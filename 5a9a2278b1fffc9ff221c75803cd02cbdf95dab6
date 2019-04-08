@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b53efaa5_6487c4fe",
+        "filename": "logd/LogAudit.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 1003966
+      },
+      "writtenOn": "2019-04-08T22:47:56Z",
+      "side": 1,
+      "message": "fast path",
+      "range": {
+        "startLine": 82,
+        "startChar": 0,
+        "endLine": 84,
+        "endChar": 5
+      },
+      "revId": "5a9a2278b1fffc9ff221c75803cd02cbdf95dab6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
