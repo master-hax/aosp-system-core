@@ -17,6 +17,7 @@
 #include <errno.h>
 #include <error.h>
 #include <fcntl.h>
+#include <fnmatch.h>
 #include <getopt.h>
 #include <inttypes.h>
 #include <stdio.h>
@@ -52,9 +53,21 @@ static uint64_t total_uncompressed_length = 0;
 static uint64_t total_compressed_length = 0;
 static size_t file_count = 0;
 
-static bool Filter(const std::string& name) {
-  if (!excludes.empty() && excludes.find(name) != excludes.end()) return true;
-  if (!includes.empty() && includes.find(name) == includes.end()) return true;
+static bool ShouldInclude(const std::string& name) {
+  // Explicitly excluded?
+  if (!excludes.empty()) {
+    for (const auto& exclude : excludes) {
+      if (!fnmatch(exclude.c_str(), name.c_str(), 0)) return false;
+    }
+  }
+
+  // Implicitly included?
+  if (includes.empty()) return true;
+
+  // Explicitly included?
+  for (const auto& include : includes) {
+    if (!fnmatch(include.c_str(), name.c_str(), 0)) return true;
+  }
   return false;
 }
 
@@ -245,7 +258,7 @@ static void ProcessAll(ZipArchiveHandle zah) {
   ZipString string;
   while ((err = Next(cookie, &entry, &string)) >= 0) {
     std::string name(string.name, string.name + string.name_length);
-    if (!Filter(name)) ProcessOne(zah, entry, name);
+    if (ShouldInclude(name)) ProcessOne(zah, entry, name);
   }
 
   if (err < -1) error(1, 0, "failed iterating %s: %s", archive_name, ErrorCodeString(err));
