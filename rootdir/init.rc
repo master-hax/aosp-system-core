@@ -742,6 +742,9 @@ on property:sys.init_log_level=*
     loglevel ${sys.init_log_level}
 
 on charger
+    chown system system /sys/power/state
+    chown system system /sys/power/wakeup_count
+    chmod 0660 /sys/power/state
     class_start charger
 
 on property:vold.decrypt=trigger_reset_main
