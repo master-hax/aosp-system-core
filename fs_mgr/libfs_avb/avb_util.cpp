@@ -104,7 +104,7 @@ bool HashtreeDmVeritySetup(FstabEntry* fstab_entry, const FsAvbHashtreeDescripto
     }
     table.set_readonly(true);
 
-    const std::string mount_point(Basename(fstab_entry->mount_point));
+    const std::string mount_point(Basename(fstab_entry->mount_pointd + "_avb"));
     const std::string device_name(GetVerityDeviceName(*fstab_entry));
     android::dm::DeviceMapper& dm = android::dm::DeviceMapper::Instance();
     if (!dm.CreateDevice(device_name, table)) {
