@@ -836,28 +836,43 @@ static int adb_sideload_legacy(const char* filename, int in_fd, int size) {
     return 0;
 }
 
+// Reads and parses the result code for rescue service. Currently it only checks for and returns
+// 0 (success) or 1 (failure).
+static int adb_rescue_read_result_code(int device_fd) {
+    char buf[kRescueServiceMessageSize] = {};
+    std::string error;
+    if (!ReadFdExactly(device_fd, buf, kRescueServiceMessageSize)) {
+        fprintf(stderr, "adb: failed to read result code: %s\n", error.c_str());
+        return 1;
+    }
+    constexpr char kRescueServiceResultSuccess[] = "RESULT00";
+    if (strncmp(buf, kRescueServiceResultSuccess, kRescueServiceMessageSize) != 0) {
+        return 1;
+    }
+    return 0;
+}
+
 #define SIDELOAD_HOST_BLOCK_SIZE (CHUNK_SIZE)
 
-/*
- * The sideload-host protocol serves the data in a file (given on the
- * command line) to the client, using a simple protocol:
- *
- * - The connect message includes the total number of bytes in the
- *   file and a block size chosen by us.
- *
- * - The other side sends the desired block number as eight decimal
- *   digits (eg "00000023" for block 23).  Blocks are numbered from
- *   zero.
- *
- * - We send back the data of the requested block.  The last block is
- *   likely to be partial; when the last block is requested we only
- *   send the part of the block that exists, it's not padded up to the
- *   block size.
- *
- * - When the other side sends "DONEDONE" instead of a block number,
- *   we hang up.
- */
-static int adb_sideload_host(const char* filename) {
+// Connects to the sideload / rescue service on the device (served by minadbd) and sends over the
+// data in an OTA package.
+//
+// It uses a simple protocol as follows.
+//
+// - The connect message includes the total number of bytes in the file and a block size chosen by
+//   us.
+//
+// - The other side sends the desired block number as eight decimal digits (e.g. "00000023" for
+//   block 23). Blocks are numbered from zero.
+//
+// - We send back the data of the requested block. The last block is likely to be partial; when the
+//   last block is requested we only send the part of the block that exists, it's not padded up to
+//   the block size.
+//
+// - When the other side sends "DONEDONE" instead of a block number, we have done all the data
+//   transfer. We additionally read the install result if under rescue mode, then hang up.
+//
+static int adb_sideload_install(const char* filename, bool rescue_mode) {
     // TODO: use a LinePrinter instead...
     struct stat sb;
     if (stat(filename, &sb) == -1) {
@@ -870,13 +885,17 @@ static int adb_sideload_host(const char* filename) {
         return -1;
     }
 
-    std::string service =
-            android::base::StringPrintf("sideload-host:%" PRId64 ":%d",
-                                        static_cast<int64_t>(sb.st_size), SIDELOAD_HOST_BLOCK_SIZE);
+    std::string service = android::base::StringPrintf(
+            "%s:%" PRId64 ":%d", rescue_mode ? "rescue-install" : "sideload-host",
+            static_cast<int64_t>(sb.st_size), SIDELOAD_HOST_BLOCK_SIZE);
     std::string error;
     unique_fd device_fd(adb_connect(service, &error));
     if (device_fd < 0) {
         fprintf(stderr, "adb: sideload connection failed: %s\n", error.c_str());
+
+        if (rescue_mode) {
+            return -1;
+        }
 
         // If this is a small enough package, maybe this is an older device that doesn't
         // support sideload-host. Try falling back to the older (<= K) sideload method.
@@ -901,11 +920,13 @@ static int adb_sideload_host(const char* filename) {
         }
         buf[8] = '\0';
 
-        if (strcmp("DONEDONE", buf) == 0) {
+        if (strcmp(kSideloadServiceExitFlag, buf) == 0) {
             printf("\rTotal xfer: %.2fx%*s\n",
                    static_cast<double>(xfer) / (sb.st_size ? sb.st_size : 1),
                    static_cast<int>(strlen(filename) + 10), "");
-            return 0;
+
+            // Read and return the result code if under rescue mode.
+            return rescue_mode ? adb_rescue_read_result_code(device_fd) : 0;
         }
 
         int64_t block = strtoll(buf, nullptr, 10);
@@ -952,6 +973,60 @@ static int adb_sideload_host(const char* filename) {
             last_percent = percent;
         }
     }
+}
+
+// Connects to the rescue service on the device (served by minadbd) and queries the given property.
+// Note that the allowed properties are white-listed on the minadbd side. Invalid queries will be
+// rejected.
+//
+// The protocol is as follows.
+//
+// - The connect message includes the name of the property.
+//
+// - The other side sends the result code first (e.g. "RESULT00"), which indicates the query result.
+//
+// - On success, we continue to read the message (size pre-defined in kRescueServiceMessageSize),
+//   which contains decimal digits for the query result size. We then read the result fully.
+//
+static int adb_rescue_getprop(const char* prop) {
+    auto service = android::base::StringPrintf("rescue-getprop:%s", prop);
+    std::string error;
+    unique_fd device_fd(adb_connect(service, &error));
+    if (device_fd == -1) {
+        fprintf(stderr, "adb: rescue connection failed: %s\n", error.c_str());
+        return 1;
+    }
+
+    // Read the result code first.
+    if (auto result_code = adb_rescue_read_result_code(device_fd); result_code != 0) {
+        return result_code;
+    }
+
+    // Read the getprop result string.
+    char buf[kRescueServiceMessageSize + 1] = {};
+    size_t length;
+    if (!ReadFdExactly(device_fd, buf, kRescueServiceMessageSize)) {
+        fprintf(stderr, "adb: failed to read getprop result length: %s\n", strerror(errno));
+        return 1;
+    }
+    if (!ParseUint(&length, buf)) {
+        fprintf(stderr, "adb: failed to parse getprop result length: %s\n", buf);
+        return 1;
+    }
+
+    // Zero-length result.
+    if (length == 0) {
+        printf("\n");
+        return 0;
+    }
+
+    std::string result(length, '\0');
+    if (!ReadFdExactly(device_fd, result.data(), length)) {
+        fprintf(stderr, "adb: failed to read getprop result: %s\n", strerror(errno));
+        return 1;
+    }
+    printf("%s\n", result.c_str());
+    return 0;
 }
 
 /**
@@ -1628,11 +1703,27 @@ int adb_commandline(int argc, const char** argv) {
         return adb_kill_server() ? 0 : 1;
     } else if (!strcmp(argv[0], "sideload")) {
         if (argc != 2) error_exit("sideload requires an argument");
-        if (adb_sideload_host(argv[1])) {
+        if (adb_sideload_install(argv[1], false /* rescue_mode */)) {
             return 1;
         } else {
             return 0;
         }
+    } else if (!strcmp(argv[0], "rescue")) {
+        // adb rescue getprop <prop>
+        // adb rescue install <filename>
+        if (argc != 3) error_exit("rescue requires two arguments");
+        if (!strcmp(argv[1], "getprop")) {
+            if (adb_rescue_getprop(argv[2]) != 0) {
+                return 1;
+            }
+        } else if (!strcmp(argv[1], "install")) {
+            if (adb_sideload_install(argv[2], true /* rescue_mode */) != 0) {
+                return 1;
+            }
+        } else {
+            error_exit("invalid rescue argument");
+        }
+        return 0;
     } else if (!strcmp(argv[0], "tcpip")) {
         if (argc != 2) error_exit("tcpip requires an argument");
         int port;

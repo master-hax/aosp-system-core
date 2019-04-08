@@ -23,5 +23,12 @@ constexpr char kShellServiceArgRaw[] = "raw";
 constexpr char kShellServiceArgPty[] = "pty";
 constexpr char kShellServiceArgShellProtocol[] = "v2";
 
+// A special flag sent by minadbd that indicates the end of sideload transfer.
+constexpr char kSideloadServiceExitFlag[] = "DONEDONE";
+
+// A result message will look like "RESULTxx", in which 0 <= xx <= 99 with 0 meaning success.
+constexpr char kRescueServiceResultPrefix[] = "RESULT";
+constexpr size_t kRescueServiceMessageSize = 8;
+
 unique_fd create_service_thread(const char* service_name, std::function<void(unique_fd)> func);
 #endif  // SERVICES_H_
