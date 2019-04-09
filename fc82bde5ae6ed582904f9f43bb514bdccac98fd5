@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "521bed94_fa0ef1bd",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1309,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-04-09T20:28:31Z",
+      "side": 1,
+      "message": "This could be interesting after aosp/932779 ... I don\u0027t think postinstall will be using both avb\u003d and avb_keys\u003d, but Bowgo should comment anyway.",
+      "range": {
+        "startLine": 1309,
+        "startChar": 20,
+        "endLine": 1309,
+        "endChar": 33
+      },
+      "revId": "fc82bde5ae6ed582904f9f43bb514bdccac98fd5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9a26ed3a_22430af7",
+        "filename": "fs_mgr/fs_mgr_verity.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 889,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-04-09T20:28:31Z",
+      "side": 1,
+      "message": "This is *technically* not a logical partition, it\u0027d be nicer to use libdm directly. Or rename/reuse UnloadAvbHashtree.",
+      "revId": "fc82bde5ae6ed582904f9f43bb514bdccac98fd5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
