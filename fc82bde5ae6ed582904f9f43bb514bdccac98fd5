@@ -75,6 +75,24 @@
       "revId": "fc82bde5ae6ed582904f9f43bb514bdccac98fd5",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0992512a_24479921",
+        "filename": "fs_mgr/fs_mgr_verity.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 889,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-04-09T20:38:35Z",
+      "side": 1,
+      "message": "Maybe just call DestroyLogicalPArtition everywhere for now, and rename it in a later CL? (Or make it a wrapper around a \"DestroyDeviceMapperDevice\" or something?)",
+      "parentUuid": "590a7a4b_7df63f3f",
+      "revId": "fc82bde5ae6ed582904f9f43bb514bdccac98fd5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
