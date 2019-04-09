@@ -55,6 +55,9 @@ bool LoadAvbHashtreeToEnableVerity(FstabEntry* fstab_entry, bool wait_for_verity
                                    const std::vector<VBMetaData>& vbmeta_images,
                                    const std::string& ab_suffix, const std::string& ab_other_suffix);
 
+// The reverse operation of LoadAvbHashtreeToEnableVerity.
+bool UnloadAvbHashtree(FstabEntry* fstab_entry, bool wait);
+
 // Converts AVB partition name to a device partition name.
 std::string AvbPartitionToDevicePatition(const std::string& avb_partition_name,
                                          const std::string& ab_suffix,

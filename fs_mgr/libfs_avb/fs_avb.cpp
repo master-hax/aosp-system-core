@@ -449,6 +449,33 @@ AvbHashtreeResult AvbHandle::SetUpAvbHashtree(FstabEntry* fstab_entry, bool wait
     return AvbHashtreeResult::kSuccess;
 }
 
+AvbHashtreeResult AvbHandle::TearDownStandaloneAvbHashtree(FstabEntry* fstab_entry, bool wait) {
+    auto avb_handle = LoadAndVerifyVbmeta(*fstab_entry);
+    if (!avb_handle) {
+        return AvbHashtreeResult::kFail;
+    }
+
+    return avb_handle->TearDownAvbHashtree(fstab_entry, wait);
+}
+
+AvbHashtreeResult AvbHandle::TearDownAvbHashtree(FstabEntry* fstab_entry, bool wait) {
+    if (!fstab_entry || status_ == AvbHandleStatus::kUninitialized || vbmeta_images_.size() < 1) {
+        return AvbHashtreeResult::kFail;
+    }
+
+    if (status_ == AvbHandleStatus::kHashtreeDisabled ||
+        status_ == AvbHandleStatus::kVerificationDisabled) {
+        LINFO << "AVB HASHTREE disabled on: " << fstab_entry->mount_point;
+        return AvbHashtreeResult::kDisabled;
+    }
+
+    if (!UnloadAvbHashtree(fstab_entry, wait)) {
+        return AvbHashtreeResult::kFail;
+    }
+
+    return AvbHashtreeResult::kSuccess;
+}
+
 std::string AvbHandle::GetSecurityPatchLevel(const FstabEntry& fstab_entry) const {
     if (vbmeta_images_.size() < 1) {
         return "";

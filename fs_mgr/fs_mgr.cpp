@@ -1268,6 +1268,65 @@ int fs_mgr_mount_all(Fstab* fstab, int mount_mode) {
     }
 }
 
+int fs_mgr_umount_all(android::fs_mgr::Fstab* fstab) {
+    AvbUniquePtr avb_handle(nullptr);
+    int ret = FsMgrUmountStatus::SUCCESS;
+    for (auto& current_entry : *fstab) {
+        if (!IsMountPointMounted(current_entry.mount_point)) {
+            continue;
+        }
+
+        if (umount(current_entry.mount_point.c_str()) == -1) {
+            PERROR << "Failed to umount " << current_entry.mount_point;
+            ret |= FsMgrUmountStatus::ERROR_UMOUNT;
+            continue;
+        }
+
+        if (current_entry.fs_mgr_flags.logical) {
+            if (!fs_mgr_update_logical_partition(&current_entry)) {
+                LERROR << "Could not get logical partition blk_device, skipping!";
+                ret |= FsMgrUmountStatus::ERROR_DEVICE_MAPPER;
+                continue;
+            }
+        }
+
+        if (current_entry.fs_mgr_flags.avb) {
+            if (!avb_handle) {
+                avb_handle = AvbHandle::Open();
+                if (!avb_handle) {
+                    LERROR << "Failed to open AvbHandle";
+                    return FsMgrUmountStatus::ERROR_UNKNOWN;
+                }
+            }
+            if (avb_handle->TearDownAvbHashtree(&current_entry, true /* wait */) ==
+                AvbHashtreeResult::kFail) {
+                LERROR << "Failed to tear down AVB on partition " << current_entry.mount_point
+                       << ", skipping!";
+                // Skips unmounting the device.
+                ret |= FsMgrUmountStatus::ERROR_AVB;
+                continue;
+            }
+        } else if (!current_entry.avb_keys.empty()) {
+            if (AvbHandle::TearDownStandaloneAvbHashtree(&current_entry) ==
+                AvbHashtreeResult::kFail) {
+                LERROR << "Failed to tear down AVB on standalone partition: "
+                       << current_entry.mount_point << ", skipping!";
+                // Skips mounting the device.
+                ret |= FsMgrUmountStatus::ERROR_AVB;
+                continue;
+            }
+        } else if ((current_entry.fs_mgr_flags.verify)) {
+            bool rc = fs_mgr_teardown_verity(&current_entry, true /* wait */);
+            if (!rc) {
+                LERROR << "Coult not tear down verified partition, skipping!";
+                ret |= FsMgrUmountStatus::ERROR_AVB;
+                continue;
+            }
+        }
+    }
+    return ret;
+}
+
 // wrapper to __mount() and expects a fully prepared fstab_rec,
 // unlike fs_mgr_do_mount which does more things with avb / verity etc.
 int fs_mgr_do_mount_one(const FstabEntry& entry, const std::string& mount_point) {

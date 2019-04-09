@@ -23,6 +23,8 @@
 #include <android-base/unique_fd.h>
 #include <linux/fs.h>
 
+#include "fs_avb/fs_avb_util.h"
+
 namespace android {
 namespace fs_mgr {
 
@@ -82,12 +84,17 @@ std::string BytesToHex(const uint8_t* bytes, size_t bytes_len) {
     return hex;
 }
 
-bool WaitForFile(const std::string& filename, const std::chrono::milliseconds relative_timeout) {
+// TODO: remove duplicate code with fs_mgr_wait_for_file
+bool WaitForFile(const std::string& filename, const std::chrono::milliseconds relative_timeout,
+                 FileWaitMode file_wait_mode) {
     auto start_time = std::chrono::steady_clock::now();
 
     while (true) {
-        if (0 == access(filename.c_str(), F_OK) || errno != ENOENT) {
-            return true;
+        int rv = access(filename.c_str(), F_OK);
+        if (file_wait_mode == FileWaitMode::Exists) {
+            if (!rv || errno != ENOENT) return true;
+        } else if (file_wait_mode == FileWaitMode::DoesNotExist) {
+            if (rv && errno == ENOENT) return true;
         }
 
         std::this_thread::sleep_for(50ms);

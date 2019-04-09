@@ -215,6 +215,23 @@ bool LoadAvbHashtreeToEnableVerity(FstabEntry* fstab_entry, bool wait_for_verity
     return HashtreeDmVeritySetup(fstab_entry, *hashtree_descriptor, wait_for_verity_dev);
 }
 
+bool UnloadAvbHashtree(FstabEntry* fstab_entry, bool wait) {
+    const std::string device_name(GetVerityDeviceName(*fstab_entry));
+
+    android::dm::DeviceMapper& dm = android::dm::DeviceMapper::Instance();
+    std::string path;
+    if (wait) {
+        dm.GetDmDevicePathByName(device_name, &path);
+    }
+    if (!dm.DeleteDevice(device_name)) {
+        return false;
+    }
+    if (!path.empty() && !WaitForFile(path, 1000ms, FileWaitMode::DoesNotExist)) {
+        return false;
+    }
+    return true;
+}
+
 // Converts a AVB partition_name (without A/B suffix) to a device partition name.
 // e.g.,       "system" => "system_a",
 //       "system_other" => "system_b".

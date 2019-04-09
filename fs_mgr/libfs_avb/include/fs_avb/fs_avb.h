@@ -110,6 +110,15 @@ class AvbHandle {
     static AvbHashtreeResult SetUpStandaloneAvbHashtree(FstabEntry* fstab_entry,
                                                         bool wait_for_verity_dev = true);
 
+    // Tear down dm devices created by SetUpAvbHashtree.
+    // The 'wait' parameter makes this function wait for the verity device to get destroyed
+    // before return.
+    AvbHashtreeResult TearDownAvbHashtree(FstabEntry* fstab_entry, bool wait);
+
+    // Similar to above, but loads the offline vbmeta from the end of fstab_entry->blk_device.
+    static AvbHashtreeResult TearDownStandaloneAvbHashtree(FstabEntry* fstab_entry,
+                                                           bool wait = true);
+
     static bool IsDeviceUnlocked();
 
     std::string GetSecurityPatchLevel(const FstabEntry& fstab_entry) const;
