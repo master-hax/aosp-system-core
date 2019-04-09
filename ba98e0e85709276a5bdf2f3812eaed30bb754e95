@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f5dd6df0_a0542526",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1108565
+      },
+      "writtenOn": "2019-04-09T20:00:59Z",
+      "side": 1,
+      "message": "Test patch is at - https://paste.googleplex.com/6033973291515904",
+      "range": {
+        "startLine": 19,
+        "startChar": 0,
+        "endLine": 19,
+        "endChar": 4
+      },
+      "revId": "ba98e0e85709276a5bdf2f3812eaed30bb754e95",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
