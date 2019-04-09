@@ -39,6 +39,24 @@
       "revId": "fc82bde5ae6ed582904f9f43bb514bdccac98fd5",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d1fde2eb_5cfad3ea",
+        "filename": "fs_mgr/fs_mgr_verity.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 889,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2019-04-09T20:33:09Z",
+      "side": 1,
+      "message": "It\u0027ll be duplicated code everywhere... I already feel sorry about LoadAvbHashtree not reusing the code in CreateLogicalPartition and UnloadAvbHashtree not using DestroyLogicalPartition. But you are right though.",
+      "parentUuid": "9a26ed3a_22430af7",
+      "revId": "fc82bde5ae6ed582904f9f43bb514bdccac98fd5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
