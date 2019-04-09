@@ -309,12 +309,8 @@ AvbUniquePtr AvbHandle::LoadAndVerifyVbmeta(const FstabEntry& fstab_entry) {
     }
 
     if (!ValidatePublicKeyBlob(public_key_data, Split(fstab_entry.avb_keys, ":"))) {
-        avb_handle->status_ = AvbHandleStatus::kVerificationError;
-        LWARNING << "Found unknown public key used to sign " << fstab_entry.mount_point;
-        if (!allow_verification_error) {
-            LERROR << "Unknown public key is not allowed";
-            return nullptr;
-        }
+        LERROR << "Found unknown public key used to sign " << fstab_entry.mount_point;
+        return nullptr;
     }
 
     if (verification_disabled) {
