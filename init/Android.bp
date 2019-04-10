@@ -110,6 +110,7 @@ cc_library_static {
         "first_stage_mount.cpp",
         "import_parser.cpp",
         "init.cpp",
+        "init_parser.cpp",
         "keychords.cpp",
         "modalias_handler.cpp",
         "mount_handler.cpp",

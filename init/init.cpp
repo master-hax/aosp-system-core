@@ -31,6 +31,8 @@
 #include <map>
 #include <memory>
 #include <optional>
+#include <string>
+#include <vector>
 
 #include <android-base/chrono_utils.h>
 #include <android-base/file.h>
@@ -52,11 +54,10 @@
 #include <binder/ProcessState.h>
 #endif
 
-#include "action_parser.h"
 #include "boringssl_self_test.h"
 #include "epoll.h"
 #include "first_stage_mount.h"
-#include "import_parser.h"
+#include "init_parser.h"
 #include "keychords.h"
 #include "mount_handler.h"
 #include "mount_namespace.h"
@@ -100,29 +101,9 @@ static bool load_debug_prop = false;
 
 std::vector<std::string> late_import_paths;
 
-static std::vector<Subcontext>* subcontexts;
-
 void DumpState() {
     ServiceList::GetInstance().DumpState();
     ActionManager::GetInstance().DumpState();
-}
-
-Parser CreateParser(ActionManager& action_manager, ServiceList& service_list) {
-    Parser parser;
-
-    parser.AddSectionParser("service", std::make_unique<ServiceParser>(&service_list, subcontexts));
-    parser.AddSectionParser("on", std::make_unique<ActionParser>(&action_manager, subcontexts));
-    parser.AddSectionParser("import", std::make_unique<ImportParser>(&parser));
-
-    return parser;
-}
-
-// parser that only accepts new services
-Parser CreateServiceOnlyParser(ServiceList& service_list) {
-    Parser parser;
-
-    parser.AddSectionParser("service", std::make_unique<ServiceParser>(&service_list, subcontexts));
-    return parser;
 }
 
 static void LoadBootScripts(ActionManager& action_manager, ServiceList& service_list) {
@@ -698,7 +679,7 @@ int SecondStageMain(int argc, char** argv) {
         PLOG(FATAL) << "SetupMountNamespaces failed";
     }
 
-    subcontexts = InitializeSubcontexts();
+    InitSubcontexts();
 
     ActionManager& am = ActionManager::GetInstance();
     ServiceList& sm = ServiceList::GetInstance();
