@@ -43,6 +43,7 @@ constexpr char USB_PORT_GONE[] =
 class FastBootTest : public testing::Test {
   public:
     static int serial_port;
+    static std::string device_serial;
     static constexpr int MAX_USB_TRIES = 10;
 
     static int MatchFastboot(usb_ifc_info* info, const char* local_serial = nullptr);

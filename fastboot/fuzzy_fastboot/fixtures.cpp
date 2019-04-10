@@ -68,8 +68,9 @@ int FastBootTest::MatchFastboot(usb_ifc_info* info, const char* local_serial) {
 
     // require matching serial number or device path if requested
     // at the command line with the -s option.
-    if (local_serial && (strcmp(local_serial, info->serial_number) != 0 &&
-                         strcmp(local_serial, info->device_path) != 0))
+    if (local_serial && local_serial[0] != '\0' &&
+        (strcmp(local_serial, info->serial_number) != 0 &&
+         strcmp(local_serial, info->device_path) != 0))
         return -1;
     return 0;
 }
@@ -113,7 +114,9 @@ void FastBootTest::SetUp() {
         ASSERT_TRUE(UsbStillAvailible());  // The device disconnected
     }
 
-    const auto matcher = [](usb_ifc_info* info) -> int { return MatchFastboot(info, nullptr); };
+    const auto matcher = [](usb_ifc_info* info) -> int {
+        return MatchFastboot(info, device_serial.c_str());
+    };
     for (int i = 0; i < MAX_USB_TRIES && !transport; i++) {
         std::unique_ptr<UsbTransport> usb(usb_open(matcher, USB_TIMEOUT));
         if (usb)
@@ -172,7 +175,9 @@ void FastBootTest::ReconnectFastbootDevice() {
         ;
     printf("WAITING FOR DEVICE\n");
     // Need to wait for device
-    const auto matcher = [](usb_ifc_info* info) -> int { return MatchFastboot(info, nullptr); };
+    const auto matcher = [](usb_ifc_info* info) -> int {
+        return MatchFastboot(info, device_serial.c_str());
+    };
     while (!transport) {
         std::unique_ptr<UsbTransport> usb(usb_open(matcher, USB_TIMEOUT));
         if (usb) {
@@ -238,6 +243,7 @@ std::string FastBootTest::device_path = "";
 std::string FastBootTest::cb_scratch = "";
 std::string FastBootTest::initial_slot = "";
 int FastBootTest::serial_port = 0;
+std::string FastBootTest::device_serial = "";
 
 template <bool UNLOCKED>
 void ModeTest<UNLOCKED>::SetUp() {
