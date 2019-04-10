@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "248812cc_de013aa5",
+        "filename": "libsysutils/src/NetlinkEvent.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 512,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-04-10T15:34:48Z",
+      "side": 1,
+      "message": "or change this to an asprintf(\"SERVERS\u003d%s\"...) to remove the copy entirely and match the others...",
+      "revId": "a6e97fe8cd1d8638154dbe8213757f1807b2af50",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b7ef788b_15ad1426",
+        "filename": "libsysutils/src/NetlinkEvent.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 638,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-04-10T15:34:48Z",
+      "side": 1,
+      "message": "since this also ignores errors, this isn\u0027t actually an improvement over atoi...\n\nsscanf would at least not update mSeq on error. or there\u0027s ParseInt.",
+      "revId": "a6e97fe8cd1d8638154dbe8213757f1807b2af50",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
