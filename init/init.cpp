@@ -57,6 +57,7 @@
 #include "boringssl_self_test.h"
 #include "epoll.h"
 #include "first_stage_mount.h"
+#include "init_kernel.h"
 #include "init_parser.h"
 #include "keychords.h"
 #include "mount_handler.h"
@@ -84,8 +85,6 @@ namespace android {
 namespace init {
 
 static int property_triggers_enabled = 0;
-
-static char qemu[32];
 
 std::string default_console = "/dev/console";
 
@@ -345,22 +344,6 @@ static Result<Success> SetupCgroupsAction(const BuiltinArguments&) {
     return Success();
 }
 
-static void import_kernel_nv(const std::string& key, const std::string& value, bool for_emulator) {
-    if (key.empty()) return;
-
-    if (for_emulator) {
-        // In the emulator, export any kernel option with the "ro.kernel." prefix.
-        property_set("ro.kernel." + key, value);
-        return;
-    }
-
-    if (key == "qemu") {
-        strlcpy(qemu, value.c_str(), sizeof(qemu));
-    } else if (android::base::StartsWith(key, "androidboot.")) {
-        property_set("ro.boot." + key.substr(12), value);
-    }
-}
-
 static void export_oem_lock_status() {
     if (!android::base::GetBoolProperty("ro.oem_unlock_supported", false)) {
         return;
@@ -371,59 +354,6 @@ static void export_oem_lock_status() {
                     property_set("ro.boot.flash.locked", value == "orange" ? "0" : "1");
                 }
             });
-}
-
-static void export_kernel_boot_props() {
-    constexpr const char* UNSET = "";
-    struct {
-        const char *src_prop;
-        const char *dst_prop;
-        const char *default_value;
-    } prop_map[] = {
-        { "ro.boot.serialno",   "ro.serialno",   UNSET, },
-        { "ro.boot.mode",       "ro.bootmode",   "unknown", },
-        { "ro.boot.baseband",   "ro.baseband",   "unknown", },
-        { "ro.boot.bootloader", "ro.bootloader", "unknown", },
-        { "ro.boot.hardware",   "ro.hardware",   "unknown", },
-        { "ro.boot.revision",   "ro.revision",   "0", },
-    };
-    for (const auto& prop : prop_map) {
-        std::string value = GetProperty(prop.src_prop, prop.default_value);
-        if (value != UNSET)
-            property_set(prop.dst_prop, value);
-    }
-}
-
-static void process_kernel_dt() {
-    if (!is_android_dt_value_expected("compatible", "android,firmware")) {
-        return;
-    }
-
-    std::unique_ptr<DIR, int (*)(DIR*)> dir(opendir(get_android_dt_dir().c_str()), closedir);
-    if (!dir) return;
-
-    std::string dt_file;
-    struct dirent *dp;
-    while ((dp = readdir(dir.get())) != NULL) {
-        if (dp->d_type != DT_REG || !strcmp(dp->d_name, "compatible") || !strcmp(dp->d_name, "name")) {
-            continue;
-        }
-
-        std::string file_name = get_android_dt_dir() + dp->d_name;
-
-        android::base::ReadFileToString(file_name, &dt_file);
-        std::replace(dt_file.begin(), dt_file.end(), ',', '.');
-
-        property_set("ro.boot."s + dp->d_name, dt_file);
-    }
-}
-
-static void process_kernel_cmdline() {
-    // The first pass does the common stuff, and finds if we are in qemu.
-    // The second pass is only necessary for qemu to export all kernel params
-    // as properties.
-    import_kernel_cmdline(false, import_kernel_nv);
-    if (qemu[0]) import_kernel_cmdline(true, import_kernel_nv);
 }
 
 static Result<Success> property_enable_triggers_action(const BuiltinArguments& args) {
@@ -622,14 +552,7 @@ int SecondStageMain(int argc, char** argv) {
 
     property_init();
 
-    // If arguments are passed both on the command line and in DT,
-    // properties set in DT always have priority over the command-line ones.
-    process_kernel_dt();
-    process_kernel_cmdline();
-
-    // Propagate the kernel variables to internal variables
-    // used by init as well as the current required properties.
-    export_kernel_boot_props();
+    process_kernel();
 
     // Make the time that init started available for bootstat to log.
     property_set("ro.boottime.init", getenv("INIT_STARTED_AT"));
