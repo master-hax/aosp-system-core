@@ -99,8 +99,6 @@ static std::string shutdown_command;
 static bool do_shutdown = false;
 static bool load_debug_prop = false;
 
-std::vector<std::string> late_import_paths;
-
 void DumpState() {
     ServiceList::GetInstance().DumpState();
     ActionManager::GetInstance().DumpState();
@@ -113,19 +111,19 @@ static void LoadBootScripts(ActionManager& action_manager, ServiceList& service_
     if (bootscript.empty()) {
         parser.ParseConfig("/init.rc");
         if (!parser.ParseConfig("/system/etc/init")) {
-            late_import_paths.emplace_back("/system/etc/init");
+            AddLateImportPath("/system/etc/init");
         }
         if (!parser.ParseConfig("/product/etc/init")) {
-            late_import_paths.emplace_back("/product/etc/init");
+            AddLateImportPath("/product/etc/init");
         }
         if (!parser.ParseConfig("/product_services/etc/init")) {
-            late_import_paths.emplace_back("/product_services/etc/init");
+            AddLateImportPath("/product_services/etc/init");
         }
         if (!parser.ParseConfig("/odm/etc/init")) {
-            late_import_paths.emplace_back("/odm/etc/init");
+            AddLateImportPath("/odm/etc/init");
         }
         if (!parser.ParseConfig("/vendor/etc/init")) {
-            late_import_paths.emplace_back("/vendor/etc/init");
+            AddLateImportPath("/vendor/etc/init");
         }
     } else {
         parser.ParseConfig(bootscript);

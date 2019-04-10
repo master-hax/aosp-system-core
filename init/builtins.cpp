@@ -41,6 +41,9 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
+#include <string>
+#include <vector>
+
 #include <android-base/chrono_utils.h>
 #include <android-base/file.h>
 #include <android-base/logging.h>
@@ -430,16 +433,21 @@ static Result<Success> do_mount(const BuiltinArguments& args) {
  *
  * start_index: index of the first path in the args list
  */
+static std::vector<std::string> LateImportPaths;
+void AddLateImportPath(std::string&& path) {
+    LateImportPaths.emplace_back(path);
+}
+
 static void import_late(const std::vector<std::string>& args, size_t start_index, size_t end_index) {
     auto& action_manager = ActionManager::GetInstance();
     auto& service_list = ServiceList::GetInstance();
     Parser parser = CreateParser(action_manager, service_list);
     if (end_index <= start_index) {
         // Fallbacks for partitions on which early mount isn't enabled.
-        for (const auto& path : late_import_paths) {
+        for (const auto& path : LateImportPaths) {
             parser.ParseConfig(path);
         }
-        late_import_paths.clear();
+        LateImportPaths.clear();
     } else {
         for (size_t i = start_index; i < end_index; ++i) {
             parser.ParseConfig(args[i]);

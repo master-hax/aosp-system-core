@@ -35,7 +35,6 @@ namespace init {
 // or any files that may be included in ueventd, such as devices.cpp and util.cpp.
 // TODO: Have an Init class and remove all globals.
 extern std::string default_console;
-extern std::vector<std::string> late_import_paths;
 
 Parser CreateParser(ActionManager& action_manager, ServiceList& service_list);
 Parser CreateServiceOnlyParser(ServiceList& service_list);
