@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "f399f9d1_a3d1ff8b",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1309,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-04-10T08:31:21Z",
+      "side": 1,
+      "message": "No, for postinstall, only avb_keys will be used.\n\nBtw, as I commented in internal gerrit, to unmap a dm-verity device, there is no diff between \u0027avb\u0027, \u0027avb_keys\u0027. And probably no diff for \u0027verify\u0027 as well, if it also uses *-verify as the dm-verity device name.",
+      "parentUuid": "521bed94_fa0ef1bd",
+      "range": {
+        "startLine": 1309,
+        "startChar": 20,
+        "endLine": 1309,
+        "endChar": 33
+      },
+      "revId": "fc82bde5ae6ed582904f9f43bb514bdccac98fd5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "9a26ed3a_22430af7",
         "filename": "fs_mgr/fs_mgr_verity.cpp",
         "patchSetId": 1
