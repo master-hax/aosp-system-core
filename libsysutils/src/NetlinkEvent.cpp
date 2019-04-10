@@ -301,8 +301,9 @@ bool NetlinkEvent::parseNfPacketMessage(struct nlmsghdr *nh) {
         raw = (char*)nlAttrData(payload);
     }
 
-    char* hex = (char*) calloc(1, 5 + (len * 2));
-    strcpy(hex, "HEX=");
+    size_t hexSize = 5 + (len * 2);
+    char* hex = (char*)calloc(1, hexSize);
+    strlcpy(hex, "HEX=", hexSize);
     for (int i = 0; i < len; i++) {
         hex[4 + (i * 2)] = "0123456789abcdef"[(raw[i] >> 4) & 0xf];
         hex[5 + (i * 2)] = "0123456789abcdef"[raw[i] & 0xf];
@@ -487,7 +488,7 @@ bool NetlinkEvent::parseNdUserOptMessage(const struct nlmsghdr *nh) {
             SLOGE("RDNSS option: out of memory\n");
             return false;
         }
-        strcpy(buf, kServerTag);
+        strlcpy(buf, kServerTag, bufsize);
         size_t pos = kTagLength;
 
         struct in6_addr *addrs = (struct in6_addr *) (rndss_opt + 1);
@@ -634,7 +635,7 @@ bool NetlinkEvent::parseAsciiNetlinkMessage(char *buffer, int size) {
                 else if (!strcmp(a, "change"))
                     mAction = Action::kChange;
             } else if ((a = HAS_CONST_PREFIX(s, end, "SEQNUM=")) != nullptr) {
-                mSeq = atoi(a);
+                mSeq = strtol(a, nullptr, 10);
             } else if ((a = HAS_CONST_PREFIX(s, end, "SUBSYSTEM=")) != nullptr) {
                 mSubsystem = strdup(a);
             } else if (param_idx < NL_PARAMS_MAX) {
