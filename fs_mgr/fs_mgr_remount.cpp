@@ -376,12 +376,31 @@ int main(int argc, char* argv[]) {
         // filesystem types like squashfs, erofs or ext4 dedupe. We will
         // consider such a device that does not have CONFIG_OVERLAY_FS
         // in the kernel as a misconfigured; except for ext4 dedupe.
-        if ((errno == EROFS) && can_reboot) {
-            const std::vector<std::string> msg = {"--fsck_unshare_blocks"};
-            std::string err;
-            if (write_bootloader_message(msg, &err)) reboot(true);
-            LOG(ERROR) << "Failed to set bootloader message: " << err;
-            errno = EROFS;
+        if (errno != EROFS) {
+            retval = REMOUNT_FAILED;
+            continue;
+        }
+
+        auto has_shared_blocks = fs_mgr_has_shared_blocks(mount_point, blk_device);
+        if (!has_shared_blocks && (mount_point == "/system")) {
+            has_shared_blocks = fs_mgr_has_shared_blocks("/", blk_device);
+        }
+        if (!has_shared_blocks && (errno == ENOENT) && (blk_device == "/dev/root")) {
+            has_shared_blocks = true;
+        }
+        if (has_shared_blocks) {
+            LOG(WARNING) << "ext4 with shared blocks, possible misconfigured system";
+            LOG(WARNING) << "Consider providing all the dependencies to enable overlayfs solution";
+            if (can_reboot) {
+                LOG(WARNING) << "rebooting to unshare";
+                const std::vector<std::string> msg = {"--fsck_unshare_blocks"};
+                std::string err;
+                if (write_bootloader_message(msg, &err)) reboot(true);
+                LOG(ERROR) << "Failed to set bootloader message: " << err;
+                errno = EROFS;
+                continue;
+            }
+            LOG(WARNING) << "Use remount -R to unshare";
         }
         retval = REMOUNT_FAILED;
     }
