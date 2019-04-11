@@ -86,6 +86,7 @@ static const struct fs_path_config android_dirs[] = {
     { 00750, AID_ROOT,         AID_SHELL,        0, "data/nativetest64" },
     { 00775, AID_ROOT,         AID_ROOT,         0, "data/preloads" },
     { 00771, AID_SYSTEM,       AID_SYSTEM,       0, "data" },
+    { 00555, AID_ROOT,         AID_ROOT,         0, "debug_ramdisk" },
     { 00755, AID_ROOT,         AID_SYSTEM,       0, "mnt" },
     { 00751, AID_ROOT,         AID_SHELL,        0, "product/bin" },
     { 00750, AID_ROOT,         AID_SHELL,        0, "sbin" },
