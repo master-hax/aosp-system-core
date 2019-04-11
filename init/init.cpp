@@ -54,6 +54,7 @@
 
 #include "action_parser.h"
 #include "boringssl_self_test.h"
+#include "debug_ramdisk.h"
 #include "epoll.h"
 #include "first_stage_mount.h"
 #include "import_parser.h"
@@ -685,6 +686,7 @@ int SecondStageMain(int argc, char** argv) {
     InstallSignalFdHandler(&epoll);
 
     property_load_boot_defaults(load_debug_prop);
+    UmountDebugRamdisk();
     fs_mgr_vendor_overlay_mount_all();
     export_oem_lock_status();
     StartPropertyService(&epoll);
