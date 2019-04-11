@@ -74,6 +74,7 @@ LOCAL_POST_INSTALL_CMD := mkdir -p \
     $(TARGET_RAMDISK_OUT)/sys \
 
 LOCAL_STATIC_LIBRARIES := \
+    libc++fs \
     libfs_avb \
     libfs_mgr \
     libfec \
