@@ -26,6 +26,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#include <filesystem>
 #include <string>
 #include <vector>
 
@@ -36,13 +37,17 @@
 #include <private/android_filesystem_config.h>
 
 #include "first_stage_mount.h"
+#include "property_service.h"
 #include "reboot_utils.h"
+#include "selinux.h"
 #include "switch_root.h"
 #include "util.h"
 
 using android::base::boot_clock;
 
 using namespace std::literals;
+
+namespace fs = std::filesystem;
 
 namespace android {
 namespace init {
@@ -202,7 +207,15 @@ int FirstStageMain(int argc, char** argv) {
     // If this file is present, the second-stage init will use a userdebug sepolicy
     // and load adb_debug.prop to allow adb root, if the device is unlocked.
     if (access("/force_debuggable", F_OK) == 0) {
-        setenv("INIT_FORCE_DEBUGGABLE", "true", 1);
+        std::error_code ec;  // to invoke the overloaded copy_file() that won't throw.
+        if (mkdir("/mnt/debug_ramdisk", 0755) != 0 ||
+            !fs::copy_file("/adb_debug.prop", kDebugRamdiskProp, ec) ||
+            !fs::copy_file("/userdebug_plat_sepolicy.cil", kDebugRamdiskSEPolicy, ec)) {
+            LOG(ERROR) << "Failed to setup debug ramdisk";
+        } else {
+            // setenv for second-stage init to read above kDebugRamdisk* files.
+            setenv("INIT_FORCE_DEBUGGABLE", "true", 1);
+        }
     }
 
     if (!DoFirstStageMount()) {

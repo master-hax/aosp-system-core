@@ -271,8 +271,6 @@ bool GetVendorMappingVersion(std::string* plat_vers) {
 }
 
 constexpr const char plat_policy_cil_file[] = "/system/etc/selinux/plat_sepolicy.cil";
-constexpr const char userdebug_plat_policy_cil_file[] =
-        "/system/etc/selinux/userdebug_plat_sepolicy.cil";
 
 bool IsSplitPolicyDevice() {
     return access(plat_policy_cil_file, R_OK) != -1;
@@ -292,7 +290,7 @@ bool LoadSplitPolicy() {
     const char* force_debuggable_env = getenv("INIT_FORCE_DEBUGGABLE");
     bool use_userdebug_policy =
             ((force_debuggable_env && "true"s == force_debuggable_env) &&
-             AvbHandle::IsDeviceUnlocked() && access(userdebug_plat_policy_cil_file, F_OK) == 0);
+             AvbHandle::IsDeviceUnlocked() && access(kDebugRamdiskSEPolicy, F_OK) == 0);
     if (use_userdebug_policy) {
         LOG(WARNING) << "Using userdebug system sepolicy";
     }
@@ -367,7 +365,7 @@ bool LoadSplitPolicy() {
     // clang-format off
     std::vector<const char*> compile_args {
         "/system/bin/secilc",
-        use_userdebug_policy ? userdebug_plat_policy_cil_file : plat_policy_cil_file,
+        use_userdebug_policy ? kDebugRamdiskSEPolicy: plat_policy_cil_file,
         "-m", "-M", "true", "-G", "-N",
         "-c", version_as_string.c_str(),
         plat_mapping_file.c_str(),
@@ -469,6 +467,7 @@ void SelinuxRestoreContext() {
     selinux_android_restorecon("/dev/device-mapper", 0);
 
     selinux_android_restorecon("/apex", 0);
+    selinux_android_restorecon("/mnt/debug_ramdisk", SELINUX_ANDROID_RESTORECON_RECURSE);
 }
 
 int SelinuxKlogCallback(int type, const char* fmt, ...) {

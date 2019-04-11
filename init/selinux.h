@@ -23,6 +23,8 @@
 namespace android {
 namespace init {
 
+constexpr const char kDebugRamdiskSEPolicy[] = "/mnt/debug_ramdisk/userdebug_plat_sepolicy.cil";
+
 int SetupSelinux(char** argv);
 void SelinuxRestoreContext();
 
