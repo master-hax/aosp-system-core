@@ -133,7 +133,9 @@ bool LocalUnwinder::Unwind(std::vector<LocalFrameData>* frame_info, size_t max_f
 
     adjust_pc = true;
     bool finished;
-    if (!elf->Step(rel_pc, step_pc, regs.get(), process_memory_.get(), &finished) || finished) {
+    if (elf->StepIfSignalHandler(rel_pc, regs.get(), process_memory_.get())) {
+      adjust_pc = false;
+    } else if (!elf->Step(step_pc, regs.get(), process_memory_.get(), &finished) || finished) {
       break;
     }
     // pc and sp are the same, terminate the unwind.

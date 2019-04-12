@@ -307,9 +307,7 @@ TEST_F(UnwindOfflineTest, jit_debug_x86) {
   }
   process_memory_.reset(memory);
 
-  JitDebug jit_debug(process_memory_);
   Unwinder unwinder(128, maps_.get(), regs_.get(), process_memory_);
-  unwinder.SetJitDebug(&jit_debug, regs_->Arch());
   unwinder.Unwind();
 
   std::string frame_info(DumpFrames(unwinder));
@@ -609,9 +607,7 @@ TEST_F(UnwindOfflineTest, jit_debug_arm) {
   }
   process_memory_.reset(memory);
 
-  JitDebug jit_debug(process_memory_);
   Unwinder unwinder(128, maps_.get(), regs_.get(), process_memory_);
-  unwinder.SetJitDebug(&jit_debug, regs_->Arch());
   unwinder.Unwind();
 
   std::string frame_info(DumpFrames(unwinder));
@@ -932,9 +928,7 @@ static void OfflineUnwind(void* data) {
   LeakType* leak_data = reinterpret_cast<LeakType*>(data);
 
   std::unique_ptr<Regs> regs_copy(leak_data->regs->Clone());
-  JitDebug jit_debug(leak_data->process_memory);
   Unwinder unwinder(128, leak_data->maps, regs_copy.get(), leak_data->process_memory);
-  unwinder.SetJitDebug(&jit_debug, regs_copy->Arch());
   unwinder.Unwind();
   ASSERT_EQ(76U, unwinder.NumFrames());
 }
@@ -1055,9 +1049,7 @@ TEST_F(UnwindOfflineTest, art_quick_osr_stub_arm) {
   }
   process_memory_.reset(memory);
 
-  JitDebug jit_debug(process_memory_);
   Unwinder unwinder(128, maps_.get(), regs_.get(), process_memory_);
-  unwinder.SetJitDebug(&jit_debug, regs_->Arch());
   unwinder.Unwind();
 
   std::string frame_info(DumpFrames(unwinder));
@@ -1462,22 +1454,22 @@ TEST_F(UnwindOfflineTest, signal_offset_arm) {
       "  #07 pc 00017868  libz.so (_Unwind_Resume+20)\n",
       frame_info);
 
-  EXPECT_EQ(0xeb8242dc, unwinder.frames()[0].pc);
-  EXPECT_EQ(0xeb782ac8, unwinder.frames()[0].sp);
-  EXPECT_EQ(0xeb7bcef1, unwinder.frames()[1].pc);
-  EXPECT_EQ(0xeb782ad8, unwinder.frames()[1].sp);
-  EXPECT_EQ(0xbd8f5947, unwinder.frames()[2].pc);
-  EXPECT_EQ(0xeb782c30, unwinder.frames()[2].sp);
-  EXPECT_EQ(0xe831f710, unwinder.frames()[3].pc);
-  EXPECT_EQ(0xeb782c90, unwinder.frames()[3].sp);
-  EXPECT_EQ(0xe836d880, unwinder.frames()[4].pc);
-  EXPECT_EQ(0xffe5e550, unwinder.frames()[4].sp);
-  EXPECT_EQ(0xe83707d0, unwinder.frames()[5].pc);
-  EXPECT_EQ(0xffe5e550, unwinder.frames()[5].sp);
-  EXPECT_EQ(0xe8370a40, unwinder.frames()[6].pc);
-  EXPECT_EQ(0xffe5e560, unwinder.frames()[6].sp);
-  EXPECT_EQ(0xe76f0868, unwinder.frames()[7].pc);
-  EXPECT_EQ(0xffe5e570, unwinder.frames()[7].sp);
+  EXPECT_EQ(0x7cbe0b14bcULL, unwinder.frames()[0].pc);
+  EXPECT_EQ(0x7be4f077d0ULL, unwinder.frames()[0].sp);
+  EXPECT_EQ(0x7be6715f5cULL, unwinder.frames()[1].pc);
+  EXPECT_EQ(0x7be4f077d0ULL, unwinder.frames()[1].sp);
+  EXPECT_EQ(0x7be6715e9cULL, unwinder.frames()[2].pc);
+  EXPECT_EQ(0x7be4f07800ULL, unwinder.frames()[2].sp);
+  EXPECT_EQ(0x7be6715d70ULL, unwinder.frames()[3].pc);
+  EXPECT_EQ(0x7be4f07840ULL, unwinder.frames()[3].sp);
+  EXPECT_EQ(0x7be6716408ULL, unwinder.frames()[4].pc);
+  EXPECT_EQ(0x7be4f07860ULL, unwinder.frames()[4].sp);
+  EXPECT_EQ(0x7be67168d8ULL, unwinder.frames()[5].pc);
+  EXPECT_EQ(0x7be4f07880ULL, unwinder.frames()[5].sp);
+  EXPECT_EQ(0x7be6716814ULL, unwinder.frames()[6].pc);
+  EXPECT_EQ(0x7be4f078f0ULL, unwinder.frames()[6].sp);
+  EXPECT_EQ(0x7be6704f60ULL, unwinder.frames()[7].pc);
+  EXPECT_EQ(0x7be4f07910ULL, unwinder.frames()[7].sp);
 }
 
 }  // namespace unwindstack

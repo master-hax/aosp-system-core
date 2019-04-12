@@ -1,0 +1,7 @@
+bd8f5000-bd8f6000 r-xp 0 00:00 0   libsigmux.so
+e76d9000-e76e0000 r--p 0 00:00 0   libz.so
+e76e0000-e76f2000 r-xp 7000 00:00 0   libz.so
+e82ee000-e8324000 r-xp 29000 00:00 0   libc.so
+e8325000-e8375000 r-xp 60000 00:00 0   libc.so
+eb78a000-eb7a7000 r--p 0 00:00 0   linker
+eb7a7000-eb840000 r-xp 1d000 00:00 0   linker

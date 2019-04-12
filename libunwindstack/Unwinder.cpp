@@ -217,16 +217,13 @@ void Unwinder::Unwind(const std::vector<std::string>* initial_map_names_to_skip,
     }
     adjust_pc = true;
 
-    bool stepped;
+    bool stepped = false;
     bool in_device_map = false;
-    if (map_info == nullptr) {
-      stepped = false;
-    } else {
+    if (map_info != nullptr) {
       if (map_info->flags & MAPS_FLAGS_DEVICE_MAP) {
         // Do not stop here, fall through in case we are
         // in the speculative unwind path and need to remove
         // some of the speculative frames.
-        stepped = false;
         in_device_map = true;
       } else {
         MapInfo* sp_info = maps_->Find(regs_->sp());
@@ -234,13 +231,19 @@ void Unwinder::Unwind(const std::vector<std::string>* initial_map_names_to_skip,
           // Do not stop here, fall through in case we are
           // in the speculative unwind path and need to remove
           // some of the speculative frames.
-          stepped = false;
           in_device_map = true;
         } else {
-          bool finished;
-          stepped = elf->Step(rel_pc, step_pc, regs_, process_memory_.get(), &finished);
+          bool finished = false;
+          if (elf->StepIfSignalHandler(rel_pc, regs_, process_memory_.get())) {
+            // Do not adjust the pc on the next loop since this pc is
+            // the exact one on which the signal was taken.
+            adjust_pc = false;
+            stepped = true;
+          } else if (elf->Step(step_pc, regs_, process_memory_.get(), &finished)) {
+            stepped = true;
+          }
           elf->GetLastError(&last_error_);
-          if (stepped && finished) {
+          if (finished) {
             break;
           }
         }
