@@ -29,20 +29,33 @@ namespace init {
 
 class ModaliasHandler : public UeventHandler {
   public:
-    ModaliasHandler();
+    ModaliasHandler(std::vector<std::string>);
     virtual ~ModaliasHandler() = default;
 
     void HandleUevent(const Uevent& uevent) override;
+    void LoadListedModules();
 
   private:
-    Result<Success> InsmodWithDeps(const std::string& module_name, const std::string& args);
-    Result<Success> Insmod(const std::string& path_name, const std::string& args);
+    std::string MakeCanonical(const std::string& module_path);
+    Result<Success> InsmodWithDeps(const std::string& module_name);
+    Result<Success> Insmod(const std::string& path_name);
+    std::vector<std::string> GetDependencies(const std::string& module);
+    bool ModuleExists(const std::string& module_name);
+    void LoadWithAliases(const std::string& module_name, bool strict);
 
     Result<Success> ParseDepCallback(std::vector<std::string>&& args);
     Result<Success> ParseAliasCallback(std::vector<std::string>&& args);
+    Result<Success> ParseSoftdepCallback(std::vector<std::string>&& args);
+    Result<Success> ParseLoadCallback(std::vector<std::string>&& args);
+    Result<Success> ParseOptionsCallback(std::vector<std::string>&& args);
 
+    std::string base_path;
     std::vector<std::pair<std::string, std::string>> module_aliases_;
     std::unordered_map<std::string, std::vector<std::string>> module_deps_;
+    std::vector<std::pair<std::string, std::string>> module_pre_softdep_;
+    std::vector<std::pair<std::string, std::string>> module_post_softdep_;
+    std::vector<std::string> module_load_;
+    std::unordered_map<std::string, std::string> module_options_;
 };
 
 }  // namespace init

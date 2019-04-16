@@ -38,6 +38,7 @@
 
 #include "debug_ramdisk.h"
 #include "first_stage_mount.h"
+#include "modalias_handler.h"
 #include "reboot_utils.h"
 #include "switch_root.h"
 #include "util.h"
@@ -195,6 +196,9 @@ int FirstStageMain(int argc, char** argv) {
         PLOG(ERROR) << "Could not stat(\"/\"), not freeing ramdisk";
         old_root_dir.reset();
     }
+
+    ModaliasHandler m({ "/lib/modules/" });
+    m.LoadListedModules();
 
     if (ForceNormalBoot()) {
         mkdir("/first_stage_ramdisk", 0755);
