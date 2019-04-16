@@ -106,6 +106,7 @@ class FirstStageMount {
     std::string super_partition_name_;
     std::unique_ptr<DeviceHandler> device_handler_;
     UeventListener uevent_listener_;
+    std::set<std::string> boot_devices_;
 };
 
 class FirstStageMountVBootV1 : public FirstStageMount {
@@ -218,10 +219,10 @@ static bool IsStandaloneImageRollback(const AvbHandle& builtin_vbmeta,
 // -----------------
 FirstStageMount::FirstStageMount(Fstab fstab)
     : need_dm_verity_(false), fstab_(std::move(fstab)), uevent_listener_(16 * 1024 * 1024) {
-    auto boot_devices = android::fs_mgr::GetBootDevices();
+    boot_devices_ = android::fs_mgr::GetBootDevices();
     device_handler_ = std::make_unique<DeviceHandler>(
-            std::vector<Permissions>{}, std::vector<SysfsPermissions>{}, std::vector<Subsystem>{},
-            std::move(boot_devices), false);
+            std::vector<Permissions>{}, std::vector<SysfsPermissions>{},
+            std::vector<Subsystem>{}, boot_devices_, false);
 
     super_partition_name_ = fs_mgr_get_super_partition_name();
 }
@@ -404,6 +405,22 @@ ListenerAction FirstStageMount::HandleBlockDevice(const std::string& name, const
 ListenerAction FirstStageMount::UeventCallback(const Uevent& uevent) {
     // Ignores everything that is not a block device.
     if (uevent.subsystem != "block") {
+        return ListenerAction::kContinue;
+    }
+    if (uevent.path.find("/pci") != std::string::npos) {
+        // PCI device could not be solid in some HW platforms, should indentify boot_devices
+        // imported via kernel commandline or DT.
+        bool is_boot_device = false;
+        // check if it is in boot devices
+        for (const auto& boot_dev : boot_devices_) {
+            if (uevent.path.find(boot_dev) != std::string::npos) {
+                is_boot_device = true;
+                break;
+            }
+        }
+    }
+    // Ignores non-boot device.
+    if (!is_boot_device) {
         return ListenerAction::kContinue;
     }
 
