@@ -94,6 +94,7 @@ class FirstStageMount {
     std::string super_partition_name_;
     std::unique_ptr<DeviceHandler> device_handler_;
     UeventListener uevent_listener_;
+    std::set<std::string> boot_devices_;
 };
 
 class FirstStageMountVBootV1 : public FirstStageMount {
@@ -156,10 +157,10 @@ static Fstab ReadFirstStageFstab() {
 // -----------------
 FirstStageMount::FirstStageMount(Fstab fstab)
     : need_dm_verity_(false), fstab_(std::move(fstab)), uevent_listener_(16 * 1024 * 1024) {
-    auto boot_devices = fs_mgr_get_boot_devices();
+    boot_devices_ = fs_mgr_get_boot_devices();
     device_handler_ = std::make_unique<DeviceHandler>(
             std::vector<Permissions>{}, std::vector<SysfsPermissions>{}, std::vector<Subsystem>{},
-            std::move(boot_devices), false);
+            boot_devices_, false);
 
     super_partition_name_ = fs_mgr_get_super_partition_name();
 }
@@ -333,8 +334,20 @@ ListenerAction FirstStageMount::HandleBlockDevice(const std::string& name, const
 }
 
 ListenerAction FirstStageMount::UeventCallback(const Uevent& uevent) {
+    bool is_boot_device = false;
     // Ignores everything that is not a block device.
     if (uevent.subsystem != "block") {
+        return ListenerAction::kContinue;
+    }
+    // check if it is in boot devices
+    for (const auto& boot_dev : boot_devices_) {
+        if (uevent.path.find(boot_dev) != uevent.path.npos) {
+            is_boot_device = true;
+            break;
+        }
+    }
+    // Ignores non-boot device.
+    if (is_boot_device != true) {
         return ListenerAction::kContinue;
     }
 
