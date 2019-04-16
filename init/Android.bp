@@ -84,6 +84,7 @@ cc_defaults {
         "liblog",
         "liblogwrap",
         "liblp",
+        "libmodprobe",
         "libprocessgroup",
         "libprocessgroup_setup",
         "libselinux",
