@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 The Android Open Source Project
+ * Copyright (C) 2019 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,24 +19,5 @@
 #include <string>
 #include <vector>
 
-#include <modprobe/modprobe.h>
-
-#include "uevent.h"
-#include "uevent_handler.h"
-
-namespace android {
-namespace init {
-
-class ModaliasHandler : public UeventHandler {
-  public:
-    ModaliasHandler(std::vector<std::string>);
-    virtual ~ModaliasHandler() = default;
-
-    void HandleUevent(const Uevent& uevent) override;
-
-  private:
-    Modprobe *m;
-};
-
-}  // namespace init
-}  // namespace android
+extern std::vector<std::string> test_modules;
+extern std::vector<std::string> modules_loaded;

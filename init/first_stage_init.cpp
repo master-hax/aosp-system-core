@@ -34,6 +34,7 @@
 #include <android-base/file.h>
 #include <android-base/logging.h>
 #include <cutils/android_reboot.h>
+#include <modprobe/modprobe.h>
 #include <private/android_filesystem_config.h>
 
 #include "debug_ramdisk.h"
@@ -194,6 +195,11 @@ int FirstStageMain(int argc, char** argv) {
     if (stat("/", &old_root_info) != 0) {
         PLOG(ERROR) << "Could not stat(\"/\"), not freeing ramdisk";
         old_root_dir.reset();
+    }
+
+    Modprobe m({ "/lib/modules/" });
+    if (!m.LoadListedModules()) {
+        LOG(FATAL) << "Failed to load kernel modules";
     }
 
     if (ForceNormalBoot()) {
