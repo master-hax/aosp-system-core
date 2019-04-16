@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "5d608e21_58f4f646",
+        "filename": "libsysutils/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1081223
+      },
+      "writtenOn": "2019-04-16T06:35:04Z",
+      "side": 1,
+      "message": "tidy_checks_as_errors: [\n    \"clang-analyzer-security*\",\n     \"cert-*\",\n     \"android-*\",\n]\n\nNicer method to add them was introduced here\nhttps://android-review.googlesource.com/c/platform/build/soong/+/933824",
+      "range": {
+        "startLine": 37,
+        "startChar": 0,
+        "endLine": 39,
+        "endChar": 6
+      },
+      "revId": "a6e97fe8cd1d8638154dbe8213757f1807b2af50",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "248812cc_de013aa5",
         "filename": "libsysutils/src/NetlinkEvent.cpp",
         "patchSetId": 1
