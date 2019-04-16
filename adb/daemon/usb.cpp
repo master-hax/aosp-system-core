@@ -58,10 +58,10 @@ using android::base::StringPrintf;
 static std::optional<bool> gFfsAioSupported;
 
 static constexpr size_t kUsbReadQueueDepth = 32;
-static constexpr size_t kUsbReadSize = 8 * PAGE_SIZE;
+static constexpr size_t kUsbReadSize = 4 * PAGE_SIZE;
 
 static constexpr size_t kUsbWriteQueueDepth = 32;
-static constexpr size_t kUsbWriteSize = 8 * PAGE_SIZE;
+static constexpr size_t kUsbWriteSize = 4 * PAGE_SIZE;
 
 static const char* to_string(enum usb_functionfs_event_type type) {
     switch (type) {
