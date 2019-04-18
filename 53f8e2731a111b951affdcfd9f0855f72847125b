@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1bddff12_423a5191",
+        "filename": "init/first_stage_init.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 163,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-04-18T22:07:22Z",
+      "side": 1,
+      "message": "I think this would go better at the beginning of second stage init, somewhere around https://cs.corp.google.com/android/system/core/init/init.cpp?q\u003df:init.cpp\u0026sq\u003dpackage:%5Eandroid$\u0026dr\u0026l\u003d633.",
+      "revId": "53f8e2731a111b951affdcfd9f0855f72847125b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
