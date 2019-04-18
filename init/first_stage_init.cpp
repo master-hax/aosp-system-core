@@ -158,7 +158,6 @@ int FirstStageMain(int argc, char** argv) {
     // /apex is used to mount APEXes
     CHECKCALL(mount("tmpfs", "/apex", "tmpfs", MS_NOEXEC | MS_NOSUID | MS_NODEV,
                     "mode=0755,uid=0,gid=0"));
-
 #undef CHECKCALL
 
     // Now that tmpfs is mounted on /dev and we have /dev/kmsg, we can actually
