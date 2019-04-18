@@ -120,9 +120,11 @@ constexpr int32_t kUnknownBootReason = 1;
 // A mapping from boot reason string, as read from the ro.boot.bootreason
 // system property, to a unique integer ID. Viewers of log data dashboards for
 // the boot_reason metric may refer to this mapping to discern the histogram
-// values.
+// values.  Regex matching, to manage the scale, as a minimum require either
+// [.] or \. to be present in the string to switch for each hierarchical dot.
+// Beware that a . matches any character otherwise.
 const std::map<std::string, int32_t> kBootReasonMap = {
-    {"empty", kEmptyBootReason},
+    {"reboot\\.empty", kEmptyBootReason},
     {"__BOOTSTAT_UNKNOWN__", kUnknownBootReason},
     {"normal", 2},
     {"recovery", 3},
@@ -312,6 +314,14 @@ int32_t BootReasonStrToEnum(const std::string& boot_reason) {
 
   if (boot_reason.empty()) {
     return kEmptyBootReason;
+  }
+
+  for (const auto& [match, id] : kBootReasonMap) {
+    // Regex matches as a minimum require either [.] or \. to be present
+    // for each hierarchical dot.  Beware that a . matches any character
+    // otherwise.
+    if ((match.find("[.]") == match.npos) && (match.find("\\.") == match.npos)) continue;
+    if (std::regex_search(boot_reason, std::regex(match))) return id;
   }
 
   LOG(INFO) << "Unknown boot reason: " << boot_reason;
@@ -1266,6 +1276,19 @@ void RecordFactoryReset() {
   boot_event_store.AddBootEventWithValue("time_since_factory_reset", time_since_factory_reset);
 }
 
+// List the associated boot reason(s), if arg is nullptr then all.
+void PrintBootReasonEnum(const char* arg) {
+  int value = -1;
+  if (arg != nullptr) {
+    value = BootReasonStrToEnum(arg);
+  }
+  for (const auto& [match, id] : kBootReasonMap) {
+    if ((value < 0) || (value == id)) {
+      printf("%u\t%s\n", id, match.c_str());
+    }
+  }
+}
+
 }  // namespace
 
 int main(int argc, char** argv) {
@@ -1280,6 +1303,7 @@ int main(int argc, char** argv) {
   static const char boot_complete_str[] = "record_boot_complete";
   static const char boot_reason_str[] = "record_boot_reason";
   static const char factory_reset_str[] = "record_time_since_factory_reset";
+  static const char boot_reason_enum_str[] = "boot_reason_enum";
   static const struct option long_options[] = {
       // clang-format off
       { "help",                 no_argument,       NULL,   'h' },
@@ -1291,6 +1315,7 @@ int main(int argc, char** argv) {
       { boot_complete_str,      no_argument,       NULL,   0 },
       { boot_reason_str,        no_argument,       NULL,   0 },
       { factory_reset_str,      no_argument,       NULL,   0 },
+      { boot_reason_enum_str,   optional_argument, NULL,   0 },
       { NULL,                   0,                 NULL,   0 }
       // clang-format on
   };
@@ -1315,6 +1340,8 @@ int main(int argc, char** argv) {
           RecordBootReason();
         } else if (option_name == factory_reset_str) {
           RecordFactoryReset();
+        } else if (option_name == boot_reason_enum_str) {
+          PrintBootReasonEnum(optarg);
         } else {
           LOG(ERROR) << "Invalid option: " << option_name;
         }
