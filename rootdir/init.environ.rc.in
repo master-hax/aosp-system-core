@@ -8,7 +8,6 @@ on early-init
     export ANDROID_RUNTIME_ROOT /apex/com.android.runtime
     export ANDROID_TZDATA_ROOT /apex/com.android.tzdata
     export EXTERNAL_STORAGE /sdcard
-    export ASEC_MOUNTPOINT /mnt/asec
     export BOOTCLASSPATH %BOOTCLASSPATH%
     export DEX2OATBOOTCLASSPATH %DEX2OATBOOTCLASSPATH%
     export SYSTEMSERVERCLASSPATH %SYSTEMSERVERCLASSPATH%
