@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ccd986ff_d3f3a77e",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1219,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-04-18T00:31:30Z",
+      "side": 0,
+      "message": "does this cause an error or just a warning in the broadcom init.rc?",
+      "revId": "371180bb7279747f9cd3edb36e22247d36c76ae5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
