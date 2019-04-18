@@ -16,6 +16,24 @@
       "revId": "53f8e2731a111b951affdcfd9f0855f72847125b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f9fb0c50_089ff941",
+        "filename": "init/first_stage_init.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 163,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2019-04-18T22:58:25Z",
+      "side": 1,
+      "message": "I thought it doesn\u0027t hurt to set it early, but no strong opinion as long as it is set early.",
+      "parentUuid": "1bddff12_423a5191",
+      "revId": "53f8e2731a111b951affdcfd9f0855f72847125b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
