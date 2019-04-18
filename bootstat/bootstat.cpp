@@ -120,7 +120,9 @@ constexpr int32_t kUnknownBootReason = 1;
 // A mapping from boot reason string, as read from the ro.boot.bootreason
 // system property, to a unique integer ID. Viewers of log data dashboards for
 // the boot_reason metric may refer to this mapping to discern the histogram
-// values.
+// values.  Regex matching, to manage the scale, as a minimum require either
+// [.] or \. to be present in the string to switch for each hierarchical dot.
+// Beware that a . matches any character otherwise.
 const std::map<std::string, int32_t> kBootReasonMap = {
     {"empty", kEmptyBootReason},
     {"__BOOTSTAT_UNKNOWN__", kUnknownBootReason},
@@ -312,6 +314,14 @@ int32_t BootReasonStrToEnum(const std::string& boot_reason) {
 
   if (boot_reason.empty()) {
     return kEmptyBootReason;
+  }
+
+  for (auto& [match, id] : kBootReasonMap) {
+    // Regex matches as a minimum require either [.] or \. to be present
+    // for each hierarchical dot.  Beware that a . matches any character
+    // otherwise.
+    if ((match.find("[.]") == match.npos) && (match.find("\\.") == match.npos)) continue;
+    if (std::regex_search(boot_reason, std::regex(match))) return id;
   }
 
   LOG(INFO) << "Unknown boot reason: " << boot_reason;
