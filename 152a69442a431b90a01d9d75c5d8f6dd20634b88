@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ecb3f2b8_db505070",
+        "filename": "debuggerd/libdebuggerd/utility.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 435,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-04-18T22:02:02Z",
+      "side": 1,
+      "message": "devices\n\n(can we just check and not mention this if it wouldn\u0027t work?)",
+      "range": {
+        "startLine": 435,
+        "startChar": 28,
+        "endLine": 435,
+        "endChar": 34
+      },
+      "revId": "152a69442a431b90a01d9d75c5d8f6dd20634b88",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
