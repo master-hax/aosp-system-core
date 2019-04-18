@@ -159,6 +159,8 @@ int FirstStageMain(int argc, char** argv) {
     CHECKCALL(mount("tmpfs", "/apex", "tmpfs", MS_NOEXEC | MS_NOSUID | MS_NODEV,
                     "mode=0755,uid=0,gid=0"));
 
+    // Set init and its forked children's oom_adj.
+    CHECKCALL(static_cast<int>(!WriteFile("/proc/1/oom_score_adj", "-1000")));
 #undef CHECKCALL
 
     // Now that tmpfs is mounted on /dev and we have /dev/kmsg, we can actually
