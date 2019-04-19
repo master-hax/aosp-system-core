@@ -1641,15 +1641,26 @@ int adb_commandline(int argc, const char** argv) {
             return 0;
         }
     } else if (!strcmp(argv[0], "rescue")) {
-        // adb rescue getprop <prop>
-        // adb rescue install <filename>
-        if (argc != 3) error_exit("rescue requires two arguments");
+        if (argc < 2) error_exit("rescue requires at least one argument");
         if (!strcmp(argv[1], "getprop")) {
+            // adb rescue getprop <prop>
+            if (argc != 3) error_exit("rescue getprop requires two arguments");
             return adb_connect_command(android::base::StringPrintf("rescue-getprop:%s", argv[2]));
         } else if (!strcmp(argv[1], "install")) {
+            // adb rescue install <filename>
+            if (argc != 3) error_exit("rescue install requires two arguments");
             if (adb_sideload_install(argv[2], true /* rescue_mode */) != 0) {
                 return 1;
             }
+        } else if (!strcmp(argv[1], "reboot")) {
+            // adb rescue reboot [target]
+            std::string command;
+            if (argc < 3) {
+                command = "rescue-reboot:";
+            } else {
+                command = android::base::StringPrintf("rescue-reboot:%s", argv[2]);
+            }
+            return adb_connect_command(command);
         } else {
             error_exit("invalid rescue argument");
         }
