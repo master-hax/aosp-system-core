@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3aee28c5_aa3341c0",
+        "filename": "adb/client/commandline.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 841,
+      "author": {
+        "id": 1056365
+      },
+      "writtenOn": "2019-04-19T19:16:46Z",
+      "side": 1,
+      "message": "Seems I don\u0027t really need to do this (to send a separate result code).\n- For rescue-install, I can encode that as part of DONEDONE (or a special flag to indicate failure case);\n- For rescue-getprop, I can just rely on adb_connect_command (i.e. invalid props will just get empty result, without a non-zero error code).",
+      "range": {
+        "startLine": 841,
+        "startChar": 11,
+        "endLine": 841,
+        "endChar": 38
+      },
+      "revId": "63e5672337913670341c5de8288cd3d8c6a90e51",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
