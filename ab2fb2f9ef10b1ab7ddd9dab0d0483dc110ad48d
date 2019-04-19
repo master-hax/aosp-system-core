@@ -39,6 +39,30 @@
       "revId": "ab2fb2f9ef10b1ab7ddd9dab0d0483dc110ad48d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0b0f2f12_42d4d913",
+        "filename": "adb/daemon/file_sync_service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 239,
+      "author": {
+        "id": 1096946
+      },
+      "writtenOn": "2019-04-19T02:09:34Z",
+      "side": 1,
+      "message": "Looks like we\u0027re using `errno` below from the `adb_open_mode` above, so this particular case is *extra* tricky...\n\nAny approach we take with these is going to be lossy (does fd.get() call an out-of-line function that ultimately somehow sets `errno`? Probably not, but maybe.)\n\nA static analyzer check is likely going to be our best bet here if we want to catch as many cases as possible while not being too loud about false-positives. I don\u0027t see how we\u0027d ever make it *not* flag the `errno \u003d\u003d ENOENT` below without seriously constraining it, though. (Maybe we could keep a map\u003cfunction_name, vector\u003cpossible_errno_value\u003e\u003e to filter literally this case out...? Seems ick.)\n\nIf usage in Android looks a lot like exactly this, maybe we could get away with an ASTMatcher-sized hammer, but I\u0027d have to check to see if that\u0027s the case.",
+      "parentUuid": "0f1fb290_8efb81cf",
+      "range": {
+        "startLine": 239,
+        "startChar": 87,
+        "endLine": 239,
+        "endChar": 91
+      },
+      "revId": "ab2fb2f9ef10b1ab7ddd9dab0d0483dc110ad48d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
