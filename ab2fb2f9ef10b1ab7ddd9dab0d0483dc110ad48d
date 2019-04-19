@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2a6652a6_768beedf",
+        "filename": "adb/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-04-19T00:40:41Z",
+      "side": 1,
+      "message": "how many build files would we have to touch to invert this, and make implicit conversions opt-in? that way all new code would default to _not_ having these issues, and the CLs would serve as PSAs for folks who want to stop using implicit conversions (codewiz was one, iirc?).",
+      "revId": "ab2fb2f9ef10b1ab7ddd9dab0d0483dc110ad48d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0f1fb290_8efb81cf",
+        "filename": "adb/daemon/file_sync_service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 239,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-04-19T00:40:41Z",
+      "side": 1,
+      "message": "this is wrong --- should be\n\n  errno \u003d posix_fadvise(...);\n  if (errno !\u003d 0) ...\n\nor whatever.\n\n+gbiv because these posix_/pthread_ functions fool a lot of people. maybe we can automate catching these?",
+      "range": {
+        "startLine": 239,
+        "startChar": 87,
+        "endLine": 239,
+        "endChar": 91
+      },
+      "revId": "ab2fb2f9ef10b1ab7ddd9dab0d0483dc110ad48d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
