@@ -65,6 +65,14 @@ LOCAL_FORCE_STATIC_EXECUTABLE := true
 LOCAL_MODULE_PATH := $(TARGET_RAMDISK_OUT)
 LOCAL_UNSTRIPPED_PATH := $(TARGET_RAMDISK_OUT_UNSTRIPPED)
 
+# For user build, install the adb_debug.prop into the debug ramdisk.
+# This allows adb root on a user build, when the debug ramdisk is used.
+ifeq ($(TARGET_BUILD_VARIANT), user)
+LOCAL_REQUIRED_MODULES := \
+   adb_debug.prop \
+
+endif
+
 # Set up the same mount points on the ramdisk that system-as-root contains.
 LOCAL_POST_INSTALL_CMD := mkdir -p \
     $(TARGET_RAMDISK_OUT)/apex \
