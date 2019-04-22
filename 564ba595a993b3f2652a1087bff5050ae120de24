@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "49a597e4_d4d8cec3",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-04-22T14:49:52Z",
+      "side": 1,
+      "message": "that doesn\u0027t seem true...",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 9,
+        "endChar": 71
+      },
+      "revId": "564ba595a993b3f2652a1087bff5050ae120de24",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8a85a41c_bdb29f98",
+        "filename": "init/init.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 687,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-04-22T14:49:52Z",
+      "side": 1,
+      "message": "...because the call to selinux_set_callback should happen here?",
+      "revId": "564ba595a993b3f2652a1087bff5050ae120de24",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
