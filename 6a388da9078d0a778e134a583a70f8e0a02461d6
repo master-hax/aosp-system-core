@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "76541708_5ee46729",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 471,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-04-22T12:32:23Z",
+      "side": 1,
+      "message": "Currently just need to restorecon for one (out of two files) under /debug_ramdisk/*.\n\nCan consider using \"restorecon_recursive /debug_ramdisk/\", too.\nLet me know WDYT.\n\nps: there is no plan to add more files under /debug_ramdisk so far.",
+      "range": {
+        "startLine": 471,
+        "startChar": 33,
+        "endLine": 471,
+        "endChar": 46
+      },
+      "revId": "6a388da9078d0a778e134a583a70f8e0a02461d6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
