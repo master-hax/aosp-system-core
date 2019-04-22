@@ -22,6 +22,30 @@
       "revId": "00efc79a1532220da516d718613e33556254142a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b5615743_3217f980",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-04-22T17:56:06Z",
+      "side": 1,
+      "message": "Does it though?  I don\u0027t like the idea of doing it in selinux.cpp, since it\u0027s more tightly coupled to property_service.cpp (which actually fills in the PropertyAuditData and generates these audits) than it is to selinux.  \n\nDoing it here essentially means that property_init() sets up the property area and sets up the audit call back so any future property set will be handled correctly.  Any other place means that there may be a time the property area is set up and property set calls may happen, but we\u0027re not sure if the audits will be accurate.",
+      "parentUuid": "18a771f5_07b9be04",
+      "range": {
+        "startLine": 116,
+        "startChar": 0,
+        "endLine": 119,
+        "endChar": 0
+      },
+      "revId": "00efc79a1532220da516d718613e33556254142a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
