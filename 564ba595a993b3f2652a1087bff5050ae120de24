@@ -39,6 +39,24 @@
       "revId": "564ba595a993b3f2652a1087bff5050ae120de24",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7114bad5_37789f89",
+        "filename": "init/init.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 687,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-04-22T17:05:35Z",
+      "side": 1,
+      "message": "It is true; selinux_set_callback() is called twice; once for the normal audits and a second time for the property service call backs.  I remember wanting to move the property service callbacks into SelinuxSetupKernelLogging(), but they\u0027re coupled pretty tightly with property service, so I left them.\n\nIn any case, I think the best fix here is to move \n\n    selinux_callback cb;\n    cb.func_audit \u003d SelinuxAuditCallback;\n    selinux_set_callback(SELINUX_CB_AUDIT, cb);\n\nfrom StartPropertyService() to property_init().",
+      "parentUuid": "8a85a41c_bdb29f98",
+      "revId": "564ba595a993b3f2652a1087bff5050ae120de24",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
