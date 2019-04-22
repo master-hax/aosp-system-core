@@ -70,6 +70,30 @@
       "revId": "00efc79a1532220da516d718613e33556254142a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9b29e81d_64949859",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-04-22T20:02:44Z",
+      "side": 1,
+      "message": "I renamed it to make it a bit more clear it\u0027s for properties and not generic selinux issues.\n\nThe callback only gets called by selinux_check_access(), which we have very few callers of in Android, none of which are libraries themselves, so this file should have the only callers for init.",
+      "parentUuid": "9ef8b78c_ad9d6812",
+      "range": {
+        "startLine": 116,
+        "startChar": 0,
+        "endLine": 119,
+        "endChar": 0
+      },
+      "revId": "00efc79a1532220da516d718613e33556254142a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
