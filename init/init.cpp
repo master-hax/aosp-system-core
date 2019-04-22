@@ -695,11 +695,11 @@ int SecondStageMain(int argc, char** argv) {
 
     InstallSignalFdHandler(&epoll);
 
+    StartPropertyService(&epoll);
     property_load_boot_defaults(load_debug_prop);
     UmountDebugRamdisk();
     fs_mgr_vendor_overlay_mount_all();
     export_oem_lock_status();
-    StartPropertyService(&epoll);
     MountHandler mount_handler(&epoll);
     set_usb_controller();
 
