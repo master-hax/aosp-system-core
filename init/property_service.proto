@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2007 The Android Open Source Project
+ * Copyright (C) 2019 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,25 +14,23 @@
  * limitations under the License.
  */
 
-#pragma once
+syntax = "proto2";
+option optimize_for = LITE_RUNTIME;
 
-#include <sys/socket.h>
+message PropertyMessage {
+    message ControlMessage {
+        optional string msg = 1;
+        optional string name = 2;
+        optional int32 pid = 3;
+    }
 
-#include <string>
+    message ChangedMessage {
+        optional string name = 1;
+        optional string value = 2;
+    }
 
-#include "epoll.h"
-
-namespace android {
-namespace init {
-
-bool CanReadProperty(const std::string& source_context, const std::string& name);
-
-extern uint32_t (*property_set)(const std::string& name, const std::string& value);
-
-void property_init();
-void property_load_boot_defaults(bool load_debug_prop);
-void load_persist_props();
-void StartPropertyService(int* epoll_socket);
-
-}  // namespace init
-}  // namespace android
+    oneof msg {
+        ControlMessage control_message = 1;
+        ChangedMessage changed_message = 2;
+    };
+}

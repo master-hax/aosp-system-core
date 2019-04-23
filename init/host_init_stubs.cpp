@@ -38,10 +38,6 @@ uint32_t SetProperty(const std::string& key, const std::string& value) {
     return 0;
 }
 uint32_t (*property_set)(const std::string& name, const std::string& value) = SetProperty;
-uint32_t HandlePropertySet(const std::string&, const std::string&, const std::string&, const ucred&,
-                           std::string*) {
-    return 0;
-}
 
 // selinux.h
 int SelinuxGetVendorAndroidVersion() {
