@@ -961,6 +961,31 @@ static int adb_sideload_install(const char* filename, bool rescue_mode) {
     }
 }
 
+static int adb_wipe_devices() {
+    std::string error;
+    unique_fd fd(adb_connect("rescue-wipe:", &error));
+    if (fd < 0) {
+        fprintf(stderr, "adb: wipe device connection failed: %s\n", error.c_str());
+        return 1;
+    }
+
+    char buf[9] = {};
+    if (!ReadFdExactly(fd, buf, 8)) {
+        fprintf(stderr, "adb: failed to read wipe result: %s\n", strerror(errno));
+        return 1;
+    }
+    buf[8] = '\0';
+
+    if (strcmp(kSideloadServiceExitSuccess, buf) == 0) {
+        return 0;
+    }
+
+    if (strcmp(kSideloadServiceExitFailure, buf) != 0) {
+        fprintf(stderr, "adb: got unexpected message from rescue wipe %s\n", buf);
+    }
+    return 1;
+}
+
 /**
  * Run ppp in "notty" mode against a resource listed as the first parameter
  * eg:
@@ -1643,13 +1668,15 @@ int adb_commandline(int argc, const char** argv) {
     } else if (!strcmp(argv[0], "rescue")) {
         // adb rescue getprop <prop>
         // adb rescue install <filename>
-        if (argc != 3) error_exit("rescue requires two arguments");
+        if (argc != 3 && argc != 2) error_exit("rescue requires two arguments");
         if (!strcmp(argv[1], "getprop")) {
             return adb_connect_command(android::base::StringPrintf("rescue-getprop:%s", argv[2]));
         } else if (!strcmp(argv[1], "install")) {
             if (adb_sideload_install(argv[2], true /* rescue_mode */) != 0) {
                 return 1;
             }
+        } else if (!strcmp(argv[1], "wipe")) {
+            return adb_wipe_devices();
         } else {
             error_exit("invalid rescue argument");
         }
