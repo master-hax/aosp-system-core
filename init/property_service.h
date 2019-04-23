@@ -35,7 +35,7 @@ uint32_t HandlePropertySet(const std::string& name, const std::string& value,
 void property_init();
 void property_load_boot_defaults(bool load_debug_prop);
 void load_persist_props();
-void StartPropertyService(Epoll* epoll);
+void StartPropertyService(int* epoll_socket);
 
 }  // namespace init
 }  // namespace android

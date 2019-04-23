@@ -61,11 +61,13 @@
 #include "mount_handler.h"
 #include "mount_namespace.h"
 #include "property_service.h"
+#include "proto_utils.h"
 #include "reboot.h"
 #include "reboot_utils.h"
 #include "security.h"
 #include "selinux.h"
 #include "sigchld_handler.h"
+#include "system/core/init/property_service.pb.h"
 #include "util.h"
 
 using namespace std::chrono_literals;
@@ -89,6 +91,7 @@ static char qemu[32];
 std::string default_console = "/dev/console";
 
 static int signal_fd = -1;
+static int property_fd = -1;
 
 static std::unique_ptr<Timer> waiting_for_prop(nullptr);
 static std::string wait_prop_name;
@@ -627,6 +630,37 @@ static void UmountDebugRamdisk() {
     }
 }
 
+static void HandlePropertyFd() {
+    auto message = ReadMessage(property_fd);
+    if (!message) {
+        LOG(ERROR) << "Could not read message from property service: " << message.error();
+        return;
+    }
+
+    auto property_message = PropertyMessage{};
+    if (!property_message.ParseFromString(*message)) {
+        LOG(ERROR) << "Could not parse message from property service";
+        return;
+    }
+
+    switch (property_message.msg_case()) {
+        case PropertyMessage::kControlMessage: {
+            auto& control_message = property_message.control_message();
+            HandleControlMessage(control_message.msg(), control_message.name(),
+                                 control_message.pid());
+            break;
+        }
+        case PropertyMessage::kChangedMessage: {
+            auto& changed_message = property_message.changed_message();
+            property_changed(changed_message.name(), changed_message.value());
+            break;
+        }
+        default:
+            LOG(ERROR) << "Unknown message type from property service: "
+                       << property_message.msg_case();
+    }
+}
+
 int SecondStageMain(int argc, char** argv) {
     if (REBOOT_BOOTLOADER_ON_PANIC) {
         InstallRebootSignalHandlers();
@@ -699,7 +733,12 @@ int SecondStageMain(int argc, char** argv) {
     UmountDebugRamdisk();
     fs_mgr_vendor_overlay_mount_all();
     export_oem_lock_status();
-    StartPropertyService(&epoll);
+
+    StartPropertyService(&property_fd);
+    if (auto result = epoll.RegisterHandler(property_fd, HandlePropertyFd); !result) {
+        PLOG(FATAL) << "Could not register epoll handler for property fd: " << result.error();
+    }
+
     MountHandler mount_handler(&epoll);
     set_usb_controller();
 

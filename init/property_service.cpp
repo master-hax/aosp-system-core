@@ -63,8 +63,10 @@
 #include "init.h"
 #include "persistent_properties.h"
 #include "property_type.h"
+#include "proto_utils.h"
 #include "selinux.h"
 #include "subcontext.h"
+#include "system/core/init/property_service.pb.h"
 #include "util.h"
 
 using namespace std::literals;
@@ -87,6 +89,7 @@ namespace init {
 
 static constexpr const char kRestoreconProperty[] = "selinux.restorecon_recursive";
 
+// TODO: The thread sets this based off of ro.persistent_properties.ready.
 static bool persistent_properties_loaded = false;
 
 static int property_set_fd = -1;
@@ -164,6 +167,35 @@ static bool CheckMacPerms(const std::string& name, const char* target_context,
     return has_access;
 }
 
+static int init_socket;
+
+static uint32_t SendControlMessage(const std::string& msg, const std::string& name, pid_t pid,
+                                   std::string* error) {
+    auto property_msg = PropertyMessage{};
+    auto* control_message = property_msg.mutable_control_message();
+    control_message->set_msg(msg);
+    control_message->set_name(name);
+    control_message->set_pid(pid);
+
+    if (auto result = SendMessage(init_socket, property_msg); !result) {
+        *error = "Failed to send control message: " + result.error_string();
+        return PROP_ERROR_HANDLE_CONTROL_MESSAGE;
+    }
+
+    return PROP_SUCCESS;
+}
+
+static void SendPropertyChanged(const std::string& name, const std::string& value) {
+    auto property_msg = PropertyMessage{};
+    auto* changed_message = property_msg.mutable_changed_message();
+    changed_message->set_name(name);
+    changed_message->set_value(value);
+
+    if (auto result = SendMessage(init_socket, property_msg); !result) {
+        LOG(ERROR) << "Failed to property changed message: " << result.error();
+    }
+}
+
 static uint32_t PropertySet(const std::string& name, const std::string& value, std::string* error) {
     size_t valuelen = value.size();
 
@@ -204,7 +236,7 @@ static uint32_t PropertySet(const std::string& name, const std::string& value, s
     if (persistent_properties_loaded && StartsWith(name, "persist.")) {
         WritePersistentProperty(name, value);
     }
-    property_changed(name, value);
+    SendPropertyChanged(name, value);
     return PROP_SUCCESS;
 }
 
@@ -473,7 +505,7 @@ uint32_t HandlePropertySet(const std::string& name, const std::string& value,
     }
 
     if (StartsWith(name, "ctl.")) {
-        HandleControlMessage(name.c_str() + 4, value, cr.pid);
+        return SendControlMessage(name.c_str() + 4, value, cr.pid, error);
         return PROP_SUCCESS;
     }
 
@@ -979,20 +1011,51 @@ void CreateSerializedPropertyInfo() {
     selinux_android_restorecon(kPropertyInfosPath, 0);
 }
 
-void StartPropertyService(Epoll* epoll) {
-    property_set("ro.property_service.version", "2");
+static void PropertyServiceThread() {
+    Epoll epoll;
+    if (auto result = epoll.Open(); !result) {
+        PLOG(FATAL) << result.error();
+    }
 
     property_set_fd = CreateSocket(PROP_SERVICE_NAME, SOCK_STREAM | SOCK_CLOEXEC | SOCK_NONBLOCK,
                                    false, 0666, 0, 0, nullptr);
+
     if (property_set_fd == -1) {
         PLOG(FATAL) << "start_property_service socket creation failed";
     }
 
     listen(property_set_fd, 8);
 
-    if (auto result = epoll->RegisterHandler(property_set_fd, handle_property_set_fd); !result) {
+    if (auto result = epoll.RegisterHandler(property_set_fd, handle_property_set_fd); !result) {
         PLOG(FATAL) << result.error();
     }
+
+    // std::barrier
+
+    while (true) {
+        if (auto result = epoll.Wait(std::nullopt); !result) {
+            LOG(ERROR) << result.error();
+        }
+    }
+}
+
+void StartPropertyService(int* epoll_socket) {
+    property_set("ro.property_service.version", "2");
+
+    int sockets[2];
+    if (socketpair(AF_UNIX, SOCK_SEQPACKET | SOCK_CLOEXEC, 0, sockets) != 0) {
+        PLOG(FATAL) << "Failed to socketpair() between property_service and init";
+    }
+    *epoll_socket = sockets[0];
+    init_socket = sockets[1];
+
+    std::thread{PropertyServiceThread}.detach();
+
+    // std::barrier
+    property_set = [](const std::string& key, const std::string& value) -> uint32_t {
+        android::base::SetProperty(key, value);
+        return 0;
+    };
 }
 
 }  // namespace init
