@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 The Android Open Source Project
+ * Copyright (C) 2019 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,25 +17,25 @@
 syntax = "proto2";
 option optimize_for = LITE_RUNTIME;
 
-message SubcontextCommand {
-    message ExecuteCommand { repeated string args = 1; }
-    message ExpandArgsCommand { repeated string args = 1; }
-    oneof command {
-        ExecuteCommand execute_command = 1;
-        ExpandArgsCommand expand_args_command = 2;
+message PropertyMessage {
+    message ControlMessage {
+        optional string msg = 1;
+        optional string name = 2;
+        optional int32 pid = 3;
     }
-}
 
-message SubcontextReply {
-    message Failure {
-        optional string error_string = 1;
-        optional int32 error_errno = 2;
+    message ControlResponse {
+        optional bool result = 1;
     }
-    message ExpandArgsReply { repeated string expanded_args = 1; }
 
-    oneof reply {
-        bool success = 1;
-        Failure failure = 2;
-        ExpandArgsReply expand_args_reply = 3;
+    message ChangedMessage {
+        optional string name = 1;
+        optional string value = 2;
     }
+
+    oneof msg {
+        ControlMessage control_message = 1;
+        ControlResponse control_response = 2;
+        ChangedMessage changed_message = 3;
+    };
 }
