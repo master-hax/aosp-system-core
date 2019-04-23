@@ -94,11 +94,14 @@ static bool ReapOneProcess() {
 
     if (!service) return true;
 
+    LOG(ERROR) << "Pre reap service " << service->name();
     service->Reap(siginfo);
 
     if (service->flags() & SVC_TEMPORARY) {
         ServiceList::GetInstance().RemoveService(*service);
     }
+
+    LOG(ERROR) << "Finished sigchld handler " << service->name();
 
     return true;
 }

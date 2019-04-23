@@ -61,6 +61,7 @@
 #define PROC_SYSRQ "/proc/sysrq-trigger"
 
 using android::base::GetBoolProperty;
+using android::base::Join;
 using android::base::Split;
 using android::base::Timer;
 using android::base::unique_fd;
@@ -555,6 +556,7 @@ static void DoReboot(unsigned int cmd, const std::string& reason, const std::str
             ReapAnyOutstandingChildren();
 
             service_count = 0;
+            std::vector<std::string> remaining_services;
             for (const auto& s : ServiceList::GetInstance()) {
                 // Count the number of services running except shutdown critical.
                 // Exclude the console as it will ignore the SIGTERM signal
@@ -563,13 +565,18 @@ static void DoReboot(unsigned int cmd, const std::string& reason, const std::str
                 // it is only used by the shell.
                 if (!s->IsShutdownCritical() && s->pid() != 0 && (s->flags() & SVC_CONSOLE) == 0) {
                     service_count++;
+                    remaining_services.emplace_back(s->name());
                 }
             }
+
+            LOG(ERROR) << "In loop, service_count: " << service_count;
 
             if (service_count == 0) {
                 // All terminable services terminated. We can exit early.
                 break;
             }
+
+            LOG(ERROR) << "Remaining services: " << Join(remaining_services, ", ");
 
             // Wait a bit before recounting the number or running services.
             std::this_thread::sleep_for(50ms);
