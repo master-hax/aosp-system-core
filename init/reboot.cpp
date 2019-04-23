@@ -436,6 +436,12 @@ static void DoReboot(unsigned int cmd, const std::string& reason, const std::str
     Timer t;
     LOG(INFO) << "Reboot start, reason: " << reason << ", rebootTarget: " << rebootTarget;
 
+    // We no longer process messages about properties changing coming from property service, so we
+    // need to tell property service to stop sending us these messages, otherwise it'll fill the
+    // buffers and block indefinitely, causing future property sets, including those that init makes
+    // during shutdown in Service::NotifyStateChange() to also block indefinitely.
+    SendStopSendingMessagesMessage();
+
     // Ensure last reboot reason is reduced to canonical
     // alias reported in bootloader or system boot reason.
     size_t skip = 0;
