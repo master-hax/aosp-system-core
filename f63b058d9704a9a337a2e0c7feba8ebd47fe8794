@@ -22,6 +22,30 @@
       "revId": "f63b058d9704a9a337a2e0c7feba8ebd47fe8794",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2b8319ac_c7b566c0",
+        "filename": "adb/daemon/file_sync_service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 270,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2019-04-25T00:45:54Z",
+      "side": 1,
+      "message": "oops, fixed",
+      "parentUuid": "562a8e78_d88ec5cc",
+      "range": {
+        "startLine": 270,
+        "startChar": 39,
+        "endLine": 270,
+        "endChar": 44
+      },
+      "revId": "f63b058d9704a9a337a2e0c7feba8ebd47fe8794",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
