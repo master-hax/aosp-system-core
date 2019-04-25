@@ -80,7 +80,7 @@ on init
     chmod 0664 /dev/stune/top-app/tasks
     chmod 0664 /dev/stune/rt/tasks
 
-    # Create blkio tuning nodes
+    # Create blkio tuning nodes and apply initial settings
     mkdir /dev/blkio/background
     chown system system /dev/blkio
     chown system system /dev/blkio/background
@@ -88,6 +88,10 @@ on init
     chown system system /dev/blkio/background/tasks
     chmod 0664 /dev/blkio/tasks
     chmod 0664 /dev/blkio/background/tasks
+    write /dev/blkio/blkio.weight 1000
+    write /dev/blkio/background/blkio.weight 100
+    write /dev/blkio/blkio.group_idle 0
+    write /dev/blkio/background/blkio.group_idle 0
 
     restorecon_recursive /mnt
 
