@@ -234,12 +234,6 @@ static bool handle_send_file(int s, const char* path, uint32_t* timestamp, uid_t
     __android_log_security_bswrite(SEC_TAG_ADB_SEND_FILE, path);
 
     unique_fd fd(adb_open_mode(path, O_WRONLY | O_CREAT | O_EXCL | O_CLOEXEC, mode));
-
-    if (posix_fadvise(fd.get(), 0, 0,
-                      POSIX_FADV_SEQUENTIAL | POSIX_FADV_NOREUSE | POSIX_FADV_WILLNEED) < 0) {
-        D("[ Failed to fadvise: %d ]", errno);
-    }
-
     if (fd < 0 && errno == ENOENT) {
         if (!secure_mkdirs(Dirname(path))) {
             SendSyncFailErrno(s, "secure_mkdirs failed");
@@ -268,6 +262,12 @@ static bool handle_send_file(int s, const char* path, uint32_t* timestamp, uid_t
         // Ignore the result of calling fchmod. It's not supported
         // by all filesystems, so we don't check for success. b/12441485
         fchmod(fd.get(), mode);
+    }
+
+    int rc = posix_fadvise(fd.get(), 0, 0,
+                           POSIX_FADV_SEQUENTIAL | POSIX_FADV_NOREUSE | POSIX_FADV_WILLNEED);
+    if (rc != 0) {
+        D("[ Failed to fadvise: %d ]", errno);
     }
 
     while (true) {
