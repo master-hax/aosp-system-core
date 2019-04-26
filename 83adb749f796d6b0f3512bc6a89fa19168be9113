@@ -48,6 +48,30 @@
     },
     {
       "key": {
+        "uuid": "8354fef2_08c2e150",
+        "filename": "adb/client/commandline.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 975,
+      "author": {
+        "id": 1088085
+      },
+      "writtenOn": "2019-04-26T03:49:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2dd83384_f171a713",
+      "range": {
+        "startLine": 975,
+        "startChar": 24,
+        "endLine": 975,
+        "endChar": 49
+      },
+      "revId": "83adb749f796d6b0f3512bc6a89fa19168be9113",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b46a378a_8352af18",
         "filename": "adb/client/commandline.cpp",
         "patchSetId": 3
@@ -68,6 +92,30 @@
       "revId": "83adb749f796d6b0f3512bc6a89fa19168be9113",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "db0682c9_d40f44e5",
+        "filename": "adb/client/commandline.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1674,
+      "author": {
+        "id": 1088085
+      },
+      "writtenOn": "2019-04-26T03:49:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b46a378a_8352af18",
+      "range": {
+        "startLine": 1674,
+        "startChar": 11,
+        "endLine": 1674,
+        "endChar": 26
+      },
+      "revId": "83adb749f796d6b0f3512bc6a89fa19168be9113",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
