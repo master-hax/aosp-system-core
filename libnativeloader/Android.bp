@@ -26,6 +26,9 @@ cc_library {
     ],
     target: {
         android: {
+            srcs: [
+                "library_namespaces.cpp",
+            ],
             shared_libs: [
                 "libdl_android",
             ],
