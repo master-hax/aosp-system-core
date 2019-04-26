@@ -47,6 +47,7 @@ namespace.default.isolated = true
 namespace.default.search.paths  = /system/${LIB}
 namespace.default.search.paths += /%PRODUCT%/${LIB}
 namespace.default.search.paths += /%PRODUCT_SERVICES%/${LIB}
+namespace.default.search.paths += /apex/com.android.runtime/${LIB}
 
 # We can't have entire /system/${LIB} as permitted paths because doing so
 # makes it possible to load libs in /system/${LIB}/vndk* directories by
@@ -422,6 +423,7 @@ namespace.default.asan.permitted.paths +=           /vendor
 
 namespace.default.links = system,vndk%VNDK_IN_SYSTEM_NS%
 namespace.default.link.system.shared_libs = %LLNDK_LIBRARIES%
+namespace.default.link.system.shared_libs += %SANITIZER_RUNTIME_LIBRARIES%
 namespace.default.link.vndk_in_system.shared_libs = %VNDK_USING_CORE_VARIANT_LIBRARIES%
 namespace.default.link.vndk.shared_libs  = %VNDK_SAMEPROCESS_LIBRARIES%
 namespace.default.link.vndk.shared_libs += %VNDK_CORE_LIBRARIES%
@@ -494,6 +496,7 @@ namespace.system.isolated = false
 namespace.system.search.paths  = /system/${LIB}
 namespace.system.search.paths += /%PRODUCT%/${LIB}
 namespace.system.search.paths += /%PRODUCT_SERVICES%/${LIB}
+namespace.system.search.paths += /apex/com.android.runtime/${LIB}
 
 namespace.system.asan.search.paths  = /data/asan/system/${LIB}
 namespace.system.asan.search.paths +=           /system/${LIB}
@@ -532,6 +535,7 @@ namespace.vndk_in_system.visible = true
 namespace.vndk_in_system.search.paths  = /system/${LIB}
 namespace.vndk_in_system.search.paths += /%PRODUCT%/${LIB}
 namespace.vndk_in_system.search.paths += /%PRODUCT_SERVICES%/${LIB}
+namespace.vndk_in_system.search.paths += /apex/com.android.runtime/${LIB}
 
 namespace.vndk_in_system.asan.search.paths  = /data/asan/system/${LIB}
 namespace.vndk_in_system.asan.search.paths +=           /system/${LIB}
@@ -674,3 +678,4 @@ namespace.default.isolated = false
 namespace.default.search.paths  = /system/${LIB}
 namespace.default.search.paths += /%PRODUCT%/${LIB}
 namespace.default.search.paths += /%PRODUCT_SERVICES%/${LIB}
+namespace.default.search.paths += /apex/com.android.runtime/${LIB}
