@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e645920e_3bad5b0a",
+        "filename": "adb/client/commandline.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 964,
+      "author": {
+        "id": 1056365
+      },
+      "writtenOn": "2019-04-26T00:05:18Z",
+      "side": 1,
+      "message": "constexpr",
+      "range": {
+        "startLine": 964,
+        "startChar": 1,
+        "endLine": 964,
+        "endChar": 7
+      },
+      "revId": "83adb749f796d6b0f3512bc6a89fa19168be9113",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2dd83384_f171a713",
+        "filename": "adb/client/commandline.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 975,
+      "author": {
+        "id": 1056365
+      },
+      "writtenOn": "2019-04-26T00:05:18Z",
+      "side": 1,
+      "message": "why not using the size of kMinadbdServicesExitSuccess directly?",
+      "range": {
+        "startLine": 975,
+        "startChar": 24,
+        "endLine": 975,
+        "endChar": 49
+      },
+      "revId": "83adb749f796d6b0f3512bc6a89fa19168be9113",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b46a378a_8352af18",
+        "filename": "adb/client/commandline.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1674,
+      "author": {
+        "id": 1056365
+      },
+      "writtenOn": "2019-04-26T00:05:18Z",
+      "side": 1,
+      "message": "`adb rescue wipe userdata`? That allows easier extension to `adb rescue wipe cache` or similar.\n\n(and then you don\u0027t need to fix the arg parsing issue for `adb rescue getprop`)",
+      "range": {
+        "startLine": 1674,
+        "startChar": 11,
+        "endLine": 1674,
+        "endChar": 26
+      },
+      "revId": "83adb749f796d6b0f3512bc6a89fa19168be9113",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
