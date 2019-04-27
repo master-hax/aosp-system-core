@@ -387,6 +387,13 @@ void Service::Reap(const siginfo_t& siginfo) {
                 }
             }
         } else {
+            if (!android::base::GetBoolProperty("sys.boot_completed", false) && !pre_apexd_) {
+                // Boot not completed but crashed 4 times > 4mins
+                LOG(ERROR) << "updatable process '" << name_
+                           << "' exited 4 times before boot completed";
+                // Notifies update_verifier and apexd
+                property_set("ro.init.updatable_crashing", "1");
+            }
             time_crashed_ = now;
             crash_count_ = 1;
         }
