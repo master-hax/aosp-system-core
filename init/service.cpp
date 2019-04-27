@@ -374,21 +374,30 @@ void Service::Reap(const siginfo_t& siginfo) {
 
     // If we crash > 4 times in 4 minutes, reboot into bootloader or set crashing property
     boot_clock::time_point now = boot_clock::now();
-    if (((flags_ & SVC_CRITICAL) || !pre_apexd_) && !(flags_ & SVC_RESTART)) {
-        if (now < time_crashed_ + 4min) {
-            if (++crash_count_ > 4) {
-                if (flags_ & SVC_CRITICAL) {
+    if (!(flags_ & SVC_RESTART)) {
+        if (flags_ & SVC_CRITICAL) {
+            if (now < time_crashed_ + 4min) {
+                if (++crash_count_ > 4) {
                     // Aborts into bootloader
                     LOG(FATAL) << "critical process '" << name_ << "' exited 4 times in 4 minutes";
-                } else {
-                    LOG(ERROR) << "updatable process '" << name_ << "' exited 4 times in 4 minutes";
+                }
+            } else {
+                time_crashed_ = now;
+                crash_count_ = 1;
+            }
+        } else if (!pre_apexd_) {
+            bool boot_completed = android::base::GetBoolProperty("sys.boot_completed", false);
+            if (now < time_crashed_ + 4min || !boot_completed) {
+                if (++crash_count_ > 4) {
+                    LOG(ERROR) << "updatable process '" << name_ << "' exited 4 times "
+                               << (boot_completed ? "in 4 minutes" : "before boot completed");
                     // Notifies update_verifier and apexd
                     property_set("ro.init.updatable_crashing", "1");
                 }
+            } else {
+                time_crashed_ = now;
+                crash_count_ = 1;
             }
-        } else {
-            time_crashed_ = now;
-            crash_count_ = 1;
         }
     }
 
