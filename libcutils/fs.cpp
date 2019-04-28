@@ -39,6 +39,8 @@
 #define ALL_PERMS (S_ISUID | S_ISGID | S_ISVTX | S_IRWXU | S_IRWXG | S_IRWXO)
 #define BUF_SIZE 64
 
+static int fixuid_ret = 0;
+
 static int fs_prepare_path_impl(const char* path, mode_t mode, uid_t uid, gid_t gid,
         int allow_fixup, int prepare_as_dir) {
     // TODO: fix the goto hell below.
@@ -100,16 +102,74 @@ create:
         }
     }
 fixup:
+    ALOGW("Expected path %s with owner %d mode %o but found %d %o,to be fixed...",
+        path, uid, (mode & ALL_PERMS), sb.st_uid, (sb.st_mode & ALL_PERMS));
+    // Only fix mode for root, the same as google.
     if (TEMP_FAILURE_RETRY(chmod(path, mode)) == -1) {
         ALOGE("Failed to chmod(%s, %d): %s", path, mode, strerror(errno));
-        return -1;
-    }
+        return -errno;
+     }
+     //Fix owner for root and child.
+     if(fixup_recursive(path, uid, gid) < 0){
+         return -1;
+     }
+     ALOGW("path %s fix completed", path);
+     return ret;
+}
+
+static int fixup(const char* path, uid_t uid, gid_t gid){
     if (TEMP_FAILURE_RETRY(chown(path, uid, gid)) == -1) {
         ALOGE("Failed to chown(%s, %d, %d): %s", path, uid, gid, strerror(errno));
-        return -1;
+        unlink(path);
+        return -errno;
+    }
+    return 0;
+}
+
+static int fixup_recursive(const char* path, uid_t uid, gid_t gid)
+{
+    DIR* d;
+    struct dirent *de;
+
+    if ((d = opendir(path)) == NULL) {
+        ALOGE("cannot open dir '%s': %s\n ", path, strerror(errno));
+        return -errno;
+    }
+    if (0 != chdir(path)) {
+        ALOGE("cannot change working dir '%s': %s\n ", path, strerror(errno));
+        closedir(d);
+        return -errno;
+    }
+    while ((de = readdir(d)) != NULL) {
+        if (de->d_type == DT_DIR &&
+            strcmp(de->d_name, ".") != 0 &&
+            strcmp(de->d_name, "..") != 0) {
+            fixuid_ret = fixup_recursive(de->d_name, uid, gid);
+            if(fixuid_ret < 0){
+                break;
+            }
+        } else if (de->d_type == DT_REG) {
+            fixuid_ret = fixup(de->d_name, uid, gid);
+            if (fixuid_ret < 0) {
+                unlink(path);
+                break;
+            }
+        }
     }
 
-    return 0;
+    if (0 != chdir("..")) {
+        ALOGE("cannot change working dir '..': %s\n ", strerror(errno));
+        closedir(d);
+        return -errno;
+    }
+    closedir(d);
+
+    // Fix root at last,since fixed interrupt may cause subfile permissions to be abnormal.
+    // This will trigger the fix operation the next time restart.
+    if (fixuid_ret == 0) {
+        fixuid_ret = fixup(path, uid, gid);
+    }
+    return fixuid_ret;
 }
 
 int fs_prepare_dir(const char* path, mode_t mode, uid_t uid, gid_t gid) {
