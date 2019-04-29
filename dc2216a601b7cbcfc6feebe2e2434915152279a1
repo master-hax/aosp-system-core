@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c3055f9a_d4c38315",
+        "filename": "libcutils/fs.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 143,
+      "author": {
+        "id": 1061057
+      },
+      "writtenOn": "2019-04-29T02:14:22Z",
+      "side": 1,
+      "message": "This is redundant as you already opendir\u0027ed with the absolute path.",
+      "range": {
+        "startLine": 138,
+        "startChar": 0,
+        "endLine": 143,
+        "endChar": 0
+      },
+      "revId": "dc2216a601b7cbcfc6feebe2e2434915152279a1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "96f9b20b_687c6525",
+        "filename": "libcutils/fs.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 165,
+      "author": {
+        "id": 1061057
+      },
+      "writtenOn": "2019-04-29T02:14:22Z",
+      "side": 1,
+      "message": "Same here.",
+      "range": {
+        "startLine": 160,
+        "startChar": 0,
+        "endLine": 165,
+        "endChar": 0
+      },
+      "revId": "dc2216a601b7cbcfc6feebe2e2434915152279a1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
