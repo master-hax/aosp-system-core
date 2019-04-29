@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "82862bb7_32e14dfd",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2019-04-29T07:23:57Z",
+      "side": 1,
+      "message": "This opens all libraries in the directory to the default namespace. Since out intention is to only allow the clang runtime , this should be done by adding following line instead:\n\nnamespace.default.link.runtime.shared_libs +\u003d libclang_rt.hwasan-i686-android.so",
+      "revId": "d6605c246959488c104f495a5e49eb78b3b4229e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "60f7d03a_9d6d4b35",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 498,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2019-04-29T07:23:57Z",
+      "side": 1,
+      "message": "same for here, but with default replaced to system",
+      "revId": "d6605c246959488c104f495a5e49eb78b3b4229e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0bf08a06_7e33a1a3",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 537,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2019-04-29T07:23:57Z",
+      "side": 1,
+      "message": "namespace.vndk_in_system.links \u003d vndk,system,runtime\nnamespace.vndk_in_system.link.runtime.shared_libs \u003d libclang_rt.hwasan-i686-android.so",
+      "revId": "d6605c246959488c104f495a5e49eb78b3b4229e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "80791df8_228f0fdc",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 680,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2019-04-29T07:23:57Z",
+      "side": 1,
+      "message": "same here",
+      "revId": "d6605c246959488c104f495a5e49eb78b3b4229e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
