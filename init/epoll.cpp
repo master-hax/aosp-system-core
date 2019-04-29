@@ -74,13 +74,18 @@ Result<void> Epoll::Wait(std::optional<std::chrono::milliseconds> timeout) {
     if (timeout && timeout->count() < INT_MAX) {
         timeout_ms = timeout->count();
     }
-    epoll_event ev;
-    auto nr = TEMP_FAILURE_RETRY(epoll_wait(epoll_fd_, &ev, 1, timeout_ms));
-    if (nr == -1) {
+
+    const auto max_events = epoll_handlers_.size();
+    epoll_event ev[max_events];
+    auto num_events = TEMP_FAILURE_RETRY(epoll_wait(epoll_fd_, ev, max_events, timeout_ms));
+    if (num_events == -1) {
         return ErrnoError() << "epoll_wait failed";
-    } else if (nr == 1) {
-        std::invoke(*reinterpret_cast<std::function<void()>*>(ev.data.ptr));
     }
+
+    for (int i = 0; i < num_events; ++i) {
+        std::invoke(*reinterpret_cast<std::function<void()>*>(ev[i].data.ptr));
+    }
+
     return {};
 }
 
