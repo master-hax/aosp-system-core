@@ -170,6 +170,55 @@ class DmTargetBow final : public DmTarget {
     std::string target_string_;
 };
 
+enum class SnapshotStorageMode {
+    // The snapshot will be persisted to the COW device.
+    Persistent,
+    // The snapshot will be lost on reboot.
+    Transient,
+    // The snapshot will be merged from the COW device into the base device,
+    // in the background.
+    Merge
+};
+
+// Writes to a snapshot device will be written to the given COW device. Reads
+// will read from the COW device or base device. The chunk size is specified
+// in sectors.
+class DmTargetSnapshot final : public DmTarget {
+  public:
+    DmTargetSnapshot(uint64_t start, uint64_t length, const std::string& base_device,
+                     const std::string& cow_device, SnapshotStorageMode mode, uint64_t chunk_size)
+        : DmTarget(start, length),
+          base_device_(base_device),
+          cow_device_(cow_device),
+          mode_(mode),
+          chunk_size_(chunk_size) {}
+
+    std::string name() const override;
+    std::string GetParameterString() const override;
+    bool Valid() const override { return true; }
+
+  private:
+    std::string base_device_;
+    std::string cow_device_;
+    SnapshotStorageMode mode_;
+    uint64_t chunk_size_;
+};
+
+// snapshot-origin will read/write directly to the backing device, updating any
+// snapshot devices with a matching origin.
+class DmTargetSnapshotOrigin final : public DmTarget {
+  public:
+    DmTargetSnapshotOrigin(uint64_t start, uint64_t length, const std::string& device)
+        : DmTarget(start, length), device_(device) {}
+
+    std::string name() const override { return "snapshot-origin"; }
+    std::string GetParameterString() const override { return device_; }
+    bool Valid() const override { return true; }
+
+  private:
+    std::string device_;
+};
+
 }  // namespace dm
 }  // namespace android
 

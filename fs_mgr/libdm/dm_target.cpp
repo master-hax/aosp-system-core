@@ -115,5 +115,35 @@ std::string DmTargetAndroidVerity::GetParameterString() const {
     return keyid_ + " " + block_device_;
 }
 
+std::string DmTargetSnapshot::name() const {
+    if (mode_ == SnapshotStorageMode::Merge) {
+        return "snapshot-merge";
+    }
+    return "snapshot";
+}
+
+std::string DmTargetSnapshot::GetParameterString() const {
+    std::string mode;
+    switch (mode_) {
+        case SnapshotStorageMode::Persistent:
+            // Note: "O" lets us query for overflow in the status message. This
+            // is only supported on kernels 4.3+, so DmTargetSnapshot will fail
+            // to activate on 3.18 devices. If this becomes a problem we can
+            // make it optional.
+            mode = "PO";
+            break;
+        case SnapshotStorageMode::Merge:
+            mode = "P";
+            break;
+        case SnapshotStorageMode::Transient:
+            mode = "N";
+            break;
+        default:
+            LOG(ERROR) << "DmTargetSnapshot unknown mode";
+            break;
+    }
+    return base_device_ + " " + cow_device_ + " " + mode + " " + std::to_string(chunk_size_);
+}
+
 }  // namespace dm
 }  // namespace android
