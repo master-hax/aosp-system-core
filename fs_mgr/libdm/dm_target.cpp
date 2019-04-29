@@ -18,6 +18,7 @@
 
 #include <android-base/logging.h>
 #include <android-base/macros.h>
+#include <android-base/parseint.h>
 #include <android-base/strings.h>
 
 #include <libdm/dm.h>
@@ -113,6 +114,62 @@ std::string DmTargetVerity::GetParameterString() const {
 
 std::string DmTargetAndroidVerity::GetParameterString() const {
     return keyid_ + " " + block_device_;
+}
+
+std::string DmTargetSnapshot::name() const {
+    if (mode_ == SnapshotStorageMode::Merge) {
+        return "snapshot-merge";
+    }
+    return "snapshot";
+}
+
+std::string DmTargetSnapshot::GetParameterString() const {
+    std::string mode;
+    switch (mode_) {
+        case SnapshotStorageMode::Persistent:
+            // Note: "O" lets us query for overflow in the status message. This
+            // is only supported on kernels 4.3+, so DmTargetSnapshot will fail
+            // to activate on 3.18 devices. If this becomes a problem we can
+            // make it optional.
+            mode = "PO";
+            break;
+        case SnapshotStorageMode::Merge:
+            mode = "P";
+            break;
+        case SnapshotStorageMode::Transient:
+            mode = "N";
+            break;
+        default:
+            LOG(ERROR) << "DmTargetSnapshot unknown mode";
+            break;
+    }
+    return base_device_ + " " + cow_device_ + " " + mode + " " + std::to_string(chunk_size_);
+}
+
+bool DmTargetSnapshot::ParseStatusText(const std::string& text, Status* status) {
+    auto sections = android::base::Split(text, " ");
+    if (sections.size() != 2) {
+        LOG(ERROR) << "snapshot status should have two components";
+        return false;
+    }
+    auto sector_info = android::base::Split(sections[0], "/");
+    if (sector_info.size() != 2) {
+        LOG(ERROR) << "snapshot sector info should have two components";
+        return false;
+    }
+    if (!android::base::ParseUint(sections[1], &status->metadata_sectors)) {
+        LOG(ERROR) << "could not parse metadata sectors";
+        return false;
+    }
+    if (!android::base::ParseUint(sector_info[0], &status->sectors_allocated)) {
+        LOG(ERROR) << "could not parse sectors allocated";
+        return false;
+    }
+    if (!android::base::ParseUint(sector_info[1], &status->total_sectors)) {
+        LOG(ERROR) << "could not parse total sectors";
+        return false;
+    }
+    return true;
 }
 
 }  // namespace dm
