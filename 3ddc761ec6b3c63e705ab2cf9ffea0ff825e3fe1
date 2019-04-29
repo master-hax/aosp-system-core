@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "afd3b743_0ad1858d",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 470,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-04-29T22:00:37Z",
+      "side": 1,
+      "message": "I deleted this code already for an unrelated reason.",
+      "revId": "3ddc761ec6b3c63e705ab2cf9ffea0ff825e3fe1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fb40bc27_298de05b",
+        "filename": "init/firmware_handler.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-04-29T22:00:37Z",
+      "side": 1,
+      "message": "This is only used in ueventd, so no need for epoll.",
+      "revId": "3ddc761ec6b3c63e705ab2cf9ffea0ff825e3fe1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "66475475_1907b0c0",
+        "filename": "init/reboot.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 248,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-04-29T22:00:37Z",
+      "side": 1,
+      "message": "None of reboot.cpp should need this either.\n\nSpecifically here, we\u0027ve already killed all running apps on the system, so there\u0027s no benefit in running the epoll loop.",
+      "revId": "3ddc761ec6b3c63e705ab2cf9ffea0ff825e3fe1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
