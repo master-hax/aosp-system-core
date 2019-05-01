@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f09aa242_b71f9f45",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 709,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-05-01T17:11:47Z",
+      "side": 1,
+      "message": "Can we resize to zero instead of remove? That way it looks more like the state the device was provisioned in.",
+      "revId": "59e7009a8da733de4396aad5ac5c830a9dfd9bd1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
