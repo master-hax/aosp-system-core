@@ -16,6 +16,8 @@
 #pragma once
 #if defined(__ANDROID__)
 
+#define LOG_TAG "nativeloader"
+
 #include "native_loader_namespace.h"
 
 #include <list>
@@ -23,7 +25,7 @@
 
 #include "jni.h"
 
-namespace android {
+namespace android::nativeloader {
 
 /* LibraryNamespaces is a singleton object that manages NativeLoaderNamespace
  * objects for an app process. Its main job is to create (and configure) a new
@@ -50,14 +52,7 @@ class LibraryNamespaces {
 
   bool initialized_;
   std::list<std::pair<jweak, NativeLoaderNamespace>> namespaces_;
-  std::string system_public_libraries_;
-  std::string runtime_public_libraries_;
-  std::string vendor_public_libraries_;
-  std::string oem_public_libraries_;
-  std::string product_public_libraries_;
-  std::string system_llndk_libraries_;
-  std::string system_vndksp_libraries_;
 };
 
-}  // namespace android
+}  // namespace android::nativeloader
 #endif  // #if defined(__ANDROID__)
