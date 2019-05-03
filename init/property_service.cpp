@@ -185,18 +185,19 @@ static uint32_t SendControlMessage(const std::string& msg, const std::string& na
     return PROP_SUCCESS;
 }
 
-static void SendPropertyChanged(const std::string& name, const std::string& value) {
+static void SendPropertyChanged(int socket, const std::string& name, const std::string& value) {
     auto property_msg = PropertyMessage{};
     auto* changed_message = property_msg.mutable_changed_message();
     changed_message->set_name(name);
     changed_message->set_value(value);
 
-    if (auto result = SendMessage(init_socket, property_msg); !result) {
+    if (auto result = SendMessage(socket, property_msg); !result) {
         LOG(ERROR) << "Failed to send property changed message: " << result.error();
     }
 }
 
-static uint32_t PropertySet(const std::string& name, const std::string& value, std::string* error) {
+static uint32_t PropertySet(const std::string& name, const std::string& value, pid_t pid,
+                            std::string* error) {
     size_t valuelen = value.size();
 
     if (!IsLegalPropertyName(name)) {
@@ -243,8 +244,8 @@ static uint32_t PropertySet(const std::string& name, const std::string& value, s
     }
     // If init hasn't started its main loop, then it won't be handling property changed messages
     // anyway, so there's no need to try to send them.
-    if (init_socket != -1) {
-        SendPropertyChanged(name, value);
+    if (init_socket != -1 && pid != 1) {
+        SendPropertyChanged(init_socket, name, value);
     }
     return PROP_SUCCESS;
 }
@@ -542,7 +543,7 @@ uint32_t HandlePropertySet(const std::string& name, const std::string& value,
         return PROP_SUCCESS;
     }
 
-    return PropertySet(name, value, error);
+    return PropertySet(name, value, cr.pid, error);
 }
 
 static void handle_property_set_fd() {
@@ -770,7 +771,7 @@ static void load_override_properties() {
         load_properties_from_file("/data/local.prop", nullptr, &properties);
         for (const auto& [name, value] : properties) {
             std::string error;
-            if (PropertySet(name, value, &error) != PROP_SUCCESS) {
+            if (PropertySet(name, value, 1, &error) != PROP_SUCCESS) {
                 LOG(ERROR) << "Could not set '" << name << "' to '" << value
                            << "' in /data/local.prop: " << error;
             }
@@ -863,7 +864,7 @@ static void property_initialize_ro_product_props() {
                 LOG(INFO) << "Setting product property " << base_prop << " to '" << target_prop_val
                           << "' (from " << target_prop << ")";
                 std::string error;
-                uint32_t res = PropertySet(base_prop, target_prop_val, &error);
+                uint32_t res = PropertySet(base_prop, target_prop_val, 1, &error);
                 if (res != PROP_SUCCESS) {
                     LOG(ERROR) << "Error setting product property " << base_prop << ": err=" << res
                                << " (" << error << ")";
@@ -901,7 +902,7 @@ static void property_derive_build_fingerprint() {
     LOG(INFO) << "Setting property 'ro.build.fingerprint' to '" << build_fingerprint << "'";
 
     std::string error;
-    uint32_t res = PropertySet("ro.build.fingerprint", build_fingerprint, &error);
+    uint32_t res = PropertySet("ro.build.fingerprint", build_fingerprint, 1, &error);
     if (res != PROP_SUCCESS) {
         LOG(ERROR) << "Error setting property 'ro.build.fingerprint': err=" << res << " (" << error
                    << ")";
@@ -937,7 +938,7 @@ void property_load_boot_defaults(bool load_debug_prop) {
 
     for (const auto& [name, value] : properties) {
         std::string error;
-        if (PropertySet(name, value, &error) != PROP_SUCCESS) {
+        if (PropertySet(name, value, 1, &error) != PROP_SUCCESS) {
             LOG(ERROR) << "Could not set '" << name << "' to '" << value
                        << "' while loading .prop files" << error;
         }
@@ -1018,9 +1019,57 @@ void CreateSerializedPropertyInfo() {
     selinux_android_restorecon(kPropertyInfosPath, 0);
 }
 
+static int init_dedicated_recv_socket = -1;
+static int init_dedicated_send_socket = -1;
+
+static void HandleInitSocket() {
+    auto message = ReadMessage(init_dedicated_recv_socket);
+    if (!message) {
+        LOG(ERROR) << "Could not read message from init_dedicated_recv_socket: " << message.error();
+        return;
+    }
+
+    auto property_message = PropertyMessage{};
+    if (!property_message.ParseFromString(*message)) {
+        LOG(ERROR) << "Could not parse message from property service";
+        return;
+    }
+
+    switch (property_message.msg_case()) {
+        case PropertyMessage::kControlMessage: {
+            LOG(ERROR) << "Should not see a control message here";
+            break;
+        }
+        case PropertyMessage::kChangedMessage: {
+            auto& changed_message = property_message.changed_message();
+            InitPropertySet(changed_message.name(), changed_message.value());
+            break;
+        }
+        default:
+            LOG(ERROR) << "Unknown message type from property service: "
+                       << property_message.msg_case();
+    }
+}
+
 static void PropertyServiceThread() {
+    Epoll epoll;
+    if (auto result = epoll.Open(); !result) {
+        PLOG(FATAL) << result.error();
+    }
+
+    if (auto result = epoll.RegisterHandler(property_set_fd, handle_property_set_fd); !result) {
+        PLOG(FATAL) << result.error();
+    }
+
+    if (auto result = epoll.RegisterHandler(init_dedicated_recv_socket, HandleInitSocket);
+        !result) {
+        PLOG(FATAL) << result.error();
+    }
+
     while (true) {
-        handle_property_set_fd();
+        if (auto result = epoll.Wait(std::nullopt); !result) {
+            LOG(ERROR) << result.error();
+        }
     }
 }
 
@@ -1041,10 +1090,18 @@ void StartPropertyService(int* epoll_socket) {
     }
     listen(property_set_fd, 8);
 
+    int sockets2[2];
+    if (socketpair(AF_UNIX, SOCK_SEQPACKET | SOCK_CLOEXEC, 0, sockets2) != 0) {
+        PLOG(FATAL) << "Failed to socketpair() between property_service and init";
+    }
+    init_dedicated_recv_socket = sockets2[0];
+    init_dedicated_send_socket = sockets2[1];
+
     std::thread{PropertyServiceThread}.detach();
 
     property_set = [](const std::string& key, const std::string& value) -> uint32_t {
-        android::base::SetProperty(key, value);
+        property_changed(key, value);
+        SendPropertyChanged(init_dedicated_send_socket, key, value);
         return 0;
     };
 }

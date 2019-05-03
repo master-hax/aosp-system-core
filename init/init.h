@@ -37,6 +37,8 @@ namespace init {
 extern std::string default_console;
 extern std::vector<std::string> late_import_paths;
 
+void property_changed(const std::string& name, const std::string& value);
+
 Parser CreateParser(ActionManager& action_manager, ServiceList& service_list);
 Parser CreateServiceOnlyParser(ServiceList& service_list);
 
