@@ -26,14 +26,11 @@
 #include "android-base/properties.h"
 #include "android-base/strings.h"
 #include "log/log.h"
+#include "utils.h"
 
 namespace android::nativeloader {
 
 using namespace std::string_literals;
-
-#define CHECK(predicate)                                                                  \
-  LOG_ALWAYS_FATAL_IF(!(predicate), "%s:%d: %s CHECK '" #predicate "' failed.", __FILE__, \
-                      __LINE__, __FUNCTION__)
 
 namespace {
 // TODO(b/130388701) simplify the names below
@@ -53,12 +50,7 @@ const std::vector<const std::string> kRuntimePublicLibraries = {
     "libicui18n.so",
 };
 
-// TODO(b/130388701) use macro LIB to eliminate the conditional
-#if defined(__LP64__)
-constexpr const char* kRuntimeApexLibPath = "/apex/com.android.runtime/lib64";
-#else
-constexpr const char* kRuntimeApexLibPath = "/apex/com.android.runtime/lib";
-#endif
+constexpr const char* kRuntimeApexLibPath = "/apex/com.android.runtime/" LIB;
 
 std::string root_dir() {
   static const char* android_root_env = getenv("ANDROID_ROOT");

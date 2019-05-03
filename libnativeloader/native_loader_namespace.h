@@ -21,12 +21,9 @@
 #include "android/dlext.h"
 #include "log/log.h"
 #include "nativebridge/native_bridge.h"
+#include "utils.h"
 
 namespace android {
-
-#define CHECK(predicate)                                                                  \
-  LOG_ALWAYS_FATAL_IF(!(predicate), "%s:%d: %s CHECK '" #predicate "' failed.", __FILE__, \
-                      __LINE__, __FUNCTION__)
 
 /* NativeLoaderNamespace abstracts a linker namespace for the native
  * architecture (ex: arm on arm) or the translated architecture (ex: arm on
