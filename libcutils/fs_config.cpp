@@ -223,6 +223,7 @@ static const struct fs_path_config android_files[] = {
     { 00755, AID_ROOT,      AID_SHELL,     0, "system/apex/*/bin/*" },
     { 00755, AID_ROOT,      AID_SHELL,     0, "vendor/bin/*" },
     { 00755, AID_ROOT,      AID_SHELL,     0, "vendor/xbin/*" },
+    { 00755, AID_ROOT,      AID_SHELL,     0, "odm/bin/*" },
     { 00644, AID_ROOT,      AID_ROOT,      0, 0 },
         // clang-format on
 };
@@ -295,20 +296,29 @@ static bool fs_config_cmp(bool dir, const char* prefix, size_t len, const char* 
     const int fnm_flags = FNM_NOESCAPE;
     if (fnmatch(pattern.c_str(), input.c_str(), fnm_flags) == 0) return true;
 
-    static constexpr const char* kSystem = "system/";
-    if (StartsWith(input, kSystem)) {
-        input.erase(0, strlen(kSystem));
-    } else if (input.size() <= strlen(kSystem)) {
-        return false;
-    } else if (StartsWith(pattern, kSystem)) {
-        pattern.erase(0, strlen(kSystem));
-    } else {
-        return false;
-    }
+    static constexpr const char* kPartitions[] = {"system/", "vendor/"};
 
-    if (!is_partition(pattern)) return false;
-    if (!is_partition(input)) return false;
-    return fnmatch(pattern.c_str(), input.c_str(), fnm_flags) == 0;
+    for(auto kPartition : kPartitions) {
+        std::string partial_input = input;
+        std::string partial_pattern = pattern;
+
+        if (StartsWith(partial_input, kPartition)) {
+            partial_input.erase(0, strlen(kPartition));
+        } else if (input.size() <= strlen(kPartition)) {
+            continue;
+        } else if (StartsWith(partial_pattern, kPartition)) {
+            partial_pattern.erase(0, strlen(kPartition));
+        } else {
+            continue;
+        }
+
+        if (!is_partition(partial_pattern)) continue;
+        if (!is_partition(partial_input)) continue;
+        if (fnmatch(partial_pattern.c_str(), partial_input.c_str(), fnm_flags) == 0) {
+            return true;
+        }
+    }
+    return false;
 }
 #ifndef __ANDROID_VNDK__
 auto __for_testing_only__fs_config_cmp = fs_config_cmp;
