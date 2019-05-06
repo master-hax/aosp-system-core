@@ -63,5 +63,9 @@ ScopeGuard<F> make_scope_guard(F&& f) {
   return ScopeGuard<F>(std::forward<F>(f));
 }
 
+#define DEFER_AUTO_NAMER(s) _defer_ ## s
+#define DEFER_AUTO_NAME(s) DEFER_AUTO_NAMER(s)
+#define DEFER ::android::base::ScopeGuard DEFER_AUTO_NAME(__COUNTER__) = [&]
+
 }  // namespace base
 }  // namespace android
