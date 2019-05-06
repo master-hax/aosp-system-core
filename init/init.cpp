@@ -68,6 +68,7 @@
 #include "selinux.h"
 #include "sigchld_handler.h"
 #include "system/core/init/property_service.pb.h"
+#include "timer.h"
 #include "util.h"
 
 using namespace std::chrono_literals;
@@ -631,6 +632,7 @@ static void UmountDebugRamdisk() {
 }
 
 static void HandlePropertyFd() {
+    Timer2 timer;
     auto message = ReadMessage(property_fd);
     if (!message) {
         LOG(ERROR) << "Could not read message from property service: " << message.error();
@@ -659,6 +661,13 @@ static void HandlePropertyFd() {
             LOG(ERROR) << "Unknown message type from property service: "
                        << property_message.msg_case();
     }
+
+    auto duration = timer.duration();
+    static decltype(timer.duration()) cumulative{};
+    cumulative += duration;
+
+    LOG(ERROR) << "grep: property_changed() took: " << duration.count()
+               << "us, cumulative: " << cumulative.count() << "us";
 }
 
 int SecondStageMain(int argc, char** argv) {

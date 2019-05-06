@@ -67,6 +67,7 @@
 #include "selinux.h"
 #include "subcontext.h"
 #include "system/core/init/property_service.pb.h"
+#include "timer.h"
 #include "util.h"
 
 using namespace std::literals;
@@ -547,11 +548,12 @@ uint32_t HandlePropertySet(const std::string& name, const std::string& value,
 
 static void handle_property_set_fd() {
     static constexpr uint32_t kDefaultSocketTimeout = 2000; /* ms */
-
     int s = accept4(property_set_fd, nullptr, nullptr, SOCK_CLOEXEC);
     if (s == -1) {
         return;
     }
+
+    Timer2 timer;
 
     ucred cr;
     socklen_t cr_size = sizeof(cr);
@@ -635,6 +637,15 @@ static void handle_property_set_fd() {
         socket.SendUint32(PROP_ERROR_INVALID_CMD);
         break;
     }
+
+    auto duration = timer.duration();
+    static decltype(timer.duration()) cumulative{};
+    static size_t count = 0;
+    cumulative += duration;
+    count++;
+    LOG(ERROR) << "grep: handle_property_set_fd took: " << duration.count()
+               << "us, cumulative: " << cumulative.count() << "us, count: " << count
+               << ", average: " << cumulative.count() / count << "us";
 }
 
 static bool load_properties_from_file(const char*, const char*,
@@ -1025,6 +1036,7 @@ static void PropertyServiceThread() {
 }
 
 void StartPropertyService(int* epoll_socket) {
+    Timer2 timer;
     property_set("ro.property_service.version", "2");
 
     int sockets[2];
@@ -1044,9 +1056,19 @@ void StartPropertyService(int* epoll_socket) {
     std::thread{PropertyServiceThread}.detach();
 
     property_set = [](const std::string& key, const std::string& value) -> uint32_t {
+        Timer2 timer;
+        static decltype(timer.duration()) cumulative{};
+        static size_t count = 0;
         android::base::SetProperty(key, value);
+        auto duration = timer.duration();
+        cumulative += duration;
+        count++;
+        LOG(ERROR) << "grep: property_set(" << key << ", " << value
+                   << ") took: " << duration.count() << "us, cumulative: " << cumulative.count()
+                   << "us, count: " << count << ", average: " << cumulative.count() / count << "us";
         return 0;
     };
+    LOG(ERROR) << "grep: StartPropertyService took: " << timer;
 }
 
 }  // namespace init
