@@ -57,3 +57,22 @@ TEST(scopeguard, vector) {
   }
   ASSERT_EQ(guarded_var, 2);
 }
+
+TEST(scopeguard, without_make_scope_guard) {
+  bool guarded_var = true;
+  {
+    android::base::ScopeGuard guard = [&]{ guarded_var = false; };
+    ASSERT_TRUE(guarded_var);
+  }
+  ASSERT_FALSE(guarded_var);
+}
+
+TEST(scopeguard, defer_order) {
+  int guarded_var = 0;
+  {
+    DEFER { guarded_var = 2; };
+    DEFER { guarded_var = 1; };
+    ASSERT_EQ(guarded_var, 0);
+  }
+  ASSERT_EQ(guarded_var, 2);
+}
