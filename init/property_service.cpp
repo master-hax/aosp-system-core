@@ -214,6 +214,8 @@ static uint32_t PropertySet(const std::string& name, const std::string& value, s
         return PROP_ERROR_INVALID_VALUE;
     }
 
+    static std::mutex mutex_pi;
+    // prop_info structs never move after they're allocated, so no lock here.
     prop_info* pi = (prop_info*) __system_property_find(name.c_str());
     if (pi != nullptr) {
         // ro.* properties are actually "write-once".
@@ -222,8 +224,12 @@ static uint32_t PropertySet(const std::string& name, const std::string& value, s
             return PROP_ERROR_READ_ONLY_PROPERTY;
         }
 
+        auto lock = std::lock_guard{mutex_pi};
         __system_property_update(pi, value.c_str(), valuelen);
     } else {
+        // Accept that there's a race between a caller finding and setting this property and us
+        // adding it here, since there's no strict ordering with property set in the first place.
+        auto lock = std::lock_guard{mutex_pi};
         int rc = __system_property_add(name.c_str(), name.size(), value.c_str(), valuelen);
         if (rc < 0) {
             *error = "__system_property_add failed";
@@ -234,6 +240,8 @@ static uint32_t PropertySet(const std::string& name, const std::string& value, s
     // Don't write properties to disk until after we have read all default
     // properties to prevent them from being overwritten by default values.
     if (persistent_properties_loaded && StartsWith(name, "persist.")) {
+        static std::mutex mutex_persist;
+        auto guard = std::lock_guard{mutex_persist};
         WritePersistentProperty(name, value);
     }
     // If init sets ro.persistent_properties.ready to true, then it has finished writing persistent
@@ -1042,11 +1050,6 @@ void StartPropertyService(int* epoll_socket) {
     listen(property_set_fd, 8);
 
     std::thread{PropertyServiceThread}.detach();
-
-    property_set = [](const std::string& key, const std::string& value) -> uint32_t {
-        android::base::SetProperty(key, value);
-        return 0;
-    };
 }
 
 }  // namespace init
