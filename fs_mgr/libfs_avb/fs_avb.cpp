@@ -370,6 +370,7 @@ AvbUniquePtr AvbHandle::Open() {
             avb_handle->status_ = AvbHandleStatus::kSuccess;
             break;
         case AVB_SLOT_VERIFY_RESULT_ERROR_VERIFICATION:
+        case AVB_SLOT_VERIFY_RESULT_ERROR_PUBLIC_KEY_REJECTED:
             if (!is_device_unlocked) {
                 LERROR << "ERROR_VERIFICATION isn't allowed when the device is LOCKED";
                 return nullptr;
