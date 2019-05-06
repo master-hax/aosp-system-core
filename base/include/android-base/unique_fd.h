@@ -119,12 +119,12 @@ class unique_fd_impl final {
   void reset(int new_value, void* previous_tag) {
     int previous_errno = errno;
 
-    if (fd_ != -1) {
+    if (fd_ >= 0) {
       close(fd_, this);
     }
 
     fd_ = new_value;
-    if (new_value != -1) {
+    if (new_value >= 0) {
       tag(new_value, previous_tag, this);
     }
 
