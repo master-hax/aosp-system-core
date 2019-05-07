@@ -427,6 +427,7 @@ on post-fs-data
     restorecon /data
 
     # Make sure we have the device encryption key.
+    wait_for_prop keymaster.status ready
     installkey /data
 
     # Start bootcharting as soon as possible after the data partition is
