@@ -193,5 +193,22 @@ bool DmTargetSnapshot::ParseStatusText(const std::string& text, Status* status) 
     return true;
 }
 
+std::string DmTargetCrypt::GetParameterString() const {
+    std::vector<std::string> argv = {
+            cipher_,
+            key_,
+            std::to_string(iv_sector_offset_),
+            device_,
+            std::to_string(device_sector_),
+    };
+
+    if (allow_discards_) argv.emplace_back("allow_discards");
+    if (allow_encrypt_override_) argv.emplace_back("allow_encrypt_override");
+    if (iv_large_sectors_) argv.emplace_back("iv_large_sectors");
+    if (sector_size_) argv.emplace_back("sector_size:" + std::to_string(sector_size_));
+
+    return android::base::Join(argv, " ");
+}
+
 }  // namespace dm
 }  // namespace android
