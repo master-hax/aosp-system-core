@@ -43,6 +43,11 @@ class DmTable {
     // successfully removed.
     bool RemoveTarget(std::unique_ptr<DmTarget>&& target);
 
+    template <typename T, typename... Args>
+    bool Emplace(Args&&... args) {
+        return AddTarget(std::make_unique<T>(std::forward<Args>(args)...));
+    }
+
     // Checks the table to make sure it is valid. i.e. Checks for range overlaps, range gaps
     // and returns 'true' if the table is ready to be loaded into kernel. Returns 'false' if the
     // table is malformed.
