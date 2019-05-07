@@ -120,8 +120,6 @@ class FirstStageMountVBootV1 : public FirstStageMount {
 
 class FirstStageMountVBootV2 : public FirstStageMount {
   public:
-    friend void SetInitAvbVersionInRecovery();
-
     FirstStageMountVBootV2(Fstab fstab);
     ~FirstStageMountVBootV2() override = default;
 
@@ -836,38 +834,6 @@ bool DoFirstStageMount() {
         return false;
     }
     return handle->DoFirstStageMount();
-}
-
-void SetInitAvbVersionInRecovery() {
-    if (!IsRecoveryMode()) {
-        LOG(INFO) << "Skipped setting INIT_AVB_VERSION (not in recovery mode)";
-        return;
-    }
-
-    auto fstab = ReadFirstStageFstab();
-
-    if (!IsDtVbmetaCompatible(fstab)) {
-        LOG(INFO) << "Skipped setting INIT_AVB_VERSION (not vbmeta compatible)";
-        return;
-    }
-
-    // Initializes required devices for the subsequent AvbHandle::Open()
-    // to verify AVB metadata on all partitions in the verified chain.
-    // We only set INIT_AVB_VERSION when the AVB verification succeeds, i.e., the
-    // Open() function returns a valid handle.
-    // We don't need to mount partitions here in recovery mode.
-    FirstStageMountVBootV2 avb_first_mount(std::move(fstab));
-    if (!avb_first_mount.InitDevices()) {
-        LOG(ERROR) << "Failed to init devices for INIT_AVB_VERSION";
-        return;
-    }
-
-    AvbUniquePtr avb_handle = AvbHandle::Open();
-    if (!avb_handle) {
-        PLOG(ERROR) << "Failed to open AvbHandle for INIT_AVB_VERSION";
-        return;
-    }
-    setenv("INIT_AVB_VERSION", avb_handle->avb_version().c_str(), 1);
 }
 
 }  // namespace init
