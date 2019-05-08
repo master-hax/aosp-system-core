@@ -21,5 +21,7 @@ namespace init {
 
 int FirstStageMain(int argc, char** argv);
 
+static constexpr char env_first_stage_started_at[] = "FIRST_STAGE_STARTED_AT";
+
 }  // namespace init
 }  // namespace android
