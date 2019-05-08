@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "fae438ba_ca52f36d",
+        "filename": "libnativeloader/library_namespaces.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 309,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2019-05-08T04:43:25Z",
+      "side": 1,
+      "message": "Yeah, but that should be okay because the function actually caches the result, right?\n\nI, BTW, have a plan to simplify this using StatusOr\u003cT\u003e (b/132145659) so that android_link_namespace can return a specific error code when the shared lib list is empty.",
+      "parentUuid": "f1f14106_5e9ea900",
+      "range": {
+        "startLine": 309,
+        "startChar": 50,
+        "endLine": 309,
+        "endChar": 73
+      },
+      "revId": "44abf977d0e7214699fd0a3dd4882fea42e2d760",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "07c7309f_378422c5",
         "filename": "libnativeloader/public_libraries.cpp",
         "patchSetId": 4
@@ -39,6 +63,24 @@
       "revId": "44abf977d0e7214699fd0a3dd4882fea42e2d760",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3e153b66_c8d3bef8",
+        "filename": "libnativeloader/public_libraries.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2019-05-08T04:43:25Z",
+      "side": 1,
+      "message": "I will clean-up the logging code at once in one of the follow-up changes.",
+      "parentUuid": "07c7309f_378422c5",
+      "revId": "44abf977d0e7214699fd0a3dd4882fea42e2d760",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
