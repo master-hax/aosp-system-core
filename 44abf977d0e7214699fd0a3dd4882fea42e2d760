@@ -73,6 +73,30 @@
     },
     {
       "key": {
+        "uuid": "db688c78_52524968",
+        "filename": "libnativeloader/library_namespaces.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 309,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2019-05-08T04:53:39Z",
+      "side": 1,
+      "message": "Yes you are right. changed to const string\u0026",
+      "parentUuid": "2ff9829e_56994012",
+      "range": {
+        "startLine": 309,
+        "startChar": 50,
+        "endLine": 309,
+        "endChar": 73
+      },
+      "revId": "44abf977d0e7214699fd0a3dd4882fea42e2d760",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "07c7309f_378422c5",
         "filename": "libnativeloader/public_libraries.cpp",
         "patchSetId": 4
