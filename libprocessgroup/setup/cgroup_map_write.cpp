@@ -235,7 +235,8 @@ static bool SetupCgroup(const CgroupDescriptor&) {
 
 #endif
 
-static bool WriteRcFile(const std::map<std::string, CgroupDescriptor>& descriptors) {
+static bool WriteRcFile(const std::map<std::string, CgroupDescriptor>& descriptors,
+                        uint32_t valid_controller_count) {
     unique_fd fd(TEMP_FAILURE_RETRY(open(CGROUPS_RC_PATH, O_CREAT | O_WRONLY | O_TRUNC | O_CLOEXEC,
                                          S_IRUSR | S_IRGRP | S_IROTH)));
     if (fd < 0) {
@@ -245,7 +246,7 @@ static bool WriteRcFile(const std::map<std::string, CgroupDescriptor>& descripto
 
     format::CgroupFile fl;
     fl.version_ = format::CgroupFile::FILE_CURR_VERSION;
-    fl.controller_count_ = descriptors.size();
+    fl.controller_count_ = valid_controller_count;
     int ret = TEMP_FAILURE_RETRY(write(fd, &fl, sizeof(fl)));
     if (ret < 0) {
         PLOG(ERROR) << "write() failed for " << CGROUPS_RC_PATH;
@@ -253,6 +254,8 @@ static bool WriteRcFile(const std::map<std::string, CgroupDescriptor>& descripto
     }
 
     for (const auto& [name, descriptor] : descriptors) {
+        // if controller failed to mount do not record it
+        if (!descriptor.mounted()) continue;
         ret = TEMP_FAILURE_RETRY(
                 write(fd, descriptor.controller(), sizeof(format::CgroupController)));
         if (ret < 0) {
@@ -267,7 +270,7 @@ static bool WriteRcFile(const std::map<std::string, CgroupDescriptor>& descripto
 CgroupDescriptor::CgroupDescriptor(uint32_t version, const std::string& name,
                                    const std::string& path, mode_t mode, const std::string& uid,
                                    const std::string& gid)
-    : controller_(version, name, path), mode_(mode), uid_(uid), gid_(gid) {}
+    : controller_(version, name, path), mode_(mode), uid_(uid), gid_(gid), mounted_(false) {}
 
 }  // namespace cgrouprc
 }  // namespace android
@@ -296,10 +299,13 @@ bool CgroupSetup() {
     }
 
     // setup cgroups
-    for (const auto& [name, descriptor] : descriptors) {
-        if (!SetupCgroup(descriptor)) {
+    uint32_t valid_controller_count = 0;
+    for (auto& [name, descriptor] : descriptors) {
+        if (SetupCgroup(descriptor)) {
+            descriptor.set_mounted(true);
+            valid_controller_count++;
+        } else {
             // issue a warning and proceed with the next cgroup
-            // TODO: mark the descriptor as invalid and skip it in WriteRcFile()
             LOG(WARNING) << "Failed to setup " << name << " cgroup";
         }
     }
@@ -314,7 +320,7 @@ bool CgroupSetup() {
     // process memory. This optimizes performance, memory usage
     // and limits infrormation shared with unprivileged processes
     // to the minimum subset of information from cgroups.json
-    if (!WriteRcFile(descriptors)) {
+    if (!WriteRcFile(descriptors, valid_controller_count)) {
         LOG(ERROR) << "Failed to write " << CGROUPS_RC_PATH << " file";
         return false;
     }
