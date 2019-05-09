@@ -236,6 +236,7 @@ const std::string& runtime_public_libraries() {
         list = list + ':' + additional_libs;
       }
     }
+    cached = true;
   }
   return list;
 }
