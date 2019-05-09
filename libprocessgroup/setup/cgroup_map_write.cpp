@@ -30,6 +30,7 @@
 
 #include <regex>
 
+#include <android/cgrouprc.h>
 #include <android-base/file.h>
 #include <android-base/logging.h>
 #include <android-base/properties.h>
@@ -267,7 +268,17 @@ static bool WriteRcFile(const std::map<std::string, CgroupDescriptor>& descripto
 CgroupDescriptor::CgroupDescriptor(uint32_t version, const std::string& name,
                                    const std::string& path, mode_t mode, const std::string& uid,
                                    const std::string& gid)
-    : controller_(version, name, path), mode_(mode), uid_(uid), gid_(gid) {}
+    : controller_(version, 0, name, path), mode_(mode), uid_(uid), gid_(gid) {}
+
+void CgroupDescriptor::set_mounted(bool mounted) {
+    uint32_t flags = controller_.flags();
+    if (mounted) {
+        flags |= CGROUPRC_CONTROLLER_FLAG_MOUNTED;
+    } else {
+        flags &= ~CGROUPRC_CONTROLLER_FLAG_MOUNTED;
+    }
+    controller_.set_flags(flags);
+}
 
 }  // namespace cgrouprc
 }  // namespace android
@@ -296,10 +307,11 @@ bool CgroupSetup() {
     }
 
     // setup cgroups
-    for (const auto& [name, descriptor] : descriptors) {
-        if (!SetupCgroup(descriptor)) {
+    for (auto& [name, descriptor] : descriptors) {
+        if (SetupCgroup(descriptor)) {
+            descriptor.set_mounted(true);
+        } else {
             // issue a warning and proceed with the next cgroup
-            // TODO: mark the descriptor as invalid and skip it in WriteRcFile()
             LOG(WARNING) << "Failed to setup " << name << " cgroup";
         }
     }
