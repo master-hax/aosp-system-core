@@ -31,12 +31,16 @@ class CgroupDescriptor {
     mode_t mode() const { return mode_; }
     std::string uid() const { return uid_; }
     std::string gid() const { return gid_; }
+    bool mounted() const { return mounted_; }
+
+    void set_mounted(bool mounted) { mounted_ = mounted; }
 
   private:
     format::CgroupController controller_;
     mode_t mode_ = 0;
     std::string uid_;
     std::string gid_;
+    bool mounted_;
 };
 
 }  // namespace cgrouprc

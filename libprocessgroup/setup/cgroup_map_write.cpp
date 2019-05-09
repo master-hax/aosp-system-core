@@ -253,6 +253,8 @@ static bool WriteRcFile(const std::map<std::string, CgroupDescriptor>& descripto
     }
 
     for (const auto& [name, descriptor] : descriptors) {
+        // if controller failed to mount do not record it
+        if (!descriptor.mounted()) continue;
         ret = TEMP_FAILURE_RETRY(
                 write(fd, descriptor.controller(), sizeof(format::CgroupController)));
         if (ret < 0) {
@@ -267,7 +269,7 @@ static bool WriteRcFile(const std::map<std::string, CgroupDescriptor>& descripto
 CgroupDescriptor::CgroupDescriptor(uint32_t version, const std::string& name,
                                    const std::string& path, mode_t mode, const std::string& uid,
                                    const std::string& gid)
-    : controller_(version, name, path), mode_(mode), uid_(uid), gid_(gid) {}
+    : controller_(version, name, path), mode_(mode), uid_(uid), gid_(gid), mounted_(false) {}
 
 }  // namespace cgrouprc
 }  // namespace android
@@ -296,10 +298,11 @@ bool CgroupSetup() {
     }
 
     // setup cgroups
-    for (const auto& [name, descriptor] : descriptors) {
-        if (!SetupCgroup(descriptor)) {
+    for (auto& [name, descriptor] : descriptors) {
+        if (SetupCgroup(descriptor)) {
+            descriptor.set_mounted(true);
+        } else {
             // issue a warning and proceed with the next cgroup
-            // TODO: mark the descriptor as invalid and skip it in WriteRcFile()
             LOG(WARNING) << "Failed to setup " << name << " cgroup";
         }
     }
