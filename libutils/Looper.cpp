@@ -13,6 +13,10 @@
 // Debugs callback registration and invocation.
 #define DEBUG_CALLBACKS 0
 
+#if DEBUG_POLL_AND_WAKE || DEBUG_CALLBACKS
+#include <cinttypes>
+#endif
+
 #include <utils/Looper.h>
 #include <sys/eventfd.h>
 
