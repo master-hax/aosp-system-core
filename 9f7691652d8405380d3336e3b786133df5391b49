@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6051780e_f0055cd1",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1003966
+      },
+      "writtenOn": "2019-05-12T15:29:02Z",
+      "side": 1,
+      "message": "This is no longer true as of https://android-review.googlesource.com/c/platform/external/selinux/+/916356 . This xattr, and the behavior described, no longer exists.",
+      "range": {
+        "startLine": 14,
+        "startChar": 25,
+        "endLine": 16,
+        "endChar": 39
+      },
+      "revId": "9f7691652d8405380d3336e3b786133df5391b49",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "dc598a09_149ed086",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1003966
+      },
+      "writtenOn": "2019-05-12T15:29:02Z",
+      "side": 1,
+      "message": "There are two scenerios:\n\n1) The program changes the label to be consistent with the file_contexts entry.\n\nIn this case, no restorecon is necessary.\n\n2) The program changes the label to be inconstant with the file_contexts entry.\n\nThis is a program bug, and running \"restorecon --force\" is inappropriate to resolve this bug. The program and the SELinux labeling config are specifying conflicting labeling decisions, which can lead to inconsistent behavior. The two processes should not fight with each other. Any program which handles labeling decisions (which it shouldn\u0027t) needs to make labeling decisions consistent with the file_contexts entry.  The correct solution is to fix the program.\n\n\nIn both of these cases, supporting --force in the init language is just masking bugs, and is incorrect.",
+      "range": {
+        "startLine": 20,
+        "startChar": 31,
+        "endLine": 22,
+        "endChar": 47
+      },
+      "revId": "9f7691652d8405380d3336e3b786133df5391b49",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
