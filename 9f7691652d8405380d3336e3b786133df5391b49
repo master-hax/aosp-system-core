@@ -45,6 +45,29 @@
       "revId": "9f7691652d8405380d3336e3b786133df5391b49",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e4b9e0ad_16e34468",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1003966
+      },
+      "writtenOn": "2019-05-12T15:33:08Z",
+      "side": 1,
+      "message": "The best fix is to restructure the programs to avoid any relabelfrom / relabelto permissions, and have init solely responsible for the permissions of the /persist directory. Distributing responsibility for labeling to multiple programs is just asking for trouble. To the extent possible, programs should never need to be SELinux aware to operate.",
+      "range": {
+        "startLine": 24,
+        "startChar": 0,
+        "endLine": 30,
+        "endChar": 34
+      },
+      "revId": "9f7691652d8405380d3336e3b786133df5391b49",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
