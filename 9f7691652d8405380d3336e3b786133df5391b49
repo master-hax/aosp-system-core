@@ -48,6 +48,29 @@
     },
     {
       "key": {
+        "uuid": "b77aa1ab_b5944196",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1003966
+      },
+      "writtenOn": "2019-05-12T15:43:14Z",
+      "side": 1,
+      "message": "Entering vendor_init via /vendor/binm/toybox_vendor should not work. This is a neverallow violation, specifically line 263 of\n\nhttps://android.googlesource.com/platform/system/sepolicy/+/44328c061d67636d4d8047ac69c4e778467eb4e8/public/vendor_init.te#263\n\nThe only entrypoint to the vendor_init domain is the init binary. Other binaries are not allowed to be entrypoints for vendor_init.\n\nAre you sure you\u0027re able to do this? I\u0027ll try to reproduce this. If it works, it\u0027s a security bug.",
+      "range": {
+        "startLine": 28,
+        "startChar": 4,
+        "endLine": 28,
+        "endChar": 66
+      },
+      "revId": "9f7691652d8405380d3336e3b786133df5391b49",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "e4b9e0ad_16e34468",
         "filename": "/COMMIT_MSG",
         "patchSetId": 3
