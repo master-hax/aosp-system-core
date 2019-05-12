@@ -532,15 +532,18 @@ Commands
 > Stops and restarts a running service, does nothing if the service is currently
   restarting, otherwise, it just starts the service.
 
-`restorecon <path> [ <path>\* ]`
+`restorecon <path> [ <path>\* ] [<options>]`
 > Restore the file named by _path_ to the security context specified
   in the file\_contexts configuration.
   Not required for directories created by the init.rc as these are
   automatically labeled correctly by init.
 
-`restorecon_recursive <path> [ <path>\* ]`
+> Supported options: `--force`, `--skip-ce`, `--cross-filesystems`.
+
+`restorecon_recursive <path> [ <path>\* ] [<options>]`
 > Recursively restore the directory tree named by _path_ to the
   security contexts specified in the file\_contexts configuration.
+  Supported options are the same as for `restorecon`.
 
 `rm <path>`
 > Calls unlink(2) on the given path. You might want to
