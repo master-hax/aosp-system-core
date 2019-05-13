@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ad2d1b7c_b995a9db",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 594,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2019-05-13T18:26:49Z",
+      "side": 1,
+      "message": "In a way it\u0027d make sense to add the links here too, as this is supposed to be a less restricted variant of the \"system\" config. Otoh one can argue that it shouldn\u0027t go here until proven necessary. Can there be tests that need ICU?",
+      "revId": "dbfb16b3b070f25c00106af4fe2ef41e8caa401c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
