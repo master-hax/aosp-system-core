@@ -16,6 +16,24 @@
       "revId": "dbfb16b3b070f25c00106af4fe2ef41e8caa401c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1effa74c_aeb9429a",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 594,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2019-05-13T18:39:27Z",
+      "side": 1,
+      "message": "There\u0027s also the matter of consistency and clean failure modes: It\u0027s overall simpler to keep all these \"keep in sync\" sections in sync. If we happen to get a platform library that grows a dependency on libicuuc, it would only fail in this config or in the vendor one, which wouldn\u0027t be properly tested for.\n\nHence I think it\u0027s better to add the kludge here and to the \"vendor\" config section as well.",
+      "parentUuid": "ad2d1b7c_b995a9db",
+      "revId": "dbfb16b3b070f25c00106af4fe2ef41e8caa401c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
