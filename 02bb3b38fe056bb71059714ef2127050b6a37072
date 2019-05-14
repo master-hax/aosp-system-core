@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "92ca759b_edffe0c4",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1108565
+      },
+      "writtenOn": "2019-05-14T21:52:45Z",
+      "side": 1,
+      "message": "Can you please elaborate, why?",
+      "range": {
+        "startLine": 11,
+        "startChar": 19,
+        "endLine": 11,
+        "endChar": 42
+      },
+      "revId": "02bb3b38fe056bb71059714ef2127050b6a37072",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
