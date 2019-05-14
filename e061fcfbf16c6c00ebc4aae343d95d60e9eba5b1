@@ -16,6 +16,24 @@
       "revId": "e061fcfbf16c6c00ebc4aae343d95d60e9eba5b1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e0ce3f6b_f2995a03",
+        "filename": "fastboot/fuzzy_fastboot/main.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 250,
+      "author": {
+        "id": 1120612
+      },
+      "writtenOn": "2019-05-14T23:40:23Z",
+      "side": 1,
+      "message": "Switched to slot-count in PS2. Is it possible for system to not have a slot suffix on a DAP A/B device?",
+      "parentUuid": "d6f2ad42_d4772dab",
+      "revId": "e061fcfbf16c6c00ebc4aae343d95d60e9eba5b1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
