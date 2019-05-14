@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d6f2ad42_d4772dab",
+        "filename": "fastboot/fuzzy_fastboot/main.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 250,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-05-14T23:23:34Z",
+      "side": 1,
+      "message": "Can we use the slot-count variable instead? The system partition may not have a slot suffix even if it\u0027s an A/B device.",
+      "revId": "e061fcfbf16c6c00ebc4aae343d95d60e9eba5b1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
