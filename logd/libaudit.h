@@ -90,7 +90,7 @@ extern int audit_get_reply(int fd, struct audit_message* rep, reply_t block,
 extern int audit_setup(int fd, pid_t pid);
 
 /* Max audit messages per second  */
-#define AUDIT_RATE_LIMIT 5
+#define AUDIT_RATE_LIMIT 0
 
 __END_DECLS
 
