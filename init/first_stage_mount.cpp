@@ -280,10 +280,8 @@ bool FirstStageMount::InitRequiredDevices() {
         return true;
     }
 
-    if (IsDmLinearEnabled() || need_dm_verity_) {
-        if (!InitDeviceMapper()) {
-            return false;
-        }
+    if (!InitDeviceMapper()) {
+        return false;
     }
 
     auto uevent_callback = [this](const Uevent& uevent) { return UeventCallback(uevent); };
@@ -601,12 +599,6 @@ void FirstStageMount::UseGsiIfPresent() {
     }
 
     if (!InitDmLinearBackingDevices(*metadata.get())) {
-        return;
-    }
-
-    // Device-mapper might not be ready if the device doesn't use DAP or verity
-    // (for example, hikey).
-    if (access("/dev/device-mapper", F_OK) && !InitDeviceMapper()) {
         return;
     }
 
