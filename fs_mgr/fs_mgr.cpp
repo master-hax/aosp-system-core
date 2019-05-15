@@ -1082,25 +1082,26 @@ int fs_mgr_mount_all(Fstab* fstab, int mount_mode) {
         if (is_extfs(current_entry.fs_type)) {
             if (!TranslateExtLabels(&current_entry)) {
                 LERROR << "Could not translate label to block device";
-                continue;
+                return FS_MGR_MNTALL_FAIL;
             }
         }
 
         if (current_entry.fs_mgr_flags.logical) {
             if (!fs_mgr_update_logical_partition(&current_entry)) {
-                LERROR << "Could not set up logical partition, skipping!";
-                continue;
+                LERROR << "Could not set up logical partition!";
+                return FS_MGR_MNTALL_FAIL;
             }
         }
 
         if (!checkpoint_manager.Update(&current_entry)) {
-            continue;
+            LERROR << "Could not set up checkpoint driver!";
+            return FS_MGR_MNTALL_FAIL;
         }
 
         if (current_entry.fs_mgr_flags.wait &&
             !fs_mgr_wait_for_file(current_entry.blk_device, 20s)) {
-            LERROR << "Skipping '" << current_entry.blk_device << "' during mount_all";
-            continue;
+            LERROR << "Failed waiting for '" << current_entry.blk_device << "' during mount_all";
+            return FS_MGR_MNTALL_FAIL;
         }
 
         if (current_entry.fs_mgr_flags.avb) {
@@ -1113,25 +1114,24 @@ int fs_mgr_mount_all(Fstab* fstab, int mount_mode) {
             }
             if (avb_handle->SetUpAvbHashtree(&current_entry, true /* wait_for_verity_dev */) ==
                 AvbHashtreeResult::kFail) {
-                LERROR << "Failed to set up AVB on partition: " << current_entry.mount_point
-                       << ", skipping!";
+                LERROR << "Failed to set up AVB on partition: " << current_entry.mount_point << "!";
                 // Skips mounting the device.
-                continue;
+                return FS_MGR_MNTALL_FAIL;
             }
         } else if (!current_entry.avb_keys.empty()) {
             if (AvbHandle::SetUpStandaloneAvbHashtree(&current_entry) == AvbHashtreeResult::kFail) {
                 LERROR << "Failed to set up AVB on standalone partition: "
-                       << current_entry.mount_point << ", skipping!";
+                       << current_entry.mount_point << "!";
                 // Skips mounting the device.
-                continue;
+                return FS_MGR_MNTALL_FAIL;
             }
         } else if ((current_entry.fs_mgr_flags.verify)) {
             int rc = fs_mgr_setup_verity(&current_entry, true);
             if (rc == FS_MGR_SETUP_VERITY_DISABLED || rc == FS_MGR_SETUP_VERITY_SKIPPED) {
                 LINFO << "Verity disabled";
             } else if (rc != FS_MGR_SETUP_VERITY_SUCCESS) {
-                LERROR << "Could not set up verified partition, skipping!";
-                continue;
+                LERROR << "Could not set up verified partition!";
+                return FS_MGR_MNTALL_FAIL;
             }
         }
 

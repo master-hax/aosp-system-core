@@ -483,70 +483,78 @@ static void import_late(const std::vector<std::string>& args, size_t start_index
  * return code is processed based on input code
  */
 static Result<Success> queue_fs_event(int code) {
-    if (code == FS_MGR_MNTALL_DEV_NEEDS_ENCRYPTION) {
-        ActionManager::GetInstance().QueueEventTrigger("encrypt");
-        return Success();
-    } else if (code == FS_MGR_MNTALL_DEV_MIGHT_BE_ENCRYPTED) {
-        property_set("ro.crypto.state", "encrypted");
-        property_set("ro.crypto.type", "block");
-        ActionManager::GetInstance().QueueEventTrigger("defaultcrypto");
-        return Success();
-    } else if (code == FS_MGR_MNTALL_DEV_NOT_ENCRYPTED) {
-        property_set("ro.crypto.state", "unencrypted");
-        ActionManager::GetInstance().QueueEventTrigger("nonencrypted");
-        return Success();
-    } else if (code == FS_MGR_MNTALL_DEV_NOT_ENCRYPTABLE) {
-        property_set("ro.crypto.state", "unsupported");
-        ActionManager::GetInstance().QueueEventTrigger("nonencrypted");
-        return Success();
-    } else if (code == FS_MGR_MNTALL_DEV_NEEDS_RECOVERY) {
-        /* Setup a wipe via recovery, and reboot into recovery */
-        if (android::gsi::IsGsiRunning()) {
-            return Error() << "cannot wipe within GSI";
-        }
-        PLOG(ERROR) << "fs_mgr_mount_all suggested recovery, so wiping data via recovery.";
-        const std::vector<std::string> options = {"--wipe_data", "--reason=fs_mgr_mount_all" };
-        return reboot_into_recovery(options);
-        /* If reboot worked, there is no return. */
-    } else if (code == FS_MGR_MNTALL_DEV_FILE_ENCRYPTED) {
-        if (fscrypt_install_keyring()) {
-            return Error() << "fscrypt_install_keyring() failed";
-        }
-        property_set("ro.crypto.state", "encrypted");
-        property_set("ro.crypto.type", "file");
+    switch (code) {
+        case FS_MGR_MNTALL_DEV_NEEDS_ENCRYPTION:
+            ActionManager::GetInstance().QueueEventTrigger("encrypt");
+            return Success();
 
-        // Although encrypted, we have device key, so we do not need to
-        // do anything different from the nonencrypted case.
-        ActionManager::GetInstance().QueueEventTrigger("nonencrypted");
-        return Success();
-    } else if (code == FS_MGR_MNTALL_DEV_IS_METADATA_ENCRYPTED) {
-        if (fscrypt_install_keyring()) {
-            return Error() << "fscrypt_install_keyring() failed";
-        }
-        property_set("ro.crypto.state", "encrypted");
-        property_set("ro.crypto.type", "file");
+        case FS_MGR_MNTALL_DEV_MIGHT_BE_ENCRYPTED:
+            property_set("ro.crypto.state", "encrypted");
+            property_set("ro.crypto.type", "block");
+            ActionManager::GetInstance().QueueEventTrigger("defaultcrypto");
+            return Success();
 
-        // Although encrypted, vold has already set the device up, so we do not need to
-        // do anything different from the nonencrypted case.
-        ActionManager::GetInstance().QueueEventTrigger("nonencrypted");
-        return Success();
-    } else if (code == FS_MGR_MNTALL_DEV_NEEDS_METADATA_ENCRYPTION) {
-        if (fscrypt_install_keyring()) {
-            return Error() << "fscrypt_install_keyring() failed";
-        }
-        property_set("ro.crypto.state", "encrypted");
-        property_set("ro.crypto.type", "file");
+        case FS_MGR_MNTALL_DEV_NOT_ENCRYPTED:
+            property_set("ro.crypto.state", "unencrypted");
+            ActionManager::GetInstance().QueueEventTrigger("nonencrypted");
+            return Success();
 
-        // Although encrypted, vold has already set the device up, so we do not need to
-        // do anything different from the nonencrypted case.
-        ActionManager::GetInstance().QueueEventTrigger("nonencrypted");
-        return Success();
-    } else if (code > 0) {
-        Error() << "fs_mgr_mount_all() returned unexpected error " << code;
+        case FS_MGR_MNTALL_DEV_NOT_ENCRYPTABLE:
+            property_set("ro.crypto.state", "unsupported");
+            ActionManager::GetInstance().QueueEventTrigger("nonencrypted");
+            return Success();
+
+        case FS_MGR_MNTALL_DEV_NEEDS_RECOVERY:
+            if (android::gsi::IsGsiRunning()) return Error() << "cannot wipe within GSI";
+            PLOG(ERROR) << "fs_mgr_mount_all suggested recovery, so wiping data via recovery.";
+            return reboot_into_recovery({"--wipe_data", "--reason=fs_mgr_mount_all"});
+            // If reboot worked, there is no return.
+
+        case FS_MGR_MNTALL_FAIL:
+            if (android::gsi::IsGsiRunning()) return Error() << "cannot wipe within GSI";
+            PLOG(ERROR) << "fs_mgr_mount_all did not succeed, so reboot to recovery.";
+            return reboot_into_recovery({"--prompt_and_wipe_data", "--reason=fs_mgr_mount_all"});
+            // If reboot worked, there is no return.
+
+        case FS_MGR_MNTALL_DEV_FILE_ENCRYPTED:
+            if (fscrypt_install_keyring()) {
+                return Error() << "fscrypt_install_keyring() failed";
+            }
+            property_set("ro.crypto.state", "encrypted");
+            property_set("ro.crypto.type", "file");
+
+            // Although encrypted, we have device key, so we do not need to
+            // do anything different from the nonencrypted case.
+            ActionManager::GetInstance().QueueEventTrigger("nonencrypted");
+            return Success();
+
+        case FS_MGR_MNTALL_DEV_IS_METADATA_ENCRYPTED:
+            if (fscrypt_install_keyring()) {
+                return Error() << "fscrypt_install_keyring() failed";
+            }
+            property_set("ro.crypto.state", "encrypted");
+            property_set("ro.crypto.type", "file");
+
+            // Although encrypted, vold has already set the device up, so we do not need to
+            // do anything different from the nonencrypted case.
+            ActionManager::GetInstance().QueueEventTrigger("nonencrypted");
+            return Success();
+
+        case FS_MGR_MNTALL_DEV_NEEDS_METADATA_ENCRYPTION:
+            if (fscrypt_install_keyring()) {
+                return Error() << "fscrypt_install_keyring() failed";
+            }
+            property_set("ro.crypto.state", "encrypted");
+            property_set("ro.crypto.type", "file");
+
+            // Although encrypted, vold has already set the device up, so we do not need to
+            // do anything different from the nonencrypted case.
+            ActionManager::GetInstance().QueueEventTrigger("nonencrypted");
+            return Success();
+
+        default:
+            return Error() << "fs_mgr_mount_all() returned unexpected error " << code;
     }
-    /* else ... < 0: error */
-
-    return Error() << "Invalid code: " << code;
 }
 
 /* mount_all <fstab> [ <path> ]* [--<options>]*
