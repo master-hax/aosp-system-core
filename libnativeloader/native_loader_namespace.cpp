@@ -81,7 +81,7 @@ NativeLoaderNamespace NativeLoaderNamespace::Create(const std::string& name,
   const NativeLoaderNamespace& effective_parent =
       parent != nullptr ? *parent : GetPlatformNamespace(is_bridged);
 
-  uint64_t type = ANDROID_NAMESPACE_TYPE_ISOLATED;
+  uint64_t type = ANDROID_NAMESPACE_TYPE_ISOLATED | ANDROID_NAMESPACE_TYPE_UNTRUSTED;
   if (is_shared) {
     type |= ANDROID_NAMESPACE_TYPE_SHARED;
   }

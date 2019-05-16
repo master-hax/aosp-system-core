@@ -33,7 +33,6 @@ __BEGIN_DECLS
 extern bool android_init_anonymous_namespace(const char* shared_libs_sonames,
                                              const char* library_search_path);
 
-
 enum {
   /* A regular namespace is the namespace with a custom search path that does
    * not impose any restrictions on the location of native libraries.
@@ -57,13 +56,18 @@ enum {
    */
   ANDROID_NAMESPACE_TYPE_SHARED = 2,
 
+  /* An untrusted namespace is the namespace for untrusted libraries, i.e. shared libs from
+   * apps. This is also used to load libraries when the caller of the dlopen cannot be
+   * determined, which is usually the case for mono-jited code */
+  ANDROID_NAMESPACE_TYPE_UNTRUSTED = 4,
+
   /* This flag instructs linker to enable grey-list workaround for the namespace.
    * See http://b/26394120 for details.
    */
   ANDROID_NAMESPACE_TYPE_GREYLIST_ENABLED = 0x08000000,
 
-  ANDROID_NAMESPACE_TYPE_SHARED_ISOLATED = ANDROID_NAMESPACE_TYPE_SHARED |
-                                           ANDROID_NAMESPACE_TYPE_ISOLATED,
+  ANDROID_NAMESPACE_TYPE_SHARED_ISOLATED =
+      ANDROID_NAMESPACE_TYPE_SHARED | ANDROID_NAMESPACE_TYPE_ISOLATED,
 };
 
 /*
