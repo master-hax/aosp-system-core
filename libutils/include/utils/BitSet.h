@@ -77,6 +77,12 @@ struct BitSet32 {
     // Result is undefined if all bits are unmarked.
     inline uint32_t firstMarkedBit() const { return firstMarkedBit(value); }
 
+    // Return the bit position of the first non-zero bit in the provided value.
+    // The positions are counted from the left (most significant bit first).
+    // Effectively, this returns the number of leading zeros in value.
+    // The results for 32 bit values and 64 bit values will be different.
+    // Example:
+    //     ASSERT_EQ(31, BitSet32::firstMarkedBit(1));
     static uint32_t firstMarkedBit(uint32_t value) { return clz_checked(value); }
 
     // Finds the first unmarked bit in the set.
@@ -219,6 +225,12 @@ struct BitSet64 {
     // Result is undefined if all bits are unmarked.
     inline uint32_t firstMarkedBit() const { return firstMarkedBit(value); }
 
+    // Return the bit position of the first non-zero bit in the provided value.
+    // The positions are counted from the left (most significant bit first).
+    // Effectively, this returns the number of leading zeros in value.
+    // The results for 32 bit values and 64 bit values will be different.
+    // Example:
+    //     ASSERT_EQ(63, BitSet64::firstMarkedBit(1));
     static inline uint32_t firstMarkedBit(uint64_t value) { return __builtin_clzll(value); }
 
     // Finds the first unmarked bit in the set.
