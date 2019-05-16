@@ -33,7 +33,6 @@ __BEGIN_DECLS
 extern bool android_init_anonymous_namespace(const char* shared_libs_sonames,
                                              const char* library_search_path);
 
-
 enum {
   /* A regular namespace is the namespace with a custom search path that does
    * not impose any restrictions on the location of native libraries.
@@ -62,8 +61,15 @@ enum {
    */
   ANDROID_NAMESPACE_TYPE_GREYLIST_ENABLED = 0x08000000,
 
-  ANDROID_NAMESPACE_TYPE_SHARED_ISOLATED = ANDROID_NAMESPACE_TYPE_SHARED |
-                                           ANDROID_NAMESPACE_TYPE_ISOLATED,
+  /* This flag instructs linker to use this namespace as the anonymous
+   * namespace. There can be only one anonymous namespace in a process. If there
+   * already an anonymous namespace in the process, using this flag when
+   * creating a new namespace causes an error
+   */
+  ANDROID_NAMESPACE_TYPE_ALSO_USED_AS_ANONYMOUS = 0x10000000,
+
+  ANDROID_NAMESPACE_TYPE_SHARED_ISOLATED =
+      ANDROID_NAMESPACE_TYPE_SHARED | ANDROID_NAMESPACE_TYPE_ISOLATED,
 };
 
 /*
