@@ -674,6 +674,46 @@ TEST(Expected, testNested) {
   EXPECT_EQ("world", e3.value().error());
 }
 
+constexpr bool equals(const char* a, const char* b) {
+  return (a == nullptr && b == nullptr) ||
+      (a != nullptr && b != nullptr && *a == *b && 
+       (*a == '\0' || equals(a + 1, b + 1)));
+}
+
+TEST(Expected, testConstexpr) {
+  // Compliation error will occur if these expressions can't be
+  // evaluated at compile time
+  constexpr exp_int e(3);
+  constexpr exp_int::unexpected_type err(3);
+  constexpr int i = 4;
+
+  // default constructor
+  static_assert(exp_int().value() == 0);
+  // copy constructor
+  static_assert(exp_int(e).value() == 3);
+  // move constructor
+  static_assert(exp_int(exp_int(4)).value() == 4);
+  // copy construct from value
+  static_assert(exp_int(i).value() == 4);
+  // copy construct from unexpected
+  static_assert(exp_int(err).error() == 3);
+  // move costruct from unexpected
+  static_assert(exp_int(unexpected(3)).error() == 3);
+  // observers
+  static_assert(*exp_int(3) == 3);
+  static_assert(exp_int(3).has_value() == true);
+  static_assert(exp_int(3).value_or(4) == 3);
+
+  typedef expected<const char*, int> exp_s;
+  constexpr exp_s s("hello");
+  constexpr const char* c = "hello";
+  static_assert(equals(exp_s().value(), nullptr));
+  static_assert(equals(exp_s(s).value(), "hello"));
+  static_assert(equals(exp_s(exp_s("hello")).value(), "hello"));
+  static_assert(equals(exp_s("hello").value(), "hello"));
+  static_assert(equals(exp_s(c).value(), "hello"));
+}
+
 // int main(int argc, char** argv) {
 //   testing::InitGoogleTest(&argc, argv);
 //   return RUN_ALL_TESTS();
