@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "38a434cd_46d56254",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 227,
+      "author": {
+        "id": 1249218
+      },
+      "writtenOn": "2019-05-16T02:05:06Z",
+      "side": 1,
+      "message": "Yes, this changes are caused by [FAILED] clang_format and auto fixed by clang, will check the reasons.",
+      "parentUuid": "89cd9841_d57630e4",
+      "range": {
+        "startLine": 222,
+        "startChar": 0,
+        "endLine": 227,
+        "endChar": 60
+      },
+      "revId": "fc9ad82f3ea55a179f33185cb7c530ab0a41be8b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "8e9507d5_9998363c",
         "filename": "init/first_stage_mount.cpp",
         "patchSetId": 2
@@ -36,6 +60,30 @@
       "writtenOn": "2019-05-16T02:02:46Z",
       "side": 1,
       "message": "need more space at start of line to align",
+      "range": {
+        "startLine": 406,
+        "startChar": 0,
+        "endLine": 421,
+        "endChar": 0
+      },
+      "revId": "fc9ad82f3ea55a179f33185cb7c530ab0a41be8b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ae705801_bbf5464a",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 421,
+      "author": {
+        "id": 1249218
+      },
+      "writtenOn": "2019-05-16T02:05:06Z",
+      "side": 1,
+      "message": "Yes, this changes are caused by [FAILED] clang_format and auto fixed by clang, will check the reasons.",
+      "parentUuid": "8e9507d5_9998363c",
       "range": {
         "startLine": 406,
         "startChar": 0,
