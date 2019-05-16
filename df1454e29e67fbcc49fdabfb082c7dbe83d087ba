@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "85da9465_d5caf931",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2019-05-16T20:29:40Z",
+      "side": 1,
+      "message": "Hmmm, or maybe it is natural b/c we read l2r? The code isn\u0027t necessarily wrong or bug-filled. It was just unexpected.",
+      "range": {
+        "startLine": 9,
+        "startChar": 50,
+        "endLine": 14,
+        "endChar": 37
+      },
+      "revId": "df1454e29e67fbcc49fdabfb082c7dbe83d087ba",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "716dd24c_fb72c5e9",
+        "filename": "libutils/BitSet_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 122,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2019-05-16T20:29:40Z",
+      "side": 1,
+      "message": "You should also be able to use \u002731u\u0027 (and elsewhere)",
+      "range": {
+        "startLine": 122,
+        "startChar": 14,
+        "endLine": 122,
+        "endChar": 39
+      },
+      "revId": "df1454e29e67fbcc49fdabfb082c7dbe83d087ba",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ac6831c5_b7ed91db",
+        "filename": "libutils/BitSet_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 124,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2019-05-16T20:29:40Z",
+      "side": 1,
+      "message": "\"|\u003d\" (or set multiple)\n\nThe test says \"counts from left\", but unless multiple bits are set, it doesn\u0027t seem like it is testing that. This test would also pass for instance if the implementation returned the position (as counted from the left) of the rightmost set bit.",
+      "range": {
+        "startLine": 124,
+        "startChar": 17,
+        "endLine": 124,
+        "endChar": 18
+      },
+      "revId": "df1454e29e67fbcc49fdabfb082c7dbe83d087ba",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9794e79f_8aedcdf3",
+        "filename": "libutils/BitSet_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 130,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2019-05-16T20:29:40Z",
+      "side": 1,
+      "message": "why uint64_t?",
+      "range": {
+        "startLine": 130,
+        "startChar": 35,
+        "endLine": 130,
+        "endChar": 43
+      },
+      "revId": "df1454e29e67fbcc49fdabfb082c7dbe83d087ba",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
