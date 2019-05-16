@@ -22,6 +22,30 @@
       "revId": "3c94eaad5ff0a88a8002645145d99c9e9d98205f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6e9ba34d_f9128d4f",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1084,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-05-16T20:49:09Z",
+      "side": 0,
+      "message": "Failing early seems better if the device isn\u0027t going to boot. Otherwise, cause and effect will be less clear from looking at the log.",
+      "parentUuid": "2656e5f7_49a068ff",
+      "range": {
+        "startLine": 1084,
+        "startChar": 16,
+        "endLine": 1084,
+        "endChar": 70
+      },
+      "revId": "3c94eaad5ff0a88a8002645145d99c9e9d98205f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
