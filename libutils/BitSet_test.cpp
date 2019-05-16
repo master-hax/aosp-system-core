@@ -112,6 +112,30 @@ TEST_F(BitSet32Test, ClearFirstMarkedBit) {
     EXPECT_TRUE(b1.hasBit(30));
 }
 
+// Compare this test to the equivalent test for BitSet64. The expected
+// values are different.
+TEST_F(BitSet32Test, FirstMarkedBitCountsFromLeft) {
+    // A couple examples first for simplicity.
+    BitSet32 bitSet;
+
+    bitSet.value = 1;
+    EXPECT_EQ(31u, bitSet.firstMarkedBit());
+
+    bitSet.value = 1 << 20;
+    // Also set the first bit to ensure that the implementation is not counting from the right,
+    // to avoid confusion with lastMarkedBit.
+    bitSet.value |= 1;
+    EXPECT_EQ(32u - 20 - 1, bitSet.firstMarkedBit());
+
+    // Test all bits
+    bitSet.value = 0;
+    for (size_t i = 0; i < 32; i++) {
+        bitSet.value = 1 << i;
+        bitSet.value |= 1;  // ensure implementation does not count from right.
+        EXPECT_EQ(static_cast<uint32_t>(32 - i - 1), bitSet.firstMarkedBit());
+    }
+}
+
 TEST_F(BitSet32Test, ClearLastMarkedBit) {
     b1.markBit(10);
     b1.markBit(31);
@@ -232,6 +256,29 @@ TEST_F(BitSet64Test, ClearFirstMarkedBit) {
     b1.clearFirstMarkedBit();
     EXPECT_EQ(b1.count(), 1u);
     EXPECT_TRUE(b1.hasBit(50));
+}
+
+/**
+ * The function clearFirstMarkedBit counts the bits from the left (so, looks at the number
+ * of leading zeros). The result will be different for 32 bit and 64 bit values.
+ */
+TEST_F(BitSet64Test, FirstMarkedBitCountsFromLeft) {
+    // A couple examples first for simplicity.
+    BitSet64 bitSet;
+
+    bitSet.value = 1;
+    EXPECT_EQ(63u, bitSet.firstMarkedBit());
+
+    bitSet.value = 1ull << 40;
+    EXPECT_EQ(64u - 40 - 1, bitSet.firstMarkedBit());
+
+    // Test all bits
+    bitSet.value = 0;
+    for (size_t i = 0; i < 64; i++) {
+        bitSet.value = 1ull << i;
+        bitSet.value |= 1;  // ensure implementation does not count from right.
+        EXPECT_EQ(64u - i - 1, bitSet.firstMarkedBit());
+    }
 }
 
 TEST_F(BitSet64Test, ClearLastMarkedBit) {
