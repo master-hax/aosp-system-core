@@ -156,12 +156,6 @@ NativeLoaderNamespace* LibraryNamespaces::Create(JNIEnv* env, uint32_t target_sd
     }
   }
 
-  // Initialize the anonymous namespace with the first non-empty library path.
-  if (!library_path.empty() && !initialized_ &&
-      !InitPublicNamespace(library_path.c_str(), error_msg)) {
-    return nullptr;
-  }
-
   bool found = FindNamespaceByClassLoader(env, class_loader);
 
   LOG_ALWAYS_FATAL_IF(found, "There is already a namespace associated with this classloader");
@@ -274,33 +268,6 @@ NativeLoaderNamespace* LibraryNamespaces::FindNamespaceByClassLoader(JNIEnv* env
   }
 
   return nullptr;
-}
-
-bool LibraryNamespaces::InitPublicNamespace(const char* library_path, std::string* error_msg) {
-  // Ask native bride if this apps library path should be handled by it
-  bool is_native_bridge = NativeBridgeIsPathSupported(library_path);
-
-  // (http://b/25844435) - Some apps call dlopen from generated code (mono jited
-  // code is one example) unknown to linker in which  case linker uses anonymous
-  // namespace. The second argument specifies the search path for the anonymous
-  // namespace which is the library_path of the classloader.
-  initialized_ = android_init_anonymous_namespace(default_public_libraries().c_str(),
-                                                  is_native_bridge ? nullptr : library_path);
-  if (!initialized_) {
-    *error_msg = dlerror();
-    return false;
-  }
-
-  // and now initialize native bridge namespaces if necessary.
-  if (NativeBridgeInitialized()) {
-    initialized_ = NativeBridgeInitAnonymousNamespace(default_public_libraries().c_str(),
-                                                      is_native_bridge ? library_path : nullptr);
-    if (!initialized_) {
-      *error_msg = NativeBridgeGetError();
-    }
-  }
-
-  return initialized_;
 }
 
 NativeLoaderNamespace* LibraryNamespaces::FindParentNamespaceByClassLoader(JNIEnv* env,
