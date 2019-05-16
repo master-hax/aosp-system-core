@@ -162,7 +162,8 @@ cc_test {
         },
     },
     local_include_dirs: ["."],
-    shared_libs: ["libbase"],
+    static_libs: ["libbase"],
+    shared_libs: ["liblog"],
     compile_multilib: "both",
     multilib: {
         lib32: {
