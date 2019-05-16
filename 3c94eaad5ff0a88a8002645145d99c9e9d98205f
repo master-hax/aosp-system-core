@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2656e5f7_49a068ff",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1084,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-05-16T19:56:03Z",
+      "side": 0,
+      "message": "The flaw here was failing to set an error_count value? If it was set then return FS_MGR_MNTALL_FAIL would happen at the end of the loop.\n\n(remember what I said about mounting all the r/o partitions that you can)",
+      "range": {
+        "startLine": 1084,
+        "startChar": 16,
+        "endLine": 1084,
+        "endChar": 70
+      },
+      "revId": "3c94eaad5ff0a88a8002645145d99c9e9d98205f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}

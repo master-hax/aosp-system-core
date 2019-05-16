@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "027841fe_ac24fd2c",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 513,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-05-16T19:56:03Z",
+      "side": 1,
+      "message": "Create two error codes? (I know, easier said than done).\n\nOne for r/w partitions (where wipe makes sense) and one for r/o partitions (where wipe makes _no_ sense)\n\nI know this is only called on --late (which should only be a r/w partition), but do not assume so for all configurations. Shame to wipe data if modem firmware fails to mount ....",
+      "range": {
+        "startLine": 513,
+        "startChar": 13,
+        "endLine": 513,
+        "endChar": 32
+      },
+      "revId": "d38678587b90c41913dbfadddfe9e4c405dab665",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
