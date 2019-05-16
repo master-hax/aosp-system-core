@@ -301,13 +301,11 @@ class expected {
   }
 
   // swap
-  std::enable_if_t<(
-    std::is_nothrow_move_constructible_v<T> &&
-    std::is_nothrow_swappable_v<T> &&
-    std::is_nothrow_move_constructible_v<E> &&
-    std::is_nothrow_swappable_v<E>
-  ), void>
-  swap(expected& rhs) noexcept { var_.swap(rhs.var_); }
+  void swap(expected& rhs) noexcept(
+      std::is_nothrow_move_constructible_v<T> && std::is_nothrow_swappable_v<T> &&
+      std::is_nothrow_move_constructible_v<E> && std::is_nothrow_swappable_v<E>) {
+    var_.swap(rhs.var_);
+  }
 
   // observers
   constexpr const T* operator->() const { return std::addressof(value()); }
