@@ -23,6 +23,7 @@
 #include "native_loader_namespace.h"
 
 #include <list>
+#include <mutex>
 #include <string>
 
 #include <android-base/result.h>
@@ -60,6 +61,7 @@ class LibraryNamespaces {
 
   bool initialized_;
   std::list<std::pair<jweak, NativeLoaderNamespace>> namespaces_;
+  std::mutex create_lock_;
 };
 
 }  // namespace android::nativeloader
