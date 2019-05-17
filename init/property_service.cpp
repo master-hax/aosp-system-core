@@ -882,11 +882,11 @@ void property_load_boot_defaults(bool load_debug_prop) {
             load_properties_from_file("/default.prop", nullptr, &properties);
         }
     }
+    // TODO: remove default.prop and move all build.prop under /<partition>/etc/.
     load_properties_from_file("/system/build.prop", nullptr, &properties);
     load_properties_from_file("/vendor/default.prop", nullptr, &properties);
     load_properties_from_file("/vendor/build.prop", nullptr, &properties);
-    load_properties_from_file("/odm/default.prop", nullptr, &properties);
-    load_properties_from_file("/odm/build.prop", nullptr, &properties);
+    load_properties_from_file("/odm/etc/build.prop", nullptr, &properties);
     load_properties_from_file("/product/build.prop", nullptr, &properties);
     load_properties_from_file("/product_services/build.prop", nullptr, &properties);
     load_properties_from_file("/factory/factory.prop", "ro.*", &properties);
