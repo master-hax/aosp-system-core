@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "36103bef_afebf47a",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1254,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-05-17T23:26:57Z",
+      "side": 1,
+      "message": "Would it make sense to put this in reboot_to_userspace_fastboot() instead?",
+      "revId": "087e9eb5a30f55d004bf8b15eb9eef9a2c78f885",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
