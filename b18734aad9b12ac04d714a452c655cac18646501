@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "e9f56df5_744929ba",
+        "filename": "base/include/android-base/strings.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2019-05-17T08:07:21Z",
+      "side": 1,
+      "message": "string_view is the best type to use here probably, span doesn\u0027t exist yet, and it\u0027s also a mutable view into a buffer, not an immutable one like string_view.",
+      "parentUuid": "2e44a986_cb815936",
+      "range": {
+        "startLine": 89,
+        "startChar": 35,
+        "endLine": 89,
+        "endChar": 41
+      },
+      "revId": "b18734aad9b12ac04d714a452c655cac18646501",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "0d1fcb04_3cfee319",
         "filename": "base/strings.cpp",
         "patchSetId": 1
