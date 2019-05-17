@@ -85,5 +85,8 @@ inline bool ConsumeSuffix(std::string_view* s, std::string_view suffix) {
   return true;
 }
 
+// Converts a buffer into a human readable string
+std::string HexDump(const uint8_t* buffer, size_t length);
+
 }  // namespace base
 }  // namespace android

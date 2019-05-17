@@ -311,3 +311,8 @@ TEST(strings, ConsumeSuffix) {
   ASSERT_TRUE(android::base::ConsumeSuffix(&s, ".bar"));
   ASSERT_EQ("foo", s);
 }
+
+TEST(strings, HexDump) {
+  std::vector<uint8_t> buff = {3, 4};
+  ASSERT_EQ("xf", android::base::HexDump(buff.data(), buff.size()));
+}

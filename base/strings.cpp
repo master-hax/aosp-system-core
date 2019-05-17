@@ -19,6 +19,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <iomanip>
 #include <string>
 #include <vector>
 
@@ -114,6 +115,15 @@ bool EndsWithIgnoreCase(std::string_view s, std::string_view suffix) {
 
 bool EqualsIgnoreCase(std::string_view lhs, std::string_view rhs) {
   return lhs.size() == rhs.size() && strncasecmp(lhs.data(), rhs.data(), lhs.size()) == 0;
+}
+
+std::string HexDump(const uint8_t* buffer, size_t length) {
+  std::ostringstream s;
+  s << std::hex << std::setfill('0');
+  for (const uint8_t* i = buffer; i < buffer + length; i++) {
+    s << std::setw(2) << static_cast<uint32_t>(*i);
+  }
+  return s.str();
 }
 
 }  // namespace base
