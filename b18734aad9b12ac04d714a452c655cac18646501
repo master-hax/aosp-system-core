@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "c59336b7_ad7beaaa",
+        "filename": "base/include/android-base/strings.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2019-05-17T16:26:11Z",
+      "side": 1,
+      "message": "I meant, using this gross thing now, and moving it to std::span\u003cconst uint8_t\u003e in a couple of years. I\u0027m actually not so familiar with string_view. It doesn\u0027t seem to impose any encoding constraints, but it seems disingenuous to use it for binary data. Are there other examples where we are doing that now?",
+      "parentUuid": "e9f56df5_744929ba",
+      "range": {
+        "startLine": 89,
+        "startChar": 35,
+        "endLine": 89,
+        "endChar": 41
+      },
+      "revId": "b18734aad9b12ac04d714a452c655cac18646501",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "0d1fcb04_3cfee319",
         "filename": "base/strings.cpp",
         "patchSetId": 1
