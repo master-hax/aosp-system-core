@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2e44a986_cb815936",
+        "filename": "base/include/android-base/strings.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2019-05-17T00:22:59Z",
+      "side": 1,
+      "message": "this should be std::span probably? idk. Any preference?",
+      "range": {
+        "startLine": 89,
+        "startChar": 35,
+        "endLine": 89,
+        "endChar": 41
+      },
+      "revId": "b18734aad9b12ac04d714a452c655cac18646501",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0d1fcb04_3cfee319",
+        "filename": "base/strings.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 122,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2019-05-17T00:22:59Z",
+      "side": 1,
+      "message": "The tests will not pass, and I should add more tests, but b/132916539. Would you be comfortable with a more C-like implementation?",
+      "range": {
+        "startLine": 122,
+        "startChar": 24,
+        "endLine": 122,
+        "endChar": 31
+      },
+      "revId": "b18734aad9b12ac04d714a452c655cac18646501",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
