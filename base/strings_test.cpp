@@ -23,6 +23,11 @@
 #include <set>
 #include <unordered_set>
 
+TEST(strings, asdf) {
+  std::ostringstream s;
+  s << std::setfill('0');
+}
+
 TEST(strings, split_empty) {
   std::vector<std::string> parts = android::base::Split("", ",");
   ASSERT_EQ(1U, parts.size());
