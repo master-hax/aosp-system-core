@@ -71,6 +71,30 @@
     },
     {
       "key": {
+        "uuid": "43d6f2b7_580e47c1",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1421169
+      },
+      "writtenOn": "2019-05-17T07:23:05Z",
+      "side": 1,
+      "message": "It still works on Pie, but the needed entrypoint(https://github.com/sonyxperiadev/device-sony-sepolicy/blob/191f147f3381102383301ba9a24505f7a7f907b4/vendor/vendor_init.te#L44) from toybox_vendor is no longer valid on master/Q.\n\nMaybe we can still get around this in Q by putting toybox_vendor into its own domain and giving it {getattr setattr} on u:r:unlabeled dirs/files on /persist so it can clear the xattr.\nBut you see that our escape hatches are dwindling.",
+      "parentUuid": "b77aa1ab_b5944196",
+      "range": {
+        "startLine": 28,
+        "startChar": 4,
+        "endLine": 28,
+        "endChar": 66
+      },
+      "revId": "9f7691652d8405380d3336e3b786133df5391b49",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "e4b9e0ad_16e34468",
         "filename": "/COMMIT_MSG",
         "patchSetId": 3
