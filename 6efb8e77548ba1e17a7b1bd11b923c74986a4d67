@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "79d1910c_fdefc186",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 888,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-05-17T15:53:17Z",
+      "side": 0,
+      "message": "There is actually no such file.",
+      "range": {
+        "startLine": 888,
+        "startChar": 31,
+        "endLine": 888,
+        "endChar": 47
+      },
+      "revId": "6efb8e77548ba1e17a7b1bd11b923c74986a4d67",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da441dc3_09013ed8",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 889,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-05-17T15:53:17Z",
+      "side": 0,
+      "message": "odm.img support was added after Pie, so no need to keep this path if we can CP this CL to Q (suppose we can do it).\n\nodm.img CL: aosp/550719",
+      "range": {
+        "startLine": 889,
+        "startChar": 0,
+        "endLine": 889,
+        "endChar": 71
+      },
+      "revId": "6efb8e77548ba1e17a7b1bd11b923c74986a4d67",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
