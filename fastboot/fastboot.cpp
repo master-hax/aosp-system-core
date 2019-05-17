@@ -1249,6 +1249,10 @@ void FlashAllTool::Flash() {
         do_for_partitions(image->part_name, slot, resize_partition, false);
     }
 
+    // Reset target_sparse_limit after reboot to userspace fastboot. Max
+    // download sizes may differ in bootloader and fastbootd.
+    target_sparse_limit = -1;
+
     // Flash OS images, resizing logical partitions as needed.
     FlashImages(os_images_);
 }
