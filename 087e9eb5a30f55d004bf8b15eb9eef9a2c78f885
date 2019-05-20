@@ -16,6 +16,24 @@
       "revId": "087e9eb5a30f55d004bf8b15eb9eef9a2c78f885",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f0a2e3d6_0d66943a",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1254,
+      "author": {
+        "id": 1120612
+      },
+      "writtenOn": "2019-05-20T16:42:11Z",
+      "side": 1,
+      "message": "Agree. Updated in PS2.",
+      "parentUuid": "36103bef_afebf47a",
+      "revId": "087e9eb5a30f55d004bf8b15eb9eef9a2c78f885",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
