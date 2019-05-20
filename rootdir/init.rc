@@ -153,6 +153,10 @@ on init
     write /proc/sys/kernel/sched_rt_runtime_us 950000
     write /proc/sys/kernel/sched_rt_period_us 1000000
 
+    # We do not expect two interfaces to be part of the same network
+    write /proc/sys/net/ipv4/conf/all/src_valid_mark 1
+    write /proc/sys/net/ipv4/conf/all/rp_filter 1
+
     # Assign reasonable ceiling values for socket rcv/snd buffers.
     # These should almost always be overridden by the target per the
     # the corresponding technology maximums.
