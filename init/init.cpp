@@ -611,7 +611,8 @@ static void InitAborter(const char* abort_message) {
         return;
     }
 
-    RebootSystem(ANDROID_RB_RESTART2, "bootloader");
+    auto reboot_target = GetProperty("ro.build.init_log_fatal_target", "bootloader");
+    RebootSystem(ANDROID_RB_RESTART2, reboot_target);
 }
 
 static void GlobalSeccomp() {
