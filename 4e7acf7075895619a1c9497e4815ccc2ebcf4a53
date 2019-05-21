@@ -16,6 +16,47 @@
       "revId": "4e7acf7075895619a1c9497e4815ccc2ebcf4a53",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8491ae49_0df1a42e",
+        "filename": "bootstat/bootstat.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 209,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-05-21T18:35:50Z",
+      "side": 1,
+      "message": "Neither are compliant for the canonical boot reasons and represent the unfortunate legacy. No one should start using them, we just can not deprecate a momentum of decades of behaviors. The act of adding a comment referencing the non-compliant source is a form of rebellion or acknowledgement. If they happen, we know who to contact to understand what they mean.\n\nBTW, usb meant to Mediatek that power was applied via usb and device booted up cold ... wow.",
+      "parentUuid": "a814768a_75daf258",
+      "revId": "4e7acf7075895619a1c9497e4815ccc2ebcf4a53",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ff268536_7833054e",
+        "filename": "bootstat/bootstat.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 282,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-05-21T18:35:50Z",
+      "side": 1,
+      "message": "These are actually compliant FYI, and are the replacements in newer Mediatek bootloaders for some of the above, and/or new entries they added through the CTS processes. Still want to designate the original owners for historical posterity. For now we do not know if anyone else is using them, and I would hope that we get contacted if they want to reuse. Yes, your point is taken, could make a case that these can be reused by others, but they need to be reused only if the reasoning is near identical to Mediatek\u0027s. reboot,tool references a special mediatek debugger tool for example. If another partner had a debugger tool that communicated to the bootloader and resulted in a reboot, then they _should_ reuse it, and either add their name in the comment, or strike the comment.\n\nI toyed with re-using reboot,unknown with the later addition of reboot,unknown[0-9]* which comes from recovery. But decided they are different patsh and meaning. reboot,unknown means the bootloader could not determine any cause for the reboot despite best efforts to track information from pmic and persistent boot resources, they were can not happen. reboot,unknown7 (for example) means an unhandled reboot case by recovery (a bug).",
+      "range": {
+        "startLine": 279,
+        "startChar": 4,
+        "endLine": 282,
+        "endChar": 41
+      },
+      "revId": "4e7acf7075895619a1c9497e4815ccc2ebcf4a53",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
