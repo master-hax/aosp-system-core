@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ea8a3773_af04e1b3",
+        "filename": "bootstat/bootstat.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 308,
+      "author": {
+        "id": 1120612
+      },
+      "writtenOn": "2019-05-21T18:00:38Z",
+      "side": 1,
+      "message": "What is the difference between 179 and 180?",
+      "revId": "8d1be80de2df00a483da0674cdaa8e4598b7952a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
