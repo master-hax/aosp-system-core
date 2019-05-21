@@ -24,10 +24,12 @@
 #include <sys/stat.h>
 #include <sys/sysmacros.h>
 #include <sys/types.h>
+#include <sys/wait.h>
 #include <unistd.h>
 
 #include <filesystem>
 #include <string>
+#include <thread>
 #include <vector>
 
 #include <android-base/chrono_utils.h>
@@ -93,15 +95,54 @@ void FreeRamdisk(DIR* dir, dev_t dev) {
     }
 }
 
-bool ForceNormalBoot() {
-    std::string cmdline;
-    android::base::ReadFileToString("/proc/cmdline", &cmdline);
+void StartConsole() {
+    pid_t pid = fork();
+    if (pid != 0) {
+        int status;
+        waitpid(pid, &status, 0);
+        LOG(ERROR) << "console shell exited with status " << status;
+        return;
+    }
+
+    int fd = -1;
+    int tries = 10;
+    while (tries--) {
+        fd = open("/dev/console", O_RDWR);
+        if (fd != -1) {
+            break;
+        }
+        std::this_thread::sleep_for(100ms);
+    }
+    if (fd == -1) {
+            LOG(ERROR) << "Could not open /dev/console, errno = " << errno;
+            _exit(127);
+    }
+    ioctl(fd, TIOCSCTTY, 0);
+    dup2(fd, 0);
+    dup2(fd, 1);
+    dup2(fd, 2);
+    close(fd);
+
+    const char* path = "/system/bin/sh";
+    const char* args[] = {path, nullptr};
+    int rv = execv(path, const_cast<char**>(args));
+    LOG(ERROR) << "unable to execv, returned " << rv << " errno " << errno;
+    _exit(127);
+}
+
+bool FirstStageConsole(std::string& cmdline) {
+    return cmdline.find("androidboot.first_stage_console=1") != std::string::npos;
+}
+
+bool ForceNormalBoot(std::string& cmdline) {
     return cmdline.find("androidboot.force_normal_boot=1") != std::string::npos;
 }
 
 }  // namespace
 
 int FirstStageMain(int argc, char** argv) {
+    std::string cmdline;
+
     if (REBOOT_BOOTLOADER_ON_PANIC) {
         InstallRebootSignalHandlers();
     }
@@ -128,6 +169,7 @@ int FirstStageMain(int argc, char** argv) {
 #undef MAKE_STR
     // Don't expose the raw commandline to unprivileged processes.
     CHECKCALL(chmod("/proc/cmdline", 0440));
+    android::base::ReadFileToString("/proc/cmdline", &cmdline);
     gid_t groups[] = {AID_READPROC};
     CHECKCALL(setgroups(arraysize(groups), groups));
     CHECKCALL(mount("sysfs", "/sys", "sysfs", 0, NULL));
@@ -145,6 +187,9 @@ int FirstStageMain(int argc, char** argv) {
     // This is needed for log wrapper, which gets called before ueventd runs.
     CHECKCALL(mknod("/dev/ptmx", S_IFCHR | 0666, makedev(5, 2)));
     CHECKCALL(mknod("/dev/null", S_IFCHR | 0666, makedev(1, 3)));
+
+    // This is needed for console.
+    CHECKCALL(mknod("/dev/console", S_IFCHR | 0600, makedev(5, 1)));
 
     // These below mounts are done in first stage init so that first stage mount can mount
     // subdirectories of /mnt/{vendor,product}/.  Other mounts, not required by first stage mount,
@@ -200,7 +245,11 @@ int FirstStageMain(int argc, char** argv) {
     ModaliasHandler m({ "/lib/modules/" });
     m.LoadListedModules();
 
-    if (ForceNormalBoot()) {
+    if (FirstStageConsole(cmdline)) {
+        StartConsole();
+    }
+
+    if (ForceNormalBoot(cmdline)) {
         mkdir("/first_stage_ramdisk", 0755);
         // SwitchRoot() must be called with a mount point as the target, so we bind mount the
         // target directory to itself here.
