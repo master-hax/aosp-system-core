@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba94195f_5d47eab1",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-05-21T21:11:35Z",
+      "side": 1,
+      "message": "(unless you supply this on the kernel command line)",
+      "revId": "a73e571d4bfe872e61ca55df7ce101025f28fe3f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "09e5013a_7af2c2e0",
+        "filename": "init/init.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 614,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-05-21T21:11:35Z",
+      "side": 1,
+      "message": "shuold this be init_reboot_target or init_fatal_reboot_target instead? seems a bit more intention-revealing (rather than talking about the specific current implementation)?",
+      "range": {
+        "startLine": 614,
+        "startChar": 47,
+        "endLine": 614,
+        "endChar": 68
+      },
+      "revId": "a73e571d4bfe872e61ca55df7ce101025f28fe3f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
