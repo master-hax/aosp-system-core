@@ -355,7 +355,7 @@ struct UsbFfsConnection : public Connection {
                         }
 
                         enabled = false;
-                        running = false;
+                        StopWorker();
                         break;
 
                     case FUNCTIONFS_UNBIND:
@@ -394,7 +394,13 @@ struct UsbFfsConnection : public Connection {
                 uint64_t dummy;
                 ssize_t rc = adb_read(worker_event_fd_.get(), &dummy, sizeof(dummy));
                 if (rc == -1) {
-                    PLOG(FATAL) << "failed to read from eventfd";
+                    if (errno == EINTR) {
+                        // We were interrupted either to stop, or because of a backtrace.
+                        // Check stopped_ again to see if we need to exit.
+                        continue;
+                    } else {
+                        PLOG(FATAL) << "failed to read from eventfd";
+                    }
                 } else if (rc == 0) {
                     LOG(FATAL) << "hit EOF on eventfd";
                 }
@@ -430,6 +436,7 @@ struct UsbFfsConnection : public Connection {
         }
 
         worker_thread_.join();
+        worker_started_ = false;
     }
 
     void PrepareReadBlock(IoBlock* block, uint64_t id) {
