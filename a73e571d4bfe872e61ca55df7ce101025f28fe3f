@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "d322a89c_828e1221",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-05-21T21:18:37Z",
+      "side": 1,
+      "message": "I\u0027ve been debating if that\u0027s worth it or not.  I know we\u0027ve wanted to put less configuration into the kernel command line for a while and the early LOG(FATAL)\u0027s should only happen if something is truly fatal.\n\n+sspatil@ for comments on if we should use the kernel command line for this or not, since I know he\u0027s been trying to limit it\u0027s usage.",
+      "parentUuid": "ba94195f_5d47eab1",
+      "revId": "a73e571d4bfe872e61ca55df7ce101025f28fe3f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "09e5013a_7af2c2e0",
         "filename": "init/init.cpp",
         "patchSetId": 1
@@ -39,6 +57,30 @@
       "revId": "a73e571d4bfe872e61ca55df7ce101025f28fe3f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "79a6d90f_2059631b",
+        "filename": "init/init.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 614,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-05-21T21:18:37Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "09e5013a_7af2c2e0",
+      "range": {
+        "startLine": 614,
+        "startChar": 47,
+        "endLine": 614,
+        "endChar": 68
+      },
+      "revId": "a73e571d4bfe872e61ca55df7ce101025f28fe3f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
