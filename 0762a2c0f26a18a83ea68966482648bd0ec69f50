@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "cead8d00_62ad092c",
+        "filename": "sdcard/sdcard.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-05-21T14:28:17Z",
+      "side": 1,
+      "message": "nit: logspam, what about:\n\n    if (new_opts.empty())\n        PLOG(WARNING) \u003c\u003c \"Failed to mount sdcardfs with options \" \u003c\u003c opts;\n    else\n        PLOG(WARNING) \u003c\u003c \"Retrying mount sdcard without option \" \u003c\u003c *new_opts.rbegin();",
+      "range": {
+        "startLine": 123,
+        "startChar": 0,
+        "endLine": 125,
+        "endChar": 99
+      },
+      "revId": "0762a2c0f26a18a83ea68966482648bd0ec69f50",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
