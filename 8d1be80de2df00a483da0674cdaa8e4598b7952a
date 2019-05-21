@@ -16,6 +16,24 @@
       "revId": "8d1be80de2df00a483da0674cdaa8e4598b7952a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7f490c7c_04192846",
+        "filename": "bootstat/bootstat.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 308,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-05-21T20:16:30Z",
+      "side": 1,
+      "message": "IDK, the path in recovery code is subtly different, one is a direct command selection from the menu using volume and power key, whereas I believe the other is a swipe/keyboard combination if the hardware is present (although a WAG). We can join these two together with regex:\n\n\"reboot,recovery_\\(menu\\|ui\\)\"\n\nif we wanted, it is clearer/easier to invent a string for each path, and just burn an enum IMHO.",
+      "parentUuid": "ea8a3773_af04e1b3",
+      "revId": "8d1be80de2df00a483da0674cdaa8e4598b7952a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
