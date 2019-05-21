@@ -16,11 +16,13 @@ logd.logpersistd          string persist Enable logpersist daemon, "logcatd"
                                          turns on logcat -f in logd context.
 					 Responds to logcatd, clear and stop.
 logd.logpersistd.buffer          persist logpersistd buffers to collect
-logd.logpersistd.size            persist logpersistd size in MB
+logd.logpersistd.count           persist logpersistd output file number.
+logd.logpersistd.kbsize          persist logpersistd outout file size in KB.
 persist.logd.logpersistd   string        Enable logpersist daemon, "logcatd"
                                          turns on logcat -f in logd context.
 persist.logd.logpersistd.buffer    all   logpersistd buffers to collect
-persist.logd.logpersistd.size      256   logpersistd size in MB
+persist.logd.logpersistd.count     256   logpersistd output file number
+persist.logd.logpersistd.kbsize    1024  logpersistd output file size in KB
 persist.logd.size          number  ro    Global default size of the buffer for
                                          all log ids at initial startup, at
                                          runtime use: logcat -b all -G <value>
