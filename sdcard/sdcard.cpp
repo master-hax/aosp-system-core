@@ -121,6 +121,8 @@ static bool sdcardfs_setup(const std::string& source_path, const std::string& de
         if (mount(source_path.c_str(), dest_path.c_str(), use_esdfs ? "esdfs" : "sdcardfs",
                   MS_NOSUID | MS_NODEV | MS_NOEXEC | MS_NOATIME, opts.c_str()) == -1) {
             PLOG(WARNING) << "Failed to mount sdcardfs with options " << opts;
+            if (i < new_opts_list.size())
+                PLOG(WARNING) << "Retrying without " << new_opts_list[new_opts_list.size() - i];
         } else {
             return true;
         }
