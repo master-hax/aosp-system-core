@@ -45,6 +45,30 @@
       "revId": "9480375b0520ee4c1f770f8257de199e47f11418",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "28d6308c_27efa8f6",
+        "filename": "bootstat/bootstat.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1211,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2019-05-22T21:57:02Z",
+      "side": 1,
+      "message": "yeah, just saw that. I will keep that as is.",
+      "parentUuid": "6c918d59_6e54eb74",
+      "range": {
+        "startLine": 1211,
+        "startChar": 44,
+        "endLine": 1211,
+        "endChar": 50
+      },
+      "revId": "9480375b0520ee4c1f770f8257de199e47f11418",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
