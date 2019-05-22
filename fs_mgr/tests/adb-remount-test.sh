@@ -135,8 +135,28 @@ Returns: the logcat output" ]
 adb_logcat() {
   echo "${RED}[     INFO ]${NORMAL} logcat ${@}" >&2 &&
   adb logcat "${@}" </dev/null |
+    tr -d '\r' |
     grep -v 'logd    : logdr: UID=' |
     sed -e '${/------- beginning of kernel/d}' -e 's/^[0-1][0-9]-[0-3][0-9] //'
+}
+
+[ "USAGE: avc_check >/dev/stderr
+
+Returns: worrisome avc violations" ]
+avc_check() {
+  if ! ${overlayfs_supported:-false}; then
+    return
+  fi
+  local L=`adb_logcat -b all -v brief -d \
+                      -e 'context=u:object_r:unlabeled:s0' 2>/dev/null |
+             sed -n 's/.*avc: //p' |
+             sort -u`
+  if [ -z "${L}" ]; then
+    return
+  fi
+  echo "${ORANGE}[  WARNING ]${NORMAL} unlabeled sepolicy violations:" >&2
+  echo "${L}" |
+    sed 's/^/             /' >&2
 }
 
 [ "USAGE: get_property <prop>
@@ -177,6 +197,7 @@ adb_cat() {
 
 Returns: true if the reboot command succeeded" ]
 adb_reboot() {
+  avc_check
   adb reboot remount-test </dev/null || true
   sleep 2
 }
@@ -811,6 +832,7 @@ if [ "orange" = "`get_property ro.boot.verifiedbootstate`" -a \
 
   echo "${GREEN}[ RUN      ]${NORMAL} Testing adb shell su root remount -R command" >&2
 
+  avc_check
   adb_su remount -R system </dev/null || true
   sleep 2
   adb_wait ${ADB_WAIT} ||
@@ -1176,6 +1198,7 @@ elif ! (
   echo "${ORANGE}[  WARNING ]${NORMAL} vendor image signature mismatch, skipping"
 else
   wait_for_screen
+  avc_check
   adb reboot fastboot </dev/null ||
     die "fastbootd not supported (wrong adb in path?)"
   any_wait ${ADB_WAIT} &&
@@ -1288,6 +1311,7 @@ if [ -n "${scratch_partition}" ]; then
 
   echo "${GREEN}[ RUN      ]${NORMAL} test fastboot flash to ${scratch_partition} recovery" >&2
 
+  avc_check
   adb reboot fastboot </dev/null ||
     die "Reboot into fastbootd"
   img=${TMPDIR}/adb-remount-test-${$}.img
@@ -1412,6 +1436,7 @@ err=${?}
 
 if [ ${err} = 0 ] && ${overlayfs_supported}; then
   echo "${GREEN}[ RUN      ]${NORMAL} test 'adb remount -R'" >&2
+  avc_check
   adb_root &&
     adb remount -R &&
     adb_wait ${ADB_WAIT} ||
