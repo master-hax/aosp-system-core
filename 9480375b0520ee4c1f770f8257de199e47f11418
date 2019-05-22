@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5757aa86_d3edba29",
+        "filename": "bootstat/bootstat.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1208,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2019-05-22T20:44:39Z",
+      "side": 1,
+      "message": "some more clean up here",
+      "range": {
+        "startLine": 1205,
+        "startChar": 2,
+        "endLine": 1208,
+        "endChar": 96
+      },
+      "revId": "9480375b0520ee4c1f770f8257de199e47f11418",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
