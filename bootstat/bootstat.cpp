@@ -1092,17 +1092,8 @@ void RecordAbsoluteBootTime(BootEventRecordStore* boot_event_store,
 void LogBootInfoToStatsd(std::chrono::milliseconds end_time,
                          std::chrono::milliseconds total_duration, int32_t bootloader_duration_ms,
                          double time_since_last_boot_sec) {
-  const auto reason = android::base::GetProperty(bootloader_reboot_reason_property, "");
-
-  if (reason.empty()) {
-    android::util::stats_write(android::util::BOOT_SEQUENCE_REPORTED, "<EMPTY>", "<EMPTY>",
-                               end_time.count(), total_duration.count(),
-                               (int64_t)bootloader_duration_ms,
-                               (int64_t)time_since_last_boot_sec * 1000);
-    return;
-  }
-
-  const auto system_reason = android::base::GetProperty(system_reboot_reason_property, "");
+  const auto reason = android::base::GetProperty(bootloader_reboot_reason_property, "<EMPTY>");
+  const auto system_reason = android::base::GetProperty(system_reboot_reason_property, "<EMPTY>");
   android::util::stats_write(android::util::BOOT_SEQUENCE_REPORTED, reason.c_str(),
                              system_reason.c_str(), end_time.count(), total_duration.count(),
                              (int64_t)bootloader_duration_ms,
@@ -1211,17 +1202,10 @@ void RecordBootComplete() {
 // Records the boot_reason metric by querying the ro.boot.bootreason system
 // property.
 void RecordBootReason() {
-  const auto reason = android::base::GetProperty(bootloader_reboot_reason_property, "");
+  const auto reason = android::base::GetProperty(bootloader_reboot_reason_property, "<EMPTY>");
 
-  if (reason.empty()) {
-    // Log an empty boot reason value as '<EMPTY>' to ensure the value is intentional
-    // (and not corruption anywhere else in the reporting pipeline).
-    android::metricslogger::LogMultiAction(android::metricslogger::ACTION_BOOT,
-                                           android::metricslogger::FIELD_PLATFORM_REASON, "<EMPTY>");
-  } else {
-    android::metricslogger::LogMultiAction(android::metricslogger::ACTION_BOOT,
-                                           android::metricslogger::FIELD_PLATFORM_REASON, reason);
-  }
+  android::metricslogger::LogMultiAction(android::metricslogger::ACTION_BOOT,
+                                         android::metricslogger::FIELD_PLATFORM_REASON, "<EMPTY>");
 
   // Log the raw bootloader_boot_reason property value.
   int32_t boot_reason = BootReasonStrToEnum(reason);
