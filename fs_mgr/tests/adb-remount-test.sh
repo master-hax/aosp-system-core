@@ -173,7 +173,7 @@ adb_cat() {
 
 Returns: true if the reboot command succeeded" ]
 adb_reboot() {
-  adb reboot remount-test || true
+  adb reboot remount-test </dev/null || true
   sleep 2
 }
 
@@ -1064,7 +1064,7 @@ echo "${GREEN}[ RUN      ]${NORMAL} reboot to confirm content persistent" >&2
 fixup_from_recovery() {
   inRecovery || return 1
   echo "${ORANGE}[    ERROR ]${NORMAL} Device in recovery" >&2
-  adb reboot
+  adb reboot </dev/null
   adb_wait 2m
 }
 
@@ -1140,7 +1140,7 @@ elif ! (
   echo "${ORANGE}[  WARNING ]${NORMAL} vendor image signature mismatch, skipping"
 else
   wait_for_screen
-  adb reboot fastboot ||
+  adb reboot fastboot </dev/null ||
     die "fastbootd not supported (wrong adb in path?)"
   any_wait 2m &&
     inFastboot ||
@@ -1252,7 +1252,7 @@ if [ -n "${scratch_partition}" ]; then
 
   echo "${GREEN}[ RUN      ]${NORMAL} test fastboot flash to ${scratch_partition} recovery" >&2
 
-  adb reboot fastboot ||
+  adb reboot fastboot </dev/null ||
     die "Reboot into fastbootd"
   img=${TMPDIR}/adb-remount-test-${$}.img
   cleanup() {
