@@ -655,6 +655,30 @@ EXPECT_EQ() {
   return 0
 }
 
+[ "USAGE: EXPECT_NE <lval> <rval> [--warning [message]]
+
+Returns true if lval matches rval" ]
+EXPECT_NE() {
+  local lval="${1}"
+  local rval="${2}"
+  shift 2
+  local error=1
+  local prefix="${RED}[    ERROR ]${NORMAL}"
+  if [ X"${1}" = X"--warning" ]; then
+      prefix="${RED}[  WARNING ]${NORMAL}"
+      error=0
+      shift 1
+  fi
+  if [ X"${rval}" = X"${lval}" ]; then
+    echo "${prefix} did not expect \"${lval}\" ${*}" >&2
+    return ${error}
+  fi
+  if [ -n "${*}" ] ; then
+    echo "${prefix} ok \"${lval}\" not \"${rval}\" ${*}" >&2
+  fi
+  return 0
+}
+
 [ "USAGE: check_eq <lval> <rval> [--warning [message]]
 
 Exits if (regex) lval mismatches rval" ]
@@ -667,6 +691,21 @@ check_eq() {
       return
   fi
   EXPECT_EQ "${lval}" "${rval}" ||
+    die "${@}"
+}
+
+[ "USAGE: check_ne <lval> <rval> [--warning [message]]
+
+Exits if lval matches rval" ]
+check_ne() {
+  local lval="${1}"
+  local rval="${2}"
+  shift 2
+  if [ X"${1}" = X"--warning" ]; then
+      EXPECT_NE "${lval}" "${rval}" ${*}
+      return
+  fi
+  EXPECT_NE "${lval}" "${rval}" ||
     die "${@}"
 }
 
@@ -1099,6 +1138,21 @@ check_eq "${A}" "${B}" /system before reboot
 B="`adb_cat /vendor/hello`" ||
   die "vendor hello"
 check_eq "${A}" "${B}" /vendor before reboot
+SYSTEM_DEVT=`adb_sh stat --format=%D /system/hello`
+VENDOR_DEVT=`adb_sh stat --format=%D /vendor/hello`
+SYSTEM_INO=`adb_sh stat --format=%i /system/hello`
+VENDOR_INO=`adb_sh stat --format=%i /vendor/hello`
+BASE_SYSTEM_DEVT=`adb_sh stat --format=%D /system/bin/stat`
+BASE_VENDOR_DEVT=`adb_sh stat --format=%D /vendor/bin/stat`
+check_eq "${SYSTEM_DEVT}" "${VENDOR_DEVT}" vendor and system devt
+check_ne "${SYSTEM_INO}" "${VENDOR_INO}" vendor and system inode
+check_ne "${SYSTEM_DEVT}" "${BASE_SYSTEM_DEVT}" system devt
+check_ne "${VENDOR_DEVT}" "${BASE_VENDOR_DEVT}" vendor devt
+check_eq "${BASE_SYSTEM_DEVT}" "${BASE_VENDOR_DEVT}" --warning system/vendor devt
+[ -n "${SYSTEM_DEVT%..}" ] ||
+  die "system devt ${SYSTEM_DEVT} is major 0"
+[ -n "${VENDOR_DEVT%..}" ] ||
+  die "vendor devt ${SYSTEM_DEVT} is major 0"
 
 # Download libc.so, append some gargage, push back, and check if the file
 # is updated.
@@ -1161,6 +1215,13 @@ adb_root ||
 B="`adb_cat /vendor/hello`"
 check_eq "${A}" "${B}" vendor after reboot
 echo "${GREEN}[       OK ]${NORMAL} /vendor content remains after reboot" >&2
+
+check_eq "${SYSTEM_DEVT}" "`adb_sh stat --format=%D /system/hello`" system devt after reboot
+check_eq "${VENDOR_DEVT}" "`adb_sh stat --format=%D /vendor/hello`" vendor devt after reboot
+check_eq "${SYSTEM_INO}" "`adb_sh stat --format=%i /system/hello`" system inode after reboot
+check_eq "${VENDOR_INO}" "`adb_sh stat --format=%i /vendor/hello`" vendor inode after reboot
+check_eq "${BASE_SYSTEM_DEVT}" "`adb_sh stat --format=%D /system/bin/stat`" base system devt after reboot
+check_eq "${BASE_VENDOR_DEVT}" "`adb_sh stat --format=%D /vendor/bin/stat`" base system devt after reboot
 
 # Check if the updated libc.so is persistent after reboot.
 adb_root &&
