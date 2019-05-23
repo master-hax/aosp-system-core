@@ -27,6 +27,7 @@
 #include <unistd.h>
 
 #include <filesystem>
+#include <limits>
 #include <string>
 #include <vector>
 
@@ -95,6 +96,22 @@ bool ForceNormalBoot() {
     std::string cmdline;
     android::base::ReadFileToString("/proc/cmdline", &cmdline);
     return cmdline.find("androidboot.force_normal_boot=1") != std::string::npos;
+}
+
+void __attribute__((noinline)) AddOne(int& input) {
+    input++;
+    input++;
+    input++;
+}
+
+__attribute__((noinline)) void CauseUbsanIssue() {
+    int bad = std::numeric_limits<int>::max();
+
+    LOG(ERROR) << "bad: " << bad;
+
+    AddOne(bad);
+
+    LOG(ERROR) << "bad: " << bad;
 }
 
 }  // namespace
@@ -173,6 +190,10 @@ int FirstStageMain(int argc, char** argv) {
     // stage init as part of the mount process.  This closes /dev/console if the
     // kernel had previously opened it.
     InitKernelLogging(argv, true);
+
+    // LOG(FATAL) << "Fatal Log Here";
+
+    if (false) CauseUbsanIssue();
 
     if (!errors.empty()) {
         for (const auto& [error_string, error_errno] : errors) {
