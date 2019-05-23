@@ -383,8 +383,25 @@ static struct {
 
 #define DATA_MNT_POINT "/data"
 
+void __attribute__((noinline)) AddOne(int& input) {
+    input++;
+    input++;
+    input++;
+}
+
+__attribute__((noinline)) void CauseUbsanIssue() {
+    int bad = std::numeric_limits<int>::max();
+
+    LOG(ERROR) << "bad: " << bad;
+
+    AddOne(bad);
+
+    LOG(ERROR) << "bad: " << bad;
+}
+
 /* mount <type> <device> <path> <flags ...> <options> */
 static Result<Success> do_mount(const BuiltinArguments& args) {
+    CauseUbsanIssue();
     const char* options = nullptr;
     unsigned flags = 0;
     bool wait = false;
