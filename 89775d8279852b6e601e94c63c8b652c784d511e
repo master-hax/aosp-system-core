@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "65ac7402_e719a2af",
+        "filename": "logd/README.property",
+        "patchSetId": 1
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-05-23T19:10:54Z",
+      "side": 1,
+      "message": "I\u0027m guessing that this is being renamed, since the original property didn\u0027t match the logcat parameter well?  Can you leave it as is though, or alternatively only add this new logd.logpersistd.count as an alias?  I don\u0027t want to break people who may have been using the previous name.\n\nThe new description isn\u0027t quite right either.  Per the logcat usage text, it refers to \"Sets max number of rotated logs to \u003ccount\u003e\" right?",
+      "revId": "89775d8279852b6e601e94c63c8b652c784d511e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c966234f_2e7298d5",
+        "filename": "logd/README.property",
+        "patchSetId": 1
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-05-23T19:10:54Z",
+      "side": 1,
+      "message": "Is this the right name?  Seems that it should be rotate_kbytes, per the logcat usage, -r is \n\n-r \u003ckbytes\u003e, --rotate-kbytes\u003d\u003ckbytes\u003e Rotate log every kbytes.",
+      "revId": "89775d8279852b6e601e94c63c8b652c784d511e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
