@@ -482,6 +482,7 @@ namespace std {
 // Note: to print the pointer, use "<< static_cast<const void*>(string_pointer)" instead.
 // Note: a not-recommended alternative is to let Clang ignore the warning by adding
 //       -Wno-user-defined-warnings to CPPFLAGS.
+#ifndef OSTREAM_STRING_POINTER_USAGE_ALLOW
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wgcc-compat"
 #define OSTREAM_STRING_POINTER_USAGE_WARNING \
@@ -491,5 +492,6 @@ inline std::ostream& operator<<(std::ostream& stream, const std::string* string_
   return stream << static_cast<const void*>(string_pointer);
 }
 #pragma clang diagnostic pop
+#endif  // OSTREAM_STRING_POINTER_USAGE_ALLOW
 
 }  // namespace std
