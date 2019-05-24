@@ -480,8 +480,8 @@ namespace std {
 // Note: using a pragma because "-Wgcc-compat" (included in "-Weverything") complains about
 //       diagnose_if.
 // Note: to print the pointer, use "<< static_cast<const void*>(string_pointer)" instead.
-// Note: a not-recommended alternative is to let Clang ignore the warning by adding
-//       -Wno-user-defined-warnings to CPPFLAGS.
+#ifndef DISABLE_OSTREAM_STRING_POINTER_WARNING_FOR_GMOCK
+#ifndef DISABLE_OSTREAM_STRING_POINTER_WARNING
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wgcc-compat"
 #define OSTREAM_STRING_POINTER_USAGE_WARNING \
@@ -491,5 +491,7 @@ inline std::ostream& operator<<(std::ostream& stream, const std::string* string_
   return stream << static_cast<const void*>(string_pointer);
 }
 #pragma clang diagnostic pop
+#endif  // DISABLE_OSTREAM_STRING_POINTER_WARNING
+#endif  // DISABLE_OSTREAM_STRING_POINTER_WARNING_FOR_GMOCK
 
 }  // namespace std
