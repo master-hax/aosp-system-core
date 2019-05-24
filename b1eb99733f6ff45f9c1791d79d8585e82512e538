@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "29d3767a_9f7861c0",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-05-24T21:53:44Z",
+      "side": 1,
+      "message": "Supposed to be 132070014",
+      "range": {
+        "startLine": 13,
+        "startChar": 5,
+        "endLine": 13,
+        "endChar": 14
+      },
+      "revId": "b1eb99733f6ff45f9c1791d79d8585e82512e538",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
