@@ -40,6 +40,7 @@
 #include <selinux/android.h>
 
 #if defined(__ANDROID__)
+#include "reboot_utils.h"
 #include "selinux.h"
 #else
 #include "host_init_stubs.h"
@@ -425,20 +426,33 @@ bool IsLegalPropertyName(const std::string& name) {
     return true;
 }
 
-void InitKernelLogging(char** argv, std::function<void(const char*)> abort_function) {
-    // Make stdin/stdout/stderr all point to /dev/null.
-    int fd = open("/dev/null", O_RDWR);
-    if (fd == -1) {
-        int saved_errno = errno;
-        android::base::InitLogging(argv, &android::base::KernelLogger, std::move(abort_function));
-        errno = saved_errno;
-        PLOG(FATAL) << "Couldn't open /dev/null";
+static void InitAborter(const char* abort_message) {
+    // When init forks, it continues to use this aborter for LOG(FATAL), but we want children to
+    // simply abort instead of trying to reboot the system.
+    if (getpid() != 1) {
+        android::base::DefaultAborter(abort_message);
+        return;
     }
-    dup2(fd, 0);
-    dup2(fd, 1);
-    dup2(fd, 2);
-    if (fd > 2) close(fd);
-    android::base::InitLogging(argv, &android::base::KernelLogger, std::move(abort_function));
+
+    InitFatalReboot();
+}
+
+void InitKernelLogging(char** argv, bool close_stdio_fds) {
+    // Make stdin/stdout/stderr all point to /dev/null.
+    if (close_stdio_fds) {
+        int fd = open("/dev/null", O_RDWR);
+        if (fd == -1) {
+            int saved_errno = errno;
+            android::base::InitLogging(argv, &android::base::KernelLogger, InitAborter);
+            errno = saved_errno;
+            PLOG(FATAL) << "Couldn't open /dev/null";
+        }
+        dup2(fd, STDIN_FILENO);
+        dup2(fd, STDOUT_FILENO);
+        dup2(fd, STDERR_FILENO);
+        if (fd > STDERR_FILENO) close(fd);
+    }
+    android::base::InitLogging(argv, &android::base::KernelLogger, InitAborter);
 }
 
 bool IsRecoveryMode() {
