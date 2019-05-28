@@ -40,7 +40,7 @@
 #include <selinux/android.h>
 
 #if defined(__ANDROID__)
-#include "selinux.h"
+#include "selabel.h"
 #else
 #include "host_init_stubs.h"
 #endif
