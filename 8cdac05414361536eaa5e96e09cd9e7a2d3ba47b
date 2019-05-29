@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "148706da_375bfa62",
+        "filename": "libutils/BitSet_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 278,
+      "author": {
+        "id": 1149384
+      },
+      "writtenOn": "2019-05-29T18:15:31Z",
+      "side": 1,
+      "message": "I would prefer to actually cast to uint64_t here. Thoughts?",
+      "range": {
+        "startLine": 278,
+        "startChar": 23,
+        "endLine": 278,
+        "endChar": 27
+      },
+      "revId": "8cdac05414361536eaa5e96e09cd9e7a2d3ba47b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "44630b9b_f48ec0eb",
+        "filename": "libutils/include/utils/BitSet.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 1149384
+      },
+      "writtenOn": "2019-05-29T18:15:31Z",
+      "side": 1,
+      "message": "Hi Elliott, I think you were talking about one of these being unused, according to code search? It might be so, but I think it is still useful to have these for local debugging.",
+      "range": {
+        "startLine": 97,
+        "startChar": 20,
+        "endLine": 103,
+        "endChar": 41
+      },
+      "revId": "8cdac05414361536eaa5e96e09cd9e7a2d3ba47b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}

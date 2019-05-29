@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "ba67478c_7bf1ca5a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1149384
+      },
+      "writtenOn": "2019-05-29T18:15:31Z",
+      "side": 1,
+      "message": "Reworded a bit. I think it\u0027s fine to count from left to get to the result, but I would expect the result of firstMarkedBit(1 \u003c\u003c 20) to be 20. So it\u0027s unnatural to me in that sense.",
+      "parentUuid": "85da9465_d5caf931",
+      "range": {
+        "startLine": 9,
+        "startChar": 50,
+        "endLine": 14,
+        "endChar": 37
+      },
+      "revId": "df1454e29e67fbcc49fdabfb082c7dbe83d087ba",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "716dd24c_fb72c5e9",
         "filename": "libutils/BitSet_test.cpp",
         "patchSetId": 1
@@ -45,6 +69,30 @@
       "revId": "df1454e29e67fbcc49fdabfb082c7dbe83d087ba",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e7e816d8_349561c2",
+        "filename": "libutils/BitSet_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 122,
+      "author": {
+        "id": 1149384
+      },
+      "writtenOn": "2019-05-29T18:15:31Z",
+      "side": 1,
+      "message": "Refactored.",
+      "parentUuid": "716dd24c_fb72c5e9",
+      "range": {
+        "startLine": 122,
+        "startChar": 14,
+        "endLine": 122,
+        "endChar": 39
+      },
+      "revId": "df1454e29e67fbcc49fdabfb082c7dbe83d087ba",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "74e2b596_45e6c301",
+        "filename": "libutils/BitSet_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 124,
+      "author": {
+        "id": 1149384
+      },
+      "writtenOn": "2019-05-29T18:15:31Z",
+      "side": 1,
+      "message": "Thanks, good point. Added the |\u003d 1 to account for this possibility.",
+      "parentUuid": "ac6831c5_b7ed91db",
+      "range": {
+        "startLine": 124,
+        "startChar": 17,
+        "endLine": 124,
+        "endChar": 18
+      },
+      "revId": "df1454e29e67fbcc49fdabfb082c7dbe83d087ba",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9794e79f_8aedcdf3",
         "filename": "libutils/BitSet_test.cpp",
         "patchSetId": 1
@@ -91,6 +163,30 @@
       "revId": "df1454e29e67fbcc49fdabfb082c7dbe83d087ba",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ecf88a27_0f2b6f21",
+        "filename": "libutils/BitSet_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 130,
+      "author": {
+        "id": 1149384
+      },
+      "writtenOn": "2019-05-29T18:15:31Z",
+      "side": 1,
+      "message": "It was a copy-paste mistake here, but it is actually important in the 64-bit test. If we don\u0027t have that, then it will be assumed to be 32-bit, which, when shifted left by more than 32, will become zero. The test will then fail.",
+      "parentUuid": "9794e79f_8aedcdf3",
+      "range": {
+        "startLine": 130,
+        "startChar": 35,
+        "endLine": 130,
+        "endChar": 43
+      },
+      "revId": "df1454e29e67fbcc49fdabfb082c7dbe83d087ba",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -117,6 +213,30 @@
     },
     {
       "key": {
+        "uuid": "06d8cd0f_c302dfe1",
+        "filename": "libutils/include/utils/BitSet.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 1149384
+      },
+      "writtenOn": "2019-05-29T18:15:31Z",
+      "side": 1,
+      "message": "Reworded.",
+      "parentUuid": "abd336b9_f6c684fc",
+      "range": {
+        "startLine": 80,
+        "startChar": 0,
+        "endLine": 83,
+        "endChar": 73
+      },
+      "revId": "df1454e29e67fbcc49fdabfb082c7dbe83d087ba",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a2d687ac_efc7e257",
         "filename": "libutils/include/utils/BitSet.h",
         "patchSetId": 1
@@ -137,6 +257,30 @@
       "revId": "df1454e29e67fbcc49fdabfb082c7dbe83d087ba",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8ad72e91_a4686be3",
+        "filename": "libutils/include/utils/BitSet.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 1149384
+      },
+      "writtenOn": "2019-05-29T18:15:31Z",
+      "side": 1,
+      "message": "Mentioned.",
+      "parentUuid": "a2d687ac_efc7e257",
+      "range": {
+        "startLine": 93,
+        "startChar": 0,
+        "endLine": 95,
+        "endChar": 52
+      },
+      "revId": "df1454e29e67fbcc49fdabfb082c7dbe83d087ba",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
