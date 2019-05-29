@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fe686b6b_1df211a5",
+        "filename": "adb/daemon/usb_legacy.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 163,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-05-29T07:02:54Z",
+      "side": 1,
+      "message": "exceeds ColumnLimit?",
+      "range": {
+        "startLine": 163,
+        "startChar": 7,
+        "endLine": 163,
+        "endChar": 102
+      },
+      "revId": "3e2a6b761c71af7dbfa4b4e018b3ee704094e80f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3b7448eb_ab6e1592",
+        "filename": "fastboot/device/usb_client.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 258,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-05-29T07:02:54Z",
+      "side": 1,
+      "message": "same here, exceeds ColumnLimit.",
+      "range": {
+        "startLine": 258,
+        "startChar": 104,
+        "endLine": 258,
+        "endChar": 111
+      },
+      "revId": "3e2a6b761c71af7dbfa4b4e018b3ee704094e80f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
