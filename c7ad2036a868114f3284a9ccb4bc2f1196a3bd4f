@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "92e74bb9_a0e0bbc3",
+        "filename": "fastboot/device/usb_client.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 258,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-05-29T08:35:20Z",
+      "side": 1,
+      "message": "please remove the trailing space.\n\nanyway, I\u0027ll help to upload this time, to let clang-format take care all of this (instead of manual steps).",
+      "range": {
+        "startLine": 258,
+        "startChar": 84,
+        "endLine": 258,
+        "endChar": 85
+      },
+      "revId": "c7ad2036a868114f3284a9ccb4bc2f1196a3bd4f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
