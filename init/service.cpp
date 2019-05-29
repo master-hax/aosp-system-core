@@ -21,12 +21,10 @@
 #include <linux/input.h>
 #include <linux/securebits.h>
 #include <sched.h>
-#include <sys/mount.h>
 #include <sys/prctl.h>
 #include <sys/resource.h>
 #include <sys/stat.h>
 #include <sys/time.h>
-#include <sys/wait.h>
 #include <termios.h>
 #include <unistd.h>
 
@@ -36,13 +34,13 @@
 #include <android-base/properties.h>
 #include <android-base/stringprintf.h>
 #include <android-base/strings.h>
-#include <android-base/unique_fd.h>
 #include <hidl-util/FQName.h>
 #include <processgroup/processgroup.h>
 #include <selinux/selinux.h>
 #include <system/thread_defs.h>
 
 #include "rlimit_parser.h"
+#include "service_utils.h"
 #include "util.h"
 
 #if defined(__ANDROID__)
@@ -65,7 +63,6 @@ using android::base::ParseInt;
 using android::base::Split;
 using android::base::StartsWith;
 using android::base::StringPrintf;
-using android::base::unique_fd;
 using android::base::WriteStringToFile;
 
 namespace android {
@@ -107,82 +104,10 @@ static Result<std::string> ComputeContextFromExecutable(const std::string& servi
     return computed_context;
 }
 
-Result<Success> Service::SetUpMountNamespace() const {
-    constexpr unsigned int kSafeFlags = MS_NODEV | MS_NOEXEC | MS_NOSUID;
-
-    // Recursively remount / as slave like zygote does so unmounting and mounting /proc
-    // doesn't interfere with the parent namespace's /proc mount. This will also
-    // prevent any other mounts/unmounts initiated by the service from interfering
-    // with the parent namespace but will still allow mount events from the parent
-    // namespace to propagate to the child.
-    if (mount("rootfs", "/", nullptr, (MS_SLAVE | MS_REC), nullptr) == -1) {
-        return ErrnoError() << "Could not remount(/) recursively as slave";
-    }
-
-    // umount() then mount() /proc and/or /sys
-    // Note that it is not sufficient to mount with MS_REMOUNT.
-    if (namespace_flags_ & CLONE_NEWPID) {
-        if (umount("/proc") == -1) {
-            return ErrnoError() << "Could not umount(/proc)";
-        }
-        if (mount("", "/proc", "proc", kSafeFlags, "") == -1) {
-            return ErrnoError() << "Could not mount(/proc)";
-        }
-    }
-    bool remount_sys = std::any_of(namespaces_to_enter_.begin(), namespaces_to_enter_.end(),
-                                   [](const auto& entry) { return entry.first == CLONE_NEWNET; });
-    if (remount_sys) {
-        if (umount2("/sys", MNT_DETACH) == -1) {
-            return ErrnoError() << "Could not umount(/sys)";
-        }
-        if (mount("", "/sys", "sysfs", kSafeFlags, "") == -1) {
-            return ErrnoError() << "Could not mount(/sys)";
-        }
-    }
-    return Success();
-}
-
-Result<Success> Service::SetUpPidNamespace() const {
-    if (prctl(PR_SET_NAME, name_.c_str()) == -1) {
-        return ErrnoError() << "Could not set name";
-    }
-
-    pid_t child_pid = fork();
-    if (child_pid == -1) {
-        return ErrnoError() << "Could not fork init inside the PID namespace";
-    }
-
-    if (child_pid > 0) {
-        // So that we exit with the right status.
-        static int init_exitstatus = 0;
-        signal(SIGTERM, [](int) { _exit(init_exitstatus); });
-
-        pid_t waited_pid;
-        int status;
-        while ((waited_pid = wait(&status)) > 0) {
-             // This loop will end when there are no processes left inside the
-             // PID namespace or when the init process inside the PID namespace
-             // gets a signal.
-            if (waited_pid == child_pid) {
-                init_exitstatus = status;
-            }
-        }
-        if (!WIFEXITED(init_exitstatus)) {
-            _exit(EXIT_FAILURE);
-        }
-        _exit(WEXITSTATUS(init_exitstatus));
-    }
-    return Success();
-}
-
 Result<Success> Service::EnterNamespaces() const {
     for (const auto& [nstype, path] : namespaces_to_enter_) {
-        auto fd = unique_fd{open(path.c_str(), O_RDONLY | O_CLOEXEC)};
-        if (fd == -1) {
-            return ErrnoError() << "Could not open namespace at " << path;
-        }
-        if (setns(fd, nstype) == -1) {
-            return ErrnoError() << "Could not setns() namespace at " << path;
+        if (auto result = EnterNamespace(nstype, path.c_str()); !result) {
+            return result;
         }
     }
     return Success();
@@ -305,19 +230,10 @@ void Service::SetProcessAttributes() {
     // TODO: work out why this fails for `console` then upgrade to FATAL.
     if (setpgid(0, getpid()) == -1) PLOG(ERROR) << "setpgid failed for " << name_;
 
-    if (gid_) {
-        if (setgid(gid_) != 0) {
-            PLOG(FATAL) << "setgid failed for " << name_;
-        }
+    if (auto result = SetUidGids(uid_, gid_, supp_gids_); !result) {
+        LOG(FATAL) << "cannot set id for " << name_ << ": " << result.error();
     }
-    if (setgroups(supp_gids_.size(), &supp_gids_[0]) != 0) {
-        PLOG(FATAL) << "setgroups failed for " << name_;
-    }
-    if (uid_) {
-        if (setuid(uid_) != 0) {
-            PLOG(FATAL) << "setuid failed for " << name_;
-        }
-    }
+
     if (!seclabel_.empty()) {
         if (setexeccon(seclabel_.c_str()) < 0) {
             PLOG(FATAL) << "cannot setexeccon('" << seclabel_ << "') for " << name_;
@@ -987,7 +903,11 @@ Result<Success> Service::Start() {
 #endif
 
         if (namespace_flags_ & CLONE_NEWNS) {
-            if (auto result = SetUpMountNamespace(); !result) {
+            bool remount_proc = namespace_flags_ & CLONE_NEWPID;
+            bool remount_sys =
+                    std::any_of(namespaces_to_enter_.begin(), namespaces_to_enter_.end(),
+                                [](const auto& entry) { return entry.first == CLONE_NEWNET; });
+            if (auto result = SetUpMountNamespace(remount_proc, remount_sys); !result) {
                 LOG(FATAL) << "Service '" << name_
                            << "' could not set up mount namespace: " << result.error();
             }
@@ -996,7 +916,7 @@ Result<Success> Service::Start() {
         if (namespace_flags_ & CLONE_NEWPID) {
             // This will fork again to run an init process inside the PID
             // namespace.
-            if (auto result = SetUpPidNamespace(); !result) {
+            if (auto result = SetUpPidNamespace(name_.c_str()); !result) {
                 LOG(FATAL) << "Service '" << name_
                            << "' could not set up PID namespace: " << result.error();
             }
@@ -1009,39 +929,8 @@ Result<Success> Service::Start() {
         std::for_each(descriptors_.begin(), descriptors_.end(),
                       std::bind(&DescriptorInfo::CreateAndPublish, std::placeholders::_1, scon));
 
-        // See if there were "writepid" instructions to write to files under cpuset path.
-        std::string cpuset_path;
-        if (CgroupGetControllerPath("cpuset", &cpuset_path)) {
-            auto cpuset_predicate = [&cpuset_path](const std::string& path) {
-                return StartsWith(path, cpuset_path + "/");
-            };
-            auto iter =
-                    std::find_if(writepid_files_.begin(), writepid_files_.end(), cpuset_predicate);
-            if (iter == writepid_files_.end()) {
-                // There were no "writepid" instructions for cpusets, check if the system default
-                // cpuset is specified to be used for the process.
-                std::string default_cpuset = GetProperty("ro.cpuset.default", "");
-                if (!default_cpuset.empty()) {
-                    // Make sure the cpuset name starts and ends with '/'.
-                    // A single '/' means the 'root' cpuset.
-                    if (default_cpuset.front() != '/') {
-                        default_cpuset.insert(0, 1, '/');
-                    }
-                    if (default_cpuset.back() != '/') {
-                        default_cpuset.push_back('/');
-                    }
-                    writepid_files_.push_back(
-                            StringPrintf("%s%stasks", cpuset_path.c_str(), default_cpuset.c_str()));
-                }
-            }
-        } else {
-            LOG(ERROR) << "cpuset cgroup controller is not mounted!";
-        }
-        std::string pid_str = std::to_string(getpid());
-        for (const auto& file : writepid_files_) {
-            if (!WriteStringToFile(pid_str, file)) {
-                PLOG(ERROR) << "couldn't write " << pid_str << " to " << file;
-            }
+        if (auto result = WritePidToFiles(&writepid_files_); !result) {
+            LOG(ERROR) << "failed to write pid to files: " << result.error();
         }
 
         if (ioprio_class_ != IoSchedClass_NONE) {
