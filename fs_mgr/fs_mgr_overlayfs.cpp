@@ -33,9 +33,9 @@
 #include <unistd.h>
 
 #include <algorithm>
-#include <map>
 #include <memory>
 #include <string>
+#include <tuple>
 #include <vector>
 
 #include <android-base/file.h>
@@ -519,9 +519,90 @@ bool fs_mgr_overlayfs_teardown_one(const std::string& overlay, const std::string
     return ret;
 }
 
+bool fs_mgr_overlayfs_set_shared_mount(const std::string& mount_point, bool value) {
+    auto ret =
+            mount(nullptr, mount_point.c_str(), nullptr, value ? MS_SHARED : MS_PRIVATE, nullptr);
+    if (ret) {
+        PERROR << "__mount(target=" << mount_point
+               << ",flag=" << (value ? "MS_SHARED" : "MS_PRIVATE") << ")=" << ret;
+        return false;
+    }
+    return true;
+}
+
+bool fs_mgr_overlayfs_move_mount(const std::string& source, const std::string& target) {
+    auto ret = mount(source.c_str(), target.c_str(), nullptr, MS_MOVE, nullptr);
+    if (ret) {
+        PERROR << "__mount(source=" << source << ",target=" << target << ",flag=MS_MOVE)=" << ret;
+        return false;
+    }
+    return true;
+}
+
 bool fs_mgr_overlayfs_mount(const std::string& mount_point) {
     auto options = fs_mgr_get_overlayfs_options(mount_point);
     if (options.empty()) return false;
+
+    auto retval = true;
+    auto save_errno = errno;
+
+    Fstab fstab;
+    ReadFstabFromFile("/proc/self/mountinfo", &fstab);
+    std::vector<std::tuple<std::string, std::string, bool> > move;
+    auto parent_private = false;
+    auto parent_made_private = false;
+    auto dev_private = false;
+    auto dev_made_private = false;
+    for (const auto& entry : fstab) {
+        if ((entry.mount_point == mount_point) && !(entry.flags & MS_SHARED)) {
+            parent_private = true;
+        }
+        if ((entry.mount_point == "/dev") && !(entry.flags & MS_SHARED)) {
+            dev_private = true;
+        }
+
+        if (!android::base::StartsWith(entry.mount_point, mount_point + "/")) {
+            continue;
+        }
+        if (std::find_if(move.begin(), move.end(), [&entry](const auto& it) {
+                return android::base::StartsWith(entry.mount_point, std::get<0>(it) + "/");
+            }) != move.end()) {
+            continue;
+        }
+
+        // use as the bound directory in /dev.
+        auto new_context = fs_mgr_get_context(entry.mount_point);
+        if (!new_context.empty() && setfscreatecon(new_context.c_str())) {
+            PERROR << "setfscreatecon " << new_context;
+        }
+        std::string dir("/dev/TemporaryDir-XXXXXX");
+        const auto target = mkdtemp(dir.data());
+        if (!target) {
+            retval = false;
+            save_errno = errno;
+            PERROR << "temporary directory for MS_BIND";
+            setfscreatecon(nullptr);
+            continue;
+        }
+        setfscreatecon(nullptr);
+
+        if (!parent_private && !parent_made_private) {
+            parent_made_private = fs_mgr_overlayfs_set_shared_mount(mount_point, false);
+        }
+        auto made_private = !!(entry.flags & MS_SHARED);
+        if (made_private) {
+            made_private = fs_mgr_overlayfs_set_shared_mount(entry.mount_point, false);
+        }
+        if (!fs_mgr_overlayfs_move_mount(entry.mount_point, dir)) {
+            retval = false;
+            save_errno = errno;
+            if (made_private) {
+                fs_mgr_overlayfs_set_shared_mount(entry.mount_point, true);
+            }
+            continue;
+        }
+        move.emplace_back(std::make_tuple(entry.mount_point, std::move(dir), made_private));
+    }
 
     // hijack __mount() report format to help triage
     auto report = "__mount(source=overlay,target="s + mount_point + ",type=overlay";
@@ -537,12 +618,37 @@ bool fs_mgr_overlayfs_mount(const std::string& mount_point) {
     auto ret = mount("overlay", mount_point.c_str(), "overlay", MS_RDONLY | MS_RELATIME,
                      options.c_str());
     if (ret) {
+        retval = false;
+        save_errno = errno;
         PERROR << report << ret;
-        return false;
     } else {
         LINFO << report << ret;
-        return true;
     }
+
+    // Move submounts back.
+    for (const auto& [entry_mount_point, dir, made_private] : move) {
+        if (!dev_private && !dev_made_private) {
+            dev_made_private = fs_mgr_overlayfs_set_shared_mount("/dev", false);
+        }
+
+        if (!fs_mgr_overlayfs_move_mount(dir, entry_mount_point)) {
+            retval = false;
+            save_errno = errno;
+        } else if (made_private && !fs_mgr_overlayfs_set_shared_mount(entry_mount_point, true)) {
+            retval = false;
+            save_errno = errno;
+        }
+        rmdir(dir.c_str());
+    }
+    if (dev_made_private) {
+        fs_mgr_overlayfs_set_shared_mount("/dev", true);
+    }
+    if (parent_made_private) {
+        fs_mgr_overlayfs_set_shared_mount(mount_point, true);
+    }
+
+    errno = save_errno;
+    return retval;
 }
 
 // Mount kScratchMountPoint
