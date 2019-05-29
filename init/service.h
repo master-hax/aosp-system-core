@@ -132,15 +132,13 @@ class Service {
     using OptionParser = Result<Success> (Service::*)(std::vector<std::string>&& args);
     class OptionParserMap;
 
-    Result<Success> SetUpMountNamespace() const;
-    Result<Success> SetUpPidNamespace() const;
     Result<Success> EnterNamespaces() const;
     void NotifyStateChange(const std::string& new_state) const;
     void StopOrReset(int how);
     void ZapStdio() const;
     void OpenConsole() const;
     void KillProcessGroup(int signal);
-    void SetProcessAttributes();
+    void SetProcessAttributesAndCaps();
 
     Result<Success> ParseCapabilities(std::vector<std::string>&& args);
     Result<Success> ParseClass(std::vector<std::string>&& args);
