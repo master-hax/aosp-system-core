@@ -32,9 +32,9 @@
 #include <unistd.h>
 
 #include <algorithm>
-#include <map>
 #include <memory>
 #include <string>
+#include <utility>
 #include <vector>
 
 #include <android-base/file.h>
@@ -517,9 +517,53 @@ bool fs_mgr_overlayfs_teardown_one(const std::string& overlay, const std::string
     return ret;
 }
 
+bool fs_mgr_overlayfs_bind_mount(const std::string& source, const std::string& target) {
+    auto ret = mount(source.c_str(), target.c_str(), nullptr, MS_BIND, nullptr);
+    if (ret) {
+        PERROR << "__mount(source=" << source << ",target=" << target << ",flag=MS_BIND)=" << ret;
+        return false;
+    }
+    return true;
+}
+
 bool fs_mgr_overlayfs_mount(const std::string& mount_point) {
     auto options = fs_mgr_get_overlayfs_options(mount_point);
     if (options.empty()) return false;
+
+    auto retval = true;
+    auto save_errno = errno;
+
+    Fstab fstab;
+    ReadFstabFromFile("/proc/mounts", &fstab);
+    std::vector<std::pair<std::string, std::string> > move;
+    for (const auto& entry : fstab) {
+        if (!android::base::StartsWith(entry.mount_point, mount_point + "/")) {
+            continue;
+        }
+        // use as the bound directory in /dev.
+        auto new_context = fs_mgr_get_context(entry.mount_point);
+        if (!new_context.empty() && setfscreatecon(new_context.c_str())) {
+            PERROR << "setfscreatecon " << new_context;
+        }
+        std::string dir("/dev/TemporaryDir-XXXXXX");
+        const auto target = mkdtemp(dir.data());
+        if (!target) {
+            retval = false;
+            save_errno = errno;
+            PERROR << "temporary directory for MS_BIND";
+            setfscreatecon(nullptr);
+            continue;
+        }
+        setfscreatecon(nullptr);
+
+        if (!fs_mgr_overlayfs_bind_mount(entry.mount_point, dir)) {
+            retval = false;
+            save_errno = errno;
+            rmdir(target);
+            continue;
+        }
+        move.emplace_back(std::make_pair(entry.mount_point, std::move(dir)));
+    }
 
     // hijack __mount() report format to help triage
     auto report = "__mount(source=overlay,target="s + mount_point + ",type=overlay";
@@ -535,12 +579,26 @@ bool fs_mgr_overlayfs_mount(const std::string& mount_point) {
     auto ret = mount("overlay", mount_point.c_str(), "overlay", MS_RDONLY | MS_RELATIME,
                      options.c_str());
     if (ret) {
+        retval = false;
+        save_errno = errno;
         PERROR << report << ret;
-        return false;
     } else {
         LINFO << report << ret;
-        return true;
     }
+
+    // Bind submounts back.
+    for (const auto& [mount_point, dir] : move) {
+        if (!fs_mgr_overlayfs_bind_mount(dir, mount_point)) {
+            retval = false;
+            save_errno = errno;
+        }
+        const auto target = dir.c_str();
+        umount2(target, MNT_DETACH);
+        rmdir(target);
+    }
+
+    errno = save_errno;
+    return retval;
 }
 
 // Mount kScratchMountPoint
