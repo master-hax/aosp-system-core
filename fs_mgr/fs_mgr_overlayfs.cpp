@@ -32,7 +32,6 @@
 #include <unistd.h>
 
 #include <algorithm>
-#include <map>
 #include <memory>
 #include <string>
 #include <vector>
@@ -517,9 +516,83 @@ bool fs_mgr_overlayfs_teardown_one(const std::string& overlay, const std::string
     return ret;
 }
 
+bool fs_mgr_overlayfs_set_shared_mount(const std::string& mount_point, bool value) {
+    auto ret =
+            mount(nullptr, mount_point.c_str(), nullptr, value ? MS_SHARED : MS_PRIVATE, nullptr);
+    if (ret) {
+        PERROR << "__mount(target=" << mount_point
+               << ",flag=" << (value ? "MS_SHARED" : "MS_PRIVATE") << ")=" << ret;
+        return false;
+    }
+    return true;
+}
+
+bool fs_mgr_overlayfs_move_mount(const std::string& source, const std::string& target) {
+    auto ret = mount(source.c_str(), target.c_str(), nullptr, MS_MOVE, nullptr);
+    if (ret) {
+        PERROR << "__mount(source=" << source << ",target=" << target << ",flag=MS_MOVE)=" << ret;
+        return false;
+    }
+    return true;
+}
+
 bool fs_mgr_overlayfs_mount(const std::string& mount_point) {
     auto options = fs_mgr_get_overlayfs_options(mount_point);
     if (options.empty()) return false;
+
+    auto retval = true;
+    auto save_errno = errno;
+
+    // Move submounts out of the way in reverse order.
+    // Assumption they can not be overridden.
+    // Assumption mount_point is the parent.
+    Fstab fstab;
+    ReadFstabFromFile("/proc/mounts", &fstab);
+    std::vector<std::string> move;
+    // fstab entries arrive in sorted order, less specific to more specific.
+    for (const auto& entry : fstab) {
+        auto less_specific = [&entry](const std::string& mount_point) {
+            return android::base::StartsWith(entry.mount_point, mount_point + "/");
+        };
+        if (!less_specific(mount_point)) continue;
+        if (std::find_if(move.begin(), move.end(), less_specific) == move.end()) {
+            move.emplace_back(entry.mount_point);
+            continue;
+        }
+    }
+
+    // "dir" is a reverse index 1:1 match to "move".
+    std::vector<std::string> dir;
+    auto parent_private = false;
+    for (auto it = move.rbegin(); it != move.rend(); ++it) {
+        dir.emplace_back("/dev/TemporaryDir-XXXXXX");
+        auto new_context = fs_mgr_get_context(*it);
+        if (!new_context.empty() && setfscreatecon(new_context.c_str())) {
+            PERROR << "setfscreatecon " << new_context;
+        }
+        const auto target = mkdtemp(dir.rbegin()->data());
+        if (!target) {
+            retval = false;
+            save_errno = errno;
+            PERROR << "temporary directory for MS_MOVE";
+            it->clear();  // do not move back
+            setfscreatecon(nullptr);
+            continue;
+        }
+        setfscreatecon(nullptr);
+
+        // Only the immediate parent needs to be made private
+        if (!parent_private) parent_private = fs_mgr_overlayfs_set_shared_mount(mount_point, false);
+        auto made_private = fs_mgr_overlayfs_set_shared_mount(*it, false);
+        if (!fs_mgr_overlayfs_move_mount(*it, target)) {
+            retval = false;
+            save_errno = errno;
+            if (made_private) fs_mgr_overlayfs_set_shared_mount(*it, true);
+            it->clear();  // do not move back
+            continue;
+        }
+        fs_mgr_overlayfs_set_shared_mount(target, false);
+    }
 
     // hijack __mount() report format to help triage
     auto report = "__mount(source=overlay,target="s + mount_point + ",type=overlay";
@@ -535,12 +608,30 @@ bool fs_mgr_overlayfs_mount(const std::string& mount_point) {
     auto ret = mount("overlay", mount_point.c_str(), "overlay", MS_RDONLY | MS_RELATIME,
                      options.c_str());
     if (ret) {
+        retval = false;
+        save_errno = errno;
         PERROR << report << ret;
-        return false;
     } else {
         LINFO << report << ret;
-        return true;
     }
+
+    parent_private = false;
+    // Move submounts back.
+    for (auto it = move.cbegin(); it != move.cend();
+         unlink(dir.crbegin()->c_str()), dir.pop_back(), ++it) {
+        if (it->empty()) continue;
+        if (!parent_private) parent_private = fs_mgr_overlayfs_set_shared_mount("/dev", false);
+        if (!fs_mgr_overlayfs_move_mount(*dir.crbegin(), *it) ||
+            !fs_mgr_overlayfs_set_shared_mount(*it, true)) {
+            retval = false;
+            save_errno = errno;
+        }
+    }
+    if (parent_private) fs_mgr_overlayfs_set_shared_mount("/dev", true);
+    fs_mgr_overlayfs_set_shared_mount(mount_point, true);
+
+    errno = save_errno;
+    return retval;
 }
 
 // Mount kScratchMountPoint
