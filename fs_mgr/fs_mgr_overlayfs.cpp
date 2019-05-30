@@ -18,6 +18,7 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <linux/fs.h>
+#include <selinux/android.h>
 #include <selinux/selinux.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -914,31 +915,39 @@ bool fs_mgr_overlayfs_mount_all(Fstab* fstab) {
     auto ret = false;
     if (fs_mgr_overlayfs_invalid()) return ret;
 
+    std::string content;
+    auto sepolicy_enabled = android::base::ReadFileToString("/sys/fs/selinux/enforce", &content) &&
+                            !content.empty() && content[0] == '1';
     auto scratch_can_be_mounted = true;
     for (const auto& entry : fs_mgr_overlayfs_candidate_list(*fstab)) {
         if (fs_mgr_is_verity_enabled(entry)) continue;
         auto mount_point = fs_mgr_mount_point(entry.mount_point);
-        if (fs_mgr_overlayfs_already_mounted(mount_point)) {
-            ret = true;
-            continue;
-        }
-        if (scratch_can_be_mounted) {
-            scratch_can_be_mounted = false;
-            auto scratch_device = fs_mgr_overlayfs_scratch_device();
-            if (fs_mgr_overlayfs_scratch_can_be_mounted(scratch_device) &&
-                fs_mgr_wait_for_file(scratch_device, 10s)) {
-                const auto mount_type = fs_mgr_overlayfs_scratch_mount_type();
-                if (fs_mgr_overlayfs_mount_scratch(scratch_device, mount_type,
-                                                   true /* readonly */)) {
-                    auto has_overlayfs_dir = fs_mgr_access(kScratchMountPoint + kOverlayTopDir);
-                    fs_mgr_overlayfs_umount_scratch();
-                    if (has_overlayfs_dir) {
-                        fs_mgr_overlayfs_mount_scratch(scratch_device, mount_type);
+        if (!fs_mgr_overlayfs_already_mounted(mount_point)) {
+            if (scratch_can_be_mounted) {
+                scratch_can_be_mounted = false;
+                auto scratch_device = fs_mgr_overlayfs_scratch_device();
+                if (fs_mgr_overlayfs_scratch_can_be_mounted(scratch_device) &&
+                    fs_mgr_wait_for_file(scratch_device, 10s)) {
+                    const auto mount_type = fs_mgr_overlayfs_scratch_mount_type();
+                    if (fs_mgr_overlayfs_mount_scratch(scratch_device, mount_type,
+                                                       true /* readonly */)) {
+                        auto has_overlayfs_dir = fs_mgr_access(kScratchMountPoint + kOverlayTopDir);
+                        fs_mgr_overlayfs_umount_scratch();
+                        if (has_overlayfs_dir) {
+                            fs_mgr_overlayfs_mount_scratch(scratch_device, mount_type);
+                        }
                     }
                 }
             }
+            if (!fs_mgr_overlayfs_mount(mount_point)) continue;
         }
-        if (fs_mgr_overlayfs_mount(mount_point)) ret = true;
+        // b/129319403 - minimize overlayfs kernel bugs managing access to xattr
+        if (sepolicy_enabled) {
+            mount(nullptr, mount_point.c_str(), nullptr, MS_REMOUNT, nullptr);
+            selinux_android_restorecon(mount_point.c_str(), SELINUX_ANDROID_RESTORECON_RECURSE);
+            mount(nullptr, mount_point.c_str(), nullptr, MS_REMOUNT | MS_RDONLY, nullptr);
+        }
+        ret = true;
     }
     return ret;
 }
