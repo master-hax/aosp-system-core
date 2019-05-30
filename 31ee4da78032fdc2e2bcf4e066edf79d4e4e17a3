@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "3a40e5ca_c489e0c9",
+        "filename": "init/service.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 918,
+      "author": {
+        "id": 1349653
+      },
+      "writtenOn": "2019-05-30T20:47:00Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "01aea88f_758eff9d",
+      "range": {
+        "startLine": 887,
+        "startChar": 0,
+        "endLine": 918,
+        "endChar": 9
+      },
+      "revId": "31ee4da78032fdc2e2bcf4e066edf79d4e4e17a3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "2fdfd7e5_3d0af829",
         "filename": "init/service.cpp",
         "patchSetId": 2
@@ -45,6 +69,30 @@
       "revId": "31ee4da78032fdc2e2bcf4e066edf79d4e4e17a3",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "64594216_1eb2b0d6",
+        "filename": "init/service.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 936,
+      "author": {
+        "id": 1349653
+      },
+      "writtenOn": "2019-05-30T20:47:00Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2fdfd7e5_3d0af829",
+      "range": {
+        "startLine": 931,
+        "startChar": 0,
+        "endLine": 936,
+        "endChar": 9
+      },
+      "revId": "31ee4da78032fdc2e2bcf4e066edf79d4e4e17a3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "69f487be_c080ac50",
+        "filename": "init/service.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 943,
+      "author": {
+        "id": 1349653
+      },
+      "writtenOn": "2019-05-30T20:47:00Z",
+      "side": 1,
+      "message": "I ended up putting this in SetProcessAttributes() so that it can be merged with setpgid. This way it\u0027s clear we have setsid() vs setpgid().",
+      "parentUuid": "7238b39f_5fd83c8f",
+      "range": {
+        "startLine": 938,
+        "startChar": 0,
+        "endLine": 943,
+        "endChar": 9
+      },
+      "revId": "31ee4da78032fdc2e2bcf4e066edf79d4e4e17a3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ec39980f_b6ee4937",
         "filename": "init/service_utils.h",
         "patchSetId": 2
@@ -85,6 +157,24 @@
       "revId": "31ee4da78032fdc2e2bcf4e066edf79d4e4e17a3",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e9f340d9_547f9263",
+        "filename": "init/service_utils.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1349653
+      },
+      "writtenOn": "2019-05-30T20:47:00Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ec39980f_b6ee4937",
+      "revId": "31ee4da78032fdc2e2bcf4e066edf79d4e4e17a3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
