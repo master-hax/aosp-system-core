@@ -302,8 +302,14 @@ void Service::SetProcessAttributes() {
         }
     }
 
-    // TODO: work out why this fails for `console` then upgrade to FATAL.
-    if (setpgid(0, getpid()) == -1) PLOG(ERROR) << "setpgid failed for " << name_;
+    // Console processes already have called setsid(), which creates both a session and a process
+    // group with itself as the leader.  Calling setpgid() again would result in an error, but is
+    // unneeded, since setsid() already created the process group.
+    if (!(flags_ & SVC_CONSOLE)) {
+        if (setpgid(0, getpid()) == -1) {
+            PLOG(FATAL) << "setpgid failed for " << name_;
+        }
+    }
 
     if (gid_) {
         if (setgid(gid_) != 0) {
