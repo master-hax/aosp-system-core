@@ -22,7 +22,7 @@
 namespace android {
 namespace init {
 
-Result<Success> StartBoringSslSelfTest(const BuiltinArguments&);
+Result<Nothing> StartBoringSslSelfTest(const BuiltinArguments&);
 
 }  // namespace init
 }  // namespace android

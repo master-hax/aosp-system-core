@@ -27,8 +27,8 @@ namespace init {
 class HostImportParser : public SectionParser {
   public:
     HostImportParser() {}
-    Result<Success> ParseSection(std::vector<std::string>&& args, const std::string&, int) override;
-    Result<Success> ParseLineSection(std::vector<std::string>&&, int) override;
+    Result<Nothing> ParseSection(std::vector<std::string>&& args, const std::string&, int) override;
+    Result<Nothing> ParseLineSection(std::vector<std::string>&&, int) override;
 };
 
 }  // namespace init

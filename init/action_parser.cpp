@@ -55,7 +55,7 @@ bool IsActionableProperty(Subcontext* subcontext, const std::string& prop_name) 
     return CanReadProperty(subcontext->context(), prop_name);
 }
 
-Result<Success> ParsePropertyTrigger(const std::string& trigger, Subcontext* subcontext,
+Result<Nothing> ParsePropertyTrigger(const std::string& trigger, Subcontext* subcontext,
                                      std::map<std::string, std::string>* property_triggers) {
     const static std::string prop_str("property:");
     std::string prop_name(trigger.substr(prop_str.length()));
@@ -74,10 +74,10 @@ Result<Success> ParsePropertyTrigger(const std::string& trigger, Subcontext* sub
     if (auto [it, inserted] = property_triggers->emplace(prop_name, prop_value); !inserted) {
         return Error() << "multiple property triggers found for same property";
     }
-    return Success();
+    return Nothing();
 }
 
-Result<Success> ParseTriggers(const std::vector<std::string>& args, Subcontext* subcontext,
+Result<Nothing> ParseTriggers(const std::vector<std::string>& args, Subcontext* subcontext,
                               std::string* event_trigger,
                               std::map<std::string, std::string>* property_triggers) {
     const static std::string prop_str("property:");
@@ -108,12 +108,12 @@ Result<Success> ParseTriggers(const std::vector<std::string>& args, Subcontext* 
         }
     }
 
-    return Success();
+    return Nothing();
 }
 
 }  // namespace
 
-Result<Success> ActionParser::ParseSection(std::vector<std::string>&& args,
+Result<Nothing> ActionParser::ParseSection(std::vector<std::string>&& args,
                                            const std::string& filename, int line) {
     std::vector<std::string> triggers(args.begin() + 1, args.end());
     if (triggers.size() < 1) {
@@ -142,19 +142,19 @@ Result<Success> ActionParser::ParseSection(std::vector<std::string>&& args,
                                            property_triggers);
 
     action_ = std::move(action);
-    return Success();
+    return Nothing();
 }
 
-Result<Success> ActionParser::ParseLineSection(std::vector<std::string>&& args, int line) {
-    return action_ ? action_->AddCommand(std::move(args), line) : Success();
+Result<Nothing> ActionParser::ParseLineSection(std::vector<std::string>&& args, int line) {
+    return action_ ? action_->AddCommand(std::move(args), line) : Nothing();
 }
 
-Result<Success> ActionParser::EndSection() {
+Result<Nothing> ActionParser::EndSection() {
     if (action_ && action_->NumCommands() > 0) {
         action_manager_->AddAction(std::move(action_));
     }
 
-    return Success();
+    return Nothing();
 }
 
 }  // namespace init

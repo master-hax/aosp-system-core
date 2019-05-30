@@ -28,7 +28,7 @@ using android::base::Join;
 namespace android {
 namespace init {
 
-Result<Success> RunBuiltinFunction(const BuiltinFunction& function,
+Result<Nothing> RunBuiltinFunction(const BuiltinFunction& function,
                                    const std::vector<std::string>& args,
                                    const std::string& context) {
     auto builtin_arguments = BuiltinArguments(context);
@@ -51,7 +51,7 @@ Command::Command(BuiltinFunction f, bool execute_in_subcontext, std::vector<std:
       args_(std::move(args)),
       line_(line) {}
 
-Result<Success> Command::InvokeFunc(Subcontext* subcontext) const {
+Result<Nothing> Command::InvokeFunc(Subcontext* subcontext) const {
     if (subcontext) {
         if (execute_in_subcontext_) {
             return subcontext->Execute(args_);
@@ -83,7 +83,7 @@ Action::Action(bool oneshot, Subcontext* subcontext, const std::string& filename
 
 const KeywordFunctionMap* Action::function_map_ = nullptr;
 
-Result<Success> Action::AddCommand(std::vector<std::string>&& args, int line) {
+Result<Nothing> Action::AddCommand(std::vector<std::string>&& args, int line) {
     if (!function_map_) {
         return Error() << "no function map available";
     }
@@ -92,7 +92,7 @@ Result<Success> Action::AddCommand(std::vector<std::string>&& args, int line) {
     if (!function) return Error() << function.error();
 
     commands_.emplace_back(function->second, function->first, std::move(args), line);
-    return Success();
+    return Nothing();
 }
 
 void Action::AddCommand(BuiltinFunction f, std::vector<std::string>&& args, int line) {
@@ -127,7 +127,7 @@ void Action::ExecuteCommand(const Command& command) const {
     // report such failures unless we're running at the DEBUG log level.
     bool report_failure = !result.has_value();
     if (report_failure && android::base::GetMinimumLogSeverity() > android::base::DEBUG &&
-        result.error().as_errno == ENOENT) {
+        result.error().code == ENOENT) {
         report_failure = false;
     }
 
@@ -139,7 +139,7 @@ void Action::ExecuteCommand(const Command& command) const {
 
         LOG(INFO) << "Command '" << cmd_str << "' action=" << trigger_name << " (" << filename_
                   << ":" << command.line() << ") took " << duration.count() << "ms and "
-                  << (result ? "succeeded" : "failed: " + result.error().as_string);
+                  << (result ? "succeeded" : "failed: " + result.error().message);
     }
 }
 

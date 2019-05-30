@@ -33,7 +33,7 @@ class TestFunctionMap : public KeywordFunctionMap {
     void Add(const std::string& name, const BuiltinFunctionNoArgs function) {
         Add(name, 0, 0, false, [function](const BuiltinArguments&) {
             function();
-            return Success();
+            return Nothing();
         });
     }
 

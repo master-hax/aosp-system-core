@@ -364,14 +364,14 @@ bool LoadSplitPolicy() {
     if (access(odm_policy_cil_file.c_str(), F_OK) == -1) {
         odm_policy_cil_file.clear();
     }
-    const std::string version_as_string = std::to_string(SEPOLICY_VERSION);
+    const std::string version_message = std::to_string(SEPOLICY_VERSION);
 
     // clang-format off
     std::vector<const char*> compile_args {
         "/system/bin/secilc",
         use_userdebug_policy ? kDebugRamdiskSEPolicy: plat_policy_cil_file,
         "-m", "-M", "true", "-G", "-N",
-        "-c", version_as_string.c_str(),
+        "-c", version_message.c_str(),
         plat_mapping_file.c_str(),
         "-o", compiled_sepolicy,
         // We don't care about file_contexts output by the compiler

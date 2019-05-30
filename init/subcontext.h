@@ -42,7 +42,7 @@ class Subcontext {
         Fork();
     }
 
-    Result<Success> Execute(const std::vector<std::string>& args);
+    Result<Nothing> Execute(const std::vector<std::string>& args);
     Result<std::vector<std::string>> ExpandArgs(const std::vector<std::string>& args);
     void Restart();
 

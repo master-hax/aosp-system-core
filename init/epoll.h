@@ -36,11 +36,11 @@ class Epoll {
   public:
     Epoll();
 
-    Result<Success> Open();
-    Result<Success> RegisterHandler(int fd, std::function<void()> handler,
+    Result<Nothing> Open();
+    Result<Nothing> RegisterHandler(int fd, std::function<void()> handler,
                                     uint32_t events = EPOLLIN);
-    Result<Success> UnregisterHandler(int fd);
-    Result<Success> Wait(std::optional<std::chrono::milliseconds> timeout);
+    Result<Nothing> UnregisterHandler(int fd);
+    Result<Nothing> Wait(std::optional<std::chrono::milliseconds> timeout);
 
   private:
     android::base::unique_fd epoll_fd_;

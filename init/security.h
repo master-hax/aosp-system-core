@@ -26,9 +26,9 @@
 namespace android {
 namespace init {
 
-Result<Success> MixHwrngIntoLinuxRngAction(const BuiltinArguments&);
-Result<Success> SetMmapRndBitsAction(const BuiltinArguments&);
-Result<Success> SetKptrRestrictAction(const BuiltinArguments&);
+Result<Nothing> MixHwrngIntoLinuxRngAction(const BuiltinArguments&);
+Result<Nothing> SetMmapRndBitsAction(const BuiltinArguments&);
+Result<Nothing> SetKptrRestrictAction(const BuiltinArguments&);
 
 }  // namespace init
 }  // namespace android

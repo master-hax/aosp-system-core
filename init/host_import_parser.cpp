@@ -23,16 +23,16 @@ using android::base::StartsWith;
 namespace android {
 namespace init {
 
-Result<Success> HostImportParser::ParseSection(std::vector<std::string>&& args, const std::string&,
+Result<Nothing> HostImportParser::ParseSection(std::vector<std::string>&& args, const std::string&,
                                                int) {
     if (args.size() != 2) {
         return Error() << "single argument needed for import\n";
     }
 
-    return Success();
+    return Nothing();
 }
 
-Result<Success> HostImportParser::ParseLineSection(std::vector<std::string>&&, int) {
+Result<Nothing> HostImportParser::ParseLineSection(std::vector<std::string>&&, int) {
     return Error() << "Unexpected line found after import statement";
 }
 

@@ -72,7 +72,7 @@ Result<std::string> ReadMessage(int socket) {
 }
 
 template <typename T>
-Result<Success> SendMessage(int socket, const T& message) {
+Result<Nothing> SendMessage(int socket, const T& message) {
     std::string message_string;
     if (!message.SerializeToString(&message_string)) {
         return Error() << "Unable to serialize message";
@@ -87,7 +87,7 @@ Result<Success> SendMessage(int socket, const T& message) {
         result != static_cast<long>(message_string.size())) {
         return ErrnoError() << "send() failed to send message contents";
     }
-    return Success();
+    return Nothing();
 }
 
 std::vector<std::pair<std::string, std::string>> properties_to_set;
@@ -123,7 +123,7 @@ void SubcontextProcess::RunCommand(const SubcontextCommand::ExecuteCommand& exec
     }
 
     auto map_result = function_map_->FindFunction(args);
-    Result<Success> result;
+    Result<Nothing> result;
     if (!map_result) {
         result = Error() << "Cannot find command: " << map_result.error();
     } else {
@@ -142,8 +142,8 @@ void SubcontextProcess::RunCommand(const SubcontextCommand::ExecuteCommand& exec
         reply->set_success(true);
     } else {
         auto* failure = reply->mutable_failure();
-        failure->set_error_string(result.error().as_string);
-        failure->set_error_errno(result.error().as_errno);
+        failure->set_error_string(result.error().message);
+        failure->set_error_errno(result.error().code);
     }
 }
 
@@ -178,7 +178,7 @@ void SubcontextProcess::MainLoop() {
 
         auto init_message = ReadMessage(init_fd_);
         if (!init_message) {
-            if (init_message.error().as_errno == 0) {
+            if (init_message.error().code == 0) {
                 // If the init file descriptor was closed, let's exit quietly. If
                 // this was accidental, init will restart us. If init died, this
                 // avoids calling abort(3) unnecessarily.
@@ -299,7 +299,7 @@ Result<SubcontextReply> Subcontext::TransmitMessage(const SubcontextCommand& sub
     return subcontext_reply;
 }
 
-Result<Success> Subcontext::Execute(const std::vector<std::string>& args) {
+Result<Nothing> Subcontext::Execute(const std::vector<std::string>& args) {
     auto subcontext_command = SubcontextCommand();
     std::copy(
         args.begin(), args.end(),
@@ -329,7 +329,7 @@ Result<Success> Subcontext::Execute(const std::vector<std::string>& args) {
                        << subcontext_reply->reply_case();
     }
 
-    return Success();
+    return Nothing();
 }
 
 Result<std::vector<std::string>> Subcontext::ExpandArgs(const std::vector<std::string>& args) {

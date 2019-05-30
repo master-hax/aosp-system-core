@@ -26,7 +26,7 @@
 namespace android {
 namespace init {
 
-Result<Success> do_bootchart(const BuiltinArguments& args);
+Result<Nothing> do_bootchart(const BuiltinArguments& args);
 
 }  // namespace init
 }  // namespace android

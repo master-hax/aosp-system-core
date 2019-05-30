@@ -31,15 +31,16 @@
 namespace android {
 namespace init {
 
-Result<Success> RunBuiltinFunction(const BuiltinFunction& function,
-                                   const std::vector<std::string>& args, const std::string& context);
+Result<Nothing> RunBuiltinFunction(const BuiltinFunction& function,
+                                   const std::vector<std::string>& args,
+                                   const std::string& context);
 
 class Command {
   public:
     Command(BuiltinFunction f, bool execute_in_subcontext, std::vector<std::string>&& args,
             int line);
 
-    Result<Success> InvokeFunc(Subcontext* subcontext) const;
+    Result<Nothing> InvokeFunc(Subcontext* subcontext) const;
     std::string BuildCommandString() const;
 
     int line() const { return line_; }
@@ -61,7 +62,7 @@ class Action {
            const std::string& event_trigger,
            const std::map<std::string, std::string>& property_triggers);
 
-    Result<Success> AddCommand(std::vector<std::string>&& args, int line);
+    Result<Nothing> AddCommand(std::vector<std::string>&& args, int line);
     void AddCommand(BuiltinFunction f, std::vector<std::string>&& args, int line);
     std::size_t NumCommands() const;
     void ExecuteOneCommand(std::size_t command) const;
