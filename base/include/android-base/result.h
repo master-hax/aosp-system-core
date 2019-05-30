@@ -70,10 +70,100 @@
 
 #pragma once
 
-#include <android-base/result.h>
+#include <errno.h>
 
-using android::base::ErrnoError;
-using android::base::Error;
-using android::base::Result;
-using android::base::ResultError;
-using android::base::Success;
+#include <sstream>
+#include <string>
+
+#include "android-base/expected.h"
+
+namespace android {
+namespace base {
+
+struct ResultError {
+  template <typename T>
+  ResultError(T&& error_string, int error_errno)
+      : as_string(std::forward<T>(error_string)), as_errno(error_errno) {}
+
+  template <typename T>
+  operator android::base::expected<T, ResultError>() {
+    return android::base::unexpected(ResultError(as_string, as_errno));
+  }
+
+  std::string as_string;
+  int as_errno;
+};
+
+inline std::ostream& operator<<(std::ostream& os, const ResultError& t) {
+  os << t.as_string;
+  return os;
+}
+
+inline std::ostream& operator<<(std::ostream& os, ResultError&& t) {
+  os << std::move(t.as_string);
+  return os;
+}
+
+class Error {
+ public:
+  Error() : errno_(0), append_errno_(false) {}
+  Error(int errno_to_append) : errno_(errno_to_append), append_errno_(true) {}
+
+  template <typename T>
+  operator android::base::expected<T, ResultError>() {
+    return android::base::unexpected(ResultError(str(), errno_));
+  }
+
+  template <typename T>
+  Error&& operator<<(T&& t) {
+    ss_ << std::forward<T>(t);
+    return std::move(*this);
+  }
+
+  Error&& operator<<(const ResultError& result_error) {
+    ss_ << result_error.as_string;
+    errno_ = result_error.as_errno;
+    return std::move(*this);
+  }
+
+  Error&& operator<<(ResultError&& result_error) {
+    ss_ << std::move(result_error.as_string);
+    errno_ = result_error.as_errno;
+    return std::move(*this);
+  }
+
+  const std::string str() const {
+    std::string str = ss_.str();
+    if (append_errno_) {
+      if (str.empty()) {
+        return strerror(errno_);
+      }
+      return str + ": " + strerror(errno_);
+    }
+    return str;
+  }
+
+  int get_errno() const { return errno_; }
+
+  Error(const Error&) = delete;
+  Error(Error&&) = delete;
+  Error& operator=(const Error&) = delete;
+  Error& operator=(Error&&) = delete;
+
+ private:
+  std::stringstream ss_;
+  int errno_;
+  bool append_errno_;
+};
+
+inline Error ErrnoError() {
+  return Error(errno);
+}
+
+template <typename T>
+using Result = android::base::expected<T, ResultError>;
+
+using Success = std::monostate;
+
+}  // namespace base
+}  // namespace android
