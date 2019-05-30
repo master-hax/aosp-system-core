@@ -18,6 +18,7 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <linux/fs.h>
+#include <selinux/android.h>
 #include <selinux/selinux.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -39,6 +40,7 @@
 
 #include <android-base/file.h>
 #include <android-base/macros.h>
+#include <android-base/parseint.h>
 #include <android-base/properties.h>
 #include <android-base/strings.h>
 #include <android-base/unique_fd.h>
@@ -855,32 +857,62 @@ bool fs_mgr_overlayfs_mount_all(Fstab* fstab) {
     auto ret = false;
     if (fs_mgr_overlayfs_invalid()) return ret;
 
+    // serial value corresponds to different phases of the boot sequence:
+    //
+    // -1 - disabled
+    // 0  - first stage init
+    // 1  - second stage init mount_all --early
+    // 2  - second stage init mount_all --late
+    // 3  - second stage init mount data
+    // 4  - adb remount
+    int serial = 0;
+    static constexpr char serial_env[] = "OVERLAYS_MOUNT_ALL_SERIAL_NUMBER";
+    auto serial_str = getenv(serial_env);
+    if (serial_str) android::base::ParseInt(serial_str, &serial);
     auto scratch_can_be_mounted = true;
     for (const auto& entry : fs_mgr_overlayfs_candidate_list(*fstab)) {
         if (fs_mgr_is_verity_enabled(entry)) continue;
         auto mount_point = fs_mgr_mount_point(entry.mount_point);
-        if (fs_mgr_overlayfs_already_mounted(mount_point)) {
-            ret = true;
-            continue;
-        }
-        if (scratch_can_be_mounted) {
-            scratch_can_be_mounted = false;
-            auto scratch_device = fs_mgr_overlayfs_scratch_device();
-            if (fs_mgr_overlayfs_scratch_can_be_mounted(scratch_device) &&
-                fs_mgr_wait_for_file(scratch_device, 10s)) {
-                const auto mount_type = fs_mgr_overlayfs_scratch_mount_type();
-                if (fs_mgr_overlayfs_mount_scratch(scratch_device, mount_type,
-                                                   true /* readonly */)) {
-                    auto has_overlayfs_dir = fs_mgr_access(kScratchMountPoint + kOverlayTopDir);
-                    fs_mgr_overlayfs_umount_scratch();
-                    if (has_overlayfs_dir) {
-                        fs_mgr_overlayfs_mount_scratch(scratch_device, mount_type);
+        if (!fs_mgr_overlayfs_already_mounted(mount_point)) {
+            if (scratch_can_be_mounted) {
+                scratch_can_be_mounted = false;
+                auto scratch_device = fs_mgr_overlayfs_scratch_device();
+                if (fs_mgr_overlayfs_scratch_can_be_mounted(scratch_device) &&
+                    fs_mgr_wait_for_file(scratch_device, 10s)) {
+                    const auto mount_type = fs_mgr_overlayfs_scratch_mount_type();
+                    if (fs_mgr_overlayfs_mount_scratch(scratch_device, mount_type,
+                                                       true /* readonly */)) {
+                        auto has_overlayfs_dir = fs_mgr_access(kScratchMountPoint + kOverlayTopDir);
+                        fs_mgr_overlayfs_umount_scratch();
+                        if (has_overlayfs_dir) {
+                            fs_mgr_overlayfs_mount_scratch(scratch_device, mount_type);
+                        }
                     }
                 }
             }
+            if (!fs_mgr_overlayfs_mount(mount_point)) continue;
+        } else if (serial > 1) {
+            // second stage mount_all --late only performs restorecon for new
+            ret = true;
+            continue;
         }
-        if (fs_mgr_overlayfs_mount(mount_point)) ret = true;
+        // b/129319403 - minimize overlayfs kernel bugs managing access to xattr
+        if (serial > 0) {
+            auto save_errno = errno;
+            auto retval = mount(nullptr, mount_point.c_str(), nullptr, MS_REMOUNT, nullptr);
+            if (retval) PERROR << "temporary remount r/w " << mount_point;
+            ret = selinux_android_restorecon(mount_point.c_str(),
+                                             SELINUX_ANDROID_RESTORECON_RECURSE);
+            // sub-mounts can trip us up, tell us of any _other_ problems.
+            if (ret && (errno != EROFS)) PERROR << "restorecon_recursive " << mount_point;
+            retval = mount(nullptr, mount_point.c_str(), nullptr, MS_REMOUNT | MS_RDONLY, nullptr);
+            if (retval) PERROR << "restore remount r/o " << mount_point;
+            errno = save_errno;
+        }
+        ret = true;
     }
+    if (serial >= 0) ++serial;
+    setenv(serial_env, std::to_string(serial).c_str(), 1);
     return ret;
 }
 
