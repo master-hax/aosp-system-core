@@ -114,20 +114,30 @@ static int drop_privs(bool klogd, bool auditd) {
     std::unique_ptr<struct _cap_struct, int (*)(void*)> caps(cap_init(),
                                                              cap_free);
     if (cap_clear(caps.get()) < 0) return -1;
-    cap_value_t cap_value[] = { CAP_SETGID,  // must be first for below
-                                klogd ? CAP_SYSLOG : CAP_SETGID,
-                                auditd ? CAP_AUDIT_CONTROL : CAP_SETGID };
-    if (cap_set_flag(caps.get(), CAP_PERMITTED, arraysize(cap_value), cap_value,
+    cap_value_t cap_value[4] = { CAP_SETGID,
+                                 CAP_SETUID,  // must be first for below
+                                 0,
+                                 0 };
+    int cap_size = 2;
+    int cap_clr_size = 2;
+
+    if (klogd)
+        cap_value[cap_size++] = CAP_SYSLOG;
+
+    if (auditd)
+        cap_value[cap_size++] = CAP_AUDIT_CONTROL;
+
+    if (cap_set_flag(caps.get(), CAP_PERMITTED, cap_size, cap_value,
                      CAP_SET) < 0) {
         return -1;
     }
-    if (cap_set_flag(caps.get(), CAP_EFFECTIVE, arraysize(cap_value), cap_value,
+    if (cap_set_flag(caps.get(), CAP_EFFECTIVE, cap_size, cap_value,
                      CAP_SET) < 0) {
         return -1;
     }
     if (cap_set_proc(caps.get()) < 0) {
         android::prdebug(
-            "failed to set CAP_SETGID, CAP_SYSLOG or CAP_AUDIT_CONTROL (%d)",
+            "failed to set CAP_SETUID, CAP_SETGID, CAP_SYSLOG or CAP_AUDIT_CONTROL (%d)",
             errno);
         return -1;
     }
@@ -149,10 +159,10 @@ static int drop_privs(bool klogd, bool auditd) {
         return -1;
     }
 
-    if (cap_set_flag(caps.get(), CAP_PERMITTED, 1, cap_value, CAP_CLEAR) < 0) {
+    if (cap_set_flag(caps.get(), CAP_PERMITTED, cap_clr_size, cap_value, CAP_CLEAR) < 0) {
         return -1;
     }
-    if (cap_set_flag(caps.get(), CAP_EFFECTIVE, 1, cap_value, CAP_CLEAR) < 0) {
+    if (cap_set_flag(caps.get(), CAP_EFFECTIVE, cap_clr_size, cap_value, CAP_CLEAR) < 0) {
         return -1;
     }
     if (cap_set_proc(caps.get()) < 0) {
