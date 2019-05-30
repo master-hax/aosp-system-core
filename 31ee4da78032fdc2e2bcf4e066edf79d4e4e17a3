@@ -1,0 +1,90 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "01aea88f_758eff9d",
+        "filename": "init/service.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 918,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-05-30T19:48:29Z",
+      "side": 1,
+      "message": "Can we refactor all of this out too?  I think we can without too much difficulty, something like:\n\nstruct NamespaceInfo {\n    unsigned namespace_flags_;\n    // Pair of namespace type, path to namespace.\n    std::vector\u003cstd::pair\u003cint, std::string\u003e\u003e namespaces_to_enter_;\n};\n\nThen\n\nEnterNamespaces(const NamespaceInfo\u0026 info, const std::string\u0026 name, bool pre_apexd_);\n\nThe code is otherwise identical in nativezygote_server.cpp, right?",
+      "range": {
+        "startLine": 887,
+        "startChar": 0,
+        "endLine": 918,
+        "endChar": 9
+      },
+      "revId": "31ee4da78032fdc2e2bcf4e066edf79d4e4e17a3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2fdfd7e5_3d0af829",
+        "filename": "init/service.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 936,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-05-30T19:48:29Z",
+      "side": 1,
+      "message": "Let\u0027s move this into SetProcessAttributes() too, as the first thing it does.  Moving it will be okay.",
+      "range": {
+        "startLine": 931,
+        "startChar": 0,
+        "endLine": 936,
+        "endChar": 9
+      },
+      "revId": "31ee4da78032fdc2e2bcf4e066edf79d4e4e17a3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7238b39f_5fd83c8f",
+        "filename": "init/service.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 943,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-05-30T19:48:29Z",
+      "side": 1,
+      "message": "Thinking more, we can probably more this whole block to a SetupStdio(bool needs_console) function.",
+      "range": {
+        "startLine": 938,
+        "startChar": 0,
+        "endLine": 943,
+        "endChar": 9
+      },
+      "revId": "31ee4da78032fdc2e2bcf4e066edf79d4e4e17a3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ec39980f_b6ee4937",
+        "filename": "init/service_utils.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-05-30T19:48:29Z",
+      "side": 1,
+      "message": "I was thinking to include ProcessAttributes directly in Service, so that we don\u0027t need to copy around the arguments.  create_proc_group could be a 2nd parameter to the function.\n\nI think only uid is used elsewhere, and an extra struct to access that shouldn\u0027t be a problem.",
+      "revId": "31ee4da78032fdc2e2bcf4e066edf79d4e4e17a3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
