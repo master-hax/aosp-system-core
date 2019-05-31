@@ -23,9 +23,7 @@
  */
 #define LOG_TAG "ashmem"
 
-#ifndef __ANDROID_VNDK__
 #include <dlfcn.h>
-#endif
 #include <errno.h>
 #include <fcntl.h>
 #include <linux/ashmem.h>
@@ -67,17 +65,19 @@ static pthread_mutex_t __ashmem_lock = PTHREAD_MUTEX_INITIALIZER;
 
 /*
  * We use ashmemd to enforce that apps don't open /dev/ashmem directly. Vendor
- * code can't access system aidl services per Treble requirements. So we limit
- * ashmemd access to the system variant of libcutils.
+ * code can't access system aidl services per Treble requirements.
  */
-#ifndef __ANDROID_VNDK__
 using openFdType = int (*)();
 
 static openFdType openFd;
 
 openFdType initOpenAshmemFd() {
     openFdType openFd = nullptr;
+#ifndef __ANDROID_VNDK__
     void* handle = dlopen("libashmemd_client.so", RTLD_NOW);
+#else
+    void* handle = dlopen("libashmemd_hidl_client.so", RTLD_NOW);
+#endif
     if (!handle) {
         ALOGE("Failed to dlopen() libashmemd_client.so: %s", dlerror());
         return openFd;
@@ -89,7 +89,6 @@ openFdType initOpenAshmemFd() {
     }
     return openFd;
 }
-#endif
 
 /*
  * has_memfd_support() determines if the device can use memfd. memfd support
@@ -222,7 +221,7 @@ static int __ashmem_open_locked()
     struct stat st;
 
     int fd = -1;
-#ifndef __ANDROID_VNDK__
+
     if (!openFd) {
         openFd = initOpenAshmemFd();
     }
@@ -230,10 +229,7 @@ static int __ashmem_open_locked()
     if (openFd) {
         fd = openFd();
     }
-#endif
-    if (fd < 0) {
-        fd = TEMP_FAILURE_RETRY(open(ASHMEM_DEVICE, O_RDWR | O_CLOEXEC));
-    }
+
     if (fd < 0) {
         return fd;
     }
@@ -487,9 +483,7 @@ int ashmem_get_size_region(int fd)
 }
 
 void ashmem_init() {
-#ifndef __ANDROID_VNDK__
     pthread_mutex_lock(&__ashmem_lock);
     openFd = initOpenAshmemFd();
     pthread_mutex_unlock(&__ashmem_lock);
-#endif  //__ANDROID_VNDK__
 }
