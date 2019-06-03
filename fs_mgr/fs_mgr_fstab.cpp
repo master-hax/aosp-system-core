@@ -36,6 +36,7 @@
 
 #include "fs_mgr_priv.h"
 
+using android::base::EndsWith;
 using android::base::ParseByteCount;
 using android::base::ParseInt;
 using android::base::ReadFileToString;
@@ -456,10 +457,16 @@ std::string GetFstabPath() {
     return "";
 }
 
-bool ReadFstabFile(FILE* fstab_file, bool proc_mounts, Fstab* fstab_out) {
+enum MountFormat {
+    MF_FSTAB = false,
+    MF_PROC_MOUNTS = true,
+    MF_PROC_MOUNTINFO,
+};
+
+bool ReadFstabFile(FILE* fstab_file, enum MountFormat mount_format, Fstab* fstab_out) {
     ssize_t len;
     size_t alloc_len = 0;
-    char *line = NULL;
+    char* line = nullptr;
     const char *delim = " \t";
     char *save_ptr, *p;
     Fstab fstab;
@@ -479,37 +486,88 @@ bool ReadFstabFile(FILE* fstab_file, bool proc_mounts, Fstab* fstab_out) {
         if (*p == '#' || *p == '\0')
             continue;
 
+        auto str = line;
+        if (mount_format == MF_PROC_MOUNTINFO) {
+            if (!(p = strtok_r(str, delim, &save_ptr))) {
+                LERROR << "Error parsing mount ID";
+                goto err;
+            }
+            if (!(p = strtok_r(nullptr, delim, &save_ptr))) {
+                LERROR << "Error parsing parent ID";
+                goto err;
+            }
+            str = nullptr;
+        }
+
         FstabEntry entry;
 
-        if (!(p = strtok_r(line, delim, &save_ptr))) {
+        if (!(p = strtok_r(str, delim, &save_ptr))) {
             LERROR << "Error parsing mount source";
             goto err;
         }
         entry.blk_device = p;
 
-        if (!(p = strtok_r(NULL, delim, &save_ptr))) {
+        if (mount_format == MF_PROC_MOUNTINFO) {
+            if (!(p = strtok_r(nullptr, delim, &save_ptr))) {
+                LERROR << "Error parsing root";
+                goto err;
+            }
+        }
+        if (!(p = strtok_r(nullptr, delim, &save_ptr))) {
             LERROR << "Error parsing mount_point";
             goto err;
         }
         entry.mount_point = p;
 
-        if (!(p = strtok_r(NULL, delim, &save_ptr))) {
-            LERROR << "Error parsing fs_type";
-            goto err;
+        if (mount_format != MF_PROC_MOUNTINFO) {
+            if (!(p = strtok_r(nullptr, delim, &save_ptr))) {
+                LERROR << "Error parsing fs_type";
+                goto err;
+            }
+            entry.fs_type = p;
         }
-        entry.fs_type = p;
 
-        if (!(p = strtok_r(NULL, delim, &save_ptr))) {
+        if (!(p = strtok_r(nullptr, delim, &save_ptr))) {
             LERROR << "Error parsing mount_flags";
             goto err;
         }
 
         ParseMountFlags(p, &entry);
 
+        if (mount_format == MF_PROC_MOUNTINFO) {
+            while ((p = strtok_r(nullptr, delim, &save_ptr))) {
+                if ((p[0] == '-') && (p[1] == '\0')) break;
+                if (StartsWith(p, "shared:")) entry.flags |= MS_SHARED;
+            }
+            if (!p) {
+                LERROR << "Error parsing fields";
+                goto err;
+            }
+
+            if (!(p = strtok_r(nullptr, delim, &save_ptr))) {
+                LERROR << "Error parsing fs_type";
+                goto err;
+            }
+            entry.fs_type = p;
+
+            if (!(p = strtok_r(str, delim, &save_ptr))) {
+                LERROR << "Error parsing mount source";
+                goto err;
+            }
+            entry.blk_device = p;
+
+            if (!(p = strtok_r(nullptr, delim, &save_ptr))) {
+                LERROR << "Error parsing super_flags";
+                goto err;
+            }
+
+            ParseMountFlags(p, &entry);
+        }
+
         // For /proc/mounts, ignore everything after mnt_freq and mnt_passno
-        if (proc_mounts) {
+        if (mount_format != MF_FSTAB) {
             p += strlen(p);
-        } else if (!(p = strtok_r(NULL, delim, &save_ptr))) {
+        } else if (!(p = strtok_r(nullptr, delim, &save_ptr))) {
             LERROR << "Error parsing fs_mgr_options";
             goto err;
         }
@@ -647,13 +705,18 @@ bool ReadFstabFromFile(const std::string& path, Fstab* fstab) {
         return false;
     }
 
-    bool is_proc_mounts = path == "/proc/mounts";
+    enum MountFormat mount_format = MF_FSTAB;
+    if (path == "/proc/mounts") {
+        mount_format = MF_PROC_MOUNTS;
+    } else if (StartsWith(path, "/proc/") && EndsWith(path, "/mountinfo")) {
+        mount_format = MF_PROC_MOUNTINFO;
+    }
 
-    if (!ReadFstabFile(fstab_file.get(), is_proc_mounts, fstab)) {
+    if (!ReadFstabFile(fstab_file.get(), mount_format, fstab)) {
         LERROR << __FUNCTION__ << "(): failed to load fstab from : '" << path << "'";
         return false;
     }
-    if (!is_proc_mounts && !access(android::gsi::kGsiBootedIndicatorFile, F_OK)) {
+    if ((mount_format == MF_FSTAB) && !access(android::gsi::kGsiBootedIndicatorFile, F_OK)) {
         TransformFstabForGsi(fstab);
     }
 
@@ -678,7 +741,7 @@ bool ReadFstabFromDt(Fstab* fstab, bool log) {
         return false;
     }
 
-    if (!ReadFstabFile(fstab_file.get(), false, fstab)) {
+    if (!ReadFstabFile(fstab_file.get(), MF_FSTAB, fstab)) {
         if (log) {
             LERROR << __FUNCTION__ << "(): failed to load fstab from kernel:" << std::endl
                    << fstab_buf;
