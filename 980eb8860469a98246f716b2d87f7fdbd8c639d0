@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "91a74267_79e3c297",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 195,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-06-04T22:33:57Z",
+      "side": 1,
+      "message": "Maybe add:\n\nLOG(INFO) \u003c\u003c it-\u003emount_point \u003c\u003c \" \" \u003c\u003c it-\u003eblock_device \u003c\u003c \" \" \u003c\u003c it-\u003eflags;\n\nto start reporting what is being dumped into fstab?",
+      "range": {
+        "startLine": 195,
+        "startChar": 59,
+        "endLine": 195,
+        "endChar": 60
+      },
+      "revId": "980eb8860469a98246f716b2d87f7fdbd8c639d0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "6526b269_e3eeb844",
         "filename": "fs_mgr/fs_mgr_remount.cpp",
         "patchSetId": 1
