@@ -83,10 +83,46 @@ struct FstabEntry {
         bool first_stage_mount : 1;
         bool slot_select_other : 1;
         bool fs_verity : 1;
+
+        bool operator==(const FsMgrFlags& rval) const {
+            return (wait == rval.wait) && (check == rval.check) && (crypt == rval.crypt) &&
+                   (nonremovable == rval.nonremovable) && (vold_managed == rval.vold_managed) &&
+                   (recovery_only == rval.recovery_only) && (verify == rval.verify) &&
+                   (force_crypt == rval.force_crypt) && (no_emulated_sd == rval.no_emulated_sd) &&
+                   (no_trim == rval.no_trim) && (file_encryption == rval.file_encryption) &&
+                   (formattable == rval.formattable) && (slot_select == rval.slot_select) &&
+                   (force_fde_or_fbe == rval.force_fde_or_fbe) && (late_mount == rval.late_mount) &&
+                   (no_fail == rval.no_fail) && (verify_at_boot == rval.verify_at_boot) &&
+                   (quota == rval.quota) && (avb == rval.avb) && (logical == rval.logical) &&
+                   (checkpoint_blk == rval.checkpoint_blk) &&
+                   (checkpoint_fs == rval.checkpoint_fs) &&
+                   (first_stage_mount == rval.first_stage_mount) &&
+                   (slot_select_other == rval.slot_select_other) && (fs_verity == rval.fs_verity);
+        }
     } fs_mgr_flags = {};
 
     bool is_encryptable() const {
         return fs_mgr_flags.crypt || fs_mgr_flags.force_crypt || fs_mgr_flags.force_fde_or_fbe;
+    }
+
+    bool operator==(const FstabEntry& rval) const {
+        return (blk_device == rval.blk_device) &&
+               (logical_partition_name == rval.logical_partition_name) &&
+               (mount_point == rval.mount_point) && (fs_type == rval.fs_type) &&
+               (flags == rval.flags) && (fs_options == rval.fs_options) &&
+               (key_loc == rval.key_loc) && (key_dir == rval.key_dir) && (length == rval.length) &&
+               (label == rval.label) && (partnum == rval.partnum) &&
+               (swap_prio == rval.swap_prio) && (max_comp_streams == rval.max_comp_streams) &&
+               (zram_size == rval.zram_size) && (reserved_size == rval.reserved_size) &&
+               (file_contents_mode == rval.file_contents_mode) &&
+               (file_names_mode == rval.file_names_mode) &&
+               (erase_blk_size == rval.erase_blk_size) &&
+               (logical_blk_size == rval.logical_blk_size) && (sysfs_path == rval.sysfs_path) &&
+               (vbmeta_partition == rval.vbmeta_partition) &&
+               (zram_loopback_path == rval.zram_loopback_path) &&
+               (zram_loopback_size == rval.zram_loopback_size) &&
+               (zram_backing_dev_path == rval.zram_backing_dev_path) &&
+               (avb_keys == rval.avb_keys) && (fs_mgr_flags == rval.fs_mgr_flags);
     }
 };
 

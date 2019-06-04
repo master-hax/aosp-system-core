@@ -190,6 +190,19 @@ int main(int argc, char* argv[]) {
         PLOG(ERROR) << "Failed to read fstab";
         return NO_FSTAB;
     }
+    // Remove all identical entries to prevent visible stutter
+    auto stutter = false;
+    for (auto it = fstab.begin(); it != fstab.end(); ++it) {
+        for (auto is = it + 1; is != fstab.end();) {
+            if (*it == *is) {
+                stutter = true;
+                is = fstab.erase(is);
+                continue;
+            }
+            ++is;
+        }
+    }
+    if (stutter) LOG(WARNING) << "Multiple identical entries in fstab, skipping";
 
     // Generate the list of supported overlayfs mount points.
     auto overlayfs_candidates = fs_mgr_overlayfs_candidate_list(fstab);
