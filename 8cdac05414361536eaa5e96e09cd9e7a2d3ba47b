@@ -25,6 +25,64 @@
     },
     {
       "key": {
+        "uuid": "c685d1b8_5910c0c3",
+        "filename": "libutils/BitSet_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 278,
+      "author": {
+        "id": 1006497
+      },
+      "writtenOn": "2019-06-04T15:50:47Z",
+      "side": 1,
+      "message": "Why? What do you think the cast adds here? (and similarly, why not cast in the test above?)",
+      "parentUuid": "148706da_375bfa62",
+      "range": {
+        "startLine": 278,
+        "startChar": 23,
+        "endLine": 278,
+        "endChar": 27
+      },
+      "revId": "8cdac05414361536eaa5e96e09cd9e7a2d3ba47b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6ef6f21e_7dec1f43",
+        "filename": "libutils/include/utils/BitSet.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 1006497
+      },
+      "writtenOn": "2019-06-04T15:50:47Z",
+      "side": 1,
+      "message": "Same as below, the details shouldn\u0027t go before the actual core intention of the function:\n\n    Finds the first marked bit in the set.\n    The positions are counted from MSB to LSB, so this is equivalent to counting the number of\n    leading zeroes. Given the same input, the results for 32 bit BitSet and 64 bit BitSet\n    will therefore be different.\n    Result is undefined if all bits are unmarked.\n\nAlso, you updated the documentation for the static function here and the method below. Either just update the method docs or add docs to both it and the static function (i.e. be consistent in what\u0027s documented). Also, don\u0027t drop the details about when behavior is undefined.",
+      "revId": "8cdac05414361536eaa5e96e09cd9e7a2d3ba47b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c78af1db_ea988146",
+        "filename": "libutils/include/utils/BitSet.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 1006497
+      },
+      "writtenOn": "2019-06-04T15:50:47Z",
+      "side": 1,
+      "message": "The details of a method shouldn\u0027t go first in the docs.\n\n  Return the last marked bit in the set.\n  Bits are marked from MSB to LSB, so this is equivalent to counting the trailing zeroes. Results\n  are undefined if all bits are marked.",
+      "revId": "8cdac05414361536eaa5e96e09cd9e7a2d3ba47b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "44630b9b_f48ec0eb",
         "filename": "libutils/include/utils/BitSet.h",
         "patchSetId": 2
