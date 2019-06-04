@@ -22,6 +22,30 @@
       "revId": "980eb8860469a98246f716b2d87f7fdbd8c639d0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bfaee745_85aa6b6a",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 205,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-06-04T22:30:56Z",
+      "side": 1,
+      "message": "Then the problem in the bug is multiple non-identical entries ...",
+      "parentUuid": "6526b269_e3eeb844",
+      "range": {
+        "startLine": 205,
+        "startChar": 0,
+        "endLine": 205,
+        "endChar": 81
+      },
+      "revId": "980eb8860469a98246f716b2d87f7fdbd8c639d0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
