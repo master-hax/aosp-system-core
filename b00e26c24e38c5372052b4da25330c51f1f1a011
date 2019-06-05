@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "11dbd238_3e8831f7",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-06-05T18:21:26Z",
+      "side": 1,
+      "message": "That\u0027s not really accurate to what the CL is doing.  It\u0027s more like \"Don\u0027t report \u0027Skip mounting partitions\u0027 when the skip mount partition is not in the fstab\".",
+      "revId": "b00e26c24e38c5372052b4da25330c51f1f1a011",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
