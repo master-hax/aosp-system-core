@@ -1,3 +1,8 @@
+TOOL(interface_start)
+TOOL(interface_stop)
 TOOL(getevent)
 TOOL(getprop)
+TOOL(setprop)
+TOOL(start)
+TOOL(stop)
 TOOL(toolbox)
