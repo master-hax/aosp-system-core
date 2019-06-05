@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "01ddffa6_f1d7c3e5",
+        "filename": "base/expected_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 429,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-06-05T23:54:45Z",
+      "side": 1,
+      "message": "Unrelated to this CL, but we might want tests for \u003d\u003d and !\u003d with different types, e.g. expected\u003cint, E\u003e and expected\u003cint32_t, E\u003e, or maybe even expected\u003cstd::string_view, E\u003e and expected\u003cstd::string, E\u003e.\n\nI\u0027m not quite sure how expected\u003cvoid, E\u003e compares with expected\u003cint, E\u003e.  It should fail of course, but does it instantiate the right templates and compile?  I don\u0027t think so currently.",
+      "revId": "06101da4f4f698f677ac686ebb3163ad92046b96",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
