@@ -28,6 +28,8 @@ cc_defaults {
         "toolbox.c",
         "getevent.c",
         "getprop.cpp",
+        "setprop.cpp",
+        "start.cpp",
     ],
     generated_headers: [
         "toolbox_input_labels",
@@ -38,8 +40,13 @@ cc_defaults {
     static_libs: ["libpropertyinfoparser"],
 
     symlinks: [
+        "interface_start",
+        "interface_stop",
         "getevent",
         "getprop",
+        "setprop",
+        "start",
+        "stop",
     ],
 }
 
