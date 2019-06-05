@@ -98,6 +98,14 @@ struct ResultError {
   int code_;
 };
 
+bool operator==(const ResultError& lhs, const ResultError& rhs) {
+  return lhs.message() == rhs.message() && lhs.code() == rhs.code();
+}
+
+bool operator!=(const ResultError& lhs, const ResultError& rhs) {
+  return !(lhs == rhs);
+}
+
 inline std::ostream& operator<<(std::ostream& os, const ResultError& t) {
   os << t.message();
   return os;
