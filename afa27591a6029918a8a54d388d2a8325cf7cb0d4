@@ -22,6 +22,30 @@
       "revId": "afa27591a6029918a8a54d388d2a8325cf7cb0d4",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a788a250_9d8a6ecc",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-06-06T00:32:32Z",
+      "side": 1,
+      "message": "Fixed \u0027stop\u0027.\n\nI\u0027m open to `start -i`.  It\u0027s wvw@ and smoreland@ who\u0027d be using it more, so I\u0027m curious to what they think here.",
+      "parentUuid": "d68330f7_5f719069",
+      "range": {
+        "startLine": 19,
+        "startChar": 19,
+        "endLine": 19,
+        "endChar": 22
+      },
+      "revId": "afa27591a6029918a8a54d388d2a8325cf7cb0d4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
