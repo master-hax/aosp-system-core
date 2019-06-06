@@ -16,6 +16,24 @@
       "revId": "06101da4f4f698f677ac686ebb3163ad92046b96",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d2458897_1cb7efba",
+        "filename": "base/expected_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 429,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2019-06-06T00:16:26Z",
+      "side": 1,
+      "message": "int \u003c-\u003e int32_t and string_view \u003c-\u003e string work. I\u0027ve added a test case for this.\n\nvoid \u003c-\u003e int didn\u0027t compile as you expected. I\u0027ve added two specialization for operator\u003d\u003d for the case where only one side is void.",
+      "parentUuid": "01ddffa6_f1d7c3e5",
+      "revId": "06101da4f4f698f677ac686ebb3163ad92046b96",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
