@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d74d99dd_95385b0f",
+        "filename": "base/include/android-base/strings.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 1494267
+      },
+      "writtenOn": "2019-06-07T19:03:50Z",
+      "side": 1,
+      "message": "I am not sure if this is necessary. I can take it out if it isn\u0027t needed.",
+      "revId": "953b2fdb768652de4a120fece3eba7e71dc4c67b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
