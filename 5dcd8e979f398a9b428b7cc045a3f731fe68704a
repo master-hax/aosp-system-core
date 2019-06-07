@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1b997f7a_f7205a50",
+        "filename": "fs_mgr/libfiemap_writer/fiemap_writer.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 134,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-06-07T20:58:15Z",
+      "side": 1,
+      "message": "If you\u0027re going to create a std::string out of target_type, might as well do it before the if statement, so we can use !\u003d instead of strcmp().",
+      "revId": "5dcd8e979f398a9b428b7cc045a3f731fe68704a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
