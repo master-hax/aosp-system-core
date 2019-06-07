@@ -28,8 +28,7 @@ namespace base {
 #define CHECK_NE(a, b) \
   if ((a) == (b)) abort();
 
-std::vector<std::string> Split(const std::string& s,
-                               const std::string& delimiters) {
+std::vector<std::string> Split(std::string_view s, std::string_view delimiters) {
   CHECK_NE(delimiters.size(), 0U);
 
   std::vector<std::string> result;
@@ -38,7 +37,7 @@ std::vector<std::string> Split(const std::string& s,
   size_t found;
   while (true) {
     found = s.find_first_of(delimiters, base);
-    result.push_back(s.substr(base, found - base));
+    result.emplace_back(s.substr(base, found - base));
     if (found == s.npos) break;
     base = found + 1;
   }
@@ -46,11 +45,9 @@ std::vector<std::string> Split(const std::string& s,
   return result;
 }
 
-std::string Trim(const std::string& s) {
-  std::string result;
-
+std::string Trim(std::string_view s) {
   if (s.size() == 0) {
-    return result;
+    return "";
   }
 
   size_t start_index = 0;
@@ -76,16 +73,17 @@ std::string Trim(const std::string& s) {
   if (end_index < start_index) {
     return "";
   }
+
   // Start_index is the first non-space, end_index is the last one.
-  return s.substr(start_index, end_index - start_index + 1);
+  return std::string(s.substr(start_index, end_index - start_index + 1));
 }
 
 // These cases are probably the norm, so we mark them extern in the header to
 // aid compile time and binary size.
 template std::string Join(const std::vector<std::string>&, char);
 template std::string Join(const std::vector<const char*>&, char);
-template std::string Join(const std::vector<std::string>&, const std::string&);
-template std::string Join(const std::vector<const char*>&, const std::string&);
+template std::string Join(const std::vector<std::string>&, std::string_view);
+template std::string Join(const std::vector<const char*>&, std::string_view);
 
 bool StartsWith(std::string_view s, std::string_view prefix) {
   return s.substr(0, prefix.size()) == prefix;
