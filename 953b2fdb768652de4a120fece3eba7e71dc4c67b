@@ -144,6 +144,48 @@
     },
     {
       "key": {
+        "uuid": "15323c65_fe79e176",
+        "filename": "base/include/android-base/strings.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1494267
+      },
+      "writtenOn": "2019-06-07T20:31:30Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5253dc27_e1b98101",
+      "range": {
+        "startLine": 32,
+        "startChar": 31,
+        "endLine": 32,
+        "endChar": 36
+      },
+      "revId": "953b2fdb768652de4a120fece3eba7e71dc4c67b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fcbd5a93_e137e025",
+        "filename": "base/include/android-base/strings.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1494267
+      },
+      "writtenOn": "2019-06-07T20:31:30Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1b12198d_f1205ad3",
+      "revId": "953b2fdb768652de4a120fece3eba7e71dc4c67b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "bd7820c3_919d4405",
         "filename": "base/include/android-base/strings.h",
         "patchSetId": 2
@@ -232,6 +274,24 @@
     },
     {
       "key": {
+        "uuid": "094e498d_d8b778d9",
+        "filename": "base/include/android-base/strings.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 1494267
+      },
+      "writtenOn": "2019-06-07T20:31:30Z",
+      "side": 1,
+      "message": "Having a std::vector\u003cstd::string_view\u003e is probably unlikely since I don\u0027t think std::vector\u003cstd::string\u003e automatically casts to that. If anything we could replace the const std::string\u0026 with std::string_view",
+      "parentUuid": "2bb6d53a_1b4bbe6f",
+      "revId": "953b2fdb768652de4a120fece3eba7e71dc4c67b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "6c97e3b2_559a8ae6",
         "filename": "base/strings.cpp",
         "patchSetId": 2
@@ -243,6 +303,30 @@
       "writtenOn": "2019-06-07T19:10:36Z",
       "side": 1,
       "message": "just return directly, remove L49, and return \"\" on L52?",
+      "range": {
+        "startLine": 80,
+        "startChar": 2,
+        "endLine": 81,
+        "endChar": 16
+      },
+      "revId": "953b2fdb768652de4a120fece3eba7e71dc4c67b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1e8fc4f8_4556666b",
+        "filename": "base/strings.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 1494267
+      },
+      "writtenOn": "2019-06-07T20:31:30Z",
+      "side": 1,
+      "message": "Unfortunately, cannot return directly since \"std::string_view::substr\" returns a \"std::string_view\" while this function has to return a \"std::string\".",
+      "parentUuid": "6c97e3b2_559a8ae6",
       "range": {
         "startLine": 80,
         "startChar": 2,
