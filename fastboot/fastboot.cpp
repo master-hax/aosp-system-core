@@ -706,7 +706,7 @@ bool ParseRequirementLine(const std::string& line, std::string* name, std::strin
     std::smatch match_results;
 
     if (std::regex_match(line, match_results, require_reject_regex)) {
-        *invert = Trim(match_results[1]) == "reject";
+        *invert = Trim(match_results.str(1)) == "reject";
     } else if (std::regex_match(line, match_results, require_product_regex)) {
         *product = match_results[1];
     } else {
@@ -719,7 +719,7 @@ bool ParseRequirementLine(const std::string& line, std::string* name, std::strin
         *name = "product";
     }
 
-    auto raw_options = Split(match_results[3], "|");
+    auto raw_options = Split(match_results.str(3), "|");
     for (const auto& option : raw_options) {
         auto trimmed_option = Trim(option);
         options->emplace_back(trimmed_option);
