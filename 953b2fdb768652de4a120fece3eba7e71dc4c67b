@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "45da4983_bad60220",
+        "filename": "base/include/android-base/strings.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-06-07T19:10:36Z",
+      "side": 1,
+      "message": "`delimiters` too? (since that\u0027ll mainly be a C string literal.)",
+      "revId": "953b2fdb768652de4a120fece3eba7e71dc4c67b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "d74d99dd_95385b0f",
         "filename": "base/include/android-base/strings.h",
         "patchSetId": 2
@@ -13,6 +30,47 @@
       "writtenOn": "2019-06-07T19:03:50Z",
       "side": 1,
       "message": "I am not sure if this is necessary. I can take it out if it isn\u0027t needed.",
+      "revId": "953b2fdb768652de4a120fece3eba7e71dc4c67b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5cf4aeee_0ff17997",
+        "filename": "base/include/android-base/strings.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-06-07T19:10:36Z",
+      "side": 1,
+      "message": "makes sense to have it too, i think.\n\n/me wonders whether the next three should be std::string_view for the last arg?",
+      "parentUuid": "d74d99dd_95385b0f",
+      "revId": "953b2fdb768652de4a120fece3eba7e71dc4c67b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6c97e3b2_559a8ae6",
+        "filename": "base/strings.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-06-07T19:10:36Z",
+      "side": 1,
+      "message": "just return directly, remove L49, and return \"\" on L52?",
+      "range": {
+        "startLine": 80,
+        "startChar": 2,
+        "endLine": 81,
+        "endChar": 16
+      },
       "revId": "953b2fdb768652de4a120fece3eba7e71dc4c67b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
