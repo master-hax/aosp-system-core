@@ -120,6 +120,30 @@
     },
     {
       "key": {
+        "uuid": "5253dc27_e1b98101",
+        "filename": "base/include/android-base/strings.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-06-07T20:06:47Z",
+      "side": 1,
+      "message": "yeah, i tend to always write const\u0026 for std::string_view too, and then jmgao/tomcherry complain.\n\ni think it\u0027s going to be a long time before we achieve consistency on that...",
+      "parentUuid": "60c67a8e_970d0be2",
+      "range": {
+        "startLine": 32,
+        "startChar": 31,
+        "endLine": 32,
+        "endChar": 36
+      },
+      "revId": "953b2fdb768652de4a120fece3eba7e71dc4c67b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "bd7820c3_919d4405",
         "filename": "base/include/android-base/strings.h",
         "patchSetId": 2
@@ -184,6 +208,24 @@
       "side": 1,
       "message": "I don\u0027t think you need it.  We already have\n\ntemplate \u003ctypename ContainerT, typename SeparatorT\u003e\nstd::string Join(const ContainerT\u0026 things, SeparatorT separator) {\n\nThat I\u0027m pretty sure will handle std::vector\u003cstd::string_view\u003e, std::string_view",
       "parentUuid": "5cf4aeee_0ff17997",
+      "revId": "953b2fdb768652de4a120fece3eba7e71dc4c67b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2bb6d53a_1b4bbe6f",
+        "filename": "base/include/android-base/strings.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-06-07T20:06:47Z",
+      "side": 1,
+      "message": "i mean \"why are we explicitly instantiating the ones we probably want _less_?\".",
+      "parentUuid": "604d8072_735a47b4",
       "revId": "953b2fdb768652de4a120fece3eba7e71dc4c67b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
