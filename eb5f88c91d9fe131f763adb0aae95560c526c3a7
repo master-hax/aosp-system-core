@@ -96,6 +96,30 @@
     },
     {
       "key": {
+        "uuid": "5a1b5624_4cf6fcd7",
+        "filename": "fs_mgr/libfiemap_writer/fiemap_writer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-06-07T19:52:03Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7477cda2_3926410c",
+      "range": {
+        "startLine": 122,
+        "startChar": 0,
+        "endLine": 123,
+        "endChar": 27
+      },
+      "revId": "eb5f88c91d9fe131f763adb0aae95560c526c3a7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "938efe47_0d48a8df",
         "filename": "fs_mgr/libfiemap_writer/fiemap_writer.cpp",
         "patchSetId": 1
@@ -155,6 +179,30 @@
       "side": 1,
       "message": "By that I mean, it\u0027s null terminated as long as the name doesn\u0027t fill all bytes of the buffer, strncpy-style.",
       "parentUuid": "71154520_ccecb1a3",
+      "range": {
+        "startLine": 131,
+        "startChar": 42,
+        "endLine": 131,
+        "endChar": 57
+      },
+      "revId": "eb5f88c91d9fe131f763adb0aae95560c526c3a7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d96ec8b2_d16de1ec",
+        "filename": "fs_mgr/libfiemap_writer/fiemap_writer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 131,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-06-07T19:52:03Z",
+      "side": 1,
+      "message": "Hmmm\n\nstd::string(entry.target_type, sizeof(entry.target_type)).c_str()",
+      "parentUuid": "a2306cb3_40a03b41",
       "range": {
         "startLine": 131,
         "startChar": 42,
