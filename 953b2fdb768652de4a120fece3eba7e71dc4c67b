@@ -37,6 +37,47 @@
     },
     {
       "key": {
+        "uuid": "ec048573_4ab627c9",
+        "filename": "base/include/android-base/strings.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2019-06-07T19:54:21Z",
+      "side": 1,
+      "message": "\u003e Unfortunately too, we can\u0027t easily have both, since there\u0027re ambiguous conversions from char* to string and string_view:\n\nWe can always leave the old API as a symbol only (not exported).",
+      "parentUuid": "9b3d6305_179c8f38",
+      "revId": "953b2fdb768652de4a120fece3eba7e71dc4c67b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "60c67a8e_970d0be2",
+        "filename": "base/include/android-base/strings.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2019-06-07T19:54:21Z",
+      "side": 1,
+      "message": "not const\u0026? right? like below",
+      "range": {
+        "startLine": 32,
+        "startChar": 31,
+        "endLine": 32,
+        "endChar": 36
+      },
+      "revId": "953b2fdb768652de4a120fece3eba7e71dc4c67b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "bd7820c3_919d4405",
         "filename": "base/include/android-base/strings.h",
         "patchSetId": 2
