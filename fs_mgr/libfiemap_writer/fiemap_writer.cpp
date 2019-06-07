@@ -37,9 +37,12 @@
 #include <android-base/stringprintf.h>
 #include <android-base/strings.h>
 #include <android-base/unique_fd.h>
+#include <libdm/dm.h>
 
 namespace android {
 namespace fiemap_writer {
+
+using namespace android::dm;
 
 // We are expecting no more than 512 extents in a fiemap of the file we create.
 // If we find more, then it is treated as error for now.
@@ -87,14 +90,49 @@ static bool BlockDeviceToName(uint32_t major, uint32_t minor, std::string* bdev_
 }
 
 static bool DeviceMapperStackPop(const std::string& bdev, std::string* bdev_raw) {
-    // TODO: Stop popping the device mapper stack if dm-linear target is found
+    *bdev_raw = bdev;
+
     if (!::android::base::StartsWith(bdev, "dm-")) {
         // We are at the bottom of the device mapper stack.
-        *bdev_raw = bdev;
         return true;
     }
 
-    std::string dm_leaf_dir = ::android::base::StringPrintf("/sys/block/%s/slaves", bdev.c_str());
+    // Get the device name.
+    auto dm_name_file = android::base::StringPrintf("/sys/block/%s/dm/name", bdev.c_str());
+    std::string dm_name;
+    if (!android::base::ReadFileToString(dm_name_file, &dm_name)) {
+        PLOG(ERROR) << "Could not read file: " << dm_name_file;
+        return false;
+    }
+    dm_name = android::base::Trim(dm_name);
+
+    auto& dm = DeviceMapper::Instance();
+    std::vector<DeviceMapper::TargetInfo> table;
+    if (!dm.GetTableInfo(dm_name, &table)) {
+        LOG(ERROR) << "Could not read device-mapper table for " << dm_name << " at " << bdev;
+        return false;
+    }
+
+    // The purpose of libfiemap_writer is to provide an extent-based view into
+    // a file. This is difficult if devices are not layered in a 1:1 manner;
+    // we would have to translate and break up extents based on the actual
+    // block mapping. Since this is too complex, we simply stop processing
+    // the device-mapper stack if we encounter a complex case.
+    //
+    // It is up to the caller to decide whether stopping at a virtual block
+    // device is allowable.
+    if (table.size() > 1) {
+        LOG(INFO) << "Stopping at complex table for " << dm_name << " at " << bdev;
+        return true;
+    }
+    const auto& entry = table[0].spec;
+    if (strcmp(entry.target_type, "bow") && strcmp(entry.target_type, "default-key") &&
+        strcmp(entry.target_type, "crypt")) {
+        LOG(INFO) << "Stopping at complex target-type for " << dm_name << " at " << bdev;
+        return true;
+    }
+
+    std::string dm_leaf_dir = android::base::StringPrintf("/sys/block/%s/slaves", bdev.c_str());
     auto d = std::unique_ptr<DIR, decltype(&closedir)>(opendir(dm_leaf_dir.c_str()), closedir);
     if (d == nullptr) {
         PLOG(ERROR) << "Failed to open: " << dm_leaf_dir;
