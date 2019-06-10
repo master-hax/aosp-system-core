@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a25d1537_bed1251e",
+        "filename": "base/result_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-06-10T19:56:41Z",
+      "side": 0,
+      "message": "expected\u003cvoid, ...\u003e and the below result_void test already cover this.",
+      "range": {
+        "startLine": 52,
+        "startChar": 0,
+        "endLine": 71,
+        "endChar": 1
+      },
+      "revId": "bbcbc2ffb339b2388e0cc282bb698fe436100b42",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
