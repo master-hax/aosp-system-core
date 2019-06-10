@@ -378,5 +378,39 @@ TEST(result, preserve_errno) {
   EXPECT_EQ(old_errno, result2.error().code());
 }
 
+TEST(result, construct_error_from_list) {
+  Result<int> result = Error("hello", "world", 3);
+  ASSERT_FALSE(result);
+  EXPECT_EQ(0, result.error().code());
+  EXPECT_EQ("helloworld3", result.error().message());
+
+  result = Error(1);
+  ASSERT_FALSE(result);
+  EXPECT_EQ(0, result.error().code());
+  EXPECT_EQ("1", result.error().message());
+
+  result = Error(1, 2, 3);
+  ASSERT_FALSE(result);
+  EXPECT_EQ(0, result.error().code());
+  EXPECT_EQ("123", result.error().message());
+
+  result = Error("error is ", result.error());
+  ASSERT_FALSE(result);
+  EXPECT_EQ(0, result.error().code());
+  EXPECT_EQ("error is 123", result.error().message());
+
+  constexpr int test_errno = 6;
+  errno = test_errno;
+  result = ErrnoError("failure", 1);
+  ASSERT_FALSE(result);
+  EXPECT_EQ(test_errno, result.error().code());
+  EXPECT_EQ("failure1: "s + strerror(test_errno), result.error().message());
+
+  result = Error("error is ", result.error());
+  ASSERT_FALSE(result);
+  EXPECT_EQ(0, result.error().code());  // error code is reset
+  EXPECT_EQ("error is failure1: "s + strerror(test_errno), result.error().message());
+}
+
 }  // namespace base
 }  // namespace android
