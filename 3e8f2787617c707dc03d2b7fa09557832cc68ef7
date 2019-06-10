@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c1ac8cec_eecbb2c9",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 900,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-06-10T23:31:27Z",
+      "side": 1,
+      "message": "You don\u0027t need std::string() here.",
+      "range": {
+        "startLine": 900,
+        "startChar": 51,
+        "endLine": 900,
+        "endChar": 63
+      },
+      "revId": "3e8f2787617c707dc03d2b7fa09557832cc68ef7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
