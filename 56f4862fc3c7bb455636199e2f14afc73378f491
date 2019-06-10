@@ -16,6 +16,24 @@
       "revId": "56f4862fc3c7bb455636199e2f14afc73378f491",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "37061f93_925a5b11",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 279,
+      "author": {
+        "id": 1176763
+      },
+      "writtenOn": "2019-06-10T21:32:33Z",
+      "side": 1,
+      "message": "Since clang-format gave much ugly shape, I just fixed \"char **\". \u0027NULL\u0027 was from the above ext4 case, so fixed together.",
+      "parentUuid": "d87ed2eb_bae0bbf3",
+      "revId": "56f4862fc3c7bb455636199e2f14afc73378f491",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
