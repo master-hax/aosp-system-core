@@ -892,6 +892,15 @@ void property_load_boot_defaults(bool load_debug_prop) {
         load_properties_from_file("/odm/default.prop", nullptr, &properties);
         load_properties_from_file("/odm/build.prop", nullptr, &properties);
     }
+
+    std::string product_sku = GetProperty("ro.boot.product.hardware.sku", "");
+    if (!product_sku.empty()) {
+      // Try odm sku variant path
+      std::string product_sku_file = std::string("/odm/etc/buildprop/sku_") +
+                                     product_sku + std::string("/build.prop");
+      load_properties_from_file(product_sku_file.c_str(), nullptr, &properties);
+    }
+
     load_properties_from_file("/product/build.prop", nullptr, &properties);
     load_properties_from_file("/product_services/build.prop", nullptr, &properties);
     load_properties_from_file("/factory/factory.prop", "ro.*", &properties);
