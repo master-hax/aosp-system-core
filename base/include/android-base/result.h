@@ -43,6 +43,10 @@
 // to the end of the failure string to aid in interacting with C APIs.  Alternatively, an errno
 // value can be directly specified via the Error() constructor.
 //
+// Error and ErrnoError can be constructed from variadic arguments, in which case the arguments
+// are put to the ostream in sequence. e.g., Error("failed when input is ", input) is equivalent
+// to Error() << "failed when input is " << input.
+//
 // ResultError can be used in the ostream when using Error to construct a Result<T>.  In this case,
 // the string that the ResultError takes is passed through the stream normally, but the errno is
 // passed to the Result<T>.  This can be used to pass errno from a failing C function up multiple
@@ -56,16 +60,16 @@
 // Result<U> CalculateResult(const T& input) {
 //   U output;
 //   if (!SomeOtherCppFunction(input, &output)) {
-//     return Error() << "SomeOtherCppFunction(" << input << ") failed";
+//     return Error("SomeOtherCppFunction(", input, ") failed");
 //   }
 //   if (!c_api_function(output)) {
-//     return ErrnoError() << "c_api_function(" << output << ") failed";
+//     return ErrnoError("c_api_function(", output, ") failed");
 //   }
 //   return output;
 // }
 //
 // auto output = CalculateResult(input);
-// if (!output) return Error() << "CalculateResult failed: " << output.error();
+// if (!output) return Error("CalculateResult failed: ", output.error());
 // UseOutput(*output);
 
 #pragma once
@@ -111,10 +115,27 @@ inline std::ostream& operator<<(std::ostream& os, const ResultError& t) {
   return os;
 }
 
+namespace {
+
+inline void StringStreamConcat(std::stringstream&) {
+  return;
+}
+
+template <typename T, typename... Ts>
+inline void StringStreamConcat(std::stringstream& ss, T&& t, Ts&&... ts) {
+  ss << t;
+  StringStreamConcat(ss, ts...);
+}
+
+}  // namespace
+
 class Error {
  public:
   Error() : errno_(0), append_errno_(false) {}
-  Error(int errno_to_append) : errno_(errno_to_append), append_errno_(true) {}
+  template <typename T, typename... Args, std::enable_if_t<!std::is_same_v<Error*, T>>* = nullptr>
+  Error(T t, Args&&... args) : Error() {
+    StringStreamConcat(ss_, t, args...);
+  }
 
   template <typename T>
   operator android::base::expected<T, ResultError>() {
@@ -130,7 +151,10 @@ class Error {
   }
 
   Error& operator<<(const ResultError& result_error) {
-    (*this) << result_error.message();
+    if (!result_error.message().empty()) {
+      (*this) << result_error.message();
+    }
+    append_errno_ = true;
     errno_ = result_error.code();
     return *this;
   }
@@ -151,14 +175,29 @@ class Error {
   Error& operator=(const Error&) = delete;
   Error& operator=(Error&&) = delete;
 
+  friend Error ErrnoError();
+  template <typename... Args>
+  friend Error ErrnoError(Args&&... args);
+
  private:
+  Error(Error*, int errno_) : errno_(errno_), append_errno_(true) {}
+  Error(Error*, int errno_, std::string&& message) : errno_(errno_), append_errno_(true) {
+    (*this) << message;
+  }
   std::stringstream ss_;
   int errno_;
   bool append_errno_;
 };
 
 inline Error ErrnoError() {
-  return Error(errno);
+  return Error(static_cast<Error*>(nullptr), errno);
+}
+
+template <typename... Args>
+inline Error ErrnoError(Args&&... args) {
+  std::stringstream ss;
+  StringStreamConcat(ss, args...);
+  return Error(static_cast<Error*>(nullptr), errno, ss.str());
 }
 
 template <typename T>
