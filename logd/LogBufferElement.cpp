@@ -33,13 +33,13 @@
 const log_time LogBufferElement::FLUSH_ERROR((uint32_t)-1, (uint32_t)-1);
 atomic_int_fast64_t LogBufferElement::sequence(1);
 
-LogBufferElement::LogBufferElement(log_id_t log_id, log_time realtime,
-                                   uid_t uid, pid_t pid, pid_t tid,
-                                   const char* msg, uint16_t len)
+LogBufferElement::LogBufferElement(log_id_t log_id, log_time realtime, log_time recordtime,
+                                   uid_t uid, pid_t pid, pid_t tid, const char* msg, uint16_t len)
     : mUid(uid),
       mPid(pid),
       mTid(tid),
       mRealTime(realtime),
+      mRecordTime(recordtime),
       mMsgLen(len),
       mLogId(log_id),
       mDropped(false) {
@@ -52,6 +52,7 @@ LogBufferElement::LogBufferElement(const LogBufferElement& elem)
       mPid(elem.mPid),
       mTid(elem.mTid),
       mRealTime(elem.mRealTime),
+      mRecordTime(elem.mRecordTime),
       mMsgLen(elem.mMsgLen),
       mLogId(elem.mLogId),
       mDropped(elem.mDropped) {

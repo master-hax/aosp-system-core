@@ -27,9 +27,9 @@
 
 pthread_mutex_t LogTimeEntry::timesLock = PTHREAD_MUTEX_INITIALIZER;
 
-LogTimeEntry::LogTimeEntry(LogReader& reader, SocketClient* client,
-                           bool nonBlock, unsigned long tail, log_mask_t logMask,
-                           pid_t pid, log_time start, uint64_t timeout)
+LogTimeEntry::LogTimeEntry(LogReader& reader, SocketClient* client, bool nonBlock,
+                           unsigned long tail, log_mask_t logMask, pid_t pid, log_time start,
+                           log_time record, uint64_t timeout)
     : leadingDropped(false),
       mReader(reader),
       mLogMask(logMask),
@@ -37,6 +37,7 @@ LogTimeEntry::LogTimeEntry(LogReader& reader, SocketClient* client,
       mCount(0),
       mTail(tail),
       mIndex(0),
+      mRecord(record),
       mClient(client),
       mStart(start),
       mNonBlock(nonBlock),
@@ -159,6 +160,7 @@ int LogTimeEntry::FilterFirstPass(const LogBufferElement* element, void* obj) {
 
     if (me->mCount == 0) {
         me->mStart = element->getRealTime();
+        me->mRecord = element->getRecordTime();
     }
 
     if ((!me->mPid || (me->mPid == element->getPid())) &&
@@ -178,6 +180,7 @@ int LogTimeEntry::FilterSecondPass(const LogBufferElement* element, void* obj) {
     LogTimeEntry::wrlock();
 
     me->mStart = element->getRealTime();
+    me->mRecord = element->getRecordTime();
 
     if (me->skipAhead[element->getLogId()]) {
         me->skipAhead[element->getLogId()]--;

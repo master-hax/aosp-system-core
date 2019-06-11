@@ -217,8 +217,9 @@ bool LogReader::onDataAvailable(SocketClient* cli) {
     }
 
     LogTimeEntry::wrlock();
-    auto entry = std::make_unique<LogTimeEntry>(
-        *this, cli, nonBlock, tail, logMask, pid, sequence, timeout);
+    log_time record = log_time(CLOCK_MONOTONIC);
+    auto entry = std::make_unique<LogTimeEntry>(*this, cli, nonBlock, tail, logMask, pid, sequence,
+                                                record, timeout);
     if (!entry->startReader_Locked()) {
         LogTimeEntry::unlock();
         return false;

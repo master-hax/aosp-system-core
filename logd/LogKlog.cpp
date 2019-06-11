@@ -815,7 +815,8 @@ int LogKlog::log(const char* buf, ssize_t len) {
     }
 
     // Log message
-    int rc = logbuf->log(LOG_ID_KERNEL, now, uid, pid, tid, newstr, (uint16_t)n);
+    log_time recordtime = log_time(CLOCK_MONOTONIC);
+    int rc = logbuf->log(LOG_ID_KERNEL, now, recordtime, uid, pid, tid, newstr, (uint16_t)n);
 
     // notify readers
     if (rc > 0) {
