@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d8a20652_77b66ada",
+        "filename": "fs_mgr/tests/file_wait_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-06-11T02:44:01Z",
+      "side": 1,
+      "message": "You probably want android::base::TemporaryDir, especially since that will work on host, and we should be able to use this as a host test too.",
+      "revId": "6a28866cc766c3fcaaffcedb91fb8302d290511f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
