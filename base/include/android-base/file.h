@@ -19,6 +19,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
+#include <chrono>
 #include <string>
 
 #include "android-base/macros.h"
@@ -120,6 +121,16 @@ std::string GetExecutableDirectory();
 // platforms and capable of correctly handling exotic Windows paths.
 std::string Basename(const std::string& path);
 std::string Dirname(const std::string& path);
+
+// Wait at most |relative_timeout| milliseconds for |path| to exist. dirname(path)
+// must already exist. For example, to wait on /dev/block/dm-6, /dev/block must
+// be a valid directory.
+bool WaitForFile(const std::string& path, const std::chrono::milliseconds relative_timeout);
+
+// Wait at most |relative_timeout| milliseconds for |path| to stop existing.
+// Note that this only returns true if the inode itself no longer exists, i.e.,
+// all outstanding file descriptors have been closed.
+bool WaitForFileDeleted(const std::string& path, const std::chrono::milliseconds relative_timeout);
 
 }  // namespace base
 }  // namespace android

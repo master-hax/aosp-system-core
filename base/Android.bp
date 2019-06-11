@@ -50,6 +50,7 @@ cc_defaults {
         "chrono_utils.cpp",
         "cmsg.cpp",
         "file.cpp",
+        "file_wait.cpp",
         "logging.cpp",
         "mapped_file.cpp",
         "parsenetaddress.cpp",
@@ -86,6 +87,7 @@ cc_defaults {
         windows: {
             srcs: [
                 "errors_windows.cpp",
+                "file_wait_generic.cpp",
                 "utf8.cpp",
             ],
             exclude_srcs: [
@@ -133,6 +135,7 @@ cc_test {
         "errors_test.cpp",
         "expected_test.cpp",
         "file_test.cpp",
+        "file_wait_test.cpp",
         "logging_test.cpp",
         "macros_test.cpp",
         "mapped_file_test.cpp",
