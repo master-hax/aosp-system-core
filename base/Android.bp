@@ -73,11 +73,13 @@ cc_defaults {
         linux: {
             srcs: [
                 "errors_unix.cpp",
+                "file_wait_linux.cpp",
             ],
         },
         darwin: {
             srcs: [
                 "errors_unix.cpp",
+                "file_wait_generic.cpp",
             ],
         },
         linux_bionic: {
@@ -86,6 +88,7 @@ cc_defaults {
         windows: {
             srcs: [
                 "errors_windows.cpp",
+                "file_wait_generic.cpp",
                 "utf8.cpp",
             ],
             exclude_srcs: [
@@ -133,6 +136,7 @@ cc_test {
         "errors_test.cpp",
         "expected_test.cpp",
         "file_test.cpp",
+        "file_wait_test.cpp",
         "logging_test.cpp",
         "macros_test.cpp",
         "mapped_file_test.cpp",
