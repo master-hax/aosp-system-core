@@ -279,7 +279,7 @@ void ParseFsMgrFlags(const std::string& flags, FstabEntry* entry) {
             if (!ParseInt(arg, &entry->max_comp_streams)) {
                 LWARNING << "Warning: max_comp_streams= flag malformed: " << arg;
             }
-        } else if (StartsWith(flag, "reservedsize=")) {
+        } else if (StartsWith(flag, "reservedsize=") || StartsWith(flag, "reserve_root=") {
             // The reserved flag is followed by an = and the reserved size of the partition.
             uint64_t size;
             if (!ParseByteCount(arg, &size)) {
