@@ -444,7 +444,7 @@ on post-fs-data
     mkdir /data/apex/backup 0700 root system
     mkdir /data/apex/sessions 0700 root system
     mkdir /data/app-staging 0750 system system
-    start apexd
+    start_apexd
 
     # Avoid predictable entropy pool. Carry over entropy from previous boot.
     copy /data/system/entropy.dat /dev/urandom

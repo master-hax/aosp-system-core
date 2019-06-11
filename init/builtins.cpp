@@ -42,6 +42,7 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
+#include <ApexProperties.sysprop.h>
 #include <android-base/chrono_utils.h>
 #include <android-base/file.h>
 #include <android-base/logging.h>
@@ -1121,6 +1122,19 @@ static Result<void> do_enter_default_mount_ns(const BuiltinArguments& args) {
     }
 }
 
+static Result<void> do_start_apexd(const BuiltinArguments&) {
+    static bool updatable = android::sysprop::ApexProperties::updatable().value_or(false);
+    if (!updatable) {
+        return {};
+    }
+    Service* svc = ServiceList::GetInstance().FindService("apexd");
+    if (!svc) return Error() << "service apexd not found";
+    if (auto result = svc->Start(); !result) {
+        return Error() << "Could not start service: " << result.error();
+    }
+    return {};
+}
+
 // Builtin-function-map start
 const BuiltinFunctionMap::Map& BuiltinFunctionMap::map() const {
     constexpr std::size_t kMax = std::numeric_limits<std::size_t>::max();
@@ -1173,6 +1187,7 @@ const BuiltinFunctionMap::Map& BuiltinFunctionMap::map() const {
         {"setprop",                 {2,     2,    {true,   do_setprop}}},
         {"setrlimit",               {3,     3,    {false,  do_setrlimit}}},
         {"start",                   {1,     1,    {false,  do_start}}},
+        {"start_apexd",             {0,     0,    {false,  do_start_apexd}}},
         {"stop",                    {1,     1,    {false,  do_stop}}},
         {"swapon_all",              {1,     1,    {false,  do_swapon_all}}},
         {"enter_default_mount_ns",  {0,     0,    {false,  do_enter_default_mount_ns}}},
