@@ -106,8 +106,9 @@ bool LogListener::onDataAvailable(SocketClient* cli) {
     // NB: hdr.msg_flags & MSG_TRUNC is not tested, silently passing a
     // truncated message to the logs.
 
-    int res = logbuf->log(logId, header->realtime, cred->uid, cred->pid, header->tid, msg,
-                          ((size_t)n <= UINT16_MAX) ? (uint16_t)n : UINT16_MAX);
+    log_time recordtime = log_time(CLOCK_MONOTONIC);
+    int res = logbuf->log(logId, header->realtime, recordtime, cred->uid, cred->pid, header->tid,
+                          msg, ((size_t)n <= UINT16_MAX) ? (uint16_t)n : UINT16_MAX);
     if (res > 0) {
         reader->notifyNewLog(static_cast<log_mask_t>(1 << logId));
     }

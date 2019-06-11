@@ -48,11 +48,11 @@ class LogTimeEntry {
     unsigned long mCount;
     unsigned long mTail;
     unsigned long mIndex;
+    log_time mRecord;
 
-   public:
-    LogTimeEntry(LogReader& reader, SocketClient* client, bool nonBlock,
-                 unsigned long tail, log_mask_t logMask, pid_t pid,
-                 log_time start, uint64_t timeout);
+  public:
+    LogTimeEntry(LogReader& reader, SocketClient* client, bool nonBlock, unsigned long tail,
+                 log_mask_t logMask, pid_t pid, log_time start, log_time record, uint64_t timeout);
 
     SocketClient* mClient;
     log_time mStart;
@@ -95,6 +95,7 @@ class LogTimeEntry {
     bool isWatchingMultiple(log_mask_t logMask) const {
         return mLogMask & logMask;
     }
+    log_time getRecordTime() const { return mRecord; }
     // flushTo filter callbacks
     static int FilterFirstPass(const LogBufferElement* element, void* me);
     static int FilterSecondPass(const LogBufferElement* element, void* me);
