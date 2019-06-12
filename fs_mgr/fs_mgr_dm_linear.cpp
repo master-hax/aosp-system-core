@@ -128,7 +128,7 @@ static bool CreateLogicalPartition(const LpMetadata& metadata, const LpMetadataP
         return false;
     }
     if (timeout_ms > std::chrono::milliseconds::zero()) {
-        if (!fs_mgr_wait_for_file(*path, timeout_ms, FileWaitMode::Exists)) {
+        if (!android::base::WaitForFile(*path, timeout_ms)) {
             DestroyLogicalPartition(name, {});
             LERROR << "Timed out waiting for device path: " << *path;
             return false;
@@ -202,7 +202,7 @@ bool UnmapDevice(const std::string& name, const std::chrono::milliseconds& timeo
     if (!dm.DeleteDevice(name)) {
         return false;
     }
-    if (!path.empty() && !fs_mgr_wait_for_file(path, timeout_ms, FileWaitMode::DoesNotExist)) {
+    if (!path.empty() && !android::base::WaitForFileDeleted(path, timeout_ms)) {
         LERROR << "Timed out waiting for device path to unlink: " << path;
         return false;
     }

@@ -529,7 +529,7 @@ loaded:
     }
 
     // make sure we've set everything up properly
-    if (wait_for_verity_dev && !fs_mgr_wait_for_file(entry->blk_device, 1s)) {
+    if (wait_for_verity_dev && !android::base::WaitForFile(entry->blk_device, 1s)) {
         goto out;
     }
 
