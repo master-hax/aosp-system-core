@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e8158746_15cddf24",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 651,
+      "author": {
+        "id": 1146974
+      },
+      "writtenOn": "2019-06-12T02:30:59Z",
+      "side": 1,
+      "message": "I believe it must be \"ERROR\" instead of \"WARNING\".",
+      "range": {
+        "startLine": 651,
+        "startChar": 19,
+        "endLine": 651,
+        "endChar": 26
+      },
+      "revId": "d45139ce3fa46af049b0d27a014645be5b0cd70f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
