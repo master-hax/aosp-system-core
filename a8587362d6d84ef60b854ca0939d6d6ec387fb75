@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f63193b2_8533fb9c",
+        "filename": "fs_mgr/fs_mgr_fstab.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 282,
+      "author": {
+        "id": 1176763
+      },
+      "writtenOn": "2019-06-12T15:45:13Z",
+      "side": 1,
+      "message": "reserve_root\u003d[# of 4KB-sized blocks], which is different from reservedsize\u003d[MB]. Moreover, this is a filesystem mount option, not a fs_mgr option. Is there a problem to use fstab to specific both of them likewise Pixel 3?\n\n/dev/block/bootdevice/by-name/userdata              /data              f2fs        noatime,nosuid,nodev,discard,reserve_root\u003d32768,resgid\u003d1065,fsync_mode\u003dnobarrier       latemount,wait,check,fileencryption\u003dice,keydirecto    ry\u003d/metadata/vold/metadata_encryption,quota,formattable,sysfs_path\u003d/sys/devices/platform/soc/1d84000.ufshc,reservedsize\u003d128M,checkpoint\u003dfs",
+      "range": {
+        "startLine": 282,
+        "startChar": 74,
+        "endLine": 282,
+        "endChar": 87
+      },
+      "revId": "a8587362d6d84ef60b854ca0939d6d6ec387fb75",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
