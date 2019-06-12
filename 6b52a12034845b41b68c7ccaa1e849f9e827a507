@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a6e5d5c2_1cdd6f22",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 2
+      },
+      "lineNbr": 536,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2019-06-12T21:11:16Z",
+      "side": 1,
+      "message": "why not under /data/vendor/camera for instance? it seems this might be confused with calibration for other things",
+      "range": {
+        "startLine": 536,
+        "startChar": 23,
+        "endLine": 536,
+        "endChar": 34
+      },
+      "revId": "6b52a12034845b41b68c7ccaa1e849f9e827a507",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
