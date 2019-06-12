@@ -355,5 +355,28 @@ TEST(result, preserve_errno) {
   EXPECT_EQ(old_errno, result2.error().code());
 }
 
+TEST(result, error_with_fmt) {
+  Result<int> result = Error("{} {}!", "hello", "world");
+  EXPECT_EQ("hello world!", result.error().message());
+
+  result = Error("{} {}!", std::string("hello"), std::string("world"));
+  EXPECT_EQ("hello world!", result.error().message());
+
+  result = Error("{h} {w}!", fmt::arg("w", "world"), fmt::arg("h", "hello"));
+  EXPECT_EQ("hello world!", result.error().message());
+
+  result = Error("hello world!");
+  EXPECT_EQ("hello world!", result.error().message());
+
+  Result<int> result2 = Error("error occurred with {}", result.error());
+  EXPECT_EQ("error occurred with hello world!", result2.error().message());
+
+  constexpr int test_errno = 6;
+  errno = test_errno;
+  result = ErrnoError("{} {}!", "hello", "world");
+  EXPECT_EQ(test_errno, result.error().code());
+  EXPECT_EQ("hello world!: "s + strerror(test_errno), result.error().message());
+}
+
 }  // namespace base
 }  // namespace android
