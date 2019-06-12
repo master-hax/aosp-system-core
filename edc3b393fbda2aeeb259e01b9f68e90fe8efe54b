@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0f99fc02_4d2c66ca",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 648,
+      "author": {
+        "id": 1146974
+      },
+      "writtenOn": "2019-06-12T05:25:22Z",
+      "side": 1,
+      "message": "fn is already assumed to be null terminated. We may remove this.",
+      "range": {
+        "startLine": 648,
+        "startChar": 39,
+        "endLine": 648,
+        "endChar": 51
+      },
+      "revId": "edc3b393fbda2aeeb259e01b9f68e90fe8efe54b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
