@@ -22,6 +22,53 @@
       "revId": "edc3b393fbda2aeeb259e01b9f68e90fe8efe54b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a567db6b_f70f3846",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 648,
+      "author": {
+        "id": 1254302
+      },
+      "writtenOn": "2019-06-12T06:48:31Z",
+      "side": 1,
+      "message": "okay.",
+      "parentUuid": "0f99fc02_4d2c66ca",
+      "range": {
+        "startLine": 648,
+        "startChar": 39,
+        "endLine": 648,
+        "endChar": 51
+      },
+      "revId": "edc3b393fbda2aeeb259e01b9f68e90fe8efe54b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6a75027b_3c8b6657",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 651,
+      "author": {
+        "id": 1254302
+      },
+      "writtenOn": "2019-06-12T06:48:31Z",
+      "side": 1,
+      "message": "And I changed this to LOG(x)",
+      "range": {
+        "startLine": 651,
+        "startChar": 14,
+        "endLine": 651,
+        "endChar": 18
+      },
+      "revId": "edc3b393fbda2aeeb259e01b9f68e90fe8efe54b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
