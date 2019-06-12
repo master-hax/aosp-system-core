@@ -26,7 +26,6 @@ cc_test {
     ],
     srcs: [
         "fs_mgr_test.cpp",
-        "file_wait_test.cpp",
     ],
 
     cflags: [
