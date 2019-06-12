@@ -84,6 +84,7 @@ LOCAL_STATIC_LIBRARIES := \
     libc++fs \
     libfs_avb \
     libfs_mgr \
+    libfs_mgr_file_wait \
     libfec \
     libfec_rs \
     libsquashfs_utils \
