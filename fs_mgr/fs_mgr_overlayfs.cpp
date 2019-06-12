@@ -867,7 +867,7 @@ bool fs_mgr_overlayfs_mount_all(Fstab* fstab) {
             scratch_can_be_mounted = false;
             auto scratch_device = fs_mgr_overlayfs_scratch_device();
             if (fs_mgr_overlayfs_scratch_can_be_mounted(scratch_device) &&
-                fs_mgr_wait_for_file(scratch_device, 10s)) {
+                android::base::WaitForFile(scratch_device, 10s)) {
                 const auto mount_type = fs_mgr_overlayfs_scratch_mount_type();
                 if (fs_mgr_overlayfs_mount_scratch(scratch_device, mount_type,
                                                    true /* readonly */)) {
