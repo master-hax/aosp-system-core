@@ -42,6 +42,9 @@
 // to the end of the failure string to aid in interacting with C APIs.  Alternatively, an errno
 // value can be directly specified via the Error() constructor.
 //
+// Errorf and ErrnoErrorf accept the format string syntax of the fmblib (https://fmt.dev).
+// Errorf("{} errors", num) is equivalent to Error() << num << " errors".
+//
 // ResultError can be used in the ostream when using Error to construct a Result<T>.  In this case,
 // the string that the ResultError takes is passed through the stream normally, but the errno is
 // passed to the Result<T>.  This can be used to pass errno from a failing C function up multiple
@@ -55,16 +58,16 @@
 // Result<U> CalculateResult(const T& input) {
 //   U output;
 //   if (!SomeOtherCppFunction(input, &output)) {
-//     return Error() << "SomeOtherCppFunction(" << input << ") failed";
+//     return Error("SomeOtherCppFunction {} failed", input);
 //   }
 //   if (!c_api_function(output)) {
-//     return ErrnoError() << "c_api_function(" << output << ") failed";
+//     return ErrnoError("c_api_function {} failed", output);
 //   }
 //   return output;
 // }
 //
 // auto output = CalculateResult(input);
-// if (!output) return Error() << "CalculateResult failed: " << output.error();
+// if (!output) return Error("CalculateResult failed: ") << output.error();
 // UseOutput(*output);
 
 #pragma once
@@ -73,6 +76,8 @@
 
 #include <sstream>
 #include <string>
+
+#include <fmt/ostream.h>
 
 #include "android-base/expected.h"
 
@@ -147,14 +152,35 @@ class Error {
   Error& operator=(const Error&) = delete;
   Error& operator=(Error&&) = delete;
 
+  template <typename... Args>
+  friend Error Errorf(const char* fmt, const Args&... args);
+
+  template <typename... Args>
+  friend Error ErrnoErrorf(const char* fmt, const Args&... args);
+
  private:
+  Error(bool append_errno, int errno_to_append, const std::string& message)
+      : errno_(errno_to_append), append_errno_(append_errno) {
+    (*this) << message;
+  }
+
   std::stringstream ss_;
   int errno_;
-  bool append_errno_;
+  const bool append_errno_;
 };
 
 inline Error ErrnoError() {
   return Error(errno);
+}
+
+template <typename... Args>
+inline Error Errorf(const char* fmt, const Args&... args) {
+  return Error(false, 0, fmt::format(fmt, args...));
+}
+
+template <typename... Args>
+inline Error ErrnoErrorf(const char* fmt, const Args&... args) {
+  return Error(true, errno, fmt::format(fmt, args...));
 }
 
 template <typename T>
