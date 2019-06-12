@@ -50,6 +50,7 @@ cc_library {
         "libcutils",
         "libext4_utils",
         "libfec",
+        "libfs_mgr_file_wait",
         "liblog",
         "liblp",
         "libselinux",
