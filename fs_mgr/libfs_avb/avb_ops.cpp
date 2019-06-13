@@ -35,6 +35,7 @@
 #include <android-base/macros.h>
 #include <android-base/strings.h>
 #include <android-base/unique_fd.h>
+#include <fs_mgr/file_wait.h>
 #include <libavb/libavb.h>
 #include <libdm/dm.h>
 #include <utils/Compat.h>

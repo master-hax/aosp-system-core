@@ -30,6 +30,7 @@
 #include <android-base/parseint.h>
 #include <android-base/stringprintf.h>
 #include <android-base/strings.h>
+#include <fs_mgr/file_wait.h>
 #include <libavb/libavb.h>
 #include <libdm/dm.h>
 
@@ -469,7 +470,7 @@ bool AvbHandle::TearDownAvbHashtree(FstabEntry* fstab_entry, bool wait) {
     if (!dm.DeleteDevice(device_name)) {
         return false;
     }
-    if (!path.empty() && !WaitForFile(path, 1000ms, FileWaitMode::DoesNotExist)) {
+    if (!path.empty() && !WaitForFileDeleted(path, 1000ms)) {
         return false;
     }
 

@@ -52,10 +52,6 @@ bool HexToBytes(uint8_t* bytes, size_t bytes_len, const std::string& hex);
 
 std::string BytesToHex(const uint8_t* bytes, size_t bytes_len);
 
-enum class FileWaitMode { Exists, DoesNotExist };
-bool WaitForFile(const std::string& filename, const std::chrono::milliseconds relative_timeout,
-                 FileWaitMode wait_mode = FileWaitMode::Exists);
-
 bool IsDeviceUnlocked();
 
 bool SetBlockDeviceReadOnly(const std::string& blockdev);

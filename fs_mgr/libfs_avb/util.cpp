@@ -82,27 +82,6 @@ std::string BytesToHex(const uint8_t* bytes, size_t bytes_len) {
     return hex;
 }
 
-// TODO: remove duplicate code with fs_mgr_wait_for_file
-bool WaitForFile(const std::string& filename, const std::chrono::milliseconds relative_timeout,
-                 FileWaitMode file_wait_mode) {
-    auto start_time = std::chrono::steady_clock::now();
-
-    while (true) {
-        int rv = access(filename.c_str(), F_OK);
-        if (file_wait_mode == FileWaitMode::Exists) {
-            if (!rv || errno != ENOENT) return true;
-        } else if (file_wait_mode == FileWaitMode::DoesNotExist) {
-            if (rv && errno == ENOENT) return true;
-        }
-
-        std::this_thread::sleep_for(50ms);
-
-        auto now = std::chrono::steady_clock::now();
-        auto time_elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(now - start_time);
-        if (time_elapsed > relative_timeout) return false;
-    }
-}
-
 bool IsDeviceUnlocked() {
     std::string verified_boot_state;
 
