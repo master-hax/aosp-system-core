@@ -22,6 +22,30 @@
       "revId": "a8587362d6d84ef60b854ca0939d6d6ec387fb75",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6d63b715_3d524b70",
+        "filename": "fs_mgr/fs_mgr_fstab.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 282,
+      "author": {
+        "id": 1513190
+      },
+      "writtenOn": "2019-06-13T06:45:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f63193b2_8533fb9c",
+      "range": {
+        "startLine": 282,
+        "startChar": 74,
+        "endLine": 282,
+        "endChar": 87
+      },
+      "revId": "a8587362d6d84ef60b854ca0939d6d6ec387fb75",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
