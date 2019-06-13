@@ -918,6 +918,7 @@ bool fs_mgr_update_logical_partition(FstabEntry* entry) {
     DeviceMapper& dm = DeviceMapper::Instance();
     std::string device_name;
     if (!dm.GetDmDevicePathByName(entry->blk_device, &device_name)) {
+        LOG(ERROR) << "fs_mgr_update_logical_part failed: " << entry->blk_device;
         return false;
     }
 
