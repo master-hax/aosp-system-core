@@ -22,6 +22,30 @@
       "revId": "6b52a12034845b41b68c7ccaa1e849f9e827a507",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bea6dc6c_c7380e34",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 2
+      },
+      "lineNbr": 536,
+      "author": {
+        "id": 1512897
+      },
+      "writtenOn": "2019-06-13T15:20:28Z",
+      "side": 1,
+      "message": "/data/vendor/camera is already used for something else. I don\u0027t know for what, but it seems wrong to muddle different things together in the same directory, especially since the face HAL will have write access to that dir.\n\nHappy to rename the dir to make it more clear.\n\n/data/vendor/autocal?\n/data/vendor/camera_cal?\n/data/vendor/camera_calibration?",
+      "parentUuid": "a6e5d5c2_1cdd6f22",
+      "range": {
+        "startLine": 536,
+        "startChar": 23,
+        "endLine": 536,
+        "endChar": 34
+      },
+      "revId": "6b52a12034845b41b68c7ccaa1e849f9e827a507",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
