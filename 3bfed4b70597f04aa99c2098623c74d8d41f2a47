@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5048c835_90a9e9a6",
+        "filename": "adb/client/adb_install.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1339996
+      },
+      "writtenOn": "2019-06-14T21:13:45Z",
+      "side": 1,
+      "message": "Should I remove the ifdefs?",
+      "range": {
+        "startLine": 39,
+        "startChar": 8,
+        "endLine": 39,
+        "endChar": 25
+      },
+      "revId": "3bfed4b70597f04aa99c2098623c74d8d41f2a47",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
