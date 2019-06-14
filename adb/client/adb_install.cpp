@@ -36,6 +36,7 @@
 #include "commandline.h"
 #include "fastdeploy.h"
 
+#define ENABLE_FASTDEPLOY = 1
 #if defined(ENABLE_FASTDEPLOY)
 static constexpr int kFastDeployMinApi = 24;
 #endif
