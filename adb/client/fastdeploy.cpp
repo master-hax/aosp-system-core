@@ -21,16 +21,14 @@
 #include <array>
 #include <memory>
 
+#include "adb_utils.h"
 #include "android-base/file.h"
 #include "android-base/strings.h"
-#include "androidfw/ResourceTypes.h"
-#include "androidfw/ZipFileRO.h"
 #include "client/file_sync_client.h"
 #include "commandline.h"
 #include "fastdeploycallbacks.h"
+#include "manifest.h"
 #include "sysdeps.h"
-
-#include "adb_utils.h"
 
 static constexpr long kRequiredAgentVersion = 0x00000002;
 
@@ -143,83 +141,6 @@ void update_agent(FastDeploy_AgentUpdateStrategy agentUpdateStrategy) {
         error_exit("After update agent version remains incorrect! Expected %ld but version is %ld",
                    kRequiredAgentVersion, agent_version);
     }
-}
-
-static std::string get_string_from_utf16(const char16_t* input, int input_len) {
-    ssize_t utf8_length = utf16_to_utf8_length(input, input_len);
-    if (utf8_length <= 0) {
-        return {};
-    }
-    std::string utf8;
-    utf8.resize(utf8_length);
-    utf16_to_utf8(input, input_len, &*utf8.begin(), utf8_length + 1);
-    return utf8;
-}
-
-static std::string get_packagename_from_apk(const char* apkPath) {
-#undef open
-    std::unique_ptr<android::ZipFileRO> zipFile(android::ZipFileRO::open(apkPath));
-#define open ___xxx_unix_open
-    if (zipFile == nullptr) {
-        perror_exit("Could not open %s", apkPath);
-    }
-    android::ZipEntryRO entry = zipFile->findEntryByName("AndroidManifest.xml");
-    if (entry == nullptr) {
-        error_exit("Could not find AndroidManifest.xml inside %s", apkPath);
-    }
-    uint32_t manifest_len = 0;
-    if (!zipFile->getEntryInfo(entry, NULL, &manifest_len, NULL, NULL, NULL, NULL)) {
-        error_exit("Could not read AndroidManifest.xml inside %s", apkPath);
-    }
-    std::vector<char> manifest_data(manifest_len);
-    if (!zipFile->uncompressEntry(entry, manifest_data.data(), manifest_len)) {
-        error_exit("Could not uncompress AndroidManifest.xml inside %s", apkPath);
-    }
-    android::ResXMLTree tree;
-    android::status_t setto_status = tree.setTo(manifest_data.data(), manifest_len, true);
-    if (setto_status != android::OK) {
-        error_exit("Could not parse AndroidManifest.xml inside %s", apkPath);
-    }
-    android::ResXMLParser::event_code_t code;
-    while ((code = tree.next()) != android::ResXMLParser::BAD_DOCUMENT &&
-           code != android::ResXMLParser::END_DOCUMENT) {
-        switch (code) {
-            case android::ResXMLParser::START_TAG: {
-                size_t element_name_length;
-                const char16_t* element_name = tree.getElementName(&element_name_length);
-                if (element_name == nullptr) {
-                    continue;
-                }
-                std::u16string element_name_string(element_name, element_name_length);
-                if (element_name_string == u"manifest") {
-                    for (size_t i = 0; i < tree.getAttributeCount(); i++) {
-                        size_t attribute_name_length;
-                        const char16_t* attribute_name_text =
-                                tree.getAttributeName(i, &attribute_name_length);
-                        if (attribute_name_text == nullptr) {
-                            continue;
-                        }
-                        std::u16string attribute_name_string(attribute_name_text,
-                                                             attribute_name_length);
-                        if (attribute_name_string == u"package") {
-                            size_t attribute_value_length;
-                            const char16_t* attribute_value_text =
-                                    tree.getAttributeStringValue(i, &attribute_value_length);
-                            if (attribute_value_text == nullptr) {
-                                continue;
-                            }
-                            return get_string_from_utf16(attribute_value_text,
-                                                         attribute_value_length);
-                        }
-                    }
-                }
-                break;
-            }
-            default:
-                break;
-        }
-    }
-    error_exit("Could not find package name tag in AndroidManifest.xml inside %s", apkPath);
 }
 
 void extract_metadata(const char* apkPath, FILE* outputFp) {

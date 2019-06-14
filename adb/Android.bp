@@ -162,6 +162,9 @@ cc_library_host_static {
         "client/usb_libusb.cpp",
         "client/usb_dispatch.cpp",
         "client/transport_mdns.cpp",
+        "client/fastdeploy.cpp",
+        "client/fastdeploycallbacks.cpp",
+        "client/manifest.cpp"
     ],
 
     generated_headers: ["platform_tools_version"],
@@ -196,6 +199,8 @@ cc_library_host_static {
         "libdiagnose_usb",
         "libmdnssd",
         "libusb",
+        "libziparchive",
+        "libz",
         "libutils",
         "liblog",
         "libcutils",
@@ -282,6 +287,8 @@ cc_binary_host {
         "libmdnssd",
         "libusb",
         "libutils",
+        "libziparchive",
+        "libz",
         "liblog",
         "libcutils",
     ],
