@@ -22,6 +22,52 @@
       "revId": "3bfed4b70597f04aa99c2098623c74d8d41f2a47",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ade5fd41_1f7b22c6",
+        "filename": "adb/client/manifest.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 706,
+      "author": {
+        "id": 1339996
+      },
+      "writtenOn": "2019-06-14T21:15:12Z",
+      "side": 1,
+      "message": "This should be lowercase.",
+      "range": {
+        "startLine": 706,
+        "startChar": 29,
+        "endLine": 706,
+        "endChar": 33
+      },
+      "revId": "3bfed4b70597f04aa99c2098623c74d8d41f2a47",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fa2b8ca7_8f61711a",
+        "filename": "adb/client/manifest.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 817,
+      "author": {
+        "id": 1339996
+      },
+      "writtenOn": "2019-06-14T21:15:12Z",
+      "side": 1,
+      "message": "::ExtractToMemory",
+      "range": {
+        "startLine": 817,
+        "startChar": 13,
+        "endLine": 817,
+        "endChar": 28
+      },
+      "revId": "3bfed4b70597f04aa99c2098623c74d8d41f2a47",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
