@@ -1,0 +1,391 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "43d85863_9742174a",
+        "filename": "init/first_stage_init.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-06-15T00:36:17Z",
+      "side": 1,
+      "message": "You\u0027re not using this include.",
+      "revId": "aef88342eb5009c51f0445bc17a7a1de42151c87",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "32a99600_5eae6e00",
+        "filename": "init/modalias_handler.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-06-15T00:36:17Z",
+      "side": 1,
+      "message": "const std::vector\u003cstd::string\u003e\u0026",
+      "range": {
+        "startLine": 27,
+        "startChar": 33,
+        "endLine": 27,
+        "endChar": 57
+      },
+      "revId": "aef88342eb5009c51f0445bc17a7a1de42151c87",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3ff93fba_cef21772",
+        "filename": "init/modalias_handler.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-06-15T00:36:17Z",
+      "side": 1,
+      "message": "You should use std::unique_ptr here.\n\nBetter to name it something more descriptive too and have the trailing _, something like modprobe_",
+      "revId": "aef88342eb5009c51f0445bc17a7a1de42151c87",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3bb7d74d_01d80721",
+        "filename": "libmodprobe/include/modprobe/modprobe.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-06-15T00:36:17Z",
+      "side": 1,
+      "message": "2019",
+      "range": {
+        "startLine": 2,
+        "startChar": 17,
+        "endLine": 2,
+        "endChar": 21
+      },
+      "revId": "aef88342eb5009c51f0445bc17a7a1de42151c87",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "036af13f_c4a7ce61",
+        "filename": "libmodprobe/include/modprobe/modprobe.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-06-15T00:36:17Z",
+      "side": 1,
+      "message": "const std::vector\u003cstd::string\u003e\u0026",
+      "revId": "aef88342eb5009c51f0445bc17a7a1de42151c87",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2d0bc287_6bdef455",
+        "filename": "libmodprobe/include/modprobe/modprobe.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-06-15T00:36:17Z",
+      "side": 1,
+      "message": "You don\u0027t need a virtual destructor if nothing is inheriting from this.",
+      "revId": "aef88342eb5009c51f0445bc17a7a1de42151c87",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "37bc62c8_b59e89f5",
+        "filename": "libmodprobe/include/modprobe/modprobe.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-06-15T00:36:17Z",
+      "side": 1,
+      "message": "This can be named better / more generically.  Something like InsmodAliasAndDeps() ?",
+      "revId": "aef88342eb5009c51f0445bc17a7a1de42151c87",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4138af7f_59712ed1",
+        "filename": "libmodprobe/include/modprobe/modprobe.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-06-15T00:36:17Z",
+      "side": 1,
+      "message": "This should fit in a single line.  Make sure to run clang-format.",
+      "revId": "aef88342eb5009c51f0445bc17a7a1de42151c87",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c3350754_9548fb66",
+        "filename": "libmodprobe/include/modprobe/modprobe.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-06-15T00:36:17Z",
+      "side": 1,
+      "message": "base_path_",
+      "range": {
+        "startLine": 46,
+        "startChar": 16,
+        "endLine": 46,
+        "endChar": 25
+      },
+      "revId": "aef88342eb5009c51f0445bc17a7a1de42151c87",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6d94f7cb_0791540c",
+        "filename": "libmodprobe/include/modprobe/modprobe.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-06-15T00:36:17Z",
+      "side": 1,
+      "message": "FWIW, I find `using` easier to read,\n\nusing ModprobParseFn \u003d bool (Modprobe::*)(std::vector\u003cstd::string\u003e\u0026\u0026);",
+      "revId": "aef88342eb5009c51f0445bc17a7a1de42151c87",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "31453ede_c7127a4e",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-06-15T00:36:17Z",
+      "side": 1,
+      "message": "2019 for all of these files.",
+      "range": {
+        "startLine": 2,
+        "startChar": 17,
+        "endLine": 2,
+        "endChar": 21
+      },
+      "revId": "aef88342eb5009c51f0445bc17a7a1de42151c87",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5d44d37b_f7821220",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-06-15T00:36:17Z",
+      "side": 1,
+      "message": "Better to not LOG(FATAL) and return the error somehow.  The user of the library should be the one to decide to abort or not.\n\nResult\u003cvoid\u003e, etc is in android-base now as android-base/result.h if you\u0027d like to use that, as the original code did.",
+      "revId": "aef88342eb5009c51f0445bc17a7a1de42151c87",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "de121d65_69c6c3aa",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 179,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-06-15T00:36:17Z",
+      "side": 1,
+      "message": "We can probably drop this check.  ReadFileToString() from android-base has a no_follow option that defaults to false.  There\u0027s not much use in checking for the writeable options either, since the partitions that contain these files are read-only and have dm-verity.  Even in init, we could drop this check; it may have made sense in the early days of android, but it doesn\u0027t anymore.\n\ntl;dr: I\u0027d just use ReadFileToString() from android-base here.",
+      "revId": "aef88342eb5009c51f0445bc17a7a1de42151c87",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "81c73363_06e19da7",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 200,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-06-15T00:36:17Z",
+      "side": 1,
+      "message": "It may make your life a bit easier if you drop the rvalue references and just have const std::vector\u003cstd::string\u003e\u0026 here.  I don\u0027t see you moving the args in the parser functions anyway.",
+      "revId": "aef88342eb5009c51f0445bc17a7a1de42151c87",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "30a37af0_2623b116",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 219,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-06-15T00:36:17Z",
+      "side": 1,
+      "message": "The streams are fine, but most code has been using android::base::Split() recently.  It\u0027s not tremendously efficient, but the streams aren\u0027t either.",
+      "revId": "aef88342eb5009c51f0445bc17a7a1de42151c87",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "be1953de_cc674eac",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 241,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-06-15T00:36:17Z",
+      "side": 1,
+      "message": "Just wondering if it\u0027s typical to have all of these different files vs a single modprobe.conf.  Even though we have some Android-isms, we should try to stay close to what either upstream does and especially what the kernel / other tools output.",
+      "revId": "aef88342eb5009c51f0445bc17a7a1de42151c87",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1e1494b0_89eee871",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 294,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-06-15T00:36:17Z",
+      "side": 1,
+      "message": "Should this be a set instead of a vector?  We don\u0027t want to calls insmod multiple times for the same module if there are multiple aliases to it.",
+      "revId": "aef88342eb5009c51f0445bc17a7a1de42151c87",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "67d01df0_3a637b17",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 330,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-06-15T00:36:17Z",
+      "side": 1,
+      "message": "What makes this different than LoadWithAliases() ?  I think we can combine these two.",
+      "revId": "aef88342eb5009c51f0445bc17a7a1de42151c87",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "dda018c2_64862b68",
+        "filename": "libmodprobe/libmodprobe_ext_test.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-06-15T00:36:17Z",
+      "side": 1,
+      "message": "no () around the expression.",
+      "range": {
+        "startLine": 61,
+        "startChar": 11,
+        "endLine": 61,
+        "endChar": 12
+      },
+      "revId": "aef88342eb5009c51f0445bc17a7a1de42151c87",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d6957035_acb1e968",
+        "filename": "libmodprobe/libmodprobe_test.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-06-15T00:36:17Z",
+      "side": 1,
+      "message": "Better to factor out this information into the tests themselves.  It\u0027ll make it easier to write more tests later.\n\nThe globals would have to stay global, but you can assign them the values.\n\nIt\u0027s one of the reasons why having the virtual functions that you override may be better for testing.  You wouldn\u0027t have any globals anymore, but rather class variables that you would assign in the constructor.",
+      "revId": "aef88342eb5009c51f0445bc17a7a1de42151c87",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b0ce7583_1774c78e",
+        "filename": "libmodprobe/libmodprobe_test.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-06-15T00:36:17Z",
+      "side": 1,
+      "message": "android::base::WriteStringToFile()",
+      "revId": "aef88342eb5009c51f0445bc17a7a1de42151c87",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
