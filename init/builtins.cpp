@@ -588,7 +588,9 @@ static Result<void> do_mount_all(const BuiltinArguments& args) {
     if (!ReadFstabFromFile(fstab_file, &fstab)) {
         return Error() << "Could not read fstab";
     }
-    auto mount_fstab_return_code = fs_mgr_mount_all(&fstab, mount_mode);
+
+    auto mount_fstab_return_code =
+            CallFunctionAndHandleProperties(fs_mgr_mount_all, &fstab, mount_mode);
     property_set(prop_name, std::to_string(t.duration().count()));
 
     if (import_rc && SelinuxGetVendorAndroidVersion() <= __ANDROID_API_Q__) {
@@ -615,7 +617,7 @@ static Result<void> do_umount_all(const BuiltinArguments& args) {
         return Error() << "Could not read fstab";
     }
 
-    if (auto result = fs_mgr_umount_all(&fstab); result != 0) {
+    if (auto result = CallFunctionAndHandleProperties(fs_mgr_umount_all, &fstab); result != 0) {
         return Error() << "umount_fstab() failed " << result;
     }
     return {};
@@ -627,7 +629,7 @@ static Result<void> do_swapon_all(const BuiltinArguments& args) {
         return Error() << "Could not read fstab '" << args[1] << "'";
     }
 
-    if (!fs_mgr_swapon_all(fstab)) {
+    if (!CallFunctionAndHandleProperties(fs_mgr_swapon_all, fstab)) {
         return Error() << "fs_mgr_swapon_all() failed";
     }
 
