@@ -18,6 +18,7 @@
 
 #include <sys/socket.h>
 
+#include <functional>
 #include <string>
 
 #include "epoll.h"
@@ -36,6 +37,14 @@ void property_init();
 void property_load_boot_defaults(bool load_debug_prop);
 void load_persist_props();
 void StartPropertyService(Epoll* epoll);
+
+int CallFunctionAndHandlePropertiesImpl(const std::function<int()>& f);
+
+template <typename F, typename... Args>
+int CallFunctionAndHandleProperties(F&& f, Args&&... args) {
+    auto func = [&] { return f(args...); };
+    return CallFunctionAndHandlePropertiesImpl(func);
+}
 
 }  // namespace init
 }  // namespace android
