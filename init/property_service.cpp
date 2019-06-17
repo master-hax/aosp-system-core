@@ -43,7 +43,6 @@
 #include <memory>
 #include <mutex>
 #include <queue>
-#include <thread>
 #include <vector>
 
 #include <android-base/chrono_utils.h>
@@ -1004,6 +1003,33 @@ void StartPropertyService(Epoll* epoll) {
     if (auto result = epoll->RegisterHandler(property_set_fd, handle_property_set_fd); !result) {
         PLOG(FATAL) << result.error();
     }
+}
+
+BackgroundPropertyHandler::BackgroundPropertyHandler() {
+    if (!Socketpair(AF_UNIX, SOCK_STREAM | SOCK_CLOEXEC, 0, &reader_, &writer_)) {
+        LOG(FATAL) << __FUNCTION__ << ": Could not create socket pair";
+    }
+    if (!epoll_.Open()) {
+        LOG(FATAL) << __FUNCTION__ << ": Could not create epoll";
+    }
+    if (auto result = epoll_.RegisterHandler(property_set_fd, handle_property_set_fd); !result) {
+        LOG(FATAL) << __FUNCTION__
+                   << ": Could not register epoll handler for property fd: " << result.error();
+    }
+    if (auto result = epoll_.RegisterHandler(reader_, [this] { end_ = true; }); !result) {
+        LOG(FATAL) << __FUNCTION__
+                   << ": Could not register epoll handler for ending thread: " << result.error();
+    }
+    thread_ = std::thread{[this] {
+        while (!end_) {
+            epoll_.Wait({});
+        }
+    }};
+}
+
+BackgroundPropertyHandler::~BackgroundPropertyHandler() {
+    send(writer_, "1", 1, 0);
+    thread_.join();
 }
 
 }  // namespace init

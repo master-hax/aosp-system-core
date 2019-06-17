@@ -18,7 +18,13 @@
 
 #include <sys/socket.h>
 
+#include <atomic>
+#include <functional>
 #include <string>
+#include <thread>
+
+#include <android-base/macros.h>
+#include <android-base/unique_fd.h>
 
 #include "epoll.h"
 
@@ -36,6 +42,27 @@ void property_init();
 void property_load_boot_defaults(bool load_debug_prop);
 void load_persist_props();
 void StartPropertyService(Epoll* epoll);
+
+class BackgroundPropertyHandler {
+  public:
+    BackgroundPropertyHandler();
+    ~BackgroundPropertyHandler();
+
+    DISALLOW_COPY_AND_ASSIGN(BackgroundPropertyHandler);
+
+  private:
+    std::atomic<bool> end_ = false;
+    std::thread thread_;
+    Epoll epoll_;
+    android::base::unique_fd reader_;
+    android::base::unique_fd writer_;
+};
+
+template <typename F, typename... Args>
+auto CallFunctionAndHandleProperties(F&& f, Args&&... args) {
+    auto background_property_handler = BackgroundPropertyHandler{};
+    return std::invoke(std::forward<F>(f), std::forward<Args>(args)...);
+}
 
 }  // namespace init
 }  // namespace android
