@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "9a109323_8a5a9cd7",
+        "filename": "adb/client/adb_install.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1269249
+      },
+      "writtenOn": "2019-06-17T23:12:03Z",
+      "side": 1,
+      "message": "I think we should remove it eventually. But let\u0027s leave it until the rest of the fastdeploy stuff is done.",
+      "parentUuid": "5048c835_90a9e9a6",
+      "range": {
+        "startLine": 39,
+        "startChar": 8,
+        "endLine": 39,
+        "endChar": 25
+      },
+      "revId": "3bfed4b70597f04aa99c2098623c74d8d41f2a47",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "ade5fd41_1f7b22c6",
         "filename": "adb/client/manifest.cpp",
         "patchSetId": 1
