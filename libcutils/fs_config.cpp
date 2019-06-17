@@ -39,6 +39,8 @@
 #include <private/android_filesystem_config.h>
 #include <utils/Compat.h>
 
+#include "fs_config.h"
+
 #ifndef O_BINARY
 #define O_BINARY 0
 #endif
@@ -60,6 +62,7 @@ static inline uint64_t get8LE(const uint8_t* src) {
 }
 
 #define ALIGN(x, alignment) (((x) + ((alignment)-1)) & ~((alignment)-1))
+#define CAP_MASK_LONG(cap_name) (1ULL << (cap_name))
 
 // Rules for directories.
 // These rules are applied based on "first match", so they
