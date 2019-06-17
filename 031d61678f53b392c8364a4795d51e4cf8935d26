@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5b5d8d5f_e07a9886",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 3
+      },
+      "lineNbr": 536,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2019-06-17T17:44:40Z",
+      "side": 1,
+      "message": "I think this is fine, but should it go here or in device-specific init.rc files? Tom/Elliott?",
+      "revId": "031d61678f53b392c8364a4795d51e4cf8935d26",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
