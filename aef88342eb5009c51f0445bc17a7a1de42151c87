@@ -166,6 +166,30 @@
     },
     {
       "key": {
+        "uuid": "06c249dc_8d704ef0",
+        "filename": "libmodprobe/include/modprobe/modprobe.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-06-18T18:08:50Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "67b7be27_2d9a09df",
+      "range": {
+        "startLine": 2,
+        "startChar": 17,
+        "endLine": 2,
+        "endChar": 21
+      },
+      "revId": "aef88342eb5009c51f0445bc17a7a1de42151c87",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "036af13f_c4a7ce61",
         "filename": "libmodprobe/include/modprobe/modprobe.h",
         "patchSetId": 5
@@ -435,6 +459,30 @@
     },
     {
       "key": {
+        "uuid": "b3c1f481_39dcfa31",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-06-18T18:08:50Z",
+      "side": 1,
+      "message": "Ack.  Doesn\u0027t really matter in the end.",
+      "parentUuid": "5fe12dd5_90206de3",
+      "range": {
+        "startLine": 2,
+        "startChar": 17,
+        "endLine": 2,
+        "endChar": 21
+      },
+      "revId": "aef88342eb5009c51f0445bc17a7a1de42151c87",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5d44d37b_f7821220",
         "filename": "libmodprobe/libmodprobe.cpp",
         "patchSetId": 5
@@ -604,6 +652,24 @@
       "side": 1,
       "message": "Yes AFAIK. This is what depmod spits out for me by default and also what appears on my host.",
       "parentUuid": "be1953de_cc674eac",
+      "revId": "aef88342eb5009c51f0445bc17a7a1de42151c87",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bcb0e166_0c136529",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 241,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-06-18T18:08:50Z",
+      "side": 1,
+      "message": "Sounds good to me.  Thanks for checking.",
+      "parentUuid": "32cfc51b_4ae8e9d6",
       "revId": "aef88342eb5009c51f0445bc17a7a1de42151c87",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false

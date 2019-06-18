@@ -1,0 +1,112 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "42bee8ca_3f2305eb",
+        "filename": "libmodprobe/include/modprobe/modprobe.h",
+        "patchSetId": 6
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-06-18T18:08:50Z",
+      "side": 1,
+      "message": "There\u0027s typically a blank newline between private functions and private variables.",
+      "revId": "7e0c4e1bb6480837627a719f6023032d011f02a5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5095a9f6_61256051",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-06-18T18:08:50Z",
+      "side": 1,
+      "message": "The \u0027related header\u0027 aka this one, should be the very first include of the file.",
+      "revId": "7e0c4e1bb6480837627a719f6023032d011f02a5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "76ae420e_72e44f61",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-06-18T18:08:50Z",
+      "side": 1,
+      "message": "You can keep the reference if you make this const, `const std::string\u0026 alias`.  Same with a few things below.",
+      "range": {
+        "startLine": 103,
+        "startChar": 0,
+        "endLine": 104,
+        "endChar": 36
+      },
+      "revId": "7e0c4e1bb6480837627a719f6023032d011f02a5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "19409029_e013db3a",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 162,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-06-18T18:08:50Z",
+      "side": 1,
+      "message": "You should check for args.size() before this.  If there\u0027s only one argument (and I don\u0027t see a different check to guarantee it\u0027s not this case), then you\u0027ll crash.",
+      "revId": "7e0c4e1bb6480837627a719f6023032d011f02a5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4bfc3cc4_14235a6d",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 203,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-06-18T18:08:50Z",
+      "side": 1,
+      "message": "You don\u0027t need the std::move() here anymore.",
+      "revId": "7e0c4e1bb6480837627a719f6023032d011f02a5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b773ddae_57332559",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 212,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-06-18T18:08:50Z",
+      "side": 1,
+      "message": "Just noticing how this is used.  It\u0027s only for ParseDepCallback(), which is only used in this constructor and it\u0027s updated for each iteration in the loop?\n\nIt doesn\u0027t need to be stored then.  Pass it as an extra parameter to ParseDepCallback().  std::bind() does this pretty seamlessly.  Have Modprobe::ParseDepCallback(const std::string\u0026 base_path, const std::vector\u003cstd::string\u003e\u0026 args); and call with auto dep_callback \u003d std::bind(\u0026Modprobe::ParseDepCallback, this, base_path, _1);",
+      "revId": "7e0c4e1bb6480837627a719f6023032d011f02a5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
