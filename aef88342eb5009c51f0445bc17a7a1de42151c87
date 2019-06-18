@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "c927470b_26cf041a",
+        "filename": "init/first_stage_init.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1131915
+      },
+      "writtenOn": "2019-06-18T00:22:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "43d85863_9742174a",
+      "revId": "aef88342eb5009c51f0445bc17a7a1de42151c87",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "32a99600_5eae6e00",
         "filename": "init/modalias_handler.cpp",
         "patchSetId": 5
@@ -42,6 +60,30 @@
     },
     {
       "key": {
+        "uuid": "0104b144_602426f2",
+        "filename": "init/modalias_handler.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1131915
+      },
+      "writtenOn": "2019-06-18T00:22:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "32a99600_5eae6e00",
+      "range": {
+        "startLine": 27,
+        "startChar": 33,
+        "endLine": 27,
+        "endChar": 57
+      },
+      "revId": "aef88342eb5009c51f0445bc17a7a1de42151c87",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3ff93fba_cef21772",
         "filename": "init/modalias_handler.h",
         "patchSetId": 5
@@ -59,6 +101,24 @@
     },
     {
       "key": {
+        "uuid": "adb3f786_0af9d896",
+        "filename": "init/modalias_handler.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1131915
+      },
+      "writtenOn": "2019-06-18T00:22:35Z",
+      "side": 1,
+      "message": "Changed to use object rather than pointer.",
+      "parentUuid": "3ff93fba_cef21772",
+      "revId": "aef88342eb5009c51f0445bc17a7a1de42151c87",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3bb7d74d_01d80721",
         "filename": "libmodprobe/include/modprobe/modprobe.h",
         "patchSetId": 5
@@ -70,6 +130,30 @@
       "writtenOn": "2019-06-15T00:36:17Z",
       "side": 1,
       "message": "2019",
+      "range": {
+        "startLine": 2,
+        "startChar": 17,
+        "endLine": 2,
+        "endChar": 21
+      },
+      "revId": "aef88342eb5009c51f0445bc17a7a1de42151c87",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "67b7be27_2d9a09df",
+        "filename": "libmodprobe/include/modprobe/modprobe.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1131915
+      },
+      "writtenOn": "2019-06-18T00:22:35Z",
+      "side": 1,
+      "message": "I left this 2018 as this was heavily based on modalias handler which was 2018 - does moving to a new file reset the copyright?",
+      "parentUuid": "3bb7d74d_01d80721",
       "range": {
         "startLine": 2,
         "startChar": 17,
@@ -99,6 +183,24 @@
     },
     {
       "key": {
+        "uuid": "7a248026_8a2714e6",
+        "filename": "libmodprobe/include/modprobe/modprobe.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1131915
+      },
+      "writtenOn": "2019-06-18T00:22:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "036af13f_c4a7ce61",
+      "revId": "aef88342eb5009c51f0445bc17a7a1de42151c87",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "2d0bc287_6bdef455",
         "filename": "libmodprobe/include/modprobe/modprobe.h",
         "patchSetId": 5
@@ -113,6 +215,24 @@
       "revId": "aef88342eb5009c51f0445bc17a7a1de42151c87",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "478d3a3a_0b3f83fa",
+        "filename": "libmodprobe/include/modprobe/modprobe.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1131915
+      },
+      "writtenOn": "2019-06-18T00:22:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2d0bc287_6bdef455",
+      "revId": "aef88342eb5009c51f0445bc17a7a1de42151c87",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -133,6 +253,24 @@
     },
     {
       "key": {
+        "uuid": "785a550c_ae18a256",
+        "filename": "libmodprobe/include/modprobe/modprobe.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1131915
+      },
+      "writtenOn": "2019-06-18T00:22:35Z",
+      "side": 1,
+      "message": "Removed (combined with LoadWithAliases).",
+      "parentUuid": "37bc62c8_b59e89f5",
+      "revId": "aef88342eb5009c51f0445bc17a7a1de42151c87",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "4138af7f_59712ed1",
         "filename": "libmodprobe/include/modprobe/modprobe.h",
         "patchSetId": 5
@@ -147,6 +285,24 @@
       "revId": "aef88342eb5009c51f0445bc17a7a1de42151c87",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c29adc92_cf37c86f",
+        "filename": "libmodprobe/include/modprobe/modprobe.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1131915
+      },
+      "writtenOn": "2019-06-18T00:22:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4138af7f_59712ed1",
+      "revId": "aef88342eb5009c51f0445bc17a7a1de42151c87",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -173,6 +329,30 @@
     },
     {
       "key": {
+        "uuid": "c3e4e7ae_4aa4a5ef",
+        "filename": "libmodprobe/include/modprobe/modprobe.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 1131915
+      },
+      "writtenOn": "2019-06-18T00:22:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c3350754_9548fb66",
+      "range": {
+        "startLine": 46,
+        "startChar": 16,
+        "endLine": 46,
+        "endChar": 25
+      },
+      "revId": "aef88342eb5009c51f0445bc17a7a1de42151c87",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "6d94f7cb_0791540c",
         "filename": "libmodprobe/include/modprobe/modprobe.h",
         "patchSetId": 5
@@ -190,6 +370,24 @@
     },
     {
       "key": {
+        "uuid": "dea06c01_9d547036",
+        "filename": "libmodprobe/include/modprobe/modprobe.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 1131915
+      },
+      "writtenOn": "2019-06-18T00:22:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6d94f7cb_0791540c",
+      "revId": "aef88342eb5009c51f0445bc17a7a1de42151c87",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "31453ede_c7127a4e",
         "filename": "libmodprobe/libmodprobe.cpp",
         "patchSetId": 5
@@ -201,6 +399,30 @@
       "writtenOn": "2019-06-15T00:36:17Z",
       "side": 1,
       "message": "2019 for all of these files.",
+      "range": {
+        "startLine": 2,
+        "startChar": 17,
+        "endLine": 2,
+        "endChar": 21
+      },
+      "revId": "aef88342eb5009c51f0445bc17a7a1de42151c87",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5fe12dd5_90206de3",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1131915
+      },
+      "writtenOn": "2019-06-18T00:22:35Z",
+      "side": 1,
+      "message": "True even if the new files were heavily based on prior 2018 files?",
+      "parentUuid": "31453ede_c7127a4e",
       "range": {
         "startLine": 2,
         "startChar": 17,
@@ -230,6 +452,24 @@
     },
     {
       "key": {
+        "uuid": "bb57f6fa_2d57d5a8",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1131915
+      },
+      "writtenOn": "2019-06-18T00:22:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5d44d37b_f7821220",
+      "revId": "aef88342eb5009c51f0445bc17a7a1de42151c87",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "de121d65_69c6c3aa",
         "filename": "libmodprobe/libmodprobe.cpp",
         "patchSetId": 5
@@ -244,6 +484,24 @@
       "revId": "aef88342eb5009c51f0445bc17a7a1de42151c87",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "68f313ed_3eadb949",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 179,
+      "author": {
+        "id": 1131915
+      },
+      "writtenOn": "2019-06-18T00:22:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "de121d65_69c6c3aa",
+      "revId": "aef88342eb5009c51f0445bc17a7a1de42151c87",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -264,6 +522,24 @@
     },
     {
       "key": {
+        "uuid": "a55debb5_4cc857df",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 200,
+      "author": {
+        "id": 1131915
+      },
+      "writtenOn": "2019-06-18T00:22:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "81c73363_06e19da7",
+      "revId": "aef88342eb5009c51f0445bc17a7a1de42151c87",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "30a37af0_2623b116",
         "filename": "libmodprobe/libmodprobe.cpp",
         "patchSetId": 5
@@ -278,6 +554,24 @@
       "revId": "aef88342eb5009c51f0445bc17a7a1de42151c87",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "710cdd68_2699906d",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 219,
+      "author": {
+        "id": 1131915
+      },
+      "writtenOn": "2019-06-18T00:22:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "30a37af0_2623b116",
+      "revId": "aef88342eb5009c51f0445bc17a7a1de42151c87",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -298,6 +592,24 @@
     },
     {
       "key": {
+        "uuid": "32cfc51b_4ae8e9d6",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 241,
+      "author": {
+        "id": 1131915
+      },
+      "writtenOn": "2019-06-18T00:22:35Z",
+      "side": 1,
+      "message": "Yes AFAIK. This is what depmod spits out for me by default and also what appears on my host.",
+      "parentUuid": "be1953de_cc674eac",
+      "revId": "aef88342eb5009c51f0445bc17a7a1de42151c87",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1e1494b0_89eee871",
         "filename": "libmodprobe/libmodprobe.cpp",
         "patchSetId": 5
@@ -315,6 +627,24 @@
     },
     {
       "key": {
+        "uuid": "746fbaad_512a1d43",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 294,
+      "author": {
+        "id": 1131915
+      },
+      "writtenOn": "2019-06-18T00:22:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1e1494b0_89eee871",
+      "revId": "aef88342eb5009c51f0445bc17a7a1de42151c87",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "67d01df0_3a637b17",
         "filename": "libmodprobe/libmodprobe.cpp",
         "patchSetId": 5
@@ -329,6 +659,24 @@
       "revId": "aef88342eb5009c51f0445bc17a7a1de42151c87",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "14e7e218_6627d826",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 330,
+      "author": {
+        "id": 1131915
+      },
+      "writtenOn": "2019-06-18T00:22:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "67d01df0_3a637b17",
+      "revId": "aef88342eb5009c51f0445bc17a7a1de42151c87",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -355,6 +703,30 @@
     },
     {
       "key": {
+        "uuid": "a0a00773_8248d353",
+        "filename": "libmodprobe/libmodprobe_ext_test.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1131915
+      },
+      "writtenOn": "2019-06-18T00:22:35Z",
+      "side": 1,
+      "message": "Done (wonder why clang-format didn\u0027t address this?)",
+      "parentUuid": "dda018c2_64862b68",
+      "range": {
+        "startLine": 61,
+        "startChar": 11,
+        "endLine": 61,
+        "endChar": 12
+      },
+      "revId": "aef88342eb5009c51f0445bc17a7a1de42151c87",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d6957035_acb1e968",
         "filename": "libmodprobe/libmodprobe_test.cpp",
         "patchSetId": 5
@@ -372,6 +744,24 @@
     },
     {
       "key": {
+        "uuid": "0ff8f2ad_80e40235",
+        "filename": "libmodprobe/libmodprobe_test.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1131915
+      },
+      "writtenOn": "2019-06-18T00:22:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d6957035_acb1e968",
+      "revId": "aef88342eb5009c51f0445bc17a7a1de42151c87",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b0ce7583_1774c78e",
         "filename": "libmodprobe/libmodprobe_test.cpp",
         "patchSetId": 5
@@ -386,6 +776,24 @@
       "revId": "aef88342eb5009c51f0445bc17a7a1de42151c87",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c59183a4_4438b886",
+        "filename": "libmodprobe/libmodprobe_test.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 1131915
+      },
+      "writtenOn": "2019-06-18T00:22:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b0ce7583_1774c78e",
+      "revId": "aef88342eb5009c51f0445bc17a7a1de42151c87",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
