@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6f0d43c1_87ae51c4",
+        "filename": "libziparchive/zip_writer.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 268,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-06-19T00:38:01Z",
+      "side": 1,
+      "message": "personally i think `1` would be clearer...",
+      "range": {
+        "startLine": 268,
+        "startChar": 26,
+        "endLine": 268,
+        "endChar": 46
+      },
+      "revId": "efa91d9696ba97ecaac3657d79382f4d9c4d6732",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1c091fd1_ae0bbe1f",
+        "filename": "libziparchive/zip_writer.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 272,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-06-19T00:38:01Z",
+      "side": 1,
+      "message": "...and it seems like the original author was inconsistent, using `1` here.",
+      "revId": "efa91d9696ba97ecaac3657d79382f4d9c4d6732",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
