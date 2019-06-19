@@ -1772,9 +1772,11 @@ int adb_commandline(int argc, const char** argv) {
         } else {
             // forward <local> <remote>
             if (argc != 2) error_exit("forward takes two arguments");
-            if (forward_targets_are_valid(argv[0], argv[1], &error_message)) {
-                cmd = host_prefix + ":forward:" + argv[0] + ";" + argv[1];
+            if (!forward_targets_are_valid(argv[0], argv[1], &error_message)) {
+                printf("warning: %s, %s, %s\n", argv[0], argv[1], error_message.c_str());
+                error_message = "";
             }
+            cmd = host_prefix + ":forward:" + argv[0] + ";" + argv[1];
         }
 
         if (!error_message.empty()) {

@@ -120,13 +120,15 @@ static int _network_loopback_server(bool ipv6, int port, int type, std::string* 
 }
 
 int network_loopback_server(int port, int type, std::string* error) {
-    int rc = _network_loopback_server(false, port, type, error);
+    int rc = _network_loopback_server(true, port, type, error);
 
     // Only attempt to listen on IPv6 if IPv4 is unavailable.
     // We don't want to start an IPv6 server if there's already an IPv4 one running.
     if (rc == -1 && (errno == EADDRNOTAVAIL || errno == EAFNOSUPPORT)) {
-        return _network_loopback_server(true, port, type, error);
+        LOG(ERROR) << "adbd falling back to ipv4: " << *error;
+        return _network_loopback_server(false, port, type, error);
     }
+    LOG(ERROR) << "adbd using ipv6: " << rc;
     return rc;
 }
 
