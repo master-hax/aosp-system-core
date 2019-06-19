@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2a975fdc_019e1876",
+        "filename": "init/README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 199,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2019-06-19T00:01:10Z",
+      "side": 0,
+      "message": "Might be better to qualify this instead \"For instance, this is used ...\".",
+      "range": {
+        "startLine": 199,
+        "startChar": 55,
+        "endLine": 199,
+        "endChar": 59
+      },
+      "revId": "b89a4434ba542e2bd09fead9e08b0f8b20eb9019",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
