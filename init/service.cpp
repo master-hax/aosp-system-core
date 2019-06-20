@@ -424,6 +424,11 @@ Result<void> Service::ParseInterface(std::vector<std::string>&& args) {
         return Error() << "Interface name must not be a value name '" << interface_name << "'";
     }
 
+    if (!ServiceList::GetInstance().IsKnownInterface(interface_name)) {
+        return Error() << "Interface is not in the known set of hidl_interfaces: '"
+                       << interface_name << "'";
+    }
+
     const std::string fullname = interface_name + "/" + instance_name;
 
     for (const auto& svc : ServiceList::GetInstance()) {
@@ -1168,6 +1173,18 @@ void ServiceList::RemoveService(const Service& svc) {
     }
 
     services_.erase(svc_it);
+}
+
+void ServiceList::AddKnownInterfaces(const std::set<std::string>& interfaces) {
+    known_interfaces_.insert(interfaces.begin(), interfaces.end());
+}
+
+bool ServiceList::IsKnownInterface(const std::string& interface_name) {
+    if (known_interfaces_.empty()) {
+        LOG(INFO) << "Set of known interfaces is empty.";
+        return true;
+    }
+    return known_interfaces_.count(interface_name) > 0;
 }
 
 void ServiceList::DumpState() const {
