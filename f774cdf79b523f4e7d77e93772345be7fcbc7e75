@@ -16,6 +16,24 @@
       "revId": "f774cdf79b523f4e7d77e93772345be7fcbc7e75",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c053baaf_d04ed537",
+        "filename": "init/host_init_verifier.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 172,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-06-20T23:56:07Z",
+      "side": 1,
+      "message": "Probably just copy/paste from elsewhere.  I guess given that I don\u0027t do anything special here, I should just fall back to the default case.",
+      "parentUuid": "cd7a04cf_789de74c",
+      "revId": "f774cdf79b523f4e7d77e93772345be7fcbc7e75",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
