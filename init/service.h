@@ -248,6 +248,9 @@ class ServiceList {
     void AddService(std::unique_ptr<Service> service);
     void RemoveService(const Service& svc);
 
+    void AddKnownInterfaces(const std::set<std::string>& interfaces);
+    bool IsKnownInterface(const std::string& interface_name);
+
     template <typename T, typename F = decltype(&Service::name)>
     Service* FindService(T value, F function = &Service::name) const {
         auto svc = std::find_if(services_.begin(), services_.end(),
@@ -285,6 +288,8 @@ class ServiceList {
 
   private:
     std::vector<std::unique_ptr<Service>> services_;
+
+    std::set<std::string> known_interfaces_;
 
     bool post_data_ = false;
     bool services_update_finished_ = false;
