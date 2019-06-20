@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "cd7a04cf_789de74c",
+        "filename": "init/host_init_verifier.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 172,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-06-20T23:47:06Z",
+      "side": 1,
+      "message": "why?",
+      "revId": "f774cdf79b523f4e7d77e93772345be7fcbc7e75",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
