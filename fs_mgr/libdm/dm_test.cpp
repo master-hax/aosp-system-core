@@ -30,6 +30,7 @@
 
 #include <android-base/file.h>
 #include <android-base/unique_fd.h>
+#include <fs_mgr/file_wait.h>
 #include <gtest/gtest.h>
 #include <libdm/dm.h>
 #include <libdm/loop_control.h>
@@ -70,22 +71,7 @@ class TempDevice {
         valid_ = false;
         return dm_.DeleteDevice(name_);
     }
-    bool WaitForUdev() const {
-        auto start_time = std::chrono::steady_clock::now();
-        while (true) {
-            if (!access(path().c_str(), F_OK)) {
-                return true;
-            }
-            if (errno != ENOENT) {
-                return false;
-            }
-            std::this_thread::sleep_for(50ms);
-            std::chrono::duration elapsed = std::chrono::steady_clock::now() - start_time;
-            if (elapsed >= 5s) {
-                return false;
-            }
-        }
-    }
+    bool WaitForUdev() const { return android::fs_mgr::WaitForFile(path(), 5s); }
     std::string path() const {
         std::string device_path;
         if (!dm_.GetDmDevicePathByName(name_, &device_path)) {
