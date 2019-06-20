@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e2606134_d4ef47a6",
+        "filename": "usbd/usbd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-06-20T19:06:22Z",
+      "side": 1,
+      "message": "when a constant is only used once, it\u0027s clearer to just inline it.\n\n(also, since you don\u0027t actually need bootmode after, just `if (GetProperty(...)) exit(0)?`)",
+      "range": {
+        "startLine": 38,
+        "startChar": 39,
+        "endLine": 38,
+        "endChar": 48
+      },
+      "revId": "38880d3c12eb0249bdd59695118f76f950ab98fc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b33d7a39_3a011677",
+        "filename": "usbd/usbd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-06-20T19:06:22Z",
+      "side": 1,
+      "message": "i guess the same two comments applied here too though :-)",
+      "range": {
+        "startLine": 47,
+        "startChar": 43,
+        "endLine": 47,
+        "endChar": 64
+      },
+      "revId": "38880d3c12eb0249bdd59695118f76f950ab98fc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
