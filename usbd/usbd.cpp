@@ -25,6 +25,7 @@
 #include <hidl/HidlTransportSupport.h>
 
 #define PERSISTENT_USB_CONFIG "persist.sys.usb.config"
+#define BOOT_MODE "ro.bootmode"
 
 using android::base::GetProperty;
 using android::base::SetProperty;
@@ -34,8 +35,10 @@ using android::hardware::usb::gadget::V1_0::IUsbGadget;
 using android::hardware::Return;
 
 int main(int /*argc*/, char** /*argv*/) {
-    configureRpcThreadpool(1, true /*callerWillJoin*/);
+    std::string bootmode = GetProperty(BOOT_MODE, "");
+    if (bootmode == "charger") exit(0);
 
+    configureRpcThreadpool(1, true /*callerWillJoin*/);
     android::sp<IUsbGadget> gadget = IUsbGadget::getService();
     Return<void> ret;
 
