@@ -16,6 +16,24 @@
       "revId": "8f6e4f9acc08621caa0889322ba0f6a22296796a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6fe41bbf_8d454955",
+        "filename": "libwakelock/include/wakelock/wakelock.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1124693
+      },
+      "writtenOn": "2019-06-22T00:57:17Z",
+      "side": 1,
+      "message": "Yeah, now that we changed the other patch, nothing\u0027s using this method. Makes sense to remove. I\u0027ll do that.",
+      "parentUuid": "b5f7da23_a4f1db5e",
+      "revId": "8f6e4f9acc08621caa0889322ba0f6a22296796a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
