@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f7668d52_06af271a",
+        "filename": "fs_mgr/libdm/dm.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-06-22T02:11:52Z",
+      "side": 0,
+      "message": "Note: removed since the kernel will tell us if something\u0027s wrong, and we already stop invalid names in CreateDevice.",
+      "revId": "99087decb9c9bb63ea20e18f6fa5ccbcefe8cf2b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0893a004_e901cee5",
+        "filename": "fs_mgr/libdm/include/libdm/dm.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-06-22T02:11:52Z",
+      "side": 0,
+      "message": "Note: this was unused/unimplemented. We have GetTableStatus/Info below.",
+      "range": {
+        "startLine": 78,
+        "startChar": 46,
+        "endLine": 78,
+        "endChar": 47
+      },
+      "revId": "99087decb9c9bb63ea20e18f6fa5ccbcefe8cf2b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
