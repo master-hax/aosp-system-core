@@ -34,6 +34,24 @@
       "revId": "8f6e4f9acc08621caa0889322ba0f6a22296796a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1365e689_5f9be4bb",
+        "filename": "libwakelock/include/wakelock/wakelock.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1124693
+      },
+      "writtenOn": "2019-06-22T01:14:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6fe41bbf_8d454955",
+      "revId": "8f6e4f9acc08621caa0889322ba0f6a22296796a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
