@@ -547,9 +547,11 @@ out:
     return retval;
 }
 
-bool fs_mgr_teardown_verity(FstabEntry* entry, bool wait) {
+bool fs_mgr_teardown_verity(FstabEntry* entry) {
+    auto& dm = android::dm::DeviceMapper::Instance();
     const std::string mount_point(basename(entry->mount_point.c_str()));
-    if (!android::fs_mgr::UnmapDevice(mount_point, wait ? 1000ms : 0ms)) {
+    if (!dm.DeleteDevice(mount_point)) {
+        LINFO << "Could not unmap verity device: " << mount_point;
         return false;
     }
     LINFO << "Unmapped verity device " << mount_point;
