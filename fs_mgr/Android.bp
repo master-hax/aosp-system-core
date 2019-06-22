@@ -49,6 +49,7 @@ cc_library {
         "libcrypto",
         "libcrypto_utils",
         "libcutils",
+        "libext2_uuid",
         "libext4_utils",
         "libfec",
         "liblog",
