@@ -97,7 +97,7 @@ bool is_dt_compatible();
 bool fs_mgr_is_ext4(const std::string& blk_device);
 bool fs_mgr_is_f2fs(const std::string& blk_device);
 
-bool fs_mgr_teardown_verity(android::fs_mgr::FstabEntry* fstab, bool wait);
+bool fs_mgr_teardown_verity(android::fs_mgr::FstabEntry* fstab);
 
 namespace android {
 namespace fs_mgr {
