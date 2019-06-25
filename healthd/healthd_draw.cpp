@@ -18,15 +18,30 @@
 #include <batteryservice/BatteryService.h>
 #include <cutils/klog.h>
 
+#include <android/hardware/configstore/1.1/IChargerConfigs.h>
+#include <configstore/Utils.h>
+
 #include "healthd_draw.h"
+
+using namespace android::hardware::configstore;
+using namespace android::hardware::configstore::V1_0;
+using namespace android::hardware::configstore::V1_1;
+using android::hardware::configstore::getUInt64;
+
+static uint64_t drawSplitScreen = getUInt64<
+        IChargerConfigs,
+        &IChargerConfigs::drawSplitScreen>(0);
+static uint64_t drawSplitOffset = getUInt64<
+        IChargerConfigs,
+        &IChargerConfigs::drawSplitOffset>(0);
 
 #define LOGE(x...) KLOG_ERROR("charger", x);
 #define LOGW(x...) KLOG_WARNING("charger", x);
 #define LOGV(x...) KLOG_DEBUG("charger", x);
 
 HealthdDraw::HealthdDraw(animation* anim)
-  : kSplitScreen(HEALTHD_DRAW_SPLIT_SCREEN),
-    kSplitOffset(HEALTHD_DRAW_SPLIT_OFFSET) {
+  : kSplitScreen(drawSplitScreen),
+    kSplitOffset(drawSplitOffset) {
     int ret = gr_init();
 
     if (ret < 0) {
