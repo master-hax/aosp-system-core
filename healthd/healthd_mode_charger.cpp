@@ -43,15 +43,28 @@
 #include <cutils/uevent.h>
 #include <sys/reboot.h>
 
-#ifdef CHARGER_ENABLE_SUSPEND
 #include <suspend/autosuspend.h>
-#endif
 
 #include "AnimationParser.h"
 #include "healthd_draw.h"
 
 #include <health2/Health.h>
 #include <healthd/healthd.h>
+
+#include <android/hardware/configstore/1.1/IChargerConfigs.h>
+#include <configstore/Utils.h>
+
+using namespace android::hardware::configstore;
+using namespace android::hardware::configstore::V1_0;
+using namespace android::hardware::configstore::V1_1;
+using android::hardware::configstore::getBool;
+
+static bool disableInitBlank = getBool<
+        IChargerConfigs,
+        &IChargerConfigs::disableInitBlank>(false);
+static bool enableSuspend = getBool<
+        IChargerConfigs,
+        &IChargerConfigs::enableSuspend>(false);
 
 using namespace android;
 
@@ -264,18 +277,16 @@ out:
     LOGW("\n");
 }
 
-#ifdef CHARGER_ENABLE_SUSPEND
 static int request_suspend(bool enable) {
-    if (enable)
-        return autosuspend_enable();
-    else
-        return autosuspend_disable();
+    if (enableSuspend) {
+        if (enable)
+            return autosuspend_enable();
+        else
+            return autosuspend_disable();
+    } else {
+        return 0;
+    }
 }
-#else
-static int request_suspend(bool /*enable*/) {
-    return 0;
-}
-#endif
 
 static void kick_animation(animation* anim) {
     anim->run = true;
@@ -321,10 +332,10 @@ static void update_screen_state(charger* charger, int64_t now) {
 
         healthd_draw.reset(new HealthdDraw(batt_anim));
 
-#ifndef CHARGER_DISABLE_INIT_BLANK
-        healthd_draw->blank_screen(true);
-        charger->screen_blanked = true;
-#endif
+        if (disableInitBlank) {
+            healthd_draw->blank_screen(true);
+            charger->screen_blanked = true;
+        }
     }
 
     /* animation is over, blank screen and leave */
