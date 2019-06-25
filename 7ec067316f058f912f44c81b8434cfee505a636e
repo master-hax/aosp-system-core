@@ -70,6 +70,30 @@
       "revId": "7ec067316f058f912f44c81b8434cfee505a636e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a27a3cd1_0e51108e",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-06-25T15:39:09Z",
+      "side": 1,
+      "message": "\u003e Tom what was the resolution from the meeting about watching properties from Java? \n\nMore or less what we talked about.  We want to get rid of it and replace it with binder or other more targeted IPC.  The idea of adding another one is not something that we\u0027d be too happy with.",
+      "parentUuid": "5e0759b3_2fce0700",
+      "range": {
+        "startLine": 8,
+        "startChar": 0,
+        "endLine": 11,
+        "endChar": 38
+      },
+      "revId": "7ec067316f058f912f44c81b8434cfee505a636e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
