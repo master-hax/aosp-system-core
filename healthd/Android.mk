@@ -9,20 +9,11 @@ LOCAL_MODULE := libhealthd_draw
 
 LOCAL_EXPORT_C_INCLUDE_DIRS := $(LOCAL_PATH)
 LOCAL_STATIC_LIBRARIES := libminui
-LOCAL_SHARED_LIBRARIES := libbase
+LOCAL_SHARED_LIBRARIES := \
+	android.hardware.configstore@1.1 \
+    android.hardware.configstore-utils \
+	libbase
 LOCAL_SRC_FILES := healthd_draw.cpp
-
-ifneq ($(TARGET_HEALTHD_DRAW_SPLIT_SCREEN),)
-LOCAL_CFLAGS += -DHEALTHD_DRAW_SPLIT_SCREEN=$(TARGET_HEALTHD_DRAW_SPLIT_SCREEN)
-else
-LOCAL_CFLAGS += -DHEALTHD_DRAW_SPLIT_SCREEN=0
-endif
-
-ifneq ($(TARGET_HEALTHD_DRAW_SPLIT_OFFSET),)
-LOCAL_CFLAGS += -DHEALTHD_DRAW_SPLIT_OFFSET=$(TARGET_HEALTHD_DRAW_SPLIT_OFFSET)
-else
-LOCAL_CFLAGS += -DHEALTHD_DRAW_SPLIT_OFFSET=0
-endif
 
 LOCAL_HEADER_LIBRARIES := libbatteryservice_headers
 
@@ -32,12 +23,6 @@ include $(BUILD_STATIC_LIBRARY)
 include $(CLEAR_VARS)
 
 LOCAL_CFLAGS := -Werror
-ifeq ($(strip $(BOARD_CHARGER_DISABLE_INIT_BLANK)),true)
-LOCAL_CFLAGS += -DCHARGER_DISABLE_INIT_BLANK
-endif
-ifeq ($(strip $(BOARD_CHARGER_ENABLE_SUSPEND)),true)
-LOCAL_CFLAGS += -DCHARGER_ENABLE_SUSPEND
-endif
 
 LOCAL_SRC_FILES := \
     healthd_mode_charger.cpp \
@@ -50,6 +35,8 @@ LOCAL_EXPORT_C_INCLUDE_DIRS := \
     $(LOCAL_PATH)/include
 
 LOCAL_STATIC_LIBRARIES := \
+	android.hardware.configstore@1.1 \
+    android.hardware.configstore-utils \
     android.hardware.health@2.0-impl \
     android.hardware.health@1.0-convert \
     libhealthstoragedefault \
@@ -64,9 +51,7 @@ LOCAL_SHARED_LIBRARIES := \
     libpng \
     libutils \
 
-ifeq ($(strip $(BOARD_CHARGER_ENABLE_SUSPEND)),true)
 LOCAL_SHARED_LIBRARIES += libsuspend
-endif
 
 include $(BUILD_STATIC_LIBRARY)
 
@@ -115,9 +100,7 @@ CHARGER_STATIC_LIBRARIES += libminui
 CHARGER_SHARED_LIBRARIES += libpng
 endif
 
-ifeq ($(strip $(BOARD_CHARGER_ENABLE_SUSPEND)),true)
 CHARGER_SHARED_LIBRARIES += libsuspend
-endif
 
 LOCAL_STATIC_LIBRARIES := $(CHARGER_STATIC_LIBRARIES)
 LOCAL_SHARED_LIBRARIES := $(CHARGER_SHARED_LIBRARIES)
