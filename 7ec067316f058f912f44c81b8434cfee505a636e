@@ -46,6 +46,30 @@
       "revId": "7ec067316f058f912f44c81b8434cfee505a636e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5e0759b3_2fce0700",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1346941
+      },
+      "writtenOn": "2019-06-25T09:53:38Z",
+      "side": 1,
+      "message": "Tom what was the resolution from the meeting about watching properties from Java? \n\nIn R I\u0027d like init to make a one-way call to system_server when the updatable_crashing property changes, assuming Java cannot listen for this property. At the moment, we are polling this property from Java land for a short while after a boot with an update. I would like to monitor this property for longer (~2 days) without burning a thread in system_server",
+      "parentUuid": "1e103f0b_30390769",
+      "range": {
+        "startLine": 8,
+        "startChar": 0,
+        "endLine": 11,
+        "endChar": 38
+      },
+      "revId": "7ec067316f058f912f44c81b8434cfee505a636e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
