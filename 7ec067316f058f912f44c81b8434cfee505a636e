@@ -22,6 +22,30 @@
       "revId": "7ec067316f058f912f44c81b8434cfee505a636e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1e103f0b_30390769",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1013030
+      },
+      "writtenOn": "2019-06-25T09:41:52Z",
+      "side": 1,
+      "message": "Yeah, the goals were for the watchdog to use it, though it currently uses properties. I\u0027ll leave Zim to comment whether he thinks it\u0027ll still be useful in R.\n\nThe other reason was that this would allow us to get rid of the \u0027vdc\u0027 daemon, which is just a proxy for making binder calls, and this would be a good way to improve boot time. Never materialized in Q due to lack of time.\n\nRe: two-way, if it\u0027s to servicemanager I don\u0027t think that\u0027s a concern, since that is a trusted component anyway. The comments were more intended as guidelines to safely use binder from init.\n\nI\u0027m fine with removing it if Zim is, we can always add it back if we do go after the boot time improvements.",
+      "parentUuid": "59122320_c5bbba3d",
+      "range": {
+        "startLine": 8,
+        "startChar": 0,
+        "endLine": 11,
+        "endChar": 38
+      },
+      "revId": "7ec067316f058f912f44c81b8434cfee505a636e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
