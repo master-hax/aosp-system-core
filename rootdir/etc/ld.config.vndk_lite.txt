@@ -73,6 +73,7 @@ namespace.default.asan.search.paths +=           /%PRODUCT_SERVICES%/${LIB}
 # Finally, if all attempts fail, the dynamic linker returns an error.
 namespace.default.links = runtime,resolv
 namespace.default.link.runtime.shared_libs  = libandroidicu.so
+namespace.default.link.runtime.shared_libs  = libandroidio.so
 namespace.default.link.runtime.shared_libs += libdexfile_external.so
 namespace.default.link.runtime.shared_libs += libdexfiled_external.so
 # TODO(b/120786417 or b/134659294): libicuuc.so and libicui18n.so are kept for app compat.
@@ -374,6 +375,7 @@ namespace.default.link.runtime.shared_libs += libnativehelper.so
 namespace.default.link.runtime.shared_libs += libnativeloader.so
 # Workaround for b/124772622
 namespace.default.link.runtime.shared_libs += libandroidicu.so
+namespace.default.link.runtime.shared_libs += libandroidio.so
 
 ###############################################################################
 # "runtime" APEX namespace
