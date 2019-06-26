@@ -62,6 +62,31 @@ cc_library_headers {
     },
 }
 
+// TODO(b/xxx): Switch all users to this NDK variant and replace the library
+// above with it. Possible?
+cc_library_headers {
+    name: "liblog_headers_ndk",
+    host_supported: true,
+    vendor_available: true,
+    recovery_available: true,
+    native_bridge_supported: true,
+    export_include_dirs: ["include"],
+    system_shared_libs: [],
+    sdk_version: "current",
+    stl: "none",
+    target: {
+        windows: {
+            enabled: true,
+        },
+        linux_bionic: {
+            enabled: true,
+        },
+        vendor: {
+            override_export_include_dirs: ["include_vndk"],
+        },
+    },
+}
+
 // Shared and static library for host and device
 // ========================================================
 cc_library {

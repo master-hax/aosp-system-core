@@ -23,9 +23,11 @@
 #include <utils/Log.h>
 #include <utils/Vector.h>
 
+#if 0
 #if defined(__ANDROID__) && !defined(__ANDROID_RECOVERY__)
 #include <dlfcn.h>
 #include <vndksupport/linker.h>
+#endif
 #endif
 
 extern "C" void do_report_sysprop_change();
@@ -70,6 +72,7 @@ void add_sysprop_change_callback(sysprop_change_callback cb, int priority) {
 void add_sysprop_change_callback(sysprop_change_callback, int) {}
 #endif
 
+#if 0
 #if defined(__ANDROID__) && !defined(__ANDROID_RECOVERY__)
 void (*get_report_sysprop_change_func())() {
     void (*func)() = nullptr;
@@ -81,10 +84,12 @@ void (*get_report_sysprop_change_func())() {
     return func;
 }
 #endif
+#endif
 
 void report_sysprop_change() {
     do_report_sysprop_change();
 
+#if 0
 #if defined(__ANDROID__) && !defined(__ANDROID_RECOVERY__)
     // libutils.so is double loaded; from the default namespace and from the
     // 'sphal' namespace. Redirect the sysprop change event to the other instance
@@ -94,6 +99,7 @@ void report_sysprop_change() {
     if (func != nullptr) {
         (*func)();
     }
+#endif
 #endif
 }
 

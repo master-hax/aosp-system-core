@@ -35,14 +35,8 @@ cc_defaults {
     },
 }
 
-cc_library {
-    name: "libunwindstack",
-    vendor_available: true,
-    recovery_available: true,
-    vndk: {
-        enabled: true,
-        support_system_process: true,
-    },
+cc_defaults {
+    name: "libunwindstack_defaults",
     defaults: ["libunwindstack_flags"],
     export_include_dirs: ["include"],
 
@@ -81,8 +75,8 @@ cc_library {
     ],
 
     target: {
-        // Always disable optimizations for host to make it easier to debug.
         host: {
+            // Always disable optimizations for host to make it easier to debug.
             cflags: [
                 "-O0",
                 "-g",
@@ -125,19 +119,60 @@ cc_library {
         },
     },
 
-    whole_static_libs: [
-        "libdemangle"
+    shared_libs: [
+        "liblog",
+        "liblzma",
     ],
+}
 
+cc_library {
+    name: "libunwindstack",
+    defaults: ["libunwindstack_defaults"],
+    vendor_available: true,
+    recovery_available: true,
+    vndk: {
+        enabled: true,
+        support_system_process: true,
+    },
     static_libs: [
         "libprocinfo",
     ],
-
     shared_libs: [
         "libbase",
         "libdexfile_support",
-        "liblog",
-        "liblzma",
+    ],
+    whole_static_libs: [
+        "libdemangle",
+    ],
+}
+
+cc_library {
+    name: "libunwindstack_ndk",
+    defaults: ["libunwindstack_defaults"],
+    // TODO: Check if we need to enable all these.
+    vendor_available: true,
+    recovery_available: true,
+    vndk: {
+        enabled: true,
+        support_system_process: true,
+    },
+    sdk_version: "current",
+    stl: "libc++",
+    target: {
+        android: {
+            // Pull in extended headers with ALOG etc that NDK liblog doesn't give us.
+            header_libs: ["liblog_headers_ndk"],
+        },
+    },
+    static_libs: [
+        "libprocinfo_ndk",
+    ],
+    shared_libs: [
+        "libbase_ndk",
+        "libdexfile_support_ndk",
+    ],
+    whole_static_libs: [
+        "libdemangle_ndk",
     ],
 }
 
