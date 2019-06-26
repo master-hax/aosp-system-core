@@ -7,8 +7,6 @@ cc_defaults {
     cppflags: [
         "-fvisibility=protected",
     ],
-    header_libs: ["libnativebridge-headers"],
-    export_header_lib_headers: ["libnativebridge-headers"],
 }
 
 cc_library_headers {
@@ -16,6 +14,7 @@ cc_library_headers {
 
     host_supported: true,
     export_include_dirs: ["include"],
+    sdk_version: "current",
 }
 
 cc_library {
@@ -24,9 +23,12 @@ cc_library {
 
     host_supported: true,
     srcs: ["native_bridge.cc"],
+    sdk_version: "current",
     header_libs: [
-        "libbase_headers",
+        "libbase_headers_ndk",
+        "libnativebridge-headers",
     ],
+    export_header_lib_headers: ["libnativebridge-headers"],
     shared_libs: [
         "liblog",
     ],
@@ -36,6 +38,8 @@ cc_library {
     target: {
         android: {
             version_script: "libnativebridge.map.txt",
+            // Pull in extended headers with ALOG etc that NDK liblog doesn't give us.
+            header_libs: ["liblog_headers_ndk"],
         },
         linux: {
             version_script: "libnativebridge.map.txt",
@@ -54,6 +58,7 @@ cc_library {
     defaults: ["libnativebridge-defaults"],
 
     host_supported: false,
+    export_include_dirs: ["include"],
     srcs: ["native_bridge_lazy.cc"],
     required: ["libnativebridge"],
 }

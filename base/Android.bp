@@ -42,6 +42,25 @@ cc_library_headers {
     },
 }
 
+cc_library_headers {
+    name: "libbase_headers_ndk",
+    vendor_available: true,
+    recovery_available: true,
+    host_supported: true,
+    native_bridge_supported: true,
+    sdk_version: "current",
+    export_include_dirs: ["include"],
+
+    target: {
+        linux_bionic: {
+            enabled: true,
+        },
+        windows: {
+            enabled: true,
+        },
+    },
+}
+
 cc_defaults {
     name: "libbase_defaults",
     defaults: ["libbase_cflags_defaults"],
@@ -116,12 +135,22 @@ cc_library {
     export_static_lib_headers: ["fmtlib"],
 }
 
-cc_library_static {
+// TODO(b/xxx): Switch libbase to NDK and delete this.
+cc_library {
     name: "libbase_ndk",
     defaults: ["libbase_defaults"],
+    vendor_available: true,
+    recovery_available: true,
+    host_supported: true,
+    native_bridge_supported: true,
+    vndk: {
+        enabled: true,
+        support_system_process: true,
+    },
     sdk_version: "current",
-    stl: "c++_static",
-    export_include_dirs: ["include"],
+    stl: "libc++",
+    header_libs: ["libbase_headers_ndk"],
+    export_header_lib_headers: ["libbase_headers_ndk"],
     static_libs: ["fmtlib_ndk"],
     whole_static_libs: ["fmtlib_ndk"],
     export_static_lib_headers: ["fmtlib_ndk"],

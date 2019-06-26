@@ -72,8 +72,8 @@ cc_defaults {
     },
 
     shared_libs: [
-        "libbase",
         "liblog",
+        "libz",
     ],
 
     export_include_dirs: ["include"],
@@ -89,18 +89,46 @@ cc_library {
         enabled: true,
     },
     double_loadable: true,
-    export_shared_lib_headers: ["libbase"],
-
     defaults: [
         "libziparchive_defaults",
         "libziparchive_flags",
     ],
-    shared_libs: [
-        "liblog",
-        "libbase",
-        "libz",
-    ],
+
+    shared_libs: ["libbase"],
+    export_shared_lib_headers: ["libbase"],
     target: {
+        linux_bionic: {
+            enabled: true,
+        },
+    },
+}
+
+// TODO(b/xxx): Switch all users to this NDK variant and replace the library
+// above with it.
+cc_library {
+    name: "libziparchive_ndk",
+    host_supported: true,
+    vendor_available: true,
+    recovery_available: true,
+    native_bridge_supported: true,
+    vndk: {
+        enabled: true,
+    },
+    double_loadable: true,
+    defaults: [
+        "libziparchive_defaults",
+        "libziparchive_flags",
+    ],
+
+    sdk_version: "current",
+    stl: "libc++",
+    shared_libs: ["libbase_ndk"],
+    export_shared_lib_headers: ["libbase_ndk"],
+    target: {
+        android: {
+            // Pull in extended headers with ALOG etc that NDK liblog doesn't give us.
+            header_libs: ["liblog_headers_ndk"],
+        },
         linux_bionic: {
             enabled: true,
         },
@@ -123,7 +151,7 @@ cc_test {
         "zip_writer_test.cc",
     ],
     shared_libs: [
-        "libbase",
+        "libbase_ndk",
         "liblog",
     ],
 
@@ -153,7 +181,7 @@ cc_benchmark {
         "zip_archive_benchmark.cpp",
     ],
     shared_libs: [
-        "libbase",
+        "libbase_ndk",
         "liblog",
     ],
 

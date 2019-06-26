@@ -22,9 +22,9 @@ cc_defaults {
     ],
 
     shared_libs: [
-        "libbase",
+        "libbase_ndk",
         "liblog",
-        "libprocinfo",
+        "libprocinfo_ndk",
     ],
 }
 
@@ -32,12 +32,14 @@ cc_library {
     name: "libmeminfo",
     defaults: ["libmeminfo_defaults"],
     export_include_dirs: ["include"],
-    export_shared_lib_headers: ["libbase"],
+    export_shared_lib_headers: ["libbase_ndk"],
     srcs: [
         "pageacct.cpp",
         "procmeminfo.cpp",
         "sysmeminfo.cpp",
     ],
+    sdk_version: "current",
+    stl: "libc++",
 }
 
 cc_test {
@@ -46,7 +48,7 @@ cc_test {
 
     static_libs: [
         "libmeminfo",
-        "libbase",
+        "libbase_ndk",
         "liblog",
     ],
 

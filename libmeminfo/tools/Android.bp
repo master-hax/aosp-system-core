@@ -20,8 +20,11 @@ cc_binary {
     ],
 
     srcs: ["librank.cpp"],
+
+    sdk_version: "current",
+    stl: "libc++", // *
     shared_libs: [
-        "libbase",
+        "libbase_ndk",
         "libmeminfo",
     ],
 }
@@ -34,8 +37,11 @@ cc_binary {
     ],
 
     srcs: ["procmem.cpp"],
+
+    sdk_version: "current",
+    stl: "libc++", // *
     shared_libs: [
-        "libbase",
+        "libbase_ndk",
         "libmeminfo",
     ],
 }
@@ -48,8 +54,11 @@ cc_binary {
     ],
 
     srcs: ["procrank.cpp"],
+
+    sdk_version: "current",
+    stl: "libc++", // *
     shared_libs: [
-        "libbase",
+        "libbase_ndk",
         "libmeminfo",
     ],
 }
@@ -62,8 +71,11 @@ cc_binary {
     ],
 
     srcs: ["showmap.cpp"],
+
+    sdk_version: "current",
+    stl: "libc++", // *
     shared_libs: [
-        "libbase",
+        "libbase_ndk",
         "libmeminfo",
     ],
 }
@@ -74,9 +86,13 @@ cc_binary {
         "-Wall",
         "-Werror",
     ],
+
     srcs: ["wsstop.cpp"],
+
+    sdk_version: "current",
+    stl: "libc++", // *
     shared_libs: [
-        "libbase",
+        "libbase_ndk",
         "liblog",
         "libmeminfo",
     ],

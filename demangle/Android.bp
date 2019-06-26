@@ -15,7 +15,7 @@
 //
 
 cc_defaults {
-    name: "libdemangle_defaults",
+    name: "libdemangle_flags",
 
     host_supported: true,
 
@@ -32,9 +32,9 @@ cc_defaults {
     },
 }
 
-cc_library {
-    name: "libdemangle",
-    defaults: ["libdemangle_defaults"],
+cc_defaults {
+    name: "libdemangle_defaults",
+    defaults: ["libdemangle_flags"],
     vendor_available: true,
     recovery_available: true,
 
@@ -51,9 +51,21 @@ cc_library {
     ],
 }
 
+cc_library {
+    name: "libdemangle",
+    defaults: ["libdemangle_defaults"],
+}
+
+cc_library {
+    name: "libdemangle_ndk",
+    defaults: ["libdemangle_defaults"],
+    sdk_version: "current",
+    stl: "libc++", // *
+}
+
 cc_binary {
     name: "demangle",
-    defaults: ["libdemangle_defaults"],
+    defaults: ["libdemangle_flags"],
     srcs: ["demangle.cpp"],
     host_supported: true,
 
@@ -65,7 +77,7 @@ cc_binary {
 //-------------------------------------------------------------------------
 cc_test {
     name: "libdemangle_test",
-    defaults: ["libdemangle_defaults"],
+    defaults: ["libdemangle_flags"],
 
     srcs: [
         "DemangleTest.cpp",
