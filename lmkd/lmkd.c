@@ -121,6 +121,8 @@
 
 #define FAIL_REPORT_RLIMIT_MS 1000
 
+#define __NR_pidfd_open 434
+
 /* default to old in-kernel interface if no memory pressure events */
 static bool use_inkernel_interface = true;
 static bool has_inkernel_module;
@@ -151,6 +153,11 @@ struct psi_threshold {
 
 static int level_oomadj[VMPRESS_LEVEL_COUNT];
 static int mpevfd[VMPRESS_LEVEL_COUNT] = { -1, -1, -1 };
+static bool pidfd_supported = false;
+static int last_kill_pid_or_fd = -1;
+static struct timespec last_kill_tm;
+
+/* lmkd configurable parameters */
 static bool debug_process_killing;
 static bool enable_pressure_upgrade;
 static int64_t upgrade_pressure;
@@ -178,10 +185,13 @@ enum polling_update {
     POLLING_NO_CHANGE,
     POLLING_START,
     POLLING_STOP,
+    POLLING_PAUSE,
+    POLLING_RESUME,
 };
 
 struct polling_params {
     struct event_handler_info* poll_handler;
+    struct event_handler_info* paused_handler;
     struct timespec poll_start_tm;
     struct timespec last_poll_tm;
     int polling_interval_ms;
@@ -210,8 +220,11 @@ static struct sock_event_handler_info data_sock[MAX_DATA_CONN];
 /* vmpressure event handler data */
 static struct event_handler_info vmpressure_hinfo[VMPRESS_LEVEL_COUNT];
 
-/* 3 memory pressure levels, 1 ctrl listen socket, 2 ctrl data socket, 1 lmk events */
-#define MAX_EPOLL_EVENTS (2 + MAX_DATA_CONN + VMPRESS_LEVEL_COUNT)
+/*
+ * 1 ctrl listen socket, 2 ctrl data socket, 3 memory pressure levels,
+ * 1 lmk events + 1 fd to wait for process death
+ */
+#define MAX_EPOLL_EVENTS (1 + MAX_DATA_CONN + VMPRESS_LEVEL_COUNT + 1 + 1)
 static int epollfd;
 static int maxevents;
 
@@ -1693,10 +1706,108 @@ static void set_process_group_and_prio(int pid, SchedPolicy sp, int prio) {
     closedir(d);
 }
 
-static int last_killed_pid = -1;
+static inline int sys_pidfd_open(pid_t pid, unsigned int flags) {
+	return syscall(__NR_pidfd_open, pid, flags);
+}
+
+static bool is_kill_pending(void) {
+    char buf[24];
+
+    if (last_kill_pid_or_fd < 0) {
+        return false;
+    }
+
+    if (pidfd_supported) {
+        return true;
+    }
+
+    /* when pidfd is not supported base the decision on /proc/<pid> existence */
+    snprintf(buf, sizeof(buf), "/proc/%d/", last_kill_pid_or_fd);
+    if (access(buf, F_OK) == 0) {
+        return true;
+    }
+
+    return false;
+}
+
+static bool is_waiting_for_kill(void) {
+    return (pidfd_supported && last_kill_pid_or_fd >= 0);
+}
+
+static void stop_wait_for_proc_kill(bool finished) {
+    struct epoll_event epev;
+
+    if (last_kill_pid_or_fd < 0) {
+        return;
+    }
+
+    if (debug_process_killing) {
+        struct timespec curr_tm;
+
+        clock_gettime(CLOCK_MONOTONIC_COARSE, &curr_tm);
+        if (finished) {
+            ALOGI("Process got killed in %ldms",
+                get_time_diff_ms(&last_kill_tm, &curr_tm));
+        } else {
+            ALOGI("Stop waiting for process kill after %ldms",
+                get_time_diff_ms(&last_kill_tm, &curr_tm));
+        }
+    }
+
+    if (pidfd_supported) {
+        /* unregister fd */
+        if (epoll_ctl(epollfd, EPOLL_CTL_DEL, last_kill_pid_or_fd, &epev) != 0) {
+            ALOGE("epoll_ctl for last killed process failed; errno=%d", errno);
+            return;
+        }
+        maxevents--;
+        close(last_kill_pid_or_fd);
+    }
+
+    last_kill_pid_or_fd = -1;
+}
+
+static void kill_done_handler(int data __unused, uint32_t events __unused, struct polling_params *poll_params) {
+    stop_wait_for_proc_kill(true);
+    poll_params->update = POLLING_RESUME;
+}
+
+static void start_wait_for_proc_kill(int pid) {
+    static struct event_handler_info kill_done_hinfo = { 0, kill_done_handler };
+    struct epoll_event epev;
+
+    if (last_kill_pid_or_fd >= 0) {
+        /* Should not happen but if it does we should stop previous wait */
+        ALOGE("Attempt to wait for a kill while another wait is in progress");
+        stop_wait_for_proc_kill(false);
+    }
+
+    if (!pidfd_supported) {
+        /* If pidfd is not supported store PID of the process being killed */
+        last_kill_pid_or_fd = pid;
+        return;
+    }
+
+    last_kill_pid_or_fd = TEMP_FAILURE_RETRY(sys_pidfd_open(pid, 0));
+    if (last_kill_pid_or_fd < 0) {
+        ALOGE("pidfd_open for process pid %d failed; errno=%d", pid, errno);
+        return;
+    }
+
+    epev.events = EPOLLIN;
+    epev.data.ptr = (void *)&kill_done_hinfo;
+    if (epoll_ctl(epollfd, EPOLL_CTL_ADD, last_kill_pid_or_fd, &epev) != 0) {
+        ALOGE("epoll_ctl for last kill failed; errno=%d", errno);
+        close(last_kill_pid_or_fd);
+        last_kill_pid_or_fd = -1;
+        return;
+    }
+    maxevents++;
+}
 
 /* Kill one process specified by procp.  Returns the size of the process killed */
-static int kill_one_process(struct proc* procp, int min_oom_score, const char *reason) {
+static int kill_one_process(struct proc* procp, int min_oom_score, const char *reason,
+                            struct timespec *tm) {
     int pid = procp->pid;
     uid_t uid = procp->uid;
     int tgid;
@@ -1741,6 +1852,9 @@ static int kill_one_process(struct proc* procp, int min_oom_score, const char *r
 
     TRACE_KILL_START(pid);
 
+    /* Have to start waiting before sending SIGKILL to make sure pid is valid */
+    start_wait_for_proc_kill(pid);
+
     /* CAP_KILL required */
     r = kill(pid, SIGKILL);
 
@@ -1757,12 +1871,12 @@ static int kill_one_process(struct proc* procp, int min_oom_score, const char *r
 
     TRACE_KILL_END();
 
-    last_killed_pid = pid;
-
     if (r) {
+        stop_wait_for_proc_kill(false);
         ALOGE("kill(%d): errno=%d", pid, errno);
         goto out;
     } else {
+        last_kill_tm = *tm;
 #ifdef LMKD_LOG_STATS
         if (memory_stat_parse_result == 0) {
             stats_write_lmk_kill_occurred(log_ctx, LMK_KILL_OCCURRED, uid, taskname,
@@ -1791,7 +1905,7 @@ out:
  * Find one process to kill at or above the given oom_adj level.
  * Returns size of the killed process.
  */
-static int find_and_kill_process(int min_score_adj, const char *reason) {
+static int find_and_kill_process(int min_score_adj, const char *reason, struct timespec *tm) {
     int i;
     int killed_size = 0;
 
@@ -1809,7 +1923,7 @@ static int find_and_kill_process(int min_score_adj, const char *reason) {
             if (!procp)
                 break;
 
-            killed_size = kill_one_process(procp, min_score_adj, reason);
+            killed_size = kill_one_process(procp, min_score_adj, reason, tm);
             if (killed_size >= 0) {
 #ifdef LMKD_LOG_STATS
                 if (enable_stats_log && !lmk_state_change_start) {
@@ -1890,23 +2004,6 @@ enum vmpressure_level upgrade_level(enum vmpressure_level level) {
 enum vmpressure_level downgrade_level(enum vmpressure_level level) {
     return (enum vmpressure_level)((level > VMPRESS_LEVEL_LOW) ?
         level - 1 : level);
-}
-
-static bool is_kill_pending(void) {
-    char buf[24];
-
-    if (last_killed_pid < 0) {
-        return false;
-    }
-
-    snprintf(buf, sizeof(buf), "/proc/%d/", last_killed_pid);
-    if (access(buf, F_OK) == 0) {
-        return true;
-    }
-
-    // reset last killed PID because there's nothing pending
-    last_killed_pid = -1;
-    return false;
 }
 
 enum zone_watermark {
@@ -2007,7 +2104,6 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
 
     /* Skip while still killing a process */
     if (is_kill_pending()) {
-        /* TODO: replace this quick polling with pidfd polling if kernel supports */
         goto no_kill;
     }
 
@@ -2122,12 +2218,19 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
 
     /* Kill a process if necessary */
     if (kill_reason != NONE) {
-        find_and_kill_process(0, kill_desc);
+        find_and_kill_process(0, kill_desc, &curr_tm);
         killing = true;
         meminfo_log(&mi);
     }
 
 no_kill:
+    /* Do not poll if kernel supports pidfd waiting */
+    if (is_waiting_for_kill()) {
+        /* Pause polling if we are waiting for process death notification */
+        poll_params->update = POLLING_PAUSE;
+        return;
+    }
+
     /*
      * Start polling after initial PSI event;
      * extend polling while device is in direct reclaim or process is being killed;
@@ -2157,7 +2260,6 @@ static void mp_event_common(int data, uint32_t events, struct polling_params *po
     union meminfo mi;
     struct zoneinfo zi;
     struct timespec curr_tm;
-    static struct timespec last_kill_tm;
     static unsigned long kill_skip_count = 0;
     enum vmpressure_level level = (enum vmpressure_level)data;
     long other_free = 0, other_file = 0;
@@ -2206,15 +2308,23 @@ static void mp_event_common(int data, uint32_t events, struct polling_params *po
         return;
     }
 
-    if (kill_timeout_ms) {
-        // If we're within the timeout, see if there's pending reclaim work
-        // from the last killed process. If there is (as evidenced by
-        // /proc/<pid> continuing to exist), skip killing for now.
-        if ((get_time_diff_ms(&last_kill_tm, &curr_tm) < kill_timeout_ms) &&
-            (low_ram_device || is_kill_pending())) {
+    if (kill_timeout_ms && get_time_diff_ms(&last_kill_tm, &curr_tm) < kill_timeout_ms) {
+        /*
+         * If we're within the no-kill timeout, see if there's pending reclaim work
+         * from the last killed process. If so, skip killing for now.
+         */
+        if (is_kill_pending()) {
             kill_skip_count++;
             return;
         }
+        /* Process is dead, stop waiting */
+        stop_wait_for_proc_kill(true);
+    } else {
+        /*
+         * Killing took longer than no-kill timeout. Stop waiting for the last process
+         * to die because we are ready to kill again.
+         */
+        stop_wait_for_proc_kill(false);
     }
 
     if (kill_skip_count > 0) {
@@ -2313,7 +2423,7 @@ static void mp_event_common(int data, uint32_t events, struct polling_params *po
 do_kill:
     if (low_ram_device) {
         /* For Go devices kill only one task */
-        if (find_and_kill_process(level_oomadj[level], NULL) == 0) {
+        if (find_and_kill_process(level_oomadj[level], NULL, &curr_tm) == 0) {
             if (debug_process_killing) {
                 ALOGI("Nothing to kill");
             }
@@ -2338,7 +2448,7 @@ do_kill:
             min_score_adj = level_oomadj[level];
         }
 
-        pages_freed = find_and_kill_process(min_score_adj, NULL);
+        pages_freed = find_and_kill_process(min_score_adj, NULL, &curr_tm);
 
         if (pages_freed == 0) {
             /* Rate limit kill reports when nothing was reclaimed */
@@ -2346,9 +2456,6 @@ do_kill:
                 report_skip_count++;
                 return;
             }
-        } else {
-            /* If we killed anything, update the last killed timestamp. */
-            last_kill_tm = curr_tm;
         }
 
         /* Log meminfo whenever we kill or when report rate limit allows */
@@ -2372,6 +2479,10 @@ do_kill:
         }
 
         last_report_tm = curr_tm;
+    }
+    if (is_waiting_for_kill()) {
+        /* pause polling if we are waiting for process death notification */
+        poll_params->update = POLLING_PAUSE;
     }
 }
 
@@ -2583,6 +2694,7 @@ static int init(void) {
         .fd = -1,
     };
     struct epoll_event epev;
+    int pidfd;
     int i;
     int ret;
 
@@ -2667,6 +2779,16 @@ static int init(void) {
         ALOGE("Failed to read %s: %s", file_data.filename, strerror(errno));
     }
 
+    /* check if kernel supports pidfd_open syscall */
+    pidfd = TEMP_FAILURE_RETRY(sys_pidfd_open(getpid(), 0));
+    if (pidfd < 0) {
+        pidfd_supported = (errno != ENOSYS);
+    } else {
+        pidfd_supported = true;
+        close(pidfd);
+    }
+    ALOGI("Process polling is %s", pidfd_supported ? "supported" : "not supported" );
+
     return 0;
 }
 
@@ -2686,18 +2808,31 @@ static void mainloop(void) {
         int i;
 
         if (poll_params.poll_handler) {
-            /* Calculate next timeout */
-            clock_gettime(CLOCK_MONOTONIC_COARSE, &curr_tm);
-            delay = get_time_diff_ms(&poll_params.last_poll_tm, &curr_tm);
-            delay = (delay < poll_params.polling_interval_ms) ?
-                poll_params.polling_interval_ms - delay : poll_params.polling_interval_ms;
+            bool poll_now;
 
-            /* Wait for events until the next polling timeout */
-            nevents = epoll_wait(epollfd, events, maxevents, delay);
+            if (poll_params.poll_handler == poll_params.paused_handler) {
+                /*
+                 * Just transitioned into POLLING_RESUME. Reset paused_handler
+                 * and poll immediately
+                 */
+                poll_params.paused_handler = NULL;
+                poll_now = true;
+                nevents = 0;
+            } else {
+                /* Calculate next timeout */
+                clock_gettime(CLOCK_MONOTONIC_COARSE, &curr_tm);
+                delay = get_time_diff_ms(&poll_params.last_poll_tm, &curr_tm);
+                delay = (delay < poll_params.polling_interval_ms) ?
+                    poll_params.polling_interval_ms - delay : poll_params.polling_interval_ms;
 
-            clock_gettime(CLOCK_MONOTONIC_COARSE, &curr_tm);
-            if (get_time_diff_ms(&poll_params.last_poll_tm, &curr_tm) >=
-                poll_params.polling_interval_ms) {
+                /* Wait for events until the next polling timeout */
+                nevents = epoll_wait(epollfd, events, maxevents, delay);
+
+                clock_gettime(CLOCK_MONOTONIC_COARSE, &curr_tm);
+                poll_now = (get_time_diff_ms(&poll_params.last_poll_tm, &curr_tm) >=
+                    poll_params.polling_interval_ms);
+            }
+            if (poll_now) {
                 /* Set input params for the call */
                 poll_params.poll_handler->handler(poll_params.poll_handler->data, 0, &poll_params);
                 poll_params.last_poll_tm = curr_tm;
@@ -2709,6 +2844,13 @@ static void mainloop(void) {
                         break;
                     case (POLLING_STOP):
                         poll_params.poll_handler = NULL;
+                        break;
+                    case (POLLING_PAUSE):
+                        poll_params.paused_handler = poll_params.poll_handler;
+                        poll_params.poll_handler = NULL;
+                        break;
+                    case (POLLING_RESUME):
+                        /* Already polling, ignore */
                         break;
                     default: /* POLLING_NO_CHANGE */
                         break;
@@ -2777,6 +2919,15 @@ static void mainloop(void) {
                         break;
                     case (POLLING_STOP):
                         poll_params.poll_handler = NULL;
+                        break;
+                    case (POLLING_PAUSE):
+                        poll_params.paused_handler = handler_info;
+                        poll_params.poll_handler = NULL;
+                        break;
+                    case (POLLING_RESUME):
+                        poll_params.poll_handler = poll_params.paused_handler;
+                        clock_gettime(CLOCK_MONOTONIC_COARSE, &curr_tm);
+                        poll_params.poll_start_tm = poll_params.last_poll_tm = curr_tm;
                         break;
                     default: /* POLLING_NO_CHANGE */
                         break;
