@@ -72,6 +72,17 @@ static std::vector<std::pair<std::string, int>> GetVendorPasswd() {
     return result;
 }
 
+static std::set<std::string> ReadKnownInterfaces(const std::string& known_interfaces_file) {
+    std::string known_interfaces;
+    if (!ReadFileToString(known_interfaces_file, &known_interfaces)) {
+        LOG(ERROR) << "Failed to read known interfaces file '" << known_interfaces_file << "'";
+        return {};
+    }
+
+    auto interfaces = Split(known_interfaces, " ");
+    return std::set<std::string>(interfaces.begin(), interfaces.end());
+}
+
 passwd* getpwnam(const char* login) {  // NOLINT: implementing bad function.
     // This isn't thread safe, but that's okay for our purposes.
     static char static_name[32] = "";
@@ -130,13 +141,14 @@ int main(int argc, char** argv) {
     android::base::InitLogging(argv, &android::base::StdioLogger);
     android::base::SetMinimumLogSeverity(android::base::ERROR);
 
-    if (argc != 2 && argc != 3) {
-        LOG(ERROR) << "Usage: " << argv[0] << " <init rc file> [passwd file]";
+    if (argc != 3 && argc != 4) {
+        LOG(ERROR) << "Usage: " << argv[0] << " <init rc file> "
+                   << "<known interfaces file> [passwd file]";
         return EXIT_FAILURE;
     }
 
-    if (argc == 3) {
-        passwd_file = argv[2];
+    if (argc == 4) {
+        passwd_file = argv[3];
     }
 
     const BuiltinFunctionMap function_map;
@@ -144,7 +156,8 @@ int main(int argc, char** argv) {
     ActionManager& am = ActionManager::GetInstance();
     ServiceList& sl = ServiceList::GetInstance();
     Parser parser;
-    parser.AddSectionParser("service", std::make_unique<ServiceParser>(&sl, nullptr));
+    parser.AddSectionParser(
+            "service", std::make_unique<ServiceParser>(&sl, nullptr, ReadKnownInterfaces(argv[2])));
     parser.AddSectionParser("on", std::make_unique<ActionParser>(&am, nullptr));
     parser.AddSectionParser("import", std::make_unique<HostImportParser>());
 
