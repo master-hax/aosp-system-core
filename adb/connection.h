@@ -69,6 +69,17 @@ struct Connection {
     std::once_flag error_flag_;
 };
 
+// Connection that receives header and data as discrete chunks.
+struct PacketConnection : public Connection {
+    virtual ~PacketConnection() = default;
+
+    bool HandlePacket(Block&& block);
+
+  private:
+    std::optional<amessage> header_;
+    IOVector payload_;
+};
+
 // Abstraction for a blocking packet transport.
 struct BlockingConnection {
     BlockingConnection() = default;
