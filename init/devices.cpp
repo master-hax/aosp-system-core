@@ -22,10 +22,11 @@
 #include <unistd.h>
 
 #include <chrono>
-#include <map>
 #include <memory>
 #include <string>
 #include <thread>
+#include <tuple>
+#include <unordered_map>
 
 #include <android-base/chrono_utils.h>
 #include <android-base/file.h>
@@ -111,29 +112,45 @@ static bool FindVbdDevicePrefix(const std::string& path, std::string* result) {
     return true;
 }
 
+struct DmDeviceInfo {
+    std::string name;
+    std::string uuid;
+};
+static std::unordered_map<std::string, DmDeviceInfo> sDmCache;
+
 // Given a path that may start with a virtual dm block device, populate
 // the supplied buffer with the dm module's instantiated name.
 // If it doesn't start with a virtual block device, or there is some
 // error, return false.
-static bool FindDmDevicePartition(const std::string& path, std::string* result) {
-    result->clear();
+static bool FindDmDevice(const std::string& path, std::string* name, std::string* uuid) {
     if (!StartsWith(path, "/devices/virtual/block/dm-")) return false;
-    if (getpid() == 1) return false;  // first_stage_init has no sepolicy needs
 
-    static std::map<std::string, std::string> cache;
-    // wait_for_file will not work, the content is also delayed ...
-    for (android::base::Timer t; t.duration() < 200ms; std::this_thread::sleep_for(10ms)) {
-        if (ReadFileToString("/sys" + path + "/dm/name", result) && !result->empty()) {
-            // Got it, set cache with result, when node arrives
-            cache[path] = *result = Trim(*result);
-            return true;
+    if (!ReadFileToString("/sys" + path + "/dm/name", name)) {
+        // When we get a remove event, sysfs is no longer available, so search
+        // the cache.
+        auto iter = sDmCache.find(path);
+        if (iter == sDmCache.end()) {
+            return false;
         }
+        *name = iter->second.name;
+        *uuid = iter->second.uuid;
+        return true;
     }
-    auto it = cache.find(path);
-    if ((it == cache.end()) || (it->second.empty())) return false;
-    // Return cached results, when node goes away
-    *result = it->second;
+
+    ReadFileToString("/sys" + path + "/dm/uuid", uuid);
+
+    *name = android::base::Trim(*name);
+    *uuid = android::base::Trim(*uuid);
+    if (auto iter = sDmCache.find(path); iter == sDmCache.end()) {
+        sDmCache[path] = {*name, *uuid};
+    }
     return true;
+}
+
+static void RemovePathFromDmCache(const std::string& path) {
+    if (auto iter = sDmCache.find(path); iter != sDmCache.end()) {
+        sDmCache.erase(iter);
+    }
 }
 
 Permissions::Permissions(const std::string& name, mode_t perm, uid_t uid, gid_t gid)
@@ -329,6 +346,7 @@ std::vector<std::string> DeviceHandler::GetBlockDeviceSymlinks(const Uevent& uev
     std::string device;
     std::string type;
     std::string partition;
+    std::string uuid;
 
     if (FindPlatformDevice(uevent.path, &device)) {
         // Skip /devices/platform or /devices/ if present
@@ -346,8 +364,12 @@ std::vector<std::string> DeviceHandler::GetBlockDeviceSymlinks(const Uevent& uev
         type = "pci";
     } else if (FindVbdDevicePrefix(uevent.path, &device)) {
         type = "vbd";
-    } else if (FindDmDevicePartition(uevent.path, &partition)) {
-        return {"/dev/block/mapper/" + partition};
+    } else if (FindDmDevice(uevent.path, &partition, &uuid)) {
+        std::vector<std::string> symlinks = {"/dev/block/mapper/" + partition};
+        if (!uuid.empty()) {
+            symlinks.emplace_back("/dev/block/mapper/by-uuid/" + uuid);
+        }
+        return symlinks;
     } else {
         return {};
     }
@@ -387,6 +409,10 @@ void DeviceHandler::HandleDevice(const std::string& action, const std::string& d
                                  int major, int minor, const std::vector<std::string>& links) const {
     if (action == "add") {
         MakeDevice(devpath, block, major, minor, links);
+    }
+
+    // We don't have full device-mapper information until a change event is fired.
+    if (action == "add" || (action == "change" && StartsWith(devpath, "/dev/block/dm-"))) {
         for (const auto& link : links) {
             if (!mkdir_recursive(Dirname(link), 0755)) {
                 PLOG(ERROR) << "Failed to create directory " << Dirname(link);
@@ -433,6 +459,9 @@ void DeviceHandler::HandleUevent(const Uevent& uevent) {
 
         if (StartsWith(uevent.path, "/devices")) {
             links = GetBlockDeviceSymlinks(uevent);
+            if (uevent.action == "remove") {
+                RemovePathFromDmCache(uevent.path);
+            }
         }
     } else if (const auto subsystem =
                    std::find(subsystems_.cbegin(), subsystems_.cend(), uevent.subsystem);

@@ -57,6 +57,7 @@ cc_library {
     ],
     static_libs: [
         "libavb",
+        "libext2_uuid",
         "libfs_avb",
         "libfstab",
         "libdm",
