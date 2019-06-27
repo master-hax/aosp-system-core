@@ -52,6 +52,48 @@ void Connection::Reset() {
     Stop();
 }
 
+bool PacketConnection::HandlePacket(Block&& packet) {
+    if (packet.empty()) return true;
+
+    if (!this->header_.has_value()) {
+        if (packet.size() != sizeof(amessage)) {
+            HandleError("received packet of size %zu, expected header of size %zu", packet.size(),
+                        sizeof(amessage));
+            return false;
+        }
+        amessage msg;
+        memcpy(&msg, packet.data(), packet.size());
+        header_ = msg;
+
+        LOG(VERBOSE) << this->transport_name_ << " <<< header " << dump_header(&msg);
+    } else {
+        size_t bytes_left = this->header_->data_length - payload_.size();
+        if (packet.size() > bytes_left) {
+            HandleError(
+                    "received too many bytes while reading packet data: wanted %zu more, got %zu",
+                    bytes_left, packet.size());
+            return false;
+        }
+
+        payload_.append(std::move(packet));
+    }
+
+    // We're guaranteed to have a header if we've reached this point.
+    if (header_->data_length == payload_.size()) {
+        auto packet = std::make_unique<apacket>();
+        packet->msg = *header_;
+
+        // TODO: Make apacket contain an IOVector so we don't have to coalesce.
+        packet->payload = payload_.coalesce();
+        read_callback_(this, std::move(packet));
+
+        header_.reset();
+        payload_.clear();
+    }
+
+    return true;
+}
+
 BlockingConnectionAdapter::BlockingConnectionAdapter(std::unique_ptr<BlockingConnection> connection)
     : underlying_(std::move(connection)) {}
 
