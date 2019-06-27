@@ -16,6 +16,7 @@
 
 #include <dirent.h>
 #include <errno.h>
+#include <getopt.h>
 #include <inttypes.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -34,11 +35,24 @@
 
 using DmaBuffer = ::android::dmabufinfo::DmaBuffer;
 
+class DmaBufferComparator {
+  public:
+    bool operator()(const DmaBuffer& lhs, const DmaBuffer& rhs) const {
+        if (lhs.inode() == rhs.inode()) return false;
+
+        if (lhs.size() < rhs.size()) {
+            return true;
+        }
+        return false;
+    }
+};
+
 [[noreturn]] static void usage(int exit_status) {
     fprintf(stderr,
-            "Usage: %s [PID] \n"
-            "\t If PID is supplied, the dmabuf information for this process is shown.\n"
-            "\t Otherwise, shows the information for all processes.\n",
+            "Usage: %s [-ah] [PID] \n"
+            "-a\t show all dma buffers (ion) in big table, [buffer x process] grid \n"
+            "-h\t show this help\n"
+            "  \t If PID is supplied, the dmabuf information for that process is shown.\n",
             getprogname());
 
     exit(exit_status);
@@ -54,11 +68,7 @@ static std::string GetProcessComm(const pid_t pid) {
     return line;
 }
 
-static void AddPidsToSet(const std::unordered_map<pid_t, int>& map, std::set<pid_t>* set) {
-    for (auto it = map.begin(); it != map.end(); ++it) set->insert(it->first);
-}
-
-static void PrintDmaBufInfo(const std::vector<DmaBuffer>& bufs) {
+static void PrintDmaBufTable(const std::vector<DmaBuffer>& bufs) {
     if (bufs.empty()) {
         printf("dmabuf info not found ¯\\_(ツ)_/¯\n");
         return;
@@ -66,9 +76,8 @@ static void PrintDmaBufInfo(const std::vector<DmaBuffer>& bufs) {
 
     // Find all unique pids in the input vector, create a set
     std::set<pid_t> pid_set;
-    for (int i = 0; i < bufs.size(); i++) {
-        AddPidsToSet(bufs[i].fdrefs(), &pid_set);
-        AddPidsToSet(bufs[i].maprefs(), &pid_set);
+    for (auto& buf : bufs) {
+        pid_set.insert(buf.pids().begin(), buf.pids().end());
     }
 
     // Format the header string spaced and separated with '|'
@@ -126,50 +135,127 @@ static void PrintDmaBufInfo(const std::vector<DmaBuffer>& bufs) {
     return;
 }
 
-int main(int argc, char* argv[]) {
-    pid_t pid = -1;
-    std::vector<DmaBuffer> bufs;
-    bool show_all = true;
+static void PrintDmaBufPerProcess(const std::vector<DmaBuffer>& bufs) {
+    if (bufs.empty()) {
+        printf("dmabuf info not found ¯\\_(ツ)_/¯\n");
+        return;
+    }
 
-    if (argc > 1) {
-        if (sscanf(argv[1], "%d", &pid) == 1) {
-            show_all = false;
-        } else {
+    // Create a reverse map from pid to dmabufs
+    std::unordered_map<pid_t, std::set<DmaBuffer, DmaBufferComparator>> pid_to_dmabufs = {};
+    for (auto& buf : bufs) {
+        for (auto pid : buf.pids()) {
+            pid_to_dmabufs[pid].insert(buf);
+        }
+    }
+
+    uint64_t total_rss = 0, total_pss = 0;
+    for (auto it = pid_to_dmabufs.begin(); it != pid_to_dmabufs.end(); ++it) {
+        pid_t pid = it->first;
+        uint64_t pss = 0;
+        uint64_t rss = 0;
+
+        printf("%16s:%-5d\n", GetProcessComm(pid).c_str(), pid);
+        printf("%22s %16s %16s %16s\n", "Name", "Rss", "Pss", "nr_procs");
+        std::set<DmaBuffer, DmaBufferComparator>& dmabufs = it->second;
+        for (auto& buf : dmabufs) {
+            printf("%22s %13" PRIu64 " kB %13" PRIu64 " kB %16zu\n",
+                   buf.name().empty() ? "<unknown>" : buf.name().c_str(), buf.size() / 1024,
+                   buf.Pss() / 1024, buf.pids().size());
+            rss += buf.size();
+            pss += buf.Pss();
+        }
+        printf("%22s %13" PRIu64 " kB %13" PRIu64 " kB %16s\n", "PROCESS TOTAL", rss / 1024,
+               pss / 1024, "");
+        printf("----------------------\n");
+        total_rss += rss;
+        total_pss += pss;
+    }
+    printf("%22s %13" PRIu64 " kB %13" PRIu64 " kB %16s\n", "TOTAL", total_rss / 1024,
+           total_pss / 1024, "");
+}
+
+static bool ReadDmaBufs(std::vector<DmaBuffer>* bufs) {
+    bufs->clear();
+
+    if (!ReadDmaBufInfo(bufs)) {
+        fprintf(stderr, "debugfs entry for dmabuf not available, skipping\n");
+        return false;
+    }
+
+    std::unique_ptr<DIR, int (*)(DIR*)> dir(opendir("/proc"), closedir);
+    if (!dir) {
+        fprintf(stderr, "Failed to open /proc directory\n");
+        bufs->clear();
+        return false;
+    }
+
+    struct dirent* dent;
+    while ((dent = readdir(dir.get()))) {
+        if (dent->d_type != DT_DIR) continue;
+
+        int pid;
+        int matched = sscanf(dent->d_name, "%d", &pid);
+        if (matched != 1) {
+            continue;
+        }
+
+        if (!AppendDmaBufInfo(pid, bufs)) {
+            fprintf(stderr, "Unable to read dmabuf info for pid %d\n", pid);
+            bufs->clear();
+            return false;
+        }
+    }
+
+    return true;
+}
+
+int main(int argc, char* argv[]) {
+    struct option longopts[] = {{"all", no_argument, nullptr, 'a'},
+                                {"help", no_argument, nullptr, 'h'},
+                                {0, 0, nullptr, 0}};
+
+    int opt;
+    bool show_table = false;
+    while ((opt = getopt_long(argc, argv, "ah", longopts, nullptr)) != -1) {
+        switch (opt) {
+            case 'a':
+                show_table = true;
+                break;
+            case 'h':
+                usage(0);
+                break;
+            default:
+                usage(EXIT_FAILURE);
+        }
+    }
+
+    pid_t pid = -1;
+    if (optind < argc) {
+        pid = atoi(argv[optind]);
+        if (pid <= 0) {
+            fprintf(stderr, "Invalid process id %s\n", argv[optind]);
             usage(EXIT_FAILURE);
         }
     }
 
-    if (show_all) {
-        if (!ReadDmaBufInfo(&bufs)) {
-            std::cerr << "debugfs entry for dmabuf not available, skipping" << std::endl;
-            bufs.clear();
-        }
-        std::unique_ptr<DIR, int (*)(DIR*)> dir(opendir("/proc"), closedir);
-        if (!dir) {
-            std::cerr << "Failed to open /proc directory" << std::endl;
+    std::vector<DmaBuffer> bufs;
+    if (pid != -1) {
+        if (!ReadDmaBufInfo(pid, &bufs)) {
+            fprintf(stderr, "Unable to read dmabuf info for %d\n", pid);
             exit(EXIT_FAILURE);
-        }
-        struct dirent* dent;
-        while ((dent = readdir(dir.get()))) {
-            if (dent->d_type != DT_DIR) continue;
-
-            int matched = sscanf(dent->d_name, "%d", &pid);
-            if (matched != 1) {
-                continue;
-            }
-
-            if (!AppendDmaBufInfo(pid, &bufs)) {
-                std::cerr << "Unable to read dmabuf info for pid " << pid << std::endl;
-                exit(EXIT_FAILURE);
-            }
         }
     } else {
-        if (!ReadDmaBufInfo(pid, &bufs)) {
-            std::cerr << "Unable to read dmabuf info" << std::endl;
-            exit(EXIT_FAILURE);
-        }
+        if (!ReadDmaBufs(&bufs)) exit(EXIT_FAILURE);
     }
 
-    PrintDmaBufInfo(bufs);
+    // Show the old dmabuf table, inode x process
+    if (show_table) {
+        PrintDmaBufTable(bufs);
+        return 0;
+    }
+
+    PrintDmaBufPerProcess(bufs);
+
     return 0;
 }
