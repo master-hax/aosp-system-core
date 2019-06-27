@@ -58,8 +58,8 @@ typedef std::list<Prune> PruneCollection;
 class PruneList {
     PruneCollection mNaughty;
     PruneCollection mNice;
-    bool mWorstUidEnabled;
-    bool mWorstPidOfSystemEnabled;
+    bool mWorstUidEnabled = false;
+    bool mWorstPidOfSystemEnabled = false;
 
    public:
     PruneList();
