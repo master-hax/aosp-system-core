@@ -1,5 +1,8 @@
 cc_defaults {
     name: "libnativebridge-defaults",
+    // TODO: Restrict to LLNDK only. This is necessary for static core
+    // dependency from perfprofd (at least).
+    vendor_available: true,
     cflags: [
         "-Werror",
         "-Wall",
@@ -14,6 +17,7 @@ cc_defaults {
 cc_library_headers {
     name: "libnativebridge-headers",
 
+    vendor_available: true,
     host_supported: true,
     export_include_dirs: ["include"],
 }
@@ -56,6 +60,9 @@ cc_library {
     host_supported: false,
     srcs: ["native_bridge_lazy.cc"],
     required: ["libnativebridge"],
+
+    // vendor_available enables the double loadable check, but it's fine for this lib.
+    double_loadable: true,
 }
 
 subdirs = ["tests"]

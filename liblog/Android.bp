@@ -57,15 +57,17 @@ cc_library_headers {
             enabled: true,
         },
         vendor: {
-            override_export_include_dirs: ["include_vndk"],
+            // TODO: Fix uses from ART that depend on (at least)
+            // android_log_event_list and reenable this.
+            //override_export_include_dirs: ["include_vndk"],
         },
     },
 }
 
 // Shared and static library for host and device
 // ========================================================
-cc_library {
-    name: "liblog",
+cc_defaults {
+    name: "liblog_defaults",
     host_supported: true,
     recovery_available: true,
     native_bridge_supported: true,
@@ -123,6 +125,20 @@ cc_library {
     compile_multilib: "both",
 }
 
+cc_library {
+    name: "liblog",
+    defaults: ["liblog_defaults"],
+}
+
+// TODO: Static library for use with vendor image modules. Cannot simply set
+// vendor_available:true on liblog, since that produces two liblog.vendor
+// modules that only differ by LOCAL_SOONG_LINK_TYPE.
+cc_library_static {
+    name: "liblog_vendor_static",
+    defaults: ["liblog_defaults"],
+    vendor_available: true,
+}
+
 ndk_headers {
     name: "liblog_ndk_headers",
     from: "include/android",
@@ -142,5 +158,7 @@ llndk_library {
     name: "liblog",
     native_bridge_supported: true,
     symbol_file: "liblog.map.txt",
+    // TODO: Fix uses from ART that depend on (at least) android_log_event_list
+    // and change back to include_vndk.
     export_include_dirs: ["include_vndk"],
 }

@@ -31,6 +31,7 @@ cc_defaults {
 cc_library {
     name: "libmeminfo",
     defaults: ["libmeminfo_defaults"],
+    vendor_available: true,
     export_include_dirs: ["include"],
     export_shared_lib_headers: ["libbase"],
     srcs: [

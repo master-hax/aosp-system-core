@@ -30,8 +30,14 @@ __BEGIN_DECLS
  * is used in the case when linker cannot identify the caller of dlopen/dlsym. This happens
  * for the code not loaded by dynamic linker; for example calls from the mono-compiled code.
  */
-extern bool android_init_anonymous_namespace(const char* shared_libs_sonames,
-                                             const char* library_search_path);
+__attribute__((__weak__))
+bool android_init_anonymous_namespace(const char* shared_libs_sonames,
+                                             const char* library_search_path) {
+  // TODO: Fix libdl_android access.
+  (void) shared_libs_sonames;
+  (void) library_search_path;
+  return false;
+}
 
 
 enum {
@@ -85,9 +91,19 @@ enum {
  * If a library or any of its dependencies are outside of the permitted_when_isolated_path
  * and search_path, and it is not part of the public namespace dlopen will fail.
  */
-extern struct android_namespace_t* android_create_namespace(
+__attribute__((__weak__))
+struct android_namespace_t* android_create_namespace(
     const char* name, const char* ld_library_path, const char* default_library_path, uint64_t type,
-    const char* permitted_when_isolated_path, struct android_namespace_t* parent);
+    const char* permitted_when_isolated_path, struct android_namespace_t* parent) {
+  // TODO: Fix libdl_android access.
+  (void) name;
+  (void) ld_library_path;
+  (void) default_library_path;
+  (void) type;
+  (void) permitted_when_isolated_path;
+  (void) parent;
+  return nullptr;
+}
 
 /*
  * Creates a link between namespaces. Every link has list of sonames of
@@ -105,11 +121,23 @@ extern struct android_namespace_t* android_create_namespace(
  *      step will not go deeper into linked namespaces for this library but
  *      will do so for DT_NEEDED libraries.
  */
-extern bool android_link_namespaces(struct android_namespace_t* from,
+__attribute__((__weak__))
+bool android_link_namespaces(struct android_namespace_t* from,
                                     struct android_namespace_t* to,
-                                    const char* shared_libs_sonames);
+                                    const char* shared_libs_sonames) {
+  // TODO: Fix libdl_android access.
+  (void) from;
+  (void) to;
+  (void) shared_libs_sonames;
+  return false;
+}
 
-extern struct android_namespace_t* android_get_exported_namespace(const char* name);
+__attribute__((__weak__))
+struct android_namespace_t* android_get_exported_namespace(const char* name) {
+  // TODO: Fix libdl_android access.
+  (void) name;
+  return nullptr;
+}
 
 __END_DECLS
 

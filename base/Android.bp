@@ -119,8 +119,10 @@ cc_library {
 cc_library_static {
     name: "libbase_ndk",
     defaults: ["libbase_defaults"],
+    vendor_available: true,
     sdk_version: "current",
-    stl: "c++_static",
+    // TODO: Safe to change this from c++_static?
+    stl: "libc++",
     export_include_dirs: ["include"],
     static_libs: ["fmtlib_ndk"],
     whole_static_libs: ["fmtlib_ndk"],

@@ -16,6 +16,7 @@ cc_defaults {
 cc_library_headers {
     name: "libdebuggerd_common_headers",
     export_include_dirs: ["common/include"],
+    vendor_available: true,     // For libtombstoned_client_static
     recovery_available: true,
 }
 
@@ -46,6 +47,7 @@ cc_library_shared {
 cc_library_static {
     name: "libtombstoned_client_static",
     defaults: ["debuggerd_defaults"],
+    vendor_available: true,     // For art_verifierd
     recovery_available: true,
     srcs: [
         "tombstoned/tombstoned_client.cpp",

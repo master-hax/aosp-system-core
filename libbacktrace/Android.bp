@@ -48,7 +48,7 @@ cc_library_headers {
 
 cc_library {
     name: "libbacktrace",
-    vendor_available: false,
+    vendor_available: true,     // Required by ART libs
     recovery_available: true,
     vndk: {
         enabled: true,

@@ -88,16 +88,6 @@ cc_library {
                 "-g",
             ],
         },
-        vendor: {
-            cflags: ["-DNO_LIBDEXFILE_SUPPORT"],
-            exclude_srcs: [
-                "DexFile.cpp",
-                "DexFiles.cpp",
-            ],
-            exclude_shared_libs: [
-                "libdexfile_support",
-            ],
-        },
         recovery: {
             cflags: ["-DNO_LIBDEXFILE_SUPPORT"],
             exclude_srcs: [
