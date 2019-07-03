@@ -76,6 +76,8 @@ cc_defaults {
         "liblog",
     ],
 
+    static_libs: ["libgtest_prod"],  // for FRIEND_TEST
+
     export_include_dirs: ["include"],
 }
 
