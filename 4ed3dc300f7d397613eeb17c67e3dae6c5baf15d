@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d3f7ff69_9b889b0f",
+        "filename": "libziparchive/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-07-03T01:03:00Z",
+      "side": 1,
+      "message": "don\u0027t you also need\n\n    export_static_lib_headers: [\"libgtest_prod\"],\n\nfor users, since this is in the exported header file?",
+      "revId": "4ed3dc300f7d397613eeb17c67e3dae6c5baf15d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
