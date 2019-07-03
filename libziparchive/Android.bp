@@ -76,6 +76,11 @@ cc_defaults {
         "liblog",
     ],
 
+    // for FRIEND_TEST
+//    static_libs: ["libgtest_prod"],
+//    export_static_lib_headers: ["libgtest_prod"],
+    whole_static_libs: ["libgtest_prod"],
+
     export_include_dirs: ["include"],
 }
 
