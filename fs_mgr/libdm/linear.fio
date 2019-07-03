@@ -1,0 +1,28 @@
+; Tests read performance of a device
+
+[global]
+include glob-runtime.fio
+include glob-include.fio
+
+; sequentially read
+[r-seq]
+rw=read
+bs=4K
+
+; randomly read
+[r-rand]
+wait_for=r-seq
+rw=randread
+include bssplit.fio
+
+; sequentially write
+[w-seq]
+wait_for=r-rand
+rw=write
+bs=4K
+
+; randomly write
+[w-rand]
+wait_for=w-seq
+rw=randwrite
+include bssplit.fio
