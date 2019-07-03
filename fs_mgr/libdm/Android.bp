@@ -55,3 +55,23 @@ cc_test {
         "test_util.cpp",
     ]
 }
+
+cc_test {
+    name: "libsnapshot_test",
+    defaults: ["fs_mgr_defaults"],
+    static_libs: [
+        "libdm",
+        "libgflags",
+    ],
+    shared_libs: [
+        "libbase",
+        "libcrypto",
+        "libfs_mgr",
+        "liblog",
+        "liblp",
+        "libutils",
+    ],
+    srcs: [
+        "libsnapshot_test.cpp",
+    ]
+}
