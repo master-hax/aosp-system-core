@@ -1,0 +1,41 @@
+[global]
+; direct=1 ; not supported
+numjobs=1
+ioengine=sync
+time_based=1
+runtime=60
+
+; sequentially read the whole file
+[sequential-read]
+rw=read
+bs=4K
+
+; randomly read the whole file
+[rand-read]
+wait_for=sequential-read
+rw=randread
+bsrange=4K-64M
+
+; sequentially write the whole file
+[sequential-write]
+wait_for=rand-read
+rw=write
+bs=4K
+
+; randomly write the whole file
+[rand-write]
+wait_for=sequential-write
+rw=randwrite
+bsrange=4K-64M
+
+; sequentially read the whole file after the write
+[sequential-read-after-write]
+wait_for=rand-write
+rw=read
+bs=4K
+
+; randomly read the whole file after the write
+[rand-read-after-write]
+wait_for=sequential-read-after-write
+rw=randread
+bsrange=4K-64M
