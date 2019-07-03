@@ -83,9 +83,6 @@ LOCAL_MODULE := charger
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/include
 
 LOCAL_CFLAGS := -Werror
-ifeq ($(strip $(LOCAL_CHARGER_NO_UI)),true)
-LOCAL_CFLAGS += -DCHARGER_NO_UI
-endif
 
 CHARGER_STATIC_LIBRARIES := \
     android.hardware.health@2.0-impl \
@@ -141,8 +138,7 @@ LOCAL_MODULE_PATH := $(TARGET_RECOVERY_ROOT_OUT)/system/bin
 LOCAL_MODULE_STEM := charger
 
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/include
-LOCAL_CFLAGS := -Wall -Werror
-LOCAL_CFLAGS += -DCHARGER_NO_UI
+LOCAL_CFLAGS := -Wall -Werror -DCHARGER_FORCE_NO_UI=1
 
 # charger.recovery doesn't link against libhealthd_{charger,draw} or libminui, since it doesn't need
 # any UI support.
@@ -176,7 +172,7 @@ include $(BUILD_EXECUTABLE)
 include $(CLEAR_VARS)
 LOCAL_MODULE := charger_test
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/include
-LOCAL_CFLAGS := -Wall -Werror -DCHARGER_NO_UI
+LOCAL_CFLAGS := -Wall -Werror
 LOCAL_STATIC_LIBRARIES := $(CHARGER_STATIC_LIBRARIES)
 LOCAL_SHARED_LIBRARIES := $(CHARGER_SHARED_LIBRARIES)
 LOCAL_SRC_FILES := \

@@ -15,6 +15,7 @@
  */
 
 #include <android-base/stringprintf.h>
+#include <android-base/properties.h>
 #include <batteryservice/BatteryService.h>
 #include <cutils/klog.h>
 
@@ -24,9 +25,17 @@
 #define LOGW(x...) KLOG_WARNING("charger", x);
 #define LOGV(x...) KLOG_DEBUG("charger", x);
 
+static bool get_split_screen() {
+    return android::base::GetBoolProperty("ro.product.charger.draw_split_screen", false);
+}
+
+static int get_split_offset() {
+    return android::base::GetIntProperty<int>("ro.product.charger.draw_split_offset", 0);
+}
+
 HealthdDraw::HealthdDraw(animation* anim)
-  : kSplitScreen(HEALTHD_DRAW_SPLIT_SCREEN),
-    kSplitOffset(HEALTHD_DRAW_SPLIT_OFFSET) {
+  : kSplitScreen(get_split_screen()),
+    kSplitOffset(get_split_offset()) {
     int ret = gr_init();
 
     if (ret < 0) {
