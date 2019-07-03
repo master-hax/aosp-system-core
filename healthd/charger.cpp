@@ -14,13 +14,19 @@
  * limitations under the License.
  */
 
+#include <android-base/properties.h>
+
 #include "healthd_mode_charger.h"
 #include "healthd_mode_charger_nops.h"
 
-int main(int argc, char** argv) {
-#ifdef CHARGER_NO_UI
-    return healthd_charger_nops(argc, argv);
-#else
-    return healthd_charger_main(argc, argv);
+#ifndef CHARGER_FORCE_NO_UI
+#define CHARGER_FORCE_NO_UI 0
 #endif
+
+int main(int argc, char** argv) {
+    if (CHARGER_FORCE_NO_UI || android::base::GetBoolProperty("ro.product.charger.no_ui", false)) {
+        return healthd_charger_nops(argc, argv);
+    } else {
+        return healthd_charger_main(argc, argv);
+    }
 }
