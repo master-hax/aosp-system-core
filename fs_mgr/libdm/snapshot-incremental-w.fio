@@ -1,0 +1,25 @@
+; test case that mimics incremental OTA
+; Only parts of the file is written (specified by ${SIZE})
+
+[global]
+include glob-include.fio
+
+; randomly write part of the file
+[w-rand]
+rw=randwrite
+bs=4K
+size=${SIZE}
+
+; sequentially read
+[r-seq]
+include glob-runtime.fio
+wait_for=w-rand
+rw=read
+bs=4K
+
+; randomly read
+[r-rand]
+include glob-runtime.fio
+wait_for=r-seq
+rw=randread
+include bssplit.fio

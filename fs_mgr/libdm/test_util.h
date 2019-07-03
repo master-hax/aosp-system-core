@@ -22,6 +22,7 @@
 
 #include <chrono>
 #include <string>
+#include <thread>
 
 #include <libdm/dm.h>
 #include <libdm/dm_table.h>
@@ -36,6 +37,27 @@ android::base::unique_fd CreateTempFile(const std::string& name, size_t size);
 // Helper to ensure that device mapper devices are released.
 class TempDevice {
   public:
+    bool WaitForUdev() const {
+        using namespace std::chrono_literals;
+        auto start_time = std::chrono::steady_clock::now();
+        while (true) {
+            if (!access(path().c_str(), F_OK)) {
+                return true;
+            }
+            if (errno != ENOENT) {
+                return false;
+            }
+            std::this_thread::sleep_for(50ms);
+            std::chrono::duration elapsed = std::chrono::steady_clock::now() - start_time;
+            if (elapsed >= 5s) {
+                return false;
+            }
+        }
+    }
+    std::string Release() {
+        valid_ = false;
+        return name_;
+    }
     TempDevice(const std::string& name, const DmTable& table)
         : dm_(DeviceMapper::Instance()), name_(name), valid_(false) {
         valid_ = dm_.CreateDevice(name, table, &path_, std::chrono::seconds(5));
@@ -43,6 +65,10 @@ class TempDevice {
     TempDevice(TempDevice&& other) noexcept
         : dm_(other.dm_), name_(other.name_), path_(other.path_), valid_(other.valid_) {
         other.valid_ = false;
+    }
+    TempDevice(const std::string& name)
+        : dm_(DeviceMapper::Instance()), name_(name), valid_(false) {
+        valid_ = dm_.GetState(name) == DmDeviceState::ACTIVE;
     }
     ~TempDevice() {
         if (valid_) {

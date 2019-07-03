@@ -95,3 +95,23 @@ cc_fuzz {
         "liblog",
   ],
 }
+
+cc_test {
+    name: "libsnapshot_benchmark",
+    defaults: ["fs_mgr_defaults"],
+    static_libs: [
+        "libdm",
+        "libgflags",
+    ],
+    shared_libs: [
+        "libbase",
+        "libcrypto",
+        "libfs_mgr",
+        "liblog",
+        "liblp",
+        "libutils",
+    ],
+    srcs: [
+        "libsnapshot_test.cpp",
+    ]
+}
