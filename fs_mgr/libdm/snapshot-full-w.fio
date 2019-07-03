@@ -1,0 +1,25 @@
+; test case that mimics full OTA
+; The whole file is written
+
+[global]
+include glob-include.fio
+
+; sequentially write the whole file
+[w-seq]
+rw=write
+bs=4K
+size=100%
+
+; sequentially read
+[r-seq]
+include glob-runtime.fio
+wait_for=w-seq
+rw=read
+bs=4K
+
+; randomly read
+[r-rand]
+include glob-runtime.fio
+wait_for=r-seq
+rw=randread
+include bssplit.fio
