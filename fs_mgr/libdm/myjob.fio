@@ -1,0 +1,25 @@
+[global]
+; filename=/dev/block/dm-0
+; direct=1
+numjobs=1
+ioengine=sync
+
+; sequentially read the whole file
+[sequential-read]
+rw=read
+bs=4M
+
+; randomly read the whole file
+[rand-read]
+rw=randread
+bs=512-64M
+
+; sequentially write the whole file
+[sequential-write]
+rw=write
+bs=4M
+
+; randomly write the whole file
+[rand-write]
+rw=randwrite
+bs=512-64M
