@@ -88,3 +88,8 @@ $(call add-clean-step, rm -rf $(PRODUCT_OUT)/system/product_services)
 $(call add-clean-step, rm -rf $(PRODUCT_OUT)/root/product_services)
 $(call add-clean-step, rm -rf $(PRODUCT_OUT)/recovery/root/product_services)
 $(call add-clean-step, rm -rf $(PRODUCT_OUT)/debug_ramdisk/product_services)
+
+# Remove the icu .dat file from /apex/com.android.runtime and the host equivalent.
+$(call add-clean-step, rm -rf $(PRODUCT_OUT)/system/apex/com.android.runtime.debug/etc/icu/*)
+$(call add-clean-step, rm -rf $(PRODUCT_OUT)/system/apex/com.android.runtime.release/etc/icu/*)
+$(call add-clean-step, rm -rf $(HOST_OUT)/com.android.runtime/etc/icu/*)
