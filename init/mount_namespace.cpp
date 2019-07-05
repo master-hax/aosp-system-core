@@ -92,9 +92,9 @@ static bool ActivateFlattenedApexesIfPossible() {
     }
 
     // Special casing for the runtime APEX
-    constexpr const char kRuntimeApexMountPath[] = "/system/apex/com.android.runtime";
-    static const std::vector<std::string> kRuntimeApexDirNames = {"com.android.runtime.release",
-                                                                  "com.android.runtime.debug"};
+    constexpr const char kRuntimeApexMountPath[] = "/system/apex/com.android.art";
+    static const std::vector<std::string> kRuntimeApexDirNames = {"com.android.art.release",
+                                                                  "com.android.art.debug"};
     bool success = false;
     for (const auto& name : kRuntimeApexDirNames) {
         std::string path = std::string(kSystemApex) + "/" + name;
