@@ -206,15 +206,15 @@ void ElfInterface::ReadProgramHeaders(const EhdrType& ehdr, uint64_t* load_bias)
     switch (phdr.p_type) {
     case PT_LOAD:
     {
+      if (phdr.p_offset == 0) {
+        *load_bias = phdr.p_vaddr;
+      }
       if ((phdr.p_flags & PF_X) == 0) {
         continue;
       }
 
       pt_loads_[phdr.p_offset] = LoadInfo{phdr.p_offset, phdr.p_vaddr,
                                           static_cast<size_t>(phdr.p_memsz)};
-      if (phdr.p_offset == 0) {
-        *load_bias = phdr.p_vaddr;
-      }
       break;
     }
 
