@@ -166,6 +166,10 @@ int FirstStageMain(int argc, char** argv) {
     // /debug_ramdisk is used to preserve additional files from the debug ramdisk
     CHECKCALL(mount("tmpfs", "/debug_ramdisk", "tmpfs", MS_NOEXEC | MS_NOSUID | MS_NODEV,
                     "mode=0755,uid=0,gid=0"));
+
+    // /linkerconfig is used to keep ld.config.txt from linkerconfig generator
+    CHECKCALL(mount("tmpfs", "/linkerconfig", "tmpfs", MS_NOEXEC | MS_NOSUID | MS_NODEV,
+                    "mode=0755,uid=0,gid=0"));
 #undef CHECKCALL
 
     SetStdioToDevNull(argv);

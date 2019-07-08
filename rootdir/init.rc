@@ -288,6 +288,9 @@ on init
     chown system system /sys/power/wakeup_count
     chmod 0660 /sys/power/state
 
+    exec -- /system/bin/linkerconfig --target /linkerconfig/ld.config.txt
+    chmod 444 /linkerconfig/ld.config.txt
+
     # Start logd before any other services run to ensure we capture all of their logs.
     start logd
 
