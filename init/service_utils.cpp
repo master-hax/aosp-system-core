@@ -121,7 +121,7 @@ Result<void> SetUpPidNamespace(const char* name) {
 
 void ZapStdio() {
     int fd;
-    fd = open("/dev/null", O_RDWR);
+    fd = open("/dev/null", O_RDWR);  // NOLINT(android-cloexec-open)
     dup2(fd, 0);
     dup2(fd, 1);
     dup2(fd, 2);
@@ -129,8 +129,8 @@ void ZapStdio() {
 }
 
 void OpenConsole(const std::string& console) {
-    int fd = open(console.c_str(), O_RDWR);
-    if (fd == -1) fd = open("/dev/null", O_RDWR);
+    int fd = open(console.c_str(), O_RDWR);        // NOLINT(android-cloexec-open)
+    if (fd == -1) fd = open("/dev/null", O_RDWR);  // NOLINT(android-cloexec-open)
     ioctl(fd, TIOCSCTTY, 0);
     dup2(fd, 0);
     dup2(fd, 1);
