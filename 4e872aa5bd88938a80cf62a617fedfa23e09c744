@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6fcf5b64_caf028a0",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 291,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2019-07-08T10:20:52Z",
+      "side": 1,
+      "message": "why not doing this earlier? (i.e. on early-init)",
+      "revId": "4e872aa5bd88938a80cf62a617fedfa23e09c744",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
