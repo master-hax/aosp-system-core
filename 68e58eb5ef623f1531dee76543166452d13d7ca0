@@ -1,0 +1,119 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "06d2cc7e_ccfa4ef5",
+        "filename": "bootstat/bootstat.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 144,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-07-08T16:50:28Z",
+      "side": 1,
+      "message": "Maybe add power_on instead? (grep means instead of power_on_key, we match power_on in alias to cover both, but there is a problem).\n\npower_on_usb has to convert to cold,charger which happens only because non-grep strings are handled before grep strings. Worried about playing games ...\n\npower_on_cable should convert to cold,charger too, which it does not.",
+      "range": {
+        "startLine": 143,
+        "startChar": 0,
+        "endLine": 144,
+        "endChar": 21
+      },
+      "revId": "68e58eb5ef623f1531dee76543166452d13d7ca0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e8a15341_35089d88",
+        "filename": "bootstat/bootstat.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 206,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-07-08T16:50:28Z",
+      "side": 1,
+      "message": "While we are here, aliasReason to \"warm\"",
+      "range": {
+        "startLine": 206,
+        "startChar": 36,
+        "endLine": 206,
+        "endChar": 44
+      },
+      "revId": "68e58eb5ef623f1531dee76543166452d13d7ca0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9f9f71a7_15afbca8",
+        "filename": "bootstat/bootstat.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 209,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-07-08T16:50:28Z",
+      "side": 1,
+      "message": "While we are here, aliasReasons to cold,charger",
+      "range": {
+        "startLine": 209,
+        "startChar": 36,
+        "endLine": 209,
+        "endChar": 44
+      },
+      "revId": "68e58eb5ef623f1531dee76543166452d13d7ca0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8f48b9e4_10eeaca0",
+        "filename": "bootstat/bootstat.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 211,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-07-08T16:50:28Z",
+      "side": 1,
+      "message": "While we are here, aliasReasons to reboot,tool",
+      "range": {
+        "startLine": 211,
+        "startChar": 36,
+        "endLine": 211,
+        "endChar": 44
+      },
+      "revId": "68e58eb5ef623f1531dee76543166452d13d7ca0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "739709a0_bc822a04",
+        "filename": "bootstat/bootstat.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 212,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-07-08T16:50:28Z",
+      "side": 1,
+      "message": "While we are here, convert to cold,rtc,2sec",
+      "range": {
+        "startLine": 212,
+        "startChar": 35,
+        "endLine": 212,
+        "endChar": 44
+      },
+      "revId": "68e58eb5ef623f1531dee76543166452d13d7ca0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
