@@ -31,6 +31,7 @@
 #include <android-base/properties.h>
 #include <android-base/stringprintf.h>
 #include <android-base/strings.h>
+#include <cutils/sockets.h>
 #include <processgroup/processgroup.h>
 #include <selinux/selinux.h>
 
@@ -38,10 +39,13 @@
 #include "util.h"
 
 #if defined(__ANDROID__)
+#include <android/api-level.h>
+
 #include <ApexProperties.sysprop.h>
 
 #include "mount_namespace.h"
 #include "property_service.h"
+#include "selinux.h"
 #else
 #include "host_init_stubs.h"
 #endif
@@ -227,9 +231,11 @@ void Service::Reap(const siginfo_t& siginfo) {
         KillProcessGroup(SIGKILL);
     }
 
-    // Remove any descriptor resources we may have created.
-    std::for_each(descriptors_.begin(), descriptors_.end(),
-                  std::bind(&DescriptorInfo::Clean, std::placeholders::_1));
+    // Remove any socket resources we may have created.
+    for (const auto& socket : sockets_) {
+        auto path = ANDROID_SOCKET_DIR "/" + socket.name;
+        unlink(path.c_str());
+    }
 
     for (const auto& f : reap_callbacks_) {
         f(siginfo);
@@ -300,8 +306,12 @@ void Service::DumpState() const {
     LOG(INFO) << "service " << name_;
     LOG(INFO) << "  class '" << Join(classnames_, " ") << "'";
     LOG(INFO) << "  exec " << Join(args_, " ");
-    std::for_each(descriptors_.begin(), descriptors_.end(),
-                  [] (const auto& info) { LOG(INFO) << *info; });
+    for (const auto& socket : sockets_) {
+        LOG(INFO) << "  socket " << socket.name;
+    }
+    for (const auto& file : files_) {
+        LOG(INFO) << "  file " << file.name;
+    }
 }
 
 
@@ -419,8 +429,27 @@ Result<void> Service::Start() {
             setenv(key.c_str(), value.c_str(), 1);
         }
 
-        std::for_each(descriptors_.begin(), descriptors_.end(),
-                      std::bind(&DescriptorInfo::CreateAndPublish, std::placeholders::_1, scon));
+        for (const auto& socket : sockets_) {
+            if (auto result = socket.CreateAndPublish(scon); !result) {
+                if (SelinuxGetVendorAndroidVersion() >= __ANDROID_API_R__) {
+                    LOG(FATAL) << "Could not create socket '" << socket.name
+                               << "': " << result.error();
+                } else {
+                    LOG(ERROR) << "Could not create socket '" << socket.name
+                               << "': " << result.error();
+                }
+            }
+        }
+
+        for (const auto& file : files_) {
+            if (auto result = file.CreateAndPublish(); !result) {
+                if (SelinuxGetVendorAndroidVersion() >= __ANDROID_API_R__) {
+                    LOG(FATAL) << "Could not open file '" << file.name << "': " << result.error();
+                } else {
+                    LOG(ERROR) << "Could not open file '" << file.name << "': " << result.error();
+                }
+            }
+        }
 
         if (auto result = WritePidToFiles(&writepid_files_); !result) {
             LOG(ERROR) << "failed to write pid to files: " << result.error();
