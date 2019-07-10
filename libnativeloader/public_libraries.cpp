@@ -51,6 +51,12 @@ const std::vector<const std::string> kRuntimePublicLibraries = {
 
 constexpr const char* kRuntimeApexLibPath = "/apex/com.android.runtime/" LIB;
 
+const std::vector<const std::string> kNeuralNetworksPublicLibraries = {
+    "libneuralnetworks.so",
+};
+
+constexpr const char* kNeuralNetworksApexLibPath = "/apex/com.android.neuralnetworks/" LIB;
+
 // TODO(b/130388701): do we need this?
 std::string root_dir() {
   static const char* android_root_env = getenv("ANDROID_ROOT");
@@ -219,6 +225,18 @@ static std::string InitDefaultPublicLibraries() {
       sonames.erase(it);
     }
   }
+
+  // Remove the public libs in the nnapi namespace.
+  // These libs are listed in public.android.txt, but we don't want the rest of android
+  // in default namespace to dlopen the libs.
+  for (const std::string& lib_name : kNeuralNetworksPublicLibraries) {
+    std::string path(kNeuralNetworksApexLibPath);
+    path.append("/").append(lib_name);
+    auto it = std::find(sonames.begin(), sonames.end(), lib_name);
+    if (it != sonames.end()) {
+      sonames.erase(it);
+    }
+  }
   return android::base::Join(sonames, ':');
 }
 
@@ -267,6 +285,11 @@ static std::string InitVndkspLibraries() {
   return android::base::Join(sonames, ':');
 }
 
+static std::string InitNeuralNetworksPublicLibraries() {
+  CHECK(sizeof(kNeuralNetworksPublicLibraries) > 0);
+  return android::base::Join(kNeuralNetworksPublicLibraries, ":");
+}
+
 }  // namespace
 
 const std::string& default_public_libraries() {
@@ -286,6 +309,11 @@ const std::string& vendor_public_libraries() {
 
 const std::string& extended_public_libraries() {
   static std::string list = InitExtendedPublicLibraries();
+  return list;
+}
+
+const std::string& neuralnetworks_public_libraries() {
+  static std::string list = InitNeuralNetworksPublicLibraries();
   return list;
 }
 
