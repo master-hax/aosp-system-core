@@ -42,7 +42,7 @@ namespace.default.asan.search.paths +=           /odm/${LIB}
 # APEX related namespaces.
 ###############################################################################
 
-additional.namespaces = runtime,conscrypt,media,resolv
+additional.namespaces = runtime,conscrypt,media,neuralnetworks,resolv
 
 # Keep in sync with the "platform" namespace in art/build/apex/ld.config.txt.
 # If a shared library or an executable requests a shared library that
@@ -157,6 +157,27 @@ namespace.resolv.link.default.shared_libs += libdl.so
 namespace.resolv.link.default.shared_libs += libbinder_ndk.so
 namespace.resolv.link.default.shared_libs += liblog.so
 namespace.resolv.link.default.shared_libs += libvndksupport.so
+
+###############################################################################
+# "neuralnetworks" APEX namespace
+#
+# This namespace is for libraries within the NEURALNETWORKS.
+###############################################################################
+namespace.neuralnetworks.isolated = true
+namespace.neuralnetworks.visible = true
+
+namespace.neuralnetworks.search.paths = /apex/com.android.neuralnetworks/${LIB}
+namespace.neuralnetworks.asan.search.paths = /apex/com.android.neuralnetworks/${LIB}
+namespace.neuralnetworks.links = default
+namespace.neuralnetworks.link.default.shared_libs  = libc.so
+namespace.neuralnetworks.link.default.shared_libs += libcgrouprc.so
+namespace.neuralnetworks.link.default.shared_libs += libdl.so
+namespace.neuralnetworks.link.default.shared_libs += liblog.so
+namespace.neuralnetworks.link.default.shared_libs += libm.so
+namespace.neuralnetworks.link.default.shared_libs += libnativewindow.so
+namespace.neuralnetworks.link.default.shared_libs += libsync.so
+namespace.neuralnetworks.link.default.shared_libs += libvndksupport.so
+
 
 ###############################################################################
 # Namespace config for binaries under /postinstall.
