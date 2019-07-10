@@ -43,6 +43,7 @@ namespace {
 constexpr const char* kVendorNamespaceName = "sphal";
 constexpr const char* kVndkNamespaceName = "vndk";
 constexpr const char* kRuntimeNamespaceName = "runtime";
+constexpr const char* kNnapiNamespaceName = "nnapi";
 
 // classloader-namespace is a linker namespace that is created for the loaded
 // app. To be specific, it is created for the app classloader. When
@@ -236,6 +237,13 @@ NativeLoaderNamespace* LibraryNamespaces::Create(JNIEnv* env, uint32_t target_sd
       *error_msg = app_ns.GetError();
       return nullptr;
     }
+  }
+
+  // Give access to NNAPI libraries (apex-updated LLNDK library).
+  auto nnapi_ns = NativeLoaderNamespace::GetExportedNamespace(kNnapiNamespaceName, is_bridged);
+  if (!app_ns.Link(nnapi_ns, "libneuralnetworks.so")) {
+    *error_msg = app_ns.GetError();
+    return nullptr;
   }
 
   // Give access to VNDK-SP libraries from the 'vndk' namespace.
