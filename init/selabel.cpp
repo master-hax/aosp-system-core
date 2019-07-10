@@ -60,7 +60,7 @@ bool SelabelLookupFileContextBestMatch(const std::string& key,
 
     if (!sehandle) return true;
 
-    std::vector<const char*> c_aliases;
+    std::vector<const char*> c_aliases(aliases.size() + 1, nullptr);
     for (const auto& alias : aliases) {
         c_aliases.emplace_back(alias.c_str());
     }
