@@ -34,6 +34,24 @@
       "revId": "cd2e830f3b112304f0d79309f4aa093abd4eba44",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c4d2ab6c_ef32a424",
+        "filename": "init/reboot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 675,
+      "author": {
+        "id": 1088085
+      },
+      "writtenOn": "2019-07-10T18:27:28Z",
+      "side": 1,
+      "message": "This interface function automatically change the boot command to \"boot-recovery\", while the options fields are arguments to the recovery binary. It makes wonder if the function name is a bit confusing. As it implies a reboot into recovery while the other bootloader message functions  requires explicit construction of a message struct. For now, maybe adding a comment to mention the boot command is sufficient here.",
+      "parentUuid": "c5be7b02_721ca9d1",
+      "revId": "cd2e830f3b112304f0d79309f4aa093abd4eba44",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
