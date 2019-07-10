@@ -35,7 +35,7 @@ dir.postinstall = /postinstall
 dir.system = /data
 
 [system]
-additional.namespaces = runtime,conscrypt,media,resolv,sphal,vndk,rs
+additional.namespaces = runtime,conscrypt,media,nnapi,resolv,sphal,vndk,rs
 
 ###############################################################################
 # "default" namespace
@@ -72,7 +72,7 @@ namespace.default.asan.search.paths +=           /vendor/${LIB}
 # shared library cannot be loaded from the runtime namespace either, the
 # dynamic linker tries to load the shared library from the resolv namespace.
 # Finally, if all attempts fail, the dynamic linker returns an error.
-namespace.default.links = runtime,resolv
+namespace.default.links = runtime,resolv,nnapi
 namespace.default.link.runtime.shared_libs  = libandroidicu.so
 namespace.default.link.runtime.shared_libs += libdexfile_external.so
 namespace.default.link.runtime.shared_libs += libdexfiled_external.so
@@ -90,6 +90,7 @@ namespace.default.link.runtime.shared_libs += libpac.so
 # in the resolv namespace. Don't allow any other libraries from the resolv namespace
 # to be loaded in the default namespace.
 namespace.default.link.resolv.shared_libs = libnetd_resolv.so
+namespace.default.link.nnapi.shared_libs = libneuralnetworks.so
 
 ###############################################################################
 # "runtime" APEX namespace
@@ -104,12 +105,13 @@ namespace.runtime.visible = true
 
 namespace.runtime.search.paths = /apex/com.android.runtime/${LIB}
 namespace.runtime.asan.search.paths = /apex/com.android.runtime/${LIB}
-namespace.runtime.links = default
+namespace.runtime.links = default,nnapi
 # Need allow_all_shared_libs because libart.so can dlopen oat files in
 # /system/framework and /data.
 # TODO(b/130340935): Use a dynamically created linker namespace similar to
 # classloader-namespace for oat files, and tighten this up.
 namespace.runtime.link.default.allow_all_shared_libs = true
+namespace.runtime.link.nnapi.shared_libs = libneuralnetworks.so
 
 ###############################################################################
 # "media" APEX namespace
@@ -129,6 +131,20 @@ namespace.media.link.default.shared_libs  = %LLNDK_LIBRARIES%
 namespace.media.link.default.shared_libs += libbinder_ndk.so
 namespace.media.link.default.shared_libs += libmediametrics.so
 namespace.media.link.default.shared_libs += %SANITIZER_RUNTIME_LIBRARIES%
+
+###############################################################################
+# "nnapi" APEX namespace
+#
+# This namespace is for libraries within the NNAPI.
+###############################################################################
+namespace.nnapi.isolated = true
+namespace.nnapi.visible = true
+
+namespace.nnapi.search.paths = /apex/com.android.nnapi/${LIB}
+namespace.nnapi.asan.search.paths = /apex/com.android.nnapi/${LIB}
+namespace.nnapi.links = default
+namespace.nnapi.link.default.shared_libs  = %LLNDK_LIBRARIES%
+namespace.nnapi.link.default.shared_libs += libbinder_ndk.so
 
 ###############################################################################
 # "conscrypt" APEX namespace
@@ -310,10 +326,11 @@ namespace.vndk.asan.permitted.paths +=           /system/${LIB}/vndk-sp%VNDK_VER
 # When these NDK libs are required inside this namespace, then it is redirected
 # to the default namespace. This is possible since their ABI is stable across
 # Android releases.
-namespace.vndk.links = default
+namespace.vndk.links = default,nnapi
 
 namespace.vndk.link.default.shared_libs  = %LLNDK_LIBRARIES%
 namespace.vndk.link.default.shared_libs += %SANITIZER_RUNTIME_LIBRARIES%
+namespace.vndk.link.nnapi.shared_libs = libneuralnetworks.so
 
 
 ###############################################################################
@@ -323,7 +340,7 @@ namespace.vndk.link.default.shared_libs += %SANITIZER_RUNTIME_LIBRARIES%
 # (LL-NDK only) access.
 ###############################################################################
 [vendor]
-additional.namespaces = runtime
+additional.namespaces = runtime,nnapi
 
 namespace.default.isolated = false
 
@@ -377,6 +394,9 @@ namespace.default.link.runtime.shared_libs += libnativeloader.so
 # Workaround for b/124772622
 namespace.default.link.runtime.shared_libs += libandroidicu.so
 
+namespace.default.link.nnapi.shared_libs = libneuralnetworks.so
+
+
 ###############################################################################
 # "runtime" APEX namespace
 #
@@ -387,10 +407,25 @@ namespace.runtime.isolated = true
 
 namespace.runtime.search.paths = /apex/com.android.runtime/${LIB}
 namespace.runtime.asan.search.paths = /apex/com.android.runtime/${LIB}
-namespace.runtime.links = default
+namespace.runtime.links = default,nnapi
 # TODO(b/130340935): Use a dynamically created linker namespace similar to
 # classloader-namespace for oat files, and tighten this up.
 namespace.runtime.link.default.allow_all_shared_libs = true
+namespace.runtime.link.nnapi.shared_libs = libneuralnetworks.so
+
+###############################################################################
+# "nnapi" APEX namespace
+#
+# This namespace is for libraries within the NNAPI.
+###############################################################################
+namespace.nnapi.isolated = true
+namespace.nnapi.visible = true
+
+namespace.nnapi.search.paths = /apex/com.android.nnapi/${LIB}
+namespace.nnapi.asan.search.paths = /apex/com.android.nnapi/${LIB}
+namespace.nnapi.links = default
+namespace.nnapi.link.default.shared_libs  = %LLNDK_LIBRARIES%
+namespace.nnapi.link.default.shared_libs += libbinder_ndk.so
 
 ###############################################################################
 # Namespace config for native tests that need access to both system and vendor
@@ -399,7 +434,7 @@ namespace.runtime.link.default.allow_all_shared_libs = true
 # includes the requisite namespace setup for APEXes.
 ###############################################################################
 [unrestricted]
-additional.namespaces = runtime,media,conscrypt,resolv
+additional.namespaces = runtime,media,conscrypt,resolv,nnapi
 
 # Visible to allow links to be created at runtime, e.g. through
 # android_link_namespaces in libnativeloader.
@@ -433,6 +468,7 @@ namespace.default.link.runtime.shared_libs += libpac.so
 namespace.default.link.runtime.shared_libs += %SANITIZER_RUNTIME_LIBRARIES%
 
 namespace.default.link.resolv.shared_libs = libnetd_resolv.so
+namespace.default.link.nnapi.shared_libs = libneuralnetworks.so
 
 ###############################################################################
 # "runtime" APEX namespace
@@ -447,10 +483,10 @@ namespace.runtime.visible = true
 
 namespace.runtime.search.paths = /apex/com.android.runtime/${LIB}
 namespace.runtime.asan.search.paths = /apex/com.android.runtime/${LIB}
-namespace.runtime.links = default
+namespace.runtime.links = default,nnapi
 # TODO(b/130340935): Use a dynamically created linker namespace similar to
 # classloader-namespace for oat files, and tighten this up.
-namespace.runtime.link.default.allow_all_shared_libs = true
+namespace.runtime.link.nnapi.shared_libs = libneuralnetworks.so
 
 ###############################################################################
 # "media" APEX namespace
@@ -504,6 +540,21 @@ namespace.resolv.link.default.shared_libs += libcgrouprc.so
 namespace.resolv.link.default.shared_libs += libm.so
 namespace.resolv.link.default.shared_libs += libdl.so
 namespace.resolv.link.default.shared_libs += libbinder_ndk.so
+
+
+###############################################################################
+# "nnapi" APEX namespace
+#
+# This namespace is for libraries within the NNAPI.
+###############################################################################
+namespace.nnapi.isolated = true
+namespace.nnapi.visible = true
+
+namespace.nnapi.search.paths = /apex/com.android.nnapi/${LIB}
+namespace.nnapi.asan.search.paths = /apex/com.android.nnapi/${LIB}
+namespace.nnapi.links = default
+namespace.nnapi.link.default.shared_libs  = %LLNDK_LIBRARIES%
+namespace.nnapi.link.default.shared_libs += libbinder_ndk.so
 
 ###############################################################################
 # Namespace config for binaries under /postinstall.
