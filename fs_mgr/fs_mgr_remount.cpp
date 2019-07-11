@@ -165,7 +165,8 @@ int main(int argc, char* argv[]) {
 
     // Make sure we are root.
     if (::getuid() != 0) {
-        LOG(ERROR) << "must be run as root";
+        fprintf(stderr, "Not running as root. Try \"adb root\" first.\n");
+        fprintf(stdout, "remount failed\n");
         return NOT_ROOT;
     }
 
