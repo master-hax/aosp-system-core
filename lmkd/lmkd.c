@@ -1665,7 +1665,7 @@ static void mp_event_common(int data, uint32_t events __unused) {
 
     // If we still have enough swap space available, check if we want to
     // ignore/downgrade pressure events.
-    if (mi.field.free_swap >=
+    if (mi.field.free_swap >
         mi.field.total_swap * swap_free_low_percentage / 100) {
         // If the pressure is larger than downgrade_pressure lmk will not
         // kill any process, since enough memory is available.
