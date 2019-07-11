@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "15c81524_e088fa84",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-07-11T16:51:52Z",
+      "side": 1,
+      "message": "downgrade_pressure is used only when free_swap is higher than some % of total_swap. If your device has no swap then there is no point in enabling downgrade_pressure. What am I missing? Please clarify.\n\nAlso is your device a low_ram_device (ro.config.low_ram\u003dtrue) or not?",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 10,
+        "endChar": 71
+      },
+      "revId": "3e759d8197e6cb01b860a15937bc68a243b9ada4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
