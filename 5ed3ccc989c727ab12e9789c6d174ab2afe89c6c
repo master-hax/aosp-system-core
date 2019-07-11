@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b727f46d_94ff72d4",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 169,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-07-11T22:50:49Z",
+      "side": 1,
+      "message": "This message has to accompany _all_ failure returns. This message has to also occur if the remount command can not be executed (so adb needs to report it).\n\nCan this be printed in adb for any non-zero return value instead?",
+      "range": {
+        "startLine": 169,
+        "startChar": 0,
+        "endLine": 169,
+        "endChar": 44
+      },
+      "revId": "5ed3ccc989c727ab12e9789c6d174ab2afe89c6c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
