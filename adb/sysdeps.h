@@ -24,12 +24,6 @@
 #  undef _WIN32
 #endif
 
-#include <errno.h>
-
-#include <string>
-#include <string_view>
-#include <vector>
-
 // Include this before open/close/unlink are defined as macros below.
 #include <android-base/errors.h>
 #include <android-base/macros.h>
@@ -40,6 +34,13 @@
 #include "sysdeps/errno.h"
 #include "sysdeps/network.h"
 #include "sysdeps/stat.h"
+
+#include <span>
+#include <string>
+#include <string_view>
+#include <vector>
+
+#include <errno.h>
 
 #ifdef _WIN32
 
@@ -86,6 +87,11 @@ extern int adb_unlink(const char* path);
 extern int adb_mkdir(const std::string& path, int mode);
 #undef mkdir
 #define mkdir ___xxx_mkdir
+
+#if !defined(O_CLOEXEC)
+/* Windows has O_CLOEXEC but calls it O_NOINHERIT for some reason. */
+#define O_CLOEXEC O_NOINHERIT
+#endif
 
 // See the comments for the !defined(_WIN32) versions of adb_*().
 extern int adb_open(const char* path, int options);
@@ -266,6 +272,32 @@ inline void seekdir(DIR*, long) {
 
 #define getcwd adb_getcwd
 
+//
+// mmap-related flags
+//
+#define PROT_NONE 0
+#define PROT_READ 1
+#define PROT_WRITE 2
+#define PROT_EXEC 4
+
+#define MAP_FILE 0
+#define MAP_SHARED 1
+#define MAP_PRIVATE 2
+#define MAP_TYPE 0xf
+#define MAP_FIXED 0x10
+#define MAP_ANONYMOUS 0x20
+#define MAP_ANON MAP_ANONYMOUS
+
+#define MAP_FAILED ((void*)-1)
+
+extern void* adb_mmap(void* addr, size_t size, int prot, int flags, int fd, off64_t offset);
+extern int adb_munmap(void* addr, size_t size);
+
+#undef mmap
+#define mmap ___xxx_mmap
+#undef munmap
+#define munmap ___xxx_munmap
+
 // Helper class to convert UTF-16 argv from wmain() to UTF-8 args that can be
 // passed to main().
 class NarrowArgs {
@@ -331,6 +363,7 @@ size_t ParseCompleteUTF8(const char* first, const char* last, std::vector<char>*
 #include <stdarg.h>
 #include <stdint.h>
 #include <string.h>
+#include <sys/mman.h>
 #include <sys/stat.h>
 #include <sys/wait.h>
 #include <unistd.h>
@@ -599,6 +632,23 @@ static __inline__ int adb_mkdir(const std::string& path, int mode) {
 static __inline__ int adb_is_absolute_host_path(const char* path) {
     return path[0] == '/';
 }
+
+static inline void* adb_mmap(void* addr, size_t size, int prot, int flags, int fd, off64_t offset) {
+#ifdef __APPLE__
+    return ::mmap(addr, size, prot, flags, fd, offset);
+#else
+    return ::mmap64(addr, size, prot, flags, fd, offset);
+#endif
+}
+
+static inline int adb_munmap(void* addr, size_t size) {
+    return ::munmap(addr, size);
+}
+
+#undef mmap
+#define mmap ___xxx_mmap
+#undef munmap
+#define munmap ___xxx_munmap
 
 #endif /* !_WIN32 */
 

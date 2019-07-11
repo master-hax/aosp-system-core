@@ -18,6 +18,7 @@
 
 #include <condition_variable>
 #include <mutex>
+#include <span>
 #include <string>
 #include <string_view>
 #include <type_traits>
@@ -142,3 +143,30 @@ inline bool ParseUint(T* result, std::string_view str, std::string_view* remaini
 
     return true;
 }
+
+//
+// RAII wrapper for a memory mapped file
+//
+class UniqueMmap final {
+  public:
+    UniqueMmap();
+    constexpr UniqueMmap(void* map, size_t size) : map_(map), size_(size) {}
+    ~UniqueMmap();
+    UniqueMmap(UniqueMmap&& other);
+    UniqueMmap& operator=(UniqueMmap&& other);
+
+    explicit operator bool() const;
+
+    constexpr std::span<char> span() const {
+        return std::span<char>(static_cast<char*>(map_), static_cast<long>(size_));
+    }
+
+    void reset();
+    std::span<char> release();
+
+    static UniqueMmap make(size_t size, int prot, int flags, int fd, off64_t offset);
+
+  private:
+    void* map_;
+    size_t size_;
+};

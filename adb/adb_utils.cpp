@@ -378,3 +378,39 @@ void perror_exit(const char* fmt, ...) {
     error_exit_va(errno, fmt, va);
     va_end(va);
 }
+
+UniqueMmap::UniqueMmap() : UniqueMmap(MAP_FAILED, 0) {}
+
+UniqueMmap::~UniqueMmap() {
+    reset();
+}
+
+UniqueMmap::UniqueMmap(UniqueMmap&& other)
+    : map_(std::exchange(other.map_, MAP_FAILED)), size_(other.size_) {}
+
+UniqueMmap& UniqueMmap::operator=(UniqueMmap&& other) {
+    this->~UniqueMmap();
+    new (this) UniqueMmap(std::move(other));
+    return *this;
+}
+
+void UniqueMmap::reset() {
+    if (map_ != MAP_FAILED) {
+        adb_munmap(map_, size_);
+        map_ = MAP_FAILED;
+    }
+}
+
+std::span<char> UniqueMmap::release() {
+    const auto res = span();
+    map_ = MAP_FAILED;
+    return res;
+}
+
+UniqueMmap UniqueMmap::make(size_t size, int prot, int flags, int fd, off64_t offset) {
+    return UniqueMmap(adb_mmap(nullptr, size, prot, flags, fd, offset), size);
+}
+
+UniqueMmap::operator bool() const {
+    return map_ != MAP_FAILED;
+}

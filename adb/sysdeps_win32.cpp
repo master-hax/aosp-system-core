@@ -2769,6 +2769,92 @@ char* adb_getcwd(char* buf, int size) {
     return buf;
 }
 
+static constexpr int map_mmap_error(DWORD win32error) {
+    // TODO: enumerate the possible Win32 errors from mapping functions
+    return win32error;
+}
+
+static constexpr DWORD map_mmap_prot_page(const int prot) {
+    if (prot == PROT_NONE) {
+        return 0;
+    }
+
+    if ((prot & PROT_EXEC) != 0) {
+        return ((prot & PROT_WRITE) != 0) ? PAGE_EXECUTE_READWRITE : PAGE_EXECUTE_READ;
+    }
+
+    return ((prot & PROT_WRITE) != 0) ? PAGE_READWRITE : PAGE_READONLY;
+}
+
+static constexpr DWORD map_mmap_prot_file(const int prot) {
+    if (prot == PROT_NONE) {
+        return 0;
+    }
+
+    DWORD desiredAccess = 0;
+    if ((prot & PROT_READ) != 0) {
+        desiredAccess |= FILE_MAP_READ;
+    }
+    if ((prot & PROT_WRITE) != 0) {
+        desiredAccess |= FILE_MAP_WRITE;
+    }
+    if ((prot & PROT_EXEC) != 0) {
+        desiredAccess |= FILE_MAP_EXECUTE;
+    }
+
+    return desiredAccess;
+}
+
+extern void* adb_mmap(void* addr, size_t size, int prot, int flags, int fd, off64_t offset) {
+    const auto offsetLow = (DWORD)(offset & 0xFFFFFFFFL);
+    const auto offsetHigh = (DWORD)((offset >> 32) & 0xFFFFFFFFL);
+    const auto protect = map_mmap_prot_page(prot);
+    const auto desiredAccess = map_mmap_prot_file(prot);
+
+    const auto maxSize = offset + size;
+    const auto maxSizeLow = (DWORD)(maxSize & 0xFFFFFFFFL);
+    const auto maxSizeHigh = (DWORD)((maxSize >> 32) & 0xFFFFFFFFL);
+
+    if (size == 0
+        /* Unsupported flag combinations */
+        || (flags & MAP_FIXED) != 0
+        /* Unsupported protection combinations */
+        || prot == PROT_EXEC) {
+        errno = EINVAL;
+        return MAP_FAILED;
+    }
+
+    const HANDLE h =
+            ((flags & MAP_ANONYMOUS) == 0) ? (HANDLE)adb_get_os_handle(fd) : INVALID_HANDLE_VALUE;
+
+    if ((flags & MAP_ANONYMOUS) == 0 && h == INVALID_HANDLE_VALUE) {
+        errno = EBADF;
+        return MAP_FAILED;
+    }
+
+    const HANDLE fm = ::CreateFileMapping(h, nullptr, protect, maxSizeHigh, maxSizeLow, nullptr);
+    if (!fm) {
+        errno = map_mmap_error(GetLastError());
+        return MAP_FAILED;
+    }
+
+    void* const map = ::MapViewOfFile(fm, desiredAccess, offsetHigh, offsetLow, size);
+    ::CloseHandle(fm);
+    if (!map) {
+        errno = map_mmap_error(GetLastError());
+        return MAP_FAILED;
+    }
+    return map;
+}
+
+extern int adb_munmap(void* addr, size_t size) {
+    if (!::UnmapViewOfFile(addr)) {
+        errno = map_mmap_error(GetLastError());
+        return -1;
+    }
+    return 0;
+}
+
 // The SetThreadDescription API was brought in version 1607 of Windows 10.
 typedef HRESULT(WINAPI* SetThreadDescription)(HANDLE hThread, PCWSTR lpThreadDescription);
 
