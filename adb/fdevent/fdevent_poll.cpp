@@ -131,7 +131,7 @@ void fdevent_context_poll::Loop() {
         CHECK_GT(pollfds.size(), 0u);
         D("poll(), pollfds = %s", dump_pollfds(pollfds).c_str());
 
-        auto timeout = CalculatePollDuration();
+        std::optional<std::chrono::milliseconds> timeout = CalculatePollDuration();
         int timeout_ms;
         if (!timeout) {
             timeout_ms = -1;
