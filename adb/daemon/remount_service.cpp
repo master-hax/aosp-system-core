@@ -83,6 +83,6 @@ static bool do_remount(int fd, const std::string& cmd) {
 }
 
 void remount_service(unique_fd fd, const std::string& cmd) {
-    const char* success = do_remount(fd.get(), cmd) ? "succeeded" : "failed";
-    WriteFdFmt(fd.get(), "remount %s\n", success);
+    do_remount(fd.get(), cmd);
+    // The remount command will print success or failure for us.
 }
