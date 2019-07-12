@@ -20,31 +20,35 @@
 
 #define LOG_TAG "vndksupport"
 #include <log/log.h>
+#include <pthread.h>
 #include <sys/types.h>
 #include <unistd.h>
 
 __attribute__((weak)) extern struct android_namespace_t* android_get_exported_namespace(const char*);
 __attribute__((weak)) extern void* android_dlopen_ext(const char*, int, const android_dlextinfo*);
 
-static const char* namespace_name = NULL;
+static const char* g_namespace_name = NULL;
+static struct android_namespace_t* g_vendor_namespace = NULL;
 
-static struct android_namespace_t* get_vendor_namespace() {
-    const char* namespace_names[] = {"sphal", "default", NULL};
-    static struct android_namespace_t* vendor_namespace = NULL;
-    if (vendor_namespace == NULL) {
-        int name_idx = 0;
-        while (namespace_names[name_idx] != NULL) {
-            if (android_get_exported_namespace != NULL) {
-                vendor_namespace = android_get_exported_namespace(namespace_names[name_idx]);
-            }
-            if (vendor_namespace != NULL) {
-                namespace_name = namespace_names[name_idx];
-                break;
-            }
-            name_idx++;
+static void init_vendor_namespace() {
+    static const char* const names[] = {"sphal", "default", NULL};
+    for (int name_idx = 0; names[name_idx] != NULL; ++name_idx) {
+        struct android_namespace_t* ns = NULL;
+        if (android_get_exported_namespace != NULL) {
+            ns = android_get_exported_namespace(names[name_idx]);
+        }
+        if (ns != NULL) {
+            g_vendor_namespace = ns;
+            g_namespace_name = names[name_idx];
+            break;
         }
     }
-    return vendor_namespace;
+}
+
+static struct android_namespace_t* get_vendor_namespace() {
+    static pthread_once_t once_control = PTHREAD_ONCE_INIT;
+    pthread_once(&once_control, init_vendor_namespace);
+    return g_vendor_namespace;
 }
 
 int android_is_in_vendor_process() {
@@ -74,7 +78,7 @@ void* android_load_sphal_library(const char* name, int flag) {
             handle = android_dlopen_ext(name, flag, &dlextinfo);
         }
         if (!handle) {
-            ALOGE("Could not load %s from %s namespace: %s.", name, namespace_name, dlerror());
+            ALOGE("Could not load %s from %s namespace: %s.", name, g_namespace_name, dlerror());
         }
         return handle;
     } else {
