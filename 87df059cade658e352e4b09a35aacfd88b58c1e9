@@ -1,0 +1,130 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f6c195a2_8b0069d2",
+        "filename": "libnativeloader/library_namespaces.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 244,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2019-07-12T21:02:41Z",
+      "side": 1,
+      "message": "Let\u0027s keep this sort of constants in public_libraries.{h,cpp}, please. Also, I think you still get a link to your lib to the platform namespace through default_public_libraries(). InitDefaultPublicLibraries got special code to remove the libs in the runtime APEX, and there ought to be something similar for this one.\n\n(I think we ideally should add a mapping from lib dirs to namespaces, and then loop through the libs in the public.libraries*.txt files, check where they are, and create links to the appropriate namespaces. That way we wouldn\u0027t need all this ad-hoc code to set up the right links. But that\u0027s perhaps out of scope for this CL.)",
+      "range": {
+        "startLine": 244,
+        "startChar": 29,
+        "endLine": 244,
+        "endChar": 51
+      },
+      "revId": "87df059cade658e352e4b09a35aacfd88b58c1e9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "863f06b7_2b705937",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 194,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2019-07-12T21:02:41Z",
+      "side": 1,
+      "message": "There are a lot of namespaces that have this expansion that aren\u0027t getting links to libneuralnetworks\u0027 new location. Is that intentional?",
+      "range": {
+        "startLine": 194,
+        "startChar": 45,
+        "endLine": 194,
+        "endChar": 60
+      },
+      "revId": "87df059cade658e352e4b09a35aacfd88b58c1e9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f5379073_9d2f491f",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 194,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2019-07-12T21:02:41Z",
+      "side": 1,
+      "message": "Doesn\u0027t this still expand to a list that includes libneuralnetworks.so? It shouldn\u0027t, right?",
+      "range": {
+        "startLine": 194,
+        "startChar": 44,
+        "endLine": 194,
+        "endChar": 61
+      },
+      "revId": "87df059cade658e352e4b09a35aacfd88b58c1e9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "682102fd_25edf08c",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 218,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2019-07-12T21:02:41Z",
+      "side": 1,
+      "message": "Style nit: Please keep this alphabetically sorted (same in other places).",
+      "range": {
+        "startLine": 211,
+        "startChar": 0,
+        "endLine": 218,
+        "endChar": 62
+      },
+      "revId": "87df059cade658e352e4b09a35aacfd88b58c1e9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "060a1c2f_3f65bd5a",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 747,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2019-07-12T21:02:41Z",
+      "side": 1,
+      "message": "Style nit: Please try to keep the order between the namespace sections the same here and in [system] (and elsewhere).",
+      "revId": "87df059cade658e352e4b09a35aacfd88b58c1e9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c24ac972_a842bda0",
+        "filename": "rootdir/etc/ld.config.vndk_lite.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 556,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2019-07-12T21:02:41Z",
+      "side": 1,
+      "message": "Style nit: Just one empty line.",
+      "revId": "87df059cade658e352e4b09a35aacfd88b58c1e9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
