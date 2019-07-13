@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e23404ed_0a1ed363",
+        "filename": "libmeminfo/include/meminfo/procmeminfo.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-07-13T01:20:46Z",
+      "side": 1,
+      "message": "is there another CL supposed to be in this topic, that uses this?",
+      "range": {
+        "startLine": 49,
+        "startChar": 28,
+        "endLine": 49,
+        "endChar": 49
+      },
+      "revId": "504d2cce6499c3fc3885776618f18784b50087b7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
