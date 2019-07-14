@@ -22,6 +22,7 @@
 #include <sys/poll.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <time.h>
 #include <unistd.h>
 
 #include <chrono>
@@ -42,8 +43,10 @@
 
 using namespace std::chrono_literals;
 
+using android::base::ReadFileToString;
 using android::base::SendFileDescriptors;
 using android::base::unique_fd;
+using android::base::WriteStringToFd;
 
 static bool send_signal(pid_t pid, const DebuggerdDumpType dump_type) {
   const int signal = (dump_type == kDebuggerdJavaBacktrace) ? SIGQUIT : DEBUGGER_SIGNAL;
@@ -63,6 +66,75 @@ static void populate_timeval(struct timeval* tv, const Duration& duration) {
   auto microseconds = std::chrono::duration_cast<std::chrono::microseconds>(duration - seconds);
   tv->tv_sec = static_cast<long>(seconds.count());
   tv->tv_usec = static_cast<long>(microseconds.count());
+}
+
+static void get_wchan_header(pid_t pid, std::stringstream& buffer) {
+  struct tm now;
+  time_t t = time(nullptr);
+  localtime_r(&t, &now);
+  char timestamp[32];
+  strftime(timestamp, sizeof(timestamp), "%Y-%m-%d %H:%M:%S", &now);
+  std::string time_now(timestamp);
+
+  std::string path = "/proc/" + std::to_string(pid) + "/cmdline";
+
+  char proc_name_buf[1024];
+  const char* proc_name = nullptr;
+  std::unique_ptr<FILE, decltype(&fclose)> fp(fopen(path.c_str(), "r"), &fclose);
+
+  if (fp) {
+    proc_name = fgets(proc_name_buf, sizeof(proc_name_buf), fp.get());
+  }
+
+  if (!proc_name) {
+    proc_name = "<unknown>";
+  }
+
+  std::string cmdline(proc_name);
+
+  buffer << "\n----- Waiting Channels: pid " << pid << " at " << time_now << " -----\n"
+         << "Cmd line: " << cmdline << "\n";
+}
+
+static void get_wchan_footer(pid_t pid, std::stringstream& buffer) {
+  buffer << "----- end " << std::to_string(pid) << " -----\n";
+}
+
+/**
+ * Returns (in buffer) the wchan data for each thread in
+ * the process, or empty string if unable to obtain any data.
+ */
+static void get_wchan_data(pid_t pid, std::stringstream& buffer) {
+  std::vector<pid_t> tids;
+
+  if (!android::procinfo::GetProcessTids(pid, &tids)) {
+    LOG(WARNING) << "libdebuggerd_client: Failed to get process tids";
+    return;
+  }
+
+  std::stringstream data;
+  for (int tid : tids) {
+    std::string path = "/proc/" + std::to_string(pid) + "/task/" + std::to_string(tid) + "/wchan";
+    std::string wchan_str;
+    if (!ReadFileToString(path, &wchan_str, true)) {
+      LOG(WARNING) << "libdebuggerd_client: Failed to read \"" << path << "\", errno: " << errno;
+      continue;
+    }
+    data << "sysTid=" << tid << "\n" << wchan_str << "\n\n";
+  }
+
+  if (!data.str().empty()) {
+    get_wchan_header(pid, buffer);
+    buffer << "\n" << data.str();
+    get_wchan_footer(pid, buffer);
+    buffer << "\n";
+  }
+}
+
+static void dump_wchan_data(const std::string& data, int fd, pid_t pid) {
+  if (!WriteStringToFd(data, fd)) {
+    LOG(WARNING) << "libdebuggerd_client: Failed to dump wchan data for pid: " << pid;
+  }
 }
 
 bool debuggerd_trigger_dump(pid_t tid, DebuggerdDumpType dump_type, unsigned int timeout_ms,
@@ -261,6 +333,17 @@ int dump_backtrace_to_file_timeout(pid_t tid, DebuggerdDumpType dump_type, int t
   if (copy == -1) {
     return -1;
   }
+
+  // Get wchan data before dump is trigerred (to get any useful data)
+  std::stringstream buffer;
+  get_wchan_data(tid, buffer);
+
   int timeout_ms = timeout_secs > 0 ? timeout_secs * 1000 : 0;
-  return debuggerd_trigger_dump(tid, dump_type, timeout_ms, std::move(copy)) ? 0 : -1;
+  int ret = debuggerd_trigger_dump(tid, dump_type, timeout_ms, std::move(copy)) ? 0 : -1;
+
+  // Dump wchan data, since only privileged processes (CAP_SYS_ADMIN) can read
+  // kernel stack traces (/proc/*/stack).
+  dump_wchan_data(buffer.str(), fd, tid);
+
+  return ret;
 }
