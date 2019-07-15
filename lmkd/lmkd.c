@@ -110,8 +110,10 @@
  * PSI_WINDOW_SIZE_MS after the event happens.
  */
 #define PSI_WINDOW_SIZE_MS 1000
-/* Polling period after initial PSI signal */
-#define PSI_POLL_PERIOD_MS 10
+/* Polling period after PSI signal when pressure is high */
+#define PSI_POLL_PERIOD_SHORT_MS 10
+/* Polling period after PSI signal when pressure is low */
+#define PSI_POLL_PERIOD_LONG_MS 100
 
 #define min(a, b) (((a) < (b)) ? (a) : (b))
 
@@ -1792,6 +1794,169 @@ static bool is_kill_pending(void) {
     return false;
 }
 
+enum zone_watermark {
+    WMARK_NONE = 0,
+    WMARK_HIGH,
+    WMARK_LOW,
+    WMARK_MIN
+};
+
+/*
+ * Returns lowest breached watermark or WMARK_NONE.
+ */
+static enum zone_watermark get_lowest_watermark(struct zoneinfo *zi)
+{
+    enum zone_watermark wmark = WMARK_NONE;
+
+    for (int node_idx = 0; node_idx < zi->node_count; node_idx++) {
+        struct zoneinfo_node *node = &zi->nodes[node_idx];
+        enum zone_watermark zone_wmark[MAX_NR_ZONES];
+
+        memset(&zone_wmark, 0, sizeof(zone_wmark));
+        for (int zone_idx = 0; zone_idx < node->zone_count; zone_idx++) {
+            struct zoneinfo_zone *zone = &node->zones[zone_idx];
+            int zone_free_mem;
+
+            if (!zone->fields.field.present)
+                continue;
+
+            zone_free_mem = zone->fields.field.nr_free_pages - zone->fields.field.nr_free_cma;
+            for (int i = 0; i < MAX_NR_ZONES; i++) {
+                if (zone_free_mem > zone->protection[i] + zone->fields.field.high) {
+                    zone_wmark[i] = WMARK_NONE;
+                    continue;
+                }
+                if (zone_free_mem > zone->protection[i] + zone->fields.field.low) {
+                    zone_wmark[i] = WMARK_HIGH;
+                    continue;
+                }
+                if (zone_free_mem > zone->protection[i] + zone->fields.field.min) {
+                    zone_wmark[i] = WMARK_LOW;
+                    continue;
+                }
+                zone_wmark[i] = WMARK_MIN;
+            }
+
+            if (wmark < zone_wmark[zone_idx]) {
+                wmark = zone_wmark[zone_idx];
+            }
+        }
+    }
+
+    return wmark;
+}
+
+static void mp_event_psi(struct event_handler_params *params) {
+    enum kill_reasons {
+        NONE = -1, /* to denote no kill condition */
+        PRESSURE_AFTER_KILL = 0,
+        NOT_RESPONDING,
+        LOW_SWAP_AND_THRASHING,
+        LOW_MEM_AND_SWAP,
+        KILL_REASON_COUNT
+    };
+    static unsigned long init_ws_refault = 0;
+    static unsigned long base_file_lru = 0;
+    static int64_t swap_low_threshold = 0;
+    static struct timespec last_wm_breach;
+    static bool just_killed = false;
+    union meminfo mi;
+    struct zoneinfo zi;
+    struct timespec curr_tm;
+    long thrashing = 0;
+    bool swap_is_low = false;
+    enum vmpressure_level level = (enum vmpressure_level)params->data;
+    enum kill_reasons kill_reason = NONE;
+    bool cycle_after_kill = false;
+    enum zone_watermark wmark = WMARK_NONE;
+
+    if (is_kill_pending()) {
+        /* TODO: replace this quick polling with pidfd polling if kernel supports */
+        params->polling_interval_ms = PSI_POLL_PERIOD_SHORT_MS;
+        goto no_kill;
+    }
+
+    if (just_killed) {
+        just_killed = false;
+        cycle_after_kill = true;
+    }
+
+    if (meminfo_parse(&mi) < 0) {
+        ALOGE("Failed to parse meminfo!");
+        return;
+    }
+
+    if (zoneinfo_parse(&zi) < 0) {
+        ALOGE("Failed to parse zoneinfo!");
+        return;
+    }
+
+    if (swap_free_low_percentage) {
+        if (!swap_low_threshold) {
+            swap_low_threshold = mi.field.total_swap * swap_free_low_percentage / 100;
+        }
+        swap_is_low = (mi.field.free_swap < swap_low_threshold);
+    }
+
+    wmark = get_lowest_watermark(&zi);
+    /*
+     * poll using short intervals when both swap and memory are low
+     * WARNING: swap might be 0 at startup, watermark check is important
+     */
+    if (swap_is_low && wmark > WMARK_NONE) {
+        params->polling_interval_ms = PSI_POLL_PERIOD_SHORT_MS;
+    } else {
+        params->polling_interval_ms = PSI_POLL_PERIOD_LONG_MS;
+    }
+
+    if (wmark == WMARK_NONE) {
+        goto no_kill;
+    }
+
+    if (clock_gettime(CLOCK_MONOTONIC_COARSE, &curr_tm) != 0) {
+        ALOGE("Failed to get current time");
+        return;
+    }
+
+    if (get_time_diff_ms(&last_wm_breach, &curr_tm) > PSI_WINDOW_SIZE_MS) {
+        /* record file-backed pagecache size at the first lowmem event */
+        base_file_lru = zi.total_inactive_file + zi.total_active_file;
+        init_ws_refault = zi.total_workingset_refault;
+    } else {
+        /* calculate what % of the file-backed pagecache refaulted so far */
+        thrashing = (zi.total_workingset_refault - init_ws_refault) * 100 / base_file_lru;
+    }
+    last_wm_breach = curr_tm;
+
+    if (!low_ram_device && cycle_after_kill && wmark > WMARK_HIGH) {
+        /* prevent kills not freeing enough memory */
+        kill_reason = PRESSURE_AFTER_KILL;
+    } else if (level == VMPRESS_LEVEL_CRITICAL && params->events != 0) {
+        /* device is too busy during lowmem event (kill to prevent ANR) */
+        kill_reason = NOT_RESPONDING;
+    } else if (swap_is_low && thrashing > 50) {
+        /* page cache is thrashing */
+        kill_reason = LOW_SWAP_AND_THRASHING;
+    } else if (swap_is_low && wmark > WMARK_HIGH) {
+        /* both free memory and swap are low */
+        kill_reason = LOW_MEM_AND_SWAP;
+    }
+
+    if (kill_reason != NONE) {
+        find_and_kill_process(0);
+        params->polling_interval_ms = PSI_POLL_PERIOD_SHORT_MS;
+        just_killed = true;
+        meminfo_log(&mi);
+    }
+
+no_kill:
+    /*
+     * start polling after initial PSI event,
+     * keep polling until the device stops reclaiming
+     */
+    params->restart_polling = (params->events || wmark > WMARK_NONE);
+}
+
 static void mp_event_common(struct event_handler_params *params) {
     int ret;
     unsigned long long evcount;
@@ -1839,7 +2004,7 @@ static void mp_event_common(struct event_handler_params *params) {
     /* Start polling after initial PSI event */
     if (use_psi_monitors && params->events) {
         params->restart_polling = true;
-        params->polling_interval_ms = PSI_POLL_PERIOD_MS;
+        params->polling_interval_ms = PSI_POLL_PERIOD_SHORT_MS;
     }
 
     if (clock_gettime(CLOCK_MONOTONIC_COARSE, &curr_tm) != 0) {
