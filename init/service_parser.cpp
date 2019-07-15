@@ -228,6 +228,15 @@ Result<void> ServiceParser::ParseOneshot(std::vector<std::string>&& args) {
 
 Result<void> ServiceParser::ParseOnrestart(std::vector<std::string>&& args) {
     args.erase(args.begin());
+
+    if (args[0] == "interface_start") {
+        service_->onrestart_start_interfaces_.insert(args[1]);
+    } else if (args[0] == "interface_restart") {
+        service_->onrestart_restart_interfaces_.insert(args[1]);
+    } else if (args[0] == "interface_stop") {
+        service_->onrestart_stop_interfaces_.insert(args[1]);
+    }
+
     int line = service_->onrestart_.NumCommands() + 1;
     if (auto result = service_->onrestart_.AddCommand(std::move(args), line); !result) {
         return Error() << "cannot add Onrestart command: " << result.error();
@@ -538,28 +547,38 @@ Result<void> ServiceParser::EndSection() {
     }
 
     if (interface_inheritance_hierarchy_) {
-        std::set<std::string> interface_names;
-        for (const std::string& intf : service_->interfaces()) {
-            interface_names.insert(Split(intf, "/")[0]);
-        }
         std::ostringstream error_stream;
-        for (const std::string& intf : interface_names) {
-            if (interface_inheritance_hierarchy_->count(intf) == 0) {
-                error_stream << "\nInterface is not in the known set of hidl_interfaces: '" << intf
-                             << "'. Please ensure the interface is spelled correctly and built "
-                             << "by a hidl_interface target.";
-                continue;
+        for (const auto& [option, interfaces] : {
+                     std::pair("interface", service_->interfaces()),
+                     std::pair("onrestart interface_start", service_->onrestart_start_interfaces_),
+                     std::pair("onrestart interface_restart",
+                               service_->onrestart_restart_interfaces_),
+                     std::pair("onrestart interface_stop", service_->onrestart_stop_interfaces_),
+             }) {
+            std::set<std::string> interface_names;
+            for (const std::string& intf : interfaces) {
+                interface_names.insert(Split(intf, "/")[0]);
             }
-            const std::set<std::string>& required_interfaces =
-                    (*interface_inheritance_hierarchy_)[intf];
-            std::set<std::string> diff;
-            std::set_difference(required_interfaces.begin(), required_interfaces.end(),
-                                interface_names.begin(), interface_names.end(),
-                                std::inserter(diff, diff.begin()));
-            if (!diff.empty()) {
-                error_stream << "\nInterface '" << intf << "' requires its full inheritance "
-                             << "hierarchy to be listed in this init_rc file. Missing "
-                             << "interfaces: [" << base::Join(diff, " ") << "]";
+            for (const std::string& intf : interface_names) {
+                if (interface_inheritance_hierarchy_->count(intf) == 0) {
+                    error_stream << "\nInterface in '" << option << "' line is not in the known "
+                                 << "set of hidl_interfaces: '" << intf << "'. Please ensure the "
+                                 << "interface is spelled correctly and built by a hidl_interface "
+                                 << "target.";
+                    continue;
+                }
+                const std::set<std::string>& required_interfaces =
+                        (*interface_inheritance_hierarchy_)[intf];
+                std::set<std::string> diff;
+                std::set_difference(required_interfaces.begin(), required_interfaces.end(),
+                                    interface_names.begin(), interface_names.end(),
+                                    std::inserter(diff, diff.begin()));
+                if (!diff.empty()) {
+                    error_stream << "\nInterface '" << intf << "' in '" << option << "' line "
+                                 << "requires its full inheritance hierarchy to be listed in this "
+                                 << "init_rc file. Missing interfaces: "
+                                 << "[" << base::Join(diff, " ") << "]";
+                }
             }
         }
         const std::string& errors = error_stream.str();
