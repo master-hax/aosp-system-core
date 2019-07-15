@@ -110,10 +110,13 @@
  * PSI_WINDOW_SIZE_MS after the event happens.
  */
 #define PSI_WINDOW_SIZE_MS 1000
-/* Polling period after initial PSI signal */
-#define PSI_POLL_PERIOD_MS 10
+/* Polling period after PSI signal when pressure is high */
+#define PSI_POLL_PERIOD_SHORT_MS 10
+/* Polling period after PSI signal when pressure is low */
+#define PSI_POLL_PERIOD_LONG_MS 100
 
 #define min(a, b) (((a) < (b)) ? (a) : (b))
+#define max(a, b) (((a) > (b)) ? (a) : (b))
 
 #define FAIL_REPORT_RLIMIT_MS 1000
 
@@ -157,6 +160,8 @@ static unsigned long kill_timeout_ms;
 static bool use_minfree_levels;
 static bool per_app_memcg;
 static int swap_free_low_percentage;
+static int thrashing_limit_pct;
+static int thrashing_limit_decay_pct;
 static bool use_psi_monitors = false;
 static struct psi_threshold psi_thresholds[VMPRESS_LEVEL_COUNT] = {
     { PSI_SOME, 70 },    /* 70ms out of 1sec for partial stall */
@@ -435,6 +440,10 @@ static uint32_t killcnt_total = 0;
 
 /* PAGE_SIZE / 1024 */
 static long page_k;
+
+static int clamp(int low, int high, int value) {
+    return max(min(value, high), low);
+}
 
 static bool parse_int64(const char* str, int64_t* ret) {
     char* endptr;
@@ -1800,6 +1809,184 @@ static bool is_kill_pending(void) {
     return false;
 }
 
+enum zone_watermark {
+    WMARK_NONE = 0,
+    WMARK_HIGH,
+    WMARK_LOW,
+    WMARK_MIN
+};
+
+/*
+ * Returns lowest breached watermark or WMARK_NONE.
+ */
+static enum zone_watermark get_lowest_watermark(struct zoneinfo *zi)
+{
+    enum zone_watermark wmark = WMARK_NONE;
+
+    for (int node_idx = 0; node_idx < zi->node_count; node_idx++) {
+        struct zoneinfo_node *node = &zi->nodes[node_idx];
+
+        for (int zone_idx = 0; zone_idx < node->zone_count; zone_idx++) {
+            struct zoneinfo_zone *zone = &node->zones[zone_idx];
+            int zone_free_mem;
+
+            if (!zone->fields.field.present) {
+                continue;
+            }
+
+            zone_free_mem = zone->fields.field.nr_free_pages - zone->fields.field.nr_free_cma;
+            if (zone_free_mem > zone->max_protection + zone->fields.field.high) {
+                continue;
+            }
+            if (zone_free_mem > zone->max_protection + zone->fields.field.low) {
+                if (wmark < WMARK_HIGH) wmark = WMARK_HIGH;
+                continue;
+            }
+            if (zone_free_mem > zone->max_protection + zone->fields.field.min) {
+                if (wmark < WMARK_LOW) wmark = WMARK_LOW;
+                continue;
+            }
+            wmark = WMARK_MIN;
+        }
+    }
+
+    return wmark;
+}
+
+static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_params) {
+    enum kill_reasons {
+        NONE = -1, /* to denote no kill condition */
+        PRESSURE_AFTER_KILL = 0,
+        NOT_RESPONDING,
+        LOW_SWAP_AND_THRASHING,
+        LOW_MEM_AND_SWAP,
+        LOW_MEM_AND_THRASHING,
+        KILL_REASON_COUNT
+    };
+    static int64_t init_ws_refault = 0;
+    static int64_t base_file_lru = 0;
+    static int64_t swap_low_threshold = 0;
+    static struct timespec last_wm_breach;
+    static bool just_killed = false;
+    static struct timespec last_thrashing_tm;
+    static int thrashing_limit = 0;
+
+    union meminfo mi;
+    struct zoneinfo zi;
+    struct timespec curr_tm;
+    int64_t thrashing = 0;
+    bool swap_is_low = false;
+    enum vmpressure_level level = (enum vmpressure_level)data;
+    enum kill_reasons kill_reason = NONE;
+    bool cycle_after_kill = false;
+    enum zone_watermark wmark = WMARK_NONE;
+
+    if (is_kill_pending()) {
+        /* TODO: replace this quick polling with pidfd polling if kernel supports */
+        poll_params->polling_interval_ms = PSI_POLL_PERIOD_SHORT_MS;
+        goto no_kill;
+    }
+
+    if (meminfo_parse(&mi) < 0) {
+        ALOGE("Failed to parse meminfo!");
+        return;
+    }
+
+    if (zoneinfo_parse(&zi) < 0) {
+        ALOGE("Failed to parse zoneinfo!");
+        return;
+    }
+
+    if (just_killed) {
+        just_killed = false;
+        cycle_after_kill = true;
+        /* reset file-backed pagecache size and refault amounts after a kill */
+        base_file_lru = zi.total_inactive_file + zi.total_active_file;
+        init_ws_refault = zi.total_workingset_refault;
+    }
+
+    if (swap_free_low_percentage) {
+        if (!swap_low_threshold) {
+            swap_low_threshold = mi.field.total_swap * swap_free_low_percentage / 100;
+        }
+        swap_is_low = (mi.field.free_swap < swap_low_threshold);
+    }
+
+    wmark = get_lowest_watermark(&zi);
+    /*
+     * poll using short intervals when both swap and memory are low
+     * WARNING: swap might be 0 at startup, watermark check is important
+     */
+    if (swap_is_low && wmark > WMARK_NONE) {
+        poll_params->polling_interval_ms = PSI_POLL_PERIOD_SHORT_MS;
+    } else {
+        poll_params->polling_interval_ms = PSI_POLL_PERIOD_LONG_MS;
+    }
+
+    if (wmark == WMARK_NONE) {
+        goto no_kill;
+    }
+
+    if (clock_gettime(CLOCK_MONOTONIC_COARSE, &curr_tm) != 0) {
+        ALOGE("Failed to get current time");
+        return;
+    }
+
+    if (get_time_diff_ms(&last_wm_breach, &curr_tm) > PSI_WINDOW_SIZE_MS) {
+        /* record file-backed pagecache size at the first lowmem event */
+        base_file_lru = zi.total_inactive_file + zi.total_active_file;
+        init_ws_refault = zi.total_workingset_refault;
+    } else {
+        /* calculate what % of the file-backed pagecache refaulted so far */
+        thrashing = (zi.total_workingset_refault - init_ws_refault) * 100 / base_file_lru;
+    }
+    last_wm_breach = curr_tm;
+
+    if (thrashing_limit != thrashing_limit_pct &&
+        get_time_diff_ms(&last_thrashing_tm, &curr_tm) > PSI_WINDOW_SIZE_MS) {
+        thrashing_limit = thrashing_limit_pct;
+    }
+
+    if (cycle_after_kill && wmark > WMARK_HIGH && swap_is_low) {
+        /* prevent kills not freeing enough memory */
+        kill_reason = PRESSURE_AFTER_KILL;
+    } else if (level == VMPRESS_LEVEL_CRITICAL && events != 0) {
+        /* device is too busy during lowmem event (kill to prevent ANR) */
+        kill_reason = NOT_RESPONDING;
+    } else if (swap_is_low && thrashing > thrashing_limit_pct) {
+        /* page cache is thrashing */
+        kill_reason = LOW_SWAP_AND_THRASHING;
+    } else if (swap_is_low && wmark > WMARK_HIGH) {
+        /* both free memory and swap are low */
+        kill_reason = LOW_MEM_AND_SWAP;
+    } else if (wmark > WMARK_HIGH && thrashing > thrashing_limit) {
+        /*
+         * record last time system was thrashing and cut thrasing limit by
+         * thrashing_limit_decay_pct percentage of the current thrashing amount
+         * until the system stops thrashing
+         */
+        last_thrashing_tm = curr_tm;
+        thrashing_limit = (thrashing_limit * (100 - thrashing_limit_decay_pct)) / 100;
+        kill_reason = LOW_MEM_AND_THRASHING;
+    }
+
+    if (kill_reason != NONE) {
+        find_and_kill_process(0);
+        poll_params->polling_interval_ms = PSI_POLL_PERIOD_SHORT_MS;
+        just_killed = true;
+        meminfo_log(&mi);
+    }
+
+no_kill:
+    /*
+     * start polling after initial PSI event,
+     * keep polling until the device stops reclaiming
+     */
+    if (events || wmark > WMARK_NONE) {
+        poll_params->update = POLLING_START;
+    }
+}
+
 static void mp_event_common(int data, uint32_t events, struct polling_params *poll_params) {
     int ret;
     unsigned long long evcount;
@@ -1848,7 +2035,7 @@ static void mp_event_common(int data, uint32_t events, struct polling_params *po
     if (use_psi_monitors && events) {
         /* Override polling params only if current event is more critical */
         if (!poll_params->poll_handler || data > poll_params->poll_handler->data) {
-            poll_params->polling_interval_ms = PSI_POLL_PERIOD_MS;
+            poll_params->polling_interval_ms = PSI_POLL_PERIOD_SHORT_MS;
             poll_params->update = POLLING_START;
         }
     }
@@ -2451,8 +2638,12 @@ int main(int argc __unused, char **argv __unused) {
         property_get_bool("ro.lmk.use_minfree_levels", false);
     per_app_memcg =
         property_get_bool("ro.config.per_app_memcg", low_ram_device);
-    swap_free_low_percentage =
-        property_get_int32("ro.lmk.swap_free_low_percentage", 10);
+    swap_free_low_percentage = clamp(0, 100,
+        property_get_int32("ro.lmk.swap_free_low_percentage", 10));
+    thrashing_limit_pct = max(0,
+        property_get_int32("ro.lmk.thrashing_limit", low_ram_device ? 50 : 100));
+    thrashing_limit_decay_pct = clamp(0, 100,
+        property_get_int32("ro.lmk.thrashing_limit_decay", low_ram_device ? 50 : 10));
 
     ctx = create_android_logger(MEMINFO_LOG_TAG);
 
