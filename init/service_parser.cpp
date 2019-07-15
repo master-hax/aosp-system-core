@@ -25,6 +25,7 @@
 #include <android-base/parseint.h>
 #include <android-base/strings.h>
 #include <hidl-util/FQName.h>
+#include <hidl-util/FqInstance.h>
 #include <system/thread_defs.h>
 
 #include "rlimit_parser.h"
@@ -228,6 +229,18 @@ Result<void> ServiceParser::ParseOneshot(std::vector<std::string>&& args) {
 
 Result<void> ServiceParser::ParseOnrestart(std::vector<std::string>&& args) {
     args.erase(args.begin());
+    if (StartsWith(args[0], "interface_")) {
+        android::FqInstance fqInstance;
+        if (!fqInstance.setTo(args[1])) {
+            return Error() << "Unable to parse interface: '" << args[1] << "'";
+        }
+        const std::string& intf = fqInstance.getFqName().string();
+        if (interface_inheritance_hierarchy_->count(intf) == 0) {
+            return Error() << "Interface is not in the known set of hidl_interfaces: '" << intf
+                           << "'. Please ensure the interface is spelled correctly and built "
+                           << "by a hidl_interface target.";
+        }
+    }
     int line = service_->onrestart_.NumCommands() + 1;
     if (auto result = service_->onrestart_.AddCommand(std::move(args), line); !result) {
         return Error() << "cannot add Onrestart command: " << result.error();
@@ -539,10 +552,15 @@ Result<void> ServiceParser::EndSection() {
 
     if (interface_inheritance_hierarchy_) {
         std::set<std::string> interface_names;
-        for (const std::string& intf : service_->interfaces()) {
-            interface_names.insert(Split(intf, "/")[0]);
-        }
         std::ostringstream error_stream;
+        for (const std::string& intf : service_->interfaces()) {
+            android::FqInstance fqInstance;
+            if (!fqInstance.setTo(intf)) {
+                error_stream << "\nUnable to parse interface: '" << intf << "'";
+                continue;
+            }
+            interface_names.insert(fqInstance.getFqName().string());
+        }
         for (const std::string& intf : interface_names) {
             if (interface_inheritance_hierarchy_->count(intf) == 0) {
                 error_stream << "\nInterface is not in the known set of hidl_interfaces: '" << intf
