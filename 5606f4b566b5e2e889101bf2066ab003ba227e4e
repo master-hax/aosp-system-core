@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0ca51686_39e98927",
+        "filename": "lmkd/lmkd.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 1208,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-07-15T23:52:54Z",
+      "side": 1,
+      "message": "WE should extend the comment to indicate the expected format of /proc/zoneinfo. At least the expectations to aid in maintenance.",
+      "range": {
+        "startLine": 1208,
+        "startChar": 0,
+        "endLine": 1208,
+        "endChar": 37
+      },
+      "revId": "5606f4b566b5e2e889101bf2066ab003ba227e4e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "20a25cc3_fb39425f",
+        "filename": "lmkd/lmkd.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 1229,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-07-15T23:52:54Z",
+      "side": 1,
+      "message": "unnecessary initialization",
+      "range": {
+        "startLine": 1229,
+        "startChar": 16,
+        "endLine": 1229,
+        "endChar": 24
+      },
+      "revId": "5606f4b566b5e2e889101bf2066ab003ba227e4e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e7eb7851_fd9fa88f",
+        "filename": "lmkd/lmkd.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 1250,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-07-15T23:52:54Z",
+      "side": 1,
+      "message": "what about if ap \u003d\u003d NULL?\n\nzone-\u003emax_protection \u003d 0\n\nCould we explicitly do a continue here since the value is already zero and reduce the chance that future selves will get nervous here?\n\nAlso,could there be more protection fields, do we want to initialized max \u003d zone-\u003emax_protection on line 1210?",
+      "range": {
+        "startLine": 1250,
+        "startChar": 12,
+        "endLine": 1250,
+        "endChar": 14
+      },
+      "revId": "5606f4b566b5e2e889101bf2066ab003ba227e4e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a8eaed52_e2ce51c5",
+        "filename": "lmkd/lmkd.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 1277,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-07-15T23:52:54Z",
+      "side": 1,
+      "message": "unnecessary initialization",
+      "range": {
+        "startLine": 1277,
+        "startChar": 16,
+        "endLine": 1277,
+        "endChar": 23
+      },
+      "revId": "5606f4b566b5e2e889101bf2066ab003ba227e4e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
