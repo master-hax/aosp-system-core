@@ -155,6 +155,12 @@ class Service {
     std::vector<std::pair<std::string, std::string>> environment_vars_;
 
     Action onrestart_;  // Commands to execute on restart.
+    std::set<std::string>
+            onrestart_start_interfaces_;  // e.g. some.package.foo@1.0::IBaz/instance-name
+    std::set<std::string>
+            onrestart_restart_interfaces_;  // e.g. some.package.foo@1.0::IBaz/instance-name
+    std::set<std::string>
+            onrestart_stop_interfaces_;  // e.g. some.package.foo@1.0::IBaz/instance-name
 
     std::vector<std::string> writepid_files_;
 
