@@ -31,7 +31,6 @@
 #include <binder/ProcessState.h>
 #include <binder/IServiceManager.h>
 #include <binder/IPCThreadState.h>
-#include <cutils/android_get_control_file.h>
 #include <cutils/sched_policy.h>
 #include <private/android_filesystem_config.h>
 
