@@ -161,6 +161,8 @@ static unsigned long kill_timeout_ms;
 static bool use_minfree_levels;
 static bool per_app_memcg;
 static int swap_free_low_percentage;
+static int psi_partial_stall_ms;
+static int psi_complete_stall_ms;
 static int thrashing_limit_pct;
 static int thrashing_limit_decay_pct;
 static bool use_psi_monitors = false;
@@ -2349,7 +2351,14 @@ do_kill:
 }
 
 static bool init_mp_psi(enum vmpressure_level level) {
-    int fd = init_psi_monitor(psi_thresholds[level].stall_type,
+    int fd;
+
+    /* Do not register a handler if threshold_ms is not set */
+    if (!psi_thresholds[level].threshold_ms) {
+        return true;
+    }
+
+    fd = init_psi_monitor(psi_thresholds[level].stall_type,
         psi_thresholds[level].threshold_ms * US_PER_MS,
         PSI_WINDOW_SIZE_MS * US_PER_MS);
 
@@ -2357,7 +2366,11 @@ static bool init_mp_psi(enum vmpressure_level level) {
         return false;
     }
 
-    vmpressure_hinfo[level].handler = mp_event_common;
+    /*
+     * When PSI is used without memfree levels use kill strategy of default PSI mode
+     * based on zone watermarks, free swap and thrashing stats (mp_event_psi)
+     */
+    vmpressure_hinfo[level].handler = use_minfree_levels ? mp_event_common : mp_event_psi;
     vmpressure_hinfo[level].data = level;
     if (register_psi_monitor(epollfd, fd, &vmpressure_hinfo[level]) < 0) {
         destroy_psi_monitor(fd);
@@ -2381,6 +2394,14 @@ static void destroy_mp_psi(enum vmpressure_level level) {
 }
 
 static bool init_psi_monitors() {
+    /* In default PSI mode override stall amounts using system properties */
+    if (!use_minfree_levels) {
+        /* Do not use low pressure level */
+        psi_thresholds[VMPRESS_LEVEL_LOW].threshold_ms = 0;
+        psi_thresholds[VMPRESS_LEVEL_MEDIUM].threshold_ms = psi_partial_stall_ms;
+        psi_thresholds[VMPRESS_LEVEL_CRITICAL].threshold_ms = psi_complete_stall_ms;
+    }
+
     if (!init_mp_psi(VMPRESS_LEVEL_LOW)) {
         return false;
     }
@@ -2773,7 +2794,11 @@ int main(int argc __unused, char **argv __unused) {
     per_app_memcg =
         property_get_bool("ro.config.per_app_memcg", low_ram_device);
     swap_free_low_percentage = clamp(0, 100,
-        property_get_int32("ro.lmk.swap_free_low_percentage", 10));
+        property_get_int32("ro.lmk.swap_free_low_percentage", low_ram_device ? 10 : 20));
+    psi_partial_stall_ms =
+        property_get_int32("ro.lmk.psi_partial_stall_ms", low_ram_device ? 500 : 70);
+    psi_complete_stall_ms =
+        property_get_int32("ro.lmk.psi_complete_stall_ms", 700);
     thrashing_limit_pct = max(0,
         property_get_int32("ro.lmk.thrashing_limit", low_ram_device ? 50 : 100));
     thrashing_limit_decay_pct = clamp(0, 100,
