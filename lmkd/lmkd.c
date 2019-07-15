@@ -1596,7 +1596,7 @@ static void set_process_group_and_prio(int pid, SchedPolicy sp, int prio) {
 static int last_killed_pid = -1;
 
 /* Kill one process specified by procp.  Returns the size of the process killed */
-static int kill_one_process(struct proc* procp, int min_oom_score) {
+static int kill_one_process(struct proc* procp, int min_oom_score, const char *reason) {
     int pid = procp->pid;
     uid_t uid = procp->uid;
     int tgid;
@@ -1647,8 +1647,13 @@ static int kill_one_process(struct proc* procp, int min_oom_score) {
     set_process_group_and_prio(pid, SP_FOREGROUND, ANDROID_PRIORITY_HIGHEST);
 
     inc_killcnt(procp->oomadj);
-    ALOGI("Kill '%s' (%d), uid %d, oom_adj %d to free %ldkB",
-        taskname, pid, uid, procp->oomadj, tasksize * page_k);
+    if (reason) {
+        ALOGI("Kill '%s' (%d), uid %d, oom_adj %d to free %ldkB; reason: %s", taskname, pid,
+              uid, procp->oomadj, tasksize * page_k, reason);
+    } else {
+        ALOGI("Kill '%s' (%d), uid %d, oom_adj %d to free %ldkB", taskname, pid,
+              uid, procp->oomadj, tasksize * page_k);
+    }
 
     TRACE_KILL_END();
 
@@ -1686,7 +1691,7 @@ out:
  * Find one process to kill at or above the given oom_adj level.
  * Returns size of the killed process.
  */
-static int find_and_kill_process(int min_score_adj) {
+static int find_and_kill_process(int min_score_adj, const char *reason) {
     int i;
     int killed_size = 0;
 
@@ -1704,7 +1709,7 @@ static int find_and_kill_process(int min_score_adj) {
             if (!procp)
                 break;
 
-            killed_size = kill_one_process(procp, min_score_adj);
+            killed_size = kill_one_process(procp, min_score_adj, reason);
             if (killed_size >= 0) {
 #ifdef LMKD_LOG_STATS
                 if (enable_stats_log && !lmk_state_change_start) {
@@ -1878,6 +1883,7 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
     enum kill_reasons kill_reason = NONE;
     bool cycle_after_kill = false;
     enum zone_watermark wmark = WMARK_NONE;
+    char kill_desc[LINE_MAX];
 
     if (is_kill_pending()) {
         /* TODO: replace this quick polling with pidfd polling if kernel supports */
@@ -1940,19 +1946,28 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
     if (!low_ram_device && cycle_after_kill && wmark > WMARK_HIGH) {
         /* prevent kills not freeing enough memory */
         kill_reason = PRESSURE_AFTER_KILL;
+        snprintf(kill_desc, sizeof(kill_desc), "%s watermark is breached even after kill",
+            wmark > WMARK_LOW ? "min" : "low");
     } else if (level == VMPRESS_LEVEL_CRITICAL && events != 0) {
         /* device is too busy during lowmem event (kill to prevent ANR) */
         kill_reason = NOT_RESPONDING;
+        strncpy(kill_desc, "device is not responding", sizeof(kill_desc));
     } else if (swap_is_low && thrashing > 50) {
         /* page cache is thrashing */
         kill_reason = LOW_SWAP_AND_THRASHING;
+        snprintf(kill_desc, sizeof(kill_desc), "device is low on swap (%" PRId64
+            "<%" PRId64 ") and thrashing (%ld%%)",
+            mi.field.free_swap, swap_low_threshold, thrashing);
     } else if (swap_is_low && wmark > WMARK_HIGH) {
         /* both free memory and swap are low */
         kill_reason = LOW_MEM_AND_SWAP;
+        snprintf(kill_desc, sizeof(kill_desc), "%s watermark is breached and swap is low (%"
+            PRId64 "<%" PRId64 ")", wmark > WMARK_LOW ? "min" : "low",
+            mi.field.free_swap, swap_low_threshold);
     }
 
     if (kill_reason != NONE) {
-        find_and_kill_process(0);
+        find_and_kill_process(0, kill_desc);
         poll_params->polling_interval_ms = PSI_POLL_PERIOD_SHORT_MS;
         just_killed = true;
         meminfo_log(&mi);
@@ -2133,7 +2148,7 @@ static void mp_event_common(int data, uint32_t events, struct polling_params *po
 do_kill:
     if (low_ram_device) {
         /* For Go devices kill only one task */
-        if (find_and_kill_process(level_oomadj[level]) == 0) {
+        if (find_and_kill_process(level_oomadj[level], NULL) == 0) {
             if (debug_process_killing) {
                 ALOGI("Nothing to kill");
             }
@@ -2158,7 +2173,7 @@ do_kill:
             min_score_adj = level_oomadj[level];
         }
 
-        pages_freed = find_and_kill_process(min_score_adj);
+        pages_freed = find_and_kill_process(min_score_adj, NULL);
 
         if (pages_freed == 0) {
             /* Rate limit kill reports when nothing was reclaimed */
