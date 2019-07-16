@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "85ed4c0e_740b77b0",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-07-16T15:50:10Z",
+      "side": 1,
+      "message": "Unlike most the rest of init, builtins.cpp is only built for Android, so you don\u0027t need this check here or below.",
+      "revId": "befd663a6103bb512594fbb7f1c3f7dee53b2d72",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
