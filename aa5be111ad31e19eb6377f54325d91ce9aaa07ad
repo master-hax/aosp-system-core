@@ -16,6 +16,24 @@
       "revId": "aa5be111ad31e19eb6377f54325d91ce9aaa07ad",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "93023a6a_e28e79ee",
+        "filename": "debuggerd/libdebuggerd/tombstone.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2019-07-16T01:45:23Z",
+      "side": 1,
+      "message": "I added the check for this in both the SEGV_MAPERR and SEGV_ACCERR code paths. I could have had two slightly different checks, but decided to combine them into one since it didn\u0027t seem worth making the distinction.",
+      "parentUuid": "1789eb6b_e886c3cd",
+      "revId": "aa5be111ad31e19eb6377f54325d91ce9aaa07ad",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
