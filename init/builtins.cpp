@@ -130,6 +130,11 @@ static Result<void> do_class_start_post_data(const BuiltinArguments& args) {
     if (args.context != kInitContext) {
         return Error() << "command 'class_start_post_data' only available in init context";
     }
+    if (!android::base::GetBoolProperty("ro.apex.updatable", false)) {
+        // No need to start these on devices that don't support APEX, since they're not
+        // stopped either.
+        return {};
+    }
     for (const auto& service : ServiceList::GetInstance()) {
         if (service->classnames().count(args[1])) {
             if (auto result = service->StartIfPostData(); !result) {
@@ -154,6 +159,10 @@ static Result<void> do_class_reset(const BuiltinArguments& args) {
 static Result<void> do_class_reset_post_data(const BuiltinArguments& args) {
     if (args.context != kInitContext) {
         return Error() << "command 'class_reset_post_data' only available in init context";
+    }
+    if (!android::base::GetBoolProperty("ro.apex.updatable", false)) {
+        // No need to stop these on devices that don't support APEX.
+        return {};
     }
     ForEachServiceInClass(args[1], &Service::ResetIfPostData);
     return {};
