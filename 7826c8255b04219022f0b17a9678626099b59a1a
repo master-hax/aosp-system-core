@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ca05382c_cc7918c4",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 133,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2019-07-16T11:47:27Z",
+      "side": 1,
+      "message": "Use android::sysprop::ApexProperties::updatable().value_or(false) for type safety. And perhaps save it to a local static variable to cache the result.\n\n(need to include ApexProperties.sysprop.h)",
+      "range": {
+        "startLine": 133,
+        "startChar": 9,
+        "endLine": 133,
+        "endChar": 67
+      },
+      "revId": "7826c8255b04219022f0b17a9678626099b59a1a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2c18554c_c4b6501b",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 163,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2019-07-16T11:47:27Z",
+      "side": 1,
+      "message": "same as above.",
+      "revId": "7826c8255b04219022f0b17a9678626099b59a1a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
