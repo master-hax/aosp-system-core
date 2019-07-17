@@ -22,6 +22,30 @@
       "revId": "c0c28faa972a4b099c374a7a5c7d8e961bfff4b4",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "393c7810_4685b960",
+        "filename": "libmeminfo/tools/showmap.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 1015378
+      },
+      "writtenOn": "2019-07-17T23:05:46Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "e7a25b9e_086e85a6",
+      "range": {
+        "startLine": 60,
+        "startChar": 31,
+        "endLine": 60,
+        "endChar": 51
+      },
+      "revId": "c0c28faa972a4b099c374a7a5c7d8e961bfff4b4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
