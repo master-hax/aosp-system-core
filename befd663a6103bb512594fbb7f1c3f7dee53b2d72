@@ -16,6 +16,24 @@
       "revId": "befd663a6103bb512594fbb7f1c3f7dee53b2d72",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7193afa6_6e0c7b55",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1013030
+      },
+      "writtenOn": "2019-07-17T06:59:20Z",
+      "side": 1,
+      "message": "Thanks, done.",
+      "parentUuid": "85ed4c0e_740b77b0",
+      "revId": "befd663a6103bb512594fbb7f1c3f7dee53b2d72",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
