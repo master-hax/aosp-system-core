@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0a6502a6_c257f2e1",
+        "filename": "logcat/logcatd.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-07-17T15:28:55Z",
+      "side": 1,
+      "message": "I mean specifically these lines.",
+      "range": {
+        "startLine": 16,
+        "startChar": 0,
+        "endLine": 18,
+        "endChar": 36
+      },
+      "revId": "4d18a04680a53ebe7de4d2a83584d74071cc16e6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f9d63c3b_bdeaaf15",
+        "filename": "logcat/logcatd.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-07-17T15:28:55Z",
+      "side": 1,
+      "message": "And these.",
+      "range": {
+        "startLine": 24,
+        "startChar": 0,
+        "endLine": 26,
+        "endChar": 45
+      },
+      "revId": "4d18a04680a53ebe7de4d2a83584d74071cc16e6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4b4ef5d0_988f6e37",
+        "filename": "logcat/logcatd.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-07-17T15:28:55Z",
+      "side": 1,
+      "message": "And these.",
+      "range": {
+        "startLine": 32,
+        "startChar": 0,
+        "endLine": 34,
+        "endChar": 38
+      },
+      "revId": "4d18a04680a53ebe7de4d2a83584d74071cc16e6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
