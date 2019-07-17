@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e7a25b9e_086e85a6",
+        "filename": "libmeminfo/tools/showmap.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-07-17T21:01:02Z",
+      "side": 1,
+      "message": "personally i\u0027d have just hard-coded the name, but this is fine.",
+      "range": {
+        "startLine": 60,
+        "startChar": 31,
+        "endLine": 60,
+        "endChar": 51
+      },
+      "revId": "c0c28faa972a4b099c374a7a5c7d8e961bfff4b4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
