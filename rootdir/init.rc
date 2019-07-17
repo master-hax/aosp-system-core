@@ -355,6 +355,7 @@ on late-init
 on early-fs
     # Once metadata has been mounted, we'll need vold to deal with userdata checkpointing
     start vold
+    start console
 
 on post-fs
     exec - system system -- /system/bin/vdc checkpoint markBootAttempt
