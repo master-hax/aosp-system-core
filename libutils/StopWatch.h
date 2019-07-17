@@ -14,14 +14,43 @@
  * limitations under the License.
  */
 
-#ifndef ANDROID_STOPWATCH_H
-#define ANDROID_STOPWATCH_H
+#pragma once
 
 #include <stdint.h>
 #include <sys/types.h>
 
 #include <utils/Timers.h>
 
-// TODO: remove users of this file
+// ---------------------------------------------------------------------------
 
-#endif // ANDROID_STOPWATCH_H
+namespace android {
+
+class StopWatch
+{
+public:
+  StopWatch(const char* name, int clock = SYSTEM_TIME_MONOTONIC);
+  ~StopWatch();
+
+  const char* name() const;
+  nsecs_t lap();
+  nsecs_t elapsedTime() const;
+
+  void reset();
+
+private:
+    const char*     mName;
+    int             mClock;
+
+    struct lap_t {
+        nsecs_t     soFar;
+        nsecs_t     thisLap;
+    };
+
+    nsecs_t         mStartTime;
+    lap_t           mLaps[8];
+    int             mNumLaps;
+};
+
+}  // namespace android
+
+// ---------------------------------------------------------------------------

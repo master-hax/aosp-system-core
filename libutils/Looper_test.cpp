@@ -4,12 +4,13 @@
 
 #include <utils/Looper.h>
 #include <utils/Timers.h>
-#include <utils/StopWatch.h>
 #include <gtest/gtest.h>
 #include <unistd.h>
 #include <time.h>
 
 #include <utils/threads.h>
+
+#include "StopWatch.h"
 
 // # of milliseconds to fudge stopwatch measurements
 #define TIMING_TOLERANCE_MS 25

@@ -16,7 +16,7 @@
 
 #define LOG_TAG "StopWatch"
 
-#include <utils/StopWatch.h>
+#include "StopWatch.h"
 
 /* for PRId64 */
 #ifndef __STDC_FORMAT_MACROS
