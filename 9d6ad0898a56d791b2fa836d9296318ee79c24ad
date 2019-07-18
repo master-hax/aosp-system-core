@@ -16,6 +16,24 @@
       "revId": "9d6ad0898a56d791b2fa836d9296318ee79c24ad",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6f9e49d8_7de44f43",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1135107
+      },
+      "writtenOn": "2019-07-18T00:52:58Z",
+      "side": 1,
+      "message": "Wow, !fd is totally obscure for stdin check, but I get the point. It doesn\u0027t apply for unique_fd for current code that\u0027s using it, as that operator was disabled anyway, right?\n\nI do like !fd much better than .valid(), but if you insist, I can implement this in a form of a method (I\u0027d prefer ok() though).\n\nStill, !fd is my first choice.",
+      "parentUuid": "21c882e5_f7025370",
+      "revId": "9d6ad0898a56d791b2fa836d9296318ee79c24ad",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
