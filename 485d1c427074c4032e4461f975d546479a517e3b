@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "14c65a95_053041e5",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 161,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2019-07-18T17:20:53Z",
+      "side": 1,
+      "message": "Still TBD whether this should be renamed. Would there be compat concerns?",
+      "range": {
+        "startLine": 161,
+        "startChar": 10,
+        "endLine": 161,
+        "endChar": 17
+      },
+      "revId": "485d1c427074c4032e4461f975d546479a517e3b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c86607fc_07234851",
+        "filename": "rootdir/init.environ.rc.in",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2019-07-18T17:20:53Z",
+      "side": 1,
+      "message": "Renaming this will come later.",
+      "range": {
+        "startLine": 8,
+        "startChar": 11,
+        "endLine": 8,
+        "endChar": 31
+      },
+      "revId": "485d1c427074c4032e4461f975d546479a517e3b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
