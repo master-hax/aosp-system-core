@@ -106,6 +106,24 @@
       "revId": "9d6ad0898a56d791b2fa836d9296318ee79c24ad",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9d5f6e19_3932eb7d",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1135107
+      },
+      "writtenOn": "2019-07-18T15:40:39Z",
+      "side": 1,
+      "message": "Right, operator bool is preferable. PTAL now. If you still feel like it\u0027s not a good idea, I\u0027ll go forward with implementing ok().",
+      "parentUuid": "adb7398f_c7e3cb30",
+      "revId": "9d6ad0898a56d791b2fa836d9296318ee79c24ad",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
