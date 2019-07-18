@@ -70,6 +70,30 @@
       "revId": "1f391fe398f8028a7f281e8cd7be76f18fafc769",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d4e23982_cf58b7a9",
+        "filename": "init/reboot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 689,
+      "author": {
+        "id": 1088085
+      },
+      "writtenOn": "2019-07-18T22:01:40Z",
+      "side": 1,
+      "message": "hmm.. Then I guess a safer way is to overwrite only if the field is empty?",
+      "parentUuid": "e10efeb0_2b6081fe",
+      "range": {
+        "startLine": 688,
+        "startChar": 0,
+        "endLine": 689,
+        "endChar": 52
+      },
+      "revId": "1f391fe398f8028a7f281e8cd7be76f18fafc769",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
