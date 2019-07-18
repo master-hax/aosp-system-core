@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "045f2bf1_f6d05e07",
+        "filename": "base/include/android-base/unique_fd.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 174,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-07-18T17:20:49Z",
+      "side": 1,
+      "message": "Ideally deleted constructors should be public: https://abseil.io/tips/143.",
+      "range": {
+        "startLine": 172,
+        "startChar": 0,
+        "endLine": 174,
+        "endChar": 49
+      },
+      "revId": "eea0b63a42df493561cc2a513cf08915d79822fa",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
