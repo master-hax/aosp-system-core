@@ -46,6 +46,30 @@
       "revId": "1f391fe398f8028a7f281e8cd7be76f18fafc769",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e10efeb0_2b6081fe",
+        "filename": "init/reboot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 689,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-07-18T21:56:56Z",
+      "side": 1,
+      "message": "Is there any chance that OEMs would use custom values here?  That\u0027s what I\u0027m worried about breaking here.\n\nIf we don\u0027t think so, then we should at least add the error message complaining about a non-expected value here.",
+      "parentUuid": "2c54b335_97a55667",
+      "range": {
+        "startLine": 688,
+        "startChar": 0,
+        "endLine": 689,
+        "endChar": 52
+      },
+      "revId": "1f391fe398f8028a7f281e8cd7be76f18fafc769",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
