@@ -27,7 +27,11 @@ namespace init {
 template <typename Function>
 class KeywordMap {
   public:
-    using FunctionInfo = std::tuple<std::size_t, std::size_t, Function>;
+    struct FunctionInfo {
+        size_t min_args;
+        size_t max_args;
+        Function parse_fun;
+    };
     using Map = std::map<std::string, FunctionInfo>;
 
     virtual ~KeywordMap() {
@@ -46,8 +50,8 @@ class KeywordMap {
 
         auto function_info = function_info_it->second;
 
-        auto min_args = std::get<0>(function_info);
-        auto max_args = std::get<1>(function_info);
+        auto min_args = function_info.min_args;
+        auto max_args = function_info.max_args;
         if (min_args == max_args && num_args != min_args) {
             return Errorf("{} requires {} argument{}", keyword, min_args,
                           (min_args > 1 || min_args == 0) ? "s" : "");
@@ -63,7 +67,7 @@ class KeywordMap {
             }
         }
 
-        return std::get<Function>(function_info);
+        return function_info.parse_fun;
     }
 
   private:
