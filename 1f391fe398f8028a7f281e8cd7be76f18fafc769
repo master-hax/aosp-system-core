@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c39d699d_79df619c",
+        "filename": "init/reboot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 689,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-07-18T21:41:52Z",
+      "side": 1,
+      "message": "Why limit us to only these values?  Maybe better to pass through whatever happens to be written as the bootloader message and have recovery report if it\u0027s unexpected?\n\nOr if we do have this check, at least let\u0027s report an error, \"Unexpected bootloader message found: %s\".",
+      "range": {
+        "startLine": 688,
+        "startChar": 0,
+        "endLine": 689,
+        "endChar": 52
+      },
+      "revId": "1f391fe398f8028a7f281e8cd7be76f18fafc769",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
