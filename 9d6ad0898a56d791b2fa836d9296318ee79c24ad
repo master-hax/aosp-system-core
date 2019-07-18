@@ -70,6 +70,24 @@
       "revId": "9d6ad0898a56d791b2fa836d9296318ee79c24ad",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "407a9f10_3c7b4cd7",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-07-18T01:13:49Z",
+      "side": 1,
+      "message": "+tomcherry so between them, jmgao+tomcherry can outvote me if they agree with you, but i still think operator! is ambiguous. valid() and/or ok() make more sense to me.",
+      "parentUuid": "f2518557_ee9202ab",
+      "revId": "9d6ad0898a56d791b2fa836d9296318ee79c24ad",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
