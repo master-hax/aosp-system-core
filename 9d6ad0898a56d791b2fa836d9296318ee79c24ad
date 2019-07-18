@@ -34,6 +34,24 @@
       "revId": "9d6ad0898a56d791b2fa836d9296318ee79c24ad",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4e2cb66f_8b502f23",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-07-18T00:56:30Z",
+      "side": 1,
+      "message": "the problem (and careful not to get jmgao started...) is that we have operator int(). so you can convert int fd code over trivially. (but [even more] dangerously if we include operator!().)\n\n[annoyingly in terms of clear precedent] the STL already uses a mix of ok() and valid(), so either/both seem fine to me.",
+      "parentUuid": "6f9e49d8_7de44f43",
+      "revId": "9d6ad0898a56d791b2fa836d9296318ee79c24ad",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
