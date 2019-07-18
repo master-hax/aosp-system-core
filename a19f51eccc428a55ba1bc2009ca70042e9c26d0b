@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d08bd8e1_8d138f47",
+        "filename": "logcat/logcatd.rc",
+        "patchSetId": 3
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-07-18T17:44:05Z",
+      "side": 0,
+      "message": "FWIW, we can remove these comment lines too.",
+      "revId": "a19f51eccc428a55ba1bc2009ca70042e9c26d0b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f0c06dbe_0b6e5e3a",
+        "filename": "logcat/logcatd.rc",
+        "patchSetId": 3
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-07-18T17:44:05Z",
+      "side": 0,
+      "message": "And this.",
+      "revId": "a19f51eccc428a55ba1bc2009ca70042e9c26d0b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e9aa0dbd_087be642",
+        "filename": "logcat/logcatd.rc",
+        "patchSetId": 3
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-07-18T17:44:05Z",
+      "side": 0,
+      "message": "And this.",
+      "revId": "a19f51eccc428a55ba1bc2009ca70042e9c26d0b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
