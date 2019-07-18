@@ -22,6 +22,7 @@
 #include <linux/loop.h>
 #include <mntent.h>
 #include <semaphore.h>
+#include <string.h>
 #include <sys/cdefs.h>
 #include <sys/ioctl.h>
 #include <sys/mount.h>
@@ -668,6 +669,30 @@ bool HandlePowerctlMessage(const std::string& command) {
                     LOG(ERROR) << "reboot-bootloader: Error writing "
                                   "bootloader_message: "
                                << err;
+                }
+            } else if (reboot_target == "recovery") {
+                bootloader_message boot = {};
+                if (std::string err; !read_bootloader_message(&boot, &err)) {
+                    LOG(ERROR) << "Failed to read bootloader message: " << err;
+                }
+                // Update the boot command field if we are not already booting into recovery, and
+                // perserve the other arguments in the bootloader message.
+                std::string boot_command;
+                if (boot.command[0] != 0) {
+                    if (memchr(boot.command, '\0', sizeof(boot.command))) {
+                        boot_command = std::string(boot.command);
+                    } else {
+                        boot_command = std::string(boot.command, sizeof(boot.command));
+                    }
+                }
+                if (boot_command != "boot-recovery" && boot_command != "boot-fastboot" &&
+                    boot_command != "boot-rescue") {
+                    memset(boot.command, 0, sizeof(boot.command));
+                    strlcpy(boot.command, "boot-recovery", sizeof(boot.command));
+                    if (std::string err; !write_bootloader_message(boot, &err)) {
+                        LOG(ERROR) << "Failed to set bootloader message: " << err;
+                        return false;
+                    }
                 }
             } else if (reboot_target == "sideload" || reboot_target == "sideload-auto-reboot" ||
                        reboot_target == "fastboot") {
