@@ -94,6 +94,30 @@
       "revId": "1f391fe398f8028a7f281e8cd7be76f18fafc769",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "15619896_3ec1c1d5",
+        "filename": "init/reboot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 689,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-07-18T22:02:47Z",
+      "side": 1,
+      "message": "That\u0027s what I\u0027m figuring.  Closer to the original behavior as well.",
+      "parentUuid": "d4e23982_cf58b7a9",
+      "range": {
+        "startLine": 688,
+        "startChar": 0,
+        "endLine": 689,
+        "endChar": 52
+      },
+      "revId": "1f391fe398f8028a7f281e8cd7be76f18fafc769",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
