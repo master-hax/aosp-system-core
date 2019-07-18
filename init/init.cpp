@@ -41,6 +41,7 @@
 #include <android-base/properties.h>
 #include <android-base/stringprintf.h>
 #include <android-base/strings.h>
+#include <dirent.h>
 #include <fs_avb/fs_avb.h>
 #include <fs_mgr_vendor_overlay.h>
 #include <keyutils.h>
@@ -613,6 +614,22 @@ static void RecordStageBoottimes(const boot_clock::time_point& second_stage_star
                                 selinux_start_time_ns));
 }
 
+void DebugOverlayfs() {
+    static constexpr char kDirToDump[] = "/system/debug_overlayfs";
+    std::unique_ptr<DIR, decltype(&closedir)> dir(opendir(kDirToDump), closedir);
+    if (!dir) {
+        PLOG(ERROR) << "DEBUG OVERLAYFS: opendir failed: " << kDirToDump;
+        return;
+    }
+
+    LOG(INFO) << "DEBUG OVERLAYFS: Dumping contents of " << kDirToDump;
+
+    struct dirent* dp;
+    while ((dp = readdir(dir.get())) != nullptr) {
+        LOG(INFO) << "DEBUG OVERLAYFS: Found " << kDirToDump << "/" << dp->d_name;
+    }
+}
+
 int SecondStageMain(int argc, char** argv) {
     if (REBOOT_BOOTLOADER_ON_PANIC) {
         InstallRebootSignalHandlers();
@@ -751,6 +768,8 @@ int SecondStageMain(int argc, char** argv) {
     } else {
         am.QueueEventTrigger("late-init");
     }
+
+    DebugOverlayfs();
 
     // Run all property triggers based on current state of the properties.
     am.QueueBuiltinAction(queue_property_triggers_action, "queue_property_triggers");
