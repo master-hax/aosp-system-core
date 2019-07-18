@@ -108,15 +108,17 @@ class unique_fd_impl final {
   // unique_fd's operator int is dangerous, but we have way too much code that
   // depends on it, so make this opt-in at first.
   operator int() const { return get(); }  // NOLINT
+
+  // Catch bogus error checks (i.e.: "!fd" instead of "fd != -1").
+  bool operator!() const = delete;
+#else
+  operator bool() const { return get() != -1; }
 #endif
 
   bool operator>=(int rhs) const { return get() >= rhs; }
   bool operator<(int rhs) const { return get() < rhs; }
   bool operator==(int rhs) const { return get() == rhs; }
   bool operator!=(int rhs) const { return get() != rhs; }
-
-  // Catch bogus error checks (i.e.: "!fd" instead of "fd != -1").
-  bool operator!() const = delete;
 
   int release() __attribute__((warn_unused_result)) {
     tag(fd_, this, nullptr);
@@ -168,8 +170,8 @@ class unique_fd_impl final {
     T::Close(fd);
   }
 
-  unique_fd_impl(const unique_fd_impl&);
-  void operator=(const unique_fd_impl&);
+  unique_fd_impl(const unique_fd_impl&) = delete;
+  void operator=(const unique_fd_impl&) = delete;
 };
 
 using unique_fd = unique_fd_impl<DefaultCloser>;
