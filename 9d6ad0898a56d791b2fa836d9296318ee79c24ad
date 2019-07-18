@@ -52,6 +52,24 @@
       "revId": "9d6ad0898a56d791b2fa836d9296318ee79c24ad",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f2518557_ee9202ab",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1135107
+      },
+      "writtenOn": "2019-07-18T01:03:19Z",
+      "side": 1,
+      "message": "Yeah, I must admit I felt uncomfortable having both operator! and operator int(). One more try: what about having operator! defined only in ANDROID_BASE_UNIQUE_FD_DISABLE_IMPLICIT_CONVERSION case?",
+      "parentUuid": "4e2cb66f_8b502f23",
+      "revId": "9d6ad0898a56d791b2fa836d9296318ee79c24ad",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
