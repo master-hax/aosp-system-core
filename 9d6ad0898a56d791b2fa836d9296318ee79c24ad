@@ -88,6 +88,24 @@
       "revId": "9d6ad0898a56d791b2fa836d9296318ee79c24ad",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "adb7398f_c7e3cb30",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2019-07-18T10:09:36Z",
+      "side": 1,
+      "message": "Yeah, I\u0027m not a fan of this. It makes sense for unique_ptr to have an operator bool, because it behaves as a pointer: !foo has the same meaning whether it\u0027s a foo* or a unique_ptr\u003cfoo\u003e. That\u0027s not the case for unique_fd, which is a bad idea IMO.\n\n(Also, sidenote: if we actually wanted to implement this, operator! is probably not the way to go: `if (!foo)` being valid but not `if (foo)` is extremely weird. `explicit operator bool` would probably be the right answer here)",
+      "parentUuid": "407a9f10_3c7b4cd7",
+      "revId": "9d6ad0898a56d791b2fa836d9296318ee79c24ad",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
