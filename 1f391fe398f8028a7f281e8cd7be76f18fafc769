@@ -22,6 +22,30 @@
       "revId": "1f391fe398f8028a7f281e8cd7be76f18fafc769",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2c54b335_97a55667",
+        "filename": "init/reboot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 689,
+      "author": {
+        "id": 1088085
+      },
+      "writtenOn": "2019-07-18T21:51:53Z",
+      "side": 1,
+      "message": "I thought this field is consumed by bootloader to figure out the boot target; and it can be empty if we determine the target with LINUX_REBOOT_CMD_RESTART2. So basically we want to overwrite this field if it hasn\u0027t pointed to recovery already... With other unsupported values, my understanding is device without LINUX_REBOOT_CMD_RESTART2 support will boot to normal boot.",
+      "parentUuid": "c39d699d_79df619c",
+      "range": {
+        "startLine": 688,
+        "startChar": 0,
+        "endLine": 689,
+        "endChar": 52
+      },
+      "revId": "1f391fe398f8028a7f281e8cd7be76f18fafc769",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
