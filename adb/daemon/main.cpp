@@ -51,6 +51,7 @@
 #include "adb_auth.h"
 #include "adb_listeners.h"
 #include "adb_utils.h"
+#include "socket_spec.h"
 #include "transport.h"
 
 #include "mdns.h"
@@ -106,7 +107,7 @@ static bool should_drop_privileges() {
     return drop;
 }
 
-static void drop_privileges(int server_port) {
+static void drop_privileges(std::string addr) {
     ScopedMinijail jail(minijail_new());
 
     // Add extra groups:
@@ -170,24 +171,27 @@ static void drop_privileges(int server_port) {
             }
         }
         std::string error;
-        std::string local_name =
-            android::base::StringPrintf("tcp:%d", server_port);
-        if (install_listener(local_name, "*smartsocket*", nullptr, 0, nullptr, &error)) {
+        if (install_listener(addr, "*smartsocket*", nullptr, 0, nullptr, &error)) {
             LOG(FATAL) << "Could not install *smartsocket* listener: " << error;
         }
     }
 }
 #endif
 
-static void setup_port(int port) {
-    LOG(INFO) << "adbd listening on port " << port;
-    local_init(port);
+static void setup_adb(std::string addr) {
+    LOG(INFO) << "adbd listening on " << addr;
+    local_init(addr);
 #if defined(__ANDROID__)
+    std::string error;
+    int port = get_host_socket_spec_port(addr, &error);
+    if (port == -1) {
+        port = DEFAULT_ADB_LOCAL_TRANSPORT_PORT;
+    }
     setup_mdns(port);
 #endif
 }
 
-int adbd_main(int server_port) {
+int adbd_main(std::string addr) {
     umask(0);
 
     signal(SIGPIPE, SIG_IGN);
@@ -227,7 +231,7 @@ int adbd_main(int server_port) {
     }
 
 #if defined(__ANDROID__)
-    drop_privileges(server_port);
+    drop_privileges(addr);
 #endif
 
     bool is_usb = false;
@@ -239,23 +243,27 @@ int adbd_main(int server_port) {
         is_usb = true;
     }
 #endif
-
     // If one of these properties is set, also listen on that port.
     // If one of the properties isn't set and we couldn't listen on usb, listen
     // on the default port.
-    std::string prop_port = android::base::GetProperty("service.adb.tcp.port", "");
-    if (prop_port.empty()) {
-        prop_port = android::base::GetProperty("persist.adb.tcp.port", "");
-    }
+    std::string prop_addr = android::base::GetProperty("service.adb.listen_addr", "");
+    if (prop_addr.empty()) {
+        std::string prop_port = android::base::GetProperty("service.adb.tcp.port", "");
+        if (prop_port.empty()) {
+            prop_port = android::base::GetProperty("persist.adb.tcp.port", "");
+        }
 
-    int port;
-    if (sscanf(prop_port.c_str(), "%d", &port) == 1 && port > 0) {
-        D("using port=%d", port);
-        // Listen on TCP port specified by service.adb.tcp.port property.
-        setup_port(port);
-    } else if (!is_usb) {
-        // Listen on default port.
-        setup_port(DEFAULT_ADB_LOCAL_TRANSPORT_PORT);
+        int port;
+        if (sscanf(prop_port.c_str(), "%d", &port) == 1 && port > 0) {
+            D("using tcp port=%d", port);
+            // Listen on TCP port specified by service.adb.tcp.port property.
+            setup_adb(android::base::StringPrintf("tcp:%d", port));
+        } else if (!is_usb) {
+            // Listen on default port.
+            setup_adb(android::base::StringPrintf("tcp:%d", DEFAULT_ADB_LOCAL_TRANSPORT_PORT));
+        }
+    } else {
+        setup_adb(prop_addr);
     }
 
     D("adbd_main(): pre init_jdwp()");
@@ -311,5 +319,5 @@ int main(int argc, char** argv) {
     adb_trace_init(argv);
 
     D("Handling main()");
-    return adbd_main(DEFAULT_ADB_PORT);
+    return adbd_main(android::base::StringPrintf("tcp:%d", DEFAULT_ADB_PORT));
 }
