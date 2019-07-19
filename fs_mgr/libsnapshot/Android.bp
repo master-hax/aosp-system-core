@@ -14,15 +14,11 @@
 // limitations under the License.
 //
 
-cc_library {
-    name: "libsnapshot",
-    recovery_available: true,
+cc_defaults {
+    name: "libsnapshot_defaults",
     defaults: ["fs_mgr_defaults"],
     cppflags: [
         "-D_FILE_OFFSET_BITS=64",
-    ],
-    srcs: [
-        "snapshot.cpp",
     ],
     shared_libs: [
         "libbase",
@@ -31,6 +27,48 @@ cc_library {
     static_libs: [
         "libdm",
         "libext2_uuid",
+        "libext4_utils",
+        "libfiemap",
     ],
     export_include_dirs: ["include"],
+}
+
+filegroup {
+    name: "libsnapshot_sources",
+    srcs: [
+        "snapshot.cpp",
+    ],
+}
+
+cc_library_static {
+    name: "libsnapshot",
+    defaults: ["libsnapshot_defaults"],
+    srcs: [":libsnapshot_sources"],
+    whole_static_libs: [
+        "libfiemap_binder",
+    ],
+}
+
+cc_library_static {
+    name: "libsnapshot_recovery",
+    defaults: ["libsnapshot_defaults"],
+    srcs: [":libsnapshot_sources"],
+    whole_static_libs: [
+        "libfiemap_recovery",
+    ],
+}
+
+cc_test {
+    name: "libsnapshot_test",
+    defaults: ["libsnapshot_defaults"],
+    srcs: [
+        "snapshot_test.cpp",
+    ],
+    shared_libs: [
+        "libbinder",
+        "libutils",
+    ],
+    static_libs: [
+        "libsnapshot",
+    ],
 }
