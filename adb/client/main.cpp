@@ -129,7 +129,8 @@ int adb_server_main(int is_daemon, const std::string& socket_spec, int ack_reply
     }
 
     if (!getenv("ADB_EMU") || strcmp(getenv("ADB_EMU"), "0") != 0) {
-        local_init(DEFAULT_ADB_LOCAL_TRANSPORT_PORT);
+        int port;
+        local_init(android::base::StringPrintf("tcp:%d", DEFAULT_ADB_LOCAL_TRANSPORT_PORT), &port);
     }
 
     std::string error;

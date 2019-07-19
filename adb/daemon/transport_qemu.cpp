@@ -55,7 +55,7 @@
  *   the transport registration is completed. That's why we need to send the
  *   'start' request after the transport is registered.
  */
-void qemu_socket_thread(int port) {
+void qemu_socket_thread(std::string addr, int port) {
     /* 'accept' request to the adb QEMUD service. */
     static const char _accept_req[] = "accept";
     /* 'start' request to the adb QEMUD service. */
@@ -78,7 +78,7 @@ void qemu_socket_thread(int port) {
         /* This could be an older version of the emulator, that doesn't
          * implement adb QEMUD service. Fall back to the old TCP way. */
         D("adb service is not available. Falling back to TCP socket.");
-        std::thread(server_socket_thread, tcp_listen_inaddr_any, port).detach();
+        std::thread(server_socket_thread, adb_listen, addr).detach();
         return;
     }
 
