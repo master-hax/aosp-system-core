@@ -138,7 +138,17 @@
 #define DEF_COMPLETE_STALL 700
 
 /* syscall numbers */
+#define __NR_pidfd_send_signal 424
 #define __NR_pidfd_open 434
+
+static inline int sys_pidfd_open(pid_t pid, unsigned int flags) {
+    return syscall(__NR_pidfd_open, pid, flags);
+}
+
+static inline int sys_pidfd_send_signal(int pidfd, int sig, siginfo_t *info,
+                                        unsigned int flags) {
+    return syscall(__NR_pidfd_send_signal, pidfd, sig, info, flags);
+}
 
 /* default to old in-kernel interface if no memory pressure events */
 static bool use_inkernel_interface = true;
@@ -477,6 +487,7 @@ struct adjslot_list {
 struct proc {
     struct adjslot_list asl;
     int pid;
+    int pidfd;
     uid_t uid;
     int oomadj;
     struct proc *pidhash_next;
@@ -675,7 +686,7 @@ static void proc_insert(struct proc *procp) {
     proc_slot(procp);
 }
 
-static int pid_remove(int pid) {
+static int pid_remove(int pid, bool close_pidfd) {
     int hval = pid_hashfn(pid);
     struct proc *procp;
     struct proc *prevp;
@@ -693,6 +704,9 @@ static int pid_remove(int pid) {
         prevp->pidhash_next = procp->pidhash_next;
 
     proc_unslot(procp);
+    if (close_pidfd && procp->pidfd >= 0) {
+        close(procp->pidfd);
+    }
     free(procp);
     return 0;
 }
@@ -862,6 +876,16 @@ static void cmd_procprio(LMKD_CTRL_PACKET packet) {
 
     procp = pid_lookup(params.pid);
     if (!procp) {
+            int pidfd = -1;
+
+            if (pidfd_supported) {
+                pidfd = TEMP_FAILURE_RETRY(sys_pidfd_open(params.pid, 0));
+                if (pidfd < 0) {
+                    ALOGE("pidfd_open for pid %d failed; errno=%d", params.pid, errno);
+                    return;
+                }
+            }
+
             procp = malloc(sizeof(struct proc));
             if (!procp) {
                 // Oh, the irony.  May need to rebuild our state.
@@ -869,6 +893,7 @@ static void cmd_procprio(LMKD_CTRL_PACKET packet) {
             }
 
             procp->pid = params.pid;
+            procp->pidfd = pidfd;
             procp->uid = params.uid;
             procp->oomadj = params.oomadj;
             proc_insert(procp);
@@ -891,7 +916,7 @@ static void cmd_procremove(LMKD_CTRL_PACKET packet) {
      * WARNING: After pid_remove() procp is freed and can't be used!
      * Therefore placed at the end of the function.
      */
-    pid_remove(params.pid);
+    pid_remove(params.pid, true);
 }
 
 static void cmd_procpurge() {
@@ -1603,7 +1628,7 @@ static struct proc *proc_get_heaviest(int oomadj) {
         int tasksize = proc_get_size(pid);
         if (tasksize <= 0) {
             struct adjslot_list *next = curr->next;
-            pid_remove(pid);
+            pid_remove(pid, true);
             curr = next;
         } else {
             if (tasksize > maxsize) {
@@ -1649,10 +1674,6 @@ static void set_process_group_and_prio(int pid, SchedPolicy sp, int prio) {
         }
     }
     closedir(d);
-}
-
-static inline int sys_pidfd_open(pid_t pid, unsigned int flags) {
-    return syscall(__NR_pidfd_open, pid, flags);
 }
 
 static bool is_kill_pending(void) {
@@ -1721,7 +1742,7 @@ static void kill_done_handler(int data __unused, uint32_t events __unused, struc
     poll_params->update = POLLING_RESUME;
 }
 
-static void start_wait_for_proc_kill(int pid) {
+static void start_wait_for_proc_kill(int pid_or_fd) {
     static struct event_handler_info kill_done_hinfo = { 0, kill_done_handler };
     struct epoll_event epev;
 
@@ -1731,15 +1752,10 @@ static void start_wait_for_proc_kill(int pid) {
         stop_wait_for_proc_kill(false);
     }
 
-    if (!pidfd_supported) {
-        /* If pidfd is not supported store PID of the process being killed */
-        last_kill_pid_or_fd = pid;
-        return;
-    }
+    last_kill_pid_or_fd = pid_or_fd;
 
-    last_kill_pid_or_fd = TEMP_FAILURE_RETRY(sys_pidfd_open(pid, 0));
-    if (last_kill_pid_or_fd < 0) {
-        ALOGE("pidfd_open for process pid %d failed; errno=%d", pid, errno);
+    if (!pidfd_supported) {
+        /* If pidfd is not supported just store PID and exit */
         return;
     }
 
@@ -1758,6 +1774,7 @@ static void start_wait_for_proc_kill(int pid) {
 static int kill_one_process(struct proc* procp, int min_oom_score, int kill_reason,
                             const char *kill_desc, union meminfo *mi, struct timespec *tm) {
     int pid = procp->pid;
+    int pidfd = procp->pidfd;
     uid_t uid = procp->uid;
     int tgid;
     char *taskname;
@@ -1786,11 +1803,14 @@ static int kill_one_process(struct proc* procp, int min_oom_score, int kill_reas
 
     TRACE_KILL_START(pid);
 
-    /* Have to start waiting before sending SIGKILL to make sure pid is valid */
-    start_wait_for_proc_kill(pid);
-
     /* CAP_KILL required */
-    r = kill(pid, SIGKILL);
+    if (pidfd < 0) {
+        start_wait_for_proc_kill(pid);
+        r = kill(pid, SIGKILL);
+    } else {
+        start_wait_for_proc_kill(pidfd);
+        r = sys_pidfd_send_signal(pidfd, SIGKILL, NULL, 0);
+    }
 
     TRACE_KILL_END();
 
@@ -1827,7 +1847,7 @@ out:
      * WARNING: After pid_remove() procp is freed and can't be used!
      * Therefore placed at the end of the function.
      */
-    pid_remove(pid);
+    pid_remove(pid, false);
     return result;
 }
 
