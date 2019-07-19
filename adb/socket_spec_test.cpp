@@ -18,6 +18,8 @@
 
 #include <string>
 
+#include <unistd.h>
+
 #include <gtest/gtest.h>
 
 TEST(socket_spec, parse_tcp_socket_spec_just_port) {
@@ -87,4 +89,53 @@ TEST(socket_spec, parse_tcp_socket_spec_ipv6_bad_ports) {
     EXPECT_FALSE(parse_tcp_socket_spec("tcp:[::1]", &hostname, &port, &serial, &error));
     EXPECT_FALSE(parse_tcp_socket_spec("tcp:[::1]:", &hostname, &port, &serial, &error));
     EXPECT_FALSE(parse_tcp_socket_spec("tcp:[::1]:-1", &hostname, &port, &serial, &error));
+}
+
+TEST(socket_spec, get_host_socket_spec_port) {
+    std::string error;
+    EXPECT_EQ(5555, get_host_socket_spec_port("tcp:5555", &error));
+    EXPECT_EQ(5555, get_host_socket_spec_port("tcp:localhost:5555", &error));
+    EXPECT_EQ(5555, get_host_socket_spec_port("tcp:[::1]:5555", &error));
+    EXPECT_EQ(5555, get_host_socket_spec_port("vsock:5555", &error));
+}
+
+TEST(socket_spec, get_host_socket_spec_port_no_port) {
+    std::string error;
+    EXPECT_EQ(5555, get_host_socket_spec_port("tcp:localhost", &error));
+    EXPECT_EQ(-1, get_host_socket_spec_port("vsock:localhost", &error));
+}
+
+TEST(socket_spec, get_host_socket_spec_port_bad_ports) {
+    std::string error;
+    EXPECT_EQ(-1, get_host_socket_spec_port("tcp:65536", &error));
+    EXPECT_EQ(-1, get_host_socket_spec_port("tcp:-5", &error));
+    EXPECT_EQ(-1, get_host_socket_spec_port("vsock:-5", &error));
+    EXPECT_EQ(-1, get_host_socket_spec_port("vsock:5:5555", &error));
+}
+
+TEST(socket_spec, socket_spec_listen_connect_tcp) {
+    std::string error, serial;
+    int port;
+    unique_fd server_fd, client_fd;
+    EXPECT_FALSE(socket_spec_connect(&client_fd, "tcp:localhost:7777", &port, &serial, &error));
+    server_fd.reset(socket_spec_listen("tcp:7777", &error, &port));
+    EXPECT_NE(server_fd.get(), -1);
+    EXPECT_TRUE(socket_spec_connect(&client_fd, "tcp:localhost:7777", &port, &serial, &error));
+    EXPECT_NE(client_fd.get(), -1);
+}
+
+TEST(socket_spec, socket_spec_listen_connect_localfilesystem) {
+    std::string error, serial;
+    int port;
+    unique_fd server_fd, client_fd;
+    EXPECT_FALSE(socket_spec_connect(&client_fd, "localfilesystem:/tmp/af_unix_socket", &port,
+                                     &serial, &error));
+    int result = access("/tmp", W_OK);
+    if (result == 0) {
+        server_fd.reset(socket_spec_listen("localfilesystem:/tmp/af_unix_socket", &error, &port));
+        EXPECT_NE(server_fd.get(), -1);
+        EXPECT_TRUE(socket_spec_connect(&client_fd, "localfilesystem:/tmp/af_unix_socket", &port,
+                                        &serial, &error));
+        EXPECT_NE(client_fd.get(), -1);
+    }
 }
