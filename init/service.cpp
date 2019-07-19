@@ -165,6 +165,13 @@ void Service::NotifyStateChange(const std::string& new_state) const {
             property_set(boottime_property, std::to_string(start_ns));
         }
     }
+
+    std::string pid_property = "init.svc_pid." + name_;
+    if (new_state == "stopped") {
+        property_set(pid_property, "");
+    } else {
+        property_set(pid_property, std::to_string(pid_));
+    }
 }
 
 void Service::KillProcessGroup(int signal) {
