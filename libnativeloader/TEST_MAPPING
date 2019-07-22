@@ -1,0 +1,7 @@
+{
+  "presubmit": [
+    {
+      "name": "libnativeloader_test"
+    }
+  ]
+}
