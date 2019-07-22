@@ -288,7 +288,7 @@ class NativeLoaderTest : public ::testing::TestWithParam<bool> {
 
   void SetExpectations() {
     std::vector<std::string> default_public_libs =
-        android::base::Split(default_public_libraries(), ":");
+        android::base::Split(default_public_libraries(/* for_preload */ true), ":");
     for (auto l : default_public_libs) {
       EXPECT_CALL(*mock, dlopen(StrEq(l.c_str()), RTLD_NOW | RTLD_NODELETE))
           .WillOnce(Return(any_nonnull));
@@ -340,11 +340,13 @@ class NativeLoaderTest_Create : public NativeLoaderTest {
   bool expected_link_with_sphal_ns = true;
   bool expected_link_with_vndk_ns = false;
   bool expected_link_with_default_ns = false;
-  std::string expected_shared_libs_to_platform_ns = default_public_libraries();
+  std::string expected_shared_libs_to_platform_ns =
+      default_public_libraries(/* for_preload */ false);
   std::string expected_shared_libs_to_runtime_ns = runtime_public_libraries();
   std::string expected_shared_libs_to_sphal_ns = vendor_public_libraries();
   std::string expected_shared_libs_to_vndk_ns = vndksp_libraries();
-  std::string expected_shared_libs_to_default_ns = default_public_libraries();
+  std::string expected_shared_libs_to_default_ns =
+      default_public_libraries(/* for_preload */ false);
 
   void SetExpectations() {
     NativeLoaderTest::SetExpectations();
