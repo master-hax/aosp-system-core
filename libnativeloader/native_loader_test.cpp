@@ -289,7 +289,7 @@ class NativeLoaderTest : public ::testing::TestWithParam<bool> {
 
   void SetExpectations() {
     std::vector<std::string> default_public_libs =
-        android::base::Split(default_public_libraries(), ":");
+        android::base::Split(preloadable_public_libraries(), ":");
     for (auto l : default_public_libs) {
       EXPECT_CALL(*mock, dlopen(StrEq(l.c_str()), RTLD_NOW | RTLD_NODELETE))
           .WillOnce(Return(any_nonnull));

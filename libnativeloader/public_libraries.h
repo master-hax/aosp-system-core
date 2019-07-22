@@ -22,6 +22,7 @@ namespace android::nativeloader {
 // These provide the list of libraries that are available to the namespace for apps.
 // Not all of the libraries are available to apps. Depending on the context,
 // e.g., if it is a vendor app or not, different set of libraries are made available.
+const std::string& preloadable_public_libraries();
 const std::string& default_public_libraries();
 const std::string& runtime_public_libraries();
 const std::string& vendor_public_libraries();
