@@ -124,7 +124,8 @@ void LibraryNamespaces::Initialize() {
   // we might as well end up loading them from /system/lib or /product/lib
   // For now we rely on CTS test to catch things like this but
   // it should probably be addressed in the future.
-  for (const auto& soname : android::base::Split(default_public_libraries(), ":")) {
+  for (const auto& soname :
+       android::base::Split(default_public_libraries(/* for_preload */ true), ":")) {
     LOG_ALWAYS_FATAL_IF(dlopen(soname.c_str(), RTLD_NOW | RTLD_NODELETE) == nullptr,
                         "Error preloading public library %s: %s", soname.c_str(), dlerror());
   }
@@ -162,7 +163,7 @@ Result<NativeLoaderNamespace*> LibraryNamespaces::Create(JNIEnv* env, uint32_t t
   LOG_ALWAYS_FATAL_IF(FindNamespaceByClassLoader(env, class_loader) != nullptr,
                       "There is already a namespace associated with this classloader");
 
-  std::string system_exposed_libraries = default_public_libraries();
+  std::string system_exposed_libraries = default_public_libraries(/* for_preload */ false);
   const char* namespace_name = kClassloaderNamespaceName;
   bool unbundled_vendor_or_product_app = false;
   if ((apk_origin == APK_ORIGIN_VENDOR ||
@@ -210,6 +211,8 @@ Result<NativeLoaderNamespace*> LibraryNamespaces::Create(JNIEnv* env, uint32_t t
   NativeLoaderNamespace* parent_ns = FindParentNamespaceByClassLoader(env, class_loader);
   // Heuristic: the first classloader with non-empty library_path is assumed to
   // be the main classloader for app
+  // TODO(b/139178525) remove this heuristic by determining this in LoadedApk (or its
+  // friends) and then passing it down to here.
   bool is_main_classloader = app_main_namespace_ == nullptr && !library_path.empty();
   // Policy: the namespace for the main classloader is also used as the
   // anonymous namespace.

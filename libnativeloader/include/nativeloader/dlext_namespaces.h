@@ -22,13 +22,6 @@
 
 __BEGIN_DECLS
 
-/*
- * Initializes anonymous namespaces. The shared_libs_sonames is the list of sonames
- * to be shared by default namespace separated by colon. Example: "libc.so:libm.so:libdl.so".
- *
- * The library_search_path is the search path for anonymous namespace.
- */
-
 enum {
   /* A regular namespace is the namespace with a custom search path that does
    * not impose any restrictions on the location of native libraries.
