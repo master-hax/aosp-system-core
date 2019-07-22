@@ -19,8 +19,6 @@
 #include <benchmark/benchmark.h>
 #include <selinux/selinux.h>
 
-#include "test_function_map.h"
-
 namespace android {
 namespace init {
 
@@ -50,10 +48,12 @@ static void BenchmarkSuccess(benchmark::State& state) {
 
 BENCHMARK(BenchmarkSuccess);
 
-TestFunctionMap BuildTestFunctionMap() {
-    TestFunctionMap test_function_map;
-    test_function_map.Add("return_success", 0, 0, true,
-                          [](const BuiltinArguments& args) { return Result<void>{}; });
+BuiltinFunctionMap BuildTestFunctionMap() {
+    BuiltinFunctionMap test_function_map;
+    test_function_map.Add("return_success", 0, 0,
+                          BuiltinFunctionMapValue{true, [](const BuiltinArguments& args) {
+                                                      return Result<void>{};
+                                                  }});
 
     return test_function_map;
 }

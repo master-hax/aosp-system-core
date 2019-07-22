@@ -29,7 +29,6 @@
 #include "service.h"
 #include "service_list.h"
 #include "service_parser.h"
-#include "test_function_map.h"
 #include "util.h"
 
 namespace android {
@@ -37,7 +36,17 @@ namespace init {
 
 using ActionManagerCommand = std::function<void(ActionManager&)>;
 
-void TestInit(const std::string& init_script_file, const TestFunctionMap& test_function_map,
+template <typename F>
+void AddZeroArgFunction(BuiltinFunctionMap* map, const std::string& name, F function) {
+    map->Add(
+            name, 0, 0,
+            BuiltinFunctionMapValue{false, [f = std::move(function)](const BuiltinArguments& args) {
+                                        f();
+                                        return Result<void>{};
+                                    }});
+}
+
+void TestInit(const std::string& init_script_file, const BuiltinFunctionMap& test_function_map,
               const std::vector<ActionManagerCommand>& commands, ServiceList* service_list) {
     ActionManager am;
 
@@ -60,7 +69,7 @@ void TestInit(const std::string& init_script_file, const TestFunctionMap& test_f
     }
 }
 
-void TestInitText(const std::string& init_script, const TestFunctionMap& test_function_map,
+void TestInitText(const std::string& init_script, const BuiltinFunctionMap& test_function_map,
                   const std::vector<ActionManagerCommand>& commands, ServiceList* service_list) {
     TemporaryFile tf;
     ASSERT_TRUE(tf.fd != -1);
@@ -76,8 +85,8 @@ on boot
 pass_test
 )init";
 
-    TestFunctionMap test_function_map;
-    test_function_map.Add("pass_test", [&expect_true]() { expect_true = true; });
+    BuiltinFunctionMap test_function_map;
+    AddZeroArgFunction(&test_function_map, "pass_test", [&expect_true]() { expect_true = true; });
 
     ActionManagerCommand trigger_boot = [](ActionManager& am) { am.QueueEventTrigger("boot"); };
     std::vector<ActionManagerCommand> commands{trigger_boot};
@@ -103,10 +112,13 @@ execute_third
 )init";
 
     int num_executed = 0;
-    TestFunctionMap test_function_map;
-    test_function_map.Add("execute_first", [&num_executed]() { EXPECT_EQ(0, num_executed++); });
-    test_function_map.Add("execute_second", [&num_executed]() { EXPECT_EQ(1, num_executed++); });
-    test_function_map.Add("execute_third", [&num_executed]() { EXPECT_EQ(2, num_executed++); });
+    BuiltinFunctionMap test_function_map;
+    AddZeroArgFunction(&test_function_map, "execute_first",
+                       [&num_executed]() { EXPECT_EQ(0, num_executed++); });
+    AddZeroArgFunction(&test_function_map, "execute_second",
+                       [&num_executed]() { EXPECT_EQ(1, num_executed++); });
+    AddZeroArgFunction(&test_function_map, "execute_third",
+                       [&num_executed]() { EXPECT_EQ(2, num_executed++); });
 
     ActionManagerCommand trigger_boot = [](ActionManager& am) { am.QueueEventTrigger("boot"); };
     std::vector<ActionManagerCommand> commands{trigger_boot};
@@ -127,7 +139,7 @@ service A something
 )init";
 
     ServiceList service_list;
-    TestInitText(init_script, TestFunctionMap(), {}, &service_list);
+    TestInitText(init_script, BuiltinFunctionMap(), {}, &service_list);
     ASSERT_EQ(1, std::distance(service_list.begin(), service_list.end()));
 
     auto service = service_list.begin()->get();
@@ -186,8 +198,8 @@ TEST(init, EventTriggerOrderMultipleFiles) {
         return Result<void>{};
     };
 
-    TestFunctionMap test_function_map;
-    test_function_map.Add("execute", 1, 1, false, execute_command);
+    BuiltinFunctionMap test_function_map;
+    test_function_map.Add("execute", 1, 1, BuiltinFunctionMapValue{false, execute_command});
 
     ActionManagerCommand trigger_boot = [](ActionManager& am) { am.QueueEventTrigger("boot"); };
     std::vector<ActionManagerCommand> commands{trigger_boot};
