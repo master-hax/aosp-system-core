@@ -81,6 +81,9 @@ cc_library {
     ],
 
     target: {
+        android: {
+            static_libs: ["libc++demangle"],
+        },
         // Always disable optimizations for host to make it easier to debug.
         host: {
             cflags: [
