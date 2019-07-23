@@ -22,6 +22,30 @@
       "revId": "eea0b63a42df493561cc2a513cf08915d79822fa",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "260eab14_cacad463",
+        "filename": "base/include/android-base/unique_fd.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 174,
+      "author": {
+        "id": 1135107
+      },
+      "writtenOn": "2019-07-23T23:38:59Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "045f2bf1_f6d05e07",
+      "range": {
+        "startLine": 172,
+        "startChar": 0,
+        "endLine": 174,
+        "endChar": 49
+      },
+      "revId": "eea0b63a42df493561cc2a513cf08915d79822fa",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
