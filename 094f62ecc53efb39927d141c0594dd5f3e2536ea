@@ -22,6 +22,30 @@
       "revId": "094f62ecc53efb39927d141c0594dd5f3e2536ea",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6e31f175_f304f8cf",
+        "filename": "common_apex/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2019-07-23T16:31:35Z",
+      "side": 1,
+      "message": "\u003e neither of these is appropriate for this.\n\nI don\u0027t understand why. Could you elaborate? We all know that these libs don\u0027t have stable ABIs, but this APEX will be updated along with other APEXes that use this. So ABI instability is not a problem.\n\n\u003e did you get the real numbers from static linking yet?\n\nJooyung might have a number, but I can expect that the saving with this APEX will increase as the number of APEXes increases. I just don\u0027t want to decide go/no-go based on the current set of APEXes.",
+      "parentUuid": "55ca265d_71d9a75a",
+      "range": {
+        "startLine": 31,
+        "startChar": 4,
+        "endLine": 32,
+        "endChar": 13
+      },
+      "revId": "094f62ecc53efb39927d141c0594dd5f3e2536ea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
