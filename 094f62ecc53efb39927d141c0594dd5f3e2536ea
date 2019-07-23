@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "55ca265d_71d9a75a",
+        "filename": "common_apex/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-07-23T15:13:26Z",
+      "side": 1,
+      "message": "neither of these is appropriate for this.\n\ndid you get the real numbers from static linking yet?",
+      "range": {
+        "startLine": 31,
+        "startChar": 4,
+        "endLine": 32,
+        "endChar": 13
+      },
+      "revId": "094f62ecc53efb39927d141c0594dd5f3e2536ea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
