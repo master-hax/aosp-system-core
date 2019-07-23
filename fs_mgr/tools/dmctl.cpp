@@ -50,6 +50,7 @@ static int Usage(void) {
     std::cerr << "  list <devices | targets> [-v]" << std::endl;
     std::cerr << "  getpath <dm-name>" << std::endl;
     std::cerr << "  status <dm-name>" << std::endl;
+    std::cerr << "  suspend <dm-name> [--resume]" << std::endl;
     std::cerr << "  table <dm-name>" << std::endl;
     std::cerr << "  help" << std::endl;
     std::cerr << std::endl;
@@ -399,6 +400,27 @@ static int StatusCmdHandler(int argc, char** argv) {
     return DumpTable("status", argc, argv);
 }
 
+static int SuspendCmdHandler(int argc, char** argv) {
+    DmDeviceState state;
+
+    if (argc == 1) {
+        state = DmDeviceState::SUSPENDED;
+    } else if (argc == 2 && argv[1] == "--resume"s) {
+        state = DmDeviceState::ACTIVE;
+    } else {
+        std::cerr << "Invalid arguments, see \'dmctl help\'" << std::endl;
+        return -EINVAL;
+    }
+
+    DeviceMapper& dm = DeviceMapper::Instance();
+    if (!dm.SuspendDevice(argv[0], state)) {
+        std::cerr << "Could not " << (state == DmDeviceState::SUSPENDED ? "suspend" : "activate")
+                  << " device \"" << argv[0] << "\"." << std::endl;
+        return -EINVAL;
+    }
+    return 0;
+}
+
 static std::map<std::string, std::function<int(int, char**)>> cmdmap = {
         // clang-format off
         {"create", DmCreateCmdHandler},
@@ -408,6 +430,7 @@ static std::map<std::string, std::function<int(int, char**)>> cmdmap = {
         {"getpath", GetPathCmdHandler},
         {"table", TableCmdHandler},
         {"status", StatusCmdHandler},
+        {"suspend", SuspendCmdHandler},
         // clang-format on
 };
 
