@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "033619f9_93a01a9c",
+        "filename": "fs_mgr/liblp/io_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 698,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-07-24T21:14:21Z",
+      "side": 1,
+      "message": "Just for completeness, we should reset the value here:\n  https://cs.corp.google.com/android/system/core/fs_mgr/liblp/builder_test.cpp?type\u003dcs\u0026q\u003dOverrideABForTesting+package:%5Eandroid$\u0026g\u003d0\u0026l\u003d28\n\nAnd here:\n  https://cs.corp.google.com/android/system/core/fs_mgr/liblp/builder_test.cpp?type\u003dcs\u0026q\u003dOverrideABForTesting+package:%5Eandroid$\u0026g\u003d0\u0026l\u003d42\n\nLike we do for OverrideABForTesting. (I don\u0027t know why the teardown call does it too, looks unnecessary).",
+      "revId": "596f7900c34a2352e7f52d2e81a1491f073e840d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
