@@ -30,6 +30,8 @@
 namespace android {
 namespace fs_mgr {
 
+constexpr char kRetrfoitDynamicPartitions[] = "ro.boot.dynamic_partitions_retrofit";
+
 bool MetadataBuilder::sABOverrideSet;
 bool MetadataBuilder::sABOverrideValue;
 
@@ -169,7 +171,8 @@ std::unique_ptr<MetadataBuilder> MetadataBuilder::NewForUpdate(const IPartitionO
     // needed. On the other hand, for retrofit devices, we'll need to
     // translate block device and group names to update their slot suffixes.
     auto super_device = GetMetadataSuperBlockDevice(*metadata.get());
-    if (GetBlockDevicePartitionName(*super_device) == "super") {
+    if (GetBlockDevicePartitionName(*super_device) == "super" ||
+        !android::base::GetBoolProperty(kRetrfoitDynamicPartitions, false)) {
         return New(*metadata.get(), &opener);
     }
 
