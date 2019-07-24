@@ -35,8 +35,6 @@ constexpr char kRetrfoitDynamicPartitions[] = "ro.boot.dynamic_partitions_retrof
 bool MetadataBuilder::sABOverrideSet;
 bool MetadataBuilder::sABOverrideValue;
 
-static const std::string kDefaultGroup = "default";
-
 bool LinearExtent::AddTo(LpMetadata* out) const {
     if (device_index_ >= out->block_devices.size()) {
         LERROR << "Extent references unknown block device.";
@@ -1116,6 +1114,33 @@ bool MetadataBuilder::ChangeGroupSize(const std::string& group_name, uint64_t ma
         return false;
     }
     group->set_maximum_size(maximum_size);
+    return true;
+}
+
+// Return true if partition is renamed, otherwise false.
+bool MetadataBuilder::RenamePartition(Partition* partition, const std::string& name) {
+    if (FindPartition(name) != nullptr) {
+        LERROR << "Cannot rename partition " << partition->name() << " to " << name << " because "
+               << name << " already exists.";
+        return false;
+    }
+    partition->set_name(name);
+    return true;
+}
+
+// Return true if group is renamed, otherwise false.
+bool MetadataBuilder::RenameGroup(PartitionGroup* group, const std::string& name) {
+    if (FindGroup(name) != nullptr) {
+        LERROR << "Cannot rename group " << group->name() << " to " << name << " because " << name
+               << " already exists.";
+        return false;
+    }
+    group->set_name(name);
+    for (Partition* p : ListPartitionsInGroup(group->name())) {
+        if (!ChangePartitionGroup(p, name)) {
+            return false;
+        }
+    }
     return true;
 }
 

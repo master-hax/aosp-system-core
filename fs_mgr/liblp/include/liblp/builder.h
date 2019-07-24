@@ -31,6 +31,8 @@
 namespace android {
 namespace fs_mgr {
 
+static constexpr const char* kDefaultGroup = "default";
+
 class LinearExtent;
 
 // By default, partitions are aligned on a 1MiB boundary.
@@ -95,6 +97,7 @@ class PartitionGroup final {
 
   private:
     void set_maximum_size(uint64_t maximum_size) { maximum_size_ = maximum_size; }
+    void set_name(const std::string& name) { name_ = name; }
 
     std::string name_;
     uint64_t maximum_size_;
@@ -125,6 +128,7 @@ class Partition final {
   private:
     void ShrinkTo(uint64_t aligned_size);
     void set_group_name(const std::string& group_name) { group_name_ = group_name; }
+    void set_name(const std::string& name) { name_ = name; }
 
     std::string name_;
     std::string group_name_;
@@ -285,6 +289,12 @@ class MetadataBuilder {
 
     // Return true if a block device is found, else false.
     bool HasBlockDevice(const std::string& partition_name) const;
+
+    // Return true if partition is renamed, otherwise false.
+    bool RenamePartition(Partition* partition, const std::string& name);
+
+    // Return true if group is renamed, otherwise false.
+    bool RenameGroup(PartitionGroup* group, const std::string& name);
 
   private:
     MetadataBuilder();
