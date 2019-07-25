@@ -34,6 +34,24 @@
       "revId": "596f7900c34a2352e7f52d2e81a1491f073e840d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "066b7c26_9364022f",
+        "filename": "fs_mgr/liblp/io_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 698,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2019-07-25T00:13:55Z",
+      "side": 1,
+      "message": "On a second thought, I shouldn\u0027t do that because that will mean the test is actually reading sysprop values. Will change this.",
+      "parentUuid": "f0a77793_8a79ae07",
+      "revId": "596f7900c34a2352e7f52d2e81a1491f073e840d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
