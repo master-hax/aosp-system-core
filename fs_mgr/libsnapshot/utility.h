@@ -14,11 +14,14 @@
 
 #pragma once
 
+#include <functional>
 #include <string>
 
 #include <android-base/macros.h>
 #include <libdm/dm.h>
 #include <libfiemap/image_manager.h>
+#include <liblp/builder.h>
+#include <libsnapshot/snapshot.h>
 
 namespace android {
 namespace snapshot {
@@ -75,6 +78,43 @@ struct AutoUnmapImage : AutoDevice {
     DISALLOW_COPY_AND_ASSIGN(AutoUnmapImage);
     android::fiemap::IImageManager* images_ = nullptr;
 };
+
+enum class LoopDirective { BREAK, CONTINUE };
+
+// Execute |func| on each partition in |builder| that ends with |suffix|.
+// If |func| return CONTINUE, continue the loop. Otherwise, exit the loop
+// and return false.
+bool ForEachPartition(fs_mgr::MetadataBuilder* builder, const std::string& suffix,
+                      const std::function<LoopDirective(fs_mgr::Partition*)>& func);
+
+// Automatically deletes a COW image. |name| should be the name of the partition, e.g. "system_a".
+// Client is responsible for maintaining the lifetime of |manager| and |lock|.
+struct AutoDeleteCowImage : AutoDevice {
+    AutoDeleteCowImage(SnapshotManager* manager, SnapshotManager::LockedFile* lock,
+                       const std::string& name) :
+        AutoDevice(name), manager_(manager), lock_(lock) {}
+    AutoDeleteCowImage(AutoDeleteCowImage&& other) = default;
+    ~AutoDeleteCowImage();
+   private:
+    DISALLOW_COPY_AND_ASSIGN(AutoDeleteCowImage);
+    SnapshotManager* manager_ = nullptr;
+    SnapshotManager::LockedFile* lock_ = nullptr;
+};
+
+// Automatically deletes a snapshot. |name| should be the name of the partition, e.g. "system_a".
+// Client is responsible for maintaining the lifetime of |manager| and |lock|.
+struct AutoDeleteSnapshot : AutoDevice {
+    AutoDeleteSnapshot(SnapshotManager* manager, SnapshotManager::LockedFile* lock,
+                       const std::string& name) :
+        AutoDevice(name), manager_(manager), lock_(lock) {}
+    AutoDeleteSnapshot(AutoDeleteSnapshot&& other);
+    ~AutoDeleteSnapshot();
+   private:
+    DISALLOW_COPY_AND_ASSIGN(AutoDeleteSnapshot);
+    SnapshotManager* manager_ = nullptr;
+    SnapshotManager::LockedFile* lock_ = nullptr;
+};
+
 
 }  // namespace snapshot
 }  // namespace android
