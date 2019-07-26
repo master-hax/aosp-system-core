@@ -15,6 +15,7 @@
 #include <libsnapshot/snapshot.h>
 
 #include <dirent.h>
+#include <math.h>
 #include <sys/file.h>
 #include <sys/types.h>
 #include <sys/unistd.h>
@@ -27,9 +28,14 @@
 #include <android-base/strings.h>
 #include <android-base/unique_fd.h>
 #include <ext4_utils/ext4_utils.h>
+#include <fs_mgr.h>
+#include <fs_mgr_dm_linear.h>
 #include <fstab/fstab.h>
 #include <libdm/dm.h>
 #include <libfiemap/image_manager.h>
+
+#include "partition_cow_creator.h"
+#include "utility.h"
 
 namespace android {
 namespace snapshot {
@@ -72,6 +78,10 @@ std::unique_ptr<SnapshotManager> SnapshotManager::New(IDeviceInfo* info) {
 SnapshotManager::SnapshotManager(IDeviceInfo* device) : device_(device) {
     gsid_dir_ = device_->GetGsidDir();
     metadata_dir_ = device_->GetMetadataDir();
+}
+
+static std::string GetBaseName(const std::string& partition_name) {
+    return partition_name + "-base";
 }
 
 static std::string GetCowName(const std::string& snapshot_name) {
@@ -301,7 +311,8 @@ bool SnapshotManager::UnmapSnapshot(LockedFile* lock, const std::string& name) {
 
     SnapshotStatus status;
     if (!ReadSnapshotStatus(lock, name, &status)) {
-        return false;
+        LOG(INFO) << "Snapshot status for " << name << " is not found. Will not unmap it.";
+        return true;
     }
 
     auto& dm = DeviceMapper::Instance();
@@ -1147,6 +1158,116 @@ bool SnapshotManager::EnsureImageManager() {
         LOG(ERROR) << "Could not open ImageManager";
         return false;
     }
+    return true;
+}
+
+bool SnapshotManager::CreateSnapshots(android::fs_mgr::MetadataBuilder* target_metadata,
+                                      const std::string& target_suffix,
+                                      android::fs_mgr::MetadataBuilder* current_metadata,
+                                      const std::string& current_suffix,
+                                      const std::map<std::string, uint64_t>& cow_sizes) {
+    auto lock = LockExclusive();
+    if (!lock) return false;
+
+    // Add _{target_suffix} to COW size map.
+    std::map<std::string, uint64_t> suffixed_cow_sizes;
+    for (const auto& [name, size] : cow_sizes) {
+        suffixed_cow_sizes[name + target_suffix] = size;
+    }
+
+    bool res = ForEachPartition(target_metadata, target_suffix, [&](auto* target_partition) {
+        std::optional<uint64_t> cow_size = std::nullopt;
+        auto it = suffixed_cow_sizes.find(target_partition->name());
+        if (it != suffixed_cow_sizes.end()) cow_size = it->second;
+
+        auto snapshot_params =
+                PartitionCowCreator{target_metadata,  target_suffix,  target_partition,
+                                    current_metadata, current_suffix, cow_size}();
+        if (!snapshot_params.has_value()) {
+            return LoopDirective::BREAK;
+        }
+
+        if (!CreateSnapshot(lock.get(), target_partition->name(), snapshot_params->device_size,
+                            snapshot_params->snapshot_size, snapshot_params->cow_file_size)) {
+            return LoopDirective::BREAK;
+        }
+        return LoopDirective::CONTINUE;
+    });
+
+    return res;
+}
+
+bool SnapshotManager::MapSnapshot(const android::fs_mgr::CreateLogicalPartitionParams& params,
+                                  std::string* snapshot_path) {
+
+    auto end_time = std::chrono::steady_clock::now() + params.timeout_ms;
+
+    std::string target_partition_name = params.partition
+        ? android::fs_mgr::GetPartitionName(*params.partition)
+        : params.partition_name;
+    CHECK(!partition_name.empty());
+
+    CHECK(params.device_name.empty()) << "Mapping snapshot with a different name is unsupported";
+
+    auto lock = LockShared();
+    if (!lock) return false;
+
+    auto& dm = DeviceMapper::Instance();
+    std::string base_name = GetBaseName(target_partition_name);
+    if (dm.GetState(base_name) != DmDeviceState::INVALID && !dm.DeleteDevice(base_name)) {
+        LOG(ERROR) << "Cannot delete existing base device: " << base_name;
+        return false;
+    }
+
+    android::fs_mgr::CreateLogicalPartitionParams base_params = params;
+    base_params.device_name = base_name;
+    std::string base_path;
+    if (!android::fs_mgr::CreateLogicalPartition(base_params, &base_path)) {
+        LOG(ERROR) << "Could not create base device: " << base_name;
+        return false;
+    }
+
+    auto remaining_time = std::chrono::duration_cast<std::chrono::milliseconds>(
+            end_time - std::chrono::steady_clock::now());
+    if (remaining_time.count() <= 0) {
+        LOG(ERROR) << "MapSnapshot spent" << remaining_time.count()
+                   << " ms creating the base device and reached timeout";
+        return false;
+    }
+
+    if (!MapSnapshot(lock.get(), target_partition_name, base_path, remaining_time,
+                     snapshot_path)) {
+        LOG(ERROR) << "Could not map snapshot: " << target_partition_name;
+        if (!dm.DeleteDevice(base_name)) {
+            LOG(WARNING) << "Cannot clean up base device: " << base_name;
+        }
+        return false;
+    }
+
+    LOG(INFO) << "Mapped " << target_partition_name << " as snapshot device at " << *snapshot_path;
+    return true;
+}
+
+bool SnapshotManager::UnmapSnapshot(const std::string& target_partition_name) {
+    // If we've never started an update, the state file won't exist.
+    auto state_file = GetStateFilePath();
+    if (access(state_file.c_str(), F_OK) != 0 && errno == ENOENT) {
+        return true;
+    }
+
+    auto lock = LockShared();
+    if (!lock) return false;
+
+    if (!UnmapSnapshot(lock.get(), target_partition_name)) {
+        return false;
+    }
+
+    std::string base_name = GetBaseName(target_partition_name);
+    if (dm.GetState(base_name) != DmDeviceState::INVALID && !dm.DeleteDevice(base_name)) {
+        LOG(ERROR) << "Cannot delete base device: " << base_name;
+        return false;
+    }
+
     return true;
 }
 
