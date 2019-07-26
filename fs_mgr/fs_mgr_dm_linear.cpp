@@ -127,7 +127,8 @@ static bool CreateLogicalPartitionInternal(const LpMetadata& metadata,
     if (!dm.CreateDevice(mapped_name, table, path, timeout_ms)) {
         return false;
     }
-    LINFO << "Created logical partition " << name << " on device " << *path;
+    LINFO << "Created logical partition " << GetPartitionName(partition) << " as "
+          << mapped_name << " on device " << *path;
     return true;
 }
 
