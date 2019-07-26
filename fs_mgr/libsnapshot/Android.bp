@@ -25,9 +25,12 @@ cc_defaults {
     shared_libs: [
         "libbase",
         "liblog",
+        "liblp",
     ],
     static_libs: [
         "libdm",
+        "libfs_mgr",
+        "libfstab",
     ],
     whole_static_libs: [
         "libext2_uuid",
@@ -55,10 +58,12 @@ cc_library_static {
 
 cc_library_static {
     name: "libsnapshot_nobinder",
+    recovery: true,
     defaults: ["libsnapshot_defaults"],
     srcs: [":libsnapshot_sources"],
     recovery_available: true,
 }
+
 
 cc_test {
     name: "libsnapshot_test",
@@ -76,5 +81,7 @@ cc_test {
         "libfs_mgr",
         "liblp",
         "libsnapshot",
+        "libsparse",
+        "libz",
     ],
 }

@@ -17,12 +17,14 @@
 #include <stdint.h>
 
 #include <chrono>
+#include <map>
 #include <memory>
 #include <string>
 #include <vector>
 
 #include <android-base/unique_fd.h>
 #include <libdm/dm_target.h>
+#include <liblp/builder.h>
 
 #ifndef FRIEND_TEST
 #define FRIEND_TEST(test_set_name, individual_test) \
@@ -104,6 +106,26 @@ class SnapshotManager final {
     //   MergeCompleted: 100
     //   Other: 0
     UpdateState GetUpdateState(double* progress = nullptr);
+
+    // Create necessary COW device / files. New logical partitions will
+    // be added to group "cow" in target_metadata. Regions of partitions
+    // of current_metadata will be "write-protected" and snapshotted.
+    bool CreateCowForUpdate(fs_mgr::MetadataBuilder* target_metadata,
+                            const std::string& target_suffix,
+                            fs_mgr::MetadataBuilder* current_metadata,
+                            const std::string& current_suffix,
+                            const std::map<std::string, uint64_t>& cow_size);
+
+    // Really map snapshot devices. Write-protected regions are determined
+    // previously in CreateCowForUpdate. |target_metadata| is used
+    // to determine what partitions needs to be mapped.
+    // |timeout_ms_per_device| is the timeout for each device.
+    bool MapSnapshotDevicesForUpdate(const std::string& super_device,
+                                     fs_mgr::MetadataBuilder* target_metadata,
+                                     const std::string& target_suffix,
+                                     const std::chrono::milliseconds& timeout_ms_per_device);
+
+    bool UnmapSnapshotDevice(const std::string& target_partition_name);
 
   private:
     FRIEND_TEST(SnapshotTest, CreateSnapshot);

@@ -15,6 +15,7 @@
 #include <libsnapshot/snapshot.h>
 
 #include <dirent.h>
+#include <math.h>
 #include <sys/file.h>
 #include <sys/types.h>
 #include <sys/unistd.h>
@@ -25,6 +26,9 @@
 #include <android-base/strings.h>
 #include <android-base/unique_fd.h>
 #include <ext4_utils/ext4_utils.h>
+#include <fs_mgr.h>
+#include <fs_mgr_dm_linear.h>
+#include <fstab/fstab.h>
 #include <libdm/dm.h>
 #include <libfiemap/image_manager.h>
 
@@ -72,6 +76,10 @@ std::unique_ptr<SnapshotManager> SnapshotManager::New(IDeviceInfo* info) {
 SnapshotManager::SnapshotManager(IDeviceInfo* device) : device_(device) {
     gsid_dir_ = device_->GetGsidDir();
     metadata_dir_ = device_->GetMetadataDir();
+}
+
+static std::string GetBaseName(const std::string& partition_name) {
+    return partition_name + "-base";
 }
 
 static std::string GetCowName(const std::string& snapshot_name) {
@@ -568,6 +576,274 @@ bool SnapshotManager::EnsureImageManager() {
         return false;
     }
     return true;
+}
+
+enum class LoopDirective { BREAK, CONTINUE };
+
+// Execute |func| on each partition in |builder| that ends with |suffix|.
+// If |func| return CONTINUE, continue the loop. Otherwise, exit the loop
+// and return false.
+static bool ForEachPartition(fs_mgr::MetadataBuilder* builder, const std::string& suffix,
+                             const std::function<LoopDirective(fs_mgr::Partition*)>& func) {
+    for (const auto& group : builder->ListGroups()) {
+        for (auto* partition : builder->ListPartitionsInGroup(group)) {
+            if (!base::EndsWith(partition->name(), suffix)) {
+                continue;
+            }
+            if (func(partition) == LoopDirective::BREAK) return false;
+        }
+    }
+    return true;
+}
+
+// Helper class that creates COW for a partition.
+struct PartitionCowCreator {
+    // The metadata that will be written to target metadata slot.
+    fs_mgr::MetadataBuilder* target_metadata;
+    // The suffix of the target slot.
+    std::string target_suffix;
+    // The partition in target_metadata that needs to be snapshotted.
+    fs_mgr::Partition* target_partition;
+    // The metadata at the current slot (that would be used if the device boots
+    // normally). This is used to determine which extents are being used.
+    fs_mgr::MetadataBuilder* current_metadata;
+    // The suffix of the current slot.
+    std::string current_suffix;
+    // The COW size given by client code.
+    std::optional<uint64_t> cow_size;
+
+    // Round |d| up to a multiple of |block_size|.
+    static uint64_t RoundUp(double d, uint64_t block_size) {
+        uint64_t ret = ((uint64_t)ceil(d) + block_size - 1) / block_size * block_size;
+        CHECK(ret >= d) << "Can't round " << d << " up to a multiple of " << block_size;
+        return ret;
+    }
+
+    // Intersect |target_extent| from target_metadata with |existing_extent| from
+    // |existing_metadata|. The result uses block device indices from
+    // |target_metadata|. If no intersection, return an extent with num_sectors() ==
+    // 0.
+    static std::unique_ptr<fs_mgr::Extent> Intersect(fs_mgr::Extent* target_extent,
+                                                     fs_mgr::MetadataBuilder* target_metadata,
+                                                     fs_mgr::Extent* existing_extent,
+                                                     fs_mgr::MetadataBuilder* existing_metadata) {
+        // Convert target_extent and existing_extent to linear extents. Zero extents
+        // doesn't matter and doesn't result in any intersection.
+        auto existing_linear_extent = existing_extent->AsLinearExtent();
+        if (!existing_extent) return std::make_unique<fs_mgr::ZeroExtent>(0);
+
+        auto target_linear_extent = target_extent->AsLinearExtent();
+        if (!target_linear_extent) return std::make_unique<fs_mgr::ZeroExtent>(0);
+
+        // Compare block device by names. Technically, block devices can have
+        // different indices in metadata in different slots. In reality:
+        // (1) For retrofit DAP devices, dynamic partitions of different slots
+        //     occupy different block devices (e.g. logical system_a can only use
+        //     physical system_a, vendor_a, etc.)
+        // (2) For launch DAP devices, there are only one super block device and
+        //     the two names from the two slots should always match.
+        auto existing_block_device = existing_metadata->GetBlockDevicePartitionName(
+                existing_linear_extent->device_index());
+        auto target_block_device =
+                target_metadata->GetBlockDevicePartitionName(target_linear_extent->device_index());
+        if (existing_block_device != target_block_device)
+            return std::make_unique<fs_mgr::ZeroExtent>(0);
+
+        // Compute the begin and end sector numbers of the potential intersection.
+        uint64_t begin = std::max(existing_linear_extent->physical_sector(),
+                                  target_linear_extent->physical_sector());
+        uint64_t end =
+                std::min(existing_linear_extent->end_sector(), target_linear_extent->end_sector());
+
+        if (end <= begin) return std::make_unique<fs_mgr::ZeroExtent>(0);
+
+        return std::make_unique<fs_mgr::LinearExtent>(end - begin,
+                                                      target_linear_extent->device_index(), begin);
+    }
+
+    // Intersect |target_extent| from this->target_metadata with |existing_extent| from
+    // this->current_metadata. The result uses block device indices from
+    // |target_metadata|. If no intersection, return an extent with num_sectors() ==
+    // 0.
+    std::unique_ptr<fs_mgr::Extent> Intersect(fs_mgr::Extent* target_extent,
+                                              fs_mgr::Extent* existing_extent) {
+        return Intersect(target_extent, target_metadata, existing_extent, current_metadata);
+    }
+
+    // Check that partition |p| contains |e| fully. Both of them should
+    // be from |target_metadata|.
+    // Returns true as long as |e| is a subrange of any extent of |p|.
+    bool HasExtent(fs_mgr::Partition* p, fs_mgr::Extent* e) {
+        for (auto& partition_extent : p->extents()) {
+            auto intersection =
+                    Intersect(partition_extent.get(), target_metadata, e, target_metadata);
+            if (intersection->num_sectors() == e->num_sectors()) return true;
+        }
+        return false;
+    }
+
+    // Return the number of sectors, N, where |target_partition|[0..N] (from
+    // |target_metadata|) are the sectors that should be snapshotted. N is computed
+    // so that this range of sectors are used by partitions in |current_metadata|.
+    //
+    // The client code (update_engine) should have computed target_metadata by
+    // resizing partitions of current_metadata, so only the first N sectors should
+    // be snapshotted, not a range with start index != 0.
+    std::optional<uint64_t> GetSnapshotSize() {
+        // Compute the number of sectors that needs to be snapshotted.
+        uint64_t snapshot_sectors = 0;
+        std::vector<std::unique_ptr<fs_mgr::Extent>> intersections;
+        for (const auto& extent : target_partition->extents()) {
+            ForEachPartition(current_metadata, current_suffix, [&](auto* existing_partition) {
+                for (const auto& existing_extent : existing_partition->extents()) {
+                    auto intersection = Intersect(extent.get(), existing_extent.get());
+                    if (intersection->num_sectors() > 0) {
+                        snapshot_sectors += intersection->num_sectors();
+                        intersections.emplace_back(std::move(intersection));
+                    }
+                }
+                return LoopDirective::CONTINUE;
+            });
+        }
+
+        // Align snapshot_sectors with logical_block_size and LP_SECTOR_SIZE.
+        uint64_t snapshot_size = snapshot_sectors * LP_SECTOR_SIZE;
+
+        // Sanity check that all recorded intersections are indeed within
+        // target_partition[0..snapshot_sectors].
+        fs_mgr::Partition target_partition_snapshot =
+                target_partition->GetBeginningExtents(snapshot_size);
+        for (const auto& intersection : intersections) {
+            if (!HasExtent(&target_partition_snapshot, intersection.get())) {
+                auto linear_intersection = intersection->AsLinearExtent();
+                LOG(ERROR)
+                        << "Extent "
+                        << (linear_intersection
+                                    ? (std::to_string(linear_intersection->physical_sector()) +
+                                       "," + std::to_string(linear_intersection->end_sector()))
+                                    : "")
+                        << " is not part of Partition " << target_partition->name() << "[0.."
+                        << snapshot_size
+                        << "]. The metadata wasn't constructed correctly. This should not happen.";
+                return std::nullopt;
+            }
+        }
+
+        return snapshot_size;
+    }
+
+    struct Return {
+        uint64_t device_size = 0;
+        uint64_t snapshot_size = 0;
+        uint64_t cow_partition_size = 0;
+        uint64_t cow_file_size = 0;
+    };
+
+    std::optional<Return> operator()() {
+        static constexpr double kCowEstimateFactor = 1.1;
+
+        Return ret;
+        ret.device_size = target_partition->size();
+
+        auto snapshot_size = GetSnapshotSize();
+        if (!snapshot_size.has_value()) return std::nullopt;
+
+        ret.snapshot_size = *snapshot_size;
+
+        // TODO: always read from cow_size when the COW size is written in
+        // update package. kCowEstimateFactor is good for prototyping but
+        // we can't use that in production.
+        if (!cow_size.has_value()) {
+            cow_size = RoundUp(ret.snapshot_size * kCowEstimateFactor, fs_mgr::kDefaultBlockSize);
+        }
+
+        // TODO: create COW partition in target_metadata to save space.
+        ret.cow_partition_size = 0;
+        ret.cow_file_size = (*cow_size) - ret.cow_partition_size;
+
+        return ret;
+    }
+};
+
+bool SnapshotManager::CreateCowForUpdate(fs_mgr::MetadataBuilder* target_metadata,
+                                         const std::string& target_suffix,
+                                         fs_mgr::MetadataBuilder* current_metadata,
+                                         const std::string& current_suffix,
+                                         const std::map<std::string, uint64_t>& cow_sizes) {
+    auto lock = OpenStateFile(O_RDWR, LOCK_EX);
+
+    // Add _{target_suffix} to COW size map.
+    std::map<std::string, uint64_t> suffixed_cow_sizes;
+    for (const auto& [name, size] : cow_sizes) {
+        suffixed_cow_sizes[name + target_suffix] = size;
+    }
+
+    bool res = ForEachPartition(target_metadata, target_suffix, [&](auto* target_partition) {
+        std::optional<uint64_t> cow_size = std::nullopt;
+        auto it = suffixed_cow_sizes.find(target_partition->name());
+        if (it != suffixed_cow_sizes.end()) cow_size = it->second;
+
+        auto snapshot_params =
+                PartitionCowCreator{target_metadata,  target_suffix,  target_partition,
+                                    current_metadata, current_suffix, cow_size}();
+        if (!snapshot_params.has_value()) {
+            return LoopDirective::BREAK;
+        }
+
+        if (!CreateSnapshot(lock.get(), target_partition->name(), snapshot_params->device_size,
+                            snapshot_params->snapshot_size, snapshot_params->cow_file_size)) {
+            return LoopDirective::BREAK;
+        }
+        return LoopDirective::CONTINUE;
+    });
+
+    return res;
+}
+
+bool SnapshotManager::MapSnapshotDevicesForUpdate(
+        const std::string& super_device, fs_mgr::MetadataBuilder* target_metadata,
+        const std::string& target_suffix, const std::chrono::milliseconds& timeout_ms_per_device) {
+    auto lock = OpenStateFile(O_RDWR, LOCK_EX);
+
+    auto exported = target_metadata->Export();
+    if (!exported) return false;
+
+    bool map_success = true;
+    ForEachPartition(target_metadata, target_suffix, [&](auto* target_partition) {
+        std::string partition_name = target_partition->name();
+        std::string base_name = GetBaseName(partition_name);
+        if (target_partition->extents().empty()) {
+            LOG(INFO) << "Skipping zero-length logical partition: " << base_name;
+            return LoopDirective::CONTINUE;
+        }
+
+        std::string base_path;
+        if (!fs_mgr::CreateLogicalPartition(super_device, *exported, partition_name, base_name,
+                                            true /* force_writable */, timeout_ms_per_device,
+                                            &base_path)) {
+            LOG(ERROR) << "Could not create logical partition: " << base_name;
+            map_success = false;
+            return LoopDirective::CONTINUE;  // Attempt to map others
+        }
+
+        std::string snapshot_path;
+        if (!MapSnapshot(lock.get(), partition_name, base_path, timeout_ms_per_device,
+                         &snapshot_path)) {
+            LOG(ERROR) << "Could not map snapshot: " << partition_name;
+            map_success = false;
+            return LoopDirective::CONTINUE;  // Attempt to map others
+        }
+
+        LOG(INFO) << "Mapped " << partition_name << " as snapshot device at " << snapshot_path;
+        return LoopDirective::CONTINUE;
+    });
+
+    return map_success;
+}
+
+bool SnapshotManager::UnmapSnapshotDevice(const std::string& target_partition_name) {
+    auto lock = OpenStateFile(O_RDWR, LOCK_EX);
+    return UnmapSnapshot(lock.get(), target_partition_name);
 }
 
 }  // namespace snapshot
