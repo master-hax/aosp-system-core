@@ -96,6 +96,19 @@ void Partition::ShrinkTo(uint64_t aligned_size) {
     DCHECK(size_ == aligned_size);
 }
 
+Partition Partition::GetBeginningExtents(uint64_t aligned_size) const {
+    Partition p(name_, group_name_, attributes_);
+    for (const auto& extent : extents_) {
+        auto le = extent->AsLinearExtent();
+        if (le)
+            p.AddExtent(std::make_unique<LinearExtent>(*le));
+        else
+            p.AddExtent(std::make_unique<ZeroExtent>(extent->num_sectors()));
+    }
+    p.ShrinkTo(aligned_size);
+    return p;
+}
+
 uint64_t Partition::BytesOnDisk() const {
     uint64_t sectors = 0;
     for (const auto& extent : extents_) {
@@ -1121,5 +1134,9 @@ bool MetadataBuilder::ChangeGroupSize(const std::string& group_name, uint64_t ma
     return true;
 }
 
+}
+
+uint64_t MetadataBuilder::logical_block_size() const {
+    return geometry_.logical_block_size;
 }  // namespace fs_mgr
 }  // namespace android

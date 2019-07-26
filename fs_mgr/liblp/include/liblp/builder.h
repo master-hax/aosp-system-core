@@ -35,8 +35,8 @@ namespace fs_mgr {
 class LinearExtent;
 
 // By default, partitions are aligned on a 1MiB boundary.
-static const uint32_t kDefaultPartitionAlignment = 1024 * 1024;
-static const uint32_t kDefaultBlockSize = 4096;
+static constexpr uint32_t kDefaultPartitionAlignment = 1024 * 1024;
+static constexpr uint32_t kDefaultBlockSize = 4096;
 
 // Name of the default group in a metadata.
 static constexpr std::string_view kDefaultGroup = "default";
@@ -125,6 +125,12 @@ class Partition final {
     uint32_t attributes() const { return attributes_; }
     const std::vector<std::unique_ptr<Extent>>& extents() const { return extents_; }
     uint64_t size() const { return size_; }
+
+    // Return a copy of *this, but with extents that includes only the first
+    // |aligned_size| bytes. |aligned_size| should be aligned to
+    // logical_block_size() of the MetadataBuilder that this partition belongs
+    // to.
+    Partition GetBeginningExtents(uint64_t aligned_size) const;
 
   private:
     void ShrinkTo(uint64_t aligned_size);
@@ -287,6 +293,7 @@ class MetadataBuilder {
     // Return true if a block device is found, else false.
     bool HasBlockDevice(const std::string& partition_name) const;
 
+    uint64_t logical_block_size() const;
   private:
     MetadataBuilder();
     MetadataBuilder(const MetadataBuilder&) = delete;

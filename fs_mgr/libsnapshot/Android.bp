@@ -25,10 +25,12 @@ cc_defaults {
     shared_libs: [
         "libbase",
         "liblog",
+        "liblp",
     ],
     static_libs: [
         "libdm",
         "libfs_mgr",
+        "libfstab",
         "liblp",
     ],
     whole_static_libs: [
@@ -44,6 +46,8 @@ filegroup {
     name: "libsnapshot_sources",
     srcs: [
         "snapshot.cpp",
+        "partition_cow_creator.cpp",
+        "utility.cpp",
     ],
 }
 
@@ -58,16 +62,19 @@ cc_library_static {
 
 cc_library_static {
     name: "libsnapshot_nobinder",
+    recovery: true,
     defaults: ["libsnapshot_defaults"],
     srcs: [":libsnapshot_sources"],
     recovery_available: true,
 }
+
 
 cc_test {
     name: "libsnapshot_test",
     defaults: ["libsnapshot_defaults"],
     srcs: [
         "snapshot_test.cpp",
+        "partition_cow_creator_test.cpp",
         "test_helpers.cpp",
     ],
     shared_libs: [
@@ -78,7 +85,10 @@ cc_test {
         "libcutils",
         "libcrypto",
         "libfs_mgr",
+        "libgmock",
         "liblp",
         "libsnapshot",
+        "libsparse",
+        "libz",
     ],
 }

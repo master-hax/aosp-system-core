@@ -17,13 +17,16 @@
 #include <stdint.h>
 
 #include <chrono>
+#include <map>
 #include <memory>
 #include <string>
 #include <vector>
 
 #include <android-base/unique_fd.h>
+#include <fs_mgr_dm_linear.h>
 #include <libdm/dm.h>
 #include <libfiemap/image_manager.h>
+#include <liblp/builder.h>
 #include <liblp/liblp.h>
 
 #ifndef FRIEND_TEST
@@ -143,6 +146,23 @@ class SnapshotManager final {
     //   MergeCompleted: 100
     //   Other: 0
     UpdateState GetUpdateState(double* progress = nullptr);
+
+    // Create necessary COW device / files for OTA clients. New logical partitions will be added to
+    // group "cow" in target_metadata. Regions of partitions of current_metadata will be
+    // "write-protected" and snapshotted.
+    bool CreateUpdateSnapshots(android::fs_mgr::MetadataBuilder* target_metadata,
+                             const std::string& target_suffix,
+                             android::fs_mgr::MetadataBuilder* current_metadata,
+                             const std::string& current_suffix,
+                             const std::map<std::string, uint64_t>& cow_size);
+
+    // Map a snapshotted partition for OTA clients to write to. Write-protected regions are
+    // determined previously in CreateSnapshots.
+    bool MapUpdateSnapshot(const android::fs_mgr::CreateLogicalPartitionParams& params,
+                           std::string* snapshot_path);
+
+    // Unmap a snapshot device that's previously mapped with MapUpdateSnapshot.
+    bool UnmapUpdateSnapshot(const std::string& target_partition_name);
 
     // If this returns true, first-stage mount must call
     // CreateLogicalAndSnapshotPartitions rather than CreateLogicalPartitions.
