@@ -52,5 +52,24 @@ AutoUnmapImage::~AutoUnmapImage() {
     }
 }
 
+bool ForEachPartition(fs_mgr::MetadataBuilder* builder, const std::string& suffix,
+                      const std::function<LoopDirective(fs_mgr::Partition*)>& func) {
+    for (const auto& group : builder->ListGroups()) {
+        for (auto* partition : builder->ListPartitionsInGroup(group)) {
+            if (!base::EndsWith(partition->name(), suffix)) {
+                continue;
+            }
+            if (func(partition) == LoopDirective::BREAK) return false;
+        }
+    }
+    return true;
+}
+
+AutoDeleteSnapshot::~AutoDeleteSnapshot() {
+    if (!name_.empty() && !manager_->DeleteSnapshot(lock_, name_)) {
+        LOG(ERROR) << "Failed to auto delete snapshot " << name_;
+    }
+}
+
 }  // namespace snapshot
 }  // namespace android
