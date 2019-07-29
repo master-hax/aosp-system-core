@@ -70,9 +70,29 @@ class DeviceMapper final {
         uint64_t dev_;
     };
 
+    class Info {
+        bool valid_;
+        uint32_t flags_;
+
+      public:
+        Info() : valid_(false) {}
+        Info(uint32_t flags) : valid_(true), flags_(flags) {}
+
+        bool IsActiveTablePresent() const { return flags_ & DM_ACTIVE_PRESENT_FLAG; }
+        bool IsBufferFull() const { return flags_ & DM_BUFFER_FULL_FLAG; }
+        bool IsInactiveTablePresent() const { return flags_ & DM_INACTIVE_PRESENT_FLAG; }
+        bool IsReadOnly() const { return flags_ & DM_READONLY_FLAG; }
+        bool IsSuspended() const { return flags_ & DM_SUSPEND_FLAG; }
+        bool IsValid() const { return valid_; }
+    };
+
     // Removes a device mapper device with the given name.
     // Returns 'true' on success, false otherwise.
     bool DeleteDevice(const std::string& name);
+
+    // Fetches and returns the complete state of the underlying device mapper
+    // device with given name.
+    Info GetDetailedInfo(const std::string& name) const;
 
     // Returns the current state of the underlying device mapper device
     // with given name.
