@@ -291,6 +291,10 @@ int FirstStageMain(int argc, char** argv) {
 
     const char* path = "/system/bin/init";
     const char* args[] = {path, "selinux_setup", nullptr};
+    auto fd = open("/dev/kmsg", O_WRONLY);  // do _not_ O_CLOEXEC!!!
+    dup2(fd, 1);                            // stdout
+    dup2(fd, 2);                            // stderr
+    close(fd);
     execv(path, const_cast<char**>(args));
 
     // execv() only returns if an error happened, in which case we
