@@ -162,6 +162,20 @@ DmDeviceState DeviceMapper::GetState(const std::string& name) const {
     return DmDeviceState::SUSPENDED;
 }
 
+bool DeviceMapper::SuspendDevice(const std::string& name, DmDeviceState state) {
+    struct dm_ioctl io;
+    InitIo(&io, name);
+
+    if (state == DmDeviceState::SUSPENDED) io.flags = DM_SUSPEND_FLAG;
+
+    if (ioctl(fd_, DM_DEV_SUSPEND, &io) < 0) {
+        PLOG(ERROR) << "DM_DEV_SUSPEND "
+                    << (state == DmDeviceState::SUSPENDED ? "suspend" : "resume") << " failed";
+        return false;
+    }
+    return true;
+}
+
 bool DeviceMapper::CreateDevice(const std::string& name, const DmTable& table) {
     std::string ignore_path;
     if (!CreateDevice(name, table, &ignore_path, 0ms)) {
