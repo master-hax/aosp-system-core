@@ -5,3 +5,21 @@ service test_service /system/bin/test_service CapAmb 0000000000003000
     capabilities NET_ADMIN NET_RAW
     disabled
     oneshot
+
+#on boot
+#    chown blah root blah
+#    chown root blah blah
+#    chown root root blah
+#    exec root root -- /bin/something
+#    exec_background root bad -- /bin/something
+#    exec - root bad -- /bin/something
+#    exec root root root root bad -- /bin/something
+#    exec root root root root root root root root root root root root root root root root root root root root root root -- /bin/something
+#    ifup blah
+#    chown ${blah} ${blah} path
+#    chown bad ${blah} path
+#    chown ${blah} bad path
+#    chown root root ${ersgserg
+#    chown root root $rthdrth
+#    chown root root ${}
+
