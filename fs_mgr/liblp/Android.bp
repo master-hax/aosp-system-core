@@ -22,6 +22,7 @@ liblp_lib_deps = [
     "libsparse",
     "libext4_utils",
     "libz",
+    "libvbmeta",
 ]
 
 cc_library {
@@ -39,6 +40,9 @@ cc_library {
         "reader.cpp",
         "utility.cpp",
         "writer.cpp",
+    ],
+    static_libs: [
+        "libavb",
     ],
     shared_libs: liblp_lib_deps,
     target: {
@@ -61,9 +65,9 @@ cc_test {
         "-Wno-unused-parameter",
     ],
     static_libs: [
-        "libgmock",
         "libfs_mgr",
         "liblp",
+        "libavb",
     ] + liblp_lib_deps,
     stl: "libc++_static",
     srcs: [
@@ -79,4 +83,31 @@ cc_test {
             ],
         },
     },
+}
+
+cc_test_host {
+    name: "liblp_test_host",
+    defaults: ["fs_mgr_defaults"],
+    cppflags: [
+        "-Wno-unused-parameter",
+    ],
+    static_libs: [
+        "libgmock",
+        "liblp",
+        "libavb",
+    ] + liblp_lib_deps,
+    stl: "libc++_static",
+    srcs: [
+        "super_footer_test.cpp",
+    ],
+    target: {
+        android: {
+            static_libs: [
+                "libcutils",
+            ],
+        },
+    },
+    required: [
+        "lpmake",
+    ],
 }

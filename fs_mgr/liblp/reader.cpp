@@ -24,8 +24,11 @@
 
 #include <android-base/file.h>
 #include <android-base/unique_fd.h>
+#include <libavb/libavb.h>
 
 #include "utility.h"
+
+#include <endian.h>
 
 namespace android {
 namespace fs_mgr {
@@ -457,6 +460,60 @@ std::string GetPartitionGroupName(const LpMetadataPartitionGroup& group) {
 
 std::string GetBlockDevicePartitionName(const LpMetadataBlockDevice& block_device) {
     return NameFromFixedArray(block_device.partition_name, sizeof(block_device.partition_name));
+}
+
+std::pair<uint64_t, uint64_t>
+GetPartitionVBMetaData(const LpMetadata &metadata,
+                       const LpMetadataPartition &partition,
+                       const int partition_fd, const uint64_t partition_size) {
+  // Get Partition AVB Footer
+  if (SeekFile64(partition_fd, partition_size - AVB_FOOTER_SIZE, SEEK_SET) <
+      0) {
+    PERROR << "Seek failed with offset " << partition_size - AVB_FOOTER_SIZE;
+    return std::pair<uint64_t, uint64_t>(0, 0);
+  }
+
+  std::unique_ptr<uint8_t[]> buffer =
+      std::make_unique<uint8_t[]>(AVB_FOOTER_SIZE);
+  if (!android::base::ReadFully(partition_fd, buffer.get(), AVB_FOOTER_SIZE)) {
+    PERROR << "Read failed";
+    return std::pair<uint64_t, uint64_t>(0, 0);
+  }
+
+  std::unique_ptr<AvbFooter> footer = std::make_unique<AvbFooter>();
+  memcpy(footer.get(), buffer.get(), sizeof(*footer));
+
+  // Extract relevant fields in order to construct the Super AVB footer.
+  footer->version_major = be32toh(footer->version_major);
+  footer->version_minor = be32toh(footer->version_minor);
+  footer->original_image_size = be64toh(footer->original_image_size);
+  footer->vbmeta_offset = be64toh(footer->vbmeta_offset);
+  footer->vbmeta_size = be64toh(footer->vbmeta_size);
+
+  // Get Physical Offset
+  uint32_t first_extent = partition.first_extent_index;
+  uint32_t last_extent = partition.first_extent_index + partition.num_extents;
+  uint64_t sectors_sum = 0;
+
+  for (uint32_t index = first_extent; index < last_extent; index++) {
+    const LpMetadataExtent &extent = metadata.extents[index];
+    if (sectors_sum * LP_SECTOR_SIZE <= footer->vbmeta_offset &&
+        footer->vbmeta_offset <
+            (sectors_sum + extent.num_sectors) * LP_SECTOR_SIZE) {
+      uint64_t physical_offset =
+          extent.target_data * LP_SECTOR_SIZE +
+          (footer->vbmeta_offset - sectors_sum * LP_SECTOR_SIZE);
+      uint64_t physical_size = footer->vbmeta_size;
+      return std::pair<uint64_t, uint64_t>(physical_offset, physical_size);
+    } else {
+      sectors_sum += extent.num_sectors;
+    }
+  }
+
+  // LpMetaData is located at the beginning of the super partition.
+  // Zero shouldn't be any resolved physical offset so using 0 to indicate
+  // failure of finding partition's vbmeta.
+  return std::pair<uint64_t, uint64_t>(0, 0);
 }
 
 }  // namespace fs_mgr
