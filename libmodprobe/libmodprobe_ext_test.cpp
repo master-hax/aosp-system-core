@@ -29,7 +29,7 @@
 
 #include "libmodprobe_test.h"
 
-bool Modprobe::Insmod(const std::string& path_name) {
+bool Modprobe::Insmod(const std::string& path_name, const std::string& parms) {
     auto deps = GetDependencies(MakeCanonical(path_name));
     if (deps.empty()) {
         return false;
@@ -47,6 +47,10 @@ bool Modprobe::Insmod(const std::string& path_name) {
     if (options_iter != module_options_.end()) {
         options = " " + options_iter->second;
     }
+    if (!parms.empty()) {
+        options = options + " " + parms;
+    }
+
     modules_loaded.emplace_back(path_name + options);
     return true;
 }
