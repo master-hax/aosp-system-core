@@ -17,8 +17,13 @@
 #include "images.h"
 
 #include <limits.h>
+#include <stdio.h>
+#include <string.h>
 
 #include <android-base/file.h>
+#include <libvbmeta/builder.h>
+#include <libvbmeta/footer_format.h>
+#include <libvbmeta/writer.h>
 
 #include "reader.h"
 #include "utility.h"
@@ -369,6 +374,13 @@ bool ImageBuilder::AddPartitionImage(const LpMetadataPartition& partition,
         output_block++;
     }
 
+    // Writes super AVB footer to record the offset of each logical partitions'
+    // vbmeta.
+    std::pair<uint64_t, uint64_t> vbmeta_data =
+        GetPartitionVBMetaData(metadata_, partition, fd, partition_size);
+    super_avb_footer_builder_.Init(GetPartitionName(partition),
+                                   vbmeta_data.first, vbmeta_data.second);
+
     return true;
 }
 
@@ -438,10 +450,68 @@ int ImageBuilder::OpenImageFile(const std::string& file) {
     return temp_fds_.back().get();
 }
 
-bool WriteToImageFile(const std::string& file, const LpMetadata& metadata, uint32_t block_size,
-                      const std::map<std::string, std::string>& images, bool sparsify) {
-    ImageBuilder builder(metadata, block_size, images, sparsify);
+bool ImageBuilder::WriteFooter(const std::string &blob) {
+  uint64_t super_size = metadata_.block_devices[0].size;
+  uint64_t last_sector = super_size / LP_SECTOR_SIZE;
+
+  if (block_size_ >= SUPER_FOOTER_TOTAL_SIZE) {
+    last_sector -= block_size_ / LP_SECTOR_SIZE;
+  } else {
+    last_sector -= SUPER_FOOTER_TOTAL_SIZE / LP_SECTOR_SIZE;
+  }
+
+  return AddData(device_images_[0].get(), blob, last_sector);
+}
+
+std::unique_ptr<SuperAVBFooter> ImageBuilder::ConstructSuperAVBFooter() {
+  return super_avb_footer_builder_.Export();
+}
+
+std::unique_ptr<SuperFooter>
+ImageBuilder::ConstructSuperFooter(uint64_t super_avb_footer_size) {
+  uint64_t super_avb_footer_offset = metadata_.block_devices[0].size;
+  if (block_size_ >= SUPER_FOOTER_TOTAL_SIZE) {
+    super_avb_footer_offset -= block_size_ - super_avb_footer_size;
+  } else {
+    super_avb_footer_offset -= SUPER_FOOTER_TOTAL_SIZE - super_avb_footer_size;
+  }
+  SuperFooterBuilder builder(super_avb_footer_offset);
+  return builder.Export();
+}
+
+bool ImageBuilder::WriteSuperAVBFooter() {
+  std::unique_ptr<SuperAVBFooter> SuperAVBFooter = ConstructSuperAVBFooter();
+  std::string super_avb_footer = SerializeSuperAVBFooter(*SuperAVBFooter);
+
+  // 2 * SUPER_FOOTER_SIZE is for backup and original.
+  if (block_size_ >= SUPER_FOOTER_TOTAL_SIZE) {
+    super_avb_footer.resize((block_size_ - 2 * SUPER_FOOTER_SIZE) / 2, 0);
+  } else {
+    super_avb_footer.resize(
+        (SUPER_FOOTER_TOTAL_SIZE - 2 * SUPER_FOOTER_SIZE) / 2, 0);
+  }
+
+  std::unique_ptr<SuperFooter> SuperFooter =
+      ConstructSuperFooter((uint64_t)super_avb_footer.size());
+  std::string super_footer = SerializeSuperFooter(*SuperFooter);
+
+  serialized_footer_ =
+      super_avb_footer + super_avb_footer + super_footer + super_footer;
+
+  return WriteFooter(serialized_footer_);
+}
+
+bool WriteToImageFile(const std::string &file, const LpMetadata &metadata,
+                      uint32_t block_size,
+                      const std::map<std::string, std::string> &images,
+                      bool sparsify, bool add_footer) {
+  ImageBuilder builder(metadata, block_size, images, sparsify);
+  if (add_footer) {
+    return builder.IsValid() && builder.Build() &&
+           builder.WriteSuperAVBFooter() && builder.Export(file);
+  } else {
     return builder.IsValid() && builder.Build() && builder.Export(file);
+  }
 }
 
 bool WriteSplitImageFiles(const std::string& output_dir, const LpMetadata& metadata,
@@ -452,4 +522,4 @@ bool WriteSplitImageFiles(const std::string& output_dir, const LpMetadata& metad
 }
 
 }  // namespace fs_mgr
-}  // namespace android
+} // namespace android
