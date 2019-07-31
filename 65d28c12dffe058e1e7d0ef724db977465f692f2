@@ -46,6 +46,30 @@
       "revId": "65d28c12dffe058e1e7d0ef724db977465f692f2",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0e0e2f43_249ca4c2",
+        "filename": "init/reboot.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 728,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2019-07-31T22:15:08Z",
+      "side": 1,
+      "message": "yeah, also we should wait for the property write done, but that\u0027s really a rare corner case and may not worth the complexity anyway.",
+      "parentUuid": "0cde18ca_3c40bb96",
+      "range": {
+        "startLine": 727,
+        "startChar": 6,
+        "endLine": 728,
+        "endChar": 8
+      },
+      "revId": "65d28c12dffe058e1e7d0ef724db977465f692f2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
