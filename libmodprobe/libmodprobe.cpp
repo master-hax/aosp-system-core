@@ -21,6 +21,7 @@
 #include <sys/syscall.h>
 
 #include <algorithm>
+#include <iostream>
 #include <set>
 #include <string>
 #include <vector>
@@ -364,4 +365,20 @@ bool Modprobe::Remove(const std::string& module_name) {
         Rmmod(*dep);
     }
     return true;
+}
+
+bool Modprobe::ListModules(const std::string& pattern) {
+    bool rv = false;
+    for (auto it = module_deps_.begin(); it != module_deps_.end(); it++) {
+        // Attempt to match both the canonical module name and the module
+        // filename.
+        if (!fnmatch(pattern.c_str(), it->first.c_str(), 0)) {
+            std::cout << it->first << std::endl;
+            rv = true;
+        } else if (!fnmatch(pattern.c_str(), basename(it->second[0].c_str()), 0)) {
+            std::cout << it->second[0] << std::endl;
+            rv = true;
+        }
+    }
+    return rv;
 }
