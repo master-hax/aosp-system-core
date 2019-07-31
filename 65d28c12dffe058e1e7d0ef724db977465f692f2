@@ -70,6 +70,30 @@
       "revId": "65d28c12dffe058e1e7d0ef724db977465f692f2",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b7372e8c_a4866906",
+        "filename": "init/reboot.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 728,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-07-31T22:55:17Z",
+      "side": 1,
+      "message": "SetProperty() itself is synchronous, so we wouldn\u0027t need to add anything.  I just didn\u0027t want to spend the time on the round trip socket communication to the other thread + potential contention from other processes.",
+      "parentUuid": "0e0e2f43_249ca4c2",
+      "range": {
+        "startLine": 727,
+        "startChar": 6,
+        "endLine": 728,
+        "endChar": 8
+      },
+      "revId": "65d28c12dffe058e1e7d0ef724db977465f692f2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
