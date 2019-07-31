@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba8535b8_1ba83c25",
+        "filename": "fs_mgr/libdm/dm.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 419,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2019-07-31T17:57:04Z",
+      "side": 1,
+      "message": "nit: Maybe use a negative number / std::nullopt for error cases? Otherwise there is no way to distinguish between 0% and error. (Or return bool and use double* outparam).",
+      "range": {
+        "startLine": 419,
+        "startChar": 19,
+        "endLine": 419,
+        "endChar": 20
+      },
+      "revId": "7a77e6bd41bb6a81c893e41f86e018da8084fbd5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
