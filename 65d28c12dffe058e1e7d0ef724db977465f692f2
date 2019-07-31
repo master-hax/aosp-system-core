@@ -22,6 +22,30 @@
       "revId": "65d28c12dffe058e1e7d0ef724db977465f692f2",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0cde18ca_3c40bb96",
+        "filename": "init/reboot.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 728,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-07-31T22:03:39Z",
+      "side": 1,
+      "message": "I (mostly) intentionally put it after the first property_set() at the beginning of DoReboot() so we don\u0027t need to worry about that being slowed down.  The net result should be the same as here.",
+      "parentUuid": "a042265f_7011e3fe",
+      "range": {
+        "startLine": 727,
+        "startChar": 6,
+        "endLine": 728,
+        "endChar": 8
+      },
+      "revId": "65d28c12dffe058e1e7d0ef724db977465f692f2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
