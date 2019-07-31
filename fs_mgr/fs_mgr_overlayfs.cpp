@@ -150,6 +150,8 @@ bool fs_mgr_filesystem_has_space(const std::string& mount_point) {
     return (vst.f_bfree >= (vst.f_blocks * kPercentThreshold / 100));
 }
 
+const auto kPhysicalDevice = "/dev/block/by-name/"s;
+
 bool fs_mgr_overlayfs_enabled(FstabEntry* entry) {
     // readonly filesystem, can not be mount -o remount,rw
     // for squashfs, erofs or if free space is (near) zero making such a remount
@@ -166,9 +168,22 @@ bool fs_mgr_overlayfs_enabled(FstabEntry* entry) {
     if (!has_shared_blocks && (entry->mount_point == "/system")) {
         has_shared_blocks = fs_mgr_has_shared_blocks("/", entry->blk_device);
     }
-    // special case for first stage init for system as root (taimen)
+    // special case for first stage init for system as root (taimen and others)
     if (!has_shared_blocks && (errno == ENOENT) && (entry->blk_device == "/dev/root")) {
-        has_shared_blocks = true;
+        // We are here because default fstab does not have an entry for / because caller
+        // (init and remount) has already retrieved (or manufactured) it.
+        entry->blk_device = kPhysicalDevice + "system" + fs_mgr_get_slot_suffix();
+        errno = 0;
+        has_shared_blocks = fs_mgr_has_shared_blocks("/", entry->blk_device);
+        if (!has_shared_blocks && (errno == ENOENT)) {
+            entry->blk_device = kPhysicalDevice + "system";
+            errno = 0;
+            has_shared_blocks = fs_mgr_has_shared_blocks("/", entry->blk_device);
+        }
+        if (!has_shared_blocks && (errno == ENOENT)) {
+            // We are here because during init first stage and have doubts ...
+            has_shared_blocks = true;
+        }
     }
     errno = save_errno;
     return has_shared_blocks;
@@ -387,8 +402,6 @@ bool fs_mgr_overlayfs_setup_one(const std::string& overlay, const std::string& m
 uint32_t fs_mgr_overlayfs_slot_number() {
     return SlotNumberForSlotSuffix(fs_mgr_get_slot_suffix());
 }
-
-const auto kPhysicalDevice = "/dev/block/by-name/"s;
 
 std::string fs_mgr_overlayfs_super_device(uint32_t slot_number) {
     return kPhysicalDevice + fs_mgr_get_super_partition_name(slot_number);
