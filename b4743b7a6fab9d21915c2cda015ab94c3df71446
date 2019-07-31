@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ee93c413_67c98054",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1057,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2019-07-31T19:00:14Z",
+      "side": 1,
+      "message": "how long this will impact shutdown time, esp. lowend device?",
+      "range": {
+        "startLine": 1053,
+        "startChar": 4,
+        "endLine": 1057,
+        "endChar": 16
+      },
+      "revId": "b4743b7a6fab9d21915c2cda015ab94c3df71446",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
