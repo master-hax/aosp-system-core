@@ -72,8 +72,10 @@ std::unique_ptr<LpMetadata> ReadMetadata(const std::string& super_partition, uin
 
 // Read/Write logical partition metadata to an image file, for diagnostics or
 // flashing.
-bool WriteToImageFile(const std::string& file, const LpMetadata& metadata, uint32_t block_size,
-                      const std::map<std::string, std::string>& images, bool sparsify);
+bool WriteToImageFile(const std::string &file, const LpMetadata &metadata,
+                      uint32_t block_size,
+                      const std::map<std::string, std::string> &images,
+                      bool sparsify, bool add_footer = false);
 bool WriteToImageFile(const std::string& file, const LpMetadata& metadata);
 std::unique_ptr<LpMetadata> ReadFromImageFile(const std::string& image_file);
 std::unique_ptr<LpMetadata> ReadFromImageBlob(const void* data, size_t bytes);
@@ -110,6 +112,12 @@ std::string GetPartitionSlotSuffix(const std::string& partition_name);
 // Helpers for common functions.
 const LpMetadataPartition* FindPartition(const LpMetadata& metadata, const std::string& name);
 uint64_t GetPartitionSize(const LpMetadata& metadata, const LpMetadataPartition& partition);
+
+// Helpers for the vbmetas' physical offset
+std::pair<uint64_t, uint64_t>
+GetPartitionVBMetaData(const LpMetadata &metadata,
+                       const LpMetadataPartition &partition,
+                       const int partition_fd, const uint64_t partition_size);
 
 }  // namespace fs_mgr
 }  // namespace android

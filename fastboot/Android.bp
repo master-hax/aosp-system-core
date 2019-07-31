@@ -44,6 +44,7 @@ cc_library_host_static {
         "libbase",
         "libadb_host",
         "liblp",
+        "libvbmeta",
     ],
 
     header_libs: [
@@ -138,6 +139,7 @@ cc_binary {
         "libhwbinder",
         "liblog",
         "liblp",
+        "libvbmeta",
         "libsparse",
         "libutils",
     ],
@@ -199,6 +201,7 @@ cc_defaults {
         "libcutils",
         "libgtest_host",
         "liblp",
+        "libvbmeta",
         "libcrypto",
     ],
 }
