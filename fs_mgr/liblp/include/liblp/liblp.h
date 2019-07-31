@@ -74,6 +74,9 @@ std::unique_ptr<LpMetadata> ReadMetadata(const std::string& super_partition, uin
 // flashing.
 bool WriteToImageFile(const std::string& file, const LpMetadata& metadata, uint32_t block_size,
                       const std::map<std::string, std::string>& images, bool sparsify);
+bool WriteToImageFileWithFooter(
+    const std::string &file, const LpMetadata &metadata, uint32_t block_size,
+    const std::map<std::string, std::string> &images, bool sparsify);
 bool WriteToImageFile(const std::string& file, const LpMetadata& metadata);
 std::unique_ptr<LpMetadata> ReadFromImageFile(const std::string& image_file);
 std::unique_ptr<LpMetadata> ReadFromImageBlob(const void* data, size_t bytes);

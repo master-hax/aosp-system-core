@@ -20,7 +20,10 @@
 #include <string>
 
 #include <android-base/unique_fd.h>
+#include <libavb/libavb.h>
 #include <liblp/liblp.h>
+#include <libvbmeta/builder.h>
+#include <libvbmeta/super_avb_footer_format.h>
 #include <sparse/sparse.h>
 
 namespace android {
@@ -45,6 +48,9 @@ class ImageBuilder {
     bool ExportFiles(const std::string& dir);
     bool IsValid() const;
 
+    bool TestFooter(const std::string &file);
+    bool WriteSuperAVBFooter();
+
     using SparsePtr = std::unique_ptr<sparse_file, decltype(&sparse_file_destroy)>;
     const std::vector<SparsePtr>& device_images() const { return device_images_; }
 
@@ -57,13 +63,23 @@ class ImageBuilder {
     bool CheckExtentOrdering();
     uint64_t ComputePartitionSize(const LpMetadataPartition& partition) const;
 
+    std::unique_ptr<AvbFooter> GetPartitionAVBFooter(const int &fd,
+                                                     const uint64_t &offset);
+    uint64_t GetPhysicalAddress(const LpMetadataPartition &partition,
+                                const uint64_t offset);
+    std::unique_ptr<SuperAVBFooter> GetSuperAVBFooter();
+    std::unique_ptr<SuperFooter> GetSuperFooter(uint64_t super_avb_footer_size);
+    bool WriteFooter(const std::string &blob);
+
     const LpMetadata& metadata_;
     const LpMetadataGeometry& geometry_;
     uint32_t block_size_;
     bool sparsify_;
+    SuperAVBFooterBuilder super_avb_footer_builder_;
 
     std::vector<SparsePtr> device_images_;
     std::string all_metadata_;
+    std::string serial_footer_;
     std::map<std::string, std::string> images_;
     std::vector<android::base::unique_fd> temp_fds_;
 };

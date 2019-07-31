@@ -22,6 +22,8 @@
 #include <memory>
 
 #include <liblp/liblp.h>
+#include <libvbmeta/super_avb_footer_format.h>
+#include <libvbmeta/super_footer_format.h>
 
 namespace android {
 namespace fs_mgr {
@@ -45,6 +47,12 @@ std::unique_ptr<LpMetadata> ReadPrimaryMetadata(int fd, const LpMetadataGeometry
                                                 uint32_t slot_number);
 std::unique_ptr<LpMetadata> ReadBackupMetadata(int fd, const LpMetadataGeometry& geometry,
                                                uint32_t slot_number);
+
+bool ParseSuperAvbFooter(const void *buffer, SuperAVBFooter *footer);
+bool ReadSuperAvbFooter(int fd, uint64_t offset, SuperAVBFooter *footer);
+bool ParseSuperFooter(const void *buffer, SuperFooter *footer);
+bool ReadSuperFooter(int fd, uint64_t super_size, SuperFooter *footer);
+uint8_t ReadDataFromSuper(int fd, uint64_t offset);
 
 }  // namespace fs_mgr
 }  // namespace android
