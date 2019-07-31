@@ -99,6 +99,10 @@ TEST(libmodprobe, Test) {
             "options test9.ko param_x=1 param_y=2 param_z=3\n"
             "options test100.ko param_1=1\n";
 
+    const std::string modules_blacklist =
+	    "blacklist test9.ko\n"
+	    "blacklist test3.ko\n";
+
     const std::string modules_load =
             "test4.ko\n"
             "test1.ko\n"
@@ -120,6 +124,8 @@ TEST(libmodprobe, Test) {
             modules_options, std::string(dir.path) + "/modules.options", 0600, getuid(), getgid()));
     ASSERT_TRUE(android::base::WriteStringToFile(
             modules_load, std::string(dir.path) + "/modules.load", 0600, getuid(), getgid()));
+    ASSERT_TRUE(android::base::WriteStringToFile(
+            modules_blacklist, std::string(dir.path) + "/modules.blacklist", 0600, getuid(), getgid()));
 
     for (auto i = test_modules.begin(); i != test_modules.end(); ++i) {
         *i = dir.path + *i;
@@ -153,4 +159,7 @@ TEST(libmodprobe, Test) {
     }
 
     EXPECT_TRUE(modules_loaded == expected_after_remove);
+
+    m.EnableBlacklist(true);
+    EXPECT_FALSE(m.LoadWithAliases("test4", true));
 }
