@@ -1041,5 +1041,26 @@ Result<int> CallFunctionAndHandlePropertiesImpl(const std::function<int()>& f) {
     return result;
 }
 
+void RebootPropertyHandlerThread() {
+    property_set = [](const std::string& name, const std::string& value) -> uint32_t {
+        return android::base::SetProperty(name, value) ? PROP_SUCCESS : PROP_ERROR_SET_FAILED;
+    };
+
+    std::thread{[] {
+        Epoll epoll;
+        if (auto result = epoll.Open(); !result) {
+            LOG(FATAL) << "Could not create epoll: " << result.error();
+        }
+        if (auto result = epoll.RegisterHandler(property_set_fd, handle_property_set_fd); !result) {
+            LOG(FATAL) << "Shutdown: Could not register epoll handler for property fd: "
+                       << result.error();
+        }
+
+        while (true) {
+            epoll.Wait({});
+        }
+    }}.detach();
+}
+
 }  // namespace init
 }  // namespace android
