@@ -22,6 +22,30 @@
       "revId": "7a77e6bd41bb6a81c893e41f86e018da8084fbd5",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bdc9660a_aec90d7f",
+        "filename": "fs_mgr/libdm/dm.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 419,
+      "author": {
+        "id": 1409599
+      },
+      "writtenOn": "2019-07-31T18:17:56Z",
+      "side": 1,
+      "message": "I went through a different approach, new version is coming in a moment.",
+      "parentUuid": "ba8535b8_1ba83c25",
+      "range": {
+        "startLine": 419,
+        "startChar": 19,
+        "endLine": 419,
+        "endChar": 20
+      },
+      "revId": "7a77e6bd41bb6a81c893e41f86e018da8084fbd5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
