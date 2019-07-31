@@ -448,6 +448,14 @@ static void DoReboot(unsigned int cmd, const std::string& reason, const std::str
     property_set(LAST_REBOOT_REASON_PROPERTY, reason.c_str() + skip);
     sync();
 
+    // After this point, we no longer return to the main init loop, so we would otherwise not
+    // handle any more properties.  However processes may need to set properties in their shutdown
+    // path and processes that we fork (such as vdc for volume shutdown) may need to set properties.
+    // Therefore, we fork a dedicated thread to handle properties from this point on.  As a side
+    // effect, property_set() now functions like any other process and communicates to the thread
+    // via a socket, but that should not cause any substantial slowdown.
+    RebootPropertyHandlerThread();
+
     bool is_thermal_shutdown = cmd == ANDROID_RB_THERMOFF;
 
     auto shutdown_timeout = 0ms;

@@ -47,5 +47,7 @@ Result<int> CallFunctionAndHandleProperties(F&& f, Args&&... args) {
     return CallFunctionAndHandlePropertiesImpl(func);
 }
 
+void RebootPropertyHandlerThread();
+
 }  // namespace init
 }  // namespace android
