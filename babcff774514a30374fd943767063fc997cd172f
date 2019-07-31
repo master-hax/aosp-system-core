@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "6cabae33_fb12fed7",
+        "filename": "fs_mgr/libdm/dm.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 407,
+      "author": {
+        "id": 1409599
+      },
+      "writtenOn": "2019-07-31T16:03:23Z",
+      "side": 1,
+      "message": "Yes, I forgot to add the WIP flag.\n\nThis was intended to be a helper function for libsnapshot, will connect it after aosp/1090697 landed.\nThe results can be easily aggregated by normalizing on sectors_initial, I\u0027ll try to refactor this in something simpler.\n\nThanks!",
+      "parentUuid": "a0356887_43c9eaa9",
+      "revId": "babcff774514a30374fd943767063fc997cd172f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "a983e9e6_ca9d05a9",
         "filename": "fs_mgr/libdm/dm.cpp",
         "patchSetId": 1
@@ -30,6 +48,24 @@
       "writtenOn": "2019-07-31T01:37:24Z",
       "side": 1,
       "message": "This should use DmTargetSnapshot::ParseStatusText - feel free to replace the old implementation as yours looks much simpler. (But better to not duplicate it). In fact, maybe this whole method should be a static helper on DmTargetSnapshot.",
+      "revId": "babcff774514a30374fd943767063fc997cd172f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9381a972_1e5c79c1",
+        "filename": "fs_mgr/libdm/dm.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 411,
+      "author": {
+        "id": 1409599
+      },
+      "writtenOn": "2019-07-31T16:03:23Z",
+      "side": 1,
+      "message": "Oh, I didn\u0027t see that! Will do.",
+      "parentUuid": "a983e9e6_ca9d05a9",
       "revId": "babcff774514a30374fd943767063fc997cd172f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
