@@ -16,6 +16,7 @@
 
 #include "libdm/dm.h"
 
+#include <inttypes.h>
 #include <sys/ioctl.h>
 #include <sys/sysmacros.h>
 #include <sys/types.h>
@@ -396,6 +397,31 @@ bool DeviceMapper::GetDeviceString(const std::string& name, std::string* dev) {
     }
     *dev = std::to_string(major(num)) + ":" + std::to_string(minor(num));
     return true;
+}
+
+// Computes the percentage of complition for snapshot merge operations.
+// @data is the table status parameter in the form
+//   "sectors_allocated/total_sectors metadata_sectors"
+// @sectors_initial is the number of sectors_allocated stored right before
+// starting the merge.
+double snap_percent(const std::string& data, uint64_t sectors_initial = 0) {
+    uint64_t sectors_allocated, total_sectors, metadata_sectors;
+    int r = sscanf(data.c_str(),
+		   "%" PRIu64 "/%" PRIu64 " %" PRIu64,
+		   &sectors_allocated, &total_sectors, &metadata_sectors);
+    if (sectors_initial == 0) {
+        sectors_initial = total_sectors;
+    }
+    if (r == 3) {
+        if (sectors_allocated <= metadata_sectors) {
+            return 100;
+        }
+        if (sectors_allocated >= total_sectors || sectors_allocated >= sectors_initial) {
+            return 0;
+        }
+	return 100 * (1.0 - static_cast<double>(sectors_allocated - metadata_sectors) / sectors_initial);
+    }
+    return 0;
 }
 
 bool DeviceMapper::GetTableStatus(const std::string& name, std::vector<TargetInfo>* table) {
