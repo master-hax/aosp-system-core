@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a0356887_43c9eaa9",
+        "filename": "fs_mgr/libdm/dm.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 407,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-07-31T01:37:24Z",
+      "side": 1,
+      "message": "It doesn\u0027t look like this is exported anywhere, was it intended for dmctl? For libsnapshot, when we implement the merge progress bar, we\u0027ll need to compute the progress as a sum of all the merge devices.",
+      "revId": "babcff774514a30374fd943767063fc997cd172f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a983e9e6_ca9d05a9",
+        "filename": "fs_mgr/libdm/dm.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 411,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-07-31T01:37:24Z",
+      "side": 1,
+      "message": "This should use DmTargetSnapshot::ParseStatusText - feel free to replace the old implementation as yours looks much simpler. (But better to not duplicate it). In fact, maybe this whole method should be a static helper on DmTargetSnapshot.",
+      "revId": "babcff774514a30374fd943767063fc997cd172f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
