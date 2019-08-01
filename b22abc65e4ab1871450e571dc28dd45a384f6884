@@ -1,0 +1,688 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1f2fcb90_07e3613a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-01T16:51:40Z",
+      "side": 1,
+      "message": "Maybe add more info for the main purpose.\n\ne.g.,\nThis commit adds the footer in super image to eliminate the\nneed of adding /vbmeta_system and/or /vbmeta_vendor when AVB\nchain partition is used with Android Dynamic Partition.\n\nSee BOARD_AVB_VBMETA_SYSTEM under the link:\nhttps://android.googlesource.com/platform/external/avb/#build-system-integration",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 9,
+        "endChar": 43
+      },
+      "revId": "b22abc65e4ab1871450e571dc28dd45a384f6884",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9d7931e0_9fa5fedf",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-01T16:51:40Z",
+      "side": 1,
+      "message": "How about adding fixed or variable for the new struct?\n\n|Backup Super AVB Footer| (variable-length)\n|    Super AVB Footer   | (variable-length)\n|  Backup Super Footer  | (fixed-length)\n|      Super Footer     | (fixed-length)",
+      "range": {
+        "startLine": 11,
+        "startChar": 0,
+        "endLine": 14,
+        "endChar": 25
+      },
+      "revId": "b22abc65e4ab1871450e571dc28dd45a384f6884",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "62d4b413_41e1e19f",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-01T16:51:40Z",
+      "side": 1,
+      "message": "Let\u0027s break if it exceeds 72 chars per line.\n\nHow about:\n\nThe bottom Super Footer records the physical offset of the Super\nAVB Footer, which in turn records the physical offset of each\nlogical partition\u0027s vbmeta within the /super partition.",
+      "range": {
+        "startLine": 16,
+        "startChar": 0,
+        "endLine": 16,
+        "endChar": 159
+      },
+      "revId": "b22abc65e4ab1871450e571dc28dd45a384f6884",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d278c124_fdec4c90",
+        "filename": "fs_mgr/liblp/images.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-01T16:51:40Z",
+      "side": 1,
+      "message": "https://google.github.io/styleguide/cppguide.html#Names_and_Order_of_Includes\n\nC system headers should be in the group of above (L19).",
+      "range": {
+        "startLine": 30,
+        "startChar": 0,
+        "endLine": 32,
+        "endChar": 19
+      },
+      "revId": "b22abc65e4ab1871450e571dc28dd45a384f6884",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "99f1d9eb_0967d5ba",
+        "filename": "fs_mgr/liblp/images.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 175,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-01T16:51:40Z",
+      "side": 1,
+      "message": "this is probably not related to this change. Let\u0027s keep it as it is.",
+      "range": {
+        "startLine": 175,
+        "startChar": 0,
+        "endLine": 175,
+        "endChar": 0
+      },
+      "revId": "b22abc65e4ab1871450e571dc28dd45a384f6884",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "163ab837_fbc798a5",
+        "filename": "fs_mgr/liblp/images.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 311,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-01T16:51:40Z",
+      "side": 1,
+      "message": "same here.",
+      "revId": "b22abc65e4ab1871450e571dc28dd45a384f6884",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "53cf0c22_9701e959",
+        "filename": "fs_mgr/liblp/images.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 381,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-01T16:51:40Z",
+      "side": 1,
+      "message": "Capitalize the first word and put a \u0027.\u0027 at the end of the sentence.\ne.g.,\n\n// Writes super AVB footer to record the offset of each logical partitions\u0027 vbmeta.\n\nhttps://google.github.io/styleguide/cppguide.html#Function_Comments\n....\nThese comments should be descriptive (\"Opens the file\") rather than imperative (\"Open the file\");",
+      "range": {
+        "startLine": 381,
+        "startChar": 3,
+        "endLine": 381,
+        "endChar": 29
+      },
+      "revId": "b22abc65e4ab1871450e571dc28dd45a384f6884",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a874fc5a_241cc4fd",
+        "filename": "fs_mgr/liblp/images.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 383,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-01T16:51:40Z",
+      "side": 1,
+      "message": "https://google.github.io/styleguide/cppguide.html#Variable_Names\n\nUsing lower case + underscores.\nAlso, how about s/address/offset  \u003d\u003d\u003e avb_footer_offset",
+      "range": {
+        "startLine": 383,
+        "startChar": 13,
+        "endLine": 383,
+        "endChar": 29
+      },
+      "revId": "b22abc65e4ab1871450e571dc28dd45a384f6884",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "74cc1bc2_8ea26760",
+        "filename": "fs_mgr/liblp/images.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 462,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-01T16:51:40Z",
+      "side": 1,
+      "message": "The style here prefers using \"const std::string\u0026 blob\".\nBut this should be checked by clang-format.",
+      "range": {
+        "startLine": 462,
+        "startChar": 49,
+        "endLine": 462,
+        "endChar": 50
+      },
+      "revId": "b22abc65e4ab1871450e571dc28dd45a384f6884",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "66c861fc_9df1b602",
+        "filename": "fs_mgr/liblp/images.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 463,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-01T16:51:40Z",
+      "side": 1,
+      "message": "ditto: lowercase + underscores",
+      "range": {
+        "startLine": 463,
+        "startChar": 11,
+        "endLine": 463,
+        "endChar": 20
+      },
+      "revId": "b22abc65e4ab1871450e571dc28dd45a384f6884",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "dd37587b_c22232b3",
+        "filename": "fs_mgr/liblp/images.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 464,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-01T16:51:40Z",
+      "side": 1,
+      "message": "ditto",
+      "range": {
+        "startLine": 464,
+        "startChar": 11,
+        "endLine": 464,
+        "endChar": 21
+      },
+      "revId": "b22abc65e4ab1871450e571dc28dd45a384f6884",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9356f154_dba76cd6",
+        "filename": "fs_mgr/liblp/images.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 475,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-01T16:51:40Z",
+      "side": 1,
+      "message": "If the code is not for production, let\u0027s remove it or moving it under tests.",
+      "range": {
+        "startLine": 475,
+        "startChar": 19,
+        "endLine": 475,
+        "endChar": 29
+      },
+      "revId": "b22abc65e4ab1871450e571dc28dd45a384f6884",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f39d87c9_3146467d",
+        "filename": "fs_mgr/liblp/images.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 506,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-01T16:51:40Z",
+      "side": 1,
+      "message": "\"int fd\" should be fine.",
+      "range": {
+        "startLine": 506,
+        "startChar": 36,
+        "endLine": 506,
+        "endChar": 49
+      },
+      "revId": "b22abc65e4ab1871450e571dc28dd45a384f6884",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b4a86e1d_4b3f88af",
+        "filename": "fs_mgr/liblp/images.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 506,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-01T16:51:40Z",
+      "side": 1,
+      "message": "copy-by-value should be fine, it\u0027s fast on 64-bit machine.",
+      "range": {
+        "startLine": 506,
+        "startChar": 51,
+        "endLine": 506,
+        "endChar": 73
+      },
+      "revId": "b22abc65e4ab1871450e571dc28dd45a384f6884",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6e021565_275f1d07",
+        "filename": "fs_mgr/liblp/images.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 508,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-01T16:51:40Z",
+      "side": 1,
+      "message": "\u0027test\u0027 is a bit misleading.\n\nHow about just \"Seek failed with offset\" \u003c\u003c offset;",
+      "range": {
+        "startLine": 508,
+        "startChar": 15,
+        "endLine": 508,
+        "endChar": 32
+      },
+      "revId": "b22abc65e4ab1871450e571dc28dd45a384f6884",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f76a5a45_16c3d22a",
+        "filename": "fs_mgr/liblp/images.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 515,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-01T16:51:40Z",
+      "side": 1,
+      "message": "same here, no need to use \u0027test\u0027.",
+      "range": {
+        "startLine": 515,
+        "startChar": 15,
+        "endLine": 515,
+        "endChar": 19
+      },
+      "revId": "b22abc65e4ab1871450e571dc28dd45a384f6884",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "dcfc0ac1_aa73774d",
+        "filename": "fs_mgr/liblp/images.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 526,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-01T16:51:40Z",
+      "side": 1,
+      "message": "How about adding a comment above:\n// Extract relevant fields in order to construct the Super AVB footer.\n\nOtherwise, someone might wonder why not use avb_vbmeta_image_header_to_host_byte_order() from libavb.\nhttps://android.googlesource.com/platform/external/avb/+/36d41d922380ce2423b32c69e1ff6c00c3134e6e/libavb/avb_vbmeta_image.h#202",
+      "range": {
+        "startLine": 522,
+        "startChar": 0,
+        "endLine": 526,
+        "endChar": 53
+      },
+      "revId": "b22abc65e4ab1871450e571dc28dd45a384f6884",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "aaaac608_4a5b1b11",
+        "filename": "fs_mgr/liblp/images.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 548,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-01T16:51:40Z",
+      "side": 1,
+      "message": "0 here means failed to get the physical offset, right?\nHow about adding a comment:\n// LpMetaData is located at the beginning of the super partition.\n// Zero shouldn\u0027t be any resolved physical offset so using 0 to indicate\n// failure of translation.",
+      "range": {
+        "startLine": 548,
+        "startChar": 9,
+        "endLine": 548,
+        "endChar": 10
+      },
+      "revId": "b22abc65e4ab1871450e571dc28dd45a384f6884",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cea73722_350c3d1b",
+        "filename": "fs_mgr/liblp/images.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 552,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-01T16:51:40Z",
+      "side": 1,
+      "message": "Does the Export() here means output to file?\nIf so, the \u0027Get...\u0027 in the function name seems not accurate?",
+      "range": {
+        "startLine": 552,
+        "startChar": 35,
+        "endLine": 552,
+        "endChar": 41
+      },
+      "revId": "b22abc65e4ab1871450e571dc28dd45a384f6884",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "878a8bd1_b4e7a45d",
+        "filename": "fs_mgr/liblp/images.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 556,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-01T16:51:40Z",
+      "side": 1,
+      "message": "It seems doesn\u0027t look like getting something from somewhere.\n\nHow about: BuildSuperFooter() or ConstructSuperFooter()?",
+      "range": {
+        "startLine": 556,
+        "startChar": 14,
+        "endLine": 556,
+        "endChar": 28
+      },
+      "revId": "b22abc65e4ab1871450e571dc28dd45a384f6884",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "63a34f3d_f6886166",
+        "filename": "fs_mgr/liblp/images.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 564,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-01T16:51:40Z",
+      "side": 1,
+      "message": "does this output to a file or just build the data structure for SuperFooter?",
+      "range": {
+        "startLine": 564,
+        "startChar": 17,
+        "endLine": 564,
+        "endChar": 23
+      },
+      "revId": "b22abc65e4ab1871450e571dc28dd45a384f6884",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f3b8a058_5c318423",
+        "filename": "fs_mgr/liblp/images.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 572,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-01T16:51:40Z",
+      "side": 1,
+      "message": "adding a comment above to state the 2 is for \"copy\" + original",
+      "range": {
+        "startLine": 572,
+        "startChar": 43,
+        "endLine": 572,
+        "endChar": 64
+      },
+      "revId": "b22abc65e4ab1871450e571dc28dd45a384f6884",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fb360abf_182f7ef1",
+        "filename": "fs_mgr/liblp/images.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 582,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-01T16:51:40Z",
+      "side": 1,
+      "message": "serialized_footers or output_footers?",
+      "range": {
+        "startLine": 582,
+        "startChar": 2,
+        "endLine": 582,
+        "endChar": 16
+      },
+      "revId": "b22abc65e4ab1871450e571dc28dd45a384f6884",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "956a0440_78b98a3d",
+        "filename": "fs_mgr/liblp/images.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 610,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-01T16:51:40Z",
+      "side": 1,
+      "message": "shouldn\u0027t be changed?",
+      "range": {
+        "startLine": 610,
+        "startChar": 2,
+        "endLine": 610,
+        "endChar": 22
+      },
+      "revId": "b22abc65e4ab1871450e571dc28dd45a384f6884",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f0dcb8ae_88f1e8ab",
+        "filename": "fs_mgr/liblp/images.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-01T16:51:40Z",
+      "side": 1,
+      "message": "seems just for your local testing? If so, let\u0027s remove it.",
+      "range": {
+        "startLine": 51,
+        "startChar": 3,
+        "endLine": 51,
+        "endChar": 45
+      },
+      "revId": "b22abc65e4ab1871450e571dc28dd45a384f6884",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c5adf917_57219b24",
+        "filename": "fs_mgr/liblp/images.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-01T16:51:40Z",
+      "side": 1,
+      "message": "Assuming this is to get physical offset relative to the beginning of /super.\n\nHow about: LogicalToPhysicalOffset",
+      "range": {
+        "startLine": 68,
+        "startChar": 13,
+        "endLine": 68,
+        "endChar": 31
+      },
+      "revId": "b22abc65e4ab1871450e571dc28dd45a384f6884",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "85730475_9b269a5f",
+        "filename": "fs_mgr/liblp/images.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-01T16:51:40Z",
+      "side": 1,
+      "message": "nit: logical_offset",
+      "range": {
+        "startLine": 69,
+        "startChar": 47,
+        "endLine": 69,
+        "endChar": 53
+      },
+      "revId": "b22abc65e4ab1871450e571dc28dd45a384f6884",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9c854ad2_cda7eb2d",
+        "filename": "fs_mgr/liblp/images.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-01T16:51:40Z",
+      "side": 1,
+      "message": "why need this input to get super footer?",
+      "range": {
+        "startLine": 71,
+        "startChar": 57,
+        "endLine": 71,
+        "endChar": 78
+      },
+      "revId": "b22abc65e4ab1871450e571dc28dd45a384f6884",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e216c04f_d0c6a930",
+        "filename": "fs_mgr/liblp/images.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-01T16:51:40Z",
+      "side": 1,
+      "message": "what does the serial mean here?",
+      "range": {
+        "startLine": 82,
+        "startChar": 16,
+        "endLine": 82,
+        "endChar": 23
+      },
+      "revId": "b22abc65e4ab1871450e571dc28dd45a384f6884",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4ddc40c7_b1cfd604",
+        "filename": "fs_mgr/liblp/include/liblp/liblp.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-01T16:51:40Z",
+      "side": 1,
+      "message": "How about just add a new params, e.g., bool add_footer\u003dfalse, without introducing the new function below?",
+      "range": {
+        "startLine": 76,
+        "startChar": 72,
+        "endLine": 76,
+        "endChar": 87
+      },
+      "revId": "b22abc65e4ab1871450e571dc28dd45a384f6884",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
