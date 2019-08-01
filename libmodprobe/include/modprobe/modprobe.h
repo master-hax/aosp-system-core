@@ -31,6 +31,7 @@ class Modprobe {
     bool ListModules(const std::string& pattern);
     bool ShowDependencies(const std::string& module);
     void EnableBlacklist(bool enable);
+    void EnableVerbose(bool enable);
 
   private:
     std::string MakeCanonical(const std::string& module_path);
@@ -56,4 +57,5 @@ class Modprobe {
     std::unordered_map<std::string, std::string> module_options_;
     std::vector<std::string> module_blacklist_;
     bool blacklist_enabled;
+    bool verbose;
 };

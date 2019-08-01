@@ -263,10 +263,15 @@ Modprobe::Modprobe(const std::vector<std::string>& base_paths) {
     }
 
     blacklist_enabled = false;
+    verbose = false;
 }
 
 void Modprobe::EnableBlacklist(bool enable) {
     blacklist_enabled = enable;
+}
+
+void Modprobe::EnableVerbose(bool enable) {
+    verbose = enable;
 }
 
 std::vector<std::string> Modprobe::GetDependencies(const std::string& module) {
@@ -291,6 +296,9 @@ bool Modprobe::InsmodWithDeps(const std::string& module_name, const std::string&
 
     // load module dependencies in reverse order
     for (auto dep = dependencies.rbegin(); dep != dependencies.rend() - 1; ++dep) {
+        if (verbose) {
+            LOG(INFO) << "Loading hard dep for '" << module_name << "': " << *dep << std::endl;
+        }
         if (!LoadWithAliases(*dep, true)) {
             return false;
         }
@@ -299,6 +307,10 @@ bool Modprobe::InsmodWithDeps(const std::string& module_name, const std::string&
     // try to load soft pre-dependencies
     for (const auto& [module, softdep] : module_pre_softdep_) {
         if (module_name == module) {
+            if (verbose) {
+                LOG(INFO) << "Loading soft pre-dep for '" << module << "': " << softdep
+                          << std::endl;
+            }
             LoadWithAliases(softdep, false);
         }
     }
@@ -311,6 +323,10 @@ bool Modprobe::InsmodWithDeps(const std::string& module_name, const std::string&
     // try to load soft post-dependencies
     for (const auto& [module, softdep] : module_post_softdep_) {
         if (module_name == module) {
+            if (verbose) {
+                LOG(INFO) << "Loading soft post-dep for '" << module << "': " << softdep
+                          << std::endl;
+            }
             LoadWithAliases(softdep, false);
         }
     }
@@ -327,6 +343,10 @@ bool Modprobe::LoadWithAliases(const std::string& module_name, bool strict,
     // may alias themselves to the requested name)
     for (const auto& [alias, aliased_module] : module_aliases_) {
         if (fnmatch(alias.c_str(), module_name.c_str(), 0) != 0) continue;
+        if (verbose) {
+            LOG(INFO) << "Found alias for '" << module_name << "': '" << aliased_module
+                      << std::endl;
+        }
         modules_to_load.emplace(aliased_module);
     }
 
@@ -337,7 +357,7 @@ bool Modprobe::LoadWithAliases(const std::string& module_name, bool strict,
     }
 
     if (strict && !module_loaded) {
-        LOG(ERROR) << "LoadWithAliases did not find a module for " << module_name;
+        LOG(ERROR) << "LoadWithAliases was unable to load " << module_name;
         return false;
     }
     return true;

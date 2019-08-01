@@ -65,8 +65,9 @@ bool Modprobe::Rmmod(const std::string& module_name) {
 
 bool Modprobe::ModuleExists(const std::string& module_name) {
     struct stat fileStat;
-    if (blacklist_enabled && std::find(module_blacklist_.begin(), module_blacklist_.end(), module_name) !=
-        module_blacklist_.end()) {
+    if (blacklist_enabled && std::find(module_blacklist_.begin(), module_blacklist_.end(),
+                                       module_name) != module_blacklist_.end()) {
+        LOG(INFO) << "module " << module_name << " is blacklisted" << std::endl;
         return false;
     }
     auto deps = GetDependencies(module_name);
@@ -75,9 +76,11 @@ bool Modprobe::ModuleExists(const std::string& module_name) {
         return false;
     }
     if (stat(deps.front().c_str(), &fileStat)) {
+        LOG(INFO) << "module " << module_name << " does not exist" << std::endl;
         return false;
     }
     if (!S_ISREG(fileStat.st_mode)) {
+        LOG(INFO) << "module " << module_name << " is not a regular file" << std::endl;
         return false;
     }
     return true;
