@@ -382,3 +382,25 @@ bool Modprobe::ListModules(const std::string& pattern) {
     }
     return rv;
 }
+
+bool Modprobe::ShowDependencies(const std::string& module) {
+    std::string canonical_name = MakeCanonical(module);
+    std::cout << "soft pre-dependencies:" << std::endl;
+    for (const auto& [it_module, it_softdep] : module_pre_softdep_) {
+        if (canonical_name == it_module) {
+            std::cout << it_softdep << std::endl;
+        }
+    }
+    std::cout << "hard dependencies:" << std::endl;
+    auto hard_deps = GetDependencies(canonical_name);
+    for (auto dep = hard_deps.rbegin(); dep != hard_deps.rend(); dep++) {
+        std::cout << *dep << std::endl;
+    }
+    std::cout << "soft post-dependencies:" << std::endl;
+    for (const auto& [it_module, it_softdep] : module_post_softdep_) {
+        if (canonical_name == it_module) {
+            std::cout << it_softdep << std::endl;
+        }
+    }
+    return true;
+}
