@@ -197,15 +197,9 @@ class TargetParser final {
     char** argv_;
 };
 
-static int DmCreateCmdHandler(int argc, char** argv) {
-    if (argc < 1) {
-        std::cerr << "Usage: dmctl create <dm-name> [-ro] <targets...>" << std::endl;
-        return -EINVAL;
-    }
-    std::string name = argv[0];
-
+static bool parse_table_args(DmTable* table_dst, int argc, char** argv) {
     // Parse extended options first.
-    DmTable table;
+    DmTable& table = *table_dst;
     int arg_index = 1;
     while (arg_index < argc && argv[arg_index][0] == '-') {
         if (strcmp(argv[arg_index], "-ro") == 0) {
@@ -230,6 +224,21 @@ static int DmCreateCmdHandler(int argc, char** argv) {
         std::cerr << "Must define at least one target." << std::endl;
         return -EINVAL;
     }
+    return 0;
+}
+
+static int DmCreateCmdHandler(int argc, char** argv) {
+    if (argc < 1) {
+        std::cerr << "Usage: dmctl create <dm-name> [-ro] <targets...>" << std::endl;
+        return -EINVAL;
+    }
+    std::string name = argv[0];
+
+    DmTable table;
+    int ret = parse_table_args(&table, argc, argv);
+    if (ret) {
+        return ret;
+    }
 
     DeviceMapper& dm = DeviceMapper::Instance();
     if (!dm.CreateDevice(name, table)) {
@@ -252,6 +261,27 @@ static int DmDeleteCmdHandler(int argc, char** argv) {
         return -EIO;
     }
 
+    return 0;
+}
+
+static int DmReplaceCmdHandler(int argc, char** argv) {
+    if (argc < 1) {
+        std::cerr << "Usage: dmctl replace <dm-name> <targets...>" << std::endl;
+        return -EINVAL;
+    }
+    std::string name = argv[0];
+
+    DmTable table;
+    int ret = parse_table_args(&table, argc, argv);
+    if (ret) {
+        return ret;
+    }
+
+    DeviceMapper& dm = DeviceMapper::Instance();
+    if (!dm.LoadTableAndActivate(name, table)) {
+        std::cerr << "Failed to replace device-mapper table to: " << name << std::endl;
+        return -EIO;
+    }
     return 0;
 }
 
@@ -469,6 +499,7 @@ static std::map<std::string, std::function<int(int, char**)>> cmdmap = {
         // clang-format off
         {"create", DmCreateCmdHandler},
         {"delete", DmDeleteCmdHandler},
+        {"replace", DmReplaceCmdHandler},
         {"list", DmListCmdHandler},
         {"help", HelpCmdHandler},
         {"getpath", GetPathCmdHandler},
