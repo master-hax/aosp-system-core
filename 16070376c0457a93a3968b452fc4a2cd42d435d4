@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "dfda86fb_3a510652",
+        "filename": "libmodprobe/include/modprobe/modprobe.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-08-02T22:24:57Z",
+      "side": 1,
+      "message": "nit, but better to write this out as parameters.\n\nIf we really want something short, maybe use \u0027args\u0027 since we\u0027re already using that one and it\u0027s a bit more canonical.  But \u0027parameters\u0027 given that they\u0027re \"module parameters\" is best.",
+      "range": {
+        "startLine": 29,
+        "startChar": 44,
+        "endLine": 29,
+        "endChar": 49
+      },
+      "revId": "16070376c0457a93a3968b452fc4a2cd42d435d4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
