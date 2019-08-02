@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a2a61cb_1d370d9d",
+        "filename": "init/host_init_verifier.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-08-02T23:21:00Z",
+      "side": 1,
+      "message": "You can and probably should move the interface functions into the android::init:: namespace.  \n\nThe only reason why I have the other functions outside of that namespace is because I want getpwnam() to take over the libc getpwnam() and therefore can\u0027t be in a namespace.  The other two functions are used by it, so I figured they can also be outside of the namespace.",
+      "revId": "c4d0313b20b30257e0338a78ceb3d669737a808a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
