@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f9b3b9b6_0c46271c",
+        "filename": "libmodprobe/include/modprobe/modprobe.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-08-02T22:34:00Z",
+      "side": 1,
+      "message": "Probably better to have \n\nbool blacklist_enabled \u003d false; \n\nhere than setting it in ParseCfg.",
+      "revId": "8cac84065c7da2b19ed674cae56c25fccca9faad",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d6696ff0_d498f0b6",
+        "filename": "libmodprobe/libmodprobe_ext_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-08-02T22:34:00Z",
+      "side": 1,
+      "message": "This is correct of course, but maybe module_blacklist_ should be a std::set.  Using std::set::count() would make this line easier to read.",
+      "revId": "8cac84065c7da2b19ed674cae56c25fccca9faad",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "aa7ac669_9755c51e",
+        "filename": "libmodprobe/libmodprobe_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-08-02T22:34:00Z",
+      "side": 1,
+      "message": "No tabs.",
+      "revId": "8cac84065c7da2b19ed674cae56c25fccca9faad",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2c8a8d7c_2b312f93",
+        "filename": "libmodprobe/libmodprobe_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 128,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-08-02T22:34:00Z",
+      "side": 1,
+      "message": "May be worth factoring out a std::string dir_path \u003d dir.path, so you can shorten these lines by not needing the extra std::string() in each of them.",
+      "revId": "8cac84065c7da2b19ed674cae56c25fccca9faad",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
