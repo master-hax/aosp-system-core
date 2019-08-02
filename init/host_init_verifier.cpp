@@ -175,7 +175,7 @@ void PrintUsage() {
                  "Tests an init script for correctness\n"
                  "\n"
                  "-p FILE\tSearch this passwd file for users and groups\n"
-                 "-k FILE\tUse this file as a space-separated list of known interfaces\n"
+                 "-i FILE\tParse this JSON file for the HIDL interface inheritance hierarhcy\n"
               << std::endl;
 }
 
