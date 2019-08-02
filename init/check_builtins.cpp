@@ -27,8 +27,10 @@
 #include <android-base/logging.h>
 #include <android-base/parseint.h>
 #include <android-base/strings.h>
+#include <hidl-util/FQName.h>
 
 #include "builtin_arguments.h"
+#include "interface_utils.h"
 #include "rlimit_parser.h"
 #include "service.h"
 #include "util.h"
@@ -78,6 +80,25 @@ Result<void> check_exec(const BuiltinArguments& args) {
 
 Result<void> check_exec_background(const BuiltinArguments& args) {
     return check_exec(std::move(args));
+}
+
+Result<void> check_interface_restart(const BuiltinArguments& args) {
+    FQName fqName;
+    if (!fqName.setTo(args[1])) {
+        return Error() << "Unable to parse interface '" << args[1] << "'";
+    }
+    if (auto result = IsKnownInterface(fqName); !result) {
+        return result.error();
+    }
+    return {};
+}
+
+Result<void> check_interface_start(const BuiltinArguments& args) {
+    return check_interface_restart(std::move(args));
+}
+
+Result<void> check_interface_stop(const BuiltinArguments& args) {
+    return check_interface_restart(std::move(args));
 }
 
 Result<void> check_load_system_props(const BuiltinArguments& args) {
