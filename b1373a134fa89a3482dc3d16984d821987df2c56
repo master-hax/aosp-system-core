@@ -46,6 +46,30 @@
       "revId": "b1373a134fa89a3482dc3d16984d821987df2c56",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "523ee5cc_d9b1b63b",
+        "filename": "init/host_init_verifier.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 173,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-08-02T18:21:16Z",
+      "side": 1,
+      "message": "It is defacto optional though since we don\u0027t have any fatal errors when it\u0027s not provided:\n\nhttps://cs.corp.google.com/android/system/core/init/host_init_verifier.cpp?q\u003df:host_init_verifier.cpp\u0026sq\u003dpackage:%5Eandroid$\u0026g\u003d0\u0026l\u003d137\n\nLet\u0027s either make that a fatal abort or make this optional.  I think you\u0027re right that it\u0027s best to be mandatory.",
+      "parentUuid": "2cfb5e09_86874538",
+      "range": {
+        "startLine": 173,
+        "startChar": 54,
+        "endLine": 173,
+        "endChar": 61
+      },
+      "revId": "b1373a134fa89a3482dc3d16984d821987df2c56",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
