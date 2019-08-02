@@ -473,6 +473,22 @@ Result<std::pair<int, std::vector<std::string>>> ParseRestorecon(
     return std::pair(flag, paths);
 }
 
+std::optional<std::set<FQName>> known_interfaces;
+
+void SetKnownInterfaces(const std::set<FQName>& intfs) {
+    known_interfaces = intfs;
+}
+
+Result<void> IsKnownInterface(const FQName& intf) {
+    if (!known_interfaces) {
+        return Error() << "No known interfaces have been loaded.";
+    }
+    if (known_interfaces->count(intf) == 0) {
+        return Error() << "Unknown interface: '" << intf.string() << "'";
+    }
+    return {};
+}
+
 static void InitAborter(const char* abort_message) {
     // When init forks, it continues to use this aborter for LOG(FATAL), but we want children to
     // simply abort instead of trying to reboot the system.

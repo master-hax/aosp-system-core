@@ -21,9 +21,11 @@
 
 #include <chrono>
 #include <functional>
+#include <set>
 #include <string>
 
 #include <android-base/chrono_utils.h>
+#include <hidl-util/FQName.h>
 
 #include "result.h"
 
@@ -62,6 +64,9 @@ Result<void> IsLegalPropertyValue(const std::string& name, const std::string& va
 
 Result<std::pair<int, std::vector<std::string>>> ParseRestorecon(
         const std::vector<std::string>& args);
+
+void SetKnownInterfaces(const std::set<FQName>& intfs);
+Result<void> IsKnownInterface(const FQName& intf);
 
 void SetStdioToDevNull(char** argv);
 void InitKernelLogging(char** argv);
