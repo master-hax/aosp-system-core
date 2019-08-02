@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b156ec20_cf9e2e29",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 299,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-08-02T22:18:49Z",
+      "side": 1,
+      "message": "You don\u0027t need a separate member variable for this.  You should be able to use LOG(VERBOSE) and SetMinimumLogSeverity().",
+      "revId": "b5355c8a676129c6adced280d64ab803553fbbbc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a277e076_614c480d",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 312,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-08-02T22:18:49Z",
+      "side": 1,
+      "message": "Do you intentionally want an extra new line?  LOG(...) will have a new line at the end already.",
+      "range": {
+        "startLine": 312,
+        "startChar": 26,
+        "endLine": 312,
+        "endChar": 38
+      },
+      "revId": "b5355c8a676129c6adced280d64ab803553fbbbc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
