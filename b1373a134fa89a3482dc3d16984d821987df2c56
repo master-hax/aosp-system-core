@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9dcb4081_0b021ba1",
+        "filename": "init/host_init_verifier.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 173,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-08-02T18:07:58Z",
+      "side": 1,
+      "message": "[-i FILE] while we\u0027re at it.  We did make this optional, right?",
+      "range": {
+        "startLine": 173,
+        "startChar": 54,
+        "endLine": 173,
+        "endChar": 61
+      },
+      "revId": "b1373a134fa89a3482dc3d16984d821987df2c56",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
