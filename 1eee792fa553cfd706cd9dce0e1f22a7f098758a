@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "05dc2153_b128e8db",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 372,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-08-02T22:38:03Z",
+      "side": 1,
+      "message": "for (const auto\u0026 [module, deps] : module_deps_) {\n  ...\n}\n\n?",
+      "revId": "1eee792fa553cfd706cd9dce0e1f22a7f098758a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b378d139_7c03352a",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 374,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-08-02T22:38:03Z",
+      "side": 1,
+      "message": "This fits on one line.",
+      "range": {
+        "startLine": 373,
+        "startChar": 0,
+        "endLine": 374,
+        "endChar": 20
+      },
+      "revId": "1eee792fa553cfd706cd9dce0e1f22a7f098758a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
