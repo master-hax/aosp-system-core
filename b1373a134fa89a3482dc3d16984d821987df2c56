@@ -22,6 +22,30 @@
       "revId": "b1373a134fa89a3482dc3d16984d821987df2c56",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2cfb5e09_86874538",
+        "filename": "init/host_init_verifier.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 173,
+      "author": {
+        "id": 1455782
+      },
+      "writtenOn": "2019-08-02T18:16:47Z",
+      "side": 1,
+      "message": "We made it optional when constructing a ServiceParser object, but not when using host_init_verifier since there wasn\u0027t any user of host_init_verifier that couldn\u0027t easily provide this file.\n\nWould you like me to make it optional in this tool for any reason?",
+      "parentUuid": "9dcb4081_0b021ba1",
+      "range": {
+        "startLine": 173,
+        "startChar": 54,
+        "endLine": 173,
+        "endChar": 61
+      },
+      "revId": "b1373a134fa89a3482dc3d16984d821987df2c56",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
