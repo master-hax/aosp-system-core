@@ -29,8 +29,6 @@
 namespace android {
 namespace fs_mgr {
 
-static const std::string kDefaultGroup = "default";
-
 bool LinearExtent::AddTo(LpMetadata* out) const {
     if (device_index_ >= out->block_devices.size()) {
         LERROR << "Extent references unknown block device.";

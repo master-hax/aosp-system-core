@@ -38,6 +38,9 @@ class LinearExtent;
 static const uint32_t kDefaultPartitionAlignment = 1024 * 1024;
 static const uint32_t kDefaultBlockSize = 4096;
 
+// Name of the default group in a metadata.
+static constexpr const char* kDefaultGroup = "default";
+
 // Abstraction around dm-targets that can be encoded into logical partition tables.
 class Extent {
   public:
