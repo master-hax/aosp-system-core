@@ -27,6 +27,7 @@
 
 #include "liblp.h"
 #include "partition_opener.h"
+#include "property_fetcher.h"
 
 namespace android {
 namespace fs_mgr {
@@ -196,11 +197,11 @@ class MetadataBuilder {
         return New(device_info, metadata_max_size, metadata_slot_count);
     }
 
-    // Used by the test harness to override whether the device is "A/B".
-    static void OverrideABForTesting(bool ab_device);
+    // // Used by the test harness to override whether the device is "A/B".
+    // static void OverrideABForTesting(bool ab_device);
 
-    // Used by the test harness to override whether the device is "retrofitting dynamic partitions".
-    static void OverrideRetrofitDynamicParititonsForTesting(bool retrofit);
+    // // Used by the test harness to override whether the device is "retrofitting dynamic partitions".
+    // static void OverrideRetrofitDynamicParititonsForTesting(bool retrofit);
 
     // Define a new partition group. By default there is one group called
     // "default", with an unrestricted size. A non-zero size will restrict the
@@ -346,9 +347,6 @@ class MetadataBuilder {
     std::unique_ptr<LinearExtent> ExtendFinalExtent(Partition* partition,
                                                     const std::vector<Interval>& free_list,
                                                     uint64_t sectors_needed) const;
-
-    static std::optional<bool> sABOverride;
-    static std::optional<bool> sRetrofitDap;
 
     LpMetadataGeometry geometry_;
     LpMetadataHeader header_;

@@ -19,22 +19,34 @@
 #include <gtest/gtest.h>
 #include <liblp/builder.h>
 
+#include "mock_property_fetcher.h"
 #include "utility.h"
 
 using namespace std;
 using namespace android::fs_mgr;
+using ::testing::_;
+using ::testing::AnyNumber;
 using ::testing::ElementsAre;
+using ::testing::NiceMock;
+using ::testing::Return;
+using ::android::fs_mgr::MockPropertyFetcher;
+
+static void ResetPropertyFetcher() {
+    IPropertyFetcher::OverrideForTesting(std::make_unique<NiceMock<MockPropertyFetcher>>());
+}
+
+MockPropertyFetcher* GetMockedInstance() {
+    return static_cast<MockPropertyFetcher*>(IPropertyFetcher::GetInstance());
+}
 
 class Environment : public ::testing::Environment {
   public:
     void SetUp() override {
-        MetadataBuilder::OverrideABForTesting(false);
-        MetadataBuilder::OverrideRetrofitDynamicParititonsForTesting(false);
+        ResetPropertyFetcher();
     }
 };
 
 int main(int argc, char** argv) {
-    ::testing::AddGlobalTestEnvironment(new Environment);
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
 }
@@ -42,12 +54,10 @@ int main(int argc, char** argv) {
 class BuilderTest : public ::testing::Test {
   public:
     void SetUp() override {
-        MetadataBuilder::OverrideABForTesting(false);
-        MetadataBuilder::OverrideRetrofitDynamicParititonsForTesting(false);
+        ResetPropertyFetcher();
     }
     void TearDown() override {
-        MetadataBuilder::OverrideABForTesting(false);
-        MetadataBuilder::OverrideRetrofitDynamicParititonsForTesting(false);
+        ResetPropertyFetcher();
     }
 };
 
@@ -785,7 +795,9 @@ TEST_F(BuilderTest, ABExtents) {
 
     // A and B slots should be allocated from separate halves of the partition,
     // to mitigate allocating too many extents. (b/120433288)
-    MetadataBuilder::OverrideABForTesting(true);
+    ON_CALL(*GetMockedInstance(), GetProperty("ro.boot.slot_suffix", _))
+        .WillByDefault(Return("_a"));
+
     auto builder = MetadataBuilder::New(device_info, 65536, 2);
     ASSERT_NE(builder, nullptr);
     Partition* system_a = builder->AddPartition("system_a", 0);

@@ -23,17 +23,21 @@
 #include <android-base/unique_fd.h>
 #include <fs_mgr.h>
 #include <fstab/fstab.h>
+#include <gmock/gmock.h>
 #include <gtest/gtest.h>
 #include <liblp/builder.h>
 
 #include "images.h"
 #include "reader.h"
+#include "mock_property_fetcher.h"
 #include "test_partition_opener.h"
 #include "utility.h"
 #include "writer.h"
 
 using namespace std;
 using namespace android::fs_mgr;
+using ::testing::Return;
+using ::testing::_;
 using unique_fd = android::base::unique_fd;
 
 // Our tests assume a 128KiB disk with two 512 byte metadata slots.
@@ -664,7 +668,8 @@ TEST(liblp, AutoSlotSuffixing) {
 }
 
 TEST(liblp, UpdateRetrofit) {
-    MetadataBuilder::OverrideRetrofitDynamicParititonsForTesting(true);
+    ON_CALL(*GetMockedInstance(), GetBoolProperty("ro.boot.dynamic_partitions_retrofit", _))
+        .WillByDefault(Return(true));
 
     unique_ptr<MetadataBuilder> builder = CreateDefaultBuilder();
     ASSERT_NE(builder, nullptr);
@@ -695,7 +700,8 @@ TEST(liblp, UpdateRetrofit) {
 }
 
 TEST(liblp, UpdateNonRetrofit) {
-    MetadataBuilder::OverrideRetrofitDynamicParititonsForTesting(false);
+    ON_CALL(*GetMockedInstance(), GetBoolProperty("ro.boot.dynamic_partitions_retrofit", _))
+        .WillByDefault(Return(true));
 
     unique_fd fd = CreateFlashedDisk();
     ASSERT_GE(fd, 0);
