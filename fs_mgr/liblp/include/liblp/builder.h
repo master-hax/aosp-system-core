@@ -348,6 +348,9 @@ class MetadataBuilder {
     static bool ModifyMetadataForRetrofitDap(LpMetadata* metadata, uint32_t source_slot_number,
                                              uint32_t target_slot_number);
 
+    static bool ModifyMetadataForVirtualAb(LpMetadata* metadata, uint32_t source_slot_number,
+                                           uint32_t target_slot_number);
+
     LpMetadataGeometry geometry_;
     LpMetadataHeader header_;
     std::vector<std::unique_ptr<Partition>> partitions_;
