@@ -89,6 +89,7 @@ constexpr uint64_t AlignTo(uint64_t base, uint32_t alignment, uint32_t alignment
 // Update names from C++ strings.
 bool UpdateBlockDevicePartitionName(LpMetadataBlockDevice* device, const std::string& name);
 bool UpdatePartitionGroupName(LpMetadataPartitionGroup* group, const std::string& name);
+bool UpdatePartitionName(LpMetadataPartition* partition, const std::string& name);
 
 // Call BLKROSET ioctl on fd so that fd is readonly / read-writable.
 bool SetBlockReadonly(int fd, bool readonly);

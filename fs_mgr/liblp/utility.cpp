@@ -182,6 +182,14 @@ bool UpdatePartitionGroupName(LpMetadataPartitionGroup* group, const std::string
     return true;
 }
 
+bool UpdatePartitionName(LpMetadataPartition* partition, const std::string& name) {
+    if (name.size() > sizeof(partition->name)) {
+        return false;
+    }
+    strncpy(partition->name, name.c_str(), sizeof(partition->name));
+    return true;
+}
+
 bool SetBlockReadonly(int fd, bool readonly) {
 #if defined(__linux__)
     int val = readonly;
