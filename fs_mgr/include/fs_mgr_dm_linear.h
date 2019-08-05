@@ -66,6 +66,12 @@ bool CreateLogicalPartition(const std::string& block_device, const LpMetadata& m
                             const std::string& partition_name, bool force_writable,
                             const std::chrono::milliseconds& timeout_ms, std::string* path);
 
+// Same as above, but the partition is mapped with |mapped_name| instead.
+bool CreateLogicalPartition(const std::string& block_device, const LpMetadata& metadata,
+                            const std::string& partition_name, const std::string& mapped_name,
+                            bool force_writable, const std::chrono::milliseconds& timeout_ms,
+                            std::string* path);
+
 // Destroy the block device for a logical partition, by name. If |timeout_ms|
 // is non-zero, then this will block until the device path has been unlinked.
 bool DestroyLogicalPartition(const std::string& name);

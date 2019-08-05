@@ -109,9 +109,11 @@ static bool CreateDmTable(const LpMetadata& metadata, const LpMetadataPartition&
     return true;
 }
 
-static bool CreateLogicalPartition(const LpMetadata& metadata, const LpMetadataPartition& partition,
-                                   bool force_writable, const std::chrono::milliseconds& timeout_ms,
-                                   const std::string& super_device, std::string* path) {
+static bool CreateLogicalPartitionInternal(const LpMetadata& metadata,
+                                           const LpMetadataPartition& partition,
+                                           const std::string& mapped_name, bool force_writable,
+                                           const std::chrono::milliseconds& timeout_ms,
+                                           const std::string& super_device, std::string* path) {
     DeviceMapper& dm = DeviceMapper::Instance();
 
     DmTable table;
@@ -121,8 +123,7 @@ static bool CreateLogicalPartition(const LpMetadata& metadata, const LpMetadataP
     if (force_writable) {
         table.set_readonly(false);
     }
-    std::string name = GetPartitionName(partition);
-    if (!dm.CreateDevice(name, table, path, timeout_ms)) {
+    if (!dm.CreateDevice(mapped_name, table, path, timeout_ms)) {
         return false;
     }
     LINFO << "Created logical partition " << name << " on device " << *path;
@@ -151,7 +152,9 @@ bool CreateLogicalPartitions(const LpMetadata& metadata, const std::string& supe
             continue;
         }
         std::string path;
-        if (!CreateLogicalPartition(metadata, partition, false, {}, super_device, &path)) {
+        if (!CreateLogicalPartitionInternal(metadata, partition,
+                                            GetPartitionName(partition) /* mapped_name */, false,
+                                            {}, super_device, &path)) {
             LERROR << "Could not create logical partition: " << GetPartitionName(partition);
             return false;
         }
@@ -160,16 +163,25 @@ bool CreateLogicalPartitions(const LpMetadata& metadata, const std::string& supe
 }
 
 bool CreateLogicalPartition(const std::string& block_device, const LpMetadata& metadata,
-                            const std::string& partition_name, bool force_writable,
-                            const std::chrono::milliseconds& timeout_ms, std::string* path) {
+                            const std::string& partition_name, const std::string& mapped_name,
+                            bool force_writable, const std::chrono::milliseconds& timeout_ms,
+                            std::string* path) {
     for (const auto& partition : metadata.partitions) {
         if (GetPartitionName(partition) == partition_name) {
-            return CreateLogicalPartition(metadata, partition, force_writable, timeout_ms,
-                                          block_device, path);
+            return CreateLogicalPartitionInternal(metadata, partition, mapped_name, force_writable,
+                                                  timeout_ms, block_device, path);
         }
     }
     LERROR << "Could not find any partition with name: " << partition_name;
     return false;
+}
+
+bool CreateLogicalPartition(const std::string& block_device, const LpMetadata& metadata,
+                            const std::string& partition_name, bool force_writable,
+                            const std::chrono::milliseconds& timeout_ms, std::string* path) {
+    return CreateLogicalPartition(block_device, metadata, partition_name,
+                                  partition_name /* mapped name */, force_writable, timeout_ms,
+                                  path);
 }
 
 bool CreateLogicalPartition(const std::string& block_device, uint32_t metadata_slot,
