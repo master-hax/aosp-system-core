@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d1c4d461_d2717041",
+        "filename": "fs_mgr/fs_mgr_dm_linear.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 132,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2019-08-05T22:52:07Z",
+      "side": 1,
+      "message": "belong to previous change",
+      "range": {
+        "startLine": 130,
+        "startChar": 0,
+        "endLine": 132,
+        "endChar": 16
+      },
+      "revId": "c2fea25d44ede15b4cf1f8d3c6c24199fade3a02",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5346270a_f6135b40",
+        "filename": "fs_mgr/liblp/include/liblp/builder.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2019-08-05T22:52:07Z",
+      "side": 1,
+      "message": "unrelated change",
+      "range": {
+        "startLine": 38,
+        "startChar": 0,
+        "endLine": 40,
+        "endChar": 0
+      },
+      "revId": "c2fea25d44ede15b4cf1f8d3c6c24199fade3a02",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "802340bb_9f10530d",
+        "filename": "fs_mgr/libsnapshot/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2019-08-05T22:52:07Z",
+      "side": 1,
+      "message": "delete",
+      "revId": "c2fea25d44ede15b4cf1f8d3c6c24199fade3a02",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
