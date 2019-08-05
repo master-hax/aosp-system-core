@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4c2e21de_54370c01",
+        "filename": "fs_mgr/liblp/include/liblp/builder.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 204,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2019-08-05T22:40:41Z",
+      "side": 1,
+      "message": "need to delete",
+      "range": {
+        "startLine": 200,
+        "startChar": 0,
+        "endLine": 204,
+        "endChar": 78
+      },
+      "revId": "51411897bdebfa6cfb26fc985dbd389283773115",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cdb30d23_bf6b09f6",
+        "filename": "fs_mgr/liblp/io_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 704,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2019-08-05T22:40:41Z",
+      "side": 1,
+      "message": "This is wrong",
+      "range": {
+        "startLine": 704,
+        "startChar": 30,
+        "endLine": 704,
+        "endChar": 34
+      },
+      "revId": "51411897bdebfa6cfb26fc985dbd389283773115",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
