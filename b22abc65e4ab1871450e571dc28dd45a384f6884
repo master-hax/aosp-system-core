@@ -71,6 +71,29 @@
     },
     {
       "key": {
+        "uuid": "ffe53521_bb30482b",
+        "filename": "fs_mgr/liblp/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 1130827
+      },
+      "writtenOn": "2019-08-05T04:22:23Z",
+      "side": 1,
+      "message": "Can this line be removed?",
+      "range": {
+        "startLine": 96,
+        "startChar": 9,
+        "endLine": 96,
+        "endChar": 17
+      },
+      "revId": "b22abc65e4ab1871450e571dc28dd45a384f6884",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "d278c124_fdec4c90",
         "filename": "fs_mgr/liblp/images.cpp",
         "patchSetId": 1
@@ -679,6 +702,161 @@
         "startChar": 72,
         "endLine": 76,
         "endChar": 87
+      },
+      "revId": "b22abc65e4ab1871450e571dc28dd45a384f6884",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fb6dce03_a5182dbd",
+        "filename": "fs_mgr/liblp/super_footer_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1130827
+      },
+      "writtenOn": "2019-08-05T04:22:23Z",
+      "side": 1,
+      "message": "Add the license.",
+      "revId": "b22abc65e4ab1871450e571dc28dd45a384f6884",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2212b0e6_8540bdc6",
+        "filename": "fs_mgr/liblp/super_footer_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 1130827
+      },
+      "writtenOn": "2019-08-05T04:22:23Z",
+      "side": 1,
+      "message": "std::stringstream cmd;\ncmd \u003c\u003c \"lpmake\"\n    \u003c\u003c \"--metadata-size \" \u003c\u003c 512\n...\nint rc \u003d system(cmd.str().c_str());",
+      "range": {
+        "startLine": 75,
+        "startChar": 2,
+        "endLine": 75,
+        "endChar": 16
+      },
+      "revId": "b22abc65e4ab1871450e571dc28dd45a384f6884",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "980be225_57527985",
+        "filename": "fs_mgr/liblp/super_footer_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 1130827
+      },
+      "writtenOn": "2019-08-05T04:22:23Z",
+      "side": 1,
+      "message": "If the command fails, the following checks are likely to fail.\nSome of the EXPECT_* should be ASSERT_*.",
+      "range": {
+        "startLine": 97,
+        "startChar": 2,
+        "endLine": 97,
+        "endChar": 13
+      },
+      "revId": "b22abc65e4ab1871450e571dc28dd45a384f6884",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b222c409_fea3db45",
+        "filename": "fs_mgr/libvbmeta/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1130827
+      },
+      "writtenOn": "2019-08-05T04:22:23Z",
+      "side": 1,
+      "message": "2019",
+      "range": {
+        "startLine": 2,
+        "startChar": 17,
+        "endLine": 2,
+        "endChar": 21
+      },
+      "revId": "b22abc65e4ab1871450e571dc28dd45a384f6884",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "275e06f9_bfe0af05",
+        "filename": "fs_mgr/libvbmeta/include/libvbmeta/builder.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1130827
+      },
+      "writtenOn": "2019-08-05T04:22:23Z",
+      "side": 1,
+      "message": "AVB_FOOTER_BUILDER_H",
+      "range": {
+        "startLine": 39,
+        "startChar": 10,
+        "endLine": 39,
+        "endChar": 34
+      },
+      "revId": "b22abc65e4ab1871450e571dc28dd45a384f6884",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f1d36acb_d5f4f19c",
+        "filename": "fs_mgr/libvbmeta/include/libvbmeta/super_avb_footer_format.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1130827
+      },
+      "writtenOn": "2019-08-05T04:22:23Z",
+      "side": 1,
+      "message": "Can this be removed?",
+      "range": {
+        "startLine": 20,
+        "startChar": 0,
+        "endLine": 21,
+        "endChar": 17
+      },
+      "revId": "b22abc65e4ab1871450e571dc28dd45a384f6884",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c885cf02_608d349a",
+        "filename": "fs_mgr/libvbmeta/include/libvbmeta/super_footer_format.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1130827
+      },
+      "writtenOn": "2019-08-05T04:22:23Z",
+      "side": 1,
+      "message": "Remove this.",
+      "range": {
+        "startLine": 20,
+        "startChar": 0,
+        "endLine": 21,
+        "endChar": 6
       },
       "revId": "b22abc65e4ab1871450e571dc28dd45a384f6884",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
