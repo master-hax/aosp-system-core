@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "78eb219d_5e2d0535",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 372,
+      "author": {
+        "id": 1131915
+      },
+      "writtenOn": "2019-08-06T19:15:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "05dc2153_b128e8db",
+      "revId": "1eee792fa553cfd706cd9dce0e1f22a7f098758a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b378d139_7c03352a",
         "filename": "libmodprobe/libmodprobe.cpp",
         "patchSetId": 1
@@ -39,6 +57,30 @@
       "revId": "1eee792fa553cfd706cd9dce0e1f22a7f098758a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "230571bf_79e6053e",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 374,
+      "author": {
+        "id": 1131915
+      },
+      "writtenOn": "2019-08-06T19:15:49Z",
+      "side": 1,
+      "message": "clang-format seems to ignore this for some reason",
+      "parentUuid": "b378d139_7c03352a",
+      "range": {
+        "startLine": 373,
+        "startChar": 0,
+        "endLine": 374,
+        "endChar": 20
+      },
+      "revId": "1eee792fa553cfd706cd9dce0e1f22a7f098758a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
