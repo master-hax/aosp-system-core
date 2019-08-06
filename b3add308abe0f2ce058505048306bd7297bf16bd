@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c8ddd161_6c8318f5",
+        "filename": "fs_mgr/liblp/include/liblp/builder.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2019-08-06T02:52:55Z",
+      "side": 1,
+      "message": "note: this is needed here:\nhttps://android-review.googlesource.com/c/platform/system/update_engine/+/1090512/3/virtual_ab_metadata_updater_android.cc#110",
+      "range": {
+        "startLine": 41,
+        "startChar": 0,
+        "endLine": 42,
+        "endChar": 55
+      },
+      "revId": "b3add308abe0f2ce058505048306bd7297bf16bd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
