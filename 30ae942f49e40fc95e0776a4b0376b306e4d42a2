@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a52d349_259a7cc9",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 383,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-08-06T19:46:45Z",
+      "side": 1,
+      "message": "We only use pointers for output parameters\n\nhttps://google.github.io/styleguide/cppguide.html#Reference_Arguments\n\nIn this case, it\u0027d also allow these outputs to be optional, if they\u0027re nullptr.",
+      "revId": "30ae942f49e40fc95e0776a4b0376b306e4d42a2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f5e03e77_18a5db8a",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 387,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-08-06T19:46:45Z",
+      "side": 1,
+      "message": "At least in other code, we tend to call -\u003eclear() to explicitly clear the contents instead of returning false if they do have contents.",
+      "revId": "30ae942f49e40fc95e0776a4b0376b306e4d42a2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
