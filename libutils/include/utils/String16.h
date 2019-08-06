@@ -43,13 +43,25 @@ class String8;
 class String16
 {
 public:
-    /* use String16(StaticLinkage) if you're statically linking against
+    /*
+     * Use String16(StaticLinkage) if you're statically linking against
      * libutils and declaring an empty static String16, e.g.:
      *
      *   static String16 sAStaticEmptyString(String16::kEmptyString);
      *   static String16 sAnotherStaticEmptyString(sAStaticEmptyString);
      */
     enum StaticLinkage { kEmptyString };
+
+    /*
+     * Data structure used to allocate static storage for static String16.
+     * Also see the helper function makeStaticData() below.
+     */
+    template <size_t N>
+    struct StaticData {
+        constexpr StaticData() : size(0), data{0} {}
+        uint32_t size;
+        char16_t data[N];
+    };
 
                                 String16();
     explicit                    String16(StaticLinkage);
@@ -62,6 +74,10 @@ public:
     explicit                    String16(const String8& o);
     explicit                    String16(const char* o);
     explicit                    String16(const char* o, size_t len);
+
+    template <size_t N>
+    explicit constexpr          String16(const StaticData<N>& s)
+        : mString(s.data) {}
 
                                 ~String16();
 
@@ -123,8 +139,45 @@ public:
 
     inline                      operator const char16_t*() const;
 
-private:
-            const char16_t*     mString;
+    bool isStaticString() const;
+
+  private:
+    /*
+     * edit() and editResize() return void* so that SharedBuffer class
+     * is not exposed.
+     */
+    void* edit();
+    void* editResize(size_t new_size);
+
+    void acquire();
+    void release();
+
+    size_t staticStringSize() const;
+
+    const char16_t* mString;
+
+  public:
+#if __cplusplus >= 201402L
+    /*
+     * Helper function for instantiating a static String16.  Example:
+     *
+     *   constexpr auto mystr_data = String16::makeStaticData(u"foo");
+     *   const String16 mystr(mystr_data);
+     *
+     * Doing so allows mystr to be placed in .data section instead of .bss
+     * section, and no runtime construction of mystr is performed.
+     */
+    template <size_t N>
+    static constexpr const StaticData<N> makeStaticData(const char16_t (&s)[N]) {
+        StaticData<N> r;
+        // The 'size' field is at the same location where mClientMetadata would
+        // be for a SharedBuffer.  We do NOT set kIsSharedBufferAllocated flag
+        // here.
+        r.size = N - 1;
+        for (size_t i = 0; i < N - 1; ++i) r.data[i] = s[i];
+        return r;
+    }
+#endif
 };
 
 // String16 can be trivially moved using memcpy() because moving does not
