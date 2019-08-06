@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7efd6f27_2a2c18ac",
+        "filename": "libutils/SharedBuffer.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2019-08-06T21:58:01Z",
+      "side": 1,
+      "message": "nit: leave reserved at the end?",
+      "range": {
+        "startLine": 105,
+        "startChar": 44,
+        "endLine": 105,
+        "endChar": 53
+      },
+      "revId": "fa0e20f7fec83f77c449559649fef05640b3214b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "02bb2d1b_e5574a2b",
+        "filename": "libutils/include/utils/String16.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 142,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2019-08-06T21:58:01Z",
+      "side": 1,
+      "message": "does this need to be public?",
+      "range": {
+        "startLine": 142,
+        "startChar": 9,
+        "endLine": 142,
+        "endChar": 23
+      },
+      "revId": "fa0e20f7fec83f77c449559649fef05640b3214b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2416148a_6b2c1a2c",
+        "filename": "libutils/include/utils/String16.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 160,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2019-08-06T21:58:01Z",
+      "side": 1,
+      "message": "are there that many users? Can they be fixed instead?",
+      "range": {
+        "startLine": 160,
+        "startChar": 0,
+        "endLine": 160,
+        "endChar": 26
+      },
+      "revId": "fa0e20f7fec83f77c449559649fef05640b3214b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "25517a01_5a663294",
+        "filename": "libutils/include/utils/String16.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 171,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2019-08-06T21:58:01Z",
+      "side": 1,
+      "message": "can we avoid exposing this type and only expose a function which does static data -\u003e String16?",
+      "range": {
+        "startLine": 171,
+        "startChar": 27,
+        "endLine": 171,
+        "endChar": 38
+      },
+      "revId": "fa0e20f7fec83f77c449559649fef05640b3214b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
