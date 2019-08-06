@@ -22,6 +22,30 @@
       "revId": "b3add308abe0f2ce058505048306bd7297bf16bd",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "229e7dbf_4d61ca2a",
+        "filename": "fs_mgr/liblp/include/liblp/builder.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2019-08-06T02:53:56Z",
+      "side": 1,
+      "message": "I know that technically I don\u0027t need this change because groups sizes aren\u0027t validated until they are exported, but I think it is good to have this synchronized with what non-A/B is doing. See commit message.",
+      "parentUuid": "c8ddd161_6c8318f5",
+      "range": {
+        "startLine": 41,
+        "startChar": 0,
+        "endLine": 42,
+        "endChar": 55
+      },
+      "revId": "b3add308abe0f2ce058505048306bd7297bf16bd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
