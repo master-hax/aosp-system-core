@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "6e6b2d09_feb5c5e2",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 299,
+      "author": {
+        "id": 1131915
+      },
+      "writtenOn": "2019-08-06T19:17:01Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b156ec20_cf9e2e29",
+      "revId": "b5355c8a676129c6adced280d64ab803553fbbbc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a277e076_614c480d",
         "filename": "libmodprobe/libmodprobe.cpp",
         "patchSetId": 1
@@ -39,6 +57,30 @@
       "revId": "b5355c8a676129c6adced280d64ab803553fbbbc",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "901e27f8_1f9ca258",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 312,
+      "author": {
+        "id": 1131915
+      },
+      "writtenOn": "2019-08-06T19:17:01Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a277e076_614c480d",
+      "range": {
+        "startLine": 312,
+        "startChar": 26,
+        "endLine": 312,
+        "endChar": 38
+      },
+      "revId": "b5355c8a676129c6adced280d64ab803553fbbbc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
