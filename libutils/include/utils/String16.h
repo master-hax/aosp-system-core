@@ -23,6 +23,12 @@
 #include <utils/String8.h>
 #include <utils/TypeHelpers.h>
 
+// The implementation of StaticString16 requires C++17, because it uses class
+// template type deduction and for-loop in constexpr functions.
+#if __cplusplus >= 201703L
+#define HAS_STATIC_STRING16_SUPPORT
+#endif
+
 // ---------------------------------------------------------------------------
 
 extern "C" {
@@ -37,13 +43,17 @@ namespace android {
 
 class String8;
 
+template <size_t N>
+class StaticString16;
+
 // DO NOT USE: please use std::u16string
 
 //! This is a string holding UTF-16 characters.
 class String16
 {
 public:
-    /* use String16(StaticLinkage) if you're statically linking against
+    /*
+     * Use String16(StaticLinkage) if you're statically linking against
      * libutils and declaring an empty static String16, e.g.:
      *
      *   static String16 sAStaticEmptyString(String16::kEmptyString);
@@ -123,13 +133,104 @@ public:
 
     inline                      operator const char16_t*() const;
 
-private:
-            const char16_t*     mString;
+    // Static and non-static String16 behave the same for the users, so
+    // this method isn't of much use for the users. It is public for testing.
+            bool                isStaticString() const;
+
+  private:
+    /*
+     * edit() and editResize() return void* so that SharedBuffer class
+     * is not exposed.
+     */
+    void* edit();
+    void* editResize(size_t new_size);
+
+    void acquire();
+    void release();
+
+    size_t staticStringSize() const;
+
+    const char16_t* mString;
+
+#ifdef HAS_STATIC_STRING16_SUPPORT
+protected:
+    /*
+     * Data structure used to allocate static storage for static String16.
+     *
+     * Note that this data structure and SharedBuffer are used interchangably
+     * as the underlying data structure for a String16.  Therefore, the layout
+     * of this data structure must match the part in SharedBuffer that is
+     * visible to String16.
+     */
+    template <size_t N>
+    struct StaticData {
+        // The high bit of 'size' is used as a flag.
+        static_assert(N - 1 <= 0x7fffffff,
+                      "StaticString16 can only hold up to 0x7fffffff char16_t!");
+        constexpr StaticData() : size(N - 1), data{0} {}
+        const uint32_t size;
+        char16_t data[N];
+
+        constexpr StaticData(const StaticData<N>&) = default;
+    };
+
+    /*
+     * Helper function for constructing a StaticData object.
+     */
+    template <size_t N>
+    static constexpr const StaticData<N> makeStaticData(const char16_t (&s)[N]) {
+        StaticData<N> r;
+        // The 'size' field is at the same location where mClientMetadata would
+        // be for a SharedBuffer.  We do NOT set kIsSharedBufferAllocated flag
+        // here.
+        for (size_t i = 0; i < N - 1; ++i) r.data[i] = s[i];
+        return r;
+    }
+
+    template <size_t N>
+    explicit constexpr String16(const StaticData<N>& s) : mString(s.data) {}
+
+public:
+    template <size_t N>
+    explicit constexpr String16(const StaticString16<N>& s) : mString(s.mString) {}
+#endif
 };
 
 // String16 can be trivially moved using memcpy() because moving does not
 // require any change to the underlying SharedBuffer contents or reference count.
 ANDROID_TRIVIAL_MOVE_TRAIT(String16)
+
+// ---------------------------------------------------------------------------
+
+#ifdef HAS_STATIC_STRING16_SUPPORT
+/*
+ * A StaticString16 object is a specialized String16 object.  Instead of holding
+ * the string data in a ref counted SharedBuffer object, it holds data in a
+ * buffer within StaticString16 itself.  Note that this buffer is NOT ref
+ * counted and is assumed to be available for as long as there is at least a
+ * String16 object using it.  Therefore, one must be extra careful to NEVER
+ * assign a StaticString16 to a String16 that outlives the StaticString16
+ * object.
+ *
+ * THE SAFEST APPROACH IS TO ONLY USE StaticString16 AS GLOBAL VARIABLES.
+ */
+template <size_t N>
+class StaticString16 : public String16 {
+public:
+    constexpr StaticString16(const char16_t (&s)[N])
+        : String16(mData), mData(makeStaticData(s)) {}
+
+    constexpr StaticString16(const StaticString16<N>& other) : String16(mData), mData(other.mData) {}
+
+    constexpr StaticString16(const StaticString16<N>&&) = delete;
+
+private:
+    const StaticData<N> mData;
+};
+
+template <typename F>
+StaticString16(const F&)->StaticString16<sizeof(F) / sizeof(char16_t)>;
+#endif
 
 // ---------------------------------------------------------------------------
 // No user servicable parts below.
