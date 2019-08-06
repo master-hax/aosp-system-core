@@ -81,6 +81,30 @@
       "revId": "1eee792fa553cfd706cd9dce0e1f22a7f098758a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b9e8f57d_93921317",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 374,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-08-06T19:42:12Z",
+      "side": 1,
+      "message": "It tends to allow short comments in case they\u0027re actually intentional, e.g.\n\n// This is a function explanation\n// Arg1: short text\n// Arg2: short text",
+      "parentUuid": "230571bf_79e6053e",
+      "range": {
+        "startLine": 373,
+        "startChar": 0,
+        "endLine": 374,
+        "endChar": 20
+      },
+      "revId": "1eee792fa553cfd706cd9dce0e1f22a7f098758a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
