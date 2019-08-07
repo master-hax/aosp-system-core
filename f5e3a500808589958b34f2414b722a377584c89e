@@ -2,6 +2,236 @@
   "comments": [
     {
       "key": {
+        "uuid": "118ce6b6_ba618326",
+        "filename": "fs_mgr/liblp/images.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 379,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-07T15:22:03Z",
+      "side": 1,
+      "message": "With C++17, how about\n\nHow about:\nconst auto [offset, size] \u003d GetPartitionVBMetaData(...);\n\nhttps://en.cppreference.com/w/cpp/language/structured_binding",
+      "range": {
+        "startLine": 379,
+        "startChar": 3,
+        "endLine": 379,
+        "endChar": 45
+      },
+      "revId": "f5e3a500808589958b34f2414b722a377584c89e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "84dbf2a6_474a20ed",
+        "filename": "fs_mgr/liblp/images.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 454,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-07T15:22:03Z",
+      "side": 1,
+      "message": "Looks like we assume [0] is the only super.img. (and no split super images).\nCan we do a check the .block_devices.size() is 1 here and return error if it\u0027s not?",
+      "range": {
+        "startLine": 454,
+        "startChar": 48,
+        "endLine": 454,
+        "endChar": 49
+      },
+      "revId": "f5e3a500808589958b34f2414b722a377584c89e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "747165a9_3d83c5d2",
+        "filename": "fs_mgr/liblp/images.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 462,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-07T15:22:03Z",
+      "side": 1,
+      "message": "how about:\nlast_sector -\u003d std::max(block_size_, SUPER_FOOTER_TOTAL_SIZE) / LP_SECTOR_SIZE;",
+      "range": {
+        "startLine": 457,
+        "startChar": 0,
+        "endLine": 462,
+        "endChar": 0
+      },
+      "revId": "f5e3a500808589958b34f2414b722a377584c89e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5ca4bb55_ff3d20ec",
+        "filename": "fs_mgr/liblp/images.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 493,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-07T15:22:03Z",
+      "side": 1,
+      "message": "How about (using \u0027\\0\u0027 looks clear than 0 to me):\n\nuint32_t resize_to \u003d (\n    (std::max(block_size_, SUPER_FOOTER_TOTAL_SIZE) - 2 * SUPER_FOOTER_SIZE) / 2);\n\nsuper_avb_footer.resize(resize_to, \u0027\\0\u0027);",
+      "range": {
+        "startLine": 486,
+        "startChar": 0,
+        "endLine": 493,
+        "endChar": 0
+      },
+      "revId": "f5e3a500808589958b34f2414b722a377584c89e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "53c0d61b_759a448b",
+        "filename": "fs_mgr/liblp/images.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 504,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-07T15:22:03Z",
+      "side": 1,
+      "message": "why this is moved to right-hand side? Shouldn\u0027t it be std::string\u0026 file.\nSame for others.",
+      "range": {
+        "startLine": 504,
+        "startChar": 40,
+        "endLine": 504,
+        "endChar": 41
+      },
+      "revId": "f5e3a500808589958b34f2414b722a377584c89e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "094a95f2_cc93d2ca",
+        "filename": "fs_mgr/liblp/include/liblp/liblp.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-07T15:22:03Z",
+      "side": 1,
+      "message": "same here, let\u0027s keep it on the left.\n\nPointerAlignment should be PAS_Left IIRC.\nhttps://clang.llvm.org/docs/ClangFormatStyleOptions.html",
+      "range": {
+        "startLine": 75,
+        "startChar": 40,
+        "endLine": 75,
+        "endChar": 41
+      },
+      "revId": "f5e3a500808589958b34f2414b722a377584c89e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c9523cc9_38b2c43d",
+        "filename": "fs_mgr/liblp/include/liblp/liblp.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-07T15:22:03Z",
+      "side": 1,
+      "message": "same here, \u0026 should aligned to left.",
+      "range": {
+        "startLine": 118,
+        "startChar": 40,
+        "endLine": 118,
+        "endChar": 41
+      },
+      "revId": "f5e3a500808589958b34f2414b722a377584c89e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "100bf202_9f33a1e7",
+        "filename": "fs_mgr/liblp/reader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 471,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-07T15:22:03Z",
+      "side": 1,
+      "message": "How about:\n\n if (SeekFile64(partition_fd,\n                partition_size - AVB_FOOTER_SIZE, SEEK_SET) \u003c 0) {\n  ...\n }",
+      "range": {
+        "startLine": 470,
+        "startChar": 1,
+        "endLine": 471,
+        "endChar": 10
+      },
+      "revId": "f5e3a500808589958b34f2414b722a377584c89e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8df020c5_ae6a49cb",
+        "filename": "fs_mgr/liblp/super_footer_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-07T15:22:03Z",
+      "side": 1,
+      "message": "moving main() to the bottom?",
+      "range": {
+        "startLine": 29,
+        "startChar": 0,
+        "endLine": 32,
+        "endChar": 1
+      },
+      "revId": "f5e3a500808589958b34f2414b722a377584c89e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e8c5fbfb_902a14b7",
+        "filename": "fs_mgr/liblp/super_footer_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-07T15:22:03Z",
+      "side": 1,
+      "message": "moving this define before main()?",
+      "range": {
+        "startLine": 33,
+        "startChar": 0,
+        "endLine": 34,
+        "endChar": 32
+      },
+      "revId": "f5e3a500808589958b34f2414b722a377584c89e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "5b59b20c_8d353447",
         "filename": "fs_mgr/liblp/super_footer_test.cpp",
         "patchSetId": 2
@@ -110,6 +340,29 @@
         "startChar": 18,
         "endLine": 17,
         "endChar": 30
+      },
+      "revId": "f5e3a500808589958b34f2414b722a377584c89e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "eb29fcf1_c685050a",
+        "filename": "fs_mgr/libvbmeta/include/libvbmeta/footer_format.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-07T15:22:03Z",
+      "side": 1,
+      "message": "2019?",
+      "range": {
+        "startLine": 2,
+        "startChar": 17,
+        "endLine": 2,
+        "endChar": 21
       },
       "revId": "f5e3a500808589958b34f2414b722a377584c89e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
