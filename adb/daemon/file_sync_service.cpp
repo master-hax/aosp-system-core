@@ -174,11 +174,19 @@ static bool do_stat_v2(int s, uint32_t id, const char* path) {
     return WriteFdExactly(s, &msg.stat_v2, sizeof(msg.stat_v2));
 }
 
+template <bool v2>
 static bool do_list(int s, const char* path) {
     dirent* de;
 
-    syncmsg msg;
-    msg.dent.id = ID_DENT;
+    using MessageType =
+            std::conditional_t<v2, decltype(syncmsg::dent_v2), decltype(syncmsg::dent_v1)>;
+    MessageType msg;
+
+    if constexpr (v2) {
+        msg.id = ID_DENT_V2;
+    } else {
+        msg.id = ID_DENT_V1;
+    }
 
     std::unique_ptr<DIR, int(*)(DIR*)> d(opendir(path), closedir);
     if (!d) goto done;
@@ -189,25 +197,33 @@ static bool do_list(int s, const char* path) {
         struct stat st;
         if (lstat(filename.c_str(), &st) == 0) {
             size_t d_name_length = strlen(de->d_name);
-            msg.dent.mode = st.st_mode;
-            msg.dent.size = st.st_size;
-            msg.dent.time = st.st_mtime;
-            msg.dent.namelen = d_name_length;
+            msg.mode = st.st_mode;
+            msg.size = st.st_size;
+            msg.time = st.st_mtime;
+            msg.namelen = d_name_length;
 
-            if (!WriteFdExactly(s, &msg.dent, sizeof(msg.dent)) ||
-                    !WriteFdExactly(s, de->d_name, d_name_length)) {
+            if (!WriteFdExactly(s, &msg, sizeof(msg)) ||
+                !WriteFdExactly(s, de->d_name, d_name_length)) {
                 return false;
             }
         }
     }
 
 done:
-    msg.dent.id = ID_DONE;
-    msg.dent.mode = 0;
-    msg.dent.size = 0;
-    msg.dent.time = 0;
-    msg.dent.namelen = 0;
-    return WriteFdExactly(s, &msg.dent, sizeof(msg.dent));
+    msg.id = ID_DONE;
+    msg.mode = 0;
+    msg.size = 0;
+    msg.time = 0;
+    msg.namelen = 0;
+    return WriteFdExactly(s, &msg, sizeof(msg));
+}
+
+static bool do_list_v1(int s, const char* path) {
+    return do_list<false>(s, path);
+}
+
+static bool do_list_v2(int s, const char* path) {
+    return do_list<true>(s, path);
 }
 
 // Make sure that SendFail from adb_io.cpp isn't accidentally used in this file.
@@ -499,8 +515,10 @@ static const char* sync_id_to_name(uint32_t id) {
       return "lstat_v2";
     case ID_STAT_V2:
       return "stat_v2";
-    case ID_LIST:
-      return "list";
+    case ID_LIST_V1:
+      return "list_v1";
+    case ID_LIST_V2:
+      return "list_v2";
     case ID_SEND:
       return "send";
     case ID_RECV:
@@ -546,8 +564,11 @@ static bool handle_sync_command(int fd, std::vector<char>& buffer) {
         case ID_STAT_V2:
             if (!do_stat_v2(fd, request.id, name)) return false;
             break;
-        case ID_LIST:
-            if (!do_list(fd, name)) return false;
+        case ID_LIST_V1:
+            if (!do_list_v1(fd, name)) return false;
+            break;
+        case ID_LIST_V2:
+            if (!do_list_v2(fd, name)) return false;
             break;
         case ID_SEND:
             if (!do_send(fd, name, buffer)) return false;
