@@ -101,6 +101,24 @@
     },
     {
       "key": {
+        "uuid": "a80c7937_f37f3916",
+        "filename": "adb/client/file_sync_client.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 818,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2019-08-07T23:07:54Z",
+      "side": 1,
+      "message": "Looks like they only parse the output of `adb shell ls -l ...`: https://android.googlesource.com/platform/tools/base/+/master/ddmlib/src/main/java/com/android/ddmlib/FileListingService.java#",
+      "parentUuid": "befc8198_1f8b4a19",
+      "revId": "a1f6dd526db4ab74a1e668359923d6234f12da0e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5bc5a1a4_de4a27ea",
         "filename": "adb/file_sync_protocol.h",
         "patchSetId": 1
