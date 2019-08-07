@@ -167,6 +167,30 @@
     },
     {
       "key": {
+        "uuid": "9b9986e4_c3e1b3aa",
+        "filename": "libutils/include/utils/String16.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 160,
+      "author": {
+        "id": 1349653
+      },
+      "writtenOn": "2019-08-07T21:39:41Z",
+      "side": 1,
+      "message": "I\u0027d much rather if we can change the size of String16 and do this properly. See my reply below.",
+      "parentUuid": "d76c6b96_517d8696",
+      "range": {
+        "startLine": 160,
+        "startChar": 0,
+        "endLine": 160,
+        "endChar": 26
+      },
+      "revId": "fa0e20f7fec83f77c449559649fef05640b3214b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "25517a01_5a663294",
         "filename": "libutils/include/utils/String16.h",
         "patchSetId": 1
@@ -226,6 +250,30 @@
       "side": 1,
       "message": "is that true? i thought libutils was vndk?",
       "parentUuid": "3e67a45b_405f71b3",
+      "range": {
+        "startLine": 171,
+        "startChar": 27,
+        "endLine": 171,
+        "endChar": 38
+      },
+      "revId": "fa0e20f7fec83f77c449559649fef05640b3214b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ff288956_8626c298",
+        "filename": "libutils/include/utils/String16.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 171,
+      "author": {
+        "id": 1349653
+      },
+      "writtenOn": "2019-08-07T21:39:41Z",
+      "side": 1,
+      "message": "\"backward compatibility\" is probably too vague a term. My concern is the prebuilts. If we change the size of String16, any prebuilt that uses String16 would have to be rebuilt.",
+      "parentUuid": "053561c4_a6bba603",
       "range": {
         "startLine": 171,
         "startChar": 27,
