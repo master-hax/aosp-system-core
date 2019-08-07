@@ -21,10 +21,14 @@
 #define ID_LSTAT_V1 MKID('S', 'T', 'A', 'T')
 #define ID_STAT_V2 MKID('S', 'T', 'A', '2')
 #define ID_LSTAT_V2 MKID('L', 'S', 'T', '2')
-#define ID_LIST MKID('L', 'I', 'S', 'T')
+
+#define ID_LIST_V1 MKID('L', 'I', 'S', 'T')
+#define ID_LIST_V2 MKID('L', 'I', 'S', '2')
+#define ID_DENT_V1 MKID('D', 'E', 'N', 'T')
+#define ID_DENT_V2 MKID('D', 'N', 'T', '2')
+
 #define ID_SEND MKID('S', 'E', 'N', 'D')
 #define ID_RECV MKID('R', 'E', 'C', 'V')
-#define ID_DENT MKID('D', 'E', 'N', 'T')
 #define ID_DONE MKID('D', 'O', 'N', 'E')
 #define ID_DATA MKID('D', 'A', 'T', 'A')
 #define ID_OKAY MKID('O', 'K', 'A', 'Y')
@@ -64,7 +68,22 @@ union syncmsg {
         uint32_t size;
         uint32_t mtime;
         uint32_t namelen;
-    } dent;
+    } dent_v1;
+    struct __attribute__((packed)) {
+        uint32_t id;
+        uint32_t error;
+        uint64_t dev;
+        uint64_t ino;
+        uint32_t mode;
+        uint32_t nlink;
+        uint32_t uid;
+        uint32_t gid;
+        uint64_t size;
+        int64_t atime;
+        int64_t mtime;
+        int64_t ctime;
+        uint32_t namelen;
+    } dent_v2;
     struct __attribute__((packed)) {
         uint32_t id;
         uint32_t size;
