@@ -23,9 +23,7 @@
  */
 #define LOG_TAG "ashmem"
 
-#ifndef __ANDROID_VNDK__
 #include <dlfcn.h>
-#endif
 #include <errno.h>
 #include <fcntl.h>
 #include <linux/ashmem.h>
@@ -70,26 +68,38 @@ static pthread_mutex_t __ashmem_lock = PTHREAD_MUTEX_INITIALIZER;
  * code can't access system aidl services per Treble requirements. So we limit
  * ashmemd access to the system variant of libcutils.
  */
-#ifndef __ANDROID_VNDK__
 using openFdType = int (*)();
 
-static openFdType openFd;
+static openFdType openAidlFd;
+static openFdType openHidlFd;
 
 openFdType initOpenAshmemFd() {
-    openFdType openFd = nullptr;
-    void* handle = dlopen("libashmemd_client.so", RTLD_NOW);
+    openFdType openAidlFd = nullptr;
+    openFdType openHidlFd = nullptr;
+#ifdef __ANDROID_VNDK__
+    const char* clientLib = "libashmemd_hidl_client.so";
+#else
+    const char* clientLib = "libashmemd_client.so";
+#endif
+    void* handle = dlopen(clientLib, RTLD_NOW);
     if (!handle) {
-        ALOGE("Failed to dlopen() libashmemd_client.so: %s", dlerror());
-        return openFd;
+        ALOGE("Failed to dlopen() %s: %s", clientLib, dlerror());
+        return openAidlFd;
     }
-
-    openFd = reinterpret_cast<openFdType>(dlsym(handle, "openAshmemdFd"));
-    if (!openFd) {
+#ifdef __ANDROID_VNDK__
+    openAidlFd = reinterpret_cast<openFdType>(dlsym(handle, "openAshmemdFd"));
+    if (!openAidlFd) {
         ALOGE("Failed to dlsym() openAshmemdFd() function: %s", dlerror());
     }
-    return openFd;
-}
+    return openAidlFd;
+#else
+    openHidlFd = reinterpret_cast<openFdType>(dlsym(handle, "openAshmemdFd"));
+    if (!openHidlFd) {
+        ALOGE("Failed to dlsym() openAshmemdFd() function: %s", dlerror());
+    }
+    return openHidlFd;
 #endif
+}
 
 /*
  * has_memfd_support() determines if the device can use memfd. memfd support
@@ -222,18 +232,21 @@ static int __ashmem_open_locked()
     struct stat st;
 
     int fd = -1;
-#ifndef __ANDROID_VNDK__
-    if (!openFd) {
-        openFd = initOpenAshmemFd();
+#ifdef __ANDROID_VNDK__
+    if (!openHidlFd) {
+        openHidlFd = initOpenAshmemFd();
     }
-
-    if (openFd) {
-        fd = openFd();
+    if (openHidlFd) {
+        fd = openHidlFd();
+    }
+#else
+    if (!openAidlFd) {
+        openAidlFd = initOpenAshmemFd();
+    }
+    if (openAidlFd) {
+        fd = openAidlFd();
     }
 #endif
-    if (fd < 0) {
-        fd = TEMP_FAILURE_RETRY(open(ASHMEM_DEVICE, O_RDWR | O_CLOEXEC));
-    }
     if (fd < 0) {
         return fd;
     }
@@ -487,9 +500,11 @@ int ashmem_get_size_region(int fd)
 }
 
 void ashmem_init() {
-#ifndef __ANDROID_VNDK__
     pthread_mutex_lock(&__ashmem_lock);
-    openFd = initOpenAshmemFd();
+#ifdef __ANDROID_VNDK_
+    openHidlFd = initOpenAshmemFd();
+#else
+    openAidlFd = initOpenAshmemFd();
+#endif
     pthread_mutex_unlock(&__ashmem_lock);
-#endif  //__ANDROID_VNDK__
 }
