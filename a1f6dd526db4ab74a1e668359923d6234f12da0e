@@ -145,6 +145,30 @@
       "revId": "a1f6dd526db4ab74a1e668359923d6234f12da0e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a5e22d39_49cd3d8a",
+        "filename": "adb/file_sync_protocol.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-08-07T22:45:35Z",
+      "side": 1,
+      "message": "(fixing that bug in toybox ls is on my to-do list :-) )",
+      "parentUuid": "885aef4a_20cac992",
+      "range": {
+        "startLine": 74,
+        "startChar": 0,
+        "endLine": 76,
+        "endChar": 22
+      },
+      "revId": "a1f6dd526db4ab74a1e668359923d6234f12da0e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
