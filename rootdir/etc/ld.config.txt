@@ -796,4 +796,23 @@ namespace.default.search.paths  = /system/${LIB}
 namespace.default.search.paths += /%SYSTEM_EXT%/${LIB}
 namespace.default.search.paths += /%PRODUCT%/${LIB}
 
+namespace.default.links = runtime
 namespace.default.link.runtime.shared_libs = %SANITIZER_RUNTIME_LIBRARIES%
+
+###############################################################################
+# "runtime" APEX namespace
+#
+# This namespace exposes externally accessible libraries from the Runtime APEX.
+# Keep in sync with the "runtime" namespace in art/build/apex/ld.config.txt.
+###############################################################################
+namespace.runtime.isolated = true
+# Visible to allow links to be created at runtime, e.g. through
+# android_link_namespaces in libnativeloader.
+namespace.runtime.visible = true
+
+namespace.runtime.search.paths = /apex/com.android.runtime/${LIB}
+namespace.runtime.asan.search.paths = /apex/com.android.runtime/${LIB}
+namespace.runtime.links = default
+# TODO(b/130340935): Use a dynamically created linker namespace similar to
+# classloader-namespace for oat files, and tighten this up.
+namespace.runtime.link.default.allow_all_shared_libs = true
