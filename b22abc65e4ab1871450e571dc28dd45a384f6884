@@ -1670,6 +1670,30 @@
     },
     {
       "key": {
+        "uuid": "e2e5f004_6c911290",
+        "filename": "fs_mgr/libvbmeta/include/libvbmeta/builder.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-07T06:37:04Z",
+      "side": 1,
+      "message": "Let\u0027s just use \"#pragma once\". e.g.,\n\nhttps://android.googlesource.com/platform/system/core/+/0d061b258a4851741a3ec18b580f93300e4a7c26/fs_mgr/liblp/include/liblp/partition_opener.h#17\n\nhttps://en.wikipedia.org/wiki/Pragma_once",
+      "parentUuid": "4056af23_41381ebb",
+      "range": {
+        "startLine": 39,
+        "startChar": 10,
+        "endLine": 39,
+        "endChar": 34
+      },
+      "revId": "b22abc65e4ab1871450e571dc28dd45a384f6884",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "f1d36acb_d5f4f19c",
         "filename": "fs_mgr/libvbmeta/include/libvbmeta/super_avb_footer_format.h",
         "patchSetId": 1
@@ -1705,6 +1729,30 @@
       "side": 1,
       "message": "I removed #include \u003cstring\u003e, but \"liblp/metadata_format.h\" includes \u003cvector\u003e if it defines __cplusplus, so I\u0027m not sure to remove or not.",
       "parentUuid": "f1d36acb_d5f4f19c",
+      "range": {
+        "startLine": 20,
+        "startChar": 0,
+        "endLine": 21,
+        "endChar": 17
+      },
+      "revId": "b22abc65e4ab1871450e571dc28dd45a384f6884",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b4253e4c_dc01168b",
+        "filename": "fs_mgr/libvbmeta/include/libvbmeta/super_avb_footer_format.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-07T06:37:04Z",
+      "side": 1,
+      "message": "Probably metadata_format.h is expected to be used by some C client?\n\nAnyway, for this header, do we expect it to be used by some C client?\ne.g., will the libvbmeta_reader (designed for bootloader to use) need this file?\nIf so, we might keep the __cplusplus.",
+      "parentUuid": "fe8e6098_13f3a93d",
       "range": {
         "startLine": 20,
         "startChar": 0,
