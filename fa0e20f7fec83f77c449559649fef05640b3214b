@@ -143,6 +143,30 @@
     },
     {
       "key": {
+        "uuid": "d76c6b96_517d8696",
+        "filename": "libutils/include/utils/String16.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 160,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-08-07T21:29:21Z",
+      "side": 1,
+      "message": "yeah, please don\u0027t add _new_ hacks like this. we\u0027ve been trying to remove them. (especially not for C++14. there would be more excuse for C++17, and obviously C++20 is only experimental so that would make sense.)",
+      "parentUuid": "0828bec8_c6958095",
+      "range": {
+        "startLine": 160,
+        "startChar": 0,
+        "endLine": 160,
+        "endChar": 26
+      },
+      "revId": "fa0e20f7fec83f77c449559649fef05640b3214b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "25517a01_5a663294",
         "filename": "libutils/include/utils/String16.h",
         "patchSetId": 1
@@ -178,6 +202,30 @@
       "side": 1,
       "message": "I would prefer that as well, but I couldn\u0027t find a way to do that. The main obstacle is that we need something to tell the compiler to allocate the static storage space. Given that we can\u0027t change the size of String16 (backward compatibility), anything that\u0027s clean (i.e. const String16 mystr(...)) isn\u0027t going to be allocating the space we need.",
       "parentUuid": "25517a01_5a663294",
+      "range": {
+        "startLine": 171,
+        "startChar": 27,
+        "endLine": 171,
+        "endChar": 38
+      },
+      "revId": "fa0e20f7fec83f77c449559649fef05640b3214b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "053561c4_a6bba603",
+        "filename": "libutils/include/utils/String16.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 171,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-08-07T21:29:21Z",
+      "side": 1,
+      "message": "is that true? i thought libutils was vndk?",
+      "parentUuid": "3e67a45b_405f71b3",
       "range": {
         "startLine": 171,
         "startChar": 27,
