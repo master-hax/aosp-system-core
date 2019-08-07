@@ -307,6 +307,30 @@
       "revId": "fa0e20f7fec83f77c449559649fef05640b3214b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "84addbeb_b756a9fe",
+        "filename": "libutils/include/utils/String16.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 171,
+      "author": {
+        "id": 1349653
+      },
+      "writtenOn": "2019-08-07T21:56:09Z",
+      "side": 1,
+      "message": "I tried this. I assume FromStatic() does something like \"return String16(makeStaticData(str));\". This way you\u0027d be taking the pointer address of an object on the stack. (Yeah there\u0027s no stack at compile time but the effect is the same, you get a pointer pointing to some garbage.)",
+      "parentUuid": "f028505d_eeb17691",
+      "range": {
+        "startLine": 171,
+        "startChar": 27,
+        "endLine": 171,
+        "endChar": 38
+      },
+      "revId": "fa0e20f7fec83f77c449559649fef05640b3214b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
