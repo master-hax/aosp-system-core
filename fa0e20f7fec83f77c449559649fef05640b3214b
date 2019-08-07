@@ -283,6 +283,30 @@
       "revId": "fa0e20f7fec83f77c449559649fef05640b3214b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f028505d_eeb17691",
+        "filename": "libutils/include/utils/String16.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 171,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2019-08-07T21:49:49Z",
+      "side": 1,
+      "message": "Why doesn\u0027t this work:\n\nprivate: template \u003csize_t N\u003e struct StaticData ...\nprivate: template \u003csize_t N\u003e explicit constexpr String16(const StaticData\u003cN\u003e\u0026 s)\nprivate: template \u003csize_t N\u003e static constexpr const StaticData\u003cN\u003e makeStaticData(const char16_t (\u0026s)[N])\n\npublic:\n   template \u003csize_t N\u003e\n   constexpr String16 FromStatic(const char16_t (\u0026s)[N]) {...}",
+      "parentUuid": "ff288956_8626c298",
+      "range": {
+        "startLine": 171,
+        "startChar": 27,
+        "endLine": 171,
+        "endChar": 38
+      },
+      "revId": "fa0e20f7fec83f77c449559649fef05640b3214b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
