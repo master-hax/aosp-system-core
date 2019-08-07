@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "f93a06d0_608a104f",
+        "filename": "adb/client/file_sync_client.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 401,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2019-08-07T22:41:26Z",
+      "side": 1,
+      "message": "This actually should be impossible, since NAME_MAX is 255 on Linux. Reduced the size of the buffer by a byte and added a comment.",
+      "parentUuid": "23ac0b1f_cfcdb415",
+      "revId": "a1f6dd526db4ab74a1e668359923d6234f12da0e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "24b52f0b_cfa09a84",
         "filename": "adb/client/file_sync_client.cpp",
         "patchSetId": 1
@@ -30,6 +48,30 @@
       "writtenOn": "2019-08-07T21:47:02Z",
       "side": 1,
       "message": "would it be simpler to just have a union in the implementation, and move the conditional into the ReadFdExactly call?",
+      "range": {
+        "startLine": 414,
+        "startChar": 12,
+        "endLine": 416,
+        "endChar": 59
+      },
+      "revId": "a1f6dd526db4ab74a1e668359923d6234f12da0e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ae89aceb_25fe1ec8",
+        "filename": "adb/client/file_sync_client.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 416,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2019-08-07T22:41:26Z",
+      "side": 1,
+      "message": "How would that work? The fields are at different offsets.",
+      "parentUuid": "24b52f0b_cfa09a84",
       "range": {
         "startLine": 414,
         "startChar": 12,
@@ -70,6 +112,30 @@
       "writtenOn": "2019-08-07T21:47:02Z",
       "side": 1,
       "message": "should we just include stat_v2? might we want to use any of the other stuff for pull in future?",
+      "range": {
+        "startLine": 74,
+        "startChar": 0,
+        "endLine": 76,
+        "endChar": 22
+      },
+      "revId": "a1f6dd526db4ab74a1e668359923d6234f12da0e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "885aef4a_20cac992",
+        "filename": "adb/file_sync_protocol.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2019-08-07T22:41:26Z",
+      "side": 1,
+      "message": "Yeah, good point, we need to do a stat anyways. This also lets us show the existence of files that show up in getdents but we can\u0027t stat (compare `adb shell ls /` with `adb ls /`)",
+      "parentUuid": "5bc5a1a4_de4a27ea",
       "range": {
         "startLine": 74,
         "startChar": 0,
