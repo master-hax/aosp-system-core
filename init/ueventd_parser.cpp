@@ -88,6 +88,19 @@ Result<void> ParseFirmwareDirectoriesLine(std::vector<std::string>&& args,
     return {};
 }
 
+Result<void> ParseExternalFirmwareHandlerLine(
+        std::vector<std::string>&& args,
+        std::vector<ExternalFirmwareHandler>* external_firmware_handlers) {
+    if (args.size() != 3) {
+        return Error() << "firmware_directories must have exactly 2 entries";
+    }
+
+    ExternalFirmwareHandler handler(std::move(args[1]), std::move(args[2]));
+    external_firmware_handlers->emplace_back(std::move(handler));
+
+    return {};
+}
+
 Result<void> ParseModaliasHandlingLine(std::vector<std::string>&& args,
                                        bool* enable_modalias_handling) {
     if (args.size() != 2) {
@@ -212,6 +225,9 @@ UeventdConfiguration ParseConfig(const std::vector<std::string>& configs) {
     parser.AddSingleLineParser("firmware_directories",
                                std::bind(ParseFirmwareDirectoriesLine, _1,
                                          &ueventd_configuration.firmware_directories));
+    parser.AddSingleLineParser("external_firmware_handler",
+                               std::bind(ParseExternalFirmwareHandlerLine, _1,
+                                         &ueventd_configuration.external_firmware_handlers));
     parser.AddSingleLineParser("modalias_handling",
                                std::bind(ParseModaliasHandlingLine, _1,
                                          &ueventd_configuration.enable_modalias_handling));
