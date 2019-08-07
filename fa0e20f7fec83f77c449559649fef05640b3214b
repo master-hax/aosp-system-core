@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "ec662a16_2eb680ce",
+        "filename": "libutils/SharedBuffer.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 1349653
+      },
+      "writtenOn": "2019-08-07T21:11:54Z",
+      "side": 1,
+      "message": "I\u0027d prefer having mClientMetadata at the end, as the client data follows that.",
+      "parentUuid": "7efd6f27_2a2c18ac",
+      "range": {
+        "startLine": 105,
+        "startChar": 44,
+        "endLine": 105,
+        "endChar": 53
+      },
+      "revId": "fa0e20f7fec83f77c449559649fef05640b3214b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "02bb2d1b_e5574a2b",
         "filename": "libutils/include/utils/String16.h",
         "patchSetId": 1
@@ -45,6 +69,30 @@
       "revId": "fa0e20f7fec83f77c449559649fef05640b3214b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "66861589_3794b08e",
+        "filename": "libutils/include/utils/String16.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 142,
+      "author": {
+        "id": 1349653
+      },
+      "writtenOn": "2019-08-07T21:11:54Z",
+      "side": 1,
+      "message": "It\u0027s mainly for testing. Added a comment.",
+      "parentUuid": "02bb2d1b_e5574a2b",
+      "range": {
+        "startLine": 142,
+        "startChar": 9,
+        "endLine": 142,
+        "endChar": 23
+      },
+      "revId": "fa0e20f7fec83f77c449559649fef05640b3214b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "0828bec8_c6958095",
+        "filename": "libutils/include/utils/String16.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 160,
+      "author": {
+        "id": 1349653
+      },
+      "writtenOn": "2019-08-07T21:11:54Z",
+      "side": 1,
+      "message": "We can probably fix what we can see (there\u0027s not many places that errors out without this when I build cuttlefish), but I don\u0027t want vendors to have to upgrade to C++14 or above just to continue using String16.",
+      "parentUuid": "2416148a_6b2c1a2c",
+      "range": {
+        "startLine": 160,
+        "startChar": 0,
+        "endLine": 160,
+        "endChar": 26
+      },
+      "revId": "fa0e20f7fec83f77c449559649fef05640b3214b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "25517a01_5a663294",
         "filename": "libutils/include/utils/String16.h",
         "patchSetId": 1
@@ -91,6 +163,30 @@
       "revId": "fa0e20f7fec83f77c449559649fef05640b3214b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3e67a45b_405f71b3",
+        "filename": "libutils/include/utils/String16.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 171,
+      "author": {
+        "id": 1349653
+      },
+      "writtenOn": "2019-08-07T21:11:54Z",
+      "side": 1,
+      "message": "I would prefer that as well, but I couldn\u0027t find a way to do that. The main obstacle is that we need something to tell the compiler to allocate the static storage space. Given that we can\u0027t change the size of String16 (backward compatibility), anything that\u0027s clean (i.e. const String16 mystr(...)) isn\u0027t going to be allocating the space we need.",
+      "parentUuid": "25517a01_5a663294",
+      "range": {
+        "startLine": 171,
+        "startChar": 27,
+        "endLine": 171,
+        "endChar": 38
+      },
+      "revId": "fa0e20f7fec83f77c449559649fef05640b3214b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
