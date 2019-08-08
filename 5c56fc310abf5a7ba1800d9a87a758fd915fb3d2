@@ -1,0 +1,107 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c4f4fdab_2efc3be4",
+        "filename": "adb/client/file_sync_client.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 383,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-08-08T01:19:30Z",
+      "side": 1,
+      "message": "or `return SendRequest(have_ls_v2_ ? ...`?",
+      "range": {
+        "startLine": 379,
+        "startChar": 8,
+        "endLine": 383,
+        "endChar": 9
+      },
+      "revId": "5c56fc310abf5a7ba1800d9a87a758fd915fb3d2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ffaea41c_8204cc5d",
+        "filename": "adb/client/file_sync_client.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 415,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-08-08T01:19:30Z",
+      "side": 1,
+      "message": "the boolean template parameter still seems weird to me. would adding the id constants to dent_v1 and dent_v2 work? then the dent type becomes the template parameter and you lose the std::conditoinal?",
+      "range": {
+        "startLine": 415,
+        "startChar": 32,
+        "endLine": 415,
+        "endChar": 36
+      },
+      "revId": "5c56fc310abf5a7ba1800d9a87a758fd915fb3d2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5c8c254a_5ade6dbe",
+        "filename": "adb/daemon/file_sync_service.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 206,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-08-08T01:19:30Z",
+      "side": 1,
+      "message": "yeah, this boolean template argument is a bit more convincing...",
+      "revId": "5c56fc310abf5a7ba1800d9a87a758fd915fb3d2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ab6d49e4_9f477e95",
+        "filename": "adb/daemon/file_sync_service.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 234,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-08-08T01:19:30Z",
+      "side": 1,
+      "message": "(i always prefer the `msg \u003d {.id \u003d ID_DONE};` style myself.)",
+      "range": {
+        "startLine": 233,
+        "startChar": 4,
+        "endLine": 234,
+        "endChar": 20
+      },
+      "revId": "5c56fc310abf5a7ba1800d9a87a758fd915fb3d2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d10a2515_df637a50",
+        "filename": "adb/file_sync_protocol.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-08-08T01:19:30Z",
+      "side": 1,
+      "message": "(maybe add a comment at the end of each of these like `// ...followed by the bytes of the name.`?)",
+      "revId": "5c56fc310abf5a7ba1800d9a87a758fd915fb3d2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
