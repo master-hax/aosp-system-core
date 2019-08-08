@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "cf0ab7fd_d001d296",
+        "filename": "adb/sysdeps_win32.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 504,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2019-08-08T20:29:15Z",
+      "side": 1,
+      "message": "bytes_written for symmetry with the variable name in pread",
+      "range": {
+        "startLine": 504,
+        "startChar": 10,
+        "endLine": 504,
+        "endChar": 22
+      },
+      "revId": "8477772e304d1258be33dab1232999331f2cea79",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3bd434f4_1985f578",
+        "filename": "adb/sysdeps_win32.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 542,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2019-08-08T20:29:15Z",
+      "side": 1,
+      "message": "Should this return a HANDLE directly? That way we don\u0027t need casts at every user of this function.",
+      "range": {
+        "startLine": 542,
+        "startChar": 0,
+        "endLine": 542,
+        "endChar": 8
+      },
+      "revId": "8477772e304d1258be33dab1232999331f2cea79",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
