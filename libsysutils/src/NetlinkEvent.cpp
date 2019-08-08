@@ -481,8 +481,8 @@ bool NetlinkEvent::parseNdUserOptMessage(const struct nlmsghdr *nh) {
         // Construct a comma-separated string of DNS addresses.
         // Reserve sufficient space for an IPv6 link-local address: all but the
         // last address are followed by ','; the last is followed by '\0'.
-        static const size_t kMaxSingleAddressLength =
-                INET6_ADDRSTRLEN + strlen("%") + IFNAMSIZ + strlen(",");
+        constexpr size_t kMaxSingleAddressLength =
+                INET6_ADDRSTRLEN + 1 /* '%' */ + IFNAMSIZ + 1 /* ',' or '\0' */;
         const size_t bufsize = numaddrs * kMaxSingleAddressLength;
         char *buf = (char *) malloc(bufsize);
         if (!buf) {
