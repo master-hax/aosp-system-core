@@ -463,6 +463,7 @@ void SelinuxRestoreContext() {
     selinux_android_restorecon("/dev/socket", 0);
     selinux_android_restorecon("/dev/random", 0);
     selinux_android_restorecon("/dev/urandom", 0);
+    selinux_android_restorecon("/dev/loop-control", 0);
     selinux_android_restorecon("/dev/__properties__", 0);
 
     selinux_android_restorecon("/dev/block", SELINUX_ANDROID_RESTORECON_RECURSE);

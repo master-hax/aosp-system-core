@@ -190,6 +190,10 @@ int FirstStageMain(int argc, char** argv) {
     CHECKCALL(mknod("/dev/ptmx", S_IFCHR | 0666, makedev(5, 2)));
     CHECKCALL(mknod("/dev/null", S_IFCHR | 0666, makedev(1, 3)));
 
+    // These are needed for apexd, which runs in parallel with ueventd.
+    CHECKCALL(mknod("/dev/loop-control", S_IFCHR | 0600, makedev(10, 237)));
+    CHECKCALL(mkdir("/dev/block", 0755));
+
     // These below mounts are done in first stage init so that first stage mount can mount
     // subdirectories of /mnt/{vendor,product}/.  Other mounts, not required by first stage mount,
     // should be done in rc files.
