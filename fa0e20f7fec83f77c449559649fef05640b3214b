@@ -379,6 +379,30 @@
       "revId": "fa0e20f7fec83f77c449559649fef05640b3214b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "469e5868_d6448e16",
+        "filename": "libutils/include/utils/String16.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 171,
+      "author": {
+        "id": 1349653
+      },
+      "writtenOn": "2019-08-08T17:37:39Z",
+      "side": 1,
+      "message": "I think it might be possible to inherit String16 and make a StaticString16\u003csize_t N\u003e to house the storage. That\u0027d make things less ugly.",
+      "parentUuid": "7e480ba3_d9f80603",
+      "range": {
+        "startLine": 171,
+        "startChar": 27,
+        "endLine": 171,
+        "endChar": 38
+      },
+      "revId": "fa0e20f7fec83f77c449559649fef05640b3214b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
