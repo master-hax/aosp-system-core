@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "f5416cfc_35c50d18",
+        "filename": "fs_mgr/libdm/include/libdm/dm.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 200,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-08-08T01:44:06Z",
+      "side": 1,
+      "message": "If there\u0027s no default constructor, I can\u0027t do something like:\n\n  TargetInfo target;\n  if (!GetTarget(\u0026target)) ...",
+      "parentUuid": "da8460dc_3d62fd3e",
+      "range": {
+        "startLine": 200,
+        "startChar": 8,
+        "endLine": 200,
+        "endChar": 23
+      },
+      "revId": "b0ddfce3adb840898aa48162489c56810cadcbbf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "15c6946e_3d1d75b6",
         "filename": "fs_mgr/libsnapshot/include/libsnapshot/snapshot.h",
         "patchSetId": 2
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "e3ea71c0_5965064b",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/snapshot.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 223,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-08-08T01:44:06Z",
+      "side": 1,
+      "message": "Ack, I\u0027ll do this in a follow up - agree it\u0027s icky.",
+      "parentUuid": "15c6946e_3d1d75b6",
+      "range": {
+        "startLine": 223,
+        "startChar": 8,
+        "endLine": 223,
+        "endChar": 26
+      },
+      "revId": "b0ddfce3adb840898aa48162489c56810cadcbbf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "74d48da5_df535042",
         "filename": "fs_mgr/libsnapshot/snapshot.cpp",
         "patchSetId": 2
@@ -59,6 +107,30 @@
       "writtenOn": "2019-08-08T00:41:55Z",
       "side": 1,
       "message": "Comparing enum strings :(",
+      "range": {
+        "startLine": 174,
+        "startChar": 24,
+        "endLine": 174,
+        "endChar": 41
+      },
+      "revId": "b0ddfce3adb840898aa48162489c56810cadcbbf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d6e5701e_a72e8459",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 174,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-08-08T01:44:06Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "74d48da5_df535042",
       "range": {
         "startLine": 174,
         "startChar": 24,
@@ -88,6 +160,24 @@
     },
     {
       "key": {
+        "uuid": "0921cffd_be931333",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 225,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-08-08T01:44:06Z",
+      "side": 1,
+      "message": "Curious, is any compiler really going to warn on this pattern? It\u0027s common to have no intervening statements between cases. Common enough that in languages (like C#) where fallthrough is explicitly disallowed, exceptions are made for combined cases. Eg the \"dangerous\" case to warn about would be something like:\n\n    case X:\n       dostuff();\n    case Y:\n       domorestuff();\n       break;",
+      "parentUuid": "96db228e_2ba39907",
+      "revId": "b0ddfce3adb840898aa48162489c56810cadcbbf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "df2f9637_4573e25e",
         "filename": "fs_mgr/libsnapshot/snapshot.cpp",
         "patchSetId": 2
@@ -99,6 +189,30 @@
       "writtenOn": "2019-08-08T00:41:55Z",
       "side": 1,
       "message": "nit: verified (the update has been \"applied\")",
+      "range": {
+        "startLine": 339,
+        "startChar": 70,
+        "endLine": 339,
+        "endChar": 77
+      },
+      "revId": "b0ddfce3adb840898aa48162489c56810cadcbbf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e1e64d5e_b0708eb5",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 339,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-08-08T01:44:06Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "df2f9637_4573e25e",
       "range": {
         "startLine": 339,
         "startChar": 70,
@@ -134,6 +248,30 @@
     },
     {
       "key": {
+        "uuid": "3337a6ef_666b20a3",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 523,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-08-08T01:44:06Z",
+      "side": 1,
+      "message": "I\u0027ll factor this out into another helper. I wanted to minimize the number of places we check for things, but the success case has to happen within the lock. And opening the lock requires another check. But the next PS should look a bit cleaner.",
+      "parentUuid": "88d2501c_6da88ae7",
+      "range": {
+        "startLine": 523,
+        "startChar": 12,
+        "endLine": 523,
+        "endChar": 38
+      },
+      "revId": "b0ddfce3adb840898aa48162489c56810cadcbbf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "2e5271cd_4521bcac",
         "filename": "fs_mgr/libsnapshot/snapshot.cpp",
         "patchSetId": 2
@@ -157,6 +295,30 @@
     },
     {
       "key": {
+        "uuid": "ccad2bd1_677fb439",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 553,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-08-08T01:44:06Z",
+      "side": 1,
+      "message": "This was in fact a bug, I\u0027ll remove the MergeFailed case since I wanted it to poll again.",
+      "parentUuid": "2e5271cd_4521bcac",
+      "range": {
+        "startLine": 553,
+        "startChar": 19,
+        "endLine": 553,
+        "endChar": 24
+      },
+      "revId": "b0ddfce3adb840898aa48162489c56810cadcbbf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1e36b4b0_01089e53",
         "filename": "fs_mgr/libsnapshot/snapshot.cpp",
         "patchSetId": 2
@@ -168,6 +330,30 @@
       "writtenOn": "2019-08-08T00:41:55Z",
       "side": 1,
       "message": "Are you referring to CL:1096938?",
+      "range": {
+        "startLine": 745,
+        "startChar": 7,
+        "endLine": 745,
+        "endChar": 71
+      },
+      "revId": "b0ddfce3adb840898aa48162489c56810cadcbbf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a5fc04f_fc7f0203",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 745,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-08-08T01:44:06Z",
+      "side": 1,
+      "message": "Yup. Though, I think we might not need it, if we can assume copying the base device table is okay.",
+      "parentUuid": "1e36b4b0_01089e53",
       "range": {
         "startLine": 745,
         "startChar": 7,
