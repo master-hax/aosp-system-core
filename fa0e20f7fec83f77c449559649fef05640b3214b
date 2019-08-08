@@ -403,6 +403,30 @@
       "revId": "fa0e20f7fec83f77c449559649fef05640b3214b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4c0dc85f_bfefe69e",
+        "filename": "libutils/include/utils/String16.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 171,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2019-08-08T17:51:27Z",
+      "side": 1,
+      "message": "Still painful to invent polymorphism, but I agree it should make things easier to organize.",
+      "parentUuid": "469e5868_d6448e16",
+      "range": {
+        "startLine": 171,
+        "startChar": 27,
+        "endLine": 171,
+        "endChar": 38
+      },
+      "revId": "fa0e20f7fec83f77c449559649fef05640b3214b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
