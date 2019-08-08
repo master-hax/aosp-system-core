@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "54297fa5_4396756f",
+        "filename": "libutils/include/utils/String16.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 215,
+      "author": {
+        "id": 1130394
+      },
+      "writtenOn": "2019-08-08T20:49:34Z",
+      "side": 1,
+      "message": "Mark operator new deleted to discourage misuse? Can\u0027t do anything about automatic allocation though.",
+      "range": {
+        "startLine": 215,
+        "startChar": 56,
+        "endLine": 215,
+        "endChar": 62
+      },
+      "revId": "a265f1e9f59521fc4706086af2541e4c3b0f3bfe",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "696511f8_34490cef",
+        "filename": "libutils/include/utils/String16.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 215,
+      "author": {
+        "id": 1130394
+      },
+      "writtenOn": "2019-08-08T20:49:34Z",
+      "side": 1,
+      "message": "USE...ONLY AS",
+      "range": {
+        "startLine": 215,
+        "startChar": 29,
+        "endLine": 215,
+        "endChar": 37
+      },
+      "revId": "a265f1e9f59521fc4706086af2541e4c3b0f3bfe",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
