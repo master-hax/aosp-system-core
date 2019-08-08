@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "1d2f9d15_cea83d8b",
+        "filename": "libutils/SharedBuffer.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2019-08-08T16:20:49Z",
+      "side": 1,
+      "message": "Sorry, I missed that these things had to overlap",
+      "parentUuid": "ec662a16_2eb680ce",
+      "range": {
+        "startLine": 105,
+        "startChar": 44,
+        "endLine": 105,
+        "endChar": 53
+      },
+      "revId": "fa0e20f7fec83f77c449559649fef05640b3214b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "02bb2d1b_e5574a2b",
         "filename": "libutils/include/utils/String16.h",
         "patchSetId": 1
@@ -322,6 +346,30 @@
       "side": 1,
       "message": "I tried this. I assume FromStatic() does something like \"return String16(makeStaticData(str));\". This way you\u0027d be taking the pointer address of an object on the stack. (Yeah there\u0027s no stack at compile time but the effect is the same, you get a pointer pointing to some garbage.)",
       "parentUuid": "f028505d_eeb17691",
+      "range": {
+        "startLine": 171,
+        "startChar": 27,
+        "endLine": 171,
+        "endChar": 38
+      },
+      "revId": "fa0e20f7fec83f77c449559649fef05640b3214b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7e480ba3_d9f80603",
+        "filename": "libutils/include/utils/String16.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 171,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2019-08-08T16:20:49Z",
+      "side": 1,
+      "message": "Sorry, Vic. I had misunderstood part of the implementation before. I think we can live with these constructors. We just might want some additional comments for how SharedBuffer/StaticData are being overlaid in memory. It\u0027s a bit confusing. Maybe there is a better way?",
+      "parentUuid": "84addbeb_b756a9fe",
       "range": {
         "startLine": 171,
         "startChar": 27,
