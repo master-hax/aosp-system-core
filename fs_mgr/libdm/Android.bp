@@ -46,6 +46,9 @@ cc_library_static {
 
 cc_test {
     name: "libdm_test",
+    //Use test_config for vts-core suite.
+    test_config: "libdm_test.xml",
+    test_suites: ["vts-core"],
     defaults: ["fs_mgr_defaults"],
     static_libs: [
         "libdm",

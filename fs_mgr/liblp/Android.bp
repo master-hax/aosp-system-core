@@ -56,6 +56,9 @@ cc_library {
 
 cc_test {
     name: "liblp_test_static",
+    //Use test_config for vts-core suite.
+    test_config: "liblp_test_static.xml",
+    test_suites: ["vts-core"],
     defaults: ["fs_mgr_defaults"],
     cppflags: [
         "-Wno-unused-parameter",
