@@ -48,6 +48,30 @@
     },
     {
       "key": {
+        "uuid": "33a6d718_382471a0",
+        "filename": "adb/client/file_sync_client.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 415,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2019-08-08T01:34:44Z",
+      "side": 1,
+      "message": "I considered it, but then I\u0027d want to assert that we\u0027re not passing some bogus value in, and doing a static_assert in an else constexpr needs a helper type because `if constexpr (true) { ... } else { static_assert(false); }` doesn\u0027t compile.",
+      "parentUuid": "ffaea41c_8204cc5d",
+      "range": {
+        "startLine": 415,
+        "startChar": 32,
+        "endLine": 415,
+        "endChar": 36
+      },
+      "revId": "5c56fc310abf5a7ba1800d9a87a758fd915fb3d2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "5c8c254a_5ade6dbe",
         "filename": "adb/daemon/file_sync_service.cpp",
         "patchSetId": 2
@@ -76,6 +100,30 @@
       "writtenOn": "2019-08-08T01:19:30Z",
       "side": 1,
       "message": "(i always prefer the `msg \u003d {.id \u003d ID_DONE};` style myself.)",
+      "range": {
+        "startLine": 233,
+        "startChar": 4,
+        "endLine": 234,
+        "endChar": 20
+      },
+      "revId": "5c56fc310abf5a7ba1800d9a87a758fd915fb3d2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a9d14ff3_ae01c9bb",
+        "filename": "adb/daemon/file_sync_service.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 234,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2019-08-08T01:34:44Z",
+      "side": 1,
+      "message": "I\u0027m always scared that that doesn\u0027t actually zero initialize the whole struct: did the original GNU C extension do so?\n(padding bytes are probably explicitly not required to be zero initialized, in any case?)",
+      "parentUuid": "ab6d49e4_9f477e95",
       "range": {
         "startLine": 233,
         "startChar": 4,
