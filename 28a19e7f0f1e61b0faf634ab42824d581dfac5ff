@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9b6d2086_1fa90427",
+        "filename": "adb/client/adb_install.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 221,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2019-08-08T18:45:56Z",
+      "side": 1,
+      "message": "nit: use_abb",
+      "range": {
+        "startLine": 221,
+        "startChar": 19,
+        "endLine": 221,
+        "endChar": 25
+      },
+      "revId": "28a19e7f0f1e61b0faf634ab42824d581dfac5ff",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cd83d3a4_0dd58c5a",
+        "filename": "adb/client/commandline.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2019-08-08T18:45:56Z",
+      "side": 1,
+      "message": "unique_fd",
+      "range": {
+        "startLine": 113,
+        "startChar": 0,
+        "endLine": 113,
+        "endChar": 3
+      },
+      "revId": "28a19e7f0f1e61b0faf634ab42824d581dfac5ff",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
