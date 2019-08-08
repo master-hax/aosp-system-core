@@ -136,6 +136,30 @@
     },
     {
       "key": {
+        "uuid": "001abebc_81d3c6d7",
+        "filename": "adb/daemon/file_sync_service.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 234,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-08-08T01:36:33Z",
+      "side": 1,
+      "message": "i don\u0027t know; i didn\u0027t use it until it was standardized :-)\n\nthese are all packed structs, aren\u0027t they?",
+      "parentUuid": "a9d14ff3_ae01c9bb",
+      "range": {
+        "startLine": 233,
+        "startChar": 4,
+        "endLine": 234,
+        "endChar": 20
+      },
+      "revId": "5c56fc310abf5a7ba1800d9a87a758fd915fb3d2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "d10a2515_df637a50",
         "filename": "adb/file_sync_protocol.h",
         "patchSetId": 2
