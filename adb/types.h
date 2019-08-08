@@ -17,6 +17,7 @@
 #pragma once
 
 #include <algorithm>
+#include <cstring>
 #include <deque>
 #include <memory>
 #include <type_traits>
