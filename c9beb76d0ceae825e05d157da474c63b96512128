@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f57ede81_b47bcbe9",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 598,
+      "author": {
+        "id": 1409599
+      },
+      "writtenOn": "2019-08-08T01:25:31Z",
+      "side": 1,
+      "message": "Then maybe we can put this directly in the switch above.",
+      "revId": "c9beb76d0ceae825e05d157da474c63b96512128",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
