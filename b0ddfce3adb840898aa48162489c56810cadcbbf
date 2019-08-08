@@ -1,0 +1,182 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da8460dc_3d62fd3e",
+        "filename": "fs_mgr/libdm/include/libdm/dm.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 200,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2019-08-08T00:41:55Z",
+      "side": 1,
+      "message": "nit: Why do you need this? (to zero out spec?)",
+      "range": {
+        "startLine": 200,
+        "startChar": 8,
+        "endLine": 200,
+        "endChar": 23
+      },
+      "revId": "b0ddfce3adb840898aa48162489c56810cadcbbf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "15c6946e_3d1d75b6",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/snapshot.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 223,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2019-08-08T00:41:55Z",
+      "side": 1,
+      "message": "Can you change this to an enum? I feel bad about comparing strings below :(\n\n(Can be done in a separate CL)",
+      "range": {
+        "startLine": 223,
+        "startChar": 8,
+        "endLine": 223,
+        "endChar": 26
+      },
+      "revId": "b0ddfce3adb840898aa48162489c56810cadcbbf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "74d48da5_df535042",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 174,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2019-08-08T00:41:55Z",
+      "side": 1,
+      "message": "Comparing enum strings :(",
+      "range": {
+        "startLine": 174,
+        "startChar": 24,
+        "endLine": 174,
+        "endChar": 41
+      },
+      "revId": "b0ddfce3adb840898aa48162489c56810cadcbbf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "96db228e_2ba39907",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 225,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2019-08-08T00:41:55Z",
+      "side": 1,
+      "message": "very nit: [[fallthrough]]",
+      "revId": "b0ddfce3adb840898aa48162489c56810cadcbbf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "df2f9637_4573e25e",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 339,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2019-08-08T00:41:55Z",
+      "side": 1,
+      "message": "nit: verified (the update has been \"applied\")",
+      "range": {
+        "startLine": 339,
+        "startChar": 70,
+        "endLine": 339,
+        "endChar": 77
+      },
+      "revId": "b0ddfce3adb840898aa48162489c56810cadcbbf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "88d2501c_6da88ae7",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 523,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2019-08-08T00:41:55Z",
+      "side": 1,
+      "message": "nit: call AcknowledgeMergeFailure in CheckMergeState? (since you call AcknowledgeMergeSuccess there)\n\nOr call AcknowledgeMergeSuccess after L521 if state \u003d\u003d Completed",
+      "range": {
+        "startLine": 523,
+        "startChar": 12,
+        "endLine": 523,
+        "endChar": 38
+      },
+      "revId": "b0ddfce3adb840898aa48162489c56810cadcbbf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2e5271cd_4521bcac",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 553,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2019-08-08T00:41:55Z",
+      "side": 1,
+      "message": "nit: it is weird that you repeat the values in L550 / L546 but just \"return state\" here",
+      "range": {
+        "startLine": 553,
+        "startChar": 19,
+        "endLine": 553,
+        "endChar": 24
+      },
+      "revId": "b0ddfce3adb840898aa48162489c56810cadcbbf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1e36b4b0_01089e53",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 745,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2019-08-08T00:41:55Z",
+      "side": 1,
+      "message": "Are you referring to CL:1096938?",
+      "range": {
+        "startLine": 745,
+        "startChar": 7,
+        "endLine": 745,
+        "endChar": 71
+      },
+      "revId": "b0ddfce3adb840898aa48162489c56810cadcbbf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
