@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "faf61ae9_03217327",
+        "filename": "libutils/String16.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1349653
+      },
+      "writtenOn": "2019-08-08T20:15:43Z",
+      "side": 1,
+      "message": "That\u0027s correct. Added a static_assert for this.",
+      "parentUuid": "cdf02960_bf63d597",
+      "range": {
+        "startLine": 27,
+        "startChar": 55,
+        "endLine": 27,
+        "endChar": 56
+      },
+      "revId": "942f0612eb0dc728a6b9b8bc8bf3bda6942e7d6a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c4641302_36eb8412",
         "filename": "libutils/String16.cpp",
         "patchSetId": 2
@@ -45,6 +69,30 @@
       "revId": "942f0612eb0dc728a6b9b8bc8bf3bda6942e7d6a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "15afeb7c_1c0c72b9",
+        "filename": "libutils/String16.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 398,
+      "author": {
+        "id": 1349653
+      },
+      "writtenOn": "2019-08-08T20:15:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c4641302_36eb8412",
+      "range": {
+        "startLine": 398,
+        "startChar": 12,
+        "endLine": 398,
+        "endChar": 53
+      },
+      "revId": "942f0612eb0dc728a6b9b8bc8bf3bda6942e7d6a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
