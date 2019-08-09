@@ -79,6 +79,7 @@
 #define MEMCG_MEMORYSW_USAGE "/dev/memcg/memory.memsw.usage_in_bytes"
 #define ZONEINFO_PATH "/proc/zoneinfo"
 #define MEMINFO_PATH "/proc/meminfo"
+#define VMSTAT_PATH "/proc/vmstat"
 #define PROC_STATUS_TGID_FIELD "Tgid:"
 #define LINE_MAX 128
 
@@ -389,6 +390,41 @@ union meminfo {
         int64_t nr_file_pages;
     } field;
     int64_t arr[MI_FIELD_COUNT];
+};
+
+/* Fields to parse in /proc/vmstat */
+enum vmstat_field {
+    VS_FREE_PAGES,
+    VS_INACTIVE_FILE,
+    VS_ACTIVE_FILE,
+    VS_WORKINGSET_REFAULT,
+    VS_PGSCAN_KSWAPD,
+    VS_PGSCAN_DIRECT,
+    VS_PGSCAN_DIRECT_THROTTLE,
+    VS_FIELD_COUNT
+};
+
+static const char* const vmstat_field_names[MI_FIELD_COUNT] = {
+    "nr_free_pages",
+    "nr_inactive_file",
+    "nr_active_file",
+    "workingset_refault",
+    "pgscan_kswapd",
+    "pgscan_direct",
+    "pgscan_direct_throttle",
+};
+
+union vmstat {
+    struct {
+        int64_t nr_free_pages;
+        int64_t nr_inactive_file;
+        int64_t nr_active_file;
+        int64_t workingset_refault;
+        int64_t pgscan_kswapd;
+        int64_t pgscan_direct;
+        int64_t pgscan_direct_throttle;
+    } field;
+    int64_t arr[VS_FIELD_COUNT];
 };
 
 enum field_match_result {
@@ -1234,7 +1270,7 @@ static int memory_stat_from_procfs(struct memory_stat* mem_st, int pid) {
 #endif
 
 /*
- * /prop/zoneinfo parsing routines
+ * /proc/zoneinfo parsing routines
  * Expected file format is:
  *
  *   Node <node_id>, zone   <zone_name>
@@ -1309,6 +1345,10 @@ static int zoneinfo_parse_zone(char **buf, struct zoneinfo_zone *zone) {
         }
         if (match_res == PARSE_SUCCESS) {
             zone->fields.arr[field_idx] = val;
+        }
+        if (field_idx == ZI_ZONE_PRESENT && val == 0) {
+            /* zone is not populated, stop parsing it */
+            return true;
         }
     }
     return false;
@@ -1424,7 +1464,7 @@ static int zoneinfo_parse(struct zoneinfo *zi) {
     return 0;
 }
 
-/* /prop/meminfo parsing routines */
+/* /proc/meminfo parsing routines */
 static bool meminfo_parse_line(char *line, union meminfo *mi) {
     char *cp = line;
     char *ap;
@@ -1475,6 +1515,59 @@ static int meminfo_parse(union meminfo *mi) {
     }
     mi->field.nr_file_pages = mi->field.cached + mi->field.swap_cached +
         mi->field.buffers;
+
+    return 0;
+}
+
+/* /proc/vmstat parsing routines */
+static bool vmstat_parse_line(char *line, union vmstat *vs) {
+    char *cp;
+    char *ap;
+    char *save_ptr;
+    int64_t val;
+    int field_idx;
+    enum field_match_result match_res;
+
+    cp = strtok_r(line, " ", &save_ptr);
+    if (!cp) {
+        return false;
+    }
+
+    ap = strtok_r(NULL, " ", &save_ptr);
+    if (!ap) {
+        return false;
+    }
+
+    match_res = match_field(cp, ap, vmstat_field_names, VS_FIELD_COUNT,
+        &val, &field_idx);
+    if (match_res == PARSE_SUCCESS) {
+        vs->arr[field_idx] = val;
+    }
+    return (match_res != PARSE_FAIL);
+}
+
+static int vmstat_parse(union vmstat *vs) {
+    static struct reread_data file_data = {
+        .filename = VMSTAT_PATH,
+        .fd = -1,
+    };
+    char *buf;
+    char *save_ptr;
+    char *line;
+
+    memset(vs, 0, sizeof(union vmstat));
+
+    if ((buf = reread_file(&file_data)) == NULL) {
+        return -1;
+    }
+
+    for (line = strtok_r(buf, "\n", &save_ptr); line;
+         line = strtok_r(NULL, "\n", &save_ptr)) {
+        if (!vmstat_parse_line(line, vs)) {
+            ALOGE("%s parse error", file_data.filename);
+            return -1;
+        }
+    }
 
     return 0;
 }
@@ -1870,15 +1963,23 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
         LOW_MEM_AND_THRASHING,
         KILL_REASON_COUNT
     };
+    enum reclaim_state {
+        NO_RECLAIM,
+        KSWAPD_RECLAIM,
+        DIRECT_RECLAIM,
+    };
     static int64_t init_ws_refault = 0;
     static int64_t base_file_lru = 0;
+    static int64_t init_pgscan_kswapd = 0;
+    static int64_t init_pgscan_direct = 0;
     static int64_t swap_low_threshold = 0;
-    static struct timespec last_wm_breach;
     static bool just_killed = false;
     static struct timespec last_thrashing_tm;
     static int thrashing_limit = 0;
+    static bool in_reclaim = false;
 
     union meminfo mi;
+    union vmstat vs;
     struct zoneinfo zi;
     struct timespec curr_tm;
     int64_t thrashing = 0;
@@ -1886,12 +1987,46 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
     enum vmpressure_level level = (enum vmpressure_level)data;
     enum kill_reasons kill_reason = NONE;
     bool cycle_after_kill = false;
+    enum reclaim_state reclaim = NO_RECLAIM;
     enum zone_watermark wmark = WMARK_NONE;
     char kill_desc[LINE_MAX];
+    bool kill_pending;
 
-    if (is_kill_pending()) {
+    kill_pending = is_kill_pending();
+    if (kill_pending) {
         /* TODO: replace this quick polling with pidfd polling if kernel supports */
         poll_params->polling_interval_ms = PSI_POLL_PERIOD_SHORT_MS;
+        goto no_kill;
+    }
+
+    if (vmstat_parse(&vs) < 0) {
+        ALOGE("Failed to parse vmstat!");
+        return;
+    }
+
+    if (just_killed) {
+        just_killed = false;
+        cycle_after_kill = true;
+        /* reset file-backed pagecache size and refault amounts after a kill */
+        base_file_lru = vs.field.nr_inactive_file + vs.field.nr_active_file;
+        init_ws_refault = vs.field.workingset_refault;
+    }
+
+    if (vs.field.pgscan_direct > init_pgscan_direct) {
+        init_pgscan_direct = vs.field.pgscan_direct;
+        init_pgscan_kswapd = vs.field.pgscan_kswapd;
+        reclaim = DIRECT_RECLAIM;
+    } else if (vs.field.pgscan_kswapd > init_pgscan_kswapd) {
+        init_pgscan_kswapd = vs.field.pgscan_kswapd;
+        reclaim = KSWAPD_RECLAIM;
+    }
+
+    /* By default use long intervals */
+    poll_params->polling_interval_ms = PSI_POLL_PERIOD_LONG_MS;
+
+    /* Bail out early if system is not reclaiming */
+    if (reclaim == NO_RECLAIM) {
+        in_reclaim = false;
         goto no_kill;
     }
 
@@ -1900,56 +2035,40 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
         return;
     }
 
+    if (swap_free_low_percentage) {
+        if (!swap_low_threshold) {
+            swap_low_threshold = mi.field.total_swap * swap_free_low_percentage / 100;
+        }
+        if (mi.field.free_swap < swap_low_threshold) {
+            swap_is_low = true;
+            /* poll using short intervals when reclaiming with low swap */
+            poll_params->polling_interval_ms = PSI_POLL_PERIOD_SHORT_MS;
+        }
+    }
+
     if (zoneinfo_parse(&zi) < 0) {
         ALOGE("Failed to parse zoneinfo!");
         return;
     }
 
-    if (just_killed) {
-        just_killed = false;
-        cycle_after_kill = true;
-        /* reset file-backed pagecache size and refault amounts after a kill */
-        base_file_lru = zi.total_inactive_file + zi.total_active_file;
-        init_ws_refault = zi.total_workingset_refault;
-    }
-
-    if (swap_free_low_percentage) {
-        if (!swap_low_threshold) {
-            swap_low_threshold = mi.field.total_swap * swap_free_low_percentage / 100;
-        }
-        swap_is_low = (mi.field.free_swap < swap_low_threshold);
-    }
-
     wmark = get_lowest_watermark(&zi);
-    /*
-     * poll using short intervals when both swap and memory are low
-     * WARNING: swap might be 0 at startup, watermark check is important
-     */
-    if (swap_is_low && wmark > WMARK_NONE) {
-        poll_params->polling_interval_ms = PSI_POLL_PERIOD_SHORT_MS;
-    } else {
-        poll_params->polling_interval_ms = PSI_POLL_PERIOD_LONG_MS;
-    }
-
-    if (wmark == WMARK_NONE) {
-        goto no_kill;
-    }
 
     if (clock_gettime(CLOCK_MONOTONIC_COARSE, &curr_tm) != 0) {
         ALOGE("Failed to get current time");
         return;
     }
 
-    if (get_time_diff_ms(&last_wm_breach, &curr_tm) > PSI_WINDOW_SIZE_MS) {
-        /* record file-backed pagecache size at the first lowmem event */
-        base_file_lru = zi.total_inactive_file + zi.total_active_file;
-        init_ws_refault = zi.total_workingset_refault;
+    if (!in_reclaim) {
+        /* record file-backed pagecache size when entering reclaim cycle */
+        base_file_lru = vs.field.nr_inactive_file + vs.field.nr_active_file;
+        init_ws_refault = vs.field.workingset_refault;
     } else {
         /* calculate what % of the file-backed pagecache refaulted so far */
-        thrashing = (zi.total_workingset_refault - init_ws_refault) * 100 / base_file_lru;
+        thrashing = (vs.field.workingset_refault - init_ws_refault) * 100 / base_file_lru;
     }
-    last_wm_breach = curr_tm;
+    in_reclaim = true;
 
+    /* TODO: test if thrashing_limit can be reset with other thrashing counters for simplicity */
     if (thrashing_limit != thrashing_limit_pct &&
         get_time_diff_ms(&last_thrashing_tm, &curr_tm) > PSI_WINDOW_SIZE_MS) {
         thrashing_limit = thrashing_limit_pct;
@@ -1998,10 +2117,12 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
 
 no_kill:
     /*
-     * start polling after initial PSI event,
-     * keep polling until the device stops reclaiming
+     * start polling after initial PSI event;
+     * extend polling while device is in direct reclaim or process is being killed;
+     * do not extend when kswapd reclaims because that might go on for a long time
+     * without causing memory pressure
      */
-    if (events || wmark > WMARK_NONE) {
+    if (events || kill_pending || reclaim == DIRECT_RECLAIM) {
         poll_params->update = POLLING_START;
     }
 }
@@ -2679,7 +2800,7 @@ int main(int argc __unused, char **argv __unused) {
     swap_free_low_percentage = clamp(0, 100,
         property_get_int32("ro.lmk.swap_free_low_percentage", low_ram_device ? 10 : 20));
     psi_partial_stall_ms =
-        property_get_int32("ro.lmk.psi_partial_stall_ms", low_ram_device ? 500 : 200);
+        property_get_int32("ro.lmk.psi_partial_stall_ms", low_ram_device ? 500 : 70);
     psi_complete_stall_ms =
         property_get_int32("ro.lmk.psi_complete_stall_ms", 700);
     thrashing_limit_pct = max(0,
