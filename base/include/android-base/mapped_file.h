@@ -28,48 +28,66 @@
 #include <windows.h>
 #define PROT_READ 1
 #define PROT_WRITE 2
+using os_handle = HANDLE;
 #else
 #include <sys/mman.h>
+using os_handle = int;
 #endif
 
 namespace android {
 namespace base {
 
 /**
- * A region of a file mapped into memory, also known as MmapFile.
+ * A region of a file mapped into memory, also known as MmapFile or file mapping.
  */
 class MappedFile {
- public:
-  /**
-   * Creates a new mapping of the file pointed to by `fd`. Unlike the underlying OS primitives,
-   * `offset` does not need to be page-aligned. If `PROT_WRITE` is set in `prot`, the mapping
-   * will be writable, otherwise it will be read-only. Mappings are always `MAP_SHARED`.
-   */
-  static std::unique_ptr<MappedFile> FromFd(borrowed_fd fd, off64_t offset, size_t length,
-                                            int prot);
+public:
+    /**
+     * Creates a new mapping of the file pointed to by `fd`. Unlike the underlying OS primitives,
+     * `offset` does not need to be page-aligned. If `PROT_WRITE` is set in `prot`, the mapping
+     * will be writable, otherwise it will be read-only. Mappings are always `MAP_SHARED`.
+     */
+    static std::unique_ptr<MappedFile> FromFd(borrowed_fd fd, off64_t offset, size_t length,
+                                              int prot);
 
-  /**
-   * Removes the mapping.
-   */
-  ~MappedFile();
+    /**
+     * Same thing, but using the raw OS file handle instead of a CRT wrapper.
+     */
+    static MappedFile FromOsHandle(os_handle h, off64_t offset, size_t length, int prot);
 
-  char* data() { return base_ + offset_; }
-  size_t size() { return size_; }
+    /**
+     * Removes the mapping.
+     */
+    ~MappedFile();
 
- private:
-  DISALLOW_IMPLICIT_CONSTRUCTORS(MappedFile);
+    /**
+     * Not copyable but movable.
+     */
+    MappedFile(MappedFile&& other);
+    MappedFile& operator=(MappedFile&& other);
 
-  char* base_;
-  size_t size_;
+    char* data() const { return base_ + offset_; }
+    size_t size() const { return size_; }
 
-  size_t offset_;
+    explicit operator bool() const { return base_ != nullptr; }
+
+private:
+    DISALLOW_IMPLICIT_CONSTRUCTORS(MappedFile);
+
+    void close();
+
+    char* base_;
+    size_t size_;
+
+    size_t offset_;
 
 #if defined(_WIN32)
-  MappedFile(char* base, size_t size, size_t offset, HANDLE handle)
-      : base_(base), size_(size), offset_(offset), handle_(handle) {}
-  HANDLE handle_;
+    MappedFile(char* base, size_t size, size_t offset, HANDLE handle)
+          : base_(base), size_(size), offset_(offset), handle_(handle) {}
+    HANDLE handle_;
 #else
-  MappedFile(char* base, size_t size, size_t offset) : base_(base), size_(size), offset_(offset) {}
+    MappedFile(char* base, size_t size, size_t offset)
+          : base_(base), size_(size), offset_(offset) {}
 #endif
 };
 
