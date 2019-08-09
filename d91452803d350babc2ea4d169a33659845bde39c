@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "339043ad_b616ed34",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 712,
+      "author": {
+        "id": 1409599
+      },
+      "writtenOn": "2019-08-09T23:52:40Z",
+      "side": 1,
+      "message": "Should we handle deletion errors here?",
+      "revId": "d91452803d350babc2ea4d169a33659845bde39c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
