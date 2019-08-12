@@ -22,6 +22,30 @@
       "revId": "f86ea02de634b15ffcc1a2b6b991df5f59dba02c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9439884d_874eb829",
+        "filename": "base/include/android-base/endian.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-08-12T19:55:53Z",
+      "side": 1,
+      "message": "well, strictly that\u0027s \"glibc\" (L25 on). the kernel makes no difference. and other linux c libraries like musl might be different. (i haven\u0027t checked.)",
+      "parentUuid": "974a4627_55d1b4e5",
+      "range": {
+        "startLine": 58,
+        "startChar": 11,
+        "endLine": 58,
+        "endChar": 16
+      },
+      "revId": "f86ea02de634b15ffcc1a2b6b991df5f59dba02c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
