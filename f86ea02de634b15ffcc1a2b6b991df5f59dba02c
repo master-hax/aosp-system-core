@@ -46,6 +46,30 @@
       "revId": "f86ea02de634b15ffcc1a2b6b991df5f59dba02c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b2426547_8e6cc156",
+        "filename": "base/include/android-base/endian.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1210963
+      },
+      "writtenOn": "2019-08-12T22:43:35Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "9439884d_874eb829",
+      "range": {
+        "startLine": 58,
+        "startChar": 11,
+        "endLine": 58,
+        "endChar": 16
+      },
+      "revId": "f86ea02de634b15ffcc1a2b6b991df5f59dba02c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
