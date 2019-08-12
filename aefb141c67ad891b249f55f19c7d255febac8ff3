@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "10499178_7f0b97e6",
+        "filename": "init/README.ueventd.md",
+        "patchSetId": 6
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-08-12T20:15:32Z",
+      "side": 1,
+      "message": "oh, i didn\u0027t realize that was a term we\u0027d made up!",
+      "range": {
+        "startLine": 106,
+        "startChar": 63,
+        "endLine": 106,
+        "endChar": 76
+      },
+      "revId": "aefb141c67ad891b249f55f19c7d255febac8ff3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
