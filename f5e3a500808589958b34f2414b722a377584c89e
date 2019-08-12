@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "0c2fb2b4_9a411764",
+        "filename": "fs_mgr/liblp/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 1130827
+      },
+      "writtenOn": "2019-08-12T04:11:49Z",
+      "side": 1,
+      "message": "Can this line be removed?",
+      "range": {
+        "startLine": 95,
+        "startChar": 9,
+        "endLine": 95,
+        "endChar": 17
+      },
+      "revId": "f5e3a500808589958b34f2414b722a377584c89e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "118ce6b6_ba618326",
         "filename": "fs_mgr/liblp/images.cpp",
         "patchSetId": 2
@@ -110,6 +133,29 @@
         "startChar": 40,
         "endLine": 504,
         "endChar": 41
+      },
+      "revId": "f5e3a500808589958b34f2414b722a377584c89e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "41e63526_ac25da06",
+        "filename": "fs_mgr/liblp/images.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 514,
+      "author": {
+        "id": 1130827
+      },
+      "writtenOn": "2019-08-12T04:11:49Z",
+      "side": 1,
+      "message": "Change to 4 spaces so that the indents are consistent in this file.",
+      "range": {
+        "startLine": 514,
+        "startChar": 0,
+        "endLine": 514,
+        "endChar": 2
       },
       "revId": "f5e3a500808589958b34f2414b722a377584c89e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",

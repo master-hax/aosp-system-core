@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "a6a912a0_9c03315e",
+        "filename": "fs_mgr/liblp/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1130827
+      },
+      "writtenOn": "2019-08-12T04:11:49Z",
+      "side": 0,
+      "message": "io_test.cpp includes gmock.h. Is it correct to remove libgmock?",
+      "range": {
+        "startLine": 64,
+        "startChar": 8,
+        "endLine": 64,
+        "endChar": 19
+      },
+      "revId": "e5fa9b80ac761dbaf7fbb389204b6b95a6938c86",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "d96bb990_86444320",
         "filename": "fs_mgr/liblp/images.cpp",
         "patchSetId": 2
