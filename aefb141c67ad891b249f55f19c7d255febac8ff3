@@ -46,6 +46,30 @@
       "revId": "aefb141c67ad891b249f55f19c7d255febac8ff3",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4e0f1a54_50d0f250",
+        "filename": "init/README.ueventd.md",
+        "patchSetId": 6
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-08-12T20:29:16Z",
+      "side": 1,
+      "message": "yeah, that\u0027s the only other way i\u0027ve known \"cold boot\" used too.\n\n/me wonders if we should just fix this bad naming if it\u0027s not a mistake we inherited from linux...",
+      "parentUuid": "cae8b8a0_893395a8",
+      "range": {
+        "startLine": 106,
+        "startChar": 63,
+        "endLine": 106,
+        "endChar": 76
+      },
+      "revId": "aefb141c67ad891b249f55f19c7d255febac8ff3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
