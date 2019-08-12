@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "974a4627_55d1b4e5",
+        "filename": "base/include/android-base/endian.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1210963
+      },
+      "writtenOn": "2019-08-12T19:46:36Z",
+      "side": 1,
+      "message": "Should we mention linux in any of these comments for completeness?",
+      "range": {
+        "startLine": 58,
+        "startChar": 11,
+        "endLine": 58,
+        "endChar": 16
+      },
+      "revId": "f86ea02de634b15ffcc1a2b6b991df5f59dba02c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
