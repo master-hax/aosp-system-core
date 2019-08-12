@@ -22,6 +22,30 @@
       "revId": "aefb141c67ad891b249f55f19c7d255febac8ff3",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cae8b8a0_893395a8",
+        "filename": "init/README.ueventd.md",
+        "patchSetId": 6
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-08-12T20:24:13Z",
+      "side": 1,
+      "message": "I\u0027m pretty sure we did.  I haven\u0027t seen \u0027coldboot\u0027 mean this anywhere else.  It usually refers to this: https://techterms.com/definition/cold_boot (aka what also happens to be the first result on Google)",
+      "parentUuid": "10499178_7f0b97e6",
+      "range": {
+        "startLine": 106,
+        "startChar": 63,
+        "endLine": 106,
+        "endChar": 76
+      },
+      "revId": "aefb141c67ad891b249f55f19c7d255febac8ff3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
