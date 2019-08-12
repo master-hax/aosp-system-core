@@ -1,0 +1,113 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "cd45e83a_c2345adb",
+        "filename": "init/README.ueventd.md",
+        "patchSetId": 5
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-08-12T19:51:15Z",
+      "side": 1,
+      "message": "(fyi, # and ## and ### are easy ways to do multiple levels of sections.)",
+      "revId": "0e281433c7f29f55844d127dd7682df4964f64cb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c4a30d2c_a915b34e",
+        "filename": "init/README.ueventd.md",
+        "patchSetId": 5
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-08-12T19:51:15Z",
+      "side": 1,
+      "message": "the comma would make more sense after \u0027below\u0027?",
+      "range": {
+        "startLine": 4,
+        "startChar": 8,
+        "endLine": 4,
+        "endChar": 25
+      },
+      "revId": "0e281433c7f29f55844d127dd7682df4964f64cb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1f9f238e_9935bad4",
+        "filename": "init/README.ueventd.md",
+        "patchSetId": 5
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-08-12T19:51:15Z",
+      "side": 1,
+      "message": "s/for//",
+      "range": {
+        "startLine": 18,
+        "startChar": 16,
+        "endLine": 18,
+        "endChar": 19
+      },
+      "revId": "0e281433c7f29f55844d127dd7682df4964f64cb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2df8e1c6_90b42681",
+        "filename": "init/README.ueventd.md",
+        "patchSetId": 5
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-08-12T19:51:15Z",
+      "side": 1,
+      "message": "add \u0027it\u0027?\n\nand maybe say `so-called \u0027coldboot\u0027` to make it clear that you\u0027re explaining the term?",
+      "range": {
+        "startLine": 106,
+        "startChar": 47,
+        "endLine": 106,
+        "endChar": 59
+      },
+      "revId": "0e281433c7f29f55844d127dd7682df4964f64cb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "270970ba_a922d058",
+        "filename": "init/README.ueventd.md",
+        "patchSetId": 5
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-08-12T19:51:15Z",
+      "side": 1,
+      "message": "maybe remove \u0027add\u0027 here? aiui it\u0027s strictly correct, but it reads confusingly, and just \"uevents\" seems to convey as much information?",
+      "range": {
+        "startLine": 108,
+        "startChar": 57,
+        "endLine": 108,
+        "endChar": 60
+      },
+      "revId": "0e281433c7f29f55844d127dd7682df4964f64cb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
