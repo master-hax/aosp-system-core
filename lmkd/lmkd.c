@@ -2177,12 +2177,12 @@ int main(int argc __unused, char **argv __unused) {
     downgrade_pressure =
         (int64_t)property_get_int32("ro.lmk.downgrade_pressure", 100);
     kill_heaviest_task =
-        property_get_bool("ro.lmk.kill_heaviest_task", false);
+        property_get_bool("ro.lmk.kill_heaviest_task", true);
     low_ram_device = property_get_bool("ro.config.low_ram", false);
     kill_timeout_ms =
-        (unsigned long)property_get_int32("ro.lmk.kill_timeout_ms", 0);
+        (unsigned long)property_get_int32("ro.lmk.kill_timeout_ms", 100);
     use_minfree_levels =
-        property_get_bool("ro.lmk.use_minfree_levels", false);
+        property_get_bool("ro.lmk.use_minfree_levels", true);
     per_app_memcg =
         property_get_bool("ro.config.per_app_memcg", low_ram_device);
     swap_free_low_percentage =
