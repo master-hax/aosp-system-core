@@ -49,19 +49,42 @@ bool CreateLogicalPartitions(const LpMetadata& metadata, const std::string& bloc
 // method for ReadMetadata and CreateLogicalPartitions.
 bool CreateLogicalPartitions(const std::string& block_device);
 
-// Create a block device for a single logical partition, given metadata and
-// the partition name. On success, a path to the partition's block device is
-// returned. If |force_writable| is true, the "readonly" flag will be ignored
-// so the partition can be flashed.
-//
-// If |timeout_ms| is non-zero, then CreateLogicalPartition will block for the
-// given amount of time until the path returned in |path| is available.
+// Helper for creating partitions from a metadata and block device. This should
+// be preferred over the old CreateLogicalPartition functions, since it has
+// simpler signatures and works better when multiple partitions are involved.
+class LogicalParititonMapper final {
+  public:
+    LogicalParititonMapper(const LpMetadata& metadata, const std::string& block_device);
+
+    // Create a block device for a single logical partition, given metadata and
+    // the partition name (or partition record). On success, a path to the
+    // partition's block device is returned. If |force_writable| is true, the
+    // "readonly" flag will be ignored so the partition can be flashed.
+    //
+    // If |timeout_ms| is non-zero, then CreateLogicalPartition will block for
+    // the given amount of time until the path returned in |path| is available.
+    bool Map(const std::string& partition_name, bool force_writable,
+             const std::chrono::milliseconds& timeout_ms, std::string* path);
+
+    // These overloads allow changing the device name (it defaults to the
+    // partition name otherwise).
+    bool Map(const std::string& partition_name, const std::string& device_name, bool force_writable,
+             const std::chrono::milliseconds& timeout_ms, std::string* path);
+    bool Map(const LpMetadataPartition& partition, const std::string& device_name,
+             bool force_writable, const std::chrono::milliseconds& timeout_ms, std::string* path);
+
+  private:
+    const LpMetadata& metadata_;
+    std::string block_device_;
+};
+
+// Invoke LogicalParititonMapper, with partiton_name == device_name, reading
+// the metadata from the block device.
 bool CreateLogicalPartition(const std::string& block_device, uint32_t metadata_slot,
                             const std::string& partition_name, bool force_writable,
                             const std::chrono::milliseconds& timeout_ms, std::string* path);
 
-// Same as above, but with a given metadata object. Care should be taken that
-// the metadata represents a valid partition layout.
+// Invoke LogicalParititonMapper, with partiton_name == device_name.
 bool CreateLogicalPartition(const std::string& block_device, const LpMetadata& metadata,
                             const std::string& partition_name, bool force_writable,
                             const std::chrono::milliseconds& timeout_ms, std::string* path);
