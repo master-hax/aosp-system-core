@@ -142,6 +142,9 @@ class DeviceMapper final {
     // Returns 'true' on success, false otherwise.
     bool LoadTableAndActivate(const std::string& name, const DmTable& table);
 
+    // Rename a device. The new name must not be in use.
+    bool RenameDevice(const std::string& old_name, const std::string& new_name);
+
     // Returns true if a list of available device mapper targets registered in the kernel was
     // successfully read and stored in 'targets'. Returns 'false' otherwise.
     bool GetAvailableTargets(std::vector<DmTargetTypeInfo>* targets);

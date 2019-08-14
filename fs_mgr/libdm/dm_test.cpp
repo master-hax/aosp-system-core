@@ -194,6 +194,27 @@ TEST(libdm, DmSuspendResume) {
     ASSERT_EQ(dm.GetState(dev.name()), DmDeviceState::ACTIVE);
 }
 
+TEST(libdm, Rename) {
+    unique_fd tmp1(CreateTempFile("file_suspend_resume", 512));
+    ASSERT_GE(tmp1, 0);
+
+    LoopDevice loop_a(tmp1, 10s);
+    ASSERT_TRUE(loop_a.valid());
+
+    DmTable table;
+    ASSERT_TRUE(table.Emplace<DmTargetLinear>(0, 1, loop_a.device(), 0));
+    ASSERT_TRUE(table.valid());
+
+    TempDevice dev("libdm-test-rename", table);
+    ASSERT_TRUE(dev.valid());
+    ASSERT_FALSE(dev.path().empty());
+
+    auto& dm = DeviceMapper::Instance();
+    ASSERT_TRUE(dm.RenameDevice("libdm-test-rename", "libdm-renamed"));
+    ASSERT_EQ(dm.GetState("libdm-renamed"), DmDeviceState::ACTIVE);
+    ASSERT_TRUE(dm.RenameDevice("libdm-renamed", "libdm-test-rename"));
+}
+
 TEST(libdm, DmVerityArgsAvb2) {
     std::string device = "/dev/block/platform/soc/1da4000.ufshc/by-name/vendor_a";
     std::string algorithm = "sha1";

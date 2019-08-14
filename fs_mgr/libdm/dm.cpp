@@ -134,6 +134,22 @@ bool DeviceMapper::CreateDevice(const std::string& name, const DmTable& table, s
     return true;
 }
 
+bool DeviceMapper::RenameDevice(const std::string& old_name, const std::string& new_name) {
+    std::string ioctl_buffer(sizeof(struct dm_ioctl), 0);
+    ioctl_buffer += new_name;
+    ioctl_buffer += '\0';
+
+    struct dm_ioctl* io = reinterpret_cast<struct dm_ioctl*>(&ioctl_buffer[0]);
+    InitIo(io, old_name);
+    io->data_size = ioctl_buffer.size();
+    io->data_start = sizeof(struct dm_ioctl);
+    if (ioctl(fd_, DM_DEV_RENAME, io)) {
+        PLOG(ERROR) << "DM_DEV_RENAME " << old_name << " to " << new_name << " failed";
+        return false;
+    }
+    return true;
+}
+
 bool DeviceMapper::GetDeviceUniquePath(const std::string& name, std::string* path) {
     struct dm_ioctl io;
     InitIo(&io, name);
