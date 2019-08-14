@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6b55ce51_5603c2e0",
+        "filename": "fs_mgr/liblp/utility.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 222,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2019-08-14T21:20:42Z",
+      "side": 1,
+      "message": "Should be InPlace...",
+      "range": {
+        "startLine": 222,
+        "startChar": 22,
+        "endLine": 222,
+        "endChar": 29
+      },
+      "revId": "8a0ffc7cfeb903488462b59ff54829826b888110",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
