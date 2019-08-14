@@ -413,6 +413,30 @@
     },
     {
       "key": {
+        "uuid": "1dfe0b73_a7ab7bb5",
+        "filename": "fs_mgr/liblp/images.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 383,
+      "author": {
+        "id": 1539525
+      },
+      "writtenOn": "2019-08-14T13:50:20Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fb779465_358b2b05",
+      "range": {
+        "startLine": 383,
+        "startChar": 13,
+        "endLine": 383,
+        "endChar": 29
+      },
+      "revId": "b22abc65e4ab1871450e571dc28dd45a384f6884",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "74cc1bc2_8ea26760",
         "filename": "fs_mgr/liblp/images.cpp",
         "patchSetId": 1
@@ -695,6 +719,30 @@
     },
     {
       "key": {
+        "uuid": "e5e4574f_61d7cef7",
+        "filename": "fs_mgr/liblp/images.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 506,
+      "author": {
+        "id": 1539525
+      },
+      "writtenOn": "2019-08-14T13:50:20Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "060e24ef_98bed42c",
+      "range": {
+        "startLine": 506,
+        "startChar": 36,
+        "endLine": 506,
+        "endChar": 49
+      },
+      "revId": "b22abc65e4ab1871450e571dc28dd45a384f6884",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "6e021565_275f1d07",
         "filename": "fs_mgr/liblp/images.cpp",
         "patchSetId": 1
@@ -836,6 +884,30 @@
     },
     {
       "key": {
+        "uuid": "ca87b33d_726bc52c",
+        "filename": "fs_mgr/liblp/images.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 526,
+      "author": {
+        "id": 1539525
+      },
+      "writtenOn": "2019-08-14T13:50:20Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "57d13f11_e92cb7b2",
+      "range": {
+        "startLine": 522,
+        "startChar": 0,
+        "endLine": 526,
+        "endChar": 53
+      },
+      "revId": "b22abc65e4ab1871450e571dc28dd45a384f6884",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "aaaac608_4a5b1b11",
         "filename": "fs_mgr/liblp/images.cpp",
         "patchSetId": 1
@@ -883,6 +955,30 @@
     },
     {
       "key": {
+        "uuid": "6f2d1d35_75c6b532",
+        "filename": "fs_mgr/liblp/images.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 548,
+      "author": {
+        "id": 1539525
+      },
+      "writtenOn": "2019-08-14T13:50:20Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "cf24ebdd_8c5a9a67",
+      "range": {
+        "startLine": 548,
+        "startChar": 9,
+        "endLine": 548,
+        "endChar": 10
+      },
+      "revId": "b22abc65e4ab1871450e571dc28dd45a384f6884",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "cea73722_350c3d1b",
         "filename": "fs_mgr/liblp/images.cpp",
         "patchSetId": 1
@@ -927,6 +1023,30 @@
       "revId": "b22abc65e4ab1871450e571dc28dd45a384f6884",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a121059b_d377c3d5",
+        "filename": "fs_mgr/liblp/images.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 552,
+      "author": {
+        "id": 1539525
+      },
+      "writtenOn": "2019-08-14T13:50:20Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8a6d97e4_9cc5cb58",
+      "range": {
+        "startLine": 552,
+        "startChar": 35,
+        "endLine": 552,
+        "endChar": 41
+      },
+      "revId": "b22abc65e4ab1871450e571dc28dd45a384f6884",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -1024,6 +1144,30 @@
     },
     {
       "key": {
+        "uuid": "2be06207_746535fb",
+        "filename": "fs_mgr/liblp/images.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 564,
+      "author": {
+        "id": 1539525
+      },
+      "writtenOn": "2019-08-14T13:50:20Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c2152886_0a2acb57",
+      "range": {
+        "startLine": 564,
+        "startChar": 17,
+        "endLine": 564,
+        "endChar": 23
+      },
+      "revId": "b22abc65e4ab1871450e571dc28dd45a384f6884",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f3b8a058_5c318423",
         "filename": "fs_mgr/liblp/images.cpp",
         "patchSetId": 1
@@ -1115,6 +1259,30 @@
       "revId": "b22abc65e4ab1871450e571dc28dd45a384f6884",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "850eb368_0d02b7b5",
+        "filename": "fs_mgr/liblp/images.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 582,
+      "author": {
+        "id": 1539525
+      },
+      "writtenOn": "2019-08-14T13:50:20Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b86b1ae4_11e2ad35",
+      "range": {
+        "startLine": 582,
+        "startChar": 2,
+        "endLine": 582,
+        "endChar": 16
+      },
+      "revId": "b22abc65e4ab1871450e571dc28dd45a384f6884",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -1259,6 +1427,30 @@
     },
     {
       "key": {
+        "uuid": "9512d26b_5cc8faf9",
+        "filename": "fs_mgr/liblp/images.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 1539525
+      },
+      "writtenOn": "2019-08-14T13:50:20Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8f14a976_0ddba9a6",
+      "range": {
+        "startLine": 68,
+        "startChar": 13,
+        "endLine": 68,
+        "endChar": 31
+      },
+      "revId": "b22abc65e4ab1871450e571dc28dd45a384f6884",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "85730475_9b269a5f",
         "filename": "fs_mgr/liblp/images.h",
         "patchSetId": 1
@@ -1303,6 +1495,30 @@
       "revId": "b22abc65e4ab1871450e571dc28dd45a384f6884",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9e43de51_801ac8da",
+        "filename": "fs_mgr/liblp/images.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 1539525
+      },
+      "writtenOn": "2019-08-14T13:50:20Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6c618f5d_bdf6ade2",
+      "range": {
+        "startLine": 69,
+        "startChar": 47,
+        "endLine": 69,
+        "endChar": 53
+      },
+      "revId": "b22abc65e4ab1871450e571dc28dd45a384f6884",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -1353,6 +1569,30 @@
     },
     {
       "key": {
+        "uuid": "e764fb9e_a4cee21a",
+        "filename": "fs_mgr/liblp/images.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1539525
+      },
+      "writtenOn": "2019-08-14T13:50:20Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "cbfee213_127284cf",
+      "range": {
+        "startLine": 71,
+        "startChar": 57,
+        "endLine": 71,
+        "endChar": 78
+      },
+      "revId": "b22abc65e4ab1871450e571dc28dd45a384f6884",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e216c04f_d0c6a930",
         "filename": "fs_mgr/liblp/images.h",
         "patchSetId": 1
@@ -1397,6 +1637,30 @@
       "revId": "b22abc65e4ab1871450e571dc28dd45a384f6884",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "705a0ed9_916dac4e",
+        "filename": "fs_mgr/liblp/images.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 1539525
+      },
+      "writtenOn": "2019-08-14T13:50:20Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "62fb0e84_b79df4fc",
+      "range": {
+        "startLine": 82,
+        "startChar": 16,
+        "endLine": 82,
+        "endChar": 23
+      },
+      "revId": "b22abc65e4ab1871450e571dc28dd45a384f6884",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -1694,6 +1958,30 @@
     },
     {
       "key": {
+        "uuid": "798d5f28_b22b95cb",
+        "filename": "fs_mgr/libvbmeta/include/libvbmeta/builder.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1539525
+      },
+      "writtenOn": "2019-08-14T13:50:20Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e2e5f004_6c911290",
+      "range": {
+        "startLine": 39,
+        "startChar": 10,
+        "endLine": 39,
+        "endChar": 34
+      },
+      "revId": "b22abc65e4ab1871450e571dc28dd45a384f6884",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f1d36acb_d5f4f19c",
         "filename": "fs_mgr/libvbmeta/include/libvbmeta/super_avb_footer_format.h",
         "patchSetId": 1
@@ -1762,6 +2050,30 @@
       "revId": "b22abc65e4ab1871450e571dc28dd45a384f6884",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9c947fac_7ad885f6",
+        "filename": "fs_mgr/libvbmeta/include/libvbmeta/super_avb_footer_format.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1539525
+      },
+      "writtenOn": "2019-08-14T13:50:20Z",
+      "side": 1,
+      "message": "I guess that libvbmeta_reader (designed for bootloader to use) needs this file, so I keep it.",
+      "parentUuid": "b4253e4c_dc01168b",
+      "range": {
+        "startLine": 20,
+        "startChar": 0,
+        "endLine": 21,
+        "endChar": 17
+      },
+      "revId": "b22abc65e4ab1871450e571dc28dd45a384f6884",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
