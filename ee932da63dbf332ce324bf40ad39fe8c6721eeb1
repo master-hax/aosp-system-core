@@ -1,0 +1,142 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e6ed9252_0d463030",
+        "filename": "adb/fdevent/fdevent.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 1080076
+      },
+      "writtenOn": "2019-08-14T02:01:37Z",
+      "side": 1,
+      "message": "FYI: a common pattern is to use \"_\" as a variable name for unused returned items",
+      "range": {
+        "startLine": 67,
+        "startChar": 0,
+        "endLine": 67,
+        "endChar": 15
+      },
+      "revId": "ee932da63dbf332ce324bf40ad39fe8c6721eeb1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ae5a8654_24efec3f",
+        "filename": "adb/fdevent/fdevent.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 1080076
+      },
+      "writtenOn": "2019-08-14T02:01:37Z",
+      "side": 1,
+      "message": "nit:\nauto erased \u003d installed_fdevents.erase(fde-\u003efd.get());\nCHECK_EQ(erased, 1);",
+      "range": {
+        "startLine": 81,
+        "startChar": 0,
+        "endLine": 83,
+        "endChar": 40
+      },
+      "revId": "ee932da63dbf332ce324bf40ad39fe8c6721eeb1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "effbce06_18081f06",
+        "filename": "adb/fdevent/fdevent.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 1080076
+      },
+      "writtenOn": "2019-08-14T02:01:37Z",
+      "side": 1,
+      "message": "nit: \"using namespace std::chrono\" in this function would make code much nicer :)",
+      "range": {
+        "startLine": 116,
+        "startChar": 28,
+        "endLine": 116,
+        "endChar": 71
+      },
+      "revId": "ee932da63dbf332ce324bf40ad39fe8c6721eeb1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a4557e1e_6fa35f95",
+        "filename": "adb/fdevent/fdevent.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 133,
+      "author": {
+        "id": 1080076
+      },
+      "writtenOn": "2019-08-14T02:01:37Z",
+      "side": 1,
+      "message": "nit: I\u0027ve seen this several times scattered around Android code. Do we have some common place for type trait utils to put it there?",
+      "range": {
+        "startLine": 131,
+        "startChar": 0,
+        "endLine": 133,
+        "endChar": 41
+      },
+      "revId": "ee932da63dbf332ce324bf40ad39fe8c6721eeb1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "56fdedaa_b06d5cd6",
+        "filename": "adb/fdevent/fdevent.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 137,
+      "author": {
+        "id": 1080076
+      },
+      "writtenOn": "2019-08-14T02:01:37Z",
+      "side": 1,
+      "message": "FYI: std::visit() on a variant generates HORRIBLE code even in simplest cases, even when the compiler is smart enough to figure everything out in the compile time. Replacing a variant with a manual dispatch for one of two function pointers will make the resulting code smaller and faster. And, probably, more readable\nhttps://godbolt.org/z/3Xw9pV - neither compiler was able to eliminate the virtual table and virtual call unless you manually do the type checking",
+      "range": {
+        "startLine": 137,
+        "startChar": 8,
+        "endLine": 137,
+        "endChar": 19
+      },
+      "revId": "ee932da63dbf332ce324bf40ad39fe8c6721eeb1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ff4f06b5_3f1aad01",
+        "filename": "adb/fdevent/fdevent.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 163,
+      "author": {
+        "id": 1080076
+      },
+      "writtenOn": "2019-08-14T02:01:37Z",
+      "side": 1,
+      "message": "nit: could you please std::move() it? Any function\u003c\u003e with a capture has dynamically allocated memory and moving it out is much cheaper",
+      "range": {
+        "startLine": 163,
+        "startChar": 17,
+        "endLine": 163,
+        "endChar": 41
+      },
+      "revId": "ee932da63dbf332ce324bf40ad39fe8c6721eeb1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
