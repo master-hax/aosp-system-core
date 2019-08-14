@@ -22,6 +22,30 @@
       "revId": "b278e013b918a59b085ea039f37ec6b6a747f67c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1768927f_eee2cafb",
+        "filename": "fs_mgr/liblp/include/liblp/builder.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-08-14T21:43:10Z",
+      "side": 1,
+      "message": "Agreed, this is one of the cases it works perfectly.  The rest of this CL is good too, since operator\u003d\u003d doesn\u0027t need to worry about the ending nullptr.\n\nI\u0027m just pointing out those worries for general usage.",
+      "parentUuid": "f4102037_2c45b101",
+      "range": {
+        "startLine": 42,
+        "startChar": 0,
+        "endLine": 42,
+        "endChar": 60
+      },
+      "revId": "b278e013b918a59b085ea039f37ec6b6a747f67c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
