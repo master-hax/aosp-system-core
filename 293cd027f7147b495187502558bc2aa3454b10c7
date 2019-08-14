@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5760f2a8_3389b4ca",
+        "filename": "fs_mgr/liblp/utility.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 276,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-08-14T21:31:35Z",
+      "side": 1,
+      "message": "Out of curiosity, do we need two group and two partition vectors? It shouldn\u0027t be a big deal to copy these, they\u0027re not very big.",
+      "revId": "293cd027f7147b495187502558bc2aa3454b10c7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
