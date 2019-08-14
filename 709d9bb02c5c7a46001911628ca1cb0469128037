@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "201ba085_fa868a27",
+        "filename": "fs_mgr/liblp/builder.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 195,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-08-14T21:12:15Z",
+      "side": 1,
+      "message": "iirc, partial namespace references are discouraged - does ::GetBlockDevicePartitionName work? Or can we just expose a getter for the LpMetadataBlockDevice list?",
+      "revId": "709d9bb02c5c7a46001911628ca1cb0469128037",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
