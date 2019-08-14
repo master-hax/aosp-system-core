@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f4102037_2c45b101",
+        "filename": "fs_mgr/liblp/include/liblp/builder.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2019-08-14T21:40:04Z",
+      "side": 1,
+      "message": "Tom, in our case, I believe the C-string here will be null-terminated (when it is written like this). And I think the constructed std::string_view object is just going to have a char* point to the \"code\" or \"static\" section (not sure which).\nAlso in our case, the string_view object itself shouldn\u0027t be long-lived since it is constexpr. (the underlying buffer will be long-lived though).",
+      "range": {
+        "startLine": 42,
+        "startChar": 0,
+        "endLine": 42,
+        "endChar": 60
+      },
+      "revId": "b278e013b918a59b085ea039f37ec6b6a747f67c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
