@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "24f9c72b_654b24e9",
+        "filename": "adb/fdevent/fdevent.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 200,
+      "author": {
+        "id": 1080076
+      },
+      "writtenOn": "2019-08-14T02:35:32Z",
+      "side": 1,
+      "message": "General question: I\u0027ve seen many unique_ptr-like global objects in Android code. All what they provide is RAII semantics, and allocating them with new gives away this only benefit. Why do we keep using those instead of raw pointers _in such places_?",
+      "range": {
+        "startLine": 199,
+        "startChar": 7,
+        "endLine": 200,
+        "endChar": 72
+      },
+      "revId": "19f802f4a068a4c0d2078d483dbf3895187f80e3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa0a2a51_0c484f4c",
+        "filename": "adb/fdevent/fdevent_epoll.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1080076
+      },
+      "writtenOn": "2019-08-14T02:35:32Z",
+      "side": 1,
+      "message": "nit: I know that Destroy() is final (now), but calling virtual functions from dtors is usually unsafe. Moving the common destruction code into a separate non-virtual function is much more future-proof\nSame for the Create() and Add() in the ctor",
+      "range": {
+        "startLine": 59,
+        "startChar": 4,
+        "endLine": 59,
+        "endChar": 40
+      },
+      "revId": "19f802f4a068a4c0d2078d483dbf3895187f80e3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4ca1576b_64fe3a29",
+        "filename": "adb/fdevent/fdevent_epoll.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 154,
+      "author": {
+        "id": 1080076
+      },
+      "writtenOn": "2019-08-14T02:35:32Z",
+      "side": 1,
+      "message": "I\u0027m trying to understand why two loops are needed here, instead of going over the triggered events array and looking them up in the installed_fdevents_ map by fde-\u003efd inside the first loop. Is there some special condition for the events ordering? If not, |event_map| becomes unneeded",
+      "range": {
+        "startLine": 151,
+        "startChar": 0,
+        "endLine": 154,
+        "endChar": 71
+      },
+      "revId": "19f802f4a068a4c0d2078d483dbf3895187f80e3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
