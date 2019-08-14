@@ -1909,41 +1909,49 @@ enum zone_watermark {
     WMARK_MIN
 };
 
+struct zone_thresholds {
+    long high_wmark;
+    long low_wmark;
+    long min_wmark;
+};
+
 /*
  * Returns lowest breached watermark or WMARK_NONE.
  */
-static enum zone_watermark get_lowest_watermark(struct zoneinfo *zi)
+static enum zone_watermark get_lowest_watermark(union meminfo *mi,
+                                                struct zone_thresholds *thresholds)
 {
-    enum zone_watermark wmark = WMARK_NONE;
+    int64_t nr_free_pages = mi->field.nr_free_pages - mi->field.cma_free;
+
+    if (nr_free_pages < thresholds->min_wmark) {
+        return WMARK_MIN;
+    }
+    if (nr_free_pages < thresholds->low_wmark) {
+        return WMARK_LOW;
+    }
+    if (nr_free_pages < thresholds->high_wmark) {
+        return WMARK_HIGH;
+    }
+    return WMARK_NONE;
+}
+
+void calc_zone_thresholds(struct zoneinfo *zi, struct zone_thresholds *thresholds) {
+    memset(thresholds, 0, sizeof(struct zone_thresholds));
 
     for (int node_idx = 0; node_idx < zi->node_count; node_idx++) {
         struct zoneinfo_node *node = &zi->nodes[node_idx];
-
         for (int zone_idx = 0; zone_idx < node->zone_count; zone_idx++) {
             struct zoneinfo_zone *zone = &node->zones[zone_idx];
-            int zone_free_mem;
 
             if (!zone->fields.field.present) {
                 continue;
             }
 
-            zone_free_mem = zone->fields.field.nr_free_pages - zone->fields.field.nr_free_cma;
-            if (zone_free_mem > zone->max_protection + zone->fields.field.high) {
-                continue;
-            }
-            if (zone_free_mem > zone->max_protection + zone->fields.field.low) {
-                if (wmark < WMARK_HIGH) wmark = WMARK_HIGH;
-                continue;
-            }
-            if (zone_free_mem > zone->max_protection + zone->fields.field.min) {
-                if (wmark < WMARK_LOW) wmark = WMARK_LOW;
-                continue;
-            }
-            wmark = WMARK_MIN;
+            thresholds->high_wmark += zone->max_protection + zone->fields.field.high;
+            thresholds->low_wmark += zone->max_protection + zone->fields.field.low;
+            thresholds->min_wmark += zone->max_protection + zone->fields.field.min;
         }
     }
-
-    return wmark;
 }
 
 static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_params) {
@@ -1970,10 +1978,11 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
     static int thrashing_limit = 0;
     static bool in_reclaim = false;
     static struct timespec kill_done_tm;
+    static struct zone_thresholds thresholds = { 0, 0, 0 };
+    static struct timespec threshold_update_tm;
 
     union meminfo mi;
     union vmstat vs;
-    struct zoneinfo zi;
     struct timespec curr_tm;
     int64_t thrashing = 0;
     bool swap_is_low = false;
@@ -2051,12 +2060,24 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
     }
     in_reclaim = true;
 
-    /* Find out which watermark is breached if any */
-    if (zoneinfo_parse(&zi) < 0) {
-        ALOGE("Failed to parse zoneinfo!");
-        return;
+    /* Refresh thresholds once per min in case user updated one of the margins */
+    if (thresholds.high_wmark == 0 || get_time_diff_ms(&threshold_update_tm, &curr_tm) > 60000) {
+        struct zoneinfo zi;
+
+        /*
+         * In unlikely case of failing we skip the update until the next opportunity
+         * but still rate limiting the updates even as we skip one.
+         */
+        if (zoneinfo_parse(&zi) < 0) {
+            ALOGE("Failed to parse zoneinfo!");
+        } else {
+            calc_zone_thresholds(&zi, &thresholds);
+        }
+        threshold_update_tm = curr_tm;
     }
-    wmark = get_lowest_watermark(&zi);
+
+    /* Find out which watermark is breached if any */
+    wmark = get_lowest_watermark(&mi, &thresholds);
 
     /* Decide if killing a process is necessary and record the reason */
     if (cycle_after_kill && wmark > WMARK_LOW) {
