@@ -46,6 +46,30 @@
       "revId": "2d47584ebb6e264dcd5476fa0af31b9a432f0be2",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6096ccc6_3d853a7a",
+        "filename": "fs_mgr/fs_mgr_dm_linear.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2019-08-15T23:44:59Z",
+      "side": 1,
+      "message": "Don\u0027t you want to reject relative paths though? so:\n\n    if (android::base::StartsWith(dev_string, \"/\")) {Realpath(...); return true;}\n    else if (dev_string.find(\u0027:\u0027) !\u003d std::string::npos) {*result \u003d dev_string; return true;}\n    return false;",
+      "parentUuid": "69448e61_70cf7591",
+      "range": {
+        "startLine": 69,
+        "startChar": 13,
+        "endLine": 70,
+        "endChar": 51
+      },
+      "revId": "2d47584ebb6e264dcd5476fa0af31b9a432f0be2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
