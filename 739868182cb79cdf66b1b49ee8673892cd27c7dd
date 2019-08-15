@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "eae7b4fe_4eb80a93",
+        "filename": "fs_mgr/tests/adb-remount-test.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 882,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-08-15T18:13:47Z",
+      "side": 1,
+      "message": ",${SPACE}${TAB}, on cuttlefish it has noatime,ro,errors... on the options line.",
+      "range": {
+        "startLine": 882,
+        "startChar": 59,
+        "endLine": 882,
+        "endChar": 60
+      },
+      "revId": "739868182cb79cdf66b1b49ee8673892cd27c7dd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
