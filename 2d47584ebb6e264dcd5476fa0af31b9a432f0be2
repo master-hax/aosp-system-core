@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1cc686cf_5935cc9d",
+        "filename": "fs_mgr/fs_mgr_dm_linear.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2019-08-15T21:18:58Z",
+      "side": 1,
+      "message": "It looks like your code does call Realpath if it is in major:minor format and print an error log. Maybe\n\n    if (!android::base::StartsWith(dev_string, \"/\") \u0026\u0026 dev_string.find(\u0027:\u0027) \u003d\u003d std::string::npos) {",
+      "range": {
+        "startLine": 69,
+        "startChar": 13,
+        "endLine": 70,
+        "endChar": 51
+      },
+      "revId": "2d47584ebb6e264dcd5476fa0af31b9a432f0be2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
