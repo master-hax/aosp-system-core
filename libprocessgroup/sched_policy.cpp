@@ -150,6 +150,28 @@ int set_sched_policy(int tid, SchedPolicy policy) {
     return 0;
 }
 
+int set_blkio_policy(int tid, SchedPolicy policy) {
+    if (tid == 0) {
+        tid = GetThreadId();
+    }
+    policy = _policy(policy);
+
+    switch (policy) {
+        case SP_BACKGROUND:
+            return SetTaskProfiles(tid, {"LowIoPriority"}, true) ? 0 : -1;
+        case SP_FOREGROUND:
+        case SP_AUDIO_APP:
+        case SP_AUDIO_SYS:
+            return SetTaskProfiles(tid, {"HighIoPriority"}, true) ? 0 : -1;
+        case SP_TOP_APP:
+            return SetTaskProfiles(tid, {"MaxIoPriority"}, true) ? 0 : -1;
+        default:
+            return SetTaskProfiles(tid, {"NormalIoPriority"}, true) ? 0 : -1;
+    }
+
+    return 0;
+}
+
 bool cpusets_enabled() {
     static bool enabled = (CgroupMap::GetInstance().FindController("cpuset").IsUsable());
     return enabled;
@@ -157,6 +179,11 @@ bool cpusets_enabled() {
 
 bool schedboost_enabled() {
     static bool enabled = (CgroupMap::GetInstance().FindController("schedtune").IsUsable());
+    return enabled;
+}
+
+bool blkio_enabled() {
+    static bool enabled = (CgroupMap::GetInstance().FindController("blkio").IsUsable());
     return enabled;
 }
 

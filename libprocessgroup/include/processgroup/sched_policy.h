@@ -37,6 +37,13 @@ extern bool cpusets_enabled();
  */
 extern bool schedboost_enabled();
 
+/*
+ * Check if Linux kernel enables BLKIO feature.
+ *
+ * Return value: 1 if Linux kernel CONFIG_BLK_CGROUP=y; 0 otherwise.
+ */
+extern bool blkio_enabled();
+
 /* Keep in sync with THREAD_GROUP_* in frameworks/base/core/java/android/os/Process.java */
 typedef enum {
     SP_DEFAULT = -1,
@@ -62,6 +69,8 @@ extern int set_cpuset_policy(int tid, SchedPolicy policy);
  * Return value: 0 for success, or -errno for error.
  */
 extern int set_sched_policy(int tid, SchedPolicy policy);
+
+extern int set_blkio_policy(int tid, SchedPolicy policy);
 
 /* Return the policy associated with the cgroup of thread tid via policy pointer.
  * On platforms which support gettid(), zero tid means current thread.
