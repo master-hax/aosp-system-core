@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "36946612_c7388e05",
+        "filename": "fs_mgr/libvbmeta/utility.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 1130827
+      },
+      "writtenOn": "2019-08-15T07:15:02Z",
+      "side": 1,
+      "message": "LogicalToPhysicalOffset may return 0. Is it necessary to check the value and log an error?",
+      "range": {
+        "startLine": 108,
+        "startChar": 13,
+        "endLine": 108,
+        "endChar": 54
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "dd4efce6_c4733209",
+        "filename": "fs_mgr/libvbmeta/writer.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 1130827
+      },
+      "writtenOn": "2019-08-15T07:15:02Z",
+      "side": 1,
+      "message": "To ceil an integer without using floating point numbers:\n\n((vbmeta.size() + SUPER_VBMETA_TOTAL_SIZE - 1) / SUPER_VBMETA_TOTAL_SIZE) * SUPER_VBMETA_TOTAL_SIZE;\n\nI think it\u0027s fine to assume that vbmeta.size() + SUPER_VBMETA_TOTAL_SIZE doesn\u0027t overflow.",
+      "range": {
+        "startLine": 43,
+        "startChar": 12,
+        "endLine": 43,
+        "endChar": 21
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c4b8cef8_f1657e65",
+        "filename": "fs_mgr/libvbmeta/writer.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1130827
+      },
+      "writtenOn": "2019-08-15T07:15:02Z",
+      "side": 1,
+      "message": "add a space",
+      "range": {
+        "startLine": 58,
+        "startChar": 64,
+        "endLine": 58,
+        "endChar": 66
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
