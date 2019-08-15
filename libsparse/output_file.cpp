@@ -50,8 +50,8 @@
 
 #define min(a, b)        \
   ({                     \
-    typeof(a) _a = (a);  \
-    typeof(b) _b = (b);  \
+    decltype(a) _a = (a);  \
+    decltype(b) _b = (b);  \
     (_a < _b) ? _a : _b; \
   })
 
