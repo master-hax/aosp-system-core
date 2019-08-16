@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "92ba7580_26c2bdee",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 991,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2019-08-16T02:36:31Z",
+      "side": 1,
+      "message": "This does look similar to the API I need to open up for update_engine:\n\nhttps://android-review.googlesource.com/c/platform/system/core/+/1096938/4/fs_mgr/libsnapshot/snapshot.cpp#1200\n\nThe difference is that CreateLogicalAndSnapshotPartitions maps all partitions where CL:1096938 maps them one by one. Maybe there is a way to merge the two? (i.e. CreateLogicalAndSnapshotPartitions is just a for-loop over all partitions that calls into CreateLogicalAndSnapshotPartition)",
+      "revId": "fcbf894b463ff88251a1c49b34a35240cb1b2508",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
