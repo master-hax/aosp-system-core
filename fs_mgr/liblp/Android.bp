@@ -81,4 +81,7 @@ cc_test {
             ],
         },
     },
+    test_suites: [
+        "device-tests",
+    ],
 }
