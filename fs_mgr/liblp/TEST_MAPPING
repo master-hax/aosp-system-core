@@ -1,0 +1,8 @@
+{
+  "presubmit": [
+    {
+      "name": "liblp_test",
+      "required_root": "true"
+    }
+  ]
+}
