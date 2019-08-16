@@ -16,10 +16,10 @@ liblog.so
 libmediandk.so
 libm.so
 libnativewindow.so
-libneuralnetworks.so
-libOpenMAXAL.so
-libOpenSLES.so
-libRS.so
+libneuralnetworks.so nopreload
+libOpenMAXAL.so nopreload
+libOpenSLES.so nopreload
+libRS.so nopreload
 libstdc++.so
 libsync.so
 libvulkan.so
