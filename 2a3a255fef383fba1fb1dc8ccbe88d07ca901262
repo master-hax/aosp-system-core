@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "fbe236f9_7d5642d7",
+        "filename": "fs_mgr/libvbmeta/Android.bp",
+        "patchSetId": 9
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1130827
+      },
+      "writtenOn": "2019-08-16T10:48:35Z",
+      "side": 1,
+      "message": "The module is a test binary on host. Can this be removed?\nhttps://android.googlesource.com/platform/build/soong/+/refs/heads/master/android/arch.go#86",
+      "range": {
+        "startLine": 71,
+        "startChar": 8,
+        "endLine": 71,
+        "endChar": 18
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "36946612_c7388e05",
         "filename": "fs_mgr/libvbmeta/utility.cpp",
         "patchSetId": 9
