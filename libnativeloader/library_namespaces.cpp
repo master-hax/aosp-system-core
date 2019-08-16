@@ -126,6 +126,7 @@ void LibraryNamespaces::Initialize() {
   // it should probably be addressed in the future.
   for (const auto& soname :
        android::base::Split(default_public_libraries(/* for_preload */ true), ":")) {
+    ALOGD("preloading %s", soname.c_str());
     LOG_ALWAYS_FATAL_IF(dlopen(soname.c_str(), RTLD_NOW | RTLD_NODELETE) == nullptr,
                         "Error preloading public library %s: %s", soname.c_str(), dlerror());
   }
