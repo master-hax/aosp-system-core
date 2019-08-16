@@ -16,6 +16,24 @@
       "revId": "fcbf894b463ff88251a1c49b34a35240cb1b2508",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "851e7dae_68b185e1",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 991,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-08-16T04:29:21Z",
+      "side": 1,
+      "message": "Ack... it\u0027s not immediately clear what the best route is, but they are kinda doing the same thing. The biggest difference might just be how timeouts work (init doesn\u0027t use one). My vote would be to land both so nothing is blocked, and we can figure out how to combine them after. The guts of both is in the internal MapSnapshot anyway, which we definitely *don\u0027t* want to duplicate.",
+      "parentUuid": "92ba7580_26c2bdee",
+      "revId": "fcbf894b463ff88251a1c49b34a35240cb1b2508",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
