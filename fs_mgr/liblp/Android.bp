@@ -56,7 +56,7 @@ cc_library {
 }
 
 cc_test {
-    name: "liblp_test_static",
+    name: "liblp_test",
     defaults: ["fs_mgr_defaults"],
     cppflags: [
         "-Wno-unused-parameter",
@@ -80,4 +80,7 @@ cc_test {
             ],
         },
     },
+    test_suites: [
+        "general-tests",
+    ],
 }
