@@ -16,6 +16,24 @@
       "revId": "293cd027f7147b495187502558bc2aa3454b10c7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6ee32eb8_4b879a9e",
+        "filename": "fs_mgr/liblp/utility.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 276,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2019-08-16T20:07:29Z",
+      "side": 1,
+      "message": "I used pointers so that I can compare them in L265. I could have compare the group names too, but I think the original pointers to the object is more accurate.",
+      "parentUuid": "5760f2a8_3389b4ca",
+      "revId": "293cd027f7147b495187502558bc2aa3454b10c7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
