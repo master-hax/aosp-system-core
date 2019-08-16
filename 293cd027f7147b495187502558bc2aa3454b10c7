@@ -34,6 +34,24 @@
       "revId": "293cd027f7147b495187502558bc2aa3454b10c7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "806f0d7f_1c356116",
+        "filename": "fs_mgr/liblp/utility.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 276,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2019-08-16T20:11:00Z",
+      "side": 1,
+      "message": "If I compare group names, it would look like:\n\nauto group_name \u003d GetPartitionGroupName(metadata-\u003egroups[partition.group_index]);\nauto it \u003d std::find_if(new_groups.begin(), new_groups.end(),\n                       [\u0026](const LpMetadataPartitionGroup\u0026 new_group) { return GetPartitionGroupName(new_group) \u003d\u003d group_name; });\n\nwhich is quite cumbersome, I think.",
+      "parentUuid": "6ee32eb8_4b879a9e",
+      "revId": "293cd027f7147b495187502558bc2aa3454b10c7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
