@@ -1003,22 +1003,6 @@ bool SnapshotManager::CreateLogicalAndSnapshotPartitions(const std::string& supe
     auto lock = LockExclusive();
     if (!lock) return false;
 
-    std::vector<std::string> snapshot_list;
-    if (!ListSnapshots(lock.get(), &snapshot_list)) {
-        return false;
-    }
-
-    std::unordered_set<std::string> live_snapshots;
-    for (const auto& snapshot : snapshot_list) {
-        SnapshotStatus status;
-        if (!ReadSnapshotStatus(lock.get(), snapshot, &status)) {
-            return false;
-        }
-        if (status.state != SnapshotState::MergeCompleted) {
-            live_snapshots.emplace(snapshot);
-        }
-    }
-
     const auto& opener = device_->GetPartitionOpener();
     uint32_t slot = SlotNumberForSlotSuffix(device_->GetSlotSuffix());
     auto metadata = android::fs_mgr::ReadMetadata(opener, super_device, slot);
@@ -1027,53 +1011,83 @@ bool SnapshotManager::CreateLogicalAndSnapshotPartitions(const std::string& supe
         return false;
     }
 
-    // Map logical partitions.
-    auto& dm = DeviceMapper::Instance();
     for (const auto& partition : metadata->partitions) {
-        auto partition_name = GetPartitionName(partition);
-        if (!partition.num_extents) {
-            LOG(INFO) << "Skipping zero-length logical partition: " << partition_name;
-            continue;
-        }
-
         CreateLogicalPartitionParams params = {
                 .block_device = super_device,
                 .metadata = metadata.get(),
                 .partition = &partition,
                 .partition_opener = &opener,
         };
-
-        if (auto iter = live_snapshots.find(partition_name); iter != live_snapshots.end()) {
-            // If the device has a snapshot, it'll need to be writable, and
-            // we'll need to create the logical partition with a marked-up name
-            // (since the snapshot will use the partition name).
-            params.force_writable = true;
-            params.device_name = GetBaseDeviceName(partition_name);
-        }
-
         std::string ignore_path;
-        if (!CreateLogicalPartition(params, &ignore_path)) {
-            LOG(ERROR) << "Could not create logical partition " << partition_name << " as device "
-                       << params.GetDeviceName();
-            return false;
-        }
-        if (!params.force_writable) {
-            // No snapshot.
-            continue;
-        }
-
-        // We don't have ueventd in first-stage init, so use device major:minor
-        // strings intead.
-        std::string base_device;
-        if (!dm.GetDeviceString(params.GetDeviceName(), &base_device)) {
-            LOG(ERROR) << "Could not determine major/minor for: " << params.GetDeviceName();
-            return false;
-        }
-        if (!MapSnapshot(lock.get(), partition_name, base_device, {}, &ignore_path)) {
-            LOG(ERROR) << "Could not map snapshot for partition: " << partition_name;
+        if (!CreateLogicalAndSnapshotPartition(lock.get(), std::move(params), &ignore_path)) {
             return false;
         }
     }
+    return true;
+}
+
+bool SnapshotManager::CreateLogicalAndSnapshotPartition(
+        LockedFile* lock,
+        CreateLogicalPartitionParams params,
+        std::string* path) {
+    CHECK(lock);
+    path->clear();
+
+    CreateLogicalPartitionParams::OwnedData params_owned_data;
+    if (!params.SetDefaults(&params_owned_data)) {
+        return false;
+    }
+    if (!params.partition->num_extents) {
+        LOG(INFO) << "Skipping zero-length logical partition: " << params.partition_name;
+        return true; // leave path empty to indicate that nothing is mapped.
+    }
+
+    auto file_path = GetSnapshotStatusFilePath(params.partition_name);
+
+    bool has_live_snapshot = false;
+    if (access(file_path.c_str(), F_OK) != 0) {
+        if (errno != ENOENT) {
+            PLOG(INFO) << "Can't access " << file_path;
+            return false;
+        }
+    } else {
+        SnapshotStatus status;
+        if (!ReadSnapshotStatus(lock, params.partition_name, &status)) {
+            return false;
+        }
+        has_live_snapshot = status.state != SnapshotState::MergeCompleted;
+    }
+
+    if (has_live_snapshot) {
+        params.force_writable = true;
+        params.device_name = GetBaseDeviceName(params.partition_name);
+    }
+
+    auto& dm = DeviceMapper::Instance();
+    std::string ignore_path;
+    if (!CreateLogicalPartition(params, &ignore_path)) {
+        LOG(ERROR) << "Could not create logical partition " << params.partition_name << " as device "
+                   << params.device_name;
+        return false;
+    }
+    if (!has_live_snapshot) {
+        return true;
+    }
+
+    // We don't have ueventd in first-stage init, so use device major:minor
+    // strings intead.
+    std::string base_device;
+    if (!dm.GetDeviceString(params.device_name, &base_device)) {
+        LOG(ERROR) << "Could not determine major/minor for: " << params.device_name;
+        return false;
+    }
+    if (!MapSnapshot(lock, params.partition_name, base_device, {}, path)) {
+        LOG(ERROR) << "Could not map snapshot for partition: " << params.partition_name;
+        return false;
+    }
+
+    LOG(INFO) << "Created " << params.partition_name << " as snapshot device at " << *path;
+
     return true;
 }
 

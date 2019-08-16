@@ -306,6 +306,13 @@ class SnapshotManager final {
     std::string GetSnapshotDeviceName(const std::string& snapshot_name,
                                       const SnapshotStatus& status);
 
+    // Create the base device and snapshot device.
+    bool CreateLogicalAndSnapshotPartition(
+        LockedFile* lock,
+        CreateLogicalPartitionParams params,
+        std::string* path);
+
+
     std::string gsid_dir_;
     std::string metadata_dir_;
     std::unique_ptr<IDeviceInfo> device_;
