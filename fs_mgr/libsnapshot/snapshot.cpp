@@ -1017,6 +1017,7 @@ bool SnapshotManager::CreateLogicalAndSnapshotPartitions(const std::string& supe
                 .metadata = metadata.get(),
                 .partition = &partition,
                 .partition_opener = &opener,
+                .timeout_ms = std::chrono::milliseconds::max(),
         };
         std::string ignore_path;
         if (!CreateLogicalAndSnapshotPartition(lock.get(), std::move(params), &ignore_path)) {
@@ -1030,6 +1031,8 @@ bool SnapshotManager::CreateLogicalAndSnapshotPartition(
         LockedFile* lock,
         CreateLogicalPartitionParams params,
         std::string* path) {
+    auto begin = std::chrono::steady_clock::now();
+
     CHECK(lock);
     path->clear();
 
@@ -1081,7 +1084,16 @@ bool SnapshotManager::CreateLogicalAndSnapshotPartition(
         LOG(ERROR) << "Could not determine major/minor for: " << params.device_name;
         return false;
     }
-    if (!MapSnapshot(lock, params.partition_name, base_device, {}, path)) {
+
+    auto remaining_time = params.timeout_ms -
+        std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - begin);
+    if (remaining_time.count() <= 0) {
+        LOG(ERROR) << "CreateLogicalAndSnapshotPartition spent" << remaining_time.count()
+                   << " ms creating the base device and reached timeout";
+        return false;
+    }
+
+    if (!MapSnapshot(lock, params.partition_name, base_device, remaining_time, path)) {
         LOG(ERROR) << "Could not map snapshot for partition: " << params.partition_name;
         return false;
     }
