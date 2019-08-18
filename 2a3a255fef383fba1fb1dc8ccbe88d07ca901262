@@ -2,6 +2,144 @@
   "comments": [
     {
       "key": {
+        "uuid": "60b72a33_ace55970",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 9
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-18T08:56:19Z",
+      "side": 1,
+      "message": "How about name it vbmeta_table to be explicit?\n\nAs the image content isn\u0027t like super.img that contains several image files. Instead, it\u0027s more like a \u0027index table\u0027.",
+      "range": {
+        "startLine": 7,
+        "startChar": 14,
+        "endLine": 7,
+        "endChar": 26
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "38272f9a_dbaf6df3",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 9
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-18T08:56:19Z",
+      "side": 1,
+      "message": "Can we make it fixed length so it\u0027s easier for the reader to read.\ne.g., just allocate a buffer size then read the partition from beginning.\n\ne.g., in the source:\n// Maximum size of a vbmeta table image - 8 KiB. */                                  \n#define VBMETA_TABLE_MAX_SIZE (8 * 1024) \n\n|    VBMeta Table    | (4 KiB)\n| Backup VBMeta Table| (4 KiB)",
+      "range": {
+        "startLine": 16,
+        "startChar": 23,
+        "endLine": 16,
+        "endChar": 38
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "79585c6b_2dad1455",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 9
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-18T08:56:19Z",
+      "side": 1,
+      "message": "Seems missing some CL to upload together?\n\nsystem/core/fs_mgr/libvbmeta/Android.bp:27:1: module \"libvbmeta\" variant \"windows_x86_static\": depends on disabled module \"libavb\"?",
+      "range": {
+        "startLine": 25,
+        "startChar": 6,
+        "endLine": 25,
+        "endChar": 22
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b17df017_a5229204",
+        "filename": "fs_mgr/libvbmeta/Android.bp",
+        "patchSetId": 9
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-18T08:56:19Z",
+      "side": 1,
+      "message": "is this required?\nPlease ensure all the libs listed here are needed (and remove it if not required).",
+      "range": {
+        "startLine": 21,
+        "startChar": 5,
+        "endLine": 21,
+        "endChar": 20
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "023debc7_fcd5398b",
+        "filename": "fs_mgr/libvbmeta/Android.bp",
+        "patchSetId": 9
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-18T08:56:19Z",
+      "side": 1,
+      "message": "libz seems only required by libvbmeta_test?\nlet\u0027s only include libs required by both libvbmeta and libvbmeta_test here.",
+      "range": {
+        "startLine": 24,
+        "startChar": 5,
+        "endLine": 24,
+        "endChar": 9
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "58ce2934_6ca0d924",
+        "filename": "fs_mgr/libvbmeta/Android.bp",
+        "patchSetId": 9
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-18T08:56:19Z",
+      "side": 1,
+      "message": "is this required?",
+      "range": {
+        "startLine": 47,
+        "startChar": 17,
+        "endLine": 47,
+        "endChar": 26
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "fbe236f9_7d5642d7",
         "filename": "fs_mgr/libvbmeta/Android.bp",
         "patchSetId": 9
@@ -25,6 +163,1299 @@
     },
     {
       "key": {
+        "uuid": "7b7fa364_b2c42817",
+        "filename": "fs_mgr/libvbmeta/Android.bp",
+        "patchSetId": 9
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-18T08:56:19Z",
+      "side": 1,
+      "message": "same here, seems no need?",
+      "range": {
+        "startLine": 73,
+        "startChar": 17,
+        "endLine": 73,
+        "endChar": 26
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cd0d0cce_e864f3d2",
+        "filename": "fs_mgr/libvbmeta/builder.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-18T08:56:19Z",
+      "side": 1,
+      "message": "#include \"libvbmeta/builder.h\" as the builder.cpp is to implement builder.h\n\nhttps://google.github.io/styleguide/cppguide.html#Names_and_Order_of_Includes",
+      "range": {
+        "startLine": 17,
+        "startChar": 0,
+        "endLine": 17,
+        "endChar": 30
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "669f01bd_dfab6287",
+        "filename": "fs_mgr/libvbmeta/builder.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-18T08:56:19Z",
+      "side": 1,
+      "message": "use \"\" instead of \u003c\u003e for local libvbmeta .h files.",
+      "range": {
+        "startLine": 24,
+        "startChar": 9,
+        "endLine": 24,
+        "endChar": 29
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6437b79a_66c290b4",
+        "filename": "fs_mgr/libvbmeta/builder.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-18T08:56:19Z",
+      "side": 1,
+      "message": "seems better to do this lookup inside AddPartitionImage(), so we can just pass \u0027partition\u0027 to it?",
+      "range": {
+        "startLine": 47,
+        "startChar": 20,
+        "endLine": 47,
+        "endChar": 32
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "eb9e3178_3b5dc7ec",
+        "filename": "fs_mgr/libvbmeta/builder.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-18T08:56:19Z",
+      "side": 1,
+      "message": "for std::pair, let\u0027s add some comment for what\u0027s the second (or first).\n\neg., AddPartitionImage(partition, iter-\u003esecond /* file_name */)",
+      "range": {
+        "startLine": 51,
+        "startChar": 42,
+        "endLine": 51,
+        "endChar": 54
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7e908edb_cddd28e7",
+        "filename": "fs_mgr/libvbmeta/builder.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-18T08:56:19Z",
+      "side": 1,
+      "message": "the name seems not accurate as it doesn\u0027t really add a partition image into super.img\n\nHow about, AddVBMetaInfoForPartition() or AddVBMetaDescForPartition().",
+      "range": {
+        "startLine": 59,
+        "startChar": 25,
+        "endLine": 59,
+        "endChar": 42
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2105c4f2_563a42b7",
+        "filename": "fs_mgr/libvbmeta/builder.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-18T08:56:19Z",
+      "side": 1,
+      "message": "This seems assumes this file (e.g., system.img) is for the \u0027partition\u0027 at L59?\n\nHowever, should this function error-out if the LpMetadataPartition doesn\u0027t match the file?\ne.g., the first argument is \u0027vendor\u0027 but the image is \u0027system.img\u0027?",
+      "range": {
+        "startLine": 60,
+        "startChar": 62,
+        "endLine": 60,
+        "endChar": 66
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e91d2fce_91aa0551",
+        "filename": "fs_mgr/libvbmeta/builder.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-18T08:56:19Z",
+      "side": 1,
+      "message": "please add comments for each argument",
+      "range": {
+        "startLine": 70,
+        "startChar": 51,
+        "endLine": 70,
+        "endChar": 61
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f6e1aff1_0e51a29e",
+        "filename": "fs_mgr/libvbmeta/builder.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-18T08:56:19Z",
+      "side": 1,
+      "message": "let\u0027s have a better name.\ne.g., unsparsed_file",
+      "range": {
+        "startLine": 71,
+        "startChar": 18,
+        "endLine": 71,
+        "endChar": 21
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "833b11a3_f86f05b2",
+        "filename": "fs_mgr/libvbmeta/builder.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-18T08:56:19Z",
+      "side": 1,
+      "message": "Add a comment here?\n\ne.g., Converts to a raw file if the input is in sparse format.",
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "70209d93_54519369",
+        "filename": "fs_mgr/libvbmeta/builder.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-18T08:56:19Z",
+      "side": 1,
+      "message": "please add a comment behind each variable.\n\ne.g., false /* is_sparse */, false /* ... */",
+      "range": {
+        "startLine": 78,
+        "startChar": 56,
+        "endLine": 78,
+        "endChar": 75
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4027b34f_40b11791",
+        "filename": "fs_mgr/libvbmeta/builder.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-18T08:56:19Z",
+      "side": 1,
+      "message": "how about calling ComputePartitionSize() inside GetPartitionVBMetaData() so we don\u0027t need to pass partition_size?",
+      "range": {
+        "startLine": 86,
+        "startChar": 13,
+        "endLine": 86,
+        "endChar": 27
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "724832bf_f6ab18c9",
+        "filename": "fs_mgr/libvbmeta/builder.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-18T08:56:19Z",
+      "side": 1,
+      "message": "nit: Adds a VBMetaDescriptor to record ...",
+      "range": {
+        "startLine": 88,
+        "startChar": 7,
+        "endLine": 88,
+        "endChar": 23
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "89f05158_6d6c6f2a",
+        "filename": "fs_mgr/libvbmeta/builder.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-18T08:56:19Z",
+      "side": 1,
+      "message": "how about: AddVBMetaDInfo?",
+      "range": {
+        "startLine": 94,
+        "startChar": 25,
+        "endLine": 94,
+        "endChar": 28
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fc79524c_17e6d934",
+        "filename": "fs_mgr/libvbmeta/builder.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-18T08:56:19Z",
+      "side": 1,
+      "message": "can we do some arithmetic to ensure the offset isn\u0027t out of range of the /super partition?\nthen return false if it happens. The check could be somewhere else.\n\nAlso, please do overflow detection as well.\nhttps://cs.corp.google.com/search/?q\u003davb_safe_add_to+p:android\u0026type\u003dcs",
+      "range": {
+        "startLine": 96,
+        "startChar": 52,
+        "endLine": 96,
+        "endChar": 65
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "daeec5b6_f8491b3f",
+        "filename": "fs_mgr/libvbmeta/builder.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-18T08:56:19Z",
+      "side": 1,
+      "message": "seems a bit weird to always return true.\nIf so, usually just use a void func().",
+      "range": {
+        "startLine": 97,
+        "startChar": 4,
+        "endLine": 97,
+        "endChar": 15
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b9a5a2e4_2306f89c",
+        "filename": "fs_mgr/libvbmeta/builder.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-18T08:56:19Z",
+      "side": 1,
+      "message": "how about: DeleteVBMetaInfo",
+      "range": {
+        "startLine": 100,
+        "startChar": 25,
+        "endLine": 100,
+        "endChar": 31
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3592ddc2_05cd14cf",
+        "filename": "fs_mgr/libvbmeta/builder.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-18T08:56:19Z",
+      "side": 1,
+      "message": "nit: vbmeta_descriptors_",
+      "range": {
+        "startLine": 101,
+        "startChar": 4,
+        "endLine": 101,
+        "endChar": 12
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fd474279_32c83c99",
+        "filename": "fs_mgr/libvbmeta/builder.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-18T08:56:19Z",
+      "side": 1,
+      "message": "oh, this looks confusing.\ncan we then define a struct, and have a precise member name for it?",
+      "range": {
+        "startLine": 113,
+        "startChar": 35,
+        "endLine": 113,
+        "endChar": 55
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e01a0a69_cdf0e40e",
+        "filename": "fs_mgr/libvbmeta/builder.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-18T08:56:19Z",
+      "side": 1,
+      "message": "let\u0027s convert the .h into cpp so we can use std::string.\nWe can another .h for C-client in the C-only lib later.",
+      "range": {
+        "startLine": 116,
+        "startChar": 36,
+        "endLine": 116,
+        "endChar": 99
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "01ed06a0_2a1a7da7",
+        "filename": "fs_mgr/libvbmeta/builder.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 152,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-18T08:56:19Z",
+      "side": 1,
+      "message": "shouldn\u0027t return false for this case?",
+      "range": {
+        "startLine": 152,
+        "startChar": 8,
+        "endLine": 152,
+        "endChar": 56
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2656d928_ae6004e2",
+        "filename": "fs_mgr/libvbmeta/builder.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 156,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-18T08:56:19Z",
+      "side": 1,
+      "message": "same here, should we return false?",
+      "range": {
+        "startLine": 156,
+        "startChar": 8,
+        "endLine": 156,
+        "endChar": 55
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0b54172b_0a8e86fa",
+        "filename": "fs_mgr/libvbmeta/builder_test.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-18T08:56:19Z",
+      "side": 1,
+      "message": "let\u0027s add a comment for constants or string literal\n\ne.g., 3E10 /* vbmeta_offset */, 5E3 /* vbmeta_size */\n\nSame for the following",
+      "range": {
+        "startLine": 28,
+        "startChar": 39,
+        "endLine": 28,
+        "endChar": 43
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e1a1beb5_46c1bd0a",
+        "filename": "fs_mgr/libvbmeta/include/libvbmeta/builder.h",
+        "patchSetId": 9
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-18T08:56:19Z",
+      "side": 1,
+      "message": "Also, does this file need to be in the public .h ? (or can be kept privately)",
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a4bd24a1_ba9f2416",
+        "filename": "fs_mgr/libvbmeta/include/libvbmeta/builder.h",
+        "patchSetId": 9
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-18T08:56:19Z",
+      "side": 1,
+      "message": "since this file is in a exported .h, you can just group them to line 22.",
+      "range": {
+        "startLine": 24,
+        "startChar": 9,
+        "endLine": 24,
+        "endChar": 42
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a4e1c4cb_fdd59eba",
+        "filename": "fs_mgr/libvbmeta/include/libvbmeta/builder.h",
+        "patchSetId": 9
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-18T08:56:19Z",
+      "side": 1,
+      "message": "what\u0027s the meaning of the two unit64_t here?\nCan we add a comment for that?",
+      "range": {
+        "startLine": 43,
+        "startChar": 36,
+        "endLine": 43,
+        "endChar": 54
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a9ed119a_d110807e",
+        "filename": "fs_mgr/libvbmeta/include/libvbmeta/builder.h",
+        "patchSetId": 9
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-18T08:56:19Z",
+      "side": 1,
+      "message": "how about name it clearly: lpmetadata_.\nOtherwise, someone might wonder if this is super_vbmeta.img\u0027s own metadata.",
+      "range": {
+        "startLine": 44,
+        "startChar": 15,
+        "endLine": 44,
+        "endChar": 24
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7b5b4378_0befbcdb",
+        "filename": "fs_mgr/libvbmeta/include/libvbmeta/builder.h",
+        "patchSetId": 9
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-18T08:56:19Z",
+      "side": 1,
+      "message": "same here, let\u0027s add a comment for the two strings here.\n\nAlso, you might consider using images_path_;",
+      "range": {
+        "startLine": 45,
+        "startChar": 13,
+        "endLine": 45,
+        "endChar": 37
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "edb47353_2d7b0a77",
+        "filename": "fs_mgr/libvbmeta/include/libvbmeta/libvbmeta.h",
+        "patchSetId": 9
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-18T08:56:19Z",
+      "side": 1,
+      "message": "Does this need multiple image files?",
+      "range": {
+        "startLine": 28,
+        "startChar": 65,
+        "endLine": 28,
+        "endChar": 71
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cb06077e_b3d04541",
+        "filename": "fs_mgr/libvbmeta/include/libvbmeta/reader.h",
+        "patchSetId": 9
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-18T08:56:19Z",
+      "side": 1,
+      "message": "seems no definition of this function, forget to remove?",
+      "range": {
+        "startLine": 24,
+        "startChar": 5,
+        "endLine": 24,
+        "endChar": 21
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1dac41e6_29b1bebb",
+        "filename": "fs_mgr/libvbmeta/include/libvbmeta/reader.h",
+        "patchSetId": 9
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-18T08:56:19Z",
+      "side": 1,
+      "message": "Does this need to be a public API?\nOr this can be a static function inside reader.cpp?",
+      "range": {
+        "startLine": 25,
+        "startChar": 5,
+        "endLine": 25,
+        "endChar": 20
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c1c72935_e6929c1e",
+        "filename": "fs_mgr/libvbmeta/include/libvbmeta/reader.h",
+        "patchSetId": 9
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-18T08:56:19Z",
+      "side": 1,
+      "message": "How about: backup_vbmeta_offset?\n\nOr define a BACKUP_VBMETA_TABLE_OFFSET in super_vbmeta_format.h, then ReadSuperBackupVBMeta() can just read the backup vbmeta without the caller to pass in this info.",
+      "range": {
+        "startLine": 28,
+        "startChar": 65,
+        "endLine": 28,
+        "endChar": 82
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "56489c5c_59587eb2",
+        "filename": "fs_mgr/libvbmeta/include/libvbmeta/super_vbmeta_format.h",
+        "patchSetId": 9
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-18T08:56:19Z",
+      "side": 1,
+      "message": "how about make it to 64 or 128 as a suggested buffer size to read the header?",
+      "range": {
+        "startLine": 37,
+        "startChar": 33,
+        "endLine": 37,
+        "endChar": 35
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a4f22444_1869da15",
+        "filename": "fs_mgr/libvbmeta/include/libvbmeta/super_vbmeta_format.h",
+        "patchSetId": 9
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-18T08:56:19Z",
+      "side": 1,
+      "message": "seems no need this? \nWho need this can just use sizeof(SuperVBMetaDescriptor)?",
+      "range": {
+        "startLine": 38,
+        "startChar": 8,
+        "endLine": 38,
+        "endChar": 36
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7defdd02_67c11479",
+        "filename": "fs_mgr/libvbmeta/include/libvbmeta/super_vbmeta_format.h",
+        "patchSetId": 9
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-18T08:56:19Z",
+      "side": 1,
+      "message": "How about just define: VBMETA_TABLE_MAX_SIZE 2048.\nAnd have 2048 for the primary and another 2048 for the backup. (i.e., total size of vbmeta_table.img is 4096).",
+      "range": {
+        "startLine": 39,
+        "startChar": 8,
+        "endLine": 39,
+        "endChar": 31
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "651afc2b_445936c5",
+        "filename": "fs_mgr/libvbmeta/include/libvbmeta/super_vbmeta_format.h",
+        "patchSetId": 9
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-18T08:56:19Z",
+      "side": 1,
+      "message": "Let\u0027s add some description of the binary format for the following structs.\n\ne.g.,\n\n/* Binary format for header of the vbmeta table image.\n *\n * The vbmeta table image consists of two blocks:\n *\n *  +-----------------------------------------+\n *  | Header data - fixed size                |\n *  +-----------------------------------------+\n *  | VBMeta descriptors - variable size      |\n *  +-----------------------------------------+\n *\n * The \"Header data\" block is described by the following struct and\n * is always |header_size| bytes long.\n *\n * The \"VBMeta Descriptors\" is |descriptors_size| bytes long and contains\n * the physical offset and size for each chained VBMeta in the super\n * partition.\n * \n * |total_size] is the total number of bytes for the \"Header data\" and\n * \"VBMeta descriptors\".\n *\n * |checksum| is calculated ...\n *\n */",
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4bd779b6_ba0ff5b8",
+        "filename": "fs_mgr/libvbmeta/include/libvbmeta/super_vbmeta_format.h",
+        "patchSetId": 9
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-18T08:56:19Z",
+      "side": 1,
+      "message": "Please add a comment and the offset for each field.\n\ne.g., similar to liblp metadata_format.h or libavb .h files.\n\n    /*  0: Magic signature (VBMETA_TABLE_MAGIC).. */                       \n    uint32_t magic;\n\n    /*  4: Version number required to read this VBMeta table header. If the\n     * version is not equal to the library version, the header should be\n     * considered incompatible.                                                            \n     */\n    uint16_t major_version;\n    ...",
+      "range": {
+        "startLine": 42,
+        "startChar": 0,
+        "endLine": 44,
+        "endChar": 27
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "683de465_a50bbe85",
+        "filename": "fs_mgr/libvbmeta/include/libvbmeta/super_vbmeta_format.h",
+        "patchSetId": 9
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-18T08:56:19Z",
+      "side": 1,
+      "message": "Let\u0027s avoid using char* and prefer using std::string in C++.\n(easier to prevent memory leak).\n\nHow about making this C-struct the same as the binary format.\nThen define another C++ struct with a std::string for internal usage and move this .h to a private location (not under ./include).\n\ne.g.,\n\nstruct InternalVBMetaDescriptor : VBMetaDescriptor {\n    std::string partition_name;                                                  \n};",
+      "range": {
+        "startLine": 56,
+        "startChar": 4,
+        "endLine": 56,
+        "endChar": 25
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "42001a5c_16f027e0",
+        "filename": "fs_mgr/libvbmeta/include/libvbmeta/super_vbmeta_format.h",
+        "patchSetId": 9
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-18T08:56:19Z",
+      "side": 1,
+      "message": "should only be in __cplusplus section?\n\nBtw, we can consider having two .h file, for C and CPP, respectively.\n\nOr add a comment in the beginning and indicating that this .h file is intended for C clients (usually bootloader) and CPP clients like fastbootd and update_engine.",
+      "range": {
+        "startLine": 61,
+        "startChar": 4,
+        "endLine": 61,
+        "endChar": 15
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cff6e4d1_3a22c15f",
+        "filename": "fs_mgr/libvbmeta/include/libvbmeta/writer.h",
+        "patchSetId": 9
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-18T08:56:19Z",
+      "side": 1,
+      "message": "does this need to be a public API? or can be kept for libvbmeta internal use only?\n\nSame for the following two APIs.",
+      "range": {
+        "startLine": 26,
+        "startChar": 12,
+        "endLine": 26,
+        "endChar": 32
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "65e34b2d_e1f7c67f",
+        "filename": "fs_mgr/libvbmeta/reader.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-18T08:56:19Z",
+      "side": 1,
+      "message": "use \"\" for the to-implement .h file\n\nhttps://google.github.io/styleguide/cppguide.html#Names_and_Order_of_Includes",
+      "range": {
+        "startLine": 17,
+        "startChar": 9,
+        "endLine": 17,
+        "endChar": 29
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "451c3d9f_8366cb8a",
+        "filename": "fs_mgr/libvbmeta/reader.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-18T08:56:19Z",
+      "side": 1,
+      "message": "nit: to be clear, considering s/Parse/LoadAndVerify",
+      "range": {
+        "startLine": 26,
+        "startChar": 5,
+        "endLine": 26,
+        "endChar": 10
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "689ca18e_d91d7a9c",
+        "filename": "fs_mgr/libvbmeta/reader.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-18T08:56:19Z",
+      "side": 1,
+      "message": "will the caller free this memory?",
+      "range": {
+        "startLine": 52,
+        "startChar": 36,
+        "endLine": 52,
+        "endChar": 62
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "372aa8ad_f7c86e78",
+        "filename": "fs_mgr/libvbmeta/reader.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-18T08:56:19Z",
+      "side": 1,
+      "message": "why not just return false in line 76 if rv is false?",
+      "range": {
+        "startLine": 90,
+        "startChar": 11,
+        "endLine": 90,
+        "endChar": 13
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4fcc1cba_9614760d",
+        "filename": "fs_mgr/libvbmeta/reader.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-18T08:56:19Z",
+      "side": 1,
+      "message": "seems a bit error-prone for the caller to decide backup offset.\nCan we keep the offset size internal and then remove this param?",
+      "range": {
+        "startLine": 99,
+        "startChar": 65,
+        "endLine": 99,
+        "endChar": 82
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "85c28243_a6203c81",
+        "filename": "fs_mgr/libvbmeta/reader.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-18T08:56:19Z",
+      "side": 1,
+      "message": "As there is \u0027fd\u0027, it might not be \u0027super‘ and can be from any partition.\nMaybe rename this to ReadData()?\n\nOr android::base::ReadFullyAtOffset() should be enough?",
+      "range": {
+        "startLine": 104,
+        "startChar": 20,
+        "endLine": 104,
+        "endChar": 32
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d53f1b8a_9ddb9987",
+        "filename": "fs_mgr/libvbmeta/super_vbmeta_test.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-18T08:56:19Z",
+      "side": 1,
+      "message": "using \"*.h\" for internal .h files.",
+      "range": {
+        "startLine": 26,
+        "startChar": 0,
+        "endLine": 28,
+        "endChar": 29
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e3faa262_919bea4e",
+        "filename": "fs_mgr/libvbmeta/super_vbmeta_test.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-18T08:56:19Z",
+      "side": 1,
+      "message": "please add comment behind each variable.\n\ne.g.,  false /* param2_name */, true /* param3_name */, ...",
+      "range": {
+        "startLine": 52,
+        "startChar": 45,
+        "endLine": 52,
+        "endChar": 63
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7f835ea8_7936a5e8",
+        "filename": "fs_mgr/libvbmeta/super_vbmeta_test.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-18T08:56:19Z",
+      "side": 1,
+      "message": "nit: vbmeta_content?",
+      "range": {
+        "startLine": 56,
+        "startChar": 55,
+        "endLine": 56,
+        "endChar": 62
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fb1a6143_00eca4c5",
+        "filename": "fs_mgr/libvbmeta/super_vbmeta_test.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-18T08:56:19Z",
+      "side": 1,
+      "message": "add a comment for those constant? \nOr even adding a struct with proper member for it",
+      "range": {
+        "startLine": 57,
+        "startChar": 45,
+        "endLine": 57,
+        "endChar": 55
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "73ba42d2_3d430e5a",
+        "filename": "fs_mgr/libvbmeta/super_vbmeta_test.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-18T08:56:19Z",
+      "side": 1,
+      "message": "seems this needs to match L57.\nHow about define a FakeVBMetaContent for it? Then we can just pass the FakeVBMetaContent object here.",
+      "range": {
+        "startLine": 65,
+        "startChar": 45,
+        "endLine": 65,
+        "endChar": 55
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6c53faf5_c0a1cf77",
+        "filename": "fs_mgr/libvbmeta/super_vbmeta_test.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 137,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-18T08:56:19Z",
+      "side": 1,
+      "message": "add a comment for those constants?\n\nOr can it be derived from the struct?",
+      "range": {
+        "startLine": 137,
+        "startChar": 36,
+        "endLine": 137,
+        "endChar": 49
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e54ae299_cf7171f9",
+        "filename": "fs_mgr/libvbmeta/super_vbmeta_test.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 143,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-18T08:56:19Z",
+      "side": 1,
+      "message": "nit: please be clear.\n\nHow about: Checks vbmeta content: start and end symbol, in the super partition.\nBtw, how about just using a random std::string as the content then use \u003d\u003d to compare?",
+      "range": {
+        "startLine": 143,
+        "startChar": 30,
+        "endLine": 143,
+        "endChar": 39
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2b67133b_db883b78",
+        "filename": "fs_mgr/libvbmeta/utility.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-18T08:56:19Z",
+      "side": 1,
+      "message": "seems a bit weird to let a \u0027util\u0027 function determine the location of the backup copy.\nusually utils are neutral.",
+      "range": {
+        "startLine": 33,
+        "startChar": 11,
+        "endLine": 33,
+        "endChar": 33
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8b02b200_4a8b0553",
+        "filename": "fs_mgr/libvbmeta/utility.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-18T08:56:19Z",
+      "side": 1,
+      "message": "how about using android::base::Result() so we don\u0027t need those comments here.\n\nhttps://android.googlesource.com/platform/system/core/+/master/base/include/android-base/result.h\n\nThere are lots of examples in:\nhttps://android.googlesource.com/platform/system/core/+/master/base/result_test.cpp",
+      "range": {
+        "startLine": 62,
+        "startChar": 0,
+        "endLine": 64,
+        "endChar": 30
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9df5df54_3d6763de",
+        "filename": "fs_mgr/libvbmeta/utility.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-18T08:56:19Z",
+      "side": 1,
+      "message": "how about just use avb_footer_validate_and_byteswap() from libavb?\n\nhttps://android.googlesource.com/platform/external/avb/+/refs/heads/pie-dev/libavb/avb_footer.c#28",
+      "range": {
+        "startLine": 69,
+        "startChar": 5,
+        "endLine": 69,
+        "endChar": 28
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "36ae8d54_1dfc11fd",
+        "filename": "fs_mgr/libvbmeta/utility.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-18T08:56:19Z",
+      "side": 1,
+      "message": "consider using android::base::Result\u003c\u003e for that.\n\nhttps://android.googlesource.com/platform/system/core/+/master/base/result_test.cpp",
+      "range": {
+        "startLine": 100,
+        "startChar": 15,
+        "endLine": 100,
+        "endChar": 51
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "36946612_c7388e05",
         "filename": "fs_mgr/libvbmeta/utility.cpp",
         "patchSetId": 9
@@ -41,6 +1472,260 @@
         "startChar": 13,
         "endLine": 108,
         "endChar": 54
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "93cde3f1_571107ba",
+        "filename": "fs_mgr/libvbmeta/utility.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-18T08:56:19Z",
+      "side": 1,
+      "message": "Yup, more importantly, can we check the returned physical_offset isn\u0027t out of /super inside LogicalToPhysicalOffset().\n\nThen LogicalToPhysicalOffset() should return error if the translation failed.",
+      "parentUuid": "36946612_c7388e05",
+      "range": {
+        "startLine": 108,
+        "startChar": 13,
+        "endLine": 108,
+        "endChar": 54
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "33fc30f4_9fdbb7ec",
+        "filename": "fs_mgr/libvbmeta/utility.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-18T08:56:19Z",
+      "side": 1,
+      "message": "size isn\u0027t related to physical v.s. logical.\nHow about just use footer-\u003evbmeta_size directly?",
+      "range": {
+        "startLine": 109,
+        "startChar": 13,
+        "endLine": 109,
+        "endChar": 21
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "58a29943_78ee73a5",
+        "filename": "fs_mgr/libvbmeta/utility.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 134,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-18T08:56:19Z",
+      "side": 1,
+      "message": "just checking the magic seems to weak.\n\nCan we also input vbmeta_size then invoke avb_vbmeta_image_verify() from libavb?\n\nhttps://android.googlesource.com/platform/external/avb/+/refs/heads/pie-dev/libavb/avb_vbmeta_image.c#32",
+      "range": {
+        "startLine": 134,
+        "startChar": 52,
+        "endLine": 134,
+        "endChar": 65
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "191edf35_9cd3df21",
+        "filename": "fs_mgr/libvbmeta/utility.h",
+        "patchSetId": 9
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-18T08:56:19Z",
+      "side": 1,
+      "message": "how about: Helpers to return (physical_offset, size) for a vbmeta struct inside /super.",
+      "range": {
+        "startLine": 37,
+        "startChar": 3,
+        "endLine": 37,
+        "endChar": 43
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "342e30a3_810e3ff7",
+        "filename": "fs_mgr/libvbmeta/utility.h",
+        "patchSetId": 9
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-18T08:56:19Z",
+      "side": 1,
+      "message": "adding a comment (or even define a struct) for those two uint64?",
+      "range": {
+        "startLine": 38,
+        "startChar": 10,
+        "endLine": 38,
+        "endChar": 28
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "87ecb1eb_cf503300",
+        "filename": "fs_mgr/libvbmeta/utility.h",
+        "patchSetId": 9
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-18T08:56:19Z",
+      "side": 1,
+      "message": "It seems not clear about the difference and similarity between those three params.\n\nCan we derive partition_size from the \u0027partition\u0027 at L39?",
+      "range": {
+        "startLine": 39,
+        "startChar": 53,
+        "endLine": 41,
+        "endChar": 82
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f42f3fb9_cb875727",
+        "filename": "fs_mgr/libvbmeta/utility.h",
+        "patchSetId": 9
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-18T08:56:19Z",
+      "side": 1,
+      "message": "How\u0027s the different with the above overloaded function?\nAlso, it seems this function isn\u0027t used?",
+      "range": {
+        "startLine": 44,
+        "startChar": 30,
+        "endLine": 44,
+        "endChar": 52
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d463cf99_472c7f6c",
+        "filename": "fs_mgr/libvbmeta/writer.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-18T08:56:19Z",
+      "side": 1,
+      "message": "it\u0027s more common to have a single \"*.h\" in the beginning.\n\nHow about only leave writer.h here and move \"libvbmeta/libvbmeta.h\" to L24-L25 group?\nOr can we combine write.h and libvbmeta.h ?",
+      "range": {
+        "startLine": 17,
+        "startChar": 0,
+        "endLine": 18,
+        "endChar": 29
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7e1fa0f2_659114dd",
+        "filename": "fs_mgr/libvbmeta/writer.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-18T08:56:19Z",
+      "side": 1,
+      "message": "using \"\" for libvbmeta .h headers",
+      "range": {
+        "startLine": 24,
+        "startChar": 0,
+        "endLine": 25,
+        "endChar": 29
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f40bf507_b621c00b",
+        "filename": "fs_mgr/libvbmeta/writer.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-18T08:56:19Z",
+      "side": 1,
+      "message": "seems no need as this is the default behavior?",
+      "range": {
+        "startLine": 32,
+        "startChar": 23,
+        "endLine": 32,
+        "endChar": 28
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a4fd5feb_e00fabf4",
+        "filename": "fs_mgr/libvbmeta/writer.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-18T08:56:19Z",
+      "side": 1,
+      "message": "The comment seems doesn\u0027t mention why it needs to divide by 2 below (primary + backup).\n\nHow about just define SUPER_VBMETA_TOTAL_SIZE to be the size of one copy of the vbmeta_table?",
+      "range": {
+        "startLine": 41,
+        "startChar": 4,
+        "endLine": 41,
+        "endChar": 83
       },
       "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
@@ -87,6 +1772,29 @@
         "startChar": 64,
         "endLine": 58,
         "endChar": 66
+      },
+      "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e0f5f7d8_c7ed0c02",
+        "filename": "fs_mgr/libvbmeta/writer.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-08-18T08:56:19Z",
+      "side": 1,
+      "message": "relying on the input vbmeta size to determine backup location seems a bit fragile.\n\ne.g., if the caller input a vbmeta with unusual size (e.g., too small or too large).\nCan we have a fixed backup offset and a max size for the vbmeta_table.\n\nThen error out if the input is invalid (e.g., too large), etc.",
+      "range": {
+        "startLine": 66,
+        "startChar": 44,
+        "endLine": 66,
+        "endChar": 58
       },
       "revId": "2a3a255fef383fba1fb1dc8ccbe88d07ca901262",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
