@@ -52,7 +52,6 @@
 
 #include "action_manager.h"
 #include "init.h"
-#include "property_service.h"
 #include "reboot_utils.h"
 #include "service.h"
 #include "service_list.h"
@@ -61,6 +60,7 @@
 #define PROC_SYSRQ "/proc/sysrq-trigger"
 
 using android::base::GetBoolProperty;
+using android::base::SetProperty;
 using android::base::Split;
 using android::base::Timer;
 using android::base::unique_fd;
@@ -445,7 +445,7 @@ static void DoReboot(unsigned int cmd, const std::string& reason, const std::str
          reasons[1] == "hard" || reasons[1] == "warm")) {
         skip = strlen("reboot,");
     }
-    property_set(LAST_REBOOT_REASON_PROPERTY, reason.c_str() + skip);
+    SetProperty(LAST_REBOOT_REASON_PROPERTY, reason.c_str() + skip);
     sync();
 
     bool is_thermal_shutdown = cmd == ANDROID_RB_THERMOFF;
@@ -513,7 +513,7 @@ static void DoReboot(unsigned int cmd, const std::string& reason, const std::str
         bool do_shutdown_animation = GetBoolProperty("ro.init.shutdown_animation", false);
 
         if (do_shutdown_animation) {
-            property_set("service.bootanim.exit", "0");
+            SetProperty("service.bootanim.exit", "0");
             // Could be in the middle of animation. Stop and start so that it can pick
             // up the right mode.
             bootAnim->Stop();
