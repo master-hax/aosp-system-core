@@ -80,6 +80,7 @@
 using namespace std::literals::string_literals;
 
 using android::base::Basename;
+using android::base::SetProperty;
 using android::base::StartsWith;
 using android::base::unique_fd;
 using android::fs_mgr::Fstab;
@@ -137,7 +138,7 @@ static Result<void> reboot_into_recovery(const std::vector<std::string>& options
     if (!write_bootloader_message(options, &err)) {
         return Error() << "Failed to set bootloader message: " << err;
     }
-    property_set("sys.powerctl", "reboot,recovery");
+    SetProperty("sys.powerctl", "reboot,recovery");
     return {};
 }
 
@@ -544,16 +545,16 @@ static Result<void> queue_fs_event(int code) {
         ActionManager::GetInstance().QueueEventTrigger("encrypt");
         return {};
     } else if (code == FS_MGR_MNTALL_DEV_MIGHT_BE_ENCRYPTED) {
-        property_set("ro.crypto.state", "encrypted");
-        property_set("ro.crypto.type", "block");
+        SetProperty("ro.crypto.state", "encrypted");
+        SetProperty("ro.crypto.type", "block");
         ActionManager::GetInstance().QueueEventTrigger("defaultcrypto");
         return {};
     } else if (code == FS_MGR_MNTALL_DEV_NOT_ENCRYPTED) {
-        property_set("ro.crypto.state", "unencrypted");
+        SetProperty("ro.crypto.state", "unencrypted");
         ActionManager::GetInstance().QueueEventTrigger("nonencrypted");
         return {};
     } else if (code == FS_MGR_MNTALL_DEV_NOT_ENCRYPTABLE) {
-        property_set("ro.crypto.state", "unsupported");
+        SetProperty("ro.crypto.state", "unsupported");
         ActionManager::GetInstance().QueueEventTrigger("nonencrypted");
         return {};
     } else if (code == FS_MGR_MNTALL_DEV_NEEDS_RECOVERY) {
@@ -569,8 +570,8 @@ static Result<void> queue_fs_event(int code) {
         if (fscrypt_install_keyring()) {
             return Error() << "fscrypt_install_keyring() failed";
         }
-        property_set("ro.crypto.state", "encrypted");
-        property_set("ro.crypto.type", "file");
+        SetProperty("ro.crypto.state", "encrypted");
+        SetProperty("ro.crypto.type", "file");
 
         // Although encrypted, we have device key, so we do not need to
         // do anything different from the nonencrypted case.
@@ -580,8 +581,8 @@ static Result<void> queue_fs_event(int code) {
         if (fscrypt_install_keyring()) {
             return Error() << "fscrypt_install_keyring() failed";
         }
-        property_set("ro.crypto.state", "encrypted");
-        property_set("ro.crypto.type", "file");
+        SetProperty("ro.crypto.state", "encrypted");
+        SetProperty("ro.crypto.type", "file");
 
         // Although encrypted, vold has already set the device up, so we do not need to
         // do anything different from the nonencrypted case.
@@ -591,8 +592,8 @@ static Result<void> queue_fs_event(int code) {
         if (fscrypt_install_keyring()) {
             return Error() << "fscrypt_install_keyring() failed";
         }
-        property_set("ro.crypto.state", "encrypted");
-        property_set("ro.crypto.type", "file");
+        SetProperty("ro.crypto.state", "encrypted");
+        SetProperty("ro.crypto.type", "file");
 
         // Although encrypted, vold has already set the device up, so we do not need to
         // do anything different from the nonencrypted case.
@@ -642,7 +643,7 @@ static Result<void> do_mount_all(const BuiltinArguments& args) {
         return Error() << "Could not read fstab";
     }
     auto mount_fstab_return_code = fs_mgr_mount_all(&fstab, mount_mode);
-    property_set(prop_name, std::to_string(t.duration().count()));
+    SetProperty(prop_name, std::to_string(t.duration().count()));
 
     if (import_rc && SelinuxGetVendorAndroidVersion() <= __ANDROID_API_Q__) {
         /* Paths of .rc files are specified at the 2nd argument and beyond */
@@ -697,7 +698,7 @@ static Result<void> do_setprop(const BuiltinArguments& args) {
                        << "' from init; use the restorecon builtin directly";
     }
 
-    property_set(args[1], args[2]);
+    SetProperty(args[1], args[2]);
     return {};
 }
 
@@ -811,7 +812,7 @@ static Result<void> do_verity_update_state(const BuiltinArguments& args) {
         // To be consistent in vboot 1.0 and vboot 2.0 (AVB), use "system" for the partition even
         // for system as root, so it has property [partition.system.verified].
         std::string partition = entry.mount_point == "/" ? "system" : Basename(entry.mount_point);
-        property_set("partition." + partition + ".verified", std::to_string(mode));
+        SetProperty("partition." + partition + ".verified", std::to_string(mode));
     }
 
     return {};
