@@ -178,11 +178,6 @@ int SubcontextMain(int argc, char** argv, const BuiltinFunctionMap* function_map
 
     SelabelInitialize();
 
-    property_set = [](const std::string& key, const std::string& value) -> uint32_t {
-        android::base::SetProperty(key, value);
-        return 0;
-    };
-
     auto subcontext_process = SubcontextProcess(function_map, context, init_fd);
     subcontext_process.MainLoop();
     return 0;
