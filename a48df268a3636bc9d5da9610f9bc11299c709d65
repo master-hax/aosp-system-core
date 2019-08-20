@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fc1d7d78_8aa6b1cc",
+        "filename": "init/property_service_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-08-20T20:11:29Z",
+      "side": 1,
+      "message": "if you `GTEST_SKIP() \u003c\u003c ` it actually shows up as skipped in the test runner.",
+      "range": {
+        "startLine": 60,
+        "startChar": 8,
+        "endLine": 60,
+        "endChar": 24
+      },
+      "revId": "a48df268a3636bc9d5da9610f9bc11299c709d65",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
