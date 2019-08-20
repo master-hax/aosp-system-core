@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "eb6cb624_a8f4f9e7",
+        "filename": "healthd/api/charger_sysprop-current.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-08-20T20:15:51Z",
+      "side": 1,
+      "message": "what does it mean that most of these properties have no `type:`?",
+      "revId": "0dbc8ed24bb7a6872f5bafd7e9cdc212ea020920",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
