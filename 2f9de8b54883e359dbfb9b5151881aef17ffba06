@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6f540e60_65284347",
+        "filename": "init/ueventd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 158,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-08-20T15:53:42Z",
+      "side": 1,
+      "message": "_exit",
+      "range": {
+        "startLine": 158,
+        "startChar": 4,
+        "endLine": 158,
+        "endChar": 10
+      },
+      "revId": "2f9de8b54883e359dbfb9b5151881aef17ffba06",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0f5da646_fb57453d",
+        "filename": "init/ueventd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 163,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-08-20T15:53:42Z",
+      "side": 1,
+      "message": "missing closedir. (grep to see how to use std::unique_ptr to automate this.)",
+      "revId": "2f9de8b54883e359dbfb9b5151881aef17ffba06",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
