@@ -27,6 +27,7 @@
 #include <unistd.h>
 
 #include <unordered_map>
+#include <utility>
 
 #include <cutils/properties.h>
 #include <private/android_logger.h>
@@ -554,12 +555,12 @@ class LogBufferElementLast {
     }
 
     void clear(LogBufferElement* element) {
-        log_time current =
-            element->getRealTime() - log_time(EXPIRE_RATELIMIT, 0);
+        uint64_t current =
+            element->getRealTime().nsec() - (EXPIRE_RATELIMIT * NS_PER_SEC);
         for (LogBufferElementMap::iterator it = map.begin(); it != map.end();) {
             LogBufferElement* mapElement = it->second;
             if ((mapElement->getDropped() >= EXPIRE_THRESHOLD) &&
-                (current > mapElement->getRealTime())) {
+                (current > mapElement->getRealTime().nsec())) {
                 it = map.erase(it);
             } else {
                 ++it;
@@ -655,7 +656,7 @@ bool LogBuffer::prune(log_id_t id, unsigned long pruneRows, uid_t caller_uid) {
                 mLastSet[id] = true;
             }
 
-            if (oldest && (oldest->mStart <= element->getRealTime().nsec())) {
+            if (oldest && (oldest->mStart <= element->getSequence())) {
                 busy = true;
                 if (oldest->mTimeout.tv_sec || oldest->mTimeout.tv_nsec) {
                     oldest->triggerReader_Locked();
@@ -747,7 +748,7 @@ bool LogBuffer::prune(log_id_t id, unsigned long pruneRows, uid_t caller_uid) {
         while (it != mLogElements.end()) {
             LogBufferElement* element = *it;
 
-            if (oldest && (oldest->mStart <= element->getRealTime().nsec())) {
+            if (oldest && (oldest->mStart <= element->getSequence())) {
                 busy = true;
                 if (oldest->mTimeout.tv_sec || oldest->mTimeout.tv_nsec) {
                     oldest->triggerReader_Locked();
@@ -901,7 +902,7 @@ bool LogBuffer::prune(log_id_t id, unsigned long pruneRows, uid_t caller_uid) {
             mLastSet[id] = true;
         }
 
-        if (oldest && (oldest->mStart <= element->getRealTime().nsec())) {
+        if (oldest && (oldest->mStart <= element->getSequence())) {
             busy = true;
             if (whitelist) {
                 break;
@@ -945,7 +946,7 @@ bool LogBuffer::prune(log_id_t id, unsigned long pruneRows, uid_t caller_uid) {
                 mLastSet[id] = true;
             }
 
-            if (oldest && (oldest->mStart <= element->getRealTime().nsec())) {
+            if (oldest && (oldest->mStart <= element->getSequence())) {
                 busy = true;
                 if (stats.sizes(id) > (2 * log_buffer_size(id))) {
                     // kick a misbehaving log reader client off the island
@@ -1041,7 +1042,7 @@ unsigned long LogBuffer::getSize(log_id_t id) {
     return retval;
 }
 
-log_time LogBuffer::flushTo(SocketClient* reader, const log_time& start,
+uint64_t LogBuffer::flushTo(SocketClient* reader, uint64_t start,
                             pid_t* lastTid, bool privileged, bool security,
                             int (*filter)(const LogBufferElement* element,
                                           void* arg),
@@ -1051,32 +1052,24 @@ log_time LogBuffer::flushTo(SocketClient* reader, const log_time& start,
 
     rdlock();
 
-    if (start == log_time::EPOCH) {
+    if (start <= 1) {
         // client wants to start from the beginning
         it = mLogElements.begin();
     } else {
-        // Cap to 300 iterations we look back for out-of-order entries.
-        size_t count = 300;
         // Client wants to start from some specified time. Chances are
         // we are better off starting from the end of the time sorted list.
-        LogBufferElementCollection::iterator last;
-        for (last = it = mLogElements.end(); it != mLogElements.begin();
+        for (it = mLogElements.end(); it != mLogElements.begin();
              /* do nothing */) {
             --it;
             LogBufferElement* element = *it;
-            if (element->getRealTime() > start) {
-                last = it;
-            } else if (element->getRealTime() == start) {
-                last = ++it;
-                break;
-            } else if (!--count) {
+            if (element->getSequence() <= start) {
+                it++;
                 break;
             }
         }
-        it = last;
     }
 
-    log_time curr = start;
+    uint64_t curr = start;
 
     LogBufferElement* lastElement = nullptr;  // iterator corruption paranoia
     static const size_t maxSkip = 4194304;    // maximum entries to skip
