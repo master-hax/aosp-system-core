@@ -137,13 +137,13 @@ bool LogReader::onDataAvailable(SocketClient* cli) {
             const pid_t mPid;
             const unsigned mLogMask;
             bool startTimeSet;
-            log_time& start;
+            const log_time start;
             uint64_t& sequence;
             uint64_t last;
             bool isMonotonic;
 
            public:
-            LogFindStart(unsigned logMask, pid_t pid, log_time& start,
+            LogFindStart(unsigned logMask, pid_t pid, log_time start,
                          uint64_t& sequence, bool isMonotonic)
                 : mPid(pid),
                   mLogMask(logMask),
@@ -208,7 +208,7 @@ bool LogReader::onDataAvailable(SocketClient* cli) {
 
     LogTimeEntry::wrlock();
     auto entry = std::make_unique<LogTimeEntry>(
-        *this, cli, nonBlock, tail, logMask, pid, sequence, timeout);
+        *this, cli, nonBlock, tail, logMask, pid, start, sequence, timeout);
     if (!entry->startReader_Locked()) {
         LogTimeEntry::unlock();
         return false;
