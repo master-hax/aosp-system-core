@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "012f0c1c_80105d38",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1103203
+      },
+      "writtenOn": "2019-08-22T18:21:43Z",
+      "side": 1,
+      "message": "Great, thanks for fixing it!",
+      "parentUuid": "a39d8753_caf61f73",
+      "revId": "f42f6dbf2e8652abbadc98ec1c03d38ba4d3decf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c330e5c1_4268cf71",
         "filename": "rootdir/init.rc",
         "patchSetId": 1
