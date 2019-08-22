@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c330e5c1_4268cf71",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 132,
+      "author": {
+        "id": 1103203
+      },
+      "writtenOn": "2019-08-22T12:23:37Z",
+      "side": 1,
+      "message": "Or perhaps we should call it self_test, to be consistent with function names in boringssl?\n\n(If we change the path then https://boringssl-review.googlesource.com/c/boringssl/+/37204 needs to be tweaked accordingly).",
+      "range": {
+        "startLine": 132,
+        "startChar": 25,
+        "endLine": 132,
+        "endChar": 33
+      },
+      "revId": "f42f6dbf2e8652abbadc98ec1c03d38ba4d3decf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
