@@ -22,6 +22,30 @@
       "revId": "f42f6dbf2e8652abbadc98ec1c03d38ba4d3decf",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4e630bd5_4ea6f1ec",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 132,
+      "author": {
+        "id": 1103203
+      },
+      "writtenOn": "2019-08-22T16:40:49Z",
+      "side": 1,
+      "message": "Will leave at selftest to avoid bikeshedding over boringssl vs. boring_ssl.",
+      "parentUuid": "c330e5c1_4268cf71",
+      "range": {
+        "startLine": 132,
+        "startChar": 25,
+        "endLine": 132,
+        "endChar": 33
+      },
+      "revId": "f42f6dbf2e8652abbadc98ec1c03d38ba4d3decf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
