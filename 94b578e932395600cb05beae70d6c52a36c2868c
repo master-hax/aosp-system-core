@@ -22,6 +22,30 @@
       "revId": "94b578e932395600cb05beae70d6c52a36c2868c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6447fc74_399d1c09",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1124693
+      },
+      "writtenOn": "2019-08-22T21:40:25Z",
+      "side": 1,
+      "message": "system_server doesn\u0027t use these on all device.\nThese are considered stable though, and other things (bluetooth) in Android use them.",
+      "parentUuid": "f98c0d6e_4d800947",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 10,
+        "endChar": 4
+      },
+      "revId": "94b578e932395600cb05beae70d6c52a36c2868c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
