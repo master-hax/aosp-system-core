@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "a39d8753_caf61f73",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-08-22T17:57:51Z",
+      "side": 1,
+      "message": "This should have been a build error, but it got regressed.  aosp/1106677 fixes this.\n\nNote that the error is in dmesg, where all init logs have gone since forever.",
+      "revId": "f42f6dbf2e8652abbadc98ec1c03d38ba4d3decf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c330e5c1_4268cf71",
         "filename": "rootdir/init.rc",
         "patchSetId": 1
