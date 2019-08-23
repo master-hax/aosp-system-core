@@ -130,6 +130,7 @@ on init
     # tmpfs place for BORINGSSL_self_test() to remember whether it has run
     mkdir /dev/boringssl 0755 root root
     mkdir /dev/boringssl/selftest 0755 root root
+    restorecon /dev/boringssl/selftest
 
     # Storage views to support runtime permissions
     mkdir /mnt/runtime 0700 root root
@@ -320,6 +321,10 @@ on init
 on property:sys.boot_from_charger_mode=1
     class_stop charger
     trigger late-init
+
+on property:apexd.status=ready
+    exec_reboot_on_failure boringssl-self-check-failed /apex/com.android.conscrypt/bin/boringssl_self_test32
+    exec_reboot_on_failure boringssl-self-check-failed /apex/com.android.conscrypt/bin/boringssl_self_test64
 
 on load_persist_props_action
     load_persist_props
