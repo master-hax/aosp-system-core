@@ -47,10 +47,26 @@ on early-init
 
     start ueventd
 
+    # These must already exist by the time boringssl_self_test32 / boringssl_self_test64 run,
+    # so let's create them before we start apexd-bootstrap.
+    mkdir /dev/boringssl 0755 root root
+    mkdir /dev/boringssl/selftest 0755 root root
+    restorecon /dev/boringssl/selftest
+
     # Run apexd-bootstrap so that APEXes that provide critical libraries
     # become available. Note that this is executed as exec_start to ensure that
     # the libraries are available to the processes started after this statement.
     exec_start apexd-bootstrap
+
+# Run boringssl self test for each ABI so that later processes can skip it. http://b/139348610
+on early-init && property:ro.product.cpu.abilist32=*:
+    exec_reboot_on_failure boringssl-self-check-failed /system/bin/boringssl_self_test32
+on early-init && property:ro.product.cpu.abilist64=*
+    exec_reboot_on_failure boringssl-self-check-failed /system/bin/boringssl_self_test64
+on property:apexd.status=ready && property:ro.product.cpu.abilist64=*
+    exec_reboot_on_failure boringssl-self-check-failed /apex/com.android.conscrypt/bin/boringssl_self_test64
+on property:apexd.status=ready && property:ro.product.cpu.abilist32=*
+    exec_reboot_on_failure boringssl-self-check-failed /apex/com.android.conscrypt/bin/boringssl_self_test32
 
 on init
     sysclktz 0
@@ -126,10 +142,6 @@ on init
     mkdir /mnt/user/0/emulated/0 0755 root root
     mkdir /mnt/expand 0771 system system
     mkdir /mnt/appfuse 0711 root root
-
-    # tmpfs place for BORINGSSL_self_test() to remember whether it has run
-    mkdir /dev/boringssl 0755 root root
-    mkdir /dev/boringssl/selftest 0755 root root
 
     # Storage views to support runtime permissions
     mkdir /mnt/runtime 0700 root root
