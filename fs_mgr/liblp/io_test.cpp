@@ -27,7 +27,6 @@
 
 #include "images.h"
 #include "liblp_test.h"
-#include "mock_property_fetcher.h"
 #include "reader.h"
 #include "test_partition_opener.h"
 #include "utility.h"

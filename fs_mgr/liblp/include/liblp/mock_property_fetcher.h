@@ -41,8 +41,14 @@ class MockPropertyFetcher : public IPropertyFetcher {
     }
 };
 
+static inline void ResetPropertyFetcher() {
+    IPropertyFetcher::OverrideForTesting(
+            std::make_unique<::testing::NiceMock<MockPropertyFetcher>>());
+}
+
+static inline MockPropertyFetcher* GetMockedPropertyFetcher() {
+    return static_cast<MockPropertyFetcher*>(IPropertyFetcher::GetInstance());
+}
+
 }  // namespace fs_mgr
 }  // namespace android
-
-android::fs_mgr::MockPropertyFetcher* GetMockedPropertyFetcher();
-void ResetPropertyFetcher();

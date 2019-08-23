@@ -24,7 +24,6 @@
 #include <liblp/property_fetcher.h>
 
 #include "liblp_test.h"
-#include "mock_property_fetcher.h"
 
 using namespace android::fs_mgr;
 using ::testing::Return;
