@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2738182a_18a6ade6",
+        "filename": "fs_mgr/liblp/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 1088076
+      },
+      "writtenOn": "2019-08-23T20:31:21Z",
+      "side": 1,
+      "message": "It\u0027s also referenced in test/vts/tools/build/tasks/list/vts_test_bin_package_list.mk",
+      "revId": "472c4968c671aeecd0683076c7734bc606b4919f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
