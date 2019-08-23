@@ -31,6 +31,7 @@
 #include <libdm/dm.h>
 #include <libfiemap/image_manager.h>
 #include <liblp/builder.h>
+#include <liblp/mock_property_fetcher.h>
 
 #include "test_helpers.h"
 
@@ -43,7 +44,12 @@ using android::dm::DmDeviceState;
 using android::fiemap::IImageManager;
 using android::fs_mgr::BlockDeviceInfo;
 using android::fs_mgr::CreateLogicalPartitionParams;
+using android::fs_mgr::DestroyLogicalPartition;
+using android::fs_mgr::GetMockedPropertyFetcher;
 using android::fs_mgr::MetadataBuilder;
+using android::fs_mgr::MockPropertyFetcher;
+using android::fs_mgr::ResetPropertyFetcher;
+using namespace ::testing;
 using namespace std::chrono_literals;
 using namespace std::string_literals;
 
@@ -67,6 +73,7 @@ class SnapshotTest : public ::testing::Test {
 
   protected:
     void SetUp() override {
+        ResetPropertyFetcher();
         InitializeState();
         CleanupTestArtifacts();
         FormatFakeSuper();
@@ -78,6 +85,7 @@ class SnapshotTest : public ::testing::Test {
         lock_ = nullptr;
 
         CleanupTestArtifacts();
+        ResetPropertyFetcher();
     }
 
     void InitializeState() {
@@ -95,7 +103,8 @@ class SnapshotTest : public ::testing::Test {
         // get an accurate list to remove.
         lock_ = nullptr;
 
-        std::vector<std::string> snapshots = {"test-snapshot", "test_partition_b"};
+        std::vector<std::string> snapshots = {"test-snapshot", "test_partition_a",
+                                              "test_partition_b"};
         for (const auto& snapshot : snapshots) {
             DeleteSnapshotDevice(snapshot);
             DeleteBackingImage(image_manager_, snapshot + "-cow");
@@ -154,11 +163,10 @@ class SnapshotTest : public ::testing::Test {
             return false;
         }
 
-        // Update both slots for convenience.
+        // Update the source slot.
         auto metadata = builder->Export();
         if (!metadata) return false;
-        if (!UpdatePartitionTable(opener, "super", *metadata.get(), 0) ||
-            !UpdatePartitionTable(opener, "super", *metadata.get(), 1)) {
+        if (!UpdatePartitionTable(opener, "super", *metadata.get(), 0)) {
             return false;
         }
 
@@ -172,6 +180,35 @@ class SnapshotTest : public ::testing::Test {
                 .timeout_ms = 10s,
         };
         return CreateLogicalPartition(params, path);
+    }
+
+    bool MapUpdatePartitions() {
+        TestPartitionOpener opener(fake_super);
+        auto builder = MetadataBuilder::NewForUpdate(opener, "super", 0, 1);
+        if (!builder) return false;
+
+        auto metadata = builder->Export();
+        if (!metadata) return false;
+
+        // Update the destination slot, mark it as updated.
+        if (!UpdatePartitionTable(opener, "super", *metadata.get(), 1)) {
+            return false;
+        }
+
+        for (const auto& partition : metadata->partitions) {
+            CreateLogicalPartitionParams params = {
+                    .block_device = fake_super,
+                    .metadata = metadata.get(),
+                    .partition = &partition,
+                    .force_writable = true,
+                    .timeout_ms = 10s,
+            };
+            std::string ignore_path;
+            if (!CreateLogicalPartition(params, &ignore_path)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     void DeleteSnapshotDevice(const std::string& snapshot) {
@@ -370,17 +407,22 @@ TEST_F(SnapshotTest, MergeCannotRemoveCow) {
 }
 
 TEST_F(SnapshotTest, FirstStageMountAndMerge) {
+    ON_CALL(*GetMockedPropertyFetcher(), GetBoolProperty("ro.virtual_ab.enabled", _))
+            .WillByDefault(Return(true));
+
     ASSERT_TRUE(AcquireLock());
 
     static const uint64_t kDeviceSize = 1024 * 1024;
 
-    ASSERT_TRUE(CreatePartition("test_partition_b", kDeviceSize));
+    ASSERT_TRUE(CreatePartition("test_partition_a", kDeviceSize));
+    ASSERT_TRUE(MapUpdatePartitions());
     ASSERT_TRUE(sm->CreateSnapshot(lock_.get(), "test_partition_b", kDeviceSize, kDeviceSize,
                                    kDeviceSize));
 
     // Simulate a reboot into the new slot.
     lock_ = nullptr;
     ASSERT_TRUE(sm->FinishedSnapshotWrites());
+    ASSERT_TRUE(DestroyLogicalPartition("test_partition_b"));
 
     auto rebooted = new TestDeviceInfo(fake_super);
     rebooted->set_slot_suffix("_b");
