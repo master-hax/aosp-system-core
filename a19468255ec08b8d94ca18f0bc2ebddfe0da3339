@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1344d482_05a06f88",
+        "filename": "fs_mgr/liblp/include/liblp/mock_property_fetcher.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2019-08-23T02:40:39Z",
+      "side": 1,
+      "message": "If we expose this header, this name is bad (in the android::fs_mgr namespace). Maybe put it in android::fs_mgr::testing::ResetPropertyFetcher (and put everything in this file in the testing namespace) or rename it to ResetMockPropertyFetcher?",
+      "range": {
+        "startLine": 44,
+        "startChar": 19,
+        "endLine": 44,
+        "endChar": 39
+      },
+      "revId": "a19468255ec08b8d94ca18f0bc2ebddfe0da3339",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
