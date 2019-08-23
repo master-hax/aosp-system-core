@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0d961f90_7851d29f",
+        "filename": "fs_mgr/liblp/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 1088076
+      },
+      "writtenOn": "2019-08-23T19:43:57Z",
+      "side": 1,
+      "message": "so the existing AndroidTest.xml will no longer be used? That will break the existing test run in vts of liblp_test_static.",
+      "revId": "c3ab3df35746fc7eaa36db8c8ccce0cf57d9db0a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
