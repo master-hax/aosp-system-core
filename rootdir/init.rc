@@ -321,6 +321,10 @@ on property:sys.boot_from_charger_mode=1
     class_stop charger
     trigger late-init
 
+on property:apexd.status=ready
+    exec /apex/com.android.conscrypt/bin/boringssl_self_test32
+    exec /apex/com.android.conscrypt/bin/boringssl_self_test64
+
 on load_persist_props_action
     load_persist_props
     start logd
