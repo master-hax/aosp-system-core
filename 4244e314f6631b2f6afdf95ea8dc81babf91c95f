@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "f4f0d07d_b843cd34",
+        "filename": "logd/LogBufferElement.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-08-23T18:28:10Z",
+      "side": 1,
+      "message": "I think we\u0027re fine here; the cast is safe enough.\n\nAll of the users internal in logd use uint32_t but the message header says int32_t.  I\u0027m not sure its worth trying to change either.",
+      "parentUuid": "ab44906e_974fd9be",
+      "range": {
+        "startLine": 76,
+        "startChar": 0,
+        "endLine": 76,
+        "endChar": 8
+      },
+      "revId": "4244e314f6631b2f6afdf95ea8dc81babf91c95f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "503a6226_2c09643e",
         "filename": "logd/LogBufferElement.cpp",
         "patchSetId": 1
@@ -36,6 +60,30 @@
       "writtenOn": "2019-08-23T17:56:32Z",
       "side": 1,
       "message": "This is not necessary since the union value is set in the next line of code.",
+      "range": {
+        "startLine": 105,
+        "startChar": 4,
+        "endLine": 105,
+        "endChar": 19
+      },
+      "revId": "4244e314f6631b2f6afdf95ea8dc81babf91c95f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "657dd4c3_7450920f",
+        "filename": "logd/LogBufferElement.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-08-23T18:28:10Z",
+      "side": 1,
+      "message": "It\u0027s not strictly necessary, but I think it\u0027s a good idea.  I checked on godbolt and since mMsg is 8 bytes on 64bit and mTag is 4 bytes, the top 4 bytes of mMsg aren\u0027t cleared when setting mTag.  I figure it\u0027s a good idea to ensure that they\u0027re cleared so that we get a proper NPE instead of reading whatever bytes happen to be pointed to.",
+      "parentUuid": "503a6226_2c09643e",
       "range": {
         "startLine": 105,
         "startChar": 4,
