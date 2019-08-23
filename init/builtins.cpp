@@ -1090,6 +1090,13 @@ static Result<void> ExecWithRebootOnFailure(const std::string& reboot_reason,
     return {};
 }
 
+static Result<void> do_exec_reboot_on_failure(const BuiltinArguments& args) {
+    const std::string reboot_reason = args[0];
+    auto remaining_arg_strings = std::vector<std::string>(args.begin() + 1, args.end());
+    const BuiltinArguments& remaining_args = BuiltinArguments(remaining_arg_strings, args.context);
+    return ExecWithRebootOnFailure(reboot_reason, remaining_args);
+}
+
 static Result<void> do_installkey(const BuiltinArguments& args) {
     if (!is_file_crypto()) return {};
 
@@ -1181,6 +1188,7 @@ const BuiltinFunctionMap& GetBuiltinFunctionMap() {
         {"exec",                    {1,     kMax, {false,  do_exec}}},
         {"exec_background",         {1,     kMax, {false,  do_exec_background}}},
         {"exec_start",              {1,     1,    {false,  do_exec_start}}},
+        {"exec_reboot_on_failure",  {2,     kMax, {false,  do_exec_reboot_on_failure}}},
         {"export",                  {2,     2,    {false,  do_export}}},
         {"hostname",                {1,     1,    {true,   do_hostname}}},
         {"ifup",                    {1,     1,    {true,   do_ifup}}},
