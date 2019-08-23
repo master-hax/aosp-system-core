@@ -362,6 +362,7 @@ cc_library_static {
     ],
 
     shared_libs: [
+        "libadbd_auth",
         "libasyncio",
         "libbase",
         "libcrypto",
@@ -415,6 +416,7 @@ cc_library {
     ],
 
     shared_libs: [
+        "libadbd_auth",
         "libasyncio",
         "libbase",
         "libcrypto",
@@ -478,6 +480,7 @@ cc_library {
     ],
 
     shared_libs: [
+        "libadbd_auth",
         "libadbd_services",
         "libasyncio",
         "libbase",
@@ -512,6 +515,7 @@ cc_binary {
 
     shared_libs: [
         "libadbd",
+        "libadbd_auth",
         "libadbd_services",
         "libbase",
         "libcap",
@@ -547,6 +551,7 @@ cc_binary {
     static_libs: [
         "libadbconnection_server",
         "libadbd",
+        "libadbd_auth",
         "libadbd_services",
         "libasyncio",
         "libavb_user",
@@ -617,6 +622,7 @@ cc_test {
 
     static_libs: [
         "libadbd",
+        "libadbd_auth",
         "libbase",
         "libbootloader_message",
         "libcutils",
