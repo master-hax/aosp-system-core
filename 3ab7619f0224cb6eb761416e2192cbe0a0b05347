@@ -1,0 +1,165 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "913a7f65_ab8672e2",
+        "filename": "init/ueventd.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 1081223
+      },
+      "writtenOn": "2019-08-24T11:47:43Z",
+      "side": 1,
+      "message": "const std::string\u0026 directory",
+      "range": {
+        "startLine": 129,
+        "startChar": 28,
+        "endLine": 129,
+        "endChar": 56
+      },
+      "revId": "3ab7619f0224cb6eb761416e2192cbe0a0b05347",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "608e7b38_9834a95c",
+        "filename": "init/ueventd.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 161,
+      "author": {
+        "id": 1081223
+      },
+      "writtenOn": "2019-08-24T11:47:43Z",
+      "side": 1,
+      "message": "const std::string\u0026 directory",
+      "range": {
+        "startLine": 161,
+        "startChar": 34,
+        "endLine": 161,
+        "endChar": 62
+      },
+      "revId": "3ab7619f0224cb6eb761416e2192cbe0a0b05347",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1fb1feea_135dd260",
+        "filename": "init/ueventd.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 163,
+      "author": {
+        "id": 1081223
+      },
+      "writtenOn": "2019-08-24T11:47:43Z",
+      "side": 1,
+      "message": "std::unique_ptr\u003cDIR, decltype(\u0026closedir)\u003e dir(opendir(directory.c_str()), closedir);",
+      "range": {
+        "startLine": 163,
+        "startChar": 4,
+        "endLine": 163,
+        "endChar": 42
+      },
+      "revId": "3ab7619f0224cb6eb761416e2192cbe0a0b05347",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "95ff67ef_2c8c9f16",
+        "filename": "init/ueventd.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 166,
+      "author": {
+        "id": 1081223
+      },
+      "writtenOn": "2019-08-24T11:47:43Z",
+      "side": 1,
+      "message": "if (!dir) return;",
+      "range": {
+        "startLine": 164,
+        "startChar": 0,
+        "endLine": 166,
+        "endChar": 15
+      },
+      "revId": "3ab7619f0224cb6eb761416e2192cbe0a0b05347",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a77c1f91_1085f6bc",
+        "filename": "init/ueventd.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 168,
+      "author": {
+        "id": 1081223
+      },
+      "writtenOn": "2019-08-24T11:47:43Z",
+      "side": 1,
+      "message": "dir.get()",
+      "range": {
+        "startLine": 168,
+        "startChar": 27,
+        "endLine": 168,
+        "endChar": 30
+      },
+      "revId": "3ab7619f0224cb6eb761416e2192cbe0a0b05347",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "49dbfe38_feb55687",
+        "filename": "init/ueventd.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 173,
+      "author": {
+        "id": 1081223
+      },
+      "writtenOn": "2019-08-24T11:47:43Z",
+      "side": 1,
+      "message": "if (strcmp(dent-\u003ed_name, \".\") \u003d\u003d 0 || strcmp(dent-\u003ed_name, \"..\") \u003d\u003d 0) continue;",
+      "range": {
+        "startLine": 171,
+        "startChar": 0,
+        "endLine": 173,
+        "endChar": 21
+      },
+      "revId": "3ab7619f0224cb6eb761416e2192cbe0a0b05347",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fd81290d_edda6c4b",
+        "filename": "init/ueventd.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 176,
+      "author": {
+        "id": 1081223
+      },
+      "writtenOn": "2019-08-24T11:47:43Z",
+      "side": 1,
+      "message": "if (fstatat(dirfd(dir.get()), dent-\u003ed_name, \u0026st, 0) \u003c 0) continue;",
+      "range": {
+        "startLine": 174,
+        "startChar": 0,
+        "endLine": 176,
+        "endChar": 21
+      },
+      "revId": "3ab7619f0224cb6eb761416e2192cbe0a0b05347",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
