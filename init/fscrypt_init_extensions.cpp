@@ -94,18 +94,17 @@ static void delete_dir_contents(const std::string& dir) {
     }
 }
 
-int fscrypt_set_directory_policy(const std::string& dir) {
+FscryptAction fscrypt_lookup_action(const std::string& dir) {
     const std::string prefix = "/data/";
 
     if (!android::base::StartsWith(dir, prefix)) {
-        return 0;
+        return FscryptAction::none;
     }
 
     // Special-case /data/media/obb per b/64566063
     if (dir == "/data/media/obb") {
         // Try to set policy on this directory, but if it is non-empty this may fail.
-        set_system_de_policy_on(dir);
-        return 0;
+        return FscryptAction::attempt;
     }
 
     // Only set policy on first level /data directories
@@ -113,7 +112,7 @@ int fscrypt_set_directory_policy(const std::string& dir) {
     // However this is overkill for as long as the policy is simply
     // to apply a global policy to all /data folders created via makedir
     if (dir.find_first_of('/', prefix.size()) != std::string::npos) {
-        return 0;
+        return FscryptAction::none;
     }
 
     // Special case various directories that must not be encrypted,
@@ -132,12 +131,8 @@ int fscrypt_set_directory_policy(const std::string& dir) {
     for (const auto& d : directories_to_exclude) {
         if ((prefix + d) == dir) {
             LOG(INFO) << "Not setting policy on " << dir;
-            return 0;
+            return FscryptAction::none;
         }
-    }
-    int err = set_system_de_policy_on(dir);
-    if (err == 0) {
-        return 0;
     }
     // Empty these directories if policy setting fails.
     std::vector<std::string> wipe_on_failure = {
@@ -145,11 +140,24 @@ int fscrypt_set_directory_policy(const std::string& dir) {
     };
     for (const auto& d : wipe_on_failure) {
         if ((prefix + d) == dir) {
-            LOG(ERROR) << "Setting policy failed, deleting: " << dir;
-            delete_dir_contents(dir);
-            err = set_system_de_policy_on(dir);
-            break;
+            return FscryptAction::delete_if_necessary;
         }
+    }
+    return FscryptAction::require;
+}
+
+int fscrypt_set_directory_policy(FscryptAction action, const std::string& dir) {
+    if (action == FscryptAction::none) {
+        return 0;
+    }
+    int err = set_system_de_policy_on(dir);
+    if (err == 0 || action == FscryptAction::attempt) {
+        return 0;
+    }
+    if (action == FscryptAction::delete_if_necessary) {
+        LOG(ERROR) << "Setting policy failed, deleting: " << dir;
+        delete_dir_contents(dir);
+        err = set_system_de_policy_on(dir);
     }
     return err;
 }
