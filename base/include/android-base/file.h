@@ -62,13 +62,22 @@ class TemporaryDir {
  public:
   TemporaryDir();
   ~TemporaryDir();
+
+  TemporaryDir(TemporaryDir&& other) = default;
+  TemporaryDir& operator=(TemporaryDir&& other) = default;
+
+  // Use named method to ensure it's clear this doesn't take a directory.
+  static TemporaryDir CreateUsingPrefix(const std::string& prefix) { return TemporaryDir(prefix); }
+
+  bool CreationSucceeded() { return path[0] != 0; }
+
   // Don't remove the temporary dir in the destructor.
   void DoNotRemove() { remove_dir_and_contents_ = false; }
 
   char path[1024];
-
  private:
-  bool init(const std::string& tmp_dir);
+  explicit TemporaryDir(const std::string& prefix) { InitWithPrefix(prefix); }
+  void InitWithPrefix(const std::string& prefix);
 
   bool remove_dir_and_contents_ = true;
 

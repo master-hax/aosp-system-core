@@ -380,14 +380,36 @@ static Result<void> do_mkdir(const BuiltinArguments& args) {
         default:
             return Error() << "Unexpected argument count: " << args.size();
     }
+    std::optional<TemporaryDir> temp_dir;
     std::string target = args[1];
+    while (!target.empty() && target.back() == '/') {
+        target.pop_back();
+    }
+    FscryptAction fscrypt_action = FscryptLookupAction(target);
     struct stat mstat;
     if (lstat(target.c_str(), &mstat) != 0) {
         if (errno != ENOENT) {
             return ErrnoError() << "lstat() failed on " << target;
         }
-        if (!make_dir(target, mode)) {
-            return ErrnoErrorIgnoreEnoent() << "mkdir() failed on " << target;
+        if (fscrypt_action == FscryptAction::kNone) {
+            if (!make_dir(target, mode)) {
+                return ErrnoErrorIgnoreEnoent() << "mkdir() failed on " << target;
+            }
+        } else {
+            std::string secontext;
+            if (SelabelLookupFileContext(target, mode, &secontext) && !secontext.empty()) {
+                setfscreatecon(secontext.c_str());
+            }
+            temp_dir = TemporaryDir::CreateUsingPrefix(target);
+            if (!secontext.empty()) {
+                int save_errno = errno;
+                setfscreatecon(nullptr);
+                errno = save_errno;
+            }
+            if (!temp_dir->CreationSucceeded()) {
+                return ErrnoError() << "mkdtemp() failed on " << target;
+            }
+            target = temp_dir->path;
         }
         if (lstat(target.c_str(), &mstat) != 0) {
             return ErrnoError() << "lstat() failed on new " << target;
@@ -411,10 +433,17 @@ static Result<void> do_mkdir(const BuiltinArguments& args) {
         }
     }
     if (fscrypt_is_native()) {
-        if (fscrypt_set_directory_policy(target)) {
+        if (FscryptSetDirectoryPolicy(fscrypt_action, target)) {
+            temp_dir.reset();  // reboot_into_recovery doesn't return
             return reboot_into_recovery(
                     {"--prompt_and_wipe_data", "--reason=set_policy_failed:"s + target});
         }
+    }
+    if (temp_dir) {
+        if (rename(temp_dir->path, target.c_str()) != 0) {
+            return ErrnoError() << "rename() failed on " << target;
+        }
+        temp_dir->DoNotRemove();
     }
     return {};
 }
@@ -578,8 +607,8 @@ static Result<void> queue_fs_event(int code) {
         return reboot_into_recovery(options);
         /* If reboot worked, there is no return. */
     } else if (code == FS_MGR_MNTALL_DEV_FILE_ENCRYPTED) {
-        if (fscrypt_install_keyring()) {
-            return Error() << "fscrypt_install_keyring() failed";
+        if (FscryptInstallKeyring()) {
+            return Error() << "FscryptInstallKeyring() failed";
         }
         property_set("ro.crypto.state", "encrypted");
         property_set("ro.crypto.type", "file");
@@ -589,8 +618,8 @@ static Result<void> queue_fs_event(int code) {
         ActionManager::GetInstance().QueueEventTrigger("nonencrypted");
         return {};
     } else if (code == FS_MGR_MNTALL_DEV_IS_METADATA_ENCRYPTED) {
-        if (fscrypt_install_keyring()) {
-            return Error() << "fscrypt_install_keyring() failed";
+        if (FscryptInstallKeyring()) {
+            return Error() << "FscryptInstallKeyring() failed";
         }
         property_set("ro.crypto.state", "encrypted");
         property_set("ro.crypto.type", "file");
@@ -600,8 +629,8 @@ static Result<void> queue_fs_event(int code) {
         ActionManager::GetInstance().QueueEventTrigger("nonencrypted");
         return {};
     } else if (code == FS_MGR_MNTALL_DEV_NEEDS_METADATA_ENCRYPTION) {
-        if (fscrypt_install_keyring()) {
-            return Error() << "fscrypt_install_keyring() failed";
+        if (FscryptInstallKeyring()) {
+            return Error() << "FscryptInstallKeyring() failed";
         }
         property_set("ro.crypto.state", "encrypted");
         property_set("ro.crypto.type", "file");
