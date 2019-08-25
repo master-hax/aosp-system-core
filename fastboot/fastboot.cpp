@@ -916,6 +916,11 @@ static bool load_buf(const char* fname, struct fastboot_buffer* buf) {
 }
 
 static void rewrite_vbmeta_buffer(struct fastboot_buffer* buf) {
+    uint64_t footer_offset = 0;
+    uint64_t vbmeta_offset = 0;
+    uint64_t flag_offset;
+    bool main_vbmeta_in_boot = false;
+
     // Buffer needs to be at least the size of the VBMeta struct which
     // is 256 bytes.
     if (buf->sz < 256) {
@@ -929,17 +934,30 @@ static void rewrite_vbmeta_buffer(struct fastboot_buffer* buf) {
         die("Failed reading from vbmeta");
     }
 
+    footer_offset = buf->sz - 64;
+    if (!data.compare(footer_offset, 4, "AVBf")) {
+        for (int i = 0; i < 8; i++)
+            vbmeta_offset |= (static_cast<uint64_t>(data[buf->sz - 37 - i]) & 0xFF) << (8 * i);
+
+        if (!data.compare(vbmeta_offset, 4, "AVB0"))
+            main_vbmeta_in_boot = true;
+    }
+
     // There's a 32-bit big endian |flags| field at offset 120 where
     // bit 0 corresponds to disable-verity and bit 1 corresponds to
     // disable-verification.
     //
     // See external/avb/libavb/avb_vbmeta_image.h for the layout of
     // the VBMeta struct.
+    flag_offset = 123;
+    if (main_vbmeta_in_boot)
+        flag_offset += vbmeta_offset;
+
     if (g_disable_verity) {
-        data[123] |= 0x01;
+        data[flag_offset] |= 0x01;
     }
     if (g_disable_verification) {
-        data[123] |= 0x02;
+        data[flag_offset] |= 0x02;
     }
 
     if (!android::base::WriteStringToFd(data, fd)) {
@@ -956,7 +974,8 @@ static void flash_buf(const std::string& partition, struct fastboot_buffer *buf)
 
     // Rewrite vbmeta if that's what we're flashing and modification has been requested.
     if ((g_disable_verity || g_disable_verification) &&
-        (partition == "vbmeta" || partition == "vbmeta_a" || partition == "vbmeta_b")) {
+        (partition == "vbmeta" || partition == "vbmeta_a" || partition == "vbmeta_b" ||
+         partition == "boot" || partition == "boot_a" || partition == "boot_b")) {
         rewrite_vbmeta_buffer(buf);
     }
 
