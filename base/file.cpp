@@ -131,11 +131,11 @@ void TemporaryFile::init(const std::string& tmp_dir) {
 }
 
 TemporaryDir::TemporaryDir() {
-  init(GetSystemTempDir());
+  InitWithPrefix(GetSystemTempDir() + OS_PATH_SEPARATOR + "TemporaryDir");
 }
 
 TemporaryDir::~TemporaryDir() {
-  if (!remove_dir_and_contents_) return;
+  if (!remove_dir_and_contents_ || !path[0]) return;
 
   auto callback = [](const char* child, const struct stat*, int file_type, struct FTW*) -> int {
     switch (file_type) {
@@ -165,9 +165,11 @@ TemporaryDir::~TemporaryDir() {
   nftw(path, callback, 128, FTW_DEPTH | FTW_MOUNT | FTW_PHYS);
 }
 
-bool TemporaryDir::init(const std::string& tmp_dir) {
-  snprintf(path, sizeof(path), "%s%cTemporaryDir-XXXXXX", tmp_dir.c_str(), OS_PATH_SEPARATOR);
-  return (mkdtemp(path) != nullptr);
+void TemporaryDir::InitWithPrefix(const std::string& prefix) {
+  snprintf(path, sizeof(path), "%s-XXXXXX", prefix.c_str());
+  if (mkdtemp(path) == nullptr) {
+    path[0] = '\0';
+  }
 }
 
 namespace android {
