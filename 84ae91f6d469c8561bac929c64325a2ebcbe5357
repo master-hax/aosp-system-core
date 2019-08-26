@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "03c48e67_c2027b9a",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 456,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-08-26T21:33:51Z",
+      "side": 1,
+      "message": "do you care if it\u0027s _not_ a \u0027\\n\u0027? (if the snprintf truncates, for example.)\n\nworth also adding the `CHECK_GT(buf_len, 0u);`?",
+      "revId": "84ae91f6d469c8561bac929c64325a2ebcbe5357",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "97445136_7eec7697",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 469,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-08-26T21:33:51Z",
+      "side": 1,
+      "message": "(there\u0027s an `ok()` now too, if you prefer.)",
+      "revId": "84ae91f6d469c8561bac929c64325a2ebcbe5357",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
