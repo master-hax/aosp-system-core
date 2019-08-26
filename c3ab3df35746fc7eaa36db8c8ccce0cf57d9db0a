@@ -34,6 +34,24 @@
       "revId": "c3ab3df35746fc7eaa36db8c8ccce0cf57d9db0a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d50561e4_f81d956a",
+        "filename": "fs_mgr/liblp/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 1088076
+      },
+      "writtenOn": "2019-08-26T06:42:54Z",
+      "side": 1,
+      "message": "I think once you specify test_config here, the existing AndroidTest.xml will no longer be used for liblp_test_static module. Have you tried it out? \n\nVtsKernelLibdmTest uses a totally different AndroidTest.xml (system/core/fs_mgr/libdm/AndroidTest.xml). Why it has anything to do with system/core/fs_mgr/liblp/AndroidTest.xml?\n\nAnyway, you don\u0027t need to land this CL. aosp/1108612 shall take care of this module.",
+      "parentUuid": "dfa29cd2_0c5bd618",
+      "revId": "c3ab3df35746fc7eaa36db8c8ccce0cf57d9db0a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
