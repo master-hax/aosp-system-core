@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "288e5e99_3b403253",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 402,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-08-26T17:25:55Z",
+      "side": 1,
+      "message": "Can we drop the unneeded (), e.g.\n\n((*uid !\u003d ((uid_t)-1) \u0026\u0026 *uid !\u003d mstat.st_uid) ||\n (*gid !\u003d ((gid_t)-1) \u0026\u0026 *gid !\u003d mstat.st_gid))\n\nWe should probably use the c++ casts too,\n\n((*uid !\u003d static_cast\u003cuid_t\u003e(-1) \u0026\u0026 *uid !\u003d mstat.st_uid) ||\n (*gid !\u003d static_cast\u003cgid_t\u003e(-1) \u0026\u0026 *gid !\u003d mstat.st_gid))",
+      "revId": "2af193f25fe66c9d5a3778e24dfaed194d55a379",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "35c8ae12_593ed549",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 403,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-08-26T17:25:55Z",
+      "side": 1,
+      "message": "Crazy idea, but what if we called geteuid() and getegid() before make_dir() ?  Could we skip calling lchown() entirely?",
+      "revId": "2af193f25fe66c9d5a3778e24dfaed194d55a379",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "48ad5ae2_3a9eeb2d",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 410,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-08-26T17:25:55Z",
+      "side": 1,
+      "message": "Is this called in the case that the directory already exists?  It is in the original code.",
+      "revId": "2af193f25fe66c9d5a3778e24dfaed194d55a379",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
