@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "554775f9_79810111",
+        "filename": "init/fscrypt_init_extensions.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1044551
+      },
+      "writtenOn": "2019-08-26T18:20:51Z",
+      "side": 1,
+      "message": "not entirely clear why you need these, but I\u0027m guessing this is a straight copy, which I approve of",
+      "range": {
+        "startLine": 20,
+        "startChar": 0,
+        "endLine": 22,
+        "endChar": 29
+      },
+      "revId": "052f31c678bd4ec27d3eb4cc89b0e0f1d2fa97e6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
