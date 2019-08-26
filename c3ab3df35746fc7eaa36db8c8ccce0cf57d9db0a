@@ -52,6 +52,24 @@
       "revId": "c3ab3df35746fc7eaa36db8c8ccce0cf57d9db0a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "65b49b54_60056e99",
+        "filename": "fs_mgr/liblp/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 1307893
+      },
+      "writtenOn": "2019-08-26T07:03:33Z",
+      "side": 1,
+      "message": "Yes, I already tried it.\n1. $ make clean\n2. $ m vts \n3. check out/host/linux-x86/vts/android-vts/testcases/VtsKernelLibdmTest.config\n( It\u0027s the same as system/core/fs_mgr/libdm/AndroidTest.xml)\n\nI think aosp/1108612 is not the same as this CL since it still used \"com.android.tradefed.testtype.VtsMultiDeviceTest\" to run it.",
+      "parentUuid": "d50561e4_f81d956a",
+      "revId": "c3ab3df35746fc7eaa36db8c8ccce0cf57d9db0a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
