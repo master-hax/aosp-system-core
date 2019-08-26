@@ -70,6 +70,24 @@
       "revId": "c3ab3df35746fc7eaa36db8c8ccce0cf57d9db0a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c53e74e7_b6e29447",
+        "filename": "fs_mgr/liblp/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 1307893
+      },
+      "writtenOn": "2019-08-26T07:05:29Z",
+      "side": 1,
+      "message": "aosp/1108612 just rename this module, but this CL run it by using Gtest.",
+      "parentUuid": "65b49b54_60056e99",
+      "revId": "c3ab3df35746fc7eaa36db8c8ccce0cf57d9db0a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
