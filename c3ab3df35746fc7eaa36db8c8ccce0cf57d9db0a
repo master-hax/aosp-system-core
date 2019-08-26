@@ -88,6 +88,24 @@
       "revId": "c3ab3df35746fc7eaa36db8c8ccce0cf57d9db0a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f86fce9b_1a873db2",
+        "filename": "fs_mgr/liblp/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 1088076
+      },
+      "writtenOn": "2019-08-26T16:21:08Z",
+      "side": 1,
+      "message": "https://android-review.googlesource.com/c/platform/system/core/+/1104324\n\nI should use that CL. It\u0027s in the same topic of aosp/1108612 \n\n\u003e 3. check out/host/linux-x86/vts/android-vts/testcases/VtsKernelLibdmTest.config\n\u003e ( It\u0027s the same as system/core/fs_mgr/libdm/AndroidTest.xml)\nThis Android.bp was using system/core/fs_mgr/liblp/AndroidTest.xml, why it has anything to do with the AndroidTest.xml under libdm? (note that liblp vs libdm)",
+      "parentUuid": "c53e74e7_b6e29447",
+      "revId": "c3ab3df35746fc7eaa36db8c8ccce0cf57d9db0a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
