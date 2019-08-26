@@ -16,6 +16,24 @@
       "revId": "c3ab3df35746fc7eaa36db8c8ccce0cf57d9db0a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "dfa29cd2_0c5bd618",
+        "filename": "fs_mgr/liblp/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 1307893
+      },
+      "writtenOn": "2019-08-26T02:36:58Z",
+      "side": 1,
+      "message": "No, vts will still use the original AndroidTest.xml when building android-vts.zip\ne.g. $ m vts \u003c--- It will package the AndroidTest.xml to VtsKernelLibdmTest.config",
+      "parentUuid": "0d961f90_7851d29f",
+      "revId": "c3ab3df35746fc7eaa36db8c8ccce0cf57d9db0a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
