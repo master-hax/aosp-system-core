@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f8afceb5_a75f63aa",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 458,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-08-26T22:10:29Z",
+      "side": 1,
+      "message": "these are only coming from the kernel, right? so we don\u0027t need to worry about one that starts with a \u0027\\0\u0027, making this dereference `buf[-1]`?",
+      "revId": "8180b48c4c22c4bbd8d156a8654e5fe5cceac7c4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
