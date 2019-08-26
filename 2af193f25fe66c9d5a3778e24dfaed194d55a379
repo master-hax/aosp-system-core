@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "3d2aeb73_78ad61c1",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 402,
+      "author": {
+        "id": 1060907
+      },
+      "writtenOn": "2019-08-26T19:31:47Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "288e5e99_3b403253",
+      "revId": "2af193f25fe66c9d5a3778e24dfaed194d55a379",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "35c8ae12_593ed549",
         "filename": "init/builtins.cpp",
         "patchSetId": 1
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "073c5cb8_d97bb3ce",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 403,
+      "author": {
+        "id": 1060907
+      },
+      "writtenOn": "2019-08-26T19:31:47Z",
+      "side": 1,
+      "message": "Do you mean seteuid and setegid? We could do. Not sure it\u0027s faster though, it\u0027s an extra system call, and we\u0027d still want this code for fixing up old directories.",
+      "parentUuid": "35c8ae12_593ed549",
+      "revId": "2af193f25fe66c9d5a3778e24dfaed194d55a379",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "48ad5ae2_3a9eeb2d",
         "filename": "init/builtins.cpp",
         "patchSetId": 1
@@ -50,6 +86,24 @@
       "revId": "2af193f25fe66c9d5a3778e24dfaed194d55a379",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c0b56296_9eb4a1b6",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 410,
+      "author": {
+        "id": 1060907
+      },
+      "writtenOn": "2019-08-26T19:31:47Z",
+      "side": 1,
+      "message": "bool needs_chmod \u003d (mstat.st_mode \u0026 ~S_IFMT) !\u003d mode;\nSo it\u0027s called when lstat indicates that the current mode differs from the desired one, and it\u0027s called if we called lchown.",
+      "parentUuid": "48ad5ae2_3a9eeb2d",
+      "revId": "2af193f25fe66c9d5a3778e24dfaed194d55a379",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
