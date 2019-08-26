@@ -16,6 +16,24 @@
       "revId": "8180b48c4c22c4bbd8d156a8654e5fe5cceac7c4",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "dd7f1113_ff0b3d67",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 458,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-08-26T22:18:34Z",
+      "side": 1,
+      "message": "Sort of.  We format it first in SelinuxKlogCallback() below, where we return and don\u0027t call this if the length that we write is 0.",
+      "parentUuid": "f8afceb5_a75f63aa",
+      "revId": "8180b48c4c22c4bbd8d156a8654e5fe5cceac7c4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
