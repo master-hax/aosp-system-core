@@ -20,6 +20,7 @@
 #include <map>
 #include <memory>
 #include <string>
+#include <string_view>
 #include <vector>
 
 #include <android-base/unique_fd.h>
@@ -51,6 +52,9 @@ namespace snapshot {
 struct AutoDeleteCowImage;
 struct AutoDeleteSnapshot;
 struct PartitionCowCreator;
+struct AutoDeviceList;
+
+static constexpr const std::string_view kCowGroupName = "cow";
 
 enum class UpdateState : unsigned int {
     // No update or merge is in progress.
@@ -266,9 +270,8 @@ class SnapshotManager final {
     // be mapped with two table entries: a dm-snapshot range covering
     // snapshot_size, and a dm-linear range covering the remainder.
     //
-    // All sizes are specified in bytes, and the device, snapshot and COW partition sizes
-    // must be a multiple of the sector size (512 bytes). COW file size will be rounded up
-    // to the nearest sector.
+    // All sizes are specified in bytes, and the device, snapshot, COW partition and COW file sizes
+    // must be a multiple of the sector size (512 bytes).
     bool CreateSnapshot(LockedFile* lock, const std::string& name, SnapshotStatus status);
 
     // |name| should be the base partition name (e.g. "system_a"). Create the
@@ -286,9 +289,23 @@ class SnapshotManager final {
                      const std::string& cow_device, const std::chrono::milliseconds& timeout_ms,
                      std::string* dev_path);
 
-    // Map a COW image that was previous created with CreateCowImage.
+    // A descriptor of a device-mapper device.
+    struct DeviceDescriptor {
+        // path like /dev/block/dm-1. The path may be filled in, but it may not exist if wait
+        // time is zero.
+        std::string path;
+        // major:minor number. This should be preferred when creating DmTable targets because
+        // path may not exist.
+        std::string number;
+
+        // Return a string that can be used in DmTable.
+        const std::string& GetDeviceString() const;
+    };
+
+    // Map a COW image that was previous created with CreateCowImage. Note that not all fields
+    // in descriptor are filled in even if true is returned.
     bool MapCowImage(const std::string& name, const std::chrono::milliseconds& timeout_ms,
-                     std::string* cow_image_device);
+                     DeviceDescriptor* descriptor);
 
     // Remove the backing copy-on-write image and snapshot states for the named snapshot. The
     // caller is responsible for ensuring that the snapshot is unmapped.
@@ -368,6 +385,18 @@ class SnapshotManager final {
     // Map the base device, COW devices, and snapshot device.
     bool MapPartitionWithSnapshot(LockedFile* lock, CreateLogicalPartitionParams params,
                                   std::string* path);
+
+    // Map the COW devices, including the partition in super and the images.
+    // |params|:
+    //    - |partition_name| should be the name of the top-level partition (e.g. system_b),
+    //            not system_b-cow-img
+    //    - |device_name| and |partition| is ignored
+    //    - |timeout_ms| and the rest is respected
+    // Return the path in |cow_device_path| (e.g. /dev/block/dm-1) and major:minor in
+    // |cow_device_string|
+    bool MapCowDevices(LockedFile* lock, const CreateLogicalPartitionParams& params,
+                       const SnapshotStatus& snapshot_status, AutoDeviceList* created_devices,
+                       DeviceDescriptor* cow_device);
 
     // The reverse of MapPartitionWithSnapshot.
     bool UnmapPartitionWithSnapshot(LockedFile* lock, const std::string& target_partition_name);
