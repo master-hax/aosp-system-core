@@ -191,6 +191,7 @@ bool SnapshotManager::CreateSnapshot(LockedFile* lock, const std::string& name,
             .state = SnapshotState::Created,
             .device_size = device_size,
             .snapshot_size = snapshot_size,
+            .cow_file_size = cow_size,
     };
     if (!WriteSnapshotStatus(lock, name, status)) {
         PLOG(ERROR) << "Could not write snapshot status: " << name;
@@ -1229,7 +1230,7 @@ bool SnapshotManager::ReadSnapshotStatus(LockedFile* lock, const std::string& na
         return false;
     }
     auto pieces = android::base::Split(contents, " ");
-    if (pieces.size() != 5) {
+    if (pieces.size() != 7) {
         LOG(ERROR) << "Invalid status line for snapshot: " << path;
         return false;
     }
@@ -1252,11 +1253,19 @@ bool SnapshotManager::ReadSnapshotStatus(LockedFile* lock, const std::string& na
         LOG(ERROR) << "Invalid snapshot size in status line for: " << path;
         return false;
     }
-    if (!android::base::ParseUint(pieces[3], &status->sectors_allocated)) {
+    if (!android::base::ParseUint(pieces[3], &status->cow_partition_size)) {
+        LOG(ERROR) << "Invalid cow linear size in status line for: " << path;
+        return false;
+    }
+    if (!android::base::ParseUint(pieces[4], &status->cow_file_size)) {
+        LOG(ERROR) << "Invalid cow file size in status line for: " << path;
+        return false;
+    }
+    if (!android::base::ParseUint(pieces[5], &status->sectors_allocated)) {
         LOG(ERROR) << "Invalid snapshot size in status line for: " << path;
         return false;
     }
-    if (!android::base::ParseUint(pieces[4], &status->metadata_sectors)) {
+    if (!android::base::ParseUint(pieces[6], &status->metadata_sectors)) {
         LOG(ERROR) << "Invalid snapshot size in status line for: " << path;
         return false;
     }
@@ -1294,6 +1303,8 @@ bool SnapshotManager::WriteSnapshotStatus(LockedFile* lock, const std::string& n
             to_string(status.state),
             std::to_string(status.device_size),
             std::to_string(status.snapshot_size),
+            std::to_string(status.cow_partition_size),
+            std::to_string(status.cow_file_size),
             std::to_string(status.sectors_allocated),
             std::to_string(status.metadata_sectors),
     };
