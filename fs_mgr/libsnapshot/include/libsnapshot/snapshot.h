@@ -20,6 +20,7 @@
 #include <map>
 #include <memory>
 #include <string>
+#include <string_view>
 #include <vector>
 
 #include <android-base/unique_fd.h>
@@ -51,6 +52,9 @@ namespace snapshot {
 struct AutoDeleteCowImage;
 struct AutoDeleteSnapshot;
 struct PartitionCowCreator;
+struct AutoDevices;
+
+static constexpr const std::string_view kCowGroupName = "cow";
 
 enum class UpdateState : unsigned int {
     // No update or merge is in progress.
@@ -374,6 +378,18 @@ class SnapshotManager final {
     // Map the base device, COW devices, and snapshot device.
     bool MapPartitionWithSnapshot(LockedFile* lock, CreateLogicalPartitionParams params,
                                   std::string* path);
+
+    // Map the COW devices, including the partition in super and the images.
+    // |params|:
+    //    - |partition_name| should be the name of the top-level partition (e.g. system_b),
+    //            not system_b-cow-img
+    //    - |device_name| and |partition| is ignored
+    //    - |timeout_ms| and the rest is respected
+    bool MapCowTree(LockedFile* lock,
+                    const CreateLogicalPartitionParams& params,
+                    const SnapshotStatus& snapshot_status,
+                    AutoDevices* created_devices,
+                    std::string* cow_device);
 
     std::string gsid_dir_;
     std::string metadata_dir_;

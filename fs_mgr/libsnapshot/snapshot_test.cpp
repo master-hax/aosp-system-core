@@ -108,6 +108,7 @@ class SnapshotTest : public ::testing::Test {
         for (const auto& snapshot : snapshots) {
             DeleteSnapshotDevice(snapshot);
             DeleteBackingImage(image_manager_, snapshot + "-cow-img");
+            DeleteBackingImage(image_manager_, snapshot + "-cow-lin");
 
             auto status_file = sm->GetSnapshotStatusFilePath(snapshot);
             android::base::RemoveFileIfExists(status_file);
@@ -216,6 +217,8 @@ class SnapshotTest : public ::testing::Test {
         DeleteDevice(snapshot);
         DeleteDevice(snapshot + "-inner");
         DeleteDevice(snapshot + "-cow-img");
+        DeleteDevice(snapshot + "-cow-lin");
+        DeleteDevice(snapshot + "-base");
     }
     void DeleteDevice(const std::string& device) {
         if (dm_.GetState(device) != DmDeviceState::INVALID) {

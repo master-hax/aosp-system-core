@@ -104,12 +104,16 @@ SnapshotManager::SnapshotManager(IDeviceInfo* device) : device_(device) {
     metadata_dir_ = device_->GetMetadataDir();
 }
 
-[[maybe_unused]] static std::string GetCowName(const std::string& snapshot_name) {
+static std::string GetCowName(const std::string& snapshot_name) {
     return snapshot_name + "-cow";
 }
 
 static std::string GetCowImageDeviceName(const std::string& snapshot_name) {
     return snapshot_name + "-cow-img";
+}
+
+static std::string GetCowPartitionDeviceName(const std::string& snapshot_name) {
+    return snapshot_name + "-cow-lin";
 }
 
 static std::string GetBaseDeviceName(const std::string& partition_name) {
@@ -191,7 +195,7 @@ bool SnapshotManager::CreateSnapshot(LockedFile* lock, const std::string& name,
     CHECK(lock->lock_mode() == LOCK_EX);
     // Sanity check these sizes. Like liblp, we guarantee the partition size
     // is respected, which means it has to be sector-aligned. (This guarantee
-    // is useful for locating avb footers correctly). The COW size, however,
+    // is useful for locating avb footers correctly). The COW file size, however,
     // can be arbitrarily larger than specified, so we can safely round it up.
     if (status.device_size % kSectorSize != 0) {
         LOG(ERROR) << "Snapshot " << name
@@ -201,6 +205,11 @@ bool SnapshotManager::CreateSnapshot(LockedFile* lock, const std::string& name,
     if (status.snapshot_size % kSectorSize != 0) {
         LOG(ERROR) << "Snapshot " << name
                    << " snapshot size is not a multiple of the sector size: " << status.snapshot_size;
+        return false;
+    }
+    if (status.cow_partition_size % kSectorSize != 0) {
+        LOG(ERROR) << "Snapshot " << name
+                   << " cow partition size is not a multiple of the sector size: " << status.cow_partition_size;
         return false;
     }
 
@@ -239,26 +248,7 @@ bool SnapshotManager::CreateCowImage(LockedFile* lock, const std::string& name) 
 
     std::string cow_image_name = GetCowImageDeviceName(name);
     int cow_flags = IImageManager::CREATE_IMAGE_DEFAULT;
-    if (!images_->CreateBackingImage(cow_image_name, status.cow_file_size, cow_flags)) {
-        return false;
-    }
-
-    // when the kernel creates a persistent dm-snapshot, it requires a CoW file
-    // to store the modifications. The kernel interface does not specify how
-    // the CoW is used, and there is no standard associated.
-    // By looking at the current implementation, the CoW file is treated as:
-    // - a _NEW_ snapshot if its first 32 bits are zero, so the newly created
-    // dm-snapshot device will look like a perfect copy of the origin device;
-    // - an _EXISTING_ snapshot if the first 32 bits are equal to a
-    // kernel-specified magic number and the CoW file metadata is set as valid,
-    // so it can be used to resume the last state of a snapshot device;
-    // - an _INVALID_ snapshot otherwise.
-    // To avoid zero-filling the whole CoW file when a new dm-snapshot is
-    // created, here we zero-fill only the first 32 bits. This is a temporary
-    // workaround that will be discussed again when the kernel API gets
-    // consolidated.
-    ssize_t dm_snap_magic_size = 4;  // 32 bit
-    return images_->ZeroFillNewImage(cow_image_name, dm_snap_magic_size);
+    return images_->CreateBackingImage(cow_image_name, status.cow_file_size, cow_flags);
 }
 
 bool SnapshotManager::MapSnapshot(LockedFile* lock, const std::string& name,
@@ -1202,6 +1192,7 @@ bool SnapshotManager::MapPartitionWithSnapshot(LockedFile* lock,
     auto begin = std::chrono::steady_clock::now();
 
     CHECK(lock);
+    if (!EnsureImageManager()) { return false; }
     path->clear();
 
     if (params.GetPartitionName() != params.GetDeviceName()) {
@@ -1285,26 +1276,15 @@ bool SnapshotManager::MapPartitionWithSnapshot(LockedFile* lock,
         return false;
     }
 
-    // If there is a timeout specified, compute the remaining time to call Map* functions.
-    // init calls CreateLogicalAndSnapshotPartitions, which has no timeout specified. Still call
-    // Map* functions in this case.
     auto remaining_time = GetRemainingTime(params.timeout_ms, begin);
     if (remaining_time.count() < 0) return false;
 
-    std::string cow_image_device;
-    if (!MapCowImage(params.GetPartitionName(), remaining_time, &cow_image_device)) {
-        LOG(ERROR) << "Could not map cow image for partition: " << params.GetPartitionName();
+    std::string cow_device;
+    CreateLogicalPartitionParams cow_params = params;
+    cow_params.timeout_ms = remaining_time;
+    if (!MapCowTree(lock, cow_params, *live_snapshot_status, &created_devices, &cow_device)) {
         return false;
     }
-    created_devices.EmplaceBack<AutoUnmapImage>(images_.get(), GetCowImageDeviceName(params.partition_name));
-    if (cow_image_device.empty()) {
-        LOG(ERROR) << "COW image for partition " << params.GetPartitionName()
-                   << " is created but no path is returned";
-        return false;
-    }
-
-    // TODO: map cow linear device here
-    std::string cow_device = cow_image_device;
 
     remaining_time = GetRemainingTime(params.timeout_ms, begin);
     if (remaining_time.count() < 0) return false;
@@ -1316,10 +1296,87 @@ bool SnapshotManager::MapPartitionWithSnapshot(LockedFile* lock,
     }
     // No need to add params.GetPartitionName() to created_devices since it is immediately released.
 
-    created_devices.Release();
-
     LOG(INFO) << "Mapped " << params.GetPartitionName() << " as snapshot device at " << *path;
 
+    return true;
+}
+
+bool SnapshotManager::MapCowTree(LockedFile* lock,
+                                 const CreateLogicalPartitionParams& params,
+                                 const SnapshotStatus& snapshot_status,
+                                 AutoDevices* created_devices,
+                                 std::string* cow_device) {
+    CHECK(lock);
+    auto begin = std::chrono::steady_clock::now();
+
+    auto& dm = DeviceMapper::Instance();
+
+    std::string cow_partition_device;
+    std::string cow_image_device;
+
+    if (snapshot_status.cow_partition_size > 0) {
+        auto remaining_time = GetRemainingTime(params.timeout_ms, begin);
+        if (remaining_time.count() < 0) return false;
+
+        CreateLogicalPartitionParams cow_partition_params = params;
+        cow_partition_params.partition = nullptr;
+        cow_partition_params.partition_name = GetCowPartitionDeviceName(params.GetPartitionName());
+        cow_partition_params.device_name.clear();
+        std::string ignore_path;
+        if (!CreateLogicalPartition(cow_partition_params, &ignore_path)) {
+            LOG(ERROR) << "Could not create COW partition " << cow_partition_params.GetPartitionName();
+            return false;
+        }
+        created_devices->EmplaceBack<AutoUnmapDevice>(&dm, cow_partition_params.partition_name);
+        if (!dm.GetDeviceString(cow_partition_params.GetDeviceName(), &cow_partition_device)) {
+            LOG(ERROR) << "Could not determine major/minor for: " << cow_partition_params.GetDeviceName();
+            return false;
+        }
+    }
+
+    if (snapshot_status.cow_file_size > 0) {
+        auto remaining_time = GetRemainingTime(params.timeout_ms, begin);
+        if (remaining_time.count() < 0) return false;
+
+        if (!MapCowImage(params.GetPartitionName(), remaining_time, &cow_image_device)) {
+            LOG(ERROR) << "Could not map cow image for partition: " << params.GetPartitionName();
+            return false;
+        }
+        created_devices->EmplaceBack<AutoUnmapImage>(images_.get(), GetCowImageDeviceName(params.partition_name));
+        if (cow_image_device.empty()) {
+            LOG(ERROR) << "COW image for partition " << params.GetPartitionName()
+                       << " is created but no path is returned";
+            return false;
+        }
+    }
+
+    if (cow_partition_device.empty()) {
+        *cow_device = std::move(cow_image_device);
+    } else if (cow_image_device.empty()) {
+        *cow_device = std::move(cow_partition_device);
+    } else {
+        auto remaining_time = GetRemainingTime(params.timeout_ms, begin);
+        if (remaining_time.count() < 0) return false;
+
+        auto cow_partition_sectors = snapshot_status.cow_partition_size / kSectorSize;
+        auto cow_image_sectors = snapshot_status.cow_file_size / kSectorSize;
+        auto cow_name = GetCowName(params.GetPartitionName());
+
+        // Our stacking will looks like this:
+        //     [          cow          ]
+        //     [cow partition][cow file]
+        DmTable table;
+        table.Emplace<DmTargetLinear>(0, cow_partition_sectors, cow_partition_device, 0);
+        table.Emplace<DmTargetLinear>(cow_partition_sectors, cow_image_sectors, cow_image_device,
+                                      0);
+        if (!dm.CreateDevice(cow_name, table, cow_device, remaining_time)) {
+            LOG(ERROR) << "Could not create outer COW device: " << cow_name;
+            return false;
+        }
+        created_devices->EmplaceBack<AutoUnmapDevice>(&dm, cow_name);
+    }
+
+    LOG(INFO) << "Mapped COW for " << params.GetPartitionName() << " at " << *cow_device;
     return true;
 }
 
@@ -1599,6 +1656,22 @@ bool SnapshotManager::CreateUpdateSnapshots(android::fs_mgr::MetadataBuilder* ta
         suffixed_cow_sizes[name + target_suffix] = size;
     }
 
+    target_metadata->RemoveGroupAndPartitions(kCowGroupName);
+    if (!target_metadata->AddGroup(kCowGroupName, 0)) {
+        LOG(ERROR) << "Cannot add group " << kCowGroupName;
+        return false;
+    }
+
+    // Check that all these metadata is not retrofit dynamic partitions. Snapshots on
+    // devices with retrofit dynamic partitions does not make sense.
+    // This ensures that current_metadata->GetFreeRegions() uses the same device
+    // indices as target_metadata (i.e. 0 -> "super").
+    // This is also assumed in MapCowTree() call below.
+    CHECK(current_metadata->GetBlockDevicePartitionName(0) == LP_METADATA_DEFAULT_PARTITION_NAME &&
+          target_metadata->GetBlockDevicePartitionName(0) == LP_METADATA_DEFAULT_PARTITION_NAME);
+
+    std::map<std::string, SnapshotStatus> all_snapshot_params;
+
     // In case of error, automatically delete devices that are created along the way.
     // Note that "lock" is destroyed after "created_devices", so it is safe to use |lock| for
     // these devices.
@@ -1623,6 +1696,30 @@ bool SnapshotManager::CreateUpdateSnapshots(android::fs_mgr::MetadataBuilder* ta
         }
         created_devices.EmplaceBack<AutoDeleteSnapshot>(this, lock.get(), target_partition->name());
 
+
+        // Create the COW partition. That is, use any remaining free space in super partition before
+        // creating the COW images.
+        if (snapshot_params->cow_partition_size > 0) {
+            CHECK(snapshot_params->cow_partition_size % kSectorSize == 0)
+                << "cow_partition_size == " << snapshot_params->cow_partition_size
+                << " is not a multiple of sector size " << kSectorSize;
+            auto cow_partition = target_metadata->AddPartition(
+                    GetCowPartitionDeviceName(target_partition->name()), kCowGroupName, 0 /* flags */);
+            if (cow_partition == nullptr) {
+                return LoopDirective::BREAK;
+            }
+
+            if (!target_metadata->ResizePartition(cow_partition,
+                                                  snapshot_params->cow_partition_size,
+                                                  current_metadata->GetFreeRegions())) {
+                LOG(ERROR) << "Cannot create COW partition on metadata with size "
+                           << snapshot_params->cow_partition_size;
+                return LoopDirective::BREAK;
+            }
+            // Only the in-memory target_metadata is modified; nothing to clean up if there is an
+            // error in the future.
+        }
+
         // Delete any existing backing COW image before re-creating one.
         if (!DeleteCowImage(lock.get(), target_partition->name())) {
             LOG(ERROR) << "Cannot delete backing COW image before creating a new one for partition "
@@ -1638,15 +1735,70 @@ bool SnapshotManager::CreateUpdateSnapshots(android::fs_mgr::MetadataBuilder* ta
             created_devices.EmplaceBack<AutoDeleteCowImage>(this, lock.get(), target_partition->name());
         }
 
+        all_snapshot_params[target_partition->name()] = std::move(*snapshot_params);
+
         LOG(INFO) << "Successfully created snapshot for " << target_partition->name();
         return LoopDirective::CONTINUE;
+    });
+
+    if (!res) {
+        LOG(ERROR) << "Failed to create all snapshots for update.";
+        return false;
+    }
+
+    auto exported_target_metadata = target_metadata->Export();
+    CreateLogicalPartitionParams cow_params {
+        .block_device = LP_METADATA_DEFAULT_PARTITION_NAME,
+        .metadata = exported_target_metadata.get(),
+        .timeout_ms = std::chrono::milliseconds::max(),
+    };
+    res = ForEachPartition(target_metadata, target_suffix, [&](auto* target_partition) {
+        AutoDevices created_devices_for_cow;
+        std::string cow_device;
+
+        auto it = all_snapshot_params.find(target_partition->name());
+        CHECK(it != all_snapshot_params.end()) << target_partition->name();
+        cow_params.partition_name = target_partition->name();
+        if (!MapCowTree(lock.get(), cow_params, it->second, &created_devices_for_cow, &cow_device)) {
+            return LoopDirective::BREAK;
+        }
+
+        // When the kernel creates a persistent dm-snapshot, it requires a CoW file
+        // to store the modifications. The kernel interface does not specify how
+        // the CoW is used, and there is no standard associated.
+        // By looking at the current implementation, the CoW file is treated as:
+        // - a _NEW_ snapshot if its first 32 bits are zero, so the newly created
+        // dm-snapshot device will look like a perfect copy of the origin device;
+        // - an _EXISTING_ snapshot if the first 32 bits are equal to a
+        // kernel-specified magic number and the CoW file metadata is set as valid,
+        // so it can be used to resume the last state of a snapshot device;
+        // - an _INVALID_ snapshot otherwise.
+        // To avoid zero-filling the whole CoW file when a new dm-snapshot is
+        // created, here we zero-fill only the first 32 bits. This is a temporary
+        // workaround that will be discussed again when the kernel API gets
+        // consolidated.
+        constexpr ssize_t dm_snap_magic_size = 4;  // 32 bit
+        char zeros[dm_snap_magic_size] = {0};
+        unique_fd fd(open(cow_device.c_str(), O_WRONLY | O_BINARY));
+        if (fd < 0) {
+            PLOG(ERROR) << "Can't open COW device for " << target_partition->name() << ": " << cow_device;
+            return LoopDirective::BREAK;
+        }
+
+        LOG(INFO) << "Zero-filling COW device for " << target_partition->name() << ": "
+                  << cow_device;
+        if (!android::base::WriteFully(fd, zeros, dm_snap_magic_size)) {
+            PLOG(ERROR) << "Can't zero-fill COW device for " << target_partition->name() << ": " << cow_device;
+            return LoopDirective::BREAK;
+        }
+
+        return LoopDirective::CONTINUE;
+        // Let destructor of created_devices_for_cow to unmap the COW devices.
     });
 
     if (res) {
         created_devices.Release();
         LOG(INFO) << "Successfully created all snapshots for target slot " << target_suffix;
-    } else {
-        LOG(ERROR) << "Failed to create all snapshots for update.";
     }
 
     return res;
@@ -1672,6 +1824,12 @@ bool SnapshotManager::UnmapUpdateSnapshot(const std::string& target_partition_na
     }
 
     auto& dm = DeviceMapper::Instance();
+
+    std::string cow_partition_name = GetCowPartitionDeviceName(target_partition_name);
+    if (!dm.DeleteDeviceIfExists(cow_partition_name)) {
+        LOG(ERROR) << "Cannot delete COW partition: " << cow_partition_name;
+        return false;
+    }
 
     std::string base_name = GetBaseDeviceName(target_partition_name);
     if (!dm.DeleteDeviceIfExists(base_name)) {
