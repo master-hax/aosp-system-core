@@ -28,10 +28,12 @@
 #include <android-base/logging.h>
 #include <android-base/strings.h>
 #include <ext4_utils/ext4_utils.h>
+#include <fs_mgr.h>
 #include <fs_mgr_overlayfs.h>
 #include <fstab/fstab.h>
 #include <liblp/builder.h>
 #include <liblp/liblp.h>
+#include <libvbmeta/libvbmeta.h>
 #include <sparse/sparse.h>
 
 #include "fastboot_device.h"
@@ -134,6 +136,19 @@ int Flash(FastbootDevice* device, const std::string& partition_name) {
     return FlashBlockDevice(handle.fd(), data);
 }
 
+bool InitializeVBMetaTable(FastbootDevice* device) {
+    std::string slot_suffix = device->GetCurrentSlot();
+    uint32_t slot_number = SlotNumberForSlotSuffix(slot_suffix);
+    std::string vbmeta_table_name = fs_mgr_get_vbmeta_table_partition_name(slot_number);
+
+    if (!FindPhysicalPartition(vbmeta_table_name)) {
+        LOG(INFO) << "partition of vbmeta table " << vbmeta_table_name << " doesn't exist";
+        return true;
+    }
+
+    return InitVBMetaTablePartition(vbmeta_table_name);
+}
+
 bool UpdateSuper(FastbootDevice* device, const std::string& super_name, bool wipe) {
     std::vector<char> data = std::move(device->download_data());
     if (data.empty()) {
@@ -159,6 +174,11 @@ bool UpdateSuper(FastbootDevice* device, const std::string& super_name, bool wip
     if (wipe || !old_metadata) {
         if (!FlashPartitionTable(super_name, *new_metadata.get())) {
             return device->WriteFail("Unable to flash new partition table");
+        }
+        // The size of partition recorded in new_metadata(super_empty.img) is always zero,
+        // so we clean up and initialize the vbmeta table.
+        if (!InitializeVBMetaTable(device)) {
+            return device->WriteFail("Unable to initialize the vbmeta table");
         }
         fs_mgr_overlayfs_teardown();
         return device->WriteOkay("Successfully flashed partition table");
@@ -194,6 +214,40 @@ bool UpdateSuper(FastbootDevice* device, const std::string& super_name, bool wip
     if (!UpdateAllPartitionMetadata(device, super_name, *new_metadata.get())) {
         return device->WriteFail("Unable to write new partition table");
     }
+    // partitions_to_keep only keeps partitions not in the current slot
+    // and the size of partition recorded in new_metadata(super_empty.img) is always zero,
+    // so we clean up and initialize the vbmeta table.
+    if (!InitializeVBMetaTable(device)) {
+        return device->WriteFail("Unable to initialize the vbmeta table");
+    }
     fs_mgr_overlayfs_teardown();
     return device->WriteOkay("Successfully updated partition table");
+}
+
+bool UpdateVBMetaTable(FastbootDevice* device, const std::string& partition_name,
+                       const void* vbmeta_table_buffer) {
+    std::string slot_suffix = device->GetCurrentSlot();
+    uint32_t slot_number = SlotNumberForSlotSuffix(slot_suffix);
+    std::string vbmeta_table_name = fs_mgr_get_vbmeta_table_partition_name(slot_number);
+
+    if (!FindPhysicalPartition(vbmeta_table_name)) {
+        LOG(INFO) << "partition of vbmeta table " << vbmeta_table_name << " doesn't exist";
+        return true;
+    }
+
+    if (slot_suffix.empty() || GetPartitionSlotSuffix(partition_name) != slot_suffix) {
+        return true;
+    }
+
+    std::string super_name = fs_mgr_get_super_partition_name(slot_number);
+    std::unique_ptr<LpMetadata> metadata = ReadMetadata(super_name, slot_number);
+
+    for (const auto& partition : metadata->partitions) {
+        if (GetPartitionName(partition) == partition_name) {
+            return UpdateVBMetaTablePartition(super_name, vbmeta_table_name, slot_suffix,
+                                              *metadata.get(), partition, vbmeta_table_buffer);
+        }
+    }
+
+    return true;
 }

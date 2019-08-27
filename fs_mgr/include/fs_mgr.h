@@ -94,6 +94,12 @@ int fs_mgr_setup_verity(android::fs_mgr::FstabEntry* fstab, bool wait_for_verity
 // returned. Otherwise, it will use the current slot.
 std::string fs_mgr_get_super_partition_name(int slot = -1);
 
+// Return the name of the vbmeta table partition if it exists.
+// If a slot number is specified, the vbmeta table partition
+// for the corresponding metadata slot will be returned.
+// Otherwise, it will use the current slot.
+std::string fs_mgr_get_vbmeta_table_partition_name(int slot = -1);
+
 enum FsMgrUmountStatus : int {
     SUCCESS = 0,
     ERROR_UNKNOWN = 1 << 0,

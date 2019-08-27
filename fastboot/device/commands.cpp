@@ -29,6 +29,7 @@
 #include <ext4_utils/wipe.h>
 #include <fs_mgr.h>
 #include <fs_mgr/roots.h>
+#include <libavb/libavb.h>
 #include <libgsi/libgsi.h>
 #include <liblp/builder.h>
 #include <liblp/liblp.h>
@@ -204,10 +205,25 @@ bool FlashHandler(FastbootDevice* device, const std::vector<std::string>& args) 
                                    "Flashing is not allowed on locked devices");
     }
 
+    std::unique_ptr<uint8_t[]> vbmeta_table_buffer = std::make_unique<uint8_t[]>(AVB_FOOTER_SIZE);
+    uint64_t data_size = device->download_data().size();
+    if (data_size >= AVB_FOOTER_SIZE) {
+        memcpy(vbmeta_table_buffer.get(),
+               &device->download_data()[device->download_data().size() - AVB_FOOTER_SIZE],
+               AVB_FOOTER_SIZE);
+    }
+
     int ret = Flash(device, args[1]);
     if (ret < 0) {
         return device->WriteStatus(FastbootResult::FAIL, strerror(-ret));
     }
+
+    if (data_size >= AVB_FOOTER_SIZE) {
+        if (!UpdateVBMetaTable(device, args[1] /* partition_name */, vbmeta_table_buffer.get())) {
+            return device->WriteFail("Couldn't update vbmeta table");
+        }
+    }
+
     return device->WriteStatus(FastbootResult::OKAY, "Flashing succeeded");
 }
 
@@ -404,6 +420,10 @@ bool DeletePartitionHandler(FastbootDevice* device, const std::vector<std::strin
     }
 
     std::string partition_name = args[1];
+
+    if (!UpdateVBMetaTable(device, partition_name, nullptr)) {
+        return device->WriteFail("Couldn't update vbmeta table");
+    }
 
     PartitionBuilder builder(device, partition_name);
     if (!builder.Valid()) {

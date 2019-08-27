@@ -19,6 +19,7 @@
 #include <string>
 
 #include <android-base/result.h>
+#include <libvbmeta/libvbmeta.h>
 
 #include "vbmeta_table_format.h"
 
