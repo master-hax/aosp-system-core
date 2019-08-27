@@ -162,8 +162,7 @@ std::optional<SnapshotManager::SnapshotStatus> PartitionCowCreator::operator()()
         cow_size = RoundUp(ret.snapshot_size * kCowEstimateFactor, fs_mgr::kDefaultBlockSize);
     }
 
-    // TODO: create COW partition in target_metadata to save space.
-    ret.cow_partition_size = 0;
+    ret.cow_partition_size = std::min(target_metadata->AllocatableSpace(), *cow_size);
     ret.cow_file_size = (*cow_size) - ret.cow_partition_size;
 
     return ret;

@@ -100,12 +100,16 @@ SnapshotManager::SnapshotManager(IDeviceInfo* device) : device_(device) {
     metadata_dir_ = device_->GetMetadataDir();
 }
 
-[[maybe_unused]] static std::string GetCowName(const std::string& snapshot_name) {
+static std::string GetCowName(const std::string& snapshot_name) {
     return snapshot_name + "-cow";
 }
 
 static std::string GetCowImageDeviceName(const std::string& snapshot_name) {
     return snapshot_name + "-cow-img";
+}
+
+static std::string GetCowPartitionDeviceName(const std::string& snapshot_name) {
+    return snapshot_name + "-cow-lin";
 }
 
 static std::string GetBaseDeviceName(const std::string& partition_name) {
@@ -180,7 +184,7 @@ bool SnapshotManager::CreateSnapshot(LockedFile* lock, const std::string& name,
     CHECK(lock->lock_mode() == LOCK_EX);
     // Sanity check these sizes. Like liblp, we guarantee the partition size
     // is respected, which means it has to be sector-aligned. (This guarantee
-    // is useful for locating avb footers correctly). The COW size, however,
+    // is useful for locating avb footers correctly). The COW file size, however,
     // can be arbitrarily larger than specified, so we can safely round it up.
     if (status.device_size % kSectorSize != 0) {
         LOG(ERROR) << "Snapshot " << name
@@ -190,6 +194,11 @@ bool SnapshotManager::CreateSnapshot(LockedFile* lock, const std::string& name,
     if (status.snapshot_size % kSectorSize != 0) {
         LOG(ERROR) << "Snapshot " << name
                    << " snapshot size is not a multiple of the sector size: " << status.snapshot_size;
+        return false;
+    }
+    if (status.cow_partition_size % kSectorSize != 0) {
+        LOG(ERROR) << "Snapshot " << name
+                   << " cow partition size is not a multiple of the sector size: " << status.cow_partition_size;
         return false;
     }
 
@@ -1093,6 +1102,7 @@ bool SnapshotManager::MapSnapshotTree(
     auto begin = std::chrono::steady_clock::now();
 
     CHECK(lock);
+    if (!EnsureImageManager()) { return false; }
     path->clear();
 
     CreateLogicalPartitionParams::OwnedData params_owned_data;
@@ -1107,13 +1117,13 @@ bool SnapshotManager::MapSnapshotTree(
     auto file_path = GetSnapshotStatusFilePath(params.partition_name);
 
     bool has_live_snapshot = false;
+    SnapshotStatus status;
     if (access(file_path.c_str(), F_OK) != 0) {
         if (errno != ENOENT) {
             PLOG(INFO) << "Can't access " << file_path;
             return false;
         }
     } else {
-        SnapshotStatus status;
         if (!ReadSnapshotStatus(lock, params.partition_name, &status)) {
             return false;
         }
@@ -1147,17 +1157,69 @@ bool SnapshotManager::MapSnapshotTree(
     // If there is a timeout specified, compute the remaining time to call Map* functions.
     // init calls CreateLogicalAndSnapshotPartitions, which has no timeout specified. Still call
     // Map* functions in this case.
-    auto remaining_time = GetRemainingTime(params.timeout_ms, begin);
-    if (remaining_time.count() < 0) return false;
+    std::chrono::milliseconds remaining_time;
 
+    std::string cow_partition_device;
     std::string cow_image_device;
-    if (!MapCowImage(params.partition_name, remaining_time, &cow_image_device)) {
-        LOG(ERROR) << "Could not map cow image for partition: " << params.partition_name;
-        return false;
+
+    if (status.cow_partition_size > 0) {
+        remaining_time = GetRemainingTime(params.timeout_ms, begin);
+        if (remaining_time.count() < 0) return false;
+
+        CreateLogicalPartitionParams cow_partition_params = params;
+        cow_partition_params.partition = nullptr;
+        cow_partition_params.partition_name = GetCowPartitionDeviceName(params.partition_name);
+        if (!CreateLogicalPartition(params, &cow_partition_device)) {
+            LOG(ERROR) << "Could not create COW partition " << cow_partition_params.partition_name;
+            return false;
+        }
+        if (cow_partition_device.empty()) {
+            LOG(ERROR) << "COW partition " << cow_partition_params.GetDeviceName()
+                       << " is created but no path is returned";
+            return false;
+        }
     }
 
-    // TODO: map cow linear device here
-    std::string cow_device = cow_image_device;
+    if (status.cow_file_size > 0) {
+        remaining_time = GetRemainingTime(params.timeout_ms, begin);
+        if (remaining_time.count() < 0) return false;
+
+        if (!MapCowImage(params.partition_name, remaining_time, &cow_image_device)) {
+            LOG(ERROR) << "Could not map cow image for partition: " << params.partition_name;
+            return false;
+        }
+        if (cow_image_device.empty()) {
+            LOG(ERROR) << "COW image for partition " << params.partition_name
+                       << " is created but no path is returned";
+            return false;
+        }
+    }
+
+    std::string cow_device;
+    if (cow_partition_device.empty()) {
+        cow_device = std::move(cow_image_device);
+    } else if (cow_image_device.empty()) {
+        cow_device = std::move(cow_partition_device);
+    } else {
+        remaining_time = GetRemainingTime(params.timeout_ms, begin);
+        if (remaining_time.count() < 0) return false;
+
+        auto cow_partition_sectors = status.cow_partition_size / kSectorSize;
+        auto cow_image_sectors = status.cow_file_size / kSectorSize;
+        auto cow_name = GetCowName(params.partition_name);
+
+        // Our stacking will looks like this:
+        //     [          cow          ]
+        //     [cow partition][cow file]
+        DmTable table;
+        table.Emplace<DmTargetLinear>(0, cow_partition_sectors, cow_partition_device, 0);
+        table.Emplace<DmTargetLinear>(cow_partition_sectors, cow_image_sectors, cow_image_device,
+                                      0);
+        if (!dm.CreateDevice(cow_name, table, &cow_device, remaining_time)) {
+            LOG(ERROR) << "Could not create outer COW device: " << cow_name;
+            return false;
+        }
+    }
 
     remaining_time = GetRemainingTime(params.timeout_ms, begin);
     if (remaining_time.count() < 0) return false;
@@ -1168,7 +1230,6 @@ bool SnapshotManager::MapSnapshotTree(
     }
 
     LOG(INFO) << "Created " << params.partition_name << " as snapshot device at " << *path;
-
     return true;
 }
 
@@ -1448,6 +1509,8 @@ bool SnapshotManager::CreateUpdateSnapshots(android::fs_mgr::MetadataBuilder* ta
         suffixed_cow_sizes[name + target_suffix] = size;
     }
 
+    target_metadata->RemoveGroupAndPartitions(kCowGroupName);
+
     bool res = ForEachPartition(target_metadata, target_suffix, [&](auto* target_partition) {
         std::optional<uint64_t> cow_size = std::nullopt;
         auto it = suffixed_cow_sizes.find(target_partition->name());
@@ -1458,6 +1521,22 @@ bool SnapshotManager::CreateUpdateSnapshots(android::fs_mgr::MetadataBuilder* ta
                                     current_metadata, current_suffix, cow_size}();
         if (!snapshot_params.has_value()) {
             return LoopDirective::BREAK;
+        }
+
+        if (snapshot_params->cow_partition_size > 0) {
+            CHECK(snapshot_params->cow_partition_size % kSectorSize == 0)
+                << "cow_partition_size == " << snapshot_params->cow_partition_size
+                << " is not a multiple of sector size " << kSectorSize;
+            auto cow_partition = target_metadata->AddPartition(
+                    GetCowPartitionDeviceName(target_partition->name()), kCowGroupName, 0 /* flags */);
+            if (cow_partition == nullptr) {
+                return LoopDirective::BREAK;
+            }
+            if (!target_metadata->ResizePartition(cow_partition, snapshot_params->cow_partition_size)) {
+                LOG(ERROR) << "Cannot create COW partition on metadata with size "
+                           << snapshot_params->cow_partition_size;
+                return LoopDirective::BREAK;
+            }
         }
 
         if (snapshot_params->cow_file_size > 0) {
@@ -1473,6 +1552,7 @@ bool SnapshotManager::CreateUpdateSnapshots(android::fs_mgr::MetadataBuilder* ta
         return LoopDirective::CONTINUE;
     });
 
+    // TODO: cleanup if failed.
     return res;
 }
 
@@ -1505,6 +1585,13 @@ bool SnapshotManager::UnmapUpdateSnapshot(const std::string& target_partition_na
     }
 
     auto& dm = DeviceMapper::Instance();
+
+    std::string cow_partition_name = GetCowPartitionDeviceName(target_partition_name);
+    if (dm.DeleteDeviceIfExists(cow_partition_name)) {
+        LOG(ERROR) << "Cannot delete COW partition: " << cow_partition_name;
+        return false;
+    }
+
     std::string base_name = GetBaseDeviceName(target_partition_name);
     if (dm.DeleteDeviceIfExists(base_name)) {
         LOG(ERROR) << "Cannot delete base device: " << base_name;

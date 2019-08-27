@@ -20,6 +20,7 @@
 #include <map>
 #include <memory>
 #include <string>
+#include <string_view>
 #include <vector>
 
 #include <android-base/unique_fd.h>
@@ -49,6 +50,8 @@ class IPartitionOpener;
 namespace snapshot {
 
 struct PartitionCowCreator;
+
+static constexpr const std::string_view kCowGroupName = "cow";
 
 enum class UpdateState : unsigned int {
     // No update or merge is in progress.
@@ -252,8 +255,9 @@ class SnapshotManager final {
     // be mapped with two table entries: a dm-snapshot range covering
     // snapshot_size, and a dm-linear range covering the remainder.
     //
-    // All sizes are specified in bytes, and the device and snapshot sizes
-    // must be a multiple of the sector size (512 bytes).
+    // All sizes are specified in bytes, and the device, snapshot and COW partition sizes
+    // must be a multiple of the sector size (512 bytes). COW file size will be rounded up
+    // to the nearest sector.
     bool CreateSnapshot(LockedFile* lock, const std::string& name, SnapshotStatus status);
 
     // |name| should be the base partition name (e.g. "system_a").

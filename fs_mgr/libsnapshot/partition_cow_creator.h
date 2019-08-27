@@ -21,6 +21,8 @@
 
 #include <liblp/builder.h>
 
+#include <libsnapshot/snapshot.h>
+
 namespace android {
 namespace snapshot {
 
