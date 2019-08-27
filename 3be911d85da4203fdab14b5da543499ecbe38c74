@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d08584d8_886522e1",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 861,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2019-08-27T22:15:25Z",
+      "side": 1,
+      "message": "wait, so when \u0027init\u0027 stage gets hit, this will also check the property is set? The property trigger will then be a no-op? Sweet!",
+      "range": {
+        "startLine": 861,
+        "startChar": 3,
+        "endLine": 861,
+        "endChar": 7
+      },
+      "revId": "3be911d85da4203fdab14b5da543499ecbe38c74",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
