@@ -1,0 +1,124 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6d571117_7301f401",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 362,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-08-27T23:20:50Z",
+      "side": 1,
+      "message": "const std::string\u0026",
+      "range": {
+        "startLine": 362,
+        "startChar": 4,
+        "endLine": 362,
+        "endChar": 15
+      },
+      "revId": "a61f55e167152953cbe1b361e571ff537e3b9332",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "379083ed_b9fd83d3",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 364,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-08-27T23:20:50Z",
+      "side": 1,
+      "message": "I know the rest of the file doesn\u0027t do this, but let\u0027s go with SetupWithPrefix(), etc for the functions.  At least the code in classes should be formatted right.",
+      "range": {
+        "startLine": 364,
+        "startChar": 9,
+        "endLine": 364,
+        "endChar": 26
+      },
+      "revId": "a61f55e167152953cbe1b361e571ff537e3b9332",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "641040c0_3c1f3c01",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 365,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-08-27T23:20:50Z",
+      "side": 1,
+      "message": "It\u0027s not actually undefined though, is it?",
+      "revId": "a61f55e167152953cbe1b361e571ff537e3b9332",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c756bda0_f969f0d4",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 391,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-08-27T23:20:50Z",
+      "side": 1,
+      "message": "path_",
+      "range": {
+        "startLine": 391,
+        "startChar": 16,
+        "endLine": 391,
+        "endChar": 21
+      },
+      "revId": "a61f55e167152953cbe1b361e571ff537e3b9332",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c13dde95_a98a54c0",
+        "filename": "init/fscrypt_init_extensions.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-08-27T23:20:50Z",
+      "side": 1,
+      "message": "Either NONE or kNone\n\nhttps://google.github.io/styleguide/cppguide.html#Enumerator_Names",
+      "revId": "a61f55e167152953cbe1b361e571ff537e3b9332",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "16889290_cb905486",
+        "filename": "init/fscrypt_init_extensions.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-08-27T23:20:50Z",
+      "side": 1,
+      "message": "While we\u0027re here we should make these FscryptLookupAction() and FscryptSetDirectoryPolicy() too.  I should have said something when moving the file to init.",
+      "revId": "a61f55e167152953cbe1b361e571ff537e3b9332",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
