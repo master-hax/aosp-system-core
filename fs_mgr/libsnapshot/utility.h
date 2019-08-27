@@ -106,5 +106,8 @@ enum class LoopDirective { BREAK, CONTINUE };
 bool ForEachPartition(fs_mgr::MetadataBuilder* builder, const std::string& suffix,
                       const std::function<LoopDirective(fs_mgr::Partition*)>& func);
 
+// Initialize a device before using it as the COW device for a dm-snapshot device.
+bool InitializeCow(const std::string& device);
+
 }  // namespace snapshot
 }  // namespace android

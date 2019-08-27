@@ -44,6 +44,7 @@ struct PartitionCowCreator {
 
     struct Return {
         SnapshotManager::SnapshotStatus snapshot_status;
+        std::vector<android::fs_mgr::Interval> cow_partition_usable_regions;
     };
 
     std::optional<Return> operator()();
