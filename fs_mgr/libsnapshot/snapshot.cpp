@@ -198,7 +198,7 @@ bool SnapshotManager::CreateSnapshot(LockedFile* lock, const std::string& name,
     }
 
     auto cow_name = GetCowName(name);
-    int cow_flags = IImageManager::CREATE_IMAGE_ZERO_FILL;
+    int cow_flags = IImageManager::CREATE_IMAGE_RESET_SNAP;
     return images_->CreateBackingImage(cow_name, cow_size, cow_flags);
 }
 
