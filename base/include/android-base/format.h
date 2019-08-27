@@ -18,8 +18,8 @@
 
 // We include fmtlib here as an alias, since libbase will have fmtlib statically linked already.
 // It is accessed through its normal fmt:: namespace.
+#include <fmt/chrono.h>
 #include <fmt/core.h>
 #include <fmt/format.h>
 #include <fmt/ostream.h>
 #include <fmt/printf.h>
-#include <fmt/time.h>
