@@ -201,57 +201,6 @@ class SnapshotManager final {
     std::unique_ptr<LockedFile> OpenFile(const std::string& file, int open_flags, int lock_flags);
     bool Truncate(LockedFile* file);
 
-    // Create a new snapshot record. This creates the backing COW store and
-    // persists information needed to map the device. The device can be mapped
-    // with MapSnapshot().
-    //
-    // |device_size| should be the size of the base_device that will be passed
-    // via MapDevice(). |snapshot_size| should be the number of bytes in the
-    // base device, starting from 0, that will be snapshotted. The cow_size
-    // should be the amount of space that will be allocated to store snapshot
-    // deltas.
-    //
-    // If |snapshot_size| < device_size, then the device will always
-    // be mapped with two table entries: a dm-snapshot range covering
-    // snapshot_size, and a dm-linear range covering the remainder.
-    //
-    // All sizes are specified in bytes, and the device and snapshot sizes
-    // must be a multiple of the sector size (512 bytes). |cow_size| will
-    // be rounded up to the nearest sector.
-    bool CreateSnapshot(LockedFile* lock, const std::string& name, uint64_t device_size,
-                        uint64_t snapshot_size, uint64_t cow_size);
-
-    // Map a snapshot device that was previously created with CreateSnapshot.
-    // If a merge was previously initiated, the device-mapper table will have a
-    // snapshot-merge target instead of a snapshot target. If the timeout
-    // parameter greater than zero, this function will wait the given amount
-    // of time for |dev_path| to become available, and fail otherwise. If
-    // timeout_ms is 0, then no wait will occur and |dev_path| may not yet
-    // exist on return.
-    bool MapSnapshot(LockedFile* lock, const std::string& name, const std::string& base_device,
-                     const std::chrono::milliseconds& timeout_ms, std::string* dev_path);
-
-    // Remove the backing copy-on-write image for the named snapshot. The
-    // caller is responsible for ensuring that the snapshot is unmapped.
-    bool DeleteSnapshot(LockedFile* lock, const std::string& name);
-
-    // Unmap a snapshot device previously mapped with MapSnapshotDevice().
-    bool UnmapSnapshot(LockedFile* lock, const std::string& name);
-
-    // Unmap and remove all known snapshots.
-    bool RemoveAllSnapshots(LockedFile* lock);
-
-    // List the known snapshot names.
-    bool ListSnapshots(LockedFile* lock, std::vector<std::string>* snapshots);
-
-    // Interact with /metadata/ota/state.
-    std::unique_ptr<LockedFile> OpenStateFile(int open_flags, int lock_flags);
-    std::unique_ptr<LockedFile> LockShared();
-    std::unique_ptr<LockedFile> LockExclusive();
-    UpdateState ReadUpdateState(LockedFile* file);
-    bool WriteUpdateState(LockedFile* file, UpdateState state);
-    std::string GetStateFilePath() const;
-
     enum class SnapshotState : int { Created, Merging, MergeCompleted };
     static std::string to_string(SnapshotState state);
 
@@ -267,6 +216,70 @@ class SnapshotManager final {
         uint64_t sectors_allocated = 0;
         uint64_t metadata_sectors = 0;
     };
+
+    // Create a new snapshot record. This creates the backing COW store and
+    // persists information needed to map the device. The device can be mapped
+    // with MapSnapshot().
+    //
+    // |status|.device_size should be the size of the base_device that will be passed
+    // via MapDevice(). |status|.snapshot_size should be the number of bytes in the
+    // base device, starting from 0, that will be snapshotted.
+    //
+    // If |status|.snapshot_size < |status|.device_size, then the device will always
+    // be mapped with two table entries: a dm-snapshot range covering
+    // snapshot_size, and a dm-linear range covering the remainder.
+    //
+    // All sizes are specified in bytes, and the device and snapshot sizes
+    // must be a multiple of the sector size (512 bytes).
+    bool CreateSnapshot(LockedFile* lock, const std::string& name, SnapshotStatus status);
+
+    // |name| should be the base partition name (e.g. "system_a").
+    // The cow_size should be the amount of space that will be allocated to store snapshot deltas.
+    // |cow_size| are specified in bytes and will be rounded up to the nearest sector.
+    bool CreateCowImage(LockedFile* lock, const std::string& name, uint64_t cow_size);
+
+    // Map a snapshot device that was previously created with CreateSnapshot.
+    // If a merge was previously initiated, the device-mapper table will have a
+    // snapshot-merge target instead of a snapshot target. If the timeout
+    // parameter greater than zero, this function will wait the given amount
+    // of time for |dev_path| to become available, and fail otherwise. If
+    // timeout_ms is 0, then no wait will occur and |dev_path| may not yet
+    // exist on return.
+    bool MapSnapshot(LockedFile* lock, const std::string& name, const std::string& base_device,
+                     const std::string& cow_device, const std::chrono::milliseconds& timeout_ms,
+                     std::string* dev_path);
+
+    // Map a COW image that was previous created with CreateCowImage.
+    bool MapCowImage(const std::string& name, const std::chrono::milliseconds& timeout_ms,
+                     std::string* cow_image_device);
+
+    // Remove snapshot states. The caller is responsible for ensuring that the
+    // snapshot is unmapped.
+    bool DeleteSnapshot(LockedFile* lock, const std::string& name);
+
+    // Remove the backing copy-on-write image for the named snapshot. The
+    // caller is responsible for ensuring that the snapshot is unmapped.
+    bool DeleteCowImage(LockedFile* lock, const std::string& name);
+
+    // Unmap a snapshot device previously mapped with MapSnapshotDevice().
+    bool UnmapSnapshot(LockedFile* lock, const std::string& name);
+
+    // Unmap a COW image device previously mapped with MapCowImage().
+    bool UnmapCowImage(const std::string& name);
+
+    // Unmap and remove all known snapshots.
+    bool RemoveAllSnapshots(LockedFile* lock);
+
+    // List the known snapshot names.
+    bool ListSnapshots(LockedFile* lock, std::vector<std::string>* snapshots);
+
+    // Interact with /metadata/ota/state.
+    std::unique_ptr<LockedFile> OpenStateFile(int open_flags, int lock_flags);
+    std::unique_ptr<LockedFile> LockShared();
+    std::unique_ptr<LockedFile> LockExclusive();
+    UpdateState ReadUpdateState(LockedFile* file);
+    bool WriteUpdateState(LockedFile* file, UpdateState state);
+    std::string GetStateFilePath() const;
 
     // Helpers for merging.
     bool SwitchSnapshotToMerge(LockedFile* lock, const std::string& name);

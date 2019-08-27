@@ -93,8 +93,12 @@ SnapshotManager::SnapshotManager(IDeviceInfo* device) : device_(device) {
     metadata_dir_ = device_->GetMetadataDir();
 }
 
-static std::string GetCowName(const std::string& snapshot_name) {
+[[maybe_unused]] static std::string GetCowName(const std::string& snapshot_name) {
     return snapshot_name + "-cow";
+}
+
+static std::string GetCowImageDeviceName(const std::string& snapshot_name) {
+    return snapshot_name + "-cow-img";
 }
 
 static std::string GetBaseDeviceName(const std::string& partition_name) {
@@ -157,54 +161,55 @@ bool SnapshotManager::FinishedSnapshotWrites() {
     return WriteUpdateState(lock.get(), UpdateState::Unverified);
 }
 
-bool SnapshotManager::CreateSnapshot(LockedFile* lock, const std::string& name,
-                                     uint64_t device_size, uint64_t snapshot_size,
-                                     uint64_t cow_size) {
-    CHECK(lock);
-    if (!EnsureImageManager()) return false;
+static inline uint64_t RoundUp(uint64_t value, uint64_t block) {
+    value += block - 1;
+    value &= ~(block - 1);
+    return value;
+}
 
+bool SnapshotManager::CreateSnapshot(LockedFile* lock, const std::string& name,
+                                     SnapshotManager::SnapshotStatus status) {
+    CHECK(lock);
     // Sanity check these sizes. Like liblp, we guarantee the partition size
     // is respected, which means it has to be sector-aligned. (This guarantee
     // is useful for locating avb footers correctly). The COW size, however,
     // can be arbitrarily larger than specified, so we can safely round it up.
-    if (device_size % kSectorSize != 0) {
+    if (status.device_size % kSectorSize != 0) {
         LOG(ERROR) << "Snapshot " << name
-                   << " device size is not a multiple of the sector size: " << device_size;
+                   << " device size is not a multiple of the sector size: " << status.device_size;
         return false;
     }
-    if (snapshot_size % kSectorSize != 0) {
+    if (status.snapshot_size % kSectorSize != 0) {
         LOG(ERROR) << "Snapshot " << name
-                   << " snapshot size is not a multiple of the sector size: " << snapshot_size;
+                   << " snapshot size is not a multiple of the sector size: " << status.snapshot_size;
         return false;
     }
 
-    // Round the COW size up to the nearest sector.
-    cow_size += kSectorSize - 1;
-    cow_size &= ~(kSectorSize - 1);
+    status.cow_file_size = RoundUp(status.cow_file_size, kSectorSize);
 
-    LOG(INFO) << "Snapshot " << name << " will have COW size " << cow_size;
+    status.state = SnapshotState::Created;
+    status.sectors_allocated = 0;
+    status.metadata_sectors = 0;
 
-    // Note, we leave the status file hanging around if we fail to create the
-    // actual backing image. This is harmless, since it'll get removed when
-    // CancelUpdate is called.
-    SnapshotStatus status = {
-            .state = SnapshotState::Created,
-            .device_size = device_size,
-            .snapshot_size = snapshot_size,
-            .cow_file_size = cow_size,
-    };
     if (!WriteSnapshotStatus(lock, name, status)) {
         PLOG(ERROR) << "Could not write snapshot status: " << name;
         return false;
     }
+    return true;
+}
 
-    auto cow_name = GetCowName(name);
+bool SnapshotManager::CreateCowImage(LockedFile* lock, const std::string& name, uint64_t cow_size) {
+    CHECK(lock);
+    if (!EnsureImageManager()) return false;
+
+    cow_size = RoundUp(cow_size, kSectorSize);
+    std::string cow_image_name = GetCowImageDeviceName(name);
     int cow_flags = IImageManager::CREATE_IMAGE_ZERO_FILL;
-    return images_->CreateBackingImage(cow_name, cow_size, cow_flags);
+    return images_->CreateBackingImage(cow_image_name, cow_size, cow_flags);
 }
 
 bool SnapshotManager::MapSnapshot(LockedFile* lock, const std::string& name,
-                                  const std::string& base_device,
+                                  const std::string& base_device, const std::string& cow_device,
                                   const std::chrono::milliseconds& timeout_ms,
                                   std::string* dev_path) {
     CHECK(lock);
@@ -250,22 +255,7 @@ bool SnapshotManager::MapSnapshot(LockedFile* lock, const std::string& name,
     uint64_t snapshot_sectors = status.snapshot_size / kSectorSize;
     uint64_t linear_sectors = (status.device_size - status.snapshot_size) / kSectorSize;
 
-    auto cow_name = GetCowName(name);
 
-    bool ok;
-    std::string cow_dev;
-    if (has_local_image_manager_) {
-        // If we forced a local image manager, it means we don't have binder,
-        // which means first-stage init. We must use device-mapper.
-        const auto& opener = device_->GetPartitionOpener();
-        ok = images_->MapImageWithDeviceMapper(opener, cow_name, &cow_dev);
-    } else {
-        ok = images_->MapImageDevice(cow_name, timeout_ms, &cow_dev);
-    }
-    if (!ok) {
-        LOG(ERROR) << "Could not map image device: " << cow_name;
-        return false;
-    }
 
     auto& dm = DeviceMapper::Instance();
 
@@ -297,11 +287,10 @@ bool SnapshotManager::MapSnapshot(LockedFile* lock, const std::string& name,
     auto snap_name = (linear_sectors > 0) ? name + "-inner" : name;
 
     DmTable table;
-    table.Emplace<DmTargetSnapshot>(0, snapshot_sectors, base_device, cow_dev, mode,
+    table.Emplace<DmTargetSnapshot>(0, snapshot_sectors, base_device, cow_device, mode,
                                     kSnapshotChunkSize);
     if (!dm.CreateDevice(snap_name, table, dev_path, timeout_ms)) {
         LOG(ERROR) << "Could not create snapshot device: " << snap_name;
-        images_->UnmapImageDevice(cow_name);
         return false;
     }
 
@@ -317,7 +306,6 @@ bool SnapshotManager::MapSnapshot(LockedFile* lock, const std::string& name,
         if (!dm.CreateDevice(name, table, dev_path, timeout_ms)) {
             LOG(ERROR) << "Could not create outer snapshot device: " << name;
             dm.DeleteDevice(snap_name);
-            images_->UnmapImageDevice(cow_name);
             return false;
         }
     }
@@ -326,6 +314,26 @@ bool SnapshotManager::MapSnapshot(LockedFile* lock, const std::string& name,
     // status indicating how much progress is left to merge. (device-mapper
     // does not retain the initial values, so we can't derive them.)
     return true;
+}
+
+bool SnapshotManager::MapCowImage(const std::string& name,
+                                  const std::chrono::milliseconds& timeout_ms,
+                                  std::string* cow_dev) {
+    auto cow_image_name = GetCowImageDeviceName(name);
+
+    bool ok;
+    if (has_local_image_manager_) {
+        // If we forced a local image manager, it means we don't have binder,
+        // which means first-stage init. We must use device-mapper.
+        const auto& opener = device_->GetPartitionOpener();
+        ok = images_->MapImageWithDeviceMapper(opener, cow_image_name, cow_dev);
+    } else {
+        ok = images_->MapImageDevice(cow_image_name, timeout_ms, cow_dev);
+    }
+    if (!ok) {
+        LOG(ERROR) << "Could not map image device: " << cow_image_name;
+    }
+    return ok;
 }
 
 bool SnapshotManager::UnmapSnapshot(LockedFile* lock, const std::string& name) {
@@ -351,27 +359,23 @@ bool SnapshotManager::UnmapSnapshot(LockedFile* lock, const std::string& name) {
         return false;
     }
 
-    auto cow_name = GetCowName(name);
-    if (images_->IsImageMapped(cow_name) && !images_->UnmapImageDevice(cow_name)) {
-        return false;
-    }
     return true;
+}
+
+static bool UnmapImageIfExists(android::fiemap::IImageManager* manager, const std::string& name) {
+    if (!manager->IsImageMapped(name)) {
+        return true;
+    }
+    return manager->UnmapImageDevice(name);
+}
+
+bool SnapshotManager::UnmapCowImage(const std::string& name) {
+    if (!EnsureImageManager()) return false;
+    return UnmapImageIfExists(images_.get(), GetCowImageDeviceName(name));
 }
 
 bool SnapshotManager::DeleteSnapshot(LockedFile* lock, const std::string& name) {
     CHECK(lock);
-    if (!EnsureImageManager()) return false;
-
-    auto cow_name = GetCowName(name);
-    if (!images_->BackingImageExists(cow_name)) {
-        return true;
-    }
-    if (images_->IsImageMapped(cow_name) && !images_->UnmapImageDevice(cow_name)) {
-        return false;
-    }
-    if (!images_->DeleteBackingImage(cow_name)) {
-        return false;
-    }
 
     std::string error;
     auto file_path = GetSnapshotStatusFilePath(name);
@@ -380,6 +384,20 @@ bool SnapshotManager::DeleteSnapshot(LockedFile* lock, const std::string& name) 
         return false;
     }
     return true;
+}
+
+bool SnapshotManager::DeleteCowImage(LockedFile* lock, const std::string& name) {
+    CHECK(lock);
+    if (!EnsureImageManager()) return false;
+
+    auto cow_image_name = GetCowImageDeviceName(name);
+    if (!images_->BackingImageExists(cow_image_name)) {
+        return true;
+    }
+    if (!UnmapCowImage(name)) {
+        return false;
+    }
+    return images_->DeleteBackingImage(cow_image_name);
 }
 
 bool SnapshotManager::InitiateMerge() {
@@ -810,6 +828,10 @@ bool SnapshotManager::OnSnapshotMergeComplete(LockedFile* lock, const std::strin
         LOG(ERROR) << "Could not delete snapshot: " << name;
         return false;
     }
+    if (!DeleteCowImage(lock, name)) {
+        LOG(ERROR) << "Could not delete cow image: " << name;
+        return false;
+    }
     return true;
 }
 
@@ -917,6 +939,7 @@ bool SnapshotManager::RemoveAllSnapshots(LockedFile* lock) {
     bool ok = true;
     for (const auto& name : snapshots) {
         ok &= DeleteSnapshot(lock, name);
+        ok &= DeleteCowImage(lock, name);
     }
     return ok;
 }
@@ -1087,7 +1110,16 @@ bool SnapshotManager::MapSnapshotTree(
         LOG(ERROR) << "Could not determine major/minor for: " << params.device_name;
         return false;
     }
-    if (!MapSnapshot(lock, params.partition_name, base_device, {}, path)) {
+
+    std::string cow_image_device;
+    if (!MapCowImage(params.partition_name, {}, &cow_image_device)) {
+        LOG(ERROR) << "Could not map cow image for partition: " << params.partition_name;
+        return false;
+    }
+    // TODO: map cow linear device here
+    std::string cow_device = cow_image_device;
+
+    if (!MapSnapshot(lock, params.partition_name, base_device, cow_device, {}, path)) {
         LOG(ERROR) << "Could not map snapshot for partition: " << params.partition_name;
         return false;
     }
