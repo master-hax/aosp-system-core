@@ -22,6 +22,30 @@
       "revId": "3be911d85da4203fdab14b5da543499ecbe38c74",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "89c8e0a9_2585977a",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 861,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-08-27T22:18:25Z",
+      "side": 1,
+      "message": "Indeed.  Init\u0027s been able to do this for years now.",
+      "parentUuid": "d08584d8_886522e1",
+      "range": {
+        "startLine": 861,
+        "startChar": 3,
+        "endLine": 861,
+        "endChar": 7
+      },
+      "revId": "3be911d85da4203fdab14b5da543499ecbe38c74",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
