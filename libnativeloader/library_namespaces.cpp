@@ -58,6 +58,13 @@ constexpr const char* kNeuralNetworksNamespaceName = "neuralnetworks";
 constexpr const char* kClassloaderNamespaceName = "classloader-namespace";
 // Same thing for vendor APKs.
 constexpr const char* kVendorClassloaderNamespaceName = "vendor-classloader-namespace";
+// If the namespace is shared then add this suffix to form
+// "classloader-namespace-shared" or "vendor-classloader-namespace-shared",
+// respectively. A shared namespace has inherited all the libraries of the
+// parent classloader namespace, or the platform namespace for the main app
+// classloader (cf. ANDROID_NAMESPACE_TYPE_SHARED). It is used for bundled apps
+// to give access to all the platform libraries.
+constexpr const char* kSharedNamespaceSuffix = "-shared";
 
 // (http://b/27588281) This is a workaround for apps using custom classloaders and calling
 // System.load() with an absolute path which is outside of the classloader library search path.
@@ -163,7 +170,7 @@ Result<NativeLoaderNamespace*> LibraryNamespaces::Create(JNIEnv* env, uint32_t t
                       "There is already a namespace associated with this classloader");
 
   std::string system_exposed_libraries = default_public_libraries();
-  const char* namespace_name = kClassloaderNamespaceName;
+  std::string namespace_name = kClassloaderNamespaceName;
   bool unbundled_vendor_or_product_app = false;
   if ((apk_origin == APK_ORIGIN_VENDOR ||
        (apk_origin == APK_ORIGIN_PRODUCT && target_sdk_version > 29)) &&
@@ -204,6 +211,10 @@ Result<NativeLoaderNamespace*> LibraryNamespaces::Create(JNIEnv* env, uint32_t t
     if (!extended_public_libraries().empty()) {
       system_exposed_libraries = system_exposed_libraries + ':' + extended_public_libraries();
     }
+  }
+
+  if (is_shared) {
+    namespace_name = namespace_name + kSharedNamespaceSuffix;
   }
 
   // Create the app namespace
