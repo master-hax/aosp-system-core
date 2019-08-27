@@ -54,6 +54,7 @@ cc_library {
         "liblog",
         "liblp",
         "libselinux",
+        "libvbmeta",
     ],
     static_libs: [
         "libavb",

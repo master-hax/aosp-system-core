@@ -17,6 +17,8 @@
 #include "utility.h"
 
 #include <android-base/file.h>
+#include <android-base/strings.h>
+#include <liblp/liblp.h>
 
 using android::base::ErrnoError;
 using android::base::Error;
@@ -107,6 +109,72 @@ Result<std::unique_ptr<VBMetaInfo>> BuildPhysicalVBMetaInfo(const LpMetadata& lp
     info->vbmeta_size = avbfooter.vbmeta_size;
     info->partition_name = std::string(lppartition.name);
     return info;
+}
+
+Result<bool> CheckPartitionIsSelfSigned(const std::string& vbmeta_name,
+                                        const std::string& slot_suffix,
+                                        const std::string& partition_name) {
+    const IPartitionOpener& opener = PartitionOpener();
+
+    BlockDeviceInfo info;
+    if (!opener.GetInfo(vbmeta_name, &info)) {
+        return ErrnoError() << "Couldn't get vbmeta info of " << vbmeta_name;
+    }
+
+    android::base::unique_fd fd = opener.Open(vbmeta_name, O_RDONLY);
+    if (fd < 0) {
+        return ErrnoError() << "Couldn't open vbmeta " << vbmeta_name;
+    }
+
+    std::unique_ptr<uint8_t[]> buffer = std::make_unique<uint8_t[]>(info.size);
+    if (!android::base::ReadFully(fd, buffer.get(), info.size)) {
+        return ErrnoError() << "Couldn't read vbmeta " << vbmeta_name;
+    }
+
+    size_t num_descriptors;
+    auto descriptors = avb_descriptor_get_all(buffer.get(), info.size, &num_descriptors);
+    for (size_t n = 0; n < num_descriptors; n++) {
+        AvbDescriptor desc;
+        if (!avb_descriptor_validate_and_byteswap(descriptors[n], &desc)) {
+            return Error() << "vbmeta descriptor is invalid";
+        }
+        switch (desc.tag) {
+            case AVB_DESCRIPTOR_TAG_CHAIN_PARTITION: {
+                AvbChainPartitionDescriptor chain_desc;
+                if (!avb_chain_partition_descriptor_validate_and_byteswap(
+                            (AvbChainPartitionDescriptor*)descriptors[n], &chain_desc)) {
+                    return Error() << "chain partition descriptor is invalid";
+                }
+                std::string chain_partition_name(
+                        (const char*)descriptors[n] + sizeof(AvbChainPartitionDescriptor),
+                        chain_desc.partition_name_len);
+                if (partition_name == chain_partition_name) {
+                    return true;
+                } else if (android::base::StartsWith(chain_partition_name, "vbmeta_")) {
+                    Result<bool> partition_is_self_signed = CheckPartitionIsSelfSigned(
+                            chain_partition_name + slot_suffix, slot_suffix, partition_name);
+                    if (partition_is_self_signed) {
+                        return partition_is_self_signed.value();
+                    }
+                }
+            } break;
+            case AVB_DESCRIPTOR_TAG_HASHTREE: {
+                AvbHashtreeDescriptor hashtree_desc;
+                if (!avb_hashtree_descriptor_validate_and_byteswap(
+                            (AvbHashtreeDescriptor*)descriptors[n], &hashtree_desc)) {
+                    return Error() << "hashtree partition descriptor is invalid";
+                }
+                std::string hashtree_partition_name(
+                        (const char*)descriptors[n] + sizeof(AvbHashtreeDescriptor),
+                        hashtree_desc.partition_name_len);
+                if (partition_name == hashtree_partition_name) {
+                    return false;
+                }
+            } break;
+        }
+    }
+
+    return Error() << "Couldn't find " << partition_name << " in vbmeta";
 }
 
 Result<bool> ValidateVBMeta(int fd, uint64_t offset, uint64_t size) {

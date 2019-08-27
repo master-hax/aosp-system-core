@@ -51,6 +51,11 @@ android::base::Result<std::unique_ptr<VBMetaInfo>> BuildPhysicalVBMetaInfo(
         const LpMetadata& lpmetadata, const LpMetadataPartition& lppartition,
         const AvbFooter& avbfooter);
 
+// Helper to check partition is self signed
+android::base::Result<bool> CheckPartitionIsSelfSigned(const std::string& vbmeta_name,
+                                                       const std::string& slot_suffix,
+                                                       const std::string& partition_name);
+
 // Helper to validate vbmeta (equal to AVB_VBMETA_VERIFY_RESULT_OK), which is |size| bytes at
 // |offset| in file |fd|.
 android::base::Result<bool> ValidateVBMeta(int fd, uint64_t offset, uint64_t size);

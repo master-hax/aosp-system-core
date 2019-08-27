@@ -21,12 +21,22 @@
 
 #include <liblp/liblp.h>
 
+/* Default VBMeta Table Partition Name */
+#define VBMETA_TABLE_DEFAULT_PARTITION_NAME "vbmeta_table"
+
 namespace android {
 namespace fs_mgr {
 
 bool WriteToVBMetaTableFile(const std::string& super_file, const std::string& vbmeta_table_file,
                             const LpMetadata& lpmetadata,
                             const std::map<std::string, std::string>& images_path);
+
+bool InitVBMetaTablePartition(const std::string& file);
+
+bool UpdateVBMetaTablePartition(const std::string& super_file, const std::string& vbmeta_table_file,
+                                const std::string& slot_suffix, const LpMetadata& lpmetadata,
+                                const LpMetadataPartition& lppartition,
+                                const void* vbmeta_table_buffer);
 
 }  // namespace fs_mgr
 }  // namespace android
