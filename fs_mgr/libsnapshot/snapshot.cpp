@@ -183,6 +183,7 @@ bool SnapshotManager::FinishedSnapshotWrites() {
 bool SnapshotManager::CreateSnapshot(LockedFile* lock, const std::string& name,
                                      SnapshotManager::SnapshotStatus status) {
     CHECK(lock);
+    CHECK(lock->lock_mode() == LOCK_EX);
     // Sanity check these sizes. Like liblp, we guarantee the partition size
     // is respected, which means it has to be sector-aligned. (This guarantee
     // is useful for locating avb footers correctly). The COW size, however,
@@ -215,6 +216,7 @@ bool SnapshotManager::CreateSnapshot(LockedFile* lock, const std::string& name,
 
 bool SnapshotManager::CreateCowImage(LockedFile* lock, const std::string& name) {
     CHECK(lock);
+    CHECK(lock->lock_mode() == LOCK_EX);
     if (!EnsureImageManager()) return false;
 
     SnapshotStatus status;
@@ -414,11 +416,12 @@ bool SnapshotManager::UnmapCowImage(const std::string& name) {
 
 bool SnapshotManager::DeleteSnapshot(LockedFile* lock, const std::string& name) {
     CHECK(lock);
+    CHECK(lock->lock_mode() == LOCK_EX);
     if (!EnsureImageManager()) return false;
 
     auto cow_name = GetCowName(name);
     if (images_->BackingImageExists(cow_name)) {
-        if (images_->IsImageMapped(cow_name) && !images_->UnmapImageDevice(cow_name)) {
+        if (images_->UnmapImageIfExists(cow_name)) {
             return false;
         }
         if (!images_->DeleteBackingImage(cow_name)) {
