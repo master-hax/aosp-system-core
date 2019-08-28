@@ -1095,6 +1095,32 @@ static std::chrono::milliseconds GetRemainingTime(
     return remaining_time;
 }
 
+// Automatically unmap a device upon deletion.
+struct AutoUnmapDevice {
+    // On destruct, delete |name| from device mapper.
+    AutoUnmapDevice(android::dm::DeviceMapper* dm, const std::string& name) : dm_(dm), name_(name) {}
+    // On destruct, delete |name| from image manager.
+    AutoUnmapDevice(android::fiemap::IImageManager* images, const std::string& name) : images_(images), name_(name) {}
+    void Release() { name_.clear(); }
+    ~AutoUnmapDevice() {
+        if (name_.empty()) return;
+        if (dm_) {
+            if (!dm_->DeleteDeviceIfExists(name_)) {
+                LOG(ERROR) << "Failed to auto unmap device " << name_;
+            }
+        }
+        if (images_) {
+            if (!UnmapImageIfExists(images_, name_)) {
+                LOG(ERROR) << "Failed to auto unmap cow image " << name_;
+            }
+        }
+    }
+   private:
+    android::dm::DeviceMapper* dm_;
+    android::fiemap::IImageManager* images_;
+    std::string name_;
+};
+
 bool SnapshotManager::MapSnapshotTree(
         LockedFile* lock,
         CreateLogicalPartitionParams params,
@@ -1146,6 +1172,12 @@ bool SnapshotManager::MapSnapshotTree(
         return true;
     }
 
+    std::vector<AutoUnmapDevice> created_devices;
+    auto release = [](std::vector<AutoUnmapDevice>* created_devices) {
+        for (auto& device : *created_devices) device.Release();
+    };
+    created_devices.emplace_back(&dm, params.GetDeviceName());
+
     // We don't have ueventd in first-stage init, so use device major:minor
     // strings instead.
     std::string base_device;
@@ -1173,6 +1205,7 @@ bool SnapshotManager::MapSnapshotTree(
             LOG(ERROR) << "Could not create COW partition " << cow_partition_params.partition_name;
             return false;
         }
+        created_devices.emplace_back(&dm, cow_partition_params.GetDeviceName());
         if (cow_partition_device.empty()) {
             LOG(ERROR) << "COW partition " << cow_partition_params.GetDeviceName()
                        << " is created but no path is returned";
@@ -1188,6 +1221,7 @@ bool SnapshotManager::MapSnapshotTree(
             LOG(ERROR) << "Could not map cow image for partition: " << params.partition_name;
             return false;
         }
+        created_devices.emplace_back(images_.get(), GetCowImageDeviceName(params.partition_name));
         if (cow_image_device.empty()) {
             LOG(ERROR) << "COW image for partition " << params.partition_name
                        << " is created but no path is returned";
@@ -1219,6 +1253,7 @@ bool SnapshotManager::MapSnapshotTree(
             LOG(ERROR) << "Could not create outer COW device: " << cow_name;
             return false;
         }
+        created_devices.emplace_back(&dm, cow_name);
     }
 
     remaining_time = GetRemainingTime(params.timeout_ms, begin);
@@ -1228,6 +1263,9 @@ bool SnapshotManager::MapSnapshotTree(
         LOG(ERROR) << "Could not map snapshot for partition: " << params.partition_name;
         return false;
     }
+    // No need to add params.partition_name to created_devices since it is immediately released.
+
+    release(&created_devices);
 
     LOG(INFO) << "Created " << params.partition_name << " as snapshot device at " << *path;
     return true;
