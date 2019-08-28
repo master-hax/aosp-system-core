@@ -170,6 +170,7 @@ static inline uint64_t RoundUp(uint64_t value, uint64_t block) {
 bool SnapshotManager::CreateSnapshot(LockedFile* lock, const std::string& name,
                                      SnapshotManager::SnapshotStatus status) {
     CHECK(lock);
+    CHECK(lock->lock_mode() == LOCK_EX);
     // Sanity check these sizes. Like liblp, we guarantee the partition size
     // is respected, which means it has to be sector-aligned. (This guarantee
     // is useful for locating avb footers correctly). The COW size, however,
@@ -200,6 +201,7 @@ bool SnapshotManager::CreateSnapshot(LockedFile* lock, const std::string& name,
 
 bool SnapshotManager::CreateCowImage(LockedFile* lock, const std::string& name, uint64_t cow_size) {
     CHECK(lock);
+    CHECK(lock->lock_mode() == LOCK_EX);
     if (!EnsureImageManager()) return false;
 
     cow_size = RoundUp(cow_size, kSectorSize);
@@ -376,6 +378,7 @@ bool SnapshotManager::UnmapCowImage(const std::string& name) {
 
 bool SnapshotManager::DeleteSnapshot(LockedFile* lock, const std::string& name) {
     CHECK(lock);
+    CHECK(lock->lock_mode() == LOCK_EX);
 
     std::string error;
     auto file_path = GetSnapshotStatusFilePath(name);
@@ -388,6 +391,7 @@ bool SnapshotManager::DeleteSnapshot(LockedFile* lock, const std::string& name) 
 
 bool SnapshotManager::DeleteCowImage(LockedFile* lock, const std::string& name) {
     CHECK(lock);
+    CHECK(lock->lock_mode() == LOCK_EX);
     if (!EnsureImageManager()) return false;
 
     auto cow_image_name = GetCowImageDeviceName(name);
