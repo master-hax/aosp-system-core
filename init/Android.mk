@@ -93,7 +93,6 @@ LOCAL_STATIC_LIBRARIES := \
     libext4_utils \
     libfscrypt \
     libseccomp_policy \
-    libcrypto_utils \
     libsparse \
     libavb \
     libkeyutils \
@@ -101,7 +100,6 @@ LOCAL_STATIC_LIBRARIES := \
     libcutils \
     libbase \
     liblog \
-    libcrypto \
     libdl \
     libz \
     libselinux \
