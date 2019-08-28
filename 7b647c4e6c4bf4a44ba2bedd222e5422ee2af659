@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "eb89c09e_87308139",
+        "filename": "libprocessgroup/sched_policy.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 137,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-08-28T05:38:20Z",
+      "side": 1,
+      "message": "Are these profiles already merged into task_profiles.json?",
+      "range": {
+        "startLine": 137,
+        "startChar": 62,
+        "endLine": 137,
+        "endChar": 75
+      },
+      "revId": "7b647c4e6c4bf4a44ba2bedd222e5422ee2af659",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c946c7a4_3b3e22ce",
+        "filename": "libprocessgroup/sched_policy.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 157,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-08-28T05:38:20Z",
+      "side": 1,
+      "message": "is that how clang_format formatted the code?",
+      "range": {
+        "startLine": 154,
+        "startChar": 35,
+        "endLine": 157,
+        "endChar": 32
+      },
+      "revId": "7b647c4e6c4bf4a44ba2bedd222e5422ee2af659",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
