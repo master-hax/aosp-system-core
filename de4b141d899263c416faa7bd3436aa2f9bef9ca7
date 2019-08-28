@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ff015630_416e150b",
+        "filename": "base/include/android-base/file.h",
+        "patchSetId": 6
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-08-28T21:16:42Z",
+      "side": 1,
+      "message": "In theory, I\u0027d say it\u0027d be good to return unique_ptr\u003cTemporaryDir\u003e from here such that we can return nullptr if InitwithPrefix() fails, instead of having a half constructed object and needing to call CreationSucceeded().\n\nBut we already are in the half created situation with the normal constructor, so I\u0027m not sure if that\u0027s worth it without changing the rest of how this class works.",
+      "range": {
+        "startLine": 69,
+        "startChar": 0,
+        "endLine": 71,
+        "endChar": 0
+      },
+      "revId": "de4b141d899263c416faa7bd3436aa2f9bef9ca7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
