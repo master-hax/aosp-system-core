@@ -14,6 +14,7 @@
 
 #include "utility.h"
 
+#include <android-base/logging.h>
 #include <android-base/strings.h>
 
 namespace android {
@@ -24,6 +25,42 @@ bool UnmapImageIfExists(android::fiemap::IImageManager* manager, const std::stri
         return true;
     }
     return manager->UnmapImageDevice(name);
+}
+
+AutoDevice::AutoDevice(AutoDevice&& other) {
+    std::swap(name_, other.name_);
+}
+
+void AutoDevice::Release() {
+    name_.clear();
+}
+
+AutoDevices::~AutoDevices() {
+    // Destroy devices in the reverse order because newer devices may have dependencies
+    // on older devices.
+    for (auto it = devices_.rbegin(); it != devices_.rend(); ++it) {
+        it->reset();
+    }
+}
+
+void AutoDevices::Release() {
+    for (auto&& p : devices_) {
+        p->Release();
+    }
+}
+
+AutoUnmapDevice::~AutoUnmapDevice() {
+    if (name_.empty()) return;
+    if (!dm_->DeleteDeviceIfExists(name_)) {
+        LOG(ERROR) << "Failed to auto unmap device " << name_;
+    }
+}
+
+AutoUnmapImage::~AutoUnmapImage() {
+    if (name_.empty()) return;
+    if (!UnmapImageIfExists(images_, name_)) {
+        LOG(ERROR) << "Failed to auto unmap cow image " << name_;
+    }
 }
 
 }  // namespace snapshot
