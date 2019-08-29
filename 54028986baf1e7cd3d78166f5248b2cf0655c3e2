@@ -46,6 +46,30 @@
       "revId": "54028986baf1e7cd3d78166f5248b2cf0655c3e2",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2b34c792_3720f26e",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2019-08-29T16:09:36Z",
+      "side": 1,
+      "message": "It\u0027ll continue to happen when a service is requested which isn\u0027t installed, but I think this is a good log.\n\nMaybe we should make control message errors warnings instead of errors?",
+      "parentUuid": "ca83e428_0809b9ee",
+      "range": {
+        "startLine": 10,
+        "startChar": 0,
+        "endLine": 11,
+        "endChar": 118
+      },
+      "revId": "54028986baf1e7cd3d78166f5248b2cf0655c3e2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
