@@ -1071,16 +1071,16 @@ static Result<void> ExecWithRebootOnFailure(const std::string& reboot_reason,
     (*service)->AddReapCallback([reboot_reason](const siginfo_t& siginfo) {
         if (siginfo.si_code != CLD_EXITED || siginfo.si_status != 0) {
             // TODO (b/122850122): support this in gsi
-            if (fscrypt_is_native() && !android::gsi::IsGsiRunning()) {
-                LOG(ERROR) << "Rebooting into recovery, reason: " << reboot_reason;
-                if (auto result = reboot_into_recovery(
-                            {"--prompt_and_wipe_data", "--reason="s + reboot_reason});
-                    !result) {
-                    LOG(FATAL) << "Could not reboot into recovery: " << result.error();
-                }
-            } else {
+            // if (fscrypt_is_native() && !android::gsi::IsGsiRunning()) {
+            //     LOG(ERROR) << "Rebooting into recovery, reason: " << reboot_reason;
+            //     if (auto result = reboot_into_recovery(
+            //                 {"--prompt_and_wipe_data", "--reason="s + reboot_reason});
+            //         !result) {
+            //         LOG(FATAL) << "Could not reboot into recovery: " << result.error();
+            //     }
+            // } else {
                 LOG(ERROR) << "Failure (reboot suppressed): " << reboot_reason;
-            }
+            // }
         }
     });
     if (auto result = (*service)->ExecStart(); !result) {
