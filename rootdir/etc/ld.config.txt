@@ -35,7 +35,7 @@ dir.postinstall = /postinstall
 dir.system = /data
 
 [system]
-additional.namespaces = runtime,conscrypt,media,neuralnetworks,resolv,sphal,vndk,rs
+additional.namespaces = runtime,conscrypt,cronet,media,neuralnetworks,resolv,sphal,vndk,rs
 
 ###############################################################################
 # "default" namespace
@@ -217,6 +217,31 @@ namespace.conscrypt.link.default.shared_libs += libdl.so
 namespace.conscrypt.link.default.shared_libs += liblog.so
 
 ###############################################################################
+# "cronet" APEX namespace
+#
+# This namespace is for libraries within the cronet APEX.
+###############################################################################
+namespace.cronet.isolated = true
+namespace.cronet.visible = true
+
+namespace.cronet.search.paths = /apex/com.android.cronet/${LIB}
+namespace.cronet.asan.search.paths = /apex/com.android.cronet/${LIB}
+namespace.cronet.links = default, runtime
+namespace.cronet.link.default.shared_libs  = libc.so
+namespace.cronet.link.default.shared_libs += libcgrouprc.so
+namespace.cronet.link.default.shared_libs += libm.so
+namespace.cronet.link.default.shared_libs += libdl.so
+namespace.cronet.link.default.shared_libs += libbinder_ndk.so
+namespace.cronet.link.default.shared_libs += liblog.so
+namespace.cronet.link.default.shared_libs += libvndksupport.so
+namespace.cronet.link.default.shared_libs += libandroid.so
+
+namespace.cronet.link.runtime.shared_libs = libnativehelper.so
+namespace.cronet.link.runtime.shared_libs += libandroidicu.so
+namespace.cronet.link.runtime.shared_libs += libicui18n.so
+namespace.cronet.link.runtime.shared_libs += libicuuc.so
+
+###############################################################################
 # "resolv" APEX namespace
 #
 # This namespace is for libraries within the resolv APEX.
@@ -226,7 +251,7 @@ namespace.resolv.visible = true
 
 namespace.resolv.search.paths = /apex/com.android.resolv/${LIB}
 namespace.resolv.asan.search.paths = /apex/com.android.resolv/${LIB}
-namespace.resolv.links = default
+namespace.resolv.links = default, cronet, runtime
 namespace.resolv.link.default.shared_libs  = libc.so
 namespace.resolv.link.default.shared_libs += libcgrouprc.so
 namespace.resolv.link.default.shared_libs += libm.so
@@ -234,6 +259,12 @@ namespace.resolv.link.default.shared_libs += libdl.so
 namespace.resolv.link.default.shared_libs += libbinder_ndk.so
 namespace.resolv.link.default.shared_libs += liblog.so
 namespace.resolv.link.default.shared_libs += libvndksupport.so
+namespace.resolv.link.default.shared_libs += libandroid.so
+
+namespace.resolv.link.runtime.shared_libs = libnativehelper.so
+namespace.resolv.link.runtime.shared_libs += libandroidicu.so
+namespace.resolv.link.runtime.shared_libs += libicui18n.so
+namespace.resolv.link.runtime.shared_libs += libicuuc.so
 
 ###############################################################################
 # "sphal" namespace
@@ -759,6 +790,7 @@ namespace.resolv.links = default
 namespace.resolv.link.default.shared_libs  = libc.so
 namespace.resolv.link.default.shared_libs += libm.so
 namespace.resolv.link.default.shared_libs += libdl.so
+namespace.resolv.link.default.shared_libs += libandroid.so
 namespace.resolv.link.default.shared_libs += libbinder_ndk.so
 namespace.resolv.link.default.shared_libs += liblog.so
 
