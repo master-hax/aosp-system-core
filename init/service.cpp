@@ -284,16 +284,16 @@ void Service::Reap(const siginfo_t& siginfo) {
         bool boot_completed = android::base::GetBoolProperty("sys.boot_completed", false);
         if (now < time_crashed_ + 4min || !boot_completed) {
             if (++crash_count_ > 4) {
-                if (flags_ & SVC_CRITICAL) {
-                    // Aborts into bootloader
-                    LOG(FATAL) << "critical process '" << name_ << "' exited 4 times "
-                               << (boot_completed ? "in 4 minutes" : "before boot completed");
-                } else {
+                // if (flags_ & SVC_CRITICAL) {
+                //     // Aborts into bootloader
+                //     LOG(FATAL) << "critical process '" << name_ << "' exited 4 times "
+                //                << (boot_completed ? "in 4 minutes" : "before boot completed");
+                // } else {
                     LOG(ERROR) << "updatable process '" << name_ << "' exited 4 times "
                                << (boot_completed ? "in 4 minutes" : "before boot completed");
                     // Notifies update_verifier and apexd
                     property_set("ro.init.updatable_crashing", "1");
-                }
+                // }
             }
         } else {
             time_crashed_ = now;
