@@ -70,6 +70,30 @@
       "revId": "54028986baf1e7cd3d78166f5248b2cf0655c3e2",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4ed25fbe_7b1ebde2",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-08-29T16:15:40Z",
+      "side": 1,
+      "message": "I think error is fine.  There are bound to be services that are critical to boot starting that are actual \u0027errors\u0027 if they\u0027re not started.\n\nHonestly though, I don\u0027t distinguish much between error and warning personally.",
+      "parentUuid": "2b34c792_3720f26e",
+      "range": {
+        "startLine": 10,
+        "startChar": 0,
+        "endLine": 11,
+        "endChar": 118
+      },
+      "revId": "54028986baf1e7cd3d78166f5248b2cf0655c3e2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
