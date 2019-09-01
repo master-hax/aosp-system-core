@@ -23,3 +23,5 @@ class FastbootDevice;
 
 int Flash(FastbootDevice* device, const std::string& partition_name);
 bool UpdateSuper(FastbootDevice* device, const std::string& super_name, bool wipe);
+bool UpdateVBMetaTable(FastbootDevice* device, const std::string& partition_name,
+                       const void* vbmeta_table_buffer);

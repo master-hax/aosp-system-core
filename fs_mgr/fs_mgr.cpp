@@ -60,6 +60,7 @@
 #include <fs_mgr_overlayfs.h>
 #include <libdm/dm.h>
 #include <liblp/metadata_format.h>
+#include <libvbmeta/libvbmeta.h>
 #include <linux/fs.h>
 #include <linux/loop.h>
 #include <linux/magic.h>
@@ -1714,4 +1715,23 @@ std::string fs_mgr_get_super_partition_name(int slot) {
         return super_partition + suffix;
     }
     return LP_METADATA_DEFAULT_PARTITION_NAME;
+}
+
+std::string fs_mgr_get_vbmeta_table_partition_name(int slot) {
+    std::string vbmeta_table_partition;
+    if (fs_mgr_get_boot_config_from_kernel_cmdline("vbmeta_table", &vbmeta_table_partition)) {
+        if (fs_mgr_get_slot_suffix().empty()) {
+            return vbmeta_table_partition;
+        }
+        std::string suffix;
+        if (slot == 0) {
+            suffix = "_a";
+        } else if (slot == 1) {
+            suffix = "_b";
+        } else if (slot == -1) {
+            suffix = fs_mgr_get_slot_suffix();
+        }
+        return vbmeta_table_partition + suffix;
+    }
+    return VBMETA_TABLE_DEFAULT_PARTITION_NAME;
 }
