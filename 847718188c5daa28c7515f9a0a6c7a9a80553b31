@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d2a920c5_76fc70ad",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 3
+      },
+      "lineNbr": 670,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2019-09-03T16:34:47Z",
+      "side": 1,
+      "message": "note: still, vendor can override this settings, so if we are using default 30s settings from dirty_expire_centisecs, why not we have dirty_expire_centisecs defaults to 200 in kernel and avoid these settings in init.rc?\n\nalso not sure what Go team say, but maybe this is safer\n\non property:ro.config.low_ram\u003d1\n    # Tweak background writeout\n    write /proc/sys/vm/dirty_expire_centisecs 200\n    write /proc/sys/vm/dirty_background_ratio  5",
+      "range": {
+        "startLine": 670,
+        "startChar": 43,
+        "endLine": 670,
+        "endChar": 54
+      },
+      "revId": "847718188c5daa28c7515f9a0a6c7a9a80553b31",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
