@@ -22,6 +22,30 @@
       "revId": "847718188c5daa28c7515f9a0a6c7a9a80553b31",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "811f8c72_62e386fb",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 3
+      },
+      "lineNbr": 670,
+      "author": {
+        "id": 1176763
+      },
+      "writtenOn": "2019-09-03T16:46:51Z",
+      "side": 1,
+      "message": "dirty_expire_centisecs flushes dirty data, while cp_interval requests checkpoint in f2fs. So,I don\u0027t see any reason to set dirty_expire_centisecs to 200s which may give more burden to memory footprint.",
+      "parentUuid": "d2a920c5_76fc70ad",
+      "range": {
+        "startLine": 670,
+        "startChar": 43,
+        "endLine": 670,
+        "endChar": 54
+      },
+      "revId": "847718188c5daa28c7515f9a0a6c7a9a80553b31",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
