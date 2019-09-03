@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0995fd5e_d1e2dae8",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-09-03T20:38:43Z",
+      "side": 1,
+      "message": "(i didn\u0027t know you could do this. there\u0027s probably a bunch of places we should be doing this instead of using ..!)",
+      "range": {
+        "startLine": 13,
+        "startChar": 0,
+        "endLine": 14,
+        "endChar": 7
+      },
+      "revId": "7aba5142e90f1f1ea64707c6c9b14ccd58c8ee79",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
