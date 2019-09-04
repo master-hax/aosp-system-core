@@ -70,6 +70,30 @@
       "revId": "847718188c5daa28c7515f9a0a6c7a9a80553b31",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "427f2e6b_9cfd275d",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 3
+      },
+      "lineNbr": 670,
+      "author": {
+        "id": 1176763
+      },
+      "writtenOn": "2019-09-04T16:16:33Z",
+      "side": 1,
+      "message": "I don\u0027t want to make any kernel version dependency here, and have no reason to change the default value for Android use-case only.",
+      "parentUuid": "2f35bb0d_04f373eb",
+      "range": {
+        "startLine": 670,
+        "startChar": 43,
+        "endLine": 670,
+        "endChar": 54
+      },
+      "revId": "847718188c5daa28c7515f9a0a6c7a9a80553b31",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
