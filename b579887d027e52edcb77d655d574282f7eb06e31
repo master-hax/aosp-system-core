@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "99b7cfbf_90be77db",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1131,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-09-04T00:02:50Z",
+      "side": 1,
+      "message": "uber-nit: possible to better distinguish the name from MapSnapshot? Like \"CreatePartitionWithSnapshot\"?",
+      "revId": "b579887d027e52edcb77d655d574282f7eb06e31",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0694d74c_830b0912",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1151,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-09-04T00:02:50Z",
+      "side": 1,
+      "message": "nit: is {std::nullopt} needed, or does the default constructor assume no value?",
+      "revId": "b579887d027e52edcb77d655d574282f7eb06e31",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "662c252c_51465d4c",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1152,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-09-04T00:02:50Z",
+      "side": 1,
+      "message": "Is a scope needed here? If it\u0027s just for readability, it might be worth using a helper method, since it appears to just need the params and can return an optional\u003cSnapshotStatus\u003e.",
+      "revId": "b579887d027e52edcb77d655d574282f7eb06e31",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
