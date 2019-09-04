@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d4959d1f_9aaa88ad",
+        "filename": "fs_mgr/libsnapshot/utility.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-09-04T23:58:10Z",
+      "side": 1,
+      "message": "Since you\u0027re using unique_ptr now, you can drop the move constructor, it looks unused.",
+      "revId": "c4cc8057c7819f0c779ffd2ac1173b3fa9109537",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1f249a48_8007c549",
+        "filename": "fs_mgr/libsnapshot/utility.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-09-04T23:58:10Z",
+      "side": 1,
+      "message": "uber-nit: AutoDeviceList? Only because it\u0027s one character off from the class above it.",
+      "revId": "c4cc8057c7819f0c779ffd2ac1173b3fa9109537",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8e748e86_990b5f3f",
+        "filename": "fs_mgr/libsnapshot/utility.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-09-04T23:58:10Z",
+      "side": 1,
+      "message": "std::forward\u003cArgs\u003e(args)...",
+      "revId": "c4cc8057c7819f0c779ffd2ac1173b3fa9109537",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
