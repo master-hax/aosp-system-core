@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "7a8f6fb4_854f0a8c",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1101,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-09-04T23:33:38Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a881f9b_f7ff1985",
+      "range": {
+        "startLine": 1101,
+        "startChar": 0,
+        "endLine": 1101,
+        "endChar": 63
+      },
+      "revId": "95761d3d681beb34aeb71f6d59b792812568dabe",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "cfee5209_3be45147",
         "filename": "init/builtins.cpp",
         "patchSetId": 1
@@ -36,6 +60,24 @@
       "writtenOn": "2019-09-04T22:48:50Z",
       "side": 1,
       "message": "i\u0027d rather have had a --reboot-on-failure option to exec, but this is a lot easier to implement...",
+      "revId": "95761d3d681beb34aeb71f6d59b792812568dabe",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "92f00d0b_9a0a2af3",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1205,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-09-04T23:33:38Z",
+      "side": 1,
+      "message": "Ya... It\u0027s comparatively rare to have -- options to the builtins here though.  Only the restorecon ones take them.",
+      "parentUuid": "cfee5209_3be45147",
       "revId": "95761d3d681beb34aeb71f6d59b792812568dabe",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
