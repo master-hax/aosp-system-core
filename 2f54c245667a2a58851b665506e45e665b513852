@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "018915b3_75c915c6",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 1304,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2019-09-04T22:50:57Z",
+      "side": 1,
+      "message": "unrelated change",
+      "range": {
+        "startLine": 1300,
+        "startChar": 0,
+        "endLine": 1304,
+        "endChar": 5
+      },
+      "revId": "2f54c245667a2a58851b665506e45e665b513852",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
