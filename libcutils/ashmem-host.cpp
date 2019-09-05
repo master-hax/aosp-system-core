@@ -34,6 +34,10 @@
 
 #include <utils/Compat.h>
 
+int ashmem_valid(int /*fd*/) {
+    return false;
+}
+
 int ashmem_create_region(const char* /*ignored*/, size_t size) {
     char pattern[PATH_MAX];
     snprintf(pattern, sizeof(pattern), "/tmp/android-ashmem-%d-XXXXXXXXX", getpid());
