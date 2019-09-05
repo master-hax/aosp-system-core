@@ -34,6 +34,24 @@
       "revId": "c387ce0153041f374bf238701d716262fe35616f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "eacdfe75_6e4ab1d2",
+        "filename": "libcutils/ashmem-host.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-09-05T00:56:07Z",
+      "side": 1,
+      "message": "what does your calling code need?\n\nseems like you could move L77-85 up here and replace that with a call to ashmem_valid...",
+      "parentUuid": "3ae4f554_83c3d271",
+      "revId": "c387ce0153041f374bf238701d716262fe35616f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
