@@ -24,6 +24,9 @@ for cert in /product/etc/security/fsverity/*.der; do
     log -p e -t fsverity_init "Failed to load $cert"
 done
 
+# Load extra keys from keystore
+/system/bin/fsverity_keystore_init
+
 DEBUGGABLE=$(getprop ro.debuggable)
 if [ $DEBUGGABLE != "1" ]; then
   # Prevent future key links to .fs-verity keyring
