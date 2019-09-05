@@ -15,7 +15,7 @@
 # limitations under the License.
 #
 
-# Enforce fsverity signature checking
+# Require signature check when files backed by fs-verity are accessed.
 echo 1 > /proc/sys/fs/verity/require_signatures
 
 # Load all keys
@@ -23,6 +23,9 @@ for cert in /product/etc/security/fsverity/*.der; do
   /system/bin/mini-keyctl padd asymmetric fsv_product .fs-verity < "$cert" ||
     log -p e -t fsverity_init "Failed to load $cert"
 done
+
+# Load extra keys from keystore
+/system/bin/fsverity_keystore_init
 
 DEBUGGABLE=$(getprop ro.debuggable)
 if [ $DEBUGGABLE != "1" ]; then
