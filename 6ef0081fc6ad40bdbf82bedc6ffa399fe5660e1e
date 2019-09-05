@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d0645743_66943b48",
+        "filename": "fs_mgr/README.overlayfs.md",
+        "patchSetId": 2
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-09-05T22:22:49Z",
+      "side": 1,
+      "message": "nit: these got renamed to \"Dynamic Android Partitions\"",
+      "revId": "6ef0081fc6ad40bdbf82bedc6ffa399fe5660e1e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4b253e36_89f332fd",
+        "filename": "fs_mgr/README.overlayfs.md",
+        "patchSetId": 2
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-09-05T22:22:49Z",
+      "side": 1,
+      "message": "nit: same here",
+      "revId": "6ef0081fc6ad40bdbf82bedc6ffa399fe5660e1e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
