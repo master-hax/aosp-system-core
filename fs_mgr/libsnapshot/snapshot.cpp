@@ -1081,6 +1081,7 @@ bool SnapshotManager::RemoveAllSnapshots(LockedFile* lock) {
 
     bool ok = true;
     for (const auto& name : snapshots) {
+        ok &= UnmapPartitionWithSnapshot(lock, name);
         ok &= DeleteSnapshot(lock, name);
     }
     return ok;
