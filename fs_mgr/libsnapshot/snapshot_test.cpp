@@ -33,6 +33,7 @@
 #include <liblp/builder.h>
 #include <liblp/mock_property_fetcher.h>
 
+#include "digital_storage.h"
 #include "test_helpers.h"
 #include "utility.h"
 
@@ -50,6 +51,7 @@ using android::fs_mgr::GetPartitionName;
 using android::fs_mgr::MetadataBuilder;
 using namespace ::testing;
 using namespace android::fs_mgr::testing;
+using namespace android::digital_storage;
 using namespace std::chrono_literals;
 using namespace std::string_literals;
 
@@ -620,6 +622,157 @@ TEST_F(SnapshotTest, FlashSuperDuringMerge) {
     ASSERT_EQ(sm->GetUpdateState(), UpdateState::None);
 }
 
+class SnapshotUpdateTest : public SnapshotTest {
+public:
+    void SetUp() override {
+        SnapshotTest::SetUp();
+        Cleanup();
+
+        ON_CALL(*GetMockedPropertyFetcher(), GetBoolProperty("ro.virtual_ab.enabled", _))
+                .WillByDefault(Return(true));
+
+        opener = std::make_unique<TestPartitionOpener>(fake_super);
+        src = MetadataBuilder::New(*opener, "super", 0);
+        ASSERT_NE(nullptr, src);
+        auto partition = src->AddPartition("test_system_a", 0);
+        ASSERT_NE(nullptr, partition);
+        ASSERT_TRUE(src->ResizePartition(partition, 3_MiB));
+        partition = src->AddPartition("test_vendor_a", 0);
+        ASSERT_NE(nullptr, partition);
+        ASSERT_TRUE(src->ResizePartition(partition, 3_MiB));
+        partition = src->AddPartition("test_product_a", 0);
+        ASSERT_NE(nullptr, partition);
+        ASSERT_TRUE(src->ResizePartition(partition, 3_MiB));
+        auto metadata = src->Export();
+        ASSERT_NE(nullptr, metadata);
+        ASSERT_TRUE(UpdatePartitionTable(*opener, "super", *metadata.get(), 0));
+
+        tgt = MetadataBuilder::NewForUpdate(*opener, "super", 0, 1);
+        ASSERT_NE(nullptr, tgt);
+        partition = tgt->FindPartition("test_system_b");
+        ASSERT_NE(nullptr, partition);
+        ASSERT_TRUE(tgt->ResizePartition(partition, 4_MiB));
+        partition = tgt->FindPartition("test_vendor_b");
+        ASSERT_NE(nullptr, partition);
+        ASSERT_TRUE(tgt->ResizePartition(partition, 4_MiB));
+        partition = tgt->FindPartition("test_product_b");
+        ASSERT_NE(nullptr, partition);
+        ASSERT_TRUE(tgt->ResizePartition(partition, 4_MiB));
+
+        std::string path;
+        for (const auto& name : {"test_system_a", "test_vendor_a", "test_product_a"}) {
+            ASSERT_TRUE(CreateLogicalPartition(CreateLogicalPartitionParams{
+                .block_device = fake_super,
+                .metadata_slot = 0,
+                .partition_name = name,
+                .timeout_ms = 1s,
+                .partition_opener = opener.get(),
+            }, &path));
+            mapped_devices_[name] = path;
+            ASSERT_TRUE(WriteRandomData(path));
+            auto hash = GetHash(path);
+            ASSERT_TRUE(hash.has_value());
+            hashes_[name] = *hash;
+        }
+    }
+    void TearDown() override {
+        Cleanup();
+        SnapshotTest::TearDown();
+    }
+    void Cleanup() {
+        InitializeState();
+        EXPECT_TRUE(sm->CancelUpdate());
+        for (const auto& name : {"system", "vendor", "product"}) {
+            EXPECT_TRUE(dm_.DeleteDeviceIfExists("test_"s + name + "_a")) << name;
+            DeleteSnapshotDevice("test_"s + name + "_b");
+        }
+    }
+
+    std::unique_ptr<TestPartitionOpener> opener;
+    std::unique_ptr<MetadataBuilder> src;
+    std::unique_ptr<MetadataBuilder> tgt;
+    std::map<std::string, std::string> mapped_devices_;
+    std::map<std::string, std::string> hashes_;
+};
+
+// Test update flow. Some partitions uses super empty space, some uses images, and
+// some uses both.
+// Also test UnmapUpdateSnapshot unmaps everything.
+// Also test first stage mount and merge after this.
+TEST_F(SnapshotUpdateTest, FullUpdateFlow) {
+
+    ASSERT_TRUE(sm->CancelUpdate());
+    ASSERT_TRUE(sm->BeginUpdate());
+    ASSERT_TRUE(sm->CreateUpdateSnapshots(tgt.get(), "_b", src.get(), "_a", {}));
+
+    // Test that partitions prioritize using space in super.
+    ASSERT_NE(nullptr, tgt->FindPartition("test_system_b-cow-lin"));
+    ASSERT_NE(nullptr, tgt->FindPartition("test_vendor_b-cow-lin"));
+    ASSERT_EQ(nullptr, tgt->FindPartition("test_product_b-cow-lin"));
+
+    // The metadata slot 1 is now updated.
+    auto metadata = tgt->Export();
+    ASSERT_NE(nullptr, metadata);
+    ASSERT_TRUE(UpdatePartitionTable(*opener, "super", *metadata.get(), 1));
+
+    // Write some data to target partitions.
+    for (const auto& name : {"test_system_b", "test_vendor_b", "test_product_b"}) {
+        std::string path;
+        ASSERT_TRUE(sm->MapUpdateSnapshot(CreateLogicalPartitionParams{
+            .block_device = fake_super,
+            .metadata_slot = 1,
+            .partition_name = name,
+            .timeout_ms = 10s,
+            .partition_opener = opener.get(),
+        }, &path));
+        mapped_devices_[name] = path;
+        ASSERT_TRUE(WriteRandomData(path));
+        auto hash = GetHash(path);
+        ASSERT_TRUE(hash.has_value());
+        hashes_[name] = *hash;
+    }
+
+    // Assert that source partitions aren't affected.
+    for (const auto& name : {"test_system_a", "test_vendor_a", "test_product_a"}) {
+        auto hash = GetHash(mapped_devices_[name]);
+        ASSERT_TRUE(hash.has_value());
+        EXPECT_EQ(hashes_[name], *hash);
+    }
+}
+
+// Test that if new system partitions uses space of old vendor partition, that region is
+// snapshotted.
+TEST_F(SnapshotUpdateTest, SnapshotOldPartitions) {
+
+}
+
+// Test that even if there seem to be empty space in target metadata, COW partition won't take
+// it because they are used by old partitions.
+TEST_F(SnapshotUpdateTest, CowPartitionDoNotTakeOldPartitions) {
+
+}
+
+// Test that it crashes after creating snapshot status file but before creating COW image, then
+// calling CreateUpdateSnapshots again works.
+TEST_F(SnapshotUpdateTest, SnapshotStatusFileWithoutCow) {
+
+}
+
+// Test some unaligned cases (COW partition not aligned to 4096 or COW file not aligned to 512)
+TEST_F(SnapshotUpdateTest, Unaligned) {
+
+}
+
+// Test that the old partitions are not modified
+TEST_F(SnapshotUpdateTest, TestRollback) {
+
+}
+
+// Test that if an update is applied but not booted into, it can be canceled.
+TEST_F(SnapshotUpdateTest, CancelAfterApply) {
+
+}
+
 }  // namespace snapshot
 }  // namespace android
 
@@ -661,6 +814,7 @@ int main(int argc, char** argv) {
     }
 
     // Clean up previous run.
+    SnapshotUpdateTest().Cleanup();
     SnapshotTest().Cleanup();
 
     // Use a separate image manager for our fake super partition.
