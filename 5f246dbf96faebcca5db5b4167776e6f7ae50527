@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5cbb7bb6_348dbb10",
+        "filename": "adb/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-09-05T00:46:14Z",
+      "side": 1,
+      "message": "(is this still necessary? i thought i\u0027d seen dwillemsen removing these?)",
+      "revId": "5f246dbf96faebcca5db5b4167776e6f7ae50527",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "934392f7_8d5e3f0c",
+        "filename": "adb/tools/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-09-05T00:46:14Z",
+      "side": 1,
+      "message": "oops",
+      "revId": "5f246dbf96faebcca5db5b4167776e6f7ae50527",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4580d0e1_e929a92b",
+        "filename": "adb/tools/check_ms_os_desc.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 212,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-09-05T00:46:14Z",
+      "side": 1,
+      "message": "return something?",
+      "revId": "5f246dbf96faebcca5db5b4167776e6f7ae50527",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
