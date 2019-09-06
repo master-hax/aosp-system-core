@@ -16,6 +16,24 @@
       "revId": "5f181bc503c27164bfa3fcf52fd26b0b68c3a580",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8dd0f842_d95fe3ff",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2019-09-06T18:40:13Z",
+      "side": 1,
+      "message": "I guess that is only for conflicts, this is fully compatible, so automerger should do it correctly.",
+      "parentUuid": "d4197242_3398fd15",
+      "revId": "5f181bc503c27164bfa3fcf52fd26b0b68c3a580",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
