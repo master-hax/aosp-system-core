@@ -52,6 +52,24 @@
       "revId": "5f181bc503c27164bfa3fcf52fd26b0b68c3a580",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e83f176c_e714aabe",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2019-09-06T18:53:53Z",
+      "side": 1,
+      "message": "yeah, also save few cycles on the automerger backend.\nhowever the merge path is tricky (in internal branches, but might not be the case for aosp \u003d\u003e master)so adding it may lead to miss path in some branch (saw that happened).",
+      "parentUuid": "608777fd_a03d5fe0",
+      "revId": "5f181bc503c27164bfa3fcf52fd26b0b68c3a580",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
