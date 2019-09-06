@@ -70,6 +70,24 @@
       "revId": "5f181bc503c27164bfa3fcf52fd26b0b68c3a580",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3339caaf_2b2dadf5",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-09-06T18:58:51Z",
+      "side": 1,
+      "message": "Sounds good to me then.",
+      "parentUuid": "e83f176c_e714aabe",
+      "revId": "5f181bc503c27164bfa3fcf52fd26b0b68c3a580",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
