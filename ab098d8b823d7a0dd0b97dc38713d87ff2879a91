@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "96c185d3_cfaa4a96",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-09-06T14:53:05Z",
+      "side": 1,
+      "message": "isn\u0027t this working as intended then? the whole point of calling sync() before reboot is to ensure that any such operations actually do get flushed...",
+      "revId": "ab098d8b823d7a0dd0b97dc38713d87ff2879a91",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
