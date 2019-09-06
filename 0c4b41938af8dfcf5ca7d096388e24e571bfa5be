@@ -16,6 +16,24 @@
       "revId": "0c4b41938af8dfcf5ca7d096388e24e571bfa5be",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4bbba4a0_5ec455d3",
+        "filename": "rootdir/fsverity_init.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1042276
+      },
+      "writtenOn": "2019-09-06T16:46:22Z",
+      "side": 1,
+      "message": "Rephrased.  fs-verity does not necessarily require a key, if one only cares about on-device integrity.  But in our cases, we always want to be backed by trusted signatures.",
+      "parentUuid": "81b82fd7_f2ac1fbf",
+      "revId": "0c4b41938af8dfcf5ca7d096388e24e571bfa5be",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
