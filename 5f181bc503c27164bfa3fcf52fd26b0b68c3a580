@@ -34,6 +34,24 @@
       "revId": "5f181bc503c27164bfa3fcf52fd26b0b68c3a580",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "608777fd_a03d5fe0",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-09-06T18:47:47Z",
+      "side": 1,
+      "message": "Right, but it\u0027ll skip the TH tests in master if you add it, which is a nice benefit.",
+      "parentUuid": "8dd0f842_d95fe3ff",
+      "revId": "5f181bc503c27164bfa3fcf52fd26b0b68c3a580",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
