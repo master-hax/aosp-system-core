@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "81b82fd7_f2ac1fbf",
+        "filename": "rootdir/fsverity_init.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-09-06T15:04:30Z",
+      "side": 1,
+      "message": "(random question in passing, that might make for a useful code comment: why does this happen first? shouldn\u0027t it happen _after_ we\u0027ve added all the keys? does this rely on the fact that init is preventing anything else from running while this shell script runs, so the order doesn\u0027t matter? or is this actually unrelated to the key, and to ensure that when we _read_ the keys, they\u0027re protected by fsverity?)",
+      "revId": "0c4b41938af8dfcf5ca7d096388e24e571bfa5be",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
