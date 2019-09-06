@@ -218,6 +218,9 @@ UeventdConfiguration ParseConfig(const std::vector<std::string>& configs) {
     parser.AddSingleLineParser("uevent_socket_rcvbuf_size",
                                std::bind(ParseUeventSocketRcvbufSizeLine, _1,
                                          &ueventd_configuration.uevent_socket_rcvbuf_size));
+    parser.AddSingleLineParser("parallel_restorecon",
+                               std::bind(ParseModaliasHandlingLine, _1,
+                                         &ueventd_configuration.enable_parallel_restorecon));
 
     for (const auto& config : configs) {
         parser.ParseConfig(config);
