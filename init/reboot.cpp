@@ -446,7 +446,6 @@ static void DoReboot(unsigned int cmd, const std::string& reason, const std::str
         skip = strlen("reboot,");
     }
     property_set(LAST_REBOOT_REASON_PROPERTY, reason.c_str() + skip);
-    sync();
 
     bool is_thermal_shutdown = cmd == ANDROID_RB_THERMOFF;
 
