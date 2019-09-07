@@ -18,6 +18,7 @@
 
 #include <sys/socket.h>
 #include <sys/un.h>
+#include <regex>
 
 #include <android-base/logging.h>
 #include <android-base/parseint.h>
@@ -138,8 +139,17 @@ bool EraseHandler(FastbootDevice* device, const std::vector<std::string>& args) 
         return device->WriteStatus(FastbootResult::FAIL, "Erase is not allowed on locked devices");
     }
 
+    const auto& partition_name = args[1];
+    // Erase vbmeta image in /super_vbmeta if /super_vbmeta exist.
+    std::regex vbmeta_regex("vbmeta_.*_.*");
+    if (std::regex_match(partition_name, vbmeta_regex)) {
+        if (auto super_vbmeta_name = GetSuperVBMetaPartitionName(device)) {
+            return EraseVBMeta(device, *super_vbmeta_name, partition_name);
+        }
+    }
+
     PartitionHandle handle;
-    if (!OpenPartition(device, args[1], &handle)) {
+    if (!OpenPartition(device, partition_name, &handle)) {
         return device->WriteStatus(FastbootResult::FAIL, "Partition doesn't exist");
     }
     if (wipe_block_device(handle.fd(), get_block_device_size(handle.fd())) == 0) {
@@ -466,6 +476,14 @@ bool FlashHandler(FastbootDevice* device, const std::vector<std::string>& args) 
         CancelPartitionSnapshot(device, partition_name);
     }
 
+    // Flash vbmeta image to /super_vbmeta if /super_vbmeta exist.
+    std::regex vbmeta_regex("vbmeta_.*_.*");
+    if (std::regex_match(partition_name, vbmeta_regex)) {
+        if (auto super_vbmeta_name = GetSuperVBMetaPartitionName(device)) {
+            return FlashVBMeta(device, *super_vbmeta_name, partition_name);
+        }
+    }
+
     int ret = Flash(device, partition_name);
     if (ret < 0) {
         return device->WriteStatus(FastbootResult::FAIL, strerror(-ret));
@@ -484,6 +502,17 @@ bool UpdateSuperHandler(FastbootDevice* device, const std::vector<std::string>& 
 
     bool wipe = (args.size() >= 3 && args[2] == "wipe");
     return UpdateSuper(device, args[1], wipe);
+}
+
+bool InitSuperVBMetaHandler(FastbootDevice* device, const std::vector<std::string>& args) {
+    if (args.size() != 1) {
+        return device->WriteFail("Invalid arguments");
+    }
+
+    if (auto super_vbmeta_name = GetSuperVBMetaPartitionName(device)) {
+        return InitSuperVBMeta(device, *super_vbmeta_name);
+    }
+    return device->WriteFail("Could not find super vbmeta partition");
 }
 
 class AutoMountMetadata {

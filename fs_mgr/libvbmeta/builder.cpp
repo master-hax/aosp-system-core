@@ -37,6 +37,12 @@ SuperVBMetaBuilder::SuperVBMetaBuilder(const int super_vbmeta_fd,
                                        const std::map<std::string, std::string>& images_path)
     : super_vbmeta_fd_(super_vbmeta_fd), images_path_(images_path) {}
 
+SuperVBMetaBuilder::SuperVBMetaBuilder(const int super_vbmeta_fd)
+    : super_vbmeta_fd_(super_vbmeta_fd) {}
+
+SuperVBMetaBuilder::SuperVBMetaBuilder(const int super_vbmeta_fd, const VBMetaTable& table)
+    : super_vbmeta_fd_(super_vbmeta_fd), table_(table) {}
+
 Result<void> SuperVBMetaBuilder::Build() {
     for (const auto& [vbmeta_name, file_path] : images_path_) {
         Result<std::string> content = ReadVBMetaImageFromFile(file_path);

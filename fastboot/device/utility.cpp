@@ -240,3 +240,13 @@ std::string GetSuperSlotSuffix(FastbootDevice* device, const std::string& partit
     }
     return current_slot_suffix;
 }
+
+std::optional<std::string> GetSuperVBMetaPartitionName(FastbootDevice* device) {
+    std::string slot_suffix = device->GetCurrentSlot();
+    uint32_t slot_number = SlotNumberForSlotSuffix(slot_suffix);
+    std::string super_vbmeta_name = fs_mgr_get_super_vbmeta_partition_name(slot_number);
+    if (!FindPhysicalPartition(super_vbmeta_name)) {
+        return {};
+    }
+    return super_vbmeta_name;
+}

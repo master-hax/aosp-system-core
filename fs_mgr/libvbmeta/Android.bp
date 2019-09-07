@@ -22,14 +22,17 @@ libvbmeta_lib_deps = [
 cc_library {
     name: "libvbmeta",
     host_supported: true,
+    recovery_available: true,
     srcs: [
         "builder.cpp",
         "reader.cpp",
+        "updater.cpp",
         "utility.cpp",
         "writer.cpp",
     ],
     shared_libs: [
         "liblog",
+        "liblp",
     ] + libvbmeta_lib_deps,
     export_include_dirs: ["include"],
 }
