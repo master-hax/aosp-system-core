@@ -138,6 +138,7 @@ cc_binary {
         "liblp",
         "libsparse",
         "libutils",
+        "libvbmeta",
     ],
 
     static_libs: [

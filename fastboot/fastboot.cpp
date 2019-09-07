@@ -98,6 +98,7 @@ static std::string g_dtb_path;
 
 static bool g_disable_verity = false;
 static bool g_disable_verification = false;
+static bool g_super_vbmeta = false;
 
 static const std::string convert_fbe_marker_filename("convert_fbe");
 
@@ -433,6 +434,7 @@ static int show_help() {
             " --set-active[=SLOT]        Sets the active slot before rebooting.\n"
             " --skip-secondary           Don't flash secondary slots in flashall/update.\n"
             " --skip-reboot              Don't reboot device after flashing.\n"
+            " --super-vbmeta             Sets super-vbmeta when flashing vbmeta_* to super_vbmeta.\n"
             " --disable-verity           Sets disable-verity when flashing vbmeta.\n"
             " --disable-verification     Sets disable-verification when flashing vbmeta.\n"
 #if !defined(_WIN32)
@@ -945,6 +947,9 @@ static void rewrite_vbmeta_buffer(struct fastboot_buffer* buf) {
     if (g_disable_verification) {
         data[123] |= 0x02;
     }
+    if (g_super_vbmeta) {
+        data[123] |= 0x02;
+    }
 
     if (!android::base::WriteStringToFd(data, fd)) {
         die("Failed writing to modified vbmeta");
@@ -1205,6 +1210,7 @@ class FlashAllTool {
     void FlashImages(const std::vector<std::pair<const Image*, std::string>>& images);
     void FlashImage(const Image& image, const std::string& slot, fastboot_buffer* buf);
     void UpdateSuperPartition();
+    void InitSuperVBMeta();
 
     const ImageSource& source_;
     std::string slot_override_;
@@ -1213,6 +1219,7 @@ class FlashAllTool {
     std::string secondary_slot_;
     std::vector<std::pair<const Image*, std::string>> boot_images_;
     std::vector<std::pair<const Image*, std::string>> os_images_;
+    std::vector<std::pair<const Image*, std::string>> vbmeta_images_;
 };
 
 FlashAllTool::FlashAllTool(const ImageSource& source, const std::string& slot_override, bool skip_secondary, bool wipe)
@@ -1258,6 +1265,23 @@ void FlashAllTool::Flash() {
 
     // Flash OS images, resizing logical partitions as needed.
     FlashImages(os_images_);
+
+    // Flash vbmeta_ images to super vbmeta if super-vbmeta is set.
+    if(g_super_vbmeta){
+        InitSuperVBMeta();
+        FlashImages(vbmeta_images_);
+
+        // Flash original vbmeta image
+        std::vector<std::pair<const Image*, std::string>> original_vbmeta_image;
+        original_vbmeta_image.emplace_back(
+            *std::find_if(
+                boot_images_.begin(), boot_images_.end(),
+                [](const auto& entry) { return entry.first->nickname == "vbmeta"; }
+            )
+        );
+        g_super_vbmeta = false;
+        FlashImages(original_vbmeta_image);
+    }
 }
 
 void FlashAllTool::CheckRequirements() {
@@ -1294,7 +1318,9 @@ void FlashAllTool::CollectImages() {
             }
             slot = secondary_slot_;
         }
-        if (images[i].type == ImageType::BootCritical) {
+        if(g_super_vbmeta && android::base::StartsWith(images[i].img_name, "vbmeta_")){
+            vbmeta_images_.emplace_back(&images[i], slot);
+        } else if (images[i].type == ImageType::BootCritical) {
             boot_images_.emplace_back(&images[i], slot);
         } else if (images[i].type == ImageType::Normal) {
             os_images_.emplace_back(&images[i], slot);
@@ -1365,6 +1391,10 @@ void FlashAllTool::UpdateSuperPartition() {
             }
         }
     }
+}
+
+void FlashAllTool::InitSuperVBMeta() {
+    fb->RawCommand("init-super-vbmeta", "Initializing super partition");
 }
 
 class ZipImageSource final : public ImageSource {
@@ -1696,6 +1726,7 @@ int FastBootTool::Main(int argc, char* argv[]) {
         {"skip-reboot", no_argument, 0, 0},
         {"skip-secondary", no_argument, 0, 0},
         {"slot", required_argument, 0, 0},
+        {"super-vbmeta", no_argument, 0, 0},
         {"tags-offset", required_argument, 0, 0},
         {"dtb", required_argument, 0, 0},
         {"dtb-offset", required_argument, 0, 0},
@@ -1745,6 +1776,8 @@ int FastBootTool::Main(int argc, char* argv[]) {
                 skip_secondary = true;
             } else if (name == "slot") {
                 slot_override = optarg;
+            } else if (name == "super-vbmeta") {
+                g_super_vbmeta = true;
             } else if (name == "dtb-offset") {
                 g_boot_img_hdr.dtb_addr = strtoul(optarg, 0, 16);
             } else if (name == "tags-offset") {
