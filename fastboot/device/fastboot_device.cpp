@@ -52,6 +52,7 @@ FastbootDevice::FastbootDevice()
               {FB_CMD_DELETE_PARTITION, DeletePartitionHandler},
               {FB_CMD_RESIZE_PARTITION, ResizePartitionHandler},
               {FB_CMD_UPDATE_SUPER, UpdateSuperHandler},
+              {FB_CMD_INIT_SUPER_VBMETA, InitSuperVBMetaHandler},
               {FB_CMD_OEM, OemCmdHandler},
               {FB_CMD_GSI, GsiHandler},
       }),

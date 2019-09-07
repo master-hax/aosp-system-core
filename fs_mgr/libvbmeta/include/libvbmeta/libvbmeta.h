@@ -17,6 +17,7 @@
 #pragma once
 
 #include <map>
+#include <optional>
 #include <string>
 
 namespace android {
@@ -24,6 +25,12 @@ namespace fs_mgr {
 
 bool WriteToSuperVBMetaFile(const std::string& super_vbmeta_file,
                             const std::map<std::string, std::string>& images_path);
+
+bool InitSuperVBMetaPartition(const std::string& super_vbmeta_name);
+
+bool UpdateSuperVBMetaPartition(const std::string& super_vbmeta_name,
+                                const std::string& vbmeta_image_name,
+                                const std::optional<std::string> vbmeta_image);
 
 }  // namespace fs_mgr
 }  // namespace android

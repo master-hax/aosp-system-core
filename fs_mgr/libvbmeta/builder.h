@@ -31,6 +31,8 @@ class SuperVBMetaBuilder {
     SuperVBMetaBuilder();
     SuperVBMetaBuilder(const int super_vbmeta_fd,
                        const std::map<std::string, std::string>& images_path);
+    SuperVBMetaBuilder(const int super_vbmeta_fd);
+    SuperVBMetaBuilder(const int super_vbmeta_fd, const VBMetaTable& table);
     android::base::Result<void> Build();
     android::base::Result<std::string> ReadVBMetaImageFromFile(const std::string& file);
     // It adds the vbmeta image in super_vbmeta and returns the index

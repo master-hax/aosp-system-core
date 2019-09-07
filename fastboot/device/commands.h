@@ -47,5 +47,6 @@ bool CreatePartitionHandler(FastbootDevice* device, const std::vector<std::strin
 bool DeletePartitionHandler(FastbootDevice* device, const std::vector<std::string>& args);
 bool ResizePartitionHandler(FastbootDevice* device, const std::vector<std::string>& args);
 bool UpdateSuperHandler(FastbootDevice* device, const std::vector<std::string>& args);
+bool InitSuperVBMetaHandler(FastbootDevice* device, const std::vector<std::string>& args);
 bool OemCmdHandler(FastbootDevice* device, const std::vector<std::string>& args);
 bool GsiHandler(FastbootDevice* device, const std::vector<std::string>& args);
