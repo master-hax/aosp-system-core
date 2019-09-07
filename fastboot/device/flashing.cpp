@@ -32,6 +32,7 @@
 #include <fstab/fstab.h>
 #include <liblp/builder.h>
 #include <liblp/liblp.h>
+#include <libvbmeta/libvbmeta.h>
 #include <sparse/sparse.h>
 
 #include "fastboot_device.h"
@@ -196,4 +197,28 @@ bool UpdateSuper(FastbootDevice* device, const std::string& super_name, bool wip
     }
     fs_mgr_overlayfs_teardown();
     return device->WriteOkay("Successfully updated partition table");
+}
+
+bool InitSuperVBMeta(FastbootDevice* device, const std::string& super_vbmeta_name) {
+    if (!InitSuperVBMetaPartition(super_vbmeta_name)) {
+        return device->WriteFail("Unable to initialize super vbmeta table");
+    }
+    return device->WriteOkay("Successfully initialized partition table");
+}
+
+bool FlashVBMeta(FastbootDevice* device, const std::string& super_vbmeta_name,
+                 const std::string& partition_name) {
+    std::string vbmeta_image(device->download_data().data(), device->download_data().size());
+    if (!UpdateSuperVBMetaPartition(super_vbmeta_name, partition_name, vbmeta_image)) {
+        return device->WriteFail("Unable to flash vbmeta image in super vbmeta");
+    }
+    return device->WriteOkay("Successfully flashed vbmeta image in super vbmeta");
+}
+
+bool EraseVBMeta(FastbootDevice* device, const std::string& super_vbmeta_name,
+                 const std::string& partition_name) {
+    if (!UpdateSuperVBMetaPartition(super_vbmeta_name, partition_name, std::nullopt)) {
+        return device->WriteFail("Unable to erase vbmeta image in super vbmeta");
+    }
+    return device->WriteOkay("Successfully erased vbmeta image in super vbmeta");
 }

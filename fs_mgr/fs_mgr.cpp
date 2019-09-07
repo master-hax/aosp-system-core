@@ -86,6 +86,9 @@
 
 #define ARRAY_SIZE(a) (sizeof(a) / sizeof(*(a)))
 
+/* Default Super VBMeta Partition Name */
+#define SUPER_VBMETA_DEFAULT_PARTITION_NAME "super_vbmeta"
+
 using android::base::Basename;
 using android::base::Realpath;
 using android::base::StartsWith;
@@ -1714,4 +1717,23 @@ std::string fs_mgr_get_super_partition_name(int slot) {
         return super_partition + suffix;
     }
     return LP_METADATA_DEFAULT_PARTITION_NAME;
+}
+
+std::string fs_mgr_get_super_vbmeta_partition_name(int slot) {
+    std::string super_vbmeta_partition;
+    if (fs_mgr_get_boot_config_from_kernel_cmdline("super_vbmeta", &super_vbmeta_partition)) {
+        if (fs_mgr_get_slot_suffix().empty()) {
+            return super_vbmeta_partition;
+        }
+        std::string suffix;
+        if (slot == 0) {
+            suffix = "_a";
+        } else if (slot == 1) {
+            suffix = "_b";
+        } else if (slot == -1) {
+            suffix = fs_mgr_get_slot_suffix();
+        }
+        return super_vbmeta_partition + suffix;
+    }
+    return SUPER_VBMETA_DEFAULT_PARTITION_NAME;
 }
