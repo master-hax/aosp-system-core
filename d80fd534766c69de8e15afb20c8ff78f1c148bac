@@ -48,6 +48,54 @@
     },
     {
       "key": {
+        "uuid": "db20e1fe_c3681e32",
+        "filename": "fs_mgr/liblp/images.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-09-09T20:18:24Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "856f1f60_236bb42a",
+      "range": {
+        "startLine": 37,
+        "startChar": 23,
+        "endLine": 37,
+        "endChar": 26
+      },
+      "revId": "d80fd534766c69de8e15afb20c8ff78f1c148bac",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6c734f71_bdfd2f7e",
+        "filename": "fs_mgr/liblp/images.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-09-09T20:18:24Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ae22b7f0_e692dba9",
+      "range": {
+        "startLine": 37,
+        "startChar": 0,
+        "endLine": 37,
+        "endChar": 4
+      },
+      "revId": "d80fd534766c69de8e15afb20c8ff78f1c148bac",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3c146912_8a4fd40f",
         "filename": "fs_mgr/liblp/utility.h",
         "patchSetId": 1
@@ -59,6 +107,30 @@
       "writtenOn": "2019-09-09T19:11:22Z",
       "side": 1,
       "message": "nit: string_view? (otherwise there might be a copy for existing callers)",
+      "range": {
+        "startLine": 97,
+        "startChar": 54,
+        "endLine": 97,
+        "endChar": 66
+      },
+      "revId": "d80fd534766c69de8e15afb20c8ff78f1c148bac",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e27af44b_3ea5a0b5",
+        "filename": "fs_mgr/liblp/utility.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-09-09T20:18:24Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3c146912_8a4fd40f",
       "range": {
         "startLine": 97,
         "startChar": 54,
