@@ -1,0 +1,211 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "954f29b3_54eb44f8",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1130827
+      },
+      "writtenOn": "2019-09-09T05:14:46Z",
+      "side": 1,
+      "message": "This bug is for lpmake. Could you create another one and briefly describe the changes to fastbootd?",
+      "range": {
+        "startLine": 16,
+        "startChar": 5,
+        "endLine": 16,
+        "endChar": 14
+      },
+      "revId": "6b9ddcec538dc92a82722fa30e565f1b95a5b604",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f6994ed2_01d9dedc",
+        "filename": "fastboot/device/flashing.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 238,
+      "author": {
+        "id": 1130827
+      },
+      "writtenOn": "2019-09-09T05:14:46Z",
+      "side": 1,
+      "message": "slot_suffix is empty for non-A/B devices.\n\nhttps://android.googlesource.com/platform/system/core/+/refs/heads/master/fastboot/device/fastboot_device.cpp#72",
+      "range": {
+        "startLine": 238,
+        "startChar": 8,
+        "endLine": 238,
+        "endChar": 27
+      },
+      "revId": "6b9ddcec538dc92a82722fa30e565f1b95a5b604",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "af615c94_1009d618",
+        "filename": "fastboot/device/flashing.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 238,
+      "author": {
+        "id": 1130827
+      },
+      "writtenOn": "2019-09-09T05:14:46Z",
+      "side": 1,
+      "message": "Does it support ` fastboot flash vendor_b vendor.img` with current slot \u003d A ?",
+      "range": {
+        "startLine": 238,
+        "startChar": 31,
+        "endLine": 238,
+        "endChar": 84
+      },
+      "revId": "6b9ddcec538dc92a82722fa30e565f1b95a5b604",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7e8302d0_ae452742",
+        "filename": "fs_mgr/Android.bp",
+        "patchSetId": 3
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1130827
+      },
+      "writtenOn": "2019-09-09T05:14:46Z",
+      "side": 1,
+      "message": "It looks like the only dependency is VBMETA_TABLE_DEFAULT_PARTITION_NAME, and libvbmeta doesn\u0027t use it. How about moving the macro to fs_mgr.cpp?",
+      "range": {
+        "startLine": 57,
+        "startChar": 9,
+        "endLine": 57,
+        "endChar": 18
+      },
+      "revId": "6b9ddcec538dc92a82722fa30e565f1b95a5b604",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "34c5e54c_1fc5e2cd",
+        "filename": "fs_mgr/libvbmeta/utility.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 1130827
+      },
+      "writtenOn": "2019-09-09T05:14:46Z",
+      "side": 1,
+      "message": "const PartitionOpener opener;\n\nor change it to a parameter.",
+      "range": {
+        "startLine": 117,
+        "startChar": 4,
+        "endLine": 117,
+        "endChar": 55
+      },
+      "revId": "6b9ddcec538dc92a82722fa30e565f1b95a5b604",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2c6265ab_f3f3a0d8",
+        "filename": "fs_mgr/libvbmeta/utility.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 147,
+      "author": {
+        "id": 1130827
+      },
+      "writtenOn": "2019-09-09T05:14:46Z",
+      "side": 1,
+      "message": "Is it necessary to handle AVB_DESCRIPTOR_TAG_HASH ?",
+      "range": {
+        "startLine": 147,
+        "startChar": 16,
+        "endLine": 147,
+        "endChar": 24
+      },
+      "revId": "6b9ddcec538dc92a82722fa30e565f1b95a5b604",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "da19edfd_ff43380a",
+        "filename": "fs_mgr/libvbmeta/writer.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 122,
+      "author": {
+        "id": 1130827
+      },
+      "writtenOn": "2019-09-09T05:14:46Z",
+      "side": 1,
+      "message": "It is the same as read_vbmeta_table.error().",
+      "range": {
+        "startLine": 122,
+        "startChar": 48,
+        "endLine": 122,
+        "endChar": 83
+      },
+      "revId": "6b9ddcec538dc92a82722fa30e565f1b95a5b604",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ca13436e_b122e842",
+        "filename": "fs_mgr/libvbmeta/writer.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 136,
+      "author": {
+        "id": 1130827
+      },
+      "writtenOn": "2019-09-09T05:14:46Z",
+      "side": 1,
+      "message": "Is it a normal case?",
+      "range": {
+        "startLine": 135,
+        "startChar": 12,
+        "endLine": 136,
+        "endChar": 24
+      },
+      "revId": "6b9ddcec538dc92a82722fa30e565f1b95a5b604",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4001f348_fa27d2dd",
+        "filename": "fs_mgr/libvbmeta/writer.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1130827
+      },
+      "writtenOn": "2019-09-09T05:14:46Z",
+      "side": 1,
+      "message": "Can this be moved to writer.cpp?",
+      "range": {
+        "startLine": 22,
+        "startChar": 0,
+        "endLine": 22,
+        "endChar": 32
+      },
+      "revId": "6b9ddcec538dc92a82722fa30e565f1b95a5b604",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
