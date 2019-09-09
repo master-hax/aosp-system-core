@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "ed4d2e7c_5e964e7d",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1539525
+      },
+      "writtenOn": "2019-09-09T09:32:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "954f29b3_54eb44f8",
+      "range": {
+        "startLine": 16,
+        "startChar": 5,
+        "endLine": 16,
+        "endChar": 14
+      },
+      "revId": "6b9ddcec538dc92a82722fa30e565f1b95a5b604",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f6994ed2_01d9dedc",
         "filename": "fastboot/device/flashing.cpp",
         "patchSetId": 3
@@ -71,6 +95,54 @@
     },
     {
       "key": {
+        "uuid": "20963815_2c73a639",
+        "filename": "fastboot/device/flashing.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 238,
+      "author": {
+        "id": 1539525
+      },
+      "writtenOn": "2019-09-09T09:32:49Z",
+      "side": 1,
+      "message": "Because of new design, I won\u0027t deal with the problem of slot suffix.\nI insert vbmeta image with any slot suffix into /super_vbmeta.",
+      "parentUuid": "af615c94_1009d618",
+      "range": {
+        "startLine": 238,
+        "startChar": 31,
+        "endLine": 238,
+        "endChar": 84
+      },
+      "revId": "6b9ddcec538dc92a82722fa30e565f1b95a5b604",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9b0c906d_2d7bc297",
+        "filename": "fastboot/device/flashing.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 238,
+      "author": {
+        "id": 1539525
+      },
+      "writtenOn": "2019-09-09T09:32:49Z",
+      "side": 1,
+      "message": "Because of new design, I won\u0027t deal with the problem of slot suffix.\nI insert vbmeta image with any slot suffix into /super_vbmeta.",
+      "parentUuid": "f6994ed2_01d9dedc",
+      "range": {
+        "startLine": 238,
+        "startChar": 8,
+        "endLine": 238,
+        "endChar": 27
+      },
+      "revId": "6b9ddcec538dc92a82722fa30e565f1b95a5b604",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7e8302d0_ae452742",
         "filename": "fs_mgr/Android.bp",
         "patchSetId": 3
@@ -91,6 +163,30 @@
       "revId": "6b9ddcec538dc92a82722fa30e565f1b95a5b604",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "00f5853d_714278e1",
+        "filename": "fs_mgr/Android.bp",
+        "patchSetId": 3
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1539525
+      },
+      "writtenOn": "2019-09-09T09:32:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7e8302d0_ae452742",
+      "range": {
+        "startLine": 57,
+        "startChar": 9,
+        "endLine": 57,
+        "endChar": 18
+      },
+      "revId": "6b9ddcec538dc92a82722fa30e565f1b95a5b604",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -117,6 +213,30 @@
     },
     {
       "key": {
+        "uuid": "339cc63e_462135f4",
+        "filename": "fs_mgr/libvbmeta/utility.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 1539525
+      },
+      "writtenOn": "2019-09-09T09:32:49Z",
+      "side": 1,
+      "message": "I change it to \"unique_fd fd \u003d PartitionOpener().Open(...)\".",
+      "parentUuid": "34c5e54c_1fc5e2cd",
+      "range": {
+        "startLine": 117,
+        "startChar": 4,
+        "endLine": 117,
+        "endChar": 55
+      },
+      "revId": "6b9ddcec538dc92a82722fa30e565f1b95a5b604",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "2c6265ab_f3f3a0d8",
         "filename": "fs_mgr/libvbmeta/utility.cpp",
         "patchSetId": 3
@@ -137,6 +257,30 @@
       "revId": "6b9ddcec538dc92a82722fa30e565f1b95a5b604",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "382c1715_ab4e4a3f",
+        "filename": "fs_mgr/libvbmeta/utility.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 147,
+      "author": {
+        "id": 1539525
+      },
+      "writtenOn": "2019-09-09T09:32:49Z",
+      "side": 1,
+      "message": "Because of new design, I won\u0027t check partition is self-signed.\nI only check vbmeta image I wrote in /super_vbmeta is equal to the original one, so I don\u0027t have to know the type of descriptors in vbmeta image.",
+      "parentUuid": "2c6265ab_f3f3a0d8",
+      "range": {
+        "startLine": 147,
+        "startChar": 16,
+        "endLine": 147,
+        "endChar": 24
+      },
+      "revId": "6b9ddcec538dc92a82722fa30e565f1b95a5b604",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -163,6 +307,30 @@
     },
     {
       "key": {
+        "uuid": "cfe83301_21e0cec7",
+        "filename": "fs_mgr/libvbmeta/writer.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 122,
+      "author": {
+        "id": 1539525
+      },
+      "writtenOn": "2019-09-09T09:32:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "da19edfd_ff43380a",
+      "range": {
+        "startLine": 122,
+        "startChar": 48,
+        "endLine": 122,
+        "endChar": 83
+      },
+      "revId": "6b9ddcec538dc92a82722fa30e565f1b95a5b604",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ca13436e_b122e842",
         "filename": "fs_mgr/libvbmeta/writer.cpp",
         "patchSetId": 3
@@ -186,6 +354,30 @@
     },
     {
       "key": {
+        "uuid": "bf43f74d_75f646d2",
+        "filename": "fs_mgr/libvbmeta/writer.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 136,
+      "author": {
+        "id": 1539525
+      },
+      "writtenOn": "2019-09-09T09:32:49Z",
+      "side": 1,
+      "message": "Because of new design, I won\u0027t parse the partition avb footer.\nAnd for old design, it\u0027s normal case.\nTake system.img as example.\nFastboot divide system.img into two parts when flashing, so it\u0027s normal that the first part of system.img doesn\u0027t have avb footer.",
+      "parentUuid": "ca13436e_b122e842",
+      "range": {
+        "startLine": 135,
+        "startChar": 12,
+        "endLine": 136,
+        "endChar": 24
+      },
+      "revId": "6b9ddcec538dc92a82722fa30e565f1b95a5b604",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "4001f348_fa27d2dd",
         "filename": "fs_mgr/libvbmeta/writer.h",
         "patchSetId": 3
@@ -206,6 +398,30 @@
       "revId": "6b9ddcec538dc92a82722fa30e565f1b95a5b604",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "58e33cff_998a5da8",
+        "filename": "fs_mgr/libvbmeta/writer.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1539525
+      },
+      "writtenOn": "2019-09-09T09:32:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4001f348_fa27d2dd",
+      "range": {
+        "startLine": 22,
+        "startChar": 0,
+        "endLine": 22,
+        "endChar": 32
+      },
+      "revId": "6b9ddcec538dc92a82722fa30e565f1b95a5b604",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
