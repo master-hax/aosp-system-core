@@ -88,6 +88,16 @@ cc_test {
 }
 
 cc_test {
+    name: "vts_core_liblp_test",
+    defaults: ["liblp_test_defaults"],
+    test_config: "vts_core_liblp_test.xml",
+    test_suites: [
+        "device-tests",
+        "vts-core",
+    ],
+}
+
+cc_test {
     name: "vts_kernel_liblp_test",
     defaults: ["liblp_test_defaults"],
 }
