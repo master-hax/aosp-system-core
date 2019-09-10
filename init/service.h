@@ -129,6 +129,9 @@ class Service {
     bool is_post_data() const { return post_data_; }
 
   private:
+    Result<void> ExecStartImpl();
+    Result<void> StartImpl();
+
     void NotifyStateChange(const std::string& new_state) const;
     void StopOrReset(int how);
     void KillProcessGroup(int signal);
@@ -196,6 +199,8 @@ class Service {
     bool post_data_ = false;
 
     bool running_at_post_data_reset_ = false;
+
+    std::optional<std::string> on_failure_reboot_target_;
 };
 
 }  // namespace init
