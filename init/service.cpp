@@ -41,6 +41,7 @@
 #if defined(__ANDROID__)
 #include <ApexProperties.sysprop.h>
 
+#include "init.h"
 #include "mount_namespace.h"
 #include "property_service.h"
 #else
@@ -250,6 +251,11 @@ void Service::Reap(const siginfo_t& siginfo) {
         f(siginfo);
     }
 
+    if ((siginfo.si_code != CLD_EXITED || siginfo.si_status != 0) && on_failure_reboot_target_) {
+        LOG(ERROR) << "Service with 'reboot_on_failure' option failed, shutting down system.";
+        EnterShutdown(*on_failure_reboot_target_);
+    }
+
     if (flags_ & SVC_EXEC) UnSetExec();
 
     if (flags_ & SVC_TEMPORARY) return;
@@ -325,6 +331,15 @@ void Service::DumpState() const {
 
 
 Result<void> Service::ExecStart() {
+    auto result = ExecStartImpl();
+    if (!result && on_failure_reboot_target_) {
+        EnterShutdown(*on_failure_reboot_target_);
+    }
+
+    return result;
+}
+
+Result<void> Service::ExecStartImpl() {
     if (is_updatable() && !ServiceList::GetInstance().IsServicesUpdated()) {
         // Don't delay the service for ExecStart() as the semantic is that
         // the caller might depend on the side effect of the execution.
@@ -349,6 +364,15 @@ Result<void> Service::ExecStart() {
 }
 
 Result<void> Service::Start() {
+    auto result = StartImpl();
+    if (!result && on_failure_reboot_target_) {
+        EnterShutdown(*on_failure_reboot_target_);
+    }
+
+    return result;
+}
+
+Result<void> Service::StartImpl() {
     if (is_updatable() && !ServiceList::GetInstance().IsServicesUpdated()) {
         ServiceList::GetInstance().DelayService(*this);
         return Error() << "Cannot start an updatable service '" << name_
