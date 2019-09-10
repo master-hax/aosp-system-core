@@ -426,6 +426,23 @@ Result<void> Service::Start() {
         pid = fork();
     }
 
+    std::vector<Descriptor> descriptors;
+    for (const auto& socket : sockets_) {
+        if (auto result = socket.Create(scon)) {
+            descriptors.emplace_back(std::move(*result));
+        } else {
+            LOG(INFO) << "Could not create socket '" << socket.name << "': " << result.error();
+        }
+    }
+
+    for (const auto& file : files_) {
+        if (auto result = file.Create()) {
+            descriptors.emplace_back(std::move(*result));
+        } else {
+            LOG(INFO) << "Could not open file '" << file.name << "': " << result.error();
+        }
+    }
+
     if (pid == 0) {
         umask(077);
 
@@ -438,16 +455,8 @@ Result<void> Service::Start() {
             setenv(key.c_str(), value.c_str(), 1);
         }
 
-        for (const auto& socket : sockets_) {
-            if (auto result = socket.CreateAndPublish(scon); !result) {
-                LOG(INFO) << "Could not create socket '" << socket.name << "': " << result.error();
-            }
-        }
-
-        for (const auto& file : files_) {
-            if (auto result = file.CreateAndPublish(); !result) {
-                LOG(INFO) << "Could not open file '" << file.name << "': " << result.error();
-            }
+        for (const auto& descriptor : descriptors) {
+            descriptor.Publish();
         }
 
         if (auto result = WritePidToFiles(&writepid_files_); !result) {
