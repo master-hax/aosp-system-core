@@ -46,6 +46,30 @@
       "revId": "971e08db5482ad3cbf9a8bb5e05f8edd97dc668f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f7ff7b7f_c8c622f6",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1103203
+      },
+      "writtenOn": "2019-09-10T18:45:28Z",
+      "side": 1,
+      "message": "I\u0027ve commented on the issue tracker ticket. For reference, the problem isn\u0027t that the binary is not there but that it returns with a non-zero return code. We\u0027ll need to figure out why that is, it would be interesting to know whether you can reproduce the non-zero exit code when starting the executable after the device has successfully rebooted using your workaround.",
+      "parentUuid": "f94dd004_13d5e186",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 11,
+        "endChar": 23
+      },
+      "revId": "971e08db5482ad3cbf9a8bb5e05f8edd97dc668f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
