@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e097b3e2_cead9dcf",
+        "filename": "init/service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 333,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-09-10T20:44:17Z",
+      "side": 1,
+      "message": "This is a little bit ugly but maybe the best?\n\nAlternatively I could have a scope_guard here and disarm it when returning successfully, but that seems worse.",
+      "revId": "d3ed1fe2dcded2189de0e37d2b56aba38fec044c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
