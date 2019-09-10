@@ -322,8 +322,8 @@ on init && property:ro.product.cpu.abilist64=*
     exec_reboot_on_failure boringssl-self-check-failed /system/bin/boringssl_self_test64
 on property:apexd.status=ready && property:ro.product.cpu.abilist64=*
     exec_reboot_on_failure boringssl-self-check-failed /apex/com.android.conscrypt/bin/boringssl_self_test64
-on property:apexd.status=ready && property:ro.product.cpu.abilist32=*
-    exec_reboot_on_failure boringssl-self-check-failed /apex/com.android.conscrypt/bin/boringssl_self_test32
+# on property:apexd.status=ready && property:ro.product.cpu.abilist32=*
+#     exec_reboot_on_failure boringssl-self-check-failed /apex/com.android.conscrypt/bin/boringssl_self_test32
 
 # Healthd can trigger a full boot from charger mode by signaling this
 # property when the power button is held.
