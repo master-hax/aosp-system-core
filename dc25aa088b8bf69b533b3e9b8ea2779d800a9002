@@ -1,0 +1,174 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "94499f24_760b0ce4",
+        "filename": "fs_mgr/liblp/builder.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-09-10T21:34:16Z",
+      "side": 1,
+      "message": "nit: braces",
+      "revId": "dc25aa088b8bf69b533b3e9b8ea2779d800a9002",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fd97c863_e4dcb80f",
+        "filename": "fs_mgr/liblp/builder.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 623,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-09-10T21:34:16Z",
+      "side": 1,
+      "message": "Zero extents are so untested that it\u0027s probably not even worth having them in a failure path. I\u0027d just return a zero-length linear extent.",
+      "revId": "dc25aa088b8bf69b533b3e9b8ea2779d800a9002",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "838b7522_b68b2835",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/snapshot.h",
+        "patchSetId": 12
+      },
+      "lineNbr": 166,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-09-10T21:34:16Z",
+      "side": 1,
+      "message": "nit: maybe \"using MetadataBuilder \u003d ...\" in the class to make these signatures a little nicer? Same for CreateLogicalPartitionParams below.",
+      "revId": "dc25aa088b8bf69b533b3e9b8ea2779d800a9002",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e0db12c8_e27517d3",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/snapshot.h",
+        "patchSetId": 12
+      },
+      "lineNbr": 170,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-09-10T21:34:16Z",
+      "side": 1,
+      "message": "nit: cow_sizes",
+      "revId": "dc25aa088b8bf69b533b3e9b8ea2779d800a9002",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "55500ee6_370c6961",
+        "filename": "fs_mgr/libsnapshot/partition_cow_creator.h",
+        "patchSetId": 12
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-09-10T21:34:16Z",
+      "side": 1,
+      "message": "nit: using MetadataBuilder \u003d (iirc partial namespaces are discouraged in system/core)",
+      "revId": "dc25aa088b8bf69b533b3e9b8ea2779d800a9002",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "afd3c70c_8af0f877",
+        "filename": "fs_mgr/libsnapshot/partition_cow_creator.h",
+        "patchSetId": 12
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-09-10T21:34:16Z",
+      "side": 1,
+      "message": "nit: Probably clearer to have an explicit Create() or Build() method.",
+      "revId": "dc25aa088b8bf69b533b3e9b8ea2779d800a9002",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1fb39bbd_16dcfc97",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 1653,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-09-10T21:34:16Z",
+      "side": 1,
+      "message": "Is there a way to avoid a huge lambda here? They\u0027re harder to debug or analyze in stack traces, and the control flow gets confusing. The outer function also gets harder to read.\n\nEither an inner class (to pull the lambda into a helper method, like you did for PartitionCowCreator), or a normal C++ iterator might be cleaner. ForEachPartition() could be ListUpdatePartitions and return a vector\u003cPartition*\u003e. (Or a generator.)",
+      "revId": "dc25aa088b8bf69b533b3e9b8ea2779d800a9002",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "81572340_7bf66b13",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 1656,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-09-10T21:34:16Z",
+      "side": 1,
+      "message": "nit: Can we restrict one-liners to control-flow only? (i.e. break/continue/return). It starts to get quite dense otherwise and this code in particular wants to be super readable, since we\u0027re doing complicated stuff. Having each line be one \"readable unit\" makes a huge difference. (Bonus, it also makes it easier to insert comments.)",
+      "revId": "dc25aa088b8bf69b533b3e9b8ea2779d800a9002",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5fcac746_6f21ab67",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 1664,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-09-10T21:34:16Z",
+      "side": 1,
+      "message": "It\u0027s possible to fail in between here and CreateSnapshot. Can that leave any dangling resources?",
+      "revId": "dc25aa088b8bf69b533b3e9b8ea2779d800a9002",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d3c0b012_7e8d2b6d",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 1685,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-09-10T21:34:16Z",
+      "side": 1,
+      "message": "When does this case come up? If a partition shrinks or grows, but does not move any blocks? (In case we don\u0027t have one already in your CL queue, we should include a test for this.)",
+      "revId": "dc25aa088b8bf69b533b3e9b8ea2779d800a9002",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
