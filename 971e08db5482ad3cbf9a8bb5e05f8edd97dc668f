@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "dc18f873_d1799d50",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1103203
+      },
+      "writtenOn": "2019-09-10T16:12:23Z",
+      "side": 1,
+      "message": "It *should* be there (and it should be ready because of the \"property:apexd.status\u003dready\" part of the trigger). Are you building with the latest commits from external/conscrypt?\n\nhttp://r.android.com/1112552 accidentally removed the executable but it was reverted in http://r.android.com/1114071 and re-done properly in http://r.android.com/1114072\n\nIf you\u0027ve synced recently enough to have the init.rc changes that you\u0027re trying to comment out then you should have all of the above changes and so the /apex/com.android.conscrypt/bin/boringssl_self_test32 binary should be present and ready.\n\nCan you please clarify:\n 1. Is /apex/com.android.conscrypt/bin/boringssl_self_test32 present on your device? \n 2. Does your device have a 32bit ABI?\n 3. Are you observing the failure consistently or is it flaky?",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 11,
+        "endChar": 23
+      },
+      "revId": "971e08db5482ad3cbf9a8bb5e05f8edd97dc668f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
