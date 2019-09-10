@@ -81,10 +81,14 @@ cc_test {
     name: "liblp_test",
     defaults: ["liblp_test_defaults"],
     test_config: "liblp_test.xml",
-    test_suites: [
-        "device-tests",
-        "vts-core",
-    ],
+    test_suites: ["device-tests"],
+}
+
+cc_test {
+    name: "vts_core_liblp_test",
+    defaults: ["liblp_test_defaults"],
+    test_config: "vts_core_liblp_test.xml",
+    test_suites: ["vts-core"],
 }
 
 cc_test {
