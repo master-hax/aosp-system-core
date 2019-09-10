@@ -155,6 +155,24 @@
     },
     {
       "key": {
+        "uuid": "0aae3194_af354548",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 1664,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2019-09-10T22:43:05Z",
+      "side": 1,
+      "message": "There shouldn\u0027t be, unless the device shuts down between here and L1694 (which is possible). In that case, the OTA client is responsible for calling CreateUpdateSnapshots again, and DeleteSnapshot should delete any previous leftover resources if they exist.",
+      "parentUuid": "5fcac746_6f21ab67",
+      "revId": "dc25aa088b8bf69b533b3e9b8ea2779d800a9002",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d3c0b012_7e8d2b6d",
         "filename": "fs_mgr/libsnapshot/snapshot.cpp",
         "patchSetId": 12
@@ -169,6 +187,24 @@
       "revId": "dc25aa088b8bf69b533b3e9b8ea2779d800a9002",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b54d059a_ed56af51",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 1685,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2019-09-10T22:43:05Z",
+      "side": 1,
+      "message": "This is just a sanity check. Technically, it could be possible if the OTA package is broken and manually feed cow_size \u003d 0 via |cow_sizes|, or if there is a bug in PartitionCowCreator. So, I think a fatal error is appropriate in this case.",
+      "parentUuid": "d3c0b012_7e8d2b6d",
+      "revId": "dc25aa088b8bf69b533b3e9b8ea2779d800a9002",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
