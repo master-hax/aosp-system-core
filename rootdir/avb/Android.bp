@@ -1,0 +1,33 @@
+genrule {
+    name: "q-gsi_avbpubkey",
+    srcs: [
+        "q-gsi.avbpubkey",
+    ],
+    out: [
+        "q-gsi_avbpubkey",
+    ],
+    cmd: "cp -f $(in) $(genDir)/q-gsi_avbpubkey",
+}
+
+
+genrule {
+    name: "r-gsi_avbpubkey",
+    srcs: [
+        "r-gsi.avbpubkey",
+    ],
+    out: [
+        "r-gsi_avbpubkey",
+    ],
+    cmd: "cp -f $(in) $(genDir)/r-gsi_avbpubkey",
+}
+
+genrule {
+    name: "s-gsi_avbpubkey",
+    srcs: [
+        "s-gsi.avbpubkey",
+    ],
+    out: [
+        "s-gsi_avbpubkey",
+    ],
+    cmd: "cp -f $(in) $(genDir)/s-gsi_avbpubkey",
+}
