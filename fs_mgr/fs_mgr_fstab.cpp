@@ -36,6 +36,7 @@
 
 #include "fs_mgr_priv.h"
 
+using android::base::EndsWith;
 using android::base::ParseByteCount;
 using android::base::ParseInt;
 using android::base::ReadFileToString;
@@ -598,7 +599,7 @@ std::set<std::string> ExtraBootDevices(const Fstab& fstab) {
     return boot_devices;
 }
 
-FstabEntry BuildGsiUserdataFstabEntry() {
+FstabEntry BuildDsuUserdataFstabEntry() {
     constexpr uint32_t kFlags = MS_NOATIME | MS_NOSUID | MS_NODEV;
 
     FstabEntry userdata = {
@@ -627,7 +628,10 @@ bool EraseFstabEntry(Fstab* fstab, const std::string& mount_point) {
     return false;
 }
 
-void TransformFstabForGsi(Fstab* fstab) {
+}  // namespace
+
+void TransformFstabForDsu(Fstab* fstab, const std::vector<std::string>& dsu_partitions) {
+    // Convert userdata
     // Inherit fstab properties for userdata.
     FstabEntry userdata;
     if (FstabEntry* entry = GetEntryForMountPoint(fstab, "/data")) {
@@ -639,19 +643,62 @@ void TransformFstabForGsi(Fstab* fstab) {
             userdata.key_dir += "/gsi";
         }
     } else {
-        userdata = BuildGsiUserdataFstabEntry();
-    }
-
-    if (EraseFstabEntry(fstab, "/system")) {
-        fstab->emplace_back(BuildGsiSystemFstabEntry());
+        userdata = BuildDsuUserdataFstabEntry();
     }
 
     if (EraseFstabEntry(fstab, "/data")) {
         fstab->emplace_back(userdata);
     }
-}
 
-}  // namespace
+    // Convert others
+    for (auto&& partition : dsu_partitions) {
+        if (!EndsWith(partition, gsi::kDsuPostfix)) {
+            continue;
+        }
+        // userdata has been handled
+        if (StartsWith(partition, "user")) {
+            continue;
+        }
+        std::string lp_name = partition.substr(0, partition.length() - strlen(gsi::kDsuPostfix));
+        std::string mount_point = "/" + lp_name;
+        std::vector<FstabEntry*> entries = GetEntriesForMountPoint(fstab, mount_point);
+        if (entries.size() == 0) {
+            FstabEntry entry = {
+                    .blk_device = partition,
+                    .mount_point = mount_point,
+                    .fs_type = "ext4",
+                    .flags = MS_RDONLY,
+                    .fs_options = "barrier=1",
+                    // .logical_partition_name is required to look up AVB Hashtree descriptors.
+                    .logical_partition_name = "system"};
+            entry.fs_mgr_flags.wait = true;
+            entry.fs_mgr_flags.logical = true;
+            entry.fs_mgr_flags.first_stage_mount = true;
+            // Use the system key which may be in the vbmeta or vbmeta_system
+            entry.vbmeta_partition = "vbmeta";
+            fstab->emplace_back(entry);
+            entry.vbmeta_partition = "vbmeta_system";
+            fstab->emplace_back(entry);
+        } else {
+            for (auto&& entry : entries) {
+                entry->blk_device = partition;
+                if (entry->avb_keys.size() > 0) {
+                    entry->avb_keys += ":";
+                }
+                entry->avb_keys += "/avb/q-gsi.avbpubkey:/avb/r-gsi.avbpubkey:/avb/s-gsi.avbpubkey";
+            }
+            auto system_ext4 = std::find_if(fstab->begin(), fstab->end(), [](const auto& entry) {
+                return entry.mount_point == "/system" && entry.fs_type == "ext4";
+            });
+            if (system_ext4 == fstab->end()) {
+                // Make sure the a ext4 system is included to support GSI.
+                auto new_entry = *GetEntryForMountPoint(fstab, "/system");
+                new_entry.fs_type = "ext4";
+                fstab->emplace_back(new_entry);
+            }
+        }
+    }
+}
 
 bool ReadFstabFromFile(const std::string& path, Fstab* fstab) {
     auto fstab_file = std::unique_ptr<FILE, decltype(&fclose)>{fopen(path.c_str(), "re"), fclose};
@@ -667,7 +714,9 @@ bool ReadFstabFromFile(const std::string& path, Fstab* fstab) {
         return false;
     }
     if (!is_proc_mounts && !access(android::gsi::kGsiBootedIndicatorFile, F_OK)) {
-        TransformFstabForGsi(fstab);
+        std::string lp_names;
+        ReadFileToString(gsi::kGsiLpNamesFile, &lp_names);
+        TransformFstabForDsu(fstab, Split(lp_names, ","));
     }
 
     SkipMountingPartitions(fstab);
@@ -779,6 +828,21 @@ FstabEntry* GetEntryForMountPoint(Fstab* fstab, const std::string& path) {
     return nullptr;
 }
 
+std::vector<FstabEntry*> GetEntriesForMountPoint(Fstab* fstab, const std::string& path) {
+    std::vector<FstabEntry*> entries;
+    if (fstab == nullptr) {
+        return entries;
+    }
+
+    for (auto& entry : *fstab) {
+        if (entry.mount_point == path) {
+            entries.emplace_back(&entry);
+        }
+    }
+
+    return entries;
+}
+
 std::set<std::string> GetBootDevices() {
     // First check the kernel commandline, then try the device tree otherwise
     std::string dt_file_name = get_android_dt_dir() + "/boot_devices";
@@ -796,23 +860,6 @@ std::set<std::string> GetBootDevices() {
     }
 
     return ExtraBootDevices(fstab);
-}
-
-FstabEntry BuildGsiSystemFstabEntry() {
-    // .logical_partition_name is required to look up AVB Hashtree descriptors.
-    FstabEntry system = {
-            .blk_device = "system_gsi",
-            .mount_point = "/system",
-            .fs_type = "ext4",
-            .flags = MS_RDONLY,
-            .fs_options = "barrier=1",
-            // could add more keys separated by ':'.
-            .avb_keys = "/avb/q-gsi.avbpubkey:/avb/r-gsi.avbpubkey:/avb/s-gsi.avbpubkey",
-            .logical_partition_name = "system"};
-    system.fs_mgr_flags.wait = true;
-    system.fs_mgr_flags.logical = true;
-    system.fs_mgr_flags.first_stage_mount = true;
-    return system;
 }
 
 std::string GetVerityDeviceName(const FstabEntry& entry) {
