@@ -83,6 +83,7 @@ cc_defaults {
         "libfs_mgr",
         "libfscrypt",
         "libgsi",
+        "liblp",
         "libhidl-gen-utils",
         "libjsoncpp",
         "libkeyutils",

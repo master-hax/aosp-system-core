@@ -102,8 +102,14 @@ bool SkipMountingPartitions(Fstab* fstab);
 
 FstabEntry* GetEntryForMountPoint(Fstab* fstab, const std::string& path);
 
-// Helper method to build a GSI fstab entry for mounting /system.
-FstabEntry BuildGsiSystemFstabEntry();
+// Helper method to build DSU fstab entries.
+// The fstab argument points to the unmodified fstab.
+// The logical_partitions argument ontains partition names, e.g.
+// logical_partitions[0] = "system_gsi"
+// logical_partitions[1] = "userdata_gsi"
+// logical_partitions[2] = ...
+std::vector<FstabEntry> BuildGsiFstabEntries(Fstab* fstab,
+                                             std::vector<std::string> logical_partitions);
 
 std::set<std::string> GetBootDevices();
 

@@ -50,7 +50,7 @@ using android::fs_mgr::AvbHandle;
 using android::fs_mgr::AvbHandleStatus;
 using android::fs_mgr::AvbHashtreeResult;
 using android::fs_mgr::AvbUniquePtr;
-using android::fs_mgr::BuildGsiSystemFstabEntry;
+using android::fs_mgr::BuildGsiFstabEntries;
 using android::fs_mgr::Fstab;
 using android::fs_mgr::FstabEntry;
 using android::fs_mgr::ReadDefaultFstab;
@@ -599,14 +599,14 @@ bool FirstStageMount::MountPartitions() {
 }
 
 void FirstStageMount::UseGsiIfPresent() {
-    std::string metadata_file, error;
+    std::string error;
 
-    if (!android::gsi::CanBootIntoGsi(&metadata_file, &error)) {
+    if (!android::gsi::CanBootIntoGsi(&error)) {
         LOG(INFO) << "GSI " << error << ", proceeding with normal boot";
         return;
     }
 
-    auto metadata = android::fs_mgr::ReadFromImageFile(metadata_file.c_str());
+    auto metadata = android::fs_mgr::ReadFromImageFile(gsi::GetMetadataFile().c_str());
     if (!metadata) {
         LOG(ERROR) << "GSI partition layout could not be read";
         return;
@@ -630,14 +630,19 @@ void FirstStageMount::UseGsiIfPresent() {
         return;
     }
 
-    // Replace the existing system fstab entry.
-    auto system_partition = std::find_if(fstab_.begin(), fstab_.end(), [](const auto& entry) {
-        return entry.mount_point == "/system";
-    });
-    if (system_partition != fstab_.end()) {
-        fstab_.erase(system_partition);
+    std::vector<std::string> partitions;
+    for (auto&& partition : metadata->partitions) {
+        partitions.push_back(partition.name);
     }
-    fstab_.emplace_back(BuildGsiSystemFstabEntry());
+    for (auto&& dsu_entry : BuildGsiFstabEntries(&fstab_, partitions)) {
+        auto old_entry = std::remove_if(fstab_.begin(), fstab_.end(), [&](const auto& entry) {
+            return entry.mount_point == dsu_entry.mount_point;
+        });
+        if (old_entry != fstab_.end()) {
+            fstab_.erase(old_entry);
+        }
+        fstab_.emplace_back(dsu_entry);
+    }
     gsi_not_on_userdata_ = (super_name != "userdata");
 }
 
