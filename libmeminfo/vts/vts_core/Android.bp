@@ -12,19 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-cc_defaults {
-    name: "vts_meminfo_defaults",
-    defaults: ["libmeminfo_defaults"],
-    static_libs: ["libmeminfo"],
-}
-
-filegroup {
-    name: "vts_meminfo_test_cpp",
-    srcs: [ "vts_meminfo_test.cpp" ],
-}
-
 cc_test {
-    name: "vts_meminfo_test",
-    srcs: [":vts_meminfo_test_cpp"],
+    name: "vts_core_meminfo_test",
     defaults: ["vts_meminfo_defaults"],
+    srcs: [":vts_meminfo_test_cpp"],
+    test_suites: ["vts-core"],
+    test_min_api_level: 29,
 }
