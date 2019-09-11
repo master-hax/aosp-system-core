@@ -44,8 +44,8 @@ cc_library_static {
     },
 }
 
-cc_test {
-    name: "libdm_test",
+cc_defaults {
+    name: "libdm_defaults",
     defaults: ["fs_mgr_defaults"],
     static_libs: [
         "libdm",
@@ -59,4 +59,16 @@ cc_test {
         "loop_control_test.cpp",
         "test_util.cpp",
     ]
+}
+
+cc_test {
+    name: "vts_core_libdm_test",
+    defaults: ["libdm_defaults"],
+    test_config: "vts_core_libdm_test.xml",
+    test_suites: ["vts-core"],
+}
+
+cc_test {
+    name: "libdm_test",
+    defaults: ["libdm_defaults"],
 }
