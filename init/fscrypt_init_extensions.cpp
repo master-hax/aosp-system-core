@@ -154,34 +154,68 @@ int fscrypt_set_directory_policy(const std::string& dir) {
     return err;
 }
 
+static int parse_encryption_options_string(const std::string& options_string,
+                                           const char** contents_encryption_mode_ret,
+                                           const char** filenames_encryption_mode_ret,
+                                           int* policy_version_ret) {
+    std::vector<std::string> parts = android::base::Split(options_string, ":");
+
+    if (parts.size() < 1 || parts.size() > 3) {
+        return -1;
+    }
+
+    *contents_encryption_mode_ret = parts[0].c_str();
+
+    *filenames_encryption_mode_ret = "aes-256-cts";
+    if (parts.size() >= 2) {
+        *filenames_encryption_mode_ret = parts[1].c_str();
+    }
+
+    *policy_version_ret = 1;
+    if (parts.size() >= 3) {
+        if (parts[2] == "v1") {
+            *policy_version_ret = 1;
+        } else if (parts[2] == "v2") {
+            *policy_version_ret = 2;
+        } else {
+            return -1;
+        }
+    }
+    return 0;
+}
+
 static int set_system_de_policy_on(const std::string& dir) {
     std::string ref_filename = std::string("/data") + fscrypt_key_ref;
-    std::string policy;
-    if (!android::base::ReadFileToString(ref_filename, &policy)) {
+    std::string key_specifier;
+    if (!android::base::ReadFileToString(ref_filename, &key_specifier)) {
         LOG(ERROR) << "Unable to read system policy to set on " << dir;
         return -1;
     }
 
-    auto type_filename = std::string("/data") + fscrypt_key_mode;
-    std::string modestring;
-    if (!android::base::ReadFileToString(type_filename, &modestring)) {
-        LOG(ERROR) << "Cannot read mode";
-    }
-
-    std::vector<std::string> modes = android::base::Split(modestring, ":");
-
-    if (modes.size() < 1 || modes.size() > 2) {
-        LOG(ERROR) << "Invalid encryption mode string: " << modestring;
+    auto options_filename = std::string("/data") + fscrypt_key_mode;
+    std::string options_string;
+    if (!android::base::ReadFileToString(options_filename, &options_string)) {
+        LOG(ERROR) << "Cannot read encryption options string";
         return -1;
     }
 
-    int result =
-            fscrypt_policy_ensure(dir.c_str(), policy.c_str(), policy.length(), modes[0].c_str(),
-                                  modes.size() >= 2 ? modes[1].c_str() : "aes-256-cts");
+    const char* contents_encryption_mode;
+    const char* filenames_encryption_mode;
+    int policy_version;
+
+    if (parse_encryption_options_string(options_string, &contents_encryption_mode,
+                                        &filenames_encryption_mode, &policy_version)) {
+        LOG(ERROR) << "Invalid encryption options string: " << options_string;
+        return -1;
+    }
+
+    int result = fscrypt_policy_ensure(dir.c_str(), key_specifier.c_str(), key_specifier.length(),
+                                       contents_encryption_mode, filenames_encryption_mode,
+                                       policy_version);
     if (result) {
         LOG(ERROR) << android::base::StringPrintf("Setting %02x%02x%02x%02x policy on %s failed!",
-                                                  policy[0], policy[1], policy[2], policy[3],
-                                                  dir.c_str());
+                                                  key_specifier[0], key_specifier[1],
+                                                  key_specifier[2], key_specifier[3], dir.c_str());
         return -1;
     }
 
