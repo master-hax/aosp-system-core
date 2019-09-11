@@ -46,6 +46,30 @@
       "revId": "ba0866d6d211ef69dd8c6abb73efeb32a45d03ed",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "96d99732_07dde1bf",
+        "filename": "fs_mgr/libdm/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 1088076
+      },
+      "writtenOn": "2019-09-11T06:14:46Z",
+      "side": 1,
+      "message": "sounds better to me.",
+      "parentUuid": "078d502a_6399377e",
+      "range": {
+        "startLine": 65,
+        "startChar": 11,
+        "endLine": 65,
+        "endChar": 30
+      },
+      "revId": "ba0866d6d211ef69dd8c6abb73efeb32a45d03ed",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
