@@ -22,6 +22,30 @@
       "revId": "ba0866d6d211ef69dd8c6abb73efeb32a45d03ed",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "078d502a_6399377e",
+        "filename": "fs_mgr/libdm/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 1307893
+      },
+      "writtenOn": "2019-09-11T06:00:58Z",
+      "side": 1,
+      "message": "How about vts_libdm_test?",
+      "parentUuid": "c0a773be_91913a6c",
+      "range": {
+        "startLine": 65,
+        "startChar": 11,
+        "endLine": 65,
+        "endChar": 30
+      },
+      "revId": "ba0866d6d211ef69dd8c6abb73efeb32a45d03ed",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
