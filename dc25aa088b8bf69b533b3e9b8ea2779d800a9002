@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "16dab6b6_1cc92294",
+        "filename": "fs_mgr/liblp/builder.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2019-09-11T00:42:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "94499f24_760b0ce4",
+      "revId": "dc25aa088b8bf69b533b3e9b8ea2779d800a9002",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fd97c863_e4dcb80f",
         "filename": "fs_mgr/liblp/builder.cpp",
         "patchSetId": 12
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "d9149b6b_819569f4",
+        "filename": "fs_mgr/liblp/builder.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 623,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2019-09-11T00:42:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fd97c863_e4dcb80f",
+      "revId": "dc25aa088b8bf69b533b3e9b8ea2779d800a9002",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "838b7522_b68b2835",
         "filename": "fs_mgr/libsnapshot/include/libsnapshot/snapshot.h",
         "patchSetId": 12
@@ -47,6 +83,24 @@
       "writtenOn": "2019-09-10T21:34:16Z",
       "side": 1,
       "message": "nit: maybe \"using MetadataBuilder \u003d ...\" in the class to make these signatures a little nicer? Same for CreateLogicalPartitionParams below.",
+      "revId": "dc25aa088b8bf69b533b3e9b8ea2779d800a9002",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9d1eebee_003bf3a9",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/snapshot.h",
+        "patchSetId": 12
+      },
+      "lineNbr": 166,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2019-09-11T00:42:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "838b7522_b68b2835",
       "revId": "dc25aa088b8bf69b533b3e9b8ea2779d800a9002",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
@@ -70,6 +124,24 @@
     },
     {
       "key": {
+        "uuid": "16da65fe_d01e6c80",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/snapshot.h",
+        "patchSetId": 12
+      },
+      "lineNbr": 170,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2019-09-11T00:42:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e0db12c8_e27517d3",
+      "revId": "dc25aa088b8bf69b533b3e9b8ea2779d800a9002",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "55500ee6_370c6961",
         "filename": "fs_mgr/libsnapshot/partition_cow_creator.h",
         "patchSetId": 12
@@ -84,6 +156,24 @@
       "revId": "dc25aa088b8bf69b533b3e9b8ea2779d800a9002",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1ba16a3c_2e4bdb17",
+        "filename": "fs_mgr/libsnapshot/partition_cow_creator.h",
+        "patchSetId": 12
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2019-09-11T00:42:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "55500ee6_370c6961",
+      "revId": "dc25aa088b8bf69b533b3e9b8ea2779d800a9002",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -104,6 +194,24 @@
     },
     {
       "key": {
+        "uuid": "449f8d09_d41b24f4",
+        "filename": "fs_mgr/libsnapshot/partition_cow_creator.h",
+        "patchSetId": 12
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2019-09-11T00:42:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "afd3c70c_8af0f877",
+      "revId": "dc25aa088b8bf69b533b3e9b8ea2779d800a9002",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1fb39bbd_16dcfc97",
         "filename": "fs_mgr/libsnapshot/snapshot.cpp",
         "patchSetId": 12
@@ -121,6 +229,24 @@
     },
     {
       "key": {
+        "uuid": "c8de8d51_f3903583",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 1653,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2019-09-11T00:42:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1fb39bbd_16dcfc97",
+      "revId": "dc25aa088b8bf69b533b3e9b8ea2779d800a9002",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "81572340_7bf66b13",
         "filename": "fs_mgr/libsnapshot/snapshot.cpp",
         "patchSetId": 12
@@ -135,6 +261,24 @@
       "revId": "dc25aa088b8bf69b533b3e9b8ea2779d800a9002",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "87a2bb32_d9a05029",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 1656,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2019-09-11T00:42:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "81572340_7bf66b13",
+      "revId": "dc25aa088b8bf69b533b3e9b8ea2779d800a9002",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
