@@ -20,7 +20,6 @@ cc_defaults {
         "-Wall",
         "-Werror",
         "-Wextra",
-        "-D_FILE_OFFSET_BITS=64",
     ],
 }
 
