@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "292ec35e_3ce2d70d",
+        "filename": "fs_mgr/libsnapshot/partition_cow_creator.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-09-11T00:33:31Z",
+      "side": 1,
+      "message": "nit: talked offline, but a comment here explaining why this works the way it does would be super helpful",
+      "revId": "c1aa58e34b1567348b45ddd0d6b298700695c79f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "af96c448_16feb6b2",
+        "filename": "fs_mgr/libsnapshot/partition_cow_creator.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-09-11T00:33:31Z",
+      "side": 1,
+      "message": "Worth having a bug # here?",
+      "revId": "c1aa58e34b1567348b45ddd0d6b298700695c79f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
