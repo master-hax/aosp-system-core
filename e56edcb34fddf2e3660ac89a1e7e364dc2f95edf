@@ -16,6 +16,24 @@
       "revId": "e56edcb34fddf2e3660ac89a1e7e364dc2f95edf",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "da4da8fa_8a56315d",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1060907
+      },
+      "writtenOn": "2019-09-11T22:51:06Z",
+      "side": 1,
+      "message": "Ah, in that case I misunderstood your message on the bug - what is the correct fix?",
+      "parentUuid": "846ac521_e5f784c7",
+      "revId": "e56edcb34fddf2e3660ac89a1e7e364dc2f95edf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
