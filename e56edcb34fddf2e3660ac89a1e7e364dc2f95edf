@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "846ac521_e5f784c7",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-09-11T22:47:57Z",
+      "side": 1,
+      "message": "[citation needed] for the \"no longer needed\" part.\n\ni think you\u0027re forgetting 32-bit :-(\n\nit\u0027s not needed on the *host* (because we no longer support 32-bit hosts), but is definitely needed on 32-bit devices.",
+      "revId": "e56edcb34fddf2e3660ac89a1e7e364dc2f95edf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
