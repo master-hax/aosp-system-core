@@ -46,6 +46,7 @@
 #include <keyutils.h>
 #include <libavb/libavb.h>
 #include <libgsi/libgsi.h>
+#include <liblp/liblp.h>
 #include <processgroup/processgroup.h>
 #include <processgroup/setup.h>
 #include <selinux/android.h>
@@ -713,6 +714,14 @@ int SecondStageMain(int argc, char** argv) {
         property_set("ro.gsid.image_running", "1");
     } else {
         property_set("ro.gsid.image_running", "0");
+    }
+    auto metadata = android::fs_mgr::ReadFromImageFile(gsi::GetMetadataFile().c_str());
+    if (metadata) {
+        std::string dsu_partitions = "";
+        for (auto&& partition : metadata->partitions) {
+            dsu_partitions += std::string(partition.name) + ",";
+        }
+        property_set("ro.gsid.dsu_partitions", dsu_partitions);
     }
 
     am.QueueBuiltinAction(SetupCgroupsAction, "SetupCgroups");
