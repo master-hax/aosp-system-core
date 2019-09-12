@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "dc4cfab1_89a21421",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 631,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2019-09-12T17:56:01Z",
+      "side": 1,
+      "message": "maybe we should have \"rm -rf\" as built-in.   \nbut before having such, is it possible we move this to boot_complete and then queue another trigger as per_boot_date_ready to minimal the boot time impact?",
+      "range": {
+        "startLine": 630,
+        "startChar": 0,
+        "endLine": 631,
+        "endChar": 43
+      },
+      "revId": "0e92e5402c53b481aa402ca23437ae1431269d99",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
