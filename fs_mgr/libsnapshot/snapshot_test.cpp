@@ -26,6 +26,7 @@
 #include <android-base/properties.h>
 #include <android-base/strings.h>
 #include <android-base/unique_fd.h>
+#include <digital_storage/digital_storage.h>
 #include <fs_mgr_dm_linear.h>
 #include <gtest/gtest.h>
 #include <libdm/dm.h>
@@ -33,7 +34,6 @@
 #include <liblp/builder.h>
 #include <liblp/mock_property_fetcher.h>
 
-#include "digital_storage.h"
 #include "test_helpers.h"
 #include "utility.h"
 
@@ -62,7 +62,7 @@ std::unique_ptr<SnapshotManager> sm;
 TestDeviceInfo* test_device = nullptr;
 std::string fake_super;
 
-static constexpr uint64_t kSuperSize = (16_MiB).bytes();
+static constexpr uint64_t kSuperSize = 16_MiB;
 
 class SnapshotTest : public ::testing::Test {
   public:
