@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include <digital_storage/digital_storage.h>
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 #include <liblp/builder.h>
@@ -22,6 +23,7 @@
 #include "utility.h"
 
 using namespace std;
+using namespace android::digital_storage;
 using namespace android::fs_mgr;
 using namespace android::fs_mgr::testing;
 using ::testing::_;
@@ -589,13 +591,6 @@ TEST_F(BuilderTest, ChangeGroups) {
     ASSERT_FALSE(builder->ChangeGroupSize("unknown", 2));
     ASSERT_TRUE(builder->ChangeGroupSize("groupA", 32768));
     ASSERT_NE(builder->Export(), nullptr);
-}
-
-constexpr unsigned long long operator"" _GiB(unsigned long long x) {  // NOLINT
-    return x << 30;
-}
-constexpr unsigned long long operator"" _MiB(unsigned long long x) {  // NOLINT
-    return x << 20;
 }
 
 TEST_F(BuilderTest, RemoveAndAddFirstPartition) {

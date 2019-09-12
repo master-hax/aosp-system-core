@@ -1,0 +1,6 @@
+
+cc_library_headers {
+    name: "libdigitalstorage_headers",
+    host_supported: true,
+    export_include_dirs: ["."],
+}
