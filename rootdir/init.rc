@@ -58,12 +58,29 @@ on early-init
 
 # Run boringssl self test for each ABI so that later processes can skip it. http://b/139348610
 on early-init && property:ro.product.cpu.abilist32=*
-    exec_reboot_on_failure boringssl-self-check-failed /system/bin/boringssl_self_test32
+    exec /system/bin/boringssl_self_test32
 on early-init && property:ro.product.cpu.abilist64=*
-    exec_reboot_on_failure boringssl-self-check-failed /system/bin/boringssl_self_test64
+    exec /system/bin/boringssl_self_test64
 on property:apexd.status=ready && property:ro.product.cpu.abilist64=*
-    exec_reboot_on_failure boringssl-self-check-failed /apex/com.android.conscrypt/bin/boringssl_self_test64
+    exec /apex/com.android.conscrypt/bin/boringssl_self_test64
 on property:apexd.status=ready && property:ro.product.cpu.abilist32=*
+    exec /apex/com.android.conscrypt/bin/boringssl_self_test32
+
+# Re-run each of the boringssl_self_test{32,64}s once logd is running.
+# This time we're running them with exec_reboot_on_failure to reboot
+# into bootloader if they fail; the advantage of doing this here rather
+# than for the original invocations is that in the failure case, logs
+# can be obtained without a serial console.
+# In the common case (success), the initial self test invocations will
+# have created marker files that causes these subsequent invocations to
+# skip the self test and exit quickly.
+on init && property:ro.product.cpu.abilist32=* && property:init.svc.logd=running
+    exec_reboot_on_failure boringssl-self-check-failed /system/bin/boringssl_self_test32
+on init && property:ro.product.cpu.abilist64=* && property:init.svc.logd=running
+    exec_reboot_on_failure boringssl-self-check-failed /system/bin/boringssl_self_test64
+on property:apexd.status=ready && property:ro.product.cpu.abilist64=* && property:init.svc.logd=running
+    exec_reboot_on_failure boringssl-self-check-failed /apex/com.android.conscrypt/bin/boringssl_self_test64
+on property:apexd.status=ready && property:ro.product.cpu.abilist32=* && property:init.svc.logd=running
     exec_reboot_on_failure boringssl-self-check-failed /apex/com.android.conscrypt/bin/boringssl_self_test32
 
 on init
