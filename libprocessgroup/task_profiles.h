@@ -138,6 +138,21 @@ class SetCgroupAction : public ProfileAction {
     bool IsFdValid() const { return fd_ > FDS_INACCESSIBLE; }
 };
 
+// Set profile profile element
+class SetProfileAction : public ProfileAction {
+  public:
+    SetProfileAction(std::vector<std::string>& profiles)
+        : profiles_(profiles.begin(), profiles.end()) {}
+
+    virtual bool ExecuteForProcess(uid_t uid, pid_t pid) const;
+    virtual bool ExecuteForTask(int tid) const;
+
+  private:
+    std::vector<std::string> profiles_;
+
+    const std::vector<std::string> GetProfiles() const { return profiles_; }
+};
+
 class TaskProfile {
   public:
     TaskProfile() : res_cached_(false) {}

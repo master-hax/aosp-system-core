@@ -44,6 +44,11 @@ using android::base::WriteStringToFile;
 #define TASK_PROFILE_DB_FILE "/etc/task_profiles.json"
 #define TASK_PROFILE_DB_VENDOR_FILE "/vendor/etc/task_profiles.json"
 
+extern "C" bool SetTaskProfiles(int tid, const std::vector<std::string>& profiles,
+                                bool use_fd_cache = false);
+extern "C" bool SetProcessProfiles(uid_t uid, pid_t pid, const std::vector<std::string>& profiles,
+                                   bool use_fd_cache = false);
+
 bool ProfileAttribute::GetPathForTask(int tid, std::string* path) const {
     std::string subgroup;
     if (!controller()->GetTaskGroup(tid, &subgroup)) {
@@ -268,6 +273,14 @@ bool SetCgroupAction::ExecuteForTask(int tid) const {
     return true;
 }
 
+bool SetProfileAction::ExecuteForProcess(uid_t uid, pid_t pid) const {
+    return SetProcessProfiles(uid, pid, GetProfiles(), true);
+}
+
+bool SetProfileAction::ExecuteForTask(int tid) const {
+    return SetTaskProfiles(tid, GetProfiles(), true);
+}
+
 bool TaskProfile::ExecuteForProcess(uid_t uid, pid_t pid) const {
     for (const auto& element : elements_) {
         if (!element->ExecuteForProcess(uid, pid)) {
@@ -436,6 +449,13 @@ bool TaskProfiles::Load(const CgroupMap& cg_map, const std::string& file_name) {
                 } else {
                     LOG(WARNING) << "SetClamps: invalid parameter: " << boost_value;
                 }
+            } else if (action_name == "SetProfile") {
+                std::vector<std::string> profiles;
+
+                for (Json::Value::ArrayIndex pf_idx = 0; pf_idx < params_val.size(); ++pf_idx) {
+                    profiles.push_back(params_val[pf_idx].asString());
+                }
+                profile->Add(std::make_unique<SetProfileAction>(profiles));
             } else {
                 LOG(WARNING) << "Unknown profile action: " << action_name;
             }

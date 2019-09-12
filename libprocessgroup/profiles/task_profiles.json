@@ -493,6 +493,105 @@
           }
         }
       ]
+    },
+    {
+      "Name": "SCHED_SP_DEFAULT",
+      "Actions": [
+        {
+          "Name": "SetProfile",
+          "Params": ["TimerSlackNormal"]
+        }
+      ]
+    },
+    {
+      "Name": "SCHED_SP_BACKGROUND",
+      "Actions": [
+        {
+          "Name": "SetProfile",
+          "Params": ["HighEnergySaving", "LowIoPriority", "TimerSlackHigh"]
+        }
+      ]
+    },
+    {
+      "Name": "SCHED_SP_FOREGROUND",
+      "Actions": [
+        {
+          "Name": "SetProfile",
+          "Params": ["HighPerformance", "HighIoPriority", "TimerSlackNormal"]
+        }
+      ]
+    },
+    {
+      "Name": "SCHED_SP_TOP_APP",
+      "Actions": [
+        {
+          "Name": "SetProfile",
+          "Params": ["MaxPerformance", "MaxIoPriority", "TimerSlackNormal"]
+        }
+      ]
+    },
+    {
+      "Name": "SCHED_SP_RT_APP",
+      "Actions": [
+        {
+          "Name": "SetProfile",
+          "Params": ["RealtimePerformance", "MaxIoPriority", "TimerSlackNormal"]
+        }
+      ]
+    },
+    {
+      "Name": "CPUSET_SP_DEFAULT",
+      "Actions": [
+        {
+          "Name": "SetProfile",
+          "Params": ["TimerSlackNormal"]
+        }
+      ]
+    },
+    {
+      "Name": "CPUSET_SP_BACKGROUND",
+      "Actions": [
+        {
+          "Name": "SetProfile",
+          "Params": ["HighEnergySaving", "ProcessCapacityLow", "LowIoPriority", "TimerSlackHigh"]
+        }
+      ]
+    },
+    {
+      "Name": "CPUSET_SP_FOREGROUND",
+      "Actions": [
+        {
+          "Name": "SetProfile",
+          "Params": ["HighPerformance", "ProcessCapacityHigh", "HighIoPriority", "TimerSlackNormal"]
+        }
+      ]
+    },
+    {
+      "Name": "CPUSET_SP_TOP_APP",
+      "Actions": [
+        {
+          "Name": "SetProfile",
+          "Params": ["MaxPerformance", "ProcessCapacityMax", "MaxIoPriority", "TimerSlackNormal"]
+        }
+      ]
+    },
+    {
+      "Name": "CPUSET_SP_SYSTEM",
+      "Actions": [
+        {
+          "Name": "SetProfile",
+          "Params": ["ServiceCapacityLow", "TimerSlackNormal"]
+        }
+      ]
+    },
+    {
+      "Name": "CPUSET_SP_RESTRICTED",
+      "Actions": [
+        {
+          "Name": "SetProfile",
+          "Params": ["ServiceCapacityRestricted", "TimerSlackNormal"]
+        }
+      ]
     }
   ]
 }
