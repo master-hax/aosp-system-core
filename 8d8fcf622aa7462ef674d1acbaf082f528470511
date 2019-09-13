@@ -94,6 +94,30 @@
       "revId": "8d8fcf622aa7462ef674d1acbaf082f528470511",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "cd72ad0d_eb80729e",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 2
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2019-09-13T19:20:41Z",
+      "side": 1,
+      "message": "Right, my point was just that the extra trace I often need doesn\u0027t go to stderr.\n\n\u003e Or do we not figure that the actual test won\u0027t ever fail?\n\nMany negations there, but yeah, of course it will. I\u0027ll put the logwrapper in.",
+      "parentUuid": "9fe9f531_47b38ec8",
+      "range": {
+        "startLine": 77,
+        "startChar": 50,
+        "endLine": 77,
+        "endChar": 80
+      },
+      "revId": "8d8fcf622aa7462ef674d1acbaf082f528470511",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
