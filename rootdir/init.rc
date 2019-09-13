@@ -73,10 +73,8 @@ service boringssl_self_test64 /system/bin/boringssl_self_test64
     reboot_on_failure reboot,bootloader,boringssl-self-check-failed
 
 service boringssl_self_test_apex32 /apex/com.android.conscrypt/bin/boringssl_self_test32
-    reboot_on_failure reboot,bootloader,boringssl-self-check-failed
 
 service boringssl_self_test_apex64 /apex/com.android.conscrypt/bin/boringssl_self_test64
-    reboot_on_failure reboot,bootloader,boringssl-self-check-failed
 
 on init
     sysclktz 0
