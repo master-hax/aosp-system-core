@@ -62,9 +62,9 @@ on early-init && property:ro.product.cpu.abilist32=*
 on early-init && property:ro.product.cpu.abilist64=*
     exec_reboot_on_failure boringssl-self-check-failed /system/bin/boringssl_self_test64
 on property:apexd.status=ready && property:ro.product.cpu.abilist64=*
-    exec_reboot_on_failure boringssl-self-check-failed /apex/com.android.conscrypt/bin/boringssl_self_test64
+    exec boringssl-self-check-failed /apex/com.android.conscrypt/bin/boringssl_self_test64
 on property:apexd.status=ready && property:ro.product.cpu.abilist32=*
-    exec_reboot_on_failure boringssl-self-check-failed /apex/com.android.conscrypt/bin/boringssl_self_test32
+    exec boringssl-self-check-failed /apex/com.android.conscrypt/bin/boringssl_self_test32
 
 on init
     sysclktz 0
