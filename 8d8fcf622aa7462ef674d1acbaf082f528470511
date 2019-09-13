@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "670f0897_ca6177e5",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 2
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-09-13T15:30:59Z",
+      "side": 1,
+      "message": "Do we actually have confirmation that the logs go to logd?  I thought they were going to stderr, so without a wrapper, they\u0027re going to be dropped.\n\nThis trigger isn\u0027t quite right either.  It is saying that \"when init happens, check that abilist32 is set and logd is running\", but logd doesn\u0027t start until the below init trigger (and these are all run in the order that they appear in this file), so it\u0027s guaranteed to never run.",
+      "range": {
+        "startLine": 77,
+        "startChar": 50,
+        "endLine": 77,
+        "endChar": 80
+      },
+      "revId": "8d8fcf622aa7462ef674d1acbaf082f528470511",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
