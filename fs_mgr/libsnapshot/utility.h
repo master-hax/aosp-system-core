@@ -22,6 +22,7 @@
 #include <libfiemap/image_manager.h>
 #include <liblp/builder.h>
 #include <libsnapshot/snapshot.h>
+#include <update_engine/update_metadata.pb.h>
 
 namespace android {
 namespace snapshot {
@@ -105,6 +106,89 @@ std::vector<android::fs_mgr::Partition*> ListPartitionsWithSuffix(
 
 // Initialize a device before using it as the COW device for a dm-snapshot device.
 bool InitializeCow(const std::string& device);
+
+// template<typename T>
+// struct NamedPtr {
+//   std::string name;
+//   T* ptr;
+
+//   operator T*() {
+//     return ptr;
+//   }
+
+//   T* operator->() {
+//     return *ptr;
+//   }
+
+//   T* get() {
+//     return ptr;
+//   }
+// };
+
+// template <typename ObjectIterator>
+// struct ConstNamedPtrIterator : public std::iterator <
+//         std::forward_iterator_tag, /* Category */
+//         NamedPtr<typename std::iterator_traits<ObjectIterator>::value_type> /* type */>
+// {
+//     using traits = std::iterator_traits<ConstNamedPtrIterator>;
+//     using value_type = typename traits::value_type;
+//     using ptr_type = typename traits::pointer;
+//     using ref_type = typename traits::reference;
+//     using diff_type = typename traits::difference_type;
+
+//     ConstNamedPtrIterator(ObjectIterator iter, std::string_view suffix) :
+//             iter_(iter), suffix_(suffix) {
+//     }
+
+//     inline ConstNamedPtrIterator &operator++()    {
+//         iter_++;
+//         current_ = std::nullopt;
+//         return *this;
+//     }
+
+//     inline ConstNamedPtrIterator operator++(int) {
+//         ConstNamedPtrIterator i = *this;
+//         ++(*this);
+//         return i;
+//     }
+
+//     inline ref_type operator*() const  {
+//         if (!current_.has_value()) {
+//             current_ = std::make_optional<value_type>(iter_->name() + suffix_, &*iter_);
+//         }
+//         return current_;
+//     }
+
+//     inline ptr_type operator->() const {
+//         return &*this;
+//     }
+
+//     // For efficiency, do not compare suffix and assume they match.
+//     inline bool operator==(const ConstNamedPtrIterator &rhs) const {
+//         return iter_ == rhs.iter_;
+//     }
+
+//     inline bool operator!=(const ConstNamedPtrIterator &rhs) const {
+//         return iter_ != rhs.iter_;
+//     }
+
+// private:
+//     ObjectIterator iter_;
+//     std::string suffix_;
+//     std::optional<value_type> current_;
+// };
+
+// template <typename Iterator>
+// struct Iterable {
+//     Iterator begin_iterator;
+//     Iterator end_iterator;
+//     Iterator begin() const  { return begin_iterator; }
+//     Iterator end() const { return end_iterator; }
+// };
+
+// void IterateGroups(const chromeos_update_engine::DynamicPartitionMetadata& metadata) {
+
+// }
 
 }  // namespace snapshot
 }  // namespace android
