@@ -46,6 +46,30 @@
       "revId": "8d8fcf622aa7462ef674d1acbaf082f528470511",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fc40aec8_85455cee",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 2
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2019-09-13T18:01:26Z",
+      "side": 1,
+      "message": "Tom: the linker debug I mentioned earlier only goes to logd, yes:\n\n$ adb shell echo hello\nhello\n$ adb logcat\n/.../\n09-13 18:31:21.866 22745 22745 W linker  : [ Android dynamic linker (64-bit) ]\n09-13 18:31:21.867 22745 22745 W linker  : [ Linking executable \"/system/bin/sh\" ]\n09-13 18:31:21.867 22745 22745 W linker  : [ Linking \"[vdso]\" ]\n09-13 18:31:21.867 22745 22745 W linker  : [ Reading linker config \"/system/etc/ld.config.R.txt\" ]\n09-13 18:31:21.868 22745 22745 W linker  : [ Using config section \"system\" ]\n09-13 18:31:21.876 22745 22745 W linker  : [ Linking \"/system/bin/sh\" ]\n09-13 18:31:21.876 22745 22745 D linker  : find_libraries(ns\u003d(default)): task\u003dlibclang_rt.hwasan-aarch64-android.so, is_dt_needed\u003d1\n/.../\n\nAs mentioned, the final \"CANNOT LINK\" error itself goes to both, and hopefully most fatal errors would go to stderr. So I think using logwrapper here is a good idea, although it doesn\u0027t replace falling back to the kernel log for pre-logd logcat messages. I\u0027ll put a CL together next week.",
+      "parentUuid": "871cb15e_377a1e8c",
+      "range": {
+        "startLine": 77,
+        "startChar": 50,
+        "endLine": 77,
+        "endChar": 80
+      },
+      "revId": "8d8fcf622aa7462ef674d1acbaf082f528470511",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
