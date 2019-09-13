@@ -22,6 +22,30 @@
       "revId": "8d8fcf622aa7462ef674d1acbaf082f528470511",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "871cb15e_377a1e8c",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 2
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 1103203
+      },
+      "writtenOn": "2019-09-13T16:21:50Z",
+      "side": 1,
+      "message": "Ah, I didn\u0027t know that these were order-dependent.\n\nAnyway, it sounds like consensus is that a better approach would be to redirect logs to kernel log until logd is ready (I don\u0027t know how to), so I\u0027ll just abandon this CL.",
+      "parentUuid": "670f0897_ca6177e5",
+      "range": {
+        "startLine": 77,
+        "startChar": 50,
+        "endLine": 77,
+        "endChar": 80
+      },
+      "revId": "8d8fcf622aa7462ef674d1acbaf082f528470511",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
