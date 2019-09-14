@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ed6d54f5_bd733f7b",
+        "filename": "fs_mgr/libsnapshot/utility.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2019-09-14T02:07:52Z",
+      "side": 1,
+      "message": "didn\u0027t mean to check this in",
+      "range": {
+        "startLine": 110,
+        "startChar": 0,
+        "endLine": 110,
+        "endChar": 23
+      },
+      "revId": "7a00eee865c29f6b8e674925fd87bd3f39e3b608",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
