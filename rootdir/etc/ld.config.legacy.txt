@@ -66,10 +66,11 @@ namespace.default.link.runtime.shared_libs += libnativeloader.so
 # TODO(b/122876336): Remove libpac.so once it's migrated to Webview
 namespace.default.link.runtime.shared_libs += libpac.so
 
-# When libnetd_resolv.so can't be found in the default namespace, search for it
-# in the resolv namespace. Don't allow any other libraries from the resolv namespace
-# to be loaded in the default namespace.
+# When libnetd_resolv.so and libdns_client.so can't be found in the default namespace,
+# search for it in the resolv namespace. Don't allow any other libraries from the resolv
+# namespace to be loaded in the default namespace.
 namespace.default.link.resolv.shared_libs = libnetd_resolv.so
+namespace.default.link.resolv.shared_libs += libdns_client.so
 
 # LLNDK library moved into apex
 namespace.default.link.neuralnetworks.shared_libs = libneuralnetworks.so
