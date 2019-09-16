@@ -38,6 +38,8 @@ Conditions:
 
 EMPTY=""
 SPACE=" "
+# Line up wrap to [  XXXXXXX ] messages.
+INDENT="             "
 # A _real_ embedded tab character
 TAB="`echo | tr '\n' '\t'`"
 # A _real_ embedded escape character
@@ -159,8 +161,7 @@ avc_check() {
     return
   fi
   echo "${ORANGE}[  WARNING ]${NORMAL} unlabeled sepolicy violations:" >&2
-  echo "${L}" |
-    sed 's/^/             /' >&2
+  echo "${L}" | sed "s/^/${INDENT}/" >&2
 }
 
 [ "USAGE: get_property <prop>
@@ -639,10 +640,10 @@ EXPECT_EQ() {
 *}" ]; then
       echo "${prefix} expected \"${lval}\""
       echo "${prefix} got \"${rval}\"" |
-        sed ': again
+        sed ": again
              N
-             s/\(\n\)\([^ ]\)/\1             \2/
-             t again'
+             s/\(\n\)\([^ ]\)/\1${INDENT}\2/
+             t again"
       if [ -n "${*}" ] ; then
         echo "${prefix} ${*}"
       fi
@@ -657,10 +658,10 @@ EXPECT_EQ() {
       if [ `echo ${lval}${rval}${*} | wc -c` -gt 60 -o "${rval}" != "${rval% *}" ]; then
         echo "${prefix} ok \"${lval}\""
         echo "       = \"${rval}\"" |
-          sed ': again
+          sed ": again
                N
-               s/\(\n\)\([^ ]\)/\1          \2/
-               t again'
+               s/\(\n\)\([^ ]\)/\1${INDENT}\2/
+               t again"
         if [ -n "${*}" ] ; then
           echo "${prefix} ${*}"
         fi
@@ -955,13 +956,16 @@ else
   echo "${GREEN}[ RUN      ]${NORMAL} Testing adb shell su root remount -R command" >&2
 
   avc_check
-  adb_su remount -R system </dev/null || true
+  adb_su remount -R system </dev/null ||
+    echo "${ORANGE}[  WARNING ]${NORMAL} adb shell su root remount -R system = ${?}" >&2
   sleep 2
   adb_wait ${ADB_WAIT} ||
     die "waiting for device after remount -R `usb_status`"
   if [ "orange" != "`get_property ro.boot.verifiedbootstate`" -o \
        "2" = "`get_property partition.system.verified`" ]; then
-    die "remount -R command failed"
+    die "remount -R command failed
+${INDENT}ro.boot.verifiedbootstate=\"`get_property ro.boot.verifiedbootstate`\"
+${INDENT}partition.system.verified=\"`get_property partition.system.verified`\""
   fi
 
   echo "${GREEN}[       OK ]${NORMAL} adb shell su root remount -R command" >&2
@@ -1645,13 +1649,16 @@ if ${overlayfs_supported}; then
   avc_check
   adb_root &&
     adb remount -R &&
+    sleep 2 &&
     adb_wait ${ADB_WAIT} ||
     die "adb remount -R"
   if [ "orange" != "`get_property ro.boot.verifiedbootstate`" -o \
        "2" = "`get_property partition.system.verified`" ] &&
      [ -n "`get_property ro.boot.verifiedbootstate`" -o \
        -n "`get_property partition.system.verified`" ]; then
-    die "remount -R command failed to disable verity"
+    die "remount -R command failed to disable verity
+${INDENT}ro.boot.verifiedbootstate=\"`get_property ro.boot.verifiedbootstate`\"
+${INDENT}partition.system.verified=\"`get_property partition.system.verified`\""
   fi
 
   echo "${GREEN}[       OK ]${NORMAL} 'adb remount -R' command" >&2

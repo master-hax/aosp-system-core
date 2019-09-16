@@ -17,6 +17,7 @@
 #include <errno.h>
 #include <getopt.h>
 #include <libavb_user/libavb_user.h>
+#include <signal.h>
 #include <stdio.h>
 #include <sys/mount.h>
 #include <sys/types.h>
@@ -385,6 +386,7 @@ static int do_remount(int argc, char* argv[]) {
 
 int main(int argc, char* argv[]) {
     android::base::InitLogging(argv, MyLogger);
+    signal(SIGHUP, SIG_IGN);
     int result = do_remount(argc, argv);
     printf("remount %s\n", result ? "failed" : "succeeded");
     return result;
