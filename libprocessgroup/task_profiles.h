@@ -138,6 +138,18 @@ class SetCgroupAction : public ProfileAction {
     bool IsFdValid() const { return fd_ > FDS_INACCESSIBLE; }
 };
 
+// Set profile profile element
+class ApplyProfileAction : public ProfileAction {
+  public:
+    ApplyProfileAction(const std::vector<std::string>& profiles) : profiles_(profiles) {}
+
+    virtual bool ExecuteForProcess(uid_t uid, pid_t pid) const;
+    virtual bool ExecuteForTask(int tid) const;
+
+  private:
+    std::vector<std::string> profiles_;
+};
+
 class TaskProfile {
   public:
     TaskProfile() : res_cached_(false) {}
@@ -162,6 +174,9 @@ class TaskProfiles {
     TaskProfile* GetProfile(const std::string& name) const;
     const ProfileAttribute* GetAttribute(const std::string& name) const;
     void DropResourceCaching() const;
+    bool SetProcessProfiles(uid_t uid, pid_t pid, const std::vector<std::string>& profiles,
+                            bool use_fd_cache);
+    bool SetTaskProfiles(int tid, const std::vector<std::string>& profiles, bool use_fd_cache);
 
   private:
     std::map<std::string, std::unique_ptr<TaskProfile>> profiles_;
