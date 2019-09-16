@@ -267,6 +267,32 @@ inline void seekdir(DIR*, long) {
 
 #define getcwd adb_getcwd
 
+//
+// mmap-related flags
+//
+#define PROT_NONE 0
+#define PROT_READ 1
+#define PROT_WRITE 2
+#define PROT_EXEC 4
+
+#define MAP_FILE 0
+#define MAP_SHARED 1
+#define MAP_PRIVATE 2
+#define MAP_TYPE 0xf
+#define MAP_FIXED 0x10
+#define MAP_ANONYMOUS 0x20
+#define MAP_ANON MAP_ANONYMOUS
+
+#define MAP_FAILED ((void*)-1)
+
+extern void* adb_mmap(void* addr, size_t size, int prot, int flags, borrowed_fd fd, off64_t offset);
+extern int adb_munmap(void* addr, size_t size);
+
+#undef mmap
+#define mmap ___xxx_mmap
+#undef munmap
+#define munmap ___xxx_munmap
+
 // Helper class to convert UTF-16 argv from wmain() to UTF-8 args that can be
 // passed to main().
 class NarrowArgs {
@@ -332,6 +358,7 @@ size_t ParseCompleteUTF8(const char* first, const char* last, std::vector<char>*
 #include <stdarg.h>
 #include <stdint.h>
 #include <string.h>
+#include <sys/mman.h>
 #include <sys/stat.h>
 #include <sys/wait.h>
 #include <unistd.h>
@@ -596,6 +623,24 @@ static __inline__ int adb_mkdir(const std::string& path, int mode) {
 
 #undef mkdir
 #define mkdir ___xxx_mkdir
+
+static inline void* adb_mmap(void* addr, size_t size, int prot, int flags, borrowed_fd fd,
+                             off64_t offset) {
+#if defined(__APPLE__) && defined(__MACH__)
+    return ::mmap(addr, size, prot, flags, fd.get(), offset);
+#else
+    return ::mmap64(addr, size, prot, flags, fd.get(), offset);
+#endif
+}
+
+static inline int adb_munmap(void* addr, size_t size) {
+    return ::munmap(addr, size);
+}
+
+#undef mmap
+#define mmap ___xxx_mmap
+#undef munmap
+#define munmap ___xxx_munmap
 
 static __inline__ int adb_is_absolute_host_path(const char* path) {
     return path[0] == '/';
