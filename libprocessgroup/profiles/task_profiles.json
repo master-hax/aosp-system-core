@@ -15,7 +15,6 @@
       "Controller": "cpuset",
       "File": "top-app/cpus"
     },
-
     {
       "Name": "MemLimit",
       "Controller": "memory",
@@ -491,6 +490,108 @@
             "Controller": "memory",
             "Path": "system"
           }
+        }
+      ]
+    }
+  ],
+
+  "AggrProfiles": [
+    {
+      "Name": "SCHED_SP_DEFAULT",
+      "AggrActions": [
+        {
+          "Name": "SetProfile",
+          "Params": ["TimerSlackNormal"]
+        }
+      ]
+    },
+    {
+      "Name": "SCHED_SP_BACKGROUND",
+      "AggrActions": [
+        {
+          "Name": "SetProfile",
+          "Params": ["HighEnergySaving", "LowIoPriority", "TimerSlackHigh"]
+        }
+      ]
+    },
+    {
+      "Name": "SCHED_SP_FOREGROUND",
+      "AggrActions": [
+        {
+          "Name": "SetProfile",
+          "Params": ["HighPerformance", "HighIoPriority", "TimerSlackNormal"]
+        }
+      ]
+    },
+    {
+      "Name": "SCHED_SP_TOP_APP",
+      "AggrActions": [
+        {
+          "Name": "SetProfile",
+          "Params": ["MaxPerformance", "MaxIoPriority", "TimerSlackNormal"]
+        }
+      ]
+    },
+    {
+      "Name": "SCHED_SP_RT_APP",
+      "AggrActions": [
+        {
+          "Name": "SetProfile",
+          "Params": ["RealtimePerformance", "MaxIoPriority", "TimerSlackNormal"]
+        }
+      ]
+    },
+    {
+      "Name": "CPUSET_SP_DEFAULT",
+      "AggrActions": [
+        {
+          "Name": "SetProfile",
+          "Params": ["TimerSlackNormal"]
+        }
+      ]
+    },
+    {
+      "Name": "CPUSET_SP_BACKGROUND",
+      "AggrActions": [
+        {
+          "Name": "SetProfile",
+          "Params": ["HighEnergySaving", "ProcessCapacityLow", "LowIoPriority", "TimerSlackHigh"]
+        }
+      ]
+    },
+    {
+      "Name": "CPUSET_SP_FOREGROUND",
+      "AggrActions": [
+        {
+          "Name": "SetProfile",
+          "Params": ["HighPerformance", "ProcessCapacityHigh", "HighIoPriority", "TimerSlackNormal"]
+        }
+      ]
+    },
+    {
+      "Name": "CPUSET_SP_TOP_APP",
+      "AggrActions": [
+        {
+          "Name": "SetProfile",
+          "Params": ["MaxPerformance", "ProcessCapacityMax", "MaxIoPriority", "TimerSlackNormal"]
+        }
+      ]
+    },
+    {
+      "Name": "CPUSET_SP_SYSTEM",
+      "AggrActions": [
+        {
+          "Name": "SetProfile",
+          "Params": ["ServiceCapacityLow", "TimerSlackNormal"]
+        }
+      ]
+    },
+    {
+      "Name": "CPUSET_SP_RESTRICTED",
+      "AggrActions": [
+        {
+          "Name": "SetProfile",
+          "Params": ["ServiceCapacityRestricted", "TimerSlackNormal"]
         }
       ]
     }

@@ -44,6 +44,47 @@ using android::base::WriteStringToFile;
 #define TASK_PROFILE_DB_FILE "/etc/task_profiles.json"
 #define TASK_PROFILE_DB_VENDOR_FILE "/vendor/etc/task_profiles.json"
 
+bool SetProcessProfiles_(uid_t uid, pid_t pid, const std::vector<std::string>& profiles,
+                         bool use_fd_cache) {
+    const TaskProfiles& tp = TaskProfiles::GetInstance();
+
+    for (const auto& name : profiles) {
+        TaskProfile* profile = tp.GetProfile(name);
+        if (profile != nullptr) {
+            if (use_fd_cache) {
+                profile->EnableResourceCaching();
+            }
+            if (!profile->ExecuteForProcess(uid, pid)) {
+                PLOG(WARNING) << "Failed to apply " << name << " process profile";
+            }
+        } else {
+            PLOG(WARNING) << "Failed to find " << name << "process profile";
+        }
+    }
+
+    return true;
+}
+
+bool SetTaskProfiles_(int tid, const std::vector<std::string>& profiles, bool use_fd_cache) {
+    const TaskProfiles& tp = TaskProfiles::GetInstance();
+
+    for (const auto& name : profiles) {
+        TaskProfile* profile = tp.GetProfile(name);
+        if (profile != nullptr) {
+            if (use_fd_cache) {
+                profile->EnableResourceCaching();
+            }
+            if (!profile->ExecuteForTask(tid)) {
+                PLOG(WARNING) << "Failed to apply " << name << " task profile";
+            }
+        } else {
+            PLOG(WARNING) << "Failed to find " << name << "task profile";
+        }
+    }
+
+    return true;
+}
+
 bool ProfileAttribute::GetPathForTask(int tid, std::string* path) const {
     std::string subgroup;
     if (!controller()->GetTaskGroup(tid, &subgroup)) {
@@ -268,6 +309,14 @@ bool SetCgroupAction::ExecuteForTask(int tid) const {
     return true;
 }
 
+bool SetProfileAction::ExecuteForProcess(uid_t uid, pid_t pid) const {
+    return SetProcessProfiles_(uid, pid, profiles_, true);
+}
+
+bool SetProfileAction::ExecuteForTask(int tid) const {
+    return SetTaskProfiles_(tid, profiles_, true);
+}
+
 bool TaskProfile::ExecuteForProcess(uid_t uid, pid_t pid) const {
     for (const auto& element : elements_) {
         if (!element->ExecuteForProcess(uid, pid)) {
@@ -373,8 +422,6 @@ bool TaskProfiles::Load(const CgroupMap& cg_map, const std::string& file_name) {
         }
     }
 
-    std::map<std::string, std::string> params;
-
     const Json::Value& profiles_val = root["Profiles"];
     for (Json::Value::ArrayIndex i = 0; i < profiles_val.size(); ++i) {
         const Json::Value& profile_val = profiles_val[i];
@@ -441,6 +488,49 @@ bool TaskProfiles::Load(const CgroupMap& cg_map, const std::string& file_name) {
             }
         }
         profiles_[profile_name] = std::move(profile);
+    }
+
+    const Json::Value& aggrprofiles_val = root["AggrProfiles"];
+    for (Json::Value::ArrayIndex i = 0; i < aggrprofiles_val.size(); ++i) {
+        const Json::Value& aggrprofile_val = aggrprofiles_val[i];
+
+        std::string aggrprofile_name = aggrprofile_val["Name"].asString();
+        const Json::Value& aggractions = aggrprofile_val["AggrActions"];
+        auto profile = std::make_unique<TaskProfile>();
+
+        for (Json::Value::ArrayIndex act_idx = 0; act_idx < aggractions.size(); ++act_idx) {
+            const Json::Value& aggraction_val = aggractions[act_idx];
+            std::string action_name = aggraction_val["Name"].asString();
+            const Json::Value& params_val = aggraction_val["Params"];
+
+            if (action_name == "SetProfile") {
+                std::vector<std::string> profiles;
+                std::string name;
+                bool ret = true;
+
+                for (Json::Value::ArrayIndex pf_idx = 0; pf_idx < params_val.size(); ++pf_idx) {
+                    name = params_val[pf_idx].asString();
+                    if (name == aggrprofile_name) {
+                        LOG(WARNING) << "SetProfile: recursive profile name: " << name;
+                        ret = false;
+                        break;
+                    } else if (GetProfile(name) == nullptr) {
+                        LOG(WARNING) << "SetProfile: undefined profile name: " << name;
+                        ret = false;
+                        break;
+                    } else {
+                        profiles.push_back(name);
+                    }
+                }
+
+                if (ret) {
+                    profile->Add(std::make_unique<SetProfileAction>(profiles));
+                }
+            } else {
+                LOG(WARNING) << "Unknown profile action: " << action_name;
+            }
+        }
+        profiles_[aggrprofile_name] = std::move(profile);
     }
 
     return true;
