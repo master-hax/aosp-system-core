@@ -59,6 +59,7 @@
 #include <android-base/strings.h>
 #include <android-base/unique_fd.h>
 #include <build/version.h>
+#include <libavb.h>
 #include <liblp/liblp.h>
 #include <platform_tools_version.h>
 #include <sparse/sparse.h>
@@ -919,6 +920,20 @@ static bool load_buf(const char* fname, struct fastboot_buffer* buf) {
     return load_buf_fd(fd.release(), buf);
 }
 
+static uint64_t fastboot_be64toh(uint64_t in) {
+    uint8_t* d = (uint8_t*)&in;
+    uint64_t ret;
+    ret = ((uint64_t)d[0]) << 56;
+    ret |= ((uint64_t)d[1]) << 48;
+    ret |= ((uint64_t)d[2]) << 40;
+    ret |= ((uint64_t)d[3]) << 32;
+    ret |= ((uint64_t)d[4]) << 24;
+    ret |= ((uint64_t)d[5]) << 16;
+    ret |= ((uint64_t)d[6]) << 8;
+    ret |= ((uint64_t)d[7]);
+    return ret;
+}
+
 static void rewrite_vbmeta_buffer(struct fastboot_buffer* buf) {
     // Buffer needs to be at least the size of the VBMeta struct which
     // is 256 bytes.
@@ -933,17 +948,35 @@ static void rewrite_vbmeta_buffer(struct fastboot_buffer* buf) {
         die("Failed reading from vbmeta");
     }
 
+    uint64_t footer_offset = buf->sz - AVB_FOOTER_SIZE;
+    uint64_t vbmeta_offset = 0;
+    bool main_vbmeta_in_boot = false;
+
+    // "AVBf" is AVB_FOOTER_MAGIC from external/avb/libavb/avb_footer.h
+    if (0 == data.compare(footer_offset, AVB_FOOTER_MAGIC_LEN, AVB_FOOTER_MAGIC)) {
+        const AvbFooter* footer = reinterpret_cast<const AvbFooter*>(data.c_str() + footer_offset);
+        vbmeta_offset = fastboot_be64toh(footer->vbmeta_offset);
+        // "AVB0" is AVB_MAGIC from external/avb/libavb/avb_vbmeta_image.h
+        if (0 == data.compare(vbmeta_offset, AVB_MAGIC_LEN, AVB_MAGIC))
+            main_vbmeta_in_boot = true;
+    }
+
     // There's a 32-bit big endian |flags| field at offset 120 where
     // bit 0 corresponds to disable-verity and bit 1 corresponds to
     // disable-verification.
     //
     // See external/avb/libavb/avb_vbmeta_image.h for the layout of
     // the VBMeta struct.
+    uint64_t flag_offset = 123;
+
+    if (main_vbmeta_in_boot)
+        flag_offset += vbmeta_offset;
+
     if (g_disable_verity) {
-        data[123] |= 0x01;
+        data[flag_offset] |= 0x01;
     }
     if (g_disable_verification) {
-        data[123] |= 0x02;
+        data[flag_offset] |= 0x02;
     }
 
     if (!android::base::WriteStringToFd(data, fd)) {
@@ -960,7 +993,8 @@ static void flash_buf(const std::string& partition, struct fastboot_buffer *buf)
 
     // Rewrite vbmeta if that's what we're flashing and modification has been requested.
     if ((g_disable_verity || g_disable_verification) &&
-        (partition == "vbmeta" || partition == "vbmeta_a" || partition == "vbmeta_b")) {
+        (partition == "vbmeta" || partition == "vbmeta_a" || partition == "vbmeta_b" ||
+         partition == "boot" || partition == "boot_a" || partition == "boot_b")) {
         rewrite_vbmeta_buffer(buf);
     }
 
