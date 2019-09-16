@@ -753,6 +753,9 @@ cc_test_host {
         },
     },
     data: [
+        "fastdeploy/testdata/rotating_cube-metadata-release.data",
         "fastdeploy/testdata/rotating_cube-release.apk",
+        "fastdeploy/testdata/sample.apk",
+        "fastdeploy/testdata/sample.cd",
     ],
 }
