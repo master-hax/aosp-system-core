@@ -17,7 +17,9 @@
     {
       "Controller": "cpuacct",
       "Path": "/acct",
-      "Mode": "0555"
+      "Mode": "0755",
+      "UID": "system",
+      "GID": "system"
     },
     {
       "Controller": "cpuset",
@@ -30,7 +32,7 @@
       "Controller": "memory",
       "Path": "/dev/memcg",
       "Mode": "0700",
-      "UID": "root",
+      "UID": "system",
       "GID": "system"
     },
     {
