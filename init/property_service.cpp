@@ -44,6 +44,7 @@
 #include <mutex>
 #include <optional>
 #include <queue>
+#include <set>
 #include <thread>
 #include <vector>
 
@@ -97,6 +98,8 @@ static int init_socket = -1;
 static PropertyInfoAreaFile property_info_area;
 
 void CreateSerializedPropertyInfo();
+
+std::set<std::string> init_watched_properties;
 
 struct PropertyAuditData {
     const ucred* cr;
@@ -211,7 +214,7 @@ static uint32_t PropertySet(const std::string& name, const std::string& value, s
     }
     // If init hasn't started its main loop, then it won't be handling property changed messages
     // anyway, so there's no need to try to send them.
-    if (init_socket != -1) {
+    if (init_socket != -1 && init_watched_properties.count(name) > 0) {
         SendPropertyChanged(name, value);
     }
     return PROP_SUCCESS;
@@ -1020,12 +1023,16 @@ static void HandleInitSocket() {
                 InitPropertySet(persistent_property_record.name(),
                                 persistent_property_record.value());
             }
-            InitPropertySet("ro.persistent_properties.ready", "true");
+            InitPropertySet(kPersistentPropertiesReadyProperty, "true");
             persistent_properties_loaded = true;
             break;
         }
         case InitMessage::kStopSendingMessages: {
             init_socket = -1;
+            break;
+        }
+        case InitMessage::kStartWatchingProperty: {
+            init_watched_properties.emplace(init_message.start_watching_property());
             break;
         }
         default:

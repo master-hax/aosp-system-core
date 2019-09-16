@@ -44,6 +44,7 @@
 #include <android-base/properties.h>
 #include <android-base/stringprintf.h>
 #include <android-base/strings.h>
+#include <cutils/android_reboot.h>
 #include <fs_avb/fs_avb.h>
 #include <fs_mgr_vendor_overlay.h>
 #include <keyutils.h>
@@ -191,13 +192,13 @@ void EnterShutdown(const std::string& command) {
 }
 
 void property_changed(const std::string& name, const std::string& value) {
-    // If the property is sys.powerctl, we bypass the event queue and immediately handle it.
-    // This is to ensure that init will always and immediately shutdown/reboot, regardless of
-    // if there are other pending events to process or if init is waiting on an exec service or
-    // waiting on a property.
+    // If the property is ANDROID_RB_PROPERTY (sys.powerctl), we bypass the event queue and
+    // immediately handle it. This is to ensure that init will always and immediately
+    // shutdown/reboot, regardless of if there are other pending events to process or if init is
+    // waiting on an exec service or waiting on a property.
     // In non-thermal-shutdown case, 'shutdown' trigger will be fired to let device specific
     // commands to be executed.
-    if (name == "sys.powerctl") {
+    if (name == ANDROID_RB_PROPERTY) {
         EnterShutdown(value);
     }
 
@@ -637,6 +638,14 @@ void SendStopSendingMessagesMessage() {
     }
 }
 
+void SendStartWatchingPropertyMessage(const std::string& property) {
+    auto init_message = InitMessage{};
+    init_message.set_start_watching_property(property);
+    if (auto result = SendMessage(property_fd, init_message); !result) {
+        LOG(ERROR) << "Failed to send start watching property message: " << result.error();
+    }
+}
+
 static void HandlePropertyFd() {
     auto message = ReadMessage(property_fd);
     if (!message) {
@@ -751,6 +760,10 @@ int SecondStageMain(int argc, char** argv) {
     if (auto result = epoll.RegisterHandler(property_fd, HandlePropertyFd); !result) {
         LOG(FATAL) << "Could not register epoll handler for property fd: " << result.error();
     }
+    // Watching properties with specific meanings to init.
+    SendStartWatchingPropertyMessage(ANDROID_RB_PROPERTY);
+    SendStartWatchingPropertyMessage(kPersistentPropertiesReadyProperty);
+    SendStartWatchingPropertyMessage(kColdBootDoneProp);
 
     MountHandler mount_handler(&epoll);
     set_usb_controller();

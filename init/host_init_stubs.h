@@ -38,6 +38,7 @@ namespace init {
 inline void EnterShutdown(const std::string&) {
     abort();
 }
+inline void SendStartWatchingPropertyMessage(const std::string& property) {}
 
 // property_service.h
 inline bool CanReadProperty(const std::string&, const std::string&) {
