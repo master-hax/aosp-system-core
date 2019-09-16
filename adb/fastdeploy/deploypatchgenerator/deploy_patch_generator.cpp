@@ -25,6 +25,7 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <unordered_map>
 
 #include "adb_unique_fd.h"
 #include "android-base/file.h"
@@ -49,14 +50,13 @@ void DeployPatchGenerator::APKEntryToLog(const APKEntry& entry) {
     Log("CRC32: 0x%08" PRIX64, entry.crc32());
     Log("Data Offset: %" PRId64, entry.dataoffset());
     Log("Compressed Size: %" PRId64, entry.compressedsize());
-    Log("Uncompressed Size: %" PRId64, entry.uncompressedsize());
 }
 
-void DeployPatchGenerator::APKMetaDataToLog(const char* file, const APKMetaData& metadata) {
+void DeployPatchGenerator::APKMetaDataToLog(const APKMetaData& metadata) {
     if (!is_verbose_) {
         return;
     }
-    Log("APK Metadata: %s", file);
+    Log("APK Metadata: %s", metadata.absolute_path().c_str());
     for (int i = 0; i < metadata.entries_size(); i++) {
         const APKEntry& entry = metadata.entries(i);
         APKEntryToLog(entry);
@@ -80,79 +80,84 @@ void DeployPatchGenerator::ReportSavings(const std::vector<SimpleEntry>& identic
 }
 
 void DeployPatchGenerator::GeneratePatch(const std::vector<SimpleEntry>& entriesToUseOnDevice,
-                                         const char* localApkPath, borrowed_fd output) {
-    unique_fd input(adb_open(localApkPath, O_RDONLY | O_CLOEXEC));
+                                         const std::string& localApkPath,
+                                         const std::string& deviceApkPath, borrowed_fd output) {
+    unique_fd input(adb_open(localApkPath.c_str(), O_RDONLY | O_CLOEXEC));
     size_t newApkSize = adb_lseek(input, 0L, SEEK_END);
     adb_lseek(input, 0L, SEEK_SET);
 
+    // Header.
     PatchUtils::WriteSignature(output);
     PatchUtils::WriteLong(newApkSize, output);
+    PatchUtils::WriteString(deviceApkPath, output);
+
     size_t currentSizeOut = 0;
     // Write data from the host upto the first entry we have that matches a device entry. Then write
     // the metadata about the device entry and repeat for all entries that match on device. Finally
     // write out any data left. If the device and host APKs are exactly the same this ends up
     // writing out zip metadata from the local APK followed by offsets to the data to use from the
     // device APK.
-    for (auto&& entry : entriesToUseOnDevice) {
-        int64_t deviceDataOffset = entry.deviceEntry->dataoffset();
+    for (size_t i = 0, size = entriesToUseOnDevice.size(); i < size; ++i) {
+        auto&& entry = entriesToUseOnDevice[i];
         int64_t hostDataOffset = entry.localEntry->dataoffset();
-        int64_t deviceDataLength = entry.deviceEntry->compressedsize();
         int64_t deltaFromDeviceDataStart = hostDataOffset - currentSizeOut;
         PatchUtils::WriteLong(deltaFromDeviceDataStart, output);
         if (deltaFromDeviceDataStart > 0) {
             PatchUtils::Pipe(input, output, deltaFromDeviceDataStart);
         }
-        PatchUtils::WriteLong(deviceDataOffset, output);
-        PatchUtils::WriteLong(deviceDataLength, output);
+        int64_t deviceDataLength = entry.deviceEntry->compressedsize();
+        int64_t deviceLocalFileHeaderOffset = entry.deviceEntry->dataoffset();
+        PatchUtils::WriteLong(deviceLocalFileHeaderOffset, output);
         adb_lseek(input, deviceDataLength, SEEK_CUR);
         currentSizeOut += deltaFromDeviceDataStart + deviceDataLength;
     }
-    if (currentSizeOut != newApkSize) {
+    if (newApkSize > currentSizeOut) {
         PatchUtils::WriteLong(newApkSize - currentSizeOut, output);
         PatchUtils::Pipe(input, output, newApkSize - currentSizeOut);
-        PatchUtils::WriteLong(0, output);
-        PatchUtils::WriteLong(0, output);
+        PatchUtils::WriteLong(-1, output);  // Invalid LFH offset.
     }
 }
 
-bool DeployPatchGenerator::CreatePatch(const char* localApkPath, const char* deviceApkMetadataPath,
-                                       borrowed_fd output) {
-    std::string content;
-    APKMetaData deviceApkMetadata;
-    if (android::base::ReadFileToString(deviceApkMetadataPath, &content)) {
-        deviceApkMetadata.ParsePartialFromString(content);
-    } else {
-        // TODO: What do we want to do if we don't find any metadata.
-        // The current fallback behavior is to build a patch with the contents of |localApkPath|.
-    }
+bool DeployPatchGenerator::CreatePatch(const char* localApkPath, APKMetaData deviceApkMetadata,
+                                       android::base::borrowed_fd output) {
+    return CreatePatch(PatchUtils::GetAPKMetaData(localApkPath), std::move(deviceApkMetadata),
+                       output);
+}
 
-    APKMetaData localApkMetadata = PatchUtils::GetAPKMetaData(localApkPath);
-    // Log gathered metadata info.
-    APKMetaDataToLog(deviceApkMetadataPath, deviceApkMetadata);
-    APKMetaDataToLog(localApkPath, localApkMetadata);
+bool DeployPatchGenerator::CreatePatch(APKMetaData localApkMetadata, APKMetaData deviceApkMetadata,
+                                       borrowed_fd output) {
+    // Log metadata info.
+    APKMetaDataToLog(deviceApkMetadata);
+    APKMetaDataToLog(localApkMetadata);
+
+    const std::string localApkPath = localApkMetadata.absolute_path();
+    const std::string deviceApkPath = deviceApkMetadata.absolute_path();
 
     std::vector<SimpleEntry> identicalEntries;
     uint64_t totalSize =
             BuildIdenticalEntries(identicalEntries, localApkMetadata, deviceApkMetadata);
     ReportSavings(identicalEntries, totalSize);
-    GeneratePatch(identicalEntries, localApkPath, output);
+    GeneratePatch(identicalEntries, localApkPath, deviceApkPath, output);
+
     return true;
 }
 
 uint64_t DeployPatchGenerator::BuildIdenticalEntries(std::vector<SimpleEntry>& outIdenticalEntries,
                                                      const APKMetaData& localApkMetadata,
                                                      const APKMetaData& deviceApkMetadata) {
+    std::unordered_map<int, std::vector<const APKEntry*>> deviceEntries;
+    for (const auto& deviceEntry : deviceApkMetadata.entries()) {
+        deviceEntries[deviceEntry.crc32()].push_back(&deviceEntry);
+    }
+
     uint64_t totalSize = 0;
-    for (int i = 0; i < localApkMetadata.entries_size(); i++) {
-        const APKEntry& localEntry = localApkMetadata.entries(i);
+    for (const auto& localEntry : localApkMetadata.entries()) {
         totalSize += localEntry.compressedsize();
-        for (int j = 0; j < deviceApkMetadata.entries_size(); j++) {
-            const APKEntry& deviceEntry = deviceApkMetadata.entries(j);
-            if (deviceEntry.crc32() == localEntry.crc32() &&
-                deviceEntry.filename().compare(localEntry.filename()) == 0) {
+        for (const auto* deviceEntry : deviceEntries[localEntry.crc32()]) {
+            if (deviceEntry->filename() == localEntry.filename()) {
                 SimpleEntry simpleEntry;
-                simpleEntry.localEntry = const_cast<APKEntry*>(&localEntry);
-                simpleEntry.deviceEntry = const_cast<APKEntry*>(&deviceEntry);
+                simpleEntry.localEntry = &localEntry;
+                simpleEntry.deviceEntry = deviceEntry;
                 APKEntryToLog(localEntry);
                 outIdenticalEntries.push_back(simpleEntry);
                 break;

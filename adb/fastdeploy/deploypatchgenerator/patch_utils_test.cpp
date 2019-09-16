@@ -23,10 +23,13 @@
 #include <sstream>
 #include <string>
 
+#include <google/protobuf/util/message_differencer.h>
+
 #include "adb_io.h"
 #include "sysdeps.h"
 
 using namespace com::android::fastdeploy;
+using google::protobuf::util::MessageDifferencer;
 
 static std::string GetTestFile(const std::string& name) {
     return "fastdeploy/testdata/" + name;
@@ -86,11 +89,59 @@ TEST(PatchUtilsTest, SignatureConstMatches) {
 
 TEST(PatchUtilsTest, GatherMetadata) {
     std::string apkFile = GetTestFile("rotating_cube-release.apk");
-    APKMetaData metadata = PatchUtils::GetAPKMetaData(apkFile.c_str());
+    APKMetaData actual = PatchUtils::GetAPKMetaData(apkFile.c_str());
+
     std::string expectedMetadata;
     android::base::ReadFileToString(GetTestFile("rotating_cube-metadata-release.data"),
                                     &expectedMetadata);
+    APKMetaData expected;
+    EXPECT_TRUE(expected.ParseFromString(expectedMetadata));
+
+    // Test paths might vary.
+    expected.set_absolute_path(actual.absolute_path());
+
     std::string actualMetadata;
-    metadata.SerializeToString(&actualMetadata);
+    actual.SerializeToString(&actualMetadata);
+
+    expected.SerializeToString(&expectedMetadata);
+
+    EXPECT_EQ(expectedMetadata, actualMetadata);
+}
+
+static inline void sortAndSanitize(APKMetaData& metadata) {
+    metadata.clear_absolute_path();
+    // On host it's the actual data offset while on device it's local file header offset.
+    std::sort(metadata.mutable_entries()->begin(), metadata.mutable_entries()->end(),
+              [](auto&& lhs, auto&& rhs) { return lhs.dataoffset() < rhs.dataoffset(); });
+    for (auto&& entry : *metadata.mutable_entries()) {
+        entry.clear_dataoffset();
+    }
+}
+
+TEST(PatchUtilsTest, GatherDumpMetadata) {
+    APKMetaData apkMetadata;
+    APKMetaData cdMetadata;
+
+    apkMetadata = PatchUtils::GetAPKMetaData(GetTestFile("sample.apk").c_str());
+
+    {
+        std::string cd;
+        android::base::ReadFileToString(GetTestFile("sample.cd"), &cd);
+
+        APKDump dump;
+        dump.set_cd(std::move(cd));
+
+        cdMetadata = PatchUtils::GetAPKMetaData(dump);
+    }
+
+    sortAndSanitize(apkMetadata);
+    sortAndSanitize(cdMetadata);
+
+    std::string expectedMetadata;
+    apkMetadata.SerializeToString(&expectedMetadata);
+
+    std::string actualMetadata;
+    cdMetadata.SerializeToString(&actualMetadata);
+
     EXPECT_EQ(expectedMetadata, actualMetadata);
 }
