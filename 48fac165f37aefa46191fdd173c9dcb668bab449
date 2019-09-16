@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2035bfd7_50f5b56b",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 1750,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-09-16T23:01:25Z",
+      "side": 1,
+      "message": "nit: maybe pull |partition_update.partition_name() + target_suffix| onto a separate line to make this a bit easier to read?",
+      "revId": "48fac165f37aefa46191fdd173c9dcb668bab449",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
