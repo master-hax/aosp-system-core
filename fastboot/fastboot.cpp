@@ -51,6 +51,7 @@
 #include <utility>
 #include <vector>
 
+#include <android-base/endian.h>
 #include <android-base/file.h>
 #include <android-base/macros.h>
 #include <android-base/parseint.h>
@@ -59,6 +60,7 @@
 #include <android-base/strings.h>
 #include <android-base/unique_fd.h>
 #include <build/version.h>
+#include <libavb/libavb.h>
 #include <liblp/liblp.h>
 #include <platform_tools_version.h>
 #include <sparse/sparse.h>
@@ -933,17 +935,37 @@ static void rewrite_vbmeta_buffer(struct fastboot_buffer* buf) {
         die("Failed reading from vbmeta");
     }
 
+    uint64_t vbmeta_offset = 0;
+    uint64_t flags_offset = 0;
+    // Tries to read AVB_MAGIC from the beginning of the main vbmeta.img.
+    if (0 != data.compare(vbmeta_offset, AVB_MAGIC_LEN, AVB_MAGIC)) {
+        // Tries to locate top-level vbmeta from the boot.img footer.
+        uint64_t footer_offset = buf->sz - AVB_FOOTER_SIZE;
+        if (0 != data.compare(footer_offset, AVB_FOOTER_MAGIC_LEN, AVB_FOOTER_MAGIC)) {
+            goto errout;
+        }
+        const AvbFooter* footer = reinterpret_cast<const AvbFooter*>(data.c_str() + footer_offset);
+        vbmeta_offset = be64toh(footer->vbmeta_offset);
+        // Ensures there is AVB_MAGIC at vbmeta_offset.
+        if (0 != data.compare(vbmeta_offset, AVB_MAGIC_LEN, AVB_MAGIC)) {
+            goto errout;
+        }
+    }
+
     // There's a 32-bit big endian |flags| field at offset 120 where
     // bit 0 corresponds to disable-verity and bit 1 corresponds to
     // disable-verification.
     //
     // See external/avb/libavb/avb_vbmeta_image.h for the layout of
     // the VBMeta struct.
+    fprintf(stderr, "Rewriting vbmeta struct at offset: %" PRId64 "\n", vbmeta_offset);
+    flags_offset = 123 + vbmeta_offset;
+
     if (g_disable_verity) {
-        data[123] |= 0x01;
+        data[flags_offset] |= 0x01;
     }
     if (g_disable_verification) {
-        data[123] |= 0x02;
+        data[flags_offset] |= 0x02;
     }
 
     if (!android::base::WriteStringToFd(data, fd)) {
@@ -952,6 +974,11 @@ static void rewrite_vbmeta_buffer(struct fastboot_buffer* buf) {
     close(buf->fd);
     buf->fd = fd;
     lseek(fd, 0, SEEK_SET);
+    return;
+
+errout:
+    close(fd);
+    lseek(buf->fd, 0, SEEK_SET);
 }
 
 static void flash_buf(const std::string& partition, struct fastboot_buffer *buf)
@@ -960,7 +987,8 @@ static void flash_buf(const std::string& partition, struct fastboot_buffer *buf)
 
     // Rewrite vbmeta if that's what we're flashing and modification has been requested.
     if ((g_disable_verity || g_disable_verification) &&
-        (partition == "vbmeta" || partition == "vbmeta_a" || partition == "vbmeta_b")) {
+        (partition == "vbmeta" || partition == "vbmeta_a" || partition == "vbmeta_b" ||
+         partition == "boot" || partition == "boot_a" || partition == "boot_b")) {
         rewrite_vbmeta_buffer(buf);
     }
 
