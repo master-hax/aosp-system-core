@@ -152,6 +152,7 @@ bool LocalUpdatableMaps::Reparse() {
       // that there will only every be a handfull of these so waiting
       // to destroy them is not too expensive.
       saved_maps_.emplace_back(std::move(info));
+      search_map_idx = old_map_idx + 1;
       maps_[old_map_idx] = nullptr;
       total_entries--;
     }
