@@ -16,6 +16,10 @@
 
 #pragma once
 
+#include "adb_unique_fd.h"
+
+#include "fastdeploy/proto/ApkEntry.pb.h"
+
 #include <string>
 
 enum FastDeploy_AgentUpdateStrategy {
@@ -27,8 +31,9 @@ enum FastDeploy_AgentUpdateStrategy {
 void fastdeploy_set_local_agent(bool use_localagent);
 int get_device_api_level();
 void update_agent(FastDeploy_AgentUpdateStrategy agentUpdateStrategy);
-void extract_metadata(const char* apkPath, FILE* outputFp);
-void create_patch(const char* apkPath, const char* metadataPath, const char* patchPath);
+com::android::fastdeploy::APKMetaData extract_metadata(const char* apkPath);
+void create_patch(const char* apkPath, com::android::fastdeploy::APKMetaData metadata,
+                  const char* patchPath);
 void apply_patch_on_device(const char* apkPath, const char* patchPath, const char* outputPath);
 void install_patch(const char* apkPath, const char* patchPath, int argc, const char** argv);
 std::string get_patch_path(const char* apkPath);
