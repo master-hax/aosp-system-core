@@ -40,6 +40,7 @@ inline void EnterShutdown(const std::string&) {
 }
 
 // property_service.h
+static constexpr const char kStartWaitForProperty[] = "ctl.start_wait_for_property";
 inline bool CanReadProperty(const std::string&, const std::string&) {
     return true;
 }

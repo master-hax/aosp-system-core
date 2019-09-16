@@ -25,6 +25,11 @@
 namespace android {
 namespace init {
 
+static constexpr const char kLoadPersistentProperty[] = "ctl.load_persistent_properties";
+static constexpr const char kStopSendingChangedMessages[] = "ctl.stop_sending_changed_messages";
+static constexpr const char kStartWaitForProperty[] = "ctl.start_wait_for_property";
+static constexpr const char kStopWaitForProperty[] = "ctl.stop_wait_for_property";
+
 static constexpr const char kRestoreconProperty[] = "selinux.restorecon_recursive";
 
 bool CanReadProperty(const std::string& source_context, const std::string& name);

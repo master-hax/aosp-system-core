@@ -44,6 +44,7 @@
 #include <mutex>
 #include <optional>
 #include <queue>
+#include <set>
 #include <thread>
 #include <vector>
 
@@ -89,12 +90,16 @@ using android::properties::PropertyInfoEntry;
 namespace android {
 namespace init {
 
+static void SetPersistentProperties();
+
 static bool persistent_properties_loaded = false;
 
 static int property_set_fd = -1;
 static int init_socket = -1;
 
 static PropertyInfoAreaFile property_info_area;
+
+std::set<std::string> watched_properties;
 
 void CreateSerializedPropertyInfo();
 
@@ -211,7 +216,7 @@ static uint32_t PropertySet(const std::string& name, const std::string& value, s
     }
     // If init hasn't started its main loop, then it won't be handling property changed messages
     // anyway, so there's no need to try to send them.
-    if (init_socket != -1) {
+    if (init_socket != -1 && watched_properties.count(name) > 0) {
         SendPropertyChanged(name, value);
     }
     return PROP_SUCCESS;
@@ -387,8 +392,22 @@ class SocketConnection {
     DISALLOW_IMPLICIT_CONSTRUCTORS(SocketConnection);
 };
 
-static uint32_t SendControlMessage(const std::string& msg, const std::string& name, pid_t pid,
+static uint32_t SendControlMessage(const std::string& msg, const std::string& value, pid_t pid,
                                    SocketConnection* socket, std::string* error) {
+    if (msg == kStopSendingChangedMessages) {
+        init_socket = -1;
+        return PROP_SUCCESS;
+    } else if (msg == kLoadPersistentProperty) {
+        SetPersistentProperties();
+        return PROP_SUCCESS;
+    } else if (msg == kStartWaitForProperty) {
+        watched_properties.emplace(value);
+        return PROP_SUCCESS;
+    } else if (msg == kStopWaitForProperty) {
+        watched_properties.erase(value);
+        return PROP_SUCCESS;
+    }
+
     if (init_socket == -1) {
         *error = "Received control message after shutdown, ignoring";
         return PROP_ERROR_HANDLE_CONTROL_MESSAGE;
@@ -396,8 +415,8 @@ static uint32_t SendControlMessage(const std::string& msg, const std::string& na
 
     auto property_msg = PropertyMessage{};
     auto* control_message = property_msg.mutable_control_message();
-    control_message->set_msg(msg);
-    control_message->set_name(name);
+    control_message->set_msg(msg.substr(4));
+    control_message->set_name(value);
     control_message->set_pid(pid);
 
     // We must release the fd before sending it to init, otherwise there will be a race with init.
@@ -495,7 +514,7 @@ uint32_t HandlePropertySet(const std::string& name, const std::string& value,
     }
 
     if (StartsWith(name, "ctl.")) {
-        return SendControlMessage(name.c_str() + 4, value, cr.pid, socket, error);
+        return SendControlMessage(name, value, cr.pid, socket, error);
     }
 
     // sys.powerctl is a special property that is used to make the device reboot.  We want to log
@@ -781,6 +800,17 @@ static void load_override_properties() {
     }
 }
 
+static void SetPersistentProperties() {
+    load_override_properties();
+    // Read persistent properties after all default values have been loaded.
+    auto persistent_properties = LoadPersistentProperties();
+    for (const auto& persistent_property_record : persistent_properties.properties()) {
+        InitPropertySet(persistent_property_record.name(), persistent_property_record.value());
+    }
+    InitPropertySet("ro.persistent_properties.ready", "true");
+    persistent_properties_loaded = true;
+}
+
 // If the ro.product.[brand|device|manufacturer|model|name] properties have not been explicitly
 // set, derive them from ro.product.${partition}.* properties
 static void property_initialize_ro_product_props() {
@@ -998,41 +1028,6 @@ void CreateSerializedPropertyInfo() {
     selinux_android_restorecon(kPropertyInfosPath, 0);
 }
 
-static void HandleInitSocket() {
-    auto message = ReadMessage(init_socket);
-    if (!message) {
-        LOG(ERROR) << "Could not read message from init_dedicated_recv_socket: " << message.error();
-        return;
-    }
-
-    auto init_message = InitMessage{};
-    if (!init_message.ParseFromString(*message)) {
-        LOG(ERROR) << "Could not parse message from init";
-        return;
-    }
-
-    switch (init_message.msg_case()) {
-        case InitMessage::kLoadPersistentProperties: {
-            load_override_properties();
-            // Read persistent properties after all default values have been loaded.
-            auto persistent_properties = LoadPersistentProperties();
-            for (const auto& persistent_property_record : persistent_properties.properties()) {
-                InitPropertySet(persistent_property_record.name(),
-                                persistent_property_record.value());
-            }
-            InitPropertySet("ro.persistent_properties.ready", "true");
-            persistent_properties_loaded = true;
-            break;
-        }
-        case InitMessage::kStopSendingMessages: {
-            init_socket = -1;
-            break;
-        }
-        default:
-            LOG(ERROR) << "Unknown message type from init: " << init_message.msg_case();
-    }
-}
-
 static void PropertyServiceThread() {
     Epoll epoll;
     if (auto result = epoll.Open(); !result) {
@@ -1040,10 +1035,6 @@ static void PropertyServiceThread() {
     }
 
     if (auto result = epoll.RegisterHandler(property_set_fd, handle_property_set_fd); !result) {
-        LOG(FATAL) << result.error();
-    }
-
-    if (auto result = epoll.RegisterHandler(init_socket, HandleInitSocket); !result) {
         LOG(FATAL) << result.error();
     }
 
