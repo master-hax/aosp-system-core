@@ -22,8 +22,6 @@ on early-init
     # Set the security context of /postinstall if present.
     restorecon /postinstall
 
-    mkdir /acct/uid
-
     # memory.pressure_level used by lmkd
     chown root system /dev/memcg/memory.pressure_level
     chmod 0040 /dev/memcg/memory.pressure_level
@@ -114,6 +112,10 @@ on init
 
     # Link /vendor to /system/vendor for devices without a vendor partition.
     symlink /system/vendor /vendor
+
+    # Allow system_server to control the content of cpuacct cgroup
+    chown system system /acct
+    chmod 0755 /acct
 
     # Create energy-aware scheduler tuning nodes
     mkdir /dev/stune/foreground
