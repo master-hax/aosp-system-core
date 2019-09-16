@@ -178,24 +178,15 @@ static int install_app_streamed(int argc, const char** argv, bool use_fastdeploy
 
     if (use_fastdeploy == true) {
 #if defined(ENABLE_FASTDEPLOY)
-        TemporaryFile metadataTmpFile;
-        std::string patchTmpFilePath;
-        {
-            TemporaryFile patchTmpFile;
-            patchTmpFile.DoNotRemove();
-            patchTmpFilePath = patchTmpFile.path;
-        }
+        TemporaryFile patchTmpFile;
 
-        FILE* metadataFile = fopen(metadataTmpFile.path, "wb");
-        extract_metadata(file, metadataFile);
-        fclose(metadataFile);
+        auto metadata = extract_metadata(file);
+        create_patch(file, std::move(metadata), patchTmpFile.path);
 
-        create_patch(file, metadataTmpFile.path, patchTmpFilePath.c_str());
         // pass all but 1st (command) and last (apk path) parameters through to pm for
         // session creation
         std::vector<const char*> pm_args{argv + 1, argv + argc - 1};
-        install_patch(file, patchTmpFilePath.c_str(), pm_args.size(), pm_args.data());
-        adb_unlink(patchTmpFilePath.c_str());
+        install_patch(file, patchTmpFile.path, pm_args.size(), pm_args.data());
         delete_device_patch_file(file);
         return 0;
 #else
@@ -290,14 +281,11 @@ static int install_app_legacy(int argc, const char** argv, bool use_fastdeploy,
 
     if (use_fastdeploy == true) {
 #if defined(ENABLE_FASTDEPLOY)
-        TemporaryFile metadataTmpFile;
         TemporaryFile patchTmpFile;
 
-        FILE* metadataFile = fopen(metadataTmpFile.path, "wb");
-        extract_metadata(apk_file[0], metadataFile);
-        fclose(metadataFile);
+        auto metadata = extract_metadata(apk_file[0]);
+        create_patch(apk_file[0], std::move(metadata), patchTmpFile.path);
 
-        create_patch(apk_file[0], metadataTmpFile.path, patchTmpFile.path);
         apply_patch_on_device(apk_file[0], patchTmpFile.path, apk_dest.c_str());
 #else
         error_exit("fastdeploy is disabled");

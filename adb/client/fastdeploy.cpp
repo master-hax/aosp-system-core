@@ -30,18 +30,22 @@
 #include "deployagent.inc"        // Generated include via build rule.
 #include "deployagentscript.inc"  // Generated include via build rule.
 #include "fastdeploy/deploypatchgenerator/deploy_patch_generator.h"
+#include "fastdeploy/deploypatchgenerator/patch_utils.h"
+#include "fastdeploy/proto/ApkEntry.pb.h"
 #include "fastdeploycallbacks.h"
 #include "sysdeps.h"
 
 #include "adb_utils.h"
 
-static constexpr long kRequiredAgentVersion = 0x00000002;
+static constexpr long kRequiredAgentVersion = 0x00000003;
 
 static constexpr const char* kDeviceAgentPath = "/data/local/tmp/";
 static constexpr const char* kDeviceAgentFile = "/data/local/tmp/deployagent.jar";
 static constexpr const char* kDeviceAgentScript = "/data/local/tmp/deployagent";
 
 static bool g_use_localagent = false;
+
+using APKMetaData = com::android::fastdeploy::APKMetaData;
 
 long get_agent_version() {
     std::vector<char> versionOutputBuffer;
@@ -213,29 +217,37 @@ static std::string get_packagename_from_apk(const char* apkPath) {
     error_exit("Could not find package name tag in AndroidManifest.xml inside %s", apkPath);
 }
 
-void extract_metadata(const char* apkPath, FILE* outputFp) {
+APKMetaData extract_metadata(const char* apkPath) {
+    constexpr const char* kAgentDumpCommandPattern = "/data/local/tmp/deployagent dump %s";
     std::string packageName = get_packagename_from_apk(apkPath);
-    const char* kAgentExtractCommandPattern = "/data/local/tmp/deployagent extract %s";
-    std::string extractCommand =
-            android::base::StringPrintf(kAgentExtractCommandPattern, packageName.c_str());
+    std::string dumpCommand =
+            android::base::StringPrintf(kAgentDumpCommandPattern, packageName.c_str());
 
-    std::vector<char> extractErrorBuffer;
-    DeployAgentFileCallback cb(outputFp, &extractErrorBuffer);
-    int returnCode = send_shell_command(extractCommand, false, &cb);
+    std::vector<char> dumpOutBuffer;
+    std::vector<char> dumpErrorBuffer;
+    int returnCode = capture_shell_command(dumpCommand.c_str(), &dumpOutBuffer, &dumpErrorBuffer);
     if (returnCode != 0) {
-        fprintf(stderr, "Executing %s returned %d\n", extractCommand.c_str(), returnCode);
-        fprintf(stderr, "%*s\n", int(extractErrorBuffer.size()), extractErrorBuffer.data());
+        fprintf(stderr, "Executing %s returned %d\n", dumpCommand.c_str(), returnCode);
+        fprintf(stderr, "%*s\n", int(dumpErrorBuffer.size()), dumpErrorBuffer.data());
         error_exit("Aborting");
     }
+
+    com::android::fastdeploy::APKDump dump;
+    if (!dump.ParseFromArray(dumpOutBuffer.data(), dumpOutBuffer.size())) {
+        fprintf(stderr, "Can't parse output of %s\n", dumpCommand.c_str());
+        error_exit("Aborting");
+    }
+
+    return PatchUtils::GetAPKMetaData(dump);
 }
 
-void create_patch(const char* apkPath, const char* metadataPath, const char* patchPath) {
-    DeployPatchGenerator generator(false);
+void create_patch(const char* apkPath, APKMetaData metadata, const char* patchPath) {
+    DeployPatchGenerator generator(/*is_verbose=*/false);
     unique_fd patchFd(adb_open(patchPath, O_WRONLY | O_CREAT | O_CLOEXEC));
     if (patchFd < 0) {
         perror_exit("adb: failed to create %s", patchPath);
     }
-    bool success = generator.CreatePatch(apkPath, metadataPath, patchFd);
+    bool success = generator.CreatePatch(apkPath, std::move(metadata), patchFd);
     if (!success) {
         error_exit("Failed to create patch for %s", apkPath);
     }
