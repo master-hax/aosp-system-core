@@ -734,7 +734,7 @@ bool HandlePowerctlMessage(const std::string& command) {
     // need to tell property service to stop sending us these messages, otherwise it'll fill the
     // buffers and block indefinitely, causing future property sets, including those that init makes
     // during shutdown in Service::NotifyStateChange() to also block indefinitely.
-    SendStopSendingMessagesMessage();
+    property_set(kStopSendingChangedMessages, "true");
 
     return true;
 }

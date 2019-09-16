@@ -167,6 +167,17 @@ bool start_waiting_for_property(const char *name, const char *value)
         wait_prop_name = name;
         wait_prop_value = value;
         waiting_for_prop.reset(new Timer());
+
+        property_set(kStartWaitForProperty, name);
+
+        // Check if the property got set between the first check and requesting notifications about
+        // it.
+        if (GetProperty(name, "") == value) {
+            ResetWaitForProp();
+            LOG(INFO) << "start_waiting_for_property(\"" << name << "\", \"" << value
+                      << "\"): already set";
+        }
+
     } else {
         LOG(INFO) << "start_waiting_for_property(\""
                   << name << "\", \"" << value << "\"): already set";
@@ -175,6 +186,7 @@ bool start_waiting_for_property(const char *name, const char *value)
 }
 
 void ResetWaitForProp() {
+    property_set(kStopWaitForProperty, wait_prop_name);
     wait_prop_name.clear();
     wait_prop_value.clear();
     waiting_for_prop.reset();
@@ -619,22 +631,6 @@ static void RecordStageBoottimes(const boot_clock::time_point& second_stage_star
     property_set("ro.boottime.init.selinux",
                  std::to_string(second_stage_start_time.time_since_epoch().count() -
                                 selinux_start_time_ns));
-}
-
-void SendLoadPersistentPropertiesMessage() {
-    auto init_message = InitMessage{};
-    init_message.set_load_persistent_properties(true);
-    if (auto result = SendMessage(property_fd, init_message); !result) {
-        LOG(ERROR) << "Failed to send load persistent properties message: " << result.error();
-    }
-}
-
-void SendStopSendingMessagesMessage() {
-    auto init_message = InitMessage{};
-    init_message.set_stop_sending_messages(true);
-    if (auto result = SendMessage(property_fd, init_message); !result) {
-        LOG(ERROR) << "Failed to send load persistent properties message: " << result.error();
-    }
 }
 
 static void HandlePropertyFd() {

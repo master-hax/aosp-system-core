@@ -138,6 +138,10 @@ Result<void> ActionParser::ParseSection(std::vector<std::string>&& args,
         return Error() << "ParseTriggers() failed: " << result.error();
     }
 
+    for (const auto& [property, _] : property_triggers) {
+        property_set(kStartWaitForProperty, property);
+    }
+
     auto action = std::make_unique<Action>(false, action_subcontext, filename, line, event_trigger,
                                            property_triggers);
 

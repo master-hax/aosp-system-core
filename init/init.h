@@ -39,9 +39,6 @@ void DumpState();
 
 void ResetWaitForProp();
 
-void SendLoadPersistentPropertiesMessage();
-void SendStopSendingMessagesMessage();
-
 int SecondStageMain(int argc, char** argv);
 
 }  // namespace init

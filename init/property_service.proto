@@ -35,10 +35,3 @@ message PropertyMessage {
         ChangedMessage changed_message = 2;
     };
 }
-
-message InitMessage {
-    oneof msg {
-        bool load_persistent_properties = 1;
-        bool stop_sending_messages = 2;
-    };
-}

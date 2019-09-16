@@ -1037,9 +1037,8 @@ static Result<void> do_load_persist_props(const BuiltinArguments& args) {
         if (++num_calls == 1) return {};
     }
 
-    SendLoadPersistentPropertiesMessage();
+    property_set(kLoadPersistentProperty, "true");
 
-    start_waiting_for_property("ro.persistent_properties.ready", "true");
     return {};
 }
 
