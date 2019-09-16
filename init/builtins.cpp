@@ -1039,7 +1039,7 @@ static Result<void> do_load_persist_props(const BuiltinArguments& args) {
 
     SendLoadPersistentPropertiesMessage();
 
-    start_waiting_for_property("ro.persistent_properties.ready", "true");
+    start_waiting_for_property(kPersistentPropertiesReadyProperty, "true");
     return {};
 }
 

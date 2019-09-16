@@ -40,5 +40,6 @@ message InitMessage {
     oneof msg {
         bool load_persistent_properties = 1;
         bool stop_sending_messages = 2;
+        string start_watching_property = 3;
     };
 }

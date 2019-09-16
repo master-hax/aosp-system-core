@@ -20,6 +20,7 @@
 #include <android-base/strings.h>
 
 #if defined(__ANDROID__)
+#include "init.h"
 #include "property_service.h"
 #else
 #include "host_init_stubs.h"
@@ -138,6 +139,10 @@ Result<void> ActionParser::ParseSection(std::vector<std::string>&& args,
         return Error() << "ParseTriggers() failed: " << result.error();
     }
 
+    for (const auto& [property, _] : property_triggers) {
+        SendStartWatchingPropertyMessage(property);
+    }
+
     auto action = std::make_unique<Action>(false, action_subcontext, filename, line, event_trigger,
                                            property_triggers);
 
@@ -146,6 +151,9 @@ Result<void> ActionParser::ParseSection(std::vector<std::string>&& args,
 }
 
 Result<void> ActionParser::ParseLineSection(std::vector<std::string>&& args, int line) {
+    if (args.size() >= 2 && args[0] == "wait_for_prop") {
+        SendStartWatchingPropertyMessage(args[1]);
+    }
     return action_ ? action_->AddCommand(std::move(args), line) : Result<void>{};
 }
 
