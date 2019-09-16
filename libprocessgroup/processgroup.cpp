@@ -136,10 +136,26 @@ static int RemoveProcessGroup(const char* cgroup, uid_t uid, int pid) {
     int ret;
 
     auto uid_pid_path = ConvertUidPidToPath(cgroup, uid, pid);
-    ret = rmdir(uid_pid_path.c_str());
+    for (int retry = 0; retry < 100; retry++) {
+        ret = rmdir(uid_pid_path.c_str());
+        if (ret == 0 || errno == ENOENT) {
+            break;
+        }
+        if (errno != EBUSY) {
+            // Unexpected error, exit immediately
+            PLOG(ERROR) << "Failed to remove " << uid_pid_path;
+            return ret;
+        }
+        // Cgroup is still populated, wait and retry
+        std::this_thread::sleep_for(2ms);
+    }
 
     auto uid_path = ConvertUidToPath(cgroup, uid);
-    rmdir(uid_path.c_str());
+    ret = rmdir(uid_path.c_str());
+    // User cgroup can be populated (EBUSY) if is has other running processes
+    if (ret && errno != ENOENT && errno != EBUSY) {
+        PLOG(ERROR) << "Failed to remove " << uid_path;
+    }
 
     return ret;
 }
@@ -160,7 +176,7 @@ static bool RemoveUidProcessGroups(const std::string& uid_path) {
 
             auto path = StringPrintf("%s/%s", uid_path.c_str(), dir->d_name);
             LOG(VERBOSE) << "Removing " << path;
-            if (rmdir(path.c_str()) == -1) {
+            if (rmdir(path.c_str()) == -1 && errno != ENOENT) {
                 if (errno != EBUSY) {
                     PLOG(WARNING) << "Failed to remove " << path;
                 }
@@ -205,7 +221,7 @@ void removeAllProcessGroups() {
                     continue;
                 }
                 LOG(VERBOSE) << "Removing " << path;
-                if (rmdir(path.c_str()) == -1 && errno != EBUSY) {
+                if (rmdir(path.c_str()) == -1 && errno != ENOENT && errno != EBUSY) {
                     PLOG(WARNING) << "Failed to remove " << path;
                 }
             }
