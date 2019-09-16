@@ -64,7 +64,7 @@ TEST(DeployPatchGeneratorTest, NoDeviceMetadata) {
     // Create a patch that is 100% different.
     TemporaryFile output;
     DeployPatchGenerator generator(true);
-    generator.CreatePatch(apkPath.c_str(), "", output.fd);
+    generator.CreatePatch(apkPath.c_str(), {}, output.fd);
 
     // Expect a patch file that has a size at least the size of our initial APK.
     long patchSize = adb_lseek(output.fd, 0L, SEEK_END);
