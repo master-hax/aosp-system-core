@@ -37,8 +37,21 @@ message Profile {
     repeated Action actions = 2 [json_name = "Actions"];
 }
 
-// Next: 3
+// Next: 4
 message Action {
     string name = 1 [json_name = "Name"];
-    map<string, string> params = 2 [json_name = "Params"];
+    oneof test {
+        ActionParam1 param1 = 2;
+        ActionParam2 param2 = 3;
+    }
+}
+
+// Next: 2
+message ActionParam1 {
+    map<string, string> params = 1 [json_name = "Params"];
+}
+
+// Next: 2
+message ActionParam2 {
+    repeated string params = 1 [json_name = "Params"];
 }

@@ -26,6 +26,10 @@
 #include <android-base/unique_fd.h>
 #include <cgroup_map.h>
 
+bool SetProcessProfiles_(uid_t uid, pid_t pid, const std::vector<std::string>& profiles,
+                         bool use_fd_cache);
+bool SetTaskProfiles_(int tid, const std::vector<std::string>& profiles, bool use_fd_cache);
+
 class ProfileAttribute {
   public:
     ProfileAttribute(const CgroupController& controller, const std::string& file_name)
@@ -136,6 +140,18 @@ class SetCgroupAction : public ProfileAction {
     static bool AddTidToCgroup(int tid, int fd);
 
     bool IsFdValid() const { return fd_ > FDS_INACCESSIBLE; }
+};
+
+// Set profile profile element
+class SetProfileAction : public ProfileAction {
+  public:
+    SetProfileAction(const std::vector<std::string>& profiles) : profiles_(profiles) {}
+
+    virtual bool ExecuteForProcess(uid_t uid, pid_t pid) const;
+    virtual bool ExecuteForTask(int tid) const;
+
+  private:
+    std::vector<std::string> profiles_;
 };
 
 class TaskProfile {
