@@ -88,6 +88,14 @@ cc_test {
         "device-tests",
         "vts-core",
     ],
+    multilib: {
+        lib32: {
+            suffix: "32",
+        },
+        lib64: {
+            suffix: "64",
+        },
+    },
 }
 
 cc_test {
