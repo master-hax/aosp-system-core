@@ -175,6 +175,7 @@ cc_test {
             srcs: ["utf8_test.cpp"],
             cflags: ["-Wno-unused-parameter"],
             enabled: true,
+            host_ldlibs: ["-lws2_32"],
         },
     },
     local_include_dirs: ["."],
