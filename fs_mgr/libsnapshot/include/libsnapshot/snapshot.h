@@ -19,6 +19,7 @@
 #include <chrono>
 #include <map>
 #include <memory>
+#include <ostream>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -84,6 +85,7 @@ enum class UpdateState : unsigned int {
     // operation via fastboot. This state can only be returned by WaitForMerge.
     Cancelled
 };
+std::ostream& operator<<(std::ostream& os, UpdateState state);
 
 class SnapshotManager final {
     using CreateLogicalPartitionParams = android::fs_mgr::CreateLogicalPartitionParams;
@@ -188,6 +190,9 @@ class SnapshotManager final {
     // Perform first-stage mapping of snapshot targets. This replaces init's
     // call to CreateLogicalPartitions when snapshots are present.
     bool CreateLogicalAndSnapshotPartitions(const std::string& super_device);
+
+    // Dump debug information.
+    bool Dump(std::ostream& os);
 
   private:
     FRIEND_TEST(SnapshotTest, CleanFirstStageMount);
