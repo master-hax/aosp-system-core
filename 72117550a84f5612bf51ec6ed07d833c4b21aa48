@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8c5c393b_c597bb27",
+        "filename": "fs_mgr/fs_mgr_fstab.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 842,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-09-17T18:12:27Z",
+      "side": 1,
+      "message": "Might be worth adding a comment here as to why we\u0027re including the partition twice for both file system types.",
+      "revId": "72117550a84f5612bf51ec6ed07d833c4b21aa48",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8c7ef523_4a2de759",
+        "filename": "fs_mgr/include_fstab/fstab/fstab.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 111,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-09-17T18:12:27Z",
+      "side": 1,
+      "message": "If the fstab is unmodified, then it should be `const Fstab\u0026 fstab`.  The vector should also be `const std::vector\u003cstd::string\u003e\u0026 logical_partitions` since we don\u0027t want to pass it by value.\n\nAlso, it\u0027s probably a good time to rename this function, right?  It seems that \u0027Dsu\u0027 should be preferred over \u0027Gsi\u0027.",
+      "revId": "72117550a84f5612bf51ec6ed07d833c4b21aa48",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "70698fb6_8fed61fe",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 642,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-09-17T18:12:27Z",
+      "side": 1,
+      "message": "In retrospect, even the old code is wrong since it should use remove_if()/erase() to handle multiple lines for the same partition.\n\nBut here, you need fstab_.erase(old_entry, fstab_.end()).\n\nhttps://en.wikipedia.org/wiki/Erase–remove_idiom\n\nThough, how does this interact with the code in BuildGsiFstabEntries() that creates 2 fstab entries for partitions that are not mounted ext4?  It seems that the second entry would delete the first entry in this list.  You may need to loop through the new fstab entries twice: the first time to remove the old entries and the second time to add the new entries.",
+      "revId": "72117550a84f5612bf51ec6ed07d833c4b21aa48",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "279c8695_ec276f88",
+        "filename": "init/init.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 718,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-09-17T18:12:27Z",
+      "side": 1,
+      "message": "If we were to link liblp into libfstab, then we\u0027d need to make liblp/libfs_mgr vendor_available, right?  That would be worse, so I\u0027m fine with this though it is a bit unfortunate.",
+      "revId": "72117550a84f5612bf51ec6ed07d833c4b21aa48",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
