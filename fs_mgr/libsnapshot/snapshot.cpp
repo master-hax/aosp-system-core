@@ -1526,34 +1526,33 @@ UpdateState SnapshotManager::ReadUpdateState(LockedFile* file) {
     }
 }
 
-bool SnapshotManager::WriteUpdateState(LockedFile* file, UpdateState state) {
-    std::string contents;
+std::ostream& operator<<(std::ostream& os, UpdateState state) {
     switch (state) {
         case UpdateState::None:
-            contents = "none";
-            break;
+            return os << "none";
         case UpdateState::Initiated:
-            contents = "initiated";
-            break;
+            return os << "initiated";
         case UpdateState::Unverified:
-            contents = "unverified";
-            break;
+            return os << "unverified";
         case UpdateState::Merging:
-            contents = "merging";
-            break;
+            return os << "merging";
         case UpdateState::MergeCompleted:
-            contents = "merge-completed";
-            break;
+            return os << "merge-completed";
         case UpdateState::MergeNeedsReboot:
-            contents = "merge-needs-reboot";
-            break;
+            return os << "merge-needs-reboot";
         case UpdateState::MergeFailed:
-            contents = "merge-failed";
-            break;
+            return os << "merge-failed";
         default:
             LOG(ERROR) << "Unknown update state";
-            return false;
+            return os;
     }
+}
+
+bool SnapshotManager::WriteUpdateState(LockedFile* file, UpdateState state) {
+    std::stringstream ss;
+    ss << state;
+    std::string contents = ss.str();
+    if (contents.empty()) return false;
 
     if (!Truncate(file)) return false;
     if (!android::base::WriteStringToFd(contents, file->fd())) {
@@ -1938,6 +1937,36 @@ bool SnapshotManager::UnmapUpdateSnapshot(const std::string& target_partition_na
     auto lock = LockShared();
     if (!lock) return false;
     return UnmapPartitionWithSnapshot(lock.get(), target_partition_name);
+}
+
+bool SnapshotManager::Dump(std::ostream& os) {
+    auto lock = LockShared();
+    if (!lock) return false;
+
+    os << "Update state: " << ReadUpdateState(lock.get()) << std::endl;
+
+    std::vector<std::string> snapshots;
+    if (!ListSnapshots(lock.get(), &snapshots)) {
+        LOG(ERROR) << "Could not list snapshots";
+        return false;
+    }
+    bool ok = true;
+    for (const auto& name : snapshots) {
+        os << "Snapshot: " << name << std::endl;
+        SnapshotStatus status;
+        if (!ReadSnapshotStatus(lock.get(), name, &status)) {
+            ok = false;
+            continue;
+        }
+        os << "    state: " << to_string(status.state) << std::endl;
+        os << "    device size (bytes): " << status.device_size << std::endl;
+        os << "    snapshot size (bytes): " << status.snapshot_size << std::endl;
+        os << "    cow partition size (bytes): " << status.cow_partition_size << std::endl;
+        os << "    cow file size (bytes): " << status.cow_file_size << std::endl;
+        os << "    allocated sectors: " << status.sectors_allocated << std::endl;
+        os << "    metadata sectors: " << status.metadata_sectors << std::endl;
+    }
+    return ok;
 }
 
 }  // namespace snapshot
