@@ -22,6 +22,30 @@
       "revId": "ad67ed042ffcc5c531d9daf588595a4d73c78fa4",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "139978cb_791e69ba",
+        "filename": "lmkd/lmkd.c",
+        "patchSetId": 15
+      },
+      "lineNbr": 868,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-09-17T22:21:10Z",
+      "side": 1,
+      "message": "The highest number of PIDFDs concurrently open by lmkd that I\u0027ve seen so far was 142 processes. We don\u0027t track all the processes in the system, only the ones which AMS registers with lmkd.\nWill log the errno and change the error log wording.",
+      "parentUuid": "40988744_e1374818",
+      "range": {
+        "startLine": 864,
+        "startChar": 16,
+        "endLine": 868,
+        "endChar": 17
+      },
+      "revId": "ad67ed042ffcc5c531d9daf588595a4d73c78fa4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
