@@ -91,6 +91,7 @@ class FirstStageMount {
     bool IsDmLinearEnabled();
     bool GetDmLinearMetadataDevice();
     bool InitDmLinearBackingDevices(const android::fs_mgr::LpMetadata& metadata);
+    bool InitExtraRequiredDevices(std::set<std::string> required_devices);
     void UseGsiIfPresent();
 
     ListenerAction UeventCallback(const Uevent& uevent);
@@ -333,17 +334,24 @@ bool FirstStageMount::InitDeviceMapper() {
 }
 
 bool FirstStageMount::InitDmLinearBackingDevices(const android::fs_mgr::LpMetadata& metadata) {
+    std::set<std::string> required_devices;
+
     auto partition_names = android::fs_mgr::GetBlockDevicePartitionNames(metadata);
     for (const auto& partition_name : partition_names) {
         // The super partition was found in the earlier pass.
         if (partition_name == super_partition_name_) {
             continue;
         }
-        required_devices_partition_names_.emplace(partition_name);
+        required_devices.emplace(partition_name);
     }
-    if (required_devices_partition_names_.empty()) {
+    if (required_devices.empty()) {
         return true;
     }
+    return InitExtraRequiredDevices(std::move(required_devices));
+}
+
+bool FirstStageMount::InitExtraRequiredDevices(std::set<std::string> required_devices) {
+    required_devices_partition_names_ = std::move(required_devices);
 
     auto uevent_callback = [this](const Uevent& uevent) { return UeventCallback(uevent); };
     uevent_listener_.RegenerateUevents(uevent_callback);
@@ -372,6 +380,12 @@ bool FirstStageMount::CreateLogicalPartitions() {
             return false;
         }
         if (sm->NeedSnapshotsInFirstStageMount()) {
+            // When COW images are present for snapshots, they are stored on
+            // the data partition.
+            std::set<std::string> partitions = {"userdata"};
+            if (!InitExtraRequiredDevices(std::move(partitions))) {
+                return false;
+            }
             return sm->CreateLogicalAndSnapshotPartitions(lp_metadata_partition_);
         }
     }
@@ -577,17 +591,8 @@ bool FirstStageMount::MountPartitions() {
     const auto devices = fs_mgr_overlayfs_required_devices(&fstab_);
     for (auto const& device : devices) {
         if (android::base::StartsWith(device, "/dev/block/by-name/")) {
-            required_devices_partition_names_.emplace(basename(device.c_str()));
-            auto uevent_callback = [this](const Uevent& uevent) { return UeventCallback(uevent); };
-            uevent_listener_.RegenerateUevents(uevent_callback);
-            if (!required_devices_partition_names_.empty()) {
-                uevent_listener_.Poll(uevent_callback, 10s);
-                if (!required_devices_partition_names_.empty()) {
-                    LOG(ERROR) << __PRETTY_FUNCTION__
-                               << ": partition(s) not found after polling timeout: "
-                               << android::base::Join(required_devices_partition_names_, ", ");
-                }
-            }
+            std::set<std::string> devices = {basename(device.c_str())};
+            InitExtraRequiredDevices(std::move(devices));
         } else {
             InitMappedDevice(device);
         }
