@@ -1,0 +1,119 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "01271b3c_1ebd7d29",
+        "filename": "lmkd/lmkd.c",
+        "patchSetId": 17
+      },
+      "lineNbr": 156,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-09-17T18:37:37Z",
+      "side": 1,
+      "message": "initialization not needed.",
+      "range": {
+        "startLine": 156,
+        "startChar": 27,
+        "endLine": 156,
+        "endChar": 35
+      },
+      "revId": "f7467ff679775d368e52b9d12b1dec05b8501abe",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2d0bdc14_2e3974dc",
+        "filename": "lmkd/lmkd.c",
+        "patchSetId": 17
+      },
+      "lineNbr": 1710,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-09-17T18:37:37Z",
+      "side": 1,
+      "message": "tab -\u003e space",
+      "range": {
+        "startLine": 1710,
+        "startChar": 0,
+        "endLine": 1710,
+        "endChar": 1
+      },
+      "revId": "f7467ff679775d368e52b9d12b1dec05b8501abe",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5b08ad1f_426b3a97",
+        "filename": "lmkd/lmkd.c",
+        "patchSetId": 17
+      },
+      "lineNbr": 1734,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-09-17T18:37:37Z",
+      "side": 1,
+      "message": "( ... ) the brackets are not needed.",
+      "range": {
+        "startLine": 1734,
+        "startChar": 11,
+        "endLine": 1734,
+        "endChar": 56
+      },
+      "revId": "f7467ff679775d368e52b9d12b1dec05b8501abe",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a7e2e6f2_56c0ed4a",
+        "filename": "lmkd/lmkd.c",
+        "patchSetId": 17
+      },
+      "lineNbr": 1747,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-09-17T18:37:37Z",
+      "side": 1,
+      "message": "generically this could return an error, shouldn\u0027t, but can if the kernel is misbehaving and if they do, the log message calculations below get _interesting_ ...",
+      "range": {
+        "startLine": 1747,
+        "startChar": 8,
+        "endLine": 1747,
+        "endChar": 56
+      },
+      "revId": "f7467ff679775d368e52b9d12b1dec05b8501abe",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "41905e6d_f043f170",
+        "filename": "lmkd/lmkd.c",
+        "patchSetId": 17
+      },
+      "lineNbr": 1760,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-09-17T18:37:37Z",
+      "side": 1,
+      "message": "At least some of the failures here could be attributed to last_kill_pid_or_fd being invalid? Or could be a more permanent condition leading to logspam?\n\nMaybe best to close and set to -1 since that is the assumption made by all who call this? You will leak an fd if epoll_ctl fails for a non-fd problem.",
+      "range": {
+        "startLine": 1760,
+        "startChar": 12,
+        "endLine": 1760,
+        "endChar": 79
+      },
+      "revId": "f7467ff679775d368e52b9d12b1dec05b8501abe",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
