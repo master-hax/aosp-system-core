@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "40988744_e1374818",
+        "filename": "lmkd/lmkd.c",
+        "patchSetId": 15
+      },
+      "lineNbr": 868,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-09-17T18:47:04Z",
+      "side": 1,
+      "message": "Failure could be because there are no more fds (1024, we easily have more than that number of processes running), not the same as attempting to register a dead task.",
+      "range": {
+        "startLine": 864,
+        "startChar": 16,
+        "endLine": 868,
+        "endChar": 17
+      },
+      "revId": "ad67ed042ffcc5c531d9daf588595a4d73c78fa4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
