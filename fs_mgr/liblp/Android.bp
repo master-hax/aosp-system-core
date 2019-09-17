@@ -27,6 +27,7 @@ liblp_lib_deps = [
 cc_library {
     name: "liblp",
     host_supported: true,
+    vendor_available: true,
     recovery_available: true,
     defaults: ["fs_mgr_defaults"],
     cppflags: [
