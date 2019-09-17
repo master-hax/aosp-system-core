@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0110eb5f_0e791bf6",
+        "filename": "base/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 178,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-09-17T14:57:31Z",
+      "side": 1,
+      "message": "+jmgao,rprichard for whether they think this is likely to cause any problems?",
+      "revId": "7a209c677fcc24e8bd92c2b9138cec1ce74a5dd5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
