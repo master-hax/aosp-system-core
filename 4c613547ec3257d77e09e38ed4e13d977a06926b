@@ -16,6 +16,75 @@
       "revId": "4c613547ec3257d77e09e38ed4e13d977a06926b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "34dc45a9_6141ae00",
+        "filename": "fs_mgr/fs_mgr_fstab.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 819,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-09-17T03:18:00Z",
+      "side": 1,
+      "message": "seems you only need to replace the original blk_device with blk_device + \"_gsi\" ?",
+      "range": {
+        "startLine": 819,
+        "startChar": 16,
+        "endLine": 819,
+        "endChar": 40
+      },
+      "revId": "4c613547ec3257d77e09e38ed4e13d977a06926b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6f6de91f_fd9151ac",
+        "filename": "fs_mgr/fs_mgr_fstab.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 821,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-09-17T03:18:00Z",
+      "side": 1,
+      "message": "We set \u0027ext4\u0027 here because we knew GSI is ext4.\nHowever, if this could be OEM\u0027s system.img then we should use the original setting from the fstab in first-stage ramdisk.",
+      "range": {
+        "startLine": 821,
+        "startChar": 16,
+        "endLine": 821,
+        "endChar": 34
+      },
+      "revId": "4c613547ec3257d77e09e38ed4e13d977a06926b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6313acce_11ddd1ca",
+        "filename": "fs_mgr/fs_mgr_fstab.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 825,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-09-17T03:18:00Z",
+      "side": 1,
+      "message": "Same here, those keys are specific to GSI and aren\u0027t needed for OEM\u0027s system.img.",
+      "range": {
+        "startLine": 825,
+        "startChar": 16,
+        "endLine": 825,
+        "endChar": 91
+      },
+      "revId": "4c613547ec3257d77e09e38ed4e13d977a06926b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
