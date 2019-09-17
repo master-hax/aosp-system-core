@@ -1960,5 +1960,35 @@ bool SnapshotManager::UnmapUpdateSnapshot(const std::string& target_partition_na
     return UnmapPartitionWithSnapshot(lock.get(), target_partition_name);
 }
 
+bool SnapshotManager::Dump(std::ostream& os) {
+    auto lock = LockShared();
+    if (!lock) return false;
+
+    os << "Update state: " << ReadUpdateState(lock.get()) << std::endl;
+
+    std::vector<std::string> snapshots;
+    if (!ListSnapshots(lock.get(), &snapshots)) {
+        LOG(ERROR) << "Could not list snapshots";
+        return false;
+    }
+    bool ok = true;
+    for (const auto& name : snapshots) {
+        os << "Snapshot: " << name << std::endl;
+        SnapshotStatus status;
+        if (!ReadSnapshotStatus(lock.get(), name, &status)) {
+            ok = false;
+            continue;
+        }
+        os << "    state: " << to_string(status.state) << std::endl;
+        os << "    device size (bytes): " << status.device_size << std::endl;
+        os << "    snapshot size (bytes): " << status.snapshot_size << std::endl;
+        os << "    cow partition size (bytes): " << status.cow_partition_size << std::endl;
+        os << "    cow file size (bytes): " << status.cow_file_size << std::endl;
+        os << "    allocated sectors: " << status.sectors_allocated << std::endl;
+        os << "    metadata sectors: " << status.metadata_sectors << std::endl;
+    }
+    return ok;
+}
+
 }  // namespace snapshot
 }  // namespace android
