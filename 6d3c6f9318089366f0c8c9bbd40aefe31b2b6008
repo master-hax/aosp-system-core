@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "08e39a7f_4465fa92",
+        "filename": "fs_mgr/libsnapshot/snapshotctl.rc",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2019-09-17T20:05:50Z",
+      "side": 1,
+      "message": "I still don\u0027t know if this is the best approach. Will hold this CL until we finalize this.",
+      "revId": "6d3c6f9318089366f0c8c9bbd40aefe31b2b6008",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
