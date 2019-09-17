@@ -1962,5 +1962,45 @@ bool SnapshotManager::UnmapUpdateSnapshot(const std::string& target_partition_na
     return UnmapPartitionWithSnapshot(lock.get(), target_partition_name);
 }
 
+bool SnapshotManager::Dump(std::ostream& os) {
+    auto lock = LockShared();
+    if (!lock) return false;
+
+    std::stringstream ss;
+
+    ss << "Update state: " << ReadUpdateState(lock.get()) << std::endl;
+
+    auto boot_file = GetSnapshotBootIndicatorPath();
+    std::string boot_indicator;
+    if (android::base::ReadFileToString(boot_file, &boot_indicator)) {
+        ss << "Boot indicator: old slot = " << boot_indicator << std::endl;
+    }
+
+    bool ok = true;
+    std::vector<std::string> snapshots;
+    if (!ListSnapshots(lock.get(), &snapshots)) {
+        LOG(ERROR) << "Could not list snapshots";
+        snapshots.clear();
+        ok = false;
+    }
+    for (const auto& name : snapshots) {
+        ss << "Snapshot: " << name << std::endl;
+        SnapshotStatus status;
+        if (!ReadSnapshotStatus(lock.get(), name, &status)) {
+            ok = false;
+            continue;
+        }
+        ss << "    state: " << to_string(status.state) << std::endl;
+        ss << "    device size (bytes): " << status.device_size << std::endl;
+        ss << "    snapshot size (bytes): " << status.snapshot_size << std::endl;
+        ss << "    cow partition size (bytes): " << status.cow_partition_size << std::endl;
+        ss << "    cow file size (bytes): " << status.cow_file_size << std::endl;
+        ss << "    allocated sectors: " << status.sectors_allocated << std::endl;
+        ss << "    metadata sectors: " << status.metadata_sectors << std::endl;
+    }
+    os << ss.rdbuf();
+    return ok;
+}
+
 }  // namespace snapshot
 }  // namespace android
