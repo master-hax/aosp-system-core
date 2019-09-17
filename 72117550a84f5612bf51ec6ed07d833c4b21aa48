@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "357bd831_cde347b6",
+        "filename": "fs_mgr/fs_mgr_fstab.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 646,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-09-17T21:01:57Z",
+      "side": 1,
+      "message": "If you store this in /metadata/gsi instead, you won\u0027t have to update sepolicy. Right now callers that care about GSI-in-fstab will already have a dontaudit or allow rule in place for GSI files, but not for ro.gsid properties.",
+      "revId": "72117550a84f5612bf51ec6ed07d833c4b21aa48",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "8c5c393b_c597bb27",
         "filename": "fs_mgr/fs_mgr_fstab.cpp",
         "patchSetId": 2
@@ -64,6 +81,23 @@
       "writtenOn": "2019-09-17T18:12:27Z",
       "side": 1,
       "message": "If we were to link liblp into libfstab, then we\u0027d need to make liblp/libfs_mgr vendor_available, right?  That would be worse, so I\u0027m fine with this though it is a bit unfortunate.",
+      "revId": "72117550a84f5612bf51ec6ed07d833c4b21aa48",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "86570cda_ab0e051d",
+        "filename": "init/init.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 722,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-09-17T21:01:57Z",
+      "side": 1,
+      "message": "Note: partition.name is not guaranteed to be null-terminated. Use GetPartitionName(partition) to get an std::string. But I think avoiding properties will be easier if the only use is to propagate names to ReadDefaultFstab.",
       "revId": "72117550a84f5612bf51ec6ed07d833c4b21aa48",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
