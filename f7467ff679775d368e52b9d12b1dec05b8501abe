@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "5979774c_abc1cfa0",
+        "filename": "lmkd/lmkd.c",
+        "patchSetId": 17
+      },
+      "lineNbr": 156,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-09-17T22:20:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "01271b3c_1ebd7d29",
+      "range": {
+        "startLine": 156,
+        "startChar": 27,
+        "endLine": 156,
+        "endChar": 35
+      },
+      "revId": "f7467ff679775d368e52b9d12b1dec05b8501abe",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "2d0bdc14_2e3974dc",
         "filename": "lmkd/lmkd.c",
         "patchSetId": 17
@@ -45,6 +69,30 @@
       "revId": "f7467ff679775d368e52b9d12b1dec05b8501abe",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "90d15a0f_dfc90ce8",
+        "filename": "lmkd/lmkd.c",
+        "patchSetId": 17
+      },
+      "lineNbr": 1710,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-09-17T22:20:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2d0bdc14_2e3974dc",
+      "range": {
+        "startLine": 1710,
+        "startChar": 0,
+        "endLine": 1710,
+        "endChar": 1
+      },
+      "revId": "f7467ff679775d368e52b9d12b1dec05b8501abe",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "935fedc8_7e21e962",
+        "filename": "lmkd/lmkd.c",
+        "patchSetId": 17
+      },
+      "lineNbr": 1734,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-09-17T22:20:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5b08ad1f_426b3a97",
+      "range": {
+        "startLine": 1734,
+        "startChar": 11,
+        "endLine": 1734,
+        "endChar": 56
+      },
+      "revId": "f7467ff679775d368e52b9d12b1dec05b8501abe",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a7e2e6f2_56c0ed4a",
         "filename": "lmkd/lmkd.c",
         "patchSetId": 17
@@ -94,6 +166,30 @@
     },
     {
       "key": {
+        "uuid": "88bd51f7_9a393ca0",
+        "filename": "lmkd/lmkd.c",
+        "patchSetId": 17
+      },
+      "lineNbr": 1747,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-09-17T22:20:46Z",
+      "side": 1,
+      "message": "Will log an error and continue since it\u0027s not fatal.",
+      "parentUuid": "a7e2e6f2_56c0ed4a",
+      "range": {
+        "startLine": 1747,
+        "startChar": 8,
+        "endLine": 1747,
+        "endChar": 56
+      },
+      "revId": "f7467ff679775d368e52b9d12b1dec05b8501abe",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "41905e6d_f043f170",
         "filename": "lmkd/lmkd.c",
         "patchSetId": 17
@@ -105,6 +201,30 @@
       "writtenOn": "2019-09-17T18:37:37Z",
       "side": 1,
       "message": "At least some of the failures here could be attributed to last_kill_pid_or_fd being invalid? Or could be a more permanent condition leading to logspam?\n\nMaybe best to close and set to -1 since that is the assumption made by all who call this? You will leak an fd if epoll_ctl fails for a non-fd problem.",
+      "range": {
+        "startLine": 1760,
+        "startChar": 12,
+        "endLine": 1760,
+        "endChar": 79
+      },
+      "revId": "f7467ff679775d368e52b9d12b1dec05b8501abe",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f24e106f_b546d161",
+        "filename": "lmkd/lmkd.c",
+        "patchSetId": 17
+      },
+      "lineNbr": 1760,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-09-17T22:20:46Z",
+      "side": 1,
+      "message": "We did check for (last_kill_pid_or_fd \u003e\u003d 0) at the top of this function and if pidfd_supported\u003d\u003dtrue then last_kill_pid_or_fd is a pidfd which can\u0027t be invalid until we close the fd even it the associated process is long dead.",
+      "parentUuid": "41905e6d_f043f170",
       "range": {
         "startLine": 1760,
         "startChar": 12,
