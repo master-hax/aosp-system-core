@@ -88,6 +88,16 @@ cc_test {
         "device-tests",
         "vts-core",
     ],
+    // TODO(b/141201041): Remove multilib setting after the build output
+    // supports module and arch sub-folder.
+    multilib: {
+        lib32: {
+            suffix: "32",
+        },
+        lib64: {
+            suffix: "64",
+        },
+    },
 }
 
 cc_test {
