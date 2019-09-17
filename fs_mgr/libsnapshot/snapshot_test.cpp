@@ -761,8 +761,7 @@ class SnapshotUpdateTest : public SnapshotTest {
 // Also test UnmapUpdateSnapshot unmaps everything.
 // Also test first stage mount and merge after this.
 TEST_F(SnapshotUpdateTest, FullUpdateFlow) {
-    // OTA client calls CancelUpdate then BeginUpdate before doing anything.
-    ASSERT_TRUE(sm->CancelUpdate());
+    // OTA client calls BeginUpdate before doing anything.
     ASSERT_TRUE(sm->BeginUpdate());
 
     // OTA client blindly unmaps all partitions that are possibly mapped.
@@ -993,8 +992,9 @@ TEST_F(SnapshotUpdateTest, TestRollback) {
     }
 }
 
-// Test that if an update is applied but not booted into, it can be canceled.
-TEST_F(SnapshotUpdateTest, CancelAfterApply) {
+// Test that if an update is applied but not booted into, it can be canceled
+// and a new update can be started.
+TEST_F(SnapshotUpdateTest, Reapply) {
     ASSERT_TRUE(sm->BeginUpdate());
     ASSERT_TRUE(sm->FinishedSnapshotWrites());
     ASSERT_TRUE(sm->CancelUpdate());
