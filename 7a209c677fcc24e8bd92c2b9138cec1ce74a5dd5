@@ -16,6 +16,24 @@
       "revId": "7a209c677fcc24e8bd92c2b9138cec1ce74a5dd5",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "111d4174_fe0dbd66",
+        "filename": "base/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 178,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-09-17T15:34:59Z",
+      "side": 1,
+      "message": "This is required for \u0027endian_test.cpp\u0027 at L145.\n\nOtherwise, it has linkage error if without -lws2_32:\n\nlld-link: error: undefined symbol: __imp_htons\n\u003e\u003e\u003e referenced by out/soong/.intermediates/system/core/base/libbase_test/windows_x86_64/obj/system/core/base/endian_test.o:(_ZN17endian_smoke_Test8TestBodyEv)\n\nlld-link: error: undefined symbol: __imp_htonl\n\u003e\u003e\u003e referenced by out/soong/.intermediates/system/core/base/libbase_test/windows_x86_64/obj/system/core/base/endian_test.o:(_ZN17endian_smoke_Test8TestBodyEv)\n\nlld-link: error: undefined symbol: __imp_ntohs\n\u003e\u003e\u003e referenced by out/soong/.intermediates/system/core/base/libbase_test/windows_x86_64/obj/system/core/base/endian_test.o:(_ZN17endian_smoke_Test8TestBodyEv)\n\nlld-link: error: undefined symbol: __imp_ntohl\n\u003e\u003e\u003e referenced by out/soong/.intermediates/system/core/base/libbase_test/windows_x86_64/obj/system/core/base/endian_test.o:(_ZN17endian_smoke_Test8TestBodyEv)\nclang-9: error: linker command failed with exit code 1 (use -v to see invocation)\n23:34:07 ninja failed with: exit status 1",
+      "parentUuid": "0110eb5f_0e791bf6",
+      "revId": "7a209c677fcc24e8bd92c2b9138cec1ce74a5dd5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
