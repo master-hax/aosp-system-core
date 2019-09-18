@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c15d7378_1edf5a48",
+        "filename": "logwrapper/logwrap.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 499,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-09-18T22:21:43Z",
+      "side": 1,
+      "message": "Is all of this fixed if we or in O_NOCTTY to this list of flags?  I\u0027ve been looking this up a bit and it seems that it should fix it too.\n\nFigure that the process doesn\u0027t have any controlling terminal in the case of `adb remount` so if we don\u0027t specify O_NOCTTY, then this terminal becomes the controlling one and we get SIGHUP when we close it().  If we set O_NOCTTY, it shouldn\u0027t become the controlling terminal, so no SIGHUP will be generated.",
+      "revId": "d865fe078c9b451fc7ffe1efcc6e9bd356405d1a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
