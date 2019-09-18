@@ -11,8 +11,9 @@
 
 #include <utils/threads.h>
 
+// b/141212746 - increased because it was failing on virtual devices
 // # of milliseconds to fudge stopwatch measurements
-#define TIMING_TOLERANCE_MS 25
+#define TIMING_TOLERANCE_MS 100
 
 namespace android {
 
