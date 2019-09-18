@@ -34,6 +34,24 @@
       "revId": "6d3c6f9318089366f0c8c9bbd40aefe31b2b6008",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ce3e05c9_d5ceb205",
+        "filename": "fs_mgr/libsnapshot/snapshotctl.rc",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-09-18T00:06:57Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "08e39a7f_4465fa92",
+      "revId": "6d3c6f9318089366f0c8c9bbd40aefe31b2b6008",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
