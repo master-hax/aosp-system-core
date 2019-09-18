@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "90cfaca2_9736c9df",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2019-09-18T17:55:35Z",
+      "side": 1,
+      "message": "the infrastructure should be able to handle having the same names though, right? The path in the output is the same. If we have to copy these multilib settings everywhere, it\u0027ll be a lot of additional configuration.",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 11,
+        "endChar": 0
+      },
+      "revId": "78352ce2ce301108cf5be0a6d006425ec25daa8d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
