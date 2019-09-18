@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba07548e_06d6b3a0",
+        "filename": "fs_mgr/liblp/Android.bp",
+        "patchSetId": 3
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-09-18T18:35:12Z",
+      "side": 1,
+      "message": "i still don\u0027t understand... isn\u0027t this the point of nativetests/ versus nativetests64/?",
+      "revId": "e5020bbd373be0111cb88386bae48acf1d840935",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
