@@ -16,6 +16,24 @@
       "revId": "e5020bbd373be0111cb88386bae48acf1d840935",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a37d4a04_fdb38be8",
+        "filename": "fs_mgr/liblp/Android.bp",
+        "patchSetId": 3
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 1088076
+      },
+      "writtenOn": "2019-09-18T20:26:13Z",
+      "side": 1,
+      "message": "yeah, the target build handles that through nativetests/64. \nThis change is for compatibility suite, which output all test binaries into a flat folder (test cases). That\u0027s why there is name collision when building \"m vts-core\"\n\nOnce b/141201041 is fixed, each binary for different build arch will be stored in its own folder (x64/64), just like nativetests/64, then we won\u0027t need this workaround.",
+      "parentUuid": "ba07548e_06d6b3a0",
+      "revId": "e5020bbd373be0111cb88386bae48acf1d840935",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
