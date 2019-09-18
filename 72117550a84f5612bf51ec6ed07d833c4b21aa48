@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "83883b8e_8fb16b22",
+        "filename": "fs_mgr/fs_mgr_fstab.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 646,
+      "author": {
+        "id": 1135739
+      },
+      "writtenOn": "2019-09-18T11:44:17Z",
+      "side": 1,
+      "message": "That\u0027s a really great idea. Fixed in the new set.",
+      "parentUuid": "357bd831_cde347b6",
+      "revId": "72117550a84f5612bf51ec6ed07d833c4b21aa48",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "8c5c393b_c597bb27",
         "filename": "fs_mgr/fs_mgr_fstab.cpp",
         "patchSetId": 2
@@ -33,6 +51,24 @@
       "revId": "72117550a84f5612bf51ec6ed07d833c4b21aa48",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "83dc46e7_60e5fbb7",
+        "filename": "fs_mgr/fs_mgr_fstab.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 842,
+      "author": {
+        "id": 1135739
+      },
+      "writtenOn": "2019-09-18T11:44:17Z",
+      "side": 1,
+      "message": "Got it. No problem",
+      "parentUuid": "8c5c393b_c597bb27",
+      "revId": "72117550a84f5612bf51ec6ed07d833c4b21aa48",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "0e1d8782_6280a359",
+        "filename": "fs_mgr/include_fstab/fstab/fstab.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 111,
+      "author": {
+        "id": 1135739
+      },
+      "writtenOn": "2019-09-18T11:44:17Z",
+      "side": 1,
+      "message": "Ack.",
+      "parentUuid": "8c7ef523_4a2de759",
+      "revId": "72117550a84f5612bf51ec6ed07d833c4b21aa48",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "70698fb6_8fed61fe",
         "filename": "init/first_stage_mount.cpp",
         "patchSetId": 2
@@ -64,6 +118,24 @@
       "writtenOn": "2019-09-17T18:12:27Z",
       "side": 1,
       "message": "In retrospect, even the old code is wrong since it should use remove_if()/erase() to handle multiple lines for the same partition.\n\nBut here, you need fstab_.erase(old_entry, fstab_.end()).\n\nhttps://en.wikipedia.org/wiki/Erase–remove_idiom\n\nThough, how does this interact with the code in BuildGsiFstabEntries() that creates 2 fstab entries for partitions that are not mounted ext4?  It seems that the second entry would delete the first entry in this list.  You may need to loop through the new fstab entries twice: the first time to remove the old entries and the second time to add the new entries.",
+      "revId": "72117550a84f5612bf51ec6ed07d833c4b21aa48",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "356d442e_b259e5bd",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 642,
+      "author": {
+        "id": 1135739
+      },
+      "writtenOn": "2019-09-18T11:44:17Z",
+      "side": 1,
+      "message": "I see. You are right. Cases with multiple entries are not properly handled here. I refactored this function in the new set which can support multiple entries in a more comprehensive way.",
+      "parentUuid": "70698fb6_8fed61fe",
       "revId": "72117550a84f5612bf51ec6ed07d833c4b21aa48",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
@@ -87,6 +159,24 @@
     },
     {
       "key": {
+        "uuid": "81866106_b4ec430e",
+        "filename": "init/init.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 718,
+      "author": {
+        "id": 1135739
+      },
+      "writtenOn": "2019-09-18T11:44:17Z",
+      "side": 1,
+      "message": "Yes. It was the attempt but linking liblp would introduce vendor_available\u003dtrue to many libraries. Luckily, by taking David\u0027s suggestion to store this information under /metadata/gsi, we can remove this.",
+      "parentUuid": "279c8695_ec276f88",
+      "revId": "72117550a84f5612bf51ec6ed07d833c4b21aa48",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "86570cda_ab0e051d",
         "filename": "init/init.cpp",
         "patchSetId": 2
@@ -101,6 +191,24 @@
       "revId": "72117550a84f5612bf51ec6ed07d833c4b21aa48",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4388b6a8_c9f65ccc",
+        "filename": "init/init.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 722,
+      "author": {
+        "id": 1135739
+      },
+      "writtenOn": "2019-09-18T11:44:17Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "86570cda_ab0e051d",
+      "revId": "72117550a84f5612bf51ec6ed07d833c4b21aa48",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
