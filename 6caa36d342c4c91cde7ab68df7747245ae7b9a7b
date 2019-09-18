@@ -1,0 +1,90 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "dc2b7560_fbbac155",
+        "filename": "fs_mgr/fs_mgr_fstab.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 665,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-09-18T15:06:05Z",
+      "side": 1,
+      "message": "entries.empty()",
+      "range": {
+        "startLine": 665,
+        "startChar": 12,
+        "endLine": 665,
+        "endChar": 31
+      },
+      "revId": "6caa36d342c4c91cde7ab68df7747245ae7b9a7b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "02990818_fd99e670",
+        "filename": "fs_mgr/fs_mgr_fstab.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 683,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-09-18T15:06:05Z",
+      "side": 1,
+      "message": "If I understand the intention here, instead of erasing the old partitions, you are going to overwrite the \u0027partition\u0027 and then add more avb keys?\n\nI guess the intention here is that we want to support any filesystem for DSU and not just ext4?",
+      "revId": "6caa36d342c4c91cde7ab68df7747245ae7b9a7b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "55afab9b_8b5ecc23",
+        "filename": "fs_mgr/fs_mgr_fstab.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 699,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-09-18T15:06:05Z",
+      "side": 1,
+      "message": "Does this need to go inside of the loop on line 654?  It doesn\u0027t reference `partition` so should it be done after the loop?",
+      "range": {
+        "startLine": 690,
+        "startChar": 12,
+        "endLine": 699,
+        "endChar": 9
+      },
+      "revId": "6caa36d342c4c91cde7ab68df7747245ae7b9a7b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "823f2e1f_b33ab45c",
+        "filename": "fs_mgr/include_fstab/fstab/fstab.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-09-18T15:06:05Z",
+      "side": 1,
+      "message": "\u0027can contain\u0027",
+      "range": {
+        "startLine": 104,
+        "startChar": 13,
+        "endLine": 104,
+        "endChar": 25
+      },
+      "revId": "6caa36d342c4c91cde7ab68df7747245ae7b9a7b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
