@@ -22,6 +22,30 @@
       "revId": "27df8733fa0c06fbe7480dbda783ad7b31a5e0e5",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "77a6555f_e0d14684",
+        "filename": "libutils/include/utils/Trace.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2019-09-18T01:35:38Z",
+      "side": 1,
+      "message": "oops, yeah",
+      "parentUuid": "9eb401ff_3f7b8369",
+      "range": {
+        "startLine": 20,
+        "startChar": 12,
+        "endLine": 20,
+        "endChar": 17
+      },
+      "revId": "27df8733fa0c06fbe7480dbda783ad7b31a5e0e5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
