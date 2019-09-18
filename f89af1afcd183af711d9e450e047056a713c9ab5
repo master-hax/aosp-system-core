@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "909e9bc6_85ba6f21",
+        "filename": "lmkd/lmkd.c",
+        "patchSetId": 18
+      },
+      "lineNbr": 143,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-09-18T16:05:47Z",
+      "side": 1,
+      "message": "You should really update the uapi headers in bionic _first_, then use #include \u003cunistd.h\u003e to pick this up.\n\nI should note that 434 is taken by FreeBSD/darwin as pid_resume, which could introduced an incompatibility (but this issue is with POSIX kernels ...)",
+      "range": {
+        "startLine": 142,
+        "startChar": 0,
+        "endLine": 143,
+        "endChar": 27
+      },
+      "revId": "f89af1afcd183af711d9e450e047056a713c9ab5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "be0ca6ae_58e33e26",
+        "filename": "lmkd/lmkd.c",
+        "patchSetId": 18
+      },
+      "lineNbr": 174,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-09-18T16:05:47Z",
+      "side": 1,
+      "message": "nit: If you increase VMPRESS_LEVEL_COUNT to 4, this is wrong and becomes a maintenance problem.\n\nGCC does allow:\n\nstatic int mpevfd[VMPRESS_LEVEL_COUNT] \u003d {[0 ... VMPRESS_LEVEL_COUNT] \u003d -1};\n\nand this is used throughout the linux kernel \u0027C\u0027 code (linux kernel is written in GCC, not C).",
+      "range": {
+        "startLine": 174,
+        "startChar": 43,
+        "endLine": 174,
+        "endChar": 53
+      },
+      "revId": "f89af1afcd183af711d9e450e047056a713c9ab5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
