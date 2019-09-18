@@ -470,6 +470,7 @@ static void child(int argc, char* argv[]) {
         FATAL_CHILD("executing %s failed: %s\n", argv_child[0],
                 strerror(errno));
     }
+    /* NOTREACH */
 }
 
 int android_fork_execvp_ext(int argc, char* argv[], int *status, bool ignore_int_quit,
@@ -480,6 +481,7 @@ int android_fork_execvp_ext(int argc, char* argv[], int *status, bool ignore_int
     int child_ptty;
     struct sigaction intact;
     struct sigaction quitact;
+    struct sigaction ignact;
     sigset_t blockset;
     sigset_t oldset;
     int rc = 0;
@@ -494,7 +496,7 @@ int android_fork_execvp_ext(int argc, char* argv[], int *status, bool ignore_int
     }
 
     /* Use ptty instead of socketpair so that STDOUT is not buffered */
-    parent_ptty = TEMP_FAILURE_RETRY(open("/dev/ptmx", O_RDWR));
+    parent_ptty = TEMP_FAILURE_RETRY(posix_openpt(O_RDWR | O_CLOEXEC));
     if (parent_ptty < 0) {
         ERROR("Cannot create parent ptty\n");
         rc = -1;
@@ -509,7 +511,7 @@ int android_fork_execvp_ext(int argc, char* argv[], int *status, bool ignore_int
         goto err_ptty;
     }
 
-    child_ptty = TEMP_FAILURE_RETRY(open(child_devname, O_RDWR));
+    child_ptty = TEMP_FAILURE_RETRY(open(child_devname, O_RDWR | O_CLOEXEC));
     if (child_ptty < 0) {
         ERROR("Cannot open child_ptty\n");
         rc = -1;
@@ -527,7 +529,9 @@ int android_fork_execvp_ext(int argc, char* argv[], int *status, bool ignore_int
         ERROR("Failed to fork\n");
         rc = -1;
         goto err_fork;
-    } else if (pid == 0) {
+    }
+
+    if (pid == 0) {
         pthread_mutex_unlock(&fd_mutex);
         pthread_sigmask(SIG_SETMASK, &oldset, NULL);
         close(parent_ptty);
@@ -537,25 +541,34 @@ int android_fork_execvp_ext(int argc, char* argv[], int *status, bool ignore_int
         close(child_ptty);
 
         child(argc, argv);
-    } else {
-        close(child_ptty);
-        if (ignore_int_quit) {
-            struct sigaction ignact;
-
-            memset(&ignact, 0, sizeof(ignact));
-            ignact.sa_handler = SIG_IGN;
-            sigaction(SIGINT, &ignact, &intact);
-            sigaction(SIGQUIT, &ignact, &quitact);
-        }
-
-        rc = parent(argv[0], parent_ptty, pid, status, log_target,
-                    abbreviated, file_path);
+        /* NOTREACH */
     }
 
+    close(child_ptty);
     if (ignore_int_quit) {
+        memset(&ignact, 0, sizeof(ignact));
+        ignact.sa_handler = SIG_IGN;
+        sigaction(SIGINT, &ignact, &intact);
+        sigaction(SIGQUIT, &ignact, &quitact);
+    }
+
+    rc = parent(argv[0], parent_ptty, pid, status, log_target, abbreviated, file_path);
+
+    if (ignore_int_quit) {
+        struct sigaction hupact;
+
+        /*
+         * ToDo: Have not found the conditions where closing
+         *       /dev/ptmx file descriptor causes a SIGHUP.
+         */
+        sigaction(SIGHUP, &ignact, &hupact);
+        close(parent_ptty);
+        parent_ptty = -1;
+        sigaction(SIGHUP, &hupact, NULL);
         sigaction(SIGINT, &intact, NULL);
         sigaction(SIGQUIT, &quitact, NULL);
     }
+
 err_fork:
     pthread_sigmask(SIG_SETMASK, &oldset, NULL);
 err_child_ptty:
