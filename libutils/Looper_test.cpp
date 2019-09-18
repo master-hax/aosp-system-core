@@ -12,7 +12,7 @@
 #include <utils/threads.h>
 
 // # of milliseconds to fudge stopwatch measurements
-#define TIMING_TOLERANCE_MS 25
+#define TIMING_TOLERANCE_MS 100
 
 namespace android {
 
