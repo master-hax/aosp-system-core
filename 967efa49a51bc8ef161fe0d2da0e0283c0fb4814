@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "99d93f9d_61d52659",
+        "filename": "libutils/Looper_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-09-18T20:32:58Z",
+      "side": 1,
+      "message": "add the bug and mention GCE in the code comment?",
+      "revId": "967efa49a51bc8ef161fe0d2da0e0283c0fb4814",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
