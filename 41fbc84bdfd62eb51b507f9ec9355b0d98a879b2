@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "17540479_49e165e4",
+        "filename": "init/reboot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 314,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-09-19T19:58:45Z",
+      "side": 1,
+      "message": "maybe `if (false)` to prevent bitrot?",
+      "revId": "41fbc84bdfd62eb51b507f9ec9355b0d98a879b2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
