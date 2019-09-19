@@ -2023,6 +2023,7 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
     enum reclaim_state reclaim = NO_RECLAIM;
     enum zone_watermark wmark = WMARK_NONE;
     char kill_desc[LINE_MAX];
+    int min_score_adj = 0;
 
     /* Skip while still killing a process */
     if (is_kill_pending()) {
@@ -2136,21 +2137,27 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
          */
         thrashing_limit = (thrashing_limit * (100 - thrashing_limit_decay_pct)) / 100;
         kill_reason = LOW_MEM_AND_THRASHING;
+        min_score_adj = 200;
         snprintf(kill_desc, sizeof(kill_desc), "%s watermark is breached and thrashing (%"
             PRId64 "%%)", wmark > WMARK_LOW ? "min" : "low", thrashing);
     } else if (reclaim == DIRECT_RECLAIM && thrashing > thrashing_limit) {
         /* Page cache is thrashing while in direct reclaim (mostly happens on lowram devices) */
         thrashing_limit = (thrashing_limit * (100 - thrashing_limit_decay_pct)) / 100;
         kill_reason = DIRECT_RECL_AND_THRASHING;
+        min_score_adj = 200;
         snprintf(kill_desc, sizeof(kill_desc), "device is in direct reclaim and thrashing (%"
             PRId64 "%%)", thrashing);
     }
 
     /* Kill a process if necessary */
     if (kill_reason != NONE) {
-        find_and_kill_process(0, kill_desc);
-        killing = true;
-        meminfo_log(&mi);
+        if (find_and_kill_process(min_score_adj, kill_desc) > 0) {
+            killing = true;
+            meminfo_log(&mi);
+        } else {
+            /* No eligible processes found, reset thrashing limit */
+            thrashing_limit = thrashing_limit_pct;
+        }
     }
 
 no_kill:
