@@ -45,6 +45,30 @@
       "revId": "f117f34aed0c63b755194c173769a1c2eafe711a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "82b5d1c3_6fe49af2",
+        "filename": "init/Android.mk",
+        "patchSetId": 1
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 1002751
+      },
+      "writtenOn": "2019-09-19T01:56:08Z",
+      "side": 1,
+      "message": "This whole module is inside BOARD_BUILD_SYSTEM_ROOT_IMAGE, I think it should only be built if one of those is true.  Or at least it won\u0027t be installed if those are not true.",
+      "parentUuid": "a86469a2_76fa1bc7",
+      "range": {
+        "startLine": 103,
+        "startChar": 4,
+        "endLine": 103,
+        "endChar": 20
+      },
+      "revId": "f117f34aed0c63b755194c173769a1c2eafe711a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
