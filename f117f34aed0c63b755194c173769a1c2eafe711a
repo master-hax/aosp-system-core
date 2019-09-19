@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "844d4cd5_8ff26e31",
+        "filename": "adb/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 527,
+      "author": {
+        "id": 1002751
+      },
+      "writtenOn": "2019-09-19T21:56:31Z",
+      "side": 1,
+      "message": "It\u0027s not referenced anywhere, so its not installed by default.  I assume its here for debugging.",
+      "parentUuid": "9617f313_7bcb68c3",
+      "range": {
+        "startLine": 527,
+        "startChar": 11,
+        "endLine": 527,
+        "endChar": 22
+      },
+      "revId": "f117f34aed0c63b755194c173769a1c2eafe711a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a86469a2_76fa1bc7",
         "filename": "init/Android.mk",
         "patchSetId": 1
