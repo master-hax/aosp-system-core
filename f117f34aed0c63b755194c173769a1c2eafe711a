@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "863f1470_0b39e343",
+        "filename": "adb/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 527,
+      "author": {
+        "id": 1103203
+      },
+      "writtenOn": "2019-09-19T22:05:47Z",
+      "side": 1,
+      "message": "Thanks for the extra context! Is that enforceable somehow?",
+      "parentUuid": "844d4cd5_8ff26e31",
+      "range": {
+        "startLine": 527,
+        "startChar": 11,
+        "endLine": 527,
+        "endChar": 22
+      },
+      "revId": "f117f34aed0c63b755194c173769a1c2eafe711a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a86469a2_76fa1bc7",
         "filename": "init/Android.mk",
         "patchSetId": 1
@@ -93,6 +117,30 @@
       "revId": "f117f34aed0c63b755194c173769a1c2eafe711a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "94daa25a_434b8ea7",
+        "filename": "init/Android.mk",
+        "patchSetId": 1
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 1103203
+      },
+      "writtenOn": "2019-09-19T22:05:47Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "82b5d1c3_6fe49af2",
+      "range": {
+        "startLine": 103,
+        "startChar": 4,
+        "endLine": 103,
+        "endChar": 20
+      },
+      "revId": "f117f34aed0c63b755194c173769a1c2eafe711a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
