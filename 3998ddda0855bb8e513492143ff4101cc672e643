@@ -1,0 +1,119 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3facacb7_22aefbe4",
+        "filename": "lmkd/event.logtags",
+        "patchSetId": 1
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-09-20T16:09:54Z",
+      "side": 1,
+      "message": "nit: This is really an int32_t\n\n(this is _everywhere_ so fixing this is not your responsibility)",
+      "range": {
+        "startLine": 20,
+        "startChar": 5,
+        "endLine": 20,
+        "endChar": 8
+      },
+      "revId": "3998ddda0855bb8e513492143ff4101cc672e643",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "615350ce_e431e8a9",
+        "filename": "lmkd/event.logtags",
+        "patchSetId": 1
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-09-20T16:09:54Z",
+      "side": 1,
+      "message": "nit: this is really an int64_t",
+      "range": {
+        "startLine": 21,
+        "startChar": 5,
+        "endLine": 21,
+        "endChar": 9
+      },
+      "revId": "3998ddda0855bb8e513492143ff4101cc672e643",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c5167256_5f6c1b7e",
+        "filename": "lmkd/event.logtags",
+        "patchSetId": 1
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-09-20T16:09:54Z",
+      "side": 1,
+      "message": "Pid|1|5\n\nIt is an Id, and needs lookup.",
+      "range": {
+        "startLine": 38,
+        "startChar": 19,
+        "endLine": 38,
+        "endChar": 24
+      },
+      "revId": "3998ddda0855bb8e513492143ff4101cc672e643",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "76cc2e75_d519c01e",
+        "filename": "lmkd/event.logtags",
+        "patchSetId": 1
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-09-20T16:09:54Z",
+      "side": 1,
+      "message": "Uid|1|5",
+      "range": {
+        "startLine": 38,
+        "startChar": 27,
+        "endLine": 38,
+        "endChar": 32
+      },
+      "revId": "3998ddda0855bb8e513492143ff4101cc672e643",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fbcbbc29_380bbdeb",
+        "filename": "lmkd/event.logtags",
+        "patchSetId": 1
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-09-20T16:09:54Z",
+      "side": 1,
+      "message": "Several thoughts.\n\nInside lmkd this reason is a string and a number. Do we want to consider a (space consuming) string (with redundant information also present in other fields) added here to be meaningful to others not familiar?\n\n(Reason|1),(Reason|3)\n\nThere was an effort in GMS to filter event messages and interpret them, they would replace numbers with strings. Not that you can use that here, but _somewhere_ you need to tell the unfamiliar about this.\n\nOne way is to put a comment here that shows which file or Readme describes the Reason code. Another is to put it in the _name_ of the field. For example \u0027(enum kill_reasons|1|5)\u0027 might help find the values in lmkd.c a lot better than \u0027(Reason|1)\u0027. Of course, this name is only printed if one uses logcat -v descriptive, but they can look at /system/etc/eventtags and see it there.",
+      "range": {
+        "startLine": 38,
+        "startChar": 76,
+        "endLine": 38,
+        "endChar": 84
+      },
+      "revId": "3998ddda0855bb8e513492143ff4101cc672e643",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
