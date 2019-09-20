@@ -16,6 +16,24 @@
       "revId": "08774f8a9ba800b10d44a19fda0909938c5ca840",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "158ea68c_70b8f409",
+        "filename": "libmeminfo/vts/vts_core/Android.bp",
+        "patchSetId": 3
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1307893
+      },
+      "writtenOn": "2019-09-20T07:15:21Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1c23d19c_36d43ada",
+      "revId": "08774f8a9ba800b10d44a19fda0909938c5ca840",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
