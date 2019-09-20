@@ -19,6 +19,7 @@
 #include <inttypes.h>
 #include <stdint.h>
 #include <string.h>
+#include <sys/mman.h>
 #include <sys/types.h>
 #include <unistd.h>
 
@@ -34,7 +35,9 @@
 #include <unwindstack/Memory.h>
 #include <unwindstack/Unwinder.h>
 
-#include <unwindstack/DexFiles.h>
+#if !defined(NO_LIBDEXFILE_SUPPORT)
+#include <DexFile.h>
+#endif
 
 // Use the demangler from libc++.
 extern "C" char* __cxa_demangle(const char*, char*, size_t*, int* status);
@@ -52,11 +55,9 @@ void Unwinder::SetRegs(Regs* regs) {
 
 void Unwinder::ResetJitDebug(ArchEnum arch) {
   std::vector<std::string> search_libs{"libart.so", "libartd.so"};
-  jit_debug_.reset(new JitDebug(process_memory_, search_libs));
-  jit_debug_->SetArch(arch);
+  jit_debug_ = JitDebug<Elf>::Create(arch, process_memory_, search_libs);
 #if !defined(NO_LIBDEXFILE_SUPPORT)
-  dex_files_.reset(new DexFiles(process_memory_, search_libs));
-  dex_files_->SetArch(arch);
+  dex_files_ = JitDebug<DexFile>::Create(arch, process_memory_, search_libs);
 #endif
 }
 
@@ -106,8 +107,7 @@ void Unwinder::FillInDexFrame() {
     return;
   }
 
-  dex_files_->GetMethodInformation(maps_, info, dex_pc, &frame->function_name,
-                                   &frame->function_offset);
+  dex_files_->GetFunctionName(maps_, dex_pc, &frame->function_name, &frame->function_offset);
 #endif
 }
 
@@ -208,9 +208,9 @@ void Unwinder::Unwind(const std::vector<std::string>* initial_map_names_to_skip,
 
       // If the pc is in an invalid elf file, try and get an Elf object
       // using the jit debug information.
-      if (!elf->valid() && jit_debug_ != nullptr) {
+      if (!elf->valid() && jit_debug_ != nullptr && (map_info->flags & PROT_EXEC)) {
         uint64_t adjusted_jit_pc = regs_->pc() - pc_adjustment;
-        Elf* jit_elf = jit_debug_->GetElf(maps_, adjusted_jit_pc);
+        Elf* jit_elf = jit_debug_->Get(maps_, adjusted_jit_pc);
         if (jit_elf != nullptr) {
           // The jit debug information requires a non relative adjusted pc.
           step_pc = adjusted_jit_pc;

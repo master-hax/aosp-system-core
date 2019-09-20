@@ -49,7 +49,6 @@ cc_library {
     srcs: [
         "ArmExidx.cpp",
         "DexFile.cpp",
-        "DexFiles.cpp",
         "DwarfCfa.cpp",
         "DwarfEhFrameWithHdr.cpp",
         "DwarfMemory.cpp",
@@ -157,7 +156,6 @@ cc_defaults {
         "tests/ArmExidxDecodeTest.cpp",
         "tests/ArmExidxExtractTest.cpp",
         "tests/DexFileTest.cpp",
-        "tests/DexFilesTest.cpp",
         "tests/DwarfCfaLogTest.cpp",
         "tests/DwarfCfaTest.cpp",
         "tests/DwarfDebugFrameTest.cpp",
