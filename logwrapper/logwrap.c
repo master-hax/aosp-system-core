@@ -477,7 +477,6 @@ int android_fork_execvp_ext(int argc, char* argv[], int *status, bool ignore_int
         void *unused_opts, int unused_opts_len) {
     pid_t pid;
     int parent_ptty;
-    int child_ptty;
     struct sigaction intact;
     struct sigaction quitact;
     sigset_t blockset;
@@ -509,13 +508,6 @@ int android_fork_execvp_ext(int argc, char* argv[], int *status, bool ignore_int
         goto err_ptty;
     }
 
-    child_ptty = TEMP_FAILURE_RETRY(open(child_devname, O_RDWR));
-    if (child_ptty < 0) {
-        ERROR("Cannot open child_ptty\n");
-        rc = -1;
-        goto err_child_ptty;
-    }
-
     sigemptyset(&blockset);
     sigaddset(&blockset, SIGINT);
     sigaddset(&blockset, SIGQUIT);
@@ -523,11 +515,18 @@ int android_fork_execvp_ext(int argc, char* argv[], int *status, bool ignore_int
 
     pid = fork();
     if (pid < 0) {
-        close(child_ptty);
         ERROR("Failed to fork\n");
         rc = -1;
         goto err_fork;
     } else if (pid == 0) {
+        setsid();
+
+        int child_ptty = TEMP_FAILURE_RETRY(open(child_devname, O_RDWR));
+        if (child_ptty < 0) {
+            ERROR("Cannot open child_ptty\n");
+            _exit(EXIT_FAILURE);
+        }
+
         pthread_mutex_unlock(&fd_mutex);
         pthread_sigmask(SIG_SETMASK, &oldset, NULL);
         close(parent_ptty);
@@ -538,7 +537,6 @@ int android_fork_execvp_ext(int argc, char* argv[], int *status, bool ignore_int
 
         child(argc, argv);
     } else {
-        close(child_ptty);
         if (ignore_int_quit) {
             struct sigaction ignact;
 
