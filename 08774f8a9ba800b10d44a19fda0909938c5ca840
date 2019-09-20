@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1c23d19c_36d43ada",
+        "filename": "libmeminfo/vts/vts_core/Android.bp",
+        "patchSetId": 3
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1088076
+      },
+      "writtenOn": "2019-09-20T06:39:29Z",
+      "side": 1,
+      "message": "remove the extra line.",
+      "revId": "08774f8a9ba800b10d44a19fda0909938c5ca840",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
