@@ -187,9 +187,11 @@ static unwindstack::FrameData BuildFrame(unwindstack::Unwinder* unwinder, uintpt
 
   // If we don't have a valid ELF file, check the JIT.
   if (!elf->valid()) {
-    unwindstack::JitDebug jit_debug(unwinder->GetProcessMemory());
+    std::unique_ptr<unwindstack::JitDebug<unwindstack::Elf>> jit_debug =
+      unwindstack::JitDebug<unwindstack::Elf>::Create(regs->Arch(), unwinder->GetProcessMemory());
+
     uint64_t jit_pc = pc - pc_adjustment;
-    unwindstack::Elf* jit_elf = jit_debug.GetElf(maps, jit_pc);
+    unwindstack::Elf* jit_elf = jit_debug->Get(maps, jit_pc);
     if (jit_elf != nullptr) {
       debug_pc = jit_pc;
       elf = jit_elf;

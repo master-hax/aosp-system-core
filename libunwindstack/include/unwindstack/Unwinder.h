@@ -24,7 +24,6 @@
 #include <string>
 #include <vector>
 
-#include <unwindstack/DexFiles.h>
 #include <unwindstack/Error.h>
 #include <unwindstack/JitDebug.h>
 #include <unwindstack/Maps.h>
@@ -34,6 +33,7 @@
 namespace unwindstack {
 
 // Forward declarations.
+class DexFile;
 class Elf;
 enum ArchEnum : uint8_t;
 
@@ -125,9 +125,9 @@ class Unwinder {
   Regs* regs_;
   std::vector<FrameData> frames_;
   std::shared_ptr<Memory> process_memory_;
-  std::unique_ptr<JitDebug> jit_debug_;
+  std::unique_ptr<JitDebug<Elf>> jit_debug_;
 #if !defined(NO_LIBDEXFILE_SUPPORT)
-  std::unique_ptr<DexFiles> dex_files_;
+  std::unique_ptr<JitDebug<DexFile>> dex_files_;
 #endif
   bool resolve_names_ = true;
   bool embedded_soname_ = true;
