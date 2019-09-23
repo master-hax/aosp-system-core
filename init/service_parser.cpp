@@ -429,6 +429,11 @@ Result<void> ServiceParser::ParseSocket(std::vector<std::string>&& args) {
     return {};
 }
 
+Result<void> ServiceParser::ParseStdioToKmsg(std::vector<std::string>&& args) {
+    service_->proc_attr_.stdio_to_kmsg = true;
+    return {};
+}
+
 // name type
 Result<void> ServiceParser::ParseFile(std::vector<std::string>&& args) {
     if (args[2] != "r" && args[2] != "w" && args[2] != "rw") {
@@ -514,6 +519,7 @@ const KeywordMap<ServiceParser::OptionParser>& ServiceParser::GetParserMap() con
         {"shutdown",                {1,     1,    &ServiceParser::ParseShutdown}},
         {"sigstop",                 {0,     0,    &ServiceParser::ParseSigstop}},
         {"socket",                  {3,     6,    &ServiceParser::ParseSocket}},
+        {"stdio_to_kmsg",           {0,     0,    &ServiceParser::ParseStdioToKmsg}},
         {"timeout_period",          {1,     1,    &ServiceParser::ParseTimeoutPeriod}},
         {"updatable",               {0,     0,    &ServiceParser::ParseUpdatable}},
         {"user",                    {1,     1,    &ServiceParser::ParseUser}},

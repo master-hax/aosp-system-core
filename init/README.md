@@ -313,6 +313,10 @@ runs the service.
   seclabel or computed based on the service executable file security context.
   For native executables see libcutils android\_get\_control\_socket().
 
+`stdio_to_kmsg`
+> Redirect stdout and stderr to /dev/kmsg. This is useful for services that do not use native
+  Android logging during early boot and whose logs messages we want to capture.
+
 `timeout_period <seconds>`
 > Provide a timeout after which point the service will be killed. The oneshot keyword is respected
   here, so oneshot services do not automatically restart, however all other services will.
