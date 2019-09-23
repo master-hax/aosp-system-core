@@ -142,6 +142,30 @@
       "revId": "8d8fcf622aa7462ef674d1acbaf082f528470511",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6508b440_860316a4",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 2
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-09-23T23:28:52Z",
+      "side": 1,
+      "message": "Hm, true, sepolicy may be hard there.\n\nI pushed https://android-review.googlesource.com/q/topic:%22boringssl-kmsg%22+(status:open%20OR%20status:merged) to print stdout/stderr of the selftest to kmsg.",
+      "parentUuid": "df591dfe_adef4fc9",
+      "range": {
+        "startLine": 77,
+        "startChar": 50,
+        "endLine": 77,
+        "endChar": 80
+      },
+      "revId": "8d8fcf622aa7462ef674d1acbaf082f528470511",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
