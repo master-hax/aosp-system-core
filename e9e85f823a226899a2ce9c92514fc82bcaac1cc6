@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0ee13fb4_dd6a07bb",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 1966,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-09-23T22:11:43Z",
+      "side": 1,
+      "message": "It\u0027d be nice to re-use this within dumpstate, but I worry about the locking causing dumpstate to give up on waiting for a result. Should we consider having lockless reads (or a bogus proof-of-lock) in this method? For diagnostics it\u0027d be fine to read back partially written data. Or, are we reasonably confident that any holders of the lock will drop it in 10s?",
+      "revId": "e9e85f823a226899a2ce9c92514fc82bcaac1cc6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
