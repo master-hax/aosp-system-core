@@ -16,6 +16,24 @@
       "revId": "e9e85f823a226899a2ce9c92514fc82bcaac1cc6",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7cb3def3_1f4dffc7",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 1966,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2019-09-23T23:42:55Z",
+      "side": 1,
+      "message": "Good point. I looked at all locks in this class and the only suspicious thing is CreateUpdateSnapshots (which has multiple binder calls, CreateLogicalPartition calls, and writing to images), which does not necessary finish in 10s. \n\nWhat happens if I don\u0027t actually hold the lock?\n\n- ReadUpdateState() can be replaced by GetUpdateState(double*)\n- ListSnapshots() might crash at some point because readdir isn\u0027t guaranteed to be correct if the directory is modified during the read? Not sure...\n- We can give ReadSnapshotStatus() a bogus lock.",
+      "parentUuid": "0ee13fb4_dd6a07bb",
+      "revId": "e9e85f823a226899a2ce9c92514fc82bcaac1cc6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
