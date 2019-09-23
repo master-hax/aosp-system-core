@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "31e98741_a60feaba",
+        "filename": "lmkd/lmkd.c",
+        "patchSetId": 18
+      },
+      "lineNbr": 142,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-09-23T14:36:34Z",
+      "side": 1,
+      "message": "Fix bionic uapi headers. You should do this today even if you never push this CL.",
+      "range": {
+        "startLine": 141,
+        "startChar": 0,
+        "endLine": 142,
+        "endChar": 27
+      },
+      "revId": "8636acec4c2e899a11e96db77a99462d4c84b290",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
