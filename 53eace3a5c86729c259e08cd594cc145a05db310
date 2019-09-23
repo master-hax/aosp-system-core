@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "77722d31_35e77a07",
+        "filename": "lmkd/lmkd.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 1774,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-09-23T14:27:59Z",
+      "side": 1,
+      "message": "please change all to strerror() for hoomans.",
+      "range": {
+        "startLine": 1774,
+        "startChar": 41,
+        "endLine": 1774,
+        "endChar": 46
+      },
+      "revId": "53eace3a5c86729c259e08cd594cc145a05db310",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
