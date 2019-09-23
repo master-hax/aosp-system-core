@@ -118,6 +118,30 @@
       "revId": "8d8fcf622aa7462ef674d1acbaf082f528470511",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "df591dfe_adef4fc9",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 2
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2019-09-23T18:33:05Z",
+      "side": 1,
+      "message": "Turned out that adding the logwrapper is a bit more involved than I hoped, because SELinux (of course): some amount of spells are necessary to allow it to run in the boringssl_self_test domain.\n\nIt also occurred to me that while logwrapper might help capture linker errors for the boringssl_self_test binary, it itself is susceptible to linker errors and other loading issues. Hence it seems better if init could redirect stderr and/or stdout directly.\n\nTom, if you\u0027re working on that I think I\u0027ll just save the time sorting out the SELinux incantations, but otherwise I might dig into it a bit more.",
+      "parentUuid": "cd72ad0d_eb80729e",
+      "range": {
+        "startLine": 77,
+        "startChar": 50,
+        "endLine": 77,
+        "endChar": 80
+      },
+      "revId": "8d8fcf622aa7462ef674d1acbaf082f528470511",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
