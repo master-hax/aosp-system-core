@@ -34,6 +34,24 @@
       "revId": "e9e85f823a226899a2ce9c92514fc82bcaac1cc6",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b9c2eb5f_036cefd1",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 1966,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-09-24T00:01:26Z",
+      "side": 1,
+      "message": "GetUpdateState takes a lock - but we could replace it by calling access() and ReadFileToString.\n\nIf we added an OpenIgnoreLock() or something, everything would work as-is. We could read back racy data, but the worst that could happen is some inconsistent information in the diagnostics.\n\nIt\u0027d be nice if we could yield to readlocks in CreateUpdateSnapshots, but I don\u0027t think it\u0027s worth worrying about right now. Better to have the update process be safe than the diagnostics guaranteed to be 100% perfect.",
+      "parentUuid": "7cb3def3_1f4dffc7",
+      "revId": "e9e85f823a226899a2ce9c92514fc82bcaac1cc6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
