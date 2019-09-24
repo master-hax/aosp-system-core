@@ -19,6 +19,7 @@
 
 #include "partition_cow_creator.h"
 
+using ::android::fs_mgr::IPropertyFetcher;
 using ::android::fs_mgr::MetadataBuilder;
 using ::testing::_;
 using ::testing::AnyNumber;
@@ -33,10 +34,10 @@ class MockPropertyFetcher : public fs_mgr::IPropertyFetcher {
     MOCK_METHOD2(GetBoolProperty, bool(const std::string&, bool));
 };
 
-class PartitionCowCreatorTest : ::testing::Test {
+class PartitionCowCreatorTest : public ::testing::Test {
   public:
     void SetUp() override {
-        fs_mgr::IPropertyFetcher::OverrideForTesting(std::make_unique<MockPropertyFetcher>());
+        IPropertyFetcher::OverrideForTesting(std::make_unique<MockPropertyFetcher>());
 
         EXPECT_CALL(fetcher(), GetProperty("ro.boot.slot_suffix", _))
                 .Times(AnyNumber())
@@ -59,7 +60,7 @@ class PartitionCowCreatorTest : ::testing::Test {
     }
 };
 
-TEST(PartitionCowCreator, IntersectSelf) {
+TEST_F(PartitionCowCreatorTest, IntersectSelf) {
     auto builder_a = MetadataBuilder::New(1024 * 1024, 1024, 2);
     ASSERT_NE(builder_a, nullptr);
     auto system_a = builder_a->AddPartition("system_a", LP_PARTITION_ATTR_READONLY);
