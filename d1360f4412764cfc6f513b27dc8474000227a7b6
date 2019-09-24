@@ -16,6 +16,24 @@
       "revId": "d1360f4412764cfc6f513b27dc8474000227a7b6",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2749b12e_82a50406",
+        "filename": "libpackagelistparser/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1088076
+      },
+      "writtenOn": "2019-09-24T17:14:50Z",
+      "side": 1,
+      "message": "Somehow packagelistparser#system_package_list always fail when running without root.\n\nThe test was marked as flaky on presubmit:\nhttps://sponge.corp.google.com/invocation?tab\u003dTiming+Breakdown\u0026id\u003da6427c86-8c09-45df-aec5-48fbb558f15c\u0026searchFor\u003d",
+      "parentUuid": "2b6fdc97_f12971da",
+      "revId": "d1360f4412764cfc6f513b27dc8474000227a7b6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
