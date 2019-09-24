@@ -34,6 +34,24 @@
       "revId": "d1360f4412764cfc6f513b27dc8474000227a7b6",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f7e1e2c4_87ab5c9d",
+        "filename": "libpackagelistparser/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1088076
+      },
+      "writtenOn": "2019-09-24T17:16:22Z",
+      "side": 1,
+      "message": "I\u0027m not sure if it\u0027s the test needs to be fixed so it won\u0027t require root.\nWe can add this require_root here until that\u0027s fixed. I can add a TODO here if you think that\u0027s a bug. Please let me know.",
+      "parentUuid": "2749b12e_82a50406",
+      "revId": "d1360f4412764cfc6f513b27dc8474000227a7b6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
