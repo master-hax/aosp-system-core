@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "435af1a1_dcaec573",
+        "filename": "init/Android.mk",
+        "patchSetId": 1
+      },
+      "lineNbr": 111,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2019-09-24T18:51:08Z",
+      "side": 1,
+      "message": "I doubt this dependency actually makes sense; rather this ought to use libunwindstack with -DNO_LIBDEXFILE_SUPPORT (like the variant in the vendor and recovery images). Anyway, that isn\u0027t in scope for this CL.",
+      "range": {
+        "startLine": 111,
+        "startChar": 4,
+        "endLine": 111,
+        "endChar": 29
+      },
+      "revId": "2ad47f35a774828c7ea7c4fdb3fd1dcb0a8bc939",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
