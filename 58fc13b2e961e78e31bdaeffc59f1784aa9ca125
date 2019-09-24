@@ -71,6 +71,30 @@
     },
     {
       "key": {
+        "uuid": "51359a22_6a8e0379",
+        "filename": "lmkd/lmkd.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 2428,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-09-24T16:50:11Z",
+      "side": 1,
+      "message": "Moved it",
+      "parentUuid": "eaffb21e_d07a35d0",
+      "range": {
+        "startLine": 2428,
+        "startChar": 0,
+        "endLine": 2428,
+        "endChar": 21
+      },
+      "revId": "58fc13b2e961e78e31bdaeffc59f1784aa9ca125",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "513ea9ab_d81b024c",
         "filename": "lmkd/statslog.c",
         "patchSetId": 1
@@ -94,6 +118,30 @@
     },
     {
       "key": {
+        "uuid": "c7b84455_4f645d73",
+        "filename": "lmkd/statslog.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-09-24T16:50:11Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "513ea9ab_d81b024c",
+      "range": {
+        "startLine": 40,
+        "startChar": 0,
+        "endLine": 40,
+        "endChar": 18
+      },
+      "revId": "58fc13b2e961e78e31bdaeffc59f1784aa9ca125",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "38b4843e_a8b494a3",
         "filename": "lmkd/statslog.c",
         "patchSetId": 1
@@ -105,6 +153,30 @@
       "writtenOn": "2019-09-20T15:35:20Z",
       "side": 1,
       "message": "Q: Can this field (and others) really have a negative sign when reported?",
+      "range": {
+        "startLine": 231,
+        "startChar": 58,
+        "endLine": 231,
+        "endChar": 59
+      },
+      "revId": "58fc13b2e961e78e31bdaeffc59f1784aa9ca125",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2f6c0bb8_b314f78e",
+        "filename": "lmkd/statslog.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 231,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-09-24T16:50:11Z",
+      "side": 1,
+      "message": "no, they can\u0027t. Kept the same types as before.",
+      "parentUuid": "38b4843e_a8b494a3",
       "range": {
         "startLine": 231,
         "startChar": 58,
@@ -140,6 +212,30 @@
     },
     {
       "key": {
+        "uuid": "2caa4201_f8a97dcb",
+        "filename": "lmkd/statslog.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-09-24T16:50:11Z",
+      "side": 1,
+      "message": "no, I just kept the same types as before.",
+      "parentUuid": "aaf521e9_57bc4aae",
+      "range": {
+        "startLine": 30,
+        "startChar": 4,
+        "endLine": 30,
+        "endChar": 11
+      },
+      "revId": "58fc13b2e961e78e31bdaeffc59f1784aa9ca125",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e0d42dac_d71ffa7c",
         "filename": "lmkd/statslog.h",
         "patchSetId": 1
@@ -160,6 +256,30 @@
       "revId": "58fc13b2e961e78e31bdaeffc59f1784aa9ca125",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "dfe47cf8_48610cae",
+        "filename": "lmkd/statslog.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-09-24T16:50:11Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e0d42dac_d71ffa7c",
+      "range": {
+        "startLine": 31,
+        "startChar": 4,
+        "endLine": 31,
+        "endChar": 11
+      },
+      "revId": "58fc13b2e961e78e31bdaeffc59f1784aa9ca125",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
