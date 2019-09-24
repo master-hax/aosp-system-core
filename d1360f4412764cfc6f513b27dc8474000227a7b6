@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2b6fdc97_f12971da",
+        "filename": "libpackagelistparser/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-09-24T17:09:16Z",
+      "side": 1,
+      "message": "this seems surprising... (i commented on the bug that these tests shouldn\u0027t need root.)",
+      "revId": "d1360f4412764cfc6f513b27dc8474000227a7b6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
