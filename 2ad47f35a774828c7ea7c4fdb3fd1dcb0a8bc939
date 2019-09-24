@@ -46,6 +46,30 @@
       "revId": "2ad47f35a774828c7ea7c4fdb3fd1dcb0a8bc939",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "408e8105_37bbb655",
+        "filename": "init/Android.mk",
+        "patchSetId": 1
+      },
+      "lineNbr": 111,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2019-09-24T19:42:07Z",
+      "side": 1,
+      "message": "Thanks, noted. I\u0027ll keep it on my radar since I\u0027m vetting the dependencies we got on the ART module.",
+      "parentUuid": "d537c7f1_31cd5ebf",
+      "range": {
+        "startLine": 111,
+        "startChar": 4,
+        "endLine": 111,
+        "endChar": 29
+      },
+      "revId": "2ad47f35a774828c7ea7c4fdb3fd1dcb0a8bc939",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
