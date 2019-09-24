@@ -1741,6 +1741,57 @@ bool SnapshotManager::ForceLocalImageManager() {
     return true;
 }
 
+static void UnmapAndDeleteUnusedPartitions(MetadataBuilder* current_metadata,
+                                           const std::string& current_suffix) {
+    auto& dm = DeviceMapper::Instance();
+    std::vector<std::string> to_delete;
+
+    for (auto* partition : ListPartitionsWithSuffix(current_metadata, "")) {
+        bool is_mapped = (dm.GetState(partition->name()) != DmDeviceState::INVALID);
+        bool is_current_slot = android::base::EndsWith(partition->name(), current_suffix);
+
+        // If a partition is mapped, try to unmap it. This fails if:
+        // - This is a COW partition and a snapshot device still uses the partition.
+        //   In practice, client code is responsible for ensuring merge finishes before starting
+        //   a new update. COW partition may only exist because the clean up step failed.
+        // - This is scratch partition and overlayfs is enabled.
+        //   In practice, either overlayfs is teared down, or it is using userdata as scratch space
+        //   (See b/134949511).
+        // - This is system_other.
+        //   In practice, client code is responsible for unmapping all target partitions before
+        //   calling CreateUpdateSnapshots.
+        // If we hit these unfortunate cases, write a log and leave them alone.
+        if (is_mapped && !is_current_slot) {
+            if (!dm.DeleteDevice(partition->name())) {
+                LOG(WARNING) << partition->name()
+                             << " cannot be unmapped and its space cannot be reclaimed.";
+            }
+            is_mapped = (dm.GetState(partition->name()) != DmDeviceState::INVALID);
+        }
+
+        // If the logical partition is mapped, it is likely that the partition is being used
+        // right now. Keep it in current_metadata so that PartitionCowCreator does not touch
+        // this space.
+        if (is_mapped) {
+            continue;
+        }
+
+        // If the partition is not mapped (e.g. old COW partitions, or source slot partitions
+        // during recovery sideload), mark it as free regions.
+        to_delete.push_back(partition->name());
+    }
+
+    if (!to_delete.empty()) {
+        LOG(INFO) << "The following partitions will be reclaimed as candidates of COW space. "
+                  << "They may be overwritten during the update. ["
+                  << android::base::Join(to_delete, ", ") << "]";
+    }
+
+    for (const auto& name : to_delete) {
+        current_metadata->RemovePartition(name);
+    }
+}
+
 bool SnapshotManager::CreateUpdateSnapshots(const DeltaArchiveManifest& manifest) {
     auto lock = LockExclusive();
     if (!lock) return false;
@@ -1787,6 +1838,10 @@ bool SnapshotManager::CreateUpdateSnapshots(const DeltaArchiveManifest& manifest
                    << ", reboot, then try again.";
         return false;
     }
+
+    // Delete unused partitions in current_metadata so that PartitionCowCreator marks those as
+    // free regions.
+    UnmapAndDeleteUnusedPartitions(current_metadata.get(), current_suffix);
 
     // Check that all these metadata is not retrofit dynamic partitions. Snapshots on
     // devices with retrofit dynamic partitions does not make sense.
@@ -1910,7 +1965,9 @@ bool SnapshotManager::CreateUpdateSnapshots(const DeltaArchiveManifest& manifest
         }
 
         auto it = all_snapshot_status.find(target_partition->name());
-        CHECK(it != all_snapshot_status.end()) << target_partition->name();
+        if (it == all_snapshot_status.end()) {
+            continue;
+        }
         cow_params.partition_name = target_partition->name();
         std::string cow_name;
         if (!MapCowDevices(lock.get(), cow_params, it->second, &created_devices_for_cow,
