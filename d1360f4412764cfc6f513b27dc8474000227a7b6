@@ -70,6 +70,24 @@
       "revId": "d1360f4412764cfc6f513b27dc8474000227a7b6",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b878e388_e96dd9b7",
+        "filename": "libpackagelistparser/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1088076
+      },
+      "writtenOn": "2019-09-24T17:26:50Z",
+      "side": 1,
+      "message": "09-23 21:51:58 I/ModuleListener: [2/2] libpackagelistparser_test libpackagelistparser_test.packagelistparser#system_package_list fail:\nsystem/core/libpackagelistparser/packagelistparser_test.cpp:129: Failure\nExpected: (packages.size()) \u003e (10U), actual: 0 vs 10\n\nThe failure can only be found in the sandbox_host_log. It\u0027s flaky so the actual error is not surfaced to the test result.\nI got the same error when running locally.",
+      "parentUuid": "585ec0fb_fe1de8ec",
+      "revId": "d1360f4412764cfc6f513b27dc8474000227a7b6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
