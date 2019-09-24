@@ -22,6 +22,30 @@
       "revId": "53eace3a5c86729c259e08cd594cc145a05db310",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f2ab1a7b_efde644d",
+        "filename": "lmkd/lmkd.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 1774,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-09-24T16:48:06Z",
+      "side": 1,
+      "message": "Will address in a separate CL (see: https://buganizer.corp.google.com/issues/74119935#comment6)",
+      "parentUuid": "77722d31_35e77a07",
+      "range": {
+        "startLine": 1774,
+        "startChar": 41,
+        "endLine": 1774,
+        "endChar": 46
+      },
+      "revId": "53eace3a5c86729c259e08cd594cc145a05db310",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
