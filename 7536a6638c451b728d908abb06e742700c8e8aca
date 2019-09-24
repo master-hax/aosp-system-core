@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ee89bcfc_33798c2e",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1103203
+      },
+      "writtenOn": "2019-09-24T09:46:56Z",
+      "side": 1,
+      "message": "Could you also check what happens when the boringssl_self_test* executable fails to start (e.g. executable not found, shared library not found)? Would error messages from that already have gone to kmsg before this CL?",
+      "range": {
+        "startLine": 11,
+        "startChar": 0,
+        "endLine": 11,
+        "endChar": 52
+      },
+      "revId": "7536a6638c451b728d908abb06e742700c8e8aca",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b29c2561_9c8e6b10",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1103203
+      },
+      "writtenOn": "2019-09-24T09:46:56Z",
+      "side": 1,
+      "message": "Can you please link to a bug number (e.g. \"Bug: 137267623\" or a more specific child bug)?",
+      "range": {
+        "startLine": 12,
+        "startChar": 0,
+        "endLine": 12,
+        "endChar": 52
+      },
+      "revId": "7536a6638c451b728d908abb06e742700c8e8aca",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
