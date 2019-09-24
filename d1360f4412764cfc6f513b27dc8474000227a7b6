@@ -52,6 +52,24 @@
       "revId": "d1360f4412764cfc6f513b27dc8474000227a7b6",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "585ec0fb_fe1de8ec",
+        "filename": "libpackagelistparser/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-09-24T17:21:58Z",
+      "side": 1,
+      "message": "where\u0027s the actual test failure for that? i can\u0027t find it from that link...",
+      "parentUuid": "f7e1e2c4_87ab5c9d",
+      "revId": "d1360f4412764cfc6f513b27dc8474000227a7b6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
