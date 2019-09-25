@@ -85,6 +85,7 @@ class DeviceInfo final : public SnapshotManager::IDeviceInfo {
         return fs_mgr_get_super_partition_name(slot);
     }
     bool IsOverlayfsSetup() const override { return fs_mgr_overlayfs_is_setup(); }
+    bool IsRecovery() const override { return access("/system/bin/recovery", F_OK) == 0; }
 
   private:
     android::fs_mgr::PartitionOpener opener_;
@@ -1776,6 +1777,7 @@ bool SnapshotManager::CreateUpdateSnapshots(const DeltaArchiveManifest& manifest
     auto target_suffix = device_->GetOtherSlotSuffix();
     uint32_t target_slot = SlotNumberForSlotSuffix(target_suffix);
     auto current_super = device_->GetSuperDevice(current_slot);
+    auto is_recovery = device_->IsRecovery();
 
     auto current_metadata = MetadataBuilder::New(opener, current_super, current_slot);
     auto target_metadata =
@@ -1813,8 +1815,8 @@ bool SnapshotManager::CreateUpdateSnapshots(const DeltaArchiveManifest& manifest
                                     .current_suffix = current_suffix,
                                     .operations = nullptr};
 
-    if (!CreateUpdateSnapshotsInternal(lock.get(), manifest, &cow_creator, &created_devices,
-                                       &all_snapshot_status)) {
+    if (!is_recovery && !CreateUpdateSnapshotsInternal(lock.get(), manifest, &cow_creator,
+                                                       &created_devices, &all_snapshot_status)) {
         return false;
     }
 
@@ -1824,9 +1826,9 @@ bool SnapshotManager::CreateUpdateSnapshots(const DeltaArchiveManifest& manifest
         return false;
     }
 
-    if (!InitializeUpdateSnapshots(lock.get(), target_metadata.get(),
-                                   exported_target_metadata.get(), target_suffix,
-                                   all_snapshot_status)) {
+    if (!is_recovery && !InitializeUpdateSnapshots(lock.get(), target_metadata.get(),
+                                                   exported_target_metadata.get(), target_suffix,
+                                                   all_snapshot_status)) {
         return false;
     }
 
@@ -1905,7 +1907,7 @@ bool SnapshotManager::CreateUpdateSnapshotsInternal(
 
         if (!needs_snapshot) {
             LOG(INFO) << "Skip creating snapshot for partition " << target_partition->name()
-                      << "because nothing needs to be snapshotted.";
+                      << " because nothing needs to be snapshotted.";
             continue;
         }
 

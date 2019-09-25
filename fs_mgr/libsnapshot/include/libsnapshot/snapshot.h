@@ -106,6 +106,7 @@ class SnapshotManager final {
         virtual std::string GetSuperDevice(uint32_t slot) const = 0;
         virtual const IPartitionOpener& GetPartitionOpener() const = 0;
         virtual bool IsOverlayfsSetup() const = 0;
+        virtual bool IsRecovery() const = 0;
     };
 
     ~SnapshotManager();
@@ -207,6 +208,7 @@ class SnapshotManager final {
     FRIEND_TEST(SnapshotTest, Merge);
     FRIEND_TEST(SnapshotTest, MergeCannotRemoveCow);
     FRIEND_TEST(SnapshotTest, NoMergeBeforeReboot);
+    FRIEND_TEST(SnapshotUpdateTest, Recovery);
     FRIEND_TEST(SnapshotUpdateTest, SnapshotStatusFileWithoutCow);
     friend class SnapshotTest;
     friend class SnapshotUpdateTest;

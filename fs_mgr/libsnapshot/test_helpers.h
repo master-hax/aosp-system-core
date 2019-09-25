@@ -72,15 +72,18 @@ class TestDeviceInfo : public SnapshotManager::IDeviceInfo {
         return *opener_.get();
     }
     bool IsOverlayfsSetup() const override { return false; }
+    bool IsRecovery() const override { return is_recovery_; }
 
     void set_slot_suffix(const std::string& suffix) { slot_suffix_ = suffix; }
     void set_fake_super(const std::string& path) {
         opener_ = std::make_unique<TestPartitionOpener>(path);
     }
+    void set_recovery(bool recovery) { is_recovery_ = recovery; }
 
   private:
     std::string slot_suffix_ = "_a";
     std::unique_ptr<TestPartitionOpener> opener_;
+    bool is_recovery_ = false;
 };
 
 class SnapshotTestPropertyFetcher : public android::fs_mgr::testing::MockPropertyFetcher {

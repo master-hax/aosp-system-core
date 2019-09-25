@@ -1019,6 +1019,31 @@ TEST_F(SnapshotUpdateTest, ReclaimCow) {
     }
 }
 
+// During recovery sideload, partitions are written directly.
+TEST_F(SnapshotUpdateTest, Recovery) {
+    // Simulate reboot to recovery.
+    ASSERT_TRUE(UnmapAll());
+    test_device->set_recovery(true);
+
+    // Execute update.
+    ASSERT_TRUE(sm->BeginUpdate());
+    ASSERT_TRUE(sm->CreateUpdateSnapshots(manifest_));
+
+    // There should not be any snapshots.
+    {
+        auto lock = sm->LockShared();
+        std::vector<std::string> snapshots;
+        ASSERT_TRUE(sm->ListSnapshots(lock.get(), &snapshots));
+        ASSERT_TRUE(snapshots.empty()) << "[" << android::base::Join(snapshots, ", ") << "]";
+    }
+
+    // There should not be any COW partitions.
+    auto tgt = MetadataBuilder::New(*opener_, "super", 1);
+    ASSERT_EQ(nullptr, tgt->FindPartition("sys_b-cow"));
+    ASSERT_EQ(nullptr, tgt->FindPartition("vnd_b-cow"));
+    ASSERT_EQ(nullptr, tgt->FindPartition("prd_b-cow"));
+}
+
 }  // namespace snapshot
 }  // namespace android
 
