@@ -22,6 +22,30 @@
       "revId": "ddbc052792d772800c4fc4fd5b170901cf93d3fe",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "03581de1_340fbac9",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 189,
+      "author": {
+        "id": 1124693
+      },
+      "writtenOn": "2019-09-25T20:03:15Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "53ca208a_bdd73f1b",
+      "range": {
+        "startLine": 189,
+        "startChar": 19,
+        "endLine": 189,
+        "endChar": 43
+      },
+      "revId": "ddbc052792d772800c4fc4fd5b170901cf93d3fe",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
