@@ -1,0 +1,12 @@
+cc_fuzz {
+    name: "sparse_fuzzer",
+    host_supported: false,
+    srcs: [
+        "sparse_fuzzer.cpp",
+    ],
+    static_libs: [
+	"libsparse",
+        "liblog",
+    ],
+}
+
