@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "2edcfdee_55763773",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1353865
+      },
+      "writtenOn": "2019-09-25T19:18:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "792a2342_b3795de5",
+      "range": {
+        "startLine": 10,
+        "startChar": 46,
+        "endLine": 10,
+        "endChar": 62
+      },
+      "revId": "ae5b146e52e3d0888c1af6dffac218f1a9ef5856",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "8b52c4cd_d8a944aa",
         "filename": "libsparse/fuzzers/Android.bp",
         "patchSetId": 1
@@ -39,6 +63,24 @@
       "revId": "ae5b146e52e3d0888c1af6dffac218f1a9ef5856",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7d9eac44_00c3e860",
+        "filename": "libsparse/fuzzers/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1353865
+      },
+      "writtenOn": "2019-09-25T19:18:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8b52c4cd_d8a944aa",
+      "revId": "ae5b146e52e3d0888c1af6dffac218f1a9ef5856",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
