@@ -308,6 +308,11 @@ static int parent(const char *tag, int parent_read, pid_t pid,
     int b = 0;  // end index of unprocessed data
     int sz;
     bool found_child = false;
+    // There is a very small chance that opening child_ptty in the child will fail, but in this case
+    // POLLHUP will not be generated below.  Therefore, we use a 1 second timeout for poll() until
+    // we receive a message from child_ptty.  If this times out, we call waitpid() with WNOHANG to
+    // check the status of the child process and exit appropriately if it has terminated.
+    bool received_messages = false;
     char tmpbuf[256];
 
     log_info.btag = basename(tag);
@@ -347,13 +352,15 @@ static int parent(const char *tag, int parent_read, pid_t pid,
     log_info.abbreviated = abbreviated;
 
     while (!found_child) {
-        if (TEMP_FAILURE_RETRY(poll(poll_fds, ARRAY_SIZE(poll_fds), -1)) < 0) {
+        int timeout = received_messages ? -1 : 1000;
+        if (TEMP_FAILURE_RETRY(poll(poll_fds, ARRAY_SIZE(poll_fds), timeout)) < 0) {
             ERROR("poll failed\n");
             rc = -1;
             goto err_poll;
         }
 
         if (poll_fds[0].revents & POLLIN) {
+            received_messages = true;
             sz = TEMP_FAILURE_RETRY(
                 read(parent_read, &buffer[b], sizeof(buffer) - 1 - b));
 
@@ -396,10 +403,11 @@ static int parent(const char *tag, int parent_read, pid_t pid,
             }
         }
 
-        if (poll_fds[0].revents & POLLHUP) {
+        if (!received_messages || (poll_fds[0].revents & POLLHUP)) {
             int ret;
+            int flags = (poll_fds[0].revents & POLLHUP) ? 0 : WNOHANG;
 
-            ret = TEMP_FAILURE_RETRY(waitpid(pid, &status, 0));
+            ret = TEMP_FAILURE_RETRY(waitpid(pid, &status, flags));
             if (ret < 0) {
                 rc = errno;
                 ALOG(LOG_ERROR, "logwrap", "waitpid failed with %s\n", strerror(errno));
@@ -472,20 +480,29 @@ static void child(int argc, char* argv[]) {
     }
 }
 
-int android_fork_execvp_ext(int argc, char* argv[], int *status, bool ignore_int_quit,
-        int log_target, bool abbreviated, char *file_path,
-        void *unused_opts, int unused_opts_len) {
+// Protected by fd_mutex
+pid_t child_pid;
+struct sigaction old_int;
+struct sigaction old_quit;
+struct sigaction old_hup;
+static void signal_handler(int signal_num) {
+    if (child_pid == 0 || kill(child_pid, signal_num) != 0) {
+        if (signal_num == SIGINT) {
+            sigaction(SIGINT, &old_int, NULL);
+        } else if (signal_num == SIGQUIT) {
+            sigaction(SIGQUIT, &old_quit, NULL);
+        } else if (signal_num == SIGHUP) {
+            sigaction(SIGHUP, &old_hup, NULL);
+        }
+        raise(signal_num);
+    }
+}
+
+int android_fork_execvp_ext2(int argc, char* argv[], int* status, bool forward_signals,
+                             int log_target, bool abbreviated, char* file_path) {
     pid_t pid;
     int parent_ptty;
-    int child_ptty;
-    struct sigaction intact;
-    struct sigaction quitact;
-    sigset_t blockset;
-    sigset_t oldset;
     int rc = 0;
-
-    LOG_ALWAYS_FATAL_IF(unused_opts != NULL);
-    LOG_ALWAYS_FATAL_IF(unused_opts_len != 0);
 
     rc = pthread_mutex_lock(&fd_mutex);
     if (rc) {
@@ -494,7 +511,7 @@ int android_fork_execvp_ext(int argc, char* argv[], int *status, bool ignore_int
     }
 
     /* Use ptty instead of socketpair so that STDOUT is not buffered */
-    parent_ptty = TEMP_FAILURE_RETRY(open("/dev/ptmx", O_RDWR));
+    parent_ptty = TEMP_FAILURE_RETRY(posix_openpt(O_RDWR | O_CLOEXEC));
     if (parent_ptty < 0) {
         ERROR("Cannot create parent ptty\n");
         rc = -1;
@@ -509,27 +526,20 @@ int android_fork_execvp_ext(int argc, char* argv[], int *status, bool ignore_int
         goto err_ptty;
     }
 
-    child_ptty = TEMP_FAILURE_RETRY(open(child_devname, O_RDWR));
-    if (child_ptty < 0) {
-        ERROR("Cannot open child_ptty\n");
-        rc = -1;
-        goto err_child_ptty;
-    }
-
-    sigemptyset(&blockset);
-    sigaddset(&blockset, SIGINT);
-    sigaddset(&blockset, SIGQUIT);
-    pthread_sigmask(SIG_BLOCK, &blockset, &oldset);
-
     pid = fork();
     if (pid < 0) {
-        close(child_ptty);
         ERROR("Failed to fork\n");
         rc = -1;
         goto err_fork;
     } else if (pid == 0) {
         pthread_mutex_unlock(&fd_mutex);
-        pthread_sigmask(SIG_SETMASK, &oldset, NULL);
+
+        setsid();
+
+        int child_ptty = TEMP_FAILURE_RETRY(open(child_devname, O_RDWR | O_CLOEXEC));
+        if (child_ptty < 0) {
+            FATAL_CHILD("Cannot open child_ptty: %s\n", strerror(errno));
+        }
         close(parent_ptty);
 
         dup2(child_ptty, 1);
@@ -538,27 +548,27 @@ int android_fork_execvp_ext(int argc, char* argv[], int *status, bool ignore_int
 
         child(argc, argv);
     } else {
-        close(child_ptty);
-        if (ignore_int_quit) {
-            struct sigaction ignact;
-
-            memset(&ignact, 0, sizeof(ignact));
-            ignact.sa_handler = SIG_IGN;
-            sigaction(SIGINT, &ignact, &intact);
-            sigaction(SIGQUIT, &ignact, &quitact);
+        struct sigaction handler;
+        memset(&handler, 0, sizeof(handler));
+        handler.sa_handler = signal_handler;
+        if (forward_signals) {
+            child_pid = pid;
+            sigaction(SIGINT, &handler, &old_int);
+            sigaction(SIGQUIT, &handler, &old_quit);
+            sigaction(SIGHUP, &handler, &old_hup);
         }
 
-        rc = parent(argv[0], parent_ptty, pid, status, log_target,
-                    abbreviated, file_path);
+        rc = parent(argv[0], parent_ptty, pid, status, log_target, abbreviated, file_path);
+
+        if (forward_signals) {
+            sigaction(SIGINT, &old_int, NULL);
+            sigaction(SIGQUIT, &old_quit, NULL);
+            sigaction(SIGHUP, &old_hup, NULL);
+            child_pid = 0;
+        }
     }
 
-    if (ignore_int_quit) {
-        sigaction(SIGINT, &intact, NULL);
-        sigaction(SIGQUIT, &quitact, NULL);
-    }
 err_fork:
-    pthread_sigmask(SIG_SETMASK, &oldset, NULL);
-err_child_ptty:
 err_ptty:
     close(parent_ptty);
 err_open:
