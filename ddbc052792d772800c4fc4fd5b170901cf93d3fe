@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "53ca208a_bdd73f1b",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 189,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-09-25T18:45:39Z",
+      "side": 1,
+      "message": "These are static, so you don\u0027t need (or want) the __ prefix.  I don\u0027t know why the existing functions have it, but better to not make that mistake moving forward.",
+      "range": {
+        "startLine": 189,
+        "startChar": 19,
+        "endLine": 189,
+        "endChar": 43
+      },
+      "revId": "ddbc052792d772800c4fc4fd5b170901cf93d3fe",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
