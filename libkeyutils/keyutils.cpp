@@ -77,3 +77,8 @@ long keyctl_restrict_keyring(key_serial_t keyring, const char* type, const char*
 long keyctl_get_security(key_serial_t id, char* buffer, size_t buflen) {
   return keyctl(KEYCTL_GET_SECURITY, id, buffer, buflen);
 }
+
+key_serial_t request_key(const char* type, const char* description, const char* callout_info,
+                         key_serial_t dest_keyring) {
+  return syscall(__NR_request_key, type, description, callout_info, dest_keyring);
+}

@@ -26,8 +26,7 @@
  * SUCH DAMAGE.
  */
 
-#ifndef _KEYUTILS_H_
-#define _KEYUTILS_H_
+#pragma once
 
 #include <linux/keyctl.h>
 #include <stdint.h>
@@ -55,6 +54,7 @@ long keyctl_restrict_keyring(key_serial_t keyring, const char* type, const char*
 
 long keyctl_get_security(key_serial_t key, char* buffer, size_t buflen);
 
-__END_DECLS
+key_serial_t request_key(const char* type, const char* description, const char* callout_info,
+                         key_serial_t dest_keyring);
 
-#endif
+__END_DECLS
