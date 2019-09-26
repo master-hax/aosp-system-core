@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f12a3a46_0ab4e450",
+        "filename": "libkeyutils/mini_keyctl/mini_keyctl_utils.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-09-26T01:13:13Z",
+      "side": 1,
+      "message": "well, this isn\u0027t a good reason... +2 https://android-review.googlesource.com/c/platform/system/core/+/1128712 if you want request_key.\n\nif \"request_key can\u0027t see keys in the kernel keyring\", which you seem to imply later, just remove this part because it\u0027s irrelevant and fixable. but what do you mean by \"kernel keyring\"? which of the KEY_SPEC_ constants do you mean?",
+      "range": {
+        "startLine": 40,
+        "startChar": 32,
+        "endLine": 40,
+        "endChar": 71
+      },
+      "revId": "e4bd9c48cb9e29fa620d9b6fbdb5b84ca566aae5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
