@@ -22,6 +22,30 @@
       "revId": "e4bd9c48cb9e29fa620d9b6fbdb5b84ca566aae5",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "889acbdd_32793bf3",
+        "filename": "libkeyutils/mini_keyctl/mini_keyctl_utils.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1042276
+      },
+      "writtenOn": "2019-09-26T17:07:15Z",
+      "side": 1,
+      "message": "IIUC, the existing KEY_SPEC_ options are associated with process, seesion, uid, etc., whereas our target keyring .fs-verity is a singleton in kernel.  I just tried to use \n\n  request_key(\"keyring\", keyring_desc.c_str(), nullptr, 0);\n\nbelow.  It works for some keyring (e.g. fscrypt) but neither .fs-verity nor .dns_resolver (failed with ENOKEY). Both of them are initiated within kernel, so that might be expected.  But Eric would know better.\n\nI\u0027ve rephrased the comment if that helps.",
+      "parentUuid": "f12a3a46_0ab4e450",
+      "range": {
+        "startLine": 40,
+        "startChar": 32,
+        "endLine": 40,
+        "endChar": 71
+      },
+      "revId": "e4bd9c48cb9e29fa620d9b6fbdb5b84ca566aae5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
