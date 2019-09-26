@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7d867398_4040c1f5",
+        "filename": "libmeminfo/tools/procmem.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 1108565
+      },
+      "writtenOn": "2019-09-26T21:27:15Z",
+      "side": 1,
+      "message": "can we add a TODO to fix libprocinfo to pass an \"is_shared\" bool to the callbacks, so the libmeminfo can then record it in the flags and the tools don\u0027t have to do anything special here.\n\nOther than that, LGTM",
+      "range": {
+        "startLine": 108,
+        "startChar": 11,
+        "endLine": 108,
+        "endChar": 22
+      },
+      "revId": "c151dcf1329f0324a93a001fbbc873b749a4de57",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
