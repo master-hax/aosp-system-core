@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "b8a46253_9a5fe759",
+        "filename": "logwrapper/include/logwrap/logwrap.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2019-09-26T16:24:18Z",
+      "side": 1,
+      "message": "Nit: Bypass this intermediate wrapper?",
+      "range": {
+        "startLine": 79,
+        "startChar": 11,
+        "endLine": 79,
+        "endChar": 34
+      },
+      "revId": "9f9a06f9f4256b426e4c5cb536491044838532cc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "5e845287_eb7b8ee2",
         "filename": "logwrapper/logwrap.cpp",
         "patchSetId": 1
