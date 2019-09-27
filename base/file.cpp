@@ -83,15 +83,20 @@ std::string GetSystemTempDir() {
   // so try current directory if /data/local/tmp is not accessible.
   return ".";
 #elif defined(_WIN32)
-  char tmp_dir[MAX_PATH];
-  DWORD result = GetTempPathA(sizeof(tmp_dir), tmp_dir);  // checks TMP env
-  CHECK_NE(result, 0ul) << "GetTempPathA failed, error: " << GetLastError();
-  CHECK_LT(result, sizeof(tmp_dir)) << "path truncated to: " << result;
+  wchar_t tmp_dir_w[MAX_PATH];
+  DWORD result =
+      GetTempPathW(sizeof(tmp_dir_w) / sizeof(tmp_dir_w[0]), tmp_dir_w);  // checks TMP env
+  CHECK_NE(result, 0ul) << "GetTempPathW failed, error: " << GetLastError();
+  CHECK_LT(result, sizeof(tmp_dir_w) / sizeof(tmp_dir_w[0])) << "path truncated to: " << result;
+
+  std::string tmp_dir;
+  CHECK(android::base::WideToUTF8(tmp_dir_w, result, &tmp_dir))
+      << "path can't be converted to utf8";
 
   // GetTempPath() returns a path with a trailing slash, but init()
   // does not expect that, so remove it.
-  CHECK_EQ(tmp_dir[result - 1], '\\');
-  tmp_dir[result - 1] = '\0';
+  CHECK_EQ(tmp_dir.back(), '\\');
+  tmp_dir.pop_back();
   return tmp_dir;
 #else
   const auto* tmpdir = getenv("TMPDIR");
@@ -127,7 +132,13 @@ int TemporaryFile::release() {
 
 void TemporaryFile::init(const std::string& tmp_dir) {
   snprintf(path, sizeof(path), "%s%cTemporaryFile-XXXXXX", tmp_dir.c_str(), OS_PATH_SEPARATOR);
+#if defined(_WIN32)
+  if (_mktemp_s(path, sizeof(path)) == 0) {
+    fd = TEMP_FAILURE_RETRY(creat(path, 0644));
+  }
+#else
   fd = mkstemp(path);
+#endif
 }
 
 TemporaryDir::TemporaryDir() {
