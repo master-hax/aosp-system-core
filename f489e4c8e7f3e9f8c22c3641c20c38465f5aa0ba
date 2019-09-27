@@ -71,6 +71,30 @@
     },
     {
       "key": {
+        "uuid": "da011052_11a62c10",
+        "filename": "fs_mgr/include/fs_mgr.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 1539525
+      },
+      "writtenOn": "2019-09-27T14:52:18Z",
+      "side": 1,
+      "message": "\"slot \u003d -1\" is to use fs_mgr_get_slot_suffix().",
+      "parentUuid": "046438cd_6d1d88aa",
+      "range": {
+        "startLine": 101,
+        "startChar": 61,
+        "endLine": 101,
+        "endChar": 64
+      },
+      "revId": "f489e4c8e7f3e9f8c22c3641c20c38465f5aa0ba",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "d1b8edaa_259de238",
         "filename": "fs_mgr/libvbmeta/updater.cpp",
         "patchSetId": 7
