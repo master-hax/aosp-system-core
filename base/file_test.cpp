@@ -16,16 +16,21 @@
 
 #include "android-base/file.h"
 
+#include "android-base/utf8.h"
+
 #include <gtest/gtest.h>
 
 #include <errno.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <wchar.h>
 
 #include <string>
 
 #if !defined(_WIN32)
 #include <pwd.h>
+#else
+#include <processenv.h>
 #endif
 
 TEST(file, ReadFileToString_ENOENT) {
@@ -83,6 +88,44 @@ TEST(file, WriteStringToFile2) {
   ASSERT_TRUE(android::base::ReadFileToString(tf.path, &s))
     << strerror(errno);
   EXPECT_EQ("abc", s);
+}
+#endif
+
+#if defined(_WIN32)
+TEST(file, NonUnicodeCharsWindows) {
+  constexpr auto kMaxEnvVariableValueSize = 32767;
+  std::wstring old_tmp;
+  old_tmp.resize(kMaxEnvVariableValueSize);
+  GetEnvironmentVariableW(L"TMP", old_tmp.data(), old_tmp.size());
+  std::wstring new_tmp = old_tmp;
+  if (new_tmp.back() != L'\\') {
+    new_tmp.push_back(L'\\');
+  }
+  new_tmp.append(L"锦绣成都\\");
+  SetEnvironmentVariableW(L"TMP", new_tmp.c_str());
+
+  TemporaryFile tf;
+  ASSERT_TRUE(tf.fd != -1);
+  ASSERT_TRUE(android::base::WriteStringToFd("abc", tf.fd));
+
+  ASSERT_EQ(0, lseek(tf.fd, 0, SEEK_SET)) << strerror(errno);
+
+  std::string s;
+  ASSERT_TRUE(android::base::ReadFdToString(tf.fd, &s)) << strerror(errno);
+  EXPECT_EQ("abc", s);
+
+  SetEnvironmentVariableW(L"TMP", old_tmp.c_str());
+}
+
+TEST(file, RootDirectoryWindows) {
+  constexpr auto kMaxEnvVariableValueSize = 32767;
+  std::wstring old_tmp;
+  old_tmp.resize(kMaxEnvVariableValueSize);
+  GetEnvironmentVariableW(L"TMP", old_tmp.data(), old_tmp.size());
+  SetEnvironmentVariableW(L"TMP", L"C:");
+  TemporaryFile tf;
+  ASSERT_TRUE(tf.fd != -1);
+  SetEnvironmentVariableW(L"TMP", old_tmp.c_str());
 }
 #endif
 
