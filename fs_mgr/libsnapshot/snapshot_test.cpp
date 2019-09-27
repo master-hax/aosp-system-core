@@ -79,7 +79,6 @@ class SnapshotTest : public ::testing::Test {
 
   protected:
     void SetUp() override {
-        SnapshotTestPropertyFetcher::SetUp();
         InitializeState();
         CleanupTestArtifacts();
         FormatFakeSuper();
@@ -91,7 +90,6 @@ class SnapshotTest : public ::testing::Test {
         lock_ = nullptr;
 
         CleanupTestArtifacts();
-        SnapshotTestPropertyFetcher::TearDown();
     }
 
     void InitializeState() {

@@ -15,7 +15,6 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 #include <liblp/builder.h>
-#include <liblp/property_fetcher.h>
 
 #include "partition_cow_creator.h"
 #include "test_helpers.h"
@@ -27,8 +26,8 @@ namespace snapshot {
 
 class PartitionCowCreatorTest : public ::testing::Test {
   public:
-    void SetUp() override { SnapshotTestPropertyFetcher::SetUp(); }
-    void TearDown() override { SnapshotTestPropertyFetcher::TearDown(); }
+    void SetUp() override {  }
+    void TearDown() override {  }
 };
 
 TEST_F(PartitionCowCreatorTest, IntersectSelf) {

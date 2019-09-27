@@ -25,8 +25,9 @@ using android::base::unique_fd;
 
 TestPartitionOpener::TestPartitionOpener(
         const std::map<std::string, int>& partition_map,
-        const std::map<std::string, BlockDeviceInfo>& partition_info)
-    : partition_map_(partition_map), partition_info_(partition_info) {}
+        const std::map<std::string, BlockDeviceInfo>& partition_info,
+        const TestPartitionProperties& properties)
+    : partition_map_(partition_map), partition_info_(partition_info), properties_(properties) {}
 
 unique_fd TestPartitionOpener::Open(const std::string& partition_name, int flags) const {
     auto iter = partition_map_.find(partition_name);

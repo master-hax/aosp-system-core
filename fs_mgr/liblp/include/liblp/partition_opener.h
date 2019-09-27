@@ -22,6 +22,8 @@
 
 #include <android-base/unique_fd.h>
 
+#include <liblp/partition_properties.h>
+
 namespace android {
 namespace fs_mgr {
 
@@ -67,6 +69,9 @@ class IPartitionOpener {
     // This must either result in an absolute path, or a major:minor device
     // sequence.
     virtual std::string GetDeviceString(const std::string& partition_name) const = 0;
+
+    // Return a list of system properties that are useful for metadata creation.
+    virtual std::unique_ptr<IPartitionProperties> GetProperties() const = 0;
 };
 
 // Helper class to implement IPartitionOpener. If |partition_name| is not an
@@ -77,6 +82,7 @@ class PartitionOpener : public IPartitionOpener {
                                           int flags) const override;
     virtual bool GetInfo(const std::string& partition_name, BlockDeviceInfo* info) const override;
     virtual std::string GetDeviceString(const std::string& partition_name) const override;
+    virtual std::unique_ptr<IPartitionProperties> GetProperties() const override;
 };
 
 }  // namespace fs_mgr

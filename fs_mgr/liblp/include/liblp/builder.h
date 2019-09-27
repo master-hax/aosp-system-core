@@ -187,10 +187,21 @@ class MetadataBuilder {
     // If the parameters would yield invalid metadata, nullptr is returned. This
     // could happen if the super device is too small to store all required
     // metadata.
-    static std::unique_ptr<MetadataBuilder> New(const std::vector<BlockDeviceInfo>& block_devices,
+    static std::unique_ptr<MetadataBuilder> New(const IPartitionOpener& opener,
+                                                const std::vector<BlockDeviceInfo>& block_devices,
                                                 const std::string& super_partition,
                                                 uint32_t metadata_max_size,
                                                 uint32_t metadata_slot_count);
+
+    // Same as above, but use the default PartitionOpener.
+    static inline std::unique_ptr<MetadataBuilder> New(
+                                                const std::vector<BlockDeviceInfo>& block_devices,
+                                                const std::string& super_partition,
+                                                uint32_t metadata_max_size,
+                                                uint32_t metadata_slot_count) {
+        return New(PartitionOpener(), block_devices, super_partition, metadata_max_size, metadata_slot_count);
+    }
+
 
     // Import an existing table for modification. This reads metadata off the
     // given block device and imports it. It also adjusts alignment information
@@ -221,23 +232,6 @@ class MetadataBuilder {
     // be updated.
     static std::unique_ptr<MetadataBuilder> New(const LpMetadata& metadata,
                                                 const IPartitionOpener* opener = nullptr);
-
-    // Helper function for a single super partition, for tests.
-    static std::unique_ptr<MetadataBuilder> New(const BlockDeviceInfo& device_info,
-                                                uint32_t metadata_max_size,
-                                                uint32_t metadata_slot_count) {
-        return New({device_info}, device_info.partition_name, metadata_max_size,
-                   metadata_slot_count);
-    }
-
-    // Wrapper around New() with a BlockDeviceInfo that only specifies a device
-    // size. This is a convenience method for tests.
-    static std::unique_ptr<MetadataBuilder> New(uint64_t blockdev_size, uint32_t metadata_max_size,
-                                                uint32_t metadata_slot_count) {
-        BlockDeviceInfo device_info(LP_METADATA_DEFAULT_PARTITION_NAME, blockdev_size, 0, 0,
-                                    kDefaultBlockSize);
-        return New(device_info, metadata_max_size, metadata_slot_count);
-    }
 
     // Define a new partition group. By default there is one group called
     // "default", with an unrestricted size. A non-zero size will restrict the
@@ -344,9 +338,13 @@ class MetadataBuilder {
     MetadataBuilder(MetadataBuilder&&) = delete;
     MetadataBuilder& operator=(const MetadataBuilder&) = delete;
     MetadataBuilder& operator=(MetadataBuilder&&) = delete;
+    static std::unique_ptr<MetadataBuilder> New(const LpMetadata& metadata,
+                                                const IPartitionOpener* opener,
+                                                std::unique_ptr<IPartitionProperties>&& properties);
     bool Init(const std::vector<BlockDeviceInfo>& block_devices, const std::string& super_partition,
-              uint32_t metadata_max_size, uint32_t metadata_slot_count);
-    bool Init(const LpMetadata& metadata);
+              uint32_t metadata_max_size, uint32_t metadata_slot_count,
+              std::unique_ptr<IPartitionProperties>&& properties);
+    bool Init(const LpMetadata& metadata, std::unique_ptr<IPartitionProperties>&& properties);
     bool GrowPartition(Partition* partition, uint64_t aligned_size,
                        const std::vector<Interval>& free_region_hint);
     void ShrinkPartition(Partition* partition, uint64_t aligned_size);
@@ -359,12 +357,6 @@ class MetadataBuilder {
     void ImportExtents(Partition* dest, const LpMetadata& metadata,
                        const LpMetadataPartition& source);
     bool ImportPartition(const LpMetadata& metadata, const LpMetadataPartition& source);
-
-    // Return true if the device is an AB device.
-    static bool IsABDevice();
-
-    // Return true if the device is retrofitting dynamic partitions.
-    static bool IsRetrofitDynamicPartitionsDevice();
 
     // Return true if _b partitions should be prioritized at the second half of the device.
     bool ShouldHalveSuper() const;
@@ -390,6 +382,7 @@ class MetadataBuilder {
     std::vector<std::unique_ptr<PartitionGroup>> groups_;
     std::vector<LpMetadataBlockDevice> block_devices_;
     bool auto_slot_suffixing_;
+    std::unique_ptr<IPartitionProperties> properties_;
 };
 
 // Read BlockDeviceInfo for a given block device. This always returns false

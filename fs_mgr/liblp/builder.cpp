@@ -23,7 +23,6 @@
 #include <android-base/unique_fd.h>
 
 #include "liblp/liblp.h"
-#include "liblp/property_fetcher.h"
 #include "reader.h"
 #include "utility.h"
 
@@ -140,11 +139,11 @@ std::unique_ptr<MetadataBuilder> MetadataBuilder::New(const std::string& super_p
     return New(PartitionOpener(), super_partition, slot_number);
 }
 
-std::unique_ptr<MetadataBuilder> MetadataBuilder::New(
+std::unique_ptr<MetadataBuilder> MetadataBuilder::New(const IPartitionOpener& opener,
         const std::vector<BlockDeviceInfo>& block_devices, const std::string& super_partition,
         uint32_t metadata_max_size, uint32_t metadata_slot_count) {
     std::unique_ptr<MetadataBuilder> builder(new MetadataBuilder());
-    if (!builder->Init(block_devices, super_partition, metadata_max_size, metadata_slot_count)) {
+    if (!builder->Init(block_devices, super_partition, metadata_max_size, metadata_slot_count, opener.GetProperties())) {
         return nullptr;
     }
     return builder;
@@ -152,8 +151,15 @@ std::unique_ptr<MetadataBuilder> MetadataBuilder::New(
 
 std::unique_ptr<MetadataBuilder> MetadataBuilder::New(const LpMetadata& metadata,
                                                       const IPartitionOpener* opener) {
+    return New(metadata, opener,
+               opener ? opener->GetProperties() : std::make_unique<PartitionProperties>());
+}
+
+std::unique_ptr<MetadataBuilder> MetadataBuilder::New(const LpMetadata& metadata,
+                                                      const IPartitionOpener* opener,
+                                                      std::unique_ptr<IPartitionProperties>&& properties) {
     std::unique_ptr<MetadataBuilder> builder(new MetadataBuilder());
-    if (!builder->Init(metadata)) {
+    if (!builder->Init(metadata, std::move(properties))) {
         return nullptr;
     }
     if (opener) {
@@ -177,26 +183,28 @@ std::unique_ptr<MetadataBuilder> MetadataBuilder::NewForUpdate(const IPartitionO
         return nullptr;
     }
 
+    auto properties = opener.GetProperties();
+
     // On retrofit DAP devices, modify the metadata so that it is suitable for being written
     // to the target slot later. We detect retrofit DAP devices by checking the super partition
     // name and system properties.
     // See comments for UpdateMetadataForOtherSuper.
     auto super_device = GetMetadataSuperBlockDevice(*metadata.get());
     if (android::fs_mgr::GetBlockDevicePartitionName(*super_device) != "super" &&
-        IsRetrofitDynamicPartitionsDevice()) {
+        properties->IsRetrofitDynamicPartitions()) {
         if (!UpdateMetadataForOtherSuper(metadata.get(), source_slot_number, target_slot_number)) {
             return nullptr;
         }
     }
 
-    if (IPropertyFetcher::GetInstance()->GetBoolProperty("ro.virtual_ab.enabled", false)) {
+    if (properties->IsVirtualAb()) {
         if (!UpdateMetadataForInPlaceSnapshot(metadata.get(), source_slot_number,
                                               target_slot_number)) {
             return nullptr;
         }
     }
 
-    return New(*metadata.get(), &opener);
+    return New(*metadata.get(), &opener, std::move(properties));
 }
 
 // For retrofit DAP devices, there are (conceptually) two super partitions. We'll need to translate
@@ -242,7 +250,8 @@ bool MetadataBuilder::UpdateMetadataForOtherSuper(LpMetadata* metadata, uint32_t
     return true;
 }
 
-MetadataBuilder::MetadataBuilder() : auto_slot_suffixing_(false) {
+MetadataBuilder::MetadataBuilder() :
+        auto_slot_suffixing_(false) {
     memset(&geometry_, 0, sizeof(geometry_));
     geometry_.magic = LP_METADATA_GEOMETRY_MAGIC;
     geometry_.struct_size = sizeof(geometry_);
@@ -258,7 +267,8 @@ MetadataBuilder::MetadataBuilder() : auto_slot_suffixing_(false) {
     header_.block_devices.entry_size = sizeof(LpMetadataBlockDevice);
 }
 
-bool MetadataBuilder::Init(const LpMetadata& metadata) {
+bool MetadataBuilder::Init(const LpMetadata& metadata, std::unique_ptr<IPartitionProperties>&& properties) {
+    properties_ = std::move(properties);
     geometry_ = metadata.geometry;
     block_devices_ = metadata.block_devices;
 
@@ -332,7 +342,10 @@ static bool VerifyDeviceProperties(const BlockDeviceInfo& device_info) {
 
 bool MetadataBuilder::Init(const std::vector<BlockDeviceInfo>& block_devices,
                            const std::string& super_partition, uint32_t metadata_max_size,
-                           uint32_t metadata_slot_count) {
+                           uint32_t metadata_slot_count,
+                           std::unique_ptr<IPartitionProperties>&& properties) {
+    properties_ = std::move(properties);
+
     if (metadata_max_size < sizeof(LpMetadataHeader)) {
         LERROR << "Invalid metadata maximum size.";
         return false;
@@ -638,7 +651,7 @@ bool MetadataBuilder::GrowPartition(Partition* partition, uint64_t aligned_size,
     CHECK_NE(sectors_per_block, 0);
     CHECK(sectors_needed % sectors_per_block == 0);
 
-    if (IsABDevice() && ShouldHalveSuper() && GetPartitionSlotSuffix(partition->name()) == "_b") {
+    if (properties_->IsAb() && ShouldHalveSuper() && GetPartitionSlotSuffix(partition->name()) == "_b") {
         // Allocate "a" partitions top-down and "b" partitions bottom-up, to
         // minimize fragmentation during OTA.
         free_regions = PrioritizeSecondHalfOfSuper(free_regions);
@@ -1109,18 +1122,9 @@ void MetadataBuilder::SetAutoSlotSuffixing() {
     auto_slot_suffixing_ = true;
 }
 
-bool MetadataBuilder::IsABDevice() {
-    return !IPropertyFetcher::GetInstance()->GetProperty("ro.boot.slot_suffix", "").empty();
-}
-
-bool MetadataBuilder::IsRetrofitDynamicPartitionsDevice() {
-    return IPropertyFetcher::GetInstance()->GetBoolProperty("ro.boot.dynamic_partitions_retrofit",
-                                                            false);
-}
-
 bool MetadataBuilder::ShouldHalveSuper() const {
     return GetBlockDevicePartitionName(0) == LP_METADATA_DEFAULT_PARTITION_NAME &&
-           !IPropertyFetcher::GetInstance()->GetBoolProperty("ro.virtual_ab.enabled", false);
+           !properties_->IsVirtualAb();
 }
 
 bool MetadataBuilder::AddLinearExtent(Partition* partition, const std::string& block_device,

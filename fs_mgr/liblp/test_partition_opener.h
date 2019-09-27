@@ -25,17 +25,41 @@
 namespace android {
 namespace fs_mgr {
 
+class TestPartitionProperties : public IPartitionProperties {
+   public:
+    bool IsAb() const override {
+        return ab;
+    }
+
+    bool IsRetrofitDynamicPartitions() const override {
+        return retrofit_dap;
+    }
+
+    bool IsVirtualAb() const override {
+        return vab;
+    }
+
+    bool ab = false;
+    bool retrofit_dap = false;
+    bool vab = false;
+};
+
 class TestPartitionOpener : public PartitionOpener {
   public:
-    explicit TestPartitionOpener(const std::map<std::string, int>& partition_map,
-                                 const std::map<std::string, BlockDeviceInfo>& partition_info = {});
+    explicit TestPartitionOpener(const std::map<std::string, int>& partition_map = {},
+                                 const std::map<std::string, BlockDeviceInfo>& partition_info = {},
+                                 const TestPartitionProperties& properties = {});
 
     android::base::unique_fd Open(const std::string& partition_name, int flags) const override;
     bool GetInfo(const std::string& partition_name, BlockDeviceInfo* info) const override;
+    std::unique_ptr<IPartitionProperties> GetProperties() const override {
+        return std::make_unique<TestPartitionProperties>(properties_);
+    }
 
   private:
     std::map<std::string, int> partition_map_;
     std::map<std::string, BlockDeviceInfo> partition_info_;
+    TestPartitionProperties properties_;
 };
 
 }  // namespace fs_mgr

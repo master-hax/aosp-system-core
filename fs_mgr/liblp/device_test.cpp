@@ -21,22 +21,18 @@
 #include <liblp/liblp.h>
 #include <liblp/metadata_format.h>
 #include <liblp/partition_opener.h>
-#include <liblp/property_fetcher.h>
 
 #include "liblp_test.h"
 
 using namespace android::fs_mgr;
 using namespace android::fs_mgr::testing;
-using ::testing::Return;
 
 // Compliance test on the actual device with dynamic partitions.
 class DeviceTest : public LiblpTest {
   public:
     void SetUp() override {
         // Read real properties.
-        IPropertyFetcher::OverrideForTesting(std::make_unique<PropertyFetcher>());
-        if (!IPropertyFetcher::GetInstance()->GetBoolProperty("ro.boot.dynamic_partitions",
-                                                              false)) {
+        if (android::base::GetBoolProperty("ro.boot.dynamic_partitions", false)) {
             GTEST_SKIP() << "Device doesn't have dynamic partitions enabled, skipping";
         }
     }
@@ -71,8 +67,7 @@ TEST_F(DeviceTest, ReadSuperPartitionOtherSlot) {
     if (other_slot_suffix.empty()) {
         GTEST_SKIP() << "No other slot, skipping";
     }
-    if (IPropertyFetcher::GetInstance()->GetBoolProperty("ro.boot.dynamic_partitions_retrofit",
-                                                         false)) {
+    if (android::base::GetBoolProperty("ro.boot.dynamic_partitions_retrofit", false)) {
         GTEST_SKIP() << "Device with retrofit dynamic partition may not have metadata at other "
                      << "slot, skipping";
     }

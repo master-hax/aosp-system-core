@@ -16,18 +16,22 @@
 
 #pragma once
 
-#include <gtest/gtest.h>
+#include <gmock/gmock.h>
+
+#include <liblp/partition_properties.h>
 
 namespace android {
 namespace fs_mgr {
 namespace testing {
 
-class LiblpTest : public ::testing::Test {
+class MockPartitionProperties : public IPartitionProperties {
   public:
-    void SetUp() override { }
-    void TearDown() override { }
+    MOCK_METHOD0(IsAb, bool());
+    MOCK_METHOD0(IsRetrofitDynamicPartitions, bool());
+    MOCK_METHOD0(IsVirtualAb, bool());
 };
 
 }  // namespace testing
 }  // namespace fs_mgr
 }  // namespace android
+

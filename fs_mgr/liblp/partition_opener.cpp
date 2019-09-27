@@ -26,6 +26,7 @@
 #include <unistd.h>
 
 #include <android-base/file.h>
+#include <android-base/properties.h>
 #include <android-base/strings.h>
 
 #include "utility.h"
@@ -116,6 +117,22 @@ bool PartitionOpener::GetInfo(const std::string& partition_name, BlockDeviceInfo
 
 std::string PartitionOpener::GetDeviceString(const std::string& partition_name) const {
     return GetPartitionAbsolutePath(partition_name);
+}
+
+std::unique_ptr<IPartitionProperties> PartitionOpener::GetProperties() const {
+    return std::make_unique<PartitionProperties>();
+}
+
+bool PartitionProperties::IsAb() const {
+    return !android::base::GetProperty("ro.boot.slot_suffix", "").empty();
+}
+
+bool PartitionProperties::IsRetrofitDynamicPartitions() const {
+    return android::base::GetBoolProperty("ro.boot.dynamic_partitions_retrofit", false);
+}
+
+bool PartitionProperties::IsVirtualAb() const {
+    return android::base::GetBoolProperty("ro.virtual_ab.enabled", false);
 }
 
 }  // namespace fs_mgr

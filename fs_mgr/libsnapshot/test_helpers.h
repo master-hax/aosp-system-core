@@ -20,17 +20,17 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 #include <libfiemap/image_manager.h>
-#include <liblp/mock_property_fetcher.h>
 #include <liblp/partition_opener.h>
+#include <liblp/mocks.h>
 #include <libsnapshot/snapshot.h>
 #include <update_engine/update_metadata.pb.h>
 
 namespace android {
 namespace snapshot {
 
-using android::fs_mgr::IPropertyFetcher;
+using android::fs_mgr::IPartitionProperties;
 using android::fs_mgr::MetadataBuilder;
-using android::fs_mgr::testing::MockPropertyFetcher;
+using android::fs_mgr::testing::MockPartitionProperties;
 using chromeos_update_engine::DeltaArchiveManifest;
 using chromeos_update_engine::PartitionUpdate;
 using testing::_;
@@ -50,6 +50,13 @@ class TestPartitionOpener final : public android::fs_mgr::PartitionOpener {
     bool GetInfo(const std::string& partition_name,
                  android::fs_mgr::BlockDeviceInfo* info) const override;
     std::string GetDeviceString(const std::string& partition_name) const override;
+    std::unique_ptr<IPartitionProperties> GetProperties() const override {
+        auto properties = std::make_unique<NiceMock<MockPartitionProperties>>();
+        ON_CALL(*properties, IsAb()).WillByDefault(Return(true));
+        ON_CALL(*properties, IsRetrofitDynamicPartitions()).WillByDefault(Return(false));
+        ON_CALL(*properties, IsVirtualAb()).WillByDefault(Return(true));
+        return properties;
+    }
 
   private:
     std::string fake_super_path_;
@@ -81,28 +88,6 @@ class TestDeviceInfo : public SnapshotManager::IDeviceInfo {
   private:
     std::string slot_suffix_ = "_a";
     std::unique_ptr<TestPartitionOpener> opener_;
-};
-
-class SnapshotTestPropertyFetcher : public android::fs_mgr::testing::MockPropertyFetcher {
-  public:
-    SnapshotTestPropertyFetcher(const std::string& slot_suffix) {
-        ON_CALL(*this, GetProperty("ro.boot.slot_suffix", _)).WillByDefault(Return(slot_suffix));
-        ON_CALL(*this, GetBoolProperty("ro.boot.dynamic_partitions", _))
-                .WillByDefault(Return(true));
-        ON_CALL(*this, GetBoolProperty("ro.boot.dynamic_partitions_retrofit", _))
-                .WillByDefault(Return(false));
-        ON_CALL(*this, GetBoolProperty("ro.virtual_ab.enabled", _)).WillByDefault(Return(true));
-    }
-
-    static void SetUp(const std::string& slot_suffix = "_a") { Reset(slot_suffix); }
-
-    static void TearDown() { Reset("_a"); }
-
-  private:
-    static void Reset(const std::string& slot_suffix) {
-        IPropertyFetcher::OverrideForTesting(
-                std::make_unique<NiceMock<SnapshotTestPropertyFetcher>>(slot_suffix));
-    }
 };
 
 // Helper for error-spam-free cleanup.

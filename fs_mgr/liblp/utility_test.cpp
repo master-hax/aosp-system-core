@@ -19,6 +19,7 @@
 #include <liblp/liblp.h>
 
 #include "utility.h"
+#include "test_utils.h"
 
 using namespace android;
 using namespace android::fs_mgr;
@@ -101,7 +102,7 @@ static std::vector<LinearExtent> GetPartitionExtents(Partition* p) {
 TEST(liblp, UpdateMetadataForInPlaceSnapshot) {
     using std::unique_ptr;
 
-    unique_ptr<MetadataBuilder> builder = MetadataBuilder::New(1024 * 1024, 1024, 2);
+    unique_ptr<MetadataBuilder> builder = NewTestBuilder(1024 * 1024, 1024, 2);
     ASSERT_NE(builder, nullptr);
 
     ASSERT_TRUE(builder->AddGroup("group_a", 256 * 1024));

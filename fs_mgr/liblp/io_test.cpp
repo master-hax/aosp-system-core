@@ -29,6 +29,7 @@
 #include "liblp_test.h"
 #include "reader.h"
 #include "test_partition_opener.h"
+#include "test_utils.h"
 #include "utility.h"
 #include "writer.h"
 
@@ -81,7 +82,7 @@ static unique_fd CreateFakeDisk() {
 // Create a MetadataBuilder around some default sizes.
 static unique_ptr<MetadataBuilder> CreateDefaultBuilder() {
     unique_ptr<MetadataBuilder> builder =
-            MetadataBuilder::New(kDiskSize, kMetadataSize, kMetadataSlots);
+            NewTestBuilder(kDiskSize, kMetadataSize, kMetadataSlots);
     return builder;
 }
 
@@ -140,7 +141,7 @@ TEST_F(LiblpTest, CreateFakeDisk) {
 // Flashing metadata should not work if the metadata was created for a larger
 // disk than the destination disk.
 TEST_F(LiblpTest, ExportDiskTooSmall) {
-    unique_ptr<MetadataBuilder> builder = MetadataBuilder::New(kDiskSize + 4096, 512, 2);
+    unique_ptr<MetadataBuilder> builder = NewTestBuilder(kDiskSize + 4096, 512, 2);
     ASSERT_NE(builder, nullptr);
     unique_ptr<LpMetadata> exported = builder->Export();
     ASSERT_NE(exported, nullptr);
@@ -595,7 +596,7 @@ TEST_F(LiblpTest, FlashSparseImage) {
 
     BlockDeviceInfo device_info("super", kDiskSize, 0, 0, 512);
     unique_ptr<MetadataBuilder> builder =
-            MetadataBuilder::New(device_info, kMetadataSize, kMetadataSlots);
+            NewTestBuilder(device_info, kMetadataSize, kMetadataSlots);
     ASSERT_NE(builder, nullptr);
     ASSERT_TRUE(AddDefaultPartitions(builder.get()));
 
@@ -667,8 +668,8 @@ TEST_F(LiblpTest, AutoSlotSuffixing) {
 }
 
 TEST_F(LiblpTest, UpdateRetrofit) {
-    ON_CALL(*GetMockedPropertyFetcher(), GetBoolProperty("ro.boot.dynamic_partitions_retrofit", _))
-            .WillByDefault(Return(true));
+    // ON_CALL(*GetMockedPropertyFetcher(), GetBoolProperty("ro.boot.dynamic_partitions_retrofit", _))
+    //         .WillByDefault(Return(true));
 
     unique_ptr<MetadataBuilder> builder = CreateDefaultBuilder();
     ASSERT_NE(builder, nullptr);
@@ -699,8 +700,8 @@ TEST_F(LiblpTest, UpdateRetrofit) {
 }
 
 TEST_F(LiblpTest, UpdateNonRetrofit) {
-    ON_CALL(*GetMockedPropertyFetcher(), GetBoolProperty("ro.boot.dynamic_partitions_retrofit", _))
-            .WillByDefault(Return(false));
+    // ON_CALL(*GetMockedPropertyFetcher(), GetBoolProperty("ro.boot.dynamic_partitions_retrofit", _))
+    //         .WillByDefault(Return(false));
 
     unique_fd fd = CreateFlashedDisk();
     ASSERT_GE(fd, 0);
@@ -715,8 +716,8 @@ TEST_F(LiblpTest, UpdateNonRetrofit) {
 }
 
 TEST_F(LiblpTest, UpdateVirtualAB) {
-    ON_CALL(*GetMockedPropertyFetcher(), GetBoolProperty("ro.virtual_ab.enabled", _))
-            .WillByDefault(Return(true));
+    // ON_CALL(*GetMockedPropertyFetcher(), GetBoolProperty("ro.virtual_ab.enabled", _))
+    //         .WillByDefault(Return(true));
 
     unique_fd fd = CreateFlashedDisk();
     ASSERT_GE(fd, 0);

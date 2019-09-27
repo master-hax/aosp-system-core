@@ -16,26 +16,28 @@
 
 #pragma once
 
-#include <memory>
-
 namespace android {
 namespace fs_mgr {
 
-class IPropertyFetcher {
+class IPartitionProperties {
   public:
-    virtual ~IPropertyFetcher() = default;
-    virtual std::string GetProperty(const std::string& key, const std::string& defaultValue) = 0;
-    virtual bool GetBoolProperty(const std::string& key, bool defaultValue) = 0;
+    virtual ~IPartitionProperties() = default;
 
-    static IPropertyFetcher* GetInstance();
-    static void OverrideForTesting(std::unique_ptr<IPropertyFetcher>&&);
+    // Returns true if this is an A/B device.
+    virtual bool IsAb() const = 0;
+
+    // Returns true if this device retrofits dynamic partitions.
+    virtual bool IsRetrofitDynamicPartitions() const = 0;
+
+    // Returns true if this device has Virtual A/B (launch or retrofit).
+    virtual bool IsVirtualAb() const = 0;
 };
 
-class PropertyFetcher : public IPropertyFetcher {
-  public:
-    ~PropertyFetcher() = default;
-    std::string GetProperty(const std::string& key, const std::string& defaultValue) override;
-    bool GetBoolProperty(const std::string& key, bool defaultValue) override;
+// Helper class to implement IPartitionProperties.
+class PartitionProperties : public IPartitionProperties {
+    bool IsAb() const override;
+    bool IsRetrofitDynamicPartitions() const override;
+    bool IsVirtualAb() const override;
 };
 
 }  // namespace fs_mgr
