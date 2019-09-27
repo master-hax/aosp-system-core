@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "aa68ff9a_39deac21",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-09-27T20:32:35Z",
+      "side": 1,
+      "message": "(... \"with a home directory that has non-ASCII in it\", i assume?)",
+      "revId": "3ed0d9e39907afbe4a7948fade9b5f1ffef314dc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "22553961_deda6d6a",
         "filename": "base/file.cpp",
         "patchSetId": 1
