@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "13530ffa_3c53cc77",
+        "filename": "rootdir/Android.mk",
+        "patchSetId": 1
+      },
+      "lineNbr": 440,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2019-09-27T09:11:04Z",
+      "side": 1,
+      "message": "Does this file need to be named with VNDK version? I don\u0027t think VNDK_USING_CORE_VARIANT_LIBRARIES work with system-only update scenario since vendor partition should not rely on different versions of those libraries (used for system and vendor together).",
+      "range": {
+        "startLine": 440,
+        "startChar": 0,
+        "endLine": 440,
+        "endChar": 64
+      },
+      "revId": "862c07f22bc9619cd252394808aee6533ae5aff6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
