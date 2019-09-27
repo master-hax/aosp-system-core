@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "67ab4c86_5eff7fdb",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 437,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-09-27T05:07:29Z",
+      "side": 1,
+      "message": "nit: how about, --has-super-vbmeta?",
+      "range": {
+        "startLine": 437,
+        "startChar": 14,
+        "endLine": 437,
+        "endChar": 28
+      },
+      "revId": "f489e4c8e7f3e9f8c22c3641c20c38465f5aa0ba",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e1d44f97_6f4c85d0",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 950,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-09-27T05:07:29Z",
+      "side": 1,
+      "message": "might be good to add a comment above.\n\ne.g., \n// if g_super_vbmeta is set, adding --disable-verification to prevent the bootloader from loading chained vbmeta structs in the super_vbmeta partition. super_vbmeta partition will be updated when boot into fastbootd.",
+      "range": {
+        "startLine": 950,
+        "startChar": 8,
+        "endLine": 950,
+        "endChar": 22
+      },
+      "revId": "f489e4c8e7f3e9f8c22c3641c20c38465f5aa0ba",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "046438cd_6d1d88aa",
+        "filename": "fs_mgr/include/fs_mgr.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-09-27T05:07:29Z",
+      "side": 1,
+      "message": "why need to default to slot _b ?",
+      "range": {
+        "startLine": 101,
+        "startChar": 61,
+        "endLine": 101,
+        "endChar": 64
+      },
+      "revId": "f489e4c8e7f3e9f8c22c3641c20c38465f5aa0ba",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d1b8edaa_259de238",
+        "filename": "fs_mgr/libvbmeta/updater.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-09-27T05:07:29Z",
+      "side": 1,
+      "message": "using the optional vbmeta_image to mean delete seems a bit not clear.\nMaybe adding a new params in the function.\n\ne.g., having a enum class { ADD, DELETE },",
+      "range": {
+        "startLine": 79,
+        "startChar": 8,
+        "endLine": 79,
+        "endChar": 53
+      },
+      "revId": "f489e4c8e7f3e9f8c22c3641c20c38465f5aa0ba",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
