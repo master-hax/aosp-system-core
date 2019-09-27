@@ -22,6 +22,30 @@
       "revId": "da6724dc43ef598271ab722b23643cef88bae2bc",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "af04f3ea_93fd8bba",
+        "filename": "base/file.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 1166043
+      },
+      "writtenOn": "2019-09-27T23:37:53Z",
+      "side": 1,
+      "message": "apparently there is mkstemp function in stdlib, changing signature",
+      "parentUuid": "0f2e97cd_86ecae61",
+      "range": {
+        "startLine": 53,
+        "startChar": 0,
+        "endLine": 53,
+        "endChar": 3
+      },
+      "revId": "da6724dc43ef598271ab722b23643cef88bae2bc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
