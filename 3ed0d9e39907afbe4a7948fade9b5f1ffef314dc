@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "22553961_deda6d6a",
+        "filename": "base/file.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-09-27T20:31:47Z",
+      "side": 1,
+      "message": "should this be removed now?",
+      "range": {
+        "startLine": 53,
+        "startChar": 0,
+        "endLine": 60,
+        "endChar": 1
+      },
+      "revId": "3ed0d9e39907afbe4a7948fade9b5f1ffef314dc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "dfd74f84_4d07ff56",
+        "filename": "base/file.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-09-27T20:31:47Z",
+      "side": 1,
+      "message": "does this code have the same bug?",
+      "range": {
+        "startLine": 62,
+        "startChar": 0,
+        "endLine": 70,
+        "endChar": 1
+      },
+      "revId": "3ed0d9e39907afbe4a7948fade9b5f1ffef314dc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "22dc3c74_7a065f48",
+        "filename": "base/file.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 137,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-09-27T20:31:47Z",
+      "side": 1,
+      "message": "does this guarantee O_BINARY like L59 did? is O_EXCL not meaningful on Windows?",
+      "range": {
+        "startLine": 137,
+        "startChar": 28,
+        "endLine": 137,
+        "endChar": 33
+      },
+      "revId": "3ed0d9e39907afbe4a7948fade9b5f1ffef314dc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
