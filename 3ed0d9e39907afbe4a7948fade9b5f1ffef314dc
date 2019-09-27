@@ -19,6 +19,29 @@
     },
     {
       "key": {
+        "uuid": "83edca1b_7f69831e",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1080076
+      },
+      "writtenOn": "2019-09-27T20:48:27Z",
+      "side": 1,
+      "message": "what about\n1. running the test on the host, to make sure it runs under Windows\n2. adding some test that creates several non-ASCII names with different encodings, e.g. German, Ukrainian, Chinese? All file operations only fail if you have one codepage selected on the machine but the filename in another one, so single name can pass if the machine happens to have that codepage selected",
+      "range": {
+        "startLine": 11,
+        "startChar": 6,
+        "endLine": 11,
+        "endChar": 24
+      },
+      "revId": "3ed0d9e39907afbe4a7948fade9b5f1ffef314dc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "22553961_deda6d6a",
         "filename": "base/file.cpp",
         "patchSetId": 1
@@ -65,6 +88,29 @@
     },
     {
       "key": {
+        "uuid": "9b0a27ba_f28abe24",
+        "filename": "base/file.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 1080076
+      },
+      "writtenOn": "2019-09-27T20:48:27Z",
+      "side": 1,
+      "message": "C++17\u0027s std::size() returns array sizes",
+      "range": {
+        "startLine": 88,
+        "startChar": 20,
+        "endLine": 88,
+        "endChar": 58
+      },
+      "revId": "3ed0d9e39907afbe4a7948fade9b5f1ffef314dc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "22dc3c74_7a065f48",
         "filename": "base/file.cpp",
         "patchSetId": 1
@@ -81,6 +127,52 @@
         "startChar": 28,
         "endLine": 137,
         "endChar": 33
+      },
+      "revId": "3ed0d9e39907afbe4a7948fade9b5f1ffef314dc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c5b8f083_7acfb886",
+        "filename": "base/file.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 140,
+      "author": {
+        "id": 1080076
+      },
+      "writtenOn": "2019-09-27T20:48:27Z",
+      "side": 1,
+      "message": "there\u0027s an implementation of mkstemp() for Windows on line 53, IMO it\u0027s better to move this code there",
+      "range": {
+        "startLine": 140,
+        "startChar": 7,
+        "endLine": 140,
+        "endChar": 14
+      },
+      "revId": "3ed0d9e39907afbe4a7948fade9b5f1ffef314dc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ab5c0b82_d7fcf8f6",
+        "filename": "base/file.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 181,
+      "author": {
+        "id": 1080076
+      },
+      "writtenOn": "2019-09-27T20:48:27Z",
+      "side": 1,
+      "message": "this probably is as bad as the TemporaryFile\u0027s version...",
+      "range": {
+        "startLine": 181,
+        "startChar": 10,
+        "endLine": 181,
+        "endChar": 17
       },
       "revId": "3ed0d9e39907afbe4a7948fade9b5f1ffef314dc",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
