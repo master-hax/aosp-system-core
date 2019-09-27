@@ -51,22 +51,34 @@
 
 #ifdef _WIN32
 int mkstemp(char* template_name) {
-  if (_mktemp(template_name) == nullptr) {
+  auto path = template_name;
+  if (_mktemp_s(path, TemporaryFile::kPathLen) != 0) {
     return -1;
   }
+
+  std::wstring path_wide;
+  CHECK(android::base::UTF8ToWide(path, &path_wide))
+      << "path can't be converted to wchar: " << path;
+
   // Use open() to match the close() that TemporaryFile's destructor does.
   // Use O_BINARY to match base file APIs.
-  return open(template_name, O_CREAT | O_EXCL | O_RDWR | O_BINARY, S_IRUSR | S_IWUSR);
+  return _wopen(path_wide.c_str(), O_CREAT | O_EXCL | O_RDWR | O_BINARY, S_IRUSR | S_IWUSR);
 }
 
 char* mkdtemp(char* template_name) {
-  if (_mktemp(template_name) == nullptr) {
+  auto path = template_name;
+  if (_mktemp_s(path, TemporaryDir::kPathLen) != 0) {
     return nullptr;
   }
-  if (_mkdir(template_name) == -1) {
+
+  std::wstring path_wide;
+  CHECK(android::base::UTF8ToWide(path, &path_wide))
+      << "path can't be converted to wchar: " << path;
+
+  if (_wmkdir(path_wide.c_str()) != 0) {
     return nullptr;
   }
-  return template_name;
+  return path;
 }
 #endif
 
@@ -83,15 +95,20 @@ std::string GetSystemTempDir() {
   // so try current directory if /data/local/tmp is not accessible.
   return ".";
 #elif defined(_WIN32)
-  char tmp_dir[MAX_PATH];
-  DWORD result = GetTempPathA(sizeof(tmp_dir), tmp_dir);  // checks TMP env
-  CHECK_NE(result, 0ul) << "GetTempPathA failed, error: " << GetLastError();
-  CHECK_LT(result, sizeof(tmp_dir)) << "path truncated to: " << result;
+  wchar_t tmp_dir_w[MAX_PATH];
+  DWORD result = GetTempPathW(std::size(tmp_dir_w), tmp_dir_w);  // checks TMP env
+  CHECK_NE(result, 0ul) << "GetTempPathW failed, error: " << GetLastError();
+  CHECK_LT(result, std::size(tmp_dir_w)) << "path truncated to: " << result;
 
   // GetTempPath() returns a path with a trailing slash, but init()
   // does not expect that, so remove it.
-  CHECK_EQ(tmp_dir[result - 1], '\\');
-  tmp_dir[result - 1] = '\0';
+  if (tmp_dir_w[result - 1] == L'\\') {
+    tmp_dir_w[result - 1] = L'\0';
+  }
+
+  std::string tmp_dir;
+  CHECK(android::base::WideToUTF8(tmp_dir_w, &tmp_dir)) << "path can't be converted to utf8";
+
   return tmp_dir;
 #else
   const auto* tmpdir = getenv("TMPDIR");
