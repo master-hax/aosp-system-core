@@ -22,6 +22,30 @@
       "revId": "862c07f22bc9619cd252394808aee6533ae5aff6",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a55df372_e594fd09",
+        "filename": "rootdir/Android.mk",
+        "patchSetId": 1
+      },
+      "lineNbr": 440,
+      "author": {
+        "id": 1413436
+      },
+      "writtenOn": "2019-09-30T01:13:44Z",
+      "side": 1,
+      "message": "I followed this from existing code. https://cs.corp.google.com/android/system/core/rootdir/update_and_install_ld_config.mk?sq\u003dpackage:android\u0026g\u003d0\u0026l\u003d45\n\nAs this is a blocker, I think we better merge this first and discuss further from separated thread / CR. What do you think about this?",
+      "parentUuid": "13530ffa_3c53cc77",
+      "range": {
+        "startLine": 440,
+        "startChar": 0,
+        "endLine": 440,
+        "endChar": 64
+      },
+      "revId": "862c07f22bc9619cd252394808aee6533ae5aff6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
