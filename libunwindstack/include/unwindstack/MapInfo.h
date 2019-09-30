@@ -59,6 +59,9 @@ struct MapInfo {
   uint16_t flags = 0;
   std::string name;
   std::shared_ptr<Elf> elf;
+  // The offset of the beginning of this mapping to the beginning of the
+  // ELF file.
+  // elf_offset == offset - elf_start_offset.
   // This value is only non-zero if the offset is non-zero but there is
   // no elf signature found at that offset.
   uint64_t elf_offset = 0;
