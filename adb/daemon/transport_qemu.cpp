@@ -122,6 +122,10 @@ void qemu_socket_thread(int port) {
 // service.adb.transport property, or be inferred from ro.kernel.qemu that is
 // set to "1" for ranchu/goldfish.
 bool use_qemu_goldfish() {
+    // Property to enable adb connection thru tcp in emulator.
+    if (android::base::GetBoolProperty("persist.adb.qemu_tcp.enable", false)) {
+        return false;
+    }
     // Legacy way to detect if adbd should use the goldfish pipe is to check for
     // ro.kernel.qemu, keep that behaviour for backward compatibility.
     if (android::base::GetBoolProperty("ro.kernel.qemu", false)) {
