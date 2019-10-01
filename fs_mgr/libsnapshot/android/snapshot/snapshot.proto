@@ -34,7 +34,13 @@ enum SnapshotState {
     MERGE_COMPLETED = 3;
 }
 
-// Next: 9
+// Next: 3
+message SnapshotInterval {
+    uint64 offset = 1;
+    uint64 length = 2;
+};
+
+// Next: 10
 message SnapshotStatus {
     // Name of the snapshot. This is usually the name of the snapshotted
     // logical partition; for example, "system_b".
@@ -84,4 +90,9 @@ message SnapshotStatus {
     // the merge process.
     // This is non-zero when |state| == MERGING or MERGE_COMPLETED.
     uint64 metadata_sectors = 8;
+
+    // During the update, stores ranges of the *logical* (base) device needs
+    // to be snapshotted to avoid corrupting the running system. Units are
+    // in bytes, and must be sector-aligned.
+    repeated SnapshotInterval snapshot_intervals = 9;
 }
