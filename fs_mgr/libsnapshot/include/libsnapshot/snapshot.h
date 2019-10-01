@@ -32,6 +32,8 @@
 #include <liblp/liblp.h>
 #include <update_engine/update_metadata.pb.h>
 
+#include <android/snapshot/snapshot.pb.h>
+
 #ifndef FRIEND_TEST
 #define FRIEND_TEST(test_set_name, individual_test) \
     friend class test_set_name##_##individual_test##_Test
@@ -250,22 +252,6 @@ class SnapshotManager final {
     std::unique_ptr<LockedFile> OpenFile(const std::string& file, int open_flags, int lock_flags);
     bool Truncate(LockedFile* file);
 
-    enum class SnapshotState : int { None, Created, Merging, MergeCompleted };
-    static std::string to_string(SnapshotState state);
-
-    // This state is persisted per-snapshot in /metadata/ota/snapshots/.
-    struct SnapshotStatus {
-        SnapshotState state = SnapshotState::None;
-        uint64_t device_size = 0;
-        uint64_t snapshot_size = 0;
-        uint64_t cow_partition_size = 0;
-        uint64_t cow_file_size = 0;
-
-        // These are non-zero when merging.
-        uint64_t sectors_allocated = 0;
-        uint64_t metadata_sectors = 0;
-    };
-
     // Create a new snapshot record. This creates the backing COW store and
     // persists information needed to map the device. The device can be mapped
     // with MapSnapshot().
@@ -282,7 +268,7 @@ class SnapshotManager final {
     //
     // All sizes are specified in bytes, and the device, snapshot, COW partition and COW file sizes
     // must be a multiple of the sector size (512 bytes).
-    bool CreateSnapshot(LockedFile* lock, const std::string& name, SnapshotStatus status);
+    bool CreateSnapshot(LockedFile* lock, SnapshotStatus* status);
 
     // |name| should be the base partition name (e.g. "system_a"). Create the
     // backing COW image using the size previously passed to CreateSnapshot().
@@ -363,8 +349,7 @@ class SnapshotManager final {
     UpdateState CheckTargetMergeState(LockedFile* lock, const std::string& name);
 
     // Interact with status files under /metadata/ota/snapshots.
-    bool WriteSnapshotStatus(LockedFile* lock, const std::string& name,
-                             const SnapshotStatus& status);
+    bool WriteSnapshotStatus(LockedFile* lock, const SnapshotStatus& status);
     bool ReadSnapshotStatus(LockedFile* lock, const std::string& name, SnapshotStatus* status);
     std::string GetSnapshotStatusFilePath(const std::string& name);
 
