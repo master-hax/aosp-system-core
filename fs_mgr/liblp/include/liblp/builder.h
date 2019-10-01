@@ -165,7 +165,7 @@ struct Interval {
         return (start == other.start) ? end < other.end : start < other.start;
     }
 
-    std::unique_ptr<Extent> AsExtent() const;
+    std::unique_ptr<LinearExtent> AsLinearExtent() const;
 
     // Intersect |a| with |b|.
     // If no intersection, result has 0 length().
