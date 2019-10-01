@@ -16,7 +16,9 @@
 
 #include <stdint.h>
 
+#include <functional>
 #include <optional>
+#include <set>
 #include <string>
 
 #include <liblp/builder.h>
@@ -59,8 +61,15 @@ struct PartitionCowCreator {
     std::optional<Return> Run();
 
   private:
+    using LinearExtent = android::fs_mgr::LinearExtent;
+    using LinearExtentsComparator = std::function<bool(const LinearExtent&, const LinearExtent&)>;
+    using SortedLinearExtents = std::multiset<LinearExtent, LinearExtentsComparator>;
     bool HasExtent(Partition* p, Extent* e);
     std::optional<uint64_t> GetCowSize(uint64_t snapshot_size);
+    SortedLinearExtents GetSnapshotRanges();
+    static std::vector<LinearExtent> MergeSnapshotRanges(
+            const SortedLinearExtents& snapshot_extents);
+    void CalculateSnapshotRanges(SnapshotStatus* snapshot_status);
 };
 
 }  // namespace snapshot

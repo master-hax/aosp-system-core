@@ -307,6 +307,53 @@ bool SnapshotManager::CreateCowImage(LockedFile* lock, const std::string& name) 
     return images_->CreateBackingImage(cow_image_name, status.cow_file_size(), cow_flags);
 }
 
+// Create the DmTable for the outer device. Ranges covered by status.snapshot_intervals() are
+// will be from |snapshot_device|. Ranges not covered by them will be from |base_device|.
+static bool CreateDmTableForOuterDevice(DmTable* table, const SnapshotStatus& status,
+                                        const std::string& base_device,
+                                        const std::string& snapshot_device) {
+    const uint64_t base_sectors = status.device_size() / kSectorSize;
+
+    for (const auto& snapshot_interval : status.snapshot_intervals()) {
+        uint64_t snapshot_offset_sectors = snapshot_interval.offset() / kSectorSize;
+        uint64_t snapshot_length_sectors = snapshot_interval.length() / kSectorSize;
+        LOG(INFO) << "See SnapshotInterval " << snapshot_offset_sectors << ".."
+                  << (snapshot_offset_sectors + snapshot_length_sectors);
+
+        if (table->num_sectors() > snapshot_offset_sectors) {
+            LOG(ERROR) << "For partition " << status.name() << ", see SnapshotInterval "
+                       << snapshot_offset_sectors << ".."
+                       << (snapshot_offset_sectors + snapshot_length_sectors)
+                       << " but current offset is " << table->num_sectors();
+            return false;
+        }
+
+        if (snapshot_offset_sectors + snapshot_length_sectors > base_sectors) {
+            LOG(ERROR) << "SnapshotInterval " << snapshot_offset_sectors << ".."
+                       << (snapshot_offset_sectors + snapshot_length_sectors)
+                       << " is out of range. Device has only " << base_sectors << " sectors.";
+            return false;
+        }
+
+        if (table->num_sectors() < snapshot_offset_sectors) {
+            uint64_t extent_sectors = snapshot_offset_sectors - table->num_sectors();
+            table->Emplace<DmTargetLinear>(table->num_sectors(), extent_sectors, base_device,
+                                           table->num_sectors());
+        }
+
+        table->Emplace<DmTargetLinear>(table->num_sectors(), snapshot_length_sectors,
+                                       snapshot_device, table->num_sectors());
+    }
+
+    if (table->num_sectors() < base_sectors) {
+        uint64_t extent_sectors = base_sectors - table->num_sectors();
+        table->Emplace<DmTargetLinear>(table->num_sectors(), extent_sectors, base_device,
+                                       table->num_sectors());
+    }
+
+    return true;
+}
+
 bool SnapshotManager::MapSnapshot(LockedFile* lock, const std::string& name,
                                   const std::string& base_device, const std::string& cow_device,
                                   const std::chrono::milliseconds& timeout_ms,
@@ -352,8 +399,8 @@ bool SnapshotManager::MapSnapshot(LockedFile* lock, const std::string& name,
         LOG(ERROR) << "Invalid snapshot size for " << base_device << ": " << status.snapshot_size();
         return false;
     }
-    uint64_t snapshot_sectors = status.snapshot_size() / kSectorSize;
-    uint64_t linear_sectors = (status.device_size() - status.snapshot_size()) / kSectorSize;
+    uint64_t base_sectors = status.device_size() / kSectorSize;
+    bool need_direct_write = !!(status.device_size() - status.snapshot_size());
 
     auto& dm = DeviceMapper::Instance();
 
@@ -382,33 +429,37 @@ bool SnapshotManager::MapSnapshot(LockedFile* lock, const std::string& name,
     // and a linear target in the same table. Instead, we stack them, and give the
     // snapshot device a different name. It is not exposed to the caller in this
     // case.
-    auto snap_name = (linear_sectors > 0) ? GetSnapshotExtraDeviceName(name) : name;
+    auto snap_name = (need_direct_write > 0) ? GetSnapshotExtraDeviceName(name) : name;
 
+    // Create the dm-snapshot device on top of the full base device; that is, the
+    // length of the dm-snapshot device equals that of the base device.
     DmTable table;
-    table.Emplace<DmTargetSnapshot>(0, snapshot_sectors, base_device, cow_device, mode,
+    table.Emplace<DmTargetSnapshot>(0, base_sectors, base_device, cow_device, mode,
                                     kSnapshotChunkSize);
     if (!dm.CreateDevice(snap_name, table, dev_path, timeout_ms)) {
         LOG(ERROR) << "Could not create snapshot device: " << snap_name;
         return false;
     }
 
-    if (linear_sectors) {
+    // If there are sectors that needs to be directly written, create an "outer" dm-linear device on
+    // top of the base and snapshot device. Each sector is selected from either the base or the
+    // snapshot device, depending on whether the sector is in status.snapshot_sectors().
+    // If there are no sectors that needs to be directly written, skip this step and return
+    // the dm-snapshot device directly.
+    if (need_direct_write) {
         std::string snap_dev;
         if (!dm.GetDeviceString(snap_name, &snap_dev)) {
             LOG(ERROR) << "Cannot determine major/minor for: " << snap_name;
             return false;
         }
 
-        // Our stacking will looks like this:
-        //     [linear, linear] ; to snapshot, and non-snapshot region of base device
-        //     [snapshot-inner]
-        //     [base device]   [cow]
         DmTable table;
-        table.Emplace<DmTargetLinear>(0, snapshot_sectors, snap_dev, 0);
-        table.Emplace<DmTargetLinear>(snapshot_sectors, linear_sectors, base_device,
-                                      snapshot_sectors);
+        if (!CreateDmTableForOuterDevice(&table, status, base_device, snap_dev)) {
+            LOG(ERROR) << "Could not create DmTable for outer device: " << name;
+            return false;
+        }
         if (!dm.CreateDevice(name, table, dev_path, timeout_ms)) {
-            LOG(ERROR) << "Could not create outer snapshot device: " << name;
+            LOG(ERROR) << "Could not create outer device: " << name;
             dm.DeleteDevice(snap_name);
             return false;
         }
@@ -1851,7 +1902,7 @@ bool SnapshotManager::CreateUpdateSnapshotsInternal(
 
         if (!needs_snapshot) {
             LOG(INFO) << "Skip creating snapshot for partition " << target_partition->name()
-                      << "because nothing needs to be snapshotted.";
+                      << " because nothing needs to be snapshotted.";
             continue;
         }
 
