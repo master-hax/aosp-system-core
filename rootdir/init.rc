@@ -390,6 +390,9 @@ on late-init
     # /data, which in turn can only be loaded when system properties are present.
     trigger post-fs-data
 
+    # Enable binder cache by default
+    setprop cache_key.package_info initial
+
     # Load persist properties and override properties (if enabled) from /data.
     trigger load_persist_props_action
 
