@@ -24,6 +24,7 @@ using android::dm::kSectorSize;
 using android::fs_mgr::Extent;
 using android::fs_mgr::Interval;
 using android::fs_mgr::kDefaultBlockSize;
+using android::fs_mgr::LinearExtent;
 using android::fs_mgr::Partition;
 using chromeos_update_engine::InstallOperation;
 template <typename T>
@@ -40,7 +41,7 @@ static uint64_t RoundUp(double d, uint64_t block_size) {
 }
 
 // Intersect two linear extents. If no intersection, return an extent with length 0.
-static std::unique_ptr<Extent> Intersect(Extent* target_extent, Extent* existing_extent) {
+static std::unique_ptr<LinearExtent> Intersect(Extent* target_extent, Extent* existing_extent) {
     // Convert target_extent and existing_extent to linear extents. Zero extents
     // doesn't matter and doesn't result in any intersection.
     auto existing_linear_extent = existing_extent->AsLinearExtent();
@@ -51,7 +52,7 @@ static std::unique_ptr<Extent> Intersect(Extent* target_extent, Extent* existing
 
     return Interval::Intersect(target_linear_extent->AsInterval(),
                                existing_linear_extent->AsInterval())
-            .AsExtent();
+            .AsLinearExtent();
 }
 
 // Check that partition |p| contains |e| fully. Both of them should
@@ -65,6 +66,108 @@ bool PartitionCowCreator::HasExtent(Partition* p, Extent* e) {
         }
     }
     return false;
+}
+
+// Return the list of extents that needs to be snapshotted. The order of these
+// ranges does not matter, but it is sorted based on the start sector so that
+// they can be merged later.
+PartitionCowCreator::SortedLinearExtents PartitionCowCreator::GetSnapshotRanges() {
+    SortedLinearExtents snapshot_extents(
+            [](const auto& a, const auto& b) { return a.physical_sector() < b.physical_sector(); });
+
+    // Offset (in sectors) of |target_extent| into the logical partition.
+    uint64_t extent_offset = 0;
+    for (const auto& target_extent : target_partition->extents()) {
+        auto* target_linear_extent = target_extent->AsLinearExtent();
+        if (!target_linear_extent) {
+            extent_offset += target_extent->num_sectors();
+            continue;
+        }
+
+        for (auto* existing_partition :
+             ListPartitionsWithSuffix(current_metadata, current_suffix)) {
+            for (const auto& existing_extent : existing_partition->extents()) {
+                auto intersection = Intersect(target_linear_extent, existing_extent.get());
+
+                if (intersection == nullptr || intersection->num_sectors() == 0) {
+                    continue;
+                }
+
+                // Offset (in sectors) of |intersection| into the logical partition.
+                uint64_t interval_offset = intersection->physical_sector() -
+                                           target_linear_extent->physical_sector() + extent_offset;
+
+                snapshot_extents.emplace(intersection->num_sectors(), 0 /* device_index */,
+                                         interval_offset);
+            }
+        }
+        extent_offset += target_extent->num_sectors();
+    }
+    DCHECK(extent_offset * kSectorSize == target_partition->size());
+
+    return snapshot_extents;
+}
+
+// Merge the list of extents that needs to be snapshotted.
+std::vector<LinearExtent> PartitionCowCreator::MergeSnapshotRanges(
+        const SortedLinearExtents& snapshot_extents) {
+    std::vector<LinearExtent> merged_extents;
+    // Add a sentinal node at the beginning to simplify the algorithm.
+    merged_extents.emplace_back(0, 0, 0);
+    for (const LinearExtent& snapshot_extent : snapshot_extents) {
+        auto& last_extent = merged_extents.back();
+
+        auto physical_sector = snapshot_extent.physical_sector();
+        auto end_sector = snapshot_extent.end_sector();
+
+        DCHECK(last_extent.physical_sector() <= physical_sector);
+
+        // Try to merge with last_extent.
+        if (physical_sector <= last_extent.end_sector()) {
+            if (end_sector > last_extent.end_sector()) {
+                last_extent = LinearExtent(end_sector - last_extent.physical_sector(), 0,
+                                           last_extent.physical_sector());
+            }
+            continue;
+        }
+
+        merged_extents.emplace_back(end_sector - physical_sector /* num_sectors */,
+                                    0 /* device_index */, physical_sector);
+    }
+    return merged_extents;
+}
+
+// Calculate the ranges into the logical |target_partition| that needs to be
+// snapshotted.
+//
+// Note that if partition A has shrunk and partition B has grown, the new
+// extents of partition B may use the empty space that was used by partition A.
+// In this case, that new extent cannot be written directly, as it may be used
+// by the running system. Hence, all extents of the new partition B must be
+// intersected with all old partitions (including old partition A and B) to get
+// the region that needs to be snapshotted.
+//
+// After this function is called, |snapshot_size| and |snapshot_intervals| will
+// be set.
+void PartitionCowCreator::CalculateSnapshotRanges(SnapshotStatus* snapshot_status) {
+    auto snapshot_extents = GetSnapshotRanges();
+    auto merged_extents = MergeSnapshotRanges(snapshot_extents);
+
+    // Transform into the list of SnapshotInterval.
+    uint64_t total_snapshot_sectors = 0;
+    for (const auto& snapshot_extent : merged_extents) {
+        if (snapshot_extent.num_sectors() == 0) {
+            // Skip the sentinel node if necessary.
+            continue;
+        }
+        auto* snapshot_interval = snapshot_status->add_snapshot_intervals();
+        DCHECK(snapshot_extent.physical_sector() * kSectorSize <= target_partition->size());
+        DCHECK(snapshot_extent.end_sector() * kSectorSize <= target_partition->size());
+        snapshot_interval->set_offset(snapshot_extent.physical_sector() * kSectorSize);
+        snapshot_interval->set_length(snapshot_extent.num_sectors() * kSectorSize);
+        total_snapshot_sectors += snapshot_extent.num_sectors();
+    }
+    snapshot_status->set_snapshot_size(total_snapshot_sectors * kSectorSize);
 }
 
 std::optional<uint64_t> PartitionCowCreator::GetCowSize(uint64_t snapshot_size) {
@@ -87,9 +190,7 @@ std::optional<PartitionCowCreator::Return> PartitionCowCreator::Run() {
     ret.snapshot_status.set_name(target_partition->name());
     ret.snapshot_status.set_device_size(target_partition->size());
 
-    // TODO(b/141889746): Optimize by using a smaller snapshot. Some ranges in target_partition
-    // may be written directly.
-    ret.snapshot_status.set_snapshot_size(target_partition->size());
+    CalculateSnapshotRanges(&ret.snapshot_status);
 
     auto cow_size = GetCowSize(ret.snapshot_status.snapshot_size());
     if (!cow_size.has_value()) return std::nullopt;

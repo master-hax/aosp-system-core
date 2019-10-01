@@ -820,7 +820,6 @@ TEST_F(SnapshotUpdateTest, FullUpdateFlow) {
 
 // Test that if new system partitions uses empty space in super, that region is not snapshotted.
 TEST_F(SnapshotUpdateTest, DirectWriteEmptySpace) {
-    GTEST_SKIP() << "b/141889746";
     SetSize(sys_, 4_MiB);
     // vnd_b and prd_b are unchanged.
     ASSERT_TRUE(sm->CreateUpdateSnapshots(manifest_));
@@ -1028,6 +1027,53 @@ TEST_F(SnapshotUpdateTest, ReclaimCow) {
             auto intersect = Interval::Intersect(cow_intervals, old_intervals);
             ASSERT_TRUE(intersect.empty()) << "COW uses space of source partitions";
         }
+    }
+}
+
+// Test that non-consecutive snapshot ranges works. In the test below, super
+// partition metadata looks like the following:
+//   source: | system |  |  vendor  |product|        |
+//   target: | system    | vendor |s|product| system |
+// snapshot: |XXXXXXXX|  |XXXXXXXXXXXXXXXXXX|        |
+TEST_F(SnapshotUpdateTest, UpdateWithHoles) {
+    // Create a hole between system and vendor in source super metadata.
+    auto sys_a = src_->FindPartition("sys_a");
+    ASSERT_TRUE(src_->ResizePartition(sys_a, 3788_KiB));
+    auto src = src_->Export();
+    ASSERT_NE(nullptr, src);
+    ASSERT_TRUE(UpdatePartitionTable(*opener_, "super", *src.get(), 0));
+
+    // Shrink vnd.
+    SetSize(vnd_, 2_MiB);
+    // Grow sys to take both the hole and the space saved from vendor.
+    SetSize(sys_, 8_MiB);
+
+    // Execute the update.
+    ASSERT_TRUE(sm->BeginUpdate());
+    ASSERT_TRUE(sm->CreateUpdateSnapshots(manifest_));
+
+    // Write some data to target partitions.
+    for (const auto& name : {"sys_b", "vnd_b", "prd_b"}) {
+        std::string path;
+        ASSERT_TRUE(sm->MapUpdateSnapshot(
+                CreateLogicalPartitionParams{
+                        .block_device = fake_super,
+                        .metadata_slot = 1,
+                        .partition_name = name,
+                        .timeout_ms = 10s,
+                        .partition_opener = opener_.get(),
+                },
+                &path))
+                << name;
+        ASSERT_TRUE(WriteRandomData(path));
+        auto hash = GetHash(path);
+        ASSERT_TRUE(hash.has_value());
+        hashes_[name] = *hash;
+    }
+
+    // Assert that source partitions aren't affected.
+    for (const auto& name : {"sys_a", "vnd_a", "prd_a"}) {
+        ASSERT_TRUE(IsPartitionUnchanged(name));
     }
 }
 
