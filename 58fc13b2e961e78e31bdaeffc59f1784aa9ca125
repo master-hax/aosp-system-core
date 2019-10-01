@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "dd795512_b9977e91",
+        "filename": "lmkd/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-10-01T16:06:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d17e12d9_6ef99bbd",
+      "range": {
+        "startLine": 18,
+        "startChar": 0,
+        "endLine": 24,
+        "endChar": 6
+      },
+      "revId": "58fc13b2e961e78e31bdaeffc59f1784aa9ca125",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a85c75f2_f44f8f36",
         "filename": "lmkd/Android.bp",
         "patchSetId": 1
@@ -45,6 +69,30 @@
       "revId": "58fc13b2e961e78e31bdaeffc59f1784aa9ca125",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4f5207f3_1466f211",
+        "filename": "lmkd/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-10-01T16:06:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a85c75f2_f44f8f36",
+      "range": {
+        "startLine": 34,
+        "startChar": 0,
+        "endLine": 34,
+        "endChar": 27
+      },
+      "revId": "58fc13b2e961e78e31bdaeffc59f1784aa9ca125",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -92,6 +140,30 @@
       "revId": "58fc13b2e961e78e31bdaeffc59f1784aa9ca125",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6c690332_b03976ca",
+        "filename": "lmkd/lmkd.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 2428,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-10-01T16:06:43Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "51359a22_6a8e0379",
+      "range": {
+        "startLine": 2428,
+        "startChar": 0,
+        "endLine": 2428,
+        "endChar": 21
+      },
+      "revId": "58fc13b2e961e78e31bdaeffc59f1784aa9ca125",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
