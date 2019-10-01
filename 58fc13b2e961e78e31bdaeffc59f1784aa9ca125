@@ -189,6 +189,30 @@
     },
     {
       "key": {
+        "uuid": "d32c5f8c_101b56cd",
+        "filename": "lmkd/statslog.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 231,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-10-01T16:00:16Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "2f6c0bb8_b314f78e",
+      "range": {
+        "startLine": 231,
+        "startChar": 58,
+        "endLine": 231,
+        "endChar": 59
+      },
+      "revId": "58fc13b2e961e78e31bdaeffc59f1784aa9ca125",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "aaf521e9_57bc4aae",
         "filename": "lmkd/statslog.h",
         "patchSetId": 1
@@ -224,6 +248,30 @@
       "side": 1,
       "message": "no, I just kept the same types as before.",
       "parentUuid": "aaf521e9_57bc4aae",
+      "range": {
+        "startLine": 30,
+        "startChar": 4,
+        "endLine": 30,
+        "endChar": 11
+      },
+      "revId": "58fc13b2e961e78e31bdaeffc59f1784aa9ca125",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "edea77a5_3aca88d6",
+        "filename": "lmkd/statslog.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-10-01T16:00:16Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "2caa4201_f8a97dcb",
       "range": {
         "startLine": 30,
         "startChar": 4,
