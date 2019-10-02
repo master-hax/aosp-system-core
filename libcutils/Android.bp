@@ -252,6 +252,7 @@ cc_test {
     defaults: ["libcutils_test_default"],
     static_libs: [
         "libc",
+        "libdl_static_stubs",
         "libcgrouprc_format",
     ] + test_libraries,
     stl: "libc++_static",
