@@ -23,6 +23,7 @@
 #include <string>
 #include <vector>
 
+#include <android-base/logging.h>
 #include <android-base/unique_fd.h>
 #include <cgroup_map.h>
 
@@ -175,6 +176,35 @@ class TaskProfiles {
     TaskProfile* GetProfile(const std::string& name) const;
     const ProfileAttribute* GetAttribute(const std::string& name) const;
     void DropResourceCaching() const;
+    inline bool SetTaskProfile(int tid, const std::string& name, bool use_fd_cache) {
+        TaskProfile* profile = GetProfile(name);
+        if (profile != nullptr) {
+            if (use_fd_cache) {
+                profile->EnableResourceCaching();
+            }
+            if (!profile->ExecuteForTask(tid)) {
+                PLOG(WARNING) << "Failed to apply " << name << " task profile";
+            }
+        } else {
+            PLOG(WARNING) << "Failed to find " << name << "task profile";
+        }
+        return true;
+    }
+    inline bool SetProcessProfile(uid_t uid, pid_t pid, const std::string& name,
+                                  bool use_fd_cache) {
+        TaskProfile* profile = GetProfile(name);
+        if (profile != nullptr) {
+            if (use_fd_cache) {
+                profile->EnableResourceCaching();
+            }
+            if (!profile->ExecuteForProcess(uid, pid)) {
+                PLOG(WARNING) << "Failed to apply " << name << " process profile";
+            }
+        } else {
+            PLOG(WARNING) << "Failed to find " << name << "process profile";
+        }
+        return true;
+    }
     bool SetProcessProfiles(uid_t uid, pid_t pid, const std::vector<std::string>& profiles,
                             bool use_fd_cache);
     bool SetTaskProfiles(int tid, const std::vector<std::string>& profiles, bool use_fd_cache);
