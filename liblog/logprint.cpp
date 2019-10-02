@@ -728,7 +728,7 @@ static int android_log_printBinaryEvent(const unsigned char** pEventData, size_t
         int32_t ival;
 
         if (eventDataLen < 4) return -1;
-        ival = *reinterpret_cast<const int32_t*>(eventData);
+        memcpy(&ival, eventData, sizeof(ival));
         eventData += 4;
         eventDataLen -= 4;
 
@@ -738,7 +738,7 @@ static int android_log_printBinaryEvent(const unsigned char** pEventData, size_t
     case EVENT_TYPE_LONG:
       /* 64-bit signed long */
       if (eventDataLen < 8) return -1;
-      lval = *reinterpret_cast<const int64_t*>(eventData);
+      memcpy(&lval, eventData, sizeof(lval));
       eventData += 8;
       eventDataLen -= 8;
     pr_lval:
@@ -758,7 +758,7 @@ static int android_log_printBinaryEvent(const unsigned char** pEventData, size_t
         float fval;
 
         if (eventDataLen < 4) return -1;
-        ival = *reinterpret_cast<const uint32_t*>(eventData);
+        memcpy(&ival, eventData, sizeof(ival));
         fval = *(float*)&ival;
         eventData += 4;
         eventDataLen -= 4;
@@ -779,7 +779,7 @@ static int android_log_printBinaryEvent(const unsigned char** pEventData, size_t
         unsigned int strLen;
 
         if (eventDataLen < 4) return -1;
-        strLen = *reinterpret_cast<const uint32_t*>(eventData);
+        memcpy(&strLen, eventData, sizeof(strLen));
         eventData += 4;
         eventDataLen -= 4;
 
@@ -1018,7 +1018,7 @@ int android_log_processBinaryLogBuffer(
   }
   inCount = buf->len;
   if (inCount < 4) return -1;
-  tagIndex = *reinterpret_cast<const uint32_t*>(eventData);
+  memcpy(&tagIndex, eventData, sizeof(tagIndex));
   eventData += 4;
   inCount -= 4;
 

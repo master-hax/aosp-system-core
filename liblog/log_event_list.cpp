@@ -194,7 +194,7 @@ int android_log_write_int32(android_log_context ctx, int32_t value) {
   }
   context->count[context->list_nest_depth]++;
   context->storage[context->pos + 0] = EVENT_TYPE_INT;
-  *reinterpret_cast<int32_t*>(&context->storage[context->pos + 1]) = value;
+  memcpy(&context->storage[context->pos + 1], &value, sizeof(value));
   context->pos += needed;
   return 0;
 }
@@ -217,14 +217,14 @@ int android_log_write_int64(android_log_context ctx, int64_t value) {
   }
   context->count[context->list_nest_depth]++;
   context->storage[context->pos + 0] = EVENT_TYPE_LONG;
-  *reinterpret_cast<int64_t*>(&context->storage[context->pos + 1]) = value;
+  memcpy(&context->storage[context->pos + 1], &value, sizeof(value));
   context->pos += needed;
   return 0;
 }
 
 int android_log_write_string8_len(android_log_context ctx, const char* value, size_t maxlen) {
   size_t needed;
-  ssize_t len;
+  int32_t len;
   android_log_context_internal* context;
 
   context = (android_log_context_internal*)ctx;
@@ -249,7 +249,7 @@ int android_log_write_string8_len(android_log_context ctx, const char* value, si
   }
   context->count[context->list_nest_depth]++;
   context->storage[context->pos + 0] = EVENT_TYPE_STRING;
-  *reinterpret_cast<ssize_t*>(&context->storage[context->pos + 1]) = len;
+  memcpy(&context->storage[context->pos + 1], &len, sizeof(len));
   if (len) {
     memcpy(&context->storage[context->pos + 5], value, len);
   }
@@ -281,7 +281,7 @@ int android_log_write_float32(android_log_context ctx, float value) {
   ivalue = *(uint32_t*)&value;
   context->count[context->list_nest_depth]++;
   context->storage[context->pos + 0] = EVENT_TYPE_FLOAT;
-  *reinterpret_cast<uint32_t*>(&context->storage[context->pos + 1]) = ivalue;
+  memcpy(&context->storage[context->pos + 1], &ivalue, sizeof(ivalue));
   context->pos += needed;
   return 0;
 }
@@ -454,7 +454,7 @@ static android_log_list_element android_log_read_next_internal(android_log_conte
         elem.type = EVENT_TYPE_UNKNOWN;
         return elem;
       }
-      elem.data.int32 = *reinterpret_cast<int32_t*>(&context->storage[pos]);
+      memcpy(&elem.data.int32, &context->storage[pos], sizeof(elem.data.int32));
       /* common tangeable object suffix */
       pos += elem.len;
       elem.complete = !context->list_nest_depth && !context->count[0];
@@ -473,7 +473,7 @@ static android_log_list_element android_log_read_next_internal(android_log_conte
         elem.type = EVENT_TYPE_UNKNOWN;
         return elem;
       }
-      elem.data.int64 = *reinterpret_cast<int64_t*>(&context->storage[pos]);
+      memcpy(&elem.data.int64, &context->storage[pos], sizeof(elem.data.int64));
       /* common tangeable object suffix */
       pos += elem.len;
       elem.complete = !context->list_nest_depth && !context->count[0];
@@ -492,7 +492,14 @@ static android_log_list_element android_log_read_next_internal(android_log_conte
         elem.complete = true;
         return elem;
       }
-      elem.len = *reinterpret_cast<int32_t*>(&context->storage[pos]);
+      // Wire format is int32_t, but elem.len is uint16_t...
+      int32_t len;
+      memcpy(&len, &context->storage[pos], sizeof(len));
+      if (len >= UINT16_MAX) {
+        elem.type = EVENT_TYPE_UNKNOWN;
+        return elem;
+      }
+      elem.len = len;
       pos += sizeof(int32_t);
       if ((pos + elem.len) > context->len) {
         elem.len = context->len - pos; /* truncate string */
