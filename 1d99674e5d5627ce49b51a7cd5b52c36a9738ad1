@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "cea3793f_a415f64b",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-10-02T19:26:53Z",
+      "side": 1,
+      "message": "nit: operations are",
+      "revId": "1d99674e5d5627ce49b51a7cd5b52c36a9738ad1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "0b27eb81_46ed4f8b",
         "filename": "fs_mgr/libsnapshot/snapshot.cpp",
         "patchSetId": 1
