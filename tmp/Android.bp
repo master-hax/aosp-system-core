@@ -1,0 +1,12 @@
+cc_library {
+    name: "libfoo",
+    compile_multilib: "32",
+    srcs: ["lib.cpp"],
+}
+
+cc_binary {
+    name: "tmp",
+    compile_multilib: "32",
+    srcs: ["tmp.cpp"],
+    shared_libs: ["libfoo"],
+}
