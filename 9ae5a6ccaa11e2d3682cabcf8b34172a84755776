@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6cdac141_6d016bff",
+        "filename": "libstats/statsd_writer.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-10-02T19:14:23Z",
+      "side": 0,
+      "message": "(this was unused here)",
+      "revId": "9ae5a6ccaa11e2d3682cabcf8b34172a84755776",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
