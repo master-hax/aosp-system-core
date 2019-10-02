@@ -22,6 +22,30 @@
       "revId": "69880e1a392ab7b10a1f794f434b9004b38ede8e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7ef08196_f7425b6a",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 3
+      },
+      "lineNbr": 674,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-10-02T15:18:04Z",
+      "side": 0,
+      "message": "A lesson in these new properties.\n\nThe purpose of property dev.mnt.blk.data is to point to the root block device (dm, sd or mmc) that is managing the command queue, and not the partition (which does not manage the device command queue). It may be advised to modify the mount property handler in init to _add_ dev.mnt.dev.\u003cmount_point\u003e properties that point directly to the device (and thus partition) used in the mount. The additional work would be a _one_ line change to the mount handler in init (more if one decides to optimize it a bit) and additional documentation in the init README.md. Please submit such a change for review by tomcherry@.\n\nAlso, these properties are set asynchronously (meaning they may be set after the mount has long completed) so they currently are required to be used with \"on property\" triggers to embody the asynchronous nature. The above works because \"on boot\" is the point that these property triggers have all settled. A more timely update could still be better with an on property:dev.mnt.blk.data\u003d* trigger which would be closer to the point the mount actually happened. But that may not be true in the future.\n\nPost Android 10 there is a desire to synchronously set these properties in the mount actions themselves getting rid of this race and delay for the mount handler and not try to foist asynchronous programming tactics on the users of these properties. \"on property\" would still work, but the subtlety is that \"on property\" triggers do not happen until enabled, and the values will be present at all points post-mount which might actually be earlier. Currently tomcherry@ owns this action and it is not at-priority.",
+      "parentUuid": "90e9a285_a71cacfc",
+      "range": {
+        "startLine": 674,
+        "startChar": 23,
+        "endLine": 674,
+        "endChar": 42
+      },
+      "revId": "69880e1a392ab7b10a1f794f434b9004b38ede8e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
