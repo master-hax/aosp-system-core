@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "50bc26cb_1efe32a1",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2019-10-02T16:22:39Z",
+      "side": 1,
+      "message": "I encountenred plenty of regression errors in this test on arm64. It\u0027s not tested by TEST_MAPPING, and it shows. Need to look into those more, and maybe we should add this test to go/art-buildbot.",
+      "range": {
+        "startLine": 14,
+        "startChar": 41,
+        "endLine": 14,
+        "endChar": 56
+      },
+      "revId": "5b7e9d58e04ec3645f792ead7bf96707ac511c08",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}

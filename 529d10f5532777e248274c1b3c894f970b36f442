@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "78a55b10_ce2ee709",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2019-10-02T16:22:39Z",
+      "side": 1,
+      "message": "Reverted changes in this file since it\u0027s no longer used (cf. https://r.android.com/1128832).",
+      "revId": "529d10f5532777e248274c1b3c894f970b36f442",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
