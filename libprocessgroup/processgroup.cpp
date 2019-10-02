@@ -38,7 +38,6 @@
 #include <thread>
 
 #include <android-base/file.h>
-#include <android-base/logging.h>
 #include <android-base/properties.h>
 #include <android-base/stringprintf.h>
 #include <android-base/strings.h>
@@ -113,6 +112,14 @@ static bool isMemoryCgroupSupported() {
 
 void DropTaskProfilesResourceCaching() {
     TaskProfiles::GetInstance().DropResourceCaching();
+}
+
+bool SetProcessProfile(uid_t uid, pid_t pid, const std::string& profile, bool use_fd_cache) {
+    return TaskProfiles::GetInstance().SetProcessProfile(uid, pid, profile, use_fd_cache);
+}
+
+bool SetTaskProfile(int tid, const std::string& profile, bool use_fd_cache) {
+    return TaskProfiles::GetInstance().SetTaskProfile(tid, profile, use_fd_cache);
 }
 
 bool SetProcessProfiles(uid_t uid, pid_t pid, const std::vector<std::string>& profiles,

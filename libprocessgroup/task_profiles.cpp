@@ -516,17 +516,7 @@ const ProfileAttribute* TaskProfiles::GetAttribute(const std::string& name) cons
 bool TaskProfiles::SetProcessProfiles(uid_t uid, pid_t pid,
                                       const std::vector<std::string>& profiles, bool use_fd_cache) {
     for (const auto& name : profiles) {
-        TaskProfile* profile = GetProfile(name);
-        if (profile != nullptr) {
-            if (use_fd_cache) {
-                profile->EnableResourceCaching();
-            }
-            if (!profile->ExecuteForProcess(uid, pid)) {
-                PLOG(WARNING) << "Failed to apply " << name << " process profile";
-            }
-        } else {
-            PLOG(WARNING) << "Failed to find " << name << "process profile";
-        }
+        SetProcessProfile(uid, pid, name, use_fd_cache);
     }
     return true;
 }
@@ -534,17 +524,7 @@ bool TaskProfiles::SetProcessProfiles(uid_t uid, pid_t pid,
 bool TaskProfiles::SetTaskProfiles(int tid, const std::vector<std::string>& profiles,
                                    bool use_fd_cache) {
     for (const auto& name : profiles) {
-        TaskProfile* profile = GetProfile(name);
-        if (profile != nullptr) {
-            if (use_fd_cache) {
-                profile->EnableResourceCaching();
-            }
-            if (!profile->ExecuteForTask(tid)) {
-                PLOG(WARNING) << "Failed to apply " << name << " task profile";
-            }
-        } else {
-            PLOG(WARNING) << "Failed to find " << name << "task profile";
-        }
+        SetTaskProfile(tid, name, use_fd_cache);
     }
     return true;
 }
