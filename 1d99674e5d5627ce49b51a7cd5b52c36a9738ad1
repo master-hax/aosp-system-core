@@ -22,6 +22,30 @@
       "revId": "1d99674e5d5627ce49b51a7cd5b52c36a9738ad1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "53f67851_83764c88",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1980,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2019-10-02T18:22:33Z",
+      "side": 1,
+      "message": "an INFO should have been emitted in L1907, so I think it is okay to silently skip here.",
+      "parentUuid": "0b27eb81_46ed4f8b",
+      "range": {
+        "startLine": 1980,
+        "startChar": 44,
+        "endLine": 1980,
+        "endChar": 45
+      },
+      "revId": "1d99674e5d5627ce49b51a7cd5b52c36a9738ad1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
