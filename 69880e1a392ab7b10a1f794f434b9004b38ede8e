@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "90e9a285_a71cacfc",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 3
+      },
+      "lineNbr": 674,
+      "author": {
+        "id": 1079098
+      },
+      "writtenOn": "2019-10-02T02:49:09Z",
+      "side": 0,
+      "message": "This property set by init is sda not sdaxx.\nMay need additional work to make it to be correct partition number",
+      "range": {
+        "startLine": 674,
+        "startChar": 23,
+        "endLine": 674,
+        "endChar": 42
+      },
+      "revId": "69880e1a392ab7b10a1f794f434b9004b38ede8e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
