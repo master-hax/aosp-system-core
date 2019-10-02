@@ -42,6 +42,30 @@
     },
     {
       "key": {
+        "uuid": "d9d34c04_a19a6706",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 261,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2019-10-02T18:25:46Z",
+      "side": 1,
+      "message": "Our chunk size is 8; do you mean 8 * 512 (sector size)?\n\nI\u0027ll put up a follow-up CL to fix this.",
+      "parentUuid": "24e6580b_cce1c7b4",
+      "range": {
+        "startLine": 261,
+        "startChar": 39,
+        "endLine": 261,
+        "endChar": 50
+      },
+      "revId": "e6badbbaad311fd9b6914249e0d4b348a88855dc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "86a2cbc8_fdda1ecc",
         "filename": "fs_mgr/libsnapshot/snapshot.cpp",
         "patchSetId": 1
