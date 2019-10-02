@@ -266,10 +266,6 @@ static int __write_to_log_daemon(log_id_t log_id, struct iovec* vec, size_t nr) 
     int prio = *static_cast<int*>(vec[0].iov_base);
     const char* tag = static_cast<const char*>(vec[1].iov_base);
     size_t len = vec[1].iov_len;
-    /* tag must be nul terminated */
-    if (strnlen(tag, len) >= len) {
-      tag = NULL;
-    }
 
     if (!__android_log_is_loggable_len(prio, tag, len - 1, ANDROID_LOG_VERBOSE)) {
       errno = save_errno;
