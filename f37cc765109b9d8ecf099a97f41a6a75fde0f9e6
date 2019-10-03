@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c4a0938c_ee122c45",
+        "filename": "libion/ion.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 1530208
+      },
+      "writtenOn": "2019-10-03T21:10:08Z",
+      "side": 1,
+      "message": "Ok, so clients can use this to figure out what version they\u0027re on, but the system heap ID is different across the non-modular, and modular ION heaps versions.\n\nHowever, how will clients know what ID to use when they are running on the modular ION heaps version? I.E. shouldn\u0027t libion also host the system heap ID somewhere and expose that to the clients?",
+      "range": {
+        "startLine": 81,
+        "startChar": 8,
+        "endLine": 81,
+        "endChar": 24
+      },
+      "revId": "f37cc765109b9d8ecf099a97f41a6a75fde0f9e6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
