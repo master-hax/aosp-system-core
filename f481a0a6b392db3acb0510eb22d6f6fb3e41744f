@@ -48,6 +48,30 @@
     },
     {
       "key": {
+        "uuid": "7438efa6_3d37a323",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1211949
+      },
+      "writtenOn": "2019-10-03T21:39:38Z",
+      "side": 1,
+      "message": "Well thanks for making me look, turns out I was wrong.\nSure there is no vbmeta partition, but there is a vbmeta_a partition. (even though the device doesn\u0027t have an A/B partition scheme).\n\nBootloader passes androidboot.slot_suffix\u003d_a, so i don\u0027t understand why init took vbmeta not vbmeta_a, I\u0027ll need to dig deeper.\n\nHowever they are using custom logics:\n- kernel/bootloader accepts to boot an unsigned GSI without changing vbmeta.img\n- even though it\u0027s a system-as-root system, bootloader doesn\u0027t seem to pass dm-verity root hash/dm-linear fallback on cmdline\nSo I don\u0027t know if there vbmeta is compatible with AOSP\u0027s\n\nI\u0027m putting this commit as WIP until I have cleared this up.\n\nThanks",
+      "parentUuid": "438cf20d_44a4163d",
+      "range": {
+        "startLine": 10,
+        "startChar": 51,
+        "endLine": 10,
+        "endChar": 67
+      },
+      "revId": "f481a0a6b392db3acb0510eb22d6f6fb3e41744f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "7ed14e36_d8f8948e",
         "filename": "init/first_stage_mount.cpp",
         "patchSetId": 2
