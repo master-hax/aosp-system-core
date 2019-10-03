@@ -46,6 +46,30 @@
       "revId": "69880e1a392ab7b10a1f794f434b9004b38ede8e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f5ac5dc0_9f6ec8d6",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 3
+      },
+      "lineNbr": 674,
+      "author": {
+        "id": 1079098
+      },
+      "writtenOn": "2019-10-03T00:59:51Z",
+      "side": 0,
+      "message": "Thanks, Mark!\nMTK will add and submit patch not only for dev.mnt.dev.\u003cmount_point\u003e but fix the dev.mnt.block for eMMC. (Current approach only consider sdx, prefix of eMMC should be mmcblk)",
+      "parentUuid": "7ef08196_f7425b6a",
+      "range": {
+        "startLine": 674,
+        "startChar": 23,
+        "endLine": 674,
+        "endChar": 42
+      },
+      "revId": "69880e1a392ab7b10a1f794f434b9004b38ede8e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
