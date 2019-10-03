@@ -44,7 +44,9 @@ struct ion_heap_query {
   __u32 reserved1;
   __u32 reserved2;
 };
+#define ION_CURRENT_ABI_VERSION 2
 #define ION_IOC_MAGIC 'I'
 #define ION_IOC_NEW_ALLOC _IOWR(ION_IOC_MAGIC, 0, struct ion_new_allocation_data)
 #define ION_IOC_HEAP_QUERY _IOWR(ION_IOC_MAGIC, 8, struct ion_heap_query)
+#define ION_IOC_ABI_VERSION _IOR(ION_IOC_MAGIC, 9, __u32)
 #endif

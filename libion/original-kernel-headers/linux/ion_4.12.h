@@ -79,6 +79,8 @@ struct ion_heap_query {
     __u32 reserved2;
 };
 
+#define ION_CURRENT_ABI_VERSION 2
+
 #define ION_IOC_MAGIC 'I'
 
 /**
@@ -121,5 +123,12 @@ struct ion_heap_query {
  * available Ion heaps.
  */
 #define ION_IOC_HEAP_QUERY _IOWR(ION_IOC_MAGIC, 8, struct ion_heap_query)
+
+/**
+ * DOC: ION_IOC_HEAP_ABI_VERSION - return ABI version
+ *
+ * Returns ABI version for this driver
+ */
+#define ION_IOC_ABI_VERSION _IOR(ION_IOC_MAGIC, 9, __u32)
 
 #endif /* _UAPI_LINUX_ION_NEW_H */
