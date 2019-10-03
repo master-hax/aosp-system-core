@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "438cf20d_44a4163d",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-10-03T06:54:20Z",
+      "side": 1,
+      "message": "is it possible that they\u0027re using top-level vbmeta in boot?",
+      "range": {
+        "startLine": 10,
+        "startChar": 51,
+        "endLine": 10,
+        "endChar": 67
+      },
+      "revId": "f481a0a6b392db3acb0510eb22d6f6fb3e41744f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b06ff499_dae96015",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-10-03T06:54:20Z",
+      "side": 1,
+      "message": "if there is \u0027avb\u0027 in fstab, does the mount / verity works when we fallback to VbootV1?",
+      "range": {
+        "startLine": 10,
+        "startChar": 0,
+        "endLine": 10,
+        "endChar": 3
+      },
+      "revId": "f481a0a6b392db3acb0510eb22d6f6fb3e41744f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7ed14e36_d8f8948e",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 836,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-10-03T06:54:20Z",
+      "side": 1,
+      "message": "How about:\n\n// Fallbacks to VBootV1 if VBootV2 fails.\nif (IsDtVbmetaCompatible(fstab) \u0026\u0026 !handle-\u003eDoFirstStageMount()) {\n  ...\n}",
+      "range": {
+        "startLine": 836,
+        "startChar": 7,
+        "endLine": 836,
+        "endChar": 35
+      },
+      "revId": "f481a0a6b392db3acb0510eb22d6f6fb3e41744f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d16fa026_f6965e98",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 838,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-10-03T06:54:20Z",
+      "side": 1,
+      "message": "Let\u0027s using spaces instead.",
+      "range": {
+        "startLine": 838,
+        "startChar": 0,
+        "endLine": 838,
+        "endChar": 5
+      },
+      "revId": "f481a0a6b392db3acb0510eb22d6f6fb3e41744f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
