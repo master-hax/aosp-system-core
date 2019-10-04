@@ -22,6 +22,30 @@
       "revId": "8636acec4c2e899a11e96db77a99462d4c84b290",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b0b25ddb_b336170d",
+        "filename": "lmkd/lmkd.c",
+        "patchSetId": 18
+      },
+      "lineNbr": 142,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-10-04T21:45:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "31e98741_a60feaba",
+      "range": {
+        "startLine": 141,
+        "startChar": 0,
+        "endLine": 142,
+        "endChar": 27
+      },
+      "revId": "8636acec4c2e899a11e96db77a99462d4c84b290",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
