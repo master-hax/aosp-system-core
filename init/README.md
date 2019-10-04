@@ -684,9 +684,15 @@ Init provides state information with the following properties.
 > Block device base name associated with a *mount_point*.
   The *mount_point* has / replaced by . and if referencing the root mount point
   "/", it will use "/root", specifically `dev.mnt.blk.root`.
-  Meant for references to `/sys/device/block/${dev.mnt.blk.<mount_point>}/` and
-  `/sys/fs/ext4/${dev.mnt.blk.<mount_point>}/` to tune the block device
-  characteristics in a device agnostic manner.
+  Meant for references to `/sys/device/block/${dev.mnt.blk.<mount_point>}/` to
+  tune the block device characteristics in a device agnostic manner.
+
+`dev.mnt.part.<mount_point>`
+> Block device base name associated with a *mount_point*.
+  The *mount_point* has / replaced by . and if referencing the root mount point
+  "/", it will use "/root", specifically `dev.mnt.blk.root`.
+  Meant for references to `/sys/fs/ext4/${dev.mnt.blk.<mount_point>}/` to tune
+  filesystem characteristics.
 
 
 Boot timing
