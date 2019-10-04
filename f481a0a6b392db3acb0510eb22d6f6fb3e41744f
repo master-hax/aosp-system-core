@@ -72,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "8726fe31_4283023c",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-10-04T07:14:46Z",
+      "side": 1,
+      "message": "\u003e so i don\u0027t understand why init took vbmeta not vbmeta_a\n\nYup, this is wield. init/fs_mgr should invoke libavb-\u003eavb_slot_verify() with androidboot.slot_suffix\u003d_a.\n\nhttps://android-review.googlesource.com/c/platform/system/core/+/1120403/2/fs_mgr/libfs_avb/fs_avb.cpp#354\n\n\n\u003e even though it\u0027s a system-as-root system, bootloader doesn\u0027t seem to pass dm-verity root hash/dm-linear fallback on cmdline\n\nOr is vbmeta flag set to 2 in you case?\nhttps://android.googlesource.com/platform/external/avb/+/refs/heads/master/libavb/avb_vbmeta_image.h#59",
+      "parentUuid": "7438efa6_3d37a323",
+      "range": {
+        "startLine": 10,
+        "startChar": 51,
+        "endLine": 10,
+        "endChar": 67
+      },
+      "revId": "f481a0a6b392db3acb0510eb22d6f6fb3e41744f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "7ed14e36_d8f8948e",
         "filename": "init/first_stage_mount.cpp",
         "patchSetId": 2
