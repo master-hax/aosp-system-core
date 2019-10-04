@@ -74,10 +74,13 @@ void SetMountProperty(const MountHandlerEntry& entry, bool add) {
     std::string value;
     if (add) {
         value = entry.blk_device.substr(strlen(devblock));
-        if (android::base::StartsWith(value, "sd")) {
-            // All sd partitions inherit their queue characteristics
+        if (android::base::StartsWith(value, "sd") || android::base::StartsWith(value, "mmcblk")) {
+            // All sd/mmc partitions inherit their queue characteristics
             // from the whole device reference.  Strip partition number.
             auto it = std::find_if(value.begin(), value.end(), [](char c) { return isdigit(c); });
+            // The first digit after mmcblk shall be reserved
+            if (android::base::StartsWith(value, "mmcblk"))
+                it++;
             if (it != value.end()) value.erase(it, value.end());
         }
         auto queue = "/sys/block/" + value + "/queue";
@@ -91,12 +94,14 @@ void SetMountProperty(const MountHandlerEntry& entry, bool add) {
     auto mount_prop = entry.mount_point;
     if (mount_prop == "/") mount_prop = "/root";
     std::replace(mount_prop.begin(), mount_prop.end(), '/', '.');
+    auto mount_part_prop = "dev.mnt.part" + mount_prop;
     mount_prop = "dev.mnt.blk" + mount_prop;
     // Set property even if its value does not change to trigger 'on property:'
     // handling, except for clearing non-existent or already clear property.
     // Goal is reduction of empty properties and associated triggers.
     if (value.empty() && android::base::GetProperty(mount_prop, "").empty()) return;
     property_set(mount_prop, value);
+    property_set(mount_part_prop, entry.blk_device.substr(strlen(devblock)));
 }
 
 }  // namespace
