@@ -93,6 +93,30 @@
       "revId": "80555b24e0ef97484a00cdad898c75223c56d4ad",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5d9ea627_02559f62",
+        "filename": "lmkd/lmkd.c",
+        "patchSetId": 24
+      },
+      "lineNbr": 824,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-10-04T23:16:24Z",
+      "side": 1,
+      "message": "I split these termination fixes into a separate patch for cleanliness.",
+      "parentUuid": "2b651106_7c990792",
+      "range": {
+        "startLine": 824,
+        "startChar": 4,
+        "endLine": 824,
+        "endChar": 5
+      },
+      "revId": "80555b24e0ef97484a00cdad898c75223c56d4ad",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
