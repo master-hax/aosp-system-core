@@ -57,6 +57,8 @@ struct AutoDeviceList;
 struct PartitionCowCreator;
 class SnapshotStatus;
 
+// Unit is sectors, this is a 4K chunk.
+static constexpr uint32_t kSnapshotChunkSize = 8;
 static constexpr const std::string_view kCowGroupName = "cow";
 
 enum class UpdateState : unsigned int {
