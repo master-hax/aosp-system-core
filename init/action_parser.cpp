@@ -133,7 +133,7 @@ Result<void> ActionParser::ParseSection(std::vector<std::string>&& args,
         return Error() << "ParseTriggers() failed: " << result.error();
     }
 
-    auto action = std::make_unique<Action>(false, action_subcontext, filename, line, event_trigger,
+    auto action = std::make_unique<Action>(action_subcontext, filename, line, event_trigger,
                                            property_triggers);
 
     action_ = std::move(action);

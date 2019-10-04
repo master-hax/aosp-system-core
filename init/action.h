@@ -57,7 +57,7 @@ using BuiltinAction = class Action*;
 
 class Action {
   public:
-    Action(bool oneshot, Subcontext* subcontext, const std::string& filename, int line,
+    Action(Subcontext* subcontext, const std::string& filename, int line,
            const std::string& event_trigger,
            const std::map<std::string, std::string>& property_triggers);
 
@@ -73,7 +73,6 @@ class Action {
     void DumpState() const;
     size_t CheckAllCommands() const;
 
-    bool oneshot() const { return oneshot_; }
     const std::string& filename() const { return filename_; }
     int line() const { return line_; }
     static void set_function_map(const BuiltinFunctionMap* function_map) {
@@ -88,7 +87,6 @@ class Action {
     std::map<std::string, std::string> property_triggers_;
     std::string event_trigger_;
     std::vector<Command> commands_;
-    bool oneshot_;
     Subcontext* subcontext_;
     std::string filename_;
     int line_;

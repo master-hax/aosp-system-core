@@ -53,7 +53,7 @@ void ActionManager::QueueAllPropertyActions() {
 }
 
 void ActionManager::QueueBuiltinAction(BuiltinFunction func, const std::string& name) {
-    auto action = std::make_unique<Action>(true, nullptr, "<Builtin Action>", 0, name,
+    auto action = std::make_unique<Action>(nullptr, "<Builtin Action>", 0, name,
                                            std::map<std::string, std::string>{});
     action->AddCommand(std::move(func), {name}, 0);
 
@@ -89,16 +89,10 @@ void ActionManager::ExecuteOneCommand() {
 
     // If this was the last command in the current action, then remove
     // the action from the executing list.
-    // If this action was oneshot, then also remove it from actions_.
     ++current_command_;
     if (current_command_ == action->NumCommands()) {
         current_executing_actions_.pop();
         current_command_ = 0;
-        if (action->oneshot()) {
-            auto eraser = [&action](std::unique_ptr<Action>& a) { return a.get() == action; };
-            actions_.erase(std::remove_if(actions_.begin(), actions_.end(), eraser),
-                           actions_.end());
-        }
     }
 }
 

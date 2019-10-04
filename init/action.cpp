@@ -96,12 +96,11 @@ std::string Command::BuildCommandString() const {
     return Join(args_, ' ');
 }
 
-Action::Action(bool oneshot, Subcontext* subcontext, const std::string& filename, int line,
+Action::Action(Subcontext* subcontext, const std::string& filename, int line,
                const std::string& event_trigger,
                const std::map<std::string, std::string>& property_triggers)
     : property_triggers_(property_triggers),
       event_trigger_(event_trigger),
-      oneshot_(oneshot),
       subcontext_(subcontext),
       filename_(filename),
       line_(line) {}
