@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b944e954_6be51902",
+        "filename": "lmkd/lmkd.c",
+        "patchSetId": 24
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-10-04T22:41:38Z",
+      "side": 1,
+      "message": "New code should use #include \u003csys/syscall.h\u003e",
+      "range": {
+        "startLine": 37,
+        "startChar": 10,
+        "endLine": 37,
+        "endChar": 19
+      },
+      "revId": "80555b24e0ef97484a00cdad898c75223c56d4ad",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "67b1a602_308a1a0e",
+        "filename": "lmkd/lmkd.c",
+        "patchSetId": 24
+      },
+      "lineNbr": 824,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-10-04T22:41:38Z",
+      "side": 1,
+      "message": "buf is not guaranteed nul terminated.",
+      "range": {
+        "startLine": 824,
+        "startChar": 4,
+        "endLine": 824,
+        "endChar": 5
+      },
+      "revId": "80555b24e0ef97484a00cdad898c75223c56d4ad",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
