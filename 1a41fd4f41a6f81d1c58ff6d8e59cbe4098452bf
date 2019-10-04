@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "9b94d942_bff6e59b",
+        "filename": "lmkd/lmkd.c",
+        "patchSetId": 20
+      },
+      "lineNbr": 141,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-10-04T21:44:14Z",
+      "side": 1,
+      "message": "Already done.",
+      "parentUuid": "f30007f6_54e430f7",
+      "range": {
+        "startLine": 141,
+        "startChar": 0,
+        "endLine": 141,
+        "endChar": 27
+      },
+      "revId": "1a41fd4f41a6f81d1c58ff6d8e59cbe4098452bf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "124dbecb_11d2af42",
         "filename": "lmkd/lmkd.c",
         "patchSetId": 20
@@ -36,6 +60,30 @@
       "writtenOn": "2019-09-23T14:34:09Z",
       "side": 1,
       "message": "But what if there is a \u0027fatal\u0027 value in curr_tm (I know there should not be as uninitialized? curr_tm \u003d {} / memset? Preferred to bypass the ALOGI section.\n\n    } else if (finished) {",
+      "range": {
+        "startLine": 1694,
+        "startChar": 12,
+        "endLine": 1694,
+        "endChar": 56
+      },
+      "revId": "1a41fd4f41a6f81d1c58ff6d8e59cbe4098452bf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4482e586_5201aa6e",
+        "filename": "lmkd/lmkd.c",
+        "patchSetId": 20
+      },
+      "lineNbr": 1694,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-10-04T21:44:14Z",
+      "side": 1,
+      "message": "What I mean here is that the worst that can happen is that we will report some bogus kill duration time. curr_tm is not used for anything else here, just to report the kill time. Will describe in the comment.",
+      "parentUuid": "124dbecb_11d2af42",
       "range": {
         "startLine": 1694,
         "startChar": 12,
