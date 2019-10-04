@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3dc7aaa9_ff0518ec",
+        "filename": "lmkd/lmkd.c",
+        "patchSetId": 21
+      },
+      "lineNbr": 798,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-10-04T17:52:46Z",
+      "side": 1,
+      "message": "Add:\n\nline[ret] \u003d 0;\n\notherwise it is not null terminated for sscanf below",
+      "range": {
+        "startLine": 798,
+        "startChar": 4,
+        "endLine": 798,
+        "endChar": 5
+      },
+      "revId": "0575024144032d1d19f9f9fed4f40ba8f414a89e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f007103e_9cee00ad",
+        "filename": "lmkd/lmkd.c",
+        "patchSetId": 21
+      },
+      "lineNbr": 807,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-10-04T17:52:46Z",
+      "side": 1,
+      "message": "nit: can not be re-entered, but I know you only have a single thread so not a _real_ problem except for the memory \u0027wasted\u0027 permanently.\n\nTwo options I expect\n1) change to allow caller to supply buffer and length (can be on its stack).\n2) allocate a buffer here, and require the caller to free it when done.",
+      "range": {
+        "startLine": 807,
+        "startChar": 4,
+        "endLine": 807,
+        "endChar": 31
+      },
+      "revId": "0575024144032d1d19f9f9fed4f40ba8f414a89e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f53adb07_d3c6762c",
+        "filename": "lmkd/lmkd.c",
+        "patchSetId": 21
+      },
+      "lineNbr": 822,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-10-04T17:52:46Z",
+      "side": 1,
+      "message": "ditto (null termination)",
+      "range": {
+        "startLine": 822,
+        "startChar": 4,
+        "endLine": 822,
+        "endChar": 5
+      },
+      "revId": "0575024144032d1d19f9f9fed4f40ba8f414a89e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6835975b_ba6dfd6f",
+        "filename": "lmkd/lmkd.c",
+        "patchSetId": 21
+      },
+      "lineNbr": 875,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-10-04T17:52:46Z",
+      "side": 1,
+      "message": "If first suggestion in nit above, then:\n\nif (use_inkernel_interface) {\n    char line[LINE_MAX];\n\n    stats_store_taskname(params.pid, proc_get_name(params.pid, line, sizeof(line)), kpoll_info.poll_fd);\n    return;\n}\n\nYou might even be able to get away with not using a line buffer here, and just _borrow_ the path[80] buffer above to keep the stack tighter? I think the compiler optimizer is smart enough to overlap this line[LINE_MAX] buffer with all the above unused below variables above (not params, everything else), but not sure.",
+      "range": {
+        "startLine": 872,
+        "startChar": 32,
+        "endLine": 875,
+        "endChar": 5
+      },
+      "revId": "0575024144032d1d19f9f9fed4f40ba8f414a89e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
