@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e268379b_e8624876",
+        "filename": "libion/ion_4.19.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1120612
+      },
+      "writtenOn": "2019-10-04T17:58:17Z",
+      "side": 1,
+      "message": "I did not add the rest of the heap types here since they are already defined in ion.h. I had to rename ION_HEAP_TYPE_CUSTOM to ION_HEAP_TYPE_CUSTOM_EXT in this header since ION_HEAP_TYPE_CUSTOM is already defined in ion.h with a different value. Let me know if you can think of a nicer solution!",
+      "revId": "dbc80cc7efa2d816f8c3257f41138663516d4407",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
