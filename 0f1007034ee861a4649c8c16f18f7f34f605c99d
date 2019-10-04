@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "db11269c_48b82462",
+        "filename": "lmkd/lmkd.c",
+        "patchSetId": 22
+      },
+      "lineNbr": 1862,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-10-04T21:49:40Z",
+      "side": 1,
+      "message": "Need to double-check if we should not close the pidfd after process is killed.",
+      "range": {
+        "startLine": 1862,
+        "startChar": 20,
+        "endLine": 1862,
+        "endChar": 25
+      },
+      "revId": "0f1007034ee861a4649c8c16f18f7f34f605c99d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
