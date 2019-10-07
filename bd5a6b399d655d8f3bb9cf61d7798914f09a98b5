@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e4b01d50_807a3d27",
+        "filename": "init/mount_handler.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-10-07T15:31:54Z",
+      "side": 1,
+      "message": "Does not clear dev.mnt.part when umount\u0027d. rename value to mount_blk_value for maitnenance clarity. rename mount_prop to mount_blk_prop for clarity.\n\n    std::string mount_part_value, mount_blk_value;\n    if (add) {\n        mount_blk_value \u003d mount_part_value \u003d entry.blk_device.substr(strlen(devblock));\n. . .\n    }\n. . .\n    if (!mount_blk_value.empty() || !android::base:GetProperty(mount_blk_prop, \"\").empty()) {\n        property_set(mount_blk_prop, mount_blk_value);\n    }\n    if (!mount_part_value.empty() || !android::base::GetProperty(mount_part_prop, \"\").empty()) {\n        property_set(mount_part_prop, mount_part_value);\n    }\n\n[TL;DR]\n\nNow some random thoughts about the above logic and performance details. It is not required to make the following suggested changes as that would overload this change, such changes could be in followup CLs unrelated to the immediate requirements.\n\nA case can be made to adjust the existing GetProperty checks above to reduce all of the associated property_set calls, we recognize that there is currently a 4 property setting queue for the property socket, which can be overloaded easily, so we try to reduce the pressure, this pressure is not an issue for internal init operations such as we have here. But in the future will be when the property service is spawned to a separate thread (tomcherry@). I suggest a check for identity should be used to prevent calling property_set, but this logic does not accomplish that. The goal of the current check is apparently to not set the property to empty, if it already is, to prevent errant creation of a property node for \u0027do-not-add noise\u0027 on the uevent as we get several, and not one. Maybe a logic should be adjusted and simplified so that we do not doom the new (?) property service to failure:\n\n    auto old_value \u003d android::base::GetProperty(mount_blk_prop, \"\");\n    if (mount_blk_value !\u003d old_value) {\n        property_set(mount_blk_prop, mount_blk_value);\n    }\n    old_value \u003d android::base::GetProperty(mount_part_prop, \"\");\n    if (mount_part_value !\u003d old_value) {\n        property_set(mount_part_prop, mount_part_value);\n    }\n\nMaybe when tomcherry@ sets up the new property service he could explicitly and internally increase the /proc/sys/net/unix/max_dgram_qlen to 600 (which is the value set later, or too late?, in init.rc), provide that value to the socket setup as well (which defaults to 4) before instantiating the property socket, or setup the property_set operations to filter out non-changes (which may be wrong, a non-change triggers an \u0027on property\u0027, which may be desireable or expected elsewhere, but is not desireable here). The point being, the filter here is desireable to set this standard in the near future, so I suggest adding it, but that could change before we are finished with the additional features.\n\nAnother change for the future is to add explicit calls in __mount and __umount in fs_mgr/vold, keep this here to catch all others that do not call, so that this is mostly synchronous.\n\nUltimately, tomcherry@ should arbitrate what kind of logic (if any) exists here for property_set filtration based on his designed needs elsewhere.",
+      "range": {
+        "startLine": 74,
+        "startChar": 0,
+        "endLine": 76,
+        "endChar": 58
+      },
+      "revId": "bd5a6b399d655d8f3bb9cf61d7798914f09a98b5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "834c8780_3059d57c",
+        "filename": "init/mount_handler.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-10-07T15:31:54Z",
+      "side": 1,
+      "message": "nit: The first digit is the mmcblk interface driver instance. mmcblk storage devices instances are enumerated separately from the pool of mmcblk interface pool.",
+      "range": {
+        "startLine": 81,
+        "startChar": 0,
+        "endLine": 83,
+        "endChar": 21
+      },
+      "revId": "bd5a6b399d655d8f3bb9cf61d7798914f09a98b5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9fa7d627_f1f57ddf",
+        "filename": "init/mount_handler.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-10-07T15:31:54Z",
+      "side": 1,
+      "message": "will leave a value after umount, and will not be mangled if value logic hits early return (see above)",
+      "range": {
+        "startLine": 104,
+        "startChar": 3,
+        "endLine": 105,
+        "endChar": 1
+      },
+      "revId": "bd5a6b399d655d8f3bb9cf61d7798914f09a98b5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
