@@ -34,6 +34,24 @@
       "revId": "29d0e8936431479617b9576b8d741bf83f500702",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8d0436df_54628fd1",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-10-08T18:27:31Z",
+      "side": 1,
+      "message": "Is that actually reasonable to try to prevent?  Do we expect multi threaded programs to be mucking with stdio (while another thread logs)?  Do we expect people to write:\n\nclose(stdin_fileno);\nlog()...\n\nI checked the git history but this just appeared during a refactoring change, so I can\u0027t find any information about why it\u0027s here.",
+      "parentUuid": "cee642ad_08fb4d06",
+      "revId": "29d0e8936431479617b9576b8d741bf83f500702",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
