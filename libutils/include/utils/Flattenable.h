@@ -17,6 +17,9 @@
 #ifndef ANDROID_UTILS_FLATTENABLE_H
 #define ANDROID_UTILS_FLATTENABLE_H
 
+// DO NOT USE: please use parcelable instead
+// This code is deprecated and will not be supported via AIDL code gen. For data
+// to be sent over binder, please use parcelables.
 
 #include <stdint.h>
 #include <string.h>
