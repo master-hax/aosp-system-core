@@ -356,7 +356,7 @@ static bool CreateDmTableForOuterDevice(DmTable* table, const SnapshotStatus& st
 
 bool SnapshotManager::MapSnapshot(LockedFile* lock, const std::string& name,
                                   const std::string& base_device, const std::string& cow_device,
-                                  const std::chrono::milliseconds& timeout_ms,
+                                  const std::chrono::milliseconds& timeout_ms, bool writable,
                                   std::string* dev_path) {
     CHECK(lock);
     if (!EnsureImageManager()) return false;
@@ -400,7 +400,7 @@ bool SnapshotManager::MapSnapshot(LockedFile* lock, const std::string& name,
         return false;
     }
     uint64_t base_sectors = status.device_size() / kSectorSize;
-    bool need_direct_write = !!(status.device_size() - status.snapshot_size());
+    bool need_direct_write = writable && !!(status.device_size() - status.snapshot_size());
 
     auto& dm = DeviceMapper::Instance();
 
@@ -1408,7 +1408,7 @@ bool SnapshotManager::MapPartitionWithSnapshot(LockedFile* lock,
     if (remaining_time.count() < 0) return false;
 
     if (!MapSnapshot(lock, params.GetPartitionName(), base_device, cow_device, remaining_time,
-                     path)) {
+                     params.force_writable, path)) {
         LOG(ERROR) << "Could not map snapshot for partition: " << params.GetPartitionName();
         return false;
     }

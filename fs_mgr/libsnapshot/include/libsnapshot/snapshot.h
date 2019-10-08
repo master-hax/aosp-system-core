@@ -282,7 +282,7 @@ class SnapshotManager final {
     // exist on return.
     bool MapSnapshot(LockedFile* lock, const std::string& name, const std::string& base_device,
                      const std::string& cow_device, const std::chrono::milliseconds& timeout_ms,
-                     std::string* dev_path);
+                     bool writable, std::string* dev_path);
 
     // Map a COW image that was previous created with CreateCowImage.
     bool MapCowImage(const std::string& name, const std::chrono::milliseconds& timeout_ms);
