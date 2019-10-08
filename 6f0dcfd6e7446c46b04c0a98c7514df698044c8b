@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "3e2dc08a_7011b90a",
+        "filename": "fs_mgr/libsnapshot/partition_cow_creator.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2019-10-08T20:04:32Z",
+      "side": 1,
+      "message": "(by that I mean, just assume there is one operation that modifies all blocks, and let the logic below handles this case)",
+      "parentUuid": "af54a448_03ea321e",
+      "range": {
+        "startLine": 73,
+        "startChar": 0,
+        "endLine": 74,
+        "endChar": 47
+      },
+      "revId": "6f0dcfd6e7446c46b04c0a98c7514df698044c8b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "d1ddf20b_eb1de270",
         "filename": "fs_mgr/libsnapshot/partition_cow_creator.cpp",
         "patchSetId": 1
