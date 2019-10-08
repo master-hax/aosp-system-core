@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "43726248_04e6c6c5",
+        "filename": "libnativeloader/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-10-08T17:07:18Z",
+      "side": 1,
+      "message": "(off topic, but... is the point of this to _exclude_ libdl? otherwise this seems unnecessary?)",
+      "range": {
+        "startLine": 92,
+        "startChar": 4,
+        "endLine": 95,
+        "endChar": 6
+      },
+      "revId": "a65f314e176dd5386e67cf9fb655dae7d7e84bf1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
