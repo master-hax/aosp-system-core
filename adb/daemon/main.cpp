@@ -51,6 +51,7 @@
 #include "adb_auth.h"
 #include "adb_listeners.h"
 #include "adb_utils.h"
+#include "adb_wifi.h"
 #include "transport.h"
 
 #include "mdns.h"
@@ -234,6 +235,9 @@ int adbd_main(int server_port) {
 
     // adbd_auth_init will spawn a thread, so we need to defer it until after selinux transitions.
     adbd_auth_init();
+    // adbd_wifi_init will spawn a thread, so we need to defer it until after
+    // selinux transitions.
+    adbd_wifi_init();
 
     bool is_usb = false;
 
