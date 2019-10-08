@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a74c0c72_73010aff",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-10-08T04:53:23Z",
+      "side": 1,
+      "message": "just turn this warning off, at least for this project? seems like it\u0027s not actually a useful warning, and we\u0027ve turned off similar \"strict compatibility\" stuff whenever it\u0027s gotten in the way.\n\n(should this one just be off globally?)",
+      "revId": "7442eb666bce8b8070a3c5f25e1836cc93b4ead4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
