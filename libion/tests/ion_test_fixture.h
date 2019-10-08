@@ -19,7 +19,6 @@
 
 #include <gtest/gtest.h>
 #include <vector>
-#include "ion_4.12.h"
 
 using ::testing::Test;
 

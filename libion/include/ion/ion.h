@@ -21,8 +21,9 @@
 #ifndef __SYS_CORE_ION_H
 #define __SYS_CORE_ION_H
 
-#include <sys/types.h>
 #include <linux/ion.h>
+#include <linux/ion_4.19.h>
+#include <sys/types.h>
 
 __BEGIN_DECLS
 
