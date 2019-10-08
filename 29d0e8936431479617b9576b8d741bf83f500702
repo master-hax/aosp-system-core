@@ -16,6 +16,24 @@
       "revId": "29d0e8936431479617b9576b8d741bf83f500702",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cee642ad_08fb4d06",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-10-08T18:19:00Z",
+      "side": 1,
+      "message": "i guess the worry is that if you log at an inopportune moment, we\u0027ll squat on your stdin. but then why protect stdin but not stdout/stderr?",
+      "parentUuid": "2987da0d_b4ad5221",
+      "revId": "29d0e8936431479617b9576b8d741bf83f500702",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
