@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2987da0d_b4ad5221",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-10-08T17:22:57Z",
+      "side": 1,
+      "message": "We don\u0027t need this, right?  I can\u0027t imagine a case where this makes sense.  It\u0027s not like we check all other open() or socket() calls to make sure they\u0027re not stdio.",
+      "revId": "29d0e8936431479617b9576b8d741bf83f500702",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
