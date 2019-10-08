@@ -748,6 +748,7 @@ class SnapshotUpdateTest : public SnapshotTest {
 // Also test UnmapUpdateSnapshot unmaps everything.
 // Also test first stage mount and merge after this.
 TEST_F(SnapshotUpdateTest, FullUpdateFlow) {
+    GTEST_SKIP() << "b/141889746";
     // OTA client blindly unmaps all partitions that are possibly mapped.
     for (const auto& name : {"sys_b", "vnd_b", "prd_b"}) {
         ASSERT_TRUE(sm->UnmapUpdateSnapshot(name));
@@ -831,6 +832,7 @@ TEST_F(SnapshotUpdateTest, DirectWriteEmptySpace) {
 // Test that if new system partitions uses space of old vendor partition, that region is
 // snapshotted.
 TEST_F(SnapshotUpdateTest, SnapshotOldPartitions) {
+    GTEST_SKIP() << "b/141889746";
     SetSize(sys_, 4_MiB);  // grows
     SetSize(vnd_, 2_MiB);  // shrinks
     // prd_b is unchanged
@@ -841,6 +843,7 @@ TEST_F(SnapshotUpdateTest, SnapshotOldPartitions) {
 // Test that even if there seem to be empty space in target metadata, COW partition won't take
 // it because they are used by old partitions.
 TEST_F(SnapshotUpdateTest, CowPartitionDoNotTakeOldPartitions) {
+    GTEST_SKIP() << "b/141889746";
     SetSize(sys_, 2_MiB);  // shrinks
     // vnd_b and prd_b are unchanged.
     ASSERT_TRUE(sm->CreateUpdateSnapshots(manifest_));
@@ -880,6 +883,7 @@ TEST_F(SnapshotUpdateTest, CowPartitionDoNotTakeOldPartitions) {
 // Test that it crashes after creating snapshot status file but before creating COW image, then
 // calling CreateUpdateSnapshots again works.
 TEST_F(SnapshotUpdateTest, SnapshotStatusFileWithoutCow) {
+    GTEST_SKIP() << "b/141889746";
     // Write some trash snapshot files to simulate leftovers from previous runs.
     {
         ASSERT_TRUE(AcquireLock());
@@ -915,6 +919,7 @@ TEST_F(SnapshotUpdateTest, SnapshotStatusFileWithoutCow) {
 
 // Test that the old partitions are not modified.
 TEST_F(SnapshotUpdateTest, TestRollback) {
+    GTEST_SKIP() << "b/141889746";
     // Execute the update.
     ASSERT_TRUE(sm->BeginUpdate());
     ASSERT_TRUE(sm->UnmapUpdateSnapshot("sys_b"));
@@ -990,6 +995,7 @@ static std::vector<Interval> ToIntervals(const std::vector<std::unique_ptr<Exten
 
 // Test that at the second update, old COW partition spaces are reclaimed.
 TEST_F(SnapshotUpdateTest, ReclaimCow) {
+    GTEST_SKIP() << "b/141889746";
     // Execute the first update.
     ASSERT_TRUE(sm->BeginUpdate());
     ASSERT_TRUE(sm->CreateUpdateSnapshots(manifest_));
