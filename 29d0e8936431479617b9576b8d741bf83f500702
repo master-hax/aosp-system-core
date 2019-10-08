@@ -52,6 +52,24 @@
       "revId": "29d0e8936431479617b9576b8d741bf83f500702",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a0f329de_c7d6f5ef",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-10-08T18:59:17Z",
+      "side": 1,
+      "message": "toybox does stuff like this, but mainly because toybox has to deal with various special cases surrounding stdin, and doesn\u0027t want to confuse \"i was run pointing at stdin\" with \"i was run with a filename\". i don\u0027t think it makes sense in general, though. folks who\u0027re deliberately messing around with the standard streams should avoid threads and avoid logging.",
+      "parentUuid": "8d0436df_54628fd1",
+      "revId": "29d0e8936431479617b9576b8d741bf83f500702",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
