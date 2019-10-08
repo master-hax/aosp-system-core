@@ -356,7 +356,7 @@ static bool CreateDmTableForOuterDevice(DmTable* table, const SnapshotStatus& st
 
 bool SnapshotManager::MapSnapshot(LockedFile* lock, const std::string& name,
                                   const std::string& base_device, const std::string& cow_device,
-                                  const std::chrono::milliseconds& timeout_ms,
+                                  const std::chrono::milliseconds& timeout_ms, bool writable,
                                   std::string* dev_path) {
     CHECK(lock);
     if (!EnsureImageManager()) return false;
@@ -400,7 +400,7 @@ bool SnapshotManager::MapSnapshot(LockedFile* lock, const std::string& name,
         return false;
     }
     uint64_t base_sectors = status.device_size() / kSectorSize;
-    bool need_direct_write = !!(status.device_size() - status.snapshot_size());
+    bool need_direct_write = writable && !!(status.device_size() - status.snapshot_size());
 
     auto& dm = DeviceMapper::Instance();
 
@@ -623,16 +623,15 @@ bool SnapshotManager::SwitchSnapshotToMerge(LockedFile* lock, const std::string&
 
     // After this, we return true because we technically did switch to a merge
     // target. Everything else we do here is just informational.
-    auto dm_name = GetSnapshotDeviceName(name, status);
-    if (!RewriteSnapshotDeviceTable(dm_name)) {
+    if (!RewriteSnapshotDeviceTable(name)) {
         return false;
     }
 
     status.set_state(SnapshotState::MERGING);
 
     DmTargetSnapshot::Status dm_status;
-    if (!QuerySnapshotStatus(dm_name, nullptr, &dm_status)) {
-        LOG(ERROR) << "Could not query merge status for snapshot: " << dm_name;
+    if (!QuerySnapshotStatus(name, nullptr, &dm_status)) {
+        LOG(ERROR) << "Could not query merge status for snapshot: " << name;
     }
     status.set_sectors_allocated(dm_status.sectors_allocated);
     status.set_metadata_sectors(dm_status.metadata_sectors);
@@ -868,9 +867,7 @@ UpdateState SnapshotManager::CheckTargetMergeState(LockedFile* lock, const std::
         return UpdateState::MergeFailed;
     }
 
-    std::string dm_name = GetSnapshotDeviceName(name, snapshot_status);
-
-    if (!IsSnapshotDevice(dm_name)) {
+    if (!IsSnapshotDevice(name)) {
         if (IsCancelledSnapshot(name)) {
             DeleteSnapshot(lock, name);
             return UpdateState::Cancelled;
@@ -887,7 +884,7 @@ UpdateState SnapshotManager::CheckTargetMergeState(LockedFile* lock, const std::
             return UpdateState::MergeCompleted;
         }
 
-        LOG(ERROR) << "Expected snapshot or snapshot-merge for device: " << dm_name;
+        LOG(ERROR) << "Expected snapshot or snapshot-merge for device: " << name;
         return UpdateState::MergeFailed;
     }
 
@@ -896,7 +893,7 @@ UpdateState SnapshotManager::CheckTargetMergeState(LockedFile* lock, const std::
 
     std::string target_type;
     DmTargetSnapshot::Status status;
-    if (!QuerySnapshotStatus(dm_name, &target_type, &status)) {
+    if (!QuerySnapshotStatus(name, &target_type, &status)) {
         return UpdateState::MergeFailed;
     }
     if (target_type != "snapshot-merge") {
@@ -974,21 +971,20 @@ void SnapshotManager::AcknowledgeMergeFailure() {
 
 bool SnapshotManager::OnSnapshotMergeComplete(LockedFile* lock, const std::string& name,
                                               const SnapshotStatus& status) {
-    auto dm_name = GetSnapshotDeviceName(name, status);
-    if (IsSnapshotDevice(dm_name)) {
+    if (IsSnapshotDevice(name)) {
         // We are extra-cautious here, to avoid deleting the wrong table.
         std::string target_type;
         DmTargetSnapshot::Status dm_status;
-        if (!QuerySnapshotStatus(dm_name, &target_type, &dm_status)) {
+        if (!QuerySnapshotStatus(name, &target_type, &dm_status)) {
             return false;
         }
         if (target_type != "snapshot-merge") {
             LOG(ERROR) << "Unexpected target type " << target_type
-                       << " for snapshot device: " << dm_name;
+                       << " for snapshot device: " << name;
             return false;
         }
         if (dm_status.sectors_allocated != dm_status.metadata_sectors) {
-            LOG(ERROR) << "Merge is unexpectedly incomplete for device " << dm_name;
+            LOG(ERROR) << "Merge is unexpectedly incomplete for device " << name;
             return false;
         }
         if (!CollapseSnapshotDevice(name, status)) {
@@ -1009,23 +1005,21 @@ bool SnapshotManager::OnSnapshotMergeComplete(LockedFile* lock, const std::strin
 bool SnapshotManager::CollapseSnapshotDevice(const std::string& name,
                                              const SnapshotStatus& status) {
     auto& dm = DeviceMapper::Instance();
-    auto dm_name = GetSnapshotDeviceName(name, status);
 
     // Verify we have a snapshot-merge device.
     DeviceMapper::TargetInfo target;
-    if (!GetSingleTarget(dm_name, TableQuery::Table, &target)) {
+    if (!GetSingleTarget(name, TableQuery::Table, &target)) {
         return false;
     }
     if (DeviceMapper::GetTargetType(target.spec) != "snapshot-merge") {
         // This should be impossible, it was checked earlier.
-        LOG(ERROR) << "Snapshot device has invalid target type: " << dm_name;
+        LOG(ERROR) << "Snapshot device has invalid target type: " << name;
         return false;
     }
 
     std::string base_device, cow_device;
     if (!DmTargetSnapshot::GetDevicesFromParams(target.data, &base_device, &cow_device)) {
-        LOG(ERROR) << "Could not parse snapshot device " << dm_name
-                   << " parameters: " << target.data;
+        LOG(ERROR) << "Could not parse snapshot device " << name << " parameters: " << target.data;
         return false;
     }
 
@@ -1034,42 +1028,6 @@ bool SnapshotManager::CollapseSnapshotDevice(const std::string& name,
         LOG(ERROR) << "Snapshot " << name
                    << " size is not sector aligned: " << status.snapshot_size();
         return false;
-    }
-
-    if (dm_name != name) {
-        // We've derived the base device, but we actually need to replace the
-        // table of the outermost device. Do a quick verification that this
-        // device looks like we expect it to.
-        std::vector<DeviceMapper::TargetInfo> outer_table;
-        if (!dm.GetTableInfo(name, &outer_table)) {
-            LOG(ERROR) << "Could not validate outer snapshot table: " << name;
-            return false;
-        }
-        if (outer_table.size() != 2) {
-            LOG(ERROR) << "Expected 2 dm-linear targets for table " << name
-                       << ", got: " << outer_table.size();
-            return false;
-        }
-        for (const auto& target : outer_table) {
-            auto target_type = DeviceMapper::GetTargetType(target.spec);
-            if (target_type != "linear") {
-                LOG(ERROR) << "Outer snapshot table may only contain linear targets, but " << name
-                           << " has target: " << target_type;
-                return false;
-            }
-        }
-        if (outer_table[0].spec.length != snapshot_sectors) {
-            LOG(ERROR) << "dm-snapshot " << name << " should have " << snapshot_sectors
-                       << " sectors, got: " << outer_table[0].spec.length;
-            return false;
-        }
-        uint64_t expected_device_sectors = status.device_size() / kSectorSize;
-        uint64_t actual_device_sectors = outer_table[0].spec.length + outer_table[1].spec.length;
-        if (expected_device_sectors != actual_device_sectors) {
-            LOG(ERROR) << "Outer device " << name << " should have " << expected_device_sectors
-                       << " sectors, got: " << actual_device_sectors;
-            return false;
-        }
     }
 
     uint32_t slot = SlotNumberForSlotSuffix(device_->GetSlotSuffix());
@@ -1086,19 +1044,7 @@ bool SnapshotManager::CollapseSnapshotDevice(const std::string& name,
         return false;
     }
 
-    // Note: we are replacing the *outer* table here, so we do not use dm_name.
     if (!dm.LoadTableAndActivate(name, table)) {
-        return false;
-    }
-
-    // Attempt to delete the snapshot device if one still exists. Nothing
-    // should be depending on the device, and device-mapper should have
-    // flushed remaining I/O. We could in theory replace with dm-zero (or
-    // re-use the table above), but for now it's better to know why this
-    // would fail.
-    if (dm_name != name && !dm.DeleteDeviceIfExists(dm_name)) {
-        LOG(ERROR) << "Unable to delete snapshot device " << dm_name << ", COW cannot be "
-                   << "reclaimed until after reboot.";
         return false;
     }
 
@@ -1354,11 +1300,14 @@ bool SnapshotManager::MapPartitionWithSnapshot(LockedFile* lock,
         }
     } while (0);
 
+    // Params for creating the base device.
+    CreateLogicalPartitionParams base_params = params;
+
     if (live_snapshot_status.has_value()) {
         // dm-snapshot requires the base device to be writable.
-        params.force_writable = true;
+        base_params.force_writable = true;
         // Map the base device with a different name to avoid collision.
-        params.device_name = GetBaseDeviceName(params.GetPartitionName());
+        base_params.device_name = GetBaseDeviceName(base_params.GetPartitionName());
     }
 
     AutoDeviceList created_devices;
@@ -1368,12 +1317,12 @@ bool SnapshotManager::MapPartitionWithSnapshot(LockedFile* lock,
     // partition that this logical partition occupies.
     auto& dm = DeviceMapper::Instance();
     std::string base_path;
-    if (!CreateLogicalPartition(params, &base_path)) {
-        LOG(ERROR) << "Could not create logical partition " << params.GetPartitionName()
-                   << " as device " << params.GetDeviceName();
+    if (!CreateLogicalPartition(base_params, &base_path)) {
+        LOG(ERROR) << "Could not create logical partition " << base_params.GetPartitionName()
+                   << " as device " << base_params.GetDeviceName();
         return false;
     }
-    created_devices.EmplaceBack<AutoUnmapDevice>(&dm, params.GetDeviceName());
+    created_devices.EmplaceBack<AutoUnmapDevice>(&dm, base_params.GetDeviceName());
 
     if (!live_snapshot_status.has_value()) {
         *path = base_path;
@@ -1384,8 +1333,8 @@ bool SnapshotManager::MapPartitionWithSnapshot(LockedFile* lock,
     // We don't have ueventd in first-stage init, so use device major:minor
     // strings instead.
     std::string base_device;
-    if (!dm.GetDeviceString(params.GetDeviceName(), &base_device)) {
-        LOG(ERROR) << "Could not determine major/minor for: " << params.GetDeviceName();
+    if (!dm.GetDeviceString(base_params.GetDeviceName(), &base_device)) {
+        LOG(ERROR) << "Could not determine major/minor for: " << base_params.GetDeviceName();
         return false;
     }
 
@@ -1408,7 +1357,7 @@ bool SnapshotManager::MapPartitionWithSnapshot(LockedFile* lock,
     if (remaining_time.count() < 0) return false;
 
     if (!MapSnapshot(lock, params.GetPartitionName(), base_device, cow_device, remaining_time,
-                     path)) {
+                     params.force_writable, path)) {
         LOG(ERROR) << "Could not map snapshot for partition: " << params.GetPartitionName();
         return false;
     }
@@ -1707,14 +1656,6 @@ bool SnapshotManager::Truncate(LockedFile* file) {
         return false;
     }
     return true;
-}
-
-std::string SnapshotManager::GetSnapshotDeviceName(const std::string& snapshot_name,
-                                                   const SnapshotStatus& status) {
-    if (status.device_size() != status.snapshot_size()) {
-        return GetSnapshotExtraDeviceName(snapshot_name);
-    }
-    return snapshot_name;
 }
 
 bool SnapshotManager::EnsureImageManager() {

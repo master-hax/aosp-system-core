@@ -282,7 +282,7 @@ class SnapshotManager final {
     // exist on return.
     bool MapSnapshot(LockedFile* lock, const std::string& name, const std::string& base_device,
                      const std::string& cow_device, const std::chrono::milliseconds& timeout_ms,
-                     std::string* dev_path);
+                     bool writable, std::string* dev_path);
 
     // Map a COW image that was previous created with CreateCowImage.
     bool MapCowImage(const std::string& name, const std::chrono::milliseconds& timeout_ms);
@@ -354,12 +354,6 @@ class SnapshotManager final {
 
     std::string GetSnapshotBootIndicatorPath();
     void RemoveSnapshotBootIndicator();
-
-    // Return the name of the device holding the "snapshot" or "snapshot-merge"
-    // target. This may not be the final device presented via MapSnapshot(), if
-    // for example there is a linear segment.
-    std::string GetSnapshotDeviceName(const std::string& snapshot_name,
-                                      const SnapshotStatus& status);
 
     // Map the base device, COW devices, and snapshot device.
     bool MapPartitionWithSnapshot(LockedFile* lock, CreateLogicalPartitionParams params,
