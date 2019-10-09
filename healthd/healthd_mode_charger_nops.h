@@ -16,4 +16,6 @@
 
 #pragma once
 
+#include <android/hardware/health/2.1/IHealth.h>
+
 int healthd_charger_nops(int argc, char** argv);
