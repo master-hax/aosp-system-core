@@ -18,4 +18,10 @@
 
 #include <android/hardware/health/2.1/IHealth.h>
 
-int healthd_charger_nops(int argc, char** argv);
+namespace android {
+namespace hardware {
+namespace health {
+sp<V2_1::IHealth> GetPassthroughHealth();
+}  // namespace health
+}  // namespace hardware
+}  // namespace android
