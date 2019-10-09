@@ -27,14 +27,17 @@
 #include <android-base/logging.h>
 #include <android-base/scopeguard.h>
 #include <android-base/stringprintf.h>
+#include <chrono>
+#include <thread>
 
 #include "init.h"
 #include "service.h"
 #include "service_list.h"
 
-using android::base::StringPrintf;
 using android::base::boot_clock;
 using android::base::make_scope_guard;
+using android::base::StringPrintf;
+using android::base::Timer;
 
 namespace android {
 namespace init {
@@ -106,6 +109,29 @@ static bool ReapOneProcess() {
 void ReapAnyOutstandingChildren() {
     while (ReapOneProcess()) {
     }
+}
+
+void WaitToBeReaped(const std::vector<pid_t>& pids, std::chrono::milliseconds timeout) {
+    Timer t;
+    std::vector<pid_t> alive_pids(pids.begin(), pids.end());
+    while (!alive_pids.empty() && t.duration() < timeout) {
+        ReapOneProcess();
+        std::remove_if(alive_pids.begin(), alive_pids.end(), [](pid_t pid) {
+            pid_t r = waitpid(pid, nullptr, WNOHANG);
+            if (r < 0) {
+                if (errno == ECHILD) {
+                    // This pid was already reaped by ReapAnyOutstandingChilder, we can remove it.
+                    r = pid;
+                } else {
+                    PLOG(ERROR) << "Failed waiting for pid " << pid;
+                }
+            }
+            return r > 0;
+        });
+        std::this_thread::sleep_for(50ms);
+    }
+    LOG(INFO) << "Waiting for " << pids.size() << " pids to be reaped took " << t << " with "
+              << alive_pids.size() << " of them still running";
 }
 
 }  // namespace init

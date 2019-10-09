@@ -612,6 +612,17 @@ void Service::Stop() {
     StopOrReset(SVC_DISABLED);
 }
 
+void Service::StopBySending(int signal) {
+    if (signal == SIGTERM) {
+        Terminate();
+    } else if (signal == SIGKILL) {
+        Stop();
+    } else {
+        LOG(WARNING) << "Unsupported signal " << signal << " defaulting to SIGKILL";
+        Stop();
+    }
+}
+
 void Service::Terminate() {
     flags_ &= ~(SVC_RESTARTING | SVC_DISABLED_START);
     flags_ |= SVC_DISABLED;
