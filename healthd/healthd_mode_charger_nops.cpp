@@ -16,45 +16,63 @@
 
 #include "healthd_mode_charger_nops.h"
 
-#include <health2/Health.h>
-#include <healthd/healthd.h>
+#include <android/hardware/health/2.0/IHealthInfoCallback.h>
+#include <android-base/logging.h>
+#include <health2impl/HalHealthLoop.h>
 
-#include <stdlib.h>
-#include <string.h>
+using ::android::sp;
+using ::android::hardware::Return;
+using ::android::hardware::Void;
+using ::android::hardware::health::V2_1::IHealth;
+using IHealth_2_0 = ::android::hardware::health::V2_0::IHealth;
+using ::android::hardware::health::V2_1::implementation::HalHealthLoop;
 
-using namespace android;
+namespace android {
 
-// main healthd loop
-extern int healthd_main(void);
+class ChargerNops : public ::android::hardware::health::V2_1::implementation::HalHealthLoop,
+                    public ::android::hardware::health::V2_0::IHealthInfoCallback {
+  public:
+    using HealthInfo_2_0 = android::hardware::health::V2_0::HealthInfo;
 
-// NOPs for modes that need no special action
+    ChargerNops(const sp<android::hardware::health::V2_1::IHealth>& service)
+        : HalHealthLoop("charger", service) {}
 
-static void healthd_mode_nop_init(struct healthd_config* config);
-static int healthd_mode_nop_preparetowait(void);
-static void healthd_mode_nop_heartbeat(void);
-static void healthd_mode_nop_battery_update(struct android::BatteryProperties* props);
+    // IHealthInfoCallback overrides.
+    android::hardware::Return<void> healthInfoChanged(const HealthInfo_2_0& health_info) override;
 
-static struct healthd_mode_ops healthd_nops = {
-        .init = healthd_mode_nop_init,
-        .preparetowait = healthd_mode_nop_preparetowait,
-        .heartbeat = healthd_mode_nop_heartbeat,
-        .battery_update = healthd_mode_nop_battery_update,
+  protected:
+    virtual void Init(struct healthd_config* config) override;
+
+    bool charger_connected_ = false;
 };
 
-static void healthd_mode_nop_init(struct healthd_config* config) {
-    using android::hardware::health::V2_0::implementation::Health;
-    Health::initInstance(config);
+// See Charger::healthInfoChanged.
+Return<void> ChargerNops::healthInfoChanged(const HealthInfo_2_0& health_info) {
+    const auto& props = health_info.legacy;
+    charger_connected_ =
+            props.chargerAcOnline || props.chargerUsbOnline || props.chargerWirelessOnline;
+
+    // adjust uevent / wakealarm periods
+    SetChargerOnline(charger_connected_);
+    return Void();
 }
 
-static int healthd_mode_nop_preparetowait(void) {
-    return -1;
+void ChargerNops::Init(struct healthd_config* config) {
+    // Initialize HealthLoop and retrieve healthd_config from the existing health HAL.
+    HalHealthLoop::Init(config);
+    // HealthLoop invokes HealthHalLoop::ScheduleBatteryUpdate() periodically, which calls
+    // service()->update(). Register |this| as a callback to service() so that healthInfoChanged()
+    // is invoked periodically.
+    service()->registerCallback(this);
 }
 
-static void healthd_mode_nop_heartbeat(void) {}
-
-static void healthd_mode_nop_battery_update(struct android::BatteryProperties* /*props*/) {}
+}  // namespace android
 
 int healthd_charger_nops(int /* argc */, char** /* argv */) {
-    healthd_mode_ops = &healthd_nops;
-    return healthd_main();
+    sp<IHealth> passthrough =
+            IHealth::castFrom(IHealth_2_0::getService("default", true /* getStub */));
+    CHECK(passthrough != nullptr)
+            << "Cannot find passthrough implementation of health 2.1 HAL for instance default";
+    sp<android::ChargerNops> charger = new android::ChargerNops(passthrough);
+    return charger->StartLoop();
 }
