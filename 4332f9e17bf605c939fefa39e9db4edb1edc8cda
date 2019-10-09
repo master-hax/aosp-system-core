@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "05803808_88aaa0e4",
+        "filename": "init/reboot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 469,
+      "author": {
+        "id": 1305591
+      },
+      "writtenOn": "2019-10-09T16:48:27Z",
+      "side": 1,
+      "message": "s/sending/sending signal",
+      "range": {
+        "startLine": 469,
+        "startChar": 65,
+        "endLine": 469,
+        "endChar": 73
+      },
+      "revId": "4332f9e17bf605c939fefa39e9db4edb1edc8cda",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "614f7718_9ca20a73",
+        "filename": "init/reboot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 492,
+      "author": {
+        "id": 1305591
+      },
+      "writtenOn": "2019-10-09T16:48:27Z",
+      "side": 1,
+      "message": "misbehaving",
+      "range": {
+        "startLine": 492,
+        "startChar": 36,
+        "endLine": 492,
+        "endChar": 48
+      },
+      "revId": "4332f9e17bf605c939fefa39e9db4edb1edc8cda",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
