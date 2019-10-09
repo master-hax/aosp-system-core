@@ -75,6 +75,7 @@ class Service {
             const std::vector<std::string>& args);
 
     bool IsRunning() { return (flags_ & SVC_RUNNING) != 0; }
+    bool IsEnabled() { return (flags_ & SVC_DISABLED) == 0; }
     Result<void> ExecStart();
     Result<void> Start();
     Result<void> StartIfNotDisabled();
@@ -93,6 +94,10 @@ class Service {
     void UnSetExec() {
         is_exec_service_running_ = false;
         flags_ &= ~SVC_EXEC;
+    }
+    void SetExec() {
+        is_exec_service_running_ = true;
+        flags_ |= SVC_EXEC;
     }
     void AddReapCallback(std::function<void(const siginfo_t& siginfo)> callback) {
         reap_callbacks_.emplace_back(std::move(callback));
