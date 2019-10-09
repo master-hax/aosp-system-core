@@ -45,3 +45,9 @@ cc_test {
         "-Wno-sign-compare",
     ],
 }
+
+cc_library_static {
+    name: "libsync_vendor",
+    vendor: true,
+    defaults: ["libsync_defaults"],
+}

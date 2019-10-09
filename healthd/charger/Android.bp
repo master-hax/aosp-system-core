@@ -1,0 +1,66 @@
+// Default implementation of vendor charger. Uses default implementation
+// of health HAL. A device may install a different charger that links to the
+// correct implementation.
+
+cc_binary {
+    name: "charger_vendor",
+    stem: "charger",
+    vendor: true,
+    init_rc: ["charger_vendor.rc"],
+    srcs: [
+        "healthd_mode_charger.cpp",
+        "charger_vendor.cpp",
+        "AnimationParser.cpp",
+    ],
+    local_include_dirs: ["include"],
+
+    shared_libs: [
+        "android.hardware.health@2.0",
+        "android.hardware.health@2.1",
+        "libbase",
+        "libcutils",
+        "libhidlbase",
+        "libjsoncpp",
+        "liblog",
+        "libpng",
+        "libprocessgroup",
+        "libutils",
+    ],
+
+    static_libs: [
+        "libbatterymonitor",
+        "libcharger_sysprop",
+        "libhealthd_draw",
+        "libhealthloop",
+        "libhealth2impl",
+        "libminui_vendor",
+        "libsuspend_vendor",
+    ],
+}
+
+// Default implementation of recovery charger. Uses default implementation
+// of health HAL. A device may install a different charger that links to the
+// correct implementation.
+cc_binary {
+    name: "charger_recovery",
+    stem: "charger",
+    recovery: true,
+    init_rc: ["charger_recovery.rc"],
+    srcs: [
+        "charger_recovery.cpp",
+    ],
+    local_include_dirs: ["include"],
+
+    shared_libs: [
+        "android.hardware.health@2.1",
+        "libbase",
+        "libutils",
+    ],
+
+    static_libs: [
+        "libhealthloop",
+        "libhealth2impl",
+        "libhidlbase",
+    ]
+}
+

@@ -1,7 +1,7 @@
 // Copyright 2012 The Android Open Source Project
 
-cc_library {
-    name: "libsuspend",
+cc_defaults {
+    name: "libsuspend_defaults",
     srcs: [
         "autosuspend.c",
         "autosuspend_wakeup_count.cpp",
@@ -17,4 +17,15 @@ cc_library {
         "-Werror",
         // "-DLOG_NDEBUG=0",
     ],
+}
+
+cc_library {
+    name: "libsuspend",
+    defaults: ["libsuspend_defaults"],
+}
+
+cc_library_static {
+    name: "libsuspend_vendor",
+    vendor: true,
+    defaults: ["libsuspend_defaults"],
 }
