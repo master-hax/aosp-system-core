@@ -93,6 +93,30 @@ pass_test
     EXPECT_TRUE(expect_true);
 }
 
+TEST(init, WrongEventTrigger) {
+    std::string init_script =
+            R"init(
+on boot:
+pass_test
+)init";
+
+    TemporaryFile tf;
+    ASSERT_TRUE(tf.fd != -1);
+    ASSERT_TRUE(android::base::WriteStringToFd(init_script, tf.fd));
+
+    ActionManager am;
+    ServiceList service_list;
+
+    Parser parser;
+    parser.AddSectionParser("service",
+                            std::make_unique<ServiceParser>(&service_list, nullptr, std::nullopt));
+    parser.AddSectionParser("on", std::make_unique<ActionParser>(&am, nullptr));
+    parser.AddSectionParser("import", std::make_unique<ImportParser>(&parser));
+
+    ASSERT_TRUE(parser.ParseConfig(tf.path));
+    ASSERT_EQ(1u, parser.parse_error_count());
+}
+
 TEST(init, EventTriggerOrder) {
     std::string init_script =
         R"init(
