@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9ee7d539_05519b15",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-10-10T21:25:04Z",
+      "side": 1,
+      "message": "a huge map, or a huge number of maps? (i don\u0027t see why one huge map would make a difference?)",
+      "range": {
+        "startLine": 9,
+        "startChar": 32,
+        "endLine": 9,
+        "endChar": 42
+      },
+      "revId": "d39c75a1178244844edfcfe2975c819d64273c9a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ecea0e54_8328e706",
+        "filename": "libmeminfo/include/meminfo/procmeminfo.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-10-10T21:25:04Z",
+      "side": 1,
+      "message": "this seems like a scary API to expose (since it hands out the *actual* vector).\n\ndo you even need this? why can\u0027t your caller just call FillInVmaStats on the Vma? it doesn\u0027t need to be able to modify the vector too?",
+      "revId": "d39c75a1178244844edfcfe2975c819d64273c9a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
