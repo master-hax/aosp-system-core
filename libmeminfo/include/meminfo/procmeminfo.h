@@ -47,6 +47,11 @@ class ProcMemInfo final {
 
     // Same as Maps() except, do not read the usage stats for each map.
     const std::vector<Vma>& MapsWithoutUsageStats();
+    std::vector<Vma>& MapsWithoutUsageStatsUpdateable();
+
+    // If MapsWithoutUsageStats was called, this function will fill in
+    // usage stats for this single vma.
+    bool FillInVmaStats(Vma& vma);
 
     // Collect all 'vma' or 'maps' from /proc/<pid>/smaps and store them in 'maps_'. Returns a
     // constant reference to the vma vector after the collection is done.
