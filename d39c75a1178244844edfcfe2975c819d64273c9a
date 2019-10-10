@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "7272f397_03abb51b",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2019-10-10T22:19:51Z",
+      "side": 1,
+      "message": "Nope, a huge map. It would be the same if there were a lot of maps, but a single really large map would be really bad since it requires reading the page map data for the entire map.\n\nThis is similar to the issue in b/135694447.",
+      "parentUuid": "9ee7d539_05519b15",
+      "range": {
+        "startLine": 9,
+        "startChar": 32,
+        "endLine": 9,
+        "endChar": 42
+      },
+      "revId": "d39c75a1178244844edfcfe2975c819d64273c9a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "ecea0e54_8328e706",
         "filename": "libmeminfo/include/meminfo/procmeminfo.h",
         "patchSetId": 1
@@ -36,6 +60,24 @@
       "writtenOn": "2019-10-10T21:25:04Z",
       "side": 1,
       "message": "this seems like a scary API to expose (since it hands out the *actual* vector).\n\ndo you even need this? why can\u0027t your caller just call FillInVmaStats on the Vma? it doesn\u0027t need to be able to modify the vector too?",
+      "revId": "d39c75a1178244844edfcfe2975c819d64273c9a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d710d3af_575bced6",
+        "filename": "libmeminfo/include/meminfo/procmeminfo.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2019-10-10T22:19:51Z",
+      "side": 1,
+      "message": "Yeah, I don\u0027t like this. I removed this function and changed the way this works.",
+      "parentUuid": "ecea0e54_8328e706",
       "revId": "d39c75a1178244844edfcfe2975c819d64273c9a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
