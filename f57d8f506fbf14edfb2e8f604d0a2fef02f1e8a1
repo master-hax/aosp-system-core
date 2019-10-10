@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3d6e1a19_a91d3a41",
+        "filename": "init/action_parser.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-10-10T20:25:12Z",
+      "side": 1,
+      "message": "ctype.h\n\nWe don\u0027t really use the \u0027c\u0027 versions of the headers.",
+      "revId": "f57d8f506fbf14edfb2e8f604d0a2fef02f1e8a1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ee3b1b95_34130fe3",
+        "filename": "init/init_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-10-10T20:25:12Z",
+      "side": 1,
+      "message": "If you want to slim this down, you can skip the import and service parsers.",
+      "revId": "f57d8f506fbf14edfb2e8f604d0a2fef02f1e8a1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
