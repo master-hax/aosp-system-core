@@ -18,9 +18,11 @@
 
 #include <android-base/properties.h>
 #include <android-base/strings.h>
+#include <ctype.h>
 
 #if defined(__ANDROID__)
 #include "property_service.h"
+#include "selinux.h"
 #else
 #include "host_init_stubs.h"
 #endif
@@ -77,6 +79,17 @@ Result<void> ParsePropertyTrigger(const std::string& trigger, Subcontext* subcon
     return {};
 }
 
+Result<void> ValidateEventTrigger(const std::string& event_trigger) {
+    if (SelinuxGetVendorAndroidVersion() >= __ANDROID_API_R__) {
+        for (const char& c : event_trigger) {
+            if (c != '_' && c != '-' && !std::isalnum(c)) {
+                return Error() << "Illegal character " << c;
+            }
+        }
+    }
+    return {};
+}
+
 Result<void> ParseTriggers(const std::vector<std::string>& args, Subcontext* subcontext,
                            std::string* event_trigger,
                            std::map<std::string, std::string>* property_triggers) {
@@ -102,6 +115,9 @@ Result<void> ParseTriggers(const std::vector<std::string>& args, Subcontext* sub
         } else {
             if (!event_trigger->empty()) {
                 return Error() << "multiple event triggers are not allowed";
+            }
+            if (auto result = ValidateEventTrigger(args[i]); !result) {
+                return result;
             }
 
             *event_trigger = args[i];
