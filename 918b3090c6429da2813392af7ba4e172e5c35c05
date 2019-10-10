@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7ec39137_a1ed4de5",
+        "filename": "init/action_parser.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-10-10T20:37:56Z",
+      "side": 1,
+      "message": "Sorry for being so pedantic here, but it goes in its own section towards the top.\n\nhttps://google.github.io/styleguide/cppguide.html#Names_and_Order_of_Includes",
+      "revId": "918b3090c6429da2813392af7ba4e172e5c35c05",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "583cc790_0914dea4",
+        "filename": "init/action_parser.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-10-10T20:37:56Z",
+      "side": 1,
+      "message": "Looking at the presubmit failure,\n\nhost_init_verifier: frameworks/opt/net/wifi/service/wifi.rc: 82: ParseTriggers() failed: Illegal character .\n\nIt may be good to add an additional \u003c\u003c \"in \u0027\" \u003c\u003c event_trigger \u003c\u003c \"\u0027\"; here to highlight exactly the part of the line that init has the problem with.",
+      "revId": "918b3090c6429da2813392af7ba4e172e5c35c05",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
