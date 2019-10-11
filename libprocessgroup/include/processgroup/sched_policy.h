@@ -75,6 +75,17 @@ extern int get_sched_policy(int tid, SchedPolicy* policy);
  */
 extern const char* get_sched_policy_name(SchedPolicy policy);
 
+/* Return the aggregated task profile name corresponding to cpuset policy.
+ * Return value: non-NULL NUL-terminated name of unspecified length, which
+ * the caller could use to call SetTaskProfiles.
+ */
+extern const char* get_cpuset_policy_profile_name(SchedPolicy policy);
+
+/* Return the aggregated task profile name corresponding to sched policy.
+ * Return value: non-NULL NUL-terminated name of unspecified length, which
+ * the caller could use to call SetTaskProfiles.
+ */
+extern const char* get_sched_policy_profile_name(SchedPolicy policy);
 #ifdef __cplusplus
 }
 #endif
