@@ -431,15 +431,9 @@ cc_library {
                 "daemon/framebuffer_service.cpp",
                 "daemon/mdns.cpp",
                 "daemon/restart_service.cpp",
-                "daemon/set_verity_enable_state_service.cpp",
-            ],
-            static_libs: [
-                "libavb_user",
             ],
             shared_libs: [
                 "libmdnssd",
-                "libfec",
-                "libfs_mgr",
                 "libselinux",
             ],
         },
