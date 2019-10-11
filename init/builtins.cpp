@@ -138,7 +138,7 @@ static Result<void> reboot_into_recovery(const std::vector<std::string>& options
     if (!write_bootloader_message(options, &err)) {
         return Error() << "Failed to set bootloader message: " << err;
     }
-    property_set("sys.powerctl", "reboot,recovery");
+    TriggerShutdown("reboot,recovery");
     return {};
 }
 
