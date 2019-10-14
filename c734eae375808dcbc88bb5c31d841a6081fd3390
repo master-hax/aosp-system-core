@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9b4e85c2_8b4014e8",
+        "filename": "liblog/include/log/log.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-10-14T23:17:13Z",
+      "side": 1,
+      "message": "Getting rid of this was way too optimistic :(",
+      "revId": "c734eae375808dcbc88bb5c31d841a6081fd3390",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
