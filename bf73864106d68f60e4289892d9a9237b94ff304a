@@ -16,6 +16,24 @@
       "revId": "bf73864106d68f60e4289892d9a9237b94ff304a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7fceccf1_6f6a6034",
+        "filename": "libprocessgroup/sched_policy.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 234,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2019-10-14T20:09:43Z",
+      "side": 1,
+      "message": "1) as stated in internal gerrit, do we want to keep similar behavior as get_sched_policy_name?\n2) this is to avoid a memcpy, or we have to use **.\nactually how about just return a nullptr if invalid argument?",
+      "parentUuid": "c53d730d_560003d7",
+      "revId": "bf73864106d68f60e4289892d9a9237b94ff304a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
