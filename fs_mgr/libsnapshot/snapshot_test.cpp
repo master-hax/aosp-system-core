@@ -782,6 +782,14 @@ TEST_F(SnapshotUpdateTest, FullUpdateFlow) {
     SetSize(vnd_, 3788_KiB);
     SetSize(prd_, 3788_KiB);
 
+    // Create fake install operations to grow the COW device size.
+    for (auto& partition : {sys_, vnd_, prd_}) {
+        using Extent = chromeos_update_engine::Extent;
+        Extent* e = partition->add_operations()->add_dst_extents();
+        e->set_start_block(0);
+        e->set_num_blocks(1024);
+    }
+
     // Execute the update.
     ASSERT_TRUE(sm->BeginUpdate());
     ASSERT_TRUE(sm->CreateUpdateSnapshots(manifest_));
@@ -942,6 +950,14 @@ TEST_F(SnapshotUpdateTest, TestRollback) {
     // Execute the update.
     ASSERT_TRUE(sm->BeginUpdate());
     ASSERT_TRUE(sm->UnmapUpdateSnapshot("sys_b"));
+
+    // Create fake install operations to grow the COW device size.
+    for (auto& partition : {sys_, vnd_, prd_}) {
+        using Extent = chromeos_update_engine::Extent;
+        Extent* e = partition->add_operations()->add_dst_extents();
+        e->set_start_block(0);
+        e->set_num_blocks(1024);
+    }
 
     ASSERT_TRUE(sm->CreateUpdateSnapshots(manifest_));
 
