@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c53d730d_560003d7",
+        "filename": "libprocessgroup/sched_policy.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 234,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-10-14T19:20:52Z",
+      "side": 1,
+      "message": "Probably better to return a bool and have a string out parameter.",
+      "revId": "bf73864106d68f60e4289892d9a9237b94ff304a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
