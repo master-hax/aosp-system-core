@@ -34,6 +34,24 @@
       "revId": "bf73864106d68f60e4289892d9a9237b94ff304a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f692d4b1_8b0cf8c7",
+        "filename": "libprocessgroup/sched_policy.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 234,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-10-14T20:15:23Z",
+      "side": 1,
+      "message": "\u003e actually how about just return a nullptr if invalid argument?\n\nSounds good to me.  It\u0027d be easier for the caller to check for an error.  And if the caller doesn\u0027t check for the error, it\u0027ll blow up quicker, which will help debugging.",
+      "parentUuid": "7fceccf1_6f6a6034",
+      "revId": "bf73864106d68f60e4289892d9a9237b94ff304a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
