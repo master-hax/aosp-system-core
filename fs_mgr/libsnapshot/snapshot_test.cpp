@@ -766,7 +766,7 @@ TEST_F(SnapshotUpdateTest, FullUpdateFlow) {
     auto tgt = MetadataBuilder::New(*opener_, "super", 1);
     ASSERT_NE(nullptr, tgt->FindPartition("sys_b-cow"));
     ASSERT_NE(nullptr, tgt->FindPartition("vnd_b-cow"));
-    ASSERT_EQ(nullptr, tgt->FindPartition("prd_b-cow"));
+    ASSERT_NE(nullptr, tgt->FindPartition("prd_b-cow"));
 
     // Write some data to target partitions.
     for (const auto& name : {"sys_b", "vnd_b", "prd_b"}) {
