@@ -719,7 +719,7 @@ bool SnapshotManager::QuerySnapshotStatus(const std::string& dm_name, std::strin
 // Note that when a merge fails, we will *always* try again to complete the
 // merge each time the device boots. There is no harm in doing so, and if
 // the problem was transient, we might manage to get a new outcome.
-UpdateState SnapshotManager::ProcessUpdateState() {
+UpdateState SnapshotManager::ProcessUpdateState(const std::function<void()>& callback) {
     while (true) {
         UpdateState state = CheckMergeState();
         if (state == UpdateState::MergeFailed) {
@@ -729,6 +729,10 @@ UpdateState SnapshotManager::ProcessUpdateState() {
             // Either there is no merge, or the merge was finished, so no need
             // to keep waiting.
             return state;
+        }
+
+        if (callback) {
+            callback();
         }
 
         // This wait is not super time sensitive, so we have a relatively
@@ -2067,6 +2071,23 @@ bool SnapshotManager::Dump(std::ostream& os) {
     os << ss.rdbuf();
     return ok;
 }
+
+#if defined(__ANDROID_RECOVERY__)
+bool SnapshotManager::HandleImminentDataWipe(const std::function<void()>& callback) {
+    auto super_path = "/dev/block/by-name/" + fs_mgr_get_super_partition_name();
+    if (!CreateLogicalAndSnapshotPartitions(super_path)) {
+        LOG(ERROR) << "Unable to map partitions to complete merge.";
+        return false;
+    }
+    UpdateState state = ProcessUpdateState(callback);
+    if (state == UpdateState::MergeFailed) {
+        LOG(ERROR) << "Unrecoverable merge failure detected.";
+        return false;
+    }
+    // :TODO: destroy logical partitions
+    return true;
+}
+#endif
 
 }  // namespace snapshot
 }  // namespace android
