@@ -17,16 +17,30 @@
 
 #include <android-base/logging.h>
 
+#include "adb_wifi.h"
 #include "sysdeps.h"
 
 static constexpr size_t kMaxConnections = 100;
 
-PairingServer::PairingServer(const std::string& password,
-                             ResultCallback callback)
-    : password_(password), callback_(callback) {
+using DataType = PairingConnection::DataType;
+
+PairingServer::PairingServer(const uint8_t* publicKey,
+                             uint64_t sz) {
+    mOurKey.assign(publicKey, publicKey + sz);
 }
 
 bool PairingServer::listen(std::string* response, int port) {
+    std::condition_variable cv;
+    std::mutex mutex;
+    bool success = false;
+
+    auto callback = [&](bool result) {
+        LOG(ERROR) << "receiving PairingServer callback";
+        std::unique_lock<std::mutex> lock(mutex);
+        success = result;
+        cv.notify_all();
+    };
+
     LOG(ERROR) << "PairingServer::listen setting up server";
     unique_fd fd(network_inaddr_any_server(port, SOCK_STREAM, response));
     if (fd.get() == -1) {
@@ -35,26 +49,40 @@ bool PairingServer::listen(std::string* response, int port) {
         return false;
     }
     close_on_exec(fd.get());
-    LOG(ERROR) << "PairingServer::listen creating fd event for fd " << fd.get();
-    fdevent_ = fdevent_create(fd.release(),
-                               &PairingServer::staticOnFdEvent,
-                               this);
-    if (fdevent_ == nullptr) {
-        LOG(ERROR) << "PairingServer::listen failed to create fd event";
-        *response = "failed to create pairing event";
-        return false;
+
+    std::unique_lock<std::mutex> lock(mutex);
+    fdevent_run_on_main_thread([&]() {
+        LOG(ERROR) << "PairingServer::listen creating fd event for fd " << fd.get();
+        mFdEvent = fdevent_create(fd.release(),
+                                   &PairingServer::staticOnFdEvent,
+                                   this);
+        if (mFdEvent == nullptr) {
+            LOG(ERROR) << "PairingServer::listen failed to create fd event";
+            *response = "failed to create pairing event";
+            callback(false);
+            return;
+        }
+        LOG(ERROR) << "PairingServer::listen successfully created fd event";
+        callback(true);
+    });
+
+    LOG(ERROR) << "pairing_server::listen waiting for cv";
+    cv.wait(lock);
+    LOG(ERROR) << "pairing_server::listen triggered on cv";
+    if (success) {
+        LOG(ERROR) << "PairingServer::listen setting fd event";
+        fdevent_set(mFdEvent, FDE_READ);
     }
-    LOG(ERROR) << "PairingServer::listen setting fd event";
-    fdevent_set(fdevent_, FDE_READ);
-    return true;
+
+    return success;
 }
 
 int PairingServer::getPort() const {
-    return adb_socket_get_local_port(fdevent_->fd);
+    return adb_socket_get_local_port(mFdEvent->fd);
 }
 
 void PairingServer::staticOnFdEvent(int fd, unsigned ev, void* data) {
-    LOG(ERROR) << "PairingServer::staticOnFdEvent";
+    PLOG(ERROR) << "PairingServer::staticOnFdEvent";
     if (data == nullptr) {
         LOG(ERROR) << "PairingServer::staticOnFdEvent recieved NULL data";
         return;
@@ -63,45 +91,70 @@ void PairingServer::staticOnFdEvent(int fd, unsigned ev, void* data) {
     server->onFdEvent(fd, ev);
 }
 
-void PairingServer::onConnectionCallback(bool success) {
-}
-
 void PairingServer::onFdEvent(int fd, unsigned ev) {
-    if ((ev & FDE_READ) == 0 || fd != fdevent_->fd) {
+    if ((ev & FDE_READ) == 0 || fd != mFdEvent->fd.get()) {
+        LOG(INFO) << __func__ << ": No reading (ev=" << ev << ", fd=" << fd << ")";
         return;
     }
 
+    LOG(INFO) << __func__ << ": Attempting to adb_socket_accept (fd=" << fd << ")";
     int clientFd = adb_socket_accept(fd, nullptr, nullptr);
     if (clientFd == -1) {
-        // Failed
+        LOG(WARNING) << __func__ << ": adb_socket_accept failed (fd=" << fd << ")";
         return;
     }
     auto callback = [this, clientFd](bool success) {
         if (success) {
+            LOG(INFO) << __func__ << ": client succeeded with pairing";
             // One client succeeded, don't accept any more incoming connections
-            fdevent_destroy(fdevent_);
-            fdevent_ = nullptr;
-            callback_(true);
+            fdevent_destroy(mFdEvent);
+            mFdEvent = nullptr;
         } else {
             // This client failed, disconnect it
-            connections_.erase(clientFd);
+            mConnections.erase(clientFd);
         }
     };
 
-    auto connection = std::make_unique<PairingConnection>(callback);
-    if (!connection->start(PairingConnection::Mode::Server,
-                          clientFd,
-                          password_)) {
+    auto connection = std::make_unique<PairingConnection>(callback, processMsg, this);
+    if (!connection->start(PairingRole::Server, clientFd)) {
         return;
     }
+    connection->sendRawMsg(mOurKey.data(), mOurKey.size());
 
-    connections_[clientFd] = std::move(connection);
+    mConnections[clientFd] = std::move(connection);
 
-    if (connections_.size() >= kMaxConnections) {
+    if (mConnections.size() >= kMaxConnections) {
         // Close the socket to limit the maximum number of concurrent
         // connections. This is to avoid using too much resources.
-        fdevent_destroy(fdevent_);
-        fdevent_ = nullptr;
+        fdevent_destroy(mFdEvent);
+        mFdEvent = nullptr;
     }
 }
 
+bool PairingServer::handleMsg(std::string_view msg,
+                              DataType dataType) {
+    // Don't need a lock here because adbd_wifi_pairing_request() will
+    // synchronize the requests for us.
+    LOG(INFO) << "PairingServer got message";
+    switch (dataType) {
+        case DataType::PublicKey:
+            // PairingServer should not get PublicKey type. the PublicKeyHeader
+            // will include this information already.
+            return false;
+        case DataType::PublicKeyHeader:
+            // Send message to system server.
+            adbd_wifi_pairing_request(reinterpret_cast<const uint8_t*>(msg.data()),
+                                      msg.size());
+            break;
+    }
+
+    return true;
+}
+
+// static
+bool PairingServer::processMsg(std::string_view msg,
+                               DataType dataType,
+                               void* opaque) {
+    auto* ptr = reinterpret_cast<PairingServer*>(opaque);
+    return ptr->handleMsg(msg, dataType);
+}

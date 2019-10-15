@@ -16,6 +16,7 @@
 
 #include "adb_mdns.h"
 #include "mdns.h"
+#include "pairing/pairing.h"
 #include "sysdeps.h"
 
 #include <dns_sd.h>
@@ -105,7 +106,7 @@ static void setup_mdns_thread() {
     // in the beginning. This is to provide more privacy/security.
     register_base_mdns_transport();
     // Or not
-    register_adb_secure_pairing_service(port);
+    register_adb_secure_pairing_service(kDefaultPairingPort);
     register_adb_wireless_service(port);
 }
 

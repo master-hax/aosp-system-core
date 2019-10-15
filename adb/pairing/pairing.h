@@ -18,14 +18,15 @@
 
 #include <string>
 
+extern const int kDefaultPairingPort;
 #if ADB_HOST
 void pair_device(const std::string& host,
                  const std::string& password,
                  std::string* response);
 #else
-// Initiate pairing mode on the host, returns the pairing code
-std::string pair_host();
+// Initiate pairing mode on the host. Return true if pair initialization was
+// successful, false otherwise.
+bool pair_host(const uint8_t* publicKey, uint64_t sz);
 void pair_cancel();
-std::string get_paired_devices();
 #endif
 

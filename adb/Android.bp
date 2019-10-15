@@ -126,17 +126,8 @@ libadb_srcs = [
     "adb_utils.cpp",
     "fdevent/fdevent.cpp",
     "fdevent/fdevent_poll.cpp",
-    "crypto/aes_128_gcm.cpp",
-    "crypto/ec_key.cpp",
-    "crypto/identifiers.cpp",
-    "crypto/key.cpp",
-    "crypto/key_store.cpp",
-    "crypto/key_store_utils.cpp",
-    "crypto/key_type.cpp",
     "pairing/pairing.cpp",
     "pairing/pairing_connection.cpp",
-    "pairing/pairing_client.cpp",
-    "pairing/pairing_server.cpp",
     "services.cpp",
     "sockets.cpp",
     "socket_spec.cpp",
@@ -161,9 +152,6 @@ libadb_test_srcs = [
     "adb_listeners_test.cpp",
     "adb_utils_test.cpp",
     "fdevent/fdevent_test.cpp",
-    "crypto/counter_test.cpp",
-    "crypto/aes_128_gcm_test.cpp",
-    "crypto/key_store_test.cpp",
     "pairing/pairing_test.cpp",
     "socket_spec_test.cpp",
     "socket_test.cpp",
@@ -182,6 +170,7 @@ cc_library_host_static {
         "client/usb_libusb.cpp",
         "client/usb_dispatch.cpp",
         "client/transport_mdns.cpp",
+        "pairing/pairing_client.cpp",
     ],
 
     generated_headers: ["platform_tools_version"],
@@ -209,6 +198,7 @@ cc_library_host_static {
     },
 
     static_libs: [
+        "libadbd_wifi_host",
         "libbase",
         "libcrypto_utils",
         "libcrypto",
@@ -300,6 +290,7 @@ cc_binary_host {
 
     static_libs: [
         "libadb_host",
+        "libadbd_wifi_host",
         "libandroidfw",
         "libbase",
         "libcutils",
@@ -363,6 +354,7 @@ cc_library_static {
         "daemon/auth.cpp",
         "daemon/jdwp_service.cpp",
 	"daemon/adb_wifi.cpp",
+        "pairing/pairing_server.cpp",
     ],
 
     local_include_dirs: [

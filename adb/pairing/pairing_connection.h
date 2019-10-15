@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 The Android Open Source Project
+ * Copyright (C) 2019 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,75 +15,76 @@
 
 #pragma once
 
-#include <openssl/curve25519.h>
-
 #include <stddef.h>
 #include <stdint.h>
 #include <string>
 #include <vector>
 
 #include "adb_unique_fd.h"
-#include "crypto/aes_128_gcm.h"
-#include "crypto/key_type.h"
-#include "fdevent.h"
+#include "fdevent/fdevent.h"
+#include "pairing/pairing_auth.h"
 
 class PairingConnection {
 public:
     using ResultCallback = std::function<void (bool success)>;
-    static constexpr int kSpake2Port = 5013;
-    static constexpr size_t kMaxAuthMsgSize = 32;
-    enum class Mode {
-        Client,
-        Server,
-    };
     enum class State {
         New,
-        Connected,
-        SendingPublicKey,
-        Authenticated,
+        ExchangingKeys,
+        ExchangingHeaders,
         Completed,
         Terminated,
     };
 
-    explicit PairingConnection(ResultCallback callback);
-    ~PairingConnection();
-    bool start(Mode mode, int fd, const std::string& password);
+    enum class DataType {
+        PublicKey,
+        PublicKeyHeader,
+    };
+    using DataCallback = std::function<bool(std::string_view,
+                                            DataType,
+                                            void*)>;
 
-    State state() const { return state_; }
+    explicit PairingConnection(ResultCallback callback,
+                               DataCallback dataCb,
+                               void* opaque);
+    ~PairingConnection();
+
+    // Starts the connection between the client and server. All incoming data
+    // will be forwarded to |cb| for further processing. Exchanges |publicKey|
+    // with the other party.
+    bool start(PairingRole role, int fd);
+    // Sends |data| to the server/client.
+    bool sendRawMsg(const uint8_t* data, uint32_t size);
+
+    State state() const { return mState; }
 
     bool receive();
 
-    int readAuthentication(uint8_t (&authMsg)[kMaxAuthMsgSize]);
 
-    bool establishEncryption(const uint8_t* authMsg, size_t size);
 
 private:
-    bool sendAuthentication(const std::string& password);
-    bool exchangeKeys(std::string* response);
-    // Create the initial message to establish a secure channel for
-    // communicating pairing data.
-    bool createPairingMessage(const std::string& password);
 
-    bool sendRawMsg(const uint8_t* data, uint32_t size);
-    bool sendSecureMsg(const uint8_t* data, uint32_t size);
-
-    bool authenticate();
-    bool sendPublicKey();
-    int readPublicKey();
+    // Read the incoming public key from the client/server. If return is 0,
+    // we didn't get enough bytes and will need to try and read again. If -1,
+    // failed. Otherwise, the return is the number of bytes in the |authMsg|.
+    int readPublicKey(uint8_t* authMsg);
+    // Wrapper to retry readPublicKey until we get enough bytes. If return true,
+    // then |theirKey| will have the contents of their key.
+    bool tryReadPublicKey(std::vector<uint8_t>& theirKey);
 
     void terminate();
 
     static void staticOnFdEvent(int fd, unsigned ev, void* data);
     void onFdEvent(int fd, unsigned ev);
 
-    ResultCallback callback_;
-    Mode mode_;
-    bssl::UniquePtr<SPAKE2_CTX> context_;
-    std::vector<uint8_t> pairing_message_;
-    std::vector<uint8_t> rx_buffer_;
-    fdevent* fdevent_ = nullptr;
-    State state_ = State::New;
-    crypto::Aes128Gcm cipher_;
-    KeyType key_type_ = KeyType::EllipticCurve;
+    ResultCallback mCallback;
+    DataCallback mDataCallback;
+    ResultCallback mCompletionCb;
+    void* mOpaque;
+    PairingRole mRole;
+    PairingAuthCtx mPairingAuthCtx = nullptr;
+    std::vector<uint8_t> mRxBuffer;
+    fdevent* mFdEvent = nullptr;
+    State mState = State::New;
+//    KeyType key_type_ = KeyType::EllipticCurve;
 };
 

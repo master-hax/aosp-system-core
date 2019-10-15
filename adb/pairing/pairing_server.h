@@ -25,7 +25,7 @@
 class PairingServer {
 public:
     using ResultCallback = std::function<void (bool /*success*/)>;
-    PairingServer(const std::string& password, ResultCallback callback);
+    PairingServer(const uint8_t* ourPublicKey, uint64_t sz);
 
     // Start listening for connections, if |port| is set to zero the server
     // will choose a port at random.
@@ -37,12 +37,16 @@ private:
     void onFdEvent(int fd, unsigned ev);
     void onConnectionCallback(bool success);
 
+    static bool processMsg(std::string_view msg,
+                           PairingConnection::DataType dataType,
+                           void* opaque);
+    bool handleMsg(std::string_view msg,
+                   PairingConnection::DataType dataType);
+
     using ConnectionPtr = std::unique_ptr<PairingConnection>;
 
-    std::string password_;
-    ResultCallback callback_;
-    unique_fd fd_;
-    fdevent* fdevent_ = nullptr;
-    std::unordered_map<int, ConnectionPtr> connections_;
+    fdevent* mFdEvent = nullptr;
+    std::unordered_map<int, ConnectionPtr> mConnections;
+    std::vector<uint8_t> mOurKey;
 };
 

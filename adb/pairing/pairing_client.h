@@ -17,6 +17,8 @@
 
 #include "pairing_connection.h"
 
+#include "pairing/pairing_auth.h"
+
 #include <functional>
 #include <string>
 
@@ -28,9 +30,17 @@ public:
     bool connect(const std::string& address,
                  int port,
                  std::string* response);
+
+    bool handleMsg(std::string_view msg,
+                   PairingConnection::DataType dataType);
+
+    // Message handler for PairingConnection.
+    static bool processMsg(std::string_view msg,
+                           PairingConnection::DataType dataType,
+                           void* opaque);
 private:
-    std::string password_;
-    ResultCallback callback_;
-    PairingConnection connection_;
+    ResultCallback mCallback;
+    PairingConnection mConnection;
+    PairingAuthCtx mPairingAuthCtx = nullptr;
 };
 
