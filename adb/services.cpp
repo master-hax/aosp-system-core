@@ -24,6 +24,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <cstring>
 #include <thread>
 
 #include <android-base/stringprintf.h>
@@ -257,18 +258,18 @@ asocket* host_service_to_socket(std::string_view name, std::string_view serial,
                 "connect", std::bind(connect_service, std::placeholders::_1, host));
         return create_local_socket(std::move(fd));
     } else if (android::base::ConsumePrefix(&name, "pair:")) {
-        const char* divider = strchr(name, ':');
+        const char* divider = strchr(name.data(), ':');
         if (!divider) {
             return nullptr;
         }
-        std::string password(name, divider);
+        std::string password(name.data(), divider);
         std::string host(divider + 1);
-        int fd = create_service_thread("pair",
-                                       std::bind(pair_service,
-                                                 std::placeholders::_1,
-                                                 host,
-                                                 password));
-        return create_local_socket(fd);
+        unique_fd fd = create_service_thread(
+                "pair", std::bind(pair_service,
+                                  std::placeholders::_1,
+                                  host,
+                                  password));
+        return create_local_socket(std::move(fd));
     }
     return nullptr;
 }

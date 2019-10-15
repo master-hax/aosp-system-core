@@ -186,6 +186,7 @@ static void setup_port(int port) {
     LOG(INFO) << "adbd listening on port " << port;
     local_init(port);
 #if defined(__ANDROID__)
+    LOG(INFO) << "Setup mdns on port= " << port;
     setup_mdns(port);
 #endif
 }
@@ -237,9 +238,6 @@ int adbd_main(int server_port) {
     // selinux transitions.
     adbd_wifi_init();
 
-    if (!initKeyStore()) {
-        LOG(ERROR) << "unable to initialize key store";
-    }
     bool is_usb = false;
 
 #if defined(__ANDROID__)

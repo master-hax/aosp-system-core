@@ -15,20 +15,42 @@
 
 #include "pairing_client.h"
 
+#include <android-base/logging.h>
 #include <android-base/parsenetaddress.h>
 
 #include "sysdeps.h"
 
 using android::base::ParseNetAddress;
+using DataType = PairingConnection::DataType;
 
 PairingClient::PairingClient(const std::string& password,
-                             ResultCallback callback) 
-    : password_(password), callback_(callback), connection_(callback) {
+                             ResultCallback callback) :
+    mCallback(callback),
+    mConnection(callback, processMsg, this) {
+    mPairingAuthCtx = pairing_auth_new_ctx(PairingRole::Client,
+                                           reinterpret_cast<const uint8_t*>(password.data()),
+                                           password.size());
+    if (mPairingAuthCtx == nullptr) {
+        LOG(ERROR) << "Unable to create a pairing auth context.";
+        return;
+    }
+}
+
+PairingClient::~PairingClient() {
+    if (mPairingAuthCtx != nullptr) {
+        pairing_auth_delete_ctx(mPairingAuthCtx);
+        mPairingAuthCtx = nullptr;
+    }
 }
 
 bool PairingClient::connect(const std::string& address,
                             int port,
                             std::string* response) {
+    if (mPairingAuthCtx == nullptr) {
+        LOG(ERROR) << "Pairing auth context is null";
+        return false;
+    }
+
     std::string host;
     if (!ParseNetAddress(address, &host, &port, nullptr, response)) {
         *response = "invalid network address";
@@ -43,10 +65,52 @@ bool PairingClient::connect(const std::string& address,
     }
     disable_tcp_nagle(fd);
 
-    if (!connection_.start(PairingConnection::Mode::Client, fd, password_)) {
+    if (!mConnection.start(PairingRole::Client, fd)) {
         *response = "internal initialization failure";
         return false;
     }
+
     return true;
 }
 
+bool PairingClient::handleMsg(std::string_view msg,
+                              DataType dataType) {
+    switch(dataType) {
+        case DataType::PublicKey: {
+            LOG(INFO) << "Registering their public key";
+            if(!pairing_auth_register_their_key(mPairingAuthCtx,
+                                                reinterpret_cast<const uint8_t*>(msg.data()),
+                                                msg.size())) {
+                LOG(ERROR) << "Failed to register their public key";
+                return false;
+            }
+            uint32_t pktSize = pairing_auth_request_max_size();
+            std::vector<uint8_t> header(pktSize);
+            if (!pairing_auth_create_request(mPairingAuthCtx,
+                                             header.data(),
+                                             &pktSize)) {
+                LOG(ERROR) << "Unable to create header packet";
+                return false;
+            }
+            header.resize(pktSize);
+            if (!mConnection.sendRawMsg(header.data(),
+                                         header.size())) {
+                LOG(ERROR) << "Unable to send header packet";
+            }
+            break;
+        }
+        default:
+            LOG(ERROR) << "unhandled DataType";
+            break;
+    }
+
+    return true;
+}
+
+// static
+bool PairingClient::processMsg(std::string_view msg,
+                               DataType dataType,
+                               void* opaque) {
+    auto* ptr = reinterpret_cast<PairingClient*>(opaque);
+    return ptr->handleMsg(msg, dataType);
+}

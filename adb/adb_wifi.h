@@ -23,5 +23,7 @@
 #else // !ADB_HOST
 
 void adbd_wifi_init(void);
+bool adbd_wifi_pairing_request(const uint8_t* public_key,
+                               uint64_t size_bytes);
 
 #endif
