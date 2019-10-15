@@ -16,7 +16,7 @@
 
 #include <cutils/trace.h>
 
-atomic_bool             atrace_is_ready      = ATOMIC_VAR_INIT(true);
+atomic_bool             atrace_is_ready[4096]      = {ATOMIC_VAR_INIT(true)};
 int                     atrace_marker_fd     = -1;
 uint64_t                atrace_enabled_tags  = 0;
 

@@ -41,12 +41,12 @@
  */
 #define ATRACE_MESSAGE_LENGTH 1024
 
-atomic_bool             atrace_is_ready      = ATOMIC_VAR_INIT(false);
-int                     atrace_marker_fd     = -1;
-uint64_t                atrace_enabled_tags  = ATRACE_TAG_NOT_READY;
-static bool             atrace_is_debuggable = false;
-static atomic_bool      atrace_is_enabled    = ATOMIC_VAR_INIT(true);
-static pthread_mutex_t  atrace_tags_mutex    = PTHREAD_MUTEX_INITIALIZER;
+atomic_bool             atrace_is_ready[4096] = {};
+int                     atrace_marker_fd      = -1;
+uint64_t                atrace_enabled_tags   = ATRACE_TAG_NOT_READY;
+static bool             atrace_is_debuggable  = false;
+static atomic_bool      atrace_is_enabled     = ATOMIC_VAR_INIT(true);
+static pthread_mutex_t  atrace_tags_mutex     = PTHREAD_MUTEX_INITIALIZER;
 
 // Set whether this process is debuggable, which determines whether
 // application-level tracing is allowed when the ro.debuggable system property
@@ -135,8 +135,9 @@ static uint64_t atrace_get_property()
 // Update tags if tracing is ready. Useful as a sysprop change callback.
 void atrace_update_tags()
 {
+  ALOGI("Updating tags.");
     uint64_t tags;
-    if (CC_UNLIKELY(atomic_load_explicit(&atrace_is_ready, memory_order_acquire))) {
+    if (CC_UNLIKELY(atomic_load_explicit(&atrace_is_ready[0], memory_order_acquire))) {
         if (atomic_load_explicit(&atrace_is_enabled, memory_order_acquire)) {
             tags = atrace_get_property();
             pthread_mutex_lock(&atrace_tags_mutex);

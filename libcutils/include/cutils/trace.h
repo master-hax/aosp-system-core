@@ -122,7 +122,7 @@ void atrace_set_tracing_enabled(bool enabled);
  * Nonzero indicates setup has completed.
  * Note: This does NOT indicate whether or not setup was successful.
  */
-extern atomic_bool atrace_is_ready;
+extern atomic_bool atrace_is_ready[4096];
 
 /**
  * Set of ATRACE_TAG flags to trace for, initialized to ATRACE_TAG_NOT_READY.
@@ -145,7 +145,7 @@ extern int atrace_marker_fd;
 #define ATRACE_INIT() atrace_init()
 static inline void atrace_init()
 {
-    if (CC_UNLIKELY(!atomic_load_explicit(&atrace_is_ready, memory_order_acquire))) {
+    if (CC_UNLIKELY(!atomic_load_explicit(&atrace_is_ready[0], memory_order_acquire))) {
         atrace_setup();
     }
 }

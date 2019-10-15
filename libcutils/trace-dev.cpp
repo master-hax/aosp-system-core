@@ -15,6 +15,7 @@
  */
 
 #include <cutils/trace.h>
+#include <sys/mman.h>
 
 #include "trace-dev.inc"
 
@@ -30,6 +31,13 @@ void atrace_set_tracing_enabled(bool enabled)
 
 static void atrace_init_once()
 {
+    int fd = open("/dev/__atrace_shmem__", O_RDONLY);
+    if (fd != -1) {
+      mmap(atrace_is_ready, 1, PROT_READ, MAP_SHARED | MAP_FIXED, fd, getpid());
+      close(fd);
+    } else {
+      ALOGE("Error remapping atrace_is_ready");
+    }
     atrace_marker_fd = open("/sys/kernel/debug/tracing/trace_marker", O_WRONLY | O_CLOEXEC);
     if (atrace_marker_fd == -1) {
         ALOGE("Error opening trace file: %s (%d)", strerror(errno), errno);
@@ -40,12 +48,13 @@ static void atrace_init_once()
     atrace_enabled_tags = atrace_get_property();
 
 done:
-    atomic_store_explicit(&atrace_is_ready, true, memory_order_release);
+    atomic_store_explicit(&atrace_is_ready[0], true, memory_order_release);
 }
 
 void atrace_setup()
 {
     pthread_once(&atrace_once_control, atrace_init_once);
+    atrace_update_tags();
 }
 
 void atrace_begin_body(const char* name)

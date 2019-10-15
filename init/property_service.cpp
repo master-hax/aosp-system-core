@@ -123,6 +123,13 @@ void property_init() {
     selinux_set_callback(SELINUX_CB_AUDIT, cb);
 
     mkdir("/dev/__properties__", S_IRWXU | S_IXGRP | S_IXOTH);
+    int fd = open("/dev/__atrace_shmem__", O_TRUNC | O_WRONLY | O_CREAT, 0777);
+    if (fd == -1) {
+      PLOG(ERROR) << "Failed to open /dev/__atrace_shmem__";
+    } else {
+      fchmod(fd, 0777);
+      ftruncate(fd, 32768);
+    }
     CreateSerializedPropertyInfo();
     if (__system_property_area_init()) {
         LOG(FATAL) << "Failed to initialize property area";
