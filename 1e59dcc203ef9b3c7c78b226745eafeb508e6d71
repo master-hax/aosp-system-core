@@ -16,6 +16,24 @@
       "revId": "1e59dcc203ef9b3c7c78b226745eafeb508e6d71",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c9df2fff_331595b4",
+        "filename": "liblog/pmsg_reader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-10-15T23:59:14Z",
+      "side": 1,
+      "message": "I think it was just to be overly cautious from the start.  It takes active effort to call this function (~3 function calls with the right arguments from liblog\u0027s API).  If someone does all of that and still doesn\u0027t have permissions, then I\u0027d rather we do generate the denial.",
+      "parentUuid": "34cf811e_5fd7ac04",
+      "revId": "1e59dcc203ef9b3c7c78b226745eafeb508e6d71",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
