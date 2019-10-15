@@ -520,7 +520,13 @@ static void UnblockSignals() {
 static void InstallSignalFdHandler(Epoll* epoll) {
     // Applying SA_NOCLDSTOP to a defaulted SIGCHLD handler prevents the signalfd from receiving
     // SIGCHLD when a child process stops or continues (b/77867680#comment9).
-    const struct sigaction act { .sa_handler = SIG_DFL, .sa_flags = SA_NOCLDSTOP };
+    const struct sigaction act {
+#ifdef __LP64__
+        .sa_flags = SA_NOCLDSTOP, .sa_handler = SIG_DFL,
+#else
+        .sa_handler = SIG_DFL, .sa_flags = SA_NOCLDSTOP,
+#endif
+    };
     sigaction(SIGCHLD, &act, nullptr);
 
     sigset_t mask;
