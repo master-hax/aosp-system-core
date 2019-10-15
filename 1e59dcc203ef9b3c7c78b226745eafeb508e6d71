@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "34cf811e_5fd7ac04",
+        "filename": "liblog/pmsg_reader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-10-15T23:55:33Z",
+      "side": 1,
+      "message": "was this to avoid an SELinux denial?",
+      "revId": "1e59dcc203ef9b3c7c78b226745eafeb508e6d71",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
