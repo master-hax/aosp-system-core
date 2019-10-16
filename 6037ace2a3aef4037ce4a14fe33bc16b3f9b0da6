@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b95c433b_8af1ddc8",
+        "filename": "liblog/include/log/log_read.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-10-16T18:52:18Z",
+      "side": 1,
+      "message": "(this comment should probably just go now too.)",
+      "revId": "6037ace2a3aef4037ce4a14fe33bc16b3f9b0da6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b5be47ab_b9f575f6",
+        "filename": "liblog/logprint.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1000,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-10-16T18:52:18Z",
+      "side": 1,
+      "message": "(that\u0027s weird.)",
+      "revId": "6037ace2a3aef4037ce4a14fe33bc16b3f9b0da6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
