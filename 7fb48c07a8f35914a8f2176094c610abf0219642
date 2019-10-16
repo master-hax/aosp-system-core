@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "56ee637c_5a1b4068",
+        "filename": "libunwindstack/AndroidVersions.md",
+        "patchSetId": 2
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2019-10-16T01:33:46Z",
+      "side": 1,
+      "message": "I should just say lld because I don\u0027t know if any linker support this. I should say by default, because I think one of the other linkers supports this, but I\u0027m not sure.",
+      "parentUuid": "6dd75dce_0e0fdbe2",
+      "range": {
+        "startLine": 22,
+        "startChar": 0,
+        "endLine": 22,
+        "endChar": 11
+      },
+      "revId": "7fb48c07a8f35914a8f2176094c610abf0219642",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "51d548e5_95a7da11",
         "filename": "libunwindstack/AndroidVersions.md",
         "patchSetId": 2
@@ -45,6 +69,30 @@
       "revId": "7fb48c07a8f35914a8f2176094c610abf0219642",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "148b0bae_03670cef",
+        "filename": "libunwindstack/AndroidVersions.md",
+        "patchSetId": 2
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2019-10-16T01:33:46Z",
+      "side": 1,
+      "message": "As above, I\u0027m not sure, so I\u0027ll mention lld alone.",
+      "parentUuid": "51d548e5_95a7da11",
+      "range": {
+        "startLine": 26,
+        "startChar": 12,
+        "endLine": 26,
+        "endChar": 28
+      },
+      "revId": "7fb48c07a8f35914a8f2176094c610abf0219642",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "3e63126c_59612a82",
+        "filename": "libunwindstack/AndroidVersions.md",
+        "patchSetId": 2
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2019-10-16T01:33:46Z",
+      "side": 1,
+      "message": "Done.",
+      "parentUuid": "ff197d11_95100d75",
+      "range": {
+        "startLine": 35,
+        "startChar": 35,
+        "endLine": 35,
+        "endChar": 46
+      },
+      "revId": "7fb48c07a8f35914a8f2176094c610abf0219642",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "15a99e31_a243a802",
         "filename": "libunwindstack/AndroidVersions.md",
         "patchSetId": 2
@@ -94,6 +166,30 @@
     },
     {
       "key": {
+        "uuid": "21a4d3f7_4e86b9c5",
+        "filename": "libunwindstack/AndroidVersions.md",
+        "patchSetId": 2
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2019-10-16T01:33:46Z",
+      "side": 1,
+      "message": "Again, better to mention only lld.",
+      "parentUuid": "15a99e31_a243a802",
+      "range": {
+        "startLine": 67,
+        "startChar": 23,
+        "endLine": 67,
+        "endChar": 36
+      },
+      "revId": "7fb48c07a8f35914a8f2176094c610abf0219642",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a525bf64_b788fb65",
         "filename": "libunwindstack/AndroidVersions.md",
         "patchSetId": 2
@@ -114,6 +210,30 @@
       "revId": "7fb48c07a8f35914a8f2176094c610abf0219642",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9e192d3e_58cceb5f",
+        "filename": "libunwindstack/AndroidVersions.md",
+        "patchSetId": 2
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2019-10-16T01:33:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a525bf64_b788fb65",
+      "range": {
+        "startLine": 109,
+        "startChar": 43,
+        "endLine": 109,
+        "endChar": 54
+      },
+      "revId": "7fb48c07a8f35914a8f2176094c610abf0219642",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
