@@ -31,9 +31,9 @@
 #endif
 
 TEST(liblog, log_id) {
-  int count = 0;
+  unsigned int count = 0;
 
-  for (int i = LOG_ID_MIN; i < LOG_ID_MAX; ++i) {
+  for (unsigned int i = LOG_ID_MIN; i < LOG_ID_MAX; ++i) {
     log_id_t id = static_cast<log_id_t>(i);
     const char* name = android_log_id_to_name(id);
     if (id != android_name_to_log_id(name)) {

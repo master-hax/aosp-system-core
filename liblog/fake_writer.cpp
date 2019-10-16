@@ -46,9 +46,7 @@ static int fakeAvailable(log_id_t) {
 }
 
 static int fakeOpen() {
-  int i;
-
-  for (i = 0; i < LOG_ID_MAX; i++) {
+  for (unsigned int i = 0; i < LOG_ID_MAX; i++) {
     /*
      * Known maximum size string, plus an 8 character margin to deal with
      * possible independent changes to android_log_id_to_name().
@@ -67,9 +65,7 @@ static int fakeOpen() {
 }
 
 static void fakeClose() {
-  int i;
-
-  for (i = 0; i < LOG_ID_MAX; i++) {
+  for (unsigned int i = 0; i < LOG_ID_MAX; i++) {
     fakeLogClose(logFds[i]);
     logFds[i] = -1;
   }

@@ -1104,7 +1104,7 @@ static int __logcat(android_logcat_context_internal* context) {
                     arg = nullptr;
                 }
 
-                for (int i = LOG_ID_MIN; i < LOG_ID_MAX; ++i) {
+                for (unsigned int i = LOG_ID_MIN; i < LOG_ID_MAX; ++i) {
                     const char* name = android_log_id_to_name((log_id_t)i);
                     log_id_t log_id = android_name_to_log_id(name);
 

@@ -37,7 +37,7 @@ TEST(liblog, android_logger_get_) {
   struct logger_list* logger_list =
       android_logger_list_alloc(ANDROID_LOG_WRONLY, 0, 0);
 
-  for (int i = LOG_ID_MIN; i < LOG_ID_MAX; ++i) {
+  for (unsigned int i = LOG_ID_MIN; i < LOG_ID_MAX; ++i) {
     log_id_t id = static_cast<log_id_t>(i);
     const char* name = android_log_id_to_name(id);
     if (id != android_name_to_log_id(name)) {
