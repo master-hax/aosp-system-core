@@ -46,6 +46,30 @@
       "revId": "422a758568aa4461ceaf04820d6c16cb7faab4ec",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7d933357_ef299176",
+        "filename": "init/host_init_verifier.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 154,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2019-10-16T22:50:31Z",
+      "side": 1,
+      "message": "it\u0027ll shrink if anything",
+      "parentUuid": "80524294_2d7418fc",
+      "range": {
+        "startLine": 154,
+        "startChar": 41,
+        "endLine": 154,
+        "endChar": 74
+      },
+      "revId": "422a758568aa4461ceaf04820d6c16cb7faab4ec",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
