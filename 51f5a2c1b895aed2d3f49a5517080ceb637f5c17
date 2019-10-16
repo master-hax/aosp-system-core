@@ -16,6 +16,41 @@
       "revId": "51f5a2c1b895aed2d3f49a5517080ceb637f5c17",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a0fee32a_a5d6518d",
+        "filename": "liblog/include/android/log.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 164,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-10-16T23:22:01Z",
+      "side": 1,
+      "message": "adding a constant is fine. (and this doesn\u0027t change the value of any existing constant.)",
+      "parentUuid": "157649bc_34f8a3f5",
+      "revId": "51f5a2c1b895aed2d3f49a5517080ceb637f5c17",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "96d12fb3_e8c3fecc",
+        "filename": "liblog/include/android/log.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 186,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-10-16T23:22:01Z",
+      "side": 1,
+      "message": "(when is that not true for this code?)",
+      "revId": "51f5a2c1b895aed2d3f49a5517080ceb637f5c17",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
