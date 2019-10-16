@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0e2bdc7a_3502d1c3",
+        "filename": "init/host_init_verifier.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 154,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2019-10-16T00:47:30Z",
+      "side": 1,
+      "message": "Tom, would you prefer this in something like interface_verification_utils.h/cpp? It can\u0027t be linked in init.",
+      "range": {
+        "startLine": 154,
+        "startChar": 41,
+        "endLine": 154,
+        "endChar": 74
+      },
+      "revId": "422a758568aa4461ceaf04820d6c16cb7faab4ec",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
