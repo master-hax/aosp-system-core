@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "99aa82f0_9f2b5b66",
+        "filename": "liblog/include/log/log_read.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-10-16T19:16:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b95c433b_8af1ddc8",
+      "revId": "6037ace2a3aef4037ce4a14fe33bc16b3f9b0da6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b5be47ab_b9f575f6",
         "filename": "liblog/logprint.cpp",
         "patchSetId": 1
@@ -33,6 +51,24 @@
       "revId": "6037ace2a3aef4037ce4a14fe33bc16b3f9b0da6",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0d58de04_14f9250f",
+        "filename": "liblog/logprint.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1000,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-10-16T19:16:52Z",
+      "side": 1,
+      "message": "Ya.  It looks like none of the binary logs formats have a notion of priority and defaults them to INFO.  aosp/187051 added this, but it doesn\u0027t explain why.  Probably better to be done in logd if there\u0027s a tangible reason that these need to be WARN, but probably not going to be high on the priority list.",
+      "parentUuid": "b5be47ab_b9f575f6",
+      "revId": "6037ace2a3aef4037ce4a14fe33bc16b3f9b0da6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
