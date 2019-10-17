@@ -16,6 +16,24 @@
       "revId": "4aacb80321e36f0f543581d8440ecc7a0a6c6f96",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b3b32ae5_138aae78",
+        "filename": "init/service_parser.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 563,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2019-10-17T01:15:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fd5deaf8_f47b9843",
+      "revId": "4aacb80321e36f0f543581d8440ecc7a0a6c6f96",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
