@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fd5deaf8_f47b9843",
+        "filename": "init/service_parser.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 563,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-10-17T00:54:25Z",
+      "side": 1,
+      "message": "You want either \u003c or __ANDROID_API_Q__, right?  If this change launches in R, then we won\u0027t want to apply to this hack for that release.",
+      "revId": "4aacb80321e36f0f543581d8440ecc7a0a6c6f96",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
