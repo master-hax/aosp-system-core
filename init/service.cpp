@@ -41,6 +41,7 @@
 
 #if defined(__ANDROID__)
 #include <ApexProperties.sysprop.h>
+#include <liblmkd_utils.h>
 
 #include "init.h"
 #include "mount_namespace.h"
@@ -124,6 +125,54 @@ static bool AreRuntimeApexesReady() {
     return stat("/apex/com.android.art/", &buf) == 0 &&
            stat("/apex/com.android.runtime/", &buf) == 0;
 }
+
+enum LmkdRegistrationResult {
+    LMKD_REG_SUCCESS,
+    LMKD_CONN_FAILED,
+    LMKD_CONN_LOST,
+    LMKD_REG_FAILED,
+};
+
+#if defined(__ANDROID__)
+
+static LmkdRegistrationResult RegisterWithLmkd(uid_t uid, pid_t pid, int oom_score_adjust) {
+    static int lmkd_sock = -1;
+
+    // connect to lmkd if not already connected
+    if (lmkd_sock < 0) {
+        lmkd_sock = lmkd_connect();
+        if (lmkd_sock < 0) {
+            return LMKD_CONN_FAILED;
+        }
+        // will handle EPIPE at the time of write
+        signal(SIGPIPE, SIG_IGN);
+    }
+
+    // register service with lmkd
+    struct lmk_procprio params;
+    params.pid = pid;
+    params.uid = uid;
+    params.oomadj = oom_score_adjust;
+    if (lmkd_register_proc(lmkd_sock, &params) != 0) {
+        if (errno == EPIPE) {
+            // lmkd connection lost, this means lmkd crashed which should not normally happen
+            lmkd_sock = -1;
+            return LMKD_CONN_LOST;
+        }
+        // data transfer failed for some other reason
+        return LMKD_REG_FAILED;
+    }
+
+    return LMKD_REG_SUCCESS;
+}
+
+#else  // defined(__ANDROID__)
+
+static LmkdRegistrationResult RegisterWithLmkd(uid_t, pid_t, int) {
+    return LMKD_REG_SUCCESS;
+}
+
+#endif  // defined(__ANDROID__)
 
 unsigned long Service::next_start_order_ = 1;
 bool Service::is_exec_service_running_ = false;
@@ -507,6 +556,26 @@ Result<void> Service::Start() {
         std::string oom_file = StringPrintf("/proc/%d/oom_score_adj", pid);
         if (!WriteStringToFile(oom_str, oom_file)) {
             PLOG(ERROR) << "couldn't write oom_score_adj";
+        }
+
+        LmkdRegistrationResult reg_result =
+                RegisterWithLmkd(proc_attr_.uid, pid, oom_score_adjust_);
+        if (reg_result == LMKD_CONN_LOST) {
+            // retry one time if connection to lmkd was lost
+            reg_result = RegisterWithLmkd(proc_attr_.uid, pid, oom_score_adjust_);
+        }
+        switch (reg_result) {
+            case LMKD_CONN_FAILED:
+                PLOG(ERROR) << "lmkd connection failed when " << name_ << " process got started";
+                break;
+            case LMKD_CONN_LOST:
+                PLOG(ERROR) << "lmkd connection was lost when " << name_ << " process got started";
+                break;
+            case LMKD_REG_FAILED:
+                PLOG(ERROR) << "Failed to register " << name_ << " process with lmkd";
+                break;
+            default:  // LMKD_REG_SUCCESS
+                break;
         }
     }
 

@@ -65,6 +65,7 @@ cc_defaults {
         "libavb",
         "libc++fs",
         "libcgrouprc_format",
+        "liblmkd_utils",
         "libmodprobe",
         "libprotobuf-cpp-lite",
         "libpropertyinfoserializer",
