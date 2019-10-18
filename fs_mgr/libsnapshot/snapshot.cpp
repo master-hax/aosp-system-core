@@ -77,6 +77,12 @@ using namespace std::string_literals;
 
 static constexpr char kBootIndicatorPath[] = "/metadata/ota/snapshot-boot";
 
+#ifdef __ANDROID_RECOVERY__
+constexpr bool kIsRecovery = true;
+#else
+constexpr bool kIsRecovery = false;
+#endif
+
 class DeviceInfo final : public SnapshotManager::IDeviceInfo {
   public:
     std::string GetGsidDir() const override { return "ota"s; }
@@ -89,6 +95,7 @@ class DeviceInfo final : public SnapshotManager::IDeviceInfo {
     }
     bool IsOverlayfsSetup() const override { return fs_mgr_overlayfs_is_setup(); }
     bool SetBootControlMergeStatus(MergeStatus status) override;
+    bool IsRecovery() const override { return kIsRecovery; }
 
   private:
     android::fs_mgr::PartitionOpener opener_;
@@ -195,6 +202,14 @@ bool SnapshotManager::CancelUpdate() {
 }
 
 bool SnapshotManager::TryCancelUpdate(bool* needs_merge) {
+    std::unique_ptr<AutoUnmountDevice> metadata_device;
+    if (device_->IsRecovery()) {
+        metadata_device = AutoUnmountDevice::New(device_->GetMetadataDir());
+        if (!metadata_device) {
+            return false;
+        }
+    }
+
     *needs_merge = false;
 
     auto file = LockExclusive();

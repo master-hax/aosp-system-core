@@ -88,6 +88,7 @@ class TestDeviceInfo : public SnapshotManager::IDeviceInfo {
         return true;
     }
     bool IsOverlayfsSetup() const override { return false; }
+    bool IsRecovery() const override { return false; }
 
     void set_slot_suffix(const std::string& suffix) { slot_suffix_ = suffix; }
     void set_fake_super(const std::string& path) {
