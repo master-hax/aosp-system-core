@@ -41,6 +41,7 @@
 
 #if defined(__ANDROID__)
 #include <ApexProperties.sysprop.h>
+#include <liblmkd_utils.h>
 
 #include "init.h"
 #include "mount_namespace.h"
@@ -508,6 +509,37 @@ Result<void> Service::Start() {
         if (!WriteStringToFile(oom_str, oom_file)) {
             PLOG(ERROR) << "couldn't write oom_score_adj";
         }
+#if defined(__ANDROID__)
+        // register with lmkd
+        static int lmkd_sock = -1;
+        bool retry;
+
+        do {
+            retry = false;
+            if (lmkd_sock < 0) {
+                lmkd_sock = lmkd_connect();
+            }
+            if (lmkd_sock >= 0) {
+                // register service with lmkd
+                struct lmk_procprio params;
+                params.pid = pid;
+                params.uid = proc_attr_.uid;
+                params.oomadj = oom_score_adjust_;
+                if (lmkd_register_proc(lmkd_sock, &params) != 0) {
+                    if (errno == EPIPE) {
+                        // lmkd connection lost, try to reestablish it
+                        // this means lmkd crashed which should not normally happen
+                        lmkd_sock = -1;
+                        retry = true;
+                    } else {
+                        PLOG(ERROR) << "Failed to register " << name_ << " process with lmkd";
+                    }
+                }
+            } else {
+                PLOG(ERROR) << "lmkd is not connected when " << name_ << " process was started";
+            }
+        } while (retry);
+#endif
     }
 
     time_started_ = boot_clock::now();
