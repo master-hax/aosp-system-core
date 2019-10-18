@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4bf8bd3c_1290ce27",
+        "filename": "init/service.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 148,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-10-18T21:28:40Z",
+      "side": 1,
+      "message": "Let\u0027s move this to the beginning of SecondStageMain(), right after \"LOG(INFO) \u003c\u003c \"init second stage started!\";\"\n\nhttps://cs.corp.google.com/android/system/core/init/init.cpp?q\u003dsecondstagemain\u0026sq\u003dpackage:%5Eandroid$\u0026g\u003d0\u0026l\u003d685",
+      "revId": "2fe7e92291232a35b3e968db28e6bfcf4b852205",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
