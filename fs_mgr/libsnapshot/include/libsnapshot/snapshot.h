@@ -119,6 +119,7 @@ class SnapshotManager final {
         virtual const IPartitionOpener& GetPartitionOpener() const = 0;
         virtual bool IsOverlayfsSetup() const = 0;
         virtual bool SetBootControlMergeStatus(MergeStatus status) = 0;
+        virtual bool IsRecovery() const = 0;
     };
 
     ~SnapshotManager();

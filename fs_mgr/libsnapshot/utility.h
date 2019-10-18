@@ -18,6 +18,7 @@
 #include <string>
 
 #include <android-base/macros.h>
+#include <fstab/fstab.h>
 #include <libdm/dm.h>
 #include <libfiemap/image_manager.h>
 #include <liblp/builder.h>
@@ -109,6 +110,16 @@ std::vector<android::fs_mgr::Partition*> ListPartitionsWithSuffix(
 
 // Initialize a device before using it as the COW device for a dm-snapshot device.
 bool InitializeCow(const std::string& device);
+
+struct AutoMountDevice : AutoDevice {
+    static std::unique_ptr<AutoMountDevice> New(const std::string& path);
+    ~AutoMountDevice();
+
+  private:
+    AutoMountDevice(const std::string& path, android::fs_mgr::Fstab&& fstab)
+        : AutoDevice(path), fstab_(std::move(fstab)) {}
+    android::fs_mgr::Fstab fstab_;
+};
 
 }  // namespace snapshot
 }  // namespace android
