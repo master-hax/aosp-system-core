@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "fa2f1cc7_724734e1",
+        "filename": "init/service.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 512,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-10-18T21:10:06Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "ed2fbff8_1356c8c4",
+      "revId": "edeec342d504fa1a5039b022fce2ea44eece71e9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "4c823f54_0f37c17d",
         "filename": "init/service.cpp",
         "patchSetId": 2
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "a51a2478_86e01de9",
+        "filename": "init/service.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 529,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-10-18T21:10:06Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "4c823f54_0f37c17d",
+      "revId": "edeec342d504fa1a5039b022fce2ea44eece71e9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c2404f8e_11782f10",
         "filename": "init/service.cpp",
         "patchSetId": 2
@@ -47,6 +83,24 @@
       "writtenOn": "2019-10-18T19:56:14Z",
       "side": 1,
       "message": "I\u0027m iffy about this being an open-ended loop.  lmkd shouldn\u0027t be able to restart while init is here, so we shouldn\u0027t ever hit this case multiple times, but still potentially worth having a cap to retry only once.",
+      "revId": "edeec342d504fa1a5039b022fce2ea44eece71e9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e394e003_8cf039f1",
+        "filename": "init/service.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 533,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-10-18T21:10:06Z",
+      "side": 1,
+      "message": "Will change to retry only one time. This can happen is lmkd crashes at some point and then a native service restarts. The lmkd_sock connection will be stale even though new lmkd instance is active.",
+      "parentUuid": "c2404f8e_11782f10",
       "revId": "edeec342d504fa1a5039b022fce2ea44eece71e9",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
