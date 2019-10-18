@@ -136,6 +136,8 @@ bool EnsurePathMounted(Fstab* fstab, const std::string& path, const std::string&
 }
 
 bool EnsurePathUnmounted(Fstab* fstab, const std::string& path) {
+    LERROR << "EnsurePathUnmounted " << path;
+
     auto rec = GetEntryForPath(fstab, path);
     if (rec == nullptr) {
         LERROR << "unknown volume for path [" << path << "]";
@@ -165,6 +167,8 @@ bool EnsurePathUnmounted(Fstab* fstab, const std::string& path) {
         PWARNING << "Failed to umount " << rec->mount_point;
         return false;
     }
+    LERROR << "EnsurePathUnmounted " << path << " success";
+
     return true;
 }
 
