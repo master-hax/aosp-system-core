@@ -684,6 +684,9 @@ int SecondStageMain(int argc, char** argv) {
     InitKernelLogging(argv);
     LOG(INFO) << "init second stage started!";
 
+    // Will handle EPIPE at the time of write by checking the errno
+    signal(SIGPIPE, SIG_IGN);
+
     // Set init and its forked children's oom_adj.
     if (auto result = WriteFile("/proc/1/oom_score_adj", "-1000"); !result) {
         LOG(ERROR) << "Unable to write -1000 to /proc/1/oom_score_adj: " << result.error();
