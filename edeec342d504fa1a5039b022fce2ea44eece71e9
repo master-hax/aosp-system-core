@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ed2fbff8_1356c8c4",
+        "filename": "init/service.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 512,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-10-18T19:56:14Z",
+      "side": 1,
+      "message": "This is better moved into its own function.  Especially since then, you can do\n\nif (lmkd_socket \u003c 0) {\n  PLOG(ERROR) \u003c\u003c \"lmkd is not connected when \" \u003c\u003c name_ \u003c\u003c \" process was started\";\n  return;\n}\n\n... Real code here with only 1 level of indentation",
+      "revId": "edeec342d504fa1a5039b022fce2ea44eece71e9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4c823f54_0f37c17d",
+        "filename": "init/service.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 529,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-10-18T19:56:14Z",
+      "side": 1,
+      "message": "We\u0027ll need to ignore SIGPIPE in init too.",
+      "revId": "edeec342d504fa1a5039b022fce2ea44eece71e9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c2404f8e_11782f10",
+        "filename": "init/service.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 533,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-10-18T19:56:14Z",
+      "side": 1,
+      "message": "I\u0027m iffy about this being an open-ended loop.  lmkd shouldn\u0027t be able to restart while init is here, so we shouldn\u0027t ever hit this case multiple times, but still potentially worth having a cap to retry only once.",
+      "revId": "edeec342d504fa1a5039b022fce2ea44eece71e9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
