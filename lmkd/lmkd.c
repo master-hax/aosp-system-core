@@ -45,6 +45,7 @@
 #include <log/log.h>
 #include <log/log_event_list.h>
 #include <log/log_time.h>
+#include <private/android_filesystem_config.h>
 #include <psi/psi.h>
 #include <system/thread_defs.h>
 
@@ -489,6 +490,7 @@ struct proc {
     int pid;
     int pidfd;
     uid_t uid;
+    uid_t reg_uid; /* UID of the process that added this record */
     int oomadj;
     struct proc *pidhash_next;
 };
@@ -845,7 +847,7 @@ static char *proc_get_name(int pid, char *buf, size_t buf_size) {
     return buf;
 }
 
-static void cmd_procprio(LMKD_CTRL_PACKET packet) {
+static void cmd_procprio(LMKD_CTRL_PACKET packet, struct ucred *cred) {
     struct proc *procp;
     char path[LINE_MAX];
     char val[20];
@@ -954,6 +956,7 @@ static void cmd_procprio(LMKD_CTRL_PACKET packet) {
         procp->pid = params.pid;
         procp->pidfd = pidfd;
         procp->uid = params.uid;
+        procp->reg_uid = cred->uid;
         procp->oomadj = params.oomadj;
         proc_insert(procp);
     } else {
@@ -963,12 +966,24 @@ static void cmd_procprio(LMKD_CTRL_PACKET packet) {
     }
 }
 
-static void cmd_procremove(LMKD_CTRL_PACKET packet) {
+static void cmd_procremove(LMKD_CTRL_PACKET packet, struct ucred *cred) {
     struct lmk_procremove params;
+    struct proc *procp;
 
     lmkd_pack_get_procremove(packet, &params);
+
     if (use_inkernel_interface) {
         stats_remove_taskname(params.pid, kpoll_info.poll_fd);
+        return;
+    }
+
+    procp = pid_lookup(params.pid);
+    if (!procp) {
+        return;
+    }
+    if (procp->reg_uid != cred->uid) {
+        /* Only process that added the record can remove it */
+        ALOGE("Client %d attempts to unregister a process registered by another client", cred->pid);
         return;
     }
 
@@ -979,7 +994,7 @@ static void cmd_procremove(LMKD_CTRL_PACKET packet) {
     pid_remove(params.pid);
 }
 
-static void cmd_procpurge() {
+static void cmd_procpurge(struct ucred *cred) {
     int i;
     struct proc *procp;
     struct proc *next;
@@ -989,20 +1004,17 @@ static void cmd_procpurge() {
         return;
     }
 
-    for (i = 0; i <= ADJTOSLOT(OOM_SCORE_ADJ_MAX); i++) {
-        procadjslot_list[i].next = &procadjslot_list[i];
-        procadjslot_list[i].prev = &procadjslot_list[i];
-    }
-
     for (i = 0; i < PIDHASH_SZ; i++) {
         procp = pidhash[i];
         while (procp) {
             next = procp->pidhash_next;
-            free(procp);
+            /* Purge only records created by the requestor */
+            if (procp->reg_uid == cred->uid) {
+                pid_remove(procp->pid);
+            }
             procp = next;
         }
     }
-    memset(&pidhash[0], 0, sizeof(pidhash));
 }
 
 static void inc_killcnt(int oomadj) {
@@ -1155,17 +1167,40 @@ static void ctrl_data_close(int dsock_idx) {
     data_sock[dsock_idx].sock = -1;
 }
 
-static int ctrl_data_read(int dsock_idx, char *buf, size_t bufsz) {
-    int ret = 0;
+static ssize_t ctrl_data_read(int dsock_idx, char *buf, size_t bufsz, struct ucred *sender_cred) {
+    struct iovec iov = { buf, bufsz };
+    char control[CMSG_SPACE(sizeof(struct ucred))];
+    struct msghdr hdr = {
+        NULL, 0, &iov, 1, control, sizeof(control), 0,
+    };
+    ssize_t ret;
 
-    ret = TEMP_FAILURE_RETRY(read(data_sock[dsock_idx].sock, buf, bufsz));
-
+    ret = TEMP_FAILURE_RETRY(recvmsg(data_sock[dsock_idx].sock, &hdr, 0));
     if (ret == -1) {
         ALOGE("control data socket read failed; errno=%d", errno);
-    } else if (ret == 0) {
-        ALOGE("Got EOF on control data socket");
-        ret = -1;
+        return -1;
     }
+    if (ret == 0) {
+        ALOGE("Got EOF on control data socket");
+        return -1;
+    }
+
+    struct ucred* cred = NULL;
+    struct cmsghdr* cmsg = CMSG_FIRSTHDR(&hdr);
+    while (cmsg != NULL) {
+        if (cmsg->cmsg_level == SOL_SOCKET && cmsg->cmsg_type == SCM_CREDENTIALS) {
+            cred = (struct ucred*)CMSG_DATA(cmsg);
+            break;
+        }
+        cmsg = CMSG_NXTHDR(&hdr, cmsg);
+    }
+
+    if (cred == NULL) {
+        ALOGE("Failed to retrieve sender credentials");
+        return -1;
+    }
+
+    memcpy(sender_cred, cred, sizeof(struct ucred));
 
     return ret;
 }
@@ -1187,15 +1222,22 @@ static int ctrl_data_write(int dsock_idx, char *buf, size_t bufsz) {
 
 static void ctrl_command_handler(int dsock_idx) {
     LMKD_CTRL_PACKET packet;
+    struct ucred cred;
     int len;
     enum lmk_cmd cmd;
     int nargs;
     int targets;
     int kill_cnt;
 
-    len = ctrl_data_read(dsock_idx, (char *)packet, CTRL_PACKET_MAX_SIZE);
+    len = ctrl_data_read(dsock_idx, (char *)packet, CTRL_PACKET_MAX_SIZE, &cred);
     if (len <= 0)
         return;
+
+    if (cred.uid != AID_SYSTEM && cred.uid != AID_ROOT) {
+        ALOGE("Request received from a non-privileged process %d",
+            cred.pid);
+        return;
+    }
 
     if (len < (int)sizeof(int)) {
         ALOGE("Wrong control socket read length len=%d", len);
@@ -1217,17 +1259,17 @@ static void ctrl_command_handler(int dsock_idx) {
     case LMK_PROCPRIO:
         if (nargs != 3)
             goto wronglen;
-        cmd_procprio(packet);
+        cmd_procprio(packet, &cred);
         break;
     case LMK_PROCREMOVE:
         if (nargs != 1)
             goto wronglen;
-        cmd_procremove(packet);
+        cmd_procremove(packet, &cred);
         break;
     case LMK_PROCPURGE:
         if (nargs != 0)
             goto wronglen;
-        cmd_procpurge();
+        cmd_procpurge(&cred);
         break;
     case LMK_GETKILLCNT:
         if (nargs != 2)
