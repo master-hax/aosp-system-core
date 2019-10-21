@@ -396,6 +396,9 @@ static int show_help() {
             " gsi wipe|disable           Wipe or disable a GSI installation (fastbootd only).\n"
             " wipe-super [SUPER_EMPTY]   Wipe the super partition. This will reset it to\n"
             "                            contain an empty set of default dynamic partitions.\n"
+            " snapshot cancel-update     On devices that support snapshot-based updates, cancel\n"
+            "                            an in-progress update. This may make the device\n"
+            "                            unbootable until it is reflashed.\n"
             "\n"
             "boot image:\n"
             " boot KERNEL [RAMDISK [SECOND]]\n"
@@ -1216,6 +1219,14 @@ static void reboot_to_userspace_fastboot() {
     target_sparse_limit = -1;
 }
 
+static void CancelSnapshotIfNeeded() {
+    std::string merge_state = "none";
+    if (fb->GetVar("update-merge-state", &merge_state) == fastboot::SUCCESS &&
+        merge_state != "none") {
+        fb->SnapshotCancelUpdate();
+    }
+}
+
 class ImageSource {
   public:
     virtual bool ReadFile(const std::string& name, std::vector<char>* out) const = 0;
@@ -1267,6 +1278,8 @@ void FlashAllTool::Flash() {
 
     DetermineSecondarySlot();
     CollectImages();
+
+    CancelSnapshotIfNeeded();
 
     // First flash boot partitions. We allow this to happen either in userspace
     // or in bootloader fastboot.
@@ -2071,12 +2084,22 @@ int FastBootTool::Main(int argc, char* argv[]) {
                 image = next_arg(&args);
             }
             do_wipe_super(image, slot_override);
+        } else if (command == "snapshot") {
+            auto arg = next_arg(&args);
+            if (arg == "cancel-update") {
+                fb->SnapshotCancelUpdate();
+            } else {
+                syntax_error("expected 'cancel-update'");
+            }
         } else {
             syntax_error("unknown command %s", command.c_str());
         }
     }
 
     if (wants_wipe) {
+        if (force_flash) {
+            CancelSnapshotIfNeeded();
+        }
         std::vector<std::string> partitions = { "userdata", "cache", "metadata" };
         for (const auto& partition : partitions) {
             std::string partition_type;
