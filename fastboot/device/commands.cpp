@@ -25,6 +25,7 @@
 #include <android-base/stringprintf.h>
 #include <android-base/strings.h>
 #include <android-base/unique_fd.h>
+#include <android/hardware/boot/1.1/IBootControl.h>
 #include <cutils/android_reboot.h>
 #include <ext4_utils/wipe.h>
 #include <fs_mgr.h>
@@ -44,8 +45,10 @@ using ::android::hardware::hidl_string;
 using ::android::hardware::boot::V1_0::BoolResult;
 using ::android::hardware::boot::V1_0::CommandResult;
 using ::android::hardware::boot::V1_0::Slot;
+using ::android::hardware::boot::V1_1::MergeStatus;
 using ::android::hardware::fastboot::V1_0::Result;
 using ::android::hardware::fastboot::V1_0::Status;
+using IBootControl1_1 = ::android::hardware::boot::V1_1::IBootControl;
 
 struct VariableHandlers {
     // Callback to retrieve the value of a single variable.
@@ -101,7 +104,8 @@ bool GetVarHandler(FastbootDevice* device, const std::vector<std::string>& args)
             {FB_VAR_BATTERY_VOLTAGE, {GetBatteryVoltage, nullptr}},
             {FB_VAR_BATTERY_SOC_OK, {GetBatterySoCOk, nullptr}},
             {FB_VAR_HW_REVISION, {GetHardwareRevision, nullptr}},
-            {FB_VAR_SUPER_PARTITION_NAME, {GetSuperPartitionName, nullptr}}};
+            {FB_VAR_SUPER_PARTITION_NAME, {GetSuperPartitionName, nullptr}},
+            {FB_VAR_UPDATE_MERGE_STATE, {GetUpdateMergeState, nullptr}}};
 
     if (args.size() < 2) {
         return device->WriteFail("Missing argument");
@@ -544,6 +548,31 @@ bool GsiHandler(FastbootDevice* device, const std::vector<std::string>& args) {
         if (!android::gsi::DisableGsi()) {
             return device->WriteStatus(FastbootResult::FAIL, strerror(errno));
         }
+    }
+    return device->WriteStatus(FastbootResult::OKAY, "Success");
+}
+
+bool SnapshotHandler(FastbootDevice* device, const std::vector<std::string>& args) {
+    if (args.size() != 2) {
+        return device->WriteFail("Invalid arguments");
+    }
+
+    // Note that we use the HAL rather than mounting /metadata, since we want
+    // our results to match the bootloader.
+    auto hal = device->boot_control_hal();
+    if (!hal) return true;
+
+    android::sp<IBootControl1_1> hal11 = IBootControl1_1::castFrom(hal);
+    if (!hal11) return true;
+
+    MergeStatus status = hal11->getSnapshotMergeStatus();
+    switch (status) {
+        case MergeStatus::SNAPSHOTTED:
+        case MergeStatus::MERGING:
+            hal11->setSnapshotMergeStatus(MergeStatus::CANCELLED);
+            break;
+        default:
+            break;
     }
     return device->WriteStatus(FastbootResult::OKAY, "Success");
 }
