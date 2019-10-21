@@ -1,0 +1,141 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a5599464_b9bb2d7f",
+        "filename": "logd/fuzz/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-10-21T23:53:15Z",
+      "side": 1,
+      "message": "Drop this?",
+      "range": {
+        "startLine": 15,
+        "startChar": 0,
+        "endLine": 23,
+        "endChar": 59
+      },
+      "revId": "bdaac0315b8475d0abb09b1afeb297ea124c78ad",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "56abc228_3ff8c976",
+        "filename": "logd/fuzz/log_buffer_log_fuzzer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-10-21T23:53:15Z",
+      "side": 1,
+      "message": "Drop the blank lines.",
+      "range": {
+        "startLine": 3,
+        "startChar": 0,
+        "endLine": 5,
+        "endChar": 2
+      },
+      "revId": "bdaac0315b8475d0abb09b1afeb297ea124c78ad",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ab277a8b_a39a5454",
+        "filename": "logd/fuzz/log_buffer_log_fuzzer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-10-21T23:53:15Z",
+      "side": 1,
+      "message": "A lot of these headers can be dropped.  Probably many of the ones above too.",
+      "revId": "bdaac0315b8475d0abb09b1afeb297ea124c78ad",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e1c046dd_c0c00893",
+        "filename": "logd/fuzz/log_buffer_log_fuzzer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-10-21T23:53:15Z",
+      "side": 1,
+      "message": "Drop this.",
+      "revId": "bdaac0315b8475d0abb09b1afeb297ea124c78ad",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d871cad9_cdde67e1",
+        "filename": "logd/fuzz/log_buffer_log_fuzzer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-10-21T23:53:15Z",
+      "side": 1,
+      "message": "It should be log_buf.  A lot of logd was written before we fully adopted the Google C++ style guide, but now that we have, variables should be written_like_this.",
+      "range": {
+        "startLine": 80,
+        "startChar": 15,
+        "endLine": 80,
+        "endChar": 21
+      },
+      "revId": "bdaac0315b8475d0abb09b1afeb297ea124c78ad",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9e2582b4_4861dbe7",
+        "filename": "logd/fuzz/log_buffer_log_fuzzer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-10-21T23:53:15Z",
+      "side": 1,
+      "message": "Might as well allocate this and times on the stack.",
+      "revId": "bdaac0315b8475d0abb09b1afeb297ea124c78ad",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7128fd3f_f4a176d9",
+        "filename": "logd/fuzz/log_buffer_log_fuzzer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-10-21T23:53:15Z",
+      "side": 1,
+      "message": "How big is `size` usually?  Unless it\u0027s many MB large, it may be interesting to loop again over data to make sure that we fill the buffer and pruning starts happening.  Maybe move this loop into its own function and call it like this:\n\nwhile (data_left \u003e\u003d sizeof(LogInput) + 2 * sizeof(uint8_t)) {\n  WriteLogMessages(data, data_left);\n  ++data;\n  --data_left;\n}\n\nThe default size of each log buffer is 1MB and there are multiple buffers, so ideally each iteration would push ~10MB into the log.\n\nAlternatively, or perhaps additionally, we can call LogBuffer::setSize().  Something like \n\nlog_id_for_each(i) { logBuf-\u003esetSize(i, 10000); } \n\nto set each log buffer to only be 10kb in size, which will make sure that we exercise the pruning code more often.",
+      "revId": "bdaac0315b8475d0abb09b1afeb297ea124c78ad",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
