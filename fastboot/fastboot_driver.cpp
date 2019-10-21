@@ -122,6 +122,14 @@ RetCode FastBootDriver::SetActive(const std::string& slot, std::string* response
                       response, info);
 }
 
+RetCode FastBootDriver::SnapshotCancelUpdate(std::string* response,
+                                             std::vector<std::string>* info) {
+    prolog_(StringPrintf("Cancelling any pending update snapshots"));
+    auto result = RawCommand("snapshot:cancel-update", response, info);
+    epilog_(result);
+    return result;
+}
+
 RetCode FastBootDriver::FlashPartition(const std::string& partition,
                                        const std::vector<char>& data) {
     RetCode ret;

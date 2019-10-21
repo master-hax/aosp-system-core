@@ -34,6 +34,7 @@
 #define FB_CMD_UPDATE_SUPER "update-super"
 #define FB_CMD_OEM "oem"
 #define FB_CMD_GSI "gsi"
+#define FB_CMD_SNAPSHOT "snapshot"
 
 #define RESPONSE_OKAY "OKAY"
 #define RESPONSE_FAIL "FAIL"
@@ -66,3 +67,4 @@
 #define FB_VAR_BATTERY_VOLTAGE "battery-voltage"
 #define FB_VAR_BATTERY_SOC_OK "battery-soc-ok"
 #define FB_VAR_SUPER_PARTITION_NAME "super-partition-name"
+#define FB_VAR_UPDATE_MERGE_STATE "update-merge-state"
