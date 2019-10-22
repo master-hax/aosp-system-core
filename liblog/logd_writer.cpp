@@ -30,7 +30,6 @@
 #include <time.h>
 #include <unistd.h>
 
-#include <cutils/sockets.h>
 #include <private/android_filesystem_config.h>
 #include <private/android_logger.h>
 
@@ -55,43 +54,32 @@ struct android_log_transport_write logdLoggerWrite = {
 
 /* log_init_lock assumed */
 static int logdOpen() {
-  int i, ret = 0;
-
-  i = atomic_load(&logdLoggerWrite.context.sock);
+  int i = atomic_load(&logdLoggerWrite.context.sock);
   if (i < 0) {
-    int sock = TEMP_FAILURE_RETRY(socket(PF_UNIX, SOCK_DGRAM | SOCK_CLOEXEC | SOCK_NONBLOCK, 0));
-    if (sock < 0) {
-      ret = -errno;
-    } else {
-      struct sockaddr_un un;
-      memset(&un, 0, sizeof(struct sockaddr_un));
-      un.sun_family = AF_UNIX;
-      strcpy(un.sun_path, "/dev/socket/logdw");
-
-      if (TEMP_FAILURE_RETRY(connect(sock, (struct sockaddr*)&un, sizeof(struct sockaddr_un))) <
-          0) {
-        ret = -errno;
-        switch (ret) {
-          case -ENOTCONN:
-          case -ECONNREFUSED:
-          case -ENOENT:
-            i = atomic_exchange(&logdLoggerWrite.context.sock, ret);
-            [[fallthrough]];
-          default:
-            break;
-        }
-        close(sock);
-      } else {
-        ret = atomic_exchange(&logdLoggerWrite.context.sock, sock);
-        if ((ret >= 0) && (ret != sock)) {
-          close(ret);
-        }
-        ret = 0;
-      }
-    }
+    return 0;
   }
 
-  return ret;
+  int sock = TEMP_FAILURE_RETRY(socket(PF_UNIX, SOCK_DGRAM | SOCK_CLOEXEC | SOCK_NONBLOCK, 0));
+  if (sock == -1) {
+    return -errno;
+  }
+
+  sockaddr_un un = {.sun_family = AF_UNIX};
+  strcpy(un.sun_path, "/dev/socket/logdw");
+  if (TEMP_FAILURE_RETRY(connect(sock, reinterpret_cast<sockaddr*>(&un), sizeof(un))) == -1) {
+    int saved_errno = -errno;
+    if (saved_errno == -ENOTCONN || saved_errno == -ECONNREFUSED || saved_errno == -ENOENT) {
+      i = atomic_exchange(&logdLoggerWrite.context.sock, saved_errno);
+    }
+    close(sock);
+    return saved_errno;
+  }
+
+  int old_sock = atomic_exchange(&logdLoggerWrite.context.sock, sock);
+  if (old_sock >= 0 && old_sock != sock) {
+    close(old_sock);
+  }
+  return 0;
 }
 
 static void __logdClose(int negative_errno) {
