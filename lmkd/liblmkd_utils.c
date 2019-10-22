@@ -26,9 +26,19 @@
 #include <cutils/sockets.h>
 
 int lmkd_connect() {
-    return socket_local_client("lmkd",
-                               ANDROID_SOCKET_NAMESPACE_RESERVED,
-                               SOCK_SEQPACKET);
+    int sock = socket_local_client("lmkd", ANDROID_SOCKET_NAMESPACE_RESERVED,
+                                   SOCK_SEQPACKET | SOCK_CLOEXEC);
+
+    if (sock < 0) {
+        return -1;
+    }
+    /* Sadly socket_local_client ignores SOCK_CLOEXEC parameter, so have to set it using fcntl */
+    if (fcntl(sock, F_SETFD, FD_CLOEXEC) < 0) {
+        close(sock);
+        return -1;
+    }
+
+    return sock;
 }
 
 int lmkd_register_proc(int sock, struct lmk_procprio *params) {
