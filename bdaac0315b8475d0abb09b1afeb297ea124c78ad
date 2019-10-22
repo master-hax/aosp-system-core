@@ -370,6 +370,24 @@
       "revId": "bdaac0315b8475d0abb09b1afeb297ea124c78ad",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e99955a2_0bd46b9b",
+        "filename": "logd/fuzz/log_buffer_log_fuzzer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 1100093
+      },
+      "writtenOn": "2019-10-22T01:33:08Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "96e839f1_9c7acdd7",
+      "revId": "bdaac0315b8475d0abb09b1afeb297ea124c78ad",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
