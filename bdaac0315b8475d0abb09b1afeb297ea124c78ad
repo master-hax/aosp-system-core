@@ -131,6 +131,24 @@
     },
     {
       "key": {
+        "uuid": "6ffe7ac6_3aef268b",
+        "filename": "logd/fuzz/log_buffer_log_fuzzer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-10-22T01:13:28Z",
+      "side": 1,
+      "message": "Shouldn\u0027t be needed to link, only to build.  I think you only need #include \"../LogBuffer.h\" and #include \"../LogTimes.h\" and a handful of the libc headers.",
+      "parentUuid": "3472de14_52e34db5",
+      "revId": "bdaac0315b8475d0abb09b1afeb297ea124c78ad",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "e1c046dd_c0c00893",
         "filename": "logd/fuzz/log_buffer_log_fuzzer.cpp",
         "patchSetId": 1
@@ -160,6 +178,24 @@
       "side": 1,
       "message": "This was needed to link for some call inside log",
       "parentUuid": "e1c046dd_c0c00893",
+      "revId": "bdaac0315b8475d0abb09b1afeb297ea124c78ad",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4d78d255_bb63fc58",
+        "filename": "logd/fuzz/log_buffer_log_fuzzer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-10-22T01:13:28Z",
+      "side": 1,
+      "message": "It was needed for the old prdebug() function, but not anymore.",
+      "parentUuid": "2ac8ec43_31640aeb",
       "revId": "bdaac0315b8475d0abb09b1afeb297ea124c78ad",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
@@ -277,6 +313,24 @@
       "side": 1,
       "message": "This is actually not much cleaner today if you move it.  I would move it if this funciton got more complex in the future",
       "parentUuid": "7128fd3f_f4a176d9",
+      "revId": "bdaac0315b8475d0abb09b1afeb297ea124c78ad",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "96e839f1_9c7acdd7",
+        "filename": "logd/fuzz/log_buffer_log_fuzzer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-10-22T01:13:28Z",
+      "side": 1,
+      "message": "I think you understand me from our chat: I\u0027m saying that we want two nested loops and to move the inner loop into its own function.  The goal there being to inject even more logs from the incoming byte stream, such that we can more likely hit the pruning threshold.",
+      "parentUuid": "5978c832_f6ab398c",
       "revId": "bdaac0315b8475d0abb09b1afeb297ea124c78ad",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
