@@ -859,7 +859,7 @@ static bool call_vdc(const std::vector<std::string>& args, int* ret) {
         LOG(ERROR) << "vdc call failed with error code: " << err;
         return false;
     }
-    LOG(DEBUG) << "vdc finished successfully";
+    LOG(INFO) << "vdc finished successfully";
     if (ret != nullptr) {
         *ret = WEXITSTATUS(*ret);
     }
@@ -903,6 +903,7 @@ class CheckpointManager {
             needs_checkpoint_ = NO;
         }
 
+        LOG(INFO) << "Do we need checkpoint? " << needs_checkpoint_;
         if (needs_checkpoint_ != YES) {
             return true;
         }
@@ -1060,6 +1061,11 @@ int fs_mgr_mount_all(Fstab* fstab, int mount_mode) {
     for (size_t i = 0; i < fstab->size(); i++) {
         auto& current_entry = (*fstab)[i];
 
+        // A terrible hack.
+        // Shame, Shame, Shame.
+        if (mount_mode == MOUNT_MODE_USERDATA_ONLY && current_entry.mount_point != "/data") {
+            continue;
+        }
         // If a filesystem should have been mounted in the first stage, we
         // ignore it here. With one exception, if the filesystem is
         // formattable, then it can only be formatted in the second stage,
@@ -1274,7 +1280,9 @@ int fs_mgr_mount_all(Fstab* fstab, int mount_mode) {
     }
 
 #if ALLOW_ADBD_DISABLE_VERITY == 1  // "userdebug" build
-    fs_mgr_overlayfs_mount_all(fstab);
+    if (mount_mode != MOUNT_MODE_USERDATA_ONLY) {
+        fs_mgr_overlayfs_mount_all(fstab);
+    }
 #endif
 
     if (error_count) {
@@ -1322,6 +1330,27 @@ int fs_mgr_umount_all(android::fs_mgr::Fstab* fstab) {
         }
     }
     return ret;
+}
+
+int fs_mgr_umount_userdata(Fstab* fstab) {
+    // TODO: implement.
+    auto entry = std::find_if(fstab->begin(), fstab->end(),
+                              [](const FstabEntry& e) { return e.mount_point == "/data"; });
+    if (entry == fstab->end()) {
+        LERROR << "Can't find /data in fstab";
+        return -1;
+    }
+    if (entry->fs_mgr_flags.checkpoint_blk) {
+        // TODO(b/135984674): tear down bow device in case of block checkpointing.
+        //  Or alternatively keep device, and change logic in CheckpointManager not to re-use it.
+        LERROR << "Remounting /data with block checkpointing is not supported";
+        return -1;
+    }
+    if (umount(entry->mount_point.c_str()) != 0) {
+        LERROR << "Failed to umount /data";
+        return -1;
+    }
+    return -0;
 }
 
 // wrapper to __mount() and expects a fully prepared fstab_rec,

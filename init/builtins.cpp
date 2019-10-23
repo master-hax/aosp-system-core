@@ -60,9 +60,11 @@
 #include <selinux/label.h>
 #include <selinux/selinux.h>
 #include <system/thread_defs.h>
+#include <memory>
 
 #include "action_manager.h"
 #include "bootchart.h"
+#include "builtin_arguments.h"
 #include "fscrypt_init_extensions.h"
 #include "init.h"
 #include "mount_namespace.h"
@@ -627,6 +629,8 @@ static Result<void> queue_fs_event(int code) {
     return Error() << "Invalid code: " << code;
 }
 
+static std::unique_ptr<Fstab> userdata_fstab;
+
 /* mount_all <fstab> [ <path> ]* [--<options>]*
  *
  * This function might request a reboot, in which case it will
@@ -677,6 +681,12 @@ static Result<void> do_mount_all(const BuiltinArguments& args) {
         if (!queue_fs_result) {
             return Error() << "queue_fs_event() failed: " << queue_fs_result.error();
         }
+    }
+
+    // Terrible hack.
+    // TODO: instead, scan fstab and check that it has /data.
+    if (mount_mode == MOUNT_MODE_LATE) {
+        userdata_fstab = std::make_unique<Fstab>(std::move(fstab));
     }
 
     return {};
@@ -1111,8 +1121,8 @@ static Result<void> ExecWithFunctionOnFailure(const std::vector<std::string>& ar
     return {};
 }
 
-static Result<void> ExecVdcRebootOnFailure(const std::string& vdc_arg) {
-    auto reboot_reason = vdc_arg + "_failed";
+static Result<void> ExecVdcRebootOnFailure(const std::string& system, const std::string& vdc_arg) {
+    auto reboot_reason = system + "_" + vdc_arg + "_failed";
 
     auto reboot = [reboot_reason](const std::string& message) {
         // TODO (b/122850122): support this in gsi
@@ -1128,8 +1138,28 @@ static Result<void> ExecVdcRebootOnFailure(const std::string& vdc_arg) {
         }
     };
 
-    std::vector<std::string> args = {"exec", "/system/bin/vdc", "--wait", "cryptfs", vdc_arg};
+    std::vector<std::string> args = {"exec", "/system/bin/vdc", "--wait", system, vdc_arg};
     return ExecWithFunctionOnFailure(args, reboot);
+}
+
+static Result<void> do_remount_userdata(const BuiltinArguments& args) {
+    if (userdata_fstab == nullptr) {
+        return Error() << "Calling remount_userdata too early";
+    }
+    // Call volume shutdown in case it wasn't called before.
+    ExecVdcRebootOnFailure("volume", "shutdown");
+    // At this point nothing should prevent from unmounting /data.
+    if (auto rc = fs_mgr_umount_userdata(userdata_fstab.get()); rc < 0) {
+        TriggerShutdown("reboot,umount-userdata-failed");
+    }
+    auto mount_fstab_return_code = fs_mgr_mount_all(userdata_fstab.get(), MOUNT_MODE_USERDATA_ONLY);
+    if (mount_fstab_return_code < 0) {
+        TriggerShutdown("reboot,mount-userdata-failed");
+    }
+    if (auto s = queue_fs_event(mount_fstab_return_code); !s) {
+        return Error() << "queue_fs_event() failed: " << s.error();
+    }
+    return {};
 }
 
 static Result<void> do_installkey(const BuiltinArguments& args) {
@@ -1139,11 +1169,11 @@ static Result<void> do_installkey(const BuiltinArguments& args) {
     if (!make_dir(unencrypted_dir, 0700) && errno != EEXIST) {
         return ErrnoError() << "Failed to create " << unencrypted_dir;
     }
-    return ExecVdcRebootOnFailure("enablefilecrypto");
+    return ExecVdcRebootOnFailure("cryptfs", "enablefilecrypto");
 }
 
 static Result<void> do_init_user0(const BuiltinArguments& args) {
-    return ExecVdcRebootOnFailure("init_user0");
+    return ExecVdcRebootOnFailure("cryptfs", "init_user0");
 }
 
 static Result<void> do_mark_post_data(const BuiltinArguments& args) {
@@ -1242,6 +1272,7 @@ const BuiltinFunctionMap& GetBuiltinFunctionMap() {
         {"parse_apex_configs",      {0,     0,    {false,  do_parse_apex_configs}}},
         {"umount",                  {1,     1,    {false,  do_umount}}},
         {"umount_all",              {1,     1,    {false,  do_umount_all}}},
+        {"remount_userdata",        {0,     0,    {false,  do_remount_userdata}}},
         {"readahead",               {1,     2,    {true,   do_readahead}}},
         {"restart",                 {1,     1,    {false,  do_restart}}},
         {"restorecon",              {1,     kMax, {true,   do_restorecon}}},
