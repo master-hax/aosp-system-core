@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0017e4e3_def70cc4",
+        "filename": "adb/fastdeploy/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 1166043
+      },
+      "writtenOn": "2019-10-23T19:12:13Z",
+      "side": 1,
+      "message": "we don\u0027t need to have it on the device at all, it\u0027s only used during build",
+      "revId": "6f5132f43b76432a1a317003c647e174e487f884",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
