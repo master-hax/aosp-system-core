@@ -30,6 +30,7 @@ java_binary {
     static_libs: [
         "deployagent_lib",
     ],
+    system_ext_specific : true,
     dex_preopt: {
         enabled: false,
     }
