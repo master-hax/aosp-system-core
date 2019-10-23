@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "96c1ac40_d1a4dc67",
+        "filename": "logd/fuzz/log_buffer_log_fuzzer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1101482
+      },
+      "writtenOn": "2019-10-23T22:39:24Z",
+      "side": 1,
+      "message": "are you sure that 4 bytes is enough? Just a random question, as I\u0027ve no idea how the target code handles the message. If it\u0027s essentially no-op then sure a very short one is good, otherwise might make sense to try longer sequences as well",
+      "range": {
+        "startLine": 22,
+        "startChar": 23,
+        "endLine": 22,
+        "endChar": 24
+      },
+      "revId": "bd340a972d87ea07f6258b68df65758c550c3ca3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a403d1cd_f75f0483",
+        "filename": "logd/fuzz/log_buffer_log_fuzzer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1101482
+      },
+      "writtenOn": "2019-10-23T22:39:24Z",
+      "side": 1,
+      "message": "would it make sense to fuzz this even more than just in the range from 1000 to 1009?",
+      "range": {
+        "startLine": 45,
+        "startChar": 13,
+        "endLine": 45,
+        "endChar": 16
+      },
+      "revId": "bd340a972d87ea07f6258b68df65758c550c3ca3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "716e659f_813e143a",
+        "filename": "logd/fuzz/log_buffer_log_fuzzer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 1101482
+      },
+      "writtenOn": "2019-10-23T22:39:24Z",
+      "side": 1,
+      "message": "is this used anywhere? if it\u0027s just a mock method, please consider adding a comment to clarify",
+      "range": {
+        "startLine": 86,
+        "startChar": 6,
+        "endLine": 86,
+        "endChar": 15
+      },
+      "revId": "bd340a972d87ea07f6258b68df65758c550c3ca3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
