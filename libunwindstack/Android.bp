@@ -35,8 +35,8 @@ cc_defaults {
     },
 }
 
-cc_library {
-    name: "libunwindstack",
+cc_defaults {
+    name: "libunwindstack_defaults",
     vendor_available: true,
     recovery_available: true,
     vndk: {
@@ -48,8 +48,6 @@ cc_library {
 
     srcs: [
         "ArmExidx.cpp",
-        "DexFile.cpp",
-        "DexFiles.cpp",
         "DwarfCfa.cpp",
         "DwarfEhFrameWithHdr.cpp",
         "DwarfMemory.cpp",
@@ -88,26 +86,6 @@ cc_library {
                 "-g",
             ],
         },
-        vendor: {
-            cflags: ["-DNO_LIBDEXFILE_SUPPORT"],
-            exclude_srcs: [
-                "DexFile.cpp",
-                "DexFiles.cpp",
-            ],
-            exclude_shared_libs: [
-                "libdexfile_support",
-            ],
-        },
-        recovery: {
-            cflags: ["-DNO_LIBDEXFILE_SUPPORT"],
-            exclude_srcs: [
-                "DexFile.cpp",
-                "DexFiles.cpp",
-            ],
-            exclude_shared_libs: [
-                "libdexfile_support",
-            ],
-        },
     },
 
     arch: {
@@ -131,10 +109,50 @@ cc_library {
 
     shared_libs: [
         "libbase",
-        "libdexfile_support",
         "liblog",
         "liblzma",
     ],
+}
+
+cc_library_static {
+    name: "libunwindstack_nodex",
+    defaults: ["libunwindstack_defaults"],
+    cflags: ["-DNO_LIBDEXFILE_SUPPORT"],
+}
+
+cc_library {
+    name: "libunwindstack",
+    defaults: ["libunwindstack_defaults"],
+
+    srcs: [
+        "DexFile.cpp",
+        "DexFiles.cpp",
+    ],
+
+    target: {
+        vendor: {
+            cflags: ["-DNO_LIBDEXFILE_SUPPORT"],
+            exclude_srcs: [
+                "DexFile.cpp",
+                "DexFiles.cpp",
+            ],
+            exclude_shared_libs: [
+                "libdexfile_support",
+            ],
+        },
+        recovery: {
+            cflags: ["-DNO_LIBDEXFILE_SUPPORT"],
+            exclude_srcs: [
+                "DexFile.cpp",
+                "DexFiles.cpp",
+            ],
+            exclude_shared_libs: [
+                "libdexfile_support",
+            ],
+        },
+    },
+
+    shared_libs: ["libdexfile_support"],
 }
 
 //-------------------------------------------------------------------------

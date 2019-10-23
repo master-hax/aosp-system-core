@@ -108,8 +108,7 @@ LOCAL_STATIC_LIBRARIES := \
     libgsi \
     libcom.android.sysprop.apex \
     liblzma \
-    libdexfile_support_static \
-    libunwindstack \
+    libunwindstack_nodex \
     libbacktrace \
     libmodprobe \
     libext2_uuid \
