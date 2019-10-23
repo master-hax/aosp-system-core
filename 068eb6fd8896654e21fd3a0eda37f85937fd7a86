@@ -2,6 +2,52 @@
   "comments": [
     {
       "key": {
+        "uuid": "80acd7ba_e5d9d2a6",
+        "filename": "lmkd/lmkd.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 493,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-10-23T16:21:49Z",
+      "side": 1,
+      "message": "This does work for init (AID_ROOT) and ams (AID_SYSTEM), but does not work to pedantically separate all. For example your test can run as either of the above uids. I understand that using cred-\u003epid will become an issue because ams can crash and restart and it needs to purge it\u0027s previous pieces. But as a minimum I would expect cred-\u003epid \u003d\u003d 1 should separate init from a test that happens to be run as su root.\n\nAlso, no one should be allowed to register pids to lmkd for the registrants? Perhaps \u0027conveniently\u0027 recording the registrant pid along with the registrant uid can be used to prevent self or cross registration of the registrants?\n\nreg_pid could be used to enhance future debugging, or is the space (64 bits) too costly to lmkd?",
+      "range": {
+        "startLine": 493,
+        "startChar": 4,
+        "endLine": 493,
+        "endChar": 66
+      },
+      "revId": "068eb6fd8896654e21fd3a0eda37f85937fd7a86",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6829cbcb_7d35f440",
+        "filename": "lmkd/lmkd.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 984,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-10-23T16:21:49Z",
+      "side": 1,
+      "message": "To facilitate the gTest running as AID_ROOT, also ((procp-\u003ereg_pid \u003d\u003d 1) !\u003d (cred-\u003epid \u003d\u003d 1))?",
+      "range": {
+        "startLine": 984,
+        "startChar": 8,
+        "endLine": 984,
+        "endChar": 35
+      },
+      "revId": "068eb6fd8896654e21fd3a0eda37f85937fd7a86",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "dfde6ba5_130fe7b6",
         "filename": "lmkd/lmkd.c",
         "patchSetId": 1
@@ -49,6 +95,29 @@
     },
     {
       "key": {
+        "uuid": "97cc2559_45827287",
+        "filename": "lmkd/lmkd.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 986,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-10-23T16:21:49Z",
+      "side": 1,
+      "message": "proc_pid_name to to know _who_ (just in case it is not init or ams)?",
+      "range": {
+        "startLine": 986,
+        "startChar": 89,
+        "endLine": 986,
+        "endChar": 97
+      },
+      "revId": "068eb6fd8896654e21fd3a0eda37f85937fd7a86",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "b48de447_4425c746",
         "filename": "lmkd/lmkd.c",
         "patchSetId": 1
@@ -89,6 +158,75 @@
         "startChar": 15,
         "endLine": 1011,
         "endChar": 59
+      },
+      "revId": "068eb6fd8896654e21fd3a0eda37f85937fd7a86",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9847eda3_f8292972",
+        "filename": "lmkd/lmkd.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 1180,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-10-23T16:21:49Z",
+      "side": 1,
+      "message": "nit: strerror?",
+      "range": {
+        "startLine": 1180,
+        "startChar": 59,
+        "endLine": 1180,
+        "endChar": 64
+      },
+      "revId": "068eb6fd8896654e21fd3a0eda37f85937fd7a86",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "03d428a1_295cac2b",
+        "filename": "lmkd/lmkd.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 1201,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-10-23T16:21:49Z",
+      "side": 1,
+      "message": "subtlety here.\n\nNB: I believe this can only happen if the listener does not create a SO_PASSCRED socket before messages start flowing. So I do not truly expect this to result in logspam.\n\nBut could we consider closing the connection to prevent the possibility of logspam, and expect the caller will start a new connection, thus purging and re-registering everything again (hopefully this time not hitting the above impossible race)?",
+      "range": {
+        "startLine": 1198,
+        "startChar": 0,
+        "endLine": 1201,
+        "endChar": 5
+      },
+      "revId": "068eb6fd8896654e21fd3a0eda37f85937fd7a86",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e945b48b_23ec8a78",
+        "filename": "lmkd/lmkd.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 1237,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-10-23T16:21:49Z",
+      "side": 1,
+      "message": "report the UID and pid_get_name too, then this message can point to the root cause so we can triage who/why.",
+      "range": {
+        "startLine": 1237,
+        "startChar": 64,
+        "endLine": 1237,
+        "endChar": 65
       },
       "revId": "068eb6fd8896654e21fd3a0eda37f85937fd7a86",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
