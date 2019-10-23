@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "8bf6094f_393ec935",
+        "filename": "lmkd/lmkd.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 493,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-10-23T18:39:50Z",
+      "side": 1,
+      "message": "Had a quick chat with Mark. Will record PID and will check for both PID and UID match. When a client disconnects we will zero-out PIDs in all its records so that next time if comes up we will detect that previous registrar disappeared and will associate the record with the new client.",
+      "parentUuid": "216e3171_c62e5c01",
+      "range": {
+        "startLine": 493,
+        "startChar": 4,
+        "endLine": 493,
+        "endChar": 66
+      },
+      "revId": "068eb6fd8896654e21fd3a0eda37f85937fd7a86",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "6829cbcb_7d35f440",
         "filename": "lmkd/lmkd.c",
         "patchSetId": 1
