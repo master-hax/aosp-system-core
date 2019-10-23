@@ -46,8 +46,8 @@ cc_library_headers {
     export_include_dirs: ["include"],
 }
 
-cc_library {
-    name: "libbacktrace",
+cc_defaults {
+    name: "libbacktrace_defaults",
     vendor_available: false,
     recovery_available: true,
     vndk: {
@@ -80,7 +80,6 @@ cc_library {
             shared_libs: [
                 "libbase",
                 "liblog",
-                "libunwindstack",
             ],
 
             static_libs: [
@@ -90,11 +89,37 @@ cc_library {
         android: {
             static_libs: ["libasync_safe"],
         },
+    },
+}
+
+cc_library {
+    name: "libbacktrace",
+    defaults: ["libbacktrace_defaults"],
+
+    target: {
+        linux: {
+            shared_libs: [
+                "libunwindstack",
+            ],
+        },
         vendor: {
             cflags: ["-DNO_LIBDEXFILE_SUPPORT"],
         },
         recovery: {
             cflags: ["-DNO_LIBDEXFILE_SUPPORT"],
+        },
+    },
+}
+
+cc_library_static {
+    name: "libbacktrace_nodex",
+    defaults: ["libbacktrace_defaults"],
+    cflags: ["-DNO_LIBDEXFILE_SUPPORT"],
+    target: {
+        linux: {
+            static_libs: [
+                "libunwindstack_nodex",
+            ],
         },
     },
 }
