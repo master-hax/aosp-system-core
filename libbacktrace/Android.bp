@@ -50,8 +50,8 @@ cc_library_headers {
     ],
 }
 
-cc_library {
-    name: "libbacktrace",
+cc_defaults {
+    name: "libbacktrace_defaults",
     vendor_available: false,
     recovery_available: true,
     apex_available: [
@@ -88,7 +88,6 @@ cc_library {
             shared_libs: [
                 "libbase",
                 "liblog",
-                "libunwindstack",
             ],
 
             static_libs: [
@@ -101,11 +100,38 @@ cc_library {
                 whole_static_libs: ["libasync_safe"],
             },
         },
+    },
+}
+
+cc_library {
+    name: "libbacktrace",
+    defaults: ["libbacktrace_defaults"],
+
+    target: {
+        linux: {
+            shared_libs: [
+                "libunwindstack",
+            ],
+        },
         vendor: {
             cflags: ["-DNO_LIBDEXFILE_SUPPORT"],
         },
         recovery: {
             cflags: ["-DNO_LIBDEXFILE_SUPPORT"],
+        },
+    },
+}
+
+// Static library without DEX support to avoid dependencies on the ART APEX.
+cc_library_static {
+    name: "libbacktrace_no_dex",
+    defaults: ["libbacktrace_defaults"],
+    cflags: ["-DNO_LIBDEXFILE_SUPPORT"],
+    target: {
+        linux: {
+            static_libs: [
+                "libunwindstack_no_dex",
+            ],
         },
     },
 }

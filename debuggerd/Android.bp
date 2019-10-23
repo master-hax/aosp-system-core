@@ -118,22 +118,13 @@ cc_library_static {
         "libasync_safe",
         "libbase",
         "libdebuggerd",
-        "libunwindstack",
-        "libdexfile_support_static",  // libunwindstack dependency
+        "libunwindstack_no_dex",
         "liblzma",
         "libcutils",
     ],
 
     header_libs: ["bionic_libc_platform_headers"],
     export_header_lib_headers: ["bionic_libc_platform_headers"],
-
-    target: {
-        recovery: {
-            exclude_static_libs: [
-                "libdexfile_support_static",
-            ],
-        },
-    },
 
     export_include_dirs: ["include"],
 }
@@ -188,7 +179,7 @@ cc_library_static {
     ],
 
     static_libs: [
-        "libdexfile_support_static",  // libunwindstack dependency
+        "libdexfile_support",  // libunwindstack dependency
         "libunwindstack",
         "liblzma",
         "libbase",
@@ -201,7 +192,7 @@ cc_library_static {
     target: {
         recovery: {
             exclude_static_libs: [
-                "libdexfile_support_static",
+                "libdexfile_support",
             ],
         },
     },
