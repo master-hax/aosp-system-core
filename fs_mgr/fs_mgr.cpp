@@ -859,7 +859,7 @@ static bool call_vdc(const std::vector<std::string>& args, int* ret) {
         LOG(ERROR) << "vdc call failed with error code: " << err;
         return false;
     }
-    LOG(DEBUG) << "vdc finished successfully";
+    LOG(INFO) << "vdc finished successfully";
     if (ret != nullptr) {
         *ret = WEXITSTATUS(*ret);
     }
@@ -888,6 +888,17 @@ class CheckpointManager {
   public:
     CheckpointManager(int needs_checkpoint = -1) : needs_checkpoint_(needs_checkpoint) {}
 
+    bool NeedsCheckpoint() {
+        if (needs_checkpoint_ != UNKNOWN) {
+            return needs_checkpoint_ == YES;
+        }
+        if (!call_vdc({"checkpoint", "needsCheckpoint"}, &needs_checkpoint_)) {
+            LERROR << "Failed to find if checkpointing is needed. Assuming no.";
+            needs_checkpoint_ = NO;
+        }
+        return needs_checkpoint_ == YES;
+    }
+
     bool Update(FstabEntry* entry, const std::string& block_device = std::string()) {
         if (!entry->fs_mgr_flags.checkpoint_blk && !entry->fs_mgr_flags.checkpoint_fs) {
             return true;
@@ -897,13 +908,7 @@ class CheckpointManager {
             call_vdc({"checkpoint", "restoreCheckpoint", entry->blk_device}, nullptr);
         }
 
-        if (needs_checkpoint_ == UNKNOWN &&
-            !call_vdc({"checkpoint", "needsCheckpoint"}, &needs_checkpoint_)) {
-            LERROR << "Failed to find if checkpointing is needed. Assuming no.";
-            needs_checkpoint_ = NO;
-        }
-
-        if (needs_checkpoint_ != YES) {
+        if (!NeedsCheckpoint()) {
             return true;
         }
 
@@ -1060,6 +1065,11 @@ int fs_mgr_mount_all(Fstab* fstab, int mount_mode) {
     for (size_t i = 0; i < fstab->size(); i++) {
         auto& current_entry = (*fstab)[i];
 
+        // A terrible hack.
+        // Shame, Shame, Shame.
+        if (mount_mode == MOUNT_MODE_USERDATA_ONLY && current_entry.mount_point != "/data") {
+            continue;
+        }
         // If a filesystem should have been mounted in the first stage, we
         // ignore it here. With one exception, if the filesystem is
         // formattable, then it can only be formatted in the second stage,
@@ -1274,7 +1284,9 @@ int fs_mgr_mount_all(Fstab* fstab, int mount_mode) {
     }
 
 #if ALLOW_ADBD_DISABLE_VERITY == 1  // "userdebug" build
-    fs_mgr_overlayfs_mount_all(fstab);
+    if (mount_mode != MOUNT_MODE_USERDATA_ONLY) {
+        fs_mgr_overlayfs_mount_all(fstab);
+    }
 #endif
 
     if (error_count) {
@@ -1322,6 +1334,62 @@ int fs_mgr_umount_all(android::fs_mgr::Fstab* fstab) {
         }
     }
     return ret;
+}
+
+int fs_mgr_remount_userdata_into_checkpointing(Fstab* fstab) {
+    auto entry = std::find_if(fstab->begin(), fstab->end(),
+                              [](const FstabEntry& e) { return e.mount_point == "/data"; });
+    if (entry == fstab->end()) {
+        LERROR << "Can't find /data in fstab";
+        return -1;
+    }
+    if (!entry->fs_mgr_flags.checkpoint_blk && !entry->fs_mgr_flags.checkpoint_fs) {
+        LINFO << "Userdata doesn't support checkpointing. Nothing to do";
+        return 0;
+    }
+    CheckpointManager checkpoint_manager;
+    if (!checkpoint_manager.NeedsCheckpoint()) {
+        LINFO << "Checkpointing not needed. Don't remount";
+        return 0;
+    }
+    if (entry->fs_mgr_flags.checkpoint_fs) {
+        // Userdata is f2fs, simply remount it.
+        if (!checkpoint_manager.Update(&(*entry))) {
+            LERROR << "Failed to remount userdata in checkpointing mode";
+            return -1;
+        }
+        if (mount(entry->blk_device.c_str(), entry->mount_point.c_str(), "none",
+                  MS_REMOUNT | entry->flags, entry->fs_options.c_str()) != 0) {
+            LERROR << "Failed to remount userdata in checkpointing mode";
+            return -1;
+        }
+    } else {
+        // TODO(b/135984674): support remounting for ext4.
+        LERROR << "Remounting in checkpointing mode is not yet supported for ext4";
+        return -1;
+    }
+    return 0;
+}
+
+int fs_mgr_umount_userdata(Fstab* fstab) {
+    // TODO: implement.
+    auto entry = std::find_if(fstab->begin(), fstab->end(),
+                              [](const FstabEntry& e) { return e.mount_point == "/data"; });
+    if (entry == fstab->end()) {
+        LERROR << "Can't find /data in fstab";
+        return -1;
+    }
+    if (entry->fs_mgr_flags.checkpoint_blk) {
+        // TODO(b/135984674): tear down bow device in case of block checkpointing.
+        //  Or alternatively keep device, and change logic in CheckpointManager not to re-use it.
+        LERROR << "Remounting /data with block checkpointing is not supported";
+        return -1;
+    }
+    if (umount(entry->mount_point.c_str()) != 0) {
+        LERROR << "Failed to umount /data";
+        return -1;
+    }
+    return 0;
 }
 
 // wrapper to __mount() and expects a fully prepared fstab_rec,
