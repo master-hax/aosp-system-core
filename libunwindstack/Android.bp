@@ -35,8 +35,8 @@ cc_defaults {
     },
 }
 
-cc_library {
-    name: "libunwindstack",
+cc_defaults {
+    name: "libunwindstack_defaults",
     vendor_available: true,
     recovery_available: true,
     vndk: {
@@ -48,7 +48,6 @@ cc_library {
 
     srcs: [
         "ArmExidx.cpp",
-        "DexFile.cpp",
         "DexFiles.cpp",
         "DwarfCfa.cpp",
         "DwarfEhFrameWithHdr.cpp",
@@ -77,7 +76,6 @@ cc_library {
     ],
 
     cflags: [
-        "-DDEXFILE_SUPPORT",
         "-Wexit-time-destructors",
     ],
 
@@ -87,24 +85,6 @@ cc_library {
             cflags: [
                 "-O0",
                 "-g",
-            ],
-        },
-        vendor: {
-            cflags: ["-UDEXFILE_SUPPORT"],
-            exclude_srcs: [
-                "DexFile.cpp",
-            ],
-            exclude_shared_libs: [
-                "libdexfile_support",
-            ],
-        },
-        recovery: {
-            cflags: ["-UDEXFILE_SUPPORT"],
-            exclude_srcs: [
-                "DexFile.cpp",
-            ],
-            exclude_shared_libs: [
-                "libdexfile_support",
             ],
         },
     },
@@ -124,9 +104,41 @@ cc_library {
 
     shared_libs: [
         "libbase",
-        "libdexfile_support",
         "liblog",
         "liblzma",
+    ],
+}
+
+cc_library {
+    name: "libunwindstack",
+    defaults: ["libunwindstack_defaults"],
+
+    srcs: ["DexFile.cpp"],
+    cflags: ["-DDEXFILE_SUPPORT"],
+    shared_libs: ["libdexfile_support"],
+
+    target: {
+        vendor: {
+            cflags: ["-UDEXFILE_SUPPORT"],
+            exclude_srcs: ["DexFile.cpp"],
+            exclude_shared_libs: ["libdexfile_support"],
+        },
+        recovery: {
+            cflags: ["-UDEXFILE_SUPPORT"],
+            exclude_srcs: ["DexFile.cpp"],
+            exclude_shared_libs: ["libdexfile_support"],
+        },
+    },
+}
+
+// Static library without DEX support to avoid dependencies on the ART APEX.
+cc_library_static {
+    name: "libunwindstack_no_dex",
+    defaults: ["libunwindstack_defaults"],
+
+    apex_available: [
+        "//apex_available:platform",
+        "com.android.runtime",
     ],
 }
 
