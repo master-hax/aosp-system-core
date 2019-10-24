@@ -1,0 +1,175 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b112485e_227f6471",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1068,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-10-24T17:32:06Z",
+      "side": 1,
+      "message": "This whole function has been desperately needing to be refactored.  Perhaps now is the time we do it?\n\nI\u0027m shamelessly okay with this hack though too.",
+      "revId": "41fabf938d2dfd38491edb02b769046b0f1787cd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e895a41f_d1667e0a",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1339,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-10-24T17:32:06Z",
+      "side": 1,
+      "message": "We support fstabs with multiple entries for /data, where a vendor may have both ext4 and f2fs in the fstab and its gets determined at runtime which one should be mounted.\n\nWe\u0027ll likely need to read /proc/mounts to find the blk_device, then find the entry in the fstab that corresponds to it.  I believe the fs_mgr_overlayfs code has an example of this.",
+      "revId": "41fabf938d2dfd38491edb02b769046b0f1787cd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "272a633e_6bcfb2a5",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1374,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-10-24T17:32:06Z",
+      "side": 1,
+      "message": "Same as above.",
+      "revId": "41fabf938d2dfd38491edb02b769046b0f1787cd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "59b9b734_f011d233",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-10-24T17:32:06Z",
+      "side": 1,
+      "message": "This goes like: \n\n#include \u003cunistd.h\u003e\n\n#include \u003cmemory\u003e\n\n#include \u003cApexProperties.sysprop.h\u003e",
+      "revId": "41fabf938d2dfd38491edb02b769046b0f1787cd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "30ec28e9_75ef3330",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-10-24T17:32:06Z",
+      "side": 1,
+      "message": "This is in the related header, so you don\u0027t need it here.",
+      "revId": "41fabf938d2dfd38491edb02b769046b0f1787cd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8ddb8612_dade6430",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 673,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-10-24T17:32:06Z",
+      "side": 1,
+      "message": "You don\u0027t really need a std::unique_ptr here.  std::optional is better suited.\n\nIn any case, I\u0027ve been pushing pretty hard that the only fstab that should actually contain /data is the ones returned by ReadDefaultFstab().  Instead of this hack, perhaps we could start enforcing that more.",
+      "range": {
+        "startLine": 673,
+        "startChar": 35,
+        "endLine": 673,
+        "endChar": 46
+      },
+      "revId": "41fabf938d2dfd38491edb02b769046b0f1787cd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0cf01ac3_48a0e63e",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1159,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-10-24T17:32:06Z",
+      "side": 1,
+      "message": "\u0027result\u0027 ? to match the rest of the code?  Anything but a single letter is better.\n\nSame below.",
+      "range": {
+        "startLine": 1159,
+        "startChar": 13,
+        "endLine": 1159,
+        "endChar": 14
+      },
+      "revId": "41fabf938d2dfd38491edb02b769046b0f1787cd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "656da247_b2d7ad44",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1172,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-10-24T17:32:06Z",
+      "side": 1,
+      "message": "Others will know better, but I think we might be checking the stats for how often we see \"enablefilecrypto\" as the reboot reason, so we might not want to change it.",
+      "revId": "41fabf938d2dfd38491edb02b769046b0f1787cd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ee9f5879_cc886028",
+        "filename": "init/reboot.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 753,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-10-24T17:32:06Z",
+      "side": 1,
+      "message": "vold_service.\n\nThis file mixes the style a bit, but new code should do the right thing.",
+      "range": {
+        "startLine": 753,
+        "startChar": 13,
+        "endLine": 753,
+        "endChar": 24
+      },
+      "revId": "41fabf938d2dfd38491edb02b769046b0f1787cd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
