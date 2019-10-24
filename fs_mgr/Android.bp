@@ -121,7 +121,6 @@ cc_binary {
         "libavb_user",
     ],
     shared_libs: [
-        "libbootloader_message",
         "libbase",
         "libcutils",
         "libcrypto",

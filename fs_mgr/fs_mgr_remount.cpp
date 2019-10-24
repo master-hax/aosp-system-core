@@ -31,7 +31,6 @@
 #include <android-base/logging.h>
 #include <android-base/properties.h>
 #include <android-base/strings.h>
-#include <bootloader_message/bootloader_message.h>
 #include <cutils/android_reboot.h>
 #include <fec/io.h>
 #include <fs_mgr_overlayfs.h>
