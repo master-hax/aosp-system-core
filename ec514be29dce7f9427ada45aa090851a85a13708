@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fcb27ef1_a793d12c",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-10-24T23:41:14Z",
+      "side": 1,
+      "message": "Does it though?  I don\u0027t see this done anywhere.",
+      "revId": "ec514be29dce7f9427ada45aa090851a85a13708",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0e8bdc23_805c8160",
+        "filename": "init/reboot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 514,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-10-24T23:41:14Z",
+      "side": 1,
+      "message": "Does this fit within 100 char?  It\u0027s better to be on one line.",
+      "range": {
+        "startLine": 513,
+        "startChar": 0,
+        "endLine": 514,
+        "endChar": 29
+      },
+      "revId": "ec514be29dce7f9427ada45aa090851a85a13708",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
