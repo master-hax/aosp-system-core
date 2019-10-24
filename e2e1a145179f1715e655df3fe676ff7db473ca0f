@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "53cea90f_284015db",
+        "filename": "liblog/README.protocol.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-10-24T18:17:39Z",
+      "side": 1,
+      "message": "(you know you don\u0027t need the trailing parts? just #/##/### at the start of the line is enough.)",
+      "range": {
+        "startLine": 22,
+        "startChar": 9,
+        "endLine": 22,
+        "endChar": 12
+      },
+      "revId": "e2e1a145179f1715e655df3fe676ff7db473ca0f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
