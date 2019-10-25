@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "57f19b68_b6dced75",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-10-25T21:15:12Z",
+      "side": 1,
+      "message": "This is the part that gives me the most trouble.  The old code in logcatd_main.cpp re-used the same \u0027context\u0027 so some of its members would leak from the first android_logcat_run_command() call to the second one.\n\nBut, I keep checking and it doesn\u0027t appear that anything intentionally leaks.  The log rotation, which is the most worrisome here, looks to already support restarting from the middle of a rotated log.  The old code resets all of the file information, including outByteCount, which adds to be belief that this could have always been two separate calls.\n\nBut I\u0027m testing this more nonetheless.",
+      "revId": "e35341ffcee624a356819276acf1544780b297ce",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
