@@ -16,6 +16,24 @@
       "revId": "7792ebec3c65859a5460e47e5631471055b4fe6d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "60ad1a5b_35cdeb08",
+        "filename": "fs_mgr/libsnapshot/snapshot_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1112,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2019-10-25T22:54:37Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fc244308_c6ab36be",
+      "revId": "7792ebec3c65859a5460e47e5631471055b4fe6d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
