@@ -16,6 +16,24 @@
       "revId": "e35341ffcee624a356819276acf1544780b297ce",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "46dd3a4e_34a615c9",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-10-25T21:32:18Z",
+      "side": 1,
+      "message": "It does the right thing when I run logpersist.start, so between the code looking right and the behavior being good, I think this is correct.",
+      "parentUuid": "57f19b68_b6dced75",
+      "revId": "e35341ffcee624a356819276acf1544780b297ce",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
