@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ee5a11b2_393c092c",
+        "filename": "libziparchive/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 187,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-10-25T17:02:10Z",
+      "side": 1,
+      "message": "i\u0027m assuming if i\u0027m not trying to annoy folks who work with zip files by replacing the unzip and zipinfo on their path that i should just do what i have here.\n\nrename to \"ziptool\", and have \"unzip\" and \"zipinfo\" symlinks for target, and no symlinks for host. we can add the host symlinks in prebuilts/build-tools?",
+      "revId": "c02676b1c44e56ca9b0ca26edacdb092d3bb0654",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
