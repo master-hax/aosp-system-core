@@ -235,7 +235,10 @@ cc_test {
         "ueventd_test.cpp",
         "util_test.cpp",
     ],
-    static_libs: ["libinit"],
+    static_libs: [
+        "libfstab",
+        "libinit",
+    ],
 
     test_suites: [
         "cts",
