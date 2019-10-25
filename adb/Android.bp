@@ -496,18 +496,26 @@ cc_binary {
         keep_symbols: true,
     },
 
-    shared_libs: [
-        "libadbconnection_server",
+    stl: "libc++_static",
+    static_libs: [
         "libadbd",
         "libadbd_auth",
         "libadbd_services",
+        "libasyncio",
         "libbase",
         "libcap",
-        "libcrypto",
+        "libcrypto_static",
+        "libcrypto_utils",
         "libcutils",
+        "libdiagnose_usb",
         "liblog",
+        "libmdnssd",
         "libminijail",
         "libselinux",
+    ],
+
+    shared_libs: [
+        "libadbconnection_server",
     ],
 }
 
