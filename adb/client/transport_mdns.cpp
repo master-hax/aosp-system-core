@@ -36,6 +36,8 @@
 #include "fdevent/fdevent.h"
 #include "sysdeps.h"
 
+#define ADB_SECURE_CLIENT_VERSION 1
+
 static DNSServiceRef service_refs[kNumADBDNSServices];
 static fdevent* service_ref_fdes[kNumADBDNSServices];
 
@@ -112,13 +114,14 @@ class ResolvedService : public AsyncServiceRef {
     virtual ~ResolvedService() = default;
 
     ResolvedService(std::string serviceName, std::string regType, uint32_t interfaceIndex,
-                    const char* hosttarget, uint16_t port) :
+                    const char* hosttarget, uint16_t port, int version) :
             serviceName_(serviceName),
             regType_(regType),
             hosttarget_(hosttarget),
             port_(port),
             sa_family_(0),
-            ip_addr_data_(NULL) {
+            ip_addr_data_(NULL),
+            serviceVersion_(version) {
 
         memset(ip_addr_, 0, sizeof(ip_addr_));
 
@@ -139,6 +142,9 @@ class ResolvedService : public AsyncServiceRef {
         } else {
             Initialize();
         }
+
+        D("Client version: %d Service version: %d\n",
+          clientVersion_, serviceVersion_);
     }
 
     void Connect(const sockaddr* address) {
@@ -223,6 +229,7 @@ class ResolvedService : public AsyncServiceRef {
             adb_secure_foreach_service_callback cb);
 
   private:
+    int clientVersion_ = ADB_SECURE_CLIENT_VERSION;
     std::string serviceName_;
     std::string regType_;
     std::string hosttarget_;
@@ -230,6 +237,7 @@ class ResolvedService : public AsyncServiceRef {
     int sa_family_;
     const void* ip_addr_data_;
     char ip_addr_[INET6_ADDRSTRLEN];
+    int serviceVersion_;
 };
 
 // static
@@ -360,6 +368,57 @@ class DiscoveredService : public AsyncServiceRef {
     std::string regType_;
 };
 
+// Returns the version the device wanted to advertise,
+// or -1 if parsing fails.
+static int parse_version_from_txt_record(uint16_t txtLen,
+                                         const unsigned char* txtRecord) {
+    int res = -1;
+
+    if (!txtLen) return -1;
+    if (!txtRecord) return -1;
+
+    // https://tools.ietf.org/html/rfc6763
+    // """
+    // 6.1.  General Format Rules for DNS TXT Records
+    //
+    // A DNS TXT record can be up to 65535 (0xFFFF) bytes long.  The total
+    // length is indicated by the length given in the resource record header
+    // in the DNS message.  There is no way to tell directly from the data
+    // alone how long it is (e.g., there is no length count at the start, or
+    // terminating NULL byte at the end).
+    // """
+
+    // Let's trust the TXT record's length byte
+    // Worst case, it wastes 255 bytes
+    std::vector<char> recordAsString(txtLen + 1, '\0');
+    char* str = recordAsString.data();
+
+    memcpy(str, txtRecord + 1 /* skip the length byte */,
+           txtLen);
+
+    // Check if it's the version key
+    static const char* versionKey = "v=";
+    size_t versionKeyLen = strlen(versionKey);
+
+    if (strncmp(versionKey, str, versionKeyLen)) return res;
+
+    auto valueStart = str + versionKeyLen;
+
+    long parsedNumber =
+        strtol(valueStart, 0, 10);
+
+    // No valid conversion. Also, 0
+    // is not a valid version.
+    if (!parsedNumber) return res;
+
+    // Outside bounds of long.
+    if (parsedNumber == LONG_MIN ||
+        parsedNumber == LONG_MAX) return res;
+
+    // Possibly valid version
+    return (int)parsedNumber;
+}
+
 static void DNSSD_API register_resolved_mdns_service(DNSServiceRef sdRef,
                                                      DNSServiceFlags flags,
                                                      uint32_t interfaceIndex,
@@ -367,8 +426,8 @@ static void DNSSD_API register_resolved_mdns_service(DNSServiceRef sdRef,
                                                      const char* fullname,
                                                      const char* hosttarget,
                                                      uint16_t port,
-                                                     uint16_t /*txtLen*/,
-                                                     const unsigned char* /*txtRecord*/,
+                                                     uint16_t txtLen,
+                                                     const unsigned char* txtRecord,
                                                      void* context) {
     D("Resolved a service.");
     std::unique_ptr<DiscoveredService> discovered(
@@ -379,10 +438,15 @@ static void DNSSD_API register_resolved_mdns_service(DNSServiceRef sdRef,
         return;
     }
 
+    // TODO: Reject certain combinations of invalid or mismatched client and
+    // service versions here before creating anything.
+    // At the moment, there is nothing to reject, so accept everything
+    // as an optimistic default.
+    auto serviceVersion = parse_version_from_txt_record(txtLen, txtRecord);
 
     auto resolved =
         new ResolvedService(discovered->ServiceName(), discovered->RegType(),
-                            interfaceIndex, hosttarget, ntohs(port));
+                            interfaceIndex, hosttarget, ntohs(port), serviceVersion);
 
     if (! resolved->Initialized()) {
         delete resolved;
