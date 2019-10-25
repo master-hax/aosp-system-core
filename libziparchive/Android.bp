@@ -182,7 +182,9 @@ cc_binary {
         "libbase",
         "libziparchive",
     ],
+    symlinks: ["zipinfo"],
     recovery_available: true,
+    host_supported: true,
 }
 
 cc_fuzz {
