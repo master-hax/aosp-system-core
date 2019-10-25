@@ -19,6 +19,8 @@
 #include <android-base/file.h>
 #include <gtest/gtest.h>
 
+#include <fstab/fstab.h>
+
 #include "action.h"
 #include "action_manager.h"
 #include "action_parser.h"
@@ -34,6 +36,11 @@
 
 namespace android {
 namespace init {
+
+using android::fs_mgr::GetEntryForMountPoint;
+using android::fs_mgr::GetFstabPath();
+using android::fs_mgr::Fstab;
+using android::fs_mgr::ReadDefaultFstab;
 
 using ActionManagerCommand = std::function<void(ActionManager&)>;
 
@@ -237,6 +244,13 @@ TEST(init, EventTriggerOrderMultipleFiles) {
     TestInit(start.path, test_function_map, commands, &service_list);
 
     EXPECT_EQ(6, num_executed);
+}
+
+TEST(fstab, DefaultFstabContainsUserdata) {
+    Fstab fstab;
+    ASSERT_TRUE(ReadDefaultFstab(&fstab)) << "Failed to read default fstab";
+    ASSERT_NE(nullptr, GetEntryForMountPoint(&fstab, "/data"))
+            << "Default fstab at " << GetFstabPath() << " doesn't contain /data entry";
 }
 
 }  // namespace init
