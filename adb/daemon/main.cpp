@@ -52,8 +52,6 @@
 #include "adb_listeners.h"
 #include "adb_utils.h"
 #include "adb_wifi.h"
-#include "crypto/identifiers.h"
-#include "crypto/key_store.h"
 #include "transport.h"
 
 #include "mdns.h"

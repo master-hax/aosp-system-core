@@ -38,6 +38,7 @@ public:
     // Message handler for PairingConnection.
     static bool processMsg(std::string_view msg,
                            PairingConnection::DataType dataType,
+                           int fd,
                            void* opaque);
 private:
     ResultCallback mCallback;

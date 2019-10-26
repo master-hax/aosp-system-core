@@ -31,6 +31,10 @@ public:
     // will choose a port at random.
     bool listen(std::string* response, int port = 0);
     int getPort() const;
+    // Called when system server has successfully paired a device and would like
+    // to exchange its system public key with the client device.
+    void sendPairingRequest(const uint8_t* pairing_request,
+                            uint64_t sz);
 
 private:
     static void staticOnFdEvent(int fd, unsigned ev, void* data);
@@ -39,8 +43,10 @@ private:
 
     static bool processMsg(std::string_view msg,
                            PairingConnection::DataType dataType,
+                           int fd,
                            void* opaque);
     bool handleMsg(std::string_view msg,
+                   int fd,
                    PairingConnection::DataType dataType);
 
     using ConnectionPtr = std::unique_ptr<PairingConnection>;
@@ -48,5 +54,7 @@ private:
     fdevent* mFdEvent = nullptr;
     std::unordered_map<int, ConnectionPtr> mConnections;
     std::vector<uint8_t> mOurKey;
+    // The fd that sent us the pairing request.
+    int m_pairing_fd_ = -1;
 };
 

@@ -29,6 +29,7 @@
 #include <android-base/file.h>
 #include <android-base/logging.h>
 #include <android-base/stringprintf.h>
+#include <crypto/key_store.h>
 
 #include "adb.h"
 #include "adb_auth.h"
@@ -148,9 +149,12 @@ int adb_server_main(int is_daemon, const std::string& socket_spec, int ack_reply
     }
 
     adb_auth_init();
-//    if (!initKeyStore()) {
-//        LOG(ERROR) << "unable to initialize key store";
-//    }
+    auto keystore_ctx = keystore_init(adb_get_android_dir_path().c_str(),
+                                      nullptr,
+                                      nullptr);
+    if (keystore_ctx == nullptr) {
+        LOG(ERROR) << "unable to initialize key store";
+    }
 
     if (is_daemon) {
 #if !defined(_WIN32)
