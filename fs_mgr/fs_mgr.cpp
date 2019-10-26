@@ -84,6 +84,9 @@
 
 #define SYSFS_EXT4_VERITY "/sys/fs/ext4/features/verity"
 
+// FIXME: this should be in system/extras
+#define EXT4_FEATURE_COMPAT_STABLE_INODES 0x0800
+
 #define ARRAY_SIZE(a) (sizeof(a) / sizeof(*(a)))
 
 using android::base::Basename;
@@ -412,7 +415,8 @@ static void tune_reserved_size(const std::string& blk_device, const FstabEntry& 
 // Enable file-based encryption if needed.
 static void tune_encrypt(const std::string& blk_device, const FstabEntry& entry,
                          const struct ext4_super_block* sb, int* fs_stat) {
-    bool has_encrypt = (sb->s_feature_incompat & cpu_to_le32(EXT4_FEATURE_INCOMPAT_ENCRYPT)) != 0;
+    bool has_encrypt = (sb->s_feature_incompat & cpu_to_le32(EXT4_FEATURE_INCOMPAT_ENCRYPT)) != 0 &&
+                       (sb->s_feature_compat & cpu_to_le32(EXT4_FEATURE_COMPAT_STABLE_INODES)) != 0;
     bool want_encrypt = entry.fs_mgr_flags.file_encryption;
 
     if (has_encrypt || !want_encrypt) {
@@ -425,7 +429,7 @@ static void tune_encrypt(const std::string& blk_device, const FstabEntry& entry,
         return;
     }
 
-    const char* argv[] = {TUNE2FS_BIN, "-Oencrypt", blk_device.c_str()};
+    const char* argv[] = {TUNE2FS_BIN, "-Oencrypt,stable_inodes", blk_device.c_str()};
 
     LINFO << "Enabling ext4 encryption on " << blk_device;
     if (!run_tune2fs(argv, ARRAY_SIZE(argv))) {
