@@ -148,9 +148,6 @@ int adb_server_main(int is_daemon, const std::string& socket_spec, int ack_reply
     }
 
     adb_auth_init();
-//    if (!initKeyStore()) {
-//        LOG(ERROR) << "unable to initialize key store";
-//    }
 
     if (is_daemon) {
 #if !defined(_WIN32)

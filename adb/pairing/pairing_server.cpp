@@ -77,6 +77,25 @@ bool PairingServer::listen(std::string* response, int port) {
     return success;
 }
 
+void PairingServer::sendPairingRequest(const uint8_t* pairing_request,
+                                       uint64_t sz) {
+    if (m_pairing_fd_ == -1 ||
+        mConnections.find(m_pairing_fd_) == mConnections.end()) {
+        // The connection may have been broken.
+        LOG(ERROR) << "No clients are currently in the pairing process.";
+        m_pairing_fd_ = -1;
+        return;
+    }
+    if (!mConnections[m_pairing_fd_]->sendRawMsg(pairing_request, sz)) {
+        LOG(ERROR) << "Unable to send the pairing request packet.";
+    }
+    LOG(INFO) << "Sent pairing request packet.";
+    // Break all pairing connections. When this function gets called, we have
+    // already successfully saved a client's public key.
+    mConnections.clear();
+    m_pairing_fd_ = -1;
+}
+
 int PairingServer::getPort() const {
     return adb_socket_get_local_port(mFdEvent->fd);
 }
@@ -104,14 +123,33 @@ void PairingServer::onFdEvent(int fd, unsigned ev) {
         return;
     }
     auto callback = [this, clientFd](bool success) {
+        LOG(INFO) << "Client disconnected [fd=" << clientFd << "]";
         if (success) {
-            LOG(INFO) << __func__ << ": client succeeded with pairing";
-            // One client succeeded, don't accept any more incoming connections
+            LOG(INFO) << "client succeeded with pairing";
+            // One client succeeded, don't accept any more incoming connections.
             fdevent_destroy(mFdEvent);
             mFdEvent = nullptr;
+            // Disconnect all connections except for the one we're pairing with.
+            // We need to send our pairing request over so we can't break the
+            // connection quite yet.
+            if (mConnections.find(clientFd) == mConnections.end()) {
+                LOG(ERROR) << "Client somehow no longer in the list of connections. Not good...";
+                return;
+            }
+            auto connection = std::move(mConnections[clientFd]);
+            mConnections.clear();
+            if (m_pairing_fd_ != clientFd) {
+                LOG(ERROR) << "fd=" << m_pairing_fd_<< " was in the pairing process, "
+                           << "but clientFd=" << clientFd << " is now pairing. "
+                           << "Aborting this connection for safety.";
+            }
+            mConnections[clientFd] = std::move(connection);
         } else {
             // This client failed, disconnect it
             mConnections.erase(clientFd);
+            if (clientFd == m_pairing_fd_) {
+                m_pairing_fd_ = -1;
+            }
         }
     };
 
@@ -132,6 +170,7 @@ void PairingServer::onFdEvent(int fd, unsigned ev) {
 }
 
 bool PairingServer::handleMsg(std::string_view msg,
+                              int fd,
                               DataType dataType) {
     // Don't need a lock here because adbd_wifi_pairing_request() will
     // synchronize the requests for us.
@@ -142,8 +181,14 @@ bool PairingServer::handleMsg(std::string_view msg,
             // will include this information already.
             return false;
         case DataType::PairingRequest:
+            if (m_pairing_fd_ != -1) {
+                LOG(ERROR) << "Pairing request process already started by another connection."
+                           << " Ignoring this request.";
+                return false;
+            }
+            m_pairing_fd_ = fd;
+            LOG(INFO) << "fd=" << m_pairing_fd_ << " entered pairing request process";
             // Send message to system server.
-            // TODO: block here until we know whether the pairing succeeded.
             adbd_wifi_pairing_request(reinterpret_cast<const uint8_t*>(msg.data()),
                                       msg.size());
             break;
@@ -155,7 +200,8 @@ bool PairingServer::handleMsg(std::string_view msg,
 // static
 bool PairingServer::processMsg(std::string_view msg,
                                DataType dataType,
+                               int fd,
                                void* opaque) {
     auto* ptr = reinterpret_cast<PairingServer*>(opaque);
-    return ptr->handleMsg(msg, dataType);
+    return ptr->handleMsg(msg, fd, dataType);
 }

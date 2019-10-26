@@ -33,14 +33,11 @@ const int kDefaultPairingPort = 51393;
 
 #if ADB_HOST
 
-static PairingClient* sClient = nullptr;
-
 void pair_device(const std::string& host,
                  const std::string& password,
                  std::string* response) {
-    if (sClient != nullptr) {
-        delete sClient;
-    }
+    LOG(INFO) << "pair_device(host=[" << host << "], "
+              << "password=[" << password << "])";
     if (password.empty()) {
         LOG(ERROR) << "Client sent an empty password";
         return;
@@ -49,24 +46,24 @@ void pair_device(const std::string& host,
     std::condition_variable cv;
     std::mutex mutex;
     bool success = false;
+    // |callback| will block this function until the pairing completes.
     auto callback = [&](bool result) {
         LOG(ERROR) << "receiving pair_device callback";
         std::unique_lock<std::mutex> lock(mutex);
         success = result;
         cv.notify_all();
     };
-    sClient = new PairingClient(password, callback);
+    PairingClient client(password, callback);
 
     std::unique_lock<std::mutex> lock(mutex);
     fdevent_run_on_main_thread([&]() {
         LOG(ERROR) << "pair_device connecting";
         // Pass a callback here to notify completion and to clean up sClient
-        if (!sClient->connect(host, kDefaultPairingPort, response)) {
-            LOG(ERROR) << "pair_device connet failed, calling callback";
+        if (!client.connect(host, kDefaultPairingPort, response)) {
+            LOG(ERROR) << "pair_device connect failed, calling callback";
             callback(false);
             return;
         }
-        callback(true);
     });
     LOG(ERROR) << "pair_device waiting for cv";
     cv.wait(lock);
@@ -99,6 +96,17 @@ bool pair_host(const uint8_t* publicKey, uint64_t sz) {
         return false;
     }
     return true;
+}
+
+void pair_host_send_pairing_request(const uint8_t* pairing_request,
+                                    uint64_t sz) {
+    LOG(INFO) << "Got pairing request from system server.";
+    if (sPairingServer == nullptr) {
+        LOG(ERROR) << "Pairing server not created. Can't send the pairing request.";
+        return;
+    }
+
+    sPairingServer->sendPairingRequest(pairing_request, sz);
 }
 
 void pair_cancel() {
