@@ -28,5 +28,7 @@ void pair_device(const std::string& host,
 // successful, false otherwise.
 bool pair_host(const uint8_t* publicKey, uint64_t sz);
 void pair_cancel();
+void pair_host_send_pairing_request(const uint8_t* pairing_request,
+                                    uint64_t sz);
 #endif
 
