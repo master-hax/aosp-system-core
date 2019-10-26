@@ -58,6 +58,7 @@ cc_library {
     static_libs: [
         "libavb",
         "libfs_avb",
+        "libfscrypt",
         "libfstab",
         "libdm",
         "libgsi",
