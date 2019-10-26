@@ -41,6 +41,7 @@ public:
     };
     using DataCallback = std::function<bool(std::string_view,
                                             DataType,
+                                            int,
                                             void*)>;
 
     explicit PairingConnection(ResultCallback callback,
@@ -71,13 +72,13 @@ private:
     // then |theirKey| will have the contents of their key.
     bool tryReadPublicKey(std::vector<uint8_t>& theirKey);
 
-    // Read the incoming public key header from the client/server. If return is 0,
+    // Read the incoming pairing request from the client/server. If return is 0,
     // we didn't get enough bytes and will need to try and read again. If -1,
     // failed. Otherwise, the return is the number of bytes in the |header|.
-    int readPairingRequest(uint8_t* header);
-    // Wrapper to retry readPublicKeyHeader until we get enough bytes. If return true,
-    // then |header| will have the contents of their public key header.
-    bool tryReadPairingRequest(std::vector<uint8_t>& header);
+    int readPairingRequest(uint8_t* pkt);
+    // Wrapper to retry readPairingRequest until we get enough bytes. If return true,
+    // then |pkt| will have the contents of their pairing request.
+    bool tryReadPairingRequest(std::vector<uint8_t>& pkt);
 
     void terminate();
 

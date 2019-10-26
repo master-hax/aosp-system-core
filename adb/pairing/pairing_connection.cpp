@@ -15,10 +15,9 @@
 
 #include "pairing_connection.h"
 
-#include <android-base/logging.h>
-
 #include <mutex>
 
+#include <android-base/logging.h>
 #include "adb_io.h"
 #include "adb_wifi.h"
 #include "fdevent/fdevent.h"
@@ -137,8 +136,8 @@ int PairingConnection::readPublicKey(uint8_t* authMsg) {
     return length;
 }
 
-bool PairingConnection::tryReadPairingRequest(std::vector<uint8_t>& header) {
-    LOG(ERROR) << "Attempting to read PublicKeyHeader";
+bool PairingConnection::tryReadPairingRequest(std::vector<uint8_t>& pkt) {
+    LOG(ERROR) << "Attempting to read pairing request...";
     std::vector<uint8_t> buf(kMaxPairingRequestSize);
     int bytes = readPairingRequest(buf.data());
     LOG(INFO) << "Got " << bytes << " bytes";
@@ -151,11 +150,11 @@ bool PairingConnection::tryReadPairingRequest(std::vector<uint8_t>& header) {
         return false;
     }
 
-    header.assign(buf.data(), buf.data() + bytes);
+    pkt.assign(buf.data(), buf.data() + bytes);
     return true;
 }
 
-int PairingConnection::readPairingRequest(uint8_t* header) {
+int PairingConnection::readPairingRequest(uint8_t* pkt) {
     if (mRxBuffer.size() < sizeof(uint32_t)) {
         return 0;
     }
@@ -172,13 +171,14 @@ int PairingConnection::readPairingRequest(uint8_t* header) {
         return 0;
     }
 
-    memcpy(header, mRxBuffer.data() + sizeof(length), length);
+    memcpy(pkt, mRxBuffer.data() + sizeof(length), length);
     mRxBuffer.erase(mRxBuffer.begin(),
                      mRxBuffer.begin() + sizeof(length) + length);
     return length;
 }
 
 bool PairingConnection::sendRawMsg(const uint8_t* data, uint32_t size) {
+    LOG(INFO) << "Sending " << size << " bytes of data";
     uint32_t networkSize = htonl(size);
     if (!WriteFdExactly(mFdEvent->fd, &networkSize, sizeof(networkSize))) {
         return false;
@@ -231,6 +231,7 @@ void PairingConnection::onFdEvent(int fd, unsigned ev) {
                     mDataCallback(std::string_view(reinterpret_cast<const char*>(buf.data()),
                                                    buf.size()),
                                   DataType::PublicKey,
+                                  fd,
                                   mOpaque);
                     continue;
                 }
@@ -240,6 +241,7 @@ void PairingConnection::onFdEvent(int fd, unsigned ev) {
                     if (mDataCallback(std::string_view(reinterpret_cast<const char*>(buf.data()),
                                                    buf.size()),
                                   DataType::PairingRequest,
+                                  fd,
                                   mOpaque)) {
                         mState = State::Completed;
                     } else {

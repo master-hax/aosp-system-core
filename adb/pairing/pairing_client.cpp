@@ -17,6 +17,7 @@
 
 #include <android-base/logging.h>
 #include <android-base/parsenetaddress.h>
+#include <crypto/key_store.h>
 
 #include "sysdeps.h"
 
@@ -75,6 +76,12 @@ bool PairingClient::connect(const std::string& address,
 
 bool PairingClient::handleMsg(std::string_view msg,
                               DataType dataType) {
+    auto keystore_ctx = keystore_get();
+    if (keystore_ctx == nullptr) {
+        LOG(ERROR) << "Keystore context is null";
+        return false;
+    }
+
     switch(dataType) {
         case DataType::PublicKey: {
             LOG(INFO) << "Registering their public key";
@@ -84,24 +91,59 @@ bool PairingClient::handleMsg(std::string_view msg,
                 LOG(ERROR) << "Failed to register their public key";
                 return false;
             }
-            uint32_t pktSize = pairing_auth_request_max_size();
-            std::vector<uint8_t> header(pktSize);
-            if (!pairing_auth_create_request(mPairingAuthCtx,
-                                             header.data(),
-                                             &pktSize)) {
-                LOG(ERROR) << "Unable to create header packet";
+            // Get the system's PublicKeyHeader and public key from the keystore
+            // to build a pairing request.
+            PublicKeyHeader public_key_header;
+            keystore_public_key_header(keystore_ctx, &public_key_header);
+            std::vector<char> public_key(keystore_max_certificate_size(keystore_ctx));
+            uint32_t public_key_sz = keystore_system_public_key(keystore_ctx, public_key.data());
+            if (public_key_sz == 0) {
+                LOG(ERROR) << "Unable to retrieve the system's public certificate.";
                 return false;
             }
-            header.resize(pktSize);
-            if (!mConnection.sendRawMsg(header.data(),
-                                         header.size())) {
-                LOG(ERROR) << "Unable to send header packet";
+            public_key.resize(public_key_sz);
+            uint32_t pktSize = pairing_auth_request_max_size();
+            std::vector<uint8_t> pkt(pktSize);
+            if (!pairing_auth_create_request(mPairingAuthCtx,
+                                             &public_key_header,
+                                             public_key.data(),
+                                             pkt.data(),
+                                             &pktSize)) {
+                LOG(ERROR) << "Unable to create pairing request packet.";
+                return false;
+            }
+            pkt.resize(pktSize);
+            if (!mConnection.sendRawMsg(pkt.data(),
+                                        pkt.size())) {
+                LOG(ERROR) << "Unable to send pairing request packet.";
+                return false;
             }
             break;
         }
-        default:
-            LOG(ERROR) << "unhandled DataType";
+        case DataType::PairingRequest: {
+            LOG(INFO) << "Got device's system public key pairing request";
+            PublicKeyHeader header;
+            std::vector<char> public_key(keystore_max_certificate_size(mPairingAuthCtx), '\0');
+            bool valid = pairing_auth_parse_request(mPairingAuthCtx,
+                                                    reinterpret_cast<const uint8_t*>(msg.data()),
+                                                    msg.size(),
+                                                    &header,
+                                                    public_key.data());
+            if (!valid) {
+                LOG(ERROR) << "Unable to parse the device's pairing request.";
+                return false;
+            }
+
+            public_key.resize(header.payload);
+            valid = keystore_store_public_key(keystore_ctx,
+                                              &header,
+                                              public_key.data());
+            if (!valid) {
+                LOG(ERROR) << "Unable to write the device's key into the keystore.";
+                return false;
+            }
             break;
+        }
     }
 
     return true;
@@ -110,6 +152,7 @@ bool PairingClient::handleMsg(std::string_view msg,
 // static
 bool PairingClient::processMsg(std::string_view msg,
                                DataType dataType,
+                               int /* fd */,
                                void* opaque) {
     auto* ptr = reinterpret_cast<PairingClient*>(opaque);
     return ptr->handleMsg(msg, dataType);
