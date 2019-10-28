@@ -369,29 +369,76 @@ static Result<void> do_mkdir(const BuiltinArguments& args) {
     mode_t mode = 0755;
     Result<uid_t> uid = -1;
     Result<gid_t> gid = -1;
+    FscryptAction fscrypt_action = FscryptAction::kNone;
+    std::string ref_basename = fscrypt_key_ref;
+    bool action_set = false;
 
-    switch (args.size()) {
-        case 5:
-            gid = DecodeUid(args[4]);
-            if (!gid) {
-                return Error() << "Unable to decode GID for '" << args[4] << "': " << gid.error();
-            }
-            FALLTHROUGH_INTENDED;
-        case 4:
-            uid = DecodeUid(args[3]);
-            if (!uid) {
-                return Error() << "Unable to decode UID for '" << args[3] << "': " << uid.error();
-            }
-            FALLTHROUGH_INTENDED;
-        case 3:
-            mode = std::strtoul(args[2].c_str(), 0, 8);
-            FALLTHROUGH_INTENDED;
-        case 2:
-            break;
-        default:
-            return Error() << "Unexpected argument count: " << args.size();
-    }
     std::string target = args[1];
+    for (size_t i = 2; i < args.size(); i++) {
+        switch (i) {
+            case 2:
+                mode = std::strtoul(args[2].c_str(), 0, 8);
+                break;
+            case 3:
+                uid = DecodeUid(args[3]);
+                if (!uid) {
+                    return Error()
+                           << "Unable to decode UID for '" << args[3] << "': " << uid.error();
+                }
+                break;
+            case 4:
+                gid = DecodeUid(args[4]);
+                if (!gid) {
+                    return Error()
+                           << "Unable to decode GID for '" << args[4] << "': " << gid.error();
+                }
+                break;
+            default:
+                auto pos = args[i].find('=');
+                if (pos == std::string::npos) {
+                    return Error() << "Can't parse option: '" << args[i];
+                }
+                auto optname = args[i].substr(0, pos);
+                auto optval = args[i].substr(pos + 1);
+                if (optname == "encryption") {
+                    if (optval == "Require") {
+                        fscrypt_action = FscryptAction::kRequire;
+                    } else if (optval == "None") {
+                        fscrypt_action = FscryptAction::kNone;
+                    } else if (optval == "Attempt") {
+                        fscrypt_action = FscryptAction::kAttempt;
+                    } else if (optval == "DeleteIfNecessary") {
+                        fscrypt_action = FscryptAction::kDeleteIfNecessary;
+                    } else {
+                        return Error() << "Unknown encryption option: '" << args[i];
+                    }
+                    action_set = true;
+                } else if (optname == "key") {
+                    if (optval == "ref") {
+                        ref_basename = fscrypt_key_ref;
+                    } else if (optval == "per_boot_ref") {
+                        ref_basename = fscrypt_key_per_boot_ref;
+                    } else {
+                        return Error() << "Unknown key option: '" << args[i];
+                    }
+                } else {
+                    return Error() << "Unknown option: '" << args[i];
+                }
+        }
+    }
+    std::string prefix = "/data/";
+    if (android::base::StartsWith(target, prefix) &&
+        target.find_first_of('/', prefix.size()) == std::string::npos) {
+        if (!action_set) {
+            LOG(WARNING) << "Top-level directory needs encryption action, eg mkdir " << target
+                         << " <mode> <uid> <gid> encryption=Require";
+            fscrypt_action = FscryptAction::kRequire;
+        }
+        if (fscrypt_action == FscryptAction::kNone) {
+            LOG(INFO) << "Not encrypting: " << target;
+        }
+    }
+
     struct stat mstat;
     if (lstat(target.c_str(), &mstat) != 0) {
         if (errno != ENOENT) {
@@ -422,7 +469,7 @@ static Result<void> do_mkdir(const BuiltinArguments& args) {
         }
     }
     if (fscrypt_is_native()) {
-        if (fscrypt_set_directory_policy(target)) {
+        if (!FscryptSetDirectoryPolicy(ref_basename, fscrypt_action, target)) {
             return reboot_into_recovery(
                     {"--prompt_and_wipe_data", "--reason=set_policy_failed:"s + target});
         }
@@ -589,8 +636,8 @@ static Result<void> queue_fs_event(int code) {
         return reboot_into_recovery(options);
         /* If reboot worked, there is no return. */
     } else if (code == FS_MGR_MNTALL_DEV_FILE_ENCRYPTED) {
-        if (fscrypt_install_keyring()) {
-            return Error() << "fscrypt_install_keyring() failed";
+        if (!FscryptInstallKeyring()) {
+            return Error() << "FscryptInstallKeyring() failed";
         }
         property_set("ro.crypto.state", "encrypted");
         property_set("ro.crypto.type", "file");
@@ -600,8 +647,8 @@ static Result<void> queue_fs_event(int code) {
         ActionManager::GetInstance().QueueEventTrigger("nonencrypted");
         return {};
     } else if (code == FS_MGR_MNTALL_DEV_IS_METADATA_ENCRYPTED) {
-        if (fscrypt_install_keyring()) {
-            return Error() << "fscrypt_install_keyring() failed";
+        if (!FscryptInstallKeyring()) {
+            return Error() << "FscryptInstallKeyring() failed";
         }
         property_set("ro.crypto.state", "encrypted");
         property_set("ro.crypto.type", "file");
@@ -611,8 +658,8 @@ static Result<void> queue_fs_event(int code) {
         ActionManager::GetInstance().QueueEventTrigger("nonencrypted");
         return {};
     } else if (code == FS_MGR_MNTALL_DEV_NEEDS_METADATA_ENCRYPTION) {
-        if (fscrypt_install_keyring()) {
-            return Error() << "fscrypt_install_keyring() failed";
+        if (!FscryptInstallKeyring()) {
+            return Error() << "FscryptInstallKeyring() failed";
         }
         property_set("ro.crypto.state", "encrypted");
         property_set("ro.crypto.type", "file");
@@ -1257,7 +1304,7 @@ const BuiltinFunctionMap& GetBuiltinFunctionMap() {
         {"load_system_props",       {0,     0,    {false,  do_load_system_props}}},
         {"loglevel",                {1,     1,    {false,  do_loglevel}}},
         {"mark_post_data",          {0,     0,    {false,  do_mark_post_data}}},
-        {"mkdir",                   {1,     4,    {true,   do_mkdir}}},
+        {"mkdir",                   {1,     kMax, {true,   do_mkdir}}},
         // TODO: Do mount operations in vendor_init.
         // mount_all is currently too complex to run in vendor_init as it queues action triggers,
         // imports rc scripts, etc.  It should be simplified and run in vendor_init context.
