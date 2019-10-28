@@ -17,12 +17,21 @@
 #include <sys/stat.h>
 #include <sys/syscall.h>
 
+#include <unordered_set>
+
 #include <android-base/logging.h>
 #include <android-base/unique_fd.h>
 
 #include <modprobe/modprobe.h>
 
+static std::unordered_set<std::string> loaded;
+
 bool Modprobe::Insmod(const std::string& path_name, const std::string& parameters) {
+    if (loaded.find(path_name) != loaded.end()) {
+        LOG(VERBOSE) << "Already loading module " << path_name;
+        return true;
+    }
+
     android::base::unique_fd fd(
             TEMP_FAILURE_RETRY(open(path_name.c_str(), O_RDONLY | O_NOFOLLOW | O_CLOEXEC)));
     if (fd == -1) {
@@ -43,6 +52,7 @@ bool Modprobe::Insmod(const std::string& path_name, const std::string& parameter
     int ret = syscall(__NR_finit_module, fd.get(), options.c_str(), 0);
     if (ret != 0) {
         if (errno == EEXIST) {
+            loaded.emplace(path_name);
             // Module already loaded
             return true;
         }
@@ -51,14 +61,24 @@ bool Modprobe::Insmod(const std::string& path_name, const std::string& parameter
     }
 
     LOG(INFO) << "Loaded kernel module " << path_name;
+    loaded.emplace(path_name);
     return true;
 }
 
 bool Modprobe::Rmmod(const std::string& module_name) {
-    int ret = syscall(__NR_delete_module, MakeCanonical(module_name).c_str(), O_NONBLOCK);
+    auto canonical_name = MakeCanonical(module_name);
+    int ret = syscall(__NR_delete_module, canonical_name.c_str(), O_NONBLOCK);
     if (ret != 0) {
         PLOG(ERROR) << "Failed to remove module '" << module_name << "'";
         return false;
+    }
+    for (auto it = loaded.begin(); it != loaded.end();) {
+        if (canonical_name == MakeCanonical(*it)) {
+            LOG(VERBOSE) << "Unloaded kernel module " << *it;
+            it = loaded.erase(it);
+        } else {
+            ++it;
+        }
     }
     return true;
 }
