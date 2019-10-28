@@ -19,7 +19,6 @@ liblog_sources = [
     "log_event_write.cpp",
     "logger_lock.cpp",
     "logger_name.cpp",
-    "logger_read.cpp",
     "logger_write.cpp",
     "logprint.cpp",
 ]
@@ -30,6 +29,7 @@ liblog_host_sources = [
 liblog_target_sources = [
     "event_tag_map.cpp",
     "log_time.cpp",
+    "logger_read.cpp",
     "properties.cpp",
     "pmsg_reader.cpp",
     "pmsg_writer.cpp",
