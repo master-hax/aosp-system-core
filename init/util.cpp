@@ -434,6 +434,91 @@ Result<void> IsLegalPropertyValue(const std::string& name, const std::string& va
     return {};
 }
 
+Result<MkdirOptions> ParseMkdir(const std::vector<std::string>& args) {
+    mode_t mode = 0755;
+    Result<uid_t> uid = -1;
+    Result<gid_t> gid = -1;
+    FscryptAction fscrypt_action = FscryptAction::kNone;
+    std::string ref_option = "ref";
+    bool set_option_encryption = false;
+    bool set_option_key = false;
+
+    for (size_t i = 2; i < args.size(); i++) {
+        switch (i) {
+            case 2:
+                mode = std::strtoul(args[2].c_str(), 0, 8);
+                break;
+            case 3:
+                uid = DecodeUid(args[3]);
+                if (!uid) {
+                    return Error()
+                           << "Unable to decode UID for '" << args[3] << "': " << uid.error();
+                }
+                break;
+            case 4:
+                gid = DecodeUid(args[4]);
+                if (!gid) {
+                    return Error()
+                           << "Unable to decode GID for '" << args[4] << "': " << gid.error();
+                }
+                break;
+            default:
+                auto parts = android::base::Split(args[i], "=");
+                if (parts.size() != 2) {
+                    return Error() << "Can't parse option: '" << args[i] << "'";
+                }
+                auto optname = parts[0];
+                auto optval = parts[1];
+                if (optname == "encryption") {
+                    if (set_option_encryption) {
+                        return Error() << "Duplicated option: '" << optname << "'";
+                    }
+                    if (optval == "Require") {
+                        fscrypt_action = FscryptAction::kRequire;
+                    } else if (optval == "None") {
+                        fscrypt_action = FscryptAction::kNone;
+                    } else if (optval == "Attempt") {
+                        fscrypt_action = FscryptAction::kAttempt;
+                    } else if (optval == "DeleteIfNecessary") {
+                        fscrypt_action = FscryptAction::kDeleteIfNecessary;
+                    } else {
+                        return Error() << "Unknown encryption option: '" << optval << "'";
+                    }
+                    set_option_encryption = true;
+                } else if (optname == "key") {
+                    if (set_option_key) {
+                        return Error() << "Duplicated option: '" << optname << "'";
+                    }
+                    if (optval == "ref" || optval == "per_boot_ref") {
+                        ref_option = optval;
+                    } else {
+                        return Error() << "Unknown key option: '" << optval << "'";
+                    }
+                    set_option_key = true;
+                } else {
+                    return Error() << "Unknown option: '" << args[i] << "'";
+                }
+        }
+    }
+    if (set_option_key && fscrypt_action == FscryptAction::kNone) {
+        return Error() << "Key option set but encryption action is none";
+    }
+    const std::string prefix = "/data/";
+    if (StartsWith(args[1], prefix) &&
+        args[1].find_first_of('/', prefix.size()) == std::string::npos) {
+        if (!set_option_encryption) {
+            LOG(WARNING) << "Top-level directory needs encryption action, eg mkdir " << args[1]
+                         << " <mode> <uid> <gid> encryption=Require";
+            fscrypt_action = FscryptAction::kRequire;
+        }
+        if (fscrypt_action == FscryptAction::kNone) {
+            LOG(INFO) << "Not setting policy on: " << args[1];
+        }
+    }
+
+    return MkdirOptions{args[1], mode, *uid, *gid, fscrypt_action, ref_option};
+}
+
 Result<std::pair<int, std::vector<std::string>>> ParseRestorecon(
         const std::vector<std::string>& args) {
     struct flag_type {
