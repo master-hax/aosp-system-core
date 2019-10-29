@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c2ab823e_6b689d04",
+        "filename": "logcat/logcat.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 983,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-10-29T23:08:37Z",
+      "side": 1,
+      "message": "This is the part that I\u0027m the most iffy about.  Maybe better to just print the error messages inline when they happen?  This is better than only printing a single buffer name when multiple fail though.",
+      "revId": "3c064907d1b2c7322bad6f58732421dec16291aa",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
