@@ -361,12 +361,13 @@ bool Modprobe::LoadWithAliases(const std::string& module_name, bool strict,
 }
 
 bool Modprobe::LoadListedModules() {
+    auto ret = true;
     for (const auto& module : module_load_) {
         if (!LoadWithAliases(module, true)) {
-            return false;
+            ret = false;
         }
     }
-    return true;
+    return ret;
 }
 
 bool Modprobe::Remove(const std::string& module_name) {
