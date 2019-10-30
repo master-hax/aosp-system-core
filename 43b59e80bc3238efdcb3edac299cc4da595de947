@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a6c67c0_b40819cc",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1088085
+      },
+      "writtenOn": "2019-10-30T17:52:21Z",
+      "side": 1,
+      "message": "right now, the boot \u0026 system images share the default properties. There seem to be a decent amount of refactor work if we want to add separations there.",
+      "range": {
+        "startLine": 16,
+        "startChar": 59,
+        "endLine": 19,
+        "endChar": 0
+      },
+      "revId": "43b59e80bc3238efdcb3edac299cc4da595de947",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
