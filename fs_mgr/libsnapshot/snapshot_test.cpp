@@ -680,7 +680,6 @@ class SnapshotUpdateTest : public SnapshotTest {
         // Initialize source partition metadata using |manifest_|.
         src_ = MetadataBuilder::New(*opener_, "super", 0);
         ASSERT_TRUE(FillFakeMetadata(src_.get(), manifest_, "_a"));
-        ASSERT_NE(nullptr, src_);
         // Add sys_b which is like system_other.
         auto partition = src_->AddPartition("sys_b", 0);
         ASSERT_NE(nullptr, partition);
@@ -1158,6 +1157,57 @@ TEST_F(SnapshotUpdateTest, RetrofitAfterRegularAb) {
     }
 
     ASSERT_TRUE(sm->FinishedSnapshotWrites());
+}
+
+TEST_F(SnapshotUpdateTest, FlashNewSlotAfterUpdate) {
+    // OTA client blindly unmaps all partitions that are possibly mapped.
+    for (const auto& name : {"sys_b", "vnd_b", "prd_b"}) {
+        ASSERT_TRUE(sm->UnmapUpdateSnapshot(name));
+    }
+
+    // Execute the update.
+    ASSERT_TRUE(sm->BeginUpdate());
+    ASSERT_TRUE(sm->CreateUpdateSnapshots(manifest_));
+
+    ASSERT_TRUE(sm->FinishedSnapshotWrites());
+
+    // Simulate shutting down the device.
+    ASSERT_TRUE(UnmapAll());
+
+    // Simulate flashing B slot. This clears the UPDATED flag.
+    auto tgt = MetadataBuilder::New(*opener_, "super", 1);
+    ASSERT_TRUE(FillFakeMetadata(tgt.get(), manifest_, "_b"));
+    ASSERT_TRUE(UpdatePartitionTable(*opener_, "super", *metadata.get(), 1));
+    std::string path;
+    for (const auto& name : {"sys_b", "vnd_b", "prd_b"}) {
+        ASSERT_TRUE(CreateLogicalPartition(
+                CreateLogicalPartitionParams{
+                        .block_device = fake_super,
+                        .metadata_slot = 1,
+                        .partition_name = name,
+                        .timeout_ms = 1s,
+                        .partition_opener = opener_.get(),
+                },
+                &path));
+        ASSERT_TRUE(WriteRandomData(path));
+        auto hash = GetHash(path);
+        ASSERT_TRUE(hash.has_value());
+        hashes_[name] = *hash;
+    }
+
+    // Simulate reboot. After reboot, init does first stage mount.
+    auto init = SnapshotManager::NewForFirstStageMount(new TestDeviceInfo(fake_super, "_b"));
+    ASSERT_NE(init, nullptr);
+    ASSERT_TRUE(init->NeedSnapshotsInFirstStageMount());
+    ASSERT_TRUE(init->CreateLogicalAndSnapshotPartitions("super"));
+
+    // Check that the target partitions have the same content.
+    for (const auto& name : {"sys_b", "vnd_b", "prd_b"}) {
+        ASSERT_TRUE(IsPartitionUnchanged(name));
+    }
+
+    // There should be no snapshot to merge.
+    ASSERT_EQ(UpdateState::None, init->InitiateMergeAndWait());
 }
 
 class MetadataMountedTest : public SnapshotUpdateTest {

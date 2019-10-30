@@ -351,6 +351,9 @@ class SnapshotManager final {
     // condition was detected and handled.
     bool HandleCancelledUpdate(LockedFile* lock);
 
+    // Helper for HandleCancelledUpdate. Assumes booting from new slot.
+    bool HandleCancelledUpdateOnNewSlot(LockedFile* lock);
+
     // Remove artifacts created by the update process, such as snapshots, and
     // set the update state to None.
     bool RemoveAllUpdateState(LockedFile* lock);
@@ -370,6 +373,9 @@ class SnapshotManager final {
     void AcknowledgeMergeSuccess(LockedFile* lock);
     void AcknowledgeMergeFailure();
     bool IsCancelledSnapshot(const std::string& snapshot_name);
+    bool IsCancelledSnapshot(const LpMetadata& metadata, const std::string& snapshot_name);
+    bool AllSnapshotsAreCancelled();
+    std::unique_ptr<LpMetadata> ReadCurrentMetadata();
 
     // Note that these require the name of the device containing the snapshot,
     // which may be the "inner" device. Use GetsnapshotDeviecName().
