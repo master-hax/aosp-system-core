@@ -1,0 +1,21 @@
+#! /system/bin/sh
+
+has_last="false"
+for arg in "$@"; do
+  if [ "$arg" == "-L" -o "$arg" == "--last" ]; then
+    has_last="true"
+  fi
+done
+
+if [ "$has_last" == "true" ]; then
+  logcat "$@"
+fi
+
+args_without_last=()
+for arg in "$@"; do
+  if [ "$arg" != "-L" -a "$arg" != "--last" ]; then
+    ARGS+=("$arg")
+  fi
+done
+
+logcat "${ARGS[@]}"
