@@ -33,6 +33,12 @@
 
 #include <diskconfig/diskconfig.h>
 
+#if __has_attribute(fallthrough)
+#define __fallthrough __attribute__((__fallthrough__))
+#else
+#define __fallthrough
+#endif
+
 static int
 parse_len(const char *str, uint64_t *plen)
 {
@@ -52,6 +58,7 @@ parse_len(const char *str, uint64_t *plen)
         case 'M': case 'm':
             /* megabyte */
             multiple <<= 10;
+            __fallthrough;
         case 'K': case 'k':
             /* kilobytes */
             multiple <<= 10;
