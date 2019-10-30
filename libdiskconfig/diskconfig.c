@@ -52,6 +52,7 @@ parse_len(const char *str, uint64_t *plen)
         case 'M': case 'm':
             /* megabyte */
             multiple <<= 10;
+            __attribute__((__fallthrough__));
         case 'K': case 'k':
             /* kilobytes */
             multiple <<= 10;
