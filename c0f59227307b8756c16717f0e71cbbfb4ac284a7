@@ -16,6 +16,24 @@
       "revId": "c0f59227307b8756c16717f0e71cbbfb4ac284a7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "613633b7_0f7983ab",
+        "filename": "libdiskconfig/diskconfig.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-10-30T17:15:07Z",
+      "side": 1,
+      "message": "do you have any stuff to fix that\u0027s also built for host? for target-only code, we can add a __fallthrough to \u003csys/cdefs.h\u003e to hide this (and provide slightly less awful syntax), but if you\u0027re finding stuff like this in a lot of host code too, that might be worse (because now you have to remember two things).",
+      "parentUuid": "423f39b4_a860e197",
+      "revId": "c0f59227307b8756c16717f0e71cbbfb4ac284a7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
