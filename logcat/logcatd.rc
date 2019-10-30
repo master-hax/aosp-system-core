@@ -35,6 +35,9 @@ on property:logd.logpersistd.enable=true && property:logd.logpersistd=logcatd
     start logcatd
 
 # stop logcatd service and clear data
+on property:logd.logpersistd.enable=true && property:persist.logd.logpersistd=clear
+    setprop logd.logpersistd clear
+
 on property:logd.logpersistd.enable=true && property:logd.logpersistd=clear
     setprop persist.logd.logpersistd ""
     stop logcatd
@@ -43,6 +46,9 @@ on property:logd.logpersistd.enable=true && property:logd.logpersistd=clear
     setprop logd.logpersistd ""
 
 # stop logcatd service
+on property:persist.logd.logpersistd=stop
+    setprop logd.logpersistd stop
+
 on property:logd.logpersistd=stop
     setprop persist.logd.logpersistd ""
     stop logcatd
