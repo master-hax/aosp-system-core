@@ -41,6 +41,7 @@
 #include <android-base/stringprintf.h>
 #include <android-base/strings.h>
 #include <android-base/thread_annotations.h>
+#include <crypto/key_store.h>
 
 #include <diagnose_usb.h>
 
@@ -387,8 +388,18 @@ bool BlockingConnectionAdapter::Write(std::unique_ptr<apacket> packet) {
     return true;
 }
 
+bool FdConnection::DispatchRead(void* buf, size_t len) {
+    return use_tls_ ? tls_connection_read_fully(tls_ctx_, buf, len) :
+                      ReadFdExactly(fd_.get(), buf, len);
+}
+
+bool FdConnection::DispatchWrite(const void* buf, size_t len) {
+    return use_tls_ ? tls_connection_write_fully(tls_ctx_, buf, len) :
+                      WriteFdExactly(fd_.get(), buf, len);
+}
+
 bool FdConnection::Read(apacket* packet) {
-    if (!ReadFdExactly(fd_.get(), &packet->msg, sizeof(amessage))) {
+    if (!DispatchRead(&packet->msg, sizeof(amessage))) {
         D("remote local: read terminated (message)");
         return false;
     }
@@ -400,7 +411,7 @@ bool FdConnection::Read(apacket* packet) {
 
     packet->payload.resize(packet->msg.data_length);
 
-    if (!ReadFdExactly(fd_.get(), &packet->payload[0], packet->payload.size())) {
+    if (!DispatchRead(&packet->payload[0], packet->payload.size())) {
         D("remote local: terminated (data)");
         return false;
     }
@@ -409,13 +420,13 @@ bool FdConnection::Read(apacket* packet) {
 }
 
 bool FdConnection::Write(apacket* packet) {
-    if (!WriteFdExactly(fd_.get(), &packet->msg, sizeof(packet->msg))) {
+    if (!DispatchWrite(&packet->msg, sizeof(packet->msg))) {
         D("remote local: write terminated");
         return false;
     }
 
     if (packet->msg.data_length) {
-        if (!WriteFdExactly(fd_.get(), &packet->payload[0], packet->msg.data_length)) {
+        if (!DispatchWrite(&packet->payload[0], packet->msg.data_length)) {
             D("remote local: write terminated");
             return false;
         }
@@ -424,8 +435,29 @@ bool FdConnection::Write(apacket* packet) {
     return true;
 }
 
+bool FdConnection::doTlsHandshake() {
+    auto keystore_ctx = keystore_get();
+    const char* keystore_path =
+#if ADB_HOST
+                adb_get_android_dir_path().c_str();
+#else
+                "/data/misc/adb";
+#endif
+
+    if (keystore_ctx == nullptr &&
+        (keystore_ctx = keystore_init(keystore_path, nullptr, nullptr)) == nullptr) {
+        LOG(ERROR) << "Unable to create KeyStoreCtx for TLS handshake.";
+        return false;
+    }
+    return tls_connection_handshake(tls_ctx_,
+                                    fd_.get(),
+                                    keystore_pub_key_path(keystore_ctx),
+                                    keystore_priv_key_path(keystore_ctx));
+}
+
 void FdConnection::Close() {
     adb_shutdown(fd_.get());
+    tls_connection_delete_ctx(tls_ctx_);
     fd_.reset();
 }
 

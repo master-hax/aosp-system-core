@@ -18,6 +18,9 @@
 
 #include "adb.h"
 
+#define ADB_WIFI_CONNECT_PORT 6654
+#define ADB_WIFI_PAIRING_PORT 51393
+
 #if ADB_HOST
 
 #else // !ADB_HOST

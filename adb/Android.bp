@@ -198,6 +198,7 @@ cc_library_host_static {
 
     static_libs: [
         "libadbd_wifi_pairing",
+        "libadbd_wifi_tls",
         "libbase",
         "libcrypto_utils",
         "libcrypto",
@@ -207,6 +208,7 @@ cc_library_host_static {
         "libutils",
         "liblog",
         "libcutils",
+        "libprotobuf-cpp-lite",
     ],
 }
 
@@ -290,6 +292,7 @@ cc_binary_host {
     static_libs: [
         "libadb_host",
 	"libadbd_wifi_pairing",
+        "libadbd_wifi_tls",
         "libandroidfw",
         "libbase",
         "libcutils",
@@ -300,6 +303,7 @@ cc_binary_host {
         "liblog",
         "libmdnssd",
         "libprotobuf-cpp-lite",
+        "libssl",
         "libusb",
         "libutils",
         "liblog",
@@ -372,12 +376,15 @@ cc_library_static {
         "libadbconnection_server",
         "libadbd_auth",
 	"libadbd_wifi",
+        "libadbd_wifi_pairing",
+        "libadbd_wifi_tls",
         "libasyncio",
         "libbase",
         "libcrypto",
         "libcrypto_utils",
         "libcutils",
         "liblog",
+        "libprotobuf-cpp-lite",
     ],
 
     target: {
@@ -427,12 +434,15 @@ cc_library {
         "libadbconnection_server",
         "libadbd_auth",
 	"libadbd_wifi",
+        "libadbd_wifi_pairing",
+        "libadbd_wifi_tls",
         "libasyncio",
         "libbase",
         "libcrypto",
         "libcrypto_utils",
         "libcutils",
         "liblog",
+        "libprotobuf-cpp-lite",
     ],
 
     target: {
@@ -476,6 +486,8 @@ cc_library {
         "libadbconnection_server",
         "libadbd_auth",
 	"libadbd_wifi",
+        "libadbd_wifi_pairing",
+        "libadbd_wifi_tls",
         "libadbd_services",
         "libasyncio",
         "libbase",
@@ -483,6 +495,8 @@ cc_library {
         "libcrypto_utils",
         "libcutils",
         "liblog",
+        "libprotobuf-cpp-lite",
+	"libssl",
     ],
 
     export_include_dirs: [
@@ -513,6 +527,8 @@ cc_binary {
         "libadbd",
         "libadbd_auth",
 	"libadbd_wifi",
+        "libadbd_wifi_pairing",
+        "libadbd_wifi_tls",
         "libadbd_services",
         "libasyncio",
         "libbase",
@@ -523,7 +539,9 @@ cc_binary {
         "liblog",
         "libmdnssd",
         "libminijail",
+        "libprotobuf-cpp-lite",
         "libselinux",
+        "libssl",
     ],
 
     shared_libs: [
@@ -538,6 +556,9 @@ phony {
         "abb",
         "libadbd_auth",
 	"libadbd_wifi",
+        "libadbd_wifi_pairing",
+        "libadbd_wifi_tls",
+        "libprotobuf-cpp-lite",
         "reboot",
         "set-verity-state",
     ]
@@ -599,12 +620,15 @@ cc_test {
         "libadbd",
         "libadbd_auth",
 	"libadbd_wifi",
+        "libadbd_wifi_pairing",
+        "libadbd_wifi_tls",
         "libbase",
         "libcutils",
         "libcrypto_utils",
         "libcrypto_static",
         "libdiagnose_usb",
         "liblog",
+        "libprotobuf-cpp-lite",
         "libusb",
         "libmdnssd",
         "libselinux",
