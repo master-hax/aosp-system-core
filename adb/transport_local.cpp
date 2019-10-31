@@ -46,6 +46,7 @@
 #include "adb_io.h"
 #include "adb_unique_fd.h"
 #include "adb_utils.h"
+#include "adb_wifi.h"
 #include "socket_spec.h"
 #include "sysdeps/chrono.h"
 
@@ -90,6 +91,7 @@ std::tuple<unique_fd, int, std::string> tcp_connect(const std::string& address,
     unique_fd fd;
     int port = DEFAULT_ADB_LOCAL_TRANSPORT_PORT;
     std::string serial;
+    LOG(INFO) << "address=[" << address << "]";
     std::string prefix_addr = address.starts_with("vsock:") ? address : "tcp:" + address;
     if (socket_spec_connect(&fd, prefix_addr, &port, &serial, response)) {
         close_on_exec(fd);
@@ -323,7 +325,8 @@ void local_init(int port) {
 #if ADB_HOST
 struct EmulatorConnection : public FdConnection {
     EmulatorConnection(unique_fd fd, int local_port)
-        : FdConnection(std::move(fd)), local_port_(local_port) {}
+        : FdConnection(std::move(fd), local_port == ADB_WIFI_CONNECT_PORT),
+          local_port_(local_port) {}
 
     ~EmulatorConnection() {
         VLOG(TRANSPORT) << "remote_close, local_port = " << local_port_;
@@ -368,11 +371,16 @@ std::string getEmulatorSerialString(int console_port) {
     return android::base::StringPrintf("emulator-%d", console_port);
 }
 
-int init_socket_transport(atransport* t, unique_fd fd, int adb_port, int local) {
+int init_socket_transport(atransport* t,
+                          unique_fd fd,
+                          int adb_port,
+                          int local) {
     int fail = 0;
+    // Only this port will use TLS, to not disturb anyone else that depends on
+    // using tcp unencrypted (emulator, for example).
+    bool use_tls = (adb_port == ADB_WIFI_CONNECT_PORT);
 
     t->type = kTransportLocal;
-
 #if ADB_HOST
     // Emulator connection.
     if (local) {
@@ -393,7 +401,12 @@ int init_socket_transport(atransport* t, unique_fd fd, int adb_port, int local) 
 #endif
 
     // Regular tcp connection.
-    auto fd_connection = std::make_unique<FdConnection>(std::move(fd));
-    t->SetConnection(std::make_unique<BlockingConnectionAdapter>(std::move(fd_connection)));
+    auto fd_connection = std::make_unique<FdConnection>(std::move(fd), use_tls);
+    if (!use_tls || fd_connection->doTlsHandshake()) {
+        t->SetConnection(std::make_unique<BlockingConnectionAdapter>(std::move(fd_connection)));
+    } else {
+        D("tcp transport failed to do TLS handshake");
+        fail = -1;
+    }
     return fail;
 }

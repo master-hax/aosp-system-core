@@ -172,6 +172,8 @@ class ResolvedService : public AsyncServiceRef {
         // connecting here.
         if (adb_DNSServiceShouldConnect(regType_.c_str())) {
             std::string response;
+            // TODO: Check the keystore against the service, and try to connect
+            // if it's in our keystore.
             connect_device(android::base::StringPrintf(addr_format, ip_addr_, port_),
                            &response);
             D("Connect to %s regtype %s (%s:%hu) : %s",
