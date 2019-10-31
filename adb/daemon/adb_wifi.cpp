@@ -18,6 +18,8 @@
 
 #define TRACE_TAG ADB_WIRELESS
 
+#include "adb_wifi.h"
+
 #include "adb.h"
 #include "pairing/pairing.h"
 #include "sysdeps.h"
@@ -29,7 +31,99 @@
 
 #define DEBUGON 1
 
+namespace {
+
 static AdbdWifiContext* sWifiCtx;
+
+class TlsServer {
+public:
+    explicit TlsServer(int port);
+    virtual ~TlsServer();
+    bool start();
+
+private:
+    void onFdEvent(int fd, unsigned ev);
+    static void staticOnFdEvent(int fd, unsigned ev, void* opaque);
+
+    fdevent* mFdEvent = nullptr;
+    int port_;
+};  // TlsServer
+
+TlsServer::TlsServer(int port) : port_(port) { }
+
+TlsServer::~TlsServer() {
+}
+
+bool TlsServer::start() {
+    LOG(INFO) << "Starting TLS server";
+    std::condition_variable cv;
+    std::mutex mutex;
+    bool success = false;
+    auto callback = [&](bool result) {
+        std::unique_lock<std::mutex> lock(mutex);
+        success = result;
+        cv.notify_all();
+    };
+
+    std::string err;
+    unique_fd fd(network_inaddr_any_server(port_, SOCK_STREAM, &err));
+    if (fd.get() == -1) {
+        LOG(ERROR) << "Failed to start TLS server [" << err << "]";
+        callback(false);
+        return false;
+    }
+    close_on_exec(fd.get());
+
+    std::unique_lock<std::mutex> lock(mutex);
+    fdevent_run_on_main_thread([&]() {
+        mFdEvent = fdevent_create(fd.release(),
+                                  &TlsServer::staticOnFdEvent,
+                                  this);
+        if (mFdEvent == nullptr) {
+            LOG(ERROR) << "Failed to create fd event for TlsServer.";
+            callback(false);
+            return;
+        }
+        callback(true);
+    });
+
+    LOG(INFO) << "Waiting for TlsServer fd event creation...";
+    cv.wait(lock);
+    if (!success) {
+        LOG(INFO) << "TlsServer fdevent_create failed";
+        return false;
+    }
+    fdevent_set(mFdEvent, FDE_READ);
+
+    return success;
+}
+
+// static
+void TlsServer::staticOnFdEvent(int fd, unsigned ev, void* opaque) {
+    auto server = reinterpret_cast<TlsServer*>(opaque);
+    server->onFdEvent(fd, ev);
+}
+
+void TlsServer::onFdEvent(int fd, unsigned ev) {
+    if ((ev & FDE_READ) == 0 || fd != mFdEvent->fd.get()) {
+        LOG(INFO) << __func__ << ": No read [ev=" << ev << " fd=" << fd << "]";
+        return;
+    }
+
+    unique_fd new_fd(adb_socket_accept(fd, nullptr, nullptr));
+    if (new_fd >= 0) {
+        LOG(INFO) << "New TLS connection [fd=" << new_fd.get() << "]";
+        close_on_exec(new_fd.get());
+        disable_tcp_nagle(new_fd.get());
+        std::string serial = android::base::StringPrintf("host-%d", new_fd.get());
+        register_socket_transport(std::move(new_fd), std::move(serial), port_, 1,
+                                  [](atransport*) { return ReconnectResult::Abort; });
+    }
+}
+
+TlsServer* sTlsServer = nullptr;
+
+}  // namespace
 
 static bool adbd_wifi_enable_discovery(const uint8_t* ourSPAKE2Key, uint64_t sz) {
     return pair_host(ourSPAKE2Key, sz);
@@ -45,12 +139,39 @@ static void adbd_wifi_send_pair_request(const uint8_t* pairing_request,
                                    sz);
 }
 
+static void adbd_wifi_framework_connected() {
+    if (sTlsServer != nullptr) {
+        delete sTlsServer;
+    }
+    sTlsServer = new TlsServer(ADB_WIFI_CONNECT_PORT);
+    if (!sTlsServer->start()) {
+        LOG(ERROR) << "Failed to start TlsServer";
+    }
+}
+
+static void adbd_wifi_framework_disconnected() {
+    if (sTlsServer != nullptr) {
+        delete sTlsServer;
+        sTlsServer = nullptr;
+    }
+}
+
+static void adbd_wifi_teardown() {
+    if (sTlsServer != nullptr) {
+        delete sTlsServer;
+    }
+}
+
 void adbd_wifi_init(void) {
+    atexit(adbd_wifi_teardown);
     AdbdWifiCallbacks cb;
     cb.version = 1;
     cb.callbacks.v1.enable_discovery = adbd_wifi_enable_discovery;
     cb.callbacks.v1.disable_discovery = adbd_wifi_disable_discovery;
     cb.callbacks.v1.send_pairing_request = adbd_wifi_send_pair_request;
+    cb.callbacks.v1.on_framework_connected = adbd_wifi_framework_connected;
+    cb.callbacks.v1.on_framework_disconnected = adbd_wifi_framework_disconnected;
+
     sWifiCtx = adbd_wifi_new(&cb);
 
     std::thread([]() {
