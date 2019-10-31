@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1b6c75ab_ff6d4dd4",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-10-31T21:36:02Z",
+      "side": 1,
+      "message": "yeah, given that i think it would be unreasonable to insist that you implement that :-)",
+      "revId": "c3e5649cfa7b91a407b0f7f533e026cf53df5dee",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cc9d5469_cbc47855",
+        "filename": "adb/test_adb.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 284,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-10-31T21:36:02Z",
+      "side": 1,
+      "message": "might be more accurate to say \"adb doesn\u0027t yet support IPv6 on Windows\". (and remove the parenthetical from the comment below.)",
+      "range": {
+        "startLine": 284,
+        "startChar": 46,
+        "endLine": 284,
+        "endChar": 60
+      },
+      "revId": "c3e5649cfa7b91a407b0f7f533e026cf53df5dee",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
