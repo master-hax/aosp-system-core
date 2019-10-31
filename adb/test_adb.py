@@ -281,6 +281,35 @@ class ServerTest(unittest.TestCase):
             subprocess.check_output(["adb", "-P", str(port), "kill-server"],
                                     stderr=subprocess.STDOUT)
 
+    @unittest.skipUnless(os.name == "posix", "requires Posix")
+    def test_starts_on_ipv6_localhost(self):
+        """
+        Tests that the server can start up on ::1 (on posix based systems)
+        and that it's still accessible
+        """
+        server_port = 5037
+        # Kill any existing server on this non-default port.
+        subprocess.check_output(
+            ["adb", "-P", str(server_port), "kill-server"],
+            stderr=subprocess.STDOUT,
+        )
+        try:
+            subprocess.check_output(
+                ["adb", "-L", f"tcp:[::1]:{server_port}", "server"],
+                stderr=subprocess.STDOUT,
+            )
+            with fake_adbd() as (port, _):
+                with adb_connect(self, serial=f"localhost:{port}"):
+                    pass
+        finally:
+            # If we started a server, kill it.
+            subprocess.check_output(
+                ["adb", "-P", str(server_port), "kill-server"],
+                stderr=subprocess.STDOUT,
+            )
+
+
+
 
 class EmulatorTest(unittest.TestCase):
     """Tests for the emulator connection."""
