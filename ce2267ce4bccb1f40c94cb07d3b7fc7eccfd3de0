@@ -1,0 +1,204 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3a636df9_1a2ab102",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 377,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-10-31T20:24:41Z",
+      "side": 1,
+      "message": "I\u0027m not a big fan of having a switch statement in a for loop.  I thought that we were going to handle these before the switch statement, something like:\n\nfor (size_t i \u003d 5; i \u003c args.size(); ++i) {\n  // Handle these \n}\n\nswitch (max(4, args.size()) {\n  // Handle the positional arguments\n}\n\nOr maybe even refactor out parsing of those parameters and:\n\ncase 7:\n  ParseExtraArgs(args[6]);\ncase 6:\n  ParseExtraArgs(args[5]);\n\nWhich becomes slightly easier if it were a lambda,\n\nauto parse_extra_args \u003d [\u0026] (const std::string\u0026 arg) {\n  // Do all the parsing and have the rest of the variables in this function easily available.\n}",
+      "revId": "ce2267ce4bccb1f40c94cb07d3b7fc7eccfd3de0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "48b2a5c9_c7a0e6a2",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 397,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-10-31T20:24:41Z",
+      "side": 1,
+      "message": "We can use android::base::Split() here instead.  We can check that there\u0027re exactly 2 pieces as well.",
+      "revId": "ce2267ce4bccb1f40c94cb07d3b7fc7eccfd3de0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f7dfcfde_f074ebaf",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 399,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-10-31T20:24:41Z",
+      "side": 1,
+      "message": "This is missing \u003c\u003c \"\u0027\"",
+      "range": {
+        "startLine": 399,
+        "startChar": 72,
+        "endLine": 399,
+        "endChar": 73
+      },
+      "revId": "ce2267ce4bccb1f40c94cb07d3b7fc7eccfd3de0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "423b862d_2a724995",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 403,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-10-31T20:24:41Z",
+      "side": 1,
+      "message": "We should probably add a check that \u0027encryption\u0027 and \u0027key\u0027 are not specified twice.  \n\nLikely a check at the end that \u0027key\u0027 isn\u0027t specified if encryption is \u0027None\u0027\n\nWe have host_init_verifier that\u0027ll check this syntax during build time, so we should make it as strict as possible.",
+      "revId": "ce2267ce4bccb1f40c94cb07d3b7fc7eccfd3de0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b09a2740_fb1cbe6e",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 429,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-10-31T20:24:41Z",
+      "side": 1,
+      "message": "const std::string",
+      "range": {
+        "startLine": 429,
+        "startChar": 4,
+        "endLine": 429,
+        "endChar": 15
+      },
+      "revId": "ce2267ce4bccb1f40c94cb07d3b7fc7eccfd3de0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "10da1d4a_c4f211d3",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 430,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-10-31T20:24:41Z",
+      "side": 1,
+      "message": "We already have `using android::base::StartsWith` at the top of the file, so we can drop this.",
+      "range": {
+        "startLine": 430,
+        "startChar": 8,
+        "endLine": 430,
+        "endChar": 23
+      },
+      "revId": "ce2267ce4bccb1f40c94cb07d3b7fc7eccfd3de0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "df7ce2d0_20bf9fff",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 433,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-10-31T20:24:41Z",
+      "side": 1,
+      "message": "How strict do we want to make this?  Again, host_init_verifier will require this at build time, so we can make it rather strict.\n\nIf we\u0027re worried about backwards compatibility, we can enforce this only when SelinuxGetVendorAndroidVersion() \u003e\u003d __ANDROID_API_R__",
+      "revId": "ce2267ce4bccb1f40c94cb07d3b7fc7eccfd3de0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5c99b797_9e283bd6",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1307,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-10-31T20:24:41Z",
+      "side": 1,
+      "message": "This should be 6, right?  The existing 4 + encryption\u003d and key\u003d ?",
+      "range": {
+        "startLine": 1307,
+        "startChar": 44,
+        "endLine": 1307,
+        "endChar": 48
+      },
+      "revId": "ce2267ce4bccb1f40c94cb07d3b7fc7eccfd3de0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f81533b0_c3775caa",
+        "filename": "init/fscrypt_init_extensions.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 145,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-10-31T20:24:41Z",
+      "side": 1,
+      "message": "Should we check that we were actually able to delete the contents?",
+      "revId": "ce2267ce4bccb1f40c94cb07d3b7fc7eccfd3de0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ba8fa746_5ae970f3",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 872,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-10-31T20:24:41Z",
+      "side": 1,
+      "message": "The code above implies that this should be a space.",
+      "range": {
+        "startLine": 872,
+        "startChar": 62,
+        "endLine": 872,
+        "endChar": 63
+      },
+      "revId": "ce2267ce4bccb1f40c94cb07d3b7fc7eccfd3de0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}

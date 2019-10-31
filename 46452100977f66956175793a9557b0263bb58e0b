@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c9324d7a_a5bb0750",
+        "filename": "init/fscrypt_init_extensions.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-10-31T20:24:41Z",
+      "side": 0,
+      "message": "The backwards compatibility comment above made me remember: do vendors depend on this functionality?  If so, we\u0027ll need to keep it around and opt into this functionality for older vendor image versions.",
+      "revId": "46452100977f66956175793a9557b0263bb58e0b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
