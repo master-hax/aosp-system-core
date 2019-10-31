@@ -251,6 +251,7 @@ class SnapshotManager final {
     FRIEND_TEST(SnapshotTest, MergeCannotRemoveCow);
     FRIEND_TEST(SnapshotTest, NoMergeBeforeReboot);
     FRIEND_TEST(SnapshotTest, UpdateBootControlHal);
+    FRIEND_TEST(SnapshotUpdateTest, MergeCannotRemoveCow);
     FRIEND_TEST(SnapshotUpdateTest, SnapshotStatusFileWithoutCow);
     friend class SnapshotTest;
     friend class SnapshotUpdateTest;
