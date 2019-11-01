@@ -94,6 +94,21 @@ void FreeRamdisk(DIR* dir, dev_t dev) {
     }
 }
 
+void RunScript() {
+    LOG(INFO) << "Attempting to run /first_stage.sh...";
+    pid_t pid = fork();
+    if (pid != 0) {
+        int status;
+        waitpid(pid, &status, 0);
+        LOG(INFO) << "/first_stage.sh exited with status " << status;
+        return;
+    }
+    const char* path = "/system/bin/sh";
+    const char* args[] = {path, "/first_stage.sh", nullptr};
+    int rv = execv(path, const_cast<char**>(args));
+    LOG(ERROR) << "unable to execv /first_stage.sh, returned " << rv << " errno " << errno;
+}
+
 void StartConsole() {
     if (mknod("/dev/console", S_IFCHR | 0600, makedev(5, 1))) {
         PLOG(ERROR) << "unable to create /dev/console";
@@ -126,6 +141,7 @@ void StartConsole() {
     dup2(fd, STDERR_FILENO);
     close(fd);
 
+    RunScript();
     const char* path = "/system/bin/sh";
     const char* args[] = {path, nullptr};
     int rv = execv(path, const_cast<char**>(args));
