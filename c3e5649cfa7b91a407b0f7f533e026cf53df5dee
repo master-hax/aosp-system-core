@@ -39,6 +39,30 @@
       "revId": "c3e5649cfa7b91a407b0f7f533e026cf53df5dee",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "08447527_2bae28ed",
+        "filename": "adb/test_adb.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 284,
+      "author": {
+        "id": 1588291
+      },
+      "writtenOn": "2019-11-01T14:20:38Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "cc9d5469_cbc47855",
+      "range": {
+        "startLine": 284,
+        "startChar": 46,
+        "endLine": 284,
+        "endChar": 60
+      },
+      "revId": "c3e5649cfa7b91a407b0f7f533e026cf53df5dee",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
