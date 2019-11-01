@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "cb28920d_e2858529",
+        "filename": "adb/daemon/adb_wifi.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1082465
+      },
+      "writtenOn": "2019-11-01T15:25:51Z",
+      "side": 1,
+      "message": "is adbd_wifi_new/run available? if not, it could be better to rebase the patches so that those are available and each one in the sequence in system/core (or other project builds by itself)",
+      "range": {
+        "startLine": 37,
+        "startChar": 1,
+        "endLine": 42,
+        "endChar": 16
+      },
+      "revId": "dc9df009a4126f3fe8a841bbb41e7b56d47939f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
