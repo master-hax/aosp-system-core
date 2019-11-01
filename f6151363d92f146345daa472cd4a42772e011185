@@ -1,0 +1,89 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "591ba55f_d657d229",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/snapshot.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 384,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-11-01T01:28:45Z",
+      "side": 1,
+      "message": "Minor nit, but we don\u0027t all-caps the other enum classes in this file I think.",
+      "revId": "f6151363d92f146345daa472cd4a42772e011185",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "79aa814d_514bc3f5",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 577,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-11-01T01:28:45Z",
+      "side": 1,
+      "message": "Clearer to copy+paste the erase() line here, it\u0027s only an extra line.",
+      "revId": "f6151363d92f146345daa472cd4a42772e011185",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b06a09aa_e81a563e",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 1200,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-11-01T01:28:45Z",
+      "side": 1,
+      "message": "On one hand, I\u0027m tempted to say this is such an edge case that maybe it\u0027s not worth worrying about. Maybe it\u0027s worth protecting in fastbootd instead, by disallowing flashing of dynamic partitions as we will userdata/metadata. If the user invokes \"fastboot snapshot-update cancel\" and performs a partial flash, the docs say this could lead to an unbootable device. That\u0027s already true for any device with verity enabled.\n\nOn the other hand, handling this isn\u0027t *too* complicated, and it makes us do the right thing, so I\u0027m fine with it as-is.",
+      "revId": "f6151363d92f146345daa472cd4a42772e011185",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f6e0c51d_fa4eb31e",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 2191,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-11-01T01:28:45Z",
+      "side": 1,
+      "message": "nit: s/finishes/finished",
+      "revId": "f6151363d92f146345daa472cd4a42772e011185",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6d51b9fa_779fddf2",
+        "filename": "fs_mgr/libsnapshot/snapshot_test.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 1333,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-11-01T01:28:45Z",
+      "side": 1,
+      "message": "Is it easy to run these instantiations one-off on the command-line? If not, it might be better for debugging to make two normal tests and have the bulk in a big helper.",
+      "revId": "f6151363d92f146345daa472cd4a42772e011185",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
