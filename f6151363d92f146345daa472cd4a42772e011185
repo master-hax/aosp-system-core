@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "f710fd4e_18b8cda4",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/snapshot.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 384,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2019-11-01T01:35:57Z",
+      "side": 1,
+      "message": "(We should be:\nhttps://google.github.io/styleguide/cppguide.html#Enumerator_Names\n\nBut let me change it for consistency)",
+      "parentUuid": "591ba55f_d657d229",
+      "revId": "f6151363d92f146345daa472cd4a42772e011185",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "79aa814d_514bc3f5",
         "filename": "fs_mgr/libsnapshot/snapshot.cpp",
         "patchSetId": 4
@@ -71,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "c8e25da0_c31b342e",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 1200,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2019-11-01T01:35:57Z",
+      "side": 1,
+      "message": "Ack.",
+      "parentUuid": "b06a09aa_e81a563e",
+      "revId": "f6151363d92f146345daa472cd4a42772e011185",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f6e0c51d_fa4eb31e",
         "filename": "fs_mgr/libsnapshot/snapshot.cpp",
         "patchSetId": 4
@@ -99,6 +135,24 @@
       "writtenOn": "2019-11-01T01:28:45Z",
       "side": 1,
       "message": "Is it easy to run these instantiations one-off on the command-line? If not, it might be better for debugging to make two normal tests and have the bulk in a big helper.",
+      "revId": "f6151363d92f146345daa472cd4a42772e011185",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f37deb5c_86d2ac49",
+        "filename": "fs_mgr/libsnapshot/snapshot_test.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 1333,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2019-11-01T01:35:57Z",
+      "side": 1,
+      "message": "Yes:\n\n    libsnapshot_test --gtest_filter\u003dFlashAfterUpdateTest.FlashSlotAfterUpdate/FlashOldSlotBeforeMerge # Run 1\n    libsnapshot_test --gtest_filter\u003d*FlashSlotAfterUpdate* # Run all 4\n\nfor example. Parameterized tests are used a lot in Android code.",
+      "parentUuid": "6d51b9fa_779fddf2",
       "revId": "f6151363d92f146345daa472cd4a42772e011185",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
