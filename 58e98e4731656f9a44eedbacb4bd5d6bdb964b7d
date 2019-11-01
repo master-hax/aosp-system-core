@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "bcbd2f83_d06392c0",
+        "filename": "adb/crypto/ec_key.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1082465
+      },
+      "writtenOn": "2019-11-01T15:39:34Z",
+      "side": 1,
+      "message": "it\u0027s probably better to use a uint8_t key[kEllipticCurveBits / 8] instead of std::string. we can\u0027t treat it as a string because 0 bytes (null terminators) might occur, esp when constructing other strings off the c_str()",
+      "range": {
+        "startLine": 18,
+        "startChar": 26,
+        "endLine": 18,
+        "endChar": 45
+      },
+      "revId": "58e98e4731656f9a44eedbacb4bd5d6bdb964b7d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2b109068_73de1e39",
+        "filename": "adb/crypto/key_store.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 202,
+      "author": {
+        "id": 1082465
+      },
+      "writtenOn": "2019-11-01T15:39:34Z",
+      "side": 1,
+      "message": "here, if the key happens to contain a 0 byte somewhere in the middle, the output std::string gets truncated. please use std::vector\u003cchar\u003e for the key and keep the size explicit",
+      "range": {
+        "startLine": 202,
+        "startChar": 0,
+        "endLine": 202,
+        "endChar": 31
+      },
+      "revId": "58e98e4731656f9a44eedbacb4bd5d6bdb964b7d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
