@@ -2082,6 +2082,12 @@ bool SnapshotManager::HandleImminentDataWipe(const std::function<void()>& callba
         return true;
     }
 
+    // Check this early, so we don't accidentally start trying to populate
+    // the state file in recovery.
+    if (GetUpdateState() == UpdateState::None) {
+        return true;
+    }
+
     auto slot_number = SlotNumberForSlotSuffix(device_->GetSlotSuffix());
     auto super_path = device_->GetSuperDevice(slot_number);
     if (!CreateLogicalAndSnapshotPartitions(super_path)) {
