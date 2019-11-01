@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "86146460_33504c9b",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-11-01T15:56:11Z",
+      "side": 1,
+      "message": "(the checkin comment doesn\u0027t address \"why move?\" or, more importantly, \"why is system/core the right home?\".)",
+      "revId": "a765a1570163c7530750125f2d851fa57d230f15",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
