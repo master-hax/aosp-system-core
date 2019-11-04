@@ -29,8 +29,6 @@
 #include <android-base/logging.h>
 #include <openssl/rand.h>
 
-const int kDefaultPairingPort = 51393;
-
 #if ADB_HOST
 
 void pair_device(const std::string& host,
@@ -59,7 +57,7 @@ void pair_device(const std::string& host,
     fdevent_run_on_main_thread([&]() {
         LOG(ERROR) << "pair_device connecting";
         // Pass a callback here to notify completion and to clean up sClient
-        if (!client.connect(host, kDefaultPairingPort, response)) {
+        if (!client.connect(host, ADB_WIFI_PAIRING_PORT, response)) {
             LOG(ERROR) << "pair_device connect failed, calling callback";
             callback(false);
             return;
@@ -90,7 +88,7 @@ bool pair_host(const uint8_t* publicKey, uint64_t sz) {
     sPairingServer = new PairingServer(publicKey, sz);
 
     std::string response;
-    if (!sPairingServer->listen(&response, kDefaultPairingPort)) {
+    if (!sPairingServer->listen(&response, ADB_WIFI_PAIRING_PORT)) {
         LOG(ERROR) << "Failed to listen for pairings: " << response;
         delete sPairingServer;
         return false;
