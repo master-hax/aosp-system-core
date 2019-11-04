@@ -20,6 +20,7 @@
 #include <crypto/key_store.h>
 
 #include "adb_utils.h"
+#include "client/adb_client.h"
 #include "sysdeps.h"
 
 using android::base::ParseNetAddress;
@@ -149,6 +150,10 @@ bool PairingClient::handleMsg(std::string_view msg,
             if (!valid) {
                 LOG(ERROR) << "Unable to write the device's key into the keystore.";
                 return false;
+            }
+            // Try to connect
+            if (!adb_secure_connect_by_service_name(header.id)) {
+                LOG(ERROR) << "Unable to connect to serviceName=[" << header.id << "]";
             }
             break;
         }
