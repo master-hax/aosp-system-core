@@ -21,6 +21,7 @@
 #include "adb_wifi.h"
 
 #include "adb.h"
+#include "daemon/mdns.h"
 #include "pairing/pairing.h"
 #include "sysdeps.h"
 #include "transport.h"
@@ -126,10 +127,12 @@ TlsServer* sTlsServer = nullptr;
 }  // namespace
 
 static bool adbd_wifi_enable_discovery(const uint8_t* ourSPAKE2Key, uint64_t sz) {
+    register_adb_secure_pairing_service(ADB_WIFI_PAIRING_PORT);
     return pair_host(ourSPAKE2Key, sz);
 }
 
 static void adbd_wifi_disable_discovery() {
+    unregister_adb_secure_pairing_service();
     pair_cancel();
 }
 
@@ -147,12 +150,20 @@ static void adbd_wifi_framework_connected() {
     if (!sTlsServer->start()) {
         LOG(ERROR) << "Failed to start TlsServer";
     }
+    // Start mdns connect service for discovery
+    register_adb_secure_connect_service(ADB_WIFI_CONNECT_PORT);
 }
 
 static void adbd_wifi_framework_disconnected() {
     if (sTlsServer != nullptr) {
         delete sTlsServer;
         sTlsServer = nullptr;
+    }
+    if (is_adb_secure_pairing_service_registered()) {
+        unregister_adb_secure_pairing_service();
+    }
+    if (is_adb_secure_connect_service_registered()) {
+        unregister_adb_secure_connect_service();
     }
 }
 
