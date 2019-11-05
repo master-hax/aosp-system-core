@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8b8ec3d4_3047c064",
+        "filename": "base/include/android-base/test_utils.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1229339
+      },
+      "writtenOn": "2019-11-05T22:28:31Z",
+      "side": 1,
+      "message": "Are we worried about a pattern expression that references an unrelated \"s\" variable from the user of ASSERT_MATCH?",
+      "revId": "98368e37280ef5c532747ee088afd90a56fd3311",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
