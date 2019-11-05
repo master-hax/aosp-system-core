@@ -507,9 +507,14 @@ Result<MkdirOptions> ParseMkdir(const std::vector<std::string>& args) {
     if (StartsWith(args[1], prefix) &&
         args[1].find_first_of('/', prefix.size()) == std::string::npos) {
         if (!set_option_encryption) {
-            LOG(WARNING) << "Top-level directory needs encryption action, eg mkdir " << args[1]
-                         << " <mode> <uid> <gid> encryption=Require";
-            fscrypt_action = FscryptAction::kRequire;
+            if (SelinuxGetVendorAndroidVersion() >= __ANDROID_API_R__) {
+                return Error() << "Top-level directory needs encryption action, eg mkdir "
+                               << args[1] << " <mode> <uid> <gid> encryption=Require";
+            } else {
+                LOG(WARNING) << "Top-level directory needs encryption action, eg mkdir " << args[1]
+                             << " <mode> <uid> <gid> encryption=Require";
+                fscrypt_action = FscryptAction::kRequire;
+            }
         }
         if (fscrypt_action == FscryptAction::kNone) {
             LOG(INFO) << "Not setting policy on: " << args[1];
