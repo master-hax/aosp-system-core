@@ -31,7 +31,7 @@
 #include "fastboot_driver.h"
 
 #include "extensions.h"
-#include "usb_transport_sniffer.h"
+#include "transport_sniffer.h"
 
 namespace fastboot {
 
@@ -47,6 +47,7 @@ class FastBootTest : public testing::Test {
     static constexpr int MAX_USB_TRIES = 10;
 
     static int MatchFastboot(usb_ifc_info* info, const std::string& local_serial = "");
+    static bool IsFastbootOverTcp();
     bool UsbStillAvailible();
     bool UserSpaceFastboot();
     void ReconnectFastbootDevice();
@@ -64,7 +65,7 @@ class FastBootTest : public testing::Test {
     void TearDownSerial();
     void SetLockState(bool unlock, bool assert_change = true);
 
-    std::unique_ptr<UsbTransportSniffer> transport;
+    std::unique_ptr<TransportSniffer> transport;
     std::unique_ptr<FastBootDriver> fb;
 
   private:
