@@ -42,12 +42,12 @@ namespace fastboot {
 /* A special class for sniffing reads and writes
  *
  * A useful debugging tool is to see the raw fastboot transactions going between
- * the host and device. This class wraps the UsbTransport class, and snoops and saves
+ * the host and device. This class is a special subclass of Transport that snoops and saves
  * all the transactions going on. Additionally, if there is a console serial port
  * from the device, this class can monitor it as well and capture the interleaving of
  * transport transactions and UART log messages.
  */
-class UsbTransportSniffer : public UsbTransport {
+class TransportSniffer : public Transport {
   public:
     enum EventType {
         READ,
@@ -67,21 +67,21 @@ class UsbTransportSniffer : public UsbTransport {
         const std::vector<char> buf;
     };
 
-    UsbTransportSniffer(std::unique_ptr<UsbTransport> transport, const int serial_fd = 0);
-    ~UsbTransportSniffer() override;
+    TransportSniffer(std::unique_ptr<Transport> transport, const int serial_fd = 0);
+    ~TransportSniffer() override;
 
     virtual ssize_t Read(void* data, size_t len) override;
     virtual ssize_t Write(const void* data, size_t len) override;
     virtual int Close() override final;  // note usage in destructor
-    virtual int Reset() override;
 
     const std::vector<Event> Transfers();
     std::string CreateTrace();
     void ProcessSerial();
+    int Reset();
 
   private:
     std::vector<Event> transfers_;
-    std::unique_ptr<UsbTransport> transport_;
+    std::unique_ptr<Transport> transport_;
     const int serial_fd_;
 };
 

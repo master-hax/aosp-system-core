@@ -1,4 +1,4 @@
-#include "usb_transport_sniffer.h"
+#include "transport_sniffer.h"
 #include <android-base/stringprintf.h>
 #include <sys/select.h>
 #include <sys/time.h>
@@ -8,15 +8,15 @@
 
 namespace fastboot {
 
-UsbTransportSniffer::UsbTransportSniffer(std::unique_ptr<UsbTransport> transport,
+TransportSniffer::TransportSniffer(std::unique_ptr<Transport> transport,
                                          const int serial_fd)
     : transport_(std::move(transport)), serial_fd_(serial_fd) {}
 
-UsbTransportSniffer::~UsbTransportSniffer() {
+TransportSniffer::~TransportSniffer() {
     Close();
 }
 
-ssize_t UsbTransportSniffer::Read(void* data, size_t len) {
+ssize_t TransportSniffer::Read(void* data, size_t len) {
     ProcessSerial();
 
     ssize_t ret = transport_->Read(data, len);
@@ -37,7 +37,7 @@ ssize_t UsbTransportSniffer::Read(void* data, size_t len) {
     return ret;
 }
 
-ssize_t UsbTransportSniffer::Write(const void* data, size_t len) {
+ssize_t TransportSniffer::Write(const void* data, size_t len) {
     ProcessSerial();
 
     size_t ret = transport_->Write(data, len);
@@ -58,13 +58,14 @@ ssize_t UsbTransportSniffer::Write(const void* data, size_t len) {
     return ret;
 }
 
-int UsbTransportSniffer::Close() {
+int TransportSniffer::Close() {
     return transport_->Close();
 }
 
-int UsbTransportSniffer::Reset() {
+int TransportSniffer::Reset() {
     ProcessSerial();
-    int ret = transport_->Reset();
+    int ret = 0;
+    if (UsbTransport* usb = dynamic_cast<UsbTransport*>(transport_.get())) ret = usb->Reset();
     std::vector<char> buf;
     Event e(RESET, std::move(buf));
     transfers_.push_back(e);
@@ -72,7 +73,7 @@ int UsbTransportSniffer::Reset() {
     return ret;
 }
 
-const std::vector<UsbTransportSniffer::Event> UsbTransportSniffer::Transfers() {
+const std::vector<TransportSniffer::Event> TransportSniffer::Transfers() {
     return transfers_;
 }
 
@@ -81,7 +82,7 @@ const std::vector<UsbTransportSniffer::Event> UsbTransportSniffer::Transfers() {
  * the failure. This method will look through its log of captured events, and
  * create a clean printable string of everything that happened.
  */
-std::string UsbTransportSniffer::CreateTrace() {
+std::string TransportSniffer::CreateTrace() {
     std::string ret;
 
     const auto no_print = [](char c) -> bool { return !isprint(c); };
@@ -158,7 +159,7 @@ std::string UsbTransportSniffer::CreateTrace() {
 
 // This is a quick call to flush any UART logs the device might have sent
 // to our internal event log. It will wait up to 10ms for data to appear
-void UsbTransportSniffer::ProcessSerial() {
+void TransportSniffer::ProcessSerial() {
     if (serial_fd_ <= 0) return;
 
     fd_set set;
