@@ -202,6 +202,10 @@ void BatteryMonitor::updateValues(void) {
 
     HealthInfo_1_0& props = mHealthInfo->legacy.legacy;
 
+    //Make sure the Status/Health values are initialized to UNKNOWN (enum value 1 not 0)
+    props.batteryStatus = BatteryStatus::UNKNOWN;
+    props.batteryHealth = BatteryHealth::UNKNOWN;
+
     if (!mHealthdConfig->batteryPresentPath.isEmpty())
         props.batteryPresent = getBooleanField(mHealthdConfig->batteryPresentPath);
     else
