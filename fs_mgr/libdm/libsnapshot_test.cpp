@@ -219,6 +219,7 @@ struct SnapshotInfo {
 
         CreateLogicalPartitionParams params = {
                 .block_device = kSuper,
+		.metadata = metadata.get(),
                 .partition_name = base_name,
                 .force_writable = true,
                 .timeout_ms = kMapTimeout,
@@ -687,9 +688,9 @@ void PinCpus() {
     while ((dp = readdir(dir.get())) != nullptr) {
         int cpunum;
         if (sscanf(dp->d_name, "cpu%d", &cpunum) == 1) {
-            ASSERT_TRUE(android::base::WriteStringToFile(
-                    "1", std::string(kCpuPath) + dp->d_name + "/online"));
-            ASSERT_TRUE(android::base::WriteStringToFile(
+            android::base::WriteStringToFile(
+                    "1", std::string(kCpuPath) + dp->d_name + "/online");
+            EXPECT_TRUE(android::base::WriteStringToFile(
                     "performance",
                     std::string(kCpuPath) + dp->d_name + "/cpufreq/scaling_governor"));
         }
