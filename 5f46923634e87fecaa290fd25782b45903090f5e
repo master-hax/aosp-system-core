@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "79580bc1_00d6d28b",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2019-11-06T02:01:35Z",
+      "side": 1,
+      "message": "any concern with this approach? It\u0027s technically against g3 C++ best practices, but requiring all of the implementations to be in a different namespace could be unnecessarily annoying. WDYT?",
+      "revId": "5f46923634e87fecaa290fd25782b45903090f5e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
