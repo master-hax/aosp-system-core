@@ -762,7 +762,7 @@ TEST_F(Fuzz, DownloadPartialBuf) {
     RetCode ret = SendBuffer(buf);
     EXPECT_EQ(ret, SUCCESS) << "Device did not accept partial payload download";
     // Send the partial buffer, then cancel it with a reset
-    EXPECT_EQ(transport->Reset(), 0) << "USB reset failed";
+    EXPECT_EQ((dynamic_cast<UsbTransportSniffer*>(transport.get()))->Reset(), 0) << "USB reset failed";
 
     ASSERT_TRUE(UsbStillAvailible()) << USB_PORT_GONE;
     // The device better still work after all that if we unplug and replug
@@ -789,7 +789,7 @@ TEST_F(Fuzz, DownloadOverRun) {
 
     ASSERT_TRUE(UsbStillAvailible()) << USB_PORT_GONE;
     // The device better still work after all that if we unplug and replug
-    EXPECT_EQ(transport->Reset(), 0) << "USB reset failed";
+    EXPECT_EQ((dynamic_cast<UsbTransportSniffer*>(transport.get()))->Reset(), 0) << "USB reset failed";
     EXPECT_EQ(fb->GetVar("product", &resp), SUCCESS)
             << "Device did not respond with SUCCESS to getvar:product.";
 }
@@ -952,7 +952,7 @@ TEST_F(Fuzz, USBResetSpam) {
     std::chrono::duration<double> elapsed;
     int i = 0;
     do {
-        ASSERT_EQ(transport->Reset(), 0) << "USB Reset failed after " << i << " resets in a row";
+        ASSERT_EQ((dynamic_cast<UsbTransportSniffer*>(transport.get()))->Reset(), 0) << "USB Reset failed after " << i << " resets in a row";
         elapsed = std::chrono::high_resolution_clock::now() - start;
     } while (i++, elapsed.count() < 5);
     std::string resp;
@@ -966,7 +966,7 @@ TEST_F(Fuzz, USBResetCommandSpam) {
     do {
         std::string resp;
         std::vector<std::string> all;
-        ASSERT_EQ(transport->Reset(), 0) << "USB Reset failed";
+        ASSERT_EQ((dynamic_cast<UsbTransportSniffer*>(transport.get()))->Reset(), 0) << "USB Reset failed";
         EXPECT_EQ(fb->GetVarAll(&all), SUCCESS) << "getvar:all failed after USB reset";
         EXPECT_EQ(fb->GetVar("product", &resp), SUCCESS) << "getvar:product failed";
         elapsed = std::chrono::high_resolution_clock::now() - start;
@@ -977,7 +977,7 @@ TEST_F(Fuzz, USBResetAfterDownload) {
     std::vector<char> buf;
     buf.resize(1000000);
     EXPECT_EQ(DownloadCommand(buf.size()), SUCCESS) << "Download command failed";
-    EXPECT_EQ(transport->Reset(), 0) << "USB Reset failed";
+    EXPECT_EQ((dynamic_cast<UsbTransportSniffer*>(transport.get()))->Reset(), 0) << "USB Reset failed";
     std::vector<std::string> all;
     EXPECT_EQ(fb->GetVarAll(&all), SUCCESS) << "getvar:all failed after USB reset.";
 }
@@ -1756,16 +1756,19 @@ int main(int argc, char** argv) {
     }
 
     setbuf(stdout, NULL);  // no buffering
-    printf("<Waiting for Device>\n");
-    const auto matcher = [](usb_ifc_info* info) -> int {
-        return fastboot::FastBootTest::MatchFastboot(info, fastboot::FastBootTest::device_serial);
-    };
-    Transport* transport = nullptr;
-    while (!transport) {
-        transport = usb_open(matcher);
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+
+    if(!fastboot::FastBootTest::IsFastbootOverNet()) {
+        printf("<Waiting for Device>\n");
+        const auto matcher = [](usb_ifc_info* info) -> int {
+            return fastboot::FastBootTest::MatchFastboot(info, fastboot::FastBootTest::device_serial);
+        };
+        Transport* transport = nullptr;
+        while (!transport) {
+            transport = usb_open(matcher);
+            std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        }
+        transport->Close();
     }
-    transport->Close();
 
     if (args.find("serial_port") != args.end()) {
         fastboot::FastBootTest::serial_port = fastboot::ConfigureSerial(args.at("serial_port"));
