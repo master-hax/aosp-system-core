@@ -55,6 +55,24 @@
     },
     {
       "key": {
+        "uuid": "1594aadf_e8d25d28",
+        "filename": "base/include/android-base/properties.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-11-06T19:50:10Z",
+      "side": 1,
+      "message": "\u003e I don\u0027t like relying on std::string\u0027s small string optimization because it makes performance characteristics change based on a threshold...\n\nFair point.\n\nIt still diverges a bit from the easy of use aspects that libbase is trying for.  We mostly created GetProperty() to simplify the libc API for the majority of people who are going to end up reading the property into a string before using it anyway.  Or, worse, people who\u0027re going to read it into a fixed length buffer and can potentially overflow.\n\nIf people really need the performance and are going to use the callback to do something other than just reading into a std::string; there\u0027s already __system_property_find() and __system_property_read_callback() that besides the slight bit of host support, do the same as FindProperty() / GetPropertyWithCallback().\n\nIn any case, let\u0027s chat about that in a bit.\n\n\u003e Also, even *with* SSO, an std::string parameter requires ...\n\nTrue; I\u0027m mostly talking about the output.  string_view input parameters sound good to me.",
+      "parentUuid": "011d7488_aa1cef71",
+      "revId": "c454406073fcb0d5ebcadead88c70082f2467740",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "8e483717_8d9c76ef",
         "filename": "base/include/android-base/properties.h",
         "patchSetId": 1
@@ -90,6 +108,30 @@
       "side": 1,
       "message": "I\u0027m describing the contract, not the implementation. This contract gives us the flexibility to invoke the callback multiple times if we want.",
       "parentUuid": "8e483717_8d9c76ef",
+      "range": {
+        "startLine": 49,
+        "startChar": 3,
+        "endLine": 51,
+        "endChar": 41
+      },
+      "revId": "c454406073fcb0d5ebcadead88c70082f2467740",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "59e3f4bf_ab06d9aa",
+        "filename": "base/include/android-base/properties.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-11-06T19:50:10Z",
+      "side": 1,
+      "message": "But why put that in the contract?  Or characterize it by being \u0027unlikely\u0027 ?  I don\u0027t think it\u0027d be a hard restriction to impose on us to only call the callback once.",
+      "parentUuid": "92c94db3_6962417f",
       "range": {
         "startLine": 49,
         "startChar": 3,
