@@ -1,0 +1,84 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3f9ad09d_c8bc6654",
+        "filename": "base/include/android-base/properties.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-11-06T19:18:05Z",
+      "side": 1,
+      "message": "We have small string optimization for libc++, right?  As far as I know, this means that there are 0 heap allocations for strings \u003c\u003d 12 bytes for 32 bit and \u003c\u003d 24 bytes for 64 bit.\n\nHow realistically inefficient is std::string then?  I checked my blueline and out of 810 properties, 733 are \u003c\u003d 12 bytes and 762 are \u003c\u003d 24 bytes.  Virtually all of the numbers are \u003c\u003d 12 bytes, and UINT64_MAX as a string is \u003c 24 bytes, so it\u0027s impossible on a 64 bit system to heap allocate reading a valid number with GetUintProperty() using std::string.\n\nI think, getting back to the comments from enh@ and the new readme: std::string references should still be preferred here as they\u0027re the safest and easiest to use and in a majority cases have no performance drag.  We can profile this further, but I don\u0027t think the comment itself is the direction we want to take this.",
+      "revId": "c454406073fcb0d5ebcadead88c70082f2467740",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8e483717_8d9c76ef",
+        "filename": "base/include/android-base/properties.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-11-06T19:18:05Z",
+      "side": 1,
+      "message": "callback isn\u0027t invoked multiple times in the current code or after aosp/1159432 from what I can tell.",
+      "range": {
+        "startLine": 49,
+        "startChar": 3,
+        "endLine": 51,
+        "endChar": 41
+      },
+      "revId": "c454406073fcb0d5ebcadead88c70082f2467740",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a6e33904_3b5f09ed",
+        "filename": "base/include/android-base/properties.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-11-06T19:18:05Z",
+      "side": 1,
+      "message": "I thought none of them allowed a null PropertyHandle ?  At least the handle_must_not_be_null implies that.  GetBoolProperty() uses handle_must_not_be_null in the implementation just not in the header.",
+      "range": {
+        "startLine": 51,
+        "startChar": 0,
+        "endLine": 53,
+        "endChar": 27
+      },
+      "revId": "c454406073fcb0d5ebcadead88c70082f2467740",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "446824df_1ee73b04",
+        "filename": "base/include/android-base/properties.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-11-06T19:18:05Z",
+      "side": 1,
+      "message": "I\u0027d be interested in seeing how many places would make sure of this.  CachedProperty seems like a better option; assuming most properties do not change often, then we would skip the parsing during each call as well.",
+      "revId": "c454406073fcb0d5ebcadead88c70082f2467740",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
