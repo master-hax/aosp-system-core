@@ -52,6 +52,7 @@
 using HealthInfo_1_0 = android::hardware::health::V1_0::HealthInfo;
 using HealthInfo_2_0 = android::hardware::health::V2_0::HealthInfo;
 using HealthInfo_2_1 = android::hardware::health::V2_1::HealthInfo;
+using android::hardware::health::InitHealthInfo;
 using android::hardware::health::V1_0::BatteryHealth;
 using android::hardware::health::V1_0::BatteryStatus;
 using android::hardware::health::V2_1::BatteryCapacityLevel;
@@ -78,7 +79,9 @@ BatteryMonitor::BatteryMonitor()
       mBatteryDevicePresent(false),
       mBatteryFixedCapacity(0),
       mBatteryFixedTemperature(0),
-      mHealthInfo(std::make_unique<HealthInfo_2_1>()) {}
+      mHealthInfo(std::make_unique<HealthInfo_2_1>()) {
+    InitHealthInfo(mHealthInfo.get());
+}
 
 BatteryMonitor::~BatteryMonitor() {}
 
@@ -198,7 +201,7 @@ int BatteryMonitor::getIntField(const String8& path) {
 }
 
 void BatteryMonitor::updateValues(void) {
-    *mHealthInfo = HealthInfo_2_1{};
+    InitHealthInfo(mHealthInfo.get());
 
     HealthInfo_1_0& props = mHealthInfo->legacy.legacy;
 
