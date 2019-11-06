@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "0ea02347_8431d1fe",
+        "filename": "base/include/android-base/properties.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1130394
+      },
+      "writtenOn": "2019-11-06T19:43:19Z",
+      "side": 1,
+      "message": "Also, even *with* SSO, an std::string parameter requires that a caller that doesn\u0027t have an std::string around already copy the string characters into an std::string on the stack, pass the address of the std::string, and then have the callee copy those characters out of the string object. If you pass a string_view or a const char*, you just pass the string contents you already happen to have, which is a win on both code size and latency --- not a huge one, granted, but still.",
+      "parentUuid": "011d7488_aa1cef71",
+      "revId": "c454406073fcb0d5ebcadead88c70082f2467740",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "8e483717_8d9c76ef",
         "filename": "base/include/android-base/properties.h",
         "patchSetId": 1
