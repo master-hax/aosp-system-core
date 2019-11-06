@@ -73,6 +73,24 @@
     },
     {
       "key": {
+        "uuid": "470482c0_a2947bcf",
+        "filename": "base/include/android-base/properties.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1130394
+      },
+      "writtenOn": "2019-11-06T20:02:07Z",
+      "side": 1,
+      "message": "Yeah. It\u0027s moot, though, since we\u0027re going in the direction of having callers that really care about performance use the libc APIs directly instead of going through a richer libbase API.",
+      "parentUuid": "1594aadf_e8d25d28",
+      "revId": "c454406073fcb0d5ebcadead88c70082f2467740",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "8e483717_8d9c76ef",
         "filename": "base/include/android-base/properties.h",
         "patchSetId": 1
@@ -132,6 +150,30 @@
       "side": 1,
       "message": "But why put that in the contract?  Or characterize it by being \u0027unlikely\u0027 ?  I don\u0027t think it\u0027d be a hard restriction to impose on us to only call the callback once.",
       "parentUuid": "92c94db3_6962417f",
+      "range": {
+        "startLine": 49,
+        "startChar": 3,
+        "endLine": 51,
+        "endChar": 41
+      },
+      "revId": "c454406073fcb0d5ebcadead88c70082f2467740",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "910b0b40_2a238da9",
+        "filename": "base/include/android-base/properties.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1130394
+      },
+      "writtenOn": "2019-11-06T20:02:07Z",
+      "side": 1,
+      "message": "Why put it in the callback? Because I want the flexibility to call the callback from inside ReadMutablePropertyValue. I think without this language callers might reasonably conclude that the function calls the callback only once; testing would confirm this mistaken conclusion since it probably wouldn\u0027t hit the reread case. But again, since we\u0027re going on a different direction, this particular contract seems moot.",
+      "parentUuid": "59e3f4bf_ab06d9aa",
       "range": {
         "startLine": 49,
         "startChar": 3,
