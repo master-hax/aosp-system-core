@@ -83,7 +83,4 @@ java_test_host {
         "cts-tradefed",
         "tradefed",
     ],
-    test_suites: [
-        "general-tests",
-    ],
 }
