@@ -1,0 +1,59 @@
+<<<<<<< PATCH SET (c0c97b Add FastDeployTests to TEST_MAPPING.)
+{
+  "presubmit": [
+    {
+      "name": "adbd_test"
+    },
+    {
+      "name": "CtsInitTestCases"
+    },
+    {
+      "name": "debuggerd_test"
+    },
+    {
+      "name": "CtsFsMgrTestCases"
+    },
+    {
+      "name": "FastDeployTests"
+    },
+    {
+      "name": "FastDeployHostTests"
+    },
+    {
+      "name": "fs_mgr_vendor_overlay_test"
+    },
+    {
+      "name": "libbase_test"
+    },
+    {
+      "name": "libpackagelistparser_test"
+    },
+    {
+      "name": "libprocinfo_test"
+    },
+    {
+      "name": "libutils_test"
+    },
+    {
+      "name": "memunreachable_test"
+    },
+    {
+      "name": "memunreachable_unit_test"
+    },
+    {
+      "name": "memunreachable_unit_test",
+      "host": true
+    },
+    {
+      "name": "memunreachable_binder_test"
+    },
+    {
+      "name": "propertyinfoserializer_tests"
+    },
+    {
+      "name": "ziparchive-tests"
+    }
+  ]
+}
+=======
+>>>>>>> BASE      (b2fdbe Merge "Revert "Cleaned up some slot logic"")
