@@ -161,7 +161,8 @@ static int file_write(struct output_file* out, void* data, size_t len) {
 
 static void file_close(struct output_file* out) {
   struct output_file_normal* outn = to_output_file_normal(out);
-
+  free(out->zero_buf);
+  free(out->fill_buf);
   free(outn);
 }
 
@@ -241,6 +242,8 @@ static void gz_file_close(struct output_file* out) {
   struct output_file_gz* outgz = to_output_file_gz(out);
 
   gzclose(outgz->gz_fd);
+  free(out->zero_buf);
+  free(out->fill_buf);
   free(outgz);
 }
 
@@ -285,7 +288,8 @@ static int callback_file_write(struct output_file* out, void* data, size_t len) 
 
 static void callback_file_close(struct output_file* out) {
   struct output_file_callback* outc = to_output_file_callback(out);
-
+  free(out->zero_buf);
+  free(out->fill_buf);
   free(outc);
 }
 
