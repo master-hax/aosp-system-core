@@ -16,6 +16,7 @@
 
 #include "socket_spec.h"
 
+#include <limits>
 #include <string>
 #include <string_view>
 #include <unordered_map>
@@ -28,6 +29,7 @@
 #include <cutils/sockets.h>
 
 #include "adb.h"
+#include "adb_utils.h"
 #include "sysdeps.h"
 
 using namespace std::string_literals;
@@ -131,7 +133,7 @@ bool is_socket_spec(std::string_view spec) {
             return true;
         }
     }
-    return spec.starts_with("tcp:");
+    return spec.starts_with("tcp:") || spec.starts_with("acceptfd:");
 }
 
 bool is_local_socket_spec(std::string_view spec) {
@@ -235,6 +237,9 @@ bool socket_spec_connect(unique_fd* fd, std::string_view address, int* port, std
         *error = "vsock is only supported on linux";
         return false;
 #endif  // ADB_LINUX
+    } else if (address.starts_with("acceptfd:")) {
+        *error = "cannot connect to acceptfd";
+        return false;
     }
 
     for (const auto& it : kLocalSocketTypes) {
@@ -332,6 +337,25 @@ int socket_spec_listen(std::string_view spec, std::string* error, int* resolved_
         *error = "vsock is only supported on linux";
         return -1;
 #endif  // ADB_LINUX
+    } else if (spec.starts_with("acceptfd:")) {
+        // We inherited the socket from some kind of launcher. It's already bound and
+        // listening. Return a copy of the FD instead of the FD itself so we implement the
+        // normal "listen" contract and can succeed more than once.
+        unsigned int fd_u;
+        if (!ParseUint(&fd_u, spec.substr(strlen("acceptfd:"))) ||
+            fd_u > std::numeric_limits<int>::max()) {
+            *error = "invalid fd";
+            return -1;
+        }
+        int fd = static_cast<int>(fd_u);
+        int new_fd = dup(fd);
+        if (new_fd < 0) {
+            *error = android::base::StringPrintf("could not dup inherited fd: '%s'",
+                                                 strerror(errno));
+            return -1;
+        }
+        close_on_exec(new_fd);
+        return new_fd;
     }
 
     for (const auto& it : kLocalSocketTypes) {
