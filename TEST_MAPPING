@@ -13,6 +13,12 @@
       "name": "CtsFsMgrTestCases"
     },
     {
+      "name": "FastDeployTests"
+    },
+    {
+      "name": "FastDeployHostTests"
+    },
+    {
       "name": "fs_mgr_vendor_overlay_test"
     },
     {
