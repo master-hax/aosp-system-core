@@ -2,6 +2,52 @@
   "comments": [
     {
       "key": {
+        "uuid": "1fa3af9c_d7506984",
+        "filename": "adb/SOCKET-ACTIVATION.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2019-11-07T01:49:22Z",
+      "side": 1,
+      "message": "configured",
+      "range": {
+        "startLine": 1,
+        "startChar": 11,
+        "endLine": 1,
+        "endChar": 20
+      },
+      "revId": "7af2678d52b1ba890717be224848707a874131dc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "96397791_a040dbd3",
+        "filename": "adb/SOCKET-ACTIVATION.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2019-11-07T01:49:22Z",
+      "side": 1,
+      "message": "Please don\u0027t call this adbd, that\u0027s the name with which the device side daemon is consistently referred to.",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 4
+      },
+      "revId": "7af2678d52b1ba890717be224848707a874131dc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "db19ef8c_783dee12",
         "filename": "adb/socket_spec.cpp",
         "patchSetId": 1
