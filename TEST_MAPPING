@@ -13,6 +13,9 @@
       "name": "CtsFsMgrTestCases"
     },
     {
+      "name": "FastDeployTests"
+    },
+    {
       "name": "fs_mgr_vendor_overlay_test"
     },
     {
