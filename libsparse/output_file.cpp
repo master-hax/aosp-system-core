@@ -493,6 +493,8 @@ static struct sparse_file_ops normal_file_ops = {
 
 void output_file_close(struct output_file* out) {
   out->sparse_ops->write_end_chunk(out);
+  free(out->zero_buf);
+  free(out->fill_buf);
   out->ops->close(out);
 }
 
