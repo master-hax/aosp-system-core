@@ -69,6 +69,7 @@
 
 using namespace std::literals;
 
+using android::base::boot_clock;
 using android::base::GetBoolProperty;
 using android::base::Split;
 using android::base::Timer;
@@ -752,6 +753,12 @@ static Result<void> DoUserspaceReboot() {
             were_enabled.push_back(s);
         }
     }
+    {
+        Timer sync_timer;
+        LOG(INFO) << "sync() before terminating services...";
+        sync();
+        LOG(INFO) << "sync() took" << sync_timer;
+    }
     // TODO(b/135984674): do we need shutdown animation for userspace reboot?
     // TODO(b/135984674): control userspace timeout via read-only property?
     StopServicesAndLogViolations(stop_first, 10s, true /* SIGTERM */);
@@ -766,6 +773,12 @@ static Result<void> DoUserspaceReboot() {
         r > 0) {
         // TODO(b/135984674): store information about offending services for debugging.
         return Error() << r << " debugging services are still running";
+    }
+    {
+        Timer sync_timer;
+        LOG(INFO) << "sync() after stopping services...";
+        sync();
+        LOG(INFO) << "sync() took" << sync_timer;
     }
     if (auto result = UnmountAllApexes(); !result) {
         return result;
@@ -784,9 +797,24 @@ static Result<void> DoUserspaceReboot() {
     return {};
 }
 
+static void UserspaceRebootWatchdogThread() {
+    Timer t;
+    // TODO(b/135984674): this should be configured via a read-only sysprop.
+    std::chrono::milliseconds timeout = 60s;
+    while (t.duration() < timeout) {
+        if (GetBoolProperty("sys.boot_completed", false)) {
+            LOG(INFO) << "Device booted in " << t << "ms. Stopping userspace reboot watchdog";
+            return;
+        }
+        std::this_thread::sleep_for(50ms);
+    }
+    TriggerShutdown("reboot,userspace-reboot-monitor-thread-fallback");
+}
+
 static void HandleUserspaceReboot() {
     LOG(INFO) << "Clearing queue and starting userspace-reboot-requested trigger";
     auto& am = ActionManager::GetInstance();
+    std::thread(UserspaceRebootWatchdogThread).detach();
     am.ClearQueue();
     am.QueueEventTrigger("userspace-reboot-requested");
     auto handler = [](const BuiltinArguments&) { return DoUserspaceReboot(); };
