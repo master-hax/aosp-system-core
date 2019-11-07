@@ -39,6 +39,7 @@
 #include <android-base/stringprintf.h>
 #include <android-base/strings.h>
 #include <android-base/unique_fd.h>
+#include <cutils/android_reboot.h>
 #include <cutils/sockets.h>
 #include <log/log_properties.h>
 
@@ -55,7 +56,6 @@
 #include "daemon/framebuffer_service.h"
 #include "daemon/restart_service.h"
 #include "daemon/shell_service.h"
-
 
 void reconnect_service(unique_fd fd, atransport* t) {
     WriteFdExactly(fd.get(), "done");
@@ -252,6 +252,22 @@ unique_fd daemon_service_to_fd(std::string_view name, atransport* transport) {
         cmd += name;
         return StartSubprocess(cmd, nullptr, SubprocessType::kRaw, SubprocessProtocol::kNone);
     } else if (android::base::ConsumePrefix(&name, "reboot:")) {
+#if defined(__ANDROID_RECOVERY__)
+        if (!__android_log_is_debuggable() &&
+            "orange" == android::base::GetProperty("ro.boot.verifiedbootstate", "")) {
+            auto reboot_service = [name](unique_fd fd) {
+                std::string reboot_string =
+                        android::base::StringPrintf("reboot,%s", std::string(name).c_str());
+                if (!android::base::SetProperty(ANDROID_RB_PROPERTY, reboot_string)) {
+                    WriteFdFmt(fd.get(), "reboot (%s) failed\n", reboot_string.c_str());
+                    return;
+                }
+                while (true) pause();
+            };
+            return create_service_thread("reboot", reboot_service);
+        }
+#endif
+        // Fall through
         std::string cmd = "/system/bin/reboot ";
         cmd += name;
         return StartSubprocess(cmd, nullptr, SubprocessType::kRaw, SubprocessProtocol::kNone);
