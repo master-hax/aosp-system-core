@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "db19ef8c_783dee12",
+        "filename": "adb/socket_spec.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 340,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2019-11-07T01:46:53Z",
+      "side": 1,
+      "message": "android::base::ConsumePrefix(\u0026spec, \"acceptfd:\")",
+      "range": {
+        "startLine": 340,
+        "startChar": 6,
+        "endLine": 340,
+        "endChar": 47
+      },
+      "revId": "7af2678d52b1ba890717be224848707a874131dc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a75cd6ce_b314880b",
+        "filename": "adb/socket_spec.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 341,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2019-11-07T01:46:53Z",
+      "side": 1,
+      "message": "It seems like a bad idea to not actually verify this, and arbitrarily dup whatever value gets passed in (e.g. hijacking the jdwp socket that adbd listens on). Disabling this on the device assuages my concerns a bit, but it still feels a bit wrong.\n\nI can\u0027t think of a great way to resolve this, though, other than to plumb a bool all the way through to here that controls whether this is enabled.",
+      "range": {
+        "startLine": 341,
+        "startChar": 8,
+        "endLine": 341,
+        "endChar": 62
+      },
+      "revId": "7af2678d52b1ba890717be224848707a874131dc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "85f4236a_907893ef",
+        "filename": "adb/socket_spec.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 351,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2019-11-07T01:46:53Z",
+      "side": 1,
+      "message": "This isn\u0027t going to work on windows (adb reimplements \"fds\" on windows via an internal translation layer).\n\nGuard this with an `#if !defined(_WIN32)` like vsock above?",
+      "range": {
+        "startLine": 349,
+        "startChar": 9,
+        "endLine": 351,
+        "endChar": 29
+      },
+      "revId": "7af2678d52b1ba890717be224848707a874131dc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "91733ece_37aa0e45",
+        "filename": "adb/socket_spec.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 357,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2019-11-07T01:46:53Z",
+      "side": 1,
+      "message": "It looks like darwin has had F_DUPFD_CLOEXEC since 2008, so maybe we could use that instead? (It doesn\u0027t really matter if it\u0027s only on the client, though.)",
+      "range": {
+        "startLine": 356,
+        "startChar": 9,
+        "endLine": 357,
+        "endChar": 30
+      },
+      "revId": "7af2678d52b1ba890717be224848707a874131dc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
