@@ -69,6 +69,7 @@
 
 using namespace std::literals;
 
+using android::base::boot_clock;
 using android::base::GetBoolProperty;
 using android::base::Split;
 using android::base::Timer;
@@ -726,6 +727,20 @@ static Result<void> UnmountAllApexes() {
     return Error() << "'/system/bin/apexd --unmount-all' failed : " << status;
 }
 
+static void UserspaceRebootWatchdogThread() {
+    Timer t;
+    // TODO(b/135984674): this should be configured via a read-only sysprop.
+    std::chrono::milliseconds timeout = 60s;
+    while (t.duration() < timeout) {
+        if (GetBoolProperty("sys.boot_completed", false)) {
+            LOG(INFO) << "Device booted in " << t << " Stopping userspace reboot watchdog";
+            return;
+        }
+        std::this_thread::sleep_for(50ms);
+    }
+    TriggerShutdown("reboot,userspace-reboot-monitor-thread-fallback");
+}
+
 static Result<void> DoUserspaceReboot() {
     LOG(INFO) << "Userspace reboot initiated";
     auto guard = android::base::make_scope_guard([] {
@@ -738,6 +753,7 @@ static Result<void> DoUserspaceReboot() {
     // proceeding with userspace reboot.
     // TODO(b/135984674): implement proper synchronization logic.
     std::this_thread::sleep_for(500ms);
+    std::thread(UserspaceRebootWatchdogThread).detach();
     EnterShutdown();
     std::vector<Service*> stop_first;
     // Remember the services that were enabled. We will need to manually enable them again otherwise
@@ -751,6 +767,12 @@ static Result<void> DoUserspaceReboot() {
         if (s->is_post_data() && s->IsEnabled()) {
             were_enabled.push_back(s);
         }
+    }
+    {
+        Timer sync_timer;
+        LOG(INFO) << "sync() before terminating services...";
+        sync();
+        LOG(INFO) << "sync() took " << sync_timer;
     }
     // TODO(b/135984674): do we need shutdown animation for userspace reboot?
     // TODO(b/135984674): control userspace timeout via read-only property?
@@ -767,9 +789,16 @@ static Result<void> DoUserspaceReboot() {
         // TODO(b/135984674): store information about offending services for debugging.
         return Error() << r << " debugging services are still running";
     }
+    {
+        Timer sync_timer;
+        LOG(INFO) << "sync() after stopping services...";
+        sync();
+        LOG(INFO) << "sync() took " << sync_timer;
+    }
     if (auto result = UnmountAllApexes(); !result) {
         return result;
     }
+    std::this_thread::sleep_for(100ms);
     if (!SwitchToBootstrapMountNamespaceIfNeeded()) {
         return Error() << "Failed to switch to bootstrap namespace";
     }
