@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "5b74002b_85c66d53",
+        "filename": "adb/SOCKET-ACTIVATION.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1130394
+      },
+      "writtenOn": "2019-11-08T05:02:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "17fe95bc_3149d130",
+      "range": {
+        "startLine": 1,
+        "startChar": 11,
+        "endLine": 1,
+        "endChar": 20
+      },
+      "revId": "7af2678d52b1ba890717be224848707a874131dc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "96397791_a040dbd3",
         "filename": "adb/SOCKET-ACTIVATION.txt",
         "patchSetId": 1
@@ -93,6 +117,30 @@
       "revId": "7af2678d52b1ba890717be224848707a874131dc",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7dd6cbe4_ef2226d8",
+        "filename": "adb/SOCKET-ACTIVATION.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1130394
+      },
+      "writtenOn": "2019-11-08T05:02:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "cf0ae559_b1ff5219",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 4
+      },
+      "revId": "7af2678d52b1ba890717be224848707a874131dc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -143,6 +191,54 @@
     },
     {
       "key": {
+        "uuid": "4f9fb2bc_7be97c0d",
+        "filename": "adb/socket_spec.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 340,
+      "author": {
+        "id": 1130394
+      },
+      "writtenOn": "2019-11-08T05:02:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a1a6d3ca_e1f81bf3",
+      "range": {
+        "startLine": 340,
+        "startChar": 6,
+        "endLine": 340,
+        "endChar": 47
+      },
+      "revId": "7af2678d52b1ba890717be224848707a874131dc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bb1726fe_a2e039bc",
+        "filename": "adb/socket_spec.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 340,
+      "author": {
+        "id": 1130394
+      },
+      "writtenOn": "2019-11-08T05:02:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a1a6d3ca_e1f81bf3",
+      "range": {
+        "startLine": 340,
+        "startChar": 6,
+        "endLine": 340,
+        "endChar": 47
+      },
+      "revId": "7af2678d52b1ba890717be224848707a874131dc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a75cd6ce_b314880b",
         "filename": "adb/socket_spec.cpp",
         "patchSetId": 1
@@ -187,6 +283,54 @@
       "revId": "7af2678d52b1ba890717be224848707a874131dc",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7e2ee79a_1fb01d74",
+        "filename": "adb/socket_spec.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 341,
+      "author": {
+        "id": 1130394
+      },
+      "writtenOn": "2019-11-08T05:02:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "08c3c8b8_1d257294",
+      "range": {
+        "startLine": 341,
+        "startChar": 8,
+        "endLine": 341,
+        "endChar": 62
+      },
+      "revId": "7af2678d52b1ba890717be224848707a874131dc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "10cecf00_97c389e3",
+        "filename": "adb/socket_spec.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 341,
+      "author": {
+        "id": 1130394
+      },
+      "writtenOn": "2019-11-08T05:02:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "08c3c8b8_1d257294",
+      "range": {
+        "startLine": 341,
+        "startChar": 8,
+        "endLine": 341,
+        "endChar": 62
+      },
+      "revId": "7af2678d52b1ba890717be224848707a874131dc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -237,6 +381,54 @@
     },
     {
       "key": {
+        "uuid": "dffaeeee_37c6c4ba",
+        "filename": "adb/socket_spec.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 351,
+      "author": {
+        "id": 1130394
+      },
+      "writtenOn": "2019-11-08T05:02:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f26635bf_289580bd",
+      "range": {
+        "startLine": 349,
+        "startChar": 9,
+        "endLine": 351,
+        "endChar": 29
+      },
+      "revId": "7af2678d52b1ba890717be224848707a874131dc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a1c17ebb_e7100de6",
+        "filename": "adb/socket_spec.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 351,
+      "author": {
+        "id": 1130394
+      },
+      "writtenOn": "2019-11-08T05:02:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f26635bf_289580bd",
+      "range": {
+        "startLine": 349,
+        "startChar": 9,
+        "endLine": 351,
+        "endChar": 29
+      },
+      "revId": "7af2678d52b1ba890717be224848707a874131dc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "91733ece_37aa0e45",
         "filename": "adb/socket_spec.cpp",
         "patchSetId": 1
@@ -281,6 +473,30 @@
       "revId": "7af2678d52b1ba890717be224848707a874131dc",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "95517704_e2e4f8aa",
+        "filename": "adb/socket_spec.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 357,
+      "author": {
+        "id": 1130394
+      },
+      "writtenOn": "2019-11-08T05:02:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d7c7d54f_7f98fbdb",
+      "range": {
+        "startLine": 356,
+        "startChar": 9,
+        "endLine": 357,
+        "endChar": 30
+      },
+      "revId": "7af2678d52b1ba890717be224848707a874131dc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
