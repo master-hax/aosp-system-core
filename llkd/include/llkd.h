@@ -56,7 +56,8 @@ unsigned llkCheckMilliseconds(void);
 #define LLK_BLACKLIST_PROCESS_DEFAULT  \
     "0,1,2,init,[kthreadd],[khungtaskd],lmkd,llkd,watchdogd,[watchdogd],[watchdogd/0]"
 #define LLK_BLACKLIST_PARENT_PROPERTY  "ro.llk.blacklist.parent"
-#define LLK_BLACKLIST_PARENT_DEFAULT   "0,2,[kthreadd],adbd&[setsid]"
+// b/144058139 com.hbo.hbonow is broken, vendor needs to fix it.
+#define LLK_BLACKLIST_PARENT_DEFAULT   "0,2,[kthreadd],adbd&[setsid],com.hbo.hbonow&[pm]"
 #define LLK_BLACKLIST_UID_PROPERTY     "ro.llk.blacklist.uid"
 #define LLK_BLACKLIST_UID_DEFAULT      ""
 #define LLK_BLACKLIST_STACK_PROPERTY   "ro.llk.blacklist.process.stack"
