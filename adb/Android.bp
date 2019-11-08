@@ -517,6 +517,8 @@ cc_binary {
         "libadbconnection_server",
         "libcrypto",
     ],
+
+    required: ["libfdtrack"],
 }
 
 phony {

@@ -1,0 +1,15 @@
+cc_library_shared {
+    name: "libfdtrack",
+    srcs: ["fd_track.cpp"],
+    stl: "libc++_static",
+    static_libs: [
+        "libasync_safe",
+        "libbase",
+        "libunwindstack",
+        "liblzma",
+        "liblog",
+    ],
+    version_script: "libfdtrack.map.txt",
+
+    recovery_available: true,
+}
