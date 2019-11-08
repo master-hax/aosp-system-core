@@ -107,6 +107,13 @@
 #define NO_THREAD_SAFETY_ANALYSIS \
       THREAD_ANNOTATION_ATTRIBUTE__(no_thread_safety_analysis)
 
+// -Wthread-safety-negative requires annotating methods that take locks with REQUIRES(!lock_name).
+// Clang requires the lock type to implement operator!() for the syntax to be valid.  Add a
+// static inline operator!() to std::mutex so can be used with the negative syntax.
+static inline const std::mutex& operator!(const std::mutex& m) {
+  return m;
+}
+
 namespace android {
 namespace base {
 
