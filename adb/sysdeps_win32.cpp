@@ -928,7 +928,7 @@ int network_inaddr_any_server(int port, int type, std::string* error) {
     return _network_server(port, type, INADDR_ANY, error);
 }
 
-int network_connect(const std::string& host, int port, int type, int timeout, std::string* error) {
+int network_connect(const std::string& host, int port, int type, std::string* error) {
     unique_fh f(_fh_alloc(&_fh_socket_class));
     if (!f) {
         *error = strerror(errno);
@@ -980,7 +980,7 @@ int network_connect(const std::string& host, int port, int type, int timeout, st
     }
     f->fh_socket = s;
 
-    // TODO: Implement timeouts for Windows. Seems like the default in theory
+    // TODO: Shorter timeouts for Windows? Seems like the default in theory
     // (according to http://serverfault.com/a/671453) and in practice is 21 sec.
     if (connect(s, addrinfo->ai_addr, addrinfo->ai_addrlen) == SOCKET_ERROR) {
         // TODO: Use WSAAddressToString or inet_ntop on address.

@@ -23,6 +23,10 @@
 #include <string.h>
 #include <stdbool.h>
 
+#ifdef __cplusplus
+#include <string>
+#endif
+
 #if defined(_WIN32)
 
 #include <winsock2.h>
@@ -85,8 +89,17 @@ int android_get_control_socket(const char* name);
  * These functions return INVALID_SOCKET (-1) on failure for all platforms.
  */
 cutils_socket_t socket_network_client(const char* host, int port, int type);
-int socket_network_client_timeout(const char* host, int port, int type,
-                                  int timeout, int* getaddrinfo_error);
+
+#ifdef __cplusplus
+/**
+ * Like socket_network_client() but with better error reporting.
+ *
+ * Returns a file descriptor or -1 on error.
+ * On error *error will be an appropriate human-readable error message.
+ */
+int socket_network_client_r(const char* host, int port, int type, std::string* error);
+#endif
+
 int socket_local_server(const char* name, int namespaceId, int type);
 int socket_local_server_bind(int s, const char* name, int namespaceId);
 int socket_local_client_connect(int fd, const char *name, int namespaceId,

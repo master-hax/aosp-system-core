@@ -130,20 +130,12 @@ int network_loopback_server(int port, int type, std::string* error) {
     return rc;
 }
 
-int network_connect(const std::string& host, int port, int type, int timeout, std::string* error) {
-    int getaddrinfo_error = 0;
-    int fd = socket_network_client_timeout(host.c_str(), port, type, timeout, &getaddrinfo_error);
-    if (fd != -1) {
-        return fd;
-    }
-    if (getaddrinfo_error != 0) {
-        *error = android::base::StringPrintf("failed to resolve host: '%s': %s", host.c_str(),
-                                             gai_strerror(getaddrinfo_error));
+int network_connect(const std::string& host, int port, int type, std::string* error) {
+    int fd = socket_network_client_r(host.c_str(), port, type, error);
+    if (fd == -1) {
         LOG(WARNING) << *error;
-    } else {
-        *error = android::base::StringPrintf("failed to connect to '%s:%d': %s", host.c_str(), port,
-                                             strerror(errno));
-        LOG(WARNING) << *error;
+        return -1;
     }
-    return -1;
+
+    return fd;
 }

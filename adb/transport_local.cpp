@@ -159,7 +159,7 @@ int local_connect_arbitrary_ports(int console_port, int adb_port, std::string* e
 
     const char *host = getenv("ADBHOST");
     if (host) {
-        fd.reset(network_connect(host, adb_port, SOCK_STREAM, 0, error));
+        fd.reset(network_connect(host, adb_port, SOCK_STREAM, error));
     }
 #endif
     if (fd < 0) {

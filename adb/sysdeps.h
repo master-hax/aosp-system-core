@@ -170,8 +170,7 @@ inline int network_local_server(const char* name, int namespace_id, int type, st
     abort();
 }
 
-int network_connect(const std::string& host, int port, int type, int timeout,
-                    std::string* error);
+int network_connect(const std::string& host, int port, int type, std::string* error);
 
 extern int adb_socket_accept(borrowed_fd serverfd, struct sockaddr* addr, socklen_t* addrlen);
 
@@ -512,7 +511,7 @@ inline int network_local_server(const char* name, int namespace_id, int type, st
     return _fd_set_error_str(socket_local_server(name, namespace_id, type), error);
 }
 
-int network_connect(const std::string& host, int port, int type, int timeout, std::string* error);
+int network_connect(const std::string& host, int port, int type, std::string* error);
 
 static __inline__ int adb_socket_accept(borrowed_fd serverfd, struct sockaddr* addr,
                                         socklen_t* addrlen) {

@@ -29,90 +29,35 @@
 #include <netinet/in.h>
 #include <netdb.h>
 
-static int toggle_O_NONBLOCK(int s) {
-    int flags = fcntl(s, F_GETFL);
-    if (flags == -1 || fcntl(s, F_SETFL, flags ^ O_NONBLOCK) == -1) {
-        close(s);
-        return -1;
-    }
-    return s;
-}
+using namespace std::string_literals;
 
-// Connect to the given host and port.
-// 'timeout' is in seconds (0 for no timeout).
-// Returns a file descriptor or -1 on error.
-// On error, check *getaddrinfo_error (for use with gai_strerror) first;
-// if that's 0, use errno instead.
-int socket_network_client_timeout(const char* host, int port, int type, int timeout,
-                                  int* getaddrinfo_error) {
-    struct addrinfo hints;
-    memset(&hints, 0, sizeof(hints));
-    hints.ai_family = AF_UNSPEC;
-    hints.ai_socktype = type;
-
+int socket_network_client_r(const char* host, int port, int type, std::string* error) {
     char port_str[16];
     snprintf(port_str, sizeof(port_str), "%d", port);
 
-    struct addrinfo* addrs;
-    *getaddrinfo_error = getaddrinfo(host, port_str, &hints, &addrs);
-    if (*getaddrinfo_error != 0) {
+    addrinfo* addrs;
+    const addrinfo hints = {.ai_family = AF_UNSPEC, .ai_socktype = type};
+    int rc = getaddrinfo(host, port_str, &hints, &addrs);
+    if (rc != 0) {
+        *error = "failed to resolve host '"s + host + "': "s + gai_strerror(rc);
         return -1;
     }
 
     int result = -1;
-    for (struct addrinfo* addr = addrs; addr != NULL; addr = addr->ai_next) {
+    for (addrinfo* addr = addrs; addr != nullptr; addr = addr->ai_next) {
         // The Mac doesn't have SOCK_NONBLOCK.
         int s = socket(addr->ai_family, type, addr->ai_protocol);
-        if (s == -1 || toggle_O_NONBLOCK(s) == -1) break;
+        if (s == -1) break;
 
-        int rc = connect(s, addr->ai_addr, addr->ai_addrlen);
-        if (rc == 0) {
-            result = toggle_O_NONBLOCK(s);
-            break;
-        } else if (rc == -1 && errno != EINPROGRESS) {
-            close(s);
-            continue;
-        }
-
-        fd_set r_set;
-        FD_ZERO(&r_set);
-        FD_SET(s, &r_set);
-        fd_set w_set = r_set;
-
-        struct timeval ts;
-        ts.tv_sec = timeout;
-        ts.tv_usec = 0;
-        if ((rc = select(s + 1, &r_set, &w_set, NULL, (timeout != 0) ? &ts : NULL)) == -1) {
-            close(s);
+        if (connect(s, addr->ai_addr, addr->ai_addrlen) == 0) {
+            result = s;
             break;
         }
-        if (rc == 0) {  // we had a timeout
-            errno = ETIMEDOUT;
-            close(s);
-            break;
-        }
+        close(s);
+    }
 
-        int error = 0;
-        socklen_t len = sizeof(error);
-        if (FD_ISSET(s, &r_set) || FD_ISSET(s, &w_set)) {
-            if (getsockopt(s, SOL_SOCKET, SO_ERROR, &error, &len) < 0) {
-                close(s);
-                break;
-            }
-        } else {
-            close(s);
-            break;
-        }
-
-        if (error) {  // check if we had a socket error
-            // TODO: Update the timeout.
-            errno = error;
-            close(s);
-            continue;
-        }
-
-        result = toggle_O_NONBLOCK(s);
-        break;
+    if (result == -1) {
+        *error = "failed to connect to '"s + host + ":"s + port_str + "': "s + strerror(errno);
     }
 
     freeaddrinfo(addrs);
@@ -120,6 +65,6 @@ int socket_network_client_timeout(const char* host, int port, int type, int time
 }
 
 int socket_network_client(const char* host, int port, int type) {
-    int getaddrinfo_error;
-    return socket_network_client_timeout(host, port, type, 0, &getaddrinfo_error);
+    std::string error;
+    return socket_network_client_r(host, port, type, &error);
 }
