@@ -1,0 +1,12 @@
+cc_library {
+    name: "libfdtrack",
+    srcs: ["fd_track.cpp"],
+    stl: "libc++_static",
+    static_libs: [
+        "libbase",
+        "libunwindstack",
+        "liblzma",
+        "liblog",
+    ],
+    version_script: "libfdtrack.map.txt",
+}

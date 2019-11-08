@@ -22,6 +22,7 @@
 #include <android/fdsan.h>
 #endif
 
+#include <dlfcn.h>
 #include <errno.h>
 #include <getopt.h>
 #include <malloc.h>
@@ -318,6 +319,18 @@ int main(int argc, char** argv) {
     }
 
     close_stdin();
+
+    auto fdtrack = dlopen("libfdtrack.so", RTLD_GLOBAL | RTLD_NOW);
+    if (!fdtrack) {
+        LOG(ERROR) << "failed to dlopen libfdtrack" << dlerror();
+    } else {
+        static void* dump = dlsym(fdtrack, "fdtrack_dump");
+        if (!dump) {
+            LOG(ERROR) << "failed to dlsym fdtrack_dump: " << dlerror();
+        } else {
+            signal(40, [](int) { reinterpret_cast<void (*)(void)>(dump)(); });
+        }
+    }
 
     adb_trace_init(argv);
 
