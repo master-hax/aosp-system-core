@@ -57,5 +57,8 @@ class FirmwareHandler : public UeventHandler {
     std::vector<ExternalFirmwareHandler> external_firmware_handlers_;
 };
 
+// Indicate that booting is in progress to background fw loaders, etc.
+Result<void> NotifyBootingInProgress();
+
 }  // namespace init
 }  // namespace android

@@ -55,6 +55,7 @@
 #include "action_parser.h"
 #include "builtins.h"
 #include "epoll.h"
+#include "firmware_handler.h"
 #include "first_stage_init.h"
 #include "first_stage_mount.h"
 #include "import_parser.h"
@@ -702,7 +703,9 @@ int SecondStageMain(int argc, char** argv) {
     keyctl_get_keyring_ID(KEY_SPEC_SESSION_KEYRING, 1);
 
     // Indicate that booting is in progress to background fw loaders, etc.
-    close(open("/dev/.booting", O_WRONLY | O_CREAT | O_CLOEXEC, 0000));
+    if (auto status = NotifyBootingInProgress(); !status) {
+        LOG(ERROR) << status.error();
+    }
 
     property_init();
 

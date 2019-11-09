@@ -942,6 +942,8 @@ on userspace-reboot-fs-remount
 on userspace-reboot-resume
   trigger userspace-reboot-fs-remount
   trigger post-fs-data
+  # Remove a file to wake up anything waiting for firmware.
+  trigger firmware_mounts_complete
   trigger zygote-start
   trigger early-boot
   trigger boot

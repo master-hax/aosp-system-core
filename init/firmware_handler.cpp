@@ -44,6 +44,8 @@ using android::base::WriteFully;
 namespace android {
 namespace init {
 
+static const constexpr char* kBootingDevice = "/dev/.booting";
+
 static void LoadFirmware(const std::string& firmware, const std::string& root, int fw_fd,
                          size_t fw_size, int loading_fd, int data_fd) {
     // Start transfer.
@@ -61,7 +63,7 @@ static void LoadFirmware(const std::string& firmware, const std::string& root, i
 }
 
 static bool IsBooting() {
-    return access("/dev/.booting", F_OK) == 0;
+    return access(kBootingDevice, F_OK) == 0;
 }
 
 FirmwareHandler::FirmwareHandler(std::vector<std::string> firmware_directories,
@@ -257,6 +259,17 @@ void FirmwareHandler::HandleUevent(const Uevent& uevent) {
         LOG(INFO) << "loading " << uevent.path << " took " << t;
         _exit(EXIT_SUCCESS);
     }
+}
+
+Result<void> NotifyBootingInProgress() {
+    int fd = open(kBootingDevice, O_WRONLY | O_CREAT | O_CLOEXEC, 0000);
+    if (fd < 0) {
+        return ErrnoError() << "Failed to open " << kBootingDevice;
+    }
+    if (close(fd) < 0) {
+        return ErrnoError() << "Failed to close " << kBootingDevice;
+    }
+    return {};
 }
 
 }  // namespace init

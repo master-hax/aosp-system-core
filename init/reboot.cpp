@@ -56,6 +56,7 @@
 #include "action.h"
 #include "action_manager.h"
 #include "builtin_arguments.h"
+#include "firmware_handler.h"
 #include "init.h"
 #include "mount_namespace.h"
 #include "property_service.h"
@@ -777,6 +778,9 @@ static Result<void> DoUserspaceReboot() {
     for (const auto& s : were_enabled) {
         LOG(INFO) << "Re-enabling service '" << s->name() << "'";
         s->Enable();
+    }
+    if (auto result = NotifyBootingInProgress(); !result) {
+        return result;
     }
     LeaveShutdown();
     ActionManager::GetInstance().QueueEventTrigger("userspace-reboot-resume");
