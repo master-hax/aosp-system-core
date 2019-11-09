@@ -674,6 +674,17 @@ static void HandlePropertyFd() {
     }
 }
 
+Result<void> MarkBootingInProgress() {
+    int fd = open("/dev/.booting", O_WRONLY | O_CREAT | O_CLOEXEC, 0000);
+    if (fd < 0) {
+        return ErrnoError() << "Failed to open /dev/.booting";
+    }
+    if (close(fd) < 0) {
+        return ErrnoError() << "Failed to close /dev/.booting";
+    }
+    return {};
+}
+
 int SecondStageMain(int argc, char** argv) {
     if (REBOOT_BOOTLOADER_ON_PANIC) {
         InstallRebootSignalHandlers();
@@ -702,7 +713,9 @@ int SecondStageMain(int argc, char** argv) {
     keyctl_get_keyring_ID(KEY_SPEC_SESSION_KEYRING, 1);
 
     // Indicate that booting is in progress to background fw loaders, etc.
-    close(open("/dev/.booting", O_WRONLY | O_CREAT | O_CLOEXEC, 0000));
+    if (auto status = MarkBootingInProgress(); !status) {
+        LOG(ERROR) << status.error();
+    }
 
     property_init();
 

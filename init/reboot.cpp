@@ -778,6 +778,9 @@ static Result<void> DoUserspaceReboot() {
         LOG(INFO) << "Re-enabling service '" << s->name() << "'";
         s->Enable();
     }
+    if (auto result = MarkBootingInProgress(); !result) {
+        return result;
+    }
     LeaveShutdown();
     ActionManager::GetInstance().QueueEventTrigger("userspace-reboot-resume");
     guard.Disable();  // Go on with userspace reboot.
