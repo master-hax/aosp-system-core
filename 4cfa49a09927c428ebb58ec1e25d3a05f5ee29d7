@@ -45,6 +45,29 @@
       "revId": "4cfa49a09927c428ebb58ec1e25d3a05f5ee29d7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "45356e3f_cb84be9e",
+        "filename": "init/host_init_verifier.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1432579
+      },
+      "writtenOn": "2019-11-09T18:17:30Z",
+      "side": 1,
+      "message": "nit: 2019?",
+      "range": {
+        "startLine": 2,
+        "startChar": 17,
+        "endLine": 2,
+        "endChar": 21
+      },
+      "revId": "4cfa49a09927c428ebb58ec1e25d3a05f5ee29d7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
