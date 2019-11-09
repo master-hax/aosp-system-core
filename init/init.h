@@ -45,5 +45,8 @@ void SendStartSendingMessagesMessage();
 
 int SecondStageMain(int argc, char** argv);
 
+// Indicate that booting is in progress to background fw loaders, etc.
+Result<void> MarkBootingInProgress();
+
 }  // namespace init
 }  // namespace android

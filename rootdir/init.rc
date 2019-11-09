@@ -388,6 +388,8 @@ on late-init
     # some services can be started.
     trigger late-fs
 
+    # TODO(b/135984674): extract all the actions below into a separate trigger, to reuse during
+    # userspace reboot, after userspace reboot support reloading of persistent properties.
     # Now we can mount /data. File encryption requires keymaster to decrypt
     # /data, which in turn can only be loaded when system properties are present.
     trigger post-fs-data
@@ -943,5 +945,7 @@ on userspace-reboot-resume
   trigger userspace-reboot-fs-remount
   trigger post-fs-data
   trigger zygote-start
+  # Remove a file to wake up anything waiting for firmware.
+  trigger firmware_mounts_complete
   trigger early-boot
   trigger boot
