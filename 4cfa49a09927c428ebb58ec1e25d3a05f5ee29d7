@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "71febccc_37caa520",
+        "filename": "init/check_builtins.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 192,
+      "author": {
+        "id": 1432579
+      },
+      "writtenOn": "2019-11-09T15:12:02Z",
+      "side": 1,
+      "message": "Are all the properties that are set in one of .rc files supposed to have type? If so, what do you think about splitting this check into two:\nOne emitting an error saying \"Property must have a type\" if type \u003d\u003d nullptr, and another checking calling CheckType?",
+      "range": {
+        "startLine": 192,
+        "startChar": 8,
+        "endLine": 192,
+        "endChar": 23
+      },
+      "revId": "4cfa49a09927c428ebb58ec1e25d3a05f5ee29d7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "856ff145_817dc61c",
+        "filename": "init/host_init_verifier.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 199,
+      "author": {
+        "id": 1432579
+      },
+      "writtenOn": "2019-11-09T15:12:02Z",
+      "side": 1,
+      "message": "Shouldn\u0027t this be outside the for loop?",
+      "range": {
+        "startLine": 199,
+        "startChar": 8,
+        "endLine": 199,
+        "endChar": 27
+      },
+      "revId": "4cfa49a09927c428ebb58ec1e25d3a05f5ee29d7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
