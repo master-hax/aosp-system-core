@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6282fd52_c539327d",
+        "filename": "adb/daemon/main.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 331,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2019-11-11T21:18:43Z",
+      "side": 1,
+      "message": "Where is this coming from? Are you going to allocate a signal for this in bionic?",
+      "range": {
+        "startLine": 331,
+        "startChar": 19,
+        "endLine": 331,
+        "endChar": 21
+      },
+      "revId": "6a1ebe2dcdc32729d144488ee9a9ac37ed253eae",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
