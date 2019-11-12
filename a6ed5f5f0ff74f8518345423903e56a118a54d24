@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c404a761_6d616c0a",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 291,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-11-12T21:50:42Z",
+      "side": 1,
+      "message": "frozen?\n\nAlso, why do you to chown /dev/freezer/frozen/freezer.state? I assume system_server is not going to dynamically change the value set there?",
+      "range": {
+        "startLine": 291,
+        "startChar": 37,
+        "endLine": 291,
+        "endChar": 43
+      },
+      "revId": "a6ed5f5f0ff74f8518345423903e56a118a54d24",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
