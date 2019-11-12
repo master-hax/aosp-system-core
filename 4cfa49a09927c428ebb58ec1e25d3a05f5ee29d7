@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "ed15a740_49613d87",
+        "filename": "init/check_builtins.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 192,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-11-12T18:27:06Z",
+      "side": 1,
+      "message": "They do all have a type.  I was iffy about it when I copied it over from property_service.cpp, but kept it for consistency.  Given that you pointed it out, I think it\u0027s time to remove it from both places as it should never be null.",
+      "parentUuid": "71febccc_37caa520",
+      "range": {
+        "startLine": 192,
+        "startChar": 8,
+        "endLine": 192,
+        "endChar": 23
+      },
+      "revId": "4cfa49a09927c428ebb58ec1e25d3a05f5ee29d7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "856ff145_817dc61c",
         "filename": "init/host_init_verifier.cpp",
         "patchSetId": 1
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "7d2e9174_897d4f1a",
+        "filename": "init/host_init_verifier.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 199,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-11-12T18:27:06Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "856ff145_817dc61c",
+      "range": {
+        "startLine": 199,
+        "startChar": 8,
+        "endLine": 199,
+        "endChar": 27
+      },
+      "revId": "4cfa49a09927c428ebb58ec1e25d3a05f5ee29d7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "45356e3f_cb84be9e",
         "filename": "init/host_init_verifier.h",
         "patchSetId": 1
@@ -68,6 +116,30 @@
       "revId": "4cfa49a09927c428ebb58ec1e25d3a05f5ee29d7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "845ff73a_75089b00",
+        "filename": "init/host_init_verifier.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-11-12T18:27:06Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "45356e3f_cb84be9e",
+      "range": {
+        "startLine": 2,
+        "startChar": 17,
+        "endLine": 2,
+        "endChar": 21
+      },
+      "revId": "4cfa49a09927c428ebb58ec1e25d3a05f5ee29d7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
