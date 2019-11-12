@@ -16,6 +16,24 @@
       "revId": "7c377a2cc512600b9e6fc1120b7976b47a49f3e4",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2588ea0c_c71414a6",
+        "filename": "libsparse/output_file.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 497,
+      "author": {
+        "id": 1553903
+      },
+      "writtenOn": "2019-11-12T10:55:41Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4d1fa892_a4417aaa",
+      "revId": "7c377a2cc512600b9e6fc1120b7976b47a49f3e4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
