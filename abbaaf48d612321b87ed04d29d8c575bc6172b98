@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ab0f82df_2ddfa444",
+        "filename": "adb/sysdeps.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 353,
+      "author": {
+        "id": 1130394
+      },
+      "writtenOn": "2019-11-12T09:57:55Z",
+      "side": 1,
+      "message": "Found the bug. Using O_CLOEXEC here instead of FD_CLOEXEC means we silently failed to actually set the FD close-on-exec, which apparently caused problems only when an image was actually built with the on-device adb incorporating the buggy close_on_exec. Once this revert lands, I\u0027ll send some fixed revert-revert CLs.",
+      "range": {
+        "startLine": 353,
+        "startChar": 30,
+        "endLine": 353,
+        "endChar": 32
+      },
+      "revId": "abbaaf48d612321b87ed04d29d8c575bc6172b98",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
