@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0e0e6997_df82d112",
+        "filename": "libnetutils/checksum.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1000835
+      },
+      "writtenOn": "2019-11-13T06:31:31Z",
+      "side": 1,
+      "message": "Do all callers of this code actually do this? If not we should update the callers or update the comment. We can\u0027t say \"never 0\" here if there are production callers that do pass in 0. Also, the comment should probably explain why 0 is not valid. Both the old and new code work when you pass in 0, right?",
+      "range": {
+        "startLine": 30,
+        "startChar": 34,
+        "endLine": 30,
+        "endChar": 77
+      },
+      "revId": "f28b262ee1088ed71862a0c01eddef415471d18f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6c62094e_61a58dc5",
+        "filename": "libnetutils/checksum.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 1000835
+      },
+      "writtenOn": "2019-11-13T06:31:31Z",
+      "side": 1,
+      "message": "ditto",
+      "range": {
+        "startLine": 46,
+        "startChar": 38,
+        "endLine": 46,
+        "endChar": 45
+      },
+      "revId": "f28b262ee1088ed71862a0c01eddef415471d18f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "94ff37e9_06c008cf",
+        "filename": "libnetutils/checksum.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 1000835
+      },
+      "writtenOn": "2019-11-13T06:31:31Z",
+      "side": 1,
+      "message": "Nit: can this actually happen? IPv4 and IPv6 have 16-bit length fields, right?",
+      "range": {
+        "startLine": 77,
+        "startChar": 59,
+        "endLine": 77,
+        "endChar": 65
+      },
+      "revId": "f28b262ee1088ed71862a0c01eddef415471d18f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
