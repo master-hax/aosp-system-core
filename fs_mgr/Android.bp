@@ -61,11 +61,13 @@ cc_library {
         "libfstab",
         "libdm",
         "libgsi",
+        "libpin",
     ],
     export_static_lib_headers: [
         "libfs_avb",
         "libfstab",
         "libdm",
+        "libpin",
     ],
     export_shared_lib_headers: [
         "liblp",
@@ -76,6 +78,7 @@ cc_library {
         "libext2_uuid",
         "libfscrypt",
         "libfstab",
+        "libpin",
     ],
     cppflags: [
         "-DALLOW_ADBD_DISABLE_VERITY=0",
