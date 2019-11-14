@@ -1,0 +1,8 @@
+props {
+  module: "android.sysprop.InitProperties"
+  prop {
+    api_name: "userspace_reboot.in_progress"
+    scope: Public
+    prop_name: "sys.init.userspace_reboot.in_progress"
+  }
+}
