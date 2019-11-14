@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "177fe6c5_bf939393",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-11-14T23:20:34Z",
+      "side": 1,
+      "message": "Seems reasonable not to introduce new functions, given there\u0027re essentially no callers nor any future callers?\n\nSeems reasonable to return -EINVAL still in those cases and not make them always work regardless of how the \u0027logger_list\u0027 was open?  It matches the original behavior, and since the logger_list already needs to be opened, seems the most accurate?",
+      "revId": "5228b5696e17084d75ff839bf81578137d8481fa",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8568acf7_a1c55ab5",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-11-14T23:20:34Z",
+      "side": 1,
+      "message": "This above change seems reasonable too?  It shouldn\u0027t impact essentially anything.",
+      "revId": "5228b5696e17084d75ff839bf81578137d8481fa",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
