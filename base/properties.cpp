@@ -28,19 +28,16 @@
 #include <map>
 #include <string>
 
+#include <android-base/parsebool.h>
 #include <android-base/parseint.h>
 
 namespace android {
 namespace base {
 
 bool GetBoolProperty(const std::string& key, bool default_value) {
-  std::string value = GetProperty(key, "");
-  if (value == "1" || value == "y" || value == "yes" || value == "on" || value == "true") {
-    return true;
-  } else if (value == "0" || value == "n" || value == "no" || value == "off" || value == "false") {
-    return false;
-  }
-  return default_value;
+  bool result = default_value;
+  ParseBool(GetProperty(key, ""), &result);
+  return result;
 }
 
 template <typename T>
