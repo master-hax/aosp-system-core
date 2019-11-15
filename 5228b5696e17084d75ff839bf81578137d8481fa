@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "380cde66_81e27483",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-11-15T00:01:37Z",
+      "side": 1,
+      "message": "unless making them \"just work\" is _less_ code, sgtm.",
+      "parentUuid": "177fe6c5_bf939393",
+      "revId": "5228b5696e17084d75ff839bf81578137d8481fa",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "8568acf7_a1c55ab5",
         "filename": "/COMMIT_MSG",
         "patchSetId": 2
@@ -30,6 +48,24 @@
       "writtenOn": "2019-11-14T23:20:34Z",
       "side": 1,
       "message": "This above change seems reasonable too?  It shouldn\u0027t impact essentially anything.",
+      "revId": "5228b5696e17084d75ff839bf81578137d8481fa",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6e1e0193_d45fc2d5",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-11-15T00:01:37Z",
+      "side": 1,
+      "message": "sgtm.",
+      "parentUuid": "8568acf7_a1c55ab5",
       "revId": "5228b5696e17084d75ff839bf81578137d8481fa",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
