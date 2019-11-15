@@ -27,7 +27,6 @@
 #include <android-base/file.h>
 #include <android-base/logging.h>
 #include <android-base/parseint.h>
-#include <android-base/strings.h>
 #include <android-base/unique_fd.h>
 #include <ext4_utils/ext4_utils.h>
 #include <fs_mgr.h>
@@ -1657,17 +1656,6 @@ std::ostream& operator<<(std::ostream& os, UpdateState state) {
 }
 
 bool SnapshotManager::WriteUpdateState(LockedFile* file, UpdateState state) {
-    std::stringstream ss;
-    ss << state;
-    std::string contents = ss.str();
-    if (contents.empty()) return false;
-
-    if (!Truncate(file)) return false;
-    if (!android::base::WriteStringToFd(contents, file->fd())) {
-        PLOG(ERROR) << "Could not write to state file";
-        return false;
-    }
-
 #ifdef LIBSNAPSHOT_USE_HAL
     auto merge_status = MergeStatus::UNKNOWN;
     switch (state) {
@@ -1696,6 +1684,16 @@ bool SnapshotManager::WriteUpdateState(LockedFile* file, UpdateState state) {
         return false;
     }
 #endif
+    std::stringstream ss;
+    ss << state;
+    std::string contents = ss.str();
+    if (contents.empty()) return false;
+
+    if (!Truncate(file)) return false;
+    if (!android::base::WriteStringToFd(contents, file->fd())) {
+        PLOG(ERROR) << "Could not write to state file";
+        return false;
+    }
     return true;
 }
 
@@ -2150,6 +2148,12 @@ std::unique_ptr<AutoDevice> SnapshotManager::EnsureMetadataMounted() {
 }
 
 UpdateState SnapshotManager::InitiateMergeAndWait() {
+    // Sync update state from file with bootloader.
+    if (!WriteUpdateState(lock.get(), ReadUpdateState(lock.get()))) {
+        LOG(WARNING) << "Unable to sync write update state, fastboot may "
+                     << "reject / accept wipes incorrectly!";
+    }
+
     LOG(INFO) << "Waiting for any previous merge request to complete. "
               << "This can take up to several minutes.";
     auto state = ProcessUpdateState();
