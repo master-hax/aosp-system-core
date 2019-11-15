@@ -1657,17 +1657,6 @@ std::ostream& operator<<(std::ostream& os, UpdateState state) {
 }
 
 bool SnapshotManager::WriteUpdateState(LockedFile* file, UpdateState state) {
-    std::stringstream ss;
-    ss << state;
-    std::string contents = ss.str();
-    if (contents.empty()) return false;
-
-    if (!Truncate(file)) return false;
-    if (!android::base::WriteStringToFd(contents, file->fd())) {
-        PLOG(ERROR) << "Could not write to state file";
-        return false;
-    }
-
 #ifdef LIBSNAPSHOT_USE_HAL
     auto merge_status = MergeStatus::UNKNOWN;
     switch (state) {
@@ -1696,6 +1685,16 @@ bool SnapshotManager::WriteUpdateState(LockedFile* file, UpdateState state) {
         return false;
     }
 #endif
+    std::stringstream ss;
+    ss << state;
+    std::string contents = ss.str();
+    if (contents.empty()) return false;
+
+    if (!Truncate(file)) return false;
+    if (!android::base::WriteStringToFd(contents, file->fd())) {
+        PLOG(ERROR) << "Could not write to state file";
+        return false;
+    }
     return true;
 }
 
