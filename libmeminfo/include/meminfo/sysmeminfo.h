@@ -43,6 +43,7 @@ class SysMemInfo final {
     static constexpr const char* kMemVmallocUsed = "VmallocUsed:";
     static constexpr const char* kMemPageTables = "PageTables:";
     static constexpr const char* kMemKernelStack = "KernelStack:";
+    static constexpr const char *kMemKReclaim = "KReclaimable:";
 
     static const std::vector<std::string> kDefaultSysMemInfoTags;
 
@@ -76,6 +77,7 @@ class SysMemInfo final {
     uint64_t mem_page_tables_kb() { return mem_in_kb_[kMemPageTables]; }
     uint64_t mem_kernel_stack_kb() { return mem_in_kb_[kMemKernelStack]; }
     uint64_t mem_zram_kb(const std::string& zram_dev = "");
+    uint64_t mem_kernel_reclaimable_kb() { return mem_in_kb_[kMemKReclaim]; }
 
   private:
     std::map<std::string, uint64_t> mem_in_kb_;

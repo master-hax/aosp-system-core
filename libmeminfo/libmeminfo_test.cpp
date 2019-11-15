@@ -601,6 +601,68 @@ Hugepagesize:       2048 kB)meminfo";
     EXPECT_EQ(mi.mem_kernel_stack_kb(), 4880);
 }
 
+TEST(SysMemInfo, TestSysMemInfoKReclaimable) {
+    std::string meminfo = R"meminfo(MemTotal:        2038120 kB
+MemFree:          248504 kB
+MemAvailable:     319624 kB
+Buffers:            8564 kB
+Cached:           387752 kB
+SwapCached:           44 kB
+Active:          1124628 kB
+Inactive:         493332 kB
+Active(anon):     937064 kB
+Inactive(anon):   347840 kB
+Active(file):     187564 kB
+Inactive(file):   145492 kB
+Unevictable:       19828 kB
+Mlocked:           19828 kB
+SwapTotal:       1528584 kB
+SwapFree:        1519368 kB
+Dirty:                 0 kB
+Writeback:             0 kB
+AnonPages:       1223196 kB
+Mapped:           310536 kB
+Shmem:             52648 kB
+KReclaimable:      30084 kB
+Slab:              76576 kB
+SReclaimable:      30084 kB
+SUnreclaim:        46492 kB
+KernelStack:       15488 kB
+PageTables:        28640 kB
+NFS_Unstable:          0 kB
+Bounce:                0 kB
+WritebackTmp:          0 kB
+CommitLimit:     2547644 kB
+Committed_AS:   24069120 kB
+VmallocTotal:   34359738367 kB
+VmallocUsed:       27752 kB
+VmallocChunk:          0 kB
+Percpu:              696 kB
+AnonHugePages:    614400 kB
+ShmemHugePages:        0 kB
+ShmemPmdMapped:        0 kB
+FileHugePages:         0 kB
+FilePmdMapped:         0 kB
+CmaTotal:              0 kB
+CmaFree:               0 kB
+DirectMap4k:      103424 kB
+DirectMap2M:     1992704 kB
+DirectMap1G:     3145728 kB
+)meminfo";
+
+    TemporaryFile tf;
+    ASSERT_TRUE(tf.fd != -1);
+    ASSERT_TRUE(::android::base::WriteStringToFd(meminfo, tf.fd));
+
+    SysMemInfo mi;
+    std::vector<std::string> tags = {
+            SysMemInfo::kMemKReclaim,
+    };
+    std::vector<uint64_t> mem(tags.size());
+    ASSERT_TRUE(mi.ReadMemInfo(tags, &mem, tf.path));
+    EXPECT_EQ(mem[0], 30084);
+}
+
 TEST(SysMemInfo, TestEmptyFile) {
     TemporaryFile tf;
     std::string empty_string = "";
