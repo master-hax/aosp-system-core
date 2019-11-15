@@ -126,6 +126,7 @@ cc_library {
 
     srcs: [
         "FileMap.cpp",
+        "Errors.cpp",
         "JenkinsHash.cpp",
         "NativeHandle.cpp",
         "Printer.cpp",
