@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "61b196bb_1ca10331",
+        "filename": "base/include/android-base/no_destruct.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-11-15T03:42:55Z",
+      "side": 1,
+      "message": "the doc comment in the google3 equivalent is pretty good: https://cs.corp.google.com/piper///depot/google3/util/gtl/no_destructor.h?type\u003dcs\u0026q\u003dNoDestruct\u0026sq\u003d-file:%5E//depot/google3/experimental+package:%5Epiper$+file:%5E//depot/google3/\u0026g\u003d0\u0026l\u003d61",
+      "revId": "00c93c80b258a325a113e2c8c443e1b6a1f2e46f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
