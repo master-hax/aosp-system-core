@@ -1,0 +1,107 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3b06d9c8_6af39e15",
+        "filename": "fs_mgr/libpin/include/libpin/pin.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-11-15T17:54:45Z",
+      "side": 1,
+      "message": "underlying",
+      "range": {
+        "startLine": 34,
+        "startChar": 65,
+        "endLine": 34,
+        "endChar": 74
+      },
+      "revId": "30fbcace4b2c2bedd44b7e8ec2dadb9a817b6247",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "304a611d_8377e92b",
+        "filename": "fs_mgr/libpin/include/libpin/pin.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-11-15T17:54:45Z",
+      "side": 1,
+      "message": "facilitates",
+      "range": {
+        "startLine": 70,
+        "startChar": 11,
+        "endLine": 70,
+        "endChar": 21
+      },
+      "revId": "30fbcace4b2c2bedd44b7e8ec2dadb9a817b6247",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a74b7f63_e3f8dd14",
+        "filename": "fs_mgr/libpin/include/libpin/pin.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-11-15T17:54:45Z",
+      "side": 1,
+      "message": "There\u0027s already android-base/result.h and the more generic /android-base/expected.h.  It would be best to use those instead of creating a new class for similar behavior.\n\nI\u0027m not sure that the function name or file number is critical compared to a good log message.  People can always and easily grok the log message back to the lines.\n\nNote that those classes allow returning the actual result as the return value instead of as an argument, which is desired as well.",
+      "revId": "30fbcace4b2c2bedd44b7e8ec2dadb9a817b6247",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ca547010_f742039a",
+        "filename": "fs_mgr/libpin/include/libpin/pin.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 153,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-11-15T17:54:45Z",
+      "side": 1,
+      "message": "const\u0026 for input parameters, pointers for output parameters.  \n\nhttps://google.github.io/styleguide/cppguide.html#Output_Parameters",
+      "range": {
+        "startLine": 153,
+        "startChar": 45,
+        "endLine": 153,
+        "endChar": 67
+      },
+      "revId": "30fbcace4b2c2bedd44b7e8ec2dadb9a817b6247",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8c6695e9_e4342fd7",
+        "filename": "fs_mgr/libpin/pin_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-11-15T17:54:45Z",
+      "side": 1,
+      "message": "Why?  gtest and libbase build on host.  It would be much better for this to not be stand alone and use both of those libraries, especially gtest for testing, since then it can be integrated into other test suites as well.",
+      "revId": "30fbcace4b2c2bedd44b7e8ec2dadb9a817b6247",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
