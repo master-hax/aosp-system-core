@@ -52,7 +52,7 @@ enum Role {
 static Role role;
 static OverwriteMode overwrite_mode = kPrompt;
 static bool flag_1 = false;
-static const char* flag_d = nullptr;
+static std::string flag_d;
 static bool flag_l = false;
 static bool flag_p = false;
 static bool flag_q = false;
@@ -214,25 +214,22 @@ static void ExtractOne(ZipArchiveHandle zah, ZipEntry& entry, const std::string&
   }
 
   // Where are we actually extracting to (for human-readable output)?
-  std::string dst;
-  if (flag_d) {
-    dst = flag_d;
-    if (!EndsWith(dst, "/")) dst += '/';
-  }
-  dst += name;
+  // flag_d is the empty string if -d wasn't used, or has a trailing '/'
+  // otherwise.
+  std::string dst = flag_d + name;
 
   // Ensure the directory hierarchy exists.
-  if (!MakeDirectoryHierarchy(android::base::Dirname(name))) {
+  if (!MakeDirectoryHierarchy(android::base::Dirname(dst))) {
     die(errno, "couldn't create directory hierarchy for %s", dst.c_str());
   }
 
   // An entry in a zip file can just be a directory itself.
-  if (EndsWith(name, "/")) {
-    if (mkdir(name.c_str(), entry.unix_mode) == -1) {
+  if (EndsWith(dst, "/")) {
+    if (mkdir(dst.c_str(), entry.unix_mode) == -1) {
       // If the directory already exists, that's fine.
       if (errno == EEXIST) {
         struct stat sb;
-        if (stat(name.c_str(), &sb) != -1 && S_ISDIR(sb.st_mode)) return;
+        if (stat(dst.c_str(), &sb) != -1 && S_ISDIR(sb.st_mode)) return;
       }
       die(errno, "couldn't extract directory %s", dst.c_str());
     }
@@ -240,12 +237,12 @@ static void ExtractOne(ZipArchiveHandle zah, ZipEntry& entry, const std::string&
   }
 
   // Create the file.
-  int fd = open(name.c_str(), O_CREAT | O_WRONLY | O_CLOEXEC | O_EXCL, entry.unix_mode);
+  int fd = open(dst.c_str(), O_CREAT | O_WRONLY | O_CLOEXEC | O_EXCL, entry.unix_mode);
   if (fd == -1 && errno == EEXIST) {
     if (overwrite_mode == kNever) return;
     if (overwrite_mode == kPrompt && !PromptOverwrite(dst)) return;
     // Either overwrite_mode is kAlways or the user consented to this specific case.
-    fd = open(name.c_str(), O_WRONLY | O_CREAT | O_CLOEXEC | O_TRUNC, entry.unix_mode);
+    fd = open(dst.c_str(), O_WRONLY | O_CREAT | O_CLOEXEC | O_TRUNC, entry.unix_mode);
   }
   if (fd == -1) die(errno, "couldn't create file %s", dst.c_str());
 
@@ -463,6 +460,7 @@ int main(int argc, char* argv[]) {
       switch (opt) {
         case 'd':
           flag_d = optarg;
+          if (!EndsWith(flag_d, "/")) flag_d += '/';
           break;
         case 'l':
           flag_l = true;
@@ -509,11 +507,6 @@ int main(int argc, char* argv[]) {
   if ((err = OpenArchive(archive_name, &zah)) != 0) {
     die(0, "couldn't open %s: %s", archive_name, ErrorCodeString(err));
   }
-
-  // Implement -d by changing into that directory.
-  // We'll create implicit directories based on paths in the zip file, but we
-  // require that the -d directory already exists.
-  if (flag_d && chdir(flag_d) == -1) die(errno, "couldn't chdir to %s", flag_d);
 
   ProcessAll(zah);
 
