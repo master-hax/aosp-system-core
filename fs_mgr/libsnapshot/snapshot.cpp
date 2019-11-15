@@ -1663,10 +1663,6 @@ bool SnapshotManager::WriteUpdateState(LockedFile* file, UpdateState state) {
     if (contents.empty()) return false;
 
     if (!Truncate(file)) return false;
-    if (!android::base::WriteStringToFd(contents, file->fd())) {
-        PLOG(ERROR) << "Could not write to state file";
-        return false;
-    }
 
 #ifdef LIBSNAPSHOT_USE_HAL
     auto merge_status = MergeStatus::UNKNOWN;
@@ -1692,7 +1688,21 @@ bool SnapshotManager::WriteUpdateState(LockedFile* file, UpdateState state) {
             LOG(ERROR) << "Unexpected update status: " << state;
             break;
     }
-    if (!device_->SetBootControlMergeStatus(merge_status)) {
+
+    bool set_before_write =
+            merge_status == MergeStatus::SNAPSHOTTED || merge_status == MergeStatus::MERGING;
+    if (set_before_write && !device_->SetBootControlMergeStatus(merge_status)) {
+        return false;
+    }
+#endif
+
+    if (!android::base::WriteStringToFd(contents, file->fd())) {
+        PLOG(ERROR) << "Could not write to state file";
+        return false;
+    }
+
+#ifdef LIBSNAPSHOT_USE_HAL
+    if (!set_before_write && !device_->SetBootControlMergeStatus(merge_status)) {
         return false;
     }
 #endif
