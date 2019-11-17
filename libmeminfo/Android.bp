@@ -26,6 +26,9 @@ cc_defaults {
         "liblog",
         "libprocinfo",
     ],
+    static_libs: [
+        "libdmabufinfo",
+    ],
     target: {
         darwin: {
             enabled: false,
@@ -38,7 +41,10 @@ cc_library {
     name: "libmeminfo",
     host_supported: true,
     defaults: ["libmeminfo_defaults"],
-    export_include_dirs: ["include"],
+    export_include_dirs: [
+        "include",
+        "libdmabufinfo/include",
+    ],
     export_shared_lib_headers: ["libbase"],
     srcs: [
         "pageacct.cpp",
