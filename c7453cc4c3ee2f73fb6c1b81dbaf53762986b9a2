@@ -94,6 +94,30 @@
       "revId": "c7453cc4c3ee2f73fb6c1b81dbaf53762986b9a2",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "03699ba7_aa8f0313",
+        "filename": "base/include/android-base/parsebool.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-11-18T22:00:44Z",
+      "side": 1,
+      "message": "this is not libc.\n\nthis is bad API especially given the typical \"errno is untouched\" behavior: it\u0027s way more expensive to manually set errno to 0 before the call and test it afterwards. we should just leave errno alone here.\n\n(this is also a false analogy with ParseInt. they\u0027re not really related, any more than ParseNetAddress, which also doesn\u0027t set errno.)",
+      "parentUuid": "91ca3234_55cbac6d",
+      "range": {
+        "startLine": 44,
+        "startChar": 35,
+        "endLine": 45,
+        "endChar": 26
+      },
+      "revId": "c7453cc4c3ee2f73fb6c1b81dbaf53762986b9a2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
