@@ -239,6 +239,7 @@ int FirstStageMain(int argc, char** argv) {
     }
 
     Modprobe m({"/lib/modules"});
+    m.LoadWithAliases("onEarlyInit", false);
     auto want_console = ALLOW_FIRST_STAGE_CONSOLE && FirstStageConsole(cmdline);
     if (!m.LoadListedModules(!want_console)) {
         if (want_console) {
