@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4245869e_a4901969",
+        "filename": "cli-test/cli-test.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 197,
+      "author": {
+        "id": 1074628
+      },
+      "writtenOn": "2019-11-18T22:43:24Z",
+      "side": 1,
+      "message": "It\u0027s possible that this variable contains characters that have special meaning as a regex (\".\" being the most obvious) -- shouldn\u0027t this just be a straight replacement, not a regex?",
+      "range": {
+        "startLine": 197,
+        "startChar": 16,
+        "endLine": 197,
+        "endChar": 21
+      },
+      "revId": "37def8ee7c81fbd29c99c59cc650d255a9159387",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2a1d8af3_98f42d5a",
+        "filename": "cli-test/cli-test.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 282,
+      "author": {
+        "id": 1074628
+      },
+      "writtenOn": "2019-11-18T22:43:24Z",
+      "side": 1,
+      "message": "g_progname",
+      "range": {
+        "startLine": 282,
+        "startChar": 42,
+        "endLine": 282,
+        "endChar": 59
+      },
+      "revId": "37def8ee7c81fbd29c99c59cc650d255a9159387",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a7986d58_529d3231",
+        "filename": "libziparchive/Android.bp",
+        "patchSetId": 3
+      },
+      "lineNbr": 211,
+      "author": {
+        "id": 1074628
+      },
+      "writtenOn": "2019-11-18T22:43:24Z",
+      "side": 1,
+      "message": "These need to be the device versions of these executables, not the host versions, so use `target_required` (though it would be nice to actually support this test on the host as well...)",
+      "range": {
+        "startLine": 211,
+        "startChar": 14,
+        "endLine": 211,
+        "endChar": 38
+      },
+      "revId": "37def8ee7c81fbd29c99c59cc650d255a9159387",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "167015ed_d9995c3a",
+        "filename": "libziparchive/run-tests-on-android.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 1074628
+      },
+      "writtenOn": "2019-11-18T22:43:24Z",
+      "side": 1,
+      "message": "This isn\u0027t something atest should be doing. Why aren\u0027t we using tradefed\u0027s device test model rather than declaring that we\u0027re a host test then running adb ourselves? (Which I can imagine could be a problem if there are multiple devices connected, but I\u0027d hope that tradefed would set ADB_SERIAL...)",
+      "range": {
+        "startLine": 4,
+        "startChar": 0,
+        "endLine": 4,
+        "endChar": 8
+      },
+      "revId": "37def8ee7c81fbd29c99c59cc650d255a9159387",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
