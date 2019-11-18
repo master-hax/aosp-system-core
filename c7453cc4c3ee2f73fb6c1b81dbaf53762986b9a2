@@ -22,6 +22,30 @@
       "revId": "c7453cc4c3ee2f73fb6c1b81dbaf53762986b9a2",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a8ecb52a_add71dd5",
+        "filename": "base/include/android-base/parsebool.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1130394
+      },
+      "writtenOn": "2019-11-18T21:26:30Z",
+      "side": 1,
+      "message": "Because that\u0027s what ParseInt does. I wouldn\u0027t bother either, but I\u0027d rather be consistent than minimal.",
+      "parentUuid": "82ce65a5_5d8a00dd",
+      "range": {
+        "startLine": 44,
+        "startChar": 35,
+        "endLine": 45,
+        "endChar": 26
+      },
+      "revId": "c7453cc4c3ee2f73fb6c1b81dbaf53762986b9a2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
