@@ -166,6 +166,30 @@
       "revId": "c7453cc4c3ee2f73fb6c1b81dbaf53762986b9a2",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "498f9ea6_6f894851",
+        "filename": "base/include/android-base/parsebool.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1130394
+      },
+      "writtenOn": "2019-11-18T22:54:59Z",
+      "side": 1,
+      "message": "Can we please not bikeshed on this? If it is an unpleasant random hack, it should be in one place, because it\u0027s extremely unpleasant and error-prone to be able to use \"yes\" in one spot but be limited to \"y\" or \"1\" in another, which is what we\u0027ll get if everyone has a different idea about the right vocabulary. The problem with returning the parsed bool is that we have to pick a value for the parsed bool to return in the error case.\n\nHow about this then?\n\nenum class ParseBoolResult {\n  ERROR,\n  FALSE,\n  TRUE,\n};\n\nParseBoolResult ParseBool(const char* value);\n\nThis way, we have no default bool conversion problem, no out parameters, and no bug-prone default.",
+      "parentUuid": "b7242e38_2df90d4f",
+      "range": {
+        "startLine": 44,
+        "startChar": 35,
+        "endLine": 45,
+        "endChar": 26
+      },
+      "revId": "c7453cc4c3ee2f73fb6c1b81dbaf53762986b9a2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
