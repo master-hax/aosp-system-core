@@ -39,6 +39,24 @@
       "revId": "cbe38948923fdd7cce25fd921516943c2032a0ec",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9f503d34_3998a393",
+        "filename": "init/first_stage_init.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 244,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-11-18T19:00:43Z",
+      "side": 1,
+      "message": "We would need corresponding changes to libmodprobe for this to make sense.\n\n[TL;DR]\n\nI had that originally, but we never return failure from LoadWithAliases(,false).\n\nThen I thought why not LoadWithAliases(,!want_console), but then we do not want this to fail if onEarlyInit had _no_ modules aliases with it, so by adding the check to make sure we do not fail if there are no aliases, we ended up performing the logic exactly like as-if we handed the function a false instead. Besides, if it failed, then it would also fail in LoadListedModules as a matter of course once it revisited them. After trying all possible combinations that made sense, the net result was that this final one is _identical_ in overall behavior and is the simplest change.\n\n_if_ we improved the logic for strict, splitting it into two (strict_module_load and strict_alias_exists) such that if any failure to load a module with an active alias is propagated, but if an alias did not existed bound to a module, then we reported success, then we might have something.:\n\nif (!m.LoadWithAliases(\"onEarlyInit\", !want_console, false /* do not fail if alias does not exist */) || !m.LoadListedModules(!want_console))\n\nThe benefit of doing so might have side effects on the recommended strict_module_load, and strict_alias_exists flags when we audit the libmodprobe logic, at least propagating them at every function (with strict_alias_exists \u003d true by default?). Hunch is not, but the audit needs to be explored anyways.\n\nDo tell if you want to explore expanding the libmodprobe logic in this fashion? I certainly do not want to have a missing alias list to be ignored with respect to error propagation universally, or for an exact match to \"onEarlyInit\".",
+      "parentUuid": "fb9b6ee7_3bd34d63",
+      "revId": "cbe38948923fdd7cce25fd921516943c2032a0ec",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
