@@ -118,6 +118,30 @@
       "revId": "c7453cc4c3ee2f73fb6c1b81dbaf53762986b9a2",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "36e31c10_a6278c0d",
+        "filename": "base/include/android-base/parsebool.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1130394
+      },
+      "writtenOn": "2019-11-18T22:11:44Z",
+      "side": 1,
+      "message": "Imagine you\u0027re building a type-based dispatcher that calls ParseInt or ParseUInt depending on type. You can imagine checking errno for errno in this case to detect errors: maybe that\u0027s a good idea, maybe not, but it adheres to the contract, so your errno-checking dispatch engine works. Suppose you want to add support for parsing bools: you see that there\u0027s a ParseBool and add a case for it that\u0027s just like the others. The ParseBool code appears to work fine, but one day, someone tries to parse \"asdfasf\" as a bool and you don\u0027t detect the resulting error because ParseBool, unlike ParseInt, doesn\u0027t set errno on failure. The result is a preventable bug. If I could do libbase from scratch, I wouldn\u0027t have any of these functions set errno, but having one of these functions set errno and the others not increases the likelihood of bugs for no gain --- it\u0027s not as if setting errno has any real cost. At least ParseNotAddress has an explicit error-output parameter.",
+      "parentUuid": "03699ba7_aa8f0313",
+      "range": {
+        "startLine": 44,
+        "startChar": 35,
+        "endLine": 45,
+        "endChar": 26
+      },
+      "revId": "c7453cc4c3ee2f73fb6c1b81dbaf53762986b9a2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
