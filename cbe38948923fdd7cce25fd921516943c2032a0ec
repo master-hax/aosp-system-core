@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "cbbaf79f_b4c3f00d",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1131915
+      },
+      "writtenOn": "2019-11-18T17:53:42Z",
+      "side": 1,
+      "message": "modules.load",
+      "range": {
+        "startLine": 11,
+        "startChar": 15,
+        "endLine": 11,
+        "endChar": 26
+      },
+      "revId": "cbe38948923fdd7cce25fd921516943c2032a0ec",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fb9b6ee7_3bd34d63",
+        "filename": "init/first_stage_init.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 244,
+      "author": {
+        "id": 1131915
+      },
+      "writtenOn": "2019-11-18T17:53:42Z",
+      "side": 1,
+      "message": "can we do\nif (!m.LoadWithAliases(\"onEarlyInit\", false) || !m.LoadListedModules(!want_console))  instead to get the same error behavior",
+      "revId": "cbe38948923fdd7cce25fd921516943c2032a0ec",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
