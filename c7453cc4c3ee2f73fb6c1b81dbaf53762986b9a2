@@ -142,6 +142,30 @@
       "revId": "c7453cc4c3ee2f73fb6c1b81dbaf53762986b9a2",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b7242e38_2df90d4f",
+        "filename": "base/include/android-base/parsebool.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-11-18T22:44:22Z",
+      "side": 1,
+      "message": "but this is a problem inherent in having a bool return type and a bool* out parameter. setting errno doesn\u0027t help. (and if anything encourages people to make the more common mistake of checking errno without setting it to 0 first.)\n\nthe more we talk about this, the less certain i am that this should be in libbase at all... it\u0027s already a fairly unpleasant random hack, and now we\u0027re struggling to write a safe API for it...\n\nmaybe the least worst API if we expose this in libbase would be to have the return value be the parsed bool, and take a bool default to return on failure (more like the existing GetBoolProperty API)?\n\nor just accept that copy \u0026 paste isn\u0027t actually the worst option here! (because it keeps a historical mistake an implementation detail rather than promoting it to an API.)",
+      "parentUuid": "36e31c10_a6278c0d",
+      "range": {
+        "startLine": 44,
+        "startChar": 35,
+        "endLine": 45,
+        "endChar": 26
+      },
+      "revId": "c7453cc4c3ee2f73fb6c1b81dbaf53762986b9a2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
