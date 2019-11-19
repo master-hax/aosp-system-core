@@ -22,6 +22,30 @@
       "revId": "d58d834c8282d6bf301ac55ea862d7ca2dc73ed9",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f0557cb6_ff000390",
+        "filename": "debuggerd/libdebuggerd/include/libdebuggerd/utility.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 1453063
+      },
+      "writtenOn": "2019-11-19T04:05:59Z",
+      "side": 1,
+      "message": "I picked LOGV to match \u003candroid/log.h\u003e\u0027s __android_log_vprint, but up to you - LMK :). VLOG matches vprintf, so either case is well represented.",
+      "parentUuid": "2bf7cbf4_cdb6d63e",
+      "range": {
+        "startLine": 75,
+        "startChar": 5,
+        "endLine": 75,
+        "endChar": 10
+      },
+      "revId": "d58d834c8282d6bf301ac55ea862d7ca2dc73ed9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
