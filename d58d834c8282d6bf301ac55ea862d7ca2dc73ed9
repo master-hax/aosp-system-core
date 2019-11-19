@@ -70,6 +70,30 @@
       "revId": "d58d834c8282d6bf301ac55ea862d7ca2dc73ed9",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4464218b_c182e5b5",
+        "filename": "debuggerd/libdebuggerd/include/libdebuggerd/utility.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 1453063
+      },
+      "writtenOn": "2019-11-19T17:46:43Z",
+      "side": 1,
+      "message": "Too right - sounds good to me. I\u0027ll make the change.",
+      "parentUuid": "078729d4_93b1396e",
+      "range": {
+        "startLine": 75,
+        "startChar": 5,
+        "endLine": 75,
+        "endChar": 10
+      },
+      "revId": "d58d834c8282d6bf301ac55ea862d7ca2dc73ed9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
