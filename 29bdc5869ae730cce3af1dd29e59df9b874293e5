@@ -117,6 +117,30 @@
       "revId": "29bdc5869ae730cce3af1dd29e59df9b874293e5",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e7fd96f7_00cd2325",
+        "filename": "init/service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 263,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-11-19T23:15:34Z",
+      "side": 1,
+      "message": "How about this instead?  It makes the else case a bit clearer instead of having two unrelated checks for the if / else if.",
+      "parentUuid": "cdc12a92_953b2269",
+      "range": {
+        "startLine": 263,
+        "startChar": 6,
+        "endLine": 263,
+        "endChar": 10
+      },
+      "revId": "29bdc5869ae730cce3af1dd29e59df9b874293e5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
