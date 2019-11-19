@@ -634,7 +634,7 @@ bool LogBuffer::isBusy(log_time watermark) {
 
 // If the selected reader is blocking our pruning progress, decide on
 // what kind of mitigation is necessary to unblock the situation.
-void LogBuffer::kickMe(LogTimeEntry* me, log_id_t id, unsigned long pruneRows) {
+void LogBuffer::kickMe(LogTimeEntry* me, log_id_t id) {
     if (stats.sizes(id) > (2 * log_buffer_size(id))) {  // +100%
         // A misbehaving or slow reader has its connection
         // dropped if we hit too much memory pressure.
@@ -645,12 +645,6 @@ void LogBuffer::kickMe(LogTimeEntry* me, log_id_t id, unsigned long pruneRows) {
         // Allow a blocked WRAP timeout reader to
         // trigger and start reporting the log data.
         me->triggerReader_Locked();
-    } else {
-        // tell slow reader to skip entries to catch up
-        android::prdebug(
-                "Skipping %lu entries from slow reader, pid %d, from LogBuffer::kickMe()\n",
-                pruneRows, me->mClient->getPid());
-        me->triggerSkip_Locked(id, pruneRows);
     }
 }
 
@@ -693,8 +687,7 @@ void LogBuffer::kickMe(LogTimeEntry* me, log_id_t id, unsigned long pruneRows) {
 // preservation. Thus whitelist is a Hail Mary low priority, blacklists and
 // spam filtration all take priority. This second loop also checks if a region
 // lock is causing us to buffer too much in the logs to help the reader(s),
-// and will tell the slowest reader thread to skip log entries, and if
-// persistent and hits a further threshold, kill the reader thread.
+// and will kill the reader thread.
 //
 // The third thread is optional, and only gets hit if there was a whitelist
 // and more needs to be pruned against the backstop of the region lock.
@@ -745,7 +738,7 @@ bool LogBuffer::prune(log_id_t id, unsigned long pruneRows, uid_t caller_uid) {
 
             if (oldest && (watermark <= element->getRealTime())) {
                 busy = isBusy(watermark);
-                if (busy) kickMe(oldest, id, pruneRows);
+                if (busy) kickMe(oldest, id);
                 break;
             }
 
@@ -963,7 +956,7 @@ bool LogBuffer::prune(log_id_t id, unsigned long pruneRows, uid_t caller_uid) {
         last.clear();
 
         if (!kick || !mPrune.worstUidEnabled()) {
-            break;  // the following loop will ask bad clients to skip/drop
+            break;  // the following loop will ask bad clients to drop
         }
     }
 
@@ -985,7 +978,7 @@ bool LogBuffer::prune(log_id_t id, unsigned long pruneRows, uid_t caller_uid) {
 
         if (oldest && (watermark <= element->getRealTime())) {
             busy = isBusy(watermark);
-            if (!whitelist && busy) kickMe(oldest, id, pruneRows);
+            if (!whitelist && busy) kickMe(oldest, id);
             break;
         }
 
@@ -1018,7 +1011,7 @@ bool LogBuffer::prune(log_id_t id, unsigned long pruneRows, uid_t caller_uid) {
 
             if (oldest && (watermark <= element->getRealTime())) {
                 busy = isBusy(watermark);
-                if (busy) kickMe(oldest, id, pruneRows);
+                if (busy) kickMe(oldest, id);
                 break;
             }
 

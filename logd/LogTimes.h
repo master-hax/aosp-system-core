@@ -43,7 +43,6 @@ class LogTimeEntry {
     static void* threadStart(void* me);
     const log_mask_t mLogMask;
     const pid_t mPid;
-    unsigned int skipAhead[LOG_ID_MAX];
     pid_t mLastTid[LOG_ID_MAX];
     unsigned long mCount;
     unsigned long mTail;
@@ -76,11 +75,6 @@ class LogTimeEntry {
     void triggerReader_Locked(void) {
         pthread_cond_signal(&threadTriggeredCondition);
     }
-
-    void triggerSkip_Locked(log_id_t id, unsigned int skip) {
-        skipAhead[id] = skip;
-    }
-    void cleanSkip_Locked(void);
 
     void release_Locked(void) {
         // gracefully shut down the socket.
