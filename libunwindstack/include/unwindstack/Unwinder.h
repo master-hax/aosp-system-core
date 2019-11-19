@@ -31,6 +31,12 @@
 #include <unwindstack/Memory.h>
 #include <unwindstack/Regs.h>
 
+#ifndef NO_LIBDEXFILE_SUPPORT
+#if defined(__ANDROID_VNDK__) || defined(__ANDROID_RECOVERY__)
+#define NO_LIBDEXFILE_SUPPORT
+#endif
+#endif
+
 namespace unwindstack {
 
 // Forward declarations.

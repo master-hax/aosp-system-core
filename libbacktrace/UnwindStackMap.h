@@ -27,13 +27,20 @@
 
 #include <backtrace/Backtrace.h>
 #include <backtrace/BacktraceMap.h>
-#if !defined(NO_LIBDEXFILE_SUPPORT)
-#include <unwindstack/DexFiles.h>
-#endif
 #include <unwindstack/Elf.h>
 #include <unwindstack/JitDebug.h>
 #include <unwindstack/Maps.h>
 #include <unwindstack/Memory.h>
+
+#ifndef NO_LIBDEXFILE_SUPPORT
+#if defined(__ANDROID_VNDK__) || defined(__ANDROID_RECOVERY__)
+#define NO_LIBDEXFILE_SUPPORT
+#endif
+#endif
+
+#if !defined(NO_LIBDEXFILE_SUPPORT)
+#include <unwindstack/DexFiles.h>
+#endif
 
 // Forward declarations.
 class UnwindDexFile;
