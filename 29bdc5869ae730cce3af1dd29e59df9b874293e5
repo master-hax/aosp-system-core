@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b532390b_9e15862e",
+        "filename": "init/service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 206,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-11-19T22:46:07Z",
+      "side": 1,
+      "message": "additional",
+      "range": {
+        "startLine": 206,
+        "startChar": 25,
+        "endLine": 206,
+        "endChar": 37
+      },
+      "revId": "29bdc5869ae730cce3af1dd29e59df9b874293e5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e1344dc7_b1f018c6",
+        "filename": "init/service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 263,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-11-19T22:46:07Z",
+      "side": 1,
+      "message": "don\u0027t these two cases need to be the other way round?",
+      "range": {
+        "startLine": 263,
+        "startChar": 6,
+        "endLine": 263,
+        "endChar": 10
+      },
+      "revId": "29bdc5869ae730cce3af1dd29e59df9b874293e5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
