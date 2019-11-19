@@ -1209,6 +1209,39 @@ static Result<void> do_parse_apex_configs(const BuiltinArguments& args) {
     }
 }
 
+/*
+ * Creates a directory under /data/misc/apexdata/ for each APEX.
+ */
+static Result<void> do_create_apex_data_dirs(const BuiltinArguments& args) {
+    auto dirp = std::unique_ptr<DIR, int (*)(DIR*)>(opendir("/apex"), closedir);
+    if (!dirp) {
+        return Error() << "Unable to open apex directory";
+    }
+    for (;;) {
+        errno = 0;
+        auto const entry = readdir(dirp.get());
+        if (!entry) {
+            if (errno) {
+                return Error() << "readdir failed on /apex";
+            }
+            return Error() << "readdir returned null";
+        }
+
+        if (entry->d_type != DT_DIR) continue;
+
+        const char* name = entry->d_name;
+        // skip "." and ".."
+        if (name[0] == '.') {
+            if (name[1] == 0) continue;
+            if ((name[1] == '.') && (name[2] == 0)) continue;
+        }
+        if (strchr(name, '@') != NULL) continue;
+
+        make_dir("/data/misc/apexdata/" + std::string(name), 0777);
+    }
+    return {};
+}
+
 static Result<void> do_enter_default_mount_ns(const BuiltinArguments& args) {
     if (SwitchToDefaultMountNamespace()) {
         return {};
@@ -1241,6 +1274,7 @@ const BuiltinFunctionMap& GetBuiltinFunctionMap() {
         {"class_start_post_data",   {1,     1,    {false,  do_class_start_post_data}}},
         {"class_stop",              {1,     1,    {false,  do_class_stop}}},
         {"copy",                    {2,     2,    {true,   do_copy}}},
+        {"create_apex_data_dirs",   {0,     0,    {false,  do_create_apex_data_dirs}}},
         {"domainname",              {1,     1,    {true,   do_domainname}}},
         {"enable",                  {1,     1,    {false,  do_enable}}},
         {"exec",                    {1,     kMax, {false,  do_exec}}},
