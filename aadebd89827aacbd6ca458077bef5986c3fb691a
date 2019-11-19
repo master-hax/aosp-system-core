@@ -22,6 +22,30 @@
       "revId": "aadebd89827aacbd6ca458077bef5986c3fb691a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e54a5e4c_0bfaae3a",
+        "filename": "debuggerd/libdebuggerd/utility.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 1453063
+      },
+      "writtenOn": "2019-11-19T17:57:50Z",
+      "side": 1,
+      "message": "Look, I\u0027ll happily deflect the blame! :)",
+      "parentUuid": "8ed34070_e5312867",
+      "range": {
+        "startLine": 86,
+        "startChar": 17,
+        "endLine": 86,
+        "endChar": 30
+      },
+      "revId": "aadebd89827aacbd6ca458077bef5986c3fb691a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
