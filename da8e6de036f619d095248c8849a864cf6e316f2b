@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "7df48844_8b22f080",
+        "filename": "base/include/android-base/parsebool.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1130394
+      },
+      "writtenOn": "2019-11-19T02:08:38Z",
+      "side": 1,
+      "message": "Gragh. Thanks for catching that.",
+      "parentUuid": "efc8a25a_e117d7c1",
+      "range": {
+        "startLine": 24,
+        "startChar": 66,
+        "endLine": 25,
+        "endChar": 53
+      },
+      "revId": "da8e6de036f619d095248c8849a864cf6e316f2b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "2c6ceb82_090604b6",
         "filename": "base/properties.cpp",
         "patchSetId": 2
