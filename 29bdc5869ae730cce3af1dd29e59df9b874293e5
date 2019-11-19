@@ -93,6 +93,30 @@
       "revId": "29bdc5869ae730cce3af1dd29e59df9b874293e5",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cdc12a92_953b2269",
+        "filename": "init/service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 263,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-11-19T23:04:49Z",
+      "side": 1,
+      "message": "yeah, i think you\u0027re right. maybe splitting the comment up and adding a final `} else {` (that only contains a comment explaining that this was the legacy behavior) would be clearer? or switching to \u003c\u003d _Q_, having a \"we used to ignore this\" command in there, and having `KillProcessGroup(SIGKILL, true);` be an `} else {` at the end?",
+      "parentUuid": "6a422692_d8dd8c0c",
+      "range": {
+        "startLine": 263,
+        "startChar": 6,
+        "endLine": 263,
+        "endChar": 10
+      },
+      "revId": "29bdc5869ae730cce3af1dd29e59df9b874293e5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
