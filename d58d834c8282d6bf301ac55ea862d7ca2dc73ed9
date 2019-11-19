@@ -46,6 +46,30 @@
       "revId": "d58d834c8282d6bf301ac55ea862d7ca2dc73ed9",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "078729d4_93b1396e",
+        "filename": "debuggerd/libdebuggerd/include/libdebuggerd/utility.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-11-19T15:31:45Z",
+      "side": 1,
+      "message": "even in liblog, the \u0027v\u0027 is coming before the \"print\". and since you don\u0027t have that...\n\n(note also that LOGV/ALOGV -- meaning verbose -- is *really* common around the tree.)",
+      "parentUuid": "f0557cb6_ff000390",
+      "range": {
+        "startLine": 75,
+        "startChar": 5,
+        "endLine": 75,
+        "endChar": 10
+      },
+      "revId": "d58d834c8282d6bf301ac55ea862d7ca2dc73ed9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
