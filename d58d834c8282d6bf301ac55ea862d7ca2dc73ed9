@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2bf7cbf4_cdb6d63e",
+        "filename": "debuggerd/libdebuggerd/include/libdebuggerd/utility.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-11-19T01:25:36Z",
+      "side": 1,
+      "message": "_VLOG is probably clearer that this is variadic rather than verbose?",
+      "range": {
+        "startLine": 75,
+        "startChar": 5,
+        "endLine": 75,
+        "endChar": 10
+      },
+      "revId": "d58d834c8282d6bf301ac55ea862d7ca2dc73ed9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
