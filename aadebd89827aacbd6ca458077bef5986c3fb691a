@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8ed34070_e5312867",
+        "filename": "debuggerd/libdebuggerd/utility.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-11-19T17:56:09Z",
+      "side": 1,
+      "message": "(and this of course is the counter-example that probably subconsciously influenced you!)",
+      "range": {
+        "startLine": 86,
+        "startChar": 17,
+        "endLine": 86,
+        "endChar": 30
+      },
+      "revId": "aadebd89827aacbd6ca458077bef5986c3fb691a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
