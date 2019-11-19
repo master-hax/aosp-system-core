@@ -45,7 +45,6 @@ LogTimeEntry::LogTimeEntry(LogReader& reader, SocketClient* client,
     mTimeout.tv_nsec = timeout % NS_PER_SEC;
     memset(mLastTid, 0, sizeof(mLastTid));
     pthread_cond_init(&threadTriggeredCondition, nullptr);
-    cleanSkip_Locked();
 }
 
 bool LogTimeEntry::startReader_Locked() {
@@ -117,8 +116,6 @@ void* LogTimeEntry::threadStart(void* obj) {
             break;
         }
 
-        me->cleanSkip_Locked();
-
         if (!me->mTimeout.tv_sec && !me->mTimeout.tv_nsec) {
             pthread_cond_wait(&me->threadTriggeredCondition, &timesLock);
         }
@@ -179,11 +176,6 @@ int LogTimeEntry::FilterSecondPass(const LogBufferElement* element, void* obj) {
 
     me->mStart = element->getRealTime();
 
-    if (me->skipAhead[element->getLogId()]) {
-        me->skipAhead[element->getLogId()]--;
-        goto skip;
-    }
-
     if (me->leadingDropped) {
         if (element->getDropped()) {
             goto skip;
@@ -223,11 +215,8 @@ int LogTimeEntry::FilterSecondPass(const LogBufferElement* element, void* obj) {
     }
 
 ok:
-    if (!me->skipAhead[element->getLogId()]) {
-        LogTimeEntry::unlock();
-        return true;
-    }
-// FALLTHRU
+    LogTimeEntry::unlock();
+    return true;
 
 skip:
     LogTimeEntry::unlock();
@@ -236,8 +225,4 @@ skip:
 stop:
     LogTimeEntry::unlock();
     return -1;
-}
-
-void LogTimeEntry::cleanSkip_Locked(void) {
-    memset(skipAhead, 0, sizeof(skipAhead));
 }
