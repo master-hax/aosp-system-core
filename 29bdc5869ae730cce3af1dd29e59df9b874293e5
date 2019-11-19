@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "ae4eecb3_35329524",
+        "filename": "init/service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 206,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-11-19T22:53:47Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b532390b_9e15862e",
+      "range": {
+        "startLine": 206,
+        "startChar": 25,
+        "endLine": 206,
+        "endChar": 37
+      },
+      "revId": "29bdc5869ae730cce3af1dd29e59df9b874293e5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e1344dc7_b1f018c6",
         "filename": "init/service.cpp",
         "patchSetId": 1
@@ -36,6 +60,30 @@
       "writtenOn": "2019-11-19T22:46:07Z",
       "side": 1,
       "message": "don\u0027t these two cases need to be the other way round?",
+      "range": {
+        "startLine": 263,
+        "startChar": 6,
+        "endLine": 263,
+        "endChar": 10
+      },
+      "revId": "29bdc5869ae730cce3af1dd29e59df9b874293e5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6a422692_d8dd8c0c",
+        "filename": "init/service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 263,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-11-19T22:53:47Z",
+      "side": 1,
+      "message": "Do they?  \n\nThe first if statement and body is identical to the old behavior.\n\nThe else case would have been a no-op, but now I check if we\u0027re \u003e\u003d R and the body is the new behavior.\n\nThe logs look right to me too.",
+      "parentUuid": "e1344dc7_b1f018c6",
       "range": {
         "startLine": 263,
         "startChar": 6,
