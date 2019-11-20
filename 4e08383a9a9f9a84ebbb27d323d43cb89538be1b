@@ -121,6 +121,30 @@
     },
     {
       "key": {
+        "uuid": "55474382_c9d97155",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1216,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-11-20T18:38:15Z",
+      "side": 1,
+      "message": "Ironic or not, WalkDir() from that second link looks good.  I was thinking it\u0027d end up being a wrapper around the iterator, but not having an iterator and having a callback seems safest to me.  Perhaps that could move to android-base and we use it here?\n\nAnd RE opendir(): it does end up being much nicer when the errno check on readdir() is dropped.  It\u0027s only specified for \"Invalid directory stream descriptor dirp\" and we should trust that opendir() is not going to do this.  There\u0027re plenty examples in system/core and even in init where we use it like this.",
+      "parentUuid": "1735d957_6dfc9d30",
+      "range": {
+        "startLine": 1216,
+        "startChar": 4,
+        "endLine": 1216,
+        "endChar": 80
+      },
+      "revId": "4e08383a9a9f9a84ebbb27d323d43cb89538be1b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "5894e7d6_8f71a0a2",
         "filename": "init/builtins.cpp",
         "patchSetId": 1
