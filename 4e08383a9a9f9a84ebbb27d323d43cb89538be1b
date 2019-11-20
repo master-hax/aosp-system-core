@@ -145,6 +145,30 @@
     },
     {
       "key": {
+        "uuid": "5aa19f12_45c8e449",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1216,
+      "author": {
+        "id": 1060347
+      },
+      "writtenOn": "2019-11-20T18:54:59Z",
+      "side": 1,
+      "message": "Acknowledged, thanks. Given this discussion I\u0027ll leave this as-is for now.",
+      "parentUuid": "1735d957_6dfc9d30",
+      "range": {
+        "startLine": 1216,
+        "startChar": 4,
+        "endLine": 1216,
+        "endChar": 80
+      },
+      "revId": "4e08383a9a9f9a84ebbb27d323d43cb89538be1b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5894e7d6_8f71a0a2",
         "filename": "init/builtins.cpp",
         "patchSetId": 1
@@ -168,6 +192,30 @@
     },
     {
       "key": {
+        "uuid": "e54bd993_48c4f070",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1218,
+      "author": {
+        "id": 1060347
+      },
+      "writtenOn": "2019-11-20T18:54:59Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5894e7d6_8f71a0a2",
+      "range": {
+        "startLine": 1218,
+        "startChar": 15,
+        "endLine": 1218,
+        "endChar": 20
+      },
+      "revId": "4e08383a9a9f9a84ebbb27d323d43cb89538be1b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ce2f101c_fc546c5a",
         "filename": "init/builtins.cpp",
         "patchSetId": 1
@@ -188,6 +236,30 @@
       "revId": "4e08383a9a9f9a84ebbb27d323d43cb89538be1b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "76b2befd_73fe3127",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1225,
+      "author": {
+        "id": 1060347
+      },
+      "writtenOn": "2019-11-20T18:54:59Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ce2f101c_fc546c5a",
+      "range": {
+        "startLine": 1225,
+        "startChar": 23,
+        "endLine": 1225,
+        "endChar": 28
+      },
+      "revId": "4e08383a9a9f9a84ebbb27d323d43cb89538be1b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -238,6 +310,30 @@
     },
     {
       "key": {
+        "uuid": "cdc85828_596d3c49",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1227,
+      "author": {
+        "id": 1060347
+      },
+      "writtenOn": "2019-11-20T18:54:59Z",
+      "side": 1,
+      "message": "Good point, this isn\u0027t an error. Changed to \"break;\"",
+      "parentUuid": "d66571b6_b57914bb",
+      "range": {
+        "startLine": 1227,
+        "startChar": 11,
+        "endLine": 1227,
+        "endChar": 54
+      },
+      "revId": "4e08383a9a9f9a84ebbb27d323d43cb89538be1b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7b054e50_34c76bf3",
         "filename": "init/builtins.cpp",
         "patchSetId": 1
@@ -258,6 +354,30 @@
       "revId": "4e08383a9a9f9a84ebbb27d323d43cb89538be1b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e07c5ccc_59d86b7a",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1237,
+      "author": {
+        "id": 1060347
+      },
+      "writtenOn": "2019-11-20T18:54:59Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7b054e50_34c76bf3",
+      "range": {
+        "startLine": 1233,
+        "startChar": 0,
+        "endLine": 1237,
+        "endChar": 9
+      },
+      "revId": "4e08383a9a9f9a84ebbb27d323d43cb89538be1b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -308,6 +428,30 @@
     },
     {
       "key": {
+        "uuid": "6b1fcf9d_c3025afe",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1240,
+      "author": {
+        "id": 1060347
+      },
+      "writtenOn": "2019-11-20T18:54:59Z",
+      "side": 1,
+      "message": "I\u0027ve changed this to 0700 system system. Some APEXes may need different settings, but they can set this in their own configuration.\n\nI believe the encryption setting for directories under /data/misc is None by default, so nothing in particular needs to be set here.\n\nTo allow the directories to be created in the same way as other directories, I broke out the functionality from do_mkdir to make it callable from elsewhere using MkdirOptions. Let me know if another approach would be preferable.",
+      "parentUuid": "582767cb_6d3b432e",
+      "range": {
+        "startLine": 1240,
+        "startChar": 61,
+        "endLine": 1240,
+        "endChar": 65
+      },
+      "revId": "4e08383a9a9f9a84ebbb27d323d43cb89538be1b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "508c2459_774606ab",
         "filename": "init/builtins.cpp",
         "patchSetId": 1
@@ -322,6 +466,24 @@
       "revId": "4e08383a9a9f9a84ebbb27d323d43cb89538be1b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1f12f963_6b2a087d",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1277,
+      "author": {
+        "id": 1060347
+      },
+      "writtenOn": "2019-11-20T18:54:59Z",
+      "side": 1,
+      "message": "Actually on reflection I think this should always happen just before parse_apex_configs.\n\nCombined both to a single perform_apex_config command.",
+      "parentUuid": "508c2459_774606ab",
+      "revId": "4e08383a9a9f9a84ebbb27d323d43cb89538be1b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
