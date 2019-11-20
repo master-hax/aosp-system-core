@@ -97,6 +97,30 @@
     },
     {
       "key": {
+        "uuid": "1735d957_6dfc9d30",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1216,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-11-20T15:53:03Z",
+      "side": 1,
+      "message": "yeah, written correctly opendir() is fine. see https://cs.corp.google.com/android/system/core/init/init.cpp?q\u003dopendir+file:system/core\u0026g\u003d0\u0026l\u003d421 for an example.\n\nthe need to say .increment() (and the difficulty of remembering to always use the std::error_code variants of calls, and not having compiler checking for that) seems to make the std::filesystem code in apexd a wash: https://cs.corp.google.com/android/system/apex/apexd/apexd_utils.h?type\u003dcs\u0026q\u003ddirectory_iter+file:apexd\u0026g\u003d0\u0026l\u003d94\n\n(but i\u0027m happy to enable more use of exceptions, and agree that the `for (auto...` code is much better than either of these.)",
+      "parentUuid": "583b94e0_6544b998",
+      "range": {
+        "startLine": 1216,
+        "startChar": 4,
+        "endLine": 1216,
+        "endChar": 80
+      },
+      "revId": "4e08383a9a9f9a84ebbb27d323d43cb89538be1b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "5894e7d6_8f71a0a2",
         "filename": "init/builtins.cpp",
         "patchSetId": 1
