@@ -52,6 +52,7 @@
 #include "adb_listeners.h"
 #include "adb_unique_fd.h"
 #include "adb_utils.h"
+#include "adb_wifi.h"
 #include "sysdeps/chrono.h"
 #include "transport.h"
 
@@ -299,7 +300,9 @@ static void handle_new_connection(atransport* t, apacket* p) {
 #if ADB_HOST
     handle_online(t);
 #else
-    if (!auth_required) {
+    if (t->is_secure_wifi) {
+        adbd_wifi_secure_connect(t);
+    } else if (!auth_required) {
         LOG(INFO) << "authentication not required";
         handle_online(t);
         send_connect(t);
@@ -1159,6 +1162,7 @@ HostRequestResult handle_host_request(std::string_view service, TransportType ty
         std::string address(service.substr(11));
         if (address.empty()) {
             kick_all_tcp_devices();
+            kick_all_secure_wifi_transports();
             SendOkay(reply_fd, "disconnected everything");
             return HostRequestResult::Handled;
         }
@@ -1173,6 +1177,8 @@ HostRequestResult handle_host_request(std::string_view service, TransportType ty
             SendFail(reply_fd, android::base::StringPrintf("couldn't parse '%s': %s",
                                                            address.c_str(), error.c_str()));
             return HostRequestResult::Handled;
+        } else if (find_secure_wifi_transport_by_guid(address)) {
+            serial = address;
         }
         atransport* t = find_transport(serial.c_str());
         if (t == nullptr) {

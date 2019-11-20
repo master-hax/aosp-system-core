@@ -32,6 +32,7 @@
 #include <thread>
 #include <unordered_set>
 
+#include <adbwifi/ssl/tls_connection.h>
 #include <android-base/macros.h>
 #include <android-base/thread_annotations.h>
 #include <openssl/rsa.h>
@@ -162,7 +163,7 @@ struct BlockingConnectionAdapter : public Connection {
 };
 
 struct FdConnection : public BlockingConnection {
-    explicit FdConnection(unique_fd fd) : fd_(std::move(fd)) {}
+    explicit FdConnection(unique_fd fd, bool use_tls) : fd_(std::move(fd)), use_tls_(use_tls) {}
 
     bool Read(apacket* packet) override final;
     bool Write(apacket* packet) override final;
@@ -170,8 +171,14 @@ struct FdConnection : public BlockingConnection {
     void Close() override;
     virtual void Reset() override final { Close(); }
 
+    bool doTlsHandshake(atransport* t);
+
   private:
+    bool DispatchRead(void* buf, size_t len);
+    bool DispatchWrite(const void* buf, size_t len);
     unique_fd fd_;
+    bool use_tls_;
+    std::unique_ptr<adbwifi::ssl::TlsConnection> tls_;
 };
 
 struct UsbConnection : public BlockingConnection {
@@ -282,6 +289,9 @@ class atransport {
     std::string auth_key;
     uint64_t auth_id;
 #endif
+
+    // Identifies a secure wifi protocol being used.
+    bool is_secure_wifi = false;
 
     bool IsTcpDevice() const { return type == kTransportLocal; }
 
@@ -398,6 +408,8 @@ std::string list_transports(bool long_listing);
 atransport* find_transport(const char* serial);
 void kick_all_tcp_devices();
 void kick_all_transports();
+void kick_all_secure_wifi_transports();
+atransport* find_secure_wifi_transport_by_guid(const std::string& guid);
 
 void register_transport(atransport* transport);
 void register_usb_transport(usb_handle* h, const char* serial,
