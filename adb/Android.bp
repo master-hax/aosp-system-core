@@ -165,9 +165,11 @@ cc_library_host_static {
 
     srcs: libadb_srcs + [
         "client/auth.cpp",
+        "client/adb_wifi.cpp",
         "client/usb_libusb.cpp",
         "client/usb_dispatch.cpp",
         "client/transport_mdns.cpp",
+        "client/pairing/pairing_client.cpp",
     ],
 
     generated_headers: ["platform_tools_version"],
@@ -197,6 +199,8 @@ cc_library_host_static {
     static_libs: [
         "libadb_crypto",
         "libadb_protos",
+        "libadbwifi_pairing_connection",
+        "libadb_tls_connection",
         "libbase",
         "libcrypto_utils",
         "libcrypto",
@@ -206,6 +210,7 @@ cc_library_host_static {
         "libutils",
         "liblog",
         "libcutils",
+        "libprotobuf-cpp-lite",
     ],
 }
 
@@ -291,6 +296,10 @@ cc_binary_host {
     static_libs: [
         "libadb_crypto",
         "libadb_host",
+	"libadbwifi_pairing_auth",
+	"libadbwifi_pairing_connection",
+        "libadb_protos",
+        "libadb_tls_connection",
         "libandroidfw",
         "libbase",
         "libcutils",
@@ -301,6 +310,7 @@ cc_binary_host {
         "liblog",
         "libmdnssd",
         "libprotobuf-cpp-lite",
+        "libssl",
         "libusb",
         "libutils",
         "liblog",
@@ -353,6 +363,7 @@ cc_library_static {
     srcs: libadb_srcs + libadb_linux_srcs + libadb_posix_srcs + [
         "daemon/auth.cpp",
         "daemon/jdwp_service.cpp",
+	"daemon/adb_wifi.cpp",
     ],
 
     local_include_dirs: [
@@ -369,12 +380,15 @@ cc_library_static {
         "libadb_crypto",
         "libadbconnection_server",
         "libadbd_auth",
+        "libadbwifi_pairing_connection",
+        "libadb_tls_connection",
         "libasyncio",
         "libbase",
         "libcrypto",
         "libcrypto_utils",
         "libcutils",
         "liblog",
+        "libprotobuf-cpp-lite",
     ],
 
     target: {
@@ -422,13 +436,17 @@ cc_library {
 
     shared_libs: [
         "libadbconnection_server",
+        "libadb_protos",
         "libadbd_auth",
+        "libadbwifi_pairing_connection",
+        "libadb_tls_connection",
         "libasyncio",
         "libbase",
         "libcrypto",
         "libcrypto_utils",
         "libcutils",
         "liblog",
+        "libprotobuf-cpp-lite",
     ],
 
     target: {
@@ -471,6 +489,8 @@ cc_library {
     shared_libs: [
         "libadbconnection_server",
         "libadbd_auth",
+        "libadbwifi_pairing_connection",
+        "libadb_tls_connection",
         "libadbd_services",
         "libasyncio",
         "libbase",
@@ -478,6 +498,8 @@ cc_library {
         "libcrypto_utils",
         "libcutils",
         "liblog",
+        "libprotobuf-cpp-lite",
+	"libssl",
     ],
 
     export_include_dirs: [
@@ -507,6 +529,9 @@ cc_binary {
     static_libs: [
         "libadbd",
         "libadbd_auth",
+        "libadbwifi_pairing_connection",
+        "libadb_protos",
+        "libadb_tls_connection",
         "libadbd_services",
         "libasyncio",
         "libbase",
@@ -517,7 +542,9 @@ cc_binary {
         "liblog",
         "libmdnssd",
         "libminijail",
+        "libprotobuf-cpp-lite",
         "libselinux",
+        "libssl",
     ],
 
     shared_libs: [
@@ -531,6 +558,9 @@ phony {
     required: [
         "abb",
         "libadbd_auth",
+        "libadbwifi_pairing_connection",
+        "libadb_tls_connection",
+        "libprotobuf-cpp-lite",
         "reboot",
         "set-verity-state",
     ]
@@ -591,12 +621,15 @@ cc_test {
     static_libs: [
         "libadbd",
         "libadbd_auth",
+        "libadbwifi_pairing_connection",
+        "libadb_tls_connection",
         "libbase",
         "libcutils",
         "libcrypto_utils",
         "libcrypto_static",
         "libdiagnose_usb",
         "liblog",
+        "libprotobuf-cpp-lite",
         "libusb",
         "libmdnssd",
         "libselinux",
