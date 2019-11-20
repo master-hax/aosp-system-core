@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "a82352db_db23b96a",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1216,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-11-20T15:23:41Z",
+      "side": 1,
+      "message": "std::filesystem is still iffy.  It relies sort of heavily on exceptions; even with the \u0027ec\u0027 versions, this:\n\nstd::error_code ec\nfor (auto\u0026 de : std::filesystem::directory_iterator(\"/apex\", ec)) {\n  ...\n}\n\ncan throw, since operator++() can throw and it\u0027s hidden in the range based for loop (https://en.cppreference.com/w/cpp/filesystem/directory_iterator/increment).\n\nIf we do use it here, maybe we finally admit try using exceptions here?  Otherwise, the code doesn\u0027t look much better than the readdir code unfortunately.",
+      "parentUuid": "105597e0_064bbc1c",
+      "range": {
+        "startLine": 1216,
+        "startChar": 4,
+        "endLine": 1216,
+        "endChar": 80
+      },
+      "revId": "4e08383a9a9f9a84ebbb27d323d43cb89538be1b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "5894e7d6_8f71a0a2",
         "filename": "init/builtins.cpp",
         "patchSetId": 1
@@ -94,6 +118,53 @@
     },
     {
       "key": {
+        "uuid": "51f2a2f1_2922818e",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1227,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-11-20T15:23:41Z",
+      "side": 1,
+      "message": "+1 this isn\u0027t an error, it\u0027s the expected behavior.",
+      "parentUuid": "d66571b6_b57914bb",
+      "range": {
+        "startLine": 1227,
+        "startChar": 11,
+        "endLine": 1227,
+        "endChar": 54
+      },
+      "revId": "4e08383a9a9f9a84ebbb27d323d43cb89538be1b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7b054e50_34c76bf3",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1237,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-11-20T15:23:41Z",
+      "side": 1,
+      "message": "Are we ever going to have names that begin with a single \u0027.\u0027 ?  Assuming not, you can simplify this and just check the first character.",
+      "range": {
+        "startLine": 1233,
+        "startChar": 0,
+        "endLine": 1237,
+        "endChar": 9
+      },
+      "revId": "4e08383a9a9f9a84ebbb27d323d43cb89538be1b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "4372928c_6fadc915",
         "filename": "init/builtins.cpp",
         "patchSetId": 1
@@ -111,6 +182,47 @@
         "endLine": 1240,
         "endChar": 65
       },
+      "revId": "4e08383a9a9f9a84ebbb27d323d43cb89538be1b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "582767cb_6d3b432e",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1240,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-11-20T15:23:41Z",
+      "side": 1,
+      "message": "Should we specify users/groups here somehow too?  Otherwise these will end up root/root.\n\nShould we specify any encryption settings via FscryptSetDirectoryPolicy()?  Or is that not needed until the user specific versions of these?",
+      "parentUuid": "4372928c_6fadc915",
+      "range": {
+        "startLine": 1240,
+        "startChar": 61,
+        "endLine": 1240,
+        "endChar": 65
+      },
+      "revId": "4e08383a9a9f9a84ebbb27d323d43cb89538be1b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "508c2459_774606ab",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1277,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-11-20T15:23:41Z",
+      "side": 1,
+      "message": "Is this only ever going to happen right after parse_apex_configs?  Can we combine these into a generic name that handles all of the things that init needs to do at this point for apex?\n\nIt\u0027s fine otherwise, but I don\u0027t want to create a bunch of apex only commands to init if fewer would suffice.",
       "revId": "4e08383a9a9f9a84ebbb27d323d43cb89538be1b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
