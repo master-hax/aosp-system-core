@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "84758518_0769ecd7",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1216,
+      "author": {
+        "id": 1432579
+      },
+      "writtenOn": "2019-11-20T15:30:56Z",
+      "side": 1,
+      "message": "We are using noexcept overrides of std::filesystem in apexd. The only big annoyance so far is the operator++ you mentioned. I was thinking on providing a noexcept wrapper for it, but never had time for it. If there are more places in the codebase that would like to use std::filesystem, but aren\u0027t using it because of things like operator++, then maybe we can have a common library to have noexcept versions? Or try to propose changes to the next standard? :)",
+      "parentUuid": "a82352db_db23b96a",
+      "range": {
+        "startLine": 1216,
+        "startChar": 4,
+        "endLine": 1216,
+        "endChar": 80
+      },
+      "revId": "4e08383a9a9f9a84ebbb27d323d43cb89538be1b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "5894e7d6_8f71a0a2",
         "filename": "init/builtins.cpp",
         "patchSetId": 1
