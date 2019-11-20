@@ -36,6 +36,8 @@
 #include <set>
 #include <thread>
 
+#include <adbwifi/crypto/key_store.h>
+#include <adbwifi/pairing/pairing_header.h>
 #include <android-base/logging.h>
 #include <android-base/parsenetaddress.h>
 #include <android-base/stringprintf.h>
@@ -52,6 +54,9 @@
 #include "fdevent/fdevent.h"
 #include "sysdeps/chrono.h"
 
+using adbwifi::crypto::KeyStore;
+using adbwifi::pairing::PeerInfo;
+using adbwifi::ssl::TlsConnection;
 using android::base::ScopedLockAssertion;
 
 static void remove_transport(atransport* transport);
@@ -387,8 +392,35 @@ bool BlockingConnectionAdapter::Write(std::unique_ptr<apacket> packet) {
     return true;
 }
 
+bool FdConnection::DispatchRead(void* buf, size_t len) {
+    if (use_tls_) {
+        if (len == 0) {
+            return true;
+        }
+        auto data = tls_->readFully(len);
+        if (data.empty()) {
+            return false;
+        }
+        memcpy(buf, data.data(), len);
+        return true;
+    } else {
+        return ReadFdExactly(fd_.get(), buf, len);
+    }
+}
+
+bool FdConnection::DispatchWrite(const void* buf, size_t len) {
+    if (use_tls_) {
+        if (len == 0) {
+            return true;
+        }
+        return tls_->writeFully(std::string_view(reinterpret_cast<const char*>(buf), len));
+    } else {
+        return WriteFdExactly(fd_.get(), buf, len);
+    }
+}
+
 bool FdConnection::Read(apacket* packet) {
-    if (!ReadFdExactly(fd_.get(), &packet->msg, sizeof(amessage))) {
+    if (!DispatchRead(&packet->msg, sizeof(amessage))) {
         D("remote local: read terminated (message)");
         return false;
     }
@@ -400,7 +432,7 @@ bool FdConnection::Read(apacket* packet) {
 
     packet->payload.resize(packet->msg.data_length);
 
-    if (!ReadFdExactly(fd_.get(), &packet->payload[0], packet->payload.size())) {
+    if (!DispatchRead(&packet->payload[0], packet->payload.size())) {
         D("remote local: terminated (data)");
         return false;
     }
@@ -409,18 +441,88 @@ bool FdConnection::Read(apacket* packet) {
 }
 
 bool FdConnection::Write(apacket* packet) {
-    if (!WriteFdExactly(fd_.get(), &packet->msg, sizeof(packet->msg))) {
+    if (!DispatchWrite(&packet->msg, sizeof(packet->msg))) {
         D("remote local: write terminated");
         return false;
     }
 
     if (packet->msg.data_length) {
-        if (!WriteFdExactly(fd_.get(), &packet->payload[0], packet->msg.data_length)) {
+        if (!DispatchWrite(&packet->payload[0], packet->msg.data_length)) {
             D("remote local: write terminated");
             return false;
         }
     }
 
+    return true;
+}
+
+bool FdConnection::doTlsHandshake(atransport* t) {
+    std::string keypath;
+#if ADB_HOST
+    keypath = adb_get_android_dir_path();
+#else
+    keypath = "/data/misc/adb";
+#endif
+
+    auto key_store = KeyStore::create(keypath);
+    if (key_store == nullptr) {
+        LOG(ERROR) << "Unable to create keystore for TLS handshake.";
+        return false;
+    }
+
+    // Create the TLS context
+    auto system_info = key_store->getDeviceInfo();
+    if (!system_info.has_value()) {
+        LOG(ERROR) << "Unable to obtain system keys for tls connection.";
+        return false;
+    }
+    auto [sys_guid, sys_name, sys_cert, sys_priv_key] = *system_info;
+#if ADB_HOST
+    tls_ = TlsConnection::create(TlsConnection::Role::Client, sys_cert, sys_priv_key);
+#else
+    tls_ = TlsConnection::create(TlsConnection::Role::Server, sys_cert, sys_priv_key);
+#endif
+    if (tls_ == nullptr) {
+        LOG(ERROR) << "Unable to create TLS context";
+        return false;
+    }
+
+    // Register the known certificates
+    LOG(INFO) << "Registering " << key_store->size() << " known certificates";
+    for (size_t i = 0; i < key_store->size(); ++i) {
+        auto apair = (*key_store)[i];
+        if (!apair.second.has_value()) {
+            LOG(WARNING) << "Got empty key in keystore.";
+            continue;
+        }
+        auto [guid, name, cert] = *(apair.second);
+        if (!tls_->addTrustedCertificate(cert)) {
+            LOG(ERROR) << "Unable to add trusted peer certificate";
+            continue;
+        }
+    }
+
+    if (!tls_->doHandshake(fd_.get())) {
+        return false;
+    }
+
+    // Write our guid, name so the peer can identify us.
+    PeerInfo sys_info = {};
+    memcpy(sys_info.guid, sys_guid.data(),
+           std::min(adbwifi::pairing::kPeerGuidLength, sys_guid.size()));
+    memcpy(sys_info.name, sys_name.data(),
+           std::min(adbwifi::pairing::kPeerNameLength, sys_name.size()));
+    if (!tls_->writeFully(
+                std::string_view(reinterpret_cast<const char*>(&sys_info), sizeof(PeerInfo)))) {
+        return false;
+    }
+    // Read the peer's guid
+    auto buf = tls_->readFully(sizeof(PeerInfo));
+    if (buf.empty()) {
+        return false;
+    }
+    auto* peer_info = reinterpret_cast<const PeerInfo*>(buf.data());
+    t->serial = peer_info->guid;
     return true;
 }
 
@@ -748,6 +850,28 @@ void kick_all_transports() {
     for (auto t : transport_list) {
         t->Kick();
     }
+}
+
+void kick_all_secure_wifi_transports() {
+    std::lock_guard<std::recursive_mutex> lock(transport_lock);
+    for (auto t : transport_list) {
+        if (t->is_secure_wifi) {
+            t->Kick();
+        }
+    }
+#if ADB_HOST
+    reconnect_handler.CheckForKicked();
+#endif
+}
+
+atransport* find_secure_wifi_transport_by_guid(const std::string& guid) {
+    std::lock_guard<std::recursive_mutex> lock(transport_lock);
+    for (auto t : transport_list) {
+        if (t->is_secure_wifi && t->serial == guid) {
+            return t;
+        }
+    }
+    return nullptr;
 }
 
 /* the fdevent select pump is single threaded */
@@ -1260,7 +1384,9 @@ bool register_socket_transport(unique_fd s, std::string serial, int port, int lo
         }
     }
 
-    t->serial = std::move(serial);
+    if (t->serial.empty()) {
+        t->serial = std::move(serial);
+    }
     pending_list.push_front(t);
 
     lock.unlock();

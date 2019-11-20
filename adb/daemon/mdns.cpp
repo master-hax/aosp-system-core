@@ -26,9 +26,11 @@
 #include <mutex>
 #include <thread>
 
+#include <adbwifi/crypto/device_identifier.h>
 #include <android-base/logging.h>
 #include <android-base/properties.h>
 
+using adbwifi::crypto::DeviceIdentifier;
 using namespace std::chrono_literals;
 
 static std::mutex& mdns_lock = *new std::mutex();
@@ -61,11 +63,9 @@ static void mdns_callback(DNSServiceRef /*ref*/,
     }
 }
 
-static void register_mdns_service(int index, int port) {
+static void register_mdns_service(int index, int port, const std::string service_name) {
     std::lock_guard<std::mutex> lock(mdns_lock);
 
-    std::string hostname = "adb-";
-    hostname += android::base::GetProperty("ro.serialno", "unidentified");
 
     // https://tools.ietf.org/html/rfc6763
     // """
@@ -95,7 +95,7 @@ static void register_mdns_service(int index, int port) {
     }
 
     auto error = DNSServiceRegister(
-            &mdns_refs[index], 0, 0, hostname.c_str(), kADBDNSServices[index], nullptr, nullptr,
+            &mdns_refs[index], 0, 0, service_name.c_str(), kADBDNSServices[index], nullptr, nullptr,
             htobe16((uint16_t)port), (uint16_t)txtRecord.size(),
             txtRecord.empty() ? nullptr : txtRecord.data(), mdns_callback, nullptr);
 
@@ -120,7 +120,9 @@ static void unregister_mdns_service(int index) {
 }
 
 static void register_base_mdns_transport() {
-    register_mdns_service(kADBTransportServiceRefIndex, port);
+    std::string hostname = "adb-";
+    hostname += android::base::GetProperty("ro.serialno", "unidentified");
+    register_mdns_service(kADBTransportServiceRefIndex, port, hostname);
 }
 
 static void setup_mdns_thread() {
@@ -149,9 +151,32 @@ void setup_mdns(int port_in) {
     atexit(teardown_mdns);
 }
 
+static std::string readDeviceIdentifierGuid() {
+    // On wireless debugging first being enabled, the system_server creates the
+    // adb_deviceid file, from which we read the guid from. We might read before
+    // it's created, so let's retry an X number of times before giving up.
+    std::string adb_deviceid_path = "/data/misc/adb";
+    std::string fullname = adb_deviceid_path + "/adb_deviceid";
+    static const int numRetries = 10;
+    for (int i = 0; i < numRetries; ++i) {
+        DeviceIdentifier id(adb_deviceid_path);
+        if (!id.getUniqueDeviceId().empty()) {
+            return id.getUniqueDeviceId();
+        }
+        LOG(INFO) << "Retry #" << i << ": " << fullname << " not found.";
+    }
+    LOG(INFO) << fullname << " not found. Giving up.";
+    return "";
+}
+
 void register_adb_secure_pairing_service(int port) {
     std::thread([port]() {
-        register_mdns_service(kADBSecurePairingServiceRefIndex, port);
+        auto service_name = readDeviceIdentifierGuid();
+        if (service_name.empty()) {
+            // Is there any benefit to a placeholder service name?
+            return;
+        }
+        register_mdns_service(kADBSecurePairingServiceRefIndex, port, service_name);
     }).detach();
 }
 
@@ -166,7 +191,12 @@ bool is_adb_secure_pairing_service_registered() {
 
 void register_adb_secure_connect_service(int port) {
     std::thread([port]() {
-        register_mdns_service(kADBSecureConnectServiceRefIndex, port);
+        auto service_name = readDeviceIdentifierGuid();
+        if (service_name.empty()) {
+            // Is there any benefit to a placeholder service name?
+            return;
+        }
+        register_mdns_service(kADBSecureConnectServiceRefIndex, port, service_name);
     }).detach();
 }
 
