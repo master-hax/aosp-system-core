@@ -52,6 +52,7 @@
 #include "adb_listeners.h"
 #include "adb_unique_fd.h"
 #include "adb_utils.h"
+#include "adb_wifi.h"
 #include "sysdeps/chrono.h"
 #include "transport.h"
 
@@ -299,7 +300,9 @@ static void handle_new_connection(atransport* t, apacket* p) {
 #if ADB_HOST
     handle_online(t);
 #else
-    if (!auth_required) {
+    if (t->is_secure_wifi) {
+        adbd_wifi_secure_connect(t);
+    } else if (!auth_required) {
         LOG(INFO) << "authentication not required";
         handle_online(t);
         send_connect(t);

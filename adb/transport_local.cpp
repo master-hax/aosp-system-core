@@ -46,6 +46,7 @@
 #include "adb_io.h"
 #include "adb_unique_fd.h"
 #include "adb_utils.h"
+#include "adb_wifi.h"
 #include "socket_spec.h"
 #include "sysdeps/chrono.h"
 
@@ -78,6 +79,24 @@ static void adb_local_transport_max_port_env_override() {
 // TODO: weak_ptr?
 static auto& local_transports GUARDED_BY(local_transports_lock) =
     *new std::unordered_map<int, atransport*>();
+
+static auto& secure_wifi_transports_lock = *new std::recursive_mutex();
+// Keep a map from secure wifi guids to transport id.
+static auto& secure_wifi_transports = *new std::unordered_map<std::string, TransportId>();
+
+static TransportId find_secure_wifi_transport_id_by_guid_locked(const std::string& guid) {
+    auto it = secure_wifi_transports.find(guid);
+    if (it == secure_wifi_transports.end()) {
+        return 0;
+    }
+    return it->second;
+}
+
+TransportId find_secure_wifi_transport_id_by_guid(const std::string& guid) {
+    std::lock_guard<std::recursive_mutex> lock(secure_wifi_transports_lock);
+    return find_secure_wifi_transport_id_by_guid_locked(guid);
+}
+
 #endif /* ADB_HOST */
 
 bool local_connect(int port) {
@@ -90,6 +109,7 @@ std::tuple<unique_fd, int, std::string> tcp_connect(const std::string& address,
     unique_fd fd;
     int port = DEFAULT_ADB_LOCAL_TRANSPORT_PORT;
     std::string serial;
+    LOG(INFO) << "address=[" << address << "]";
     std::string prefix_addr = address.starts_with("vsock:") ? address : "tcp:" + address;
     if (socket_spec_connect(&fd, prefix_addr, &port, &serial, response)) {
         close_on_exec(fd);
@@ -116,6 +136,18 @@ void connect_device(const std::string& address, std::string* response) {
         return;
     }
     auto reconnect = [address](atransport* t) {
+#if ADB_HOST
+        std::lock_guard<std::recursive_mutex> lock(secure_wifi_transports_lock);
+        if (t->is_secure_wifi) {
+            auto id = find_secure_wifi_transport_id_by_guid_locked(t->serial);
+            if (id != 0 && id != t->id) {
+                // A new secure wifi connection took over. Abort this
+                // connection.
+                return ReconnectResult::Abort;
+            }
+        }
+#endif
+
         std::string response;
         unique_fd fd;
         int port;
@@ -129,8 +161,8 @@ void connect_device(const std::string& address, std::string* response) {
         // invoked if the atransport* has already been setup. This eventually
         // calls atransport->SetConnection() with a newly created Connection*
         // that will in turn send the CNXN packet.
-        return init_socket_transport(t, std::move(fd), port, 0) >= 0 ? ReconnectResult::Success
-                                                                     : ReconnectResult::Retry;
+        return init_socket_transport(t, std::move(fd), port, 0, true) >= 0 ? ReconnectResult::Success
+                                                                           : ReconnectResult::Retry;
     };
 
     int error;
@@ -323,7 +355,8 @@ void local_init(int port) {
 #if ADB_HOST
 struct EmulatorConnection : public FdConnection {
     EmulatorConnection(unique_fd fd, int local_port)
-        : FdConnection(std::move(fd)), local_port_(local_port) {}
+        : FdConnection(std::move(fd), local_port == ADB_WIFI_CONNECT_PORT),
+          local_port_(local_port) {}
 
     ~EmulatorConnection() {
         VLOG(TRANSPORT) << "remote_close, local_port = " << local_port_;
@@ -368,11 +401,17 @@ std::string getEmulatorSerialString(int console_port) {
     return android::base::StringPrintf("emulator-%d", console_port);
 }
 
-int init_socket_transport(atransport* t, unique_fd fd, int adb_port, int local) {
+int init_socket_transport(atransport* t,
+                          unique_fd fd,
+                          int adb_port,
+                          int local,
+                          bool is_reconnect) {
     int fail = 0;
+    // Only this port will use TLS, to not disturb anyone else that depends on
+    // using tcp unencrypted (emulator, for example).
+    bool use_tls = (adb_port == ADB_WIFI_CONNECT_PORT);
 
     t->type = kTransportLocal;
-
 #if ADB_HOST
     // Emulator connection.
     if (local) {
@@ -393,7 +432,52 @@ int init_socket_transport(atransport* t, unique_fd fd, int adb_port, int local) 
 #endif
 
     // Regular tcp connection.
-    auto fd_connection = std::make_unique<FdConnection>(std::move(fd));
-    t->SetConnection(std::make_unique<BlockingConnectionAdapter>(std::move(fd_connection)));
+    auto fd_connection =
+            std::make_unique<FdConnection>(std::move(fd), use_tls);
+    if (!use_tls) {
+        t->SetConnection(std::make_unique<BlockingConnectionAdapter>(std::move(fd_connection)));
+    } else if (fd_connection->doTlsHandshake(t)) {
+#if ADB_HOST
+        {
+            std::lock_guard<std::recursive_mutex> lock(secure_wifi_transports_lock);
+            auto id = find_secure_wifi_transport_id_by_guid_locked(t->serial);
+            if (is_reconnect) {
+                if (t->id != id) {
+                    // This was a reconnect attempt that succeeded, but it looks
+                    // like another connection took over. Let's abort this
+                    // connection.
+                    D("New secure wifi connection detected (id=%lu). Not connecting to old connection (id=%lu).",
+                      id, t->id);
+                    return -1;
+                }
+            } else {
+                // Blow up any previous connection to this guid
+                if (id != 0) {
+                    std::string err;
+                    auto* existing = acquire_one_transport(kTransportAny, nullptr, id, nullptr, &err, true);
+                    if (existing != nullptr) {
+                        // Force close the connection, because it may be in a
+                        // state of successful reconnection, but unstarted
+                        // connection.
+                        existing->Kick();
+                        auto* conn = reinterpret_cast<BlockingConnectionAdapter*>(existing->connection().get());
+                        conn->underlying_->Close();
+                    }
+                }
+                // Save the new connection
+                D("Adding new secure wifi connection (serial=%s, id=%lu)", t->serial.c_str(), t->id);
+                secure_wifi_transports[t->serial] = t->id;
+            }
+        }
+#endif
+        LOG(INFO) << "Handshake succeeded [serial=" << t->serial << "]";
+        // We can bypass authentication if using TLS, since only known hosts
+        // will be able to communicate anyways.
+        t->is_secure_wifi = true;
+        t->SetConnection(std::make_unique<BlockingConnectionAdapter>(std::move(fd_connection)));
+    } else {
+        D("tcp transport failed to do TLS handshake");
+        fail = -1;
+    }
     return fail;
 }

@@ -51,6 +51,7 @@
 #include "adb_auth.h"
 #include "adb_listeners.h"
 #include "adb_utils.h"
+#include "adb_wifi.h"
 #include "transport.h"
 
 #include "mdns.h"
@@ -183,6 +184,7 @@ static void setup_port(int port) {
     LOG(INFO) << "adbd listening on port " << port;
     local_init(port);
 #if defined(__ANDROID__)
+    LOG(INFO) << "Setup mdns on port= " << port;
     setup_mdns(port);
 #endif
 }
@@ -204,6 +206,7 @@ int adbd_main(int server_port) {
     // We need to call this even if auth isn't enabled because the file
     // descriptor will always be open.
     adbd_cloexec_auth_socket();
+    adbdwifi_cloexec_auth_socket();
 
 #if defined(__ANDROID_RECOVERY__)
     if (is_device_unlocked() || __android_log_is_debuggable()) {
@@ -234,6 +237,9 @@ int adbd_main(int server_port) {
 
     // adbd_auth_init will spawn a thread, so we need to defer it until after selinux transitions.
     adbd_auth_init();
+    // adbd_wifi_init will spawn a thread, so we need to defer it until after
+    // selinux transitions.
+    adbd_wifi_init();
 
     bool is_usb = false;
 
@@ -290,6 +296,7 @@ int main(int argc, char** argv) {
             {"root_seclabel", required_argument, nullptr, 's'},
             {"device_banner", required_argument, nullptr, 'b'},
             {"version", no_argument, nullptr, 'v'},
+            {"logpostfsdata", no_argument, nullptr, 'l'},
         };
 
         int option_index = 0;
@@ -310,6 +317,9 @@ int main(int argc, char** argv) {
             case 'v':
                 printf("Android Debug Bridge Daemon version %d.%d.%d\n", ADB_VERSION_MAJOR,
                        ADB_VERSION_MINOR, ADB_SERVER_VERSION);
+                return 0;
+            case 'l':
+                LOG(ERROR) << "post-fs-data triggered";
                 return 0;
             default:
                 // getopt already prints "adbd: invalid option -- %c" for us.
