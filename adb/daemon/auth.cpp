@@ -39,6 +39,7 @@
 #include "adb.h"
 #include "adb_auth.h"
 #include "adb_io.h"
+#include "adb_wifi.h"
 #include "fdevent/fdevent.h"
 #include "transport.h"
 #include "types.h"
@@ -163,7 +164,11 @@ void adbd_auth_init(void) {
     AdbdAuthCallbacks cb;
     cb.version = 1;
     cb.callbacks.v1.key_authorized = adbd_auth_key_authorized;
+    cb.callbacks.v1.disconnect_wifi_device = adbd_wifi_disconnect_device;
+    cb.callbacks.v1.disable_wifi_debugging = adbd_wifi_disable_debugging;
+    cb.callbacks.v1.enable_wifi_debugging = adbd_wifi_enable_debugging;
     auth_ctx = adbd_auth_new(&cb);
+    adbd_wifi_init(auth_ctx);
     std::thread([]() {
         adb_thread_setname("adbd auth");
         adbd_auth_run(auth_ctx);
