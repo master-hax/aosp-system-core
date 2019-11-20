@@ -41,6 +41,7 @@
 #include <android-base/stringprintf.h>
 #include <android-base/strings.h>
 #include <android-base/thread_annotations.h>
+#include <adbwifi/crypto/key_store.h>
 
 #include <diagnose_usb.h>
 
@@ -52,6 +53,8 @@
 #include "fdevent/fdevent.h"
 #include "sysdeps/chrono.h"
 
+using adbwifi::crypto::KeyStore;
+using adbwifi::ssl::TlsConnection;
 using android::base::ScopedLockAssertion;
 
 static void remove_transport(atransport* transport);
@@ -387,8 +390,35 @@ bool BlockingConnectionAdapter::Write(std::unique_ptr<apacket> packet) {
     return true;
 }
 
+bool FdConnection::DispatchRead(void* buf, size_t len) {
+    if (use_tls_) {
+        if (len == 0) {
+            return true;
+        }
+        auto data = tls_->readFully(len);
+        if (data.empty()) {
+            return false;
+        }
+        memcpy(buf, data.data(), len);
+        return true;
+    } else {
+        return ReadFdExactly(fd_.get(), buf, len);
+    }
+}
+
+bool FdConnection::DispatchWrite(const void* buf, size_t len) {
+    if (use_tls_) {
+        if (len == 0) {
+            return true;
+        }
+        return tls_->writeFully(std::string_view(reinterpret_cast<const char*>(buf), len));
+    } else {
+        return WriteFdExactly(fd_.get(), buf, len);
+    }
+}
+
 bool FdConnection::Read(apacket* packet) {
-    if (!ReadFdExactly(fd_.get(), &packet->msg, sizeof(amessage))) {
+    if (!DispatchRead(&packet->msg, sizeof(amessage))) {
         D("remote local: read terminated (message)");
         return false;
     }
@@ -400,7 +430,7 @@ bool FdConnection::Read(apacket* packet) {
 
     packet->payload.resize(packet->msg.data_length);
 
-    if (!ReadFdExactly(fd_.get(), &packet->payload[0], packet->payload.size())) {
+    if (!DispatchRead(&packet->payload[0], packet->payload.size())) {
         D("remote local: terminated (data)");
         return false;
     }
@@ -409,19 +439,72 @@ bool FdConnection::Read(apacket* packet) {
 }
 
 bool FdConnection::Write(apacket* packet) {
-    if (!WriteFdExactly(fd_.get(), &packet->msg, sizeof(packet->msg))) {
+    if (!DispatchWrite(&packet->msg, sizeof(packet->msg))) {
         D("remote local: write terminated");
         return false;
     }
 
     if (packet->msg.data_length) {
-        if (!WriteFdExactly(fd_.get(), &packet->payload[0], packet->msg.data_length)) {
+        if (!DispatchWrite(&packet->payload[0], packet->msg.data_length)) {
             D("remote local: write terminated");
             return false;
         }
     }
 
     return true;
+}
+
+bool FdConnection::doTlsHandshake() {
+    std::string keypath;
+#if ADB_HOST
+    keypath = adb_get_android_dir_path();
+#else
+    keypath = "/data/misc/adb";
+#endif
+
+    auto key_store = KeyStore::create(keypath);
+    if (key_store == nullptr) {
+        LOG(ERROR) << "Unable to create keystore for TLS handshake.";
+        return false;
+    }
+
+    // Create the TLS context
+    auto system_info = key_store->getDeviceInfo();
+    if (!system_info.has_value()) {
+        LOG(ERROR) << "Unable to obtain system keys for tls connection.";
+        return false;
+    }
+    auto [sys_guid, sys_name, sys_cert, sys_priv_key] = *system_info;
+#if ADB_HOST
+    tls_ = TlsConnection::create(TlsConnection::Role::Client,
+                                 sys_cert,
+                                 sys_priv_key);
+#else
+    tls_ = TlsConnection::create(TlsConnection::Role::Server,
+                                 sys_cert,
+                                 sys_priv_key);
+#endif
+    if (tls_ == nullptr) {
+        LOG(ERROR) << "Unable to create TLS context";
+        return false;
+    }
+
+    // Register the known certificates
+    LOG(INFO) << "Registering " << key_store->size() << " known certificates";
+    for (size_t i = 0; i < key_store->size(); ++i) {
+        auto apair = (*key_store)[i];
+        if (!apair.second.has_value()) {
+            LOG(WARNING) << "Got empty key in keystore.";
+            continue;
+        }
+        auto [guid, name, cert] = *(apair.second);
+        if (!tls_->addTrustedCertificate(cert)) {
+            LOG(ERROR) << "Unable to add trusted peer certificate";
+            continue;
+        }
+    }
+
+    return tls_->doHandshake(fd_.get());
 }
 
 void FdConnection::Close() {

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright (C) 2019 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,17 +14,23 @@
  * limitations under the License.
  */
 
-#ifndef _DAEMON_MDNS_H_
-#define _DAEMON_MDNS_H_
+#pragma once
 
-void setup_mdns(int port);
+#include <string>
 
-void register_adb_secure_pairing_service(int port);
-void unregister_adb_secure_pairing_service();
-bool is_adb_secure_pairing_service_registered();
+#include "adb.h"
 
-void register_adb_secure_connect_service(int port);
-void unregister_adb_secure_connect_service();
-bool is_adb_secure_connect_service_registered();
+#define ADB_WIFI_CONNECT_PORT 6654
 
-#endif  // _DAEMON_MDNS_H_
+#if ADB_HOST
+
+void adb_wifi_init(void);
+void adb_wifi_pair_device(const std::string& host,
+                          const std::string& password,
+                          std::string& response);
+
+#else // !ADB_HOST
+
+void adbd_wifi_init(void);
+
+#endif

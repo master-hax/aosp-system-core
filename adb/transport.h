@@ -34,6 +34,7 @@
 
 #include <android-base/macros.h>
 #include <android-base/thread_annotations.h>
+#include <adbwifi/ssl/tls_connection.h>
 #include <openssl/rsa.h>
 
 #include "adb.h"
@@ -162,7 +163,9 @@ struct BlockingConnectionAdapter : public Connection {
 };
 
 struct FdConnection : public BlockingConnection {
-    explicit FdConnection(unique_fd fd) : fd_(std::move(fd)) {}
+    explicit FdConnection(unique_fd fd, bool use_tls) :
+        fd_(std::move(fd)),
+        use_tls_(use_tls) { }
 
     bool Read(apacket* packet) override final;
     bool Write(apacket* packet) override final;
@@ -170,8 +173,14 @@ struct FdConnection : public BlockingConnection {
     void Close() override;
     virtual void Reset() override final { Close(); }
 
+    bool doTlsHandshake();
+
   private:
+    bool DispatchRead(void* buf, size_t len);
+    bool DispatchWrite(const void* buf, size_t len);
     unique_fd fd_;
+    bool use_tls_;
+    std::unique_ptr<adbwifi::ssl::TlsConnection> tls_;
 };
 
 struct UsbConnection : public BlockingConnection {
