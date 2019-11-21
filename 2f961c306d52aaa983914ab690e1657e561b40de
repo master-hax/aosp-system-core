@@ -2,6 +2,167 @@
   "comments": [
     {
       "key": {
+        "uuid": "8aea6f2c_30f9c896",
+        "filename": "logcat/logcat.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 294,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2019-11-21T19:33:07Z",
+      "side": 1,
+      "message": "Nit: End with \".\" for consistency (there are a couple more lines like it below).",
+      "range": {
+        "startLine": 294,
+        "startChar": 64,
+        "endLine": 294,
+        "endChar": 65
+      },
+      "revId": "2f961c306d52aaa983914ab690e1657e561b40de",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "01bdd364_6c2a748d",
+        "filename": "logcat/logcat.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 297,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2019-11-21T19:33:07Z",
+      "side": 1,
+      "message": "\"Fileset\" and \"persistent log\" are unknown terms to me in this context. Perhaps a full explanation doesn\u0027t belong here, but I can\u0027t find them on SAC either: https://developer.android.com/studio/command-line/logcat",
+      "range": {
+        "startLine": 296,
+        "startChar": 60,
+        "endLine": 297,
+        "endChar": 74
+      },
+      "revId": "2f961c306d52aaa983914ab690e1657e561b40de",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4d809525_63e3486f",
+        "filename": "logcat/logcat.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 299,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2019-11-21T19:33:07Z",
+      "side": 1,
+      "message": "Nit: Delete \"s\".",
+      "range": {
+        "startLine": 299,
+        "startChar": 40,
+        "endLine": 299,
+        "endChar": 41
+      },
+      "revId": "2f961c306d52aaa983914ab690e1657e561b40de",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "40534fdf_8559467c",
+        "filename": "logcat/logcat.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 302,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2019-11-21T19:33:07Z",
+      "side": 1,
+      "message": "This doesn\u0027t make much sense to a mere mortal like myself. But perhaps it doesn\u0027t have to.",
+      "range": {
+        "startLine": 300,
+        "startChar": 30,
+        "endLine": 302,
+        "endChar": 54
+      },
+      "revId": "2f961c306d52aaa983914ab690e1657e561b40de",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "89b952cd_763a31c5",
+        "filename": "logcat/logcat.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 307,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2019-11-21T19:33:07Z",
+      "side": 1,
+      "message": "I don\u0027t understand \"individually flagged\". Can it say just \"Modifying adverbs\"?",
+      "range": {
+        "startLine": 307,
+        "startChar": 30,
+        "endLine": 307,
+        "endChar": 68
+      },
+      "revId": "2f961c306d52aaa983914ab690e1657e561b40de",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "141a064e_c47a2b06",
+        "filename": "logcat/logcat.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 322,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2019-11-21T19:33:07Z",
+      "side": 1,
+      "message": "Suggest adding \"on device\", to spell it out a bit for users who aren\u0027t familiar with the implementation.",
+      "range": {
+        "startLine": 322,
+        "startChar": 45,
+        "endLine": 322,
+        "endChar": 46
+      },
+      "revId": "2f961c306d52aaa983914ab690e1657e561b40de",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "813cc863_15a200ae",
+        "filename": "logcat/logcat.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 341,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2019-11-21T19:33:07Z",
+      "side": 1,
+      "message": "It would be useful to mention which dialect of regexps this uses, e.g. RE2.",
+      "range": {
+        "startLine": 341,
+        "startChar": 30,
+        "endLine": 341,
+        "endChar": 50
+      },
+      "revId": "2f961c306d52aaa983914ab690e1657e561b40de",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "b6bb690d_6ab1bed9",
         "filename": "logcat/logcat.cpp",
         "patchSetId": 1
@@ -34,6 +195,29 @@
       "revId": "2f961c306d52aaa983914ab690e1657e561b40de",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "535bb90e_d8948702",
+        "filename": "logcat/logcat.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1166,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2019-11-21T19:33:07Z",
+      "side": 1,
+      "message": "Suggest somewhat more succinctly: \"If you have enabled significant logging, look into using the -G option to increase log buffer sizes.\"",
+      "range": {
+        "startLine": 1164,
+        "startChar": 0,
+        "endLine": 1166,
+        "endChar": 59
+      },
+      "revId": "2f961c306d52aaa983914ab690e1657e561b40de",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
