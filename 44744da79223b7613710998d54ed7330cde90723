@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d2271265_1cf28b44",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-11-21T22:17:47Z",
+      "side": 1,
+      "message": "This will work for things like /data that are not in dm-linear, but I don\u0027t think it will work for things mounted through dm-linear like /system on blueline.  \n\nWe\u0027d want to return it\u0027s \u0027logical\u0027 fstab entry, right?  That means we\u0027d need to check the fstab at each iteration of the the dm recursion, right?  Since /system is mounted on dm-verity, is mounted on dm-linear (which we want to detect), is mounted on the underlying super partition.\n\nWe should add a test case that it can resolve \"/system\" as well to detect this case.",
+      "revId": "44744da79223b7613710998d54ed7330cde90723",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
