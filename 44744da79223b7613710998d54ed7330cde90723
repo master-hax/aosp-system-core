@@ -16,6 +16,24 @@
       "revId": "44744da79223b7613710998d54ed7330cde90723",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4b20feb4_4bdea3c9",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1432579
+      },
+      "writtenOn": "2019-11-21T23:24:37Z",
+      "side": 1,
+      "message": "I\u0027m not sure I have a good solution for /system, apart from special casing. IIUC on blueline /system is not even mounted directly, but instead / is mounted on a dm device.\n\nGiven that use case I\u0027m implementing with this CL is \"get additional metadata about mount point (e.g. whenever it\u0027s support checkpointing), not available in /proc/mounts\", I am erring towards not supporting logical partitions, and renaming this method to GetMountedEntryForUserdata. WDYT?\n\nIf you think, that there is value in having a generic version, I\u0027m happy to take another shot in implementing it in one of the follow up CLs, in order not to block my userspace reboot work (this one is a prerequisite to support it on devices with ext4 userdata).",
+      "parentUuid": "d2271265_1cf28b44",
+      "revId": "44744da79223b7613710998d54ed7330cde90723",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
