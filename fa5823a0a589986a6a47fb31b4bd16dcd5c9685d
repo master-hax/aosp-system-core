@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2564bbfe_8a66cf79",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1233,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-11-21T00:06:15Z",
+      "side": 1,
+      "message": "We can pretty reliably ignore the errno for readdir() too, and make this loop:\n\nstruct dirent* entry;\nwhile ((entry \u003d readdir(dirp.get())) !\u003d nullptr) {\n\n\n}\n\nlike the code that enh@ referenced.",
+      "range": {
+        "startLine": 1224,
+        "startChar": 4,
+        "endLine": 1233,
+        "endChar": 0
+      },
+      "revId": "fa5823a0a589986a6a47fb31b4bd16dcd5c9685d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "53686627_fe468f4f",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1240,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-11-21T00:06:15Z",
+      "side": 1,
+      "message": "nullptr",
+      "range": {
+        "startLine": 1240,
+        "startChar": 33,
+        "endLine": 1240,
+        "endChar": 37
+      },
+      "revId": "fa5823a0a589986a6a47fb31b4bd16dcd5c9685d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
