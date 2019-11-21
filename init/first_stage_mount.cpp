@@ -56,7 +56,6 @@ using android::fs_mgr::ReadDefaultFstab;
 using android::fs_mgr::ReadFstabFromDt;
 using android::fs_mgr::SkipMountingPartitions;
 using android::fs_mgr::TransformFstabForDsu;
-using android::init::WriteFile;
 using android::snapshot::SnapshotManager;
 
 using namespace std::literals;
@@ -109,6 +108,7 @@ class FirstStageMount {
     std::string super_partition_name_;
     std::unique_ptr<DeviceHandler> device_handler_;
     UeventListener uevent_listener_;
+    std::unique_ptr<fs_mgr::LpMetadata> metadata_;
 };
 
 class FirstStageMountVBootV1 : public FirstStageMount {
@@ -378,6 +378,7 @@ bool FirstStageMount::CreateLogicalPartitions() {
             if (!InitRequiredDevices({"userdata"})) {
                 return false;
             }
+            metadata_ = android::fs_mgr::ReadCurrentMetadata(lp_metadata_partition_);
             return sm->CreateLogicalAndSnapshotPartitions(lp_metadata_partition_);
         }
     }
@@ -603,26 +604,35 @@ void FirstStageMount::UseGsiIfPresent() {
         LOG(INFO) << "GSI " << error << ", proceeding with normal boot";
         return;
     }
-
-    auto metadata = android::fs_mgr::ReadFromImageFile(gsi::kDsuLpMetadataFile);
+    auto&& metadata = metadata_;
     if (!metadata) {
-        LOG(ERROR) << "GSI partition layout could not be read";
-        return;
-    }
+        std::string active_dsu;
+        if (!gsi::GetActiveDsu(&active_dsu)) {
+            LOG(ERROR) << "Failed to GetActiveDsu";
+            return;
+        }
+        LOG(INFO) << "DSU slot:" << active_dsu;
+        metadata = android::fs_mgr::ReadFromImageFile(gsi::DsuLpMetadataFile(active_dsu));
+        if (!metadata) {
+            LOG(ERROR) << "GSI partition layout could not be read";
+            return;
+        }
 
-    if (!InitDmLinearBackingDevices(*metadata.get())) {
-        return;
-    }
+        if (!InitDmLinearBackingDevices(*metadata.get())) {
+            return;
+        }
 
-    // Find the super name. PartitionOpener will ensure this translates to the
-    // correct block device path.
-    auto super = GetMetadataSuperBlockDevice(*metadata.get());
-    auto super_name = android::fs_mgr::GetBlockDevicePartitionName(*super);
-    if (!android::fs_mgr::CreateLogicalPartitions(*metadata.get(), super_name)) {
-        LOG(ERROR) << "GSI partition layout could not be instantiated";
-        return;
-    }
+        // Find the super name. PartitionOpener will ensure this translates to the
+        // correct block device path.
+        auto super = GetMetadataSuperBlockDevice(*metadata.get());
+        auto super_name = android::fs_mgr::GetBlockDevicePartitionName(*super);
+        if (!android::fs_mgr::CreateLogicalPartitions(*metadata.get(), super_name)) {
+            LOG(ERROR) << "GSI partition layout could not be instantiated";
+            return;
+        }
 
+        gsi_not_on_userdata_ = (super_name != "userdata");
+    }
     if (!android::gsi::MarkSystemAsGsi()) {
         PLOG(ERROR) << "GSI indicator file could not be written";
         return;
@@ -638,7 +648,6 @@ void FirstStageMount::UseGsiIfPresent() {
     // Publish the logical partition names for TransformFstabForDsu
     WriteFile(gsi::kGsiLpNamesFile, lp_names);
     TransformFstabForDsu(&fstab_, dsu_partitions);
-    gsi_not_on_userdata_ = (super_name != "userdata");
 }
 
 bool FirstStageMountVBootV1::GetDmVerityDevices(std::set<std::string>* devices) {

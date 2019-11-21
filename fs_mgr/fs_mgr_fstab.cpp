@@ -582,7 +582,8 @@ bool EraseFstabEntry(Fstab* fstab, const std::string& mount_point) {
 
 void TransformFstabForDsu(Fstab* fstab, const std::vector<std::string>& dsu_partitions) {
     static constexpr char kGsiKeys[] =
-            "/avb/q-gsi.avbpubkey:/avb/r-gsi.avbpubkey:/avb/s-gsi.avbpubkey";
+            "/avb/q-gsi.avbpubkey:/avb/r-gsi.avbpubkey:/avb/s-gsi.avbpubkey:"
+            "/avb/oem1.avbpubkey:/avb/oem2.avbpubkey:/avb/oem3.avbpubkey";
     // Convert userdata
     // Inherit fstab properties for userdata.
     FstabEntry userdata;
@@ -633,11 +634,8 @@ void TransformFstabForDsu(Fstab* fstab, const std::vector<std::string>& dsu_part
             entry.fs_mgr_flags.wait = true;
             entry.fs_mgr_flags.logical = true;
             entry.fs_mgr_flags.first_stage_mount = true;
-            // Use the system key which may be in the vbmeta or vbmeta_system
-            // TODO: b/141284191
+            // Use the system key which may be in the vbmeta or
             entry.vbmeta_partition = "vbmeta";
-            fstab->emplace_back(entry);
-            entry.vbmeta_partition = "vbmeta_system";
             fstab->emplace_back(entry);
         } else {
             // If the corresponding partition exists, transform all its Fstab
