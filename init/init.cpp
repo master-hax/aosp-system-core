@@ -583,7 +583,14 @@ void HandleKeychord(const std::vector<int>& keycodes) {
 
 static void UmountDebugRamdisk() {
     if (umount("/debug_ramdisk") != 0) {
-        LOG(ERROR) << "Failed to umount /debug_ramdisk";
+        PLOG(ERROR) << "Failed to umount /debug_ramdisk";
+    }
+}
+
+static void MountLinkerConfig() {
+    if (mount("tmpfs", "/system/etc/linkerconfig", "tmpfs", MS_NOEXEC | MS_NOSUID | MS_NODEV,
+              "mode=0755,uid=0,gid=0")) {
+        PLOG(ERROR) << "Failed to mount linker config space";
     }
 }
 
@@ -733,6 +740,9 @@ int SecondStageMain(int argc, char** argv) {
     // Clean up our environment.
     unsetenv("INIT_AVB_VERSION");
     unsetenv("INIT_FORCE_DEBUGGABLE");
+
+    // Mount space for linker configuration
+    MountLinkerConfig();
 
     // Now set up SELinux for second stage.
     SelinuxSetupKernelLogging();
