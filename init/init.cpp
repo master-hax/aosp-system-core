@@ -583,7 +583,7 @@ void HandleKeychord(const std::vector<int>& keycodes) {
 
 static void UmountDebugRamdisk() {
     if (umount("/debug_ramdisk") != 0) {
-        LOG(ERROR) << "Failed to umount /debug_ramdisk";
+        PLOG(ERROR) << "Failed to umount /debug_ramdisk";
     }
 }
 
