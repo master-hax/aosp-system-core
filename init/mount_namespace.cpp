@@ -131,6 +131,7 @@ bool SetupMountNamespaces() {
     // the bootstrap and default mount namespaces. The processes running with
     // the bootstrap namespace get APEXes from the read-only partition.
     if (!(MakePrivate("/apex"))) return false;
+    if (!(MakePrivate("/system/etc/linkerconfig"))) return false;
 
     bootstrap_ns_fd.reset(OpenMountNamespace());
     bootstrap_ns_id = GetMountNamespaceId();
