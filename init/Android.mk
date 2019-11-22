@@ -81,6 +81,7 @@ LOCAL_POST_INSTALL_CMD := mkdir -p \
     $(TARGET_RAMDISK_OUT)/mnt \
     $(TARGET_RAMDISK_OUT)/proc \
     $(TARGET_RAMDISK_OUT)/sys \
+    $(TARGET_RAMDISK_OUT)/linkerconfig \
 
 LOCAL_STATIC_LIBRARIES := \
     libc++fs \
