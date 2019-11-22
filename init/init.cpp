@@ -587,6 +587,13 @@ static void UmountDebugRamdisk() {
     }
 }
 
+static void MountLinkerConfig() {
+    if (mount("tmpfs", "/system/etc/linkerconfig", "tmpfs", MS_NOEXEC | MS_NOSUID | MS_NODEV,
+              "mode=0755,uid=0,gid=0")) {
+        LOG(ERROR) << "Failed to mount linker config space";
+    }
+}
+
 static void RecordStageBoottimes(const boot_clock::time_point& second_stage_start_time) {
     int64_t first_stage_start_time_ns = -1;
     if (auto first_stage_start_time_str = getenv(kEnvFirstStageStartedAt);
@@ -733,6 +740,9 @@ int SecondStageMain(int argc, char** argv) {
     // Clean up our environment.
     unsetenv("INIT_AVB_VERSION");
     unsetenv("INIT_FORCE_DEBUGGABLE");
+
+    // Mount space for linker configuration
+    MountLinkerConfig();
 
     // Now set up SELinux for second stage.
     SelinuxSetupKernelLogging();
