@@ -154,7 +154,7 @@ cc_library_static {
         "com.android.sysprop.apex",
         "com.android.sysprop.init",
     ],
-    header_libs: ["bootimg_headers"],
+    header_libs: ["bootimg_headers", "libatrace_headers"],
     proto: {
         type: "lite",
         export_proto_headers: true,
