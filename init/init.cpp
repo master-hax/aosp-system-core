@@ -51,6 +51,7 @@
 #include <processgroup/processgroup.h>
 #include <processgroup/setup.h>
 #include <selinux/android.h>
+#include <libatrace/atrace_shmem.h>
 
 #include "action_parser.h"
 #include "builtins.h"
@@ -129,6 +130,18 @@ Parser CreateServiceOnlyParser(ServiceList& service_list) {
     parser.AddSectionParser("service", std::make_unique<ServiceParser>(
                                                &service_list, subcontext.get(), std::nullopt));
     return parser;
+}
+
+static void CreateAtraceShmem() {
+  android::base::unique_fd fd(TEMP_FAILURE_RETRY(
+        OpenFile("/dev/__atrace_shmem__", O_WRONLY | O_CREAT | O_TRUNC | O_CLOEXEC, 0755)));
+  if (fd == -1) {
+    PLOG(ERROR) << "failed to create /dev/__atrace_shmem__";
+    return;
+  }
+  if (ftruncate(fd, sizeof(android::atrace::AtraceShmemPage)) == -1) {
+      PLOG(ERROR) << "failed to truncate /dev/__atrace_shmem__";
+  }
 }
 
 static void LoadBootScripts(ActionManager& action_manager, ServiceList& service_list) {
@@ -446,7 +459,7 @@ static void process_kernel_cmdline() {
 }
 
 static Result<void> property_enable_triggers_action(const BuiltinArguments& args) {
-    /* Enable property triggers. */
+
     property_triggers_enabled = 1;
     return {};
 }
@@ -738,6 +751,8 @@ int SecondStageMain(int argc, char** argv) {
     SelinuxSetupKernelLogging();
     SelabelInitialize();
     SelinuxRestoreContext();
+
+    CreateAtraceShmem();
 
     Epoll epoll;
     if (auto result = epoll.Open(); !result) {
