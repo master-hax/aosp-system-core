@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1b436363_ac84c67b",
+        "filename": "trusty/utils/rpmb_dev/rpmb_dev.rc",
+        "patchSetId": 5
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1000205
+      },
+      "writtenOn": "2019-11-25T21:33:32Z",
+      "side": 1,
+      "message": "can you keep everything under /data/vendor/ss so we don\u0027t pollute the /data/vendor directory?",
+      "revId": "5e083b831f9dd26f0c069626361249439f73a0d7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
