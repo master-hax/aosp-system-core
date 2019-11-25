@@ -174,7 +174,7 @@ Result<std::string> ReadFile(const std::string& path) {
     return content;
 }
 
-static int OpenFile(const std::string& path, int flags, mode_t mode) {
+int OpenFile(const std::string& path, int flags, mode_t mode) {
     std::string secontext;
     if (SelabelLookupFileContext(path, mode, &secontext) && !secontext.empty()) {
         setfscreatecon(secontext.c_str());

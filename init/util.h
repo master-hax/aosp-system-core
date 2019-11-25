@@ -37,6 +37,7 @@ static const char kColdBootDoneProp[] = "ro.cold_boot_done";
 Result<int> CreateSocket(const std::string& name, int type, bool passcred, mode_t perm, uid_t uid,
                          gid_t gid, const std::string& socketcon);
 
+int OpenFile(const std::string& path, int flags, mode_t mode);
 Result<std::string> ReadFile(const std::string& path);
 Result<void> WriteFile(const std::string& path, const std::string& content);
 
