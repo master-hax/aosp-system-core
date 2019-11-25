@@ -1,0 +1,5 @@
+cc_library_headers {
+  name: "atrace_headers",
+  export_include_dirs: ["include"],
+  recovery_available: true,
+}
