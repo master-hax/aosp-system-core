@@ -108,9 +108,10 @@ done:
     atomic_store_explicit(&atrace_is_ready, true, memory_order_release);
 }
 
-void atrace_setup()
+void atrace_seq_number_changed(uint32_t, uint32_t seq_no)
 {
     pthread_once(&atrace_once_control, atrace_init_once);
+    atomic_store_explicit(&last_sequence_number, seq_no, memory_order_relaxed);
 }
 
 static inline uint64_t gettime(clockid_t clk_id)

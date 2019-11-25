@@ -18,8 +18,11 @@
 
 atomic_bool             atrace_is_ready      = ATOMIC_VAR_INIT(true);
 int                     atrace_marker_fd     = -1;
-uint64_t                atrace_enabled_tags  = 0;
+_Atomic(uint64_t)       atrace_enabled_tags{0};
+_Atomic(uint32_t)       last_sequence_number{0};
+AtraceShmemPage atrace_shmem = {};
 
+void atrace_seq_number_changed(uint32_t, uint32_t) {}
 void atrace_set_debuggable(bool /*debuggable*/) {}
 void atrace_set_tracing_enabled(bool /*enabled*/) {}
 void atrace_update_tags() { }

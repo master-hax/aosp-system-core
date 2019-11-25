@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+#include <sys/mman.h>
+
 #include <cutils/trace.h>
 
 #include "trace-dev.inc"
@@ -37,12 +39,38 @@ static void atrace_init_once()
     } else {
       atrace_enabled_tags = atrace_get_property();
     }
-    atomic_store_explicit(&atrace_is_ready, true, memory_order_release);
 }
 
+static void atrace_setup_shmem() {
+    pthread_once(&atrace_once_control, atrace_init_once);
+    int fd = open("/dev/__atrace_shmem__", O_RDONLY);
+    if (fd != -1) {
+        if (mmap(&atrace_shmem, sizeof(AtraceShmemPage),
+              PROT_READ, MAP_SHARED | MAP_FIXED, fd, 0) == MAP_FAILED) {
+            ALOGE("Error remapping atrace_shmem: %d.", errno);
+        }
+        close(fd);
+    } else {
+        ALOGE("Error opening /dev/__atrace_shmem__.");
+    }
+}
+
+void atrace_seq_number_changed(uint32_t prev_seq_no, uint32_t seq_no) {
+    // Someone raced us.
+    if (!last_sequence_number.compare_exchange_strong(prev_seq_no, seq_no))
+        return;
+    if (CC_UNLIKELY(prev_seq_no == 0))
+        atrace_setup_shmem();
+    atomic_load_explicit(&atrace_shmem.atrace_sequence_number, memory_order_acquire);
+    atrace_update_tags();
+}
+
+// This is only called by programs inlining old versions of the header.
+// This gets called on every atrace event because we permanentely set
+// atrace_is_ready to false, which causes this being called.
 void atrace_setup()
 {
-    pthread_once(&atrace_once_control, atrace_init_once);
+    atrace_init();
 }
 
 void atrace_begin_body(const char* name)

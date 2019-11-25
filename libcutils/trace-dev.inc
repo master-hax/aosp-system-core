@@ -43,10 +43,11 @@
 
 atomic_bool             atrace_is_ready      = ATOMIC_VAR_INIT(false);
 int                     atrace_marker_fd     = -1;
-uint64_t                atrace_enabled_tags  = ATRACE_TAG_NOT_READY;
-static bool             atrace_is_debuggable = false;
+_Atomic(uint64_t)       atrace_enabled_tags  = ATOMIC_VAR_INIT(ATRACE_TAG_NOT_READY);
+_Atomic(uint32_t)       last_sequence_number = ATOMIC_VAR_INIT(4294967295);
+static bool             atrace_is_debuggable = ATOMIC_VAR_INIT(false);
 static atomic_bool      atrace_is_enabled    = ATOMIC_VAR_INIT(true);
-static pthread_mutex_t  atrace_tags_mutex    = PTHREAD_MUTEX_INITIALIZER;
+alignas(4096) AtraceShmemPage atrace_shmem   = {};
 
 // Set whether this process is debuggable, which determines whether
 // application-level tracing is allowed when the ro.debuggable system property
@@ -61,19 +62,27 @@ void atrace_set_debuggable(bool debuggable)
 // values listed in the app_cmdlines property.
 static bool atrace_is_cmdline_match(const char* cmdline)
 {
-    int count = property_get_int32("debug.atrace.app_number", 0);
+    ptrdiff_t len = strlen(cmdline);
 
-    char buf[PROPERTY_KEY_MAX];
-    char value[PROPERTY_VALUE_MAX];
+    char* enabled_cmdlines = atrace_shmem.enabled_cmdlines;
+    const char* enabled_cmdlines_end = enabled_cmdlines + sizeof(atrace_shmem.enabled_cmdlines);
 
-    for (int i = 0; i < count; i++) {
-        snprintf(buf, sizeof(buf), "debug.atrace.app_%d", i);
-        property_get(buf, value, "");
-        if (strcmp(value, "*") == 0 || strcmp(value, cmdline) == 0) {
+    while (enabled_cmdlines < enabled_cmdlines_end) {
+        char* end = (char*)memchr(enabled_cmdlines, '\0', enabled_cmdlines_end - enabled_cmdlines);
+        if (end == NULL) {
+            return false;
+        }
+        if (end == enabled_cmdlines) {
+            return false;
+        }
+        if (end - enabled_cmdlines == 1 && *enabled_cmdlines == '*') {
             return true;
         }
+        if (end - enabled_cmdlines == len && strncmp(enabled_cmdlines, cmdline, len) == 0)  {
+            return true;
+        }
+        enabled_cmdlines = end + 1;
     }
-
     return false;
 }
 
@@ -106,20 +115,7 @@ static bool atrace_is_app_tracing_enabled()
 // Read the sysprop and return the value tags should be set to
 static uint64_t atrace_get_property()
 {
-    char value[PROPERTY_VALUE_MAX];
-    char *endptr;
-    uint64_t tags;
-
-    property_get("debug.atrace.tags.enableflags", value, "0");
-    errno = 0;
-    tags = strtoull(value, &endptr, 0);
-    if (value[0] == '\0' || *endptr != '\0') {
-        ALOGE("Error parsing trace property: Not a number: %s", value);
-        return 0;
-    } else if (errno == ERANGE || tags == ULLONG_MAX) {
-        ALOGE("Error parsing trace property: Number too large: %s", value);
-        return 0;
-    }
+    uint64_t tags = atrace_shmem.atrace_requested_tags;
 
     // Only set the "app" tag if this process was selected for app-level debug
     // tracing.
@@ -139,15 +135,11 @@ void atrace_update_tags()
     if (CC_UNLIKELY(atomic_load_explicit(&atrace_is_ready, memory_order_acquire))) {
         if (atomic_load_explicit(&atrace_is_enabled, memory_order_acquire)) {
             tags = atrace_get_property();
-            pthread_mutex_lock(&atrace_tags_mutex);
-            atrace_enabled_tags = tags;
-            pthread_mutex_unlock(&atrace_tags_mutex);
+            atomic_store_explicit(&atrace_enabled_tags, tags, memory_order_relaxed);
         } else {
             // Tracing is disabled for this process, so we simply don't
             // initialize the tags.
-            pthread_mutex_lock(&atrace_tags_mutex);
-            atrace_enabled_tags = ATRACE_TAG_NOT_READY;
-            pthread_mutex_unlock(&atrace_tags_mutex);
+            atomic_store_explicit(&atrace_enabled_tags, static_cast<uint64_t>(ATRACE_TAG_NOT_READY), memory_order_relaxed);
         }
     }
 }

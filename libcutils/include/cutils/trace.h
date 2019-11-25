@@ -26,6 +26,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#include <cutils/atrace_shmem.h>
 #include <cutils/compiler.h>
 
 __BEGIN_DECLS
@@ -118,6 +119,11 @@ void atrace_set_debuggable(bool debuggable);
 void atrace_set_tracing_enabled(bool enabled);
 
 /**
+ * Called when the sequence number is incremented.
+ */
+void atrace_seq_number_changed(uint32_t prev_seq_no, uint32_t seq_no);
+
+/**
  * Flag indicating whether setup has been completed, initialized to 0.
  * Nonzero indicates setup has completed.
  * Note: This does NOT indicate whether or not setup was successful.
@@ -129,7 +135,15 @@ extern atomic_bool atrace_is_ready;
  * A value of zero indicates setup has failed.
  * Any other nonzero value indicates setup has succeeded, and tracing is on.
  */
-extern uint64_t atrace_enabled_tags;
+extern _Atomic(uint64_t) atrace_enabled_tags;
+
+/**
+ * struct that is shared with other processes. This gets used by the atrace
+ * invocation to send data to this process.
+ */
+extern struct AtraceShmemPage atrace_shmem;
+
+extern _Atomic(uint32_t) last_sequence_number;
 
 /**
  * Handle to the kernel's trace buffer, initialized to -1.
@@ -145,8 +159,12 @@ extern int atrace_marker_fd;
 #define ATRACE_INIT() atrace_init()
 static inline void atrace_init()
 {
-    if (CC_UNLIKELY(!atomic_load_explicit(&atrace_is_ready, memory_order_acquire))) {
-        atrace_setup();
+    uint32_t seq_no =
+      atomic_load_explicit(&atrace_shmem.atrace_sequence_number, memory_order_relaxed);
+    uint32_t prev_seq_no = atomic_load_explicit(&last_sequence_number, memory_order_relaxed);
+    // Optimize for the fast-path.
+    if (CC_UNLIKELY(seq_no != prev_seq_no)) {
+        atrace_seq_number_changed(prev_seq_no, seq_no);
     }
 }
 

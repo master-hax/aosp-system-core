@@ -20,7 +20,7 @@
 
 struct AtraceShmemPage {
   _Atomic(uint32_t) atrace_sequence_number;
-  _Atomic(uint64_t) atrace_requested_tags;
+  uint64_t atrace_requested_tags;
   // Some words reserved for future extensions
   char reserved[1024];
   char enabled_cmdlines[7152];
@@ -28,4 +28,8 @@ struct AtraceShmemPage {
 
 #if defined(__cplusplus)
 static_assert(sizeof(AtraceShmemPage) % 4096 == 0, "shmem needs to be whole pages");
+
+static_assert(__atomic_always_lock_free(
+      sizeof(AtraceShmemPage::atrace_sequence_number), nullptr),
+    "sequence number should be lock free");
 #endif
