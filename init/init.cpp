@@ -134,7 +134,7 @@ Parser CreateServiceOnlyParser(ServiceList& service_list) {
 
 static void CreateAtraceShmem() {
   android::base::unique_fd fd(TEMP_FAILURE_RETRY(
-        OpenFile("/dev/__atrace_shmem__", O_WRONLY | O_CREAT | O_TRUNC | O_CLOEXEC, 0755)));
+        OpenFile("/dev/__atrace_shmem__", O_WRONLY | O_CREAT | O_TRUNC | O_CLOEXEC, 0777)));
   if (fd == -1) {
     PLOG(ERROR) << "failed to create /dev/__atrace_shmem__";
     return;
