@@ -50,7 +50,7 @@ const std::vector<std::string> SysMemInfo::kDefaultSysMemInfoTags = {
         SysMemInfo::kMemCached,     SysMemInfo::kMemShmem,       SysMemInfo::kMemSlab,
         SysMemInfo::kMemSReclaim,   SysMemInfo::kMemSUnreclaim,  SysMemInfo::kMemSwapTotal,
         SysMemInfo::kMemSwapFree,   SysMemInfo::kMemMapped,      SysMemInfo::kMemVmallocUsed,
-        SysMemInfo::kMemPageTables, SysMemInfo::kMemKernelStack,
+        SysMemInfo::kMemPageTables, SysMemInfo::kMemKernelStack, SysMemInfo::kMemKReclaimable,
 };
 
 bool SysMemInfo::ReadMemInfo(const std::string& path) {
