@@ -271,5 +271,29 @@ uint64_t ReadVmallocInfo(const std::string& path) {
     return vmalloc_total;
 }
 
+static bool ReadSysfsFile(const char* path, uint64_t* value) {
+    std::string content;
+    if (!::android::base::ReadFileToString(path, &content)) {
+        LOG(ERROR) << "Can't open file: " << path;
+        return false;
+    }
+
+    *value = strtoull(content.c_str(), NULL, 10);
+    if (*value == ULLONG_MAX) {
+        PLOG(ERROR) << "Invalid file format: " << path;
+        return false;
+    }
+
+    return true;
+}
+
+bool ReadIonHeapsSizeKb(uint64_t* size) {
+    return ReadSysfsFile("/sys/kernel/ion/total_heaps_kb", size);
+}
+
+bool ReadIonPoolsSizeKb(uint64_t* size) {
+    return ReadSysfsFile("/sys/kernel/ion/total_pools_kb", size);
+}
+
 }  // namespace meminfo
 }  // namespace android

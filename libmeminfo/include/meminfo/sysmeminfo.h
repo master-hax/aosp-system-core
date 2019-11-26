@@ -91,5 +91,11 @@ class SysMemInfo final {
 // _always_ mapped in a process and are counted for in each process.
 uint64_t ReadVmallocInfo(const std::string& path = "/proc/vmallocinfo");
 
+// Read ION heaps allocation size in kb
+bool ReadIonHeapsSizeKb(uint64_t* size);
+
+// Read ION pools allocation size in kb
+bool ReadIonPoolsSizeKb(uint64_t* size);
+
 }  // namespace meminfo
 }  // namespace android
