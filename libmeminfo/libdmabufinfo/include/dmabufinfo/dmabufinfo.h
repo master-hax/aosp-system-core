@@ -100,14 +100,14 @@ bool ReadDmaBufInfo(std::vector<DmaBuffer>* dmabufs,
 // Read and return dmabuf objects for a given process without the help
 // of DEBUGFS
 // Returns false if something went wrong with the function, true otherwise.
-bool ReadDmaBufInfo(pid_t pid, std::vector<DmaBuffer>* dmabufs);
+bool ReadDmaBufInfo(pid_t pid, std::vector<DmaBuffer>* dmabufs, bool read_fdrefs = true);
 
 // Append new dmabuf objects from a given process to an existing vector.
 // When the vector contains an existing element with a matching inode,
 // the reference counts will be updated.
 // Does not depend on DEBUGFS.
 // Returns false if something went wrong with the function, true otherwise.
-bool AppendDmaBufInfo(pid_t pid, std::vector<DmaBuffer>* dmabufs);
+bool AppendDmaBufInfo(pid_t pid, std::vector<DmaBuffer>* dmabufs, bool read_fdrefs = true);
 
 }  // namespace dmabufinfo
 }  // namespace android

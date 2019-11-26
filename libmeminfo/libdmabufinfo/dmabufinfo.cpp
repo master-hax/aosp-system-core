@@ -243,15 +243,17 @@ bool ReadDmaBufInfo(std::vector<DmaBuffer>* dmabufs, const std::string& path) {
     return true;
 }
 
-bool ReadDmaBufInfo(pid_t pid, std::vector<DmaBuffer>* dmabufs) {
+bool ReadDmaBufInfo(pid_t pid, std::vector<DmaBuffer>* dmabufs, bool read_fdrefs) {
     dmabufs->clear();
-    return AppendDmaBufInfo(pid, dmabufs);
+    return AppendDmaBufInfo(pid, dmabufs, read_fdrefs);
 }
 
-bool AppendDmaBufInfo(pid_t pid, std::vector<DmaBuffer>* dmabufs) {
-    if (!ReadDmaBufFdRefs(pid, dmabufs)) {
-        LOG(ERROR) << "Failed to read dmabuf fd references";
-        return false;
+bool AppendDmaBufInfo(pid_t pid, std::vector<DmaBuffer>* dmabufs, bool read_fdrefs) {
+    if (read_fdrefs) {
+        if (!ReadDmaBufFdRefs(pid, dmabufs)) {
+            LOG(ERROR) << "Failed to read dmabuf fd references";
+            return false;
+        }
     }
 
     if (!ReadDmaBufMapRefs(pid, dmabufs)) {
