@@ -1445,7 +1445,16 @@ int main(int argc, char** argv) {
             "/metadata/ota/test/snapshots",
             // clang-format on
     };
+    Fstab fstab;
+    if (!ReadDefaultFstab(&fstab)) {
+        std::cerr << "Cannot read default fstab" << std::endl;
+        return 1;
+    }
     for (const auto& path : paths) {
+        if (!android::fs_mgr::EnsurePathMounted(&fstab, path)) {
+            std::cerr << "Cannot ensure mounted: " << path << std::endl;
+            return 1;
+        }
         if (!Mkdir(path)) {
             return 1;
         }
