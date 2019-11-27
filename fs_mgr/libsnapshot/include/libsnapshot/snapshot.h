@@ -379,6 +379,10 @@ class SnapshotManager final {
     // set the update state to None.
     bool RemoveAllUpdateState(LockedFile* lock);
 
+    // Returns true if any fiemap-based copy-on-write device for a snapshot is
+    // mapped.
+    bool IsAnyCowImageMapped(LockedFile* lock);
+
     // Interact with /metadata/ota/state.
     std::unique_ptr<LockedFile> OpenStateFile(int open_flags, int lock_flags);
     std::unique_ptr<LockedFile> LockShared();
