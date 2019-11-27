@@ -142,7 +142,7 @@ class SnapshotTest : public ::testing::Test {
     }
 
     bool AcquireLock() {
-        lock_ = sm->OpenStateFile(O_RDWR, LOCK_EX);
+        lock_ = sm->OpenLockFile(O_RDWR, LOCK_EX);
         return !!lock_;
     }
 
@@ -1160,6 +1160,27 @@ TEST_F(SnapshotUpdateTest, MergeCannotRemoveCow) {
 
     // Merge should be able to complete now.
     ASSERT_EQ(UpdateState::MergeCompleted, init->InitiateMergeAndWait());
+}
+
+TEST_F(SnapshotUpdateTest, NoLockFile) {
+    ASSERT_TRUE(sm->BeginUpdate());
+    ASSERT_TRUE(sm->CreateUpdateSnapshots(manifest_));
+    ASSERT_TRUE(sm->FinishedSnapshotWrites());
+    ASSERT_TRUE(UnmapAll());
+
+    // After reboot, init does first stage mount.
+    auto init = SnapshotManager::New(new TestDeviceInfo(fake_super, "_b"));
+    ASSERT_NE(init, nullptr);
+
+    // Some old builds don't create the lock file during the update. Simulate that.
+    auto lock_file = test_device->GetMetadataDir() + "/lock"s;
+    ASSERT_TRUE(unlink(lock_file.c_str()) == 0) << strerror(errno);
+    ASSERT_TRUE(access(lock_file.c_str(), F_OK) == -1 && errno == ENOENT);
+    ASSERT_TRUE(init->NeedSnapshotsInFirstStageMount());
+
+    ASSERT_TRUE(unlink(lock_file.c_str()) == 0) << strerror(errno);
+    ASSERT_TRUE(access(lock_file.c_str(), F_OK) == -1 && errno == ENOENT);
+    ASSERT_EQ(init->GetUpdateState(), UpdateState::Unverified);
 }
 
 class MetadataMountedTest : public SnapshotUpdateTest {
