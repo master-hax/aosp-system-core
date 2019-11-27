@@ -16,6 +16,24 @@
       "revId": "5e083b831f9dd26f0c069626361249439f73a0d7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d4fd908c_6e3955e6",
+        "filename": "trusty/utils/rpmb_dev/rpmb_dev.rc",
+        "patchSetId": 5
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1416371
+      },
+      "writtenOn": "2019-11-27T18:18:00Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1b436363_ac84c67b",
+      "revId": "5e083b831f9dd26f0c069626361249439f73a0d7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
