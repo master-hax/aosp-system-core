@@ -142,7 +142,7 @@ class SnapshotTest : public ::testing::Test {
     }
 
     bool AcquireLock() {
-        lock_ = sm->OpenStateFile(O_RDWR, LOCK_EX);
+        lock_ = sm->OpenLockFile(O_RDWR, LOCK_EX);
         return !!lock_;
     }
 
