@@ -20,6 +20,7 @@
 #include <sys/types.h>
 
 #include <chrono>
+#include <future>
 #include <iostream>
 
 #include <android-base/file.h>
@@ -142,7 +143,7 @@ class SnapshotTest : public ::testing::Test {
     }
 
     bool AcquireLock() {
-        lock_ = sm->OpenStateFile(O_RDWR, LOCK_EX);
+        lock_ = sm->LockExclusive();
         return !!lock_;
     }
 
@@ -594,6 +595,145 @@ TEST_F(SnapshotTest, UpdateBootControlHal) {
     ASSERT_TRUE(sm->WriteUpdateState(lock_.get(), UpdateState::MergeFailed));
     ASSERT_EQ(test_device->merge_status(), MergeStatus::MERGING);
 }
+
+enum class Request { NONE, LOCK_SHARED, LOCK_EXCLUSIVE, UNLOCK, EXIT };
+std::ostream& operator<<(std::ostream& os, Request request) {
+    switch (request) {
+        case Request::NONE:
+            return os << "NONE";
+        case Request::LOCK_SHARED:
+            return os << "LOCK_SHARED";
+        case Request::LOCK_EXCLUSIVE:
+            return os << "LOCK_EXCLUSIVE";
+        case Request::UNLOCK:
+            return os << "UNLOCK";
+        case Request::EXIT:
+            return os << "EXIT";
+    }
+}
+
+struct LockTestConsumer {
+    std::mutex mutex;
+    std::condition_variable cv;
+    Request request = Request::NONE;
+    std::unique_ptr<SnapshotManager::LockedFile> lock;
+
+    AssertionResult MakeRequest(Request new_request, bool force = false) {
+        std::unique_lock<std::mutex> lock(mutex);
+        if (!force && request != Request::NONE) {
+            return AssertionFailure() << "Previous request " << request << " not fulfilled";
+        }
+        request = new_request;
+        cv.notify_all();
+        return AssertionSuccess() << "Request " << new_request << " successful";
+    }
+
+    template <typename R, typename P>
+    AssertionResult WaitFulfill(std::chrono::duration<R, P> timeout, Request expect_request) {
+        std::unique_lock<std::mutex> lock(mutex);
+        if (request != expect_request) {
+            return AssertionFailure()
+                   << "Old request is " << request << ", expected " << expect_request;
+        }
+        if (cv.wait_for(lock, timeout, [this] { return this->request == Request::NONE; })) {
+            return AssertionSuccess() << "Request fulfilled.";
+        }
+        return AssertionFailure() << "Timeout waiting for fulfilling request " << request;
+    }
+
+    void HandleRequests() {
+        using namespace std::chrono_literals;
+        static constexpr auto consumer_timeout = 3s;
+        std::unique_lock<std::mutex> lock(mutex);
+        while (cv.wait_for(lock, consumer_timeout, [this] { return request != Request::NONE; })) {
+            switch (request) {
+                case Request::NONE: {
+                    continue;
+                }
+                case Request::EXIT:
+                    break;
+                case Request::LOCK_SHARED: {
+                    lock = sm->LockShared();
+                } break;
+                case Request::LOCK_EXCLUSIVE: {
+                    lock = sm->LockExclusive();
+                } break;
+                case Request::UNLOCK: {
+                    lock.reset();
+                } break;
+            }
+            if (request == Request::EXIT) {
+                break;
+            } else {
+                request = Request::NONE;
+                cv.notify_all();
+                continue;
+            }
+        }
+    }
+};
+
+class LockTest : public ::testing::Test {
+  public:
+    void SetUp() {
+        using namespace std::chrono_literals;
+
+        first_consumer.test_suite = this;
+        second_consumer.test_suite = this;
+        *first_future_ =
+                std::async(std::launch::async, &LockTestConsumer::HandleRequests, &first_consumer);
+        *second_future_ =
+                std::async(std::launch::async, &LockTestConsumer::HandleRequests, &second_consumer);
+    }
+
+    void TearDown() {
+        EXPECT_TRUE(first_consumer.MakeRequest(Request::EXIT, true));
+        EXPECT_TRUE(second_consumer.MakeRequest(Request::EXIT, true));
+        // Destroy futures to ensure thread termination before destroying states.
+        first_future_.reset();
+        second_future_.reset();
+    }
+
+  private:
+    std::unique_ptr<std::future<void>> first_future_ = std::make_unique<std::future<void>>();
+    std::unique_ptr<std::future<void>> second_future_ = std::make_unique<std::future<void>>();
+
+  public:
+    static constexpr auto request_timeout = 500ms;
+    LockTestConsumer first_consumer;
+    LockTestConsumer second_consumer;
+};
+
+TEST_F(LockTest, SharedShared) {
+    ASSERT_TRUE(first_consumer.MakeRequest(Request::LOCK_SHARED));
+    ASSERT_TRUE(first_consumer.WaitFulfill(request_timeout, Request::LOCK_SHARED));
+    ASSERT_TRUE(second_consumer.MakeRequest(Request::LOCK_SHARED));
+    ASSERT_TRUE(second_consumer.WaitFulfill(request_timeout, Request::LOCK_SHARED));
+}
+
+using LockTestParam = std::pair<Request, Request>;
+class LockTestP : public LockTest, public ::testing::WithParamInterface<LockTestParam> {};
+TEST_P(LockTestP, Test) {
+    ASSERT_TRUE(first_consumer.MakeRequest(GetParam().first));
+    ASSERT_TRUE(first_consumer.WaitFulfill(request_timeout, GetParam().first));
+    ASSERT_TRUE(second_consumer.MakeRequest(GetParam().second));
+    ASSERT_FALSE(second_consumer.WaitFulfill(request_timeout, GetParam().second))
+            << "Should not be able to " << GetParam().second << " while separate thread "
+            << GetParam().first;
+    ASSERT_TRUE(first_consumer.MakeRequest(Request::UNLOCK));
+    ASSERT_TRUE(second_consumer.WaitFulfill(request_timeout, GetParam().second))
+            << "Should be able to hold lock that is released by separate thread";
+}
+INSTANTIATE_TEST_SUITE_P(
+        LockTest, LockTestP,
+        testing::Values(LockTestParam{Request::LOCK_EXCLUSIVE, Request::LOCK_EXCLUSIVE},
+                        LockTestParam{Request::LOCK_EXCLUSIVE, Request::LOCK_SHARED},
+                        LockTestParam{Request::LOCK_SHARED, Request::LOCK_EXCLUSIVE}),
+        [](const testing::TestParamInfo<LockTestP::ParamType>& info) {
+            std::stringstream ss;
+            ss << info.param.first << "_" << info.param.second;
+            return ss.str();
+        });
 
 class SnapshotUpdateTest : public SnapshotTest {
   public:
@@ -1160,6 +1300,27 @@ TEST_F(SnapshotUpdateTest, MergeCannotRemoveCow) {
 
     // Merge should be able to complete now.
     ASSERT_EQ(UpdateState::MergeCompleted, init->InitiateMergeAndWait());
+}
+
+TEST_F(SnapshotUpdateTest, NoLockFile) {
+    ASSERT_TRUE(sm->BeginUpdate());
+    ASSERT_TRUE(sm->CreateUpdateSnapshots(manifest_));
+    ASSERT_TRUE(sm->FinishedSnapshotWrites());
+    ASSERT_TRUE(UnmapAll());
+
+    // After reboot, init does first stage mount.
+    auto init = SnapshotManager::New(new TestDeviceInfo(fake_super, "_b"));
+    ASSERT_NE(init, nullptr);
+
+    // Some old builds don't create the lock file during the update. Simulate that.
+    auto lock_file = test_device->GetMetadataDir() + "/lock"s;
+    ASSERT_TRUE(unlink(lock_file.c_str()) == 0) << strerror(errno);
+    ASSERT_TRUE(access(lock_file.c_str(), F_OK) == -1 && errno == ENOENT);
+    ASSERT_TRUE(init->NeedSnapshotsInFirstStageMount());
+
+    ASSERT_TRUE(unlink(lock_file.c_str()) == 0) << strerror(errno);
+    ASSERT_TRUE(access(lock_file.c_str(), F_OK) == -1 && errno == ENOENT);
+    ASSERT_EQ(init->GetUpdateState(), UpdateState::Unverified);
 }
 
 class MetadataMountedTest : public SnapshotUpdateTest {
