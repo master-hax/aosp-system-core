@@ -62,6 +62,19 @@ bool PartitionCowCreator::HasExtent(Partition* p, Extent* e) {
     return false;
 }
 
+bool SourceCopyOperationIsClone(const InstallOperation& operation) {
+    using ChromeOSExtent = chromeos_update_engine::Extent;
+    if (operation.src_extents().size() != operation.dst_extents().size()) {
+        return false;
+    }
+    return std::equal(operation.src_extents().begin(), operation.src_extents().end(),
+                      operation.dst_extents().begin(),
+                      [](const ChromeOSExtent& src, const ChromeOSExtent& dst) {
+                          return src.start_block() == dst.start_block() &&
+                                 src.num_blocks() == dst.num_blocks();
+                      });
+}
+
 uint64_t PartitionCowCreator::GetCowSize() {
     // WARNING: The origin partition should be READ-ONLY
     const uint64_t logical_block_size = current_metadata->logical_block_size();
@@ -71,6 +84,11 @@ uint64_t PartitionCowCreator::GetCowSize() {
     if (operations == nullptr) return sc.cow_size_bytes();
 
     for (const auto& iop : *operations) {
+        // Do not allocate space for operations that are going to be skipped
+        // during OTA application.
+        if (iop.type() == InstallOperation::SOURCE_COPY && SourceCopyOperationIsClone(iop))
+            continue;
+
         for (const auto& de : iop.dst_extents()) {
             // Skip if no blocks are written
             if (de.num_blocks() == 0) continue;
