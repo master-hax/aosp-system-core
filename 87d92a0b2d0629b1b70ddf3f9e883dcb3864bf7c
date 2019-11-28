@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b99ff6c2_30ede163",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 775,
+      "author": {
+        "id": 1601765
+      },
+      "writtenOn": "2019-11-28T09:00:28Z",
+      "side": 1,
+      "message": "I think the path should be /sys/block/${dev.mnt.blk.data}/queue/discard_max_bytes",
+      "revId": "87d92a0b2d0629b1b70ddf3f9e883dcb3864bf7c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
