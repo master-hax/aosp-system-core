@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a5f6d7b_9a63dd1e",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 704,
+      "author": {
+        "id": 1346941
+      },
+      "writtenOn": "2019-11-28T12:46:07Z",
+      "side": 0,
+      "message": "I now remember why I added this then. I think I wasn\u0027t sure if to have all native processes go through FUSE so I was considering pointing bootstrapping -\u003e /storage to /mnt/pass_through. I guess that\u0027s no longer the case and it\u0027s risky anyways to modify the FUSE fs behind the FUSE driver",
+      "range": {
+        "startLine": 704,
+        "startChar": 2,
+        "endLine": 704,
+        "endChar": 7
+      },
+      "revId": "a487793fc772e7aa3db2fb59a52e82108030ee09",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
