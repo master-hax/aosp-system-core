@@ -80,6 +80,7 @@ class Regs {
   static Regs* RemoteGet(pid_t pid);
   static Regs* CreateFromUcontext(ArchEnum arch, void* ucontext);
   static Regs* CreateFromLocal();
+  static Regs* CreateFromLocalUcontext(void* ucontext);
 
  protected:
   uint16_t total_regs_;

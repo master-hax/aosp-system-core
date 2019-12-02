@@ -91,6 +91,24 @@ Regs* Regs::CreateFromUcontext(ArchEnum arch, void* ucontext) {
   }
 }
 
+Regs* Regs::CreateFromLocalUcontext(void* ucontext) {
+#if defined(__arm__)
+  return RegsArm::CreateFromUcontext(ucontext);
+#elif defined(__aarch64__)
+  return RegsArm64::CreateFromUcontext(ucontext);
+#elif defined(__i386__)
+  return RegsX86::CreateFromUcontext(ucontext);
+#elif defined(__x86_64__)
+  return RegsX86_64::CreateFromUcontext(ucontext);
+#elif defined(__mips__) && !defined(__LP64__)
+  return RegsMips::CreateFromUcontext(ucontext);
+#elif defined(__mips__) && defined(__LP64__)
+  return RegsMips64::CreateFromUcontext(ucontext);
+#else
+  abort();
+#endif
+}
+
 ArchEnum Regs::CurrentArch() {
 #if defined(__arm__)
   return ARCH_ARM;
