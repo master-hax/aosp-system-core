@@ -210,6 +210,20 @@ class DeviceMapper final {
 
     static std::string GetTargetType(const struct dm_target_spec& spec);
 
+    // Returns true if given path is a path to a dm block device.
+    bool IsDmBlockDevice(const std::string& path);
+
+    // Returns name of a dm-device with the given path, or std::nulloptr if given path is not a
+    // dm-device.
+    std::optional<std::string> GetDmDeviceNameByPath(const std::string& path);
+
+    // Returns an underlying block device a dm device with the given path is based on, or
+    // std::nullopt if:
+    //  * Given path doesn't correspond to a dm device.
+    //  * A dm device is based oon top of more than one block devices.
+    //  * A failure occuired.
+    std::optional<std::string> GetUnderlyingBlockDeviceByPath(const std::string& path);
+
   private:
     // Maximum possible device mapper targets registered in the kernel.
     // This is only used to read the list of targets from kernel so we allocate
