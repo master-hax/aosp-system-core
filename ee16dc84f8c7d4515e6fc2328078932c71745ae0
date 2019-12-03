@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6ca9d24b_6ae3a2f4",
+        "filename": "libcutils/trace-dev.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1130394
+      },
+      "writtenOn": "2019-12-03T19:29:26Z",
+      "side": 1,
+      "message": "O_CLOEXEC",
+      "range": {
+        "startLine": 45,
+        "startChar": 43,
+        "endLine": 45,
+        "endChar": 51
+      },
+      "revId": "ee16dc84f8c7d4515e6fc2328078932c71745ae0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
