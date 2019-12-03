@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "761c3aa5_66dc776b",
+        "filename": "fs_mgr/libdm/dm.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 541,
+      "author": {
+        "id": 1013030
+      },
+      "writtenOn": "2019-12-03T14:55:46Z",
+      "side": 1,
+      "message": "as discussed, may break for dm devices that have two or more slaves (eg dm-verity with a different device for data and hash)...but, this may not be of concern for now?",
+      "range": {
+        "startLine": 538,
+        "startChar": 8,
+        "endLine": 541,
+        "endChar": 9
+      },
+      "revId": "9ee8ac57754a273c33db4f825083b13e8576bdea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "627dee7a_cd548a33",
+        "filename": "fs_mgr/libdm/include/libdm/dm.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 214,
+      "author": {
+        "id": 1013030
+      },
+      "writtenOn": "2019-12-03T14:55:46Z",
+      "side": 1,
+      "message": "presumably this is used, too?",
+      "range": {
+        "startLine": 214,
+        "startChar": 9,
+        "endLine": 214,
+        "endChar": 24
+      },
+      "revId": "9ee8ac57754a273c33db4f825083b13e8576bdea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
