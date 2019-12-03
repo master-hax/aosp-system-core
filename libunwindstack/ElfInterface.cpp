@@ -236,8 +236,12 @@ void ElfInterface::ReadProgramHeaders(const EhdrType& ehdr, int64_t* load_bias) 
 
     case PT_DYNAMIC:
       dynamic_offset_ = phdr.p_offset;
-      dynamic_vaddr_ = phdr.p_vaddr;
-      dynamic_size_ = phdr.p_memsz;
+      dynamic_vaddr_start_ = phdr.p_vaddr;
+      if (__builtin_add_overflow(dynamic_vaddr_start_, phdr.p_memsz, &dynamic_vaddr_end_)) {
+        dynamic_offset_ = 0;
+        dynamic_vaddr_start_ = 0;
+        dynamic_vaddr_end_ = 0;
+      }
       break;
 
     default:
@@ -360,6 +364,14 @@ void ElfInterface::ReadSectionHeaders(const EhdrType& ehdr) {
             eh_frame_hdr_offset_ = shdr.sh_offset;
             eh_frame_hdr_section_bias_ = static_cast<uint64_t>(shdr.sh_addr) - shdr.sh_offset;
             eh_frame_hdr_size_ = shdr.sh_size;
+          } else if (name == ".data") {
+            data_offset_ = shdr.sh_offset;
+            data_vaddr_start_ = shdr.sh_addr;
+            if (__builtin_add_overflow(data_vaddr_start_, shdr.sh_size, &data_vaddr_end_) {
+              data_offset_ = 0;
+              data_vaddr_start_ = 0;
+              data_vaddr_end_ = 0;
+            }
           }
         }
       }
