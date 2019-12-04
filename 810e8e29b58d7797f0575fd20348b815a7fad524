@@ -16,6 +16,24 @@
       "revId": "810e8e29b58d7797f0575fd20348b815a7fad524",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2b5d9d9c_b1b17a46",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 1629,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2019-12-04T22:00:03Z",
+      "side": 1,
+      "message": "will do. Should I also rename OpenFile to OpenDir, and LockedFile to LockedDir?",
+      "parentUuid": "4281d8ff_ad1f0c22",
+      "revId": "810e8e29b58d7797f0575fd20348b815a7fad524",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
