@@ -191,7 +191,7 @@ static int64_t upgrade_pressure;
 static int64_t downgrade_pressure;
 static bool low_ram_device;
 static bool kill_heaviest_task;
-static unsigned long kill_timeout_ms;
+static long kill_timeout_ms;
 static bool use_minfree_levels;
 static bool per_app_memcg;
 static int swap_free_low_percentage;
@@ -600,7 +600,7 @@ static char *reread_file(struct reread_data *data) {
 
     if (data->fd == -1) {
         /* First-time buffer initialization */
-        if (!buf && (buf = malloc(buf_size)) == NULL) {
+        if (!buf && (buf = static_cast<char*>(malloc(buf_size))) == nullptr) {
             return NULL;
         }
 
@@ -626,7 +626,7 @@ static char *reread_file(struct reread_data *data) {
          * Since we are reading /proc files we can't use fstat to find out
          * the real size of the file. Double the buffer size and keep retrying.
          */
-        if ((new_buf = realloc(buf, buf_size * 2)) == NULL) {
+        if ((new_buf = static_cast<char*>(realloc(buf, buf_size * 2))) == nullptr) {
             errno = ENOMEM;
             return NULL;
         }
@@ -648,13 +648,13 @@ static struct proc *pid_lookup(int pid) {
     return procp;
 }
 
-static void adjslot_insert(struct adjslot_list *head, struct adjslot_list *new)
+static void adjslot_insert(struct adjslot_list *head, struct adjslot_list *new_element)
 {
     struct adjslot_list *next = head->next;
-    new->prev = head;
-    new->next = next;
-    next->prev = new;
-    head->next = new;
+    new_element->prev = head;
+    new_element->next = next;
+    next->prev = new_element;
+    head->next = new_element;
 }
 
 static void adjslot_remove(struct adjslot_list *old)
@@ -982,7 +982,7 @@ static void cmd_procprio(LMKD_CTRL_PACKET packet, int field_count, struct ucred 
             }
         }
 
-        procp = calloc(1, sizeof(struct proc));
+        procp = static_cast<struct proc*>(calloc(1, sizeof(struct proc)));
         if (!procp) {
             // Oh, the irony.  May need to rebuild our state.
             return;
@@ -2000,7 +2000,6 @@ static int find_and_kill_process(int min_score_adj, int kill_reason, const char 
 }
 
 static int64_t get_memory_usage(struct reread_data *file_data) {
-    int ret;
     int64_t mem_usage;
     char *buf;
 
@@ -2331,11 +2330,9 @@ no_kill:
 }
 
 static void mp_event_common(int data, uint32_t events, struct polling_params *poll_params) {
-    int ret;
     unsigned long long evcount;
     int64_t mem_usage, memsw_usage;
     int64_t mem_pressure;
-    enum vmpressure_level lvl;
     union meminfo mi;
     struct zoneinfo zi;
     struct timespec curr_tm;
@@ -2363,12 +2360,12 @@ static void mp_event_common(int data, uint32_t events, struct polling_params *po
          * and upgrade to the highest priority one. By reading
          * eventfd we also reset the event counters.
          */
-        for (lvl = VMPRESS_LEVEL_LOW; lvl < VMPRESS_LEVEL_COUNT; lvl++) {
+        for (int lvl = VMPRESS_LEVEL_LOW; lvl < VMPRESS_LEVEL_COUNT; lvl++) {
             if (mpevfd[lvl] != -1 &&
                 TEMP_FAILURE_RETRY(read(mpevfd[lvl],
                                    &evcount, sizeof(evcount))) > 0 &&
                 evcount > 0 && lvl > level) {
-                level = lvl;
+                level = static_cast<vmpressure_level>(lvl);
             }
         }
     }
@@ -2969,8 +2966,7 @@ int main(int argc __unused, char **argv __unused) {
     kill_heaviest_task =
         property_get_bool("ro.lmk.kill_heaviest_task", false);
     low_ram_device = property_get_bool("ro.config.low_ram", false);
-    kill_timeout_ms =
-        (unsigned long)property_get_int32("ro.lmk.kill_timeout_ms", 0);
+    kill_timeout_ms = property_get_int32("ro.lmk.kill_timeout_ms", 0);
     use_minfree_levels =
         property_get_bool("ro.lmk.use_minfree_levels", false);
     per_app_memcg =
