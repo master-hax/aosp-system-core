@@ -351,7 +351,7 @@ bool init_poll_kernel(struct kernel_poll_info *poll_info) {
 
 static void proc_insert(struct proc* procp) {
     if (!pidhash) {
-        pidhash = calloc(PIDHASH_SZ, sizeof(struct proc));
+        pidhash = calloc(PIDHASH_SZ, sizeof(*pidhash));
     }
 
     int hval = pid_hashfn(procp->pid);
