@@ -132,6 +132,7 @@ bool SnapshotManager::BeginUpdate() {
     // Purge the ImageManager just in case there is a corrupt lp_metadata file
     // lying around. (NB: no need to return false on an error, we can let the
     // update try to progress.)
+    if (!EnsureImageManager()) return false;
     images_->RemoveAllImages();
 
     auto state = ReadUpdateState(file.get());
