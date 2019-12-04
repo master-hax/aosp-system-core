@@ -227,13 +227,15 @@ static int install_app_streamed(int argc, const char** argv, bool use_fastdeploy
         return 1;
     }
 
-    copy_to_file(local_fd.get(), remote_fd.get());
-
     char buf[BUFSIZ];
-    read_status_line(remote_fd.get(), buf, sizeof(buf));
-    if (!strncmp("Success", buf, 7)) {
-        fputs(buf, stdout);
-        return 0;
+    if (copy_to_file(local_fd.get(), remote_fd.get())) {
+        read_status_line(remote_fd.get(), buf, sizeof(buf));
+        if (!strncmp("Success", buf, 7)) {
+            fputs(buf, stdout);
+            return 0;
+        }
+    } else {
+        snprintf(buf, sizeof(buf), "copy_to_file: %s\n", strerror(errno));
     }
     fprintf(stderr, "adb: failed to install %s: %s", file, buf);
     return 1;
@@ -455,7 +457,12 @@ int install_multiple_app(int argc, const char** argv) {
             goto finalize_session;
         }
 
-        copy_to_file(local_fd.get(), remote_fd.get());
+        if (!copy_to_file(local_fd.get(), remote_fd.get())) {
+            fprintf(stderr, "adb: failed to write \"%s\": %s\n", file, strerror(errno));
+            success = false;
+            goto finalize_session;
+        }
+
         read_status_line(remote_fd.get(), buf, sizeof(buf));
 
         if (strncmp("Success", buf, 7)) {
@@ -634,7 +641,11 @@ int install_multi_package(int argc, const char** argv) {
                 goto finalize_multi_package_session;
             }
 
-            copy_to_file(local_fd.get(), remote_fd.get());
+            if (!copy_to_file(local_fd.get(), remote_fd.get())) {
+                fprintf(stderr, "adb: failed to write %s: %s\n", split.c_str(), strerror(errno));
+                goto finalize_multi_package_session;
+            }
+
             read_status_line(remote_fd.get(), buf, sizeof(buf));
 
             if (strncmp("Success", buf, 7)) {
