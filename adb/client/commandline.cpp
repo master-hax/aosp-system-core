@@ -351,7 +351,7 @@ static void stdinout_raw_epilogue(int inFd, int outFd, int old_stdin_mode, int o
 #endif
 }
 
-void copy_to_file(int inFd, int outFd) {
+bool copy_to_file(int inFd, int outFd) {
     std::vector<char> buf(64 * 1024);
     int len;
     long total = 0;
@@ -374,7 +374,7 @@ void copy_to_file(int inFd, int outFd) {
         }
         if (len < 0) {
             D("copy_to_file(): read failed: %s", strerror(errno));
-            break;
+            return false;
         }
         if (outFd == STDOUT_FILENO) {
             fwrite(buf.data(), 1, len, stdout);
@@ -388,6 +388,7 @@ void copy_to_file(int inFd, int outFd) {
     stdinout_raw_epilogue(inFd, outFd, old_stdin_mode, old_stdout_mode);
 
     D("copy_to_file() finished after %lu bytes", total);
+    return true;
 }
 
 static void send_window_size_change(int fd, std::unique_ptr<ShellProtocol>& shell) {
