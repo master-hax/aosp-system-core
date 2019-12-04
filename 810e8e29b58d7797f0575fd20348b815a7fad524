@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4281d8ff_ad1f0c22",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 1629,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-12-04T21:59:00Z",
+      "side": 1,
+      "message": "It looks like we don\u0027t need open_flags anymore, it will always be O_RDONLY.",
+      "revId": "810e8e29b58d7797f0575fd20348b815a7fad524",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
