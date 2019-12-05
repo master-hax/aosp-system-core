@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "354c4244_5f5a2739",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 672,
+      "author": {
+        "id": 1060959
+      },
+      "writtenOn": "2019-12-05T15:47:16Z",
+      "side": 1,
+      "message": "Something I\u0027m not sure about -- this appears to happen before load_persistent_properties, is that right? It\u0027s currently writing a persistent property, which seems to work, but I\u0027m not sure why. Anyway, I plan on changing it to a non-persistent property now that it runs on every boot.",
+      "range": {
+        "startLine": 672,
+        "startChar": 0,
+        "endLine": 672,
+        "endChar": 25
+      },
+      "revId": "3c5cc318244f3836230824afffc8b6f0354727a4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
