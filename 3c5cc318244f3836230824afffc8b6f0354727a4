@@ -22,6 +22,30 @@
       "revId": "3c5cc318244f3836230824afffc8b6f0354727a4",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "daba4cd2_b93c4023",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 672,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-12-05T17:04:39Z",
+      "side": 1,
+      "message": "We don\u0027t block writing persistent properties, but we don\u0027t write them back to storage before they\u0027re loaded.  We will overwrite them with what is read from storage when we call load_persistent_properties, so it would be much better to convert this to a non-persistent property.",
+      "parentUuid": "354c4244_5f5a2739",
+      "range": {
+        "startLine": 672,
+        "startChar": 0,
+        "endLine": 672,
+        "endChar": 25
+      },
+      "revId": "3c5cc318244f3836230824afffc8b6f0354727a4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
