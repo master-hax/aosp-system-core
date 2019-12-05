@@ -46,6 +46,30 @@
       "revId": "3c5cc318244f3836230824afffc8b6f0354727a4",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "087505a3_865ee96d",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 672,
+      "author": {
+        "id": 1060959
+      },
+      "writtenOn": "2019-12-05T17:06:34Z",
+      "side": 1,
+      "message": "ok, that\u0027s what I thought. As-is the property would basically never evolve as it\u0027d always get reverted back. :)",
+      "parentUuid": "daba4cd2_b93c4023",
+      "range": {
+        "startLine": 672,
+        "startChar": 0,
+        "endLine": 672,
+        "endChar": 25
+      },
+      "revId": "3c5cc318244f3836230824afffc8b6f0354727a4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
