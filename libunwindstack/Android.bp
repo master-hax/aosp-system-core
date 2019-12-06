@@ -254,6 +254,7 @@ cc_defaults {
         "tests/files/offline/signal_load_bias_arm/*",
         "tests/files/offline/straddle_arm/*",
         "tests/files/offline/straddle_arm64/*",
+        "tests/files/offline/unknown_failure_test/*",
         "tests/files/offline/unknown_failure_test_error_1/*",
         "tests/files/offline/unknown_failure_test_error_2/*",
     ],
