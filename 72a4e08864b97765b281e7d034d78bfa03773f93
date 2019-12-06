@@ -16,6 +16,24 @@
       "revId": "72a4e08864b97765b281e7d034d78bfa03773f93",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b62badd4_766918fb",
+        "filename": "logcat/logcat.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 860,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-12-06T18:50:57Z",
+      "side": 1,
+      "message": "it doesn\u0027t exit if status\u003d\u003d0, and there\u0027s no way to annotate that.",
+      "parentUuid": "b628bc9a_691bb866",
+      "revId": "72a4e08864b97765b281e7d034d78bfa03773f93",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
