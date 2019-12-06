@@ -46,6 +46,30 @@
       "revId": "39da493a6db71309ee105188654c859baf70595f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "41777bcd_19870073",
+        "filename": "liblog/logd_reader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 254,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-12-06T19:25:06Z",
+      "side": 1,
+      "message": "Done.\n\nOr the useless \u0027logger_list\u0027",
+      "parentUuid": "c9d64b01_31d081d1",
+      "range": {
+        "startLine": 254,
+        "startChar": 67,
+        "endLine": 254,
+        "endChar": 76
+      },
+      "revId": "39da493a6db71309ee105188654c859baf70595f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
