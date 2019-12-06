@@ -1,0 +1,11 @@
+rax: 0
+rbx: 0
+rcx: 0
+rdx: 0
+r8: 0
+r12: 0
+r13: 0
+rsi: 0
+rbp: 0
+rsp: 7ffdfc2ba388
+rip: 556299e033e0
