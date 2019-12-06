@@ -20,6 +20,7 @@
 #include <string>
 #include <thread>
 
+#include <android-base/strings.h>
 #include <base/files/file_util.h>
 
 #include "fs_avb_test_util.h"
@@ -29,6 +30,7 @@
 using android::fs_mgr::BytesToHex;
 using android::fs_mgr::FileWaitMode;
 using android::fs_mgr::HexToBytes;
+using android::fs_mgr::ListFiles;
 using android::fs_mgr::NibbleValue;
 using android::fs_mgr::WaitForFile;
 
@@ -210,4 +212,87 @@ TEST(BasicUtilTest, WaitForFileDeferCreationFailure) {
     ASSERT_TRUE(base::DeleteFile(wait_path, false /* resursive */));
 }
 
+TEST(BasicUtilTest, ListFiles) {
+    // Gets system tmp dir.
+    base::FilePath tmp_dir;
+    ASSERT_TRUE(GetTempDir(&tmp_dir));
+
+    // Creates a test dir for ListFiles testing.
+    base::FilePath test_dir;
+    ASSERT_TRUE(base::CreateTemporaryDirInDir(tmp_dir, "list-file-tests.", &test_dir));
+
+    // Generates dummy files to list.
+    base::FilePath file_path_1 = test_dir.Append("1.txt");
+    ASSERT_TRUE(base::WriteFile(file_path_1, "1", 1));
+    base::FilePath file_path_2 = test_dir.Append("2.txt");
+    ASSERT_TRUE(base::WriteFile(file_path_2, "22", 2));
+    base::FilePath file_path_3 = test_dir.Append("3.txt");
+    ASSERT_TRUE(base::WriteFile(file_path_3, "333", 3));
+
+    // List files with sorting.
+    auto result = ListFiles(test_dir.value(), true /* sort */);
+    ASSERT_TRUE(result);
+    ASSERT_TRUE(result.has_value());
+    auto files = result.value();
+    EXPECT_EQ(3UL, files.size());
+    EXPECT_EQ(file_path_1.value(), files[0]);
+    EXPECT_EQ(file_path_2.value(), files[1]);
+    EXPECT_EQ(file_path_3.value(), files[2]);
+
+    // List files without sorting.
+    result = ListFiles(test_dir.value(), false /* sort */);
+    ASSERT_TRUE(result);
+    ASSERT_TRUE(result.has_value());
+    files = result.value();
+    EXPECT_EQ(3UL, files.size());
+
+    ASSERT_TRUE(base::DeleteFile(test_dir, true /* resursive */));
+}
+
+TEST(BasicUtilTest, ListFilesOpenDirFailure) {
+    // Gets system tmp dir.
+    base::FilePath tmp_dir;
+    ASSERT_TRUE(GetTempDir(&tmp_dir));
+
+    // Generates dummy files to list.
+    base::FilePath no_such_dir = tmp_dir.Append("not_such_dir");
+
+    // List files with sorting.
+    auto fail = ListFiles(no_such_dir.value(), true /* sort */);
+    ASSERT_FALSE(fail);
+    EXPECT_EQ(ENOENT, fail.error().code());
+    EXPECT_TRUE(android::base::StartsWith(fail.error().message(), "Failed to opendir: "));
+
+    // List files without sorting.
+    fail = ListFiles(no_such_dir.value(), false /* sort */);
+    ASSERT_FALSE(fail);
+    EXPECT_EQ(ENOENT, fail.error().code());
+    EXPECT_TRUE(android::base::StartsWith(fail.error().message(), "Failed to opendir: "));
+}
+
+TEST(BasicUtilTest, ListFilesEmptyDir) {
+    // Gets system tmp dir.
+    base::FilePath tmp_dir;
+    ASSERT_TRUE(GetTempDir(&tmp_dir));
+
+    // Creates a test dir for ListFiles testing.
+    base::FilePath test_dir;
+    ASSERT_TRUE(base::CreateTemporaryDirInDir(tmp_dir, "list-file-tests.", &test_dir));
+
+    // List files with sorting.
+    auto result = ListFiles(test_dir.value(), true /* sort */);
+    ASSERT_TRUE(result);
+    ASSERT_TRUE(result.has_value());
+    auto files = result.value();
+    EXPECT_EQ(0UL, files.size());
+
+    // List files without sorting.
+    result = ListFiles(test_dir.value(), false /* sort */);
+    ASSERT_TRUE(result);
+    ASSERT_TRUE(result.has_value());
+    files = result.value();
+    EXPECT_EQ(0UL, files.size());
+
+    ASSERT_TRUE(base::DeleteFile(test_dir, true /* resursive */));
+}
 }  // namespace fs_avb_host_test
