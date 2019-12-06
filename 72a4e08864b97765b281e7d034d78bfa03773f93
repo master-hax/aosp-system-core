@@ -34,6 +34,24 @@
       "revId": "72a4e08864b97765b281e7d034d78bfa03773f93",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "738ebca6_cfe6f26f",
+        "filename": "logcat/logcat.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 860,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-12-06T18:53:21Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "b62badd4_766918fb",
+      "revId": "72a4e08864b97765b281e7d034d78bfa03773f93",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
