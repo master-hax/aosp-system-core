@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9befabdc_709ce1c8",
+        "filename": "liblog/logd_reader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 254,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-12-06T19:06:20Z",
+      "side": 1,
+      "message": "Can we add `const` to parameters like this despite them being in the llndk?  Half of me feels like no, but the rest of me knows that symbols aren\u0027t mangled in C, so it wouldn\u0027t prevent linking if someone thought they had a version with a writable \u0027buf\u0027.  It\u0027s a stricter requirement too, so it shouldn\u0027t cause runtime issues either.",
+      "range": {
+        "startLine": 254,
+        "startChar": 67,
+        "endLine": 254,
+        "endChar": 76
+      },
+      "revId": "39da493a6db71309ee105188654c859baf70595f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
