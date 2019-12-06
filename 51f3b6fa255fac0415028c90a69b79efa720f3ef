@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0c581d5e_be5bd3ea",
+        "filename": "fs_mgr/fs_mgr_fstab.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 647,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-12-06T05:29:09Z",
+      "side": 1,
+      "message": "This is to generalize the avb key location for the DSU process.\nThe image to install might be either GSI or OEM\u0027s system.img",
+      "range": {
+        "startLine": 647,
+        "startChar": 16,
+        "endLine": 647,
+        "endChar": 71
+      },
+      "revId": "51f3b6fa255fac0415028c90a69b79efa720f3ef",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
