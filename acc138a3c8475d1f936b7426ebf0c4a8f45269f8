@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c2353078_fb58cbd1",
+        "filename": "adb/Android.bp",
+        "patchSetId": 8
+      },
+      "lineNbr": 295,
+      "author": {
+        "id": 1082465
+      },
+      "writtenOn": "2019-12-06T19:16:00Z",
+      "side": 1,
+      "message": "spaces (and others below)",
+      "revId": "acc138a3c8475d1f936b7426ebf0c4a8f45269f8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
