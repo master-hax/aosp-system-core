@@ -22,6 +22,30 @@
       "revId": "39da493a6db71309ee105188654c859baf70595f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c9d64b01_31d081d1",
+        "filename": "liblog/logd_reader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 254,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-12-06T19:08:01Z",
+      "side": 1,
+      "message": "sgtm.\n\nannoying we can\u0027t remove the useless size_t...",
+      "parentUuid": "9befabdc_709ce1c8",
+      "range": {
+        "startLine": 254,
+        "startChar": 67,
+        "endLine": 254,
+        "endChar": 76
+      },
+      "revId": "39da493a6db71309ee105188654c859baf70595f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
