@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b628bc9a_691bb866",
+        "filename": "logcat/logcat.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 860,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-12-06T18:30:00Z",
+      "side": 1,
+      "message": "Apparently error() isn\u0027t marked as noreturn.  Should we add that to bionic?  It should be fine even with the NDK to make a change like that, right?",
+      "revId": "72a4e08864b97765b281e7d034d78bfa03773f93",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
