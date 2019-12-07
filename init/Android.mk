@@ -113,6 +113,7 @@ LOCAL_STATIC_LIBRARIES := \
     libext2_uuid \
     libprotobuf-cpp-lite \
     libsnapshot_init \
+    lib_apex_manifest_proto_lite \
 
 LOCAL_SANITIZE := signed-integer-overflow
 # First stage init is weird: it may start without stdout/stderr, and no /proc.
