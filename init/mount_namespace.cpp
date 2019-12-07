@@ -27,6 +27,7 @@
 #include <android-base/properties.h>
 #include <android-base/result.h>
 #include <android-base/unique_fd.h>
+#include <apex_manifest.pb.h>
 
 #include "util.h"
 
@@ -90,6 +91,19 @@ static Result<void> MountDir(const std::string& path, const std::string& mount_p
     return {};
 }
 
+static Result<std::string> getApexName(const std::string& apex_dir) {
+    const std::string manifest_path = apex_dir + "/apex_manifest.pb";
+    std::string content;
+    if (!android::base::ReadFileToString(manifest_path, &content)) {
+        return Error() << "Failed to read manifest file: " << manifest_path;
+    }
+    apex::proto::ApexManifest manifest;
+    if (!manifest.ParseFromString(content)) {
+        return Error() << "Can't parse APEX manifest";
+    }
+    return manifest.name();
+}
+
 static Result<void> ActivateFlattenedApexesFrom(const std::string& from_dir,
                                                 const std::string& to_dir) {
     std::unique_ptr<DIR, decltype(&closedir)> dir(opendir(from_dir.c_str()), closedir);
@@ -101,7 +115,12 @@ static Result<void> ActivateFlattenedApexesFrom(const std::string& from_dir,
         if (entry->d_name[0] == '.') continue;
         if (entry->d_type == DT_DIR) {
             const std::string apex_path = from_dir + "/" + entry->d_name;
-            const std::string mount_path = to_dir + "/" + entry->d_name;
+            const auto apex_name = getApexName(apex_path);
+            if (!apex_name) {
+                PLOG(ERROR) << apex_path << " is not an APEX directory: " << apex_name.error();
+                continue;
+            }
+            const std::string mount_path = to_dir + "/" + (*apex_name);
             if (auto result = MountDir(apex_path, mount_path); !result) {
                 return result;
             }
