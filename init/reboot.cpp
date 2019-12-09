@@ -413,7 +413,7 @@ static UmountStat TryUmountAndFsck(unsigned int cmd, bool run_fsck,
         if (DUMP_ON_UMOUNT_FAILURE) DumpUmountDebuggingInfo();
         KillAllProcesses();
         // even if it succeeds, still it is timeout and do not run fsck with all processes killed
-        UmountStat st = UmountPartitions(0ms);
+        UmountStat st = UmountPartitions(1000ms);
         if ((st != UMOUNT_STAT_SUCCESS) && DUMP_ON_UMOUNT_FAILURE) DumpUmountDebuggingInfo();
     }
 
