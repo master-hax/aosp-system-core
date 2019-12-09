@@ -490,6 +490,11 @@ class SnapshotManager final {
     // This should only be called in recovery.
     bool UnmapAllPartitions();
 
+    // Sanity check no snapshot overflows. Note that this returns false negatives if the snapshot
+    // overflows, then is remapped and not written afterwards. Hence, the function may only serve
+    // as a sanity check.
+    bool EnsureNoOverflowSnapshot(LockedFile* lock);
+
     std::string gsid_dir_;
     std::string metadata_dir_;
     std::unique_ptr<IDeviceInfo> device_;

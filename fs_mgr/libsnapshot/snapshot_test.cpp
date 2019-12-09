@@ -1500,6 +1500,31 @@ TEST_F(SnapshotUpdateTest, Hashtree) {
     ASSERT_TRUE(IsPartitionUnchanged("sys_b"));
 }
 
+// Test for overflow bit after update
+TEST_F(SnapshotUpdateTest, Overflow) {
+    const auto actual_write_size = GetSize(sys_);
+    const auto declared_write_size = actual_write_size - 1_MiB;
+
+    auto e = sys_->add_operations()->add_dst_extents();
+    e->set_start_block(0);
+    e->set_num_blocks(declared_write_size / manifest_.block_size());
+
+    // Execute the update.
+    ASSERT_TRUE(sm->BeginUpdate());
+    ASSERT_TRUE(sm->CreateUpdateSnapshots(manifest_));
+
+    // Write some data to target partitions.
+    ASSERT_TRUE(WriteSnapshotAndHash("sys_b", actual_write_size));
+
+    std::vector<android::dm::DeviceMapper::TargetInfo> table;
+    ASSERT_TRUE(DeviceMapper::Instance().GetTableStatus("sys_b", &table));
+    ASSERT_EQ(1u, table.size());
+    EXPECT_TRUE(table[0].IsOverflowSnapshot());
+
+    ASSERT_FALSE(sm->FinishedSnapshotWrites())
+            << "FinishedSnapshotWrites should detect overflow of CoW device.";
+}
+
 class FlashAfterUpdateTest : public SnapshotUpdateTest,
                              public WithParamInterface<std::tuple<uint32_t, bool>> {
   public:
