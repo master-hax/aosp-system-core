@@ -2339,5 +2339,54 @@ bool SnapshotManager::EnsureNoOverflowSnapshot(LockedFile* lock) {
     return true;
 }
 
+RetCode SnapshotManager::FirstStageCreateSnapshotDevices() {
+    auto mount = EnsureMetadataMounted();
+    if (!mount || !mount->HasDevice()) {
+        LOG(ERROR) << "Couldn't mount Metadata.";
+        return RetCode::NOT_CREATED;
+    }
+
+    auto state_file = GetStateFilePath();
+    if (access(state_file.c_str(), F_OK) != 0 && errno == ENOENT) {
+        LOG(ERROR) << "Couldn't access state file.";
+        return RetCode::NOT_CREATED;
+    }
+
+    if (!NeedSnapshotsInFirstStageMount()) {
+        return RetCode::NOT_CREATED;
+    }
+
+    auto slot_suffix = device_->GetOtherSlotSuffix();
+    auto slot_number = SlotNumberForSlotSuffix(slot_suffix);
+    auto super_path = device_->GetSuperDevice(slot_number);
+    if (!CreateLogicalAndSnapshotPartitions(super_path)) {
+        LOG(ERROR) << "Unable to map partitions.";
+        return RetCode::ERROR;
+    }
+
+    auto lock = LockExclusive();
+    if (!lock) {
+        LOG(ERROR) << "Could not get exclusive lock";
+        return RetCode::ERROR;
+    }
+
+    std::vector<std::string> created_snapshots;
+    if (!ListSnapshots(lock.get(), &created_snapshots)) {
+        LOG(ERROR) << "Could not list snapshots";
+        return RetCode::ERROR;
+    }
+
+    for (const auto& s : created_snapshots) {
+        SnapshotStatus status;
+        ReadSnapshotStatus(lock.get(), s, &status);
+        if (status.state() == SnapshotState::MERGING) {
+            LOG(ERROR) << "Snapshot \"" << s << "\" is currently MERGING and cannot be mounted.";
+            return RetCode::ERROR;
+        }
+    }
+
+    return RetCode::CREATED;
+}
+
 }  // namespace snapshot
 }  // namespace android
