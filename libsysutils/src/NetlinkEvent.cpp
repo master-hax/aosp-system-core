@@ -24,7 +24,6 @@
 #include <linux/if_link.h>
 #include <linux/netfilter/nfnetlink.h>
 #include <linux/netfilter/nfnetlink_log.h>
-#include <linux/netfilter_ipv4/ipt_ULOG.h>
 #include <linux/netlink.h>
 #include <linux/rtnetlink.h>
 #include <net/if.h>
@@ -34,6 +33,9 @@
 #include <string.h>
 #include <sys/socket.h>
 #include <sys/types.h>
+
+// Include the local copy of the deprecated uapi kernel header.
+#include <linux/netfilter_ipv4/ipt_ULOG.h>
 
 /* From kernel's net/netfilter/xt_quota2.c */
 const int LOCAL_QLOG_NL_EVENT = 112;
