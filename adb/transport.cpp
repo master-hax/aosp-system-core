@@ -1220,11 +1220,12 @@ void close_usb_devices(bool reset) {
 
 bool register_socket_transport(unique_fd s, std::string serial, int port, int local,
                                atransport::ReconnectCallback reconnect, int* error) {
+    check_main_thread();
     atransport* t = new atransport(std::move(reconnect), kCsOffline);
 
     D("transport: %s init'ing for socket %d, on port %d", serial.c_str(), s.get(), port);
     if (init_socket_transport(t, std::move(s), port, local) < 0) {
-        delete t;
+        t->schedule_deletion();
         if (error) *error = errno;
         return false;
     }
@@ -1234,7 +1235,7 @@ bool register_socket_transport(unique_fd s, std::string serial, int port, int lo
         if (serial == transport->serial) {
             VLOG(TRANSPORT) << "socket transport " << transport->serial
                             << " is already in pending_list and fails to register";
-            delete t;
+            t->schedule_deletion();
             if (error) *error = EALREADY;
             return false;
         }
@@ -1244,7 +1245,7 @@ bool register_socket_transport(unique_fd s, std::string serial, int port, int lo
         if (serial == transport->serial) {
             VLOG(TRANSPORT) << "socket transport " << transport->serial
                             << " is already in transport_list and fails to register";
-            delete t;
+            t->schedule_deletion();
             if (error) *error = EALREADY;
             return false;
         }
