@@ -238,6 +238,14 @@ class SnapshotManager final {
     // optional callback fires periodically to query progress via GetUpdateState.
     bool HandleImminentDataWipe(const std::function<void()>& callback = {});
 
+    // This method is only allowed in recovery and is used as a helper to initialize
+    // the snapshot devices as a requirement to mount a snapshotted /system in recovery.
+    // This function returns:
+    // -1: a fatal error occurred, mounting /system should be aborted;
+    //  0: it was not necessary to create snapshot devices;
+    //  1: snapshot devices were successfully created.
+    int CreateFirstStageSnapshotDevices();
+
     // Dump debug information.
     bool Dump(std::ostream& os);
 
