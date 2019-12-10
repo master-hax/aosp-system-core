@@ -26,6 +26,11 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#if defined(__BIONIC__)
+#define _REALLY_INCLUDE_SYS__SYSTEM_PROPERTIES_H_
+#include <sys/_system_properties.h>
+#endif
+
 #include <cutils/compiler.h>
 
 __BEGIN_DECLS
@@ -89,6 +94,9 @@ __BEGIN_DECLS
 #error ATRACE_TAG must be defined to be one of the tags defined in cutils/trace.h
 #endif
 
+// Set this to 0 to revert to the old Binder-based atrace implementation.
+#define ATRACE_SHMEM 1
+
 /**
  * Opens the trace file for writing and reads the property for initial tags.
  * The atrace.tags.enableflags property sets the tags to trace.
@@ -118,9 +126,20 @@ void atrace_set_debuggable(bool debuggable);
 void atrace_set_tracing_enabled(bool enabled);
 
 /**
- * Flag indicating whether setup has been completed, initialized to 0.
- * Nonzero indicates setup has completed.
- * Note: This does NOT indicate whether or not setup was successful.
+ * This is called when the sequence number of debug.atrace.tags.enableflags
+ * changes and we need to reload the enabled tags.
+ **/
+extern void atrace_seq_number_changed(uint32_t prev_seq_no, uint32_t seq_no);
+
+/**
+ * If !ATRACE_SHMEM:
+ *   Flag indicating whether setup has been completed, initialized to 0.
+ *   Nonzero indicates setup has completed.
+ *   Note: This does NOT indicate whether or not setup was successful.
+ * If ATRACE_SHMEM:
+ *   This is always set to false. This forces code that uses an old version
+ *   of this header to always call into atrace_setup, in which we call
+ *   atrace_init unconditionally.
  */
 extern atomic_bool atrace_is_ready;
 
@@ -130,6 +149,16 @@ extern atomic_bool atrace_is_ready;
  * Any other nonzero value indicates setup has succeeded, and tracing is on.
  */
 extern uint64_t atrace_enabled_tags;
+
+/**
+ * Sequence number of debug.atrace.tags.enableflags the last time the enabled
+ * tags were reloaded.
+ **/
+extern _Atomic(uint32_t) last_sequence_number;
+
+#if defined(__BIONIC__)
+extern const prop_info* atrace_property_info;
+#endif
 
 /**
  * Handle to the kernel's trace buffer, initialized to -1.
@@ -143,12 +172,27 @@ extern int atrace_marker_fd;
  * This can be explicitly run to avoid setup delay on first trace function.
  */
 #define ATRACE_INIT() atrace_init()
+
+#if ATRACE_SHMEM
+static inline void atrace_init() {
+#if defined(__BIONIC__)
+    uint32_t seq_no = __system_property_serial(atrace_property_info);  // Acquire semantics.
+#else
+    uint32_t seq_no = 0;
+#endif
+    uint32_t prev_seq_no = atomic_load_explicit(&last_sequence_number, memory_order_relaxed);
+    if (CC_UNLIKELY(seq_no != prev_seq_no)) {
+        atrace_seq_number_changed(prev_seq_no, seq_no);
+    }
+}
+#else
 static inline void atrace_init()
 {
     if (CC_UNLIKELY(!atomic_load_explicit(&atrace_is_ready, memory_order_acquire))) {
         atrace_setup();
     }
 }
+#endif
 
 /**
  * Get the mask of all tags currently enabled.
