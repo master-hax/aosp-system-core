@@ -16,6 +16,24 @@
       "revId": "c4f81b1e5b68e764c11eee4f67a4dcd72b94740f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f21954bf_514e6d3d",
+        "filename": "init/reboot.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 416,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2019-12-10T17:32:12Z",
+      "side": 1,
+      "message": "KillAllProcesses() will kill shutdown_critical processes we should not rely on it.",
+      "parentUuid": "2fdd07d5_8255910e",
+      "revId": "c4f81b1e5b68e764c11eee4f67a4dcd72b94740f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
