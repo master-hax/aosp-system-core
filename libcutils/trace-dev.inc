@@ -41,12 +41,25 @@
  */
 #define ATRACE_MESSAGE_LENGTH 1024
 
+constexpr uint32_t kSeqNoNotInit = 4294967295;
+
 atomic_bool             atrace_is_ready      = ATOMIC_VAR_INIT(false);
 int                     atrace_marker_fd     = -1;
 uint64_t                atrace_enabled_tags  = ATRACE_TAG_NOT_READY;
 static bool             atrace_is_debuggable = false;
 static atomic_bool      atrace_is_enabled    = ATOMIC_VAR_INIT(true);
 static pthread_mutex_t  atrace_tags_mutex    = PTHREAD_MUTEX_INITIALIZER;
+_Atomic(uint32_t)       last_sequence_number = ATOMIC_VAR_INIT(kSeqNoNotInit);
+
+#if defined(__BIONIC__) && !defined(__ANDROID_RECOVERY__)
+// All zero prop_info that has a sequence number of 0. This is easier than
+// depending on implementation details of the property implementation.
+//
+// prop_info is static_assert-ed to be 96 bytes, which cann ot change due to
+// ABI compatibility.
+alignas(uint64_t) static char empty_pi[96];
+const prop_info* atrace_property_info = reinterpret_cast<const prop_info*>(empty_pi);
+#endif
 
 // Set whether this process is debuggable, which determines whether
 // application-level tracing is allowed when the ro.debuggable system property
@@ -136,7 +149,7 @@ static uint64_t atrace_get_property()
 void atrace_update_tags()
 {
     uint64_t tags;
-    if (CC_UNLIKELY(atomic_load_explicit(&atrace_is_ready, memory_order_acquire))) {
+    if (ATRACE_SHMEM || CC_UNLIKELY(atomic_load_explicit(&atrace_is_ready, memory_order_acquire))) {
         if (atomic_load_explicit(&atrace_is_enabled, memory_order_acquire)) {
             tags = atrace_get_property();
             pthread_mutex_lock(&atrace_tags_mutex);
