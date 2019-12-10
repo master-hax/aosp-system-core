@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "385c680c_090feae2",
+        "filename": "libsysutils/src/NetlinkEvent.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 269,
+      "author": {
+        "id": 1003247
+      },
+      "writtenOn": "2019-12-10T19:01:53Z",
+      "side": 1,
+      "message": "is this the entire dependency?",
+      "range": {
+        "startLine": 264,
+        "startChar": 0,
+        "endLine": 269,
+        "endChar": 55
+      },
+      "revId": "bfaa8f205e1e2c1d539c51474fa8b345f3192b70",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
