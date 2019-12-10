@@ -22,6 +22,30 @@
       "revId": "bfaa8f205e1e2c1d539c51474fa8b345f3192b70",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a31cb7d8_328a45d4",
+        "filename": "libsysutils/src/NetlinkEvent.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 269,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2019-12-10T20:50:04Z",
+      "side": 1,
+      "message": "Yes, if I add this to the file:\n\n#define ULOG_MAC_LEN 80\n#define ULOG_PREFIX_LEN 32\ntypedef struct ulog_packet_msg {\n  unsigned long mark;\n  long timestamp_sec;\n  long timestamp_usec;\n  unsigned int hook;\n  char indev_name[IFNAMSIZ];\n  char outdev_name[IFNAMSIZ];\n  size_t data_len;\n  char prefix[ULOG_PREFIX_LEN];\n  unsigned char mac_len;\n  unsigned char mac[ULOG_MAC_LEN];\n  unsigned char payload[0];\n} ulog_packet_msg_t;\n\nEverything compiles again. I\u0027ll do this so that all changes are contained in this one file.",
+      "parentUuid": "385c680c_090feae2",
+      "range": {
+        "startLine": 264,
+        "startChar": 0,
+        "endLine": 269,
+        "endChar": 55
+      },
+      "revId": "bfaa8f205e1e2c1d539c51474fa8b345f3192b70",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
