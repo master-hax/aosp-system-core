@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "470ae291_2940dac6",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/snapshot.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 165,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2019-12-10T07:10:57Z",
+      "side": 1,
+      "message": "Add WaitForMerge() that blocks even if state is Unverified and boot indicator !\u003d current slot",
+      "revId": "90a930b63d686a51239f6ed5cd1139134c2578a9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
