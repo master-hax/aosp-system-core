@@ -46,6 +46,30 @@
       "revId": "bfaa8f205e1e2c1d539c51474fa8b345f3192b70",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1c4d8008_277b9f85",
+        "filename": "libsysutils/src/NetlinkEvent.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 269,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2019-12-10T20:54:22Z",
+      "side": 1,
+      "message": "Done now, it leaves only this one structure in the file.",
+      "parentUuid": "a31cb7d8_328a45d4",
+      "range": {
+        "startLine": 264,
+        "startChar": 0,
+        "endLine": 269,
+        "endChar": 55
+      },
+      "revId": "bfaa8f205e1e2c1d539c51474fa8b345f3192b70",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
