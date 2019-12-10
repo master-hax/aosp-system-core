@@ -162,6 +162,7 @@ class SnapshotManager final {
     // update has been marked successful after booting.
     bool InitiateMerge();
 
+  public:
     // Perform any necessary post-boot actions. This should be run soon after
     // /data is mounted.
     //
@@ -188,7 +189,6 @@ class SnapshotManager final {
     // progress with GetUpdateState().
     UpdateState ProcessUpdateState(const std::function<void()>& callback = {});
 
-  public:
     // Initiate the merge if necessary, then wait for the merge to finish.
     // See InitiateMerge() and ProcessUpdateState() for details.
     // Returns:
