@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6ee05164_0162de8c",
+        "filename": "liblog/tests/liblog_host_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 164,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-12-10T23:08:06Z",
+      "side": 1,
+      "message": "I can\u0027t imagine anyone depends on this behavior though...  And given that zygote is the only call to this function, maybe I do remove it.\n\nI\u0027ll save some marginal amount of code if I do.",
+      "revId": "7e61e139d5678331512d71138c066b5186292804",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
