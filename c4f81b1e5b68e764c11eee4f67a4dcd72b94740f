@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2fdd07d5_8255910e",
+        "filename": "init/reboot.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 416,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-12-10T17:06:41Z",
+      "side": 1,
+      "message": "Instead of adding the timeout, could we call ReapAnyOutstandingChildren(); instead and see if that works?  If processes turn into zombies synchronously with the sysrq trigger in KillAllProcesses() that will be enough and we\u0027ll only need to call UmountPartitions() once.  Even if not, I\u0027d prefer if we did add that call, since it will print a message for each additional process that is killed by KillAllProcesses().\n\nAlso, can we change the timeout used in line 410 to reflect that we\u0027ll spend an extra second here?  In the first loop when we kill processes, we use half of the remaining timeout.  I think it would be a good idea to use half of the remaining timeout for line 410, then use the remaining timeout for this UmountPartitions() call, instead of adding a second to the overall timeout.",
+      "revId": "c4f81b1e5b68e764c11eee4f67a4dcd72b94740f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
