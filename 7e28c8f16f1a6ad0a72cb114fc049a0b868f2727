@@ -22,6 +22,30 @@
       "revId": "7e28c8f16f1a6ad0a72cb114fc049a0b868f2727",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "69d8c4d5_fd1badaf",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 837,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-12-11T22:30:29Z",
+      "side": 1,
+      "message": "Agreed, I\u0027ve reverted this. It was causing presubmit failures anyway since it brought up an selinux violation in second-stage init. (Note FWIW, some non-A/B devices write-protect the super eMMC but still expose the block devices as rw, so this doesn\u0027t really buy us anything.)",
+      "parentUuid": "f2c78f9f_6fa182b0",
+      "range": {
+        "startLine": 837,
+        "startChar": 8,
+        "endLine": 837,
+        "endChar": 24
+      },
+      "revId": "7e28c8f16f1a6ad0a72cb114fc049a0b868f2727",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
