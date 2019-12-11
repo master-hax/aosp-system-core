@@ -45,6 +45,30 @@
       "revId": "cf770bfd48826b00402b24204d9ad6a9593c3967",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b0929a09_8bdbb66d",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1268,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-12-11T21:51:33Z",
+      "side": 1,
+      "message": "I\u0027m trying to avoid this style lately. I find the density makes it hard to step through what\u0027s going on, since instead of scanning down I have to scan left-to-right as well. It\u0027s more the complex indentation that I\u0027m trying to reduce, rather than all indentation.\n\nAnother reason: when we refactor this file to propagate error strings instead of errno, we\u0027ll very likely need the braces to do error handling.",
+      "parentUuid": "0353d96b_460f1e4d",
+      "range": {
+        "startLine": 1258,
+        "startChar": 0,
+        "endLine": 1268,
+        "endChar": 5
+      },
+      "revId": "cf770bfd48826b00402b24204d9ad6a9593c3967",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
