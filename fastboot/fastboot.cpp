@@ -26,7 +26,7 @@
  * SUCH DAMAGE.
  */
 
-#include "fastboot.h"
+//#include "fastboot.h"
 
 #include <ctype.h>
 #include <errno.h>
