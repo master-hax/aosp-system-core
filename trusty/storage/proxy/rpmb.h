@@ -18,7 +18,11 @@
 #include <stdint.h>
 #include <trusty/interface/storage.h>
 
+<<<<<<< HEAD
 enum dev_type { UNKNOWN_RPMB, MMC_RPMB, VIRT_RPMB };
+=======
+enum dev_type { UNKNOWN_RPMB, MMC_RPMB, VIRT_RPMB, UFS_RPMB };
+>>>>>>> c29ba1c4e... Add storageproxyd UFS support
 
 int rpmb_open(const char* rpmb_devname, enum dev_type dev_type);
 int rpmb_send(struct storage_msg* msg, const void* r, size_t req_len);
