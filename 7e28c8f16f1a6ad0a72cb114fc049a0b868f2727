@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f2c78f9f_6fa182b0",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 837,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-12-11T21:14:13Z",
+      "side": 1,
+      "message": "AFAIK all devices are supposed to be r/o to protect us, and switched to r/w upon request as a security measure to keep the attack vectors small. Super block device is ro, and thus will/should fail up until fs_mgr_set_blk_ro(device_path, false) is called in fs_mgr_overlayfs_mount_scratch. Existence is enough, we can worry about it later if we do not have the _ability_ to switch the device to ro?",
+      "range": {
+        "startLine": 837,
+        "startChar": 8,
+        "endLine": 837,
+        "endChar": 24
+      },
+      "revId": "7e28c8f16f1a6ad0a72cb114fc049a0b868f2727",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}

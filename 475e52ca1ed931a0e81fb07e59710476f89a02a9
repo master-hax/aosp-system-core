@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "94813bd8_dc9e14c1",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 927,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-12-11T21:14:13Z",
+      "side": 0,
+      "message": "Yow, this could lead to troubles (?) guess I am glad you removed it!",
+      "range": {
+        "startLine": 927,
+        "startChar": 24,
+        "endLine": 927,
+        "endChar": 58
+      },
+      "revId": "475e52ca1ed931a0e81fb07e59710476f89a02a9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
