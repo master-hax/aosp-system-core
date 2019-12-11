@@ -825,24 +825,25 @@ enum class ScratchStrategy {
     kSystemOther
 };
 
-static ScratchStrategy GetScratchStrategy(std::string* backing_device) {
+// Return the strategy this device must use for creating a scratch partition.
+static ScratchStrategy GetScratchStrategy(std::string* backing_device = nullptr) {
     auto slot_number = fs_mgr_overlayfs_slot_number();
     auto super_device = fs_mgr_overlayfs_super_device(slot_number);
     auto path = fs_mgr_overlayfs_super_device(slot_number == 0);
-    if (super_device != path) {
-        *backing_device = path;
+    if (super_device != path && fs_mgr_rw_access(path)) {
+        if (backing_device) *backing_device = path;
         return ScratchStrategy::kSuperOther;
     }
-    if (fs_mgr_access(super_device)) {
-        *backing_device = super_device;
+    if (fs_mgr_rw_access(super_device)) {
+        if (backing_device) *backing_device = super_device;
         return ScratchStrategy::kDynamicPartition;
     }
 
     auto other_slot = fs_mgr_get_other_slot_suffix();
     if (!other_slot.empty()) {
         path = kPhysicalDevice + "system" + other_slot;
-        if (fs_mgr_access(path)) {
-            *backing_device = path;
+        if (fs_mgr_rw_access(path)) {
+            if (backing_device) *backing_device = path;
             return ScratchStrategy::kSystemOther;
         }
     }
@@ -920,16 +921,15 @@ static void TruncatePartitionsWithSuffix(MetadataBuilder* builder, const std::st
     }
 }
 
-// This is where we find and steal backing storage from the system.
-bool fs_mgr_overlayfs_create_scratch(const Fstab& fstab, std::string* scratch_device,
-                                     bool* partition_exists, bool* change) {
-    *scratch_device = fs_mgr_overlayfs_scratch_device();
-    *partition_exists = fs_mgr_rw_access(*scratch_device);
+// Create or update a scratch partition within super.
+static bool CreateDynamicScratch(const Fstab& fstab, std::string* scratch_device,
+                                 bool* partition_exists, bool* change) {
+    const auto partition_name = android::base::Basename(kScratchMountPoint);
+
+    auto& dm = DeviceMapper::Instance();
+    *partition_exists = dm.GetState(partition_name) != DmDeviceState::INVALID;
+
     auto partition_create = !*partition_exists;
-    // Do we need to create a logical "scratch" partition?
-    if (!partition_create && android::base::StartsWith(*scratch_device, kPhysicalDevice)) {
-        return true;
-    }
     auto slot_number = fs_mgr_overlayfs_slot_number();
     auto super_device = fs_mgr_overlayfs_super_device(slot_number);
     if (!fs_mgr_rw_access(super_device)) return false;
@@ -939,7 +939,6 @@ bool fs_mgr_overlayfs_create_scratch(const Fstab& fstab, std::string* scratch_de
         LERROR << "open " << super_device << " metadata";
         return false;
     }
-    const auto partition_name = android::base::Basename(kScratchMountPoint);
     auto partition = builder->FindPartition(partition_name);
     *partition_exists = partition != nullptr;
     auto changed = false;
@@ -1017,6 +1016,25 @@ bool fs_mgr_overlayfs_create_scratch(const Fstab& fstab, std::string* scratch_de
 
         if (change) *change = true;
     }
+    return true;
+}
+
+bool fs_mgr_overlayfs_create_scratch(const Fstab& fstab, std::string* scratch_device,
+                                     bool* partition_exists, bool* change) {
+    auto strategy = GetScratchStrategy();
+    if (strategy == ScratchStrategy::kDynamicPartition) {
+        return CreateDynamicScratch(fstab, scratch_device, partition_exists, change);
+    }
+
+    // The scratch partition can only be landed on a physical partition if we
+    // get here. If there are no viable candidates that are R/W, just return
+    // that there is no device.
+    *scratch_device = GetScratchDevice();
+    if (scratch_device->empty()) {
+        errno = ENXIO;
+        return false;
+    }
+    *partition_exists = true;
     return true;
 }
 
