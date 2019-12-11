@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "65ff9172_faf396eb",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-12-11T22:41:05Z",
+      "side": 1,
+      "message": "adb_remount_test.sh needs to be run. Also watch the post-submit test for this as well just in case it broke.",
+      "range": {
+        "startLine": 21,
+        "startChar": 7,
+        "endLine": 21,
+        "endChar": 17
+      },
+      "revId": "3eb5d9226a3f56811a8388920132353607497c86",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
