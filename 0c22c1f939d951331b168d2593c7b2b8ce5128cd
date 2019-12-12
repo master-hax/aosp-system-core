@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "56bf2fa6_e41912b6",
+        "filename": "liblog/fake_log_device.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 215,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-12-12T18:41:42Z",
+      "side": 1,
+      "message": "(i\u0027m surprised there\u0027s no \"why did you bother to say this?\" warning for this case.)",
+      "revId": "0c22c1f939d951331b168d2593c7b2b8ce5128cd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
