@@ -40,10 +40,13 @@ extern "C" {
 /* Current metadata version. */
 #define LP_METADATA_MAJOR_VERSION 10
 #define LP_METADATA_MINOR_VERSION_MIN 0
-#define LP_METADATA_MINOR_VERSION_MAX 1
+#define LP_METADATA_MINOR_VERSION_MAX 2
 
 /* Metadata version needed to use the UPDATED partition attribute. */
 #define LP_METADATA_VERSION_FOR_UPDATED_ATTR 1
+
+/* Metadata version needed for the new expanded header struct. */
+#define LP_METADATA_VERSION_FOR_EXPANDED_HEADER 2
 
 /* Attributes for the LpMetadataPartition::attributes field.
  *
@@ -212,6 +215,27 @@ typedef struct LpMetadataHeader {
     LpMetadataTableDescriptor groups;
     /* 116: Block device table. */
     LpMetadataTableDescriptor block_devices;
+
+    /* Everything past here is header version 1.2+, and is only included if
+     * needed. When liblp supporting >= 1.2 reads a < 1.2 header, it must
+     * zero these additional fields.
+     */
+
+    /* 128: See LP_HEADER_FLAG_ constants for possible values.
+     *
+     * (Note there are no flags currently defined.)
+     */
+    uint32_t flags;
+
+    /* 132: See LP_HEADER_INCOMPAT_FLAG_ constants for possible values. If any
+     * flags in this set are unrecognized, the header should be rejected.
+     *
+     * (Note there are no incompat flags currently defined.)
+     */
+    uint32_t incompat_flags;
+
+    /* 136: Reserved (zero), pad to 256 bytes. */
+    uint8_t reserved[120];
 } __attribute__((packed)) LpMetadataHeader;
 
 /* This struct defines a logical partition entry, similar to what would be
@@ -350,6 +374,25 @@ typedef struct LpMetadataBlockDevice {
  * (0 = _a, 1 = _b).
  */
 #define LP_BLOCK_DEVICE_SLOT_SUFFIXED (1 << 0)
+
+/* For ease of writing compatibility checks, the original metadata header is
+ * preserved below, and typedefs are provided for the current version.
+ */
+typedef struct LpMetadataHeaderV1_0 {
+    uint32_t magic;
+    uint16_t major_version;
+    uint16_t minor_version;
+    uint32_t header_size;
+    uint8_t header_checksum[32];
+    uint32_t tables_size;
+    uint8_t tables_checksum[32];
+    LpMetadataTableDescriptor partitions;
+    LpMetadataTableDescriptor extents;
+    LpMetadataTableDescriptor groups;
+    LpMetadataTableDescriptor block_devices;
+} __attribute__((packed)) LpMetadataHeaderV1_0;
+
+typedef LpMetadataHeader LpMetadataHeaderV1_2;
 
 #ifdef __cplusplus
 } /* extern "C" */
