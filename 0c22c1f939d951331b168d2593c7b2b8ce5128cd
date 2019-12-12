@@ -16,6 +16,24 @@
       "revId": "0c22c1f939d951331b168d2593c7b2b8ce5128cd",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a768f3dc_662bd584",
+        "filename": "liblog/fake_log_device.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 215,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-12-12T18:45:40Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "56bf2fa6_e41912b6",
+      "revId": "0c22c1f939d951331b168d2593c7b2b8ce5128cd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
