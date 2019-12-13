@@ -74,6 +74,7 @@ cc_library_static {
     header_libs: [
         "libbase_headers",
         "libdebuggerd_common_headers",
+        "bionic_libc_platform_headers",
     ],
 
     whole_static_libs: [
@@ -119,6 +120,10 @@ cc_library_static {
         "liblzma",
         "libcutils",
     ],
+
+    header_libs: ["bionic_libc_platform_headers"],
+    export_header_lib_headers: ["bionic_libc_platform_headers"],
+
     target: {
         recovery: {
             exclude_static_libs: [
@@ -138,15 +143,21 @@ cc_library {
         "util.cpp",
     ],
 
-    header_libs: ["libdebuggerd_common_headers"],
-
     shared_libs: [
         "libbase",
         "libcutils",
         "libprocinfo",
     ],
 
-    export_header_lib_headers: ["libdebuggerd_common_headers"],
+    header_libs: [
+        "libdebuggerd_common_headers",
+        "bionic_libc_platform_headers",
+    ],
+    export_header_lib_headers: [
+        "libdebuggerd_common_headers",
+        "bionic_libc_platform_headers",
+    ],
+
     export_include_dirs: ["include"],
 }
 
@@ -167,6 +178,7 @@ cc_library_static {
 
     // Needed for private/bionic_fdsan.h
     include_dirs: ["bionic/libc"],
+    header_libs: ["bionic_libc_platform_headers"],
 
     static_libs: [
         "libdexfile_support_static",  // libunwindstack dependency
@@ -176,6 +188,7 @@ cc_library_static {
         "libcutils",
         "liblog",
     ],
+
     target: {
         recovery: {
             exclude_static_libs: [
@@ -232,6 +245,10 @@ cc_test {
         "libdebuggerd",
     ],
 
+    header_libs: [
+        "bionic_libc_platform_headers",
+    ],
+
     local_include_dirs: [
         "libdebuggerd",
     ],
@@ -277,6 +294,10 @@ cc_binary {
         },
     },
 
+    header_libs: [
+        "bionic_libc_platform_headers",
+    ],
+
     static_libs: [
         "libtombstoned_client_static",
         "libdebuggerd",
@@ -317,7 +338,10 @@ cc_binary {
     ],
     defaults: ["debuggerd_defaults"],
 
-    header_libs: ["libdebuggerd_common_headers"],
+    header_libs: [
+        "bionic_libc_platform_headers",
+        "libdebuggerd_common_headers"
+    ],
 
     static_libs: [
         "libbase",
