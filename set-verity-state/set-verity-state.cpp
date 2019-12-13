@@ -30,6 +30,7 @@
 #include <android-base/stringprintf.h>
 #include <android-base/unique_fd.h>
 #include <fs_mgr.h>
+#include <fs_mgr/remount.h>
 #include <fs_mgr_overlayfs.h>
 #include <fstab/fstab.h>
 #include <log/log_properties.h>
@@ -43,6 +44,8 @@ static const bool kAllowDisableVerity = false;
 #endif
 
 using android::base::unique_fd;
+using android::fs_mgr::SetupOverlayfs;
+using android::fs_mgr::TeardownOverlayfs;
 
 static void suggest_run_adb_root() {
   if (getuid() != 0) printf("Maybe run adb root?\n");
@@ -100,8 +103,7 @@ static bool set_verity_enabled_state(const char* block_device, const char* mount
 
   auto change = false;
   errno = 0;
-  if (enable ? fs_mgr_overlayfs_teardown(mount_point, &change)
-             : fs_mgr_overlayfs_setup(mount_point, &change)) {
+  if (enable ? TeardownOverlayfs(mount_point, &change) : SetupOverlayfs(mount_point, &change)) {
     if (change) {
       printf("%s overlayfs for %s\n", enable ? "disabling" : "using", mount_point);
     }
@@ -131,8 +133,7 @@ static bool is_avb_device_locked() {
 static bool overlayfs_setup(bool enable) {
   auto change = false;
   errno = 0;
-  if (enable ? fs_mgr_overlayfs_teardown(nullptr, &change)
-             : fs_mgr_overlayfs_setup(nullptr, &change)) {
+  if (enable ? TeardownOverlayfs(nullptr, &change) : SetupOverlayfs(nullptr, &change)) {
     if (change) {
       printf("%s overlayfs\n", enable ? "disabling" : "using");
     }

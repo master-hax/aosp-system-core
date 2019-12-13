@@ -5,15 +5,20 @@ cc_binary {
     srcs: ["set-verity-state.cpp"],
     shared_libs: [
         "libbase",
+        "libcutils",
         "libcrypto",
         "libcrypto_utils",
         "libcutils",
+        "libext4_utils",
         "libfec",
         "libfs_mgr",
+        "liblp",
         "liblog",
+        "libselinux",
     ],
     static_libs: [
         "libavb_user",
+        "libfs_mgr_remount",
     ],
 
     cflags: ["-Werror"],

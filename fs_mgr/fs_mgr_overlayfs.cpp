@@ -44,6 +44,7 @@
 #include <ext4_utils/ext4_utils.h>
 #include <fs_mgr.h>
 #include <fs_mgr/file_wait.h>
+#include <fs_mgr/remount.h>
 #include <fs_mgr_dm_linear.h>
 #include <fs_mgr_overlayfs.h>
 #include <fstab/fstab.h>
@@ -52,6 +53,7 @@
 #include <liblp/builder.h>
 #include <liblp/liblp.h>
 
+#include "fs_mgr_overlayfs_priv.h"
 #include "fs_mgr_priv.h"
 
 using namespace std::literals;
@@ -59,13 +61,6 @@ using namespace android::dm;
 using namespace android::fs_mgr;
 
 namespace {
-
-bool fs_mgr_access(const std::string& path) {
-    auto save_errno = errno;
-    auto ret = access(path.c_str(), F_OK) == 0;
-    errno = save_errno;
-    return ret;
-}
 
 // determine if a filesystem is available
 bool fs_mgr_overlayfs_filesystem_available(const std::string& filesystem) {
@@ -109,15 +104,8 @@ bool fs_mgr_overlayfs_is_setup() {
 namespace {
 
 // list of acceptable overlayfs backing storage
-const auto kScratchMountPoint = "/mnt/scratch"s;
 const auto kCacheMountPoint = "/cache"s;
-const std::vector<const std::string> kOverlayMountPoints = {kScratchMountPoint, kCacheMountPoint};
-
-// Return true if everything is mounted, but before adb is started.  Right
-// after 'trigger load_persist_props_action' is done.
-bool fs_mgr_boot_completed() {
-    return android::base::GetBoolProperty("ro.persistent_properties.ready", false);
-}
+const std::vector<std::string> kOverlayMountPoints = {kScratchMountPoint, kCacheMountPoint};
 
 bool fs_mgr_is_dir(const std::string& path) {
     struct stat st;
@@ -131,25 +119,6 @@ bool fs_mgr_dir_is_writable(const std::string& path) {
     rmdir(test_directory.c_str());
     auto ret = !mkdir(test_directory.c_str(), 0700);
     return ret | !rmdir(test_directory.c_str());
-}
-
-// At less than 1% or 8MB of free space return value of false,
-// means we will try to wrap with overlayfs.
-bool fs_mgr_filesystem_has_space(const std::string& mount_point) {
-    // If we have access issues to find out space remaining, return true
-    // to prevent us trying to override with overlayfs.
-    struct statvfs vst;
-    auto save_errno = errno;
-    if (statvfs(mount_point.c_str(), &vst)) {
-        errno = save_errno;
-        return true;
-    }
-
-    static constexpr int kPercentThreshold = 1;                       // 1%
-    static constexpr unsigned long kSizeThreshold = 8 * 1024 * 1024;  // 8MB
-
-    return (vst.f_bfree >= (vst.f_blocks * kPercentThreshold / 100)) &&
-           (vst.f_bfree * vst.f_bsize) >= kSizeThreshold;
 }
 
 const auto kPhysicalDevice = "/dev/block/by-name/"s;
@@ -201,61 +170,11 @@ bool fs_mgr_overlayfs_enabled(FstabEntry* entry) {
     return has_shared_blocks;
 }
 
-bool fs_mgr_rm_all(const std::string& path, bool* change = nullptr, int level = 0) {
-    auto save_errno = errno;
-    std::unique_ptr<DIR, decltype(&closedir)> dir(opendir(path.c_str()), closedir);
-    if (!dir) {
-        if (errno == ENOENT) {
-            errno = save_errno;
-            return true;
-        }
-        PERROR << "opendir " << path << " depth=" << level;
-        if ((errno == EPERM) && (level != 0)) {
-            errno = save_errno;
-            return true;
-        }
-        return false;
-    }
-    dirent* entry;
-    auto ret = true;
-    while ((entry = readdir(dir.get()))) {
-        if (("."s == entry->d_name) || (".."s == entry->d_name)) continue;
-        auto file = path + "/" + entry->d_name;
-        if (entry->d_type == DT_UNKNOWN) {
-            struct stat st;
-            save_errno = errno;
-            if (!lstat(file.c_str(), &st) && (st.st_mode & S_IFDIR)) entry->d_type = DT_DIR;
-            errno = save_errno;
-        }
-        if (entry->d_type == DT_DIR) {
-            ret &= fs_mgr_rm_all(file, change, level + 1);
-            if (!rmdir(file.c_str())) {
-                if (change) *change = true;
-            } else {
-                if (errno != ENOENT) ret = false;
-                PERROR << "rmdir " << file << " depth=" << level;
-            }
-            continue;
-        }
-        if (!unlink(file.c_str())) {
-            if (change) *change = true;
-        } else {
-            if (errno != ENOENT) ret = false;
-            PERROR << "rm " << file << " depth=" << level;
-        }
-    }
-    return ret;
-}
-
-const auto kUpperName = "upper"s;
-const auto kWorkName = "work"s;
-const auto kOverlayTopDir = "/overlay"s;
-
 std::string fs_mgr_get_overlayfs_candidate(const std::string& mount_point) {
     if (!fs_mgr_is_dir(mount_point)) return "";
     const auto base = android::base::Basename(mount_point) + "/";
     for (const auto& overlay_mount_point : kOverlayMountPoints) {
-        auto dir = overlay_mount_point + kOverlayTopDir + "/" + base;
+        auto dir = overlay_mount_point + std::string(kOverlayTopDir) + "/" + base;
         auto upper = dir + kUpperName;
         if (!fs_mgr_is_dir(upper)) continue;
         auto work = dir + kWorkName;
@@ -281,41 +200,6 @@ std::string fs_mgr_get_overlayfs_options(const std::string& mount_point) {
     return ret;
 }
 
-const std::string fs_mgr_mount_point(const std::string& mount_point) {
-    if ("/"s != mount_point) return mount_point;
-    return "/system";
-}
-
-bool fs_mgr_rw_access(const std::string& path) {
-    if (path.empty()) return false;
-    auto save_errno = errno;
-    auto ret = access(path.c_str(), R_OK | W_OK) == 0;
-    errno = save_errno;
-    return ret;
-}
-
-bool fs_mgr_overlayfs_already_mounted(const std::string& mount_point, bool overlay_only = true) {
-    Fstab fstab;
-    auto save_errno = errno;
-    if (!ReadFstabFromFile("/proc/mounts", &fstab)) {
-        return false;
-    }
-    errno = save_errno;
-    const auto lowerdir = kLowerdirOption + mount_point;
-    for (const auto& entry : fstab) {
-        if (overlay_only && "overlay" != entry.fs_type && "overlayfs" != entry.fs_type) continue;
-        if (mount_point != entry.mount_point) continue;
-        if (!overlay_only) return true;
-        const auto options = android::base::Split(entry.fs_options, ",");
-        for (const auto& opt : options) {
-            if (opt == lowerdir) {
-                return true;
-            }
-        }
-    }
-    return false;
-}
-
 bool fs_mgr_wants_overlayfs(FstabEntry* entry) {
     // Don't check entries that are managed by vold.
     if (entry->fs_mgr_flags.vold_managed || entry->fs_mgr_flags.recovery_only) return false;
@@ -335,207 +219,6 @@ bool fs_mgr_wants_overlayfs(FstabEntry* entry) {
     if (!fs_mgr_overlayfs_enabled(entry)) return false;
 
     return true;
-}
-constexpr char kOverlayfsFileContext[] = "u:object_r:overlayfs_file:s0";
-
-bool fs_mgr_overlayfs_setup_dir(const std::string& dir, std::string* overlay, bool* change) {
-    auto ret = true;
-    auto top = dir + kOverlayTopDir;
-    if (setfscreatecon(kOverlayfsFileContext)) {
-        ret = false;
-        PERROR << "setfscreatecon " << kOverlayfsFileContext;
-    }
-    auto save_errno = errno;
-    if (!mkdir(top.c_str(), 0755)) {
-        if (change) *change = true;
-    } else if (errno != EEXIST) {
-        ret = false;
-        PERROR << "mkdir " << top;
-    } else {
-        errno = save_errno;
-    }
-    setfscreatecon(nullptr);
-
-    if (overlay) *overlay = std::move(top);
-    return ret;
-}
-
-bool fs_mgr_overlayfs_setup_one(const std::string& overlay, const std::string& mount_point,
-                                bool* change) {
-    auto ret = true;
-    if (fs_mgr_overlayfs_already_mounted(mount_point)) return ret;
-    auto fsrec_mount_point = overlay + "/" + android::base::Basename(mount_point) + "/";
-
-    if (setfscreatecon(kOverlayfsFileContext)) {
-        ret = false;
-        PERROR << "setfscreatecon " << kOverlayfsFileContext;
-    }
-    auto save_errno = errno;
-    if (!mkdir(fsrec_mount_point.c_str(), 0755)) {
-        if (change) *change = true;
-    } else if (errno != EEXIST) {
-        ret = false;
-        PERROR << "mkdir " << fsrec_mount_point;
-    } else {
-        errno = save_errno;
-    }
-
-    save_errno = errno;
-    if (!mkdir((fsrec_mount_point + kWorkName).c_str(), 0755)) {
-        if (change) *change = true;
-    } else if (errno != EEXIST) {
-        ret = false;
-        PERROR << "mkdir " << fsrec_mount_point << kWorkName;
-    } else {
-        errno = save_errno;
-    }
-    setfscreatecon(nullptr);
-
-    auto new_context = fs_mgr_get_context(mount_point);
-    if (!new_context.empty() && setfscreatecon(new_context.c_str())) {
-        ret = false;
-        PERROR << "setfscreatecon " << new_context;
-    }
-    auto upper = fsrec_mount_point + kUpperName;
-    save_errno = errno;
-    if (!mkdir(upper.c_str(), 0755)) {
-        if (change) *change = true;
-    } else if (errno != EEXIST) {
-        ret = false;
-        PERROR << "mkdir " << upper;
-    } else {
-        errno = save_errno;
-    }
-    if (!new_context.empty()) setfscreatecon(nullptr);
-
-    return ret;
-}
-
-uint32_t fs_mgr_overlayfs_slot_number() {
-    return SlotNumberForSlotSuffix(fs_mgr_get_slot_suffix());
-}
-
-std::string fs_mgr_overlayfs_super_device(uint32_t slot_number) {
-    return kPhysicalDevice + fs_mgr_get_super_partition_name(slot_number);
-}
-
-bool fs_mgr_overlayfs_has_logical(const Fstab& fstab) {
-    for (const auto& entry : fstab) {
-        if (entry.fs_mgr_flags.logical) {
-            return true;
-        }
-    }
-    return false;
-}
-
-void fs_mgr_overlayfs_umount_scratch() {
-    // Lazy umount will allow us to move on and possibly later
-    // establish a new fresh mount without requiring a reboot should
-    // the developer wish to restart.  Old references should melt
-    // away or have no data.  Main goal is to shut the door on the
-    // current overrides with an expectation of a subsequent reboot,
-    // thus any errors here are ignored.
-    umount2(kScratchMountPoint.c_str(), MNT_DETACH);
-    LINFO << "umount(" << kScratchMountPoint << ")";
-    rmdir(kScratchMountPoint.c_str());
-}
-
-bool fs_mgr_overlayfs_teardown_scratch(const std::string& overlay, bool* change) {
-    // umount and delete kScratchMountPoint storage if we have logical partitions
-    if (overlay != kScratchMountPoint) return true;
-    auto slot_number = fs_mgr_overlayfs_slot_number();
-    auto super_device = fs_mgr_overlayfs_super_device(slot_number);
-    if (!fs_mgr_rw_access(super_device)) return true;
-
-    auto save_errno = errno;
-    if (fs_mgr_overlayfs_already_mounted(kScratchMountPoint, false)) {
-        fs_mgr_overlayfs_umount_scratch();
-    }
-    auto builder = MetadataBuilder::New(super_device, slot_number);
-    if (!builder) {
-        errno = save_errno;
-        return true;
-    }
-    const auto partition_name = android::base::Basename(kScratchMountPoint);
-    if (builder->FindPartition(partition_name) == nullptr) {
-        errno = save_errno;
-        return true;
-    }
-    builder->RemovePartition(partition_name);
-    auto metadata = builder->Export();
-    if (metadata && UpdatePartitionTable(super_device, *metadata.get(), slot_number)) {
-        if (change) *change = true;
-        if (!DestroyLogicalPartition(partition_name)) return false;
-    } else {
-        LERROR << "delete partition " << overlay;
-        return false;
-    }
-    errno = save_errno;
-    return true;
-}
-
-bool fs_mgr_overlayfs_teardown_one(const std::string& overlay, const std::string& mount_point,
-                                   bool* change) {
-    const auto top = overlay + kOverlayTopDir;
-
-    if (!fs_mgr_access(top)) return fs_mgr_overlayfs_teardown_scratch(overlay, change);
-
-    auto cleanup_all = mount_point.empty();
-    const auto partition_name = android::base::Basename(mount_point);
-    const auto oldpath = top + (cleanup_all ? "" : ("/" + partition_name));
-    const auto newpath = cleanup_all ? overlay + "/." + kOverlayTopDir.substr(1) + ".teardown"
-                                     : top + "/." + partition_name + ".teardown";
-    auto ret = fs_mgr_rm_all(newpath);
-    auto save_errno = errno;
-    if (!rename(oldpath.c_str(), newpath.c_str())) {
-        if (change) *change = true;
-    } else if (errno != ENOENT) {
-        ret = false;
-        PERROR << "mv " << oldpath << " " << newpath;
-    } else {
-        errno = save_errno;
-    }
-    ret &= fs_mgr_rm_all(newpath, change);
-    save_errno = errno;
-    if (!rmdir(newpath.c_str())) {
-        if (change) *change = true;
-    } else if (errno != ENOENT) {
-        ret = false;
-        PERROR << "rmdir " << newpath;
-    } else {
-        errno = save_errno;
-    }
-    if (!cleanup_all) {
-        save_errno = errno;
-        if (!rmdir(top.c_str())) {
-            if (change) *change = true;
-            cleanup_all = true;
-        } else if (errno == ENOTEMPTY) {
-            cleanup_all = true;
-            // cleanup all if the content is all hidden (leading .)
-            std::unique_ptr<DIR, decltype(&closedir)> dir(opendir(top.c_str()), closedir);
-            if (!dir) {
-                PERROR << "opendir " << top;
-            } else {
-                dirent* entry;
-                while ((entry = readdir(dir.get()))) {
-                    if (entry->d_name[0] != '.') {
-                        cleanup_all = false;
-                        break;
-                    }
-                }
-            }
-            errno = save_errno;
-        } else if (errno == ENOENT) {
-            cleanup_all = true;
-            errno = save_errno;
-        } else {
-            ret = false;
-            PERROR << "rmdir " << top;
-        }
-    }
-    if (cleanup_all) ret &= fs_mgr_overlayfs_teardown_scratch(overlay, change);
-    return ret;
 }
 
 bool fs_mgr_overlayfs_set_shared_mount(const std::string& mount_point, bool shared_flag) {
@@ -746,83 +429,65 @@ bool fs_mgr_overlayfs_mount(const std::string& mount_point) {
     return retval;
 }
 
-// Mount kScratchMountPoint
-bool fs_mgr_overlayfs_mount_scratch(const std::string& device_path, const std::string mnt_type,
-                                    bool readonly = false) {
-    if (readonly) {
-        if (!fs_mgr_access(device_path)) return false;
-    } else {
-        if (!fs_mgr_rw_access(device_path)) return false;
-    }
+bool fs_mgr_overlayfs_scratch_can_be_mounted(const std::string& scratch_device) {
+    if (scratch_device.empty()) return false;
+    if (fs_mgr_overlayfs_already_mounted(kScratchMountPoint, false)) return false;
+    if (android::base::StartsWith(scratch_device, kPhysicalDevice)) return true;
+    if (fs_mgr_rw_access(scratch_device)) return true;
+    auto slot_number = fs_mgr_overlayfs_slot_number();
+    auto super_device = fs_mgr_overlayfs_super_device(slot_number);
+    if (!fs_mgr_rw_access(super_device)) return false;
+    auto builder = MetadataBuilder::New(super_device, slot_number);
+    if (!builder) return false;
+    return builder->FindPartition(android::base::Basename(kScratchMountPoint)) != nullptr;
+}
 
-    auto f2fs = fs_mgr_is_f2fs(device_path);
-    auto ext4 = fs_mgr_is_ext4(device_path);
-    if (!f2fs && !ext4) return false;
+bool fs_mgr_overlayfs_invalid() {
+    if (fs_mgr_overlayfs_valid() == OverlayfsValidResult::kNotSupported) return true;
 
-    if (setfscreatecon(kOverlayfsFileContext)) {
-        PERROR << "setfscreatecon " << kOverlayfsFileContext;
-    }
-    if (mkdir(kScratchMountPoint.c_str(), 0755) && (errno != EEXIST)) {
-        PERROR << "create " << kScratchMountPoint;
-    }
-
-    FstabEntry entry;
-    entry.blk_device = device_path;
-    entry.mount_point = kScratchMountPoint;
-    entry.fs_type = mnt_type;
-    if ((mnt_type == "f2fs") && !f2fs) entry.fs_type = "ext4";
-    if ((mnt_type == "ext4") && !ext4) entry.fs_type = "f2fs";
-    entry.flags = MS_NOATIME;
-    if (readonly) {
-        entry.flags |= MS_RDONLY;
-    } else {
-        fs_mgr_set_blk_ro(device_path, false);
-    }
-    entry.fs_mgr_flags.check = true;
+    // in recovery, fastbootd, or gsi mode, not allowed!
+    if (fs_mgr_access("/system/bin/recovery")) return true;
     auto save_errno = errno;
-    auto mounted = fs_mgr_do_mount_one(entry) == 0;
-    if (!mounted) {
-        if ((entry.fs_type == "f2fs") && ext4) {
-            entry.fs_type = "ext4";
-            mounted = fs_mgr_do_mount_one(entry) == 0;
-        } else if ((entry.fs_type == "ext4") && f2fs) {
-            entry.fs_type = "f2fs";
-            mounted = fs_mgr_do_mount_one(entry) == 0;
-        }
-        if (!mounted) save_errno = errno;
-    }
-    setfscreatecon(nullptr);
-    if (!mounted) rmdir(kScratchMountPoint.c_str());
+    auto ret = android::gsi::IsGsiRunning();
     errno = save_errno;
-    return mounted;
+    return ret;
 }
 
-const std::string kMkF2fs("/system/bin/make_f2fs");
-const std::string kMkExt4("/system/bin/mke2fs");
+}  // namespace
 
-// Only a suggestion for _first_ try during mounting
-std::string fs_mgr_overlayfs_scratch_mount_type() {
-    if (!access(kMkF2fs.c_str(), X_OK) && fs_mgr_overlayfs_filesystem_available("f2fs")) {
-        return "f2fs";
+// At less than 1% or 8MB of free space return value of false,
+// means we will try to wrap with overlayfs.
+bool fs_mgr_filesystem_has_space(const std::string& mount_point) {
+    // If we have access issues to find out space remaining, return true
+    // to prevent us trying to override with overlayfs.
+    struct statvfs vst;
+    auto save_errno = errno;
+    if (statvfs(mount_point.c_str(), &vst)) {
+        errno = save_errno;
+        return true;
     }
-    if (!access(kMkExt4.c_str(), X_OK) && fs_mgr_overlayfs_filesystem_available("ext4")) {
-        return "ext4";
-    }
-    return "auto";
+
+    static constexpr int kPercentThreshold = 1;                       // 1%
+    static constexpr unsigned long kSizeThreshold = 8 * 1024 * 1024;  // 8MB
+
+    return (vst.f_bfree >= (vst.f_blocks * kPercentThreshold / 100)) &&
+           (vst.f_bfree * vst.f_bsize) >= kSizeThreshold;
 }
 
-enum class ScratchStrategy {
-    kNone,
-    // DAP device, use logical partitions.
-    kDynamicPartition,
-    // Retrofit DAP device, use super_<other>.
-    kSuperOther,
-    // Pre-DAP device, uses the other slot.
-    kSystemOther
-};
+std::vector<std::string> GetOverlayMountPoints() {
+    return kOverlayMountPoints;
+}
+
+uint32_t fs_mgr_overlayfs_slot_number() {
+    return SlotNumberForSlotSuffix(fs_mgr_get_slot_suffix());
+}
+
+std::string fs_mgr_overlayfs_super_device(uint32_t slot_number) {
+    return kPhysicalDevice + fs_mgr_get_super_partition_name(slot_number);
+}
 
 // Return the strategy this device must use for creating a scratch partition.
-static ScratchStrategy GetScratchStrategy(std::string* backing_device = nullptr) {
+ScratchStrategy GetScratchStrategy(std::string* backing_device) {
     auto slot_number = fs_mgr_overlayfs_slot_number();
     auto super_device = fs_mgr_overlayfs_super_device(slot_number);
     auto path = fs_mgr_overlayfs_super_device(slot_number == 0);
@@ -851,7 +516,7 @@ static ScratchStrategy GetScratchStrategy(std::string* backing_device = nullptr)
 }
 
 // Return the scratch device if it exists.
-static std::string GetScratchDevice() {
+std::string GetScratchDevice() {
     std::string device;
     ScratchStrategy strategy = GetScratchStrategy(&device);
 
@@ -873,223 +538,70 @@ static std::string GetScratchDevice() {
     }
 }
 
-bool fs_mgr_overlayfs_make_scratch(const std::string& scratch_device, const std::string& mnt_type) {
-    // Force mkfs by design for overlay support of adb remount, simplify and
-    // thus do not rely on fsck to correct problems that could creep in.
-    auto command = ""s;
-    if (mnt_type == "f2fs") {
-        command = kMkF2fs + " -w 4096 -f -d1 -l" + android::base::Basename(kScratchMountPoint);
-    } else if (mnt_type == "ext4") {
-        command = kMkExt4 + " -F -b 4096 -t ext4 -m 0 -O has_journal -M " + kScratchMountPoint;
-    } else {
-        errno = ESRCH;
-        LERROR << mnt_type << " has no mkfs cookbook";
-        return false;
-    }
-    command += " " + scratch_device + " >/dev/null 2>/dev/null </dev/null";
-    fs_mgr_set_blk_ro(scratch_device, false);
-    auto ret = system(command.c_str());
-    if (ret) {
-        LERROR << "make " << mnt_type << " filesystem on " << scratch_device << " return=" << ret;
-        return false;
-    }
-    return true;
-}
-
-static void TruncatePartitionsWithSuffix(MetadataBuilder* builder, const std::string& suffix) {
-    auto& dm = DeviceMapper::Instance();
-
-    // Remove <other> partitions
-    for (const auto& group : builder->ListGroups()) {
-        for (const auto& part : builder->ListPartitionsInGroup(group)) {
-            const auto& name = part->name();
-            if (!android::base::EndsWith(name, suffix)) {
-                continue;
-            }
-            if (dm.GetState(name) != DmDeviceState::INVALID && !DestroyLogicalPartition(name)) {
-                continue;
-            }
-            builder->ResizePartition(builder->FindPartition(name), 0);
-        }
-    }
-}
-
-// Create or update a scratch partition within super.
-static bool CreateDynamicScratch(const Fstab& fstab, std::string* scratch_device,
-                                 bool* partition_exists, bool* change) {
-    const auto partition_name = android::base::Basename(kScratchMountPoint);
-
-    auto& dm = DeviceMapper::Instance();
-    *partition_exists = dm.GetState(partition_name) != DmDeviceState::INVALID;
-
-    auto partition_create = !*partition_exists;
-    auto slot_number = fs_mgr_overlayfs_slot_number();
-    auto super_device = fs_mgr_overlayfs_super_device(slot_number);
-    if (!fs_mgr_rw_access(super_device)) return false;
-    if (!fs_mgr_overlayfs_has_logical(fstab)) return false;
-    auto builder = MetadataBuilder::New(super_device, slot_number);
-    if (!builder) {
-        LERROR << "open " << super_device << " metadata";
-        return false;
-    }
-    auto partition = builder->FindPartition(partition_name);
-    *partition_exists = partition != nullptr;
-    auto changed = false;
-    if (!*partition_exists) {
-        partition = builder->AddPartition(partition_name, LP_PARTITION_ATTR_NONE);
-        if (!partition) {
-            LERROR << "create " << partition_name;
-            return false;
-        }
-        changed = true;
-    }
-    // Take half of free space, minimum 512MB or maximum free - margin.
-    static constexpr auto kMinimumSize = uint64_t(512 * 1024 * 1024);
-    if (partition->size() < kMinimumSize) {
-        auto partition_size =
-                builder->AllocatableSpace() - builder->UsedSpace() + partition->size();
-        if ((partition_size > kMinimumSize) || !partition->size()) {
-            // Leave some space for free space jitter of a few erase
-            // blocks, in case they are needed for any individual updates
-            // to any other partition that needs to be flashed while
-            // overlayfs is in force.  Of course if margin_size is not
-            // enough could normally get a flash failure, so
-            // ResizePartition() will delete the scratch partition in
-            // order to fulfill.  Deleting scratch will destroy all of
-            // the adb remount overrides :-( .
-            auto margin_size = uint64_t(3 * 256 * 1024);
-            BlockDeviceInfo info;
-            if (builder->GetBlockDeviceInfo(fs_mgr_get_super_partition_name(slot_number), &info)) {
-                margin_size = 3 * info.logical_block_size;
-            }
-            partition_size = std::max(std::min(kMinimumSize, partition_size - margin_size),
-                                      partition_size / 2);
-            if (partition_size > partition->size()) {
-                if (!builder->ResizePartition(partition, partition_size)) {
-                    // Try to free up space by deallocating partitions in the other slot.
-                    TruncatePartitionsWithSuffix(builder.get(), fs_mgr_get_other_slot_suffix());
-
-                    partition_size =
-                            builder->AllocatableSpace() - builder->UsedSpace() + partition->size();
-                    partition_size = std::max(std::min(kMinimumSize, partition_size - margin_size),
-                                              partition_size / 2);
-                    if (!builder->ResizePartition(partition, partition_size)) {
-                        LERROR << "resize " << partition_name;
-                        return false;
-                    }
-                }
-                if (!partition_create) DestroyLogicalPartition(partition_name);
-                changed = true;
-                *partition_exists = false;
-            }
-        }
-    }
-    // land the update back on to the partition
-    if (changed) {
-        auto metadata = builder->Export();
-        if (!metadata || !UpdatePartitionTable(super_device, *metadata.get(), slot_number)) {
-            LERROR << "add partition " << partition_name;
-            return false;
-        }
-
-        if (change) *change = true;
-    }
-
-    if (changed || partition_create) {
-        CreateLogicalPartitionParams params = {
-                .block_device = super_device,
-                .metadata_slot = slot_number,
-                .partition_name = partition_name,
-                .force_writable = true,
-                .timeout_ms = 10s,
-        };
-        if (!CreateLogicalPartition(params, scratch_device)) {
-            return false;
-        }
-
-        if (change) *change = true;
-    }
-    return true;
-}
-
-bool fs_mgr_overlayfs_create_scratch(const Fstab& fstab, std::string* scratch_device,
-                                     bool* partition_exists, bool* change) {
-    auto strategy = GetScratchStrategy();
-    if (strategy == ScratchStrategy::kDynamicPartition) {
-        return CreateDynamicScratch(fstab, scratch_device, partition_exists, change);
-    }
-
-    // The scratch partition can only be landed on a physical partition if we
-    // get here. If there are no viable candidates that are R/W, just return
-    // that there is no device.
-    *scratch_device = GetScratchDevice();
-    if (scratch_device->empty()) {
-        errno = ENXIO;
-        return false;
-    }
-    *partition_exists = true;
-    return true;
-}
-
-// Create and mount kScratchMountPoint storage if we have logical partitions
-bool fs_mgr_overlayfs_setup_scratch(const Fstab& fstab, bool* change) {
-    if (fs_mgr_overlayfs_already_mounted(kScratchMountPoint, false)) return true;
-
-    std::string scratch_device;
-    bool partition_exists;
-    if (!fs_mgr_overlayfs_create_scratch(fstab, &scratch_device, &partition_exists, change)) {
-        return false;
-    }
-
-    // If the partition exists, assume first that it can be mounted.
-    auto mnt_type = fs_mgr_overlayfs_scratch_mount_type();
-    if (partition_exists) {
-        if (fs_mgr_overlayfs_mount_scratch(scratch_device, mnt_type)) {
-            if (!fs_mgr_access(kScratchMountPoint + kOverlayTopDir) &&
-                !fs_mgr_filesystem_has_space(kScratchMountPoint)) {
-                // declare it useless, no overrides and no free space
-                fs_mgr_overlayfs_umount_scratch();
-            } else {
-                if (change) *change = true;
-                return true;
-            }
-        }
-        // partition existed, but was not initialized; fall through to make it.
-        errno = 0;
-    }
-
-    if (!fs_mgr_overlayfs_make_scratch(scratch_device, mnt_type)) return false;
-
-    if (change) *change = true;
-
-    return fs_mgr_overlayfs_mount_scratch(scratch_device, mnt_type);
-}
-
-bool fs_mgr_overlayfs_scratch_can_be_mounted(const std::string& scratch_device) {
-    if (scratch_device.empty()) return false;
-    if (fs_mgr_overlayfs_already_mounted(kScratchMountPoint, false)) return false;
-    if (android::base::StartsWith(scratch_device, kPhysicalDevice)) return true;
-    if (fs_mgr_rw_access(scratch_device)) return true;
-    auto slot_number = fs_mgr_overlayfs_slot_number();
-    auto super_device = fs_mgr_overlayfs_super_device(slot_number);
-    if (!fs_mgr_rw_access(super_device)) return false;
-    auto builder = MetadataBuilder::New(super_device, slot_number);
-    if (!builder) return false;
-    return builder->FindPartition(android::base::Basename(kScratchMountPoint)) != nullptr;
-}
-
-bool fs_mgr_overlayfs_invalid() {
-    if (fs_mgr_overlayfs_valid() == OverlayfsValidResult::kNotSupported) return true;
-
-    // in recovery, fastbootd, or gsi mode, not allowed!
-    if (fs_mgr_access("/system/bin/recovery")) return true;
+bool fs_mgr_access(const std::string& path) {
     auto save_errno = errno;
-    auto ret = android::gsi::IsGsiRunning();
+    auto ret = access(path.c_str(), F_OK) == 0;
     errno = save_errno;
     return ret;
 }
 
-}  // namespace
+bool fs_mgr_rw_access(const std::string& path) {
+    if (path.empty()) return false;
+    auto save_errno = errno;
+    auto ret = access(path.c_str(), R_OK | W_OK) == 0;
+    errno = save_errno;
+    return ret;
+}
+
+const std::string fs_mgr_mount_point(const std::string& mount_point) {
+    if ("/"s != mount_point) return mount_point;
+    return "/system";
+}
+
+// Only a suggestion for _first_ try during mounting
+std::string fs_mgr_overlayfs_scratch_mount_type() {
+    if (!access(kMkF2fs, X_OK) && fs_mgr_overlayfs_filesystem_available("f2fs")) {
+        return "f2fs";
+    }
+    if (!access(kMkExt4, X_OK) && fs_mgr_overlayfs_filesystem_available("ext4")) {
+        return "ext4";
+    }
+    return "auto";
+}
+
+bool fs_mgr_overlayfs_already_mounted(const std::string& mount_point, bool overlay_only) {
+    Fstab fstab;
+    auto save_errno = errno;
+    if (!ReadFstabFromFile("/proc/mounts", &fstab)) {
+        return false;
+    }
+    errno = save_errno;
+    const auto lowerdir = kLowerdirOption + mount_point;
+    for (const auto& entry : fstab) {
+        if (overlay_only && "overlay" != entry.fs_type && "overlayfs" != entry.fs_type) continue;
+        if (mount_point != entry.mount_point) continue;
+        if (!overlay_only) return true;
+        const auto options = android::base::Split(entry.fs_options, ",");
+        for (const auto& opt : options) {
+            if (opt == lowerdir) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+void fs_mgr_overlayfs_umount_scratch() {
+    // Lazy umount will allow us to move on and possibly later
+    // establish a new fresh mount without requiring a reboot should
+    // the developer wish to restart.  Old references should melt
+    // away or have no data.  Main goal is to shut the door on the
+    // current overrides with an expectation of a subsequent reboot,
+    // thus any errors here are ignored.
+    umount2(kScratchMountPoint, MNT_DETACH);
+    LINFO << "umount(" << kScratchMountPoint << ")";
+    rmdir(kScratchMountPoint);
+}
 
 Fstab fs_mgr_overlayfs_candidate_list(const Fstab& fstab) {
     Fstab candidates;
@@ -1119,6 +631,57 @@ Fstab fs_mgr_overlayfs_candidate_list(const Fstab& fstab) {
     return candidates;
 }
 
+// Mount kScratchMountPoint
+bool fs_mgr_overlayfs_mount_scratch(const std::string& device_path, const std::string mnt_type,
+                                    bool readonly) {
+    if (readonly) {
+        if (!fs_mgr_access(device_path)) return false;
+    } else {
+        if (!fs_mgr_rw_access(device_path)) return false;
+    }
+
+    auto f2fs = fs_mgr_is_f2fs(device_path);
+    auto ext4 = fs_mgr_is_ext4(device_path);
+    if (!f2fs && !ext4) return false;
+
+    if (setfscreatecon(kOverlayfsFileContext)) {
+        PERROR << "setfscreatecon " << kOverlayfsFileContext;
+    }
+    if (mkdir(kScratchMountPoint, 0755) && (errno != EEXIST)) {
+        PERROR << "create " << kScratchMountPoint;
+    }
+
+    FstabEntry entry;
+    entry.blk_device = device_path;
+    entry.mount_point = kScratchMountPoint;
+    entry.fs_type = mnt_type;
+    if ((mnt_type == "f2fs") && !f2fs) entry.fs_type = "ext4";
+    if ((mnt_type == "ext4") && !ext4) entry.fs_type = "f2fs";
+    entry.flags = MS_NOATIME;
+    if (readonly) {
+        entry.flags |= MS_RDONLY;
+    } else {
+        fs_mgr_set_blk_ro(device_path, false);
+    }
+    entry.fs_mgr_flags.check = true;
+    auto save_errno = errno;
+    auto mounted = fs_mgr_do_mount_one(entry) == 0;
+    if (!mounted) {
+        if ((entry.fs_type == "f2fs") && ext4) {
+            entry.fs_type = "ext4";
+            mounted = fs_mgr_do_mount_one(entry) == 0;
+        } else if ((entry.fs_type == "ext4") && f2fs) {
+            entry.fs_type = "f2fs";
+            mounted = fs_mgr_do_mount_one(entry) == 0;
+        }
+        if (!mounted) save_errno = errno;
+    }
+    setfscreatecon(nullptr);
+    if (!mounted) rmdir(kScratchMountPoint);
+    errno = save_errno;
+    return mounted;
+}
+
 static void TryMountScratch() {
     auto scratch_device = GetScratchDevice();
     if (!fs_mgr_overlayfs_scratch_can_be_mounted(scratch_device)) {
@@ -1131,7 +694,7 @@ static void TryMountScratch() {
     if (!fs_mgr_overlayfs_mount_scratch(scratch_device, mount_type, true /* readonly */)) {
         return;
     }
-    auto has_overlayfs_dir = fs_mgr_access(kScratchMountPoint + kOverlayTopDir);
+    auto has_overlayfs_dir = fs_mgr_access(kScratchMountPoint + std::string(kOverlayTopDir));
     fs_mgr_overlayfs_umount_scratch();
     if (has_overlayfs_dir) {
         fs_mgr_overlayfs_mount_scratch(scratch_device, mount_type);
@@ -1174,127 +737,6 @@ std::vector<std::string> fs_mgr_overlayfs_required_devices(Fstab* fstab) {
         return {device};
     }
     return {};
-}
-
-// Returns false if setup not permitted, errno set to last error.
-// If something is altered, set *change.
-bool fs_mgr_overlayfs_setup(const char* mount_point, bool* change, bool force) {
-    if (change) *change = false;
-    auto ret = false;
-    if (fs_mgr_overlayfs_valid() == OverlayfsValidResult::kNotSupported) return ret;
-    if (!fs_mgr_boot_completed()) {
-        errno = EBUSY;
-        PERROR << "setup";
-        return ret;
-    }
-
-    auto save_errno = errno;
-    Fstab fstab;
-    if (!ReadDefaultFstab(&fstab)) {
-        return false;
-    }
-    errno = save_errno;
-    auto candidates = fs_mgr_overlayfs_candidate_list(fstab);
-    for (auto it = candidates.begin(); it != candidates.end();) {
-        if (mount_point &&
-            (fs_mgr_mount_point(it->mount_point) != fs_mgr_mount_point(mount_point))) {
-            it = candidates.erase(it);
-            continue;
-        }
-        save_errno = errno;
-        auto verity_enabled = !force && fs_mgr_is_verity_enabled(*it);
-        if (errno == ENOENT || errno == ENXIO) errno = save_errno;
-        if (verity_enabled) {
-            it = candidates.erase(it);
-            continue;
-        }
-        ++it;
-    }
-
-    if (candidates.empty()) return ret;
-
-    std::string dir;
-    for (const auto& overlay_mount_point : kOverlayMountPoints) {
-        if (overlay_mount_point == kScratchMountPoint) {
-            if (!fs_mgr_overlayfs_setup_scratch(fstab, change)) continue;
-        } else {
-            if (GetEntryForMountPoint(&fstab, overlay_mount_point) == nullptr) {
-                continue;
-            }
-        }
-        dir = overlay_mount_point;
-        break;
-    }
-    if (dir.empty()) {
-        if (change && *change) errno = ESRCH;
-        if (errno == EPERM) errno = save_errno;
-        return ret;
-    }
-
-    std::string overlay;
-    ret |= fs_mgr_overlayfs_setup_dir(dir, &overlay, change);
-    for (const auto& entry : candidates) {
-        ret |= fs_mgr_overlayfs_setup_one(overlay, fs_mgr_mount_point(entry.mount_point), change);
-    }
-    return ret;
-}
-
-static bool GetAndMapScratchDeviceIfNeeded(std::string* device) {
-    *device = GetScratchDevice();
-    if (!device->empty()) {
-        return true;
-    }
-
-    auto strategy = GetScratchStrategy();
-    if (strategy == ScratchStrategy::kDynamicPartition) {
-        auto metadata_slot = fs_mgr_overlayfs_slot_number();
-        CreateLogicalPartitionParams params = {
-                .block_device = fs_mgr_overlayfs_super_device(metadata_slot),
-                .metadata_slot = metadata_slot,
-                .partition_name = android::base::Basename(kScratchMountPoint),
-                .force_writable = true,
-                .timeout_ms = 10s,
-        };
-        return CreateLogicalPartition(params, device);
-    }
-    return false;
-}
-
-// Returns false if teardown not permitted, errno set to last error.
-// If something is altered, set *change.
-bool fs_mgr_overlayfs_teardown(const char* mount_point, bool* change) {
-    if (change) *change = false;
-    auto ret = true;
-    // If scratch exists, but is not mounted, lets gain access to clean
-    // specific override entries.
-    auto mount_scratch = false;
-    if ((mount_point != nullptr) && !fs_mgr_overlayfs_already_mounted(kScratchMountPoint, false)) {
-        std::string scratch_device;
-        if (GetAndMapScratchDeviceIfNeeded(&scratch_device)) {
-            mount_scratch = fs_mgr_overlayfs_mount_scratch(scratch_device,
-                                                           fs_mgr_overlayfs_scratch_mount_type());
-        }
-    }
-    for (const auto& overlay_mount_point : kOverlayMountPoints) {
-        ret &= fs_mgr_overlayfs_teardown_one(
-                overlay_mount_point, mount_point ? fs_mgr_mount_point(mount_point) : "", change);
-    }
-    if (fs_mgr_overlayfs_valid() == OverlayfsValidResult::kNotSupported) {
-        // After obligatory teardown to make sure everything is clean, but if
-        // we didn't want overlayfs in the the first place, we do not want to
-        // waste time on a reboot (or reboot request message).
-        if (change) *change = false;
-    }
-    // And now that we did what we could, lets inform
-    // caller that there may still be more to do.
-    if (!fs_mgr_boot_completed()) {
-        errno = EBUSY;
-        PERROR << "teardown";
-        ret = false;
-    }
-    if (mount_scratch) fs_mgr_overlayfs_umount_scratch();
-
-    return ret;
 }
 
 bool fs_mgr_overlayfs_is_setup() {

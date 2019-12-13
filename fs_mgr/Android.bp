@@ -115,11 +115,29 @@ cc_library_static {
     ],
 }
 
+cc_library_static {
+    name: "libfs_mgr_remount",
+    recovery_available: true,
+    defaults: ["fs_mgr_defaults"],
+    srcs: [
+        "libremount.cpp",
+    ],
+    shared_libs: [
+        "libbase",
+    ],
+    static_libs: [
+        "libfs_mgr",
+        "libfstab",
+        "libselinux",
+    ],
+}
+
 cc_binary {
     name: "remount",
     defaults: ["fs_mgr_defaults"],
     static_libs: [
         "libavb_user",
+        "libfs_mgr_remount",
     ],
     shared_libs: [
         "libbootloader_message",

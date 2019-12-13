@@ -143,6 +143,7 @@ cc_binary {
     ],
 
     static_libs: [
+        "libfs_mgr_remount",
         "libhealthhalutils",
         "libsnapshot_nobinder",
     ],

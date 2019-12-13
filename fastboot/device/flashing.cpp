@@ -28,7 +28,7 @@
 #include <android-base/logging.h>
 #include <android-base/strings.h>
 #include <ext4_utils/ext4_utils.h>
-#include <fs_mgr_overlayfs.h>
+#include <fs_mgr/remount.h>
 #include <fstab/fstab.h>
 #include <liblp/builder.h>
 #include <liblp/liblp.h>
@@ -63,7 +63,7 @@ void WipeOverlayfsForPartition(FastbootDevice* device, const std::string& partit
         }
 
         if ((partition + device->GetCurrentSlot()) == partition_name) {
-            fs_mgr_overlayfs_teardown(entry.mount_point.c_str());
+            TeardownOverlayfs(entry.mount_point.c_str());
         }
     }
 }
@@ -161,7 +161,7 @@ bool UpdateSuper(FastbootDevice* device, const std::string& super_name, bool wip
         if (!FlashPartitionTable(super_name, *new_metadata.get())) {
             return device->WriteFail("Unable to flash new partition table");
         }
-        fs_mgr_overlayfs_teardown();
+        TeardownOverlayfs();
         return device->WriteOkay("Successfully flashed partition table");
     }
 
@@ -200,6 +200,6 @@ bool UpdateSuper(FastbootDevice* device, const std::string& super_name, bool wip
     if (!UpdateAllPartitionMetadata(device, super_name, *new_metadata.get())) {
         return device->WriteFail("Unable to write new partition table");
     }
-    fs_mgr_overlayfs_teardown();
+    TeardownOverlayfs();
     return device->WriteOkay("Successfully updated partition table");
 }

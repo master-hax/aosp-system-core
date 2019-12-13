@@ -34,6 +34,7 @@
 #include <bootloader_message/bootloader_message.h>
 #include <cutils/android_reboot.h>
 #include <fec/io.h>
+#include <fs_mgr/remount.h>
 #include <fs_mgr_overlayfs.h>
 #include <fs_mgr_priv.h>
 #include <fstab/fstab.h>
@@ -100,6 +101,8 @@ void MyLogger(android::base::LogId id, android::base::LogSeverity severity, cons
 }
 
 }  // namespace
+
+using android::fs_mgr::SetupOverlayfs;
 
 static int do_remount(int argc, char* argv[]) {
     enum {
@@ -277,7 +280,7 @@ static int do_remount(int argc, char* argv[]) {
 
         auto change = false;
         errno = 0;
-        if (fs_mgr_overlayfs_setup(mount_point.c_str(), &change, just_disabled_verity)) {
+        if (SetupOverlayfs(mount_point.c_str(), &change, just_disabled_verity)) {
             if (change) {
                 LOG(INFO) << "Using overlayfs for " << mount_point;
                 reboot_later = can_reboot;
