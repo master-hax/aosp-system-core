@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "778dfd38_ce0117d9",
+        "filename": "fs_mgr/libpin/include/libpin/pin.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1428004
+      },
+      "writtenOn": "2019-12-13T00:39:36Z",
+      "side": 1,
+      "message": "Fixed, thank you.\nAfter moving the library files with \"git mv\" to the location requested by dvander@ and after\namending the commit, the side by side diff doesn\u0027t seem to work on Gerrit.",
+      "parentUuid": "3b06d9c8_6af39e15",
+      "range": {
+        "startLine": 34,
+        "startChar": 65,
+        "endLine": 34,
+        "endChar": 74
+      },
+      "revId": "30fbcace4b2c2bedd44b7e8ec2dadb9a817b6247",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "304a611d_8377e92b",
         "filename": "fs_mgr/libpin/include/libpin/pin.h",
         "patchSetId": 1
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "bbfc4294_b5b90b6f",
+        "filename": "fs_mgr/libpin/include/libpin/pin.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 1428004
+      },
+      "writtenOn": "2019-12-13T00:39:36Z",
+      "side": 1,
+      "message": "Fixed. Thank you.",
+      "parentUuid": "304a611d_8377e92b",
+      "range": {
+        "startLine": 70,
+        "startChar": 11,
+        "endLine": 70,
+        "endChar": 21
+      },
+      "revId": "30fbcace4b2c2bedd44b7e8ec2dadb9a817b6247",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a74b7f63_e3f8dd14",
         "filename": "fs_mgr/libpin/include/libpin/pin.h",
         "patchSetId": 1
@@ -62,6 +110,24 @@
       "revId": "30fbcace4b2c2bedd44b7e8ec2dadb9a817b6247",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fc8c4002_9eafb620",
+        "filename": "fs_mgr/libpin/include/libpin/pin.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 1428004
+      },
+      "writtenOn": "2019-12-13T00:39:36Z",
+      "side": 1,
+      "message": "Thank you. Changed to use android-base/result.h",
+      "parentUuid": "a74b7f63_e3f8dd14",
+      "revId": "30fbcace4b2c2bedd44b7e8ec2dadb9a817b6247",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -88,6 +154,30 @@
     },
     {
       "key": {
+        "uuid": "83cf560b_c9412958",
+        "filename": "fs_mgr/libpin/include/libpin/pin.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 153,
+      "author": {
+        "id": 1428004
+      },
+      "writtenOn": "2019-12-13T00:39:36Z",
+      "side": 1,
+      "message": "Corrected all the parameters. Thanks you.",
+      "parentUuid": "ca547010_f742039a",
+      "range": {
+        "startLine": 153,
+        "startChar": 45,
+        "endLine": 153,
+        "endChar": 67
+      },
+      "revId": "30fbcace4b2c2bedd44b7e8ec2dadb9a817b6247",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "8c6695e9_e4342fd7",
         "filename": "fs_mgr/libpin/pin_test.cpp",
         "patchSetId": 1
@@ -102,6 +192,24 @@
       "revId": "30fbcace4b2c2bedd44b7e8ec2dadb9a817b6247",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d7540ffc_6aac88dd",
+        "filename": "fs_mgr/libpin/pin_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 1428004
+      },
+      "writtenOn": "2019-12-13T00:39:36Z",
+      "side": 1,
+      "message": "Removed that standalone support. Thank you.\n\nAfter moving the library files with \"git mv\" to the location requested by dvander@ and after\namending the commit, the side by side diff doesn\u0027t seem to work on Gerrit.\n\nThe test program as it exists now does not yet use gtest. I will leave this as a standalone test program for now, after I learn gtest I will write new tests or modify this to become those tests.",
+      "parentUuid": "8c6695e9_e4342fd7",
+      "revId": "30fbcace4b2c2bedd44b7e8ec2dadb9a817b6247",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
