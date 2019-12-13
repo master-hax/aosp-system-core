@@ -131,6 +131,24 @@
     },
     {
       "key": {
+        "uuid": "bd6a98ed_dfd19332",
+        "filename": "fs_mgr/libpin/include/libpin/pin.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-12-13T20:09:58Z",
+      "side": 1,
+      "message": "Thank you.  I have some comments on the latest CL on how it can be better used as well.",
+      "parentUuid": "fc8c4002_9eafb620",
+      "revId": "30fbcace4b2c2bedd44b7e8ec2dadb9a817b6247",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ca547010_f742039a",
         "filename": "fs_mgr/libpin/include/libpin/pin.h",
         "patchSetId": 1
@@ -207,6 +225,24 @@
       "side": 1,
       "message": "Removed that standalone support. Thank you.\n\nAfter moving the library files with \"git mv\" to the location requested by dvander@ and after\namending the commit, the side by side diff doesn\u0027t seem to work on Gerrit.\n\nThe test program as it exists now does not yet use gtest. I will leave this as a standalone test program for now, after I learn gtest I will write new tests or modify this to become those tests.",
       "parentUuid": "8c6695e9_e4342fd7",
+      "revId": "30fbcace4b2c2bedd44b7e8ec2dadb9a817b6247",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "394d44e4_18a93dd8",
+        "filename": "fs_mgr/libpin/pin_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-12-13T20:09:58Z",
+      "side": 1,
+      "message": "Ack.  gtest will help reduce a lot of the boilerplate code here significantly once you start using it.",
+      "parentUuid": "d7540ffc_6aac88dd",
       "revId": "30fbcace4b2c2bedd44b7e8ec2dadb9a817b6247",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false

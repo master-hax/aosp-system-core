@@ -1,0 +1,95 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8e6a56f9_52a97904",
+        "filename": "fs_mgr/libf2fs_pin/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-12-13T20:09:58Z",
+      "side": 1,
+      "message": "Run `bpfmt -w` on this file to format it well, including removing these spaces.",
+      "revId": "dd33298a339aca9f883580a7a20e51fbf848e5f6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "88de3b8d_8fdbf39d",
+        "filename": "fs_mgr/libf2fs_pin/include/f2fs_pin/pin.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-12-13T20:09:58Z",
+      "side": 1,
+      "message": "It\u0027s likely better not to have this typedef, since you likely do want to change the template parameter.\n\nI\u0027ll write comments below on the specific cases that I see, but in general, you want Result\u003cvoid\u003e for the cases where you either return success or an error (with string).  You want Result\u003cOtherType\u003e instead of using output parameters when returning success (with an output) or an error (with string).",
+      "revId": "dd33298a339aca9f883580a7a20e51fbf848e5f6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2aacb67a_dd77dea1",
+        "filename": "fs_mgr/libf2fs_pin/pin.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-12-13T20:09:58Z",
+      "side": 1,
+      "message": "Following from the above comment about result, this would be:\n\nstatic Result\u003cDeviceNumber\u003e FileGetFileSystemDeviceNumber(int file_fd) {\n    struct statx stx;\n    if (statx(file_fd, \"\", AT_EMPTY_PATH, STATX_BASIC_STATS, \u0026stx) \u003c 0)\n        return android::base::ErrnoErrorf(\"statx() failed\");\n    if ((stx.stx_mode \u0026 S_IFMT) !\u003d S_IFREG)\n        return android::base::Errorf((\"file_fd not a regular device\");\n    return DeviceNumber(stx.stx_dev_major, stx.stx_dev_minor);  // Assuming a constructor is added to DeviceNumber\n}",
+      "range": {
+        "startLine": 86,
+        "startChar": 0,
+        "endLine": 99,
+        "endChar": 1
+      },
+      "revId": "dd33298a339aca9f883580a7a20e51fbf848e5f6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fea9b5cc_34cd41e5",
+        "filename": "fs_mgr/libf2fs_pin/pin.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 175,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-12-13T20:09:58Z",
+      "side": 1,
+      "message": "Following on the above comment, this would be used as:\n\nstatic Result\u003cvoid\u003e FileOnFileSystemOnBdev(int file_fd, int bdev_fd) {\n    Result\u003cDeviceNumber\u003e file_system_device_number \u003d FileGetFileSystemDeviceNumber(file_fd);\n    if (!file_system_device_number) return file_system_device_number.error();\n    Result\u003cDeviceNumber\u003e bdev_device_number \u003d BdevGetDeviceNumber(bdev_fd);\n    if (!bdev_device_number) return bdev_device_number.error();\n    if (!bdev_device_number-\u003eEquals(*file_system_device_number))\n        return android::base::Errorf(\"file_fd not on file system on bdev_fd\");\n    return {};\n}",
+      "revId": "dd33298a339aca9f883580a7a20e51fbf848e5f6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bdc2ceb4_8ebc8889",
+        "filename": "fs_mgr/libf2fs_pin/pin.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 226,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-12-13T20:09:58Z",
+      "side": 1,
+      "message": "These error messages can add the input values too, \n\nreturn android::base::ErrnoErrorf(\"invalid /sys/fs/f2fs main_blkaddr value \u0027{}\u0027\", buf);\n\nfor example.",
+      "revId": "dd33298a339aca9f883580a7a20e51fbf848e5f6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
