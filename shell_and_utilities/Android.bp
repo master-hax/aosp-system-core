@@ -12,7 +12,6 @@ phony {
     required: [
         "auditctl",
         "awk",
-        "bc",
         "bzip2",
         "ldd",
         "logwrapper",
