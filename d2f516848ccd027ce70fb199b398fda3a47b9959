@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "bbbdb55b_77a096e7",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/snapshot.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 246,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-12-13T16:49:24Z",
+      "side": 1,
+      "message": "If we really need a tristate return, it may be better to have an enum class so it\u0027s explicit in the code instead of just a comment.",
+      "revId": "d2f516848ccd027ce70fb199b398fda3a47b9959",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ec3f7556_5e2bb8aa",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2342,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-12-13T16:49:24Z",
+      "side": 1,
+      "message": "const auto\u0026",
+      "range": {
+        "startLine": 2342,
+        "startChar": 9,
+        "endLine": 2342,
+        "endChar": 13
+      },
+      "revId": "d2f516848ccd027ce70fb199b398fda3a47b9959",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
