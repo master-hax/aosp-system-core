@@ -1295,7 +1295,6 @@ bool fs_mgr_overlayfs_teardown(const char* mount_point, bool* change) {
         ret = false;
     }
     if (mount_scratch) fs_mgr_overlayfs_umount_scratch();
-
     return ret;
 }
 
