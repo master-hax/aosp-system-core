@@ -1242,6 +1242,30 @@ static Result<void> create_apex_data_dirs() {
     return {};
 }
 
+static Result<void> GenerateLinkerConfigurationWithApex() {
+    const char* linkerconfig_binary = "/system/bin/linkerconfig";
+    const char* linkerconfig_target = "/linkerconfig/ld.config.txt";
+    const std::vector<std::string> arguments = {"", linkerconfig_binary, "--target",
+                                                linkerconfig_target};
+
+    auto service = Service::MakeTemporaryOneshotService(arguments);
+    if (!service) {
+        return Error() << "Could not create exec linkerconfig service: " << service.error();
+    }
+    if (auto result = (*service)->ExecStart(); !result) {
+        return Error() << "Could not start exec linkerconfig service: " << result.error();
+    }
+
+    ServiceList::GetInstance().AddService(std::move(*service));
+
+    mode_t mode = get_mode("0444");
+    if (fchmodat(AT_FDCWD, linkerconfig_target, mode, AT_SYMLINK_NOFOLLOW) < 0) {
+        return ErrnoErrorIgnoreEnoent() << "fchmodat() failed";
+    }
+
+    return {};
+}
+
 static Result<void> do_perform_apex_config(const BuiltinArguments& args) {
     auto create_dirs = create_apex_data_dirs();
     if (!create_dirs) {
@@ -1251,6 +1275,12 @@ static Result<void> do_perform_apex_config(const BuiltinArguments& args) {
     if (!parse_configs) {
         return parse_configs.error();
     }
+
+    auto generate_linkerconfig = GenerateLinkerConfigurationWithApex();
+    if (!generate_linkerconfig) {
+        return generate_linkerconfig.error();
+    }
+
     return {};
 }
 
