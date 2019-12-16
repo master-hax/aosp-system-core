@@ -1017,6 +1017,28 @@ TEST_F(UnwindOfflineTest, debug_frame_first_x86) {
   EXPECT_EQ(0xffcf9e80U, unwinder.frames()[4].sp);
 }
 
+TEST_F(UnwindOfflineTest, unknown_failure_test_error_1) {
+  ASSERT_NO_FATAL_FAILURE(Init("unknown_failure_test_error_1/", ARCH_X86_64));
+  Unwinder unwinder(128, maps_.get(), regs_.get(), process_memory_);
+  unwinder.Unwind();
+
+  std::string frame_info(DumpFrames(unwinder));
+  GTEST_LOG_(INFO) << frame_info;
+  ASSERT_EQ(0, unwinder.LastErrorCode())
+      << "LastErrorAddress: " << std::hex << unwinder.LastErrorAddress();
+}
+
+TEST_F(UnwindOfflineTest, unknown_failure_test_error_2) {
+  ASSERT_NO_FATAL_FAILURE(Init("unknown_failure_test_error_2/", ARCH_X86_64));
+  Unwinder unwinder(128, maps_.get(), regs_.get(), process_memory_);
+  unwinder.Unwind();
+
+  std::string frame_info(DumpFrames(unwinder));
+  GTEST_LOG_(INFO) << frame_info;
+  ASSERT_EQ(0, unwinder.LastErrorCode())
+      << "LastErrorAddress: " << std::hex << unwinder.LastErrorAddress();
+}
+
 // Make sure that a pc that is at the beginning of an fde unwinds correctly.
 TEST_F(UnwindOfflineTest, eh_frame_hdr_begin_x86_64) {
   ASSERT_NO_FATAL_FAILURE(Init("eh_frame_hdr_begin_x86_64/", ARCH_X86_64));

@@ -1,0 +1,32 @@
+121588800000-121588a02000 ---p 00000000 00:00 0 
+2fe9c0000000-2fe9ffc00000 ---p 00000000 00:00 0 
+2fe9ffc00000-2fea00000000 rw-p 00000000 00:00 0 
+56418d2d4000-56418d608000 r-xp 00000000 fe:0c 64488447                   work
+56418d608000-56418d615000 r--p 00333000 fe:0c 64488447                   work
+56418d615000-56418d619000 rw-p 0033f000 fe:0c 64488447                   work
+56418d619000-56418d800000 rw-p 00000000 00:00 0 
+56418d800000-56418de00000 rw-p 00000000 00:00 0 
+56418de00000-56418de90000 rw-p 00000000 00:00 0 
+7fdf77488000-7fdf774dc000 rw-p 00000000 00:00 0 
+7fdf774dc000-7fdf7767e000 r-xp 00000000 fe:01 1974744                    /usr/grte/v4/lib64/libc-2.19.so
+7fdf7767e000-7fdf77682000 r--p 001a1000 fe:01 1974744                    /usr/grte/v4/lib64/libc-2.19.so
+7fdf77682000-7fdf77684000 rw-p 001a5000 fe:01 1974744                    /usr/grte/v4/lib64/libc-2.19.so
+7fdf77684000-7fdf77688000 rw-p 00000000 00:00 0 
+7fdf77688000-7fdf7768f000 r-xp 00000000 fe:01 1975389                    /usr/grte/v4/lib64/librt-2.19.so
+7fdf7768f000-7fdf77690000 r--p 00006000 fe:01 1975389                    /usr/grte/v4/lib64/librt-2.19.so
+7fdf77690000-7fdf77691000 rw-p 00007000 fe:01 1975389                    /usr/grte/v4/lib64/librt-2.19.so
+7fdf77691000-7fdf776a8000 r-xp 00000000 fe:01 1975385                    /usr/grte/v4/lib64/libpthread-2.19.so
+7fdf776a8000-7fdf776a9000 ---p 00017000 fe:01 1975385                    /usr/grte/v4/lib64/libpthread-2.19.so
+7fdf776a9000-7fdf776aa000 r--p 00017000 fe:01 1975385                    /usr/grte/v4/lib64/libpthread-2.19.so
+7fdf776aa000-7fdf776ab000 rw-p 00018000 fe:01 1975385                    /usr/grte/v4/lib64/libpthread-2.19.so
+7fdf776ab000-7fdf776b0000 rw-p 00000000 00:00 0 
+7fdf776b0000-7fdf777b3000 r-xp 00000000 fe:01 1974758                    libm-2.19.so
+7fdf777b3000-7fdf777b4000 r--p 00102000 fe:01 1974758                    libm-2.19.so
+7fdf777b4000-7fdf777b5000 rw-p 00103000 fe:01 1974758                    libm-2.19.so
+7fdf777b5000-7fdf777b9000 rw-p 00000000 00:00 0 
+7fdf777b9000-7fdf777da000 r-xp 00000000 fe:01 1974742                    /usr/grte/v4/lib64/ld-2.19.so
+7fdf777da000-7fdf777db000 r--p 00020000 fe:01 1974742                    /usr/grte/v4/lib64/ld-2.19.so
+7fdf777db000-7fdf777dd000 rw-p 00021000 fe:01 1974742                    /usr/grte/v4/lib64/ld-2.19.so
+7ffe1e9af000-7ffe1e9d1000 rw-p 00000000 00:00 0                          [stack]
+7ffe1e9f9000-7ffe1e9fc000 r--p 00000000 00:00 0                          [vvar]
+7ffe1e9fc000-7ffe1e9fd000 r-xp 00000000 00:00 0                          [vdso]
