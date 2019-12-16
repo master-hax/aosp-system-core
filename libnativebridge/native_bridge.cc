@@ -262,23 +262,27 @@ bool NeedsNativeBridge(const char* instruction_set) {
 }
 
 bool PreInitializeNativeBridge(const char* app_data_dir_in, const char* instruction_set) {
+  if (state == NativeBridgeState::kPreInitialized) {
+    // If forking from AppZygote, pre-initialization may be already done.
+    return true;
+  }
+
   if (state != NativeBridgeState::kOpened) {
     ALOGE("Invalid state: native bridge is expected to be opened.");
     CloseNativeBridge(true);
     return false;
   }
 
-  if (app_data_dir_in == nullptr) {
-    ALOGE("Application private directory cannot be null.");
-    CloseNativeBridge(true);
-    return false;
+  if (app_data_dir_in != nullptr) {
+    // Create the path to the application code cache directory.
+    // The memory will be release after Initialization or when the native bridge is closed.
+    const size_t len = strlen(app_data_dir_in) + strlen(kCodeCacheDir) + 2;  // '\0' + '/'
+    app_code_cache_dir = new char[len];
+    snprintf(app_code_cache_dir, len, "%s/%s", app_data_dir_in, kCodeCacheDir);
+  } else {
+    ALOGW("Application private directory isn't available.");
+    app_code_cache_dir = nullptr;
   }
-
-  // Create the path to the application code cache directory.
-  // The memory will be release after Initialization or when the native bridge is closed.
-  const size_t len = strlen(app_data_dir_in) + strlen(kCodeCacheDir) + 2; // '\0' + '/'
-  app_code_cache_dir = new char[len];
-  snprintf(app_code_cache_dir, len, "%s/%s", app_data_dir_in, kCodeCacheDir);
 
   // Bind-mount /system/lib{,64}/<isa>/cpuinfo to /proc/cpuinfo.
   // Failure is not fatal and will keep the native bridge in kPreInitialized.
@@ -350,7 +354,7 @@ static void SetCpuAbi(JNIEnv* env, jclass build_class, const char* field, const 
 }
 
 // Set up the environment for the bridged app.
-static void SetupEnvironment(const NativeBridgeCallbacks* callbacks, JNIEnv* env, const char* isa) {
+static void SetupEnvironment(const NativeBridgeCallbacks* cbs, JNIEnv* env, const char* isa) {
   // Need a JNIEnv* to do anything.
   if (env == nullptr) {
     ALOGW("No JNIEnv* to set up app environment.");
@@ -358,7 +362,7 @@ static void SetupEnvironment(const NativeBridgeCallbacks* callbacks, JNIEnv* env
   }
 
   // Query the bridge for environment values.
-  const struct NativeBridgeRuntimeValues* env_values = callbacks->getAppEnv(isa);
+  const struct NativeBridgeRuntimeValues* env_values = cbs->getAppEnv(isa);
   if (env_values == nullptr) {
     return;
   }
@@ -414,24 +418,27 @@ bool InitializeNativeBridge(JNIEnv* env, const char* instruction_set) {
   // point we are not multi-threaded, so we do not need locking here.
 
   if (state == NativeBridgeState::kPreInitialized) {
-    // Check for code cache: if it doesn't exist try to create it.
-    struct stat st;
-    if (stat(app_code_cache_dir, &st) == -1) {
-      if (errno == ENOENT) {
-        if (mkdir(app_code_cache_dir, S_IRWXU | S_IRWXG | S_IXOTH) == -1) {
-          ALOGW("Cannot create code cache directory %s: %s.", app_code_cache_dir, strerror(errno));
+    if (app_code_cache_dir) {
+      // Check for code cache: if it doesn't exist try to create it.
+      struct stat st;
+      if (stat(app_code_cache_dir, &st) == -1) {
+        if (errno == ENOENT) {
+          if (mkdir(app_code_cache_dir, S_IRWXU | S_IRWXG | S_IXOTH) == -1) {
+            ALOGW("Cannot create code cache directory %s: %s.", app_code_cache_dir,
+                  strerror(errno));
+            ReleaseAppCodeCacheDir();
+          }
+        } else {
+          ALOGW("Cannot stat code cache directory %s: %s.", app_code_cache_dir, strerror(errno));
           ReleaseAppCodeCacheDir();
         }
-      } else {
-        ALOGW("Cannot stat code cache directory %s: %s.", app_code_cache_dir, strerror(errno));
+      } else if (!S_ISDIR(st.st_mode)) {
+        ALOGW("Code cache is not a directory %s.", app_code_cache_dir);
         ReleaseAppCodeCacheDir();
       }
-    } else if (!S_ISDIR(st.st_mode)) {
-      ALOGW("Code cache is not a directory %s.", app_code_cache_dir);
-      ReleaseAppCodeCacheDir();
     }
 
-    // If we're still PreInitialized (dind't fail the code cache checks) try to initialize.
+    // If we're still PreInitialized (didn't fail the code cache checks) try to initialize.
     if (state == NativeBridgeState::kPreInitialized) {
       if (callbacks->initialize(runtime_callbacks, app_code_cache_dir, instruction_set)) {
         SetupEnvironment(callbacks, env, instruction_set);
