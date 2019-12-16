@@ -38,6 +38,10 @@ on early-init
     # Allow up to 32K FDs per process
     setrlimit nofile 32768 32768
 
+    # Disable dm-verity hash prefetching, since it doesn't help performance
+    # Read more in b/136247322
+    write /sys/module/dm_verity/parameters/prefetch_cluster 0
+
     # Generate ld.config.txt for early executed processes
     exec -- /system/bin/linkerconfig --target /linkerconfig/ld.config.txt
     chmod 444 /linkerconfig/ld.config.txt
