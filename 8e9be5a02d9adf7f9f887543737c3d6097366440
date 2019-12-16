@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "041d072d_1344513d",
+        "filename": "fs_mgr/libfiemap/.clang-format",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-12-16T22:38:07Z",
+      "side": 1,
+      "message": "You don\u0027t need this anymore.",
+      "revId": "8e9be5a02d9adf7f9f887543737c3d6097366440",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
