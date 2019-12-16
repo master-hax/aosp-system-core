@@ -59,6 +59,7 @@
 #include <fs_mgr.h>
 #include <fscrypt/fscrypt.h>
 #include <libgsi/libgsi.h>
+#include <logwrap/logwrap.h>
 #include <selinux/android.h>
 #include <selinux/label.h>
 #include <selinux/selinux.h>
@@ -1242,6 +1243,27 @@ static Result<void> create_apex_data_dirs() {
     return {};
 }
 
+static Result<void> GenerateLinkerConfigurationWithApex() {
+    const char* linkerconfig_binary = "/system/bin/linkerconfig";
+    const char* linkerconfig_target = "/linkerconfig/ld.config.txt";
+    const char* arguments[3] = {linkerconfig_binary, "--target", linkerconfig_target};
+
+    if (logwrap_fork_execvp(arraysize(arguments), arguments, nullptr, false, LOG_KLOG | LOG_ALOG,
+                            false, nullptr) != 0) {
+        return ErrnoError() << "failed to execute linkerconfig";
+    }
+
+    mode_t mode = get_mode("0444");
+    if (fchmodat(AT_FDCWD, linkerconfig_target, mode, AT_SYMLINK_NOFOLLOW) < 0) {
+        return ErrnoErrorIgnoreEnoent() << "fchmodat() failed";
+    }
+
+    LOG(INFO) << "linkerconfig generated " << linkerconfig_target
+              << " with mounted APEX modules info";
+
+    return {};
+}
+
 static Result<void> do_perform_apex_config(const BuiltinArguments& args) {
     auto create_dirs = create_apex_data_dirs();
     if (!create_dirs) {
@@ -1251,6 +1273,12 @@ static Result<void> do_perform_apex_config(const BuiltinArguments& args) {
     if (!parse_configs) {
         return parse_configs.error();
     }
+
+    auto generate_linkerconfig = GenerateLinkerConfigurationWithApex();
+    if (!generate_linkerconfig) {
+        return generate_linkerconfig.error();
+    }
+
     return {};
 }
 
