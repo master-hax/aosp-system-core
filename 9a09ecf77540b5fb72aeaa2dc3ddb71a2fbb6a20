@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "03f601d2_a6e21c03",
+        "filename": "adb/fastdeploy/deploypatchgenerator/apk_archive.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-12-17T00:34:27Z",
+      "side": 1,
+      "message": "From our quick conversation on this earlier today: the original issue was that we wanted to avoid the allocation from unique_ptr, right?  What about using std::optional instead?  There\u0027s no allocation done with that class, but you can still check if its valid or not (has_value() or operator bool).",
+      "revId": "9a09ecf77540b5fb72aeaa2dc3ddb71a2fbb6a20",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
