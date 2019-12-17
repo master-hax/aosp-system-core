@@ -56,7 +56,6 @@ using android::fs_mgr::ReadDefaultFstab;
 using android::fs_mgr::ReadFstabFromDt;
 using android::fs_mgr::SkipMountingPartitions;
 using android::fs_mgr::TransformFstabForDsu;
-using android::init::WriteFile;
 using android::snapshot::SnapshotManager;
 
 using namespace std::literals;
@@ -603,8 +602,13 @@ void FirstStageMount::UseGsiIfPresent() {
         LOG(INFO) << "GSI " << error << ", proceeding with normal boot";
         return;
     }
-
-    auto metadata = android::fs_mgr::ReadFromImageFile(gsi::kDsuLpMetadataFile);
+    std::string active_dsu;
+    if (!gsi::GetActiveDsu(&active_dsu)) {
+        LOG(ERROR) << "Failed to GetActiveDsu";
+        return;
+    }
+    LOG(INFO) << "DSU slot:" << active_dsu;
+    auto metadata = android::fs_mgr::ReadFromImageFile(gsi::DsuLpMetadataFile(active_dsu));
     if (!metadata) {
         LOG(ERROR) << "GSI partition layout could not be read";
         return;
