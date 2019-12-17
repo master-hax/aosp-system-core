@@ -16,6 +16,24 @@
       "revId": "8e9be5a02d9adf7f9f887543737c3d6097366440",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "30d024b1_74d371b7",
+        "filename": "fs_mgr/libfiemap/.clang-format",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-12-17T02:07:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "041d072d_1344513d",
+      "revId": "8e9be5a02d9adf7f9f887543737c3d6097366440",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
