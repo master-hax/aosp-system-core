@@ -33,7 +33,10 @@ cc_defaults {
         "-DCHATTY_LOG_TAG=1004",
     ],
 
-    srcs: ["logd_test.cpp"],
+    srcs: [
+        "logd_slow_reader_test.cpp",
+        "logd_test.cpp",
+    ],
 
     static_libs: [
         "libbase",
