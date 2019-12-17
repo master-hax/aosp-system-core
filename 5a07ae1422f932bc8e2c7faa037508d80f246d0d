@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2ed8b2da_258ec5aa",
+        "filename": "libziparchive/zip_archive.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 275,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-12-17T00:25:47Z",
+      "side": 0,
+      "message": "there are many reasons why InitializeCentralDirectory can fail, and all but one already log. so i\u0027ve moved this down.",
+      "revId": "5a07ae1422f932bc8e2c7faa037508d80f246d0d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "96d42f40_2603d9b1",
+        "filename": "libziparchive/zip_archive.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 357,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-12-17T00:25:47Z",
+      "side": 0,
+      "message": "all of these -1s were wrong, but the compiler doesn\u0027t care. some of the tests already tested these, so i\u0027ve adjusted the expectations.",
+      "revId": "5a07ae1422f932bc8e2c7faa037508d80f246d0d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
