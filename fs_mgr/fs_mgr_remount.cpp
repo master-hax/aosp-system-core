@@ -46,6 +46,7 @@ namespace {
                  "\t-h --help\tthis help\n"
                  "\t-R --reboot\tdisable verity & reboot to facilitate remount\n"
                  "\t-T --fstab\tcustom fstab file location\n"
+                 "\t-c --clean\tremove any unused scratch artifacts and exit\n"
                  "\tpartition\tspecific partition(s) (empty does all)\n"
                  "\n"
                  "Remount specified partition(s) read-write, by name or mount point.\n"
@@ -99,6 +100,10 @@ void MyLogger(android::base::LogId id, android::base::LogSeverity severity, cons
     ::exit(0);  // SUCCESS
 }
 
+void do_clean() {
+    android::fs_mgr::CleanupOldScratchFiles();
+}
+
 }  // namespace
 
 static int do_remount(int argc, char* argv[]) {
@@ -131,6 +136,7 @@ static int do_remount(int argc, char* argv[]) {
             {"fstab", required_argument, nullptr, 'T'},
             {"help", no_argument, nullptr, 'h'},
             {"reboot", no_argument, nullptr, 'R'},
+            {"clean", no_argument, nullptr, 'c'},
             {0, 0, nullptr, 0},
     };
     for (int opt; (opt = ::getopt_long(argc, argv, "hRT:", longopts, nullptr)) != -1;) {
@@ -145,6 +151,9 @@ static int do_remount(int argc, char* argv[]) {
                 }
                 fstab_file = optarg;
                 break;
+            case 'c':
+                do_clean();
+                return SUCCESS;
             default:
                 LOG(ERROR) << "Bad Argument -" << char(opt);
                 usage(BADARG);
