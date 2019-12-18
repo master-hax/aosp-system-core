@@ -91,6 +91,7 @@ cc_defaults {
     },
     header_libs: [
         "libfiemap_headers",
+        "libstorage_literals_headers",
     ],
     export_header_lib_headers: [
         "libfiemap_headers",
@@ -158,7 +159,7 @@ cc_binary {
         "libcrypto",
         "libext4_utils",
         "libfec",
-        "libfs_mgr",
+        "libfs_mgr_binder",
         "liblog",
         "liblp",
         "libselinux",
@@ -180,4 +181,7 @@ cc_binary {
             ],
         },
     },
+    init_rc: [
+        "remount.rc",
+    ],
 }
