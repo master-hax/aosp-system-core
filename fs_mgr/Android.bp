@@ -26,14 +26,14 @@ cc_defaults {
     ],
 }
 
-cc_library {
-    // Do not ever allow this library to be vendor_available as a shared library.
-    // It does not have a stable interface.
-    name: "libfs_mgr",
+cc_defaults {
+    name: "libfs_mgr_defaults",
     defaults: ["fs_mgr_defaults"],
-    recovery_available: true,
     export_include_dirs: ["include"],
     include_dirs: ["system/vold"],
+    cflags: [
+        "-D_FILE_OFFSET_BITS=64",
+    ],
     srcs: [
         "file_wait.cpp",
         "fs_mgr.cpp",
@@ -43,6 +43,7 @@ cc_library {
         "fs_mgr_overlayfs.cpp",
         "fs_mgr_roots.cpp",
         "fs_mgr_vendor_overlay.cpp",
+        ":libfiemap_srcs",
     ],
     shared_libs: [
         "libbase",
@@ -88,6 +89,35 @@ cc_library {
             ],
         },
     },
+    header_libs: [
+        "libfiemap_headers",
+    ],
+    export_header_lib_headers: [
+        "libfiemap_headers",
+    ],
+}
+
+cc_library {
+    // Do not ever allow this library to be vendor_available as a shared library.
+    // It does not have a stable interface.
+    name: "libfs_mgr",
+    recovery_available: true,
+    defaults: [
+        "libfs_mgr_defaults",
+    ],
+    srcs: [
+        ":libfiemap_passthrough_srcs",
+    ],
+}
+
+cc_library {
+    // Do not ever allow this library to be vendor_available as a shared library.
+    // It does not have a stable interface.
+    name: "libfs_mgr_binder",
+    defaults: [
+        "libfs_mgr_defaults",
+        "libfiemap_binder_defaults",
+    ],
 }
 
 cc_library_static {
