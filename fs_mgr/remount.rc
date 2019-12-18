@@ -1,0 +1,2 @@
+on post-fs-data && property:ro.build.type!=user
+    exec_background - root root -- /system/bin/remount -c
