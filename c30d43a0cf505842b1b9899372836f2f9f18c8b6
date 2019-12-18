@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "139e8be4_0fc47a8d",
+        "filename": "init/reboot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 837,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-12-18T16:34:38Z",
+      "side": 1,
+      "message": "Do we have a android::sysprop entry for this?  If it\u0027s just a simple bool, we probably should add one.",
+      "revId": "c30d43a0cf505842b1b9899372836f2f9f18c8b6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8896b971_dacd2630",
+        "filename": "rootdir/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-12-18T16:34:38Z",
+      "side": 1,
+      "message": "Remove this?",
+      "revId": "c30d43a0cf505842b1b9899372836f2f9f18c8b6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
