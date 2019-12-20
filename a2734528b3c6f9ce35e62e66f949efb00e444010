@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fc92e4f2_e05562b5",
+        "filename": "libutils/include/utils/StrongPointer.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 133,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2019-12-20T00:38:24Z",
+      "side": 1,
+      "message": "it might be cleaner to move all of the comparison operator definitons to be defined externally to the class?",
+      "range": {
+        "startLine": 133,
+        "startChar": 8,
+        "endLine": 133,
+        "endChar": 31
+      },
+      "revId": "a2734528b3c6f9ce35e62e66f949efb00e444010",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "57b61a72_be2c35d5",
+        "filename": "libutils/include/utils/StrongPointer.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 146,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2019-12-20T00:38:24Z",
+      "side": 1,
+      "message": "@Hans, is this overkill for nullptr? Any reason to prefer \u0027const T* o\u0027 over std::nullptr_t above?",
+      "revId": "a2734528b3c6f9ce35e62e66f949efb00e444010",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fd9765ff_b4b64ced",
+        "filename": "libutils/include/utils/StrongPointer.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 168,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2019-12-20T00:38:24Z",
+      "side": 1,
+      "message": "I will reorder this if I rebase before submitting https://android-review.googlesource.com/c/platform/system/core/+/1196598",
+      "range": {
+        "startLine": 166,
+        "startChar": 0,
+        "endLine": 168,
+        "endChar": 0
+      },
+      "revId": "a2734528b3c6f9ce35e62e66f949efb00e444010",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
