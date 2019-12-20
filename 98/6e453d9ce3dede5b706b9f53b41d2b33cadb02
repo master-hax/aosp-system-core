@@ -1,0 +1,10 @@
+Open-Source-Licensing+1: Lint 🤖 <android-build-prod-ayeaye@system.gserviceaccount.com>
+Code-Review+2: Jiyong Park <jiyong@google.com>
+Code-Review+2: Jooyung Han <jooyung@google.com>
+Presubmit-Verified+1: Treehugger Robot <treehugger-gerrit@google.com>
+Lint+1: Lint 🤖 <android-build-prod-ayeaye@system.gserviceaccount.com>
+Submitted-by: Kiyoung Kim <kiyoungkim@google.com>
+Submitted-at: Fri, 20 Dec 2019 07:10:26 +0000
+Reviewed-on: https://android-review.googlesource.com/c/platform/system/core/+/1193854
+Project: platform/system/core
+Branch: refs/heads/master
