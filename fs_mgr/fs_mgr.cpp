@@ -880,7 +880,9 @@ static bool call_vdc(const std::vector<std::string>& args, int* ret) {
         argv.emplace_back(arg.c_str());
     }
     LOG(INFO) << "Calling: " << android::base::Join(argv, ' ');
-    int err = logwrap_fork_execvp(argv.size(), argv.data(), ret, false, LOG_ALOG, false, nullptr);
+    // Log into kernel logs when it's init who calls vdc.
+    int log_target = getpid() == 1 ? LOG_KLOG : LOG_ALOG;
+    int err = logwrap_fork_execvp(argv.size(), argv.data(), ret, false, log_target, false, nullptr);
     if (err != 0) {
         LOG(ERROR) << "vdc call failed with error code: " << err;
         return false;
