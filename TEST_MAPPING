@@ -4,6 +4,9 @@
       "name": "adbd_test"
     },
     {
+      "name": "adb_crypto_test"
+    },
+    {
       "name": "CtsInitTestCases"
     },
     {
