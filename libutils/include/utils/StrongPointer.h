@@ -130,6 +130,36 @@ private:
     T* m_ptr;
 };
 
+#define COMPARE_EXTERNAL_STRONG(_op_)                                    \
+    template <typename T>                                                \
+    static inline bool operator _op_(std::nullptr_t, const sp<T>& ptr) { \
+        return nullptr _op_ ptr.get();                                   \
+    }                                                                    \
+    template <typename T, typename U>                                    \
+    static inline bool operator _op_(const T* t, const sp<U>& ptr) {     \
+        return t _op_ ptr.get();                                         \
+    }
+
+#define COMPARE_EXTERNAL_STRONG_FUNCTIONAL(_op_, _compare_)              \
+    template <typename T>                                                \
+    static inline bool operator _op_(std::nullptr_t, const sp<T>& ptr) { \
+        return _sp_compare_<_compare_>(nullptr, ptr.get());              \
+    }                                                                    \
+    template <typename T, typename U>                                    \
+    static inline bool operator _op_(const T* t, const sp<U>& ptr) {     \
+        return _sp_compare_<_compare_>(t, ptr.get());                    \
+    }
+
+COMPARE_EXTERNAL_STRONG(==)
+COMPARE_EXTERNAL_STRONG(!=)
+COMPARE_EXTERNAL_STRONG_FUNCTIONAL(>, std::greater)
+COMPARE_EXTERNAL_STRONG_FUNCTIONAL(<, std::less)
+COMPARE_EXTERNAL_STRONG_FUNCTIONAL(<=, std::less_equal)
+COMPARE_EXTERNAL_STRONG_FUNCTIONAL(>=, std::greater_equal)
+
+#undef COMPARE_EXTERNAL
+#undef COMPARE_EXTERNAL_FUNCTIONAL
+
 // For code size reasons, we do not want these inlined or templated.
 void sp_report_race();
 void sp_report_stack_pointer();
