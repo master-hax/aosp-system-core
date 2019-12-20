@@ -137,6 +137,40 @@ void sp_report_stack_pointer();
 #undef COMPARE_STRONG
 #undef COMPARE_STRONG_FUNCTIONAL
 
+}  // namespace android
+
+#define COMPARE_EXTERNAL_STRONG(_op_)                                             \
+    template <typename T>                                                         \
+    static inline bool operator _op_(std::nullptr_t, const android::sp<T>& ptr) { \
+        return nullptr _op_ ptr.get();                                            \
+    }                                                                             \
+    template <typename T, typename U>                                             \
+    static inline bool operator _op_(const T* t, const android::sp<U>& ptr) {     \
+        return t _op_ ptr.get();                                                  \
+    }
+
+#define COMPARE_EXTERNAL_STRONG_FUNCTIONAL(_op_, _compare_)                       \
+    template <typename T>                                                         \
+    static inline bool operator _op_(std::nullptr_t, const android::sp<T>& ptr) { \
+        return android::_sp_compare_<_compare_>(nullptr, ptr.get());              \
+    }                                                                             \
+    template <typename T, typename U>                                             \
+    static inline bool operator _op_(const T* t, const android::sp<U>& ptr) {     \
+        return android::_sp_compare_<_compare_>(t, ptr.get());                    \
+    }
+
+COMPARE_EXTERNAL_STRONG(==)
+COMPARE_EXTERNAL_STRONG(!=)
+COMPARE_EXTERNAL_STRONG_FUNCTIONAL(>, std::greater)
+COMPARE_EXTERNAL_STRONG_FUNCTIONAL(<, std::less)
+COMPARE_EXTERNAL_STRONG_FUNCTIONAL(<=, std::less_equal)
+COMPARE_EXTERNAL_STRONG_FUNCTIONAL(>=, std::greater_equal)
+
+#undef COMPARE_EXTERNAL
+#undef COMPARE_EXTERNAL_FUNCTIONAL
+
+namespace android {
+
 // ---------------------------------------------------------------------------
 // No user serviceable parts below here.
 
