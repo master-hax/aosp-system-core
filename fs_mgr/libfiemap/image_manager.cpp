@@ -130,27 +130,24 @@ bool ImageManager::BackingImageExists(const std::string& name) {
     return access(header_file.c_str(), F_OK) == 0;
 }
 
-bool ImageManager::CreateBackingImage(const std::string& name, uint64_t size, int flags) {
-    return CreateBackingImage(name, size, flags, nullptr);
-}
-
 static bool IsUnreliablePinningAllowed(const std::string& path) {
     return android::base::StartsWith(path, "/data/gsi/dsu/") ||
            android::base::StartsWith(path, "/data/gsi/test/") ||
            android::base::StartsWith(path, "/data/gsi/ota/test/");
 }
 
-bool ImageManager::CreateBackingImage(const std::string& name, uint64_t size, int flags,
-                                      std::function<bool(uint64_t, uint64_t)>&& on_progress) {
+ImageManagerStatus ImageManager::CreateBackingImage(
+        const std::string& name, uint64_t size, int flags,
+        std::function<bool(uint64_t, uint64_t)>&& on_progress) {
     auto data_path = GetImageHeaderPath(name);
     auto fw = SplitFiemap::Create(data_path, size, 0, on_progress);
     if (!fw) {
-        return false;
+        return ImageManagerStatus(errno == 0 ? UNKNOWN_ERROR : -errno);
     }
 
     bool reliable_pinning;
     if (!FilesystemHasReliablePinning(data_path, &reliable_pinning)) {
-        return false;
+        return ImageManagerStatus(errno == 0 ? UNKNOWN_ERROR : -errno);
     }
     if (!reliable_pinning && !IsUnreliablePinningAllowed(data_path)) {
         // For historical reasons, we allow unreliable pinning for certain use
@@ -161,7 +158,7 @@ bool ImageManager::CreateBackingImage(const std::string& name, uint64_t size, in
         // proper pinning.
         LOG(ERROR) << "File system does not have reliable block pinning";
         SplitFiemap::RemoveSplitFiles(data_path);
-        return false;
+        return ImageManagerStatus(errno == 0 ? UNKNOWN_ERROR : -errno);
     }
 
     // Except for testing, we do not allow persisting metadata that references
@@ -177,21 +174,21 @@ bool ImageManager::CreateBackingImage(const std::string& name, uint64_t size, in
 
         fw = {};
         SplitFiemap::RemoveSplitFiles(data_path);
-        return false;
+        return ImageManagerStatus(errno == 0 ? UNKNOWN_ERROR : -errno);
     }
 
     bool readonly = !!(flags & CREATE_IMAGE_READONLY);
     if (!UpdateMetadata(metadata_dir_, name, fw.get(), size, readonly)) {
-        return false;
+        return ImageManagerStatus(errno == 0 ? UNKNOWN_ERROR : -errno);
     }
 
     if (flags & CREATE_IMAGE_ZERO_FILL) {
         if (!ZeroFillNewImage(name, 0)) {
             DeleteBackingImage(name);
-            return false;
+            return ImageManagerStatus(errno == 0 ? UNKNOWN_ERROR : -errno);
         }
     }
-    return true;
+    return ImageManagerStatus(OK);
 }
 
 bool ImageManager::ZeroFillNewImage(const std::string& name, uint64_t bytes) {

@@ -17,6 +17,7 @@
 #if !defined(__ANDROID_RECOVERY__)
 #include <android-base/logging.h>
 #include <android-base/properties.h>
+#include <android/gsi/BnProgressCallback.h>
 #include <android/gsi/IGsiService.h>
 #include <android/gsi/IGsid.h>
 #include <binder/IServiceManager.h>
@@ -29,10 +30,30 @@ namespace fiemap {
 using namespace android::gsi;
 using namespace std::chrono_literals;
 
+class ProgressCallback final : public BnProgressCallback {
+  public:
+    ProgressCallback(std::function<bool(uint64_t, uint64_t)>&& callback)
+        : callback_(std::move(callback)) {
+        CHECK(callback_);
+    }
+    android::binder::Status onProgress(int64_t current, int64_t total) {
+        if (callback_(static_cast<uint64_t>(current), static_cast<uint64_t>(total))) {
+            return android::binder::Status::ok();
+        }
+        return android::binder::Status::fromServiceSpecificError(UNKNOWN_ERROR,
+                                                                 "Progress callback failed");
+    }
+
+  private:
+    std::function<bool(uint64_t, uint64_t)> callback_;
+};
+
 class ImageManagerBinder final : public IImageManager {
   public:
     ImageManagerBinder(android::sp<IGsiService>&& service, android::sp<IImageService>&& manager);
-    bool CreateBackingImage(const std::string& name, uint64_t size, int flags) override;
+    ImageManagerStatus CreateBackingImage(
+            const std::string& name, uint64_t size, int flags,
+            std::function<bool(uint64_t, uint64_t)>&& on_progress) override;
     bool DeleteBackingImage(const std::string& name) override;
     bool MapImageDevice(const std::string& name, const std::chrono::milliseconds& timeout_ms,
                         std::string* path) override;
@@ -55,14 +76,25 @@ ImageManagerBinder::ImageManagerBinder(android::sp<IGsiService>&& service,
                                        android::sp<IImageService>&& manager)
     : service_(std::move(service)), manager_(std::move(manager)) {}
 
-bool ImageManagerBinder::CreateBackingImage(const std::string& name, uint64_t size, int flags) {
-    auto status = manager_->createBackingImage(name, size, flags);
-    if (!status.isOk()) {
-        LOG(ERROR) << __PRETTY_FUNCTION__
-                   << " binder returned: " << status.exceptionMessage().string();
-        return false;
+ImageManagerStatus ImageManagerBinder::CreateBackingImage(
+        const std::string& name, uint64_t size, int flags,
+        std::function<bool(uint64_t, uint64_t)>&& on_progress) {
+    sp<IProgressCallback> callback = nullptr;
+    if (on_progress) {
+        callback = new ProgressCallback(std::move(on_progress));
     }
-    return true;
+    auto status = manager_->createBackingImage(name, size, flags, callback);
+    if (!status.isOk()) {
+        LOG(ERROR) << __PRETTY_FUNCTION__ << " binder returned: " << status.toString8().string();
+        if (status.serviceSpecificErrorCode() != 0) {
+            return ImageManagerStatus(status.serviceSpecificErrorCode());
+        } else if (status.transactionError() != OK) {
+            return ImageManagerStatus(status.transactionError());
+        } else {
+            return ImageManagerStatus(UNKNOWN_ERROR);
+        }
+    }
+    return ImageManagerStatus(OK);
 }
 
 bool ImageManagerBinder::DeleteBackingImage(const std::string& name) {

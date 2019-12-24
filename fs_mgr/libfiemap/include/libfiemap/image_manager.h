@@ -25,9 +25,26 @@
 
 #include <android-base/unique_fd.h>
 #include <liblp/partition_opener.h>
+#include <utils/Errors.h>
 
 namespace android {
 namespace fiemap {
+
+// A wrapper of a status_t code. The difference is that when contextually converted to bool, this
+// object returns true for OK and false otherwise. To retrieve the internal status_t value, one must
+// explicitly call status().
+//
+// This class is created to align calling conventions on IImageManager. Functions of IImageManager
+// should return a value that evaluates to "true" on success and "false" on error.
+class ImageManagerStatus {
+  public:
+    explicit constexpr ImageManagerStatus(status_t status) : status_(status){};
+    operator bool() const { return status_ == OK; }
+    status_t status() const { return status_; }
+
+  private:
+    status_t status_;
+};
 
 class IImageManager {
   public:
@@ -51,7 +68,9 @@ class IImageManager {
     // of the image is undefined. If zero-fill is requested, and the operation
     // cannot be completed, the image will be deleted and this function will
     // return false.
-    virtual bool CreateBackingImage(const std::string& name, uint64_t size, int flags) = 0;
+    virtual ImageManagerStatus CreateBackingImage(
+            const std::string& name, uint64_t size, int flags,
+            std::function<bool(uint64_t, uint64_t)>&& on_progress = nullptr) = 0;
 
     // Delete an image created with CreateBackingImage. Its entry will be
     // removed from the associated lp_metadata file.
@@ -109,7 +128,9 @@ class ImageManager final : public IImageManager {
     static std::unique_ptr<ImageManager> Open(const std::string& dir_prefix);
 
     // Methods that must be implemented from IImageManager.
-    bool CreateBackingImage(const std::string& name, uint64_t size, int flags) override;
+    ImageManagerStatus CreateBackingImage(
+            const std::string& name, uint64_t size, int flags,
+            std::function<bool(uint64_t, uint64_t)>&& on_progress) override;
     bool DeleteBackingImage(const std::string& name) override;
     bool MapImageDevice(const std::string& name, const std::chrono::milliseconds& timeout_ms,
                         std::string* path) override;
@@ -121,9 +142,6 @@ class ImageManager final : public IImageManager {
     bool RemoveAllImages() override;
 
     std::vector<std::string> GetAllBackingImages();
-    // Same as CreateBackingImage, but provides a progress notification.
-    bool CreateBackingImage(const std::string& name, uint64_t size, int flags,
-                            std::function<bool(uint64_t, uint64_t)>&& on_progress);
 
     // Returns true if the named partition exists. This does not check the
     // consistency of the backing image/data file.
