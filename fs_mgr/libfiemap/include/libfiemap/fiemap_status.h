@@ -39,6 +39,10 @@ class FiemapStatus {
         return FiemapStatus(ErrorCodeFromErrno(error_num));
     }
 
+    // Create from an integer error code that is expected to be an ErrorCode
+    // value. If it isn't, Error() is returned.
+    static inline FiemapStatus FromErrorCode(int32_t error_code);
+
     // Generic error.
     static inline FiemapStatus Error() { return FiemapStatus(ErrorCode::ERROR); }
 
@@ -78,6 +82,17 @@ FiemapStatus::ErrorCode FiemapStatus::ErrorCodeFromErrno(int error_num) {
             return ErrorCode::NO_SPACE;
         default:
             return ErrorCode::ERROR;
+    }
+}
+
+FiemapStatus FiemapStatus::FromErrorCode(int32_t error_code) {
+    switch (error_code) {
+        case static_cast<int32_t>(ErrorCode::SUCCESS):
+        case static_cast<int32_t>(ErrorCode::NO_SPACE):
+            return FiemapStatus(static_cast<ErrorCode>(error_code));
+        case static_cast<int32_t>(ErrorCode::ERROR):
+        default:
+            return FiemapStatus::Error();
     }
 }
 
