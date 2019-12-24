@@ -17,6 +17,7 @@
 #include <fcntl.h>
 #include <sys/file.h>
 #include <sys/stat.h>
+#include <sys/statvfs.h>
 #include <sys/types.h>
 
 #include <chrono>
@@ -67,6 +68,8 @@ using namespace ::testing;
 using namespace android::storage_literals;
 using namespace std::chrono_literals;
 using namespace std::string_literals;
+
+static constexpr const char* kUserDataDevice = "/data";
 
 // Global states. See test_helpers.h.
 std::unique_ptr<SnapshotManager> sm;
@@ -1699,6 +1702,68 @@ INSTANTIATE_TEST_SUITE_P(Snapshot, FlashAfterUpdateTest, Combine(Values(0, 1), B
                                     "Slot"s + (std::get<1>(info.param) ? "After"s : "Before"s) +
                                     "Merge"s;
                          });
+
+// Test behavior of ImageManager::Create on low space scenario. These tests assumes image manager
+// uses /data as backup device.
+class ImageManagerTest : public SnapshotTest {
+  public:
+    void SetUp() override {
+        SnapshotTest::SetUp();
+
+        struct statvfs buf;
+        ASSERT_EQ(0, statvfs(kUserDataDevice, &buf)) << strerror(errno);
+        bsize = buf.f_bsize;
+        ASSERT_NE(0, bsize);
+        free_space = buf.f_bsize * buf.f_bfree;
+        available_space = buf.f_bsize * buf.f_bavail;
+        if (free_space > kMaxFree) {
+            // Simulate low-space scenario by allocating a big file.
+            big_file = std::make_unique<TemporaryFile>();
+            ASSERT_GT(big_file->fd, 0);
+            ASSERT_THAT(big_file->path, StartsWith(kUserDataDevice));
+            LOG(INFO) << "Allocating " << (free_space - kMaxFree) << " bytes of file "
+                      << big_file->path;
+            ASSERT_EQ(0, fallocate(big_file->fd, 0, 0, free_space - kMaxFree));
+
+            // recompute available space on /data
+            ASSERT_EQ(0, statvfs(kUserDataDevice, &buf)) << strerror(errno);
+            free_space = buf.f_bsize * buf.f_bfree;
+            ASSERT_LE(free_space, kMaxFree);
+        }
+        LOG(INFO) << "Remaining free space on /data is " << free_space << " bytes";
+    }
+    void TearDown() override {
+        EXPECT_TRUE(!image_manager_->BackingImageExists(kImageName) ||
+                    image_manager_->DeleteBackingImage(kImageName));
+    }
+    static constexpr auto kMaxFree = 512_MiB;
+    static constexpr const char* kImageName = "my_image";
+
+    std::unique_ptr<TemporaryFile> big_file;
+    uint64_t free_space = 0;
+    uint64_t available_space = 0;
+    uint64_t bsize = 0;
+};
+
+TEST_F(ImageManagerTest, CreateImageEnoughSpace) {
+    if (available_space <= 4_MiB) {
+        GTEST_SKIP() << "/data is (almost) full (" << available_space << " bytes free), skipping";
+    }
+    ASSERT_TRUE(image_manager_->CreateBackingImage(kImageName, available_space,
+                                                   IImageManager::CREATE_IMAGE_DEFAULT))
+            << "Should be able to create image with size = " << available_space << " bytes";
+    ASSERT_TRUE(image_manager_->DeleteBackingImage(kImageName))
+            << "Should be able to delete created image";
+}
+
+TEST_F(ImageManagerTest, CreateImageNoSpace) {
+    uint64_t to_allocate = free_space + bsize;
+    auto res = image_manager_->CreateBackingImage(kImageName, to_allocate,
+                                                  IImageManager::CREATE_IMAGE_DEFAULT);
+    ASSERT_FALSE(res) << "Should not be able to create image with size = " << to_allocate
+                      << " bytes because only " << free_space << " bytes are free";
+    ASSERT_EQ(-ENOSPC, res.status()) << statusToString(res.status());
+}
 
 }  // namespace snapshot
 }  // namespace android
