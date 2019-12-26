@@ -315,7 +315,7 @@ void Service::Reap(const siginfo_t& siginfo) {
     boot_clock::time_point now = boot_clock::now();
     if (((flags_ & SVC_CRITICAL) || is_process_updatable) && !(flags_ & SVC_RESTART)) {
         bool boot_completed = android::base::GetBoolProperty("sys.boot_completed", false);
-        if (now < time_crashed_ + 4min || !boot_completed) {
+        if (now < time_crashed_ + fatal_crash_window_ || !boot_completed) {
             if (++crash_count_ > 4) {
                 if (flags_ & SVC_CRITICAL) {
                     // Aborts into bootloader
