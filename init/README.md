@@ -173,9 +173,11 @@ runs the service.
   This option connects stdin, stdout, and stderr to the console. It is mutually exclusive with the
   stdio_to_kmsg option, which only connects stdout and stderr to kmsg.
 
-`critical`
+`critical [<crash grudge hold mins>]`
 > This is a device-critical service. If it exits more than four times in
-  four minutes or before boot completes, the device will reboot into bootloader.
+  _crash grudge hold mins_ minutes or before boot completes, the device
+  will reboot into bootloader.
+  The default value of _crash grudge hold mins_ is 4.
 
 `disabled`
 > This service will not automatically start with its class.

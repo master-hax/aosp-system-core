@@ -143,6 +143,7 @@ Service::Service(const std::string& name, unsigned flags, uid_t uid, gid_t gid,
       flags_(flags),
       pid_(0),
       crash_count_(0),
+      crash_grudge_hold_(4min),
       proc_attr_{.ioprio_class = IoSchedClass_NONE,
                  .ioprio_pri = 0,
                  .uid = uid,
@@ -315,7 +316,7 @@ void Service::Reap(const siginfo_t& siginfo) {
     boot_clock::time_point now = boot_clock::now();
     if (((flags_ & SVC_CRITICAL) || is_process_updatable) && !(flags_ & SVC_RESTART)) {
         bool boot_completed = android::base::GetBoolProperty("sys.boot_completed", false);
-        if (now < time_crashed_ + 4min || !boot_completed) {
+        if (now < time_crashed_ + crash_grudge_hold_ || !boot_completed) {
             if (++crash_count_ > 4) {
                 if (flags_ & SVC_CRITICAL) {
                     // Aborts into bootloader

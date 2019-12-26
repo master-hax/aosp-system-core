@@ -94,6 +94,15 @@ Result<void> ServiceParser::ParseConsole(std::vector<std::string>&& args) {
 
 Result<void> ServiceParser::ParseCritical(std::vector<std::string>&& args) {
     service_->flags_ |= SVC_CRITICAL;
+
+    if (args.size() > 1) {
+        int minutes;
+        if (!ParseInt(args[1], &minutes, 1)) {
+            return Error() << "critical: 'crash_grudge_hold_mins' must be an integer >= 1";
+        }
+        service_->crash_grudge_hold_ = std::chrono::minutes(minutes);
+    }
+
     return {};
 }
 
@@ -500,7 +509,7 @@ const KeywordMap<ServiceParser::OptionParser>& ServiceParser::GetParserMap() con
         {"capabilities",            {0,     kMax, &ServiceParser::ParseCapabilities}},
         {"class",                   {1,     kMax, &ServiceParser::ParseClass}},
         {"console",                 {0,     1,    &ServiceParser::ParseConsole}},
-        {"critical",                {0,     0,    &ServiceParser::ParseCritical}},
+        {"critical",                {0,     1,    &ServiceParser::ParseCritical}},
         {"disabled",                {0,     0,    &ServiceParser::ParseDisabled}},
         {"enter_namespace",         {2,     2,    &ServiceParser::ParseEnterNamespace}},
         {"file",                    {2,     2,    &ServiceParser::ParseFile}},
