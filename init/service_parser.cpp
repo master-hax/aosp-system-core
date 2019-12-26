@@ -94,6 +94,24 @@ Result<void> ServiceParser::ParseConsole(std::vector<std::string>&& args) {
 
 Result<void> ServiceParser::ParseCritical(std::vector<std::string>&& args) {
     service_->flags_ |= SVC_CRITICAL;
+
+    for (auto it = args.begin() + 1; it != args.end(); ++it) {
+        auto arg = android::base::Split(*it, "=");
+        if (arg.size() != 2) {
+            return Error() << "critical: Argument '" << *it << "' is not supported";
+        }
+        if (arg[0] == "target") {
+            service_->fatal_reboot_target_ = arg[1];
+        } else if (arg[0] == "window") {
+            int minutes;
+            if (!ParseInt(arg[1], &minutes, 1)) {
+                return Error() << "critical: 'fatal_crash_window' must be an integer >= 1";
+            }
+            service_->fatal_crash_window_ = std::chrono::minutes(minutes);
+        } else {
+            return Error() << "critical: Argument '" << *it << "' is not supported";
+        }
+    }
     return {};
 }
 
@@ -500,7 +518,7 @@ const KeywordMap<ServiceParser::OptionParser>& ServiceParser::GetParserMap() con
         {"capabilities",            {0,     kMax, &ServiceParser::ParseCapabilities}},
         {"class",                   {1,     kMax, &ServiceParser::ParseClass}},
         {"console",                 {0,     1,    &ServiceParser::ParseConsole}},
-        {"critical",                {0,     0,    &ServiceParser::ParseCritical}},
+        {"critical",                {0,     2,    &ServiceParser::ParseCritical}},
         {"disabled",                {0,     0,    &ServiceParser::ParseDisabled}},
         {"enter_namespace",         {2,     2,    &ServiceParser::ParseEnterNamespace}},
         {"file",                    {2,     2,    &ServiceParser::ParseFile}},
