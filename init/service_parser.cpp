@@ -94,6 +94,26 @@ Result<void> ServiceParser::ParseConsole(std::vector<std::string>&& args) {
 
 Result<void> ServiceParser::ParseCritical(std::vector<std::string>&& args) {
     service_->flags_ |= SVC_CRITICAL;
+
+    for (auto it = args.begin() + 1; it != args.end(); ++it) {
+        // Split the arg to key, value = arg[0:3], arg[3:-1]
+        if (it->length() >= 3) {
+            auto key = it->substr(0, 3);
+            auto value = it->substr(3, it->length());
+            if (key == "-t=") {
+                service_->fatal_reboot_target_ = value;
+                continue;
+            } else if (key == "-w=") {
+                int minutes;
+                if (!ParseInt(value, &minutes, 1)) {
+                    return Error() << "critical: 'fatal_crash_window' must be an integer >= 1";
+                }
+                service_->fatal_crash_window_ = std::chrono::minutes(minutes);
+                continue;
+            }
+        }
+        return Error() << "critical: Argument '" << *it << "' is not supported";
+    }
     return {};
 }
 
@@ -500,7 +520,7 @@ const KeywordMap<ServiceParser::OptionParser>& ServiceParser::GetParserMap() con
         {"capabilities",            {0,     kMax, &ServiceParser::ParseCapabilities}},
         {"class",                   {1,     kMax, &ServiceParser::ParseClass}},
         {"console",                 {0,     1,    &ServiceParser::ParseConsole}},
-        {"critical",                {0,     0,    &ServiceParser::ParseCritical}},
+        {"critical",                {0,     2,    &ServiceParser::ParseCritical}},
         {"disabled",                {0,     0,    &ServiceParser::ParseDisabled}},
         {"enter_namespace",         {2,     2,    &ServiceParser::ParseEnterNamespace}},
         {"file",                    {2,     2,    &ServiceParser::ParseFile}},
