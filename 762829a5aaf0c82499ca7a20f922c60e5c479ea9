@@ -1,0 +1,61 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d961e729_2c8599c5",
+        "filename": "init/reboot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-12-27T20:40:02Z",
+      "side": 1,
+      "message": "We have arraysize in android-base/macros.h: https://cs.android.com/android/platform/superproject/+/master:system/core/base/include/android-base/macros.h;l\u003d76",
+      "revId": "762829a5aaf0c82499ca7a20f922c60e5c479ea9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "91890122_7c9bf4af",
+        "filename": "init/reboot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 873,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-12-27T20:40:02Z",
+      "side": 1,
+      "message": "bootloader_message* boot\n\ngit should run clang-format automatically, which would make the same change.",
+      "range": {
+        "startLine": 873,
+        "startChar": 29,
+        "endLine": 873,
+        "endChar": 53
+      },
+      "revId": "762829a5aaf0c82499ca7a20f922c60e5c479ea9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0ecff4e6_35cbd362",
+        "filename": "init/reboot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 881,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-12-27T20:40:02Z",
+      "side": 1,
+      "message": "break; instead of the goto.",
+      "revId": "762829a5aaf0c82499ca7a20f922c60e5c479ea9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
