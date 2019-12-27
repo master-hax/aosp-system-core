@@ -21,6 +21,7 @@
 #include <string>
 
 #include <libfiemap/split_fiemap_writer.h>
+#include <utils/Errors.h>
 
 namespace android {
 namespace fiemap {
@@ -50,6 +51,10 @@ bool BlockDeviceToName(uint32_t major, uint32_t minor, std::string* bdev_name);
 // in conjunction with ImageManager to reject image requests for reliable use
 // cases (such as snapshots or adb remount).
 bool FilesystemHasReliablePinning(const std::string& file, bool* supported);
+
+static inline status_t ErrorStatusFromErrno() {
+    return errno ? -errno : UNKNOWN_ERROR;
+}
 
 }  // namespace fiemap
 }  // namespace android
