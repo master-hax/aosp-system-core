@@ -1,0 +1,84 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1b2a33d2_6bb61740",
+        "filename": "fastboot/fuzzy_fastboot/fixtures.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 126,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-12-27T20:52:02Z",
+      "side": 1,
+      "message": "It\u0027d be better to have a maximum number of retries here too, like the USB case, so that the test doesn\u0027t hang forever.",
+      "revId": "e970d5b122c282ed7d5229531b65ddd41efa4f4c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ec14f1ae_01a31e92",
+        "filename": "fastboot/fuzzy_fastboot/fixtures.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 130,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-12-27T20:52:02Z",
+      "side": 1,
+      "message": "These lines should be 100 char or less.  clang-format should handle this as well.",
+      "range": {
+        "startLine": 127,
+        "startChar": 0,
+        "endLine": 130,
+        "endChar": 103
+      },
+      "revId": "e970d5b122c282ed7d5229531b65ddd41efa4f4c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f737d3c1_39338cc9",
+        "filename": "fastboot/fuzzy_fastboot/fixtures.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 207,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-12-27T20:52:02Z",
+      "side": 1,
+      "message": "This is the same code as in FastBootTest::SetUp() ?  Better to refactor it into its own function.",
+      "range": {
+        "startLine": 197,
+        "startChar": 4,
+        "endLine": 207,
+        "endChar": 9
+      },
+      "revId": "e970d5b122c282ed7d5229531b65ddd41efa4f4c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5768dc03_84d9f44b",
+        "filename": "fastboot/fuzzy_fastboot/transport_sniffer.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-12-27T20:52:02Z",
+      "side": 1,
+      "message": "Does this need to inherit from UsbTransport or could it inherit from the more generic Transport?",
+      "revId": "e970d5b122c282ed7d5229531b65ddd41efa4f4c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
