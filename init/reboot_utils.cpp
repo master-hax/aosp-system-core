@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include <stdbool.h>
 #include <sys/capability.h>
 #include <sys/reboot.h>
 #include <sys/syscall.h>
@@ -34,11 +35,15 @@ namespace android {
 namespace init {
 
 static std::string init_fatal_reboot_target = "bootloader";
+static bool init_fatal_panic = false;
 
 void SetFatalRebootTarget() {
     std::string cmdline;
     android::base::ReadFileToString("/proc/cmdline", &cmdline);
     cmdline = android::base::Trim(cmdline);
+
+    const char kInitFatalPanicString[] = "androidboot.init_fatal_panic=true";
+    init_fatal_panic = cmdline.find(kInitFatalPanicString) != std::string::npos;
 
     const char kRebootTargetString[] = "androidboot.init_fatal_reboot_target=";
     auto start_pos = cmdline.find(kRebootTargetString);
@@ -133,6 +138,8 @@ void __attribute__((noreturn)) InitFatalReboot(int signal_number) {
     for (size_t i = 0; i < backtrace->NumFrames(); i++) {
         LOG(ERROR) << backtrace->FormatFrameData(i);
     }
+    if (init_fatal_panic)
+        _exit(signal_number);
     RebootSystem(ANDROID_RB_RESTART2, init_fatal_reboot_target);
 }
 
