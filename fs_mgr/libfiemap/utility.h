@@ -21,6 +21,7 @@
 #include <string>
 
 #include <libfiemap/split_fiemap_writer.h>
+#include <utils/Errors.h>
 
 namespace android {
 namespace fiemap {
