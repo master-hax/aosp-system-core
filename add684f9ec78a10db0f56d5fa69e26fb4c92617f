@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ddd1e150_1f995c02",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-12-27T21:46:38Z",
+      "side": 1,
+      "message": "Super nit, but maybe \"backed by /data\" instead of \"/data-backed\".  The latter could be misinterpreted as a separate mount point.",
+      "range": {
+        "startLine": 13,
+        "startChar": 0,
+        "endLine": 13,
+        "endChar": 12
+      },
+      "revId": "add684f9ec78a10db0f56d5fa69e26fb4c92617f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e49515fb_53fce4da",
+        "filename": "fs_mgr/remount.rc",
+        "patchSetId": 3
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-12-27T21:46:38Z",
+      "side": 1,
+      "message": "Only userdebug, not eng?",
+      "revId": "add684f9ec78a10db0f56d5fa69e26fb4c92617f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
