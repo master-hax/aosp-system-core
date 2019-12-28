@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ed26d20f_6ad8b39e",
+        "filename": "fs_mgr/libfiemap/fiemap_writer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 415,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-12-28T03:11:04Z",
+      "side": 1,
+      "message": "The callback may not set or preserve errno, so this should use an unknown error.",
+      "revId": "f52fe832375440befe248f8fa93029d3a698698a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b15ddb01_8adb9c29",
+        "filename": "fs_mgr/libfiemap/fiemap_writer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 441,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-12-28T03:11:04Z",
+      "side": 1,
+      "message": "Not all paths through F2fsPinBeforeAllocate set errno (see BlockDeviceToName failure case)",
+      "revId": "f52fe832375440befe248f8fa93029d3a698698a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "834da199_bb74912a",
+        "filename": "fs_mgr/libfiemap/fiemap_writer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 481,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-12-28T03:11:04Z",
+      "side": 1,
+      "message": "Ditto for callbacks not setting errno.",
+      "revId": "f52fe832375440befe248f8fa93029d3a698698a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "358e3b98_0a22f4a6",
+        "filename": "fs_mgr/libfiemap/fiemap_writer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 784,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-12-28T03:11:04Z",
+      "side": 1,
+      "message": "Lots of paths in this do not set errno.",
+      "revId": "f52fe832375440befe248f8fa93029d3a698698a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
