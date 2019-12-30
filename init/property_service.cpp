@@ -1158,6 +1158,11 @@ void StartPropertyService(int* epoll_socket) {
     init_socket = sockets[1];
     accept_messages = true;
 
+    int buf_size = 2 * 1024 * 1014;
+    if (setsockopt(init_socket, SOL_SOCKET, SO_SNDBUFFORCE, &buf_size, sizeof(buf_size)) != 0) {
+        PLOG(ERROR) << "Could not set init_socket send buffer size to " << buf_size;
+    }
+
     if (auto result = CreateSocket(PROP_SERVICE_NAME, SOCK_STREAM | SOCK_CLOEXEC | SOCK_NONBLOCK,
                                    false, 0666, 0, 0, {})) {
         property_set_fd = *result;
