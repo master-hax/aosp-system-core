@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "4f88c23a_e1c08210",
+        "filename": "fs_mgr/libf2fs_pin/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1428004
+      },
+      "writtenOn": "2019-12-30T06:26:55Z",
+      "side": 1,
+      "message": "Done, thank you!",
+      "parentUuid": "8e6a56f9_52a97904",
+      "revId": "dd33298a339aca9f883580a7a20e51fbf848e5f6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "88de3b8d_8fdbf39d",
         "filename": "fs_mgr/libf2fs_pin/include/f2fs_pin/pin.h",
         "patchSetId": 2
@@ -33,6 +51,24 @@
       "revId": "dd33298a339aca9f883580a7a20e51fbf848e5f6",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "30895b87_68a7f9ce",
+        "filename": "fs_mgr/libf2fs_pin/include/f2fs_pin/pin.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1428004
+      },
+      "writtenOn": "2019-12-30T06:26:55Z",
+      "side": 1,
+      "message": "Changed typedef to be Result\u003cvoid\u003e, retained for clarity where it is used in the code",
+      "parentUuid": "88de3b8d_8fdbf39d",
+      "revId": "dd33298a339aca9f883580a7a20e51fbf848e5f6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -59,6 +95,30 @@
     },
     {
       "key": {
+        "uuid": "06a07d61_f31426b2",
+        "filename": "fs_mgr/libf2fs_pin/pin.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 1428004
+      },
+      "writtenOn": "2019-12-30T06:26:55Z",
+      "side": 1,
+      "message": "Changed all the functions that returned a Result and a value via pointer arguments to return\nthem as you explained. Added various typedefs to make the calling locations less obscure.",
+      "parentUuid": "2aacb67a_dd77dea1",
+      "range": {
+        "startLine": 86,
+        "startChar": 0,
+        "endLine": 99,
+        "endChar": 1
+      },
+      "revId": "dd33298a339aca9f883580a7a20e51fbf848e5f6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fea9b5cc_34cd41e5",
         "filename": "fs_mgr/libf2fs_pin/pin.cpp",
         "patchSetId": 2
@@ -76,6 +136,24 @@
     },
     {
       "key": {
+        "uuid": "c34ab84c_9b9aa044",
+        "filename": "fs_mgr/libf2fs_pin/pin.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 175,
+      "author": {
+        "id": 1428004
+      },
+      "writtenOn": "2019-12-30T06:26:55Z",
+      "side": 1,
+      "message": "Changed all the relevant code to use the programming idiom you suggested.",
+      "parentUuid": "fea9b5cc_34cd41e5",
+      "revId": "dd33298a339aca9f883580a7a20e51fbf848e5f6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "bdc2ceb4_8ebc8889",
         "filename": "fs_mgr/libf2fs_pin/pin.cpp",
         "patchSetId": 2
@@ -90,6 +168,24 @@
       "revId": "dd33298a339aca9f883580a7a20e51fbf848e5f6",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "001b734b_fb71a0be",
+        "filename": "fs_mgr/libf2fs_pin/pin.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 226,
+      "author": {
+        "id": 1428004
+      },
+      "writtenOn": "2019-12-30T06:26:55Z",
+      "side": 1,
+      "message": "Updated all the errors to include whatever filename or device names were involved in the error",
+      "parentUuid": "bdc2ceb4_8ebc8889",
+      "revId": "dd33298a339aca9f883580a7a20e51fbf848e5f6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
