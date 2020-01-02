@@ -34,6 +34,7 @@
 #include <map>
 #include <memory>
 #include <optional>
+#include <thread>
 #include <vector>
 
 #include <android-base/chrono_utils.h>
@@ -43,6 +44,7 @@
 #include <android-base/properties.h>
 #include <android-base/stringprintf.h>
 #include <android-base/strings.h>
+#include <android-base/unique_fd.h>
 #include <fs_avb/fs_avb.h>
 #include <fs_mgr_vendor_overlay.h>
 #include <keyutils.h>
@@ -85,6 +87,7 @@ using android::base::SetProperty;
 using android::base::StringPrintf;
 using android::base::Timer;
 using android::base::Trim;
+using android::base::unique_fd;
 using android::fs_mgr::AvbHandle;
 
 namespace android {
@@ -615,6 +618,50 @@ static void HandlePropertyFd() {
             LOG(ERROR) << "Unknown message type from property service: "
                        << property_message.msg_case();
     }
+}
+
+Result<int> CallFunctionAndHandlePropertiesImpl(const std::function<int()>& f) {
+    unique_fd reader;
+    unique_fd writer;
+    if (!Socketpair(AF_UNIX, SOCK_STREAM | SOCK_CLOEXEC, 0, &reader, &writer)) {
+        return ErrnoError() << "Could not create socket pair";
+    }
+
+    int result = 0;
+    std::atomic<bool> end = false;
+    auto thread = std::thread{[&f, &result, &end, &writer] {
+        result = f();
+        end = true;
+        send(writer, "1", 1, 0);
+    }};
+
+    Epoll epoll;
+    if (auto result = epoll.Open(); !result) {
+        return Error() << "Could not create epoll: " << result.error();
+    }
+    if (auto result = epoll.RegisterHandler(property_fd, HandlePropertyFd); !result) {
+        return Error() << "Could not register epoll handler for property fd: " << result.error();
+    }
+
+    // No-op function, just used to break from loop.
+    if (auto result = epoll.RegisterHandler(reader, [] {}); !result) {
+        return Error() << "Could not register epoll handler for ending thread:" << result.error();
+    }
+
+    while (!end) {
+        auto pending_functions = epoll.Wait({});
+        if (!pending_functions) {
+            LOG(ERROR) << pending_functions.error();
+        } else if (!pending_functions->empty()) {
+            for (const auto& function : *pending_functions) {
+                (*function)();
+            }
+        }
+    }
+
+    thread.join();
+
+    return result;
 }
 
 int SecondStageMain(int argc, char** argv) {

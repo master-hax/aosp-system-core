@@ -41,6 +41,13 @@ void SendLoadPersistentPropertiesMessage();
 void SendStopSendingMessagesMessage();
 void SendStartSendingMessagesMessage();
 
+template <typename F, typename... Args>
+Result<int> CallFunctionAndHandleProperties(F&& f, Args&&... args) {
+    Result<int> CallFunctionAndHandlePropertiesImpl(const std::function<int()>& f);
+    auto func = [&] { return f(args...); };
+    return CallFunctionAndHandlePropertiesImpl(func);
+}
+
 int SecondStageMain(int argc, char** argv);
 
 }  // namespace init

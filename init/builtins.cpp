@@ -667,7 +667,11 @@ static Result<void> do_mount_all(const BuiltinArguments& args) {
         return Error() << "Could not read fstab";
     }
 
-    auto mount_fstab_return_code = fs_mgr_mount_all(&fstab, mount_mode);
+    auto mount_fstab_return_code =
+            CallFunctionAndHandleProperties(fs_mgr_mount_all, &fstab, mount_mode);
+    if (!mount_fstab_return_code) {
+        return Error() << "Could not call fs_mgr_mount_all(): " << mount_fstab_return_code.error();
+    }
     SetProperty(prop_name, std::to_string(t.duration().count()));
 
     if (import_rc && SelinuxGetVendorAndroidVersion() <= __ANDROID_API_Q__) {
@@ -678,8 +682,8 @@ static Result<void> do_mount_all(const BuiltinArguments& args) {
     if (queue_event) {
         /* queue_fs_event will queue event based on mount_fstab return code
          * and return processed return code*/
-        initial_mount_fstab_return_code = mount_fstab_return_code;
-        auto queue_fs_result = queue_fs_event(mount_fstab_return_code, false);
+        initial_mount_fstab_return_code = *mount_fstab_return_code;
+        auto queue_fs_result = queue_fs_event(*mount_fstab_return_code, false);
         if (!queue_fs_result) {
             return Error() << "queue_fs_event() failed: " << queue_fs_result.error();
         }
