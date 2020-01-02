@@ -991,7 +991,6 @@ on userspace-reboot-fs-remount
   # userspace reboot was initiated.
   start vold
   exec - system system -- /system/bin/vdc checkpoint resetCheckpoint
-  exec - system system -- /system/bin/vdc checkpoint markBootAttempt
   remount_userdata
 
 on userspace-reboot-resume
