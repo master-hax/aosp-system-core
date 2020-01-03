@@ -1267,8 +1267,7 @@ static Result<void> create_apex_data_dirs() {
 
         auto path = "/data/misc/apexdata/" + std::string(name);
         auto system_uid = DecodeUid("system");
-        auto options =
-                MkdirOptions{path, 0700, *system_uid, *system_uid, FscryptAction::kNone, "ref"};
+        auto options = MkdirOptions{path, 0770, 0, *system_uid, FscryptAction::kNone, "ref"};
         make_dir_with_options(options);
     }
     return {};
