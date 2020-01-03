@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c18525df_12185500",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1270,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-01-03T16:23:53Z",
+      "side": 1,
+      "message": "We should probably include \u003cprivate/android_filesystem_config.h\u003e and use AID_ROOT for clarity.  We can actually skip the DecodeUid and use AID_SYSTEM here too if we want.\n\nOr use DecodeUid on both, but that\u0027s not necessary since these are compile time constants.",
+      "revId": "b0a153fb6ab908e6b5e0b64d8ccdcbf782176b3c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
