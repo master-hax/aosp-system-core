@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "40fcda64_d8bda9e5",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1264,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2020-01-03T19:35:59Z",
+      "side": 1,
+      "message": "Should just bail out here (or at least LOG(WARNING))",
+      "range": {
+        "startLine": 1264,
+        "startChar": 72,
+        "endLine": 1264,
+        "endChar": 80
+      },
+      "revId": "020b84ac2b55310457194fa5e325fb0c0bdf1ad6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9f9f3cdc_18472b5b",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1267,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2020-01-03T19:35:59Z",
+      "side": 1,
+      "message": "Same here. Otherwise, it is possible that initial_sectors_allocated is incremented but the rest are not.",
+      "range": {
+        "startLine": 1267,
+        "startChar": 70,
+        "endLine": 1267,
+        "endChar": 78
+      },
+      "revId": "020b84ac2b55310457194fa5e325fb0c0bdf1ad6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "51d88aff_5704120c",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2272,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2020-01-03T19:35:59Z",
+      "side": 1,
+      "message": "nit: This creates a log spam every 2s. Maybe only log when progress has changed by 1%?",
+      "range": {
+        "startLine": 2272,
+        "startChar": 12,
+        "endLine": 2272,
+        "endChar": 79
+      },
+      "revId": "020b84ac2b55310457194fa5e325fb0c0bdf1ad6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3afc4ffa_31a57350",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2272,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2020-01-03T19:35:59Z",
+      "side": 1,
+      "message": "nit: This may log something like 66.666666666667 which looks ugly. Truncate?",
+      "range": {
+        "startLine": 2272,
+        "startChar": 62,
+        "endLine": 2272,
+        "endChar": 70
+      },
+      "revId": "020b84ac2b55310457194fa5e325fb0c0bdf1ad6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
