@@ -1232,14 +1232,45 @@ UpdateState SnapshotManager::GetUpdateState(double* progress) {
     }
 
     auto state = ReadUpdateState(lock.get());
-    if (progress) {
-        *progress = 0.0;
-        if (state == UpdateState::Merging) {
-            // :TODO: When merging is implemented, set progress_val.
-        } else if (state == UpdateState::MergeCompleted) {
-            *progress = 100.0;
-        }
+    if (progress == nullptr) {
+        return state;
     }
+
+    if (state == UpdateState::MergeCompleted) {
+        *progress = 100.0;
+        return state;
+    }
+
+    if (state != UpdateState::Merging) {
+        *progress = 0.0;
+        return state;
+    }
+
+    // Sum all the snapshot states as if the system consists of a single huge
+    // snapshots device, then compute the merge completion percentage of that
+    // device.
+    std::vector<std::string> snapshots;
+    if (!ListSnapshots(lock.get(), &snapshots)) {
+        LOG(ERROR) << "Could not list snapshots";
+        return state;
+    }
+
+    DmTargetSnapshot::Status snapshots_status = {};
+    uint64_t initial_sectors_allocated = 0;
+    for (const auto& snapshot : snapshots) {
+        DmTargetSnapshot::Status current_status;
+        SnapshotStatus initial_status;
+
+        if (!ReadSnapshotStatus(lock.get(), snapshot, &initial_status)) continue;
+        initial_sectors_allocated += initial_status.sectors_allocated();
+
+        if (!QuerySnapshotStatus(snapshot, nullptr, &current_status)) continue;
+        snapshots_status.sectors_allocated += current_status.sectors_allocated;
+        snapshots_status.total_sectors += current_status.total_sectors;
+        snapshots_status.metadata_sectors += current_status.metadata_sectors;
+    }
+
+    *progress = DmTargetSnapshot::MergePercent(snapshots_status, initial_sectors_allocated);
     return state;
 }
 
@@ -2235,7 +2266,12 @@ UpdateState SnapshotManager::InitiateMergeAndWait() {
         }
         // All other states can be handled by ProcessUpdateState.
         LOG(INFO) << "Waiting for merge to complete. This can take up to several minutes.";
-        state = ProcessUpdateState();
+        auto callback = [&]() -> void {
+            double progress;
+            GetUpdateState(&progress);
+            LOG(INFO) << "Waiting for merge to complete: " << progress << "%.";
+        };
+        state = ProcessUpdateState(callback);
     }
 
     LOG(INFO) << "Merge finished with state \"" << state << "\".";
