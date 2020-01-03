@@ -83,7 +83,7 @@ AutoDeleteSnapshot::~AutoDeleteSnapshot() {
     }
 }
 
-bool InitializeCow(const std::string& device) {
+SnapshotManager::Return InitializeCow(const std::string& device) {
     // When the kernel creates a persistent dm-snapshot, it requires a CoW file
     // to store the modifications. The kernel interface does not specify how
     // the CoW is used, and there is no standard associated.
@@ -103,15 +103,15 @@ bool InitializeCow(const std::string& device) {
     android::base::unique_fd fd(open(device.c_str(), O_WRONLY | O_BINARY));
     if (fd < 0) {
         PLOG(ERROR) << "Can't open COW device: " << device;
-        return false;
+        return SnapshotManager::Return::Error();
     }
 
     LOG(INFO) << "Zero-filling COW device: " << device;
     if (!android::base::WriteFully(fd, zeros.data(), kDmSnapZeroFillSize)) {
         PLOG(ERROR) << "Can't zero-fill COW device for " << device;
-        return false;
+        return SnapshotManager::Return::FromErrno(errno);
     }
-    return true;
+    return SnapshotManager::Return::Ok();
 }
 
 std::unique_ptr<AutoUnmountDevice> AutoUnmountDevice::New(const std::string& path) {
