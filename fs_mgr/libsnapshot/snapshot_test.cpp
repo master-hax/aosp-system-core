@@ -1750,6 +1750,32 @@ std::vector<uint64_t> ImageManagerTestParams() {
 
 INSTANTIATE_TEST_SUITE_P(ImageManagerTest, ImageManagerTest, ValuesIn(ImageManagerTestParams()));
 
+class LowSpaceTest : public SnapshotUpdateTest {
+    void SetUp() override {
+        SnapshotUpdateTest::SetUp();
+        userdata_ = std::make_unique<LowSpaceUserdata>();
+        ASSERT_TRUE(userdata_->Init(kMaxFree));
+    }
+    static constexpr auto kMaxFree = 10_MiB;
+    std::unique_ptr<LowSpaceUserdata> userdata_;
+};
+
+TEST_F(LowSpaceTest, CreateUpdateSnapshots) {
+    // Grow all partitions to 5_MiB, total 15_MiB. This will require 14_MiB of userdata space.
+    constexpr uint64_t partition_size = 5_MiB;
+    SetSize(sys_, partition_size);
+    SetSize(vnd_, partition_size);
+    SetSize(prd_, partition_size);
+
+    AddOperationForPartitions();
+
+    // Execute the update.
+    ASSERT_TRUE(sm->BeginUpdate());
+    auto res = sm->CreateUpdateSnapshots(manifest_);
+    ASSERT_FALSE(res);
+    ASSERT_EQ(SnapshotManager::Return::ErrorCode::NO_SPACE, res.error_code());
+}
+
 }  // namespace snapshot
 }  // namespace android
 
