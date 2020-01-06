@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b1ea9276_5092287b",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1850,
+      "author": {
+        "id": 1409599
+      },
+      "writtenOn": "2020-01-06T17:16:25Z",
+      "side": 1,
+      "message": "nit: Do we want to keep it general or use more appropriate errnos?\nE.g. here Return::FromErrno(EAGAIN) may be a good fit.",
+      "range": {
+        "startLine": 1850,
+        "startChar": 22,
+        "endLine": 1850,
+        "endChar": 37
+      },
+      "revId": "499b1c95e97d03618eee3bb1918b5e7477097f63",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0d348c20_5ee2d422",
+        "filename": "fs_mgr/libsnapshot/utility.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 1409599
+      },
+      "writtenOn": "2020-01-06T17:16:25Z",
+      "side": 1,
+      "message": "Why not Return::FromErrno(errno)?",
+      "range": {
+        "startLine": 106,
+        "startChar": 40,
+        "endLine": 106,
+        "endChar": 47
+      },
+      "revId": "499b1c95e97d03618eee3bb1918b5e7477097f63",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
