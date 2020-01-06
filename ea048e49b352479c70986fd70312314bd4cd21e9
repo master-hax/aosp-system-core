@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d2fd9208_db3e3ba4",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1163,
+      "author": {
+        "id": 1130394
+      },
+      "writtenOn": "2020-01-06T20:42:35Z",
+      "side": 1,
+      "message": "FATAL? This should never fail.",
+      "range": {
+        "startLine": 1163,
+        "startChar": 13,
+        "endLine": 1163,
+        "endChar": 18
+      },
+      "revId": "ea048e49b352479c70986fd70312314bd4cd21e9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
