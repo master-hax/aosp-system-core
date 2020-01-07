@@ -161,8 +161,8 @@ static bool gInitialized = false;
 static LogSeverity gMinimumLogSeverity = INFO;
 
 #if defined(__linux__)
-void KernelLogger(android::base::LogId, android::base::LogSeverity severity,
-                  const char* tag, const char*, unsigned int, const char* msg) {
+void KernelLogger(android::base::LogId, android::base::LogSeverity severity, const char* tag,
+                  const char* msg) {
   // clang-format off
   static constexpr int kLogSeverityToKernelLogLevel[] = {
       [android::base::VERBOSE] = 7,              // KERN_DEBUG (there is no verbose kernel log
@@ -200,8 +200,7 @@ void KernelLogger(android::base::LogId, android::base::LogSeverity severity,
 }
 #endif
 
-void StderrLogger(LogId, LogSeverity severity, const char* tag, const char*, unsigned int,
-                  const char* message) {
+void StderrLogger(LogId, LogSeverity severity, const char* tag, const char* message) {
   struct tm now;
   time_t t = time(nullptr);
 
@@ -222,8 +221,7 @@ void StderrLogger(LogId, LogSeverity severity, const char* tag, const char*, uns
           getpid(), GetThreadId(), message);
 }
 
-void StdioLogger(LogId, LogSeverity severity, const char* /*tag*/, const char* /*file*/,
-                 unsigned int /*line*/, const char* message) {
+void StdioLogger(LogId, LogSeverity severity, const char* /*tag*/, const char* message) {
   if (severity >= WARNING) {
     fflush(stdout);
     fprintf(stderr, "%s: %s\n", GetFileBasename(getprogname()), message);
@@ -246,8 +244,7 @@ void DefaultAborter(const char* abort_message) {
 LogdLogger::LogdLogger(LogId default_log_id) : default_log_id_(default_log_id) {
 }
 
-void LogdLogger::operator()(LogId id, LogSeverity severity, const char* tag, const char*,
-                            unsigned int, const char* message) {
+void LogdLogger::operator()(LogId id, LogSeverity severity, const char* tag, const char* message) {
   static constexpr android_LogPriority kLogSeverityToAndroidLogPriority[] = {
       ANDROID_LOG_VERBOSE, ANDROID_LOG_DEBUG, ANDROID_LOG_INFO,
       ANDROID_LOG_WARN,    ANDROID_LOG_ERROR, ANDROID_LOG_FATAL,
@@ -344,22 +341,8 @@ void SetAborter(AbortFunction&& aborter) {
 // checks/logging in a function.
 class LogMessageData {
  public:
-  LogMessageData(const char* file, unsigned int line, LogId id, LogSeverity severity,
-                 const char* tag, int error)
-      : file_(GetFileBasename(file)),
-        line_number_(line),
-        id_(id),
-        severity_(severity),
-        tag_(tag),
-        error_(error) {}
-
-  const char* GetFile() const {
-    return file_;
-  }
-
-  unsigned int GetLineNumber() const {
-    return line_number_;
-  }
+  LogMessageData(LogId id, LogSeverity severity, const char* tag, int error)
+      : id_(id), severity_(severity), tag_(tag), error_(error) {}
 
   LogSeverity GetSeverity() const {
     return severity_;
@@ -385,8 +368,6 @@ class LogMessageData {
 
  private:
   std::ostringstream buffer_;
-  const char* const file_;
-  const unsigned int line_number_;
   const LogId id_;
   const LogSeverity severity_;
   const char* const tag_;
@@ -395,9 +376,8 @@ class LogMessageData {
   DISALLOW_COPY_AND_ASSIGN(LogMessageData);
 };
 
-LogMessage::LogMessage(const char* file, unsigned int line, LogId id, LogSeverity severity,
-                       const char* tag, int error)
-    : data_(new LogMessageData(file, line, id, severity, tag, error)) {}
+LogMessage::LogMessage(LogId id, LogSeverity severity, const char* tag, int error)
+    : data_(new LogMessageData(id, severity, tag, error)) {}
 
 LogMessage::~LogMessage() {
   // Check severity again. This is duplicate work wrt/ LOG macros, but not LOG_STREAM.
@@ -423,16 +403,14 @@ LogMessage::~LogMessage() {
     // Do the actual logging with the lock held.
     std::lock_guard<std::mutex> lock(LoggingLock());
     if (msg.find('\n') == std::string::npos) {
-      LogLine(data_->GetFile(), data_->GetLineNumber(), data_->GetId(), data_->GetSeverity(),
-              data_->GetTag(), msg.c_str());
+      LogLine(data_->GetId(), data_->GetSeverity(), data_->GetTag(), msg.c_str());
     } else {
       msg += '\n';
       size_t i = 0;
       while (i < msg.size()) {
         size_t nl = msg.find('\n', i);
         msg[nl] = '\0';
-        LogLine(data_->GetFile(), data_->GetLineNumber(), data_->GetId(), data_->GetSeverity(),
-                data_->GetTag(), &msg[i]);
+        LogLine(data_->GetId(), data_->GetSeverity(), data_->GetTag(), &msg[i]);
         // Undo the zero-termination so we can give the complete message to the aborter.
         msg[nl] = '\n';
         i = nl + 1;
@@ -450,16 +428,15 @@ std::ostream& LogMessage::stream() {
   return data_->GetBuffer();
 }
 
-void LogMessage::LogLine(const char* file, unsigned int line, LogId id, LogSeverity severity,
-                         const char* tag, const char* message) {
+void LogMessage::LogLine(LogId id, LogSeverity severity, const char* tag, const char* message) {
   if (tag == nullptr) {
     std::lock_guard<std::recursive_mutex> lock(TagLock());
     if (gDefaultTag == nullptr) {
       gDefaultTag = new std::string(getprogname());
     }
-    Logger()(id, severity, gDefaultTag->c_str(), file, line, message);
+    Logger()(id, severity, gDefaultTag->c_str(), message);
   } else {
-    Logger()(id, severity, tag, file, line, message);
+    Logger()(id, severity, tag, message);
   }
 }
 
