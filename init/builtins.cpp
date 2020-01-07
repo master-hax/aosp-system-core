@@ -1122,8 +1122,7 @@ static Result<void> ExecVdcRebootOnFailure(const std::string& vdc_arg) {
     auto reboot_reason = vdc_arg + "_failed";
 
     auto reboot = [reboot_reason](const std::string& message) {
-        // TODO (b/122850122): support this in gsi
-        if (fscrypt_is_native() && !android::gsi::IsGsiRunning()) {
+        if (fscrypt_is_native()) {
             LOG(ERROR) << message << ": Rebooting into recovery, reason: " << reboot_reason;
             if (auto result = reboot_into_recovery(
                         {"--prompt_and_wipe_data", "--reason="s + reboot_reason});
