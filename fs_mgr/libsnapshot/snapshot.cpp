@@ -559,9 +559,26 @@ bool SnapshotManager::InitiateMerge() {
         }
     }
 
+    DmTargetSnapshot::Status initial_target_values = {};
+    for (const auto& snapshot : snapshots) {
+        DmTargetSnapshot::Status current_status;
+        if (!QuerySnapshotStatus(snapshot, nullptr, &current_status)) {
+            return false;
+        }
+        initial_target_values.sectors_allocated += current_status.sectors_allocated;
+        initial_target_values.total_sectors += current_status.total_sectors;
+        initial_target_values.metadata_sectors += current_status.metadata_sectors;
+    }
+
+    SnapshotUpdateStatus initial_status;
+    initial_status.set_state(UpdateState::Merging);
+    initial_status.set_sectors_allocated(initial_target_values.sectors_allocated);
+    initial_status.set_total_sectors(initial_target_values.total_sectors);
+    initial_status.set_metadata_sectors(initial_target_values.metadata_sectors);
+
     // Point of no return - mark that we're starting a merge. From now on every
     // snapshot must be a merge target.
-    if (!WriteUpdateState(lock.get(), UpdateState::Merging)) {
+    if (!WriteUpdateState(lock.get(), initial_status)) {
         return false;
     }
 
@@ -1643,68 +1660,47 @@ std::unique_ptr<SnapshotManager::LockedFile> SnapshotManager::LockExclusive() {
 }
 
 UpdateState SnapshotManager::ReadUpdateState(LockedFile* lock) {
-    CHECK(lock);
+    SnapshotUpdateStatus status;
+    return ReadUpdateState(lock, &status);
+}
 
-    std::string contents;
-    if (!android::base::ReadFileToString(GetStateFilePath(), &contents)) {
+UpdateState SnapshotManager::ReadUpdateState(LockedFile* lock, SnapshotUpdateStatus* status) {
+    CHECK(lock);
+    auto path = GetStateFilePath();
+
+    unique_fd fd(open(path.c_str(), O_RDONLY | O_CLOEXEC | O_NOFOLLOW));
+    if (fd < 0) {
         PLOG(ERROR) << "Read state file failed";
         return UpdateState::None;
     }
 
-    if (contents.empty() || contents == "none") {
-        return UpdateState::None;
-    } else if (contents == "initiated") {
-        return UpdateState::Initiated;
-    } else if (contents == "unverified") {
-        return UpdateState::Unverified;
-    } else if (contents == "merging") {
-        return UpdateState::Merging;
-    } else if (contents == "merge-completed") {
-        return UpdateState::MergeCompleted;
-    } else if (contents == "merge-needs-reboot") {
-        return UpdateState::MergeNeedsReboot;
-    } else if (contents == "merge-failed") {
-        return UpdateState::MergeFailed;
-    } else {
-        LOG(ERROR) << "Unknown merge state in update state file";
+    if (!status->ParseFromFileDescriptor(fd.get())) {
+        PLOG(ERROR) << "Unable to parse " << path << " as SnapshotUpdateStatus";
         return UpdateState::None;
     }
-}
 
-std::ostream& operator<<(std::ostream& os, UpdateState state) {
-    switch (state) {
-        case UpdateState::None:
-            return os << "none";
-        case UpdateState::Initiated:
-            return os << "initiated";
-        case UpdateState::Unverified:
-            return os << "unverified";
-        case UpdateState::Merging:
-            return os << "merging";
-        case UpdateState::MergeCompleted:
-            return os << "merge-completed";
-        case UpdateState::MergeNeedsReboot:
-            return os << "merge-needs-reboot";
-        case UpdateState::MergeFailed:
-            return os << "merge-failed";
-        default:
-            LOG(ERROR) << "Unknown update state";
-            return os;
-    }
+    return status->state();
 }
 
 bool SnapshotManager::WriteUpdateState(LockedFile* lock, UpdateState state) {
+    SnapshotUpdateStatus status;
+    status.set_state(state);
+    return WriteUpdateState(lock, status);
+}
+
+bool SnapshotManager::WriteUpdateState(LockedFile* lock, const SnapshotUpdateStatus& status) {
     CHECK(lock);
     CHECK(lock->lock_mode() == LOCK_EX);
 
-    std::stringstream ss;
-    ss << state;
-    std::string contents = ss.str();
-    if (contents.empty()) return false;
+    std::string contents;
+    if (!status.SerializeToString(&contents)) {
+        LOG(ERROR) << "Unable to serialize SnapshotUpdateStatus.";
+        return false;
+    }
 
 #ifdef LIBSNAPSHOT_USE_HAL
     auto merge_status = MergeStatus::UNKNOWN;
-    switch (state) {
+    switch (status.state()) {
         // The needs-reboot and completed cases imply that /data and /metadata
         // can be safely wiped, so we don't report a merge status.
         case UpdateState::None:
@@ -1723,7 +1719,7 @@ bool SnapshotManager::WriteUpdateState(LockedFile* lock, UpdateState state) {
         default:
             // Note that Cancelled flows to here - it is never written, since
             // it only communicates a transient state to the caller.
-            LOG(ERROR) << "Unexpected update status: " << state;
+            LOG(ERROR) << "Unexpected update status: " << status.state();
             break;
     }
 
