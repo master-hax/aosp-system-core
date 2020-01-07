@@ -27,6 +27,7 @@
 
 #include "android-base/file.h"
 #include "android-base/stringprintf.h"
+#include "android-base/strings.h"
 #include "android-base/test_utils.h"
 
 #include <gtest/gtest.h>
@@ -200,9 +201,13 @@ static std::string make_log_pattern(android::base::LogSeverity severity,
                 "Mismatch in size of log_characters and values in LogSeverity");
   char log_char = log_characters[severity];
   std::string holder(__FILE__);
-  return android::base::StringPrintf(
-      "%c \\d+-\\d+ \\d+:\\d+:\\d+ \\s*\\d+ \\s*\\d+ %s:\\d+] %s",
-      log_char, basename(&holder[0]), message);
+
+  // Some tests print function names including their ().  We need to sanitize these characters
+  // before using them in a regex.
+  auto message_sanitized = android::base::StringReplace(message, "(", "\\(", true);
+  message_sanitized = android::base::StringReplace(message_sanitized, ")", "\\)", true);
+  return android::base::StringPrintf("%c \\d+-\\d+ \\d+:\\d+:\\d+ \\s*\\d+ \\s*\\d+ %s", log_char,
+                                     message_sanitized.c_str());
 }
 #endif
 
