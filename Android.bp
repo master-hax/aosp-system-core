@@ -4,3 +4,7 @@ filegroup {
 }
 
 subdirs = ["*"]
+
+stub_libraries_txt {
+    name: "stub.libraries.txt"
+}
