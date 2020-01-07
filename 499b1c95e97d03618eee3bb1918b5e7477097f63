@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "e7df4571_62a3f293",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1850,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2020-01-07T22:19:40Z",
+      "side": 1,
+      "message": "I don\u0027t think LockExclusive will set errno to EAGAIN (open / flock doesn\u0027t have EAGAIN).\n\nAlso, syscalls should be wrapped in TEMP_FAILURE_RETRY if EAGAIN could be returned.\n\nIt is also intentional to keep this general. This is why FiemapStatus class doesn\u0027t recognize other errnos. Otherwise, it\u0027ll just be another status_t type.",
+      "parentUuid": "b1ea9276_5092287b",
+      "range": {
+        "startLine": 1850,
+        "startChar": 22,
+        "endLine": 1850,
+        "endChar": 37
+      },
+      "revId": "499b1c95e97d03618eee3bb1918b5e7477097f63",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "0d348c20_5ee2d422",
         "filename": "fs_mgr/libsnapshot/utility.cpp",
         "patchSetId": 3
@@ -36,6 +60,30 @@
       "writtenOn": "2020-01-06T17:16:25Z",
       "side": 1,
       "message": "Why not Return::FromErrno(errno)?",
+      "range": {
+        "startLine": 106,
+        "startChar": 40,
+        "endLine": 106,
+        "endChar": 47
+      },
+      "revId": "499b1c95e97d03618eee3bb1918b5e7477097f63",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "eb3f7813_b9e21fdd",
+        "filename": "fs_mgr/libsnapshot/utility.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2020-01-07T22:19:40Z",
+      "side": 1,
+      "message": "Oops, missed this one.",
+      "parentUuid": "0d348c20_5ee2d422",
       "range": {
         "startLine": 106,
         "startChar": 40,
