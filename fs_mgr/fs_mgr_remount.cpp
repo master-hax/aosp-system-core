@@ -81,10 +81,10 @@ const android::fs_mgr::FstabEntry* is_wrapped(const android::fs_mgr::Fstab& over
 }
 
 void MyLogger(android::base::LogId id, android::base::LogSeverity severity, const char* tag,
-              const char* file, unsigned int line, const char* message) {
+              const char* message) {
     fprintf(stderr, "%s\n", message);
     static auto logd = android::base::LogdLogger();
-    logd(id, severity, tag, file, line, message);
+    logd(id, severity, tag, message);
 }
 
 [[noreturn]] void reboot(bool overlayfs = false) {

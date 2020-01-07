@@ -95,21 +95,20 @@ enum LogId {
   SYSTEM,
 };
 
-using LogFunction = std::function<void(LogId, LogSeverity, const char*, const char*,
-                                       unsigned int, const char*)>;
+using LogFunction = std::function<void(LogId, LogSeverity, const char*, const char*)>;
 using AbortFunction = std::function<void(const char*)>;
 
 // Loggers for use with InitLogging/SetLogger.
 
 // Log to the kernel log (dmesg).
-void KernelLogger(LogId, LogSeverity, const char*, const char*, unsigned int, const char*);
+void KernelLogger(LogId, LogSeverity, const char*, const char*);
 // Log to stderr in the full logcat format (with pid/tid/time/tag details).
-void StderrLogger(LogId, LogSeverity, const char*, const char*, unsigned int, const char*);
+void StderrLogger(LogId, LogSeverity, const char*, const char*);
 // Log just the message to stdout/stderr (without pid/tid/time/tag details).
 // The choice of stdout versus stderr is based on the severity.
 // Errors are also prefixed by the program name (as with err(3)/error(3)).
 // Useful for replacing printf(3)/perror(3)/err(3)/error(3) in command-line tools.
-void StdioLogger(LogId, LogSeverity, const char*, const char*, unsigned int, const char*);
+void StdioLogger(LogId, LogSeverity, const char*, const char*);
 
 void DefaultAborter(const char* abort_message);
 
@@ -123,8 +122,7 @@ class LogdLogger {
  public:
   explicit LogdLogger(LogId default_log_id = android::base::MAIN);
 
-  void operator()(LogId, LogSeverity, const char* tag, const char* file,
-                  unsigned int line, const char* message);
+  void operator()(LogId, LogSeverity, const char* tag, const char* message);
 
  private:
   LogId default_log_id_;
@@ -226,9 +224,9 @@ struct LogAbortAfterFullExpr {
 
 // Get an ostream that can be used for logging at the given severity and to the
 // given destination. The same notes as for LOG_STREAM apply.
-#define LOG_STREAM_TO(dest, severity)                                           \
-  ::android::base::LogMessage(__FILE__, __LINE__, ::android::base::dest,        \
-                              SEVERITY_LAMBDA(severity), _LOG_TAG_INTERNAL, -1) \
+#define LOG_STREAM_TO(dest, severity)                                                              \
+  ::android::base::LogMessage(::android::base::dest, SEVERITY_LAMBDA(severity), _LOG_TAG_INTERNAL, \
+                              -1)                                                                  \
       .stream()
 
 // Logs a message to logcat on Android otherwise to stderr. If the severity is
@@ -256,10 +254,10 @@ struct LogAbortAfterFullExpr {
 #define PLOG(severity) PLOG_TO(DEFAULT, severity)
 
 // Behaves like PLOG, but logs to the specified log ID.
-#define PLOG_TO(dest, severity)                                                        \
-  LOGGING_PREAMBLE(severity) &&                                                        \
-      ::android::base::LogMessage(__FILE__, __LINE__, ::android::base::dest,           \
-                                  SEVERITY_LAMBDA(severity), _LOG_TAG_INTERNAL, errno) \
+#define PLOG_TO(dest, severity)                                                     \
+  LOGGING_PREAMBLE(severity) &&                                                     \
+      ::android::base::LogMessage(::android::base::dest, SEVERITY_LAMBDA(severity), \
+                                  _LOG_TAG_INTERNAL, errno)                         \
           .stream()
 
 // Marker that code is yet to be implemented.
@@ -272,11 +270,11 @@ struct LogAbortAfterFullExpr {
 //
 //     CHECK(false == true) results in a log message of
 //       "Check failed: false == true".
-#define CHECK(x)                                                                 \
-  LIKELY((x)) || ABORT_AFTER_LOG_FATAL_EXPR(false) ||                            \
-      ::android::base::LogMessage(__FILE__, __LINE__, ::android::base::DEFAULT,  \
-                                  ::android::base::FATAL, _LOG_TAG_INTERNAL, -1) \
-              .stream()                                                          \
+#define CHECK(x)                                                                    \
+  LIKELY((x)) || ABORT_AFTER_LOG_FATAL_EXPR(false) ||                               \
+      ::android::base::LogMessage(::android::base::DEFAULT, ::android::base::FATAL, \
+                                  _LOG_TAG_INTERNAL, -1)                            \
+              .stream()                                                             \
           << "Check failed: " #x << " "
 
 // clang-format off
@@ -286,7 +284,7 @@ struct LogAbortAfterFullExpr {
        UNLIKELY(!(_values.lhs OP _values.rhs));                                                \
        /* empty */)                                                                            \
   ABORT_AFTER_LOG_FATAL                                                                        \
-  ::android::base::LogMessage(__FILE__, __LINE__, ::android::base::DEFAULT,                    \
+  ::android::base::LogMessage(::android::base::DEFAULT,                                        \
                               ::android::base::FATAL, _LOG_TAG_INTERNAL, -1)                   \
           .stream()                                                                            \
       << "Check failed: " << #LHS << " " << #OP << " " << #RHS << " (" #LHS "=" << _values.lhs \
@@ -311,7 +309,7 @@ struct LogAbortAfterFullExpr {
 #define CHECK_STROP(s1, s2, sense)                                             \
   while (UNLIKELY((strcmp(s1, s2) == 0) != (sense)))                           \
     ABORT_AFTER_LOG_FATAL                                                      \
-    ::android::base::LogMessage(__FILE__, __LINE__, ::android::base::DEFAULT,  \
+    ::android::base::LogMessage(::android::base::DEFAULT,                      \
                                 ::android::base::FATAL, _LOG_TAG_INTERNAL, -1) \
         .stream()                                                              \
         << "Check failed: " << "\"" << (s1) << "\""                            \
@@ -431,8 +429,7 @@ class LogMessageData;
 // of a CHECK. The destructor will abort if the severity is FATAL.
 class LogMessage {
  public:
-  LogMessage(const char* file, unsigned int line, LogId id, LogSeverity severity, const char* tag,
-             int error);
+  LogMessage(LogId id, LogSeverity severity, const char* tag, int error);
 
   ~LogMessage();
 
@@ -441,8 +438,7 @@ class LogMessage {
   std::ostream& stream();
 
   // The routine that performs the actual logging.
-  static void LogLine(const char* file, unsigned int line, LogId id, LogSeverity severity,
-                      const char* tag, const char* msg);
+  static void LogLine(LogId id, LogSeverity severity, const char* tag, const char* msg);
 
  private:
   const std::unique_ptr<LogMessageData> data_;
