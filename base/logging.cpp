@@ -200,7 +200,7 @@ void KernelLogger(android::base::LogId, android::base::LogSeverity severity,
 }
 #endif
 
-void StderrLogger(LogId, LogSeverity severity, const char* tag, const char* file, unsigned int line,
+void StderrLogger(LogId, LogSeverity severity, const char* tag, const char*, unsigned int,
                   const char* message) {
   struct tm now;
   time_t t = time(nullptr);
@@ -218,8 +218,8 @@ void StderrLogger(LogId, LogSeverity severity, const char* tag, const char* file
   static_assert(arraysize(log_characters) - 1 == FATAL + 1,
                 "Mismatch in size of log_characters and values in LogSeverity");
   char severity_char = log_characters[severity];
-  fprintf(stderr, "%s %c %s %5d %5" PRIu64 " %s:%u] %s\n", tag ? tag : "nullptr", severity_char,
-          timestamp, getpid(), GetThreadId(), file, line, message);
+  fprintf(stderr, "%s %c %s %5d %5" PRIu64 " %s\n", tag ? tag : "nullptr", severity_char, timestamp,
+          getpid(), GetThreadId(), message);
 }
 
 void StdioLogger(LogId, LogSeverity severity, const char* /*tag*/, const char* /*file*/,
@@ -246,9 +246,8 @@ void DefaultAborter(const char* abort_message) {
 LogdLogger::LogdLogger(LogId default_log_id) : default_log_id_(default_log_id) {
 }
 
-void LogdLogger::operator()(LogId id, LogSeverity severity, const char* tag,
-                            const char* file, unsigned int line,
-                            const char* message) {
+void LogdLogger::operator()(LogId id, LogSeverity severity, const char* tag, const char*,
+                            unsigned int, const char* message) {
   static constexpr android_LogPriority kLogSeverityToAndroidLogPriority[] = {
       ANDROID_LOG_VERBOSE, ANDROID_LOG_DEBUG, ANDROID_LOG_INFO,
       ANDROID_LOG_WARN,    ANDROID_LOG_ERROR, ANDROID_LOG_FATAL,
@@ -269,12 +268,7 @@ void LogdLogger::operator()(LogId id, LogSeverity severity, const char* tag,
                 "Mismatch in size of kLogIdToAndroidLogId and values in LogId");
   log_id lg_id = kLogIdToAndroidLogId[id];
 
-  if (priority == ANDROID_LOG_FATAL) {
-    __android_log_buf_print(lg_id, priority, tag, "%s:%u] %s", file, line,
-                            message);
-  } else {
-    __android_log_buf_print(lg_id, priority, tag, "%s", message);
-  }
+  __android_log_buf_print(lg_id, priority, tag, "%s", message);
 }
 #endif
 
