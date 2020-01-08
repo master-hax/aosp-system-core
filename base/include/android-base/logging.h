@@ -93,6 +93,8 @@ enum LogId {
   DEFAULT,
   MAIN,
   SYSTEM,
+  RADIO,
+  CRASH,
 };
 
 using LogFunction = std::function<void(LogId, LogSeverity, const char*, const char*,
@@ -120,7 +122,7 @@ void SetDefaultTag(const std::string& tag);
 // override the default log buffer will have to construct this themselves.
 class LogdLogger {
  public:
-  explicit LogdLogger(LogId default_log_id = android::base::MAIN);
+  explicit LogdLogger(LogId default_log_id = MAIN);
 
   void operator()(LogId, LogSeverity, const char* tag, const char* file,
                   unsigned int line, const char* message);
