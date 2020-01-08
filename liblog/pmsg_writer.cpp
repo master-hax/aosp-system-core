@@ -28,7 +28,6 @@
 #include <shared_mutex>
 
 #include <log/log_properties.h>
-#include <private/android_filesystem_config.h>
 #include <private/android_logger.h>
 
 #include "log_portability.h"
@@ -123,7 +122,7 @@ static int PmsgWrite(log_id_t logId, struct timespec* ts, struct iovec* vec, siz
 
   pmsgHeader.magic = LOGGER_MAGIC;
   pmsgHeader.len = sizeof(pmsgHeader) + sizeof(header);
-  pmsgHeader.uid = __android_log_uid();
+  pmsgHeader.uid = getuid();
   pmsgHeader.pid = getpid();
 
   header.id = logId;

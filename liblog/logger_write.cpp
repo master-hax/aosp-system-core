@@ -15,7 +15,6 @@
  */
 
 #include <errno.h>
-#include <stdatomic.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/time.h>
@@ -48,7 +47,7 @@ android_log_transport_write* android_log_persist_write = nullptr;
 
 #if defined(__ANDROID__)
 static int check_log_uid_permissions() {
-  uid_t uid = __android_log_uid();
+  uid_t uid = getuid();
 
   /* Matches clientHasLogCredentials() in logd */
   if ((uid != AID_SYSTEM) && (uid != AID_ROOT) && (uid != AID_LOG)) {
