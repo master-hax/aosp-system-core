@@ -12,7 +12,7 @@ namespace.default.search.paths = /apex/com.android.adbd/${LIB}
 namespace.default.asan.search.paths = /apex/com.android.adbd/${LIB}
 namespace.default.links = art,platform
 namespace.default.link.art.shared_libs = libadbconnection_server.so
-namespace.default.link.platform.shared_libs = libc.so:libdl.so:libm.so:libclang_rt.hwasan-aarch64-android.so
+namespace.default.link.platform.shared_libs = libc.so:libdl.so:libm.so:libunwind.so:libclang_rt.hwasan-aarch64-android.so
 
 ###############################################################################
 # "art" APEX namespace: used for libadbdconnection_server
