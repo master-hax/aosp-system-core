@@ -93,6 +93,8 @@ enum LogId {
   DEFAULT,
   MAIN,
   SYSTEM,
+  RADIO,
+  CRASH,
 };
 
 using LogFunction = std::function<void(LogId, LogSeverity, const char*, const char*,
@@ -120,7 +122,7 @@ void SetDefaultTag(const std::string& tag);
 // override the default log buffer will have to construct this themselves.
 class LogdLogger {
  public:
-  explicit LogdLogger(LogId default_log_id = android::base::MAIN);
+  explicit LogdLogger(LogId default_log_id = MAIN);
 
   void operator()(LogId, LogSeverity, const char* tag, const char* file,
                   unsigned int line, const char* message);
@@ -147,10 +149,12 @@ void InitLogging(char* argv[],
                  AbortFunction&& aborter = DefaultAborter);
 #undef INIT_LOGGING_DEFAULT_LOGGER
 
-// Replace the current logger.
+// Set the logger for the program to use.
+// This is meant to be called once at the start of a program and is *not* thread safe.
 void SetLogger(LogFunction&& logger);
 
-// Replace the current aborter.
+// Set the aborter for the program to use.
+// This is meant to be called once at the start of a program and is *not* thread safe.
 void SetAborter(AbortFunction&& aborter);
 
 class ErrnoRestorer {
