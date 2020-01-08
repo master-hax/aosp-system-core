@@ -55,6 +55,7 @@
  */
 
 #include <stdarg.h>
+#include <stddef.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -152,6 +153,12 @@ typedef enum log_id {
 } log_id_t;
 
 /**
+ * Let the logging function choose the best log target.
+ * This is not part of the enum since adding either -1 or 0xFFFFFFFF forces the enum to be signed or
+ * unsigned, which breaks unfortunately common arithmetic against LOG_ID_MIN and LOG_ID_MAX. */
+#define LOG_ID_DEFAULT -1
+
+/**
  * Writes the constant string `text` to the log buffer `id`,
  * with priority `prio` and tag `tag`.
  *
@@ -169,6 +176,35 @@ int __android_log_buf_write(int bufID, int prio, const char* tag, const char* te
  */
 int __android_log_buf_print(int bufID, int prio, const char* tag, const char* fmt, ...)
     __attribute__((__format__(printf, 4, 5)));
+
+struct __android_logger_data {
+  size_t struct_size;
+  int buffer_id;  // log_id_t or -1 to represent 'default'.
+  android_LogPriority priority;
+  const char* tag;
+  const char* file;
+  unsigned int line;
+};
+
+typedef void (*__android_releaser_function)(void* aux);
+
+typedef void (*__android_logger_function)(const struct __android_logger_data* logger_data,
+                                          const char* message, void* aux);
+void __android_log_set_logger(__android_logger_function logger, void* aux,
+                              __android_releaser_function releaser);
+
+void __android_log_write_logger_data(struct __android_logger_data logger_data, const char* msg);
+
+void __android_log_logd_logger(const struct __android_logger_data* logger_data, const char* msg,
+                               void*);
+void __android_log_stderr_logger(const struct __android_logger_data* logger_data,
+                                 const char* message, void*);
+
+typedef void (*__android_aborter_function)(const char* abort_message, void* aux);
+void __android_log_set_aborter(__android_aborter_function aborter, void* aux,
+                               __android_releaser_function releaser);
+void __android_log_call_aborter(const char* abort_message);
+void __android_log_default_aborter(const char* abort_message, void*);
 
 #ifdef __cplusplus
 }

@@ -66,6 +66,15 @@ LIBLOG_Q {
     android_log_parser_reset; # llndk
 };
 
+LIBLOG_R {
+  global:
+    __android_log_set_logger;
+    __android_log_write_logger_data;
+    __android_log_logd_logger;
+    __android_log_set_aborter;
+    __android_log_call_aborter;
+};
+
 LIBLOG_PRIVATE {
   global:
     __android_log_pmsg_file_read;
