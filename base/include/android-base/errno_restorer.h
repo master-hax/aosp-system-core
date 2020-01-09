@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 The Android Open Source Project
+ * Copyright (C) 2015 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,27 @@
 
 #pragma once
 
-#include <stddef.h>
+#include <errno.h>
 
-#include <android/log.h>
+#include "android-base/macros.h"
 
-int LogdWrite(log_id_t logId, const struct timespec& ts, struct iovec* vec, size_t nr);
-void LogdClose();
+namespace android {
+namespace base {
+
+class ErrnoRestorer {
+ public:
+  ErrnoRestorer() : saved_errno_(errno) {}
+
+  ~ErrnoRestorer() { errno = saved_errno_; }
+
+  // Allow this object to be used as part of && operation.
+  operator bool() const { return true; }
+
+ private:
+  const int saved_errno_;
+
+  DISALLOW_COPY_AND_ASSIGN(ErrnoRestorer);
+};
+
+}  // namespace base
+}  // namespace android

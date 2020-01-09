@@ -23,6 +23,7 @@
 #include <android/set_abort_message.h>
 #endif
 
+#include <android-base/errno_restorer.h>
 #include <private/android_filesystem_config.h>
 #include <private/android_logger.h>
 
@@ -37,10 +38,16 @@
 #include "fake_log_device.h"
 #endif
 
+using android::base::ErrnoRestorer;
+
 #define LOG_BUF_SIZE 1024
 
+static bool CanLogSecurity() {
 #if defined(__ANDROID__)
-static int check_log_uid_permissions() {
+  if (!__android_log_security()) {
+    return false;
+  }
+
   uid_t uid = getuid();
 
   /* Matches clientHasLogCredentials() in logd */
@@ -56,11 +63,11 @@ static int check_log_uid_permissions() {
 
           num_groups = getgroups(0, NULL);
           if (num_groups <= 0) {
-            return -EPERM;
+            return false;
           }
           groups = static_cast<gid_t*>(calloc(num_groups, sizeof(gid_t)));
           if (!groups) {
-            return -ENOMEM;
+            return false;
           }
           num_groups = getgroups(num_groups, groups);
           while (num_groups > 0) {
@@ -71,15 +78,17 @@ static int check_log_uid_permissions() {
           }
           free(groups);
           if (num_groups <= 0) {
-            return -EPERM;
+            return false;
           }
         }
       }
     }
   }
-  return 0;
-}
+  return true;
+#else
+  return false;
 #endif
+}
 
 /*
  * Release any logger resources. A new log write will immediately re-acquire.
@@ -93,78 +102,33 @@ void __android_log_close() {
 #endif
 }
 
-static int write_to_log(log_id_t log_id, struct iovec* vec, size_t nr) {
-  int ret, save_errno;
-  struct timespec ts;
+static void GetTimestamp(struct timespec* ts) {
+#if defined(__ANDROID__)
+  clock_gettime(android_log_clockid(), ts);
+#else
+  // Host ignores the timestamp, so no need to provide it.
+  ts->tv_sec = 0;
+  ts->tv_nsec = 0;
+#endif
+}
 
-  save_errno = errno;
-
+static int WriteToLog(log_id_t log_id, struct iovec* vec, size_t nr, const struct timespec& ts) {
   if (log_id == LOG_ID_KERNEL) {
     return -EINVAL;
   }
 
-#if defined(__ANDROID__)
-  clock_gettime(android_log_clockid(), &ts);
-
-  if (log_id == LOG_ID_SECURITY) {
-    if (vec[0].iov_len < 4) {
-      errno = save_errno;
-      return -EINVAL;
-    }
-
-    ret = check_log_uid_permissions();
-    if (ret < 0) {
-      errno = save_errno;
-      return ret;
-    }
-    if (!__android_log_security()) {
-      /* If only we could reset downstream logd counter */
-      errno = save_errno;
-      return -EPERM;
-    }
-  } else if (log_id == LOG_ID_EVENTS || log_id == LOG_ID_STATS) {
-    if (vec[0].iov_len < 4) {
-      errno = save_errno;
-      return -EINVAL;
-    }
-  } else {
-    int prio = *static_cast<int*>(vec[0].iov_base);
-    const char* tag = static_cast<const char*>(vec[1].iov_base);
-    size_t len = vec[1].iov_len;
-
-    if (!__android_log_is_loggable_len(prio, tag, len - 1, ANDROID_LOG_VERBOSE)) {
-      errno = save_errno;
-      return -EPERM;
-    }
-  }
-#else
-  /* simulate clock_gettime(CLOCK_REALTIME, &ts); */
-  {
-    struct timeval tv;
-    gettimeofday(&tv, NULL);
-    ts.tv_sec = tv.tv_sec;
-    ts.tv_nsec = tv.tv_usec * 1000;
-  }
-#endif
-
-  ret = 0;
-
 #if (FAKE_LOG_DEVICE == 0)
-  ret = LogdWrite(log_id, &ts, vec, nr);
-  PmsgWrite(log_id, &ts, vec, nr);
+  int ret = LogdWrite(log_id, ts, vec, nr);
+  PmsgWrite(log_id, ts, vec, nr);
 #else
-  ret = FakeWrite(log_id, &ts, vec, nr);
+  int ret = FakeWrite(log_id, ts, vec, nr);
 #endif
 
-  errno = save_errno;
   return ret;
 }
 
-int __android_log_write(int prio, const char* tag, const char* msg) {
-  return __android_log_buf_write(LOG_ID_MAIN, prio, tag, msg);
-}
-
-int __android_log_buf_write(int bufID, int prio, const char* tag, const char* msg) {
+int WriteTextToLog(int bufID, int prio, const char* tag, const char* msg,
+                   const struct timespec& ts) {
   if (!tag) tag = "";
 
 #if __BIONIC__
@@ -181,18 +145,42 @@ int __android_log_buf_write(int bufID, int prio, const char* tag, const char* ms
   vec[2].iov_base = (void*)msg;
   vec[2].iov_len = strlen(msg) + 1;
 
-  return write_to_log(static_cast<log_id_t>(bufID), vec, 3);
+  return WriteToLog(static_cast<log_id_t>(bufID), vec, 3, ts);
+}
+
+int __android_log_write(int prio, const char* tag, const char* msg) {
+  return __android_log_buf_write(LOG_ID_MAIN, prio, tag, msg);
+}
+
+#define TEXT_PREAMBLE                                               \
+  ErrnoRestorer errno_restorer;                                     \
+                                                                    \
+  struct timespec ts;                                               \
+  GetTimestamp(&ts);                                                \
+                                                                    \
+  if (!__android_log_is_loggable(prio, tag, ANDROID_LOG_VERBOSE)) { \
+    return -EPERM;                                                  \
+  }
+
+int __android_log_buf_write(int bufID, int prio, const char* tag, const char* msg) {
+  TEXT_PREAMBLE
+
+  return WriteTextToLog(bufID, prio, tag, msg, ts);
 }
 
 int __android_log_vprint(int prio, const char* tag, const char* fmt, va_list ap) {
+  TEXT_PREAMBLE
+
   char buf[LOG_BUF_SIZE];
 
   vsnprintf(buf, LOG_BUF_SIZE, fmt, ap);
 
-  return __android_log_write(prio, tag, buf);
+  return WriteTextToLog(LOG_ID_MAIN, prio, tag, buf, ts);
 }
 
 int __android_log_print(int prio, const char* tag, const char* fmt, ...) {
+  TEXT_PREAMBLE
+
   va_list ap;
   char buf[LOG_BUF_SIZE];
 
@@ -200,10 +188,12 @@ int __android_log_print(int prio, const char* tag, const char* fmt, ...) {
   vsnprintf(buf, LOG_BUF_SIZE, fmt, ap);
   va_end(ap);
 
-  return __android_log_write(prio, tag, buf);
+  return WriteTextToLog(LOG_ID_MAIN, prio, tag, buf, ts);
 }
 
 int __android_log_buf_print(int bufID, int prio, const char* tag, const char* fmt, ...) {
+  TEXT_PREAMBLE
+
   va_list ap;
   char buf[LOG_BUF_SIZE];
 
@@ -211,8 +201,10 @@ int __android_log_buf_print(int bufID, int prio, const char* tag, const char* fm
   vsnprintf(buf, LOG_BUF_SIZE, fmt, ap);
   va_end(ap);
 
-  return __android_log_buf_write(bufID, prio, tag, buf);
+  return WriteTextToLog(bufID, prio, tag, buf, ts);
 }
+
+#undef TEXT_PREABMLE
 
 void __android_log_assert(const char* cond, const char* tag, const char* fmt, ...) {
   char buf[LOG_BUF_SIZE];
@@ -244,6 +236,11 @@ void __android_log_assert(const char* cond, const char* tag, const char* fmt, ..
 }
 
 int __android_log_bwrite(int32_t tag, const void* payload, size_t len) {
+  ErrnoRestorer errno_restorer;
+
+  struct timespec ts;
+  GetTimestamp(&ts);
+
   struct iovec vec[2];
 
   vec[0].iov_base = &tag;
@@ -251,10 +248,15 @@ int __android_log_bwrite(int32_t tag, const void* payload, size_t len) {
   vec[1].iov_base = (void*)payload;
   vec[1].iov_len = len;
 
-  return write_to_log(LOG_ID_EVENTS, vec, 2);
+  return WriteToLog(LOG_ID_EVENTS, vec, 2, ts);
 }
 
 int __android_log_stats_bwrite(int32_t tag, const void* payload, size_t len) {
+  ErrnoRestorer errno_restorer;
+
+  struct timespec ts;
+  GetTimestamp(&ts);
+
   struct iovec vec[2];
 
   vec[0].iov_base = &tag;
@@ -262,10 +264,19 @@ int __android_log_stats_bwrite(int32_t tag, const void* payload, size_t len) {
   vec[1].iov_base = (void*)payload;
   vec[1].iov_len = len;
 
-  return write_to_log(LOG_ID_STATS, vec, 2);
+  return WriteToLog(LOG_ID_STATS, vec, 2, ts);
 }
 
 int __android_log_security_bwrite(int32_t tag, const void* payload, size_t len) {
+  ErrnoRestorer errno_restorer;
+
+  struct timespec ts;
+  GetTimestamp(&ts);
+
+  if (!CanLogSecurity()) {
+    return -EPERM;
+  }
+
   struct iovec vec[2];
 
   vec[0].iov_base = &tag;
@@ -273,7 +284,7 @@ int __android_log_security_bwrite(int32_t tag, const void* payload, size_t len) 
   vec[1].iov_base = (void*)payload;
   vec[1].iov_len = len;
 
-  return write_to_log(LOG_ID_SECURITY, vec, 2);
+  return WriteToLog(LOG_ID_SECURITY, vec, 2, ts);
 }
 
 /*
@@ -282,6 +293,11 @@ int __android_log_security_bwrite(int32_t tag, const void* payload, size_t len) 
  * handy if we just want to dump an integer into the log.
  */
 int __android_log_btwrite(int32_t tag, char type, const void* payload, size_t len) {
+  ErrnoRestorer errno_restorer;
+
+  struct timespec ts;
+  GetTimestamp(&ts);
+
   struct iovec vec[3];
 
   vec[0].iov_base = &tag;
@@ -291,7 +307,7 @@ int __android_log_btwrite(int32_t tag, char type, const void* payload, size_t le
   vec[2].iov_base = (void*)payload;
   vec[2].iov_len = len;
 
-  return write_to_log(LOG_ID_EVENTS, vec, 3);
+  return WriteToLog(LOG_ID_EVENTS, vec, 3, ts);
 }
 
 /*
@@ -299,6 +315,11 @@ int __android_log_btwrite(int32_t tag, char type, const void* payload, size_t le
  * event log.
  */
 int __android_log_bswrite(int32_t tag, const char* payload) {
+  ErrnoRestorer errno_restorer;
+
+  struct timespec ts;
+  GetTimestamp(&ts);
+
   struct iovec vec[4];
   char type = EVENT_TYPE_STRING;
   uint32_t len = strlen(payload);
@@ -312,7 +333,7 @@ int __android_log_bswrite(int32_t tag, const char* payload) {
   vec[3].iov_base = (void*)payload;
   vec[3].iov_len = len;
 
-  return write_to_log(LOG_ID_EVENTS, vec, 4);
+  return WriteToLog(LOG_ID_EVENTS, vec, 4, ts);
 }
 
 /*
@@ -320,6 +341,15 @@ int __android_log_bswrite(int32_t tag, const char* payload) {
  * security log.
  */
 int __android_log_security_bswrite(int32_t tag, const char* payload) {
+  ErrnoRestorer errno_restorer;
+
+  struct timespec ts;
+  GetTimestamp(&ts);
+
+  if (!CanLogSecurity()) {
+    return -EPERM;
+  }
+
   struct iovec vec[4];
   char type = EVENT_TYPE_STRING;
   uint32_t len = strlen(payload);
@@ -333,5 +363,5 @@ int __android_log_security_bswrite(int32_t tag, const char* payload) {
   vec[3].iov_base = (void*)payload;
   vec[3].iov_len = len;
 
-  return write_to_log(LOG_ID_SECURITY, vec, 4);
+  return WriteToLog(LOG_ID_SECURITY, vec, 4, ts);
 }
