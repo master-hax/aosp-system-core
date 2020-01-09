@@ -1,0 +1,61 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c2def06f_821808b7",
+        "filename": "liblog/logger_write.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-01-09T01:59:38Z",
+      "side": 1,
+      "message": "use the libbase_headers copy?",
+      "revId": "342e9a6816dbf846558945d98886a45ff707d4a5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "eecface5_ca389421",
+        "filename": "liblog/logger_write.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 111,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-01-09T01:59:38Z",
+      "side": 1,
+      "message": "nit: move the comment _before_ the code? (i guessed wrong why you were doing this :-) )",
+      "revId": "342e9a6816dbf846558945d98886a45ff707d4a5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3d10901c_b22e8e13",
+        "filename": "liblog/logger_write.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-01-09T01:59:38Z",
+      "side": 1,
+      "message": "nit: `ret` unused.\n\n  if (check_log_uid_permissions() \u003c 0 || !__android_log_security()) return false;\n  return true;\n\nor just\n\n  return check_log_uid_permissions() \u003e\u003d 0 \u0026\u0026 __android_log_security();\n\nseems like this is the only caller of check_log_uid_permissions() so it can be simplified to just return bool rather than a menagerie of negated errno values...",
+      "range": {
+        "startLine": 117,
+        "startChar": 6,
+        "endLine": 117,
+        "endChar": 9
+      },
+      "revId": "342e9a6816dbf846558945d98886a45ff707d4a5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
