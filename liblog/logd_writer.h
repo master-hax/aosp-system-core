@@ -20,5 +20,5 @@
 
 #include <android/log.h>
 
-int LogdWrite(log_id_t logId, struct timespec* ts, struct iovec* vec, size_t nr);
+int LogdWrite(log_id_t logId, const struct timespec& ts, struct iovec* vec, size_t nr);
 void LogdClose();
