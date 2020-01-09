@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "d06b28db_d9f5b96b",
+        "filename": "liblog/logger_write.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-01-09T05:33:15Z",
+      "side": 1,
+      "message": "yeah, that\u0027s a good idea.",
+      "parentUuid": "8b0c5841_6a168892",
+      "revId": "342e9a6816dbf846558945d98886a45ff707d4a5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "eecface5_ca389421",
         "filename": "liblog/logger_write.cpp",
         "patchSetId": 5
@@ -107,6 +125,30 @@
       "side": 1,
       "message": "I tried to move as much as possible instead of trying to rewrite it.  That was probably a mistake.\n\nI repurposed check_log_uid_permissions() to do all of this instead, which is better.",
       "parentUuid": "3d10901c_b22e8e13",
+      "range": {
+        "startLine": 117,
+        "startChar": 6,
+        "endLine": 117,
+        "endChar": 9
+      },
+      "revId": "342e9a6816dbf846558945d98886a45ff707d4a5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3acc7f61_6137074e",
+        "filename": "liblog/logger_write.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-01-09T05:33:15Z",
+      "side": 1,
+      "message": "yeah, even better.",
+      "parentUuid": "8ddd61b9_8e8f13e5",
       "range": {
         "startLine": 117,
         "startChar": 6,
