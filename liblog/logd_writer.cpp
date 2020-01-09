@@ -91,7 +91,7 @@ void LogdClose() {
   logd_socket = 0;
 }
 
-int LogdWrite(log_id_t logId, struct timespec* ts, struct iovec* vec, size_t nr) {
+int LogdWrite(log_id_t logId, const struct timespec& ts, struct iovec* vec, size_t nr) {
   ssize_t ret;
   static const unsigned headerLength = 1;
   struct iovec newVec[nr + headerLength];
@@ -122,8 +122,8 @@ int LogdWrite(log_id_t logId, struct timespec* ts, struct iovec* vec, size_t nr)
   }
 
   header.tid = gettid();
-  header.realtime.tv_sec = ts->tv_sec;
-  header.realtime.tv_nsec = ts->tv_nsec;
+  header.realtime.tv_sec = ts.tv_sec;
+  header.realtime.tv_nsec = ts.tv_nsec;
 
   newVec[0].iov_base = (unsigned char*)&header;
   newVec[0].iov_len = sizeof(header);
