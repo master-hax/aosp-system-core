@@ -25,7 +25,7 @@
 __BEGIN_DECLS
 
 void FakeClose();
-int FakeWrite(log_id_t log_id, struct timespec* ts, struct iovec* vec, size_t nr);
+int FakeWrite(log_id_t log_id, const struct timespec& ts, struct iovec* vec, size_t nr);
 
 int __android_log_is_loggable(int prio, const char*, int def);
 int __android_log_is_loggable_len(int prio, const char*, size_t, int def);

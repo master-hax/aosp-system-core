@@ -54,7 +54,7 @@ void PmsgClose() {
   pmsg_fd = 0;
 }
 
-int PmsgWrite(log_id_t logId, struct timespec* ts, struct iovec* vec, size_t nr) {
+int PmsgWrite(log_id_t logId, const struct timespec& ts, struct iovec* vec, size_t nr) {
   static const unsigned headerLength = 2;
   struct iovec newVec[nr + headerLength];
   android_log_header_t header;
@@ -117,8 +117,8 @@ int PmsgWrite(log_id_t logId, struct timespec* ts, struct iovec* vec, size_t nr)
 
   header.id = logId;
   header.tid = gettid();
-  header.realtime.tv_sec = ts->tv_sec;
-  header.realtime.tv_nsec = ts->tv_nsec;
+  header.realtime.tv_sec = ts.tv_sec;
+  header.realtime.tv_nsec = ts.tv_nsec;
 
   newVec[0].iov_base = (unsigned char*)&pmsgHeader;
   newVec[0].iov_len = sizeof(pmsgHeader);
@@ -234,7 +234,7 @@ ssize_t __android_log_pmsg_file_write(log_id_t logId, char prio, const char* fil
     vec[2].iov_base = (unsigned char*)buf;
     vec[2].iov_len = transfer;
 
-    ret = PmsgWrite(logId, &ts, vec, sizeof(vec) / sizeof(vec[0]));
+    ret = PmsgWrite(logId, ts, vec, sizeof(vec) / sizeof(vec[0]));
 
     if (ret <= 0) {
       free(cp);

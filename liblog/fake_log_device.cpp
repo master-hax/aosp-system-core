@@ -445,7 +445,7 @@ static void ShowLog(int logPrio, const char* tag, const char* msg) {
  *  tag (N bytes -- null-terminated ASCII string)
  *  message (N bytes -- null-terminated ASCII string)
  */
-int FakeWrite(log_id_t log_id, struct timespec*, struct iovec* vector, size_t count) {
+int FakeWrite(log_id_t log_id, const struct timespec&, struct iovec* vector, size_t count) {
   /* Make sure that no-one frees the LogState while we're using it.
    * Also guarantees that only one thread is in showLog() at a given
    * time (if it matters).
