@@ -190,3 +190,17 @@ LOCAL_MODULE_PATH := $(TARGET_DEBUG_RAMDISK_OUT)
 include $(BUILD_PREBUILT)
 
 include $(call all-makefiles-under,$(LOCAL_PATH))
+
+#######################################
+# stub.libraries.txt
+include $(CLEAR_VARS)
+LOCAL_MODULE := stub.libraries.txt
+LOCAL_MODULE_CLASS := ETC
+LOCAL_MODULE_PATH := $(TARGET_OUT_ETC)
+LOCAL_MODULE_STEM := $(LOCAL_MODULE)
+include $(BUILD_SYSTEM)/base_rules.mk
+$(LOCAL_BUILT_MODULE): $(STUB_LIBRARIES_FILE)
+$(LOCAL_BUILT_MODULE):
+	@echo "Generate: $@"
+	@mkdir -p $(dir $@)
+	$(hide) cat $(STUB_LIBRARIES_FILE) > $@
