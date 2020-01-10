@@ -14,9 +14,7 @@
 // limitations under the License.
 //
 
-// =========================================================================
-// Native library to write stats log to statsd socket on Android R and later
-// =========================================================================
+// TODO (b/147511818): delete this when libstatspush merges into google master
 cc_library {
     name: "libstatssocket",
     srcs: [
@@ -43,7 +41,43 @@ cc_library {
 
     // enumerate stable entry points for APEX use
     stubs: {
-        symbol_file: "libstatssocket.map.txt",
+        symbol_file: "libstatspush.map.txt",
+        versions: [
+            "1",
+        ],
+    }
+}
+
+// ==========================================================================
+// Native library to log pushed atoms to statsd socket on Android R and later
+// ==========================================================================
+cc_library {
+    name: "libstatspush",
+    srcs: [
+        "stats_buffer_writer.c",
+        "stats_event.c",
+        // TODO(b/145573568): Remove stats_event_list once stats_event
+        // migration is complete.
+        "stats_event_list.c",
+        "statsd_writer.c",
+    ],
+    host_supported: true,
+    cflags: [
+        "-Wall",
+        "-Werror",
+        "-DLIBLOG_LOG_TAG=1006",
+        "-DWRITE_TO_STATSD=1",
+        "-DWRITE_TO_LOGD=0",
+    ],
+    export_include_dirs: ["include"],
+    shared_libs: [
+        "libcutils",
+        "liblog",
+    ],
+
+    // enumerate stable entry points for APEX use
+    stubs: {
+        symbol_file: "libstatspush.map.txt",
         versions: [
             "1",
         ],
@@ -51,13 +85,13 @@ cc_library {
 }
 
 cc_library_headers {
-    name: "libstatssocket_headers",
+    name: "libstatspush_headers",
     export_include_dirs: ["include"],
     host_supported: true,
 }
 
 cc_benchmark {
-    name: "libstatssocket_benchmark",
+    name: "libstatspush_benchmark",
     srcs: [
         "benchmark/main.cpp",
         "benchmark/stats_event_benchmark.cpp",
@@ -67,7 +101,7 @@ cc_benchmark {
         "-Werror",
     ],
     static_libs: [
-        "libstatssocket",
+        "libstatspush",
     ],
     shared_libs: [
         "libcutils",
