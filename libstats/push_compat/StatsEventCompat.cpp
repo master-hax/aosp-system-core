@@ -47,7 +47,7 @@ StatsEventCompat::StatsEventCompat() : mEventQ(kStatsEventTag) {
     {
         std::lock_guard<std::mutex> lg(mLoadLock);
         if (!mAttemptedLoad) {
-            void* handle = dlopen("libstatssocket.so", RTLD_NOW);
+            void* handle = dlopen("libstatspush.so", RTLD_NOW);
             if (handle) {
                 mStatsEventApi = (struct stats_event_api_table*)dlsym(handle, "table");
             } else {
