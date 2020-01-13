@@ -49,6 +49,53 @@
     },
     {
       "key": {
+        "uuid": "47055ee3_e4e202d5",
+        "filename": "init/README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 490,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2020-01-13T17:31:01Z",
+      "side": 1,
+      "message": "Sorry, you\u0027re right. It\u0027s only the \u0027interface\u0027 service declaration which is different. Yeah",
+      "parentUuid": "2bd7d651_298f6193",
+      "range": {
+        "startLine": 490,
+        "startChar": 17,
+        "endLine": 490,
+        "endChar": 23
+      },
+      "revId": "bf1e98dae18d65488d0306593dfcf32e0c305689",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1dd86fba_252722d0",
+        "filename": "init/README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 493,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2020-01-13T17:31:01Z",
+      "side": 1,
+      "message": "should this emphasize that it is as declared in init.rc w/ the \u0027interface\u0027 declaration, not whatever happens to be registered at runtime?",
+      "range": {
+        "startLine": 493,
+        "startChar": 37,
+        "endLine": 493,
+        "endChar": 46
+      },
+      "revId": "bf1e98dae18d65488d0306593dfcf32e0c305689",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "42bc4bc1_aee7f5b9",
         "filename": "init/README.md",
         "patchSetId": 1
@@ -72,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "a4ee43b0_fe89360e",
+        "filename": "init/README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 501,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2020-01-13T17:31:01Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "42bc4bc1_aee7f5b9",
+      "range": {
+        "startLine": 501,
+        "startChar": 68,
+        "endLine": 501,
+        "endChar": 69
+      },
+      "revId": "bf1e98dae18d65488d0306593dfcf32e0c305689",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "58c0384d_b497bb43",
         "filename": "init/README.md",
         "patchSetId": 1
@@ -92,6 +163,30 @@
       "revId": "bf1e98dae18d65488d0306593dfcf32e0c305689",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "aad1e63c_bfa24198",
+        "filename": "init/README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 504,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2020-01-13T17:31:01Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "58c0384d_b497bb43",
+      "range": {
+        "startLine": 504,
+        "startChar": 21,
+        "endLine": 504,
+        "endChar": 22
+      },
+      "revId": "bf1e98dae18d65488d0306593dfcf32e0c305689",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -162,6 +257,30 @@
       "revId": "bf1e98dae18d65488d0306593dfcf32e0c305689",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fb352037_1b078c24",
+        "filename": "init/README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 735,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2020-01-13T17:31:01Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "85c3f23d_4178aab4",
+      "range": {
+        "startLine": 735,
+        "startChar": 43,
+        "endLine": 735,
+        "endChar": 50
+      },
+      "revId": "bf1e98dae18d65488d0306593dfcf32e0c305689",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
