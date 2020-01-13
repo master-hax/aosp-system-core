@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "97e9a412_1e9b1763",
+        "filename": "fs_mgr/libf2fs_pin/Android.bp",
+        "patchSetId": 3
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2020-01-13T23:26:43Z",
+      "side": 1,
+      "message": "not a gtest?",
+      "range": {
+        "startLine": 39,
+        "startChar": 0,
+        "endLine": 39,
+        "endChar": 9
+      },
+      "revId": "8e97b144241bb88e76e6098976d740e1a9d658b9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "af57e6ee_635b26da",
+        "filename": "fs_mgr/libf2fs_pin/pin.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2020-01-13T23:26:43Z",
+      "side": 1,
+      "message": "Is there a bug to remind us to clean this up in the future?",
+      "range": {
+        "startLine": 53,
+        "startChar": 70,
+        "endLine": 56,
+        "endChar": 20
+      },
+      "revId": "8e97b144241bb88e76e6098976d740e1a9d658b9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "539b126f_2d418946",
+        "filename": "fs_mgr/libf2fs_pin/pin.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 120,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2020-01-13T23:26:43Z",
+      "side": 1,
+      "message": "comma",
+      "range": {
+        "startLine": 120,
+        "startChar": 42,
+        "endLine": 120,
+        "endChar": 43
+      },
+      "revId": "8e97b144241bb88e76e6098976d740e1a9d658b9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
