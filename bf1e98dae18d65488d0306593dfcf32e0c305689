@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "2bd7d651_298f6193",
+        "filename": "init/README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 490,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-01-13T17:26:04Z",
+      "side": 1,
+      "message": "Are you sure?  https://cs.android.com/android/platform/superproject/+/master:system/core/init/builtins.cpp;l\u003d349?q\u003df:builtins.cpp uses only one parameter with the format of \"\u003cname\u003e/\u003cinstance\u003e\"\n\nhttps://cs.android.com/android/platform/superproject/+/master:device/google/crosshatch/init.hardware.rc;l\u003d933?q\u003df:%22.rc%22%20interface_start is where I took this example from too.",
+      "parentUuid": "f5b67430_a65c12fb",
+      "range": {
+        "startLine": 490,
+        "startChar": 17,
+        "endLine": 490,
+        "endChar": 23
+      },
+      "revId": "bf1e98dae18d65488d0306593dfcf32e0c305689",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "42bc4bc1_aee7f5b9",
         "filename": "init/README.md",
         "patchSetId": 1
