@@ -1,0 +1,60 @@
+//
+// Copyright (c) 2020 Google LLC.  All Rights Reserved.
+// Google Proprietary and Confidential.
+//
+
+cc_binary {
+    name: "android.hardware.confirmationui@1.0-service.trusty",
+    relative_install_path: "hw",
+    vendor: true,
+    shared_libs: [
+        "android.hardware.confirmationui@1.0",
+        "android.hardware.confirmationui.not-so-secure-input",
+        "android.hardware.keymaster@4.0",
+        "libbase",
+        "libc",
+        "libcrypto",
+        "libcutils",
+        "libdl",
+        "libhidlbase",
+        "libteeui_hal_support",
+        "libtrusty",
+        "libutils",
+    ],
+
+    init_rc: ["android.hardware.confirmationui@1.0-service.trusty.rc"],
+
+    vintf_fragments: ["android.hardware.confirmationui@1.0-service.trusty.xml"],
+
+    srcs: [
+        "service.cpp",
+        "TrustyApp.cpp",
+        "TrustyConfirmationUI.cpp",
+    ],
+
+    cflags: [
+        "-Wall",
+        "-Werror",
+        "-DTEEUI_USE_STD_VECTOR",
+    ],
+}
+
+cc_library {
+    name: "android.hardware.confirmationui.not-so-secure-input",
+    vendor: true,
+    shared_libs: [
+        "libbase",
+        "libcrypto",
+        "libteeui_hal_support",
+    ],
+
+    srcs: [
+        "NotSoSecureInput.cpp",
+    ],
+
+    cflags: [
+        "-Wall",
+        "-Werror",
+        "-DTEEUI_USE_STD_VECTOR",
+    ],
+}
