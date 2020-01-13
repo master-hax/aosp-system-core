@@ -132,6 +132,8 @@ class AvbHandle {
   private:
     AvbHandle() : status_(AvbHandleStatus::kUninitialized) {}
 
+    static std::vector<std::string> GetAllowedAvbKeyBlobs(const std::string& fstab_keys);
+    static std::vector<std::string> allowed_avb_key_blobs_;
     std::vector<VBMetaData> vbmeta_images_;
     VBMetaInfo vbmeta_info_;  // A summary info for vbmeta_images_.
     AvbHandleStatus status_;
