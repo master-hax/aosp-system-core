@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "56334bfd_d94c02b0",
+        "filename": "adb/ssl/tls_connection.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1002975
+      },
+      "writtenOn": "2020-01-13T18:15:11Z",
+      "side": 1,
+      "message": "You\u0027ll need some way to export the channel binding value here to make sure the channel isn\u0027t stolen after running a PAKE. See https://commondatastorage.googleapis.com/chromium-boringssl-docs/ssl.h.html#SSL_export_keying_material for BoringSSL\u0027s way of doing this.",
+      "range": {
+        "startLine": 35,
+        "startChar": 4,
+        "endLine": 36,
+        "endChar": 71
+      },
+      "revId": "dc723488cbdd0d940aadb04a2b5a0ab44f9d3844",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "93f38c16_6f351d7c",
+        "filename": "adb/ssl/tls_connection.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 158,
+      "author": {
+        "id": 1002975
+      },
+      "writtenOn": "2020-01-13T18:15:11Z",
+      "side": 1,
+      "message": "There\u0027s actually no difference between TLSv1_2_server_method and TLSv1_2_client_method. However, since this is a new feature and we are writing both sides of the connection, this should use TLS 1.3:\n\n  ssl_ctx_.reset(SSL_CTX_new(TLS_method()));\n  if (ssl_ctx_.get() \u003d\u003d nullptr ||\n      !SSL_CTX_set_min_proto_version(ssl_ctx_.get(), TLS1_3_VERSION) {\n    // handle error...\n  }",
+      "range": {
+        "startLine": 151,
+        "startChar": 4,
+        "endLine": 158,
+        "endChar": 5
+      },
+      "revId": "dc723488cbdd0d940aadb04a2b5a0ab44f9d3844",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
