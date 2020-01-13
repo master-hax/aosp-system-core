@@ -68,6 +68,75 @@
       "revId": "8e97b144241bb88e76e6098976d740e1a9d658b9",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "208a0fd0_8de9cad2",
+        "filename": "fs_mgr/libf2fs_pin/pin_test.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2020-01-13T23:33:39Z",
+      "side": 1,
+      "message": "This can just be LOG(ERROR) / PLOG(ERROR) with proper SetLogger(StdioLogger)",
+      "range": {
+        "startLine": 52,
+        "startChar": 0,
+        "endLine": 62,
+        "endChar": 0
+      },
+      "revId": "8e97b144241bb88e76e6098976d740e1a9d658b9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a3c178ec_7f78442e",
+        "filename": "fs_mgr/libf2fs_pin/pin_test.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 303,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2020-01-13T23:33:39Z",
+      "side": 1,
+      "message": "This can be managed with gtest framework",
+      "range": {
+        "startLine": 296,
+        "startChar": 0,
+        "endLine": 303,
+        "endChar": 1
+      },
+      "revId": "8e97b144241bb88e76e6098976d740e1a9d658b9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a485cb73_2269e273",
+        "filename": "fs_mgr/libf2fs_pin/pin_test.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 324,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2020-01-13T23:33:39Z",
+      "side": 1,
+      "message": "These can be a TEST_P in gtest",
+      "range": {
+        "startLine": 324,
+        "startChar": 5,
+        "endLine": 324,
+        "endChar": 15
+      },
+      "revId": "8e97b144241bb88e76e6098976d740e1a9d658b9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
