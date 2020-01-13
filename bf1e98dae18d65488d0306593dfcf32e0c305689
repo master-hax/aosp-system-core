@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1cfa8f9e_5d282ea2",
+        "filename": "init/README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 505,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-01-13T16:26:38Z",
+      "side": 1,
+      "message": "smoreland@ - am I using interface and instance correctly here?",
+      "range": {
+        "startLine": 500,
+        "startChar": 0,
+        "endLine": 505,
+        "endChar": 42
+      },
+      "revId": "bf1e98dae18d65488d0306593dfcf32e0c305689",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
