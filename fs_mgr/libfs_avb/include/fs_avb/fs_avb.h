@@ -17,6 +17,7 @@
 #pragma once
 
 #include <functional>
+#include <map>
 #include <memory>
 #include <string>
 #include <vector>
@@ -132,6 +133,8 @@ class AvbHandle {
   private:
     AvbHandle() : status_(AvbHandleStatus::kUninitialized) {}
 
+    static std::vector<std::string> GetAllowedAvbKeyBlobs(const std::string& fstab_keys);
+    static std::map<std::string, std::string> avb_key_cache_;
     std::vector<VBMetaData> vbmeta_images_;
     VBMetaInfo vbmeta_info_;  // A summary info for vbmeta_images_.
     AvbHandleStatus status_;
