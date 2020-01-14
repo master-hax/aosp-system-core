@@ -40,6 +40,7 @@ class CgroupController {
 
     bool HasValue() const;
     bool IsUsable();
+    bool HasFile(const std::string& path) const;
 
     std::string GetTasksFilePath(const std::string& path) const;
     std::string GetProcsFilePath(const std::string& path, uid_t uid, pid_t pid) const;

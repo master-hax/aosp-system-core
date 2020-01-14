@@ -77,6 +77,16 @@ bool CgroupController::IsUsable() {
     return state_ == USABLE;
 }
 
+bool CgroupController::HasFile(const std::string& rel_path) const {
+    std::string file_path = path();
+
+    if (!rel_path.empty()) {
+        file_path += "/" + rel_path;
+    }
+
+   return access(file_path.c_str(), F_OK) != -1;
+}
+
 std::string CgroupController::GetTasksFilePath(const std::string& rel_path) const {
     std::string tasks_path = path();
 
