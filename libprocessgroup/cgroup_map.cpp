@@ -77,6 +77,17 @@ bool CgroupController::IsUsable() {
     return state_ == USABLE;
 }
 
+bool CgroupController::HasFile(const std::string& rel_path) const {
+    std::string file_path = path();
+    std::string discard;
+
+    if (!rel_path.empty()) {
+        file_path += "/" + rel_path;
+    }
+
+   return android::base::ReadFileToString(file_path, &discard, false);
+}
+
 std::string CgroupController::GetTasksFilePath(const std::string& rel_path) const {
     std::string tasks_path = path();
 
