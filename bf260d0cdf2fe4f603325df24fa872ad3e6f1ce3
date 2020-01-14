@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "039e9d7b_b5db5ceb",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 216,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-01-14T18:12:01Z",
+      "side": 1,
+      "message": "This comment fits on one line, doesn\u0027t it?",
+      "range": {
+        "startLine": 215,
+        "startChar": 0,
+        "endLine": 216,
+        "endChar": 18
+      },
+      "revId": "bf260d0cdf2fe4f603325df24fa872ad3e6f1ce3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
