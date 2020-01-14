@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "57794187_13118cbe",
+        "filename": "fastboot/fuzzy_fastboot/fixtures.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 126,
+      "author": {
+        "id": 1595239
+      },
+      "writtenOn": "2020-01-14T14:23:26Z",
+      "side": 1,
+      "message": "Add a 60 sec. timeout.\nIt seems that the \"retry count\" here for tcp fastboot only fix a part of your concern.\nIf the device doesn\u0027t connect to network or serial parameter for fuzzy_fastboot indicates a wrong ip address, it will hang at tcp::Connect forever.",
+      "parentUuid": "1b2a33d2_6bb61740",
+      "revId": "e970d5b122c282ed7d5229531b65ddd41efa4f4c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "ec14f1ae_01a31e92",
         "filename": "fastboot/fuzzy_fastboot/fixtures.cpp",
         "patchSetId": 3
@@ -30,6 +48,30 @@
       "writtenOn": "2019-12-27T20:52:02Z",
       "side": 1,
       "message": "These lines should be 100 char or less.  clang-format should handle this as well.",
+      "range": {
+        "startLine": 127,
+        "startChar": 0,
+        "endLine": 130,
+        "endChar": 103
+      },
+      "revId": "e970d5b122c282ed7d5229531b65ddd41efa4f4c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4af8e7c9_2cff16ae",
+        "filename": "fastboot/fuzzy_fastboot/fixtures.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 130,
+      "author": {
+        "id": 1595239
+      },
+      "writtenOn": "2020-01-14T14:23:26Z",
+      "side": 1,
+      "message": "Fixed by using clang-format.",
+      "parentUuid": "ec14f1ae_01a31e92",
       "range": {
         "startLine": 127,
         "startChar": 0,
@@ -65,6 +107,30 @@
     },
     {
       "key": {
+        "uuid": "ecc94946_09f64593",
+        "filename": "fastboot/fuzzy_fastboot/fixtures.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 207,
+      "author": {
+        "id": 1595239
+      },
+      "writtenOn": "2020-01-14T14:23:26Z",
+      "side": 1,
+      "message": "Refactored it by adding a ConnectTcpFastbootDevice function.",
+      "parentUuid": "f737d3c1_39338cc9",
+      "range": {
+        "startLine": 197,
+        "startChar": 4,
+        "endLine": 207,
+        "endChar": 9
+      },
+      "revId": "e970d5b122c282ed7d5229531b65ddd41efa4f4c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "5768dc03_84d9f44b",
         "filename": "fastboot/fuzzy_fastboot/transport_sniffer.h",
         "patchSetId": 3
@@ -76,6 +142,24 @@
       "writtenOn": "2019-12-27T20:52:02Z",
       "side": 1,
       "message": "Does this need to inherit from UsbTransport or could it inherit from the more generic Transport?",
+      "revId": "e970d5b122c282ed7d5229531b65ddd41efa4f4c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7ad1aa86_13bda611",
+        "filename": "fastboot/fuzzy_fastboot/transport_sniffer.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1595239
+      },
+      "writtenOn": "2020-01-14T14:23:26Z",
+      "side": 1,
+      "message": "I think it could inherit from Transport directly, rewrited.",
+      "parentUuid": "5768dc03_84d9f44b",
       "revId": "e970d5b122c282ed7d5229531b65ddd41efa4f4c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
