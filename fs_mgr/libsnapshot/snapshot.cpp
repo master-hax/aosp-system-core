@@ -2262,7 +2262,7 @@ UpdateState SnapshotManager::InitiateMergeAndWait() {
     return state;
 }
 
-bool SnapshotManager::WaitForMerge() {
+SnapshotManager::Return SnapshotManager::WaitForMerge() {
     LOG(INFO) << "Waiting for any previous merge request to complete. "
               << "This can take up to several minutes.";
     while (true) {
@@ -2273,7 +2273,18 @@ bool SnapshotManager::WaitForMerge() {
             continue;
         }
         LOG(INFO) << "Wait for merge exits with state " << state;
-        return state == UpdateState::None || state == UpdateState::MergeCompleted;
+        switch (state) {
+            case UpdateState::None:
+                [[fallthrough]];
+            case UpdateState::MergeCompleted:
+                [[fallthrough]];
+            case UpdateState::Cancelled:
+                return Return::Ok();
+            case UpdateState::MergeNeedsReboot:
+                return Return::NeedsReboot();
+            default:
+                return Return::Error();
+        }
     }
 }
 

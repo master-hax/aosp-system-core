@@ -121,23 +121,50 @@ class SnapshotManager final {
   public:
     // SnapshotManager functions return either bool or Return objects. "Return" types provides
     // more information about the reason of the failure.
-    class Return : public FiemapStatus {
+    class Return {
       public:
+        enum class ErrorCode : int32_t {
+            SUCCESS = static_cast<int32_t>(FiemapStatus::ErrorCode::SUCCESS),
+            ERROR = static_cast<int32_t>(FiemapStatus::ErrorCode::ERROR),
+            NO_SPACE = static_cast<int32_t>(FiemapStatus::ErrorCode::NO_SPACE),
+            NEEDS_REBOOT = -EAGAIN,
+        };
+        ErrorCode error_code() const { return error_code_; }
+        bool is_ok() const { return error_code() == ErrorCode::SUCCESS; }
+        operator bool() const { return is_ok(); }
         // Total required size on /userdata.
         uint64_t required_size() const { return required_size_; }
-
-        static Return Ok() { return Return(FiemapStatus::ErrorCode::SUCCESS); }
-        static Return Error() { return Return(FiemapStatus::ErrorCode::ERROR); }
-        static Return NoSpace(uint64_t size) {
-            return Return(FiemapStatus::ErrorCode::NO_SPACE, size);
+        std::string string() const {
+            if (error_code() == ErrorCode::ERROR) {
+                return "Error";
+            }
+            return strerror(-static_cast<int>(error_code()));
         }
+
+        static Return Ok() { return Return(ErrorCode::SUCCESS); }
+        static Return Error() { return Return(ErrorCode::ERROR); }
+        static Return NoSpace(uint64_t size) { return Return(ErrorCode::NO_SPACE, size); }
+        static Return NeedsReboot() { return Return(ErrorCode::NEEDS_REBOOT); }
         // Does not set required_size_ properly even when status.error_code() == NO_SPACE.
-        explicit Return(const FiemapStatus& status) : Return(status.error_code()) {}
+        explicit Return(const FiemapStatus& status)
+            : error_code_(FromFiemapStatusErrorCode(status.error_code())), required_size_(0) {}
 
       private:
+        ErrorCode error_code_;
         uint64_t required_size_;
-        Return(FiemapStatus::ErrorCode code, uint64_t required_size = 0)
-            : FiemapStatus(code), required_size_(required_size) {}
+        Return(ErrorCode error_code, uint64_t required_size = 0)
+            : error_code_(error_code), required_size_(required_size) {}
+
+        static ErrorCode FromFiemapStatusErrorCode(FiemapStatus::ErrorCode error_code) {
+            switch (error_code) {
+                case FiemapStatus::ErrorCode::SUCCESS:
+                case FiemapStatus::ErrorCode::ERROR:
+                case FiemapStatus::ErrorCode::NO_SPACE:
+                    return static_cast<ErrorCode>(error_code);
+                default:
+                    return ErrorCode::ERROR;
+            }
+        }
     };
 
     // Dependency injection for testing.
@@ -231,7 +258,7 @@ class SnapshotManager final {
     // Returns:
     //   - true there is no merge or merge finishes
     //   - false indicating an error has occurred
-    bool WaitForMerge();
+    Return WaitForMerge();
 
     // Find the status of the current update, if any.
     //
