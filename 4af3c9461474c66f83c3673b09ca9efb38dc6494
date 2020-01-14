@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "a14768dc_05963393",
+        "filename": "trusty/confirmationui/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 1092085
+      },
+      "writtenOn": "2020-01-14T21:55:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "be0e64f8_2bd9a63a",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 4,
+        "endChar": 2
+      },
+      "revId": "4af3c9461474c66f83c3673b09ca9efb38dc6494",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "00a12c46_4f9fc28b",
         "filename": "trusty/confirmationui/Android.bp",
         "patchSetId": 1
@@ -45,6 +69,30 @@
       "revId": "4af3c9461474c66f83c3673b09ca9efb38dc6494",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "40ef701a_60414d77",
+        "filename": "trusty/confirmationui/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1092085
+      },
+      "writtenOn": "2020-01-14T21:55:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "00a12c46_4f9fc28b",
+      "range": {
+        "startLine": 38,
+        "startChar": 0,
+        "endLine": 38,
+        "endChar": 19
+      },
+      "revId": "4af3c9461474c66f83c3673b09ca9efb38dc6494",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "fbf1ee17_4ae301f7",
+        "filename": "trusty/confirmationui/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1092085
+      },
+      "writtenOn": "2020-01-14T21:55:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "53077729_1d1b217e",
+      "range": {
+        "startLine": 47,
+        "startChar": 0,
+        "endLine": 47,
+        "endChar": 46
+      },
+      "revId": "4af3c9461474c66f83c3673b09ca9efb38dc6494",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "404dffda_daf2b66f",
         "filename": "trusty/confirmationui/Android.bp",
         "patchSetId": 1
@@ -91,6 +163,30 @@
       "revId": "4af3c9461474c66f83c3673b09ca9efb38dc6494",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d2514060_9073f446",
+        "filename": "trusty/confirmationui/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 1092085
+      },
+      "writtenOn": "2020-01-14T21:55:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "404dffda_daf2b66f",
+      "range": {
+        "startLine": 60,
+        "startChar": 0,
+        "endLine": 60,
+        "endChar": 19
+      },
+      "revId": "4af3c9461474c66f83c3673b09ca9efb38dc6494",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -117,6 +213,30 @@
     },
     {
       "key": {
+        "uuid": "dcd8adc1_f086ff28",
+        "filename": "trusty/confirmationui/NotSoSecureInput.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 1092085
+      },
+      "writtenOn": "2020-01-14T21:55:26Z",
+      "side": 1,
+      "message": "I chose it randomly. Second value that came to mind. Of course we could go into a philosophical discussion about determinism... But it really doesn\u0027t matter since this implementation is a mock altogether.",
+      "parentUuid": "1871a3c1_d0acf6b1",
+      "range": {
+        "startLine": 68,
+        "startChar": 0,
+        "endLine": 68,
+        "endChar": 31
+      },
+      "revId": "4af3c9461474c66f83c3673b09ca9efb38dc6494",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "0a596f0f_f86f7cdc",
         "filename": "trusty/confirmationui/README.security",
         "patchSetId": 1
@@ -131,6 +251,24 @@
       "revId": "4af3c9461474c66f83c3673b09ca9efb38dc6494",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "511697dd_17708d24",
+        "filename": "trusty/confirmationui/README.security",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1092085
+      },
+      "writtenOn": "2020-01-14T21:55:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0a596f0f_f86f7cdc",
+      "revId": "4af3c9461474c66f83c3673b09ca9efb38dc6494",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -157,6 +295,30 @@
     },
     {
       "key": {
+        "uuid": "ad313f4b_d0f2c27c",
+        "filename": "trusty/confirmationui/TrustyConfirmationUI.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1092085
+      },
+      "writtenOn": "2020-01-14T21:55:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "bd1e58f8_ba670309",
+      "range": {
+        "startLine": 18,
+        "startChar": 10,
+        "endLine": 18,
+        "endChar": 59
+      },
+      "revId": "4af3c9461474c66f83c3673b09ca9efb38dc6494",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "6a8870cd_e5480e60",
         "filename": "trusty/confirmationui/TrustyConfirmationUI.cpp",
         "patchSetId": 1
@@ -177,6 +339,30 @@
       "revId": "4af3c9461474c66f83c3673b09ca9efb38dc6494",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a590e8b0_ca4bc640",
+        "filename": "trusty/confirmationui/TrustyConfirmationUI.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 512,
+      "author": {
+        "id": 1092085
+      },
+      "writtenOn": "2020-01-14T21:55:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6a8870cd_e5480e60",
+      "range": {
+        "startLine": 507,
+        "startChar": 0,
+        "endLine": 512,
+        "endChar": 0
+      },
+      "revId": "4af3c9461474c66f83c3673b09ca9efb38dc6494",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -203,6 +389,30 @@
     },
     {
       "key": {
+        "uuid": "642c06a3_bc3d4c06",
+        "filename": "trusty/confirmationui/TrustyConfirmationUI.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 1092085
+      },
+      "writtenOn": "2020-01-14T21:55:26Z",
+      "side": 1,
+      "message": "The life cycle of the app/connection is mostly determined by the promptUserConfirmation thread. But on occasion other binder calls also access the app. The weak_ptr does not keep the app alive but it allows these other binder calls to get a reference to the app IFF it is still alive.",
+      "parentUuid": "6f52a0ed_91f786e6",
+      "range": {
+        "startLine": 65,
+        "startChar": 9,
+        "endLine": 65,
+        "endChar": 17
+      },
+      "revId": "4af3c9461474c66f83c3673b09ca9efb38dc6494",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "cfe3add5_eb08aa85",
         "filename": "trusty/confirmationui/TrustyConfirmationUI.h",
         "patchSetId": 1
@@ -223,6 +433,30 @@
       "revId": "4af3c9461474c66f83c3673b09ca9efb38dc6494",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "02baae9c_33af8cf8",
+        "filename": "trusty/confirmationui/TrustyConfirmationUI.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 1092085
+      },
+      "writtenOn": "2020-01-14T21:55:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "cfe3add5_eb08aa85",
+      "range": {
+        "startLine": 75,
+        "startChar": 4,
+        "endLine": 75,
+        "endChar": 12
+      },
+      "revId": "4af3c9461474c66f83c3673b09ca9efb38dc6494",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -249,6 +483,30 @@
     },
     {
       "key": {
+        "uuid": "5745ebe5_a445aff8",
+        "filename": "trusty/confirmationui/TrustyConfirmationUI.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1092085
+      },
+      "writtenOn": "2020-01-14T21:55:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "17a605b3_5ad6fa4e",
+      "range": {
+        "startLine": 76,
+        "startChar": 4,
+        "endLine": 76,
+        "endChar": 12
+      },
+      "revId": "4af3c9461474c66f83c3673b09ca9efb38dc6494",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5e9be5e0_9b0a6711",
         "filename": "trusty/confirmationui/TrustyConfirmationUI.h",
         "patchSetId": 1
@@ -269,6 +527,30 @@
       "revId": "4af3c9461474c66f83c3673b09ca9efb38dc6494",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c3eaecf8_cf3319f5",
+        "filename": "trusty/confirmationui/TrustyConfirmationUI.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 1092085
+      },
+      "writtenOn": "2020-01-14T21:55:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5e9be5e0_9b0a6711",
+      "range": {
+        "startLine": 77,
+        "startChar": 0,
+        "endLine": 77,
+        "endChar": 36
+      },
+      "revId": "4af3c9461474c66f83c3673b09ca9efb38dc6494",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -295,6 +577,30 @@
     },
     {
       "key": {
+        "uuid": "5c1fb2f2_1eb749bd",
+        "filename": "trusty/confirmationui/service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1092085
+      },
+      "writtenOn": "2020-01-14T21:55:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "79dd0f49_8d390f64",
+      "range": {
+        "startLine": 21,
+        "startChar": 0,
+        "endLine": 21,
+        "endChar": 71
+      },
+      "revId": "4af3c9461474c66f83c3673b09ca9efb38dc6494",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "71e8cf03_6a227c3b",
         "filename": "trusty/confirmationui/service.cpp",
         "patchSetId": 1
@@ -315,6 +621,30 @@
       "revId": "4af3c9461474c66f83c3673b09ca9efb38dc6494",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3c061a3d_2df0bd3c",
+        "filename": "trusty/confirmationui/service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1092085
+      },
+      "writtenOn": "2020-01-14T21:55:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "71e8cf03_6a227c3b",
+      "range": {
+        "startLine": 22,
+        "startChar": 10,
+        "endLine": 22,
+        "endChar": 59
+      },
+      "revId": "4af3c9461474c66f83c3673b09ca9efb38dc6494",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
