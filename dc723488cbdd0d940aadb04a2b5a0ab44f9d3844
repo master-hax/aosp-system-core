@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "b9f0c802_a26f5354",
+        "filename": "adb/ssl/tls_connection.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1128973
+      },
+      "writtenOn": "2020-01-14T05:54:34Z",
+      "side": 1,
+      "message": "Done. I\u0027ve added a method to grab the exported keying material. I\u0027ve also updated the pairing connection CL to append the keying material to the password. Please see https://android-review.googlesource.com/c/platform/frameworks/native/+/1169007/24/libs/adbd_auth/adbwifi_libs/pairing_connection/pairing_connection.cpp#199",
+      "parentUuid": "56334bfd_d94c02b0",
+      "range": {
+        "startLine": 35,
+        "startChar": 4,
+        "endLine": 36,
+        "endChar": 71
+      },
+      "revId": "dc723488cbdd0d940aadb04a2b5a0ab44f9d3844",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "93f38c16_6f351d7c",
         "filename": "adb/ssl/tls_connection.cpp",
         "patchSetId": 6
@@ -60,6 +84,30 @@
       "side": 1,
       "message": "When setting the min version, I get this error in the handshake: Handshake failed in SSL_accept/SSL_connect [NO_SUPPORTED_VERSIONS_ENABLED].\n\nSeems like also setting the max (SSL_CTX_set_max_proto_version(ssl_ctx_.get(), TLS1_3_VERSION)) fixed that, but getting a key usage failure now:\nHandshake failed in SSL_accept/SSL_connect [KEY_USAGE_BIT_INCORRECT]. Looks like I have to add additional keyUsage bits to use TLS 1.3.",
       "parentUuid": "93f38c16_6f351d7c",
+      "range": {
+        "startLine": 151,
+        "startChar": 4,
+        "endLine": 158,
+        "endChar": 5
+      },
+      "revId": "dc723488cbdd0d940aadb04a2b5a0ab44f9d3844",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "956f9c9b_a6ca2d46",
+        "filename": "adb/ssl/tls_connection.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 158,
+      "author": {
+        "id": 1128973
+      },
+      "writtenOn": "2020-01-14T05:54:34Z",
+      "side": 1,
+      "message": "Done. Changing the keyUsage from keyEncipherment to digitalSignature made it work. See https://android-review.googlesource.com/c/platform/system/core/+/1202584/7/adb/crypto/x509_generator.cpp#33",
+      "parentUuid": "0165f044_213f79f3",
       "range": {
         "startLine": 151,
         "startChar": 4,
