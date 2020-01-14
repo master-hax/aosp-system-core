@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "046f1830_c535fe8b",
+        "filename": "libprocessgroup/sched_policy.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 149,
+      "author": {
+        "id": 1569742
+      },
+      "writtenOn": "2020-01-14T13:17:46Z",
+      "side": 1,
+      "message": "Can I assume top-app will always be present ? The uclamp attributes are not exposed at the root group level, so I need to go check in a subgroup. An alternative would be to look at the kernel config, but that sounds a lot more complicated ...",
+      "range": {
+        "startLine": 149,
+        "startChar": 67,
+        "endLine": 149,
+        "endChar": 74
+      },
+      "revId": "b8f6040939383f77f5a6ed7a5a95d9ad3e25aa59",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
