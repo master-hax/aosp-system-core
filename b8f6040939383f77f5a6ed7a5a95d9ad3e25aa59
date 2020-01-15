@@ -70,6 +70,30 @@
       "revId": "b8f6040939383f77f5a6ed7a5a95d9ad3e25aa59",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c5f8c581_8615adf2",
+        "filename": "libprocessgroup/sched_policy.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 149,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2020-01-15T17:37:51Z",
+      "side": 1,
+      "message": "I think we can require CONFIG_UCLAMP_TASK_GROUP | CONFIG_SCHED_TUNE using VTS tests. Alistair would know more about how to set it up.\n\n\nAnother less desirable option (this would require new library to be linked) is to use Vintf library to determine if the config flag is set. See example here: https://android-review.googlesource.com/c/platform/frameworks/base/+/1194228/3/core/jni/android_os_Debug.cpp#847",
+      "parentUuid": "b963f4d1_5baf48ad",
+      "range": {
+        "startLine": 149,
+        "startChar": 67,
+        "endLine": 149,
+        "endChar": 74
+      },
+      "revId": "b8f6040939383f77f5a6ed7a5a95d9ad3e25aa59",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
