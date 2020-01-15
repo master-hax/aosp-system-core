@@ -46,6 +46,30 @@
       "revId": "b8f6040939383f77f5a6ed7a5a95d9ad3e25aa59",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b963f4d1_5baf48ad",
+        "filename": "libprocessgroup/sched_policy.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 149,
+      "author": {
+        "id": 1569742
+      },
+      "writtenOn": "2020-01-15T10:07:37Z",
+      "side": 1,
+      "message": "Well my problem is, we could have the cpu controller mounted but uclamp could still be disabled. They\u0027re orthogonal. And I don\u0027t think cpuctl\u0027s IsUsable() should fail if uclamp is disabled, using the cpuctl \u0027alone\u0027 is a reasonable use-case too.\n\nSo, I need to check that the cpuctl is mounted AND that it has uclamp. I agree that looking into the top-app folder isn\u0027t great, but I had no better suggestion. The only other idea I had was to check CONFIG_UCLAMP_TASK_GROUP in the kernel config, but I have no guarantee the config is exposed by the kernel to userspace ... Unless we can find a way to ensure the device is running with GKI, so we can hard-rely on UCLAMP being enabled in the Kconfig. But I\u0027m not sure if this is feasible, though.\n\nThoughts ?",
+      "parentUuid": "1f92a0b1_26efff84",
+      "range": {
+        "startLine": 149,
+        "startChar": 67,
+        "endLine": 149,
+        "endChar": 74
+      },
+      "revId": "b8f6040939383f77f5a6ed7a5a95d9ad3e25aa59",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
