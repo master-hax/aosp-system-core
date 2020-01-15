@@ -94,6 +94,30 @@
       "revId": "b8f6040939383f77f5a6ed7a5a95d9ad3e25aa59",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c6466b50_58a3ef95",
+        "filename": "libprocessgroup/sched_policy.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 149,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2020-01-15T19:15:10Z",
+      "side": 1,
+      "message": "Alistair told me there is a way to check such conditions. There is a VTS test and it uses https://android.googlesource.com/kernel/configs/%2B/refs/heads/master/android-5.4/android-base-conditional.xml to define the rules. Yifan implemented this, so please check with him.",
+      "parentUuid": "c5f8c581_8615adf2",
+      "range": {
+        "startLine": 149,
+        "startChar": 67,
+        "endLine": 149,
+        "endChar": 74
+      },
+      "revId": "b8f6040939383f77f5a6ed7a5a95d9ad3e25aa59",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
