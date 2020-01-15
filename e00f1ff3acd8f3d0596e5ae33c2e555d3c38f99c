@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2c5ea4bc_57a4ee6e",
+        "filename": "libprocessgroup/sched_policy.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 142,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2020-01-15T05:00:10Z",
+      "side": 0,
+      "message": "This static variable ensures that we call FindController() function only once. Since we do not dynamically mount new controllers this one-time lookup should suffice.",
+      "range": {
+        "startLine": 142,
+        "startChar": 4,
+        "endLine": 142,
+        "endChar": 23
+      },
+      "revId": "e00f1ff3acd8f3d0596e5ae33c2e555d3c38f99c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}

@@ -22,6 +22,30 @@
       "revId": "b8f6040939383f77f5a6ed7a5a95d9ad3e25aa59",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1f92a0b1_26efff84",
+        "filename": "libprocessgroup/sched_policy.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 149,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2020-01-15T05:00:10Z",
+      "side": 1,
+      "message": "I would prefer if we don\u0027t make such assumptions. The hierarchy can change in the future.\n\nWhy a check for IsUsable() is not enough here? IsUsable() should be the indicator of cgroup being usable, so it\u0027s not the case we should fix IsUsable() instead.\n\nBy checking for that file are you trying to ensure that cpu controller was mounted correctly? If so we have a better way to do that: https://cs.corp.google.com/android/system/core/libprocessgroup/cgrouprc/include/android/cgrouprc.h?type\u003dcs\u0026g\u003d0\u0026l\u003d71. I had a patch that exposed ACgroupController_getFlags() function but it was revert at the time because it was too late for Q to change LLNDK. Maybe it\u0027s time to revive it. This is the patch that reverted it: aosp/981803",
+      "parentUuid": "046f1830_c535fe8b",
+      "range": {
+        "startLine": 149,
+        "startChar": 67,
+        "endLine": 149,
+        "endChar": 74
+      },
+      "revId": "b8f6040939383f77f5a6ed7a5a95d9ad3e25aa59",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
