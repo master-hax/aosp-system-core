@@ -55,18 +55,24 @@ on post-fs-data && property:init.svc.bootanim=running && property:ro.crypto.type
 # restart (e.g., adb shell stop && adb shell start).  /proc/uptime is not reset
 # during a runtime restart, which leads to false boot time metrics being reported.
 #
-# The 'on boot' event occurs once per hard boot (device power on), which
-# switches the flag on. If the device performs a runtime restart, the flag is
-# switched off and cannot be switched on until the device hard boots again.
+# sys.logbootcoplete can be in of three states:
+#   sys.logbootcomplete="" - first boot of a device.
+#   sys.logbootcomplete=1  - bootstat is allowed to be started.
+#   sys.logbootcomplete=0  - bootstat is not allowed to be started even if boot sequence
+#                            is restarted (e.g. as part of userspace reboot)
 
-# Enable bootstat logging on boot.
-on boot
+# Enable bootstat logging on first boot.
+on boot && property:sys.logbootcomplete=""
     setprop sys.logbootcomplete 1
 
 # Disable further bootstat logging on a runtime restart. A runtime restart is
 # signaled by the zygote stopping.
 on property:init.svc.zygote=stopping
     setprop sys.logbootcomplete 0
+
+# Disable further bootstat logging on a userspace reboot.
+on userspace-reboot-requested
+  setprop sys.logbootcomplete 0
 
 # Set boot reason
 on zygote-start
