@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "42d44a4a_7ea1384e",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-01-15T16:44:50Z",
+      "side": 1,
+      "message": "can you give an example of a command that *doesn\u0027t* work currently, but *does* work with this patch?",
+      "revId": "6c699b9765e9ed97b984b0a670ce10f07d783daf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
