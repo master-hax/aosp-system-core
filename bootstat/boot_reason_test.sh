@@ -7,7 +7,7 @@
 # - watch adb logcat -b all -d -s bootstat
 # - watch adb logcat -b all -d | audit2allow
 # - wait until screen is up, boot has completed, can mean wait for
-#   sys.boot_completed=1 and sys.logbootcomplete=1 to be true
+#   sys.boot_completed=1 and sys.bootstat.first_boot_completed= to be true
 #
 # All test frames, and nothing else, must be function names prefixed and
 # specifiged with the pattern 'test_<test>() {' as this is also how the
