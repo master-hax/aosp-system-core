@@ -143,6 +143,30 @@
     },
     {
       "key": {
+        "uuid": "debb6bae_727cc344",
+        "filename": "trusty/confirmationui/TrustyApp.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 1124693
+      },
+      "writtenOn": "2020-01-16T01:06:11Z",
+      "side": 1,
+      "message": "No need to initialize it then?",
+      "parentUuid": "c8efdf16_19548083",
+      "range": {
+        "startLine": 100,
+        "startChar": 25,
+        "endLine": 100,
+        "endChar": 26
+      },
+      "revId": "0758ec5e6f3adbe1b30f02a2c9f3556aabfa686a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5d7e88cd_faf89ba7",
         "filename": "trusty/confirmationui/TrustyApp.h",
         "patchSetId": 4
@@ -225,6 +249,30 @@
       "side": 1,
       "message": "Depends on your perspective. I was more thinking of the caller/API user. For them, obegin/oend is buffer is the buffer they send out, while the second buffer is input. Analog: you write to stdout or std::cout.\n\nWould it be more intuitive to call them wXXX and rXXX for write and read buffer?",
       "parentUuid": "aa92fe8a_d2d21ba6",
+      "range": {
+        "startLine": 65,
+        "startChar": 30,
+        "endLine": 66,
+        "endChar": 31
+      },
+      "revId": "0758ec5e6f3adbe1b30f02a2c9f3556aabfa686a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cc2908b6_b10e3111",
+        "filename": "trusty/confirmationui/TrustyApp.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1124693
+      },
+      "writtenOn": "2020-01-16T01:06:11Z",
+      "side": 1,
+      "message": "up to you",
+      "parentUuid": "4c586137_4af5aedd",
       "range": {
         "startLine": 65,
         "startChar": 30,
@@ -671,6 +719,30 @@
       "side": 1,
       "message": "It would not have an effect. We cannot get to this point while in \"Starting\" because throughout this phase the binder thread is busy starting the confirmation dialog. After \"Interactive\" the dialog is going down anyway. So the only time abort would have an effect is during the grace period (SetupDone) or while the dialog is interactive.\n\nThe postcondition of abort() is that no confirmation operation is active, This is already true or about to come true in all other states, and listener_state_ \u003d\u003d Starting cannot be reached here.",
       "parentUuid": "2d7782ed_66f206a4",
+      "range": {
+        "startLine": 492,
+        "startChar": 0,
+        "endLine": 493,
+        "endChar": 60
+      },
+      "revId": "0758ec5e6f3adbe1b30f02a2c9f3556aabfa686a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3ff52183_305740f6",
+        "filename": "trusty/confirmationui/TrustyConfirmationUI.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 493,
+      "author": {
+        "id": 1124693
+      },
+      "writtenOn": "2020-01-16T01:06:11Z",
+      "side": 1,
+      "message": "If there is no effect during other stages, could you drop the conditional altogether? That would aid readability.",
+      "parentUuid": "07cf5c1e_2eca88af",
       "range": {
         "startLine": 492,
         "startChar": 0,

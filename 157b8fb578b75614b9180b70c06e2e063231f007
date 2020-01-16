@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "eaf6c02c_c4061bf5",
+        "filename": "trusty/confirmationui/TrustyApp.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 144,
+      "author": {
+        "id": 1124693
+      },
+      "writtenOn": "2020-01-16T01:06:11Z",
+      "side": 1,
+      "message": "This case can\u0027t happen.",
+      "range": {
+        "startLine": 141,
+        "startChar": 0,
+        "endLine": 144,
+        "endChar": 5
+      },
+      "revId": "157b8fb578b75614b9180b70c06e2e063231f007",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "57256d32_315fee99",
+        "filename": "trusty/confirmationui/TrustyApp.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 1124693
+      },
+      "writtenOn": "2020-01-16T01:06:11Z",
+      "side": 1,
+      "message": "It\u0027s not obvious why this is correct. I think locking the mutex every time we touch handle_ is more readable.",
+      "range": {
+        "startLine": 79,
+        "startChar": 0,
+        "endLine": 84,
+        "endChar": 49
+      },
+      "revId": "157b8fb578b75614b9180b70c06e2e063231f007",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
