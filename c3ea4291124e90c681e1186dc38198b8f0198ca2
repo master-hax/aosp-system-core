@@ -22,6 +22,30 @@
       "revId": "c3ea4291124e90c681e1186dc38198b8f0198ca2",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "19ae458e_c9c6bd1a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1432579
+      },
+      "writtenOn": "2020-01-16T21:19:50Z",
+      "side": 1,
+      "message": "Finished. Total time: 97.278s\n~/android/external\nINFO: ok \"\\(reboot,ota\\|bootloader\\)\"\n       \u003d \"reboot,ota\"\n      for Android property sys.boot.reason\nINFO: ok \"bootloader\" for Android property sys.boot.reason.last\nINFO: ok \"\" for Android property persist.sys.boot.reason\nINFO: ok \"reboot,ota,[1-9][0-9]*\\(\\|[^0-9].*\\)\"\n       \u003d \"reboot,ota,1579206499\n          bootloader,1579206488\n          warm,1579193846\n          warm,1579193794\"\n      for Android property persist.sys.boot.reason.history\nINFO: \u0027ota\u0027 test duration 18:08\n[       OK ] ota \n\n[  PASSED  ] ota",
+      "parentUuid": "97f81adb_c57392db",
+      "range": {
+        "startLine": 14,
+        "startChar": 0,
+        "endLine": 14,
+        "endChar": 50
+      },
+      "revId": "c3ea4291124e90c681e1186dc38198b8f0198ca2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
