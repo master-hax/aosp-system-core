@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "97f81adb_c57392db",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1432579
+      },
+      "writtenOn": "2020-01-16T20:15:33Z",
+      "side": 1,
+      "message": "Still running.",
+      "range": {
+        "startLine": 14,
+        "startChar": 0,
+        "endLine": 14,
+        "endChar": 50
+      },
+      "revId": "c3ea4291124e90c681e1186dc38198b8f0198ca2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
