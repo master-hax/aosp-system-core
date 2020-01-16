@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b5b41071_90e4d36f",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2020-01-16T15:24:40Z",
+      "side": 1,
+      "message": "nit: You could burn another Test: footer here for this.",
+      "range": {
+        "startLine": 13,
+        "startChar": 28,
+        "endLine": 13,
+        "endChar": 34
+      },
+      "revId": "087610f2aa58b35b14a9b52b72907d2ef04fb31a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9f311006_502d59f5",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2020-01-16T15:24:40Z",
+      "side": 1,
+      "message": "nit:\n\nActually:\n\natest llkd_unit_tests -- --test-arg  com.android.tradefed.testtype.GTest:native-test-timeout:900000\n\nor\n\n$ mmma system/core/llkd/tests\n$ adb sync data\n$ adb shell su root /data/nativetest64/llkd_unit_test/llkd_unit_test\n\nBut that is too much detail.\n\nI think just \u0027llkd_unit_test\u0027 is enough and succinct.",
+      "range": {
+        "startLine": 13,
+        "startChar": 6,
+        "endLine": 13,
+        "endChar": 26
+      },
+      "revId": "087610f2aa58b35b14a9b52b72907d2ef04fb31a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
