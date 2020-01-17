@@ -16,6 +16,23 @@
       "revId": "6c699b9765e9ed97b984b0a670ce10f07d783daf",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "05f7f01b_8d3b842e",
+        "filename": "adb/client/commandline.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1129,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-01-17T00:34:22Z",
+      "side": 1,
+      "message": "should this come before the fflush(), since it\u0027s also writing to stdout?",
+      "revId": "6c699b9765e9ed97b984b0a670ce10f07d783daf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
