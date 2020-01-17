@@ -34,6 +34,24 @@
       "revId": "874045dd67368ac2f0d03873077a9ba559ae2261",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "947bc1a7_c47f7038",
+        "filename": "base/logging.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 601,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-01-17T02:38:58Z",
+      "side": 1,
+      "message": "Actually I don\u0027t think we can remove the function call.  I put it there intentionally because I wanted it to happen the first time that anyone used these functions, not during the static initializer phase.  I think this is about as optimized as it can be.",
+      "parentUuid": "6ac26c22_e7f8b4f2",
+      "revId": "874045dd67368ac2f0d03873077a9ba559ae2261",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
