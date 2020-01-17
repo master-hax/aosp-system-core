@@ -16,6 +16,24 @@
       "revId": "874045dd67368ac2f0d03873077a9ba559ae2261",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6ac26c22_e7f8b4f2",
+        "filename": "base/logging.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 601,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-01-17T01:49:26Z",
+      "side": 1,
+      "message": "What do you mean \"out of line\" ?  That we\u0027re calling through function pointers instead of directly?\n\nThere\u0027s a static set of liblog_functions in liblog_symbols.cpp, so the first call to GetLiblogFunctions() is responsible for the dlopen() / dlsym() and subsequent calls just retrieve the result.  statics and their initializers are thread safe with C++11, so this \"just works\".  It returns a reference to the std::optional, so no deep copies needed.  \n\nEssentially in any of these functions (after the first time) we have :\n1) A function call to GetLibLogFunctions()\n2) An atomic load to check that our static has been initialized\n3) A return of the reference to the std::optional\u003cLibLogFunctions\u003e\n4) A call through the function pointer inside the std::optional\u003cLibLogFunctions\u003e.\n\nIt\u0027s not that heavy.  I could move the static std::optional\u003cLibLogFunctions\u003e into logging.cpp though to save on the function call overhead, but I assume that isn\u0027t much.",
+      "parentUuid": "d2b556e8_f0fd6717",
+      "revId": "874045dd67368ac2f0d03873077a9ba559ae2261",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
