@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d2b556e8_f0fd6717",
+        "filename": "base/logging.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 601,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-01-17T01:39:37Z",
+      "side": 1,
+      "message": "static on these? (i\u0027m already a bit concerned about the cost of taking all of this out of line.)",
+      "revId": "874045dd67368ac2f0d03873077a9ba559ae2261",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
