@@ -162,14 +162,14 @@ on init
     mkdir /mnt/asec 0755 root system
     mkdir /mnt/obb 0755 root system
     mkdir /mnt/media_rw 0750 root media_rw
-    mkdir /mnt/user 0755 root root
+    mkdir /mnt/user 0700 root root
     mkdir /mnt/user/0 0755 root root
     mkdir /mnt/user/0/self 0755 root root
     mkdir /mnt/user/0/emulated 0755 root root
     mkdir /mnt/user/0/emulated/0 0755 root root
 
     # Prepare directories for pass through processes
-    mkdir /mnt/pass_through 0755 root root
+    mkdir /mnt/pass_through 0700 root root
     mkdir /mnt/pass_through/0 0755 root root
     mkdir /mnt/pass_through/0/self 0755 root root
     mkdir /mnt/pass_through/0/emulated 0755 root root
