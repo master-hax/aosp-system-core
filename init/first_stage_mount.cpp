@@ -16,6 +16,7 @@
 
 #include "first_stage_mount.h"
 
+#include <dirent.h>
 #include <stdlib.h>
 #include <sys/mount.h>
 #include <unistd.h>
@@ -51,6 +52,7 @@ using android::base::ReadFileToString;
 using android::base::Split;
 using android::base::StringPrintf;
 using android::base::Timer;
+using android::base::WriteStringToFile;
 using android::fiemap::IImageManager;
 using android::fs_mgr::AvbHandle;
 using android::fs_mgr::AvbHandleStatus;
@@ -99,7 +101,11 @@ class FirstStageMount {
     void GetDmLinearMetadataDevice(std::set<std::string>* devices);
     bool InitDmLinearBackingDevices(const android::fs_mgr::LpMetadata& metadata);
     void UseDsuIfPresent();
+    // Reads all fstab.avb_keys from the ramdisk for first-stage mount.
     void PreloadAvbKeys();
+    // Copies /avb/*.avbpubkey used for DSU from the ramdisk to /metadata for key
+    // revocation check by DSU installation service.
+    void CopyDsuAvbKeys();
 
     ListenerAction UeventCallback(const Uevent& uevent, std::set<std::string>* required_devices);
 
@@ -595,7 +601,12 @@ bool FirstStageMount::MountPartitions() {
         return entry.mount_point == "/metadata";
     });
     if (metadata_partition != fstab_.end()) {
-        MountPartition(metadata_partition, true /* erase_same_mounts */);
+        if (MountPartition(metadata_partition, true /* erase_same_mounts */)) {
+            // Copies DSU AVB keys from the ramdisk to /metadata.
+            // Must be done before the following TrySwitchSystemAsRoot().
+            // Otherwise, ramdisk will be inaccessible after switching root.
+            CopyDsuAvbKeys();
+        }
     }
 
     if (!CreateLogicalPartitions()) return false;
@@ -661,6 +672,52 @@ bool FirstStageMount::MountPartitions() {
     fs_mgr_overlayfs_mount_all(&fstab_);
 
     return true;
+}
+
+// Preserves /avb/*.avbpubkey to /metadata/gsi/dsu/avb/, so they can be used for
+// key revocation check by DSU installation service.  Note that failing to
+// copy files to /metadata is NOT fatal, because it is auxiliary to perform
+// public key matching before booting into DSU images on next boot. The actual
+// public key matching will still be done on next boot to DSU.
+void FirstStageMount::CopyDsuAvbKeys() {
+    if (!is_dir(gsi::kDsuAvbKeyDir) && !mkdir_recursive(gsi::kDsuAvbKeyDir, 0755)) {
+        PLOG(ERROR) << "Failed to create directory " << gsi::kDsuAvbKeyDir;
+        return;
+    }
+    std::unique_ptr<DIR, int (*)(DIR*)> dir(opendir(gsi::kDsuAvbKeyDir), closedir);
+    if (!dir) {
+        PLOG(ERROR) << "Failed to open directory " << gsi::kDsuAvbKeyDir;
+        return;
+    }
+
+    // Removing existing keys on gsi::kDsuAvbKeyDir as they might be stale.
+    struct dirent* de;
+    int dfd = dirfd(dir.get());
+    while ((de = readdir(dir.get()))) {
+        if (de->d_type != DT_REG) continue;
+        if (unlinkat(dfd, de->d_name, 0 /* flags */) != 0) {
+            PLOG(ERROR) << "Failed to remove file: "
+                        << StringPrintf("%s/%s", gsi::kDsuAvbKeyDir, de->d_name);
+        }
+    }
+
+    // Copy keys from the ramdisk /avb/* to gsi::kDsuAvbKeyDir.
+    static constexpr char kRamdiskAvbKeyDir[] = "/avb";
+    std::unique_ptr<DIR, int (*)(DIR*)> ramdisk_dir(opendir(kRamdiskAvbKeyDir), closedir);
+    if (!ramdisk_dir) {
+        PLOG(ERROR) << "Failed to open directory " << kRamdiskAvbKeyDir;
+        return;
+    }
+    while ((de = readdir(ramdisk_dir.get()))) {
+        if (de->d_type != DT_REG) continue;
+        std::string key_content;
+        std::string src_path = StringPrintf("%s/%s", kRamdiskAvbKeyDir, de->d_name);
+        std::string dst_path = StringPrintf("%s/%s", gsi::kDsuAvbKeyDir, de->d_name);
+        if (!ReadFileToString(src_path, &key_content) ||
+            !WriteStringToFile(key_content, dst_path)) {
+            PLOG(ERROR) << "Failed to copy: " << src_path << " -> " << dst_path;
+        }
+    }
 }
 
 void FirstStageMount::UseDsuIfPresent() {
