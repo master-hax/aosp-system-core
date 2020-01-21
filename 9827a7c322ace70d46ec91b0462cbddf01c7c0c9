@@ -1,0 +1,535 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8c4b4ce2_94097cb1",
+        "filename": "adb/ssl/include/adb/ssl/tls_connection.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1031048
+      },
+      "writtenOn": "2020-01-21T21:14:59Z",
+      "side": 1,
+      "message": "I assume this class is only intended to do mutual authentication, so you\u0027d request a client certificate and such? It might be worth documenting this, since people usually expect the server default to be not requesting a certificate.",
+      "range": {
+        "startLine": 31,
+        "startChar": 8,
+        "endLine": 31,
+        "endChar": 14
+      },
+      "revId": "9827a7c322ace70d46ec91b0462cbddf01c7c0c9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b5ebd936_d81de475",
+        "filename": "adb/ssl/include/adb/ssl/tls_connection.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1031048
+      },
+      "writtenOn": "2020-01-21T21:14:59Z",
+      "side": 1,
+      "message": "Not: Configures whether certificate verification is enabled?",
+      "range": {
+        "startLine": 37,
+        "startChar": 7,
+        "endLine": 37,
+        "endChar": 40
+      },
+      "revId": "9827a7c322ace70d46ec91b0462cbddf01c7c0c9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "26de96cd_9569d092",
+        "filename": "adb/ssl/include/adb/ssl/tls_connection.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1031048
+      },
+      "writtenOn": "2020-01-21T21:14:59Z",
+      "side": 1,
+      "message": "Starts",
+      "range": {
+        "startLine": 57,
+        "startChar": 7,
+        "endLine": 57,
+        "endChar": 13
+      },
+      "revId": "9827a7c322ace70d46ec91b0462cbddf01c7c0c9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b470813b_887bbfa6",
+        "filename": "adb/ssl/include/adb/ssl/tls_connection.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1031048
+      },
+      "writtenOn": "2020-01-21T21:14:59Z",
+      "side": 1,
+      "message": "Any reason this is passed in here rather than on creation?",
+      "range": {
+        "startLine": 58,
+        "startChar": 29,
+        "endLine": 58,
+        "endChar": 35
+      },
+      "revId": "9827a7c322ace70d46ec91b0462cbddf01c7c0c9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "70b70b04_154989dd",
+        "filename": "adb/ssl/include/adb/ssl/tls_connection.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 1031048
+      },
+      "writtenOn": "2020-01-21T21:14:59Z",
+      "side": 1,
+      "message": "size_t?\n\n(libssl is sadly, not yet size_t-clean, but may as well make this one.)",
+      "range": {
+        "startLine": 62,
+        "startChar": 43,
+        "endLine": 62,
+        "endChar": 46
+      },
+      "revId": "9827a7c322ace70d46ec91b0462cbddf01c7c0c9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c6cd3602_3c5d57b6",
+        "filename": "adb/ssl/include/adb/ssl/tls_connection.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1031048
+      },
+      "writtenOn": "2020-01-21T21:14:59Z",
+      "side": 1,
+      "message": "It is a little odd that the output is a vector\u003cuint8_t\u003e (unsigned) while the input is a string_view (signed). Also, C/C++ is the worst. :-(\n\nIn C++20, std::span will be a thing, but we don\u0027t quite have that yet.",
+      "range": {
+        "startLine": 66,
+        "startChar": 33,
+        "endLine": 66,
+        "endChar": 44
+      },
+      "revId": "9827a7c322ace70d46ec91b0462cbddf01c7c0c9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a95ef420_40e76562",
+        "filename": "adb/ssl/tests/tls_connection_test.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1031048
+      },
+      "writtenOn": "2020-01-21T21:14:59Z",
+      "side": 1,
+      "message": "Note: RSA keygen is not the fastest thing out there. Having a pregenerated one will probably make your tests a lot faster.",
+      "range": {
+        "startLine": 61,
+        "startChar": 24,
+        "endLine": 61,
+        "endChar": 40
+      },
+      "revId": "9827a7c322ace70d46ec91b0462cbddf01c7c0c9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "81be16ee_7257b798",
+        "filename": "adb/ssl/tests/tls_connection_test.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 1031048
+      },
+      "writtenOn": "2020-01-21T21:14:59Z",
+      "side": 1,
+      "message": "Nit: This uses lowerCamelCase, while other local variables use_underscores. (Ditto with clientKeyMaterial and friends.)",
+      "range": {
+        "startLine": 101,
+        "startChar": 16,
+        "endLine": 101,
+        "endChar": 37
+      },
+      "revId": "9827a7c322ace70d46ec91b0462cbddf01c7c0c9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "28578ff7_ccadb641",
+        "filename": "adb/ssl/tests/tls_connection_test.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 1031048
+      },
+      "writtenOn": "2020-01-21T21:14:59Z",
+      "side": 1,
+      "message": "Note this is relying on the socket pair\u0027s buffer being large enough for that message. (If you want to avoid that assumption or test something larger, you could put the entire client half into a separate thread and then join on it before the test is done. I think GTest assertions work on random threads.)",
+      "revId": "9827a7c322ace70d46ec91b0462cbddf01c7c0c9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6e3b66ba_39bd3e8f",
+        "filename": "adb/ssl/tests/tls_connection_test.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 128,
+      "author": {
+        "id": 1031048
+      },
+      "writtenOn": "2020-01-21T21:14:59Z",
+      "side": 1,
+      "message": "Probably worth testing verification in both directions. Ditto for AddTrustedCertificates.",
+      "revId": "9827a7c322ace70d46ec91b0462cbddf01c7c0c9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1864de64_8f0580c4",
+        "filename": "adb/ssl/tests/tls_connection_test.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 1031048
+      },
+      "writtenOn": "2020-01-21T21:14:59Z",
+      "side": 1,
+      "message": "Is it worth testing that the default is enabled?",
+      "range": {
+        "startLine": 129,
+        "startChar": 13,
+        "endLine": 129,
+        "endChar": 48
+      },
+      "revId": "9827a7c322ace70d46ec91b0462cbddf01c7c0c9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "601736f7_eb7528a7",
+        "filename": "adb/ssl/tests/tls_connection_test.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 189,
+      "author": {
+        "id": 1031048
+      },
+      "writtenOn": "2020-01-21T21:14:59Z",
+      "side": 1,
+      "message": "Nit: ASSERT_FALSE?",
+      "range": {
+        "startLine": 189,
+        "startChar": 4,
+        "endLine": 189,
+        "endChar": 15
+      },
+      "revId": "9827a7c322ace70d46ec91b0462cbddf01c7c0c9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7eb0fc00_9407ecb8",
+        "filename": "adb/ssl/tests/tls_connection_test.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 195,
+      "author": {
+        "id": 1031048
+      },
+      "writtenOn": "2020-01-21T21:14:59Z",
+      "side": 1,
+      "message": "Maybe just EXPECT_EQ(clientKeyMaterial, serverKeyMaterial)?\n\n(The msg_ checks above could also do that if you turned it into a std::vector.)",
+      "revId": "9827a7c322ace70d46ec91b0462cbddf01c7c0c9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cf58446a_29ef1717",
+        "filename": "adb/ssl/tests/tls_connection_test.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 197,
+      "author": {
+        "id": 1031048
+      },
+      "writtenOn": "2020-01-21T21:14:59Z",
+      "side": 1,
+      "message": "Maybe some tests for what happens if you pass in invalid certificate or key?",
+      "revId": "9827a7c322ace70d46ec91b0462cbddf01c7c0c9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f999d702_87b99ea8",
+        "filename": "adb/ssl/tls_connection.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1031048
+      },
+      "writtenOn": "2020-01-21T21:14:59Z",
+      "side": 1,
+      "message": "Hrm. I thought ~TlsConnectionImpl() also wants an override. Is the warning not enabled?",
+      "revId": "9827a7c322ace70d46ec91b0462cbddf01c7c0c9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "23d37121_8ceca118",
+        "filename": "adb/ssl/tls_connection.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1031048
+      },
+      "writtenOn": "2020-01-21T21:14:59Z",
+      "side": 1,
+      "message": "Ignore me if Android style is otherwise: in Chromium, we don\u0027t write the \"virtual\" if it\u0027s already got \"override\".",
+      "range": {
+        "startLine": 37,
+        "startChar": 4,
+        "endLine": 37,
+        "endChar": 11
+      },
+      "revId": "9827a7c322ace70d46ec91b0462cbddf01c7c0c9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "10c844c7_c4135b77",
+        "filename": "adb/ssl/tls_connection.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 1031048
+      },
+      "writtenOn": "2020-01-21T21:14:59Z",
+      "side": 1,
+      "message": "No need to call SSL_load_error_strings() in BoringSSL.\n\n(Also it doesn\u0027t register algorithms or anything. Actually you shouldn\u0027t need to call anything in Android. In specifically Chromium, because we build with BORINGSSL_NO_STATIC_INITIALIZER, we need to call CRYPTO_library_init(), which SSL_library_init() is an alias of, to set up the CPU capabilities. I keep meaning to do that internally but haven\u0027t gotten to it.)",
+      "revId": "9827a7c322ace70d46ec91b0462cbddf01c7c0c9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2430f3c3_eaf9d4bb",
+        "filename": "adb/ssl/tls_connection.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 1031048
+      },
+      "writtenOn": "2020-01-21T21:14:59Z",
+      "side": 1,
+      "message": "Do you care about handling malloc failures? Technically this function (and most of them really) can fail if malloc fails.\n\n(I wonder if we can just make the default build config abort when malloc fails...)",
+      "revId": "9827a7c322ace70d46ec91b0462cbddf01c7c0c9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ffa11a31_9d423116",
+        "filename": "adb/ssl/tls_connection.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 115,
+      "author": {
+        "id": 1031048
+      },
+      "writtenOn": "2020-01-21T21:14:59Z",
+      "side": 1,
+      "message": "We have an X509_parse_from_buffer function which will allow the buffer to share some data with the certificate internally. (Saves a little bit of memory.)",
+      "revId": "9827a7c322ace70d46ec91b0462cbddf01c7c0c9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ec4dd6f8_82449fcb",
+        "filename": "adb/ssl/tls_connection.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 133,
+      "author": {
+        "id": 1031048
+      },
+      "writtenOn": "2020-01-21T21:14:59Z",
+      "side": 1,
+      "message": "(Does X509FromBuffer not just fail cleanly in that case?)",
+      "revId": "9827a7c322ace70d46ec91b0462cbddf01c7c0c9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f72a6a0b_c62fbbc5",
+        "filename": "adb/ssl/tls_connection.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 170,
+      "author": {
+        "id": 1031048
+      },
+      "writtenOn": "2020-01-21T21:14:59Z",
+      "side": 1,
+      "message": "Nice! :-D\n\nMaybe add a TODO that, once external/boringssl in Android is updated past https://boringssl.googlesource.com/boringssl/+/58d56f4c59969a23e5f52014e2651c76fea2f877, to remove the set_max_proto_version line? That way we don\u0027t have to prod this decades from now when TLS 1.4 exists.",
+      "revId": "9827a7c322ace70d46ec91b0462cbddf01c7c0c9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0368bf19_78135d2c",
+        "filename": "adb/ssl/tls_connection.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 179,
+      "author": {
+        "id": 1031048
+      },
+      "writtenOn": "2020-01-21T21:14:59Z",
+      "side": 1,
+      "message": "One of these days, we\u0027ll actually upstream our verifier... :-/",
+      "revId": "9827a7c322ace70d46ec91b0462cbddf01c7c0c9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa62e463_b7828884",
+        "filename": "adb/ssl/tls_connection.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 192,
+      "author": {
+        "id": 1031048
+      },
+      "writtenOn": "2020-01-21T21:14:59Z",
+      "side": 1,
+      "message": "This is unnecessary in BoringSSL (and OpenSSL these days too). We always do ECDH negotiation.",
+      "revId": "9827a7c322ace70d46ec91b0462cbddf01c7c0c9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "495a57a7_15c6cb36",
+        "filename": "adb/ssl/tls_connection.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 202,
+      "author": {
+        "id": 1031048
+      },
+      "writtenOn": "2020-01-21T21:14:59Z",
+      "side": 1,
+      "message": "Nit/optional: I generally prefer cert_chain.data(). And at that point you may as well also do cert_chain.size().",
+      "range": {
+        "startLine": 202,
+        "startChar": 58,
+        "endLine": 202,
+        "endChar": 72
+      },
+      "revId": "9827a7c322ace70d46ec91b0462cbddf01c7c0c9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fcb82175_af52165e",
+        "filename": "adb/ssl/tls_connection.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 276,
+      "author": {
+        "id": 1031048
+      },
+      "writtenOn": "2020-01-21T21:14:59Z",
+      "side": 1,
+      "message": "You can avoid the pointer math (and, not that it matters, but avoid overflow) by doing:\n\nwhile (!data.empty()) {\n  int bytes_out \u003d SSL_write(ssl_.get(), data.data(), std::min(INT_MAX, data.size()))\u0027\n  if (bytes_out \u003c\u003d 0) {\n    ...\n  }\n  data \u003d data.substr(bytes_out);\n}",
+      "revId": "9827a7c322ace70d46ec91b0462cbddf01c7c0c9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c23de235_b9793959",
+        "filename": "adb/ssl/tls_connection.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 285,
+      "author": {
+        "id": 1031048
+      },
+      "writtenOn": "2020-01-21T21:14:59Z",
+      "side": 1,
+      "message": "Does HasValidKey not handle these cases?",
+      "revId": "9827a7c322ace70d46ec91b0462cbddf01c7c0c9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "12db70be_ace8ed4e",
+        "filename": "adb/ssl/tls_connection.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 288,
+      "author": {
+        "id": 1031048
+      },
+      "writtenOn": "2020-01-21T21:14:59Z",
+      "side": 1,
+      "message": "May as well avoid the bare new/delete:\n\nauto p \u003d std::make_unique\u003cTlsConnectionImpl\u003e(role, cert, priv_key);\nif (!p-\u003eHasValidKey()) {\n  return nullptr;\n}\nreturn p;",
+      "revId": "9827a7c322ace70d46ec91b0462cbddf01c7c0c9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
