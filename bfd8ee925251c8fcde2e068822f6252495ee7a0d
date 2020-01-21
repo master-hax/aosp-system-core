@@ -22,6 +22,30 @@
       "revId": "bfd8ee925251c8fcde2e068822f6252495ee7a0d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f4333bd8_68a9ea40",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/return.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2020-01-21T19:36:09Z",
+      "side": 1,
+      "message": "You mean SUCCESS, NO_SPACE, ERROR, NEEDS_REBOOT?\n\nI do like it right now because SUCCESS and (irrecoverable) ERROR are generic terms, but NO_SPACE and NEEDS_REBOOT are specific (recoverable) errors.\n\nI can have SUCCESS, ERROR, NEEDS_REBOOT, NO_SPACE too. WDYT?",
+      "parentUuid": "50610ad7_1b6626f9",
+      "range": {
+        "startLine": 34,
+        "startChar": 8,
+        "endLine": 34,
+        "endChar": 33
+      },
+      "revId": "bfd8ee925251c8fcde2e068822f6252495ee7a0d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
