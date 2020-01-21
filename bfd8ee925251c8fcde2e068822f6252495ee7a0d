@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "50610ad7_1b6626f9",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/return.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1409599
+      },
+      "writtenOn": "2020-01-21T10:04:48Z",
+      "side": 1,
+      "message": "This can be probably fixed in the parent patch.\nIt looks a bit unreadable to me having this reference to an element in the middle of the enumerator list.\nI would move NO_SPACE (negative) as first enumerator, so that NEEDS_REBOOT comes immediately after ERROR.",
+      "range": {
+        "startLine": 34,
+        "startChar": 8,
+        "endLine": 34,
+        "endChar": 33
+      },
+      "revId": "bfd8ee925251c8fcde2e068822f6252495ee7a0d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
