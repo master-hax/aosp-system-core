@@ -52,6 +52,7 @@
 #include "adb_listeners.h"
 #include "adb_unique_fd.h"
 #include "adb_utils.h"
+#include "adb_wifi.h"
 #include "sysdeps/chrono.h"
 #include "transport.h"
 
@@ -140,6 +141,9 @@ void print_packet(const char *label, apacket *p)
     case A_CLSE: tag = "CLSE"; break;
     case A_WRTE: tag = "WRTE"; break;
     case A_AUTH: tag = "AUTH"; break;
+    case A_STLS:
+        tag = "ATLS";
+        break;
     default: tag = "????"; break;
     }
 
@@ -299,7 +303,13 @@ static void handle_new_connection(atransport* t, apacket* p) {
 #if ADB_HOST
     handle_online(t);
 #else
-    if (!auth_required) {
+    if (t->use_tls) {
+        // We still handshake in TLS mode. If auth_required is disabled,
+        // we'll just not verify the client's certificate.
+        LOG(INFO) << "transport using TLS";
+        send_tls_request(t);
+        adbd_auth_tls_handshake(t);
+    } else if (!auth_required) {
         LOG(INFO) << "authentication not required";
         handle_online(t);
         send_connect(t);
@@ -321,12 +331,24 @@ void handle_packet(apacket *p, atransport *t)
     CHECK_EQ(p->payload.size(), p->msg.data_length);
 
     switch(p->msg.command){
-    case A_CNXN:  // CONNECT(version, maxdata, "system-id-string")
-        handle_new_connection(t, p);
-        break;
+#if ADB_HOST
+        // adbd should never get this packet.
+        case A_STLS:  // TLS(version, "")
+            // TODO: Check A_STLS_VERSION
+            t->use_tls = true;
+            adb_auth_tls_handshake(t);
+            break;
+#endif
+        case A_CNXN:  // CONNECT(version, maxdata, "system-id-string")
+            handle_new_connection(t, p);
+            break;
 
-    case A_AUTH:
-        switch (p->msg.arg0) {
+        case A_AUTH:
+            if (t->use_tls) {
+                // AUTH is no longer a valid command in the TLS protocol
+                break;
+            }
+            switch (p->msg.arg0) {
 #if ADB_HOST
             case ADB_AUTH_TOKEN:
                 if (t->GetConnectionState() != kCsAuthorizing) {
@@ -360,7 +382,7 @@ void handle_packet(apacket *p, atransport *t)
                 t->SetConnectionState(kCsOffline);
                 handle_offline(t);
                 break;
-        }
+            }
         break;
 
     case A_OPEN: /* OPEN(local-id, 0, "destination") */

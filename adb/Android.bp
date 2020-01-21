@@ -378,6 +378,7 @@ cc_library_static {
 
     shared_libs: [
         "libadb_crypto",
+        "libadb_protos",
         "libadbconnection_server",
         "libadbd_auth",
         "libadbwifi_pairing_connection",
@@ -436,6 +437,7 @@ cc_library {
 
     shared_libs: [
         "libadbconnection_server",
+        "libadb_crypto",
         "libadb_protos",
         "libadbd_auth",
         "libadbwifi_pairing_connection",
@@ -487,6 +489,7 @@ cc_library {
     ],
 
     shared_libs: [
+        "libadb_crypto",
         "libadbconnection_server",
         "libadbd_auth",
         "libadbwifi_pairing_connection",
@@ -527,6 +530,7 @@ cc_binary {
 
     stl: "libc++_static",
     static_libs: [
+        "libadb_crypto",
         "libadbd",
         "libadbd_auth",
         "libadbwifi_pairing_connection",

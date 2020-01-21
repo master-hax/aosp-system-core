@@ -23,10 +23,13 @@
 #include <string.h>
 
 #include <algorithm>
+#include <chrono>
 #include <iomanip>
 #include <map>
 #include <memory>
+#include <thread>
 
+#include <adb/crypto/rsa_2048_key.h>
 #include <adbd_auth.h>
 #include <android-base/file.h>
 #include <android-base/no_destructor.h>
@@ -43,6 +46,9 @@
 #include "fdevent/fdevent.h"
 #include "transport.h"
 #include "types.h"
+
+using namespace adb::crypto;
+using namespace std::chrono_literals;
 
 static AdbdAuthContext* auth_ctx;
 
@@ -211,5 +217,95 @@ void adbd_auth_confirm_key(atransport* t) {
 }
 
 void adbd_notify_framework_connected_key(atransport* t) {
-    adbd_auth_notify_auth(auth_ctx, t->auth_key.data(), t->auth_key.size());
+    t->auth_id = adbd_auth_notify_auth(auth_ctx, t->auth_key.data(), t->auth_key.size());
+}
+
+int adbd_tls_verify_cert(X509_STORE_CTX* ctx, void* opaque) {
+    bool authorized = false;
+    X509* cert = X509_STORE_CTX_get0_cert(ctx);
+    if (cert == nullptr) {
+        LOG(INFO) << "got null x509 certificate";
+        return 0;
+    }
+    bssl::UniquePtr<EVP_PKEY> evp_pkey(X509_get_pubkey(cert));
+    if (evp_pkey == nullptr) {
+        LOG(INFO) << "got null evp_pkey from x509 certificate";
+        return 0;
+    }
+
+    IteratePublicKeys([&](std::string_view public_key) {
+        // TODO: do we really have to support both ' ' and '\t'?
+        std::vector<std::string> split = android::base::Split(std::string(public_key), " \t");
+        uint8_t keybuf[ANDROID_PUBKEY_ENCODED_SIZE + 1];
+        const std::string& pubkey = split[0];
+        if (b64_pton(pubkey.c_str(), keybuf, sizeof(keybuf)) != ANDROID_PUBKEY_ENCODED_SIZE) {
+            LOG(ERROR) << "Invalid base64 key " << pubkey;
+            return true;
+        }
+
+        RSA* key = nullptr;
+        if (!android_pubkey_decode(keybuf, ANDROID_PUBKEY_ENCODED_SIZE, &key)) {
+            LOG(ERROR) << "Failed to parse key " << pubkey;
+            return true;
+        }
+
+        bool verified = false;
+        bssl::UniquePtr<EVP_PKEY> known_evp(EVP_PKEY_new());
+        EVP_PKEY_set1_RSA(known_evp.get(), key);
+        if (EVP_PKEY_cmp(known_evp.get(), evp_pkey.get())) {
+            LOG(INFO) << "Matched auth_key=" << public_key;
+            verified = true;
+        } else {
+            LOG(INFO) << "auth_key doesn't match [" << public_key << "]";
+        }
+        RSA_free(key);
+        if (verified) {
+            if (opaque != nullptr) {
+                auto* auth_key = reinterpret_cast<std::string*>(opaque);
+                *auth_key = public_key;
+            }
+            authorized = true;
+            return false;
+        }
+
+        return true;
+    });
+
+    return authorized ? 1 : 0;
+}
+
+void send_tls_request(atransport* t) {
+    LOG(INFO) << "Calling send_tls_request...";
+    apacket* p = get_apacket();
+    p->msg.command = A_STLS;
+    p->msg.arg0 = A_STLS_VERSION;
+    p->msg.data_length = 0;
+    send_packet(p, t);
+}
+
+void adbd_auth_tls_handshake(atransport* t) {
+    std::thread([t]() {
+        // Generate a random RSA key to feed into the X509 certificate
+        auto rsa_2048 = CreateRSA2048Key();
+        CHECK(rsa_2048.has_value());
+        auto* rsa = EVP_PKEY_get0_RSA(rsa_2048->GetEvpPkey());
+        std::string auth_key;
+        if (t->connection()->DoTlsHandshake(rsa, &auth_key)) {
+            LOG(INFO) << "auth_key=" << auth_key;
+            t->failed_auth_attempts = 0;
+            // TODO: set auth_key in the handshake
+            if (t->IsTcpDevice()) {
+                t->auth_key = auth_key;
+                adbd_wifi_secure_connect(t);
+            } else {
+                adbd_auth_verified(t);
+                adbd_notify_framework_connected_key(t);
+            }
+        } else {
+            if (t->failed_auth_attempts++ > 256) {
+                std::this_thread::sleep_for(1s);
+            }
+            send_tls_request(t);
+        }
+    }).detach();
 }
