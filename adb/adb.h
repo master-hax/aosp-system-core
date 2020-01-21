@@ -44,6 +44,7 @@ constexpr size_t LINUX_MAX_SOCKET_SIZE = 4194304;
 #define A_CLSE 0x45534c43
 #define A_WRTE 0x45545257
 #define A_AUTH 0x48545541
+#define A_STLS 0x534C5453
 
 // ADB protocol version.
 // Version revision:
@@ -52,6 +53,10 @@ constexpr size_t LINUX_MAX_SOCKET_SIZE = 4194304;
 #define A_VERSION_MIN 0x01000000
 #define A_VERSION_SKIP_CHECKSUM 0x01000001
 #define A_VERSION 0x01000001
+
+// Stream-based TLS protocol version
+#define A_STLS_VERSION_MIN 0x01000000
+#define A_STLS_VERSION 0x01000000
 
 // Used for help/version information.
 #define ADB_VERSION_MAJOR 1

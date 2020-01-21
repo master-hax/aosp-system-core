@@ -171,6 +171,12 @@ bool UsbConnection::Write(apacket* packet) {
     return true;
 }
 
+bool UsbConnection::DoTlsHandshake(RSA* key, std::string* auth_key) {
+    // TODO: support TLS for usb connections
+    LOG(FATAL) << "Not supported yet.";
+    return false;
+}
+
 void UsbConnection::Reset() {
     usb_reset(handle_);
     usb_kick(handle_);
@@ -183,7 +189,7 @@ void UsbConnection::Close() {
 void init_usb_transport(atransport* t, usb_handle* h) {
     D("transport: usb");
     auto connection = std::make_unique<UsbConnection>(h);
-    t->SetConnection(std::make_unique<BlockingConnectionAdapter>(std::move(connection)));
+    t->SetConnection(std::make_unique<BlockingConnectionAdapter>(std::move(connection), false));
     t->type = kTransportUsb;
     t->SetUsbHandle(h);
 }
