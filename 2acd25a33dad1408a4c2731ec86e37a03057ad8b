@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "93329f2a_ea0370ad",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-01-21T19:04:49Z",
+      "side": 1,
+      "message": "like who? that\u0027s not supported. we removed GCC from the NDK a long time ago, and we\u0027re actively removing the GCC binaries from the platform right now.\n\ni\u0027ll +2 this change anyway, because it removes the comment and doesn\u0027t actually make the code worse, but we won\u0027t take GCC patches in general.\n\nlet us know if you need help moving off GCC.",
+      "revId": "2acd25a33dad1408a4c2731ec86e37a03057ad8b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
