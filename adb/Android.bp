@@ -438,6 +438,7 @@ cc_library_static {
 
     shared_libs: [
         "libadb_crypto",
+        "libadb_protos",
         "libadbd_auth",
         "libadbwifi_pairing_connection",
         "libadb_tls_connection",
@@ -495,6 +496,7 @@ cc_library {
     ],
 
     shared_libs: [
+        "libadb_crypto",
         "libadb_protos",
         "libadbd_auth",
         "libadbwifi_pairing_connection",
@@ -547,6 +549,7 @@ cc_library {
     ],
 
     shared_libs: [
+        "libadb_crypto",
         "libadbd_auth",
         "libadbwifi_pairing_connection",
         "libadb_tls_connection",
@@ -587,6 +590,7 @@ cc_binary {
 
     static_libs: [
         "libadbconnection_server",
+        "libadb_crypto",
         "libadbd",
         "libadbwifi_pairing_connection",
         "libadb_protos",
