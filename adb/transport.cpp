@@ -36,6 +36,8 @@
 #include <set>
 #include <thread>
 
+#include <adb/crypto/rsa_2048_key.h>
+#include <adb/crypto/x509_generator.h>
 #include <android-base/logging.h>
 #include <android-base/parsenetaddress.h>
 #include <android-base/stringprintf.h>
@@ -52,6 +54,8 @@
 #include "fdevent/fdevent.h"
 #include "sysdeps/chrono.h"
 
+using namespace adb::crypto;
+using namespace adb::ssl;
 using android::base::ScopedLockAssertion;
 
 static void remove_transport(atransport* transport);
@@ -264,8 +268,9 @@ void Connection::Reset() {
     Stop();
 }
 
-BlockingConnectionAdapter::BlockingConnectionAdapter(std::unique_ptr<BlockingConnection> connection)
-    : underlying_(std::move(connection)) {}
+BlockingConnectionAdapter::BlockingConnectionAdapter(std::unique_ptr<BlockingConnection> connection,
+                                                     bool use_tls)
+    : underlying_(std::move(connection)), use_tls_(use_tls) {}
 
 BlockingConnectionAdapter::~BlockingConnectionAdapter() {
     LOG(INFO) << "BlockingConnectionAdapter(" << this->transport_name_ << "): destructing";
@@ -279,18 +284,25 @@ void BlockingConnectionAdapter::Start() {
                    << "): started multiple times";
     }
 
-    read_thread_ = std::thread([this]() {
-        LOG(INFO) << this->transport_name_ << ": read thread spawning";
-        while (true) {
-            auto packet = std::make_unique<apacket>();
-            if (!underlying_->Read(packet.get())) {
-                PLOG(INFO) << this->transport_name_ << ": read failed";
-                break;
-            }
-            read_callback_(this, std::move(packet));
-        }
-        std::call_once(this->error_flag_, [this]() { this->error_callback_(this, "read failed"); });
-    });
+#if ADB_HOST
+    // The first packet adbd sends will determine which type of connection we
+    // use. If the packet is STLS, then we start the handshake. Otherwise, we
+    // start the blocking read thread and follow the old adb protocol.
+    // The TLS protocol requires us to delay the reading thread creation until
+    // we determine whether we are using a TLS connection or not, since
+    // SSL_accept/SSL_connect needs to read first.
+    StartReadFirstPacketThread();
+#else
+    // Once adbd receives the CNXN packet, it will send the STLS packet, then
+    // start the SSL_accept (DoTlsHandshake).
+    // So we cannot spawn the blocking read thread until after the handshake
+    // is complete.
+    if (use_tls_) {
+        StartReadFirstPacketThread();
+    } else {
+        StartBlockingReadThread();
+    }
+#endif
 
     write_thread_ = std::thread([this]() {
         LOG(INFO) << this->transport_name_ << ": write thread spawning";
@@ -317,6 +329,67 @@ void BlockingConnectionAdapter::Start() {
     });
 
     started_ = true;
+}
+
+void BlockingConnectionAdapter::StartReadFirstPacketThread() {
+    detection_thread_ = std::thread([this]() {
+        // For client, the first packet tells us whether the connection uses
+        // TLS. For daemon, only the CNXN packet is valid from the client. All
+        // other packets are considered invalid and will break the connection.
+        LOG(INFO) << this->transport_name_ << ": read thread spawning. Determining connection type";
+        auto packet = std::make_unique<apacket>();
+        if (underlying_->Read(packet.get())) {
+#if ADB_HOST
+            LOG(INFO) << this->transport_name_ << ": read packet";
+            if (packet->msg.command != A_STLS) {
+                std::lock_guard<std::mutex> lock(mutex_);
+                LOG(INFO) << this->transport_name_
+                          << ": Not TLS packet. falling back to old protocol";
+                StartBlockingReadThread();
+            } else {
+                LOG(INFO) << this->transport_name_ << ": Got TLS packet. waiting for handshake";
+                use_tls_ = true;
+            }
+            read_callback_(this, std::move(packet));
+#else
+            if (packet->msg.command != A_CNXN) {
+                PLOG(INFO) << this->transport_name_ << ": remote sent invalid packet";
+                std::call_once(this->error_flag_,
+                               [this]() { this->error_callback_(this, "invalid packet"); });
+                return;
+            }
+            read_callback_(this, std::move(packet));
+#endif
+        } else {
+            PLOG(INFO) << this->transport_name_ << ": read failed";
+            std::call_once(this->error_flag_,
+                           [this]() { this->error_callback_(this, "read failed"); });
+        }
+    });
+}
+
+void BlockingConnectionAdapter::StartBlockingReadThread() {
+    read_thread_ = std::thread([this]() {
+        LOG(INFO) << this->transport_name_ << ": read thread spawning";
+        while (true) {
+            auto packet = std::make_unique<apacket>();
+            if (!underlying_->Read(packet.get())) {
+                PLOG(INFO) << this->transport_name_ << ": read failed";
+                break;
+            }
+            read_callback_(this, std::move(packet));
+        }
+        std::call_once(this->error_flag_, [this]() { this->error_callback_(this, "read failed"); });
+    });
+}
+
+bool BlockingConnectionAdapter::DoTlsHandshake(RSA* key, std::string* auth_key) {
+    std::lock_guard<std::mutex> lock(mutex_);
+    bool success = this->underlying_->DoTlsHandshake(key, auth_key);
+    if (success) {
+        StartBlockingReadThread();
+    }
+    return success;
 }
 
 void BlockingConnectionAdapter::Reset() {
@@ -364,15 +437,24 @@ void BlockingConnectionAdapter::Stop() {
     // Move the threads out into locals with the lock taken, and then unlock to let them exit.
     std::thread read_thread;
     std::thread write_thread;
+    std::thread detection_thread;
 
     {
         std::lock_guard<std::mutex> lock(mutex_);
         read_thread = std::move(read_thread_);
         write_thread = std::move(write_thread_);
+        detection_thread = std::move(detection_thread_);
     }
 
-    read_thread.join();
-    write_thread.join();
+    if (read_thread.joinable()) {
+        read_thread.join();
+    }
+    if (write_thread.joinable()) {
+        write_thread.join();
+    }
+    if (detection_thread.joinable()) {
+        detection_thread.join();
+    }
 
     LOG(INFO) << "BlockingConnectionAdapter(" << this->transport_name_ << "): stopped";
     std::call_once(this->error_flag_, [this]() { this->error_callback_(this, "requested stop"); });
@@ -388,8 +470,32 @@ bool BlockingConnectionAdapter::Write(std::unique_ptr<apacket> packet) {
     return true;
 }
 
+bool FdConnection::DispatchRead(void* buf, size_t len) {
+    if (tls_ != nullptr) {
+        // The TlsConnection doesn't allow 0 byte reads
+        if (len == 0) {
+            return true;
+        }
+        return tls_->ReadFully(buf, len);
+    }
+
+    return ReadFdExactly(fd_.get(), buf, len);
+}
+
+bool FdConnection::DispatchWrite(void* buf, size_t len) {
+    if (tls_ != nullptr) {
+        // The TlsConnection doesn't allow 0 byte writes
+        if (len == 0) {
+            return true;
+        }
+        return tls_->WriteFully(std::string_view(reinterpret_cast<const char*>(buf), len));
+    }
+
+    return WriteFdExactly(fd_.get(), buf, len);
+}
+
 bool FdConnection::Read(apacket* packet) {
-    if (!ReadFdExactly(fd_.get(), &packet->msg, sizeof(amessage))) {
+    if (!DispatchRead(&packet->msg, sizeof(amessage))) {
         D("remote local: read terminated (message)");
         return false;
     }
@@ -401,7 +507,7 @@ bool FdConnection::Read(apacket* packet) {
 
     packet->payload.resize(packet->msg.data_length);
 
-    if (!ReadFdExactly(fd_.get(), &packet->payload[0], packet->payload.size())) {
+    if (!DispatchRead(&packet->payload[0], packet->payload.size())) {
         D("remote local: terminated (data)");
         return false;
     }
@@ -410,16 +516,46 @@ bool FdConnection::Read(apacket* packet) {
 }
 
 bool FdConnection::Write(apacket* packet) {
-    if (!WriteFdExactly(fd_.get(), &packet->msg, sizeof(packet->msg))) {
+    if (!DispatchWrite(&packet->msg, sizeof(packet->msg))) {
         D("remote local: write terminated");
         return false;
     }
 
     if (packet->msg.data_length) {
-        if (!WriteFdExactly(fd_.get(), &packet->payload[0], packet->msg.data_length)) {
+        if (!DispatchWrite(&packet->payload[0], packet->msg.data_length)) {
             D("remote local: write terminated");
             return false;
         }
+    }
+
+    return true;
+}
+
+bool FdConnection::DoTlsHandshake(RSA* key, std::string* auth_key) {
+    bssl::UniquePtr<EVP_PKEY> evp_pkey(EVP_PKEY_new());
+    if (!EVP_PKEY_set1_RSA(evp_pkey.get(), key)) {
+        LOG(ERROR) << "EVP_PKEY_set1_RSA failed";
+        return false;
+    }
+    auto x509 = GenerateX509Certificate(evp_pkey.get());
+    auto x509_str = X509ToPEMString(x509.get());
+    auto evp_str = Key::ToPEMString(evp_pkey.get());
+#if ADB_HOST
+    tls_ = TlsConnection::Create(TlsConnection::Role::Client,
+#else
+    tls_ = TlsConnection::Create(TlsConnection::Role::Server,
+#endif
+                                 x509_str, evp_str);
+    CHECK(tls_);
+    // We will be verifying the key after the handshake succeeds.
+    tls_->EnableCertificateVerification(false);
+#if !ADB_HOST
+    // Add callback to check certificate against a list of known public keys
+    tls_->SetCertVerifyCallback(adbd_tls_verify_cert, auth_key);
+#endif
+    if (!tls_->DoHandshake(fd_.get())) {
+        tls_.reset();
+        return false;
     }
 
     return true;
@@ -750,6 +886,15 @@ void kick_all_transports() {
     }
 }
 
+void kick_all_tcp_tls_transports() {
+    std::lock_guard<std::recursive_mutex> lock(transport_lock);
+    for (auto t : transport_list) {
+        if (t->IsTcpDevice() && t->use_tls) {
+            t->Kick();
+        }
+    }
+}
+
 /* the fdevent select pump is single threaded */
 void register_transport(atransport* transport) {
     tmsg m;
@@ -1026,6 +1171,10 @@ int atransport::get_protocol_version() const {
     return protocol_version;
 }
 
+int atransport::get_tls_version() const {
+    return tls_version;
+}
+
 size_t atransport::get_max_payload() const {
     return max_payload;
 }
@@ -1221,8 +1370,9 @@ void close_usb_devices(bool reset) {
 #endif  // ADB_HOST
 
 bool register_socket_transport(unique_fd s, std::string serial, int port, int local,
-                               atransport::ReconnectCallback reconnect, int* error) {
+                               atransport::ReconnectCallback reconnect, bool use_tls, int* error) {
     atransport* t = new atransport(std::move(reconnect), kCsOffline);
+    t->use_tls = use_tls;
 
     D("transport: %s init'ing for socket %d, on port %d", serial.c_str(), s.get(), port);
     if (init_socket_transport(t, std::move(s), port, local) < 0) {

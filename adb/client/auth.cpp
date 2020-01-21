@@ -475,3 +475,23 @@ void send_auth_response(const char* token, size_t token_size, atransport* t) {
     p->msg.data_length = p->payload.size();
     send_packet(p, t);
 }
+
+void adb_auth_tls_handshake(atransport* t) {
+    std::thread([t]() {
+        // TODO(joshuaduong): Add support for ADB_VENDOR_KEYS
+        std::shared_ptr<RSA> key = t->NextKey();
+        if (key == nullptr) {
+            // No more private keys to try, give up.
+            kick_transport(t);
+            return;
+        }
+
+        LOG(INFO) << "Attempting to TLS handshake";
+        bool success = t->connection()->DoTlsHandshake(key.get());
+        if (success) {
+            LOG(INFO) << "Handshake succeeded. Waiting for CNXN packet...";
+        } else {
+            LOG(INFO) << "Handshake failed. Waiting for TLS packet...";
+        }
+    }).detach();
+}
