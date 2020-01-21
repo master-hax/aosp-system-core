@@ -45,7 +45,7 @@ SnapshotMergeStats::~SnapshotMergeStats() {
     }
 }
 
-void SnapshotMergeStats::start() {
+void SnapshotMergeStats::Start() {
     SnapshotMergeReport report;
     report.set_resume_count(0);
     report.set_state(UpdateState::None);
@@ -62,7 +62,7 @@ void SnapshotMergeStats::start() {
     }
 }
 
-void SnapshotMergeStats::resume() {
+void SnapshotMergeStats::Resume() {
     std::string contents;
     if (!android::base::ReadFileToString(parent_.GetMergeStateFilePath(), &contents)) {
         PLOG(INFO) << "Read merge statistics file failed";

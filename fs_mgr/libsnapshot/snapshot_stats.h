@@ -28,8 +28,8 @@ class SnapshotMergeStats {
   public:
     SnapshotMergeStats(SnapshotManager& parent);
     ~SnapshotMergeStats();
-    void start();
-    void resume();
+    void Start();
+    void Resume();
     void set_state(android::snapshot::UpdateState state);
     SnapshotMergeReport GetReport();
 

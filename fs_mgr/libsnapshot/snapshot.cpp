@@ -2412,7 +2412,7 @@ UpdateState SnapshotManager::InitiateMergeAndWait(SnapshotMergeReport* stats_rep
 
     LOG(INFO) << "Waiting for any previous merge request to complete. "
               << "This can take up to several minutes.";
-    merge_stats.resume();
+    merge_stats.Resume();
     auto state = ProcessUpdateState(callback);
     merge_stats.set_state(state);
     if (state == UpdateState::None) {
@@ -2427,7 +2427,7 @@ UpdateState SnapshotManager::InitiateMergeAndWait(SnapshotMergeReport* stats_rep
 
         // This is the first snapshot merge that is requested after OTA. We can
         // initialize the merge duration statistics.
-        merge_stats.start();
+        merge_stats.Start();
 
         if (!InitiateMerge()) {
             LOG(ERROR) << "Failed to initiate merge.";
