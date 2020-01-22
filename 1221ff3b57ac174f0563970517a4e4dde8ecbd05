@@ -16,6 +16,24 @@
       "revId": "1221ff3b57ac174f0563970517a4e4dde8ecbd05",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3c383ce6_9d17c53a",
+        "filename": "liblog/include/android/log.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 183,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-01-22T16:40:52Z",
+      "side": 1,
+      "message": "sgtm. (but worth documenting?)",
+      "parentUuid": "cbf11632_148d26aa",
+      "revId": "1221ff3b57ac174f0563970517a4e4dde8ecbd05",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
