@@ -76,6 +76,12 @@ TYPED_TEST_P(DwarfCfaLogTest, cfa_illegal) {
       // Skip gnu extension ops.
       continue;
     }
+#if defined(__aarch64__)
+    if (i == 0x2d) {
+      // Skip DW_CFA_AARCH64_negate_ra_state ops.
+      continue;
+    }
+#endif
     this->memory_.SetMemory(0x2000, std::vector<uint8_t>{i});
 
     ResetLogs();

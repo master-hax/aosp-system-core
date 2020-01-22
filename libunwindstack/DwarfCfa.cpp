@@ -27,6 +27,7 @@
 #include <unwindstack/DwarfError.h>
 #include <unwindstack/DwarfLocation.h>
 #include <unwindstack/Log.h>
+#include <unwindstack/MachineArm64.h>
 
 #include "DwarfCfa.h"
 #include "DwarfEncoding.h"
@@ -514,6 +515,20 @@ bool DwarfCfa<AddressType>::cfa_gnu_negative_offset_extended(dwarf_loc_regs_t* l
   return true;
 }
 
+#ifdef __aarch64__
+template <typename AddressType>
+bool DwarfCfa<AddressType>::cfa_aarch64_negate_ra_state(dwarf_loc_regs_t* loc_regs) {
+  auto cfa_location = loc_regs->find(Arm64Reg::ARM64_PREG_RA_SIGN_STATE);
+  if (cfa_location == loc_regs->end()) {
+    (*loc_regs)[Arm64Reg::ARM64_PREG_RA_SIGN_STATE] = {
+        .type = DWARF_LOCATION_PSEUDO_REGISTER, .values = {1}};
+  } else {
+    cfa_location->second.values[0] ^= 1;
+  }
+  return true;
+}
+#endif
+
 const DwarfCfaInfo::Info DwarfCfaInfo::kTable[64] = {
     {
         // 0x00 DW_CFA_nop
@@ -699,7 +714,17 @@ const DwarfCfaInfo::Info DwarfCfaInfo::kTable[64] = {
     {"", 0, 0, {}, {}},  // 0x2a illegal cfa
     {"", 0, 0, {}, {}},  // 0x2b illegal cfa
     {"", 0, 0, {}, {}},  // 0x2c illegal cfa
+#ifdef __aarch64__
+    {
+        "DW_CFA_AARCH64_negate_ra_state",  // 0x2d DW_CFA_AARCH64_negate_ra_state
+        3,
+        0,
+        {},
+        {},
+    },
+#else
     {"", 0, 0, {}, {}},  // 0x2d DW_CFA_GNU_window_save (Treat as illegal)
+#endif
     {
         "DW_CFA_GNU_args_size",  // 0x2e DW_CFA_GNU_args_size
         2,

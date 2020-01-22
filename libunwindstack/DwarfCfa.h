@@ -128,6 +128,9 @@ class DwarfCfa {
   bool cfa_val_offset_sf(dwarf_loc_regs_t*);
   bool cfa_val_expression(dwarf_loc_regs_t*);
   bool cfa_gnu_negative_offset_extended(dwarf_loc_regs_t*);
+#if defined(__aarch64__)
+  bool cfa_aarch64_negate_ra_state(dwarf_loc_regs_t*);
+#endif
 
   using process_func = bool (DwarfCfa::*)(dwarf_loc_regs_t*);
   constexpr static process_func kCallbackTable[64] = {
@@ -221,8 +224,13 @@ class DwarfCfa {
       nullptr,
       // 0x2c illegal cfa
       nullptr,
+#if defined(__aarch64__)
+      // 0x2d DW_CFA_AARCH64_negate_ra_state
+      &DwarfCfa::cfa_aarch64_negate_ra_state,
+#else
       // 0x2d DW_CFA_GNU_window_save (Treat this as illegal)
       nullptr,
+#endif
       // 0x2e DW_CFA_GNU_args_size
       &DwarfCfa::cfa_nop,
       // 0x2f DW_CFA_GNU_negative_offset_extended

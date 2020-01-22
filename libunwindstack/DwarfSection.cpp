@@ -464,6 +464,13 @@ bool DwarfSectionImpl<AddressType>::EvalRegister(const DwarfLocation* loc, uint3
         eval_info->return_address_undefined = true;
       }
       break;
+    case DWARF_LOCATION_PSEUDO_REGISTER: {
+      if (!eval_info->regs_info.regs->SetPseudoRegister(reg, loc->values[0])) {
+        last_error_.code = DWARF_ERROR_ILLEGAL_VALUE;
+        return false;
+      }
+      break;
+    }
     default:
       break;
   }
@@ -490,6 +497,10 @@ bool DwarfSectionImpl<AddressType>::Eval(const DwarfCie* cie, Memory* regular_me
 
   // Always set the dex pc to zero when evaluating.
   cur_regs->set_dex_pc(0);
+
+  // Reset necessary pseudo registers before evaluation.
+  // This is needed for ARM64, for example.
+  regs->ResetPseudoRegisters();
 
   EvalInfo<AddressType> eval_info{.loc_regs = &loc_regs,
                                   .cie = cie,
@@ -527,8 +538,10 @@ bool DwarfSectionImpl<AddressType>::Eval(const DwarfCie* cie, Memory* regular_me
 
     AddressType* reg_ptr;
     if (reg >= cur_regs->total_regs()) {
-      // Skip this unknown register.
-      continue;
+      if (entry.second.type != DWARF_LOCATION_PSEUDO_REGISTER) {
+        // Skip this unknown register.
+        continue;
+      }
     }
 
     reg_ptr = eval_info.regs_info.Save(reg);
