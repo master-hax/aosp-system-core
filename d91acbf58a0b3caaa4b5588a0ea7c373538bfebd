@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a55c08b2_669983ad",
+        "filename": "adb/apex/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2020-01-22T01:24:19Z",
+      "side": 1,
+      "message": "nit: add license header?",
+      "revId": "d91acbf58a0b3caaa4b5588a0ea7c373538bfebd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
