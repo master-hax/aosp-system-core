@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "719672ef_67ef1365",
+        "filename": "libnetutils/ifc_utils.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 314,
+      "author": {
+        "id": 1273909
+      },
+      "writtenOn": "2020-01-22T09:13:30Z",
+      "side": 1,
+      "message": "isn\u0027t this a __u16? Then, make flags a uint16_t to match.",
+      "range": {
+        "startLine": 314,
+        "startChar": 4,
+        "endLine": 314,
+        "endChar": 19
+      },
+      "revId": "272a43214bf7baec0f1aaa95fb64e81bc3518491",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4a58e3ca_117bdf02",
+        "filename": "libnetutils/include/netutils/ifc.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1273909
+      },
+      "writtenOn": "2020-01-22T09:13:30Z",
+      "side": 1,
+      "message": "maybe also switch this to uint16_t.",
+      "range": {
+        "startLine": 58,
+        "startChar": 24,
+        "endLine": 58,
+        "endChar": 32
+      },
+      "revId": "272a43214bf7baec0f1aaa95fb64e81bc3518491",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
