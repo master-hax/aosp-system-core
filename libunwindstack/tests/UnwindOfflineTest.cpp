@@ -1277,6 +1277,80 @@ TEST_F(UnwindOfflineTest, offset_arm) {
   EXPECT_EQ(0xffcc1558U, unwinder.frames()[18].sp);
 }
 
+TEST_F(UnwindOfflineTest, empty_arm) {
+  ASSERT_NO_FATAL_FAILURE(Init("empty_arm/", ARCH_ARM));
+
+  Unwinder unwinder(128, maps_.get(), regs_.get(), process_memory_);
+  unwinder.Unwind();
+
+  std::string frame_info(DumpFrames(unwinder));
+  ASSERT_EQ(19U, unwinder.NumFrames()) << "Unwind:\n" << frame_info;
+  EXPECT_EQ(
+      "  #00 pc 0032bfa0  libunwindstack_test (SignalInnerFunction+40)\n"
+      "  #01 pc 0032bfeb  libunwindstack_test (SignalMiddleFunction+2)\n"
+      "  #02 pc 0032bff3  libunwindstack_test (SignalOuterFunction+2)\n"
+      "  #03 pc 0032fed3  libunwindstack_test "
+      "(unwindstack::SignalCallerHandler(int, siginfo*, void*)+26)\n"
+      "  #04 pc 0002652c  libc.so (__restore)\n"
+      "  #05 pc 00000000  <unknown>\n"
+      "  #06 pc 0032c2d9  libunwindstack_test (InnerFunction+736)\n"
+      "  #07 pc 0032cc4f  libunwindstack_test (MiddleFunction+42)\n"
+      "  #08 pc 0032cc81  libunwindstack_test (OuterFunction+42)\n"
+      "  #09 pc 0032e547  libunwindstack_test "
+      "(unwindstack::RemoteThroughSignal(int, unsigned int)+270)\n"
+      "  #10 pc 0032ed99  libunwindstack_test "
+      "(unwindstack::UnwindTest_remote_through_signal_with_invalid_func_Test::TestBody()+16)\n"
+      "  #11 pc 00354453  libunwindstack_test (testing::Test::Run()+154)\n"
+      "  #12 pc 00354de7  libunwindstack_test (testing::TestInfo::Run()+194)\n"
+      "  #13 pc 00355105  libunwindstack_test (testing::TestCase::Run()+180)\n"
+      "  #14 pc 0035a215  libunwindstack_test "
+      "(testing::internal::UnitTestImpl::RunAllTests()+664)\n"
+      "  #15 pc 00359f4f  libunwindstack_test (testing::UnitTest::Run()+110)\n"
+      "  #16 pc 0034d3db  libunwindstack_test (main+38)\n"
+      "  #17 pc 00092c0d  libc.so (__libc_init+48)\n"
+      "  #18 pc 0004202f  libunwindstack_test (_start_main+38)\n",
+      frame_info);
+
+  EXPECT_EQ(0x2e55fa0U, unwinder.frames()[0].pc);
+  EXPECT_EQ(0xf43d2cccU, unwinder.frames()[0].sp);
+  EXPECT_EQ(0x2e55febU, unwinder.frames()[1].pc);
+  EXPECT_EQ(0xf43d2ce0U, unwinder.frames()[1].sp);
+  EXPECT_EQ(0x2e55ff3U, unwinder.frames()[2].pc);
+  EXPECT_EQ(0xf43d2ce8U, unwinder.frames()[2].sp);
+  EXPECT_EQ(0x2e59ed3U, unwinder.frames()[3].pc);
+  EXPECT_EQ(0xf43d2cf0U, unwinder.frames()[3].sp);
+  EXPECT_EQ(0xf413652cU, unwinder.frames()[4].pc);
+  EXPECT_EQ(0xf43d2d10U, unwinder.frames()[4].sp);
+  EXPECT_EQ(0U, unwinder.frames()[5].pc);
+  EXPECT_EQ(0xffcc0ee0U, unwinder.frames()[5].sp);
+  EXPECT_EQ(0x2e562d9U, unwinder.frames()[6].pc);
+  EXPECT_EQ(0xffcc0ee0U, unwinder.frames()[6].sp);
+  EXPECT_EQ(0x2e56c4fU, unwinder.frames()[7].pc);
+  EXPECT_EQ(0xffcc1060U, unwinder.frames()[7].sp);
+  EXPECT_EQ(0x2e56c81U, unwinder.frames()[8].pc);
+  EXPECT_EQ(0xffcc1078U, unwinder.frames()[8].sp);
+  EXPECT_EQ(0x2e58547U, unwinder.frames()[9].pc);
+  EXPECT_EQ(0xffcc1090U, unwinder.frames()[9].sp);
+  EXPECT_EQ(0x2e58d99U, unwinder.frames()[10].pc);
+  EXPECT_EQ(0xffcc1438U, unwinder.frames()[10].sp);
+  EXPECT_EQ(0x2e7e453U, unwinder.frames()[11].pc);
+  EXPECT_EQ(0xffcc1448U, unwinder.frames()[11].sp);
+  EXPECT_EQ(0x2e7ede7U, unwinder.frames()[12].pc);
+  EXPECT_EQ(0xffcc1458U, unwinder.frames()[12].sp);
+  EXPECT_EQ(0x2e7f105U, unwinder.frames()[13].pc);
+  EXPECT_EQ(0xffcc1490U, unwinder.frames()[13].sp);
+  EXPECT_EQ(0x2e84215U, unwinder.frames()[14].pc);
+  EXPECT_EQ(0xffcc14c0U, unwinder.frames()[14].sp);
+  EXPECT_EQ(0x2e83f4fU, unwinder.frames()[15].pc);
+  EXPECT_EQ(0xffcc1510U, unwinder.frames()[15].sp);
+  EXPECT_EQ(0x2e773dbU, unwinder.frames()[16].pc);
+  EXPECT_EQ(0xffcc1528U, unwinder.frames()[16].sp);
+  EXPECT_EQ(0xf41a2c0dU, unwinder.frames()[17].pc);
+  EXPECT_EQ(0xffcc1540U, unwinder.frames()[17].sp);
+  EXPECT_EQ(0x2b6c02fU, unwinder.frames()[18].pc);
+  EXPECT_EQ(0xffcc1558U, unwinder.frames()[18].sp);
+}
+
 // Test using a non-zero load bias library that has the fde entries
 // encoded as 0xb, which is not set as pc relative.
 TEST_F(UnwindOfflineTest, debug_frame_load_bias_arm) {
