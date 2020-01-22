@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "b354ab05_5c0e8ed5",
+        "filename": "libnetutils/ifc_utils.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 261,
+      "author": {
+        "id": 1273909
+      },
+      "writtenOn": "2020-01-22T09:18:42Z",
+      "side": 1,
+      "message": "Either document that these are flags go into struct ifaddrmsg, or at least hint to it by renaming the argument to ifa_flags (here and in the .h).",
+      "range": {
+        "startLine": 261,
+        "startChar": 23,
+        "endLine": 261,
+        "endChar": 32
+      },
+      "revId": "272a43214bf7baec0f1aaa95fb64e81bc3518491",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "719672ef_67ef1365",
         "filename": "libnetutils/ifc_utils.c",
         "patchSetId": 1
