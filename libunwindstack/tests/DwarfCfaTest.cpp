@@ -70,8 +70,8 @@ TYPED_TEST_SUITE_P(DwarfCfaTest);
 
 TYPED_TEST_P(DwarfCfaTest, cfa_illegal) {
   for (uint8_t i = 0x17; i < 0x3f; i++) {
-    if (i == 0x2e || i == 0x2f) {
-      // Skip gnu extension ops.
+    if (i == 0x2e || i == 0x2f || i == 0x2d) {
+      // Skip gnu and aarch64 extension ops.
       continue;
     }
     this->memory_.SetMemory(0x2000, std::vector<uint8_t>{i});
