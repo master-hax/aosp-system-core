@@ -39,6 +39,10 @@ class RegsFake : public Regs {
   void set_pc(uint64_t pc) override { fake_pc_ = pc; }
   void set_sp(uint64_t sp) override { fake_sp_ = sp; }
 
+  void ResetPseudoRegisters(void) override {};
+  bool SetPseudoRegister(uint16_t, uint64_t) override { return false; };
+  bool GetPseudoRegister(uint16_t, uint64_t*) override { return false; };
+
   bool SetPcFromReturnAddress(Memory*) override {
     if (!fake_return_address_valid_) {
       return false;

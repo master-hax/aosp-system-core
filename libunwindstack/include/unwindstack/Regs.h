@@ -64,6 +64,12 @@ class Regs {
   uint64_t dex_pc() { return dex_pc_; }
   void set_dex_pc(uint64_t dex_pc) { dex_pc_ = dex_pc; }
 
+  virtual void ResetPseudoRegisters(void) = 0;
+
+  virtual bool SetPseudoRegister(uint16_t id, uint64_t value) = 0;
+
+  virtual bool GetPseudoRegister(uint16_t id, uint64_t* value) = 0;
+
   virtual uint64_t GetPcAdjustment(uint64_t rel_pc, Elf* elf) = 0;
 
   virtual bool StepIfSignalHandler(uint64_t elf_offset, Elf* elf, Memory* process_memory) = 0;
@@ -99,6 +105,12 @@ class RegsImpl : public Regs {
   inline AddressType& operator[](size_t reg) { return regs_[reg]; }
 
   void* RawData() override { return regs_.data(); }
+
+  void ResetPseudoRegisters(void) override {};
+
+  bool SetPseudoRegister(uint16_t, uint64_t) override { return false; };
+
+  bool GetPseudoRegister(uint16_t, uint64_t*) override { return false; };
 
   virtual void IterateRegisters(std::function<void(const char*, uint64_t)> fn) override {
     for (size_t i = 0; i < regs_.size(); ++i) {

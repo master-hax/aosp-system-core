@@ -128,6 +128,11 @@ void PrintRegInformation(DwarfSection* section, Memory* memory, uint64_t pc, uin
         break;
       }
 
+      case DWARF_LOCATION_PSEUDO_REGISTER: {
+        printf("%" PRId64 "\n", loc->values[0]);
+        break;
+      }
+
       case DWARF_LOCATION_UNDEFINED:
         printf("undefine\n");
         break;
