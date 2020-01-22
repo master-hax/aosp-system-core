@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "cd5f5495_5c9bde9b",
+        "filename": "base/logging.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 596,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-01-22T23:46:20Z",
+      "side": 1,
+      "message": "Or do we want liblog to just set the default tag for us?  The annoying disadvantage here is that we\u0027ll need to duplicate the getprogname() code above.  Or make a getprogname.a, but that is equally also annoying, especially since libbase currently doesn\u0027t export getprogname() as a symbol.",
+      "range": {
+        "startLine": 595,
+        "startChar": 0,
+        "endLine": 596,
+        "endChar": 26
+      },
+      "revId": "a7cbee3348d2b9454712295fdef6cb34fee851ac",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c5d422b5_c3e421ce",
+        "filename": "liblog/logger_write.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-01-22T23:46:20Z",
+      "side": 1,
+      "message": "Errr :x\n\nI don\u0027t want to use std::string, since it\u0027s possible programs log in their static initializers before those of liblog are called.  Right?\n\nThen we don\u0027t have asprintf() or strndup() or anything reasonable on windows.\n\nBut as I\u0027m writing this, I realize that I can do:\n\nstd::string\u0026 GetDefaultTag() {\n  static std::string default_tag;\n  return \u0026default_tag;\n}\n\nto avoid the static initializer problem... so I\u0027ll do that.",
+      "range": {
+        "startLine": 115,
+        "startChar": 0,
+        "endLine": 125,
+        "endChar": 70
+      },
+      "revId": "a7cbee3348d2b9454712295fdef6cb34fee851ac",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
