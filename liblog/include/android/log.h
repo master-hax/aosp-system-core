@@ -276,6 +276,19 @@ int __android_log_set_minimum_priority(int priority);
  */
 int __android_log_get_minimum_priority();
 
+/**
+ * Sets the default tag if no tag is provided when writing a log message.  Defaults to
+ * getprogname().  This truncates tag to the maximum log message size, though appropriate tags
+ * should be much smaller.
+ */
+void __android_log_set_default_tag(const char* tag);
+
+/**
+ * Retrieves the default tag and places it in tag, up to tag_size.  Returns the actual size of
+ * the tag.
+ */
+size_t __android_log_get_default_tag(char* tag, size_t tag_size);
+
 #ifdef __cplusplus
 }
 #endif
