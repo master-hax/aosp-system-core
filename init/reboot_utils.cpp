@@ -146,7 +146,9 @@ void __attribute__((noreturn)) InitFatalReboot(int signal_number) {
     if (init_fatal_panic) {
         _exit(signal_number);
     }
-    RebootSystem(ANDROID_RB_RESTART2, init_fatal_reboot_target);
+    std::string reboot_cmd = "reboot,";
+    android::base::SetProperty("sys.powerctl", reboot_cmd + init_fatal_reboot_target);
+    while (1) {;}
 }
 
 void InstallRebootSignalHandlers() {
