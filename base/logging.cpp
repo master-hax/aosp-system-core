@@ -281,6 +281,9 @@ void KernelLogger(android::base::LogId, android::base::LogSeverity severity,
 
 void StderrLogger(LogId, LogSeverity severity, const char* tag, const char* file, unsigned int line,
                   const char* message) {
+  if (severity < gMinimumLogSeverity) {
+    return;
+  }
   struct tm now;
   time_t t = time(nullptr);
 
@@ -306,8 +309,11 @@ void StderrLogger(LogId, LogSeverity severity, const char* tag, const char* file
   }
 }
 
-void StdioLogger(LogId, LogSeverity severity, const char* /*tag*/, const char* /*file*/,
+void StdioLogger(LogId, LogSeverity severity, const char* tag, const char* /*file*/,
                  unsigned int /*line*/, const char* message) {
+  if (severity < gMinimumLogSeverity) {
+    return;
+  }
   if (severity >= WARNING) {
     fflush(stdout);
     fprintf(stderr, "%s: %s\n", GetFileBasename(getprogname()), message);
