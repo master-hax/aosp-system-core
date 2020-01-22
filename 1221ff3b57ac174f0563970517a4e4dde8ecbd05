@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "cbf11632_148d26aa",
+        "filename": "liblog/include/android/log.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 183,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-01-22T16:33:19Z",
+      "side": 1,
+      "message": "Two options here:\n\n1) We do as I write in this comment since this is currently only used by the new libbase code, and libbase already checks loggability.\n2) We add the loggability check in this function as well, but that means libbase would duplicate this check.\n\nWe do want to check loggability in libbase, since we don\u0027t want to waste time formatting if we\u0027re going to throw away the log.\n\nI figure 1) is the better option here, but open to changing that.",
+      "revId": "1221ff3b57ac174f0563970517a4e4dde8ecbd05",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
