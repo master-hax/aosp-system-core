@@ -25,6 +25,64 @@
     },
     {
       "key": {
+        "uuid": "5bc0252e_f3012478",
+        "filename": "base/logging.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 596,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-01-22T23:54:16Z",
+      "side": 1,
+      "message": "if it lets us just move all this into liblog and avoid the new symbols, maybe worth it?",
+      "parentUuid": "cd5f5495_5c9bde9b",
+      "range": {
+        "startLine": 595,
+        "startChar": 0,
+        "endLine": 596,
+        "endChar": 26
+      },
+      "revId": "a7cbee3348d2b9454712295fdef6cb34fee851ac",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "25d32bf0_cab2e711",
+        "filename": "base/logging.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 610,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-01-22T23:54:16Z",
+      "side": 1,
+      "message": "https://www.freebsd.org/cgi/man.cgi?query\u003dgetprogname\u0026sektion\u003d3\u0026manpath\u003dfreebsd-release-ports implies that getprogname() is meant to be just the basename().",
+      "revId": "a7cbee3348d2b9454712295fdef6cb34fee851ac",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f4fa3180_bd781002",
+        "filename": "liblog/include/android/log.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 289,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-01-22T23:54:16Z",
+      "side": 1,
+      "message": "(...but that\u0027s inherently racy, so don\u0027t rely on that. maybe don\u0027t even implement that, because using it would be a mistake?)",
+      "revId": "a7cbee3348d2b9454712295fdef6cb34fee851ac",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "c5d422b5_c3e421ce",
         "filename": "liblog/logger_write.cpp",
         "patchSetId": 1
@@ -36,6 +94,30 @@
       "writtenOn": "2020-01-22T23:46:20Z",
       "side": 1,
       "message": "Errr :x\n\nI don\u0027t want to use std::string, since it\u0027s possible programs log in their static initializers before those of liblog are called.  Right?\n\nThen we don\u0027t have asprintf() or strndup() or anything reasonable on windows.\n\nBut as I\u0027m writing this, I realize that I can do:\n\nstd::string\u0026 GetDefaultTag() {\n  static std::string default_tag;\n  return \u0026default_tag;\n}\n\nto avoid the static initializer problem... so I\u0027ll do that.",
+      "range": {
+        "startLine": 115,
+        "startChar": 0,
+        "endLine": 125,
+        "endChar": 70
+      },
+      "revId": "a7cbee3348d2b9454712295fdef6cb34fee851ac",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c2f848ec_97b6e522",
+        "filename": "liblog/logger_write.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-01-22T23:54:16Z",
+      "side": 1,
+      "message": "(i\u0027d probably call that GetDefaultTagLocation(), but, yeah, sgtm.)",
+      "parentUuid": "c5d422b5_c3e421ce",
       "range": {
         "startLine": 115,
         "startChar": 0,
