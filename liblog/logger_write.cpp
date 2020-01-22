@@ -31,6 +31,7 @@
 #include <private/android_logger.h>
 
 #include "android/log.h"
+#include "log/log_read.h"
 #include "logger.h"
 #include "rwlock.h"
 #include "uio.h"
@@ -104,6 +105,42 @@ void __android_log_close() {
 #else
   FakeClose();
 #endif
+}
+
+static char* default_tag;
+static RwLock default_tag_lock;
+
+void __android_log_set_default_tag(const char* tag) {
+  auto lock = std::unique_lock{default_tag_lock};
+  free(default_tag);
+  default_tag = nullptr;
+  if (tag == nullptr) {
+    return;
+  }
+  auto size = strnlen(tag, LOGGER_ENTRY_MAX_PAYLOAD) + 1;
+  if (size == 0) {
+    return;
+  }
+  default_tag = static_cast<char*>(calloc(size, sizeof(char)));
+  snprintf(default_tag, size, "%s", tag);  // no strndup() on windows.
+}
+
+size_t __android_log_get_default_tag(char* tag, size_t tag_size) {
+  auto lock = std::shared_lock{default_tag_lock};
+  if (tag == nullptr || tag_size == 0) {
+    if (default_tag == nullptr) {
+      return 0;
+    }
+    return strlen(default_tag);
+  }
+
+  if (default_tag == nullptr) {
+    tag[0] = '\0';
+    return 0;
+  }
+
+  snprintf(tag, tag_size, "%s", default_tag);  // no strlcpy on host.
+  return strlen(default_tag);
 }
 
 static int minimum_log_priority = ANDROID_LOG_DEFAULT;
@@ -270,7 +307,16 @@ int __android_log_write(int prio, const char* tag, const char* msg) {
 }
 
 void __android_log_write_logger_data(__android_logger_data* logger_data, const char* msg) {
-  if (logger_data->tag == nullptr) logger_data->tag = "";
+  auto tag_lock = std::shared_lock{default_tag_lock, std::defer_lock};
+  if (logger_data->tag == nullptr) {
+    tag_lock.lock();
+    if (default_tag == nullptr) {
+      logger_data->tag = "";
+      tag_lock.unlock();
+    } else {
+      logger_data->tag = default_tag;
+    }
+  }
 
 #if __BIONIC__
   if (logger_data->priority == ANDROID_LOG_FATAL) {

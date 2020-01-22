@@ -276,6 +276,20 @@ int __android_log_set_minimum_priority(int priority);
  */
 int __android_log_get_minimum_priority();
 
+/**
+ * Sets the default tag if no tag is provided when writing a log message.  Defaults to an empty
+ * string.  This truncates tag to the maximum log message size, though appropriate tags should be
+ * much smaller.
+ */
+void __android_log_set_default_tag(const char* tag);
+
+/**
+ * Retrieves the default tag and places it in tag, up to tag_size.  Returns the actual size of
+ * the tag.  If there is no default tag set, tag[0] to set to '\0' and this returns 0.  If tag is
+ * nullptr or tag_size is 0, this simply returns the actual size of the tag.
+ */
+size_t __android_log_get_default_tag(char* tag, size_t tag_size);
+
 #ifdef __cplusplus
 }
 #endif

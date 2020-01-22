@@ -211,26 +211,43 @@ static AbortFunction& Aborter() {
   return aborter;
 }
 
+// Only used for Q fallback.
 static std::recursive_mutex& TagLock() {
   static auto& tag_lock = *new std::recursive_mutex();
   return tag_lock;
 }
+// Only used for Q fallback.
 static std::string* gDefaultTag;
+
 std::string GetDefaultTag() {
-  std::lock_guard<std::recursive_mutex> lock(TagLock());
-  if (gDefaultTag == nullptr) {
-    return "";
+  static auto& liblog_functions = GetLibLogFunctions();
+  if (liblog_functions) {
+    constexpr size_t kMaxTagSize = 4068;  // LOGGER_ENTRY_MAX_PAYLOAD
+    char buffer[kMaxTagSize] = {};
+    liblog_functions->__android_log_get_default_tag(buffer, kMaxTagSize);
+    return buffer;
+  } else {
+    std::lock_guard<std::recursive_mutex> lock(TagLock());
+    if (gDefaultTag == nullptr) {
+      return "";
+    }
+    return *gDefaultTag;
   }
-  return *gDefaultTag;
 }
+
 void SetDefaultTag(const std::string& tag) {
-  std::lock_guard<std::recursive_mutex> lock(TagLock());
-  if (gDefaultTag != nullptr) {
-    delete gDefaultTag;
-    gDefaultTag = nullptr;
-  }
-  if (!tag.empty()) {
-    gDefaultTag = new std::string(tag);
+  static auto& liblog_functions = GetLibLogFunctions();
+  if (liblog_functions) {
+    liblog_functions->__android_log_set_default_tag(tag.c_str());
+  } else {
+    std::lock_guard<std::recursive_mutex> lock(TagLock());
+    if (gDefaultTag != nullptr) {
+      delete gDefaultTag;
+      gDefaultTag = nullptr;
+    }
+    if (!tag.empty()) {
+      gDefaultTag = new std::string(tag);
+    }
   }
 }
 
@@ -574,24 +591,26 @@ void LogMessage::LogLine(const char* file, unsigned int line, LogSeverity severi
                          const char* message) {
   static auto& liblog_functions = GetLibLogFunctions();
   auto priority = LogSeverityToPriority(severity);
-  if (tag == nullptr) {
-    std::lock_guard<std::recursive_mutex> lock(TagLock());
-    if (gDefaultTag == nullptr) {
-      gDefaultTag = new std::string(getprogname());
+  if (liblog_functions) {
+    // The new liblog is okay with nullptr as the tag, but it doesn't set the tag automatically,
+    // so we do that here.
+    if (tag == nullptr) {
+      if (liblog_functions->__android_log_get_default_tag(nullptr, 0) == 0) {
+        auto new_tag = Basename(getprogname());
+        liblog_functions->__android_log_set_default_tag(new_tag.c_str());
+      }
     }
-
-    if (liblog_functions) {
-      __android_logger_data logger_data = {sizeof(__android_logger_data), LOG_ID_DEFAULT, priority,
-                                           gDefaultTag->c_str(),          file,           line};
-      __android_log_write_logger_data(&logger_data, message);
-    } else {
-      Logger()(DEFAULT, severity, gDefaultTag->c_str(), file, line, message);
-    }
+    __android_logger_data logger_data = {
+        sizeof(__android_logger_data), LOG_ID_DEFAULT, priority, tag, file, line};
+    __android_log_write_logger_data(&logger_data, message);
   } else {
-    if (liblog_functions) {
-      __android_logger_data logger_data = {
-          sizeof(__android_logger_data), LOG_ID_DEFAULT, priority, tag, file, line};
-      __android_log_write_logger_data(&logger_data, message);
+    if (tag == nullptr) {
+      std::lock_guard<std::recursive_mutex> lock(TagLock());
+      if (gDefaultTag == nullptr) {
+        gDefaultTag = new std::string(Basename(getprogname()));
+      }
+
+      Logger()(DEFAULT, severity, gDefaultTag->c_str(), file, line, message);
     } else {
       Logger()(DEFAULT, severity, tag, file, line, message);
     }
