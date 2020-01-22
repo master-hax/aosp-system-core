@@ -180,6 +180,7 @@ int __android_log_buf_print(int bufID, int prio, const char* tag, const char* fm
 /**
  * Logger data struct used for writing log messages to liblog via __android_log_write_logger_data()
  * and sending log messages to user defined loggers specified in __android_log_set_logger().
+ * This assumes that loggability has already been checked through __android_log_is_loggable().
  */
 struct __android_logger_data {
   size_t struct_size; /* Must be set to sizeof(__android_logger_data) and is used for versioning. */
