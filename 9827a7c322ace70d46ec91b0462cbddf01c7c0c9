@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "30357aad_f1fbdec7",
+        "filename": "adb/ssl/include/adb/ssl/tls_connection.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1128973
+      },
+      "writtenOn": "2020-01-22T00:23:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8c4b4ce2_94097cb1",
+      "range": {
+        "startLine": 31,
+        "startChar": 8,
+        "endLine": 31,
+        "endChar": 14
+      },
+      "revId": "9827a7c322ace70d46ec91b0462cbddf01c7c0c9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b5ebd936_d81de475",
         "filename": "adb/ssl/include/adb/ssl/tls_connection.h",
         "patchSetId": 7
@@ -45,6 +69,30 @@
       "revId": "9827a7c322ace70d46ec91b0462cbddf01c7c0c9",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7a01f8b0_c285a07b",
+        "filename": "adb/ssl/include/adb/ssl/tls_connection.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1128973
+      },
+      "writtenOn": "2020-01-22T00:23:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b5ebd936_d81de475",
+      "range": {
+        "startLine": 37,
+        "startChar": 7,
+        "endLine": 37,
+        "endChar": 40
+      },
+      "revId": "9827a7c322ace70d46ec91b0462cbddf01c7c0c9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "9063f762_d22a2ff2",
+        "filename": "adb/ssl/include/adb/ssl/tls_connection.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1128973
+      },
+      "writtenOn": "2020-01-22T00:23:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "26de96cd_9569d092",
+      "range": {
+        "startLine": 57,
+        "startChar": 7,
+        "endLine": 57,
+        "endChar": 13
+      },
+      "revId": "9827a7c322ace70d46ec91b0462cbddf01c7c0c9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b470813b_887bbfa6",
         "filename": "adb/ssl/include/adb/ssl/tls_connection.h",
         "patchSetId": 7
@@ -82,6 +154,30 @@
       "writtenOn": "2020-01-21T21:14:59Z",
       "side": 1,
       "message": "Any reason this is passed in here rather than on creation?",
+      "range": {
+        "startLine": 58,
+        "startChar": 29,
+        "endLine": 58,
+        "endChar": 35
+      },
+      "revId": "9827a7c322ace70d46ec91b0462cbddf01c7c0c9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9ce2dc50_6df7464f",
+        "filename": "adb/ssl/include/adb/ssl/tls_connection.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1128973
+      },
+      "writtenOn": "2020-01-22T00:23:18Z",
+      "side": 1,
+      "message": "I initially put it here in case someone would want to retry the handshake with a different connection, but I haven\u0027t tested whether that even works.",
+      "parentUuid": "b470813b_887bbfa6",
       "range": {
         "startLine": 58,
         "startChar": 29,
@@ -117,6 +213,30 @@
     },
     {
       "key": {
+        "uuid": "97c2eee2_7d248c51",
+        "filename": "adb/ssl/include/adb/ssl/tls_connection.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 1128973
+      },
+      "writtenOn": "2020-01-22T00:23:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "70b70b04_154989dd",
+      "range": {
+        "startLine": 62,
+        "startChar": 43,
+        "endLine": 62,
+        "endChar": 46
+      },
+      "revId": "9827a7c322ace70d46ec91b0462cbddf01c7c0c9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c6cd3602_3c5d57b6",
         "filename": "adb/ssl/include/adb/ssl/tls_connection.h",
         "patchSetId": 7
@@ -128,6 +248,30 @@
       "writtenOn": "2020-01-21T21:14:59Z",
       "side": 1,
       "message": "It is a little odd that the output is a vector\u003cuint8_t\u003e (unsigned) while the input is a string_view (signed). Also, C/C++ is the worst. :-(\n\nIn C++20, std::span will be a thing, but we don\u0027t quite have that yet.",
+      "range": {
+        "startLine": 66,
+        "startChar": 33,
+        "endLine": 66,
+        "endChar": 44
+      },
+      "revId": "9827a7c322ace70d46ec91b0462cbddf01c7c0c9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0743ccb6_c6f5aae8",
+        "filename": "adb/ssl/include/adb/ssl/tls_connection.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1128973
+      },
+      "writtenOn": "2020-01-22T00:23:18Z",
+      "side": 1,
+      "message": "Ack. I\u0027ll just keep it as is for now since the other options at the moment aren\u0027t that appealing.",
+      "parentUuid": "c6cd3602_3c5d57b6",
       "range": {
         "startLine": 66,
         "startChar": 33,
@@ -163,6 +307,30 @@
     },
     {
       "key": {
+        "uuid": "a7a33452_002ce528",
+        "filename": "adb/ssl/tests/tls_connection_test.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1128973
+      },
+      "writtenOn": "2020-01-22T00:23:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a95ef420_40e76562",
+      "range": {
+        "startLine": 61,
+        "startChar": 24,
+        "endLine": 61,
+        "endChar": 40
+      },
+      "revId": "9827a7c322ace70d46ec91b0462cbddf01c7c0c9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "81be16ee_7257b798",
         "filename": "adb/ssl/tests/tls_connection_test.cpp",
         "patchSetId": 7
@@ -186,6 +354,30 @@
     },
     {
       "key": {
+        "uuid": "b1b136e1_4392d97d",
+        "filename": "adb/ssl/tests/tls_connection_test.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 1128973
+      },
+      "writtenOn": "2020-01-22T00:23:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "81be16ee_7257b798",
+      "range": {
+        "startLine": 101,
+        "startChar": 16,
+        "endLine": 101,
+        "endChar": 37
+      },
+      "revId": "9827a7c322ace70d46ec91b0462cbddf01c7c0c9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "28578ff7_ccadb641",
         "filename": "adb/ssl/tests/tls_connection_test.cpp",
         "patchSetId": 7
@@ -203,6 +395,24 @@
     },
     {
       "key": {
+        "uuid": "4512881c_0dc4c85c",
+        "filename": "adb/ssl/tests/tls_connection_test.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 1128973
+      },
+      "writtenOn": "2020-01-22T00:23:18Z",
+      "side": 1,
+      "message": "Ack. I\u0027ll put a note for now since it\u0027s not testing anything large ATM.",
+      "parentUuid": "28578ff7_ccadb641",
+      "revId": "9827a7c322ace70d46ec91b0462cbddf01c7c0c9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "6e3b66ba_39bd3e8f",
         "filename": "adb/ssl/tests/tls_connection_test.cpp",
         "patchSetId": 7
@@ -217,6 +427,24 @@
       "revId": "9827a7c322ace70d46ec91b0462cbddf01c7c0c9",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "70f75f63_ed6ef5ad",
+        "filename": "adb/ssl/tests/tls_connection_test.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 128,
+      "author": {
+        "id": 1128973
+      },
+      "writtenOn": "2020-01-22T00:23:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6e3b66ba_39bd3e8f",
+      "revId": "9827a7c322ace70d46ec91b0462cbddf01c7c0c9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -243,6 +471,30 @@
     },
     {
       "key": {
+        "uuid": "634f90e8_a3488980",
+        "filename": "adb/ssl/tests/tls_connection_test.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 1128973
+      },
+      "writtenOn": "2020-01-22T00:23:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1864de64_8f0580c4",
+      "range": {
+        "startLine": 129,
+        "startChar": 13,
+        "endLine": 129,
+        "endChar": 48
+      },
+      "revId": "9827a7c322ace70d46ec91b0462cbddf01c7c0c9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "601736f7_eb7528a7",
         "filename": "adb/ssl/tests/tls_connection_test.cpp",
         "patchSetId": 7
@@ -266,6 +518,30 @@
     },
     {
       "key": {
+        "uuid": "7c74dc09_2d18da9b",
+        "filename": "adb/ssl/tests/tls_connection_test.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 189,
+      "author": {
+        "id": 1128973
+      },
+      "writtenOn": "2020-01-22T00:23:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "601736f7_eb7528a7",
+      "range": {
+        "startLine": 189,
+        "startChar": 4,
+        "endLine": 189,
+        "endChar": 15
+      },
+      "revId": "9827a7c322ace70d46ec91b0462cbddf01c7c0c9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7eb0fc00_9407ecb8",
         "filename": "adb/ssl/tests/tls_connection_test.cpp",
         "patchSetId": 7
@@ -280,6 +556,24 @@
       "revId": "9827a7c322ace70d46ec91b0462cbddf01c7c0c9",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1a520797_5a8c20c6",
+        "filename": "adb/ssl/tests/tls_connection_test.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 195,
+      "author": {
+        "id": 1128973
+      },
+      "writtenOn": "2020-01-22T00:23:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7eb0fc00_9407ecb8",
+      "revId": "9827a7c322ace70d46ec91b0462cbddf01c7c0c9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -300,6 +594,24 @@
     },
     {
       "key": {
+        "uuid": "76e2aaf1_32ca9d2d",
+        "filename": "adb/ssl/tests/tls_connection_test.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 197,
+      "author": {
+        "id": 1128973
+      },
+      "writtenOn": "2020-01-22T00:23:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "cf58446a_29ef1717",
+      "revId": "9827a7c322ace70d46ec91b0462cbddf01c7c0c9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f999d702_87b99ea8",
         "filename": "adb/ssl/tls_connection.cpp",
         "patchSetId": 7
@@ -317,6 +629,24 @@
     },
     {
       "key": {
+        "uuid": "1a4f49b9_fc549c61",
+        "filename": "adb/ssl/tls_connection.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1128973
+      },
+      "writtenOn": "2020-01-22T00:23:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f999d702_87b99ea8",
+      "revId": "9827a7c322ace70d46ec91b0462cbddf01c7c0c9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "23d37121_8ceca118",
         "filename": "adb/ssl/tls_connection.cpp",
         "patchSetId": 7
@@ -328,6 +658,30 @@
       "writtenOn": "2020-01-21T21:14:59Z",
       "side": 1,
       "message": "Ignore me if Android style is otherwise: in Chromium, we don\u0027t write the \"virtual\" if it\u0027s already got \"override\".",
+      "range": {
+        "startLine": 37,
+        "startChar": 4,
+        "endLine": 37,
+        "endChar": 11
+      },
+      "revId": "9827a7c322ace70d46ec91b0462cbddf01c7c0c9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "883838e1_0e567298",
+        "filename": "adb/ssl/tls_connection.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1128973
+      },
+      "writtenOn": "2020-01-22T00:23:18Z",
+      "side": 1,
+      "message": "Done. Android doesn\u0027t seem to have rules on this, and adb code seems to use both formats. I\u0027ll just remove the virtual.",
+      "parentUuid": "23d37121_8ceca118",
       "range": {
         "startLine": 37,
         "startChar": 4,
@@ -357,6 +711,24 @@
     },
     {
       "key": {
+        "uuid": "d3866a8e_206f0acc",
+        "filename": "adb/ssl/tls_connection.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 1128973
+      },
+      "writtenOn": "2020-01-22T00:23:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "10c844c7_c4135b77",
+      "revId": "9827a7c322ace70d46ec91b0462cbddf01c7c0c9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "2430f3c3_eaf9d4bb",
         "filename": "adb/ssl/tls_connection.cpp",
         "patchSetId": 7
@@ -368,6 +740,24 @@
       "writtenOn": "2020-01-21T21:14:59Z",
       "side": 1,
       "message": "Do you care about handling malloc failures? Technically this function (and most of them really) can fail if malloc fails.\n\n(I wonder if we can just make the default build config abort when malloc fails...)",
+      "revId": "9827a7c322ace70d46ec91b0462cbddf01c7c0c9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "15f19587_22c93c92",
+        "filename": "adb/ssl/tls_connection.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 1128973
+      },
+      "writtenOn": "2020-01-22T00:23:18Z",
+      "side": 1,
+      "message": "I\u0027d rather just abort if malloc fails. It there a flag I need to set for libssl to do that? So I don\u0027t have to have these CHECKs everywhere.",
+      "parentUuid": "2430f3c3_eaf9d4bb",
       "revId": "9827a7c322ace70d46ec91b0462cbddf01c7c0c9",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
@@ -391,6 +781,24 @@
     },
     {
       "key": {
+        "uuid": "84b013e7_0b53e483",
+        "filename": "adb/ssl/tls_connection.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 115,
+      "author": {
+        "id": 1128973
+      },
+      "writtenOn": "2020-01-22T00:23:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ffa11a31_9d423116",
+      "revId": "9827a7c322ace70d46ec91b0462cbddf01c7c0c9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ec4dd6f8_82449fcb",
         "filename": "adb/ssl/tls_connection.cpp",
         "patchSetId": 7
@@ -402,6 +810,24 @@
       "writtenOn": "2020-01-21T21:14:59Z",
       "side": 1,
       "message": "(Does X509FromBuffer not just fail cleanly in that case?)",
+      "revId": "9827a7c322ace70d46ec91b0462cbddf01c7c0c9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "016647a0_338c54ae",
+        "filename": "adb/ssl/tls_connection.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 133,
+      "author": {
+        "id": 1128973
+      },
+      "writtenOn": "2020-01-22T00:23:18Z",
+      "side": 1,
+      "message": "Done. Removed.",
+      "parentUuid": "ec4dd6f8_82449fcb",
       "revId": "9827a7c322ace70d46ec91b0462cbddf01c7c0c9",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
@@ -422,6 +848,24 @@
       "revId": "9827a7c322ace70d46ec91b0462cbddf01c7c0c9",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "68e5e2e6_17639915",
+        "filename": "adb/ssl/tls_connection.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 170,
+      "author": {
+        "id": 1128973
+      },
+      "writtenOn": "2020-01-22T00:23:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f72a6a0b_c62fbbc5",
+      "revId": "9827a7c322ace70d46ec91b0462cbddf01c7c0c9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -459,6 +903,24 @@
     },
     {
       "key": {
+        "uuid": "28822930_2d3624c7",
+        "filename": "adb/ssl/tls_connection.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 192,
+      "author": {
+        "id": 1128973
+      },
+      "writtenOn": "2020-01-22T00:23:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fa62e463_b7828884",
+      "revId": "9827a7c322ace70d46ec91b0462cbddf01c7c0c9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "495a57a7_15c6cb36",
         "filename": "adb/ssl/tls_connection.cpp",
         "patchSetId": 7
@@ -479,6 +941,30 @@
       "revId": "9827a7c322ace70d46ec91b0462cbddf01c7c0c9",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b7a63f1f_93e485b7",
+        "filename": "adb/ssl/tls_connection.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 202,
+      "author": {
+        "id": 1128973
+      },
+      "writtenOn": "2020-01-22T00:23:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "495a57a7_15c6cb36",
+      "range": {
+        "startLine": 202,
+        "startChar": 58,
+        "endLine": 202,
+        "endChar": 72
+      },
+      "revId": "9827a7c322ace70d46ec91b0462cbddf01c7c0c9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -516,6 +1002,24 @@
     },
     {
       "key": {
+        "uuid": "2ff4ac81_39d4a260",
+        "filename": "adb/ssl/tls_connection.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 285,
+      "author": {
+        "id": 1128973
+      },
+      "writtenOn": "2020-01-22T00:23:18Z",
+      "side": 1,
+      "message": "Done. This should be an assertion instead. Also removed HasValidKey().",
+      "parentUuid": "c23de235_b9793959",
+      "revId": "9827a7c322ace70d46ec91b0462cbddf01c7c0c9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "12db70be_ace8ed4e",
         "filename": "adb/ssl/tls_connection.cpp",
         "patchSetId": 7
@@ -530,6 +1034,24 @@
       "revId": "9827a7c322ace70d46ec91b0462cbddf01c7c0c9",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "050db68d_975e929c",
+        "filename": "adb/ssl/tls_connection.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 288,
+      "author": {
+        "id": 1128973
+      },
+      "writtenOn": "2020-01-22T00:23:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "12db70be_ace8ed4e",
+      "revId": "9827a7c322ace70d46ec91b0462cbddf01c7c0c9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
