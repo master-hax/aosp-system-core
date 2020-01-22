@@ -42,6 +42,8 @@ extern int ifc_reset_connections(const char *ifname, const int reset_mask);
 
 extern int ifc_get_addr(const char *name, in_addr_t *addr);
 extern int ifc_set_addr(const char *name, in_addr_t addr);
+extern int ifc_act_on_address(int action, const char* name, const char* address, int prefixlen,
+                              int flags);
 extern int ifc_add_address(const char *name, const char *address,
                            int prefixlen);
 extern int ifc_del_address(const char *name, const char *address,
