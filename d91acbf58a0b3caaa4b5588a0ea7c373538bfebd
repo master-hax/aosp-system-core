@@ -16,6 +16,24 @@
       "revId": "d91acbf58a0b3caaa4b5588a0ea7c373538bfebd",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "58821328_64ff420a",
+        "filename": "adb/apex/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-01-22T01:39:44Z",
+      "side": 1,
+      "message": "i thought the build folks were suggesting we _don\u0027t_ have copyright headers in .bp files?",
+      "parentUuid": "a55c08b2_669983ad",
+      "revId": "d91acbf58a0b3caaa4b5588a0ea7c373538bfebd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
