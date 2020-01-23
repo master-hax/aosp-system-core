@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "b332ebf1_6fe95afc",
+        "filename": "base/logging.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 596,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-01-23T00:03:44Z",
+      "side": 1,
+      "message": "We always need the new symbols.  The choice is whether to have getprogname() called in liblog or only libbase if the tag is nullptr.",
+      "parentUuid": "5bc0252e_f3012478",
+      "range": {
+        "startLine": 595,
+        "startChar": 0,
+        "endLine": 596,
+        "endChar": 26
+      },
+      "revId": "a7cbee3348d2b9454712295fdef6cb34fee851ac",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "25d32bf0_cab2e711",
         "filename": "base/logging.cpp",
         "patchSetId": 1
@@ -60,6 +84,24 @@
       "writtenOn": "2020-01-22T23:54:16Z",
       "side": 1,
       "message": "https://www.freebsd.org/cgi/man.cgi?query\u003dgetprogname\u0026sektion\u003d3\u0026manpath\u003dfreebsd-release-ports implies that getprogname() is meant to be just the basename().",
+      "revId": "a7cbee3348d2b9454712295fdef6cb34fee851ac",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f85790a8_9bad9823",
+        "filename": "base/logging.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 610,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-01-23T00:03:44Z",
+      "side": 1,
+      "message": "Right; this is what I was talking about yesterday.  The bionic getprogname() gives the full path.",
+      "parentUuid": "25d32bf0_cab2e711",
       "revId": "a7cbee3348d2b9454712295fdef6cb34fee851ac",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
