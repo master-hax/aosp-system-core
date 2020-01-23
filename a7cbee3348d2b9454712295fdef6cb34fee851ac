@@ -73,6 +73,30 @@
     },
     {
       "key": {
+        "uuid": "45aef67e_71bb2a8d",
+        "filename": "base/logging.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 596,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-01-23T01:22:02Z",
+      "side": 1,
+      "message": "Done.  I don\u0027t know why I thought duplicating getprogname() would have been harder.",
+      "parentUuid": "b332ebf1_6fe95afc",
+      "range": {
+        "startLine": 595,
+        "startChar": 0,
+        "endLine": 596,
+        "endChar": 26
+      },
+      "revId": "a7cbee3348d2b9454712295fdef6cb34fee851ac",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "25d32bf0_cab2e711",
         "filename": "base/logging.cpp",
         "patchSetId": 1
@@ -108,6 +132,24 @@
     },
     {
       "key": {
+        "uuid": "a95fc4c6_3bc927ee",
+        "filename": "base/logging.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 610,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-01-23T01:22:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f85790a8_9bad9823",
+      "revId": "a7cbee3348d2b9454712295fdef6cb34fee851ac",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f4fa3180_bd781002",
         "filename": "liblog/include/android/log.h",
         "patchSetId": 1
@@ -122,6 +164,24 @@
       "revId": "a7cbee3348d2b9454712295fdef6cb34fee851ac",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "98a7052a_bb836334",
+        "filename": "liblog/include/android/log.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 289,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-01-23T01:22:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f4fa3180_bd781002",
+      "revId": "a7cbee3348d2b9454712295fdef6cb34fee851ac",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -169,6 +229,30 @@
       "revId": "a7cbee3348d2b9454712295fdef6cb34fee851ac",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "91230039_49244417",
+        "filename": "liblog/logger_write.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-01-23T01:22:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c2f848ec_97b6e522",
+      "range": {
+        "startLine": 115,
+        "startChar": 0,
+        "endLine": 125,
+        "endChar": 70
+      },
+      "revId": "a7cbee3348d2b9454712295fdef6cb34fee851ac",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
