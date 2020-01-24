@@ -46,7 +46,6 @@
 #include <utility>
 #include <vector>
 
-#include <android/log.h>
 #ifdef __ANDROID__
 #include <android/set_abort_message.h>
 #else
@@ -117,22 +116,6 @@ static int OpenKmsg() {
   return TEMP_FAILURE_RETRY(open("/dev/kmsg", O_WRONLY | O_CLOEXEC));
 }
 #endif
-
-static LogId log_id_tToLogId(int buffer_id) {
-  switch (buffer_id) {
-    case LOG_ID_MAIN:
-      return MAIN;
-    case LOG_ID_SYSTEM:
-      return SYSTEM;
-    case LOG_ID_RADIO:
-      return RADIO;
-    case LOG_ID_CRASH:
-      return CRASH;
-    case LOG_ID_DEFAULT:
-    default:
-      return DEFAULT;
-  }
-}
 
 static int LogIdTolog_id_t(LogId log_id) {
   switch (log_id) {
@@ -241,36 +224,37 @@ static bool gInitialized = false;
 static LogSeverity gMinimumLogSeverity = INFO;
 
 #if defined(__linux__)
-void KernelLogger(android::base::LogId, android::base::LogSeverity severity,
-                  const char* tag, const char*, unsigned int, const char* msg) {
-  // clang-format off
-  static constexpr int kLogSeverityToKernelLogLevel[] = {
-      [android::base::VERBOSE] = 7,              // KERN_DEBUG (there is no verbose kernel log
-                                                 //             level)
-      [android::base::DEBUG] = 7,                // KERN_DEBUG
-      [android::base::INFO] = 6,                 // KERN_INFO
-      [android::base::WARNING] = 4,              // KERN_WARNING
-      [android::base::ERROR] = 3,                // KERN_ERROR
-      [android::base::FATAL_WITHOUT_ABORT] = 2,  // KERN_CRIT
-      [android::base::FATAL] = 2,                // KERN_CRIT
-  };
-  // clang-format on
-  static_assert(arraysize(kLogSeverityToKernelLogLevel) == android::base::FATAL + 1,
-                "Mismatch in size of kLogSeverityToKernelLogLevel and values in LogSeverity");
-
+void KernelLogger(const LoggerData& data, const char* message) {
   static int klog_fd = OpenKmsg();
   if (klog_fd == -1) return;
 
-  int level = kLogSeverityToKernelLogLevel[severity];
+  int level = [&] {
+    switch (data.priority) {
+      case ANDROID_LOG_VERBOSE:
+        return 7;  // KERN_DEBUG (there is no verbose kernel log level).
+      case ANDROID_LOG_DEBUG:
+        return 7;  // KERN_DEBUG
+      case ANDROID_LOG_INFO:
+        return 6;  // KERN_INFO
+      case ANDROID_LOG_WARN:
+        return 4;  // KERN_WARNING
+      case ANDROID_LOG_ERROR:
+        return 3;  // KERN_ERROR
+      case ANDROID_LOG_FATAL:
+        return 2;  // KERN_CRIT
+      default:
+        return 6;  // KERN_INFO
+    }
+  }();
 
   // The kernel's printk buffer is only 1024 bytes.
   // TODO: should we automatically break up long lines into multiple lines?
   // Or we could log but with something like "..." at the end?
   char buf[1024];
-  size_t size = snprintf(buf, sizeof(buf), "<%d>%s: %s\n", level, tag, msg);
+  size_t size = snprintf(buf, sizeof(buf), "<%d>%s: %s\n", level, data.tag, message);
   if (size > sizeof(buf)) {
-    size = snprintf(buf, sizeof(buf), "<%d>%s: %zu-byte message too long for printk\n",
-                    level, tag, size);
+    size = snprintf(buf, sizeof(buf), "<%d>%s: %zu-byte message too long for printk\n", level,
+                    data.tag, size);
   }
 
   iovec iov[1];
@@ -280,8 +264,15 @@ void KernelLogger(android::base::LogId, android::base::LogSeverity severity,
 }
 #endif
 
-void StderrLogger(LogId, LogSeverity severity, const char* tag, const char* file, unsigned int line,
-                  const char* message) {
+void StderrLogger(const LoggerData& data, const char* message) {
+  static auto& liblog_functions = GetLibLogFunctions();
+  if (liblog_functions) {
+    __android_log_stderr_logger(&data, message);
+    return;
+  }
+
+  LogSeverity severity = PriorityToLogSeverity(data.priority);
+
   struct tm now;
   time_t t = time(nullptr);
 
@@ -298,18 +289,17 @@ void StderrLogger(LogId, LogSeverity severity, const char* tag, const char* file
   static_assert(arraysize(log_characters) - 1 == FATAL + 1,
                 "Mismatch in size of log_characters and values in LogSeverity");
   char severity_char = log_characters[severity];
-  if (file != nullptr) {
-    fprintf(stderr, "%s %c %s %5d %5" PRIu64 " %s:%u] %s\n", tag ? tag : "nullptr", severity_char,
-            timestamp, getpid(), GetThreadId(), file, line, message);
+  if (data.file != nullptr) {
+    fprintf(stderr, "%s %c %s %5d %5" PRIu64 " %s:%u] %s\n", data.tag ? data.tag : "nullptr",
+            severity_char, timestamp, getpid(), GetThreadId(), data.file, data.line, message);
   } else {
-    fprintf(stderr, "%s %c %s %5d %5" PRIu64 " %s\n", tag ? tag : "nullptr", severity_char,
-            timestamp, getpid(), GetThreadId(), message);
+    fprintf(stderr, "%s %c %s %5d %5" PRIu64 " %s\n", data.tag ? data.tag : "nullptr",
+            severity_char, timestamp, getpid(), GetThreadId(), message);
   }
 }
 
-void StdioLogger(LogId, LogSeverity severity, const char* /*tag*/, const char* /*file*/,
-                 unsigned int /*line*/, const char* message) {
-  if (severity >= WARNING) {
+void StdioLogger(const LoggerData& data, const char* message) {
+  if (data.priority >= ANDROID_LOG_WARN) {
     fflush(stdout);
     fprintf(stderr, "%s: %s\n", GetFileBasename(getprogname()), message);
   } else {
@@ -326,34 +316,41 @@ void DefaultAborter(const char* abort_message) {
   abort();
 }
 
-
-LogdLogger::LogdLogger(LogId default_log_id) : default_log_id_(default_log_id) {
-}
+LogdLogger::LogdLogger(LogId default_log_id) : LogdLogger(LogIdTolog_id_t(default_log_id)) {}
+LogdLogger::LogdLogger(int default_buffer_id) : default_buffer_id_(default_buffer_id) {}
 
 void LogdLogger::operator()(LogId id, LogSeverity severity, const char* tag,
                             const char* file, unsigned int line,
                             const char* message) {
   android_LogPriority priority = LogSeverityToPriority(severity);
-  if (id == DEFAULT) {
-    id = default_log_id_;
-  }
 
   int lg_id = LogIdTolog_id_t(id);
 
+  LoggerData logger_data = {sizeof(LoggerData), lg_id, priority, tag, file, line};
+
+  operator()(logger_data, message);
+}
+
+void LogdLogger::operator()(const LoggerData& logger_data, const char* message) {
   char log_message_with_file[4068];  // LOGGER_ENTRY_MAX_PAYLOAD, not available in the NDK.
-  if (priority == ANDROID_LOG_FATAL && file != nullptr) {
-    snprintf(log_message_with_file, sizeof(log_message_with_file), "%s:%u] %s", file, line,
-             message);
+  if (logger_data.priority == ANDROID_LOG_FATAL && logger_data.file != nullptr) {
+    snprintf(log_message_with_file, sizeof(log_message_with_file), "%s:%u] %s", logger_data.file,
+             logger_data.line, message);
     message = log_message_with_file;
   }
 
+  int buffer_id =
+      logger_data.buffer_id == LOG_ID_DEFAULT ? default_buffer_id_ : logger_data.buffer_id;
+
+  LoggerData logger_data_out = {sizeof(LoggerData), buffer_id, logger_data.priority,
+                                logger_data.tag,    nullptr,   0};
+
   static auto& liblog_functions = GetLibLogFunctions();
   if (liblog_functions) {
-    __android_logger_data logger_data = {sizeof(__android_logger_data),     lg_id, priority, tag,
-                                         static_cast<const char*>(nullptr), 0};
-    liblog_functions->__android_log_logd_logger(&logger_data, message);
+    liblog_functions->__android_log_logd_logger(&logger_data_out, message);
   } else {
-    __android_log_buf_print(lg_id, priority, tag, "%s", message);
+    __android_log_buf_print(logger_data_out.buffer_id, logger_data_out.priority,
+                            logger_data_out.tag, "%s", message);
   }
 }
 
@@ -426,14 +423,11 @@ void SetLogger(LogFunction&& logger) {
     // std::function<>, which is the not-thread-safe alternative.
     static std::atomic<LogFunction*> logger_function(nullptr);
     auto* old_logger_function = logger_function.exchange(new LogFunction(logger));
-    liblog_functions->__android_log_set_logger([](const struct __android_logger_data* logger_data,
-                                                  const char* message) {
-      auto log_id = log_id_tToLogId(logger_data->buffer_id);
-      auto severity = PriorityToLogSeverity(logger_data->priority);
-
-      auto& function = *logger_function.load(std::memory_order_acquire);
-      function(log_id, severity, logger_data->tag, logger_data->file, logger_data->line, message);
-    });
+    liblog_functions->__android_log_set_logger(
+        [](const __android_logger_data* logger_data, const char* message) {
+          auto& function = *logger_function.load(std::memory_order_acquire);
+          function(*logger_data, message);
+        });
     delete old_logger_function;
   } else {
     std::lock_guard<std::mutex> lock(LoggingLock());
@@ -575,9 +569,9 @@ void LogMessage::LogLine(const char* file, unsigned int line, LogSeverity severi
                          const char* message) {
   static auto& liblog_functions = GetLibLogFunctions();
   auto priority = LogSeverityToPriority(severity);
+  LoggerData logger_data = {sizeof(LoggerData), LOG_ID_DEFAULT, priority, tag, file, line};
+
   if (liblog_functions) {
-    __android_logger_data logger_data = {
-        sizeof(__android_logger_data), LOG_ID_DEFAULT, priority, tag, file, line};
     __android_log_write_logger_data(&logger_data, message);
   } else {
     if (tag == nullptr) {
@@ -586,9 +580,10 @@ void LogMessage::LogLine(const char* file, unsigned int line, LogSeverity severi
         gDefaultTag = new std::string(getprogname());
       }
 
-      Logger()(DEFAULT, severity, gDefaultTag->c_str(), file, line, message);
+      logger_data.tag = gDefaultTag->c_str();
+      Logger()(logger_data, message);
     } else {
-      Logger()(DEFAULT, severity, tag, file, line, message);
+      Logger()(logger_data, message);
     }
   }
 }
