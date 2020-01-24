@@ -26,26 +26,24 @@
 TEST(liblog_global_state, libbase_logs_with_libbase_SetLogger) {
   using namespace android::base;
   bool message_seen = false;
-  LogSeverity expected_severity = WARNING;
   std::string expected_file = Basename(__FILE__);
   unsigned int expected_line;
   std::string expected_message = "libbase test message";
 
-  auto LoggerFunction = [&](LogId log_id, LogSeverity severity, const char* tag, const char* file,
-                            unsigned int line, const char* message) {
+  auto LoggerFunction = [&](const LoggerData& logger_data, const char* message) {
     message_seen = true;
-    EXPECT_EQ(DEFAULT, log_id);
-    EXPECT_EQ(expected_severity, severity);
-    EXPECT_STREQ(LOG_TAG, tag);
-    EXPECT_EQ(expected_file, file);
-    EXPECT_EQ(expected_line, line);
+    EXPECT_EQ(LOG_ID_DEFAULT, logger_data.buffer_id);
+    EXPECT_EQ(ANDROID_LOG_WARN, logger_data.priority);
+    EXPECT_STREQ(LOG_TAG, logger_data.tag);
+    EXPECT_EQ(expected_file, logger_data.file);
+    EXPECT_EQ(expected_line, logger_data.line);
     EXPECT_EQ(expected_message, message);
   };
 
   SetLogger(LoggerFunction);
 
   expected_line = __LINE__ + 1;
-  LOG(expected_severity) << expected_message;
+  LOG(WARNING) << expected_message;
   EXPECT_TRUE(message_seen);
 }
 
@@ -83,14 +81,13 @@ TEST(liblog_global_state, liblog_logs_with_libbase_SetLogger) {
   bool message_seen = false;
   std::string expected_message = "libbase test message";
 
-  auto LoggerFunction = [&](LogId log_id, LogSeverity severity, const char* tag, const char* file,
-                            unsigned int line, const char* message) {
+  auto LoggerFunction = [&](const LoggerData& logger_data, const char* message) {
     message_seen = true;
-    EXPECT_EQ(MAIN, log_id);
-    EXPECT_EQ(WARNING, severity);
-    EXPECT_STREQ(LOG_TAG, tag);
-    EXPECT_EQ(nullptr, file);
-    EXPECT_EQ(0U, line);
+    EXPECT_EQ(LOG_ID_MAIN, logger_data.buffer_id);
+    EXPECT_EQ(ANDROID_LOG_WARN, logger_data.priority);
+    EXPECT_STREQ(LOG_TAG, logger_data.tag);
+    EXPECT_EQ(nullptr, logger_data.file);
+    EXPECT_EQ(0U, logger_data.line);
     EXPECT_EQ(expected_message, message);
   };
 

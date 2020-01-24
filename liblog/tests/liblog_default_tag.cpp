@@ -37,9 +37,9 @@ TEST(liblog_default_tag, no_default_tag_libbase_write_first) {
   using namespace android::base;
   bool message_seen = false;
   std::string expected_tag = "";
-  SetLogger([&](LogId, LogSeverity, const char* tag, const char*, unsigned int, const char*) {
+  SetLogger([&](const LoggerData& logger_data, const char*) {
     message_seen = true;
-    EXPECT_EQ(expected_tag, tag);
+    EXPECT_EQ(expected_tag, logger_data.tag);
   });
 
   expected_tag = getprogname();
@@ -55,9 +55,9 @@ TEST(liblog_default_tag, no_default_tag_liblog_write_first) {
   using namespace android::base;
   bool message_seen = false;
   std::string expected_tag = "";
-  SetLogger([&](LogId, LogSeverity, const char* tag, const char*, unsigned int, const char*) {
+  SetLogger([&](const LoggerData& logger_data, const char*) {
     message_seen = true;
-    EXPECT_EQ(expected_tag, tag);
+    EXPECT_EQ(expected_tag, logger_data.tag);
   });
 
   expected_tag = getprogname();
@@ -73,9 +73,9 @@ TEST(liblog_default_tag, libbase_sets_default_tag) {
   using namespace android::base;
   bool message_seen = false;
   std::string expected_tag = "libbase_test_tag";
-  SetLogger([&](LogId, LogSeverity, const char* tag, const char*, unsigned int, const char*) {
+  SetLogger([&](const LoggerData& logger_data, const char*) {
     message_seen = true;
-    EXPECT_EQ(expected_tag, tag);
+    EXPECT_EQ(expected_tag, logger_data.tag);
   });
   SetDefaultTag(expected_tag);
 
@@ -91,9 +91,9 @@ TEST(liblog_default_tag, liblog_sets_default_tag) {
   using namespace android::base;
   bool message_seen = false;
   std::string expected_tag = "liblog_test_tag";
-  SetLogger([&](LogId, LogSeverity, const char* tag, const char*, unsigned int, const char*) {
+  SetLogger([&](const LoggerData& logger_data, const char*) {
     message_seen = true;
-    EXPECT_EQ(expected_tag, tag);
+    EXPECT_EQ(expected_tag, logger_data.tag);
   });
   __android_log_set_default_tag(expected_tag.c_str());
 
@@ -110,9 +110,9 @@ TEST(liblog_default_tag, default_tag_plus_log_severity) {
   using namespace android::base;
   bool message_seen = false;
   std::string expected_tag = "liblog_test_tag";
-  SetLogger([&](LogId, LogSeverity, const char* tag, const char*, unsigned int, const char*) {
+  SetLogger([&](const LoggerData& logger_data, const char*) {
     message_seen = true;
-    EXPECT_EQ(expected_tag, tag);
+    EXPECT_EQ(expected_tag, logger_data.tag);
   });
   __android_log_set_default_tag(expected_tag.c_str());
 
@@ -136,9 +136,9 @@ TEST(liblog_default_tag, generated_default_tag_plus_log_severity) {
   using namespace android::base;
   bool message_seen = false;
   std::string expected_tag = getprogname();
-  SetLogger([&](LogId, LogSeverity, const char* tag, const char*, unsigned int, const char*) {
+  SetLogger([&](const LoggerData& logger_data, const char*) {
     message_seen = true;
-    EXPECT_EQ(expected_tag, tag);
+    EXPECT_EQ(expected_tag, logger_data.tag);
   });
 
   // Even without any calls to SetDefaultTag(), the first message that attempts to log, will

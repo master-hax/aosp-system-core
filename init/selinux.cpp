@@ -536,11 +536,11 @@ void SelinuxRestoreContext() {
 }
 
 int SelinuxKlogCallback(int type, const char* fmt, ...) {
-    android::base::LogSeverity severity = android::base::ERROR;
+    int priority = ANDROID_LOG_ERROR;
     if (type == SELINUX_WARNING) {
-        severity = android::base::WARNING;
+        priority = ANDROID_LOG_WARN;
     } else if (type == SELINUX_INFO) {
-        severity = android::base::INFO;
+        priority = ANDROID_LOG_INFO;
     }
     char buf[kKlogMessageSize];
     va_list ap;
@@ -553,7 +553,9 @@ int SelinuxKlogCallback(int type, const char* fmt, ...) {
     if (type == SELINUX_AVC) {
         SelinuxAvcLog(buf, sizeof(buf));
     } else {
-        android::base::KernelLogger(android::base::MAIN, severity, "selinux", nullptr, 0, buf);
+        android::base::LoggerData logger_data = {sizeof(logger_data), LOG_ID_DEFAULT, priority,
+                                                 "selinux",           nullptr,        0};
+        android::base::KernelLogger(logger_data, buf);
     }
     return 0;
 }

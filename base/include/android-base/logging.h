@@ -67,6 +67,8 @@
 #include "android-base/errno_restorer.h"
 #include "android-base/macros.h"
 
+#include <android/log.h>
+
 // Note: DO NOT USE DIRECTLY. Use LOG_TAG instead.
 #ifdef _LOG_TAG_INTERNAL
 #error "_LOG_TAG_INTERNAL must not be defined"
@@ -98,21 +100,22 @@ enum LogId {
   CRASH,
 };
 
-using LogFunction = std::function<void(LogId, LogSeverity, const char*, const char*,
-                                       unsigned int, const char*)>;
+using LoggerData = __android_logger_data;
+
+using LogFunction = std::function<void(const LoggerData& logger_data, const char* message)>;
 using AbortFunction = std::function<void(const char*)>;
 
 // Loggers for use with InitLogging/SetLogger.
 
 // Log to the kernel log (dmesg).
-void KernelLogger(LogId, LogSeverity, const char*, const char*, unsigned int, const char*);
+void KernelLogger(const LoggerData& data, const char* message);
 // Log to stderr in the full logcat format (with pid/tid/time/tag details).
-void StderrLogger(LogId, LogSeverity, const char*, const char*, unsigned int, const char*);
+void StderrLogger(const LoggerData& data, const char* message);
 // Log just the message to stdout/stderr (without pid/tid/time/tag details).
 // The choice of stdout versus stderr is based on the severity.
 // Errors are also prefixed by the program name (as with err(3)/error(3)).
 // Useful for replacing printf(3)/perror(3)/err(3)/error(3) in command-line tools.
-void StdioLogger(LogId, LogSeverity, const char*, const char*, unsigned int, const char*);
+void StdioLogger(const LoggerData& data, const char* message);
 
 void DefaultAborter(const char* abort_message);
 
@@ -123,12 +126,14 @@ void SetDefaultTag(const std::string& tag);
 class LogdLogger {
  public:
   explicit LogdLogger(LogId default_log_id = android::base::MAIN);
+  explicit LogdLogger(int default_buffer_id);
 
   void operator()(LogId, LogSeverity, const char* tag, const char* file,
                   unsigned int line, const char* message);
+  void operator()(const LoggerData& logger_data, const char* message);
 
  private:
-  LogId default_log_id_;
+  int default_buffer_id_;
 };
 
 // Configure logging based on ANDROID_LOG_TAGS environment variable.
@@ -144,8 +149,7 @@ class LogdLogger {
 #else
 #define INIT_LOGGING_DEFAULT_LOGGER StderrLogger
 #endif
-void InitLogging(char* argv[],
-                 LogFunction&& logger = INIT_LOGGING_DEFAULT_LOGGER,
+void InitLogging(char* argv[], LogFunction&& logger = INIT_LOGGING_DEFAULT_LOGGER,
                  AbortFunction&& aborter = DefaultAborter);
 #undef INIT_LOGGING_DEFAULT_LOGGER
 
