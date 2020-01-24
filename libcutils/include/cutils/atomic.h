@@ -19,7 +19,25 @@
 
 #include <stdint.h>
 #include <sys/types.h>
+
+#if defined(__cplusplus) && __has_include(<atomic>)
+#include <atomic>
+using std::atomic_int_least32_t;
+using std::atomic_compare_exchange_strong_explicit;
+using std::atomic_fetch_add_explicit;
+using std::atomic_fetch_and_explicit;
+using std::atomic_fetch_or_explicit;
+using std::atomic_fetch_sub_explicit;
+using std::atomic_load_explicit;
+using std::atomic_store_explicit;
+using std::atomic_thread_fence;
+using std::memory_order_acquire;
+using std::memory_order_relaxed;
+using std::memory_order_release;
+using std::memory_order_seq_cst;
+#else
 #include <stdatomic.h>
+#endif
 
 #ifndef ANDROID_ATOMIC_INLINE
 #define ANDROID_ATOMIC_INLINE static inline

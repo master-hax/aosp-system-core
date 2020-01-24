@@ -18,7 +18,6 @@
 #define _LIBS_CUTILS_TRACE_H
 
 #include <inttypes.h>
-#include <stdatomic.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -26,6 +25,14 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <cutils/compiler.h>
+
+#if defined(__cplusplus) && __has_include(<atomic>)
+#include <atomic>
+using std::atomic_bool;
+using std::atomic_load_explicit;
+#else
+#include <stdatomic.h>
+#endif
 
 __BEGIN_DECLS
 
