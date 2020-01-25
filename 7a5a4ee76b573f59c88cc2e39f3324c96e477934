@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "20f1bbf8_62ca6b84",
+        "filename": "libunwindstack/RegsArm64.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 1056364
+      },
+      "writtenOn": "2020-01-25T00:45:57Z",
+      "side": 1,
+      "message": "ARM manual says: PAC is replaced with the extension bits, which don\u0027t hold valid address bits.\nAre the extension bits all zero?\n\nCan we know the extension bits of current processor? So we can keep it in files and use it in offline unwinding which may happen on another processor.",
+      "range": {
+        "startLine": 60,
+        "startChar": 29,
+        "endLine": 60,
+        "endChar": 31
+      },
+      "revId": "7a5a4ee76b573f59c88cc2e39f3324c96e477934",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
