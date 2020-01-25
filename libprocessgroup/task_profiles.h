@@ -143,6 +143,8 @@ class TaskProfile {
     TaskProfile() : res_cached_(false) {}
 
     void Add(std::unique_ptr<ProfileAction> e) { elements_.push_back(std::move(e)); }
+    void Clear();
+    void MoveTo(std::shared_ptr<TaskProfile> profile);
 
     bool ExecuteForProcess(uid_t uid, pid_t pid) const;
     bool ExecuteForTask(int tid) const;
