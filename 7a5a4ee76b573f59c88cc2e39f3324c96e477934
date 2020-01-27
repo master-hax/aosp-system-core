@@ -22,6 +22,30 @@
       "revId": "7a5a4ee76b573f59c88cc2e39f3324c96e477934",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3ffe33dc_af875835",
+        "filename": "libunwindstack/RegsArm64.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 1626440
+      },
+      "writtenOn": "2020-01-27T10:31:48Z",
+      "side": 1,
+      "message": "Hi Yabin,\n\nFor userspace pointers the extension bits are all zero, for kernel pointers they are all one. In general they all have the value of bit 55.\n\nOn Linux you can query which bits to strip by asking for NT_ARM_PAC_MASK in a PTRACE_GETREGSET. Otherwise you can execute XPACLRI on a pointer in which every bit is the same but bit 55 is negated to see which bits are changed. You can save this and use it on other configurations.",
+      "parentUuid": "20f1bbf8_62ca6b84",
+      "range": {
+        "startLine": 60,
+        "startChar": 29,
+        "endLine": 60,
+        "endChar": 31
+      },
+      "revId": "7a5a4ee76b573f59c88cc2e39f3324c96e477934",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
