@@ -18,7 +18,6 @@
 #define _LIBS_CUTILS_TRACE_H
 
 #include <inttypes.h>
-#include <stdatomic.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -26,6 +25,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <cutils/compiler.h>
+#include <cutils/stdatomic.h>
 
 __BEGIN_DECLS
 

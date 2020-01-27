@@ -19,7 +19,7 @@
 
 #include <stdint.h>
 #include <sys/types.h>
-#include <stdatomic.h>
+#include <cutils/stdatomic.h>
 
 #ifndef ANDROID_ATOMIC_INLINE
 #define ANDROID_ATOMIC_INLINE static inline

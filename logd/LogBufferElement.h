@@ -16,7 +16,7 @@
 
 #pragma once
 
-#include <stdatomic.h>
+#include <cutils/stdatomic.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <sys/types.h>
