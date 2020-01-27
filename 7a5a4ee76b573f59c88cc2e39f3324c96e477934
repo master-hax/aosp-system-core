@@ -46,6 +46,30 @@
       "revId": "7a5a4ee76b573f59c88cc2e39f3324c96e477934",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "aa6a0c99_70ba4884",
+        "filename": "libunwindstack/RegsArm64.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 1056364
+      },
+      "writtenOn": "2020-01-27T20:45:34Z",
+      "side": 1,
+      "message": "Thanks for the info. This matches what kernel uses for stripping PAC, \u0026 ~MASK in https://github.com/torvalds/linux/blob/master/arch/arm64/include/asm/pointer_auth.h#L77.\n\nlibunwindstack currently supports unwinding arm/arm64/x86/x86_64 on any of these archs. This is useful to simpleperf in below ways:\n  1. we only build one arm64 simpleperf binary on device, and it can unwind both arm/arm64 stacks.\n  2. simpleperf supports generating stacks on device, and unwinding them on host. This is not the default way, but we do support it.\n  3. both simpleperf and libunwindstack contain test data files with recorded stack for unwinding regression tests.\n\nSo I prefer to keep unwinding arm64 code possible on other archs and devices:\n  1. have a way to pass PTR_AUTH_USER_SPACE_MASK to RegsArm64, and use \u0026~PTR_AUTH_USER_SPACE_MASK instead of XPACLRI in set_pc.\n  2. not limit DW_CFA_AARCH64_negate_ra_state build to arm64.",
+      "parentUuid": "3ffe33dc_af875835",
+      "range": {
+        "startLine": 60,
+        "startChar": 29,
+        "endLine": 60,
+        "endChar": 31
+      },
+      "revId": "7a5a4ee76b573f59c88cc2e39f3324c96e477934",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
