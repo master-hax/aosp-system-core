@@ -1,0 +1,11 @@
+Open-Source-Licensing+1: Lint 🤖 <android-build-prod-ayeaye@system.gserviceaccount.com>
+Verified+1: Quentin Perret <qperret@google.com>
+Lint+1: Lint 🤖 <android-build-prod-ayeaye@system.gserviceaccount.com>
+Presubmit-Verified+1: Treehugger Robot <treehugger-gerrit@google.com>
+Code-Review+2: Todd Kjos <tkjos@google.com>
+Code-Review+1: Suren Baghdasaryan <surenb@google.com>
+Submitted-by: Quentin Perret <qperret@google.com>
+Submitted-at: Mon, 27 Jan 2020 17:24:04 +0000
+Reviewed-on: https://android-review.googlesource.com/c/platform/system/core/+/1206709
+Project: platform/system/core
+Branch: refs/heads/master
