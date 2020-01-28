@@ -377,13 +377,11 @@ bool BatteryMonitor::isChargerOnline() {
 }
 
 int BatteryMonitor::getChargeStatus() {
-    BatteryStatus result = BatteryStatus::UNKNOWN;
-    if (!mHealthdConfig->batteryStatusPath.isEmpty()) {
-        std::string buf;
-        if (readFromFile(mHealthdConfig->batteryStatusPath, &buf) > 0)
-            result = getBatteryStatus(buf.c_str());
+    struct BatteryProperty val;
+    if (getProperty(BATTERY_PROP_BATTERY_STATUS, &val) != OK) {
+        return static_cast<int64_t>(BatteryStatus::UNKNOWN);
     }
-    return static_cast<int>(result);
+    return static_cast<int>(val.valueInt64);
 }
 
 status_t BatteryMonitor::getProperty(int id, struct BatteryProperty *val) {
@@ -441,10 +439,19 @@ status_t BatteryMonitor::getProperty(int id, struct BatteryProperty *val) {
         }
         break;
 
-    case BATTERY_PROP_BATTERY_STATUS:
-        val->valueInt64 = getChargeStatus();
+    case BATTERY_PROP_BATTERY_STATUS: {
+        if (mHealthdConfig->batteryCapacityPath.isEmpty()) {
+            ret = NAME_NOT_FOUND;
+            break;
+        }
+        std::string buf;
+        if (readFromFile(mHealthdConfig->batteryStatusPath, &buf) <= 0) {
+            ret = UNKNOWN_ERROR;
+            break;
+        }
+        val->valueInt64 = static_cast<int64_t>(getBatteryStatus(buf.c_str()));
         ret = OK;
-        break;
+    } break;
 
     default:
         break;
