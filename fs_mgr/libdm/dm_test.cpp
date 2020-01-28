@@ -516,10 +516,17 @@ TEST(libdm, CryptArgs) {
 }
 
 TEST(libdm, DefaultKeyArgs) {
-    DmTargetDefaultKey target(0, 4096, "AES-256-XTS", "abcdef0123456789", "/dev/loop0", 0);
+    bool is_legacy;
+    ASSERT_TRUE(DmTargetDefaultKey::IsLegacy(&is_legacy));
+    DmTargetDefaultKey target(0, 4096, "AES-256-XTS", "abcdef0123456789", "/dev/loop0", 0,
+                              is_legacy, false);
     ASSERT_EQ(target.name(), "default-key");
     ASSERT_TRUE(target.Valid());
-    ASSERT_EQ(target.GetParameterString(), "AES-256-XTS abcdef0123456789 /dev/loop0 0");
+    if (is_legacy) {
+        ASSERT_EQ(target.GetParameterString(), "AES-256-XTS abcdef0123456789 /dev/loop0 0");
+    } else {
+        ASSERT_EQ(target.GetParameterString(), "AES-256-XTS abcdef0123456789 0 /dev/loop0 0");
+    }
 }
 
 TEST(libdm, DeleteDeviceWithTimeout) {

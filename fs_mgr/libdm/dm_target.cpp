@@ -243,9 +243,37 @@ std::string DmTargetCrypt::GetParameterString() const {
     return android::base::Join(argv, " ");
 }
 
+const std::string DmTargetDefaultKey::name_ = "default-key";
+
+bool DmTargetDefaultKey::IsLegacy(bool* result) {
+    DeviceMapper& dm = DeviceMapper::Instance();
+    DmTargetTypeInfo info;
+    if (!dm.GetTargetByName(name_, &info)) return false;
+    // dm-default-key was modified to be like dm-crypt with version 2
+    *result = !info.IsAtLeast(2, 0, 0);
+    return true;
+}
+
+bool DmTargetDefaultKey::Valid() const {
+    bool real_is_legacy;
+    if (!DmTargetDefaultKey::IsLegacy(&real_is_legacy)) return false;
+    return real_is_legacy == is_legacy_;
+}
+
 std::string DmTargetDefaultKey::GetParameterString() const {
-    return cipher_ + " " + key_ + " " + blockdev_ + " " + std::to_string(start_sector_) +
-           (set_dun_ ? " 1 set_dun" : "");
+    std::vector<std::string> argv;
+    argv.emplace_back(cipher_);
+    argv.emplace_back(key_);
+    if (!is_legacy_) {
+        argv.emplace_back("0");
+    }
+    argv.emplace_back(blockdev_);
+    argv.push_back(std::to_string(start_sector_));
+    if (is_legacy_ && set_dun_) {  // v2 always sets the DUN.
+        argv.emplace_back("1");
+        argv.emplace_back("set_dun");
+    }
+    return android::base::Join(argv, " ");
 }
 
 }  // namespace dm
