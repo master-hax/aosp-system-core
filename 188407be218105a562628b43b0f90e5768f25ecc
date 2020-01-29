@@ -16,6 +16,24 @@
       "revId": "188407be218105a562628b43b0f90e5768f25ecc",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "af976d85_a64e3033",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/snapshot.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 218,
+      "author": {
+        "id": 1409599
+      },
+      "writtenOn": "2020-01-29T16:49:54Z",
+      "side": 1,
+      "message": "Both look good to me.\nI thought this was the standard way of managing default parameters within the project.",
+      "parentUuid": "cb83886e_81f1a679",
+      "revId": "188407be218105a562628b43b0f90e5768f25ecc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
