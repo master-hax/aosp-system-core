@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9150aaf5_50068c7a",
+        "filename": "fs_mgr/libdm/dm_target.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 275,
+      "author": {
+        "id": 1137063
+      },
+      "writtenOn": "2020-01-29T23:20:25Z",
+      "side": 1,
+      "message": "The new syntax is exactly like dm-crypt.  So in the !is_legacy_ case we also need optional parameters: \"3 allow_discards sector_size:4096 iv_large_sectors\".  See DmTargetCrypt::GetParameterString().",
+      "revId": "1028fb9ad1943ce7a6f8dcf5b6b99c61e01f5b6f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
