@@ -16,6 +16,24 @@
       "revId": "683e8ac2f41786909fa708bc250250c8fa654624",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4007bb59_9f1b23b7",
+        "filename": "fs_mgr/libsnapshot/snapshot_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 370,
+      "author": {
+        "id": 1409599
+      },
+      "writtenOn": "2020-01-29T16:52:51Z",
+      "side": 1,
+      "message": "That was my first approach. The problem is that there may be some derived test cases we still want to run, for example to make sure the kernel supports snapshots. So I went for this ugly solution.",
+      "parentUuid": "2fa132c2_fffc42a0",
+      "revId": "683e8ac2f41786909fa708bc250250c8fa654624",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
