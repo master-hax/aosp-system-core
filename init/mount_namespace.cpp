@@ -29,6 +29,7 @@
 #include <android-base/unique_fd.h>
 #include <apex_manifest.pb.h>
 
+#include "property_service.h"
 #include "util.h"
 
 namespace android {
@@ -290,6 +291,8 @@ bool SwitchToDefaultMountNamespace() {
         return true;
     }
     if (default_ns_id != GetMountNamespaceId()) {
+        StopPropertyService();
+
         if (setns(default_ns_fd.get(), CLONE_NEWNS) == -1) {
             PLOG(ERROR) << "Failed to switch back to the default mount namespace.";
             return false;
@@ -299,6 +302,8 @@ bool SwitchToDefaultMountNamespace() {
             LOG(ERROR) << result.error();
             return false;
         }
+
+        RestartPropertyService();
     }
 
     LOG(INFO) << "Switched to default mount namespace";
