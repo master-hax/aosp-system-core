@@ -34,6 +34,24 @@
       "revId": "188407be218105a562628b43b0f90e5768f25ecc",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5d87adda_6a64e3a7",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/snapshot.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 218,
+      "author": {
+        "id": 1409599
+      },
+      "writtenOn": "2020-01-29T18:31:32Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "af976d85_a64e3033",
+      "revId": "188407be218105a562628b43b0f90e5768f25ecc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
