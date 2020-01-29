@@ -17,6 +17,8 @@
 #include <utils/NativeHandle.h>
 #include <cutils/native_handle.h>
 
+#include <unistd.h>
+
 namespace android {
 
 sp<NativeHandle> NativeHandle::create(native_handle_t* handle, bool ownsHandle) {
@@ -29,9 +31,15 @@ NativeHandle::NativeHandle(native_handle_t* handle, bool ownsHandle)
 }
 
 NativeHandle::~NativeHandle() {
-    if (mOwnsHandle) {
-        native_handle_close(mHandle);
-        native_handle_delete(mHandle);
+    if (mOwnsHandle && mHandle) {
+        // Copied from libcutils, since this is the last libutils dependency on
+        // libutils.
+        if (mHandle->version != sizeof(native_handle_t)) return;
+        const int numFds = mHandle->numFds;
+        for (int i = 0; i < numFds; ++i) {
+            close(mHandle->data[i]);
+        }
+        free(mHandle);
     }
 }
 

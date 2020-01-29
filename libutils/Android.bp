@@ -70,7 +70,6 @@ cc_defaults {
     ],
 
     shared_libs: [
-        "libcutils",
         "liblog",
     ],
 
@@ -147,11 +146,6 @@ cc_library {
     ],
 
     target: {
-        android: {
-            srcs: [
-                "Trace.cpp",
-            ],
-        },
         linux: {
             header_libs: ["libbase_headers"],
             srcs: [
