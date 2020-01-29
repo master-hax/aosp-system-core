@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "bd98359a_d5a3d87d",
+        "filename": "libutils/Trace.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2020-01-29T23:55:38Z",
+      "side": 0,
+      "message": "and I would need to talk to fmayer to see if this is actually a problem for APEXes or if we can ignore it",
+      "range": {
+        "startLine": 23,
+        "startChar": 43,
+        "endLine": 23,
+        "endChar": 61
+      },
+      "revId": "e30aa601288b17f74431b6b32cb3f10e6781e340",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
