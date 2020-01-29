@@ -94,6 +94,30 @@
       "revId": "7a5a4ee76b573f59c88cc2e39f3324c96e477934",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0b09c382_7ee82bb5",
+        "filename": "libunwindstack/RegsArm64.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 1056364
+      },
+      "writtenOn": "2020-01-29T22:00:54Z",
+      "side": 1,
+      "message": "Thanks for the change, the code LGTM. I will upload a patch in simpleperf, hopefully you can help review it.",
+      "parentUuid": "9e53192c_28e3ad9c",
+      "range": {
+        "startLine": 60,
+        "startChar": 29,
+        "endLine": 60,
+        "endChar": 31
+      },
+      "revId": "7a5a4ee76b573f59c88cc2e39f3324c96e477934",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
