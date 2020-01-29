@@ -34,6 +34,24 @@
       "revId": "683e8ac2f41786909fa708bc250250c8fa654624",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8d3374fc_4257d4b4",
+        "filename": "fs_mgr/libsnapshot/snapshot_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 370,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-01-29T16:56:25Z",
+      "side": 1,
+      "message": "Maybe we can test that in libdm instead? (Or move it into a different fixture?)",
+      "parentUuid": "4007bb59_9f1b23b7",
+      "revId": "683e8ac2f41786909fa708bc250250c8fa654624",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
