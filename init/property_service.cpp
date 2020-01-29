@@ -147,17 +147,6 @@ static bool CheckMacPerms(const std::string& name, const char* target_context,
     return has_access;
 }
 
-static void SendPropertyChanged(const std::string& name, const std::string& value) {
-    auto property_msg = PropertyMessage{};
-    auto* changed_message = property_msg.mutable_changed_message();
-    changed_message->set_name(name);
-    changed_message->set_value(value);
-
-    if (auto result = SendMessage(init_socket, property_msg); !result) {
-        LOG(ERROR) << "Failed to send property changed message: " << result.error();
-    }
-}
-
 static uint32_t PropertySet(const std::string& name, const std::string& value, std::string* error) {
     size_t valuelen = value.size();
 
@@ -196,7 +185,7 @@ static uint32_t PropertySet(const std::string& name, const std::string& value, s
     // If init hasn't started its main loop, then it won't be handling property changed messages
     // anyway, so there's no need to try to send them.
     if (accept_messages) {
-        SendPropertyChanged(name, value);
+        PropertyChanged(name, value);
     }
     return PROP_SUCCESS;
 }
@@ -378,29 +367,25 @@ static uint32_t SendControlMessage(const std::string& msg, const std::string& na
         return PROP_ERROR_HANDLE_CONTROL_MESSAGE;
     }
 
-    auto property_msg = PropertyMessage{};
-    auto* control_message = property_msg.mutable_control_message();
-    control_message->set_msg(msg);
-    control_message->set_name(name);
-    control_message->set_pid(pid);
-
-    // We must release the fd before sending it to init, otherwise there will be a race with init.
-    // If init calls close() before Release(), then fdsan will see the wrong tag and abort().
+    // We must release the fd before spawning the thread, otherwise there will be a race with the
+    // thread. If the thread calls close() before this function calls Release(), then fdsan will see
+    // the wrong tag and abort().
     int fd = -1;
     if (socket != nullptr && SelinuxGetVendorAndroidVersion() > __ANDROID_API_Q__) {
         fd = socket->Release();
-        control_message->set_fd(fd);
     }
 
-    if (auto result = SendMessage(init_socket, property_msg); !result) {
-        // We've already released the fd above, so if we fail to send the message to init, we need
-        // to manually free it here.
+    // Handling a control message likely calls SetProperty, which we must synchronously handle,
+    // therefore we must fork a thread to handle it.
+    std::thread([fd, msg, name, pid] {
+        bool success = HandleControlMessage(msg, name, pid);
+
+        uint32_t response = success ? PROP_SUCCESS : PROP_ERROR_HANDLE_CONTROL_MESSAGE;
         if (fd != -1) {
+            TEMP_FAILURE_RETRY(send(fd, &response, sizeof(response), 0));
             close(fd);
         }
-        *error = "Failed to send control message: " + result.error().message();
-        return PROP_ERROR_HANDLE_CONTROL_MESSAGE;
-    }
+    }).detach();
 
     return PROP_SUCCESS;
 }
