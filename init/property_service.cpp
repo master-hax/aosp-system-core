@@ -147,17 +147,6 @@ static bool CheckMacPerms(const std::string& name, const char* target_context,
     return has_access;
 }
 
-static void SendPropertyChanged(const std::string& name, const std::string& value) {
-    auto property_msg = PropertyMessage{};
-    auto* changed_message = property_msg.mutable_changed_message();
-    changed_message->set_name(name);
-    changed_message->set_value(value);
-
-    if (auto result = SendMessage(init_socket, property_msg); !result) {
-        LOG(ERROR) << "Failed to send property changed message: " << result.error();
-    }
-}
-
 static uint32_t PropertySet(const std::string& name, const std::string& value, std::string* error) {
     size_t valuelen = value.size();
 
@@ -196,36 +185,39 @@ static uint32_t PropertySet(const std::string& name, const std::string& value, s
     // If init hasn't started its main loop, then it won't be handling property changed messages
     // anyway, so there's no need to try to send them.
     if (accept_messages) {
-        SendPropertyChanged(name, value);
+        PropertyChanged(name, value);
     }
     return PROP_SUCCESS;
 }
 
-class AsyncRestorecon {
+template <typename T>
+class Executor {
   public:
-    void TriggerRestorecon(const std::string& path) {
+    virtual ~Executor() {}
+
+    template <typename F = T>
+    void Trigger(F&& item) {
         auto guard = std::lock_guard{mutex_};
-        paths_.emplace(path);
+        items_.emplace(std::forward<F>(item));
 
         if (!thread_started_) {
             thread_started_ = true;
-            std::thread{&AsyncRestorecon::ThreadFunction, this}.detach();
+            std::thread{&Executor::ThreadFunction, this}.detach();
         }
     }
 
   private:
+    virtual void Execute(T&& item) = 0;
+
     void ThreadFunction() {
         auto lock = std::unique_lock{mutex_};
 
-        while (!paths_.empty()) {
-            auto path = paths_.front();
-            paths_.pop();
+        while (!items_.empty()) {
+            auto item = items_.front();
+            items_.pop();
 
             lock.unlock();
-            if (selinux_android_restorecon(path.c_str(), SELINUX_ANDROID_RESTORECON_RECURSE) != 0) {
-                LOG(ERROR) << "Asynchronous restorecon of '" << path << "' failed'";
-            }
-            android::base::SetProperty(kRestoreconProperty, path);
+            Execute(std::move(item));
             lock.lock();
         }
 
@@ -233,8 +225,36 @@ class AsyncRestorecon {
     }
 
     std::mutex mutex_;
-    std::queue<std::string> paths_;
+    std::queue<T> items_;
     bool thread_started_ = false;
+};
+
+class AsyncRestorecon : public Executor<std::string> {
+    virtual void Execute(std::string&& path) override {
+        if (selinux_android_restorecon(path.c_str(), SELINUX_ANDROID_RESTORECON_RECURSE) != 0) {
+            LOG(ERROR) << "Asynchronous restorecon of '" << path << "' failed'";
+        }
+        android::base::SetProperty(kRestoreconProperty, path);
+    }
+};
+
+struct ControlMessageInfo {
+    std::string message;
+    std::string name;
+    pid_t pid;
+    int fd;
+};
+
+class AsyncControlMessage : public Executor<ControlMessageInfo> {
+    virtual void Execute(ControlMessageInfo&& info) override {
+        bool success = HandleControlMessage(info.message, info.name, info.pid);
+
+        uint32_t response = success ? PROP_SUCCESS : PROP_ERROR_HANDLE_CONTROL_MESSAGE;
+        if (info.fd != -1) {
+            TEMP_FAILURE_RETRY(send(info.fd, &response, sizeof(response), 0));
+            close(info.fd);
+        }
+    }
 };
 
 class SocketConnection {
@@ -378,29 +398,18 @@ static uint32_t SendControlMessage(const std::string& msg, const std::string& na
         return PROP_ERROR_HANDLE_CONTROL_MESSAGE;
     }
 
-    auto property_msg = PropertyMessage{};
-    auto* control_message = property_msg.mutable_control_message();
-    control_message->set_msg(msg);
-    control_message->set_name(name);
-    control_message->set_pid(pid);
-
-    // We must release the fd before sending it to init, otherwise there will be a race with init.
-    // If init calls close() before Release(), then fdsan will see the wrong tag and abort().
+    // We must release the fd before spawning the thread, otherwise there will be a race with the
+    // thread. If the thread calls close() before this function calls Release(), then fdsan will see
+    // the wrong tag and abort().
     int fd = -1;
     if (socket != nullptr && SelinuxGetVendorAndroidVersion() > __ANDROID_API_Q__) {
         fd = socket->Release();
-        control_message->set_fd(fd);
     }
 
-    if (auto result = SendMessage(init_socket, property_msg); !result) {
-        // We've already released the fd above, so if we fail to send the message to init, we need
-        // to manually free it here.
-        if (fd != -1) {
-            close(fd);
-        }
-        *error = "Failed to send control message: " + result.error().message();
-        return PROP_ERROR_HANDLE_CONTROL_MESSAGE;
-    }
+    // Handling a control message likely calls SetProperty, which we must synchronously handle,
+    // therefore we must fork a thread to handle it.
+    static AsyncControlMessage async_control_message;
+    async_control_message.Trigger({msg, name, pid, fd});
 
     return PROP_SUCCESS;
 }
@@ -503,7 +512,7 @@ uint32_t HandlePropertySet(const std::string& name, const std::string& value,
     // a long time to complete.
     if (name == kRestoreconProperty && cr.pid != 1 && !value.empty()) {
         static AsyncRestorecon async_restorecon;
-        async_restorecon.TriggerRestorecon(value);
+        async_restorecon.Trigger(value);
         return PROP_SUCCESS;
     }
 
