@@ -1,0 +1,11 @@
+Verified+1: Luca Stefani <luca.stefani.ge1@gmail.com>
+Code-Review+1: Luca Stefani <luca.stefani.ge1@gmail.com>
+Code-Review+2: David Anderson <dvander@google.com>
+Lint+1: Lint 🤖 <android-build-prod-ayeaye@system.gserviceaccount.com>
+Presubmit-Ready+1: David Anderson <dvander@google.com>
+Open-Source-Licensing+1: Lint 🤖 <android-build-prod-ayeaye@system.gserviceaccount.com>
+Submitted-by: David Anderson <dvander@google.com>
+Submitted-at: Wed, 29 Jan 2020 22:48:06 +0000
+Reviewed-on: https://android-review.googlesource.com/c/platform/system/core/+/1221537
+Project: platform/system/core
+Branch: refs/heads/master
