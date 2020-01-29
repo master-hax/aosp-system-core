@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2fa132c2_fffc42a0",
+        "filename": "fs_mgr/libsnapshot/snapshot_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 370,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-01-29T16:38:32Z",
+      "side": 1,
+      "message": "Is it possible to skip in the fixture SetUp call instead? (And maybe we don\u0027t need to add a macro then, even)",
+      "revId": "683e8ac2f41786909fa708bc250250c8fa654624",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
