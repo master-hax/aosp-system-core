@@ -20,6 +20,7 @@
 #include <unordered_set>
 
 #include <android-base/file.h>
+#include <android-base/properties.h>
 #include <android/hardware/boot/1.1/IBootControl.h>
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
@@ -53,6 +54,13 @@ extern class TestDeviceInfo* test_device;
 extern std::string fake_super;
 static constexpr uint64_t kSuperSize = 16_MiB + 4_KiB;
 static constexpr uint64_t kGroupSize = 16_MiB;
+
+#define SKIP_NON_VAB()                                                         \
+    do {                                                                       \
+        if (!android::base::GetBoolProperty("ro.virtual_ab.enabled", false)) { \
+            GTEST_SKIP() << "Test for Virtual A/B devices only";               \
+        }                                                                      \
+    } while (0)
 
 // Redirect requests for "super" to our fake super partition.
 class TestPartitionOpener final : public android::fs_mgr::PartitionOpener {

@@ -367,6 +367,8 @@ TEST_F(SnapshotTest, CreateSnapshot) {
 }
 
 TEST_F(SnapshotTest, MapSnapshot) {
+    SKIP_NON_VAB();
+
     ASSERT_TRUE(AcquireLock());
 
     static const uint64_t kDeviceSize = 1024 * 1024;
@@ -391,6 +393,8 @@ TEST_F(SnapshotTest, MapSnapshot) {
 }
 
 TEST_F(SnapshotTest, MapPartialSnapshot) {
+    SKIP_NON_VAB();
+
     ASSERT_TRUE(AcquireLock());
 
     static const uint64_t kSnapshotSize = 1024 * 1024;
@@ -442,6 +446,8 @@ TEST_F(SnapshotTest, FirstStageMountAfterRollback) {
 }
 
 TEST_F(SnapshotTest, Merge) {
+    SKIP_NON_VAB();
+
     ASSERT_TRUE(AcquireLock());
 
     static const uint64_t kDeviceSize = 1024 * 1024;
@@ -495,6 +501,8 @@ TEST_F(SnapshotTest, Merge) {
 }
 
 TEST_F(SnapshotTest, FirstStageMountAndMerge) {
+    SKIP_NON_VAB();
+
     ASSERT_TRUE(AcquireLock());
 
     static const uint64_t kDeviceSize = 1024 * 1024;
@@ -520,6 +528,8 @@ TEST_F(SnapshotTest, FirstStageMountAndMerge) {
 }
 
 TEST_F(SnapshotTest, FlashSuperDuringUpdate) {
+    SKIP_NON_VAB();
+
     ASSERT_TRUE(AcquireLock());
 
     static const uint64_t kDeviceSize = 1024 * 1024;
@@ -551,6 +561,8 @@ TEST_F(SnapshotTest, FlashSuperDuringUpdate) {
 }
 
 TEST_F(SnapshotTest, FlashSuperDuringMerge) {
+    SKIP_NON_VAB();
+
     ASSERT_TRUE(AcquireLock());
 
     static const uint64_t kDeviceSize = 1024 * 1024;
@@ -957,6 +969,8 @@ class SnapshotUpdateTest : public SnapshotTest {
 // Also test UnmapUpdateSnapshot unmaps everything.
 // Also test first stage mount and merge after this.
 TEST_F(SnapshotUpdateTest, FullUpdateFlow) {
+    SKIP_NON_VAB();
+
     // OTA client blindly unmaps all partitions that are possibly mapped.
     for (const auto& name : {"sys_b", "vnd_b", "prd_b"}) {
         ASSERT_TRUE(sm->UnmapUpdateSnapshot(name));
@@ -1077,6 +1091,8 @@ TEST_F(SnapshotUpdateTest, CowPartitionDoNotTakeOldPartitions) {
 // Test that it crashes after creating snapshot status file but before creating COW image, then
 // calling CreateUpdateSnapshots again works.
 TEST_F(SnapshotUpdateTest, SnapshotStatusFileWithoutCow) {
+    SKIP_NON_VAB();
+
     // Write some trash snapshot files to simulate leftovers from previous runs.
     {
         ASSERT_TRUE(AcquireLock());
@@ -1100,6 +1116,8 @@ TEST_F(SnapshotUpdateTest, SnapshotStatusFileWithoutCow) {
 
 // Test that the old partitions are not modified.
 TEST_F(SnapshotUpdateTest, TestRollback) {
+    SKIP_NON_VAB();
+
     // Execute the update.
     ASSERT_TRUE(sm->BeginUpdate());
     ASSERT_TRUE(sm->UnmapUpdateSnapshot("sys_b"));
@@ -1163,6 +1181,8 @@ static std::vector<Interval> ToIntervals(const std::vector<std::unique_ptr<Exten
 
 // Test that at the second update, old COW partition spaces are reclaimed.
 TEST_F(SnapshotUpdateTest, ReclaimCow) {
+    SKIP_NON_VAB();
+
     // Execute the first update.
     ASSERT_TRUE(sm->BeginUpdate());
     ASSERT_TRUE(sm->CreateUpdateSnapshots(manifest_));
@@ -1206,6 +1226,8 @@ TEST_F(SnapshotUpdateTest, ReclaimCow) {
 }
 
 TEST_F(SnapshotUpdateTest, RetrofitAfterRegularAb) {
+    SKIP_NON_VAB();
+
     constexpr auto kRetrofitGroupSize = kGroupSize / 2;
 
     // Initialize device-mapper / disk
@@ -1275,6 +1297,8 @@ TEST_F(SnapshotUpdateTest, RetrofitAfterRegularAb) {
 }
 
 TEST_F(SnapshotUpdateTest, MergeCannotRemoveCow) {
+    SKIP_NON_VAB();
+
     // Make source partitions as big as possible to force COW image to be created.
     SetSize(sys_, 5_MiB);
     SetSize(vnd_, 5_MiB);
@@ -1398,6 +1422,8 @@ TEST_F(MetadataMountedTest, Recovery) {
 
 // Test that during a merge, we can wipe data in recovery.
 TEST_F(SnapshotUpdateTest, MergeInRecovery) {
+    SKIP_NON_VAB();
+
     // Execute the first update.
     ASSERT_TRUE(sm->BeginUpdate());
     ASSERT_TRUE(sm->CreateUpdateSnapshots(manifest_));
@@ -1430,6 +1456,8 @@ TEST_F(SnapshotUpdateTest, MergeInRecovery) {
 
 // Test that after an OTA, before a merge, we can wipe data in recovery.
 TEST_F(SnapshotUpdateTest, DataWipeRollbackInRecovery) {
+    SKIP_NON_VAB();
+
     // Execute the first update.
     ASSERT_TRUE(sm->BeginUpdate());
     ASSERT_TRUE(sm->CreateUpdateSnapshots(manifest_));
@@ -1455,6 +1483,8 @@ TEST_F(SnapshotUpdateTest, DataWipeRollbackInRecovery) {
 // Test that after an OTA and a bootloader rollback with no merge, we can wipe
 // data in recovery.
 TEST_F(SnapshotUpdateTest, DataWipeAfterRollback) {
+    SKIP_NON_VAB();
+
     // Execute the first update.
     ASSERT_TRUE(sm->BeginUpdate());
     ASSERT_TRUE(sm->CreateUpdateSnapshots(manifest_));
@@ -1476,6 +1506,8 @@ TEST_F(SnapshotUpdateTest, DataWipeAfterRollback) {
 }
 
 TEST_F(SnapshotUpdateTest, Hashtree) {
+    SKIP_NON_VAB();
+
     constexpr auto partition_size = 4_MiB;
     constexpr auto data_size = 3_MiB;
     constexpr auto hashtree_size = 512_KiB;
@@ -1525,6 +1557,8 @@ TEST_F(SnapshotUpdateTest, Hashtree) {
 
 // Test for overflow bit after update
 TEST_F(SnapshotUpdateTest, Overflow) {
+    SKIP_NON_VAB();
+
     const auto actual_write_size = GetSize(sys_);
     const auto declared_write_size = actual_write_size - 1_MiB;
 
@@ -1548,6 +1582,8 @@ TEST_F(SnapshotUpdateTest, Overflow) {
 }
 
 TEST_F(SnapshotUpdateTest, WaitForMerge) {
+    SKIP_NON_VAB();
+
     AddOperationForPartitions();
 
     // Execute the update.
@@ -1625,6 +1661,8 @@ class FlashAfterUpdateTest : public SnapshotUpdateTest,
 };
 
 TEST_P(FlashAfterUpdateTest, FlashSlotAfterUpdate) {
+    SKIP_NON_VAB();
+
     // OTA client blindly unmaps all partitions that are possibly mapped.
     for (const auto& name : {"sys_b", "vnd_b", "prd_b"}) {
         ASSERT_TRUE(sm->UnmapUpdateSnapshot(name));
