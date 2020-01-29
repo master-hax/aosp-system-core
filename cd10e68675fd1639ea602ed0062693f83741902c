@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "06a70280_566010a0",
+        "filename": "libappfuse/include/libappfuse/FuseBridgeLoop.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 1069219
+      },
+      "writtenOn": "2020-01-29T09:53:39Z",
+      "side": 1,
+      "message": "Isn\u0027t it possible to make these not static?",
+      "revId": "cd10e68675fd1639ea602ed0062693f83741902c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
