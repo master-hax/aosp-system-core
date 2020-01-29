@@ -1,0 +1,25 @@
+{
+  "presubmit": [
+    {
+      "name": "fiemap_writer_test"
+    },
+    {
+      "name": "fiemap_image_test"
+    },
+    {
+      "name": "libdm_test"
+    },
+    {
+      "name": "libfs_avb_test"
+    },
+    {
+      "name": "liblp_test"
+    },
+    {
+      "name": "libsnapshot_test"
+    },
+    {
+      "name": "libvbmeta_test"
+    }
+  ]
+}
