@@ -16,6 +16,24 @@
       "revId": "cd10e68675fd1639ea602ed0062693f83741902c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c490e3a5_f809a339",
+        "filename": "libappfuse/include/libappfuse/FuseBridgeLoop.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 1622142
+      },
+      "writtenOn": "2020-01-29T10:13:28Z",
+      "side": 1,
+      "message": "FuseBridgeLoop should be deleted when all opened proxy filedescipors are closed.\nAnd after onClosed(), mNativeLoop will be changed 0.\nIf not use static lock, handling of mNativeLoop in AppFuseBridge should be changed.\n\nIn my opinion, that will make the routine more complex, therefore I used static lock.",
+      "parentUuid": "06a70280_566010a0",
+      "revId": "cd10e68675fd1639ea602ed0062693f83741902c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
