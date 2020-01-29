@@ -16,6 +16,7 @@
 
 #pragma once
 
+#include <mutex>
 #include <string>
 #include <vector>
 
@@ -47,6 +48,7 @@ class ActionManager {
     ActionManager(ActionManager const&) = delete;
     void operator=(ActionManager const&) = delete;
 
+    mutable std::mutex lock_;
     std::vector<std::unique_ptr<Action>> actions_;
     std::queue<std::variant<EventTrigger, PropertyChange, BuiltinAction>> event_queue_;
     std::queue<const Action*> current_executing_actions_;

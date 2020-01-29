@@ -41,6 +41,9 @@ void SendLoadPersistentPropertiesMessage();
 void SendStopSendingMessagesMessage();
 void SendStartSendingMessagesMessage();
 
+void property_changed(const std::string& name, const std::string& value);
+bool HandleControlMessage(const std::string& msg, const std::string& name, pid_t pid);
+
 int SecondStageMain(int argc, char** argv);
 
 }  // namespace init
