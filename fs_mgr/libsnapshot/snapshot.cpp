@@ -1347,6 +1347,11 @@ bool SnapshotManager::NeedSnapshotsInFirstStageMount() {
 }
 
 bool SnapshotManager::CreateLogicalAndSnapshotPartitions(const std::string& super_device) {
+    return CreateLogicalAndSnapshotPartitionsTimeout(super_device, 0ms);
+}
+
+bool SnapshotManager::CreateLogicalAndSnapshotPartitionsTimeout(
+        const std::string& super_device, const std::chrono::milliseconds& timeout_ms) {
     LOG(INFO) << "Creating logical partitions with snapshots as needed";
 
     auto lock = LockExclusive();
@@ -1372,6 +1377,7 @@ bool SnapshotManager::CreateLogicalAndSnapshotPartitions(const std::string& supe
                 .metadata = metadata.get(),
                 .partition = &partition,
                 .partition_opener = &opener,
+                .timeout_ms = timeout_ms,
         };
         std::string ignore_path;
         if (!MapPartitionWithSnapshot(lock.get(), std::move(params), &ignore_path)) {
