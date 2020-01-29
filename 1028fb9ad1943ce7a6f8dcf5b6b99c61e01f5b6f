@@ -16,6 +16,24 @@
       "revId": "1028fb9ad1943ce7a6f8dcf5b6b99c61e01f5b6f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "aa0a459f_1e82996d",
+        "filename": "fs_mgr/libdm/dm_target.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 275,
+      "author": {
+        "id": 1137063
+      },
+      "writtenOn": "2020-01-29T23:23:16Z",
+      "side": 1,
+      "message": "Also, it uses the dm-crypt syntax to specify the algorithm and IV generator.  So: \"aes-xts-plain64\" and \"xchacha12,aes-adiantum-plain64\" -- not \"AES-256-XTS\".",
+      "parentUuid": "9150aaf5_50068c7a",
+      "revId": "1028fb9ad1943ce7a6f8dcf5b6b99c61e01f5b6f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
