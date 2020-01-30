@@ -52,6 +52,24 @@
       "revId": "683e8ac2f41786909fa708bc250250c8fa654624",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fcddc001_c5367b50",
+        "filename": "fs_mgr/libsnapshot/snapshot_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 370,
+      "author": {
+        "id": 1409599
+      },
+      "writtenOn": "2020-01-30T16:26:40Z",
+      "side": 1,
+      "message": "This is the less bad solution I could find. :)",
+      "parentUuid": "8d3374fc_4257d4b4",
+      "revId": "683e8ac2f41786909fa708bc250250c8fa654624",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
