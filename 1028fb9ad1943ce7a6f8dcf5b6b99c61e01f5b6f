@@ -34,6 +34,24 @@
       "revId": "1028fb9ad1943ce7a6f8dcf5b6b99c61e01f5b6f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "52604751_8c98f13f",
+        "filename": "fs_mgr/libdm/dm_target.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 275,
+      "author": {
+        "id": 1060907
+      },
+      "writtenOn": "2020-01-30T01:10:40Z",
+      "side": 1,
+      "message": "First part done; second part in previous change.",
+      "parentUuid": "aa0a459f_1e82996d",
+      "revId": "1028fb9ad1943ce7a6f8dcf5b6b99c61e01f5b6f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
