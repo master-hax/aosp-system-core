@@ -24,6 +24,13 @@ service adbd /system/bin/adbd --root_seclabel=u:r:su:s0
 on init
     setprop sys.usb.configfs 0
 
+on boot
+  trigger maybe-fix-configfs
+
+# If downstream .rc files haven't set sys.usb.configfs, then restore a default value.
+on maybe-fix-configfs && property:sys.usb.configfs=""
+  setprop sys.usb.configfs 0
+
 # Used to disable USB when switching states
 on property:sys.usb.config=none && property:sys.usb.configfs=0
     stop adbd
