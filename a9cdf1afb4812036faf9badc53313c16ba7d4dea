@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0c8f3031_d4835587",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 718,
+      "author": {
+        "id": 1003966
+      },
+      "writtenOn": "2020-01-30T00:48:36Z",
+      "side": 1,
+      "message": "perhaps this should be a mkdir builtin, so we avoid the overhead of an exec() and this can be an atomic operation.\n\nline 717:\n\n  mkdir /data/media ... encryption\u003dNone chattr\u003d+F\n\n(or some better syntax)",
+      "revId": "a9cdf1afb4812036faf9badc53313c16ba7d4dea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
