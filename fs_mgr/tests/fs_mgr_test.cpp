@@ -413,7 +413,7 @@ source none2       swap   defaults      forcefdeorfbe=
         EXPECT_TRUE(CompareFlags(flags, entry->fs_mgr_flags));
     }
     EXPECT_EQ("", entry->key_loc);
-    EXPECT_EQ("", entry->key_dir);
+    EXPECT_EQ("", entry->metadata_key_dir);
     EXPECT_EQ(0, entry->length);
     EXPECT_EQ("", entry->label);
     EXPECT_EQ(-1, entry->partnum);
@@ -440,7 +440,7 @@ source none2       swap   defaults      forcefdeorfbe=
         EXPECT_TRUE(CompareFlags(flags, entry->fs_mgr_flags));
     }
     EXPECT_EQ("", entry->key_loc);
-    EXPECT_EQ("", entry->key_dir);
+    EXPECT_EQ("", entry->metadata_key_dir);
     EXPECT_EQ(0, entry->length);
     EXPECT_EQ("", entry->label);
     EXPECT_EQ(-1, entry->partnum);
@@ -892,7 +892,24 @@ source none0       swap   defaults      keydirectory=/dir/key
     FstabEntry::FsMgrFlags flags = {};
     EXPECT_TRUE(CompareFlags(flags, entry->fs_mgr_flags));
 
-    EXPECT_EQ("/dir/key", entry->key_dir);
+    EXPECT_EQ("/dir/key", entry->metadata_key_dir);
+}
+
+TEST(fs_mgr, ReadFstabFromFile_FsMgrOptions_MetadataCipher) {
+    TemporaryFile tf;
+    ASSERT_TRUE(tf.fd != -1);
+    std::string fstab_contents = R"fs(
+source none0       swap   defaults      keydirectory=/dir/key,metadata_cipher=aes-xts-plain64
+)fs";
+
+    ASSERT_TRUE(android::base::WriteStringToFile(fstab_contents, tf.path));
+
+    Fstab fstab;
+    EXPECT_TRUE(ReadFstabFromFile(tf.path, &fstab));
+    ASSERT_EQ(1U, fstab.size());
+
+    auto entry = fstab.begin();
+    EXPECT_EQ("aes-xts-plain64", entry->metadata_cipher);
 }
 
 TEST(fs_mgr, ReadFstabFromFile_FsMgrOptions_SysfsPath) {
