@@ -22,6 +22,30 @@
       "revId": "1a145f1ecaa3b99b65875614b38e2034b6137259",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6fcf4239_65adda49",
+        "filename": "fs_mgr/libdm/dm_test.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 520,
+      "author": {
+        "id": 1137063
+      },
+      "writtenOn": "2020-01-31T16:58:59Z",
+      "side": 1,
+      "message": "See CheckSnapshotAvailability() earlier in this file for an example of skipping a test when a dm target isn\u0027t available.",
+      "parentUuid": "b7ac7a46_7371470b",
+      "range": {
+        "startLine": 520,
+        "startChar": 4,
+        "endLine": 520,
+        "endChar": 58
+      },
+      "revId": "1a145f1ecaa3b99b65875614b38e2034b6137259",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
