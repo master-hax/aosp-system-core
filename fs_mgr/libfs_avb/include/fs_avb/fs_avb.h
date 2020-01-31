@@ -85,8 +85,13 @@ class AvbHandle {
     // TODO(bowgotsai): remove Open() and switch to LoadAndVerifyVbmeta().
     static AvbUniquePtr Open();                 // loads inline vbmeta, via libavb.
     static AvbUniquePtr LoadAndVerifyVbmeta();  // loads inline vbmeta.
-    static AvbUniquePtr LoadAndVerifyVbmeta(
-            const FstabEntry& fstab_entry);     // loads offline vbmeta.
+
+    // The caller can specify the optional allowed_key_blobs for public key matching.
+    // This is mostly for init to preload AVB keys before chroot into /system.
+    // If it is absent, we'll fallback to reading fstab_entry.avb_keys by path.
+    static AvbUniquePtr LoadAndVerifyVbmeta(  // loads offline vbmeta.
+            const FstabEntry& fstab_entry, const std::vector<std::string>& allowed_key_blobs = {});
+
     static AvbUniquePtr LoadAndVerifyVbmeta(    // loads offline vbmeta.
             const std::string& partition_name, const std::string& ab_suffix,
             const std::string& ab_other_suffix, const std::string& expected_public_key,
