@@ -266,8 +266,10 @@ AvbUniquePtr AvbHandle::LoadAndVerifyVbmeta(
     return avb_handle;
 }
 
-AvbUniquePtr AvbHandle::LoadAndVerifyVbmeta(const FstabEntry& fstab_entry) {
-    if (fstab_entry.avb_keys.empty()) {
+AvbUniquePtr AvbHandle::LoadAndVerifyVbmeta(const FstabEntry& fstab_entry,
+                                            const std::vector<std::string>& allowed_key_blobs) {
+    // Either of the following should be provided for public key matching.
+    if (allowed_key_blobs.empty() && fstab_entry.avb_keys.empty()) {
         LERROR << "avb_keys=/path/to/key(s) is missing for " << fstab_entry.mount_point;
         return nullptr;
     }
@@ -309,18 +311,31 @@ AvbUniquePtr AvbHandle::LoadAndVerifyVbmeta(const FstabEntry& fstab_entry) {
             return nullptr;
     }
 
-    // fstab_entry.avb_keys might be either a directory containing multiple keys,
-    // or a string indicating multiple keys separated by ':'.
-    std::vector<std::string> allowed_avb_keys;
-    auto list_avb_keys_in_dir = ListFiles(fstab_entry.avb_keys);
-    if (list_avb_keys_in_dir) {
-        std::sort(list_avb_keys_in_dir->begin(), list_avb_keys_in_dir->end());
-        allowed_avb_keys = *list_avb_keys_in_dir;
+    bool public_key_mismatch = false;
+    if (public_key_data.empty()) {  // if the image is not signed, fails the public key matching.
+        public_key_mismatch = true;
+    } else if (!allowed_key_blobs.empty()) {  // if the optional allowed key blobs are present.
+        if (std::find(allowed_key_blobs.begin(), allowed_key_blobs.end(), public_key_data) ==
+            allowed_key_blobs.end()) {
+            public_key_mismatch = true;
+        }
     } else {
-        allowed_avb_keys = Split(fstab_entry.avb_keys, ":");
+        // fstab_entry.avb_keys might be either a directory containing multiple keys,
+        // or a string indicating multiple keys separated by ':'.
+        std::vector<std::string> allowed_avb_keys;
+        auto list_avb_keys_in_dir = ListFiles(fstab_entry.avb_keys);
+        if (list_avb_keys_in_dir) {
+            std::sort(list_avb_keys_in_dir->begin(), list_avb_keys_in_dir->end());
+            allowed_avb_keys = *list_avb_keys_in_dir;
+        } else {
+            allowed_avb_keys = Split(fstab_entry.avb_keys, ":");
+        }
+        if (!ValidatePublicKeyBlob(public_key_data, allowed_avb_keys)) {
+            public_key_mismatch = true;
+        }
     }
 
-    if (!ValidatePublicKeyBlob(public_key_data, allowed_avb_keys)) {
+    if (public_key_mismatch) {
         avb_handle->status_ = AvbHandleStatus::kVerificationError;
         LWARNING << "Found unknown public key used to sign " << fstab_entry.mount_point;
         if (!allow_verification_error) {
