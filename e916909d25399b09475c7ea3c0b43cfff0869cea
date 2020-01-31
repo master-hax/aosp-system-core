@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "e4f2c36e_979d8bd9",
+        "filename": "fs_mgr/libdm/dm_target.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 270,
+      "author": {
+        "id": 1060907
+      },
+      "writtenOn": "2020-01-31T01:11:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "48d3e687_06e9dc95",
+      "range": {
+        "startLine": 270,
+        "startChar": 8,
+        "endLine": 270,
+        "endChar": 31
+      },
+      "revId": "e916909d25399b09475c7ea3c0b43cfff0869cea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a5461683_d45af721",
         "filename": "fs_mgr/libdm/dm_test.cpp",
         "patchSetId": 3
@@ -45,6 +69,30 @@
       "revId": "e916909d25399b09475c7ea3c0b43cfff0869cea",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "823a9e8c_6cd2359d",
+        "filename": "fs_mgr/libdm/dm_test.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 522,
+      "author": {
+        "id": 1060907
+      },
+      "writtenOn": "2020-01-31T01:11:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a5461683_d45af721",
+      "range": {
+        "startLine": 522,
+        "startChar": 41,
+        "endLine": 522,
+        "endChar": 46
+      },
+      "revId": "e916909d25399b09475c7ea3c0b43cfff0869cea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
