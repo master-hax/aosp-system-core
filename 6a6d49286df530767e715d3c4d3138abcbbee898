@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6265744e_36fd46df",
+        "filename": "fs_mgr/libfs_avb/avb_util.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 328,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2020-01-31T03:48:10Z",
+      "side": 1,
+      "message": "If this is empty then we should fail the validation.",
+      "range": {
+        "startLine": 325,
+        "startChar": 4,
+        "endLine": 328,
+        "endChar": 5
+      },
+      "revId": "6a6d49286df530767e715d3c4d3138abcbbee898",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "560f0162_205888ee",
+        "filename": "fs_mgr/libfs_avb/fs_avb.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 304,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2020-01-31T03:48:10Z",
+      "side": 1,
+      "message": "How about let init pass in the allowed_key_blobs?\n\n\n\nAvbUniquePtr AvbHandle::LoadAndVerifyVbmeta(const FstabEntry\u0026 fstab_entry\n                                            const std::vector\u003cstd::string\u003e\u0026 allowed_key_blobs) {",
+      "range": {
+        "startLine": 304,
+        "startChar": 24,
+        "endLine": 304,
+        "endChar": 75
+      },
+      "revId": "6a6d49286df530767e715d3c4d3138abcbbee898",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2899070d_12076659",
+        "filename": "fs_mgr/libfs_avb/fs_avb.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 348,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2020-01-31T03:48:10Z",
+      "side": 1,
+      "message": "Note that public_key_data might be empty.\nIf it\u0027s empty, then the validation fails.",
+      "range": {
+        "startLine": 348,
+        "startChar": 50,
+        "endLine": 348,
+        "endChar": 65
+      },
+      "revId": "6a6d49286df530767e715d3c4d3138abcbbee898",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f20ce775_66053206",
+        "filename": "fs_mgr/libfs_avb/include/fs_avb/fs_avb.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 138,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2020-01-31T03:48:10Z",
+      "side": 1,
+      "message": "The names seems a bit confusing.\n\nHow about moving this to init and let init pass the key_blos to fs_avb?",
+      "range": {
+        "startLine": 137,
+        "startChar": 2,
+        "endLine": 138,
+        "endChar": 61
+      },
+      "revId": "6a6d49286df530767e715d3c4d3138abcbbee898",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
