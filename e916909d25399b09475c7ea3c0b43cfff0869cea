@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "48d3e687_06e9dc95",
+        "filename": "fs_mgr/libdm/dm_target.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 270,
+      "author": {
+        "id": 1137063
+      },
+      "writtenOn": "2020-01-31T00:43:55Z",
+      "side": 1,
+      "message": "A comment here might help:\n\nargv.emplace_back(\"0\"); // iv_offset",
+      "range": {
+        "startLine": 270,
+        "startChar": 8,
+        "endLine": 270,
+        "endChar": 31
+      },
+      "revId": "e916909d25399b09475c7ea3c0b43cfff0869cea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a5461683_d45af721",
+        "filename": "fs_mgr/libdm/dm_test.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 522,
+      "author": {
+        "id": 1137063
+      },
+      "writtenOn": "2020-01-31T00:43:55Z",
+      "side": 1,
+      "message": "This is using set_dun\u003dfalse, so won\u0027t ASSERT_TRUE(target.Valid()) fail if it\u0027s the new version of dm-default-key?",
+      "range": {
+        "startLine": 522,
+        "startChar": 41,
+        "endLine": 522,
+        "endChar": 46
+      },
+      "revId": "e916909d25399b09475c7ea3c0b43cfff0869cea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
