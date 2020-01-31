@@ -46,6 +46,30 @@
       "revId": "1a145f1ecaa3b99b65875614b38e2034b6137259",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "adc17caa_8163e37d",
+        "filename": "fs_mgr/libdm/dm_test.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 520,
+      "author": {
+        "id": 1060907
+      },
+      "writtenOn": "2020-01-31T22:47:20Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6fcf4239_65adda49",
+      "range": {
+        "startLine": 520,
+        "startChar": 4,
+        "endLine": 520,
+        "endChar": 58
+      },
+      "revId": "1a145f1ecaa3b99b65875614b38e2034b6137259",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
