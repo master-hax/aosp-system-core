@@ -180,6 +180,11 @@ cc_test {
     header_libs: [
         "libstorage_literals_headers",
     ],
+    test_suites: [
+        "vts-core",
+        "device-tests",
+    ],
+    test_min_api_level: 30,
     require_root: true,
 }
 
