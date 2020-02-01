@@ -5,6 +5,9 @@
     },
     {
       "name": "liblp_test"
+    },
+    {
+      "name": "vts_libsnapshot_test"
     }
   ]
 }
