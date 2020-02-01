@@ -150,8 +150,8 @@ cc_library_static {
     ],
 }
 
-cc_test {
-    name: "libsnapshot_test",
+cc_defaults {
+    name: "libsnapshot_test_defaults",
     defaults: ["libsnapshot_defaults"],
     srcs: [
         "partition_cow_creator_test.cpp",
@@ -181,6 +181,18 @@ cc_test {
         "libstorage_literals_headers",
     ],
     require_root: true,
+}
+
+cc_test {
+    name: "libsnapshot_test",
+    defaults: ["libsnapshot_test_defaults"],
+}
+
+cc_test {
+    name: "vts_libsnapshot_test",
+    defaults: ["libsnapshot_test_defaults"],
+    test_suites: ["vts-core"],
+    test_min_api_level: 30,
 }
 
 cc_binary {
