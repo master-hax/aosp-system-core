@@ -30,7 +30,7 @@ cc_library_static {
         "utility.cpp",
     ],
 
-    static_libs: [
+    shared_libs: [
         "libext2_uuid",
     ],
     header_libs: [
@@ -44,8 +44,23 @@ cc_library_static {
     },
 }
 
-filegroup {
-    name: "libdm_test_srcs",
+cc_defaults {
+    name: "libdm_test_defaults",
+    defaults: ["fs_mgr_defaults"],
+    static_libs: [
+        "libdm",
+    ],
+    shared_libs: [
+        "libbase",
+        "libext2_uuid",
+        "libfs_mgr",
+        "liblog",
+    ],
+}
+
+cc_test {
+    name: "libdm_test",
+    defaults: ["libdm_test_defaults"],
     srcs: [
         "dm_test.cpp",
         "loop_control_test.cpp",
@@ -53,27 +68,9 @@ filegroup {
     ],
 }
 
-cc_defaults {
-    name: "libdm_defaults",
-    defaults: ["fs_mgr_defaults"],
-    static_libs: [
-        "libdm",
-        "libbase",
-        "libext2_uuid",
-        "libfs_mgr",
-        "liblog",
-    ],
-    srcs: [":libdm_test_srcs"],
-}
-
-cc_test {
-    name: "libdm_test",
-    defaults: ["libdm_defaults"],
-}
-
 cc_test {
     name: "vts_libdm_test",
-    defaults: ["libdm_defaults"],
+    defaults: ["libdm_test_defaults"],
     test_suites: ["vts-core"],
     auto_gen_config: true,
     require_root: true,
@@ -81,17 +78,21 @@ cc_test {
 }
 
 cc_fuzz {
-  name: "dm_linear_table_fuzzer",
-  defaults: ["fs_mgr_defaults"],
-  srcs: [
-    "dm_linear_fuzzer.cpp",
-    "test_util.cpp",
-  ],
-  static_libs: [
+    name: "dm_linear_table_fuzzer",
+    defaults: [
+        "fs_mgr_defaults",
+    ],
+    srcs: [
+      "dm_linear_fuzzer.cpp",
+      "test_util.cpp",
+    ],
+    static_libs: [
         "libdm",
+    ],
+    shared_libs: [
         "libbase",
         "libext2_uuid",
         "libfs_mgr",
         "liblog",
-  ],
+    ],
 }

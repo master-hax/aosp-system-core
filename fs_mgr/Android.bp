@@ -52,16 +52,16 @@ cc_defaults {
         "libcutils",
         "libext4_utils",
         "libfec",
+        "libgsi",
         "liblog",
         "liblp",
         "libselinux",
     ],
     static_libs: [
         "libavb",
+        "libdm",
         "libfs_avb",
         "libfstab",
-        "libdm",
-        "libgsi",
     ],
     export_static_lib_headers: [
         "libfs_avb",

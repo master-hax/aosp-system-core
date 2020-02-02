@@ -74,11 +74,13 @@ cc_defaults {
         "-Wno-unused-parameter",
     ],
     static_libs: [
-        "libcutils",
         "libgmock",
+    ],
+    shared_libs: [
+        "libcrypto",
+        "libcutils",
         "libfs_mgr",
         "liblp",
-        "libcrypto_static",
     ] + liblp_lib_deps,
     header_libs: [
         "libstorage_literals_headers",

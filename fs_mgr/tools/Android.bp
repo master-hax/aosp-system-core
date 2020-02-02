@@ -18,12 +18,9 @@ cc_binary {
     name: "dmctl",
     srcs: ["dmctl.cpp"],
 
-    static_libs: [
-        "libfs_mgr",
-    ],
-
     shared_libs: [
         "libbase",
+        "libfs_mgr",
         "liblog",
     ],
 
