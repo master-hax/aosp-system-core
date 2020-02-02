@@ -31,10 +31,10 @@ cc_test {
 
     shared_libs: [
         "libbase",
+        "libfs_mgr",
         "liblog",
     ],
     static_libs: [
-        "libfs_mgr",
         "libfstab",
     ],
     srcs: [
