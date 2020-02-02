@@ -16,6 +16,24 @@
       "revId": "a9cdf1afb4812036faf9badc53313c16ba7d4dea",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "447c1eee_59cda666",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 718,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-02-02T05:04:33Z",
+      "side": 1,
+      "message": "well, it can\u0027t be _atomic_ --- there\u0027s no way to create the directory with the attribute. we can reduce the window, but since init will be waiting around for toybox the only difference is a 0.01s saving.\n\nif we get another use case it might be worth a chattr builtin, but for now i\u0027m assuming 0.01s is too small to be worth the duplication. (that said, it\u0027s not actually much code, at least not for the trivial flags: open, ioctl to read, |\u003d, ioctl to write, close.)",
+      "parentUuid": "0c8f3031_d4835587",
+      "revId": "a9cdf1afb4812036faf9badc53313c16ba7d4dea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
