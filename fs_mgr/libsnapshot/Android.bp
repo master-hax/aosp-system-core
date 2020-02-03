@@ -29,7 +29,7 @@ cc_defaults {
         "liblp",
     ],
     static_libs: [
-        "libdm",
+	"libdm",
         "libfstab",
         "update_metadata-protos",
     ],
@@ -201,6 +201,7 @@ cc_binary {
         "libbinderthreadstate",
         "libext2_uuid",
         "libext4_utils",
+	"libext4_utils",
         "libfs_mgr_binder",
         "libhidlbase",
         "liblog",
