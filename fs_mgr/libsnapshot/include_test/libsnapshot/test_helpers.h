@@ -95,6 +95,7 @@ class TestDeviceInfo : public SnapshotManager::IDeviceInfo {
         unbootable_slots_.insert(slot);
         return true;
     }
+    bool IsSlotBootable(unsigned int slot) override { return !IsSlotUnbootable(slot); }
 
     bool IsSlotUnbootable(uint32_t slot) { return unbootable_slots_.count(slot) != 0; }
 

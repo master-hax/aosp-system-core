@@ -105,6 +105,7 @@ class SnapshotManager final {
         virtual bool IsOverlayfsSetup() const = 0;
         virtual bool SetBootControlMergeStatus(MergeStatus status) = 0;
         virtual bool SetSlotAsUnbootable(unsigned int slot) = 0;
+        virtual bool IsSlotBootable(unsigned int slot) = 0;
         virtual bool IsRecovery() const = 0;
     };
 
@@ -374,7 +375,7 @@ class SnapshotManager final {
     bool HandleCancelledUpdate(LockedFile* lock);
 
     // Helper for HandleCancelledUpdate. Assumes booting from new slot.
-    bool HandleCancelledUpdateOnNewSlot(LockedFile* lock);
+    bool AreAllSnapshotsCancelled(LockedFile* lock);
 
     // Remove artifacts created by the update process, such as snapshots, and
     // set the update state to None.
@@ -502,6 +503,8 @@ class SnapshotManager final {
     enum class Slot { Unknown, Source, Target };
     friend std::ostream& operator<<(std::ostream& os, SnapshotManager::Slot slot);
     Slot GetCurrentSlot();
+
+    std::string ReadUpdateSourceSlotSuffix();
 
     std::string gsid_dir_;
     std::string metadata_dir_;
