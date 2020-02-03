@@ -97,6 +97,30 @@
     },
     {
       "key": {
+        "uuid": "edbe00c4_430c2b13",
+        "filename": "libunwindstack/RegsArm64.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-02-03T17:42:24Z",
+      "side": 1,
+      "message": "ah, i see. i suspect i heard someone say \"implementation defined\" and mistakenly assumed that was \"OS defined\", not \"hardware defined\".",
+      "parentUuid": "25abcc4a_99f55e20",
+      "range": {
+        "startLine": 60,
+        "startChar": 0,
+        "endLine": 64,
+        "endChar": 15
+      },
+      "revId": "723916baab42f9530db713d722cd032a7785db5d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "756ad545_4b440fb1",
         "filename": "libunwindstack/include/unwindstack/Regs.h",
         "patchSetId": 2
