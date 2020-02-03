@@ -201,6 +201,7 @@ cc_binary {
         "libbinderthreadstate",
         "libext2_uuid",
         "libext4_utils",
+        "libext4_utils",
         "libfs_mgr_binder",
         "libhidlbase",
         "liblog",
