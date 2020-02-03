@@ -16,6 +16,24 @@
       "revId": "cc47b908b9d6b86ac5a5d047e3c643722e1c55d8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "00497ba7_8f3c4d12",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 206,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-02-03T22:03:55Z",
+      "side": 1,
+      "message": "typo, removed",
+      "parentUuid": "03d6c1ef_13beed6c",
+      "revId": "cc47b908b9d6b86ac5a5d047e3c643722e1c55d8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
