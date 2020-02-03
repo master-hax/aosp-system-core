@@ -1680,9 +1680,11 @@ TEST_P(FlashAfterUpdateTest, FlashSlotAfterUpdate) {
     ASSERT_NE(nullptr, flashed_builder->FindPartition("prd" + flashed_slot_suffix));
     flashed_builder->RemovePartition("prd" + flashed_slot_suffix);
 
+    // Note that fastbootd always updates the partition table of both slots.
     auto flashed_metadata = flashed_builder->Export();
     ASSERT_NE(nullptr, flashed_metadata);
-    ASSERT_TRUE(UpdatePartitionTable(*opener_, "super", *flashed_metadata, flashed_slot));
+    ASSERT_TRUE(UpdatePartitionTable(*opener_, "super", *flashed_metadata, 0));
+    ASSERT_TRUE(UpdatePartitionTable(*opener_, "super", *flashed_metadata, 1));
 
     std::string path;
     for (const auto& name : {"sys", "vnd"}) {

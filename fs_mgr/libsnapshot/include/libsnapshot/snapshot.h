@@ -374,7 +374,7 @@ class SnapshotManager final {
     bool HandleCancelledUpdate(LockedFile* lock);
 
     // Helper for HandleCancelledUpdate. Assumes booting from new slot.
-    bool HandleCancelledUpdateOnNewSlot(LockedFile* lock);
+    bool AreAllSnapshotsCancelled(LockedFile* lock);
 
     // Remove artifacts created by the update process, such as snapshots, and
     // set the update state to None.
@@ -502,6 +502,8 @@ class SnapshotManager final {
     enum class Slot { Unknown, Source, Target };
     friend std::ostream& operator<<(std::ostream& os, SnapshotManager::Slot slot);
     Slot GetCurrentSlot();
+
+    std::string ReadUpdateSourceSlotSuffix();
 
     std::string gsid_dir_;
     std::string metadata_dir_;
