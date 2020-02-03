@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "03d6c1ef_13beed6c",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 206,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2020-02-03T22:01:56Z",
+      "side": 1,
+      "message": "Why does it return false here? It looks like the log says \"it will be marked unbootable to reclaim storage\", but it doesn\u0027t reclaim it.\n\nAlso, if RemoveAllUpdateState is called again, it will proceed?",
+      "revId": "cc47b908b9d6b86ac5a5d047e3c643722e1c55d8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
