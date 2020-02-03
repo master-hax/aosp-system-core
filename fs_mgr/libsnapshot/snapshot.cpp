@@ -197,6 +197,14 @@ SnapshotManager::Slot SnapshotManager::GetCurrentSlot() {
 }
 
 bool SnapshotManager::RemoveAllUpdateState(LockedFile* lock) {
+    auto other_suffix = device_->GetOtherSlotSuffix();
+    auto other_slot = SlotNumberForSlotSuffix(other_suffix);
+    if (device_->IsSlotBootable(other_slot)) {
+        LOG(ERROR) << "Other slot " << other_slot
+                   << " will be marked unbootable to safely reclaim snapshot storage.";
+        device_->SetSlotAsUnbootable(other_slot);
+    }
+
     if (!RemoveAllSnapshots(lock)) {
         LOG(ERROR) << "Could not remove all snapshots";
         return false;
@@ -1123,12 +1131,11 @@ bool SnapshotManager::HandleCancelledUpdate(LockedFile* lock) {
     if (slot == Slot::Unknown) {
         return false;
     }
-    if (slot == Slot::Target) {
-        // We're booted into the target slot, which means we just rebooted
-        // after applying the update.
-        if (!HandleCancelledUpdateOnNewSlot(lock)) {
-            return false;
-        }
+
+    // If all snapshots were reflashed, then cancel the entire update.
+    if (AreAllSnapshotsCancelled(lock)) {
+        RemoveAllUpdateState(lock);
+        return true;
     }
 
     // The only way we can get here is if:
@@ -1140,8 +1147,12 @@ bool SnapshotManager::HandleCancelledUpdate(LockedFile* lock) {
     //
     // In any case, delete the snapshots. It may be worth using the boot_control
     // HAL to differentiate case (2).
-    RemoveAllUpdateState(lock);
-    return true;
+    //
+    // See b/147819418 and b/147347110. There are more paths that can reach
+    // this state, and until they are all accounted for, it is not safe to
+    // call RemoveAllUpdateState().
+    LOG(ERROR) << "Update state is being processed before reboot, taking no action.";
+    return false;
 }
 
 std::unique_ptr<LpMetadata> SnapshotManager::ReadCurrentMetadata() {
@@ -1166,7 +1177,7 @@ SnapshotManager::MetadataPartitionState SnapshotManager::GetMetadataPartitionSta
     return MetadataPartitionState::Flashed;
 }
 
-bool SnapshotManager::HandleCancelledUpdateOnNewSlot(LockedFile* lock) {
+bool SnapshotManager::AreAllSnapshotsCancelled(LockedFile* lock) {
     std::vector<std::string> snapshots;
     if (!ListSnapshots(lock, &snapshots)) {
         LOG(WARNING) << "Failed to list snapshots to determine whether device has been flashed "
@@ -1182,28 +1193,22 @@ bool SnapshotManager::HandleCancelledUpdateOnNewSlot(LockedFile* lock) {
     // - If none of the partitions are re-flashed, caller is responsible for merging the snapshots.
     auto metadata = ReadCurrentMetadata();
     if (!metadata) return false;
-    bool all_snapshot_cancelled = true;
+    bool all_snapshots_cancelled = true;
     for (const auto& snapshot_name : snapshots) {
         if (GetMetadataPartitionState(*metadata, snapshot_name) ==
             MetadataPartitionState::Updated) {
             LOG(WARNING) << "Cannot cancel update because snapshot" << snapshot_name
                          << " is in use.";
-            all_snapshot_cancelled = false;
+            all_snapshots_cancelled = false;
             continue;
         }
         // Delete snapshots for partitions that are re-flashed after the update.
         LOG(INFO) << "Detected re-flashing of partition " << snapshot_name << ".";
-        if (!DeleteSnapshot(lock, snapshot_name)) {
-            // This is an error, but it is okay to leave the snapshot in the short term.
-            // However, if all_snapshot_cancelled == false after exiting the loop, caller may
-            // initiate merge for this unused snapshot, which is likely to fail.
-            LOG(WARNING) << "Failed to delete snapshot for re-flashed partition " << snapshot_name;
-        }
     }
-    if (!all_snapshot_cancelled) return false;
-
-    LOG(INFO) << "All partitions are re-flashed after update, removing all update states.";
-    return true;
+    if (all_snapshots_cancelled) {
+        LOG(INFO) << "All partitions are re-flashed after update, removing all update states.";
+    }
+    return all_snapshots_cancelled;
 }
 
 bool SnapshotManager::RemoveAllSnapshots(LockedFile* lock) {

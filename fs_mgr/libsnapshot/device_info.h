@@ -38,6 +38,7 @@ class DeviceInfo final : public SnapshotManager::IDeviceInfo {
     bool IsOverlayfsSetup() const override;
     bool SetBootControlMergeStatus(MergeStatus status) override;
     bool SetSlotAsUnbootable(unsigned int slot) override;
+    bool IsSlotBootable(unsigned int slot) override;
     bool IsRecovery() const override;
 
   private:

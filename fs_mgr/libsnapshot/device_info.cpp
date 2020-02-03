@@ -22,6 +22,7 @@ namespace android {
 namespace snapshot {
 
 #ifdef LIBSNAPSHOT_USE_HAL
+using android::hardware::boot::V1_0::BoolResult;
 using android::hardware::boot::V1_0::CommandResult;
 #endif
 
@@ -113,6 +114,23 @@ bool DeviceInfo::SetSlotAsUnbootable([[maybe_unused]] unsigned int slot) {
         return false;
     }
     return true;
+#else
+    LOG(ERROR) << "HAL support not enabled.";
+    return false;
+#endif
+}
+
+bool DeviceInfo::IsSlotBootable([[maybe_unused]] unsigned int slot) {
+#ifdef LIBSNAPSHOT_USE_HAL
+    if (!EnsureBootHal()) {
+        return false;
+    }
+    auto cr = boot_control_->isSlotBootable(slot);
+    if (!cr.isOk()) {
+        LOG(ERROR) << "Unable to query whether slot is bootable: " << cr.description().c_str();
+        return false;
+    }
+    return cr == BoolResult::TRUE;
 #else
     LOG(ERROR) << "HAL support not enabled.";
     return false;

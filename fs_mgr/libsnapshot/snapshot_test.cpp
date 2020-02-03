@@ -1719,9 +1719,13 @@ TEST_P(FlashAfterUpdateTest, FlashSlotAfterUpdate) {
         ASSERT_TRUE(IsPartitionUnchanged(name + flashed_slot_suffix));
     }
 
-    // There should be no snapshot to merge.
     auto new_sm = SnapshotManager::New(new TestDeviceInfo(fake_super, flashed_slot_suffix));
-    ASSERT_EQ(UpdateState::Cancelled, new_sm->InitiateMergeAndWait());
+    if (std::get<1>(GetParam())) {
+        // The OTA state should still exist if we didn't start a merge.
+        ASSERT_EQ(UpdateState::Cancelled, new_sm->InitiateMergeAndWait());
+    } else {
+        ASSERT_EQ(UpdateState::Cancelled, new_sm->InitiateMergeAndWait());
+    }
 
     // Next OTA calls CancelUpdate no matter what.
     ASSERT_TRUE(new_sm->CancelUpdate());
