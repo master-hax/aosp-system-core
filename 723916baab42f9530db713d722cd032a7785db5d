@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "27a9b13c_18114b00",
+        "filename": "libunwindstack/RegsArm64.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1626440
+      },
+      "writtenOn": "2020-02-03T10:31:12Z",
+      "side": 1,
+      "message": "Yes, with the pac_mask_ above. However, the mask has to be collected from the CPU where the stack was dumped, as it depends on its configuration.",
+      "parentUuid": "6679ff49_6a003316",
+      "range": {
+        "startLine": 60,
+        "startChar": 0,
+        "endLine": 64,
+        "endChar": 15
+      },
+      "revId": "723916baab42f9530db713d722cd032a7785db5d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "756ad545_4b440fb1",
         "filename": "libunwindstack/include/unwindstack/Regs.h",
         "patchSetId": 2
@@ -45,6 +69,30 @@
       "revId": "723916baab42f9530db713d722cd032a7785db5d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4af112d0_1e0b1d56",
+        "filename": "libunwindstack/include/unwindstack/Regs.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 1626440
+      },
+      "writtenOn": "2020-02-03T10:31:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "756ad545_4b440fb1",
+      "range": {
+        "startLine": 67,
+        "startChar": 36,
+        "endLine": 67,
+        "endChar": 40
+      },
+      "revId": "723916baab42f9530db713d722cd032a7785db5d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "0f3dbc7b_9eba2586",
+        "filename": "libunwindstack/include/unwindstack/Regs.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 1626440
+      },
+      "writtenOn": "2020-02-03T10:31:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "db49074a_013f8340",
+      "range": {
+        "startLine": 109,
+        "startChar": 0,
+        "endLine": 114,
+        "endChar": 0
+      },
+      "revId": "723916baab42f9530db713d722cd032a7785db5d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1ebf0114_3c3bd335",
         "filename": "libunwindstack/include/unwindstack/RegsArm64.h",
         "patchSetId": 2
@@ -91,6 +163,30 @@
       "revId": "723916baab42f9530db713d722cd032a7785db5d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "77b90c40_6224dc99",
+        "filename": "libunwindstack/include/unwindstack/RegsArm64.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 1626440
+      },
+      "writtenOn": "2020-02-03T10:31:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1ebf0114_3c3bd335",
+      "range": {
+        "startLine": 55,
+        "startChar": 28,
+        "endLine": 55,
+        "endChar": 32
+      },
+      "revId": "723916baab42f9530db713d722cd032a7785db5d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -117,6 +213,30 @@
     },
     {
       "key": {
+        "uuid": "db98797b_5b96de24",
+        "filename": "libunwindstack/include/unwindstack/RegsArm64.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1626440
+      },
+      "writtenOn": "2020-02-03T10:31:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f3800c13_55891544",
+      "range": {
+        "startLine": 61,
+        "startChar": 18,
+        "endLine": 61,
+        "endChar": 22
+      },
+      "revId": "723916baab42f9530db713d722cd032a7785db5d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a1fc981e_59dd2807",
         "filename": "libunwindstack/tests/RegsFake.h",
         "patchSetId": 2
@@ -140,6 +260,30 @@
     },
     {
       "key": {
+        "uuid": "b0c9949b_9bb65c39",
+        "filename": "libunwindstack/tests/RegsFake.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1626440
+      },
+      "writtenOn": "2020-02-03T10:31:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a1fc981e_59dd2807",
+      "range": {
+        "startLine": 42,
+        "startChar": 0,
+        "endLine": 45,
+        "endChar": 0
+      },
+      "revId": "723916baab42f9530db713d722cd032a7785db5d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ed515f29_923c3b17",
         "filename": "libunwindstack/tools/unwind_reg_info.cpp",
         "patchSetId": 2
@@ -160,6 +304,30 @@
       "revId": "723916baab42f9530db713d722cd032a7785db5d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "99c8f381_7438e8fa",
+        "filename": "libunwindstack/tools/unwind_reg_info.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 132,
+      "author": {
+        "id": 1626440
+      },
+      "writtenOn": "2020-02-03T10:31:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ed515f29_923c3b17",
+      "range": {
+        "startLine": 132,
+        "startChar": 16,
+        "endLine": 132,
+        "endChar": 17
+      },
+      "revId": "723916baab42f9530db713d722cd032a7785db5d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
