@@ -197,6 +197,15 @@ SnapshotManager::Slot SnapshotManager::GetCurrentSlot() {
 }
 
 bool SnapshotManager::RemoveAllUpdateState(LockedFile* lock) {
+    auto other_suffix = device_->GetOtherSlotSuffix();
+    auto other_slot = SlotNumberForSlotSuffix(other_suffix);
+    if (device_->IsSlotBootable(other_slot)) {
+        LOG(ERROR) << "Other slot " << other_slot
+                   << " will be marked unbootable to safely reclaim snapshot storage.";
+        device_->SetSlotAsUnbootable(other_slot);
+        return false;
+    }
+
     if (!RemoveAllSnapshots(lock)) {
         LOG(ERROR) << "Could not remove all snapshots";
         return false;
@@ -1140,8 +1149,12 @@ bool SnapshotManager::HandleCancelledUpdate(LockedFile* lock) {
     //
     // In any case, delete the snapshots. It may be worth using the boot_control
     // HAL to differentiate case (2).
-    RemoveAllUpdateState(lock);
-    return true;
+    //
+    // See b/147819418 and b/147347110. There are more paths that can reach
+    // this state, and until they are all accounted for, it is not safe to
+    // call RemoveAllUpdateState().
+    LOG(ERROR) << "Update state is being processed before reboot, taking no action.";
+    return false;
 }
 
 std::unique_ptr<LpMetadata> SnapshotManager::ReadCurrentMetadata() {

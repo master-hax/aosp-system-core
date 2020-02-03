@@ -105,6 +105,7 @@ class SnapshotManager final {
         virtual bool IsOverlayfsSetup() const = 0;
         virtual bool SetBootControlMergeStatus(MergeStatus status) = 0;
         virtual bool SetSlotAsUnbootable(unsigned int slot) = 0;
+        virtual bool IsSlotBootable(unsigned int slot) = 0;
         virtual bool IsRecovery() const = 0;
     };
 
