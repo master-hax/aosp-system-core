@@ -73,6 +73,30 @@
     },
     {
       "key": {
+        "uuid": "25abcc4a_99f55e20",
+        "filename": "libunwindstack/RegsArm64.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1490246
+      },
+      "writtenOn": "2020-02-03T17:14:12Z",
+      "side": 1,
+      "message": "In theory the PAC Mask is IMPDEF, thus defined by the CPU that implements it. In practice we don\u0027t really know as yet, however I would have said that a certain amount of standardisation is  probable. The problem here is that I wouldn\u0027t like to say we could rely on that at this point (no hardware)",
+      "parentUuid": "b920295d_4fa0e0a1",
+      "range": {
+        "startLine": 60,
+        "startChar": 0,
+        "endLine": 64,
+        "endChar": 15
+      },
+      "revId": "723916baab42f9530db713d722cd032a7785db5d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "756ad545_4b440fb1",
         "filename": "libunwindstack/include/unwindstack/Regs.h",
         "patchSetId": 2
