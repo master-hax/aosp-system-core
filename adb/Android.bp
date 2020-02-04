@@ -614,6 +614,9 @@ cc_binary {
         keep_symbols: true,
     },
 
+    // libbinder needs a shared libc++.
+    stl: "libc++",
+
     static_libs: [
         "libadbd_core",
         "libadbd_services",
