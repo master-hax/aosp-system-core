@@ -34,6 +34,24 @@
       "revId": "cd10e68675fd1639ea602ed0062693f83741902c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fd9446e1_e91eedc7",
+        "filename": "libappfuse/include/libappfuse/FuseBridgeLoop.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 1622142
+      },
+      "writtenOn": "2020-02-04T09:28:01Z",
+      "side": 1,
+      "message": "Also, without using a static lock,\nthere will be a lock hole between\nmNativeLoop destroy vs AppFuseBridge mount\n\nWhen StorageManagerService tries to mount using the AppFuseBridge object,\nthe mNativeLoop might be already closed - or AppFuseBridge is working on destroying it.\nWhich means, to check mNativeLoop was destroyed or not, the object needs to get the object lock first.\n\nEven if the object gets the object lock and checks the native loop, it needs to release the object lock before getting the native lock.\n\nNot only the routine can\u0027t be protected (the native loop can be destroyed after checking),\nwe can not keep the lock order either.\n\nTherefore, to keep the lock order, using a static lock is inevitable in this class.",
+      "parentUuid": "c490e3a5_f809a339",
+      "revId": "cd10e68675fd1639ea602ed0062693f83741902c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
