@@ -280,11 +280,12 @@ class DmTargetCrypt final : public DmTarget {
 class DmTargetDefaultKey final : public DmTarget {
   public:
     DmTargetDefaultKey(uint64_t start, uint64_t length, const std::string& cipher,
-                       const std::string& key, const std::string& blockdev, uint64_t start_sector,
-                       bool is_legacy, bool set_dun)
+                       const std::string& key, bool is_hw_wrapped, const std::string& blockdev,
+                       uint64_t start_sector, bool is_legacy, bool set_dun)
         : DmTarget(start, length),
           cipher_(cipher),
           key_(key),
+          is_hw_wrapped_(is_hw_wrapped),
           blockdev_(blockdev),
           start_sector_(start_sector),
           is_legacy_(is_legacy),
@@ -294,11 +295,13 @@ class DmTargetDefaultKey final : public DmTarget {
     bool Valid() const override;
     std::string GetParameterString() const override;
     static bool IsLegacy(bool* result);
+    static bool IsHwWrappedSupported();
 
   private:
     static const std::string name_;
     std::string cipher_;
     std::string key_;
+    bool is_hw_wrapped_;
     std::string blockdev_;
     uint64_t start_sector_;
     bool is_legacy_;
