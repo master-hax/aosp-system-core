@@ -19,11 +19,14 @@
 #include <chrono>
 #include <iostream>
 #include <map>
+#include <sstream>
 
 #include <android-base/file.h>
 #include <android-base/logging.h>
 #include <android-base/unique_fd.h>
 #include <libsnapshot/snapshot.h>
+
+#include "utility.h"
 
 using namespace std::string_literals;
 

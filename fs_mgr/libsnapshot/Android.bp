@@ -37,6 +37,11 @@ cc_defaults {
         "libext2_uuid",
         "libext4_utils",
         "libfstab",
+        // TODO(b/148818798) remove these
+        "libbacktrace",
+	"libutilscallstack",
+	"libunwindstack",
+	"liblzma",
     ],
     header_libs: [
         "libfiemap_headers",
