@@ -2,6 +2,12 @@
   "presubmit": [
     {
       "name": "libdm_test"
+    },
+    {
+      "name": "fiemap_image_test"
+    },
+    {
+      "name": "fiemap_writer_test"
     }
   ]
 }
