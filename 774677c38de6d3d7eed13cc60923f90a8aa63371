@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e260460b_d97a3e14",
+        "filename": "fs_mgr/libsnapshot/snapshotctl.rc",
+        "patchSetId": 6
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-02-04T01:18:30Z",
+      "side": 1,
+      "message": "Just to confirm: is the assumption here that this is the only caller of snapshotctl merge, so it\u0027ll give us confirmation of whether it\u0027s deleting snapshots?\n\nWe still wouldn\u0027t know /why/ we\u0027re booting into the same slot again, but I\u0027m also not sure how to get that information.",
+      "revId": "774677c38de6d3d7eed13cc60923f90a8aa63371",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
