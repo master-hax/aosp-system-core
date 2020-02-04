@@ -36,6 +36,7 @@
 #include <libdm/dm.h>
 #include <libfiemap/image_manager.h>
 #include <liblp/liblp.h>
+#include <utils/CallStack.h>
 
 #include <android/snapshot/snapshot.pb.h>
 #include "device_info.h"
@@ -197,6 +198,15 @@ SnapshotManager::Slot SnapshotManager::GetCurrentSlot() {
 }
 
 bool SnapshotManager::RemoveAllUpdateState(LockedFile* lock) {
+    LOG(WARNING) << "Removing all update state. Logging stack; see b/148818798.";
+
+    // Do not use CallStack's log functions because snapshotctl relies on
+    // android-base/logging to save log to files.
+    // TODO(b/148818798): remove this before we ship.
+    CallStack callstack;
+    callstack.update();
+    LOG(WARNING) << callstack.toString().c_str();
+
     if (!RemoveAllSnapshots(lock)) {
         LOG(ERROR) << "Could not remove all snapshots";
         return false;
