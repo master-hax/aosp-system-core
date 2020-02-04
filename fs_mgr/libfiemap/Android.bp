@@ -64,8 +64,10 @@ filegroup {
 cc_test {
     name: "fiemap_writer_test",
     static_libs: [
-        "libbase",
         "libdm",
+    ],
+    shared_libs: [
+        "libbase",
         "libfs_mgr",
         "liblog",
     ],
@@ -90,18 +92,21 @@ cc_test {
     name: "fiemap_image_test",
     static_libs: [
         "libdm",
-        "libext4_utils",
-        "libfs_mgr",
-        "liblp",
     ],
     shared_libs: [
         "libbase",
         "libcrypto",
         "libcrypto_utils",
         "libcutils",
+        "libext4_utils",
+        "libfs_mgr",
         "liblog",
+        "liblp",
     ],
     srcs: [
         "image_test.cpp",
     ],
+    test_suites: ["device-tests"],
+    auto_gen_config: true,
+    require_root: true,
 }
