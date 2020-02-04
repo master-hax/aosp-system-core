@@ -16,6 +16,24 @@
       "revId": "774677c38de6d3d7eed13cc60923f90a8aa63371",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a8711ac9_cd07142c",
+        "filename": "fs_mgr/libsnapshot/snapshotctl.rc",
+        "patchSetId": 6
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2020-02-04T01:59:39Z",
+      "side": 1,
+      "message": "Right; that\u0027s the assumption.\n\nupdate_engine is another possibility. But update_engine uses libchrome\u0027s logging, and it is not very appropriate to pull it in here. \n\nHowever, in the next CL, I can consider directly writing the callstack to snapshotctl_log directory.",
+      "parentUuid": "e260460b_d97a3e14",
+      "revId": "774677c38de6d3d7eed13cc60923f90a8aa63371",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
