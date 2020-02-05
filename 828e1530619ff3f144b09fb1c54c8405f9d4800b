@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c974115f_18d41497",
+        "filename": "base/include/android-base/result.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 226,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2020-02-05T18:46:48Z",
+      "side": 1,
+      "message": "According to gtest guidance, these should be functions returning AssertionResult, no?",
+      "range": {
+        "startLine": 215,
+        "startChar": 0,
+        "endLine": 226,
+        "endChar": 13
+      },
+      "revId": "828e1530619ff3f144b09fb1c54c8405f9d4800b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
