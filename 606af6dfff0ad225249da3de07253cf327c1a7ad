@@ -46,6 +46,30 @@
       "revId": "606af6dfff0ad225249da3de07253cf327c1a7ad",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "618bbab9_9dc0818f",
+        "filename": "bootstat/bootstat.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2020-02-05T20:59:54Z",
+      "side": 1,
+      "message": "that was one of the comments there, and for some reason gerrit holds it late, anyway, only a nit.",
+      "parentUuid": "fe92fe50_c157fca5",
+      "range": {
+        "startLine": 62,
+        "startChar": 0,
+        "endLine": 62,
+        "endChar": 5
+      },
+      "revId": "606af6dfff0ad225249da3de07253cf327c1a7ad",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
