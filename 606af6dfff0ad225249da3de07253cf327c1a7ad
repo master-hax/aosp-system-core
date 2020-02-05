@@ -22,6 +22,30 @@
       "revId": "606af6dfff0ad225249da3de07253cf327c1a7ad",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fe92fe50_c157fca5",
+        "filename": "bootstat/bootstat.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 1010465
+      },
+      "writtenOn": "2020-02-05T20:58:25Z",
+      "side": 1,
+      "message": "This is merge from master. So we should not make any more changes in this CL. If that is critical, I will add another CL from AOSP.",
+      "parentUuid": "5ba2a3ed_177e5f89",
+      "range": {
+        "startLine": 62,
+        "startChar": 0,
+        "endLine": 62,
+        "endChar": 5
+      },
+      "revId": "606af6dfff0ad225249da3de07253cf327c1a7ad",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
