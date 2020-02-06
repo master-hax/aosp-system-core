@@ -121,6 +121,30 @@
     },
     {
       "key": {
+        "uuid": "89fb6647_32952d83",
+        "filename": "libunwindstack/RegsArm64.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1581772
+      },
+      "writtenOn": "2020-02-06T16:23:16Z",
+      "side": 1,
+      "message": "Just to clarify a bit what Paul said, the mask is not really IMPDEF. However, you have to make assumptions about the kernel if you want to hardcode the PAC mask.\n\nThis is what a virtual address is made of:\n- [63:56]: field0 (top byte, maybe part of PAC)\n- [55]: TTBR selection (always 0 in userspace)\n- [54:VASize]: field1 (part of PAC)\n- [VASize-1:0]: actual address to be accessed\n\nWhat the PAC (and therefore the mask) is made of is configured by the kernel in two ways:\n1. If Top Byte Ignored (TBI) is enabled, field0 is not part of the PAC.\n2. VASize can be either 39 or 48 on Armv8.0.\n\nOn Linux, TBI is always enabled for userspace; however VASize is controlled via CONFIG options. Therefore your PAC mask will depend on how you configure the kernel. AFAICT Android kernels always use 39-bit VAs, but there is no fundamental reason why a device couldn\u0027t use 48-bit VAs. \n\nAdditionally, Armv8.3 introduced a new system register configuration along with Pointer Authentication, which allows TBI to be disabled for instruction addresses only. This is not used in Linux for now, but it could be in the future to allow for a larger PAC for the return address while preserving TBI for MTE/HWASan/etc.",
+      "parentUuid": "edbe00c4_430c2b13",
+      "range": {
+        "startLine": 60,
+        "startChar": 0,
+        "endLine": 64,
+        "endChar": 15
+      },
+      "revId": "723916baab42f9530db713d722cd032a7785db5d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "756ad545_4b440fb1",
         "filename": "libunwindstack/include/unwindstack/Regs.h",
         "patchSetId": 2
