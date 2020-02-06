@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "355b3909_f1461523",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-02-06T18:00:16Z",
+      "side": 1,
+      "message": "i don\u0027t think so. are you thinking of tsan? (which is currently broken, but something we want to fix [and add tests to keep from regressing] this year.)",
+      "parentUuid": "10f2947e_8ac0342f",
+      "range": {
+        "startLine": 34,
+        "startChar": 0,
+        "endLine": 34,
+        "endChar": 4
+      },
+      "revId": "6324b7c62fae98887f5886bc73ecfe46ecd082bd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "981404d1_93d20e3e",
         "filename": "init/Android.bp",
         "patchSetId": 1
