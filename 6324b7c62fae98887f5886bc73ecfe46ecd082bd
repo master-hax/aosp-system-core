@@ -2,6 +2,184 @@
   "comments": [
     {
       "key": {
+        "uuid": "10f2947e_8ac0342f",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2020-02-06T17:53:27Z",
+      "side": 1,
+      "message": "I think asan build detect some races? too? right?",
+      "range": {
+        "startLine": 34,
+        "startChar": 0,
+        "endLine": 34,
+        "endChar": 4
+      },
+      "revId": "6324b7c62fae98887f5886bc73ecfe46ecd082bd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "981404d1_93d20e3e",
+        "filename": "init/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 320,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2020-02-06T17:53:27Z",
+      "side": 1,
+      "message": "nit: defaults to de-dupe configuration?",
+      "range": {
+        "startLine": 309,
+        "startChar": 22,
+        "endLine": 320,
+        "endChar": 21
+      },
+      "revId": "6324b7c62fae98887f5886bc73ecfe46ecd082bd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8be19ff9_ca8cad79",
+        "filename": "init/action_manager.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2020-02-06T17:53:27Z",
+      "side": 1,
+      "message": "for instance, why not here?",
+      "range": {
+        "startLine": 117,
+        "startChar": 25,
+        "endLine": 117,
+        "endChar": 33
+      },
+      "revId": "6324b7c62fae98887f5886bc73ecfe46ecd082bd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3eeec5ac_84941830",
+        "filename": "init/action_manager.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2020-02-06T17:53:27Z",
+      "side": 1,
+      "message": "document? (for all memebers?) or\n\nShould you add \"GUARDED_BY\" annotations or similar that feed into the clang sanity/validation/tidy machinations?",
+      "range": {
+        "startLine": 51,
+        "startChar": 23,
+        "endLine": 51,
+        "endChar": 28
+      },
+      "revId": "6324b7c62fae98887f5886bc73ecfe46ecd082bd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2d09a8d1_df042403",
+        "filename": "init/init.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2020-02-06T17:53:27Z",
+      "side": 1,
+      "message": "one line comment usage?",
+      "revId": "6324b7c62fae98887f5886bc73ecfe46ecd082bd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "25da1da1_ea519f8c",
+        "filename": "init/init.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 130,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2020-02-06T17:53:27Z",
+      "side": 1,
+      "message": "nit/out of curiosity, why not constexpr?",
+      "range": {
+        "startLine": 130,
+        "startChar": 4,
+        "endLine": 130,
+        "endChar": 9
+      },
+      "revId": "6324b7c62fae98887f5886bc73ecfe46ecd082bd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "10763d28_b8a7d423",
+        "filename": "init/init.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2020-02-06T17:53:27Z",
+      "side": 1,
+      "message": "why different format?",
+      "range": {
+        "startLine": 44,
+        "startChar": 5,
+        "endLine": 44,
+        "endChar": 21
+      },
+      "revId": "6324b7c62fae98887f5886bc73ecfe46ecd082bd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "505a782f_7866db65",
+        "filename": "init/init.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2020-02-06T17:53:27Z",
+      "side": 1,
+      "message": "nit: fromPid?",
+      "range": {
+        "startLine": 45,
+        "startChar": 81,
+        "endLine": 45,
+        "endChar": 84
+      },
+      "revId": "6324b7c62fae98887f5886bc73ecfe46ecd082bd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "69fcc230_cadc256d",
         "filename": "init/service_lock.h",
         "patchSetId": 1
@@ -13,6 +191,24 @@
       "writtenOn": "2020-02-06T17:38:27Z",
       "side": 1,
       "message": "std::recursive_mutex isn\u0027t annotated :(",
+      "revId": "6324b7c62fae98887f5886bc73ecfe46ecd082bd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5287accf_9299e375",
+        "filename": "init/service_lock.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2020-02-06T17:53:27Z",
+      "side": 1,
+      "message": "can you kick of an issue to fix that?\n\nsecondarily, do you *really* need it? :)",
+      "parentUuid": "69fcc230_cadc256d",
       "revId": "6324b7c62fae98887f5886bc73ecfe46ecd082bd",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
