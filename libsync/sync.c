@@ -411,13 +411,7 @@ void sync_file_info_free(struct sync_file_info *info)
 
 int sw_sync_timeline_create(void)
 {
-    int ret;
-
-    ret = open("/sys/kernel/debug/sync/sw_sync", O_RDWR);
-    if (ret < 0)
-        ret = open("/dev/sw_sync", O_RDWR);
-
-    return ret;
+    return open("/dev/sw_sync", O_RDWR);
 }
 
 int sw_sync_timeline_inc(int fd, unsigned count)
