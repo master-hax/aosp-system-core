@@ -139,7 +139,10 @@ cc_library {
 
 cc_library {
     name: "libadbconnection_client",
-    srcs: ["adbconnection/adbconnection_client.cpp"],
+    srcs: [
+        "adbconnection/adbconnection_client.cpp",
+        "adbconnection/proto/AdbConnection.proto",
+    ],
 
     export_include_dirs: ["adbconnection/include"],
 
@@ -160,6 +163,10 @@ cc_library {
     // libadbconnection_client doesn't need an embedded build number.
     use_version_lib: false,
 
+    proto: {
+        type: "lite",
+        export_proto_headers: true,
+    },
     target: {
         linux: {
             version_script: "adbconnection/libadbconnection_client.map.txt",

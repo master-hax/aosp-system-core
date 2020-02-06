@@ -29,6 +29,8 @@
 #include <android-base/logging.h>
 #include <android-base/unique_fd.h>
 
+#include "adbconnection/proto/AdbConnection.pb.h"
+
 using android::base::unique_fd;
 
 static constexpr char kJdwpControlName[] = "\0jdwp-control";
@@ -77,7 +79,7 @@ AdbConnectionClientContext* adbconnection_client_new(
           LOG(ERROR) << "multiple debuggable entries in AdbConnectionClientInfo, ignoring";
           continue;
         }
-        debuggable = info->data.pid;
+        debuggable = info->data.debuggable;
         break;
     }
   }
