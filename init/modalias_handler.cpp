@@ -29,7 +29,7 @@ ModaliasHandler::ModaliasHandler(const std::vector<std::string>& base_paths)
 
 void ModaliasHandler::HandleUevent(const Uevent& uevent) {
     if (uevent.modalias.empty()) return;
-    modprobe_.LoadWithAliases(uevent.modalias, true);
+    modprobe_.LoadWithAliases(uevent.modalias, false);
 }
 
 }  // namespace init
