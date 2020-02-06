@@ -49,7 +49,11 @@ bool Modprobe::Insmod(const std::string& path_name, const std::string& parameter
         options = options + " " + parameters;
     }
 
-    LOG(INFO) << "Loading module " << path_name << " with args \"" << options << "\"";
+    if (options.empty()) {
+        LOG(INFO) << "Loading module " << path_name;
+    } else {
+        LOG(INFO) << "Loading module " << path_name << " with args \"" << options << "\"";
+    }
     int ret = syscall(__NR_finit_module, fd.get(), options.c_str(), 0);
     if (ret != 0) {
         if (errno == EEXIST) {
