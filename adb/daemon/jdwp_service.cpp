@@ -33,6 +33,7 @@
 #include <thread>
 #include <vector>
 
+#include <adbconnection/process_info.h>
 #include <adbconnection/server.h>
 #include <android-base/cmsg.h>
 #include <android-base/unique_fd.h>
@@ -41,6 +42,7 @@
 #include "adb_io.h"
 #include "adb_unique_fd.h"
 #include "adb_utils.h"
+// #include "daemon/proto/AppProcess.pb.h"
 
 using android::base::borrowed_fd;
 using android::base::unique_fd;
@@ -139,11 +141,11 @@ struct JdwpProcess;
 static auto& _jdwp_list = *new std::list<std::unique_ptr<JdwpProcess>>();
 
 struct JdwpProcess {
-    JdwpProcess(unique_fd socket, pid_t pid) {
-        CHECK(pid != 0);
+    JdwpProcess(unique_fd socket, ProcessInfo process) {
+        CHECK(process.pid != 0);
 
         this->socket = socket;
-        this->pid = pid;
+        this->process = process;
         this->fde = fdevent_create(socket.release(), jdwp_process_event, this);
 
         if (!this->fde) {
@@ -171,7 +173,7 @@ struct JdwpProcess {
     }
 
     borrowed_fd socket = -1;
-    int32_t pid = -1;
+    ProcessInfo process;
     fdevent* fde = nullptr;
 
     std::vector<unique_fd> out_fds;
@@ -179,9 +181,10 @@ struct JdwpProcess {
 
 static size_t jdwp_process_list(char* buffer, size_t bufferlen) {
     std::string temp;
+    // AppProcess output;
 
     for (auto& proc : _jdwp_list) {
-        std::string next = std::to_string(proc->pid) + "\n";
+        std::string next = std::to_string(proc->process.pid) + "\n";
         if (temp.length() + next.length() > bufferlen) {
             D("truncating JDWP process list (max len = %zu)", bufferlen);
             break;
@@ -204,6 +207,7 @@ static size_t jdwp_process_list_msg(char* buffer, size_t bufferlen) {
     size_t len = jdwp_process_list(buffer + header_len, bufferlen - header_len);
     snprintf(head, sizeof head, "%04zx", len);
     memcpy(buffer, head, header_len);
+    LOG(ERROR) << "SKSK jdwp_process_list_msg size=" << len + header_len;
     return len + header_len;
 }
 
@@ -213,7 +217,7 @@ static void jdwp_process_event(int socket, unsigned events, void* _proc) {
 
     if (events & FDE_READ) {
         // We already have the PID, if we can read from the socket, we've probably hit EOF.
-        D("terminating JDWP connection %d", proc->pid);
+        D("terminating JDWP connection %lu", proc->process.pid);
         goto CloseProcess;
     }
 
@@ -223,11 +227,12 @@ static void jdwp_process_event(int socket, unsigned events, void* _proc) {
 
         int fd = proc->out_fds.back().get();
         if (android::base::SendFileDescriptors(socket, "", 1, fd) != 1) {
-            D("sending new file descriptor to JDWP %d failed: %s", proc->pid, strerror(errno));
+            D("sending new file descriptor to JDWP %lu failed: %s", proc->process.pid,
+              strerror(errno));
             goto CloseProcess;
         }
 
-        D("sent file descriptor %d to JDWP process %d", fd, proc->pid);
+        D("sent file descriptor %d to JDWP process %lu", fd, proc->process.pid);
 
         proc->out_fds.pop_back();
         if (proc->out_fds.empty()) {
@@ -246,7 +251,7 @@ unique_fd create_jdwp_connection_fd(int pid) {
     D("looking for pid %d in JDWP process list", pid);
 
     for (auto& proc : _jdwp_list) {
-        if (proc->pid == pid) {
+        if (proc->process.pid == static_cast<uint64_t>(pid)) {
             int fds[2];
 
             if (adb_socketpair(fds) < 0) {
@@ -306,6 +311,7 @@ static void jdwp_socket_ready(asocket* s) {
     if (!jdwp->pass) {
         apacket::payload_type data;
         data.resize(s->get_max_payload());
+        LOG(ERROR) << "SKSK jdwp_socket_ready data.size()=" << data.size();
         size_t len = jdwp_process_list(&data[0], data.size());
         data.resize(len);
         peer->enqueue(peer, std::move(data));
@@ -419,11 +425,12 @@ asocket* create_jdwp_tracker_service_socket(void) {
 int init_jdwp(void) {
     std::thread([]() {
         adb_thread_setname("jdwp control");
-        adbconnection_listen([](int fd, pid_t pid) {
-            LOG(INFO) << "jdwp connection from " << pid;
-            fdevent_run_on_main_thread([fd, pid] {
+        // adbconnection_listen([](int fd, pid_t pid) {
+        adbconnection_listen([](int fd, ProcessInfo process) {
+            LOG(INFO) << "jdwp connection from " << process.pid;
+            fdevent_run_on_main_thread([fd, process] {
                 unique_fd ufd(fd);
-                auto proc = std::make_unique<JdwpProcess>(std::move(ufd), pid);
+                auto proc = std::make_unique<JdwpProcess>(std::move(ufd), process);
                 if (!proc) {
                     LOG(FATAL) << "failed to allocate JdwpProcess";
                 }

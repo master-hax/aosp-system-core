@@ -29,6 +29,8 @@
 #include <android-base/logging.h>
 #include <android-base/unique_fd.h>
 
+#include "adbconnection/process_info.h"
+
 using android::base::unique_fd;
 
 static constexpr char kJdwpControlName[] = "\0jdwp-control";
@@ -77,7 +79,7 @@ AdbConnectionClientContext* adbconnection_client_new(
           LOG(ERROR) << "multiple debuggable entries in AdbConnectionClientInfo, ignoring";
           continue;
         }
-        debuggable = info->data.pid;
+        debuggable = info->data.debuggable;
         break;
     }
   }
@@ -120,10 +122,10 @@ AdbConnectionClientContext* adbconnection_client_new(
     return nullptr;
   }
 
-  uint32_t pid_u32 = static_cast<uint32_t>(*pid);
-  rc = TEMP_FAILURE_RETRY(write(ctx->control_socket_.get(), &pid_u32, sizeof(pid_u32)));
-  if (rc != sizeof(pid_u32)) {
-    PLOG(ERROR) << "failed to send JDWP process pid to adbd";
+  ProcessInfo process(*pid, *debuggable, true, ProcessInfo::Arch::kUnspecified);
+  rc = TEMP_FAILURE_RETRY(write(ctx->control_socket_.get(), &process, sizeof(process)));
+  if (rc != sizeof(process)) {
+    PLOG(ERROR) << "failed to send JDWP process info to adbd";
   }
 
   return ctx.release();
