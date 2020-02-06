@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "7ab3d58e_b9b8bc7d",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2020-02-06T18:39:05Z",
+      "side": 1,
+      "message": "remove",
+      "range": {
+        "startLine": 9,
+        "startChar": 40,
+        "endLine": 9,
+        "endChar": 41
+      },
+      "revId": "6324b7c62fae98887f5886bc73ecfe46ecd082bd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "10f2947e_8ac0342f",
         "filename": "/COMMIT_MSG",
         "patchSetId": 1
@@ -197,6 +220,29 @@
         "startChar": 81,
         "endLine": 45,
         "endChar": 84
+      },
+      "revId": "6324b7c62fae98887f5886bc73ecfe46ecd082bd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "757f8e4e_cd85154d",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 380,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2020-02-06T18:39:05Z",
+      "side": 1,
+      "message": "what about clients keep set control property like s storm?\nI really hope we can gate that from happening. Can we have use a fixed size thread pool/executor? also can we have a library in libbase?",
+      "range": {
+        "startLine": 380,
+        "startChar": 4,
+        "endLine": 380,
+        "endChar": 15
       },
       "revId": "6324b7c62fae98887f5886bc73ecfe46ecd082bd",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
