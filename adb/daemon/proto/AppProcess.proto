@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package com.android.adbdaemon;
+
+option java_package = "com.android.adbdaemon";
+option java_outer_classname = "AppProcessProto";
+option java_multiple_files = true;
+// option optimize_for = LITE_RUNTIME;
+
+message ProcessEntry {
+    int64 pid = 1;
+    bool debuggable = 2;
+    bool profileable = 3;
+    string arch = 4;
+}
+
+message AppProcess {
+  repeated ProcessEntry process = 1;
+}

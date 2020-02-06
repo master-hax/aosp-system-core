@@ -30,9 +30,13 @@
 
 #include <list>
 #include <memory>
+#include <sstream>
 #include <thread>
 #include <vector>
 
+#include <google/protobuf/text_format.h>
+
+#include <adbconnection/process_info.h>
 #include <adbconnection/server.h>
 #include <android-base/cmsg.h>
 #include <android-base/unique_fd.h>
@@ -41,6 +45,7 @@
 #include "adb_io.h"
 #include "adb_unique_fd.h"
 #include "adb_utils.h"
+#include "daemon/proto/AppProcess.pb.h"
 
 using android::base::borrowed_fd;
 using android::base::unique_fd;
@@ -132,18 +137,24 @@ using android::base::unique_fd;
  ** for each JDWP process, we record its pid and its connected socket
  **/
 
+enum class TrackerKind {
+    kJdwp,
+    kApp,
+};
+
 static void jdwp_process_event(int socket, unsigned events, void* _proc);
 static void jdwp_process_list_updated(void);
+static void app_process_list_updated(void);
 
 struct JdwpProcess;
 static auto& _jdwp_list = *new std::list<std::unique_ptr<JdwpProcess>>();
 
 struct JdwpProcess {
-    JdwpProcess(unique_fd socket, pid_t pid) {
-        CHECK(pid != 0);
+    JdwpProcess(unique_fd socket, ProcessInfo process) {
+        CHECK(process.pid != 0);
 
         this->socket = socket;
-        this->pid = pid;
+        this->process = process;
         this->fde = fdevent_create(socket.release(), jdwp_process_event, this);
 
         if (!this->fde) {
@@ -171,7 +182,7 @@ struct JdwpProcess {
     }
 
     borrowed_fd socket = -1;
-    int32_t pid = -1;
+    ProcessInfo process;
     fdevent* fde = nullptr;
 
     std::vector<unique_fd> out_fds;
@@ -181,7 +192,8 @@ static size_t jdwp_process_list(char* buffer, size_t bufferlen) {
     std::string temp;
 
     for (auto& proc : _jdwp_list) {
-        std::string next = std::to_string(proc->pid) + "\n";
+        if (!proc->process.debuggable) continue;
+        std::string next = std::to_string(proc->process.pid) + "\n";
         if (temp.length() + next.length() > bufferlen) {
             D("truncating JDWP process list (max len = %zu)", bufferlen);
             break;
@@ -193,7 +205,50 @@ static size_t jdwp_process_list(char* buffer, size_t bufferlen) {
     return temp.length();
 }
 
-static size_t jdwp_process_list_msg(char* buffer, size_t bufferlen) {
+static size_t app_process_list(char* buffer, size_t bufferlen) {
+    // std::string temp;
+    // com::android::adbdaemon::AppProcess proto_list;
+
+    // for (auto& proc : _jdwp_list) {
+    //     auto* entry = proto_list.add_process();
+    //     entry->set_pid(proc->process.pid);
+    //     entry->set_debuggable(proc->process.debuggable);
+    //     entry->set_profileable(proc->process.profileable);
+    //     // entry->set_arch();
+    // }
+    // std::string output;
+    // TextFormat doesn't work with "libprotobuf-cpp-lite"; needs "libprotobuf-cpp-full".
+    // google::protobuf::TextFormat::PrintToString(list, &output);
+
+    std::string temp;
+    std::ostringstream next;
+    for (auto& proc : _jdwp_list) {
+        if (!proc->process.debuggable && !proc->process.profileable) continue;
+        next.str("");
+        next.clear();
+        next << proc->process.pid << "-d" << proc->process.debuggable << "p"
+             << proc->process.profileable << static_cast<int>(proc->process.arch) << "\n";
+        if (temp.length() + next.str().length() > bufferlen) {
+            D("truncating JDWP process list (max len = %zu)", bufferlen);
+            break;
+        }
+        temp.append(next.str());
+    }
+
+    memcpy(buffer, temp.data(), temp.length());
+    return temp.length();
+}
+
+static size_t process_list(TrackerKind kind, char* buffer, size_t bufferlen) {
+    switch (kind) {
+        case TrackerKind::kJdwp:
+            return jdwp_process_list(buffer, bufferlen);
+        case TrackerKind::kApp:
+            return app_process_list(buffer, bufferlen);
+    }
+}
+
+static size_t process_list_msg(TrackerKind kind, char* buffer, size_t bufferlen) {
     // Message is length-prefixed with 4 hex digits in ASCII.
     static constexpr size_t header_len = 4;
     if (bufferlen < header_len) {
@@ -201,9 +256,11 @@ static size_t jdwp_process_list_msg(char* buffer, size_t bufferlen) {
     }
 
     char head[header_len + 1];
-    size_t len = jdwp_process_list(buffer + header_len, bufferlen - header_len);
+    size_t len = process_list(kind, buffer + header_len, bufferlen - header_len);
     snprintf(head, sizeof head, "%04zx", len);
     memcpy(buffer, head, header_len);
+    LOG(ERROR) << "SKSK process_list_msg kind=" << static_cast<int>(kind)
+               << " size=" << len + header_len;
     return len + header_len;
 }
 
@@ -213,7 +270,7 @@ static void jdwp_process_event(int socket, unsigned events, void* _proc) {
 
     if (events & FDE_READ) {
         // We already have the PID, if we can read from the socket, we've probably hit EOF.
-        D("terminating JDWP connection %d", proc->pid);
+        D("terminating JDWP connection %lu", proc->process.pid);
         goto CloseProcess;
     }
 
@@ -223,11 +280,12 @@ static void jdwp_process_event(int socket, unsigned events, void* _proc) {
 
         int fd = proc->out_fds.back().get();
         if (android::base::SendFileDescriptors(socket, "", 1, fd) != 1) {
-            D("sending new file descriptor to JDWP %d failed: %s", proc->pid, strerror(errno));
+            D("sending new file descriptor to JDWP %lu failed: %s", proc->process.pid,
+              strerror(errno));
             goto CloseProcess;
         }
 
-        D("sent file descriptor %d to JDWP process %d", fd, proc->pid);
+        D("sent file descriptor %d to JDWP process %lu", fd, proc->process.pid);
 
         proc->out_fds.pop_back();
         if (proc->out_fds.empty()) {
@@ -238,15 +296,18 @@ static void jdwp_process_event(int socket, unsigned events, void* _proc) {
     return;
 
 CloseProcess:
+    bool debuggable = proc->process.debuggable;
+    bool profileable = proc->process.profileable;
     proc->RemoveFromList();
-    jdwp_process_list_updated();
+    if (debuggable) jdwp_process_list_updated();
+    if (debuggable || profileable) app_process_list_updated();
 }
 
 unique_fd create_jdwp_connection_fd(int pid) {
     D("looking for pid %d in JDWP process list", pid);
 
     for (auto& proc : _jdwp_list) {
-        if (proc->pid == pid) {
+        if (proc->process.pid == static_cast<uint64_t>(pid)) {
             int fds[2];
 
             if (adb_socketpair(fds) < 0) {
@@ -306,6 +367,7 @@ static void jdwp_socket_ready(asocket* s) {
     if (!jdwp->pass) {
         apacket::payload_type data;
         data.resize(s->get_max_payload());
+        LOG(ERROR) << "SKSK jdwp_socket_ready data.size()=" << data.size();
         size_t len = jdwp_process_list(&data[0], data.size());
         data.resize(len);
         peer->enqueue(peer, std::move(data));
@@ -339,22 +401,33 @@ asocket* create_jdwp_service_socket(void) {
 
 struct JdwpTracker : public asocket {
     bool need_initial;
+    TrackerKind kind;
+
+    explicit JdwpTracker(bool initial, TrackerKind k) : need_initial(initial), kind(k) {}
 };
 
 static auto& _jdwp_trackers = *new std::vector<std::unique_ptr<JdwpTracker>>();
 
-static void jdwp_process_list_updated(void) {
+static void process_list_updated(TrackerKind kind) {
     std::string data;
     data.resize(1024);
-    data.resize(jdwp_process_list_msg(&data[0], data.size()));
+    data.resize(process_list_msg(kind, &data[0], data.size()));
 
     for (auto& t : _jdwp_trackers) {
-        if (t->peer) {
+        if (t->kind == kind && t->peer) {
             // The tracker might not have been connected yet.
             apacket::payload_type payload(data.begin(), data.end());
             t->peer->enqueue(t->peer, std::move(payload));
         }
     }
+}
+
+static void jdwp_process_list_updated(void) {
+    process_list_updated(TrackerKind::kJdwp);
+}
+
+static void app_process_list_updated(void) {
+    process_list_updated(TrackerKind::kApp);
 }
 
 static void jdwp_tracker_close(asocket* s) {
@@ -380,7 +453,7 @@ static void jdwp_tracker_ready(asocket* s) {
     if (t->need_initial) {
         apacket::payload_type data;
         data.resize(s->get_max_payload());
-        data.resize(jdwp_process_list_msg(&data[0], data.size()));
+        data.resize(process_list_msg(t->kind, &data[0], data.size()));
         t->need_initial = false;
         s->peer->enqueue(s->peer, std::move(data));
     }
@@ -393,8 +466,8 @@ static int jdwp_tracker_enqueue(asocket* s, apacket::payload_type) {
     return -1;
 }
 
-asocket* create_jdwp_tracker_service_socket(void) {
-    auto t = std::make_unique<JdwpTracker>();
+asocket* create_process_tracker_service_socket(TrackerKind kind) {
+    auto t = std::make_unique<JdwpTracker>(true, kind);
     if (!t) {
         LOG(FATAL) << "failed to allocate JdwpTracker";
     }
@@ -407,7 +480,6 @@ asocket* create_jdwp_tracker_service_socket(void) {
     t->ready = jdwp_tracker_ready;
     t->enqueue = jdwp_tracker_enqueue;
     t->close = jdwp_tracker_close;
-    t->need_initial = true;
 
     asocket* result = t.get();
 
@@ -416,19 +488,29 @@ asocket* create_jdwp_tracker_service_socket(void) {
     return result;
 }
 
+asocket* create_jdwp_tracker_service_socket() {
+    return create_process_tracker_service_socket(TrackerKind::kJdwp);
+}
+
+asocket* create_app_tracker_service_socket() {
+    return create_process_tracker_service_socket(TrackerKind::kApp);
+}
+
 int init_jdwp(void) {
     std::thread([]() {
         adb_thread_setname("jdwp control");
-        adbconnection_listen([](int fd, pid_t pid) {
-            LOG(INFO) << "jdwp connection from " << pid;
-            fdevent_run_on_main_thread([fd, pid] {
+        // adbconnection_listen([](int fd, pid_t pid) {
+        adbconnection_listen([](int fd, ProcessInfo process) {
+            LOG(INFO) << "jdwp connection from " << process.pid;
+            fdevent_run_on_main_thread([fd, process] {
                 unique_fd ufd(fd);
-                auto proc = std::make_unique<JdwpProcess>(std::move(ufd), pid);
+                auto proc = std::make_unique<JdwpProcess>(std::move(ufd), process);
                 if (!proc) {
                     LOG(FATAL) << "failed to allocate JdwpProcess";
                 }
                 _jdwp_list.emplace_back(std::move(proc));
-                jdwp_process_list_updated();
+                if (process.debuggable) jdwp_process_list_updated();
+                if (process.debuggable || process.profileable) app_process_list_updated();
             });
         });
     }).detach();

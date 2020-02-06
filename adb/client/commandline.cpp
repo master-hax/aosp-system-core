@@ -1908,6 +1908,8 @@ int adb_commandline(int argc, const char** argv) {
         return adb_connect_command("jdwp");
     } else if (!strcmp(argv[0], "track-jdwp")) {
         return adb_connect_command("track-jdwp");
+    } else if (!strcmp(argv[0], "track-app")) {
+        return adb_connect_command("track-app");
     } else if (!strcmp(argv[0], "track-devices")) {
         if (argc > 2 || (argc == 2 && strcmp(argv[1], "-l"))) {
             error_exit("usage: adb track-devices [-l]");

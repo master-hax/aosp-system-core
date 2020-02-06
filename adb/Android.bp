@@ -408,6 +408,7 @@ cc_library_static {
     srcs: libadb_srcs + libadb_linux_srcs + libadb_posix_srcs + [
         "daemon/auth.cpp",
         "daemon/jdwp_service.cpp",
+        "daemon/proto/AppProcess.proto",
     ],
 
     local_include_dirs: [
@@ -419,6 +420,7 @@ cc_library_static {
     static_libs: [
         "libadbconnection_server",
         "libdiagnose_usb",
+        "libprotobuf-cpp-lite",
     ],
 
     shared_libs: [
@@ -430,6 +432,12 @@ cc_library_static {
         "libcutils",
         "liblog",
     ],
+
+    proto: {
+        type: "lite",
+        static: true,
+        export_proto_headers: true,
+    },
 
     target: {
         android: {
@@ -521,6 +529,7 @@ cc_library {
     whole_static_libs: [
         "libadbconnection_server",
         "libadbd_core",
+        "libprotobuf-cpp-lite",
     ],
 
     shared_libs: [
