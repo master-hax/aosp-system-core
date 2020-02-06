@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a35ec11_8c9f3244",
+        "filename": "libutils/Threads.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 305,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2020-02-06T17:46:28Z",
+      "side": 1,
+      "message": "can we keep the same kernel-like style same with the reset of this file?",
+      "range": {
+        "startLine": 305,
+        "startChar": 48,
+        "endLine": 305,
+        "endChar": 50
+      },
+      "revId": "1bd84e3490116b46f3ebde798b95b2f502ecc004",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2cfd23fa_cf7ff9b9",
+        "filename": "libutils/Threads.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 319,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2020-02-06T17:46:28Z",
+      "side": 1,
+      "message": "feel this might be better for readability?\n\nSchedPolicy policy \u003d SP_FOREGROUND;\nget_sched_policy(getpid(), \u0026policy);",
+      "range": {
+        "startLine": 317,
+        "startChar": 8,
+        "endLine": 319,
+        "endChar": 72
+      },
+      "revId": "1bd84e3490116b46f3ebde798b95b2f502ecc004",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
