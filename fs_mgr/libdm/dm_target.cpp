@@ -262,6 +262,14 @@ bool DmTargetDefaultKey::Valid() const {
     return true;
 }
 
+bool DmTargetDefaultKey::IsHwWrappedSupported(bool* result) {
+    DeviceMapper& dm = DeviceMapper::Instance();
+    DmTargetTypeInfo info;
+    if (!dm.GetTargetByName(name_, &info)) return false;
+    *result = info.IsAtLeast(2, 1, 0);
+    return true;
+}
+
 std::string DmTargetDefaultKey::GetParameterString() const {
     std::vector<std::string> argv;
     argv.emplace_back(cipher_);
@@ -280,6 +288,7 @@ std::string DmTargetDefaultKey::GetParameterString() const {
         extra_argv.emplace_back("allow_discards");
         extra_argv.emplace_back("sector_size:4096");
         extra_argv.emplace_back("iv_large_sectors");
+        if (is_hw_wrapped_) extra_argv.emplace_back("wrappedkey_v0");
     }
     if (!extra_argv.empty()) {
         argv.emplace_back(std::to_string(extra_argv.size()));
