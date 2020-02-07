@@ -31,8 +31,8 @@ cc_library {
     target: {
         windows: {
             compile_multilib: "first",
-	    enabled: true,
-	},
+            enabled: true,
+        },
     },
     export_include_dirs: ["include"],
 

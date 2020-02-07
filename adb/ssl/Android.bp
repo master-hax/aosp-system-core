@@ -38,11 +38,13 @@ cc_library {
     host_supported: true,
     recovery_available: true,
 
-    shared_libs: [
+    static_libs: [
         "libbase",
+    ],
+    shared_libs: [
         "libcrypto",
-        "libcutils",
+//        "libcutils",
         "liblog",
-        "libssl",
+//        "libssl",
     ],
 }

@@ -7,6 +7,12 @@ apex_defaults {
         both: {
             native_shared_libs: ["libadbconnection_client"],
         },
+        first: {
+            native_shared_libs: [
+                "libadb_pairing_auth",
+                "libadb_pairing_connection",
+            ],
+        },
     },
     prebuilts: ["com.android.adbd.init.rc", "com.android.adbd.ld.config.txt"],
 
