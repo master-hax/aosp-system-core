@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a0870f9_a91ae5b3",
+        "filename": "fs_mgr/libfs_avb/fs_avb.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 278,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2020-02-07T09:27:59Z",
+      "side": 1,
+      "message": "Returning true for permissive seems not good (though function-wise it\u0027s the same).\n\nHow about:\n\nstatic bool IsAvbPermissive() {\n    if (IsDeviceUnlocked()) {\n        // Manually putting a file under metadata partition can enforce AVB verification.\n        if (!access(DSU_METADATA_PREFIX \"avb_enforce\", F_OK)) {\n\t    LINFO \u003c\u003c \"Enforcing AVB verification when the device is unlocked\";\n\t    return false;\n        }\n        return true;\n    }\n    return false;\n}",
+      "range": {
+        "startLine": 278,
+        "startChar": 4,
+        "endLine": 278,
+        "endChar": 16
+      },
+      "revId": "bc469a0ab000ea6a18d630e659c47408917ccd6a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5b40e3d2_73c64f2e",
+        "filename": "fs_mgr/libfs_avb/fs_avb.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 423,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2020-02-07T09:27:59Z",
+      "side": 1,
+      "message": "Nit: since we renamed is_device_unlocked at L421, so the log here is no longer valid.\n\nMaybe just remove L423?",
+      "range": {
+        "startLine": 423,
+        "startChar": 27,
+        "endLine": 423,
+        "endChar": 50
+      },
+      "revId": "bc469a0ab000ea6a18d630e659c47408917ccd6a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
