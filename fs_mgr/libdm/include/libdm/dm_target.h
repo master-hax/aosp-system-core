@@ -294,11 +294,14 @@ class DmTargetDefaultKey final : public DmTarget {
     bool Valid() const override;
     std::string GetParameterString() const override;
     static bool IsLegacy(bool* result);
+    static bool IsHwWrappedSupported(bool* result);
+    void SetWrappedKeyV0() { is_hw_wrapped_ = true; }
 
   private:
     static const std::string name_;
     std::string cipher_;
     std::string key_;
+    bool is_hw_wrapped_;
     std::string blockdev_;
     uint64_t start_sector_;
     bool is_legacy_;
