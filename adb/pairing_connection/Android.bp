@@ -1,0 +1,125 @@
+// Copyright (C) 2020 The Android Open Source Project
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+cc_library {
+    name: "libadb_pairing_connection",
+    cflags: [
+        "-Wall",
+        "-Wextra",
+        "-Wthread-safety",
+        "-Werror",
+    ],
+
+    compile_multilib: "both",
+
+    srcs: [
+        "pairing_connection.cpp",
+    ],
+    target: {
+        android: {
+            version_script: "libadb_pairing_connection.map.txt",
+        },
+        windows: {
+            compile_multilib: "first",
+            enabled: true,
+        },
+    },
+    export_include_dirs: ["include"],
+
+    visibility: [
+        "//art:__subpackages__",
+        "//system/core/adb:__subpackages__",
+        "//frameworks/base/services:__subpackages__",
+    ],
+    apex_available: [
+        "com.android.adbd",
+    ],
+
+    // libadb_pairing_connection doesn't need an embedded build number.
+    use_version_lib: false,
+
+    stubs: {
+        symbol_file: "libadb_pairing_connection.map.txt",
+        versions: ["1"],
+    },
+
+    stl: "libc++_static",
+
+    host_supported: true,
+    recovery_available: true,
+
+    static_libs: [
+        "libadb_tls_connection",
+        "libbase",
+    ],
+    shared_libs: [
+        "libcrypto",
+        "liblog",
+        "libadb_pairing_auth",
+        "libadb_protos",
+    ],
+}
+
+cc_library {
+    name: "libadb_pairing_server",
+    cflags: [
+        "-Wall",
+        "-Wextra",
+        "-Wthread-safety",
+        "-Werror",
+    ],
+
+    compile_multilib: "both",
+
+    srcs: [
+        "pairing_server.cpp",
+    ],
+    target: {
+        android: {
+            version_script: "libadb_pairing_server.map.txt",
+        },
+    },
+    export_include_dirs: ["include"],
+
+    visibility: [
+        "//art:__subpackages__",
+        "//system/core/adb:__subpackages__",
+        "//frameworks/base/services:__subpackages__",
+    ],
+    apex_available: [
+        "com.android.adbd",
+    ],
+
+    stubs: {
+        symbol_file: "libadb_pairing_server.map.txt",
+        versions: ["1"],
+    },
+
+    host_supported: true,
+    recovery_available: true,
+
+    stl: "libc++_static",
+
+    static_libs: [
+        "libadb_tls_connection",
+        "libbase",
+    ],
+    shared_libs: [
+        "libcrypto",
+        "liblog",
+        "libadb_pairing_auth",
+        "libadb_pairing_connection",
+        "libadb_protos",
+    ],
+}
