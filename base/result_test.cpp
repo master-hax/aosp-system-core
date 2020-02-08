@@ -418,5 +418,26 @@ TEST(result, errno_chaining_multiple) {
             outer.error().message());
 }
 
+TEST(result, assign_or_return_returns_values) {
+  auto result = []() -> Result<int> {
+    ASSIGN_RESULT_OR_RETURN(int value, Result<int>(42));
+    EXPECT_EQ(value, 42);
+    ASSIGN_RESULT_OR_RETURN(value, Result<int>(43));
+    return 666;
+  }();
+  ASSERT_RESULT_OK(result);
+  EXPECT_EQ(*result, 666);
+}
+
+TEST(result, assign_or_return_returns_errors) {
+  auto result = []() -> Result<int> {
+    ASSIGN_RESULT_OR_RETURN(int value, Result<int>(Error(1)));
+    (void)value;
+    return 666;
+  }();
+  EXPECT_FALSE(result.ok());
+  EXPECT_EQ(result, Result<int>(Error(1)));
+}
+
 }  // namespace base
 }  // namespace android
