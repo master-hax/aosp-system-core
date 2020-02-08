@@ -228,7 +228,65 @@ using Result = android::base::expected<T, ResultError>;
     EXPECT_TRUE(tmp.ok()) << tmp.error(); \
   } while (0)
 
-// TODO: Maybe add RETURN_IF_ERROR() and ASSIGN_OR_RETURN()
+// TODO: Maybe add RETURN_IF_ERROR()
+
+#define ASSIGN_RESULT_OR_RETURN(...)                                                     \
+  RESULT_MACROS_IMPL_GET_VARIADIC_((__VA_ARGS__, RESULT_MACROS_IMPL_ASSIGN_OR_RETURN_3_, \
+                                    RESULT_MACROS_IMPL_ASSIGN_OR_RETURN_2_))             \
+  (__VA_ARGS__)
+
+// Implementation details, do not rely on anything below here.
+
+// MSVC incorrectly expands variadic macros, splice together a macro call to work around the bug.
+#define RESULT_MACROS_IMPL_GET_VARIADIC_HELPER_(_1, _2, _3, NAME, ...) NAME
+#define RESULT_MACROS_IMPL_GET_VARIADIC_(args) RESULT_MACROS_IMPL_GET_VARIADIC_HELPER_ args
+
+// TODO: use [[unlikely]] in C++20 mode
+#define RESULT_MACROS_UNLIKELY(x) x
+
+#define RESULT_MACROS_IMPL_ASSIGN_OR_RETURN_2_(lhs, rexpr) \
+  RESULT_MACROS_IMPL_ASSIGN_OR_RETURN_3_(lhs, rexpr, std::move(_))
+#define RESULT_MACROS_IMPL_ASSIGN_OR_RETURN_3_(lhs, rexpr, error_expression)                      \
+  RESULT_MACROS_IMPL_ASSIGN_OR_RETURN_(RESULT_MACROS_IMPL_CONCAT_(_result, __LINE__), lhs, rexpr, \
+                                       error_expression)
+#define RESULT_MACROS_IMPL_ASSIGN_OR_RETURN_(result, lhs, rexpr, error_expression) \
+  auto result = (rexpr);                                                           \
+  if (RESULT_MACROS_UNLIKELY(!result.ok())) return result;                         \
+  RESULT_MACROS_IMPL_UNPARENTHESIZE_IF_PARENTHESIZED(lhs) = std::move(result).value()
+
+// Internal helpers for macro expansion.
+#define RESULT_MACROS_IMPL_EAT(...)
+#define RESULT_MACROS_IMPL_REM(...) __VA_ARGS__
+#define RESULT_MACROS_IMPL_EMPTY()
+
+// Internal helpers for emptyness arguments check.
+#define RESULT_MACROS_IMPL_IS_EMPTY_INNER(...) \
+  RESULT_MACROS_IMPL_IS_EMPTY_INNER_I(__VA_ARGS__, 0, 1)
+#define RESULT_MACROS_IMPL_IS_EMPTY_INNER_I(e0, e1, is_empty, ...) is_empty
+
+#define RESULT_MACROS_IMPL_IS_EMPTY(...) RESULT_MACROS_IMPL_IS_EMPTY_I(__VA_ARGS__)
+#define RESULT_MACROS_IMPL_IS_EMPTY_I(...) RESULT_MACROS_IMPL_IS_EMPTY_INNER(_, ##__VA_ARGS__)
+
+// Internal helpers for if statement.
+#define RESULT_MACROS_IMPL_IF_1(_Then, _Else) _Then
+#define RESULT_MACROS_IMPL_IF_0(_Then, _Else) _Else
+#define RESULT_MACROS_IMPL_IF(_Cond, _Then, _Else) \
+  RESULT_MACROS_IMPL_CONCAT_(RESULT_MACROS_IMPL_IF_, _Cond)(_Then, _Else)
+
+// Expands to 1 if the input is parenthesized. Otherwise expands to 0.
+#define RESULT_MACROS_IMPL_IS_PARENTHESIZED(...) \
+  RESULT_MACROS_IMPL_IS_EMPTY(RESULT_MACROS_IMPL_EAT __VA_ARGS__)
+
+// If the input is parenthesized, removes the parentheses. Otherwise expands to
+// the input unchanged.
+#define RESULT_MACROS_IMPL_UNPARENTHESIZE_IF_PARENTHESIZED(...)                                   \
+  RESULT_MACROS_IMPL_IF(RESULT_MACROS_IMPL_IS_PARENTHESIZED(__VA_ARGS__), RESULT_MACROS_IMPL_REM, \
+                        RESULT_MACROS_IMPL_EMPTY())                                               \
+  __VA_ARGS__
+
+// Internal helper for concatenating macro values.
+#define RESULT_MACROS_IMPL_CONCAT_INNER_(x, y) x##y
+#define RESULT_MACROS_IMPL_CONCAT_(x, y) RESULT_MACROS_IMPL_CONCAT_INNER_(x, y)
 
 }  // namespace base
 }  // namespace android
