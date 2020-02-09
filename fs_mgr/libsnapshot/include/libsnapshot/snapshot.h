@@ -260,6 +260,17 @@ class SnapshotManager final {
     //   a.reset() // does nothing
     std::unique_ptr<AutoDevice> EnsureMetadataMounted();
 
+    // Returns true if there is an unverified update that needs to be
+    // cancelled. A failed update should be cancelled if one of the following:
+    // - The update has been rolled back and the device is booting from the old
+    //   slot;
+    // - The device has been flashed after the update (including source or
+    //   target slot, see IsAnySnapshotCancelled).
+    // If this function returns true, a client should call CancelUpdate() and
+    // clean up any persistent state the client has. (For example, update_engine
+    // should delete markers).
+    bool ShouldCleanupFailedUpdate();
+
   private:
     FRIEND_TEST(SnapshotTest, CleanFirstStageMount);
     FRIEND_TEST(SnapshotTest, CreateSnapshot);
@@ -373,10 +384,34 @@ class SnapshotManager final {
 
     // Check for a cancelled or rolled back merge, returning true if such a
     // condition was detected and handled.
+    //
+    // This function is deprecated because it deletes snapshots when cancelled
+    // / roolled back merge is detected without cleaning up states in
+    // update_ngine. Use ShouldCancelFailedupdate() if possible.
+    //
+    // TODO(b/147696014): snapshotctl merge should not delete snapshots even
+    // when it detects flashing.
     bool HandleCancelledUpdate(LockedFile* lock);
 
     // Helper for HandleCancelledUpdate. Assumes booting from new slot.
+    // Note that it handles errors differently than IsAnySnapshotsCancelled;
+    // see implementation for details.
     bool AreAllSnapshotsCancelled(LockedFile* lock);
+
+    // Helper for ShouldCleanupFailedUpdate. Assumes booting from new slot.
+    // Note that it handles errors differently than AreAllSnapshotsCancelled;
+    // see implementation for details.
+    bool IsAnySnapshotCancelled(LockedFile* lock);
+
+    // Helper for AreAllSnapshotsCancelled and IsAnySnapshotCancelled.
+    // Determine whether partition names in |snapshots| have been flashed and
+    // store result to |out|.
+    // Return true if values are successfully retrieved and false on error
+    // (e.g. super partition metadata cannot be read). When it returns true,
+    // |out| stores true for partitions that have been flashed and false for
+    // partitions that have not been flashed.
+    bool GetSnapshotFlashingStatus(LockedFile* lock, const std::vector<std::string>& snapshots,
+                                   std::map<std::string, bool>* out);
 
     // Remove artifacts created by the update process, such as snapshots, and
     // set the update state to None.

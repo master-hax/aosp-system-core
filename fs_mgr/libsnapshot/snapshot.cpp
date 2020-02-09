@@ -17,6 +17,7 @@
 #include <dirent.h>
 #include <math.h>
 #include <sys/file.h>
+#include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/unistd.h>
 
@@ -1213,6 +1214,28 @@ bool SnapshotManager::AreAllSnapshotsCancelled(LockedFile* lock) {
         return true;
     }
 
+    std::map<std::string, bool> snapshot_flashing_status;
+
+    if (!GetSnapshotFlashingStatus(lock, snapshots, &snapshot_flashing_status)) {
+        LOG(WARNING) << "Failed to determine whether partitions have been flashed. Not"
+                     << "removing update states.";
+        return false;
+    }
+
+    bool all_snapshots_cancelled =
+            std::all_of(snapshot_flashing_status.begin(), snapshot_flashing_status.end(),
+                        [](const auto& pair) { return pair.second; });
+
+    if (all_snapshots_cancelled) {
+        LOG(WARNING) << "All partitions are re-flashed after update, removing all update states.";
+    }
+    return all_snapshots_cancelled;
+}
+
+bool SnapshotManager::GetSnapshotFlashingStatus(LockedFile* lock,
+                                                const std::vector<std::string>& snapshots,
+                                                std::map<std::string, bool>* out) {
+    CHECK(lock);
     auto source_slot_suffix = ReadUpdateSourceSlotSuffix();
     if (source_slot_suffix.empty()) {
         return false;
@@ -1238,20 +1261,17 @@ bool SnapshotManager::AreAllSnapshotsCancelled(LockedFile* lock) {
         return false;
     }
 
-    bool all_snapshots_cancelled = true;
     for (const auto& snapshot_name : snapshots) {
         if (GetMetadataPartitionState(*metadata, snapshot_name) ==
             MetadataPartitionState::Updated) {
-            all_snapshots_cancelled = false;
-            continue;
+            out->emplace(snapshot_name, false);
+        } else {
+            // Delete snapshots for partitions that are re-flashed after the update.
+            LOG(WARNING) << "Detected re-flashing of partition " << snapshot_name << ".";
+            out->emplace(snapshot_name, true);
         }
-        // Delete snapshots for partitions that are re-flashed after the update.
-        LOG(WARNING) << "Detected re-flashing of partition " << snapshot_name << ".";
     }
-    if (all_snapshots_cancelled) {
-        LOG(WARNING) << "All partitions are re-flashed after update, removing all update states.";
-    }
-    return all_snapshots_cancelled;
+    return true;
 }
 
 bool SnapshotManager::RemoveAllSnapshots(LockedFile* lock) {
@@ -2579,6 +2599,80 @@ CreateResult SnapshotManager::RecoveryCreateSnapshotDevices() {
         return CreateResult::ERROR;
     }
     return CreateResult::CREATED;
+}
+
+bool SnapshotManager::IsAnySnapshotCancelled(LockedFile* lock) {
+    // Be aggressive about clean up; if we clean up incorrectly, update_engine
+    // can always try again.
+    std::vector<std::string> snapshots;
+    if (!ListSnapshots(lock, &snapshots)) {
+        LOG(WARNING) << "Failed to list snapshots to determine whether device has been flashed "
+                     << "after applying an update. Will clean up update states.";
+        return true;
+    }
+
+    std::map<std::string, bool> snapshot_flashing_status;
+
+    if (!GetSnapshotFlashingStatus(lock, snapshots, &snapshot_flashing_status)) {
+        LOG(WARNING) << "Failed to determine whether partitions have been flashed. Will clean up "
+                        "update states.";
+        return true;
+    }
+
+    bool any_snapshot_cancelled =
+            std::any_of(snapshot_flashing_status.begin(), snapshot_flashing_status.end(),
+                        [](const auto& pair) { return pair.second; });
+
+    if (any_snapshot_cancelled) {
+        LOG(WARNING) << "Some partitions are re-flashed after update, removing all update states.";
+    }
+    return any_snapshot_cancelled;
+}
+
+bool SnapshotManager::ShouldCleanupFailedUpdate() {
+    auto lock = LockShared();
+    if (!lock) {
+        LOG(WARNING) << "Can't acquire lock. Not cancelling update.";
+        return false;
+    }
+
+    auto state = ReadSnapshotUpdateStatus(lock.get()).state();
+    if (state != UpdateState::Unverified) {
+        LOG(INFO) << "Previous update state is " << state << ", no need to cancel.";
+        return false;
+    }
+
+    auto current_slot = GetCurrentSlot();
+    switch (current_slot) {
+        case Slot::Unknown:
+            LOG(WARNING)
+                    << "Inconsistent state; boot indicator is empty even though update state is "
+                    << "unverified. Not cancelling potential failed update.";
+            return false;
+        case Slot::Source:
+            LOG(INFO) << "Bootinf from '" << current_slot << "' slot, no need to cancel.";
+            return false;
+        case Slot::Target:
+            break;
+    }
+
+    LOG(INFO) << "Potential failed update detected, doing additional checks.";
+    // If one of the following case is true, schedule cancellation.
+
+    struct stat buf;
+    if (stat(GetRollbackIndicatorPath().c_str(), &buf) == 0) {
+        LOG(INFO) << "Rollback detected, failed update should be canceled.";
+        return true;
+    }
+
+    if (IsAnySnapshotCancelled(lock.get())) {
+        LOG(INFO) << "Flashing detected, failed update should be canceled.";
+        return true;
+    }
+
+    LOG(INFO) << "No rollback or flashing detected. Device might not have attempted to "
+              << "boot into new version. Keeping the snapshots.";
+    return false;
 }
 
 }  // namespace snapshot
