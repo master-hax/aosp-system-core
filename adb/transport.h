@@ -32,7 +32,7 @@
 #include <thread>
 #include <unordered_set>
 
-#include <adb/ssl/tls_connection.h>
+//#include <adb/ssl/tls_connection.h>
 #include <android-base/macros.h>
 #include <android-base/thread_annotations.h>
 #include <openssl/rsa.h>
@@ -43,6 +43,14 @@
 #include "usb.h"
 
 typedef std::unordered_set<std::string> FeatureSet;
+
+namespace adb {
+namespace ssl {
+
+class TlsConnection;
+
+}  // namespace ssl
+}  // namespace adb
 
 const FeatureSet& supported_features();
 
@@ -172,7 +180,8 @@ struct BlockingConnectionAdapter : public Connection {
 };
 
 struct FdConnection : public BlockingConnection {
-    explicit FdConnection(unique_fd fd) : fd_(std::move(fd)) {}
+    explicit FdConnection(unique_fd fd);
+    ~FdConnection();
 
     bool Read(apacket* packet) override final;
     bool Write(apacket* packet) override final;

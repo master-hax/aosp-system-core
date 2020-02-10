@@ -39,6 +39,7 @@
 #include <openssl/obj_mac.h>
 #include <openssl/rsa.h>
 #include <openssl/sha.h>
+#include <openssl/ssl.h>
 
 #include "adb.h"
 #include "adb_auth.h"

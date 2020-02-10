@@ -38,6 +38,7 @@
 
 #include <adb/crypto/rsa_2048_key.h>
 #include <adb/crypto/x509_generator.h>
+#include <adb/ssl/tls_connection.h>
 #include <android-base/logging.h>
 #include <android-base/parsenetaddress.h>
 #include <android-base/stringprintf.h>
@@ -421,6 +422,10 @@ bool BlockingConnectionAdapter::Write(std::unique_ptr<apacket> packet) {
     cv_.notify_one();
     return true;
 }
+
+FdConnection::FdConnection(unique_fd fd) : fd_(std::move(fd)) {}
+
+FdConnection::~FdConnection() {}
 
 bool FdConnection::DispatchRead(void* buf, size_t len) {
     if (tls_ != nullptr) {

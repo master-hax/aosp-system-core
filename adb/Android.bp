@@ -259,7 +259,7 @@ cc_library_host_static {
     static_libs: [
         "libadb_crypto",
         "libadb_protos",
-        "libadbwifi_pairing_connection",
+        "libadb_pairing_connection",
         "libadb_tls_connection",
         "libbase",
         "libcrypto_utils",
@@ -279,7 +279,7 @@ cc_test_host {
     defaults: ["adb_defaults"],
     srcs: libadb_test_srcs,
     static_libs: [
-        "libadb_crypto",
+//        "libadb_crypto",
         "libadb_host",
         "libbase",
         "libcutils",
@@ -357,8 +357,8 @@ cc_binary_host {
     static_libs: [
         "libadb_crypto",
         "libadb_host",
-	"libadbwifi_pairing_auth",
-	"libadbwifi_pairing_connection",
+	"libadb_pairing_auth",
+	"libadb_pairing_connection",
         "libadb_protos",
         "libadb_tls_connection",
         "libandroidfw",
@@ -440,7 +440,7 @@ cc_library_static {
         "libadb_crypto",
         "libadb_protos",
         "libadbd_auth",
-        "libadbwifi_pairing_connection",
+        "libadb_pairing_connection",
         "libadb_tls_connection",
         "libasyncio",
         "libbase",
@@ -499,7 +499,7 @@ cc_library {
         "libadb_crypto",
         "libadb_protos",
         "libadbd_auth",
-        "libadbwifi_pairing_connection",
+        "libadb_pairing_connection",
         "libadb_tls_connection",
         "libasyncio",
         "libbase",
@@ -551,7 +551,7 @@ cc_library {
     shared_libs: [
         "libadb_crypto",
         "libadbd_auth",
-        "libadbwifi_pairing_connection",
+        "libadb_pairing_connection",
         "libadb_tls_connection",
         "libadbd_services",
         "libasyncio",
@@ -590,11 +590,7 @@ cc_binary {
 
     static_libs: [
         "libadbconnection_server",
-        "libadb_crypto",
         "libadbd",
-        "libadbwifi_pairing_connection",
-        "libadb_protos",
-        "libadb_tls_connection",
         "libadbd_services",
         "libasyncio",
         "libbase",
@@ -611,6 +607,10 @@ cc_binary {
     ],
 
     shared_libs: [
+        "libadb_crypto",
+        "libadb_pairing_connection",
+        "libadb_protos",
+        "libadb_tls_connection",
         "libadbd_auth",
         "libcrypto",
     ],
@@ -622,9 +622,6 @@ phony {
     name: "adbd_system_binaries",
     required: [
         "abb",
-        "libadbwifi_pairing_connection",
-        "libadb_tls_connection",
-        "libprotobuf-cpp-lite",
         "reboot",
         "set-verity-state",
     ]
@@ -690,7 +687,8 @@ cc_test {
     static_libs: [
         "libadbd",
         "libadbd_auth",
-        "libadbwifi_pairing_connection",
+        "libadb_crypto",
+        "libadb_pairing_connection",
         "libadb_tls_connection",
         "libbase",
         "libcutils",
@@ -807,7 +805,7 @@ cc_test_host {
         "fastdeploy/deploypatchgenerator/patch_utils_test.cpp",
     ],
     static_libs: [
-        "libadb_crypto",
+//        "libadb_crypto",
         "libadb_host",
         "libandroidfw",
         "libbase",

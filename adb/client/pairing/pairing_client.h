@@ -24,7 +24,7 @@
 #include <string_view>
 #include <vector>
 
-#include "adbwifi/pairing/pairing_connection.h"
+#include "adb/pairing/pairing_connection.h"
 
 namespace adbwifi {
 namespace pairing {
