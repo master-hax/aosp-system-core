@@ -11,7 +11,7 @@ namespace.default.isolated = true
 namespace.default.permitted.paths = /system/${LIB}
 namespace.default.asan.permitted.paths = /system/${LIB}
 namespace.default.links = apex,art,platform
-namespace.default.link.apex.shared_libs = libcrypto.so
+namespace.default.link.apex.shared_libs = libcrypto.so:libadb_crypto.so:libadb_pairing_connection.so:libadb_tls_connection.so:libadb_protos.so
 namespace.default.link.art.shared_libs = libadbconnection_server.so
 
 # libcrypto.so in the APEX might be a symlink to /system, for APEXes bundled with the system image.
