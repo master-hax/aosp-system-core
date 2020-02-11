@@ -313,8 +313,8 @@ static void crash_handler(siginfo_t* info, ucontext_t* ucontext, void* abort_mes
   static int lock_count;
 
   crash_mutex.lock();
-  if (lock_count++ > 0) {
-    async_safe_format_log(ANDROID_LOG_ERROR, "libc", "recursed signal handler call, aborting");
+  if (lock_count++ > 1) {
+    async_safe_format_log(ANDROID_LOG_ERROR, "libc", "recursed more than once in signal handler");
     signal(SIGABRT, SIG_DFL);
     raise(SIGABRT);
     sigset_t sigset;
