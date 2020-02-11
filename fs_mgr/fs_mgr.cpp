@@ -359,7 +359,7 @@ static void tune_quota(const std::string& blk_device, const FstabEntry& entry,
         return;
     }
 
-    const char* argv[] = {TUNE2FS_BIN, nullptr, nullptr, blk_device.c_str()};
+    const char* argv[] = {TUNE2FS_BIN, nullptr, nullptr, "-Ometadata_csum", blk_device.c_str()};
 
     if (want_quota) {
         LINFO << "Enabling quotas on " << blk_device;
