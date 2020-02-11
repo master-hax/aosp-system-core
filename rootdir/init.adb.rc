@@ -1,0 +1,35 @@
+# Copyright (C) 2020 The Android Open Source Project
+#
+# ADB configuration common for all android devices
+#
+
+# Set default values for sys.adb.wifi and sys.adb.usb early in boot sequence.
+# It will be over overriden later on in the boot sequence.
+on init
+    setprop sys.adb.wifi 0
+    setprop sys.adb.usb 0
+
+# Disable adbd when both usb and wifi debugging is off
+on property:sys.adb.wifi=0 && property:sys.adb.usb=0
+    stop adbd
+
+# adb over USB is enabled
+on property:sys.adb.usb=1
+    start adbd
+
+# adb over Wi-Fi is enabled
+on property:sys.adb.wifi=1
+    start adbd
+
+# Clear the port information when adb over Wi-Fi is disabled
+on property:sys.adb.wifi=0
+    setprop service.adb.tls.port ""
+
+# TODO: We can change this later on if we want to use adb over WiFi
+# earlier in the boot sequence.
+on property:sys.boot_completed=1 && property:persist.sys.adb.wifi=*
+    setprop sys.adb.wifi ${persist.sys.adb.wifi}
+
+on userspace-reboot-requested
+    setprop sys.adb.wifi 0
+    setprop sys.adb.usb 0
