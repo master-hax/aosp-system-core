@@ -58,7 +58,7 @@ static int get_dev_sz(const std::string& fs_blkdev, uint64_t* dev_sz) {
 }
 
 static int format_ext4(const std::string& fs_blkdev, const std::string& fs_mnt_point,
-                       bool crypt_footer, bool needs_projid) {
+                       bool crypt_footer, bool needs_projid, bool needs_metadata_csum) {
     uint64_t dev_sz;
     int rc = 0;
 
@@ -82,6 +82,15 @@ static int format_ext4(const std::string& fs_blkdev, const std::string& fs_mnt_p
         mke2fs_args.push_back("512");
     }
     // casefolding is enabled via tune2fs during boot.
+
+    if (needs_metadata_csum) {
+        mke2fs_args.push_back("-O");
+        mke2fs_args.push_back("metadata_csum");
+        mke2fs_args.push_back("-O");
+        mke2fs_args.push_back("64bit");
+        mke2fs_args.push_back("-O");
+        mke2fs_args.push_back("extent");
+    }
 
     mke2fs_args.push_back(fs_blkdev.c_str());
     mke2fs_args.push_back(size_str.c_str());
@@ -153,7 +162,7 @@ int fs_mgr_do_format(const FstabEntry& entry, bool crypt_footer) {
         return format_f2fs(entry.blk_device, entry.length, crypt_footer, needs_projid,
                            needs_casefold);
     } else if (entry.fs_type == "ext4") {
-        return format_ext4(entry.blk_device, entry.mount_point, crypt_footer, needs_projid);
+        return format_ext4(entry.blk_device, entry.mount_point, crypt_footer, needs_projid, entry.fs_mgr_flags.ext_meta_csum);
     } else {
         LERROR << "File system type '" << entry.fs_type << "' is not supported";
         return -EINVAL;

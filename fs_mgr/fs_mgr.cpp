@@ -78,6 +78,7 @@
 #define F2FS_FSCK_BIN   "/system/bin/fsck.f2fs"
 #define MKSWAP_BIN      "/system/bin/mkswap"
 #define TUNE2FS_BIN     "/system/bin/tune2fs"
+#define RESIZE2FS_BIN     "/system/bin/resize2fs"
 
 #define FSCK_LOG_FILE   "/dev/fscklogs/log"
 
@@ -126,6 +127,7 @@ enum FsStatFlags {
     FS_STAT_ENABLE_ENCRYPTION_FAILED = 0x40000,
     FS_STAT_ENABLE_VERITY_FAILED = 0x80000,
     FS_STAT_ENABLE_CASEFOLD_FAILED = 0x100000,
+    FS_STAT_ENABLE_METADATA_CSUM_FAILED = 0x200000,
 };
 
 static void log_fs_stat(const std::string& blk_device, int fs_stat) {
@@ -542,6 +544,55 @@ static void tune_casefold(const std::string& blk_device, const struct ext4_super
     }
 }
 
+static bool resize2fs_available(void) {
+    return access(RESIZE2FS_BIN, X_OK) == 0;
+}
+
+static bool run_resize2fs(const char* argv[], int argc) {
+    int ret;
+
+    ret = logwrap_fork_execvp(argc, argv, nullptr, false, LOG_KLOG, true, nullptr);
+    return ret == 0;
+}
+
+// Enable metadata_csum
+static void tune_metadata_csum(const std::string& blk_device, const struct ext4_super_block* sb,
+                          int* fs_stat) {
+    bool has_meta_csum = (sb->s_feature_ro_compat & cpu_to_le32(EXT4_FEATURE_RO_COMPAT_METADATA_CSUM)) != 0;
+    bool want_meta_csum = entry.fs_mgr_flags.ext_meta_csum;
+
+    if (!want_meta_csum || has_meta_csum) return;
+
+    if (!tune2fs_available()) {
+        LERROR << "Unable to enable metadata_csum on " << blk_device
+               << " because " TUNE2FS_BIN " is missing";
+    }
+    if (!resiez2fs_available()) {
+        LERROR << "Unable to enable metadata_csum on " << blk_device
+               << " because " RESIZE2FS_BIN " is missing";
+        return;
+    }
+
+    LINFO << "Enabling ext4 metadata_csum on " << blk_device;
+
+    const char* argv_t[] = {TUNE2FS_BIN, "-O", "metadata_csum,64bit,extent", blk_device.c_str()};
+    const char* argv_r[] = {RESIZE2FS_BIN, "-b", blk_device.c_str()};
+
+    if (!run_tune2fs(argv_t, ARRAY_SIZE(argv_t))) {
+        LERROR << "Failed to run " TUNE2FS_BIN " to enable "
+               << "ext4 metadata_csum on " << blk_device;
+        *fs_stat |= FS_STAT_ENABLE_METADATA_CSUM_FAILED;
+    } else {
+        if (!run_resize2fs(argv_r, ARRAY_SIZE(argv_r))) {
+            LERROR << "Failed to run " RESIZE2FS_BIN " to enable "
+                   << "ext4 metadata_csum on " << blk_device;
+            *fs_stat |= FS_STAT_ENABLE_METADATA_CSUM_FAILED;
+        }
+    }
+}
+
+// Read the primary superblock from an f2fs filesystem.  On failure return
+/
 // Read the primary superblock from an f2fs filesystem.  On failure return
 // false.  If it's not an f2fs filesystem, also set FS_STAT_INVALID_MAGIC.
 #define F2FS_BLKSIZE 4096
@@ -632,7 +683,7 @@ static int prepare_fs_for_mount(const std::string& blk_device, const FstabEntry&
 
     if (is_extfs(entry.fs_type) &&
         (entry.reserved_size != 0 || entry.fs_mgr_flags.file_encryption ||
-         entry.fs_mgr_flags.fs_verity)) {
+         entry.fs_mgr_flags.fs_verity) || entry.fs_mgr_flags.ext_meta_csum) {
         struct ext4_super_block sb;
 
         if (read_ext4_superblock(blk_device, &sb, &fs_stat)) {
@@ -640,6 +691,7 @@ static int prepare_fs_for_mount(const std::string& blk_device, const FstabEntry&
             tune_encrypt(blk_device, entry, &sb, &fs_stat);
             tune_verity(blk_device, entry, &sb, &fs_stat);
             tune_casefold(blk_device, &sb, &fs_stat);
+            tune_metadata_csum(blk_device, &sb, &fs_stat);
         }
     }
 
