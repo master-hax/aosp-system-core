@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b7544a0a_735d3660",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/snapshot.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 390,
+      "author": {
+        "id": 1409599
+      },
+      "writtenOn": "2020-02-11T00:39:14Z",
+      "side": 1,
+      "message": "typo",
+      "range": {
+        "startLine": 390,
+        "startChar": 14,
+        "endLine": 390,
+        "endChar": 15
+      },
+      "revId": "2be97020007f9a0cb423b8050e1b4e34ad34f1d1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "70fef28e_7e994fc6",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2663,
+      "author": {
+        "id": 1409599
+      },
+      "writtenOn": "2020-02-11T00:39:14Z",
+      "side": 1,
+      "message": "if (access(GetRollbackIndicatorPath().c_str(), F_OK)) {",
+      "range": {
+        "startLine": 2662,
+        "startChar": 4,
+        "endLine": 2663,
+        "endChar": 62
+      },
+      "revId": "2be97020007f9a0cb423b8050e1b4e34ad34f1d1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
