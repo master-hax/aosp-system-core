@@ -30,6 +30,8 @@ std::string Return::string() const {
             [[fallthrough]];
         case ErrorCode::NO_SPACE:
             return strerror(-static_cast<int>(error_code()));
+        case ErrorCode::NEEDS_CLEANUP:
+            return "Needs cleanup";
     }
 }
 

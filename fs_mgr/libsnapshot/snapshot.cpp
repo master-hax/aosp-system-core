@@ -850,7 +850,8 @@ UpdateState SnapshotManager::CheckMergeState() {
         // lock, because flock() might have failed.
         AcknowledgeMergeSuccess(lock.get());
     } else if (state == UpdateState::Cancelled) {
-        RemoveAllUpdateState(lock.get());
+        LOG(INFO) << __func__ << ": Update should be cancelled, but deferring it to avoid "
+                  << "inconsistent state in update_engine";
     }
     return state;
 }
@@ -1202,9 +1203,10 @@ bool SnapshotManager::HandleCancelledUpdate(LockedFile* lock) {
         return false;
     }
 
-    // If all snapshots were reflashed, then cancel the entire update.
+    // If all snapshots were reflashed, then the entire update should be cancelled.
     if (AreAllSnapshotsCancelled(lock)) {
-        RemoveAllUpdateState(lock);
+        LOG(INFO) << __func__ << "Update should be cancelled, but deferring it to avoid "
+                  << "inconsistent states in update_engine.";
         return true;
     }
 
@@ -2514,6 +2516,15 @@ UpdateState SnapshotManager::InitiateMergeAndWait() {
         LOG(INFO) << "Can't find any snapshot to merge.";
         return state;
     }
+    if (state == UpdateState::Cancelled) {
+        // Merge can only be initiated by snapshotctl. It is not responsible
+        // for cleaning up cancelled update.
+        LOG(INFO) << "Merge finished with state \"" << state
+                  << "\". Leaving state = " << GetUpdateState()
+                  << " but update_engine should call CancelUpdate() "
+                  << "to clean up as soon as possible.";
+        return state;
+    }
     if (state == UpdateState::Unverified) {
         if (GetCurrentSlot() != Slot::Target) {
             LOG(INFO) << "Cannot merge until device reboots.";
@@ -2546,11 +2557,11 @@ Return SnapshotManager::WaitForMerge() {
         LOG(INFO) << "Wait for merge exits with state " << state;
         switch (state) {
             case UpdateState::None:
-                [[fallthrough]];
-            case UpdateState::MergeCompleted:
-                [[fallthrough]];
-            case UpdateState::Cancelled:
                 return Return::Ok();
+            case UpdateState::MergeCompleted:
+                return Return::Ok();
+            case UpdateState::Cancelled:
+                return Return::NeedsCleanup();
             case UpdateState::MergeNeedsReboot:
                 return Return::NeedsReboot();
             default:
