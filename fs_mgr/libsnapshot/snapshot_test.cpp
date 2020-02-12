@@ -1818,6 +1818,77 @@ std::vector<uint64_t> ImageManagerTestParams() {
 
 INSTANTIATE_TEST_SUITE_P(ImageManagerTest, ImageManagerTest, ValuesIn(ImageManagerTestParams()));
 
+class ShouldCleanUpFailedUpdateTest : public SnapshotUpdateTest {
+  protected:
+    void SetUp() override {
+        SnapshotUpdateTest::SetUp();
+#ifdef SKIP_TEST_IN_PRESUBMIT
+        GTEST_SKIP() << "WIP failure b/148889015";
+#endif
+        ASSERT_EQ(CleanUpAction::NONE, sm->ShouldCleanUpFailedUpdate())
+                << "Should not have any failed update to clean up.";
+        AddOperationForPartitions();
+        // Execute the update.
+        ASSERT_TRUE(sm->BeginUpdate());
+        ASSERT_EQ(CleanUpAction::NONE, sm->ShouldCleanUpFailedUpdate())
+                << "Should not cleanup in initiated stage";
+        ASSERT_TRUE(sm->CreateUpdateSnapshots(manifest_));
+        ASSERT_EQ(CleanUpAction::NONE, sm->ShouldCleanUpFailedUpdate())
+                << "Should not cleanup in initiated stage";
+        ASSERT_TRUE(MapUpdateSnapshots());
+        ASSERT_TRUE(sm->FinishedSnapshotWrites());
+        ASSERT_EQ(CleanUpAction::NONE, sm->ShouldCleanUpFailedUpdate())
+                << "Should not cleanup without rollback indicator";
+        // Simulate shutting down the device.
+        ASSERT_TRUE(UnmapAll());
+    }
+};
+
+TEST_F(ShouldCleanUpFailedUpdateTest, SuccessfulUpdate) {
+    // After reboot, init does first stage mount.
+    auto init = SnapshotManager::NewForFirstStageMount(new TestDeviceInfo(fake_super, "_b"));
+    ASSERT_NE(nullptr, init);
+    ASSERT_EQ(CleanUpAction::NONE, init->ShouldCleanUpFailedUpdate())
+            << "Should not cleanup when booting at target slot";
+    ASSERT_FALSE(access(init->GetRollbackIndicatorPath().c_str(), R_OK) == 0);
+    ASSERT_TRUE(init->NeedSnapshotsInFirstStageMount());
+    ASSERT_FALSE(access(init->GetRollbackIndicatorPath().c_str(), R_OK) == 0);
+    ASSERT_EQ(CleanUpAction::NONE, init->ShouldCleanUpFailedUpdate())
+            << "Should not cleanup when booting at target slot";
+    ASSERT_TRUE(init->CreateLogicalAndSnapshotPartitions("super", snapshot_timeout_));
+    init.reset();
+
+    // SnapshotManager created by snapshotctl
+    auto snapshotctl_sm = SnapshotManager::New(new TestDeviceInfo(fake_super, "_b"));
+    ASSERT_NE(nullptr, snapshotctl_sm);
+    ASSERT_TRUE(snapshotctl_sm->InitiateMerge());
+    ASSERT_EQ(CleanUpAction::NONE, snapshotctl_sm->ShouldCleanUpFailedUpdate())
+            << "Should not cleanup when booting at target slot";
+    ASSERT_EQ(UpdateState::MergeCompleted, snapshotctl_sm->ProcessUpdateState());
+    ASSERT_EQ(CleanUpAction::NONE, snapshotctl_sm->ShouldCleanUpFailedUpdate())
+            << "Should not cleanup when booting at target slot";
+}
+
+TEST_F(ShouldCleanUpFailedUpdateTest, RollbackBeforeMerge) {
+    // After reboot, init does first stage mount.
+    auto init = SnapshotManager::NewForFirstStageMount(new TestDeviceInfo(fake_super, "_b"));
+    ASSERT_NE(nullptr, init);
+    ASSERT_TRUE(init->NeedSnapshotsInFirstStageMount());
+    // Simulate shutdown
+    init.reset();
+    ASSERT_TRUE(UnmapAll());
+    // Simulate rollback to source slot
+    init = SnapshotManager::NewForFirstStageMount(new TestDeviceInfo(fake_super, "_a"));
+    ASSERT_FALSE(init->NeedSnapshotsInFirstStageMount());
+    init.reset();
+    // Calling NeedSnapshotInFirstStageMount on source slot should set the
+    // rollback indicator.
+    ASSERT_TRUE(access(sm->GetRollbackIndicatorPath().c_str(), R_OK) == 0);
+    ASSERT_EQ(CleanUpAction::CANCEL, sm->ShouldCleanUpFailedUpdate())
+            << "Should cleanup when booting at source slot with unverified state";
+    ASSERT_TRUE(sm->CancelUpdate());
+}
+
 }  // namespace snapshot
 }  // namespace android
 
