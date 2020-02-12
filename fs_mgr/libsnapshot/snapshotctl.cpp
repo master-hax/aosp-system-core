@@ -29,8 +29,6 @@
 #include <libsnapshot/snapshot_stats.h>
 #include <statslog.h>
 
-#include "utility.h"
-
 using namespace std::string_literals;
 
 int Usage() {
