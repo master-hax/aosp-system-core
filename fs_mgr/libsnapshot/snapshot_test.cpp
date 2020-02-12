@@ -592,6 +592,7 @@ TEST_F(SnapshotTest, FlashSuperDuringMerge) {
     // Because the status is Merging, we must call ProcessUpdateState, which should
     // detect a cancelled update.
     ASSERT_EQ(sm->ProcessUpdateState(), UpdateState::Cancelled);
+    ASSERT_TRUE(sm->CancelUpdate());
     ASSERT_EQ(sm->GetUpdateState(), UpdateState::None);
 }
 
@@ -1746,7 +1747,10 @@ TEST_P(FlashAfterUpdateTest, FlashSlotAfterUpdate) {
 
     bool after_merge = std::get<1>(GetParam());
     if (after_merge) {
+        auto sm_b = SnapshotManager::New(new TestDeviceInfo(fake_super, "_b"));
+        EXPECT_EQ(CleanUpAction::INITIATE, sm_b->ShouldCleanUpFailedUpdate());
         ASSERT_TRUE(InitiateMerge("_b"));
+        EXPECT_EQ(CleanUpAction::WAIT_FOR_MERGE, sm_b->ShouldCleanUpFailedUpdate());
         // Simulate shutting down the device after merge has initiated.
         ASSERT_TRUE(UnmapAll());
     }
@@ -1770,9 +1774,14 @@ TEST_P(FlashAfterUpdateTest, FlashSlotAfterUpdate) {
             new TestDeviceInfo(fake_super, flashed_slot_suffix));
     ASSERT_NE(init, nullptr);
 
-    if (flashed_slot && after_merge) {
-        ASSERT_TRUE(init->NeedSnapshotsInFirstStageMount());
-    }
+    // NeedSnapshotsInFirstStateMount doesn't check UPDATED flag, so it
+    // still returns true on the target slot. However,
+    // CreateLogicalAndSnapshotPartitions will handle mapping correctly.
+    // It still needs to be called to fully mimic the boot process because
+    // it places a rollback indicator, which changes states.
+    bool need_snapshots = flashed_slot == 1;
+    ASSERT_EQ(need_snapshots, init->NeedSnapshotsInFirstStageMount());
+
     ASSERT_TRUE(init->CreateLogicalAndSnapshotPartitions("super", snapshot_timeout_));
 
     // Check that the target partitions have the same content.
@@ -1782,7 +1791,9 @@ TEST_P(FlashAfterUpdateTest, FlashSlotAfterUpdate) {
 
     // There should be no snapshot to merge.
     auto new_sm = SnapshotManager::New(new TestDeviceInfo(fake_super, flashed_slot_suffix));
+    EXPECT_EQ(CleanUpAction::CANCEL, new_sm->ShouldCleanUpFailedUpdate());
     ASSERT_EQ(UpdateState::Cancelled, new_sm->InitiateMergeAndWait());
+    EXPECT_EQ(CleanUpAction::CANCEL, new_sm->ShouldCleanUpFailedUpdate());
 
     // Next OTA calls CancelUpdate no matter what.
     ASSERT_TRUE(new_sm->CancelUpdate());
@@ -1898,6 +1909,8 @@ TEST_F(ShouldCleanUpFailedUpdateTest, SuccessfulUpdate) {
     // SnapshotManager created by snapshotctl
     auto snapshotctl_sm = SnapshotManager::New(new TestDeviceInfo(fake_super, "_b"));
     ASSERT_NE(nullptr, snapshotctl_sm);
+    ASSERT_EQ(CleanUpAction::INITIATE, snapshotctl_sm->ShouldCleanUpFailedUpdate())
+            << "Should not cleanup when booting at target slot";
     ASSERT_TRUE(snapshotctl_sm->InitiateMerge());
     ASSERT_EQ(CleanUpAction::WAIT_FOR_MERGE, snapshotctl_sm->ShouldCleanUpFailedUpdate())
             << "Should not cleanup when booting at target slot";
@@ -1927,10 +1940,10 @@ TEST_F(ShouldCleanUpFailedUpdateTest, RollbackBeforeMerge) {
 }
 
 class ShouldCleanUpFailedUpdateTestP : public ShouldCleanUpFailedUpdateTest,
-                                       public WithParamInterface<int32_t> {};
+                                       public WithParamInterface<std::tuple<int32_t, bool>> {};
 
-TEST_P(ShouldCleanUpFailedUpdateTestP, FlashBeforeMerge) {
-    auto flashed_slot = GetParam();
+TEST_P(ShouldCleanUpFailedUpdateTestP, FlashBeforeInitiateMerge) {
+    auto&& [flashed_slot, cancel_before_merge] = GetParam();
     auto flashed_slot_suffix = SlotSuffixForSlotNumber(flashed_slot);
 
     // Flash |flashed_slot|.
@@ -1962,11 +1975,47 @@ TEST_P(ShouldCleanUpFailedUpdateTestP, FlashBeforeMerge) {
             SnapshotManager::New(new TestDeviceInfo(fake_super, flashed_slot_suffix));
     ASSERT_NE(nullptr, update_engine_sm);
 
-    // InitiateMergeAndWait should not delete any snapshots, so
-    // ShouldCleanUpFailedUpdate should still return true.
-    ASSERT_EQ(CleanUpAction::CANCEL, update_engine_sm->ShouldCleanUpFailedUpdate())
-            << "Boot into flashed slot " << flashed_slot_suffix
-            << ", snapshots should be deleted because they are no longer useful.";
+    // update_engine and snapshotctl may race, which means that update_engine
+    // may check ShouldCleanUpFailedUpdate before or after the merge is
+    // initiated.
+    if (cancel_before_merge) {
+        // InitiateMergeAndWait should not delete any snapshots, so
+        // ShouldCleanUpFailedUpdate should still return true.
+        ASSERT_EQ(CleanUpAction::CANCEL, update_engine_sm->ShouldCleanUpFailedUpdate())
+                << "Boot into flashed slot " << flashed_slot_suffix
+                << ", snapshots should be deleted because they are no longer useful.";
+        ASSERT_TRUE(update_engine_sm->CancelUpdate());
+    }
+
+    for (const auto& name : {"sys", "vnd", "prd"}) {
+        ASSERT_TRUE(IsPartitionUnchanged(name + flashed_slot_suffix));
+    }
+
+    auto snapshotctl_sm = SnapshotManager::New(new TestDeviceInfo(fake_super, flashed_slot_suffix));
+    ASSERT_NE(nullptr, snapshotctl_sm);
+    auto expected_merge_ret = cancel_before_merge ? UpdateState::None : UpdateState::Cancelled;
+    auto merge_ret = snapshotctl_sm->InitiateMergeAndWait();
+    ASSERT_EQ(expected_merge_ret, merge_ret)
+            << "InitateMergeAndWait returns " << UpdateState_Name(merge_ret) << ", expected "
+            << UpdateState_Name(expected_merge_ret);
+
+    for (const auto& name : {"sys", "vnd", "prd"}) {
+        ASSERT_TRUE(IsPartitionUnchanged(name + flashed_slot_suffix));
+    }
+
+    if (cancel_before_merge) {
+        ASSERT_EQ(CleanUpAction::NONE, update_engine_sm->ShouldCleanUpFailedUpdate())
+                << "Previous CancelUpdate() call should make ShouldCleanUpFailedUpdate return NONE";
+    } else {
+        ASSERT_EQ(CleanUpAction::CANCEL, update_engine_sm->ShouldCleanUpFailedUpdate())
+                << "Boot into flashed slot " << flashed_slot_suffix
+                << ", snapshots should be deleted because they are no longer useful. "
+                << "InitiateMergeAndWait should not have cancel anything.";
+    }
+
+    // Should be able to call CancelUpdate even though NONE may be returned;
+    // However, update_engine should not call CancelUpdate unless it is planning
+    // to start a new one.
     ASSERT_TRUE(update_engine_sm->CancelUpdate());
 
     for (const auto& name : {"sys", "vnd", "prd"}) {
@@ -1975,10 +2024,12 @@ TEST_P(ShouldCleanUpFailedUpdateTestP, FlashBeforeMerge) {
 }
 
 INSTANTIATE_TEST_SUITE_P(
-        ShouldCleanUpFailedUpdateTest, ShouldCleanUpFailedUpdateTestP, testing::Values(0, 1),
+        ShouldCleanUpFailedUpdateTest, ShouldCleanUpFailedUpdateTestP,
+        testing::Combine(testing::Values(0, 1), testing::Bool()),
         [](const testing::TestParamInfo<ShouldCleanUpFailedUpdateTestP::ParamType>& info) {
             std::stringstream ss;
-            ss << "FlashSlot" << info.param;
+            ss << "FlashSlot" << std::get<0>(info.param) << "And"
+               << (std::get<1>(info.param) ? "CancelBeforeMerge" : "MergeBeforeCancel");
             return ss.str();
         });
 }  // namespace snapshot

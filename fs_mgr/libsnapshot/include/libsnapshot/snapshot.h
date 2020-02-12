@@ -159,6 +159,10 @@ class SnapshotManager final {
     // completed. If a merge or update was cancelled, this will clean up any
     // update artifacts and return.
     //
+    // If ProcessUpdateState returns Cancelled, caller is reponsible for calling
+    // CancelUpdate() to do additional cleanup work. Otherwise, GetUpdateState()
+    // may still return Unverified / Merging.
+    //
     // Note that after calling this, GetUpdateState() may still return that a
     // merge is in progress:
     //   MergeFailed indicates that a fatal error occurred. WaitForMerge() may
