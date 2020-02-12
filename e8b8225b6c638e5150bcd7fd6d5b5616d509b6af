@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9b40bcaf_5e48e36f",
+        "filename": "fs_mgr/libdm/include/libdm/dm_target.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 298,
+      "author": {
+        "id": 1060907
+      },
+      "writtenOn": "2020-02-12T16:36:24Z",
+      "side": 1,
+      "message": "I would rather follow the same pattern as IsLegacy here for consistency.",
+      "revId": "e8b8225b6c638e5150bcd7fd6d5b5616d509b6af",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c57ac2c3_d60bd991",
+        "filename": "fs_mgr/tests/fs_mgr_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 915,
+      "author": {
+        "id": 1060907
+      },
+      "writtenOn": "2020-02-12T16:36:24Z",
+      "side": 1,
+      "message": "I think it\u0027s OK to remove this test; it doesn\u0027t really test anything the above doesn\u0027t test.",
+      "revId": "e8b8225b6c638e5150bcd7fd6d5b5616d509b6af",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
