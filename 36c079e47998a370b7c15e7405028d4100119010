@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "8f9770bd_03aceea0",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 561,
+      "author": {
+        "id": 1176763
+      },
+      "writtenOn": "2020-02-12T19:22:41Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "13295896_326483c9",
+      "range": {
+        "startLine": 561,
+        "startChar": 52,
+        "endLine": 561,
+        "endChar": 108
+      },
+      "revId": "36c079e47998a370b7c15e7405028d4100119010",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ebb6ad75_ca6ec1aa",
         "filename": "fs_mgr/fs_mgr.cpp",
         "patchSetId": 4
@@ -84,6 +108,30 @@
       "side": 1,
       "message": "I see. Can you add comment so that it is clear.",
       "parentUuid": "c02922d5_ad860046",
+      "range": {
+        "startLine": 564,
+        "startChar": 27,
+        "endLine": 564,
+        "endChar": 40
+      },
+      "revId": "36c079e47998a370b7c15e7405028d4100119010",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7f3fb3e0_e795d9a7",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 564,
+      "author": {
+        "id": 1176763
+      },
+      "writtenOn": "2020-02-12T19:22:41Z",
+      "side": 1,
+      "message": "Keun-young, I\u0027m not quite sure how to say more... It\u0027s also following the convention used in the above tunes. (e.g., #480)",
+      "parentUuid": "ce8f891e_26aeffa0",
       "range": {
         "startLine": 564,
         "startChar": 27,
@@ -164,6 +212,30 @@
       "revId": "36c079e47998a370b7c15e7405028d4100119010",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2bc313d7_cf4b9bc0",
+        "filename": "fs_mgr/fs_mgr_format.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 1176763
+      },
+      "writtenOn": "2020-02-12T19:22:41Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4cd146ac_2abd10b8",
+      "range": {
+        "startLine": 92,
+        "startChar": 31,
+        "endLine": 92,
+        "endChar": 37
+      },
+      "revId": "36c079e47998a370b7c15e7405028d4100119010",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
