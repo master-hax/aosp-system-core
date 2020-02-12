@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "13295896_326483c9",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 561,
+      "author": {
+        "id": 1010465
+      },
+      "writtenOn": "2020-02-12T18:58:02Z",
+      "side": 1,
+      "message": "nit: break line",
+      "range": {
+        "startLine": 561,
+        "startChar": 52,
+        "endLine": 561,
+        "endChar": 108
+      },
+      "revId": "36c079e47998a370b7c15e7405028d4100119010",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "ebb6ad75_ca6ec1aa",
         "filename": "fs_mgr/fs_mgr.cpp",
         "patchSetId": 4
@@ -49,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "ce8f891e_26aeffa0",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 564,
+      "author": {
+        "id": 1010465
+      },
+      "writtenOn": "2020-02-12T18:58:02Z",
+      "side": 1,
+      "message": "I see. Can you add comment so that it is clear.",
+      "parentUuid": "c02922d5_ad860046",
+      "range": {
+        "startLine": 564,
+        "startChar": 27,
+        "endLine": 564,
+        "endChar": 40
+      },
+      "revId": "36c079e47998a370b7c15e7405028d4100119010",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "ad3d34e3_dfdd4267",
         "filename": "fs_mgr/fs_mgr_format.cpp",
         "patchSetId": 4
@@ -84,6 +131,30 @@
       "side": 1,
       "message": "It\u0027s file extent tree, and tune2fs says it\u0027d be better to enable 64bit and extent to increase checksum\u0027ing coverage.",
       "parentUuid": "ad3d34e3_dfdd4267",
+      "range": {
+        "startLine": 92,
+        "startChar": 31,
+        "endLine": 92,
+        "endChar": 37
+      },
+      "revId": "36c079e47998a370b7c15e7405028d4100119010",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4cd146ac_2abd10b8",
+        "filename": "fs_mgr/fs_mgr_format.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 1010465
+      },
+      "writtenOn": "2020-02-12T18:58:02Z",
+      "side": 1,
+      "message": "Can you add comment for that (both 64bit and extent)?",
+      "parentUuid": "242aa9de_552d3ed6",
       "range": {
         "startLine": 92,
         "startChar": 31,
