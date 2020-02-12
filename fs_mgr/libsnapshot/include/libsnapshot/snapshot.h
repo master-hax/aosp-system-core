@@ -82,6 +82,11 @@ enum class CreateResult : unsigned int {
     NOT_CREATED,
 };
 
+enum class CleanUpAction : unsigned int {
+    NONE,
+    CANCEL,
+};
+
 class SnapshotManager final {
     using CreateLogicalPartitionParams = android::fs_mgr::CreateLogicalPartitionParams;
     using IPartitionOpener = android::fs_mgr::IPartitionOpener;
@@ -260,6 +265,16 @@ class SnapshotManager final {
     //   a.reset() // does nothing
     std::unique_ptr<AutoDevice> EnsureMetadataMounted();
 
+    // Returns CANCEL if there is an unverified update that needs to be
+    // cancelled. A failed update should be cancelled if one of the following:
+    // - The update has been rolled back and the device is booting from the old
+    //   slot;
+    // - An update is pending but we flashed the old slot
+    // If this function returns CANCEL, a client should call CancelUpdate() and
+    // clean up any persistent state the client has. (For example, update_engine
+    // should delete markers).
+    CleanUpAction ShouldCleanUpFailedUpdate();
+
   private:
     FRIEND_TEST(SnapshotTest, CleanFirstStageMount);
     FRIEND_TEST(SnapshotTest, CreateSnapshot);
@@ -278,6 +293,8 @@ class SnapshotManager final {
     FRIEND_TEST(SnapshotUpdateTest, MergeCannotRemoveCow);
     FRIEND_TEST(SnapshotUpdateTest, MergeInRecovery);
     FRIEND_TEST(SnapshotUpdateTest, SnapshotStatusFileWithoutCow);
+    FRIEND_TEST(ShouldCleanUpFailedUpdateTest, SuccessfulUpdate);
+    FRIEND_TEST(ShouldCleanUpFailedUpdateTest, RollbackBeforeMerge);
     friend class SnapshotTest;
     friend class SnapshotUpdateTest;
     friend class FlashAfterUpdateTest;
@@ -506,6 +523,11 @@ class SnapshotManager final {
     Slot GetCurrentSlot();
 
     std::string ReadUpdateSourceSlotSuffix();
+
+    // Helpers for ShouldCleanUpFailedUpdate
+    CleanUpAction ShouldCleanUpFailedUpdate(LockedFile* lock);
+    CleanUpAction ShouldCleanUpFailedUpdateNoBootIndicator(UpdateState state);
+    CleanUpAction ShouldCleanUpFailedUpdateSourceSlot(UpdateState state);
 
     std::string gsid_dir_;
     std::string metadata_dir_;

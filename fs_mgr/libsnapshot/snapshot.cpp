@@ -2586,5 +2586,87 @@ CreateResult SnapshotManager::RecoveryCreateSnapshotDevices() {
     return CreateResult::CREATED;
 }
 
+CleanUpAction SnapshotManager::ShouldCleanUpFailedUpdate() {
+    auto lock = LockShared();
+    if (!lock) {
+        LOG(ERROR) << "Can't acquire lock. Not cancelling update.";
+        return CleanUpAction::NONE;
+    }
+    return ShouldCleanUpFailedUpdate(lock.get());
+}
+
+CleanUpAction SnapshotManager::ShouldCleanUpFailedUpdate(LockedFile* lock) {
+    auto state = ReadSnapshotUpdateStatus(lock).state();
+    auto current_slot = GetCurrentSlot();
+
+    switch (current_slot) {
+        case Slot::Unknown:
+            return ShouldCleanUpFailedUpdateNoBootIndicator(state);
+        case Slot::Source:
+            return ShouldCleanUpFailedUpdateSourceSlot(state);
+        case Slot::Target: {
+            // TODO(b/147696014): detect flashing target slot
+            LOG(WARNING) << "Unsupported";
+            return CleanUpAction::NONE;
+        }
+        default: {
+            LOG(ERROR) << "Unknown content in boot indicator";
+            return CleanUpAction::CANCEL;
+        }
+    }
+}
+
+CleanUpAction SnapshotManager::ShouldCleanUpFailedUpdateNoBootIndicator(UpdateState state) {
+    switch (state) {
+        case UpdateState::None: {
+            LOG(INFO) << "No previously failed update to cleanup";
+        } break;
+        case UpdateState::Initiated: {
+            LOG(INFO) << "Update is in progress, not cleaning up";
+        } break;
+        default: {
+            LOG(ERROR) << "Inconsistent state; boot indicator is empty even though update "
+                          "state is "
+                       << "unverified. Not cancelling potentially failed update because source "
+                          "slot "
+                       << "of the update can't be determined.";
+        }
+    }
+    return CleanUpAction::NONE;
+}
+
+CleanUpAction SnapshotManager::ShouldCleanUpFailedUpdateSourceSlot(UpdateState state) {
+    // Do clean up when booting from source slot. This should include
+    // rollback or re-flashing source slot. Only exception is when state is unverified
+    // and rollback indicator is missing, which indicates runtime crashes.
+    auto action = CleanUpAction::CANCEL;
+    switch (state) {
+        case UpdateState::None: {
+            LOG(WARNING) << "Boot indicator exists but state is none. Previous attempt to "
+                         << "delete it might have failed.";
+        } break;
+        case UpdateState::Initiated: {
+            LOG(ERROR) << "Boot indicator exists but state is initiated. This should not "
+                       << "happen. Cleaning up at best effort.";
+        } break;
+        case UpdateState::Unverified: {
+            if (access(GetRollbackIndicatorPath().c_str(), F_OK) != 0) {
+                PLOG(INFO) << "Did not reboot after update but ShouldCleanUpFailedUpdate is "
+                           << "called. Not cleaning up update. (Did update_engine restarted?)";
+                action = CleanUpAction::NONE;
+            } else {
+                LOG(INFO) << "Rollback detected, failed update should be canceled.";
+            }
+        } break;
+        default: {
+            LOG(INFO) << "Update is being merged (state = " << UpdateState_Name(state)
+                      << ") but we booted into the source slot. This ususally don't"
+                      << "happen, but we might be lucky or the source slot is re-flashed. "
+                      << "Attempt to clean up.";
+        } break;
+    }
+    return action;
+}
+
 }  // namespace snapshot
 }  // namespace android
