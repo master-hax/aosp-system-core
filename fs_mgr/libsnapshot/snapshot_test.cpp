@@ -1650,9 +1650,12 @@ TEST_F(SnapshotUpdateTest, LowSpace) {
     ASSERT_LT(res.required_size(), 15_MiB);
 }
 
-class FlashAfterUpdateTest : public SnapshotUpdateTest,
-                             public WithParamInterface<std::tuple<uint32_t, bool>> {
+class FlashAfterUpdateTestBase : public SnapshotUpdateTest {
   public:
+    void SetUp() override {
+        if (!is_virtual_ab_) GTEST_SKIP() << "Test for Virtual A/B devices only";
+        SnapshotUpdateTest::SetUp();
+    }
     AssertionResult InitiateMerge(const std::string& slot_suffix) {
         auto sm = SnapshotManager::New(new TestDeviceInfo(fake_super, slot_suffix));
         if (!sm->CreateLogicalAndSnapshotPartitions("super", snapshot_timeout_)) {
@@ -1663,11 +1666,70 @@ class FlashAfterUpdateTest : public SnapshotUpdateTest,
         }
         return AssertionSuccess();
     }
+
+    AssertionResult GetFlashingMetadataBuilder(std::unique_ptr<MetadataBuilder>* flashed_builder,
+                                               int32_t flashed_slot) {
+        auto flashed_slot_suffix = SlotSuffixForSlotNumber(flashed_slot);
+        // Simulate flashing |flashed_slot|. This clears the UPDATED flag.
+        *flashed_builder = MetadataBuilder::New(*opener_, "super", flashed_slot);
+        if ((*flashed_builder) == nullptr) {
+            return AssertionFailure() << "Can't read metadata from " << flashed_slot_suffix;
+        }
+        (*flashed_builder)->RemoveGroupAndPartitions(group_->name() + flashed_slot_suffix);
+        (*flashed_builder)->RemoveGroupAndPartitions(kCowGroupName);
+        if (!FillFakeMetadata(flashed_builder->get(), manifest_, flashed_slot_suffix)) {
+            return AssertionFailure()
+                   << "Can't fill fake metadata for slot " << flashed_slot_suffix;
+        }
+        return AssertionSuccess();
+    }
+
+    AssertionResult DoFlashing(MetadataBuilder* flashed_builder, int32_t flashed_slot,
+                               const std::vector<std::string>& names = {"sys", "vnd", "prd"}) {
+        auto flashed_slot_suffix = SlotSuffixForSlotNumber(flashed_slot);
+        // Note that fastbootd always updates the partition table of both slots.
+        auto flashed_metadata = flashed_builder->Export();
+        if (flashed_metadata == nullptr) return AssertionFailure() << "Can't export metadata";
+        for (int32_t slot : {0, 1}) {
+            if (!UpdatePartitionTable(*opener_, "super", *flashed_metadata, slot))
+                return AssertionFailure() << "Can't write metadata to slot " << slot;
+        }
+
+        std::string path;
+        for (const auto& name : names) {
+            auto map_res = CreateLogicalPartition(
+                    CreateLogicalPartitionParams{
+                            .block_device = fake_super,
+                            .metadata_slot = flashed_slot,
+                            .partition_name = name + flashed_slot_suffix,
+                            .timeout_ms = 1s,
+                            .partition_opener = opener_.get(),
+                    },
+                    &path);
+            if (!map_res) {
+                return AssertionFailure() << "Can't map " << name;
+            }
+            if (!WriteRandomData(path)) {
+                return AssertionFailure() << "Can't write to " << path << " for " << name;
+            }
+            auto hash = GetHash(path);
+            if (!hash.has_value()) {
+                return AssertionFailure() << "Can't compute hash for " << path << " for " << name;
+            }
+            hashes_[name + flashed_slot_suffix] = *hash;
+        }
+        // Simulate shutting down the device after flash.
+        if (!UnmapAll()) {
+            return AssertionFailure() << "Can't unmap all devices";
+        }
+        return AssertionSuccess();
+    }
 };
 
-TEST_P(FlashAfterUpdateTest, FlashSlotAfterUpdate) {
-    if (!is_virtual_ab_) GTEST_SKIP() << "Test for Virtual A/B devices only";
+class FlashAfterUpdateTest : public FlashAfterUpdateTestBase,
+                             public WithParamInterface<std::tuple<uint32_t, bool>> {};
 
+TEST_P(FlashAfterUpdateTest, FlashSlotAfterUpdate) {
     // OTA client blindly unmaps all partitions that are possibly mapped.
     for (const auto& name : {"sys_b", "vnd_b", "prd_b"}) {
         ASSERT_TRUE(sm->UnmapUpdateSnapshot(name));
@@ -1692,12 +1754,8 @@ TEST_P(FlashAfterUpdateTest, FlashSlotAfterUpdate) {
     auto flashed_slot = std::get<0>(GetParam());
     auto flashed_slot_suffix = SlotSuffixForSlotNumber(flashed_slot);
 
-    // Simulate flashing |flashed_slot|. This clears the UPDATED flag.
-    auto flashed_builder = MetadataBuilder::New(*opener_, "super", flashed_slot);
-    ASSERT_NE(flashed_builder, nullptr);
-    flashed_builder->RemoveGroupAndPartitions(group_->name() + flashed_slot_suffix);
-    flashed_builder->RemoveGroupAndPartitions(kCowGroupName);
-    ASSERT_TRUE(FillFakeMetadata(flashed_builder.get(), manifest_, flashed_slot_suffix));
+    std::unique_ptr<MetadataBuilder> flashed_builder;
+    ASSERT_TRUE(GetFlashingMetadataBuilder(&flashed_builder, flashed_slot));
 
     // Deliberately remove a partition from this build so that
     // InitiateMerge do not switch state to "merging". This is possible in
@@ -1705,31 +1763,7 @@ TEST_P(FlashAfterUpdateTest, FlashSlotAfterUpdate) {
     ASSERT_NE(nullptr, flashed_builder->FindPartition("prd" + flashed_slot_suffix));
     flashed_builder->RemovePartition("prd" + flashed_slot_suffix);
 
-    // Note that fastbootd always updates the partition table of both slots.
-    auto flashed_metadata = flashed_builder->Export();
-    ASSERT_NE(nullptr, flashed_metadata);
-    ASSERT_TRUE(UpdatePartitionTable(*opener_, "super", *flashed_metadata, 0));
-    ASSERT_TRUE(UpdatePartitionTable(*opener_, "super", *flashed_metadata, 1));
-
-    std::string path;
-    for (const auto& name : {"sys", "vnd"}) {
-        ASSERT_TRUE(CreateLogicalPartition(
-                CreateLogicalPartitionParams{
-                        .block_device = fake_super,
-                        .metadata_slot = flashed_slot,
-                        .partition_name = name + flashed_slot_suffix,
-                        .timeout_ms = 1s,
-                        .partition_opener = opener_.get(),
-                },
-                &path));
-        ASSERT_TRUE(WriteRandomData(path));
-        auto hash = GetHash(path);
-        ASSERT_TRUE(hash.has_value());
-        hashes_[name + flashed_slot_suffix] = *hash;
-    }
-
-    // Simulate shutting down the device after flash.
-    ASSERT_TRUE(UnmapAll());
+    ASSERT_TRUE(DoFlashing(flashed_builder.get(), flashed_slot, {"sys", "vnd"}));
 
     // Simulate reboot. After reboot, init does first stage mount.
     auto init = SnapshotManager::NewForFirstStageMount(
@@ -1818,10 +1852,10 @@ std::vector<uint64_t> ImageManagerTestParams() {
 
 INSTANTIATE_TEST_SUITE_P(ImageManagerTest, ImageManagerTest, ValuesIn(ImageManagerTestParams()));
 
-class ShouldCleanUpFailedUpdateTest : public SnapshotUpdateTest {
+class ShouldCleanUpFailedUpdateTest : public FlashAfterUpdateTestBase {
   protected:
     void SetUp() override {
-        SnapshotUpdateTest::SetUp();
+        FlashAfterUpdateTestBase::SetUp();
 #ifdef SKIP_TEST_IN_PRESUBMIT
         GTEST_SKIP() << "WIP failure b/148889015";
 #endif
@@ -1836,6 +1870,9 @@ class ShouldCleanUpFailedUpdateTest : public SnapshotUpdateTest {
         ASSERT_EQ(CleanUpAction::NONE, sm->ShouldCleanUpFailedUpdate())
                 << "Should not cleanup in initiated stage";
         ASSERT_TRUE(MapUpdateSnapshots());
+        for (const auto& name : {"sys_b", "vnd_b", "prd_b"}) {
+            ASSERT_TRUE(WriteSnapshotAndHash(name));
+        }
         ASSERT_TRUE(sm->FinishedSnapshotWrites());
         ASSERT_EQ(CleanUpAction::NONE, sm->ShouldCleanUpFailedUpdate())
                 << "Should not cleanup without rollback indicator";
@@ -1848,12 +1885,12 @@ TEST_F(ShouldCleanUpFailedUpdateTest, SuccessfulUpdate) {
     // After reboot, init does first stage mount.
     auto init = SnapshotManager::NewForFirstStageMount(new TestDeviceInfo(fake_super, "_b"));
     ASSERT_NE(nullptr, init);
-    ASSERT_EQ(CleanUpAction::NONE, init->ShouldCleanUpFailedUpdate())
+    ASSERT_EQ(CleanUpAction::INITIATE, init->ShouldCleanUpFailedUpdate())
             << "Should not cleanup when booting at target slot";
     ASSERT_FALSE(access(init->GetRollbackIndicatorPath().c_str(), R_OK) == 0);
     ASSERT_TRUE(init->NeedSnapshotsInFirstStageMount());
     ASSERT_FALSE(access(init->GetRollbackIndicatorPath().c_str(), R_OK) == 0);
-    ASSERT_EQ(CleanUpAction::NONE, init->ShouldCleanUpFailedUpdate())
+    ASSERT_EQ(CleanUpAction::INITIATE, init->ShouldCleanUpFailedUpdate())
             << "Should not cleanup when booting at target slot";
     ASSERT_TRUE(init->CreateLogicalAndSnapshotPartitions("super", snapshot_timeout_));
     init.reset();
@@ -1862,7 +1899,7 @@ TEST_F(ShouldCleanUpFailedUpdateTest, SuccessfulUpdate) {
     auto snapshotctl_sm = SnapshotManager::New(new TestDeviceInfo(fake_super, "_b"));
     ASSERT_NE(nullptr, snapshotctl_sm);
     ASSERT_TRUE(snapshotctl_sm->InitiateMerge());
-    ASSERT_EQ(CleanUpAction::NONE, snapshotctl_sm->ShouldCleanUpFailedUpdate())
+    ASSERT_EQ(CleanUpAction::WAIT_FOR_MERGE, snapshotctl_sm->ShouldCleanUpFailedUpdate())
             << "Should not cleanup when booting at target slot";
     ASSERT_EQ(UpdateState::MergeCompleted, snapshotctl_sm->ProcessUpdateState());
     ASSERT_EQ(CleanUpAction::NONE, snapshotctl_sm->ShouldCleanUpFailedUpdate())
@@ -1889,6 +1926,58 @@ TEST_F(ShouldCleanUpFailedUpdateTest, RollbackBeforeMerge) {
     ASSERT_TRUE(sm->CancelUpdate());
 }
 
+class ShouldCleanUpFailedUpdateTestP : public ShouldCleanUpFailedUpdateTest,
+                                       public WithParamInterface<int32_t> {};
+
+TEST_P(ShouldCleanUpFailedUpdateTestP, FlashBeforeMerge) {
+    auto flashed_slot = GetParam();
+    auto flashed_slot_suffix = SlotSuffixForSlotNumber(flashed_slot);
+
+    // Flash |flashed_slot|.
+    std::unique_ptr<MetadataBuilder> flashed_builder;
+    ASSERT_TRUE(GetFlashingMetadataBuilder(&flashed_builder, flashed_slot));
+    ASSERT_TRUE(DoFlashing(flashed_builder.get(), flashed_slot));
+
+    // Boot into |flashed_slot|.
+    auto init = SnapshotManager::NewForFirstStageMount(
+            new TestDeviceInfo(fake_super, flashed_slot_suffix));
+    ASSERT_NE(nullptr, init);
+    // NeedSnapshotsInFirstStaeMount doesn't check UPDATED flag, so it
+    // still returns true on the target slot. However,
+    // CreateLogicalAndSnapshotPartitions will handle mapping correctly.
+    // It still needs to be called to fully mimic the boot process because
+    // it places a rollback indicator, which changes states.
+    ASSERT_EQ(flashed_slot == 1, init->NeedSnapshotsInFirstStageMount());
+
+    ASSERT_TRUE(init->CreateLogicalAndSnapshotPartitions("super", snapshot_timeout_));
+    init.reset();
+
+    for (const auto& name : {"sys", "vnd", "prd"}) {
+        ASSERT_TRUE(IsPartitionUnchanged(name + flashed_slot_suffix));
+    }
+
+    auto update_engine_sm =
+            SnapshotManager::New(new TestDeviceInfo(fake_super, flashed_slot_suffix));
+    ASSERT_NE(nullptr, update_engine_sm);
+
+    // InitiateMergeAndWait should not delete any snapshots, so
+    // ShouldCleanUpFailedUpdate should still return true.
+    ASSERT_EQ(CleanUpAction::CANCEL, update_engine_sm->ShouldCleanUpFailedUpdate())
+            << "Boot into flashed slot " << flashed_slot_suffix
+            << ", snapshots should be deleted because they are no longer useful.";
+
+    for (const auto& name : {"sys", "vnd", "prd"}) {
+        ASSERT_TRUE(IsPartitionUnchanged(name + flashed_slot_suffix));
+    }
+}
+
+INSTANTIATE_TEST_SUITE_P(
+        ShouldCleanUpFailedUpdateTest, ShouldCleanUpFailedUpdateTestP, testing::Values(0, 1),
+        [](const testing::TestParamInfo<ShouldCleanUpFailedUpdateTestP::ParamType>& info) {
+            std::stringstream ss;
+            ss << "FlashSlot" << info.param;
+            return ss.str();
+        });
 }  // namespace snapshot
 }  // namespace android
 
