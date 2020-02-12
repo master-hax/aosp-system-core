@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2e4ff9c6_9ecbcc1b",
+        "filename": "adb/proto/Android.bp",
+        "patchSetId": 3
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2020-02-12T04:12:02Z",
+      "side": 1,
+      "message": "tabs -\u003e spaces",
+      "range": {
+        "startLine": 37,
+        "startChar": 38,
+        "endLine": 39,
+        "endChar": 3
+      },
+      "revId": "90df597a0652a79ae85075068868315f96875c53",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9d565a94_733c9a97",
+        "filename": "adb/proto/Android.bp",
+        "patchSetId": 3
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2020-02-12T04:12:02Z",
+      "side": 1,
+      "message": "I think this should be 30?",
+      "range": {
+        "startLine": 84,
+        "startChar": 18,
+        "endLine": 84,
+        "endChar": 20
+      },
+      "revId": "90df597a0652a79ae85075068868315f96875c53",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
