@@ -85,6 +85,10 @@ enum class CreateResult : unsigned int {
 enum class CleanUpAction : unsigned int {
     NONE,
     CANCEL,
+    INITIATE,
+    WAIT_FOR_MERGE,
+    REBOOT,
+    DEVICE_CORRUPTED,
 };
 
 class SnapshotManager final {
@@ -270,6 +274,8 @@ class SnapshotManager final {
     // - The update has been rolled back and the device is booting from the old
     //   slot;
     // - An update is pending but we flashed the old slot
+    // - The device has been flashed after the update (including source or
+    //   target slot, see CheckTargetSlotFlashed).
     // If this function returns CANCEL, a client should call CancelUpdate() and
     // clean up any persistent state the client has. (For example, update_engine
     // should delete markers).
@@ -297,6 +303,7 @@ class SnapshotManager final {
     FRIEND_TEST(ShouldCleanUpFailedUpdateTest, RollbackBeforeMerge);
     friend class SnapshotTest;
     friend class SnapshotUpdateTest;
+    friend class FlashAfterUpdateTestBase;
     friend class FlashAfterUpdateTest;
     friend class LockTestConsumer;
     friend struct AutoDeleteCowImage;
@@ -389,11 +396,20 @@ class SnapshotManager final {
     bool ListSnapshots(LockedFile* lock, std::vector<std::string>* snapshots);
 
     // Check for a cancelled or rolled back merge, returning true if such a
-    // condition was detected and handled.
+    // condition was detected. It does NOT delete any update states.
     bool HandleCancelledUpdate(LockedFile* lock);
 
     // Helper for HandleCancelledUpdate. Assumes booting from new slot.
     bool AreAllSnapshotsCancelled(LockedFile* lock);
+
+    // Determine whether partition names in |snapshots| have been flashed and
+    // store result to |out|.
+    // Return true if values are successfully retrieved and false on error
+    // (e.g. super partition metadata cannot be read). When it returns true,
+    // |out| stores true for partitions that have been flashed and false for
+    // partitions that have not been flashed.
+    bool GetSnapshotFlashingStatus(LockedFile* lock, const std::vector<std::string>& snapshots,
+                                   std::map<std::string, bool>* out);
 
     // Remove artifacts created by the update process, such as snapshots, and
     // set the update state to None.
@@ -528,6 +544,8 @@ class SnapshotManager final {
     CleanUpAction ShouldCleanUpFailedUpdate(LockedFile* lock);
     CleanUpAction ShouldCleanUpFailedUpdateNoBootIndicator(UpdateState state);
     CleanUpAction ShouldCleanUpFailedUpdateSourceSlot(UpdateState state);
+    CleanUpAction ShouldCleanUpFailedUpdateTargetSlot(LockedFile* lock, UpdateState state);
+    CleanUpAction CheckTargetSlotFlashed(LockedFile* lock);
 
     std::string gsid_dir_;
     std::string metadata_dir_;

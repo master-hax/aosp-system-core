@@ -1218,6 +1218,27 @@ bool SnapshotManager::AreAllSnapshotsCancelled(LockedFile* lock) {
         return true;
     }
 
+    std::map<std::string, bool> flashing_status;
+
+    if (!GetSnapshotFlashingStatus(lock, snapshots, &flashing_status)) {
+        LOG(WARNING) << "Failed to determine whether partitions have been flashed. Not"
+                     << "removing update states.";
+        return false;
+    }
+
+    bool all_snapshots_cancelled = std::all_of(flashing_status.begin(), flashing_status.end(),
+                                               [](const auto& pair) { return pair.second; });
+
+    if (all_snapshots_cancelled) {
+        LOG(WARNING) << "All partitions are re-flashed after update, removing all update states.";
+    }
+    return all_snapshots_cancelled;
+}
+
+bool SnapshotManager::GetSnapshotFlashingStatus(LockedFile* lock,
+                                                const std::vector<std::string>& snapshots,
+                                                std::map<std::string, bool>* out) {
+    CHECK(lock);
     auto source_slot_suffix = ReadUpdateSourceSlotSuffix();
     if (source_slot_suffix.empty()) {
         return false;
@@ -1243,20 +1264,17 @@ bool SnapshotManager::AreAllSnapshotsCancelled(LockedFile* lock) {
         return false;
     }
 
-    bool all_snapshots_cancelled = true;
     for (const auto& snapshot_name : snapshots) {
         if (GetMetadataPartitionState(*metadata, snapshot_name) ==
             MetadataPartitionState::Updated) {
-            all_snapshots_cancelled = false;
-            continue;
+            out->emplace(snapshot_name, false);
+        } else {
+            // Delete snapshots for partitions that are re-flashed after the update.
+            LOG(WARNING) << "Detected re-flashing of partition " << snapshot_name << ".";
+            out->emplace(snapshot_name, true);
         }
-        // Delete snapshots for partitions that are re-flashed after the update.
-        LOG(WARNING) << "Detected re-flashing of partition " << snapshot_name << ".";
     }
-    if (all_snapshots_cancelled) {
-        LOG(WARNING) << "All partitions are re-flashed after update, removing all update states.";
-    }
-    return all_snapshots_cancelled;
+    return true;
 }
 
 bool SnapshotManager::RemoveAllSnapshots(LockedFile* lock) {
@@ -2605,9 +2623,7 @@ CleanUpAction SnapshotManager::ShouldCleanUpFailedUpdate(LockedFile* lock) {
         case Slot::Source:
             return ShouldCleanUpFailedUpdateSourceSlot(state);
         case Slot::Target: {
-            // TODO(b/147696014): detect flashing target slot
-            LOG(WARNING) << "Unsupported";
-            return CleanUpAction::NONE;
+            return ShouldCleanUpFailedUpdateTargetSlot(lock, state);
         }
         default: {
             LOG(ERROR) << "Unknown content in boot indicator";
@@ -2666,6 +2682,85 @@ CleanUpAction SnapshotManager::ShouldCleanUpFailedUpdateSourceSlot(UpdateState s
         } break;
     }
     return action;
+}
+
+CleanUpAction SnapshotManager::ShouldCleanUpFailedUpdateTargetSlot(LockedFile* lock,
+                                                                   UpdateState state) {
+    LOG(INFO) << "Boot into target slot after update and state is " << state;
+
+    auto check_flash = CheckTargetSlotFlashed(lock);
+    if (check_flash != CleanUpAction::NONE) {
+        return check_flash;
+    }
+
+    switch (state) {
+        case UpdateState::None: {
+            LOG(WARNING) << "Boot indicator exists but state is none. It might have not been "
+                         << "removed properly.";
+            return CleanUpAction::CANCEL;
+        }
+        case UpdateState::Unverified: {
+            LOG(INFO) << "Merge has not been initiated.";
+            return CleanUpAction::INITIATE;
+        }
+        case UpdateState::Merging: {
+            LOG(INFO) << "Merge has not been completed.";
+            return CleanUpAction::WAIT_FOR_MERGE;
+        }
+        case UpdateState::MergeNeedsReboot: {
+            LOG(INFO) << "Previous update can only be cleaned up after reboot.";
+            return CleanUpAction::REBOOT;
+        }
+        case UpdateState::MergeFailed: {
+            LOG(ERROR) << "Previous update did not merge correctly.";
+            return CleanUpAction::DEVICE_CORRUPTED;
+        }
+        case UpdateState::Initiated:
+        case UpdateState::MergeCompleted:
+        case UpdateState::Cancelled:
+        default: {
+            LOG(ERROR) << "Unexpected state " << UpdateState_Name(state)
+                       << ", cleaning up at best effort.";
+            return CleanUpAction::CANCEL;
+        }
+    }
+}
+
+CleanUpAction SnapshotManager::CheckTargetSlotFlashed(LockedFile* lock) {
+    // Be aggressive about clean up; if we clean up incorrectly, update_engine
+    // can always try again.
+    std::vector<std::string> snapshots;
+    if (!ListSnapshots(lock, &snapshots)) {
+        LOG(ERROR) << "Failed to list snapshots to determine whether device has been flashed "
+                   << "after applying an update. Will clean up update states.";
+        return CleanUpAction::CANCEL;
+    }
+
+    std::map<std::string, bool> flashing_status;
+
+    if (!GetSnapshotFlashingStatus(lock, snapshots, &flashing_status)) {
+        LOG(ERROR) << "Failed to determine whether partitions have been flashed. Will clean up "
+                   << "update states.";
+        return CleanUpAction::CANCEL;
+    }
+
+    bool any_snapshot_cancelled = std::any_of(flashing_status.begin(), flashing_status.end(),
+                                              [](const auto& pair) { return pair.second; });
+    bool all_snapshot_cancelled = std::all_of(flashing_status.begin(), flashing_status.end(),
+                                              [](const auto& pair) { return pair.second; });
+
+    if (all_snapshot_cancelled) {
+        LOG(INFO) << "Booted into target slot that has been flashed, removing useless update "
+                  << "states.";
+        return CleanUpAction::CANCEL;
+    }
+    if (any_snapshot_cancelled) {
+        LOG(WARNING) << "Some (but not all) partitions are re-flashed after update. "
+                     << "Don't know what to do except removing all update states.";
+        return CleanUpAction::CANCEL;
+    }
+    LOG(INFO) << "Did not detect partition re-flashed, continue checking.";
+    return CleanUpAction::NONE;
 }
 
 }  // namespace snapshot
