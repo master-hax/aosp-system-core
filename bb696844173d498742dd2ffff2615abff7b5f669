@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "437a0518_d8acca6c",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 362,
+      "author": {
+        "id": 1639819
+      },
+      "writtenOn": "2020-02-12T14:11:05Z",
+      "side": 1,
+      "message": "If 64bit isn\u0027t enabled tune2fs will ask to to run resize2fs to enable it but ignore this feature.",
+      "range": {
+        "startLine": 362,
+        "startChar": 74,
+        "endLine": 362,
+        "endChar": 79
+      },
+      "revId": "bb696844173d498742dd2ffff2615abff7b5f669",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
