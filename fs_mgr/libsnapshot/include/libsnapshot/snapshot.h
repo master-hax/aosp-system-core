@@ -174,6 +174,7 @@ class SnapshotManager final {
     // See InitiateMerge() and ProcessUpdateState() for details.
     // Returns:
     //   - None if no merge to initiate
+    //   - Unverified if called on the source slot
     //   - MergeCompleted if merge is completed
     //   - other states indicating an error has occurred
     UpdateState InitiateMergeAndWait();
@@ -213,7 +214,8 @@ class SnapshotManager final {
 
     // Perform first-stage mapping of snapshot targets. This replaces init's
     // call to CreateLogicalPartitions when snapshots are present.
-    bool CreateLogicalAndSnapshotPartitions(const std::string& super_device);
+    bool CreateLogicalAndSnapshotPartitions(const std::string& super_device,
+                                            const std::chrono::milliseconds& timeout_ms = {});
 
     // This method should be called preceding any wipe or flash of metadata or
     // userdata. It is only valid in recovery or fastbootd, and it ensures that
@@ -272,6 +274,7 @@ class SnapshotManager final {
     FRIEND_TEST(SnapshotTest, UpdateBootControlHal);
     FRIEND_TEST(SnapshotUpdateTest, DataWipeAfterRollback);
     FRIEND_TEST(SnapshotUpdateTest, DataWipeRollbackInRecovery);
+    FRIEND_TEST(SnapshotUpdateTest, FullUpdateFlow);
     FRIEND_TEST(SnapshotUpdateTest, MergeCannotRemoveCow);
     FRIEND_TEST(SnapshotUpdateTest, MergeInRecovery);
     FRIEND_TEST(SnapshotUpdateTest, SnapshotStatusFileWithoutCow);
@@ -373,7 +376,7 @@ class SnapshotManager final {
     bool HandleCancelledUpdate(LockedFile* lock);
 
     // Helper for HandleCancelledUpdate. Assumes booting from new slot.
-    bool HandleCancelledUpdateOnNewSlot(LockedFile* lock);
+    bool AreAllSnapshotsCancelled(LockedFile* lock);
 
     // Remove artifacts created by the update process, such as snapshots, and
     // set the update state to None.
@@ -438,7 +441,7 @@ class SnapshotManager final {
     std::string GetSnapshotStatusFilePath(const std::string& name);
 
     std::string GetSnapshotBootIndicatorPath();
-    void RemoveSnapshotBootIndicator();
+    std::string GetRollbackIndicatorPath();
 
     // Return the name of the device holding the "snapshot" or "snapshot-merge"
     // target. This may not be the final device presented via MapSnapshot(), if
@@ -501,6 +504,8 @@ class SnapshotManager final {
     enum class Slot { Unknown, Source, Target };
     friend std::ostream& operator<<(std::ostream& os, SnapshotManager::Slot slot);
     Slot GetCurrentSlot();
+
+    std::string ReadUpdateSourceSlotSuffix();
 
     std::string gsid_dir_;
     std::string metadata_dir_;
