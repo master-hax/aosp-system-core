@@ -22,6 +22,30 @@
       "revId": "66f58a3eccada5480ab4150c8a4ab330a6034815",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0bb67c5b_51b14b09",
+        "filename": "liblog/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 124,
+      "author": {
+        "id": 1242539
+      },
+      "writtenOn": "2020-02-13T22:31:05Z",
+      "side": 1,
+      "message": "I don\u0027t think there is anything to prevent people from statically linking this. If that is a problem, can we add liblog into the for statsd until it\u0027s no longer a problem? I see there are currently whitelist entries for other modules.",
+      "parentUuid": "b76bdcca_297cfe2a",
+      "range": {
+        "startLine": 124,
+        "startChar": 4,
+        "endLine": 124,
+        "endChar": 18
+      },
+      "revId": "66f58a3eccada5480ab4150c8a4ab330a6034815",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
