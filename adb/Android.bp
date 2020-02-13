@@ -160,6 +160,11 @@ cc_library {
     // libadbconnection_client doesn't need an embedded build number.
     use_version_lib: false,
 
+    target: {
+        linux: {
+            version_script: "adbconnection/libadbconnection_client.map.txt",
+        },
+    },
     stubs: {
         symbol_file: "adbconnection/libadbconnection_client.map.txt",
         versions: ["1"],
@@ -319,6 +324,7 @@ cc_benchmark {
 cc_binary_host {
     name: "adb",
 
+    stl: "libc++_static",
     defaults: ["adb_defaults"],
 
     srcs: [
@@ -358,8 +364,6 @@ cc_binary_host {
         "libziparchive",
         "libz",
     ],
-
-    stl: "libc++_static",
 
     // Don't add anything here, we don't want additional shared dependencies
     // on the host adb tool, and shared libraries that link against libc++
@@ -538,6 +542,7 @@ cc_library {
 cc_binary {
     name: "adbd",
     defaults: ["adbd_defaults", "host_adbd_supported"],
+    stl: "libc++_static",
     recovery_available: true,
 
     srcs: [
@@ -553,11 +558,9 @@ cc_binary {
         keep_symbols: true,
     },
 
-    stl: "libc++_static",
     static_libs: [
         "libadbconnection_server",
         "libadbd",
-        "libadbd_auth",
         "libadbd_services",
         "libasyncio",
         "libbase",
@@ -572,15 +575,17 @@ cc_binary {
     ],
 
     shared_libs: [
+        "libadbd_auth",
         "libcrypto",
     ],
+
+    required: ["libadbd_auth"],
 }
 
 phony {
     name: "adbd_system_binaries",
     required: [
         "abb",
-        "libadbd_auth",
         "reboot",
         "set-verity-state",
     ]
@@ -597,6 +602,7 @@ cc_binary {
     name: "abb",
 
     defaults: ["adbd_defaults"],
+    stl: "libc++",
     recovery_available: false,
 
     srcs: [
@@ -629,7 +635,11 @@ cc_binary {
 
 cc_test {
     name: "adbd_test",
+
     defaults: ["adbd_defaults"],
+    stl: "libc++_static",
+
+    recovery_available: false,
     srcs: libadb_test_srcs + [
         "daemon/services.cpp",
         "daemon/shell_service.cpp",
@@ -651,7 +661,7 @@ cc_test {
         "libmdnssd",
         "libselinux",
     ],
-    test_suites: ["device-tests"],
+    test_suites: ["device-tests", "mts"],
     require_root: true,
 }
 
@@ -686,10 +696,10 @@ python_test_host {
     test_suites: ["general-tests"],
     version: {
         py2: {
-            enabled: true,
+            enabled: false,
         },
         py3: {
-            enabled: false,
+            enabled: true,
         },
     },
 }
@@ -734,7 +744,6 @@ cc_library_host_static {
         "libziparchive",
         "libz",
     ],
-    stl: "libc++_static",
     proto: {
         type: "lite",
         export_proto_headers: true,

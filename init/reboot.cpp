@@ -180,7 +180,7 @@ static void TurnOffBacklight() {
         LOG(WARNING) << "cannot find blank_screen in TurnOffBacklight";
         return;
     }
-    if (auto result = service->Start(); !result) {
+    if (auto result = service->Start(); !result.ok()) {
         LOG(WARNING) << "Could not start blank_screen service: " << result.error();
     }
 }
@@ -591,14 +591,14 @@ static void DoReboot(unsigned int cmd, const std::string& reason, const std::str
             // keep debugging tools until non critical ones are all gone.
             s->SetShutdownCritical();
         } else if (to_starts.count(s->name())) {
-            if (auto result = s->Start(); !result) {
+            if (auto result = s->Start(); !result.ok()) {
                 LOG(ERROR) << "Could not start shutdown 'to_start' service '" << s->name()
                            << "': " << result.error();
             }
             s->SetShutdownCritical();
         } else if (s->IsShutdownCritical()) {
             // Start shutdown critical service if not started.
-            if (auto result = s->Start(); !result) {
+            if (auto result = s->Start(); !result.ok()) {
                 LOG(ERROR) << "Could not start shutdown critical service '" << s->name()
                            << "': " << result.error();
             }
@@ -731,22 +731,22 @@ static Result<void> UnmountAllApexes() {
 
 static Result<void> DoUserspaceReboot() {
     LOG(INFO) << "Userspace reboot initiated";
-    boot_clock::time_point now = boot_clock::now();
-    SetProperty("sys.init.userspace_reboot.last_started",
-                std::to_string(now.time_since_epoch().count()));
     auto guard = android::base::make_scope_guard([] {
         // Leave shutdown so that we can handle a full reboot.
         LeaveShutdown();
-        trigger_shutdown("reboot,abort-userspace-reboot");
+        trigger_shutdown("reboot,userspace_failed,shutdown_aborted");
     });
     // Triggering userspace-reboot-requested will result in a bunch of setprop
     // actions. We should make sure, that all of them are propagated before
-    // proceeding with userspace reboot. Synchronously setting kUserspaceRebootInProgress property
-    // is not perfect, but it should do the trick.
+    // proceeding with userspace reboot. Synchronously setting sys.init.userspace_reboot.in_progress
+    // property is not perfect, but it should do the trick.
     if (!android::sysprop::InitProperties::userspace_reboot_in_progress(true)) {
         return Error() << "Failed to set sys.init.userspace_reboot.in_progress property";
     }
     EnterShutdown();
+    if (!SetProperty("sys.powerctl", "")) {
+        return Error() << "Failed to reset sys.powerctl property";
+    }
     std::vector<Service*> stop_first;
     // Remember the services that were enabled. We will need to manually enable them again otherwise
     // triggers like class_start won't restart them.
@@ -773,10 +773,10 @@ static Result<void> DoUserspaceReboot() {
         // TODO(b/135984674): store information about offending services for debugging.
         return Error() << r << " post-data services are still running";
     }
-    if (auto result = KillZramBackingDevice(); !result) {
+    if (auto result = KillZramBackingDevice(); !result.ok()) {
         return result;
     }
-    if (auto result = CallVdc("volume", "reset"); !result) {
+    if (auto result = CallVdc("volume", "reset"); !result.ok()) {
         return result;
     }
     if (int r = StopServicesAndLogViolations(GetDebuggingServices(true /* only_post_data */), 5s,
@@ -791,7 +791,7 @@ static Result<void> DoUserspaceReboot() {
         sync();
         LOG(INFO) << "sync() took " << sync_timer;
     }
-    if (auto result = UnmountAllApexes(); !result) {
+    if (auto result = UnmountAllApexes(); !result.ok()) {
         return result;
     }
     if (!SwitchToBootstrapMountNamespaceIfNeeded()) {
@@ -828,7 +828,7 @@ static void UserspaceRebootWatchdogThread() {
     if (!WaitForProperty("sys.boot_completed", "1", timeout)) {
         LOG(ERROR) << "Failed to boot in " << timeout.count() << "ms. Switching to full reboot";
         // In this case device is in a boot loop. Only way to recover is to do dirty reboot.
-        RebootSystem(ANDROID_RB_RESTART2, "userspace-reboot-watchdog-triggered");
+        RebootSystem(ANDROID_RB_RESTART2, "userspace_failed,watchdog_triggered");
     }
     LOG(INFO) << "Device booted, stopping userspace reboot watchdog";
 }
@@ -844,7 +844,7 @@ static void HandleUserspaceReboot() {
     if (pid < 0) {
         PLOG(ERROR) << "Failed to fork process for userspace reboot watchdog. Switching to full "
                     << "reboot";
-        trigger_shutdown("reboot,userspace-reboot-failed-to-fork");
+        trigger_shutdown("reboot,userspace_failed,watchdog_fork");
         return;
     }
     if (pid == 0) {

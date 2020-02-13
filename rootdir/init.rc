@@ -32,6 +32,10 @@ on early-init
     # cgroup for system_server and surfaceflinger
     mkdir /dev/memcg/system 0550 system system
 
+    # symlink the Android specific /dev/tun to Linux expected /dev/net/tun
+    mkdir /dev/net 0755 root root
+    symlink ../tun /dev/net/tun
+
     # set RLIMIT_NICE to allow priorities from 19 to -20
     setrlimit nice 40 40
 
@@ -110,15 +114,6 @@ on init
     symlink /proc/self/fd/1 /dev/stdout
     symlink /proc/self/fd/2 /dev/stderr
 
-    symlink /system/bin /bin
-    symlink /system/etc /etc
-
-    # Backward compatibility.
-    symlink /sys/kernel/debug /d
-
-    # Link /vendor to /system/vendor for devices without a vendor partition.
-    symlink /system/vendor /vendor
-
     # Create energy-aware scheduler tuning nodes
     mkdir /dev/stune/foreground
     mkdir /dev/stune/background
@@ -139,6 +134,14 @@ on init
     chmod 0664 /dev/stune/background/tasks
     chmod 0664 /dev/stune/top-app/tasks
     chmod 0664 /dev/stune/rt/tasks
+
+    # Create an stune group for NNAPI HAL processes
+    mkdir /dev/stune/nnapi-hal
+    chown system system /dev/stune/nnapi-hal
+    chown system system /dev/stune/nnapi-hal/tasks
+    chmod 0664 /dev/stune/nnapi-hal/tasks
+    write /dev/stune/nnapi-hal/schedtune.boost 1
+    write /dev/stune/nnapi-hal/schedtune.prefer_idle 1
 
     # Create blkio group and apply initial settings.
     # This feature needs kernel to support it, and the
@@ -161,6 +164,19 @@ on init
     chmod 0770 /config/sdcardfs
     chown system package_info /config/sdcardfs
 
+    # Mount binderfs
+    mkdir /dev/binderfs
+    mount binder binder /dev/binderfs stats=global
+    chmod 0755 /dev/binderfs
+
+    symlink /dev/binderfs/binder /dev/binder
+    symlink /dev/binderfs/hwbinder /dev/hwbinder
+    symlink /dev/binderfs/vndbinder /dev/vndbinder
+
+    chmod 0666 /dev/binderfs/hwbinder
+    chmod 0666 /dev/binderfs/binder
+    chmod 0666 /dev/binderfs/vndbinder
+
     mkdir /mnt/secure 0700 root root
     mkdir /mnt/secure/asec 0700 root root
     mkdir /mnt/asec 0755 root system
@@ -174,10 +190,10 @@ on init
 
     # Prepare directories for pass through processes
     mkdir /mnt/pass_through 0700 root root
-    mkdir /mnt/pass_through/0 0755 root root
-    mkdir /mnt/pass_through/0/self 0755 root root
-    mkdir /mnt/pass_through/0/emulated 0755 root root
-    mkdir /mnt/pass_through/0/emulated/0 0755 root root
+    mkdir /mnt/pass_through/0 0710 root media_rw
+    mkdir /mnt/pass_through/0/self 0710 root media_rw
+    mkdir /mnt/pass_through/0/emulated 0710 root media_rw
+    mkdir /mnt/pass_through/0/emulated/0 0710 root media_rw
 
     mkdir /mnt/expand 0771 system system
     mkdir /mnt/appfuse 0711 root root
@@ -194,7 +210,6 @@ on init
     mkdir /mnt/runtime/full/self 0755 root root
 
     # Symlink to keep legacy apps working in multi-user world
-    symlink /storage/self/primary /sdcard
     symlink /storage/self/primary /mnt/sdcard
     symlink /mnt/user/0/primary /mnt/runtime/default/self/primary
 
@@ -489,6 +504,7 @@ on post-fs
 on late-fs
     # Ensure that tracefs has the correct permissions.
     # This does not work correctly if it is called in post-fs.
+    chmod 0755 /sys/kernel/tracing
     chmod 0755 /sys/kernel/debug/tracing
 
     # HALs required before storage encryption can get unlocked (FBE/FDE)
@@ -595,6 +611,9 @@ on post-fs-data
     mkdir /data/misc/installd 0700 root root
     mkdir /data/misc/apexdata 0711 root root
     mkdir /data/misc/apexrollback 0700 root root
+    mkdir /data/misc/snapshotctl_log 0755 root root
+    # create location to store pre-reboot information
+    mkdir /data/misc/prereboot 0700 system system
 
     mkdir /data/preloads 0775 system system encryption=None
 
@@ -675,10 +694,6 @@ on post-fs-data
     mkdir /data/user/0 0700 system system encryption=None
     mount none /data/data /data/user/0 bind rec
 
-    # Special-case /data/media/obb per b/64566063
-    mkdir /data/media 0770 media_rw media_rw encryption=None
-    mkdir /data/media/obb 0770 media_rw media_rw encryption=Attempt
-
     # A tmpfs directory, which will contain all apps CE DE data directory that
     # bind mount from the original source.
     chown root root /data_mirror
@@ -716,9 +731,20 @@ on post-fs-data
     wait_for_prop apexd.status ready
     perform_apex_config
 
+    # Special-case /data/media/obb per b/64566063
+    mkdir /data/media 0770 media_rw media_rw encryption=None
+    exec - media_rw media_rw -- /system/bin/chattr +F /data/media
+    mkdir /data/media/obb 0770 media_rw media_rw encryption=Attempt
+
     exec_start derive_sdk
 
     init_user0
+
+    # Allow apexd to snapshot and restore device encrypted apex data in the case
+    # of a rollback. This should be done immediately after DE_user data keys
+    # are loaded. APEXes should not access this data until this has been
+    # completed.
+    exec_start apexd-snapshotde
 
     # Set SELinux security contexts on upgrade or policy update.
     restorecon --recursive --skip-ce /data
@@ -737,6 +763,9 @@ on post-fs-data
     # until it is confirmed that apps and vendor processes don't make
     # IOCTLs on ashmem fds any more.
     setprop sys.use_memfd false
+
+    # Explicitly disable FUSE
+    setprop persist.sys.fuse false
 
     # Set fscklog permission
     chown root system /dev/fscklogs/log
@@ -1007,11 +1036,13 @@ on init && property:ro.debuggable=1
 on userspace-reboot-requested
   # TODO(b/135984674): reset all necessary properties here.
   setprop sys.boot_completed ""
+  setprop dev.bootcomplete ""
   setprop sys.init.updatable_crashing ""
   setprop sys.init.updatable_crashing_process_name ""
   setprop apexd.status ""
   setprop sys.user.0.ce_available ""
   setprop sys.shutdown.requested ""
+  setprop service.bootanim.exit ""
 
 on userspace-reboot-fs-remount
   # Make sure that vold is running.
@@ -1021,6 +1052,7 @@ on userspace-reboot-fs-remount
   exec - system system -- /system/bin/vdc checkpoint resetCheckpoint
   exec - system system -- /system/bin/vdc checkpoint markBootAttempt
   remount_userdata
+  start bootanim
 
 on userspace-reboot-resume
   trigger userspace-reboot-fs-remount
@@ -1030,4 +1062,4 @@ on userspace-reboot-resume
   trigger boot
 
 on property:sys.boot_completed=1 && property:sys.init.userspace_reboot.in_progress=1
-  finish_userspace_reboot
+  setprop sys.init.userspace_reboot.in_progress ""

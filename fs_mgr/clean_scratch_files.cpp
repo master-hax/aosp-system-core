@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright (C) 2020 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,15 +14,9 @@
  * limitations under the License.
  */
 
-#include "metricslogger/metrics_logger.h"
+#include <fs_mgr_overlayfs.h>
 
-#include <gtest/gtest.h>
-
-TEST(MetricsLoggerTest, AddSingleBootEvent) {
-    android::metricslogger::LogHistogram("test_event", 42);
-    // TODO(jhawkins): Verify the EventLog is updated.
-}
-
-TEST(MetricsLoggerTest, AddCounterVal) {
-    android::metricslogger::LogCounter("test_count", 10);
+int main() {
+    android::fs_mgr::CleanupOldScratchFiles();
+    return 0;
 }
