@@ -78,7 +78,7 @@
 #define F2FS_FSCK_BIN   "/system/bin/fsck.f2fs"
 #define MKSWAP_BIN      "/system/bin/mkswap"
 #define TUNE2FS_BIN     "/system/bin/tune2fs"
-#define RESIZE2FS_BIN     "/system/bin/resize2fs"
+#define RESIZE2FS_BIN "/system/bin/resize2fs"
 
 #define FSCK_LOG_FILE   "/dev/fscklogs/log"
 
@@ -111,23 +111,23 @@ using namespace std::literals;
 
 // record fs stat
 enum FsStatFlags {
-    FS_STAT_IS_EXT4 = 0x0001,
-    FS_STAT_NEW_IMAGE_VERSION = 0x0002,
-    FS_STAT_E2FSCK_F_ALWAYS = 0x0004,
-    FS_STAT_UNCLEAN_SHUTDOWN = 0x0008,
-    FS_STAT_QUOTA_ENABLED = 0x0010,
-    FS_STAT_RO_MOUNT_FAILED = 0x0040,
-    FS_STAT_RO_UNMOUNT_FAILED = 0x0080,
-    FS_STAT_FULL_MOUNT_FAILED = 0x0100,
-    FS_STAT_E2FSCK_FAILED = 0x0200,
-    FS_STAT_E2FSCK_FS_FIXED = 0x0400,
-    FS_STAT_INVALID_MAGIC = 0x0800,
-    FS_STAT_TOGGLE_QUOTAS_FAILED = 0x10000,
-    FS_STAT_SET_RESERVED_BLOCKS_FAILED = 0x20000,
-    FS_STAT_ENABLE_ENCRYPTION_FAILED = 0x40000,
-    FS_STAT_ENABLE_VERITY_FAILED = 0x80000,
-    FS_STAT_ENABLE_CASEFOLD_FAILED = 0x100000,
-    FS_STAT_ENABLE_METADATA_CSUM_FAILED = 0x200000,
+  FS_STAT_IS_EXT4 = 0x0001,
+  FS_STAT_NEW_IMAGE_VERSION = 0x0002,
+  FS_STAT_E2FSCK_F_ALWAYS = 0x0004,
+  FS_STAT_UNCLEAN_SHUTDOWN = 0x0008,
+  FS_STAT_QUOTA_ENABLED = 0x0010,
+  FS_STAT_RO_MOUNT_FAILED = 0x0040,
+  FS_STAT_RO_UNMOUNT_FAILED = 0x0080,
+  FS_STAT_FULL_MOUNT_FAILED = 0x0100,
+  FS_STAT_E2FSCK_FAILED = 0x0200,
+  FS_STAT_E2FSCK_FS_FIXED = 0x0400,
+  FS_STAT_INVALID_MAGIC = 0x0800,
+  FS_STAT_TOGGLE_QUOTAS_FAILED = 0x10000,
+  FS_STAT_SET_RESERVED_BLOCKS_FAILED = 0x20000,
+  FS_STAT_ENABLE_ENCRYPTION_FAILED = 0x40000,
+  FS_STAT_ENABLE_VERITY_FAILED = 0x80000,
+  FS_STAT_ENABLE_CASEFOLD_FAILED = 0x100000,
+  FS_STAT_ENABLE_METADATA_CSUM_FAILED = 0x200000,
 };
 
 static void log_fs_stat(const std::string& blk_device, int fs_stat) {
@@ -338,10 +338,11 @@ static bool tune2fs_available(void) {
 }
 
 static bool run_command(const char* argv[], int argc) {
-    int ret;
+  int ret;
 
-    ret = logwrap_fork_execvp(argc, argv, nullptr, false, LOG_KLOG, true, nullptr);
-    return ret == 0;
+  ret =
+      logwrap_fork_execvp(argc, argv, nullptr, false, LOG_KLOG, true, nullptr);
+  return ret == 0;
 }
 
 // Enable/disable quota support on the filesystem if needed.
@@ -379,9 +380,10 @@ static void tune_quota(const std::string& blk_device, const FstabEntry& entry,
     }
 
     if (!run_command(argv, ARRAY_SIZE(argv))) {
-        LERROR << "Failed to run " TUNE2FS_BIN " to " << (want_quota ? "enable" : "disable")
-               << " quotas on " << blk_device;
-        *fs_stat |= FS_STAT_TOGGLE_QUOTAS_FAILED;
+      LERROR << "Failed to run " TUNE2FS_BIN " to "
+             << (want_quota ? "enable" : "disable") << " quotas on "
+             << blk_device;
+      *fs_stat |= FS_STAT_TOGGLE_QUOTAS_FAILED;
     }
 }
 
@@ -421,9 +423,10 @@ static void tune_reserved_size(const std::string& blk_device, const FstabEntry& 
             TUNE2FS_BIN,       "-r", reserved_blocks_str.c_str(), "-g", reserved_gid_str.c_str(),
             blk_device.c_str()};
     if (!run_command(argv, ARRAY_SIZE(argv))) {
-        LERROR << "Failed to run " TUNE2FS_BIN " to set the number of reserved blocks on "
-               << blk_device;
-        *fs_stat |= FS_STAT_SET_RESERVED_BLOCKS_FAILED;
+      LERROR << "Failed to run " TUNE2FS_BIN
+                " to set the number of reserved blocks on "
+             << blk_device;
+      *fs_stat |= FS_STAT_SET_RESERVED_BLOCKS_FAILED;
     }
 }
 
@@ -465,9 +468,9 @@ static void tune_encrypt(const std::string& blk_device, const FstabEntry& entry,
 
     LINFO << "Enabling ext4 flags " << flags << " on " << blk_device;
     if (!run_command(argv, ARRAY_SIZE(argv))) {
-        LERROR << "Failed to run " TUNE2FS_BIN " to enable "
-               << "ext4 flags " << flags << " on " << blk_device;
-        *fs_stat |= FS_STAT_ENABLE_ENCRYPTION_FAILED;
+      LERROR << "Failed to run " TUNE2FS_BIN " to enable "
+             << "ext4 flags " << flags << " on " << blk_device;
+      *fs_stat |= FS_STAT_ENABLE_ENCRYPTION_FAILED;
     }
 }
 
@@ -502,9 +505,9 @@ static void tune_verity(const std::string& blk_device, const FstabEntry& entry,
 
     const char* argv[] = {TUNE2FS_BIN, "-O", "verity", blk_device.c_str()};
     if (!run_command(argv, ARRAY_SIZE(argv))) {
-        LERROR << "Failed to run " TUNE2FS_BIN " to enable "
-               << "ext4 verity on " << blk_device;
-        *fs_stat |= FS_STAT_ENABLE_VERITY_FAILED;
+      LERROR << "Failed to run " TUNE2FS_BIN " to enable "
+             << "ext4 verity on " << blk_device;
+      *fs_stat |= FS_STAT_ENABLE_VERITY_FAILED;
     }
 }
 
@@ -538,54 +541,57 @@ static void tune_casefold(const std::string& blk_device, const struct ext4_super
 
     const char* argv[] = {TUNE2FS_BIN, "-O", "casefold", "-E", "encoding=utf8", blk_device.c_str()};
     if (!run_command(argv, ARRAY_SIZE(argv))) {
-        LERROR << "Failed to run " TUNE2FS_BIN " to enable "
-               << "ext4 casefold on " << blk_device;
-        *fs_stat |= FS_STAT_ENABLE_CASEFOLD_FAILED;
+      LERROR << "Failed to run " TUNE2FS_BIN " to enable "
+             << "ext4 casefold on " << blk_device;
+      *fs_stat |= FS_STAT_ENABLE_CASEFOLD_FAILED;
     }
 }
 
 static bool resize2fs_available(void) {
-    return access(RESIZE2FS_BIN, X_OK) == 0;
+  return access(RESIZE2FS_BIN, X_OK) == 0;
 }
 
 // Enable metadata_csum
-static void tune_metadata_csum(const std::string& blk_device, const FstabEntry& entry,
-                        const struct ext4_super_block* sb, int* fs_stat) {
-    bool has_meta_csum = (sb->s_feature_ro_compat &
-                          cpu_to_le32(EXT4_FEATURE_RO_COMPAT_METADATA_CSUM)) != 0;
-    bool want_meta_csum = entry.fs_mgr_flags.ext_meta_csum;
+static void tune_metadata_csum(const std::string& blk_device,
+                               const FstabEntry& entry,
+                               const struct ext4_super_block* sb,
+                               int* fs_stat) {
+  bool has_meta_csum = (sb->s_feature_ro_compat &
+                        cpu_to_le32(EXT4_FEATURE_RO_COMPAT_METADATA_CSUM)) != 0;
+  bool want_meta_csum = entry.fs_mgr_flags.ext_meta_csum;
 
-    if (has_meta_csum || !want_meta_csum) return;
+  if (has_meta_csum || !want_meta_csum) return;
 
-    if (!tune2fs_available()) {
-        LERROR << "Unable to enable metadata_csum on " << blk_device
-               << " because " TUNE2FS_BIN " is missing";
-        return;
-    }
-    if (!resize2fs_available()) {
-        LERROR << "Unable to enable metadata_csum on " << blk_device
-               << " because " RESIZE2FS_BIN " is missing";
-        return;
-    }
+  if (!tune2fs_available()) {
+    LERROR << "Unable to enable metadata_csum on " << blk_device
+           << " because " TUNE2FS_BIN " is missing";
+    return;
+  }
+  if (!resize2fs_available()) {
+    LERROR << "Unable to enable metadata_csum on " << blk_device
+           << " because " RESIZE2FS_BIN " is missing";
+    return;
+  }
 
-    LINFO << "Enabling ext4 metadata_csum on " << blk_device;
+  LINFO << "Enabling ext4 metadata_csum on " << blk_device;
 
-    // requires to give last_fsck_time to current to avoid insane time.
-    // otherwise, tune2fs won't enable metadata_csum.
-    std::string now = std::to_string(time(0));
-    const char* argv_t[] = {TUNE2FS_BIN, "-O", "metadata_csum,64bit,extent",
-                            "-T", now.c_str(), blk_device.c_str()};
-    const char* argv_r[] = {RESIZE2FS_BIN, "-b", blk_device.c_str()};
+  // requires to give last_fsck_time to current to avoid insane time.
+  // otherwise, tune2fs won't enable metadata_csum.
+  std::string now = std::to_string(time(0));
+  const char* argv_t[] = {
+      TUNE2FS_BIN, "-O",        "metadata_csum,64bit,extent",
+      "-T",        now.c_str(), blk_device.c_str()};
+  const char* argv_r[] = {RESIZE2FS_BIN, "-b", blk_device.c_str()};
 
-    if (!run_command(argv_t, ARRAY_SIZE(argv_t))) {
-        LERROR << "Failed to run " TUNE2FS_BIN " to enable "
-               << "ext4 metadata_csum on " << blk_device;
-        *fs_stat |= FS_STAT_ENABLE_METADATA_CSUM_FAILED;
-    } else if (!run_command(argv_r, ARRAY_SIZE(argv_r))) {
-        LERROR << "Failed to run " RESIZE2FS_BIN " to enable "
-               << "ext4 metadata_csum on " << blk_device;
-        *fs_stat |= FS_STAT_ENABLE_METADATA_CSUM_FAILED;
-    }
+  if (!run_command(argv_t, ARRAY_SIZE(argv_t))) {
+    LERROR << "Failed to run " TUNE2FS_BIN " to enable "
+           << "ext4 metadata_csum on " << blk_device;
+    *fs_stat |= FS_STAT_ENABLE_METADATA_CSUM_FAILED;
+  } else if (!run_command(argv_r, ARRAY_SIZE(argv_r))) {
+    LERROR << "Failed to run " RESIZE2FS_BIN " to enable "
+           << "ext4 metadata_csum on " << blk_device;
+    *fs_stat |= FS_STAT_ENABLE_METADATA_CSUM_FAILED;
+  }
 }
 
 // Read the primary superblock from an f2fs filesystem.  On failure return
@@ -679,15 +685,15 @@ static int prepare_fs_for_mount(const std::string& blk_device, const FstabEntry&
     if (is_extfs(entry.fs_type) &&
         (entry.reserved_size != 0 || entry.fs_mgr_flags.file_encryption ||
          entry.fs_mgr_flags.fs_verity || entry.fs_mgr_flags.ext_meta_csum)) {
-        struct ext4_super_block sb;
+      struct ext4_super_block sb;
 
-        if (read_ext4_superblock(blk_device, &sb, &fs_stat)) {
-            tune_reserved_size(blk_device, entry, &sb, &fs_stat);
-            tune_encrypt(blk_device, entry, &sb, &fs_stat);
-            tune_verity(blk_device, entry, &sb, &fs_stat);
-            tune_casefold(blk_device, &sb, &fs_stat);
-            tune_metadata_csum(blk_device, entry, &sb, &fs_stat);
-        }
+      if (read_ext4_superblock(blk_device, &sb, &fs_stat)) {
+        tune_reserved_size(blk_device, entry, &sb, &fs_stat);
+        tune_encrypt(blk_device, entry, &sb, &fs_stat);
+        tune_verity(blk_device, entry, &sb, &fs_stat);
+        tune_casefold(blk_device, &sb, &fs_stat);
+        tune_metadata_csum(blk_device, entry, &sb, &fs_stat);
+      }
     }
 
     return fs_stat;
