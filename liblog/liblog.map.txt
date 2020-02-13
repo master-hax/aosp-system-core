@@ -78,6 +78,8 @@ LIGLOG_R { # introduced=30
     __android_log_set_minimum_priority;
     __android_log_stderr_logger;
     __android_log_write_logger_data;
+    android_log_read_next; # apex
+    create_android_log_parser; # apex
 };
 
 LIBLOG_PRIVATE {
@@ -89,8 +91,6 @@ LIBLOG_PRIVATE {
     android_openEventTagMap;
     android_log_processBinaryLogBuffer;
     android_log_processLogBuffer;
-    android_log_read_next;
     android_log_write_list_buffer;
     android_lookupEventTagNum;
-    create_android_log_parser;
 };

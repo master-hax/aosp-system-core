@@ -84,6 +84,10 @@ int android_log_write_list(android_log_context ctx, log_id_t id);
  */
 android_log_context create_android_log_parser(const char* msg, size_t len);
 
+/*
+ * Reads the next event from the context returned from
+ * create_android_log_parser()
+ */
 android_log_list_element android_log_read_next(android_log_context ctx);
 android_log_list_element android_log_peek_next(android_log_context ctx);
 
