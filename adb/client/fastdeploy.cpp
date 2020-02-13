@@ -80,7 +80,7 @@ struct FileDeleter {
 
 }  // namespace
 
-int get_device_api_level() {
+static int obtain_device_api_level() {
     REPORT_FUNC_TIME();
     std::vector<char> sdk_version_output_buffer;
     std::vector<char> sdk_version_error_buffer;
@@ -92,6 +92,11 @@ int get_device_api_level() {
         api_level = strtol((char*)sdk_version_output_buffer.data(), NULL, 10);
     }
 
+    return api_level;
+}
+
+int get_device_api_level() {
+    static int api_level = obtain_device_api_level();
     return api_level;
 }
 
