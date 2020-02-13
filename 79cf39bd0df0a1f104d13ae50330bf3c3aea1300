@@ -16,6 +16,24 @@
       "revId": "79cf39bd0df0a1f104d13ae50330bf3c3aea1300",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c688b60e_a929477d",
+        "filename": "libutils/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 165,
+      "author": {
+        "id": 1242539
+      },
+      "writtenOn": "2020-02-13T01:57:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "06588e3d_9877691e",
+      "revId": "79cf39bd0df0a1f104d13ae50330bf3c3aea1300",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
