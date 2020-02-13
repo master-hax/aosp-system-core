@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "06588e3d_9877691e",
+        "filename": "libutils/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 165,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2020-02-13T01:41:03Z",
+      "side": 1,
+      "message": "please add //apex_available:platform as well. Otherwise, this won\u0027t build I guess.",
+      "revId": "79cf39bd0df0a1f104d13ae50330bf3c3aea1300",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
