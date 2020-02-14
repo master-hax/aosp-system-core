@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0343d154_7c73caa7",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 5
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1079424
+      },
+      "writtenOn": "2020-02-14T01:37:36Z",
+      "side": 1,
+      "message": "Josh mentioned using TextFormat of protobuf for flexibility and compatibility. However, TextFormat doesn\u0027t work with libprotobuf-cpp-lite. I\u0027m not sure about the space overhead (memory footprint) of adbd if we are going to use libprotobuf-cpp-full. I\u0027m happy to chat and open to inputs regarding the format.",
+      "range": {
+        "startLine": 14,
+        "startChar": 0,
+        "endLine": 14,
+        "endChar": 55
+      },
+      "revId": "9226d12774ff263c8bcf844590b78e81be3ca668",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
