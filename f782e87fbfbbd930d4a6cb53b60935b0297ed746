@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "31e148fb_4e56b52d",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 2
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1081223
+      },
+      "writtenOn": "2020-02-14T19:47:39Z",
+      "side": 1,
+      "message": "scripts under /system/etc/init/ are imported automatically by init",
+      "range": {
+        "startLine": 8,
+        "startChar": 0,
+        "endLine": 8,
+        "endChar": 35
+      },
+      "revId": "f782e87fbfbbd930d4a6cb53b60935b0297ed746",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
