@@ -1967,6 +1967,7 @@ TEST_P(ShouldCleanUpFailedUpdateTestP, FlashBeforeMerge) {
     ASSERT_EQ(CleanUpAction::CANCEL, update_engine_sm->ShouldCleanUpFailedUpdate())
             << "Boot into flashed slot " << flashed_slot_suffix
             << ", snapshots should be deleted because they are no longer useful.";
+    ASSERT_TRUE(update_engine_sm->CancelUpdate());
 
     for (const auto& name : {"sys", "vnd", "prd"}) {
         ASSERT_TRUE(IsPartitionUnchanged(name + flashed_slot_suffix));
