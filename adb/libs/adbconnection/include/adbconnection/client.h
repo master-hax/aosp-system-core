@@ -28,6 +28,8 @@ struct AdbConnectionClientContext;
 enum AdbConnectionClientInfoType {
   pid,
   debuggable,
+  profileable,
+  architecture,
 };
 
 struct AdbConnectionClientInfo {
@@ -35,6 +37,11 @@ struct AdbConnectionClientInfo {
   union {
     uint64_t pid;
     bool debuggable;
+    bool profileable;
+    struct {
+      const char* name;
+      size_t size;
+    } architecture;
   } data;
 };
 
