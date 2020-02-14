@@ -547,6 +547,13 @@ class SnapshotManager final {
     CleanUpAction ShouldCleanUpFailedUpdateTargetSlot(LockedFile* lock, UpdateState state);
     CleanUpAction CheckTargetSlotFlashed(LockedFile* lock);
 
+    // Helper for RemoveAllSnapshots.
+    // Check whether |name| should be unmapped and/or deleted as a snapshot name.
+    // Return [should_unmap, should_delete].
+    std::tuple<bool, bool> ShouldUnmapDeleteSnapshot(
+            LockedFile* lock, const std::map<std::string, bool>& flashing_status, Slot current_slot,
+            const std::string& name);
+
     std::string gsid_dir_;
     std::string metadata_dir_;
     std::unique_ptr<IDeviceInfo> device_;

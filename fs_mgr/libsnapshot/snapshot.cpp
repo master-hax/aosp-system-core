@@ -169,7 +169,10 @@ bool SnapshotManager::TryCancelUpdate(bool* needs_merge) {
     if (!file) return false;
 
     UpdateState state = ReadUpdateState(file.get());
-    if (state == UpdateState::None) return true;
+    if (state == UpdateState::None) {
+        LOG(INFO) << "Update state is none, deleting old files";
+        return RemoveAllUpdateState(file.get());
+    }
 
     if (state == UpdateState::Initiated) {
         LOG(INFO) << "Update has been initiated, now canceling";
@@ -178,14 +181,39 @@ bool SnapshotManager::TryCancelUpdate(bool* needs_merge) {
 
     if (state == UpdateState::Unverified) {
         // We completed an update, but it can still be canceled if we haven't booted into it.
+        // Note that CancelUpdate does not check for rollback indicator, so reboot might have not
+        // been attempted before deleting the update. If client code does not intend to delete
+        // an unverified update, check ShouldCleanUpFailedUpdate first.
         auto slot = GetCurrentSlot();
         if (slot != Slot::Target) {
             LOG(INFO) << "Canceling previously completed updates (if any)";
             return RemoveAllUpdateState(file.get());
         }
     }
-    *needs_merge = true;
-    return true;
+
+    // Check potentially failed updates.
+    auto action = ShouldCleanUpFailedUpdate(file.get());
+    switch (action) {
+        case CleanUpAction::NONE:
+            return true;
+        case CleanUpAction::CANCEL:
+            return RemoveAllUpdateState(file.get());
+        case CleanUpAction::INITIATE:
+            // BeginUpdate / CancelUpdate should not initiate a merge. Client
+            // code must call InitiateMergeAndWait explicitly to initiate the
+            // merge. Hence, just wait until snapshotctl starts.
+        case CleanUpAction::WAIT_FOR_MERGE: {
+            *needs_merge = true;
+            return true;
+        }
+        case CleanUpAction::REBOOT:
+        case CleanUpAction::DEVICE_CORRUPTED:
+        default:
+            break;
+    }
+    // Can't do anything right now. Just fail.
+    LOG(INFO) << "Cannot cancel update (cleanup action = " << (int)action << ")";
+    return false;
 }
 
 std::string SnapshotManager::ReadUpdateSourceSlotSuffix() {
@@ -1284,10 +1312,26 @@ bool SnapshotManager::RemoveAllSnapshots(LockedFile* lock) {
         return false;
     }
 
+    std::map<std::string, bool> flashing_status;
+    if (!GetSnapshotFlashingStatus(lock, snapshots, &flashing_status)) {
+        LOG(WARNING) << "Failed to get flashing status";
+    }
+
+    auto current_slot = GetCurrentSlot();
     bool ok = true;
     bool has_mapped_cow_images = false;
     for (const auto& name : snapshots) {
-        if (!UnmapPartitionWithSnapshot(lock, name) || !DeleteSnapshot(lock, name)) {
+        auto&& [should_unmap, should_delete] =
+                ShouldUnmapDeleteSnapshot(lock, flashing_status, current_slot, name);
+        bool partition_ok = true;
+        if (should_unmap && !UnmapPartitionWithSnapshot(lock, name)) {
+            partition_ok = false;
+        }
+        if (partition_ok && should_delete && !DeleteSnapshot(lock, name)) {
+            partition_ok = false;
+        }
+
+        if (!partition_ok) {
             // Remember whether or not we were able to unmap the cow image.
             auto cow_image_device = GetCowImageDeviceName(name);
             has_mapped_cow_images |=
@@ -1308,6 +1352,48 @@ bool SnapshotManager::RemoveAllSnapshots(LockedFile* lock) {
         }
     }
     return ok;
+}
+
+// If booting off source slot, it is okay to unmap and delete all the snapshots.
+// If boot indicator is missing, update state is None or Initiated, so
+//   it is also okay to unmap and delete all the snapshots.
+// If booting off target slot,
+//  - should not unmap because:
+//    - In Android mode, snapshots are not mapped, but
+//      filesystems are mounting off dm-linear targets directly.
+//    - In recovery mode, assume nothing is mapped, so it is optional to unmap.
+//  - If partition is flashed or unknown, it is okay to delete snapshots.
+//    Otherwise (UPDATED flag), only delete snapshots if they are not mapped
+//    as dm-snapshot (for example, after merge completes).
+std::tuple<bool, bool> SnapshotManager::ShouldUnmapDeleteSnapshot(
+        LockedFile* lock, const std::map<std::string, bool>& flashing_status, Slot current_slot,
+        const std::string& name) {
+    bool should_unmap = true;
+    bool should_delete = true;
+    if (current_slot == Slot::Target) {
+        should_unmap = false;
+        auto it = flashing_status.find(name);
+        if (it == flashing_status.end()) {
+            LOG(WARNING) << "Can't determine flashing status for " << name;
+            should_delete = true;
+        } else if (it->second) {
+            // partition flashed, okay to delete obsolete snapshots
+            should_delete = true;
+        } else {
+            // partition updated, only delete if not dm-snapshot
+            SnapshotStatus status;
+            if (ReadSnapshotStatus(lock, name, &status)) {
+                auto dm_name = GetSnapshotDeviceName(name, status);
+                should_delete = !IsSnapshotDevice(dm_name);
+            } else {
+                LOG(WARNING) << "Unable to read snapshot status for " << name
+                             << ", guessing snapshot device name";
+                auto extra_name = GetSnapshotExtraDeviceName(name);
+                should_delete = !IsSnapshotDevice(name) && !IsSnapshotDevice(extra_name);
+            }
+        }
+    }
+    return {should_unmap, should_delete};
 }
 
 UpdateState SnapshotManager::GetUpdateState(double* progress) {
