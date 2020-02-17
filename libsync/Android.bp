@@ -25,6 +25,11 @@ cc_library {
     recovery_available: true,
     native_bridge_supported: true,
     defaults: ["libsync_defaults"],
+    apex_available: [
+        "//apex_available:platform",
+        "com.android.neuralnetworks",
+        "test_com.android.neuralnetworks",
+    ],
 }
 
 llndk_library {
