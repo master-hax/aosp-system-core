@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba9e7366_13980ba2",
+        "filename": "libutils/include/utils/StrongPointer.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 164,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2020-02-18T22:13:42Z",
+      "side": 0,
+      "message": "Two things:\n- is there a reason to prefer make_sp\u003cT\u003e over sp\u003cT\u003e::make?\n- I don\u0027t see how make_sp could allow us to remove the check_not_on_stack function. Seems it would still be needed.",
+      "range": {
+        "startLine": 164,
+        "startChar": 25,
+        "endLine": 164,
+        "endChar": 32
+      },
+      "revId": "cd8b982e40d1cf13360e552b81fab520810c7adc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
