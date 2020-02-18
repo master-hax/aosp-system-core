@@ -134,7 +134,8 @@ bool MergeCmdHandler(int argc, char** argv) {
         return true;
     }
 
-    LOG(ERROR) << "Snapshot failed to merge with state \"" << state << "\".";
+    LOG(ERROR) << "Snapshot failed to merge with state \"" << state
+               << "\". You may want to remove update_engine states and retry the update.";
     return false;
 }
 
