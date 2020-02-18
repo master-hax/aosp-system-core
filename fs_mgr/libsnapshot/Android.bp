@@ -24,6 +24,7 @@ cc_defaults {
     ],
     shared_libs: [
         "libbase",
+        "libchrome",
         "libcutils",
         "liblog",
         "liblp",
@@ -231,6 +232,7 @@ cc_binary {
         "android.hardware.boot@1.1",
         "libbase",
         "libbinder",
+        "libchrome",
         "libext2_uuid",
         "libext4_utils",
         "libfs_mgr_binder",
