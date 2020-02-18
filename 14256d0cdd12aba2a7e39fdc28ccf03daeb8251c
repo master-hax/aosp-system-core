@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5e9b860a_272e3622",
+        "filename": "libutils/include/utils/StrongPointer.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 183,
+      "author": {
+        "id": 1042828
+      },
+      "writtenOn": "2020-02-18T22:55:54Z",
+      "side": 1,
+      "message": "I don\u0027t know how to do this reasonably in C++, but it would be wonderful if we could somehow arrange to do the incStrong on the base object before we ran the rest of the constructor, so that conversions of this to sp\u003c\u003e in the constructor where unconditionally reliable. If we had a different set of constructors that initialized to a one reference count, that could presumably work, but seems messy.",
+      "range": {
+        "startLine": 183,
+        "startChar": 4,
+        "endLine": 183,
+        "endChar": 46
+      },
+      "revId": "14256d0cdd12aba2a7e39fdc28ccf03daeb8251c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}

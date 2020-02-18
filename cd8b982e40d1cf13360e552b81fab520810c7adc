@@ -22,6 +22,30 @@
       "revId": "cd8b982e40d1cf13360e552b81fab520810c7adc",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d9e46494_df77febe",
+        "filename": "libutils/include/utils/StrongPointer.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 164,
+      "author": {
+        "id": 1042828
+      },
+      "writtenOn": "2020-02-18T22:55:54Z",
+      "side": 0,
+      "message": "1) I don\u0027t see why it would make a difference. I prefer your version.\n2) Since we know we allocated the object with new, I don\u0027t think there\u0027s a point in checking that the object isn\u0027t on the stack. Maybe I\u0027m missing your point.",
+      "parentUuid": "ba9e7366_13980ba2",
+      "range": {
+        "startLine": 164,
+        "startChar": 25,
+        "endLine": 164,
+        "endChar": 32
+      },
+      "revId": "cd8b982e40d1cf13360e552b81fab520810c7adc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
