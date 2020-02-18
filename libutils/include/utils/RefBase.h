@@ -297,6 +297,12 @@ public:
     }
 
 protected:
+    // When constructing these objects, prefer using sp::make<>. Using a RefBase
+    // object on the stack or with other refcount mechanisms (e.g.
+    // std::shared_ptr) is inherently wrong. RefBase types have an implicit
+    // ownership model and must be used with sp/wp in order to fulfill all API
+    // contracts here.
+
                             RefBase();
     virtual                 ~RefBase();
     
