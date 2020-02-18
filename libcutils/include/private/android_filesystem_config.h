@@ -201,6 +201,20 @@
 #define AID_SHARED_GID_START 50000 /* start of gids for apps in each user to share */
 #define AID_SHARED_GID_END 59999   /* end of gids for apps in each user to share */
 
+#define PROJECT_ID_EXT_DEFAULT     1000     /* default project ID for files on external storage */
+#define PROJECT_ID_EXT_MEDIA_AUDIO 1001     /* project ID for audio files on external storage */
+#define PROJECT_ID_EXT_MEDIA_VIDEO 1002     /* project ID for video files on external storage */
+#define PROJECT_ID_EXT_MEDIA_IMAGE 1003     /* project ID for image files on external storage */
+
+#define PROJECT_ID_EXT_DATA_START 20000 /* start of project IDs for apps to mark external app data */
+#define PROJECT_ID_EXT_DATA_END   29999 /* end of project IDs for apps to mark external app data */
+
+#define PROJECT_ID_EXT_CACHE_START 30000 /* start of project IDs for apps to mark external cached data */
+#define PROJECT_ID_EXT_CACHE_END   39999 /* end of project IDs for apps to mark external cached data */
+
+#define PROJECT_ID_EXT_OBB_START  40000 /* start of project IDs for apps to mark external OBB data */
+#define PROJECT_ID_EXT_OBB_END    49999 /* end of project IDs for apps to mark external OBB data */
+
 /*
  * This is a magic number in the kernel and not something that was picked
  * arbitrarily. This value is returned whenever a uid that has no mapping in the
