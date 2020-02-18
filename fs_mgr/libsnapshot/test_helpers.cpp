@@ -17,9 +17,9 @@
 #include <sys/statvfs.h>
 
 #include <android-base/file.h>
-#include <android-base/logging.h>
 #include <android-base/strings.h>
 #include <android-base/unique_fd.h>
+#include <base/logging.h>
 #include <gtest/gtest.h>
 #include <openssl/sha.h>
 
