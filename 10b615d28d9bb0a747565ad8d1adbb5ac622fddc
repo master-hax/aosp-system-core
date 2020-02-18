@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "105fded2_e90ebd52",
+        "filename": "libcutils/include/private/android_filesystem_config.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 204,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-02-18T17:13:20Z",
+      "side": 1,
+      "message": "Can we put this at the end of the file, instead of in the middle of the UID/GID numbers?\n\nAlternatively, can we put this in a new file entirely?  It\u0027s only tangentially related to the UID/GID numbers, right?  It seems better in a new file with a comment on how exactly these project IDs should be used.",
+      "revId": "10b615d28d9bb0a747565ad8d1adbb5ac622fddc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
