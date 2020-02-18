@@ -33,6 +33,24 @@
       "revId": "fecd6cfc1d5d0b7cda9e11bf79c8f436eb2bb59d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "762033e5_93ae88f4",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 365,
+      "author": {
+        "id": 1229339
+      },
+      "writtenOn": "2020-02-18T23:40:35Z",
+      "side": 1,
+      "message": "Maybe use arraysize(iovs)? I think you need \u003candroid-base/macros.h\u003e for it.\n\nWe could also omit the 7 from the array type.",
+      "parentUuid": "870c273b_ecac0a26",
+      "revId": "fecd6cfc1d5d0b7cda9e11bf79c8f436eb2bb59d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
