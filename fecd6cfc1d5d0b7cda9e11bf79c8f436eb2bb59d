@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9563c7ab_957d05cc",
+        "filename": "debuggerd/client/debuggerd_client_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 1005967
+      },
+      "writtenOn": "2020-02-18T23:30:48Z",
+      "side": 1,
+      "message": "why are you decreasing the pipe size?",
+      "revId": "fecd6cfc1d5d0b7cda9e11bf79c8f436eb2bb59d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "870c273b_ecac0a26",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 365,
+      "author": {
+        "id": 1005967
+      },
+      "writtenOn": "2020-02-18T23:30:48Z",
+      "side": 1,
+      "message": "why not sizeof(iovs)/sizeof(*iovs)",
+      "revId": "fecd6cfc1d5d0b7cda9e11bf79c8f436eb2bb59d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
