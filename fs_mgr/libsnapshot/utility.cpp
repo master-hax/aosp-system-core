@@ -21,8 +21,8 @@
 #include <sstream>
 
 #include <android-base/file.h>
-#include <android-base/logging.h>
 #include <android-base/strings.h>
+#include <base/logging.h>
 #include <fs_mgr/roots.h>
 
 using android::dm::kSectorSize;
