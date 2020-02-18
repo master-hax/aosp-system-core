@@ -26,10 +26,10 @@
 #include <unordered_set>
 
 #include <android-base/file.h>
-#include <android-base/logging.h>
 #include <android-base/parseint.h>
 #include <android-base/strings.h>
 #include <android-base/unique_fd.h>
+#include <base/logging.h>
 #include <ext4_utils/ext4_utils.h>
 #include <fs_mgr.h>
 #include <fs_mgr_dm_linear.h>
@@ -39,6 +39,7 @@
 #include <liblp/liblp.h>
 
 #ifdef LIBSNAPSHOT_USE_CALLSTACK
+#undef ALWAYS_INLINE
 #include <utils/CallStack.h>
 #endif
 

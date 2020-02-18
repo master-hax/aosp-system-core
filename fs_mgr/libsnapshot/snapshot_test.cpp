@@ -25,10 +25,10 @@
 #include <iostream>
 
 #include <android-base/file.h>
-#include <android-base/logging.h>
 #include <android-base/properties.h>
 #include <android-base/strings.h>
 #include <android-base/unique_fd.h>
+#include <base/logging.h>
 #include <fs_mgr/roots.h>
 #include <fs_mgr_dm_linear.h>
 #include <gtest/gtest.h>

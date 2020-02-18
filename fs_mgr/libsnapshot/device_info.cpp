@@ -14,7 +14,7 @@
 
 #include "device_info.h"
 
-#include <android-base/logging.h>
+#include <base/logging.h>
 #include <fs_mgr.h>
 #include <fs_mgr_overlayfs.h>
 
