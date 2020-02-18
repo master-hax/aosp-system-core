@@ -143,6 +143,7 @@ cc_binary {
     ],
 
     static_libs: [
+        "libchrome", // for libsnapshot logging
         "libhealthhalutils",
         "libsnapshot_nobinder",
     ],

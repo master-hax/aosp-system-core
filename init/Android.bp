@@ -121,6 +121,7 @@ cc_defaults {
         "libavb",
         "libc++fs",
         "libcgrouprc_format",
+        "libchrome",
         "liblmkd_utils",
         "libmodprobe",
         "libprotobuf-cpp-lite",
