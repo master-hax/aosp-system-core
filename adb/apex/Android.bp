@@ -1,7 +1,6 @@
 apex_defaults {
     name: "com.android.adbd-defaults",
 
-    binaries: ["adbd"],
     compile_multilib: "both",
     multilib: {
         both: {
@@ -23,6 +22,8 @@ apex {
     name: "com.android.adbd",
     defaults: ["com.android.adbd-defaults"],
     manifest: "apex_manifest.json",
+
+    binaries: ["adbd"],
 }
 
 // adbd apex with INT_MAX version code, to allow for upgrade/rollback testing.
@@ -32,6 +33,16 @@ apex_test {
     manifest: "test_apex_manifest.json",
     file_contexts: ":com.android.adbd-file_contexts",
     installable: false,
+
+    // HACK: b/149618660
+    // Automated testing is currently installing an apex built for test_suites_x86_64 on cf_x86,
+    // which blows up as expected. Until we fix the test infrastructure, always build the test apex
+    // with a 32-bit adbd.
+    multilib: {
+        prefer32: {
+            binaries: ["adbd_32"],
+        },
+    },
 }
 
 prebuilt_etc {

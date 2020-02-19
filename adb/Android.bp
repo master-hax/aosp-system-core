@@ -526,7 +526,7 @@ cc_library {
 
 cc_binary {
     name: "adbd",
-    defaults: ["adbd_defaults", "host_adbd_supported"],
+    defaults: ["adbd_defaults"],
     stl: "libc++_static",
     recovery_available: true,
 
@@ -574,6 +574,65 @@ cc_binary {
         "libadbd_auth",
         "libadbd_fs",
     ],
+}
+
+// HACK: b/149618660
+// Automated testing is currently installing an apex built for test_suites_x86_64 on cf_x86,
+// which blows up as expected. Until we fix the test infrastructure, always build the test apex
+// with a 32-bit adbd.
+cc_binary {
+    name: "adbd_32",
+    defaults: ["adbd_defaults", "host_adbd_supported"],
+    stl: "libc++_static",
+    compile_multilib: "prefer32",
+    stem: "adbd",
+
+    srcs: [
+        "daemon/main.cpp",
+    ],
+
+    cflags: [
+        "-D_GNU_SOURCE",
+        "-Wno-deprecated-declarations",
+    ],
+
+    strip: {
+        keep_symbols: true,
+    },
+
+    static_libs: [
+        "libadbconnection_server",
+        "libadbd",
+        "libadbd_services",
+        "libasyncio",
+        "libbase",
+        "libcap",
+        "libcrypto_utils",
+        "libcutils_sockets",
+        "libdiagnose_usb",
+        "liblog",
+        "libmdnssd",
+        "libminijail",
+        "libselinux",
+        "libssl",
+    ],
+
+    shared_libs: [
+        "libadb_crypto",
+        "libadb_pairing_connection",
+        "libadb_protos",
+        "libadb_tls_connection",
+        "libadbd_auth",
+        "libadbd_fs",
+        "libcrypto",
+    ],
+
+    required: [
+        "libadbd_auth",
+        "libadbd_fs",
+    ],
+
+    apex_available: ["test_com.android.adbd"],
 }
 
 phony {
