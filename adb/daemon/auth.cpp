@@ -85,8 +85,8 @@ static atransport* transport_from_callback_arg(void* id) {
 static void IteratePublicKeys(std::function<bool(std::string_view public_key)> f) {
     adbd_auth_get_public_keys(
             auth_ctx,
-            [](const char* public_key, size_t len, void* arg) {
-                return (*static_cast<decltype(f)*>(arg))(std::string_view(public_key, len));
+            [](void* opaque, const char* public_key, size_t len) {
+                return (*static_cast<decltype(f)*>(opaque))(std::string_view(public_key, len));
             },
             &f);
 }
