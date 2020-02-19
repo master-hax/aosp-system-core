@@ -70,6 +70,30 @@
       "revId": "cd8b982e40d1cf13360e552b81fab520810c7adc",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1ff48195_a1a9ecdc",
+        "filename": "libutils/include/utils/StrongPointer.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 164,
+      "author": {
+        "id": 1042828
+      },
+      "writtenOn": "2020-02-19T01:36:23Z",
+      "side": 0,
+      "message": "Right. If you construct an sp\u003c\u003e to foo, check_not_on_stack is likely to complain. If you don\u0027t, the RefBase destructor should.\n\nBut why does that prevent your \"return sp\u003cT\u003e(t);\" at line 184 from bypassing this check? I think that should call a private constructor that doesn\u0027t do the check.",
+      "parentUuid": "131403cd_522ef63f",
+      "range": {
+        "startLine": 164,
+        "startChar": 25,
+        "endLine": 164,
+        "endChar": 32
+      },
+      "revId": "cd8b982e40d1cf13360e552b81fab520810c7adc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }

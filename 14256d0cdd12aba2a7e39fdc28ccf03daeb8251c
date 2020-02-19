@@ -46,6 +46,30 @@
       "revId": "14256d0cdd12aba2a7e39fdc28ccf03daeb8251c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "45cb32a6_7830110a",
+        "filename": "libutils/include/utils/StrongPointer.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 183,
+      "author": {
+        "id": 1042828
+      },
+      "writtenOn": "2020-02-19T01:36:23Z",
+      "side": 1,
+      "message": "If we could eventually switch to a model in which the RefBase constructor always initializes the count to 1 rather than (logically) zero, that would be great.\n\nIt occurs to me that one specific reason it\u0027s somewhat hard to get there is that we have a bunch of cases in which RefBase objects are owned by Java objects. (See e.g. SurfaceTexture_setSurfaceTexture.) They\u0027re referenced via a jlong, where we explicitly manage the reference count. That\u0027s going to make it harder to really make new() private. We could probably still have an initial refcount of one, so long as we update all the clients at once.\n\nI guess this could also be recast as sp\u003c\u003e to/from jlong conversions, but that also seems pretty nasty.\n\nDo you understand how much third-party vendor code relies on our current conventions here?",
+      "parentUuid": "26c378fd_0391f69c",
+      "range": {
+        "startLine": 183,
+        "startChar": 4,
+        "endLine": 183,
+        "endChar": 46
+      },
+      "revId": "14256d0cdd12aba2a7e39fdc28ccf03daeb8251c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
