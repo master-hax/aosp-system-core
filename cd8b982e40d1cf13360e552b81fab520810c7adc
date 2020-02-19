@@ -94,6 +94,30 @@
       "revId": "cd8b982e40d1cf13360e552b81fab520810c7adc",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cc0a53ee_ca4960c8",
+        "filename": "libutils/include/utils/StrongPointer.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 164,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2020-02-19T02:31:36Z",
+      "side": 0,
+      "message": "Sorry, I was thinking that this TODO meant to replace this function, but it was just an additional suggestion.",
+      "parentUuid": "1ff48195_a1a9ecdc",
+      "range": {
+        "startLine": 164,
+        "startChar": 25,
+        "endLine": 164,
+        "endChar": 32
+      },
+      "revId": "cd8b982e40d1cf13360e552b81fab520810c7adc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
