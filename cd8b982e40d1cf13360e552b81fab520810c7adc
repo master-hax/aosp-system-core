@@ -46,6 +46,30 @@
       "revId": "cd8b982e40d1cf13360e552b81fab520810c7adc",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "131403cd_522ef63f",
+        "filename": "libutils/include/utils/StrongPointer.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 164,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2020-02-19T00:57:48Z",
+      "side": 0,
+      "message": "This is the problematic case which this function appears to be protecting against:\n\nclass Foo : RefBase {...};\n\nint main() {\n    Foo foo;\n    foo.bar();\n}",
+      "parentUuid": "d9e46494_df77febe",
+      "range": {
+        "startLine": 164,
+        "startChar": 25,
+        "endLine": 164,
+        "endChar": 32
+      },
+      "revId": "cd8b982e40d1cf13360e552b81fab520810c7adc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }

@@ -22,6 +22,30 @@
       "revId": "14256d0cdd12aba2a7e39fdc28ccf03daeb8251c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "26c378fd_0391f69c",
+        "filename": "libutils/include/utils/StrongPointer.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 183,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2020-02-19T00:57:48Z",
+      "side": 1,
+      "message": "Well, I think here is what we could do (once sp\u003cT\u003e::make is used everywhere):\n- make RefBase constructor call incStrong at the end\n- call decStrong on the sp\u003cT\u003e created here (or avoid the extra incStrong)\n\nHowever, I can\u0027t think of a way to accomplish this until everyone uses this function, yeah.",
+      "parentUuid": "5e9b860a_272e3622",
+      "range": {
+        "startLine": 183,
+        "startChar": 4,
+        "endLine": 183,
+        "endChar": 46
+      },
+      "revId": "14256d0cdd12aba2a7e39fdc28ccf03daeb8251c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
