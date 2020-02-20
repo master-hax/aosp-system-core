@@ -16,6 +16,7 @@
 
 #include "incremental.h"
 
+#include <android-base/endian.h>
 #include <android-base/file.h>
 #include <android-base/stringprintf.h>
 #include <openssl/base64.h>
@@ -25,12 +26,6 @@
 #include "adb_utils.h"
 #include "commandline.h"
 #include "sysdeps.h"
-
-#ifndef _WIN32
-#include <endian.h>
-#else
-#define be32toh(x) _byteswap_ulong(x)
-#endif
 
 using namespace std::literals;
 
@@ -202,8 +197,9 @@ std::optional<Process> install(std::vector<std::string> files) {
     auto fd_param = std::to_string(osh);
 #endif
 
-    std::vector<std::string> args(std::move(files));
-    args.insert(args.begin(), {"inc-server", fd_param});
+    std::vector<std::string> args{"inc-server", fd_param};
+    args.insert(args.end(), std::make_move_iterator(files.begin()),
+                std::make_move_iterator(files.end()));
     auto child = adb_launch_process(adb_path, std::move(args), {connection_fd.get()});
     if (!child) {
         fprintf(stderr, "adb: failed to fork: %s\n", strerror(errno));
