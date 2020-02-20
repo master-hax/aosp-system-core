@@ -1,5 +1,6 @@
 cc_library_static {
     name: "libinit_test_utils",
+    defaults: ["init_defaults_libraries"],
     cflags: [
         "-Wall",
         "-Wextra",
@@ -9,19 +10,6 @@ cc_library_static {
     srcs: [
         "service_utils.cpp",
     ],
-    shared_libs: [
-        "libcutils",
-        "liblog",
-        "libjsoncpp",
-        "libprotobuf-cpp-lite",
-        "libhidl-gen-utils",
-    ],
-    whole_static_libs: [
-        "libinit",
-        "libpropertyinfoparser",
-    ],
-    static_libs: [
-        "libbase",
-    ],
+    whole_static_libs: ["libinit"],
     export_include_dirs: ["include"], // for tests
 }
