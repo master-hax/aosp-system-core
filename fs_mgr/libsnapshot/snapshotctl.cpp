@@ -51,27 +51,8 @@ bool DumpCmdHandler(int /*argc*/, char** argv) {
 }
 
 bool MergeCmdHandler(int /*argc*/, char** argv) {
-    auto begin = std::chrono::steady_clock::now();
-
-    android::base::InitLogging(argv, android::base::StderrLogger);
-
-    LOG(INFO) << "Initiating merge.";
-    auto state = SnapshotManager::New()->InitiateMergeAndWait();
-
-    // We could wind up in the Unverified state if the device rolled back or
-    // hasn't fully rebooted. Ignore this.
-    if (state == UpdateState::None || state == UpdateState::Unverified) {
-        return true;
-    }
-    if (state == UpdateState::MergeCompleted) {
-        auto end = std::chrono::steady_clock::now();
-        auto passed = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count();
-        LOG(INFO) << "Snapshot merged in " << passed << " ms.";
-        return true;
-    }
-
-    LOG(ERROR) << "Snapshot failed to merge with state \"" << state
-               << "\". You may want to remove update_engine states and retry the update.";
+    android::base::InitLogging(argv, &android::base::StderrLogger);
+    LOG(WARNING) << "Deprecated. Call update_engine_client --merge instead.";
     return false;
 }
 
