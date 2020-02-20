@@ -754,16 +754,24 @@ TYPED_TEST_P(DwarfDebugFrameTest, GetFdeFromPc_interleaved) {
   SetFde32(&this->memory_, 0x5400, 0xfc, 0, 0xa00, 0x100);
   // FDE 4 (0x100 - 0xb00)
   SetFde32(&this->memory_, 0x5500, 0xfc, 0, 0x150, 0xa00);
-  // FDE 5 (0x0 - 0x50)
-  SetFde32(&this->memory_, 0x5600, 0xfc, 0, 0, 0x50);
+  // FDE 5 (0x50 - 0xa0)
+  SetFde32(&this->memory_, 0x5600, 0xfc, 0, 0x50, 0x50);
+  // FDE 6 (0x0 - 0x50)
+  SetFde32(&this->memory_, 0x5700, 0xfc, 0, 0, 0x50);
 
-  this->debug_frame_->Init(0x5000, 0x700, 0);
+  this->debug_frame_->Init(0x5000, 0x800, 0);
 
   // Force reading all entries so no entries are found.
   const DwarfFde* fde = this->debug_frame_->GetFdeFromPc(0xfffff);
   ASSERT_TRUE(fde == nullptr);
 
-  //   0x0   - 0x50   FDE 5
+  //   0x50  - 0xa0  FDE 5
+  fde = this->debug_frame_->GetFdeFromPc(0x60);
+  ASSERT_TRUE(fde != nullptr);
+  EXPECT_EQ(0x50U, fde->pc_start);
+  EXPECT_EQ(0xa0U, fde->pc_end);
+
+  //   0x0   - 0x50   FDE 6
   fde = this->debug_frame_->GetFdeFromPc(0x10);
   ASSERT_TRUE(fde != nullptr);
   EXPECT_EQ(0U, fde->pc_start);
