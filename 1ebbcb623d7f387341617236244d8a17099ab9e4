@@ -1,0 +1,61 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9c01fcc2_e07f02b4",
+        "filename": "adb/daemon/file_sync_service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 574,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-02-20T01:13:25Z",
+      "side": 1,
+      "message": "don\u0027t need this either now?",
+      "revId": "1ebbcb623d7f387341617236244d8a17099ab9e4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1b827327_845fc819",
+        "filename": "adb/libs/libadbd_fs/adbd_fs.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-02-20T01:13:25Z",
+      "side": 1,
+      "message": "you don\u0027t want to use the correct types in your wrapper at least?",
+      "range": {
+        "startLine": 21,
+        "startChar": 76,
+        "endLine": 21,
+        "endChar": 84
+      },
+      "revId": "1ebbcb623d7f387341617236244d8a17099ab9e4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e7b77d54_ec466566",
+        "filename": "libcutils/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 132,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-02-20T01:13:25Z",
+      "side": 1,
+      "message": "is this worth it?\n\ni think we\u0027re already pretty screwed here anyway: https://source.corp.google.com/android/build/soong/apex/apex.go?q\u003dfile:apex.go%20libcutils",
+      "revId": "1ebbcb623d7f387341617236244d8a17099ab9e4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
