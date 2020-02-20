@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "cd1df4c5_850eb774",
+        "filename": "adb/pairing_auth/include/adb/pairing/pairing_auth.h",
+        "patchSetId": 11
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1128973
+      },
+      "writtenOn": "2020-02-20T16:27:57Z",
+      "side": 1,
+      "message": "Ack. I\u0027ll just do it now since it\u0027s an easy replace.",
+      "parentUuid": "6a5d84c1_20e53ac2",
+      "revId": "702d8054cae10a19f5b62374f547bf1b8b4c8625",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c5b34167_95ae46b2",
         "filename": "adb/pairing_auth/include/adb/pairing/pairing_auth.h",
         "patchSetId": 11
@@ -30,6 +48,47 @@
       "writtenOn": "2020-02-20T06:25:29Z",
       "side": 1,
       "message": "Presumably on error null is returned (such as, null pswd or 0 len)? Please document that behavior.",
+      "revId": "702d8054cae10a19f5b62374f547bf1b8b4c8625",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "44eba7f5_55c3876f",
+        "filename": "adb/pairing_auth/include/adb/pairing/pairing_auth.h",
+        "patchSetId": 11
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1128973
+      },
+      "writtenOn": "2020-02-20T16:27:57Z",
+      "side": 1,
+      "message": "Ack. I\u0027ll update the doc to say that it will \"abort on bad params.\"",
+      "parentUuid": "c5b34167_95ae46b2",
+      "revId": "702d8054cae10a19f5b62374f547bf1b8b4c8625",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "01954135_aa7429a0",
+        "filename": "adb/pairing_auth/include/adb/pairing/pairing_auth.h",
+        "patchSetId": 11
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1128973
+      },
+      "writtenOn": "2020-02-20T16:27:57Z",
+      "side": 1,
+      "message": "client",
+      "range": {
+        "startLine": 59,
+        "startChar": 32,
+        "endLine": 59,
+        "endChar": 38
+      },
       "revId": "702d8054cae10a19f5b62374f547bf1b8b4c8625",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
@@ -53,6 +112,24 @@
     },
     {
       "key": {
+        "uuid": "f265309e_bbe726c3",
+        "filename": "adb/pairing_auth/include/adb/pairing/pairing_auth.h",
+        "patchSetId": 11
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1128973
+      },
+      "writtenOn": "2020-02-20T16:27:57Z",
+      "side": 1,
+      "message": "pairing_auth_new should never return an invalid context. I guess I can add something like \"guaranteed to return \u003e 0\"?\n\nI can additionally add \"aborts if ctx is null\" if needed? IMO, this seems excessively verbose though.",
+      "parentUuid": "37ada96f_f16730a1",
+      "revId": "702d8054cae10a19f5b62374f547bf1b8b4c8625",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "98bf9a5e_6b48728f",
         "filename": "adb/pairing_auth/include/adb/pairing/pairing_auth.h",
         "patchSetId": 11
@@ -64,6 +141,30 @@
       "writtenOn": "2020-02-20T06:25:29Z",
       "side": 1,
       "message": "I assume if it\u0027s not valid, this just silently does nothing/writes garbage? Is there any value to a bool return value here as with pairing_auth_encrypt/decrypt?",
+      "range": {
+        "startLine": 79,
+        "startChar": 46,
+        "endLine": 79,
+        "endChar": 72
+      },
+      "revId": "702d8054cae10a19f5b62374f547bf1b8b4c8625",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "42de3726_62d56024",
+        "filename": "adb/pairing_auth/include/adb/pairing/pairing_auth.h",
+        "patchSetId": 11
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 1128973
+      },
+      "writtenOn": "2020-02-20T16:27:57Z",
+      "side": 1,
+      "message": "I should remove these words. And assuming that ctx is always valid, void should be ok.",
+      "parentUuid": "98bf9a5e_6b48728f",
       "range": {
         "startLine": 79,
         "startChar": 46,
@@ -99,6 +200,30 @@
     },
     {
       "key": {
+        "uuid": "3366124f_859bce48",
+        "filename": "adb/pairing_auth/include/adb/pairing/pairing_auth.h",
+        "patchSetId": 11
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 1128973
+      },
+      "writtenOn": "2020-02-20T16:27:57Z",
+      "side": 1,
+      "message": "Yeah, maybe this should be something like \"pairing_auth_get_spake2_msg\" since it may not be clear what this message is for. I should also put a link to pairing_auth_init_cipher here.",
+      "parentUuid": "bc0e4b54_40dc8df3",
+      "range": {
+        "startLine": 85,
+        "startChar": 17,
+        "endLine": 85,
+        "endChar": 25
+      },
+      "revId": "702d8054cae10a19f5b62374f547bf1b8b4c8625",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "1941b035_9e01b46e",
         "filename": "adb/pairing_auth/include/adb/pairing/pairing_auth.h",
         "patchSetId": 11
@@ -119,6 +244,30 @@
       "revId": "702d8054cae10a19f5b62374f547bf1b8b4c8625",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ebbb4f8d_a33882e5",
+        "filename": "adb/pairing_auth/include/adb/pairing/pairing_auth.h",
+        "patchSetId": 11
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 1128973
+      },
+      "writtenOn": "2020-02-20T16:27:57Z",
+      "side": 1,
+      "message": "Ack. I\u0027ll update here and elsewhere.",
+      "parentUuid": "1941b035_9e01b46e",
+      "range": {
+        "startLine": 108,
+        "startChar": 13,
+        "endLine": 108,
+        "endChar": 23
+      },
+      "revId": "702d8054cae10a19f5b62374f547bf1b8b4c8625",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
