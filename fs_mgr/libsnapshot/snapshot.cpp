@@ -2489,67 +2489,6 @@ std::unique_ptr<AutoDevice> SnapshotManager::EnsureMetadataMounted() {
     return AutoUnmountDevice::New(device_->GetMetadataDir());
 }
 
-UpdateState SnapshotManager::InitiateMergeAndWait(SnapshotMergeReport* stats_report,
-                                                  const std::function<bool()>& before_cancel) {
-    {
-        auto lock = LockExclusive();
-        // Sync update state from file with bootloader.
-        if (!WriteUpdateState(lock.get(), ReadUpdateState(lock.get()))) {
-            LOG(WARNING) << "Unable to sync write update state, fastboot may "
-                         << "reject / accept wipes incorrectly!";
-        }
-    }
-
-    SnapshotMergeStats merge_stats(*this);
-
-    unsigned int last_progress = 0;
-    auto callback = [&]() -> bool {
-        double progress;
-        GetUpdateState(&progress);
-        if (last_progress < static_cast<unsigned int>(progress)) {
-            last_progress = progress;
-            LOG(INFO) << "Waiting for merge to complete: " << last_progress << "%.";
-        }
-        return true;  // continue
-    };
-
-    LOG(INFO) << "Waiting for any previous merge request to complete. "
-              << "This can take up to several minutes.";
-    merge_stats.Resume();
-    auto state = ProcessUpdateState(callback, before_cancel);
-    merge_stats.set_state(state);
-    if (state == UpdateState::None) {
-        LOG(INFO) << "Can't find any snapshot to merge.";
-        return state;
-    }
-    if (state == UpdateState::Unverified) {
-        if (GetCurrentSlot() != Slot::Target) {
-            LOG(INFO) << "Cannot merge until device reboots.";
-            return state;
-        }
-
-        // This is the first snapshot merge that is requested after OTA. We can
-        // initialize the merge duration statistics.
-        merge_stats.Start();
-
-        if (!InitiateMerge()) {
-            LOG(ERROR) << "Failed to initiate merge.";
-            return state;
-        }
-        // All other states can be handled by ProcessUpdateState.
-        LOG(INFO) << "Waiting for merge to complete. This can take up to several minutes.";
-        last_progress = 0;
-        state = ProcessUpdateState(callback, before_cancel);
-        merge_stats.set_state(state);
-    }
-
-    LOG(INFO) << "Merge finished with state \"" << state << "\".";
-    if (stats_report) {
-        *stats_report = merge_stats.GetReport();
-    }
-    return state;
-}
-
 bool SnapshotManager::HandleImminentDataWipe(const std::function<void()>& callback) {
     if (!device_->IsRecovery()) {
         LOG(ERROR) << "Data wipes are only allowed in recovery.";
