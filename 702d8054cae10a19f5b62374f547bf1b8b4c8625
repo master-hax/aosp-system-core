@@ -1,0 +1,124 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6a5d84c1_20e53ac2",
+        "filename": "adb/pairing_auth/include/adb/pairing/pairing_auth.h",
+        "patchSetId": 11
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1010050
+      },
+      "writtenOn": "2020-02-20T06:25:29Z",
+      "side": 1,
+      "message": "nit: I don\u0027t think anything is yet set up to generate reference docs for non-public NDK variants, but I don\u0027t believe comments blocks using // will be included in any such docs. I think you need /// or //!, or /**...**/ etc.\n\nBut less critical right now since I don\u0027t believe anything will try to ingest these?",
+      "revId": "702d8054cae10a19f5b62374f547bf1b8b4c8625",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c5b34167_95ae46b2",
+        "filename": "adb/pairing_auth/include/adb/pairing/pairing_auth.h",
+        "patchSetId": 11
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1010050
+      },
+      "writtenOn": "2020-02-20T06:25:29Z",
+      "side": 1,
+      "message": "Presumably on error null is returned (such as, null pswd or 0 len)? Please document that behavior.",
+      "revId": "702d8054cae10a19f5b62374f547bf1b8b4c8625",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "37ada96f_f16730a1",
+        "filename": "adb/pairing_auth/include/adb/pairing/pairing_auth.h",
+        "patchSetId": 11
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1010050
+      },
+      "writtenOn": "2020-02-20T06:25:29Z",
+      "side": 1,
+      "message": "I\u0027m guessing this returns 0 if ctx is invalid (or will it just abort?) Please document that.",
+      "revId": "702d8054cae10a19f5b62374f547bf1b8b4c8625",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "98bf9a5e_6b48728f",
+        "filename": "adb/pairing_auth/include/adb/pairing/pairing_auth.h",
+        "patchSetId": 11
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 1010050
+      },
+      "writtenOn": "2020-02-20T06:25:29Z",
+      "side": 1,
+      "message": "I assume if it\u0027s not valid, this just silently does nothing/writes garbage? Is there any value to a bool return value here as with pairing_auth_encrypt/decrypt?",
+      "range": {
+        "startLine": 79,
+        "startChar": 46,
+        "endLine": 79,
+        "endChar": 72
+      },
+      "revId": "702d8054cae10a19f5b62374f547bf1b8b4c8625",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bc0e4b54_40dc8df3",
+        "filename": "adb/pairing_auth/include/adb/pairing/pairing_auth.h",
+        "patchSetId": 11
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 1010050
+      },
+      "writtenOn": "2020-02-20T06:25:29Z",
+      "side": 1,
+      "message": "minor naming: Should this maybe be called something like \u0027get_init_msg\u0027, to make it clear what role it plays in the session setup sequence?  But not a strong preference if you think the current name is more appropriate or idiomatic to SPAKE2.",
+      "range": {
+        "startLine": 85,
+        "startChar": 17,
+        "endLine": 85,
+        "endChar": 25
+      },
+      "revId": "702d8054cae10a19f5b62374f547bf1b8b4c8625",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1941b035_9e01b46e",
+        "filename": "adb/pairing_auth/include/adb/pairing/pairing_auth.h",
+        "patchSetId": 11
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 1010050
+      },
+      "writtenOn": "2020-02-20T06:25:29Z",
+      "side": 1,
+      "message": "I\u0027m assuming this is in bytes, but would be nice to confirm.",
+      "range": {
+        "startLine": 108,
+        "startChar": 13,
+        "endLine": 108,
+        "endChar": 23
+      },
+      "revId": "702d8054cae10a19f5b62374f547bf1b8b4c8625",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
