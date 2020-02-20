@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9c4e3e41_6afc024f",
+        "filename": "fs_mgr/libsnapshot/snapshotctl.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 138,
+      "author": {
+        "id": 1108565
+      },
+      "writtenOn": "2020-02-20T05:45:31Z",
+      "side": 1,
+      "message": "nit: you may want to point or write how does one clean up update_engine states (may be a command?!) here. That way, anyone who see\u0027s the message don\u0027t have to try to find it elsewhere",
+      "range": {
+        "startLine": 138,
+        "startChar": 0,
+        "endLine": 138,
+        "endChar": 90
+      },
+      "revId": "91544a0695d2932751e8a68aa669397e7da6a50b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
