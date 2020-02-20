@@ -22,6 +22,30 @@
       "revId": "91544a0695d2932751e8a68aa669397e7da6a50b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "98e129f8_748d61c3",
+        "filename": "fs_mgr/libsnapshot/snapshotctl.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 138,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2020-02-20T22:41:17Z",
+      "side": 1,
+      "message": "This code will actually be deleted in aosp/1240375 and be replaced by another command. See that CL",
+      "parentUuid": "9c4e3e41_6afc024f",
+      "range": {
+        "startLine": 138,
+        "startChar": 0,
+        "endLine": 138,
+        "endChar": 90
+      },
+      "revId": "91544a0695d2932751e8a68aa669397e7da6a50b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
