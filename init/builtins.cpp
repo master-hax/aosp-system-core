@@ -1209,10 +1209,18 @@ static bool IsApexUpdatable() {
     return updatable;
 }
 
-static Result<void> do_update_linker_config(const BuiltinArguments&) {
+static Result<void> do_update_linker_config(const BuiltinArguments& args) {
+    bool force = false;
+
+    for (auto& arg : args.args) {
+        if (arg == "--force") {
+            force = true;
+        }
+    }
+
     // If APEX is not updatable, then all APEX information are already included in the first
     // linker config generation, so there is no need to update linker configuration again.
-    if (IsApexUpdatable()) {
+    if (force || IsApexUpdatable()) {
         return GenerateLinkerConfiguration();
     }
 
@@ -1352,7 +1360,7 @@ const BuiltinFunctionMap& GetBuiltinFunctionMap() {
         {"perform_apex_config",     {0,     0,    {false,  do_perform_apex_config}}},
         {"umount",                  {1,     1,    {false,  do_umount}}},
         {"umount_all",              {1,     1,    {false,  do_umount_all}}},
-        {"update_linker_config",    {0,     0,    {false,  do_update_linker_config}}},
+        {"update_linker_config",    {0,     1,    {false,  do_update_linker_config}}},
         {"readahead",               {1,     2,    {true,   do_readahead}}},
         {"remount_userdata",        {0,     0,    {false,  do_remount_userdata}}},
         {"restart",                 {1,     1,    {false,  do_restart}}},
