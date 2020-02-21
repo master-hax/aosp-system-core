@@ -72,6 +72,24 @@
     },
     {
       "key": {
+        "uuid": "2c561a8c_e3d22fc7",
+        "filename": "adb/pairing_auth/include/adb/pairing/pairing_auth.h",
+        "patchSetId": 11
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1010050
+      },
+      "writtenOn": "2020-02-21T18:50:28Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "44eba7f5_55c3876f",
+      "revId": "702d8054cae10a19f5b62374f547bf1b8b4c8625",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "01954135_aa7429a0",
         "filename": "adb/pairing_auth/include/adb/pairing/pairing_auth.h",
         "patchSetId": 11
@@ -92,6 +110,30 @@
       "revId": "702d8054cae10a19f5b62374f547bf1b8b4c8625",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bb56d972_8ca966c8",
+        "filename": "adb/pairing_auth/include/adb/pairing/pairing_auth.h",
+        "patchSetId": 11
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1010050
+      },
+      "writtenOn": "2020-02-21T18:50:28Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "01954135_aa7429a0",
+      "range": {
+        "startLine": 59,
+        "startChar": 32,
+        "endLine": 59,
+        "endChar": 38
+      },
+      "revId": "702d8054cae10a19f5b62374f547bf1b8b4c8625",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -192,6 +234,30 @@
       "revId": "702d8054cae10a19f5b62374f547bf1b8b4c8625",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ee97c281_37340698",
+        "filename": "adb/pairing_auth/include/adb/pairing/pairing_auth.h",
+        "patchSetId": 11
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 1010050
+      },
+      "writtenOn": "2020-02-21T18:50:28Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "42de3726_62d56024",
+      "range": {
+        "startLine": 79,
+        "startChar": 46,
+        "endLine": 79,
+        "endChar": 72
+      },
+      "revId": "702d8054cae10a19f5b62374f547bf1b8b4c8625",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
