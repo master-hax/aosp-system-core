@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "233e89dd_6870ed4d",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 1198,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-02-21T18:10:32Z",
+      "side": 1,
+      "message": "Do we want/need a check that slot \u003d\u003d Slot::Source here? It\u0027s conceivable, maybe, that we could reboot after creating the rollback indicator, but not before we delete it, and invoke set_active.",
+      "revId": "3a61913e68841ead4d9c0e734481f6b3f0f2f92e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
