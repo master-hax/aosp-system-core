@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0bb43ff9_44cb5b21",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/snapshot.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 153,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-02-21T17:40:33Z",
+      "side": 1,
+      "message": "nit: s/pause/will pause/",
+      "revId": "1e6786c0748ca0008dd32dc0c70ab5e7ed5067ee",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
