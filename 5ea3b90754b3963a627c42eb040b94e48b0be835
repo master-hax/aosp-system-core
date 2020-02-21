@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b50a8479_e0d1932b",
+        "filename": "adb/pairing_auth/include/adb/pairing/pairing_auth.h",
+        "patchSetId": 14
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 1010050
+      },
+      "writtenOn": "2020-02-21T18:49:35Z",
+      "side": 1,
+      "message": "doc nit: I think your search-and replace caught a bit more than planned.",
+      "range": {
+        "startLine": 116,
+        "startChar": 17,
+        "endLine": 116,
+        "endChar": 19
+      },
+      "revId": "5ea3b90754b3963a627c42eb040b94e48b0be835",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}

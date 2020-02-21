@@ -130,6 +130,24 @@
     },
     {
       "key": {
+        "uuid": "3d61c7fb_f3afcf68",
+        "filename": "adb/pairing_auth/include/adb/pairing/pairing_auth.h",
+        "patchSetId": 11
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1010050
+      },
+      "writtenOn": "2020-02-21T18:49:35Z",
+      "side": 1,
+      "message": "Eh, our docs requirements tend to want detail included that most C API writers just assume true; it does tend to make life less painful for less experienced folks which isn\u0027t as big of a concern for these APIs.  Nevertheless, thanks for the added detail!",
+      "parentUuid": "f265309e_bbe726c3",
+      "revId": "702d8054cae10a19f5b62374f547bf1b8b4c8625",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "98bf9a5e_6b48728f",
         "filename": "adb/pairing_auth/include/adb/pairing/pairing_auth.h",
         "patchSetId": 11
@@ -224,6 +242,30 @@
     },
     {
       "key": {
+        "uuid": "0c777cce_00479265",
+        "filename": "adb/pairing_auth/include/adb/pairing/pairing_auth.h",
+        "patchSetId": 11
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 1010050
+      },
+      "writtenOn": "2020-02-21T18:49:35Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "3366124f_859bce48",
+      "range": {
+        "startLine": 85,
+        "startChar": 17,
+        "endLine": 85,
+        "endChar": 25
+      },
+      "revId": "702d8054cae10a19f5b62374f547bf1b8b4c8625",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1941b035_9e01b46e",
         "filename": "adb/pairing_auth/include/adb/pairing/pairing_auth.h",
         "patchSetId": 11
@@ -259,6 +301,30 @@
       "side": 1,
       "message": "Ack. I\u0027ll update here and elsewhere.",
       "parentUuid": "1941b035_9e01b46e",
+      "range": {
+        "startLine": 108,
+        "startChar": 13,
+        "endLine": 108,
+        "endChar": 23
+      },
+      "revId": "702d8054cae10a19f5b62374f547bf1b8b4c8625",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0982d3cb_2de0238d",
+        "filename": "adb/pairing_auth/include/adb/pairing/pairing_auth.h",
+        "patchSetId": 11
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 1010050
+      },
+      "writtenOn": "2020-02-21T18:49:35Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "ebbb4f8d_a33882e5",
       "range": {
         "startLine": 108,
         "startChar": 13,
