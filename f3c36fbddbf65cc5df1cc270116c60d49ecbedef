@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "62332ca3_338c3946",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 798,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-02-21T17:37:00Z",
+      "side": 1,
+      "message": "If we get a third callback here, we should probably move these into an interface for clarity.",
+      "revId": "f3c36fbddbf65cc5df1cc270116c60d49ecbedef",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
