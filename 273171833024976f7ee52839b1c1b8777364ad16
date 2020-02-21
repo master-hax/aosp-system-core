@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "604dcd98_8a0b8e0e",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-02-21T16:24:13Z",
+      "side": 1,
+      "message": "That is a bit unfortunate.  That\u0027s only true when the device uses that recovery trampoline, since in that case first stage init is literally the \u0027init\u0027 from the recovery image.  We should look into not using __ANDROID_RECOVERY__ in any of the fs_mgr code in this case, since it will be error prone.",
+      "range": {
+        "startLine": 10,
+        "startChar": 22,
+        "endLine": 12,
+        "endChar": 0
+      },
+      "revId": "273171833024976f7ee52839b1c1b8777364ad16",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
