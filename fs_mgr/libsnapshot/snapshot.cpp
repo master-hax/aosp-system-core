@@ -81,6 +81,7 @@ using namespace std::chrono_literals;
 using namespace std::string_literals;
 
 static constexpr char kBootIndicatorPath[] = "/metadata/ota/snapshot-boot";
+static constexpr char kRollbackIndicatorPath[] = "/metadata/ota/rollback-indicator";
 static constexpr auto kUpdateStateCheckInterval = 2s;
 
 // Note: IImageManager is an incomplete type in the header, so the default
@@ -1010,7 +1011,7 @@ std::string SnapshotManager::GetSnapshotBootIndicatorPath() {
 }
 
 std::string SnapshotManager::GetRollbackIndicatorPath() {
-    return metadata_dir_ + "/rollback-indicator";
+    return metadata_dir_ + "/" + android::base::Basename(kRollbackIndicatorPath);
 }
 
 void SnapshotManager::AcknowledgeMergeSuccess(LockedFile* lock) {
@@ -1375,6 +1376,10 @@ bool SnapshotManager::ListSnapshots(LockedFile* lock, std::vector<std::string>* 
 
 bool SnapshotManager::IsSnapshotManagerNeeded() {
     return access(kBootIndicatorPath, F_OK) == 0;
+}
+
+std::string SnapshotManager::GetGlobalRollbackIndicatorPath() {
+    return kRollbackIndicatorPath;
 }
 
 bool SnapshotManager::NeedSnapshotsInFirstStageMount() {
