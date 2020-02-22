@@ -535,6 +535,11 @@ void SelinuxRestoreContext() {
 
     selinux_android_restorecon("/linkerconfig", 0);
 
+    // adb remount, and snapshot-based updates, both use ImageManager during
+    // first-stage init. This creates status files which need to be labelled.
+    selinux_android_restorecon("/metadata/gsi/ota", SELINUX_ANDROID_RESTORECON_RECURSE);
+    selinux_android_restorecon("/metadata/gsi/remount", SELINUX_ANDROID_RESTORECON_RECURSE);
+
     selinux_android_restorecon(gsi::kDsuAvbKeyDir, SELINUX_ANDROID_RESTORECON_RECURSE);
 }
 
