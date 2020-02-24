@@ -90,7 +90,10 @@ static bool init_functionfs(struct usb_handle* h) {
 
     h->read_aiob.fd = h->bulk_out.get();
     h->write_aiob.fd = h->bulk_in.get();
-    h->reads_zero_packets = true;
+    if (android::base::GetBoolProperty("sys.usb.ffs.aio_compat", false))
+        h->reads_zero_packets = true;
+    else
+        h->reads_zero_packets = false;
     return true;
 }
 
