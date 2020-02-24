@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "892e2140_ef4100d5",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 542,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-02-24T19:19:19Z",
+      "side": 1,
+      "message": "Why is this needed?  Shouldn\u0027t the labels be stored in the /metadata file system?  If not, then shouldn\u0027t we have a restorecon /metadata step for all of /metadata?",
+      "revId": "eb3d23fa6364c15b8029759d416d51c066f2bef6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
