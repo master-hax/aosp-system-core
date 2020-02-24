@@ -92,6 +92,7 @@ bool LocalUnwinder::Unwind(std::vector<LocalFrameData>* frame_info, size_t max_f
 
   size_t num_frames = 0;
   bool adjust_pc = false;
+  bool is_first_frame = true;
   while (true) {
     uint64_t cur_pc = regs->pc();
     uint64_t cur_sp = regs->sp();
@@ -120,7 +121,7 @@ bool LocalUnwinder::Unwind(std::vector<LocalFrameData>* frame_info, size_t max_f
     }
 
     // Skip any locations that are within this library.
-    if (num_frames != 0 || !ShouldSkipLibrary(map_info->name)) {
+    if (!is_first_frame && !ShouldSkipLibrary(map_info->name)) {
       // Add frame information.
       std::string func_name;
       uint64_t func_offset;
@@ -131,6 +132,9 @@ bool LocalUnwinder::Unwind(std::vector<LocalFrameData>* frame_info, size_t max_f
         frame_info->emplace_back(map_info, cur_pc - pc_adjustment, rel_pc - pc_adjustment, "", 0);
       }
       num_frames++;
+    }
+    if (is_first_frame) {
+      is_first_frame = false;
     }
 
     if (finished || frame_info->size() == max_frames ||

@@ -19,6 +19,7 @@
 #include <signal.h>
 #include <stdint.h>
 
+#include <algorithm>
 #include <memory>
 #include <string>
 #include <vector>
@@ -202,6 +203,39 @@ TEST_F(LocalUnwinderTest, unwind_after_dlopen) {
   }
 
   ASSERT_TRUE(expected_function_names.empty()) << ErrorMsg(expected_function_names, frame_info);
+}
+
+extern "C" void UnwindSkipLibraries() {
+#if defined(__LP64__)
+  std::vector<std::string> skip_libraries = {"/data/nativetest64/libunwindstack_test/libunwindstack_test"};
+#else
+  std::vector<std::string> skip_libraries = {"/data/nativetest/libunwindstack_test/libunwindstack_test"};
+#endif
+  std::vector<const char*> expected_function_names = {"UnwindSkipLibraries"};
+  std::vector<LocalFrameData> frames;
+  size_t max_depth = 256;
+  auto unwinder = new LocalUnwinder();
+  unwinder->Init();
+  unwinder->Unwind(&frames, max_depth);
+  ASSERT_FALSE(frames.empty());
+  ASSERT_NE(find(skip_libraries.begin(), skip_libraries.end(), frames[0].map_info->name),
+      skip_libraries.end()) << ErrorMsg(expected_function_names, frames);
+  frames.clear();
+  delete unwinder;
+
+  unwinder = new LocalUnwinder(skip_libraries);
+  unwinder->Init();
+  unwinder->Unwind(&frames, max_depth);
+  ASSERT_FALSE(frames.empty());
+  for (auto frame : frames) {
+    ASSERT_EQ(find(skip_libraries.begin(), skip_libraries.end(), frame.map_info->name),
+        skip_libraries.end()) << ErrorMsg(expected_function_names, frames);
+  }
+  delete unwinder;
+}
+
+TEST_F(LocalUnwinderTest, skip_libraries) {
+  ASSERT_NO_FATAL_FAILURE(UnwindSkipLibraries());
 }
 
 }  // namespace unwindstack
