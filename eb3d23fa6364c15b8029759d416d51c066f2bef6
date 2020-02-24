@@ -16,6 +16,24 @@
       "revId": "eb3d23fa6364c15b8029759d416d51c066f2bef6",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b55ef050_fc0c1025",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 542,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2020-02-24T23:30:35Z",
+      "side": 1,
+      "message": "The file is created during first stage init, where SELinux is not set up yet.\n\nOnly that file is created during first stage init. Other files are created before reboot, where SELinux is properly set up.",
+      "parentUuid": "892e2140_ef4100d5",
+      "revId": "eb3d23fa6364c15b8029759d416d51c066f2bef6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
