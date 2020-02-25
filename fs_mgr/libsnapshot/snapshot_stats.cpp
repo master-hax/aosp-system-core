@@ -27,7 +27,7 @@ SnapshotMergeStats::SnapshotMergeStats(SnapshotManager& parent) : parent_(parent
     init_time_ = std::chrono::steady_clock::now();
 }
 
-SnapshotMergeStats::~SnapshotMergeStats() {
+SnapshotMergeStats::DeleteFile() {
     std::string error;
     auto file_path = parent_.GetMergeStateFilePath();
     if (!android::base::RemoveFileIfExists(file_path, &error)) {
