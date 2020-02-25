@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a3ac41de_ab509a68",
+        "filename": "fs_mgr/fs_mgr_fstab.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 869,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-02-25T01:20:14Z",
+      "side": 1,
+      "message": "GetMountedEntryForUserdata is only called when remounting into checkpointing, is that intended here?",
+      "revId": "f7768be2bf315c491f57192149ff8f455ef131f4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
