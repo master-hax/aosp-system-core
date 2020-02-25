@@ -98,6 +98,11 @@ static int format_ext4(const std::string& fs_blkdev, const std::string& fs_mnt_p
         mke2fs_args.push_back("extent");
     }
 
+    if (android::base::GetIntProperty("ro.product.first_api_level", 0) >= 30) {
+        mke2fs_args.push_back("-O");
+        mke2fs_args.push_back("verity");
+    }
+
     mke2fs_args.push_back(fs_blkdev.c_str());
     mke2fs_args.push_back(size_str.c_str());
 

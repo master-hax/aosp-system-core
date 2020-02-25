@@ -20,6 +20,7 @@
 #include <android-base/errors.h>
 #include <android-base/file.h>
 #include <android-base/macros.h>
+#include <android-base/properties.h>
 #include <android-base/stringprintf.h>
 #include <android-base/unique_fd.h>
 
@@ -137,6 +138,12 @@ static int generate_ext4_image(const char* fileName, long long partSize,
     mke2fs_args.push_back(ext_attr.c_str());
     mke2fs_args.push_back("-O");
     mke2fs_args.push_back("uninit_bg");
+
+    if (android::base::GetIntProperty("ro.product.first_api_level", 0) >= 30) {
+        mke2fs_args.push_back("-O");
+        mke2fs_args.push_back("verity");
+    }
+
     mke2fs_args.push_back(fileName);
 
     std::string size_str = std::to_string(partSize / block_size);
