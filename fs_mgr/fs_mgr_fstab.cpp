@@ -30,6 +30,7 @@
 
 #include <android-base/file.h>
 #include <android-base/parseint.h>
+#include <android-base/properties.h>
 #include <android-base/stringprintf.h>
 #include <android-base/strings.h>
 #include <libgsi/libgsi.h>
@@ -862,6 +863,10 @@ FstabEntry* GetMountedEntryForUserdata(Fstab* fstab) {
     if (mounted_entry == nullptr) {
         LWARNING << "/data is not mounted";
         return nullptr;
+    }
+    // fs-verity is required for new devices, and can be opted in on old ones.
+    if (android::base::GetIntProperty("ro.product.first_api_level", 0) >= 30) {
+        mounted_entry->fs_mgr_flags.fs_verity = true;
     }
     std::string resolved_block_device = ResolveBlockDevice(mounted_entry->blk_device);
     if (resolved_block_device.empty()) {
