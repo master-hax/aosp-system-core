@@ -96,6 +96,7 @@ struct FstabEntry {
 // Unless explicitly requested, a lookup on mount point should always return the 1st one.
 using Fstab = std::vector<FstabEntry>;
 
+void EnableMandatoryFlags(Fstab* fstab);
 bool ReadFstabFromFile(const std::string& path, Fstab* fstab);
 bool ReadFstabFromDt(Fstab* fstab, bool log = true);
 bool ReadDefaultFstab(Fstab* fstab);

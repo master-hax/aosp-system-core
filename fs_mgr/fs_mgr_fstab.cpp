@@ -30,6 +30,7 @@
 
 #include <android-base/file.h>
 #include <android-base/parseint.h>
+#include <android-base/properties.h>
 #include <android-base/stringprintf.h>
 #include <android-base/strings.h>
 #include <libgsi/libgsi.h>
@@ -679,6 +680,7 @@ bool ReadFstabFromFile(const std::string& path, Fstab* fstab) {
     }
 
     SkipMountingPartitions(fstab);
+    EnableMandatoryFlags(fstab);
 
     return true;
 }
@@ -742,6 +744,21 @@ bool SkipMountingPartitions(Fstab* fstab) {
     }
 
     return true;
+}
+
+void EnableMandatoryFlags(Fstab* fstab) {
+    // Devices launched in R and after should enable fs_verity on userdata. The flag causes tune2fs
+    // to enable the feature. A better alternative would be to enable on mkfs at the beginning.
+    if (android::base::GetIntProperty("ro.product.first_api_level", 0) >= 30) {
+        std::vector<FstabEntry*> data_entries = GetEntriesForMountPoint(fstab, "/data");
+        for (auto&& entry : data_entries) {
+            // Besides ext4, f2fs is also supported. But the image is already created with verity
+            // turned on when it was first introduced.
+            if (entry->fs_type == "ext4") {
+                entry->fs_mgr_flags.fs_verity = true;
+            }
+        }
+    }
 }
 
 // Loads the fstab file and combines with fstab entries passed in from device tree.
