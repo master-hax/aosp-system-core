@@ -63,6 +63,9 @@
     },
     {
       "name": "ziparchive-tests"
+    },
+    {
+      "name": "init_kill_services_test"
     }
   ]
 }
