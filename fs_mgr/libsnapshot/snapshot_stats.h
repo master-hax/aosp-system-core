@@ -25,11 +25,16 @@ namespace snapshot {
 class SnapshotMergeStats {
   public:
     SnapshotMergeStats(SnapshotManager& parent);
-    ~SnapshotMergeStats();
+    // Called when merge starts.
     void Start();
+    // Do nothing if "Start()" is not called before. Otherwise, increments
+    // resume count and store it permanently.
     void Resume();
     void set_state(android::snapshot::UpdateState state);
+    // Called when merge ends.
     SnapshotMergeReport GetReport();
+    // Called when merge ends. Properly clean up permanent storage.
+    void DeleteFile();
 
   private:
     bool ReadState();
