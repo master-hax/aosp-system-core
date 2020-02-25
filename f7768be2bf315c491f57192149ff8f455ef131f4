@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "c5aece19_5f3d8ff7",
+        "filename": "fs_mgr/fs_mgr_fstab.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 683,
+      "author": {
+        "id": 1042276
+      },
+      "writtenOn": "2020-02-25T23:04:52Z",
+      "side": 1,
+      "message": "Done.  Thanks for the suggestion.",
+      "parentUuid": "5bd49297_281943a4",
+      "revId": "f7768be2bf315c491f57192149ff8f455ef131f4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a3ac41de_ab509a68",
         "filename": "fs_mgr/fs_mgr_fstab.cpp",
         "patchSetId": 1
@@ -33,6 +51,24 @@
       "revId": "f7768be2bf315c491f57192149ff8f455ef131f4",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5dc5dfa0_04984391",
+        "filename": "fs_mgr/fs_mgr_fstab.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 869,
+      "author": {
+        "id": 1042276
+      },
+      "writtenOn": "2020-02-25T23:04:52Z",
+      "side": 1,
+      "message": "Oops, moved to the other place.",
+      "parentUuid": "a3ac41de_ab509a68",
+      "revId": "f7768be2bf315c491f57192149ff8f455ef131f4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
