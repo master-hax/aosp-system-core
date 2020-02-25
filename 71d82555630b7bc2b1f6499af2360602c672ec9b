@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b5127539_9b835c7a",
+        "filename": "adb/daemon/usb_legacy.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-02-25T17:19:45Z",
+      "side": 1,
+      "message": "or just `h-\u003ereads_zero_packets \u003d android::base::GetBoolProperty(...);`?",
+      "range": {
+        "startLine": 93,
+        "startChar": 0,
+        "endLine": 96,
+        "endChar": 38
+      },
+      "revId": "71d82555630b7bc2b1f6499af2360602c672ec9b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
