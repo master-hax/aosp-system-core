@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "5bd49297_281943a4",
+        "filename": "fs_mgr/fs_mgr_fstab.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 683,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2020-02-25T05:04:32Z",
+      "side": 1,
+      "message": "How about adding a new function here?\n\ne.g.,\n\nSkipMountingPartitions(fstab);\n\nEnableMandatoryFlags(fstab);\n\nvoid EnableMandatoryFlags(Fstab* fstab) {\n    // Devices launched in R and after should enable fs_verity on userdata.                                       \n    if (android::base::GetIntProperty(\"ro.product.first_api_level\", 0) \u003e\u003d 30) {                                                                                            \n        std::vector\u003cFstabEntry*\u003e data_entries \u003d GetEntriesForMountPoint(fstab, \"/data\");\n        for (auto\u0026\u0026 entry : data_entries) {                                     \n            if (entry-\u003efs_type \u003d\u003d \"ext4\" || entry-\u003efs_type \u003d\u003d \"f2fs\") {         \n                entry-\u003efs_mgr_flags.fs_verity \u003d true;                           \n            }                                                                   \n        }                                                                       \n    }                                                                           \n}",
+      "revId": "f7768be2bf315c491f57192149ff8f455ef131f4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "a3ac41de_ab509a68",
         "filename": "fs_mgr/fs_mgr_fstab.cpp",
         "patchSetId": 1
