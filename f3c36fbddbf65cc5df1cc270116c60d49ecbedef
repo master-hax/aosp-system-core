@@ -16,6 +16,24 @@
       "revId": "f3c36fbddbf65cc5df1cc270116c60d49ecbedef",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4b7eeba4_90592d14",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 798,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2020-02-25T03:26:16Z",
+      "side": 1,
+      "message": "Agreed. I\u0027ll leave it as is for now.",
+      "parentUuid": "62332ca3_338c3946",
+      "revId": "f3c36fbddbf65cc5df1cc270116c60d49ecbedef",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
