@@ -16,6 +16,24 @@
       "revId": "eb906e7c230d880000d9d08363a84213af1b172e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c7fb4603_238b7e02",
+        "filename": "init/test_death/death_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2020-02-26T02:26:53Z",
+      "side": 1,
+      "message": "clang format ran. wdym? snake_case? Do we have no tools to automate this review away?",
+      "parentUuid": "80203a0a_2e6090ed",
+      "revId": "eb906e7c230d880000d9d08363a84213af1b172e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
