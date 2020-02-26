@@ -52,6 +52,24 @@
       "revId": "eb906e7c230d880000d9d08363a84213af1b172e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a0ea5bf6_9e7ff372",
+        "filename": "init/test_death/death_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-02-26T02:46:20Z",
+      "side": 1,
+      "message": "Thanks!",
+      "parentUuid": "0fe3d27c_b59c1777",
+      "revId": "eb906e7c230d880000d9d08363a84213af1b172e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
