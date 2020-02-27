@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8ced6681_1957bcc1",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 1199,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-02-27T00:55:47Z",
+      "side": 1,
+      "message": "nit: although you can infer from the log it\u0027s not the current slot, it\u0027s probably worth being explicit for clarity: \"while booting at target slot\"",
+      "revId": "a20fc9a5256284000592e4ca04aa3e8b8c279668",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "92b1393a_fb6e4ba2",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 1206,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-02-27T00:55:47Z",
+      "side": 1,
+      "message": "PLOG will add the syserror from access() at the end of the message -intended?",
+      "revId": "a20fc9a5256284000592e4ca04aa3e8b8c279668",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
