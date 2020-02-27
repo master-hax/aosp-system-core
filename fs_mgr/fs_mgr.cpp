@@ -97,6 +97,7 @@
 using android::base::Basename;
 using android::base::GetBoolProperty;
 using android::base::Realpath;
+using android::base::SetProperty;
 using android::base::StartsWith;
 using android::base::Timer;
 using android::base::unique_fd;
@@ -177,6 +178,8 @@ static void check_fs(const std::string& blk_device, const std::string& fs_type,
     if (*fs_stat & FS_STAT_INVALID_MAGIC) {  // will fail, so do not try
         return;
     }
+
+    auto start_time = time(0);
 
     /* Check for the types of filesystems we know how to check */
     if (is_extfs(fs_type)) {
@@ -270,6 +273,8 @@ static void check_fs(const std::string& blk_device, const std::string& fs_type,
             LERROR << "Failed trying to run " << F2FS_FSCK_BIN;
         }
     }
+    std::string duration = std::to_string(time(0) - start_time);
+    android::base::SetProperty("fs_mgr.check_fs.secs", duration);
 
     return;
 }
