@@ -320,7 +320,7 @@ bool DeviceMapper::GetAvailableTargets(std::vector<DmTargetTypeInfo>* targets) {
     return true;
 }
 
-bool DeviceMapper::GetTargetByName(const std::string& name, DmTargetTypeInfo* info) {
+bool DeviceMapper::GetTargetByName(const std::string_view& name, DmTargetTypeInfo* info) {
     std::vector<DmTargetTypeInfo> targets;
     if (!GetAvailableTargets(&targets)) {
         return false;

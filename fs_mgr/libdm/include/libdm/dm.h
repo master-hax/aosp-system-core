@@ -29,6 +29,7 @@
 #include <memory>
 #include <optional>
 #include <string>
+#include <string_view>
 #include <utility>
 #include <vector>
 
@@ -153,7 +154,7 @@ class DeviceMapper final {
 
     // Finds a target by name and returns its information if found. |info| may
     // be null to check for the existence of a target.
-    bool GetTargetByName(const std::string& name, DmTargetTypeInfo* info);
+    bool GetTargetByName(const std::string_view& name, DmTargetTypeInfo* info);
 
     // Return 'true' if it can successfully read the list of device mapper block devices
     // currently created. 'devices' will be empty if the kernel interactions
