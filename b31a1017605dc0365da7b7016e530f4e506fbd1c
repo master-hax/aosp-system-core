@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "83da9b00_210b3d20",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-02-27T21:20:56Z",
+      "side": 1,
+      "message": "|sort",
+      "revId": "b31a1017605dc0365da7b7016e530f4e506fbd1c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "efbb0903_0bc5911a",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 277,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-02-27T21:20:56Z",
+      "side": 1,
+      "message": "do you actually want seconds? see Timer in chrono_utils.h for what most such properties are based on.\n\n(i defer to tomcherry about whether this property name makes sense.)",
+      "revId": "b31a1017605dc0365da7b7016e530f4e506fbd1c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
