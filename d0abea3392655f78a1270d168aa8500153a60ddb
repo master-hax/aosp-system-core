@@ -19,6 +19,52 @@
     },
     {
       "key": {
+        "uuid": "4d13b85b_e584b598",
+        "filename": "base/include/android-base/properties.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-02-27T01:35:16Z",
+      "side": 1,
+      "message": "I wonder if we have this in libbase and not just bionic if we should just include the locks ourself?  Or maybe have a second thread-safe version of it?  Especially since you need the locked version for adb anyway.",
+      "range": {
+        "startLine": 85,
+        "startChar": 63,
+        "endLine": 86,
+        "endChar": 41
+      },
+      "revId": "d0abea3392655f78a1270d168aa8500153a60ddb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "408fc84a_909e1546",
+        "filename": "base/properties.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 244,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-02-27T01:35:16Z",
+      "side": 1,
+      "message": "What if this property has been written since the last time Get() was called?  We shouldn\u0027t set *changed to false in that case.  I think the same cached_property_serial_ !\u003d initial_property_serial_ check should be done here.",
+      "range": {
+        "startLine": 242,
+        "startChar": 4,
+        "endLine": 244,
+        "endChar": 5
+      },
+      "revId": "d0abea3392655f78a1270d168aa8500153a60ddb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "a0384b08_2ca10a0d",
         "filename": "base/properties_test.cpp",
         "patchSetId": 1
@@ -30,6 +76,29 @@
       "writtenOn": "2020-02-27T01:34:49Z",
       "side": 1,
       "message": "?",
+      "revId": "d0abea3392655f78a1270d168aa8500153a60ddb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ff4af322_a6389f69",
+        "filename": "base/properties_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 267,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-02-27T01:35:16Z",
+      "side": 1,
+      "message": "Remove?",
+      "range": {
+        "startLine": 259,
+        "startChar": 0,
+        "endLine": 267,
+        "endChar": 6
+      },
       "revId": "d0abea3392655f78a1270d168aa8500153a60ddb",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
