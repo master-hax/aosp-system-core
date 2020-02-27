@@ -155,6 +155,30 @@
     },
     {
       "key": {
+        "uuid": "0a404b2e_37e681aa",
+        "filename": "base/properties.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 244,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-02-27T16:38:21Z",
+      "side": 1,
+      "message": "Yes, that\u0027s the case that I mean: the first time that you read a read-only property, then `changed` should  be true.\n\nro. properties can go from unset to set at any point while the system is up, so it\u0027s possible for Get() to have been called earlier before it was set, then again once it has been set.  I figure `changed` should be true in that case.",
+      "parentUuid": "fca5c928_ff5095dc",
+      "range": {
+        "startLine": 242,
+        "startChar": 4,
+        "endLine": 244,
+        "endChar": 5
+      },
+      "revId": "d0abea3392655f78a1270d168aa8500153a60ddb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "a0384b08_2ca10a0d",
         "filename": "base/properties_test.cpp",
         "patchSetId": 1
