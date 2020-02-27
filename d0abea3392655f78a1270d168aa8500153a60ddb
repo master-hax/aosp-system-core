@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "ff461ac6_48eee35b",
+        "filename": "base/include/android-base/properties.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2020-02-27T02:02:17Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1f3b9170_71452637",
+      "revId": "d0abea3392655f78a1270d168aa8500153a60ddb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "4d13b85b_e584b598",
         "filename": "base/include/android-base/properties.h",
         "patchSetId": 1
@@ -42,6 +60,30 @@
     },
     {
       "key": {
+        "uuid": "a26dbf89_4bfae8ca",
+        "filename": "base/include/android-base/properties.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2020-02-27T02:02:17Z",
+      "side": 1,
+      "message": "Locks here wouldn\u0027t actually help with adbd, though, because we\u0027re also caching the results of parsing the CachedProperties, so we need a lock on the outside too.\n\nI imagine that most use cases would be similar, and not just treating the property as an opaque blob of bytes? If you care enough to cache the property access, you probably want to cache the results of your string parsing as well.",
+      "parentUuid": "4d13b85b_e584b598",
+      "range": {
+        "startLine": 85,
+        "startChar": 63,
+        "endLine": 86,
+        "endChar": 41
+      },
+      "revId": "d0abea3392655f78a1270d168aa8500153a60ddb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "408fc84a_909e1546",
         "filename": "base/properties.cpp",
         "patchSetId": 1
@@ -53,6 +95,30 @@
       "writtenOn": "2020-02-27T01:35:16Z",
       "side": 1,
       "message": "What if this property has been written since the last time Get() was called?  We shouldn\u0027t set *changed to false in that case.  I think the same cached_property_serial_ !\u003d initial_property_serial_ check should be done here.",
+      "range": {
+        "startLine": 242,
+        "startChar": 4,
+        "endLine": 244,
+        "endChar": 5
+      },
+      "revId": "d0abea3392655f78a1270d168aa8500153a60ddb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fca5c928_ff5095dc",
+        "filename": "base/properties.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 244,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2020-02-27T02:02:17Z",
+      "side": 1,
+      "message": "Can this actually happen for read-only properties?\n\n(we do end up returning false for the first time you try to read a read-only property, though, hmm...)",
+      "parentUuid": "408fc84a_909e1546",
       "range": {
         "startLine": 242,
         "startChar": 4,
@@ -93,6 +159,30 @@
       "writtenOn": "2020-02-27T01:35:16Z",
       "side": 1,
       "message": "Remove?",
+      "range": {
+        "startLine": 259,
+        "startChar": 0,
+        "endLine": 267,
+        "endChar": 6
+      },
+      "revId": "d0abea3392655f78a1270d168aa8500153a60ddb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "502e18a2_9d6b3ecf",
+        "filename": "base/properties_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 267,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2020-02-27T02:02:17Z",
+      "side": 1,
+      "message": "oops.",
+      "parentUuid": "ff4af322_a6389f69",
       "range": {
         "startLine": 259,
         "startChar": 0,
