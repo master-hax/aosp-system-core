@@ -179,6 +179,30 @@
     },
     {
       "key": {
+        "uuid": "6f8c4963_100cea09",
+        "filename": "base/properties.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 244,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2020-02-27T21:40:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0a404b2e_37e681aa",
+      "range": {
+        "startLine": 242,
+        "startChar": 4,
+        "endLine": 244,
+        "endChar": 5
+      },
+      "revId": "d0abea3392655f78a1270d168aa8500153a60ddb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a0384b08_2ca10a0d",
         "filename": "base/properties_test.cpp",
         "patchSetId": 1
