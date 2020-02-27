@@ -84,6 +84,30 @@
     },
     {
       "key": {
+        "uuid": "cae64168_e19022d8",
+        "filename": "base/include/android-base/properties.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-02-27T02:05:26Z",
+      "side": 1,
+      "message": "(yeah, that was my assumption with the original. maybe just expand the comment to make that explicit?)",
+      "parentUuid": "a26dbf89_4bfae8ca",
+      "range": {
+        "startLine": 85,
+        "startChar": 63,
+        "endLine": 86,
+        "endChar": 41
+      },
+      "revId": "d0abea3392655f78a1270d168aa8500153a60ddb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "408fc84a_909e1546",
         "filename": "base/properties.cpp",
         "patchSetId": 1
