@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d029e2b3_e2049b05",
+        "filename": "adb/daemon/shell_service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 772,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-02-27T01:57:17Z",
+      "side": 1,
+      "message": "delete this one too?",
+      "revId": "8a69dbebef08908cf1ee0d5acb97503438b2a692",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
