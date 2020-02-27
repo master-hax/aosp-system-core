@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1f3b9170_71452637",
+        "filename": "base/include/android-base/properties.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-02-27T01:34:49Z",
+      "side": 1,
+      "message": "or just inline the constant and static_assert?",
+      "revId": "d0abea3392655f78a1270d168aa8500153a60ddb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a0384b08_2ca10a0d",
+        "filename": "base/properties_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 259,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-02-27T01:34:49Z",
+      "side": 1,
+      "message": "?",
+      "revId": "d0abea3392655f78a1270d168aa8500153a60ddb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
