@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "67047513_cf615da5",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 182,
+      "author": {
+        "id": 1176763
+      },
+      "writtenOn": "2020-02-28T22:37:43Z",
+      "side": 1,
+      "message": "that doesn\u0027t work nicely.",
+      "parentUuid": "a5e5fc21_90fa16ad",
+      "range": {
+        "startLine": 182,
+        "startChar": 4,
+        "endLine": 182,
+        "endChar": 36
+      },
+      "revId": "d63232be4d8e5a1dac7ea69baecd4d089d42a9b4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "930a4ba4_4723b235",
         "filename": "fs_mgr/fs_mgr.cpp",
         "patchSetId": 3
@@ -36,6 +60,30 @@
       "writtenOn": "2020-02-28T22:18:35Z",
       "side": 1,
       "message": "what about multiple partitions? also use convention ro.boottime.\n\ne.g.\n\"ro.boottime.init.fsck.\" + blk_device",
+      "range": {
+        "startLine": 276,
+        "startChar": 0,
+        "endLine": 277,
+        "endChar": 65
+      },
+      "revId": "d63232be4d8e5a1dac7ea69baecd4d089d42a9b4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "417832a7_e102206e",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 277,
+      "author": {
+        "id": 1176763
+      },
+      "writtenOn": "2020-02-28T22:37:43Z",
+      "side": 1,
+      "message": "let me add this for /data only.",
+      "parentUuid": "930a4ba4_4723b235",
       "range": {
         "startLine": 276,
         "startChar": 0,
