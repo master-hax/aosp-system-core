@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "4048ff52_b91f45d1",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 182,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2020-02-28T23:06:35Z",
+      "side": 1,
+      "message": "see line #1547.",
+      "parentUuid": "67047513_cf615da5",
+      "range": {
+        "startLine": 182,
+        "startChar": 4,
+        "endLine": 182,
+        "endChar": 36
+      },
+      "revId": "d63232be4d8e5a1dac7ea69baecd4d089d42a9b4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "930a4ba4_4723b235",
         "filename": "fs_mgr/fs_mgr.cpp",
         "patchSetId": 3
@@ -93,6 +117,53 @@
       "revId": "d63232be4d8e5a1dac7ea69baecd4d089d42a9b4",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fb8dddd3_3fb7bafb",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 277,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2020-02-28T23:06:35Z",
+      "side": 1,
+      "message": "sounds good also, but why not add all writable partions in case some surprise (they are not many). also should use `target` to figure out.",
+      "parentUuid": "417832a7_e102206e",
+      "range": {
+        "startLine": 276,
+        "startChar": 0,
+        "endLine": 277,
+        "endChar": 65
+      },
+      "revId": "d63232be4d8e5a1dac7ea69baecd4d089d42a9b4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f162179f_7110d0e5",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1547,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2020-02-28T23:06:35Z",
+      "side": 1,
+      "message": "ditto",
+      "range": {
+        "startLine": 1547,
+        "startChar": 4,
+        "endLine": 1547,
+        "endChar": 12
+      },
+      "revId": "d63232be4d8e5a1dac7ea69baecd4d089d42a9b4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
