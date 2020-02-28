@@ -73,6 +73,30 @@
     },
     {
       "key": {
+        "uuid": "6f6821bb_40458a2d",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 182,
+      "author": {
+        "id": 1176763
+      },
+      "writtenOn": "2020-02-28T23:16:02Z",
+      "side": 1,
+      "message": "I\u0027d like to get seconds, but that will give milliseconds.",
+      "parentUuid": "4048ff52_b91f45d1",
+      "range": {
+        "startLine": 182,
+        "startChar": 4,
+        "endLine": 182,
+        "endChar": 36
+      },
+      "revId": "d63232be4d8e5a1dac7ea69baecd4d089d42a9b4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "930a4ba4_4723b235",
         "filename": "fs_mgr/fs_mgr.cpp",
         "patchSetId": 3
@@ -132,6 +156,30 @@
       "side": 1,
       "message": "sounds good also, but why not add all writable partions in case some surprise (they are not many). also should use `target` to figure out.",
       "parentUuid": "417832a7_e102206e",
+      "range": {
+        "startLine": 276,
+        "startChar": 0,
+        "endLine": 277,
+        "endChar": 65
+      },
+      "revId": "d63232be4d8e5a1dac7ea69baecd4d089d42a9b4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3a782e51_74b2b250",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 277,
+      "author": {
+        "id": 1176763
+      },
+      "writtenOn": "2020-02-28T23:16:02Z",
+      "side": 1,
+      "message": "Nice to have, but I don\u0027t have any concern on other partitions. Moreover, that doesn\u0027t look like a general approach.",
+      "parentUuid": "fb8dddd3_3fb7bafb",
       "range": {
         "startLine": 276,
         "startChar": 0,
