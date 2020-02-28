@@ -97,6 +97,30 @@
     },
     {
       "key": {
+        "uuid": "54fde599_635c4316",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 182,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2020-02-28T23:30:50Z",
+      "side": 1,
+      "message": "that\u0027s what we want in boottime metrics.\n\nif you have concern about overflow? at that time, I think user or battery would give up on booting.\n\nalso I think time is based on CLOCK_REALTIME which is subject to change, you need CLOCK_BOOTTIME which the Timer API is based on.",
+      "parentUuid": "6f6821bb_40458a2d",
+      "range": {
+        "startLine": 182,
+        "startChar": 4,
+        "endLine": 182,
+        "endChar": 36
+      },
+      "revId": "d63232be4d8e5a1dac7ea69baecd4d089d42a9b4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "930a4ba4_4723b235",
         "filename": "fs_mgr/fs_mgr.cpp",
         "patchSetId": 3
@@ -180,6 +204,30 @@
       "side": 1,
       "message": "Nice to have, but I don\u0027t have any concern on other partitions. Moreover, that doesn\u0027t look like a general approach.",
       "parentUuid": "fb8dddd3_3fb7bafb",
+      "range": {
+        "startLine": 276,
+        "startChar": 0,
+        "endLine": 277,
+        "endChar": 65
+      },
+      "revId": "d63232be4d8e5a1dac7ea69baecd4d089d42a9b4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "90a52d2b_fd9e2fb5",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 277,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2020-02-28T23:30:50Z",
+      "side": 1,
+      "message": "i am not sure what you meant by \"general approach\", isn\u0027t the check_fs is generic?",
+      "parentUuid": "3a782e51_74b2b250",
       "range": {
         "startLine": 276,
         "startChar": 0,
