@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "ec47cd89_4ac0d72e",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 1199,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2020-02-29T22:37:39Z",
+      "side": 1,
+      "message": "\"current_slot\" will be printed as a human-readable string. It will be printed as \"at target slot\" or \"at unknown slot\", depending on the value of current_slot.\n\nBut yeah, it looks like I am printing \"at slot target\"... LOL. Will fix.",
+      "parentUuid": "8ced6681_1957bcc1",
+      "revId": "a20fc9a5256284000592e4ca04aa3e8b8c279668",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "92b1393a_fb6e4ba2",
         "filename": "fs_mgr/libsnapshot/snapshot.cpp",
         "patchSetId": 12
@@ -30,6 +48,24 @@
       "writtenOn": "2020-02-27T00:55:47Z",
       "side": 1,
       "message": "PLOG will add the syserror from access() at the end of the message -intended?",
+      "revId": "a20fc9a5256284000592e4ca04aa3e8b8c279668",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3c72f35c_bc5595f7",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 1206,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2020-02-29T22:37:39Z",
+      "side": 1,
+      "message": "Right. In the case when it hits a permission denial (e.g. regression because of code changes elsewhere), we should see it here.\n\nMaybe I should also check the errno here?",
+      "parentUuid": "92b1393a_fb6e4ba2",
       "revId": "a20fc9a5256284000592e4ca04aa3e8b8c279668",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
