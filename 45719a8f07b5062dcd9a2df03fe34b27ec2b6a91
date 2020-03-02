@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "45509965_cffa7b51",
+        "filename": "fastboot/device/commands.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 259,
+      "author": {
+        "id": 1088076
+      },
+      "writtenOn": "2020-03-02T21:30:57Z",
+      "side": 1,
+      "message": "does this need to be updated too?",
+      "range": {
+        "startLine": 259,
+        "startChar": 8,
+        "endLine": 259,
+        "endChar": 12
+      },
+      "revId": "45719a8f07b5062dcd9a2df03fe34b27ec2b6a91",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
