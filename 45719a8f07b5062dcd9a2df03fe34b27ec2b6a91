@@ -22,6 +22,30 @@
       "revId": "45719a8f07b5062dcd9a2df03fe34b27ec2b6a91",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a49fec3e_c33541d5",
+        "filename": "fastboot/device/commands.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 259,
+      "author": {
+        "id": 1120612
+      },
+      "writtenOn": "2020-03-02T21:39:07Z",
+      "side": 1,
+      "message": "Hi Dan, actually we don\u0027t need to change this one since it refers to the slot number. I had to use args[1] below since GetCurrentSlot returns a letter representing the slot.",
+      "parentUuid": "45509965_cffa7b51",
+      "range": {
+        "startLine": 259,
+        "startChar": 8,
+        "endLine": 259,
+        "endChar": 12
+      },
+      "revId": "45719a8f07b5062dcd9a2df03fe34b27ec2b6a91",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
