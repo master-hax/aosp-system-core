@@ -124,7 +124,11 @@ bool WriteToImageFile(borrowed_fd fd, const LpMetadata& input) {
 }
 
 bool WriteToImageFile(const std::string& file, const LpMetadata& input) {
+#if defined(_WIN32)
+    unique_fd fd(open(file.c_str(), O_CREAT | O_RDWR | O_TRUNC | O_CLOEXEC | O_BINARY, 0644));
+#else
     unique_fd fd(open(file.c_str(), O_CREAT | O_RDWR | O_TRUNC | O_CLOEXEC, 0644));
+#endif
     if (fd < 0) {
         PERROR << __PRETTY_FUNCTION__ << " open failed: " << file;
         return false;
@@ -184,7 +188,11 @@ bool ImageBuilder::IsValid() const {
 }
 
 bool ImageBuilder::Export(const std::string& file) {
+#if defined(_WIN32)
+    unique_fd fd(open(file.c_str(), O_CREAT | O_RDWR | O_TRUNC | O_CLOEXEC | O_BINARY, 0644));
+#else
     unique_fd fd(open(file.c_str(), O_CREAT | O_RDWR | O_TRUNC | O_CLOEXEC, 0644));
+#endif
     if (fd < 0) {
         PERROR << "open failed: " << file;
         return false;
@@ -208,7 +216,10 @@ bool ImageBuilder::ExportFiles(const std::string& output_dir) {
         std::string file_name = "super_" + name + ".img";
         std::string file_path = output_dir + "/" + file_name;
 
-        static const int kOpenFlags = O_CREAT | O_RDWR | O_TRUNC | O_CLOEXEC | O_NOFOLLOW;
+        static int kOpenFlags = O_CREAT | O_RDWR | O_TRUNC | O_CLOEXEC | O_NOFOLLOW;
+#if defined(_WIN32)
+        kOpenFlags |= O_BINARY;
+#endif
         unique_fd fd(open(file_path.c_str(), kOpenFlags, 0644));
         if (fd < 0) {
             PERROR << "open failed: " << file_path;
@@ -443,7 +454,11 @@ bool ImageBuilder::CheckExtentOrdering() {
 }
 
 int ImageBuilder::OpenImageFile(const std::string& file) {
-    android::base::unique_fd source_fd = GetControlFileOrOpen(file.c_str(), O_RDONLY | O_CLOEXEC);
+#if defined(_WIN32)
+    unique_fd source_fd = GetControlFileOrOpen(file.c_str(), O_RDONLY | O_CLOEXEC | O_BINARY);
+#else
+    unique_fd source_fd = GetControlFileOrOpen(file.c_str(), O_RDONLY | O_CLOEXEC );
+#endif
     if (source_fd < 0) {
         PERROR << "open image file failed: " << file;
         return -1;
@@ -468,7 +483,7 @@ int ImageBuilder::OpenImageFile(const std::string& file) {
         LERROR << "sparse_file_write failed with code: " << rv;
         return -1;
     }
-    temp_fds_.push_back(android::base::unique_fd(tf.release()));
+    temp_fds_.push_back(unique_fd(tf.release()));
     return temp_fds_.back().get();
 }
 
