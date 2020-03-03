@@ -194,6 +194,8 @@ extern int __fake_use_va_args(int, ...);
 /*
  * Simplified macro to send a verbose log message using the current LOG_TAG.
  */
+
+#define ALOGV ALOGE
 #ifndef ALOGV
 #define __ALOGV(...) ((void)ALOG(LOG_VERBOSE, LOG_TAG, __VA_ARGS__))
 #if LOG_NDEBUG
