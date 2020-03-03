@@ -21,6 +21,8 @@
 
 #include <inttypes.h>
 
+#include <optional>
+
 // The "end of central directory" (EOCD) record. Each archive
 // contains exactly once such record which appears at the end of
 // the archive. It contains archive wide information like the
@@ -172,6 +174,85 @@ struct DataDescriptor {
   DataDescriptor() = default;
   DISALLOW_COPY_AND_ASSIGN(DataDescriptor);
 } __attribute__((packed));
+
+struct Zip64EocdLocator {
+  static constexpr uint32_t kSignature = 0x07064b50;
+
+  // The signature of zip64 eocd locator, must be |kSignature|
+  uint32_t locator_signature;
+  // This implementation assumes that each archive spans a single
+  // disk only.
+  uint32_t eocd_start_disk;
+  // relative offset of the zip64 end of central directory record
+  uint64_t zip64_eocd_offset;
+
+  // This implementation assumes that each archive spans a single
+  // disk only.
+  uint32_t num_of_disks;
+
+ private:
+  Zip64EocdLocator() = default;
+  DISALLOW_COPY_AND_ASSIGN(Zip64EocdLocator);
+} __attribute__((packed));
+
+struct Zip64EocdRecord {
+  static constexpr uint32_t kSignature = 0x06064b50;
+
+  // The signature of zip64 eocd record, must be |kSignature|
+  uint32_t record_signature;
+
+  // size of zip64 end of central directory record
+  // The value stored into the "size of zip64 end of central
+  //     directory record" SHOULD be the size of the remaining
+  //     record and SHOULD NOT include the leading 12 bytes.
+  //
+  //     Size = SizeOfFixedFields + SizeOfVariableData - 12.
+  uint64_t record_size;
+
+  // version made by
+  uint16_t version_made;
+
+  // version needed to extract
+  uint16_t version_needed;
+
+  // number of this disk
+  uint32_t disk_num;
+
+  // number of the disk with the start of the central directory
+  uint32_t cd_start_disk;
+
+  // total number of entries in the central directory on this disk
+  uint64_t num_cd_records_on_disk;
+
+  uint64_t num_cd_records;
+
+  // The size of the central directory in bytes.
+  uint64_t cd_size;
+
+  // The offset of the start of the central directory, relative
+  // to the start of the file.
+  uint64_t cd_start_offset;
+
+ private:
+  Zip64EocdRecord() = default;
+  DISALLOW_COPY_AND_ASSIGN(Zip64EocdRecord);
+} __attribute__((packed));
+
+struct Zip64ExtendedInfo {
+  static constexpr uint16_t kHeaderId = 0x0001;
+
+  uint16_t header_id;
+
+  uint16_t info_size;
+
+  uint64_t uncompressed_file_size;
+
+  uint64_t compressed_file_size;
+
+  std::optional<uint64_t> local_header_offset;
+  Zip64ExtendedInfo() = default;
+  // uint32_t disk_num;
+};
 
 // mask value that signifies that the entry has a DD
 static const uint32_t kGPBDDFlagMask = 0x0008;
