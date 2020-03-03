@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 #include <errno.h>
 #include <fcntl.h>
 #include <fnmatch.h>
@@ -133,8 +132,8 @@ static void MaybeShowHeader(ZipArchiveHandle zah) {
     if (!flag_1 && includes.empty() && excludes.empty()) {
       ZipArchiveInfo info{GetArchiveInfo(zah)};
       printf("Archive:  %s\n", archive_name);
-      printf("Zip file size: %" PRId64 " bytes, number of entries: %zu\n", info.archive_size,
-             info.entry_count);
+      printf("Zip file size: %" PRId64 " bytes, number of entries: %" PRId64 "\n",
+             info.archive_size, info.entry_count);
     }
   }
 }

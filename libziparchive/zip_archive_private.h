@@ -22,6 +22,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+#include <map>
 #include <memory>
 #include <vector>
 
@@ -140,26 +141,6 @@ class CentralDirectory {
   size_t length_;
 };
 
-/**
- * More space efficient string representation of strings in an mmaped zipped
- * file than std::string_view. Using std::string_view as an entry in the
- * ZipArchive hash table wastes space. std::string_view stores a pointer to a
- * string (on 64 bit, 8 bytes) and the length to read from that pointer,
- * 2 bytes. Because of alignment, the structure consumes 16 bytes, wasting
- * 6 bytes.
- *
- * ZipStringOffset stores a 4 byte offset from a fixed location in the memory
- * mapped file instead of the entire address, consuming 8 bytes with alignment.
- */
-struct ZipStringOffset {
-  uint32_t name_offset;
-  uint16_t name_length;
-
-  const std::string_view ToStringView(const uint8_t* start) const {
-    return std::string_view{reinterpret_cast<const char*>(start + name_offset), name_length};
-  }
-};
-
 struct ZipArchive {
   // open Zip archive
   mutable MappedZipFile mapped_zip;
@@ -171,14 +152,9 @@ struct ZipArchive {
   std::unique_ptr<android::base::MappedFile> directory_map;
 
   // number of entries in the Zip archive
-  uint16_t num_entries;
+  uint64_t num_entries;
 
-  // We know how many entries are in the Zip archive, so we can have a
-  // fixed-size hash table. We define a load factor of 0.75 and over
-  // allocate so the maximum number entries can never be higher than
-  // ((4 * UINT16_MAX) / 3 + 1) which can safely fit into a uint32_t.
-  uint32_t hash_table_size;
-  ZipStringOffset* hash_table;
+  std::map<std::string_view, uint64_t> entry_table;
 
   ZipArchive(const int fd, bool assume_ownership);
   ZipArchive(const void* address, size_t length);
