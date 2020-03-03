@@ -1,0 +1,10 @@
+Open-Source-Licensing+1: Lint 🤖 <android-build-prod-ayeaye@system.gserviceaccount.com>
+Lint+1: Lint 🤖 <android-build-prod-ayeaye@system.gserviceaccount.com>
+Code-Review+1: Tom Cherry <tomcherry@google.com>
+Code-Review+2: Wei Wang <wvw@google.com>
+Presubmit-Verified+1: Treehugger Robot <treehugger-gerrit@google.com>
+Submitted-by: Jaegeuk Kim <jaegeuk@google.com>
+Submitted-at: Tue, 03 Mar 2020 00:33:46 +0000
+Reviewed-on: https://android-review.googlesource.com/c/platform/system/core/+/1245913
+Project: platform/system/core
+Branch: refs/heads/master
