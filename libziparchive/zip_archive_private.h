@@ -22,6 +22,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+#include <map>
 #include <memory>
 #include <vector>
 
@@ -171,14 +172,9 @@ struct ZipArchive {
   std::unique_ptr<android::base::MappedFile> directory_map;
 
   // number of entries in the Zip archive
-  uint16_t num_entries;
+  uint64_t num_entries;
 
-  // We know how many entries are in the Zip archive, so we can have a
-  // fixed-size hash table. We define a load factor of 0.75 and over
-  // allocate so the maximum number entries can never be higher than
-  // ((4 * UINT16_MAX) / 3 + 1) which can safely fit into a uint32_t.
-  uint32_t hash_table_size;
-  ZipStringOffset* hash_table;
+  std::map<std::string_view, uint64_t> entry_table;
 
   ZipArchive(const int fd, bool assume_ownership);
   ZipArchive(const void* address, size_t length);
