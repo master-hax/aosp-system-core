@@ -143,3 +143,11 @@ llndk_library {
     symbol_file: "liblog.map.txt",
     export_include_dirs: ["include_vndk"],
 }
+
+// An SDK for mainline module development.
+sdk {
+    name: "liblog-mainline-sdk",
+    native_shared_libs: [
+        "liblog",
+    ],
+}
