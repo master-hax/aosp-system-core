@@ -22,6 +22,30 @@
       "revId": "8dccf3ffd1e5de142987ebd3cf9ed8dfebb17f1d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ba0cbaaa_1ee4f472",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 2
+      },
+      "lineNbr": 733,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2020-03-04T23:34:35Z",
+      "side": 1,
+      "message": "if so, of course, should be in a separate CL, since this is a c/p",
+      "parentUuid": "581ec685_3d724a8a",
+      "range": {
+        "startLine": 731,
+        "startChar": 2,
+        "endLine": 733,
+        "endChar": 60
+      },
+      "revId": "8dccf3ffd1e5de142987ebd3cf9ed8dfebb17f1d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
