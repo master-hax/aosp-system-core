@@ -736,6 +736,11 @@ by the _value_ of the property.
 > These are equivalent to using the `interface_start`, `interface_restart`, and `interface_stop`
 commands on the interface specified by the _value_ of the property.
 
+`ctl.oneshot_one` and `ctl.oneshot_off` will turn on or off the _oneshot_
+flag for the service specified by the _value_ of the property.  This is
+particularly intended for services that are conditionally lazy HALs.  When
+they are lazy HALs, oneshot must be on, otherwise oneshot should be off.
+
 `ctl.sigstop_on` and `ctl.sigstop_off` will turn on or off the _sigstop_ feature for the service
 specified by the _value_ of the property.  See the _Debugging init_ section below for more details
 about this feature.
