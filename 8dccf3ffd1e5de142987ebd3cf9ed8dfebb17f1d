@@ -46,6 +46,30 @@
       "revId": "8dccf3ffd1e5de142987ebd3cf9ed8dfebb17f1d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "15f47f7b_6140af0c",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 2
+      },
+      "lineNbr": 733,
+      "author": {
+        "id": 1242539
+      },
+      "writtenOn": "2020-03-04T23:58:02Z",
+      "side": 1,
+      "message": "Ack, I\u0027ll make another CL to sort this after.",
+      "parentUuid": "ba0cbaaa_1ee4f472",
+      "range": {
+        "startLine": 731,
+        "startChar": 2,
+        "endLine": 733,
+        "endChar": 60
+      },
+      "revId": "8dccf3ffd1e5de142987ebd3cf9ed8dfebb17f1d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
