@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "016cbeab_9bc6fb60",
+        "filename": "init/init.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 377,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-03-04T19:12:15Z",
+      "side": 1,
+      "message": "Do we actually need oneshot_off?  I added it for completeness, but maybe let\u0027s skip it if we don\u0027t need it.",
+      "revId": "5d3de4b8bf4dbd8ec223084476e58463f65bc992",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2e06e9ee_228f5f3b",
+        "filename": "init/init.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 382,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-03-04T19:12:15Z",
+      "side": 1,
+      "message": "Do we actually need interface_oneshot_on ?  hwservicemanager works through interfaces, not services, right?  \n\nIs it possible that a service will host multiple interfaces and only a subset of those interfaces are started lazily?",
+      "range": {
+        "startLine": 382,
+        "startChar": 31,
+        "endLine": 382,
+        "endChar": 55
+      },
+      "revId": "5d3de4b8bf4dbd8ec223084476e58463f65bc992",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
