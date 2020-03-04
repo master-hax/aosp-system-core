@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "581ec685_3d724a8a",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 2
+      },
+      "lineNbr": 733,
+      "author": {
+        "id": 1258293
+      },
+      "writtenOn": "2020-03-04T23:27:52Z",
+      "side": 1,
+      "message": "i would prefer this to be sorted",
+      "range": {
+        "startLine": 731,
+        "startChar": 2,
+        "endLine": 733,
+        "endChar": 60
+      },
+      "revId": "8dccf3ffd1e5de142987ebd3cf9ed8dfebb17f1d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
