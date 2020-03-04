@@ -27,7 +27,12 @@
 #include <sys/vfs.h>
 #include <unistd.h>
 
+#include <algorithm>
+#include <chrono>
+#include <iostream>
 #include <limits>
+#include <queue>
+#include <random>
 #include <string>
 #include <utility>
 #include <vector>
@@ -529,6 +534,56 @@ static bool IsLastExtent(const fiemap_extent* extent) {
     return !!(extent->fe_flags & FIEMAP_EXTENT_LAST);
 }
 
+static constexpr size_t kMinExtents = 20000;
+
+static void ShuffleExtents(std::vector<struct fiemap_extent>* extents) {
+    auto comparator = [](const struct fiemap_extent& left,
+                         const struct fiemap_extent& right) -> bool {
+        return left.fe_length < right.fe_length;
+    };
+    std::priority_queue<struct fiemap_extent, std::vector<struct fiemap_extent>,
+                        decltype(comparator)>
+            queue(comparator, std::move(*extents));
+
+    // Split the largest extents in two until we reach the number of minimum
+    // extents, or until the largest extent is only one block.
+    static constexpr uint64_t kMinExtentSize = 4096;
+    while (queue.size() < kMinExtents) {
+        auto extent = queue.top();
+        queue.pop();
+
+        if (extent.fe_length < kMinExtentSize * 2) break;
+
+        uint64_t orig_length = extent.fe_length;
+
+        // Split the extent in two, and then round up to the nearest block.
+        uint64_t lhs_length = orig_length / 2;
+        lhs_length += kMinExtentSize - 1;
+        lhs_length &= ~(kMinExtentSize - 1);
+        CHECK(lhs_length < extent.fe_length);
+        CHECK(orig_length - lhs_length >= kMinExtentSize);
+
+        extent.fe_length = lhs_length;
+        queue.push(extent);
+
+        extent.fe_logical += lhs_length;
+        extent.fe_physical += lhs_length;
+        extent.fe_length = orig_length - lhs_length;
+        queue.push(extent);
+    }
+    CHECK(extents->empty());
+
+    while (!queue.empty()) {
+        extents->push_back(queue.top());
+        queue.pop();
+    }
+
+    auto seed = std::chrono::system_clock::now().time_since_epoch().count();
+
+    // Note: we don't bother fixing up fe_logical since we don't use it anywhere.
+    std::shuffle(extents->begin(), extents->end(), std::default_random_engine(seed));
+}
+
 static bool FiemapToExtents(struct fiemap* fiemap, std::vector<struct fiemap_extent>* extents,
                             uint32_t num_extents, std::string_view file_path) {
     if (num_extents == 0) return false;
@@ -571,6 +626,8 @@ static bool FiemapToExtents(struct fiemap* fiemap, std::vector<struct fiemap_ext
         }
     }
     extents->emplace_back(*prev);
+
+    ShuffleExtents(extents);
 
     return true;
 }
