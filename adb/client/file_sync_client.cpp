@@ -41,6 +41,7 @@
 #include "adb_client.h"
 #include "adb_io.h"
 #include "adb_utils.h"
+#include "brotli_utils.h"
 #include "file_sync_protocol.h"
 #include "line_printer.h"
 #include "sysdeps/errno.h"
@@ -212,6 +213,7 @@ class SyncConnection {
         } else {
             have_stat_v2_ = CanUseFeature(features_, kFeatureStat2);
             have_ls_v2_ = CanUseFeature(features_, kFeatureLs2);
+            have_sendrecv_v2_ = CanUseFeature(features_, kFeatureSendRecv2);
             fd.reset(adb_connect("sync:", &error));
             if (fd < 0) {
                 Error("connect failed: %s", error.c_str());
@@ -234,6 +236,8 @@ class SyncConnection {
 
         line_printer_.KeepInfoLine();
     }
+
+    bool HaveSendRecv2() const { return have_sendrecv_v2_; }
 
     const FeatureSet& Features() const { return features_; }
 
@@ -301,6 +305,39 @@ class SyncConnection {
         memcpy(data, path_and_mode, path_length);
 
         return WriteFdExactly(fd, &buf[0], buf.size());
+    }
+
+    bool SendRecv2(const char* path) {
+        size_t path_length = strlen(path);
+        if (path_length > 1024) {
+            Error("SendRequest failed: path too long: %zu", path_length);
+            errno = ENAMETOOLONG;
+            return false;
+        }
+
+        Block buf;
+
+        SyncRequest req;
+        req.id = ID_RECV_V2;
+        req.path_length = path_length;
+
+        syncmsg msg;
+        msg.recv_v2_setup.id = ID_RECV_V2;
+        msg.recv_v2_setup.flags = kSyncFlagBrotli;
+
+        buf.resize(sizeof(SyncRequest) + strlen(path) + sizeof(msg.recv_v2_setup));
+
+        char* p = buf.data();
+
+        memcpy(p, &req, sizeof(SyncRequest));
+        p += sizeof(SyncRequest);
+
+        memcpy(p, path, path_length);
+        p += path_length;
+
+        memcpy(p, &msg.recv_v2_setup, sizeof(msg.recv_v2_setup));
+
+        return WriteFdExactly(fd, buf.data(), buf.size());
     }
 
     bool SendStat(const char* path_and_mode) {
@@ -432,7 +469,7 @@ class SyncConnection {
         char* p = &buf[0];
 
         SyncRequest* req_send = reinterpret_cast<SyncRequest*>(p);
-        req_send->id = ID_SEND;
+        req_send->id = ID_SEND_V1;
         req_send->path_length = path_length;
         p += sizeof(SyncRequest);
         memcpy(p, path_and_mode, path_length);
@@ -462,8 +499,8 @@ class SyncConnection {
     bool SendLargeFile(const char* path_and_mode,
                        const char* lpath, const char* rpath,
                        unsigned mtime) {
-        if (!SendRequest(ID_SEND, path_and_mode)) {
-            Error("failed to send ID_SEND message '%s': %s", path_and_mode, strerror(errno));
+        if (!SendRequest(ID_SEND_V1, path_and_mode)) {
+            Error("failed to send ID_SEND_V1 message '%s': %s", path_and_mode, strerror(errno));
             return false;
         }
 
@@ -620,6 +657,7 @@ class SyncConnection {
     FeatureSet features_;
     bool have_stat_v2_;
     bool have_ls_v2_;
+    bool have_sendrecv_v2_;
 
     TransferLedger global_ledger_;
     TransferLedger current_ledger_;
@@ -751,9 +789,9 @@ static bool sync_send(SyncConnection& sc, const char* lpath, const char* rpath, 
     return sc.CopyDone(lpath, rpath);
 }
 
-static bool sync_recv(SyncConnection& sc, const char* rpath, const char* lpath,
-                      const char* name, uint64_t expected_size) {
-    if (!sc.SendRequest(ID_RECV, rpath)) return false;
+static bool sync_recv_v1(SyncConnection& sc, const char* rpath, const char* lpath, const char* name,
+                         uint64_t expected_size) {
+    if (!sc.SendRequest(ID_RECV_V1, rpath)) return false;
 
     adb_unlink(lpath);
     unique_fd lfd(adb_creat(lpath, 0644));
@@ -804,6 +842,94 @@ static bool sync_recv(SyncConnection& sc, const char* rpath, const char* lpath,
 
     sc.RecordFilesTransferred(1);
     return true;
+}
+
+static bool sync_recv_v2(SyncConnection& sc, const char* rpath, const char* lpath, const char* name,
+                         uint64_t expected_size) {
+    if (!sc.SendRecv2(rpath)) return false;
+
+    adb_unlink(lpath);
+    unique_fd lfd(adb_creat(lpath, 0644));
+    if (lfd < 0) {
+        sc.Error("cannot create '%s': %s", lpath, strerror(errno));
+        return false;
+    }
+
+    uint64_t bytes_copied = 0;
+
+    Block buffer(SYNC_DATA_MAX);
+    BrotliDecoder decoder(std::span(buffer.data(), buffer.size()));
+    while (true) {
+        syncmsg msg;
+        if (!ReadFdExactly(sc.fd, &msg.data, sizeof(msg.data))) {
+            adb_unlink(lpath);
+            return false;
+        }
+
+        if (msg.data.id == ID_DONE) break;
+
+        if (msg.data.id != ID_DATA) {
+            adb_unlink(lpath);
+            sc.ReportCopyFailure(rpath, lpath, msg);
+            return false;
+        }
+
+        if (msg.data.size > sc.max) {
+            sc.Error("msg.data.size too large: %u (max %zu)", msg.data.size, sc.max);
+            adb_unlink(lpath);
+            return false;
+        }
+
+        Block block(msg.data.size);
+        if (!ReadFdExactly(sc.fd, block.data(), msg.data.size)) {
+            adb_unlink(lpath);
+            return false;
+        }
+        decoder.Append(std::move(block));
+
+    decompress:
+        std::span<char> output;
+        BrotliDecodeResult result = decoder.Decode(&output);
+
+        if (result == BrotliDecodeResult::Error) {
+            sc.Error("decompress failed");
+            adb_unlink(lpath);
+            return false;
+        }
+
+        if (!output.empty()) {
+            if (!WriteFdExactly(lfd, output.data(), output.size())) {
+                sc.Error("cannot write '%s': %s", lpath, strerror(errno));
+                adb_unlink(lpath);
+                return false;
+            }
+        }
+
+        bytes_copied += output.size();
+
+        sc.RecordBytesTransferred(msg.data.size);
+        sc.ReportProgress(name != nullptr ? name : rpath, bytes_copied, expected_size);
+
+        if (result == BrotliDecodeResult::MoreOutput) {
+            goto decompress;
+        } else if (result == BrotliDecodeResult::NeedInput) {
+            continue;
+        } else if (result == BrotliDecodeResult::Done) {
+            break;
+        }
+    }
+
+    sc.RecordFilesTransferred(1);
+    return true;
+}
+
+static bool sync_recv(SyncConnection& sc, const char* rpath, const char* lpath, const char* name,
+                      uint64_t expected_size) {
+    if (sc.HaveSendRecv2()) {
+        return sync_recv_v2(sc, rpath, lpath, name, expected_size);
+    } else {
+        return sync_recv_v1(sc, rpath, lpath, name, expected_size);
+    }
 }
 
 bool do_sync_ls(const char* path) {
