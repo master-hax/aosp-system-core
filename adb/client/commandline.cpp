@@ -191,7 +191,7 @@ static void help() {
         "     generate adb public/private key; private key stored in FILE,\n"
         "\n"
         "scripting:\n"
-        " wait-for[-TRANSPORT]-STATE\n"
+        " wait-for[-TRANSPORT]-STATE...\n"
         "     wait for device to be in the given state\n"
         "     STATE: device, recovery, rescue, sideload, bootloader, or disconnect\n"
         "     TRANSPORT: usb, local, or any [default=any]\n"
@@ -1054,7 +1054,7 @@ static int ppp(int argc, const char** argv) {
 static bool wait_for_device(const char* service,
                             std::optional<std::chrono::milliseconds> timeout = std::nullopt) {
     std::vector<std::string> components = android::base::Split(service, "-");
-    if (components.size() < 3 || components.size() > 4) {
+    if (components.size() < 3) {
         fprintf(stderr, "adb: couldn't parse 'wait-for' command: %s\n", service);
         return false;
     }
@@ -1079,15 +1079,17 @@ static bool wait_for_device(const char* service,
         return false;
     }
 
-    if (components[3] != "any" && components[3] != "bootloader" && components[3] != "device" &&
-        components[3] != "recovery" && components[3] != "rescue" && components[3] != "sideload" &&
-        components[3] != "disconnect") {
-        fprintf(stderr,
-                "adb: unknown state %s; "
-                "expected 'any', 'bootloader', 'device', 'recovery', 'rescue', 'sideload', or "
-                "'disconnect'\n",
-                components[3].c_str());
-        return false;
+    for (auto it = components.begin() + 3; it != components.end(); it++) {
+        if (*it != "any" && *it != "bootloader" && *it != "device" &&
+            *it != "recovery" && *it != "rescue" && *it != "sideload" &&
+            *it != "disconnect") {
+            fprintf(stderr,
+                    "adb: unknown state %s; "
+                    "expected 'any', 'bootloader', 'device', 'recovery', 'rescue', 'sideload', "
+                    "or 'disconnect'\n",
+                    it->c_str());
+            return false;
+        }
     }
 
     std::string cmd = format_host_command(android::base::Join(components, "-").c_str());

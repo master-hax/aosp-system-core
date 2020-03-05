@@ -107,13 +107,13 @@ enum ConnectionState {
     kCsUnauthorized,    // ADB_VENDOR_KEYS exhausted, fell back to user prompt.
     kCsNoPerm,          // Insufficient permissions to communicate with the device.
     kCsOffline,
-
-    kCsBootloader,
-    kCsDevice,
     kCsHost,
-    kCsRecovery,
-    kCsSideload,
-    kCsRescue,
+
+    kCsBootloader = 8,
+    kCsDevice = 16,
+    kCsRecovery = 32,
+    kCsSideload = 64,
+    kCsRescue = 128,
 };
 
 inline bool ConnectionStateIsOnline(ConnectionState state) {

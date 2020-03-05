@@ -99,7 +99,7 @@ struct state_info {
     TransportType transport_type;
     std::string serial;
     TransportId transport_id;
-    ConnectionState state;
+    int state;
 };
 
 static void wait_for_state(unique_fd fd, state_info* sinfo) {
@@ -111,14 +111,13 @@ static void wait_for_state(unique_fd fd, state_info* sinfo) {
         const char* serial = sinfo->serial.length() ? sinfo->serial.c_str() : nullptr;
         atransport* t = acquire_one_transport(sinfo->transport_type, serial, sinfo->transport_id,
                                               &is_ambiguous, &error);
-        if (sinfo->state == kCsOffline) {
+        if ((sinfo->state & kCsOffline) != 0) {
             // wait-for-disconnect uses kCsOffline, we don't actually want to wait for 'offline'.
             if (t == nullptr) {
                 SendOkay(fd);
                 break;
             }
-        } else if (t != nullptr &&
-                   (sinfo->state == kCsAny || sinfo->state == t->GetConnectionState())) {
+        } else if (t != nullptr && (sinfo->state & t->GetConnectionState()) != 0) {
             SendOkay(fd);
             break;
         }
@@ -231,19 +230,19 @@ asocket* host_service_to_socket(std::string_view name, std::string_view serial,
         }
 
         if (name == "-device") {
-            sinfo->state = kCsDevice;
+            sinfo->state |= kCsDevice;
         } else if (name == "-recovery") {
-            sinfo->state = kCsRecovery;
+            sinfo->state |= kCsRecovery;
         } else if (name == "-rescue") {
             sinfo->state = kCsRescue;
         } else if (name == "-sideload") {
-            sinfo->state = kCsSideload;
+            sinfo->state |= kCsSideload;
         } else if (name == "-bootloader") {
-            sinfo->state = kCsBootloader;
+            sinfo->state |= kCsBootloader;
         } else if (name == "-any") {
-            sinfo->state = kCsAny;
+            sinfo->state |= kCsAny;
         } else if (name == "-disconnect") {
-            sinfo->state = kCsOffline;
+            sinfo->state |= kCsOffline;
         } else {
             return nullptr;
         }
