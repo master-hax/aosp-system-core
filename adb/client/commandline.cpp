@@ -1321,7 +1321,7 @@ static int restore(int argc, const char** argv) {
 }
 
 static void parse_push_pull_args(const char** arg, int narg, std::vector<const char*>* srcs,
-                                 const char** dst, bool* copy_attrs, bool* sync) {
+                                 const char** dst, bool* copy_attrs, bool* sync, bool* compressed) {
     *copy_attrs = false;
 
     srcs->clear();
@@ -1334,6 +1334,10 @@ static void parse_push_pull_args(const char** arg, int narg, std::vector<const c
                 // Silently ignore for backwards compatibility.
             } else if (!strcmp(*arg, "-a")) {
                 *copy_attrs = true;
+            } else if (!strcmp(*arg, "-Z")) {
+                if (compressed != nullptr) {
+                    *compressed = false;
+                }
             } else if (!strcmp(*arg, "--sync")) {
                 if (sync != nullptr) {
                     *sync = true;
@@ -1836,20 +1840,22 @@ int adb_commandline(int argc, const char** argv) {
     } else if (!strcmp(argv[0], "push")) {
         bool copy_attrs = false;
         bool sync = false;
+        bool compressed = true;
         std::vector<const char*> srcs;
         const char* dst = nullptr;
 
-        parse_push_pull_args(&argv[1], argc - 1, &srcs, &dst, &copy_attrs, &sync);
+        parse_push_pull_args(&argv[1], argc - 1, &srcs, &dst, &copy_attrs, &sync, &compressed);
         if (srcs.empty() || !dst) error_exit("push requires an argument");
-        return do_sync_push(srcs, dst, sync) ? 0 : 1;
+        return do_sync_push(srcs, dst, sync, compressed) ? 0 : 1;
     } else if (!strcmp(argv[0], "pull")) {
         bool copy_attrs = false;
+        bool compressed = true;
         std::vector<const char*> srcs;
         const char* dst = ".";
 
-        parse_push_pull_args(&argv[1], argc - 1, &srcs, &dst, &copy_attrs, nullptr);
+        parse_push_pull_args(&argv[1], argc - 1, &srcs, &dst, &copy_attrs, nullptr, &compressed);
         if (srcs.empty()) error_exit("pull requires an argument");
-        return do_sync_pull(srcs, dst, copy_attrs) ? 0 : 1;
+        return do_sync_pull(srcs, dst, copy_attrs, compressed) ? 0 : 1;
     } else if (!strcmp(argv[0], "install")) {
         if (argc < 2) error_exit("install requires an argument");
         return install_app(argc, argv);
@@ -1885,7 +1891,7 @@ int adb_commandline(int argc, const char** argv) {
                 std::string src_dir{product_file(partition)};
                 if (!directory_exists(src_dir)) continue;
                 found = true;
-                if (!do_sync_sync(src_dir, "/" + partition, list_only)) return 1;
+                if (!do_sync_sync(src_dir, "/" + partition, list_only, true)) return 1;
             }
         }
         if (!found) error_exit("don't know how to sync %s partition", src.c_str());

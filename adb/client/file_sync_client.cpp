@@ -42,6 +42,7 @@
 #include "adb_client.h"
 #include "adb_io.h"
 #include "adb_utils.h"
+#include "brotli_utils.h"
 #include "file_sync_protocol.h"
 #include "line_printer.h"
 #include "sysdeps/errno.h"
@@ -213,6 +214,7 @@ class SyncConnection {
         } else {
             have_stat_v2_ = CanUseFeature(features_, kFeatureStat2);
             have_ls_v2_ = CanUseFeature(features_, kFeatureLs2);
+            have_sendrecv_v2_ = CanUseFeature(features_, kFeatureSendRecv2);
             fd.reset(adb_connect("sync:", &error));
             if (fd < 0) {
                 Error("connect failed: %s", error.c_str());
@@ -235,6 +237,8 @@ class SyncConnection {
 
         line_printer_.KeepInfoLine();
     }
+
+    bool HaveSendRecv2() const { return have_sendrecv_v2_; }
 
     const FeatureSet& Features() const { return features_; }
 
@@ -294,6 +298,70 @@ class SyncConnection {
         req->path_length = path.length();
         char* data = reinterpret_cast<char*>(req + 1);
         memcpy(data, path.data(), path.length());
+        return WriteFdExactly(fd, buf.data(), buf.size());
+    }
+
+    bool SendSend2(std::string_view path, mode_t mode, bool compressed) {
+        if (path.length() > 1024) {
+            Error("SendRequest failed: path too long: %zu", path.length());
+            errno = ENAMETOOLONG;
+            return false;
+        }
+
+        Block buf;
+
+        SyncRequest req;
+        req.id = ID_SEND_V2;
+        req.path_length = path.length();
+
+        syncmsg msg;
+        msg.send_v2_setup.id = ID_SEND_V2;
+        msg.send_v2_setup.mode = mode;
+        msg.send_v2_setup.flags = compressed ? kSyncFlagBrotli : 0;
+
+        buf.resize(sizeof(SyncRequest) + path.length() + sizeof(msg.send_v2_setup));
+
+        char* p = buf.data();
+
+        memcpy(p, &req, sizeof(SyncRequest));
+        p += sizeof(SyncRequest);
+
+        memcpy(p, path.data(), path.length());
+        p += path.length();
+
+        memcpy(p, &msg.send_v2_setup, sizeof(msg.send_v2_setup));
+
+        return WriteFdExactly(fd, buf.data(), buf.size());
+    }
+
+    bool SendRecv2(const std::string& path) {
+        if (path.length() > 1024) {
+            Error("SendRequest failed: path too long: %zu", path.length());
+            errno = ENAMETOOLONG;
+            return false;
+        }
+
+        Block buf;
+
+        SyncRequest req;
+        req.id = ID_RECV_V2;
+        req.path_length = path.length();
+
+        syncmsg msg;
+        msg.recv_v2_setup.id = ID_RECV_V2;
+        msg.recv_v2_setup.flags = kSyncFlagBrotli;
+
+        buf.resize(sizeof(SyncRequest) + path.length() + sizeof(msg.recv_v2_setup));
+
+        char* p = buf.data();
+
+        memcpy(p, &req, sizeof(SyncRequest));
+        p += sizeof(SyncRequest);
+
+        memcpy(p, path.data(), path.length());
+        p += path.length();
+
+        memcpy(p, &msg.recv_v2_setup, sizeof(msg.recv_v2_setup));
 
         return WriteFdExactly(fd, buf.data(), buf.size());
     }
@@ -425,7 +493,7 @@ class SyncConnection {
         char* p = &buf[0];
 
         SyncRequest* req_send = reinterpret_cast<SyncRequest*>(p);
-        req_send->id = ID_SEND;
+        req_send->id = ID_SEND_V1;
         req_send->path_length = path_and_mode.length();
         p += sizeof(SyncRequest);
         memcpy(p, path_and_mode.data(), path_and_mode.size());
@@ -452,12 +520,19 @@ class SyncConnection {
     }
 
     bool SendLargeFile(const std::string& path, mode_t mode, const std::string& lpath,
-                       const std::string& rpath, unsigned mtime) {
-        std::string path_and_mode = android::base::StringPrintf("%s,%d", path.c_str(), mode);
-        if (!SendRequest(ID_SEND, path_and_mode)) {
-            Error("failed to send ID_SEND message '%s': %s", path_and_mode.c_str(),
-                  strerror(errno));
-            return false;
+                       const std::string& rpath, unsigned mtime, bool compressed) {
+        if (compressed) {
+            if (!SendSend2(path, mode, compressed)) {
+                Error("failed to send ID_SEND_V2 message '%s': %s", path.c_str(), strerror(errno));
+                return false;
+            }
+        } else {
+            std::string path_and_mode = android::base::StringPrintf("%s,%d", path.c_str(), mode);
+            if (!SendRequest(ID_SEND_V1, path_and_mode.c_str())) {
+                Error("failed to send ID_SEND_V1 message '%s': %s", path_and_mode.c_str(),
+                      strerror(errno));
+                return false;
+            }
         }
 
         struct stat st;
@@ -477,22 +552,67 @@ class SyncConnection {
 
         syncsendbuf sbuf;
         sbuf.id = ID_DATA;
+
+        std::optional<BrotliEncoder<SYNC_DATA_MAX>> encoder;
+        if (compressed) {
+            encoder.emplace();
+        }
+
         while (true) {
-            int bytes_read = adb_read(lfd, sbuf.data, max - sizeof(SyncRequest));
-            if (bytes_read == -1) {
-                Error("reading '%s' locally failed: %s", lpath.c_str(), strerror(errno));
-                return false;
-            } else if (bytes_read == 0) {
-                break;
+            if (compressed) {
+                Block input(SYNC_DATA_MAX);
+                int r = adb_read(lfd.get(), input.data(), input.size());
+                if (r < 0) {
+                    Error("reading '%s' locally failed: %s", lpath.c_str(), strerror(errno));
+                    return false;
+                }
+
+                if (r == 0) {
+                    encoder->Finish();
+                } else {
+                    input.resize(r);
+                    encoder->Append(std::move(input));
+                    RecordBytesTransferred(r);
+                    bytes_copied += r;
+                }
+
+            compress:
+                Block output;
+                BrotliEncodeResult result = encoder->Encode(&output);
+                if (result == BrotliEncodeResult::Error) {
+                    Error("compressing '%s' locally failed", lpath.c_str());
+                    return false;
+                }
+
+                if (!output.empty()) {
+                    sbuf.size = output.size();
+                    memcpy(sbuf.data, output.data(), output.size());
+                    WriteOrDie(lpath, rpath, &sbuf, sizeof(SyncRequest) + output.size());
+                }
+
+                if (result == BrotliEncodeResult::Done) {
+                    break;
+                } else if (result == BrotliEncodeResult::NeedInput) {
+                    continue;
+                } else if (result == BrotliEncodeResult::MoreOutput) {
+                    goto compress;
+                }
+            } else {
+                int bytes_read = adb_read(lfd, sbuf.data, max);
+                if (bytes_read == -1) {
+                    Error("reading '%s' locally failed: %s", lpath.c_str(), strerror(errno));
+                    return false;
+                } else if (bytes_read == 0) {
+                    break;
+                }
+
+                sbuf.size = bytes_read;
+                WriteOrDie(lpath, rpath, &sbuf, sizeof(SyncRequest) + bytes_read);
+
+                RecordBytesTransferred(bytes_read);
+                bytes_copied += bytes_read;
+                ReportProgress(rpath, bytes_copied, total_size);
             }
-
-            sbuf.size = bytes_read;
-            WriteOrDie(lpath, rpath, &sbuf, sizeof(SyncRequest) + bytes_read);
-
-            RecordBytesTransferred(bytes_read);
-            bytes_copied += bytes_read;
-
-            ReportProgress(rpath, bytes_copied, total_size);
         }
 
         syncmsg msg;
@@ -611,6 +731,7 @@ class SyncConnection {
     FeatureSet features_;
     bool have_stat_v2_;
     bool have_ls_v2_;
+    bool have_sendrecv_v2_;
 
     TransferLedger global_ledger_;
     TransferLedger current_ledger_;
@@ -692,7 +813,7 @@ static bool sync_stat_fallback(SyncConnection& sc, const std::string& path, stru
 }
 
 static bool sync_send(SyncConnection& sc, const std::string& lpath, const std::string& rpath,
-                      unsigned mtime, mode_t mode, bool sync) {
+                      unsigned mtime, mode_t mode, bool sync, bool compressed) {
     if (sync) {
         struct stat st;
         if (sync_lstat(sc, rpath, &st)) {
@@ -735,16 +856,16 @@ static bool sync_send(SyncConnection& sc, const std::string& lpath, const std::s
             return false;
         }
     } else {
-        if (!sc.SendLargeFile(rpath, mode, lpath, rpath, mtime)) {
+        if (!sc.SendLargeFile(rpath, mode, lpath, rpath, mtime, compressed)) {
             return false;
         }
     }
     return true;
 }
 
-static bool sync_recv(SyncConnection& sc, const char* rpath, const char* lpath,
-                      const char* name, uint64_t expected_size) {
-    if (!sc.SendRequest(ID_RECV, rpath)) return false;
+static bool sync_recv_v1(SyncConnection& sc, const char* rpath, const char* lpath, const char* name,
+                         uint64_t expected_size) {
+    if (!sc.SendRequest(ID_RECV_V1, rpath)) return false;
 
     adb_unlink(lpath);
     unique_fd lfd(adb_creat(lpath, 0644));
@@ -795,6 +916,94 @@ static bool sync_recv(SyncConnection& sc, const char* rpath, const char* lpath,
 
     sc.RecordFilesTransferred(1);
     return true;
+}
+
+static bool sync_recv_v2(SyncConnection& sc, const char* rpath, const char* lpath, const char* name,
+                         uint64_t expected_size) {
+    if (!sc.SendRecv2(rpath)) return false;
+
+    adb_unlink(lpath);
+    unique_fd lfd(adb_creat(lpath, 0644));
+    if (lfd < 0) {
+        sc.Error("cannot create '%s': %s", lpath, strerror(errno));
+        return false;
+    }
+
+    uint64_t bytes_copied = 0;
+
+    Block buffer(SYNC_DATA_MAX);
+    BrotliDecoder decoder(std::span(buffer.data(), buffer.size()));
+    while (true) {
+        syncmsg msg;
+        if (!ReadFdExactly(sc.fd, &msg.data, sizeof(msg.data))) {
+            adb_unlink(lpath);
+            return false;
+        }
+
+        if (msg.data.id == ID_DONE) break;
+
+        if (msg.data.id != ID_DATA) {
+            adb_unlink(lpath);
+            sc.ReportCopyFailure(rpath, lpath, msg);
+            return false;
+        }
+
+        if (msg.data.size > sc.max) {
+            sc.Error("msg.data.size too large: %u (max %zu)", msg.data.size, sc.max);
+            adb_unlink(lpath);
+            return false;
+        }
+
+        Block block(msg.data.size);
+        if (!ReadFdExactly(sc.fd, block.data(), msg.data.size)) {
+            adb_unlink(lpath);
+            return false;
+        }
+        decoder.Append(std::move(block));
+
+    decompress:
+        std::span<char> output;
+        BrotliDecodeResult result = decoder.Decode(&output);
+
+        if (result == BrotliDecodeResult::Error) {
+            sc.Error("decompress failed");
+            adb_unlink(lpath);
+            return false;
+        }
+
+        if (!output.empty()) {
+            if (!WriteFdExactly(lfd, output.data(), output.size())) {
+                sc.Error("cannot write '%s': %s", lpath, strerror(errno));
+                adb_unlink(lpath);
+                return false;
+            }
+        }
+
+        bytes_copied += output.size();
+
+        sc.RecordBytesTransferred(msg.data.size);
+        sc.ReportProgress(name != nullptr ? name : rpath, bytes_copied, expected_size);
+
+        if (result == BrotliDecodeResult::MoreOutput) {
+            goto decompress;
+        } else if (result == BrotliDecodeResult::NeedInput) {
+            continue;
+        } else if (result == BrotliDecodeResult::Done) {
+            break;
+        }
+    }
+
+    sc.RecordFilesTransferred(1);
+    return true;
+}
+
+static bool sync_recv(SyncConnection& sc, const char* rpath, const char* lpath, const char* name,
+                      uint64_t expected_size, bool compressed) {
+    if (sc.HaveSendRecv2() && compressed) {
+        return sync_recv_v2(sc, rpath, lpath, name, expected_size);
+    } else {
+        return sync_recv_v1(sc, rpath, lpath, name, expected_size);
+    }
 }
 
 bool do_sync_ls(const char* path) {
@@ -872,9 +1081,8 @@ static bool is_root_dir(std::string_view path) {
     return true;
 }
 
-static bool copy_local_dir_remote(SyncConnection& sc, std::string lpath,
-                                  std::string rpath, bool check_timestamps,
-                                  bool list_only) {
+static bool copy_local_dir_remote(SyncConnection& sc, std::string lpath, std::string rpath,
+                                  bool check_timestamps, bool list_only, bool compressed) {
     sc.NewTransfer();
 
     // Make sure that both directory paths end in a slash.
@@ -956,7 +1164,7 @@ static bool copy_local_dir_remote(SyncConnection& sc, std::string lpath,
             if (list_only) {
                 sc.Println("would push: %s -> %s", ci.lpath.c_str(), ci.rpath.c_str());
             } else {
-                if (!sync_send(sc, ci.lpath, ci.rpath, ci.time, ci.mode, false)) {
+                if (!sync_send(sc, ci.lpath, ci.rpath, ci.time, ci.mode, false, compressed)) {
                     return false;
                 }
             }
@@ -970,7 +1178,8 @@ static bool copy_local_dir_remote(SyncConnection& sc, std::string lpath,
     return true;
 }
 
-bool do_sync_push(const std::vector<const char*>& srcs, const char* dst, bool sync) {
+bool do_sync_push(const std::vector<const char*>& srcs, const char* dst, bool sync,
+                  bool compressed) {
     SyncConnection sc;
     if (!sc.IsValid()) return false;
 
@@ -1035,7 +1244,7 @@ bool do_sync_push(const std::vector<const char*>& srcs, const char* dst, bool sy
                 dst_dir.append(android::base::Basename(src_path));
             }
 
-            success &= copy_local_dir_remote(sc, src_path, dst_dir, sync, false);
+            success &= copy_local_dir_remote(sc, src_path, dst_dir, sync, false, compressed);
             continue;
         } else if (!should_push_file(st.st_mode)) {
             sc.Warning("skipping special file '%s' (mode = 0o%o)", src_path, st.st_mode);
@@ -1056,7 +1265,7 @@ bool do_sync_push(const std::vector<const char*>& srcs, const char* dst, bool sy
 
         sc.NewTransfer();
         sc.SetExpectedTotalBytes(st.st_size);
-        success &= sync_send(sc, src_path, dst_path, st.st_mtime, st.st_mode, sync);
+        success &= sync_send(sc, src_path, dst_path, st.st_mtime, st.st_mode, sync, compressed);
         sc.ReportTransferRate(src_path, TransferDirection::push);
     }
 
@@ -1141,8 +1350,8 @@ static int set_time_and_mode(const std::string& lpath, time_t time,
     return r1 ? r1 : r2;
 }
 
-static bool copy_remote_dir_local(SyncConnection& sc, std::string rpath,
-                                  std::string lpath, bool copy_attrs) {
+static bool copy_remote_dir_local(SyncConnection& sc, std::string rpath, std::string lpath,
+                                  bool copy_attrs, bool compressed) {
     sc.NewTransfer();
 
     // Make sure that both directory paths end in a slash.
@@ -1172,7 +1381,7 @@ static bool copy_remote_dir_local(SyncConnection& sc, std::string rpath,
                 continue;
             }
 
-            if (!sync_recv(sc, ci.rpath.c_str(), ci.lpath.c_str(), nullptr, ci.size)) {
+            if (!sync_recv(sc, ci.rpath.c_str(), ci.lpath.c_str(), nullptr, ci.size, compressed)) {
                 return false;
             }
 
@@ -1189,8 +1398,8 @@ static bool copy_remote_dir_local(SyncConnection& sc, std::string rpath,
     return true;
 }
 
-bool do_sync_pull(const std::vector<const char*>& srcs, const char* dst,
-                  bool copy_attrs, const char* name) {
+bool do_sync_pull(const std::vector<const char*>& srcs, const char* dst, bool copy_attrs,
+                  bool compressed, const char* name) {
     SyncConnection sc;
     if (!sc.IsValid()) return false;
 
@@ -1264,7 +1473,7 @@ bool do_sync_pull(const std::vector<const char*>& srcs, const char* dst,
                 dst_dir.append(android::base::Basename(src_path));
             }
 
-            success &= copy_remote_dir_local(sc, src_path, dst_dir, copy_attrs);
+            success &= copy_remote_dir_local(sc, src_path, dst_dir, copy_attrs, compressed);
             continue;
         } else if (!should_pull_file(src_st.st_mode)) {
             sc.Warning("skipping special file '%s' (mode = 0o%o)", src_path, src_st.st_mode);
@@ -1283,7 +1492,7 @@ bool do_sync_pull(const std::vector<const char*>& srcs, const char* dst,
 
         sc.NewTransfer();
         sc.SetExpectedTotalBytes(src_st.st_size);
-        if (!sync_recv(sc, src_path, dst_path, name, src_st.st_size)) {
+        if (!sync_recv(sc, src_path, dst_path, name, src_st.st_size, compressed)) {
             success = false;
             continue;
         }
@@ -1299,11 +1508,12 @@ bool do_sync_pull(const std::vector<const char*>& srcs, const char* dst,
     return success;
 }
 
-bool do_sync_sync(const std::string& lpath, const std::string& rpath, bool list_only) {
+bool do_sync_sync(const std::string& lpath, const std::string& rpath, bool list_only,
+                  bool compressed) {
     SyncConnection sc;
     if (!sc.IsValid()) return false;
 
-    bool success = copy_local_dir_remote(sc, lpath, rpath, true, list_only);
+    bool success = copy_local_dir_remote(sc, lpath, rpath, true, list_only, compressed);
     if (!list_only) {
         sc.ReportOverallTransferRate(TransferDirection::push);
     }

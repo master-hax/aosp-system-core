@@ -27,8 +27,10 @@
 #define ID_DENT_V1 MKID('D', 'E', 'N', 'T')
 #define ID_DENT_V2 MKID('D', 'N', 'T', '2')
 
-#define ID_SEND MKID('S', 'E', 'N', 'D')
-#define ID_RECV MKID('R', 'E', 'C', 'V')
+#define ID_SEND_V1 MKID('S', 'E', 'N', 'D')
+#define ID_SEND_V2 MKID('S', 'N', 'D', '2')
+#define ID_RECV_V1 MKID('R', 'E', 'C', 'V')
+#define ID_RECV_V2 MKID('R', 'C', 'V', '2')
 #define ID_DONE MKID('D', 'O', 'N', 'E')
 #define ID_DATA MKID('D', 'A', 'T', 'A')
 #define ID_OKAY MKID('O', 'K', 'A', 'Y')
@@ -40,6 +42,10 @@ struct SyncRequest {
     uint32_t path_length;  // <= 1024
     // Followed by 'path_length' bytes of path (not NUL-terminated).
 } __attribute__((packed));
+
+enum SyncFlag {
+    kSyncFlagBrotli = 1,
+};
 
 union syncmsg {
     struct __attribute__((packed)) {
@@ -92,6 +98,19 @@ union syncmsg {
         uint32_t id;
         uint32_t msglen;
     } status; // followed by `msglen` bytes of error message, if id == ID_FAIL.
+    // send_v1 sent the path in a buffer, followed by a comma and the mode as a string.
+    // send_v2 sends just the path in the first request, and then sends another syncmsg (with the
+    // same ID!) with details.
+    struct __attribute__((packed)) {
+        uint32_t id;
+        uint32_t mode;
+        uint32_t flags;
+    } send_v2_setup;
+    // Likewise, recv_v1 just sent the path without any accompanying data.
+    struct __attribute__((packed)) {
+        uint32_t id;
+        uint32_t flags;
+    } recv_v2_setup;
 };
 
 #define SYNC_DATA_MAX (64 * 1024)
