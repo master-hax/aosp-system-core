@@ -140,6 +140,21 @@ class CentralDirectory {
   size_t length_;
 };
 
+class CdEntryMapInterface {
+ public:
+  virtual ~CdEntryMapInterface() = default;
+  virtual int32_t AddToMap(std::string_view name, const uint8_t* start) = 0;
+
+  virtual std::pair<int32_t, uint64_t> GetCdEntryOffset(std::string_view entryName,
+                                                        const uint8_t* cd_start) const = 0;
+
+  virtual uint64_t GetSize() const = 0;
+
+  virtual void ResetIteration() = 0;
+
+  virtual std::pair<std::string_view, uint64_t> Next(const uint8_t* cd_start) = 0;
+};
+
 /**
  * More space efficient string representation of strings in an mmaped zipped
  * file than std::string_view. Using std::string_view as an entry in the
@@ -160,6 +175,35 @@ struct ZipStringOffset {
   }
 };
 
+class CdEntryMapZip32 : public CdEntryMapInterface {
+ public:
+  static std::unique_ptr<CdEntryMapInterface> Create(uint16_t num_entries);
+
+  ~CdEntryMapZip32();
+  int32_t AddToMap(std::string_view name, const uint8_t* start) override;
+
+  std::pair<int32_t, uint64_t> GetCdEntryOffset(std::string_view name,
+                                                const uint8_t* cd_start) const override;
+
+  uint64_t GetSize() const override;
+
+  void ResetIteration() override;
+
+  std::pair<std::string_view, uint64_t> Next(const uint8_t* cd_start) override;
+
+ private:
+  CdEntryMapZip32(uint16_t num_entries);
+
+  // We know how many entries are in the Zip archive, so we can have a
+  // fixed-size hash table. We define a load factor of 0.75 and over
+  // allocate so the maximum number entries can never be higher than
+  // ((4 * UINT16_MAX) / 3 + 1) which can safely fit into a uint32_t.
+  uint32_t hash_table_size_{0};
+  ZipStringOffset* hash_table_{nullptr};
+
+  uint32_t current_position_{0};
+};
+
 struct ZipArchive {
   // open Zip archive
   mutable MappedZipFile mapped_zip;
@@ -172,13 +216,7 @@ struct ZipArchive {
 
   // number of entries in the Zip archive
   uint16_t num_entries;
-
-  // We know how many entries are in the Zip archive, so we can have a
-  // fixed-size hash table. We define a load factor of 0.75 and over
-  // allocate so the maximum number entries can never be higher than
-  // ((4 * UINT16_MAX) / 3 + 1) which can safely fit into a uint32_t.
-  uint32_t hash_table_size;
-  ZipStringOffset* hash_table;
+  std::unique_ptr<CdEntryMapInterface> cd_entry_map;
 
   ZipArchive(const int fd, bool assume_ownership);
   ZipArchive(const void* address, size_t length);
