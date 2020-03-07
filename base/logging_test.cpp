@@ -553,50 +553,22 @@ TEST(logging, UNIMPLEMENTED) {
   ASSERT_NO_FATAL_FAILURE(CheckMessage(cap, android::base::ERROR, expected.c_str()));
 }
 
-static void NoopAborter(const char* msg ATTRIBUTE_UNUSED) {
-  LOG(ERROR) << "called noop";
-}
-
-TEST(logging, LOG_FATAL_NOOP_ABORTER) {
-  CapturedStderr cap;
-  {
-    android::base::SetAborter(NoopAborter);
-
-    android::base::ScopedLogSeverity sls(android::base::ERROR);
-    LOG(FATAL) << "foobar";
-    cap.Stop();
-
-    android::base::SetAborter(android::base::DefaultAborter);
-  }
-  std::string output = cap.str();
-  ASSERT_NO_FATAL_FAILURE(CheckMessage(output, android::base::FATAL, "foobar"));
-  ASSERT_NO_FATAL_FAILURE(CheckMessage(output, android::base::ERROR, "called noop"));
-
-  ASSERT_DEATH({SuppressAbortUI(); LOG(FATAL) << "foobar";}, "foobar");
-}
-
-struct CountLineAborter {
-  static void CountLineAborterFunction(const char* msg) {
-    while (*msg != 0) {
-      if (*msg == '\n') {
+TEST(logging, LOG_FATAL_ABORTER_MESSAGE) {
+  android::base::SetAborter([](const char* message) {
+    size_t newline_count = 0;
+    while (*message != 0) {
+      if (*message == '\n') {
         newline_count++;
       }
-      msg++;
+      message++;
     }
-  }
-  static size_t newline_count;
-};
-size_t CountLineAborter::newline_count = 0;
-
-TEST(logging, LOG_FATAL_ABORTER_MESSAGE) {
-  CountLineAborter::newline_count = 0;
-  android::base::SetAborter(CountLineAborter::CountLineAborterFunction);
+    _exit(newline_count);
+  });
 
   android::base::ScopedLogSeverity sls(android::base::ERROR);
-  CapturedStderr cap;
-  LOG(FATAL) << "foo\nbar";
 
-  EXPECT_EQ(CountLineAborter::newline_count, 1U + 1U);  // +1 for final '\n'.
+  const int kExpectedExitCode = 3;  // foo\nbar\nbar will print three lines.
+  ASSERT_EXIT({ LOG(FATAL) << "foo\nbar\nbar"; }, testing::ExitedWithCode(kExpectedExitCode), "");
 }
 
 __attribute__((constructor)) void TestLoggingInConstructor() {
