@@ -553,6 +553,9 @@ TEST(logging, UNIMPLEMENTED) {
   ASSERT_NO_FATAL_FAILURE(CheckMessage(cap, android::base::ERROR, expected.c_str()));
 }
 
+/*
+TODO(tomcherry): Make this a death test
+
 static void NoopAborter(const char* msg ATTRIBUTE_UNUSED) {
   LOG(ERROR) << "called noop";
 }
@@ -598,6 +601,7 @@ TEST(logging, LOG_FATAL_ABORTER_MESSAGE) {
 
   EXPECT_EQ(CountLineAborter::newline_count, 1U + 1U);  // +1 for final '\n'.
 }
+*/
 
 __attribute__((constructor)) void TestLoggingInConstructor() {
   LOG(ERROR) << "foobar";
