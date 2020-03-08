@@ -90,9 +90,8 @@ class Unwinder {
   std::string FormatFrame(size_t frame_num) const;
   std::string FormatFrame(const FrameData& frame) const;
 
-  void SetJitDebug(JitDebug* jit_debug, ArchEnum arch);
-
-  void SetRegs(Regs* regs) { regs_ = regs; }
+  void SetRegs(Regs* regs);
+  void ResetJitDebug(ArchEnum arch);
   Maps* GetMaps() { return maps_; }
   std::shared_ptr<Memory>& GetProcessMemory() { return process_memory_; }
 
@@ -106,8 +105,6 @@ class Unwinder {
   void SetEmbeddedSoname(bool embedded_soname) { embedded_soname_ = embedded_soname; }
 
   void SetDisplayBuildID(bool display_build_id) { display_build_id_ = display_build_id; }
-
-  void SetDexFiles(DexFiles* dex_files, ArchEnum arch);
 
   bool elf_from_memory_not_file() { return elf_from_memory_not_file_; }
 
@@ -125,8 +122,10 @@ class Unwinder {
   Regs* regs_;
   std::vector<FrameData> frames_;
   std::shared_ptr<Memory> process_memory_;
-  JitDebug* jit_debug_ = nullptr;
-  DexFiles* dex_files_ = nullptr;
+  std::unique_ptr<JitDebug> jit_debug_;
+#if !defined(NO_LIBDEXFILE_SUPPORT)
+  std::unique_ptr<DexFiles> dex_files_;
+#endif
   bool resolve_names_ = true;
   bool embedded_soname_ = true;
   bool display_build_id_ = false;
@@ -141,13 +140,11 @@ class UnwinderFromPid : public Unwinder {
   UnwinderFromPid(size_t max_frames, pid_t pid) : Unwinder(max_frames), pid_(pid) {}
   virtual ~UnwinderFromPid() = default;
 
-  bool Init(ArchEnum arch);
+  bool Init();
 
  private:
   pid_t pid_;
   std::unique_ptr<Maps> maps_ptr_;
-  std::unique_ptr<JitDebug> jit_debug_ptr_;
-  std::unique_ptr<DexFiles> dex_files_ptr_;
 };
 
 }  // namespace unwindstack

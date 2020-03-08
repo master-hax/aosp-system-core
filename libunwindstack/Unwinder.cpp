@@ -41,6 +41,22 @@ extern "C" char* __cxa_demangle(const char*, char*, size_t*, int* status);
 
 namespace unwindstack {
 
+void Unwinder::SetRegs(Regs* regs) {
+  regs_ = regs;
+  if (jit_debug_ == nullptr && regs != nullptr) {
+    ResetJitDebug(regs_->Arch());
+  }
+}
+
+void Unwinder::ResetJitDebug(ArchEnum arch) {
+  jit_debug_.reset(new JitDebug(process_memory_));
+  jit_debug_->SetArch(arch);
+#if !defined(NO_LIBDEXFILE_SUPPORT)
+  dex_files_.reset(new DexFiles(process_memory_));
+  dex_files_->SetArch(arch);
+#endif
+}
+
 // Inject extra 'virtual' frame that represents the dex pc data.
 // The dex pc is a magic register defined in the Mterp interpreter,
 // and thus it will be restored/observed in the frame after it.
@@ -360,17 +376,7 @@ std::string Unwinder::FormatFrame(size_t frame_num) const {
   return FormatFrame(frames_[frame_num]);
 }
 
-void Unwinder::SetJitDebug(JitDebug* jit_debug, ArchEnum arch) {
-  jit_debug->SetArch(arch);
-  jit_debug_ = jit_debug;
-}
-
-void Unwinder::SetDexFiles(DexFiles* dex_files, ArchEnum arch) {
-  dex_files->SetArch(arch);
-  dex_files_ = dex_files;
-}
-
-bool UnwinderFromPid::Init(ArchEnum arch) {
+bool UnwinderFromPid::Init() {
   if (pid_ == getpid()) {
     maps_ptr_.reset(new LocalMaps());
   } else {
@@ -382,15 +388,6 @@ bool UnwinderFromPid::Init(ArchEnum arch) {
   maps_ = maps_ptr_.get();
 
   process_memory_ = Memory::CreateProcessMemoryCached(pid_);
-
-  jit_debug_ptr_.reset(new JitDebug(process_memory_));
-  jit_debug_ = jit_debug_ptr_.get();
-  SetJitDebug(jit_debug_, arch);
-#if defined(DEXFILE_SUPPORT)
-  dex_files_ptr_.reset(new DexFiles(process_memory_));
-  dex_files_ = dex_files_ptr_.get();
-  SetDexFiles(dex_files_, arch);
-#endif
 
   return true;
 }
