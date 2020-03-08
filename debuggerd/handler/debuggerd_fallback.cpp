@@ -43,7 +43,6 @@
 #include <android-base/unique_fd.h>
 #include <async_safe/log.h>
 #include <bionic/reserved_signals.h>
-#include <unwindstack/DexFiles.h>
 #include <unwindstack/JitDebug.h>
 #include <unwindstack/Maps.h>
 #include <unwindstack/Memory.h>
@@ -87,7 +86,7 @@ static void debuggerd_fallback_trace(int output_fd, ucontext_t* ucontext) {
 
     // TODO: Create this once and store it in a global?
     unwindstack::UnwinderFromPid unwinder(kMaxFrames, getpid());
-    if (unwinder.Init(arch)) {
+    if (unwinder.Init()) {
       dump_backtrace_thread(output_fd, &unwinder, thread);
     } else {
       async_safe_format_log(ANDROID_LOG_ERROR, "libc", "Unable to init unwinder.");

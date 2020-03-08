@@ -94,7 +94,7 @@ TEST(VerifyBionicTermination, local_terminate) {
   std::unique_ptr<Regs> regs(Regs::CreateFromLocal());
 
   UnwinderFromPid unwinder(512, getpid());
-  ASSERT_TRUE(unwinder.Init(regs->Arch()));
+  ASSERT_TRUE(unwinder.Init());
   unwinder.SetRegs(regs.get());
 
   RegsGetLocal(regs.get());
