@@ -22,6 +22,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+#include <map>
 #include <memory>
 #include <utility>
 #include <vector>
@@ -210,6 +211,25 @@ class CdEntryMapZip32 : public CdEntryMapInterface {
   uint32_t current_position_{0};
 };
 
+// This implementation of CdEntryMap uses a std::map
+class CdEntryMapZip64 : public CdEntryMapInterface {
+ public:
+  static std::unique_ptr<CdEntryMapInterface> Create();
+
+  int32_t AddToMap(std::string_view name, const uint8_t* start) override;
+  std::pair<int32_t, uint64_t> GetCdEntryOffset(std::string_view name,
+                                                const uint8_t* cd_start) const override;
+  void ResetIteration() override;
+  std::pair<std::string_view, uint64_t> Next(const uint8_t* cd_start) override;
+
+ private:
+  CdEntryMapZip64() = default;
+
+  std::map<std::string_view, uint64_t> entry_table_;
+
+  std::map<std::string_view, uint64_t>::iterator iterator_;
+};
+
 struct ZipArchive {
   // open Zip archive
   mutable MappedZipFile mapped_zip;
@@ -226,7 +246,13 @@ struct ZipArchive {
 
   ZipArchive(const int fd, bool assume_ownership);
   ZipArchive(const void* address, size_t length);
-  ~ZipArchive();
+  virtual ~ZipArchive();
 
   bool InitializeCentralDirectory(off64_t cd_start_offset, size_t cd_size);
+
+  // Returns true if we choose to use std::map implementation for cd entry map.
+  virtual bool UseCdEntryMapZip64() const { return false; }
 };
+
+// Exposed for testing.
+int32_t OpenArchiveInternal(ZipArchive* archive, const char* debug_file_name);
