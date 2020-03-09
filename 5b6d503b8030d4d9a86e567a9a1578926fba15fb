@@ -22,6 +22,30 @@
       "revId": "5b6d503b8030d4d9a86e567a9a1578926fba15fb",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "47660cf0_89434373",
+        "filename": "adb/daemon/mdns.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 157,
+      "author": {
+        "id": 1052399
+      },
+      "writtenOn": "2020-03-09T22:07:03Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "661bb8ca_29c4f5cb",
+      "range": {
+        "startLine": 153,
+        "startChar": 0,
+        "endLine": 157,
+        "endChar": 42
+      },
+      "revId": "5b6d503b8030d4d9a86e567a9a1578926fba15fb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
