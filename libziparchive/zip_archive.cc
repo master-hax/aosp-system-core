@@ -179,6 +179,48 @@ std::unique_ptr<CdEntryMapInterface> CdEntryMapZip32::Create(uint16_t num_entrie
   return std::unique_ptr<CdEntryMapInterface>(entry_map);
 }
 
+std::unique_ptr<CdEntryMapInterface> CdEntryMapZip64::Create() {
+  return std::unique_ptr<CdEntryMapZip64>(new CdEntryMapZip64());
+}
+
+int32_t CdEntryMapZip64::AddToMap(std::string_view name, const uint8_t* start) {
+  if (entry_table_.find(name) != entry_table_.end()) {
+    ALOGW("Zip: Found duplicate entry %.*s", static_cast<int>(name.size()), name.data());
+    return kDuplicateEntry;
+  }
+
+  const auto [it, success] =
+      entry_table_.insert({name, name.data() - reinterpret_cast<const char*>(start)});
+  if (!success) {
+    ALOGW("Zip: Error adding entry to hash table");
+    return kAllocationFailed;
+  }
+  return 0;
+}
+
+std::pair<int32_t, uint64_t> CdEntryMapZip64::GetCdEntryOffset(std::string_view name,
+                                                               const uint8_t* /*cd_start*/) const {
+  const auto it = entry_table_.find(name);
+  if (it == entry_table_.end()) {
+    ALOGV("Zip: Could not find entry %.*s", static_cast<int>(name.size()), name.data());
+    return {kEntryNotFound, 0};
+  }
+
+  return {0, it->second};
+}
+
+void CdEntryMapZip64::ResetIteration() {
+  iterator_ = entry_table_.begin();
+}
+
+std::pair<std::string_view, uint64_t> CdEntryMapZip64::Next(const uint8_t* /*cd_start*/) {
+  if (iterator_ == entry_table_.end()) {
+    return {};
+  }
+
+  return *iterator_++;
+}
+
 #if defined(__BIONIC__)
 uint64_t GetOwnerTag(const ZipArchive* archive) {
   return android_fdsan_create_owner_tag(ANDROID_FDSAN_OWNER_TYPE_ZIPARCHIVE,
@@ -357,12 +399,11 @@ static int32_t ParseZipArchive(ZipArchive* archive) {
   const size_t cd_length = archive->central_directory.GetMapLength();
   const uint16_t num_entries = archive->num_entries;
 
-  /*
-   * Create hash table.  We have a minimum 75% load factor, possibly as
-   * low as 50% after we round off to a power of 2.  There must be at
-   * least one unused entry to avoid an infinite loop during creation.
-   */
-  archive->cd_entry_map = CdEntryMapZip32::Create(num_entries);
+  if (archive->UseCdEntryMapZip64()) {
+    archive->cd_entry_map = CdEntryMapZip64::Create();
+  } else {
+    archive->cd_entry_map = CdEntryMapZip32::Create(num_entries);
+  }
   if (archive->cd_entry_map == nullptr) {
     return kAllocationFailed;
   }
@@ -449,7 +490,7 @@ static int32_t ParseZipArchive(ZipArchive* archive) {
   return 0;
 }
 
-static int32_t OpenArchiveInternal(ZipArchive* archive, const char* debug_file_name) {
+int32_t OpenArchiveInternal(ZipArchive* archive, const char* debug_file_name) {
   int32_t result = MapCentralDirectory(debug_file_name, archive);
   return result != 0 ? result : ParseZipArchive(archive);
 }
