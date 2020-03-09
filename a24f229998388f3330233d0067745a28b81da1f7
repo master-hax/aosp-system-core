@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4cc1f4e7_311abbfd",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-03-09T19:21:39Z",
+      "side": 1,
+      "message": "explain how that isn\u0027t the `[[clang::reinitializes]]` you\u0027re using?",
+      "range": {
+        "startLine": 9,
+        "startChar": 43,
+        "endLine": 9,
+        "endChar": 52
+      },
+      "revId": "a24f229998388f3330233d0067745a28b81da1f7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
