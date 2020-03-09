@@ -263,7 +263,11 @@ static int32_t ParseZipArchive(ZipArchive* archive) {
   const size_t cd_length = archive->central_directory.GetMapLength();
   const uint16_t num_entries = archive->num_entries;
 
-  archive->cd_entry_map = CdEntryMapZip32::Create(num_entries);
+  if (archive->UseCdEntryMapZip64()) {
+    archive->cd_entry_map = CdEntryMapZip64::Create();
+  } else {
+    archive->cd_entry_map = CdEntryMapZip32::Create(num_entries);
+  }
   if (archive->cd_entry_map == nullptr) {
     return kAllocationFailed;
   }
@@ -350,7 +354,7 @@ static int32_t ParseZipArchive(ZipArchive* archive) {
   return 0;
 }
 
-static int32_t OpenArchiveInternal(ZipArchive* archive, const char* debug_file_name) {
+int32_t OpenArchiveInternal(ZipArchive* archive, const char* debug_file_name) {
   int32_t result = MapCentralDirectory(debug_file_name, archive);
   return result != 0 ? result : ParseZipArchive(archive);
 }

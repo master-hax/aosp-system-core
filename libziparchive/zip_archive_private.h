@@ -93,7 +93,13 @@ struct ZipArchive {
 
   ZipArchive(const int fd, bool assume_ownership);
   ZipArchive(const void* address, size_t length);
-  ~ZipArchive();
+  virtual ~ZipArchive();
 
   bool InitializeCentralDirectory(off64_t cd_start_offset, size_t cd_size);
+
+  // Returns true if we choose to use std::map implementation for cd entry map.
+  virtual bool UseCdEntryMapZip64() const { return false; }
 };
+
+// Exposed for testing.
+int32_t OpenArchiveInternal(ZipArchive* archive, const char* debug_file_name);
