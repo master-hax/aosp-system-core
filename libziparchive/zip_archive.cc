@@ -263,12 +263,16 @@ static int32_t ParseZipArchive(ZipArchive* archive) {
   const size_t cd_length = archive->central_directory.GetMapLength();
   const uint16_t num_entries = archive->num_entries;
 
-  /*
-   * Create hash table.  We have a minimum 75% load factor, possibly as
-   * low as 50% after we round off to a power of 2.  There must be at
-   * least one unused entry to avoid an infinite loop during creation.
-   */
-  archive->cd_entry_map = CdEntryMapZip32::Create(num_entries);
+  if (archive->UseCdEntryMapZip64()) {
+    archive->cd_entry_map = CdEntryMapZip64::Create();
+  } else {
+    /*
+     * Create hash table.  We have a minimum 75% load factor, possibly as
+     * low as 50% after we round off to a power of 2.  There must be at
+     * least one unused entry to avoid an infinite loop during creation.
+     */
+    archive->cd_entry_map = CdEntryMapZip32::Create(num_entries);
+  }
   if (archive->cd_entry_map == nullptr) {
     ALOGW("Zip: failed to create the entry map for central directory.");
     return kAllocationFailed;
@@ -356,7 +360,7 @@ static int32_t ParseZipArchive(ZipArchive* archive) {
   return 0;
 }
 
-static int32_t OpenArchiveInternal(ZipArchive* archive, const char* debug_file_name) {
+int32_t OpenArchiveInternal(ZipArchive* archive, const char* debug_file_name) {
   int32_t result = MapCentralDirectory(debug_file_name, archive);
   return result != 0 ? result : ParseZipArchive(archive);
 }

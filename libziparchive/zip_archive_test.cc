@@ -108,9 +108,64 @@ TEST(ziparchive, OpenDoNotAssumeFdOwnership) {
   close(fd);
 }
 
-TEST(ziparchive, Iteration_std_string_view) {
+class ZipArchiveUnderTest : public ZipArchive {
+ public:
+  ZipArchiveUnderTest(const int fd, bool assume_ownership, bool zip64_cd_map)
+      : ZipArchive(fd, assume_ownership), zip64_cd_map_(zip64_cd_map) {}
+
+  bool UseCdEntryMapZip64() const override {
+    if (zip64_cd_map_) return true;
+
+    return ZipArchive::UseCdEntryMapZip64();
+  }
+
+ private:
+  bool zip64_cd_map_{false};
+};
+
+class ZipArchiveEntriesTest : public ::testing::TestWithParam<bool> {
+ public:
+  static void OpenArchiveWrapper(const std::string& name, ZipArchiveHandle* handle,
+                                 bool zip64_cd_map) {
+    const std::string abs_path = test_data_dir + "/" + name;
+    const int fd = open(abs_path.c_str(), O_RDONLY | O_BINARY | O_CLOEXEC, 0);
+    ASSERT_NE(-1, fd);
+    ZipArchive* archive = new ZipArchiveUnderTest(fd, true, zip64_cd_map);
+    *handle = archive;
+    ASSERT_EQ(0, OpenArchiveInternal(archive, name.c_str()));
+  }
+
+  static void AssertIterationOrder(const std::string_view prefix, const std::string_view suffix,
+                                   bool zip64_cd_map,
+                                   const std::vector<std::string>& expected_names_sorted) {
+    ZipArchiveHandle handle;
+    OpenArchiveWrapper(kValidZip, &handle, zip64_cd_map);
+
+    void* iteration_cookie;
+    ASSERT_EQ(0, StartIteration(handle, &iteration_cookie, prefix, suffix));
+
+    ZipEntry data;
+    std::vector<std::string> names;
+
+    std::string name;
+    for (size_t i = 0; i < expected_names_sorted.size(); ++i) {
+      ASSERT_EQ(0, Next(iteration_cookie, &data, &name));
+      names.push_back(name);
+    }
+
+    // End of iteration.
+    ASSERT_EQ(-1, Next(iteration_cookie, &data, &name));
+    CloseArchive(handle);
+
+    // Assert that the names are as expected.
+    std::sort(names.begin(), names.end());
+    ASSERT_EQ(expected_names_sorted, names);
+  }
+};
+
+TEST_P(ZipArchiveEntriesTest, Iteration_std_string_view) {
   ZipArchiveHandle handle;
-  ASSERT_EQ(0, OpenArchiveWrapper(kValidZip, &handle));
+  OpenArchiveWrapper(kValidZip, &handle, GetParam());
 
   void* iteration_cookie;
   ASSERT_EQ(0, StartIteration(handle, &iteration_cookie));
@@ -128,61 +183,35 @@ TEST(ziparchive, Iteration_std_string_view) {
   CloseArchive(handle);
 }
 
-static void AssertIterationOrder(const std::string_view prefix, const std::string_view suffix,
-                                 const std::vector<std::string>& expected_names_sorted) {
-  ZipArchiveHandle handle;
-  ASSERT_EQ(0, OpenArchiveWrapper(kValidZip, &handle));
-
-  void* iteration_cookie;
-  ASSERT_EQ(0, StartIteration(handle, &iteration_cookie, prefix, suffix));
-
-  ZipEntry data;
-  std::vector<std::string> names;
-
-  std::string name;
-  for (size_t i = 0; i < expected_names_sorted.size(); ++i) {
-    ASSERT_EQ(0, Next(iteration_cookie, &data, &name));
-    names.push_back(name);
-  }
-
-  // End of iteration.
-  ASSERT_EQ(-1, Next(iteration_cookie, &data, &name));
-  CloseArchive(handle);
-
-  // Assert that the names are as expected.
-  std::sort(names.begin(), names.end());
-  ASSERT_EQ(expected_names_sorted, names);
-}
-
-TEST(ziparchive, Iteration) {
+TEST_P(ZipArchiveEntriesTest, Iteration) {
   static const std::vector<std::string> kExpectedMatchesSorted = {"a.txt", "b.txt", "b/", "b/c.txt",
                                                                   "b/d.txt"};
 
-  AssertIterationOrder("", "", kExpectedMatchesSorted);
+  AssertIterationOrder("", "", GetParam(), kExpectedMatchesSorted);
 }
 
-TEST(ziparchive, IterationWithPrefix) {
+TEST_P(ZipArchiveEntriesTest, IterationWithPrefix) {
   static const std::vector<std::string> kExpectedMatchesSorted = {"b/", "b/c.txt", "b/d.txt"};
 
-  AssertIterationOrder("b/", "", kExpectedMatchesSorted);
+  AssertIterationOrder("b/", "", GetParam(), kExpectedMatchesSorted);
 }
 
-TEST(ziparchive, IterationWithSuffix) {
+TEST_P(ZipArchiveEntriesTest, IterationWithSuffix) {
   static const std::vector<std::string> kExpectedMatchesSorted = {"a.txt", "b.txt", "b/c.txt",
                                                                   "b/d.txt"};
 
-  AssertIterationOrder("", ".txt", kExpectedMatchesSorted);
+  AssertIterationOrder("", ".txt", GetParam(), kExpectedMatchesSorted);
 }
 
-TEST(ziparchive, IterationWithPrefixAndSuffix) {
+TEST_P(ZipArchiveEntriesTest, IterationWithPrefixAndSuffix) {
   static const std::vector<std::string> kExpectedMatchesSorted = {"b.txt", "b/c.txt", "b/d.txt"};
 
-  AssertIterationOrder("b", ".txt", kExpectedMatchesSorted);
+  AssertIterationOrder("b", ".txt", GetParam(), kExpectedMatchesSorted);
 }
 
-TEST(ziparchive, IterationWithBadPrefixAndSuffix) {
+TEST_P(ZipArchiveEntriesTest, IterationWithBadPrefixAndSuffix) {
   ZipArchiveHandle handle;
-  ASSERT_EQ(0, OpenArchiveWrapper(kValidZip, &handle));
+  OpenArchiveWrapper(kValidZip, &handle, GetParam());
 
   void* iteration_cookie;
   ASSERT_EQ(0, StartIteration(handle, &iteration_cookie, "x", "y"));
@@ -196,9 +225,9 @@ TEST(ziparchive, IterationWithBadPrefixAndSuffix) {
   CloseArchive(handle);
 }
 
-TEST(ziparchive, FindEntry) {
+TEST_P(ZipArchiveEntriesTest, FindEntry) {
   ZipArchiveHandle handle;
-  ASSERT_EQ(0, OpenArchiveWrapper(kValidZip, &handle));
+  OpenArchiveWrapper(kValidZip, &handle, GetParam());
 
   ZipEntry data;
   ASSERT_EQ(0, FindEntry(handle, "a.txt", &data));
@@ -217,9 +246,9 @@ TEST(ziparchive, FindEntry) {
   CloseArchive(handle);
 }
 
-TEST(ziparchive, FindEntry_empty) {
+TEST_P(ZipArchiveEntriesTest, FindEntry_empty) {
   ZipArchiveHandle handle;
-  ASSERT_EQ(0, OpenArchiveWrapper(kValidZip, &handle));
+  OpenArchiveWrapper(kValidZip, &handle, GetParam());
 
   ZipEntry data;
   ASSERT_EQ(kInvalidEntryName, FindEntry(handle, "", &data));
@@ -227,9 +256,9 @@ TEST(ziparchive, FindEntry_empty) {
   CloseArchive(handle);
 }
 
-TEST(ziparchive, FindEntry_too_long) {
+TEST_P(ZipArchiveEntriesTest, FindEntry_too_long) {
   ZipArchiveHandle handle;
-  ASSERT_EQ(0, OpenArchiveWrapper(kValidZip, &handle));
+  OpenArchiveWrapper(kValidZip, &handle, GetParam());
 
   std::string very_long_name(65536, 'x');
   ZipEntry data;
@@ -238,9 +267,9 @@ TEST(ziparchive, FindEntry_too_long) {
   CloseArchive(handle);
 }
 
-TEST(ziparchive, TestInvalidDeclaredLength) {
+TEST_P(ZipArchiveEntriesTest, TestInvalidDeclaredLength) {
   ZipArchiveHandle handle;
-  ASSERT_EQ(0, OpenArchiveWrapper("declaredlength.zip", &handle));
+  OpenArchiveWrapper("declaredlength.zip", &handle, GetParam());
 
   void* iteration_cookie;
   ASSERT_EQ(0, StartIteration(handle, &iteration_cookie));
@@ -253,6 +282,9 @@ TEST(ziparchive, TestInvalidDeclaredLength) {
 
   CloseArchive(handle);
 }
+
+INSTANTIATE_TEST_CASE_P(ValidateEntryMap, ZipArchiveEntriesTest,
+                        ::testing::ValuesIn({false, true}));
 
 TEST(ziparchive, ExtractToMemory) {
   ZipArchiveHandle handle;
