@@ -150,11 +150,11 @@ static std::string RandomAlphaNumString(size_t len) {
     for (size_t i = 0; i < len; ++i) {
         uint8_t val = dist(mt);
         if (val < 10) {
-            ret += '0' + val;
+            ret += char('0' + val);
         } else if (val < 36) {
-            ret += 'A' + (val - 10);
+            ret += char('A' + (val - 10));
         } else {
-            ret += 'a' + (val - 36);
+            ret += char('a' + (val - 36));
         }
     }
     return ret;
