@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e81c2a54_0550def0",
+        "filename": "libutils/include/utils/Flattenable.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-03-10T17:06:42Z",
+      "side": 1,
+      "message": "you already have \u003cstring.h\u003e above. we prefer to avoid the \u003cc*\u003e headers anyway, because the differences between them and the regular \u003c*.h\u003e headers are subtle and usually unwanted.",
+      "revId": "ef7ac347df0bb1179acc56ed2e3d5ad1214548f0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
