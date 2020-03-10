@@ -4,6 +4,7 @@ cc_library_static {
     name: "libqemu_pipe",
     vendor_available: true,
     recovery_available: true,
+    apex_available: ["com.android.adbd"],
     sanitize: {
         misc_undefined: ["integer"],
     },

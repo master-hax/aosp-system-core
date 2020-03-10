@@ -18,6 +18,7 @@ cc_library {
     use_version_lib: false,
 
     recovery_available: true,
+    apex_available: ["com.android.adbd"],
     compile_multilib: "both",
 }
 

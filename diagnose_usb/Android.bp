@@ -3,6 +3,7 @@ cc_library_static {
     cflags: ["-Wall", "-Wextra", "-Werror"],
     host_supported: true,
     recovery_available: true,
+    apex_available: ["com.android.adbd"],
     target: {
         windows: {
             enabled: true,
