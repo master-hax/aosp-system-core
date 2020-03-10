@@ -22,6 +22,30 @@
       "revId": "8bf9b1632e4fadc6e960fa6697037c8fc6401a5c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1a7b668f_ad76627d",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2020-03-10T01:46:45Z",
+      "side": 1,
+      "message": "Sorry, I don\u0027t understand what this means. Could you elaborate? The list below just enumerates the libraries whose apex_available settings were moved from the whitelist in apex.go",
+      "parentUuid": "1ccf12c1_555613f3",
+      "range": {
+        "startLine": 13,
+        "startChar": 16,
+        "endLine": 13,
+        "endChar": 30
+      },
+      "revId": "8bf9b1632e4fadc6e960fa6697037c8fc6401a5c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
