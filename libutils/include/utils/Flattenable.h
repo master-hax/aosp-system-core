@@ -24,12 +24,17 @@
 #include <stdint.h>
 #include <string.h>
 #include <sys/types.h>
-#include <utils/Errors.h>
 #include <utils/Debug.h>
+#include <utils/Errors.h>
+#include <cstring>
+#include <optional>
 
 #include <type_traits>
 
 namespace android {
+
+template <typename T>
+class LightFlattenable;
 
 // DO NOT USE: please use parcelable instead
 // This code is deprecated and will not be supported via AIDL code gen. For data
@@ -86,6 +91,52 @@ public:
                       "Cannot unflatten a non-trivially-copyable type");
         memcpy(&value, buffer, sizeof(T));
         advance(buffer, size, sizeof(T));
+    }
+
+    // Optionals
+
+    template <class T, typename = std::enable_if_t<std::is_base_of_v<LightFlattenable<T>, T>>>
+    static size_t getFlattenedSize(const std::optional<T>& value) {
+        return sizeof(bool) + (value ? value->getFlattenedSize() : 0);
+    }
+
+    template <class T, typename = std::enable_if_t<std::is_base_of_v<LightFlattenable<T>, T>>>
+    static void write(void* buffer, size_t& size, const std::optional<T>& value) {
+        if (value) {
+            FlattenableUtils::write(buffer, size, true);
+            value->flatten(buffer, size);
+            FlattenableUtils::advance(buffer, size, value->getFlattenedSize());
+        } else {
+            FlattenableUtils::write(buffer, size, false);
+        }
+    }
+
+    template <class T, typename = std::enable_if_t<std::is_base_of_v<LightFlattenable<T>, T>>>
+    static void read(const void* buffer, size_t& size, std::optional<T>& value) {
+        bool isPresent;
+        FlattenableUtils::read(buffer, size, isPresent);
+        if (isPresent) {
+            value = T();
+            value->unflatten(buffer, size);
+            FlattenableUtils::advance(buffer, size, value->getFlattenedSize());
+        } else {
+            value.reset();
+        }
+    }
+
+    // Strings
+    static size_t getFlattenedSize(const std::string& str) {
+        return (str.length() + 1) * sizeof(char);
+    }
+
+    static void write(void* buffer, size_t& size, const std::string& str) {
+        strcpy(reinterpret_cast<char*>(buffer), str.c_str());
+        advance(buffer, size, getFlattenedSize(str));  // +1 for string termination
+    }
+
+    static void read(const void* buffer, size_t& size, std::string& str) {
+        str.assign(reinterpret_cast<const char*>(buffer));
+        advance(buffer, size, getFlattenedSize(str));
     }
 };
 
