@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <tuple>
+
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 #include <libdm/dm.h>
@@ -25,6 +27,13 @@
 #include "utility.h"
 
 using namespace android::fs_mgr;
+
+using google::protobuf::RepeatedPtrField;
+using ::testing::Matches;
+using ::testing::Pointwise;
+using ::testing::Truly;
+using UeExtent = chromeos_update_engine::Extent;
+using chromeos_update_engine::InstallOperation;
 
 namespace android {
 namespace snapshot {
@@ -212,6 +221,77 @@ TEST(DmSnapshotInternals, CowSizeCalculator) {
         ASSERT_EQ(cc.cow_size_sectors(), 40);
     }
 }
+
+void BlocksToExtents(const std::vector<uint64_t>& blocks,
+                     google::protobuf::RepeatedPtrField<UeExtent>* extents) {
+    for (uint64_t block : blocks) {
+        // First try to extend the last extent in |extents|, if any.
+        if (extents->size() > 0) {
+            UeExtent& extent = *extents->rbegin();
+            if (block == extent.start_block() + extent.num_blocks()) {
+                extent.set_num_blocks(extent.num_blocks() + 1);
+                continue;
+            }
+        }
+        // If unable to extend the last extent, append a new single-block extent.
+        UeExtent* new_extent = extents->Add();
+        new_extent->set_start_block(block);
+        new_extent->set_num_blocks(1);
+    }
+}
+
+template <typename T>
+std::vector<uint64_t> ExtentsToBlocks(const T& extents) {
+    std::vector<uint64_t> blocks;
+    for (const auto& extent : extents) {
+        for (uint64_t offset = 0; offset < extent.num_blocks(); ++offset) {
+            blocks.push_back(extent.start_block() + offset);
+        }
+    }
+    return blocks;
+}
+
+InstallOperation CreateCopyOp(const std::vector<uint64_t>& src_blocks,
+                              const std::vector<uint64_t>& dst_blocks) {
+    InstallOperation op;
+    op.set_type(InstallOperation::SOURCE_COPY);
+    BlocksToExtents(src_blocks, op.mutable_src_extents());
+    BlocksToExtents(dst_blocks, op.mutable_dst_extents());
+    return op;
+}
+
+struct OptimizeOperationTestParam {
+    InstallOperation input;
+    InstallOperation expected_output;
+};
+
+class OptimizeOperationTest : public ::testing::TestWithParam<OptimizeOperationTestParam> {};
+TEST_P(OptimizeOperationTest, Test) {
+    InstallOperation actual_output;
+    EXPECT_TRUE(OptimizeSourceCopyOperation(GetParam().input, &actual_output));
+    EXPECT_EQ(ExtentsToBlocks(actual_output.src_extents()),
+              ExtentsToBlocks(GetParam().expected_output.src_extents()));
+    EXPECT_EQ(ExtentsToBlocks(actual_output.dst_extents()),
+              ExtentsToBlocks(GetParam().expected_output.dst_extents()));
+}
+
+std::vector<OptimizeOperationTestParam> GetOptimizeOperationTestParams() {
+    return {
+            {CreateCopyOp({}, {}), CreateCopyOp({}, {})},
+            {CreateCopyOp({1, 2, 4}, {1, 2, 4}), CreateCopyOp({}, {})},
+            {CreateCopyOp({1, 2, 3}, {4, 5, 6}), CreateCopyOp({1, 2, 3}, {4, 5, 6})},
+            {CreateCopyOp({3, 2}, {1, 2}), CreateCopyOp({3}, {1})},
+            {CreateCopyOp({5, 6, 3, 4, 1, 2}, {1, 2, 3, 4, 5, 6}),
+             CreateCopyOp({5, 6, 1, 2}, {1, 2, 5, 6})},
+            {CreateCopyOp({1, 2, 3, 5, 5, 6}, {5, 6, 3, 4, 1, 2}),
+             CreateCopyOp({1, 2, 5, 5, 6}, {5, 6, 4, 1, 2})},
+            {CreateCopyOp({1, 2, 5, 6, 9, 10}, {1, 4, 5, 6, 7, 8}),
+             CreateCopyOp({2, 9, 10}, {4, 7, 8})},
+    };
+}
+
+INSTANTIATE_TEST_CASE_P(Snapshot, OptimizeOperationTest,
+                        ::testing::ValuesIn(GetOptimizeOperationTestParams()));
 
 }  // namespace snapshot
 }  // namespace android
