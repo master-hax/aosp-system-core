@@ -83,13 +83,13 @@ TEST_F(AdbPairingAuthTest, ValidPassword) {
     {
         size_t msg_size = pairing_auth_msg_size(client.get());
         std::vector<uint8_t> buf(msg_size);
-        ASSERT_GT(msg_size, 0);
+        ASSERT_GT(msg_size, 0U);
         pairing_auth_get_spake2_msg(client.get(), buf.data());
     }
     {
         size_t msg_size = pairing_auth_msg_size(server.get());
         std::vector<uint8_t> buf(msg_size);
-        ASSERT_GT(msg_size, 0);
+        ASSERT_GT(msg_size, 0U);
         pairing_auth_get_spake2_msg(server.get(), buf.data());
     }
 }
@@ -158,29 +158,29 @@ TEST_F(AdbPairingAuthTest, DifferentPasswords) {
     // Client encrypts, server can't decrypt
     size_t out_size;
     client_msg.resize(pairing_auth_safe_encrypted_size(client.get(), msg.size()));
-    ASSERT_GT(client_msg.size(), 0);
+    ASSERT_GT(client_msg.size(), 0U);
     ASSERT_TRUE(pairing_auth_encrypt(client.get(), msg.data(), msg.size(), client_msg.data(),
                                      &out_size));
-    ASSERT_GT(out_size, 0);
+    ASSERT_GT(out_size, 0U);
     client_msg.resize(out_size);
 
     server_msg.resize(
             pairing_auth_safe_decrypted_size(server.get(), client_msg.data(), client_msg.size()));
-    ASSERT_GT(server_msg.size(), 0);
+    ASSERT_GT(server_msg.size(), 0U);
     ASSERT_FALSE(pairing_auth_decrypt(server.get(), client_msg.data(), client_msg.size(),
                                       server_msg.data(), &out_size));
 
     // Server encrypts, client can't decrypt
     server_msg.resize(pairing_auth_safe_encrypted_size(server.get(), msg.size()));
-    ASSERT_GT(server_msg.size(), 0);
+    ASSERT_GT(server_msg.size(), 0U);
     ASSERT_TRUE(pairing_auth_encrypt(server.get(), msg.data(), msg.size(), server_msg.data(),
                                      &out_size));
-    ASSERT_GT(out_size, 0);
+    ASSERT_GT(out_size, 0U);
     server_msg.resize(out_size);
 
     client_msg.resize(
             pairing_auth_safe_decrypted_size(client.get(), server_msg.data(), server_msg.size()));
-    ASSERT_GT(client_msg.size(), 0);
+    ASSERT_GT(client_msg.size(), 0U);
     ASSERT_FALSE(pairing_auth_decrypt(client.get(), server_msg.data(), server_msg.size(),
                                       client_msg.data(), &out_size));
 }
@@ -208,15 +208,15 @@ TEST_F(AdbPairingAuthTest, SamePasswords) {
     // Client encrypts, server decrypts
     size_t out_size;
     client_msg.resize(pairing_auth_safe_encrypted_size(client.get(), msg.size()));
-    ASSERT_GT(client_msg.size(), 0);
+    ASSERT_GT(client_msg.size(), 0U);
     ASSERT_TRUE(pairing_auth_encrypt(client.get(), msg.data(), msg.size(), client_msg.data(),
                                      &out_size));
-    ASSERT_GT(out_size, 0);
+    ASSERT_GT(out_size, 0U);
     client_msg.resize(out_size);
 
     server_msg.resize(
             pairing_auth_safe_decrypted_size(server.get(), client_msg.data(), client_msg.size()));
-    ASSERT_GT(server_msg.size(), 0);
+    ASSERT_GT(server_msg.size(), 0U);
     ASSERT_TRUE(pairing_auth_decrypt(server.get(), client_msg.data(), client_msg.size(),
                                      server_msg.data(), &out_size));
     ASSERT_EQ(out_size, msg.size());
@@ -224,15 +224,15 @@ TEST_F(AdbPairingAuthTest, SamePasswords) {
 
     // Server encrypts, client decrypt
     server_msg.resize(pairing_auth_safe_encrypted_size(server.get(), msg.size()));
-    ASSERT_GT(server_msg.size(), 0);
+    ASSERT_GT(server_msg.size(), 0U);
     ASSERT_TRUE(pairing_auth_encrypt(server.get(), msg.data(), msg.size(), server_msg.data(),
                                      &out_size));
-    ASSERT_GT(out_size, 0);
+    ASSERT_GT(out_size, 0U);
     server_msg.resize(out_size);
 
     client_msg.resize(
             pairing_auth_safe_decrypted_size(client.get(), server_msg.data(), server_msg.size()));
-    ASSERT_GT(client_msg.size(), 0);
+    ASSERT_GT(client_msg.size(), 0U);
     ASSERT_TRUE(pairing_auth_decrypt(client.get(), server_msg.data(), server_msg.size(),
                                      client_msg.data(), &out_size));
     ASSERT_EQ(out_size, msg.size());
@@ -262,15 +262,15 @@ TEST_F(AdbPairingAuthTest, CorruptedPayload) {
         // Client encrypts whole msg, server decrypts msg. Should be fine.
         size_t out_size;
         client_msg.resize(pairing_auth_safe_encrypted_size(client.get(), msg.size()));
-        ASSERT_GT(client_msg.size(), 0);
+        ASSERT_GT(client_msg.size(), 0U);
         ASSERT_TRUE(pairing_auth_encrypt(client.get(), msg.data(), msg.size(), client_msg.data(),
                                          &out_size));
-        ASSERT_GT(out_size, 0);
+        ASSERT_GT(out_size, 0U);
         client_msg.resize(out_size);
 
         server_msg.resize(pairing_auth_safe_decrypted_size(server.get(), client_msg.data(),
                                                            client_msg.size()));
-        ASSERT_GT(server_msg.size(), 0);
+        ASSERT_GT(server_msg.size(), 0U);
         ASSERT_TRUE(pairing_auth_decrypt(server.get(), client_msg.data(), client_msg.size(),
                                          server_msg.data(), &out_size));
         ASSERT_EQ(out_size, msg.size());
@@ -283,10 +283,10 @@ TEST_F(AdbPairingAuthTest, CorruptedPayload) {
         // 4) server tries to decrypt. It should fail.
         size_t out_size;
         client_msg.resize(pairing_auth_safe_encrypted_size(client.get(), msg.size()));
-        ASSERT_GT(client_msg.size(), 0);
+        ASSERT_GT(client_msg.size(), 0U);
         ASSERT_TRUE(pairing_auth_encrypt(client.get(), msg.data(), msg.size(), client_msg.data(),
                                          &out_size));
-        ASSERT_GT(out_size, 0);
+        ASSERT_GT(out_size, 0U);
         client_msg.resize(out_size);
         client_msg.push_back(0xaa);
         // This requires knowledge of the layout of the data. payload is the
@@ -297,7 +297,7 @@ TEST_F(AdbPairingAuthTest, CorruptedPayload) {
 
         server_msg.resize(pairing_auth_safe_decrypted_size(server.get(), client_msg.data(),
                                                            client_msg.size()));
-        ASSERT_GT(server_msg.size(), 0);
+        ASSERT_GT(server_msg.size(), 0U);
         ASSERT_FALSE(pairing_auth_decrypt(server.get(), client_msg.data(), client_msg.size(),
                                           server_msg.data(), &out_size));
     }
@@ -307,10 +307,10 @@ TEST_F(AdbPairingAuthTest, CorruptedPayload) {
         // 4) server tries to decrypt. It should fail.
         size_t out_size;
         client_msg.resize(pairing_auth_safe_encrypted_size(client.get(), msg.size()));
-        ASSERT_GT(client_msg.size(), 0);
+        ASSERT_GT(client_msg.size(), 0U);
         ASSERT_TRUE(pairing_auth_encrypt(client.get(), msg.data(), msg.size(), client_msg.data(),
                                          &out_size));
-        ASSERT_GT(out_size, 0);
+        ASSERT_GT(out_size, 0U);
         client_msg.resize(out_size);
         // This requires knowledge of the layout of the data. payload is the
         // first four bytes of the client_msg.
@@ -320,7 +320,7 @@ TEST_F(AdbPairingAuthTest, CorruptedPayload) {
 
         server_msg.resize(pairing_auth_safe_decrypted_size(server.get(), client_msg.data(),
                                                            client_msg.size()));
-        ASSERT_GT(server_msg.size(), 0);
+        ASSERT_GT(server_msg.size(), 0U);
         ASSERT_FALSE(pairing_auth_decrypt(server.get(), client_msg.data(), client_msg.size(),
                                           server_msg.data(), &out_size));
     }

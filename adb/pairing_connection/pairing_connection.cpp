@@ -20,7 +20,9 @@
 #include <stdint.h>
 
 #include <functional>
+#include <iomanip>
 #include <memory>
+#include <sstream>
 #include <string_view>
 #include <thread>
 #include <vector>
@@ -30,9 +32,17 @@
 #include <android-base/endian.h>
 #include <android-base/logging.h>
 #include <android-base/macros.h>
+#include <android-base/stringprintf.h>
 #include <android-base/unique_fd.h>
 
 #include "pairing.pb.h"
+
+#define DEBUG_PAIRING 1
+#if DEBUG_PAIRING
+#define D(...) LOG(INFO) << android::base::StringPrintf(__VA_ARGS__)
+#else
+#define D(...)  // nothing
+#endif
 
 using namespace adb;
 using android::base::unique_fd;
@@ -53,6 +63,17 @@ struct PairingAuthDeleter {
     void operator()(PairingAuthCtx* p) { pairing_auth_destroy(p); }
 };  // PairingAuthDeleter
 using PairingAuthPtr = std::unique_ptr<PairingAuthCtx, PairingAuthDeleter>;
+
+static std::string DumpBytes(const std::vector<uint8_t>& bytes) {
+    std::stringstream ss;
+    ss << "bytes=[";
+    ss << std::uppercase << std::setfill('0') << std::hex;
+    for (size_t i = 0; i < bytes.size(); ++i) {
+        ss << std::setw(2) << static_cast<uint16_t>(bytes[i]) << ' ';
+    }
+    ss << ']';
+    return ss.str();
+}
 
 // PairingConnectionCtx encapsulates the protocol to authenticate two peers with
 // each other. This class will open the tcp sockets and handle the pairing
@@ -296,6 +317,7 @@ bool PairingConnectionCtx::DoExchangeMsgs() {
     uint32_t payload = pairing_auth_msg_size(auth_.get());
     std::vector<uint8_t> msg(payload);
     pairing_auth_get_spake2_msg(auth_.get(), msg.data());
+    D("Our SPAKE2 msg dump(sz=%lu):\n%s", msg.size(), DumpBytes(msg).c_str());
 
     PairingPacketHeader header;
     CreateHeader(&header, adb::proto::PairingPacket::SPAKE2_MSG, payload);
@@ -325,6 +347,7 @@ bool PairingConnectionCtx::DoExchangeMsgs() {
                    << "]";
         return false;
     }
+    D("Their SPAKE2 msg dump(sz=%lu):\n%s", their_msg.size(), DumpBytes(their_msg).c_str());
 
     return true;
 }
@@ -337,6 +360,7 @@ bool PairingConnectionCtx::DoExchangePeerInfo() {
     std::vector<uint8_t> outbuf(pairing_auth_safe_encrypted_size(auth_.get(), buf.size()));
     CHECK(!outbuf.empty());
     size_t outsize;
+    D("Our PeerInfo dump(sz=%lu):\n%s", buf.size(), DumpBytes(buf).c_str());
     if (!pairing_auth_encrypt(auth_.get(), buf.data(), buf.size(), outbuf.data(), &outsize)) {
         LOG(ERROR) << "Failed to encrypt peer info";
         return false;
@@ -399,6 +423,7 @@ bool PairingConnectionCtx::DoExchangePeerInfo() {
 
     p = outbuf.data();
     ::memcpy(&their_info_, p, sizeof(PeerInfo));
+    D("Their PeerInfo dump(sz=%lu):\n%s", outbuf.size(), DumpBytes(outbuf).c_str());
     p += sizeof(PeerInfo);
 
     return true;

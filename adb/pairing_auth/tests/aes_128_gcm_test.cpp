@@ -52,7 +52,7 @@ TEST(Aes128GcmTest, encrypt_decrypt) {
     size_t out_size = sizeof(out_buf);
     ASSERT_GE(bob.DecryptedSize(encrypted, sizeof(encrypted)), sizeof(msg));
     int decrypted_size = bob.Decrypt(encrypted, sizeof(encrypted), out_buf, out_size);
-    ASSERT_EQ(sizeof(msg), decrypted_size);
+    ASSERT_EQ(sizeof(msg), static_cast<size_t>(decrypted_size));
     memset(out_buf + decrypted_size, 0, sizeof(out_buf) - decrypted_size);
     ASSERT_STREQ(reinterpret_cast<const char*>(msg), reinterpret_cast<const char*>(out_buf));
 }
@@ -81,7 +81,7 @@ TEST(Aes128GcmTest, padding) {
         int encrypted_size =
                 alice.Encrypt(msg.data(), msg.size(), encrypted.data(), encrypted.size());
         ASSERT_GT(encrypted_size, 0);
-        ASSERT_LE(encrypted_size, safe_encrypted_sz);
+        ASSERT_LE(static_cast<size_t>(encrypted_size), safe_encrypted_sz);
         encrypted.resize(encrypted_size);
 
         // decrypt
@@ -91,8 +91,8 @@ TEST(Aes128GcmTest, padding) {
         int decrypted_size =
                 bob.Decrypt(encrypted.data(), encrypted.size(), decrypted.data(), decrypted.size());
         ASSERT_GT(decrypted_size, 0);
-        ASSERT_LE(decrypted_size, safe_decrypted_size);
-        ASSERT_EQ(msg.size(), decrypted_size);
+        ASSERT_LE(static_cast<size_t>(decrypted_size), safe_decrypted_size);
+        ASSERT_EQ(msg.size(), static_cast<size_t>(decrypted_size));
         ASSERT_EQ(memcmp(msg.data(), decrypted.data(), decrypted.size()), 0);
     }
 
@@ -108,7 +108,7 @@ TEST(Aes128GcmTest, padding) {
         int encrypted_size =
                 alice.Encrypt(msg.data(), msg.size(), encrypted.data(), encrypted.size());
         ASSERT_GT(encrypted_size, 0);
-        ASSERT_LE(encrypted_size, safe_encrypted_sz);
+        ASSERT_LE(static_cast<size_t>(encrypted_size), safe_encrypted_sz);
         encrypted.resize(encrypted_size);
 
         // decrypt
@@ -118,8 +118,8 @@ TEST(Aes128GcmTest, padding) {
         int decrypted_size =
                 bob.Decrypt(encrypted.data(), encrypted.size(), decrypted.data(), decrypted.size());
         ASSERT_GT(decrypted_size, 0);
-        ASSERT_LE(decrypted_size, safe_decrypted_size);
-        ASSERT_EQ(msg.size(), decrypted_size);
+        ASSERT_LE(static_cast<size_t>(decrypted_size), safe_decrypted_size);
+        ASSERT_EQ(msg.size(), static_cast<size_t>(decrypted_size));
         ASSERT_EQ(memcmp(msg.data(), decrypted.data(), decrypted.size()), 0);
     }
 }

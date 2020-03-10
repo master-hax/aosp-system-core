@@ -38,7 +38,7 @@ using android::base::unique_fd;
 using TlsError = TlsConnection::TlsError;
 
 // Test X.509 certificates (RSA 2048)
-static const std::string kTestRsa2048ServerCert =
+[[clang::no_destroy]] static const std::string kTestRsa2048ServerCert =
         "-----BEGIN CERTIFICATE-----\n"
         "MIIDFzCCAf+gAwIBAgIBATANBgkqhkiG9w0BAQsFADAtMQswCQYDVQQGEwJVUzEQ\n"
         "MA4GA1UECgwHQW5kcm9pZDEMMAoGA1UEAwwDQWRiMB4XDTIwMDEyMTIyMjU1NVoX\n"
@@ -59,7 +59,7 @@ static const std::string kTestRsa2048ServerCert =
         "cP/ReOTwQIzM1K5a83p8cX8AGGYmM7dQp7ec\n"
         "-----END CERTIFICATE-----\n";
 
-static const std::string kTestRsa2048ServerPrivKey =
+[[clang::no_destroy]] static const std::string kTestRsa2048ServerPrivKey =
         "-----BEGIN PRIVATE KEY-----\n"
         "MIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCvBNgpPU37ipc+\n"
         "8KlnTH5J42dZbhQ6diB8QFGc4fxeo3iNnThRgI6XpaEpxjhPOhSGk3dRL6ck4e5w\n"
@@ -89,7 +89,7 @@ static const std::string kTestRsa2048ServerPrivKey =
         "sydGT8yfWD1FYUWgfrVRbg==\n"
         "-----END PRIVATE KEY-----\n";
 
-static const std::string kTestRsa2048ClientCert =
+[[clang::no_destroy]] static const std::string kTestRsa2048ClientCert =
         "-----BEGIN CERTIFICATE-----\n"
         "MIIDFzCCAf+gAwIBAgIBATANBgkqhkiG9w0BAQsFADAtMQswCQYDVQQGEwJVUzEQ\n"
         "MA4GA1UECgwHQW5kcm9pZDEMMAoGA1UEAwwDQWRiMB4XDTIwMDEyMTIyMjU1NloX\n"
@@ -110,7 +110,7 @@ static const std::string kTestRsa2048ClientCert =
         "fIf2V+1o1JW8J7D11RmRbNPh3vfisueB4f88\n"
         "-----END CERTIFICATE-----\n";
 
-static const std::string kTestRsa2048ClientPrivKey =
+[[clang::no_destroy]] static const std::string kTestRsa2048ClientPrivKey =
         "-----BEGIN PRIVATE KEY-----\n"
         "MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCN2hF4dUuRU23r\n"
         "eyVTjbMH30T2npHSCud3G/EpwG0jvV+TiwOMxsHZKwbw07Hfekiq6ScZqDThNQ4W\n"
@@ -140,7 +140,7 @@ static const std::string kTestRsa2048ClientPrivKey =
         "/Z7HXmXUvZHVyYi/QzX2Gahj\n"
         "-----END PRIVATE KEY-----\n";
 
-static const std::string kTestRsa2048UnknownPrivKey =
+[[clang::no_destroy]] static const std::string kTestRsa2048UnknownPrivKey =
         "-----BEGIN PRIVATE KEY-----\n"
         "MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCrIhr+CS+6UI0w\n"
         "CTaVzQAicKBe6X531LeQAGYx7j5RLHR1QIoJ0WCc5msmXKe2VzcWuLbVdTGAIP1H\n"
@@ -170,7 +170,7 @@ static const std::string kTestRsa2048UnknownPrivKey =
         "IazYzsxUUpZFC4dJ1GhBn3y1\n"
         "-----END PRIVATE KEY-----\n";
 
-static const std::string kTestRsa2048UnknownCert =
+[[clang::no_destroy]] static const std::string kTestRsa2048UnknownCert =
         "-----BEGIN CERTIFICATE-----\n"
         "MIIDFzCCAf+gAwIBAgIBATANBgkqhkiG9w0BAQsFADAtMQswCQYDVQQGEwJVUzEQ\n"
         "MA4GA1UECgwHQW5kcm9pZDEMMAoGA1UEAwwDQWRiMB4XDTIwMDEyNDE4MzMwNVoX\n"
@@ -196,7 +196,7 @@ struct CAIssuerField {
     std::vector<uint8_t> val;
 };
 using CAIssuer = std::vector<CAIssuerField>;
-static std::vector<CAIssuer> kCAIssuers = {
+[[clang::no_destroy]] static std::vector<CAIssuer> kCAIssuers = {
         {
                 {NID_commonName, {'a', 'b', 'c', 'd', 'e'}},
                 {NID_organizationName, {'d', 'e', 'f', 'g'}},
@@ -328,11 +328,11 @@ TEST_F(AdbWifiTlsConnectionTest, NoTrustedCertificates) {
         EXPECT_FALSE(client_->WriteFully(
                 std::string_view(reinterpret_cast<const char*>(msg_.data()), msg_.size())));
         auto data = client_->ReadFully(msg_.size());
-        EXPECT_EQ(data.size(), 0);
+        EXPECT_EQ(data.size(), 0U);
     });
 
     auto data = server_->ReadFully(msg_.size());
-    EXPECT_EQ(data.size(), 0);
+    EXPECT_EQ(data.size(), 0U);
     EXPECT_FALSE(server_->WriteFully(
             std::string_view(reinterpret_cast<const char*>(msg_.data()), msg_.size())));
 
@@ -386,11 +386,11 @@ TEST_F(AdbWifiTlsConnectionTest, AddTrustedCertificates_ClientWrongCert) {
         EXPECT_TRUE(client_->WriteFully(
                 std::string_view(reinterpret_cast<const char*>(msg_.data()), msg_.size())));
         auto data = client_->ReadFully(msg_.size());
-        EXPECT_EQ(data.size(), 0);
+        EXPECT_EQ(data.size(), 0U);
     });
 
     auto data = server_->ReadFully(msg_.size());
-    EXPECT_EQ(data.size(), 0);
+    EXPECT_EQ(data.size(), 0U);
     EXPECT_FALSE(server_->WriteFully(
             std::string_view(reinterpret_cast<const char*>(msg_.data()), msg_.size())));
 
@@ -504,11 +504,11 @@ TEST_F(AdbWifiTlsConnectionTest, EnableClientPostHandshakeCheck_ClientWrongCert)
         EXPECT_FALSE(client_->WriteFully(
                 std::string_view(reinterpret_cast<const char*>(msg_.data()), msg_.size())));
         auto data = client_->ReadFully(msg_.size());
-        EXPECT_EQ(data.size(), 0);
+        EXPECT_EQ(data.size(), 0U);
     });
 
     auto data = server_->ReadFully(msg_.size());
-    EXPECT_EQ(data.size(), 0);
+    EXPECT_EQ(data.size(), 0U);
     EXPECT_FALSE(server_->WriteFully(
             std::string_view(reinterpret_cast<const char*>(msg_.data()), msg_.size())));
 
@@ -552,7 +552,7 @@ TEST_F(AdbWifiTlsConnectionTest, SetClientCAList_Smoke) {
                 for (auto& attr : issuer) {
                     EXPECT_EQ(X509_NAME_get_text_by_NID(name, attr.nid,
                                                         reinterpret_cast<char*>(buf), buf_size),
-                              attr.val.size());
+                              static_cast<int>(attr.val.size()));
                     std::vector<uint8_t> out(buf, buf + attr.val.size());
                     EXPECT_EQ(out, attr.val);
                 }
@@ -586,7 +586,7 @@ TEST_F(AdbWifiTlsConnectionTest, SetClientCAList_AdbCAList) {
             const STACK_OF(X509_NAME)* received = SSL_get_client_CA_list(ssl);
             EXPECT_NE(received, nullptr);
             const size_t num_names = sk_X509_NAME_num(received);
-            EXPECT_EQ(1, num_names);
+            EXPECT_EQ(1U, num_names);
 
             auto* name = sk_X509_NAME_value(received, 0);
             EXPECT_NE(name, nullptr);

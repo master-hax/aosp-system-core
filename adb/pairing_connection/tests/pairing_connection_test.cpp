@@ -35,7 +35,7 @@ namespace adb {
 namespace pairing {
 
 // Test X.509 certificates (RSA 2048)
-static const std::string kTestRsa2048ServerCert =
+[[clang::no_destroy]] const std::string kTestRsa2048ServerCert =
         "-----BEGIN CERTIFICATE-----\n"
         "MIIDFzCCAf+gAwIBAgIBATANBgkqhkiG9w0BAQsFADAtMQswCQYDVQQGEwJVUzEQ\n"
         "MA4GA1UECgwHQW5kcm9pZDEMMAoGA1UEAwwDQWRiMB4XDTIwMDEyMTIyMjU1NVoX\n"
@@ -56,7 +56,7 @@ static const std::string kTestRsa2048ServerCert =
         "cP/ReOTwQIzM1K5a83p8cX8AGGYmM7dQp7ec\n"
         "-----END CERTIFICATE-----\n";
 
-static const std::string kTestRsa2048ServerPrivKey =
+[[clang::no_destroy]] const std::string kTestRsa2048ServerPrivKey =
         "-----BEGIN PRIVATE KEY-----\n"
         "MIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCvBNgpPU37ipc+\n"
         "8KlnTH5J42dZbhQ6diB8QFGc4fxeo3iNnThRgI6XpaEpxjhPOhSGk3dRL6ck4e5w\n"
@@ -86,7 +86,7 @@ static const std::string kTestRsa2048ServerPrivKey =
         "sydGT8yfWD1FYUWgfrVRbg==\n"
         "-----END PRIVATE KEY-----\n";
 
-static const std::string kTestRsa2048ClientCert =
+[[clang::no_destroy]] const std::string kTestRsa2048ClientCert =
         "-----BEGIN CERTIFICATE-----\n"
         "MIIDFzCCAf+gAwIBAgIBATANBgkqhkiG9w0BAQsFADAtMQswCQYDVQQGEwJVUzEQ\n"
         "MA4GA1UECgwHQW5kcm9pZDEMMAoGA1UEAwwDQWRiMB4XDTIwMDEyMTIyMjU1NloX\n"
@@ -107,7 +107,7 @@ static const std::string kTestRsa2048ClientCert =
         "fIf2V+1o1JW8J7D11RmRbNPh3vfisueB4f88\n"
         "-----END CERTIFICATE-----\n";
 
-static const std::string kTestRsa2048ClientPrivKey =
+[[clang::no_destroy]] const std::string kTestRsa2048ClientPrivKey =
         "-----BEGIN PRIVATE KEY-----\n"
         "MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCN2hF4dUuRU23r\n"
         "eyVTjbMH30T2npHSCud3G/EpwG0jvV+TiwOMxsHZKwbw07Hfekiq6ScZqDThNQ4W\n"
