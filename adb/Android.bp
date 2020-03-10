@@ -369,6 +369,11 @@ cc_library_static {
     name: "libadbd_core",
     defaults: ["adbd_defaults", "host_adbd_supported"],
     recovery_available: true,
+    apex_available: [
+        "com.android.adbd",
+        // TODO(b/151398197) remove the below
+        "//apex_available:platform",
+    ],
 
     // libminadbd wants both, as it's used to build native tests.
     compile_multilib: "both",
@@ -441,6 +446,7 @@ cc_library {
     name: "libadbd_services",
     defaults: ["adbd_defaults", "host_adbd_supported"],
     recovery_available: true,
+    apex_available: ["com.android.adbd"],
     compile_multilib: "both",
 
     srcs: [
@@ -507,6 +513,7 @@ cc_library {
     name: "libadbd",
     defaults: ["adbd_defaults", "host_adbd_supported"],
     recovery_available: true,
+    apex_available: ["com.android.adbd"],
 
     // avoid getting duplicate symbol of android::build::getbuildnumber().
     use_version_lib: false,
@@ -562,6 +569,7 @@ cc_binary {
     defaults: ["adbd_defaults", "host_adbd_supported"],
     stl: "libc++_static",
     recovery_available: true,
+    apex_available: ["com.android.adbd"],
 
     srcs: [
         "daemon/main.cpp",
