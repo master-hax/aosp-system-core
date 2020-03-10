@@ -2,6 +2,75 @@
   "comments": [
     {
       "key": {
+        "uuid": "69e42a1d_581132e1",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2020-03-10T17:13:06Z",
+      "side": 1,
+      "message": "This re-introduces b/141890807.",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 57
+      },
+      "revId": "ef7ac347df0bb1179acc56ed2e3d5ad1214548f0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4672bfd1_dd22bbc1",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2020-03-10T17:13:06Z",
+      "side": 1,
+      "message": "could you share background on this? I think we should aim to switch it. I filed b/142282873 for this, but gave up b/c of ABI.",
+      "range": {
+        "startLine": 10,
+        "startChar": 50,
+        "endLine": 12,
+        "endChar": 42
+      },
+      "revId": "ef7ac347df0bb1179acc56ed2e3d5ad1214548f0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "30844bd2_92ab82bf",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2020-03-10T17:13:06Z",
+      "side": 1,
+      "message": "add test for new code",
+      "range": {
+        "startLine": 14,
+        "startChar": 0,
+        "endLine": 14,
+        "endChar": 16
+      },
+      "revId": "ef7ac347df0bb1179acc56ed2e3d5ad1214548f0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "e81c2a54_0550def0",
         "filename": "libutils/include/utils/Flattenable.h",
         "patchSetId": 1
