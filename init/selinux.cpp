@@ -542,6 +542,10 @@ void SelinuxRestoreContext() {
     selinux_android_restorecon("/metadata", SELINUX_ANDROID_RESTORECON_RECURSE);
 
     selinux_android_restorecon(SnapshotManager::GetGlobalRollbackIndicatorPath().c_str(), 0);
+
+    selinux_android_restorecon(gsi::kGsiLpNamesFile, 0);
+    selinux_android_restorecon(gsi::kGsiBootedIndicatorFile, 0);
+    selinux_android_restorecon(gsi::kDsuAvbKeyDir, SELINUX_ANDROID_RESTORECON_RECURSE);
 }
 
 int SelinuxKlogCallback(int type, const char* fmt, ...) {
