@@ -167,6 +167,30 @@
     },
     {
       "key": {
+        "uuid": "88798f1c_910476f2",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-03-10T17:51:19Z",
+      "side": 1,
+      "message": "(the libutils tests are gtests in the libutils directory, with _test.cpp filenames. they\u0027re run in presubmit for changes in system/core/, or you can use atest manually.)",
+      "parentUuid": "038b57aa_8ef4f69c",
+      "range": {
+        "startLine": 14,
+        "startChar": 0,
+        "endLine": 14,
+        "endChar": 16
+      },
+      "revId": "ef7ac347df0bb1179acc56ed2e3d5ad1214548f0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "e81c2a54_0550def0",
         "filename": "libutils/include/utils/Flattenable.h",
         "patchSetId": 1
