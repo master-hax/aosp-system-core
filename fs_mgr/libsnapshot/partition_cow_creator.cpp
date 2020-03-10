@@ -75,6 +75,66 @@ bool SourceCopyOperationIsClone(const InstallOperation& operation) {
                       });
 }
 
+bool OptimizeSourceCopyOperation(const InstallOperation& operation, InstallOperation* optimized) {
+    optimized->Clear();
+    optimized->set_type(InstallOperation::SOURCE_COPY);
+
+    // If src_extents == dst_extents, optimize the entire operation by returning
+    // an empty operation.
+    if (SourceCopyOperationIsClone(operation)) {
+        return true;
+    }
+
+    const auto& src_extents = operation.src_extents();
+    const auto& dst_extents = operation.dst_extents();
+    auto s_it = src_extents.begin();
+    auto d_it = dst_extents.begin();
+    uint64_t s_offset = 0;  // offset within *s_it
+    uint64_t d_offset = 0;  // offset within *d_it
+
+    while (s_it != src_extents.end() || d_it != dst_extents.end()) {
+        if (s_it == src_extents.end() || d_it == dst_extents.end()) {
+            LOG(ERROR) << "number of blocks do not equal in src_extents and "
+                       << "dst_extents";
+            return false;
+        }
+        if (s_it->num_blocks() <= s_offset || d_it->num_blocks() <= d_offset) {
+            LOG(ERROR) << "Offset goes out of bounds.";
+            return false;
+        }
+
+        // Check the next |step| blocks, where |step| is the min of remaining blocks in the current
+        // source extent and current destination extent.
+        auto s_step = s_it->num_blocks() - s_offset;
+        auto d_step = d_it->num_blocks() - d_offset;
+        auto step = std::min(s_step, d_step);
+
+        // If the next |step| blocks are not copied to the same location, add them to |optimized|.
+        bool is_clone = s_it->start_block() + s_offset == d_it->start_block() + d_offset;
+        if (!is_clone) {
+            auto new_src = optimized->add_src_extents();
+            new_src->set_start_block(s_it->start_block() + s_offset);
+            new_src->set_num_blocks(step);
+            auto new_dst = optimized->add_dst_extents();
+            new_dst->set_start_block(d_it->start_block() + d_offset);
+            new_dst->set_num_blocks(step);
+        }
+
+        // Advance offsets by |step|, and go to the next extent if necessary.
+        s_offset += step;
+        d_offset += step;
+        while (s_it != src_extents.end() && s_offset >= s_it->num_blocks()) {
+            ++s_it;
+            s_offset = 0;
+        }
+        while (d_it != dst_extents.end() && d_offset >= d_it->num_blocks()) {
+            ++d_it;
+            d_offset = 0;
+        }
+    }
+    return true;
+}
+
 void WriteExtent(DmSnapCowSizeCalculator* sc, const chromeos_update_engine::Extent& de,
                  unsigned int sectors_per_block) {
     const auto block_boundary = de.start_block() + de.num_blocks();
@@ -101,12 +161,15 @@ uint64_t PartitionCowCreator::GetCowSize() {
     if (operations == nullptr) return sc.cow_size_bytes();
 
     for (const auto& iop : *operations) {
-        // Do not allocate space for operations that are going to be skipped
+        const InstallOperation* written_op = &iop;
+        InstallOperation buf;
+        // Do not allocate space for extents that are going to be skipped
         // during OTA application.
-        if (iop.type() == InstallOperation::SOURCE_COPY && SourceCopyOperationIsClone(iop))
-            continue;
+        if (iop.type() == InstallOperation::SOURCE_COPY && OptimizeSourceCopyOperation(iop, &buf)) {
+            written_op = &buf;
+        }
 
-        for (const auto& de : iop.dst_extents()) {
+        for (const auto& de : written_op->dst_extents()) {
             WriteExtent(&sc, de, sectors_per_block);
         }
     }
