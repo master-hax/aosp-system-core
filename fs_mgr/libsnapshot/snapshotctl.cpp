@@ -24,8 +24,12 @@
 #include <android-base/file.h>
 #include <android-base/logging.h>
 #include <android-base/unique_fd.h>
-
+#include <android/snapshot/snapshot.pb.h>
 #include <libsnapshot/snapshot.h>
+//#include <libsnapshot/snapshot_stats.h>
+#include <statslog.h>
+
+#include "utility.h"
 
 using namespace std::string_literals;
 
@@ -35,8 +39,10 @@ int Usage() {
                  "Actions:\n"
                  "  dump\n"
                  "    Print snapshot states.\n"
-                 "  merge\n"
-                 "    Deprecated.\n";
+                 "  merge --dry-run\n"
+                 "    The merge operation is deprecated.\n"
+                 "    Use with --dry-run to generate sample merge statistics\n"
+                 "      that are sent to statsd for testing purposes.\n";
     return EX_USAGE;
 }
 
@@ -48,8 +54,18 @@ bool DumpCmdHandler(int /*argc*/, char** argv) {
     return SnapshotManager::New()->Dump(std::cout);
 }
 
-bool MergeCmdHandler(int /*argc*/, char** argv) {
+bool MergeCmdHandler(int argc, char** argv) {
     android::base::InitLogging(argv, &android::base::StderrLogger);
+
+    for (int i = 2; i < argc; ++i) {
+        if (argv[i] == "--dry-run"s) {
+            android::util::stats_write(android::util::SNAPSHOT_MERGE_REPORTED,
+                                       static_cast<int32_t>(UpdateState::MergeCompleted),
+                                       static_cast<int64_t>(1234), static_cast<int32_t>(56));
+            return true;
+        }
+    }
+
     LOG(WARNING) << "Deprecated. Call update_engine_client --merge instead.";
     return false;
 }
