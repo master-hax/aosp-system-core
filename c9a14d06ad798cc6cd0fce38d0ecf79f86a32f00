@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "70c2087a_fd622558",
+        "filename": "fs_mgr/libsnapshot/partition_cow_creator.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2020-03-11T17:44:06Z",
+      "side": 1,
+      "message": "Will do.",
+      "parentUuid": "6988d893_1bfb9386",
+      "revId": "c9a14d06ad798cc6cd0fce38d0ecf79f86a32f00",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "af9843c5_dd614634",
         "filename": "fs_mgr/libsnapshot/partition_cow_creator.cpp",
         "patchSetId": 9
@@ -39,6 +57,30 @@
       "revId": "c9a14d06ad798cc6cd0fce38d0ecf79f86a32f00",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "08febf51_765d3ecc",
+        "filename": "fs_mgr/libsnapshot/partition_cow_creator.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 111,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2020-03-11T17:44:06Z",
+      "side": 1,
+      "message": "in case the input is invalidated and contain empty extents. Without it, if there are empty extents in the extent list, L86 will complain.",
+      "parentUuid": "af9843c5_dd614634",
+      "range": {
+        "startLine": 111,
+        "startChar": 0,
+        "endLine": 111,
+        "endChar": 77
+      },
+      "revId": "c9a14d06ad798cc6cd0fce38d0ecf79f86a32f00",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -65,6 +107,30 @@
     },
     {
       "key": {
+        "uuid": "c7e09e7f_1080ac92",
+        "filename": "fs_mgr/libsnapshot/partition_cow_creator_test.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 230,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2020-03-11T17:44:06Z",
+      "side": 1,
+      "message": "RepeatedPtrField doesn\u0027t seem to have a \"back\" function from the docs.",
+      "parentUuid": "be37fee4_51e7531f",
+      "range": {
+        "startLine": 230,
+        "startChar": 41,
+        "endLine": 230,
+        "endChar": 49
+      },
+      "revId": "c9a14d06ad798cc6cd0fce38d0ecf79f86a32f00",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "4c51342b_7c816f43",
         "filename": "fs_mgr/libsnapshot/partition_cow_creator_test.cpp",
         "patchSetId": 9
@@ -76,6 +142,30 @@
       "writtenOn": "2020-03-11T01:34:53Z",
       "side": 1,
       "message": "Can we compare the extents directly? Even though it should work either way, but I think having one continuous extent over two adjacent extents would be slightly more efficient during reading and writing. (unless the algorithm to do that is too complicated)",
+      "range": {
+        "startLine": 272,
+        "startChar": 14,
+        "endLine": 272,
+        "endChar": 29
+      },
+      "revId": "c9a14d06ad798cc6cd0fce38d0ecf79f86a32f00",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c1ecb452_e92f8faa",
+        "filename": "fs_mgr/libsnapshot/partition_cow_creator_test.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 272,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2020-03-11T17:44:06Z",
+      "side": 1,
+      "message": "I\u0027ll try to merge the extents in the algorithm so that we can compare the extents directly here.",
+      "parentUuid": "4c51342b_7c816f43",
       "range": {
         "startLine": 272,
         "startChar": 14,
@@ -108,6 +198,30 @@
       "revId": "c9a14d06ad798cc6cd0fce38d0ecf79f86a32f00",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "825ecd53_d8de3117",
+        "filename": "fs_mgr/libsnapshot/partition_cow_creator_test.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 282,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2020-03-11T17:44:06Z",
+      "side": 1,
+      "message": "I don\u0027t see a good way to detect this besides adding boolean flags (to detect if any optimization has occurred) or checking if the output equals input. I feel that\u0027s hacky because it adds extra logic, so I just let it return true with input \u003d\u003d output.\n\nThe interface contract for the function is this:\n\nif OptimizeSourceCopyOperation returns false, caller should use input directly.\nif OptimizeSourceCopyOperation returns true, caller should use output when writing.\n\nSo, (returning false) is the same as (returning true with output \u003d\u003d input).",
+      "parentUuid": "cc7c1f41_f507690b",
+      "range": {
+        "startLine": 282,
+        "startChar": 12,
+        "endLine": 282,
+        "endChar": 84
+      },
+      "revId": "c9a14d06ad798cc6cd0fce38d0ecf79f86a32f00",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
