@@ -1,0 +1,90 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6988d893_1bfb9386",
+        "filename": "fs_mgr/libsnapshot/partition_cow_creator.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 1079733
+      },
+      "writtenOn": "2020-03-11T01:34:53Z",
+      "side": 1,
+      "message": "Try append to the last extent instead of adding a new extent every time?",
+      "revId": "c9a14d06ad798cc6cd0fce38d0ecf79f86a32f00",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "be37fee4_51e7531f",
+        "filename": "fs_mgr/libsnapshot/partition_cow_creator_test.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 230,
+      "author": {
+        "id": 1079733
+      },
+      "writtenOn": "2020-03-11T01:34:53Z",
+      "side": 1,
+      "message": "nit: back()",
+      "range": {
+        "startLine": 230,
+        "startChar": 41,
+        "endLine": 230,
+        "endChar": 49
+      },
+      "revId": "c9a14d06ad798cc6cd0fce38d0ecf79f86a32f00",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4c51342b_7c816f43",
+        "filename": "fs_mgr/libsnapshot/partition_cow_creator_test.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 272,
+      "author": {
+        "id": 1079733
+      },
+      "writtenOn": "2020-03-11T01:34:53Z",
+      "side": 1,
+      "message": "Can we compare the extents directly? Even though it should work either way, but I think having one continuous extent over two adjacent extents would be slightly more efficient during reading and writing. (unless the algorithm to do that is too complicated)",
+      "range": {
+        "startLine": 272,
+        "startChar": 14,
+        "endLine": 272,
+        "endChar": 29
+      },
+      "revId": "c9a14d06ad798cc6cd0fce38d0ecf79f86a32f00",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cc7c1f41_f507690b",
+        "filename": "fs_mgr/libsnapshot/partition_cow_creator_test.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 282,
+      "author": {
+        "id": 1079733
+      },
+      "writtenOn": "2020-03-11T01:34:53Z",
+      "side": 1,
+      "message": "I think for this test case OptimizeSourceCopyOperation should return false because no optimization can be done.",
+      "range": {
+        "startLine": 282,
+        "startChar": 12,
+        "endLine": 282,
+        "endChar": 84
+      },
+      "revId": "c9a14d06ad798cc6cd0fce38d0ecf79f86a32f00",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
