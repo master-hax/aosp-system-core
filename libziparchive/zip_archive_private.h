@@ -36,7 +36,7 @@ class MappedZipFile {
   explicit MappedZipFile(const int fd)
       : has_fd_(true), fd_(fd), base_ptr_(nullptr), data_length_(0) {}
 
-  explicit MappedZipFile(const void* address, size_t length)
+  explicit MappedZipFile(const void* address, uint64_t length)
       : has_fd_(false), fd_(-1), base_ptr_(address), data_length_(static_cast<off64_t>(length)) {}
 
   bool HasFd() const { return has_fd_; }
@@ -88,17 +88,17 @@ struct ZipArchive {
   std::unique_ptr<android::base::MappedFile> directory_map;
 
   // number of entries in the Zip archive
-  uint16_t num_entries;
+  uint64_t num_entries;
   std::unique_ptr<CdEntryMapInterface> cd_entry_map;
 
   ZipArchive(const int fd, bool assume_ownership);
-  ZipArchive(const void* address, size_t length);
+  ZipArchive(const void* address, uint64_t length);
   virtual ~ZipArchive();
 
   bool InitializeCentralDirectory(off64_t cd_start_offset, size_t cd_size);
 
   // Returns true if we choose to use std::map implementation for cd entry map.
-  virtual bool UseCdEntryMapZip64() const { return false; }
+  virtual bool UseCdEntryMapZip64() const;
 };
 
 // Exposed for testing.
