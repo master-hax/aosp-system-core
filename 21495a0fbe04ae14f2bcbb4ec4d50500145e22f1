@@ -52,6 +52,24 @@
       "revId": "21495a0fbe04ae14f2bcbb4ec4d50500145e22f1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0face780_e0148b8c",
+        "filename": "libasyncio/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2020-03-11T01:28:49Z",
+      "side": 1,
+      "message": "when unspecified, apex_available defaults to \u0027//apex_available:platform\u0027. so, it\u0027s available to platform, but not available to any apex.\n\nwhen it is set to \u0027com.android.adbd\u0027 only, it\u0027s only available to the said apex and isn\u0027t available even to the platform.",
+      "parentUuid": "468de1a3_dd094c92",
+      "revId": "21495a0fbe04ae14f2bcbb4ec4d50500145e22f1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
