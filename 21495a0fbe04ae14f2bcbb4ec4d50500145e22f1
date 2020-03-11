@@ -16,6 +16,24 @@
       "revId": "21495a0fbe04ae14f2bcbb4ec4d50500145e22f1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "42a1bc7c_8d63b4f7",
+        "filename": "libasyncio/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2020-03-11T01:03:09Z",
+      "side": 1,
+      "message": "it means it\u0027s available to the (non-updatable part of) platform. i.e. it can be in /system/lib.\n\n\"//apex_available:\" is just a magic prefix for the values in the \u0027apex_available\u0027 property. (to distinguish the value \u0027platform\u0027 with a fictional apex named \u0027platform\u0027)",
+      "parentUuid": "01a0d11f_d4e13984",
+      "revId": "21495a0fbe04ae14f2bcbb4ec4d50500145e22f1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
