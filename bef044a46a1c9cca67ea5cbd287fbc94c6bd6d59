@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9cb5e2e8_ccccaef4",
+        "filename": "fs_mgr/libfiemap/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2020-03-11T10:48:35Z",
+      "side": 1,
+      "message": "I\u0027m not sure if this is still needed.. Yifan do you know?",
+      "range": {
+        "startLine": 45,
+        "startChar": 4,
+        "endLine": 45,
+        "endChar": 22
+      },
+      "revId": "bef044a46a1c9cca67ea5cbd287fbc94c6bd6d59",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
