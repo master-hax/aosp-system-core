@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "782ef91e_fd38725e",
+        "filename": "fs_mgr/libsnapshot/snapshotctl.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2020-03-11T02:28:25Z",
+      "side": 1,
+      "message": "remove",
+      "revId": "8139d9509577c9ec9427809f51cef1213a43e491",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
