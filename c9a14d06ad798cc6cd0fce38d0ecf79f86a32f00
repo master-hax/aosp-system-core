@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "9f4059fb_55d16342",
+        "filename": "fs_mgr/libsnapshot/partition_cow_creator.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2020-03-11T18:56:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "70c2087a_fd622558",
+      "revId": "c9a14d06ad798cc6cd0fce38d0ecf79f86a32f00",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "af9843c5_dd614634",
         "filename": "fs_mgr/libsnapshot/partition_cow_creator.cpp",
         "patchSetId": 9
@@ -202,6 +220,30 @@
     },
     {
       "key": {
+        "uuid": "498e85b0_7cbbeed3",
+        "filename": "fs_mgr/libsnapshot/partition_cow_creator_test.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 272,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2020-03-11T18:56:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c1ecb452_e92f8faa",
+      "range": {
+        "startLine": 272,
+        "startChar": 14,
+        "endLine": 272,
+        "endChar": 29
+      },
+      "revId": "c9a14d06ad798cc6cd0fce38d0ecf79f86a32f00",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "cc7c1f41_f507690b",
         "filename": "fs_mgr/libsnapshot/partition_cow_creator_test.cpp",
         "patchSetId": 9
@@ -261,6 +303,30 @@
       "side": 1,
       "message": "But it returning true will cause us to read and hash first and then do the copy instead of copying and hashing in one go.\n\nI see two options, either this should return false, or we should refactor the code so that we never have to read twice even if it was optimized.",
       "parentUuid": "825ecd53_d8de3117",
+      "range": {
+        "startLine": 282,
+        "startChar": 12,
+        "endLine": 282,
+        "endChar": 84
+      },
+      "revId": "c9a14d06ad798cc6cd0fce38d0ecf79f86a32f00",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3ebdbb41_276ff247",
+        "filename": "fs_mgr/libsnapshot/partition_cow_creator_test.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 282,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2020-03-11T18:56:35Z",
+      "side": 1,
+      "message": "Will do.",
+      "parentUuid": "d0811757_79ce52ef",
       "range": {
         "startLine": 282,
         "startChar": 12,
