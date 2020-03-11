@@ -246,6 +246,30 @@
       "revId": "c9a14d06ad798cc6cd0fce38d0ecf79f86a32f00",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d0811757_79ce52ef",
+        "filename": "fs_mgr/libsnapshot/partition_cow_creator_test.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 282,
+      "author": {
+        "id": 1079733
+      },
+      "writtenOn": "2020-03-11T18:16:58Z",
+      "side": 1,
+      "message": "But it returning true will cause us to read and hash first and then do the copy instead of copying and hashing in one go.\n\nI see two options, either this should return false, or we should refactor the code so that we never have to read twice even if it was optimized.",
+      "parentUuid": "825ecd53_d8de3117",
+      "range": {
+        "startLine": 282,
+        "startChar": 12,
+        "endLine": 282,
+        "endChar": 84
+      },
+      "revId": "c9a14d06ad798cc6cd0fce38d0ecf79f86a32f00",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
