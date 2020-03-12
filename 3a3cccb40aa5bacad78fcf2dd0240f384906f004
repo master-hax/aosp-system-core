@@ -22,6 +22,30 @@
       "revId": "3a3cccb40aa5bacad78fcf2dd0240f384906f004",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "71c51a04_97c62ebb",
+        "filename": "fs_mgr/libf2fs_pin/pin_misc.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2020-03-12T22:26:24Z",
+      "side": 1,
+      "message": "Only call InitLogging / SetLogger in the main function / close to the main function, though; don\u0027t do it in a library because other binaries linking to the library may want to redirect logs to their custom place",
+      "parentUuid": "783922d0_728e694c",
+      "range": {
+        "startLine": 22,
+        "startChar": 0,
+        "endLine": 41,
+        "endChar": 1
+      },
+      "revId": "3a3cccb40aa5bacad78fcf2dd0240f384906f004",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
