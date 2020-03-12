@@ -70,6 +70,30 @@
       "revId": "3a3cccb40aa5bacad78fcf2dd0240f384906f004",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9cc48873_ab897c70",
+        "filename": "fs_mgr/libf2fs_pin/pin_misc.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1428004
+      },
+      "writtenOn": "2020-03-12T23:46:50Z",
+      "side": 1,
+      "message": "Changed the test and tool programs to use LOG(ERROR) and PLOG(ERROR).  Only those programs do the android::base::InitLogging().  The library itself does not use LOG() or PLOG() nor the error printing functions shown above, those 4 functions were removed.\n\nThe library returns its values or error results via android::base::Result\u003c\u003e template values per prior guidance by Tom Cherry (that replaced a non template poor man\u0027s version of the result class). The error strings are extracted from the results via result.error().",
+      "parentUuid": "f5ed9b93_942767ec",
+      "range": {
+        "startLine": 22,
+        "startChar": 0,
+        "endLine": 41,
+        "endChar": 1
+      },
+      "revId": "3a3cccb40aa5bacad78fcf2dd0240f384906f004",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }

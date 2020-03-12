@@ -48,6 +48,30 @@
     },
     {
       "key": {
+        "uuid": "b124f85b_bb7eece7",
+        "filename": "fs_mgr/libf2fs_pin/Android.bp",
+        "patchSetId": 3
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1428004
+      },
+      "writtenOn": "2020-03-12T23:46:50Z",
+      "side": 1,
+      "message": "Testing code was originally in the libf2fs_pin_test program, but it was not a gtest program. That program is now a gtest program.  The interactive tool parts of it are now in the new program libf2fs_pin_tool.",
+      "parentUuid": "97e9a412_1e9b1763",
+      "range": {
+        "startLine": 39,
+        "startChar": 0,
+        "endLine": 39,
+        "endChar": 9
+      },
+      "revId": "8e97b144241bb88e76e6098976d740e1a9d658b9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "af57e6ee_635b26da",
         "filename": "fs_mgr/libf2fs_pin/pin.cpp",
         "patchSetId": 3
@@ -143,6 +167,30 @@
     },
     {
       "key": {
+        "uuid": "e2fdab43_03676e26",
+        "filename": "fs_mgr/libf2fs_pin/pin.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1428004
+      },
+      "writtenOn": "2020-03-12T23:46:50Z",
+      "side": 1,
+      "message": "The fallback for now is not to use statx(2) until we no longer support kernels without statx() or we no longer support 32 bit kernels.  For now always using fstat(2) is good enough.",
+      "parentUuid": "dbba3743_e3402ae9",
+      "range": {
+        "startLine": 53,
+        "startChar": 70,
+        "endLine": 56,
+        "endChar": 20
+      },
+      "revId": "8e97b144241bb88e76e6098976d740e1a9d658b9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "539b126f_2d418946",
         "filename": "fs_mgr/libf2fs_pin/pin.cpp",
         "patchSetId": 3
@@ -163,6 +211,30 @@
       "revId": "8e97b144241bb88e76e6098976d740e1a9d658b9",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "35561265_28748ee3",
+        "filename": "fs_mgr/libf2fs_pin/pin.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 120,
+      "author": {
+        "id": 1428004
+      },
+      "writtenOn": "2020-03-12T23:46:50Z",
+      "side": 1,
+      "message": "Thank you, this code is ifdef\u0027d out and (obviously) not recently tested, thus the compiler didn\u0027t catch that.",
+      "parentUuid": "539b126f_2d418946",
+      "range": {
+        "startLine": 120,
+        "startChar": 42,
+        "endLine": 120,
+        "endChar": 43
+      },
+      "revId": "8e97b144241bb88e76e6098976d740e1a9d658b9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -189,6 +261,30 @@
     },
     {
       "key": {
+        "uuid": "ddd1d863_b579a8f8",
+        "filename": "fs_mgr/libf2fs_pin/pin_test.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 1428004
+      },
+      "writtenOn": "2020-03-12T23:46:50Z",
+      "side": 1,
+      "message": "These moved to pin_misc.cpp.  They were changed there to LOG(ERROR) / PLOG(ERROR) per your suggestion. Thank you!",
+      "parentUuid": "208a0fd0_8de9cad2",
+      "range": {
+        "startLine": 52,
+        "startChar": 0,
+        "endLine": 62,
+        "endChar": 0
+      },
+      "revId": "8e97b144241bb88e76e6098976d740e1a9d658b9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a3c178ec_7f78442e",
         "filename": "fs_mgr/libf2fs_pin/pin_test.cpp",
         "patchSetId": 3
@@ -212,6 +308,30 @@
     },
     {
       "key": {
+        "uuid": "3ef959ce_46220e85",
+        "filename": "fs_mgr/libf2fs_pin/pin_test.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 303,
+      "author": {
+        "id": 1428004
+      },
+      "writtenOn": "2020-03-12T23:46:50Z",
+      "side": 1,
+      "message": "Thank you Yifan!  I changed this program to use the gtest framework, with leftover tool code in a new interactive tool program.  Common code for both of them is now in pin_misc.cpp.",
+      "parentUuid": "a3c178ec_7f78442e",
+      "range": {
+        "startLine": 296,
+        "startChar": 0,
+        "endLine": 303,
+        "endChar": 1
+      },
+      "revId": "8e97b144241bb88e76e6098976d740e1a9d658b9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a485cb73_2269e273",
         "filename": "fs_mgr/libf2fs_pin/pin_test.cpp",
         "patchSetId": 3
@@ -232,6 +352,30 @@
       "revId": "8e97b144241bb88e76e6098976d740e1a9d658b9",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fa8b2b67_27fa8aef",
+        "filename": "fs_mgr/libf2fs_pin/pin_test.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 324,
+      "author": {
+        "id": 1428004
+      },
+      "writtenOn": "2020-03-12T23:46:50Z",
+      "side": 1,
+      "message": "I changed the code to use gtest, two of the underlying test functions where turned into TEST_P() declared code.  Apologies if my use of gtest is primitive, I had never worked with a code base that used both templates and macros to generate code like gtest does (it is still obscure to me).",
+      "parentUuid": "a485cb73_2269e273",
+      "range": {
+        "startLine": 324,
+        "startChar": 5,
+        "endLine": 324,
+        "endChar": 15
+      },
+      "revId": "8e97b144241bb88e76e6098976d740e1a9d658b9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
