@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "783922d0_728e694c",
+        "filename": "fs_mgr/libf2fs_pin/pin_misc.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-03-12T16:23:19Z",
+      "side": 1,
+      "message": "Likely still better to use LOG() \u003c\u003c ... like elsk@ recommended before.  You can change the target (logd, stdio, both, etc) via android::base::InitLogging() or android::base::SetLogger().",
+      "range": {
+        "startLine": 22,
+        "startChar": 0,
+        "endLine": 41,
+        "endChar": 1
+      },
+      "revId": "3a3cccb40aa5bacad78fcf2dd0240f384906f004",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
