@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "bb94b604_c2629293",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2020-03-12T22:26:54Z",
+      "side": 1,
+      "message": "nit provides",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 9,
+        "endChar": 9
+      },
+      "revId": "8e97b144241bb88e76e6098976d740e1a9d658b9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "97e9a412_1e9b1763",
         "filename": "fs_mgr/libf2fs_pin/Android.bp",
         "patchSetId": 3
