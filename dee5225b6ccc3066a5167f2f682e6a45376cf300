@@ -22,6 +22,30 @@
       "revId": "dee5225b6ccc3066a5167f2f682e6a45376cf300",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3b76c11c_335e34e4",
+        "filename": "fs_mgr/libsnapshot/partition_cow_creator.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2020-03-12T17:54:35Z",
+      "side": 1,
+      "message": "s_offset is the offset within the extent pointed by s_it. When s_it advances, s_offset should be reset to 0.\n\ns_offset is *NOT* the offset within all extents.\n\n`s_offset -\u003d s_it-\u003enum_blocks()` should also work because at this time, s_offset \u003d\u003d s_it-\u003e num_blocks() (it should never go over num_blocks according to the code above it). But I want to be explicit about resetting it to 0 here.",
+      "parentUuid": "7e8b4a56_bbb028a7",
+      "range": {
+        "startLine": 118,
+        "startChar": 12,
+        "endLine": 119,
+        "endChar": 25
+      },
+      "revId": "dee5225b6ccc3066a5167f2f682e6a45376cf300",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
