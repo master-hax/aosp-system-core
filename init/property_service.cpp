@@ -92,8 +92,10 @@ namespace init {
 static bool persistent_properties_loaded = false;
 
 static int property_set_fd = -1;
+static int from_init_socket = -1;
 static int init_socket = -1;
 static bool accept_messages = false;
+static std::thread property_service_thread;
 
 static PropertyInfoAreaFile property_info_area;
 
@@ -147,17 +149,6 @@ static bool CheckMacPerms(const std::string& name, const char* target_context,
     return has_access;
 }
 
-static void SendPropertyChanged(const std::string& name, const std::string& value) {
-    auto property_msg = PropertyMessage{};
-    auto* changed_message = property_msg.mutable_changed_message();
-    changed_message->set_name(name);
-    changed_message->set_value(value);
-
-    if (auto result = SendMessage(init_socket, property_msg); !result.ok()) {
-        LOG(ERROR) << "Failed to send property changed message: " << result.error();
-    }
-}
-
 static uint32_t PropertySet(const std::string& name, const std::string& value, std::string* error) {
     size_t valuelen = value.size();
 
@@ -196,7 +187,7 @@ static uint32_t PropertySet(const std::string& name, const std::string& value, s
     // If init hasn't started its main loop, then it won't be handling property changed messages
     // anyway, so there's no need to try to send them.
     if (accept_messages) {
-        SendPropertyChanged(name, value);
+        PropertyChanged(name, value);
     }
     return PROP_SUCCESS;
 }
@@ -378,28 +369,18 @@ static uint32_t SendControlMessage(const std::string& msg, const std::string& na
         return PROP_ERROR_HANDLE_CONTROL_MESSAGE;
     }
 
-    auto property_msg = PropertyMessage{};
-    auto* control_message = property_msg.mutable_control_message();
-    control_message->set_msg(msg);
-    control_message->set_name(name);
-    control_message->set_pid(pid);
-
     // We must release the fd before sending it to init, otherwise there will be a race with init.
     // If init calls close() before Release(), then fdsan will see the wrong tag and abort().
     int fd = -1;
     if (socket != nullptr && SelinuxGetVendorAndroidVersion() > __ANDROID_API_Q__) {
         fd = socket->Release();
-        control_message->set_fd(fd);
     }
 
-    if (auto result = SendMessage(init_socket, property_msg); !result.ok()) {
-        // We've already released the fd above, so if we fail to send the message to init, we need
-        // to manually free it here.
-        if (fd != -1) {
-            close(fd);
-        }
-        *error = "Failed to send control message: " + result.error().message();
-        return PROP_ERROR_HANDLE_CONTROL_MESSAGE;
+    bool queue_success = QueueControlMessage(msg, name, pid, fd);
+    if (!queue_success && fd != -1) {
+        uint32_t response = PROP_ERROR_HANDLE_CONTROL_MESSAGE;
+        TEMP_FAILURE_RETRY(send(fd, &response, sizeof(response), 0));
+        close(fd);
     }
 
     return PROP_SUCCESS;
@@ -1157,7 +1138,7 @@ void StartPropertyService(int* epoll_socket) {
     if (socketpair(AF_UNIX, SOCK_SEQPACKET | SOCK_CLOEXEC, 0, sockets) != 0) {
         PLOG(FATAL) << "Failed to socketpair() between property_service and init";
     }
-    *epoll_socket = sockets[0];
+    *epoll_socket = from_init_socket = sockets[0];
     init_socket = sockets[1];
     accept_messages = true;
 
@@ -1171,7 +1152,8 @@ void StartPropertyService(int* epoll_socket) {
 
     listen(property_set_fd, 8);
 
-    std::thread{PropertyServiceThread}.detach();
+    auto new_thread = std::thread{PropertyServiceThread};
+    property_service_thread.swap(new_thread);
 }
 
 }  // namespace init
