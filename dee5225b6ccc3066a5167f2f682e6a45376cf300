@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7e8b4a56_bbb028a7",
+        "filename": "fs_mgr/libsnapshot/partition_cow_creator.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 1409599
+      },
+      "writtenOn": "2020-03-12T17:42:22Z",
+      "side": 1,
+      "message": "There is something I\u0027m not totally convinced about here... Shouldn\u0027t it be:\n\ns_offset -\u003d s_it-\u003enum_blocks();\n++s_it;\n\n?",
+      "range": {
+        "startLine": 118,
+        "startChar": 12,
+        "endLine": 119,
+        "endChar": 25
+      },
+      "revId": "dee5225b6ccc3066a5167f2f682e6a45376cf300",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
