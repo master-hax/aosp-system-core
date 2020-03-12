@@ -46,6 +46,30 @@
       "revId": "3a3cccb40aa5bacad78fcf2dd0240f384906f004",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f5ed9b93_942767ec",
+        "filename": "fs_mgr/libf2fs_pin/pin_misc.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-03-12T22:32:11Z",
+      "side": 1,
+      "message": "Agreed.  Pretty much all libraries on Android should be using LOG() \u003c\u003c and whatever programs they\u0027re included into can direct those logs as they see fit.",
+      "parentUuid": "71c51a04_97c62ebb",
+      "range": {
+        "startLine": 22,
+        "startChar": 0,
+        "endLine": 41,
+        "endChar": 1
+      },
+      "revId": "3a3cccb40aa5bacad78fcf2dd0240f384906f004",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
