@@ -1,0 +1,48 @@
+{
+  "comments": [
+    {
+      "robotId": "ayeaye",
+      "robotRunId": "AR00000000000001933678",
+      "url": "https://android-build.googleplex.com/builds/treetop/android-review/1167228?revision\u003d5",
+      "fixSuggestions": [
+        {
+          "fixId": "e37f53c8_dbbec2a4",
+          "description": "Change to \"fs_mgr/libf2fs_pin/include/f2fs_pin/pin.h\"",
+          "replacements": [
+            {
+              "path": "fs_mgr/libf2fs_pin/include/f2fs_pin/pin.h",
+              "range": {
+                "startLine": 58,
+                "startChar": 51,
+                "endLine": 58,
+                "endChar": 60
+              },
+              "replacement": "descriptor"
+            }
+          ]
+        }
+      ],
+      "key": {
+        "uuid": "5ba9521a_15d9c5b3",
+        "filename": "fs_mgr/libf2fs_pin/include/f2fs_pin/pin.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1550585
+      },
+      "writtenOn": "2020-03-12T02:40:02Z",
+      "side": 1,
+      "message": "Common typo found: \"desriptor\" -- should it be \"descriptor\"?\nNote: a line containing \"common_typos_disable\" or \"common_typos_enable\" will turn off or on (respectively) the linter for subsequent lines in the file. Alternatively include the token \"NOTYPO\" within a line to skip typo linting that line.",
+      "range": {
+        "startLine": 58,
+        "startChar": 51,
+        "endLine": 58,
+        "endChar": 60
+      },
+      "revId": "62cc046331662fba469801035c3e54e1b0cc18b3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
