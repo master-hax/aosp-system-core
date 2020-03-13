@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5ba0ec76_ab1e1b0a",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 268,
+      "author": {
+        "id": 1453063
+      },
+      "writtenOn": "2020-03-13T23:33:59Z",
+      "side": 1,
+      "message": "Given that version #2/#3 are now deprecated, do we want to handle them by silently falling back to #1, or do we want to error_log as well?",
+      "range": {
+        "startLine": 267,
+        "startChar": 6,
+        "endLine": 268,
+        "endChar": 13
+      },
+      "revId": "3889de0cbce7414ee11de6fad6f920598892ac65",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
