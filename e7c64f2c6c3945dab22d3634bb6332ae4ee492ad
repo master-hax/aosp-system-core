@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "7ae1971f_7f6e12be",
+        "filename": "fs_mgr/libf2fs_pin/pin_test.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1428004
+      },
+      "writtenOn": "2020-03-13T17:36:06Z",
+      "side": 1,
+      "message": "Fixed. Thank you!",
+      "parentUuid": "5c37e71c_9fe54e58",
+      "revId": "e7c64f2c6c3945dab22d3634bb6332ae4ee492ad",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "16117087_6921aa10",
         "filename": "fs_mgr/libf2fs_pin/pin_test.cpp",
         "patchSetId": 10
@@ -42,6 +60,30 @@
     },
     {
       "key": {
+        "uuid": "66c2e19f_41c9141f",
+        "filename": "fs_mgr/libf2fs_pin/pin_test.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 181,
+      "author": {
+        "id": 1428004
+      },
+      "writtenOn": "2020-03-13T17:36:06Z",
+      "side": 1,
+      "message": "Thank you! Changed accessors to have the signature and name per your feedback. There are a few callers of them, so I decided to leave the .c_str() on the accessors instead of doing so in their callers.",
+      "parentUuid": "16117087_6921aa10",
+      "range": {
+        "startLine": 181,
+        "startChar": 16,
+        "endLine": 181,
+        "endChar": 22
+      },
+      "revId": "e7c64f2c6c3945dab22d3634bb6332ae4ee492ad",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "629919d2_f644337a",
         "filename": "fs_mgr/libf2fs_pin/pin_tool.cpp",
         "patchSetId": 10
@@ -56,6 +98,24 @@
       "revId": "e7c64f2c6c3945dab22d3634bb6332ae4ee492ad",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a6f6e513_57e0df01",
+        "filename": "fs_mgr/libf2fs_pin/pin_tool.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1428004
+      },
+      "writtenOn": "2020-03-13T17:36:06Z",
+      "side": 1,
+      "message": "Fixed. Thank you!",
+      "parentUuid": "629919d2_f644337a",
+      "revId": "e7c64f2c6c3945dab22d3634bb6332ae4ee492ad",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
