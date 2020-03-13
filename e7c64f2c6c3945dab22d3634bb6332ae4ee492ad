@@ -1,0 +1,61 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5c37e71c_9fe54e58",
+        "filename": "fs_mgr/libf2fs_pin/pin_test.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-03-13T16:09:55Z",
+      "side": 1,
+      "message": "A nit, but header ordering here isn\u0027t correct.  https://google.github.io/styleguide/cppguide.html#Names_and_Order_of_Includes",
+      "revId": "e7c64f2c6c3945dab22d3634bb6332ae4ee492ad",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "16117087_6921aa10",
+        "filename": "fs_mgr/libf2fs_pin/pin_test.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 181,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-03-13T16:09:55Z",
+      "side": 1,
+      "message": "Accessors are better named after their variables, so const char* dir() const { return dir_.c_str(); }\n\nhttps://google.github.io/styleguide/cppguide.html#Function_Names\n\nMay be better to just return a const std::string\u0026 too and let the caller deal with the .c_str(), but I don\u0027t have a strong opinion there.",
+      "range": {
+        "startLine": 181,
+        "startChar": 16,
+        "endLine": 181,
+        "endChar": 22
+      },
+      "revId": "e7c64f2c6c3945dab22d3634bb6332ae4ee492ad",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "629919d2_f644337a",
+        "filename": "fs_mgr/libf2fs_pin/pin_tool.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-03-13T16:09:55Z",
+      "side": 1,
+      "message": "Same comment RE the header ordering.",
+      "revId": "e7c64f2c6c3945dab22d3634bb6332ae4ee492ad",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
