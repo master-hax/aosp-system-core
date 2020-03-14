@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "f2cf93bc_2464ea27",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1067098
+      },
+      "writtenOn": "2020-03-14T00:54:48Z",
+      "side": 1,
+      "message": "Sure. It\u0027s not clear whether we want to do this right away though, since there are probably many other blockers to making the runtime apex updatable.",
+      "parentUuid": "65485e48_024ee6bc",
+      "range": {
+        "startLine": 16,
+        "startChar": 34,
+        "endLine": 17,
+        "endChar": 18
+      },
+      "revId": "3889de0cbce7414ee11de6fad6f920598892ac65",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "5ba0ec76_ab1e1b0a",
         "filename": "debuggerd/crash_dump.cpp",
         "patchSetId": 1
