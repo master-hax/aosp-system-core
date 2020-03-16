@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f7563320_cbb98d94",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2020-03-16T17:31:00Z",
+      "side": 1,
+      "message": "Please add: Fixes: c29c2baa6907 (\"init: Add support for native service registration with lmkd\")",
+      "revId": "3dd41814397e4a63e3deba50f0486f59ced32b64",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
