@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d35c45ba_34abff4c",
+        "filename": "debuggerd/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 326,
+      "author": {
+        "id": 1453063
+      },
+      "writtenOn": "2020-03-17T21:45:39Z",
+      "side": 1,
+      "message": "Don\u0027t we also need \"//apex_available:platform\" for a crash_dump that\u0027s usable by the bootstrap linker?",
+      "range": {
+        "startLine": 326,
+        "startChar": 0,
+        "endLine": 326,
+        "endChar": 30
+      },
+      "revId": "7f9bb4b81a58c179a29f43acaf0079f6ef563dc7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
