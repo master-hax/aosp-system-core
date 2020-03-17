@@ -22,6 +22,30 @@
       "revId": "7f9bb4b81a58c179a29f43acaf0079f6ef563dc7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bbf2c151_6dd08635",
+        "filename": "debuggerd/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 326,
+      "author": {
+        "id": 1067098
+      },
+      "writtenOn": "2020-03-17T21:50:49Z",
+      "side": 1,
+      "message": "As far as I know apex_available only controls build-time dependencies. The bootstrap linker should have no problem executing crash_dump at runtime.",
+      "parentUuid": "d35c45ba_34abff4c",
+      "range": {
+        "startLine": 326,
+        "startChar": 0,
+        "endLine": 326,
+        "endChar": 30
+      },
+      "revId": "7f9bb4b81a58c179a29f43acaf0079f6ef563dc7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
