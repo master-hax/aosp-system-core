@@ -63,6 +63,24 @@
       "revId": "7f9bb4b81a58c179a29f43acaf0079f6ef563dc7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5303c1d3_bf9abd62",
+        "filename": "liblog/liblog.map.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-03-17T22:13:57Z",
+      "side": 1,
+      "message": "There are okay to add if we need them, but... I don\u0027t actually think that we do.  They code that uses them was added in aosp/94380, which provides support for dumping the event log, but actually dumping the event log was removed shortly after in aosp/95685, 6 years ago.\n\nUnless we believe that we need the event log in tombstones and want to restore capturing it, it\u0027d be better to remove the code than to mark these symbols as apex.",
+      "parentUuid": "44582a9c_62138715",
+      "revId": "7f9bb4b81a58c179a29f43acaf0079f6ef563dc7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
