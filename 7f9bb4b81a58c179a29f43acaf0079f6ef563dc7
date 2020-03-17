@@ -99,6 +99,24 @@
       "revId": "7f9bb4b81a58c179a29f43acaf0079f6ef563dc7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3f05ccff_40c91322",
+        "filename": "liblog/liblog.map.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 1067098
+      },
+      "writtenOn": "2020-03-17T23:25:34Z",
+      "side": 1,
+      "message": "My reading of the code is that I agree that that code is dead, so I\u0027ve removed it.",
+      "parentUuid": "6b05b0f8_462466ef",
+      "revId": "7f9bb4b81a58c179a29f43acaf0079f6ef563dc7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
