@@ -81,6 +81,24 @@
       "revId": "7f9bb4b81a58c179a29f43acaf0079f6ef563dc7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6b05b0f8_462466ef",
+        "filename": "liblog/liblog.map.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-03-17T22:34:10Z",
+      "side": 1,
+      "message": "(since it wasn\u0027t clear to me either, he\u0027s saying that we can remove\n\n    if (log_entry.id() \u003d\u003d LOG_ID_EVENTS) {\n      if (!g_eventTagMap) {\n        g_eventTagMap \u003d android_openEventTagMap(nullptr);\n      }\n      AndroidLogEntry e;\n      char buf[512];\n      if (android_log_processBinaryLogBuffer(\u0026log_entry.entry, \u0026e, g_eventTagMap, buf,\n                                             sizeof(buf)) \u003d\u003d 0) {\n        _LOG(log, logtype::LOGS, \"%s.%03d %5d %5d %c %-8.*s: %s\\n\", timeBuf,\n             log_entry.entry.nsec / 1000000, log_entry.entry.pid, log_entry.entry.tid, \u0027I\u0027\n,\n             (int)e.tagLen, e.tag, e.message);\n      }\n      continue;\n    }\n\nbecause that function is no longer called for a log where that would be true. if you\u0027re not comfortable removing that yourself in this change, let me know and i\u0027ll remove it and you can rebase on top of that :-) )",
+      "parentUuid": "5303c1d3_bf9abd62",
+      "revId": "7f9bb4b81a58c179a29f43acaf0079f6ef563dc7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
