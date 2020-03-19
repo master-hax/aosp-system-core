@@ -212,3 +212,20 @@ sh_test {
     data: ["cli-tests/**/*"],
     target_required: ["cli-test", "ziptool"],
 }
+
+python_test_host {
+    name: "zip64_test",
+    srcs: ["test_zip64.py",],
+    main: "test_zip64.py",
+    version: {
+        py2: {
+            enabled: true,
+            embedded_launcher: false,
+        },
+        py3: {
+            enabled: false,
+            embedded_launcher: false,
+        },
+    },
+    test_suites: ["general-tests"],
+}
