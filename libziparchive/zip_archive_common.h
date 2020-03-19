@@ -239,7 +239,7 @@ struct Zip64EocdRecord {
 // and compressed file size fields.
 struct Zip64ExtendedInfo {
   static constexpr uint16_t kHeaderId = 0x0001;
-  // The header tag for this 'extra' block, should be |kHeaderId|.
+  // The header tag for this 'extra' block, shouldLocalFileHeader be |kHeaderId|.
   uint16_t header_id;
   // The size in bytes of the remaining data (excluding the top 4 bytes).
   uint16_t data_size;
