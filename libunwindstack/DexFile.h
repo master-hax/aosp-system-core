@@ -39,7 +39,7 @@ class DexFile : protected art_api::dex::DexFile {
                                          MapInfo* info);
 
  protected:
-  DexFile(art_api::dex::DexFile&& art_dex_file) : art_api::dex::DexFile(std::move(art_dex_file)) {}
+  DexFile(art_api::dex::DexFile* art_dex_file) : art_api::dex::DexFile(art_dex_file) {}
 };
 
 class DexFileFromFile : public DexFile {
@@ -48,7 +48,7 @@ class DexFileFromFile : public DexFile {
                                                  const std::string& file);
 
  private:
-  DexFileFromFile(art_api::dex::DexFile&& art_dex_file) : DexFile(std::move(art_dex_file)) {}
+  DexFileFromFile(art_api::dex::DexFile* art_dex_file) : DexFile(art_dex_file) {}
 };
 
 class DexFileFromMemory : public DexFile {
@@ -57,8 +57,8 @@ class DexFileFromMemory : public DexFile {
                                                    Memory* memory, const std::string& name);
 
  private:
-  DexFileFromMemory(art_api::dex::DexFile&& art_dex_file, std::vector<uint8_t>&& memory)
-      : DexFile(std::move(art_dex_file)), memory_(std::move(memory)) {}
+  DexFileFromMemory(art_api::dex::DexFile* art_dex_file, std::vector<uint8_t>&& memory)
+      : DexFile(art_dex_file), memory_(std::move(memory)) {}
 
   std::vector<uint8_t> memory_;
 };
