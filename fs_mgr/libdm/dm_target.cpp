@@ -24,6 +24,7 @@
 #include <android-base/macros.h>
 #include <android-base/parseint.h>
 #include <android-base/strings.h>
+#include <android-base/properties.h>
 
 #include <libdm/dm.h>
 
@@ -246,9 +247,13 @@ std::string DmTargetCrypt::GetParameterString() const {
 bool DmTargetDefaultKey::IsLegacy(bool* result) {
     DeviceMapper& dm = DeviceMapper::Instance();
     DmTargetTypeInfo info;
+    constexpr uint64_t pre_gki_level = 29;
+    auto first_api_level = android::base::GetUintProperty<unsigned int>("ro.product.first_api_level", 0);
     if (!dm.GetTargetByName(kName, &info)) return false;
     // dm-default-key was modified to be like dm-crypt with version 2
     *result = !info.IsAtLeast(2, 0, 0);
+    // To cater to older on-disk format
+    *result |= (first_api_level < pre_gki_level);
     return true;
 }
 
