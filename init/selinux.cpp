@@ -63,12 +63,15 @@
 #include <android-base/file.h>
 #include <android-base/logging.h>
 #include <android-base/parseint.h>
+#include <android-base/strings.h>
 #include <android-base/unique_fd.h>
 #include <fs_avb/fs_avb.h>
+#include <fs_mgr.h>
 #include <libgsi/libgsi.h>
 #include <libsnapshot/snapshot.h>
 #include <selinux/android.h>
 
+#include "block_dev_initializer.h"
 #include "debug_ramdisk.h"
 #include "reboot_utils.h"
 #include "util.h"
@@ -598,9 +601,63 @@ int SelinuxGetVendorAndroidVersion() {
     return vendor_android_version;
 }
 
+void MountMissingSystemPartitions() {
+    android::fs_mgr::Fstab fstab;
+    if (!ReadDefaultFstab(&fstab)) {
+        LOG(ERROR) << "Could not read default fstab";
+    }
+
+    std::optional<BlockDevInitializer> block_dev_init;
+
+    static const std::vector<std::string> kPartitionNames = {"system_ext"};
+    for (const auto& name : kPartitionNames) {
+        if (GetEntryForMountPoint(&fstab, "/"s + name)) {
+            // The partition is already in fstab.
+            continue;
+        }
+
+        auto system_entry = GetEntryForMountPoint(&fstab, "/system");
+        if (!system_entry) {
+            LOG(ERROR) << "Could not find mount entry for /system";
+            break;
+        }
+        if (!system_entry->fs_mgr_flags.logical) {
+            LOG(INFO) << "Skipping mount of " << name << ", system is not dynamic.";
+            break;
+        }
+
+        auto entry = *system_entry;
+        auto partition_name = name + fs_mgr_get_slot_suffix();
+        auto replace_name = "system"s + fs_mgr_get_slot_suffix();
+
+        entry.mount_point = "/"s + name;
+        entry.blk_device =
+                android::base::StringReplace(entry.blk_device, replace_name, partition_name, false);
+
+        if (entry.fs_mgr_flags.logical && !fs_mgr_update_logical_partition(&entry)) {
+            LOG(ERROR) << "Could not update logical partition";
+            continue;
+        }
+        if (access(entry.blk_device.c_str(), F_OK) != 0) {
+            block_dev_init.emplace();
+
+            auto block_dev = android::base::Basename(entry.blk_device);
+            if (!block_dev_init->InitDmDevice(block_dev)) {
+                LOG(ERROR) << "Failed to find device-mapper node: " << block_dev;
+                continue;
+            }
+        }
+        if (fs_mgr_do_mount_one(entry)) {
+            LOG(ERROR) << "Could not mount " << entry.mount_point;
+        }
+    }
+}
+
 int SetupSelinux(char** argv) {
     SetStdioToDevNull(argv);
     InitKernelLogging(argv);
+
+    MountMissingSystemPartitions();
 
     if (REBOOT_BOOTLOADER_ON_PANIC) {
         InstallRebootSignalHandlers();
