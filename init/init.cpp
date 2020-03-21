@@ -46,6 +46,7 @@
 #include <android-base/stringprintf.h>
 #include <android-base/strings.h>
 #include <fs_avb/fs_avb.h>
+#include <fs_mgr.h>
 #include <fs_mgr_vendor_overlay.h>
 #include <keyutils.h>
 #include <libavb/libavb.h>
