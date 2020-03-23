@@ -27,6 +27,8 @@
 #include <algorithm>
 #include <memory>
 
+#include <bionic/mte_kernel.h>
+
 #include <android-base/unique_fd.h>
 
 #include <unwindstack/Memory.h>
@@ -320,8 +322,26 @@ size_t MemoryRemote::Read(uint64_t addr, void* dst, size_t size) {
   }
 }
 
+long MemoryRemote::ReadTag(uint64_t addr) {
+#if defined(__aarch64__) && defined(ANDROID_EXPERIMENTAL_MTE)
+  return ptrace(PTRACE_PEEKTAG, pid_, (void*)addr, nullptr);
+#else
+  (void)addr;
+  return -1;
+#endif
+}
+
 size_t MemoryLocal::Read(uint64_t addr, void* dst, size_t size) {
   return ProcessVmRead(getpid(), addr, dst, size);
+}
+
+long MemoryLocal::ReadTag(uint64_t addr) {
+#if defined(__aarch64__) && defined(ANDROID_EXPERIMENTAL_MTE)
+  return ptrace(PTRACE_PEEKTAG, getpid(), (void*)addr, nullptr);
+#else
+  (void)addr;
+  return -1;
+#endif
 }
 
 MemoryRange::MemoryRange(const std::shared_ptr<Memory>& memory, uint64_t begin, uint64_t length,
@@ -473,6 +493,10 @@ size_t MemoryCache::Read(uint64_t addr, void* dst, size_t size) {
   }
   memcpy(dst, cache_dst, size - max_read);
   return size;
+}
+
+long MemoryCache::ReadTag(uint64_t addr) {
+  return impl_->ReadTag(addr);
 }
 
 }  // namespace unwindstack

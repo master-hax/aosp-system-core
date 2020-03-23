@@ -169,6 +169,7 @@ cc_library_static {
         "libdebuggerd/backtrace.cpp",
         "libdebuggerd/gwp_asan.cpp",
         "libdebuggerd/open_files_list.cpp",
+        "libdebuggerd/scudo.cpp",
         "libdebuggerd/tombstone.cpp",
         "libdebuggerd/utility.cpp",
     ],
@@ -177,7 +178,10 @@ cc_library_static {
     export_include_dirs: ["libdebuggerd/include"],
 
     // Needed for private/bionic_fdsan.h
-    include_dirs: ["bionic/libc"],
+    include_dirs: [
+        "bionic/libc",
+        "external/scudo/standalone/include",
+    ],
     header_libs: [
         "bionic_libc_platform_headers",
         "gwp_asan_headers",
@@ -192,7 +196,10 @@ cc_library_static {
         "liblog",
     ],
 
-    whole_static_libs: ["gwp_asan_crash_handler"],
+    whole_static_libs: [
+        "gwp_asan_crash_handler",
+        "libscudo",
+    ],
 
     target: {
         recovery: {
@@ -256,6 +263,10 @@ cc_test {
         "gwp_asan_headers",
     ],
 
+    include_dirs: [
+        "external/scudo/standalone/include",
+    ],
+
     local_include_dirs: [
         "libdebuggerd",
     ],
@@ -271,6 +282,12 @@ cc_test {
     },
 
     test_suites: ["device-tests"],
+
+    product_variables: {
+        experimental_mte: {
+            cflags: ["-DANDROID_EXPERIMENTAL_MTE"],
+        },
+    },
 }
 
 cc_benchmark {
