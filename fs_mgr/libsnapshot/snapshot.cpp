@@ -77,7 +77,6 @@ using namespace std::string_literals;
 
 static constexpr char kBootIndicatorPath[] = "/metadata/ota/snapshot-boot";
 static constexpr char kRollbackIndicatorPath[] = "/metadata/ota/rollback-indicator";
-static constexpr char kPropBuildDateUTC[] = "ro.build.date.utc";
 static constexpr auto kUpdateStateCheckInterval = 2s;
 
 // Note: IImageManager is an incomplete type in the header, so the default
@@ -2115,6 +2114,10 @@ Return SnapshotManager::CreateUpdateSnapshots(const DeltaArchiveManifest& manife
         return Return::Error();
     }
 
+    if (!UpdateForwardMergeIndicator(manifest.max_timestamp())) {
+        return Return::Error();
+    }
+
     const auto& opener = device_->GetPartitionOpener();
     auto current_suffix = device_->GetSlotSuffix();
     uint32_t current_slot = SlotNumberForSlotSuffix(current_suffix);
@@ -2634,6 +2637,21 @@ CreateResult SnapshotManager::RecoveryCreateSnapshotDevices(
         return CreateResult::ERROR;
     }
     return CreateResult::CREATED;
+}
+
+bool SnapshotManager::UpdateForwardMergeIndicator(int64_t manifest_timestamp) {
+    auto path = GetForwardMergeIndicatorPath();
+    if (manifest_timestamp >= device_->GetBuildTimestamp()) {
+        return RemoveFileIfExists(path);
+    }
+
+    LOG(INFO) << "Downgrade detected, allowing forward merge of snapshots.";
+    if (!android::base::WriteStringToFile("1", path)) {
+        PLOG(ERROR) << "Unable to write forward merge indicator: " << path;
+        return false;
+    }
+
+    return true;
 }
 
 }  // namespace snapshot

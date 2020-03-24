@@ -15,6 +15,7 @@
 #include "device_info.h"
 
 #include <android-base/logging.h>
+#include <android-base/properties.h>
 #include <fs_mgr.h>
 #include <fs_mgr_overlayfs.h>
 
@@ -33,6 +34,8 @@ constexpr bool kIsRecovery = true;
 #else
 constexpr bool kIsRecovery = false;
 #endif
+
+static constexpr char kPropBuildDateUTC[] = "ro.build.date.utc";
 
 std::string DeviceInfo::GetGsidDir() const {
     return "ota"s;
@@ -118,6 +121,10 @@ bool DeviceInfo::SetSlotAsUnbootable([[maybe_unused]] unsigned int slot) {
     LOG(ERROR) << "HAL support not enabled.";
     return false;
 #endif
+}
+
+int64_t DeviceInfo::GetBuildTimestamp() const {
+    return android::base::GetIntProperty<int64_t>(kPropBuildDateUTC, 0);
 }
 
 }  // namespace snapshot
