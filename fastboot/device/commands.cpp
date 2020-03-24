@@ -31,6 +31,7 @@
 #include <cutils/android_reboot.h>
 #include <ext4_utils/wipe.h>
 #include <fs_mgr.h>
+#include <fs_mgr/roots.h>
 #include <libgsi/libgsi.h>
 #include <liblp/builder.h>
 #include <liblp/liblp.h>
@@ -42,6 +43,8 @@
 #include "flashing.h"
 #include "utility.h"
 
+using android::fs_mgr::EnsurePathUnmounted;
+using android::fs_mgr::Fstab;
 using android::fs_mgr::MetadataBuilder;
 using ::android::hardware::hidl_string;
 using ::android::hardware::boot::V1_0::BoolResult;
@@ -535,6 +538,13 @@ bool FlashHandler(FastbootDevice* device, const std::vector<std::string>& args) 
 
     if (LogicalPartitionExists(device, partition_name)) {
         CancelPartitionSnapshot(device, partition_name);
+    }
+
+    if (partition_name == "cache") {
+        Fstab fstab;
+        if (ReadDefaultFstab(&fstab) && !EnsurePathUnmounted(&fstab, "/cache")) {
+            return device->WriteStatus(FastbootResult::FAIL, "Could not unmount partition");
+        }
     }
 
     int ret = Flash(device, partition_name);
