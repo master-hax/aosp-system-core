@@ -142,7 +142,9 @@ class SnapshotManager final {
     // be created, and the device must either cancel the OTA (either before
     // rebooting or after rolling back), or merge the OTA.
     // Before calling this function, all snapshots must be mapped.
-    bool FinishedSnapshotWrites();
+    // If |wipe| is set to true, wipe is scheduled after reboot, and snapshots
+    // may need to be merged before wiping.
+    bool FinishedSnapshotWrites(bool wipe);
 
     // Initiate a merge on all snapshot devices. This should only be used after an
     // update has been marked successful after booting.
@@ -522,6 +524,11 @@ class SnapshotManager final {
     // Check whether |name| should be deleted as a snapshot name.
     bool ShouldDeleteSnapshot(LockedFile* lock, const std::map<std::string, bool>& flashing_status,
                               Slot current_slot, const std::string& name);
+
+    // Create or delete forward merge indicator given |manifest_timestamp|. Compare
+    // |manifest_timestamp| with the timestamp of the current build. Iff downgrade is detected,
+    // allow forward merge on FDR.
+    bool UpdateForwardMergeIndicator(int64_t manifest_timestamp);
 
     std::string gsid_dir_;
     std::string metadata_dir_;
