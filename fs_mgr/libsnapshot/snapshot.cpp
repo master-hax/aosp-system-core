@@ -2522,6 +2522,19 @@ bool SnapshotManager::HandleImminentDataWipe() {
         return false;
     }
 
+    if (!ProcessUpdateStateOnDataWipe(true /* allow_forward_merge */)) {
+        return false;
+    }
+
+    // Nothing should be depending on partitions now, so unmap them all.
+    if (!UnmapAllPartitions()) {
+        LOG(ERROR) << "Unable to unmap all partitions; fastboot may fail to flash.";
+    }
+    return true;
+}
+
+bool SnapshotManager::ProcessUpdateStateOnDataWipe(bool allow_forward_merge) {
+    auto slot_number = SlotNumberForSlotSuffix(device_->GetSlotSuffix());
     UpdateState state = ProcessUpdateState([&]() -> bool {
         return true;
     });
@@ -2531,7 +2544,12 @@ bool SnapshotManager::HandleImminentDataWipe() {
             LOG(ERROR) << "Unrecoverable merge failure detected.";
             return false;
         case UpdateState::Unverified: {
-            // If an OTA was just applied but has not yet started merging, we
+            // If an OTA was just applied but has not yet started merging:
+            //
+            // - if forward merge is allowed, initiate merge and call
+            // ProcessUpdateState again.
+            //
+            // - if forward merge is not allowed, we
             // have no choice but to revert slots, because the current slot will
             // immediately become unbootable. Rather than wait for the device
             // to reboot N times until a rollback, we proactively disable the
@@ -2541,8 +2559,17 @@ bool SnapshotManager::HandleImminentDataWipe() {
             // as an error here.
             auto slot = GetCurrentSlot();
             if (slot == Slot::Target) {
+                if (allow_forward_merge &&
+                    access(GetForwardMergeIndicatorPath().c_str(), F_OK) == 0) {
+                    LOG(INFO) << "Forward merge allowed, initiating merge now.";
+                    return InitiateMerge() &&
+                           ProcessUpdateStateOnDataWipe(false /* allow_forward_merge */);
+                }
+
                 LOG(ERROR) << "Reverting to old slot since update will be deleted.";
                 device_->SetSlotAsUnbootable(slot_number);
+            } else {
+                LOG(INFO) << "Booting from " << slot << " slot, no action is taken.";
             }
             break;
         }
@@ -2553,11 +2580,6 @@ bool SnapshotManager::HandleImminentDataWipe() {
             break;
         default:
             break;
-    }
-
-    // Nothing should be depending on partitions now, so unmap them all.
-    if (!UnmapAllPartitions()) {
-        LOG(ERROR) << "Unable to unmap all partitions; fastboot may fail to flash.";
     }
     return true;
 }
