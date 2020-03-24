@@ -219,7 +219,7 @@ class SnapshotManager final {
     //
     // Returns true on success (or nothing to do), false on failure. The
     // optional callback fires periodically to query progress via GetUpdateState.
-    bool HandleImminentDataWipe(const std::function<void()>& callback = {});
+    bool HandleImminentDataWipe();
 
     // This method is only allowed in recovery and is used as a helper to
     // initialize the snapshot devices as a requirement to mount a snapshotted
