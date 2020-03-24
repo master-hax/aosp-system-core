@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7b265b49_be83aa75",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2020-03-24T09:20:23Z",
+      "side": 1,
+      "message": "This seems unintentional?",
+      "range": {
+        "startLine": 15,
+        "startChar": 52,
+        "endLine": 20,
+        "endChar": 52
+      },
+      "revId": "55f311263692d99fcea938e49f616a67e9902229",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
