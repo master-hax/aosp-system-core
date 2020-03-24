@@ -32,6 +32,7 @@
 #include <unistd.h>
 
 #include <memory>
+#include <optional>
 #include <vector>
 
 #if defined(__APPLE__)
@@ -675,31 +676,40 @@ static int32_t FindEntry(const ZipArchive* archive, std::string_view entryName,
 struct IterationHandle {
   ZipArchive* archive;
 
-  std::string prefix;
-  std::string suffix;
+  std::function<bool(std::string_view)> matcher;
 
   uint32_t position = 0;
 
-  IterationHandle(ZipArchive* archive, std::string_view in_prefix, std::string_view in_suffix)
-      : archive(archive), prefix(in_prefix), suffix(in_suffix) {}
+  IterationHandle(ZipArchive* archive, std::function<bool(std::string_view)> in_matcher)
+      : archive(archive), matcher(std::move(in_matcher)) {}
+
+  bool Match(std::string_view entry_name) const { return matcher(entry_name); }
 };
 
 int32_t StartIteration(ZipArchiveHandle archive, void** cookie_ptr,
                        const std::string_view optional_prefix,
                        const std::string_view optional_suffix) {
-  if (archive == nullptr || archive->cd_entry_map == nullptr) {
-    ALOGW("Zip: Invalid ZipArchiveHandle");
-    return kInvalidHandle;
-  }
-
   if (optional_prefix.size() > static_cast<size_t>(UINT16_MAX) ||
       optional_suffix.size() > static_cast<size_t>(UINT16_MAX)) {
     ALOGW("Zip: prefix/suffix too long");
     return kInvalidEntryName;
   }
+  auto matcher = [prefix = std::string(optional_prefix),
+                  suffix = std::string(optional_suffix)](std::string_view name) mutable {
+    return android::base::StartsWith(name, prefix) && android::base::EndsWith(name, suffix);
+  };
+  return StartIteration(archive, cookie_ptr, std::move(matcher));
+}
+
+int32_t StartIteration(ZipArchiveHandle archive, void** cookie_ptr,
+                       std::function<bool(std::string_view)> matcher) {
+  if (archive == NULL || archive->hash_table == NULL) {
+    ALOGW("Zip: Invalid ZipArchiveHandle");
+    return kInvalidHandle;
+  }
 
   archive->cd_entry_map->ResetIteration();
-  *cookie_ptr = new IterationHandle(archive, optional_prefix, optional_suffix);
+  *cookie_ptr = new IterationHandle(archive, matcher);
   return 0;
 }
 
