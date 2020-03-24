@@ -109,7 +109,6 @@ class SnapshotManager final {
         virtual bool SetBootControlMergeStatus(MergeStatus status) = 0;
         virtual bool SetSlotAsUnbootable(unsigned int slot) = 0;
         virtual bool IsRecovery() const = 0;
-        virtual int64_t GetBuildTimestamp() const = 0;
     };
 
     ~SnapshotManager();
@@ -526,10 +525,16 @@ class SnapshotManager final {
     bool ShouldDeleteSnapshot(LockedFile* lock, const std::map<std::string, bool>& flashing_status,
                               Slot current_slot, const std::string& name);
 
-    // Create or delete forward merge indicator given |manifest_timestamp|. Compare
-    // |manifest_timestamp| with the timestamp of the current build. Iff downgrade is detected,
+    // Create or delete forward merge indicator given |wipe|. Iff wipe is scheduled,
     // allow forward merge on FDR.
-    bool UpdateForwardMergeIndicator(int64_t manifest_timestamp);
+    bool UpdateForwardMergeIndicator(bool wipe);
+
+    // Helper for HandleImminentDataWipe.
+    // Call ProcessUpdateState and handle states with special rules before data wipe. Specifically,
+    // if |allow_forward_merge| and allow-forward-merge indicator exists, initiate merge if
+    // necessary.
+    bool ProcessUpdateStateOnDataWipe(bool allow_forward_merge,
+                                      const std::function<bool()>& callback);
 
     std::string gsid_dir_;
     std::string metadata_dir_;
