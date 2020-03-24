@@ -2474,7 +2474,7 @@ std::unique_ptr<AutoDevice> SnapshotManager::EnsureMetadataMounted() {
     return AutoUnmountDevice::New(device_->GetMetadataDir());
 }
 
-bool SnapshotManager::HandleImminentDataWipe(const std::function<void()>& callback) {
+bool SnapshotManager::HandleImminentDataWipe() {
     if (!device_->IsRecovery()) {
         LOG(ERROR) << "Data wipes are only allowed in recovery.";
         return false;
@@ -2505,7 +2505,6 @@ bool SnapshotManager::HandleImminentDataWipe(const std::function<void()>& callba
     }
 
     UpdateState state = ProcessUpdateState([&]() -> bool {
-        callback();
         return true;
     });
     LOG(INFO) << "Update state in recovery: " << state;
