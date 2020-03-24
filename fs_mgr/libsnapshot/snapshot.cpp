@@ -77,6 +77,7 @@ using namespace std::string_literals;
 
 static constexpr char kBootIndicatorPath[] = "/metadata/ota/snapshot-boot";
 static constexpr char kRollbackIndicatorPath[] = "/metadata/ota/rollback-indicator";
+static constexpr char kPropBuildDateUTC[] = "ro.build.date.utc";
 static constexpr auto kUpdateStateCheckInterval = 2s;
 
 // Note: IImageManager is an incomplete type in the header, so the default
@@ -228,10 +229,17 @@ bool SnapshotManager::RemoveAllUpdateState(LockedFile* lock, const std::function
         return false;
     }
 
-    // It's okay if these fail - first-stage init performs a deeper check after
+    // It's okay if these fail:
+    // - For SnapshotBoot and Rollback, first-stage init performs a deeper check after
     // reading the indicator file, so it's not a problem if it still exists
     // after the update completes.
-    std::vector<std::string> files = {GetSnapshotBootIndicatorPath(), GetRollbackIndicatorPath()};
+    // - For ForwardMerge, CreateUpdateSnapshots asserts that the existence of the indicator matches
+    // the incoming update.
+    std::vector<std::string> files = {
+            GetSnapshotBootIndicatorPath(),
+            GetRollbackIndicatorPath(),
+            GetForwardMergeIndicatorPath(),
+    };
     for (const auto& file : files) {
         RemoveFileIfExists(file);
     }
@@ -990,6 +998,10 @@ std::string SnapshotManager::GetSnapshotBootIndicatorPath() {
 
 std::string SnapshotManager::GetRollbackIndicatorPath() {
     return metadata_dir_ + "/" + android::base::Basename(kRollbackIndicatorPath);
+}
+
+std::string SnapshotManager::GetForwardMergeIndicatorPath() {
+    return metadata_dir_ + "/allow-forward-merge";
 }
 
 void SnapshotManager::AcknowledgeMergeSuccess(LockedFile* lock) {
@@ -2437,6 +2449,9 @@ bool SnapshotManager::Dump(std::ostream& os) {
     ss << "Boot indicator: booting from " << GetCurrentSlot() << " slot" << std::endl;
     ss << "Rollback indicator: "
        << (access(GetRollbackIndicatorPath().c_str(), F_OK) == 0 ? "exists" : strerror(errno))
+       << std::endl;
+    ss << "Forward merge indicator: "
+       << (access(GetForwardMergeIndicatorPath().c_str(), F_OK) == 0 ? "exists" : strerror(errno))
        << std::endl;
 
     bool ok = true;
