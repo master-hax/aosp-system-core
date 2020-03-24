@@ -95,6 +95,7 @@ class TestDeviceInfo : public SnapshotManager::IDeviceInfo {
         unbootable_slots_.insert(slot);
         return true;
     }
+    int64_t GetBuildTimestamp() const override { return build_timestamp_; }
 
     bool IsSlotUnbootable(uint32_t slot) { return unbootable_slots_.count(slot) != 0; }
 
@@ -111,6 +112,7 @@ class TestDeviceInfo : public SnapshotManager::IDeviceInfo {
     MergeStatus merge_status_;
     bool recovery_ = false;
     std::unordered_set<uint32_t> unbootable_slots_;
+    int64_t build_timestamp_ = 0;
 };
 
 class SnapshotTestPropertyFetcher : public android::fs_mgr::testing::MockPropertyFetcher {
