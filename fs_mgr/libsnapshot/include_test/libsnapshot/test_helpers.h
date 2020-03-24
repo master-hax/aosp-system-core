@@ -105,6 +105,7 @@ class TestDeviceInfo : public SnapshotManager::IDeviceInfo {
     }
     void set_recovery(bool value) { recovery_ = value; }
     MergeStatus merge_status() const { return merge_status_; }
+    void set_build_timestamp(int64_t timestamp) { build_timestamp_ = timestamp; }
 
   private:
     std::string slot_suffix_ = "_a";
