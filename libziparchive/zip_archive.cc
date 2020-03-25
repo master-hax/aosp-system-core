@@ -406,15 +406,6 @@ static ZipError ParseZip64ExtendedInfoInExtraField(
       return kInvalidFile;
     }
 
-    // TODO(xunchang) Support handling file large than UINT32_MAX. It's theoretically possible
-    // for libz to (de)compressing file larger than UINT32_MAX. But we should use our own
-    // bytes counter to replace stream.total_out.
-    if ((uncompressedFileSize.has_value() && uncompressedFileSize.value() > UINT32_MAX) ||
-        (compressedFileSize.has_value() && compressedFileSize.value() > UINT32_MAX)) {
-      ALOGW("Zip: File size larger than UINT32_MAX isn't supported yet");
-      return kInvalidFile;
-    }
-
     zip64Info->uncompressed_file_size = uncompressedFileSize;
     zip64Info->compressed_file_size = compressedFileSize;
     zip64Info->local_header_offset = localHeaderOffset;
@@ -644,13 +635,17 @@ static int32_t ValidateDataDescriptor(MappedZipFile& mapped_zip, ZipEntry* entry
   if (entry->compressed_length != descriptor.compressed_size ||
       entry->uncompressed_length != descriptor.uncompressed_size ||
       entry->crc32 != descriptor.crc32) {
-    ALOGW("Zip: size/crc32 mismatch. expected {%" PRIu32 ", %" PRIu32 ", %" PRIx32
+    ALOGW("Zip: size/crc32 mismatch. expected {%" PRIu64 ", %" PRIu64 ", %" PRIx32
           "}, was {%" PRIu64 ", %" PRIu64 ", %" PRIx32 "}",
           entry->compressed_length, entry->uncompressed_length, entry->crc32,
           descriptor.compressed_size, descriptor.uncompressed_size, descriptor.crc32);
     return kInconsistentInformation;
   }
 
+  ALOGW("Zip: size/crc32 match. expected {%" PRIu64 ", %" PRIu64 ", %" PRIx32 "}, was {%" PRIu64
+        ", %" PRIu64 ", %" PRIx32 "}",
+        entry->compressed_length, entry->uncompressed_length, entry->crc32,
+        descriptor.compressed_size, descriptor.uncompressed_size, descriptor.crc32);
   return 0;
 }
 
@@ -704,11 +699,8 @@ static int32_t FindEntry(const ZipArchive* archive, std::string_view entryName,
       return status;
     }
 
-    // TODO(xunchang) remove the size limit and support entry length > UINT32_MAX.
-    data->uncompressed_length =
-        static_cast<uint32_t>(zip64_info.uncompressed_file_size.value_or(cdr->uncompressed_size));
-    data->compressed_length =
-        static_cast<uint32_t>(zip64_info.compressed_file_size.value_or(cdr->compressed_size));
+    data->uncompressed_length = zip64_info.uncompressed_file_size.value_or(cdr->uncompressed_size);
+    data->compressed_length = zip64_info.compressed_file_size.value_or(cdr->compressed_size);
     local_header_offset = zip64_info.local_header_offset.value_or(local_header_offset);
     data->zip64_format_size =
         cdr->uncompressed_size == UINT32_MAX || cdr->compressed_size == UINT32_MAX;
@@ -822,7 +814,7 @@ static int32_t FindEntry(const ZipArchive* archive, std::string_view entryName,
     data->has_data_descriptor = 0;
     if (data->compressed_length != lfh_compressed_size ||
         data->uncompressed_length != lfh_uncompressed_size || data->crc32 != lfh->crc32) {
-      ALOGW("Zip: size/crc32 mismatch. expected {%" PRIu32 ", %" PRIu32 ", %" PRIx32
+      ALOGW("Zip: size/crc32 mismatch. expected {%" PRIu64 ", %" PRIu64 ", %" PRIx32
             "}, was {%" PRIu64 ", %" PRIu64 ", %" PRIx32 "}",
             data->compressed_length, data->uncompressed_length, data->crc32, lfh_compressed_size,
             lfh_uncompressed_size, lfh->crc32);
@@ -855,16 +847,15 @@ static int32_t FindEntry(const ZipArchive* archive, std::string_view entryName,
     return kInvalidOffset;
   }
 
-  if (static_cast<off64_t>(data_offset + data->compressed_length) > cd_offset) {
-    ALOGW("Zip: bad compressed length in zip (%" PRId64 " + %" PRIu32 " > %" PRId64 ")",
+  if (data->compressed_length > cd_offset - data_offset) {
+    ALOGW("Zip: bad compressed length in zip (%" PRId64 " + %" PRIu64 " > %" PRId64 ")",
           static_cast<int64_t>(data_offset), data->compressed_length,
           static_cast<int64_t>(cd_offset));
     return kInvalidOffset;
   }
 
-  if (data->method == kCompressStored &&
-      static_cast<off64_t>(data_offset + data->uncompressed_length) > cd_offset) {
-    ALOGW("Zip: bad uncompressed length in zip (%" PRId64 " + %" PRIu32 " > %" PRId64 ")",
+  if (data->method == kCompressStored && data->uncompressed_length > cd_offset - data_offset) {
+    ALOGW("Zip: bad uncompressed length in zip (%" PRId64 " + %" PRIu64 " > %" PRId64 ")",
           static_cast<int64_t>(data_offset), data->uncompressed_length,
           static_cast<int64_t>(cd_offset));
     return kInvalidOffset;
@@ -1011,7 +1002,7 @@ class FileWriter : public zip_archive::Writer {
   //
   // Returns a valid FileWriter on success, |nullptr| if an error occurred.
   static FileWriter Create(int fd, const ZipEntry* entry) {
-    const uint32_t declared_length = entry->uncompressed_length;
+    const uint64_t declared_length = entry->uncompressed_length;
     const off64_t current_offset = lseek64(fd, 0, SEEK_CUR);
     if (current_offset == -1) {
       ALOGW("Zip: unable to seek to current location on fd %d: %s", fd, strerror(errno));
@@ -1031,9 +1022,8 @@ class FileWriter : public zip_archive::Writer {
       // disk does not have enough space.
       long result = TEMP_FAILURE_RETRY(fallocate(fd, 0, current_offset, declared_length));
       if (result == -1 && errno == ENOSPC) {
-        ALOGW("Zip: unable to allocate %" PRId64 " bytes at offset %" PRId64 ": %s",
-              static_cast<int64_t>(declared_length), static_cast<int64_t>(current_offset),
-              strerror(errno));
+        ALOGW("Zip: unable to allocate %" PRIu64 " bytes at offset %" PRId64 ": %s",
+              declared_length, static_cast<int64_t>(current_offset), strerror(errno));
         return FileWriter{};
       }
     }
@@ -1069,7 +1059,7 @@ class FileWriter : public zip_archive::Writer {
 
   virtual bool Append(uint8_t* buf, size_t buf_size) override {
     if (total_bytes_written_ + buf_size > declared_length_) {
-      ALOGW("Zip: Unexpected size %zu (declared) vs %zu (actual)", declared_length_,
+      ALOGW("Zip: Unexpected size %" PRIu64 " (declared) vs %" PRIu64 " (actual)", declared_length_,
             total_bytes_written_ + buf_size);
       return false;
     }
@@ -1085,12 +1075,12 @@ class FileWriter : public zip_archive::Writer {
   }
 
  private:
-  explicit FileWriter(const int fd = -1, const size_t declared_length = 0)
+  explicit FileWriter(const int fd = -1, const uint64_t declared_length = 0)
       : Writer(), fd_(fd), declared_length_(declared_length), total_bytes_written_(0) {}
 
   int fd_;
-  const size_t declared_length_;
-  size_t total_bytes_written_;
+  const uint64_t declared_length_;
+  uint64_t total_bytes_written_;
 };
 
 class EntryReader : public zip_archive::Reader {
@@ -1098,7 +1088,7 @@ class EntryReader : public zip_archive::Reader {
   EntryReader(const MappedZipFile& zip_file, const ZipEntry* entry)
       : Reader(), zip_file_(zip_file), entry_(entry) {}
 
-  virtual bool ReadAtOffset(uint8_t* buf, size_t len, uint32_t offset) const {
+  virtual bool ReadAtOffset(uint8_t* buf, size_t len, off64_t offset) const {
     return zip_file_.ReadAtOffset(buf, len, entry_->offset + offset);
   }
 
@@ -1123,8 +1113,8 @@ namespace zip_archive {
 Reader::~Reader() {}
 Writer::~Writer() {}
 
-int32_t Inflate(const Reader& reader, const uint32_t compressed_length,
-                const uint32_t uncompressed_length, Writer* writer, uint64_t* crc_out) {
+int32_t Inflate(const Reader& reader, const uint64_t compressed_length,
+                const uint64_t uncompressed_length, Writer* writer, uint64_t* crc_out) {
   const size_t kBufSize = 32768;
   std::vector<uint8_t> read_buf(kBufSize);
   std::vector<uint8_t> write_buf(kBufSize);
@@ -1167,12 +1157,14 @@ int32_t Inflate(const Reader& reader, const uint32_t compressed_length,
 
   const bool compute_crc = (crc_out != nullptr);
   uLong crc = 0;
-  uint32_t remaining_bytes = compressed_length;
+  uint64_t remaining_bytes = compressed_length;
+  uint64_t total_output = 0;
   do {
     /* read as much as we can */
     if (zstream.avail_in == 0) {
-      const uint32_t read_size = (remaining_bytes > kBufSize) ? kBufSize : remaining_bytes;
-      const uint32_t offset = (compressed_length - remaining_bytes);
+      const uint32_t read_size =
+          (remaining_bytes > kBufSize) ? kBufSize : static_cast<uint32_t>(remaining_bytes);
+      const off64_t offset = (compressed_length - remaining_bytes);
       // Make sure to read at offset to ensure concurrent access to the fd.
       if (!reader.ReadAtOffset(read_buf.data(), read_size, offset)) {
         ALOGW("Zip: inflate read failed, getSize = %u: %s", read_size, strerror(errno));
@@ -1203,6 +1195,7 @@ int32_t Inflate(const Reader& reader, const uint32_t compressed_length,
         crc = crc32(crc, &write_buf[0], static_cast<uint32_t>(write_size));
       }
 
+      total_output += kBufSize - zstream.avail_out;
       zstream.next_out = &write_buf[0];
       zstream.avail_out = kBufSize;
     }
@@ -1219,9 +1212,10 @@ int32_t Inflate(const Reader& reader, const uint32_t compressed_length,
   if (compute_crc) {
     *crc_out = crc;
   }
-
-  if (zstream.total_out != uncompressed_length || remaining_bytes != 0) {
-    ALOGW("Zip: size mismatch on inflated file (%lu vs %" PRIu32 ")", zstream.total_out,
+  ALOGW("Zip: size on inflated file (%" PRIu64 " vs %" PRIu64 ")", total_output,
+        uncompressed_length);
+  if (total_output != uncompressed_length || remaining_bytes != 0) {
+    ALOGW("Zip: size mismatch on inflated file (%lu vs %" PRIu64 ")", zstream.total_out,
           uncompressed_length);
     return kInconsistentInformation;
   }
@@ -1243,15 +1237,16 @@ static int32_t CopyEntryToWriter(MappedZipFile& mapped_zip, const ZipEntry* entr
   static const uint32_t kBufSize = 32768;
   std::vector<uint8_t> buf(kBufSize);
 
-  const uint32_t length = entry->uncompressed_length;
-  uint32_t count = 0;
+  const uint64_t length = entry->uncompressed_length;
+  uint64_t count = 0;
   uLong crc = 0;
   while (count < length) {
-    uint32_t remaining = length - count;
+    uint64_t remaining = length - count;
     off64_t offset = entry->offset + count;
 
     // Safe conversion because kBufSize is narrow enough for a 32 bit signed value.
-    const uint32_t block_size = (remaining > kBufSize) ? kBufSize : remaining;
+    const uint32_t block_size =
+        (remaining > kBufSize) ? kBufSize : static_cast<uint32_t>(remaining);
 
     // Make sure to read at offset to ensure concurrent access to the fd.
     if (!mapped_zip.ReadAtOffset(buf.data(), block_size, offset)) {
@@ -1300,7 +1295,7 @@ int32_t ExtractToWriter(ZipArchiveHandle archive, ZipEntry* entry, zip_archive::
   return return_value;
 }
 
-int32_t ExtractToMemory(ZipArchiveHandle archive, ZipEntry* entry, uint8_t* begin, uint32_t size) {
+int32_t ExtractToMemory(ZipArchiveHandle archive, ZipEntry* entry, uint8_t* begin, size_t size) {
   MemoryWriter writer(begin, size);
   return ExtractToWriter(archive, entry, &writer);
 }

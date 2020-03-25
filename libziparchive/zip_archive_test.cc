@@ -417,7 +417,7 @@ TEST(ziparchive, OpenArchiveFdRange) {
   // An entry that's deflated.
   ZipEntry data;
   ASSERT_EQ(0, FindEntry(handle, "a.txt", &data));
-  const uint32_t a_size = data.uncompressed_length;
+  const auto a_size = static_cast<uint32_t>(data.uncompressed_length);
   ASSERT_EQ(a_size, kATxtContents.size());
   auto buffer = std::unique_ptr<uint8_t[]>(new uint8_t[a_size]);
   ASSERT_EQ(0, ExtractToMemory(handle, &data, buffer.get(), a_size));
@@ -425,7 +425,7 @@ TEST(ziparchive, OpenArchiveFdRange) {
 
   // An entry that's stored.
   ASSERT_EQ(0, FindEntry(handle, "b.txt", &data));
-  const uint32_t b_size = data.uncompressed_length;
+  const auto b_size = static_cast<uint32_t>(data.uncompressed_length);
   ASSERT_EQ(b_size, kBTxtContents.size());
   buffer = std::unique_ptr<uint8_t[]>(new uint8_t[b_size]);
   ASSERT_EQ(0, ExtractToMemory(handle, &data, buffer.get(), b_size));
@@ -441,7 +441,7 @@ TEST(ziparchive, ExtractToMemory) {
   // An entry that's deflated.
   ZipEntry data;
   ASSERT_EQ(0, FindEntry(handle, "a.txt", &data));
-  const uint32_t a_size = data.uncompressed_length;
+  const auto a_size = static_cast<uint32_t>(data.uncompressed_length);
   ASSERT_EQ(a_size, kATxtContents.size());
   uint8_t* buffer = new uint8_t[a_size];
   ASSERT_EQ(0, ExtractToMemory(handle, &data, buffer, a_size));
@@ -450,7 +450,7 @@ TEST(ziparchive, ExtractToMemory) {
 
   // An entry that's stored.
   ASSERT_EQ(0, FindEntry(handle, "b.txt", &data));
-  const uint32_t b_size = data.uncompressed_length;
+  const auto b_size = static_cast<uint32_t>(data.uncompressed_length);
   ASSERT_EQ(b_size, kBTxtContents.size());
   buffer = new uint8_t[b_size];
   ASSERT_EQ(0, ExtractToMemory(handle, &data, buffer, b_size));
@@ -594,9 +594,9 @@ TEST(ziparchive, ExtractToFile) {
   ASSERT_EQ(0, memcmp(read_buffer, data, data_size));
 
   // Assert that the remainder of the file contains the incompressed data.
-  std::vector<uint8_t> uncompressed_data(entry.uncompressed_length);
-  ASSERT_TRUE(
-      android::base::ReadFully(tmp_file.fd, uncompressed_data.data(), entry.uncompressed_length));
+  std::vector<uint8_t> uncompressed_data(static_cast<size_t>(entry.uncompressed_length));
+  ASSERT_TRUE(android::base::ReadFully(tmp_file.fd, uncompressed_data.data(),
+                                       static_cast<size_t>(entry.uncompressed_length)));
   ASSERT_EQ(0, memcmp(&uncompressed_data[0], kATxtContents.data(), kATxtContents.size()));
 
   // Assert that the total length of the file is sane
@@ -635,13 +635,13 @@ static void ZipArchiveStreamTest(ZipArchiveHandle& handle, const std::string& en
   if (raw) {
     stream.reset(ZipArchiveStreamEntry::CreateRaw(handle, *entry));
     if (entry->method == kCompressStored) {
-      read_data->resize(entry->uncompressed_length);
+      read_data->resize(static_cast<size_t>(entry->uncompressed_length));
     } else {
-      read_data->resize(entry->compressed_length);
+      read_data->resize(static_cast<size_t>(entry->compressed_length));
     }
   } else {
     stream.reset(ZipArchiveStreamEntry::Create(handle, *entry));
-    read_data->resize(entry->uncompressed_length);
+    read_data->resize(static_cast<size_t>(entry->uncompressed_length));
   }
   uint8_t* read_data_ptr = read_data->data();
   ASSERT_TRUE(stream.get() != nullptr);
@@ -681,7 +681,7 @@ static void ZipArchiveStreamTestUsingMemory(const std::string& zip_file,
   std::vector<uint8_t> read_data;
   ZipArchiveStreamTest(handle, entry_name, false, true, &entry, &read_data);
 
-  std::vector<uint8_t> cmp_data(entry.uncompressed_length);
+  std::vector<uint8_t> cmp_data(static_cast<size_t>(entry.uncompressed_length));
   ASSERT_EQ(entry.uncompressed_length, read_data.size());
   ASSERT_EQ(
       0, ExtractToMemory(handle, &entry, cmp_data.data(), static_cast<uint32_t>(cmp_data.size())));
@@ -887,12 +887,12 @@ class VectorReader : public zip_archive::Reader {
  public:
   VectorReader(const std::vector<uint8_t>& input) : Reader(), input_(input) {}
 
-  bool ReadAtOffset(uint8_t* buf, size_t len, uint32_t offset) const {
+  bool ReadAtOffset(uint8_t* buf, size_t len, off64_t offset) const {
     if ((offset + len) < input_.size()) {
       return false;
     }
 
-    memcpy(buf, &input_[offset], len);
+    memcpy(buf, &input_[static_cast<size_t>(offset)], len);
     return true;
   }
 
@@ -919,7 +919,7 @@ class BadReader : public zip_archive::Reader {
  public:
   BadReader() : Reader() {}
 
-  bool ReadAtOffset(uint8_t*, size_t, uint32_t) const { return false; }
+  bool ReadAtOffset(uint8_t*, size_t, off64_t) const { return false; }
 };
 
 class BadWriter : public zip_archive::Writer {
