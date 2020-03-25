@@ -645,10 +645,13 @@ provides the `aidl_lazy_test_1` interface.
   within _value_. If property _name_ is already set to _value_, continue
   immediately.
 
-`write <path> <content>`
+`write <path> <content> [timeout]`
 > Open the file at _path_ and write a string to it with write(2).
   If the file does not exist, it will be created. If it does exist,
   it will be truncated. Properties are expanded within _content_.
+  _timeout_ is optional, if it is specified and _path_ isn't ready,
+  the behavior is same as the _wait_ command, i.e. wait until the
+  _path_ is ready or the timeout has been reached.
 
 
 Imports

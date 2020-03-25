@@ -845,10 +845,28 @@ static Result<void> do_verity_update_state(const BuiltinArguments& args) {
     return {};
 }
 
+static Result<void> do_wait(const BuiltinArguments& args);
+
 static Result<void> do_write(const BuiltinArguments& args) {
     if (auto result = WriteFile(args[1], args[2]); !result.ok()) {
-        return ErrorIgnoreEnoent()
-               << "Unable to write to file '" << args[1] << "': " << result.error();
+        if (args.size() == 4) {
+            auto waitArgs = BuiltinArguments(args.context);
+            waitArgs.args.resize(3);
+            waitArgs.args[0] = "wait";
+            waitArgs.args[1] = args[1];
+            waitArgs.args[2] = args[3];
+            if (auto result1 = do_wait(waitArgs); !result1.ok()) {
+                return ErrorIgnoreEnoent()
+                       << "Unable to wait to file '" << args[1] << "': " << result1.error();
+            }
+            if (auto result2 = WriteFile(args[1], args[2]); !result2.ok()) {
+                return ErrorIgnoreEnoent()
+                       << "Still unable to write to file '" << args[1] << "': " << result2.error();
+            }
+        } else {
+            return ErrorIgnoreEnoent()
+                   << "Unable to write to file '" << args[1] << "': " << result.error();
+        }
     }
 
     return {};
@@ -1372,7 +1390,7 @@ const BuiltinFunctionMap& GetBuiltinFunctionMap() {
         {"verity_update_state",     {0,     0,    {false,  do_verity_update_state}}},
         {"wait",                    {1,     2,    {true,   do_wait}}},
         {"wait_for_prop",           {2,     2,    {false,  do_wait_for_prop}}},
-        {"write",                   {2,     2,    {true,   do_write}}},
+        {"write",                   {2,     3,    {true,   do_write}}},
     };
     // clang-format on
     return builtin_functions;
