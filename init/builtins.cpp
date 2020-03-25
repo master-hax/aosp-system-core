@@ -845,10 +845,28 @@ static Result<void> do_verity_update_state(const BuiltinArguments& args) {
     return {};
 }
 
+static Result<Success> do_wait(const BuiltinArguments& args);
+
 static Result<void> do_write(const BuiltinArguments& args) {
     if (auto result = WriteFile(args[1], args[2]); !result.ok()) {
-        return ErrorIgnoreEnoent()
-               << "Unable to write to file '" << args[1] << "': " << result.error();
+        if (args.size() == 4) {
+            auto waitArgs = BuiltinArguments(args.context);
+            waitArgs.args.resize(3);
+            waitArgs.args[0] = "wait";
+            waitArgs.args[1] = args[1];
+            waitArgs.args[2] = args[3];
+            if (auto result1 = do_wait(waitArgs); !result1.ok()) {
+                return ErrorIgnoreEnoent()
+                       << "Unable to wait to file '" << args[1] << "': " << result1.error();
+            }
+            if (auto result2 = WriteFile(args[1], args[2]); !result2.ok()) {
+                return ErrorIgnoreEnoent()
+                       << "Still unable to write to file '" << args[1] << "': " << result2.error();
+            }
+        } else {
+            return ErrorIgnoreEnoent()
+                   << "Unable to write to file '" << args[1] << "': " << result.error();
+        }
     }
 
     return {};
@@ -949,24 +967,57 @@ static Result<void> do_copy(const BuiltinArguments& args) {
 }
 
 static Result<void> do_chown(const BuiltinArguments& args) {
+    int path_index = 0, timeout_index = 0;
     auto uid = DecodeUid(args[1]);
     if (!uid.ok()) {
         return Error() << "Unable to decode UID for '" << args[1] << "': " << uid.error();
     }
 
     // GID is optional and pushes the index of path out by one if specified.
-    const std::string& path = (args.size() == 4) ? args[3] : args[2];
     Result<gid_t> gid = -1;
 
+    gid = DecodeUid(args[2]);
     if (args.size() == 4) {
-        gid = DecodeUid(args[2]);
+        if (!gid.ok()) {
+            // This assume that all of path should contain '/'.
+            if (std::string::npos == args[2].find('/')) {
+                return Error() << "Unable to decide path or GID '" << args[2]
+                               << "': " << gid.error();
+            }
+            path_index = 2;
+            timeout_index = 3;
+        } else {
+            path_index = 3;
+        }
+    }
+    if (args.size() == 5) {
         if (!gid.ok()) {
             return Error() << "Unable to decode GID for '" << args[2] << "': " << gid.error();
         }
+
+        path_index = 3;
+        timeout_index = 4;
     }
 
+    const std::string& path = args[path_index];
     if (lchown(path.c_str(), *uid, *gid) == -1) {
-        return ErrnoErrorIgnoreEnoent() << "lchown() failed";
+        if (timeout_index) {
+            auto waitArgs = BuiltinArguments(args.context);
+            waitArgs.args.resize(3);
+            waitArgs.args[0] = "wait";
+            waitArgs.args[1] = path;                 // file name
+            waitArgs.args[2] = args[timeout_index];  // timeout
+
+            if (auto result1 = do_wait(waitArgs); !result1.ok()) {
+                return ErrnoErrorIgnoreEnoent()
+                       << "chown: Unable to wait to file '" << path << "': " << result1.error();
+            }
+            if (lchown(path.c_str(), *uid, *gid) == -1) {
+                return ErrnoErrorIgnoreEnoent() << "lchown() still failed";
+            }
+        } else {
+            return ErrnoErrorIgnoreEnoent() << "lchown() failed";
+        }
     }
 
     return {};
@@ -988,7 +1039,22 @@ static mode_t get_mode(const char *s) {
 static Result<void> do_chmod(const BuiltinArguments& args) {
     mode_t mode = get_mode(args[1].c_str());
     if (fchmodat(AT_FDCWD, args[2].c_str(), mode, AT_SYMLINK_NOFOLLOW) < 0) {
-        return ErrnoErrorIgnoreEnoent() << "fchmodat() failed";
+        if (args.size() == 4) {
+            auto waitArgs = BuiltinArguments(args.context);
+            waitArgs.args.resize(3);
+            waitArgs.args[0] = "wait";
+            waitArgs.args[1] = args[2];
+            waitArgs.args[2] = args[3];
+            if (auto result1 = do_wait(waitArgs); !result1.ok()) {
+                return Error() << "chmod: Unable to wait to file '" << args[2]
+                               << "': " << result1.error();
+            }
+            if (fchmodat(AT_FDCWD, args[2].c_str(), mode, AT_SYMLINK_NOFOLLOW) < 0) {
+                return ErrnoError() << "fchmodat() still failed";
+            }
+        } else {
+            return ErrnoError() << "fchmodat() failed";
+        }
     }
     return {};
 }
@@ -1315,8 +1381,8 @@ const BuiltinFunctionMap& GetBuiltinFunctionMap() {
     // clang-format off
     static const BuiltinFunctionMap builtin_functions = {
         {"bootchart",               {1,     1,    {false,  do_bootchart}}},
-        {"chmod",                   {2,     2,    {true,   do_chmod}}},
-        {"chown",                   {2,     3,    {true,   do_chown}}},
+        {"chmod",                   {2,     3,    {true,   do_chmod}}},
+        {"chown",                   {2,     4,    {true,   do_chown}}},
         {"class_reset",             {1,     1,    {false,  do_class_reset}}},
         {"class_reset_post_data",   {1,     1,    {false,  do_class_reset_post_data}}},
         {"class_restart",           {1,     1,    {false,  do_class_restart}}},
@@ -1372,7 +1438,7 @@ const BuiltinFunctionMap& GetBuiltinFunctionMap() {
         {"verity_update_state",     {0,     0,    {false,  do_verity_update_state}}},
         {"wait",                    {1,     2,    {true,   do_wait}}},
         {"wait_for_prop",           {2,     2,    {false,  do_wait_for_prop}}},
-        {"write",                   {2,     2,    {true,   do_write}}},
+        {"write",                   {2,     3,    {true,   do_write}}},
     };
     // clang-format on
     return builtin_functions;
