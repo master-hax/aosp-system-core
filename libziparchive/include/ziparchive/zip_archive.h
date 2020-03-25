@@ -70,12 +70,12 @@ struct ZipEntry {
   // Compressed length of this ZipEntry. Might be present
   // either in the local file header or in the data descriptor
   // footer.
-  uint32_t compressed_length;
+  uint64_t compressed_length;
 
   // Uncompressed length of this ZipEntry. Might be present
   // either in the local file header or in the data descriptor
   // footer.
-  uint32_t uncompressed_length;
+  uint64_t uncompressed_length;
 
   // If the value of uncompressed length and compressed length are stored in
   // the zip64 extended info of the extra field.
@@ -234,7 +234,7 @@ int32_t ExtractEntryToFile(ZipArchiveHandle archive, ZipEntry* entry, int fd);
  *
  * Returns 0 on success and negative values on failure.
  */
-int32_t ExtractToMemory(ZipArchiveHandle archive, ZipEntry* entry, uint8_t* begin, uint32_t size);
+int32_t ExtractToMemory(ZipArchiveHandle archive, ZipEntry* entry, uint8_t* begin, size_t size);
 
 int GetFileDescriptor(const ZipArchiveHandle archive);
 
@@ -274,7 +274,7 @@ class Writer {
 
 class Reader {
  public:
-  virtual bool ReadAtOffset(uint8_t* buf, size_t len, uint32_t offset) const = 0;
+  virtual bool ReadAtOffset(uint8_t* buf, size_t len, off64_t offset) const = 0;
   virtual ~Reader();
 
  protected:
@@ -296,6 +296,6 @@ class Reader {
  * If |crc_out| is not nullptr, it is set to the crc32 checksum of the
  * uncompressed data.
  */
-int32_t Inflate(const Reader& reader, const uint32_t compressed_length,
-                const uint32_t uncompressed_length, Writer* writer, uint64_t* crc_out);
+int32_t Inflate(const Reader& reader, const uint64_t compressed_length,
+                const uint64_t uncompressed_length, Writer* writer, uint64_t* crc_out);
 }  // namespace zip_archive
