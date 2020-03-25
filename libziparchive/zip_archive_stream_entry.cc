@@ -40,7 +40,7 @@ static constexpr size_t kBufSize = 65535;
 
 bool ZipArchiveStreamEntry::Init(const ZipEntry& entry) {
   crc32_ = entry.crc32;
-  offset_ = entry.offset;
+  offset_ = static_cast<off64_t>(entry.offset);
   return true;
 }
 
@@ -57,7 +57,7 @@ class ZipArchiveStreamEntryUncompressed : public ZipArchiveStreamEntry {
  protected:
   bool Init(const ZipEntry& entry) override;
 
-  uint32_t length_ = 0u;
+  uint64_t length_ = 0u;
 
  private:
   std::vector<uint8_t> data_;
@@ -88,7 +88,7 @@ const std::vector<uint8_t>* ZipArchiveStreamEntryUncompressed::Read() {
     return nullptr;
   }
 
-  size_t bytes = (length_ > data_.size()) ? data_.size() : length_;
+  size_t bytes = (length_ > data_.size()) ? data_.size() : static_cast<size_t>(length_);
   ZipArchive* archive = reinterpret_cast<ZipArchive*>(handle_);
   errno = 0;
   if (!archive->mapped_zip.ReadAtOffset(data_.data(), bytes, offset_)) {
@@ -133,8 +133,8 @@ class ZipArchiveStreamEntryCompressed : public ZipArchiveStreamEntry {
   z_stream z_stream_;
   std::vector<uint8_t> in_;
   std::vector<uint8_t> out_;
-  uint32_t uncompressed_length_ = 0u;
-  uint32_t compressed_length_ = 0u;
+  uint64_t uncompressed_length_ = 0u;
+  uint64_t compressed_length_ = 0u;
   uint32_t computed_crc32_ = 0u;
 };
 
@@ -218,8 +218,9 @@ const std::vector<uint8_t>* ZipArchiveStreamEntryCompressed::Read() {
         return nullptr;
       }
       DCHECK_LE(in_.size(), std::numeric_limits<uint32_t>::max());  // Should be buf size = 64k.
-      uint32_t bytes = (compressed_length_ > in_.size()) ? static_cast<uint32_t>(in_.size())
-                                                         : compressed_length_;
+      uint32_t bytes = (compressed_length_ > in_.size())
+                           ? static_cast<uint32_t>(in_.size())
+                           : static_cast<uint32_t>(compressed_length_);
       ZipArchive* archive = reinterpret_cast<ZipArchive*>(handle_);
       errno = 0;
       if (!archive->mapped_zip.ReadAtOffset(in_.data(), bytes, offset_)) {

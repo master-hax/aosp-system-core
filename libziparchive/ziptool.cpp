@@ -259,12 +259,12 @@ static void ListOne(const ZipEntry& entry, const std::string& name) {
   snprintf(time, sizeof(time), "%04d-%02d-%02d %02d:%02d", t.tm_year + 1900, t.tm_mon + 1,
            t.tm_mday, t.tm_hour, t.tm_min);
   if (flag_v) {
-    printf("%8d  %s  %7d %3.0f%% %s %08x  %s\n", entry.uncompressed_length,
+    printf("%8lu  %s  %8lu %3.0f%% %s %08x  %s\n", entry.uncompressed_length,
            (entry.method == kCompressStored) ? "Stored" : "Defl:N", entry.compressed_length,
            CompressionRatio(entry.uncompressed_length, entry.compressed_length), time, entry.crc32,
            name.c_str());
   } else {
-    printf("%9d  %s   %s\n", entry.uncompressed_length, time, name.c_str());
+    printf("%9lu  %s   %s\n", entry.uncompressed_length, time, name.c_str());
   }
 }
 
@@ -323,7 +323,7 @@ static void InfoOne(const ZipEntry& entry, const std::string& name) {
            t.tm_mday, t.tm_hour, t.tm_min);
 
   // "-rw-r--r--  3.0 unx      577 t- defX 19-Feb-12 16:09 android-ndk-r19b/sources/android/NOTICE"
-  printf("%s %2d.%d %s %8d %c%c %s %s %s\n", mode, version / 10, version % 10, src_fs,
+  printf("%s %2d.%d %s %8lu %c%c %s %s %s\n", mode, version / 10, version % 10, src_fs,
          entry.uncompressed_length, entry.is_text ? 't' : 'b',
          entry.has_data_descriptor ? 'X' : 'x', method, time, name.c_str());
 }
