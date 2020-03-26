@@ -374,9 +374,11 @@ static ZipError ParseZip64ExtendedInfoInExtraField(
     }
 
     uint16_t expectedDataSize = 0;
-    // We expect the extended field to include both uncompressed and compressed size.
-    if (zip32UncompressedSize == UINT32_MAX || zip32CompressedSize == UINT32_MAX) {
-      expectedDataSize += 16;
+    if (zip32UncompressedSize == UINT32_MAX) {
+      expectedDataSize += 8;
+    }
+    if (zip32CompressedSize == UINT32_MAX) {
+      expectedDataSize += 8;
     }
     if (zip32LocalFileHeaderOffset == UINT32_MAX) {
       expectedDataSize += 8;
@@ -401,26 +403,26 @@ static ZipError ParseZip64ExtendedInfoInExtraField(
     std::optional<uint64_t> uncompressedFileSize;
     std::optional<uint64_t> compressedFileSize;
     std::optional<uint64_t> localHeaderOffset;
-    if (zip32UncompressedSize == UINT32_MAX || zip32CompressedSize == UINT32_MAX) {
+    if (zip32UncompressedSize == UINT32_MAX) {
       uncompressedFileSize = get_unaligned<uint64_t>(extraFieldStart + offset);
-      compressedFileSize = get_unaligned<uint64_t>(extraFieldStart + offset + 8);
-      offset += 16;
-
-      // TODO(xunchang) Support handling file large than UINT32_MAX. It's theoretically possible
-      // for libz to (de)compressing file larger than UINT32_MAX. But we should use our own
-      // bytes counter to replace stream.total_out.
-      if (uncompressedFileSize.value() >= UINT32_MAX || compressedFileSize.value() >= UINT32_MAX) {
-        ALOGW(
-            "Zip: File size larger than UINT32_MAX isn't supported yet. uncompressed size %" PRIu64
-            ", compressed size %" PRIu64,
-            uncompressedFileSize.value(), compressedFileSize.value());
-        return kInvalidFile;
-      }
+      offset += 8;
     }
-
+    if (zip32CompressedSize == UINT32_MAX) {
+      compressedFileSize = get_unaligned<uint64_t>(extraFieldStart + offset);
+      offset += 8;
+    }
     if (zip32LocalFileHeaderOffset == UINT32_MAX) {
       localHeaderOffset = get_unaligned<uint64_t>(extraFieldStart + offset);
       offset += 8;
+    }
+
+    // TODO(xunchang) Support handling file large than UINT32_MAX. It's theoretically possible
+    // for libz to (de)compressing file larger than UINT32_MAX. But we should use our own
+    // bytes counter to replace stream.total_out.
+    if ((uncompressedFileSize.has_value() && uncompressedFileSize.value() > UINT32_MAX) ||
+        (compressedFileSize.has_value() && compressedFileSize.value() > UINT32_MAX)) {
+      ALOGW("Zip: File size larger than UINT32_MAX isn't supported yet");
+      return kInvalidFile;
     }
 
     zip64Info->uncompressed_file_size = uncompressedFileSize;
@@ -622,7 +624,8 @@ void CloseArchive(ZipArchiveHandle archive) {
 }
 
 static int32_t ValidateDataDescriptor(MappedZipFile& mapped_zip, ZipEntry* entry) {
-  uint8_t ddBuf[sizeof(DataDescriptor) + sizeof(DataDescriptor::kOptSignature)];
+  // Maximum possible size for data descriptor: 2 * 4 + 2 * 8 = 24 bytes
+  uint8_t ddBuf[24];
   off64_t offset = entry->offset;
   if (entry->method != kCompressStored) {
     offset += entry->compressed_length;
@@ -636,17 +639,25 @@ static int32_t ValidateDataDescriptor(MappedZipFile& mapped_zip, ZipEntry* entry
 
   const uint32_t ddSignature = *(reinterpret_cast<const uint32_t*>(ddBuf));
   const uint16_t ddOffset = (ddSignature == DataDescriptor::kOptSignature) ? 4 : 0;
-  const DataDescriptor* descriptor = reinterpret_cast<const DataDescriptor*>(ddBuf + ddOffset);
+  DataDescriptor descriptor{};
+  descriptor.crc32 = get_unaligned<uint32_t>(ddBuf + ddOffset);
+  if (entry->zip64_format_size) {
+    descriptor.compressed_size = get_unaligned<uint64_t>(ddBuf + ddOffset + 4);
+    descriptor.uncompressed_size = get_unaligned<uint64_t>(ddBuf + ddOffset + 12);
+  } else {
+    descriptor.compressed_size = get_unaligned<uint32_t>(ddBuf + ddOffset + 4);
+    descriptor.uncompressed_size = get_unaligned<uint32_t>(ddBuf + ddOffset + 8);
+  }
 
   // Validate that the values in the data descriptor match those in the central
   // directory.
-  if (entry->compressed_length != descriptor->compressed_size ||
-      entry->uncompressed_length != descriptor->uncompressed_size ||
-      entry->crc32 != descriptor->crc32) {
+  if (entry->compressed_length != descriptor.compressed_size ||
+      entry->uncompressed_length != descriptor.uncompressed_size ||
+      entry->crc32 != descriptor.crc32) {
     ALOGW("Zip: size/crc32 mismatch. expected {%" PRIu32 ", %" PRIu32 ", %" PRIx32
-          "}, was {%" PRIu32 ", %" PRIu32 ", %" PRIx32 "}",
+          "}, was {%" PRIu64 ", %" PRIu64 ", %" PRIx32 "}",
           entry->compressed_length, entry->uncompressed_length, entry->crc32,
-          descriptor->compressed_size, descriptor->uncompressed_size, descriptor->crc32);
+          descriptor.compressed_size, descriptor.uncompressed_size, descriptor.crc32);
     return kInconsistentInformation;
   }
 
@@ -703,18 +714,14 @@ static int32_t FindEntry(const ZipArchive* archive, std::string_view entryName,
       return status;
     }
 
-    if (cdr->uncompressed_size == UINT32_MAX || cdr->compressed_size == UINT32_MAX) {
-      CHECK(zip64_info.uncompressed_file_size.has_value());
-      CHECK(zip64_info.compressed_file_size.has_value());
-      // TODO(xunchang) remove the size limit and support entry length > UINT32_MAX.
-      data->uncompressed_length = static_cast<uint32_t>(zip64_info.uncompressed_file_size.value());
-      data->compressed_length = static_cast<uint32_t>(zip64_info.compressed_file_size.value());
-    }
-
-    if (local_header_offset == UINT32_MAX) {
-      CHECK(zip64_info.local_header_offset.has_value());
-      local_header_offset = zip64_info.local_header_offset.value();
-    }
+    // TODO(xunchang) remove the size limit and support entry length > UINT32_MAX.
+    data->uncompressed_length =
+        static_cast<uint32_t>(zip64_info.uncompressed_file_size.value_or(cdr->uncompressed_size));
+    data->compressed_length =
+        static_cast<uint32_t>(zip64_info.compressed_file_size.value_or(cdr->compressed_size));
+    local_header_offset = zip64_info.local_header_offset.value_or(local_header_offset);
+    data->zip64_format_size =
+        cdr->uncompressed_size == UINT32_MAX || cdr->compressed_size == UINT32_MAX;
   }
 
   if (local_header_offset + static_cast<off64_t>(sizeof(LocalFileHeader)) >= cd_offset) {
@@ -763,6 +770,13 @@ static int32_t FindEntry(const ZipArchive* archive, std::string_view entryName,
   uint64_t lfh_uncompressed_size = lfh->uncompressed_size;
   uint64_t lfh_compressed_size = lfh->compressed_size;
   if (lfh_uncompressed_size == UINT32_MAX || lfh_compressed_size == UINT32_MAX) {
+    if (lfh_uncompressed_size != UINT32_MAX || lfh_compressed_size != UINT32_MAX) {
+      ALOGW(
+          "Zip: The zip64 extended field in the local header MUST include BOTH original and "
+          "compressed file size fields.");
+      return kInvalidFile;
+    }
+
     const off64_t lfh_extra_field_offset = name_offset + lfh->file_name_length;
     const uint16_t lfh_extra_field_size = lfh->extra_field_length;
     if (lfh_extra_field_offset > cd_offset - lfh_extra_field_size) {
