@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2f705673_7ade0a64",
+        "filename": "adb/pairing_connection/libadb_pairing_connection.map.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-03-26T23:30:00Z",
+      "side": 1,
+      "message": "R?",
+      "range": {
+        "startLine": 1,
+        "startChar": 46,
+        "endLine": 1,
+        "endChar": 48
+      },
+      "revId": "d474964c9c1fe25a7be20d1b41da2d81f72f3408",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "02bb3c90_7ae78daf",
+        "filename": "adb/pairing_connection/libadb_pairing_server.map.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-03-26T23:30:00Z",
+      "side": 1,
+      "message": "R?",
+      "range": {
+        "startLine": 1,
+        "startChar": 42,
+        "endLine": 1,
+        "endChar": 44
+      },
+      "revId": "d474964c9c1fe25a7be20d1b41da2d81f72f3408",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "91d6feaa_0be721e5",
+        "filename": "libprocessgroup/cgrouprc/libcgrouprc.llndk.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-03-26T23:30:00Z",
+      "side": 1,
+      "message": "want to change that to R too?",
+      "range": {
+        "startLine": 13,
+        "startChar": 12,
+        "endLine": 13,
+        "endChar": 14
+      },
+      "revId": "d474964c9c1fe25a7be20d1b41da2d81f72f3408",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
