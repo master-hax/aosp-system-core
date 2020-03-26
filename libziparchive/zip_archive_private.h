@@ -104,3 +104,5 @@ struct ZipArchive {
 
   bool InitializeCentralDirectory(off64_t cd_start_offset, size_t cd_size);
 };
+
+int32_t ExtractToWriter(ZipArchiveHandle handle, ZipEntry* entry, zip_archive::Writer* writer);
