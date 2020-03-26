@@ -36,7 +36,7 @@
 // If both sides have authenticated, they will exchange their peer information
 // (see #PeerInfo).
 __BEGIN_DECLS
-#if !defined(__ANDROID__) || __ANDROID_API__ >= 30
+#if !defined(__ANDROID__) || __ANDROID_API__ >= __ANDROID_API_R__
 
 const uint32_t kMaxPeerInfoSize = 8192;
 struct PeerInfo {
@@ -79,7 +79,7 @@ typedef void (*pairing_result_cb)(const PeerInfo*, int, void*);
 //         invoked. Otherwise, cb is guaranteed to be invoked, even if you
 //         destroy the ctx while in the pairing process.
 bool pairing_connection_start(PairingConnectionCtx* ctx, int fd, pairing_result_cb cb, void* opaque)
-        __INTRODUCED_IN(30);
+        __INTRODUCED_IN(__ANDROID_API_R__);
 
 // Creates a new PairingConnectionCtx instance as the client.
 //
@@ -98,7 +98,7 @@ PairingConnectionCtx* pairing_connection_client_new(const uint8_t* pswd, size_t 
                                                     const PeerInfo* peer_info,
                                                     const uint8_t* x509_cert_pem, size_t x509_size,
                                                     const uint8_t* priv_key_pem, size_t priv_size)
-        __INTRODUCED_IN(30);
+        __INTRODUCED_IN(__ANDROID_API_R__);
 
 // Creates a new PairingConnectionCtx instance as the server.
 //
@@ -117,14 +117,14 @@ PairingConnectionCtx* pairing_connection_server_new(const uint8_t* pswd, size_t 
                                                     const PeerInfo* peer_info,
                                                     const uint8_t* x509_cert_pem, size_t x509_size,
                                                     const uint8_t* priv_key_pem, size_t priv_size)
-        __INTRODUCED_IN(30);
+        __INTRODUCED_IN(__ANDROID_API_R__);
 
 // Destroys the PairingConnectionCtx instance.
 //
 // It is safe to destroy the instance at any point in the pairing process.
 //
 // @param ctx the PairingConnectionCtx instance to destroy. Will abort if null.
-void pairing_connection_destroy(PairingConnectionCtx* ctx) __INTRODUCED_IN(30);
+void pairing_connection_destroy(PairingConnectionCtx* ctx) __INTRODUCED_IN(__ANDROID_API_R__);
 
-#endif  //!__ANDROID__ || __ANDROID_API__ >= 30
+#endif  //!__ANDROID__ || __ANDROID_API__ >= __ANDROID_API_R__
 __END_DECLS

@@ -1,15 +1,15 @@
-LIBADB_PAIRING_AUTH {
+LIBADB_PAIRING_AUTH { # apex introduced=R
   global:
-    pairing_auth_msg_size; # apex introduced=30
-    pairing_auth_get_spake2_msg; # apex introduced=30
-    pairing_auth_init_cipher; # apex introduced=30
-    pairing_auth_safe_encrypted_size; # apex introduced=30
-    pairing_auth_encrypt; # apex introduced=30
-    pairing_auth_safe_decrypted_size; # apex introduced=30
-    pairing_auth_decrypt; # apex introduced=30
-    pairing_auth_server_new; # apex introduced=30
-    pairing_auth_client_new; # apex introduced=30
-    pairing_auth_destroy; # apex introduced=30
+    pairing_auth_msg_size;
+    pairing_auth_get_spake2_msg;
+    pairing_auth_init_cipher;
+    pairing_auth_safe_encrypted_size;
+    pairing_auth_encrypt;
+    pairing_auth_safe_decrypted_size;
+    pairing_auth_decrypt;
+    pairing_auth_server_new;
+    pairing_auth_client_new;
+    pairing_auth_destroy;
   local:
     *;
 };

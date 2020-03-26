@@ -77,7 +77,7 @@ __attribute__((warn_unused_result)) uint32_t ACgroupController_getVersion(const 
  * If the given controller is null, return 0.
  */
 __attribute__((warn_unused_result, weak)) uint32_t ACgroupController_getFlags(
-        const ACgroupController*) __INTRODUCED_IN(30);
+        const ACgroupController*) __INTRODUCED_IN(__ANDROID_API_R__);
 
 #endif
 

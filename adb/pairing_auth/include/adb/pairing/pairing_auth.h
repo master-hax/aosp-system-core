@@ -25,7 +25,7 @@
 #endif
 
 __BEGIN_DECLS
-#if !defined(__ANDROID__) || __ANDROID_API__ >= 30
+#if !defined(__ANDROID__) || __ANDROID_API__ >= __ANDROID_API_R__
 
 /**
  * PairingAuthCtx is a wrapper around the SPAKE2 protocol + cipher initialization
@@ -53,7 +53,8 @@ typedef struct PairingAuthCtx PairingAuthCtx;
  * @return a new PairingAuthCtx server instance. Caller is responsible for
  *         destroying the context via #pairing_auth_destroy.
  */
-PairingAuthCtx* pairing_auth_server_new(const uint8_t* pswd, size_t len) __INTRODUCED_IN(30);
+PairingAuthCtx* pairing_auth_server_new(const uint8_t* pswd, size_t len)
+        __INTRODUCED_IN(__ANDROID_API_R__);
 
 /**
  * Creates a new PairingAuthCtx instance as the client.
@@ -64,14 +65,15 @@ PairingAuthCtx* pairing_auth_server_new(const uint8_t* pswd, size_t len) __INTRO
  * @return a new PairingAuthCtx client instance. Caller is responsible for
  *         destroying the context via #pairing_auth_destroy.
  */
-PairingAuthCtx* pairing_auth_client_new(const uint8_t* pswd, size_t len) __INTRODUCED_IN(30);
+PairingAuthCtx* pairing_auth_client_new(const uint8_t* pswd, size_t len)
+        __INTRODUCED_IN(__ANDROID_API_R__);
 
 /**
  * Destroys the PairingAuthCtx.
  *
  * @param ctx the PairingAuthCtx instance to destroy. Will abort if null.
  */
-void pairing_auth_destroy(PairingAuthCtx* ctx) __INTRODUCED_IN(30);
+void pairing_auth_destroy(PairingAuthCtx* ctx) __INTRODUCED_IN(__ANDROID_API_R__);
 
 /**
  * Returns the exact size of the SPAKE2 msg.
@@ -82,7 +84,7 @@ void pairing_auth_destroy(PairingAuthCtx* ctx) __INTRODUCED_IN(30);
  * @param ctx the PairingAuthCtx instance. Will abort if null.
  * @return the size of the SPAKE2 message in bytes. This is guaranteed to be > 0.
  */
-size_t pairing_auth_msg_size(PairingAuthCtx* ctx) __INTRODUCED_IN(30);
+size_t pairing_auth_msg_size(PairingAuthCtx* ctx) __INTRODUCED_IN(__ANDROID_API_R__);
 
 /**
  * Writes the SPAKE2 message to exchange with the other party to |out_buf|.
@@ -96,7 +98,8 @@ size_t pairing_auth_msg_size(PairingAuthCtx* ctx) __INTRODUCED_IN(30);
  *                be have at least #pairing_auth_msg_size size. Will abort if
  *                out_buf is null.
  */
-void pairing_auth_get_spake2_msg(PairingAuthCtx* ctx, uint8_t* out_buf) __INTRODUCED_IN(30);
+void pairing_auth_get_spake2_msg(PairingAuthCtx* ctx, uint8_t* out_buf)
+        __INTRODUCED_IN(__ANDROID_API_R__);
 
 /**
  * Processes the peer's |their_msg| and attempts to initialize the cipher for
@@ -117,7 +120,7 @@ void pairing_auth_get_spake2_msg(PairingAuthCtx* ctx, uint8_t* out_buf) __INTROD
  *         for more details on the SPAKE2 protocol.
  */
 bool pairing_auth_init_cipher(PairingAuthCtx* ctx, const uint8_t* their_msg, size_t msg_len)
-        __INTRODUCED_IN(30);
+        __INTRODUCED_IN(__ANDROID_API_R__);
 
 /**
  * Returns a safe buffer size for encrypting data of a certain size.
@@ -130,7 +133,8 @@ bool pairing_auth_init_cipher(PairingAuthCtx* ctx, const uint8_t* their_msg, siz
  * @return the minimum buffer size, in bytes, to hold an encrypted message of size len. See
  * #pairing_auth_encrypt for usage.
  */
-size_t pairing_auth_safe_encrypted_size(PairingAuthCtx* ctx, size_t len) __INTRODUCED_IN(30);
+size_t pairing_auth_safe_encrypted_size(PairingAuthCtx* ctx, size_t len)
+        __INTRODUCED_IN(__ANDROID_API_R__);
 
 /**
  * Encrypts input data and writes the encrypted data into a user-provided buffer.
@@ -147,7 +151,7 @@ size_t pairing_auth_safe_encrypted_size(PairingAuthCtx* ctx, size_t len) __INTRO
  *         otherwise.
  */
 bool pairing_auth_encrypt(PairingAuthCtx* ctx, const uint8_t* inbuf, size_t inlen, uint8_t* outbuf,
-                          size_t* outlen) __INTRODUCED_IN(30);
+                          size_t* outlen) __INTRODUCED_IN(__ANDROID_API_R__);
 
 /**
  * Returns a safe buffer size for decrypting data of a certain size.
@@ -162,7 +166,7 @@ bool pairing_auth_encrypt(PairingAuthCtx* ctx, const uint8_t* inbuf, size_t inle
  *         #pairing_auth_decrypt for usage.
  */
 size_t pairing_auth_safe_decrypted_size(PairingAuthCtx* ctx, const uint8_t* buf, size_t len)
-        __INTRODUCED_IN(30);
+        __INTRODUCED_IN(__ANDROID_API_R__);
 
 /**
  * Decrypts input data and writes the decrypted data into a user-provided buffer.
@@ -180,7 +184,7 @@ size_t pairing_auth_safe_decrypted_size(PairingAuthCtx* ctx, const uint8_t* buf,
  *         otherwise.
  */
 bool pairing_auth_decrypt(PairingAuthCtx* ctx, const uint8_t* inbuf, size_t inlen, uint8_t* outbuf,
-                          size_t* outlen) __INTRODUCED_IN(30);
+                          size_t* outlen) __INTRODUCED_IN(__ANDROID_API_R__);
 
-#endif  //!__ANDROID__ || __ANDROID_API__ >= 30
+#endif  //!__ANDROID__ || __ANDROID_API__ >= __ANDROID_API_R__
 __END_DECLS
