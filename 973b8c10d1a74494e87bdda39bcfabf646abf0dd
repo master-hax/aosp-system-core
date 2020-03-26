@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "bf59a40d_8d38ba48",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 2677,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2020-03-26T22:02:44Z",
+      "side": 1,
+      "message": "Not sure if we want to do this or not; if so, we\u0027ll never hit this code path on devices with 2x super.",
+      "range": {
+        "startLine": 2676,
+        "startChar": 0,
+        "endLine": 2677,
+        "endChar": 74
+      },
+      "revId": "973b8c10d1a74494e87bdda39bcfabf646abf0dd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
