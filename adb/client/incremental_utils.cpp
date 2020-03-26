@@ -23,12 +23,15 @@
 #include <ziparchive/zip_archive.h>
 #include <ziparchive/zip_writer.h>
 
+#include <array>
 #include <cinttypes>
 #include <numeric>
 #include <unordered_set>
 
 #include "adb_trace.h"
 #include "sysdeps.h"
+
+using namespace std::literals;
 
 static constexpr int kBlockSize = 4096;
 
@@ -217,16 +220,29 @@ static std::pair<ZipArchiveHandle, std::unique_ptr<android::base::MappedFile>> o
     return {zip, std::move(mapping)};
 }
 
-// TODO(b/151676293): avoid using libziparchive as it reads local file headers
-// which causes additional performance cost. Instead, only read from central directory.
 static std::vector<int32_t> InstallationPriorityBlocks(int fd, int64_t fileSize) {
+    static constexpr auto kResourceArsc = "resources.arsc"sv;
+    static constexpr auto kAndroidManifest = "AndroidManifest.xml"sv;
+    static constexpr auto kClassesDex = "classes.dex"sv;
+    static constexpr auto kLibPrefix = "lib/"sv;
+    static constexpr auto kLibSuffix = ".so"sv;
+    static constexpr std::array<std::string_view, 3> additional_matches = {
+            kResourceArsc, kAndroidManifest, kClassesDex};
     auto [zip, _] = openZipArchive(fd, fileSize);
     if (!zip) {
         return {};
     }
 
+    auto matcher = [](std::string_view entry_name) {
+        if (entry_name.starts_with(kLibPrefix) && entry_name.ends_with(kLibSuffix)) {
+            return true;
+        }
+        return std::any_of(additional_matches.begin(), additional_matches.end(),
+                           [entry_name](std::string_view i) { return i == entry_name; });
+    };
+
     void* cookie = nullptr;
-    if (StartIteration(zip, &cookie) != 0) {
+    if (StartIteration(zip, &cookie, std::move(matcher)) != 0) {
         D("%s failed at StartIteration: %d", __func__, errno);
         return {};
     }
@@ -235,8 +251,13 @@ static std::vector<int32_t> InstallationPriorityBlocks(int fd, int64_t fileSize)
     ZipEntry entry;
     std::string_view entryName;
     while (Next(cookie, &entry, &entryName) == 0) {
-        if (entryName == "resources.arsc" || entryName == "AndroidManifest.xml" ||
-            entryName.starts_with("lib/")) {
+        if (entryName == kClassesDex) {
+            // Only the head is needed for installation
+            int32_t startBlockIndex = offsetToBlockIndex(entry.offset);
+            appendBlocks(startBlockIndex, 1, &installationPriorityBlocks);
+            D("\tadding to priority blocks: '%.*s' (%d)", (int)entryName.size(), entryName.data(),
+              1);
+        } else {
             // Full entries are needed for installation
             off64_t entryStartOffset = entry.offset;
             off64_t entryEndOffset =
@@ -248,11 +269,8 @@ static std::vector<int32_t> InstallationPriorityBlocks(int fd, int64_t fileSize)
             int32_t endBlockIndex = offsetToBlockIndex(entryEndOffset);
             int32_t numNewBlocks = endBlockIndex - startBlockIndex + 1;
             appendBlocks(startBlockIndex, numNewBlocks, &installationPriorityBlocks);
-            D("\tadding to priority blocks: '%.*s'", (int)entryName.size(), entryName.data());
-        } else if (entryName == "classes.dex") {
-            // Only the head is needed for installation
-            int32_t startBlockIndex = offsetToBlockIndex(entry.offset);
-            appendBlocks(startBlockIndex, 1, &installationPriorityBlocks);
+            D("\tadding to priority blocks: '%.*s' (%d)", (int)entryName.size(), entryName.data(),
+              numNewBlocks);
         }
     }
 
