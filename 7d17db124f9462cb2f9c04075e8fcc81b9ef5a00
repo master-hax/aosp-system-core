@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "12674e7a_80827887",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-03-26T15:45:34Z",
+      "side": 1,
+      "message": "why? none of these should take any significant amount of time, and if they do, it seems like your system is seriously broken and unlikely to recover anyway?",
+      "revId": "7d17db124f9462cb2f9c04075e8fcc81b9ef5a00",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
