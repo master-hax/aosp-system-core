@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9cec824c_b184b958",
+        "filename": "libziparchive/zip_archive_common.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 162,
+      "author": {
+        "id": 1088085
+      },
+      "writtenOn": "2020-03-27T06:15:47Z",
+      "side": 1,
+      "message": "it\u0027s debatable if we still want to keep the struct...",
+      "range": {
+        "startLine": 162,
+        "startChar": 0,
+        "endLine": 162,
+        "endChar": 23
+      },
+      "revId": "65dd64b522d40ff519dcee852fd70f6bfd3fcd5c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
