@@ -76,6 +76,7 @@ bool adb_status(borrowed_fd fd, std::string* _Nonnull error);
 std::string format_host_command(const char* _Nonnull command);
 
 // Get the feature set of the current preferred transport.
+const FeatureSet* _Nullable adb_get_feature_set(std::string* _Nonnull error);
 bool adb_get_feature_set(FeatureSet* _Nonnull feature_set, std::string* _Nonnull error);
 
 #if defined(__linux__)

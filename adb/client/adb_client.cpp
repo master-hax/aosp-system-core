@@ -399,18 +399,23 @@ std::string format_host_command(const char* command) {
     return android::base::StringPrintf("%s:%s", prefix, command);
 }
 
-bool adb_get_feature_set(FeatureSet* feature_set, std::string* error) {
-    static FeatureSet* features = nullptr;
+const FeatureSet* adb_get_feature_set(std::string* error) {
+    static const FeatureSet* features = nullptr;
     if (!features) {
         std::string result;
         if (adb_query(format_host_command("features"), &result, error)) {
             features = new FeatureSet(StringToFeatureSet(result));
         }
     }
-    if (features) {
-        *feature_set = *features;
-        return true;
+    return features;
+}
+
+bool adb_get_feature_set(FeatureSet* feature_set, std::string* error) {
+    const auto current_features = adb_get_feature_set(error);
+    if (!current_features) {
+        feature_set->clear();
+        return false;
     }
-    feature_set->clear();
-    return false;
+    *feature_set = *current_features;
+    return true;
 }
