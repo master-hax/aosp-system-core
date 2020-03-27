@@ -139,7 +139,7 @@ static void help() {
         "     -a: preserve file timestamp and mode\n"
         "     -z: enable compression\n"
         "     -Z: disable compression\n"
-        " sync [-lzZ] [all|data|odm|oem|product|system|system_ext|vendor]\n"
+        " sync [-lzZ] [all|data|odm|oem|product|system|system_ext|gms|vendor]\n"
         "     sync a local build from $ANDROID_PRODUCT_OUT to the device (default all)\n"
         "     -l: list files that would be copied, but don't copy them\n"
         "     -z: enable compression\n"
@@ -1958,7 +1958,7 @@ int adb_commandline(int argc, const char** argv) {
         }
 
         std::vector<std::string> partitions{"data",   "odm",        "oem",   "product",
-                                            "system", "system_ext", "vendor"};
+                                            "system", "system_ext", "gms",    "vendor"};
         bool found = false;
         for (const auto& partition : partitions) {
             if (src == "all" || src == partition) {

@@ -89,6 +89,7 @@ static const struct fs_path_config android_dirs[] = {
     { 00751, AID_ROOT,         AID_SHELL,        0, "system/apex/*/bin" },
     { 00751, AID_ROOT,         AID_SHELL,        0, "system_ext/bin" },
     { 00751, AID_ROOT,         AID_SHELL,        0, "system_ext/apex/*/bin" },
+    { 00751, AID_ROOT,         AID_SHELL,        0, "gms/bin" },
     { 00751, AID_ROOT,         AID_SHELL,        0, "vendor/bin" },
     { 00755, AID_ROOT,         AID_SHELL,        0, "vendor" },
     { 00755, AID_ROOT,         AID_ROOT,         0, 0 },
@@ -110,7 +111,7 @@ static const char sys_conf_file[] = "/system/etc/fs_config_files";
 // oem/ file-system since the intent is to provide support for customized
 // portions of a separate vendor.img or oem.img.  Has to remain open so that
 // customization can also land on /system/vendor, /system/oem, /system/odm,
-// /system/product or /system/system_ext.
+// /system/product, /system/system_ext or /system/gsm.
 //
 // We expect build-time checking or filtering when constructing the associated
 // fs_config_* files (see build/tools/fs_config/fs_config_generate.c)
@@ -124,10 +125,13 @@ static const char product_conf_dir[] = "/product/etc/fs_config_dirs";
 static const char product_conf_file[] = "/product/etc/fs_config_files";
 static const char system_ext_conf_dir[] = "/system_ext/etc/fs_config_dirs";
 static const char system_ext_conf_file[] = "/system_ext/etc/fs_config_files";
+static const char gms_conf_dir[] = "/gms/etc/fs_config_dirs";
+static const char gms_conf_file[] = "/gms/etc/fs_config_files";
 static const char* conf[][2] = {
         {sys_conf_file, sys_conf_dir},         {ven_conf_file, ven_conf_dir},
         {oem_conf_file, oem_conf_dir},         {odm_conf_file, odm_conf_dir},
         {product_conf_file, product_conf_dir}, {system_ext_conf_file, system_ext_conf_dir},
+        {gms_conf_file, gms_conf_dir},
 };
 
 // Do not use android_files to grant Linux capabilities.  Use ambient capabilities in their
@@ -164,6 +168,9 @@ static const struct fs_path_config android_files[] = {
     { 00600, AID_ROOT,      AID_ROOT,      0, "system_ext/build.prop" },
     { 00444, AID_ROOT,      AID_ROOT,      0, system_ext_conf_dir + 1 },
     { 00444, AID_ROOT,      AID_ROOT,      0, system_ext_conf_file + 1 },
+    { 00600, AID_ROOT,      AID_ROOT,      0, "gms/build.prop" },
+    { 00444, AID_ROOT,      AID_ROOT,      0, gms_conf_dir + 1 },
+    { 00444, AID_ROOT,      AID_ROOT,      0, gms_conf_file + 1 },
     { 00755, AID_ROOT,      AID_SHELL,     0, "system/bin/crash_dump32" },
     { 00755, AID_ROOT,      AID_SHELL,     0, "system/bin/crash_dump64" },
     { 00755, AID_ROOT,      AID_SHELL,     0, "system/bin/debuggerd" },
@@ -214,6 +221,7 @@ static const struct fs_path_config android_files[] = {
     { 00755, AID_ROOT,      AID_SHELL,     0, "system/apex/*/bin/*" },
     { 00755, AID_ROOT,      AID_SHELL,     0, "system_ext/bin/*" },
     { 00755, AID_ROOT,      AID_SHELL,     0, "system_ext/apex/*/bin/*" },
+    { 00755, AID_ROOT,      AID_SHELL,     0, "gms/bin/*" },
     { 00755, AID_ROOT,      AID_SHELL,     0, "vendor/bin/*" },
     { 00755, AID_ROOT,      AID_SHELL,     0, "vendor/xbin/*" },
     { 00644, AID_ROOT,      AID_ROOT,      0, 0 },
@@ -252,9 +260,9 @@ static int fs_config_open(int dir, int which, const char* target_out_path) {
 }
 
 // if path is "odm/<stuff>", "oem/<stuff>", "product/<stuff>",
-// "system_ext/<stuff>" or "vendor/<stuff>"
+// "system_ext/<stuff>", "gms/<stuff>" or "vendor/<stuff>"
 static bool is_partition(const std::string& path) {
-    static const char* partitions[] = {"odm/", "oem/", "product/", "system_ext/", "vendor/"};
+    static const char* partitions[] = {"odm/", "oem/", "product/", "system_ext/", "gms/", "vendor/"};
     for (size_t i = 0; i < (sizeof(partitions) / sizeof(partitions[0])); ++i) {
         if (StartsWith(path, partitions[i])) return true;
     }
@@ -290,7 +298,8 @@ static bool fs_config_cmp(bool dir, const char* prefix, size_t len, const char* 
 
     // Check match between logical partition's files and patterns.
     static constexpr const char* kLogicalPartitions[] = {"system/product/", "system/system_ext/",
-                                                         "system/vendor/", "vendor/odm/"};
+                                                         "system/vendor/", "system/gms",
+                                                         "vendor/odm/"};
     for (auto& logical_partition : kLogicalPartitions) {
         if (StartsWith(input, logical_partition)) {
             std::string input_in_partition = input.substr(input.find('/') + 1);
