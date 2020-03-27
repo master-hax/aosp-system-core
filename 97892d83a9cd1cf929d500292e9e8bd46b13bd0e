@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d0e6791c_86ae9f36",
+        "filename": "adb/client/adb_install.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 390,
+      "author": {
+        "id": 1166043
+      },
+      "writtenOn": "2020-03-27T03:32:00Z",
+      "side": 1,
+      "message": "is this setting approved yet?",
+      "revId": "97892d83a9cd1cf929d500292e9e8bd46b13bd0e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2f854ed2_f886d804",
+        "filename": "adb/client/adb_install.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 393,
+      "author": {
+        "id": 1166043
+      },
+      "writtenOn": "2020-03-27T03:32:00Z",
+      "side": 1,
+      "message": "round-trip #1",
+      "revId": "97892d83a9cd1cf929d500292e9e8bd46b13bd0e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c0bb0b99_0a7ea092",
+        "filename": "adb/client/adb_install.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 394,
+      "author": {
+        "id": 1166043
+      },
+      "writtenOn": "2020-03-27T03:32:00Z",
+      "side": 1,
+      "message": "good that this is available without shell, still need to check if is_abb_exec_supported",
+      "revId": "97892d83a9cd1cf929d500292e9e8bd46b13bd0e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
