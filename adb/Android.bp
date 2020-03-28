@@ -114,6 +114,50 @@ cc_defaults {
     },
 }
 
+cc_defaults {
+    name: "libadbd_binary_dependencies",
+
+    target: {
+        android: {
+            static_libs: [
+                "libadb_crypto",
+                "libadb_pairing_connection",
+                "libadb_tls_connection",
+                "libadbd",
+                "libadbd_core",
+                "libadbconnection_server",
+                "libasyncio",
+                "libbrotli",
+                "libcutils_sockets",
+                "libdiagnose_usb",
+                "libmdnssd",
+                "libbase",
+
+                "libadb_protos",
+                "libapp_processes_protos_lite",
+                "libprotobuf-cpp-lite",
+            ],
+
+            shared_libs: [
+                "libadbd_auth",
+                "libadbd_fs",
+                "libcrypto",
+                "libcrypto_utils",
+                "liblog",
+                "libselinux",
+            ],
+
+        },
+
+        recovery: {
+            exclude_static_libs: [
+                "libadb_pairing_auth",
+                "libadb_pairing_connection",
+            ],
+        },
+    },
+}
+
 // libadb
 // =========================================================
 // These files are compiled for both the host and the device.
@@ -248,7 +292,7 @@ cc_test_host {
 
 cc_benchmark {
     name: "adb_benchmark",
-    defaults: ["adb_defaults"],
+    defaults: ["adb_defaults", "libadbd_binary_dependencies"],
 
     srcs: ["transport_benchmark.cpp"],
     target: {
@@ -400,6 +444,7 @@ cc_library_static {
         "libbase",
         "libcrypto",
         "libcrypto_utils",
+        "libcutils_sockets",
         "liblog",
     ],
 
@@ -469,16 +514,18 @@ cc_library {
         "libadb_pairing_connection",
         "libadb_protos",
         "libadb_tls_connection",
-        "libadbd_auth",
-        "libadbd_fs",
         "libapp_processes_protos_lite",
         "libasyncio",
         "libbase",
-        "libcrypto",
         "libcrypto_utils",
         "libcutils_sockets",
-        "liblog",
         "libprotobuf-cpp-lite",
+
+        // APEX dependencies.
+        "libadbd_auth",
+        "libadbd_fs",
+        "libcrypto",
+        "liblog",
     ],
 
     target: {
@@ -527,10 +574,6 @@ cc_library {
     // libminadbd wants both, as it's used to build native tests.
     compile_multilib: "both",
 
-    whole_static_libs: [
-        "libadbd_core",
-    ],
-
     shared_libs: [
         "libadbconnection_server",
         "libapp_processes_protos_lite",
@@ -538,15 +581,17 @@ cc_library {
         "libadb_crypto",
         "libadb_pairing_connection",
         "libadb_tls_connection",
-        "libadbd_auth",
-        "libadbd_fs",
-        "libadbd_services",
         "libasyncio",
         "libbase",
         "libcrypto",
         "libcrypto_utils",
         "liblog",
         "libselinux",
+
+        // APEX dependencies on the system image.
+        "libadbd_auth",
+        "libadbd_fs",
+        "libadbd_services",
     ],
 
     target: {
@@ -559,6 +604,7 @@ cc_library {
     },
 
     static_libs: [
+        "libadbd_core",
         "libbrotli",
         "libcutils_sockets",
         "libdiagnose_usb",
@@ -573,7 +619,7 @@ cc_library {
 
 cc_binary {
     name: "adbd",
-    defaults: ["adbd_defaults", "host_adbd_supported"],
+    defaults: ["adbd_defaults", "host_adbd_supported", "libadbd_binary_dependencies"],
     stl: "libc++_static",
     recovery_available: true,
     apex_available: ["com.android.adbd"],
@@ -592,33 +638,17 @@ cc_binary {
     },
 
     static_libs: [
-        "libadb_crypto",
-        "libadb_tls_connection",
-        "libadbconnection_server",
         "libadbd",
         "libadbd_services",
-        "libapp_processes_protos_lite",
         "libasyncio",
-        "libbase",
-        "libbrotli",
         "libcap",
-        "libcrypto_utils",
-        "libcutils_sockets",
-        "libdiagnose_usb",
-        "libmdnssd",
         "libminijail",
-        "libprotobuf-cpp-lite",
         "libssl",
     ],
 
     shared_libs: [
-        "libadb_pairing_connection",
         "libadb_protos",
         "libadbd_auth",
-        "libadbd_fs",
-        "libcrypto",
-        "liblog",
-        "libselinux",
     ],
 
     target: {
@@ -690,7 +720,7 @@ cc_binary {
 cc_test {
     name: "adbd_test",
 
-    defaults: ["adbd_defaults"],
+    defaults: ["adbd_defaults", "libadbd_binary_dependencies"],
     stl: "libc++_static",
 
     recovery_available: false,
