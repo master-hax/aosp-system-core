@@ -135,7 +135,10 @@ int Flash(FastbootDevice* device, const std::string& partition_name) {
         return -EOVERFLOW;
     }
     WipeOverlayfsForPartition(device, partition_name);
-    return FlashBlockDevice(handle.fd(), data);
+    int result = FlashBlockDevice(handle.fd(), data);
+    device->WriteInfo("sync()'ing " + partition_name);
+    sync();
+    return result;
 }
 
 bool UpdateSuper(FastbootDevice* device, const std::string& super_name, bool wipe) {
@@ -165,6 +168,8 @@ bool UpdateSuper(FastbootDevice* device, const std::string& super_name, bool wip
             return device->WriteFail("Unable to flash new partition table");
         }
         fs_mgr_overlayfs_teardown();
+        device->WriteInfo("sync()'ing super partition");
+        sync();
         return device->WriteOkay("Successfully flashed partition table");
     }
 
@@ -204,5 +209,7 @@ bool UpdateSuper(FastbootDevice* device, const std::string& super_name, bool wip
         return device->WriteFail("Unable to write new partition table");
     }
     fs_mgr_overlayfs_teardown();
+    device->WriteInfo("sync()'ing super partition");
+    sync();
     return device->WriteOkay("Successfully updated partition table");
 }
