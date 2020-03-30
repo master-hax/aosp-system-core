@@ -214,23 +214,46 @@ namespace base {
 // Versions of standard library APIs that support UTF-8 strings.
 using namespace android::base::utf8;
 
-bool ReadFdToString(borrowed_fd fd, std::string* content) {
+static bool ReadFdToString(borrowed_fd fd, std::string* content, bool definitely_at_start) {
   content->clear();
 
-  // Although original we had small files in mind, this code gets used for
+  // Although originally we had small files in mind, this code gets used for
   // very large files too, where the std::string growth heuristics might not
   // be suitable. https://code.google.com/p/android/issues/detail?id=258500.
   struct stat sb;
-  if (fstat(fd.get(), &sb) != -1 && sb.st_size > 0) {
+  // Since we're reading from an fd, we need to take the current file offset
+  // into account.
+  off_t offset = 0;
+  if (fstat(fd.get(), &sb) != -1 && sb.st_size > 0 &&
+      (definitely_at_start || (offset = lseek(fd.get(), 0, SEEK_CUR)) != -1)) {
+    // We reserve *and* resize so that we use exactly the right amount of space,
+    // rather than let std::string assume the string will grow further.
+    sb.st_size -= offset;
     content->reserve(sb.st_size);
+    content->resize(sb.st_size);
+
+    // Take advantage of knowing that we have a sufficiently large buffer.
+    char* p = content->data();
+    ssize_t n;
+    while (sb.st_size > 0 && (n = TEMP_FAILURE_RETRY(read(fd.get(), p, sb.st_size))) > 0) {
+      p += n;
+      sb.st_size -= n;
+    }
+    return n >= 0;
   }
 
+  // We've no idea how large this file is, so read chunks into a temporary
+  // buffer.
   char buf[BUFSIZ];
   ssize_t n;
   while ((n = TEMP_FAILURE_RETRY(read(fd.get(), &buf[0], sizeof(buf)))) > 0) {
     content->append(buf, n);
   }
-  return (n == 0) ? true : false;
+  return n == 0;
+}
+
+bool ReadFdToString(borrowed_fd fd, std::string* content) {
+  return ReadFdToString(fd, content, false);
 }
 
 bool ReadFileToString(const std::string& path, std::string* content, bool follow_symlinks) {
@@ -241,7 +264,7 @@ bool ReadFileToString(const std::string& path, std::string* content, bool follow
   if (fd == -1) {
     return false;
   }
-  return ReadFdToString(fd, content);
+  return ReadFdToString(fd, content, true);
 }
 
 bool WriteStringToFd(const std::string& content, borrowed_fd fd) {

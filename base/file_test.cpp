@@ -383,3 +383,15 @@ TEST(file, ReadFileToString_capacity_0) {
   EXPECT_EQ(0U, s.size());
   EXPECT_EQ(initial_capacity, s.capacity());
 }
+
+TEST(file, ReadFdToString_offset) {
+  TemporaryFile tf;
+  ASSERT_NE(tf.fd, -1) << tf.path;
+  ASSERT_TRUE(android::base::WriteStringToFd("non-alcoholic", tf.fd));
+
+  ASSERT_EQ(4, lseek(tf.fd, 4, SEEK_SET)) << strerror(errno);
+
+  std::string s;
+  ASSERT_TRUE(android::base::ReadFdToString(tf.fd, &s)) << strerror(errno);
+  EXPECT_EQ("alcoholic", s);
+}
