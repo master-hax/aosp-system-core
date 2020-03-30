@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3fde5991_49deae86",
+        "filename": "base/file.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 237,
+      "author": {
+        "id": 1130394
+      },
+      "writtenOn": "2020-03-30T23:08:14Z",
+      "side": 1,
+      "message": "Fall through in case the file grew while we read it?",
+      "range": {
+        "startLine": 237,
+        "startChar": 5,
+        "endLine": 237,
+        "endChar": 35
+      },
+      "revId": "f74edbdb4616f0ea65d7e315bd7ecc98d962b228",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
