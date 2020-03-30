@@ -222,9 +222,23 @@ bool ReadFdToString(borrowed_fd fd, std::string* content) {
   // be suitable. https://code.google.com/p/android/issues/detail?id=258500.
   struct stat sb;
   if (fstat(fd.get(), &sb) != -1 && sb.st_size > 0) {
+    // We reserve *and* resize so that we use exactly the right amount of space,
+    // rather than let std::string assume the string will grow further.
     content->reserve(sb.st_size);
+    content->resize(sb.st_size);
+
+    // Take advantage of knowing that we have a sufficiently large buffer.
+    char* p = content->data();
+    ssize_t n;
+    while (sb.st_size > 0 && (n = TEMP_FAILURE_RETRY(read(fd.get(), p, sb.st_size))) > 0) {
+      p += n;
+      sb.st_size -= n;
+    }
+    return (n >= 0) ? true : false;
   }
 
+  // We've no idea how large this file is, so read chunks into a temporary
+  // buffer.
   char buf[BUFSIZ];
   ssize_t n;
   while ((n = TEMP_FAILURE_RETRY(read(fd.get(), &buf[0], sizeof(buf)))) > 0) {
