@@ -94,7 +94,7 @@ int LogdWrite(log_id_t logId, struct timespec* ts, struct iovec* vec, size_t nr)
   ssize_t ret;
   static const unsigned headerLength = 1;
   struct iovec newVec[nr + headerLength];
-  android_log_header_t header;
+  android_log_header_t header = {};
   size_t i, payloadSize;
   static atomic_int dropped;
   static atomic_int droppedSecurity;

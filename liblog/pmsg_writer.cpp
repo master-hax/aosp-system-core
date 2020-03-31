@@ -56,7 +56,7 @@ void PmsgClose() {
 int PmsgWrite(log_id_t logId, struct timespec* ts, struct iovec* vec, size_t nr) {
   static const unsigned headerLength = 2;
   struct iovec newVec[nr + headerLength];
-  android_log_header_t header;
+  android_log_header_t header = {};
   android_pmsg_log_header_t pmsgHeader;
   size_t i, payloadSize;
   ssize_t ret;

@@ -25,6 +25,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <sys/types.h>
+#include <sys/uio.h>
+#include <sys/un.h>
 #include <unistd.h>
 
 #include <memory>
@@ -34,6 +36,7 @@
 #include <android-base/macros.h>
 #include <android-base/scopeguard.h>
 #include <android-base/stringprintf.h>
+#include <android-base/unique_fd.h>
 #ifdef __ANDROID__  // includes sys/properties.h which does not exist outside
 #include <cutils/properties.h>
 #endif
@@ -45,6 +48,7 @@
 #include <private/android_logger.h>
 
 using android::base::make_scope_guard;
+using android::base::unique_fd;
 
 // #define ENABLE_FLAKY_TESTS
 
@@ -2790,6 +2794,74 @@ TEST(liblog, android_lookupEventTagNum) {
   EXPECT_NE(-1, tag);
   EXPECT_NE(0, tag);
   EXPECT_GT(UINT32_MAX, (unsigned)tag);
+#else
+  GTEST_LOG_(INFO) << "This test does nothing.\n";
+#endif
+}
+
+TEST(liblog, updated_version_field_write_then_read) {
+#ifdef __ANDROID__
+  pid_t pid = getpid();
+
+  struct timespec ts;
+  clock_gettime(CLOCK_MONOTONIC, &ts);
+
+  constexpr size_t iovec_len = 4;
+  struct iovec vec[iovec_len];
+  android_log_header_t header = {
+      .version = 1,
+      .id = LOG_ID_MAIN,
+      .tid = static_cast<uint16_t>(gettid()),
+      .realtime.tv_sec = static_cast<uint32_t>(ts.tv_sec),
+      .realtime.tv_nsec = static_cast<uint32_t>(ts.tv_nsec),
+  };
+  vec[0].iov_base = &header;
+  vec[0].iov_len = sizeof(android_log_header_t);
+
+  static char prio = ANDROID_LOG_DEBUG;
+  vec[1].iov_base = &prio;
+  vec[1].iov_len = sizeof(prio);
+
+  static char tag[] = "liblog.__android_log_write__android_logger_list_read";
+  vec[2].iov_base = tag;
+  vec[2].iov_len = strlen(tag) + 1;
+
+  std::string msg = android::base::StringPrintf("pid=%u ts=%ld.%09ld", pid, ts.tv_sec, ts.tv_nsec);
+  vec[3].iov_base = msg.data();
+  vec[3].iov_len = msg.length() + 1;
+
+  std::string expected_message =
+      std::string(&prio, sizeof(prio)) + tag + std::string("", 1) + msg + std::string("", 1);
+
+  auto write_function = [&] {
+    auto logd_socket = unique_fd{
+        TEMP_FAILURE_RETRY(socket(PF_UNIX, SOCK_DGRAM | SOCK_CLOEXEC | SOCK_NONBLOCK, 0))};
+    ASSERT_TRUE(logd_socket.ok());
+
+    sockaddr_un un = {};
+    un.sun_family = AF_UNIX;
+    strcpy(un.sun_path, "/dev/socket/logdw");
+
+    ASSERT_EQ(0, TEMP_FAILURE_RETRY(
+                     connect(logd_socket, reinterpret_cast<sockaddr*>(&un), sizeof(sockaddr_un))));
+
+    ASSERT_NE(-1, TEMP_FAILURE_RETRY(writev(logd_socket, vec, iovec_len)));
+  };
+
+  auto check_function = [&](log_msg log_msg, bool* found) {
+    if (log_msg.entry.len != expected_message.length()) {
+      return;
+    }
+
+    if (expected_message != std::string(log_msg.msg(), log_msg.entry.len)) {
+      return;
+    }
+
+    *found = true;
+  };
+
+  RunLogTests(LOG_ID_MAIN, write_function, check_function);
+
 #else
   GTEST_LOG_(INFO) << "This test does nothing.\n";
 #endif

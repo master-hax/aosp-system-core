@@ -192,7 +192,7 @@ static void BM_pmsg_short(benchmark::State& state) {
   pmsg_header.uid = getuid();
   pmsg_header.pid = getpid();
 
-  android_log_header_t header;
+  android_log_header_t header = {};
   header.tid = gettid();
   header.realtime.tv_sec = ts.tv_sec;
   header.realtime.tv_nsec = ts.tv_nsec;

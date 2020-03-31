@@ -47,7 +47,8 @@ typedef struct __attribute__((__packed__)) {
 
 /* Header Structure to logd, and second header for pstore */
 typedef struct __attribute__((__packed__)) {
-  uint8_t id;
+  uint8_t version : 3;
+  uint8_t id : 5;
   uint16_t tid;
   log_time realtime;
 } android_log_header_t;
