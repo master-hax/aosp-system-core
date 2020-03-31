@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ff0a08d6_a8fcadc0",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 562,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2020-03-31T17:10:58Z",
+      "side": 1,
+      "message": "GetBoolProperty",
+      "range": {
+        "startLine": 562,
+        "startChar": 8,
+        "endLine": 562,
+        "endChar": 19
+      },
+      "revId": "ffd837e6ce15475c34d2632afadca2147dfbabf4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
