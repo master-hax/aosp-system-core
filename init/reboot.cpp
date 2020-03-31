@@ -102,7 +102,9 @@ static void PersistRebootReason(const char* reason, bool write_to_property) {
     if (write_to_property) {
         SetProperty(LAST_REBOOT_REASON_PROPERTY, reason);
     }
-    WriteStringToFile(reason, LAST_REBOOT_REASON_FILE);
+    if (!WriteStringToFile(reason, LAST_REBOOT_REASON_FILE)) {
+        PLOG(ERROR) << "Failed to write to " << LAST_REBOOT_REASON_FILE;
+    }
 }
 
 // represents umount status during reboot / shutdown.
