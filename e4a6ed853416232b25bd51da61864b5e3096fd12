@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "776ce18a_75c9d3ae",
+        "filename": "fastboot/device/flashing.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 139,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-03-31T19:03:10Z",
+      "side": 1,
+      "message": "Does fsync() work here?",
+      "revId": "e4a6ed853416232b25bd51da61864b5e3096fd12",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
