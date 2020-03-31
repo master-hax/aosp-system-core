@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "a1a924ee_603390b9",
+        "filename": "bootstat/bootstat.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1247,
+      "author": {
+        "id": 1432579
+      },
+      "writtenOn": "2020-03-31T23:06:25Z",
+      "side": 1,
+      "message": "Ooops, autocomplete in vim fails me again. :(\nThanks for catching this!",
+      "parentUuid": "35d52f33_7248eff5",
+      "range": {
+        "startLine": 1247,
+        "startChar": 52,
+        "endLine": 1247,
+        "endChar": 84
+      },
+      "revId": "e693cff0efe04a56dfd550fb42f07cd0fd76357e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9f0d7a7e_5a5fad74",
         "filename": "bootstat/bootstat.cpp",
         "patchSetId": 1
@@ -36,6 +60,30 @@
       "writtenOn": "2020-03-31T22:59:52Z",
       "side": 1,
       "message": "nit: Logspam. Also the last_reboot_reason_file and property are constants.\n\nMerge these into one message?",
+      "range": {
+        "startLine": 1245,
+        "startChar": 4,
+        "endLine": 1248,
+        "endChar": 77
+      },
+      "revId": "e693cff0efe04a56dfd550fb42f07cd0fd76357e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "99c4a4a4_268b822c",
+        "filename": "bootstat/bootstat.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1248,
+      "author": {
+        "id": 1432579
+      },
+      "writtenOn": "2020-03-31T23:06:25Z",
+      "side": 1,
+      "message": "Merged in one. Although last_reboot_reason_file and last_reboot_reason_property are constants, I think it\u0027s still worth logging their value to make debugging easier. WDYT?",
+      "parentUuid": "9f0d7a7e_5a5fad74",
       "range": {
         "startLine": 1245,
         "startChar": 4,
