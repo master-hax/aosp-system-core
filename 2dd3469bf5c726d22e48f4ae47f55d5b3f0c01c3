@@ -22,6 +22,30 @@
       "revId": "2dd3469bf5c726d22e48f4ae47f55d5b3f0c01c3",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b6ff5bbf_86fa0d6d",
+        "filename": "adb/client/adb_install.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 328,
+      "author": {
+        "id": 1080076
+      },
+      "writtenOn": "2020-03-31T02:08:59Z",
+      "side": 1,
+      "message": "It actually does:\n\n$ adb install --incr -r\n$",
+      "parentUuid": "6f543ce8_33b32b4d",
+      "range": {
+        "startLine": 328,
+        "startChar": 4,
+        "endLine": 328,
+        "endChar": 35
+      },
+      "revId": "2dd3469bf5c726d22e48f4ae47f55d5b3f0c01c3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
