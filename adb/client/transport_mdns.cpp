@@ -577,3 +577,17 @@ std::string mdns_list_discovered_services() {
     ResolvedService::forEachService(*ResolvedService::sAdbSecurePairingServices, "", cb);
     return result;
 }
+
+std::string mdns_check() {
+    uint32_t daemon_version;
+    uint32_t sz = sizeof(daemon_version);
+
+    auto dnserr = DNSServiceGetProperty(kDNSServiceProperty_DaemonVersion, &daemon_version, &sz);
+    std::string result = "ERROR: mdns daemon unavailable";
+    if (dnserr != kDNSServiceErr_NoError) {
+        return result;
+    }
+
+    result = android::base::StringPrintf("mdns daemon version [%u]", daemon_version);
+    return result;
+}

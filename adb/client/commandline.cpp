@@ -128,6 +128,7 @@ static void help() {
         " reverse --remove REMOTE  remove specific reverse socket connection\n"
         " reverse --remove-all     remove all reverse socket connections from device\n"
         " mdns services            list all discovered services\n"
+        " mdns check               check if mdns discovery is available\n"
         "\n"
         "file transfer:\n"
         " push [--sync] [-zZ] LOCAL... REMOTE\n"
@@ -1902,6 +1903,9 @@ int adb_commandline(int argc, const char** argv) {
             if (argc != 1) error_exit("mdns %s doesn't take any arguments", argv[0]);
             query += "services";
             printf("List of discovered mdns services\n");
+        } else if (!strcmp(argv[0], "check")) {
+            if (argc != 1) error_exit("mdns %s doesn't take any arguments", argv[0]);
+            query += "check";
         } else {
             error_exit("unknown mdns command [%s]", argv[0]);
         }
