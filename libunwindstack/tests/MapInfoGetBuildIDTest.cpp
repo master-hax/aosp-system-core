@@ -142,15 +142,14 @@ static void InitElfData(int fd) {
 
   char note_section[128];
   Elf32_Nhdr note_header = {};
-  note_header.n_namesz = 4;   // "GNU"
-  note_header.n_descsz = 12;  // "ELF_BUILDID"
+  note_header.n_namesz = sizeof("GNU");
+  note_header.n_descsz = sizeof("ELF_BUILDID") - 1;
   note_header.n_type = NT_GNU_BUILD_ID;
   memcpy(&note_section, &note_header, sizeof(note_header));
   size_t note_offset = sizeof(note_header);
-  memcpy(&note_section[note_offset], "GNU", sizeof("GNU"));
-  note_offset += sizeof("GNU");
-  memcpy(&note_section[note_offset], "ELF_BUILDID", sizeof("ELF_BUILDID"));
-  note_offset += sizeof("ELF_BUILDID");
+  memcpy(&note_section[note_offset], "GNU", note_header.n_namesz);
+  note_offset += note_header.n_namesz;
+  memcpy(&note_section[note_offset], "ELF_BUILDID", note_header.n_descsz);
 
   Elf32_Shdr shdr = {};
   shdr.sh_type = SHT_NOTE;
