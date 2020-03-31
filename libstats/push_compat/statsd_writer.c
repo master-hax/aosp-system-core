@@ -158,7 +158,7 @@ static int statsdWrite(struct timespec* ts, struct iovec* vec, size_t nr) {
     int sock;
     static const unsigned headerLength = 1;
     struct iovec newVec[nr + headerLength];
-    android_log_header_t header;
+    android_log_header_t header = {};
     size_t i, payloadSize;
 
     sock = atomic_load(&statsdLoggerWrite.sock);

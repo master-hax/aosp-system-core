@@ -21,7 +21,18 @@ The payload, excluding the header, has a max size of LOGGER_ENTRY_MAX_PAYLOAD.
 
 ## header
 
-The header is added immediately before sending the log message to logd.
+The header is added immediately before sending the log message to logd.  It is represented below.
+
+    typedef struct __attribute__((__packed__)) {
+        uint8_t version : 3;
+        uint8_t id : 5;
+        uint16_t tid;
+        log_time realtime;
+    } android_log_header_t;
+
+Note the `version` field, which was added in Android-R is intended to be set to 0 for the current
+version.  For backwards compatibility, this version field should be bumped and additional items in
+the new log message must be appended at the end of the existing data.
 
 ## `string` payload
 
