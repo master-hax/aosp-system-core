@@ -614,6 +614,12 @@ TEST_F(SnapshotTest, UpdateBootControlHal) {
     ASSERT_EQ(test_device->merge_status(), MergeStatus::MERGING);
 }
 
+TEST_F(SnapshotTest, NoMergeDSU) {
+    base::SetProperty("ro.gsid.image_running", "1");
+    ASSERT_FALSE(sm->InitiateMerge());
+    base::SetProperty("ro.gsid.image_running", "0");
+}
+
 enum class Request { UNKNOWN, LOCK_SHARED, LOCK_EXCLUSIVE, UNLOCK, EXIT };
 std::ostream& operator<<(std::ostream& os, Request request) {
     switch (request) {
