@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "38c7ca67_82575439",
+        "filename": "init/property_service_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-03-31T01:46:08Z",
+      "side": 1,
+      "message": "Are you missing a \n\nSetProperty(\"init.userspace_reboot.is_supported\", \"false\");\n\n?",
+      "revId": "c1eabf3c8d49ed360e28438b3fce4d67dab3bff9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
