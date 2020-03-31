@@ -27,6 +27,7 @@
 #include <android-base/file.h>
 #include <android-base/logging.h>
 #include <android-base/parseint.h>
+#include <android-base/properties.h>
 #include <android-base/strings.h>
 #include <android-base/unique_fd.h>
 #include <ext4_utils/ext4_utils.h>
@@ -47,6 +48,7 @@
 namespace android {
 namespace snapshot {
 
+using android::base::GetProperty;
 using android::base::unique_fd;
 using android::dm::DeviceMapper;
 using android::dm::DmDeviceState;
@@ -556,6 +558,9 @@ bool SnapshotManager::DeleteSnapshot(LockedFile* lock, const std::string& name) 
 }
 
 bool SnapshotManager::InitiateMerge() {
+    // suspend the VAB merge when running a DSU
+    if (GetProperty("ro.gsid.image_running", "0") == "1") return false;
+
     auto lock = LockExclusive();
     if (!lock) return false;
 
