@@ -216,6 +216,24 @@
       "revId": "dc06570c832ab7956fa0228a8aee4a60022c404b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "94992274_ad3e610f",
+        "filename": "adb/daemon/file_sync_service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 612,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2020-04-01T23:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0397c04d_9ba90e4d",
+      "revId": "dc06570c832ab7956fa0228a8aee4a60022c404b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
