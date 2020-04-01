@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "80a18de7_d4d24c87",
+        "filename": "adb/client/commandline.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1317,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2020-04-01T23:19:21Z",
+      "side": 1,
+      "message": "Doesn\u0027t have c_str() for the error_exit below, since it might not be null-terminated.\n\n(this is going to fit in the SSO, anyway, so it doesn\u0027t really cost much)",
+      "parentUuid": "d884eadd_0caa4d56",
+      "range": {
+        "startLine": 1317,
+        "startChar": 46,
+        "endLine": 1317,
+        "endChar": 68
+      },
+      "revId": "acba8bcc935f62febca3e333345be588eb0d1aec",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "bee2cc12_1435e1be",
         "filename": "adb/client/commandline.cpp",
         "patchSetId": 2
@@ -45,6 +69,30 @@
       "revId": "acba8bcc935f62febca3e333345be588eb0d1aec",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1a64e9d3_deb4c9d6",
+        "filename": "adb/client/commandline.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1343,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2020-04-01T23:19:21Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "bee2cc12_1435e1be",
+      "range": {
+        "startLine": 1343,
+        "startChar": 63,
+        "endLine": 1343,
+        "endChar": 80
+      },
+      "revId": "acba8bcc935f62febca3e333345be588eb0d1aec",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -94,6 +142,30 @@
     },
     {
       "key": {
+        "uuid": "846e54b9_9e604be0",
+        "filename": "adb/compression_utils.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2020-04-01T23:19:21Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6de6f1c9_122827c2",
+      "range": {
+        "startLine": 47,
+        "startChar": 0,
+        "endLine": 48,
+        "endChar": 32
+      },
+      "revId": "acba8bcc935f62febca3e333345be588eb0d1aec",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "86c50bdf_cb0e027f",
         "filename": "adb/compression_utils.h",
         "patchSetId": 2
@@ -114,6 +186,30 @@
       "revId": "acba8bcc935f62febca3e333345be588eb0d1aec",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "19636e1e_6305d7b6",
+        "filename": "adb/compression_utils.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2020-04-01T23:19:21Z",
+      "side": 1,
+      "message": "(see below for why I think we should require that the outside buffer lives longer than the decoder)",
+      "parentUuid": "86c50bdf_cb0e027f",
+      "range": {
+        "startLine": 59,
+        "startChar": 12,
+        "endLine": 59,
+        "endChar": 41
+      },
+      "revId": "acba8bcc935f62febca3e333345be588eb0d1aec",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -140,6 +236,30 @@
     },
     {
       "key": {
+        "uuid": "7db575a8_54614197",
+        "filename": "adb/compression_utils.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2020-04-01T23:19:21Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0918634d_5ccb50bc",
+      "range": {
+        "startLine": 70,
+        "startChar": 0,
+        "endLine": 71,
+        "endChar": 32
+      },
+      "revId": "acba8bcc935f62febca3e333345be588eb0d1aec",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "cfd97361_85e8cf61",
         "filename": "adb/compression_utils.h",
         "patchSetId": 2
@@ -163,6 +283,30 @@
     },
     {
       "key": {
+        "uuid": "c47c822c_5fac12ed",
+        "filename": "adb/compression_utils.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2020-04-01T23:19:21Z",
+      "side": 1,
+      "message": "Yeah...\n\nI\u0027ve been thinking that a better interface woudl be Decoder taking a pointer to an IOVector for output. NullDecoder can just splice Blocks onto it for free, and the clients can take_front and writev the result. I\u0027d prefer to do that in a followup, though, since the brotli stuff is already checked in in this state.",
+      "parentUuid": "cfd97361_85e8cf61",
+      "range": {
+        "startLine": 98,
+        "startChar": 0,
+        "endLine": 98,
+        "endChar": 60
+      },
+      "revId": "acba8bcc935f62febca3e333345be588eb0d1aec",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5d71d3f6_ee51472b",
         "filename": "adb/compression_utils.h",
         "patchSetId": 2
@@ -183,6 +327,30 @@
       "revId": "acba8bcc935f62febca3e333345be588eb0d1aec",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "208c6fb7_a27d3fb6",
+        "filename": "adb/compression_utils.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2020-04-01T23:19:21Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5d71d3f6_ee51472b",
+      "range": {
+        "startLine": 109,
+        "startChar": 0,
+        "endLine": 110,
+        "endChar": 22
+      },
+      "revId": "acba8bcc935f62febca3e333345be588eb0d1aec",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -229,6 +397,30 @@
       "revId": "acba8bcc935f62febca3e333345be588eb0d1aec",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b8b244f9_9c659aa7",
+        "filename": "adb/daemon/file_sync_service.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 683,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2020-04-01T23:19:21Z",
+      "side": 1,
+      "message": "(this was fixed in the patch that added LZ4)",
+      "parentUuid": "408ae5c6_b3a481ed",
+      "range": {
+        "startLine": 683,
+        "startChar": 56,
+        "endLine": 683,
+        "endChar": 79
+      },
+      "revId": "acba8bcc935f62febca3e333345be588eb0d1aec",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
