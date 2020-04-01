@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "63b2e5ab_fb1e0d64",
+        "filename": "adb/client/commandline.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 148,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-04-01T20:44:51Z",
+      "side": 1,
+      "message": "so good, you mentioned it twice?\n\n(also, shouldn\u0027t --dry-run\u0027s short opt be -n?)",
+      "revId": "022a6fe4cd2ebef6b71391b7cc7575fd352ffddf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "9d61f721_bf839400",
         "filename": "adb/file_sync_protocol.h",
         "patchSetId": 1
