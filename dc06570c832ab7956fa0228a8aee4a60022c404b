@@ -1,0 +1,101 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a7671e39_487f7324",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-04-01T20:33:48Z",
+      "side": 1,
+      "message": "can we make the tests automatically test both variants?",
+      "revId": "dc06570c832ab7956fa0228a8aee4a60022c404b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "befe4f58_d83e864e",
+        "filename": "adb/client/commandline.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1359,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-04-01T20:33:48Z",
+      "side": 1,
+      "message": "(i thought you wanted to switch to getopt_long()?)",
+      "revId": "dc06570c832ab7956fa0228a8aee4a60022c404b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d3342a86_b747092b",
+        "filename": "adb/client/commandline.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1953,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-04-01T20:33:48Z",
+      "side": 1,
+      "message": "is the 0/1 support really worth it?",
+      "range": {
+        "startLine": 1953,
+        "startChar": 66,
+        "endLine": 1953,
+        "endChar": 70
+      },
+      "revId": "dc06570c832ab7956fa0228a8aee4a60022c404b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e256140d_77fb68dc",
+        "filename": "adb/compression_utils.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-04-01T20:33:48Z",
+      "side": 1,
+      "message": "FATAL for these logic errors?",
+      "range": {
+        "startLine": 50,
+        "startChar": 16,
+        "endLine": 50,
+        "endChar": 21
+      },
+      "revId": "dc06570c832ab7956fa0228a8aee4a60022c404b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "389a5d39_85cdbdaf",
+        "filename": "adb/daemon/file_sync_service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 612,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-04-01T20:33:48Z",
+      "side": 1,
+      "message": "isn\u0027t there a compiler option we can use to make these build-time checks instead?",
+      "revId": "dc06570c832ab7956fa0228a8aee4a60022c404b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
