@@ -19,6 +19,23 @@
     },
     {
       "key": {
+        "uuid": "b2afaf32_847372a2",
+        "filename": "adb/compression_utils.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 288,
+      "author": {
+        "id": 1166043
+      },
+      "writtenOn": "2020-04-01T22:21:46Z",
+      "side": 1,
+      "message": "(nit) i hope you copy-pasted this from somewhere. in my experience it\u0027s extremely difficult to do correctly from the first 10 iterations 😊",
+      "revId": "d99aac5522bf943b1d59cd339a2ed94a30821358",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "17a26d90_b02ffef9",
         "filename": "adb/compression_utils.h",
         "patchSetId": 1
