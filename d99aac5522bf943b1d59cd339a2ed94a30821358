@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "0dee588a_ee084c3c",
+        "filename": "adb/compression_utils.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 268,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-04-01T20:40:04Z",
+      "side": 1,
+      "message": "return DecodeResult::Error?",
+      "revId": "d99aac5522bf943b1d59cd339a2ed94a30821358",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "17a26d90_b02ffef9",
         "filename": "adb/compression_utils.h",
         "patchSetId": 1
@@ -41,6 +58,29 @@
         "startChar": 47,
         "endLine": 310,
         "endChar": 62
+      },
+      "revId": "d99aac5522bf943b1d59cd339a2ed94a30821358",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1db01ae0_b3cf4eb6",
+        "filename": "adb/compression_utils.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 319,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-04-01T20:40:04Z",
+      "side": 1,
+      "message": "...?\n\n(and isn\u0027t there a constant for this?)",
+      "range": {
+        "startLine": 319,
+        "startChar": 51,
+        "endLine": 319,
+        "endChar": 53
       },
       "revId": "d99aac5522bf943b1d59cd339a2ed94a30821358",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
