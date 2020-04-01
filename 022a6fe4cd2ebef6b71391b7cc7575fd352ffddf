@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9d61f721_bf839400",
+        "filename": "adb/file_sync_protocol.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 1080076
+      },
+      "writtenOn": "2020-04-01T20:25:55Z",
+      "side": 1,
+      "message": "nit: why not a simple 1\u003c\u003c0, 1\u003c\u003c1, 1\u003c\u003c2, ... progression?",
+      "range": {
+        "startLine": 96,
+        "startChar": 0,
+        "endLine": 96,
+        "endChar": 35
+      },
+      "revId": "022a6fe4cd2ebef6b71391b7cc7575fd352ffddf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
