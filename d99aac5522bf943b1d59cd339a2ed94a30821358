@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "17a26d90_b02ffef9",
+        "filename": "adb/compression_utils.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 307,
+      "author": {
+        "id": 1080076
+      },
+      "writtenOn": "2020-04-01T20:35:49Z",
+      "side": 1,
+      "message": "nit: const?",
+      "range": {
+        "startLine": 307,
+        "startChar": 22,
+        "endLine": 307,
+        "endChar": 23
+      },
+      "revId": "d99aac5522bf943b1d59cd339a2ed94a30821358",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f3092921_60c29dab",
+        "filename": "adb/compression_utils.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 310,
+      "author": {
+        "id": 1080076
+      },
+      "writtenOn": "2020-04-01T20:35:49Z",
+      "side": 1,
+      "message": "nit: only one of \"virtual\", \"override\", or \"final\" is actually needed. That\u0027s a best practice from CppCoreGuidelines: http://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#Rh-override",
+      "range": {
+        "startLine": 310,
+        "startChar": 47,
+        "endLine": 310,
+        "endChar": 62
+      },
+      "revId": "d99aac5522bf943b1d59cd339a2ed94a30821358",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
