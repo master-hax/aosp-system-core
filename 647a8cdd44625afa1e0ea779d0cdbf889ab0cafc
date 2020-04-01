@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "62875acb_0bc49486",
+        "filename": "fs_mgr/tests/adb-remount-test.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 734,
+      "author": {
+        "id": 1395887
+      },
+      "writtenOn": "2020-04-01T21:35:56Z",
+      "side": 1,
+      "message": "I could remove adb from this list, but decided to minimize the change. LMK if you\u0027d like me to remove it.",
+      "range": {
+        "startLine": 734,
+        "startChar": 50,
+        "endLine": 734,
+        "endChar": 53
+      },
+      "revId": "647a8cdd44625afa1e0ea779d0cdbf889ab0cafc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
