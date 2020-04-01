@@ -36,6 +36,24 @@
     },
     {
       "key": {
+        "uuid": "7171256a_f62ad032",
+        "filename": "adb/compression_utils.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 288,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2020-04-01T22:32:54Z",
+      "side": 1,
+      "message": "I thought I\u0027d be able to finish it in a day, and...\n\n    Author:     Josh Gao \u003cjmgao@google.com\u003e\n    AuthorDate: Thu Mar 26 22:02:03 2020 -0700\n    Commit:     Josh Gao \u003cjmgao@google.com\u003e\n    CommitDate: Wed Apr 1 15:22:26 2020 -0700",
+      "parentUuid": "b2afaf32_847372a2",
+      "revId": "d99aac5522bf943b1d59cd339a2ed94a30821358",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "17a26d90_b02ffef9",
         "filename": "adb/compression_utils.h",
         "patchSetId": 1
@@ -56,6 +74,30 @@
       "revId": "d99aac5522bf943b1d59cd339a2ed94a30821358",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "63ea7530_5bc38552",
+        "filename": "adb/compression_utils.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 307,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2020-04-01T22:32:54Z",
+      "side": 1,
+      "message": "Done (and also fixed it so it\u0027s \u003e\u003d output_block_size).",
+      "parentUuid": "17a26d90_b02ffef9",
+      "range": {
+        "startLine": 307,
+        "startChar": 22,
+        "endLine": 307,
+        "endChar": 23
+      },
+      "revId": "d99aac5522bf943b1d59cd339a2ed94a30821358",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -82,6 +124,30 @@
     },
     {
       "key": {
+        "uuid": "0db9c09b_4cff330d",
+        "filename": "adb/compression_utils.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 310,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2020-04-01T22:32:54Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f3092921_60c29dab",
+      "range": {
+        "startLine": 310,
+        "startChar": 47,
+        "endLine": 310,
+        "endChar": 62
+      },
+      "revId": "d99aac5522bf943b1d59cd339a2ed94a30821358",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1db01ae0_b3cf4eb6",
         "filename": "adb/compression_utils.h",
         "patchSetId": 1
@@ -102,6 +168,30 @@
       "revId": "d99aac5522bf943b1d59cd339a2ed94a30821358",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ae0bde05_1412d3c1",
+        "filename": "adb/compression_utils.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 319,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2020-04-01T22:32:54Z",
+      "side": 1,
+      "message": "Whoops, I switched terminals to look for the constant and then multitasked to something else. There doesn\u0027t seem to actually be a constant for this.",
+      "parentUuid": "1db01ae0_b3cf4eb6",
+      "range": {
+        "startLine": 319,
+        "startChar": 51,
+        "endLine": 319,
+        "endChar": 53
+      },
+      "revId": "d99aac5522bf943b1d59cd339a2ed94a30821358",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
