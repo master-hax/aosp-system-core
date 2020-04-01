@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "d9cd0bef_7ca0e381",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2020-04-01T22:44:53Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a7671e39_487f7324",
+      "revId": "dc06570c832ab7956fa0228a8aee4a60022c404b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "befe4f58_d83e864e",
         "filename": "adb/client/commandline.cpp",
         "patchSetId": 1
@@ -33,6 +51,24 @@
       "revId": "dc06570c832ab7956fa0228a8aee4a60022c404b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7005dc9b_919b3b66",
+        "filename": "adb/client/commandline.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1359,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2020-04-01T22:44:53Z",
+      "side": 1,
+      "message": "I do, but I\u0027m also lazy",
+      "parentUuid": "befe4f58_d83e864e",
+      "revId": "dc06570c832ab7956fa0228a8aee4a60022c404b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -59,6 +95,30 @@
     },
     {
       "key": {
+        "uuid": "541ff25d_bf1a7780",
+        "filename": "adb/client/commandline.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1953,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2020-04-01T22:44:53Z",
+      "side": 1,
+      "message": "I have too much muscle memory for typing ADB_FOO\u003d0, and this doesn\u0027t really cost us much",
+      "parentUuid": "d3342a86_b747092b",
+      "range": {
+        "startLine": 1953,
+        "startChar": 66,
+        "endLine": 1953,
+        "endChar": 70
+      },
+      "revId": "dc06570c832ab7956fa0228a8aee4a60022c404b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e256140d_77fb68dc",
         "filename": "adb/compression_utils.h",
         "patchSetId": 1
@@ -82,6 +142,30 @@
     },
     {
       "key": {
+        "uuid": "b9c5ca48_4a0fbd9d",
+        "filename": "adb/compression_utils.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2020-04-01T22:44:53Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e256140d_77fb68dc",
+      "range": {
+        "startLine": 50,
+        "startChar": 16,
+        "endLine": 50,
+        "endChar": 21
+      },
+      "revId": "dc06570c832ab7956fa0228a8aee4a60022c404b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "389a5d39_85cdbdaf",
         "filename": "adb/daemon/file_sync_service.cpp",
         "patchSetId": 1
@@ -96,6 +180,24 @@
       "revId": "dc06570c832ab7956fa0228a8aee4a60022c404b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "244200ee_533a4a11",
+        "filename": "adb/daemon/file_sync_service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 612,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2020-04-01T22:44:53Z",
+      "side": 1,
+      "message": "CompressionType::Any makes the warning fire, so at best we\u0027d replace `default:` with `case CompressionType::Any:`",
+      "parentUuid": "389a5d39_85cdbdaf",
+      "revId": "dc06570c832ab7956fa0228a8aee4a60022c404b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
