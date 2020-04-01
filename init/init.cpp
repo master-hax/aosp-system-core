@@ -52,6 +52,7 @@
 #include <keyutils.h>
 #include <libavb/libavb.h>
 #include <libgsi/libgsi.h>
+#include <logwrap/logwrap.h>
 #include <processgroup/processgroup.h>
 #include <processgroup/setup.h>
 #include <selinux/android.h>
@@ -267,6 +268,18 @@ void DebugRebootLogging() {
     if (IsShuttingDown()) {
         LOG(ERROR) << "sys.powerctl set while init is already shutting down";
         UnwindMainThreadStack();
+    }
+
+    auto pid = fork();
+    if (pid == 0) {
+        std::vector<const char*> args;
+        args.push_back("/system/bin/iotop");
+        args.push_back("-m");
+        args.push_back("10");
+        args.push_back("-n");
+        args.push_back("10");
+        setexeccon("u:r:su:s0");
+        logwrap_fork_execvp(args.size(), args.data(), nullptr, false, LOG_KLOG, false, nullptr);
     }
 }
 
