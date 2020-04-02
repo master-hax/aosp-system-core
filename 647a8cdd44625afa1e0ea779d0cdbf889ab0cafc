@@ -22,6 +22,30 @@
       "revId": "647a8cdd44625afa1e0ea779d0cdbf889ab0cafc",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "03486661_ed36562e",
+        "filename": "fs_mgr/tests/adb-remount-test.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 734,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2020-04-02T18:51:15Z",
+      "side": 1,
+      "message": "There was a device that had this, but for the life of me can not remember when/why. There is no harm done by its presence.",
+      "parentUuid": "62875acb_0bc49486",
+      "range": {
+        "startLine": 734,
+        "startChar": 50,
+        "endLine": 734,
+        "endChar": 53
+      },
+      "revId": "647a8cdd44625afa1e0ea779d0cdbf889ab0cafc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
