@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "39c749aa_8f3dd567",
+        "filename": "liblog/README.protocol.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-04-03T21:29:45Z",
+      "side": 1,
+      "message": "just put the `struct X` here and lose the typedefs on all these for readability, since this is only meant to be consumed by humans?",
+      "range": {
+        "startLine": 22,
+        "startChar": 4,
+        "endLine": 22,
+        "endChar": 46
+      },
+      "revId": "516b6cc959c3f76aa7f6e6f4f55e7b20e9cf8784",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
