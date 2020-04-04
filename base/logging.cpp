@@ -258,8 +258,8 @@ void KernelLogger(android::base::LogId, android::base::LogSeverity severity,
   static_assert(arraysize(kLogSeverityToKernelLogLevel) == android::base::FATAL + 1,
                 "Mismatch in size of kLogSeverityToKernelLogLevel and values in LogSeverity");
 
-  static int klog_fd = OpenKmsg();
-  if (klog_fd == -1) return;
+  unique_fd klog_fd(OpenKmsg());
+  if (klog_fd.get() == -1) return;
 
   int level = kLogSeverityToKernelLogLevel[severity];
 
@@ -276,7 +276,7 @@ void KernelLogger(android::base::LogId, android::base::LogSeverity severity,
   iovec iov[1];
   iov[0].iov_base = buf;
   iov[0].iov_len = size;
-  TEMP_FAILURE_RETRY(writev(klog_fd, iov, 1));
+  TEMP_FAILURE_RETRY(writev(klog_fd.get(), iov, 1));
 }
 #endif
 
