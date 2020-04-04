@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4967e134_cae4803f",
+        "filename": "debuggerd/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 180,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-04-04T00:22:28Z",
+      "side": 1,
+      "message": "move this comment down, and say what you need the scudo include directory for? (should the scudo include directory be exported by libscudo instead?)",
+      "revId": "895035c37b39925dfe7ca55a678c5c678eb040c7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
