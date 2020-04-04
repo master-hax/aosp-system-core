@@ -234,7 +234,7 @@ int FirstStageMain(int argc, char** argv) {
         old_root_dir.reset();
     }
 
-    Modprobe m({"/lib/modules"});
+    Modprobe m({"/lib/modules"}, IsRecoveryMode() && !ForceNormalBoot(cmdline));
     auto want_console = ALLOW_FIRST_STAGE_CONSOLE && FirstStageConsole(cmdline);
     if (!m.LoadListedModules(!want_console)) {
         if (want_console) {
