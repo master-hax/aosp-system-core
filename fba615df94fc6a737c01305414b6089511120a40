@@ -22,6 +22,30 @@
       "revId": "fba615df94fc6a737c01305414b6089511120a40",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "47ca049a_8ce01a54",
+        "filename": "adb/adb.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 255,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2020-04-06T21:16:51Z",
+      "side": 1,
+      "message": "It\u0027s following with (most) of the rest of the stuff above, where we have logically separate blocks in their own ifdefs.",
+      "parentUuid": "eb4fceb4_a9c7025d",
+      "range": {
+        "startLine": 253,
+        "startChar": 0,
+        "endLine": 255,
+        "endChar": 12
+      },
+      "revId": "fba615df94fc6a737c01305414b6089511120a40",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
