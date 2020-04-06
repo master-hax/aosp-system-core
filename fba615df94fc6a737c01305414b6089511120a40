@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "eb4fceb4_a9c7025d",
+        "filename": "adb/adb.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 255,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-04-06T20:52:44Z",
+      "side": 1,
+      "message": "(i still don\u0027t understand why you close this, only to immediately reopen it...)",
+      "range": {
+        "startLine": 253,
+        "startChar": 0,
+        "endLine": 255,
+        "endChar": 12
+      },
+      "revId": "fba615df94fc6a737c01305414b6089511120a40",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
