@@ -16,6 +16,74 @@
       "revId": "895035c37b39925dfe7ca55a678c5c678eb040c7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "df984586_3ec0cb41",
+        "filename": "debuggerd/debuggerd_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 366,
+      "author": {
+        "id": 1005967
+      },
+      "writtenOn": "2020-04-06T20:25:55Z",
+      "side": 1,
+      "message": "I don\u0027t think (volatile int) does anything here. If you want to prevent llvm from understanding the connection between the free and the later store, the pointer itself should be volatile.",
+      "revId": "895035c37b39925dfe7ca55a678c5c678eb040c7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "97901470_cc62adfe",
+        "filename": "debuggerd/debuggerd_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 381,
+      "author": {
+        "id": 1005967
+      },
+      "writtenOn": "2020-04-06T20:25:55Z",
+      "side": 1,
+      "message": "what about the SEGV_ code?",
+      "revId": "895035c37b39925dfe7ca55a678c5c678eb040c7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f86673d8_117a112c",
+        "filename": "debuggerd/debuggerd_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 382,
+      "author": {
+        "id": 1005967
+      },
+      "writtenOn": "2020-04-06T20:25:55Z",
+      "side": 1,
+      "message": "Add a test with multiple causes.",
+      "revId": "895035c37b39925dfe7ca55a678c5c678eb040c7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "69ad1f9b_73488fbd",
+        "filename": "libunwindstack/include/unwindstack/Memory.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1005967
+      },
+      "writtenOn": "2020-04-06T20:25:55Z",
+      "side": 1,
+      "message": "uint64_t addr",
+      "revId": "895035c37b39925dfe7ca55a678c5c678eb040c7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
