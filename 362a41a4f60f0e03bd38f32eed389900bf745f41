@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5b2f7a20_facdee77",
+        "filename": "adb/adb.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1079,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-04-06T19:40:50Z",
+      "side": 0,
+      "message": "(i\u0027d have understood this better if it came _before_ the previous line... but here we\u0027ll flush on exit anyway, so...)",
+      "revId": "362a41a4f60f0e03bd38f32eed389900bf745f41",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}

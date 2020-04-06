@@ -1,0 +1,130 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "39815c9e_0d80b07b",
+        "filename": "adb/adb.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1074,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-04-06T19:40:50Z",
+      "side": 1,
+      "message": "g_?",
+      "range": {
+        "startLine": 1074,
+        "startChar": 12,
+        "endLine": 1074,
+        "endChar": 30
+      },
+      "revId": "3b85a4cf039e6703426d65e3f67d06926a08a255",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "595d0806_eb26cbed",
+        "filename": "adb/adb.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1085,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-04-06T19:40:50Z",
+      "side": 1,
+      "message": "(it will be interesting to see whether we actually need to return _success_ to avoid breaking other workflows :-/ )",
+      "revId": "3b85a4cf039e6703426d65e3f67d06926a08a255",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5d733412_6e9f6fff",
+        "filename": "adb/adb.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1089,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-04-06T19:40:50Z",
+      "side": 1,
+      "message": "we don\u0027t? so my above question about success vs failure is moot?",
+      "range": {
+        "startLine": 1089,
+        "startChar": 28,
+        "endLine": 1089,
+        "endChar": 64
+      },
+      "revId": "3b85a4cf039e6703426d65e3f67d06926a08a255",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c35e1d6b_2769c844",
+        "filename": "adb/adb.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 255,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-04-06T19:40:50Z",
+      "side": 1,
+      "message": "?\n\njust add a comment for the new function instead? (copy \u0026 pasted motivation from the checkin comment?)",
+      "range": {
+        "startLine": 253,
+        "startChar": 0,
+        "endLine": 255,
+        "endChar": 12
+      },
+      "revId": "3b85a4cf039e6703426d65e3f67d06926a08a255",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e403c3fa_592209cf",
+        "filename": "adb/client/adb_client.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 209,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-04-06T19:40:50Z",
+      "side": 1,
+      "message": "hmm, so we do read, we were just ignoring whether the read succeeded or not, and _what_ was read? fix the previous comment?",
+      "revId": "3b85a4cf039e6703426d65e3f67d06926a08a255",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a054f52c_2e975f70",
+        "filename": "adb/client/adb_client.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 218,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-04-06T19:40:50Z",
+      "side": 1,
+      "message": "missing \\n?",
+      "range": {
+        "startLine": 218,
+        "startChar": 38,
+        "endLine": 218,
+        "endChar": 39
+      },
+      "revId": "3b85a4cf039e6703426d65e3f67d06926a08a255",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
