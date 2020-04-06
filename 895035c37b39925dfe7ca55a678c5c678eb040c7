@@ -36,6 +36,24 @@
     },
     {
       "key": {
+        "uuid": "aef436fa_fee94ece",
+        "filename": "debuggerd/debuggerd_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 366,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2020-04-06T20:41:08Z",
+      "side": 1,
+      "message": "google benchmark has a DoNotOptimize function that launders the value through an asm volatile, maybe we should just add that as a dependency to use here?",
+      "parentUuid": "df984586_3ec0cb41",
+      "revId": "895035c37b39925dfe7ca55a678c5c678eb040c7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "97901470_cc62adfe",
         "filename": "debuggerd/debuggerd_test.cpp",
         "patchSetId": 1
@@ -64,6 +82,29 @@
       "writtenOn": "2020-04-06T20:25:55Z",
       "side": 1,
       "message": "Add a test with multiple causes.",
+      "revId": "895035c37b39925dfe7ca55a678c5c678eb040c7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0368d09c_590cadec",
+        "filename": "debuggerd/debuggerd_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 385,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2020-04-06T20:41:08Z",
+      "side": 1,
+      "message": "These get printed for `defined(__aarch64__) \u0026\u0026 !defined(ANDROID_EXPERIMENTAL_MTE)`, which is a bit misleading",
+      "range": {
+        "startLine": 383,
+        "startChar": 5,
+        "endLine": 385,
+        "endChar": 0
+      },
       "revId": "895035c37b39925dfe7ca55a678c5c678eb040c7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
