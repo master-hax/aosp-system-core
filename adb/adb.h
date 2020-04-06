@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-#ifndef __ADB_H
-#define __ADB_H
+#pragma once
 
 #include <limits.h>
 #include <stdint.h>
@@ -237,6 +236,7 @@ void send_tls_request(atransport* t);
 
 void parse_banner(const std::string&, atransport* t);
 
+#if ADB_HOST
 // On startup, the adb server needs to wait until all of the connected devices are ready.
 // To do this, we need to know when the scan has identified all of the potential new transports, and
 // when each transport becomes ready.
@@ -250,6 +250,10 @@ void update_transport_status();
 
 // Wait until device scan has completed and every transport is ready, or a timeout elapses.
 void adb_wait_for_device_initialization();
+#endif  // ADB_HOST
+
+#if ADB_HOST
+void adb_set_reject_kill_server(bool reject);
+#endif
 
 void usb_init();
-#endif
