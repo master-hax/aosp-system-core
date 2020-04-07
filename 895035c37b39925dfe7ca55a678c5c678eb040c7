@@ -72,6 +72,24 @@
     },
     {
       "key": {
+        "uuid": "da4acf4a_a4be35dc",
+        "filename": "debuggerd/debuggerd_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 366,
+      "author": {
+        "id": 1067098
+      },
+      "writtenOn": "2020-04-07T19:05:54Z",
+      "side": 1,
+      "message": "It looks like (volatile int*) is necessary to keep the store around. With (int *volatile) it gets deleted, presumably because of dead-store elimination (although I also would have thought that volatile would stop it, maybe a bug?) (volatile int*) means that dead store elimination can\u0027t touch it.\n\nI also tried DoNotOptimize but it wasn\u0027t enough to keep the store either. So I left this as is.",
+      "parentUuid": "df984586_3ec0cb41",
+      "revId": "895035c37b39925dfe7ca55a678c5c678eb040c7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "97901470_cc62adfe",
         "filename": "debuggerd/debuggerd_test.cpp",
         "patchSetId": 1
@@ -83,6 +101,24 @@
       "writtenOn": "2020-04-06T20:25:55Z",
       "side": 1,
       "message": "what about the SEGV_ code?",
+      "revId": "895035c37b39925dfe7ca55a678c5c678eb040c7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "da73ad94_0bd4899e",
+        "filename": "debuggerd/debuggerd_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 381,
+      "author": {
+        "id": 1067098
+      },
+      "writtenOn": "2020-04-07T19:05:54Z",
+      "side": 1,
+      "message": "I thought about checking the code here, but I figured that it would rely an implementation detail of scudo (e.g. scudo could unmap on free which would turn this into SEGV_MAPERR). Checking it on underflow also depends on an implementation detail (i.e. header prefix). I think it\u0027s also possible for overflow to result in SEGV_MAPERR right now if we get the last chunk in a mapping.\n\nMaybe it\u0027s not too bad though to check the code for UAF and underflow since we\u0027re already depending on scudo implementation details in tests elsewhere IIRC.",
+      "parentUuid": "97901470_cc62adfe",
       "revId": "895035c37b39925dfe7ca55a678c5c678eb040c7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
@@ -103,6 +139,24 @@
       "revId": "895035c37b39925dfe7ca55a678c5c678eb040c7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "81ae7e7f_059bc87d",
+        "filename": "debuggerd/debuggerd_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 382,
+      "author": {
+        "id": 1067098
+      },
+      "writtenOn": "2020-04-07T19:05:54Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f86673d8_117a112c",
+      "revId": "895035c37b39925dfe7ca55a678c5c678eb040c7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -129,6 +183,30 @@
     },
     {
       "key": {
+        "uuid": "51d7d315_0fa45e01",
+        "filename": "debuggerd/debuggerd_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 385,
+      "author": {
+        "id": 1067098
+      },
+      "writtenOn": "2020-04-07T19:05:54Z",
+      "side": 1,
+      "message": "I\u0027ve changed it to \"Requires __aarch64__ + ANDROID_EXPERIMENTAL_MTE\".",
+      "parentUuid": "0368d09c_590cadec",
+      "range": {
+        "startLine": 383,
+        "startChar": 5,
+        "endLine": 385,
+        "endChar": 0
+      },
+      "revId": "895035c37b39925dfe7ca55a678c5c678eb040c7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "69ad1f9b_73488fbd",
         "filename": "libunwindstack/include/unwindstack/Memory.h",
         "patchSetId": 1
@@ -140,6 +218,24 @@
       "writtenOn": "2020-04-06T20:25:55Z",
       "side": 1,
       "message": "uint64_t addr",
+      "revId": "895035c37b39925dfe7ca55a678c5c678eb040c7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1f295d1e_cdd66560",
+        "filename": "libunwindstack/include/unwindstack/Memory.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1067098
+      },
+      "writtenOn": "2020-04-07T19:05:54Z",
+      "side": 1,
+      "message": "This makes the compiler complain about an unused parameter.",
+      "parentUuid": "69ad1f9b_73488fbd",
       "revId": "895035c37b39925dfe7ca55a678c5c678eb040c7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
