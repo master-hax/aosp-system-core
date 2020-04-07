@@ -50,6 +50,17 @@ static bool HasDexSupport() {
 
 std::unique_ptr<DexFile> DexFile::Create(uint64_t dex_file_offset_in_memory, Memory* memory,
                                          MapInfo* info) {
+  if (memory->IsLocal()) {
+    size_t size = info->end - dex_file_offset_in_memory;
+
+    std::string err_msg;
+    std::unique_ptr<art_api::dex::DexFile> art_dex_file = DexFile::OpenFromMemory(
+        reinterpret_cast<void const*>(dex_file_offset_in_memory), &size, info->name, &err_msg);
+    if (art_dex_file != nullptr) {
+      return std::unique_ptr<DexFile>(new DexFile(art_dex_file));
+    }
+  }
+
   if (!info->name.empty()) {
     std::unique_ptr<DexFile> dex_file =
         DexFileFromFile::Create(dex_file_offset_in_memory - info->start + info->offset, info->name);
