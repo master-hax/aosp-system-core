@@ -144,7 +144,7 @@ class AsyncServiceRef {
         return initialized_;
     }
 
-    virtual ~AsyncServiceRef() {
+    void DestroyServiceRef() {
         if (!initialized_) {
             return;
         }
@@ -152,8 +152,11 @@ class AsyncServiceRef {
         // Order matters here! Must destroy the fdevent first since it has a
         // reference to |sdRef_|.
         fdevent_destroy(fde_);
+        D("DNSServiceRefDeallocate(sdRef=%p)", sdRef_);
         DNSServiceRefDeallocate(sdRef_);
     }
+
+    virtual ~AsyncServiceRef() { DestroyServiceRef(); }
 
   protected:
     DNSServiceRef sdRef_;
@@ -203,6 +206,7 @@ class ResolvedService : public AsyncServiceRef {
         if (ret != kDNSServiceErr_NoError) {
             D("Got %d from DNSServiceGetAddrInfo.", ret);
         } else {
+            D("DNSServiceGetAddrInfo(sdRef=%p, hosttarget=%s)", sdRef_, hosttarget);
             Initialize();
         }
 
@@ -223,7 +227,7 @@ class ResolvedService : public AsyncServiceRef {
         return true;
     }
 
-    void Connect(const sockaddr* address) {
+    bool AddToServiceRegistry(const sockaddr* address) {
         sa_family_ = address->sa_family;
 
         if (sa_family_ == AF_INET) {
@@ -234,13 +238,13 @@ class ResolvedService : public AsyncServiceRef {
             addr_format_ = "[%s]:%hu";
         } else {  // Should be impossible
             D("mDNS resolved non-IP address.");
-            return;
+            return false;
         }
 
         // Winsock version requires the const cast Because Microsoft.
         if (!inet_ntop(sa_family_, const_cast<void*>(ip_addr_data_), ip_addr_, sizeof(ip_addr_))) {
             D("Could not convert IP address to string.");
-            return;
+            return false;
         }
 
         // adb secure service needs to do something different from just
@@ -277,6 +281,8 @@ class ResolvedService : public AsyncServiceRef {
             default:
                 break;
         }
+
+        return true;
     }
 
     int serviceIndex() const { return adb_DNSServiceIndexByName(regType_.c_str()); }
@@ -393,23 +399,28 @@ bool adb_secure_connect_by_service_name(const char* service_name) {
                                                  service_name);
 }
 
-static void DNSSD_API register_service_ip(DNSServiceRef /*sdRef*/,
-                                          DNSServiceFlags /*flags*/,
+static void DNSSD_API register_service_ip(DNSServiceRef sdRef, DNSServiceFlags flags,
                                           uint32_t /*interfaceIndex*/,
-                                          DNSServiceErrorType /*errorCode*/,
-                                          const char* /*hostname*/,
-                                          const sockaddr* address,
-                                          uint32_t /*ttl*/,
-                                          void* context) {
-    D("Got IP for service.");
+                                          DNSServiceErrorType errorCode, const char* hostname,
+                                          const sockaddr* address, uint32_t ttl, void* context) {
+    D("%s: sdRef=%p flags=0x%08x errorCode=%u ttl=%u", __func__, sdRef, flags, errorCode, ttl);
     std::unique_ptr<ResolvedService> data(
         reinterpret_cast<ResolvedService*>(context));
-    data->Connect(address);
+    // Only resolve the address once. If the address or port changes, we'll just get another
+    // registration.
+    data->DestroyServiceRef();
 
-    // For ADB Secure services, keep those ResolvedService's around
-    // for later processing with secure connection establishment.
-    if (data->serviceIndex() != kADBTransportServiceRefIndex) {
-        data.release();
+    if (errorCode != kDNSServiceErr_NoError) {
+        D("Got error while looking up ipaddr [%u]", errorCode);
+        return;
+    }
+
+    if (flags & kDNSServiceFlagsAdd) {
+        D("Resolved IP address for [%s]. Adding to service registry.", hostname);
+        if (data->AddToServiceRegistry(address)) {
+            // The service registry owns |data| now.
+            data.release();
+        }
     }
 }
 
@@ -459,6 +470,7 @@ class DiscoveredService : public AsyncServiceRef {
 };
 
 static void adb_RemoveDNSService(const char* regType, const char* serviceName) {
+    D("%s: regType=[%s] serviceName=[%s]", __func__, regType, serviceName);
     int index = adb_DNSServiceIndexByName(regType);
     ResolvedService::ServiceRegistry* services;
     switch (index) {
