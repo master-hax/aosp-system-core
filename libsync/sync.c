@@ -157,7 +157,7 @@ static int legacy_sync_merge(const char *name, int fd1, int fd2)
     int ret;
 
     data.fd2 = fd2;
-    strlcpy(data.name, name, sizeof(data.name));
+    snprintf(data.name, sizeof(data.name), "%s", name);
     ret = ioctl(fd1, SYNC_IOC_LEGACY_MERGE, &data);
     if (ret < 0)
         return ret;
@@ -170,7 +170,7 @@ static int modern_sync_merge(const char *name, int fd1, int fd2)
     int ret;
 
     data.fd2 = fd2;
-    strlcpy(data.name, name, sizeof(data.name));
+    snprintf(data.name, sizeof(data.name), "%s", name);
     data.flags = 0;
     data.pad = 0;
 
@@ -266,16 +266,16 @@ static struct sync_fence_info_data *sync_file_info_to_legacy_fence_info(
         return NULL;
     legacy_info->len = sizeof(*legacy_info) +
                         num_fences * sizeof(struct sync_pt_info);
-    strlcpy(legacy_info->name, info->name, sizeof(legacy_info->name));
+    snprintf(legacy_info->name, sizeof(legacy_info->name), "%s", info->name);
     legacy_info->status = info->status;
 
     legacy_pt_info = (struct sync_pt_info *)legacy_info->pt_info;
     for (uint32_t i = 0; i < num_fences; i++) {
         legacy_pt_info[i].len = sizeof(*legacy_pt_info);
-        strlcpy(legacy_pt_info[i].obj_name, fence_info[i].obj_name,
-                sizeof(legacy_pt_info->obj_name));
-        strlcpy(legacy_pt_info[i].driver_name, fence_info[i].driver_name,
-                sizeof(legacy_pt_info->driver_name));
+        snprintf(legacy_pt_info[i].obj_name, sizeof(legacy_pt_info->obj_name), "%s",
+                 fence_info[i].obj_name);
+        snprintf(legacy_pt_info[i].driver_name, sizeof(legacy_pt_info->driver_name), "%s",
+                 fence_info[i].driver_name);
         legacy_pt_info[i].status = fence_info[i].status;
         legacy_pt_info[i].timestamp_ns = fence_info[i].timestamp_ns;
     }
@@ -304,16 +304,15 @@ static struct sync_file_info* legacy_fence_info_to_sync_file_info(
     }
     info->sync_fence_info = (__u64)(uintptr_t)(info + 1);
 
-    strlcpy(info->name, legacy_info->name, sizeof(info->name));
+    snprintf(info->name, sizeof(info->name), "%s", legacy_info->name);
     info->status = legacy_info->status;
     info->num_fences = num_fences;
 
     pt = NULL;
     fence = sync_get_fence_info(info);
     while ((pt = sync_pt_info(legacy_info, pt)) != NULL) {
-        strlcpy(fence->obj_name, pt->obj_name, sizeof(fence->obj_name));
-        strlcpy(fence->driver_name, pt->driver_name,
-                sizeof(fence->driver_name));
+        snprintf(fence->obj_name, sizeof(fence->obj_name), "%s", pt->obj_name);
+        snprintf(fence->driver_name, sizeof(fence->driver_name), "%s", pt->driver_name);
         fence->status = pt->status;
         fence->timestamp_ns = pt->timestamp_ns;
         fence++;
@@ -433,7 +432,7 @@ int sw_sync_fence_create(int fd, const char *name, unsigned value)
     int err;
 
     data.value = value;
-    strlcpy(data.name, name, sizeof(data.name));
+    snprintf(data.name, sizeof(data.name), "%s", name);
 
     err = ioctl(fd, SW_SYNC_IOC_CREATE_FENCE, &data);
     if (err < 0)
