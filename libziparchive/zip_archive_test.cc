@@ -508,6 +508,9 @@ TEST(ziparchive, EmptyEntries) {
   ASSERT_EQ(static_cast<uint32_t>(0), entry.uncompressed_length);
   uint8_t buffer[1];
   ASSERT_EQ(0, ExtractToMemory(handle, &entry, buffer, 1));
+  auto uncompressed_length = static_cast<size_t>(entry.uncompressed_length);
+  std::vector<uint8_t> vec_buf(uncompressed_length);
+  ASSERT_EQ(0, ExtractToMemory(handle, &entry, vec_buf.data(), uncompressed_length));
 
   TemporaryFile tmp_output_file;
   ASSERT_NE(-1, tmp_output_file.fd);
