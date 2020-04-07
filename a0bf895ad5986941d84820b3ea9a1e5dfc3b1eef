@@ -16,6 +16,24 @@
       "revId": "a0bf895ad5986941d84820b3ea9a1e5dfc3b1eef",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a7c668d3_7144508c",
+        "filename": "debuggerd/debuggerd_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 461,
+      "author": {
+        "id": 1067098
+      },
+      "writtenOn": "2020-04-07T19:20:55Z",
+      "side": 1,
+      "message": "Only if the allocations have the same tag would they be measured as closer than 128 bytes to each other. Otherwise they would be about (some non-zero value \u003c\u003c 56) apart.",
+      "parentUuid": "def98e1e_af29c374",
+      "revId": "a0bf895ad5986941d84820b3ea9a1e5dfc3b1eef",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
