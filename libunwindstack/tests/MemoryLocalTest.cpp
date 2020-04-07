@@ -18,6 +18,9 @@
 #include <string.h>
 #include <sys/mman.h>
 
+#include <bionic/mte.h>
+#include <bionic/mte_kernel.h>
+
 #include <vector>
 
 #include <gtest/gtest.h>
@@ -48,6 +51,29 @@ TEST(MemoryLocalTest, read) {
   for (size_t i = 512; i < 1024; i++) {
     ASSERT_EQ(0x4cU, dst[i]);
   }
+}
+
+TEST(MemoryLocalTest, read_tag) {
+#if defined(__aarch64__) && defined(ANDROID_EXPERIMENTAL_MTE)
+  if (!mte_supported()) {
+    GTEST_SKIP() << "Requires MTE";
+  }
+
+  uintptr_t mapping =
+      reinterpret_cast<uintptr_t>(mmap(nullptr, getpagesize(), PROT_READ | PROT_WRITE | PROT_MTE,
+                                       MAP_PRIVATE | MAP_ANONYMOUS, -1, 0));
+  __asm__ __volatile__(".arch_extension mte; stg %0, [%0]"
+                       :
+                       : "r"(mapping + (1ULL << 56))
+                       : "memory");
+
+  MemoryLocal local;
+
+  EXPECT_EQ(1, local.ReadTag(mapping));
+  EXPECT_EQ(0, local.ReadTag(mapping + 16));
+#else
+  GTEST_SKIP() << "Requires aarch64 + ANDROID_EXPERIMENTAL_MTE";
+#endif
 }
 
 TEST(MemoryLocalTest, read_illegal) {

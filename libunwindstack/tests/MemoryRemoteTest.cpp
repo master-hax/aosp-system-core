@@ -28,6 +28,8 @@
 
 #include <android-base/test_utils.h>
 #include <android-base/file.h>
+#include <bionic/mte.h>
+#include <bionic/mte_kernel.h>
 #include <gtest/gtest.h>
 
 #include "MemoryRemote.h"
@@ -77,6 +79,39 @@ TEST_F(MemoryRemoteTest, read) {
   }
 
   ASSERT_TRUE(Detach(pid));
+}
+
+TEST_F(MemoryRemoteTest, read_tag) {
+#if defined(__aarch64__) && defined(ANDROID_EXPERIMENTAL_MTE)
+  if (!mte_supported()) {
+    GTEST_SKIP() << "Requires MTE";
+  }
+
+  uintptr_t mapping =
+      reinterpret_cast<uintptr_t>(mmap(nullptr, getpagesize(), PROT_READ | PROT_WRITE | PROT_MTE,
+                                       MAP_PRIVATE | MAP_ANONYMOUS, -1, 0));
+  __asm__ __volatile__(".arch_extension mte; stg %0, [%0]"
+                       :
+                       : "r"(mapping + (1ULL << 56))
+                       : "memory");
+
+  pid_t pid;
+  if ((pid = fork()) == 0) {
+    while (true);
+    exit(1);
+  }
+  ASSERT_LT(0, pid);
+  TestScopedPidReaper reap(pid);
+
+  ASSERT_TRUE(Attach(pid));
+
+  MemoryRemote remote(pid);
+
+  EXPECT_EQ(1, remote.ReadTag(mapping));
+  EXPECT_EQ(0, remote.ReadTag(mapping + 16));
+#else
+  GTEST_SKIP() << "Requires aarch64 + ANDROID_EXPERIMENTAL_MTE";
+#endif
 }
 
 TEST_F(MemoryRemoteTest, read_large) {
