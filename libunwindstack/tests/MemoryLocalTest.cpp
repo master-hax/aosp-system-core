@@ -18,6 +18,9 @@
 #include <string.h>
 #include <sys/mman.h>
 
+#include <bionic/mte.h>
+#include <bionic/mte_kernel.h>
+
 #include <vector>
 
 #include <gtest/gtest.h>
