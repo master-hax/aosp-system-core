@@ -34,6 +34,24 @@
       "revId": "a0bf895ad5986941d84820b3ea9a1e5dfc3b1eef",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6de9fcd1_9a8057be",
+        "filename": "debuggerd/debuggerd_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 461,
+      "author": {
+        "id": 1005967
+      },
+      "writtenOn": "2020-04-07T19:28:46Z",
+      "side": 1,
+      "message": "Oh, smart!\nMention this in a comment please.",
+      "parentUuid": "a7c668d3_7144508c",
+      "revId": "a0bf895ad5986941d84820b3ea9a1e5dfc3b1eef",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
