@@ -55,6 +55,24 @@
     },
     {
       "key": {
+        "uuid": "aeba2f67_53ad2b4f",
+        "filename": "init/test_kill_services/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2020-04-08T20:34:54Z",
+      "side": 1,
+      "message": "Can you dupe b/153566868 to that bug then? I can\u0027t find it",
+      "parentUuid": "84f22199_811d2580",
+      "revId": "86ba82d6b6835e4de1d5688d46e38b96e4feb940",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "edbfc386_ba34a730",
         "filename": "init/test_kill_services/AndroidTest.xml",
         "patchSetId": 1
