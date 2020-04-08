@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b618b5f5_000919a4",
+        "filename": "init/test_kill_services/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1088076
+      },
+      "writtenOn": "2020-04-08T18:42:36Z",
+      "side": 1,
+      "message": "default is false, and you don\u0027t have other test in this Android.bp. So you don\u0027t need this line.",
+      "revId": "86ba82d6b6835e4de1d5688d46e38b96e4feb940",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "edbfc386_ba34a730",
+        "filename": "init/test_kill_services/AndroidTest.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1088076
+      },
+      "writtenOn": "2020-04-08T18:42:36Z",
+      "side": 1,
+      "message": "remove",
+      "revId": "86ba82d6b6835e4de1d5688d46e38b96e4feb940",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
