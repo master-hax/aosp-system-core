@@ -17,6 +17,7 @@
 #include <elf.h>
 #include <stdint.h>
 
+#include <deque>
 #include <memory>
 #include <string>
 #include <utility>
@@ -82,23 +83,9 @@ Memory* ElfInterface::CreateGnuDebugdataMemory() {
   if (gnu_debugdata_size_ > SIZE_MAX) {
     return nullptr;
   }
-  size_t initial_buffer_size;
-  if (__builtin_mul_overflow(5, gnu_debugdata_size_, &initial_buffer_size)) {
-    return nullptr;
-  }
-
-  size_t buffer_increment;
-  if (__builtin_mul_overflow(2, gnu_debugdata_size_, &buffer_increment)) {
-    return nullptr;
-  }
 
   std::unique_ptr<uint8_t[]> src(new (std::nothrow) uint8_t[gnu_debugdata_size_]);
   if (src.get() == nullptr) {
-    return nullptr;
-  }
-
-  std::unique_ptr<MemoryBuffer> dst(new MemoryBuffer);
-  if (!dst->Resize(initial_buffer_size)) {
     return nullptr;
   }
 
@@ -112,35 +99,38 @@ Memory* ElfInterface::CreateGnuDebugdataMemory() {
   alloc.Free = [](ISzAllocPtr, void* ptr) { return free(ptr); };
   XzUnpacker_Construct(&state, &alloc);
 
+  constexpr size_t kBlockSize = 64 * 1024;
+  std::deque<std::unique_ptr<uint8_t[]>> output;
+
   int return_val;
   size_t src_offset = 0;
-  size_t dst_offset = 0;
+  size_t total_size = 0;
   ECoderStatus status;
   do {
     size_t src_remaining = gnu_debugdata_size_ - src_offset;
-    size_t dst_remaining = dst->Size() - dst_offset;
-    if (dst_remaining < buffer_increment) {
-      size_t new_size;
-      if (__builtin_add_overflow(dst->Size(), buffer_increment, &new_size) ||
-          !dst->Resize(new_size)) {
-        XzUnpacker_Free(&state);
-        return nullptr;
-      }
-      dst_remaining += buffer_increment;
+    size_t dst_remaining = kBlockSize;
+    output.emplace_back(new (std::nothrow) uint8_t[kBlockSize]);
+    if (output.back().get() == nullptr) {
+      return nullptr;
     }
-    return_val = XzUnpacker_Code(&state, dst->GetPtr(dst_offset), &dst_remaining, &src[src_offset],
+    return_val = XzUnpacker_Code(&state, output.back().get(), &dst_remaining, &src[src_offset],
                                  &src_remaining, true, CODER_FINISH_ANY, &status);
     src_offset += src_remaining;
-    dst_offset += dst_remaining;
+    total_size += dst_remaining;
   } while (return_val == SZ_OK && status == CODER_STATUS_NOT_FINISHED);
   XzUnpacker_Free(&state);
   if (return_val != SZ_OK || !XzUnpacker_IsStreamWasFinished(&state)) {
     return nullptr;
   }
 
-  // Shrink back down to the exact size.
-  if (!dst->Resize(dst_offset)) {
+  // Copy to continuous buffer of exact size.
+  std::unique_ptr<MemoryBuffer> dst(new MemoryBuffer);
+  if (!dst->Resize(total_size)) {
     return nullptr;
+  }
+  for (size_t offset = 0; offset < total_size; offset += kBlockSize) {
+    size_t size = std::min(total_size - offset, kBlockSize);
+    memcpy(dst->GetPtr(offset), output[offset / kBlockSize].get(), size);
   }
 
   return dst.release();
