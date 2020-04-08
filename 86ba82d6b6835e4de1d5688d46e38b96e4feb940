@@ -51,6 +51,24 @@
       "revId": "86ba82d6b6835e4de1d5688d46e38b96e4feb940",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ec8d1ed5_1d3b08f8",
+        "filename": "init/test_kill_services/AndroidTest.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2020-04-08T20:23:44Z",
+      "side": 1,
+      "message": "Done, thanks",
+      "parentUuid": "edbfc386_ba34a730",
+      "revId": "86ba82d6b6835e4de1d5688d46e38b96e4feb940",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
