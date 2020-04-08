@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8760d51c_c0cbea2d",
+        "filename": "healthd/BatteryMonitor.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 258,
+      "author": {
+        "id": 1319951
+      },
+      "writtenOn": "2020-04-08T23:38:30Z",
+      "side": 1,
+      "message": "voltage is reported in mV as well, is there a requirement on this one too?",
+      "revId": "e5bd5f914f1bfdf94379ea0c2d72d58c06cfd25e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
