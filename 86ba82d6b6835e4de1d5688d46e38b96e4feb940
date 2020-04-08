@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "306f62bd_530ab18d",
+        "filename": "init/test_kill_services/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2020-04-08T20:23:33Z",
+      "side": 1,
+      "message": "I know, but it bothers me that it is not explicit (and that require_root would imply that it is auto-generated, see b/153566868 which I\u0027ve filed for this)",
+      "parentUuid": "b618b5f5_000919a4",
+      "revId": "86ba82d6b6835e4de1d5688d46e38b96e4feb940",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "edbfc386_ba34a730",
         "filename": "init/test_kill_services/AndroidTest.xml",
         "patchSetId": 1
