@@ -95,8 +95,6 @@ class LogBuffer {
 
     unsigned long mMaxSize[LOG_ID_MAX];
 
-    bool monotonic;
-
     LogTags tags;
 
     LogBufferElement* lastLoggedElements[LOG_ID_MAX];
@@ -109,9 +107,6 @@ class LogBuffer {
     explicit LogBuffer(LastLogTimes* times);
     ~LogBuffer();
     void init();
-    bool isMonotonic() {
-        return monotonic;
-    }
 
     int log(log_id_t log_id, log_time realtime, uid_t uid, pid_t pid, pid_t tid, const char* msg,
             uint16_t len);
