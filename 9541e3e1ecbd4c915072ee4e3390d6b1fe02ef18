@@ -1,0 +1,48 @@
+{
+  "comments": [
+    {
+      "robotId": "ayeaye",
+      "robotRunId": "AR00000000000002360427",
+      "url": "https://android-build.googleplex.com/builds/treetop/android-review/937418?revision\u003d1",
+      "fixSuggestions": [
+        {
+          "fixId": "b7b2a400_8eef5c36",
+          "description": "Change to \"libunwindstack/Symbols.h\"",
+          "replacements": [
+            {
+              "path": "libunwindstack/Symbols.h",
+              "range": {
+                "startLine": 66,
+                "startChar": 35,
+                "endLine": 66,
+                "endChar": 43
+              },
+              "replacement": "Indices"
+            }
+          ]
+        }
+      ],
+      "key": {
+        "uuid": "2ac27621_fb2403eb",
+        "filename": "libunwindstack/Symbols.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1550585
+      },
+      "writtenOn": "2020-04-08T21:38:38Z",
+      "side": 1,
+      "message": "Common typo found: \"Indicies\" -- should it be \"Indices\"?\nNote: a line containing \"common_typos_disable\" or \"common_typos_enable\" will turn off or on (respectively) the linter for subsequent lines in the file. Alternatively include the token \"NOTYPO\" within a line to skip typo linting that line.",
+      "range": {
+        "startLine": 66,
+        "startChar": 35,
+        "endLine": 66,
+        "endChar": 43
+      },
+      "revId": "9541e3e1ecbd4c915072ee4e3390d6b1fe02ef18",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
