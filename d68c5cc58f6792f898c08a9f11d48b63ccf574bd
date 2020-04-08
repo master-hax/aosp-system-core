@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "15be1c73_1f743d3c",
+        "filename": "logd/LogBufferElement.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-04-08T20:20:49Z",
+      "side": 1,
+      "message": "4 billion log messages not enough for you?",
+      "revId": "d68c5cc58f6792f898c08a9f11d48b63ccf574bd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
