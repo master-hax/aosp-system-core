@@ -587,7 +587,7 @@ bool ChattyLogBuffer::prune(log_id_t id, unsigned long pruneRows, uid_t caller_u
                 continue;
             }
 
-            if (oldest && oldest->start() <= element->getSequence()) {
+            if (oldest && oldest->start() <= element->getMonotonicTime()) {
                 busy = true;
                 kickMe(oldest, id, pruneRows);
                 break;
@@ -669,7 +669,7 @@ bool ChattyLogBuffer::prune(log_id_t id, unsigned long pruneRows, uid_t caller_u
         while (it != mLogElements.end()) {
             LogBufferElement* element = *it;
 
-            if (oldest && oldest->start() <= element->getSequence()) {
+            if (oldest && oldest->start() <= element->getMonotonicTime()) {
                 busy = true;
                 // Do not let chatty eliding trigger any reader mitigation
                 break;
@@ -806,7 +806,7 @@ bool ChattyLogBuffer::prune(log_id_t id, unsigned long pruneRows, uid_t caller_u
             continue;
         }
 
-        if (oldest && oldest->start() <= element->getSequence()) {
+        if (oldest && oldest->start() <= element->getMonotonicTime()) {
             busy = true;
             if (!whitelist) kickMe(oldest, id, pruneRows);
             break;
@@ -834,7 +834,7 @@ bool ChattyLogBuffer::prune(log_id_t id, unsigned long pruneRows, uid_t caller_u
                 continue;
             }
 
-            if (oldest && oldest->start() <= element->getSequence()) {
+            if (oldest && oldest->start() <= element->getMonotonicTime()) {
                 busy = true;
                 kickMe(oldest, id, pruneRows);
                 break;
@@ -926,7 +926,7 @@ uint64_t ChattyLogBuffer::FlushTo(
              /* do nothing */) {
             --it;
             LogBufferElement* element = *it;
-            if (element->getSequence() <= start) {
+            if (element->getMonotonicTime() <= start) {
                 it++;
                 break;
             }
@@ -971,7 +971,7 @@ uint64_t ChattyLogBuffer::FlushTo(
 
         unlock();
 
-        curr = element->getSequence();
+        curr = element->getMonotonicTime();
         // range locking in LastLogTimes looks after us
         if (!element->FlushTo(writer, stats_, sameTid)) {
             return FLUSH_ERROR;

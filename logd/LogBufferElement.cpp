@@ -31,18 +31,27 @@
 #include "LogStatistics.h"
 #include "LogUtils.h"
 
-atomic_int_fast64_t LogBufferElement::sequence(1);
+atomic_uint_fast64_t LogBufferElement::latest_monotonic_time(1);
 
 LogBufferElement::LogBufferElement(log_id_t log_id, log_time realtime, uid_t uid, pid_t pid,
                                    pid_t tid, const char* msg, uint16_t len)
     : mUid(uid),
       mPid(pid),
       mTid(tid),
-      mSequence(sequence.fetch_add(1, memory_order_relaxed)),
       mRealTime(realtime),
       mMsgLen(len),
       mLogId(log_id),
       mDropped(false) {
+    struct timespec ts;
+    clock_gettime(CLOCK_MONOTONIC, &ts);
+    mMonotonicTime = ts.tv_nsec + ts.tv_sec * NS_PER_SEC;
+
+    // CLOCK_MONOTONIC has poor accuracy or is unreliable, ensure that sequence numbers always
+    // increase.
+    if (mMonotonicTime <= latest_monotonic_time) {
+        mMonotonicTime = ++latest_monotonic_time;
+    }
+
     mMsg = new char[len];
     memcpy(mMsg, msg, len);
 }
@@ -51,7 +60,7 @@ LogBufferElement::LogBufferElement(const LogBufferElement& elem)
     : mUid(elem.mUid),
       mPid(elem.mPid),
       mTid(elem.mTid),
-      mSequence(elem.mSequence),
+      mMonotonicTime(elem.mMonotonicTime),
       mRealTime(elem.mRealTime),
       mMsgLen(elem.mMsgLen),
       mLogId(elem.mLogId),

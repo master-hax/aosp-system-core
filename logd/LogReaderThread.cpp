@@ -83,12 +83,12 @@ void LogReaderThread::ThreadFunction() {
         start = log_buffer_->FlushTo(writer_.get(), start, last_tid_,
                                      std::bind(&LogReaderThread::FilterSecondPass, this, _1));
 
-        // We only ignore entries before the original start time for the first flushTo(), if we
-        // get entries after this first flush before the original start time, then the client
-        // wouldn't have seen them.
+        // If the client requests entries starting at a realtime timestamp, then we only ignore
+        // entries before the original start time for the first flushTo(), if we get entries after
+        // this first flush before the original start time, then the client wouldn't have seen them.
         // Note: this is still racy and may skip out of order events that came in since the last
-        // time the client disconnected and then reconnected with the new start time.  The long term
-        // solution here is that clients must request events since a specific sequence number.
+        // time the client disconnected and then reconnected with the new start time.  Users who
+        // require accuracy should request entries starting at a monotonic timestamp.
         start_time_.tv_sec = 0;
         start_time_.tv_nsec = 0;
 
@@ -134,7 +134,7 @@ FlushToResult LogReaderThread::FilterFirstPass(const LogBufferElement* element) 
     }
 
     if (count_ == 0) {
-        start_ = element->getSequence();
+        start_ = element->getMonotonicTime();
     }
 
     if ((!pid_ || pid_ == element->getPid()) && IsWatching(element->getLogId()) &&
@@ -149,7 +149,7 @@ FlushToResult LogReaderThread::FilterFirstPass(const LogBufferElement* element) 
 FlushToResult LogReaderThread::FilterSecondPass(const LogBufferElement* element) {
     auto lock = std::lock_guard{reader_list_->reader_threads_lock()};
 
-    start_ = element->getSequence();
+    start_ = element->getMonotonicTime();
 
     if (skip_ahead_[element->getLogId()]) {
         skip_ahead_[element->getLogId()]--;

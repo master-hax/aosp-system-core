@@ -165,12 +165,12 @@ bool LogReader::onDataAvailable(SocketClient* cli) {
     std::unique_ptr<LogWriter> socket_log_writer(
             new SocketLogWriter(this, cli, privileged, can_read_security));
 
-    uint64_t sequence = 1;
-    // Convert realtime to sequence number
+    uint64_t monotonic_time = 1;
+    // Find the monotonic timestamp for the entry that matches the input realtime timestamp.
     if (start != log_time::EPOCH) {
         bool start_time_set = false;
-        uint64_t last = sequence;
-        auto log_find_start = [pid, logMask, start, &sequence, &start_time_set,
+        uint64_t last = monotonic_time;
+        auto log_find_start = [pid, logMask, start, &monotonic_time, &start_time_set,
                                &last](const LogBufferElement* element) -> FlushToResult {
             if (pid && pid != element->getPid()) {
                 return FlushToResult::kSkip;
@@ -179,27 +179,27 @@ bool LogReader::onDataAvailable(SocketClient* cli) {
                 return FlushToResult::kSkip;
             }
             if (start == element->getRealTime()) {
-                sequence = element->getSequence();
+                monotonic_time = element->getMonotonicTime();
                 start_time_set = true;
                 return FlushToResult::kStop;
             } else {
                 if (start < element->getRealTime()) {
-                    sequence = last;
+                    monotonic_time = last;
                     start_time_set = true;
                     return FlushToResult::kStop;
                 }
-                last = element->getSequence();
+                last = element->getMonotonicTime();
             }
             return FlushToResult::kSkip;
         };
 
-        log_buffer_->FlushTo(socket_log_writer.get(), sequence, nullptr, log_find_start);
+        log_buffer_->FlushTo(socket_log_writer.get(), monotonic_time, nullptr, log_find_start);
 
         if (!start_time_set) {
             if (nonBlock) {
                 return false;
             }
-            sequence = LogBufferElement::getCurrentSequence();
+            monotonic_time = LogBufferElement::getLatestMonotonicTime();
         }
     }
 
@@ -216,7 +216,7 @@ bool LogReader::onDataAvailable(SocketClient* cli) {
     auto lock = std::lock_guard{reader_list_->reader_threads_lock()};
     auto entry = std::make_unique<LogReaderThread>(log_buffer_, reader_list_,
                                                    std::move(socket_log_writer), nonBlock, tail,
-                                                   logMask, pid, start, sequence, deadline);
+                                                   logMask, pid, start, monotonic_time, deadline);
     // release client and entry reference counts once done
     cli->incRef();
     reader_list_->reader_threads().emplace_front(std::move(entry));

@@ -38,7 +38,7 @@ class __attribute__((packed)) LogBufferElement {
     const uint32_t mUid;
     const uint32_t mPid;
     const uint32_t mTid;
-    uint64_t mSequence;
+    uint64_t mMonotonicTime;
     log_time mRealTime;
     union {
         char* mMsg;    // mDropped == false
@@ -51,7 +51,7 @@ class __attribute__((packed)) LogBufferElement {
     const uint8_t mLogId;
     bool mDropped;
 
-    static atomic_int_fast64_t sequence;
+    static atomic_uint_fast64_t latest_monotonic_time;
 
     // assumption: mDropped == true
     size_t populateDroppedMessage(char*& buffer, LogStatistics* parent, bool lastSame);
@@ -89,8 +89,10 @@ class __attribute__((packed)) LogBufferElement {
     const char* getMsg() const {
         return mDropped ? nullptr : mMsg;
     }
-    uint64_t getSequence() const { return mSequence; }
-    static uint64_t getCurrentSequence() { return sequence.load(memory_order_relaxed); }
+    uint64_t getMonotonicTime() const { return mMonotonicTime; }
+    static uint64_t getLatestMonotonicTime() {
+        return latest_monotonic_time.load(memory_order_relaxed);
+    }
     log_time getRealTime(void) const {
         return mRealTime;
     }
