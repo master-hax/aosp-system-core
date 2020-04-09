@@ -27,7 +27,7 @@ class LogWriter {
         : uid_(uid), privileged_(privileged), can_read_security_logs_(can_read_security_logs) {}
     virtual ~LogWriter() {}
 
-    virtual bool Write(const logger_entry& entry, const char* msg) = 0;
+    virtual bool Write(const void* entry, const char* msg) = 0;
     virtual void Shutdown() {}
     virtual void Release() {}
 

@@ -36,7 +36,7 @@ extern "C" {
  * access to raw information, or parsing is an issue.
  */
 
-struct logger_entry {
+struct __attribute__((__packed__)) logger_entry {
   uint16_t len;      /* length of the payload */
   uint16_t hdr_size; /* sizeof(struct logger_entry) */
   int32_t pid;       /* generating process's pid */
@@ -45,6 +45,18 @@ struct logger_entry {
   uint32_t nsec;     /* nanoseconds */
   uint32_t lid;      /* log id of the payload, bottom 4 bits currently */
   uint32_t uid;      /* generating process's uid */
+};
+
+struct __attribute__((__packed__)) logger_entry_v2 {
+  uint16_t len;      /* length of the payload */
+  uint16_t hdr_size; /* sizeof(struct logger_entry) */
+  int32_t pid;       /* generating process's pid */
+  uint32_t tid;      /* generating process's tid */
+  uint32_t sec;      /* seconds since Epoch */
+  uint32_t nsec;     /* nanoseconds */
+  uint32_t lid;      /* log id of the payload, bottom 4 bits currently */
+  uint32_t uid;      /* generating process's uid */
+  uint64_t monotonic_time;
 };
 
 /*

@@ -50,14 +50,15 @@ class SocketLogWriter : public LogWriter {
           reader_(reader),
           client_(client) {}
 
-    bool Write(const logger_entry& entry, const char* msg) override {
+    bool Write(const void* entry, const char* msg) override {
         struct iovec iovec[2];
-        iovec[0].iov_base = const_cast<logger_entry*>(&entry);
-        iovec[0].iov_len = entry.hdr_size;
+        auto logger_entry = reinterpret_cast<const struct logger_entry*>(entry);
+        iovec[0].iov_base = const_cast<void*>(entry);
+        iovec[0].iov_len = logger_entry->hdr_size;
         iovec[1].iov_base = const_cast<char*>(msg);
-        iovec[1].iov_len = entry.len;
+        iovec[1].iov_len = logger_entry->len;
 
-        return client_->sendDatav(iovec, 1 + (entry.len != 0)) == 0;
+        return client_->sendDatav(iovec, 1 + (logger_entry->len != 0)) == 0;
     }
 
     void Release() override {

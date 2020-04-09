@@ -251,15 +251,16 @@ size_t LogBufferElement::populateDroppedMessage(char*& buffer, LogStatistics* st
 }
 
 bool LogBufferElement::FlushTo(LogWriter* writer, LogStatistics* stats, bool lastSame) {
-    struct logger_entry entry = {};
+    struct logger_entry_v2 entry = {};
 
-    entry.hdr_size = sizeof(struct logger_entry);
+    entry.hdr_size = sizeof(logger_entry_v2);
     entry.lid = mLogId;
     entry.pid = mPid;
     entry.tid = mTid;
     entry.uid = mUid;
     entry.sec = mRealTime.tv_sec;
     entry.nsec = mRealTime.tv_nsec;
+    entry.monotonic_time = mMonotonicTime;
 
     char* buffer = nullptr;
     const char* msg;
@@ -272,7 +273,7 @@ bool LogBufferElement::FlushTo(LogWriter* writer, LogStatistics* stats, bool las
         entry.len = mMsgLen;
     }
 
-    bool retval = writer->Write(entry, msg);
+    bool retval = writer->Write(&entry, msg);
 
     if (buffer) free(buffer);
 

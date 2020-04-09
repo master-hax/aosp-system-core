@@ -39,6 +39,10 @@
 
 #include "logger.h"
 
+// Assert that these headers stay a consistent size.  These values should never change.
+static_assert(sizeof(logger_entry) == 28);
+static_assert(sizeof(logger_entry_v2) == 36);
+
 // Connects to /dev/socket/<name> and returns the associated fd or returns -1 on error.
 // O_CLOEXEC is always set.
 static int socket_local_client(const std::string& name, int type) {
