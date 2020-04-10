@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4c038b49_37292863",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 434,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-04-10T18:52:47Z",
+      "side": 1,
+      "message": "who\u0027s doing the killing?\n\nshould we return 127+ in cases where exec fails, like xargs and friends, so we can tell the difference?",
+      "revId": "c40a7515eb223d9f24f500b99478a4800f49dc3a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
