@@ -1,0 +1,10 @@
+Presubmit-Verified+1: Treehugger Robot <treehugger-gerrit@google.com>
+Lint+1: Lint 🤖 <android-build-prod-ayeaye@system.gserviceaccount.com>
+Code-Review+1: Tej Singh <singhtejinder@google.com>
+Code-Review+2: Ruchir Rastogi <ruchirr@google.com>
+Open-Source-Licensing+1: Lint 🤖 <android-build-prod-ayeaye@system.gserviceaccount.com>
+Submitted-by: Jiyong Park <jiyong@google.com>
+Submitted-at: Fri, 10 Apr 2020 01:14:53 +0000
+Reviewed-on: https://android-review.googlesource.com/c/platform/system/core/+/1282278
+Project: platform/system/core
+Branch: refs/heads/master
