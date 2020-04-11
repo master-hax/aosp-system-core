@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4a07c35b_62fbe766",
+        "filename": "init/service_parser.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 558,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2020-04-11T00:45:31Z",
+      "side": 1,
+      "message": "where is the logic that checks this is a service in one of these partitions?",
+      "range": {
+        "startLine": 558,
+        "startChar": 36,
+        "endLine": 558,
+        "endChar": 52
+      },
+      "revId": "ec851277cde0d790db190ac1268f46ba8f349b4a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
