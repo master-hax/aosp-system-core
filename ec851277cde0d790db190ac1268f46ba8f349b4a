@@ -22,6 +22,30 @@
       "revId": "ec851277cde0d790db190ac1268f46ba8f349b4a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f4c798ab_9107c6d5",
+        "filename": "init/service_parser.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 558,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-04-11T00:49:39Z",
+      "side": 1,
+      "message": "It\u0027s from the list here: https://cs.android.com/android/platform/superproject/+/master:system/core/init/subcontext.cpp;l\u003d331?q\u003df:subcontext.cpp\n\nIt\u0027s the same list we use for determining if init.rc files should be run in vendor_init or init.  I\u0027d be happy to abstract that list like you mentioned on the bug.",
+      "parentUuid": "4a07c35b_62fbe766",
+      "range": {
+        "startLine": 558,
+        "startChar": 36,
+        "endLine": 558,
+        "endChar": 52
+      },
+      "revId": "ec851277cde0d790db190ac1268f46ba8f349b4a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
