@@ -553,6 +553,10 @@ Result<void> ServiceParser::ParseSection(std::vector<std::string>&& args,
 
     Subcontext* restart_action_subcontext = nullptr;
     if (subcontext_ && subcontext_->PathMatchesSubcontext(filename)) {
+        if (!StartsWith(name, "vendor.")) {
+            LOG(ERROR) << "service name '" << name
+                       << "' in the /vendor or /odm partition must begin with 'vendor.'";
+        }
         restart_action_subcontext = subcontext_;
     }
 
