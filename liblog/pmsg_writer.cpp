@@ -22,6 +22,7 @@
 #include <string.h>
 #include <sys/types.h>
 #include <time.h>
+#include <unistd.h>
 
 #include <shared_mutex>
 

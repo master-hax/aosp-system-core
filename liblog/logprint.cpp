@@ -32,6 +32,7 @@
 #include <string.h>
 #include <sys/param.h>
 #include <sys/types.h>
+#include <unistd.h>
 #include <wchar.h>
 
 #include <cutils/list.h>

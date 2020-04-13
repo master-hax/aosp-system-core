@@ -20,6 +20,7 @@
 #include <sys/prctl.h>
 #include <sys/socket.h>
 #include <sys/types.h>
+#include <unistd.h>
 
 #include <cutils/sockets.h>
 #include <private/android_logger.h>

@@ -16,14 +16,7 @@
 
 #pragma once
 
-/* Too many in the ecosystem assume these are included */
-#if !defined(_WIN32)
-#include <pthread.h>
-#endif
 #include <stdint.h> /* uint16_t, int32_t */
-#include <stdio.h>
-#include <time.h>
-#include <unistd.h>
 
 #include <android/log.h>
 #include <log/log_id.h>

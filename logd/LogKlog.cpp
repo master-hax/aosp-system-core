@@ -24,6 +24,7 @@
 #include <sys/prctl.h>
 #include <sys/uio.h>
 #include <syslog.h>
+#include <unistd.h>
 
 #include <private/android_filesystem_config.h>
 #include <private/android_logger.h>
