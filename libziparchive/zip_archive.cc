@@ -379,12 +379,33 @@ static ZipError ParseZip64ExtendedInfoInExtraField(
     std::optional<uint64_t> compressedFileSize;
     std::optional<uint64_t> localHeaderOffset;
     if (zip32UncompressedSize == UINT32_MAX) {
+      if (readPtr > extraFieldStart + extraFieldLength - sizeof(uint64_t)) {
+        ALOGW(
+            "Zip: Read exceeds the boundary of extra field when parsing zip64 sizes,"
+            " extra field length %" PRIu16,
+            extraFieldLength);
+        return kInvalidOffset;
+      }
       uncompressedFileSize = ConsumeUnaligned<uint64_t>(&readPtr);
     }
     if (zip32CompressedSize == UINT32_MAX) {
+      if (readPtr > extraFieldStart + extraFieldLength - sizeof(uint64_t)) {
+        ALOGW(
+            "Zip: Read exceeds the boundary of extra field when parsing zip64 sizes,"
+            " extra field length %" PRIu16,
+            extraFieldLength);
+        return kInvalidOffset;
+      }
       compressedFileSize = ConsumeUnaligned<uint64_t>(&readPtr);
     }
     if (zip32LocalFileHeaderOffset == UINT32_MAX) {
+      if (readPtr > extraFieldStart + extraFieldLength - sizeof(uint64_t)) {
+        ALOGW(
+            "Zip: Read exceeds the boundary of extra field when parsing zip64 sizes, extra field "
+            "length %" PRIu16,
+            extraFieldLength);
+        return kInvalidOffset;
+      }
       localHeaderOffset = ConsumeUnaligned<uint64_t>(&readPtr);
     }
 
