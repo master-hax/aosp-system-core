@@ -17,9 +17,12 @@
 #include <gtest/gtest.h>
 
 #include <android-base/properties.h>
+#include <android-base/strings.h>
+#include <sys/system_properties.h>
 
 #include <iostream>
 
+using ::android::base::ConsumePrefix;
 using ::android::base::GetProperty;
 using ::android::base::SetProperty;
 
@@ -61,9 +64,50 @@ TEST_P(InitKillServicesTest, KillCriticalProcesses) {
 }
 
 static inline std::string PrintName(const testing::TestParamInfo<std::string>& info) {
-    return info.param;
+    std::string name = info.param;
+    for (size_t i = 0; i < name.size(); i++) {
+        if (!std::isalnum(name[i])) name[i] = '_';
+    }
+    return name;
 }
 
+struct Prop {
+    std::string name;
+    std::string value;
+};
+
+std::vector<Prop> GetAllProperties() {
+    std::vector<Prop> all_props;
+    __system_property_foreach(
+            [](const prop_info* pi, void* cookie) {
+                __system_property_read_callback(
+                        pi,
+                        [](void* cookie, const char* name, const char* value, unsigned) {
+                            auto all_props = reinterpret_cast<std::vector<Prop>*>(cookie);
+                            all_props->push_back(Prop{name, value});
+                        },
+                        cookie);
+            },
+            &all_props);
+    return all_props;
+}
+std::vector<std::string> GetAllRunningServices() {
+    std::vector<std::string> services;
+    for (const Prop& prop : GetAllProperties()) {
+        std::string_view name = prop.name;
+        if (ConsumePrefix(&name, "init.svc_debug_pid.")) {
+            // FIXME: can we avoid adb dependency on cuttlefish? :D
+            if (name == "adbd") continue;
+
+            services.push_back(std::string(name));
+        }
+    }
+    return services;
+}
+
+// FIXME delete or use
+std::vector<std::string> kImportantServices = {"lmkd", "ueventd", "hwservicemanager",
+                                               "servicemanager", "system_server"};
+
 INSTANTIATE_TEST_CASE_P(DeathTest, InitKillServicesTest,
-                        ::testing::Values("lmkd", "ueventd", "hwservicemanager", "servicemanager"),
-                        PrintName);
+                        ::testing::ValuesIn(GetAllRunningServices()), PrintName);
