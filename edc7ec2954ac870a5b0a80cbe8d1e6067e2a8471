@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "4a269d04_06dbdedb",
+        "filename": "libziparchive/zip_archive.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 382,
+      "author": {
+        "id": 1088085
+      },
+      "writtenOn": "2020-04-14T01:38:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1fc24706_6384bca1",
+      "range": {
+        "startLine": 382,
+        "startChar": 20,
+        "endLine": 382,
+        "endChar": 54
+      },
+      "revId": "edc7ec2954ac870a5b0a80cbe8d1e6067e2a8471",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "480328e5_96c008fd",
         "filename": "libziparchive/zip_archive.cc",
         "patchSetId": 1
@@ -144,6 +168,30 @@
     },
     {
       "key": {
+        "uuid": "41d293c2_cda7434e",
+        "filename": "libziparchive/zip_archive.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 408,
+      "author": {
+        "id": 1088085
+      },
+      "writtenOn": "2020-04-14T01:38:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "76f1592b_75fe13c8",
+      "range": {
+        "startLine": 402,
+        "startChar": 6,
+        "endLine": 408,
+        "endChar": 7
+      },
+      "revId": "edc7ec2954ac870a5b0a80cbe8d1e6067e2a8471",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "78591910_a7e4d2c3",
         "filename": "libziparchive/zip_archive.cc",
         "patchSetId": 1
@@ -197,6 +245,24 @@
     },
     {
       "key": {
+        "uuid": "9292ef24_c75fa3fa",
+        "filename": "libziparchive/zip_archive.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 629,
+      "author": {
+        "id": 1088085
+      },
+      "writtenOn": "2020-04-14T01:38:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ec6fa729_321b5502",
+      "revId": "edc7ec2954ac870a5b0a80cbe8d1e6067e2a8471",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "0d6770a1_8ef18667",
         "filename": "libziparchive/zip_archive.cc",
         "patchSetId": 1
@@ -229,6 +295,24 @@
       "revId": "edc7ec2954ac870a5b0a80cbe8d1e6067e2a8471",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6df70a2d_2bc44235",
+        "filename": "libziparchive/zip_archive.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 1523,
+      "author": {
+        "id": 1088085
+      },
+      "writtenOn": "2020-04-14T01:38:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d3664485_408228f7",
+      "revId": "edc7ec2954ac870a5b0a80cbe8d1e6067e2a8471",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
