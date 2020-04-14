@@ -72,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "ad509dcd_2d1f895a",
+        "filename": "libziparchive/zip_archive.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 408,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-04-14T00:42:47Z",
+      "side": 1,
+      "message": "maybe the least bad choice is to count the number of UINT32_MAX entries, multiply by sizeof(uint64_t), and then just do the one bounds check? that\u0027s at least slightly better than three separate bounds checks all with the same message?\n\n(ideally i\u0027m trying to come up with a style that just naturally avoids these kinds of bugs, but i\u0027m struggling given all the optionals...)",
+      "parentUuid": "e1094410_e6fa7419",
+      "range": {
+        "startLine": 402,
+        "startChar": 6,
+        "endLine": 408,
+        "endChar": 7
+      },
+      "revId": "edc7ec2954ac870a5b0a80cbe8d1e6067e2a8471",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "78591910_a7e4d2c3",
         "filename": "libziparchive/zip_archive.cc",
         "patchSetId": 1
@@ -101,6 +125,24 @@
       "side": 1,
       "message": "This is unfortunate as there\u0027s no indication of the boundary of data descriptor. But since we are reading directly from the zip file, we won\u0027t read OOB due to the cd + eocd in the end. And we\u0027ll abort later due to the inconsistent info.",
       "parentUuid": "78591910_a7e4d2c3",
+      "revId": "edc7ec2954ac870a5b0a80cbe8d1e6067e2a8471",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ec6fa729_321b5502",
+        "filename": "libziparchive/zip_archive.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 629,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-04-14T00:42:47Z",
+      "side": 1,
+      "message": "worth extending the comment to explicitly say that?",
+      "parentUuid": "95114f03_5312895b",
       "revId": "edc7ec2954ac870a5b0a80cbe8d1e6067e2a8471",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
