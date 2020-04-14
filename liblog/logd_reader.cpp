@@ -313,8 +313,12 @@ static int logdOpen(struct logger_list* logger_list) {
       remaining -= ret;
       cp += ret;
     }
-    ret = snprintf(cp, remaining, " start=%" PRIu32 ".%09" PRIu32, logger_list->start.tv_sec,
-                   logger_list->start.tv_nsec);
+    const char kStartRealtime[] = "start";
+    const char kStartMonotonic[] = "monotonic_start";
+    const char* start_expression =
+        logger_list->mode & ANDROID_LOG_MONOTONIC ? kStartMonotonic : kStartRealtime;
+    ret = snprintf(cp, remaining, " %s=%" PRIu32 ".%09" PRIu32, start_expression,
+                   logger_list->start.tv_sec, logger_list->start.tv_nsec);
     ret = MIN(ret, remaining);
     remaining -= ret;
     cp += ret;

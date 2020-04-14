@@ -2785,3 +2785,58 @@ TEST(liblog, android_lookupEventTagNum) {
   GTEST_LOG_(INFO) << "This test does nothing.\n";
 #endif
 }
+
+TEST(liblog, android_logger_list_alloc_time_monotonic) {
+  auto write_function = [] {
+    __android_log_write(ANDROID_LOG_ERROR, "liblog_test", "1");
+    usleep(1);
+    __android_log_write(ANDROID_LOG_ERROR, "liblog_test", "2");
+    usleep(1);
+    __android_log_write(ANDROID_LOG_ERROR, "liblog_test", "3");
+  };
+
+  uint64_t monotonic_timestamps[3];
+  size_t messages_seen = 0;
+
+  auto check_function = [&](log_msg log_msg, bool* found) {
+    ASSERT_EQ(sizeof(logger_entry_v2), log_msg.entry.hdr_size);
+    ASSERT_LT(messages_seen, 3U);
+    auto* entry = reinterpret_cast<logger_entry_v2*>(&log_msg.entry);
+    monotonic_timestamps[messages_seen] = entry->monotonic_time;
+    messages_seen++;
+    if (messages_seen == 3) {
+      *found = true;
+      messages_seen = 0;
+    }
+  };
+
+  // Use the normal readers to grab the 3 log messages and their timestamps.
+  RunLogTests(LOG_ID_MAIN, write_function, check_function);
+
+  log_time middle_timestamp(monotonic_timestamps[1] / NS_PER_SEC,
+                            monotonic_timestamps[1] % NS_PER_SEC);
+  ASSERT_EQ(monotonic_timestamps[1], middle_timestamp.nsec());
+  auto pid = getpid();
+  auto logger_list = std::unique_ptr<struct logger_list, ListCloser>{android_logger_list_alloc_time(
+      ANDROID_LOG_MONOTONIC | ANDROID_LOG_NONBLOCK, middle_timestamp, pid)};
+  ASSERT_TRUE(logger_list);
+  ASSERT_TRUE(android_logger_open(logger_list.get(), LOG_ID_MAIN));
+
+  messages_seen = 0;
+  while (true) {
+    log_msg log_msg;
+    auto ret = android_logger_list_read(logger_list.get(), &log_msg);
+    if (ret == -EAGAIN) {
+      break;
+    }
+    ASSERT_GT(ret, 0);
+    ASSERT_EQ(pid, log_msg.entry.pid);
+
+    ASSERT_EQ(sizeof(logger_entry_v2), log_msg.entry.hdr_size);
+    auto* entry = reinterpret_cast<logger_entry_v2*>(&log_msg.entry);
+    EXPECT_EQ(monotonic_timestamps[2], entry->monotonic_time);
+
+    messages_seen++;
+  }
+  EXPECT_EQ(1U, messages_seen);
+}

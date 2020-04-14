@@ -100,6 +100,8 @@ bool LogReader::onDataAvailable(SocketClient* cli) {
         return false;
     }
 
+    android::prdebug("Reader connected from pid=%d, requesting '%s'.", cli->getPid(), buffer);
+
     unsigned long tail = 0;
     static const char _tail[] = " tail=";
     char* cp = strstr(buffer, _tail);
@@ -113,6 +115,32 @@ bool LogReader::onDataAvailable(SocketClient* cli) {
     if (cp) {
         // Parse errors will result in current time
         start.strptime(cp + sizeof(_start) - 1, "%s.%q");
+    }
+
+    log_time monotonic_start(log_time::EPOCH);
+    static const char _monotonic_start[] = " monotonic_start=";
+    cp = strstr(buffer, _monotonic_start);
+    if (cp) {
+        if (start != log_time::EPOCH) {
+            android::prdebug(
+                    "Ignoring reader from pid=%d that specified both 'start=' and "
+                    "'monotonic_start=' values.",
+                    cli->getPid());
+            return false;
+        }
+        // Format should be sec.nsec
+        uint32_t monotonic_sec = 0;
+        uint32_t monotonic_nsec = 0;
+        if (sscanf(cp + sizeof(_monotonic_start) - 1, "%" PRIu32 ".%" PRIu32, &monotonic_sec,
+                   &monotonic_nsec) != 2) {
+            android::prdebug(
+                    "Ignoring reader from pid=%d that specified and invalid 'monotonic_start=' "
+                    "value.",
+                    cli->getPid());
+            return false;
+        }
+        monotonic_start.tv_sec = monotonic_sec;
+        monotonic_start.tv_nsec = monotonic_nsec;
     }
 
     std::chrono::steady_clock::time_point deadline = {};
@@ -198,17 +226,25 @@ bool LogReader::onDataAvailable(SocketClient* cli) {
 
         if (!start_time_set) {
             if (nonBlock) {
+                android::prdebug(
+                        "Ignoring non-blocking reader from pid=%d, did not find start time.",
+                        cli->getPid());
                 return false;
             }
             monotonic_time = LogBufferElement::getLatestMonotonicTime();
         }
     }
 
+    if (monotonic_start != log_time::EPOCH) {
+        monotonic_time = monotonic_start.nsec();
+    }
+
     android::prdebug(
             "logdr: UID=%d GID=%d PID=%d %c tail=%lu logMask=%x pid=%d "
-            "start=%" PRIu64 "ns deadline=%" PRIi64 "ns\n",
+            "start=%" PRIu64 "ns monotonic_time=%" PRIu64 "ns deadline=%" PRIi64 "ns\n",
             cli->getUid(), cli->getGid(), cli->getPid(), nonBlock ? 'n' : 'b', tail, logMask,
-            (int)pid, start.nsec(), static_cast<int64_t>(deadline.time_since_epoch().count()));
+            (int)pid, start.nsec(), monotonic_time,
+            static_cast<int64_t>(deadline.time_since_epoch().count()));
 
     if (start == log_time::EPOCH) {
         deadline = {};

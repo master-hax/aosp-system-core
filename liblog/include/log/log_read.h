@@ -109,6 +109,9 @@ int android_logger_set_prune_list(struct logger_list* logger_list, const char* b
 
 /* The below values are used for the `mode` argument of the below functions. */
 /* Note that 0x00000003 were previously used and should be considered reserved. */
+/* Indicates that the 'start' parameter to android_logger_list_alloc_time() is based off of
+ * CLOCK_MONOTONIC, not CLOCK_REALTIME. */
+#define ANDROID_LOG_MONOTONIC 0x00000004
 #define ANDROID_LOG_NONBLOCK 0x00000800
 #define ANDROID_LOG_WRAP 0x40000000 /* Block until buffer about to wrap */
 #define ANDROID_LOG_PSTORE 0x80000000
