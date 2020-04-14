@@ -1,0 +1,84 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1fc24706_6384bca1",
+        "filename": "libziparchive/zip_archive.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 382,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-04-14T00:25:30Z",
+      "side": 1,
+      "message": "these can still overflow if extraFieldStart is within 64KiB of the top of the address space. (which is unlikely, but it\u0027s probably always worth using the \"always subtract\" style for tests in this file?)",
+      "range": {
+        "startLine": 382,
+        "startChar": 20,
+        "endLine": 382,
+        "endChar": 54
+      },
+      "revId": "edc7ec2954ac870a5b0a80cbe8d1e6067e2a8471",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "480328e5_96c008fd",
+        "filename": "libziparchive/zip_archive.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 408,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-04-14T00:25:30Z",
+      "side": 1,
+      "message": "it\u0027s annoying they\u0027re all optional, so we can\u0027t just use a struct!\n\nrather than three copies of this, should we always pass in `end` too?\n\n    bool TryConsumeUnaligned\u003cT\u003e(std::optional\u003cT\u003e* result, uint8_t** ptr, uint8_t* end) {\n       // log here on failure, rather than in the caller\n       ...\n    }\n\n    std::optional\u003cuint64_t\u003e uncompressedFileSize;\n    std::optional\u003cuint64_t\u003e compressedFileSize;\n    std::optional\u003cuint64_t\u003e localHeaderOffset;\n    if (zip32UncompressedSize \u003d\u003d UINT32_MAX \u0026\u0026\n        !MaybeConsumeUnaligned\u003cuint64_t\u003e(\u0026uncompressedFileSize, \u0026readPtr, end)) return kInvalidOffset;\n\nit\u0027s days like this i wish we had exceptions enabled...",
+      "range": {
+        "startLine": 402,
+        "startChar": 6,
+        "endLine": 408,
+        "endChar": 7
+      },
+      "revId": "edc7ec2954ac870a5b0a80cbe8d1e6067e2a8471",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "78591910_a7e4d2c3",
+        "filename": "libziparchive/zip_archive.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 629,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-04-14T00:25:30Z",
+      "side": 1,
+      "message": "why does this say \"maximum\" but then always insists on reading that many bytes on L638? does this mean we can read too much?",
+      "revId": "edc7ec2954ac870a5b0a80cbe8d1e6067e2a8471",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0d6770a1_8ef18667",
+        "filename": "libziparchive/zip_archive.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 1523,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-04-14T00:25:30Z",
+      "side": 1,
+      "message": "seems like we don\u0027t take `len` into account in the non-fd case?\n\n(noticed when wondering whether ReadAtOffset can ever return fewer than `len` bytes.)",
+      "revId": "edc7ec2954ac870a5b0a80cbe8d1e6067e2a8471",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
