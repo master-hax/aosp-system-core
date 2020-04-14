@@ -137,71 +137,43 @@ const std::string LocalUpdatableMaps::GetMapsFile() const {
 }
 
 bool LocalUpdatableMaps::Reparse() {
-  // New maps will be added at the end without deleting the old ones.
-  size_t last_map_idx = maps_.size();
+  auto old_maps = std::move(maps_);
+  maps_.clear();
+
   if (!Parse()) {
-    maps_.resize(last_map_idx);
+    maps_ = std::move(old_maps);
     return false;
   }
 
-  size_t total_entries = maps_.size();
-  size_t search_map_idx = 0;
-  for (size_t new_map_idx = last_map_idx; new_map_idx < maps_.size(); new_map_idx++) {
-    auto& new_map_info = maps_[new_map_idx];
-    uint64_t start = new_map_info->start;
-    uint64_t end = new_map_info->end;
-    uint64_t flags = new_map_info->flags;
-    std::string* name = &new_map_info->name;
-    for (size_t old_map_idx = search_map_idx; old_map_idx < last_map_idx; old_map_idx++) {
-      auto& info = maps_[old_map_idx];
-      if (start == info->start && end == info->end && flags == info->flags && *name == info->name) {
-        // No need to check
-        search_map_idx = old_map_idx + 1;
-        if (new_map_idx + 1 < maps_.size()) {
-          maps_[new_map_idx + 1]->prev_map = info.get();
-          maps_[new_map_idx + 1]->prev_real_map =
-              info->IsBlank() ? info->prev_real_map : info.get();
-        }
-        maps_[new_map_idx] = nullptr;
-        total_entries--;
-        break;
-      } else if (info->start > start) {
-        // Stop, there isn't going to be a match.
-        search_map_idx = old_map_idx;
-        break;
-      }
-
-      // Never delete these maps, they may be in use. The assumption is
-      // that there will only every be a handful of these so waiting
-      // to destroy them is not too expensive.
-      saved_maps_.emplace_back(std::move(info));
-      search_map_idx = old_map_idx + 1;
-      maps_[old_map_idx] = nullptr;
-      total_entries--;
-    }
-    if (search_map_idx >= last_map_idx) {
-      break;
+  // remove any entries from maps_ that already exist in old_maps (duplicates), and move any entries
+  // in old_maps that don't have entries in maps_ to saved_maps_
+  // at the end of this, old_maps will contain only entries that still exist, maps_ will contain
+  // only new entries, and saved_maps_ will contain the entries that no longer exist
+  auto new_map_iter = maps_.begin();
+  auto old_map_iter = old_maps.begin();
+  while (old_map_iter != old_maps.end()) {
+    auto found_new_map = std::find_if(new_map_iter, maps_.end(), [&] (auto& new_map) {
+      auto const& old_map = *old_map_iter;
+      return new_map->start == old_map->start
+          && new_map->end == old_map->end
+          && new_map->flags == old_map->flags
+          && new_map->name == old_map->name;
+    });
+    if (found_new_map != maps_.end()) {
+      // duplicate entry, keep the old one
+      new_map_iter = maps_.erase(found_new_map);
+      old_map_iter++;
+    } else {
+      // old entry doesn't exist in the new map, move it to saved_maps_ so it doesn't get deleted
+      // (someone may still be using it)
+      saved_maps_.push_back(std::move(*old_map_iter));
+      old_map_iter = old_maps.erase(old_map_iter);
     }
   }
 
-  // Now move out any of the maps that never were found.
-  for (size_t i = search_map_idx; i < last_map_idx; i++) {
-    saved_maps_.emplace_back(std::move(maps_[i]));
-    maps_[i] = nullptr;
-    total_entries--;
-  }
+  std::move(old_maps.begin(), old_maps.end(), std::back_inserter(maps_));
 
-  // Sort all of the values such that the nullptrs wind up at the end, then
-  // resize them away.
-  std::sort(maps_.begin(), maps_.end(), [](const auto& a, const auto& b) {
-    if (a == nullptr) {
-      return false;
-    } else if (b == nullptr) {
-      return true;
-    }
-    return a->start < b->start;
-  });
-  maps_.resize(total_entries);
+  Sort(); // this will rebuild the prev_map and prev_real_map links along with correctly sorting
 
   return true;
 }
