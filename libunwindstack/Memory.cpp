@@ -158,20 +158,28 @@ bool Memory::ReadFully(uint64_t addr, void* dst, size_t size) {
   return rc == size;
 }
 
-bool Memory::ReadString(uint64_t addr, std::string* string, uint64_t max_read) {
-  string->clear();
-  uint64_t bytes_read = 0;
-  while (bytes_read < max_read) {
-    uint8_t value;
-    if (!ReadFully(addr, &value, sizeof(value))) {
+bool Memory::ReadString(uint64_t addr, std::string* string, size_t max_read) {
+  char buffer[64];
+  size_t size = 0;  // Number of bytes which were read into the buffer.
+  for (size_t offset = 0; offset < max_read; offset += size) {
+    // Look for null-terminator first, so we can allocate string of exact size.
+    // If we know the end of valid memory range, do the reads in larger blocks.
+    size_t read = (max_read == SIZE_MAX) ? 1 : std::min(sizeof(buffer), max_read - offset);
+    size = Read(addr + offset, buffer, read);
+    if (size == 0) {
       return false;
     }
-    if (value == '\0') {
-      return true;
+    size_t length = strnlen(buffer, size);  // Index of the null-terminator.
+    if (length < size) {
+      // We found the null-terminator. Allocate the string and set its content.
+      if (offset == 0) {
+        *string = std::string(buffer, length);
+        return true;
+      } else {
+        *string = std::string(offset + length, '\0');
+        return ReadFully(addr, string->data(), string->size());
+      }
     }
-    string->push_back(value);
-    addr++;
-    bytes_read++;
   }
   return false;
 }
