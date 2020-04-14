@@ -1,0 +1,48 @@
+{
+  "comments": [
+    {
+      "robotId": "ayeaye",
+      "robotRunId": "AR00000000000002457790",
+      "url": "https://android-build.googleplex.com/builds/treetop/android-review/1229867?revision\u003d9",
+      "fixSuggestions": [
+        {
+          "fixId": "fcf9e7f0_d7c6f90c",
+          "description": "Change to \"adb/pairing_connection/pairing_server.cpp\"",
+          "replacements": [
+            {
+              "path": "adb/pairing_connection/pairing_server.cpp",
+              "range": {
+                "startLine": 107,
+                "startChar": 62,
+                "endLine": 107,
+                "endChar": 70
+              },
+              "replacement": "its own"
+            }
+          ]
+        }
+      ],
+      "key": {
+        "uuid": "7f05d82c_5e1d3271",
+        "filename": "adb/pairing_connection/pairing_server.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 1550585
+      },
+      "writtenOn": "2020-04-14T23:20:39Z",
+      "side": 1,
+      "message": "Common typo found: \"it\u0027s own\" -- should it be \"its own\"?\nor alternatively, it\u0027s a(n) ...\nNote: a line containing \"common_typos_disable\" or \"common_typos_enable\" will turn off or on (respectively) the linter for subsequent lines in the file. Alternatively include the token \"NOTYPO\" within a line to skip typo linting that line.",
+      "range": {
+        "startLine": 107,
+        "startChar": 62,
+        "endLine": 107,
+        "endChar": 70
+      },
+      "revId": "1b0aae555e7cca98bd354f608d9fe3f3cee3ceaf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
