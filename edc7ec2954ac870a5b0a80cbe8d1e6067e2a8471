@@ -48,6 +48,30 @@
     },
     {
       "key": {
+        "uuid": "e1094410_e6fa7419",
+        "filename": "libziparchive/zip_archive.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 408,
+      "author": {
+        "id": 1088085
+      },
+      "writtenOn": "2020-04-14T00:35:31Z",
+      "side": 1,
+      "message": "will the end pointer cause the overflow you mentioned in the first comment?",
+      "parentUuid": "480328e5_96c008fd",
+      "range": {
+        "startLine": 402,
+        "startChar": 6,
+        "endLine": 408,
+        "endChar": 7
+      },
+      "revId": "edc7ec2954ac870a5b0a80cbe8d1e6067e2a8471",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "78591910_a7e4d2c3",
         "filename": "libziparchive/zip_archive.cc",
         "patchSetId": 1
@@ -76,6 +100,24 @@
       "writtenOn": "2020-04-14T00:25:30Z",
       "side": 1,
       "message": "seems like we don\u0027t take `len` into account in the non-fd case?\n\n(noticed when wondering whether ReadAtOffset can ever return fewer than `len` bytes.)",
+      "revId": "edc7ec2954ac870a5b0a80cbe8d1e6067e2a8471",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d3664485_408228f7",
+        "filename": "libziparchive/zip_archive.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 1523,
+      "author": {
+        "id": 1088085
+      },
+      "writtenOn": "2020-04-14T00:35:31Z",
+      "side": 1,
+      "message": "looks like we should add a check here.",
+      "parentUuid": "0d6770a1_8ef18667",
       "revId": "edc7ec2954ac870a5b0a80cbe8d1e6067e2a8471",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
