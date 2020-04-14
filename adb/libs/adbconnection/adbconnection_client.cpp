@@ -40,16 +40,27 @@ struct AdbConnectionClientContext {
 };
 
 bool SocketPeerIsTrusted(int fd) {
-  ucred cr;
+  uid_t uid;
+
+#if defined(__APPLE__)
+  gid_t gid;
+  if (getpeereid(fd, &uid, &gid) != 0) {
+    PLOG(ERROR) << "getpeereid failed";
+    return false;
+  }
+#else
+  ucred cr = {};
   socklen_t cr_length = sizeof(cr);
   if (getsockopt(fd, SOL_SOCKET, SO_PEERCRED, &cr, &cr_length) != 0) {
     PLOG(ERROR) << "couldn't get socket credentials";
     return false;
   }
+  uid = cr.uid;
+#endif
 
   passwd* shell = getpwnam("shell");
-  if (cr.uid != 0 && cr.uid != shell->pw_uid) {
-    LOG(ERROR) << "untrusted uid " << cr.uid << " on other end of socket";
+  if (uid != 0 && uid != shell->pw_uid) {
+    LOG(ERROR) << "untrusted uid " << uid << " on other end of socket";
     return false;
   }
 
