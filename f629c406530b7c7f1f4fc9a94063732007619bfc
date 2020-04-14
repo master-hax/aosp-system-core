@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a5491454_2da0a697",
+        "filename": "init/README.md",
+        "patchSetId": 4
+      },
+      "lineNbr": 654,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2020-04-14T14:47:24Z",
+      "side": 1,
+      "message": "Grammar nit: Some words are missing here, maybe it should be something like: \"the behavior [is the] same [as] with [the] _wait_ command[, i.e. wait] [s/util/until/] the _path_ is ready or the timeout has been reached\"",
+      "range": {
+        "startLine": 653,
+        "startChar": 2,
+        "endLine": 654,
+        "endChar": 26
+      },
+      "revId": "f629c406530b7c7f1f4fc9a94063732007619bfc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
