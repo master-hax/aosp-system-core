@@ -96,6 +96,30 @@
     },
     {
       "key": {
+        "uuid": "d9eb95ec_b2968cec",
+        "filename": "libziparchive/zip_archive.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 408,
+      "author": {
+        "id": 1088085
+      },
+      "writtenOn": "2020-04-14T00:45:04Z",
+      "side": 1,
+      "message": "Maybe a new function\nbool TryConsumeUnaligned\u003cT\u003e(std::optional\u003cT\u003e* result, uint8_t** ptr, uint8_t* buf, size_t bufSize)",
+      "parentUuid": "ad509dcd_2d1f895a",
+      "range": {
+        "startLine": 402,
+        "startChar": 6,
+        "endLine": 408,
+        "endChar": 7
+      },
+      "revId": "edc7ec2954ac870a5b0a80cbe8d1e6067e2a8471",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "78591910_a7e4d2c3",
         "filename": "libziparchive/zip_archive.cc",
         "patchSetId": 1
