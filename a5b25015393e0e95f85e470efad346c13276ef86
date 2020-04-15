@@ -16,6 +16,24 @@
       "revId": "a5b25015393e0e95f85e470efad346c13276ef86",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f6ee1408_6d8ffdf5",
+        "filename": "libziparchive/zip_archive.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 1581,
+      "author": {
+        "id": 1088085
+      },
+      "writtenOn": "2020-04-15T23:13:32Z",
+      "side": 1,
+      "message": "Yes for the zipfile in the bug. Do we want to explicitly handle the erroneous though. Or we are comfortable leaving -1 in tm.",
+      "parentUuid": "9aeaf170_668323c9",
+      "revId": "a5b25015393e0e95f85e470efad346c13276ef86",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
