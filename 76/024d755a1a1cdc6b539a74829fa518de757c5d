@@ -1,0 +1,10 @@
+Open-Source-Licensing+1: Lint 🤖 <android-build-prod-ayeaye@system.gserviceaccount.com>
+Autosubmit+1: Felipe Leme <felipeal@google.com>
+Code-Review+2: Tom Cherry <tomcherry@google.com>
+Code-Review+2: Keun-young Park <keunyoung@google.com>
+Presubmit-Verified+1: Treehugger Robot <treehugger-gerrit@google.com>
+Submitted-by: Treehugger Robot <treehugger-gerrit@google.com>
+Submitted-at: Wed, 15 Apr 2020 23:22:26 +0000
+Reviewed-on: https://android-review.googlesource.com/c/platform/system/core/+/1286554
+Project: platform/system/core
+Branch: refs/heads/master
