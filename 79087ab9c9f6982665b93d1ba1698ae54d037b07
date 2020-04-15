@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b83b3519_7e79162b",
+        "filename": "libziparchive/zip_archive.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 1584,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-04-15T23:28:03Z",
+      "side": 1,
+      "message": "do we care enough to log for everyone? if we warn on this, why not on a too-large month as well? or out of range values for all the other fields? i think we should just say in the doc comment that this returns the time represented in the file, which may or may not be a valid time, and then leave this code exactly as it was?",
+      "revId": "79087ab9c9f6982665b93d1ba1698ae54d037b07",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
