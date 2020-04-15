@@ -34,6 +34,24 @@
       "revId": "a5b25015393e0e95f85e470efad346c13276ef86",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f28693ea_eb7a8798",
+        "filename": "libziparchive/zip_archive.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 1581,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-04-15T23:20:36Z",
+      "side": 1,
+      "message": "\"it\u0027s what the regular zip tools do\" sounds good enough to me?\n\nand libc\u0027s supposed to cope too:\n\n  #include \u003cstdio.h\u003e\n  #include \u003ctime.h\u003e\n  int main() {\n   time_t t \u003d time(NULL);\n   struct tm* tm \u003d gmtime(\u0026t);\n   printf(\"%s\", asctime(tm));\n   tm-\u003etm_mon \u003d 0;\n   printf(\"%s\", asctime(tm));\n   tm-\u003etm_mon \u003d -1;\n   printf(\"%s\", asctime(tm));\n   return 0;\n  }\n\ngives me:\n\n  Wed Apr 15 23:18:13 2020\n  Wed Jan 15 23:18:13 2020\n  Wed ??? 15 23:18:13 2020\n\nit also means that if the *other* fields are valid, we\u0027re not throwing away information? with this patch we\u0027d be inconsistent --- we wouldn\u0027t reject month 15, say. or hour 66 of the day or whatever.",
+      "parentUuid": "f6ee1408_6d8ffdf5",
+      "revId": "a5b25015393e0e95f85e470efad346c13276ef86",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
