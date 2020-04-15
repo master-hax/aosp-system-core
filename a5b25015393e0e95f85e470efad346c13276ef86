@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9aeaf170_668323c9",
+        "filename": "libziparchive/zip_archive.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 1581,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-04-15T23:03:55Z",
+      "side": 1,
+      "message": "oh, wait does changing `uint32_t mod_time` to `int32_t mod_time` fix this with no other changes? (sorry, i hadn\u0027t realized that returning {} meant you\u0027d need a special case in the caller to get what i assumed was the default behavior...)",
+      "revId": "a5b25015393e0e95f85e470efad346c13276ef86",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
