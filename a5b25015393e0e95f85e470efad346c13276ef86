@@ -52,6 +52,24 @@
       "revId": "a5b25015393e0e95f85e470efad346c13276ef86",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d56ba2c7_5f336919",
+        "filename": "libziparchive/zip_archive.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 1581,
+      "author": {
+        "id": 1088085
+      },
+      "writtenOn": "2020-04-15T23:22:59Z",
+      "side": 1,
+      "message": "okay!",
+      "parentUuid": "f28693ea_eb7a8798",
+      "revId": "a5b25015393e0e95f85e470efad346c13276ef86",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
