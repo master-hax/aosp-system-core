@@ -16,6 +16,24 @@
       "revId": "79087ab9c9f6982665b93d1ba1698ae54d037b07",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "69683151_61f41118",
+        "filename": "libziparchive/zip_archive.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 1584,
+      "author": {
+        "id": 1088085
+      },
+      "writtenOn": "2020-04-15T23:35:26Z",
+      "side": 1,
+      "message": "Done. Do we want it in rvc-dev as well?",
+      "parentUuid": "b83b3519_7e79162b",
+      "revId": "79087ab9c9f6982665b93d1ba1698ae54d037b07",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
