@@ -32,6 +32,7 @@
 #include <string>
 
 #include <android-base/file.h>
+#include <android-base/stringprintf.h>
 #include <android-base/strings.h>
 #include <ziparchive/zip_archive.h>
 
@@ -257,18 +258,27 @@ static void ExtractOne(ZipArchiveHandle zah, const ZipEntry64& entry, const std:
   close(fd);
 }
 
+static std::string PrintTimeStamp(const tm& t) {
+  // We expect a empty tm if the timestamp is invalid in the zipfile. Also many zip libraries don't
+  // support the timestamp before 1980. So we use 1980-0-0 to indicate an error. The linux zipinfo
+  // similarly use '80-000-00' as the timestamp string.
+  if (t.tm_year == 0) {
+    return android::base::StringPrintf("%04d-%02d-%02d %02d:%02d", 1980, 0, 0, 0, 0);
+  }
+  return android::base::StringPrintf("%04d-%02d-%02d %02d:%02d", t.tm_year + 1900, t.tm_mon + 1,
+                                     t.tm_mday, t.tm_hour, t.tm_min);
+}
+
 static void ListOne(const ZipEntry64& entry, const std::string& name) {
   tm t = entry.GetModificationTime();
-  char time[32];
-  snprintf(time, sizeof(time), "%04d-%02d-%02d %02d:%02d", t.tm_year + 1900, t.tm_mon + 1,
-           t.tm_mday, t.tm_hour, t.tm_min);
+  auto time = PrintTimeStamp(t);
   if (flag_v) {
     printf("%8" PRIu64 " %s  %8" PRIu64 " %3.0f%% %s %08x  %s\n", entry.uncompressed_length,
            (entry.method == kCompressStored) ? "Stored" : "Defl:N", entry.compressed_length,
-           CompressionRatio(entry.uncompressed_length, entry.compressed_length), time, entry.crc32,
-           name.c_str());
+           CompressionRatio(entry.uncompressed_length, entry.compressed_length), time.c_str(),
+           entry.crc32, name.c_str());
   } else {
-    printf("%9" PRIu64 " %s   %s\n", entry.uncompressed_length, time, name.c_str());
+    printf("%9" PRIu64 " %s   %s\n", entry.uncompressed_length, time.c_str(), name.c_str());
   }
 }
 
@@ -322,14 +332,12 @@ static void InfoOne(const ZipEntry64& entry, const std::string& name) {
   // TODO: zipinfo (unlike unzip) sometimes uses time zone?
   // TODO: this uses 4-digit years because we're not barbarians unless interoperability forces it.
   tm t = entry.GetModificationTime();
-  char time[32];
-  snprintf(time, sizeof(time), "%04d-%02d-%02d %02d:%02d", t.tm_year + 1900, t.tm_mon + 1,
-           t.tm_mday, t.tm_hour, t.tm_min);
+  auto time = PrintTimeStamp(t);
 
   // "-rw-r--r--  3.0 unx      577 t- defX 19-Feb-12 16:09 android-ndk-r19b/sources/android/NOTICE"
   printf("%s %2d.%d %s %8" PRIu64 " %c%c %s %s %s\n", mode, version / 10, version % 10, src_fs,
          entry.uncompressed_length, entry.is_text ? 't' : 'b',
-         entry.has_data_descriptor ? 'X' : 'x', method, time, name.c_str());
+         entry.has_data_descriptor ? 'X' : 'x', method, time.c_str(), name.c_str());
 }
 
 static void ProcessOne(ZipArchiveHandle zah, const ZipEntry64& entry, const std::string& name) {
