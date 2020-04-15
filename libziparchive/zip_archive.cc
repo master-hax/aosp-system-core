@@ -1578,7 +1578,12 @@ tm ZipEntryCommon::GetModificationTime() const {
   t.tm_sec = (mod_time & 0x1f) << 1;
 
   t.tm_year = ((mod_time >> 25) & 0x7f) + 80;
-  t.tm_mon = ((mod_time >> 21) & 0xf) - 1;
+  int month_one_based = (mod_time >> 21) & 0xf;
+  if (month_one_based == 0) {
+    // Higher log level would pollute the output of zipinfo.
+    ALOGD("Zip: Invalid month in modification time.");
+  }
+  t.tm_mon = month_one_based - 1;
   t.tm_mday = (mod_time >> 16) & 0x1f;
 
   return t;
