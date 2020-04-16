@@ -24,7 +24,7 @@ cc_defaults {
     srcs: [
         "statsd_writer.c",
         "stats_event_list.c",
-        "StatsEventCompat.cpp"
+        "StatsEventCompat.cpp",
     ],
     cflags: [
         "-Wall",
@@ -48,6 +48,7 @@ cc_library {
     export_include_dirs: ["include"],
     static_libs: ["libgtest_prod"],
     apex_available: ["com.android.resolv"],
+    min_sdk_version: "29",
 }
 
 cc_test {
@@ -59,4 +60,3 @@ cc_test {
     ],
     static_libs: ["libgmock"],
 }
-

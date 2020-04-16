@@ -18,4 +18,5 @@ cc_library_headers {
             enabled: true,
         },
     },
+    min_sdk_version: "29",
 }
