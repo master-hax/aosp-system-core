@@ -23,6 +23,7 @@
 #include <fcntl.h>
 #include <inttypes.h>
 #include <libgen.h>
+#include <pthread.h>
 #include <time.h>
 
 // For getprogname(3) or program_invocation_short_name.
@@ -190,8 +191,22 @@ static int32_t LogSeverityToPriority(LogSeverity severity) {
   }
 }
 
-static std::mutex& LoggingLock() {
-  static auto& logging_lock = *new std::mutex();
+class ResettableLock {
+ public:
+  ResettableLock() {}
+  ~ResettableLock() {}
+
+  void lock() { pthread_mutex_lock(&lock_); }
+  void unlock() { pthread_mutex_unlock(&lock_); }
+
+  void reset() { lock_ = PTHREAD_MUTEX_INITIALIZER; }
+
+ private:
+  pthread_mutex_t lock_ = PTHREAD_MUTEX_INITIALIZER;
+};
+
+static ResettableLock& LoggingLock() {
+  static auto& logging_lock = *new ResettableLock();
   return logging_lock;
 }
 
@@ -365,6 +380,10 @@ void InitLogging(char* argv[], LogFunction&& logger, AbortFunction&& aborter) {
     return;
   }
 
+#if !defined(_WIN32)
+  pthread_atfork(nullptr, nullptr, [] { LoggingLock().reset(); });
+#endif
+
   gInitialized = true;
 
   // Stash the command line for later use. We can use /proc/self/cmdline on
@@ -436,7 +455,7 @@ void SetLogger(LogFunction&& logger) {
     });
     delete old_logger_function;
   } else {
-    std::lock_guard<std::mutex> lock(LoggingLock());
+    std::lock_guard lock(LoggingLock());
     Logger() = std::move(logger);
   }
 }
@@ -453,7 +472,7 @@ void SetAborter(AbortFunction&& aborter) {
     });
     delete old_abort_function;
   } else {
-    std::lock_guard<std::mutex> lock(LoggingLock());
+    std::lock_guard lock(LoggingLock());
     Aborter() = std::move(aborter);
   }
 }
@@ -537,7 +556,7 @@ LogMessage::~LogMessage() {
 
   {
     // Do the actual logging with the lock held.
-    std::lock_guard<std::mutex> lock(LoggingLock());
+    std::lock_guard lock(LoggingLock());
     if (msg.find('\n') == std::string::npos) {
       LogLine(data_->GetFile(), data_->GetLineNumber(), data_->GetSeverity(), data_->GetTag(),
               msg.c_str());
