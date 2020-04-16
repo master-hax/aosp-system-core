@@ -23,6 +23,7 @@
 #include <fcntl.h>
 #include <inttypes.h>
 #include <libgen.h>
+#include <pthread.h>
 #include <time.h>
 
 // For getprogname(3) or program_invocation_short_name.
@@ -364,6 +365,11 @@ void InitLogging(char* argv[], LogFunction&& logger, AbortFunction&& aborter) {
   if (gInitialized) {
     return;
   }
+
+#if !defined(_WIN32)
+  pthread_atfork([] { LoggingLock().lock(); }, [] { LoggingLock().unlock(); },
+                 [] { LoggingLock().unlock(); });
+#endif
 
   gInitialized = true;
 
