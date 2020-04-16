@@ -25,6 +25,29 @@
     },
     {
       "key": {
+        "uuid": "6b6a9345_a2b58f57",
+        "filename": "libunwindstack/Memory.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 168,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2020-04-16T10:03:47Z",
+      "side": 1,
+      "message": "Shouldn\u0027t this be buffer + offset as well?",
+      "range": {
+        "startLine": 168,
+        "startChar": 31,
+        "endLine": 168,
+        "endChar": 37
+      },
+      "revId": "c643e770fb6e4e4160f0ebca2f68e672ceb37652",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "421aff96_8a46bb08",
         "filename": "libunwindstack/Memory.cpp",
         "patchSetId": 2
