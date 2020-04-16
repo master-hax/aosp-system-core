@@ -94,12 +94,23 @@ void Maps::Add(uint64_t start, uint64_t end, uint64_t offset, uint64_t flags,
 void Maps::Sort() {
   std::sort(maps_.begin(), maps_.end(),
             [](const std::unique_ptr<MapInfo>& a, const std::unique_ptr<MapInfo>& b) {
-              return a->start < b->start; });
+              // Put all the nullptr at the end of vector.
+              if (a == nullptr) {
+                return false;
+              } else if (b == nullptr) {
+                return true;
+              }
+              return a->start < b->start;
+            });
 
   // Set the prev_map values on the info objects.
   MapInfo* prev_map = nullptr;
   MapInfo* prev_real_map = nullptr;
   for (const auto& map_info : maps_) {
+    if (map_info == nullptr) {
+      // Null element would be at the end after sorting.
+      break;
+    }
     map_info->prev_map = prev_map;
     map_info->prev_real_map = prev_real_map;
     prev_map = map_info.get();
@@ -138,69 +149,38 @@ const std::string LocalUpdatableMaps::GetMapsFile() const {
 
 bool LocalUpdatableMaps::Reparse() {
   // New maps will be added at the end without deleting the old ones.
-  size_t last_map_idx = maps_.size();
+  const size_t old_map_size = maps_.size();
   if (!Parse()) {
-    maps_.resize(last_map_idx);
+    maps_.resize(old_map_size);
     return false;
   }
 
-  size_t total_entries = maps_.size();
-  size_t search_map_idx = 0;
-  for (size_t new_map_idx = last_map_idx; new_map_idx < maps_.size(); new_map_idx++) {
-    auto& new_map_info = maps_[new_map_idx];
-    uint64_t start = new_map_info->start;
-    uint64_t end = new_map_info->end;
-    uint64_t flags = new_map_info->flags;
-    std::string* name = &new_map_info->name;
-    for (size_t old_map_idx = search_map_idx; old_map_idx < last_map_idx; old_map_idx++) {
-      auto& info = maps_[old_map_idx];
-      if (start == info->start && end == info->end && flags == info->flags && *name == info->name) {
-        // No need to check
-        search_map_idx = old_map_idx + 1;
-        if (new_map_idx + 1 < maps_.size()) {
-          maps_[new_map_idx + 1]->prev_map = info.get();
-          maps_[new_map_idx + 1]->prev_real_map =
-              info->IsBlank() ? info->prev_real_map : info.get();
-        }
-        maps_[new_map_idx] = nullptr;
-        total_entries--;
-        break;
-      } else if (info->start > start) {
-        // Stop, there isn't going to be a match.
-        search_map_idx = old_map_idx;
-        break;
-      }
+  // Remove any entries from maps_ that already exist in old_maps (duplicates), and move any
+  // entries in old_maps that don't have entries in maps_ to saved_maps_.
+  // At the end of this, maps_ will contain only new entries, and saved_maps_ will contain the
+  // entries that no longer exist.
+  const size_t total_entries = maps_.size() - old_map_size;
+  auto const& old_map_end = maps_.begin() + old_map_size;
+  for (auto old_map_iter = maps_.begin(), new_map_iter = old_map_end; old_map_iter != old_map_end;
+       ++old_map_iter) {
+    new_map_iter = std::find_if(new_map_iter, maps_.end(), [&](const auto& new_map) {
+      auto const& old_map = *old_map_iter;
+      return new_map->start >= old_map->start;
+    });
 
+    if (new_map_iter != maps_.end() && **old_map_iter == **new_map_iter) {
+      *new_map_iter = nullptr;
+      new_map_iter++;
+    } else {
       // Never delete these maps, they may be in use. The assumption is
       // that there will only every be a handful of these so waiting
       // to destroy them is not too expensive.
-      saved_maps_.emplace_back(std::move(info));
-      search_map_idx = old_map_idx + 1;
-      maps_[old_map_idx] = nullptr;
-      total_entries--;
-    }
-    if (search_map_idx >= last_map_idx) {
-      break;
+      saved_maps_.emplace_back(std::move(*old_map_iter));
     }
   }
 
-  // Now move out any of the maps that never were found.
-  for (size_t i = search_map_idx; i < last_map_idx; i++) {
-    saved_maps_.emplace_back(std::move(maps_[i]));
-    maps_[i] = nullptr;
-    total_entries--;
-  }
-
-  // Sort all of the values such that the nullptrs wind up at the end, then
-  // resize them away.
-  std::sort(maps_.begin(), maps_.end(), [](const auto& a, const auto& b) {
-    if (a == nullptr) {
-      return false;
-    } else if (b == nullptr) {
-      return true;
-    }
-    return a->start < b->start;
-  });
+  // This will rebuild the prev_map and prev_real_map links along with correctly sorting.
+  Sort();
   maps_.resize(total_entries);
 
   return true;

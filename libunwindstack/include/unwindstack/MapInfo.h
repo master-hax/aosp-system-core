@@ -109,6 +109,10 @@ struct MapInfo {
 
   inline bool IsBlank() { return offset == 0 && flags == 0 && name.empty(); }
 
+  inline bool operator==(const MapInfo& other) const {
+    return start == other.start && end == other.end && flags == other.flags && name == other.name;
+  }
+
  private:
   MapInfo(const MapInfo&) = delete;
   void operator=(const MapInfo&) = delete;
