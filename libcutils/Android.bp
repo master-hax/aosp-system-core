@@ -46,6 +46,7 @@ cc_library_headers {
             enabled: true,
         },
     },
+    min_sdk_version: "29",
 }
 
 // Socket specific parts of libcutils that are safe to statically link into an APEX.
@@ -106,12 +107,16 @@ cc_library {
             ],
         },
     },
+    min_sdk_version: "29",
 }
 
 cc_test {
     name: "libcutils_sockets_test",
     test_suites: ["device-tests"],
-    static_libs: ["libbase", "libcutils_sockets"],
+    static_libs: [
+        "libbase",
+        "libcutils_sockets",
+    ],
     cflags: [
         "-Wall",
         "-Wextra",
@@ -234,7 +239,7 @@ cc_library {
                 // releases, exclude qtaguid.cpp from the VNDK-SP variant.
                 "qtaguid.cpp",
             ],
-        }
+        },
     },
 
     whole_static_libs: ["libcutils_sockets"],
@@ -259,6 +264,7 @@ cc_library {
         "-Wall",
         "-Wextra",
     ],
+    min_sdk_version: "29",
 }
 
 cc_defaults {
@@ -346,7 +352,10 @@ cc_test {
 
 cc_test {
     name: "KernelLibcutilsTest",
-    test_suites: ["general-tests", "vts"],
+    test_suites: [
+        "general-tests",
+        "vts",
+    ],
     defaults: ["libcutils_test_static_defaults"],
     test_config: "KernelLibcutilsTest.xml",
 }

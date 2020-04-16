@@ -49,6 +49,7 @@ cc_library_headers {
             enabled: true,
         },
     },
+    min_sdk_version: "29",
 }
 
 cc_defaults {
@@ -162,6 +163,7 @@ cc_library {
         "//apex_available:anyapex",
         "//apex_available:platform",
     ],
+    min_sdk_version: "29",
 }
 
 cc_library {
@@ -173,8 +175,8 @@ cc_library {
     ],
 
     shared_libs: [
-         "libutils",
-         "libbacktrace",
+        "libutils",
+        "libbacktrace",
     ],
 
     target: {

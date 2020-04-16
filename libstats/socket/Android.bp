@@ -47,7 +47,7 @@ cc_library {
         versions: [
             "1",
         ],
-    }
+    },
 }
 
 cc_library_headers {
@@ -55,6 +55,7 @@ cc_library_headers {
     export_include_dirs: ["include"],
     host_supported: true,
     apex_available: ["com.android.resolv"],
+    min_sdk_version: "29",
 }
 
 cc_benchmark {

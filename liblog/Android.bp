@@ -57,6 +57,7 @@ cc_library_headers {
             override_export_include_dirs: ["include_vndk"],
         },
     },
+    min_sdk_version: "29",
 }
 
 // Shared and static library for host and device
@@ -102,7 +103,10 @@ cc_library {
 
     stubs: {
         symbol_file: "liblog.map.txt",
-        versions: ["29", "30"],
+        versions: [
+            "29",
+            "30",
+        ],
     },
 
     cflags: [
