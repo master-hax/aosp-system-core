@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "13e4e18b_4b641da4",
+        "filename": "libunwindstack/Memory.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 161,
+      "author": {
+        "id": 1065473
+      },
+      "writtenOn": "2020-04-16T10:23:08Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "208c5f76_6e66f7f7",
+      "range": {
+        "startLine": 161,
+        "startChar": 52,
+        "endLine": 161,
+        "endChar": 58
+      },
+      "revId": "c643e770fb6e4e4160f0ebca2f68e672ceb37652",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "6b6a9345_a2b58f57",
         "filename": "libunwindstack/Memory.cpp",
         "patchSetId": 2
@@ -45,6 +69,30 @@
       "revId": "c643e770fb6e4e4160f0ebca2f68e672ceb37652",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7768cf67_304baeab",
+        "filename": "libunwindstack/Memory.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 168,
+      "author": {
+        "id": 1065473
+      },
+      "writtenOn": "2020-04-16T10:23:08Z",
+      "side": 1,
+      "message": "The buffer is fixed size. It does not fit the whole string. It stores the result of the Read.",
+      "parentUuid": "6b6a9345_a2b58f57",
+      "range": {
+        "startLine": 168,
+        "startChar": 31,
+        "endLine": 168,
+        "endChar": 37
+      },
+      "revId": "c643e770fb6e4e4160f0ebca2f68e672ceb37652",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "6391a42a_ab5d2806",
+        "filename": "libunwindstack/Memory.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 172,
+      "author": {
+        "id": 1065473
+      },
+      "writtenOn": "2020-04-16T10:23:08Z",
+      "side": 1,
+      "message": "Same as above.",
+      "parentUuid": "421aff96_8a46bb08",
+      "range": {
+        "startLine": 172,
+        "startChar": 0,
+        "endLine": 172,
+        "endChar": 76
+      },
+      "revId": "c643e770fb6e4e4160f0ebca2f68e672ceb37652",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f5bf0791_79135eda",
         "filename": "libunwindstack/Memory.cpp",
         "patchSetId": 2
@@ -94,6 +166,30 @@
     },
     {
       "key": {
+        "uuid": "7ba1b25b_808b6535",
+        "filename": "libunwindstack/Memory.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 176,
+      "author": {
+        "id": 1065473
+      },
+      "writtenOn": "2020-04-16T10:23:08Z",
+      "side": 1,
+      "message": "Done\n\nI thought about it... was thinking \"\u003d\" is better over \"assign\" as it explicitly allocates new memory of correct size.\n\nOn the other hand, if passed empty string, the semantic is same anyway.  And assign allows the caller the reuse old string allocation, thus saving alloc/free. (assuming \"assign\" has the behavior I assume)",
+      "parentUuid": "f5bf0791_79135eda",
+      "range": {
+        "startLine": 176,
+        "startChar": 9,
+        "endLine": 176,
+        "endChar": 15
+      },
+      "revId": "c643e770fb6e4e4160f0ebca2f68e672ceb37652",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "912376d5_5ef85a36",
         "filename": "libunwindstack/Memory.cpp",
         "patchSetId": 2
@@ -114,6 +210,30 @@
       "revId": "c643e770fb6e4e4160f0ebca2f68e672ceb37652",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bd1f824c_620f0520",
+        "filename": "libunwindstack/Memory.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 179,
+      "author": {
+        "id": 1065473
+      },
+      "writtenOn": "2020-04-16T10:23:08Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "912376d5_5ef85a36",
+      "range": {
+        "startLine": 179,
+        "startChar": 9,
+        "endLine": 179,
+        "endChar": 15
+      },
+      "revId": "c643e770fb6e4e4160f0ebca2f68e672ceb37652",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
