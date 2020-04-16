@@ -19,9 +19,22 @@
 
 #include <android-base/macros.h>
 
-const char* kADBServiceType = "_adb._tcp";
-const char* kADBSecurePairingServiceType = "_adb_secure_pairing._tcp";
-const char* kADBSecureConnectServiceType = "_adb_secure_connect._tcp";
+// According to RFC 6763 (https://tools.ietf.org/html/rfc6763#section-7.2), the service name has a
+// length limit of 15 bytes, excluding the leading underscore. So including the "._tcp", the max
+// size should be 21 bytes (22 bytes if we include the dot at the beginning of the name).
+//
+// Furthermore, service names can only contain letters, digits, and hyphens, must begin and end with
+// a letter or digit, must not contain consecutive hyphens, and must contain at least one letter.
+#define ADB_SERVICE_TYPE_MAX_LENGTH 21
+
+const char kADBServiceType[] = "_adb._tcp";
+static_assert(sizeof(kADBServiceType) - 1 <= ADB_SERVICE_TYPE_MAX_LENGTH, "Service name too large");
+const char kADBSecurePairingServiceType[] = "_adb-tls-pairing._tcp";
+static_assert(sizeof(kADBSecurePairingServiceType) - 1 <= ADB_SERVICE_TYPE_MAX_LENGTH,
+              "Service name too large");
+const char kADBSecureConnectServiceType[] = "_adb-tls-connect._tcp";
+static_assert(sizeof(kADBSecureConnectServiceType) - 1 <= ADB_SERVICE_TYPE_MAX_LENGTH,
+              "Service name too large");
 
 const int kADBTransportServiceRefIndex = 0;
 const int kADBSecurePairingServiceRefIndex = 1;
