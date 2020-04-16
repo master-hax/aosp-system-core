@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "208c5f76_6e66f7f7",
+        "filename": "libunwindstack/Memory.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 161,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2020-04-16T10:00:12Z",
+      "side": 1,
+      "message": "I am not very fond of that name. out?",
+      "range": {
+        "startLine": 161,
+        "startChar": 52,
+        "endLine": 161,
+        "endChar": 58
+      },
+      "revId": "c643e770fb6e4e4160f0ebca2f68e672ceb37652",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "421aff96_8a46bb08",
+        "filename": "libunwindstack/Memory.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 172,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2020-04-16T10:00:12Z",
+      "side": 1,
+      "message": "This should be strnlen(buffer + offset, size). Otherwise we keep looking at the first size elements of the buffer, even if we\u0027ve read beyond.",
+      "range": {
+        "startLine": 172,
+        "startChar": 0,
+        "endLine": 172,
+        "endChar": 76
+      },
+      "revId": "c643e770fb6e4e4160f0ebca2f68e672ceb37652",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f5bf0791_79135eda",
+        "filename": "libunwindstack/Memory.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 176,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2020-04-16T10:00:12Z",
+      "side": 1,
+      "message": "string-\u003eassign(buffer, length);",
+      "range": {
+        "startLine": 176,
+        "startChar": 9,
+        "endLine": 176,
+        "endChar": 15
+      },
+      "revId": "c643e770fb6e4e4160f0ebca2f68e672ceb37652",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "912376d5_5ef85a36",
+        "filename": "libunwindstack/Memory.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 179,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2020-04-16T10:00:12Z",
+      "side": 1,
+      "message": "As above.",
+      "range": {
+        "startLine": 179,
+        "startChar": 9,
+        "endLine": 179,
+        "endChar": 15
+      },
+      "revId": "c643e770fb6e4e4160f0ebca2f68e672ceb37652",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
