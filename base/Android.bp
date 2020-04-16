@@ -51,6 +51,7 @@ cc_library_headers {
         "//apex_available:anyapex",
         "//apex_available:platform",
     ],
+    min_sdk_version: "29",
 }
 
 cc_defaults {
@@ -132,6 +133,7 @@ cc_library {
         "//apex_available:anyapex",
         "//apex_available:platform",
     ],
+    min_sdk_version: "29",
 }
 
 cc_library_static {
@@ -143,6 +145,11 @@ cc_library_static {
     static_libs: ["fmtlib_ndk"],
     whole_static_libs: ["fmtlib_ndk"],
     export_static_lib_headers: ["fmtlib_ndk"],
+    apex_available: [
+        "//apex_available:platform",
+        "com.android.sdkext",
+    ],
+    min_sdk_version: "30",
 }
 
 // Tests
