@@ -104,10 +104,21 @@ using AbortFunction = std::function<void(const char*)>;
 
 // Loggers for use with InitLogging/SetLogger.
 
+// Note the NoInterleave variants.  These loggers split the log message sent to them by new line
+// before handing them off to the underlying device.  For example, this allows placing a header in
+// front of all lines sent to stderr, or allowing buffers with greater size than logd accepts to
+// be logged to logd piece by piece.  By default, libbase does not prevent other threads from
+// calling the underlying logger during line split, so other threads may interleave their messages.
+// The NoInterleave options use a lock that prevents other threads from logging while a given thread
+// is logging, thus preventing interleaving.  This, however, has a performance penalty due to the
+// lock, and makes libbase logging not fork safe.
+
 // Log to the kernel log (dmesg).
 void KernelLogger(LogId, LogSeverity, const char*, const char*, unsigned int, const char*);
 // Log to stderr in the full logcat format (with pid/tid/time/tag details).
 void StderrLogger(LogId, LogSeverity, const char*, const char*, unsigned int, const char*);
+void StderrLoggerNoInterleave(LogId, LogSeverity, const char*, const char*, unsigned int,
+                              const char*);
 // Log just the message to stdout/stderr (without pid/tid/time/tag details).
 // The choice of stdout versus stderr is based on the severity.
 // Errors are also prefixed by the program name (as with err(3)/error(3)).
@@ -126,6 +137,17 @@ class LogdLogger {
 
   void operator()(LogId, LogSeverity, const char* tag, const char* file,
                   unsigned int line, const char* message);
+
+ private:
+  LogId default_log_id_;
+};
+
+class LogdLoggerNoInterleave {
+ public:
+  explicit LogdLoggerNoInterleave(LogId default_log_id = android::base::MAIN);
+
+  void operator()(LogId, LogSeverity, const char* tag, const char* file, unsigned int line,
+                  const char* message);
 
  private:
   LogId default_log_id_;
