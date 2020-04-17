@@ -1,0 +1,28 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "65a5fbb1_451a539d",
+        "filename": "adb/libs/adbconnection/adbconnection_client.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 144,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-04-17T22:45:59Z",
+      "side": 1,
+      "message": "\u003e Common typo found: \"explictly\" -- should it be \"explicitly\"?\n\u003e Note: a line containing \"common_typos_disable\" or \"common_typos_enable\" will turn off or on (respectively) the linter for subsequent lines in the file. Alternatively include the token \"NOTYPO\" within a line to skip typo linting that line.\n\nPlease fix.",
+      "parentUuid": "224183fe_48a60f03",
+      "range": {
+        "startLine": 144,
+        "startChar": 79,
+        "endLine": 144,
+        "endChar": 88
+      },
+      "revId": "ac9df5ee278fe5813844b9c0b355dba494091227",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
