@@ -1,0 +1,48 @@
+{
+  "comments": [
+    {
+      "robotId": "ayeaye",
+      "robotRunId": "AR00000000000002524835",
+      "url": "https://android-build.googleplex.com/builds/treetop/android-review/1289160?revision\u003d1",
+      "fixSuggestions": [
+        {
+          "fixId": "2821fc7c_70cb60bc",
+          "description": "Change to \"adb/libs/adbconnection/adbconnection_client.cpp\"",
+          "replacements": [
+            {
+              "path": "adb/libs/adbconnection/adbconnection_client.cpp",
+              "range": {
+                "startLine": 144,
+                "startChar": 79,
+                "endLine": 144,
+                "endChar": 88
+              },
+              "replacement": "explicitly"
+            }
+          ]
+        }
+      ],
+      "key": {
+        "uuid": "224183fe_48a60f03",
+        "filename": "adb/libs/adbconnection/adbconnection_client.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 144,
+      "author": {
+        "id": 1550585
+      },
+      "writtenOn": "2020-04-17T21:48:41Z",
+      "side": 1,
+      "message": "Common typo found: \"explictly\" -- should it be \"explicitly\"?\nNote: a line containing \"common_typos_disable\" or \"common_typos_enable\" will turn off or on (respectively) the linter for subsequent lines in the file. Alternatively include the token \"NOTYPO\" within a line to skip typo linting that line.",
+      "range": {
+        "startLine": 144,
+        "startChar": 79,
+        "endLine": 144,
+        "endChar": 88
+      },
+      "revId": "ac9df5ee278fe5813844b9c0b355dba494091227",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
