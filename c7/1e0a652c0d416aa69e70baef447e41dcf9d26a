@@ -1,0 +1,10 @@
+Open-Source-Licensing+1: Lint 🤖 <android-build-prod-ayeaye@system.gserviceaccount.com>
+Presubmit-Verified+1: Treehugger Robot <treehugger-gerrit@google.com>
+Lint+1: Lint 🤖 <android-build-prod-ayeaye@system.gserviceaccount.com>
+Verified+1: Peter Collingbourne <pcc@google.com>
+Code-Review+2: Christopher Ferris <cferris@google.com>
+Submitted-by: Peter Collingbourne <pcc@google.com>
+Submitted-at: Fri, 17 Apr 2020 18:16:02 +0000
+Reviewed-on: https://android-review.googlesource.com/c/platform/system/core/+/1280696
+Project: platform/system/core
+Branch: refs/heads/master
