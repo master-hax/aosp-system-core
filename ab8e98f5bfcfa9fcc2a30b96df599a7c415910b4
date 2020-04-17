@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d11e7ad9_209868ad",
+        "filename": "base/logging.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 434,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-04-17T23:38:32Z",
+      "side": 1,
+      "message": "i assume the argument is \"the multiline case doesn\u0027t happen often enough for this to matter\"?",
+      "revId": "ab8e98f5bfcfa9fcc2a30b96df599a7c415910b4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
