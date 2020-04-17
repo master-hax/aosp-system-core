@@ -654,6 +654,7 @@ void SetStdioToDevNull(char** argv) {
 void InitKernelLogging(char** argv) {
     SetFatalRebootTarget();
     android::base::InitLogging(argv, &android::base::KernelLogger, InitAborter);
+    android::base::SetLoggerNoInterleaveLock(&android::base::KernelLogger);
 }
 
 bool IsRecoveryMode() {

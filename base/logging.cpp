@@ -190,6 +190,7 @@ static int32_t LogSeverityToPriority(LogSeverity severity) {
   }
 }
 
+// Only used for Q fallback.
 static std::mutex& LoggingLock() {
   static auto& logging_lock = *new std::mutex();
   return logging_lock;
@@ -415,7 +416,48 @@ void InitLogging(char* argv[], LogFunction&& logger, AbortFunction&& aborter) {
   }
 }
 
-void SetLogger(LogFunction&& logger) {
+template <typename F>
+static void SplitByLines(LogId log_id, LogSeverity severity, const char* tag, const char* file,
+                         unsigned int line, const char* msg, const F& log_function,
+                         std::mutex* lock) {
+  std::unique_lock<std::mutex> guard;
+  if (lock != nullptr) {
+    guard = std::unique_lock<std::mutex>{*lock};
+  }
+
+  const char* newline = strchr(msg, '\n');
+  while (newline != nullptr) {
+    if (*(newline + 1) == '\0') {
+      break;
+    }
+    std::unique_ptr<char[]> new_string(new char[newline - msg + 1]);
+    memcpy(new_string.get(), msg, newline - msg);
+    new_string[newline - msg] = '\0';
+    log_function(log_id, severity, tag, file, line, new_string.get());
+    msg = newline + 1;
+    newline = strchr(msg, '\n');
+  }
+
+  log_function(log_id, severity, tag, file, line, msg);
+}
+
+template <bool with_lock>
+static void SetLoggerInternal(LogFunction&& logger) {
+  // libbase has a feature that it splits a log message containing multiple lines into separate
+  // calls to LogFunction, protected by a lock to prevent multiple threads from interleaving their
+  // split logs.
+  // The original code used LoggingLock in LogMessage::~LogMessage().  With APEX, there may be
+  // multiple instances of libbase within a single process, each with their own copy of LoggingLock,
+  // so that lock is not sufficient to prevent interleaving.  Instead, we do the split operation in
+  // a lambda that wraps the LogFunction, since there will only be one LogFunction for the entire
+  // process, referencing this single lock.
+  //
+  // Note that using a lock in either of these locations causes libbase's logging to be not fork()
+  // safe.  We offer a SetLoggerNoInterleaveLock() function that is identical to SetLogger() except
+  // that it does not use a lock to prevent threads from interleaving their logs.  Programs that use
+  // that function to set their logger are fork safe.
+  static auto& interleave_line_lock = *new std::mutex();
+
   static auto& liblog_functions = GetLibLogFunctions();
   if (liblog_functions) {
     // We need to atomically swap the old and new pointers since other threads may be logging.
@@ -430,15 +472,35 @@ void SetLogger(LogFunction&& logger) {
       auto log_id = log_id_tToLogId(log_message->buffer_id);
       auto severity = PriorityToLogSeverity(log_message->priority);
 
+      std::mutex* lock_pointer = nullptr;
+      if (with_lock) {
+        lock_pointer = &interleave_line_lock;
+      }
+
       auto& function = *logger_function.load(std::memory_order_acquire);
-      function(log_id, severity, log_message->tag, log_message->file, log_message->line,
-               log_message->message);
+      SplitByLines(log_id, severity, log_message->tag, log_message->file, log_message->line,
+                   log_message->message, function, lock_pointer);
     });
     delete old_logger_function;
   } else {
     std::lock_guard<std::mutex> lock(LoggingLock());
-    Logger() = std::move(logger);
+    Logger() = [logger = std::move(logger)](LogId log_id, LogSeverity severity, const char* tag,
+                                            const char* file, unsigned int line, const char* msg) {
+      std::mutex* lock_pointer = nullptr;
+      if (with_lock) {
+        lock_pointer = &interleave_line_lock;
+      }
+      SplitByLines(log_id, severity, tag, file, line, msg, logger, lock_pointer);
+    };
   }
+}
+
+void SetLogger(LogFunction&& logger) {
+  SetLoggerInternal<true>(std::move(logger));
+}
+
+void SetLoggerNoInterleaveLock(LogFunction&& logger) {
+  SetLoggerInternal<false>(std::move(logger));
 }
 
 void SetAborter(AbortFunction&& aborter) {
@@ -535,26 +597,8 @@ LogMessage::~LogMessage() {
 #endif
   }
 
-  {
-    // Do the actual logging with the lock held.
-    std::lock_guard<std::mutex> lock(LoggingLock());
-    if (msg.find('\n') == std::string::npos) {
-      LogLine(data_->GetFile(), data_->GetLineNumber(), data_->GetSeverity(), data_->GetTag(),
-              msg.c_str());
-    } else {
-      msg += '\n';
-      size_t i = 0;
-      while (i < msg.size()) {
-        size_t nl = msg.find('\n', i);
-        msg[nl] = '\0';
-        LogLine(data_->GetFile(), data_->GetLineNumber(), data_->GetSeverity(), data_->GetTag(),
-                &msg[i]);
-        // Undo the zero-termination so we can give the complete message to the aborter.
-        msg[nl] = '\n';
-        i = nl + 1;
-      }
-    }
-  }
+  LogLine(data_->GetFile(), data_->GetLineNumber(), data_->GetSeverity(), data_->GetTag(),
+          msg.c_str());
 
   // Abort if necessary.
   if (data_->GetSeverity() == FATAL) {
@@ -580,6 +624,7 @@ void LogMessage::LogLine(const char* file, unsigned int line, LogSeverity severi
         sizeof(__android_log_message), LOG_ID_DEFAULT, priority, tag, file, line, message};
     liblog_functions->__android_log_write_log_message(&log_message);
   } else {
+    std::lock_guard<std::mutex> lock(LoggingLock());
     if (tag == nullptr) {
       std::lock_guard<std::recursive_mutex> lock(TagLock());
       if (gDefaultTag == nullptr) {

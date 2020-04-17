@@ -151,6 +151,12 @@ void InitLogging(char* argv[],
 
 // Replace the current logger.
 void SetLogger(LogFunction&& logger);
+// libbase splits log messages that contain new lines into separate log messages.  It uses a lock
+// to prevent interleaving of these messages by multiple threads in a process.  This means that it
+// is unsafe to use libbase logging after fork() in multithreaded programs.  This below function
+// does not use a lock and therefore is fork(), though it will not stop multiple threads from
+// interleaving their multi-line content.
+void SetLoggerNoInterleaveLock(LogFunction&& logger);
 
 // Replace the current aborter.
 void SetAborter(AbortFunction&& aborter);
