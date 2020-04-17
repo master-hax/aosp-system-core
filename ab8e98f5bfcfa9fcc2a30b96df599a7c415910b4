@@ -16,6 +16,24 @@
       "revId": "ab8e98f5bfcfa9fcc2a30b96df599a7c415910b4",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5e5fc2a6_421c5b88",
+        "filename": "base/logging.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 434,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-04-17T23:43:28Z",
+      "side": 1,
+      "message": "Yes, but also the \n\nmsg +\u003d \u0027\\n\u0027;\n\nin the original code almost always reallocates, since std::string doesn\u0027t preallocate more space than necessary, so it\u0027s not actually worse than status quo.\n\n(and if we really cared about performance / allocations we wouldn\u0027t be using std::stringstream)",
+      "parentUuid": "d11e7ad9_209868ad",
+      "revId": "ab8e98f5bfcfa9fcc2a30b96df599a7c415910b4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
