@@ -66,6 +66,9 @@
     },
     {
       "name": "ziparchive-tests"
+    },
+    {
+      "name": "ziptool-tests"
     }
   ],
 
