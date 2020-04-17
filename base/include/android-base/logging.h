@@ -131,6 +131,24 @@ class LogdLogger {
   LogId default_log_id_;
 };
 
+// Note the NoInterleave variant.  The LogdLogger sends chunks of up to ~4000 bytes at a time to
+// logd.  it does not prevent other threads from writing to logd between sending each chunk, so
+// other threads may interleave their messages.  This NoInterleave option uses a lock that prevents
+// other threads from logging while a given thread is logging, thus preventing interleaving.  This,
+// however, has a performance penalty due to the lock, and makes libbase logging not fork safe,
+// and is thus not the default option.
+
+class LogdLoggerNoInterleave {
+ public:
+  explicit LogdLoggerNoInterleave(LogId default_log_id = android::base::MAIN);
+
+  void operator()(LogId, LogSeverity, const char* tag, const char* file, unsigned int line,
+                  const char* message);
+
+ private:
+  LogId default_log_id_;
+};
+
 // Configure logging based on ANDROID_LOG_TAGS environment variable.
 // We need to parse a string that looks like
 //
