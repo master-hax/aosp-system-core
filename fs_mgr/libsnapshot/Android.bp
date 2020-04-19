@@ -26,11 +26,11 @@ cc_defaults {
         "libbase",
         "libcutils",
         "liblog",
-        "liblp",
     ],
     static_libs: [
         "libdm",
         "libfstab",
+        "liblp",
         "update_metadata-protos",
     ],
     whole_static_libs: [
