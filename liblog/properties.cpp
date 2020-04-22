@@ -99,9 +99,7 @@ static int __android_log_level(const char* tag, size_t len) {
   static const char log_namespace[] = "persist.log.tag.";
   static const size_t base_offset = 8; /* skip "persist." */
 
-  auto tag_lock = std::shared_lock{default_tag_lock, std::defer_lock};
   if (tag == nullptr || len == 0) {
-    tag_lock.lock();
     auto& tag_string = GetDefaultTag();
     tag = tag_string.c_str();
     len = tag_string.size();
