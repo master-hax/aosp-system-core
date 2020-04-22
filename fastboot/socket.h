@@ -40,7 +40,9 @@
 
 #include <android-base/macros.h>
 #include <cutils/sockets.h>
+#ifndef FASTBOOTD_DEVICE
 #include <gtest/gtest_prod.h>
+#endif
 
 // Socket interface to be implemented for each platform.
 class Socket {
@@ -119,8 +121,10 @@ class Socket {
             socket_send_buffers_function_ = &socket_send_buffers;
 
   private:
+#ifndef FASTBOOTD_DEVICE
     FRIEND_TEST(SocketTest, TestTcpSendBuffers);
     FRIEND_TEST(SocketTest, TestUdpSendBuffers);
+#endif
 
     DISALLOW_COPY_AND_ASSIGN(Socket);
 };
