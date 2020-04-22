@@ -117,6 +117,8 @@ cc_binary {
         "device/main.cpp",
         "device/usb.cpp",
         "device/usb_client.cpp",
+        "device/tcp_client.cpp",
+        "device/tcp_socket.cpp",
         "device/utility.cpp",
         "device/variables.cpp",
     ],
