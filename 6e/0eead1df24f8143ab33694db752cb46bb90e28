@@ -1,0 +1,9 @@
+Autosubmit+1: Dan Albert <danalbert@google.com>
+Presubmit-Ready+1: Dan Albert <danalbert@google.com>
+Open-Source-Licensing+1: Lint 🤖 <android-build-prod-ayeaye@system.gserviceaccount.com>
+Code-Review+2: Tom Cherry <tomcherry@google.com>
+Submitted-by: Treehugger Robot <treehugger-gerrit@google.com>
+Submitted-at: Thu, 23 Apr 2020 04:00:20 +0000
+Reviewed-on: https://android-review.googlesource.com/c/platform/system/core/+/1293478
+Project: platform/system/core
+Branch: refs/heads/master
