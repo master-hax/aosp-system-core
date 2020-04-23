@@ -82,6 +82,12 @@ cc_defaults {
                 "-g",
             ],
         },
+        android: {
+            header_libs: ["bionic_libc_platform_headers"],
+        },
+        linux_bionic: {
+            header_libs: ["bionic_libc_platform_headers"],
+        },
     },
 
     arch: {
@@ -101,10 +107,6 @@ cc_defaults {
         "libbase",
         "liblog",
         "liblzma",
-    ],
-
-    header_libs: [
-        "bionic_libc_platform_headers",
     ],
 
     product_variables: {
@@ -281,9 +283,14 @@ cc_defaults {
         "tests/files/offline/straddle_arm64/*",
     ],
 
-    header_libs: [
-        "bionic_libc_platform_headers",
-    ],
+    target: {
+        android: {
+            header_libs: ["bionic_libc_platform_headers"],
+        },
+        linux_bionic: {
+            header_libs: ["bionic_libc_platform_headers"],
+        },
+    },
 
     product_variables: {
         experimental_mte: {
