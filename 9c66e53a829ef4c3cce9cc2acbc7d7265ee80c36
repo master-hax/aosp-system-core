@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d9f1ce25_a3bafebb",
+        "filename": "fs_mgr/liblp/device_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2020-04-23T18:13:49Z",
+      "side": 0,
+      "message": "especially this one; at least we can start enforcing it for VAB devices if we are super worried that some devices may start failing VTS",
+      "range": {
+        "startLine": 60,
+        "startChar": 0,
+        "endLine": 62,
+        "endChar": 5
+      },
+      "revId": "9c66e53a829ef4c3cce9cc2acbc7d7265ee80c36",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
