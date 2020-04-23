@@ -124,6 +124,12 @@ bool Elf::GetGlobalVariableOffset(const std::string& name, uint64_t* memory_offs
     return false;
   }
 
+  if (machine_type_ == EM_AARCH64) {
+    // Tagged pointer after Android R would lead top byte to have random values
+    // https://source.android.com/devices/tech/debug/tagged-pointers
+    vaddr &= 0xffffffffffff;
+  }
+
   // Check the .data section.
   uint64_t vaddr_start = interface_->data_vaddr_start();
   if (vaddr >= vaddr_start && vaddr < interface_->data_vaddr_end()) {
