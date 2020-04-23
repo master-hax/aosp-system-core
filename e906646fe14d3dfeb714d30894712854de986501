@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "cbc45b72_4c8051b1",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2020-04-23T06:24:04Z",
+      "side": 1,
+      "message": "reworded the commit message to explain",
+      "parentUuid": "2349ef82_d2d35024",
+      "range": {
+        "startLine": 10,
+        "startChar": 36,
+        "endLine": 10,
+        "endChar": 47
+      },
+      "revId": "e906646fe14d3dfeb714d30894712854de986501",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "645161cd_120ff9ce",
         "filename": "adb/client/transport_blocking.h",
         "patchSetId": 1
@@ -39,6 +63,24 @@
       "revId": "e906646fe14d3dfeb714d30894712854de986501",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "536c4382_5a93da6c",
+        "filename": "adb/client/transport_blocking.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2020-04-23T06:24:04Z",
+      "side": 1,
+      "message": "damn it, we should have a preupload hook for this...",
+      "parentUuid": "645161cd_120ff9ce",
+      "revId": "e906646fe14d3dfeb714d30894712854de986501",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
