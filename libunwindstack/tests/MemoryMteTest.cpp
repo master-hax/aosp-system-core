@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-#if defined(ANDROID_EXPERIMENTAL_MTE)
+#include <sys/cdefs.h>
+
+#if defined(ANDROID_EXPERIMENTAL_MTE) && defined(__BIONIC__)
 
 #include <sys/mman.h>
 #include <sys/types.h>
@@ -96,4 +98,4 @@ TEST(MemoryMteTest, local_read_tag) {
 
 }  // namespace unwindstack
 
-#endif
+#endif  // ANDROID_EXPERIMENTAL_MTE && __BIONIC__

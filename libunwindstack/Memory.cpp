@@ -334,7 +334,7 @@ size_t MemoryLocal::Read(uint64_t addr, void* dst, size_t size) {
   return ProcessVmRead(getpid(), addr, dst, size);
 }
 
-#if !defined(ANDROID_EXPERIMENTAL_MTE)
+#if !defined(ANDROID_EXPERIMENTAL_MTE) || !defined(__BIONIC__)
 long MemoryRemote::ReadTag(uint64_t) {
   return -1;
 }
