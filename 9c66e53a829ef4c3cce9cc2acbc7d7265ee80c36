@@ -22,6 +22,30 @@
       "revId": "9c66e53a829ef4c3cce9cc2acbc7d7265ee80c36",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "dcc34e8e_f0ea8460",
+        "filename": "fs_mgr/liblp/device_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-04-23T23:03:24Z",
+      "side": 0,
+      "message": "According to Jaegeuk, there\u0027s no performance benefit, and no correctness one either. After this patch we won\u0027t be using alignment_offset in any meaningful way, so there\u0027s no reason to enforce it. If we do enforce it, storage vendors will just force a 0 value to be reported, so it\u0027s not clear what we win.\n\nWe\u0027ll still keep the alignment checks, however.",
+      "parentUuid": "d9f1ce25_a3bafebb",
+      "range": {
+        "startLine": 60,
+        "startChar": 0,
+        "endLine": 62,
+        "endChar": 5
+      },
+      "revId": "9c66e53a829ef4c3cce9cc2acbc7d7265ee80c36",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }

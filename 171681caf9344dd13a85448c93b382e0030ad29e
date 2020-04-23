@@ -16,6 +16,24 @@
       "revId": "171681caf9344dd13a85448c93b382e0030ad29e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2d8d5ff3_ccf5a0f1",
+        "filename": "fs_mgr/liblp/device_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-04-23T23:03:24Z",
+      "side": 1,
+      "message": "See below",
+      "parentUuid": "ae656794_41e1a126",
+      "revId": "171681caf9344dd13a85448c93b382e0030ad29e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
