@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "621cd306_940df5e2",
+        "filename": "adb/daemon/transport_local.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 120,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-04-23T05:49:10Z",
+      "side": 1,
+      "message": "or lose `fail` and just `return 0`...",
+      "revId": "457ff4c3343a9aa88093d4154065a3a3d3cda7de",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
