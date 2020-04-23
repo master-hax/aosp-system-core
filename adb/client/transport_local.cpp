@@ -17,6 +17,7 @@
 #define TRACE_TAG TRANSPORT
 
 #include "sysdeps.h"
+
 #include "transport.h"
 
 #include <errno.h>
@@ -42,6 +43,7 @@
 #include "adb_io.h"
 #include "adb_unique_fd.h"
 #include "adb_utils.h"
+#include "client/transport_blocking.h"
 #include "socket_spec.h"
 #include "sysdeps/chrono.h"
 
@@ -282,8 +284,6 @@ std::string getEmulatorSerialString(int console_port) {
 }
 
 int init_socket_transport(atransport* t, unique_fd fd, int adb_port, int local) {
-    int fail = 0;
-
     t->type = kTransportLocal;
 
     // Emulator connection.
@@ -295,16 +295,15 @@ int init_socket_transport(atransport* t, unique_fd fd, int adb_port, int local) 
         atransport* existing_transport = find_emulator_transport_by_adb_port_locked(adb_port);
         if (existing_transport != nullptr) {
             D("local transport for port %d already registered (%p)?", adb_port, existing_transport);
-            fail = -1;
+            return -1;
         } else {
             local_transports[adb_port] = t;
         }
 
-        return fail;
+        return 0;
     }
 
     // Regular tcp connection.
-    auto fd_connection = std::make_unique<FdConnection>(std::move(fd));
-    t->SetConnection(std::make_unique<BlockingConnectionAdapter>(std::move(fd_connection)));
-    return fail;
+    t->SetConnection(Connection::FromFd(std::move(fd)));
+    return 0;
 }

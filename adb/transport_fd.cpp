@@ -85,43 +85,16 @@ struct NonblockingFdConnection : public Connection {
             if (pfds[0].revents) {
                 if ((pfds[0].revents & POLLOUT)) {
                     std::lock_guard<std::mutex> lock(this->write_mutex_);
-                    if (DispatchWrites() == WriteResult::Error) {
+                    writable_ = true;
+                    if (DispatchWrites() == IOResult::Error) {
                         *error = "write failed";
                         return;
                     }
                 }
 
-                if (pfds[0].revents & POLLIN) {
-                    // TODO: Should we be getting blocks from a free list?
-                    auto block = IOVector::block_type(MAX_PAYLOAD);
-                    rc = adb_read(fd_.get(), &block[0], block.size());
-                    if (rc == -1) {
-                        *error = std::string("read failed: ") + strerror(errno);
+                if ((pfds[0].revents & POLLIN)) {
+                    if (PerformRead(error) == IOResult::Error) {
                         return;
-                    } else if (rc == 0) {
-                        *error = "read failed: EOF";
-                        return;
-                    }
-                    block.resize(rc);
-                    read_buffer_.append(std::move(block));
-
-                    if (!read_header_ && read_buffer_.size() >= sizeof(amessage)) {
-                        auto header_buf = read_buffer_.take_front(sizeof(amessage)).coalesce();
-                        CHECK_EQ(sizeof(amessage), header_buf.size());
-                        read_header_ = std::make_unique<amessage>();
-                        memcpy(read_header_.get(), header_buf.data(), sizeof(amessage));
-                    }
-
-                    if (read_header_ && read_buffer_.size() >= read_header_->data_length) {
-                        auto data_chain = read_buffer_.take_front(read_header_->data_length);
-
-                        // TODO: Make apacket carry around a IOVector instead of coalescing.
-                        auto payload = std::move(data_chain).coalesce();
-                        auto packet = std::make_unique<apacket>();
-                        packet->msg = *read_header_;
-                        packet->payload = std::move(payload);
-                        read_header_ = nullptr;
-                        read_callback_(this, std::move(packet));
                     }
                 }
             }
@@ -167,36 +140,89 @@ struct NonblockingFdConnection : public Connection {
         }
     }
 
-    enum class WriteResult {
+    enum class IOResult {
         Error,
         Completed,
         TryAgain,
     };
 
-    WriteResult DispatchWrites() REQUIRES(write_mutex_) {
+    IOResult PerformRead(std::string* error) {
+        // TODO: Should we be getting blocks from a free list?
+        auto block = IOVector::block_type(MAX_PAYLOAD);
+        ssize_t rc = adb_read(fd_.get(), &block[0], block.size());
+        if (rc == -1) {
+            *error = std::string("read failed: ") + strerror(errno);
+            return IOResult::Error;
+        } else if (rc == 0) {
+            *error = "read failed: EOF";
+            return IOResult::Error;
+        }
+        block.resize(rc);
+        read_buffer_.append(std::move(block));
+
+        while (true) {
+            if (!read_header_) {
+                if (read_buffer_.size() >= sizeof(amessage)) {
+                    amessage header;
+                    read_buffer_.take_front(sizeof(header))
+                            .coalesced([&header](const char* data, size_t len) {
+                                CHECK_EQ(sizeof(header), len);
+                                memcpy(&header, data, len);
+                            });
+                    read_header_ = header;
+                } else {
+                    break;
+                }
+            }
+
+            if (read_header_) {
+                if (read_buffer_.size() >= read_header_->data_length) {
+                    auto data_chain = read_buffer_.take_front(read_header_->data_length);
+
+                    // TODO: Make apacket carry around a IOVector instead of coalescing.
+                    auto payload = std::move(data_chain).coalesce();
+                    auto packet = std::make_unique<apacket>();
+                    packet->msg = *read_header_;
+                    packet->payload = std::move(payload);
+                    read_header_ = std::nullopt;
+                    read_callback_(this, std::move(packet));
+                } else {
+                    break;
+                }
+            }
+        }
+
+        return IOResult::Completed;
+    }
+
+    IOResult DispatchWrites() REQUIRES(write_mutex_) {
         CHECK(!write_buffer_.empty());
+        if (!writable_) {
+            return IOResult::TryAgain;
+        }
+
         auto iovs = write_buffer_.iovecs();
         ssize_t rc = adb_writev(fd_.get(), iovs.data(), iovs.size());
         if (rc == -1) {
             if (errno == EAGAIN || errno == EWOULDBLOCK) {
                 writable_ = false;
-                return WriteResult::TryAgain;
+                return IOResult::TryAgain;
             }
 
-            return WriteResult::Error;
+            return IOResult::Error;
         } else if (rc == 0) {
             errno = 0;
-            return WriteResult::Error;
+            return IOResult::Error;
         }
 
         write_buffer_.drop_front(rc);
-        writable_ = write_buffer_.empty();
-        if (write_buffer_.empty()) {
-            return WriteResult::Completed;
+        if (!write_buffer_.empty()) {
+            // There's data left in the range, which means our write returned early.
+            writable_ = false;
+            return IOResult::TryAgain;
         }
 
-        // There's data left in the range, which means our write returned early.
-        return WriteResult::TryAgain;
+        return IOResult::Completed;
     }
 
     bool Write(std::unique_ptr<apacket> packet) final {
@@ -209,11 +235,11 @@ struct NonblockingFdConnection : public Connection {
             write_buffer_.append(std::move(packet->payload));
         }
 
-        WriteResult result = DispatchWrites();
-        if (result == WriteResult::TryAgain) {
+        IOResult result = DispatchWrites();
+        if (result == IOResult::TryAgain) {
             WakeThread();
         }
-        return result != WriteResult::Error;
+        return result != IOResult::Error;
     }
 
     std::thread thread_;
@@ -222,7 +248,7 @@ struct NonblockingFdConnection : public Connection {
     std::mutex run_mutex_;
     bool running_ GUARDED_BY(run_mutex_);
 
-    std::unique_ptr<amessage> read_header_;
+    std::optional<amessage> read_header_;
     IOVector read_buffer_;
 
     unique_fd fd_;
@@ -232,8 +258,6 @@ struct NonblockingFdConnection : public Connection {
     std::mutex write_mutex_;
     bool writable_ GUARDED_BY(write_mutex_) = true;
     IOVector write_buffer_ GUARDED_BY(write_mutex_);
-
-    IOVector incoming_queue_;
 };
 
 std::unique_ptr<Connection> Connection::FromFd(unique_fd fd) {
