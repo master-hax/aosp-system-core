@@ -19,6 +19,7 @@
 #include <sys/types.h>
 
 #include "adb.h"
+#include "client/transport_blocking.h"
 #include "transport.h"
 
 // USB host/client interface.
