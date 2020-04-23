@@ -115,7 +115,6 @@ int init_socket_transport(atransport* t, unique_fd fd, int adb_port, int local) 
     t->type = kTransportLocal;
 
     // Regular tcp connection.
-    auto fd_connection = std::make_unique<FdConnection>(std::move(fd));
-    t->SetConnection(std::make_unique<BlockingConnectionAdapter>(std::move(fd_connection)));
+    t->SetConnection(Connection::FromFd(std::move(fd)));
     return fail;
 }

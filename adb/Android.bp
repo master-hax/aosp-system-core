@@ -216,6 +216,7 @@ cc_library_host_static {
         "client/adb_wifi.cpp",
         "client/usb_libusb.cpp",
         "client/usb_dispatch.cpp",
+        "client/transport_blocking.cpp",
         "client/transport_local.cpp",
         "client/transport_mdns.cpp",
         "client/transport_usb.cpp",

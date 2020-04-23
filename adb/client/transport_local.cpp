@@ -17,6 +17,7 @@
 #define TRACE_TAG TRANSPORT
 
 #include "sysdeps.h"
+
 #include "transport.h"
 
 #include <errno.h>
@@ -42,6 +43,7 @@
 #include "adb_io.h"
 #include "adb_unique_fd.h"
 #include "adb_utils.h"
+#include "client/transport_blocking.h"
 #include "socket_spec.h"
 #include "sysdeps/chrono.h"
 
