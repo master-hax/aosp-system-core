@@ -16,6 +16,24 @@
       "revId": "457ff4c3343a9aa88093d4154065a3a3d3cda7de",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b734c171_9ba4f892",
+        "filename": "adb/daemon/transport_local.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 120,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2020-04-23T06:22:21Z",
+      "side": 1,
+      "message": "oops, fixed",
+      "parentUuid": "621cd306_940df5e2",
+      "revId": "457ff4c3343a9aa88093d4154065a3a3d3cda7de",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
