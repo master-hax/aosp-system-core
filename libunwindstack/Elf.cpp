@@ -124,6 +124,12 @@ bool Elf::GetGlobalVariableOffset(const std::string& name, uint64_t* memory_offs
     return false;
   }
 
+#if defined(__aarch64__)
+  // Ignore top 16-bits that might be used by Tagged Pointer or HWASan on
+  // TBI(Top-byte Ignore) supported device.
+  vaddr &= 0xFFFFFFFFFFFF;
+#endif
+
   // Check the .data section.
   uint64_t vaddr_start = interface_->data_vaddr_start();
   if (vaddr >= vaddr_start && vaddr < interface_->data_vaddr_end()) {
