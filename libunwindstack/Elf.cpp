@@ -124,6 +124,11 @@ bool Elf::GetGlobalVariableOffset(const std::string& name, uint64_t* memory_offs
     return false;
   }
 
+#if defined(__aarch64__)
+  // Ignore top 8-bits that used by HWASan
+  vaddr &= 0xFFFFFFFFFFFFFF;
+#endif
+
   // Check the .data section.
   uint64_t vaddr_start = interface_->data_vaddr_start();
   if (vaddr >= vaddr_start && vaddr < interface_->data_vaddr_end()) {
