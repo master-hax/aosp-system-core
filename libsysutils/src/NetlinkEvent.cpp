@@ -180,6 +180,7 @@ bool NetlinkEvent::parseIfAddrMessage(const struct nlmsghdr *nh) {
     struct ifa_cacheinfo *cacheinfo = nullptr;
     char addrstr[INET6_ADDRSTRLEN] = "";
     char ifname[IFNAMSIZ] = "";
+    uint32_t flags = 0;
 
     if (!checkRtNetlinkLength(nh, sizeof(*ifaddr)))
         return false;
@@ -230,6 +231,9 @@ bool NetlinkEvent::parseIfAddrMessage(const struct nlmsghdr *nh) {
                 SLOGD("Unknown ifindex %d in %s", ifaddr->ifa_index, msgtype);
             }
 
+            // First 8 flags, in case the IFA_FLAGS attribute somehow isn't present.
+            flags = ifaddr->ifa_flags;
+
         } else if (rta->rta_type == IFA_CACHEINFO) {
             // Address lifetime information.
             if (maybeLogDuplicateAttribute(cacheinfo, "IFA_CACHEINFO", msgtype))
@@ -242,6 +246,10 @@ bool NetlinkEvent::parseIfAddrMessage(const struct nlmsghdr *nh) {
             }
 
             cacheinfo = (struct ifa_cacheinfo *) RTA_DATA(rta);
+
+        } else if (rta->rta_type == IFA_FLAGS) {
+            // In practice IFA_FLAGS is always after IFA_ADDRESS, so this will overwrite the flags.
+            flags = *(uint32_t*)RTA_DATA(rta);
         }
     }
 
@@ -256,7 +264,7 @@ bool NetlinkEvent::parseIfAddrMessage(const struct nlmsghdr *nh) {
     mSubsystem = strdup("net");
     asprintf(&mParams[0], "ADDRESS=%s/%d", addrstr, ifaddr->ifa_prefixlen);
     asprintf(&mParams[1], "INTERFACE=%s", ifname);
-    asprintf(&mParams[2], "FLAGS=%u", ifaddr->ifa_flags);
+    asprintf(&mParams[2], "FLAGS=%u", flags);
     asprintf(&mParams[3], "SCOPE=%u", ifaddr->ifa_scope);
     asprintf(&mParams[4], "IFINDEX=%u", ifaddr->ifa_index);
 
