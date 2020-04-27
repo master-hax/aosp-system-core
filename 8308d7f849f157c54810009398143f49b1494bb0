@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "f58f8b65_03dd3cd5",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 292,
+      "author": {
+        "id": 1067098
+      },
+      "writtenOn": "2020-04-27T19:56:21Z",
+      "side": 1,
+      "message": "No, see the comment here: https://cs.android.com/android/platform/superproject/+/master:system/core/debuggerd/handler/debuggerd_handler.cpp;l\u003d356",
+      "parentUuid": "b08ad287_f1339018",
+      "revId": "8308d7f849f157c54810009398143f49b1494bb0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "cd32bd3d_3af70cd1",
         "filename": "debuggerd/libdebuggerd/scudo.cpp",
         "patchSetId": 5
@@ -30,6 +48,24 @@
       "writtenOn": "2020-04-27T19:48:56Z",
       "side": 1,
       "message": "what if this underflows?\n\nAlso, this is way too much \"auto\" - I have no idea what the type of \"memory_begin\" is. I hope it\u0027s uint64_t.",
+      "revId": "8308d7f849f157c54810009398143f49b1494bb0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "77907f0a_1db0503f",
+        "filename": "debuggerd/libdebuggerd/scudo.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1067098
+      },
+      "writtenOn": "2020-04-27T19:56:21Z",
+      "side": 1,
+      "message": "Yeah, or memory_end could overflow. I\u0027ll add some checks.\n\nThey should all be uintptr_t. I\u0027ll make the type explicit in a few places here.",
+      "parentUuid": "cd32bd3d_3af70cd1",
       "revId": "8308d7f849f157c54810009398143f49b1494bb0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
