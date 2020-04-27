@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b08ad287_f1339018",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 292,
+      "author": {
+        "id": 1005967
+      },
+      "writtenOn": "2020-04-27T19:48:56Z",
+      "side": 1,
+      "message": "Not sure how this works exactly, but if gwp-asan is in R, and this code is not, do not we need to bump the version number here?",
+      "revId": "8308d7f849f157c54810009398143f49b1494bb0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cd32bd3d_3af70cd1",
+        "filename": "debuggerd/libdebuggerd/scudo.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1005967
+      },
+      "writtenOn": "2020-04-27T19:48:56Z",
+      "side": 1,
+      "message": "what if this underflows?\n\nAlso, this is way too much \"auto\" - I have no idea what the type of \"memory_begin\" is. I hope it\u0027s uint64_t.",
+      "revId": "8308d7f849f157c54810009398143f49b1494bb0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
