@@ -19,6 +19,41 @@
     },
     {
       "key": {
+        "uuid": "adfe6f90_348193dd",
+        "filename": "liblog/logprint.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 219,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-04-29T23:49:13Z",
+      "side": 1,
+      "message": "It can be set true else where, see my other comment.",
+      "parentUuid": "1e0eecd5_30ee885a",
+      "revId": "57d81d7b0a71abb29388d96ffd3a8ba0bd1d8818",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e513f6f4_740399de",
+        "filename": "liblog/logprint.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 276,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-04-29T23:49:13Z",
+      "side": 1,
+      "message": "It can be set true here.  It attempts to determine what the monotonic time of these log messages would have been from their realtime.\n\nIn some other world, we\u0027ll have logd provide the actual monotonic timestamps so there\u0027s no inferring going on.",
+      "revId": "57d81d7b0a71abb29388d96ffd3a8ba0bd1d8818",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "2957c1ed_cc389d69",
         "filename": "liblog/logprint.cpp",
         "patchSetId": 1
@@ -33,6 +68,24 @@
       "revId": "57d81d7b0a71abb29388d96ffd3a8ba0bd1d8818",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "527e1439_314d4b6d",
+        "filename": "liblog/logprint.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1463,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-04-29T23:49:13Z",
+      "side": 1,
+      "message": "It can be set true else where, see my other comment.",
+      "parentUuid": "2957c1ed_cc389d69",
+      "revId": "57d81d7b0a71abb29388d96ffd3a8ba0bd1d8818",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
