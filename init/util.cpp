@@ -31,6 +31,7 @@
 #include <unistd.h>
 
 #include <thread>
+#include <vector>
 
 #include <android-base/file.h>
 #include <android-base/logging.h>
@@ -658,6 +659,49 @@ void InitKernelLogging(char** argv) {
 
 bool IsRecoveryMode() {
     return access("/system/bin/recovery", F_OK) == 0;
+}
+
+// TODO(b/155203339): remove this
+// Devices in the lab seem to be stuck during shutdown, but the logs don't capture the last actions
+// before shutdown started, so we record those lines, ignoring requests to shutdown, and replay them
+// if we identify that the device is stuck.
+constexpr size_t kRecordedLogsSize = 30;
+std::string recorded_logs[kRecordedLogsSize];
+size_t recorded_log_position = 0;
+
+void InitSecondStageLogging(char** argv) {
+    SetFatalRebootTarget();
+    auto second_stage_logger = [](android::base::LogId log_id, android::base::LogSeverity severity,
+                                  const char* tag, const char* file, unsigned int line,
+                                  const char* message) {
+        if (strstr(message, "sys.powerctl") == nullptr) {
+            recorded_logs[recorded_log_position++] = message;
+            if (recorded_log_position == kRecordedLogsSize) {
+                recorded_log_position = 0;
+            }
+        }
+        android::base::KernelLogger(log_id, severity, tag, file, line, message);
+    };
+    android::base::InitLogging(argv, second_stage_logger, InitAborter);
+}
+
+void DumpShutdownDebugInformation() {
+    // Other threads may race us, so store the point that we dump from once.  Worst case logs will
+    // be out of order, but we won't crash.
+    android::base::KernelLogger(
+            android::base::MAIN, android::base::ERROR, "init", nullptr, 0,
+            "===================== Dumping previous init lines =====================");
+    size_t dump_point = recorded_log_position;
+    for (size_t i = dump_point; i < kRecordedLogsSize; ++i) {
+        android::base::KernelLogger(android::base::MAIN, android::base::ERROR, "init", nullptr, 0,
+                                    recorded_logs[i].c_str());
+    }
+    for (size_t i = 0; i < dump_point; ++i) {
+        android::base::KernelLogger(android::base::MAIN, android::base::ERROR, "init", nullptr, 0,
+                                    recorded_logs[i].c_str());
+    }
+    android::base::KernelLogger(android::base::MAIN, android::base::ERROR, "init", nullptr, 0,
+                                "===================== End of dump =====================");
 }
 
 }  // namespace init
