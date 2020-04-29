@@ -103,10 +103,12 @@ bool DeviceMapper::DeleteDevice(const std::string& name,
     struct dm_ioctl io;
     InitIo(&io, name);
 
+    LOG(WARNING) << "DM issue remove for " << name << " uuid=" << unique_path;
     if (ioctl(fd_, DM_DEV_REMOVE, &io)) {
         PLOG(ERROR) << "DM_DEV_REMOVE failed for [" << name << "]";
         return false;
     }
+    LOG(WARNING) << "DM remove issued for " << name << " uuid=" << unique_path;
 
     // Check to make sure appropriate uevent is generated so ueventd will
     // do the right thing and remove the corresponding device node and symlinks.
@@ -123,6 +125,7 @@ bool DeviceMapper::DeleteDevice(const std::string& name,
         LOG(ERROR) << "Failed waiting for " << unique_path << " to be deleted";
         return false;
     }
+    LOG(WARNING) << "DM remove done for " << name << " uuid=" << unique_path;
     return true;
 }
 
@@ -143,6 +146,7 @@ static std::string GenerateUuid() {
 bool DeviceMapper::CreateDevice(const std::string& name, const DmTable& table, std::string* path,
                                 const std::chrono::milliseconds& timeout_ms) {
     std::string uuid = GenerateUuid();
+    LOG(WARNING) << "DM CreateDevice starting, uuid=" << uuid << " name=" << name;
     if (!CreateDevice(name, uuid)) {
         return false;
     }
@@ -165,6 +169,8 @@ bool DeviceMapper::CreateDevice(const std::string& name, const DmTable& table, s
         DeleteDevice(name);
         return false;
     }
+    LOG(WARNING) << "DM CreateDevice done uuid=" << unique_path << " path=" << *path
+                 << " timeout=" << timeout_ms.count();
     return true;
 }
 

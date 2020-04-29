@@ -283,6 +283,7 @@ void DeviceHandler::MakeDevice(const std::string& path, bool block, int major, i
                         << "' device";
         }
     }
+    LOG(WARNING) << "INIT invoked mknod for path " << path;
 
 out:
     chown(path.c_str(), uid, -1);
@@ -396,6 +397,7 @@ static void RemoveDeviceMapperLinks(const std::string& devpath) {
 
             auto path = dir + "/" + dp->d_name;
             if (Readlink(path, &link_path) && link_path == devpath) {
+                LOG(WARNING) << "INIT rm dm link=" << path << " to " << link_path;
                 unlink(path.c_str());
             }
         }
@@ -424,6 +426,7 @@ void DeviceHandler::HandleDevice(const std::string& action, const std::string& d
                                 << ", which already links to: " << link_path;
                 }
             }
+            LOG(WARNING) << "INIT add symlink dev=" << devpath << " link=" << link;
         }
     }
 
@@ -434,9 +437,11 @@ void DeviceHandler::HandleDevice(const std::string& action, const std::string& d
         for (const auto& link : links) {
             std::string link_path;
             if (Readlink(link, &link_path) && link_path == devpath) {
+                LOG(WARNING) << "INIT rm symlink " << link << " to " << link_path;
                 unlink(link.c_str());
             }
         }
+        LOG(WARNING) << "INIT rm node " << devpath;
         unlink(devpath.c_str());
     }
 }
