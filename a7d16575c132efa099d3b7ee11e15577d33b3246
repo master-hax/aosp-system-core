@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5ce8db58_bca8e921",
+        "filename": "libunwindstack/Maps.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 155,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2020-04-29T01:49:52Z",
+      "side": 1,
+      "message": "This new algorithm is an orders of magnitude slower than the previous. I believe it\u0027s due to this since you need to scan through the new map for every entry in the old.\n\nMy old algorithm only visited each element once, using a few tricks.\n\nI uploaded a change that adds a benchmark that you can run on your host machine. If you build it, then you can run it like so from the root of your android tree:\n\n  out/host/linux-x86/benchmarktest64/unwind_benchmarks/unwind_benchmarks --benchmark_filter\u003dBM_local\n\nThat runs the 64 bit version, the 32 bit version is in benchmarktest.",
+      "range": {
+        "startLine": 155,
+        "startChar": 30,
+        "endLine": 155,
+        "endChar": 37
+      },
+      "revId": "a7d16575c132efa099d3b7ee11e15577d33b3246",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
