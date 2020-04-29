@@ -24,6 +24,7 @@ cc_binary {
         "3.0/service.cpp",
         "3.0/TrustyKeymaster3Device.cpp",
         "ipc/trusty_keymaster_ipc.cpp",
+        "RemoteKeymaster.cpp",
         "TrustyKeymaster.cpp",
     ],
 
@@ -54,6 +55,7 @@ cc_binary {
         "4.0/service.cpp",
         "4.0/TrustyKeymaster4Device.cpp",
         "ipc/trusty_keymaster_ipc.cpp",
+        "RemoteKeymaster.cpp",
         "TrustyKeymaster.cpp",
     ],
 

@@ -20,7 +20,7 @@
 
 #include <android/hardware/keymaster/4.0/IKeymasterDevice.h>
 #include <hidl/Status.h>
-#include <trusty_keymaster/TrustyKeymaster.h>
+#include <trusty_keymaster/RemoteKeymaster.h>
 
 namespace keymaster {
 
@@ -45,7 +45,7 @@ using ::android::hardware::keymaster::V4_0::VerificationToken;
 
 class TrustyKeymaster4Device : public IKeymasterDevice {
   public:
-    explicit TrustyKeymaster4Device(TrustyKeymaster* impl);
+    explicit TrustyKeymaster4Device(RemoteKeymaster* impl);
     virtual ~TrustyKeymaster4Device();
 
     Return<void> getHardwareInfo(getHardwareInfo_cb _hidl_cb) override;
@@ -96,7 +96,7 @@ class TrustyKeymaster4Device : public IKeymasterDevice {
     Return<ErrorCode> abort(uint64_t operationHandle) override;
 
   private:
-    std::unique_ptr<::keymaster::TrustyKeymaster> impl_;
+    std::unique_ptr<::keymaster::RemoteKeymaster> impl_;
 };
 
 }  // namespace V4_0

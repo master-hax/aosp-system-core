@@ -23,7 +23,7 @@
 #include <hidl/MQDescriptor.h>
 #include <hidl/Status.h>
 
-#include <trusty_keymaster/TrustyKeymaster.h>
+#include <trusty_keymaster/RemoteKeymaster.h>
 
 namespace keymaster {
 
@@ -41,7 +41,7 @@ using ::android::hardware::keymaster::V3_0::KeyPurpose;
 
 class TrustyKeymaster3Device : public IKeymasterDevice {
   public:
-    TrustyKeymaster3Device(TrustyKeymaster* impl);
+    TrustyKeymaster3Device(RemoteKeymaster* impl);
     virtual ~TrustyKeymaster3Device();
 
     Return<void> getHardwareFeatures(getHardwareFeatures_cb _hidl_cb);
@@ -76,7 +76,7 @@ class TrustyKeymaster3Device : public IKeymasterDevice {
     Return<ErrorCode> abort(uint64_t operationHandle) override;
 
   private:
-    std::unique_ptr<TrustyKeymaster> impl_;
+    std::unique_ptr<RemoteKeymaster> impl_;
 };
 
 }  // namespace keymaster

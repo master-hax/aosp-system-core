@@ -260,7 +260,7 @@ void addClientAndAppData(const hidl_vec<uint8_t>& clientId, const hidl_vec<uint8
 
 }  // anonymous namespace
 
-TrustyKeymaster4Device::TrustyKeymaster4Device(TrustyKeymaster* impl) : impl_(impl) {}
+TrustyKeymaster4Device::TrustyKeymaster4Device(RemoteKeymaster* impl) : impl_(impl) {}
 
 TrustyKeymaster4Device::~TrustyKeymaster4Device() {}
 

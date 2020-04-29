@@ -208,7 +208,7 @@ void addClientAndAppData(const hidl_vec<uint8_t>& clientId, const hidl_vec<uint8
 
 }  // anonymous namespace
 
-TrustyKeymaster3Device::TrustyKeymaster3Device(TrustyKeymaster* impl) : impl_(impl) {}
+TrustyKeymaster3Device::TrustyKeymaster3Device(RemoteKeymaster* impl) : impl_(impl) {}
 
 TrustyKeymaster3Device::~TrustyKeymaster3Device() {}
 

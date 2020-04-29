@@ -18,47 +18,19 @@
 #define TRUSTY_KEYMASTER_H_
 
 #include <keymaster/android_keymaster_messages.h>
+#include <trusty_keymaster/RemoteKeymaster.h>
 
 namespace keymaster {
 
-class TrustyKeymaster {
+class TrustyKeymaster : public RemoteKeymaster {
+  protected:
+    void ForwardCommand(enum keymaster_command, const Serializable& req,
+                        KeymasterResponse* rsp) override;
+
   public:
     TrustyKeymaster();
-    ~TrustyKeymaster();
-    int Initialize();
-    void GetVersion(const GetVersionRequest& request, GetVersionResponse* response);
-    void SupportedAlgorithms(const SupportedAlgorithmsRequest& request,
-                             SupportedAlgorithmsResponse* response);
-    void SupportedBlockModes(const SupportedBlockModesRequest& request,
-                             SupportedBlockModesResponse* response);
-    void SupportedPaddingModes(const SupportedPaddingModesRequest& request,
-                               SupportedPaddingModesResponse* response);
-    void SupportedDigests(const SupportedDigestsRequest& request,
-                          SupportedDigestsResponse* response);
-    void SupportedImportFormats(const SupportedImportFormatsRequest& request,
-                                SupportedImportFormatsResponse* response);
-    void SupportedExportFormats(const SupportedExportFormatsRequest& request,
-                                SupportedExportFormatsResponse* response);
-    void AddRngEntropy(const AddEntropyRequest& request, AddEntropyResponse* response);
-    void Configure(const ConfigureRequest& request, ConfigureResponse* response);
-    void GenerateKey(const GenerateKeyRequest& request, GenerateKeyResponse* response);
-    void GetKeyCharacteristics(const GetKeyCharacteristicsRequest& request,
-                               GetKeyCharacteristicsResponse* response);
-    void ImportKey(const ImportKeyRequest& request, ImportKeyResponse* response);
-    void ImportWrappedKey(const ImportWrappedKeyRequest& request,
-                          ImportWrappedKeyResponse* response);
-    void ExportKey(const ExportKeyRequest& request, ExportKeyResponse* response);
-    void AttestKey(const AttestKeyRequest& request, AttestKeyResponse* response);
-    void UpgradeKey(const UpgradeKeyRequest& request, UpgradeKeyResponse* response);
-    void DeleteKey(const DeleteKeyRequest& request, DeleteKeyResponse* response);
-    void DeleteAllKeys(const DeleteAllKeysRequest& request, DeleteAllKeysResponse* response);
-    void BeginOperation(const BeginOperationRequest& request, BeginOperationResponse* response);
-    void UpdateOperation(const UpdateOperationRequest& request, UpdateOperationResponse* response);
-    void FinishOperation(const FinishOperationRequest& request, FinishOperationResponse* response);
-    void AbortOperation(const AbortOperationRequest& request, AbortOperationResponse* response);
-    GetHmacSharingParametersResponse GetHmacSharingParameters();
-    ComputeSharedHmacResponse ComputeSharedHmac(const ComputeSharedHmacRequest& request);
-    VerifyAuthorizationResponse VerifyAuthorization(const VerifyAuthorizationRequest& request);
+    virtual ~TrustyKeymaster();
+    int Initialize() override;
 };
 
 }  // namespace keymaster
