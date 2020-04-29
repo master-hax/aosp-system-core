@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e925bb23_fd6b059d",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 402,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-04-29T18:52:13Z",
+      "side": 1,
+      "message": "It\u0027d be clearer to check explicitly result \u003d\u003d REMOUNT_SUCCESS ? \"succeeded\" : \"failed\" instead of taking advantage that REMOUNT_SUCCESS \u003d\u003d 0.",
+      "range": {
+        "startLine": 402,
+        "startChar": 31,
+        "endLine": 402,
+        "endChar": 37
+      },
+      "revId": "8c0041f6c34efadf5e702fdac9ec3d0980ed89ae",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
