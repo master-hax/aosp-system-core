@@ -18,8 +18,8 @@ build_normal() (
 
 build_cov() {
     pushd $(gettop)
-    ret=$?
     NATIVE_COVERAGE="true" NATIVE_LINE_COVERAGE="true" COVERAGE_PATHS="${PROJECT_PATH}" m ${FUZZ_TARGET}
+    ret=$?
     popd
     return ${ret}
 }
