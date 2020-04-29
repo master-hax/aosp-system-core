@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1e0eecd5_30ee885a",
+        "filename": "liblog/logprint.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 219,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-04-29T23:44:41Z",
+      "side": 1,
+      "message": "remove the field?",
+      "revId": "57d81d7b0a71abb29388d96ffd3a8ba0bd1d8818",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2957c1ed_cc389d69",
+        "filename": "liblog/logprint.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1463,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-04-29T23:44:41Z",
+      "side": 1,
+      "message": "didn\u0027t you just make this always false?",
+      "revId": "57d81d7b0a71abb29388d96ffd3a8ba0bd1d8818",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
