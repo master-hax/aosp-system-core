@@ -322,6 +322,9 @@ runs the service.
   This is mutually exclusive with the console option, which additionally connects stdin to the
   given console.
 
+`task_profiles <profile> [ <profile>\* ]`
+> Set task profiles for the process when it forks.
+
 `timeout_period <seconds>`
 > Provide a timeout after which point the service will be killed. The oneshot keyword is respected
   here, so oneshot services do not automatically restart, however all other services will.
