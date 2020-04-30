@@ -279,4 +279,9 @@ std::unique_ptr<ISnapshotManager> SnapshotFuzzEnv::CreateSnapshotManager(
     return snapshot;
 }
 
+const std::string& SnapshotFuzzEnv::super() const {
+    CHECK(InitOk());
+    return fake_super_;
+}
+
 }  // namespace android::snapshot

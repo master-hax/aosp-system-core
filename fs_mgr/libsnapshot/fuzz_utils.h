@@ -128,6 +128,30 @@ struct ArgReader<T, typename std::enable_if_t<std::is_base_of_v<google::protobuf
 };
 
 template <>
+struct ArgReader<std::string> {
+    // A wrapper over std::string that may or may not own it. GetStringReference may return
+    // a string reference within the protobuf message or into the scratch space. In the latter case,
+    // return the scratch space as well.
+    struct MaybeOwnStringReference {
+        MaybeOwnStringReference(const google::protobuf::Message& action_proto,
+                                const google::protobuf::FieldDescriptor* field_desc) {
+            string_ptr_ = &action_proto.GetReflection()->GetStringReference(
+                    action_proto, field_desc, &owned_string_);
+        }
+        operator const std::string&() { return *string_ptr_; }
+
+      private:
+        std::string owned_string_;
+        const std::string* string_ptr_ = nullptr;
+    };
+    using ret_type = MaybeOwnStringReference;
+    static MaybeOwnStringReference Get(const google::protobuf::Message& action_proto,
+                                       const google::protobuf::FieldDescriptor* field_desc) {
+        return MaybeOwnStringReference(action_proto, field_desc);
+    }
+};
+
+template <>
 struct ArgReader<bool> {
     using ret_type = bool;
     static bool Get(const google::protobuf::Message& action_proto,
