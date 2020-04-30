@@ -16,6 +16,7 @@
 
 #include <android-base/file.h>
 #include <android-base/stringprintf.h>
+#include <libdm/loop_control.h>
 #include <libfiemap/image_manager.h>
 #include <libsnapshot/auto_device.h>
 #include <libsnapshot/test_helpers.h>
@@ -55,10 +56,6 @@ class SnapshotFuzzEnv {
     // Check if environment is initialized properly.
     bool InitOk() const;
 
-    // A scratch directory for the test to play around with. The scratch directory
-    // is backed by tmpfs. SoftReset() clears the directory.
-    std::string root() const;
-
     // Soft reset part of the environment before running the next test.
     bool SoftReset();
 
@@ -69,10 +66,15 @@ class SnapshotFuzzEnv {
 
   private:
     std::unique_ptr<AutoMemBasedDir> fake_root_;
+    std::unique_ptr<android::dm::LoopControl> loop_control_;
+    std::unique_ptr<AutoDevice> mapped_super_;
+    std::string fake_super_;
 
     static std::unique_ptr<android::fiemap::IImageManager> CreateFakeImageManager(
-            const std::string& fake_root);
-    static std::unique_ptr<TestPartitionOpener> CreatePartitionOpener(const std::string& fake_root);
+            const std::string& fake_tmp_path);
+    static std::unique_ptr<AutoDevice> MapSuper(const std::string& fake_persist_path,
+                                                android::dm::LoopControl* control,
+                                                std::string* fake_super);
 };
 
 class SnapshotFuzzDeviceInfo : public ISnapshotManager::IDeviceInfo {
