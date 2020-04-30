@@ -889,6 +889,8 @@ void PropertyLoadBootDefaults() {
             load_properties_from_file("/default.prop", nullptr, &properties);
         }
     }
+    // Recovery vendor path
+    load_properties_from_file("/prop.vendor", nullptr, &properties);
     load_properties_from_file("/system/build.prop", nullptr, &properties);
     load_properties_from_file("/system_ext/build.prop", nullptr, &properties);
     load_properties_from_file("/vendor/default.prop", nullptr, &properties);
