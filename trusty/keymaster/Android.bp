@@ -14,6 +14,32 @@
 // limitations under the License.
 //
 
+cc_library {
+    name: "libkeymaster_remote",
+    vendor: true,
+    defaults: ["hidl_defaults"],
+    srcs: [
+        "RemoteKeymaster.cpp",
+        "3.0/TrustyKeymaster3Device.cpp",
+        "4.0/TrustyKeymaster4Device.cpp",
+    ],
+    export_include_dirs: ["include"],
+    local_include_dirs: ["include"],
+    shared_libs: [
+        "libbase",
+        "liblog",
+        "libcutils",
+        "libhardware",
+        "libhidlbase",
+        "libutils",
+        "libkeymaster3device",
+        "libkeymaster_messages",
+        "libkeymaster4",
+        "android.hardware.keymaster@3.0",
+        "android.hardware.keymaster@4.0",
+    ],
+}
+
 cc_binary {
     name: "android.hardware.keymaster@3.0-service.trusty",
     defaults: ["hidl_defaults"],
@@ -22,9 +48,7 @@ cc_binary {
     init_rc: ["3.0/android.hardware.keymaster@3.0-service.trusty.rc"],
     srcs: [
         "3.0/service.cpp",
-        "3.0/TrustyKeymaster3Device.cpp",
         "ipc/trusty_keymaster_ipc.cpp",
-        "RemoteKeymaster.cpp",
         "TrustyKeymaster.cpp",
     ],
 
@@ -41,6 +65,7 @@ cc_binary {
         "libtrusty",
         "libkeymaster_messages",
         "libkeymaster3device",
+        "libkeymaster_remote",
         "android.hardware.keymaster@3.0"
     ],
 }
@@ -53,9 +78,7 @@ cc_binary {
     init_rc: ["4.0/android.hardware.keymaster@4.0-service.trusty.rc"],
     srcs: [
         "4.0/service.cpp",
-        "4.0/TrustyKeymaster4Device.cpp",
         "ipc/trusty_keymaster_ipc.cpp",
-        "RemoteKeymaster.cpp",
         "TrustyKeymaster.cpp",
     ],
 
@@ -72,6 +95,7 @@ cc_binary {
         "libtrusty",
         "libkeymaster_messages",
         "libkeymaster4",
+        "libkeymaster_remote",
         "android.hardware.keymaster@4.0"
     ],
 
