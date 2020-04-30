@@ -30,6 +30,11 @@ namespace android::snapshot {
 
 class AutoMemBasedDir;
 
+class DummyAutoDevice : public AutoDevice {
+  public:
+    DummyAutoDevice(bool mounted) : AutoDevice(mounted ? "dummy" : "") {}
+};
+
 // Prepare test environment. This has a heavy overhead and should be done once.
 class SnapshotFuzzEnv {
   public:
@@ -50,6 +55,9 @@ class SnapshotFuzzEnv {
     // Client is responsible for maintaining the lifetime of |data| over the life time of
     // ISnapshotManager.
     std::unique_ptr<ISnapshotManager> CreateSnapshotManager(const SnapshotFuzzData& data);
+
+    // Return path to super partition.
+    const std::string& super() const;
 
   private:
     std::unique_ptr<AutoMemBasedDir> fake_root_;
