@@ -106,7 +106,7 @@ int AllowLoggingDuringGlobalInit() {
 void FatalOnlyLogger(LogId logid, LogSeverity severity, const char* tag, const char* file,
                      unsigned int line, const char* message) {
     if (severity == LogSeverity::FATAL) {
-        StderrLogger(logid, severity, tag, file, line, message);
+        StdioLogger(logid, severity, tag, file, line, message);
     }
 }
 // Stop logging (except fatal messages) after global initialization. This is only done once.
