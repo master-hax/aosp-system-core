@@ -36,6 +36,7 @@ using android::fuzz::CheckedCast;
 using android::fuzz::Void;
 using android::snapshot::SnapshotFuzzData;
 using android::snapshot::SnapshotFuzzEnv;
+using chromeos_update_engine::DeltaArchiveManifest;
 using google::protobuf::RepeatedPtrField;
 
 // Avoid linking to libgsi since it needs disk I/O.
@@ -101,6 +102,10 @@ SNAPSHOT_FUZZ_FUNCTION(HandleImminentDataWipe, bool has_callback) {
 SNAPSHOT_FUZZ_FUNCTION(Dump, Void) {
     std::stringstream ss;
     (void)snapshot->Dump(ss);
+}
+
+SNAPSHOT_FUZZ_FUNCTION(CreateUpdateSnapshots, const DeltaArchiveManifest& manifest) {
+    (void)snapshot->CreateUpdateSnapshots(manifest);
 }
 
 SNAPSHOT_FUZZ_FUNCTION(UnmapUpdateSnapshot, const std::string& name) {
