@@ -488,6 +488,12 @@ Result<void> ServiceParser::ParseWritepid(std::vector<std::string>&& args) {
     return {};
 }
 
+Result<void> ServiceParser::ParseTaskProfiles(std::vector<std::string>&& args) {
+    args.erase(args.begin());
+    service_->task_profiles_ = std::move(args);
+    return {};
+}
+
 Result<void> ServiceParser::ParseUpdatable(std::vector<std::string>&& args) {
     service_->updatable_ = true;
     return {};
@@ -533,6 +539,7 @@ const KeywordMap<ServiceParser::OptionParser>& ServiceParser::GetParserMap() con
         {"updatable",               {0,     0,    &ServiceParser::ParseUpdatable}},
         {"user",                    {1,     1,    &ServiceParser::ParseUser}},
         {"writepid",                {1,     kMax, &ServiceParser::ParseWritepid}},
+        {"task_profiles",           {1,     kMax, &ServiceParser::ParseTaskProfiles}},
     };
     // clang-format on
     return parser_map;
