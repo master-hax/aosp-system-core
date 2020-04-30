@@ -82,6 +82,7 @@ class ServiceParser : public SectionParser {
     Result<void> ParseFile(std::vector<std::string>&& args);
     Result<void> ParseUser(std::vector<std::string>&& args);
     Result<void> ParseWritepid(std::vector<std::string>&& args);
+    Result<void> ParseTaskProfiles(std::vector<std::string>&& args);
     Result<void> ParseUpdatable(std::vector<std::string>&& args);
 
     bool IsValidName(const std::string& name) const;
