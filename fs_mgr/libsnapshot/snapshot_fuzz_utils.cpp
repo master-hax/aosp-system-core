@@ -42,6 +42,9 @@ using android::base::WriteStringToFile;
 using android::dm::LoopControl;
 using android::fiemap::IImageManager;
 using android::fiemap::ImageManager;
+using android::fs_mgr::BlockDeviceInfo;
+using android::fs_mgr::IPartitionOpener;
+using chromeos_update_engine::DynamicPartitionMetadata;
 
 // This directory is exempted from pinning in ImageManager.
 static const char MNT_DIR[] = "/data/gsi/ota/test/";
@@ -267,6 +270,7 @@ std::unique_ptr<ISnapshotManager> SnapshotFuzzEnv::CreateSnapshotManager(
     CHECK(InitOk());
     auto partition_opener = std::make_unique<TestPartitionOpener>(super());
     if (partition_opener == nullptr) return nullptr;
+    if (!WriteSuperMetadata(data, *partition_opener)) return nullptr;
     auto metadata_dir = fake_root_->tmp_path() + "/snapshot_metadata";
     if (!Mkdir(metadata_dir)) return nullptr;
 
@@ -282,6 +286,38 @@ std::unique_ptr<ISnapshotManager> SnapshotFuzzEnv::CreateSnapshotManager(
 const std::string& SnapshotFuzzEnv::super() const {
     CHECK(InitOk());
     return fake_super_;
+}
+
+bool SnapshotFuzzEnv::WriteSuperMetadata(const SnapshotFuzzData& data,
+                                         const IPartitionOpener& opener) {
+    if (!data.is_super_metadata_valid()) {
+        // Leave it zero.
+        return true;
+    }
+
+    BlockDeviceInfo super_device("super", SUPER_IMAGE_SIZE, 0, 0, 4096);
+    std::vector<BlockDeviceInfo> devices = {super_device};
+    auto builder = MetadataBuilder::New(devices, "super", 65536, 2);
+    if (builder == nullptr) return false;
+
+    // Attempt to create a super partition metadata using proto. All errors are ignored.
+    for (const auto& group_proto : data.super_data().dynamic_partition_metadata().groups()) {
+        (void)builder->AddGroup(group_proto.name(), group_proto.size());
+        for (const auto& partition_name : group_proto.partition_names()) {
+            (void)builder->AddPartition(partition_name, group_proto.name(),
+                                        LP_PARTITION_ATTR_READONLY);
+        }
+    }
+
+    for (const auto& partition_proto : data.super_data().partitions()) {
+        auto p = builder->FindPartition(partition_proto.partition_name());
+        if (p == nullptr) continue;
+        (void)builder->ResizePartition(p, partition_proto.new_partition_info().size());
+    }
+
+    auto metadata = builder->Export();
+    if (metadata == nullptr) return false;
+    return FlashPartitionTable(opener, super(), *metadata.get());
 }
 
 }  // namespace android::snapshot
