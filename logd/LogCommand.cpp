@@ -18,6 +18,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/socket.h>
+
+#include <vector>
 
 #include <private/android_filesystem_config.h>
 
@@ -57,12 +60,12 @@ static bool groupIsLog(char* buf) {
     return false;
 }
 
-bool clientHasLogCredentials(uid_t uid, gid_t gid, pid_t pid) {
-    if ((uid == AID_ROOT) || (uid == AID_SYSTEM) || (uid == AID_LOG)) {
-        return true;
-    }
+static bool UserIsPrivileged(int id) {
+    return id == AID_ROOT || id == AID_SYSTEM || id == AID_LOG;
+}
 
-    if ((gid == AID_ROOT) || (gid == AID_SYSTEM) || (gid == AID_LOG)) {
+bool clientHasLogCredentials(uid_t uid, gid_t gid, pid_t pid) {
+    if (UserIsPrivileged(uid) || UserIsPrivileged(gid)) {
         return true;
     }
 
@@ -141,5 +144,37 @@ bool clientHasLogCredentials(uid_t uid, gid_t gid, pid_t pid) {
 }
 
 bool clientHasLogCredentials(SocketClient* cli) {
-    return clientHasLogCredentials(cli->getUid(), cli->getGid(), cli->getPid());
+    if (UserIsPrivileged(cli->getUid()) || UserIsPrivileged(cli->getGid())) {
+        return true;
+    }
+
+    // Kernel version 4.13 added SO_PEERGROUPS to return the supplemental groups of a peer socket,
+    // so try that first then fallback to the above racy checking of /proc/<pid>/status if the
+    // kernel is too old.
+    auto supplemental_groups = std::vector<gid_t>(16, 0);
+    int groups_size = supplemental_groups.size();
+
+    int result = getsockopt(cli->getSocket(), SOL_SOCKET, SO_PEERGROUPS, supplemental_groups.data(),
+                            &groups_size);
+    if (result != 0) {
+        if (errno != ERANGE) {
+            return clientHasLogCredentials(cli->getUid(), cli->getGid(), cli->getPid());
+        }
+
+        supplemental_groups.resize(groups_size);
+        result = getsockopt(cli->getSocket(), SOL_SOCKET, SO_PEERGROUPS, supplemental_groups.data(),
+                            &groups_size);
+        // There is still some error after resizing supplemental_groups, fallback.
+        if (result != 0) {
+            return clientHasLogCredentials(cli->getUid(), cli->getGid(), cli->getPid());
+        }
+    }
+
+    for (const auto& gid : supplemental_groups) {
+        if (UserIsPrivileged(gid)) {
+            return true;
+        }
+    }
+
+    return false;
 }
