@@ -98,8 +98,6 @@ class LogBuffer {
 
     bool monotonic;
 
-    LogTags tags;
-
     LogBufferElement* lastLoggedElements[LOG_ID_MAX];
     LogBufferElement* droppedElements[LOG_ID_MAX];
     void log(LogBufferElement* elem);
@@ -107,7 +105,7 @@ class LogBuffer {
    public:
     LastLogTimes& mTimes;
 
-    explicit LogBuffer(LastLogTimes* times);
+    LogBuffer(LastLogTimes* times, LogTags* tags);
     ~LogBuffer();
     void init();
     bool isMonotonic() {
@@ -143,17 +141,6 @@ class LogBuffer {
         return mPrune.format();
     }
 
-    std::string formatGetEventTag(uid_t uid, const char* name,
-                                  const char* format) {
-        return tags.formatGetEventTag(uid, name, format);
-    }
-    std::string formatEntry(uint32_t tag, uid_t uid) {
-        return tags.formatEntry(tag, uid);
-    }
-    const char* tagToName(uint32_t tag) {
-        return tags.tagToName(tag);
-    }
-
     // helper must be protected directly or implicitly by wrlock()/unlock()
     const char* pidToName(pid_t pid) {
         return stats.pidToName(pid);
@@ -186,6 +173,8 @@ class LogBuffer {
     // Returns an iterator to the oldest element for a given log type, or mLogElements.end() if
     // there are no logs for the given log type. Requires mLogElementsLock to be held.
     LogBufferElementCollection::iterator GetOldest(log_id_t log_id);
+
+    LogTags* tags_;
 };
 
 #endif  // _LOGD_LOG_BUFFER_H__
