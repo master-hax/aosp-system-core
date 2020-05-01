@@ -181,7 +181,10 @@ static char* get_android_product_out() {
 static std::string find_item_given_name(const std::string& img_name) {
     char* dir = get_android_product_out();
     if (!dir) {
-        die("ANDROID_PRODUCT_OUT not set");
+        dir = getenv("PWD");
+    }
+    if (!dir) {
+        die("Neither ANDROID_PRODUCT_OUT nor PWD is set");
     }
     return std::string(dir) + "/" + img_name;
 }
