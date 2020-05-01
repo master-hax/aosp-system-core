@@ -270,7 +270,7 @@ std::unique_ptr<ISnapshotManager> SnapshotFuzzEnv::CreateSnapshotManager(
     CHECK(InitOk());
     auto partition_opener = std::make_unique<TestPartitionOpener>(super());
     if (partition_opener == nullptr) return nullptr;
-    if (!WriteSuperMetadata(data.super_data(), *partition_opener)) return nullptr;
+    if (!WriteSuperMetadata(data, *partition_opener)) return nullptr;
     auto metadata_dir = fake_root_->tmp_path() + "/snapshot_metadata";
     if (!Mkdir(metadata_dir)) return nullptr;
 

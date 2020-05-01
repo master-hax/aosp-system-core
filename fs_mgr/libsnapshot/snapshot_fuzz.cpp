@@ -132,6 +132,26 @@ SNAPSHOT_FUZZ_FUNCTION(RecoveryCreateSnapshotDevicesWithMetadata, RecoveryCreate
     (void)snapshot->RecoveryCreateSnapshotDevices(device);
 }
 
+SNAPSHOT_FUZZ_FUNCTION(MapUpdateSnapshot, CreateLogicalPartitionParamsProto, params_proto) {
+    auto partition_opener = std::make_unique<TestPartitionOpener>(GetSnapshotFuzzEnv()->super());
+    CreateLogicalPartitionParams params;
+    if (params_proto.use_correct_super()) {
+        params.block_device = GetSnapshotFuzzEnv()->super();
+    } else {
+        params.block_device = params_proto.block_device();
+    }
+    if (params_proto.has_metadata_slot()) {
+        params.metadata_slot = params_proto.metadata_slot();
+    }
+    params.partition_name = params_proto.partition_name();
+    params.force_writable = params_proto.force_writable();
+    params.timeout_ms = std::chrono::milliseconds(params_proto.timeout_millis());
+    params.device_name = params_proto.device_name();
+    params.partition_opener = partition_opener.get();
+    std::string path;
+    (void)snapshot->MapUpdateSnapshot(params, &path);
+}
+
 // During global init, log all messages to stdio. This is only done once.
 int AllowLoggingDuringGlobalInit() {
     SetLogger(&StdioLogger);
