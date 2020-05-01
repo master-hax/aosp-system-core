@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e33d8dab_e72bb6a8",
+        "filename": "libunwindstack/tests/LocalUpdatableMapsTest.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 274,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2020-05-01T21:00:47Z",
+      "side": 1,
+      "message": "This test doesn\u0027t fail on the previous version of the code. Did you mean to call Reparse twice or something else?",
+      "range": {
+        "startLine": 274,
+        "startChar": 31,
+        "endLine": 274,
+        "endChar": 61
+      },
+      "revId": "d5c5a71348ae73dc363fb4e59b580a4fa7f62b91",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "889357a1_da5a4607",
+        "filename": "libunwindstack/tests/LocalUpdatableMapsTest.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 296,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2020-05-01T21:00:47Z",
+      "side": 1,
+      "message": "It\u0027s not quite dangling pointer, maybe a better name would be add_map_prev_real_name_updated, or add_map_prev_real_anme_no_dangling_ptr to indicate clearly what it\u0027s testing for.",
+      "range": {
+        "startLine": 296,
+        "startChar": 54,
+        "endLine": 296,
+        "endChar": 66
+      },
+      "revId": "d5c5a71348ae73dc363fb4e59b580a4fa7f62b91",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "168972e8_abd1c3b2",
+        "filename": "libunwindstack/tests/LocalUpdatableMapsTest.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 300,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2020-05-01T21:00:47Z",
+      "side": 1,
+      "message": "Technically, it\u0027s not possible to have two maps with the same start and end address. Can you fix this and the one below so none of the addresses overlap?",
+      "range": {
+        "startLine": 300,
+        "startChar": 40,
+        "endLine": 300,
+        "endChar": 49
+      },
+      "revId": "d5c5a71348ae73dc363fb4e59b580a4fa7f62b91",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
