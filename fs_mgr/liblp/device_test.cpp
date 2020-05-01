@@ -50,12 +50,13 @@ TEST_F(DeviceTest, BlockDeviceInfo) {
     // Sanity check that the device doesn't give us some weird inefficient
     // alignment.
     EXPECT_EQ(device_info.alignment % LP_SECTOR_SIZE, 0);
-    EXPECT_EQ(device_info.alignment_offset % LP_SECTOR_SIZE, 0);
-    EXPECT_LE(device_info.alignment_offset, INT_MAX);
     EXPECT_EQ(device_info.logical_block_size % LP_SECTOR_SIZE, 0);
+<<<<<<< HEAD   (e9c17e Merge "Snap for 6416774 from 67095b28de43087e74b93b8f913338b)
 
     // Having an alignment offset > alignment doesn't really make sense.
     EXPECT_LT(device_info.alignment_offset, device_info.alignment);
+=======
+>>>>>>> BRANCH (13c657 Merge "init: Add task_profiles init command")
 }
 
 TEST_F(DeviceTest, ReadSuperPartitionCurrentSlot) {
