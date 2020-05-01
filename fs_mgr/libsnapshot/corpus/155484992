@@ -1,0 +1,70 @@
+is_super_metadata_valid: true
+actions {
+  get_snapshot_merge_stats_instance {
+  }
+}
+actions {
+  create_update_snapshots {
+    partitions {
+      partition_name: "\304\304\304\304\304\304\304\304\304\304\304\304\304\304\304\304"
+      hash_tree_extent {
+        start_block: 288230376151711744
+      }
+    }
+    dynamic_partition_metadata {
+      groups {
+        name: ""
+        partition_names: "@"
+        partition_names: "\304\304\304\304\304\304\304\304\304\304\304\304\304\304\304\304"
+      }
+      groups {
+        name: "@"
+        size: 133143986176
+        partition_names: "\377\377\377\377\377\377\377\377"
+      }
+    }
+  }
+}
+actions {
+  create_update_snapshots {
+    dynamic_partition_metadata {
+      groups {
+        name: ""
+        partition_names: "YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY"
+        partition_names: "@"
+        partition_names: "\304\304\304\304\304\304\304\304\304\304\304\304\304\304\304\304"
+      }
+      groups {
+        name: "@"
+        partition_names: "\377\377\377\377\377\377\377\377"
+      }
+    }
+  }
+}
+actions {
+  create_update_snapshots {
+    dynamic_partition_metadata {
+      groups {
+        name: ""
+      }
+    }
+  }
+}
+actions {
+  create_update_snapshots {
+    dynamic_partition_metadata {
+      groups {
+        name: ""
+        partition_names: "@"
+        partition_names: "\304\304\304\304\304\304\304\304\304\304\304\304\304\304\304\304"
+      }
+      groups {
+        name: "@"
+        partition_names: "\377\377\377\377\377\377\377\377"
+      }
+    }
+  }
+}
+actions {
+  unmap_update_snapshot: "@"
+}
