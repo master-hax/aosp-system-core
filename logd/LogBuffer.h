@@ -81,7 +81,6 @@ class LogBuffer {
 
     LogStatistics stats;
 
-    PruneList mPrune;
     // Keeps track of the iterator to the oldest log message of a given log type, as an
     // optimization when pruning logs.  Use GetOldest() to retrieve.
     std::optional<LogBufferElementCollection::iterator> mOldest[LOG_ID_MAX];
@@ -105,7 +104,7 @@ class LogBuffer {
    public:
     LastLogTimes& mTimes;
 
-    LogBuffer(LastLogTimes* times, LogTags* tags);
+    LogBuffer(LastLogTimes* times, LogTags* tags, PruneList* prune);
     ~LogBuffer();
     void init();
     bool isMonotonic() {
@@ -132,13 +131,6 @@ class LogBuffer {
 
     void enableStatistics() {
         stats.enableStatistics();
-    }
-
-    int initPrune(const char* cp) {
-        return mPrune.init(cp);
-    }
-    std::string formatPrune() {
-        return mPrune.format();
     }
 
     // helper must be protected directly or implicitly by wrlock()/unlock()
@@ -175,6 +167,7 @@ class LogBuffer {
     LogBufferElementCollection::iterator GetOldest(log_id_t log_id);
 
     LogTags* tags_;
+    PruneList* prune_;
 };
 
 #endif  // _LOGD_LOG_BUFFER_H__
