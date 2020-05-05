@@ -1016,6 +1016,8 @@ on property:security.perf_harden=1
     write /proc/sys/kernel/perf_cpu_time_max_percent 25
     write /proc/sys/kernel/perf_event_mlock_kb 516
 
+on property:lmkd.reinit=1
+    exec_background /system/bin/lmkd --reinit
 
 # on shutdown
 # In device's init.rc, this trigger can be used to do device-specific actions
