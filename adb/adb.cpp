@@ -21,6 +21,7 @@
 
 #include <ctype.h>
 #include <errno.h>
+#include <inttypes.h>
 #include <stdarg.h>
 #include <stddef.h>
 #include <stdint.h>
