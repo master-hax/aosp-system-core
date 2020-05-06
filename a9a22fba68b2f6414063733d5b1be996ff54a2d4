@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "198cba71_dc66195f",
+        "filename": "libnetutils/packet.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 1003247
+      },
+      "writtenOn": "2020-05-06T21:09:31Z",
+      "side": 1,
+      "message": "this should probably be a 0 to prevent receiving spurious packets prior to the bind...",
+      "range": {
+        "startLine": 43,
+        "startChar": 42,
+        "endLine": 43,
+        "endChar": 57
+      },
+      "revId": "a9a22fba68b2f6414063733d5b1be996ff54a2d4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
