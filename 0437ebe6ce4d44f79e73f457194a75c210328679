@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7b72bee1_55eb4909",
+        "filename": "fs_mgr/libsnapshot/update_engine/update_metadata.proto",
+        "patchSetId": 1
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-05-06T23:32:55Z",
+      "side": 1,
+      "message": "Can you add a comment that it\u0027s unused/unsupported outside of the fuzzer?",
+      "revId": "0437ebe6ce4d44f79e73f457194a75c210328679",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
