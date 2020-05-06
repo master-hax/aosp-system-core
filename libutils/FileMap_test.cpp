@@ -32,3 +32,14 @@ TEST(FileMap, zero_length_mapping) {
     ASSERT_EQ(0u, m.getDataLength());
     ASSERT_EQ(4096, m.getDataOffset());
 }
+
+TEST(FileMap, overflow) {
+    // http://b/119818070 "app crashes when reading asset of zero length".
+    // mmap fails with EINVAL for a zero length region.
+    TemporaryFile tf;
+    ASSERT_TRUE(tf.fd != -1);
+
+    android::FileMap m;
+    off64_t offset = INT32_MAX + 1024LL;
+    ASSERT_FALSE(m.create("test", tf.fd, offset, 0, true));
+}
