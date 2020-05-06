@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3523a805_d924739f",
+        "filename": "libunwindstack/Maps.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 177,
+      "author": {
+        "id": 1616271
+      },
+      "writtenOn": "2020-05-06T08:10:57Z",
+      "side": 1,
+      "message": "I\u0027m not sure whether it\u0027s necessary, I just follow your original way. IIUC, unique_ptr will be set to nullptr if we transfer ownership to other unique_ptr.\nhttps://timsong-cpp.github.io/cppwp/n3337/unique.ptr#4.2",
+      "revId": "f264f3b8320e536432c7bc1da1b8add06f1e5c27",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
