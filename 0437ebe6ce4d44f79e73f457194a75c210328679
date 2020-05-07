@@ -16,6 +16,24 @@
       "revId": "0437ebe6ce4d44f79e73f457194a75c210328679",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d7de1c70_490cf7c2",
+        "filename": "fs_mgr/libsnapshot/update_engine/update_metadata.proto",
+        "patchSetId": 1
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2020-05-07T00:11:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7b72bee1_55eb4909",
+      "revId": "0437ebe6ce4d44f79e73f457194a75c210328679",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
