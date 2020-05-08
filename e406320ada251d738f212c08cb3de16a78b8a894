@@ -22,6 +22,30 @@
       "revId": "e406320ada251d738f212c08cb3de16a78b8a894",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e2157a8f_fe3ec15e",
+        "filename": "libutils/include/utils/Compat.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2020-05-08T22:31:15Z",
+      "side": 1,
+      "message": "I added an assert with slightly different wording.",
+      "parentUuid": "69dee814_2d839940",
+      "range": {
+        "startLine": 28,
+        "startChar": 0,
+        "endLine": 28,
+        "endChar": 71
+      },
+      "revId": "e406320ada251d738f212c08cb3de16a78b8a894",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
