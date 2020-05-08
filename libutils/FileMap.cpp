@@ -42,6 +42,10 @@
 #include <errno.h>
 #include <assert.h>
 
+#if defined(__APPLE__) && defined(__MACH__) && !defined(mmap64)
+#define mmap64 mmap
+#endif
+
 using namespace android;
 
 /*static*/ long FileMap::mPageSize = -1;
