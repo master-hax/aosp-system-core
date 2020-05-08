@@ -104,6 +104,7 @@ int32_t property_get_int32(const char *key, int32_t default_value) {
     return (int32_t)property_get_imax(key, INT32_MIN, INT32_MAX, default_value);
 }
 
+#ifdef __ANDROID__
 #define _REALLY_INCLUDE_SYS__SYSTEM_PROPERTIES_H_
 #include <sys/_system_properties.h>
 
@@ -142,3 +143,26 @@ int property_list(void (*fn)(const char* name, const char* value, void* cookie),
     callback_data data = { fn, cookie };
     return __system_property_foreach(property_list_callback, &data);
 }
+#else  //__ANDROID__
+
+#define UNUSED_PARAM __attribute__((unused))
+// Return error or default values (if provided) on non Android Systems
+int property_set(const char* key UNUSED_PARAM, const char* value UNUSED_PARAM) {
+    return -1;
+}
+
+int property_get(const char* key UNUSED_PARAM, char* value, const char* default_value) {
+    int len = -1;
+    if (default_value) {
+        len = strnlen(default_value, PROPERTY_VALUE_MAX - 1);
+        memcpy(value, default_value, len);
+        value[len] = '\0';
+    }
+    return len;
+}
+
+int property_list(void (*fn)(const char* name, const char* value, void* cookie) UNUSED_PARAM,
+                  void* cookie UNUSED_PARAM) {
+    return -1;
+}
+#endif  //__ANDROID__

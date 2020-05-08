@@ -19,7 +19,13 @@
 
 #include <sys/cdefs.h>
 #include <stddef.h>
+#ifdef __ANDROID__
 #include <sys/system_properties.h>
+#else
+// Values copied from sys/system_properties.h which is not available on non Android systems
+#define PROP_VALUE_MAX 92
+#define PROP_NAME_MAX 32
+#endif
 #include <stdint.h>
 
 #ifdef __cplusplus
