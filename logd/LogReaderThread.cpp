@@ -49,14 +49,13 @@ LogReaderThread::LogReaderThread(LogReader& reader, SocketClient* client, bool n
     timeout_.tv_sec = timeout / NS_PER_SEC;
     timeout_.tv_nsec = timeout % NS_PER_SEC;
     memset(last_tid_, 0, sizeof(last_tid_));
-    pthread_cond_init(&thread_triggered_condition_, nullptr);
-    cleanSkip_Locked();
+    sem_init(&trigger_reader_, 0, 0);
+    CleanSkip();
 }
 
-bool LogReaderThread::startReader_Locked() {
+void LogReaderThread::StartReader() {
     auto thread = std::thread{&LogReaderThread::ThreadFunction, this};
     thread.detach();
-    return true;
 }
 
 void LogReaderThread::ThreadFunction() {
@@ -68,14 +67,11 @@ void LogReaderThread::ThreadFunction() {
 
     leading_dropped_ = true;
 
-    wrlock();
-
     uint64_t start = start_;
 
     while (!release_) {
         if (timeout_.tv_sec || timeout_.tv_nsec) {
-            if (pthread_cond_clockwait(&thread_triggered_condition_, &timesLock, CLOCK_MONOTONIC,
-                                       &timeout_) == ETIMEDOUT) {
+            if (sem_clockwait(&trigger_reader_, CLOCK_MONOTONIC, &timeout_) == ETIMEDOUT) {
                 timeout_.tv_sec = 0;
                 timeout_.tv_nsec = 0;
             }
@@ -83,8 +79,6 @@ void LogReaderThread::ThreadFunction() {
                 break;
             }
         }
-
-        unlock();
 
         if (tail_) {
             logbuf.flushTo(client, start, nullptr, privileged_, can_read_security_logs_,
@@ -105,8 +99,6 @@ void LogReaderThread::ThreadFunction() {
         start_time_.tv_sec = 0;
         start_time_.tv_nsec = 0;
 
-        wrlock();
-
         if (start == LogBufferElement::FLUSH_ERROR) {
             break;
         }
@@ -117,12 +109,14 @@ void LogReaderThread::ThreadFunction() {
             break;
         }
 
-        cleanSkip_Locked();
+        CleanSkip();
 
         if (!timeout_.tv_sec && !timeout_.tv_nsec) {
-            pthread_cond_wait(&thread_triggered_condition_, &timesLock);
+            sem_wait(&trigger_reader_);
         }
     }
+
+    wrlock();
 
     LogReader& reader = reader_;
     reader.release(client);
@@ -142,11 +136,8 @@ void LogReaderThread::ThreadFunction() {
 
 // A first pass to count the number of elements
 int LogReaderThread::FilterFirstPass(const LogBufferElement* element) {
-    LogReaderThread::wrlock();
-
     if (leading_dropped_) {
         if (element->getDropped()) {
-            LogReaderThread::unlock();
             return false;
         }
         leading_dropped_ = false;
@@ -161,15 +152,11 @@ int LogReaderThread::FilterFirstPass(const LogBufferElement* element) {
         ++count_;
     }
 
-    LogReaderThread::unlock();
-
     return false;
 }
 
 // A second pass to send the selected elements
 int LogReaderThread::FilterSecondPass(const LogBufferElement* element) {
-    LogReaderThread::wrlock();
-
     start_ = element->getSequence();
 
     if (skip_ahead_[element->getLogId()]) {
@@ -221,20 +208,19 @@ int LogReaderThread::FilterSecondPass(const LogBufferElement* element) {
 
 ok:
     if (!skip_ahead_[element->getLogId()]) {
-        LogReaderThread::unlock();
         return true;
     }
     // FALLTHRU
 
 skip:
-    LogReaderThread::unlock();
     return false;
 
 stop:
-    LogReaderThread::unlock();
     return -1;
 }
 
-void LogReaderThread::cleanSkip_Locked(void) {
-    memset(skip_ahead_, 0, sizeof(skip_ahead_));
+void LogReaderThread::CleanSkip() {
+    for (auto& skip_ahead : skip_ahead_) {
+        skip_ahead = 0;
+    }
 }

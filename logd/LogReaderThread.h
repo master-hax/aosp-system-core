@@ -17,6 +17,7 @@
 #pragma once
 
 #include <pthread.h>
+#include <semaphore.h>
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <time.h>
@@ -40,21 +41,20 @@ class LogReaderThread {
 
     // Protect List manipulations
     static void wrlock() { pthread_mutex_lock(&timesLock); }
-    static void rdlock() { pthread_mutex_lock(&timesLock); }
     static void unlock() { pthread_mutex_unlock(&timesLock); }
 
-    bool startReader_Locked();
+    void StartReader();
 
-    void triggerReader_Locked() { pthread_cond_signal(&thread_triggered_condition_); }
+    void TriggerReader() { sem_post(&trigger_reader_); }
 
-    void triggerSkip_Locked(log_id_t id, unsigned int skip) { skip_ahead_[id] = skip; }
-    void cleanSkip_Locked();
+    void TriggerSkip(log_id_t id, unsigned int skip) { skip_ahead_[id] = skip; }
+    void CleanSkip();
 
-    void release_Locked() {
+    void Release() {
         // gracefully shut down the socket.
         shutdown(client_->getSocket(), SHUT_RDWR);
         release_ = true;
-        pthread_cond_signal(&thread_triggered_condition_);
+        sem_post(&trigger_reader_);
     }
 
     bool IsWatching(log_id_t id) const { return log_mask_ & (1 << id); }
@@ -70,14 +70,15 @@ class LogReaderThread {
     int FilterFirstPass(const LogBufferElement* element);
     int FilterSecondPass(const LogBufferElement* element);
 
-    // Set to true to cause the thread to end and the LogReaderThread to delete itself.
-    bool release_ = false;
+    // Set to true to cause the thread to end and the LogReaderThread to delete itself.  This may be
+    // set by other threads, but it is not important that it is synchronous.
+    std::atomic<bool> release_ = false;
     // Indicates whether or not 'leading' (first logs seen starting from start_) 'dropped' (chatty)
     // messages should be ignored.
     bool leading_dropped_;
 
-    // Condition variable for waking the reader thread if there are messages pending for its client.
-    pthread_cond_t thread_triggered_condition_;
+    // Semaphore for waking the reader thread if there are messages pending for its client.
+    sem_t trigger_reader_;
 
     // Reference to the parent thread that manages log reader sockets.
     LogReader& reader_;
@@ -88,7 +89,9 @@ class LogReaderThread {
     // When a reader is referencing (via start_) old elements in the log buffer, and the log
     // buffer's size grows past its memory limit, the log buffer may request the reader to skip
     // ahead a specified number of logs.
-    unsigned int skip_ahead_[LOG_ID_MAX];
+    // This may be set by other threads; it's not important for there to be synchronization
+    // between these threads, only that the accesses are atomic.
+    std::atomic<unsigned int> skip_ahead_[LOG_ID_MAX];
     // Used for distinguishing 'dropped' messages for duplicate logs vs chatty drops
     pid_t last_tid_[LOG_ID_MAX];
 

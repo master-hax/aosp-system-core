@@ -50,7 +50,7 @@ void LogReader::notifyNewLog(unsigned int log_mask) {
         if (entry->timeout().tv_sec || entry->timeout().tv_nsec) {
             continue;
         }
-        entry->triggerReader_Locked();
+        entry->TriggerReader();
     }
     LogReaderThread::unlock();
 }
@@ -77,7 +77,7 @@ bool LogReader::onDataAvailable(SocketClient* cli) {
     LogReaderThread::wrlock();
     for (const auto& entry : mLogbuf.mTimes) {
         if (entry->client() == cli) {
-            entry->release_Locked();
+            entry->Release();
             LogReaderThread::unlock();
             return false;
         }
@@ -199,10 +199,7 @@ bool LogReader::onDataAvailable(SocketClient* cli) {
     auto entry =
             std::make_unique<LogReaderThread>(*this, cli, nonBlock, tail, logMask, pid, start,
                                               sequence, timeout, privileged, can_read_security);
-    if (!entry->startReader_Locked()) {
-        LogReaderThread::unlock();
-        return false;
-    }
+    entry->StartReader();
 
     // release client and entry reference counts once done
     cli->incRef();
@@ -225,7 +222,7 @@ void LogReader::doSocketDelete(SocketClient* cli) {
     while (it != times.end()) {
         LogReaderThread* entry = it->get();
         if (entry->client() == cli) {
-            entry->release_Locked();
+            entry->Release();
             break;
         }
         it++;

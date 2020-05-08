@@ -56,7 +56,7 @@ void LogBuffer::init() {
     LastLogTimes::iterator times = mTimes.begin();
     while (times != mTimes.end()) {
         LogReaderThread* entry = times->get();
-        entry->triggerReader_Locked();
+        entry->TriggerReader();
         times++;
     }
 
@@ -522,17 +522,17 @@ void LogBuffer::kickMe(LogReaderThread* me, log_id_t id, unsigned long pruneRows
         // dropped if we hit too much memory pressure.
         android::prdebug("Kicking blocked reader, pid %d, from LogBuffer::kickMe()\n",
                          me->client()->getPid());
-        me->release_Locked();
+        me->Release();
     } else if (me->timeout().tv_sec || me->timeout().tv_nsec) {
         // Allow a blocked WRAP timeout reader to
         // trigger and start reporting the log data.
-        me->triggerReader_Locked();
+        me->TriggerReader();
     } else {
         // tell slow reader to skip entries to catch up
         android::prdebug(
                 "Skipping %lu entries from slow reader, pid %d, from LogBuffer::kickMe()\n",
                 pruneRows, me->client()->getPid());
-        me->triggerSkip_Locked(id, pruneRows);
+        me->TriggerSkip(id, pruneRows);
     }
 }
 
@@ -588,7 +588,7 @@ bool LogBuffer::prune(log_id_t id, unsigned long pruneRows, uid_t caller_uid) {
     bool busy = false;
     bool clearAll = pruneRows == ULONG_MAX;
 
-    LogReaderThread::rdlock();
+    LogReaderThread::wrlock();
 
     // Region locked?
     LastLogTimes::iterator times = mTimes.begin();
@@ -916,7 +916,7 @@ bool LogBuffer::clear(log_id_t id, uid_t uid) {
                         android::prdebug(
                                 "Kicking blocked reader, pid %d, from LogBuffer::clear()\n",
                                 entry->client()->getPid());
-                        entry->release_Locked();
+                        entry->Release();
                     }
                     times++;
                 }
