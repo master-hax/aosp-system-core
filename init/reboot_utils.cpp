@@ -29,6 +29,7 @@
 #include <cutils/android_reboot.h>
 
 #include "capabilities.h"
+#include "reboot_utils.h"
 
 namespace android {
 namespace init {
@@ -138,7 +139,8 @@ void __attribute__((noreturn)) InitFatalReboot(int signal_number) {
         LOG(ERROR) << backtrace->FormatFrameData(i);
     }
     if (init_fatal_panic) {
-        _exit(signal_number);
+        LOG(ERROR) << __FUNCTION__ << ": Trigger crash";
+        android::base::WriteStringToFile("c", PROC_SYSRQ);
     }
     RebootSystem(ANDROID_RB_RESTART2, init_fatal_reboot_target);
 }
