@@ -25,6 +25,10 @@
 
 typedef off_t off64_t;
 
+static inline void* mmap64(void* addr, size_t length, int prot, int flags, int fd, off64_t offset) {
+    return mmap(addr, length, prot, flags, offset);
+}
+
 static inline off64_t lseek64(int fd, off64_t offset, int whence) {
     return lseek(fd, offset, whence);
 }
