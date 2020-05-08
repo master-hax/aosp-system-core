@@ -30,6 +30,43 @@
 #include <cutils/sockets.h>
 #include <log/log.h>
 
+#if __has_include(<sys/_system_properties.h>)
+
+#define _REALLY_INCLUDE_SYS__SYSTEM_PROPERTIES_H_
+#include <sys/_system_properties.h>
+
+#else
+
+#include <map>
+#include <string>
+
+static std::map<std::string, std::string>& g_properties = *new std::map<std::string, std::string>;
+
+static int __system_property_set(const char* key, const char* value) {
+    if (key == nullptr) return -1;
+    if (value == nullptr) value = "";
+    if (strlen(value) >= PROPERTY_VALUE_MAX) return -1;
+    g_properties[key] = value;
+    return 0;
+}
+
+static int __system_property_get(const char* key, char* value) {
+    auto it = g_properties.find(key);
+    if (it == g_properties.end()) return -1;
+
+    snprintf(value, PROPERTY_VALUE_MAX, "%s", it->second.c_str());
+    return it->second.size();
+}
+
+int property_list(void (*fn)(const char* name, const char* value, void* cookie), void* cookie) {
+    for (const auto& it : g_properties) {
+        fn(it.first.c_str(), it.second.c_str(), cookie);
+    }
+    return 0;
+}
+
+#endif
+
 int8_t property_get_bool(const char *key, int8_t default_value) {
     if (!key) {
         return default_value;
@@ -97,15 +134,12 @@ static intmax_t property_get_imax(const char *key, intmax_t lower_bound, intmax_
 }
 
 int64_t property_get_int64(const char *key, int64_t default_value) {
-    return (int64_t)property_get_imax(key, INT64_MIN, INT64_MAX, default_value);
+    return property_get_imax(key, INT64_MIN, INT64_MAX, default_value);
 }
 
 int32_t property_get_int32(const char *key, int32_t default_value) {
-    return (int32_t)property_get_imax(key, INT32_MIN, INT32_MAX, default_value);
+    return property_get_imax(key, INT32_MIN, INT32_MAX, default_value);
 }
-
-#define _REALLY_INCLUDE_SYS__SYSTEM_PROPERTIES_H_
-#include <sys/_system_properties.h>
 
 int property_set(const char *key, const char *value) {
     return __system_property_set(key, value);
@@ -123,6 +157,8 @@ int property_get(const char *key, char *value, const char *default_value) {
     }
     return len;
 }
+
+#if __has_include(<sys/system_properties.h>)
 
 struct callback_data {
     void (*callback)(const char* name, const char* value, void* cookie);
@@ -142,3 +178,5 @@ int property_list(void (*fn)(const char* name, const char* value, void* cookie),
     callback_data data = { fn, cookie };
     return __system_property_foreach(property_list_callback, &data);
 }
+
+#endif
