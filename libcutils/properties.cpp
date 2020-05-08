@@ -104,18 +104,33 @@ int32_t property_get_int32(const char *key, int32_t default_value) {
     return (int32_t)property_get_imax(key, INT32_MIN, INT32_MAX, default_value);
 }
 
+#ifdef __ANDROID__
 #define _REALLY_INCLUDE_SYS__SYSTEM_PROPERTIES_H_
 #include <sys/_system_properties.h>
+#else
+#define UNUSED_PARAM(variable) (void)variable
+#endif
 
 int property_set(const char *key, const char *value) {
+#ifdef __ANDROID__
     return __system_property_set(key, value);
+#else
+    UNUSED_PARAM(key);
+    UNUSED_PARAM(value);
+    return -1;
+#endif
 }
 
 int property_get(const char *key, char *value, const char *default_value) {
-    int len = __system_property_get(key, value);
+    int len = -1;
+#ifdef __ANDROID__
+    len = __system_property_get(key, value);
     if (len > 0) {
         return len;
     }
+#else
+    UNUSED_PARAM(key);
+#endif
     if (default_value) {
         len = strnlen(default_value, PROPERTY_VALUE_MAX - 1);
         memcpy(value, default_value, len);
@@ -124,6 +139,7 @@ int property_get(const char *key, char *value, const char *default_value) {
     return len;
 }
 
+#ifdef __ANDROID__
 struct callback_data {
     void (*callback)(const char* name, const char* value, void* cookie);
     void* cookie;
@@ -137,8 +153,15 @@ static void trampoline(void* raw_data, const char* name, const char* value, unsi
 static void property_list_callback(const prop_info* pi, void* data) {
     __system_property_read_callback(pi, trampoline, data);
 }
+#endif  //__ANDROID__
 
 int property_list(void (*fn)(const char* name, const char* value, void* cookie), void* cookie) {
+#ifdef __ANDROID__
     callback_data data = { fn, cookie };
     return __system_property_foreach(property_list_callback, &data);
+#else
+    UNUSED_PARAM(fn);
+    UNUSED_PARAM(cookie);
+    return -1;
+#endif
 }
