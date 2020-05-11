@@ -1,0 +1,11 @@
+cc_fuzz {
+    name: "libutils_fuzz_vector",
+    defaults: ["libutils_fuzz_defaults"],
+    host_supported: true,
+    srcs: [
+        "fuzz_vector.cc",
+    ],
+    shared_libs: [
+        "libutils",
+    ],
+}
