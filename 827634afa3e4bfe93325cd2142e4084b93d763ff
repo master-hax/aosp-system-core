@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b2e33fdb_e7b2e24c",
+        "filename": "fastboot/device/flashing.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 126,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-05-11T23:09:39Z",
+      "side": 1,
+      "message": "I think you want this to be \"std::vector\u003cchar\u003e* data\" (which means you\u0027ll also have to switch to data-\u003eat(...) instead of data[...])",
+      "revId": "827634afa3e4bfe93325cd2142e4084b93d763ff",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
