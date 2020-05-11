@@ -1,0 +1,11 @@
+cc_fuzz {
+    name: "libutils_fuzz_filemap",
+    defaults: ["libutils_fuzz_defaults"],
+    host_supported: true,
+    srcs: [
+        "fuzz_filemap.cc",
+    ],
+    shared_libs: [
+        "libutils",
+    ],
+}

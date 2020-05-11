@@ -1,0 +1,8 @@
+cc_defaults {
+    name: "libutils_fuzz_defaults",
+    //    defaults: ["libutils_defaults"],
+    host_supported: true,
+    shared_libs: [
+        "libutils",
+    ],
+}
