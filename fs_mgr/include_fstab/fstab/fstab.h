@@ -19,6 +19,7 @@
 #include <stdint.h>
 #include <sys/types.h>
 
+#include <fstream>
 #include <set>
 #include <string>
 #include <vector>
@@ -100,6 +101,7 @@ using Fstab = std::vector<FstabEntry>;
 bool ReadFstabFromFile(const std::string& path, Fstab* fstab);
 bool ReadFstabFromDt(Fstab* fstab, bool log = true);
 bool ReadDefaultFstab(Fstab* fstab);
+void ReadDefaultFstabToFile(std::fstream& file);
 bool SkipMountingPartitions(Fstab* fstab);
 
 FstabEntry* GetEntryForMountPoint(Fstab* fstab, const std::string& path);

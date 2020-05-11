@@ -33,6 +33,7 @@
 #include <sys/wait.h>
 
 #include <chrono>
+#include <fstream>
 #include <memory>
 #include <set>
 #include <thread>
@@ -757,6 +758,7 @@ static std::chrono::milliseconds GetMillisProperty(const std::string& name,
 }
 
 static Result<void> DoUserspaceReboot() {
+    std::fstream services_file;
     LOG(INFO) << "Userspace reboot initiated";
     // An ugly way to pass a more precise reason on why fallback to hard reboot was triggered.
     std::string sub_reason = "";
@@ -804,8 +806,15 @@ static Result<void> DoUserspaceReboot() {
     StopServicesAndLogViolations(stop_first, sigterm_timeout, true /* SIGTERM */);
     if (int r = StopServicesAndLogViolations(stop_first, sigkill_timeout, false /* SIGKILL */);
         r > 0) {
+        services_file.open("/metadata/userspacereboot/services.txt", std::fstream::out);
+        services_file << "Post-data services still running:" << std::endl;
+        for (const auto& s : stop_first) {
+            if (s->IsRunning()) {
+                services_file << s->name() << std::endl;
+            }
+        }
+        services_file.close();
         sub_reason = "sigkill";
-        // TODO(b/135984674): store information about offending services for debugging.
         return Error() << r << " post-data services are still running";
     }
     if (auto result = KillZramBackingDevice(); !result.ok()) {
@@ -819,8 +828,15 @@ static Result<void> DoUserspaceReboot() {
     if (int r = StopServicesAndLogViolations(GetDebuggingServices(true /* only_post_data */),
                                              sigkill_timeout, false /* SIGKILL */);
         r > 0) {
+        services_file.open("/metadata/userspacereboot/services.txt", std::fstream::out);
+        services_file << "Debugging services still running:" << std::endl;
+        for (const auto& s : GetDebuggingServices(true)) {
+            if (s->IsRunning()) {
+                services_file << s->name() << std::endl;
+            }
+        }
+        services_file.close();
         sub_reason = "sigkill_debug";
-        // TODO(b/135984674): store information about offending services for debugging.
         return Error() << r << " debugging services are still running";
     }
     {

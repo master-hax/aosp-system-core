@@ -35,6 +35,7 @@
 #include <unistd.h>
 
 #include <chrono>
+#include <fstream>
 #include <functional>
 #include <map>
 #include <memory>
@@ -1592,10 +1593,17 @@ static bool fs_mgr_unmount_all_data_mounts(const std::string& data_block_device)
                 LERROR << __FUNCTION__ << "(): Can't read /proc/mounts";
             } else {
                 LERROR << __FUNCTION__ << "(): Following mounts remaining";
+                std::fstream failed_unmounts_file;
+                failed_unmounts_file.open("/metadata/userspacereboot/failed_unmounts.txt",
+                                          std::fstream::out);
+                failed_unmounts_file << "Failed unmounts:" << std::endl;
                 for (const auto& e : remaining_mounts) {
+                    failed_unmounts_file << "Mount point: " << e.mount_point
+                                         << " block device: " << e.blk_device << std::endl;
                     LERROR << __FUNCTION__ << "(): mount point: " << e.mount_point
                            << " block device: " << e.blk_device;
                 }
+                failed_unmounts_file.close();
             }
             return false;
         }

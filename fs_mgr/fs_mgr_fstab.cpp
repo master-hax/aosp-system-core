@@ -25,6 +25,7 @@
 
 #include <algorithm>
 #include <array>
+#include <fstream>
 #include <utility>
 #include <vector>
 
@@ -789,6 +790,16 @@ bool ReadDefaultFstab(Fstab* fstab) {
     }
 
     return !fstab->empty();
+}
+
+void ReadDefaultFstabToFile(std::fstream& file) {
+    file << "Default fstab path: " << GetFstabPath() << std::endl;
+    std::fstream fstab_file;
+    fstab_file.open(GetFstabPath(), std::fstream::in);
+    std::string line;
+    while (std::getline(fstab_file, line)) {
+        file << line << std::endl;
+    }
 }
 
 FstabEntry* GetEntryForMountPoint(Fstab* fstab, const std::string& path) {

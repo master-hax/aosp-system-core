@@ -42,6 +42,7 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
+#include <fstream>
 #include <memory>
 
 #include <ApexProperties.sysprop.h>
@@ -1160,6 +1161,17 @@ static Result<void> do_remount_userdata(const BuiltinArguments& args) {
     }
     // TODO(b/135984674): check that fstab contains /data.
     if (auto rc = fs_mgr_remount_userdata_into_checkpointing(&fstab); rc < 0) {
+        std::fstream mount_info_file;
+        mount_info_file.open("/metadata/userspacereboot/mount_info.txt", std::fstream::out);
+        fs_mgr::ReadDefaultFstabToFile(mount_info_file);
+        std::fstream proc_mounts_file;
+        mount_info_file << "proc/mounts output:" << std::endl;
+        proc_mounts_file.open("/proc/mounts", std::fstream::in);
+        std::string line;
+        while (std::getline(proc_mounts_file, line)) {
+            mount_info_file << line << std::endl;
+        }
+        mount_info_file.close();
         trigger_shutdown("reboot,mount_userdata_failed");
     }
     if (auto result = queue_fs_event(initial_mount_fstab_return_code, true); !result.ok()) {
