@@ -209,8 +209,7 @@ sh_test {
     host_supported: true,
     device_supported: false,
     test_config: "ziptool-tests.xml",
-    data: ["cli-tests/**/*"],
-    target_required: ["cli-test", "ziptool"],
+    data: ["cli-tests/**/*", ":cli-test", ":ziptool"],
 }
 
 python_test_host {
