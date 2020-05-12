@@ -16,12 +16,12 @@
 
 #pragma once
 
-#include "LogBuffer.h"
+#include "LogBufferInterface.h"
 #include "LogReader.h"
 
 class LogListener {
   public:
-    LogListener(LogBuffer* buf);
+    LogListener(LogBufferInterface* buf);
     bool StartListener();
 
   private:
@@ -30,5 +30,5 @@ class LogListener {
     static int GetLogSocket();
 
     int socket_;
-    LogBuffer* logbuf_;
+    LogBufferInterface* log_buffer_;
 };

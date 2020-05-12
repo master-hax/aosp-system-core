@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+#include "LogListener.h"
+
 #include <limits.h>
 #include <sys/cdefs.h>
 #include <sys/prctl.h>
@@ -28,11 +30,9 @@
 #include <private/android_filesystem_config.h>
 #include <private/android_logger.h>
 
-#include "LogBuffer.h"
-#include "LogListener.h"
 #include "LogUtils.h"
 
-LogListener::LogListener(LogBuffer* buf) : socket_(GetLogSocket()), logbuf_(buf) {}
+LogListener::LogListener(LogBufferInterface* buf) : socket_(GetLogSocket()), log_buffer_(buf) {}
 
 bool LogListener::StartListener() {
     if (socket_ <= 0) {
@@ -120,8 +120,8 @@ void LogListener::HandleData() {
     // NB: hdr.msg_flags & MSG_TRUNC is not tested, silently passing a
     // truncated message to the logs.
 
-    logbuf_->log(logId, header->realtime, cred->uid, cred->pid, header->tid, msg,
-                 ((size_t)n <= UINT16_MAX) ? (uint16_t)n : UINT16_MAX);
+    log_buffer_->Log(logId, header->realtime, cred->uid, cred->pid, header->tid, msg,
+                     ((size_t)n <= UINT16_MAX) ? (uint16_t)n : UINT16_MAX);
 }
 
 int LogListener::GetLogSocket() {

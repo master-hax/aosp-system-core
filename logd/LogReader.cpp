@@ -24,9 +24,9 @@
 #include <chrono>
 
 #include <cutils/sockets.h>
+#include <private/android_filesystem_config.h>
 #include <private/android_logger.h>
 
-#include "LogBuffer.h"
 #include "LogBufferElement.h"
 #include "LogReader.h"
 #include "LogUtils.h"
@@ -35,7 +35,7 @@ static bool CanReadSecurityLogs(SocketClient* client) {
     return client->getUid() == AID_SYSTEM || client->getGid() == AID_SYSTEM;
 }
 
-LogReader::LogReader(LogBuffer* logbuf, LogReaderList* reader_list)
+LogReader::LogReader(LogBufferInterface* logbuf, LogReaderList* reader_list)
     : SocketListener(getLogSocket(), true), log_buffer_(logbuf), reader_list_(reader_list) {}
 
 // Note returning false will release the SocketClient instance.
@@ -158,7 +158,7 @@ bool LogReader::onDataAvailable(SocketClient* cli) {
             return FlushToResult::kSkip;
         };
 
-        log_buffer_->flushTo(cli, sequence, nullptr, privileged, can_read_security, log_find_start);
+        log_buffer_->FlushTo(cli, sequence, nullptr, privileged, can_read_security, log_find_start);
 
         if (!start_time_set) {
             if (nonBlock) {

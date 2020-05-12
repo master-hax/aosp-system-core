@@ -19,12 +19,11 @@
 #include <private/android_logger.h>
 #include <sysutils/SocketListener.h>
 
+#include "LogBufferInterface.h"
 #include "LogStatistics.h"
 
-class LogBuffer;
-
 class LogKlog : public SocketListener {
-    LogBuffer* logbuf;
+    LogBufferInterface* logbuf;
     const log_time signature;
     // Set once thread is started, separates KLOG_ACTION_READ_ALL
     // and KLOG_ACTION_READ phases.
@@ -38,7 +37,7 @@ class LogKlog : public SocketListener {
     static log_time correction;
 
   public:
-    LogKlog(LogBuffer* buf, int fdWrite, int fdRead, bool auditd, LogStatistics* stats);
+    LogKlog(LogBufferInterface* buf, int fdWrite, int fdRead, bool auditd, LogStatistics* stats);
     int log(const char* buf, ssize_t len);
 
     static void convertMonotonicToReal(log_time& real) { real += correction; }

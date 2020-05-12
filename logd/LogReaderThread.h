@@ -29,10 +29,11 @@
 #include <log/log.h>
 #include <sysutils/SocketClient.h>
 
-#include "LogBuffer.h"
+#include "LogBufferInterface.h"
 
 class LogReader;
 class LogBufferElement;
+class LogReaderList;
 
 class LogReaderThread {
   public:

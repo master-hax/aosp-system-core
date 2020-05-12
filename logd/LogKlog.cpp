@@ -30,8 +30,6 @@
 #include <private/android_filesystem_config.h>
 #include <private/android_logger.h>
 
-#include "LogBuffer.h"
-
 #define KMSG_PRIORITY(PRI) \
     '<', '0' + (LOG_SYSLOG | (PRI)) / 10, '0' + (LOG_SYSLOG | (PRI)) % 10, '>'
 
@@ -201,7 +199,8 @@ log_time LogKlog::correction = (log_time(CLOCK_REALTIME) < log_time(CLOCK_MONOTO
                                        ? log_time(log_time::EPOCH)
                                        : (log_time(CLOCK_REALTIME) - log_time(CLOCK_MONOTONIC));
 
-LogKlog::LogKlog(LogBuffer* buf, int fdWrite, int fdRead, bool auditd, LogStatistics* stats)
+LogKlog::LogKlog(LogBufferInterface* buf, int fdWrite, int fdRead, bool auditd,
+                 LogStatistics* stats)
     : SocketListener(fdRead, false),
       logbuf(buf),
       signature(CLOCK_MONOTONIC),
@@ -767,7 +766,7 @@ int LogKlog::log(const char* buf, ssize_t len) {
     }
 
     // Log message
-    int rc = logbuf->log(LOG_ID_KERNEL, now, uid, pid, tid, newstr, (uint16_t)n);
+    int rc = logbuf->Log(LOG_ID_KERNEL, now, uid, pid, tid, newstr, (uint16_t)n);
 
     return rc;
 }
