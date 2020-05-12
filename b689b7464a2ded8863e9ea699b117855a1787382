@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4421ab07_32d38055",
+        "filename": "logd/LogBuffer.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-05-12T18:14:45Z",
+      "side": 1,
+      "message": "should the *interface* be LogBuffer and this concrete class have a name change instead (even if just the Java-style \"DefaultLogBuffer\")?",
+      "revId": "b689b7464a2ded8863e9ea699b117855a1787382",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
