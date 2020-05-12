@@ -18,18 +18,17 @@
 
 #include <sysutils/SocketListener.h>
 
+#include "LogBufferInterface.h"
 #include "LogReaderList.h"
 #include "LogReaderThread.h"
 
 #define LOGD_SNDTIMEO 32
 
-class LogBuffer;
-
 class LogReader : public SocketListener {
   public:
-    explicit LogReader(LogBuffer* logbuf, LogReaderList* reader_list);
+    explicit LogReader(LogBufferInterface* logbuf, LogReaderList* reader_list);
 
-    LogBuffer* log_buffer() const { return log_buffer_; }
+    LogBufferInterface* log_buffer() const { return log_buffer_; }
 
   protected:
     virtual bool onDataAvailable(SocketClient* cli);
@@ -39,6 +38,6 @@ class LogReader : public SocketListener {
 
     void doSocketDelete(SocketClient* cli);
 
-    LogBuffer* log_buffer_;
+    LogBufferInterface* log_buffer_;
     LogReaderList* reader_list_;
 };

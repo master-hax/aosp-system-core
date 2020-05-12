@@ -18,7 +18,7 @@
 
 #include <sysutils/FrameworkListener.h>
 
-#include "LogBuffer.h"
+#include "LogBufferInterface.h"
 #include "LogCommand.h"
 #include "LogListener.h"
 #include "LogReader.h"
@@ -28,31 +28,32 @@
 
 class CommandListener : public FrameworkListener {
   public:
-    CommandListener(LogBuffer* buf, LogTags* tags, PruneList* prune, LogStatistics* log_statistics);
+    CommandListener(LogBufferInterface* buf, LogTags* tags, PruneList* prune,
+                    LogStatistics* log_statistics);
     virtual ~CommandListener() {}
 
   private:
     static int getLogSocket();
 
-    LogBuffer* buf_;
+    LogBufferInterface* buf_;
     LogTags* tags_;
     PruneList* prune_;
     LogStatistics* stats_;
 
-#define LogCmd(name, command_string)                             \
-    class name##Cmd : public LogCommand {                        \
-      public:                                                    \
-        explicit name##Cmd(CommandListener* parent)              \
-            : LogCommand(#command_string), parent_(parent) {}    \
-        virtual ~name##Cmd() {}                                  \
-        int runCommand(SocketClient* c, int argc, char** argv);  \
-                                                                 \
-      private:                                                   \
-        LogBuffer* buf() const { return parent_->buf_; }         \
-        LogTags* tags() const { return parent_->tags_; }         \
-        PruneList* prune() const { return parent_->prune_; }     \
-        LogStatistics* stats() const { return parent_->stats_; } \
-        CommandListener* parent_;                                \
+#define LogCmd(name, command_string)                              \
+    class name##Cmd : public LogCommand {                         \
+      public:                                                     \
+        explicit name##Cmd(CommandListener* parent)               \
+            : LogCommand(#command_string), parent_(parent) {}     \
+        virtual ~name##Cmd() {}                                   \
+        int runCommand(SocketClient* c, int argc, char** argv);   \
+                                                                  \
+      private:                                                    \
+        LogBufferInterface* buf() const { return parent_->buf_; } \
+        LogTags* tags() const { return parent_->tags_; }          \
+        PruneList* prune() const { return parent_->prune_; }      \
+        LogStatistics* stats() const { return parent_->stats_; }  \
+        CommandListener* parent_;                                 \
     }
 
     LogCmd(Clear, clear);

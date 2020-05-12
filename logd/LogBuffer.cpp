@@ -44,10 +44,10 @@
 // Default
 #define log_buffer_size(id) mMaxSize[id]
 
-void LogBuffer::init() {
+void LogBuffer::Init() {
     log_id_for_each(i) {
-        if (setSize(i, __android_logger_get_buffer_size(i))) {
-            setSize(i, LOG_BUFFER_MIN_SIZE);
+        if (SetSize(i, __android_logger_get_buffer_size(i))) {
+            SetSize(i, LOG_BUFFER_MIN_SIZE);
         }
     }
     // Release any sleeping reader threads to dump their current content.
@@ -67,7 +67,7 @@ LogBuffer::LogBuffer(LogReaderList* reader_list, LogTags* tags, PruneList* prune
         droppedElements[i] = nullptr;
     }
 
-    init();
+    Init();
 }
 
 LogBuffer::~LogBuffer() {
@@ -155,8 +155,8 @@ static enum match_type identical(LogBufferElement* elem,
     return SAME;
 }
 
-int LogBuffer::log(log_id_t log_id, log_time realtime, uid_t uid, pid_t pid,
-                   pid_t tid, const char* msg, uint16_t len) {
+int LogBuffer::Log(log_id_t log_id, log_time realtime, uid_t uid, pid_t pid, pid_t tid,
+                   const char* msg, uint16_t len) {
     if (log_id >= LOG_ID_MAX) {
         return -EINVAL;
     }
@@ -883,7 +883,7 @@ bool LogBuffer::prune(log_id_t id, unsigned long pruneRows, uid_t caller_uid) {
 }
 
 // clear all rows of type "id" from the buffer.
-bool LogBuffer::clear(log_id_t id, uid_t uid) {
+bool LogBuffer::Clear(log_id_t id, uid_t uid) {
     bool busy = true;
     // If it takes more than 4 tries (seconds) to clear, then kill reader(s)
     for (int retry = 4;;) {
@@ -923,7 +923,7 @@ bool LogBuffer::clear(log_id_t id, uid_t uid) {
 }
 
 // set the total space allocated to "id"
-int LogBuffer::setSize(log_id_t id, unsigned long size) {
+int LogBuffer::SetSize(log_id_t id, unsigned long size) {
     // Reasonable limits ...
     if (!__android_logger_valid_buffer_size(size)) {
         return -1;
@@ -935,14 +935,14 @@ int LogBuffer::setSize(log_id_t id, unsigned long size) {
 }
 
 // get the total space allocated to "id"
-unsigned long LogBuffer::getSize(log_id_t id) {
+unsigned long LogBuffer::GetSize(log_id_t id) {
     rdlock();
     size_t retval = log_buffer_size(id);
     unlock();
     return retval;
 }
 
-uint64_t LogBuffer::flushTo(
+uint64_t LogBuffer::FlushTo(
         SocketClient* reader, uint64_t start, pid_t* lastTid, bool privileged, bool security,
         const std::function<FlushToResult(const LogBufferElement* element)>& filter) {
     LogBufferElementCollection::iterator it;

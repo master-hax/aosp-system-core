@@ -20,18 +20,18 @@
 
 #include <sysutils/SocketListener.h>
 
-#include "LogBuffer.h"
+#include "LogBufferInterface.h"
 #include "LogStatistics.h"
 
 class LogAudit : public SocketListener {
-    LogBuffer* logbuf;
+    LogBufferInterface* logbuf;
     int fdDmesg;  // fdDmesg >= 0 is functionally bool dmesg
     bool main;
     bool events;
     bool initialized;
 
   public:
-    LogAudit(LogBuffer* buf, int fdDmesg, LogStatistics* stats);
+    LogAudit(LogBufferInterface* buf, int fdDmesg, LogStatistics* stats);
     int log(char* buf, size_t len);
 
   protected:

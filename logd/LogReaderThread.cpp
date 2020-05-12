@@ -22,7 +22,7 @@
 
 #include <thread>
 
-#include "LogBuffer.h"
+#include "LogBufferInterface.h"
 #include "LogReader.h"
 
 using namespace std::placeholders;
@@ -62,7 +62,7 @@ void LogReaderThread::ThreadFunction() {
 
     SocketClient* client = client_;
 
-    LogBuffer& logbuf = *reader_.log_buffer();
+    LogBufferInterface& logbuf = *reader_.log_buffer();
 
     leading_dropped_ = true;
 
@@ -83,13 +83,13 @@ void LogReaderThread::ThreadFunction() {
         lock.unlock();
 
         if (tail_) {
-            logbuf.flushTo(client, start, nullptr, privileged_, can_read_security_logs_,
+            logbuf.FlushTo(client, start, nullptr, privileged_, can_read_security_logs_,
                            std::bind(&LogReaderThread::FilterFirstPass, this, _1));
             leading_dropped_ =
                     true;  // TODO: Likely a bug, if leading_dropped_ was not true before calling
                            // flushTo(), then it should not be reset to true after.
         }
-        start = logbuf.flushTo(client, start, last_tid_, privileged_, can_read_security_logs_,
+        start = logbuf.FlushTo(client, start, last_tid_, privileged_, can_read_security_logs_,
                                std::bind(&LogReaderThread::FilterSecondPass, this, _1));
 
         // We only ignore entries before the original start time for the first flushTo(), if we

@@ -27,6 +27,7 @@
 #include <sysutils/SocketClient.h>
 
 #include "LogBufferElement.h"
+#include "LogBufferInterface.h"
 #include "LogStatistics.h"
 #include "LogTags.h"
 #include "LogWhiteBlackList.h"
@@ -36,13 +37,7 @@ typedef std::list<LogBufferElement*> LogBufferElementCollection;
 class LogReaderList;
 class LogReaderThread;
 
-enum class FlushToResult {
-    kSkip,
-    kStop,
-    kWrite,
-};
-
-class LogBuffer {
+class LogBuffer : public LogBufferInterface {
     LogBufferElementCollection mLogElements;
     pthread_rwlock_t mLogElementsLock;
 
@@ -64,21 +59,17 @@ class LogBuffer {
   public:
     LogBuffer(LogReaderList* reader_list, LogTags* tags, PruneList* prune, LogStatistics* stats);
     ~LogBuffer();
-    void init();
+    void Init() override;
 
-    int log(log_id_t log_id, log_time realtime, uid_t uid, pid_t pid, pid_t tid, const char* msg,
-            uint16_t len);
-    // lastTid is an optional context to help detect if the last previous
-    // valid message was from the same source so we can differentiate chatty
-    // filter types (identical or expired)
-    uint64_t flushTo(SocketClient* writer, uint64_t start,
-                     pid_t* lastTid,  // &lastTid[LOG_ID_MAX] or nullptr
-                     bool privileged, bool security,
-                     const std::function<FlushToResult(const LogBufferElement* element)>& filter);
+    int Log(log_id_t log_id, log_time realtime, uid_t uid, pid_t pid, pid_t tid, const char* msg,
+            uint16_t len) override;
+    uint64_t FlushTo(
+            SocketClient* writer, uint64_t start, pid_t* lastTid, bool privileged, bool security,
+            const std::function<FlushToResult(const LogBufferElement* element)>& filter) override;
 
-    bool clear(log_id_t id, uid_t uid = AID_ROOT);
-    unsigned long getSize(log_id_t id);
-    int setSize(log_id_t id, unsigned long size);
+    bool Clear(log_id_t id, uid_t uid = AID_ROOT) override;
+    unsigned long GetSize(log_id_t id) override;
+    int SetSize(log_id_t id, unsigned long size) override;
 
   private:
     void wrlock() {
