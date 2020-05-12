@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ec20aa7f_878633ee",
+        "filename": "logd/LogReaderThread.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-05-12T18:12:06Z",
+      "side": 1,
+      "message": "nit: timeouts are usually durations; this is more of a deadline.\n\n(not in this CL though, even if you do want to change that.)",
+      "range": {
+        "startLine": 116,
+        "startChar": 42,
+        "endLine": 116,
+        "endChar": 50
+      },
+      "revId": "d1cd7d0fcf2b71ca88a85e8c7e3b50341a117aad",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
