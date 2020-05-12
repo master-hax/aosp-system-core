@@ -260,10 +260,11 @@ cc_test {
     ],
     shared_libs: ["libbase"],
 
-    required: [
-        ":libutils_test_singleton1",
-        ":libutils_test_singleton2",
-    ],
+    // TODO(b/128018586): Fix this when we can package cc_test_library with cc_test
+    // required: [
+    //     ":libutils_test_singleton1",
+    //     ":libutils_test_singleton2",
+    // ],
 }
 
 cc_test_library {
