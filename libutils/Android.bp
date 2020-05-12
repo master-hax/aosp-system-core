@@ -302,10 +302,12 @@ cc_test {
     ],
     shared_libs: ["libbase"],
 
-    required: [
-        ":libutils_test_singleton1",
-        ":libutils_test_singleton2",
-    ],
+    // TODO(b/128018586): Install these libraries in the test's "data/"
+    //   directory when the build system supports it
+    // required: [
+    //     "libutils_test_singleton1",
+    //     "libutils_test_singleton2",
+    // ],
 }
 
 cc_test_library {
