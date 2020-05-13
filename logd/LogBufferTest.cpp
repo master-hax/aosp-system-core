@@ -363,4 +363,5 @@ TEST_P(LogBufferTest, read_last_sequence) {
     CompareLogMessages(expected_log_messages, read_log_messages);
 }
 
-INSTANTIATE_TEST_CASE_P(LogBufferTests, LogBufferTest, testing::Values("chatty", "simple"));
+INSTANTIATE_TEST_CASE_P(LogBufferTests, LogBufferTest,
+                        testing::Values("chatty", "serialized", "simple"));
