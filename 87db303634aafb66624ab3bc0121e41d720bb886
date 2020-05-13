@@ -209,6 +209,54 @@
     },
     {
       "key": {
+        "uuid": "0de0cde1_0365f08e",
+        "filename": "libutils/fuzzers/bitset/fuzz_bitset.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 1695385
+      },
+      "writtenOn": "2020-05-13T21:37:22Z",
+      "side": 1,
+      "message": "I am not completely sure I am interpreting this right. If I understand what you\u0027re asking, it\u0027s why we limit this range here and have a switch statement in runOperationForBit. Is that correct? If so, I think the fuzzer would waste a lot of time grabbing random values out of range if we didn\u0027t do that. Also not positive I\u0027m interpreting this right, but if you\u0027re suggesting I use a vector of functions instead of the switch statement and simply grab an index for the vector, I think that would get complicated given the different number of arguments used for some functions.",
+      "parentUuid": "c4c0f79b_dd87daf2",
+      "range": {
+        "startLine": 78,
+        "startChar": 69,
+        "endLine": 78,
+        "endChar": 71
+      },
+      "revId": "87db303634aafb66624ab3bc0121e41d720bb886",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "76965a7e_6d7f3d37",
+        "filename": "libutils/fuzzers/bitset/fuzz_bitset.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 1695385
+      },
+      "writtenOn": "2020-05-13T21:37:22Z",
+      "side": 1,
+      "message": "Excellent point, I think that means we\u0027re getting a lot of zero values here. Will change the approach to account for that.",
+      "parentUuid": "cec19001_093359d5",
+      "range": {
+        "startLine": 76,
+        "startChar": 0,
+        "endLine": 78,
+        "endChar": 73
+      },
+      "revId": "87db303634aafb66624ab3bc0121e41d720bb886",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "de1d21e8_f9981ffa",
         "filename": "libutils/fuzzers/filemap/fuzz_filemap.cc",
         "patchSetId": 2
