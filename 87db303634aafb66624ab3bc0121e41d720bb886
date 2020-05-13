@@ -257,6 +257,30 @@
     },
     {
       "key": {
+        "uuid": "9753d5a0_3c0dcac4",
+        "filename": "libutils/fuzzers/bitset/fuzz_bitset.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2020-05-13T21:48:37Z",
+      "side": 1,
+      "message": "We shouldn\u0027t have coupling between a value here and the structure runOperationForBit, since it would be too easy to make the program inconsistent (if a new case is added above). It\u0027s fine to have the information \u002714\u0027 encoded multiple times in the program, but only if the compiler ensures it does not become inconsistent.\n\n\u003e I think the fuzzer would waste a lot of time grabbing random values out of range if we didn\u0027t do that\none option is using modulo\n\nAll cases are functions of T bs and uint32_t bit.",
+      "parentUuid": "0de0cde1_0365f08e",
+      "range": {
+        "startLine": 78,
+        "startChar": 69,
+        "endLine": 78,
+        "endChar": 71
+      },
+      "revId": "87db303634aafb66624ab3bc0121e41d720bb886",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "de1d21e8_f9981ffa",
         "filename": "libutils/fuzzers/filemap/fuzz_filemap.cc",
         "patchSetId": 2
