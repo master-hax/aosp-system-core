@@ -909,7 +909,12 @@ int SecondStageMain(int argc, char** argv) {
             }
         }
         if (!IsShuttingDown()) {
+            static auto usb_controller = false;
             HandleControlMessages();
+            if (!usb_controller) {
+                usb_controller = !GetProperty("sys.usb.controller", "").empty();
+                if (!usb_controller) set_usb_controller();
+            }
         }
     }
 
