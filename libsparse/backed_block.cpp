@@ -23,6 +23,8 @@
 #include "backed_block.h"
 #include "sparse_defs.h"
 
+#define MAX_BACKED_BLOCK_SIZE (64 << 20)
+
 struct backed_block {
   unsigned int block;
   unsigned int len;
@@ -192,6 +194,11 @@ static int merge_bb(struct backed_block_list* bbl, struct backed_block* a, struc
   /* Blocks are not adjacent */
   block_len = a->len / bbl->block_size; /* rounds down */
   if (a->block + block_len != b->block) {
+    return -EINVAL;
+  }
+
+  /* Limit merged block size */
+  if (a->len + b->len > MAX_BACKED_BLOCK_SIZE) {
     return -EINVAL;
   }
 
