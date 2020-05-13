@@ -27,6 +27,8 @@
 #include "sparse_defs.h"
 #include "sparse_format.h"
 
+#define MAX_BACKED_BLOCK_SIZE ((unsigned int) (64UL << 20))
+
 struct sparse_file* sparse_file_new(unsigned int block_size, int64_t len) {
   struct sparse_file* s = reinterpret_cast<sparse_file*>(calloc(sizeof(struct sparse_file), 1));
   if (!s) {
@@ -122,6 +124,8 @@ static int write_all_blocks(struct sparse_file* s, struct output_file* out) {
       unsigned int blocks = backed_block_block(bb) - last_block;
       write_skip_chunk(out, (int64_t)blocks * s->block_size);
     }
+    ret = backed_block_split(s->backed_block_list, bb, MAX_BACKED_BLOCK_SIZE);
+    if (ret) return ret;
     ret = sparse_file_write_block(out, bb);
     if (ret) return ret;
     last_block = backed_block_block(bb) + DIV_ROUND_UP(backed_block_len(bb), s->block_size);
