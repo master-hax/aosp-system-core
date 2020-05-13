@@ -29,6 +29,7 @@
 #include <android-base/file.h>
 #include <android-base/logging.h>
 #include <android-base/macros.h>
+#include <android-base/properties.h>
 #include <android-base/strings.h>
 #include <uuid/uuid.h>
 
@@ -160,6 +161,16 @@ bool DeviceMapper::CreateDevice(const std::string& name, const DmTable& table, s
     if (timeout_ms <= std::chrono::milliseconds::zero()) {
         return true;
     }
+
+#ifdef __ANDROID_RECOVERY__
+    bool non_ab_device = android::base::GetProperty("ro.build.ab_update", "").empty();
+    int release = android::base::GetIntProperty("ro.build.version.release", 0);
+    if (non_ab_device && release && release <= 10) {
+        LOG(INFO) << "Detected ueventd incompatibility, reverting to legacy libdm behavior.";
+        unique_path = *path;
+    }
+#endif
+
     if (!WaitForFile(unique_path, timeout_ms)) {
         LOG(ERROR) << "Failed waiting for device path: " << unique_path;
         DeleteDevice(name);
