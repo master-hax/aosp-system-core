@@ -52,15 +52,15 @@ unsigned llkCheckMilliseconds(void);
 #define LLK_CHECK_STACK_PROPERTY       "ro.llk.stack"
 #define LLK_CHECK_STACK_DEFAULT        \
     "cma_alloc,__get_user_pages,bit_wait_io,wait_on_page_bit_killable"
-#define LLK_BLACKLIST_PROCESS_PROPERTY "ro.llk.blacklist.process"
-#define LLK_BLACKLIST_PROCESS_DEFAULT  \
+#define LLK_BLOCKLIST_PROCESS_PROPERTY "ro.llk.blocklist.process"
+#define LLK_BLOCKLIST_PROCESS_DEFAULT  \
     "0,1,2,init,[kthreadd],[khungtaskd],lmkd,llkd,watchdogd,[watchdogd],[watchdogd/0]"
-#define LLK_BLACKLIST_PARENT_PROPERTY  "ro.llk.blacklist.parent"
-#define LLK_BLACKLIST_PARENT_DEFAULT   "0,2,[kthreadd],adbd&[setsid]"
-#define LLK_BLACKLIST_UID_PROPERTY     "ro.llk.blacklist.uid"
-#define LLK_BLACKLIST_UID_DEFAULT      ""
-#define LLK_BLACKLIST_STACK_PROPERTY   "ro.llk.blacklist.process.stack"
-#define LLK_BLACKLIST_STACK_DEFAULT    "init,lmkd.llkd,llkd,keystore,ueventd,apexd"
+#define LLK_BLOCKLIST_PARENT_PROPERTY  "ro.llk.blocklist.parent"
+#define LLK_BLOCKLIST_PARENT_DEFAULT   "0,2,[kthreadd],adbd&[setsid]"
+#define LLK_BLOCKLIST_UID_PROPERTY     "ro.llk.blocklist.uid"
+#define LLK_BLOCKLIST_UID_DEFAULT      ""
+#define LLK_BLOCKLIST_STACK_PROPERTY   "ro.llk.blocklist.process.stack"
+#define LLK_BLOCKLIST_STACK_DEFAULT    "init,lmkd.llkd,llkd,keystore,ueventd,apexd"
 /* clang-format on */
 
 __END_DECLS
