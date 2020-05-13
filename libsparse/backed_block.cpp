@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include <algorithm>
 #include <assert.h>
 #include <errno.h>
 #include <stdint.h>
@@ -22,6 +23,8 @@
 
 #include "backed_block.h"
 #include "sparse_defs.h"
+
+#define MAX_BACKED_BLOCK_SIZE ((unsigned int) (64UL << 20))
 
 struct backed_block {
   unsigned int block;
@@ -195,6 +198,11 @@ static int merge_bb(struct backed_block_list* bbl, struct backed_block* a, struc
     return -EINVAL;
   }
 
+  /* Limit merged block size */
+  if (a->len + b->len > MAX_BACKED_BLOCK_SIZE) {
+    return -EINVAL;
+  }
+
   switch (a->type) {
     case BACKED_BLOCK_DATA:
       /* Don't support merging data for now */
@@ -272,71 +280,124 @@ static int queue_bb(struct backed_block_list* bbl, struct backed_block* new_bb) 
 /* Queues a fill block of memory to be written to the specified data blocks */
 int backed_block_add_fill(struct backed_block_list* bbl, unsigned int fill_val, unsigned int len,
                           unsigned int block) {
-  struct backed_block* bb = reinterpret_cast<backed_block*>(calloc(1, sizeof(struct backed_block)));
-  if (bb == nullptr) {
-    return -ENOMEM;
+  int ret;
+  while (len) {
+    struct backed_block* bb = reinterpret_cast<backed_block*>(calloc(1,
+        sizeof(struct backed_block)));
+    if (bb == nullptr) {
+      return -ENOMEM;
+    }
+
+    int chunk_len = std::min(len, MAX_BACKED_BLOCK_SIZE);
+
+    bb->block = block;
+    bb->len = chunk_len;
+    bb->type = BACKED_BLOCK_FILL;
+    bb->fill.val = fill_val;
+    bb->next = nullptr;
+
+    ret = queue_bb(bbl, bb);
+    if (ret != 0)
+        return ret;
+
+    block += chunk_len / bbl->block_size;
+    len -= chunk_len;
   }
-
-  bb->block = block;
-  bb->len = len;
-  bb->type = BACKED_BLOCK_FILL;
-  bb->fill.val = fill_val;
-  bb->next = nullptr;
-
-  return queue_bb(bbl, bb);
+  return 0;
 }
 
 /* Queues a block of memory to be written to the specified data blocks */
 int backed_block_add_data(struct backed_block_list* bbl, void* data, unsigned int len,
                           unsigned int block) {
-  struct backed_block* bb = reinterpret_cast<backed_block*>(calloc(1, sizeof(struct backed_block)));
-  if (bb == nullptr) {
-    return -ENOMEM;
+  int ret;
+  while (len) {
+    struct backed_block* bb = reinterpret_cast<backed_block*>(calloc(1,
+          sizeof(struct backed_block)));
+    if (bb == nullptr) {
+      return -ENOMEM;
+    }
+
+    int chunk_len = std::min(len, MAX_BACKED_BLOCK_SIZE);
+
+    bb->block = block;
+    bb->len = chunk_len;
+    bb->type = BACKED_BLOCK_DATA;
+    bb->data.data = data;
+    bb->next = nullptr;
+
+    ret = queue_bb(bbl, bb);
+    if (ret != 0)
+        return ret;
+
+    block += chunk_len / bbl->block_size;
+    len -= chunk_len;
+    data = (void*) ((char*) data + chunk_len);
   }
 
-  bb->block = block;
-  bb->len = len;
-  bb->type = BACKED_BLOCK_DATA;
-  bb->data.data = data;
-  bb->next = nullptr;
-
-  return queue_bb(bbl, bb);
+  return 0;
 }
 
 /* Queues a chunk of a file on disk to be written to the specified data blocks */
 int backed_block_add_file(struct backed_block_list* bbl, const char* filename, int64_t offset,
                           unsigned int len, unsigned int block) {
-  struct backed_block* bb = reinterpret_cast<backed_block*>(calloc(1, sizeof(struct backed_block)));
-  if (bb == nullptr) {
-    return -ENOMEM;
+  int ret;
+  while (len) {
+    struct backed_block* bb = reinterpret_cast<backed_block*>(calloc(1, sizeof(struct backed_block)));
+    if (bb == nullptr) {
+      return -ENOMEM;
+    }
+
+    int chunk_len = std::min(len, MAX_BACKED_BLOCK_SIZE);
+
+    bb->block = block;
+    bb->len = chunk_len;
+    bb->type = BACKED_BLOCK_FILE;
+    bb->file.filename = strdup(filename);
+    bb->file.offset = offset;
+    bb->next = nullptr;
+
+    ret = queue_bb(bbl, bb);
+    if (ret != 0)
+        return ret;
+
+    block += chunk_len / bbl->block_size;
+    len -= chunk_len;
+    offset += chunk_len;
   }
 
-  bb->block = block;
-  bb->len = len;
-  bb->type = BACKED_BLOCK_FILE;
-  bb->file.filename = strdup(filename);
-  bb->file.offset = offset;
-  bb->next = nullptr;
-
-  return queue_bb(bbl, bb);
+  return 0;
 }
 
 /* Queues a chunk of a fd to be written to the specified data blocks */
 int backed_block_add_fd(struct backed_block_list* bbl, int fd, int64_t offset, unsigned int len,
                         unsigned int block) {
-  struct backed_block* bb = reinterpret_cast<backed_block*>(calloc(1, sizeof(struct backed_block)));
-  if (bb == nullptr) {
-    return -ENOMEM;
+  int ret;
+  while (len) {
+    struct backed_block* bb = reinterpret_cast<backed_block*>(calloc(1,
+          sizeof(struct backed_block)));
+    if (bb == nullptr) {
+      return -ENOMEM;
+    }
+
+    int chunk_len = std::min(len, MAX_BACKED_BLOCK_SIZE);
+
+    bb->block = block;
+    bb->len = chunk_len;
+    bb->type = BACKED_BLOCK_FD;
+    bb->fd.fd = fd;
+    bb->fd.offset = offset;
+    bb->next = nullptr;
+
+    ret = queue_bb(bbl, bb);
+    if (ret != 0)
+        return ret;
+
+    block += chunk_len / bbl->block_size;
+    len -= chunk_len;
+    offset += chunk_len;
   }
 
-  bb->block = block;
-  bb->len = len;
-  bb->type = BACKED_BLOCK_FD;
-  bb->fd.fd = fd;
-  bb->fd.offset = offset;
-  bb->next = nullptr;
-
-  return queue_bb(bbl, bb);
+  return 0;
 }
 
 int backed_block_split(struct backed_block_list* bbl, struct backed_block* bb,
