@@ -1,0 +1,112 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "52ea4190_2b5d9900",
+        "filename": "libutils/fuzzers/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-05-13T07:31:13Z",
+      "side": 1,
+      "message": "unused?",
+      "revId": "87db303634aafb66624ab3bc0121e41d720bb886",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "376c6421_0d3f6d7d",
+        "filename": "libutils/fuzzers/bitset/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-05-13T07:31:13Z",
+      "side": 1,
+      "message": "just put all the fuzzers in the same directory and have one Android.bp file?\n\n(personally, i\u0027d rather not have *any* subdirectory. just have x_fuzz.cpp next to x.cpp and x_test.cpp like we usually do.)",
+      "revId": "87db303634aafb66624ab3bc0121e41d720bb886",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9b8590c0_32020b5e",
+        "filename": "libutils/fuzzers/bitset/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-05-13T07:31:13Z",
+      "side": 1,
+      "message": "(and then remove all the defaults duplication.)",
+      "range": {
+        "startLine": 8,
+        "startChar": 4,
+        "endLine": 10,
+        "endChar": 6
+      },
+      "revId": "87db303634aafb66624ab3bc0121e41d720bb886",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "17e768a5_cb199b10",
+        "filename": "libutils/fuzzers/bitset/fuzz_bitset.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-05-13T07:31:13Z",
+      "side": 1,
+      "message": ".cpp",
+      "revId": "87db303634aafb66624ab3bc0121e41d720bb886",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "de1d21e8_f9981ffa",
+        "filename": "libutils/fuzzers/filemap/fuzz_filemap.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-05-13T07:31:13Z",
+      "side": 1,
+      "message": "use android::base::TemporaryFile for temporary files. (for one thing, it\u0027ll clean up afterwards!)",
+      "revId": "87db303634aafb66624ab3bc0121e41d720bb886",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4b43957e_d42f4bc5",
+        "filename": "libutils/fuzzers/filemap/fuzz_filemap.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-05-13T07:31:13Z",
+      "side": 1,
+      "message": "the code that follows doesn\u0027t ensure that...",
+      "revId": "87db303634aafb66624ab3bc0121e41d720bb886",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
