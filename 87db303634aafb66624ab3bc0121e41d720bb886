@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "26ad5c69_fc190456",
+        "filename": "libutils/fuzzers/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1695385
+      },
+      "writtenOn": "2020-05-14T22:15:08Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "52ea4190_2b5d9900",
+      "revId": "87db303634aafb66624ab3bc0121e41d720bb886",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "376c6421_0d3f6d7d",
         "filename": "libutils/fuzzers/bitset/Android.bp",
         "patchSetId": 2
@@ -54,6 +72,24 @@
     },
     {
       "key": {
+        "uuid": "4ef3dabf_c4d2ab8a",
+        "filename": "libutils/fuzzers/bitset/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1695385
+      },
+      "writtenOn": "2020-05-14T22:15:08Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0fdbdf9e_90a0d12c",
+      "revId": "87db303634aafb66624ab3bc0121e41d720bb886",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9b8590c0_32020b5e",
         "filename": "libutils/fuzzers/bitset/Android.bp",
         "patchSetId": 2
@@ -77,6 +113,30 @@
     },
     {
       "key": {
+        "uuid": "886fed53_8b54f78a",
+        "filename": "libutils/fuzzers/bitset/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1695385
+      },
+      "writtenOn": "2020-05-14T22:15:08Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9b8590c0_32020b5e",
+      "range": {
+        "startLine": 8,
+        "startChar": 4,
+        "endLine": 10,
+        "endChar": 6
+      },
+      "revId": "87db303634aafb66624ab3bc0121e41d720bb886",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "17e768a5_cb199b10",
         "filename": "libutils/fuzzers/bitset/fuzz_bitset.cc",
         "patchSetId": 2
@@ -91,6 +151,24 @@
       "revId": "87db303634aafb66624ab3bc0121e41d720bb886",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d583fbe8_e32690da",
+        "filename": "libutils/fuzzers/bitset/fuzz_bitset.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1695385
+      },
+      "writtenOn": "2020-05-14T22:15:08Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "17e768a5_cb199b10",
+      "revId": "87db303634aafb66624ab3bc0121e41d720bb886",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -137,6 +215,54 @@
       "revId": "87db303634aafb66624ab3bc0121e41d720bb886",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "08d81939_58f17210",
+        "filename": "libutils/fuzzers/bitset/fuzz_bitset.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 1695385
+      },
+      "writtenOn": "2020-05-14T22:15:08Z",
+      "side": 1,
+      "message": "I\u0027ve limited the number of operations and some lengths in places that make sense and haven\u0027t observed any issues related to that.",
+      "parentUuid": "2c7196d1_ca6a6343",
+      "range": {
+        "startLine": 70,
+        "startChar": 66,
+        "endLine": 70,
+        "endChar": 70
+      },
+      "revId": "87db303634aafb66624ab3bc0121e41d720bb886",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "09e903f6_8ff71db5",
+        "filename": "libutils/fuzzers/bitset/fuzz_bitset.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 1695385
+      },
+      "writtenOn": "2020-05-14T22:15:08Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2b6f0937_12bafc3c",
+      "range": {
+        "startLine": 70,
+        "startChar": 53,
+        "endLine": 70,
+        "endChar": 54
+      },
+      "revId": "87db303634aafb66624ab3bc0121e41d720bb886",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -281,6 +407,54 @@
     },
     {
       "key": {
+        "uuid": "df7d5b5a_85c656aa",
+        "filename": "libutils/fuzzers/bitset/fuzz_bitset.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 1695385
+      },
+      "writtenOn": "2020-05-14T22:15:08Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "76965a7e_6d7f3d37",
+      "range": {
+        "startLine": 76,
+        "startChar": 0,
+        "endLine": 78,
+        "endChar": 73
+      },
+      "revId": "87db303634aafb66624ab3bc0121e41d720bb886",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3123c182_f70ff637",
+        "filename": "libutils/fuzzers/bitset/fuzz_bitset.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 1695385
+      },
+      "writtenOn": "2020-05-14T22:15:08Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9753d5a0_3c0dcac4",
+      "range": {
+        "startLine": 78,
+        "startChar": 69,
+        "endLine": 78,
+        "endChar": 71
+      },
+      "revId": "87db303634aafb66624ab3bc0121e41d720bb886",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "de1d21e8_f9981ffa",
         "filename": "libutils/fuzzers/filemap/fuzz_filemap.cc",
         "patchSetId": 2
@@ -298,6 +472,24 @@
     },
     {
       "key": {
+        "uuid": "d537146d_1af7cb50",
+        "filename": "libutils/fuzzers/filemap/fuzz_filemap.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1695385
+      },
+      "writtenOn": "2020-05-14T22:15:08Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "de1d21e8_f9981ffa",
+      "revId": "87db303634aafb66624ab3bc0121e41d720bb886",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "4b43957e_d42f4bc5",
         "filename": "libutils/fuzzers/filemap/fuzz_filemap.cc",
         "patchSetId": 2
@@ -312,6 +504,24 @@
       "revId": "87db303634aafb66624ab3bc0121e41d720bb886",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f728d092_7788cb60",
+        "filename": "libutils/fuzzers/filemap/fuzz_filemap.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1695385
+      },
+      "writtenOn": "2020-05-14T22:15:08Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4b43957e_d42f4bc5",
+      "revId": "87db303634aafb66624ab3bc0121e41d720bb886",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -338,6 +548,30 @@
     },
     {
       "key": {
+        "uuid": "494212ed_8e240d5d",
+        "filename": "libutils/fuzzers/filemap/fuzz_filemap.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 1695385
+      },
+      "writtenOn": "2020-05-14T22:15:08Z",
+      "side": 1,
+      "message": "Added support for zero length",
+      "parentUuid": "91967ac3_0d9ad195",
+      "range": {
+        "startLine": 43,
+        "startChar": 8,
+        "endLine": 43,
+        "endChar": 31
+      },
+      "revId": "87db303634aafb66624ab3bc0121e41d720bb886",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a879d149_d8dacecc",
         "filename": "libutils/fuzzers/filemap/fuzz_filemap.cc",
         "patchSetId": 2
@@ -358,6 +592,30 @@
       "revId": "87db303634aafb66624ab3bc0121e41d720bb886",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b0d15c3f_a663f851",
+        "filename": "libutils/fuzzers/filemap/fuzz_filemap.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1695385
+      },
+      "writtenOn": "2020-05-14T22:15:08Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a879d149_d8dacecc",
+      "range": {
+        "startLine": 45,
+        "startChar": 0,
+        "endLine": 45,
+        "endChar": 37
+      },
+      "revId": "87db303634aafb66624ab3bc0121e41d720bb886",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -432,6 +690,30 @@
     },
     {
       "key": {
+        "uuid": "0a66e53d_52e938e9",
+        "filename": "libutils/fuzzers/filemap/fuzz_filemap.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1695385
+      },
+      "writtenOn": "2020-05-14T22:15:08Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9c264872_65190aef",
+      "range": {
+        "startLine": 56,
+        "startChar": 71,
+        "endLine": 56,
+        "endChar": 72
+      },
+      "revId": "87db303634aafb66624ab3bc0121e41d720bb886",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "aceed43b_0cfdba55",
         "filename": "libutils/fuzzers/string16/fuzz_string16.cc",
         "patchSetId": 2
@@ -476,6 +758,30 @@
       "revId": "87db303634aafb66624ab3bc0121e41d720bb886",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4feb60ca_76c9cf66",
+        "filename": "libutils/fuzzers/string16/fuzz_string16.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 1695385
+      },
+      "writtenOn": "2020-05-14T22:15:08Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "aa61e1ff_28f72d21",
+      "range": {
+        "startLine": 33,
+        "startChar": 76,
+        "endLine": 33,
+        "endChar": 84
+      },
+      "revId": "87db303634aafb66624ab3bc0121e41d720bb886",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -573,6 +879,30 @@
     },
     {
       "key": {
+        "uuid": "4a9362a6_f09ea18d",
+        "filename": "libutils/fuzzers/string8/fuzz_string8.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1695385
+      },
+      "writtenOn": "2020-05-14T22:15:08Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b5018efb_2aad5a00",
+      "range": {
+        "startLine": 31,
+        "startChar": 0,
+        "endLine": 34,
+        "endChar": 90
+      },
+      "revId": "87db303634aafb66624ab3bc0121e41d720bb886",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f78f082c_c89f65cb",
         "filename": "libutils/fuzzers/vector/fuzz_vector.cc",
         "patchSetId": 2
@@ -665,6 +995,30 @@
       "revId": "87db303634aafb66624ab3bc0121e41d720bb886",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5c20fd09_7232fa6b",
+        "filename": "libutils/fuzzers/vector/fuzz_vector.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1695385
+      },
+      "writtenOn": "2020-05-14T22:15:08Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d0a908af_2a19a060",
+      "range": {
+        "startLine": 19,
+        "startChar": 21,
+        "endLine": 19,
+        "endChar": 23
+      },
+      "revId": "87db303634aafb66624ab3bc0121e41d720bb886",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
