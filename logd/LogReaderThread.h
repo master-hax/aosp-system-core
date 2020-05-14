@@ -69,6 +69,7 @@ class LogReaderThread {
     // flushTo filter callbacks
     FlushToResult FilterFirstPass(const LogBufferElement* element);
     FlushToResult FilterSecondPass(const LogBufferElement* element);
+    bool WriteToSocket(const logger_entry& entry, const char* msg);
 
     // Set to true to cause the thread to end and the LogReaderThread to delete itself.
     bool release_ = false;

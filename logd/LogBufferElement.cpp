@@ -32,7 +32,6 @@
 #include "LogStatistics.h"
 #include "LogUtils.h"
 
-const uint64_t LogBufferElement::FLUSH_ERROR(0);
 atomic_int_fast64_t LogBufferElement::sequence(1);
 
 LogBufferElement::LogBufferElement(log_id_t log_id, log_time realtime, uid_t uid, pid_t pid,
@@ -243,7 +242,9 @@ size_t LogBufferElement::populateDroppedMessage(char*& buffer, LogStatistics* st
     return retval;
 }
 
-uint64_t LogBufferElement::flushTo(SocketClient* reader, LogStatistics* stats, bool lastSame) {
+bool LogBufferElement::FlushTo(
+        LogStatistics* stats, bool lastSame,
+        const std::function<bool(const logger_entry& entry, const char* msg)> writer) {
     struct logger_entry entry = {};
 
     entry.hdr_size = sizeof(struct logger_entry);
@@ -254,23 +255,18 @@ uint64_t LogBufferElement::flushTo(SocketClient* reader, LogStatistics* stats, b
     entry.sec = mRealTime.tv_sec;
     entry.nsec = mRealTime.tv_nsec;
 
-    struct iovec iovec[2];
-    iovec[0].iov_base = &entry;
-    iovec[0].iov_len = entry.hdr_size;
-
     char* buffer = nullptr;
-
+    const char* msg = nullptr;
     if (mDropped) {
         entry.len = populateDroppedMessage(buffer, stats, lastSame);
-        if (!entry.len) return mSequence;
-        iovec[1].iov_base = buffer;
+        if (!entry.len) return true;
+        msg = buffer;
     } else {
+        msg = mMsg;
         entry.len = mMsgLen;
-        iovec[1].iov_base = mMsg;
     }
-    iovec[1].iov_len = entry.len;
 
-    uint64_t retval = reader->sendDatav(iovec, 1 + (entry.len != 0)) ? FLUSH_ERROR : mSequence;
+    bool retval = writer(entry, msg);
 
     if (buffer) free(buffer);
 

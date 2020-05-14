@@ -911,11 +911,10 @@ unsigned long ChattyLogBuffer::GetSize(log_id_t id) {
 }
 
 uint64_t ChattyLogBuffer::FlushTo(
-        SocketClient* reader, uint64_t start, pid_t* lastTid, bool privileged, bool security,
-        const std::function<FlushToResult(const LogBufferElement* element)>& filter) {
+        uid_t uid, uint64_t start, pid_t* lastTid, bool privileged, bool security,
+        const std::function<FlushToResult(const LogBufferElement* element)>& filter,
+        const std::function<bool(const logger_entry& entry, const char* msg)> writer) {
     LogBufferElementCollection::iterator it;
-    uid_t uid = reader->getUid();
-
     rdlock();
 
     if (start <= 1) {
@@ -974,10 +973,11 @@ uint64_t ChattyLogBuffer::FlushTo(
         unlock();
 
         // range locking in LastLogTimes looks after us
-        curr = element->flushTo(reader, stats_, sameTid);
-
-        if (curr == element->FLUSH_ERROR) {
-            return curr;
+        curr = element->getCurrentSequence();
+        if (writer) {
+            if (!element->FlushTo(stats_, sameTid, writer)) {
+                return FLUSH_ERROR;
+            }
         }
 
         rdlock();

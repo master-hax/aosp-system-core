@@ -84,14 +84,16 @@ void LogReaderThread::ThreadFunction() {
         lock.unlock();
 
         if (tail_) {
-            logbuf.FlushTo(client, start, nullptr, privileged_, can_read_security_logs_,
-                           std::bind(&LogReaderThread::FilterFirstPass, this, _1));
+            logbuf.FlushTo(client->getUid(), start, nullptr, privileged_, can_read_security_logs_,
+                           std::bind(&LogReaderThread::FilterFirstPass, this, _1), {});
             leading_dropped_ =
                     true;  // TODO: Likely a bug, if leading_dropped_ was not true before calling
                            // flushTo(), then it should not be reset to true after.
         }
-        start = logbuf.FlushTo(client, start, last_tid_, privileged_, can_read_security_logs_,
-                               std::bind(&LogReaderThread::FilterSecondPass, this, _1));
+        start = logbuf.FlushTo(client->getUid(), start, last_tid_, privileged_,
+                               can_read_security_logs_,
+                               std::bind(&LogReaderThread::FilterSecondPass, this, _1),
+                               std::bind(&LogReaderThread::WriteToSocket, this, _1, _2));
 
         // We only ignore entries before the original start time for the first flushTo(), if we
         // get entries after this first flush before the original start time, then the client
@@ -104,7 +106,7 @@ void LogReaderThread::ThreadFunction() {
 
         lock.lock();
 
-        if (start == LogBufferElement::FLUSH_ERROR) {
+        if (start == LogBuffer::FLUSH_ERROR) {
             break;
         }
 
@@ -214,6 +216,16 @@ ok:
         return FlushToResult::kWrite;
     }
     return FlushToResult::kSkip;
+}
+
+bool LogReaderThread::WriteToSocket(const logger_entry& entry, const char* msg) {
+    struct iovec iovec[2];
+    iovec[0].iov_base = const_cast<logger_entry*>(&entry);
+    iovec[0].iov_len = entry.hdr_size;
+    iovec[1].iov_base = const_cast<char*>(msg);
+    iovec[1].iov_len = entry.len;
+
+    return client_->sendDatav(iovec, 1 + (entry.len != 0)) == 0;
 }
 
 void LogReaderThread::cleanSkip_Locked(void) {
