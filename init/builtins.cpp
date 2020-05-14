@@ -1065,11 +1065,16 @@ static Result<void> do_load_system_props(const BuiltinArguments& args) {
 static Result<void> do_wait(const BuiltinArguments& args) {
     auto timeout = kCommandRetryTimeout;
     if (args.size() == 3) {
+        auto ms = android::base::EndsWith(args[2], 'm');
         int timeout_int;
-        if (!android::base::ParseInt(args[2], &timeout_int)) {
+        if (!android::base::ParseInt(args[2].substr(0, args[2].size() - ms), &timeout_int)) {
             return Error() << "failed to parse timeout";
         }
-        timeout = std::chrono::seconds(timeout_int);
+        if (ms) {
+            timeout = std::chrono::milliseconds(timeout_int);
+        } else {
+            timeout = std::chrono::seconds(timeout_int);
+        }
     }
 
     if (wait_for_file(args[1].c_str(), timeout) != 0) {

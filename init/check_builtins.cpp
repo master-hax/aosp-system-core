@@ -205,8 +205,9 @@ Result<void> check_sysclktz(const BuiltinArguments& args) {
 
 Result<void> check_wait(const BuiltinArguments& args) {
     if (args.size() == 3 && !args[2].empty()) {
+        auto ms = android::base::EndsWith(args[2], 'm');
         int timeout_int;
-        if (!android::base::ParseInt(args[2], &timeout_int)) {
+        if (!android::base::ParseInt(args[2].substr(0, args[2].size() - ms), &timeout_int)) {
             return Error() << "failed to parse timeout";
         }
     }
