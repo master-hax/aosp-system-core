@@ -641,6 +641,30 @@
       "revId": "87db303634aafb66624ab3bc0121e41d720bb886",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d0a908af_2a19a060",
+        "filename": "libutils/fuzzers/vector/fuzz_vector.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1695385
+      },
+      "writtenOn": "2020-05-14T21:28:41Z",
+      "side": 1,
+      "message": "Ended up going with 5k as 50k made the fuzzer go incredibly slowly even on a powerful machine.",
+      "parentUuid": "22c09a89_dae0602e",
+      "range": {
+        "startLine": 19,
+        "startChar": 21,
+        "endLine": 19,
+        "endChar": 23
+      },
+      "revId": "87db303634aafb66624ab3bc0121e41d720bb886",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
