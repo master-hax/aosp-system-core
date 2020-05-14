@@ -569,6 +569,30 @@
       "revId": "87db303634aafb66624ab3bc0121e41d720bb886",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "22c09a89_dae0602e",
+        "filename": "libutils/fuzzers/vector/fuzz_vector.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2020-05-14T19:22:43Z",
+      "side": 1,
+      "message": "Yeah, I think that should do it. We just want to make sure we are able to fully exercise sort/grow/shrink etc which are a bit more on the complicated side.",
+      "parentUuid": "135ad799_7abdeb42",
+      "range": {
+        "startLine": 19,
+        "startChar": 21,
+        "endLine": 19,
+        "endChar": 23
+      },
+      "revId": "87db303634aafb66624ab3bc0121e41d720bb886",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
