@@ -408,6 +408,30 @@
     },
     {
       "key": {
+        "uuid": "9c264872_65190aef",
+        "filename": "libutils/fuzzers/filemap/fuzz_filemap.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2020-05-14T19:47:44Z",
+      "side": 1,
+      "message": "Since the enum isn\u0027t type-checked (enum class), and the implementation already checks this, we could pass arbitrary data here. That would increase coverage as well.",
+      "parentUuid": "e91c952a_346ee8e8",
+      "range": {
+        "startLine": 56,
+        "startChar": 71,
+        "endLine": 56,
+        "endChar": 72
+      },
+      "revId": "87db303634aafb66624ab3bc0121e41d720bb886",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "aceed43b_0cfdba55",
         "filename": "libutils/fuzzers/string16/fuzz_string16.cc",
         "patchSetId": 2
