@@ -16,6 +16,24 @@
       "revId": "7cbb0ccc21f670f74ac45f1f3c3b6892b82841b0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "88083914_5caf9aaa",
+        "filename": "libsparse/backed_block.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1002751
+      },
+      "writtenOn": "2020-05-14T23:24:27Z",
+      "side": 1,
+      "message": "I assume Windows could implement the mmap behavior, I just didn\u0027t bother.  If the workaround is causing problems it might be better to implement it.\n\nMaking this conditional on Windows would cause Windows to produce different outputs for the same inputs, which isn\u0027t great.",
+      "parentUuid": "8f51104a_8e87ffd6",
+      "revId": "7cbb0ccc21f670f74ac45f1f3c3b6892b82841b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
