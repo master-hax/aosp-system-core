@@ -21,7 +21,7 @@
 #include <functional>
 
 #include <log/log.h>
-#include <sysutils/SocketClient.h>
+#include <log/log_read.h>
 
 #include "LogBufferElement.h"
 
@@ -42,11 +42,13 @@ class LogBuffer {
     // lastTid is an optional context to help detect if the last previous
     // valid message was from the same source so we can differentiate chatty
     // filter types (identical or expired)
+    static const uint64_t FLUSH_ERROR = 0;
     virtual uint64_t FlushTo(
-            SocketClient* writer, uint64_t start,
+            uid_t uid, uint64_t start,
             pid_t* last_tid,  // nullable
             bool privileged, bool security,
-            const std::function<FlushToResult(const LogBufferElement* element)>& filter) = 0;
+            const std::function<FlushToResult(const LogBufferElement* element)>& filter,
+            const std::function<bool(const logger_entry& entry, const char* msg)> writer) = 0;
 
     virtual bool Clear(log_id_t id, uid_t uid) = 0;
     virtual unsigned long GetSize(log_id_t id) = 0;

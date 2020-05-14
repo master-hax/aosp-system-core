@@ -21,8 +21,10 @@
 #include <stdlib.h>
 #include <sys/types.h>
 
+#include <functional>
+
 #include <log/log.h>
-#include <sysutils/SocketClient.h>
+#include <log/log_read.h>
 
 class LogStatistics;
 
@@ -61,6 +63,9 @@ class __attribute__((packed)) LogBufferElement {
     LogBufferElement(const LogBufferElement& elem);
     ~LogBufferElement();
 
+    bool FlushTo(LogStatistics* stats, bool last_same,
+                 const std::function<bool(const logger_entry& entry, const char* msg)> writer);
+
     bool isBinary(void) const {
         return (mLogId == LOG_ID_EVENTS) || (mLogId == LOG_ID_SECURITY);
     }
@@ -93,7 +98,4 @@ class __attribute__((packed)) LogBufferElement {
     log_time getRealTime(void) const {
         return mRealTime;
     }
-
-    static const uint64_t FLUSH_ERROR;
-    uint64_t flushTo(SocketClient* writer, LogStatistics* parent, bool lastSame);
 };

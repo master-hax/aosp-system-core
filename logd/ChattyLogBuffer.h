@@ -23,8 +23,8 @@
 #include <string>
 
 #include <android/log.h>
+#include <log/log_read.h>
 #include <private/android_filesystem_config.h>
-#include <sysutils/SocketClient.h>
 
 #include "LogBuffer.h"
 #include "LogBufferElement.h"
@@ -63,8 +63,9 @@ class ChattyLogBuffer : public LogBuffer {
     int Log(log_id_t log_id, log_time realtime, uid_t uid, pid_t pid, pid_t tid, const char* msg,
             uint16_t len) override;
     uint64_t FlushTo(
-            SocketClient* writer, uint64_t start, pid_t* lastTid, bool privileged, bool security,
-            const std::function<FlushToResult(const LogBufferElement* element)>& filter) override;
+            uid_t uid, uint64_t start, pid_t* lastTid, bool privileged, bool security,
+            const std::function<FlushToResult(const LogBufferElement* element)>& filter,
+            const std::function<bool(const logger_entry& entry, const char* msg)> writer) override;
 
     bool Clear(log_id_t id, uid_t uid = AID_ROOT) override;
     unsigned long GetSize(log_id_t id) override;

@@ -495,7 +495,7 @@ void ChattyLogBuffer::kickMe(LogReaderThread* me, log_id_t id, unsigned long pru
         // A misbehaving or slow reader has its connection
         // dropped if we hit too much memory pressure.
         android::prdebug("Kicking blocked reader, pid %d, from ChattyLogBuffer::kickMe()\n",
-                         me->client()->getPid());
+                         me->pid());
         me->release_Locked();
     } else if (me->deadline().time_since_epoch().count() != 0) {
         // Allow a blocked WRAP deadline reader to trigger and start reporting the log data.
@@ -504,7 +504,7 @@ void ChattyLogBuffer::kickMe(LogReaderThread* me, log_id_t id, unsigned long pru
         // tell slow reader to skip entries to catch up
         android::prdebug(
                 "Skipping %lu entries from slow reader, pid %d, from ChattyLogBuffer::kickMe()\n",
-                pruneRows, me->client()->getPid());
+                pruneRows, me->pid());
         me->triggerSkip_Locked(id, pruneRows);
     }
 }
@@ -873,7 +873,7 @@ bool ChattyLogBuffer::Clear(log_id_t id, uid_t uid) {
                     if (reader_thread->IsWatching(id)) {
                         android::prdebug(
                                 "Kicking blocked reader, pid %d, from ChattyLogBuffer::clear()\n",
-                                reader_thread->client()->getPid());
+                                reader_thread->pid());
                         reader_thread->release_Locked();
                     }
                 }
@@ -911,11 +911,10 @@ unsigned long ChattyLogBuffer::GetSize(log_id_t id) {
 }
 
 uint64_t ChattyLogBuffer::FlushTo(
-        SocketClient* reader, uint64_t start, pid_t* lastTid, bool privileged, bool security,
-        const std::function<FlushToResult(const LogBufferElement* element)>& filter) {
+        uid_t uid, uint64_t start, pid_t* lastTid, bool privileged, bool security,
+        const std::function<FlushToResult(const LogBufferElement* element)>& filter,
+        const std::function<bool(const logger_entry& entry, const char* msg)> writer) {
     LogBufferElementCollection::iterator it;
-    uid_t uid = reader->getUid();
-
     rdlock();
 
     if (start <= 1) {
@@ -974,10 +973,11 @@ uint64_t ChattyLogBuffer::FlushTo(
         unlock();
 
         // range locking in LastLogTimes looks after us
-        curr = element->flushTo(reader, stats_, sameTid);
-
-        if (curr == element->FLUSH_ERROR) {
-            return curr;
+        curr = element->getCurrentSequence();
+        if (writer) {
+            if (!element->FlushTo(stats_, sameTid, writer)) {
+                return FLUSH_ERROR;
+            }
         }
 
         rdlock();

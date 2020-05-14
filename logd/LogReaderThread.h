@@ -61,6 +61,7 @@ class LogReaderThread {
     bool IsWatchingMultiple(unsigned int log_mask) const { return log_mask_ & log_mask; }
 
     const SocketClient* client() const { return client_; }
+    pid_t pid() const { return client_->getPid(); }
     uint64_t start() const { return start_; }
     std::chrono::steady_clock::time_point deadline() const { return deadline_; }
 
@@ -69,6 +70,7 @@ class LogReaderThread {
     // flushTo filter callbacks
     FlushToResult FilterFirstPass(const LogBufferElement* element);
     FlushToResult FilterSecondPass(const LogBufferElement* element);
+    bool WriteToSocket(const logger_entry& entry, const char* msg);
 
     // Set to true to cause the thread to end and the LogReaderThread to delete itself.
     bool release_ = false;
