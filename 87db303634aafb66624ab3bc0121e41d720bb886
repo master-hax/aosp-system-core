@@ -407,6 +407,30 @@
     },
     {
       "key": {
+        "uuid": "aa61e1ff_28f72d21",
+        "filename": "libutils/fuzzers/string16/fuzz_string16.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 1695385
+      },
+      "writtenOn": "2020-05-14T18:32:20Z",
+      "side": 1,
+      "message": "Agreed, will take a different approach. As for char16_t, probably a copy-paste artifact from String16 logic.",
+      "parentUuid": "aceed43b_0cfdba55",
+      "range": {
+        "startLine": 33,
+        "startChar": 76,
+        "endLine": 33,
+        "endChar": 84
+      },
+      "revId": "87db303634aafb66624ab3bc0121e41d720bb886",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "298257c5_466c5866",
         "filename": "libutils/fuzzers/string16/fuzz_string16.cc",
         "patchSetId": 2
@@ -427,6 +451,30 @@
       "revId": "87db303634aafb66624ab3bc0121e41d720bb886",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c54c3554_52a6a72d",
+        "filename": "libutils/fuzzers/string16/fuzz_string16.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 1695385
+      },
+      "writtenOn": "2020-05-14T18:32:20Z",
+      "side": 1,
+      "message": "Ack, will require restructuring but can do",
+      "parentUuid": "298257c5_466c5866",
+      "range": {
+        "startLine": 48,
+        "startChar": 2,
+        "endLine": 78,
+        "endChar": 50
+      },
+      "revId": "87db303634aafb66624ab3bc0121e41d720bb886",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -453,6 +501,30 @@
     },
     {
       "key": {
+        "uuid": "b5018efb_2aad5a00",
+        "filename": "libutils/fuzzers/string8/fuzz_string8.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1695385
+      },
+      "writtenOn": "2020-05-14T18:32:20Z",
+      "side": 1,
+      "message": "If I recall correctly, the size check in String16 is a bit of a relic from when I was consuming raw bytes instead of the null-terminated strings. Will remove it there. I am currently in the process of rewriting a ton of this logic to let the fuzzer determine order.",
+      "parentUuid": "dbf4787c_40f1df41",
+      "range": {
+        "startLine": 31,
+        "startChar": 0,
+        "endLine": 34,
+        "endChar": 90
+      },
+      "revId": "87db303634aafb66624ab3bc0121e41d720bb886",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "f78f082c_c89f65cb",
         "filename": "libutils/fuzzers/vector/fuzz_vector.cc",
         "patchSetId": 2
@@ -464,6 +536,30 @@
       "writtenOn": "2020-05-13T21:02:10Z",
       "side": 1,
       "message": "should be a few orders of magnitudes larger? There are probably some behaviors only critical \u003e length 32? maybe certain combinations of queries",
+      "range": {
+        "startLine": 19,
+        "startChar": 21,
+        "endLine": 19,
+        "endChar": 23
+      },
+      "revId": "87db303634aafb66624ab3bc0121e41d720bb886",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "135ad799_7abdeb42",
+        "filename": "libutils/fuzzers/vector/fuzz_vector.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1695385
+      },
+      "writtenOn": "2020-05-14T18:32:20Z",
+      "side": 1,
+      "message": "Didn\u0027t want to make it too huge, but I will kick it up. What seems like a good number? 50000?",
+      "parentUuid": "f78f082c_c89f65cb",
       "range": {
         "startLine": 19,
         "startChar": 21,
