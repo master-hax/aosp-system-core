@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8f51104a_8e87ffd6",
+        "filename": "libsparse/backed_block.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-05-14T16:55:18Z",
+      "side": 1,
+      "message": "doesn\u0027t this have negative consequences for those OSes that _can_ cope?\n\nshould this be Windows-specific?",
+      "revId": "7cbb0ccc21f670f74ac45f1f3c3b6892b82841b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
