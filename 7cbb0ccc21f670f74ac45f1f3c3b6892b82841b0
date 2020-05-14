@@ -34,6 +34,24 @@
       "revId": "7cbb0ccc21f670f74ac45f1f3c3b6892b82841b0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2480573e_e0acb916",
+        "filename": "libsparse/backed_block.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-05-14T23:53:33Z",
+      "side": 1,
+      "message": "untested, but does https://android-review.googlesource.com/c/platform/system/core/+/1311923 fix your problem?",
+      "parentUuid": "88083914_5caf9aaa",
+      "revId": "7cbb0ccc21f670f74ac45f1f3c3b6892b82841b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
