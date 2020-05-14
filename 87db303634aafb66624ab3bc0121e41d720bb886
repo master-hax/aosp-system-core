@@ -384,6 +384,30 @@
     },
     {
       "key": {
+        "uuid": "e91c952a_346ee8e8",
+        "filename": "libutils/fuzzers/filemap/fuzz_filemap.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1695385
+      },
+      "writtenOn": "2020-05-14T19:24:12Z",
+      "side": 1,
+      "message": "Not really. Apparently getting enum length is not really possible in C++, at least from the research I\u0027ve done. It\u0027s possible we could use the last value to determine the length (DONTNEED), but if that is ever not the last item in the enum, or is explicitly assigned to an integer, then the length will be wrong.",
+      "parentUuid": "658b9ff3_5a58007c",
+      "range": {
+        "startLine": 56,
+        "startChar": 71,
+        "endLine": 56,
+        "endChar": 72
+      },
+      "revId": "87db303634aafb66624ab3bc0121e41d720bb886",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "aceed43b_0cfdba55",
         "filename": "libutils/fuzzers/string16/fuzz_string16.cc",
         "patchSetId": 2
