@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "6c8579fc_05ffcc81",
+        "filename": "logd/LogWhiteBlackList.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-05-15T17:28:08Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e7002028_d1feb03a",
+      "range": {
+        "startLine": 76,
+        "startChar": 22,
+        "endLine": 76,
+        "endChar": 30
+      },
+      "revId": "bb7a2b74a1819c3fe4830ceccbcfa1552f2fb5c3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "8cf6b62b_de47896c",
         "filename": "logd/LogWhiteBlackList.cpp",
         "patchSetId": 2
@@ -39,6 +63,24 @@
       "revId": "bb7a2b74a1819c3fe4830ceccbcfa1552f2fb5c3",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "70015742_587dcb3d",
+        "filename": "logd/LogWhiteBlackList.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-05-15T17:28:08Z",
+      "side": 1,
+      "message": "Me too.  I was trying to optimize for a smaller diff rather than changing the logic, but I guess the cat\u0027s out of the bag now.\n\nDone.",
+      "parentUuid": "8cf6b62b_de47896c",
+      "revId": "bb7a2b74a1819c3fe4830ceccbcfa1552f2fb5c3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
