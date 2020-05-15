@@ -1,0 +1,78 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "98b82cea_895d4f35",
+        "filename": "libutils/Android.bp",
+        "patchSetId": 3
+      },
+      "lineNbr": 201,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-05-15T00:21:30Z",
+      "side": 1,
+      "message": "unused",
+      "revId": "5e048fa02b4a4552e17fac170f60defa6ad28910",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "44cd0603_15d0f1dd",
+        "filename": "libutils/Android.bp",
+        "patchSetId": 3
+      },
+      "lineNbr": 208,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-05-15T00:21:30Z",
+      "side": 1,
+      "message": "-Wall and -Werror are there automatically",
+      "revId": "5e048fa02b4a4552e17fac170f60defa6ad28910",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ba581ff5_aecaaa2a",
+        "filename": "libutils/Android.bp",
+        "patchSetId": 3
+      },
+      "lineNbr": 223,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-05-15T00:21:30Z",
+      "side": 1,
+      "message": "put this in the shared defaults to make it easier to use libbase in any fuzzer?",
+      "revId": "5e048fa02b4a4552e17fac170f60defa6ad28910",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "eff895ae_9e2db018",
+        "filename": "libutils/BitSet_fuzz.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-05-15T00:21:30Z",
+      "side": 1,
+      "message": "static constexpr instead of #define (here and elsewhere)",
+      "range": {
+        "startLine": 20,
+        "startChar": 0,
+        "endLine": 20,
+        "endChar": 7
+      },
+      "revId": "5e048fa02b4a4552e17fac170f60defa6ad28910",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
