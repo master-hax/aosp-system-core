@@ -22,6 +22,30 @@
       "revId": "c44f50ca587aefac5505a1f1298e5c01da63baca",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b1ec3bfe_d8991aaa",
+        "filename": "libsparse/output_file.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 653,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-05-15T16:14:37Z",
+      "side": 1,
+      "message": "+jmgao for the win64 issue. we really should switch to 64-bit for windows (the NDK is already 64-bit only), but i assume that\u0027s non-trivial? not just a matter of rebuilding?",
+      "parentUuid": "34845b3e_1c8c5a04",
+      "range": {
+        "startLine": 653,
+        "startChar": 2,
+        "endLine": 653,
+        "endChar": 24
+      },
+      "revId": "c44f50ca587aefac5505a1f1298e5c01da63baca",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
