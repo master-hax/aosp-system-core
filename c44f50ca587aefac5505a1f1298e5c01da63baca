@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "34845b3e_1c8c5a04",
+        "filename": "libsparse/output_file.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 653,
+      "author": {
+        "id": 1345812
+      },
+      "writtenOn": "2020-05-15T08:03:19Z",
+      "side": 1,
+      "message": "It returns failure here. I added log in MappedFile::FromOsHandle:\n\n    void* base \u003d MapViewOfFile(handle, (prot \u0026 PROT_WRITE) ? FILE_MAP_ALL_ACCESS : FILE_MAP_READ, 0,\n                               file_offset, file_length);\n    if (base \u003d\u003d nullptr) {\n +    fprintf(stderr, \"DEBUG: MappedFile::FromOsHandle: MapViewOfFile(%\" PRId64 \", %zu) failed: GetLastError\u003d%d\\n\", file_offset, file_length, ::GetLastError());\n      CloseHandle(handle);\n      return nullptr;\n    }\n +  fprintf(stderr, \"DEBUG: MappedFile::FromOsHandle: almost success\\n\");\n\nWhich shows\n\n DEBUG: MappedFile::FromOsHandle: MapViewOfFile(0, 2147532840) failed: GetLastError\u003d0\n DEBUG: write_fd_chunk: MappedFile::FromFd failed\n\n(Note: 2147532840 \u003d 0x8000c028, which \u003e 2GB)\n\nI guess it’s because the fastboot is a win32 executable, so alloc or map memory more than 2GB is not supported? I tried to re-build a win64 executable but failed:\n\nAdd\n +   compile_multilib: \"both\",\n +    multilib: {\n +        lib64: {\n +            suffix: \"64\",\n +        },\n +    },\n\nTo cc_binary_host fastboot, and build failure logs are:\n\n error: system/core/fastboot/Android.bp:260:1: dependency \"AdbWinApi\" of \"fastboot\" missing variant:\n   os:windows, arch:x86_64, link:shared\n available variants:\n   os:linux_glibc, arch:x86, link:shared\n   os:linux_glibc, arch:x86, link:static\n   os:windows, arch:x86, link:shared\n   os:windows, arch:x86, link:static\n\nLooks like first we need a win64 AdbWinApi.dll for building win64 fastboot.",
+      "range": {
+        "startLine": 653,
+        "startChar": 2,
+        "endLine": 653,
+        "endChar": 24
+      },
+      "revId": "c44f50ca587aefac5505a1f1298e5c01da63baca",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
