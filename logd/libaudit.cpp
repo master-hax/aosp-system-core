@@ -18,11 +18,11 @@
  *
  */
 
+#include "libaudit.h"
+
 #include <errno.h>
 #include <string.h>
 #include <unistd.h>
-
-#include "libaudit.h"
 
 /**
  * Waits for an ack from the kernel
@@ -82,7 +82,7 @@ static int audit_send(int fd, int type, const void* data, size_t size) {
     addr.nl_family = AF_NETLINK;
 
     /* Set up the netlink headers */
-    req.nlh.nlmsg_type = type;
+    req.nlh.nlmsg_type = static_cast<uint16_t>(type);
     req.nlh.nlmsg_len = NLMSG_SPACE(size);
     req.nlh.nlmsg_flags = NLM_F_REQUEST | NLM_F_ACK;
 
@@ -116,7 +116,7 @@ static int audit_send(int fd, int type, const void* data, size_t size) {
      * in size. The only safe type to use here is a signed 16
      * bit value.
      */
-    req.nlh.nlmsg_seq = ++sequence;
+    req.nlh.nlmsg_seq = static_cast<uint32_t>(++sequence);
 
     /* While failing and its due to interrupts */
 
@@ -159,7 +159,7 @@ int audit_setup(int fd, pid_t pid) {
      * socket with the pid field of the status struct set to our current pid,
      * and the the mask set to AUDIT_STATUS_PID
      */
-    status.pid = pid;
+    status.pid = static_cast<uint32_t>(pid);
     status.mask = AUDIT_STATUS_PID;
 
     /* Let the kernel know this pid will be registering for audit events */
