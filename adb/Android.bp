@@ -214,6 +214,7 @@ cc_library_host_static {
     srcs: libadb_srcs + [
         "client/auth.cpp",
         "client/adb_wifi.cpp",
+        "client/dnssd_symbols.cpp",
         "client/usb_libusb.cpp",
         "client/usb_dispatch.cpp",
         "client/transport_local.cpp",

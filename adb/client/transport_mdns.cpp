@@ -31,13 +31,13 @@
 
 #include <android-base/stringprintf.h>
 #include <android-base/strings.h>
-#include <dns_sd.h>
 
 #include "adb_client.h"
 #include "adb_mdns.h"
 #include "adb_trace.h"
 #include "adb_utils.h"
 #include "adb_wifi.h"
+#include "client/dnssd_symbols.h"
 #include "client/mdns_utils.h"
 #include "fdevent/fdevent.h"
 #include "sysdeps.h"
@@ -45,6 +45,7 @@
 static DNSServiceRef service_refs[kNumADBDNSServices];
 static fdevent* service_ref_fdes[kNumADBDNSServices];
 static auto& g_autoconn_whitelist = *new std::unordered_set<int>();
+static const mdns::AdbDnssdFuncs* g_dnssd_funcs;
 
 static int adb_DNSServiceIndexByName(std::string_view regType) {
     for (int i = 0; i < kNumADBDNSServices; ++i) {
@@ -119,7 +120,7 @@ static bool adb_DNSServiceShouldAutoConnect(const char* regType, const char* ser
 // directly so that the socket is put through the appropriate compatibility
 // layers to work with the rest of ADB's internal APIs.
 static inline int adb_DNSServiceRefSockFD(DNSServiceRef ref) {
-    return adb_register_socket(DNSServiceRefSockFD(ref));
+    return adb_register_socket(g_dnssd_funcs->DNSServiceRefSockFD(ref));
 }
 #define DNSServiceRefSockFD ___xxx_DNSServiceRefSockFD
 
@@ -135,8 +136,7 @@ static void DNSSD_API register_service_ip(DNSServiceRef sdRef,
 static void pump_service_ref(int /*fd*/, unsigned ev, void* data) {
     DNSServiceRef* ref = reinterpret_cast<DNSServiceRef*>(data);
 
-    if (ev & FDE_READ)
-        DNSServiceProcessResult(*ref);
+    if (ev & FDE_READ) g_dnssd_funcs->DNSServiceProcessResult(*ref);
 }
 
 class AsyncServiceRef {
@@ -154,7 +154,7 @@ class AsyncServiceRef {
         // reference to |sdRef_|.
         fdevent_destroy(fde_);
         D("DNSServiceRefDeallocate(sdRef=%p)", sdRef_);
-        DNSServiceRefDeallocate(sdRef_);
+        g_dnssd_funcs->DNSServiceRefDeallocate(sdRef_);
         initialized_ = false;
     }
 
@@ -199,10 +199,8 @@ class ResolvedService : public AsyncServiceRef {
          * connect to. What's more, we seem to /only/ get those and nothing else.
          * If we want IPv6 in the future we'll have to figure out why.
          */
-        DNSServiceErrorType ret =
-            DNSServiceGetAddrInfo(
-                &sdRef_, 0, interfaceIndex,
-                kDNSServiceProtocol_IPv4, hosttarget,
+        DNSServiceErrorType ret = g_dnssd_funcs->DNSServiceGetAddrInfo(
+                &sdRef_, 0, interfaceIndex, kDNSServiceProtocol_IPv4, hosttarget,
                 register_service_ip, reinterpret_cast<void*>(this));
 
         if (ret != kDNSServiceErr_NoError) {
@@ -452,10 +450,9 @@ class DiscoveredService : public AsyncServiceRef {
     DiscoveredService(uint32_t interfaceIndex, const char* serviceName, const char* regtype,
                       const char* domain)
         : serviceName_(serviceName), regType_(regtype) {
-        DNSServiceErrorType ret =
-            DNSServiceResolve(&sdRef_, 0, interfaceIndex, serviceName, regtype,
-                              domain, register_resolved_mdns_service,
-                              reinterpret_cast<void*>(this));
+        DNSServiceErrorType ret = g_dnssd_funcs->DNSServiceResolve(
+                &sdRef_, 0, interfaceIndex, serviceName, regtype, domain,
+                register_resolved_mdns_service, reinterpret_cast<void*>(this));
 
         D("DNSServiceResolve for "
           "interfaceIndex %u "
@@ -594,7 +591,7 @@ static void DNSSD_API on_service_browsed(DNSServiceRef sdRef, DNSServiceFlags fl
                                          const char* domain, void* /*context*/) {
     if (errorCode != kDNSServiceErr_NoError) {
         D("Got error %d during mDNS browse.", errorCode);
-        DNSServiceRefDeallocate(sdRef);
+        g_dnssd_funcs->DNSServiceRefDeallocate(sdRef);
         int serviceIndex = adb_DNSServiceIndexByName(regtype);
         if (serviceIndex != -1) {
             fdevent_destroy(service_ref_fdes[serviceIndex]);
@@ -617,6 +614,7 @@ static void DNSSD_API on_service_browsed(DNSServiceRef sdRef, DNSServiceFlags fl
 }
 
 void init_mdns_transport_discovery_thread(void) {
+    g_dnssd_funcs = mdns::get_adb_dnssd_funcs();
     config_auto_connect_services();
     std::string res;
     std::for_each(g_autoconn_whitelist.begin(), g_autoconn_whitelist.end(), [&](const int& i) {
@@ -627,8 +625,8 @@ void init_mdns_transport_discovery_thread(void) {
 
     int errorCodes[kNumADBDNSServices];
     for (int i = 0; i < kNumADBDNSServices; ++i) {
-        errorCodes[i] = DNSServiceBrowse(&service_refs[i], 0, 0, kADBDNSServices[i], nullptr,
-                                         on_service_browsed, nullptr);
+        errorCodes[i] = g_dnssd_funcs->DNSServiceBrowse(&service_refs[i], 0, 0, kADBDNSServices[i],
+                                                        nullptr, on_service_browsed, nullptr);
 
         if (errorCodes[i] != kDNSServiceErr_NoError) {
             D("Got %d browsing for mDNS service %s.", errorCodes[i], kADBDNSServices[i]);
@@ -653,7 +651,8 @@ std::string mdns_check() {
     uint32_t daemon_version;
     uint32_t sz = sizeof(daemon_version);
 
-    auto dnserr = DNSServiceGetProperty(kDNSServiceProperty_DaemonVersion, &daemon_version, &sz);
+    auto dnserr = g_dnssd_funcs->DNSServiceGetProperty(kDNSServiceProperty_DaemonVersion,
+                                                       &daemon_version, &sz);
     std::string result = "ERROR: mdns daemon unavailable";
     if (dnserr != kDNSServiceErr_NoError) {
         return result;
