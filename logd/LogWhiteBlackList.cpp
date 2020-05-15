@@ -16,12 +16,10 @@
 
 #include <ctype.h>
 
+#include <android-base/properties.h>
 #include <android-base/stringprintf.h>
-#include <cutils/properties.h>
 
 #include "LogWhiteBlackList.h"
-
-// White and Black list
 
 Prune::Prune(uid_t uid, pid_t pid) : mUid(uid), mPid(pid) {
 }
@@ -91,13 +89,11 @@ int PruneList::init(const char* str) {
     if (str) {
         filter = str;
     } else {
-        char property[PROPERTY_VALUE_MAX];
-        property_get("ro.logd.filter", property, _default);
-        filter = property;
-        property_get("persist.logd.filter", property, filter.c_str());
+        filter = android::base::GetProperty("ro.logd.filter", _default);
+        auto persist_filter = android::base::GetProperty("persist.logd.filter", filter);
         // default here means take ro.logd.filter
-        if (strcmp(property, _default)) {
-            filter = property;
+        if (persist_filter != _default) {
+            filter = persist_filter;
         }
     }
 
