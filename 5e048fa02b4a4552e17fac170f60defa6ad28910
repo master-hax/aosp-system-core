@@ -127,6 +127,30 @@
       "revId": "5e048fa02b4a4552e17fac170f60defa6ad28910",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f41cb352_00cea6dd",
+        "filename": "libutils/BitSet_fuzz.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1695385
+      },
+      "writtenOn": "2020-05-15T17:36:03Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "eff895ae_9e2db018",
+      "range": {
+        "startLine": 20,
+        "startChar": 0,
+        "endLine": 20,
+        "endChar": 7
+      },
+      "revId": "5e048fa02b4a4552e17fac170f60defa6ad28910",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
