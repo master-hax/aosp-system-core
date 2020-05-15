@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e7002028_d1feb03a",
+        "filename": "logd/LogWhiteBlackList.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-05-15T16:40:57Z",
+      "side": 1,
+      "message": "ugh. just inline these two string literals for readability and let the compiler factor them out?",
+      "range": {
+        "startLine": 76,
+        "startChar": 22,
+        "endLine": 76,
+        "endChar": 30
+      },
+      "revId": "bb7a2b74a1819c3fe4830ceccbcfa1552f2fb5c3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8cf6b62b_de47896c",
+        "filename": "logd/LogWhiteBlackList.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-05-15T16:40:57Z",
+      "side": 1,
+      "message": "i found this whole block quite hard to follow.\n\nis this whole thing just\n```\n  filter \u003d GetProperty(\"persist.logd.filter\", GetProperty(\"ro.logd.filter\", \"\"));\n```\n\noh, no, because all of unset/empty/\"default\" in persist.logd.filter \u003d\u003e use ro.logd.filter.\n\ni think this achieves the same effect but requires less thinking?\n```\n        filter \u003d android::base::GetProperty(\"ro.logd.filter\", \"default\");\n\n        auto persist_filter \u003d android::base::GetProperty(\"persist.logd.filter\", \"default\");\n        if (persist_filter !\u003d \"default\") filter \u003d persist_filter;\n```",
+      "revId": "bb7a2b74a1819c3fe4830ceccbcfa1552f2fb5c3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
