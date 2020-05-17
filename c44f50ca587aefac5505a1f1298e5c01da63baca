@@ -46,6 +46,30 @@
       "revId": "c44f50ca587aefac5505a1f1298e5c01da63baca",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4e8a334f_ebee1cf1",
+        "filename": "libsparse/output_file.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 653,
+      "author": {
+        "id": 1345812
+      },
+      "writtenOn": "2020-05-17T08:27:27Z",
+      "side": 1,
+      "message": "If the switch to 64-bit might take a long time, please consider aosp/1310496 as a short-term solution. There are labs that have only windows PC as flash station, and images have this issue are dispatching to these labs for setting up test suite weekly. Ideally we need to prepare one of \"win64 fastboot\" or \"images that have smaller blocks\" to unblock that testing process.",
+      "parentUuid": "b1ec3bfe_d8991aaa",
+      "range": {
+        "startLine": 653,
+        "startChar": 2,
+        "endLine": 653,
+        "endChar": 24
+      },
+      "revId": "c44f50ca587aefac5505a1f1298e5c01da63baca",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
