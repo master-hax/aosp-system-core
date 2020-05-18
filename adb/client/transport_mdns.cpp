@@ -150,9 +150,10 @@ class AsyncServiceRef {
             return;
         }
 
-        // Order matters here! Must destroy the fdevent first since it has a
-        // reference to |sdRef_|.
-        fdevent_destroy(fde_);
+        // the dns-sd library will clean up it's fd in DNSServiceRefDeallocate, so don't close the
+        // fd by using fdevent_destroy().
+        unique_fd fd = fdevent_release(fde_);
+        (void)fd.release();
         D("DNSServiceRefDeallocate(sdRef=%p)", sdRef_);
         g_dnssd_funcs->DNSServiceRefDeallocate(sdRef_);
         initialized_ = false;
@@ -454,13 +455,13 @@ class DiscoveredService : public AsyncServiceRef {
                 &sdRef_, 0, interfaceIndex, serviceName, regtype, domain,
                 register_resolved_mdns_service, reinterpret_cast<void*>(this));
 
-        D("DNSServiceResolve for "
+        D("DNSServiceResolve sdref=%p for "
           "interfaceIndex %u "
           "serviceName %s "
           "regtype %s "
           "domain %s "
           ": %d",
-          interfaceIndex, serviceName, regtype, domain, ret);
+          sdRef_, interfaceIndex, serviceName, regtype, domain, ret);
 
         if (ret == kDNSServiceErr_NoError) {
             Initialize();

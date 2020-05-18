@@ -128,7 +128,8 @@ static void setup_trace_mask() {
                                                         {"auth", AUTH},
                                                         {"fdevent", FDEVENT},
                                                         {"shell", SHELL},
-                                                        {"incremental", INCREMENTAL}};
+                                                        {"incremental", INCREMENTAL},
+                                                        {"mdns", MDNS}};
 
     std::vector<std::string> elements = android::base::Split(trace_setting, " ");
     for (const auto& elem : elements) {
