@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "93ed4ae1_9732456b",
+        "filename": "logd/libaudit.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-05-18T16:33:25Z",
+      "side": 1,
+      "message": "why not? int is 32-bit everywhere.",
+      "range": {
+        "startLine": 112,
+        "startChar": 15,
+        "endLine": 112,
+        "endChar": 68
+      },
+      "revId": "66dc708b2058492fc0c2cc9f1adc0c09884057d9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4af22eb0_112da310",
+        "filename": "logd/libaudit.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-05-18T16:33:25Z",
+      "side": 1,
+      "message": "no, it really couldn\u0027t. it\u0027s not the 1980s.",
+      "range": {
+        "startLine": 115,
+        "startChar": 38,
+        "endLine": 116,
+        "endChar": 14
+      },
+      "revId": "66dc708b2058492fc0c2cc9f1adc0c09884057d9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bf042d05_7fdcfa77",
+        "filename": "logd/libaudit.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-05-18T16:33:25Z",
+      "side": 1,
+      "message": "undo this and just switch L74 to int32_t?\n\n(or fix the comment so it makes some sense, if there\u0027s a real reason for this.)",
+      "revId": "66dc708b2058492fc0c2cc9f1adc0c09884057d9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
