@@ -39,6 +39,7 @@ enum AdbTrace {
     FDEVENT,
     SHELL,
     INCREMENTAL,
+    MDNS,
 };
 
 #define VLOG_IS_ON(TAG) \

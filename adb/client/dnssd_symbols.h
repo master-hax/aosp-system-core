@@ -34,6 +34,10 @@ struct AdbDnssdFuncs {
                                                       const char* domain,
                                                       DNSServiceBrowseReply callBack,
                                                       void* context);
+    DNSServiceErrorType DNSSD_API (*DNSServiceQueryRecord)(
+            DNSServiceRef* sdRef, DNSServiceFlags flags, uint32_t interfaceIndex,
+            const char* fullname, uint16_t rrtype, uint16_t rrclass,
+            DNSServiceQueryRecordReply callBack, void* context);
 
     // The below APIs do not exist in avahi's bonjour compatibility library.
     DNSServiceErrorType DNSSD_API (*DNSServiceGetAddrInfo)(

@@ -454,13 +454,13 @@ class DiscoveredService : public AsyncServiceRef {
                 &sdRef_, 0, interfaceIndex, serviceName, regtype, domain,
                 register_resolved_mdns_service, reinterpret_cast<void*>(this));
 
-        D("DNSServiceResolve for "
+        D("DNSServiceResolve sdref=%p for "
           "interfaceIndex %u "
           "serviceName %s "
           "regtype %s "
           "domain %s "
           ": %d",
-          interfaceIndex, serviceName, regtype, domain, ret);
+          sdRef_, interfaceIndex, serviceName, regtype, domain, ret);
 
         if (ret == kDNSServiceErr_NoError) {
             Initialize();
