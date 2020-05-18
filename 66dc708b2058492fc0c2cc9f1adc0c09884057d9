@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "69c4999e_f7381f41",
+        "filename": "logd/libaudit.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-05-18T17:05:37Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "93ed4ae1_9732456b",
+      "range": {
+        "startLine": 112,
+        "startChar": 15,
+        "endLine": 112,
+        "endChar": 68
+      },
+      "revId": "66dc708b2058492fc0c2cc9f1adc0c09884057d9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "4af22eb0_112da310",
         "filename": "logd/libaudit.cpp",
         "patchSetId": 1
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "779fc892_8b233597",
+        "filename": "logd/libaudit.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-05-18T17:05:37Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4af22eb0_112da310",
+      "range": {
+        "startLine": 115,
+        "startChar": 38,
+        "endLine": 116,
+        "endChar": 14
+      },
+      "revId": "66dc708b2058492fc0c2cc9f1adc0c09884057d9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "bf042d05_7fdcfa77",
         "filename": "logd/libaudit.cpp",
         "patchSetId": 1
@@ -62,6 +110,47 @@
       "revId": "66dc708b2058492fc0c2cc9f1adc0c09884057d9",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "443fb179_075fb231",
+        "filename": "logd/libaudit.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-05-18T17:05:37Z",
+      "side": 1,
+      "message": "I\u0027m reasonable sure there was no reason for this, done.",
+      "parentUuid": "bf042d05_7fdcfa77",
+      "revId": "66dc708b2058492fc0c2cc9f1adc0c09884057d9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "725d0bec_63775d16",
+        "filename": "logd/libaudit.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 145,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-05-18T17:05:37Z",
+      "side": 1,
+      "message": "Fun side benefit of using int16_t: relying on signed integer overflow for wrapping the sequence numbers to work.",
+      "range": {
+        "startLine": 142,
+        "startChar": 0,
+        "endLine": 145,
+        "endChar": 5
+      },
+      "revId": "66dc708b2058492fc0c2cc9f1adc0c09884057d9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
