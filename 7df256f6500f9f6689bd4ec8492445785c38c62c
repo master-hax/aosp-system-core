@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "307dd1e7_375d773a",
+        "filename": "adb/socket_spec.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 209,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2020-05-18T21:02:50Z",
+      "side": 1,
+      "message": "strictly speaking, `!\u003d -1` (but we\u0027re probably in deep trouble if STDIN_FILENO was closed before this)",
+      "range": {
+        "startLine": 209,
+        "startChar": 30,
+        "endLine": 209,
+        "endChar": 33
+      },
+      "revId": "7df256f6500f9f6689bd4ec8492445785c38c62c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
