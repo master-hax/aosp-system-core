@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4251538b_87ac81f9",
+        "filename": "adb/client/commandline.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1732,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2020-05-18T21:04:03Z",
+      "side": 1,
+      "message": "CODE or PAIRING CODE to be consistent with the text printed below?",
+      "range": {
+        "startLine": 1732,
+        "startChar": 75,
+        "endLine": 1732,
+        "endChar": 83
+      },
+      "revId": "113b801389292fd31c3cd43c0ad2df40b4ed67a4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
