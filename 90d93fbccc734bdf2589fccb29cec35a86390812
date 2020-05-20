@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "acd1c7cd_1e914b0e",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 673,
+      "author": {
+        "id": 1060907
+      },
+      "writtenOn": "2020-05-20T23:48:18Z",
+      "side": 1,
+      "message": "Should we check whether this has already been set and if so  whether it\u0027s the same?",
+      "revId": "90d93fbccc734bdf2589fccb29cec35a86390812",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
