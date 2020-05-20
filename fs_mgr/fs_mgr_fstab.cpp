@@ -408,16 +408,23 @@ std::string ReadFstabFromDt() {
     return fstab_result;
 }
 
-// Identify path to fstab file. Lookup is based on pattern fstab.<hardware>,
+// Identify path to fstab file. The new way is to trust a property set up by
+// the "mount_all" command, and only fall back to searching for the fstab if
+// this was not used. The old lookup is based on pattern fstab.<hardware>,
 // fstab.<hardware.platform> in folders /odm/etc, vendor/etc, or /.
 std::string GetFstabPath() {
+    std::string fstab_path = android::base::GetProperty("ro.fstab", "");
+    if (!fstab_path.empty() && access(fstab_path.c_str(), F_OK) == 0) {
+        return fstab_path;
+    }
+
     for (const char* prop : {"hardware", "hardware.platform"}) {
         std::string hw;
 
         if (!fs_mgr_get_boot_config(prop, &hw)) continue;
 
         for (const char* prefix : {"/odm/etc/fstab.", "/vendor/etc/fstab.", "/fstab."}) {
-            std::string fstab_path = prefix + hw;
+            fstab_path = prefix + hw;
             if (access(fstab_path.c_str(), F_OK) == 0) {
                 return fstab_path;
             }

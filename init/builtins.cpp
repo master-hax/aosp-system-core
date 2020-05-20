@@ -670,6 +670,7 @@ static Result<void> do_mount_all(const BuiltinArguments& args) {
     }
 
     auto mount_fstab_return_code = fs_mgr_mount_all(&fstab, mount_mode);
+    SetProperty("ro.fstab", fstab_file);
     SetProperty(prop_name, std::to_string(t.duration().count()));
 
     if (import_rc && SelinuxGetVendorAndroidVersion() <= __ANDROID_API_Q__) {
