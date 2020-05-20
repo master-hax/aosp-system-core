@@ -50,10 +50,6 @@ class ChattyLogBuffer : public LogBuffer {
 
     unsigned long mMaxSize[LOG_ID_MAX];
 
-    LogBufferElement* lastLoggedElements[LOG_ID_MAX];
-    LogBufferElement* droppedElements[LOG_ID_MAX];
-    void log(LogBufferElement* elem);
-
   public:
     ChattyLogBuffer(LogReaderList* reader_list, LogTags* tags, PruneList* prune,
                     LogStatistics* stats);
@@ -81,6 +77,8 @@ class ChattyLogBuffer : public LogBuffer {
     bool prune(log_id_t id, unsigned long pruneRows, uid_t uid = AID_ROOT);
     LogBufferElementCollection::iterator erase(LogBufferElementCollection::iterator it,
                                                bool coalesce = false);
+    bool ShouldLog(log_id_t log_id, const char* msg, uint16_t len);
+    void Log(std::unique_ptr<LogBufferElement>&& elem);
 
     // Returns an iterator to the oldest element for a given log type, or mLogElements.end() if
     // there are no logs for the given log type. Requires mLogElementsLock to be held.
@@ -94,4 +92,10 @@ class ChattyLogBuffer : public LogBuffer {
     // Keeps track of the iterator to the oldest log message of a given log type, as an
     // optimization when pruning logs.  Use GetOldest() to retrieve.
     std::optional<LogBufferElementCollection::iterator> oldest_[LOG_ID_MAX];
+
+    // This always contains a copy of the last message logged, for deduplication.
+    std::unique_ptr<LogBufferElement> last_logged_elements_[LOG_ID_MAX];
+    // This contains an element if duplicate messages are seen.
+    // Its `dropped` count is `duplicates seen - 1`.
+    std::unique_ptr<LogBufferElement> duplicate_elements_[LOG_ID_MAX];
 };
