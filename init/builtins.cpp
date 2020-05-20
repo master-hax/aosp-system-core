@@ -633,7 +633,8 @@ static Result<void> queue_fs_event(int code, bool userdata_remount) {
 
 static int initial_mount_fstab_return_code = -1;
 
-/* mount_all <fstab> [ <path> ]* [--<options>]*
+/* <= Q: mount_all <fstab> [ <path> ]* [--<options>]*
+ * >= R: mount_all [ <fstab> ] [--<options>]*
  *
  * This function might request a reboot, in which case it will
  * not return.
@@ -643,18 +644,29 @@ static Result<void> do_mount_all(const BuiltinArguments& args) {
     bool import_rc = true;
     bool queue_event = true;
     int mount_mode = MOUNT_MODE_DEFAULT;
-    const auto& fstab_file = args[1];
-    std::size_t path_arg_end = args.size();
+    std::size_t first_option_arg = args.size();
     const char* prop_post_fix = "default";
+    bool compat_mode = false;
 
-    for (na = args.size() - 1; na > 1; --na) {
+    if (SelinuxGetVendorAndroidVersion() <= __ANDROID_API_Q__) {
+        if (args.size() == 0) {
+            return Error() << "mount_all requires at least 1 argument";
+        }
+        compat_mode = true;
+    }
+
+    /* If we are <= Q, then stop looking for non-fstab arguments at slot 2.
+     * Otherwise, stop looking at slot 1 (as the fstab path argument is
+     * optional >= R).
+     */
+    for (na = args.size() - 1; na > (compat_mode ? 1 : 0); --na) {
         if (args[na] == "--early") {
-            path_arg_end = na;
+            first_option_arg = na;
             queue_event = false;
             mount_mode = MOUNT_MODE_EARLY;
             prop_post_fix = "early";
         } else if (args[na] == "--late") {
-            path_arg_end = na;
+            first_option_arg = na;
             import_rc = false;
             mount_mode = MOUNT_MODE_LATE;
             prop_post_fix = "late";
@@ -665,16 +677,24 @@ static Result<void> do_mount_all(const BuiltinArguments& args) {
     android::base::Timer t;
 
     Fstab fstab;
-    if (!ReadFstabFromFile(fstab_file, &fstab)) {
-        return Error() << "Could not read fstab";
+    if (first_option_arg > 1) {
+        if (!ReadFstabFromFile(args[1], &fstab)) {
+            return Error() << "Could not read fstab";
+        }
+    } else if (compat_mode) {
+        return Error() << "mount_all argument 1 must be the fstab path";
+    } else {
+        if (!ReadDefaultFstab(&fstab)) {
+            return Error() << "Could not read default fstab";
+        }
     }
 
     auto mount_fstab_return_code = fs_mgr_mount_all(&fstab, mount_mode);
     SetProperty(prop_name, std::to_string(t.duration().count()));
 
-    if (import_rc && SelinuxGetVendorAndroidVersion() <= __ANDROID_API_Q__) {
-        /* Paths of .rc files are specified at the 2nd argument and beyond */
-        import_late(args.args, 2, path_arg_end);
+    if (import_rc && compat_mode) {
+        /* Path arguments are after fstab, before the first option arg (if any) */
+        import_late(args.args, 2, first_option_arg);
     }
 
     if (queue_event) {
@@ -690,11 +710,23 @@ static Result<void> do_mount_all(const BuiltinArguments& args) {
     return {};
 }
 
-/* umount_all <fstab> */
+/* umount_all [ <fstab> ] */
 static Result<void> do_umount_all(const BuiltinArguments& args) {
+    if (SelinuxGetVendorAndroidVersion() <= __ANDROID_API_Q__) {
+        if (args.size() == 0) {
+            return Error() << "umount_all requires at least 1 argument";
+        }
+    }
+
     Fstab fstab;
-    if (!ReadFstabFromFile(args[1], &fstab)) {
-        return Error() << "Could not read fstab";
+    if (args.size() == 1) {
+        if (!ReadFstabFromFile(args[1], &fstab)) {
+            return Error() << "Could not read fstab";
+        }
+    } else {
+        if (!ReadDefaultFstab(&fstab)) {
+            return Error() << "Could not read default fstab";
+        }
     }
 
     if (auto result = fs_mgr_umount_all(&fstab); result != 0) {
@@ -1349,11 +1381,11 @@ const BuiltinFunctionMap& GetBuiltinFunctionMap() {
         // mount_all is currently too complex to run in vendor_init as it queues action triggers,
         // imports rc scripts, etc.  It should be simplified and run in vendor_init context.
         // mount and umount are run in the same context as mount_all for symmetry.
-        {"mount_all",               {1,     kMax, {false,  do_mount_all}}},
+        {"mount_all",               {0,     kMax, {false,  do_mount_all}}},
         {"mount",                   {3,     kMax, {false,  do_mount}}},
         {"perform_apex_config",     {0,     0,    {false,  do_perform_apex_config}}},
         {"umount",                  {1,     1,    {false,  do_umount}}},
-        {"umount_all",              {1,     1,    {false,  do_umount_all}}},
+        {"umount_all",              {0,     1,    {false,  do_umount_all}}},
         {"update_linker_config",    {0,     0,    {false,  do_update_linker_config}}},
         {"readahead",               {1,     2,    {true,   do_readahead}}},
         {"remount_userdata",        {0,     0,    {false,  do_remount_userdata}}},
