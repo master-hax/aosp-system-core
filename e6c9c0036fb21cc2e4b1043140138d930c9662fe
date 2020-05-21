@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8b34c149_fa32ce2e",
+        "filename": "logd/ChattyLogBuffer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 344,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-05-21T00:32:05Z",
+      "side": 1,
+      "message": "This is wrong now, element will have been deleted.",
+      "range": {
+        "startLine": 340,
+        "startChar": 0,
+        "endLine": 344,
+        "endChar": 5
+      },
+      "revId": "e6c9c0036fb21cc2e4b1043140138d930c9662fe",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
