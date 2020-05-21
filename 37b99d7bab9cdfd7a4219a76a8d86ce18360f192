@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "25c78043_2c022999",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1137063
+      },
+      "writtenOn": "2020-05-21T18:08:37Z",
+      "side": 1,
+      "message": "I tested this on Cuttlefish with ext4.  Seems to work fine.  The IV_INO_LBLK_32 flag is used, and \u0027tune2fs -l /dev/block/dm-6\u0027 lists the stable_inodes flag.",
+      "range": {
+        "startLine": 14,
+        "startChar": 0,
+        "endLine": 14,
+        "endChar": 19
+      },
+      "revId": "37b99d7bab9cdfd7a4219a76a8d86ce18360f192",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
