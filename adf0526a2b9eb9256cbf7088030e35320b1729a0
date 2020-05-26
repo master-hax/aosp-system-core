@@ -22,6 +22,30 @@
       "revId": "adf0526a2b9eb9256cbf7088030e35320b1729a0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3a0b58c7_639500e0",
+        "filename": "libutils/FileMap_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2020-05-26T19:00:48Z",
+      "side": 1,
+      "message": "That does sound better, so done.",
+      "parentUuid": "ae8b0abc_4fb849d4",
+      "range": {
+        "startLine": 57,
+        "startChar": 22,
+        "endLine": 57,
+        "endChar": 30
+      },
+      "revId": "adf0526a2b9eb9256cbf7088030e35320b1729a0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
