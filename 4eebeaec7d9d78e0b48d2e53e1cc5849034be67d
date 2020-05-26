@@ -79,6 +79,30 @@
       "revId": "4eebeaec7d9d78e0b48d2e53e1cc5849034be67d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "594098ae_42d91531",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 658,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2020-05-26T17:57:17Z",
+      "side": 1,
+      "message": "Even if you want to reload these numbers when resuming the merge, I think these numbers should be directly included in the report then be written to /metadata.",
+      "parentUuid": "fefe966f_57d11e52",
+      "range": {
+        "startLine": 657,
+        "startChar": 0,
+        "endLine": 658,
+        "endChar": 58
+      },
+      "revId": "4eebeaec7d9d78e0b48d2e53e1cc5849034be67d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
