@@ -130,6 +130,9 @@ message SnapshotUpdateStatus {
 
     // Sectors allocated for metadata in all the snapshot devices.
     uint64 metadata_sectors = 4;
+
+    // Bytes allocated for the COW image before the update.
+    uint64 total_cow_file_size = 6;
 }
 
 // Next: 2
@@ -140,4 +143,7 @@ message SnapshotMergeReport {
     // Number of reboots that occurred after issuing and before completeing the
     // merge of all the snapshot devices.
     int32 resume_count = 2;
+
+    // Total size of all the COW images before the update.
+    uint64 cow_file_size = 4;
 }
