@@ -1,0 +1,84 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "173bb41d_ffdfdbf1",
+        "filename": "fs_mgr/libsnapshot/android/snapshot/snapshot.proto",
+        "patchSetId": 2
+      },
+      "lineNbr": 153,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2020-05-26T17:52:21Z",
+      "side": 1,
+      "message": "... before the update",
+      "revId": "4eebeaec7d9d78e0b48d2e53e1cc5849034be67d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d1855f4b_f2799cd0",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/snapshot.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 127,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2020-05-26T17:52:21Z",
+      "side": 1,
+      "message": "put \u003d nullptr here too?",
+      "revId": "4eebeaec7d9d78e0b48d2e53e1cc5849034be67d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "184772d1_2e61d4ba",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 643,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2020-05-26T17:52:21Z",
+      "side": 1,
+      "message": "Should we consider this as a failure case for InitiateMerge? I know it is a very rare branch to hit, but I think this is just a failure to report the numbers, but it has nothing to do with initiating the merge at all. Maybe log warning and set total_free_space to 0?",
+      "range": {
+        "startLine": 642,
+        "startChar": 0,
+        "endLine": 643,
+        "endChar": 21
+      },
+      "revId": "4eebeaec7d9d78e0b48d2e53e1cc5849034be67d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fefe966f_57d11e52",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 658,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2020-05-26T17:52:21Z",
+      "side": 1,
+      "message": "Why do SnapshotUpdateStatus need these two fields? It looks like it only serves as a return value of InitateMerge so that CleanupPreviousUpdateAction can send it to SnapshotMergeStats, but it is not necessary to be included in SnapshotUpdateStatus, correct?",
+      "range": {
+        "startLine": 657,
+        "startChar": 0,
+        "endLine": 658,
+        "endChar": 58
+      },
+      "revId": "4eebeaec7d9d78e0b48d2e53e1cc5849034be67d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
