@@ -130,6 +130,12 @@ message SnapshotUpdateStatus {
 
     // Sectors allocated for metadata in all the snapshot devices.
     uint64 metadata_sectors = 4;
+
+    // Free space available in the target partition before the update.
+    uint64 total_free_space = 5;
+
+    // Bytes allocated for the COW image.
+    uint64 total_cow_file_size = 6;
 }
 
 // Next: 2
@@ -140,4 +146,10 @@ message SnapshotMergeReport {
     // Number of reboots that occurred after issuing and before completeing the
     // merge of all the snapshot devices.
     int32 resume_count = 2;
+
+    // Free space available in the target partition before the update.
+    uint64 free_space = 3;
+
+    // Total size of all the COW images.
+    uint64 cow_file_size = 4;
 }

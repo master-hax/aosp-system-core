@@ -555,7 +555,7 @@ bool SnapshotManager::DeleteSnapshot(LockedFile* lock, const std::string& name) 
     return true;
 }
 
-bool SnapshotManager::InitiateMerge() {
+bool SnapshotManager::InitiateMerge(SnapshotUpdateStatus* status) {
     auto lock = LockExclusive();
     if (!lock) return false;
 
@@ -618,6 +618,7 @@ bool SnapshotManager::InitiateMerge() {
         }
     }
 
+    uint64_t total_cow_file_size = 1234;
     DmTargetSnapshot::Status initial_target_values = {};
     for (const auto& snapshot : snapshots) {
         DmTargetSnapshot::Status current_status;
@@ -627,13 +628,38 @@ bool SnapshotManager::InitiateMerge() {
         initial_target_values.sectors_allocated += current_status.sectors_allocated;
         initial_target_values.total_sectors += current_status.total_sectors;
         initial_target_values.metadata_sectors += current_status.metadata_sectors;
+
+        SnapshotStatus snapshot_status;
+        if (!ReadSnapshotStatus(lock.get(), snapshot, &snapshot_status)) {
+            return false;
+        }
+        total_cow_file_size += snapshot_status.cow_file_size();
     }
+
+    // Compute total free space available in the current LP
+    std::unique_ptr<MetadataBuilder> current_metadata = MetadataBuilder::New(*metadata);
+    if (current_metadata == nullptr) {
+        LOG(ERROR) << "Cannot create metadata builder.";
+        return false;
+    }
+    uint64_t total_free_space = 0;
+    auto free_regions = current_metadata->GetFreeRegions();
+    for (const auto& interval : free_regions) {
+        total_free_space += interval.length();
+    }
+    total_free_space *= kSectorSize;
 
     SnapshotUpdateStatus initial_status;
     initial_status.set_state(UpdateState::Merging);
     initial_status.set_sectors_allocated(initial_target_values.sectors_allocated);
     initial_status.set_total_sectors(initial_target_values.total_sectors);
     initial_status.set_metadata_sectors(initial_target_values.metadata_sectors);
+    initial_status.set_total_cow_file_size(total_cow_file_size);
+    initial_status.set_total_free_space(total_free_space);
+
+    if (status) {
+        *status = initial_status;
+    }
 
     // Point of no return - mark that we're starting a merge. From now on every
     // snapshot must be a merge target.
