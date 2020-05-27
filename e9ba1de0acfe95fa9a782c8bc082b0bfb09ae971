@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "eb2aeaec_5ff9ec55",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 693,
+      "author": {
+        "id": 1079733
+      },
+      "writtenOn": "2020-05-27T20:57:32Z",
+      "side": 1,
+      "message": "Does it make sense to do something similar to f2fs as well?",
+      "revId": "e9ba1de0acfe95fa9a782c8bc082b0bfb09ae971",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
