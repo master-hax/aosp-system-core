@@ -674,7 +674,18 @@ static int prepare_fs_for_mount(const std::string& blk_device, const FstabEntry&
             // Note: quotas should be enabled before running fsck.
             tune_quota(blk_device, entry, &sb, &fs_stat);
         } else {
-            return fs_stat;
+            fs_stat &= ~FS_STAT_INVALID_MAGIC;
+            fs_stat |= FS_STAT_FULL_MOUNT_FAILED;
+            if (entry.fs_mgr_flags.check) {
+                check_fs(blk_device, entry.fs_type, entry.mount_point, &fs_stat);
+            }
+
+            if (read_ext4_superblock(blk_device, &sb, &fs_stat)) {
+                LINFO << "Filesystem on " << blk_device << " was corrupted; "
+                      << "superblock has been recovered by e2fsck";
+                fs_stat |= FS_STAT_UNCLEAN_SHUTDOWN;
+            } else
+                return fs_stat;
         }
     } else if (is_f2fs(entry.fs_type)) {
         if (!read_f2fs_superblock(blk_device, &fs_stat)) {
