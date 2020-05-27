@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a5e3a86_e1488f93",
+        "filename": "logd/LogBuffer.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-05-27T22:18:39Z",
+      "side": 1,
+      "message": "In theory, I\u0027d like to use a structure to hold multiple elements, but none of the existing ones would work for this and copying everything into a new structure or having some hybrid structure + extra parameters seems worse.\n\nLogBufferElement contains the message, so it\u0027s too expensive to allocate.\nMy new LogBufferElements won\u0027t contain log_id or dropped_count.\nstruct logger_entry doesn\u0027t contain sequence or dropped_count.\n\nFor 5 parameters, some of which may be in flux over time, it looks like specifying each of them is the least worst option here.",
+      "revId": "70fadea36f9d742e2e52e223abb6d75bcc5307f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
