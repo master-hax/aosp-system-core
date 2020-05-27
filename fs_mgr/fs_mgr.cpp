@@ -647,6 +647,11 @@ bool fs_mgr_is_f2fs(const std::string& blk_device) {
     return sb == cpu_to_le32(F2FS_SUPER_MAGIC);
 }
 
+static bool should_use_metadata_encryption(const FstabEntry& entry) {
+    return !entry.metadata_key_dir.empty() &&
+           (entry.fs_mgr_flags.file_encryption || entry.fs_mgr_flags.force_fde_or_fbe);
+}
+
 //
 // Prepare the filesystem on the given block device to be mounted.
 //
@@ -674,7 +679,26 @@ static int prepare_fs_for_mount(const std::string& blk_device, const FstabEntry&
             // Note: quotas should be enabled before running fsck.
             tune_quota(blk_device, entry, &sb, &fs_stat);
         } else {
-            return fs_stat;
+            if (!entry.fs_mgr_flags.file_encryption || should_use_metadata_encryption(entry)) {
+                return fs_stat;
+            }
+
+            fs_stat &= ~FS_STAT_INVALID_MAGIC;
+            fs_stat |= FS_STAT_FULL_MOUNT_FAILED;
+            if (entry.fs_mgr_flags.check) {
+                check_fs(blk_device, entry.fs_type, entry.mount_point, &fs_stat);
+            }
+            fs_stat &= ~FS_STAT_FULL_MOUNT_FAILED;
+
+            if (read_ext4_superblock(blk_device, &sb, &fs_stat)) {
+                LINFO << "Filesystem on " << blk_device << " was corrupted; "
+                      << "superblock has been recovered by e2fsck";
+                fs_stat |= FS_STAT_UNCLEAN_SHUTDOWN;
+            } else
+                return fs_stat;
+
+            // Note: quotas should be enabled before running fsck.
+            tune_quota(blk_device, entry, &sb, &fs_stat);
         }
     } else if (is_f2fs(entry.fs_type)) {
         if (!read_f2fs_superblock(blk_device, &fs_stat)) {
@@ -942,11 +966,6 @@ static bool needs_block_encryption(const FstabEntry& entry) {
         if (access(convert_fbe_name.c_str(), F_OK) != 0) return true;
     }
     return false;
-}
-
-static bool should_use_metadata_encryption(const FstabEntry& entry) {
-    return !entry.metadata_key_dir.empty() &&
-           (entry.fs_mgr_flags.file_encryption || entry.fs_mgr_flags.force_fde_or_fbe);
 }
 
 // Check to see if a mountable volume has encryption requirements
