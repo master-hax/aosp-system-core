@@ -115,7 +115,8 @@ struct SimpleFlushToState : public FlushToState {
 };
 
 uint64_t SimpleLogBuffer::FlushTo(
-        LogWriter* writer, uint64_t start, std::unique_ptr<FlushToState>& abstract_state,
+        LogWriter* writer, uint64_t start, LogMask log_mask,
+        std::unique_ptr<FlushToState>& abstract_state,
         const std::function<FilterResult(log_id_t log_id, pid_t pid, uint64_t sequence,
                                          log_time realtime, uint16_t dropped_count)>& filter) {
     auto shared_lock = SharedLock{lock_};
@@ -147,6 +148,10 @@ uint64_t SimpleLogBuffer::FlushTo(
         }
 
         if (!writer->can_read_security_logs() && element.getLogId() == LOG_ID_SECURITY) {
+            continue;
+        }
+
+        if (((1 << element.getLogId()) & log_mask) == 0) {
             continue;
         }
 

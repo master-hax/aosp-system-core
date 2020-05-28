@@ -35,7 +35,8 @@ class SimpleLogBuffer : public LogBuffer {
 
     int Log(log_id_t log_id, log_time realtime, uid_t uid, pid_t pid, pid_t tid, const char* msg,
             uint16_t len) override;
-    uint64_t FlushTo(LogWriter* writer, uint64_t start, std::unique_ptr<FlushToState>& state,
+    uint64_t FlushTo(LogWriter* writer, uint64_t start, LogMask log_mask,
+                     std::unique_ptr<FlushToState>& state,
                      const std::function<FilterResult(log_id_t log_id, pid_t pid, uint64_t sequence,
                                                       log_time realtime, uint16_t dropped_count)>&
                              filter) override;

@@ -62,7 +62,7 @@ TEST_P(ChattyLogBufferTest, deduplication_simple) {
     std::vector<LogMessage> read_log_messages;
     std::unique_ptr<LogWriter> test_writer(new TestWriter(&read_log_messages, nullptr));
     std::unique_ptr<FlushToState> flush_to_state;
-    log_buffer_->FlushTo(test_writer.get(), 1, flush_to_state, nullptr);
+    log_buffer_->FlushTo(test_writer.get(), 1, kLogMaskAll, flush_to_state, nullptr);
 
     std::vector<LogMessage> expected_log_messages = {
             make_message(0, "test_tag", "duplicate"),
@@ -119,7 +119,7 @@ TEST_P(ChattyLogBufferTest, deduplication_overflow) {
     std::vector<LogMessage> read_log_messages;
     std::unique_ptr<LogWriter> test_writer(new TestWriter(&read_log_messages, nullptr));
     std::unique_ptr<FlushToState> flush_to_state;
-    log_buffer_->FlushTo(test_writer.get(), 1, flush_to_state, nullptr);
+    log_buffer_->FlushTo(test_writer.get(), 1, kLogMaskAll, flush_to_state, nullptr);
 
     std::vector<LogMessage> expected_log_messages = {
             make_message(0, "test_tag", "normal"),
@@ -175,7 +175,7 @@ TEST_P(ChattyLogBufferTest, deduplication_liblog) {
     std::vector<LogMessage> read_log_messages;
     std::unique_ptr<LogWriter> test_writer(new TestWriter(&read_log_messages, nullptr));
     std::unique_ptr<FlushToState> flush_to_state;
-    log_buffer_->FlushTo(test_writer.get(), 1, flush_to_state, nullptr);
+    log_buffer_->FlushTo(test_writer.get(), 1, kLogMaskAll, flush_to_state, nullptr);
 
     std::vector<LogMessage> expected_log_messages = {
             make_message(0, 1234, 1),

@@ -25,6 +25,10 @@
 
 #include "LogWriter.h"
 
+// A mask to represent which log buffers a reader is watching, values are (1 << LOG_ID_MAIN), etc.
+using LogMask = uint32_t;
+constexpr uint32_t kLogMaskAll = 0xFFFFFFFF;
+
 // State that a LogBuffer may want to persist across calls to FlushTo().
 class FlushToState {
   public:
@@ -48,7 +52,7 @@ class LogBuffer {
                     const char* msg, uint16_t len) = 0;
 
     static const uint64_t FLUSH_ERROR = 0;
-    virtual uint64_t FlushTo(LogWriter* writer, uint64_t start,
+    virtual uint64_t FlushTo(LogWriter* writer, uint64_t start, LogMask log_mask,
                              std::unique_ptr<FlushToState>& state,
                              const std::function<FilterResult(log_id_t log_id, pid_t pid,
                                                               uint64_t sequence, log_time realtime,

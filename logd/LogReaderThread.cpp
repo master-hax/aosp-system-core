@@ -74,7 +74,7 @@ void LogReaderThread::ThreadFunction() {
 
         if (tail_) {
             std::unique_ptr<FlushToState> first_pass_state;
-            log_buffer_->FlushTo(writer_.get(), start, first_pass_state,
+            log_buffer_->FlushTo(writer_.get(), start, log_mask_, first_pass_state,
                                  [this](log_id_t log_id, pid_t pid, uint64_t sequence,
                                         log_time realtime, uint16_t dropped_count) {
                                      return FilterFirstPass(log_id, pid, sequence, realtime,
@@ -84,7 +84,7 @@ void LogReaderThread::ThreadFunction() {
                     true;  // TODO: Likely a bug, if leading_dropped_ was not true before calling
                            // flushTo(), then it should not be reset to true after.
         }
-        start = log_buffer_->FlushTo(writer_.get(), start, flush_to_state_,
+        start = log_buffer_->FlushTo(writer_.get(), start, log_mask_, flush_to_state_,
                                      [this](log_id_t log_id, pid_t pid, uint64_t sequence,
                                             log_time realtime, uint16_t dropped_count) {
                                          return FilterSecondPass(log_id, pid, sequence, realtime,
@@ -131,7 +131,7 @@ void LogReaderThread::ThreadFunction() {
 }
 
 // A first pass to count the number of elements
-FilterResult LogReaderThread::FilterFirstPass(log_id_t log_id, pid_t pid, uint64_t sequence,
+FilterResult LogReaderThread::FilterFirstPass(log_id_t, pid_t pid, uint64_t sequence,
                                               log_time realtime, uint16_t dropped_count) {
     auto lock = std::lock_guard{reader_list_->reader_threads_lock()};
 
@@ -146,8 +146,7 @@ FilterResult LogReaderThread::FilterFirstPass(log_id_t log_id, pid_t pid, uint64
         start_ = sequence;
     }
 
-    if ((!pid_ || pid_ == pid) && IsWatching(log_id) &&
-        (start_time_ == log_time::EPOCH || start_time_ <= realtime)) {
+    if ((!pid_ || pid_ == pid) && (start_time_ == log_time::EPOCH || start_time_ <= realtime)) {
         ++count_;
     }
 
@@ -176,10 +175,6 @@ FilterResult LogReaderThread::FilterSecondPass(log_id_t log_id, pid_t pid, uint6
     // Truncate to close race between first and second pass
     if (non_block_ && tail_ && index_ >= count_) {
         return FilterResult::kStop;
-    }
-
-    if (!IsWatching(log_id)) {
-        return FilterResult::kSkip;
     }
 
     if (pid_ && pid_ != pid) {
