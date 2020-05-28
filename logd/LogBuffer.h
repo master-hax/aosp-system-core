@@ -25,6 +25,13 @@
 
 #include "LogWriter.h"
 
+// State that a LogBuffer may want to persist across calls to FlushTo().
+class FlushToState {
+  public:
+    virtual ~FlushToState() {}
+};
+
+// Enum for the return values of the `filter` function passed to FlushTo().
 enum class FilterResult {
     kSkip,
     kStop,
@@ -39,12 +46,10 @@ class LogBuffer {
 
     virtual int Log(log_id_t log_id, log_time realtime, uid_t uid, pid_t pid, pid_t tid,
                     const char* msg, uint16_t len) = 0;
-    // lastTid is an optional context to help detect if the last previous
-    // valid message was from the same source so we can differentiate chatty
-    // filter types (identical or expired)
+
     static const uint64_t FLUSH_ERROR = 0;
     virtual uint64_t FlushTo(LogWriter* writer, uint64_t start,
-                             pid_t* last_tid,  // nullable
+                             std::unique_ptr<FlushToState>& state,
                              const std::function<FilterResult(log_id_t log_id, pid_t pid,
                                                               uint64_t sequence, log_time realtime,
                                                               uint16_t dropped_count)>& filter) = 0;

@@ -208,7 +208,8 @@ TEST_P(LogBufferTest, smoke) {
 
     std::vector<LogMessage> read_log_messages;
     std::unique_ptr<LogWriter> test_writer(new TestWriter(&read_log_messages, nullptr));
-    uint64_t flush_result = log_buffer_->FlushTo(test_writer.get(), 1, nullptr, nullptr);
+    std::unique_ptr<FlushToState> flush_to_state;
+    uint64_t flush_result = log_buffer_->FlushTo(test_writer.get(), 1, flush_to_state, nullptr);
     EXPECT_EQ(1ULL, flush_result);
     CompareLogMessages(log_messages, read_log_messages);
 }

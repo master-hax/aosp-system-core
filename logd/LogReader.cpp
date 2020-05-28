@@ -195,8 +195,8 @@ bool LogReader::onDataAvailable(SocketClient* cli) {
             }
             return FilterResult::kSkip;
         };
-
-        log_buffer_->FlushTo(socket_log_writer.get(), sequence, nullptr, log_find_start);
+        std::unique_ptr<FlushToState> flush_to_state;
+        log_buffer_->FlushTo(socket_log_writer.get(), sequence, flush_to_state, log_find_start);
 
         if (!start_time_set) {
             if (nonBlock) {

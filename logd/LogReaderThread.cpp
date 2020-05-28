@@ -45,7 +45,6 @@ LogReaderThread::LogReaderThread(LogBuffer* log_buffer, LogReaderList* reader_li
       start_(start),
       deadline_(deadline),
       non_block_(non_block) {
-    memset(last_tid_, 0, sizeof(last_tid_));
     cleanSkip_Locked();
     auto thread = std::thread{&LogReaderThread::ThreadFunction, this};
     thread.detach();
@@ -74,7 +73,8 @@ void LogReaderThread::ThreadFunction() {
         lock.unlock();
 
         if (tail_) {
-            log_buffer_->FlushTo(writer_.get(), start, nullptr,
+            std::unique_ptr<FlushToState> first_pass_state;
+            log_buffer_->FlushTo(writer_.get(), start, first_pass_state,
                                  [this](log_id_t log_id, pid_t pid, uint64_t sequence,
                                         log_time realtime, uint16_t dropped_count) {
                                      return FilterFirstPass(log_id, pid, sequence, realtime,
@@ -84,7 +84,7 @@ void LogReaderThread::ThreadFunction() {
                     true;  // TODO: Likely a bug, if leading_dropped_ was not true before calling
                            // flushTo(), then it should not be reset to true after.
         }
-        start = log_buffer_->FlushTo(writer_.get(), start, last_tid_,
+        start = log_buffer_->FlushTo(writer_.get(), start, flush_to_state_,
                                      [this](log_id_t log_id, pid_t pid, uint64_t sequence,
                                             log_time realtime, uint16_t dropped_count) {
                                          return FilterSecondPass(log_id, pid, sequence, realtime,

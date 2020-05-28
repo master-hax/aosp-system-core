@@ -86,8 +86,8 @@ class LogReaderThread {
     // buffer's size grows past its memory limit, the log buffer may request the reader to skip
     // ahead a specified number of logs.
     unsigned int skip_ahead_[LOG_ID_MAX];
-    // Used for distinguishing 'dropped' messages for duplicate logs vs chatty drops
-    pid_t last_tid_[LOG_ID_MAX];
+    // LogBuffer::FlushTo() needs to store state across subsequent calls.
+    std::unique_ptr<FlushToState> flush_to_state_;
 
     // These next three variables are used for reading only the most recent lines aka `adb logcat
     // -t` / `adb logcat -T`.

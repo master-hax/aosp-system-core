@@ -110,8 +110,12 @@ void SimpleLogBuffer::LogInternal(LogBufferElement&& elem) {
     reader_list_->NotifyNewLog(1 << log_id);
 }
 
+struct SimpleFlushToState : public FlushToState {
+    pid_t last_tid[LOG_ID_MAX] = {};
+};
+
 uint64_t SimpleLogBuffer::FlushTo(
-        LogWriter* writer, uint64_t start, pid_t* last_tid,
+        LogWriter* writer, uint64_t start, std::unique_ptr<FlushToState>& abstract_state,
         const std::function<FilterResult(log_id_t log_id, pid_t pid, uint64_t sequence,
                                          log_time realtime, uint16_t dropped_count)>& filter) {
     auto shared_lock = SharedLock{lock_};
@@ -157,17 +161,17 @@ uint64_t SimpleLogBuffer::FlushTo(
             }
         }
 
-        bool same_tid = false;
-        if (last_tid) {
-            same_tid = last_tid[element.getLogId()] == element.getTid();
-            // Dropped (chatty) immediately following a valid log from the
-            // same source in the same log buffer indicates we have a
-            // multiple identical squash.  chatty that differs source
-            // is due to spam filter.  chatty to chatty of different
-            // source is also due to spam filter.
-            last_tid[element.getLogId()] =
-                    (element.getDropped() && !same_tid) ? 0 : element.getTid();
+        if (abstract_state.get() == nullptr) {
+            abstract_state.reset(new SimpleFlushToState());
         }
+        auto* state = reinterpret_cast<SimpleFlushToState*>(abstract_state.get());
+
+        bool same_tid = state->last_tid[element.getLogId()] == element.getTid();
+        // Dropped (chatty) immediately following a valid log from the same source in the same log
+        // buffer indicates we have a multiple identical squash.  chatty that differs source is due
+        // to spam filter.  chatty to chatty of different source is also due to spam filter.
+        state->last_tid[element.getLogId()] =
+                (element.getDropped() && !same_tid) ? 0 : element.getTid();
 
         shared_lock.unlock();
 
