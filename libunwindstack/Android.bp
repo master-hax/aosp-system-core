@@ -327,6 +327,56 @@ cc_test {
     isolated: true,
 }
 
+
+
+//-------------------------------------------------------------------------
+// Fuzzers
+//-------------------------------------------------------------------------
+cc_defaults {
+    name: "libunwindstack_fuzz_defaults",
+    host_supported: true,
+    defaults: ["libunwindstack_defaults"],
+    shared_libs: [
+        "libbase",
+        "liblog",
+        "liblzma",
+        "libunwindstack",
+        "libdexfile_support",
+    ],
+}
+cc_fuzz {
+    name: "libunwindstack_fuzz_regs",
+    defaults: ["libunwindstack_fuzz_defaults"],
+    srcs: [
+        "tests/fuzz/UnwindComponentCreator.cpp",
+        "tests/MemoryFake.cpp",
+        "tests/fuzz/RegsFuzz.cpp",
+    ],
+}
+cc_fuzz {
+    name: "libunwindstack_fuzz_memory",
+    defaults: ["libunwindstack_fuzz_defaults"],
+    srcs: [
+        "tests/fuzz/MemoryFuzz.cpp",
+    ],
+}
+cc_fuzz {
+    name: "libunwindstack_fuzz_unwind",
+    defaults: ["libunwindstack_fuzz_defaults"],
+    srcs: [
+        "tests/fuzz/UnwindComponentCreator.cpp",
+        "tests/fuzz/UnwinderFuzz.cpp",
+    ],
+}
+cc_fuzz {
+    name: "libunwindstack_fuzz_dex_files",
+    defaults: ["libunwindstack_fuzz_defaults"],
+    srcs: [
+        "tests/fuzz/UnwindComponentCreator.cpp",
+        "tests/fuzz/DexFilesFuzz.cpp",
+    ],
+}
+
 //-------------------------------------------------------------------------
 // Tools
 //-------------------------------------------------------------------------
