@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "36a95a72_9b0e3ad5",
+        "filename": "adb/compression_utils.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 392,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-05-28T18:14:33Z",
+      "side": 1,
+      "message": "put this straight in the unique_ptr and then CHECK() on that? (since it seems like there\u0027s no ZSTD_getErrorName() error to report here, and it\u0027s presumably just a OOM issue?)",
+      "range": {
+        "startLine": 389,
+        "startChar": 8,
+        "endLine": 392,
+        "endChar": 9
+      },
+      "revId": "ba77a9888c5b7f14e03c47ea29677d72c6642813",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b666796a_4ec2715c",
+        "filename": "adb/compression_utils.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 446,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-05-28T18:14:33Z",
+      "side": 1,
+      "message": "(same)",
+      "range": {
+        "startLine": 442,
+        "startChar": 8,
+        "endLine": 446,
+        "endChar": 17
+      },
+      "revId": "ba77a9888c5b7f14e03c47ea29677d72c6642813",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
