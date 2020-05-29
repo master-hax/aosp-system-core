@@ -24,6 +24,7 @@
 #include <sys/stat.h>
 #include <sys/sysmacros.h>
 #include <sys/types.h>
+#include <sys/utsname.h>
 #include <unistd.h>
 
 #include <filesystem>
@@ -98,6 +99,70 @@ bool ForceNormalBoot(const std::string& cmdline) {
 }
 
 }  // namespace
+
+std::string GetModuleLoadList(bool recovery, const std::string& dir_path) {
+    auto module_load_file = "modules.load";
+    if (recovery) {
+        struct stat fileStat;
+        std::string recovery_load_path = dir_path + "/modules.load.recovery";
+        if (!stat(recovery_load_path.c_str(), &fileStat)) {
+            module_load_file = "modules.load.recovery";
+        }
+    }
+
+    return module_load_file;
+}
+
+#define MODULE_BASE_DIR "/lib/modules"
+bool LoadKernelModules(bool recovery, bool want_console) {
+    bool retval;
+    int modules_loaded;
+
+    struct utsname uts;
+    if (uname(&uts)) {
+        LOG(FATAL) << "Failed to get kernel version.";
+    }
+    int major, minor;
+    if (sscanf(uts.release, "%d.%d", &major, &minor) != 2) {
+        LOG(FATAL) << "Failed to parse kernel version " << uts.release;
+    }
+
+    auto moduledirs = std::unique_ptr<DIR, decltype(&closedir)>{opendir("/lib/modules"), closedir};
+    if (!moduledirs) {
+        return true;
+    }
+
+    struct dirent* ent;
+    while ((ent = readdir(moduledirs.get()))) {
+        if (ent->d_type != DT_DIR) {
+            continue;
+        }
+        int dir_major, dir_minor;
+        if (sscanf(ent->d_name, "%d.%d", &dir_major, &dir_minor) != 2 || dir_major != major ||
+            dir_minor != minor) {
+            continue;
+        }
+        std::string dir_path = MODULE_BASE_DIR "/";
+        dir_path.append(ent->d_name);
+        Modprobe m({dir_path}, GetModuleLoadList(recovery, dir_path));
+        m.ResetModuleCount();
+        retval = m.LoadListedModules(!want_console);
+        modules_loaded = m.GetModuleCount();
+        if (modules_loaded > 0) {
+            return retval;
+        }
+    }
+
+    Modprobe m({MODULE_BASE_DIR}, GetModuleLoadList(recovery, MODULE_BASE_DIR));
+    m.ResetModuleCount();
+    retval = m.LoadListedModules(!want_console);
+    modules_loaded = m.GetModuleCount();
+    if (modules_loaded > 0) {
+        return retval;
+    }
+
+    return true;
+}
 
 int FirstStageMain(int argc, char** argv) {
     if (REBOOT_BOOTLOADER_ON_PANIC) {
@@ -190,18 +255,9 @@ int FirstStageMain(int argc, char** argv) {
         old_root_dir.reset();
     }
 
-    std::string module_load_file = "modules.load";
-    if (IsRecoveryMode() && !ForceNormalBoot(cmdline)) {
-        struct stat fileStat;
-        std::string recovery_load_path = "/lib/modules/modules.load.recovery";
-        if (!stat(recovery_load_path.c_str(), &fileStat)) {
-            module_load_file = "modules.load.recovery";
-        }
-    }
-
-    Modprobe m({"/lib/modules"}, module_load_file);
     auto want_console = ALLOW_FIRST_STAGE_CONSOLE ? FirstStageConsole(cmdline) : 0;
-    if (!m.LoadListedModules(!want_console)) {
+
+    if (!LoadKernelModules(IsRecoveryMode() && !ForceNormalBoot(cmdline), want_console)) {
         if (want_console != FirstStageConsoleParam::DISABLED) {
             LOG(ERROR) << "Failed to load kernel modules, starting console";
         } else {
