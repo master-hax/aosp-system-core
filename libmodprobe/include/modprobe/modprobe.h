@@ -34,6 +34,8 @@ class Modprobe {
     bool GetAllDependencies(const std::string& module, std::vector<std::string>* pre_dependencies,
                             std::vector<std::string>* dependencies,
                             std::vector<std::string>* post_dependencies);
+    void ResetModuleCount(void);
+    int GetModuleCount(void);
     void EnableBlacklist(bool enable);
     void EnableVerbose(bool enable);
 
@@ -65,5 +67,6 @@ class Modprobe {
     std::unordered_map<std::string, std::string> module_options_;
     std::set<std::string> module_blacklist_;
     std::unordered_set<std::string> module_loaded_;
+    int module_count = 0;
     bool blacklist_enabled = false;
 };

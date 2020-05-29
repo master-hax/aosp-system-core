@@ -31,6 +31,14 @@
 #include <android-base/strings.h>
 #include <android-base/unique_fd.h>
 
+int Modprobe::GetModuleCount(void) {
+    return module_count;
+}
+
+void Modprobe::ResetModuleCount(void) {
+    module_count = 0;
+}
+
 std::string Modprobe::MakeCanonical(const std::string& module_path) {
     auto start = module_path.find_last_of('/');
     if (start == std::string::npos) {
