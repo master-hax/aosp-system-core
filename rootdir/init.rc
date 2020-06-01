@@ -66,6 +66,14 @@ on early-init
 
     start ueventd
 
+# Run boringssl self test for each ABI so that later processes can skip it. http://b/139348610
+on early-init && property:ro.product.cpu.abilist32=*
+    exec_start boringssl_self_test32
+on early-init && property:ro.product.cpu.abilist64=*
+    exec_start boringssl_self_test64
+
+
+on early-init
     # Run apexd-bootstrap so that APEXes that provide critical libraries
     # become available. Note that this is executed as exec_start to ensure that
     # the libraries are available to the processes started after this statement.
@@ -81,11 +89,6 @@ on early-init
     # Mount tracefs
     mount tracefs tracefs /sys/kernel/tracing
 
-# Run boringssl self test for each ABI so that later processes can skip it. http://b/139348610
-on early-init && property:ro.product.cpu.abilist32=*
-    exec_start boringssl_self_test32
-on early-init && property:ro.product.cpu.abilist64=*
-    exec_start boringssl_self_test64
 on property:apexd.status=ready && property:ro.product.cpu.abilist32=*
     exec_start boringssl_self_test_apex32
 on property:apexd.status=ready && property:ro.product.cpu.abilist64=*
@@ -93,12 +96,12 @@ on property:apexd.status=ready && property:ro.product.cpu.abilist64=*
 
 service boringssl_self_test32 /system/bin/boringssl_self_test32
     setenv BORINGSSL_SELF_TEST_CREATE_FLAG true # Any nonempty value counts as true
-    reboot_on_failure reboot,boringssl-self-check-failed
+    reboot_on_failure reboot,bootloader,boringssl-self-check-failed
     stdio_to_kmsg
 
 service boringssl_self_test64 /system/bin/boringssl_self_test64
     setenv BORINGSSL_SELF_TEST_CREATE_FLAG true # Any nonempty value counts as true
-    reboot_on_failure reboot,boringssl-self-check-failed
+    reboot_on_failure reboot,bootloader,boringssl-self-check-failed
     stdio_to_kmsg
 
 service boringssl_self_test_apex32 /apex/com.android.conscrypt/bin/boringssl_self_test32
@@ -176,6 +179,9 @@ on init
     mkdir /dev/binderfs
     mount binder binder /dev/binderfs stats=global
     chmod 0755 /dev/binderfs
+
+    # Mount fusectl
+    mount fusectl none /sys/fs/fuse/connections
 
     symlink /dev/binderfs/binder /dev/binder
     symlink /dev/binderfs/hwbinder /dev/hwbinder
@@ -327,7 +333,7 @@ on init
     chown system system /dev/freezer/frozen/freezer.state
     chown system system /dev/freezer/frozen/cgroup.procs
 
-    chmod 0444 /dev/freezer/frozen/freezer.state
+    chmod 0664 /dev/freezer/frozen/freezer.state
 
     # make the PSI monitor accessible to others
     chown system system /proc/pressure/memory
@@ -782,12 +788,12 @@ on post-fs-data
     # IOCTLs on ashmem fds any more.
     setprop sys.use_memfd false
 
-    # Explicitly disable FUSE
-    setprop persist.sys.fuse false
-
     # Set fscklog permission
     chown root system /dev/fscklogs/log
     chmod 0770 /dev/fscklogs/log
+
+    # Enable FUSE by default
+    setprop persist.sys.fuse true
 
 # Switch between sdcardfs and FUSE depending on persist property
 # TODO: Move this to ro property before launch because FDE devices
@@ -828,11 +834,6 @@ on zygote-start && property:ro.crypto.state=encrypted && property:ro.crypto.type
     start zygote
     start zygote_secondary
 
-on boot && property:ro.config.low_ram=true
-    # Tweak background writeout
-    write /proc/sys/vm/dirty_expire_centisecs 200
-    write /proc/sys/vm/dirty_background_ratio  5
-
 on boot
     # basic network init
     ifup lo
@@ -854,12 +855,17 @@ on boot
     chown root system /sys/block/zram0/writeback
     chmod 0664 /sys/block/zram0/writeback
 
-    # F2FS tuning. Set cp_interval larger than dirty_expire_centisecs, 30 secs,
+    # Tweak background writeout
+    write /proc/sys/vm/dirty_expire_centisecs 200
+    write /proc/sys/vm/dirty_background_ratio  5
+
+    # F2FS tuning. Set cp_interval larger than dirty_expire_centisecs
     # to avoid power consumption when system becomes mostly idle. Be careful
     # to make it too large, since it may bring userdata loss, if they
     # are not aware of using fsync()/sync() to prepare sudden power-cut.
     write /sys/fs/f2fs/${dev.mnt.blk.data}/cp_interval 200
     write /sys/fs/f2fs/${dev.mnt.blk.data}/gc_urgent_sleep_time 50
+    write /sys/fs/f2fs/${dev.mnt.blk.data}/iostat_enable 1
 
     # limit discard size to 128MB in order to avoid long IO latency
     # for filesystem tuning first (dm or sda)
