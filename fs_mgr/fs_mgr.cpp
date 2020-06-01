@@ -1094,8 +1094,22 @@ class CheckpointManager {
                 }
 
                 android::dm::DmTable table;
-                if (!table.AddTarget(std::make_unique<android::dm::DmTargetBow>(
-                            0, size, entry->blk_device))) {
+                auto bowTarget =
+                        std::make_unique<android::dm::DmTargetBow>(0, size, entry->blk_device);
+
+                // dm-bow uses the first block as a log record, and relocates the real first block
+                // elsewhere. For metadata encrypted devices, dm-bow sits below dm-default-key, and
+                // for post Android A devices dm-default-key uses a block size of 4096 always.
+                // So if dm-bow's block size, which by default is the block size of the underlying
+                // hardware, is less than dm-default-key's, blocks will get broken up and corrupted.
+                // However, since it is possible there is an already shipping non
+                // metadata-encrypted device with smaller blocks, we must not change this for
+                // devices shipped with Q or earlier.
+                if (android::base::GetIntProperty("ro.product.first_api_level", 0) >
+                    __ANDROID_API_Q__)
+                    bowTarget->SetBlockSize(4096);
+
+                if (!table.AddTarget(std::move(bowTarget))) {
                     LERROR << "Failed to add bow target";
                     return false;
                 }
