@@ -1094,8 +1094,18 @@ class CheckpointManager {
                 }
 
                 android::dm::DmTable table;
-                if (!table.AddTarget(std::make_unique<android::dm::DmTargetBow>(
-                            0, size, entry->blk_device))) {
+                auto bowDevice =
+                        std::make_unique<android::dm::DmTargetBow>(0, size, entry->blk_device);
+
+                // dm-bow uses the first block as a log record, and relocates the real first block
+                // elsewhere. So if dm-bow's block size is less than dm-default-key's, blocks will
+                // get broken up. However, since is is possible there is an already shipping non
+                // metadata device with smaller blocks, we must not change this for shipping devices
+                if (android::base::GetIntProperty("ro.product.first_api_level", 0) >
+                    __ANDROID_API_Q__)
+                    bowDevice->SetBlockSize(4096);
+
+                if (!table.AddTarget(std::move(bowDevice))) {
                     LERROR << "Failed to add bow target";
                     return false;
                 }
