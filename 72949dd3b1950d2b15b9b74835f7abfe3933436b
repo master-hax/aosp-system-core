@@ -114,6 +114,30 @@
       "revId": "72949dd3b1950d2b15b9b74835f7abfe3933436b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ead54217_5727583e",
+        "filename": "libunwindstack/tests/fuzz/MemoryFuzz.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1695385
+      },
+      "writtenOn": "2020-06-01T17:54:29Z",
+      "side": 1,
+      "message": "Interesting, when I originally looked at this function, it wasn\u0027t clear that out and maxRead had any relationship. Something I think is valuable about leaving \u0027out\u0027 as a single byte is that it challenges an assumption about the size of out and maxRead. That being said, I think making this a variable-length vector would probably make more sense.",
+      "parentUuid": "0f360ebd_d89b7551",
+      "range": {
+        "startLine": 44,
+        "startChar": 8,
+        "endLine": 45,
+        "endChar": 44
+      },
+      "revId": "72949dd3b1950d2b15b9b74835f7abfe3933436b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
