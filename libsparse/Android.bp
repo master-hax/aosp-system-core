@@ -58,6 +58,18 @@ cc_binary {
 }
 
 cc_binary_host {
+    name: "rechunksimg",
+    srcs: ["rechunksimg.cpp"],
+    static_libs: [
+        "libsparse",
+        "libz",
+        "libbase",
+    ],
+
+    cflags: ["-Werror"],
+}
+
+cc_binary_host {
     name: "append2simg",
     srcs: ["append2simg.cpp"],
     static_libs: [
