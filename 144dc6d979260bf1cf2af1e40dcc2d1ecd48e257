@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "37dc4c21_d644832c",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1100,
+      "author": {
+        "id": 1137063
+      },
+      "writtenOn": "2020-06-02T17:19:56Z",
+      "side": 1,
+      "message": "This could use a comment.",
+      "range": {
+        "startLine": 1099,
+        "startChar": 0,
+        "endLine": 1100,
+        "endChar": 50
+      },
+      "revId": "144dc6d979260bf1cf2af1e40dcc2d1ecd48e257",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
