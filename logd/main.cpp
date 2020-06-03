@@ -36,6 +36,7 @@
 
 #include <memory>
 
+#include <android-base/logging.h>
 #include <android-base/macros.h>
 #include <cutils/android_get_control_file.h>
 #include <cutils/sockets.h>
@@ -70,19 +71,18 @@ static int drop_privs(bool klogd, bool auditd) {
     sched_param param = {};
 
     if (set_sched_policy(0, SP_BACKGROUND) < 0) {
-        android::prdebug("failed to set background scheduling policy");
+        LOG(ERROR) << "failed to set background scheduling policy";
         return -1;
     }
 
     if (sched_setscheduler((pid_t)0, SCHED_BATCH, &param) < 0) {
-        android::prdebug("failed to set batch scheduler");
+        LOG(ERROR) << "failed to set batch scheduler";
         return -1;
     }
 
-    if (!__android_logger_property_get_bool("ro.debuggable",
-                                            BOOL_DEFAULT_FALSE) &&
+    if (!__android_logger_property_get_bool("ro.debuggable", BOOL_DEFAULT_FALSE) &&
         prctl(PR_SET_DUMPABLE, 0) == -1) {
-        android::prdebug("failed to clear PR_SET_DUMPABLE");
+        LOG(ERROR) << "failed to clear PR_SET_DUMPABLE";
         return -1;
     }
 
@@ -105,38 +105,11 @@ static int drop_privs(bool klogd, bool auditd) {
         return -1;
     }
     if (cap_set_proc(caps.get()) < 0) {
-        android::prdebug("failed to set CAP_SYSLOG or CAP_AUDIT_CONTROL (%d)", errno);
+        PLOG(ERROR) << "failed to set CAP_SYSLOG or CAP_AUDIT_CONTROL";
         return -1;
     }
 
     return 0;
-}
-
-static int fdDmesg = -1;
-void android::prdebug(const char* fmt, ...) {
-    if (fdDmesg < 0) {
-        return;
-    }
-
-    static const char message[] = {
-        KMSG_PRIORITY(LOG_DEBUG), 'l', 'o', 'g', 'd', ':', ' '
-    };
-    char buffer[256];
-    memcpy(buffer, message, sizeof(message));
-
-    va_list ap;
-    va_start(ap, fmt);
-    int n = vsnprintf(buffer + sizeof(message),
-                      sizeof(buffer) - sizeof(message), fmt, ap);
-    va_end(ap);
-    if (n > 0) {
-        buffer[sizeof(buffer) - 1] = '\0';
-        if (!strchr(buffer, '\n')) {
-            buffer[sizeof(buffer) - 2] = '\0';
-            strlcat(buffer, "\n", sizeof(buffer));
-        }
-        write(fdDmesg, buffer, strlen(buffer));
-    }
 }
 
 char* android::uidToName(uid_t u) {
@@ -246,8 +219,10 @@ int main(int argc, char* argv[]) {
         return issueReinit();
     }
 
+    android::base::InitLogging(argv, android::base::KernelLogger);
+
     static const char dev_kmsg[] = "/dev/kmsg";
-    fdDmesg = android_get_control_file(dev_kmsg);
+    int fdDmesg = android_get_control_file(dev_kmsg);
     if (fdDmesg < 0) {
         fdDmesg = TEMP_FAILURE_RETRY(open(dev_kmsg, O_WRONLY | O_CLOEXEC));
     }
@@ -263,7 +238,7 @@ int main(int argc, char* argv[]) {
             fdPmesg = TEMP_FAILURE_RETRY(
                 open(proc_kmsg, O_RDONLY | O_NDELAY | O_CLOEXEC));
         }
-        if (fdPmesg < 0) android::prdebug("Failed to open %s\n", proc_kmsg);
+        if (fdPmesg < 0) LOG(ERROR) << "Failed to open " << proc_kmsg;
     }
 
     bool auditd = __android_logger_property_get_bool("ro.logd.auditd", BOOL_DEFAULT_TRUE);
