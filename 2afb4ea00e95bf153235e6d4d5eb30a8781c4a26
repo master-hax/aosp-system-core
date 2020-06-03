@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f1fb763f_a34476f9",
+        "filename": "logd/LogStatistics.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 491,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-06-03T23:53:06Z",
+      "side": 1,
+      "message": "comment?",
+      "revId": "2afb4ea00e95bf153235e6d4d5eb30a8781c4a26",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
