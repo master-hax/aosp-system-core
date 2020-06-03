@@ -16,6 +16,24 @@
       "revId": "2afb4ea00e95bf153235e6d4d5eb30a8781c4a26",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "143e55ae_e27ae40b",
+        "filename": "logd/LogStatistics.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 491,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-06-03T23:59:17Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f1fb763f_a34476f9",
+      "revId": "2afb4ea00e95bf153235e6d4d5eb30a8781c4a26",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
