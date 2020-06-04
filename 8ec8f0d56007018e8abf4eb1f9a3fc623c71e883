@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3a94daee_0d9b6b26",
+        "filename": "logcat/logcat.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 643,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2020-06-04T17:35:15Z",
+      "side": 1,
+      "message": "minor nit: We standardize on one thing (comma) for documentation, but we should harden for other users. I typically like to have \",;: \\t\\r\\n\" or some such so that --uid \"`cat file_list_of_uids_I_am_interested_in`\" would work with some flexibility of (accidental) separators in the file.",
+      "range": {
+        "startLine": 643,
+        "startChar": 54,
+        "endLine": 643,
+        "endChar": 55
+      },
+      "revId": "8ec8f0d56007018e8abf4eb1f9a3fc623c71e883",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
