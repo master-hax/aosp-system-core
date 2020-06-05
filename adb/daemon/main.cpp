@@ -67,18 +67,11 @@ static inline bool is_device_unlocked() {
 }
 
 static bool should_drop_capabilities_bounding_set() {
-    if (ALLOW_ADBD_ROOT || is_device_unlocked()) {
-        if (__android_log_is_debuggable()) {
-            return false;
-        }
-    }
-    return true;
+    bool ro_debuggable = __android_log_is_debuggable();
+    return !ro_debuggable;
 }
 
 static bool should_drop_privileges() {
-    // "adb root" not allowed, always drop privileges.
-    if (!ALLOW_ADBD_ROOT && !is_device_unlocked()) return true;
-
     // The properties that affect `adb root` and `adb unroot` are ro.secure and
     // ro.debuggable. In this context the names don't make the expected behavior
     // particularly obvious.
@@ -222,13 +215,9 @@ int adbd_main(int server_port) {
     if (is_device_unlocked() || __android_log_is_debuggable()) {
         auth_required = false;
     }
-#elif defined(ALLOW_ADBD_NO_AUTH)
-    // If ro.adb.secure is unset, default to no authentication required.
-    auth_required = android::base::GetBoolProperty("ro.adb.secure", false);
 #elif defined(__ANDROID__)
-    if (is_device_unlocked()) {  // allows no authentication when the device is unlocked.
-        auth_required = android::base::GetBoolProperty("ro.adb.secure", false);
-    }
+    // If ro.adb.secure is unset, default to authentication required.
+    auth_required = android::base::GetBoolProperty("ro.adb.secure", true);
 #endif
 
     // Our external storage path may be different than apps, since
