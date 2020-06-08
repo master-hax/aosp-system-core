@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "702d55d0_6a383684",
+        "filename": "libprocessgroup/profiles/task_profiles.json",
+        "patchSetId": 1
+      },
+      "lineNbr": 565,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2020-06-08T20:34:59Z",
+      "side": 1,
+      "message": "When we move on to using per-process cgroups how will this be implemented? IIUC this freezes/unfreezes all previously frozen processes. If we have processes in their own subgroups is there a way in cgroups v2 to enable-disable freezer for all these subgroups?",
+      "range": {
+        "startLine": 540,
+        "startChar": 0,
+        "endLine": 565,
+        "endChar": 5
+      },
+      "revId": "5c140809465717e62d31b5b8fae83ef7724b9c18",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
