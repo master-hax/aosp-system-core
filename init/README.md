@@ -512,6 +512,17 @@ instance. \
 `interface_start aidl/aidl_lazy_test_1` will start the AIDL service that
 provides the `aidl_lazy_test_1` interface.
 
+`interface_start_latest`
+> Find the service hosting the most current revision of the requested
+interface and start it. Use this if you only care about any version of the
+interface being available, e.g. you want the latest keymaster service to be
+started, without knowing the exact service name or which instance(s) it will
+serve.
+
+> Example usage of the command: \
+`interface_start_latest android.hardware.keymaster`
+will result in `android.hardware.keymaster@4.0/default` starting up.
+
 `load_system_props`
 > (This action is deprecated and no-op.)
 
