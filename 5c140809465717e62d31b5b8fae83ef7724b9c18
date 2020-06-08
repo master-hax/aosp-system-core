@@ -22,6 +22,30 @@
       "revId": "5c140809465717e62d31b5b8fae83ef7724b9c18",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "245a049b_f97d78e6",
+        "filename": "libprocessgroup/profiles/task_profiles.json",
+        "patchSetId": 1
+      },
+      "lineNbr": 565,
+      "author": {
+        "id": 1562829
+      },
+      "writtenOn": "2020-06-08T22:10:15Z",
+      "side": 1,
+      "message": "In the uid/pid cgroup world, we should either seek for a kernel solution similar to the current thawing flag, or keep track of frozen processes in ActivityManager and freeze or unfreeze all of them when the freezer is enabled or disabled. See http://b/151467613",
+      "parentUuid": "702d55d0_6a383684",
+      "range": {
+        "startLine": 540,
+        "startChar": 0,
+        "endLine": 565,
+        "endChar": 5
+      },
+      "revId": "5c140809465717e62d31b5b8fae83ef7724b9c18",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
