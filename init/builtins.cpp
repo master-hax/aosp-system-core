@@ -356,6 +356,19 @@ static Result<void> do_interface_start(const BuiltinArguments& args) {
     return {};
 }
 
+// TODO: Find better name for this
+/* arg1 is the interface name only, e.g.:
+ * "android.hardware.keymaster", without the @x.y/instance suffix.
+ */
+static Result<void> do_interface_latest_start(const BuiltinArguments& args) {
+    Service* svc = ServiceList::GetInstance().FindLatestInterface(args[1]);
+    if (!svc) return Error() << "interface " << args[1] << " not found";
+    if (auto result = svc->Start(); !result.ok()) {
+        return Error() << "Could not start interface: " << result.error();
+    }
+    return {};
+}
+
 static Result<void> do_interface_stop(const BuiltinArguments& args) {
     Service* svc = ServiceList::GetInstance().FindInterface(args[1]);
     if (!svc) return Error() << "interface " << args[1] << " not found";
@@ -1344,6 +1357,7 @@ const BuiltinFunctionMap& GetBuiltinFunctionMap() {
         {"installkey",              {1,     1,    {false,  do_installkey}}},
         {"interface_restart",       {1,     1,    {false,  do_interface_restart}}},
         {"interface_start",         {1,     1,    {false,  do_interface_start}}},
+        {"interface_start_latest",  {1,     1,    {false,  do_interface_latest_start}}},
         {"interface_stop",          {1,     1,    {false,  do_interface_stop}}},
         {"load_persist_props",      {0,     0,    {false,  do_load_persist_props}}},
         {"load_system_props",       {0,     0,    {false,  do_load_system_props}}},
