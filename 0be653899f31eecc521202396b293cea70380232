@@ -50,6 +50,24 @@
       "revId": "0be653899f31eecc521202396b293cea70380232",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4a3b2ec1_ef261e94",
+        "filename": "logd/CompressionEngine.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-06-08T22:46:28Z",
+      "side": 1,
+      "message": "Copy paste fail.  FWIW this code is mostly coming from ProfileCompilationInfo::InflateBuffer() in art.\n\nBut yes, this does need better error checking too.",
+      "parentUuid": "ab1dd9e1_2df1bbbb",
+      "revId": "0be653899f31eecc521202396b293cea70380232",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
