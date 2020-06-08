@@ -318,10 +318,28 @@ static bool read_ext4_superblock(const std::string& blk_device, struct ext4_supe
     }
 
     if (!is_ext4_superblock_valid(sb)) {
+        unsigned int blocksize = 0;
+        unsigned int superblock = 0;
         LINFO << "Invalid ext4 superblock on '" << blk_device << "'";
         // not a valid fs, tune2fs, fsck, and mount  will all fail.
         *fs_stat |= FS_STAT_INVALID_MAGIC;
-        return false;
+
+        // try backup superblock, if main superblock is corrupted
+        for (blocksize = EXT4_MIN_BLOCK_SIZE; blocksize <= EXT4_MAX_BLOCK_SIZE; blocksize *= 2) {
+            superblock = blocksize * 8;
+            if (blocksize == EXT4_MIN_BLOCK_SIZE) superblock++;
+
+            if (TEMP_FAILURE_RETRY(pread(fd, sb, sizeof(*sb), superblock * blocksize)) !=
+                sizeof(*sb)) {
+                PERROR << "Can't read '" << blk_device << "' superblock";
+                return false;
+            }
+            if (is_ext4_superblock_valid(sb) && (2 << (10 + sb->s_log_block_size) == blocksize)) {
+                *fs_stat &= ~FS_STAT_INVALID_MAGIC;
+                break;
+            }
+            if (blocksize == EXT4_MAX_BLOCK_SIZE) return false;
+        }
     }
     *fs_stat |= FS_STAT_IS_EXT4;
     LINFO << "superblock s_max_mnt_count:" << sb->s_max_mnt_count << "," << blk_device;
