@@ -321,7 +321,17 @@ static bool read_ext4_superblock(const std::string& blk_device, struct ext4_supe
         LINFO << "Invalid ext4 superblock on '" << blk_device << "'";
         // not a valid fs, tune2fs, fsck, and mount  will all fail.
         *fs_stat |= FS_STAT_INVALID_MAGIC;
-        return false;
+
+        // try backup superblock at group 1 (block 32768)
+        if (TEMP_FAILURE_RETRY(pread(fd, sb, sizeof(*sb), 32768 * 4096)) != sizeof(*sb)) {
+            PERROR << "Can't read '" << blk_device << "' superblock";
+            return false;
+        }
+        if (!is_ext4_superblock_valid(sb)) {
+            LINFO << "Invalid ext4 backup superblock on '" << blk_device << "'";
+            return false;
+        } else
+            *fs_stat &= ~FS_STAT_INVALID_MAGIC;
     }
     *fs_stat |= FS_STAT_IS_EXT4;
     LINFO << "superblock s_max_mnt_count:" << sb->s_max_mnt_count << "," << blk_device;
