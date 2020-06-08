@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "dceeadbb_25623cd8",
+        "filename": "logd/CompressionEngine.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-06-08T22:35:03Z",
+      "side": 1,
+      "message": "+jmgao for this stuff, since he\u0027s done it most recently.",
+      "revId": "0be653899f31eecc521202396b293cea70380232",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "54fa51ac_96edf0bc",
+        "filename": "logd/CompressionEngine.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-06-08T22:35:03Z",
+      "side": 1,
+      "message": "(jmgao had a strerror equivalent.)",
+      "revId": "0be653899f31eecc521202396b293cea70380232",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ab1dd9e1_2df1bbbb",
+        "filename": "logd/CompressionEngine.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-06-08T22:35:03Z",
+      "side": 1,
+      "message": "?",
+      "revId": "0be653899f31eecc521202396b293cea70380232",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
