@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6b5751b1_0a269979",
+        "filename": "init/util.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 663,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-06-08T18:22:54Z",
+      "side": 1,
+      "message": "We don\u0027t have args[1] always.  We need to return an empty string if args.size() \u003c 2.  It may be worth flipping the above check to be.\n\nif (args.size() \u003c\u003d 1) {\n  if (SelinuxGetVendorAndroidVersion() \u003c\u003d __ANDROID_API_Q__) {\n    return Error() \u003c\u003c \"swapon_all requires at least 1 argument\";\n  }\n  return {};\n}\nreturn args[1];",
+      "revId": "8b580bbfc6fff3adb2e8f22d4cecc91cb3e05d24",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ab76d02e_92999a40",
+        "filename": "init/util.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 672,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-06-08T18:22:54Z",
+      "side": 1,
+      "message": "The same change is needed here.",
+      "revId": "8b580bbfc6fff3adb2e8f22d4cecc91cb3e05d24",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
