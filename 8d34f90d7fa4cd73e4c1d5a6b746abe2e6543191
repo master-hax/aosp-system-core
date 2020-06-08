@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "ef6e5f4b_05b72808",
+        "filename": "libprocessgroup/cgrouprc/include/android/cgrouprc.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-06-08T21:13:24Z",
+      "side": 1,
+      "message": "(in the NDK at least we prefer to keep types and constants always available and only guard the functions themselves. that makes life easier for anyone trying to use dlsym() to have one binary that works on multiple API levels.)",
+      "parentUuid": "8148b1a3_263ac9b0",
+      "range": {
+        "startLine": 72,
+        "startChar": 8,
+        "endLine": 72,
+        "endChar": 49
+      },
+      "revId": "8d34f90d7fa4cd73e4c1d5a6b746abe2e6543191",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "4db24e7d_34fb1a20",
         "filename": "libprocessgroup/setup/cgroup_descriptor.h",
         "patchSetId": 1
