@@ -62,6 +62,35 @@ class ServiceList {
         return nullptr;
     }
 
+    /*
+     * Return service which hosts the latest version of the
+     * requested interface
+     * param interface_only could e.g. be
+     * "android.hardware.keymaster", without the @x.y/instance suffix.
+     */
+    Service* FindLatestInterface(const std::string& interface_only) {
+        double highest_version = 0;
+        Service* candidate;
+
+        for (const auto& svc : services_) {
+            const std::set<std::string>& _interfaces = svc->interfaces();
+            for (const auto& intf : _interfaces) {
+                if (intf.find(interface_only) == std::string::npos) {
+                    continue;
+                }
+                // TODO: Make this more robust, interfaces might not be syntactically correct
+                intf.erase(0, intf.find("@") + 1); // Strip everything before "@"
+                intf = intf.substr(0, intf.find("/")); // Strip everything after "/"
+                double version = atof(int.c_str());
+                if (version > highest_version) {
+                    highest_version = version;
+                    candidate = svc;
+                }
+            }
+        }
+        return (highest_version > 0) ? candidate : nullptr;
+    }
+
     void DumpState() const;
 
     auto begin() const { return services_.begin(); }
