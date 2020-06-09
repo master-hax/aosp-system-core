@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "f459acb2_56f27f89",
+        "filename": "libprocessgroup/cgrouprc/include/android/cgrouprc.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2020-06-09T01:49:05Z",
+      "side": 1,
+      "message": "+1 to enh",
+      "parentUuid": "ef6e5f4b_05b72808",
+      "range": {
+        "startLine": 72,
+        "startChar": 8,
+        "endLine": 72,
+        "endChar": 49
+      },
+      "revId": "8d34f90d7fa4cd73e4c1d5a6b746abe2e6543191",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "4db24e7d_34fb1a20",
         "filename": "libprocessgroup/setup/cgroup_descriptor.h",
         "patchSetId": 1
@@ -60,6 +84,30 @@
       "writtenOn": "2020-06-08T20:45:08Z",
       "side": 1,
       "message": "Yifan, I think we can change this without affecting LLNDK (as long as we don\u0027t change format::CgroupController), correct?",
+      "range": {
+        "startLine": 28,
+        "startChar": 82,
+        "endLine": 28,
+        "endChar": 96
+      },
+      "revId": "8d34f90d7fa4cd73e4c1d5a6b746abe2e6543191",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "78a1f331_cc486c88",
+        "filename": "libprocessgroup/setup/cgroup_descriptor.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2020-06-09T01:49:05Z",
+      "side": 1,
+      "message": "This is a change in the C++ interface which isn\u0027t visible to vendors, so I think it\u0027s fine unless this leads to some hidden semantic changes to the existing LLNDK APIs.",
+      "parentUuid": "4db24e7d_34fb1a20",
       "range": {
         "startLine": 28,
         "startChar": 82,
