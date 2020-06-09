@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "46d13aa6_34d92afd",
+        "filename": "init/ueventd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 273,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2020-06-09T05:35:43Z",
+      "side": 1,
+      "message": "This function itself doesn\u0027t make sure that the mount namespace that we are entering into is the default one. We are just using the init\u0027s. \n\nCan we just make use of https://cs.corp.google.com/android/system/core/init/mount_namespace.cpp?rcl\u003d05ac9faf2072af4349dcd5500aa3fe2a34f98cdb\u0026l\u003d293 ?",
+      "range": {
+        "startLine": 273,
+        "startChar": 20,
+        "endLine": 273,
+        "endChar": 32
+      },
+      "revId": "5ec8cc17189e61ca7259f9da5301897a7fb8915b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "586b773f_ad51fc46",
+        "filename": "init/ueventd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 274,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2020-06-09T05:35:43Z",
+      "side": 1,
+      "message": "use unique_fd instead?",
+      "range": {
+        "startLine": 274,
+        "startChar": 8,
+        "endLine": 274,
+        "endChar": 10
+      },
+      "revId": "5ec8cc17189e61ca7259f9da5301897a7fb8915b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "85c78ab8_61fc53ce",
+        "filename": "init/ueventd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 350,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2020-06-09T05:35:43Z",
+      "side": 1,
+      "message": "I don\u0027t know how, but I wish we could handle uevent the sysprop events in the same/generic way.",
+      "range": {
+        "startLine": 350,
+        "startChar": 26,
+        "endLine": 350,
+        "endChar": 56
+      },
+      "revId": "5ec8cc17189e61ca7259f9da5301897a7fb8915b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
