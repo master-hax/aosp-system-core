@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "a9346a5a_36bf2f90",
+        "filename": "init/ueventd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 273,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2020-06-09T06:15:57Z",
+      "side": 1,
+      "message": "I found \"Switched to default mount namespace\" look better when seeing the kernel log because init process also emits the same line.\n\n  init: Switched to ... \n  ..\n  ueventd: Switched to ..\n\nBut, yes, you\u0027re right. It\u0027s the context that tells the target namespace is the \"default\" mount namespace of init process. This function is called only after \"apexd.status\u003dready\", which ensures that \"init\" is now associated with \"default\" mount namespace.\n\nWe might be more explicit by passing fd of init\u0027s `default_ns_fd`. I don\u0027t know how to pass it but one thing I tried was that init process bind-mounts /proc/self/ns/mnt to a well-know location (say, /apex/.defaultns) and uevent reads it instead of /proc/1/ns/mnt.\n\n\u003e Can we just make use of https://cs.corp.google.com/android/system/core/init/mount_namespace.cpp?rcl\u003d05ac9faf2072af4349dcd5500aa3fe2a34f98cdb\u0026l\u003d293 ?\n\nThe function above was too specific to init process. It\u0027d be better if we could use this.\n\nI\u0027d like to hear other alternatives before taking that path.",
+      "parentUuid": "46d13aa6_34d92afd",
+      "range": {
+        "startLine": 273,
+        "startChar": 20,
+        "endLine": 273,
+        "endChar": 32
+      },
+      "revId": "5ec8cc17189e61ca7259f9da5301897a7fb8915b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "586b773f_ad51fc46",
         "filename": "init/ueventd.cpp",
         "patchSetId": 1
@@ -59,6 +83,30 @@
       "writtenOn": "2020-06-09T05:35:43Z",
       "side": 1,
       "message": "I don\u0027t know how, but I wish we could handle uevent the sysprop events in the same/generic way.",
+      "range": {
+        "startLine": 350,
+        "startChar": 26,
+        "endLine": 350,
+        "endChar": 56
+      },
+      "revId": "5ec8cc17189e61ca7259f9da5301897a7fb8915b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6156a343_cb06c7d5",
+        "filename": "init/ueventd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 350,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2020-06-09T06:15:57Z",
+      "side": 1,
+      "message": "One possible way to handle both events is to open a named pipe and pass it to poll(). And the thread which waits for apexd.status could send some data to the pip and handler could handle the event.\n\nBut when I tried to make it generic to handle two kinds of events, the change got too diverged. We\u0027d better have a generic way but for now this one-shot future seems fine to me.",
+      "parentUuid": "85c78ab8_61fc53ce",
       "range": {
         "startLine": 350,
         "startChar": 26,
