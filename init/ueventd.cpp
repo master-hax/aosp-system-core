@@ -33,6 +33,7 @@
 #include <android-base/chrono_utils.h>
 #include <android-base/logging.h>
 #include <android-base/properties.h>
+#include <android-base/unique_fd.h>
 #include <fstab/fstab.h>
 #include <selinux/android.h>
 #include <selinux/selinux.h>
@@ -266,6 +267,20 @@ void ColdBoot::Run() {
     LOG(INFO) << "Coldboot took " << cold_boot_timer.duration().count() / 1000.0f << " seconds";
 }
 
+// When apexd.status=ready, init process is associated with the "default" mount
+// namespace. TODO(b/158630115): Add an assert or a test for this
+static void SwitchToDefaultMountNamespace() {
+    base::unique_fd fd(open("/proc/1/ns/mnt", O_RDONLY | O_CLOEXEC));
+    if (fd < 0) {
+        PLOG(ERROR) << "Cannot open fd for default mount namespace.";
+        return;
+    }
+    if (setns(fd, CLONE_NEWNS) == -1) {
+        PLOG(ERROR) << "Failed to switch to default mount namespace.";
+    }
+    LOG(INFO) << "Switched to default mount namespace";
+}
+
 int ueventd_main(int argc, char** argv) {
     /*
      * init sets the umask to 077 for forked processes. We need to
@@ -321,7 +336,19 @@ int ueventd_main(int argc, char** argv) {
     while (waitpid(-1, nullptr, WNOHANG) > 0) {
     }
 
-    uevent_listener.Poll([&uevent_handlers](const Uevent& uevent) {
+    // While ueventd starts in "bootstrap" mount namespace, init switches to "default"
+    // mount namespace after APEXd mounts all APEXes. To support loading firmwares from
+    // APEXes ueventd also switches to "default" when apexd.status=ready.
+    bool in_default_mount_namespace = false;
+
+    uevent_listener.Poll([&](const Uevent& uevent) {
+        // Since this is not a very tight loop, we simply rely on
+        // GetProperty(apexd.status) to see if APEXd is done with mounting APEXes.
+        if (!in_default_mount_namespace &&
+            android::base::GetProperty("apexd.status", "") == "ready") {
+            SwitchToDefaultMountNamespace();
+            in_default_mount_namespace = true;
+        }
         for (auto& uevent_handler : uevent_handlers) {
             uevent_handler->HandleUevent(uevent);
         }
