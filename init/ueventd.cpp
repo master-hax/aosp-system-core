@@ -27,15 +27,20 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
+#include <future>
 #include <set>
 #include <thread>
 
 #include <android-base/chrono_utils.h>
 #include <android-base/logging.h>
 #include <android-base/properties.h>
+#include <android-base/unique_fd.h>
 #include <fstab/fstab.h>
 #include <selinux/android.h>
 #include <selinux/selinux.h>
+#ifdef INIT_FULL_SOURCES
+#include <ApexProperties.sysprop.h>
+#endif
 
 #include "devices.h"
 #include "firmware_handler.h"
@@ -266,6 +271,18 @@ void ColdBoot::Run() {
     LOG(INFO) << "Coldboot took " << cold_boot_timer.duration().count() / 1000.0f << " seconds";
 }
 
+static void SwitchToDefaultMountNamespace() {
+    base::unique_fd fd(open("/proc/1/ns/mnt", O_RDONLY | O_CLOEXEC));
+    if (fd < 0) {
+        PLOG(ERROR) << "Cannot open fd for `init` mount namespace.";
+        return;
+    }
+    if (setns(fd, CLONE_NEWNS) == -1) {
+        PLOG(ERROR) << "Failed to switch to `init` mount namespace.";
+    }
+    LOG(INFO) << "Switched to default mount namespace";
+}
+
 int ueventd_main(int argc, char** argv) {
     /*
      * init sets the umask to 077 for forked processes. We need to
@@ -321,7 +338,20 @@ int ueventd_main(int argc, char** argv) {
     while (waitpid(-1, nullptr, WNOHANG) > 0) {
     }
 
-    uevent_listener.Poll([&uevent_handlers](const Uevent& uevent) {
+    std::future<bool> apexd_ready;
+#ifdef INIT_FULL_SOURCES
+    if (android::sysprop::ApexProperties::updatable().value_or(false)) {
+        apexd_ready = std::async(std::launch::async, [] {
+            return android::base::WaitForProperty("apexd.status", "ready");
+        });
+    }
+#endif
+
+    uevent_listener.Poll([&uevent_handlers, &apexd_ready](const Uevent& uevent) {
+        if (apexd_ready.valid() && apexd_ready.wait_for(0s) == std::future_status::ready &&
+            apexd_ready.get()) {
+            SwitchToDefaultMountNamespace();
+        }
         for (auto& uevent_handler : uevent_handlers) {
             uevent_handler->HandleUevent(uevent);
         }
