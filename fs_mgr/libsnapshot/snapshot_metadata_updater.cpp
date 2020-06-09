@@ -62,6 +62,10 @@ SnapshotMetadataUpdater::SnapshotMetadataUpdater(MetadataBuilder* builder, uint3
                                                std::string(it->second) + target_suffix_, &p});
         }
     }
+
+    if (manifest.has_partial_update()) {
+        partial_update_ = manifest.partial_update();
+    }
 }
 
 bool SnapshotMetadataUpdater::ShrinkPartitions() const {
@@ -254,11 +258,16 @@ bool SnapshotMetadataUpdater::Update() const {
     // Remove extents used by COW devices by removing the COW group completely.
     builder_->RemoveGroupAndPartitions(android::snapshot::kCowGroupName);
 
+    auto status = ShrinkPartitions();
+    // For partial update, not all dynamic partitions are included in the payload.
+    if (!partial_update_) {
+        status = status && DeletePartitions();
+    }
+
     // The order of these operations are important so that we
     // always have enough space to grow or add new partitions / groups.
     // clang-format off
-    return ShrinkPartitions() &&
-           DeletePartitions() &&
+    return status &&
            MovePartitionsToDefault() &&
            ShrinkGroups() &&
            DeleteGroups() &&
