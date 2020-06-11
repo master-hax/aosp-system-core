@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f215373d_21d4f76e",
+        "filename": "fs_mgr/liblp/partition_opener.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-06-11T19:07:39Z",
+      "side": 1,
+      "message": "This should be:\n\n#if !defined(ANDROID)",
+      "revId": "b706a2a6557704231c152c69e1e2d8fcee2ea7e9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
