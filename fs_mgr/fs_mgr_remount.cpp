@@ -31,6 +31,8 @@
 #include <android-base/logging.h>
 #include <android-base/properties.h>
 #include <android-base/strings.h>
+#include <android/os/IVold.h>
+#include <binder/IServiceManager.h>
 #include <bootloader_message/bootloader_message.h>
 #include <cutils/android_reboot.h>
 #include <fec/io.h>
@@ -103,6 +105,25 @@ void MyLogger(android::base::LogId id, android::base::LogSeverity severity, cons
     ::exit(0);  // SUCCESS
 }
 
+static bool IsCheckpointing() {
+    android::sp<android::IServiceManager> sm = android::defaultServiceManager();
+    if (!sm) {
+        return false;
+    }
+    android::sp<android::IBinder> binder = sm->getService(android::String16("vold"));
+    if (!binder) {
+        return false;
+    }
+
+    android::sp<android::os::IVold> vold = android::interface_cast<android::os::IVold>(binder);
+    if (!vold) {
+        return false;
+    }
+
+    bool result;
+    return vold->isCheckpointing(&result).isOk() && result;
+}
+
 }  // namespace
 
 enum RemountStatus {
@@ -117,7 +138,8 @@ enum RemountStatus {
     BAD_OVERLAY,
     NO_MOUNTS,
     REMOUNT_FAILED,
-    MUST_REBOOT
+    MUST_REBOOT,
+    CHECKPOINTING
 };
 
 static int do_remount(int argc, char* argv[]) {
@@ -192,6 +214,16 @@ static int do_remount(int argc, char* argv[]) {
     if (!fstab_read || fstab.empty()) {
         PLOG(ERROR) << "Failed to read fstab";
         return NO_FSTAB;
+    }
+
+    if (android::base::GetBoolProperty("ro.virtual_ab.enabled", false) &&
+        !android::base::GetBoolProperty("ro.virtual_ab.retrofit", false)) {
+        // Virtual A/B devices can use /data as backing storage; make sure we're
+        // not checkpointing.
+        if (IsCheckpointing()) {
+            printf("Cannot use remount when a checkpoint is in progress.\n");
+            return CHECKPOINTING;
+        }
     }
 
     // Generate the list of supported overlayfs mount points.
