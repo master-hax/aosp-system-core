@@ -52,10 +52,24 @@ android::base::unique_fd TestPartitionOpener::Open(const std::string& partition_
 
 bool TestPartitionOpener::GetInfo(const std::string& partition_name,
                                   android::fs_mgr::BlockDeviceInfo* info) const {
-    if (partition_name == "super") {
-        return PartitionOpener::GetInfo(fake_super_path_, info);
+    if (partition_name != "super") {
+        auto res = PartitionOpener::GetInfo(partition_name, info);
+        LOG(ERROR) << "#### GetInfo returning for " << partition_name << ": " << res
+               << ", alignment=" << info->alignment << ", offset=" << info->alignment_offset;
+        return res;
     }
-    return PartitionOpener::GetInfo(partition_name, info);
+
+    if (PartitionOpener::GetInfo(fake_super_path_, info)) {
+        // SnapshotUpdateTest uses a relatively small super partition, which requires a small
+        // alignment to work. For the purpose of this test, hardcode the alignment. This test
+        // isn't about testing liblp or libdm.
+        info->alignment = std::min<uint32_t>(info->alignment, static_cast<uint32_t>(128_KiB));
+        LOG(ERROR) << "#### GetInfo returning for " << partition_name
+               << ", ok, alignment=" << info->alignment << ", offset=" << info->alignment_offset;
+        return true;
+    }
+    LOG(ERROR) << "#### GetInfo returning for " << partition_name << ": FAILURE";
+    return false;
 }
 
 std::string TestPartitionOpener::GetDeviceString(const std::string& partition_name) const {

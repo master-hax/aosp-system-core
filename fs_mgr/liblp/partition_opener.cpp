@@ -78,6 +78,12 @@ bool GetBlockDeviceInfo(const std::string& block_device, BlockDeviceInfo* device
         PERROR << __PRETTY_FUNCTION__ << "BLKALIGNOFF failed on " << block_device;
         return false;
     }
+
+    LERROR << "#### GetBlockDeviceInfo returning for " << block_device << ": "
+           << "alignment=" << device_info->alignment << ", offset=" << alignment_offset;
+//    device_info->alignment = 786432;
+//    alignment_offset = 524288;
+
     // The kernel can return -1 here when misaligned devices are stacked (i.e.
     // device-mapper).
     if (alignment_offset == -1) {
