@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "785e7996_054dc0ca",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 201,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-06-15T19:12:53Z",
+      "side": 1,
+      "message": "Do we need the legacy blacklist term here too when parsing modules.blacklist?",
+      "revId": "ecc1e276f39f5c9836f8eb3b2aa9697da7663053",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
