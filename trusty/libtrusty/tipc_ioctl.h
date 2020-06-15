@@ -20,7 +20,17 @@
 #include <linux/ioctl.h>
 #include <linux/types.h>
 
+#include <trusty/shm.h>
+
+struct tipc_send_msg_req {
+    const struct iovec* iov;
+    struct trusty_shmem* shmem;
+    size_t iov_cnt;
+    size_t shmem_cnt;
+};
+
 #define TIPC_IOC_MAGIC			'r'
 #define TIPC_IOC_CONNECT		_IOW(TIPC_IOC_MAGIC, 0x80, char *)
+#define TIPC_IOC_SEND_MSG _IOW(TIPC_IOC_MAGIC, 0x81, struct tipc_send_msg_req)
 
 #endif
