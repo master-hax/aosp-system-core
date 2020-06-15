@@ -21,6 +21,8 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <getopt.h>
+#define __USE_GNU
+#include <sys/mman.h>
 #include <sys/uio.h>
 
 #include <trusty/tipc.h>
@@ -885,6 +887,52 @@ static int readv_test(uint repeat, uint msgsz, bool var)
 	return 0;
 }
 
+static int send_fd_test(void) {
+    int fd = tipc_connect(dev_name, "com.android.trusty.memref.receiver");
+    if (fd < 0) {
+        printf("Failed to connect to test support TA - is it missing?\n");
+        return -1;
+    }
+
+    int memfd = memfd_create("tipc-send-fd", 0);
+    if (memfd < 0) {
+        printf("Failed to create memfd: %s\n", strerror(errno));
+        return -1;
+    }
+
+    if (ftruncate(memfd, PAGE_SIZE) < 0) {
+        printf("Failed to resize memfd: %s\n", strerror(errno));
+        return -1;
+    }
+
+    volatile char* buf = mmap(0, PAGE_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, memfd, 0);
+    if (buf == MAP_FAILED) {
+        printf("Failed to map memfd: %s\n", strerror(errno));
+        return -1;
+    }
+
+    strcpy((char*)buf, "From NS");
+
+    struct trusty_shmem shmem = {
+            .fd = memfd,
+            .transfer = TRUSTY_SHARE,
+    };
+
+    struct iovec b;
+    ssize_t rc = tipc_send(fd, &b, 0, &shmem, 1);
+    if (rc < 0) {
+        printf("tipc_send failed\n");
+        return rc;
+    }
+    char c;
+    read(fd, &c, 1);
+    tipc_close(fd);
+
+    int ret = strcmp("Hello from Trusty!", (const char*)buf) ? (-1) : 0;
+    munmap((char*)buf, PAGE_SIZE);
+    close(memfd);
+    return ret;
+}
 
 int main(int argc, char **argv)
 {
@@ -933,10 +981,12 @@ int main(int argc, char **argv)
 		rc = writev_test(opt_repeat, opt_msgsize, opt_variable);
 	} else if (strcmp(test_name, "readv") == 0) {
 		rc = readv_test(opt_repeat, opt_msgsize, opt_variable);
-	} else {
-		fprintf(stderr, "Unrecognized test name '%s'\n", test_name);
-		print_usage_and_exit(argv[0], EXIT_FAILURE, true);
-	}
+    } else if (strcmp(test_name, "send-fd") == 0) {
+        rc = send_fd_test();
+    } else {
+        fprintf(stderr, "Unrecognized test name '%s'\n", test_name);
+        print_usage_and_exit(argv[0], EXIT_FAILURE, true);
+    }
 
-	return rc == 0 ? EXIT_SUCCESS : EXIT_FAILURE;
+    return rc == 0 ? EXIT_SUCCESS : EXIT_FAILURE;
 }
