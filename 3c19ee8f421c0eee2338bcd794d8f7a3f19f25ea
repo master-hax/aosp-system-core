@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "3832c2ff_e8b4eb71",
+        "filename": "trusty/libtrusty/include/trusty/shm.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1416371
+      },
+      "writtenOn": "2020-06-15T23:10:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a9e84590_9aa25f67",
+      "range": {
+        "startLine": 10,
+        "startChar": 4,
+        "endLine": 10,
+        "endChar": 31
+      },
+      "revId": "3c19ee8f421c0eee2338bcd794d8f7a3f19f25ea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a409d7d_b9817829",
         "filename": "trusty/libtrusty/include/trusty/tipc.h",
         "patchSetId": 2
@@ -36,6 +60,30 @@
       "writtenOn": "2020-06-15T23:04:36Z",
       "side": 1,
       "message": "Do we need to overlap with read() functionality?",
+      "range": {
+        "startLine": 28,
+        "startChar": 26,
+        "endLine": 28,
+        "endChar": 61
+      },
+      "revId": "3c19ee8f421c0eee2338bcd794d8f7a3f19f25ea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "485b993c_005415e6",
+        "filename": "trusty/libtrusty/include/trusty/tipc.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1416371
+      },
+      "writtenOn": "2020-06-15T23:10:42Z",
+      "side": 1,
+      "message": "This signature was decided upon with the design doc. Since tipc is a message-oriented protocol, it is meaningfully different to send data *and* fds vs just send fds.",
+      "parentUuid": "3a409d7d_b9817829",
       "range": {
         "startLine": 28,
         "startChar": 26,
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "3ea99298_c6698e55",
+        "filename": "trusty/libtrusty/include/trusty/tipc.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1416371
+      },
+      "writtenOn": "2020-06-15T23:10:42Z",
+      "side": 1,
+      "message": "We can\u0027t generically send fds because reviewers wanted the ability to decide whether to SHARE or LEND explicitly rather than dynamically based on fd type.",
+      "parentUuid": "2abe145b_ea5bab60",
+      "range": {
+        "startLine": 28,
+        "startChar": 63,
+        "endLine": 29,
+        "endChar": 30
+      },
+      "revId": "3c19ee8f421c0eee2338bcd794d8f7a3f19f25ea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "36bfe910_35560259",
         "filename": "trusty/libtrusty/tipc-test/tipc_test.c",
         "patchSetId": 2
@@ -91,6 +163,30 @@
       "revId": "3c19ee8f421c0eee2338bcd794d8f7a3f19f25ea",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "19c3ba24_c90b5ff2",
+        "filename": "trusty/libtrusty/tipc-test/tipc_test.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 894,
+      "author": {
+        "id": 1416371
+      },
+      "writtenOn": "2020-06-15T23:10:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "36bfe910_35560259",
+      "range": {
+        "startLine": 894,
+        "startChar": 8,
+        "endLine": 894,
+        "endChar": 14
+      },
+      "revId": "3c19ee8f421c0eee2338bcd794d8f7a3f19f25ea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -117,6 +213,30 @@
     },
     {
       "key": {
+        "uuid": "6f23af6c_d2619ec4",
+        "filename": "trusty/libtrusty/tipc-test/tipc_test.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 922,
+      "author": {
+        "id": 1416371
+      },
+      "writtenOn": "2020-06-15T23:10:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0f827ac5_6b54aac0",
+      "range": {
+        "startLine": 922,
+        "startChar": 17,
+        "endLine": 922,
+        "endChar": 18
+      },
+      "revId": "3c19ee8f421c0eee2338bcd794d8f7a3f19f25ea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "0e12108b_af149e32",
         "filename": "trusty/libtrusty/tipc-test/tipc_test.c",
         "patchSetId": 2
@@ -140,6 +260,30 @@
     },
     {
       "key": {
+        "uuid": "37184b71_1ad6f587",
+        "filename": "trusty/libtrusty/tipc-test/tipc_test.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 985,
+      "author": {
+        "id": 1416371
+      },
+      "writtenOn": "2020-06-15T23:10:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0e12108b_af149e32",
+      "range": {
+        "startLine": 985,
+        "startChar": 33,
+        "endLine": 985,
+        "endChar": 42
+      },
+      "revId": "3c19ee8f421c0eee2338bcd794d8f7a3f19f25ea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ca004017_a256d6e9",
         "filename": "trusty/libtrusty/tipc_ioctl.h",
         "patchSetId": 2
@@ -151,6 +295,30 @@
       "writtenOn": "2020-06-15T22:32:20Z",
       "side": 1,
       "message": "Make it fixed size.",
+      "range": {
+        "startLine": 28,
+        "startChar": 4,
+        "endLine": 28,
+        "endChar": 11
+      },
+      "revId": "3c19ee8f421c0eee2338bcd794d8f7a3f19f25ea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "52691e53_38a8404c",
+        "filename": "trusty/libtrusty/tipc_ioctl.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1416371
+      },
+      "writtenOn": "2020-06-15T23:10:42Z",
+      "side": 1,
+      "message": "Since the iovec type will be arch dependent as well, I don\u0027t see a reason to make the size_t independent.",
+      "parentUuid": "ca004017_a256d6e9",
       "range": {
         "startLine": 28,
         "startChar": 4,
