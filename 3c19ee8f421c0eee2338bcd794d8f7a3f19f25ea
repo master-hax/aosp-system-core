@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a9e84590_9aa25f67",
+        "filename": "trusty/libtrusty/include/trusty/shm.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1045553
+      },
+      "writtenOn": "2020-06-15T22:32:20Z",
+      "side": 1,
+      "message": "You are passing this to IOCTL it should be fixed size",
+      "range": {
+        "startLine": 10,
+        "startChar": 4,
+        "endLine": 10,
+        "endChar": 31
+      },
+      "revId": "3c19ee8f421c0eee2338bcd794d8f7a3f19f25ea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ca004017_a256d6e9",
+        "filename": "trusty/libtrusty/tipc_ioctl.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1045553
+      },
+      "writtenOn": "2020-06-15T22:32:20Z",
+      "side": 1,
+      "message": "Make it fixed size.",
+      "range": {
+        "startLine": 28,
+        "startChar": 4,
+        "endLine": 28,
+        "endChar": 11
+      },
+      "revId": "3c19ee8f421c0eee2338bcd794d8f7a3f19f25ea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
