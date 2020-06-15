@@ -25,6 +25,75 @@
     },
     {
       "key": {
+        "uuid": "36bfe910_35560259",
+        "filename": "trusty/libtrusty/tipc-test/tipc_test.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 894,
+      "author": {
+        "id": 1045553
+      },
+      "writtenOn": "2020-06-15T22:54:01Z",
+      "side": 1,
+      "message": "Write to stderr.",
+      "range": {
+        "startLine": 894,
+        "startChar": 8,
+        "endLine": 894,
+        "endChar": 14
+      },
+      "revId": "3c19ee8f421c0eee2338bcd794d8f7a3f19f25ea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0f827ac5_6b54aac0",
+        "filename": "trusty/libtrusty/tipc-test/tipc_test.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 922,
+      "author": {
+        "id": 1045553
+      },
+      "writtenOn": "2020-06-15T22:54:01Z",
+      "side": 1,
+      "message": "b is not initialized?",
+      "range": {
+        "startLine": 922,
+        "startChar": 17,
+        "endLine": 922,
+        "endChar": 18
+      },
+      "revId": "3c19ee8f421c0eee2338bcd794d8f7a3f19f25ea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0e12108b_af149e32",
+        "filename": "trusty/libtrusty/tipc-test/tipc_test.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 985,
+      "author": {
+        "id": 1045553
+      },
+      "writtenOn": "2020-06-15T22:54:01Z",
+      "side": 1,
+      "message": "Add to \"usage\".",
+      "range": {
+        "startLine": 985,
+        "startChar": 33,
+        "endLine": 985,
+        "endChar": 42
+      },
+      "revId": "3c19ee8f421c0eee2338bcd794d8f7a3f19f25ea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "ca004017_a256d6e9",
         "filename": "trusty/libtrusty/tipc_ioctl.h",
         "patchSetId": 2
