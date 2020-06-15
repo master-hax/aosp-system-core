@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 The Android Open Source Project
+ * Copyright (C) 2020 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,23 +14,16 @@
  * limitations under the License.
  */
 
-#ifndef _TIPC_IOCTL_H
-#define _TIPC_IOCTL_H
+#pragma once
 
-#include <linux/ioctl.h>
-#include <linux/types.h>
+#include <stdint.h>
 
-#include <trusty/shm.h>
-
-struct tipc_send_msg_req {
-    const struct iovec* iov;
-    struct trusty_shm* shm;
-    size_t iov_cnt;
-    size_t shm_cnt;
+enum transfer_kind {
+    TRUSTY_SHARE = 0,
+    TRUSTY_LEND = 1,
 };
 
-#define TIPC_IOC_MAGIC			'r'
-#define TIPC_IOC_CONNECT		_IOW(TIPC_IOC_MAGIC, 0x80, char *)
-#define TIPC_IOC_SEND_MSG _IOW(TIPC_IOC_MAGIC, 0x81, struct tipc_send_msg_req)
-
-#endif
+struct trusty_shmem {
+    int fd;
+    uint8_t transfer;
+};

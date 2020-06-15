@@ -55,6 +55,23 @@ int tipc_connect(const char *dev_name, const char *srv_name)
 	return fd;
 }
 
+ssize_t tipc_send(int fd, const struct iovec* iov, int iovcnt, struct trusty_shm* shms,
+                  int shmcnt) {
+    struct tipc_send_msg_req req;
+    req.iov = iov;
+    req.iov_cnt = iovcnt;
+    req.shm = shms;
+    req.shm_cnt = shmcnt;
+
+    int rc = ioctl(fd, TIPC_IOC_SEND_MSG, &req);
+    if (rc < 0) {
+        ALOGE("%s: failed to send message (err=%d)\n", __func__, rc);
+        return rc;
+    }
+
+    return rc;
+}
+
 void tipc_close(int fd)
 {
 	close(fd);
