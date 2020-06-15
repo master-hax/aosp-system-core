@@ -143,6 +143,30 @@
     },
     {
       "key": {
+        "uuid": "3f264990_fd71eb38",
+        "filename": "trusty/libtrusty/include/trusty/tipc.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1124693
+      },
+      "writtenOn": "2020-06-15T23:32:04Z",
+      "side": 1,
+      "message": "OK, I wasn\u0027t aware we already settled on the signature.\nWhat I had in mind was to remove reference to shared mem from type names and use some opaque flags member variable instead of enum transfer_kind. That way, we\u0027d leave room to add support for other types of fds. Just some random thoughts. I\u0027m OK with the signature as is.",
+      "parentUuid": "3ea99298_c6698e55",
+      "range": {
+        "startLine": 28,
+        "startChar": 63,
+        "endLine": 29,
+        "endChar": 30
+      },
+      "revId": "3c19ee8f421c0eee2338bcd794d8f7a3f19f25ea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "36bfe910_35560259",
         "filename": "trusty/libtrusty/tipc-test/tipc_test.c",
         "patchSetId": 2
