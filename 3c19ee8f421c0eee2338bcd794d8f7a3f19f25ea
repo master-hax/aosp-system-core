@@ -25,6 +25,52 @@
     },
     {
       "key": {
+        "uuid": "3a409d7d_b9817829",
+        "filename": "trusty/libtrusty/include/trusty/tipc.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1124693
+      },
+      "writtenOn": "2020-06-15T23:04:36Z",
+      "side": 1,
+      "message": "Do we need to overlap with read() functionality?",
+      "range": {
+        "startLine": 28,
+        "startChar": 26,
+        "endLine": 28,
+        "endChar": 61
+      },
+      "revId": "3c19ee8f421c0eee2338bcd794d8f7a3f19f25ea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2abe145b_ea5bab60",
+        "filename": "trusty/libtrusty/include/trusty/tipc.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1124693
+      },
+      "writtenOn": "2020-06-15T23:04:36Z",
+      "side": 1,
+      "message": "This signature and struct definition suggest that this function only works with shared memory fds. Consider changing it into a generic function that sends fds (albeit with only memfds supported for now).",
+      "range": {
+        "startLine": 28,
+        "startChar": 63,
+        "endLine": 29,
+        "endChar": 30
+      },
+      "revId": "3c19ee8f421c0eee2338bcd794d8f7a3f19f25ea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "36bfe910_35560259",
         "filename": "trusty/libtrusty/tipc-test/tipc_test.c",
         "patchSetId": 2
