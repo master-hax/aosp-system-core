@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7cd6dee4_eacf7420",
+        "filename": "adb/client/transport_mdns.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 723,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2020-06-16T22:29:19Z",
+      "side": 1,
+      "message": "Do we need to check if each of the services is !\u003d nullopt here?\n\n(alternatively, CHECK() that both of them are nullopt if one of them is nullopt above?)",
+      "range": {
+        "startLine": 720,
+        "startChar": 0,
+        "endLine": 723,
+        "endChar": 9
+      },
+      "revId": "0ae3a16c4f9cf923d29d54dc1d80eeb2e3060a87",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
