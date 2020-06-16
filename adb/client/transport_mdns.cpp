@@ -680,6 +680,10 @@ std::string mdns_list_discovered_services() {
 std::optional<MdnsInfo> mdns_get_connect_service_info(std::string_view name) {
     CHECK(!name.empty());
 
+    if (!ResolvedService::sAdbTransportServices && !ResolvedService::sAdbSecureConnectServices) {
+        return std::nullopt;
+    }
+
     auto mdns_instance = mdns::mdns_parse_instance_name(name);
     if (!mdns_instance.has_value()) {
         D("Failed to parse mDNS name [%s]", name.data());
