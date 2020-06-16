@@ -1,0 +1,142 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a955759b_ee69ebc6",
+        "filename": "logcat/logcat.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 338,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-06-16T17:39:06Z",
+      "side": 1,
+      "message": "maybe  \"earlier\" and \"later\"? or \"with a higher/lower priority\"? i  struggled to understand what was meant  in the code later.\n\n(not that the old terminology made any sense either, if i\u0027ve understood the actual priority intention correctly now.)",
+      "range": {
+        "startLine": 338,
+        "startChar": 30,
+        "endLine": 338,
+        "endChar": 35
+      },
+      "revId": "e8f0c9aea8d180ab1133538e775558da38c006b2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3511baf1_ae8f8683",
+        "filename": "logcat/logcat.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 341,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-06-16T17:39:06Z",
+      "side": 1,
+      "message": "case",
+      "range": {
+        "startLine": 341,
+        "startChar": 51,
+        "endLine": 341,
+        "endChar": 56
+      },
+      "revId": "e8f0c9aea8d180ab1133538e775558da38c006b2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a59842c1_21792132",
+        "filename": "logd/ChattyLogBuffer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 301,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-06-16T17:39:06Z",
+      "side": 1,
+      "message": "?",
+      "range": {
+        "startLine": 301,
+        "startChar": 27,
+        "endLine": 301,
+        "endChar": 43
+      },
+      "revId": "e8f0c9aea8d180ab1133538e775558da38c006b2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3d7ca3f3_b732e43e",
+        "filename": "logd/ChattyLogBuffer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 318,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-06-16T17:39:06Z",
+      "side": 1,
+      "message": "?",
+      "range": {
+        "startLine": 318,
+        "startChar": 67,
+        "endLine": 318,
+        "endChar": 82
+      },
+      "revId": "e8f0c9aea8d180ab1133538e775558da38c006b2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0848ae04_910c5d4a",
+        "filename": "logd/ChattyLogBuffer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 319,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-06-16T17:39:06Z",
+      "side": 1,
+      "message": "?",
+      "range": {
+        "startLine": 319,
+        "startChar": 47,
+        "endLine": 319,
+        "endChar": 69
+      },
+      "revId": "e8f0c9aea8d180ab1133538e775558da38c006b2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "394c7732_8e02f7cb",
+        "filename": "logd/README.property",
+        "patchSetId": 2
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-06-16T17:39:06Z",
+      "side": 1,
+      "message": "where does the 1/8th come from?",
+      "range": {
+        "startLine": 71,
+        "startChar": 2,
+        "endLine": 71,
+        "endChar": 65
+      },
+      "revId": "e8f0c9aea8d180ab1133538e775558da38c006b2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
