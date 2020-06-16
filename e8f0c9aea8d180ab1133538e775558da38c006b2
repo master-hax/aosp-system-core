@@ -71,6 +71,30 @@
     },
     {
       "key": {
+        "uuid": "baa51a4b_c3167e78",
+        "filename": "logd/ChattyLogBuffer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 301,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-06-16T18:43:56Z",
+      "side": 1,
+      "message": "I was just replacing this word for word.  I\u0027ll rewrite this better.",
+      "parentUuid": "a59842c1_21792132",
+      "range": {
+        "startLine": 301,
+        "startChar": 27,
+        "endLine": 301,
+        "endChar": 43
+      },
+      "revId": "e8f0c9aea8d180ab1133538e775558da38c006b2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "3d7ca3f3_b732e43e",
         "filename": "logd/ChattyLogBuffer.cpp",
         "patchSetId": 2
@@ -128,6 +152,30 @@
       "writtenOn": "2020-06-16T17:39:06Z",
       "side": 1,
       "message": "where does the 1/8th come from?",
+      "range": {
+        "startLine": 71,
+        "startChar": 2,
+        "endLine": 71,
+        "endChar": 65
+      },
+      "revId": "e8f0c9aea8d180ab1133538e775558da38c006b2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0e855b26_e84fd2a0",
+        "filename": "logd/README.property",
+        "patchSetId": 2
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-06-16T18:43:56Z",
+      "side": 1,
+      "message": "Maybe I should just drop this line.  It\u0027s my half hearted attempt to actually document how the default chatty works.\n\nhttps://cs.android.com/android/platform/superproject/+/master:system/core/logd/ChattyLogBuffer.cpp;l\u003d383 is where it comes from though.",
+      "parentUuid": "394c7732_8e02f7cb",
       "range": {
         "startLine": 71,
         "startChar": 2,
