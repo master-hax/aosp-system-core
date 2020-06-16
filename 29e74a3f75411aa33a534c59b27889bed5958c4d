@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "10b20e3b_a1a18cda",
+        "filename": "llkd/README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2020-06-16T13:37:52Z",
+      "side": 1,
+      "message": "I commented these out because on the (simple?) markdown viewers, the following looks like \u0027noise\u0027.",
+      "range": {
+        "startLine": 32,
+        "startChar": 23,
+        "endLine": 32,
+        "endChar": 27
+      },
+      "revId": "29e74a3f75411aa33a534c59b27889bed5958c4d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
