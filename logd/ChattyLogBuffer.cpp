@@ -298,7 +298,7 @@ class LogBufferElementLast {
 // invariably move the logs value down faster as less chatty sources would be
 // expired in the noise.
 //
-// The first loop performs blacklisting and worst offender pruning. Falling
+// The first loop performs prune first list and worst offender pruning. Falling
 // through when there are no notable worst offenders and have not hit the
 // region lock preventing further worst offender pruning. This loop also looks
 // after managing the chatty log entries and merging to help provide
@@ -315,14 +315,14 @@ class LogBufferElementLast {
 // background task at lowest priority.
 //
 // This second loop does straight-up expiration from the end of the logs
-// (again, remember for the specified log buffer id) but does some whitelist
-// preservation. Thus whitelist is a Hail Mary low priority, blacklists and
+// (again, remember for the specified log buffer id) but does some prune last list
+// preservation. Thus the prune last list is a Hail Mary low priority, and prune first list and
 // spam filtration all take priority. This second loop also checks if a region
 // lock is causing us to buffer too much in the logs to help the reader(s),
 // and will tell the slowest reader thread to skip log entries, and if
 // persistent and hits a further threshold, kill the reader thread.
 //
-// The third thread is optional, and only gets hit if there was a whitelist
+// The third thread is optional, and only gets hit if there was a prune last list
 // and more needs to be pruned against the backstop of the region lock.
 //
 bool ChattyLogBuffer::Prune(log_id_t id, unsigned long pruneRows, uid_t caller_uid) {
@@ -370,8 +370,8 @@ bool ChattyLogBuffer::Prune(log_id_t id, unsigned long pruneRows, uid_t caller_u
         return true;
     }
 
-    // prune by worst offenders; by blacklist, UID, and by PID of system UID
-    bool hasBlacklist = (id != LOG_ID_SECURITY) && prune_->naughty();
+    // prune by worst offenders; by prune first list, UID, and by PID of system UID
+    bool has_prune_first = (id != LOG_ID_SECURITY) && prune_->HasPruneFirst();
     while (!clearAll && (pruneRows > 0)) {
         // recalculate the worst offender on every batched pass
         int worst = -1;  // not valid for uid() or getKey()
@@ -379,7 +379,7 @@ bool ChattyLogBuffer::Prune(log_id_t id, unsigned long pruneRows, uid_t caller_u
         size_t second_worst_sizes = 0;
         pid_t worstPid = 0;  // POSIX guarantees PID != 0
 
-        if (worstUidEnabledForLogid(id) && prune_->worstUidEnabled()) {
+        if (worstUidEnabledForLogid(id) && prune_->worst_uid_enabled()) {
             // Calculate threshold as 12.5% of available storage
             size_t threshold = max_size(id) / 8;
 
@@ -389,14 +389,14 @@ bool ChattyLogBuffer::Prune(log_id_t id, unsigned long pruneRows, uid_t caller_u
             } else {
                 stats()->WorstTwoUids(id, threshold, &worst, &worst_sizes, &second_worst_sizes);
 
-                if (worst == AID_SYSTEM && prune_->worstPidOfSystemEnabled()) {
+                if (worst == AID_SYSTEM && prune_->worst_pid_of_system_enabled()) {
                     stats()->WorstTwoSystemPids(id, worst_sizes, &worstPid, &second_worst_sizes);
                 }
             }
         }
 
         // skip if we have neither worst nor naughty filters
-        if ((worst == -1) && !hasBlacklist) {
+        if ((worst == -1) && !has_prune_first) {
             break;
         }
 
@@ -464,7 +464,7 @@ bool ChattyLogBuffer::Prune(log_id_t id, unsigned long pruneRows, uid_t caller_u
             int key = (id == LOG_ID_EVENTS || id == LOG_ID_SECURITY) ? element.GetTag()
                                                                      : element.uid();
 
-            if (hasBlacklist && prune_->naughty(&element)) {
+            if (has_prune_first && prune_->PruneFirst(&element)) {
                 last.clear(&element);
                 it = Erase(it);
                 if (dropped) {
@@ -557,15 +557,15 @@ bool ChattyLogBuffer::Prune(log_id_t id, unsigned long pruneRows, uid_t caller_u
         }
         last.clear();
 
-        if (!kick || !prune_->worstUidEnabled()) {
+        if (!kick || !prune_->worst_uid_enabled()) {
             break;  // the following loop will ask bad clients to skip/drop
         }
     }
 
-    bool whitelist = false;
-    bool hasWhitelist = (id != LOG_ID_SECURITY) && prune_->nice() && !clearAll;
+    bool skipped_prune_last_element = false;
+    bool has_prune_last_list = (id != LOG_ID_SECURITY) && prune_->HasPruneLast() && !clearAll;
     it = GetOldest(id);
-    while ((pruneRows > 0) && (it != logs().end())) {
+    while (pruneRows > 0 && it != logs().end()) {
         LogBufferElement& element = *it;
 
         if (element.log_id() != id) {
@@ -574,13 +574,12 @@ bool ChattyLogBuffer::Prune(log_id_t id, unsigned long pruneRows, uid_t caller_u
         }
 
         if (oldest && oldest->start() <= element.sequence()) {
-            if (!whitelist) KickReader(oldest, id, pruneRows);
+            if (!skipped_prune_last_element) KickReader(oldest, id, pruneRows);
             break;
         }
 
-        if (hasWhitelist && !element.dropped_count() && prune_->nice(&element)) {
-            // WhiteListed
-            whitelist = true;
+        if (has_prune_last_list && !element.dropped_count() && prune_->PruneLast(&element)) {
+            skipped_prune_last_element = true;
             it++;
             continue;
         }
@@ -589,10 +588,10 @@ bool ChattyLogBuffer::Prune(log_id_t id, unsigned long pruneRows, uid_t caller_u
         pruneRows--;
     }
 
-    // Do not save the whitelist if we are reader range limited
-    if (whitelist && (pruneRows > 0)) {
+    // Ignore the prune last list if we are reader range limited
+    if (skipped_prune_last_element && pruneRows > 0) {
         it = GetOldest(id);
-        while ((it != logs().end()) && (pruneRows > 0)) {
+        while (it != logs().end() && pruneRows > 0) {
             LogBufferElement& element = *it;
 
             if (element.log_id() != id) {
