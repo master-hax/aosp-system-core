@@ -185,6 +185,30 @@
       "revId": "e8f0c9aea8d180ab1133538e775558da38c006b2",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b58c9af0_44a5c9f3",
+        "filename": "logd/README.property",
+        "patchSetId": 2
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-06-16T18:47:25Z",
+      "side": 1,
+      "message": "yeah, on the assumption that chatty is at least deprecated in S, this just seems to add confusion...",
+      "parentUuid": "0e855b26_e84fd2a0",
+      "range": {
+        "startLine": 71,
+        "startChar": 2,
+        "endLine": 71,
+        "endChar": 65
+      },
+      "revId": "e8f0c9aea8d180ab1133538e775558da38c006b2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
