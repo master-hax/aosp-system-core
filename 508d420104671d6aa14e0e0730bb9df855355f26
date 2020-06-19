@@ -1,0 +1,31 @@
+{
+  "comments": [
+    {
+      "robotId": "ayeaye",
+      "robotRunId": "AR00000000000003533293",
+      "url": "https://android-build.googleplex.com/builds/treetop/android-review/1339493?revision\u003d5",
+      "fixSuggestions": [],
+      "key": {
+        "uuid": "6e077adb_b45202d7",
+        "filename": "trusty/libtrusty/include/trusty/ioctl.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 1550585
+      },
+      "writtenOn": "2020-06-19T20:35:05Z",
+      "side": 1,
+      "message": "Third-party license (GPL2) disallowed in repository platform/system/core:\nGNU General Public License version 2,\n",
+      "range": {
+        "startLine": 4,
+        "startChar": 53,
+        "endLine": 5,
+        "endChar": 22
+      },
+      "revId": "508d420104671d6aa14e0e0730bb9df855355f26",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
