@@ -109,19 +109,16 @@ int SerializedLogBuffer::Log(log_id_t log_id, log_time realtime, uid_t uid, pid_
 }
 
 void SerializedLogBuffer::MaybePrune(log_id_t log_id) {
-    auto get_total_size = [](const auto& buffer) {
-        size_t total_size = 0;
-        for (const auto& chunk : buffer) {
-            total_size += chunk.PruneSize();
-        }
-        return total_size;
-    };
-    size_t total_size = get_total_size(logs_[log_id]);
+    size_t total_size = GetSizeUsed(log_id);
+    size_t after_size = total_size;
     if (total_size > max_size_[log_id]) {
         Prune(log_id, total_size - max_size_[log_id], 0);
+        after_size = GetSizeUsed(log_id);
         LOG(INFO) << "Pruned Logs from log_id: " << log_id << ", previous size: " << total_size
-                  << " after size: " << get_total_size(logs_[log_id]);
+                  << " after size: " << after_size;
     }
+
+    stats_->set_overhead(log_id, after_size);
 }
 
 void SerializedLogBuffer::StartDeleterThread() {
@@ -347,6 +344,14 @@ bool SerializedLogBuffer::Clear(log_id_t id, uid_t uid) {
     }
     auto lock = std::lock_guard{lock_};
     return Prune(id, ULONG_MAX, uid);
+}
+
+unsigned long SerializedLogBuffer::GetSizeUsed(log_id_t id) {
+    size_t total_size = 0;
+    for (const auto& chunk : logs_[id]) {
+        total_size += chunk.PruneSize();
+    }
+    return total_size;
 }
 
 unsigned long SerializedLogBuffer::GetSize(log_id_t id) {
