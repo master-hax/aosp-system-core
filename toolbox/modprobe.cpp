@@ -15,10 +15,14 @@
  */
 
 #include <ctype.h>
+#include <errno.h>
 #include <getopt.h>
 #include <stdlib.h>
+#include <string.h>
+
 #include <iostream>
 
+#include <android-base/file.h>
 #include <android-base/strings.h>
 #include <modprobe/modprobe.h>
 
@@ -32,8 +36,8 @@ enum modprobe_mode {
 static void print_usage(void) {
     std::cerr << "Usage:" << std::endl;
     std::cerr << std::endl;
-    std::cerr << "  modprobe [-alrqvsDb] [-d DIR] [MODULE]+" << std::endl;
-    std::cerr << "  modprobe [-alrqvsDb] [-d DIR] MODULE [symbol=value][...]" << std::endl;
+    std::cerr << "  modprobe [-alrqvsDb] [-d DIR] [-M module.load.file|MODULE] ..." << std::endl;
+    std::cerr << "  modprobe [-alrqvsDb] [-d DIR] MODULE [symbol=value]..." << std::endl;
     std::cerr << std::endl;
     std::cerr << "Options:" << std::endl;
     std::cerr << "  -b: Apply blocklist to module names too" << std::endl;
@@ -41,6 +45,7 @@ static void print_usage(void) {
     std::cerr << "  -D: Print dependencies for modules only, do not load";
     std::cerr << "  -h: Print this help" << std::endl;
     std::cerr << "  -l: List modules matching pattern" << std::endl;
+    std::cerr << "  -M: module.load file to acquire module names from" << std::endl;
     std::cerr << "  -r: Remove MODULE (multiple modules may be specified)" << std::endl;
     std::cerr << "  -q: Quiet" << std::endl;
     std::cerr << "  -v: Verbose" << std::endl;
@@ -54,9 +59,21 @@ static void print_usage(void) {
         return EXIT_FAILURE;                                              \
     }
 
+static std::string stripComments(const std::string& str) {
+    for (std::string rv = str;;) {
+        auto comment = rv.find('#');
+        if (comment == std::string::npos) return rv;
+        auto end = rv.find('\n', comment);
+        if (end != std::string::npos) end = end - comment;
+        rv.erase(comment, end);
+    }
+    /* NOTREACHED */
+}
+
 extern "C" int modprobe_main(int argc, char** argv) {
     std::vector<std::string> modules;
     std::string module_parameters;
+    std::string mods;
     std::vector<std::string> mod_dirs;
     modprobe_mode mode = AddModulesMode;
     bool blocklist = false;
@@ -64,7 +81,7 @@ extern "C" int modprobe_main(int argc, char** argv) {
     int rv = EXIT_SUCCESS;
 
     int opt;
-    while ((opt = getopt(argc, argv, "abd:Dhlqrv")) != -1) {
+    while ((opt = getopt(argc, argv, "abd:DhlM:qrv")) != -1) {
         switch (opt) {
             case 'a':
                 // toybox modprobe supported -a to load multiple modules, this
@@ -87,6 +104,19 @@ extern "C" int modprobe_main(int argc, char** argv) {
             case 'l':
                 check_mode();
                 mode = ListModulesMode;
+                break;
+            case 'M':
+                if (!android::base::ReadFileToString(optarg, &mods)) {
+                    std::cerr << "Failed to open " << optarg << ": " << strerror(errno)
+                              << std::endl;
+                    rv = EXIT_FAILURE;
+                }
+                for (auto mod : android::base::Split(stripComments(mods), "\n")) {
+                    mod = android::base::Trim(mod);
+                    if (mod == "") continue;
+                    if (std::find(modules.begin(), modules.end(), mod) != modules.end()) continue;
+                    modules.emplace_back(mod);
+                }
                 break;
             case 'q':
                 verbose = false;
