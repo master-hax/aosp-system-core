@@ -1,0 +1,48 @@
+{
+  "comments": [
+    {
+      "robotId": "ayeaye",
+      "robotRunId": "AR00000000000003551026",
+      "url": "https://android-build.googleplex.com/builds/treetop/android-review/1340634?revision\u003d2",
+      "fixSuggestions": [
+        {
+          "fixId": "5f1a08db_e695f267",
+          "description": "Change to \"trusty/spi/main.cpp\"",
+          "replacements": [
+            {
+              "path": "trusty/spi/main.cpp",
+              "range": {
+                "startLine": 69,
+                "startChar": 30,
+                "endLine": 69,
+                "endChar": 39
+              },
+              "replacement": "initialize"
+            }
+          ]
+        }
+      ],
+      "key": {
+        "uuid": "7fb5947c_b7015b8f",
+        "filename": "trusty/spi/main.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 1550585
+      },
+      "writtenOn": "2020-06-22T06:33:56Z",
+      "side": 1,
+      "message": "Common typo found: \"intialize\" -- should it be \"initialize\"?\nNote: a line containing \"common_typos_disable\" or \"common_typos_enable\" will turn off or on (respectively) the linter for subsequent lines in the file. Alternatively include the token \"NOTYPO\" within a line to skip typo linting that line.",
+      "range": {
+        "startLine": 69,
+        "startChar": 30,
+        "endLine": 69,
+        "endChar": 39
+      },
+      "revId": "39db4a791f74f890d06c5c83ab82583e8e71ce90",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
