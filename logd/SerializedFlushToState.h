@@ -67,9 +67,8 @@ class SerializedFlushToState : public FlushToState {
 
     bool HasUnreadLogs() { return !min_heap_.empty(); }
 
-    // Pops the next unread log from the min heap.  Add the next log for that log_id to the min heap
-    // if one is available otherwise set logs_needed_from_next_position_ to indicate that we're
-    // waiting for more logs.
+    // Pops the next unread log from the min heap and sets logs_needed_from_next_position_ to
+    // indicate that we're waiting for more logs from the associated log buffer.
     MinHeapElement PopNextUnreadLog();
 
     // If the parent log buffer prunes logs, the reference that this class contains may become

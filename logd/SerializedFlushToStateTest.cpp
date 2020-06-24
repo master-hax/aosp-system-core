@@ -136,6 +136,7 @@ class SerializedFlushToStateTest : public testing::Test {
         while (state.HasUnreadLogs()) {
             auto top = state.PopNextUnreadLog();
             read_sequence.emplace_back(top.entry->sequence());
+            state.CheckForNewLogs();
         }
 
         EXPECT_TRUE(std::is_sorted(read_sequence.begin(), read_sequence.end()));
@@ -149,7 +150,7 @@ class SerializedFlushToStateTest : public testing::Test {
 
     // Add a chunk with the given messages to the a given log buffer.  Keep track of the sequence
     // numbers for future validation.  Optionally mark the block as having finished writing.
-    void AddChunkWithMessages(int buffer, bool finish_writing,
+    void AddChunkWithMessages(bool finish_writing, int buffer,
                               const std::vector<std::string>& messages) {
         auto chunk = SerializedLogChunk{kChunkSize};
         for (const auto& message : messages) {
@@ -251,4 +252,47 @@ TEST_F(SerializedFlushToStateTest, future_writes) {
     };
 
     TestAllReadingWithFutureMessages(write_logs);
+}
+
+TEST_F(SerializedFlushToStateTest, no_dangling_references) {
+    AddChunkWithMessages(true, 0, {"1st", "2nd"});
+    AddChunkWithMessages(true, 0, {"3rd", "4th"});
+
+    auto state = SerializedFlushToState{1, kLogMaskAll};
+    state.InitializeLogs(log_chunks_);
+    state.CheckForNewLogs();
+
+    ASSERT_EQ(log_chunks_[0].size(), 2U);
+    auto first_chunk = log_chunks_[0].begin();
+    auto second_chunk = std::next(first_chunk);
+
+    ASSERT_TRUE(state.HasUnreadLogs());
+    auto first_log = state.PopNextUnreadLog();
+    EXPECT_STREQ(first_log.entry->msg(), "1st");
+    EXPECT_EQ(first_chunk->reader_ref_count(), 1U);
+    EXPECT_EQ(second_chunk->reader_ref_count(), 0U);
+    state.CheckForNewLogs();
+
+    ASSERT_TRUE(state.HasUnreadLogs());
+    auto second_log = state.PopNextUnreadLog();
+    EXPECT_STREQ(second_log.entry->msg(), "2nd");
+    EXPECT_EQ(first_chunk->reader_ref_count(), 1U);
+    EXPECT_EQ(second_chunk->reader_ref_count(), 0U);
+    state.CheckForNewLogs();
+
+    ASSERT_TRUE(state.HasUnreadLogs());
+    auto third_log = state.PopNextUnreadLog();
+    EXPECT_STREQ(third_log.entry->msg(), "3rd");
+    EXPECT_EQ(first_chunk->reader_ref_count(), 0U);
+    EXPECT_EQ(second_chunk->reader_ref_count(), 1U);
+    state.CheckForNewLogs();
+
+    ASSERT_TRUE(state.HasUnreadLogs());
+    auto fourth_log = state.PopNextUnreadLog();
+    EXPECT_STREQ(fourth_log.entry->msg(), "4th");
+    EXPECT_EQ(first_chunk->reader_ref_count(), 0U);
+    EXPECT_EQ(second_chunk->reader_ref_count(), 1U);
+    state.CheckForNewLogs();
+
+    EXPECT_FALSE(state.HasUnreadLogs());
 }
