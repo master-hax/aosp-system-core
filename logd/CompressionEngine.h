@@ -16,8 +16,7 @@
 
 #pragma once
 
-#include <span>
-#include <vector>
+#include <memory>
 
 class CompressionEngine {
   public:
@@ -25,23 +24,26 @@ class CompressionEngine {
 
     virtual ~CompressionEngine(){};
 
-    virtual bool Compress(std::span<uint8_t> in, std::vector<uint8_t>& out) = 0;
+    virtual bool Compress(uint8_t* in, size_t in_size, std::unique_ptr<uint8_t[]>& out,
+                          size_t& out_size) = 0;
     // Decompress the contents of `in` into `out`.  `out_size` must be set to the decompressed size
     // of the contents.
-    virtual bool Decompress(const std::vector<uint8_t>& in, std::vector<uint8_t>& out,
+    virtual bool Decompress(uint8_t* in, size_t in_size, std::unique_ptr<uint8_t[]>& out,
                             size_t out_size) = 0;
 };
 
 class ZlibCompressionEngine : public CompressionEngine {
   public:
-    bool Compress(std::span<uint8_t> in, std::vector<uint8_t>& out) override;
-    bool Decompress(const std::vector<uint8_t>& in, std::vector<uint8_t>& out,
+    bool Compress(uint8_t* in, size_t in_size, std::unique_ptr<uint8_t[]>& out,
+                  size_t& out_size) override;
+    bool Decompress(uint8_t* in, size_t in_size, std::unique_ptr<uint8_t[]>& out,
                     size_t out_size) override;
 };
 
 class ZstdCompressionEngine : public CompressionEngine {
   public:
-    bool Compress(std::span<uint8_t> in, std::vector<uint8_t>& out) override;
-    bool Decompress(const std::vector<uint8_t>& in, std::vector<uint8_t>& out,
+    bool Compress(uint8_t* in, size_t in_size, std::unique_ptr<uint8_t[]>& out,
+                  size_t& out_size) override;
+    bool Decompress(uint8_t* in, size_t in_size, std::unique_ptr<uint8_t[]>& out,
                     size_t out_size) override;
 };

@@ -25,7 +25,8 @@
 
 class SerializedLogChunk {
   public:
-    explicit SerializedLogChunk(size_t size) : contents_(size) {}
+    explicit SerializedLogChunk(size_t size) : contents_(new uint8_t[size]), contents_size_(size) {}
+    SerializedLogChunk(SerializedLogChunk&& other) noexcept = default;
     ~SerializedLogChunk();
 
     void Compress();
@@ -44,7 +45,7 @@ class SerializedLogChunk {
     // If this buffer has been compressed, we only consider its compressed size when accounting for
     // memory consumption for pruning.  This is since the uncompressed log is only by used by
     // readers, and thus not a representation of how much these logs cost to keep in memory.
-    size_t PruneSize() const { return compressed_log_.size() ?: contents_.size(); }
+    size_t PruneSize() const { return compressed_log_size_ ?: contents_size_; }
 
     void FinishWriting() {
         writer_active_ = false;
@@ -56,7 +57,7 @@ class SerializedLogChunk {
     const SerializedLogEntry* log_entry(int offset) const {
         return reinterpret_cast<const SerializedLogEntry*>(data() + offset);
     }
-    const uint8_t* data() const { return contents_.data(); }
+    const uint8_t* data() const { return contents_.get(); }
     int write_offset() const { return write_offset_; }
     uint64_t highest_sequence_number() const { return highest_sequence_number_; }
 
@@ -66,10 +67,12 @@ class SerializedLogChunk {
   private:
     // The decompressed contents of this log buffer.  Deallocated when the ref_count reaches 0 and
     // writer_active_ is false.
-    std::vector<uint8_t> contents_;
+    std::unique_ptr<uint8_t[]> contents_;
+    size_t contents_size_ = 0;
     int write_offset_ = 0;
     uint32_t reader_ref_count_ = 0;
     bool writer_active_ = true;
     uint64_t highest_sequence_number_ = 1;
-    std::vector<uint8_t> compressed_log_;
+    std::unique_ptr<uint8_t[]> compressed_log_;
+    size_t compressed_log_size_ = 0;
 };

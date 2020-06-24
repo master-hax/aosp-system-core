@@ -27,7 +27,8 @@ CompressionEngine& CompressionEngine::GetInstance() {
     return *engine;
 }
 
-bool ZlibCompressionEngine::Compress(std::span<uint8_t> in, std::vector<uint8_t>& out) {
+bool ZlibCompressionEngine::Compress(uint8_t* in, size_t in_size, std::unique_ptr<uint8_t[]>& out,
+                                     size_t& out_size) {
     z_stream strm;
     strm.zalloc = Z_NULL;
     strm.zfree = Z_NULL;
@@ -37,36 +38,39 @@ bool ZlibCompressionEngine::Compress(std::span<uint8_t> in, std::vector<uint8_t>
         LOG(FATAL) << "deflateInit() failed";
     }
 
-    CHECK_LE(in.size(), static_cast<int64_t>(std::numeric_limits<uint32_t>::max()));
-    uint32_t out_size = deflateBound(&strm, in.size());
+    CHECK_LE(in_size, std::numeric_limits<uint32_t>::max());
+    uint32_t deflate_bound = deflateBound(&strm, in_size);
 
-    out.resize(out_size);
-    strm.avail_in = in.size();
-    strm.next_in = const_cast<uint8_t*>(in.data());
-    strm.avail_out = out_size;
-    strm.next_out = out.data();
+    std::unique_ptr<uint8_t[]> temp_decompressed(new uint8_t[deflate_bound]);
+
+    strm.avail_in = in_size;
+    strm.next_in = in;
+    strm.avail_out = deflate_bound;
+    strm.next_out = temp_decompressed.get();
     ret = deflate(&strm, Z_FINISH);
     CHECK_EQ(ret, Z_STREAM_END);
 
-    uint32_t compressed_data_size = strm.total_out;
+    out_size = strm.total_out;
     deflateEnd(&strm);
-    out.resize(compressed_data_size);
+
+    out.reset(new uint8_t[out_size]);
+    memcpy(out.get(), temp_decompressed.get(), out_size);
 
     return true;
 }
 
-bool ZlibCompressionEngine::Decompress(const std::vector<uint8_t>& in, std::vector<uint8_t>& out,
+bool ZlibCompressionEngine::Decompress(uint8_t* in, size_t in_size, std::unique_ptr<uint8_t[]>& out,
                                        size_t out_size) {
-    out.resize(out_size);
+    out.reset(new uint8_t[out_size]);
 
     z_stream strm;
     strm.zalloc = Z_NULL;
     strm.zfree = Z_NULL;
     strm.opaque = Z_NULL;
-    strm.avail_in = in.size();
-    strm.next_in = const_cast<uint8_t*>(in.data());
-    strm.avail_out = out.size();
-    strm.next_out = out.data();
+    strm.avail_in = in_size;
+    strm.next_in = in;
+    strm.avail_out = out_size;
+    strm.next_out = out.get();
 
     inflateInit(&strm);
     int ret = inflate(&strm, Z_NO_FLUSH);
@@ -79,26 +83,28 @@ bool ZlibCompressionEngine::Decompress(const std::vector<uint8_t>& in, std::vect
     return true;
 }
 
-bool ZstdCompressionEngine::Compress(std::span<uint8_t> in, std::vector<uint8_t>& out) {
-    size_t out_size = ZSTD_compressBound(in.size());
-    out.resize(out_size);
+bool ZstdCompressionEngine::Compress(uint8_t* in, size_t in_size, std::unique_ptr<uint8_t[]>& out,
+                                     size_t& out_size) {
+    uint32_t compress_bound = ZSTD_compressBound(in_size);
+    std::unique_ptr<uint8_t[]> temp_decompressed(new uint8_t[compress_bound]);
 
-    out_size = ZSTD_compress(out.data(), out_size, in.data(), in.size(), 1);
+    out_size = ZSTD_compress(temp_decompressed.get(), compress_bound, in, in_size, 1);
     if (ZSTD_isError(out_size)) {
         LOG(FATAL) << "ZSTD_compress failed: " << ZSTD_getErrorName(out_size);
     }
-    out.resize(out_size);
+    out.reset(new uint8_t[compress_bound]);
+    memcpy(out.get(), temp_decompressed.get(), out_size);
 
     return true;
 }
 
-bool ZstdCompressionEngine::Decompress(const std::vector<uint8_t>& in, std::vector<uint8_t>& out,
+bool ZstdCompressionEngine::Decompress(uint8_t* in, size_t in_size, std::unique_ptr<uint8_t[]>& out,
                                        size_t out_size) {
-    out.resize(out_size);
-    size_t result = ZSTD_decompress(out.data(), out.size(), in.data(), in.size());
+    out.reset(new uint8_t[out_size]);
+    size_t result = ZSTD_decompress(out.get(), out_size, in, in_size);
     if (ZSTD_isError(result)) {
         LOG(FATAL) << "ZSTD_decompress failed: " << ZSTD_getErrorName(result);
     }
-    CHECK_EQ(result, out.size());
+    CHECK_EQ(result, out_size);
     return true;
 }

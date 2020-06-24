@@ -25,14 +25,15 @@ SerializedLogChunk::~SerializedLogChunk() {
 }
 
 void SerializedLogChunk::Compress() {
-    if (compressed_log_.empty()) {
-        CompressionEngine::GetInstance().Compress({contents_.data(), write_offset_},
-                                                  compressed_log_);
-        LOG(INFO) << "Compressed Log, buffer max size: " << contents_.size()
+    if (compressed_log_size_ == 0) {
+        CompressionEngine::GetInstance().Compress(contents_.get(), write_offset_, compressed_log_,
+                                                  compressed_log_size_);
+        LOG(INFO) << "Compressed Log, buffer max size: " << contents_size_
                   << " size used: " << write_offset_
-                  << " compressed size: " << compressed_log_.size();
+                  << " compressed size: " << compressed_log_size_;
     }
-    contents_.resize(0);
+    contents_.reset();
+    contents_size_ = 0;
 }
 
 // TODO: Develop a better reference counting strategy to guard against the case where the writer is
@@ -41,7 +42,8 @@ void SerializedLogChunk::IncReaderRefCount() {
     if (++reader_ref_count_ != 1 || writer_active_) {
         return;
     }
-    CompressionEngine::GetInstance().Decompress(compressed_log_, contents_, write_offset_);
+    CompressionEngine::GetInstance().Decompress(compressed_log_.get(), compressed_log_size_,
+                                                contents_, write_offset_);
 }
 
 void SerializedLogChunk::DecReaderRefCount(bool compress) {
@@ -75,7 +77,7 @@ bool SerializedLogChunk::ClearUidLogs(uid_t uid, log_id_t log_id, LogStatistics*
         }
         size_t entry_total_len = entry->total_len();
         if (read_offset != new_write_offset) {
-            memmove(contents_.data() + new_write_offset, contents_.data() + read_offset,
+            memmove(contents_.get() + new_write_offset, contents_.get() + read_offset,
                     entry_total_len);
         }
         read_offset += entry_total_len;
@@ -90,7 +92,8 @@ bool SerializedLogChunk::ClearUidLogs(uid_t uid, log_id_t log_id, LogStatistics*
     // Clear the old compressed logs and set write_offset_ appropriately for DecReaderRefCount()
     // to compress the new partially cleared log.
     if (new_write_offset != write_offset_) {
-        compressed_log_.clear();
+        compressed_log_.reset();
+        compressed_log_size_ = 0;
         write_offset_ = new_write_offset;
     }
 
@@ -100,12 +103,12 @@ bool SerializedLogChunk::ClearUidLogs(uid_t uid, log_id_t log_id, LogStatistics*
 }
 
 bool SerializedLogChunk::CanLog(size_t len) {
-    return write_offset_ + len <= contents_.size();
+    return write_offset_ + len <= contents_size_;
 }
 
 SerializedLogEntry* SerializedLogChunk::Log(uint64_t sequence, log_time realtime, uid_t uid,
                                             pid_t pid, pid_t tid, const char* msg, uint16_t len) {
-    auto new_log_address = contents_.data() + write_offset_;
+    auto new_log_address = contents_.get() + write_offset_;
     auto* entry = new (new_log_address) SerializedLogEntry(uid, pid, tid, sequence, realtime, len);
     memcpy(entry->msg(), msg, len);
     write_offset_ += entry->total_len();
