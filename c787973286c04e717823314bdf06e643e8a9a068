@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d224b824_2048f0dc",
+        "filename": "toolbox/modprobe.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-06-24T16:02:04Z",
+      "side": 1,
+      "message": "yeah, and i\u0027m sure that\u0027s going to cause trouble one day, but he\u0027s a stickler for always having a short option :-(\n\nmaybe reword this as \"We have non-standard short options -l and -D to make it easier for OEMs to transition from toybox.\", which i think is the point you\u0027re trying to make here?",
+      "revId": "c787973286c04e717823314bdf06e643e8a9a068",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
