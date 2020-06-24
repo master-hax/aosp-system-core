@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9ce3aaa7_1528afc0",
+        "filename": "logd/SerializedLogChunk.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-06-24T21:06:39Z",
+      "side": 1,
+      "message": "should this be a type in its own right? rather than carry around two related fields?",
+      "range": {
+        "startLine": 70,
+        "startChar": 4,
+        "endLine": 71,
+        "endChar": 30
+      },
+      "revId": "d30ac56f4ccc7d715db21ea65b2aee511b32b974",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
