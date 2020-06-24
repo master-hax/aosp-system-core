@@ -16,6 +16,24 @@
       "revId": "7109c08116c4bb59539babbf05eb6fb07b2e38a4",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1c414629_744b86e5",
+        "filename": "logd/SerializedData.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-06-24T23:20:15Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a04f97b_bb3296f4",
+      "revId": "7109c08116c4bb59539babbf05eb6fb07b2e38a4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
