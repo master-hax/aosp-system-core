@@ -630,9 +630,10 @@ static void LoadProperties(char* data, const char* filter, const char* filename,
     char *key, *value, *eol, *sol, *tmp, *fn;
     size_t flen = 0;
 
-    static constexpr const char* const kVendorPathPrefixes[2] = {
+    static constexpr const char* const kVendorPathPrefixes[3] = {
             "/vendor",
             "/odm",
+            "/vendor_dlkm",
     };
 
     const char* context = kInitContext;
@@ -781,9 +782,10 @@ static void property_initialize_ro_product_props() {
             "brand", "device", "manufacturer", "model", "name",
     };
     const char* RO_PRODUCT_PROPS_ALLOWED_SOURCES[] = {
-            "odm", "product", "system_ext", "system", "vendor",
+            "odm", "product", "system_ext", "system", "vendor", "vendor_dlkm",
     };
-    const char* RO_PRODUCT_PROPS_DEFAULT_SOURCE_ORDER = "product,odm,vendor,system_ext,system";
+    const char* RO_PRODUCT_PROPS_DEFAULT_SOURCE_ORDER =
+            "product,vendor_dlkm,odm,vendor,system_ext,system";
     const std::string EMPTY = "";
 
     std::string ro_product_props_source_order =
@@ -902,6 +904,8 @@ void PropertyLoadBootDefaults() {
         load_properties_from_file("/odm/default.prop", nullptr, &properties);
         load_properties_from_file("/odm/build.prop", nullptr, &properties);
     }
+
+    load_properties_from_file("/vendor_dlkm/build.prop", nullptr, &properties);
 
     load_properties_from_file("/product/build.prop", nullptr, &properties);
     load_properties_from_file("/factory/factory.prop", "ro.*", &properties);
