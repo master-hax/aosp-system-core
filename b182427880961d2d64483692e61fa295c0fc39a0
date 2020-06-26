@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3819bf51_be094714",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 785,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2020-06-26T03:53:55Z",
+      "side": 1,
+      "message": "I am not sure if vendor_dlkm is supposed to contribute to ro.product.[branch|...].\n\nYifan, didn\u0027t you sayd that the build props in the vendor_dlkm partition is just for its own versioning?",
+      "range": {
+        "startLine": 785,
+        "startChar": 63,
+        "endLine": 785,
+        "endChar": 77
+      },
+      "revId": "b182427880961d2d64483692e61fa295c0fc39a0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
