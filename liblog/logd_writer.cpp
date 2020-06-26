@@ -59,8 +59,7 @@ static void GetSocket() {
     return;
   }
 
-  int new_socket =
-      TEMP_FAILURE_RETRY(socket(PF_UNIX, SOCK_DGRAM | SOCK_CLOEXEC | SOCK_NONBLOCK, 0));
+  int new_socket = TEMP_FAILURE_RETRY(socket(PF_UNIX, SOCK_DGRAM | SOCK_CLOEXEC, 0));
   if (new_socket <= 0) {
     return;
   }

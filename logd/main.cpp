@@ -268,7 +268,7 @@ int main(int argc, char* argv[]) {
 
     // LogBuffer is the object which is responsible for holding all log entries.
     LogBuffer* logBuf;
-    if (true) {
+    if (false) {
         logBuf = new ChattyLogBuffer(&reader_list, &log_tags, &prune_list, &log_statistics);
     } else {
         logBuf = new SimpleLogBuffer(&reader_list, &log_tags, &log_statistics);

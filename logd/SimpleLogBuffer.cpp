@@ -16,7 +16,13 @@
 
 #include "SimpleLogBuffer.h"
 
+#include <string>
+#include <tuple>
+#include <vector>
+
+#include <android-base/file.h>
 #include <android-base/logging.h>
+#include <android-base/unique_fd.h>
 
 #include "LogBufferElement.h"
 
@@ -77,8 +83,59 @@ bool SimpleLogBuffer::ShouldLog(log_id_t log_id, const char* msg, uint16_t len) 
     return __android_log_is_loggable_len(prio, tag, tag_len, ANDROID_LOG_VERBOSE);
 }
 
+struct __attribute__((packed)) RecordedLogMessage {
+    uint32_t uid;
+    uint32_t pid;
+    uint32_t tid;
+    log_time realtime;
+    uint16_t msg_len;
+    uint8_t log_id;
+};
+
+static void WriteLogMessage(int fd, const RecordedLogMessage& meta, const std::string& msg) {
+    android::base::WriteFully(fd, &meta, sizeof(meta));
+    android::base::WriteFully(fd, msg.c_str(), meta.msg_len);
+}
+
+static void RecordLogMessage(log_id_t log_id, log_time realtime, uid_t uid, pid_t pid, pid_t tid,
+                             const char* msg, uint16_t len) {
+    static std::vector<std::pair<RecordedLogMessage, std::string>> since_boot_messages;
+    static android::base::unique_fd fd;
+
+    if (len > LOGGER_ENTRY_MAX_PAYLOAD) {
+        len = LOGGER_ENTRY_MAX_PAYLOAD;
+    }
+
+    RecordedLogMessage recorded_log_message = {
+            .uid = uid,
+            .pid = static_cast<uint32_t>(pid),
+            .tid = static_cast<uint32_t>(tid),
+            .realtime = realtime,
+            .msg_len = len,
+            .log_id = static_cast<uint8_t>(log_id),
+    };
+
+    if (!fd.ok()) {
+        fd.reset(open("/data/misc/logd/recorded-messages",
+                      O_WRONLY | O_CREAT | O_APPEND | O_CLOEXEC, 0666));
+        if (!fd.ok()) {
+            since_boot_messages.emplace_back(recorded_log_message, std::string(msg, len));
+            return;
+        } else {
+            for (const auto& [meta, msg] : since_boot_messages) {
+                WriteLogMessage(fd.get(), meta, msg);
+            }
+        }
+    }
+
+    WriteLogMessage(fd.get(), recorded_log_message, std::string(msg, len));
+}
+
 int SimpleLogBuffer::Log(log_id_t log_id, log_time realtime, uid_t uid, pid_t pid, pid_t tid,
                          const char* msg, uint16_t len) {
+    auto lock = std::lock_guard{lock_};
+    RecordLogMessage(log_id, realtime, uid, pid, tid, msg, len);
+
     if (log_id >= LOG_ID_MAX) {
         return -EINVAL;
     }
@@ -94,7 +151,6 @@ int SimpleLogBuffer::Log(log_id_t log_id, log_time realtime, uid_t uid, pid_t pi
     // exact entry with time specified in ms or us precision.
     if ((realtime.tv_nsec % 1000) == 0) ++realtime.tv_nsec;
 
-    auto lock = std::lock_guard{lock_};
     auto sequence = sequence_.fetch_add(1, std::memory_order_relaxed);
     LogInternal(LogBufferElement(log_id, realtime, uid, pid, tid, sequence, msg, len));
     return len;
