@@ -18,10 +18,11 @@
 
 #include <linux/types.h>
 
+#include <android-base/logging.h>
+#include <android-base/stringprintf.h>
+
 #define DM_USER_MAP_READ 0
 #define DM_USER_MAP_WRITE 1
-
-#define DEBUG 0
 
 struct dm_user_message {
     __u64 seq;
@@ -34,67 +35,65 @@ struct dm_user_message {
 
 using namespace android::dm;
 
-static int daemon_main(void) {
-    int block_fd = open("/dev/block/mapper/system_a", O_RDWR);
+static void ConsoleLogger(android::base::LogId, android::base::LogSeverity severity, const char*,
+                          const char*, unsigned int, const char* message) {
+    if (severity == android::base::ERROR || severity == android::base::FATAL) {
+        fprintf(stderr, "%s\n", message);
+    } else {
+        fprintf(stdout, "%s\n", message);
+    }
+}
+
+static int daemon_main(const std::string& device) {
+    int block_fd = open(device.c_str(), O_RDWR);
     if (!block_fd) {
-        perror("Unable to open /dev/block/mapper/system_a");
+        PLOG(ERROR) << "Unable to open " << device;
         return 1;
     }
 
     int ctrl_fd = open("/dev/dm-user", O_RDWR);
     if (!ctrl_fd) {
-        perror("Unable to open /dev/dm-user");
+        PLOG(ERROR) << "Unable to open /dev/dm-user";
         return 1;
     }
 
     size_t buf_size = 1UL << 16;
-    char* buf = new char[buf_size];
+    auto buf = std::make_unique<char>(buf_size);
 
     /* Just keeps pumping messages between userspace and the kernel.  We won't
      * actually be doing anything, but the sequence numbers line up so it'll at
      * least make forward progress. */
     while (true) {
-        struct dm_user_message* msg = (struct dm_user_message*)(&(buf[0]));
+        struct dm_user_message* msg = (struct dm_user_message*)buf.get();
 
-        memset(buf, 0, buf_size);
+        memset(buf.get(), 0, buf_size);
 
-        ssize_t readed = read(ctrl_fd, buf, buf_size);
+        ssize_t readed = read(ctrl_fd, buf.get(), buf_size);
         if (readed < 0) {
-            perror("Control read failed, trying with more space");
-            delete[] buf;
+            PLOG(ERROR) << "Control read failed, trying with more space";
             buf_size *= 2;
-            fprintf(stderr, "Looking for %x bytes\n", buf_size);
-            buf = new char[buf_size];
-            if (buf == NULL) {
-                perror("Unable to allocate buffer");
-                return 2;
-            }
+            buf = std::make_unique<char>(buf_size);
             continue;
         }
 
-#if (DEBUG == 1)
-        printf("read() from dm-user returned %d bytes:\n", readed);
-        printf("    msg->seq:    0x%016llx\n", msg->seq);
-        printf("    msg->type:   0x%016llx\n", msg->type);
-        printf("    msg->flags:  0x%016llx\n", msg->flags);
-        printf("    msg->sector: 0x%016llx\n", msg->sector);
-        printf("    msg->len:    0x%016llx\n", msg->len);
-#endif
+        LOG(DEBUG) << android::base::StringPrintf("read() from dm-user returned %d bytes:", (int)readed);
+        LOG(DEBUG) << android::base::StringPrintf("    msg->seq:    0x%016llx", msg->seq);
+        LOG(DEBUG) << android::base::StringPrintf("    msg->type:   0x%016llx", msg->type);
+        LOG(DEBUG) << android::base::StringPrintf("    msg->flags:  0x%016llx", msg->flags);
+        LOG(DEBUG) << android::base::StringPrintf("    msg->sector: 0x%016llx", msg->sector);
+        LOG(DEBUG) << android::base::StringPrintf("    msg->len:    0x%016llx", msg->len);
 
         switch (msg->type) {
             case DM_USER_MAP_READ: {
-#if (DEBUG == 1)
-                printf("Responding to read of sector %lld with %lld bytes data\n", msg->sector,
+                LOG(DEBUG) << android::base::StringPrintf("Responding to read of sector %lld with %lld bytes data", msg->sector,
                        msg->len);
-#endif
 
                 if ((sizeof(*msg) + msg->len) > buf_size) {
-                    auto old_buf = buf;
+                    auto old_buf = std::move(buf);
                     buf_size = sizeof(*msg) + msg->len;
-                    buf = new char[buf_size];
-                    memcpy(buf, old_buf, sizeof(*msg));
-                    delete[] old_buf;
-                    msg = (struct dm_user_message*)(&(buf[0]));
+                    buf = std::make_unique<char>(buf_size);
+                    memcpy(buf.get(), old_buf.get(), sizeof(*msg));
+                    msg = (struct dm_user_message*)buf.get();
                 }
 
                 ssize_t readed = 0;
@@ -102,15 +101,15 @@ static int daemon_main(void) {
                 while (readed < msg->len) {
                     ssize_t r = read(block_fd, msg->buf + readed, msg->len - readed);
                     if (r < 0) {
-                        perror("Unable to read from block device");
+                        PLOG(ERROR) << "Unable to read from block device: " << device;
                         return 7;
                     }
                     readed += r;
                 }
 
-                ssize_t written = write(ctrl_fd, buf, sizeof(*msg) + msg->len);
+                ssize_t written = write(ctrl_fd, buf.get(), sizeof(*msg) + msg->len);
                 if (written < 0) {
-                    perror("Control write failed");
+                    PLOG(ERROR) << "Control write failed";
                     return 3;
                 }
                 break;
@@ -122,20 +121,30 @@ static int daemon_main(void) {
         }
 
 #if (DEBUG == 1)
-        printf("read() finished, next message\n");
+        LOG(DEBUG) << "read() finished, next message";
 #endif
     }
 
     return 0;
 }
 
-int main() {
+int main(int argc, char** argv) {
+    if (argc >= 2) {
+        // :TODO: switch to logd after second-stage init.
+        android::base::InitLogging(argv, &android::base::KernelLogger);
+
+        daemon_main(argv[1]);
+        return 0;
+    }
+
+    android::base::InitLogging(argv, ConsoleLogger);
+
     /* Creates a new block device by just running dmctl, so I don't have to...
      * :) */
     system("dmctl create palmer user 0 1000000");
 
     /* Backgrounds the daemon... */
-    if (fork() == 0) return daemon_main();
+    if (fork() == 0) return daemon_main("system_a");
 
     /* That's probably log enough... */
     sleep(5);

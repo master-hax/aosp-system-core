@@ -35,8 +35,27 @@ cc_binary {
     srcs: ["dmuserd.cpp"],
 
     static_libs: [
+        "libbase",
+        "liblog",
         "libdm",
     ],
+
+    cflags: ["-Werror"],
+}
+
+cc_binary {
+    name: "dmuserd_ramdisk",
+    stem: "dmuserd",
+    srcs: ["dmuserd.cpp"],
+
+    static_libs: [
+        "libbase",
+        "liblog",
+        "libdm",
+    ],
+    ramdisk: true,
+    static_executable: true,
+    system_shared_libs: [],
 
     cflags: ["-Werror"],
 }
