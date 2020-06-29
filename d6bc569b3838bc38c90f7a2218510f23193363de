@@ -1,0 +1,48 @@
+{
+  "comments": [
+    {
+      "robotId": "ayeaye",
+      "robotRunId": "AR00000000000003659161",
+      "url": "https://android-build.googleplex.com/builds/treetop/android-review/1351307?revision\u003d1",
+      "fixSuggestions": [
+        {
+          "fixId": "f4356fe8_262c5689",
+          "description": "Change to \"init/property_service.cpp\"",
+          "replacements": [
+            {
+              "path": "init/property_service.cpp",
+              "range": {
+                "startLine": 896,
+                "startChar": 77,
+                "endLine": 896,
+                "endChar": 87
+              },
+              "replacement": "properties"
+            }
+          ]
+        }
+      ],
+      "key": {
+        "uuid": "9a38e34d_32976a27",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 896,
+      "author": {
+        "id": 1550585
+      },
+      "writtenOn": "2020-06-29T01:49:36Z",
+      "side": 1,
+      "message": "Common typo found: \"properites\" -- should it be \"properties\"?\nNote: a line containing \"common_typos_disable\" or \"common_typos_enable\" will turn off or on (respectively) the linter for subsequent lines in the file. Alternatively include the token \"NOTYPO\" within a line to skip typo linting that line.",
+      "range": {
+        "startLine": 896,
+        "startChar": 77,
+        "endLine": 896,
+        "endChar": 87
+      },
+      "revId": "d6bc569b3838bc38c90f7a2218510f23193363de",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
