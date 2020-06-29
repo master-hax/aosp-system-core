@@ -886,24 +886,24 @@ void PropertyLoadBootDefaults() {
         load_properties_from_file("/prop.default", nullptr, &properties);
     }
 
-    load_properties_from_file("/system/build.prop", nullptr, &properties);
-    load_properties_from_file("/system_ext/build.prop", nullptr, &properties);
+    // <part>/etc/build.prop is the canonical location of the build-time properties since S.
+    // Falling back to <part>/defalt.prop and <part>/build.prop when legacy partition has to be
+    // supported, i.e., vendor, odm, etc.
+    auto load_prop_from = [&properties](const std::string& partition, bool support_legacy) {
+        auto success =
+                load_properties_from_file(partition + "/etc/build.prop", nullptr, &properties);
+        if (!success && support_legacy) {
+            load_properties_from_file(partition + "/default.prop", nullptr, &properites);
+            load_properties_from_file(partition + "/build.prop", nullptr, &properties);
+        }
+    };
 
-    // TODO(b/117892318): uncomment the following condition when vendor.imgs for
-    // aosp_* targets are all updated.
-//    if (SelinuxGetVendorAndroidVersion() <= __ANDROID_API_R__) {
-        load_properties_from_file("/vendor/default.prop", nullptr, &properties);
-//    }
-    load_properties_from_file("/vendor/build.prop", nullptr, &properties);
+    load_prop_from("/system", support_legacy = false);
+    load_prop_from("/system_ext", support_legacy = false);
+    load_prop_from("/vendor", support_legacy = true);
+    load_prop_from("/odm", support_legacy = SelinuxGetVendorAndroidVersion() < __ANDROID_API_Q__);
+    load_prop_from("/product", support_legacy = true);
 
-    if (SelinuxGetVendorAndroidVersion() >= __ANDROID_API_Q__) {
-        load_properties_from_file("/odm/etc/build.prop", nullptr, &properties);
-    } else {
-        load_properties_from_file("/odm/default.prop", nullptr, &properties);
-        load_properties_from_file("/odm/build.prop", nullptr, &properties);
-    }
-
-    load_properties_from_file("/product/build.prop", nullptr, &properties);
     load_properties_from_file("/factory/factory.prop", "ro.*", &properties);
 
     if (access(kDebugRamdiskProp, R_OK) == 0) {
