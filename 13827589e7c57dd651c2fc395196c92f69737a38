@@ -34,6 +34,24 @@
       "revId": "13827589e7c57dd651c2fc395196c92f69737a38",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6fc9ea00_20272232",
+        "filename": "trusty/spi/main.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1000205
+      },
+      "writtenOn": "2020-06-30T23:32:11Z",
+      "side": 1,
+      "message": "We can handle multiple devices with one server. Also if you want to to have multiple proxy servers, they can all open the same port. I don\u0027t know if we currently support multiple instances of a trusty app, which would be an easy way to handle this, but even without it is possible to write an app that supports interleaved requests from multiple clients.",
+      "parentUuid": "5ea3d540_b49f4e93",
+      "revId": "13827589e7c57dd651c2fc395196c92f69737a38",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
