@@ -16,6 +16,24 @@
       "revId": "13827589e7c57dd651c2fc395196c92f69737a38",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5ea3d540_b49f4e93",
+        "filename": "trusty/spi/main.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1124693
+      },
+      "writtenOn": "2020-06-30T23:10:24Z",
+      "side": 1,
+      "message": "I agree making the this port names agnostic of the actual device is a good idea. I\u0027ll change it to \"com.android.trusty.spi.proxy\". One caveat though is that if there are multiple SPI servers that use the proxy, proxy ports need to be distinguishable by name.",
+      "parentUuid": "ff47d656_9f5c6605",
+      "revId": "13827589e7c57dd651c2fc395196c92f69737a38",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
