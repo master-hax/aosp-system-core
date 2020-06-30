@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ff47d656_9f5c6605",
+        "filename": "trusty/spi/main.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1000205
+      },
+      "writtenOn": "2020-06-30T21:39:16Z",
+      "side": 1,
+      "message": "why does the proxy port have fingerprint in the name?",
+      "revId": "13827589e7c57dd651c2fc395196c92f69737a38",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
