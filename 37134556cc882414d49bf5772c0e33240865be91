@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d24818c8_492b4b2d",
+        "filename": "libprocessgroup/task_profiles.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-07-01T20:13:42Z",
+      "side": 1,
+      "message": "Better to be \u0027Reset()\u0027.  Accessors get to be lower case but other functions are LikeThis().",
+      "range": {
+        "startLine": 36,
+        "startChar": 9,
+        "endLine": 36,
+        "endChar": 14
+      },
+      "revId": "37134556cc882414d49bf5772c0e33240865be91",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
