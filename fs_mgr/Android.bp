@@ -149,6 +149,11 @@ cc_library_static {
         darwin: {
             enabled: false,
         },
+        vendor: {
+            cflags: [
+                "-DVENDOR_BUILD",
+            ],
+        },
     },
     export_include_dirs: ["include_fstab"],
     header_libs: [

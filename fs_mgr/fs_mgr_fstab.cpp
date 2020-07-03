@@ -696,7 +696,9 @@ bool ReadFstabFromFile(const std::string& path, Fstab* fstab) {
         TransformFstabForDsu(fstab, Split(lp_names, ","));
     }
 
+#ifndef VENDOR_BUILD
     SkipMountingPartitions(fstab);
+#endif
     EnableMandatoryFlags(fstab);
 
     return true;
@@ -726,11 +728,16 @@ bool ReadFstabFromDt(Fstab* fstab, bool log) {
         return false;
     }
 
+#ifndef VENDOR_BUILD
     SkipMountingPartitions(fstab);
+#endif
 
     return true;
 }
 
+// SkipMountingPartitions() is used to skip mounting system partitions and should only be
+// called in a system process. Remove it from the vendor variant.
+#ifndef VENDOR_BUILD
 // For GSI to skip mounting /product and /system_ext, until there are well-defined interfaces
 // between them and /system. Otherwise, the GSI flashed on /system might not be able to work with
 // device-specific /product and /system_ext. skip_mount.cfg belongs to system_ext partition because
@@ -762,6 +769,7 @@ bool SkipMountingPartitions(Fstab* fstab) {
 
     return true;
 }
+#endif
 
 // Loads the fstab file and combines with fstab entries passed in from device tree.
 bool ReadDefaultFstab(Fstab* fstab) {
