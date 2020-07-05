@@ -1,0 +1,48 @@
+{
+  "comments": [
+    {
+      "robotId": "ayeaye",
+      "robotRunId": "AR00000000000003739694",
+      "url": "https://android-build.googleplex.com/builds/treetop/android-review/1352612?revision\u003d2",
+      "fixSuggestions": [
+        {
+          "fixId": "babc4923_99bfa0c3",
+          "description": "Change to \"fs_mgr/liblp/include/liblp/builder.h\"",
+          "replacements": [
+            {
+              "path": "fs_mgr/liblp/include/liblp/builder.h",
+              "range": {
+                "startLine": 363,
+                "startChar": 83,
+                "endLine": 363,
+                "endChar": 90
+              },
+              "replacement": "the"
+            }
+          ]
+        }
+      ],
+      "key": {
+        "uuid": "ecfd2244_3aae31e7",
+        "filename": "fs_mgr/liblp/include/liblp/builder.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 363,
+      "author": {
+        "id": 1550585
+      },
+      "writtenOn": "2020-07-05T00:52:14Z",
+      "side": 1,
+      "message": "Common typo found: \"the the\" -- should it be \"the\"?\nNote: a line containing \"common_typos_disable\" or \"common_typos_enable\" will turn off or on (respectively) the linter for subsequent lines in the file. Alternatively include the token \"NOTYPO\" within a line to skip typo linting that line.",
+      "range": {
+        "startLine": 363,
+        "startChar": 83,
+        "endLine": 363,
+        "endChar": 90
+      },
+      "revId": "8b8ea9642be3908fd11db246f8cc5d93863095d1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
