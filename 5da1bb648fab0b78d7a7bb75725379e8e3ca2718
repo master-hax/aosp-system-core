@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3c5dc873_56193bdd",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 5
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1131915
+      },
+      "writtenOn": "2020-07-06T23:25:09Z",
+      "side": 1,
+      "message": "nit, looks like it is /vendor_dlkm/etc/build.prop in the patch",
+      "revId": "5da1bb648fab0b78d7a7bb75725379e8e3ca2718",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
