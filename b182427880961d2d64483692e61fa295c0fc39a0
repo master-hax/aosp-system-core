@@ -63,6 +63,24 @@
       "revId": "b182427880961d2d64483692e61fa295c0fc39a0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cae2fa90_ce7b5f02",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 908,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2020-07-06T20:43:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5d08520f_03402850",
+      "revId": "b182427880961d2d64483692e61fa295c0fc39a0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
