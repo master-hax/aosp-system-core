@@ -54,6 +54,7 @@ int main(int argc, char** argv) {
 #endif
 
     if (!strcmp(basename(argv[0]), "ueventd")) {
+        setpriority(PRIO_PROCESS, 0, -20);
         return ueventd_main(argc, argv);
     }
 
@@ -66,13 +67,16 @@ int main(int argc, char** argv) {
         }
 
         if (!strcmp(argv[1], "selinux_setup")) {
+            setpriority(PRIO_PROCESS, 0, -20);
             return SetupSelinux(argv);
         }
 
         if (!strcmp(argv[1], "second_stage")) {
+            setpriority(PRIO_PROCESS, 0, 0);
             return SecondStageMain(argc, argv);
         }
     }
 
+    setpriority(PRIO_PROCESS, 0, -20);
     return FirstStageMain(argc, argv);
 }
