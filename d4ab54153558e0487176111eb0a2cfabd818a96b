@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "998a9237_af3b4270",
+        "filename": "rootdir/Android.mk",
+        "patchSetId": 4
+      },
+      "lineNbr": 131,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2020-07-07T22:30:52Z",
+      "side": 1,
+      "message": "Talked to smuckle@. I intentionally remove this symlink to force code to read /vendor/lib/modules directly.",
+      "range": {
+        "startLine": 130,
+        "startChar": 0,
+        "endLine": 131,
+        "endChar": 35
+      },
+      "revId": "d4ab54153558e0487176111eb0a2cfabd818a96b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
