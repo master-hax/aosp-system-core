@@ -34,6 +34,23 @@
       "revId": "530f7ac9eb303bbc4a474dd63dbb45fad661954a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "586d80b6_89410afd",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-07-07T18:04:30Z",
+      "side": 1,
+      "message": "Sounds good to me.  I\u0027d check if boosting apexd-bootstrap would help as well in any case.",
+      "revId": "530f7ac9eb303bbc4a474dd63dbb45fad661954a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
