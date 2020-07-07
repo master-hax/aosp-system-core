@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3abc6090_f4e59e3d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-07-07T17:38:18Z",
+      "side": 1,
+      "message": "Boosting the early init stages makes sense to me.  The only other things running at this time are just kernel threads, but they\u0027re probably loading kernel drivers or other actions that we can defer, right?\n\nDoes speeding up ueventd actually speed up boot?  It runs in parallel with apexd-bootstrap now and the latest that I saw apexd-bootstrap takes longer than ueventd.  I think the bigger metric to check is what this change does to getting to the `on init` trigger.  Maybe both apexd-bootstrap and ueventd should have their priority boosted?  ",
+      "revId": "530f7ac9eb303bbc4a474dd63dbb45fad661954a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
