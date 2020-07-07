@@ -140,6 +140,30 @@
     },
     {
       "key": {
+        "uuid": "fb3dc0d6_db1b0206",
+        "filename": "libutils/Printer_fuzz.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2020-07-07T01:41:16Z",
+      "side": 1,
+      "message": "wait, i guess it also has __attribute__((format (printf, 2, 3)));\n\nSo, maybe since these aren\u0027t static strings, it assumes it\u0027s valid? Anyway, I would expect this to fail for sure.\n\nYou might try:\n\nprinter.printFormatLine(\"%s\", line.c_str());\n\nsince this delegates to a bionic function.",
+      "parentUuid": "13535fdf_f3269bf9",
+      "range": {
+        "startLine": 47,
+        "startChar": 0,
+        "endLine": 47,
+        "endChar": 58
+      },
+      "revId": "cd3e5d58e47306804669c1182f28e124631528da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "140e210b_25b999c0",
         "filename": "libutils/Printer_fuzz.cpp",
         "patchSetId": 3
