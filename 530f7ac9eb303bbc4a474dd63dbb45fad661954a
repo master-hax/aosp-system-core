@@ -16,6 +16,24 @@
       "revId": "530f7ac9eb303bbc4a474dd63dbb45fad661954a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "819c6380_d110480e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2020-07-07T18:03:07Z",
+      "side": 1,
+      "message": "it also shows some improvement:\nToT:\n07-06 02:05:30 D/BaseBootTest: action_init_/system/etc/init/hw/init.rc:114_START_TIME_avg : 2226.0\n\n\nWith CL\n07-07 11:41:52 D/BaseBootTest: action_init_/system/etc/init/hw/init.rc:114_START_TIME_avg : 2072.4",
+      "parentUuid": "3abc6090_f4e59e3d",
+      "revId": "530f7ac9eb303bbc4a474dd63dbb45fad661954a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
