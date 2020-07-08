@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a0990278_d176a751",
+        "filename": "fs_mgr/libsnapshot/snapuserd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2020-07-08T21:45:54Z",
+      "side": 1,
+      "message": "Nit: Shouldn\u0027t this be if (block_fd \u003c 0) ?",
+      "revId": "9243573d0ea5268cc2639077dbfd5683e8602212",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2238918e_1f51b87d",
+        "filename": "fs_mgr/libsnapshot/snapuserd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2020-07-08T21:45:54Z",
+      "side": 1,
+      "message": "Theoretically, this may end up with infinite loop if read() returns 0. I think read() and posix family of syscalls returns 0 when read at EOF or beyond EOF.\n\nThat said, I am not sure if read() may ever return for a raw block read.",
+      "revId": "9243573d0ea5268cc2639077dbfd5683e8602212",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fd520949_5d4df2f0",
+        "filename": "fs_mgr/libsnapshot/snapuserd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2020-07-08T21:45:54Z",
+      "side": 1,
+      "message": "Curious, why hardcode to 7 ? It looks like caller is ignoring the return value and should be ok; but shouldn\u0027t this be ERRNO ?",
+      "revId": "9243573d0ea5268cc2639077dbfd5683e8602212",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
