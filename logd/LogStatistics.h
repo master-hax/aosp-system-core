@@ -556,6 +556,7 @@ class LogStatistics {
         return SizesTotal;
     }
 
+    std::string ReportInteresting() const EXCLUDES(lock_);
     std::string Format(uid_t uid, pid_t pid, unsigned int logMask) const EXCLUDES(lock_);
 
     const char* PidToName(pid_t pid) const EXCLUDES(lock_);

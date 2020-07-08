@@ -51,6 +51,8 @@ class SerializedLogBuffer final : public LogBuffer {
     unsigned long GetSize(log_id_t id) override;
     int SetSize(log_id_t id, unsigned long size) override;
 
+    void JoinDeleter();
+
     uint64_t sequence() const override { return sequence_.load(std::memory_order_relaxed); }
 
   private:
@@ -75,7 +77,7 @@ class SerializedLogBuffer final : public LogBuffer {
     RwLock lock_;
 
     std::list<SerializedLogChunk> chunks_to_delete_[LOG_ID_MAX] GUARDED_BY(lock_);
-    std::thread deleter_thread_ GUARDED_BY(lock_);
+    std::thread deleter_thread_;
     bool deleter_thread_running_ GUARDED_BY(lock_) = false;
 
     std::atomic<uint64_t> sequence_ = 1;

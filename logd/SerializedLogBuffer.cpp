@@ -38,6 +38,14 @@ SerializedLogBuffer::~SerializedLogBuffer() {
     }
 }
 
+void SerializedLogBuffer::JoinDeleter() {
+    if (deleter_thread_.joinable()) {
+        deleter_thread_.join();
+    }
+    auto lock = std::lock_guard{lock_};
+    log_id_for_each(i) { CHECK(chunks_to_delete_[i].empty()) << i; }
+}
+
 void SerializedLogBuffer::Init() {
     log_id_for_each(i) {
         if (SetSize(i, __android_logger_get_buffer_size(i))) {
@@ -114,8 +122,10 @@ void SerializedLogBuffer::MaybePrune(log_id_t log_id) {
     if (total_size > max_size_[log_id]) {
         Prune(log_id, total_size - max_size_[log_id], 0);
         after_size = GetSizeUsed(log_id);
+        /*
         LOG(INFO) << "Pruned Logs from log_id: " << log_id << ", previous size: " << total_size
                   << " after size: " << after_size;
+                  */
     }
 
     stats_->set_overhead(log_id, after_size);

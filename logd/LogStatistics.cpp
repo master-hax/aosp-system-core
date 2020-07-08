@@ -26,8 +26,10 @@
 #include <unistd.h>
 
 #include <list>
+#include <vector>
 
 #include <android-base/logging.h>
+#include <android-base/strings.h>
 #include <private/android_logger.h>
 
 #include "LogBufferElement.h"
@@ -70,8 +72,8 @@ LogStatistics::LogStatistics(bool enable_statistics, bool track_total_size)
         mDroppedElements[id] = 0;
         mSizesTotal[id] = 0;
         mElementsTotal[id] = 0;
-        mOldest[id] = now;
-        mNewest[id] = now;
+        mOldest[id] = {};
+        mNewest[id] = {};
         mNewestDropped[id] = now;
     }
 }
@@ -142,23 +144,7 @@ void LogStatistics::Add(LogStatisticsElement element) {
 
     log_time stamp(element.realtime);
     if (mNewest[log_id] < stamp) {
-        // A major time update invalidates the statistics :-(
-        log_time diff = stamp - mNewest[log_id];
         mNewest[log_id] = stamp;
-
-        if (diff.tv_sec > hourSec) {
-            // approximate Do-Your-Best fixup
-            diff += mOldest[log_id];
-            if ((diff > stamp) && ((diff - stamp).tv_sec < hourSec)) {
-                diff = stamp;
-            }
-            if (diff <= stamp) {
-                mOldest[log_id] = diff;
-                if (mNewestDropped[log_id] < diff) {
-                    mNewestDropped[log_id] = diff;
-                }
-            }
-        }
     }
 
     if (log_id == LOG_ID_KERNEL) {
@@ -782,6 +768,35 @@ std::string LogStatistics::FormatTable(const LogHashtable<TKey, TEntry>& table, 
         output += entry->format(*this, id, *sorted_keys[index]);
     }
     return output;
+}
+
+std::string LogStatistics::ReportInteresting() const {
+    auto lock = std::lock_guard{lock_};
+
+    std::vector<std::string> items;
+
+    log_id_for_each(i) { items.emplace_back(std::to_string(mElements[i])); }
+
+    log_id_for_each(i) { items.emplace_back(std::to_string(mSizes[i])); }
+
+    log_id_for_each(i) {
+        items.emplace_back(std::to_string(overhead_[i] ? *overhead_[i] : mSizes[i]));
+    }
+
+    log_id_for_each(i) {
+        uint64_t oldest = mOldest[i].msec() / 1000;
+        uint64_t newest = mNewest[i].msec() / 1000;
+
+        int span = newest - oldest;
+
+        if (span > 864000) {
+            span = -1;
+        }
+
+        items.emplace_back(std::to_string(span));
+    }
+
+    return android::base::Join(items, ",");
 }
 
 std::string LogStatistics::Format(uid_t uid, pid_t pid, unsigned int logMask) const {
