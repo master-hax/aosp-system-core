@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "a6fa2e83_92dbf552",
+        "filename": "fs_mgr/libsnapshot/snapuserd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-07-08T22:47:22Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a0990278_d176a751",
+      "revId": "9243573d0ea5268cc2639077dbfd5683e8602212",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "2238918e_1f51b87d",
         "filename": "fs_mgr/libsnapshot/snapuserd.cpp",
         "patchSetId": 1
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "ec365c3e_4a6e29a4",
+        "filename": "fs_mgr/libsnapshot/snapuserd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-07-08T22:47:22Z",
+      "side": 1,
+      "message": "Thanks, I\u0027ll replace this with android::base::Read/WriteFully.",
+      "parentUuid": "2238918e_1f51b87d",
+      "revId": "9243573d0ea5268cc2639077dbfd5683e8602212",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fd520949_5d4df2f0",
         "filename": "fs_mgr/libsnapshot/snapuserd.cpp",
         "patchSetId": 1
@@ -50,6 +86,24 @@
       "revId": "9243573d0ea5268cc2639077dbfd5683e8602212",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "727465f8_0018c5e3",
+        "filename": "fs_mgr/libsnapshot/snapuserd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-07-08T22:47:22Z",
+      "side": 1,
+      "message": "This is fairly open-coded for now, since it\u0027s experimental and the kernel side of things is changing rapidly. We\u0027ll fix this as it iterates. Eventually the kernel\u003c-\u003euserspace interactions should be abstracted via libdm.",
+      "parentUuid": "fd520949_5d4df2f0",
+      "revId": "9243573d0ea5268cc2639077dbfd5683e8602212",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
