@@ -40,6 +40,30 @@
       "revId": "44e966da7c593dad37b898a31b2b1422dd810365",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "26cece1f_6852a64f",
+        "filename": "libutils/RefBase_fuzz.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1695385
+      },
+      "writtenOn": "2020-07-09T22:55:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f3c167fd_e1e1022b",
+      "range": {
+        "startLine": 34,
+        "startChar": 86,
+        "endLine": 34,
+        "endChar": 95
+      },
+      "revId": "44e966da7c593dad37b898a31b2b1422dd810365",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
