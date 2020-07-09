@@ -27,9 +27,11 @@ SerializedLogChunk::~SerializedLogChunk() {
 void SerializedLogChunk::Compress() {
     if (compressed_log_.size() == 0) {
         CompressionEngine::GetInstance().Compress(contents_, write_offset_, compressed_log_);
+        /*
         LOG(INFO) << "Compressed Log, buffer max size: " << contents_.size()
                   << " size used: " << write_offset_
                   << " compressed size: " << compressed_log_.size();
+                  */
     }
     contents_.Resize(0);
 }
