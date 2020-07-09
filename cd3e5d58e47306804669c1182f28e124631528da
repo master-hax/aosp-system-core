@@ -48,6 +48,30 @@
     },
     {
       "key": {
+        "uuid": "8b80951a_9470942e",
+        "filename": "libutils/CallStack_fuzz.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1695385
+      },
+      "writtenOn": "2020-07-09T18:26:02Z",
+      "side": 1,
+      "message": "My thinking here is this code essentially just calls out to libunwdinstack under the hood, which is being covered as a separate target. The logic involved with allowing the fuzzer to generate stacks of various depths is fairly complex and feels a bit bigger than the scope of this fuzzer.",
+      "parentUuid": "399cf71e_a17ff1d1",
+      "range": {
+        "startLine": 36,
+        "startChar": 0,
+        "endLine": 45,
+        "endChar": 95
+      },
+      "revId": "cd3e5d58e47306804669c1182f28e124631528da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "d75db4b1_9678b68f",
         "filename": "libutils/Looper_fuzz.cpp",
         "patchSetId": 3
@@ -319,6 +343,30 @@
     },
     {
       "key": {
+        "uuid": "cf87dd34_9ff5e573",
+        "filename": "libutils/RWLock_fuzz.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 1695385
+      },
+      "writtenOn": "2020-07-09T18:26:02Z",
+      "side": 1,
+      "message": "Hm. I\u0027m thinking about this fuzzer and it\u0027s starting to make a little less sense. It seems like the only operations are going to be locking/unlocking in some form, which will deadlock if not called in order, and don\u0027t take any input. Does it actually make sense to fuzz this class? If so, is there a better way to approach it? If not, I can just delete this fuzzer.",
+      "parentUuid": "d202983f_cf7e3463",
+      "range": {
+        "startLine": 52,
+        "startChar": 0,
+        "endLine": 52,
+        "endChar": 36
+      },
+      "revId": "cd3e5d58e47306804669c1182f28e124631528da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "c959dd1b_3799a486",
         "filename": "libutils/RefBase_fuzz.cpp",
         "patchSetId": 3
@@ -342,6 +390,30 @@
     },
     {
       "key": {
+        "uuid": "696ec35c_9647de32",
+        "filename": "libutils/RefBase_fuzz.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1695385
+      },
+      "writtenOn": "2020-07-09T18:26:02Z",
+      "side": 1,
+      "message": "Agreed, it would be quite a bit more robust if this was publicly accessible, and I could see these functions actually being useful for standard library users.",
+      "parentUuid": "c959dd1b_3799a486",
+      "range": {
+        "startLine": 33,
+        "startChar": 0,
+        "endLine": 42,
+        "endChar": 1
+      },
+      "revId": "cd3e5d58e47306804669c1182f28e124631528da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "76a2eff9_931f1c39",
         "filename": "libutils/RefBase_fuzz.cpp",
         "patchSetId": 3
@@ -353,6 +425,30 @@
       "writtenOn": "2020-07-06T20:46:56Z",
       "side": 1,
       "message": "this can be nullptr btw",
+      "range": {
+        "startLine": 66,
+        "startChar": 58,
+        "endLine": 66,
+        "endChar": 70
+      },
+      "revId": "cd3e5d58e47306804669c1182f28e124631528da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0c3eeb86_69926240",
+        "filename": "libutils/RefBase_fuzz.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1695385
+      },
+      "writtenOn": "2020-07-09T18:26:02Z",
+      "side": 1,
+      "message": "Ah, that\u0027s good to know, should make this simpler.",
+      "parentUuid": "76a2eff9_931f1c39",
       "range": {
         "startLine": 66,
         "startChar": 58,
@@ -491,6 +587,30 @@
       "writtenOn": "2020-07-06T20:46:56Z",
       "side": 1,
       "message": "If this isn\u0027t true, it means we didn\u0027t start the thread, so there should be some other problem, right?",
+      "range": {
+        "startLine": 109,
+        "startChar": 0,
+        "endLine": 109,
+        "endChar": 28
+      },
+      "revId": "cd3e5d58e47306804669c1182f28e124631528da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "236d16f0_e33f1ec0",
+        "filename": "libutils/RefBase_fuzz.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 1695385
+      },
+      "writtenOn": "2020-07-09T18:26:02Z",
+      "side": 1,
+      "message": "Was mainly meant as a sanity check, but I can remove it if you\u0027d prefer.",
+      "parentUuid": "ed305463_bc3ebc9c",
       "range": {
         "startLine": 109,
         "startChar": 0,
