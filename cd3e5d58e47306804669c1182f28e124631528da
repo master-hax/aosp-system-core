@@ -72,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "5266da16_df8498e9",
+        "filename": "libutils/CallStack_fuzz.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2020-07-09T18:46:23Z",
+      "side": 1,
+      "message": "ack, then maybe the only other thing to do is also fuzz the weak utility symbols as well. They\u0027re used pretty frequently",
+      "parentUuid": "8b80951a_9470942e",
+      "range": {
+        "startLine": 36,
+        "startChar": 0,
+        "endLine": 45,
+        "endChar": 95
+      },
+      "revId": "cd3e5d58e47306804669c1182f28e124631528da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "d75db4b1_9678b68f",
         "filename": "libutils/Looper_fuzz.cpp",
         "patchSetId": 3
@@ -367,6 +391,30 @@
     },
     {
       "key": {
+        "uuid": "a6ba2e59_a939e8ea",
+        "filename": "libutils/RWLock_fuzz.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2020-07-09T18:46:23Z",
+      "side": 1,
+      "message": "Well, there are a couple of ways to encode this knowledge into the fuzzer. I think the most complete way would be to keep track of the state of the lock, unlocked or locked.\n\nThen you think of the graph with these two states and the following edges:\n- an operation from locked to locked state\n- an operation from unlocked to locked state\n- an operation from locked to unlocked state\n- an operation from unlocked to unlocked state\n\nThen the fuzzer would just travel around this graph randomly.",
+      "parentUuid": "cf87dd34_9ff5e573",
+      "range": {
+        "startLine": 52,
+        "startChar": 0,
+        "endLine": 52,
+        "endChar": 36
+      },
+      "revId": "cd3e5d58e47306804669c1182f28e124631528da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "c959dd1b_3799a486",
         "filename": "libutils/RefBase_fuzz.cpp",
         "patchSetId": 3
@@ -611,6 +659,30 @@
       "side": 1,
       "message": "Was mainly meant as a sanity check, but I can remove it if you\u0027d prefer.",
       "parentUuid": "ed305463_bc3ebc9c",
+      "range": {
+        "startLine": 109,
+        "startChar": 0,
+        "endLine": 109,
+        "endChar": 28
+      },
+      "revId": "cd3e5d58e47306804669c1182f28e124631528da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "214ab887_b09a1370",
+        "filename": "libutils/RefBase_fuzz.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2020-07-09T18:46:23Z",
+      "side": 1,
+      "message": "Sanity check should assert rather than potentially lose coverage, but I think we get that behavior for free from join",
+      "parentUuid": "236d16f0_e33f1ec0",
       "range": {
         "startLine": 109,
         "startChar": 0,
