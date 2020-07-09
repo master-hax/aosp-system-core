@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "2389cd51_5c2d1ee5",
+        "filename": "libutils/CallStack_fuzz.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1695385
+      },
+      "writtenOn": "2020-07-09T22:52:36Z",
+      "side": 1,
+      "message": "Not sure how, but somehow I got the notion that an empty log tag would cause issues. Fixed.",
+      "parentUuid": "070c63b4_d91b89db",
+      "range": {
+        "startLine": 30,
+        "startChar": 38,
+        "endLine": 30,
+        "endChar": 39
+      },
+      "revId": "cd3e5d58e47306804669c1182f28e124631528da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "399cf71e_a17ff1d1",
         "filename": "libutils/CallStack_fuzz.cpp",
         "patchSetId": 3
@@ -96,6 +120,30 @@
     },
     {
       "key": {
+        "uuid": "632297de_336868d1",
+        "filename": "libutils/CallStack_fuzz.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1695385
+      },
+      "writtenOn": "2020-07-09T22:52:36Z",
+      "side": 1,
+      "message": "If you\u0027re referring to logStack, stackToString, and getCurrent, I\u0027m already calling these (outside of stackToString).",
+      "parentUuid": "5266da16_df8498e9",
+      "range": {
+        "startLine": 36,
+        "startChar": 0,
+        "endLine": 45,
+        "endChar": 95
+      },
+      "revId": "cd3e5d58e47306804669c1182f28e124631528da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "d75db4b1_9678b68f",
         "filename": "libutils/Looper_fuzz.cpp",
         "patchSetId": 3
@@ -119,6 +167,30 @@
     },
     {
       "key": {
+        "uuid": "326a15d8_f7d03013",
+        "filename": "libutils/Looper_fuzz.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1695385
+      },
+      "writtenOn": "2020-07-09T22:52:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d75db4b1_9678b68f",
+      "range": {
+        "startLine": 31,
+        "startChar": 0,
+        "endLine": 32,
+        "endChar": 41
+      },
+      "revId": "cd3e5d58e47306804669c1182f28e124631528da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "2ffc4f6b_4d3253e6",
         "filename": "libutils/LruCache_fuzz.cpp",
         "patchSetId": 3
@@ -130,6 +202,30 @@
       "writtenOn": "2020-07-06T20:46:56Z",
       "side": 1,
       "message": "style is pointer for modifiable argument",
+      "range": {
+        "startLine": 37,
+        "startChar": 65,
+        "endLine": 37,
+        "endChar": 75
+      },
+      "revId": "cd3e5d58e47306804669c1182f28e124631528da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a8ccac59_b538119e",
+        "filename": "libutils/LruCache_fuzz.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1695385
+      },
+      "writtenOn": "2020-07-09T22:52:36Z",
+      "side": 1,
+      "message": "I tried that originally, however the call to \nandroid::LruCache\u003csize_t, size_t\u003e::Iterator iter(cache)\nrequires a android::LruCache\u003csize_t, size_t\u003e::Iterator iter(cache),\nmeaning that I can\u0027t pass a pointer there. Additionally, LruCache has disabled the copy constructor, preventing me from converting the pointer to a reference. Open to suggestions if you have a better way of handling this.",
+      "parentUuid": "2ffc4f6b_4d3253e6",
       "range": {
         "startLine": 37,
         "startChar": 65,
@@ -162,6 +258,54 @@
       "revId": "cd3e5d58e47306804669c1182f28e124631528da",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d3485fc4_8877b3c4",
+        "filename": "libutils/LruCache_fuzz.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1695385
+      },
+      "writtenOn": "2020-07-09T22:52:36Z",
+      "side": 1,
+      "message": "For the first case, I agree, will make sure we have enough remaining bytes. For the second case (not consuming all of the data), I am not as concerned. ~1000 operations seems like it should be sufficient to cover meaningful changes here",
+      "parentUuid": "a41004bb_9824415d",
+      "range": {
+        "startLine": 69,
+        "startChar": 4,
+        "endLine": 73,
+        "endChar": 5
+      },
+      "revId": "cd3e5d58e47306804669c1182f28e124631528da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "19defbfe_bc84b525",
+        "filename": "libutils/LruCache_fuzz.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1695385
+      },
+      "writtenOn": "2020-07-09T22:52:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a41004bb_9824415d",
+      "range": {
+        "startLine": 69,
+        "startChar": 4,
+        "endLine": 73,
+        "endChar": 5
+      },
+      "revId": "cd3e5d58e47306804669c1182f28e124631528da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -212,6 +356,30 @@
     },
     {
       "key": {
+        "uuid": "db122dc8_fb583a0f",
+        "filename": "libutils/Printer_fuzz.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1695385
+      },
+      "writtenOn": "2020-07-09T22:52:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fb3dc0d6_db1b0206",
+      "range": {
+        "startLine": 47,
+        "startChar": 0,
+        "endLine": 47,
+        "endChar": 58
+      },
+      "revId": "cd3e5d58e47306804669c1182f28e124631528da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "140e210b_25b999c0",
         "filename": "libutils/Printer_fuzz.cpp",
         "patchSetId": 3
@@ -229,6 +397,24 @@
     },
     {
       "key": {
+        "uuid": "cd7f7f25_33c8d7e8",
+        "filename": "libutils/Printer_fuzz.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1695385
+      },
+      "writtenOn": "2020-07-09T22:52:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "140e210b_25b999c0",
+      "revId": "cd3e5d58e47306804669c1182f28e124631528da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b4e731d6_4a7a7fdc",
         "filename": "libutils/ProcessCallStack_fuzz.cpp",
         "patchSetId": 3
@@ -240,6 +426,30 @@
       "writtenOn": "2020-07-06T20:46:56Z",
       "side": 1,
       "message": "nullptr",
+      "range": {
+        "startLine": 46,
+        "startChar": 34,
+        "endLine": 46,
+        "endChar": 35
+      },
+      "revId": "cd3e5d58e47306804669c1182f28e124631528da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2f8f38f6_1a530c7f",
+        "filename": "libutils/ProcessCallStack_fuzz.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 1695385
+      },
+      "writtenOn": "2020-07-09T22:52:36Z",
+      "side": 1,
+      "message": "So it looks like native_handle returns a native_handle_type, which is not comparable to nullptr (which is of type nullptr_t).",
+      "parentUuid": "b4e731d6_4a7a7fdc",
       "range": {
         "startLine": 46,
         "startChar": 34,
@@ -272,6 +482,30 @@
       "revId": "cd3e5d58e47306804669c1182f28e124631528da",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "67356337_7aa8390c",
+        "filename": "libutils/ProcessCallStack_fuzz.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 1695385
+      },
+      "writtenOn": "2020-07-09T22:52:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "884cb38a_24176bac",
+      "range": {
+        "startLine": 60,
+        "startChar": 13,
+        "endLine": 60,
+        "endChar": 28
+      },
+      "revId": "cd3e5d58e47306804669c1182f28e124631528da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -509,6 +743,30 @@
     },
     {
       "key": {
+        "uuid": "46c0578d_61c574b3",
+        "filename": "libutils/RefBase_fuzz.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1695385
+      },
+      "writtenOn": "2020-07-09T22:52:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0c3eeb86_69926240",
+      "range": {
+        "startLine": 66,
+        "startChar": 58,
+        "endLine": 66,
+        "endChar": 70
+      },
+      "revId": "cd3e5d58e47306804669c1182f28e124631528da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9f3e0179_ea621db9",
         "filename": "libutils/RefBase_fuzz.cpp",
         "patchSetId": 3
@@ -529,6 +787,30 @@
       "revId": "cd3e5d58e47306804669c1182f28e124631528da",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "dc9435c7_d786d333",
+        "filename": "libutils/RefBase_fuzz.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 1695385
+      },
+      "writtenOn": "2020-07-09T22:52:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9f3e0179_ea621db9",
+      "range": {
+        "startLine": 85,
+        "startChar": 36,
+        "endLine": 85,
+        "endChar": 39
+      },
+      "revId": "cd3e5d58e47306804669c1182f28e124631528da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -555,6 +837,30 @@
     },
     {
       "key": {
+        "uuid": "5ee2b0a9_c5db1c83",
+        "filename": "libutils/RefBase_fuzz.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 1695385
+      },
+      "writtenOn": "2020-07-09T22:52:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0417de1d_f314cba1",
+      "range": {
+        "startLine": 86,
+        "startChar": 9,
+        "endLine": 86,
+        "endChar": 14
+      },
+      "revId": "cd3e5d58e47306804669c1182f28e124631528da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "0159fb61_15e286a6",
         "filename": "libutils/RefBase_fuzz.cpp",
         "patchSetId": 3
@@ -575,6 +881,30 @@
       "revId": "cd3e5d58e47306804669c1182f28e124631528da",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "903e10b2_a16e5934",
+        "filename": "libutils/RefBase_fuzz.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 1695385
+      },
+      "writtenOn": "2020-07-09T22:52:36Z",
+      "side": 1,
+      "message": "Originally did this because RefBase expects a *bool, but just using \u0026false inline was not valid. I have changed this to be a bit cleaner by just passing false and having RefBaseSubclass pass a pointer to the bool to RefBase.",
+      "parentUuid": "0159fb61_15e286a6",
+      "range": {
+        "startLine": 92,
+        "startChar": 0,
+        "endLine": 92,
+        "endChar": 21
+      },
+      "revId": "cd3e5d58e47306804669c1182f28e124631528da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -601,6 +931,30 @@
     },
     {
       "key": {
+        "uuid": "013a9578_9ca0c334",
+        "filename": "libutils/RefBase_fuzz.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 1695385
+      },
+      "writtenOn": "2020-07-09T22:52:36Z",
+      "side": 1,
+      "message": "Removed val, no longer relevant",
+      "parentUuid": "e31dcc48_3385c4f8",
+      "range": {
+        "startLine": 100,
+        "startChar": 57,
+        "endLine": 100,
+        "endChar": 61
+      },
+      "revId": "cd3e5d58e47306804669c1182f28e124631528da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ffd875d2_858c7863",
         "filename": "libutils/RefBase_fuzz.cpp",
         "patchSetId": 3
@@ -621,6 +975,30 @@
       "revId": "cd3e5d58e47306804669c1182f28e124631528da",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e8f9f9fa_38f0f5b4",
+        "filename": "libutils/RefBase_fuzz.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 1695385
+      },
+      "writtenOn": "2020-07-09T22:52:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ffd875d2_858c7863",
+      "range": {
+        "startLine": 103,
+        "startChar": 0,
+        "endLine": 103,
+        "endChar": 9
+      },
+      "revId": "cd3e5d58e47306804669c1182f28e124631528da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -695,6 +1073,30 @@
     },
     {
       "key": {
+        "uuid": "aa374e42_2ec2dff3",
+        "filename": "libutils/RefBase_fuzz.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 1695385
+      },
+      "writtenOn": "2020-07-09T22:52:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "214ab887_b09a1370",
+      "range": {
+        "startLine": 109,
+        "startChar": 0,
+        "endLine": 109,
+        "endChar": 28
+      },
+      "revId": "cd3e5d58e47306804669c1182f28e124631528da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ce9b0f7_977fab60",
         "filename": "libutils/StopWatch_fuzz.cpp",
         "patchSetId": 3
@@ -715,6 +1117,30 @@
       "revId": "cd3e5d58e47306804669c1182f28e124631528da",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fcb8594b_488b07a7",
+        "filename": "libutils/StopWatch_fuzz.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 1695385
+      },
+      "writtenOn": "2020-07-09T22:52:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ce9b0f7_977fab60",
+      "range": {
+        "startLine": 33,
+        "startChar": 0,
+        "endLine": 33,
+        "endChar": 39
+      },
+      "revId": "cd3e5d58e47306804669c1182f28e124631528da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -741,6 +1167,30 @@
     },
     {
       "key": {
+        "uuid": "57e5ce66_0cca96f7",
+        "filename": "libutils/StopWatch_fuzz.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1695385
+      },
+      "writtenOn": "2020-07-09T22:52:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3e113b9f_0d8899f2",
+      "range": {
+        "startLine": 38,
+        "startChar": 9,
+        "endLine": 38,
+        "endChar": 14
+      },
+      "revId": "cd3e5d58e47306804669c1182f28e124631528da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5f30af72_bb13e4fa",
         "filename": "libutils/StopWatch_fuzz.cpp",
         "patchSetId": 3
@@ -752,6 +1202,30 @@
       "writtenOn": "2020-07-06T20:46:56Z",
       "side": 1,
       "message": "same",
+      "range": {
+        "startLine": 42,
+        "startChar": 0,
+        "endLine": 42,
+        "endChar": 36
+      },
+      "revId": "cd3e5d58e47306804669c1182f28e124631528da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6d889d6e_a13857a0",
+        "filename": "libutils/StopWatch_fuzz.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1695385
+      },
+      "writtenOn": "2020-07-09T22:52:36Z",
+      "side": 1,
+      "message": "So I\u0027m a bit confused here. The reason we\u0027re calling it % operations.size is to ensure \"it\" points to a valid index in operations. Otherwise, if libfuzzer provides larger or smaller values, they will cause an error in the fuzzer. I could simply ignore values outside of operations.size() if that\u0027s preferable, however that would mean a lot of values outside that range would effectively be wasted cycles. To be clear here, \"it\" is not incremental. It\u0027s a byte generated by the fuzzer.",
+      "parentUuid": "5f30af72_bb13e4fa",
       "range": {
         "startLine": 42,
         "startChar": 0,
