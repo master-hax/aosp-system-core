@@ -16,6 +16,30 @@
       "revId": "44e966da7c593dad37b898a31b2b1422dd810365",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f3c167fd_e1e1022b",
+        "filename": "libutils/RefBase_fuzz.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1695385
+      },
+      "writtenOn": "2020-07-09T22:52:51Z",
+      "side": 1,
+      "message": "\u003e Common typo found: \"artifical\" -- should it be \"artificial\"?\n\u003e Note: a line containing \"common_typos_disable\" or \"common_typos_enable\" will turn off or on (respectively) the linter for subsequent lines in the file. Alternatively include the token \"NOTYPO\" within a line to skip typo linting that line.\n\nPlease fix.",
+      "parentUuid": "14e68896_222d5014",
+      "range": {
+        "startLine": 34,
+        "startChar": 86,
+        "endLine": 34,
+        "endChar": 95
+      },
+      "revId": "44e966da7c593dad37b898a31b2b1422dd810365",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
