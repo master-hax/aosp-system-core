@@ -239,7 +239,7 @@ void __android_log_write_log_message(struct __android_log_message* log_message) 
  * already terminated with a new line.  This function should add new lines if required for line
  * separation.
  *
- * @param logger the new function that will handle log messages.
+ * @param logger the new function that will handle log messages. Passing null restores the default.
  *
  * Available since API level 30.
  */

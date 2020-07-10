@@ -75,6 +75,12 @@ TEST(liblog_global_state, libbase_logs_with_liblog_set_logger) {
   expected_line = __LINE__ + 1;
   LOG(WARNING) << expected_message;
   EXPECT_TRUE(message_seen);
+  message_seen = false;
+
+  // Ensure that passing null (reset to default) doesn't crash.
+  __android_log_set_logger(nullptr);
+  LOG(INFO) << expected_message;
+  EXPECT_FALSE(message_seen);
 }
 
 TEST(liblog_global_state, liblog_logs_with_libbase_SetLogger) {

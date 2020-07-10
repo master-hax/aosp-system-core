@@ -155,13 +155,18 @@ int32_t __android_log_get_minimum_priority() {
 }
 
 #ifdef __ANDROID__
-static __android_logger_function logger_function = __android_log_logd_logger;
+static const __android_logger_function default_logger_function = __android_log_logd_logger;
 #else
-static __android_logger_function logger_function = __android_log_stderr_logger;
+static const __android_logger_function default_logger_function = __android_log_stderr_logger;
 #endif
+static __android_logger_function logger_function = default_logger_function;
 
 void __android_log_set_logger(__android_logger_function logger) {
-  logger_function = logger;
+  if (logger == nullptr) {
+    logger_function = default_logger_function;
+  } else {
+    logger_function = logger;
+  }
 }
 
 void __android_log_default_aborter(const char* abort_message) {
