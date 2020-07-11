@@ -23,7 +23,8 @@
 /*
  * Contains some bit manipulation helpers.
  *
- * DO NOT USE: std::bitset<32> or std::bitset<64> preferred
+ * Use std::bitset<32> or std::bitset<64> instead unless you need the ability to efficiently query
+ * the first / last set bit in the bitset.
  */
 
 namespace android {
