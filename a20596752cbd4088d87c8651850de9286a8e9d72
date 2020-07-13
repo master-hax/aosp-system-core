@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "87cbf73a_dff37713",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1108919
+      },
+      "writtenOn": "2020-07-13T20:42:24Z",
+      "side": 1,
+      "message": "cherry pick of internal\nhttps://googleplex-android-review.git.corp.google.com/c/platform/system/core/+/12137689/\n\nso that we have aosp/master in sync -- since this tree is aosp-first.",
+      "revId": "a20596752cbd4088d87c8651850de9286a8e9d72",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
