@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "579e2ee7_0e1def12",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1605027
+      },
+      "writtenOn": "2020-07-14T19:34:20Z",
+      "side": 1,
+      "message": "I understand this is a partial reversion of aosp/1360220\n\nPlease let me know if you have any philosophical issues with this change. My motivation is that marking data_libs as installable:false does not work well with additional functionality I hope to implement in aosp/1359742.",
+      "revId": "644049ffbf8757317daa5fb57bef5ac5437669b4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
