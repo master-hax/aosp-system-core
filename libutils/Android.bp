@@ -303,7 +303,6 @@ cc_test {
 cc_test_library {
     name: "libutils_test_singleton1",
     host_supported: true,
-    installable: false,
     srcs: ["Singleton_test1.cpp"],
     cflags: [
         "-Wall",
@@ -314,7 +313,6 @@ cc_test_library {
 cc_test_library {
     name: "libutils_test_singleton2",
     host_supported: true,
-    installable: false,
     srcs: ["Singleton_test2.cpp"],
     cflags: [
         "-Wall",
