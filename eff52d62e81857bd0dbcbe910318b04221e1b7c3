@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c3df85b2_d2d38378",
+        "filename": "logd/main.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 282,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-07-14T18:49:13Z",
+      "side": 1,
+      "message": "LOG",
+      "range": {
+        "startLine": 282,
+        "startChar": 8,
+        "endLine": 282,
+        "endChar": 12
+      },
+      "revId": "eff52d62e81857bd0dbcbe910318b04221e1b7c3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3cccaf0c_0e45e5d7",
+        "filename": "logd/main.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 283,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-07-14T18:49:13Z",
+      "side": 1,
+      "message": "why don\u0027t we see this more? can we fix it? (for this specific case i think just `\u003d nullptr` where you declare log_buffer would be less bad.)",
+      "revId": "eff52d62e81857bd0dbcbe910318b04221e1b7c3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
