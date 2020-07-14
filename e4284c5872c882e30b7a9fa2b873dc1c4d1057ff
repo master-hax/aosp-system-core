@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "0a6432f0_2929df49",
+        "filename": "libutils/RWLock_fuzz.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1695385
+      },
+      "writtenOn": "2020-07-14T18:48:22Z",
+      "side": 1,
+      "message": "So I removed those methods here because this class is just directly calling the underlying pthread_rwlock_try*lock methods, and if we fail to lock, it will hang forever, meaning we can\u0027t fuzz that state. If we successfully lock, then the state should be the same as if we used the normal pthread_rwlock_*lock methods, meaning we get no new information from that case. Because of that I didn\u0027t think it was worth dealing with the locked/unlocked state, especially given the small size of this class to begin with.",
+      "parentUuid": "0d0231ae_0a4d70df",
+      "range": {
+        "startLine": 25,
+        "startChar": 0,
+        "endLine": 31,
+        "endChar": 62
+      },
+      "revId": "e4284c5872c882e30b7a9fa2b873dc1c4d1057ff",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "064ff26d_82a217e5",
         "filename": "libutils/RefBase_fuzz.cpp",
         "patchSetId": 7
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "d8feae9b_ddd12229",
+        "filename": "libutils/RefBase_fuzz.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1695385
+      },
+      "writtenOn": "2020-07-14T18:48:22Z",
+      "side": 1,
+      "message": "Good point. Originally I was doing some funky stuff to prevent it from being deallocated but it didn\u0027t end up doing anything worthwhile.",
+      "parentUuid": "064ff26d_82a217e5",
+      "range": {
+        "startLine": 44,
+        "startChar": 0,
+        "endLine": 47,
+        "endChar": 2
+      },
+      "revId": "e4284c5872c882e30b7a9fa2b873dc1c4d1057ff",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "56726f88_aaf0563c",
         "filename": "libutils/include/utils/Looper_test_pipe.h",
         "patchSetId": 7
@@ -68,6 +116,30 @@
       "revId": "e4284c5872c882e30b7a9fa2b873dc1c4d1057ff",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e10c493f_aaac43fc",
+        "filename": "libutils/include/utils/Looper_test_pipe.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1695385
+      },
+      "writtenOn": "2020-07-14T18:48:22Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "56726f88_aaf0563c",
+      "range": {
+        "startLine": 17,
+        "startChar": 0,
+        "endLine": 18,
+        "endChar": 32
+      },
+      "revId": "e4284c5872c882e30b7a9fa2b873dc1c4d1057ff",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }

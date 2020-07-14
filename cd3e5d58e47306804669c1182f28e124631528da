@@ -286,6 +286,30 @@
     },
     {
       "key": {
+        "uuid": "eb0027db_5a133375",
+        "filename": "libutils/LruCache_fuzz.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1695385
+      },
+      "writtenOn": "2020-07-14T18:48:22Z",
+      "side": 1,
+      "message": "Whoops, my bad. Done.",
+      "parentUuid": "d599a21e_fa77caeb",
+      "range": {
+        "startLine": 37,
+        "startChar": 65,
+        "endLine": 37,
+        "endChar": 75
+      },
+      "revId": "cd3e5d58e47306804669c1182f28e124631528da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a41004bb_9824415d",
         "filename": "libutils/LruCache_fuzz.cpp",
         "patchSetId": 3
@@ -402,6 +426,30 @@
       "revId": "cd3e5d58e47306804669c1182f28e124631528da",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "84e319f4_098b1a5a",
+        "filename": "libutils/LruCache_fuzz.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1695385
+      },
+      "writtenOn": "2020-07-14T18:48:22Z",
+      "side": 1,
+      "message": "Ah I see what you mean. I\u0027ve been capping max operations for a lot of these (especially low complexity fuzzers) to prevent low exec/s or big corpuses, but I suppose for this there\u0027s enough state involved there could be strange cases over a few thousand operations, so I\u0027ll just remove that cap.",
+      "parentUuid": "65756078_139b6de9",
+      "range": {
+        "startLine": 69,
+        "startChar": 4,
+        "endLine": 73,
+        "endChar": 5
+      },
+      "revId": "cd3e5d58e47306804669c1182f28e124631528da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -603,6 +651,30 @@
       "revId": "cd3e5d58e47306804669c1182f28e124631528da",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bb14dbb3_ba0b68d5",
+        "filename": "libutils/ProcessCallStack_fuzz.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 1695385
+      },
+      "writtenOn": "2020-07-14T18:48:22Z",
+      "side": 1,
+      "message": "Looking back on this, I think it\u0027s a relic from when I was using pthread_create here. I have removed it and verified the fuzzer still works as intended.",
+      "parentUuid": "2d59e99a_7b7488cb",
+      "range": {
+        "startLine": 46,
+        "startChar": 34,
+        "endLine": 46,
+        "endChar": 35
+      },
+      "revId": "cd3e5d58e47306804669c1182f28e124631528da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
