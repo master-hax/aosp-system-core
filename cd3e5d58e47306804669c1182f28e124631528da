@@ -144,6 +144,30 @@
     },
     {
       "key": {
+        "uuid": "2b7b65c0_17f33b4e",
+        "filename": "libutils/CallStack_fuzz.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2020-07-14T17:59:11Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "632297de_336868d1",
+      "range": {
+        "startLine": 36,
+        "startChar": 0,
+        "endLine": 45,
+        "endChar": 95
+      },
+      "revId": "cd3e5d58e47306804669c1182f28e124631528da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d75db4b1_9678b68f",
         "filename": "libutils/Looper_fuzz.cpp",
         "patchSetId": 3
@@ -226,6 +250,30 @@
       "side": 1,
       "message": "I tried that originally, however the call to \nandroid::LruCache\u003csize_t, size_t\u003e::Iterator iter(cache)\nrequires a android::LruCache\u003csize_t, size_t\u003e::Iterator iter(cache),\nmeaning that I can\u0027t pass a pointer there. Additionally, LruCache has disabled the copy constructor, preventing me from converting the pointer to a reference. Open to suggestions if you have a better way of handling this.",
       "parentUuid": "2ffc4f6b_4d3253e6",
+      "range": {
+        "startLine": 37,
+        "startChar": 65,
+        "endLine": 37,
+        "endChar": 75
+      },
+      "revId": "cd3e5d58e47306804669c1182f28e124631528da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d599a21e_fa77caeb",
+        "filename": "libutils/LruCache_fuzz.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2020-07-14T17:59:11Z",
+      "side": 1,
+      "message": "You should be able to ues (*cache) there then. We shouldn\u0027t create a new object/need to invoke the copy constructor.",
+      "parentUuid": "a8ccac59_b538119e",
       "range": {
         "startLine": 37,
         "startChar": 65,
@@ -330,6 +378,30 @@
       "revId": "cd3e5d58e47306804669c1182f28e124631528da",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "65756078_139b6de9",
+        "filename": "libutils/LruCache_fuzz.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2020-07-14T17:59:11Z",
+      "side": 1,
+      "message": "why have opCount here at all?",
+      "parentUuid": "175e4822_6f12d6bd",
+      "range": {
+        "startLine": 69,
+        "startChar": 4,
+        "endLine": 73,
+        "endChar": 5
+      },
+      "revId": "cd3e5d58e47306804669c1182f28e124631528da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     },
     {
       "key": {
@@ -507,6 +579,30 @@
       "revId": "cd3e5d58e47306804669c1182f28e124631528da",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2d59e99a_7b7488cb",
+        "filename": "libutils/ProcessCallStack_fuzz.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2020-07-14T17:59:11Z",
+      "side": 1,
+      "message": "sorry, I was thinking this was a different native handle type. I see now it is pthread_t. I can\u0027t seem to find any documentation indicating what 0 would mean here. Can you point me to why this check is being made?",
+      "parentUuid": "244b270d_f4366814",
+      "range": {
+        "startLine": 46,
+        "startChar": 34,
+        "endLine": 46,
+        "endChar": 35
+      },
+      "revId": "cd3e5d58e47306804669c1182f28e124631528da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     },
     {
       "key": {
@@ -1379,6 +1475,30 @@
       "revId": "cd3e5d58e47306804669c1182f28e124631528da",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a3a64ac6_6d5b9046",
+        "filename": "libutils/StopWatch_fuzz.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2020-07-14T17:59:11Z",
+      "side": 1,
+      "message": "Sorry, I think I was confused because of the two different ways we\u0027re initializing the fuzzer (consuming one byte at a time vs ConsumeRemainingBytes).",
+      "parentUuid": "6d889d6e_a13857a0",
+      "range": {
+        "startLine": 42,
+        "startChar": 0,
+        "endLine": 42,
+        "endChar": 36
+      },
+      "revId": "cd3e5d58e47306804669c1182f28e124631528da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }

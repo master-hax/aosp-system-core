@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0d0231ae_0a4d70df",
+        "filename": "libutils/RWLock_fuzz.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2020-07-14T17:59:11Z",
+      "side": 1,
+      "message": "it looks like we\u0027re still missing fuzzing of the lock methods",
+      "range": {
+        "startLine": 25,
+        "startChar": 0,
+        "endLine": 31,
+        "endChar": 62
+      },
+      "revId": "e4284c5872c882e30b7a9fa2b873dc1c4d1057ff",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "064ff26d_82a217e5",
+        "filename": "libutils/RefBase_fuzz.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2020-07-14T17:59:11Z",
+      "side": 1,
+      "message": "can we just use RefBase here? I\u0027m not sure why a subclass is needed.",
+      "range": {
+        "startLine": 44,
+        "startChar": 0,
+        "endLine": 47,
+        "endChar": 2
+      },
+      "revId": "e4284c5872c882e30b7a9fa2b873dc1c4d1057ff",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "56726f88_aaf0563c",
+        "filename": "libutils/include/utils/Looper_test_pipe.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2020-07-14T17:59:11Z",
+      "side": 1,
+      "message": "nit: prefer #pragma once",
+      "range": {
+        "startLine": 17,
+        "startChar": 0,
+        "endLine": 18,
+        "endChar": 32
+      },
+      "revId": "e4284c5872c882e30b7a9fa2b873dc1c4d1057ff",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
