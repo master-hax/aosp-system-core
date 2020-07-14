@@ -1,0 +1,48 @@
+{
+  "comments": [
+    {
+      "robotId": "ayeaye",
+      "robotRunId": "AR00000000000003864829",
+      "url": "https://android-build.googleplex.com/builds/treetop/android-review/1356122?revision\u003d8",
+      "fixSuggestions": [
+        {
+          "fixId": "a4887a84_3f9d5377",
+          "description": "Change to \"libutils/RefBase_fuzz.cpp\"",
+          "replacements": [
+            {
+              "path": "libutils/RefBase_fuzz.cpp",
+              "range": {
+                "startLine": 34,
+                "startChar": 86,
+                "endLine": 34,
+                "endChar": 95
+              },
+              "replacement": "artificial"
+            }
+          ]
+        }
+      ],
+      "key": {
+        "uuid": "33dcd984_1664f375",
+        "filename": "libutils/RefBase_fuzz.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1550585
+      },
+      "writtenOn": "2020-07-14T18:50:05Z",
+      "side": 1,
+      "message": "Common typo found: \"artifical\" -- should it be \"artificial\"?\nNote: a line containing \"common_typos_disable\" or \"common_typos_enable\" will turn off or on (respectively) the linter for subsequent lines in the file. Alternatively include the token \"NOTYPO\" within a line to skip typo linting that line.",
+      "range": {
+        "startLine": 34,
+        "startChar": 86,
+        "endLine": 34,
+        "endChar": 95
+      },
+      "revId": "c0dc929cba4187d584733d7cce28bb0a0093207a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
