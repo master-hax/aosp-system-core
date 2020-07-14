@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "eacc0285_a9283365",
+        "filename": "logd/main.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 282,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-07-14T18:55:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c3df85b2_d2d38378",
+      "range": {
+        "startLine": 282,
+        "startChar": 8,
+        "endLine": 282,
+        "endChar": 12
+      },
+      "revId": "eff52d62e81857bd0dbcbe910318b04221e1b7c3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3cccaf0c_0e45e5d7",
         "filename": "logd/main.cpp",
         "patchSetId": 1
@@ -39,6 +63,24 @@
       "revId": "eff52d62e81857bd0dbcbe910318b04221e1b7c3",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8c185a51_05503f8e",
+        "filename": "logd/main.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 283,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-07-14T18:55:46Z",
+      "side": 1,
+      "message": "Ack the `\u003d nullptr` is what I really wanted.\n\nWe can\u0027t fix it without a bunch of hacks (and at this point an NDK API change).  std::function, which is used for the aborter in libbase can\u0027t take the `noreturn` attribute for the function that it holds, so we can\u0027t guarantee that the aborter aborts (unless we add an abort(), which we decided against earlier).  I\u0027m not sure if that\u0027s even enough for the LOG() macro to show itself as noreturn either.",
+      "parentUuid": "3cccaf0c_0e45e5d7",
+      "revId": "eff52d62e81857bd0dbcbe910318b04221e1b7c3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
