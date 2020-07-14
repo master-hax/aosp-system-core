@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "074ec417_178be997",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-07-14T01:21:35Z",
+      "side": 1,
+      "message": "Failure is from failing to sync a test internally and this bug is blocking tests in presubmit, so bypassing...",
+      "revId": "44e1a5d59c216e9f716965cf8e355ee82de8599c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
