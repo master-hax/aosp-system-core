@@ -138,7 +138,7 @@ void dump_memory(log_t* log, unwindstack::Memory* memory, uint64_t addr, const s
   // Don't bother if the address looks too low, or looks too high.
   if (addr < 4096 ||
 #if defined(__LP64__)
-      addr > 0x4000000000000000UL - MEMORY_BYTES_TO_DUMP) {
+      untag_address(addr) > 0x4000000000000000UL - MEMORY_BYTES_TO_DUMP) {
 #else
       addr > 0xffff0000 - MEMORY_BYTES_TO_DUMP) {
 #endif
