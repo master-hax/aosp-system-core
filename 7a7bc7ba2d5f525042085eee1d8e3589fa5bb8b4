@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0438e5bf_02775e2e",
+        "filename": "logd/README.replay.md",
+        "patchSetId": 4
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-07-17T03:29:41Z",
+      "side": 1,
+      "message": "I\u0027m really not enthusiastic about actually building the code for this into any products and giving users an easy method of enabling it (a property), but this is the only other realistic option.\n\nI guess I could allow \u0027recording\u0027 in userdebug only, but I don\u0027t have any solution for turning the logging socket into non-blocking either...",
+      "range": {
+        "startLine": 8,
+        "startChar": 24,
+        "endLine": 9,
+        "endChar": 28
+      },
+      "revId": "7a7bc7ba2d5f525042085eee1d8e3589fa5bb8b4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
