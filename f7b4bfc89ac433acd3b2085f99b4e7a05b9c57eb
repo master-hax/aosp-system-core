@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "8f476d0a_be2195db",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000205
+      },
+      "writtenOn": "2020-07-17T01:27:30Z",
+      "side": 1,
+      "message": "I still don\u0027t see why you need all the C++ wrappers to pass data from one c interface to another.",
+      "revId": "f7b4bfc89ac433acd3b2085f99b4e7a05b9c57eb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "40088e9c_1d1bdf4c",
         "filename": "trusty/spi/Android.bp",
         "patchSetId": 5
