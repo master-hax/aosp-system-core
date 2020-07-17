@@ -1,0 +1,157 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "40088e9c_1d1bdf4c",
+        "filename": "trusty/spi/Android.bp",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1416371
+      },
+      "writtenOn": "2020-07-17T01:13:45Z",
+      "side": 1,
+      "message": "All these files should be at trusty/utils/spi, since spiproxyd is not intended for use on real devices.",
+      "revId": "f7b4bfc89ac433acd3b2085f99b4e7a05b9c57eb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d113be36_df6c8d07",
+        "filename": "trusty/spi/main.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1416371
+      },
+      "writtenOn": "2020-07-17T01:13:45Z",
+      "side": 1,
+      "message": "This never should have been ALOGE, that will go to logcat, but this is clearly supposed to be displayed to the user on the console.",
+      "revId": "f7b4bfc89ac433acd3b2085f99b4e7a05b9c57eb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "68acd3e2_e247fae1",
+        "filename": "trusty/spi/proxy.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1416371
+      },
+      "writtenOn": "2020-07-17T01:13:45Z",
+      "side": 1,
+      "message": "Return types should be android::base::Result\u003csize_t\u003e, not an int",
+      "revId": "f7b4bfc89ac433acd3b2085f99b4e7a05b9c57eb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e9ad138e_e8153fc6",
+        "filename": "trusty/spi/proxy.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1416371
+      },
+      "writtenOn": "2020-07-17T01:13:45Z",
+      "side": 1,
+      "message": "Since hdr_len is constant for the app, maybe it makes sense to just take in a `struct spi_host_msg_hdr *` for your `hdr` argument, and fill out the iov_len as sizeof(*hdr), and cast to void* for iov_base? Not blocking, and if you do this, do it to WriteMsg too",
+      "revId": "f7b4bfc89ac433acd3b2085f99b4e7a05b9c57eb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "10296531_46e6e0b4",
+        "filename": "trusty/spi/proxy.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1416371
+      },
+      "writtenOn": "2020-07-17T01:13:45Z",
+      "side": 1,
+      "message": "(Also applies to readmsg, just wanted a separate thread)\nReplace the void* for msg with a std::array passed by reference. If you only support one size, then don\u0027t have msg_len.\n\nI see that you\u0027ll need to keep the size for Write at least.",
+      "revId": "f7b4bfc89ac433acd3b2085f99b4e7a05b9c57eb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "56045cfd_c652f8e5",
+        "filename": "trusty/spi/proxy.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 1416371
+      },
+      "writtenOn": "2020-07-17T01:13:45Z",
+      "side": 1,
+      "message": "Since these are always called using the SpiProxy\u0027s internal buffer as an argument, maybe it makes more sense for them to be instance methods?",
+      "revId": "f7b4bfc89ac433acd3b2085f99b4e7a05b9c57eb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "67e65192_d043df24",
+        "filename": "trusty/spi/proxy.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 1416371
+      },
+      "writtenOn": "2020-07-17T01:13:45Z",
+      "side": 1,
+      "message": "In C++, use LOG(ERROR) \u003c\u003c or PERROR(ERROR) \u003c\u003c if you want errno.\n\nALOGE is used throughout and should be changed if this is C++",
+      "revId": "f7b4bfc89ac433acd3b2085f99b4e7a05b9c57eb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4a99d85d_3a114210",
+        "filename": "trusty/spi/proxy.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1416371
+      },
+      "writtenOn": "2020-07-17T01:13:45Z",
+      "side": 1,
+      "message": "Why the mix? If we\u0027re using C++,shouldn\u0027t these be std::strings, not char*s?",
+      "revId": "f7b4bfc89ac433acd3b2085f99b4e7a05b9c57eb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e0bea9a8_3b44abe3",
+        "filename": "trusty/spi/proxy.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 1416371
+      },
+      "writtenOn": "2020-07-17T01:13:45Z",
+      "side": 1,
+      "message": "This should be a std::array",
+      "revId": "f7b4bfc89ac433acd3b2085f99b4e7a05b9c57eb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
