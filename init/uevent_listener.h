@@ -50,7 +50,7 @@ class UeventListener {
               const std::optional<std::chrono::milliseconds> relative_timeout = {}) const;
 
   private:
-    bool ReadUevent(Uevent* uevent) const;
+    int ReadUevent(Uevent* uevent) const;
     ListenerAction RegenerateUeventsForDir(DIR* d, const ListenerCallback& callback) const;
 
     android::base::unique_fd device_fd_;

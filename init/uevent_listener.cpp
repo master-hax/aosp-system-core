@@ -95,20 +95,20 @@ UeventListener::UeventListener(size_t uevent_socket_rcvbuf_size) {
     fcntl(device_fd_, F_SETFL, O_NONBLOCK);
 }
 
-bool UeventListener::ReadUevent(Uevent* uevent) const {
+int UeventListener::ReadUevent(Uevent* uevent) const {
     char msg[UEVENT_MSG_LEN + 2];
     int n = uevent_kernel_multicast_recv(device_fd_, msg, UEVENT_MSG_LEN);
     if (n <= 0) {
         if (errno != EAGAIN && errno != EWOULDBLOCK) {
             PLOG(ERROR) << "Error reading from Uevent Fd";
         }
-        return false;
+        return -1;
     }
     if (n >= UEVENT_MSG_LEN) {
         LOG(ERROR) << "Uevent overflowed buffer, discarding";
-        // Return true here even if we discard as we may have more uevents pending and we
-        // want to keep processing them.
-        return true;
+        // Return 0 in this case, where the Uevent was successfully read but is invalid, so that
+        // the caller can skip processing this and continue reading further pending uevents.
+        return 0;
     }
 
     msg[n] = '\0';
@@ -116,7 +116,7 @@ bool UeventListener::ReadUevent(Uevent* uevent) const {
 
     ParseEvent(msg, uevent);
 
-    return true;
+    return 1;
 }
 
 // RegenerateUevents*() walks parts of the /sys tree and pokes the uevent files to cause the kernel
@@ -137,7 +137,10 @@ ListenerAction UeventListener::RegenerateUeventsForDir(DIR* d,
         close(fd);
 
         Uevent uevent;
-        while (ReadUevent(&uevent)) {
+        int ret;
+        while ((ret = ReadUevent(&uevent)) != -1) {
+            // Skip processing the uevent if it is invalid.
+            if (ret == 0) continue;
             if (callback(uevent) == ListenerAction::kStop) return ListenerAction::kStop;
         }
     }
@@ -212,7 +215,10 @@ void UeventListener::Poll(const ListenerCallback& callback,
             // We're non-blocking, so if we receive a poll event keep processing until
             // we have exhausted all uevent messages.
             Uevent uevent;
-            while (ReadUevent(&uevent)) {
+            int ret;
+            while ((ret = ReadUevent(&uevent)) != -1) {
+                // Skip processing the uevent if it is invalid.
+                if (ret == 0) continue;
                 if (callback(uevent) == ListenerAction::kStop) return;
             }
         }
