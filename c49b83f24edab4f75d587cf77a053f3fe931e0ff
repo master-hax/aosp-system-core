@@ -16,6 +16,24 @@
       "revId": "c49b83f24edab4f75d587cf77a053f3fe931e0ff",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9102d0be_a446abc5",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1608690
+      },
+      "writtenOn": "2020-07-20T17:23:17Z",
+      "side": 1,
+      "message": "It\u0027s already on master aosp/1323282.",
+      "parentUuid": "fcade56f_fd866392",
+      "revId": "c49b83f24edab4f75d587cf77a053f3fe931e0ff",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
