@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "44315a31_26647aef",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1124693
+      },
+      "writtenOn": "2020-07-20T23:42:59Z",
+      "side": 1,
+      "message": "The reason we use C++ here is because there is no reason to not use C++, which is the preferred language on Android side :)",
+      "parentUuid": "8f476d0a_be2195db",
+      "revId": "f7b4bfc89ac433acd3b2085f99b4e7a05b9c57eb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "40088e9c_1d1bdf4c",
         "filename": "trusty/spi/Android.bp",
         "patchSetId": 5
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "da048ea9_d7be0562",
+        "filename": "trusty/spi/Android.bp",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1124693
+      },
+      "writtenOn": "2020-07-20T23:42:59Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "40088e9c_1d1bdf4c",
+      "revId": "f7b4bfc89ac433acd3b2085f99b4e7a05b9c57eb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d113be36_df6c8d07",
         "filename": "trusty/spi/main.cpp",
         "patchSetId": 5
@@ -47,6 +83,24 @@
       "writtenOn": "2020-07-17T01:13:45Z",
       "side": 1,
       "message": "This never should have been ALOGE, that will go to logcat, but this is clearly supposed to be displayed to the user on the console.",
+      "revId": "f7b4bfc89ac433acd3b2085f99b4e7a05b9c57eb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7df0cf97_67c85ff1",
+        "filename": "trusty/spi/main.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1124693
+      },
+      "writtenOn": "2020-07-20T23:42:59Z",
+      "side": 1,
+      "message": "Well, in the normal flow this message needs to go to logcat, otherwise we can\u0027t retrieve it from a device.",
+      "parentUuid": "d113be36_df6c8d07",
       "revId": "f7b4bfc89ac433acd3b2085f99b4e7a05b9c57eb",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
@@ -70,6 +124,24 @@
     },
     {
       "key": {
+        "uuid": "09aad11d_751ad8a3",
+        "filename": "trusty/spi/proxy.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1124693
+      },
+      "writtenOn": "2020-07-20T23:42:59Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "68acd3e2_e247fae1",
+      "revId": "f7b4bfc89ac433acd3b2085f99b4e7a05b9c57eb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e9ad138e_e8153fc6",
         "filename": "trusty/spi/proxy.cpp",
         "patchSetId": 5
@@ -84,6 +156,24 @@
       "revId": "f7b4bfc89ac433acd3b2085f99b4e7a05b9c57eb",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d5a165f9_a7b2fe8d",
+        "filename": "trusty/spi/proxy.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1124693
+      },
+      "writtenOn": "2020-07-20T23:42:59Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e9ad138e_e8153fc6",
+      "revId": "f7b4bfc89ac433acd3b2085f99b4e7a05b9c57eb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -104,6 +194,24 @@
     },
     {
       "key": {
+        "uuid": "8c4958a4_f15bf5a1",
+        "filename": "trusty/spi/proxy.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1124693
+      },
+      "writtenOn": "2020-07-20T23:42:59Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "10296531_46e6e0b4",
+      "revId": "f7b4bfc89ac433acd3b2085f99b4e7a05b9c57eb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "56045cfd_c652f8e5",
         "filename": "trusty/spi/proxy.cpp",
         "patchSetId": 5
@@ -118,6 +226,24 @@
       "revId": "f7b4bfc89ac433acd3b2085f99b4e7a05b9c57eb",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "73f45bee_53d20e95",
+        "filename": "trusty/spi/proxy.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 1124693
+      },
+      "writtenOn": "2020-07-20T23:42:59Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "56045cfd_c652f8e5",
+      "revId": "f7b4bfc89ac433acd3b2085f99b4e7a05b9c57eb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -138,6 +264,24 @@
     },
     {
       "key": {
+        "uuid": "2703bea1_196ffe9e",
+        "filename": "trusty/spi/proxy.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 1124693
+      },
+      "writtenOn": "2020-07-20T23:42:59Z",
+      "side": 1,
+      "message": "ALOG is commonly used in C++ though. But I do agree that not having to manually print errno is nice. I\u0027ll switch",
+      "parentUuid": "67e65192_d043df24",
+      "revId": "f7b4bfc89ac433acd3b2085f99b4e7a05b9c57eb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "4a99d85d_3a114210",
         "filename": "trusty/spi/proxy.h",
         "patchSetId": 5
@@ -155,6 +299,24 @@
     },
     {
       "key": {
+        "uuid": "31cc3dc2_c9dc0795",
+        "filename": "trusty/spi/proxy.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1124693
+      },
+      "writtenOn": "2020-07-20T23:42:59Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4a99d85d_3a114210",
+      "revId": "f7b4bfc89ac433acd3b2085f99b4e7a05b9c57eb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e0bea9a8_3b44abe3",
         "filename": "trusty/spi/proxy.h",
         "patchSetId": 5
@@ -169,6 +331,24 @@
       "revId": "f7b4bfc89ac433acd3b2085f99b4e7a05b9c57eb",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8bd5530e_74965e5f",
+        "filename": "trusty/spi/proxy.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 1124693
+      },
+      "writtenOn": "2020-07-20T23:42:59Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e0bea9a8_3b44abe3",
+      "revId": "f7b4bfc89ac433acd3b2085f99b4e7a05b9c57eb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
