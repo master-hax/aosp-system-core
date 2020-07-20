@@ -70,6 +70,29 @@
       "revId": "0f167afbf587acf8bca55139b72da98c74453c24",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "86d39aaf_dd9def6f",
+        "filename": "init/uevent_listener.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-07-20T17:26:02Z",
+      "side": 1,
+      "message": "Can we return an enum class here, similar to `ListenerAction` instead of the int.  We likely won\u0027t need the comments if the return values are clear.",
+      "range": {
+        "startLine": 98,
+        "startChar": 0,
+        "endLine": 98,
+        "endChar": 3
+      },
+      "revId": "0f167afbf587acf8bca55139b72da98c74453c24",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
