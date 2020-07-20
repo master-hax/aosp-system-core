@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b87d85ce_50628017",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000205
+      },
+      "writtenOn": "2020-07-20T23:53:29Z",
+      "side": 1,
+      "message": "This code is way too complicated for what it does.",
+      "revId": "f7c6f1172d9ee5619b52e3d7f5fb00188ee2f456",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
