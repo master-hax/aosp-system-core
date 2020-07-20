@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "279f9e5e_02d8d2de",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-07-20T17:29:05Z",
+      "side": 1,
+      "message": "(i\u0027ve edited the commit message to show that this is already merged.)",
+      "revId": "f595077e24507d52c6ffcad3f3dd29aa5d7f3943",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
