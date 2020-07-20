@@ -46,6 +46,30 @@
       "revId": "0f167afbf587acf8bca55139b72da98c74453c24",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7e380501_5d8c86d9",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1415202
+      },
+      "writtenOn": "2020-07-20T17:00:27Z",
+      "side": 1,
+      "message": "Right, increasing the buffer size is also a part of the discussion. But irrespective of that (say in future also whenever the uevent size received exceeds the max size defined), an invalid Uevent shouldn\u0027t cause firmware double loading. This change tries to handle the error/invalid uevent received appropriately i.e. to not invoke the callbacks (firmware handler) again on a stale/previously-stored uevent (that would result in double firmware loading of the previosly served firmware event)",
+      "parentUuid": "7848352b_34944f71",
+      "range": {
+        "startLine": 11,
+        "startChar": 41,
+        "endLine": 12,
+        "endChar": 7
+      },
+      "revId": "0f167afbf587acf8bca55139b72da98c74453c24",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
