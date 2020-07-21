@@ -81,6 +81,11 @@ on early-init
     # Mount tracefs
     mount tracefs tracefs /sys/kernel/tracing
 
+    # create sys dirctory
+    mkdir /dev/sys 0755 system system
+    mkdir /dev/sys/fs 0755 system system
+    mkdir /dev/sys/block 0755 system system
+
 # Run boringssl self test for each ABI so that later processes can skip it. http://b/139348610
 on early-init && property:ro.product.cpu.abilist32=*
     exec_start boringssl_self_test32
@@ -874,10 +879,20 @@ on boot
     write /sys/fs/f2fs/${dev.mnt.blk.data}/cp_interval 200
     write /sys/fs/f2fs/${dev.mnt.blk.data}/gc_urgent_sleep_time 50
 
+    # to access F2FS sysfs on dm-<num> directly
+    mkdir /dev/sys/fs/by-name 0755 system system
+    symlink /sys/fs/f2fs/${dev.mnt.blk.data} /dev/sys/fs/by-name/userdata
+    chmod 0755 /dev/sys/fs/by-name/userdata
+
+    # to access dm-<num> sysfs
+    mkdir /dev/sys/block/by-name 0755 system system
+    symlink /sys/block/${dev.mnt.blk.data} /dev/sys/block/by-name/userdata
+    chmod 0755 /dev/sys/block/by-name/userdata
+
     # limit discard size to 128MB in order to avoid long IO latency
     # for filesystem tuning first (dm or sda)
     # Note that, if dm-<num> is used, sda/mmcblk0 should be tuned in vendor/init.rc
-    write /sys/devices/virtual/block/${dev.mnt.blk.data}/queue/discard_max_bytes 134217728
+    write /dev/sys/block/by-name/userdata/queue/discard_max_bytes 134217728
 
     # Permissions for System Server and daemons.
     chown system system /sys/power/autosleep
