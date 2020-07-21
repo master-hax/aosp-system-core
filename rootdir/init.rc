@@ -874,6 +874,11 @@ on boot
     write /sys/fs/f2fs/${dev.mnt.blk.data}/cp_interval 200
     write /sys/fs/f2fs/${dev.mnt.blk.data}/gc_urgent_sleep_time 50
 
+    mkdir /dev/disk 0755 system system
+    mkdir /dev/disk/by-partlabel 0755 system system
+    symlink /sys/fs/f2fs/${dev.mnt.blk.data} /dev/disk/by-partlabel/userdata
+    chmod 0755 /dev/disk/by-partlabel/userdata
+
     # limit discard size to 128MB in order to avoid long IO latency
     # for filesystem tuning first (dm or sda)
     # Note that, if dm-<num> is used, sda/mmcblk0 should be tuned in vendor/init.rc
