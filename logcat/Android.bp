@@ -27,7 +27,10 @@ cc_defaults {
         "libbase",
         "libprocessgroup",
     ],
-    static_libs: ["liblog"],
+    static_libs: [
+        "liblog",
+        "liblog_internal",
+    ],
     logtags: ["event.logtags"],
 }
 

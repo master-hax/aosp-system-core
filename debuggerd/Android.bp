@@ -190,12 +190,13 @@ cc_library_static {
     ],
 
     static_libs: [
-        "libdexfile_support",  // libunwindstack dependency
+        "libdexfile_support", // libunwindstack dependency
         "libunwindstack",
         "liblzma",
         "libbase",
         "libcutils",
         "liblog",
+        "liblog_internal",
     ],
 
     whole_static_libs: [
@@ -373,7 +374,7 @@ cc_binary {
 
     header_libs: [
         "bionic_libc_platform_headers",
-        "libdebuggerd_common_headers"
+        "libdebuggerd_common_headers",
     ],
 
     static_libs: [
@@ -408,7 +409,6 @@ prebuilt_etc {
         "crash_dump.policy_other",
     ],
 }
-
 
 // NB -- this installs "the other" architecture. (puts 32 bit config in on 64 bit device)
 // or at least that is the intention so that we get both of them populated

@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+#include <log_internal/event_tag_map.h>
+
 #include <assert.h>
 #include <ctype.h>
 #include <errno.h>
@@ -30,7 +32,6 @@
 #include <string_view>
 #include <unordered_map>
 
-#include <log/event_tag_map.h>
 #include <log/log_properties.h>
 #include <private/android_logger.h>
 #include <utils/FastStrcmp.h>
