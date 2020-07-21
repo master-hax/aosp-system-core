@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include <log/logprint.h>
+#include <log_internal/logprint.h>
 
 #include <string>
 

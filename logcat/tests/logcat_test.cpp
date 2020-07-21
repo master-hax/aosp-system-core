@@ -38,9 +38,9 @@
 #include <android-base/stringprintf.h>
 #include <android-base/strings.h>
 #include <gtest/gtest.h>
-#include <log/event_tag_map.h>
 #include <log/log.h>
 #include <log/log_event_list.h>
+#include <log_internal/event_tag_map.h>
 
 #ifndef logcat_executable
 #define USING_LOGCAT_EXECUTABLE_DEFAULT

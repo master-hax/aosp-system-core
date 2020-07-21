@@ -42,7 +42,6 @@
 #include <android-base/stringprintf.h>
 #include <cutils/android_get_control_file.h>
 #include <cutils/sockets.h>
-#include <log/event_tag_map.h>
 #include <packagelistparser/packagelistparser.h>
 #include <private/android_filesystem_config.h>
 #include <private/android_logger.h>
