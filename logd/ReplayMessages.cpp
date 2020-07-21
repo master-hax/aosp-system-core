@@ -26,7 +26,7 @@
 #include <android-base/unique_fd.h>
 #include <android/log.h>
 #include <log/log_time.h>
-#include <log/logprint.h>
+#include <log_internal/logprint.h>
 
 #include "ChattyLogBuffer.h"
 #include "LogBuffer.h"

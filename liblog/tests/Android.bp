@@ -32,8 +32,9 @@ cc_benchmark {
         "libm",
         "libbase",
         "libcutils",
+        "liblog",
     ],
-    static_libs: ["liblog"],
+    static_libs: ["liblog_internal"],
     srcs: ["liblog_benchmark.cpp"],
 }
 
@@ -67,10 +68,11 @@ cc_defaults {
         "logprint_test.cpp",
     ],
     shared_libs: [
-        "libcutils",
         "libbase",
+        "libcutils",
+        "liblog",
     ],
-    static_libs: ["liblog"],
+    static_libs: ["liblog_internal"],
     isolated: true,
     require_root: true,
 }
