@@ -49,10 +49,10 @@
 #include <android-base/strings.h>
 #include <android-base/unique_fd.h>
 #include <android/log.h>
-#include <log/event_tag_map.h>
 #include <log/log_id.h>
 #include <log/log_read.h>
-#include <log/logprint.h>
+#include <log_internal/event_tag_map.h>
+#include <log_internal/logprint.h>
 #include <private/android_logger.h>
 #include <processgroup/sched_policy.h>
 #include <system/thread_defs.h>

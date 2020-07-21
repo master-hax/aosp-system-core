@@ -20,12 +20,10 @@ liblog_sources = [
     "logger_name.cpp",
     "logger_read.cpp",
     "logger_write.cpp",
-    "logprint.cpp",
     "properties.cpp",
 ]
+
 liblog_target_sources = [
-    "event_tag_map.cpp",
-    "log_time.cpp",
     "pmsg_reader.cpp",
     "pmsg_writer.cpp",
     "logd_reader.cpp",
@@ -87,9 +85,6 @@ cc_library {
         windows: {
             enabled: true,
         },
-        not_windows: {
-            srcs: ["event_tag_map.cpp"],
-        },
         linux_bionic: {
             enabled: true,
         },
@@ -103,7 +98,10 @@ cc_library {
 
     stubs: {
         symbol_file: "liblog.map.txt",
-        versions: ["29", "30"],
+        versions: [
+            "29",
+            "30",
+        ],
     },
 
     cflags: [
@@ -151,4 +149,38 @@ llndk_library {
     native_bridge_supported: true,
     symbol_file: "liblog.map.txt",
     export_include_dirs: ["include_vndk"],
+}
+
+// ========================================================
+cc_library_static {
+    name: "liblog_internal",
+    host_supported: true,
+    ramdisk_available: true,
+    recovery_available: true,
+    native_bridge_supported: true,
+    srcs: [
+        "event_tag_map.cpp",
+        "log_time.cpp",
+        "logprint.cpp",
+    ],
+
+    header_libs: [
+        "libbase_headers",
+        "liblog_headers",
+    ],
+
+    export_include_dirs: ["include_internal"],
+
+    cflags: [
+        "-Wall",
+        "-Werror",
+        "-Wextra",
+    ],
+
+    compile_multilib: "both",
+
+    apex_available: [
+        "//apex_available:platform",
+        "com.android.runtime",
+    ],
 }

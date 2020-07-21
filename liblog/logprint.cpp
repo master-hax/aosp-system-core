@@ -19,7 +19,7 @@
 #define HAVE_STRSEP
 #endif
 
-#include <log/logprint.h>
+#include <log_internal/logprint.h>
 
 #include <assert.h>
 #include <ctype.h>

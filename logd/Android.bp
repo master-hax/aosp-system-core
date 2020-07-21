@@ -88,11 +88,12 @@ cc_binary {
     ],
 
     static_libs: [
-        "liblog",
+        "liblog_internal",
         "liblogd",
     ],
 
     shared_libs: [
+        "liblog",
         "libsysutils",
         "libcutils",
         "libpackagelistparser",
