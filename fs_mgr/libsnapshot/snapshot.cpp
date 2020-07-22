@@ -300,7 +300,7 @@ bool SnapshotManager::CreateSnapshot(LockedFile* lock, SnapshotStatus* status) {
         LOG(ERROR) << "SnapshotStatus has no name.";
         return false;
     }
-    // Sanity check these sizes. Like liblp, we guarantee the partition size
+    // Validity check these sizes. Like liblp, we guarantee the partition size
     // is respected, which means it has to be sector-aligned. (This guarantee
     // is useful for locating avb footers correctly). The COW file size, however,
     // can be arbitrarily larger than specified, so we can safely round it up.
@@ -351,7 +351,7 @@ Return SnapshotManager::CreateCowImage(LockedFile* lock, const std::string& name
     }
 
     // The COW file size should have been rounded up to the nearest sector in CreateSnapshot.
-    // Sanity check this.
+    // Validity check this.
     if (status.cow_file_size() % kSectorSize != 0) {
         LOG(ERROR) << "Snapshot " << name << " COW file size is not a multiple of the sector size: "
                    << status.cow_file_size();

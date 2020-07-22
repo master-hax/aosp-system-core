@@ -35,9 +35,9 @@ namespace android::snapshot {
 class AutoMemBasedDir;
 class SnapshotFuzzDeviceInfo;
 
-class DummyAutoDevice : public AutoDevice {
+class FakeAutoDevice : public AutoDevice {
   public:
-    DummyAutoDevice(bool mounted) : AutoDevice(mounted ? "dummy" : "") {}
+    FakeAutoDevice(bool mounted) : AutoDevice(mounted ? "fake" : "") {}
 };
 
 struct SnapshotTestModule {
