@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3effc871_09dca4fd",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-07-22T23:02:11Z",
+      "side": 1,
+      "message": "btw, i think you want to include #inclusivefixit in the commit message if you want to take part in that :-)",
+      "revId": "dd4f3a96635254722032550e19395199686317cf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
