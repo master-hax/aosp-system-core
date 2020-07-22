@@ -1,0 +1,222 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "105fcc10_d6bc4b3a",
+        "filename": "fs_mgr/libfiemap/fiemap_writer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-07-22T23:48:55Z",
+      "side": 1,
+      "message": "that doesn\u0027t really make sense",
+      "range": {
+        "startLine": 48,
+        "startChar": 45,
+        "endLine": 48,
+        "endChar": 53
+      },
+      "revId": "e66d53d437dca0029c0710690223af750e7c1028",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3687c16f_dbd69cac",
+        "filename": "fs_mgr/libfiemap/split_fiemap_writer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 269,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-07-22T23:48:55Z",
+      "side": 1,
+      "message": "that doesn\u0027t really make sense",
+      "revId": "e66d53d437dca0029c0710690223af750e7c1028",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1ba1a398_cd241cbe",
+        "filename": "fs_mgr/libfiemap/utility.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 142,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-07-22T23:48:55Z",
+      "side": 1,
+      "message": "you think \"sanity\" is bad but you\u0027re okay with \"paranoid\"? :-)",
+      "revId": "e66d53d437dca0029c0710690223af750e7c1028",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f801f599_f32cf436",
+        "filename": "fs_mgr/libfs_avb/avb_ops.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-07-22T23:48:55Z",
+      "side": 1,
+      "message": "is this a fake in the usual sense, or is no-op more accurate?",
+      "range": {
+        "startLine": 55,
+        "startChar": 19,
+        "endLine": 55,
+        "endChar": 23
+      },
+      "revId": "e66d53d437dca0029c0710690223af750e7c1028",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e3534940_f5dff33b",
+        "filename": "fs_mgr/liblp/partition_opener.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-07-22T23:48:55Z",
+      "side": 1,
+      "message": "grammar",
+      "range": {
+        "startLine": 52,
+        "startChar": 14,
+        "endLine": 52,
+        "endChar": 21
+      },
+      "revId": "e66d53d437dca0029c0710690223af750e7c1028",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1e0ac341_3314c27b",
+        "filename": "fs_mgr/liblp/reader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 258,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-07-22T23:48:55Z",
+      "side": 1,
+      "message": "just \"Check\" makes more sense",
+      "range": {
+        "startLine": 258,
+        "startChar": 7,
+        "endLine": 258,
+        "endChar": 15
+      },
+      "revId": "e66d53d437dca0029c0710690223af750e7c1028",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "aa7ef54e_3e451322",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/snapshot.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 556,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-07-22T23:48:55Z",
+      "side": 1,
+      "message": "again",
+      "range": {
+        "startLine": 556,
+        "startChar": 7,
+        "endLine": 556,
+        "endChar": 15
+      },
+      "revId": "e66d53d437dca0029c0710690223af750e7c1028",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "49199acf_fe771fa5",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 303,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-07-22T23:48:55Z",
+      "side": 1,
+      "message": "again",
+      "range": {
+        "startLine": 303,
+        "startChar": 7,
+        "endLine": 303,
+        "endChar": 15
+      },
+      "revId": "e66d53d437dca0029c0710690223af750e7c1028",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1368e345_e980d2e4",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 354,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-07-22T23:48:55Z",
+      "side": 1,
+      "message": "again (or remove this line)",
+      "range": {
+        "startLine": 354,
+        "startChar": 7,
+        "endLine": 354,
+        "endChar": 15
+      },
+      "revId": "e66d53d437dca0029c0710690223af750e7c1028",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c5c8f1da_e1be49dd",
+        "filename": "fs_mgr/libsnapshot/snapshot_metadata_updater.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 176,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-07-22T23:48:55Z",
+      "side": 1,
+      "message": "again",
+      "range": {
+        "startLine": 176,
+        "startChar": 80,
+        "endLine": 176,
+        "endChar": 88
+      },
+      "revId": "e66d53d437dca0029c0710690223af750e7c1028",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
