@@ -1,0 +1,10 @@
+Open-Source-Licensing+1: Lint 🤖 <android-build-prod-ayeaye@system.gserviceaccount.com>
+Code-Review+2: Arve Hjønnevåg <arve@android.com>
+Code-Review+2: Matthew Maurer <mmaurer@google.com>
+Presubmit-Verified+1: Treehugger Robot <treehugger-gerrit@google.com>
+Lint+1: Lint 🤖 <android-build-prod-ayeaye@system.gserviceaccount.com>
+Submitted-by: Tri Vo <trong@google.com>
+Submitted-at: Wed, 22 Jul 2020 23:25:57 +0000
+Reviewed-on: https://android-review.googlesource.com/c/platform/system/core/+/1340634
+Project: platform/system/core
+Branch: refs/heads/master
