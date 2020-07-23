@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ef462b58_51ce5ed1",
+        "filename": "debuggerd/libdebuggerd/tombstone.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 572,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-07-23T22:38:27Z",
+      "side": 1,
+      "message": "is there a reason we don\u0027t just use the stashed tid from L557?",
+      "range": {
+        "startLine": 572,
+        "startChar": 10,
+        "endLine": 572,
+        "endChar": 18
+      },
+      "revId": "6527cf4a473c0579b9f54f8becf562f3297000ae",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "07e67ad7_5f5ae772",
+        "filename": "debuggerd/libdebuggerd/tombstone.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 598,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-07-23T22:38:27Z",
+      "side": 1,
+      "message": "oops. i did this when i merged dump_header_info (which is almost always auto) in here before realizing that there\u0027s a test that #includes this file. i\u0027ll undo this.",
+      "range": {
+        "startLine": 598,
+        "startChar": 2,
+        "endLine": 598,
+        "endChar": 6
+      },
+      "revId": "6527cf4a473c0579b9f54f8becf562f3297000ae",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
