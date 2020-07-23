@@ -33,10 +33,12 @@
 #include <android-base/logging.h>
 #include <android-base/stringprintf.h>
 #include <android-base/strings.h>
+#include <ext4_utils/ext4_utils.h>
 #include <fs_avb/fs_avb.h>
 #include <fs_mgr.h>
 #include <fs_mgr_dm_linear.h>
 #include <fs_mgr_overlayfs.h>
+#include <libdm/dm.h>
 #include <libfiemap/image_manager.h>
 #include <libgsi/libgsi.h>
 #include <liblp/liblp.h>
@@ -102,6 +104,7 @@ class FirstStageMount {
     // Copies /avb/*.avbpubkey used for DSU from the ramdisk to /metadata for key
     // revocation check by DSU installation service.
     void CopyDsuAvbKeys();
+    bool InitDmUser(FstabEntry* entry);
 
     // Pure virtual functions.
     virtual bool GetDmVerityDevices(std::set<std::string>* devices) = 0;
@@ -299,6 +302,9 @@ bool FirstStageMount::InitRequiredDevices(std::set<std::string> devices) {
     if (!block_dev_init_.InitDeviceMapper()) {
         return false;
     }
+    if (!block_dev_init_.InitDmUser()) {
+        return false;
+    }
     if (devices.empty()) {
         return true;
     }
@@ -358,6 +364,51 @@ bool FirstStageMount::CreateLogicalPartitions() {
     return android::fs_mgr::CreateLogicalPartitions(*metadata.get(), super_path_);
 }
 
+bool FirstStageMount::InitDmUser(FstabEntry* entry) {
+    auto name = android::base::Basename(entry->mount_point);
+    if (name != "system") {
+        return false;
+    }
+
+    android::base::unique_fd fd(open(entry->blk_device.c_str(), O_RDONLY | O_CLOEXEC));
+    if (fd < 0) {
+        PLOG(ERROR) << "open failed: " << entry->blk_device;
+        return false;
+    }
+
+    if (fork() == 0) {
+        const char* argv[] = {
+                "/system/bin/snapuserd",
+                entry->blk_device.c_str(),
+                nullptr,
+        };
+        if (execv(argv[0], const_cast<char**>(argv))) {
+            PLOG(ERROR) << "execvp failed";
+            return false;
+        }
+    }
+
+    uint64_t sectors = get_block_device_size(fd) / 512;
+
+    auto& dm = android::dm::DeviceMapper::Instance();
+    android::dm::DmTable table;
+    table.set_readonly(true);
+    table.Emplace<android::dm::DmTargetUser>(0, sectors);
+    if (!dm.CreateDevice(name + "-user", table)) {
+        LOG(ERROR) << "failed to create user device";
+        return false;
+    }
+    if (!dm.GetDmDevicePathByName(name + "-user", &entry->blk_device)) {
+        LOG(ERROR) << "failed to GET user device";
+        return false;
+    }
+    if (!block_dev_init_.InitDmDevice(entry->blk_device)) {
+        LOG(ERROR) << "failed to INIT user device";
+        return false;
+    }
+    return true;
+}
+
 bool FirstStageMount::MountPartition(const Fstab::iterator& begin, bool erase_same_mounts,
                                      Fstab::iterator* end) {
     // Sets end to begin + 1, so we can just return on failure below.
@@ -365,6 +416,7 @@ bool FirstStageMount::MountPartition(const Fstab::iterator& begin, bool erase_sa
         *end = begin + 1;
     }
 
+    bool using_dm_user = false;
     if (begin->fs_mgr_flags.logical) {
         if (!fs_mgr_update_logical_partition(&(*begin))) {
             return false;
@@ -372,8 +424,9 @@ bool FirstStageMount::MountPartition(const Fstab::iterator& begin, bool erase_sa
         if (!block_dev_init_.InitDmDevice(begin->blk_device)) {
             return false;
         }
+        using_dm_user = InitDmUser(&(*begin));
     }
-    if (!SetUpDmVerity(&(*begin))) {
+    if (!using_dm_user && !SetUpDmVerity(&(*begin))) {
         PLOG(ERROR) << "Failed to setup verity for '" << begin->mount_point << "'";
         return false;
     }
