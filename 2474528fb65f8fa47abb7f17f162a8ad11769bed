@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6d1c784c_cea28684",
+        "filename": "debuggerd/libdebuggerd/tombstone.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 572,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-07-23T22:41:01Z",
+      "side": 1,
+      "message": "is there a reason we can\u0027t reuse tid from L557?",
+      "range": {
+        "startLine": 572,
+        "startChar": 10,
+        "endLine": 572,
+        "endChar": 18
+      },
+      "revId": "2474528fb65f8fa47abb7f17f162a8ad11769bed",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
