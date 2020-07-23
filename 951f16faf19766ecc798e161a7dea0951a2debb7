@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2393574f_568ecb95",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1608690
+      },
+      "writtenOn": "2020-07-23T01:19:21Z",
+      "side": 1,
+      "message": "Thank you for reviewing. And apologized for my initial low quality patch.",
+      "revId": "951f16faf19766ecc798e161a7dea0951a2debb7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
