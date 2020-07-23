@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "ea964f74_1e1e1125",
+        "filename": "fs_mgr/libfiemap/fiemap_writer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1608690
+      },
+      "writtenOn": "2020-07-23T01:16:11Z",
+      "side": 1,
+      "message": "How about \"robustness\"?",
+      "parentUuid": "105fcc10_d6bc4b3a",
+      "range": {
+        "startLine": 48,
+        "startChar": 45,
+        "endLine": 48,
+        "endChar": 53
+      },
+      "revId": "e66d53d437dca0029c0710690223af750e7c1028",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "3687c16f_dbd69cac",
         "filename": "fs_mgr/libfiemap/split_fiemap_writer.cpp",
         "patchSetId": 1
@@ -42,6 +66,24 @@
     },
     {
       "key": {
+        "uuid": "bc83a380_ae67a491",
+        "filename": "fs_mgr/libfiemap/split_fiemap_writer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 269,
+      "author": {
+        "id": 1608690
+      },
+      "writtenOn": "2020-07-23T01:16:11Z",
+      "side": 1,
+      "message": "How about \"safety\"",
+      "parentUuid": "3687c16f_dbd69cac",
+      "revId": "e66d53d437dca0029c0710690223af750e7c1028",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "1ba1a398_cd241cbe",
         "filename": "fs_mgr/libfiemap/utility.cpp",
         "patchSetId": 1
@@ -53,6 +95,24 @@
       "writtenOn": "2020-07-22T23:48:55Z",
       "side": 1,
       "message": "you think \"sanity\" is bad but you\u0027re okay with \"paranoid\"? :-)",
+      "revId": "e66d53d437dca0029c0710690223af750e7c1028",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a160e9ef_8d9d6753",
+        "filename": "fs_mgr/libfiemap/utility.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 142,
+      "author": {
+        "id": 1608690
+      },
+      "writtenOn": "2020-07-23T01:16:11Z",
+      "side": 1,
+      "message": "I removed it. Sorry about that.",
+      "parentUuid": "1ba1a398_cd241cbe",
       "revId": "e66d53d437dca0029c0710690223af750e7c1028",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
@@ -82,6 +142,30 @@
     },
     {
       "key": {
+        "uuid": "2bd2abac_b956c75c",
+        "filename": "fs_mgr/libfs_avb/avb_ops.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 1608690
+      },
+      "writtenOn": "2020-07-23T01:16:11Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f801f599_f32cf436",
+      "range": {
+        "startLine": 55,
+        "startChar": 19,
+        "endLine": 55,
+        "endChar": 23
+      },
+      "revId": "e66d53d437dca0029c0710690223af750e7c1028",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e3534940_f5dff33b",
         "filename": "fs_mgr/liblp/partition_opener.cpp",
         "patchSetId": 1
@@ -102,6 +186,30 @@
       "revId": "e66d53d437dca0029c0710690223af750e7c1028",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8417cb4e_586cb4fb",
+        "filename": "fs_mgr/liblp/partition_opener.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 1608690
+      },
+      "writtenOn": "2020-07-23T01:16:11Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e3534940_f5dff33b",
+      "range": {
+        "startLine": 52,
+        "startChar": 14,
+        "endLine": 52,
+        "endChar": 21
+      },
+      "revId": "e66d53d437dca0029c0710690223af750e7c1028",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -128,6 +236,30 @@
     },
     {
       "key": {
+        "uuid": "2221f523_fedc8ac3",
+        "filename": "fs_mgr/liblp/reader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 258,
+      "author": {
+        "id": 1608690
+      },
+      "writtenOn": "2020-07-23T01:16:11Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1e0ac341_3314c27b",
+      "range": {
+        "startLine": 258,
+        "startChar": 7,
+        "endLine": 258,
+        "endChar": 15
+      },
+      "revId": "e66d53d437dca0029c0710690223af750e7c1028",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "aa7ef54e_3e451322",
         "filename": "fs_mgr/libsnapshot/include/libsnapshot/snapshot.h",
         "patchSetId": 1
@@ -139,6 +271,30 @@
       "writtenOn": "2020-07-22T23:48:55Z",
       "side": 1,
       "message": "again",
+      "range": {
+        "startLine": 556,
+        "startChar": 7,
+        "endLine": 556,
+        "endChar": 15
+      },
+      "revId": "e66d53d437dca0029c0710690223af750e7c1028",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5b472c4e_3b501505",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/snapshot.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 556,
+      "author": {
+        "id": 1608690
+      },
+      "writtenOn": "2020-07-23T01:16:11Z",
+      "side": 1,
+      "message": "How about \"Soundness\" here?",
+      "parentUuid": "aa7ef54e_3e451322",
       "range": {
         "startLine": 556,
         "startChar": 7,
@@ -174,6 +330,30 @@
     },
     {
       "key": {
+        "uuid": "e42b201c_c21bcbfe",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 303,
+      "author": {
+        "id": 1608690
+      },
+      "writtenOn": "2020-07-23T01:16:11Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "49199acf_fe771fa5",
+      "range": {
+        "startLine": 303,
+        "startChar": 7,
+        "endLine": 303,
+        "endChar": 15
+      },
+      "revId": "e66d53d437dca0029c0710690223af750e7c1028",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1368e345_e980d2e4",
         "filename": "fs_mgr/libsnapshot/snapshot.cpp",
         "patchSetId": 1
@@ -197,6 +377,30 @@
     },
     {
       "key": {
+        "uuid": "fbb68117_26ec7da8",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 354,
+      "author": {
+        "id": 1608690
+      },
+      "writtenOn": "2020-07-23T01:16:11Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1368e345_e980d2e4",
+      "range": {
+        "startLine": 354,
+        "startChar": 7,
+        "endLine": 354,
+        "endChar": 15
+      },
+      "revId": "e66d53d437dca0029c0710690223af750e7c1028",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c5c8f1da_e1be49dd",
         "filename": "fs_mgr/libsnapshot/snapshot_metadata_updater.cpp",
         "patchSetId": 1
@@ -208,6 +412,30 @@
       "writtenOn": "2020-07-22T23:48:55Z",
       "side": 1,
       "message": "again",
+      "range": {
+        "startLine": 176,
+        "startChar": 80,
+        "endLine": 176,
+        "endChar": 88
+      },
+      "revId": "e66d53d437dca0029c0710690223af750e7c1028",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2b40ad63_5613e669",
+        "filename": "fs_mgr/libsnapshot/snapshot_metadata_updater.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 176,
+      "author": {
+        "id": 1608690
+      },
+      "writtenOn": "2020-07-23T01:16:11Z",
+      "side": 1,
+      "message": "How about \"rationality\" here?",
+      "parentUuid": "c5c8f1da_e1be49dd",
       "range": {
         "startLine": 176,
         "startChar": 80,
