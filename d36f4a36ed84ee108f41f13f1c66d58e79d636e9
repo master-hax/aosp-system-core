@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6dcc35de_196b3025",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-07-23T16:26:49Z",
+      "side": 1,
+      "message": "really need to try to get back to https://android-review.googlesource.com/q/topic:%22mksh-hack-removal%22+(status:open%20OR%20status:merged) at some point...",
+      "revId": "d36f4a36ed84ee108f41f13f1c66d58e79d636e9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
