@@ -46,6 +46,30 @@
       "revId": "2474528fb65f8fa47abb7f17f162a8ad11769bed",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d1568807_34091bc7",
+        "filename": "debuggerd/libdebuggerd/tombstone.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 572,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-07-23T23:34:29Z",
+      "side": 1,
+      "message": "fixed in the next ps.",
+      "parentUuid": "cc97cd4a_2f372d6e",
+      "range": {
+        "startLine": 572,
+        "startChar": 10,
+        "endLine": 572,
+        "endChar": 18
+      },
+      "revId": "2474528fb65f8fa47abb7f17f162a8ad11769bed",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
