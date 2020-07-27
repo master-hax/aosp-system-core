@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba873a45_82e4fbab",
+        "filename": "libcutils/qtaguid.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-07-27T22:40:54Z",
+      "side": 1,
+      "message": "is this a mock, or is this something else? \"no-op\" or \"stub\" seem more appropriate?",
+      "range": {
+        "startLine": 41,
+        "startChar": 4,
+        "endLine": 41,
+        "endChar": 8
+      },
+      "revId": "462a1750477d6c18f2b67d6997cb649b69970374",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "855de796_f4e9b157",
+        "filename": "libutils/Unicode.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 165,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-07-27T22:40:54Z",
+      "side": 1,
+      "message": "or just `unused`?\n\n(what you have is fine, but it did make me think, whereas i could have skipped `unused` :-) .)",
+      "range": {
+        "startLine": 165,
+        "startChar": 11,
+        "endLine": 165,
+        "endChar": 25
+      },
+      "revId": "462a1750477d6c18f2b67d6997cb649b69970374",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
