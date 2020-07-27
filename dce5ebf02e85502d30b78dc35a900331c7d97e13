@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fe3cb2d2_d904392f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-07-27T23:19:09Z",
+      "side": 1,
+      "message": "I\u0027m already doing this in aosp/1373456.",
+      "revId": "dce5ebf02e85502d30b78dc35a900331c7d97e13",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
