@@ -294,33 +294,25 @@ int __android_log_is_loggable(int prio, const char* tag, int default_prio) {
 }
 
 int __android_log_is_debuggable() {
-  static uint32_t serial;
-  static struct cache_char tag_cache;
-  static const char key[] = "ro.debuggable";
-  int ret;
-
-  if (tag_cache.c) { /* ro property does not change after set */
-    ret = tag_cache.c == '1';
-  } else if (lock()) {
-    struct cache_char temp_cache = {{NULL, 0xFFFFFFFF}, '\0'};
-    refresh_cache(&temp_cache, key);
-    ret = temp_cache.c == '1';
-  } else {
-    int change_detected = check_cache(&tag_cache.cache);
-    uint32_t current_serial = __system_property_area_serial();
-    if (current_serial != serial) {
-      change_detected = 1;
+  static int is_debuggable = [] {
+    const prop_info* debuggable_property = __system_property_find("ro.debuggable");
+    if (debuggable_property == nullptr) {
+      return 0;
     }
-    if (change_detected) {
-      refresh_cache(&tag_cache, key);
-      serial = current_serial;
-    }
-    ret = tag_cache.c == '1';
+    int result = 0;
+    __system_property_read_callback(
+        debuggable_property,
+        [](void* cookie, const char*, const char* value, uint32_t) {
+          int* is_debuggable = reinterpret_cast<int*>(cookie);
+          if (!strcmp(value, "1")) {
+            *is_debuggable = 1;
+          }
+        },
+        &result);
+    return result;
+  }();
 
-    unlock();
-  }
-
-  return ret;
+  return is_debuggable;
 }
 
 /*
