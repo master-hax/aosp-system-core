@@ -16,6 +16,24 @@
       "revId": "aa646e5c63c28f72d0eb6d3d1e50ec20952dc7ff",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "aac1eb3d_8a559cfb",
+        "filename": "qemu_pipe/qemu_pipe.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1608690
+      },
+      "writtenOn": "2020-07-28T00:23:35Z",
+      "side": 1,
+      "message": "Agree, done.",
+      "parentUuid": "bfeb07a2_6c9feaad",
+      "revId": "aa646e5c63c28f72d0eb6d3d1e50ec20952dc7ff",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
