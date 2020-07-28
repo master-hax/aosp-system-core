@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "62cc47d6_a1a55d05",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-07-28T20:31:20Z",
+      "side": 1,
+      "message": "yeah, i can see an argument for either, but we should choose _one_ :-) (i hadn\u0027t actually noticed that fs_mgr was already different from everyone else!)",
+      "revId": "689deabc3bb01d56ecd2e4f8925786cbd9349a49",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
