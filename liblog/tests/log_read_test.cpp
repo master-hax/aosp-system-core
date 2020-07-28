@@ -49,7 +49,7 @@ TEST(liblog, android_logger_get_) {
     ssize_t get_log_size = android_logger_get_log_size(logger);
     /* security buffer is allowed to be denied */
     if (name != "security") {
-      EXPECT_LT(get_log_size, 0);
+      EXPECT_LT(0, get_log_size);
       // crash buffer is allowed to be empty, that is actually healthy!
       // stats buffer is no longer in use.
       if (name == "crash" || name == "stats") {
