@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "bfeb07a2_6c9feaad",
+        "filename": "qemu_pipe/qemu_pipe.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-07-28T00:22:06Z",
+      "side": 1,
+      "message": "just delete this instead? i don\u0027t think there\u0027s any value added by this comment?",
+      "revId": "aa646e5c63c28f72d0eb6d3d1e50ec20952dc7ff",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
