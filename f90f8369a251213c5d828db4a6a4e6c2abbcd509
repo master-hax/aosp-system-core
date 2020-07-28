@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b0369f00_fcf91404",
+        "filename": "liblog/tests/log_read_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-07-28T20:12:46Z",
+      "side": 1,
+      "message": "clearer as `EXPECT_GT(get_log_size, 0)`?",
+      "revId": "f90f8369a251213c5d828db4a6a4e6c2abbcd509",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
