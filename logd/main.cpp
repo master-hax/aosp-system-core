@@ -62,6 +62,7 @@
 #include "SerializedLogBuffer.h"
 #include "SimpleLogBuffer.h"
 
+using android::base::GetBoolProperty;
 using android::base::GetProperty;
 
 #define KMSG_PRIORITY(PRI)                                 \
@@ -82,9 +83,10 @@ static void DropPrivs(bool klogd, bool auditd) {
         PLOG(FATAL) << "failed to set batch scheduler";
     }
 
-    if (!__android_logger_property_get_bool("ro.debuggable", BOOL_DEFAULT_FALSE) &&
-        prctl(PR_SET_DUMPABLE, 0) == -1) {
-        PLOG(FATAL) << "failed to clear PR_SET_DUMPABLE";
+    if (!android::base::GetBoolProperty("ro.debuggable", false)) {
+        if (prctl(PR_SET_DUMPABLE, 0) == -1) {
+            PLOG(FATAL) << "failed to clear PR_SET_DUMPABLE";
+        }
     }
 
     std::unique_ptr<struct _cap_struct, int (*)(void*)> caps(cap_init(), cap_free);
@@ -249,7 +251,7 @@ int main(int argc, char* argv[]) {
         if (fdPmesg < 0) PLOG(ERROR) << "Failed to open " << proc_kmsg;
     }
 
-    bool auditd = __android_logger_property_get_bool("ro.logd.auditd", BOOL_DEFAULT_TRUE);
+    bool auditd = GetBoolProperty("ro.logd.auditd", true);
     DropPrivs(klogd, auditd);
 
     // A cache of event log tags
@@ -309,9 +311,7 @@ int main(int argc, char* argv[]) {
     // and LogReader is notified to send updates to connected clients.
     LogAudit* al = nullptr;
     if (auditd) {
-        int dmesg_fd = __android_logger_property_get_bool("ro.logd.auditd.dmesg", BOOL_DEFAULT_TRUE)
-                               ? fdDmesg
-                               : -1;
+        int dmesg_fd = GetBoolProperty("ro.logd.auditd.dmesg", true) ? fdDmesg : -1;
         al = new LogAudit(log_buffer, dmesg_fd, &log_statistics);
     }
 
