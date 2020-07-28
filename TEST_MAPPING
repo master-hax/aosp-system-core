@@ -31,6 +31,12 @@
       "name": "init_kill_services_test"
     },
     {
+      "name": "CtsLiblogTestCases"
+    },
+    {
+      "name": "CtsLogdTestCases"
+    },
+    {
       "name": "libpackagelistparser_test"
     },
     {
