@@ -16,6 +16,24 @@
       "revId": "f90f8369a251213c5d828db4a6a4e6c2abbcd509",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ff2c042b_0318fe8f",
+        "filename": "liblog/tests/log_read_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-07-28T20:13:58Z",
+      "side": 1,
+      "message": "Ugh, I pushed this into the wrong CL.\n\nI actually did plan to do that, then didn\u0027t want to touch the lines, but failed to revert it properly.",
+      "parentUuid": "b0369f00_fcf91404",
+      "revId": "f90f8369a251213c5d828db4a6a4e6c2abbcd509",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
