@@ -22,6 +22,30 @@
       "revId": "904716e138ae6b1216365fb10f0a2c8d1e63e1f3",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d8bcd95b_dca129b7",
+        "filename": "liblog/properties.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 307,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-07-28T00:45:13Z",
+      "side": 1,
+      "message": "Which ParseBool?  \n\nThe one in cutils/base I can\u0027t use, since we don\u0027t want to drag those dependencies into liblog.\n\n__android_logger_property_get_bool() I separately want to get rid of in another CL.  I may end up having to write a copy of parsebool just for liblog to replace it though.",
+      "parentUuid": "7ca7339e_e40431a3",
+      "range": {
+        "startLine": 307,
+        "startChar": 10,
+        "endLine": 307,
+        "endChar": 36
+      },
+      "revId": "904716e138ae6b1216365fb10f0a2c8d1e63e1f3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
