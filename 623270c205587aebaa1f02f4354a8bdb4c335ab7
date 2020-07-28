@@ -34,6 +34,24 @@
       "revId": "623270c205587aebaa1f02f4354a8bdb4c335ab7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c2dc15f0_9ecfac5b",
+        "filename": "TEST_MAPPING",
+        "patchSetId": 1
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-07-28T20:29:10Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "bcf23ee9_348c546b",
+      "revId": "623270c205587aebaa1f02f4354a8bdb4c335ab7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
