@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7ca7339e_e40431a3",
+        "filename": "liblog/properties.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 307,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-07-28T00:20:23Z",
+      "side": 1,
+      "message": "do you want to use the same ParseBool as all the other property stuff?",
+      "range": {
+        "startLine": 307,
+        "startChar": 10,
+        "endLine": 307,
+        "endChar": 36
+      },
+      "revId": "904716e138ae6b1216365fb10f0a2c8d1e63e1f3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
