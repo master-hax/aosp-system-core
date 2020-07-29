@@ -68,6 +68,24 @@
       "revId": "f595077e24507d52c6ffcad3f3dd29aa5d7f3943",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "dd04edc8_453e36f4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1608690
+      },
+      "writtenOn": "2020-07-29T16:07:49Z",
+      "side": 1,
+      "message": "This CL must be merged together with aosp/365776. Who can review it?",
+      "parentUuid": "05229f6e_f907dfe3",
+      "revId": "f595077e24507d52c6ffcad3f3dd29aa5d7f3943",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
