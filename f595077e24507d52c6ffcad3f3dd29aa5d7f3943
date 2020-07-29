@@ -104,6 +104,24 @@
       "revId": "f595077e24507d52c6ffcad3f3dd29aa5d7f3943",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "931e08b3_d33e1695",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1608690
+      },
+      "writtenOn": "2020-07-29T16:17:28Z",
+      "side": 1,
+      "message": ":), I did it, but no response. Anyway, I pinged its owners again.",
+      "parentUuid": "5f6e4a03_0d4e488a",
+      "revId": "f595077e24507d52c6ffcad3f3dd29aa5d7f3943",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
