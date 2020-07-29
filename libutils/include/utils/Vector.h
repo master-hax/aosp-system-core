@@ -25,7 +25,7 @@
 #include <utils/VectorImpl.h>
 
 /*
- * Used to blacklist some functions from CFI.
+ * Used to blocklist some functions from CFI.
  *
  */
 #ifndef __has_attribute
