@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "57eb7b9d_b1da4ba1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-07-29T19:36:52Z",
+      "side": 1,
+      "message": "i thought danalbert already fixed these?\n\nah, that CL is stuck... stupid treehugger!\n\nhttps://android-review.googlesource.com/c/platform/system/core/+/1373460 is a superset of this.",
+      "revId": "6b40cf205d20c6acd5ff8784cca2873bfed57fd5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
