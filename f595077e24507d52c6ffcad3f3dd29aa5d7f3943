@@ -16,6 +16,23 @@
       "revId": "f595077e24507d52c6ffcad3f3dd29aa5d7f3943",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7243b722_aa3dcc2a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1604275
+      },
+      "writtenOn": "2020-07-29T12:39:26Z",
+      "side": 1,
+      "message": "Elliott,\n\nA friendly reminder for +2. Thanks,",
+      "revId": "f595077e24507d52c6ffcad3f3dd29aa5d7f3943",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
