@@ -86,6 +86,24 @@
       "revId": "f595077e24507d52c6ffcad3f3dd29aa5d7f3943",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5f6e4a03_0d4e488a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-07-29T16:10:42Z",
+      "side": 1,
+      "message": "you can answer that question with the \"[FIND OWNERS]\" button on that CL.",
+      "parentUuid": "dd04edc8_453e36f4",
+      "revId": "f595077e24507d52c6ffcad3f3dd29aa5d7f3943",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
