@@ -27,13 +27,6 @@
       "GID": "system"
     },
     {
-      "Controller": "memory",
-      "Path": "/dev/memcg",
-      "Mode": "0700",
-      "UID": "root",
-      "GID": "system"
-    },
-    {
       "Controller": "schedtune",
       "Path": "/dev/stune",
       "Mode": "0755",
@@ -49,9 +42,19 @@
     }
   ],
   "Cgroups2": {
-    "Path": "/dev/cg2_bpf",
-    "Mode": "0600",
-    "UID": "root",
-    "GID": "root"
+    "Path": "/sys/fs/cgroup",
+    "Mode": "0755",
+    "UID": "system",
+    "GID": "system",
+    "Controllers": [
+      {
+        "Controller": "memory",
+        "Path": "",
+        "Mode": "0700",
+        "UID": "root",
+        "GID": "system",
+        "NeedsActivation": true
+      }
+    ]
   }
 }
