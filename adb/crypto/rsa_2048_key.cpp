@@ -16,7 +16,13 @@
 
 #include "adb/crypto/rsa_2048_key.h"
 
+#ifdef _WIN32
+#include <lmcons.h>
+#include <windows.h>
+#endif  // _WIN32
+
 #include <android-base/logging.h>
+#include <android-base/utf8.h>
 #include <crypto_utils/android_pubkey.h>
 #include <openssl/bn.h>
 #include <openssl/rsa.h>
@@ -25,25 +31,110 @@ namespace adb {
 namespace crypto {
 
 namespace {
-std::string get_user_info() {
-    std::string hostname;
-    if (getenv("HOSTNAME")) hostname = getenv("HOSTNAME");
-#if !defined(_WIN32)
-    char buf[64];
-    if (hostname.empty() && gethostname(buf, sizeof(buf)) != -1) hostname = buf;
-#endif
-    if (hostname.empty()) hostname = "unknown";
-
-    std::string username;
-    if (getenv("LOGNAME")) username = getenv("LOGNAME");
-#if !defined(_WIN32)
-    if (username.empty() && getlogin()) username = getlogin();
-#endif
-    if (username.empty()) hostname = "unknown";
-
-    return " " + username + "@" + hostname;
+bool HasOnlySpacesOrEmpty(std::string_view s) {
+    if (s.empty()) {
+        return true;
+    }
+    return std::all_of(s.begin(), s.end(), [](unsigned char c) { return std::isspace(c); });
 }
 
+std::optional<std::string> GetEnvironmentVariable(std::string_view var) {
+    if (var.empty()) {
+        return std::nullopt;
+    }
+
+#ifdef _WIN32
+    constexpr size_t kMaxEnvVarSize = 32767;
+    wchar_t wbuf[kMaxEnvVarSize];
+    std::wstring wvar;
+    if (!android::base::UTF8ToWide(var.data(), &wvar)) {
+        return std::nullopt;
+    }
+
+    auto sz = ::GetEnvironmentVariableW(wvar.data(), wbuf, sizeof(wbuf));
+    if (sz == 0) {
+        return std::nullopt;
+    }
+
+    std::string val;
+    if (!android::base::WideToUTF8(wbuf, &val)) {
+        return std::nullopt;
+    }
+
+    return std::make_optional(val);
+#else  // !_WIN32
+    const char* val = getenv(var.data());
+    if (val == nullptr) {
+        return std::nullopt;
+    }
+
+    return std::make_optional(std::string(val));
+#endif
+}
+
+#ifdef _WIN32
+constexpr char kHostNameEnvVar[] = "COMPUTERNAME";
+constexpr char kUserNameEnvVar[] = "USERNAME";
+#else
+constexpr char kHostNameEnvVar[] = "HOSTNAME";
+constexpr char kUserNameEnvVar[] = "LOGNAME";
+#endif
+
+std::string GetHostName() {
+    constexpr char defaultName[] = "nohostname";
+    const auto hostName = GetEnvironmentVariable(kHostNameEnvVar);
+    if (hostName && !HasOnlySpacesOrEmpty(*hostName)) {
+        return *hostName;
+    }
+
+#ifdef _WIN32
+    wchar_t wbuf[MAX_COMPUTERNAME_LENGTH + 1];
+    DWORD size = sizeof(wbuf);
+    if (!GetComputerNameW(wbuf, &size) || size == 0) {
+        return defaultName;
+    }
+
+    std::string name;
+    if (!android::base::WideToUTF8(wbuf, &name) || HasOnlySpacesOrEmpty(name)) {
+        return defaultName;
+    }
+
+    return name;
+#else   // !_WIN32
+    char buf[256];
+    return (gethostname(buf, sizeof(buf)) == -1) ? defaultName : buf;
+#endif  // _WIN32
+}
+
+std::string GetLoginName() {
+    constexpr char defaultName[] = "nousername";
+    const auto userName = GetEnvironmentVariable(kUserNameEnvVar);
+    if (userName && !HasOnlySpacesOrEmpty(*userName)) {
+        return *userName;
+    }
+
+#ifdef _WIN32
+    wchar_t wbuf[UNLEN + 1];
+    DWORD size = sizeof(wbuf);
+    if (!GetUserNameW(wbuf, &size) || size == 0) {
+        return defaultName;
+    }
+
+    std::string login;
+    if (!android::base::WideToUTF8(wbuf, &login) || HasOnlySpacesOrEmpty(login)) {
+        return defaultName;
+    }
+
+    return login;
+#else   // !_WIN32
+    const char* login = getlogin();
+    return login ? login : defaultName;
+#endif  // _WIN32
+}
+
+std::string GetUserInfo() {
+    return GetLoginName() + "@" + GetHostName();
+}
 }  // namespace
 
 bool CalculatePublicKey(std::string* out, RSA* private_key) {
@@ -63,7 +154,8 @@ bool CalculatePublicKey(std::string* out, RSA* private_key) {
     size_t actual_length = EVP_EncodeBlock(reinterpret_cast<uint8_t*>(out->data()), binary_key_data,
                                            sizeof(binary_key_data));
     out->resize(actual_length);
-    out->append(get_user_info());
+    out->append(" ");
+    out->append(GetUserInfo());
     return true;
 }
 
