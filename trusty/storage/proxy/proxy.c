@@ -176,6 +176,29 @@ static int handle_req(struct storage_msg* msg, const void* req, size_t req_len) 
     return rc;
 }
 
+static int server_probe(const char* device, const char* port) {
+    ssize_t rc;
+    struct storage_msg msg;
+
+    rc = ipc_connect(device, port);
+    if (rc < 0) return rc;
+
+    while (true) {
+        /* get incoming message */
+        rc = ipc_get_msg(&msg, req_buffer, REQ_BUFFER_SIZE);
+        if (rc < 0) break;
+
+        /* handle request */
+        req_buffer[rc] = 0; /* force zero termination */
+        rc = handle_req(&msg, req_buffer, rc);
+        if (rc) break;
+    }
+
+    ipc_disconnect();
+
+    return 0;
+}
+
 static int proxy_loop(void) {
     ssize_t rc;
     struct storage_msg msg;
@@ -254,6 +277,12 @@ int main(int argc, char* argv[]) {
     /* open rpmb device */
     rc = rpmb_open(rpmb_devname, dev_type);
     if (rc < 0) return EXIT_FAILURE;
+
+    /* probe Trusty secure storage server for UFS device*/
+    if (dev_type == UFS_RPMB) {
+        rc = server_probe(trusty_devname, ss_srv_name);
+        if (rc < 0) return EXIT_FAILURE;
+    }
 
     /* connect to Trusty secure storage server */
     rc = ipc_connect(trusty_devname, ss_srv_name);
