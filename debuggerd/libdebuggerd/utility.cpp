@@ -44,7 +44,7 @@
 
 using android::base::unique_fd;
 
-// Whitelist output desired in the logcat output.
+// Allow output desired in the logcat output.
 bool is_allowed_in_logcat(enum logtype ltype) {
   if ((ltype == HEADER)
    || (ltype == REGISTERS)
