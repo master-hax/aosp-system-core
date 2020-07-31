@@ -32,6 +32,7 @@
 #include "ipc.h"
 #include "log.h"
 #include "rpmb.h"
+#include "rpmb_protocol.h"
 #include "storage.h"
 
 #define MMC_READ_MULTIPLE_BLOCK 18
@@ -306,12 +307,20 @@ int rpmb_send(struct storage_msg* msg, const void* r, size_t req_len) {
             goto err_response;
         }
     } else if (dev_type == UFS_RPMB) {
-        rc = send_ufs_rpmb_req(rpmb_fd, req);
-        if (rc < 0) {
-            ALOGE("send_ufs_rpmb_req failed: %d, %s\n", rc, strerror(errno));
-            msg->result = STORAGE_ERR_GENERIC;
-            goto err_response;
-        }
+        size_t tries = 0;
+        struct rpmb_packet* res_packet;
+        enum rpmb_result result;
+        do {
+            tries++;
+            rc = send_ufs_rpmb_req(rpmb_fd, req);
+            if (rc < 0) {
+                ALOGE("send_ufs_rpmb_req failed: %d, %s\n", rc, strerror(errno));
+                msg->result = STORAGE_ERR_GENERIC;
+                goto err_response;
+            }
+            res_packet = (struct rpmb_packet*)read_buf;
+            result = rpmb_get_u16(res_packet->result);
+        } while (result == RPMB_RES_GENERAL_FAILURE && tries < 3);
     } else if ((dev_type == VIRT_RPMB) || (dev_type == SOCK_RPMB)) {
         size_t payload_size = req->reliable_write_size + req->write_size;
         rc = send_virt_rpmb_req(rpmb_fd, read_buf, req->read_size, req->payload, payload_size);
