@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fbf6a7e8_0de130c1",
+        "filename": "libsysutils/src/SocketClient.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 205,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-07-31T22:31:13Z",
+      "side": 1,
+      "message": "shouldn\u0027t that have been `int e \u003d errno` anyway? seems weird that this function *clears* errno...",
+      "revId": "7e7737f3d5a642db363ebc8578de6fedfacb7729",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
