@@ -21,6 +21,7 @@
 #include <fcntl.h>
 #include <getopt.h>
 #include <math.h>
+#include <poll.h>
 #include <sched.h>
 #include <stdarg.h>
 #include <stdio.h>
@@ -34,10 +35,14 @@
 #include <time.h>
 #include <unistd.h>
 
+#include <condition_variable>
 #include <memory>
+#include <mutex>
+#include <queue>
 #include <regex>
 #include <set>
 #include <string>
+#include <thread>
 #include <utility>
 #include <vector>
 
@@ -62,20 +67,42 @@
 using android::base::Join;
 using android::base::ParseByteCount;
 using android::base::ParseUint;
+using android::base::Socketpair;
 using android::base::Split;
 using android::base::StringPrintf;
+using android::base::unique_fd;
 using android::base::WriteFully;
+
+struct ProcessedLogMessage {
+    std::unique_ptr<char, decltype(&free)> message{nullptr, free};
+    size_t length;
+    log_id_t log_id;
+};
 
 class Logcat {
   public:
     int Run(int argc, char** argv);
 
   private:
-    void RotateLogs();
-    void ProcessBuffer(struct log_msg* buf);
+    ProcessedLogMessage ProcessBuffer(struct log_msg* buf);
     void PrintDividers(log_id_t log_id, bool print_dividers);
+    void ReleaseAndJoinWriter();
     void SetupOutputAndSchedulingPolicy(bool blocking);
     int SetLogFormat(const char* format_string);
+
+    // Called in the child thread.
+    void ChildThreadErrorExit(const char* message, int errno_val) __attribute__((noreturn));
+    void RotateLogs();
+    void WriterThread();
+
+    // Threading coordination.
+    std::thread writer_thread_;
+    std::mutex mutex_;
+    std::condition_variable cv_;
+    std::deque<ProcessedLogMessage> log_msgs_;
+    unique_fd parent_exit_fd_;
+    unique_fd child_exit_fd_;
+    bool release_writer_ = false;
 
     // Used for all options
     android::base::unique_fd output_fd_{dup(STDOUT_FILENO)};
@@ -101,6 +128,7 @@ class Logcat {
     bool print_it_anyways_ = false;
 
     // For PrintDividers()
+    bool print_dividers_ = false;
     log_id_t last_printed_id_ = LOG_ID_MAX;
     bool printed_start_[LOG_ID_MAX] = {};
 
@@ -179,14 +207,22 @@ void Logcat::RotateLogs() {
     output_fd_.reset(openLogFile(output_file_name_, log_rotate_size_kb_));
 
     if (!output_fd_.ok()) {
-        error(EXIT_FAILURE, errno, "Couldn't open output file");
+        ChildThreadErrorExit("Couldn't open output file", errno);
     }
 
     out_byte_count_ = 0;
 }
 
-void Logcat::ProcessBuffer(struct log_msg* buf) {
-    int bytesWritten = 0;
+ProcessedLogMessage Logcat::ProcessBuffer(struct log_msg* buf) {
+    if (print_binary_) {
+        ProcessedLogMessage retval;
+        retval.length = buf->len();
+        retval.message.reset(static_cast<char*>(calloc(buf->len(), sizeof(char))));
+        memcpy(retval.message.get(), buf->buf, buf->len());
+        retval.log_id = buf->id();
+        return retval;
+    }
+
     int err;
     AndroidLogEntry entry;
     char binaryMsgBuf[1024];
@@ -206,7 +242,7 @@ void Logcat::ProcessBuffer(struct log_msg* buf) {
     } else {
         err = android_log_processLogBuffer(&buf->entry, &entry);
     }
-    if (err < 0 && !debug_) return;
+    if (err < 0 && !debug_) return {};
 
     if (android_log_shouldPrintLine(logformat_.get(), std::string(entry.tag, entry.tagLen).c_str(),
                                     entry.priority)) {
@@ -215,19 +251,19 @@ void Logcat::ProcessBuffer(struct log_msg* buf) {
 
         print_count_ += match;
         if (match || print_it_anyways_) {
-            bytesWritten = android_log_printLogLine(logformat_.get(), output_fd_.get(), &entry);
-
-            if (bytesWritten < 0) {
-                error(EXIT_FAILURE, 0, "Output error.");
+            ProcessedLogMessage retval;
+            retval.log_id = buf->id();
+            char* processed_string =
+                    android_log_formatLogLine(logformat_.get(), nullptr, 0, &entry, &retval.length);
+            if (processed_string == nullptr) {
+                ReleaseAndJoinWriter();
+                error(EXIT_FAILURE, 0, "android_log_formatLogLine failed");
             }
+            retval.message.reset(processed_string);
+            return retval;
         }
     }
-
-    out_byte_count_ += bytesWritten;
-
-    if (log_rotate_size_kb_ > 0 && (out_byte_count_ / 1024) >= log_rotate_size_kb_) {
-        RotateLogs();
-    }
+    return {};
 }
 
 void Logcat::PrintDividers(log_id_t log_id, bool print_dividers) {
@@ -530,7 +566,6 @@ int Logcat::Run(int argc, char** argv) {
     bool getLogSize = false;
     bool getPruneList = false;
     bool printStatistics = false;
-    bool printDividers = false;
     unsigned long setLogSize = 0;
     const char* setPruneList = nullptr;
     const char* setId = nullptr;
@@ -696,7 +731,7 @@ int Logcat::Run(int argc, char** argv) {
                 break;
 
             case 'D':
-                printDividers = true;
+                print_dividers_ = true;
                 break;
 
             case 'e':
@@ -1160,10 +1195,50 @@ int Logcat::Run(int argc, char** argv) {
 
     SetupOutputAndSchedulingPolicy(!(mode & ANDROID_LOG_NONBLOCK));
 
-    while (!max_count_ || print_count_ < max_count_) {
+    if (!Socketpair(AF_UNIX, SOCK_SEQPACKET | SOCK_CLOEXEC, 0, &parent_exit_fd_, &child_exit_fd_)) {
+        error(EXIT_FAILURE, errno, "Socketpair() failed");
+    }
+    std::thread writer_thread{&Logcat::WriterThread, this};
+    std::swap(writer_thread, writer_thread_);
+
+    bool first_iteration = true;
+
+    while (max_count_ == 0 || print_count_ >= max_count_) {
         struct log_msg log_msg;
+
+        if (!first_iteration) {
+            first_iteration = false;
+            // TODO: Awful
+            int logger_fd = *reinterpret_cast<int*>(logger_list.get());
+
+            pollfd ufd[2];
+            ufd[0].events = POLLIN;
+            ufd[0].fd = parent_exit_fd_.get();
+            ufd[1].events = POLLIN;
+            ufd[1].fd = logger_fd;
+
+            int poll_result = poll(ufd, 2, -1);
+            if (poll_result < 0) {
+                int saved_errno = errno;
+                ReleaseAndJoinWriter();
+                error(EXIT_FAILURE, saved_errno, "poll() failed");
+            }
+
+            if (ufd[0].revents) {
+                ReleaseAndJoinWriter();
+                char error_message[1024];
+                int read_result = TEMP_FAILURE_RETRY(
+                        read(parent_exit_fd_.get(), error_message, sizeof(error_message)));
+                if (read_result < 0) {
+                    error(EXIT_FAILURE, errno, "failed to read() child thread's error message");
+                }
+                error(EXIT_FAILURE, 0, "%s", error_message);
+            }
+        }
+
         int ret = android_logger_list_read(logger_list.get(), &log_msg);
         if (!ret) {
+            ReleaseAndJoinWriter();
             error(EXIT_FAILURE, 0, R"init(Unexpected EOF!
 
 This means that either the device shut down, logd crashed, or this instance of logcat was unable to read log
@@ -1176,15 +1251,19 @@ If you have enabled significant logging, look into using the -G option to increa
             if (ret == -EAGAIN) break;
 
             if (ret == -EIO) {
+                ReleaseAndJoinWriter();
                 error(EXIT_FAILURE, 0, "Unexpected EOF!");
             }
             if (ret == -EINVAL) {
+                ReleaseAndJoinWriter();
                 error(EXIT_FAILURE, 0, "Unexpected length.");
             }
+            ReleaseAndJoinWriter();
             error(EXIT_FAILURE, errno, "Logcat read failure");
         }
 
         if (log_msg.id() > LOG_ID_MAX) {
+            ReleaseAndJoinWriter();
             error(EXIT_FAILURE, 0, "Unexpected log id (%d) over LOG_ID_MAX (%d).", log_msg.id(),
                   LOG_ID_MAX);
         }
@@ -1193,17 +1272,84 @@ If you have enabled significant logging, look into using the -G option to increa
             continue;
         }
 
-        PrintDividers(log_msg.id(), printDividers);
-
-        if (print_binary_) {
-            if (!WriteFully(output_fd_, &log_msg, log_msg.len())) {
-                error(EXIT_FAILURE, errno, "Failed to write to output fd");
-            }
-        } else {
-            ProcessBuffer(&log_msg);
+        ProcessedLogMessage processed_log_message = ProcessBuffer(&log_msg);
+        if (processed_log_message.message == nullptr) {
+            continue;
         }
+
+        {
+            auto lock = std::lock_guard{mutex_};
+            fprintf(stderr, "%d\n", (int)log_msgs_.size());
+            log_msgs_.emplace_back(std::move(processed_log_message));
+        }
+        cv_.notify_all();
     }
+
+    ReleaseAndJoinWriter();
     return EXIT_SUCCESS;
+}
+
+void Logcat::ReleaseAndJoinWriter() {
+    {
+        auto lock = std::lock_guard{mutex_};
+        release_writer_ = true;
+    }
+    cv_.notify_all();
+
+    writer_thread_.join();
+}
+
+void Logcat::ChildThreadErrorExit(const char* message, int errno_val) {
+    char error_message[1024];
+    if (errno_val != 0) {
+        snprintf(error_message, sizeof(error_message), "%s: %d", message, errno_val);
+    } else {
+        snprintf(error_message, sizeof(error_message), "%s", message);
+    }
+    WriteFully(child_exit_fd_, error_message, strlen(error_message));
+    pthread_exit(nullptr);
+}
+
+void Logcat::WriterThread() {
+    auto lock = std::unique_lock{mutex_};
+    size_t counter = 0;
+    while (!release_writer_ || !log_msgs_.empty()) {
+        if (log_msgs_.empty()) {
+            cv_.wait(lock, [this] { return release_writer_ || !log_msgs_.empty(); });
+        }
+
+        // std::deque doesn't deallocate memory once its elements have been used, so we must do this
+        // swap trick to keep the sizes low.
+        std::deque<ProcessedLogMessage> local_log_msgs;
+        std::swap(local_log_msgs, log_msgs_);
+
+        lock.unlock();
+
+        while (!local_log_msgs.empty()) {
+            auto& log_msg = local_log_msgs.front();
+            PrintDividers(log_msg.log_id, print_dividers_);
+
+            if (!WriteFully(output_fd_, log_msg.message.get(), log_msg.length)) {
+                ChildThreadErrorExit("+++ LOG: write failed", errno);
+            }
+
+            out_byte_count_ += log_msg.length;
+
+            if (log_rotate_size_kb_ > 0 && (out_byte_count_ / 1024) >= log_rotate_size_kb_) {
+                RotateLogs();
+            }
+            local_log_msgs.pop_front();
+            fprintf(stderr, "local_msgs size: %d\n", (int)local_log_msgs.size());
+
+            if (++counter == 100) {
+                mallopt(M_PURGE, 0);
+                fprintf(stderr, "post purge: %d\n", (int)mallinfo().uordblks);
+                counter = 0;
+            }
+        }
+
+        lock.lock();
+    }
 }
 
 int main(int argc, char** argv) {

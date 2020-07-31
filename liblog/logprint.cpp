@@ -1633,8 +1633,8 @@ char* android_log_formatLogLine(AndroidLogFormat* p_format, char* defaultBuffer,
     while (pm < (entry->message + entry->messageLen)) {
       if (*pm++ == '\n') numLines++;
     }
-    /* plus one line for anything not newline-terminated at the end */
-    if (pm > entry->message && *(pm - 1) != '\n') numLines++;
+    /* plus one line for an empty message or anything not newline-terminated at the end */
+    if (pm == entry->message || *(pm - 1) != '\n') numLines++;
   }
 
   /*

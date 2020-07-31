@@ -2785,3 +2785,16 @@ TEST(liblog, android_lookupEventTagNum) {
   GTEST_LOG_(INFO) << "This test does nothing.\n";
 #endif
 }
+
+TEST(liblog, tom_writes_tons) {
+  std::string message;
+  message.reserve(120);
+  for (int i = 0; i < 1000000; ++i) {
+    // usleep(20);
+    message = "tom " + std::to_string(i) + " ";
+    for (int j = 0; j < 100; ++j) {
+      message += 'a' + rand() % 26;
+    }
+    __android_log_write(ANDROID_LOG_ERROR, "tom", message.c_str());
+  }
+}
