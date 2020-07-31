@@ -255,6 +255,10 @@ int main(int argc, char* argv[]) {
     rc = rpmb_open(rpmb_devname, dev_type);
     if (rc < 0) return EXIT_FAILURE;
 
+    /* probe rpmb device */
+    rc = rpmb_probe(req_buffer);
+    if (rc < 0) return EXIT_FAILURE;
+
     /* connect to Trusty secure storage server */
     rc = ipc_connect(trusty_devname, ss_srv_name);
     if (rc < 0) return EXIT_FAILURE;
