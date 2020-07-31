@@ -6,6 +6,7 @@ libbinder_ndk.so
 libc.so
 libcamera2ndk.so
 libdl.so
+libAdpf.so
 libEGL.so
 libGLESv1_CM.so
 libGLESv2.so
