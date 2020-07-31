@@ -96,6 +96,52 @@ struct sec_proto_cdb {
     uint8_t ctrl;
 } __packed;
 
+struct rpmb_key {
+    uint8_t byte[32];
+};
+
+struct rpmb_nonce {
+    uint8_t byte[16];
+};
+
+struct rpmb_u16 {
+    uint8_t byte[2];
+};
+
+struct rpmb_u32 {
+    uint8_t byte[4];
+};
+
+static inline struct rpmb_u16 rpmb_u16(uint16_t val) {
+    struct rpmb_u16 ret = {{
+            (uint8_t)(val >> 8),
+            (uint8_t)(val >> 0),
+    }};
+    return ret;
+}
+
+#define RPMB_PACKET_DATA_SIZE (256)
+
+struct rpmb_packet {
+    uint8_t pad[196];
+    struct rpmb_key key_mac;
+    uint8_t data[RPMB_PACKET_DATA_SIZE];
+    struct rpmb_nonce nonce;
+    struct rpmb_u32 write_counter;
+    struct rpmb_u16 address;
+    struct rpmb_u16 block_count;
+    struct rpmb_u16 result;
+    struct rpmb_u16 req_resp;
+};
+
+enum rpmb_request {
+    RPMB_REQ_PROGRAM_KEY = 0x0001,
+    RPMB_REQ_GET_COUNTER = 0x0002,
+    RPMB_REQ_DATA_WRITE = 0x0003,
+    RPMB_REQ_DATA_READ = 0x0004,
+    RPMB_REQ_RESULT_READ = 0x0005,
+};
+
 static int rpmb_fd = -1;
 static uint8_t read_buf[4096];
 static enum dev_type dev_type = UNKNOWN_RPMB;
@@ -261,6 +307,28 @@ static int send_virt_rpmb_req(int rpmb_fd, void* read_buf, size_t read_size, con
         return rc;
     }
     rc = read(rpmb_fd, read_buf, read_size);
+    return rc;
+}
+
+int rpmb_probe(void* req_buf) {
+    /* UFS device requies a probe. */
+    if (dev_type != UFS_RPMB) {
+        return 0;
+    }
+
+    int rc;
+    struct storage_rpmb_send_req* req = req_buf;
+    req->write_size = sizeof(struct rpmb_packet);
+
+    struct rpmb_packet* cmd = (struct rpmb_packet*)req->payload;
+    /* construct read counter as the probe command. */
+    cmd->req_resp = rpmb_u16(RPMB_REQ_GET_COUNTER);
+
+    rc = send_ufs_rpmb_req(rpmb_fd, req);
+    if (rc < 0) {
+        ALOGE("send_ufs_rpmb_req failed: %d, %s\n", rc, strerror(errno));
+        return rc;
+    }
     return rc;
 }
 
