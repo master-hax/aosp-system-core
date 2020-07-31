@@ -129,7 +129,7 @@ void ARMAssembler::BL(int cc, const char* label)
 
 void ARMAssembler::prolog()
 {
-    // write dummy prolog code
+    // write placeholder prolog code
     mPrologPC = mPC;
     STM(AL, FD, SP, 1, LSAVED);
 }

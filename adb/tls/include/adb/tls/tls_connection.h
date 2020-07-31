@@ -75,7 +75,7 @@ class TlsConnection {
     // for more details.
     virtual void SetCertificateCallback(SetCertCb cb) = 0;
 
-    // Exports a value derived from the master secret used in the TLS
+    // Exports a value derived from the main secret used in the TLS
     // connection. This value should be used alongside any PAKE to ensure the
     // peer is the intended peer. |length| is the requested length for the
     // keying material. This is only valid after |DoHandshake| succeeds.
