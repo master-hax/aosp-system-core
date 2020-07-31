@@ -20,6 +20,7 @@
 
 enum dev_type { UNKNOWN_RPMB, MMC_RPMB, VIRT_RPMB, UFS_RPMB, SOCK_RPMB };
 
+int rpmb_probe(void* req_buf);
 int rpmb_open(const char* rpmb_devname, enum dev_type dev_type);
 int rpmb_send(struct storage_msg* msg, const void* r, size_t req_len);
 void rpmb_close(void);
