@@ -16,6 +16,24 @@
       "revId": "7e7737f3d5a642db363ebc8578de6fedfacb7729",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "55aa532e_c60bf421",
+        "filename": "libsysutils/src/SocketClient.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 205,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-07-31T22:54:24Z",
+      "side": 1,
+      "message": "errno is only set to e if e !\u003d 0, so this doesn\u0027t clear errno, but I was trying to make as small of a change as possible.\n\nBut since you mentioned it, I checked and as I suspected (well, I wrote this 9 months ago), SLOGW() doesn\u0027t clobber Errno, so we can drop all of that.",
+      "parentUuid": "fbf6a7e8_0de130c1",
+      "revId": "7e7737f3d5a642db363ebc8578de6fedfacb7729",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
