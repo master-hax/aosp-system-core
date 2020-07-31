@@ -141,7 +141,6 @@ std::vector<std::string> late_import_paths;
 static constexpr std::chrono::nanoseconds kCommandRetryTimeout = 5s;
 
 static Result<void> reboot_into_recovery(const std::vector<std::string>& options) {
-    LOG(ERROR) << "Rebooting into recovery";
     std::string err;
     if (!write_bootloader_message(options, &err)) {
         return Error() << "Failed to set bootloader message: " << err;
@@ -404,8 +403,12 @@ static Result<void> make_dir_with_options(const MkdirOptions& options) {
     }
     if (fscrypt_is_native()) {
         if (!FscryptSetDirectoryPolicy(ref_basename, options.fscrypt_action, options.target)) {
-            return reboot_into_recovery(
-                    {"--prompt_and_wipe_data", "--reason=set_policy_failed:"s + options.target});
+            const std::vector<std::string> reboot_params = {
+                    "--prompt_and_wipe_data", "--reason=set_policy_failed:"s + options.target};
+            if (auto result = reboot_into_recovery(reboot_params); !result.ok()) {
+                LOG(FATAL) << "Could not reboot into recovery: " << result.error();
+            }
+            return Error() << "FscryptSetDirectoryPolicy() failed, rebooting into recovery";
         }
     }
     return {};
@@ -586,10 +589,11 @@ static Result<void> queue_fs_event(int code, bool userdata_remount) {
         if (android::gsi::IsGsiRunning()) {
             return Error() << "cannot wipe within GSI";
         }
-        PLOG(ERROR) << "fs_mgr_mount_all suggested recovery, so wiping data via recovery.";
         const std::vector<std::string> options = {"--wipe_data", "--reason=fs_mgr_mount_all" };
-        return reboot_into_recovery(options);
-        /* If reboot worked, there is no return. */
+        if (auto result = reboot_into_recovery(options); !result.ok()) {
+            LOG(FATAL) << "Could not reboot into recovery: " << result.error();
+        }
+        return Error() << "fs_mgr_mount_all suggested recovery, so wiping data via recovery.";
     } else if (code == FS_MGR_MNTALL_DEV_FILE_ENCRYPTED) {
         if (!FscryptInstallKeyring()) {
             return Error() << "FscryptInstallKeyring() failed";
