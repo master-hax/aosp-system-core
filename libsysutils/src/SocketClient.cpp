@@ -202,13 +202,8 @@ int SocketClient::sendDataLockedv(struct iovec *iov, int iovcnt) {
     }
 
     int ret = 0;
-    int e = 0; // SLOGW and sigaction are not inert regarding errno
+    int e = 0;  // SLOGW is not inert regarding errno
     int current = 0;
-
-    struct sigaction new_action, old_action;
-    memset(&new_action, 0, sizeof(new_action));
-    new_action.sa_handler = SIG_IGN;
-    sigaction(SIGPIPE, &new_action, &old_action);
 
     for (;;) {
         ssize_t rc = TEMP_FAILURE_RETRY(
@@ -238,8 +233,6 @@ int SocketClient::sendDataLockedv(struct iovec *iov, int iovcnt) {
         ret = -1;
         break;
     }
-
-    sigaction(SIGPIPE, &old_action, &new_action);
 
     if (e != 0) {
         errno = e;
