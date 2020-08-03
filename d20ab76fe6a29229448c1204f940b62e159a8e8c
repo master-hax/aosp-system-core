@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3ff45610_3308d1a7",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-08-03T16:26:21Z",
+      "side": 1,
+      "message": "It was even further back than that.  aosp/297646 was when logd started running as \u0027logd\u0027 instead of \u0027root\u0027.  My later CL just removed the setuid() calls, that could have been cleaned up earlier.",
+      "revId": "d20ab76fe6a29229448c1204f940b62e159a8e8c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
