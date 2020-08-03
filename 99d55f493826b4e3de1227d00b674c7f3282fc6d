@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "cb8d43b8_82857974",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-08-03T16:07:42Z",
+      "side": 1,
+      "message": "I think a while back logd started as AID_ROOT then dropped its privileges?  There also was a sketchy setuid() call on a single thread of logd, but that\u0027s removed as well.\n\nI think this is safe now.",
+      "revId": "99d55f493826b4e3de1227d00b674c7f3282fc6d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
