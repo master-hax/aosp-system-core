@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2f06b8c7_74316fcf",
+        "filename": "liblog/log_size.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-08-03T18:50:57Z",
+      "side": 1,
+      "message": "see also ParseByteCount in \u003candroid-base/parseint.h\u003e.\n\n(actually, all the Parse* functions in there support suffixes, but ParseByteCount is intention-revealing and unsigned.)",
+      "range": {
+        "startLine": 39,
+        "startChar": 0,
+        "endLine": 57,
+        "endChar": 0
+      },
+      "revId": "3bccbab44628c88aedc75d16c56613c80e673943",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
