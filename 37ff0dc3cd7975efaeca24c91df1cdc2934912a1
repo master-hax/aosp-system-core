@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ec64a200_8efecdd2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2020-08-04T23:18:51Z",
+      "side": 1,
+      "message": "Includes some formatting change done by clang format.",
+      "revId": "37ff0dc3cd7975efaeca24c91df1cdc2934912a1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
