@@ -115,6 +115,11 @@ std::unique_ptr<Maps> GetMaps(FuzzedDataProvider* data_provider) {
   for (uint8_t i = 0; i < entry_count; i++) {
     uint64_t start = data_provider->ConsumeIntegral<uint64_t>();
     uint64_t end = data_provider->ConsumeIntegralInRange<uint64_t>(start, UINT64_MAX);
+    // Make sure not to add overlapping maps, that is not something that can
+    // happen in the real world.
+    if (maps->Find(start) != nullptr || maps->Find(end) != nullptr) {
+      continue;
+    }
     uint64_t offset = data_provider->ConsumeIntegral<uint64_t>();
     std::string map_info_name = data_provider->ConsumeRandomLengthString(kMaxMapInfoNameLen);
     uint8_t flags = PROT_READ | PROT_WRITE;
