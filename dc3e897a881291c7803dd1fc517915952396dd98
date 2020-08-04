@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f3159a81_d1c3cf2e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1176763
+      },
+      "writtenOn": "2020-08-04T19:05:52Z",
+      "side": 1,
+      "message": "Regardless of backup superblock was encrypted, it seems we can recover the superblock, right? How about adding a way to say dm-X is ready to use with the mapping?",
+      "revId": "dc3e897a881291c7803dd1fc517915952396dd98",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
