@@ -249,6 +249,19 @@ on init
     write /proc/sys/kernel/sched_rt_runtime_us 950000
     write /proc/sys/kernel/sched_rt_period_us 1000000
 
+    # Increase IPv4 ARP reliability
+    # ipv{4,6} defaults (at least on 4.9 and 5.4) are 3 3 0 1000
+    write /proc/sys/net/ipv4/neigh/default/ucast_solicit 7
+    write /proc/sys/net/ipv4/neigh/default/mcast_solicit 7
+    write /proc/sys/net/ipv4/neigh/default/mcast_resolicit 3
+    write /proc/sys/net/ipv4/neigh/default/retrans_time_ms 750
+
+    # Increase IPv6 ND reliability
+    write /proc/sys/net/ipv6/neigh/default/ucast_solicit 7
+    write /proc/sys/net/ipv6/neigh/default/mcast_solicit 7
+    write /proc/sys/net/ipv6/neigh/default/mcast_resolicit 3
+    write /proc/sys/net/ipv6/neigh/default/retrans_time_ms 750
+
     # Assign reasonable ceiling values for socket rcv/snd buffers.
     # These should almost always be overridden by the target per the
     # the corresponding technology maximums.
