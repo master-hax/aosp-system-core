@@ -16,6 +16,23 @@
       "revId": "37ff0dc3cd7975efaeca24c91df1cdc2934912a1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a1ef3c3_b5d58d3c",
+        "filename": "init/capabilities.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-08-05T00:02:52Z",
+      "side": 1,
+      "message": "these seem unconditionally defined in \u003clinux/capability.h\u003e?\n\ni\u0027m assuming this is because the code is also compiled against our ancient glibc? so maybe `#if defined(__GLIBC__)` is more intention-revealing?",
+      "revId": "37ff0dc3cd7975efaeca24c91df1cdc2934912a1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
