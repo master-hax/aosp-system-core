@@ -1,0 +1,13 @@
+Lint+1: Lint 🤖 <android-build-prod-ayeaye@system.gserviceaccount.com>
+Code-Review+2: allenhair <allenhair@google.com>
+Code-Review+2: Colin Cross <ccross@android.com>
+Code-Review+2: Andrew Hsieh <andrewhsieh@google.com>
+Presubmit-Verified+1: Treehugger Robot <treehugger-gerrit@google.com>
+DrNo-Review+1: Andrew Hsieh <andrewhsieh@google.com>
+Autosubmit+1: Kun Niu <kunniu@google.com>
+Open-Source-Licensing+1: Lint 🤖 <android-build-prod-ayeaye@system.gserviceaccount.com>
+Submitted-by: Treehugger Robot <treehugger-gerrit@google.com>
+Submitted-at: Wed, 05 Aug 2020 21:54:57 +0000
+Reviewed-on: https://android-review.googlesource.com/c/platform/system/core/+/1373454
+Project: platform/system/core
+Branch: refs/heads/android10-gsi
