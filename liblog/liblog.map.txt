@@ -80,6 +80,11 @@ LIBLOG_R { # introduced=30
     __android_log_write_log_message;
 };
 
+LIBLOG_S { # introduced=31
+  global:
+    android_logger_get_log_consumed_size; # llndk
+};
+
 LIBLOG_PRIVATE {
   global:
     __android_log_pmsg_file_read;
