@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7e5b752d_56fe3825",
+        "filename": "init/capabilities.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-08-05T02:34:47Z",
+      "side": 1,
+      "message": "(if you\u0027re going to negate it, `__BIONIC__` instead?)",
+      "range": {
+        "startLine": 69,
+        "startChar": 4,
+        "endLine": 69,
+        "endChar": 23
+      },
+      "revId": "f7ba00d25711ae9910127de35781e0de040c9a39",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
