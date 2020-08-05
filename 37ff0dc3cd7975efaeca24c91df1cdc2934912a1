@@ -33,6 +33,24 @@
       "revId": "37ff0dc3cd7975efaeca24c91df1cdc2934912a1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a1173b6c_dce6d39b",
+        "filename": "init/capabilities.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2020-08-05T01:43:52Z",
+      "side": 1,
+      "message": "Good point, I changed to the glibc check.",
+      "parentUuid": "9a1ef3c3_b5d58d3c",
+      "revId": "37ff0dc3cd7975efaeca24c91df1cdc2934912a1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
