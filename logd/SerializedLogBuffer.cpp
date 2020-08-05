@@ -23,6 +23,7 @@
 #include <android-base/logging.h>
 #include <android-base/scopeguard.h>
 
+#include "LogSize.h"
 #include "LogStatistics.h"
 #include "SerializedFlushToState.h"
 
@@ -34,7 +35,7 @@ SerializedLogBuffer::SerializedLogBuffer(LogReaderList* reader_list, LogTags* ta
 
 void SerializedLogBuffer::Init() {
     log_id_for_each(i) {
-        if (SetSize(i, __android_logger_get_buffer_size(i))) {
+        if (SetSize(i, GetBufferSizeFromProperties(i))) {
             SetSize(i, LOG_BUFFER_MIN_SIZE);
         }
     }
@@ -317,7 +318,7 @@ unsigned long SerializedLogBuffer::GetSize(log_id_t id) {
 // new size is lower.
 int SerializedLogBuffer::SetSize(log_id_t id, unsigned long size) {
     // Reasonable limits ...
-    if (!__android_logger_valid_buffer_size(size)) {
+    if (!IsValidBufferSize(size)) {
         return -1;
     }
 

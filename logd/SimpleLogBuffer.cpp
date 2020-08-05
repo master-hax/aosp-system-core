@@ -19,6 +19,7 @@
 #include <android-base/logging.h>
 
 #include "LogBufferElement.h"
+#include "LogSize.h"
 
 SimpleLogBuffer::SimpleLogBuffer(LogReaderList* reader_list, LogTags* tags, LogStatistics* stats)
     : reader_list_(reader_list), tags_(tags), stats_(stats) {
@@ -29,7 +30,7 @@ SimpleLogBuffer::~SimpleLogBuffer() {}
 
 void SimpleLogBuffer::Init() {
     log_id_for_each(i) {
-        if (SetSize(i, __android_logger_get_buffer_size(i))) {
+        if (SetSize(i, GetBufferSizeFromProperties(i))) {
             SetSize(i, LOG_BUFFER_MIN_SIZE);
         }
     }
@@ -256,7 +257,7 @@ unsigned long SimpleLogBuffer::GetSize(log_id_t id) {
 // set the total space allocated to "id"
 int SimpleLogBuffer::SetSize(log_id_t id, unsigned long size) {
     // Reasonable limits ...
-    if (!__android_logger_valid_buffer_size(size)) {
+    if (!IsValidBufferSize(size)) {
         return -1;
     }
 
