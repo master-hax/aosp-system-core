@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "36619336_75a5bc71",
+        "filename": "liblog/include/log/log_read.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-08-05T19:13:55Z",
+      "side": 1,
+      "message": "yeah, no strong opinion beyond \"i like consistency, so all one way or all the other sgtm\".",
+      "parentUuid": "702e7219_8548dc5d",
+      "revId": "5de3671d8b9193ca0223537acf41e26e65471d36",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "df41069d_d9463235",
         "filename": "liblog/liblog.map.txt",
         "patchSetId": 1
@@ -36,6 +54,144 @@
         "endLine": 87,
         "endChar": 0
       },
+      "revId": "5de3671d8b9193ca0223537acf41e26e65471d36",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8ade8e83_f62a5b69",
+        "filename": "liblog/liblog.map.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-08-05T19:13:55Z",
+      "side": 1,
+      "message": "1. nothing has improved there this year, afaik. (though i think \u003dS should work already?)\n\n2. wait until they need it?",
+      "parentUuid": "df41069d_d9463235",
+      "range": {
+        "startLine": 83,
+        "startChar": 0,
+        "endLine": 87,
+        "endChar": 0
+      },
+      "revId": "5de3671d8b9193ca0223537acf41e26e65471d36",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8feb70ae_c496dbca",
+        "filename": "liblog/logd_reader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 210,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-08-05T19:13:55Z",
+      "side": 1,
+      "message": "yoda! (but why not isdigit? (and why only check the *first* digit?))",
+      "revId": "5de3671d8b9193ca0223537acf41e26e65471d36",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0e13df6b_b84496c9",
+        "filename": "liblog/logd_reader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 214,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-08-05T19:13:55Z",
+      "side": 1,
+      "message": "is zero a valid size? i\u0027m assuming not, in which case you don\u0027t actually need the isdigit check above.\n\nshould this use ParseUInt instead?",
+      "revId": "5de3671d8b9193ca0223537acf41e26e65471d36",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "439080ba_97fb313d",
+        "filename": "liblog/logd_reader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 231,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-08-05T19:13:55Z",
+      "side": 1,
+      "message": "isdigit? (though again, i\u0027m confused why this only checks the first digit.)",
+      "revId": "5de3671d8b9193ca0223537acf41e26e65471d36",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "31f67fd5_d8bb71fc",
+        "filename": "logcat/logcat.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1081,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-08-05T19:13:55Z",
+      "side": 1,
+      "message": "should this be using WriteFully? (since you can be interrupted after writing _some_ bytes, and TEMP_FAILURE_RETRY only protects you against the case where you haven\u0027t written any bytes yet.)",
+      "range": {
+        "startLine": 1081,
+        "startChar": 16,
+        "endLine": 1081,
+        "endChar": 34
+      },
+      "revId": "5de3671d8b9193ca0223537acf41e26e65471d36",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "41292999_0f2757d0",
+        "filename": "logd/CommandListener.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-08-05T19:13:55Z",
+      "side": 1,
+      "message": "so this is always the same thread, but we have no other access to the thread so we can\u0027t just do this once when the thread is created?",
+      "range": {
+        "startLine": 60,
+        "startChar": 4,
+        "endLine": 62,
+        "endChar": 43
+      },
+      "revId": "5de3671d8b9193ca0223537acf41e26e65471d36",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "147b9fbd_42406f17",
+        "filename": "logd/CommandListener.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 140,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-08-05T19:13:55Z",
+      "side": 1,
+      "message": "why, grandma! what a lot of copy \u0026 paste you have! (this whole file, though, so not really a regression.)",
       "revId": "5de3671d8b9193ca0223537acf41e26e65471d36",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
