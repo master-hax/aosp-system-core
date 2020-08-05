@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b0e2383b_7073b618",
+        "filename": "init/capabilities.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-08-05T15:19:10Z",
+      "side": 1,
+      "message": "(yeah, this is an excellent idea to keep us out of trouble if we\u0027re ever daft enough to update glibc again...)",
+      "revId": "ab60ca583a01cf375877486370154458b0e10ea5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
