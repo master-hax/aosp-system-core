@@ -366,6 +366,8 @@ int ashmem_create_region(const char *name, size_t size)
 
     int fd = __ashmem_open();
     if (fd < 0) {
+        // TODO(b/147363723): Remove below logging once bug is fixed
+        LOG_ALWAYS_FATAL_IF(errno == EACCES, "Unauthorized access to ashmem");
         return fd;
     }
 
