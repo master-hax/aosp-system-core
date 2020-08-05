@@ -1,0 +1,12 @@
+Open-Source-Licensing+1: Lint 🤖 <android-build-prod-ayeaye@system.gserviceaccount.com>
+Presubmit-Verified+1: Treehugger Robot <treehugger-gerrit@google.com>
+Lint+1: Lint 🤖 <android-build-prod-ayeaye@system.gserviceaccount.com>
+Code-Review+2: Randall Huang <huangrandall@google.com>
+Code-Review+1: Daeho Jeong <daehojeong@google.com>
+Code-Review+2: David Anderson <dvander@google.com>
+Code-Review+2: Jaegeuk Kim <jaegeuk@google.com>
+Submitted-by: Eric Biggers <ebiggers@google.com>
+Submitted-at: Wed, 05 Aug 2020 22:28:51 +0000
+Reviewed-on: https://android-review.googlesource.com/c/platform/system/core/+/1387869
+Project: platform/system/core
+Branch: refs/heads/master
