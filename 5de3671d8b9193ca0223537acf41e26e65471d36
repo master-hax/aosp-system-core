@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "702e7219_8548dc5d",
+        "filename": "liblog/include/log/log_read.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-08-05T18:31:23Z",
+      "side": 1,
+      "message": "Using `struct logger* logger` is unnecessary since strict `log_id_t` (or better: `int`) is all that these functions actually need.\n\nBut I\u0027m not sure if we should break the symmetry here.  Alternatively, we could use this as the motivation to add all of the log_id_t versions of these functions and push these old versions into a cruft file.",
+      "revId": "5de3671d8b9193ca0223537acf41e26e65471d36",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "df41069d_d9463235",
+        "filename": "liblog/liblog.map.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-08-05T18:31:23Z",
+      "side": 1,
+      "message": "1) Is \u002731\u0027 the right value here?  I remember there was lots of issues around this with R.\n2) Should we expose this to the llndk right away?  I figure yes since its associated calls are all exposed to the llndk.",
+      "range": {
+        "startLine": 83,
+        "startChar": 0,
+        "endLine": 87,
+        "endChar": 0
+      },
+      "revId": "5de3671d8b9193ca0223537acf41e26e65471d36",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
