@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5b7e4988_d30fbc31",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-08-06T15:53:03Z",
+      "side": 1,
+      "message": "This is going to fail due to abi-dumps in internal, but I\u0027ll post those CLs soon.  Thought I\u0027d add you to the AOSP review first anyway.\n\nSide benefit in all of this: now we can use android-base properties and remove the hacks for host.",
+      "revId": "162f225f6b7f0426e8235144d0d51640c8d5272a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
