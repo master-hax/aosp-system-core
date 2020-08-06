@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "817e983f_b58b5f5c",
+        "filename": "logd/CommandListener.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-08-06T17:17:13Z",
+      "side": 1,
+      "message": "I\u0027m going to push another CL to make this file better between seeing it now and your comment on the other CL, but at least getting rid of `unsigned long` is an improvement.",
+      "revId": "667ac0638f8651b544986f38b87c829c7fb27169",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
