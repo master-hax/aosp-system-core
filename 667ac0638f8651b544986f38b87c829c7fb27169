@@ -16,6 +16,47 @@
       "revId": "667ac0638f8651b544986f38b87c829c7fb27169",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "674d5821_306a1aa9",
+        "filename": "logd/CommandListener.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-08-06T17:26:56Z",
+      "side": 1,
+      "message": "(when you do, you can just assign atoi()\u0027s result directly to a log_id_t and lose the static_casts too.)",
+      "parentUuid": "817e983f_b58b5f5c",
+      "revId": "667ac0638f8651b544986f38b87c829c7fb27169",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b1cfd1e5_edad6578",
+        "filename": "logd/LogSize.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-08-06T17:26:56Z",
+      "side": 1,
+      "message": "much better, thanks!",
+      "range": {
+        "startLine": 29,
+        "startChar": 0,
+        "endLine": 33,
+        "endChar": 89
+      },
+      "revId": "667ac0638f8651b544986f38b87c829c7fb27169",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
