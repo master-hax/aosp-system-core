@@ -16,6 +16,75 @@
       "revId": "162f225f6b7f0426e8235144d0d51640c8d5272a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e1b5a92b_5bb218e0",
+        "filename": "logd/LogSize.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-08-06T16:17:22Z",
+      "side": 1,
+      "message": "(i see you couldn\u0027t use GetUintProperty instead because we don\u0027t expose the bool to allow suffixes there. even if we think that extra [default] parameter there would be awkward, i do wonder if we should add a separate GetSizeProperty for size_t with suffixes always on...)",
+      "range": {
+        "startLine": 31,
+        "startChar": 4,
+        "endLine": 39,
+        "endChar": 5
+      },
+      "revId": "162f225f6b7f0426e8235144d0d51640c8d5272a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2de7a12a_847778a7",
+        "filename": "logd/LogSize.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-08-06T16:17:22Z",
+      "side": 1,
+      "message": "not `static constexpr`?",
+      "range": {
+        "startLine": 21,
+        "startChar": 0,
+        "endLine": 21,
+        "endChar": 7
+      },
+      "revId": "162f225f6b7f0426e8235144d0d51640c8d5272a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "63b0e0aa_f1f75c5c",
+        "filename": "logd/LogSize.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-08-06T16:17:22Z",
+      "side": 1,
+      "message": "do we care that it\u0027s specifically from properties, or do we just mean GetConfiguredBufferSize?",
+      "range": {
+        "startLine": 25,
+        "startChar": 14,
+        "endLine": 25,
+        "endChar": 41
+      },
+      "revId": "162f225f6b7f0426e8235144d0d51640c8d5272a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
