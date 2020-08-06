@@ -29,8 +29,8 @@
 #include <cutils/sockets.h>
 
 #include "adb.h"
+#include "adb_mdns.h"
 #include "adb_utils.h"
-#include "adb_wifi.h"
 #include "sysdeps.h"
 
 using namespace std::string_literals;

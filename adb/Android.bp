@@ -31,6 +31,8 @@ cc_defaults {
         "-Wvla",
         "-DADB_HOST=1",         // overridden by adbd_defaults
         "-DANDROID_BASE_UNIQUE_FD_DISABLE_IMPLICIT_CONVERSION=1",
+        "-DOPENSCREEN_NO_ABSL",
+        "-D_DEBUG",
     ],
     cpp_std: "experimental",
 
@@ -161,6 +163,7 @@ libadb_srcs = [
     "adb.cpp",
     "adb_io.cpp",
     "adb_listeners.cpp",
+    "adb_mdns.cpp",
     "adb_trace.cpp",
     "adb_unique_fd.cpp",
     "adb_utils.cpp",
@@ -218,7 +221,6 @@ cc_library_host_static {
         "client/usb_libusb.cpp",
         "client/usb_dispatch.cpp",
         "client/transport_local.cpp",
-        "client/transport_mdns.cpp",
         "client/mdns_utils.cpp",
         "client/transport_usb.cpp",
         "client/pairing/pairing_client.cpp",
@@ -234,14 +236,26 @@ cc_library_host_static {
             srcs: ["client/usb_osx.cpp"] + libadb_darwin_srcs,
         },
         not_windows: {
-            srcs: libadb_posix_srcs,
+            srcs: [
+                "client/mdns_service_info.cpp",
+                "client/mdns_service_watcher.cpp",
+                "client/transport_mdns2.cpp",
+                "client/mdnsresponder_client.cpp",
+            ] + libadb_posix_srcs,
+            static_libs: [
+                "libopenscreen-discovery",
+            ],
         },
         windows: {
             enabled: true,
             srcs: [
                 "client/usb_windows.cpp",
+                "client/transport_mdns.cpp",
             ] + libadb_windows_srcs,
             shared_libs: ["AdbWinApi"],
+            static_libs: [
+                "libmdnssd",
+            ],
         },
     },
 
@@ -335,6 +349,9 @@ cc_test_host {
             ldflags: ["-municode"],
             shared_libs: ["AdbWinApi"],
         },
+        not_windows: {
+            static_libs: ["libopenscreen-discovery"],
+        },
     },
 }
 
@@ -422,6 +439,11 @@ cc_binary_host {
             shared_libs: ["AdbWinApi"],
             required: [
                 "AdbWinUsbApi",
+            ],
+        },
+        not_windows: {
+            static_libs: [
+                "libopenscreen-discovery",
             ],
         },
     },
@@ -898,6 +920,9 @@ cc_test_host {
         windows: {
             enabled: true,
             shared_libs: ["AdbWinApi"],
+        },
+        not_windows: {
+            static_libs: ["libopenscreen-discovery"],
         },
     },
     data: [
