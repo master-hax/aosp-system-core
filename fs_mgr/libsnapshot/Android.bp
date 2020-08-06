@@ -343,3 +343,13 @@ cc_binary {
     static_executable: true,
     system_shared_libs: [],
 }
+
+cc_test {
+    name: "foo_test",
+    srcs: [
+        "foo_test.cpp",
+    ],
+    test_suites: [
+        "device-tests"
+    ],
+}
