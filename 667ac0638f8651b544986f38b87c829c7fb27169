@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "d77cba94_bddc903f",
+        "filename": "logd/CommandListener.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-08-06T17:34:57Z",
+      "side": 1,
+      "message": "I was actually thinking of replacing them with ParseInt().  0 is a valid buffer number, so it\u0027s not useful as an error code.  \n\n```\nvsoc_x86:/ $ echo -n \u0027getLogSize ignoreme!\\0\u0027 | nc -U /dev/socket/logd                                                                                                                                           \n1048576\n```\n\nIsn\u0027t what we want to see, but is the result.",
+      "parentUuid": "674d5821_306a1aa9",
+      "revId": "667ac0638f8651b544986f38b87c829c7fb27169",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b1cfd1e5_edad6578",
         "filename": "logd/LogSize.h",
         "patchSetId": 2
