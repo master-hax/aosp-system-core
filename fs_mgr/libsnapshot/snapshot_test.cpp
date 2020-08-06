@@ -81,11 +81,13 @@ std::string fake_super;
 
 void MountMetadata();
 
+bool IsVirtualAbEnabled() {
+    return android::base::GetBoolProperty("ro.virtual_ab.enabled", false);
+}
+
 class SnapshotTest : public ::testing::Test {
   public:
-    SnapshotTest() : dm_(DeviceMapper::Instance()) {
-        is_virtual_ab_ = android::base::GetBoolProperty("ro.virtual_ab.enabled", false);
-    }
+    SnapshotTest() : dm_(DeviceMapper::Instance()) { is_virtual_ab_ = IsVirtualAbEnabled(); }
 
     // This is exposed for main.
     void Cleanup() {
@@ -1852,11 +1854,6 @@ std::vector<uint64_t> ImageManagerTestParams() {
 
 INSTANTIATE_TEST_SUITE_P(ImageManagerTest, ImageManagerTest, ValuesIn(ImageManagerTestParams()));
 
-}  // namespace snapshot
-}  // namespace android
-
-using namespace android::snapshot;
-
 bool Mkdir(const std::string& path) {
     if (mkdir(path.c_str(), 0700) && errno != EEXIST) {
         std::cerr << "Could not mkdir " << path << ": " << strerror(errno) << std::endl;
@@ -1865,8 +1862,24 @@ bool Mkdir(const std::string& path) {
     return true;
 }
 
-int main(int argc, char** argv) {
-    ::testing::InitGoogleTest(&argc, argv);
+class SnapshotTestEnvironment : public ::testing::Environment {
+  public:
+    ~SnapshotTestEnvironment() override {}
+    void SetUp() override;
+    void TearDown() override;
+
+  private:
+    std::unique_ptr<IImageManager> super_images_;
+};
+
+void SnapshotTestEnvironment::SetUp() {
+    if (!IsVirtualAbEnabled()) {
+        // b/163082876: GTEST_SKIP in Environment will make atest report incorrect results. Until
+        // that is fixed, don't call GTEST_SKIP here, but instead call GTEST_SKIP in individual test
+        // suites,
+        std::cerr << "Virtual A/B is not enabled, skipping global setup.\n";
+        return;
+    }
 
     std::vector<std::string> paths = {
             // clang-format off
@@ -1879,18 +1892,13 @@ int main(int argc, char** argv) {
             // clang-format on
     };
     for (const auto& path : paths) {
-        if (!Mkdir(path)) {
-            return 1;
-        }
+        ASSERT_TRUE(Mkdir(path));
     }
 
     // Create this once, otherwise, gsid will start/stop between each test.
     test_device = new TestDeviceInfo();
     sm = SnapshotManager::New(test_device);
-    if (!sm) {
-        std::cerr << "Could not create snapshot manager\n";
-        return 1;
-    }
+    ASSERT_NE(nullptr, sm) << "Could not create snapshot manager";
 
     // Clean up previous run.
     MetadataMountedTest().TearDown();
@@ -1898,31 +1906,34 @@ int main(int argc, char** argv) {
     SnapshotTest().Cleanup();
 
     // Use a separate image manager for our fake super partition.
-    auto super_images = IImageManager::Open("ota/test/super", 10s);
-    if (!super_images) {
-        std::cerr << "Could not create image manager\n";
-        return 1;
-    }
+    super_images_ = IImageManager::Open("ota/test/super", 10s);
+    ASSERT_NE(nullptr, super_images_) << "Could not create image manager";
 
     // Clean up any old copy.
-    DeleteBackingImage(super_images.get(), "fake-super");
+    DeleteBackingImage(super_images_.get(), "fake-super");
 
     // Create and map the fake super partition.
     static constexpr int kImageFlags =
             IImageManager::CREATE_IMAGE_DEFAULT | IImageManager::CREATE_IMAGE_ZERO_FILL;
-    if (!super_images->CreateBackingImage("fake-super", kSuperSize, kImageFlags)) {
-        std::cerr << "Could not create fake super partition\n";
-        return 1;
-    }
-    if (!super_images->MapImageDevice("fake-super", 10s, &fake_super)) {
-        std::cerr << "Could not map fake super partition\n";
-        return 1;
-    }
+    ASSERT_TRUE(super_images_->CreateBackingImage("fake-super", kSuperSize, kImageFlags))
+            << "Could not create fake super partition";
+
+    ASSERT_TRUE(super_images_->MapImageDevice("fake-super", 10s, &fake_super))
+            << "Could not map fake super partition";
     test_device->set_fake_super(fake_super);
+}
 
-    auto result = RUN_ALL_TESTS();
+void SnapshotTestEnvironment::TearDown() {
+    if (super_images_ != nullptr) {
+        DeleteBackingImage(super_images_.get(), "fake-super");
+    }
+}
 
-    DeleteBackingImage(super_images.get(), "fake-super");
+}  // namespace snapshot
+}  // namespace android
 
-    return result;
+int main(int argc, char** argv) {
+    ::testing::InitGoogleTest(&argc, argv);
+    ::testing::AddGlobalTestEnvironment(new ::android::snapshot::SnapshotTestEnvironment());
+    return RUN_ALL_TESTS();
 }
