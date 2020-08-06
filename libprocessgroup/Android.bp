@@ -56,6 +56,8 @@ cc_library {
         "-Wall",
         "-Werror",
         "-Wexit-time-destructors",
+        // TODO: Json::Reader is decprecated: Use CharReader and CharReaderBuilder instead.
+        "-Wno-deprecated-declarations",
     ],
     apex_available: [
         "//apex_available:platform",
