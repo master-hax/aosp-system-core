@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a0e1bd44_489008f4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2020-08-07T00:49:26Z",
+      "side": 1,
+      "message": "Code search gives me empty result on SKIP_TEST_IN_PRESUBMIT, so I think we can remove this now.",
+      "revId": "f0cb5a04f304423723bdb9a56c99d62f7e18a80b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
