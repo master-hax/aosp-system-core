@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1ff0428d_ba491575",
+        "filename": "logd/logd_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 846,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-08-07T18:49:15Z",
+      "side": 1,
+      "message": "why only 10? i\u0027m assuming 1024 is fast too?",
+      "range": {
+        "startLine": 846,
+        "startChar": 55,
+        "endLine": 846,
+        "endChar": 57
+      },
+      "revId": "9b77d73744852adddbb0871dd2a5691738886f10",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
