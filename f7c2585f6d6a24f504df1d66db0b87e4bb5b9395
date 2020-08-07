@@ -16,6 +16,24 @@
       "revId": "f7c2585f6d6a24f504df1d66db0b87e4bb5b9395",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7f3f4f94_e51993f0",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1146974
+      },
+      "writtenOn": "2020-08-07T03:17:16Z",
+      "side": 1,
+      "message": "\u003e I will fine with the change of the order, but I also wish that the overriding of services is agnostic to the order. i.e.\n\u003e \n\u003e service foo a_path\n\u003e     override\n\u003e \n\u003e followed by\n\u003e \n\u003e service foo another_path\n\u003e \n\u003e shouldn\u0027t be an error. Can\u0027t we check the duplication after *.rc from all partitions are loaded?\n\u003e \n\u003e \n\nLGTM. We may use Jiyong\u0027s suggestion in other way by adding override to a service to prevent from overridden from the other partitions because we must not have multiple services with \u0027override\u0027 flag to be agnostic to the order.\n\nBut, I also support this CL for a short-term solution.",
+      "parentUuid": "bde57c63_b774195e",
+      "revId": "f7c2585f6d6a24f504df1d66db0b87e4bb5b9395",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
