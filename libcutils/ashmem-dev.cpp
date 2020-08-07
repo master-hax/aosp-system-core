@@ -211,11 +211,17 @@ static int __ashmem_open_locked()
     int fd = TEMP_FAILURE_RETRY(open(ashmem_device_path.c_str(), O_RDWR | O_CLOEXEC));
 
     // fallback for APEX w/ use_vendor on Q, which would have still used /dev/ashmem
+    int saved_errno = 0;
     if (fd < 0) {
+        saved_errno = errno;
         fd = TEMP_FAILURE_RETRY(open("/dev/ashmem", O_RDWR | O_CLOEXEC));
     }
 
     if (fd < 0) {
+        /* Q launching devices and newer must not reach here since they should have been
+         * able to open ashmem_device_path */
+        ALOGW("Unable to open ashmem device %s: %s", ashmem_device_path.c_str(),
+              strerror(saved_errno));
         return fd;
     }
 
