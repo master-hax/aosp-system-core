@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "63ba94d8_89c1b3d5",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-08-07T16:10:40Z",
+      "side": 1,
+      "message": "At least this gets rid of some of the duplication.",
+      "revId": "c7146aff9fe50968d66cefb46b2bb926a5e27b57",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
