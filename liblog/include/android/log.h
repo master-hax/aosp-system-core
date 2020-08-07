@@ -55,6 +55,7 @@
  */
 
 #include <stdarg.h>
+#include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
 #include <sys/cdefs.h>
@@ -254,6 +255,20 @@ void __android_log_set_logger(__android_logger_function logger) __INTRODUCED_IN(
  * Available since API level 30.
  */
 void __android_log_logd_logger(const struct __android_log_message* log_message) __INTRODUCED_IN(30);
+
+/**
+ * Sets whether or not __android_log_logd_logger() will use a blocking socket when sending messages
+ * to logd.  By default and historically, it uses a non_blocking socket, which ensures that client
+ * programs will not block, but may drop logs if the socket buffers overflow.  This function gives
+ * an option to client programs to ensure that logs are never dropped.
+ *
+ * Note that this must be set before client programs send any log messages.
+ *
+ * @param value a bool where true means the socket should be blocking and false means non-blocking.
+ *
+ * Available since API level 30.
+ */
+void __android_log_logd_logger_set_blocking(bool value) __INTRODUCED_IN(31);
 
 /**
  * Writes the log message to stderr.  This is an __android_logger_function and can be provided to

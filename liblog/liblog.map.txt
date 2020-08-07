@@ -80,6 +80,11 @@ LIBLOG_R { # introduced=30
     __android_log_write_log_message;
 };
 
+LIBLOG_S { # introduced=S
+  global:
+    __android_log_logd_logger_set_blocking;
+};
+
 LIBLOG_PRIVATE {
   global:
     __android_log_pmsg_file_read;

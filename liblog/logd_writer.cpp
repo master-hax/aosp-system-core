@@ -39,6 +39,11 @@
 #include "uio.h"
 
 static atomic_int logd_socket;
+static bool is_blocking = true;
+
+void __android_log_logd_logger_set_blocking(bool value) {
+  is_blocking = value;
+}
 
 // Note that it is safe to call connect() multiple times on DGRAM Unix domain sockets, so this
 // function is used to reconnect to logd without requiring a new socket.
@@ -59,8 +64,12 @@ static void GetSocket() {
     return;
   }
 
-  int new_socket =
-      TEMP_FAILURE_RETRY(socket(PF_UNIX, SOCK_DGRAM | SOCK_CLOEXEC | SOCK_NONBLOCK, 0));
+  int type = SOCK_DGRAM | SOCK_CLOEXEC;
+  if (!is_blocking) {
+    type |= SOCK_NONBLOCK;
+  }
+
+  int new_socket = TEMP_FAILURE_RETRY(socket(PF_UNIX, type, 0));
   if (new_socket <= 0) {
     return;
   }
