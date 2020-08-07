@@ -16,6 +16,24 @@
       "revId": "7f3f34ddc549fb0f0c2b7253ac7014cc70b31cb8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "38a2743d_fe3abf0a",
+        "filename": "libutils/include/utils/Looper_test_pipe.h",
+        "patchSetId": 9
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1695385
+      },
+      "writtenOn": "2020-08-07T17:25:05Z",
+      "side": 1,
+      "message": "This was explicitly pulled out so it could be shared across the test and fuzzer.",
+      "parentUuid": "c828b307_a8299988",
+      "revId": "7f3f34ddc549fb0f0c2b7253ac7014cc70b31cb8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
