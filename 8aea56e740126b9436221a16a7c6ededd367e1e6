@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c952edb8_e95aa89a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2020-08-07T23:45:05Z",
+      "side": 1,
+      "message": "I added tests in CL:1394309 and actually found a bug. I\u0027ve updated a CL a bit. Hridya, please review.",
+      "revId": "8aea56e740126b9436221a16a7c6ededd367e1e6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
