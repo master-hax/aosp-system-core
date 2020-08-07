@@ -1,0 +1,75 @@
+{
+  "comments": [
+    {
+      "robotId": "ayeaye",
+      "robotRunId": "AR00000000000004286137",
+      "url": "https://android-build.googleplex.com/builds/treetop/android-review/1356122?revision\u003d10",
+      "fixSuggestions": [],
+      "key": {
+        "uuid": "5fb08af1_57dd2456",
+        "filename": "libutils/Looper_test_pipe.h",
+        "patchSetId": 10
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1550585
+      },
+      "writtenOn": "2020-08-07T22:33:53Z",
+      "side": 1,
+      "message": "Prefer to use inclusive terms like \u0027complex\u0027, \u0027unexpected\u0027, or \u0027placeholder\u0027; see https://developers.google.com/style/inclusive-documentation#ableist-language for more details.",
+      "range": {
+        "startLine": 20,
+        "startChar": 5,
+        "endLine": 20,
+        "endChar": 10
+      },
+      "revId": "a0e28c490be633db61eaa552782656f297fb1e58",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "robotId": "ayeaye",
+      "robotRunId": "AR00000000000004286136",
+      "url": "https://android-build.googleplex.com/builds/treetop/android-review/1356122?revision\u003d10",
+      "fixSuggestions": [
+        {
+          "fixId": "4cf762b8_de061558",
+          "description": "Change to \"libutils/RefBase_fuzz.cpp\"",
+          "replacements": [
+            {
+              "path": "libutils/RefBase_fuzz.cpp",
+              "range": {
+                "startLine": 34,
+                "startChar": 86,
+                "endLine": 34,
+                "endChar": 95
+              },
+              "replacement": "artificial"
+            }
+          ]
+        }
+      ],
+      "key": {
+        "uuid": "f2d91268_b8caa832",
+        "filename": "libutils/RefBase_fuzz.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1550585
+      },
+      "writtenOn": "2020-08-07T22:33:53Z",
+      "side": 1,
+      "message": "Common typo found: \"artifical\" -- should it be \"artificial\"?\nNote: a line containing \"common_typos_disable\" or \"common_typos_enable\" will turn off or on (respectively) the linter for subsequent lines in the file. Alternatively include the token \"NOTYPO\" within a line to skip typo linting that line or include \u0027NO_TYPO_CHECK\u003d\u003creason\u003e\u0027in the commit message.",
+      "range": {
+        "startLine": 34,
+        "startChar": 86,
+        "endLine": 34,
+        "endChar": 95
+      },
+      "revId": "a0e28c490be633db61eaa552782656f297fb1e58",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
