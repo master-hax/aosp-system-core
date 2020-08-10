@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a5ba39dc_a20d6316",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-08-10T18:52:46Z",
+      "side": 1,
+      "message": "https://android.googlesource.com/platform/system/core/+/refs/changes/69/1394969/3/logd/README.compression.md lgtm...",
+      "revId": "c5c02bde0981dd8ae9b7248741a1060e84cfafa7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
