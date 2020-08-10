@@ -94,6 +94,30 @@
       "revId": "fd705c04625114b6c65585fc287f74dea90df953",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "008637f6_cc9e5b33",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 215,
+      "author": {
+        "id": 1120612
+      },
+      "writtenOn": "2020-08-10T19:00:33Z",
+      "side": 1,
+      "message": "You are right! Having it here may cause log spamming for upgrading devices. I have moved it so that it only prints if the caller can neither open ashmem_device_path nor /dev/ashmem.",
+      "parentUuid": "120c0477_185a7c3f",
+      "range": {
+        "startLine": 215,
+        "startChar": 50,
+        "endLine": 215,
+        "endChar": 52
+      },
+      "revId": "fd705c04625114b6c65585fc287f74dea90df953",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
