@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "c7b6d2b4_69e2a40a",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 214,
+      "author": {
+        "id": 1120612
+      },
+      "writtenOn": "2020-08-10T21:15:31Z",
+      "side": 1,
+      "message": "Fixed in the latest PS.",
+      "parentUuid": "00c44676_85085127",
+      "range": {
+        "startLine": 214,
+        "startChar": 22,
+        "endLine": 214,
+        "endChar": 23
+      },
+      "revId": "2805336ee8afd881374b49f47554375339c360c3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "87346dbe_87058452",
         "filename": "libcutils/ashmem-dev.cpp",
         "patchSetId": 4
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "29468f68_815a4e57",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 222,
+      "author": {
+        "id": 1120612
+      },
+      "writtenOn": "2020-08-10T21:15:31Z",
+      "side": 1,
+      "message": "Sounds good, done!",
+      "parentUuid": "87346dbe_87058452",
+      "range": {
+        "startLine": 221,
+        "startChar": 61,
+        "endLine": 222,
+        "endChar": 42
+      },
+      "revId": "2805336ee8afd881374b49f47554375339c360c3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d5d55e92_8b9353c4",
         "filename": "libcutils/ashmem-dev.cpp",
         "patchSetId": 4
@@ -68,6 +116,30 @@
       "revId": "2805336ee8afd881374b49f47554375339c360c3",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b5d35338_4098c418",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 227,
+      "author": {
+        "id": 1120612
+      },
+      "writtenOn": "2020-08-10T21:15:31Z",
+      "side": 1,
+      "message": "Agree, done!",
+      "parentUuid": "d5d55e92_8b9353c4",
+      "range": {
+        "startLine": 220,
+        "startChar": 0,
+        "endLine": 227,
+        "endChar": 0
+      },
+      "revId": "2805336ee8afd881374b49f47554375339c360c3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
