@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "cc8933cb_21bec63a",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 215,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2020-08-10T17:11:27Z",
+      "side": 1,
+      "message": "unneeded (actually, this will create an extra blank lines in the log? I\u0027m not sure if it\u0027s truncated)",
+      "range": {
+        "startLine": 215,
+        "startChar": 50,
+        "endLine": 215,
+        "endChar": 52
+      },
+      "revId": "fd705c04625114b6c65585fc287f74dea90df953",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
