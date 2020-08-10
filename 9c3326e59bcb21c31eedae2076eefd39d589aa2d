@@ -16,6 +16,23 @@
       "revId": "9c3326e59bcb21c31eedae2076eefd39d589aa2d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "14ddfb07_5cb6688a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2020-08-10T23:00:40Z",
+      "side": 1,
+      "message": "Before I post comments, are you encountering a need for this or is it just a good idea? Obviously it\u0027s a convenient feature.\n\nI ask this because this doesn\u0027t add any new ability to init, and it\u0027s therefore technically an unnecessary addition to the init API surface. An alternative would be to start every version (and this is technically possible to automatically generate). I\u0027m really hoping to see few if any new major versions added, and most interfaces to be written using AIDL, where major versions are expected to be much rarer.",
+      "revId": "9c3326e59bcb21c31eedae2076eefd39d589aa2d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
