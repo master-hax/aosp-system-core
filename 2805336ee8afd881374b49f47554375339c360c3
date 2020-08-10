@@ -2,6 +2,52 @@
   "comments": [
     {
       "key": {
+        "uuid": "00c44676_85085127",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 214,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2020-08-10T19:28:25Z",
+      "side": 1,
+      "message": "nit: because it saves 1LOC, we could initialize here, since we know L220 reached implies L216 was also reached (but I\u0027m not sure if the compiler will)",
+      "range": {
+        "startLine": 214,
+        "startChar": 22,
+        "endLine": 214,
+        "endChar": 23
+      },
+      "revId": "2805336ee8afd881374b49f47554375339c360c3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "87346dbe_87058452",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 222,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2020-08-10T19:28:25Z",
+      "side": 1,
+      "message": "nit: depending on the permissions of the process. Maybe you could also log /dev/ashmem here and errno, so you would see the error for both file locations",
+      "range": {
+        "startLine": 221,
+        "startChar": 61,
+        "endLine": 222,
+        "endChar": 42
+      },
+      "revId": "2805336ee8afd881374b49f47554375339c360c3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "d5d55e92_8b9353c4",
         "filename": "libcutils/ashmem-dev.cpp",
         "patchSetId": 4
