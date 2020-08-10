@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4adc1c7d_07a62fc3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-08-10T19:05:26Z",
+      "side": 1,
+      "message": "shouldn\u0027t these be *uint64_t*, not int64_t?\n\notherwise seems okay.",
+      "revId": "6eede91781ec71eef6ad41259d4b8280c453d6f4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c9d334e9_9d7de191",
+        "filename": "libsparse/include/sparse/sparse.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 337,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-08-10T19:05:26Z",
+      "side": 1,
+      "message": "accidental?",
+      "revId": "6eede91781ec71eef6ad41259d4b8280c453d6f4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
