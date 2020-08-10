@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "533716c1_d5310156",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-08-10T22:22:59Z",
+      "side": 1,
+      "message": "i think i\u0027m probably the \"other people\" cferris mentioned on the bug who aren\u0027t convinced by this and, yes, i\u0027m not convinced actually makes any positive difference and i do worry that it\u0027ll break scripts/infrastructure, but i\u0027m not sufficiently against it to give it a negative vote. but you two are on the hook to fix anything that breaks :-)\n\ni assume you\u0027ve tested ndk-stack and Android Studio and they\u0027re both fine? and pitot/whatever google3 uses copes with the new output?",
+      "revId": "84dfc95a08909eea0ed49a0b62060143ae6d4baa",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
