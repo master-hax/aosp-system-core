@@ -70,6 +70,30 @@
       "revId": "fd705c04625114b6c65585fc287f74dea90df953",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "120c0477_185a7c3f",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 215,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2020-08-10T17:46:14Z",
+      "side": 1,
+      "message": "So this will generate error logs on Q which uses /dev/ashmem? Maybe ALOGI or ALOGW since it\u0027s not really an error on Android Q? Or maybe we can suppress this message for Q and earlier versions?",
+      "parentUuid": "c6238c8f_117dec40",
+      "range": {
+        "startLine": 215,
+        "startChar": 50,
+        "endLine": 215,
+        "endChar": 52
+      },
+      "revId": "fd705c04625114b6c65585fc287f74dea90df953",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
