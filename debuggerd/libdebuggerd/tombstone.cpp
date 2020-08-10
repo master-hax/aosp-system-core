@@ -313,6 +313,8 @@ static void print_register_row(log_t* log,
 }
 
 void dump_registers(log_t* log, unwindstack::Regs* regs) {
+  _LOG(log, logtype::REGISTERS, "\nregisters:\n");
+
   // Split lr/sp/pc into their own special row.
   static constexpr size_t column_count = 4;
   std::vector<std::pair<std::string, uint64_t>> current_row;
@@ -397,8 +399,6 @@ static bool dump_thread(log_t* log, unwindstack::Unwinder* unwinder, const Threa
     dump_abort_message(log, unwinder->GetProcessMemory().get(), process_info.abort_msg_address);
   }
 
-  dump_registers(log, thread_info.registers.get());
-
   // Unwind will mutate the registers, so make a copy first.
   std::unique_ptr<unwindstack::Regs> regs_copy(thread_info.registers->Clone());
   unwinder->SetRegs(regs_copy.get());
@@ -409,6 +409,8 @@ static bool dump_thread(log_t* log, unwindstack::Unwinder* unwinder, const Threa
     _LOG(log, logtype::BACKTRACE, "\nbacktrace:\n");
     log_backtrace(log, unwinder, "    ");
   }
+
+  dump_registers(log, thread_info.registers.get());
 
   if (primary_thread) {
     if (gwp_asan_crash_data->HasDeallocationTrace()) {
