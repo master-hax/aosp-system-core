@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d5d55e92_8b9353c4",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 227,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2020-08-10T19:27:40Z",
+      "side": 1,
+      "message": "nit: I think it\u0027s better to move this inside the previous \"if block\" and limit saved_errno visibility to that block.",
+      "range": {
+        "startLine": 220,
+        "startChar": 0,
+        "endLine": 227,
+        "endChar": 0
+      },
+      "revId": "2805336ee8afd881374b49f47554375339c360c3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
