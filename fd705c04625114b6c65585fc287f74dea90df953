@@ -22,6 +22,30 @@
       "revId": "fd705c04625114b6c65585fc287f74dea90df953",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7e88e935_45a6b955",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 215,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-08-10T17:20:42Z",
+      "side": 1,
+      "message": "Per https://cs.android.com/android/platform/superproject/+/master:system/core/liblog/include/android/log.h;l\u003d41?q\u003df:liblog%20%22%5Cn%22 it\u0027s truncated.\n\nIt actually happens in logcat when formatting the message though, not in liblog or logd when recording it: https://cs.android.com/android/platform/superproject/+/master:system/core/liblog/logprint.cpp;l\u003d1074?q\u003df:liblog%20%22%5Cn%22\n\nSo yes, it\u0027s truncated, but also it should be removed (might as well save that 1 byte from the log)",
+      "parentUuid": "cc8933cb_21bec63a",
+      "range": {
+        "startLine": 215,
+        "startChar": 50,
+        "endLine": 215,
+        "endChar": 52
+      },
+      "revId": "fd705c04625114b6c65585fc287f74dea90df953",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
