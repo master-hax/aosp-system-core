@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "35e95fc7_21e2012b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-08-11T18:44:51Z",
+      "side": 1,
+      "message": "yeah, it seems to be true that this is only used by the input stuff:\n\nhttps://source.corp.google.com/search?q\u003d%5CbPropertyMap%5C.h%5Cb%20-file:external%2F%20-file:dump$\u0026sq\u003dpackage:%5Eandroid$\n\ncan we move it there instead? (which also solves the libbase issue.)",
+      "revId": "868dd685f6dcd84e85e194486352841dc5595a9c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a2531693_8b3cd5cf",
+        "filename": "libutils/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-08-11T18:44:51Z",
+      "side": 1,
+      "message": "is Result header-only? that\u0027s probably more kosher than this, which i assume will cause problems.",
+      "revId": "868dd685f6dcd84e85e194486352841dc5595a9c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
