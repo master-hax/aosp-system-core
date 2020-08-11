@@ -82,6 +82,10 @@ cc_defaults {
         misc_undefined: ["integer"],
     },
 
+    static_libs: [
+        "libbase",
+    ],
+
     target: {
         android: {
             cflags: ["-fvisibility=protected"],

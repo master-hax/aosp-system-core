@@ -17,9 +17,10 @@
 #ifndef _UTILS_PROPERTY_MAP_H
 #define _UTILS_PROPERTY_MAP_H
 
+#include <android-base/result.h>
+#include <utils/Errors.h>
 #include <utils/KeyedVector.h>
 #include <utils/String8.h>
-#include <utils/Errors.h>
 #include <utils/Tokenizer.h>
 
 namespace android {
@@ -78,9 +79,9 @@ public:
     inline const KeyedVector<String8, String8>& getProperties() const { return mProperties; }
 
     /* Loads a property map from a file. */
-    static status_t load(const String8& filename, PropertyMap** outMap);
+    static android::base::Result<std::unique_ptr<PropertyMap>> load(const char* filename);
 
-private:
+  private:
     class Parser {
         PropertyMap* mMap;
         Tokenizer* mTokenizer;

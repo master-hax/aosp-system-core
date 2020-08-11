@@ -111,41 +111,35 @@ void PropertyMap::addAll(const PropertyMap* map) {
     }
 }
 
-status_t PropertyMap::load(const String8& filename, PropertyMap** outMap) {
-    *outMap = nullptr;
+android::base::Result<std::unique_ptr<PropertyMap>> PropertyMap::load(const char* filename) {
+    std::unique_ptr<PropertyMap> outMap = std::make_unique<PropertyMap>();
+    if (outMap == nullptr) {
+        return android::base::Error(NO_MEMORY) << "Error allocating property map.";
+    }
 
     Tokenizer* tokenizer;
-    status_t status = Tokenizer::open(filename, &tokenizer);
+    status_t status = Tokenizer::open(String8(filename), &tokenizer);
     if (status) {
-        ALOGE("Error %d opening property file %s.", status, filename.string());
+        ALOGE("Error %d opening property file %s.", status, filename);
     } else {
-        PropertyMap* map = new PropertyMap();
-        if (!map) {
-            ALOGE("Error allocating property map.");
-            status = NO_MEMORY;
-        } else {
 #if DEBUG_PARSER_PERFORMANCE
             nsecs_t startTime = systemTime(SYSTEM_TIME_MONOTONIC);
 #endif
-            Parser parser(map, tokenizer);
+            Parser parser(outMap.get(), tokenizer);
             status = parser.parse();
+            delete tokenizer;
 #if DEBUG_PARSER_PERFORMANCE
             nsecs_t elapsedTime = systemTime(SYSTEM_TIME_MONOTONIC) - startTime;
             ALOGD("Parsed property file '%s' %d lines in %0.3fms.",
-                    tokenizer->getFilename().string(), tokenizer->getLineNumber(),
-                    elapsedTime / 1000000.0);
+                  tokenizer->getFilename().string(), tokenizer->getLineNumber(),
+                  elapsedTime / 1000000.0);
 #endif
             if (status) {
-                delete map;
-            } else {
-                *outMap = map;
+                return android::base::Error(BAD_VALUE) << "Could not parse ";
             }
-        }
-        delete tokenizer;
     }
-    return status;
+    return std::move(outMap);
 }
-
 
 // --- PropertyMap::Parser ---
 
