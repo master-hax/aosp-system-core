@@ -51,6 +51,24 @@
       "revId": "9c3326e59bcb21c31eedae2076eefd39d589aa2d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "101b01d2_fc52e1c2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2020-08-11T00:39:09Z",
+      "side": 1,
+      "message": "Sorry Felix, missed the original comment. Even though it\u0027s a good change, I would abandon/hold off, citing YAGNI. I\u0027m somewhat of a minimalist. You never know when real life usecases would imply slightly different semantics.\n\nFor AIDL vs HIDL, you can read a bit about it here and on related pages:\n\u003e https://source.android.com/devices/architecture/aidl/overview\n\nThe motivation is multifaceted:\n- AIDL versioning works in place (struct fields can be added and methods can be added *to the upstream interface*). So, it avoids the problem of a new library for every version, and it avoids a huge amount of boilerplate code. Lessons learned from maintaining HIDL were applied as much as possible to AIDL.\n- an interface can be written using AIDL, and the decision where to use it can be made later (AIDL can be used anywhere in Android now, vendor\u003c-\u003evendor, vendor\u003c-\u003esystem, etc, even apps can define custom AIDL interface to talk among themselves--although AIDL interfaces are not used as API). Sometimes it\u0027s not clear in an architecture where exactly the boundary should be frozen until later in development.\n- developers should need to learn fewer systems in order to be productive in Android\n- previously, if there was an AIDL interface that was needed by hardware, a clone of it would have to be recreated in HIDL (good luck cleaning up old clients). Now, it can work everywhere.\n\nThose are only some of the reasons, but AIDL is probably much better for this, than it would have been, and I believe its availability and use makes a lot of things better, even while we very very gradually move away from HIDL.\n\n\u003e commit to not uprev\u0027ing it\n\nWell, they certainly need upreving for new features, new standards. Android needs to evolve with time. It\u0027s highly frowned upon to uprve things for fun/without a motivation. If you only knew how many interfaces were prevented!\n\n\u003e But alas, you guys have to earn your keep somehow, I guess.\n\nI try, yo.",
+      "parentUuid": "57862032_a5f645dc",
+      "revId": "9c3326e59bcb21c31eedae2076eefd39d589aa2d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
