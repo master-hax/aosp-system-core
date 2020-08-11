@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "774812b7_9cab602b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1149384
+      },
+      "writtenOn": "2020-08-11T18:56:28Z",
+      "side": 1,
+      "message": "I\u0027m OK with moving it to input.\nThe only concern is that it\u0027s needed in both frameworks/native and frameworks/base, but I think it\u0027s solvable.\nLong-term, we should switch to xml anyways.\n\nMichael, Chris,\nAny concerns about moving PropertyMap to input?",
+      "parentUuid": "35e95fc7_21e2012b",
+      "revId": "868dd685f6dcd84e85e194486352841dc5595a9c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a2531693_8b3cd5cf",
         "filename": "libutils/Android.bp",
         "patchSetId": 2
