@@ -124,7 +124,7 @@ class Unwinder {
  protected:
   Unwinder(size_t max_frames) : max_frames_(max_frames) { frames_.reserve(max_frames); }
 
-  void FillInDexFrame();
+  bool FillInDexFrame();
   FrameData* FillInFrame(MapInfo* map_info, Elf* elf, uint64_t rel_pc, uint64_t pc_adjustment);
 
   size_t max_frames_;
