@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "27975c4d_bf726e99",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-08-11T01:11:26Z",
+      "side": 1,
+      "message": "4) you\u0027d have to be logging a ridiculous amount of crap to even notice :-)",
+      "revId": "4af349b072f1cf8d2cf3ecaf0987612f2490d530",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
