@@ -1,0 +1,12 @@
+Code-Review+2: Elliott Hughes <enh@google.com>
+Lint+1: Lint 🤖 <android-build-prod-ayeaye@system.gserviceaccount.com>
+DrNo-Review+1: Robin Jacob <robinjacob@google.com>
+Presubmit-Verified+1: Treehugger Robot <treehugger-gerrit@google.com>
+Autosubmit+1: Hongguang Chen <hgchen@google.com>
+Verified+1: sirius.wang <sirius.wang@mediatek.corp-partner.google.com>
+Open-Source-Licensing+1: Lint 🤖 <android-build-prod-ayeaye@system.gserviceaccount.com>
+Submitted-by: Treehugger Robot <treehugger-gerrit@google.com>
+Submitted-at: Wed, 12 Aug 2020 19:25:49 +0000
+Reviewed-on: https://android-review.googlesource.com/c/platform/system/core/+/1364665
+Project: platform/system/core
+Branch: refs/heads/android10-tests-dev
