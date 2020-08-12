@@ -48,7 +48,7 @@ namespace unwindstack {
 //   #7 pc 0015fa20 core.vdex   java.util.Arrays.binarySearch+8
 //   #8 pc 006b1ba1 libartd.so  ExecuteMterpImpl+14625
 //   #9 pc 0039a1ef libartd.so  art::interpreter::Execute+719
-void Unwinder::FillInDexFrame() {
+ErrorCode Unwinder::FillInDexFrame() {
   size_t frame_num = frames_.size();
   frames_.resize(frame_num + 1);
   FrameData* frame = &frames_.at(frame_num);
@@ -75,21 +75,22 @@ void Unwinder::FillInDexFrame() {
     frame->rel_pc = dex_pc - info->start;
   } else {
     frame->rel_pc = dex_pc;
-    return;
+    return ERROR_INVALID_MAP;
   }
 
   if (!resolve_names_) {
-    return;
+    return ERROR_NONE;
   }
 
 #if defined(DEXFILE_SUPPORT)
   if (dex_files_ == nullptr) {
-    return;
+    return ERROR_NONE;
   }
 
   dex_files_->GetMethodInformation(maps_, info, dex_pc, &frame->function_name,
                                    &frame->function_offset);
 #endif
+  return ERROR_NONE;
 }
 
 FrameData* Unwinder::FillInFrame(MapInfo* map_info, Elf* elf, uint64_t rel_pc,
@@ -206,7 +207,10 @@ void Unwinder::Unwind(const std::vector<std::string>* initial_map_names_to_skip,
                   basename(map_info->name.c_str())) == initial_map_names_to_skip->end()) {
       if (regs_->dex_pc() != 0) {
         // Add a frame to represent the dex file.
-        FillInDexFrame();
+        ErrorCode dex_error = FillInDexFrame();
+        if (dex_error != ERROR_NONE) {
+          last_error_.code = dex_error;
+        }
         // Clear the dex pc so that we don't repeat this frame later.
         regs_->set_dex_pc(0);
 
