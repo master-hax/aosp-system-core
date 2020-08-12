@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a91d255f_229a1dda",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1096713
+      },
+      "writtenOn": "2020-08-12T14:09:18Z",
+      "side": 1,
+      "message": "Follow-up to https://android-review.googlesource.com/c/platform/system/core/+/1392013",
+      "revId": "8763fd26fb2af91126a405b243c90ce026b29aec",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
