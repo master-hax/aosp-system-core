@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "040ff775_ad3fc686",
+        "filename": "logd/SerializedLogBuffer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 239,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-08-12T19:04:38Z",
+      "side": 1,
+      "message": "more readable to put this on the end of the line instead?",
+      "range": {
+        "startLine": 239,
+        "startChar": 8,
+        "endLine": 239,
+        "endChar": 38
+      },
+      "revId": "09d54afaba9e895c2b0100ddd97e7870d76f7db1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
