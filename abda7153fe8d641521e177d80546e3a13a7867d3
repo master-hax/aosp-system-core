@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c5a3a654_5585a322",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 10
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1096713
+      },
+      "writtenOn": "2020-08-12T14:08:51Z",
+      "side": 1,
+      "message": "Minor performance note: Since we switched a couple of these calls to using methods which take a const std::string\u0026 instead of a const char* for the argument, it\u0027s more efficient to get rid of the c_str() call in these arguments (which otherwise forces the construction of a temporary std::string).  I\u0027ve put up a follow-up CL: https://android-review.googlesource.com/c/platform/system/core/+/1397708",
+      "revId": "abda7153fe8d641521e177d80546e3a13a7867d3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "395e25c9_0bd0876e",
+        "filename": "healthd/healthd_mode_charger.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 696,
+      "author": {
+        "id": 1096713
+      },
+      "writtenOn": "2020-08-12T14:08:51Z",
+      "side": 1,
+      "message": "This method takes a const std::string\u0026 for its first argument, so we don\u0027t need to use c_str() here.",
+      "revId": "abda7153fe8d641521e177d80546e3a13a7867d3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "31ccf784_c2afe0a0",
+        "filename": "healthd/healthd_mode_charger.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 711,
+      "author": {
+        "id": 1096713
+      },
+      "writtenOn": "2020-08-12T14:08:51Z",
+      "side": 1,
+      "message": "This method takes a const std::string\u0026 for its first argument, so we don\u0027t need to use c_str() here.",
+      "revId": "abda7153fe8d641521e177d80546e3a13a7867d3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
