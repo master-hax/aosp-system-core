@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e1816506_594e094e",
+        "filename": "healthd/BatteryMonitor.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 294,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-08-13T16:51:18Z",
+      "side": 1,
+      "message": "just make this the default in initHealthInfo instead?",
+      "revId": "d346571d979263914c0e17e590a1f86b5737e124",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
