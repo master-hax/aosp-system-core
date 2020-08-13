@@ -37,6 +37,9 @@ namespace unwindstack {
 class Elf;
 enum ArchEnum : uint8_t;
 
+constexpr uint32_t kWarningNone = 0;
+constexpr uint32_t kWarningDexNotFound = 1;
+
 struct FrameData {
   size_t num;
 
@@ -110,6 +113,7 @@ class Unwinder {
   void SetDexFiles(DexFiles* dex_files, ArchEnum arch);
 
   bool elf_from_memory_not_file() { return elf_from_memory_not_file_; }
+  uint32_t warnings() { return warnings_; }
 
   ErrorCode LastErrorCode() { return last_error_.code; }
   uint64_t LastErrorAddress() { return last_error_.address; }
@@ -124,7 +128,7 @@ class Unwinder {
  protected:
   Unwinder(size_t max_frames) : max_frames_(max_frames) { frames_.reserve(max_frames); }
 
-  void FillInDexFrame();
+  uint32_t FillInDexFrame();
   FrameData* FillInFrame(MapInfo* map_info, Elf* elf, uint64_t rel_pc, uint64_t pc_adjustment);
 
   size_t max_frames_;
@@ -141,6 +145,7 @@ class Unwinder {
   // file. This is only true if there is an actual file backing up the elf.
   bool elf_from_memory_not_file_ = false;
   ErrorData last_error_;
+  uint32_t warnings_;
 };
 
 class UnwinderFromPid : public Unwinder {
