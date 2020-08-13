@@ -39,6 +39,24 @@
       "revId": "d346571d979263914c0e17e590a1f86b5737e124",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "909ceca6_761a3929",
+        "filename": "healthd/BatteryMonitor.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 294,
+      "author": {
+        "id": 1604091
+      },
+      "writtenOn": "2020-08-13T21:28:24Z",
+      "side": 1,
+      "message": "Fair enough. I didn\u0027t notice initHealthInfo() was also called in updateValues()\n\nI wanted to follow the definition in the HAL (UNKNOWN if uninitialized)\n    /**\n     * Battery capacity level is unknown.\n     * Battery capacity level must be set to this value if and only if battery\n     * is not present or the battery capacity level is unknown/uninitialized.\n     */\n\nThe problem is that initHealthInfo() is both called in the constructor and in updateValues(). I\u0027m fine if we adopt the semantic that we assume UNSUPPORTED instead of UNKNOWN at initialization, but the caveat is that there\u0027s a risk that a phone might shutdown (if there\u0027s a race or a bug), as the battery level is initialized to 0% (and the check in BatteryService.java is level \u003d\u003d 0%). The idea is that we wouldn\u0027t assume UNSUPPORTED and act until we know the feature is actually UNSUPPORTED.\n\nAlternative; could also separate the assignments and initialize to UNKNOWN at constructor and set to UNSUPPORTED as default in updateValues().",
+      "parentUuid": "e1816506_594e094e",
+      "revId": "d346571d979263914c0e17e590a1f86b5737e124",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
