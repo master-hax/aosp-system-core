@@ -23,8 +23,10 @@
 
 #include <iostream>
 #include <limits>
+#include <map>
 #include <string>
 #include <unordered_set>
+#include <utility>
 
 #include <android-base/file.h>
 #include <android-base/logging.h>
@@ -33,6 +35,7 @@
 #include <bzlib.h>
 #include <gflags/gflags.h>
 #include <libsnapshot/cow_writer.h>
+#include <payload_generator/extent_ranges.h>
 #include <puffin/puffpatch.h>
 #include <sparse/sparse.h>
 #include <update_engine/update_metadata.pb.h>
@@ -44,8 +47,10 @@ namespace snapshot {
 
 using android::base::borrowed_fd;
 using android::base::unique_fd;
+using chromeos_update_engine::CowMergeOperation;
 using chromeos_update_engine::DeltaArchiveManifest;
 using chromeos_update_engine::Extent;
+using chromeos_update_engine::ExtentRanges;
 using chromeos_update_engine::InstallOperation;
 using chromeos_update_engine::PartitionUpdate;
 
@@ -86,12 +91,14 @@ class PayloadConverter final {
   private:
     bool OpenPayload();
     bool OpenSourceTargetFiles();
+    bool PreprocessCopy(const InstallOperation& op);
     bool ProcessPartition(const PartitionUpdate& update);
     bool ProcessOperation(const InstallOperation& op);
     bool ProcessZero(const InstallOperation& op);
     bool ProcessCopy(const InstallOperation& op);
     bool ProcessReplace(const InstallOperation& op);
     bool ProcessDiff(const InstallOperation& op);
+    bool ProcessMergeOp(const CowMergeOperation& op);
     borrowed_fd OpenSourceImage();
 
     std::string in_file_;
@@ -107,6 +114,8 @@ class PayloadConverter final {
     std::string partition_name_;
     std::unique_ptr<CowWriter> writer_;
     unique_fd source_image_;
+    ExtentRanges copied_to_blocks_;
+    ExtentRanges merged_blocks_;
 };
 
 bool PayloadConverter::Run() {
@@ -197,7 +206,17 @@ bool PayloadConverter::ProcessPartition(const PartitionUpdate& update) {
     }
 
     partition_name_ = partition_name;
+    copied_to_blocks_ = {};
 
+    for (const auto& op : update.operations()) {
+        if (op.type() == InstallOperation::SOURCE_COPY) {
+        }
+    }
+    for (const auto& op : update.merge_operations()) {
+        if (!ProcessMergeOp(op)) {
+            return false;
+        }
+    }
     for (const auto& op : update.operations()) {
         if (!ProcessOperation(op)) {
             return false;
@@ -496,22 +515,55 @@ class ExtentIter final {
     uint64_t dst_index_;
 };
 
+bool PayloadConverter::PreprocessCopy(const InstallOperation& op) {
+    for (const auto& extent : op.dst_extents()) {
+        copied_to_blocks_.AddExtent(extent);
+    }
+    return true;
+}
+
 bool PayloadConverter::ProcessCopy(const InstallOperation& op) {
+    ExtentIter src_blocks(op.src_extents());
     ExtentIter dst_blocks(op.dst_extents());
 
-    for (const auto& extent : op.src_extents()) {
-        for (uint64_t i = 0; i < extent.num_blocks(); i++) {
-            uint64_t src_block = extent.start_block() + i;
-            uint64_t dst_block;
-            if (!dst_blocks.GetNext(&dst_block)) {
-                LOG(ERROR) << "SOURCE_COPY contained mismatching extents";
+    borrowed_fd source_image{-1};
+
+    char buffer[kBlockSize];
+    while (true) {
+        uint64_t src_block, dst_block;
+        bool has_src = src_blocks.GetNext(&src_block);
+        bool has_dst = dst_blocks.GetNext(&dst_block);
+        if (has_src != has_dst) {
+            LOG(ERROR) << "SOURCE_COPY contained mismatching extents";
+            return false;
+        }
+        if (!has_src) {
+            break;
+        }
+        if (merged_blocks_.ContainsBlock(dst_block)) {
+            // This block was already handled via the merge sequence.
+            continue;
+        }
+
+        // This block needs to be converted to raw bytes due to a dependency
+        // in the merge sequence.
+        if (source_image.get() < 0) {
+            source_image = OpenSourceImage();
+            if (source_image.get() < 0) {
                 return false;
             }
-            if (src_block == dst_block) continue;
-            if (!writer_->AddCopy(dst_block, src_block)) {
-                LOG(ERROR) << "Could not add copy operation";
-                return false;
-            }
+        }
+        uint64_t offset = src_block * kBlockSize;
+        if (lseek(source_image.get(), offset, SEEK_SET) < 0) {
+            PLOG(ERROR) << "lseek source image failed";
+            return false;
+        }
+        if (!android::base::ReadFully(source_image, buffer, sizeof(buffer))) {
+            PLOG(ERROR) << "read source image failed";
+            return false;
+        }
+        if (!writer_->AddRawBlocks(dst_block, buffer, sizeof(buffer))) {
+            return false;
         }
     }
     return true;
@@ -603,6 +655,35 @@ bool PayloadConverter::ProcessReplace(const InstallOperation& op) {
             return false;
         }
         buffer_pos += extent_size;
+    }
+    return true;
+}
+
+bool PayloadConverter::ProcessMergeOp(const CowMergeOperation& op) {
+    if (op.type() != CowMergeOperation::SOURCE_COPY) {
+        LOG(ERROR) << "Unexpected merge operation: " << op.type();
+        return false;
+    }
+
+    const Extent& src = op.src_extent();
+    const Extent& dst = op.dst_extent();
+    if (src.num_blocks() != dst.num_blocks()) {
+        LOG(ERROR) << "Merge SOURCE_COPY contained mismatching extents.";
+        return false;
+    }
+    merged_blocks_.AddExtent(dst);
+
+    for (uint64_t i = 0; i < src.num_blocks(); i++) {
+        uint64_t src_block = src.start_block() + i;
+        uint64_t dst_block = dst.start_block() + i;
+        if (!writer_->AddCopy(dst_block, src_block)) {
+            LOG(ERROR) << "Could not add copy operation.";
+            return false;
+        }
+        if (!copied_to_blocks_.ContainsBlock(dst_block)) {
+            LOG(ERROR) << "Block " << dst_block << " is not in the SOURCE_COPY set.";
+            return false;
+        }
     }
     return true;
 }

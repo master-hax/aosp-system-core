@@ -417,6 +417,7 @@ cc_binary {
         "libcrypto",
         "libgflags",
         "liblog",
+        "libpayload_extent_ranges",
         "libprotobuf-cpp-lite",
         "libpuffpatch",
         "libsnapshot_cow",
@@ -425,6 +426,9 @@ cc_binary {
         "libz",
         "libziparchive",
         "update_metadata-protos",
+    ],
+    header_libs: [
+        "libupdate_engine_headers",
     ],
     srcs: [
         "vab_convert_payload.cpp",
