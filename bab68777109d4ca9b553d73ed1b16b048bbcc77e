@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "dee237f8_0315a498",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-08-13T21:34:19Z",
+      "side": 1,
+      "message": "lgtm, but you probably want smoreland or someone else who actually knows something to +2 :-)",
+      "revId": "bab68777109d4ca9b553d73ed1b16b048bbcc77e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
