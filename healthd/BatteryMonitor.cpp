@@ -287,8 +287,12 @@ void BatteryMonitor::updateValues(void) {
 
     std::string buf;
 
-    if (readFromFile(mHealthdConfig->batteryCapacityLevelPath, &buf) > 0)
+    if (readFromFile(mHealthdConfig->batteryCapacityLevelPath, &buf) > 0) {
         mHealthInfo->batteryCapacityLevel = getBatteryCapacityLevel(buf.c_str());
+    } else {
+        /* Sysfs node does not exist - assume unsupported */
+        mHealthInfo->batteryCapacityLevel = BatteryCapacityLevel::UNSUPPORTED;
+    }
 
     if (readFromFile(mHealthdConfig->batteryStatusPath, &buf) > 0)
         props.batteryStatus = getBatteryStatus(buf.c_str());
