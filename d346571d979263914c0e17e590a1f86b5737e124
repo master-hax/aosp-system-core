@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "3c65464e_8633128e",
+        "filename": "healthd/BatteryMonitor.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 293,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2020-08-13T18:37:26Z",
+      "side": 1,
+      "message": "nit: //",
+      "range": {
+        "startLine": 293,
+        "startChar": 8,
+        "endLine": 293,
+        "endChar": 10
+      },
+      "revId": "d346571d979263914c0e17e590a1f86b5737e124",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e1816506_594e094e",
         "filename": "healthd/BatteryMonitor.cpp",
         "patchSetId": 1
