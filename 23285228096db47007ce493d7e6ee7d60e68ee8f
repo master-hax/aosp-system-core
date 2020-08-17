@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "89cce311_6aad55d1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1096713
+      },
+      "writtenOn": "2020-08-17T02:47:48Z",
+      "side": 1,
+      "message": "Follow up to https://android-review.googlesource.com/c/platform/system/core/+/1224544\n\nArguably, to the extent that we want this to be a C interface as well, we should instead introduce an additional method, like androidSetThreadPriorityAndPolicy(), to allow us to have both the 2 and 3 argument versions of the functions defined in C with compile-time type checking.\n\nBut I went with what seems the minimal change, which I think is still a strict improvement on the current state (we can now include this header again in C code, even if we don\u0027t get compile-time argument checking for one function).  If we want to consider changing this in the other way, I have no objections.  But given that the original CL landed in May, it\u0027s possible not a lot of folks are using this from C, so this CL may be sufficient.",
+      "revId": "23285228096db47007ce493d7e6ee7d60e68ee8f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
