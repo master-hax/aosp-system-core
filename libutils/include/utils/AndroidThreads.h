@@ -80,7 +80,13 @@ extern void androidSetCreateThreadFunc(android_create_thread_fn func);
 // in either case errno is set.  Thread ID zero means current thread.
 // Parameter "change_policy" indicates if sched policy should be changed. It needs
 // not be checked again if the change is done elsewhere like activity manager.
+#ifdef __cplusplus
 extern int androidSetThreadPriority(pid_t tid, int prio, bool change_policy = true);
+#else
+// For C, we can't have a default argument, so we'll end up not having any
+// argument checking at compile time.
+extern int androidSetThreadPriority();
+#endif
 
 // Get the current priority of a particular thread. Returns one of the
 // ANDROID_PRIORITY constants or a negative result in case of error.
