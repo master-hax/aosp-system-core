@@ -46,6 +46,30 @@
       "revId": "42a1a126e554a8bca31d0afc832848b7b0fa1f4e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7b49064c_b4c9a4d6",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-08-18T15:02:30Z",
+      "side": 1,
+      "message": "a quick codesearch implies that /system/xbin is also used for stuff like crasher and simpleperf.",
+      "parentUuid": "3eadfa3d_51e3fe84",
+      "range": {
+        "startLine": 9,
+        "startChar": 15,
+        "endLine": 9,
+        "endChar": 42
+      },
+      "revId": "42a1a126e554a8bca31d0afc832848b7b0fa1f4e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
