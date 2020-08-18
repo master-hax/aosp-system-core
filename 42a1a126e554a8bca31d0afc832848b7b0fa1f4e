@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "619b7119_81b91c87",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-08-18T14:52:38Z",
+      "side": 1,
+      "message": "should we just get rid of this directory instead?",
+      "range": {
+        "startLine": 9,
+        "startChar": 15,
+        "endLine": 9,
+        "endChar": 42
+      },
+      "revId": "42a1a126e554a8bca31d0afc832848b7b0fa1f4e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
