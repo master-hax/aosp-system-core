@@ -543,9 +543,11 @@ bool DwarfSectionImpl<AddressType>::Eval(const DwarfCie* cie, Memory* regular_me
         // Skip this unknown register.
         continue;
       }
+      reg_ptr = nullptr;
+    } else {
+      reg_ptr = eval_info.regs_info.Save(reg);
     }
 
-    reg_ptr = eval_info.regs_info.Save(reg);
     if (!EvalRegister(&entry.second, reg, reg_ptr, &eval_info)) {
       return false;
     }
