@@ -22,6 +22,30 @@
       "revId": "42a1a126e554a8bca31d0afc832848b7b0fa1f4e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3eadfa3d_51e3fe84",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1010681
+      },
+      "writtenOn": "2020-08-18T14:59:30Z",
+      "side": 1,
+      "message": "And move su to /system/bin? I don\u0027t feel qualified to answer that.\n\nIt would be a bigger change though, as we\u0027d need to update selinux policy also (at a minimum)",
+      "parentUuid": "619b7119_81b91c87",
+      "range": {
+        "startLine": 9,
+        "startChar": 15,
+        "endLine": 9,
+        "endChar": 42
+      },
+      "revId": "42a1a126e554a8bca31d0afc832848b7b0fa1f4e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
