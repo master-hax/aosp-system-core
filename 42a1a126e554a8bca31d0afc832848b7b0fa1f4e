@@ -70,6 +70,30 @@
       "revId": "42a1a126e554a8bca31d0afc832848b7b0fa1f4e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bf03aaf9_54e9ca88",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1010681
+      },
+      "writtenOn": "2020-08-18T15:06:32Z",
+      "side": 1,
+      "message": "Well, on my coral-userdebug there is nothing else in there. I\u0027ll look into those other references, perhaps they\u0027re only there in eng builds?",
+      "parentUuid": "7b49064c_b4c9a4d6",
+      "range": {
+        "startLine": 9,
+        "startChar": 15,
+        "endLine": 9,
+        "endChar": 42
+      },
+      "revId": "42a1a126e554a8bca31d0afc832848b7b0fa1f4e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
