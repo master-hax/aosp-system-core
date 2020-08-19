@@ -34,6 +34,23 @@
       "revId": "92bf8e21069ec07c1630763eb7f23fc7d0d1deeb",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "99d27160_bcd39be2",
+        "filename": "libcrypto_utils/android_pubkey.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-08-19T21:12:19Z",
+      "side": 1,
+      "message": "i like your new style better... just remove this conditional and set `new_key \u003d NULL` above instead, rather than have two styles in the same function?",
+      "revId": "92bf8e21069ec07c1630763eb7f23fc7d0d1deeb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
