@@ -52,7 +52,7 @@ static int daemon_main(const std::string& device) {
     }
 
     size_t buf_size = 1UL << 16;
-    auto buf = std::make_unique<char>(buf_size);
+    auto buf = std::make_unique<char[]>(buf_size);
 
     /* Just keeps pumping messages between userspace and the kernel.  We won't
      * actually be doing anything, but the sequence numbers line up so it'll at
@@ -66,7 +66,7 @@ static int daemon_main(const std::string& device) {
         if (readed < 0) {
             PLOG(ERROR) << "Control read failed, trying with more space";
             buf_size *= 2;
-            buf = std::make_unique<char>(buf_size);
+            buf = std::make_unique<char[]>(buf_size);
             continue;
         }
 
@@ -87,7 +87,7 @@ static int daemon_main(const std::string& device) {
                 if ((sizeof(*msg) + msg->len) > buf_size) {
                     auto old_buf = std::move(buf);
                     buf_size = sizeof(*msg) + msg->len;
-                    buf = std::make_unique<char>(buf_size);
+                    buf = std::make_unique<char[]>(buf_size);
                     memcpy(buf.get(), old_buf.get(), sizeof(*msg));
                     msg = (struct dm_user_message*)buf.get();
                 }
