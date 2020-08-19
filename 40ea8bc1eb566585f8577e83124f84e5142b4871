@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9850d91c_c894c84c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-08-19T21:56:20Z",
+      "side": 1,
+      "message": "yeah, the thing that always made me sad was how unfriendly the OpenSSL APIs were to things like std::unique_ptr --- you couldn\u0027t even conveniently use RAII to make them a bit less unsafe.",
+      "revId": "40ea8bc1eb566585f8577e83124f84e5142b4871",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
