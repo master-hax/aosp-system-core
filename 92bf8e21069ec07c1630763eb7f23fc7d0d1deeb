@@ -16,6 +16,24 @@
       "revId": "92bf8e21069ec07c1630763eb7f23fc7d0d1deeb",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "96b8d3e7_8c68c708",
+        "filename": "libcrypto_utils/android_pubkey.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-08-19T21:09:35Z",
+      "side": 1,
+      "message": "ah, that\u0027ll mean  there\u0027s a missing .clang-format symlink in this directory. if you look at its  siblings, you\u0027ll find one that\u0027s a link to the two-space .clang-format that you can copy and add to this CL.\n\n(you must be the first person to touch this code since clang-format was added!)",
+      "parentUuid": "085cb6b9_40aec23e",
+      "revId": "92bf8e21069ec07c1630763eb7f23fc7d0d1deeb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
