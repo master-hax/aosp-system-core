@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "7a89dfff_00d0c67a",
+        "filename": "libcrypto_utils/android_pubkey.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1031048
+      },
+      "writtenOn": "2020-08-19T21:43:11Z",
+      "side": 1,
+      "message": "Aha. Done.",
+      "parentUuid": "96b8d3e7_8c68c708",
+      "revId": "92bf8e21069ec07c1630763eb7f23fc7d0d1deeb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "99d27160_bcd39be2",
         "filename": "libcrypto_utils/android_pubkey.c",
         "patchSetId": 1
@@ -51,6 +69,24 @@
       "revId": "92bf8e21069ec07c1630763eb7f23fc7d0d1deeb",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "74cbc610_311d4270",
+        "filename": "libcrypto_utils/android_pubkey.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 1031048
+      },
+      "writtenOn": "2020-08-19T21:43:11Z",
+      "side": 1,
+      "message": "Done (Yeah I guess putting it inside the if would also have worked, but then if anyone stuck code in between things, it\u0027d break. Not that RSA_set0_key can actually fail. That API is terrible...)",
+      "parentUuid": "99d27160_bcd39be2",
+      "revId": "92bf8e21069ec07c1630763eb7f23fc7d0d1deeb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
