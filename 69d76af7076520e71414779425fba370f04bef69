@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d5e5a91f_a2358f0f",
+        "filename": "fs_mgr/libsnapshot/snapuserd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2020-08-20T06:39:06Z",
+      "side": 1,
+      "message": "I presume all this code is going to go away when you have queues and messages setup.\n\nFWIW, all my current code changes related to dm-snap-persistent and snapuserd has been on top of:\n\nhttps://user.git.corp.google.com/akailash/dm-user/+/refs/heads/pixel-4.19\n\nWherein, I had cleaned up all this re-allocation and some clean up in kernel code as well. That said, I guess it shouldn\u0027t matter as we can merge back once we have individual pieces working.",
+      "revId": "69d76af7076520e71414779425fba370f04bef69",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
