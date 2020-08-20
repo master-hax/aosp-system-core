@@ -101,7 +101,7 @@ static int daemon_main(const std::string& device) {
                     return 7;
                 }
 
-                if (!android::base::WriteFully(ctrl_fd.get(), buf.get(), sizeof(*msg) + msg->len)) {
+                if (write(ctrl_fd.get(), buf.get(), sizeof(*msg) + msg->len) < 0) {
                     PLOG(ERROR) << "write control failed";
                     return 3;
                 }
