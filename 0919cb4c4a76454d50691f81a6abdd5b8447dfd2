@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "50d4c044_44371130",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-08-20T06:59:44Z",
+      "side": 1,
+      "message": "Looks like a .swp file got swept into the commit by accident.",
+      "revId": "0919cb4c4a76454d50691f81a6abdd5b8447dfd2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
