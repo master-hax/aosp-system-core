@@ -326,6 +326,7 @@ cc_defaults {
         "libbase",
         "liblog",
         "libdm",
+        "libdm-user",
     ],
 }
 

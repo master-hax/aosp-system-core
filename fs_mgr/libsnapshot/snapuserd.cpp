@@ -20,8 +20,10 @@
 #include <android-base/logging.h>
 #include <android-base/stringprintf.h>
 #include <android-base/unique_fd.h>
+#include <libdm-user/target.h>
 #include <libdm/dm.h>
 
+using namespace android;
 using android::base::unique_fd;
 
 #define DM_USER_MAP_READ 0
@@ -36,16 +38,26 @@ struct dm_user_message {
     __u8 buf[];
 };
 
-using namespace android::dm;
-
-static int daemon_main(const std::string& device) {
-    unique_fd block_fd(open(device.c_str(), O_RDWR));
+static int daemon_main(const std::string& backing_store, const std::string& mapped_device) {
+    unique_fd block_fd(open(backing_store.c_str(), O_RDWR));
     if (block_fd < 0) {
-        PLOG(ERROR) << "Unable to open " << device;
+        PLOG(ERROR) << "Unable to open " << backing_store;
         return 1;
     }
 
-    unique_fd ctrl_fd(open("/dev/dm-user", O_RDWR));
+    auto uuid = [&]() {
+        auto& dm = dm::DeviceMapper::Instance();
+        std::string uuid;
+        if (!dm.GetDmDeviceUUIDByName(mapped_device, &uuid)) {
+            PLOG(ERROR) << "Unable to find UUID for " << mapped_device;
+            abort();
+        }
+        return uuid;
+    }();
+
+    auto target = dm_user::target(uuid);
+
+    unique_fd ctrl_fd(open(target.control_path().c_str(), O_RDWR));
     if (ctrl_fd < 0) {
         PLOG(ERROR) << "Unable to open /dev/dm-user";
         return 1;
@@ -93,11 +105,11 @@ static int daemon_main(const std::string& device) {
                 }
 
                 if (lseek(block_fd.get(), msg->sector * 512, SEEK_SET) < 0) {
-                    PLOG(ERROR) << "lseek failed: " << device;
+                    PLOG(ERROR) << "lseek failed: " << backing_store;
                     return 7;
                 }
                 if (!android::base::ReadFully(block_fd.get(), msg->buf, msg->len)) {
-                    PLOG(ERROR) << "read failed: " << device;
+                    PLOG(ERROR) << "read failed: " << backing_store;
                     return 7;
                 }
 
@@ -121,6 +133,11 @@ static int daemon_main(const std::string& device) {
 
 int main([[maybe_unused]] int argc, char** argv) {
     android::base::InitLogging(argv, &android::base::KernelLogger);
-    daemon_main(argv[1]);
-    return 0;
+
+    if (argc != 3) {
+        LOG(ERROR) << argv[0] << "<backing store> <dm device>";
+        return 1;
+    }
+
+    return daemon_main(argv[1], argv[2]);
 }
