@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "44b10a65_29511416",
+        "filename": "fs_mgr/libdm/dm.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 432,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-08-20T06:54:29Z",
+      "side": 1,
+      "message": "Nit: GetDmDeviceUuidByName (Style guide says to lowercase abbreviations)",
+      "revId": "dc8ed80c3b17d994019e5ac6701fbb48ddc15cd9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cfded7c3_ea53b99b",
+        "filename": "fs_mgr/tools/dmctl.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 395,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-08-20T06:54:29Z",
+      "side": 1,
+      "message": "nit: GetUuidCmdHandler",
+      "revId": "dc8ed80c3b17d994019e5ac6701fbb48ddc15cd9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
