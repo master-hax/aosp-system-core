@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5f8beb59_14b1ff0c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1598726
+      },
+      "writtenOn": "2020-08-20T05:12:07Z",
+      "side": 1,
+      "message": "My kernel code lives at sso://user/palmerdabbelt/dm-user/linux -b dm-user",
+      "revId": "91ad8f2b80b7f9f03966b02d1be12cb2a969513a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
