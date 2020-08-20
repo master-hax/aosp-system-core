@@ -16,6 +16,23 @@
       "revId": "2d70d102bed84bc1bec1ed3376bf5b7c83ed384d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6cacdf4d_0cc24178",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2020-08-20T18:14:50Z",
+      "side": 1,
+      "message": "This seems safe to me since it\u0027s only additions to the json schema. But let\u0027s wait for Steven and Yifan to chime in.",
+      "revId": "2d70d102bed84bc1bec1ed3376bf5b7c83ed384d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
