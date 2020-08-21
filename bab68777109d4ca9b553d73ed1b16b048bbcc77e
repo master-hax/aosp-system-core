@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "e929e58b_1a085077",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2020-08-21T01:17:27Z",
+      "side": 1,
+      "message": "If it does not exist, framework will use old logic to determine shutdown logic, so it works as expected.",
+      "range": {
+        "startLine": 11,
+        "startChar": 0,
+        "endLine": 13,
+        "endChar": 16
+      },
+      "revId": "bab68777109d4ca9b553d73ed1b16b048bbcc77e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "dee237f8_0315a498",
         "filename": "/PATCHSET_LEVEL",
         "patchSetId": 2
