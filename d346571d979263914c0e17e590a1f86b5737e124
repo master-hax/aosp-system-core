@@ -72,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "85c8a92e_1f232359",
+        "filename": "healthd/BatteryMonitor.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 293,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2020-08-21T01:26:01Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "c8a4db10_a7785572",
+      "range": {
+        "startLine": 293,
+        "startChar": 39,
+        "endLine": 293,
+        "endChar": 57
+      },
+      "revId": "d346571d979263914c0e17e590a1f86b5737e124",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e1816506_594e094e",
         "filename": "healthd/BatteryMonitor.cpp",
         "patchSetId": 1
@@ -140,6 +164,24 @@
       "revId": "d346571d979263914c0e17e590a1f86b5737e124",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cd3b32e0_6bc1a1b7",
+        "filename": "healthd/BatteryMonitor.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 294,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2020-08-21T01:26:01Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "afb4731a_691c28a2",
+      "revId": "d346571d979263914c0e17e590a1f86b5737e124",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
