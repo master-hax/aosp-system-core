@@ -79,6 +79,12 @@ public:
     void* getDataPtr(void) const { return mDataPtr; }
 
     /*
+     * Get a pointer to the start of the underlying map.
+     * Start of the map may precede start of requested data.
+     */
+    void* getBasePtr(void) const { return mBasePtr; }
+
+    /*
      * Get the length we requested.
      */
     size_t getDataLength(void) const { return mDataLength; }
