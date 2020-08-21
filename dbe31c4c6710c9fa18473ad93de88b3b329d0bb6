@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "cd3abdfb_ed448257",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-08-21T16:07:33Z",
+      "side": 1,
+      "message": "init.rc",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 6
+      },
+      "revId": "dbe31c4c6710c9fa18473ad93de88b3b329d0bb6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "dc136bb5_0d64cb93",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-08-21T16:07:33Z",
+      "side": 1,
+      "message": "Can you remove one of these Change-Id lines?",
+      "revId": "dbe31c4c6710c9fa18473ad93de88b3b329d0bb6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
