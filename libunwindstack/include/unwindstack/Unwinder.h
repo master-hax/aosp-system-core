@@ -119,6 +119,8 @@ class Unwinder {
   // frames collected by frame-pointer unwinding that's done outside of
   // libunwindstack. This is used by tombstoned to symbolize frame pointer-based
   // stack traces that are collected by tools such as GWP-ASan and MTE.
+  static FrameData BuildFrameFromPcOnly(uint64_t pc, Maps* maps,
+                                        std::shared_ptr<Memory> process_memory, bool resolve_names);
   FrameData BuildFrameFromPcOnly(uint64_t pc);
 
  protected:

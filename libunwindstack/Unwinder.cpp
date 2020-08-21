@@ -395,10 +395,11 @@ bool UnwinderFromPid::Init(ArchEnum arch) {
   return true;
 }
 
-FrameData Unwinder::BuildFrameFromPcOnly(uint64_t pc) {
+FrameData Unwinder::BuildFrameFromPcOnly(uint64_t pc, Maps* maps,
+                                         std::shared_ptr<Memory> process_memory,
+                                         bool resolve_names) {
   FrameData frame;
 
-  Maps* maps = GetMaps();
   MapInfo* map_info = maps->Find(pc);
   if (!map_info) {
     frame.rel_pc = pc;
@@ -406,7 +407,7 @@ FrameData Unwinder::BuildFrameFromPcOnly(uint64_t pc) {
   }
 
   ArchEnum arch = Regs::CurrentArch();
-  Elf* elf = map_info->GetElf(GetProcessMemory(), arch);
+  Elf* elf = map_info->GetElf(process_memory, arch);
 
   uint64_t relative_pc = elf->GetRelPc(pc, map_info);
 
@@ -417,7 +418,7 @@ FrameData Unwinder::BuildFrameFromPcOnly(uint64_t pc) {
 
   // If we don't have a valid ELF file, check the JIT.
   if (!elf->valid()) {
-    JitDebug jit_debug(GetProcessMemory());
+    JitDebug jit_debug(process_memory);
     uint64_t jit_pc = pc - pc_adjustment;
     Elf* jit_elf = jit_debug.GetElf(maps, jit_pc);
     if (jit_elf != nullptr) {
@@ -437,12 +438,16 @@ FrameData Unwinder::BuildFrameFromPcOnly(uint64_t pc) {
   frame.map_flags = map_info->flags;
   frame.map_load_bias = elf->GetLoadBias();
 
-  if (!resolve_names_ ||
+  if (!resolve_names ||
       !elf->GetFunctionName(relative_pc, &frame.function_name, &frame.function_offset)) {
     frame.function_name = "";
     frame.function_offset = 0;
   }
   return frame;
+}
+
+FrameData Unwinder::BuildFrameFromPcOnly(uint64_t pc) {
+  return BuildFrameFromPcOnly(pc, GetMaps(), GetProcessMemory(), resolve_names_);
 }
 
 }  // namespace unwindstack
