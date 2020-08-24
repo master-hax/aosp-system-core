@@ -34,6 +34,24 @@
       "revId": "421c91004e6a868d17fde777d1db0bcd9487c40c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "41f30139_08be29c0",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-08-24T17:08:37Z",
+      "side": 1,
+      "message": "yes please, if you\u0027ve got time. that just seems cleaner and less disruptive all around. (and rickyiu@ didn\u0027t counter by saying that more callers are coming...)",
+      "parentUuid": "a3fa2516_1786d31f",
+      "revId": "421c91004e6a868d17fde777d1db0bcd9487c40c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
