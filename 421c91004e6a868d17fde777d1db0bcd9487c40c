@@ -16,6 +16,24 @@
       "revId": "421c91004e6a868d17fde777d1db0bcd9487c40c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a3fa2516_1786d31f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1096713
+      },
+      "writtenOn": "2020-08-24T16:49:11Z",
+      "side": 1,
+      "message": "It is not much more effort to add the new function.  I believe there is only one calling site using the extra parameter.  If that\u0027s what we want and think is better from the API view, we might as well fix it correctly now, before others start using the default parameter and we\u0027re not able to undo it.\n\nJust let me know, I\u0027m happy to put up a fix which does that.",
+      "parentUuid": "8a38af09_bebd0f37",
+      "revId": "421c91004e6a868d17fde777d1db0bcd9487c40c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
