@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8a38af09_bebd0f37",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-08-24T16:39:06Z",
+      "side": 1,
+      "message": "yeah, seems like the easiest fix. (though like i said, i still think the default parameter is a mistake and we should have added a new function for the single caller that wants the extra control.)",
+      "revId": "421c91004e6a868d17fde777d1db0bcd9487c40c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
