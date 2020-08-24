@@ -16,6 +16,23 @@
       "revId": "c08c51994bec3611e3c3e297f3da3d36287f681e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ec8555af_ede7a50c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1096713
+      },
+      "writtenOn": "2020-08-24T19:08:34Z",
+      "side": 1,
+      "message": "Good to know if we decide to revive this approach: There are prebuilts which link in these symbols, so changing them from C-linked to C++-linked will not work without us updating the prebuilts.  This seems a good reason not to take this approach.  Good catch by TreeHugger.",
+      "revId": "c08c51994bec3611e3c3e297f3da3d36287f681e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
