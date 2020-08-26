@@ -69,6 +69,10 @@ bool CowReader::Parse(android::base::borrowed_fd fd) {
         return false;
     }
 
+    CHECK(header_.magic == kCowMagicNumber);
+    CHECK(header_.major_version == kCowVersionMajor);
+    CHECK(header_.minor_version == kCowVersionMinor);
+
     uint8_t header_csum[32];
     {
         CowHeader tmp = header_;
