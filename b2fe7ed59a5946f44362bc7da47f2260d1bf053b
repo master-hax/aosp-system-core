@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c08cfd48_dcecf75b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2020-08-26T03:30:08Z",
+      "side": 1,
+      "message": "dm-snap overview:\n\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\n\nDocument goes over IO path from dm-snap to snapuserd. I have added code comments wherever necessary but document should cover in detail.\n\nhttps://docs.google.com/document/d/1xXE1EJsjqZjfrcSsUE2e0sLnRYaGxeNikAb992SCJ5A/edit?usp\u003dsharing\n\n\n\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\nKernel code: \n\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\nNo change in kernel code - same patch which was used for verifying boot time measurements. However, it handles IO being split into multiple chunks based on fixed payload size and clean up all the bio code.\n\nhttps://user.git.corp.google.com/akailash/dm-user/+/refs/heads/pixel-4.19/pixel-patch/kernel-patch/pixel-4.19-08-04.diff\n\n",
+      "revId": "b2fe7ed59a5946f44362bc7da47f2260d1bf053b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
