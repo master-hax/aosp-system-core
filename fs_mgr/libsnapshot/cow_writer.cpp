@@ -23,7 +23,7 @@
 #include <android-base/logging.h>
 #include <android-base/unique_fd.h>
 #include <libsnapshot/cow_writer.h>
-#include <openssl/sha.h>
+//#include <openssl/sha.h>
 #include <zlib.h>
 
 namespace android {
@@ -179,12 +179,16 @@ std::basic_string<uint8_t> CowWriter::Compress(const void* data, size_t length) 
     return {};
 }
 
+// TODO: Fix compilation issues when linking libcrypto library
+// when snapuserd is compiled as part of ramdisk.
+#if 0
 static void SHA256(const void* data, size_t length, uint8_t out[32]) {
     SHA256_CTX c;
     SHA256_Init(&c);
     SHA256_Update(&c, data, length);
     SHA256_Final(out, &c);
 }
+#endif
 
 bool CowWriter::Finalize() {
     // If both fields are set then Finalize is already called.
@@ -199,8 +203,12 @@ bool CowWriter::Finalize() {
     header_.ops_offset = offs;
     header_.ops_size = ops_.size();
 
+    memset(header_.ops_checksum, 0, sizeof(uint8_t) * 32);
+    memset(header_.header_checksum, 0, sizeof(uint8_t) * 32);
+#if 0
     SHA256(ops_.data(), ops_.size(), header_.ops_checksum);
     SHA256(&header_, sizeof(header_), header_.header_checksum);
+#endif
 
     if (lseek(fd_.get(), 0, SEEK_SET)) {
         PLOG(ERROR) << "lseek failed";
