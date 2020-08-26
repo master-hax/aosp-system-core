@@ -37,3 +37,12 @@ cc_test {
     static_libs: ["libpropertyinfoserializer"],
     test_suites: ["device-tests"],
 }
+
+cc_benchmark {
+    name: "propertyinfoserializer_benchmarks",
+    defaults: ["propertyinfoserializer_defaults"],
+    srcs: [
+        "property_info_benchmark.cpp",
+    ],
+    static_libs: ["libpropertyinfoserializer"],
+}
