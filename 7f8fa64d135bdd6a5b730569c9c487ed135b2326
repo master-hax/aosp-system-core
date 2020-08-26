@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d927c08e_9e575955",
+        "filename": "property_service/libpropertyinfoserializer/property_info_benchmark.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-08-26T23:31:48Z",
+      "side": 1,
+      "message": "?",
+      "range": {
+        "startLine": 2,
+        "startChar": 17,
+        "endLine": 2,
+        "endChar": 26
+      },
+      "revId": "7f8fa64d135bdd6a5b730569c9c487ed135b2326",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "72c07582_9596314c",
+        "filename": "property_service/libpropertyinfoserializer/property_info_benchmark.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1020,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-08-26T23:31:48Z",
+      "side": 1,
+      "message": "can we just link that in instead? (like we do bits of the linker code in the linker tests?)",
+      "revId": "7f8fa64d135bdd6a5b730569c9c487ed135b2326",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6d3791b7_ce6fad13",
+        "filename": "property_service/libpropertyinfoserializer/property_info_benchmark.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1108,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-08-26T23:31:48Z",
+      "side": 1,
+      "message": "is this a %ms scanf?",
+      "range": {
+        "startLine": 1092,
+        "startChar": 2,
+        "endLine": 1108,
+        "endChar": 3
+      },
+      "revId": "7f8fa64d135bdd6a5b730569c9c487ed135b2326",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
