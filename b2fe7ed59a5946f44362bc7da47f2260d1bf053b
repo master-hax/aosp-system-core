@@ -16,6 +16,176 @@
       "revId": "b2fe7ed59a5946f44362bc7da47f2260d1bf053b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bf8b0f19_9c3e6034",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/snapuserd.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-08-26T23:00:02Z",
+      "side": 1,
+      "message": "Where appropriate, we prefer to explicitly type these, eg:\n\nstatic constexpr uint32_t SNAP_MAGIC \u003d ...\n\n(This applies to below as well.)",
+      "revId": "b2fe7ed59a5946f44362bc7da47f2260d1bf053b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e41b6401_b9e609fc",
+        "filename": "fs_mgr/libsnapshot/snapuserd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-08-26T23:00:02Z",
+      "side": 1,
+      "message": "nit: Android puts the main include first, then system C includes, then system C++, then Android includes. Eg:\n\n#include \"snapuserd.h\"\n\n#include \u003cassert.h\u003e\n#include \u003clinux/types.h\u003e\n#include \u003cstdlib.h\u003e\n\n#include \u003ccstring\u003e\n#include \u003ciostream\u003e\n#include \u003cmap\u003e\n#include \u003cstring\u003e\n#include \u003cvector\u003e\n\n#include \u003candroid-base/file.h\u003e\n#include \u003candroid-base/logging.h\u003e\n#include \u003candroid-base/stringprintf.h\u003e\n#include \u003candroid-base/unique_fd.h\u003e\n#include \u003clibmd/dm.h\u003e",
+      "revId": "b2fe7ed59a5946f44362bc7da47f2260d1bf053b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a06e4ede_0db81e88",
+        "filename": "fs_mgr/libsnapshot/snapuserd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-08-26T23:00:02Z",
+      "side": 1,
+      "message": "Was there a case where std::min() didn\u0027t work?",
+      "revId": "b2fe7ed59a5946f44362bc7da47f2260d1bf053b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "058c21fb_d1e0cf63",
+        "filename": "fs_mgr/libsnapshot/snapuserd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-08-26T23:00:02Z",
+      "side": 1,
+      "message": "From looking at the callers, I think you can remove this. AOSP doesn\u0027t support big-endian.",
+      "revId": "b2fe7ed59a5946f44362bc7da47f2260d1bf053b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8a9bb252_6783184b",
+        "filename": "fs_mgr/libsnapshot/snapuserd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-08-26T23:00:02Z",
+      "side": 1,
+      "message": "nit: Clear()",
+      "revId": "b2fe7ed59a5946f44362bc7da47f2260d1bf053b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5ad11a49_dafa5274",
+        "filename": "fs_mgr/libsnapshot/snapuserd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-08-26T23:00:02Z",
+      "side": 1,
+      "message": "nit: nullptr (s/NULL/nullptr everywhere, actually)",
+      "revId": "b2fe7ed59a5946f44362bc7da47f2260d1bf053b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4c12696b_11e8fd46",
+        "filename": "fs_mgr/libsnapshot/snapuserd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-08-26T23:00:02Z",
+      "side": 1,
+      "message": "Maybe add a CHECK() here that sizeof(dm_user_header) \u003c\u003d buffer_size_?",
+      "revId": "b2fe7ed59a5946f44362bc7da47f2260d1bf053b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6180d7df_376f4248",
+        "filename": "fs_mgr/libsnapshot/snapuserd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 122,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-08-26T23:00:02Z",
+      "side": 1,
+      "message": "No need for \"void\" like this.",
+      "revId": "b2fe7ed59a5946f44362bc7da47f2260d1bf053b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9968288a_4f8eb128",
+        "filename": "fs_mgr/libsnapshot/snapuserd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 164,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-08-26T23:00:02Z",
+      "side": 1,
+      "message": "Can you explain a bit what it means to be out of memory here? When can that happen?",
+      "revId": "b2fe7ed59a5946f44362bc7da47f2260d1bf053b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7c3583d0_05d9cff0",
+        "filename": "fs_mgr/libsnapshot/snapuserd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 263,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-08-26T23:00:02Z",
+      "side": 1,
+      "message": "It looks like you can move these checks out of the switch statement, since they have a uniform return style.",
+      "revId": "b2fe7ed59a5946f44362bc7da47f2260d1bf053b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
