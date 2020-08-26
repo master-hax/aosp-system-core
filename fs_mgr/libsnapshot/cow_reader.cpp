@@ -69,6 +69,22 @@ bool CowReader::Parse(android::base::borrowed_fd fd) {
         return false;
     }
 
+    if (header_.magic != kCowMagicNumber) {
+        LOG(ERROR) << "Header Magic corrupted. Magic: " << header_.magic
+                   << "Expected: " << kCowMagicNumber;
+        return false;
+    }
+
+    if ((header_.major_version != kCowVersionMajor) ||
+        (header_.minor_version != kCowVersionMinor)) {
+        LOG(ERROR) << "Header version mismatch";
+        LOG(ERROR) << "Major version: " << header_.major_version
+                   << "Expected: " << kCowVersionMajor;
+        LOG(ERROR) << "Minor version: " << header_.minor_version
+                   << "Expected: " << kCowVersionMinor;
+        return false;
+    }
+
     uint8_t header_csum[32];
     {
         CowHeader tmp = header_;
@@ -128,6 +144,9 @@ const CowOperation& CowOpIter::Get() {
     return *reinterpret_cast<const CowOperation*>(pos_);
 }
 
+// Create a CowOpIter object which contains header_.num_ops
+// CowOperation objects. Get() returns a unique CowOperation object
+// whose lifeteime depends on the CowOpIter object
 std::unique_ptr<ICowOpIter> CowReader::GetOpIter() {
     if (lseek(fd_.get(), header_.ops_offset, SEEK_SET) < 0) {
         PLOG(ERROR) << "lseek ops failed";
