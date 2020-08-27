@@ -36,6 +36,24 @@
     },
     {
       "key": {
+        "uuid": "2b092b0d_abc08dc4",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/snapuserd.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2020-08-27T23:09:29Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "bf8b0f19_9c3e6034",
+      "revId": "b2fe7ed59a5946f44362bc7da47f2260d1bf053b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e41b6401_b9e609fc",
         "filename": "fs_mgr/libsnapshot/snapuserd.cpp",
         "patchSetId": 1
@@ -50,6 +68,24 @@
       "revId": "b2fe7ed59a5946f44362bc7da47f2260d1bf053b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e9376518_4c961ba6",
+        "filename": "fs_mgr/libsnapshot/snapuserd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2020-08-27T23:09:29Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e41b6401_b9e609fc",
+      "revId": "b2fe7ed59a5946f44362bc7da47f2260d1bf053b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -70,6 +106,24 @@
     },
     {
       "key": {
+        "uuid": "2ab6e110_35ba8025",
+        "filename": "fs_mgr/libsnapshot/snapuserd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2020-08-27T23:09:29Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a06e4ede_0db81e88",
+      "revId": "b2fe7ed59a5946f44362bc7da47f2260d1bf053b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "058c21fb_d1e0cf63",
         "filename": "fs_mgr/libsnapshot/snapuserd.cpp",
         "patchSetId": 1
@@ -84,6 +138,24 @@
       "revId": "b2fe7ed59a5946f44362bc7da47f2260d1bf053b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8899536b_4b8a62ba",
+        "filename": "fs_mgr/libsnapshot/snapuserd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2020-08-27T23:09:29Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "058c21fb_d1e0cf63",
+      "revId": "b2fe7ed59a5946f44362bc7da47f2260d1bf053b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -104,6 +176,24 @@
     },
     {
       "key": {
+        "uuid": "c269c302_b4adf398",
+        "filename": "fs_mgr/libsnapshot/snapuserd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2020-08-27T23:09:29Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8a9bb252_6783184b",
+      "revId": "b2fe7ed59a5946f44362bc7da47f2260d1bf053b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5ad11a49_dafa5274",
         "filename": "fs_mgr/libsnapshot/snapuserd.cpp",
         "patchSetId": 1
@@ -118,6 +208,24 @@
       "revId": "b2fe7ed59a5946f44362bc7da47f2260d1bf053b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "068d80ec_3c23fdc8",
+        "filename": "fs_mgr/libsnapshot/snapuserd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2020-08-27T23:09:29Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5ad11a49_dafa5274",
+      "revId": "b2fe7ed59a5946f44362bc7da47f2260d1bf053b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -155,6 +263,24 @@
     },
     {
       "key": {
+        "uuid": "43812247_64b5c162",
+        "filename": "fs_mgr/libsnapshot/snapuserd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 122,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2020-08-27T23:09:29Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6180d7df_376f4248",
+      "revId": "b2fe7ed59a5946f44362bc7da47f2260d1bf053b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9968288a_4f8eb128",
         "filename": "fs_mgr/libsnapshot/snapuserd.cpp",
         "patchSetId": 1
@@ -172,6 +298,24 @@
     },
     {
       "key": {
+        "uuid": "94f3fe19_5576ef4d",
+        "filename": "fs_mgr/libsnapshot/snapuserd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 164,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2020-08-27T23:09:29Z",
+      "side": 1,
+      "message": "I have moved this to assert(buffer !\u003d nullptr).\n\nTo explain a bit more about the allocation; buffer_size_ is the memory allocated upfront when daemon is started. The size of this buffer is equivalent to PAYLOAD_SIZE + sizeof(dm_user_header). If the IO issued by dm-user is greater than PAYLOAD_SIZE, we will chop that IO into multiple chunks.\n\nGetPayloadBuffer(size_t size) is asking for buffer which was allocated above. Most of the\ncallers for GetPayLoadBuffer is asking for buffer of size BLOCK_SIZE which is 4k. The check\nhere fails if the buffer size allocated is less than BLOCK_SIZE. \n\nHowever, I have now added a static_assert that the PAYLOAD_SIZE is always greater than BLOCK_SIZE and we should never have out of memory at all the places where BLOCK_SIZE allocation is requested.",
+      "parentUuid": "9968288a_4f8eb128",
+      "revId": "b2fe7ed59a5946f44362bc7da47f2260d1bf053b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7c3583d0_05d9cff0",
         "filename": "fs_mgr/libsnapshot/snapuserd.cpp",
         "patchSetId": 1
@@ -186,6 +330,24 @@
       "revId": "b2fe7ed59a5946f44362bc7da47f2260d1bf053b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a2404328_b4b8cc48",
+        "filename": "fs_mgr/libsnapshot/snapuserd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 263,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2020-08-27T23:09:29Z",
+      "side": 1,
+      "message": "Thanks.",
+      "parentUuid": "7c3583d0_05d9cff0",
+      "revId": "b2fe7ed59a5946f44362bc7da47f2260d1bf053b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
