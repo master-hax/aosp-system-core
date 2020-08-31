@@ -1,0 +1,208 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "617098b7_787b9317",
+        "filename": "fs_mgr/libsnapshot/cow_snapuserd_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-08-31T22:36:52Z",
+      "side": 1,
+      "message": "If you use libstorage_literals [1], you can do things like 1_MiB and not need the #define.\n\n[1] https://cs.corp.google.com/android/system/core/fs_mgr/libstorage_literals/storage_literals/storage_literals.h",
+      "revId": "eddce9b09bdfe20835f6162f600859790535d3f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1a34c9be_4fa75e44",
+        "filename": "fs_mgr/libsnapshot/cow_snapuserd_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-08-31T22:36:52Z",
+      "side": 1,
+      "message": "Should use unique_fd here.",
+      "revId": "eddce9b09bdfe20835f6162f600859790535d3f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a0e4b731_6383de3c",
+        "filename": "fs_mgr/libsnapshot/cow_snapuserd_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 146,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-08-31T22:36:52Z",
+      "side": 1,
+      "message": "This is fine for now, but it won\u0027t be robust enough for automated testing. Everything has to be cleaned up as best we can so each test run gets a clean slate. \n\nThis took a while to get right in libsnapshot_test. For now though, let\u0027s just file a bug to track this.",
+      "revId": "eddce9b09bdfe20835f6162f600859790535d3f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "da958a99_6494ddf2",
+        "filename": "fs_mgr/libsnapshot/cow_snapuserd_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 149,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-08-31T22:36:52Z",
+      "side": 1,
+      "message": "nit: combine with declaration",
+      "revId": "eddce9b09bdfe20835f6162f600859790535d3f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5a468478_fb82f5aa",
+        "filename": "fs_mgr/libsnapshot/cow_snapuserd_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 150,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-08-31T22:36:52Z",
+      "side": 1,
+      "message": "make_unique\u003cT[]\u003e uses a default initializer, in this case uint8_t(0), so the array is already zeroed.",
+      "revId": "eddce9b09bdfe20835f6162f600859790535d3f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "55849542_c6a26175",
+        "filename": "fs_mgr/libsnapshot/cow_snapuserd_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 154,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-08-31T22:36:52Z",
+      "side": 1,
+      "message": "unique_fd",
+      "revId": "eddce9b09bdfe20835f6162f600859790535d3f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bd8c60b6_92727883",
+        "filename": "fs_mgr/libsnapshot/cow_snapuserd_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 171,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-08-31T22:36:52Z",
+      "side": 1,
+      "message": "Do we need to handle EINTR or partial reads here? If so, it can be a TODO for when we go for automated testing.",
+      "revId": "eddce9b09bdfe20835f6162f600859790535d3f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "04dd44d0_bcee3868",
+        "filename": "fs_mgr/libsnapshot/snapuserd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-08-31T22:36:52Z",
+      "side": 1,
+      "message": "nit: move these into the block of \u003candroid-base\u003e includes",
+      "revId": "eddce9b09bdfe20835f6162f600859790535d3f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "49c40346_4cc9544c",
+        "filename": "fs_mgr/libsnapshot/snapuserd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 181,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-08-31T22:36:52Z",
+      "side": 1,
+      "message": "Use CHECK() instead of assert here, it\u0027ll make it work in release builds. (There\u0027s also DCHECK for debug-only asserts, but this seems like one important enough to make release-checked?)",
+      "revId": "eddce9b09bdfe20835f6162f600859790535d3f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "599ae6bd_f09c4c81",
+        "filename": "fs_mgr/libsnapshot/snapuserd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 199,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-08-31T22:36:52Z",
+      "side": 1,
+      "message": "s/assert/CHECK/",
+      "revId": "eddce9b09bdfe20835f6162f600859790535d3f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d35ed856_e6b880c2",
+        "filename": "fs_mgr/libsnapshot/snapuserd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 391,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-08-31T22:36:52Z",
+      "side": 1,
+      "message": "Do we need the first three asserts? The reader should have guaranteed everything except BLOCK_SIZE, I think.",
+      "revId": "eddce9b09bdfe20835f6162f600859790535d3f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0629e650_ff6a2abb",
+        "filename": "fs_mgr/libsnapshot/snapuserd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 444,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-08-31T22:36:52Z",
+      "side": 1,
+      "message": "uint32_t stride \u003d ...\n    lldiv_t divresult \u003d ...\n\n(Move the declarations from outside the loop to here.)",
+      "revId": "eddce9b09bdfe20835f6162f600859790535d3f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
