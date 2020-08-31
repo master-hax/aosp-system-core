@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da85fc6c_01f6e368",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 663,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-08-31T23:39:27Z",
+      "side": 1,
+      "message": "can we do this under /data/nativetest instead?\n\n(in particular: how does this work for 32 vs 64?)",
+      "revId": "c7d3cbe2dd450726581168582bfa5fc45d1a4556",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
