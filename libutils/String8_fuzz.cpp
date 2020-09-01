@@ -15,97 +15,172 @@
  */
 #include <functional>
 #include <iostream>
+#include <memory>
 
 #include "fuzzer/FuzzedDataProvider.h"
 #include "utils/String8.h"
 
 static constexpr int MAX_STRING_BYTES = 256;
 static constexpr uint8_t MAX_OPERATIONS = 50;
-
-std::vector<std::function<void(FuzzedDataProvider&, android::String8, android::String8)>>
+// Interestingly, 2147483614 (INT32_MAX - 33) seems to be the max value that is handled for format
+// flags. Unfortunately we need to use a smaller value so we avoid consuming too much memory.
+static constexpr int32_t MAX_FORMAT_FLAG_VAL = INT16_MAX;
+std::string formatChars = "duoxXfFeEgGaAcsp";
+void fuzzFormat(FuzzedDataProvider* dataProvider, android::String8* str1, bool shouldAppend);
+std::vector<std::function<void(FuzzedDataProvider*, android::String8*, android::String8*)>>
         operations = {
-
                 // Bytes and size
-                [](FuzzedDataProvider&, android::String8 str1, android::String8) -> void {
-                    str1.bytes();
+                [](FuzzedDataProvider*, android::String8* str1, android::String8*) -> void {
+                    str1->bytes();
                 },
-                [](FuzzedDataProvider&, android::String8 str1, android::String8) -> void {
-                    str1.isEmpty();
+                [](FuzzedDataProvider*, android::String8* str1, android::String8*) -> void {
+                    str1->isEmpty();
                 },
-                [](FuzzedDataProvider&, android::String8 str1, android::String8) -> void {
-                    str1.length();
-                },
-                [](FuzzedDataProvider&, android::String8 str1, android::String8) -> void {
-                    str1.size();
+                [](FuzzedDataProvider*, android::String8* str1, android::String8*) -> void {
+                    str1->length();
                 },
 
                 // Casing
-                [](FuzzedDataProvider&, android::String8 str1, android::String8) -> void {
-                    str1.toUpper();
+                [](FuzzedDataProvider*, android::String8* str1, android::String8*) -> void {
+                    str1->toUpper();
                 },
-                [](FuzzedDataProvider&, android::String8 str1, android::String8) -> void {
-                    str1.toLower();
+                [](FuzzedDataProvider*, android::String8* str1, android::String8*) -> void {
+                    str1->toLower();
                 },
-
-                [](FuzzedDataProvider&, android::String8 str1, android::String8 str2) -> void {
-                    str1.removeAll(str2.c_str());
+                [](FuzzedDataProvider*, android::String8* str1, android::String8* str2) -> void {
+                    str1->removeAll(str2->c_str());
                 },
-                [](FuzzedDataProvider&, android::String8 str1, android::String8 str2) -> void {
-                    str1.compare(str2);
+                [](FuzzedDataProvider*, android::String8* str1, android::String8* str2) -> void {
+                    const android::String8& constRef(*str2);
+                    str1->compare(constRef);
                 },
 
                 // Append and format
-                [](FuzzedDataProvider&, android::String8 str1, android::String8 str2) -> void {
-                    str1.append(str2);
+                [](FuzzedDataProvider*, android::String8* str1, android::String8* str2) -> void {
+                    str1->append(str2->c_str());
                 },
-                [](FuzzedDataProvider&, android::String8 str1, android::String8 str2) -> void {
-                    str1.appendFormat(str1.c_str(), str2.c_str());
-                },
-                [](FuzzedDataProvider&, android::String8 str1, android::String8 str2) -> void {
-                    str1.format(str1.c_str(), str2.c_str());
-                },
+                [](FuzzedDataProvider* dataProvider, android::String8* str1, android::String8*)
+                        -> void { fuzzFormat(dataProvider, str1, dataProvider->ConsumeBool()); },
 
                 // Find operation
-                [](FuzzedDataProvider& dataProvider, android::String8 str1,
-                   android::String8) -> void {
+                [](FuzzedDataProvider* dataProvider, android::String8* str1,
+                   android::String8* str2) -> void {
                     // We need to get a value from our fuzzer here.
-                    int start_index = dataProvider.ConsumeIntegralInRange<int>(0, str1.size());
-                    str1.find(str1.c_str(), start_index);
+                    int start_index = dataProvider->ConsumeIntegralInRange<int>(0, str1->size());
+                    str1->find(str2->c_str(), start_index);
                 },
 
                 // Path handling
-                [](FuzzedDataProvider&, android::String8 str1, android::String8) -> void {
-                    str1.getBasePath();
+                [](FuzzedDataProvider*, android::String8* str1, android::String8*) -> void {
+                    str1->getBasePath();
                 },
-                [](FuzzedDataProvider&, android::String8 str1, android::String8) -> void {
-                    str1.getPathExtension();
+                [](FuzzedDataProvider*, android::String8* str1, android::String8*) -> void {
+                    str1->getPathExtension();
                 },
-                [](FuzzedDataProvider&, android::String8 str1, android::String8) -> void {
-                    str1.getPathLeaf();
+                [](FuzzedDataProvider*, android::String8* str1, android::String8*) -> void {
+                    str1->getPathLeaf();
                 },
-                [](FuzzedDataProvider&, android::String8 str1, android::String8) -> void {
-                    str1.getPathDir();
+                [](FuzzedDataProvider*, android::String8* str1, android::String8*) -> void {
+                    str1->getPathDir();
                 },
-                [](FuzzedDataProvider&, android::String8 str1, android::String8) -> void {
-                    str1.convertToResPath();
+                [](FuzzedDataProvider*, android::String8* str1, android::String8*) -> void {
+                    str1->convertToResPath();
                 },
-                [](FuzzedDataProvider&, android::String8 str1, android::String8) -> void {
-                    android::String8 path_out_str = android::String8();
-                    str1.walkPath(&path_out_str);
-                    path_out_str.clear();
+                [](FuzzedDataProvider*, android::String8* str1, android::String8*) -> void {
+                    std::shared_ptr<android::String8> path_out_str =
+                            std::make_shared<android::String8>();
+                    str1->walkPath(path_out_str.get());
+                    path_out_str->clear();
                 },
-                [](FuzzedDataProvider& dataProvider, android::String8 str1,
-                   android::String8) -> void {
-                    str1.setPathName(dataProvider.ConsumeBytesWithTerminator<char>(5).data());
+                [](FuzzedDataProvider* dataProvider, android::String8* str1,
+                   android::String8*) -> void {
+                    str1->setPathName(dataProvider->ConsumeBytesWithTerminator<char>(5).data());
                 },
-                [](FuzzedDataProvider& dataProvider, android::String8 str1,
-                   android::String8) -> void {
-                    str1.appendPath(dataProvider.ConsumeBytesWithTerminator<char>(5).data());
+                [](FuzzedDataProvider* dataProvider, android::String8* str1,
+                   android::String8*) -> void {
+                    str1->appendPath(dataProvider->ConsumeBytesWithTerminator<char>(5).data());
                 },
 };
 
-void callFunc(uint8_t index, FuzzedDataProvider& dataProvider, android::String8 str1,
-              android::String8 str2) {
+void fuzzFormat(FuzzedDataProvider* dataProvider, android::String8* str1, bool shouldAppend) {
+    uint8_t formatType = dataProvider->ConsumeIntegralInRange<uint8_t>(0, formatChars.length() - 1);
+
+    std::string formatString("%");
+    // Width specifier
+    if (dataProvider->ConsumeBool()) {
+        // Left pad with zeroes
+        if (dataProvider->ConsumeBool()) {
+            formatString.push_back('0');
+        }
+        // Right justify (or left justify if negative)
+        int32_t justify = dataProvider->ConsumeIntegralInRange<int32_t>(-MAX_FORMAT_FLAG_VAL,
+                                                                        MAX_FORMAT_FLAG_VAL);
+        formatString += std::to_string(justify);
+    }
+
+    // The # specifier only works with a, A, e, E, f, F, g, and G
+    if (formatType > 0 && formatType < 12 && dataProvider->ConsumeBool()) {
+        formatString.push_back('#');
+    }
+
+    // Precision specifier
+    if (formatType < 12 && dataProvider->ConsumeBool()) {
+        formatString.push_back('.');
+        formatString +=
+                std::to_string(dataProvider->ConsumeIntegralInRange<int>(0, MAX_FORMAT_FLAG_VAL));
+    }
+
+    formatString.push_back(formatChars.at(formatType));
+
+    if (formatType == 0) {
+        int val = dataProvider->ConsumeIntegral<int>();
+        if (shouldAppend) {
+            str1->appendFormat(formatString.c_str(), val);
+        } else {
+            str1->format(formatString.c_str(), dataProvider->ConsumeIntegral<int>());
+        }
+    } else if (formatType <= 4) {
+        // Unsigned integers for u, o, x, and X
+        uint val = dataProvider->ConsumeIntegral<uint>();
+        if (shouldAppend) {
+            str1->appendFormat(formatString.c_str(), val);
+        } else {
+            str1->format(formatString.c_str(), val);
+        }
+    } else if (formatType <= 12) {
+        // Floating points for f, F, e, E, g, G, a, and A
+        float val = dataProvider->ConsumeFloatingPoint<float>();
+        if (shouldAppend) {
+            str1->appendFormat(formatString.c_str(), val);
+        } else {
+            str1->format(formatString.c_str(), val);
+        }
+    } else if (formatType == 13) {
+        char val = dataProvider->ConsumeIntegral<char>();
+        if (shouldAppend) {
+            str1->appendFormat(formatString.c_str(), val);
+        } else {
+            str1->format(formatString.c_str(), val);
+        }
+    } else if (formatType == 14) {
+        std::string val = dataProvider->ConsumeRandomLengthString(MAX_STRING_BYTES);
+        if (shouldAppend) {
+            str1->appendFormat(formatString.c_str(), val.c_str());
+        } else {
+            str1->format(formatString.c_str(), val.c_str());
+        }
+    } else if (formatType == 15) {
+        uintptr_t val = dataProvider->ConsumeIntegral<uintptr_t>();
+        if (shouldAppend) {
+            str1->appendFormat(formatString.c_str(), val);
+        } else {
+            str1->format(formatString.c_str(), val);
+        }
+    }
+}
+
+void callFunc(uint8_t index, FuzzedDataProvider* dataProvider, android::String8* str1,
+              android::String8* str2) {
     operations[index](dataProvider, str1, str2);
 }
 
@@ -120,14 +195,12 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size) {
     // Create UTF-8 pointers
     android::String8 str_one_utf8 = android::String8(vec.data());
     android::String8 str_two_utf8 = android::String8(vec_two.data());
-
     // Run operations against strings
     int opsRun = 0;
     while (dataProvider.remaining_bytes() > 0 && opsRun++ < MAX_OPERATIONS) {
         uint8_t op = dataProvider.ConsumeIntegralInRange<uint8_t>(0, operations.size() - 1);
-        callFunc(op, dataProvider, str_one_utf8, str_two_utf8);
+        operations[op](&dataProvider, &str_one_utf8, &str_two_utf8);
     }
-
     // Just to be extra sure these can be freed, we're going to explicitly clear
     // them
     str_one_utf8.clear();
