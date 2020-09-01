@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "08b63eb1_a0602333",
+        "filename": "fs_mgr/libsnapshot/cow_reader.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 150,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-09-01T23:24:11Z",
+      "side": 1,
+      "message": "This comment is a bit more visible if moved to the header file.",
+      "revId": "819879bbe5646295d2858441956abaa177de3d1f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
