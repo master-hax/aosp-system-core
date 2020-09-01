@@ -16,6 +16,24 @@
       "revId": "500c25cb619cfe3cfe251a6a07989ccd4a5a5dd3",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ebec8383_29c541e0",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-09-01T22:09:31Z",
+      "side": 1,
+      "message": "They\u0027re not run in presubmit yet.  The tests are super flaky in general.  These are just low hanging fruit.\n\nI\u0027ve been delaying putting this in pre-submit, hoping to actually clean up the flaky tests, but perhaps it\u0027s time to just disable them and enable the rest of the tests widely.",
+      "parentUuid": "e3f929e7_3109d8e0",
+      "revId": "500c25cb619cfe3cfe251a6a07989ccd4a5a5dd3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
