@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "1551a59b_833ab475",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-09-01T21:54:11Z",
+      "side": 1,
+      "message": "n",
+      "revId": "3b2ae7ae60cb791a8db718cae8b874a3f7927203",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "140d4a7e_bcfb86ee",
         "filename": "fs_mgr/libsnapshot/cow_reader.cpp",
         "patchSetId": 4
@@ -47,6 +64,24 @@
       "writtenOn": "2020-09-01T21:52:43Z",
       "side": 1,
       "message": "This returns (or should return) a boolean, so the return value should be checked.",
+      "revId": "3b2ae7ae60cb791a8db718cae8b874a3f7927203",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a7f6aebd_9c3f6ea2",
+        "filename": "fs_mgr/libsnapshot/snapuserd.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 381,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-09-01T21:54:11Z",
+      "side": 1,
+      "message": "Actually it looks like GetHeader() can return false as well, so that should be checked too.",
+      "parentUuid": "93d38554_6c5a2c1d",
       "revId": "3b2ae7ae60cb791a8db718cae8b874a3f7927203",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
