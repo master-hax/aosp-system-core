@@ -34,6 +34,29 @@
       "revId": "c7d3cbe2dd450726581168582bfa5fc45d1a4556",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "417d575c_30e79957",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 663,
+      "author": {
+        "id": 1054468
+      },
+      "writtenOn": "2020-09-01T07:15:38Z",
+      "side": 1,
+      "message": "770? (here and below) or even 700?",
+      "range": {
+        "startLine": 663,
+        "startChar": 28,
+        "endLine": 663,
+        "endChar": 32
+      },
+      "revId": "c7d3cbe2dd450726581168582bfa5fc45d1a4556",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
