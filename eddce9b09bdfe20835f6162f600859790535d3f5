@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "23bd5b13_f4a84647",
+        "filename": "fs_mgr/libsnapshot/cow_snapuserd_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2020-09-01T18:08:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "617098b7_787b9317",
+      "revId": "eddce9b09bdfe20835f6162f600859790535d3f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a34c9be_4fa75e44",
         "filename": "fs_mgr/libsnapshot/cow_snapuserd_test.cpp",
         "patchSetId": 2
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "c7495f47_2b17c2ed",
+        "filename": "fs_mgr/libsnapshot/cow_snapuserd_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2020-09-01T18:08:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a34c9be_4fa75e44",
+      "revId": "eddce9b09bdfe20835f6162f600859790535d3f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a0e4b731_6383de3c",
         "filename": "fs_mgr/libsnapshot/cow_snapuserd_test.cpp",
         "patchSetId": 2
@@ -47,6 +83,24 @@
       "writtenOn": "2020-08-31T22:36:52Z",
       "side": 1,
       "message": "This is fine for now, but it won\u0027t be robust enough for automated testing. Everything has to be cleaned up as best we can so each test run gets a clean slate. \n\nThis took a while to get right in libsnapshot_test. For now though, let\u0027s just file a bug to track this.",
+      "revId": "eddce9b09bdfe20835f6162f600859790535d3f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9a57b873_9c48ed61",
+        "filename": "fs_mgr/libsnapshot/cow_snapuserd_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 146,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2020-09-01T18:08:23Z",
+      "side": 1,
+      "message": "I agree. The purpose of this test was to have one test which will do end-to-end IO path testing from dm-snap to snapuserd userspace. However, this will change once we integrate.\n\nI have raised http://b/167409187 to track this issue. \n\n1: Unit test for snapuserd which is done as part of this code.\n2: Create kernel selftest to test dm-user interface independently.",
+      "parentUuid": "a0e4b731_6383de3c",
       "revId": "eddce9b09bdfe20835f6162f600859790535d3f5",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
@@ -70,6 +124,24 @@
     },
     {
       "key": {
+        "uuid": "1268b786_afdc8046",
+        "filename": "fs_mgr/libsnapshot/cow_snapuserd_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 149,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2020-09-01T18:08:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "da958a99_6494ddf2",
+      "revId": "eddce9b09bdfe20835f6162f600859790535d3f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5a468478_fb82f5aa",
         "filename": "fs_mgr/libsnapshot/cow_snapuserd_test.cpp",
         "patchSetId": 2
@@ -84,6 +156,24 @@
       "revId": "eddce9b09bdfe20835f6162f600859790535d3f5",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "de487b21_d37d9fb9",
+        "filename": "fs_mgr/libsnapshot/cow_snapuserd_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 150,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2020-09-01T18:08:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5a468478_fb82f5aa",
+      "revId": "eddce9b09bdfe20835f6162f600859790535d3f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -104,6 +194,24 @@
     },
     {
       "key": {
+        "uuid": "1c1c2d22_f69996ca",
+        "filename": "fs_mgr/libsnapshot/cow_snapuserd_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 154,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2020-09-01T18:08:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "55849542_c6a26175",
+      "revId": "eddce9b09bdfe20835f6162f600859790535d3f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "bd8c60b6_92727883",
         "filename": "fs_mgr/libsnapshot/cow_snapuserd_test.cpp",
         "patchSetId": 2
@@ -118,6 +226,24 @@
       "revId": "eddce9b09bdfe20835f6162f600859790535d3f5",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1adaf595_0ea22593",
+        "filename": "fs_mgr/libsnapshot/cow_snapuserd_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 171,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2020-09-01T18:08:23Z",
+      "side": 1,
+      "message": "I have used ReadFullyAtOffset() as we should never have partial reads.",
+      "parentUuid": "bd8c60b6_92727883",
+      "revId": "eddce9b09bdfe20835f6162f600859790535d3f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -138,6 +264,24 @@
     },
     {
       "key": {
+        "uuid": "1e54797d_f7735f83",
+        "filename": "fs_mgr/libsnapshot/snapuserd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2020-09-01T18:08:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "04dd44d0_bcee3868",
+      "revId": "eddce9b09bdfe20835f6162f600859790535d3f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "49c40346_4cc9544c",
         "filename": "fs_mgr/libsnapshot/snapuserd.cpp",
         "patchSetId": 2
@@ -152,6 +296,24 @@
       "revId": "eddce9b09bdfe20835f6162f600859790535d3f5",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8174be6e_3a57c6e5",
+        "filename": "fs_mgr/libsnapshot/snapuserd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 181,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2020-09-01T18:08:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "49c40346_4cc9544c",
+      "revId": "eddce9b09bdfe20835f6162f600859790535d3f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -172,6 +334,24 @@
     },
     {
       "key": {
+        "uuid": "1d4cd386_012053c2",
+        "filename": "fs_mgr/libsnapshot/snapuserd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 199,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2020-09-01T18:08:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "599ae6bd_f09c4c81",
+      "revId": "eddce9b09bdfe20835f6162f600859790535d3f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d35ed856_e6b880c2",
         "filename": "fs_mgr/libsnapshot/snapuserd.cpp",
         "patchSetId": 2
@@ -183,6 +363,24 @@
       "writtenOn": "2020-08-31T22:36:52Z",
       "side": 1,
       "message": "Do we need the first three asserts? The reader should have guaranteed everything except BLOCK_SIZE, I think.",
+      "revId": "eddce9b09bdfe20835f6162f600859790535d3f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3e279690_0f415eeb",
+        "filename": "fs_mgr/libsnapshot/snapuserd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 391,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2020-09-01T18:08:23Z",
+      "side": 1,
+      "message": "I don\u0027t see CowReader() has any asserts verifying the first three field viz. magic, major_version, minor_version. It is up to the caller. \n\nProbably we should move this to reader so that callers are guaranteed to have valid headers ?",
+      "parentUuid": "d35ed856_e6b880c2",
       "revId": "eddce9b09bdfe20835f6162f600859790535d3f5",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
@@ -203,6 +401,24 @@
       "revId": "eddce9b09bdfe20835f6162f600859790535d3f5",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ceb96ff5_401a0499",
+        "filename": "fs_mgr/libsnapshot/snapuserd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 444,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2020-09-01T18:08:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0629e650_ff6a2abb",
+      "revId": "eddce9b09bdfe20835f6162f600859790535d3f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
