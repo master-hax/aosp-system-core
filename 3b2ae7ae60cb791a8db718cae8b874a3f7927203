@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "140d4a7e_bcfb86ee",
+        "filename": "fs_mgr/libsnapshot/cow_reader.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-09-01T21:52:43Z",
+      "side": 1,
+      "message": "These if-checks should log an error instead and return false (bonus points if it logs the bad and correct values).",
+      "revId": "3b2ae7ae60cb791a8db718cae8b874a3f7927203",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "061fc8e5_9fc9dbcd",
+        "filename": "fs_mgr/libsnapshot/snapuserd.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 335,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-09-01T21:52:43Z",
+      "side": 1,
+      "message": "This can just be:\n\n    memcpy(buffer, vec_[divresult.quot].get(), size);\n\nIf you really want a temporary, it\u0027s better to:\n\n    auto\u0026 ptr \u003d vec_[divresult.quot];\n\nInstead, rather than shuffle the pointer around.",
+      "revId": "3b2ae7ae60cb791a8db718cae8b874a3f7927203",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "93d38554_6c5a2c1d",
+        "filename": "fs_mgr/libsnapshot/snapuserd.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 381,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-09-01T21:52:43Z",
+      "side": 1,
+      "message": "This returns (or should return) a boolean, so the return value should be checked.",
+      "revId": "3b2ae7ae60cb791a8db718cae8b874a3f7927203",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7b70f983_19b79aa3",
+        "filename": "fs_mgr/libsnapshot/snapuserd.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 429,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-09-01T21:52:43Z",
+      "side": 1,
+      "message": "Just noticed this, but CowOpIter makes no mention of whether the returned object is valid after calls to Next(). We should add a comment to CowReader::GetOpIter that Get() returns unique objects that are tied to the lifetime of the iterator. (That, or, store the full CowOperation I guess.)",
+      "revId": "3b2ae7ae60cb791a8db718cae8b874a3f7927203",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
