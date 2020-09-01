@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1b52bbf1_4b74aacd",
+        "filename": "fs_mgr/libsnapshot/snapuserd.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 131,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-09-01T19:17:53Z",
+      "side": 1,
+      "message": "nit: vec_",
+      "revId": "80117f890e852d4160cbe8972c891e30f6df8b0e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7dd5d9a4_185e26b6",
+        "filename": "fs_mgr/libsnapshot/snapuserd.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 135,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-09-01T19:17:53Z",
+      "side": 1,
+      "message": "chunk_map_\n\nSince next_free is monotonic, do we actually need a map here, or can we use a vector? (If map, does unordered_map work?)",
+      "revId": "80117f890e852d4160cbe8972c891e30f6df8b0e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3080e389_33cece45",
+        "filename": "fs_mgr/libsnapshot/snapuserd.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 577,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-09-01T19:17:53Z",
+      "side": 1,
+      "message": "Avoid else-after-return when possible:\n\n    if (!metadata_read_done_ \u0026\u0026 ReadMetadata()) {\n        LOG(ERROR) \u003c\u003c \"Metadata read failed\";\n        return 1;\n    }\n    metadata_read_done_ \u003d true;",
+      "revId": "80117f890e852d4160cbe8972c891e30f6df8b0e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
