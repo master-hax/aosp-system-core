@@ -14,3 +14,4 @@
 
 PRODUCT_PACKAGES += \
 	spiproxyd \
+	trusty_keymaster_set_attestation_key \
