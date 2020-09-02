@@ -408,26 +408,6 @@ std::string ReadFstabFromDt() {
     return fstab_result;
 }
 
-// Identify path to fstab file. Lookup is based on pattern
-// fstab.<fstab_suffix>, fstab.<hardware>, fstab.<hardware.platform> in
-// folders /odm/etc, vendor/etc, or /.
-std::string GetFstabPath() {
-    for (const char* prop : {"fstab_suffix", "hardware", "hardware.platform"}) {
-        std::string suffix;
-
-        if (!fs_mgr_get_boot_config(prop, &suffix)) continue;
-
-        for (const char* prefix : {"/odm/etc/fstab.", "/vendor/etc/fstab.", "/fstab."}) {
-            std::string fstab_path = prefix + suffix;
-            if (access(fstab_path.c_str(), F_OK) == 0) {
-                return fstab_path;
-            }
-        }
-    }
-
-    return "";
-}
-
 bool ReadFstabFile(FILE* fstab_file, bool proc_mounts, Fstab* fstab_out) {
     ssize_t len;
     size_t alloc_len = 0;
@@ -770,6 +750,27 @@ bool SkipMountingPartitions(Fstab* fstab) {
 }
 #endif
 
+std::string GetDefaultFstabPath() {
+    // Use different fstab paths for normal boot and recovery boot, respectively
+    if (access("/system/bin/recovery", F_OK) == 0) {
+        return "/etc/recovery.fstab";
+    }
+    for (const char* prop : {"fstab_suffix", "hardware", "hardware.platform"}) {
+        std::string suffix;
+
+        if (!fs_mgr_get_boot_config(prop, &suffix)) continue;
+
+        for (const char* prefix : {"/odm/etc/fstab.", "/vendor/etc/fstab.", "/fstab."}) {
+            std::string fstab_path = prefix + suffix;
+            if (access(fstab_path.c_str(), F_OK) == 0) {
+                return fstab_path;
+            }
+        }
+    }
+
+    return "";
+}
+
 // Loads the fstab file and combines with fstab entries passed in from device tree.
 bool ReadDefaultFstab(Fstab* fstab) {
     Fstab dt_fstab;
@@ -777,13 +778,7 @@ bool ReadDefaultFstab(Fstab* fstab) {
 
     *fstab = std::move(dt_fstab);
 
-    std::string default_fstab_path;
-    // Use different fstab paths for normal boot and recovery boot, respectively
-    if (access("/system/bin/recovery", F_OK) == 0) {
-        default_fstab_path = "/etc/recovery.fstab";
-    } else {  // normal boot
-        default_fstab_path = GetFstabPath();
-    }
+    std::string default_fstab_path = GetDefaultFstabPath();
 
     Fstab default_fstab;
     if (!default_fstab_path.empty()) {

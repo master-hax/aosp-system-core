@@ -97,6 +97,12 @@ struct FstabEntry {
 // Unless explicitly requested, a lookup on mount point should always return the 1st one.
 using Fstab = std::vector<FstabEntry>;
 
+// Returns path to default fstab file.
+//
+// Lookup is based on pattern fstab.<fstab_suffix>, fstab.<hardware>,
+// fstab.<hardware.platform> in folders /odm/etc, vendor/etc, or /.
+std::string GetDefaultFstabPath();
+
 bool ReadFstabFromFile(const std::string& path, Fstab* fstab);
 bool ReadFstabFromDt(Fstab* fstab, bool log = true);
 bool ReadDefaultFstab(Fstab* fstab);

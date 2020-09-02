@@ -92,6 +92,7 @@ using android::base::StartsWith;
 using android::base::StringPrintf;
 using android::base::unique_fd;
 using android::fs_mgr::Fstab;
+using android::fs_mgr::GetDefaultFstabPath;
 using android::fs_mgr::ReadFstabFromFile;
 
 #define chmod DO_NOT_USE_CHMOD_USE_FCHMODAT_SYMLINK_NOFOLLOW
@@ -651,12 +652,15 @@ static Result<void> do_mount_all(const BuiltinArguments& args) {
     std::string prop_name = "ro.boottime.init.mount_all."s + prop_post_fix;
     android::base::Timer t;
 
+    bool is_default_fstab = false;
     Fstab fstab;
     if (mount_all->fstab_path.empty()) {
+        is_default_fstab = true;
         if (!ReadDefaultFstab(&fstab)) {
             return Error() << "Could not read default fstab";
         }
     } else {
+        is_default_fstab = mount_all->fstab_path == GetDefaultFstabPath();
         if (!ReadFstabFromFile(mount_all->fstab_path, &fstab)) {
             return Error() << "Could not read fstab";
         }
@@ -669,10 +673,13 @@ static Result<void> do_mount_all(const BuiltinArguments& args) {
         import_late(mount_all->rc_paths);
     }
 
+    if (is_default_fstab && mount_all->mode == MOUNT_MODE_LATE) {
+        initial_mount_fstab_return_code = mount_fstab_return_code;
+    }
+
     if (queue_event) {
         /* queue_fs_event will queue event based on mount_fstab return code
          * and return processed return code*/
-        initial_mount_fstab_return_code = mount_fstab_return_code;
         auto queue_fs_result = queue_fs_event(mount_fstab_return_code, false);
         if (!queue_fs_result.ok()) {
             return Error() << "queue_fs_event() failed: " << queue_fs_result.error();
