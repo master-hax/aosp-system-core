@@ -160,6 +160,30 @@
     },
     {
       "key": {
+        "uuid": "724bb864_a5375c3a",
+        "filename": "libutils/RefBase_fuzz.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2020-09-02T20:36:07Z",
+      "side": 1,
+      "message": "I think a raw pointer is best because we are testing RefBase methods themselves. It may become invalid, but you could keep track of this (only call methods on it when you know it isn\u0027t deleted).",
+      "parentUuid": "8c7d2434_fcce248b",
+      "range": {
+        "startLine": 34,
+        "startChar": 0,
+        "endLine": 34,
+        "endChar": 24
+      },
+      "revId": "b0854dd880db87e38269860439fd3b9f67c66684",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "8d9a5c0e_040b6271",
         "filename": "libutils/RefBase_fuzz.cpp",
         "patchSetId": 1
@@ -195,6 +219,30 @@
       "side": 1,
       "message": "Hmm okay. I suppose that makes sense. In general this fuzzer has proven very temperamental/brittle, especially since ref objects can delete themselves.",
       "parentUuid": "8d9a5c0e_040b6271",
+      "range": {
+        "startLine": 53,
+        "startChar": 0,
+        "endLine": 53,
+        "endChar": 29
+      },
+      "revId": "b0854dd880db87e38269860439fd3b9f67c66684",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "826575bb_1b313c2e",
+        "filename": "libutils/RefBase_fuzz.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2020-09-02T20:36:07Z",
+      "side": 1,
+      "message": "Yeah, and you would also want to avoid calling methods on ref in the case that all ThreadState objects had zero counts.",
+      "parentUuid": "31b706e9_ae79cddf",
       "range": {
         "startLine": 53,
         "startChar": 0,
@@ -277,6 +325,29 @@
     },
     {
       "key": {
+        "uuid": "f6a67b51_5eb95916",
+        "filename": "libutils/String8_fuzz.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2020-09-02T20:36:07Z",
+      "side": 1,
+      "message": "make static const, also prefer kFormatChars (you could also restrict the scope of this)",
+      "range": {
+        "startLine": 28,
+        "startChar": 12,
+        "endLine": 28,
+        "endChar": 23
+      },
+      "revId": "b0854dd880db87e38269860439fd3b9f67c66684",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "55607424_c57cebd9",
         "filename": "libutils/String8_fuzz.cpp",
         "patchSetId": 1
@@ -312,6 +383,30 @@
       "side": 1,
       "message": "Yes, different types allow for different modifiers. For instance, precision is only useful for decimal types. I figured this was slightly more eloquent than checking each character independently, although that may be a more explicit/clear way of doing it...",
       "parentUuid": "55607424_c57cebd9",
+      "range": {
+        "startLine": 122,
+        "startChar": 21,
+        "endLine": 122,
+        "endChar": 22
+      },
+      "revId": "b0854dd880db87e38269860439fd3b9f67c66684",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "750c166d_9df9521d",
+        "filename": "libutils/String8_fuzz.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 122,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2020-09-02T20:36:07Z",
+      "side": 1,
+      "message": "Yeah, this is a bit hard to read w/ the indexes, if it could be more explicit, that would be great. For instance, it\u0027s not clear how we could add an additional format character.",
+      "parentUuid": "8200c8c3_6c325681",
       "range": {
         "startLine": 122,
         "startChar": 21,
