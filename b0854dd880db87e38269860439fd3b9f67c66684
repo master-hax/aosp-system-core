@@ -113,6 +113,23 @@
     },
     {
       "key": {
+        "uuid": "7b8dcb41_eacc5441",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1695385
+      },
+      "writtenOn": "2020-09-02T20:41:48Z",
+      "side": 1,
+      "message": "Alright, going to abandon this CL and open new ones with the changes we\u0027ve discussed. Feel free to let me know if you think of anything else that should be improved design-wise. Thanks!",
+      "revId": "b0854dd880db87e38269860439fd3b9f67c66684",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "4ce04d54_adb5f01f",
         "filename": "libutils/RefBase_fuzz.cpp",
         "patchSetId": 1
@@ -348,6 +365,30 @@
     },
     {
       "key": {
+        "uuid": "09dc3480_60927248",
+        "filename": "libutils/String8_fuzz.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1695385
+      },
+      "writtenOn": "2020-09-02T20:41:48Z",
+      "side": 1,
+      "message": "Will probably lean towards static const just to avoid allocating a new string every loop.",
+      "parentUuid": "f6a67b51_5eb95916",
+      "range": {
+        "startLine": 28,
+        "startChar": 12,
+        "endLine": 28,
+        "endChar": 23
+      },
+      "revId": "b0854dd880db87e38269860439fd3b9f67c66684",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "55607424_c57cebd9",
         "filename": "libutils/String8_fuzz.cpp",
         "patchSetId": 1
@@ -407,6 +448,30 @@
       "side": 1,
       "message": "Yeah, this is a bit hard to read w/ the indexes, if it could be more explicit, that would be great. For instance, it\u0027s not clear how we could add an additional format character.",
       "parentUuid": "8200c8c3_6c325681",
+      "range": {
+        "startLine": 122,
+        "startChar": 21,
+        "endLine": 122,
+        "endChar": 22
+      },
+      "revId": "b0854dd880db87e38269860439fd3b9f67c66684",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ddfdd7fa_0cbbfdb8",
+        "filename": "libutils/String8_fuzz.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 122,
+      "author": {
+        "id": 1695385
+      },
+      "writtenOn": "2020-09-02T20:41:48Z",
+      "side": 1,
+      "message": "It\u0027s a bit tricky. I think a better way to do this might be with an enum for format modifiers and string characters. That would make this a lot less magic, although it might be slightly more verbose.",
+      "parentUuid": "750c166d_9df9521d",
       "range": {
         "startLine": 122,
         "startChar": 21,
