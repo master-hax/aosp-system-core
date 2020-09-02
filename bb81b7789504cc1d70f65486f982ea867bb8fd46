@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "56f0f5f8_0316a349",
+        "filename": "libutils/RWLock_fuzz.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2020-09-02T18:32:00Z",
+      "side": 0,
+      "message": "we could only call unlock if the lock is taken",
+      "revId": "bb81b7789504cc1d70f65486f982ea867bb8fd46",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}

@@ -2,6 +2,52 @@
   "comments": [
     {
       "key": {
+        "uuid": "c9202290_d431fa42",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2020-09-02T18:32:00Z",
+      "side": 1,
+      "message": "prefer to split these up if you can, since we run the fuzzers independently, and fixes can be merged independently (also, this would make the commit title to be able to be more specific)",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 14,
+        "endChar": 0
+      },
+      "revId": "b0854dd880db87e38269860439fd3b9f67c66684",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0945ca29_3e1099fe",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2020-09-02T18:32:00Z",
+      "side": 1,
+      "message": "btw, do you have access to the test cases discovered by our infra?\n\nAlso, do you artificially lower the memory limit, out of curiousity?\n\nPlease prefer to add exact commands used in \u0027Test\u0027 line",
+      "range": {
+        "startLine": 15,
+        "startChar": 0,
+        "endLine": 15,
+        "endChar": 81
+      },
+      "revId": "b0854dd880db87e38269860439fd3b9f67c66684",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "74bd7b39_b4bedeaf",
         "filename": "/PATCHSET_LEVEL",
         "patchSetId": 1
@@ -16,6 +62,121 @@
       "revId": "b0854dd880db87e38269860439fd3b9f67c66684",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4ce04d54_adb5f01f",
+        "filename": "libutils/RefBase_fuzz.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2020-09-02T18:32:00Z",
+      "side": 1,
+      "message": "this is implicitly holding a strong ref, which we may not want, since we would avoid testing the case where the ref is deleted",
+      "range": {
+        "startLine": 34,
+        "startChar": 0,
+        "endLine": 34,
+        "endChar": 24
+      },
+      "revId": "b0854dd880db87e38269860439fd3b9f67c66684",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8d9a5c0e_040b6271",
+        "filename": "libutils/RefBase_fuzz.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2020-09-02T18:32:00Z",
+      "side": 1,
+      "message": "all of this locking removes a bit of coverage from the test, since incStrong/decWeak, for instance are allowed together. The problem is one thread doing a decWeak of the reference that incStrong owns locally.\n\nLet me suggest an alternative setup (independent thread ownership) which would retain coverage w/o having this \u0027stealing ref\u0027 problem:\n\nstruct ThreadState {\n    size_t strong_count \u003d 0;\n    size_t weak_count \u003d 0;\n};\n\nstd::vector\u003cstd::function\u003cvoid(ThreadState*)\u003e operations \u003d {\n    [](ThreadState* state) -\u003e void {\n        ref-\u003eincStrong();\n        state-\u003estrong_count++;\n    },\n    ...\n};\n\nEach thread would clean up references independently, and this way you never have a situation where one thread assumes it has ownership of a reference that another thread would take locally.",
+      "range": {
+        "startLine": 53,
+        "startChar": 0,
+        "endLine": 53,
+        "endChar": 29
+      },
+      "revId": "b0854dd880db87e38269860439fd3b9f67c66684",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4aff4905_67565620",
+        "filename": "libutils/RefBase_fuzz.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2020-09-02T18:32:00Z",
+      "side": 1,
+      "message": "yeah, but it maps to the weak decrement implicitly added in incStrong",
+      "range": {
+        "startLine": 70,
+        "startChar": 0,
+        "endLine": 70,
+        "endChar": 57
+      },
+      "revId": "b0854dd880db87e38269860439fd3b9f67c66684",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a66504d2_81b8f8e4",
+        "filename": "libutils/RefBase_fuzz.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 140,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2020-09-02T18:32:00Z",
+      "side": 1,
+      "message": "the sp\u003c\u003e implicitly holds a strong ref of the object, so this should never be true.\n\nAlso, as mentioned above, it seems the fuzzer might put the object in a bad state where it has no weak refs but still strong refs, OR this misses removing remaining weak references after all strong references are removed (this should leave some state sitting around)",
+      "range": {
+        "startLine": 140,
+        "startChar": 11,
+        "endLine": 140,
+        "endChar": 14
+      },
+      "revId": "b0854dd880db87e38269860439fd3b9f67c66684",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "55607424_c57cebd9",
+        "filename": "libutils/String8_fuzz.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 122,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2020-09-02T18:32:00Z",
+      "side": 1,
+      "message": "what are all these magic constants? indexes into formatChars?",
+      "range": {
+        "startLine": 122,
+        "startChar": 21,
+        "endLine": 122,
+        "endChar": 22
+      },
+      "revId": "b0854dd880db87e38269860439fd3b9f67c66684",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
