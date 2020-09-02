@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "8dbf8a7e_364da34c",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1695385
+      },
+      "writtenOn": "2020-09-02T20:19:32Z",
+      "side": 1,
+      "message": "Gotcha, probably makes the most sense to bundle these as rwlock removal, refbase rewrite, and string8 rewrite.",
+      "parentUuid": "c9202290_d431fa42",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 14,
+        "endChar": 0
+      },
+      "revId": "b0854dd880db87e38269860439fd3b9f67c66684",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "0945ca29_3e1099fe",
         "filename": "/COMMIT_MSG",
         "patchSetId": 1
@@ -36,6 +60,30 @@
       "writtenOn": "2020-09-02T18:32:00Z",
       "side": 1,
       "message": "btw, do you have access to the test cases discovered by our infra?\n\nAlso, do you artificially lower the memory limit, out of curiousity?\n\nPlease prefer to add exact commands used in \u0027Test\u0027 line",
+      "range": {
+        "startLine": 15,
+        "startChar": 0,
+        "endLine": 15,
+        "endChar": 81
+      },
+      "revId": "b0854dd880db87e38269860439fd3b9f67c66684",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "dbde0994_d39d006b",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1695385
+      },
+      "writtenOn": "2020-09-02T20:19:32Z",
+      "side": 1,
+      "message": "1. We might, but don\u0027t know where we\u0027d find it, and are unable to export/run it from google machines, so effectively no. \n2. We don\u0027t explicitly limit it, but oss-fuzz might be using default libfuzzer limits before it considers it a bug",
+      "parentUuid": "0945ca29_3e1099fe",
       "range": {
         "startLine": 15,
         "startChar": 0,
@@ -88,6 +136,30 @@
     },
     {
       "key": {
+        "uuid": "8c7d2434_fcce248b",
+        "filename": "libutils/RefBase_fuzz.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1695385
+      },
+      "writtenOn": "2020-09-02T20:19:32Z",
+      "side": 1,
+      "message": "That\u0027s a good point. We went back in forth on this a few times. Initially this was just a RefBaseSubclass object, but that created a memory leak. Then I added a delete, but since ref objects can delete themselves, it lead to double free problems. I also tried using a shared_ptr, but that had issues and there\u0027s a big warning in RefBase against doing that. sp seemed to be the most common use case, but yeah, it modifies refs, which I can see being problematic. Just to be clear, as long as this retains at least one weak or strong ref, it shouldn\u0027t be deleted, correct?",
+      "parentUuid": "4ce04d54_adb5f01f",
+      "range": {
+        "startLine": 34,
+        "startChar": 0,
+        "endLine": 34,
+        "endChar": 24
+      },
+      "revId": "b0854dd880db87e38269860439fd3b9f67c66684",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "8d9a5c0e_040b6271",
         "filename": "libutils/RefBase_fuzz.cpp",
         "patchSetId": 1
@@ -99,6 +171,30 @@
       "writtenOn": "2020-09-02T18:32:00Z",
       "side": 1,
       "message": "all of this locking removes a bit of coverage from the test, since incStrong/decWeak, for instance are allowed together. The problem is one thread doing a decWeak of the reference that incStrong owns locally.\n\nLet me suggest an alternative setup (independent thread ownership) which would retain coverage w/o having this \u0027stealing ref\u0027 problem:\n\nstruct ThreadState {\n    size_t strong_count \u003d 0;\n    size_t weak_count \u003d 0;\n};\n\nstd::vector\u003cstd::function\u003cvoid(ThreadState*)\u003e operations \u003d {\n    [](ThreadState* state) -\u003e void {\n        ref-\u003eincStrong();\n        state-\u003estrong_count++;\n    },\n    ...\n};\n\nEach thread would clean up references independently, and this way you never have a situation where one thread assumes it has ownership of a reference that another thread would take locally.",
+      "range": {
+        "startLine": 53,
+        "startChar": 0,
+        "endLine": 53,
+        "endChar": 29
+      },
+      "revId": "b0854dd880db87e38269860439fd3b9f67c66684",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "31b706e9_ae79cddf",
+        "filename": "libutils/RefBase_fuzz.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 1695385
+      },
+      "writtenOn": "2020-09-02T20:19:32Z",
+      "side": 1,
+      "message": "Hmm okay. I suppose that makes sense. In general this fuzzer has proven very temperamental/brittle, especially since ref objects can delete themselves.",
+      "parentUuid": "8d9a5c0e_040b6271",
       "range": {
         "startLine": 53,
         "startChar": 0,
@@ -157,6 +253,30 @@
     },
     {
       "key": {
+        "uuid": "f1b10285_49fd7885",
+        "filename": "libutils/RefBase_fuzz.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 140,
+      "author": {
+        "id": 1695385
+      },
+      "writtenOn": "2020-09-02T20:19:32Z",
+      "side": 1,
+      "message": "Gotcha, I think swapping to the per-thread state tracking will make this a lot more robust, and should hopefully resolve this.",
+      "parentUuid": "a66504d2_81b8f8e4",
+      "range": {
+        "startLine": 140,
+        "startChar": 11,
+        "endLine": 140,
+        "endChar": 14
+      },
+      "revId": "b0854dd880db87e38269860439fd3b9f67c66684",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "55607424_c57cebd9",
         "filename": "libutils/String8_fuzz.cpp",
         "patchSetId": 1
@@ -168,6 +288,30 @@
       "writtenOn": "2020-09-02T18:32:00Z",
       "side": 1,
       "message": "what are all these magic constants? indexes into formatChars?",
+      "range": {
+        "startLine": 122,
+        "startChar": 21,
+        "endLine": 122,
+        "endChar": 22
+      },
+      "revId": "b0854dd880db87e38269860439fd3b9f67c66684",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8200c8c3_6c325681",
+        "filename": "libutils/String8_fuzz.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 122,
+      "author": {
+        "id": 1695385
+      },
+      "writtenOn": "2020-09-02T20:19:32Z",
+      "side": 1,
+      "message": "Yes, different types allow for different modifiers. For instance, precision is only useful for decimal types. I figured this was slightly more eloquent than checking each character independently, although that may be a more explicit/clear way of doing it...",
+      "parentUuid": "55607424_c57cebd9",
       "range": {
         "startLine": 122,
         "startChar": 21,
