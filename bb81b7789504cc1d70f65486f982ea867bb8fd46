@@ -16,6 +16,24 @@
       "revId": "bb81b7789504cc1d70f65486f982ea867bb8fd46",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "699ecd75_eba658a3",
+        "filename": "libutils/RWLock_fuzz.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1695385
+      },
+      "writtenOn": "2020-09-02T20:30:51Z",
+      "side": 0,
+      "message": "At that point we\u0027re simply fuzzing the known good path, and I don\u0027t see how it\u0027s possible that would lead to anything unless it somehow occurs within pthreads. The logic behind removing this was, outside of just unlocking and re-locking the same lock object in order a bunch, which is the intended use case, it didn\u0027t seem like there were obvious ways to fuzz this within acceptable usage.",
+      "parentUuid": "56f0f5f8_0316a349",
+      "revId": "bb81b7789504cc1d70f65486f982ea867bb8fd46",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
