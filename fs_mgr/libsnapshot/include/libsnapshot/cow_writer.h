@@ -47,6 +47,11 @@ class ICowWriter {
     // Encode a sequence of zeroed blocks. |size| must be a multiple of the block size.
     virtual bool AddZeroBlocks(uint64_t new_block_start, uint64_t num_blocks) = 0;
 
+    // Finalize all COW operations and flush pending writes.
+    // Return 0 if failed, return number of bytes written to
+    // fd_ on success
+    virtual size_t Finalize() = 0;
+
   protected:
     CowOptions options_;
 };
@@ -63,8 +68,7 @@ class CowWriter : public ICowWriter {
     bool AddRawBlocks(uint64_t new_block_start, const void* data, size_t size) override;
     bool AddZeroBlocks(uint64_t new_block_start, uint64_t num_blocks) override;
 
-    // Finalize all COW operations and flush pending writes.
-    bool Finalize();
+    size_t Finalize() override;
 
   private:
     void SetupHeaders();

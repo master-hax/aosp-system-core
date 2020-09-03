@@ -185,11 +185,11 @@ static void SHA256(const void* data, size_t length, uint8_t out[32]) {
     SHA256_Final(out, &c);
 }
 
-bool CowWriter::Finalize() {
+size_t CowWriter::Finalize() {
     auto offs = lseek(fd_.get(), 0, SEEK_CUR);
     if (offs < 0) {
         PLOG(ERROR) << "lseek failed";
-        return false;
+        return 0;
     }
     header_.ops_offset = offs;
     header_.ops_size = ops_.size();
@@ -199,21 +199,26 @@ bool CowWriter::Finalize() {
 
     if (lseek(fd_.get(), 0, SEEK_SET) < 0) {
         PLOG(ERROR) << "lseek start failed";
-        return false;
+        return 0;
     }
     if (!android::base::WriteFully(fd_, &header_, sizeof(header_))) {
         PLOG(ERROR) << "write header failed";
-        return false;
+        return 0;
     }
     if (lseek(fd_.get(), header_.ops_offset, SEEK_SET) < 0) {
         PLOG(ERROR) << "lseek ops failed";
-        return false;
+        return 0;
     }
     if (!android::base::WriteFully(fd_, ops_.data(), ops_.size())) {
         PLOG(ERROR) << "write ops failed";
-        return false;
+        return 0;
     }
-    return true;
+    // Restore fd_ to the same position before calling finalize,
+    // so that this function is safe to be called multiple times.
+    // Calling this multiple times isn't efficient though.
+    lseek(fd_.get(), offs, SEEK_SET);
+    // Return number of bytes written
+    return sizeof(header_) + ops_.size() * sizeof(ops_[0]);
 }
 
 bool CowWriter::GetDataPos(uint64_t* pos) {
