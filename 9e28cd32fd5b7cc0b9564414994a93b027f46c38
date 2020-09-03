@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ea3dfafb_7151e311",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-09-03T16:01:21Z",
+      "side": 1,
+      "message": "ccross: is there any API in here you\u0027d definitely want to clean up before making this vendor available?",
+      "revId": "9e28cd32fd5b7cc0b9564414994a93b027f46c38",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
