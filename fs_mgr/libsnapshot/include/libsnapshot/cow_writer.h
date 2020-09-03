@@ -47,6 +47,14 @@ class ICowWriter {
     // Encode a sequence of zeroed blocks. |size| must be a multiple of the block size.
     virtual bool AddZeroBlocks(uint64_t new_block_start, uint64_t num_blocks) = 0;
 
+    // Finalize all COW operations and flush pending writes.
+    // Return true if successful.
+    virtual bool Finalize() = 0;
+
+    // Return 0 if failed, on success return number of bytes the cow image would be
+    // after calling Finalize();
+    virtual size_t GetCowSize() = 0;
+
   protected:
     CowOptions options_;
 };
@@ -63,12 +71,14 @@ class CowWriter : public ICowWriter {
     bool AddRawBlocks(uint64_t new_block_start, const void* data, size_t size) override;
     bool AddZeroBlocks(uint64_t new_block_start, uint64_t num_blocks) override;
 
-    // Finalize all COW operations and flush pending writes.
-    bool Finalize();
+    bool Finalize() override;
+
+    size_t GetCowSize() override;
 
   private:
     void SetupHeaders();
     bool GetDataPos(uint64_t* pos);
+    bool WriteFully(base::borrowed_fd fd, const void* data, size_t size);
     std::basic_string<uint8_t> Compress(const void* data, size_t length);
 
   private:
@@ -80,6 +90,7 @@ class CowWriter : public ICowWriter {
     // :TODO: this is not efficient, but stringstream ubsan aborts because some
     // bytes overflow a signed char.
     std::basic_string<uint8_t> ops_;
+    std::atomic<size_t> bytes_written_;
 };
 
 }  // namespace snapshot
