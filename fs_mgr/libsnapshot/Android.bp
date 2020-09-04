@@ -152,6 +152,7 @@ cc_library_static {
         "liblog",
     ],
     static_libs: [
+        "libbrotli",
         "libz",
     ],
     ramdisk_available: true,
@@ -403,6 +404,7 @@ cc_test {
         "libz",
     ],
     static_libs: [
+        "libbrotli",
         "libgtest",
         "libsnapshot_cow",
     ],
