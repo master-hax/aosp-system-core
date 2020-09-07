@@ -61,7 +61,11 @@ enum mount_mode {
 #define FS_MGR_MNTALL_DEV_NOT_ENCRYPTABLE 0
 #define FS_MGR_MNTALL_FAIL (-1)
 // fs_mgr_mount_all() updates fstab entries that reference device-mapper.
-int fs_mgr_mount_all(android::fs_mgr::Fstab* fstab, int mount_mode);
+// Returns pair where first element is one of the return codes defined above,
+// and second element tells whether this call to fs_mgr_mount_all was
+// responsible for mounting userdata. Later is required to correctly remount
+// userdata during userspace reboot.
+std::pair<int, bool> fs_mgr_mount_all(android::fs_mgr::Fstab* fstab, int mount_mode);
 
 #define FS_MGR_DOMNT_FAILED (-1)
 #define FS_MGR_DOMNT_BUSY (-2)
