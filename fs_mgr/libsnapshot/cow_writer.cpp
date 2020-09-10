@@ -49,6 +49,7 @@ bool CowWriter::Initialize(android::base::unique_fd&& fd) {
 }
 
 bool CowWriter::Initialize(android::base::borrowed_fd fd) {
+    CHECK_GE(fd.get(), 0);
     fd_ = fd;
 
     // This limitation is tied to the data field size in CowOperation.

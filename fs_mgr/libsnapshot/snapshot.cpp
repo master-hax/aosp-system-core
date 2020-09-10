@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <asm-generic/fcntl.h>
 #include <libsnapshot/snapshot.h>
 
 #include <dirent.h>
@@ -20,7 +21,9 @@
 #include <sys/types.h>
 #include <sys/unistd.h>
 
+#include <memory>
 #include <optional>
+#include <string_view>
 #include <thread>
 #include <unordered_set>
 
@@ -40,6 +43,7 @@
 #include <android/snapshot/snapshot.pb.h>
 #include <libsnapshot/snapshot_stats.h>
 #include "device_info.h"
+#include "libsnapshot/cow_writer.h"
 #include "partition_cow_creator.h"
 #include "snapshot_metadata_updater.h"
 #include "utility.h"
@@ -1560,8 +1564,8 @@ bool SnapshotManager::CreateLogicalAndSnapshotPartitions(
                 .block_device = super_device,
                 .metadata = metadata.get(),
                 .partition = &partition,
-                .partition_opener = &opener,
                 .timeout_ms = timeout_ms,
+                .partition_opener = &opener,
         };
         std::string ignore_path;
         if (!MapPartitionWithSnapshot(lock.get(), std::move(params), &ignore_path)) {
@@ -1588,6 +1592,30 @@ static std::chrono::milliseconds GetRemainingTime(
         return std::chrono::milliseconds::min();
     }
     return remaining_time;
+}
+
+std::unique_ptr<ICowWriter> SnapshotManager::GetPartitionCowWriter(
+        std::string_view partition_name) {
+    const auto& opener = device_->GetPartitionOpener();
+    auto target_suffix = device_->GetOtherSlotSuffix();
+
+    target_suffix.insert(0, partition_name);
+    auto&& cow_name = GetCowName(target_suffix);
+
+    // std::string cow_device;
+    // if (!GetMappedImageDeviceStringOrPath(cow_name, &cow_device)) {
+    //     LOG(ERROR) << "Could not determine major/minor for: " << cow_name;
+    //     return nullptr;
+    // }
+
+    CowOptions options;
+    options.compression = "gz";
+    // TODO(zhangkelvin) pass in the blocksize.
+    options.block_size = 4096;
+    auto cow_writer = std::make_unique<CowWriter>(options);
+    LOG(INFO) << "cow_name: " << cow_name;
+    cow_writer->Initialize(opener.Open("/dev/block/mapper/" + cow_name, O_RDWR));
+    return cow_writer;
 }
 
 bool SnapshotManager::MapPartitionWithSnapshot(LockedFile* lock,
@@ -1718,7 +1746,8 @@ bool SnapshotManager::MapPartitionWithSnapshot(LockedFile* lock,
 
     created_devices.Release();
 
-    LOG(INFO) << "Mapped " << params.GetPartitionName() << " as snapshot device at " << *path;
+    LOG(INFO) << "Mapped " << params.GetPartitionName() << " as snapshot device at " << *path
+              << " with COW device " << cow_device << " COW name " << cow_name;
 
     return true;
 }

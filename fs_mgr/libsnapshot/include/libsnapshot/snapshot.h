@@ -35,6 +35,7 @@
 #include <update_engine/update_metadata.pb.h>
 
 #include <libsnapshot/auto_device.h>
+#include <libsnapshot/cow_writer.h>
 #include <libsnapshot/return.h>
 
 #ifndef FRIEND_TEST
@@ -177,6 +178,9 @@ class ISnapshotManager {
     virtual bool MapUpdateSnapshot(const android::fs_mgr::CreateLogicalPartitionParams& params,
                                    std::string* snapshot_path) = 0;
 
+    // return a CowWriter for this partition
+    virtual std::unique_ptr<ICowWriter> GetPartitionCowWriter(std::string_view partition_name) = 0;
+
     // Unmap a snapshot device that's previously mapped with MapUpdateSnapshot.
     virtual bool UnmapUpdateSnapshot(const std::string& target_partition_name) = 0;
 
@@ -288,6 +292,7 @@ class SnapshotManager final : public ISnapshotManager {
     Return CreateUpdateSnapshots(const DeltaArchiveManifest& manifest) override;
     bool MapUpdateSnapshot(const CreateLogicalPartitionParams& params,
                            std::string* snapshot_path) override;
+    std::unique_ptr<ICowWriter> GetPartitionCowWriter(std::string_view partition_name);
     bool UnmapUpdateSnapshot(const std::string& target_partition_name) override;
     bool NeedSnapshotsInFirstStageMount() override;
     bool CreateLogicalAndSnapshotPartitions(

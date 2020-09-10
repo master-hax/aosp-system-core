@@ -17,6 +17,7 @@
 #include <android-base/logging.h>
 
 #include <libsnapshot/snapshot_stats.h>
+#include <cstddef>
 
 using android::fs_mgr::CreateLogicalPartitionParams;
 using chromeos_update_engine::DeltaArchiveManifest;
@@ -127,6 +128,11 @@ ISnapshotMergeStats* SnapshotManagerStub::GetSnapshotMergeStatsInstance() {
     static SnapshotMergeStatsStub snapshot_merge_stats;
     LOG(ERROR) << __FUNCTION__ << " should never be called.";
     return &snapshot_merge_stats;
+}
+
+std::unique_ptr<ICowWriter> SnapshotManagerStub::GetPartitionCowWriter(
+        std::string_view /*partition_name*/) {
+    return nullptr;
 }
 
 }  // namespace android::snapshot

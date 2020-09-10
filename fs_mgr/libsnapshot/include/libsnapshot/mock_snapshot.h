@@ -50,6 +50,9 @@ class MockSnapshotManager : public ISnapshotManager {
     MOCK_METHOD(bool, Dump, (std::ostream & os), (override));
     MOCK_METHOD(std::unique_ptr<AutoDevice>, EnsureMetadataMounted, (), (override));
     MOCK_METHOD(ISnapshotMergeStats*, GetSnapshotMergeStatsInstance, (), (override));
+
+    MOCK_METHOD(std::unique_ptr<ICowWriter>, GetPartitionCowWriter,
+                (std::string_view partition_name), (override));
 };
 
 }  // namespace android::snapshot

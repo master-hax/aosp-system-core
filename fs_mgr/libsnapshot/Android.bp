@@ -31,6 +31,7 @@ cc_defaults {
         "libdm",
         "libfstab",
         "update_metadata-protos",
+        "libsnapshot_cow",
     ],
     whole_static_libs: [
         "libext2_uuid",
@@ -96,6 +97,9 @@ cc_library_static {
     static_libs: [
         "libfs_mgr_binder"
     ],
+    export_static_lib_headers: [
+        "libfs_mgr_binder",
+    ],
 }
 
 cc_library_static {
@@ -137,6 +141,9 @@ cc_defaults {
         "cow_reader.cpp",
         "cow_writer.cpp",
     ],
+    static_libs: [
+        "libz",
+    ],
 }
 
 cc_library_static {
@@ -150,9 +157,6 @@ cc_library_static {
         "libbase",
         "libcrypto",
         "liblog",
-    ],
-    static_libs: [
-        "libz",
     ],
 }
 
@@ -245,6 +249,8 @@ cc_binary {
         "libfstab",
         "libsnapshot",
         "update_metadata-protos",
+        "libz",
+        "libsnapshot_cow",
     ],
     shared_libs: [
         "android.hardware.boot@1.0",
@@ -260,6 +266,7 @@ cc_binary {
         "libprotobuf-cpp-lite",
         "libstatslog",
         "libutils",
+        "libcrypto",
     ],
 }
 
@@ -309,6 +316,8 @@ cc_defaults {
         "liblp",
         "libsnapshot_test_helpers",
         "libprotobuf-mutator",
+        "libsnapshot_cow",
+        "libz",
     ],
     header_libs: [
         "libfiemap_headers",
