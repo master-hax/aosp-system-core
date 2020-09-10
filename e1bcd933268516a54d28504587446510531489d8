@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "504ac499_cf394f35",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-09-10T18:21:41Z",
+      "side": 1,
+      "message": "does this need to be in qpr, or does this only happen under artificial conditions?",
+      "revId": "e1bcd933268516a54d28504587446510531489d8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
