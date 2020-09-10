@@ -154,6 +154,7 @@ cc_library_static {
     static_libs: [
         "libbrotli",
         "libz",
+        "libzstd",
     ],
     ramdisk_available: true,
 }
@@ -365,8 +366,8 @@ cc_defaults {
         "libbase",
         "liblog",
         "libdm",
-	"libz",
-	"libsnapshot_cow",
+        "libz",
+        "libsnapshot_cow",
     ],
 }
 
@@ -407,6 +408,7 @@ cc_test {
         "libbrotli",
         "libgtest",
         "libsnapshot_cow",
+        "libzstd",
     ],
     test_min_api_level: 30,
     auto_gen_config: true,
@@ -438,6 +440,7 @@ cc_binary {
         "libxz",
         "libz",
         "libziparchive",
+        "libzstd",
         "update_metadata-protos",
     ],
     srcs: [
@@ -470,6 +473,7 @@ cc_binary {
         "libsparse",
         "libz",
         "libziparchive",
+        "libzstd",
     ],
     srcs: [
         "estimate_cow_from_nonab_ota.cpp",

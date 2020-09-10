@@ -241,7 +241,7 @@ TEST_P(CompressionTest, HorribleSink) {
     ASSERT_EQ(sink.stream(), data);
 }
 
-INSTANTIATE_TEST_SUITE_P(CowApi, CompressionTest, testing::Values("none", "gz", "brotli"));
+INSTANTIATE_TEST_SUITE_P(CowApi, CompressionTest, testing::Values("none", "gz", "brotli", "zstd"));
 
 TEST_F(CowTest, GetSize) {
     CowOptions options;

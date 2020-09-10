@@ -236,6 +236,9 @@ bool CowReader::ReadData(const CowOperation& op, IByteSink* sink) {
         case kCowCompressBrotli:
             decompressor = IDecompressor::Brotli();
             break;
+        case kCowCompressZstd:
+            decompressor = IDecompressor::Zstd();
+            break;
         default:
             LOG(ERROR) << "Unknown compression type: " << op.compression;
             return false;

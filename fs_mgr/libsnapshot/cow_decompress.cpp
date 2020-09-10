@@ -21,6 +21,7 @@
 #include <android-base/logging.h>
 #include <brotli/decode.h>
 #include <zlib.h>
+#include <zstd.h>
 
 namespace android {
 namespace snapshot {
@@ -258,6 +259,66 @@ bool BrotliDecompressor::DecompressInput(const uint8_t* data, size_t length) {
 
 std::unique_ptr<IDecompressor> IDecompressor::Brotli() {
     return std::unique_ptr<IDecompressor>(new BrotliDecompressor());
+}
+
+class ZstdDecompressor final : public StreamDecompressor {
+  public:
+    ~ZstdDecompressor();
+
+    bool Init() override;
+    bool DecompressInput(const uint8_t* data, size_t length) override;
+    bool Done() override;
+
+  private:
+    ZSTD_DStream* decoder_ = nullptr;
+    bool ended_ = false;
+};
+
+bool ZstdDecompressor::Init() {
+    decoder_ = ZSTD_createDStream();
+    return !!decoder_;
+}
+
+ZstdDecompressor::~ZstdDecompressor() {
+    if (decoder_) {
+        ZSTD_freeDStream(decoder_);
+    }
+}
+
+bool ZstdDecompressor::Done() {
+    return ended_;
+}
+
+bool ZstdDecompressor::DecompressInput(const uint8_t* data, size_t length) {
+    ZSTD_inBuffer input = {};
+    input.src = data;
+    input.size = length;
+    input.pos = 0;
+
+    ZSTD_outBuffer output = {};
+
+    while (input.pos != input.size) {
+        if (output.size == output.pos) {
+            if (!GetFreshBuffer()) {
+                return false;
+            }
+            output.dst = output_buffer_;
+            output.size = output_buffer_remaining_;
+            output.pos = 0;
+        }
+
+        size_t rv = ZSTD_decompressStream(decoder_, &output, &input);
+        if (ZSTD_isError(rv)) {
+            LOG(ERROR) << "ZSTD_decompressStream returned: " << rv;
+            return false;
+        }
+        ended_ = (rv == 0);
+    }
+    return true;
+}
+
+std::unique_ptr<IDecompressor> IDecompressor::Zstd() {
+    return std::unique_ptr<IDecompressor>(new ZstdDecompressor());
 }
 
 }  // namespace snapshot

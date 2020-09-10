@@ -25,6 +25,7 @@
 #include <brotli/encode.h>
 #include <libsnapshot/cow_writer.h>
 #include <zlib.h>
+#include <zstd.h>
 
 namespace android {
 namespace snapshot {
@@ -66,6 +67,8 @@ bool CowWriter::Initialize(android::base::borrowed_fd fd) {
         compression_ = kCowCompressGz;
     } else if (options_.compression == "brotli") {
         compression_ = kCowCompressBrotli;
+    } else if (options_.compression == "zstd") {
+        compression_ = kCowCompressZstd;
     } else if (options_.compression == "none") {
         compression_ = kCowCompressNone;
     } else if (!options_.compression.empty()) {
@@ -193,6 +196,17 @@ std::basic_string<uint8_t> CowWriter::Compress(const void* data, size_t length) 
                 return {};
             }
             return std::basic_string<uint8_t>(buffer.get(), encoded_size);
+        }
+        case kCowCompressZstd: {
+            auto bound = ZSTD_compressBound(length);
+            auto buffer = std::make_unique<uint8_t[]>(bound);
+
+            size_t rv = ZSTD_compress(buffer.get(), bound, data, length, ZSTD_maxCLevel());
+            if (ZSTD_isError(rv)) {
+                LOG(ERROR) << "ZSTD_compress failed: " << rv;
+                return {};
+            }
+            return std::basic_string<uint8_t>(buffer.get(), rv);
         }
         default:
             LOG(ERROR) << "unhandled compression type: " << compression_;
