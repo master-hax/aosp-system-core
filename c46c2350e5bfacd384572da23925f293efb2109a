@@ -1,0 +1,31 @@
+{
+  "comments": [
+    {
+      "robotId": "ayeaye",
+      "robotRunId": "AR00000000000004890468",
+      "url": "https://android-build.googleplex.com/builds/treetop/android-review/1424809?revision\u003d1",
+      "fixSuggestions": [],
+      "key": {
+        "uuid": "3fd9681c_69f485b5",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 469,
+      "author": {
+        "id": 1757831
+      },
+      "writtenOn": "2020-09-11T10:07:24Z",
+      "side": 1,
+      "message": "Prefer to use inclusive terms like \u0027primary/secondary\u0027 or \u0027manager/worker\u0027; see https://source.android.com/setup/contribute/respectful-code for more details.",
+      "range": {
+        "startLine": 469,
+        "startChar": 29,
+        "endLine": 469,
+        "endChar": 34
+      },
+      "revId": "c46c2350e5bfacd384572da23925f293efb2109a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
