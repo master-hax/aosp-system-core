@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "77fa4f44_42b9d4df",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1041813
+      },
+      "writtenOn": "2020-09-12T01:35:32Z",
+      "side": 1,
+      "message": "after this change, do you think if we should update the settings in the hikey side:\nhttps://android.googlesource.com/device/linaro/hikey/+/refs/heads/master/ueventd.common.rc#21",
+      "revId": "72a0f10f518a981d67612c6832a86f03c586c877",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
