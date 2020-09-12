@@ -872,6 +872,17 @@ int SecondStageMain(int argc, char** argv) {
     auto is_installed = android::gsi::IsGsiInstalled() ? "1" : "0";
     SetProperty(gsi::kGsiInstalledProp, is_installed);
 
+    /*
+     * For debug builds of S launching devices, init mounts debugfs for
+     * enabling debug data collection setup. Init will unmount it on
+     * boot-complete. first_api_level comparison is done here instead
+     * of init.rc since init.rc parser does not support >/< operators.
+     */
+    auto api_level = android::base::GetIntProperty("ro.product.first_api_level", 0);
+    bool is_debuggable = android::base::GetBoolProperty("ro.debuggable", false);
+    auto mount_debugfs = (is_debuggable && (api_level >= 31)) ? "1" : "0";
+    SetProperty("init.mount_debugfs", mount_debugfs);
+
     am.QueueBuiltinAction(SetupCgroupsAction, "SetupCgroups");
     am.QueueBuiltinAction(SetKptrRestrictAction, "SetKptrRestrict");
     am.QueueBuiltinAction(TestPerfEventSelinuxAction, "TestPerfEventSelinux");
