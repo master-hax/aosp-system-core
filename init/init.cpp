@@ -872,6 +872,12 @@ int SecondStageMain(int argc, char** argv) {
     auto is_installed = android::gsi::IsGsiInstalled() ? "1" : "0";
     SetProperty(gsi::kGsiInstalledProp, is_installed);
 
+    // Check if debugfs should be mounted by init for non-user builds
+    auto api_level = android::base::GetIntProperty("ro.product.first_api_level", 0);
+    bool is_debuggable = android::base::GetBoolProperty("ro.debuggable", false);
+    auto mount_debugfs = (is_debuggable && (api_level >= 31)) ? "1" : "0";
+    SetProperty("init.mount_debugfs", mount_debugfs);
+
     am.QueueBuiltinAction(SetupCgroupsAction, "SetupCgroups");
     am.QueueBuiltinAction(SetKptrRestrictAction, "SetKptrRestrict");
     am.QueueBuiltinAction(TestPerfEventSelinuxAction, "TestPerfEventSelinux");
