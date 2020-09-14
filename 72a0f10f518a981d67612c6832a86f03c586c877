@@ -87,6 +87,24 @@
       "revId": "72a0f10f518a981d67612c6832a86f03c586c877",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "87e32fa6_74071c71",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-09-14T17:36:13Z",
+      "side": 1,
+      "message": "\u003e As for uevent_devname, I believe this is because we\u0027re just creating the base /dev/dma_heap/ directory (the basename uevent?) not a specific device node.\n\nMaybe I need to do a better job of the documentation, but uevent_devname vs uevent_devpath controls the name of the node within the /dev/dma_heap/ directory.  The node name is either the devname from the uevent or basename(\u003cdevpath of the uevent\u003e).  It may be that these happen to be identical for the cases you\u0027ve used so far.\n\n\u003e Additionally this \"/dev/dma_heap/\u003cheapname\u003e\" is same pathname as found w/ dmabuf heaps on  desktop linux as well. So hopefully no divergence here, unless I\u0027m missing something.\n\nInteresting.  Does systemd/etc have a specific rule to handle dma_heap such that the device nodes don\u0027t end up in the root of /dev/?  Maybe I\u0027m just misremembering how desktop linux creates nodes, but I thought they default to the root of /dev/, and this causes divergence with Android that tends to put its nodes in subdirectories.\n\nIn either case, if this puts the nodes in the same place as desktop linux, that\u0027s great.",
+      "parentUuid": "71e6412f_516f4c66",
+      "revId": "72a0f10f518a981d67612c6832a86f03c586c877",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
