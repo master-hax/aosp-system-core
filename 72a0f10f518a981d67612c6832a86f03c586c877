@@ -69,6 +69,24 @@
       "revId": "72a0f10f518a981d67612c6832a86f03c586c877",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "71e6412f_516f4c66",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1010110
+      },
+      "writtenOn": "2020-09-14T17:26:48Z",
+      "side": 1,
+      "message": "As for uevent_devname, I believe this is because we\u0027re just creating the base /dev/dma_heap/ directory (the basename uevent?) not a specific device node.\n\n\nAdditionally this \"/dev/dma_heap/\u003cheapname\u003e\" is same pathname as found w/ dmabuf heaps on  desktop linux as well. So hopefully no divergence here, unless I\u0027m missing something.",
+      "parentUuid": "da0c8b71_cd7ce09c",
+      "revId": "72a0f10f518a981d67612c6832a86f03c586c877",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
