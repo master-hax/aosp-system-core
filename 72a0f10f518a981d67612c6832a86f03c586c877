@@ -105,6 +105,24 @@
       "revId": "72a0f10f518a981d67612c6832a86f03c586c877",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c5db9fb0_f515d4ac",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1010110
+      },
+      "writtenOn": "2020-09-14T18:00:42Z",
+      "side": 1,
+      "message": "Yes, the driver specifies the path in its devnode name:\n  https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/dma-buf/dma-heap.c#n279\n\nBut without creating the dma_heap dir the the subsystem uevent_devpath, Android doesn\u0027t interpret the node directory path name. Though I can\u0027t recall exactly, I feel like we get \"dev/dma_heap!system\" nodes.",
+      "parentUuid": "87e32fa6_74071c71",
+      "revId": "72a0f10f518a981d67612c6832a86f03c586c877",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
