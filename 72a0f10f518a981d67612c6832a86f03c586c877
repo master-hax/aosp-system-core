@@ -52,6 +52,23 @@
       "revId": "72a0f10f518a981d67612c6832a86f03c586c877",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "da0c8b71_cd7ce09c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-09-14T16:15:37Z",
+      "side": 1,
+      "message": "Just wondering - what do these paths look like if we don\u0027t have this subsystem section?  Also why not uevent_devname isntead of uevent_devpath?\n\nI\u0027m fine with the change overall, but these subsystem sections tend to diverge us from desktop linux, so we\u0027ll lose compatibility with any tools built for desktop linux.",
+      "revId": "72a0f10f518a981d67612c6832a86f03c586c877",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
