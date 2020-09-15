@@ -392,7 +392,7 @@ static int GetPathCmdHandler(int argc, char** argv) {
     return 0;
 }
 
-static int GetUUIDCmdHandler(int argc, char** argv) {
+static int GetUuidCmdHandler(int argc, char** argv) {
     if (argc != 1) {
         std::cerr << "Invalid arguments, see \'dmctl help\'" << std::endl;
         return -EINVAL;
@@ -400,7 +400,7 @@ static int GetUUIDCmdHandler(int argc, char** argv) {
 
     DeviceMapper& dm = DeviceMapper::Instance();
     std::string uuid;
-    if (!dm.GetDmDeviceUUIDByName(argv[0], &uuid)) {
+    if (!dm.GetDmDeviceUuidByName(argv[0], &uuid)) {
         std::cerr << "Could not query uuid of device \"" << argv[0] << "\"." << std::endl;
         return -EINVAL;
     }
@@ -521,7 +521,7 @@ static std::map<std::string, std::function<int(int, char**)>> cmdmap = {
         {"list", DmListCmdHandler},
         {"help", HelpCmdHandler},
         {"getpath", GetPathCmdHandler},
-        {"getuuid", GetUUIDCmdHandler},
+        {"getuuid", GetUuidCmdHandler},
         {"info", InfoCmdHandler},
         {"table", TableCmdHandler},
         {"status", StatusCmdHandler},
