@@ -34,6 +34,125 @@
       "revId": "26036e9bb4d57255913a4111aa7d387303c966da",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7ab55bce_caf24703",
+        "filename": "fs_mgr/libsnapshot/cow_snapuserd_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-09-15T19:56:03Z",
+      "side": 1,
+      "message": "nit: suffix with _ since these are protected/private",
+      "revId": "26036e9bb4d57255913a4111aa7d387303c966da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e67ac160_b1fe8d39",
+        "filename": "fs_mgr/libsnapshot/cow_snapuserd_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-09-15T19:56:03Z",
+      "side": 1,
+      "message": "Using PRNGs in a test is probably going to bite back at some point, eg failure being non-reproducible or intermittent. I would only do this if you\u0027re going to print the seed and allow for re-running the test with a given seed.",
+      "revId": "26036e9bb4d57255913a4111aa7d387303c966da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f6a3a145_5c4ea442",
+        "filename": "fs_mgr/libsnapshot/cow_snapuserd_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-09-15T19:56:03Z",
+      "side": 1,
+      "message": "nit: remove all the excess newlines in between these make_unique lines",
+      "revId": "26036e9bb4d57255913a4111aa7d387303c966da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3f1fd0b1_d0c91e11",
+        "filename": "fs_mgr/libsnapshot/cow_snapuserd_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 184,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-09-15T19:56:03Z",
+      "side": 1,
+      "message": "ASSERT_GE(err, 0)",
+      "revId": "26036e9bb4d57255913a4111aa7d387303c966da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "80f2f301_88d7631c",
+        "filename": "fs_mgr/libsnapshot/cow_snapuserd_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 190,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-09-15T19:56:03Z",
+      "side": 1,
+      "message": "As part of this change, dmctl should pass a timeout to CreateDevice. Otherwise this will be racy.",
+      "revId": "26036e9bb4d57255913a4111aa7d387303c966da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e11f5b2d_2426cf69",
+        "filename": "fs_mgr/libsnapshot/cow_snapuserd_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 210,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-09-15T19:56:03Z",
+      "side": 1,
+      "message": "ASSERT_GE(err, 0)",
+      "revId": "26036e9bb4d57255913a4111aa7d387303c966da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e3ad6aca_9d205012",
+        "filename": "fs_mgr/libsnapshot/cow_snapuserd_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 220,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-09-15T19:56:03Z",
+      "side": 1,
+      "message": "Can remove sleep() after fixing dmctl.",
+      "revId": "26036e9bb4d57255913a4111aa7d387303c966da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
