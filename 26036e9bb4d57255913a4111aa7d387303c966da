@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7454b363_155ba0be",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2020-09-15T19:01:54Z",
+      "side": 1,
+      "message": "Kernel changes will be uploaded to Palmer\u0027s user.git repo.\n\n",
+      "revId": "26036e9bb4d57255913a4111aa7d387303c966da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
