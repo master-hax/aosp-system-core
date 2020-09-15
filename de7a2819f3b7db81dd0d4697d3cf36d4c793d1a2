@@ -1,0 +1,140 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "32e1f851_42f58aa1",
+        "filename": "fs_mgr/libsnapshot/snapuserd.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-09-15T23:27:26Z",
+      "side": 1,
+      "message": "nit: Target",
+      "revId": "de7a2819f3b7db81dd0d4697d3cf36d4c793d1a2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "668d00ca_a4794dd9",
+        "filename": "fs_mgr/libsnapshot/snapuserd.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-09-15T23:27:26Z",
+      "side": 1,
+      "message": "no need for \"void\" here (and elsewhere)",
+      "revId": "de7a2819f3b7db81dd0d4697d3cf36d4c793d1a2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3040d88f_5254f75d",
+        "filename": "fs_mgr/libsnapshot/snapuserd.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-09-15T23:27:26Z",
+      "side": 1,
+      "message": "Instance? (For consistency with libdm)",
+      "revId": "de7a2819f3b7db81dd0d4697d3cf36d4c793d1a2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e6eb6dd4_b0d34a4d",
+        "filename": "fs_mgr/libsnapshot/snapuserd.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-09-15T23:27:26Z",
+      "side": 1,
+      "message": "is_running_",
+      "revId": "de7a2819f3b7db81dd0d4697d3cf36d4c793d1a2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "10940828_4128b606",
+        "filename": "fs_mgr/libsnapshot/snapuserd.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-09-15T23:27:26Z",
+      "side": 1,
+      "message": "SignalHandler",
+      "revId": "de7a2819f3b7db81dd0d4697d3cf36d4c793d1a2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a04e96c3_b6a793de",
+        "filename": "fs_mgr/libsnapshot/snapuserd.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 619,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-09-15T23:27:26Z",
+      "side": 1,
+      "message": "Maybe CHECK(found !\u003d std::string::npos)?",
+      "revId": "de7a2819f3b7db81dd0d4697d3cf36d4c793d1a2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c0df791a_283ac8c3",
+        "filename": "fs_mgr/libsnapshot/snapuserd.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 632,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-09-15T23:27:26Z",
+      "side": 1,
+      "message": "Any reason you needed a local function here? If it\u0027s just to add a scope, do braces work?",
+      "revId": "de7a2819f3b7db81dd0d4697d3cf36d4c793d1a2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "af3d1312_292bd715",
+        "filename": "fs_mgr/tools/dmctl.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 248,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-09-15T23:27:26Z",
+      "side": 1,
+      "message": "Thanks! This has been a long-standing bug. I believe this file imports it already, but if not, you can do:\n\n    using namespace std::chrono_literals;\n    ...\n    if (!dm.CreateDevice(name, table, \u0026ignore_path, 5s)) {",
+      "revId": "de7a2819f3b7db81dd0d4697d3cf36d4c793d1a2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
