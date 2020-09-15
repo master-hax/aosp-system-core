@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9cefb079_0154f2ec",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1086523
+      },
+      "writtenOn": "2020-09-15T00:33:11Z",
+      "side": 1,
+      "message": "This will not bring any new changes that is not already present in trunk.",
+      "revId": "c6a5bb31c7e3cdc54d1730445ad12c6137468e52",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
