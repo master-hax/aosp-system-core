@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "daa37ba1_8096b86a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-09-16T17:23:02Z",
+      "side": 1,
+      "message": "The TODO is resolved, so this should be safe to delete.",
+      "revId": "9c2005fc27da23751acdbf29531fa15d62ac1038",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
