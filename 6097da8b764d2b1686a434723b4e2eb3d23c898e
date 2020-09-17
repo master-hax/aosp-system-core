@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5c839995_06bb73d2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1054468
+      },
+      "writtenOn": "2020-09-17T12:55:35Z",
+      "side": 1,
+      "message": "- Is \"nfc snoop\" a Pixel thing, or part of core Android?\n- Is any sensitive data logged? How are these logs accessed?\n- If sensitive data is logged, should this be stored in credential encrypted storage? e.g. /data/system_ce/0 ?",
+      "revId": "6097da8b764d2b1686a434723b4e2eb3d23c898e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
