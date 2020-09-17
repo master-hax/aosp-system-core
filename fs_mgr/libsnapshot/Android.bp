@@ -30,6 +30,7 @@ cc_defaults {
     static_libs: [
         "libdm",
         "libfstab",
+        "libsnapshot_cow",
         "update_metadata-protos",
     ],
     whole_static_libs: [

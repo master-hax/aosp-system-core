@@ -35,6 +35,7 @@
 #include <update_engine/update_metadata.pb.h>
 
 #include <libsnapshot/auto_device.h>
+#include <libsnapshot/cow_writer.h>
 #include <libsnapshot/return.h>
 
 #ifndef FRIEND_TEST
@@ -173,11 +174,20 @@ class ISnapshotManager {
 
     // Map a snapshotted partition for OTA clients to write to. Write-protected regions are
     // determined previously in CreateSnapshots.
+    //
     // |snapshot_path| must not be nullptr.
+    //
+    // This method will return false if ro.virtual_ab.compression.enabled is true.
     virtual bool MapUpdateSnapshot(const android::fs_mgr::CreateLogicalPartitionParams& params,
                                    std::string* snapshot_path) = 0;
 
-    // Unmap a snapshot device that's previously mapped with MapUpdateSnapshot.
+    // Create an ICowWriter to build a snapshot against a target partition.
+    virtual std::unique_ptr<ICowWriter> OpenWritableSnapshot(
+            const std::string& partition_name,
+            const std::chrono::milliseconds& timeout_ms = {}) = 0;
+
+    // Unmap a snapshot device or CowWriter that was previously opened with MapUpdateSnapshot
+    // or OpenWritableSnapshot().
     virtual bool UnmapUpdateSnapshot(const std::string& target_partition_name) = 0;
 
     // If this returns true, first-stage mount must call
@@ -288,6 +298,9 @@ class SnapshotManager final : public ISnapshotManager {
     Return CreateUpdateSnapshots(const DeltaArchiveManifest& manifest) override;
     bool MapUpdateSnapshot(const CreateLogicalPartitionParams& params,
                            std::string* snapshot_path) override;
+    std::unique_ptr<ICowWriter> OpenWritableSnapshot(
+            const std::string& partition_name,
+            const std::chrono::milliseconds& timeout_ms = {}) override;
     bool UnmapUpdateSnapshot(const std::string& target_partition_name) override;
     bool NeedSnapshotsInFirstStageMount() override;
     bool CreateLogicalAndSnapshotPartitions(

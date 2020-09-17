@@ -129,4 +129,10 @@ ISnapshotMergeStats* SnapshotManagerStub::GetSnapshotMergeStatsInstance() {
     return &snapshot_merge_stats;
 }
 
+std::unique_ptr<ICowWriter> SnapshotManagerStub::OpenWritableSnapshot(
+        const std::string&, const std::chrono::milliseconds&) {
+    LOG(ERROR) << __FUNCTION__ << " should never be called.";
+    return nullptr;
+}
+
 }  // namespace android::snapshot
