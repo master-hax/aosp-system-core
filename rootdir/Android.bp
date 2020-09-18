@@ -24,3 +24,8 @@ prebuilt_etc {
     src: "ueventd.rc",
     recovery_available: true,
 }
+
+prebuilt_etc {
+    name: "stub.libraries.txt",
+    src: "etc/stub.libraries.txt",
+}
