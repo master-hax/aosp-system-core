@@ -24,3 +24,10 @@ prebuilt_etc {
     src: "ueventd.rc",
     recovery_available: true,
 }
+
+// TODO(b/147210213) Generate list of libraries during build and fill in at build time
+prebuilt_etc {
+    name: "system_linker_config",
+    src: "etc/linker.config.txt",
+    filename: "linker.config.txt",
+}
