@@ -36,6 +36,24 @@
     },
     {
       "key": {
+        "uuid": "e98408be_1ff69ff7",
+        "filename": "init/README.ueventd.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2020-09-18T23:08:53Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d0bb9501_78c517f3",
+      "revId": "214a20a7c5539acaf773466cc5b912b34281e367",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "4e5c7bd0_2e04c2cd",
         "filename": "init/firmware_handler.cpp",
         "patchSetId": 1
@@ -50,6 +68,24 @@
       "revId": "214a20a7c5539acaf773466cc5b912b34281e367",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8e35d73e_ad57ea26",
+        "filename": "init/firmware_handler.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 258,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2020-09-18T23:08:53Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4e5c7bd0_2e04c2cd",
+      "revId": "214a20a7c5539acaf773466cc5b912b34281e367",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
