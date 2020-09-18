@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "411e68ec_4d156134",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-09-18T18:51:18Z",
+      "side": 1,
+      "message": "Lgtm.  We just need to update the documentation to reflect this.",
+      "revId": "214a20a7c5539acaf773466cc5b912b34281e367",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d0bb9501_78c517f3",
+        "filename": "init/README.ueventd.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-09-18T18:51:18Z",
+      "side": 1,
+      "message": "Can write here that /apex/*/firmware is also searched?",
+      "revId": "214a20a7c5539acaf773466cc5b912b34281e367",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
