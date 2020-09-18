@@ -33,6 +33,23 @@
       "revId": "214a20a7c5539acaf773466cc5b912b34281e367",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4e5c7bd0_2e04c2cd",
+        "filename": "init/firmware_handler.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 258,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-09-18T19:06:20Z",
+      "side": 1,
+      "message": "don\u0027t name a constant that\u0027s used exactly once. just inline it.",
+      "revId": "214a20a7c5539acaf773466cc5b912b34281e367",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
