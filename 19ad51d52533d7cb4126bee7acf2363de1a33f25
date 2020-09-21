@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d8594077_88b22228",
+        "filename": "rootdir/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2020-09-21T01:34:38Z",
+      "side": 1,
+      "message": "Add a todo comment for generating this by the build system",
+      "revId": "19ad51d52533d7cb4126bee7acf2363de1a33f25",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
