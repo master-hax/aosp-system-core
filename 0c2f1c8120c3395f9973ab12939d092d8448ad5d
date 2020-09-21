@@ -39,6 +39,30 @@
       "revId": "0c2f1c8120c3395f9973ab12939d092d8448ad5d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5970f9b0_a74b9661",
+        "filename": "rootdir/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1413436
+      },
+      "writtenOn": "2020-09-21T04:47:51Z",
+      "side": 1,
+      "message": "What about apex.available.libraries.txt?",
+      "parentUuid": "5207a568_f0f9d19d",
+      "range": {
+        "startLine": 30,
+        "startChar": 11,
+        "endLine": 30,
+        "endChar": 29
+      },
+      "revId": "0c2f1c8120c3395f9973ab12939d092d8448ad5d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
