@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f8a0e68c_4ab80c79",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-09-21T22:14:36Z",
+      "side": 1,
+      "message": "(Don\u0027t really know why I used CHECK(false) in the first place)",
+      "revId": "5d1fbece58cfda5486d8f729b7b28ce553e62261",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
