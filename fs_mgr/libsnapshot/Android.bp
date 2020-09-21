@@ -215,6 +215,7 @@ cc_defaults {
         "libgmock",
         "liblp",
         "libsnapshot",
+        "libsnapshot_cow",
         "libsnapshot_test_helpers",
         "libsparse",
     ],
@@ -249,6 +250,7 @@ cc_binary {
     static_libs: [
         "libfstab",
         "libsnapshot",
+        "libsnapshot_cow",
         "update_metadata-protos",
     ],
     shared_libs: [
