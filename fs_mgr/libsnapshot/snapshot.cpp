@@ -2443,10 +2443,43 @@ bool SnapshotManager::MapUpdateSnapshot(const CreateLogicalPartitionParams& para
 
 std::unique_ptr<ICowWriter> SnapshotManager::OpenSnapshotWriter(
         const android::fs_mgr::CreateLogicalPartitionParams& params) {
-    (void)params;
+    if (IsCompressionEnabled()) {
+        LOG(ERROR) << "OpenSnapshotWriter not yet implemented for compression";
+        return nullptr;
+    } else {
+        return OpenKernelSnapshotWriter(params);
+    }
+}
 
-    LOG(ERROR) << "OpenSnapshotWriter not yet implemented";
-    return nullptr;
+std::unique_ptr<ICowWriter> SnapshotManager::OpenKernelSnapshotWriter(
+        const android::fs_mgr::CreateLogicalPartitionParams& params) {
+    if (IsCompressionEnabled()) {
+        LOG(ERROR) << "OpenKernelSnapshotWriter should not be used when compression is enabled";
+        return nullptr;
+    }
+
+    std::string path;
+    if (!MapUpdateSnapshot(params, &path)) {
+        return nullptr;
+    }
+
+    SnapshotStatus status;
+
+    auto lock = LockShared();
+    if (!ReadSnapshotStatus(lock.get(), params.partition_name, &status)) {
+        return nullptr;
+    }
+
+    CowOptions cow_options;
+    cow_options.max_blocks = {status.snapshot_size() / cow_options.block_size};
+
+    unique_fd fd(open(path.c_str(), O_RDWR | O_CLOEXEC));
+    if (fd < 0) {
+        PLOG(ERROR) << "open failed: " << path;
+        return nullptr;
+    }
+    return std::make_unique<OnlineKernelCowWriter>(cow_options, std::move(fd),
+                                                   status.snapshot_size());
 }
 
 std::unique_ptr<FileDescriptor> SnapshotManager::OpenSnapshotReader(
