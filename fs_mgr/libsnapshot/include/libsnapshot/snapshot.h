@@ -536,6 +536,9 @@ class SnapshotManager final : public ISnapshotManager {
     bool MapPartitionWithSnapshot(LockedFile* lock, CreateLogicalPartitionParams params,
                                   std::string* path);
 
+    std::unique_ptr<ICowWriter> OpenKernelSnapshotWriter(
+            const android::fs_mgr::CreateLogicalPartitionParams& params);
+
     // Map the COW devices, including the partition in super and the images.
     // |params|:
     //    - |partition_name| should be the name of the top-level partition (e.g. system_b),

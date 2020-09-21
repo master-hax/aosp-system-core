@@ -32,6 +32,9 @@ namespace snapshot {
 
 static_assert(sizeof(off_t) == sizeof(uint64_t));
 
+using android::base::borrowed_fd;
+using android::base::unique_fd;
+
 bool ICowWriter::AddCopy(uint64_t new_block, uint64_t old_block) {
     if (!ValidateNewBlock(new_block)) {
         return false;
@@ -98,12 +101,12 @@ bool CowWriter::ParseOptions() {
     return true;
 }
 
-bool CowWriter::Initialize(android::base::unique_fd&& fd, OpenMode mode) {
+bool CowWriter::Initialize(unique_fd&& fd, OpenMode mode) {
     owned_fd_ = std::move(fd);
-    return Initialize(android::base::borrowed_fd{owned_fd_}, mode);
+    return Initialize(borrowed_fd{owned_fd_}, mode);
 }
 
-bool CowWriter::Initialize(android::base::borrowed_fd fd, OpenMode mode) {
+bool CowWriter::Initialize(borrowed_fd fd, OpenMode mode) {
     fd_ = fd;
 
     if (!ParseOptions()) {
@@ -349,6 +352,50 @@ bool CowWriter::WriteRawData(const void* data, size_t size) {
     }
     header_.ops_offset += size;
     return true;
+}
+
+OnlineKernelCowWriter::OnlineKernelCowWriter(const CowOptions& options, unique_fd&& fd,
+                                             uint64_t cow_size)
+    : ICowWriter(options), fd_(std::move(fd)), cow_size_(cow_size) {}
+
+bool OnlineKernelCowWriter::Flush() {
+    if (fsync(fd_.get()) < 0) {
+        PLOG(ERROR) << "fsync";
+        return false;
+    }
+    return true;
+}
+
+uint64_t OnlineKernelCowWriter::GetCowSize() {
+    return cow_size_;
+}
+
+bool OnlineKernelCowWriter::EmitRawBlocks(uint64_t new_block_start, const void* data, size_t size) {
+    uint64_t offset = new_block_start * options_.block_size;
+    if (lseek(fd_.get(), offset, SEEK_SET) < 0) {
+        PLOG(ERROR) << "EmitRawBlocks lseek to offset " << offset;
+        return false;
+    }
+    if (!android::base::WriteFully(fd_, data, size)) {
+        PLOG(ERROR) << "EmitRawBlocks write";
+        return false;
+    }
+    return true;
+}
+
+bool OnlineKernelCowWriter::EmitZeroBlocks(uint64_t new_block_start, uint64_t num_blocks) {
+    std::string zeroes(options_.block_size, 0);
+    for (uint64_t i = 0; i < num_blocks; i++) {
+        if (!EmitRawBlocks(new_block_start + i, zeroes.data(), zeroes.size())) {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool OnlineKernelCowWriter::EmitCopy(uint64_t, uint64_t) {
+    LOG(ERROR) << "OnlineKernelCowWriter does not support EmitCopy";
+    return false;
 }
 
 }  // namespace snapshot
