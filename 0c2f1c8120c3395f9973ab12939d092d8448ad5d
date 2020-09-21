@@ -16,6 +16,29 @@
       "revId": "0c2f1c8120c3395f9973ab12939d092d8448ad5d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5207a568_f0f9d19d",
+        "filename": "rootdir/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2020-09-21T02:31:08Z",
+      "side": 1,
+      "message": "\"stub\" sounds a bit misleading to me. From the build system point of view, they provide \"stubs\" across the boundaries between the system and APEXes. But at runtime, they are real libraries provided by system to apexes, not \"stubs\".\n\nSome candidates I can think of for now: (omitted .public.txt)\n- stable\n- module\n- apex\n- system\n- .. (or combination of above?)",
+      "range": {
+        "startLine": 30,
+        "startChar": 11,
+        "endLine": 30,
+        "endChar": 29
+      },
+      "revId": "0c2f1c8120c3395f9973ab12939d092d8448ad5d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
