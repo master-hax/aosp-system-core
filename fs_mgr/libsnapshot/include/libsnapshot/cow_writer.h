@@ -58,6 +58,9 @@ class ICowWriter {
     // Return number of bytes the cow image occupies on disk.
     virtual uint64_t GetCowSize() = 0;
 
+    // Returns true if AddCopy() operations are supported.
+    virtual bool SupportsCopyOperation() const { return true; }
+
     const CowOptions& options() { return options_; }
 
   protected:
@@ -109,6 +112,28 @@ class CowWriter : public ICowWriter {
     // :TODO: this is not efficient, but stringstream ubsan aborts because some
     // bytes overflow a signed char.
     std::basic_string<uint8_t> ops_;
+};
+
+// Write directly to a dm-snapshot device.
+class OnlineKernelCowWriter : public ICowWriter {
+  public:
+    OnlineKernelCowWriter(const CowOptions& options, android::base::unique_fd&& fd,
+                          uint64_t cow_size);
+
+    bool Flush() override;
+    uint64_t GetCowSize() override;
+    bool SupportsCopyOperation() const override { return false; }
+
+  protected:
+    bool EmitRawBlocks(uint64_t new_block_start, const void* data, size_t size) override;
+    bool EmitZeroBlocks(uint64_t new_block_start, uint64_t num_blocks) override;
+
+    // Copies are not supported in FdCowWriter, false is always returned.
+    bool EmitCopy(uint64_t new_block, uint64_t old_block) override;
+
+  private:
+    android::base::unique_fd fd_;
+    uint64_t cow_size_;
 };
 
 }  // namespace snapshot
