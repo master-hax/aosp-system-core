@@ -43,6 +43,7 @@
 #include "device_info.h"
 #include "partition_cow_creator.h"
 #include "snapshot_metadata_updater.h"
+#include "snapshot_reader.h"
 #include "utility.h"
 
 namespace android {
@@ -2474,9 +2475,26 @@ std::unique_ptr<ICowWriter> SnapshotManager::OpenSnapshotWriter(
 
 std::unique_ptr<FileDescriptor> SnapshotManager::OpenSnapshotReader(
         const android::fs_mgr::CreateLogicalPartitionParams& params) {
-    (void)params;
+    if (IsCompressionEnabled()) {
+        LOG(ERROR) << "OpenSnapshotReader not yet implemented for compression";
+    } else {
+        std::string path;
+        auto& dm = DeviceMapper::Instance();
+        if (dm.GetState(params.partition_name) == DmDeviceState::INVALID) {
+            if (!MapUpdateSnapshot(params, &path)) {
+                return nullptr;
+            }
+        } else if (!dm.GetDmDevicePathByName(params.partition_name, &path)) {
+            return nullptr;
+        }
 
-    LOG(ERROR) << "OpenSnapshotReader not yet implemented";
+        unique_fd fd(open(path.c_str(), O_RDONLY));
+        if (fd < 0) {
+            PLOG(ERROR) << "open " << path;
+            return nullptr;
+        }
+        return std::make_unique<ReadFdFileDescriptor>(std::move(fd));
+    }
     return nullptr;
 }
 
