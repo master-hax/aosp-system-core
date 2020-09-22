@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a440dd6_1f197977",
+        "filename": "fs_mgr/libsnapshot/snapshot_reader.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2020-09-22T22:25:21Z",
+      "side": 1,
+      "message": "@Tianjie, should we make this part of update_engine, and make FileDescriptor a subclass of ReadOnlyDescriptor?",
+      "range": {
+        "startLine": 25,
+        "startChar": 6,
+        "endLine": 25,
+        "endChar": 28
+      },
+      "revId": "2a8d589d49b543e18650125aa7dbd91be3ea34ff",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
