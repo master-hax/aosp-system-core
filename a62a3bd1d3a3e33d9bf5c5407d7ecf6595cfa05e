@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3f223d5b_51bd4f47",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000835
+      },
+      "writtenOn": "2020-09-23T06:17:20Z",
+      "side": 1,
+      "message": "I don\u0027t think we should set these values here since they on wifi they are actually set by IpReachabilityMonitor. Setting them here will not have any effect on wifi, and will be confusing.",
+      "revId": "a62a3bd1d3a3e33d9bf5c5407d7ecf6595cfa05e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
