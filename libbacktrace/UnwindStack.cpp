@@ -52,11 +52,11 @@ bool Backtrace::Unwind(unwindstack::Regs* regs, BacktraceMap* back_map,
   unwinder.SetResolveNames(stack_map->ResolveNames());
   stack_map->SetArch(regs->Arch());
   if (stack_map->GetJitDebug() != nullptr) {
-    unwinder.SetJitDebug(stack_map->GetJitDebug(), regs->Arch());
+    unwinder.SetJitDebug(stack_map->GetJitDebug());
   }
 #if !defined(NO_LIBDEXFILE_SUPPORT)
   if (stack_map->GetDexFiles() != nullptr) {
-    unwinder.SetDexFiles(stack_map->GetDexFiles(), regs->Arch());
+    unwinder.SetDexFiles(stack_map->GetDexFiles());
   }
 #endif
   unwinder.Unwind(skip_names, &stack_map->GetSuffixesToIgnore());
