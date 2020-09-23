@@ -579,7 +579,7 @@ void engrave_tombstone_ucontext(int tombstone_fd, uint64_t abort_msg_address, si
   };
 
   unwindstack::UnwinderFromPid unwinder(kMaxFrames, pid);
-  if (!unwinder.Init(unwindstack::Regs::CurrentArch())) {
+  if (!unwinder.Init()) {
     LOG(FATAL) << "Failed to init unwinder object.";
   }
 
