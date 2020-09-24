@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a5c3364e_300986f4",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1060907
+      },
+      "writtenOn": "2020-09-24T15:54:35Z",
+      "side": 1,
+      "message": "For this the policy must be encryption\u003dDeleteIfNecessary; with \"Require\" the boot process will be aborted if the directory contains unencrypted files. See https://source.corp.google.com/android/system/core/init/README.md;l\u003d542",
+      "revId": "6100ada47ae8b730a7b5eec23f2d60544a12805b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
