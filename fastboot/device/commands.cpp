@@ -164,6 +164,31 @@ bool GetVarHandler(FastbootDevice* device, const std::vector<std::string>& args)
     return device->WriteOkay(message);
 }
 
+bool OemPostWipeData(FastbootDevice* device) {
+    auto fastboot_hal = device->fastboot_hal();
+    if (!fastboot_hal) {
+        return false;
+    }
+
+    Result ret;
+    const std::string postWipeDataCmd("postwipedata userdata");
+    auto ret_val = fastboot_hal->doOemSpecificErase(postWipeDataCmd,
+                                        [&](Result result) { ret = result; });
+    if (!ret_val.isOk()) {
+        return false;
+    }
+    if (ret.status == Status::NOT_SUPPORTED) {
+        return false;
+    }
+    if (ret.status != Status::SUCCESS) {
+        device->WriteStatus(FastbootResult::FAIL, ret.message);
+    } else {
+        device->WriteStatus(FastbootResult::OKAY, "Erasing succeeded");
+    }
+
+    return true;
+}
+
 bool EraseHandler(FastbootDevice* device, const std::vector<std::string>& args) {
     if (args.size() < 2) {
         return device->WriteStatus(FastbootResult::FAIL, "Invalid arguments");
@@ -184,7 +209,18 @@ bool EraseHandler(FastbootDevice* device, const std::vector<std::string>& args) 
         return device->WriteStatus(FastbootResult::FAIL, "Partition doesn't exist");
     }
     if (wipe_block_device(handle.fd(), get_block_device_size(handle.fd())) == 0) {
-        return device->WriteStatus(FastbootResult::OKAY, "Erasing succeeded");
+        //Perform oem PostWipeData if Android userdata partition has been erased
+        bool support_oem_postwipedata = false;
+        if (partition_name == "userdata") {
+            support_oem_postwipedata = OemPostWipeData(device);
+        }
+
+        if (!support_oem_postwipedata) {
+            return device->WriteStatus(FastbootResult::OKAY, "Erasing succeeded");
+        } else {
+            //Write device status in OemPostWipeData(), so just return true
+            return true;
+        }
     }
     return device->WriteStatus(FastbootResult::FAIL, "Erasing failed");
 }
