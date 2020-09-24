@@ -16,8 +16,30 @@
 
 #include <stdint.h>
 
+#include <linux/types.h>
+#include <stdlib.h>
+
+#include <csignal>
+#include <cstring>
+#include <iostream>
+#include <limits>
+#include <string>
+#include <thread>
+#include <vector>
+
+#include <android-base/file.h>
+#include <android-base/logging.h>
+#include <android-base/stringprintf.h>
+#include <android-base/unique_fd.h>
+
+#include <libdm/dm.h>
+#include <libsnapshot/cow_reader.h>
+#include <libsnapshot/cow_writer.h>
+
 namespace android {
 namespace snapshot {
+
+using android::base::unique_fd;
 
 // Kernel COW header fields
 static constexpr uint32_t SNAP_MAGIC = 0x70416e53;
@@ -93,6 +115,100 @@ struct dm_user_payload {
 struct dm_user_message {
     struct dm_user_header header;
     struct dm_user_payload payload;
+};
+
+class BufferSink : public IByteSink {
+  public:
+    void Initialize(size_t size) {
+        buffer_size_ = size;
+        buffer_offset_ = 0;
+        buffer_ = std::make_unique<uint8_t[]>(size);
+    }
+
+    void* GetBufPtr() { return buffer_.get(); }
+
+    void Clear() { memset(GetBufPtr(), 0, buffer_size_); }
+
+    void* GetPayloadBuffer(size_t size) {
+        if ((buffer_size_ - buffer_offset_) < size) return nullptr;
+
+        char* buffer = reinterpret_cast<char*>(GetBufPtr());
+        struct dm_user_message* msg = (struct dm_user_message*)(&(buffer[0]));
+        return (char*)msg->payload.buf + buffer_offset_;
+    }
+
+    void* GetBuffer(size_t requested, size_t* actual) override {
+        void* buf = GetPayloadBuffer(requested);
+        if (!buf) {
+            *actual = 0;
+            return nullptr;
+        }
+        *actual = requested;
+        return buf;
+    }
+
+    void UpdateBufferOffset(size_t size) { buffer_offset_ += size; }
+
+    struct dm_user_header* GetHeaderPtr() {
+        CHECK(sizeof(struct dm_user_header) <= buffer_size_);
+        char* buf = reinterpret_cast<char*>(GetBufPtr());
+        struct dm_user_header* header = (struct dm_user_header*)(&(buf[0]));
+        return header;
+    }
+
+    bool ReturnData(void*, size_t) override { return true; }
+    void ResetBufferOffset() { buffer_offset_ = 0; }
+
+  private:
+    std::unique_ptr<uint8_t[]> buffer_;
+    loff_t buffer_offset_;
+    size_t buffer_size_;
+};
+
+class Snapuserd final {
+  public:
+    Snapuserd(const std::string& in_cow_device, const std::string& in_backing_store_device)
+        : in_cow_device_(in_cow_device),
+          in_backing_store_device_(in_backing_store_device),
+          metadata_read_done_(false) {}
+
+    int Init();
+    int Run();
+    int ReadDmUserHeader();
+    int WriteDmUserPayload(size_t size);
+    int ConstructKernelCowHeader();
+    int ReadMetadata();
+    int ZerofillDiskExceptions(size_t read_size);
+    int ReadDiskExceptions(chunk_t chunk, size_t size);
+    int ReadData(chunk_t chunk, size_t size);
+
+  private:
+    int ProcessReplaceOp(const CowOperation* cow_op);
+    int ProcessCopyOp(const CowOperation* cow_op);
+    int ProcessZeroOp();
+
+    std::string in_cow_device_;
+    std::string in_backing_store_device_;
+
+    unique_fd cow_fd_;
+    unique_fd backing_store_fd_;
+    unique_fd ctrl_fd_;
+
+    uint32_t exceptions_per_area_;
+
+    std::unique_ptr<ICowOpIter> cowop_iter_;
+    std::unique_ptr<CowReader> reader_;
+
+    // Vector of disk exception which is a
+    // mapping of old-chunk to new-chunk
+    std::vector<std::unique_ptr<uint8_t[]>> vec_;
+
+    // Index - Chunk ID
+    // Value - cow operation
+    std::vector<const CowOperation*> chunk_vec_;
+
+    bool metadata_read_done_;
+    BufferSink bufsink_;
 };
 
 }  // namespace snapshot

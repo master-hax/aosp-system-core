@@ -26,6 +26,7 @@
 #include <android-base/unique_fd.h>
 #include <gtest/gtest.h>
 #include <libsnapshot/cow_writer.h>
+#include <libsnapshot/snapuserd_client.h>
 #include <storage_literals/storage_literals.h>
 
 namespace android {
@@ -77,6 +78,7 @@ class SnapuserdTest : public ::testing::Test {
     void CreateSnapshotDevices();
 
     void TestIO(unique_fd& snapshot_fd, std::unique_ptr<uint8_t[]>&& buf);
+    SnapuserdClient client_;
 };
 
 void SnapuserdTest::Init() {
@@ -112,7 +114,7 @@ void SnapuserdTest::Init() {
     // Read from system partition from offset 0 of size 100MB
     ASSERT_EQ(ReadFullyAtOffset(sys_fd_, system_buffer_.get(), size_, 0), true);
 
-    // Read from system partition from offset 0 of size 100MB
+    // Read from product partition from offset 0 of size 100MB
     ASSERT_EQ(ReadFullyAtOffset(product_fd_, product_buffer_.get(), size_, 0), true);
 }
 
@@ -212,15 +214,16 @@ void SnapuserdTest::CreateProductDmUser() {
 }
 
 void SnapuserdTest::StartSnapuserdDaemon() {
-    // Start the snapuserd daemon
-    if (fork() == 0) {
-        const char* argv[] = {"/system/bin/snapuserd",       cow_system_->path,
-                              "/dev/block/mapper/system_a",  cow_product_->path,
-                              "/dev/block/mapper/product_a", nullptr};
-        if (execv(argv[0], const_cast<char**>(argv))) {
-            ASSERT_TRUE(0);
-        }
-    }
+    int ret;
+
+    ret = client_.StartSnapuserd();
+    ASSERT_EQ(ret, 0);
+
+    ret = client_.InitializeSnapuserd(cow_system_->path, "/dev/block/mapper/system_a");
+    ASSERT_EQ(ret, 0);
+
+    ret = client_.InitializeSnapuserd(cow_product_->path, "/dev/block/mapper/product_a");
+    ASSERT_EQ(ret, 0);
 }
 
 void SnapuserdTest::CreateSnapshotDevices() {
@@ -340,6 +343,9 @@ TEST_F(SnapuserdTest, ReadWrite) {
     snapshot_fd.reset(open("/dev/block/mapper/product-snapshot", O_RDONLY));
     ASSERT_TRUE(snapshot_fd > 0);
     TestIO(snapshot_fd, std::move(product_buffer_));
+
+    ASSERT_EQ(client_.RestartSnapuserd(), 0);
+    ASSERT_EQ(client_.StopSnapuserd(), 0);
 }
 
 }  // namespace snapshot
