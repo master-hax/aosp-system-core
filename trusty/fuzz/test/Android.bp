@@ -1,10 +1,10 @@
-// Copyright (C) 2015 The Android Open Source Project
+// Copyright (C) 2020 The Android Open Source Project
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
+//       http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -12,26 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-cc_defaults {
-    name: "libtrusty_defaults",
-
-    srcs: ["trusty.c"],
-    export_include_dirs: ["include"],
-    cflags: [
-        "-Wall",
-        "-Werror",
+cc_fuzz {
+    name: "trusty_test_fuzzer",
+    srcs: ["fuzz.cpp"],
+    static_libs: [
+        "libtrusty_coverage",
+        "libtrusty_test",
     ],
-
-    shared_libs: ["liblog"],
-}
-
-cc_library {
-    name: "libtrusty",
-    vendor: true,
-    defaults: ["libtrusty_defaults"],
-}
-
-cc_test_library {
-    name: "libtrusty_test",
-    defaults: ["libtrusty_defaults"],
+    shared_libs: [
+        "libbase",
+        "liblog",
+    ],
+    fuzz_config: {
+        fuzz_on_haiku_device: false,
+        fuzz_on_haiku_host: false,
+    },
 }
