@@ -102,7 +102,7 @@ bool TargetFilesPackage::Open() {
 
 bool TargetFilesPackage::HasFile(const std::string& path) {
     if (zip_) {
-        ZipEntry64 entry;
+        ZipEntry entry;
         return !FindEntry(zip_.get(), path, &entry);
     }
 
@@ -121,7 +121,7 @@ unique_fd TargetFilesPackage::OpenFile(const std::string& path) {
         return fd;
     }
 
-    ZipEntry64 entry;
+    ZipEntry entry;
     if (FindEntry(zip_.get(), path, &entry)) {
         LOG(ERROR) << path << " not found in archive: " << path_;
         return {};
