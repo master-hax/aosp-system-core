@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4d9aedb8_bb9e9b57",
+        "filename": "libutils/FuzzFormatTypes.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2020-09-28T20:57:24Z",
+      "side": 1,
+      "message": "license header",
+      "revId": "98e14de0570fbf66a1f2fd11803837aa83ad1159",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
