@@ -16,6 +16,29 @@
       "revId": "98e14de0570fbf66a1f2fd11803837aa83ad1159",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "565afccf_ecdf7703",
+        "filename": "libutils/String8_fuzz.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2020-09-28T20:59:29Z",
+      "side": 1,
+      "message": "please make sure to run it for a while as well. One interesting thing about this is that it is fuzzing uses of single format strings, instead of multiple. We could improve it more (e.g. I don\u0027t think \"%s%s\" would get fuzzed here), but that\u0027s much more complicated, and this looks like an approvement, so lg.",
+      "range": {
+        "startLine": 105,
+        "startChar": 5,
+        "endLine": 105,
+        "endChar": 15
+      },
+      "revId": "98e14de0570fbf66a1f2fd11803837aa83ad1159",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
