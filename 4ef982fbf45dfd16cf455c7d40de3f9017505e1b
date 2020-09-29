@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6617b17c_a26d71ec",
+        "filename": "fs_mgr/libsnapshot/snapshot_writer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2020-09-29T18:04:11Z",
+      "side": 1,
+      "message": "Is the source_fd_ ever closed? With this operation model, a new fd will be created per `GetSourceFd` call. Maybe it\u0027s better to return existing source_fd_ if there is one?",
+      "range": {
+        "startLine": 43,
+        "startChar": 4,
+        "endLine": 43,
+        "endChar": 14
+      },
+      "revId": "4ef982fbf45dfd16cf455c7d40de3f9017505e1b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
