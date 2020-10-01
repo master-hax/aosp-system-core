@@ -22,6 +22,30 @@
       "revId": "4ef982fbf45dfd16cf455c7d40de3f9017505e1b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "08cb247a_7d2dba2d",
+        "filename": "fs_mgr/libsnapshot/snapshot_writer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-10-01T06:18:05Z",
+      "side": 1,
+      "message": "Thanks for catching this! Fixed.",
+      "parentUuid": "6617b17c_a26d71ec",
+      "range": {
+        "startLine": 43,
+        "startChar": 4,
+        "endLine": 43,
+        "endChar": 14
+      },
+      "revId": "4ef982fbf45dfd16cf455c7d40de3f9017505e1b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
