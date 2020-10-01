@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9556d0fa_e318cc8f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1293738
+      },
+      "writtenOn": "2020-10-01T21:36:50Z",
+      "side": 1,
+      "message": "Hung-ying: more context in b/169680939, I think this will be a good change for Android 11 GSI device testing as well.",
+      "revId": "5c0f44b92736f5686540630d9af558626cc51d89",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
