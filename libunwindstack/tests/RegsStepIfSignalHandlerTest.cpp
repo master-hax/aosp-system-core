@@ -130,6 +130,7 @@ TEST_F(RegsStepIfSignalHandlerTest, arm64_step_if_signal_handler) {
   EXPECT_EQ(0x470U, regs.pc());
 }
 
+#if 0  // The StepIfSignalHandler functions are disabled for x86/x86_64 so that the FDE is used
 TEST_F(RegsStepIfSignalHandlerTest, x86_step_if_signal_handler_no_siginfo) {
   uint64_t addr = 0xa00;
   RegsX86 regs;
@@ -200,6 +201,7 @@ TEST_F(RegsStepIfSignalHandlerTest, x86_64_step_if_signal_handler) {
   EXPECT_EQ(0x140U, regs.sp());
   EXPECT_EQ(0x150U, regs.pc());
 }
+#endif
 
 TEST_F(RegsStepIfSignalHandlerTest, mips_step_if_signal_handler_non_rt) {
   uint64_t addr = 0x1000;

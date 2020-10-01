@@ -133,6 +133,8 @@ Regs* RegsX86_64::CreateFromUcontext(void* ucontext) {
 }
 
 bool RegsX86_64::StepIfSignalHandler(uint64_t elf_offset, Elf* elf, Memory* process_memory) {
+  return false;  // HACK
+
   uint64_t data;
   Memory* elf_memory = elf->memory();
   // Read from elf memory since it is usually more expensive to read from
