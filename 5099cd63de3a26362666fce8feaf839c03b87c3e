@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a329324a_20ac8193",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1229339
+      },
+      "writtenOn": "2020-10-01T08:02:00Z",
+      "side": 1,
+      "message": "I don\u0027t actually think we should make this change. I\u0027m just uploading it for reference, for https://android-review.googlesource.com/c/platform/bionic/+/1439538.\n",
+      "revId": "5099cd63de3a26362666fce8feaf839c03b87c3e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
