@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "65a067f9_ab66f193",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-10-01T18:09:25Z",
+      "side": 1,
+      "message": "everything i know about markdown i learned from reviewing danalbert\u0027s changes (or him reviewing mine!) :-)",
+      "revId": "34ee04762aee35994562f62dd113f2b92a84c04a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
