@@ -415,7 +415,6 @@ static void RemoteThroughSignal(int signal, unsigned int sa_flags) {
   ASSERT_TRUE(maps.Parse());
   std::unique_ptr<Regs> regs(Regs::RemoteGet(pid));
   ASSERT_TRUE(regs.get() != nullptr);
-
   VerifyUnwind(pid, &maps, regs.get(), kFunctionSignalOrder);
 
   ASSERT_EQ(0, ptrace(PTRACE_DETACH, pid, 0, 0))
