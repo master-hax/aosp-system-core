@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f5838963_4c7a192c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1695385
+      },
+      "writtenOn": "2020-10-02T18:21:12Z",
+      "side": 1,
+      "message": "I\u0027m surprised it let you merge the last CL! Anyways, fixed a missing header.",
+      "revId": "50ed92a7e07e0367f1b24f4414a6c0054196a870",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
