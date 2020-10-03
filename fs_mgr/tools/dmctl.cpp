@@ -177,7 +177,8 @@ class TargetParser final {
             return std::make_unique<DmTargetSnapshot>(start_sector, num_sectors, base_device,
                                                       cow_device, mode, chunk_size);
         } else if (target_type == "user") {
-            return std::make_unique<DmTargetUser>(start_sector, num_sectors);
+            std::string control_device = NextArg();
+            return std::make_unique<DmTargetUser>(start_sector, num_sectors, control_device);
         } else {
             std::cerr << "Unrecognized target type: " << target_type << std::endl;
             return nullptr;
