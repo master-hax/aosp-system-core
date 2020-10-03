@@ -40,7 +40,7 @@ class Target {
     Target(std::string uuid) : uuid_(uuid) {}
 
     const auto& uuid() { return uuid_; }
-    std::string control_path() { return std::string("/dev/dm-user-") + uuid(); }
+    std::string control_path() { return std::string("/dev/dm-user/") + uuid(); }
 
   private:
     const std::string uuid_;
