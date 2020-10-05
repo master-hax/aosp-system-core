@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "dda20747_dd0aa1d7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-10-05T19:21:08Z",
+      "side": 1,
+      "message": "Post submit caught another.  Let\u0027s just do this instead of playing whack-a-mole and forcing downstream users to do the same.",
+      "revId": "136e4f6da6a78ab3a203069d2801318bc6f3daa1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
