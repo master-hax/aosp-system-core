@@ -1,3 +1,14 @@
+#include <arpa/inet.h>
+#include <cutils/sockets.h>
+#include <errno.h>
+#include <netinet/in.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <unistd.h>
+
 #include <android-base/logging.h>
 #include <libsnapshot/snapuserd.h>
 #include <libsnapshot/snapuserd_server.h>
@@ -38,9 +49,9 @@ void SnapuserdServer::Parsemsg(std::string const& msg, const char delim,
 // new thread
 void SnapuserdServer::ThreadStart(std::string cow_device, std::string backing_device) {
     Snapuserd snapd(cow_device, backing_device);
-    if (snapd.Init()) {
+    if (!snapd.Init()) {
         PLOG(ERROR) << "Snapuserd: Init failed";
-        exit(EXIT_FAILURE);
+        return;
     }
 
     while (StopRequested() == false) {

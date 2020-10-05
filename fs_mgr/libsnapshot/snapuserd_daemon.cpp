@@ -16,11 +16,26 @@ int Daemon::StartServer(std::string socketname) {
     return ret;
 }
 
+void Daemon::MaskAllSignalsExceptIntAndTerm() {
+    sigset_t signalMask;
+    sigfillset(&signalMask);
+    sigdelset(&signalMask, SIGINT);
+    sigdelset(&signalMask, SIGTERM);
+    if (sigprocmask(SIG_SETMASK, &signalMask, NULL) != 0) {
+        PLOG(ERROR) << "Failed to set sigprocmask";
+    }
+}
+
+void Daemon::MaskAllSignals() {
+    sigset_t signalMask;
+    sigfillset(&signalMask);
+    if (sigprocmask(SIG_SETMASK, &signalMask, NULL) != 0) {
+        PLOG(ERROR) << "Couldn't mask all signals";
+    }
+}
+
 Daemon::Daemon() {
     is_running_ = true;
-    // TODO: Mask other signals - Bug 168258493
-    signal(SIGINT, Daemon::SignalHandler);
-    signal(SIGTERM, Daemon::SignalHandler);
 }
 
 bool Daemon::IsRunning() {
@@ -28,10 +43,40 @@ bool Daemon::IsRunning() {
 }
 
 void Daemon::Run() {
+    pollFd_ = std::make_unique<struct pollfd>();
+    pollFd_->fd = server_.GetSocketFd();
+    pollFd_->events = POLLIN;
+
+    sigfillset(&signalMask_);
+    sigdelset(&signalMask_, SIGINT);
+    sigdelset(&signalMask_, SIGTERM);
+
+    // Masking signals here ensure that after this point, we won't handle INT/TERM
+    // until after we call into ppoll()
+    MaskAllSignals();
+    signal(SIGINT, Daemon::SignalHandler);
+    signal(SIGTERM, Daemon::SignalHandler);
+
+    LOG(DEBUG) << "Snapuserd-server: ready to accept connections";
+
     while (IsRunning()) {
-        if (server_.AcceptClient() == static_cast<int>(DaemonOperations::STOP)) {
-            Daemon::Instance().is_running_ = false;
+        int ret = ppoll(pollFd_.get(), 1, nullptr, &signalMask_);
+        MaskAllSignalsExceptIntAndTerm();
+
+        if (ret == -1) {
+            PLOG(ERROR) << "Snapuserd:ppoll error";
+            break;
         }
+
+        if (pollFd_->revents == POLLIN) {
+            if (server_.AcceptClient() == static_cast<int>(DaemonOperations::STOP)) {
+                Daemon::Instance().is_running_ = false;
+            }
+        }
+
+        // Mask all signals to ensure that is_running_ can't become false between
+        // checking it in the while condition and calling into ppoll()
+        MaskAllSignals();
     }
 }
 
