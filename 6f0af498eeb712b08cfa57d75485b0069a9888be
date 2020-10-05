@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "abfbfbab_b50a20e1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1041495
+      },
+      "writtenOn": "2020-10-05T14:21:47Z",
+      "side": 1,
+      "message": "AFAICT, there are no releases that demand -z \u003carg\u003e in the wild, so we don\u0027t yet have the impossible situation of needing to be compatible with both behaviors.",
+      "revId": "6f0af498eeb712b08cfa57d75485b0069a9888be",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
