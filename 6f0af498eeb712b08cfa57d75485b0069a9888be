@@ -34,6 +34,24 @@
       "revId": "6f0af498eeb712b08cfa57d75485b0069a9888be",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f517ddb3_9e824e0c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-10-05T22:20:30Z",
+      "side": 1,
+      "message": "d\u0027oh! i didn\u0027t realize when i +2ed the second version that we\u0027d already shipped the first version.\n\non the bright side, that at least gives us a good excuse for keeping the better second version...",
+      "parentUuid": "73bed263_b648c8a9",
+      "revId": "6f0af498eeb712b08cfa57d75485b0069a9888be",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
