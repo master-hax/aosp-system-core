@@ -16,6 +16,24 @@
       "revId": "6f0af498eeb712b08cfa57d75485b0069a9888be",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "73bed263_b648c8a9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2020-10-05T21:49:38Z",
+      "side": 1,
+      "message": "Whoops.\n\nplatform-tools 30.0.1-30.0.4 require the argument, so I think we\u0027re stuck at this point.",
+      "parentUuid": "abfbfbab_b50a20e1",
+      "revId": "6f0af498eeb712b08cfa57d75485b0069a9888be",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
