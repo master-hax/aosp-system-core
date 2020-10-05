@@ -199,7 +199,7 @@ class BugreportStandardStreamsCallback : public StandardStreamsCallbackInterface
 };
 
 int Bugreport::DoIt(int argc, const char** argv) {
-    if (argc > 2) error_exit("usage: adb bugreport [PATH]");
+    if (argc > 2) error_exit("usage: adb bugreport [[PATH] | [--stream]]");
 
     // Gets bugreportz version.
     std::string bugz_stdout, bugz_stderr;
@@ -237,6 +237,8 @@ int Bugreport::DoIt(int argc, const char** argv) {
             perror("adb: getcwd failed");
             return 1;
         }
+    } else if (!strcmp(argv[1], "--stream")) {
+        return SendShellCommand("bugreportz -s", false);
     } else {
         // Check whether argument is a directory or file
         if (directory_exists(argv[1])) {
