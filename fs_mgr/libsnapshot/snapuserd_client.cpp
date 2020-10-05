@@ -1,3 +1,17 @@
+#include <arpa/inet.h>
+#include <cutils/sockets.h>
+#include <errno.h>
+#include <netdb.h>
+#include <netinet/in.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <unistd.h>
+
+#include <chrono>
+
 #include <android-base/logging.h>
 #include <libsnapshot/snapuserd_client.h>
 
@@ -68,18 +82,32 @@ int SnapuserdClient::Sendmsg(const char* msg, size_t size) {
 }
 
 std::string SnapuserdClient::Receivemsg() {
+    int ret;
+    struct timeval tv;
+    fd_set set;
     char msg[PACKET_SIZE];
     std::string msgStr("fail");
-    int ret;
 
-    ret = TEMP_FAILURE_RETRY(recv(sockfd_, msg, PACKET_SIZE, 0));
-    if (ret <= 0) {
-        LOG(ERROR) << "recv failed " << strerror(errno);
-        return msgStr;
+    tv.tv_sec = 2;
+    tv.tv_usec = 0;
+    FD_ZERO(&set);
+    FD_SET(sockfd_, &set);
+    ret = select(sockfd_ + 1, &set, NULL, NULL, &tv);
+    if (ret == -1) {  // select failed
+        LOG(ERROR) << "Snapuserd:client: Select call failed";
+    } else if (ret == 0) {  // timeout
+        LOG(ERROR) << "Snapuserd:client: Select call timeout";
+    } else {
+        ret = TEMP_FAILURE_RETRY(recv(sockfd_, msg, PACKET_SIZE, 0));
+        if (ret < 0) {
+            PLOG(ERROR) << "Snapuserd:client: recv failed";
+        } else if (ret == 0) {
+            LOG(DEBUG) << "Snapuserd:client disconnected";
+        } else {
+            msgStr.clear();
+            msgStr = msg;
+        }
     }
-
-    msgStr.clear();
-    msgStr = msg;
     return msgStr;
 }
 

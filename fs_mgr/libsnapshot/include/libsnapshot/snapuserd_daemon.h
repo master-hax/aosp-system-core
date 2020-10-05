@@ -14,6 +14,8 @@
 
 #pragma once
 
+#include <poll.h>
+
 #include <libsnapshot/snapuserd_server.h>
 
 namespace android {
@@ -34,12 +36,17 @@ class Daemon {
 
   private:
     bool is_running_;
+    std::unique_ptr<struct pollfd> pollFd_;
+    // Signal mask used with ppoll()
+    sigset_t signalMask_;
 
     Daemon();
     Daemon(Daemon const&) = delete;
     void operator=(Daemon const&) = delete;
 
     SnapuserdServer server_;
+    void MaskAllSignalsExceptIntAndTerm();
+    void MaskAllSignals();
     static void SignalHandler(int signal);
 };
 
