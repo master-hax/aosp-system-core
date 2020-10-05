@@ -132,23 +132,26 @@ static void help() {
         " mdns services            list all discovered services\n"
         "\n"
         "file transfer:\n"
-        " push [--sync] [-z ALGORITHM] [-Z] LOCAL... REMOTE\n"
+        " push [--sync] [-c ALGORITHM] [-z] [-Z] LOCAL... REMOTE\n"
         "     copy local files/directories to device\n"
         "     --sync: only push files that are newer on the host than the device\n"
         "     -n: dry run: push files to device without storing to the filesystem\n"
-        "     -z: enable compression with a specified algorithm (any, none, brotli)\n"
-        "     -Z: disable compression\n"
-        " pull [-a] [-z ALGORITHM] [-Z] REMOTE... LOCAL\n"
+        "     -c: use a specified compression algorithm (any, none, brotli)\n"
+        "     -z: equivalent to -c any\n"
+        "     -Z: equivalent to -c none\n"
+        " pull [-a] [-c ALGORITHM] [-z] [-Z] REMOTE... LOCAL\n"
         "     copy files/dirs from device\n"
         "     -a: preserve file timestamp and mode\n"
-        "     -z: enable compression with a specified algorithm (any, none, brotli)\n"
-        "     -Z: disable compression\n"
-        " sync [-l] [-z ALGORITHM] [-Z] [all|data|odm|oem|product|system|system_ext|vendor]\n"
+        "     -c: use a specified compression algorithm (any, none, brotli)\n"
+        "     -z: equivalent to -c any\n"
+        "     -Z: equivalent to -c none\n"
+        " sync [-l] [-c ALGORITHM] [-z] [-Z] [all|data|odm|oem|product|system|system_ext|vendor]\n"
         "     sync a local build from $ANDROID_PRODUCT_OUT to the device (default all)\n"
         "     -n: dry run: push files to device without storing to the filesystem\n"
         "     -l: list files that would be copied, but don't copy them\n"
-        "     -z: enable compression with a specified algorithm (any, none, brotli)\n"
-        "     -Z: disable compression\n"
+        "     -c: use a specified compression algorithm (any, none, brotli)\n"
+        "     -z: equivalent to -c any\n"
+        "     -Z: equivalent to -c none\n"
         "\n"
         "shell:\n"
         " shell [-e ESCAPE] [-n] [-Tt] [-x] [COMMAND...]\n"
@@ -1361,12 +1364,14 @@ static void parse_push_pull_args(const char** arg, int narg, std::vector<const c
                 // Silently ignore for backwards compatibility.
             } else if (!strcmp(*arg, "-a")) {
                 *copy_attrs = true;
-            } else if (!strcmp(*arg, "-z")) {
+            } else if (!strcmp(*arg, "-c")) {
                 if (narg < 2) {
-                    error_exit("-z requires an argument");
+                    error_exit("-c requires an argument");
                 }
                 *compression = parse_compression_type(*++arg, false);
                 --narg;
+            } else if (!strcmp(*arg, "-z")) {
+                *compression = CompressionType::Any;
             } else if (!strcmp(*arg, "-Z")) {
                 *compression = CompressionType::None;
             } else if (dry_run && !strcmp(*arg, "-n")) {
@@ -2000,7 +2005,7 @@ int adb_commandline(int argc, const char** argv) {
         }
 
         int opt;
-        while ((opt = getopt(argc, const_cast<char**>(argv), "lnz:Z")) != -1) {
+        while ((opt = getopt(argc, const_cast<char**>(argv), "lnc:zZ")) != -1) {
             switch (opt) {
                 case 'l':
                     list_only = true;
@@ -2008,14 +2013,17 @@ int adb_commandline(int argc, const char** argv) {
                 case 'n':
                     dry_run = true;
                     break;
-                case 'z':
+                case 'c':
                     compression = parse_compression_type(optarg, false);
+                    break;
+                case 'z':
+                    compression = CompressionType::Any;
                     break;
                 case 'Z':
                     compression = CompressionType::None;
                     break;
                 default:
-                    error_exit("usage: adb sync [-l] [-n]  [-z ALGORITHM] [-Z] [PARTITION]");
+                    error_exit("usage: adb sync [-l] [-n]  [-c ALGORITHM] [-z] [-Z] [PARTITION]");
             }
         }
 
@@ -2024,7 +2032,7 @@ int adb_commandline(int argc, const char** argv) {
         } else if (optind + 1 == argc) {
             src = argv[optind];
         } else {
-            error_exit("usage: adb sync [-l] [-n] [-z ALGORITHM] [-Z] [PARTITION]");
+            error_exit("usage: adb sync [-l] [-n] [-c ALGORITHM] [-z] [-Z] [PARTITION]");
         }
 
         std::vector<std::string> partitions{"data",   "odm",        "oem",   "product",
