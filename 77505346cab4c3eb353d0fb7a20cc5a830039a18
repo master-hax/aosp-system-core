@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "11780d13_a6c5e3e2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1041495
+      },
+      "writtenOn": "2020-10-05T14:14:40Z",
+      "side": 1,
+      "message": "Results in the commit message are from an internal prototype device. A Pixel 3a running RP1A.200720.009 shows similar results when pulling /system/lib64.",
+      "revId": "77505346cab4c3eb353d0fb7a20cc5a830039a18",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
