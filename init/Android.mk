@@ -55,6 +55,7 @@ LOCAL_SRC_FILES := \
     first_stage_main.cpp \
     first_stage_mount.cpp \
     reboot_utils.cpp \
+    second_stage_resources.cpp \
     selabel.cpp \
     selinux.cpp \
     switch_root.cpp \
@@ -80,6 +81,7 @@ LOCAL_POST_INSTALL_CMD := mkdir -p \
     $(TARGET_RAMDISK_OUT)/dev \
     $(TARGET_RAMDISK_OUT)/mnt \
     $(TARGET_RAMDISK_OUT)/proc \
+    $(TARGET_RAMDISK_OUT)/second_stage_resources \
     $(TARGET_RAMDISK_OUT)/sys \
 
 LOCAL_STATIC_LIBRARIES := \
