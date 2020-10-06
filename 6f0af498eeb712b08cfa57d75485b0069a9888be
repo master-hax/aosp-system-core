@@ -52,6 +52,24 @@
       "revId": "6f0af498eeb712b08cfa57d75485b0069a9888be",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d8140799_6c242be8",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1041495
+      },
+      "writtenOn": "2020-10-06T07:49:35Z",
+      "side": 1,
+      "message": "Drats!\n\nAlright, no use in breaking stuff twice -- abandoning.",
+      "parentUuid": "f517ddb3_9e824e0c",
+      "revId": "6f0af498eeb712b08cfa57d75485b0069a9888be",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
