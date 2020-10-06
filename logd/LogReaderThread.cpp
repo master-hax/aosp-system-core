@@ -24,6 +24,7 @@
 
 #include "LogBuffer.h"
 #include "LogReaderList.h"
+#include "SerializedFlushToState.h"
 
 LogReaderThread::LogReaderThread(LogBuffer* log_buffer, LogReaderList* reader_list,
                                  std::unique_ptr<LogWriter> writer, bool non_block,
@@ -49,7 +50,8 @@ LogReaderThread::LogReaderThread(LogBuffer* log_buffer, LogReaderList* reader_li
 void LogReaderThread::ThreadFunction() {
     prctl(PR_SET_NAME, "logd.reader.per");
 
-    auto lock = std::unique_lock{reader_list_->reader_threads_lock()};
+    auto lock = std::unique_lock{logd_lock};
+    auto lock_assertion = android::base::ScopedLockAssertion{logd_lock};
 
     while (!release_) {
         if (deadline_.time_since_epoch().count() != 0) {
@@ -62,23 +64,19 @@ void LogReaderThread::ThreadFunction() {
             }
         }
 
-        lock.unlock();
-
         if (tail_) {
             auto first_pass_state = log_buffer_->CreateFlushToState(flush_to_state_->start(),
                                                                     flush_to_state_->log_mask());
-            log_buffer_->FlushTo(
-                    writer_.get(), *first_pass_state,
-                    [this](log_id_t log_id, pid_t pid, uint64_t sequence, log_time realtime) {
-                        return FilterFirstPass(log_id, pid, sequence, realtime);
-                    });
-            log_buffer_->DeleteFlushToState(std::move(first_pass_state));
+            log_buffer_->FlushTo(writer_.get(), *first_pass_state,
+                                 [this](log_id_t log_id, pid_t pid, uint64_t sequence,
+                                        log_time realtime) REQUIRES(logd_lock) {
+                                     return FilterFirstPass(log_id, pid, sequence, realtime);
+                                 });
         }
         bool flush_success = log_buffer_->FlushTo(
                 writer_.get(), *flush_to_state_,
-                [this](log_id_t log_id, pid_t pid, uint64_t sequence, log_time realtime) {
-                    return FilterSecondPass(log_id, pid, sequence, realtime);
-                });
+                [this](log_id_t log_id, pid_t pid, uint64_t sequence, log_time realtime) REQUIRES(
+                        logd_lock) { return FilterSecondPass(log_id, pid, sequence, realtime); });
 
         // We only ignore entries before the original start time for the first flushTo(), if we
         // get entries after this first flush before the original start time, then the client
@@ -88,8 +86,6 @@ void LogReaderThread::ThreadFunction() {
         // solution here is that clients must request events since a specific sequence number.
         start_time_.tv_sec = 0;
         start_time_.tv_nsec = 0;
-
-        lock.lock();
 
         if (!flush_success) {
             break;
@@ -106,10 +102,6 @@ void LogReaderThread::ThreadFunction() {
         }
     }
 
-    lock.unlock();
-    log_buffer_->DeleteFlushToState(std::move(flush_to_state_));
-    lock.lock();
-
     writer_->Release();
 
     auto& log_reader_threads = reader_list_->reader_threads();
@@ -123,8 +115,6 @@ void LogReaderThread::ThreadFunction() {
 
 // A first pass to count the number of elements
 FilterResult LogReaderThread::FilterFirstPass(log_id_t, pid_t pid, uint64_t, log_time realtime) {
-    auto lock = std::lock_guard{reader_list_->reader_threads_lock()};
-
     if ((!pid_ || pid_ == pid) && (start_time_ == log_time::EPOCH || start_time_ <= realtime)) {
         ++count_;
     }
@@ -135,8 +125,6 @@ FilterResult LogReaderThread::FilterFirstPass(log_id_t, pid_t pid, uint64_t, log
 // A second pass to send the selected elements
 FilterResult LogReaderThread::FilterSecondPass(log_id_t log_id, pid_t pid, uint64_t,
                                                log_time realtime) {
-    auto lock = std::lock_guard{reader_list_->reader_threads_lock()};
-
     if (skip_ahead_[log_id]) {
         skip_ahead_[log_id]--;
         return FilterResult::kSkip;

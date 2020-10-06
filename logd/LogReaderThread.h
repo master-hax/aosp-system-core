@@ -26,10 +26,12 @@
 #include <list>
 #include <memory>
 
+#include <android-base/thread_annotations.h>
 #include <log/log.h>
 
 #include "LogBuffer.h"
 #include "LogWriter.h"
+#include "LogdLock.h"
 
 class LogReaderList;
 
@@ -64,8 +66,10 @@ class LogReaderThread {
   private:
     void ThreadFunction();
     // flushTo filter callbacks
-    FilterResult FilterFirstPass(log_id_t log_id, pid_t pid, uint64_t sequence, log_time realtime);
-    FilterResult FilterSecondPass(log_id_t log_id, pid_t pid, uint64_t sequence, log_time realtime);
+    FilterResult FilterFirstPass(log_id_t log_id, pid_t pid, uint64_t sequence, log_time realtime)
+            REQUIRES(logd_lock);
+    FilterResult FilterSecondPass(log_id_t log_id, pid_t pid, uint64_t sequence, log_time realtime)
+            REQUIRES(logd_lock);
 
     std::condition_variable thread_triggered_condition_;
     LogBuffer* log_buffer_;

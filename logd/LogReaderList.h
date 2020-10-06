@@ -22,15 +22,16 @@
 
 #include "LogBuffer.h"
 #include "LogReaderThread.h"
+#include "LogdLock.h"
 
 class LogReaderList {
   public:
-    void NotifyNewLog(LogMask log_mask) const;
+    void NotifyNewLog(LogMask log_mask) const REQUIRES(logd_lock);
 
-    std::list<std::unique_ptr<LogReaderThread>>& reader_threads() { return reader_threads_; }
-    std::mutex& reader_threads_lock() { return reader_threads_lock_; }
+    std::list<std::unique_ptr<LogReaderThread>>& reader_threads() REQUIRES(logd_lock) {
+        return reader_threads_;
+    }
 
   private:
-    std::list<std::unique_ptr<LogReaderThread>> reader_threads_;
-    mutable std::mutex reader_threads_lock_;
+    std::list<std::unique_ptr<LogReaderThread>> reader_threads_ GUARDED_BY(logd_lock);
 };
