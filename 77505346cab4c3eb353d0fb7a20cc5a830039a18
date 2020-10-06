@@ -33,6 +33,24 @@
       "revId": "77505346cab4c3eb353d0fb7a20cc5a830039a18",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7f1595e0_5e61bf95",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1041495
+      },
+      "writtenOn": "2020-10-06T07:42:54Z",
+      "side": 1,
+      "message": "Sounds good to me. Feel free to send me an email if you\u0027d like to discuss in more detail.",
+      "parentUuid": "f2efd1d5_fff9d07e",
+      "revId": "77505346cab4c3eb353d0fb7a20cc5a830039a18",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
