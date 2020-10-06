@@ -67,6 +67,7 @@
 #include "persistent_properties.h"
 #include "property_type.h"
 #include "proto_utils.h"
+#include "second_stage_resources.h"
 #include "selinux.h"
 #include "subcontext.h"
 #include "system/core/init/property_service.pb.h"
@@ -620,15 +621,18 @@ uint32_t InitPropertySet(const std::string& name, const std::string& value) {
     return result;
 }
 
+static bool load_properties_from_file_with_filters(const char*, const std::vector<const char*>&,
+                                                   std::map<std::string, std::string>*);
 static bool load_properties_from_file(const char*, const char*,
                                       std::map<std::string, std::string>*);
 
 /*
  * Filter is used to decide which properties to load: NULL loads all keys,
  * "ro.foo.*" is a prefix match, and "ro.foo.bar" is an exact match.
+ * The last element of filters array must be nullptr.
  */
-static void LoadProperties(char* data, const char* filter, const char* filename,
-                           std::map<std::string, std::string>* properties) {
+static void LoadProperties(char* data, const std::vector<const char*>& filters,
+                           const char* filename, std::map<std::string, std::string>* properties) {
     char *key, *value, *eol, *sol, *tmp, *fn;
     size_t flen = 0;
 
@@ -646,10 +650,6 @@ static void LoadProperties(char* data, const char* filter, const char* filename,
                 context = kVendorContext;
             }
         }
-    }
-
-    if (filter) {
-        flen = strlen(filter);
     }
 
     sol = data;
@@ -693,11 +693,14 @@ static void LoadProperties(char* data, const char* filter, const char* filename,
 
             while (isspace(*value)) value++;
 
-            if (flen > 0) {
-                if (filter[flen - 1] == '*') {
-                    if (strncmp(key, filter, flen - 1) != 0) continue;
-                } else {
-                    if (strcmp(key, filter) != 0) continue;
+            for (const char* filter : filters) {
+                flen = strlen(filter);
+                if (flen > 0) {
+                    if (filter[flen - 1] == '*') {
+                        if (strncmp(key, filter, flen - 1) != 0) continue;
+                    } else {
+                        if (strcmp(key, filter) != 0) continue;
+                    }
                 }
             }
 
@@ -729,8 +732,9 @@ static void LoadProperties(char* data, const char* filter, const char* filename,
 
 // Filter is used to decide which properties to load: NULL loads all keys,
 // "ro.foo.*" is a prefix match, and "ro.foo.bar" is an exact match.
-static bool load_properties_from_file(const char* filename, const char* filter,
-                                      std::map<std::string, std::string>* properties) {
+static bool load_properties_from_file_with_filters(const char* filename,
+                                                   const std::vector<const char*>& filters,
+                                                   std::map<std::string, std::string>* properties) {
     Timer t;
     auto file_contents = ReadFile(filename);
     if (!file_contents.ok()) {
@@ -740,9 +744,33 @@ static bool load_properties_from_file(const char* filename, const char* filter,
     }
     file_contents->push_back('\n');
 
-    LoadProperties(file_contents->data(), filter, filename, properties);
+    LoadProperties(file_contents->data(), filters, filename, properties);
     LOG(VERBOSE) << "(Loading properties from " << filename << " took " << t << ".)";
     return true;
+}
+
+// Filter is used to decide which properties to load: NULL loads all keys,
+// "ro.foo.*" is a prefix match, and "ro.foo.bar" is an exact match.
+static bool load_properties_from_file(const char* filename, const char* filter,
+                                      std::map<std::string, std::string>* properties) {
+    std::vector<const char*> filters;
+    if (filter != nullptr) {
+        filters.push_back(filter);
+    }
+    return load_properties_from_file_with_filters(filename, filters, properties);
+}
+
+static void LoadPropertiesFromSecondStageRes(std::map<std::string, std::string>* properties) {
+    std::string prop = GetRamdiskPropForSecondStage();
+    if (access(prop.c_str(), R_OK) != 0) {
+        CHECK(errno == ENOENT) << "Cannot access " << prop << ": " << strerror(errno);
+        return;
+    }
+    std::vector<const char*> prop_filters = {
+            "ro.bootimage.*",
+            "ro.product.bootimage.*",
+    };
+    load_properties_from_file_with_filters(prop.c_str(), prop_filters, properties);
 }
 
 // persist.sys.usb.config values can't be combined on build-time when property
@@ -933,6 +961,7 @@ void PropertyLoadBootDefaults() {
 
     // Order matters here. The more the partition is specific to a product, the higher its
     // precedence is.
+    LoadPropertiesFromSecondStageRes(&properties);
     load_properties_from_file("/system/build.prop", nullptr, &properties);
     load_properties_from_partition("system_ext", /* support_legacy_path_until */ 30);
     // TODO(b/117892318): uncomment the following condition when vendor.imgs for aosp_* targets are

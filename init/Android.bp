@@ -56,6 +56,7 @@ init_device_sources = [
     "property_service.proto",
     "reboot.cpp",
     "reboot_utils.cpp",
+    "second_stage_resources.cpp",
     "security.cpp",
     "selabel.cpp",
     "selinux.cpp",
