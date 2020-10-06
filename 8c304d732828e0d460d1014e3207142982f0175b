@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "415ccf94_3330ad69",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2020-10-06T11:40:49Z",
+      "side": 1,
+      "message": "Following discussion on http://b/164126569#comment24 ff. I just invented a location in system/core for this, but I\u0027ve no strong opinions on where this should go.\n\nI regard this as a short-term solution, where the long-term goal is to improve the tooling so that the NDK API can be vetted upstream in the unbundled ART branches and the ndk_{library,headers} modules reference them from prebuilt drops of ART (cf. http://b/164126569#comment16).",
+      "revId": "8c304d732828e0d460d1014e3207142982f0175b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
