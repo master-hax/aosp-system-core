@@ -257,7 +257,7 @@ TEST_P(ChattyLogBufferTest, no_leading_chatty_simple) {
     std::vector<LogMessage> read_log_messages;
     bool released = false;
     {
-        auto lock = std::unique_lock{reader_list_.reader_threads_lock()};
+        auto lock = std::unique_lock{logd_lock};
         std::unique_ptr<LogWriter> test_writer(new TestWriter(&read_log_messages, &released));
         std::unique_ptr<LogReaderThread> log_reader(
                 new LogReaderThread(log_buffer_.get(), &reader_list_, std::move(test_writer), true,
@@ -317,7 +317,7 @@ TEST_P(ChattyLogBufferTest, no_leading_chatty_tail) {
     std::vector<LogMessage> read_log_messages;
     bool released = false;
     {
-        auto lock = std::unique_lock{reader_list_.reader_threads_lock()};
+        auto lock = std::unique_lock{logd_lock};
         std::unique_ptr<LogWriter> test_writer(new TestWriter(&read_log_messages, &released));
         std::unique_ptr<LogReaderThread> log_reader(
                 new LogReaderThread(log_buffer_.get(), &reader_list_, std::move(test_writer), true,

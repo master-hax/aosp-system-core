@@ -152,9 +152,6 @@ bool LogReader::onDataAvailable(SocketClient* cli) {
     if (!fastcmp<strncmp>(buffer, "dumpAndClose", 12)) {
         // Allow writer to get some cycles, and wait for pending notifications
         sched_yield();
-        reader_list_->reader_threads_lock().lock();
-        reader_list_->reader_threads_lock().unlock();
-        sched_yield();
         nonBlock = true;
     }
 
@@ -212,7 +209,7 @@ bool LogReader::onDataAvailable(SocketClient* cli) {
         deadline = {};
     }
 
-    auto lock = std::lock_guard{reader_list_->reader_threads_lock()};
+    auto lock = std::lock_guard{logd_lock};
     auto entry = std::make_unique<LogReaderThread>(log_buffer_, reader_list_,
                                                    std::move(socket_log_writer), nonBlock, tail,
                                                    logMask, pid, start, sequence, deadline);
@@ -230,7 +227,7 @@ bool LogReader::onDataAvailable(SocketClient* cli) {
 
 bool LogReader::DoSocketDelete(SocketClient* cli) {
     auto cli_name = SocketClientToName(cli);
-    auto lock = std::lock_guard{reader_list_->reader_threads_lock()};
+    auto lock = std::lock_guard{logd_lock};
     for (const auto& reader : reader_list_->reader_threads()) {
         if (reader->name() == cli_name) {
             reader->release_Locked();

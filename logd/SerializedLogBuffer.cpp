@@ -41,7 +41,7 @@ void SerializedLogBuffer::Init() {
     }
 
     // Release any sleeping reader threads to dump their current content.
-    auto reader_threads_lock = std::lock_guard{reader_list_->reader_threads_lock()};
+    auto lock = std::lock_guard{logd_lock};
     for (const auto& reader_thread : reader_list_->reader_threads()) {
         reader_thread->triggerReader_Locked();
     }
@@ -86,7 +86,7 @@ int SerializedLogBuffer::Log(log_id_t log_id, log_time realtime, uid_t uid, pid_
 
     auto sequence = sequence_.fetch_add(1, std::memory_order_relaxed);
 
-    auto lock = std::lock_guard{lock_};
+    auto lock = std::lock_guard{logd_lock};
 
     if (logs_[log_id].empty()) {
         logs_[log_id].push_back(SerializedLogChunk(max_size_[log_id] / 4));
@@ -140,8 +140,6 @@ void SerializedLogBuffer::NotifyReadersOfPrune(
 }
 
 void SerializedLogBuffer::Prune(log_id_t log_id, size_t bytes_to_free, uid_t uid) {
-    auto reader_threads_lock = std::lock_guard{reader_list_->reader_threads_lock()};
-
     auto& log_buffer = logs_[log_id];
     auto it = log_buffer.begin();
     while (it != log_buffer.end()) {
@@ -202,7 +200,7 @@ std::unique_ptr<FlushToState> SerializedLogBuffer::CreateFlushToState(uint64_t s
 }
 
 void SerializedLogBuffer::DeleteFlushToState(std::unique_ptr<FlushToState> state) {
-    auto lock = std::unique_lock{lock_};
+    auto lock = std::unique_lock{logd_lock};
     state.reset();
 }
 
@@ -210,7 +208,7 @@ bool SerializedLogBuffer::FlushTo(
         LogWriter* writer, FlushToState& abstract_state,
         const std::function<FilterResult(log_id_t log_id, pid_t pid, uint64_t sequence,
                                          log_time realtime)>& filter) {
-    auto lock = std::unique_lock{lock_};
+    auto lock = std::unique_lock{logd_lock};
 
     auto& state = reinterpret_cast<SerializedFlushToState&>(abstract_state);
     state.InitializeLogs(logs_);
@@ -259,7 +257,7 @@ bool SerializedLogBuffer::FlushTo(
 }
 
 bool SerializedLogBuffer::Clear(log_id_t id, uid_t uid) {
-    auto lock = std::lock_guard{lock_};
+    auto lock = std::lock_guard{logd_lock};
     Prune(id, ULONG_MAX, uid);
 
     // Clearing SerializedLogBuffer never waits for readers and therefore is always successful.
@@ -275,7 +273,7 @@ size_t SerializedLogBuffer::GetSizeUsed(log_id_t id) {
 }
 
 size_t SerializedLogBuffer::GetSize(log_id_t id) {
-    auto lock = std::lock_guard{lock_};
+    auto lock = std::lock_guard{logd_lock};
     return max_size_[id];
 }
 
@@ -288,7 +286,7 @@ bool SerializedLogBuffer::SetSize(log_id_t id, size_t size) {
         return false;
     }
 
-    auto lock = std::lock_guard{lock_};
+    auto lock = std::lock_guard{logd_lock};
     max_size_[id] = size;
 
     MaybePrune(id);

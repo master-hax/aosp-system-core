@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,18 +14,23 @@
  * limitations under the License.
  */
 
-#include "LogReaderList.h"
+#pragma once
 
-// When we are notified a new log entry is available, inform
-// listening sockets who are watching this entry's log id.
-void LogReaderList::NotifyNewLog(LogMask log_mask) const {
-    for (const auto& entry : reader_threads_) {
-        if (!entry->IsWatchingMultiple(log_mask)) {
-            continue;
-        }
-        if (entry->deadline().time_since_epoch().count() != 0) {
-            continue;
-        }
-        entry->triggerReader_Locked();
-    }
-}
+#include <mutex>
+
+#include <android-base/thread_annotations.h>
+
+extern std::mutex logd_lock;
+
+// std::unique_lock does not have thread annotations, so we need our own.
+class SCOPED_CAPABILITY UniqueLock {
+  public:
+    UniqueLock(std::mutex& lock) ACQUIRE(lock) : lock_(lock) { lock_.lock(); }
+    ~UniqueLock() RELEASE() { lock_.unlock(); }
+
+    void lock() ACQUIRE() { lock_.lock(); }
+    void unlock() RELEASE() { lock_.unlock(); }
+
+  private:
+    std::mutex& lock_;
+};
