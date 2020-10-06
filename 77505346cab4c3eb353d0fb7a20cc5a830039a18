@@ -16,6 +16,23 @@
       "revId": "77505346cab4c3eb353d0fb7a20cc5a830039a18",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f2efd1d5_fff9d07e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2020-10-06T01:27:05Z",
+      "side": 1,
+      "message": "Yep, I see the same behavior on AOSP pixel.\n\nBefore merging this, I\u0027d like to see if we can fix things so compression actually wins here. /vendor is fairly compressible, so we\u0027re either losing a bunch of time on setup and teardown of the compression context, or the individual files are small enough that we\u0027re spending more time to compress them than it takes to just send them across the wire.\n\nI did some googling and found some references to ZSTD_initCStream being slow, so I hacked together a patch to cache them and use a separate thread to reset them, but it didn\u0027t seem to improve things any. I\u0027m guessing that the main problem is that we only compress when we\u0027re out of data to send to the other side. I think improving this shouldn\u0027t be too hard, so I\u0027ll give that a try in the next few days.",
+      "revId": "77505346cab4c3eb353d0fb7a20cc5a830039a18",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
