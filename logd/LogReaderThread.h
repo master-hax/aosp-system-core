@@ -22,10 +22,10 @@
 #include <time.h>
 
 #include <chrono>
-#include <condition_variable>
 #include <list>
 #include <memory>
 
+#include <android-base/thread_annotations.h>
 #include <log/log.h>
 
 #include "LogBuffer.h"
@@ -39,7 +39,7 @@ class LogReaderThread {
                     std::unique_ptr<LogWriter> writer, bool non_block, unsigned long tail,
                     LogMask log_mask, pid_t pid, log_time start_time, uint64_t sequence,
                     std::chrono::steady_clock::time_point deadline);
-    void triggerReader_Locked() { thread_triggered_condition_.notify_all(); }
+    void triggerReader_Locked() { pthread_cond_signal(&thread_triggered_condition_); }
 
     void triggerSkip_Locked(log_id_t id, unsigned int skip) { skip_ahead_[id] = skip; }
     void cleanSkip_Locked();
@@ -48,7 +48,7 @@ class LogReaderThread {
         // gracefully shut down the socket.
         writer_->Shutdown();
         release_ = true;
-        thread_triggered_condition_.notify_all();
+        pthread_cond_signal(&thread_triggered_condition_);
     }
 
     bool IsWatching(log_id_t id) const { return flush_to_state_->log_mask() & (1 << id); }
@@ -64,10 +64,12 @@ class LogReaderThread {
   private:
     void ThreadFunction();
     // flushTo filter callbacks
-    FilterResult FilterFirstPass(log_id_t log_id, pid_t pid, uint64_t sequence, log_time realtime);
-    FilterResult FilterSecondPass(log_id_t log_id, pid_t pid, uint64_t sequence, log_time realtime);
+    FilterResult FilterFirstPass(log_id_t log_id, pid_t pid, uint64_t sequence, log_time realtime)
+            REQUIRES(LogBufferLock);
+    FilterResult FilterSecondPass(log_id_t log_id, pid_t pid, uint64_t sequence, log_time realtime)
+            REQUIRES(LogBufferLock);
 
-    std::condition_variable thread_triggered_condition_;
+    pthread_cond_t thread_triggered_condition_;
     LogBuffer* log_buffer_;
     LogReaderList* reader_list_;
     std::unique_ptr<LogWriter> writer_;

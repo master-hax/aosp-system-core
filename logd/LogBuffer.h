@@ -20,11 +20,13 @@
 
 #include <functional>
 #include <memory>
+#include <mutex>
 
 #include <log/log.h>
 #include <log/log_read.h>
 
 #include "LogWriter.h"
+#include "rwlock.h"
 
 // A mask to represent which log buffers a reader is watching, values are (1 << LOG_ID_MAIN), etc.
 using LogMask = uint32_t;
@@ -75,3 +77,5 @@ class LogBuffer {
 
     virtual uint64_t sequence() const = 0;
 };
+
+extern std::mutex LogBufferLock;

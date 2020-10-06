@@ -40,7 +40,6 @@ class SHARED_CAPABILITY("mutex") RwLock {
 };
 
 // std::shared_lock does not have thread annotations, so we need our own.
-
 class SCOPED_CAPABILITY SharedLock {
   public:
     explicit SharedLock(RwLock& lock) ACQUIRE_SHARED(lock) : lock_(lock) { lock_.lock_shared(); }
@@ -48,9 +47,21 @@ class SCOPED_CAPABILITY SharedLock {
 
     void lock_shared() ACQUIRE_SHARED() { lock_.lock_shared(); }
     void unlock() RELEASE() { lock_.unlock(); }
-
     DISALLOW_IMPLICIT_CONSTRUCTORS(SharedLock);
 
   private:
     RwLock& lock_;
+};
+
+// std::unique_lock does not have thread annotations, so we need our own.
+class SCOPED_CAPABILITY UniqueLock {
+  public:
+    UniqueLock(std::mutex& lock) ACQUIRE(lock) : lock_(lock) { lock_.lock(); }
+    ~UniqueLock() RELEASE() { lock_.unlock(); }
+
+    void lock() ACQUIRE() { lock_.lock(); }
+    void unlock() RELEASE() { lock_.unlock(); }
+
+  private:
+    std::mutex& lock_;
 };

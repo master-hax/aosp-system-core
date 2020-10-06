@@ -227,7 +227,7 @@ TEST_P(LogBufferTest, smoke_with_reader_thread) {
     bool released = false;
 
     {
-        auto lock = std::unique_lock{reader_list_.reader_threads_lock()};
+        auto lock = std::unique_lock{LogBufferLock};
         std::unique_ptr<LogWriter> test_writer(new TestWriter(&read_log_messages, &released));
         std::unique_ptr<LogReaderThread> log_reader(
                 new LogReaderThread(log_buffer_.get(), &reader_list_, std::move(test_writer), true,
@@ -239,7 +239,7 @@ TEST_P(LogBufferTest, smoke_with_reader_thread) {
         usleep(5000);
     }
     {
-        auto lock = std::unique_lock{reader_list_.reader_threads_lock()};
+        auto lock = std::unique_lock{LogBufferLock};
         EXPECT_EQ(0U, reader_list_.reader_threads().size());
     }
     CompareLogMessages(log_messages, read_log_messages);
@@ -301,7 +301,7 @@ TEST_P(LogBufferTest, random_messages) {
     bool released = false;
 
     {
-        auto lock = std::unique_lock{reader_list_.reader_threads_lock()};
+        auto lock = std::unique_lock{LogBufferLock};
         std::unique_ptr<LogWriter> test_writer(new TestWriter(&read_log_messages, &released));
         std::unique_ptr<LogReaderThread> log_reader(
                 new LogReaderThread(log_buffer_.get(), &reader_list_, std::move(test_writer), true,
@@ -313,7 +313,7 @@ TEST_P(LogBufferTest, random_messages) {
         usleep(5000);
     }
     {
-        auto lock = std::unique_lock{reader_list_.reader_threads_lock()};
+        auto lock = std::unique_lock{LogBufferLock};
         EXPECT_EQ(0U, reader_list_.reader_threads().size());
     }
     CompareLogMessages(log_messages, read_log_messages);
@@ -335,7 +335,7 @@ TEST_P(LogBufferTest, read_last_sequence) {
     bool released = false;
 
     {
-        auto lock = std::unique_lock{reader_list_.reader_threads_lock()};
+        auto lock = std::unique_lock{LogBufferLock};
         std::unique_ptr<LogWriter> test_writer(new TestWriter(&read_log_messages, &released));
         std::unique_ptr<LogReaderThread> log_reader(
                 new LogReaderThread(log_buffer_.get(), &reader_list_, std::move(test_writer), true,
@@ -347,7 +347,7 @@ TEST_P(LogBufferTest, read_last_sequence) {
         usleep(5000);
     }
     {
-        auto lock = std::unique_lock{reader_list_.reader_threads_lock()};
+        auto lock = std::unique_lock{LogBufferLock};
         EXPECT_EQ(0U, reader_list_.reader_threads().size());
     }
     std::vector<LogMessage> expected_log_messages = {log_messages.back()};
@@ -372,7 +372,7 @@ TEST_P(LogBufferTest, clear_logs) {
 
     // Connect a blocking reader.
     {
-        auto lock = std::unique_lock{reader_list_.reader_threads_lock()};
+        auto lock = std::unique_lock{LogBufferLock};
         std::unique_ptr<LogWriter> test_writer(new TestWriter(&read_log_messages, &released));
         std::unique_ptr<LogReaderThread> log_reader(
                 new LogReaderThread(log_buffer_.get(), &reader_list_, std::move(test_writer), false,
@@ -385,7 +385,7 @@ TEST_P(LogBufferTest, clear_logs) {
     int count = 0;
     for (; count < kMaxRetryCount; ++count) {
         usleep(5000);
-        auto lock = std::unique_lock{reader_list_.reader_threads_lock()};
+        auto lock = std::unique_lock{LogBufferLock};
         if (reader_list_.reader_threads().back()->start() == 4) {
             break;
         }
@@ -410,7 +410,7 @@ TEST_P(LogBufferTest, clear_logs) {
     // Wait up to 250ms for the reader to read the 3 additional logs.
     for (count = 0; count < kMaxRetryCount; ++count) {
         usleep(5000);
-        auto lock = std::unique_lock{reader_list_.reader_threads_lock()};
+        auto lock = std::unique_lock{LogBufferLock};
         if (reader_list_.reader_threads().back()->start() == 7) {
             break;
         }
@@ -419,14 +419,14 @@ TEST_P(LogBufferTest, clear_logs) {
 
     // Release the reader, wait for it to get the signal then check that it has been deleted.
     {
-        auto lock = std::unique_lock{reader_list_.reader_threads_lock()};
+        auto lock = std::unique_lock{LogBufferLock};
         reader_list_.reader_threads().back()->release_Locked();
     }
     while (!released) {
         usleep(5000);
     }
     {
-        auto lock = std::unique_lock{reader_list_.reader_threads_lock()};
+        auto lock = std::unique_lock{LogBufferLock};
         EXPECT_EQ(0U, reader_list_.reader_threads().size());
     }
 

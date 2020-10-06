@@ -55,20 +55,19 @@ class SerializedLogBuffer final : public LogBuffer {
 
   private:
     bool ShouldLog(log_id_t log_id, const char* msg, uint16_t len);
-    void MaybePrune(log_id_t log_id) REQUIRES(lock_);
-    void Prune(log_id_t log_id, size_t bytes_to_free, uid_t uid) REQUIRES(lock_);
+    void MaybePrune(log_id_t log_id) REQUIRES(LogBufferLock);
+    void Prune(log_id_t log_id, size_t bytes_to_free, uid_t uid) REQUIRES(LogBufferLock);
     void NotifyReadersOfPrune(log_id_t log_id, const std::list<SerializedLogChunk>::iterator& chunk)
-            REQUIRES(reader_list_->reader_threads_lock());
+            REQUIRES(LogBufferLock);
     void RemoveChunkFromStats(log_id_t log_id, SerializedLogChunk& chunk);
-    size_t GetSizeUsed(log_id_t id) REQUIRES(lock_);
+    size_t GetSizeUsed(log_id_t id) REQUIRES(LogBufferLock);
 
     LogReaderList* reader_list_;
     LogTags* tags_;
     LogStatistics* stats_;
 
-    size_t max_size_[LOG_ID_MAX] GUARDED_BY(lock_) = {};
-    std::list<SerializedLogChunk> logs_[LOG_ID_MAX] GUARDED_BY(lock_);
-    RwLock lock_;
+    size_t max_size_[LOG_ID_MAX] GUARDED_BY(LogBufferLock) = {};
+    std::list<SerializedLogChunk> logs_[LOG_ID_MAX] GUARDED_BY(LogBufferLock);
 
     std::atomic<uint64_t> sequence_ = 1;
 };

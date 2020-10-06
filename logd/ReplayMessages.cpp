@@ -372,7 +372,7 @@ class PrintAllLogs : public SingleBufferOperation {
     PrintAllLogs(log_time first_log_timestamp, const char* buffer, const char* buffers)
         : SingleBufferOperation(first_log_timestamp, buffer) {
         LogMask mask = BuffersToLogMask(buffers);
-        auto lock = std::unique_lock{reader_list_.reader_threads_lock()};
+        auto lock = std::unique_lock{LogBufferLock};
         std::unique_ptr<LogWriter> stdout_writer(new StdoutWriter());
         std::unique_ptr<LogReaderThread> log_reader(
                 new LogReaderThread(log_buffer_.get(), &reader_list_, std::move(stdout_writer),
