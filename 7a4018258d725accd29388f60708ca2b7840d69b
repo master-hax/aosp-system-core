@@ -3,6 +3,29 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "6a1753ea_585b858e",
+        "filename": "init/first_stage_init.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 292,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-10-07T16:11:16Z",
+      "side": 1,
+      "message": "Do you need .c_str() here?",
+      "range": {
+        "startLine": 292,
+        "startChar": 54,
+        "endLine": 292,
+        "endChar": 62
+      },
+      "revId": "7a4018258d725accd29388f60708ca2b7840d69b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "c1b9f820_cd42835b",
         "filename": "init/property_service.cpp",
         "patchSetId": 3
@@ -43,6 +66,40 @@
         "endLine": 711,
         "endChar": 42
       },
+      "revId": "7a4018258d725accd29388f60708ca2b7840d69b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6bfd7780_5c131ef4",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 787,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-10-07T16:11:16Z",
+      "side": 1,
+      "message": "Why do we need these filters?  Do we not trust this partition?",
+      "revId": "7a4018258d725accd29388f60708ca2b7840d69b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a06e89c5_499f09ef",
+        "filename": "init/second_stage_resources.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-10-07T16:11:16Z",
+      "side": 1,
+      "message": "We might as well inline this in the header.  It\u0027s a trivial enough function.",
       "revId": "7a4018258d725accd29388f60708ca2b7840d69b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
