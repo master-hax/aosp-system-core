@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "da07033d_f1d76278",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2020-10-07T17:44:30Z",
+      "side": 1,
+      "message": "On recovery as boot devices, /boot/etc/build.prop is not visible because the device has switched root into /first_stage_ramdisk. In order to make this file visible, the file is moved into a tmpfs, named /second_stage_ramdisk, before switching root.\n\nSee http://go/split-ramdisk (internal link) for details.",
+      "parentUuid": "fc30cd1c_f0c00b7a",
+      "range": {
+        "startLine": 13,
+        "startChar": 0,
+        "endLine": 19,
+        "endChar": 36
+      },
+      "revId": "7a4018258d725accd29388f60708ca2b7840d69b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "6a1753ea_585b858e",
@@ -60,6 +84,30 @@
       "writtenOn": "2020-10-07T16:33:21Z",
       "side": 1,
       "message": "nit: this will be printed even when there were errors",
+      "range": {
+        "startLine": 296,
+        "startChar": 8,
+        "endLine": 296,
+        "endChar": 55
+      },
+      "revId": "7a4018258d725accd29388f60708ca2b7840d69b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "00d5a823_19a8863a",
+        "filename": "init/first_stage_init.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 296,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2020-10-07T17:44:30Z",
+      "side": 1,
+      "message": "No because of LOG(FATAL)",
+      "parentUuid": "774a5b6f_19bc8841",
       "range": {
         "startLine": 296,
         "startChar": 8,
