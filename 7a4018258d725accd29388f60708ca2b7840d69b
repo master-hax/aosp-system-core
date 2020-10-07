@@ -71,6 +71,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "cd188dd2_c77f4e80",
+        "filename": "init/first_stage_init.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 292,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2020-10-07T18:36:03Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6a1753ea_585b858e",
+      "range": {
+        "startLine": 292,
+        "startChar": 54,
+        "endLine": 292,
+        "endChar": 62
+      },
+      "revId": "7a4018258d725accd29388f60708ca2b7840d69b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "774a5b6f_19bc8841",
@@ -141,6 +165,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "3c791b71_2f181f26",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 634,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2020-10-07T18:36:03Z",
+      "side": 1,
+      "message": "Ack\n\nI did mean the last element of filters must be nullptr because I was using const char** before. Reverted.",
+      "parentUuid": "c1b9f820_cd42835b",
+      "range": {
+        "startLine": 634,
+        "startChar": 0,
+        "endLine": 634,
+        "endChar": 53
+      },
+      "revId": "7a4018258d725accd29388f60708ca2b7840d69b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "c401006e_8fe9e4f2",
@@ -154,6 +202,30 @@
       "writtenOn": "2020-10-07T01:39:55Z",
       "side": 1,
       "message": "nit; we could break",
+      "range": {
+        "startLine": 711,
+        "startChar": 0,
+        "endLine": 711,
+        "endChar": 42
+      },
+      "revId": "7a4018258d725accd29388f60708ca2b7840d69b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "05a86fbe_60f4564e",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 711,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2020-10-07T18:36:03Z",
+      "side": 1,
+      "message": "Ack, reverted",
+      "parentUuid": "c401006e_8fe9e4f2",
       "range": {
         "startLine": 711,
         "startChar": 0,
@@ -199,6 +271,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "8cda51ba_e2c1e151",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 787,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2020-10-07T18:36:03Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "adb21a75_7f379b55",
+      "revId": "7a4018258d725accd29388f60708ca2b7840d69b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a06e89c5_499f09ef",
@@ -230,6 +320,24 @@
       "side": 1,
       "message": "+1",
       "parentUuid": "a06e89c5_499f09ef",
+      "revId": "7a4018258d725accd29388f60708ca2b7840d69b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "12e23bba_998cd069",
+        "filename": "init/second_stage_resources.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2020-10-07T18:36:03Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f90b827d_67e8f96a",
       "revId": "7a4018258d725accd29388f60708ca2b7840d69b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
