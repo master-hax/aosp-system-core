@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8a0b8d55_e82067c6",
+        "filename": "logd/SerializedFlushToState.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-10-07T21:37:39Z",
+      "side": 1,
+      "message": "This is the one sketchy part remaining.  Thread analysis doesn\u0027t work at all in destructors, so we can\u0027t guarantee that logd_lock is held for this part, nor can we guarantee that logd_lock isn\u0027t held, such that we know it\u0027s safe to lock it here.  \n\nI don\u0027t want to use a recursive mutex such that I can always lock here, just for this awkward edge case that I can\u0027t statically guarantee.\n\nI don\u0027t think there\u0027s any realistic way to refactor this such that it\u0027s not in a destructor either.  It\u0027s intentionally there, since we are guaranteed that whenever a reader disconnects -\u003e its reader thread is destroyed -\u003e its FlushToState is destroyed.\n\nMaybe we just live with this, as we did before lock annotations were a thing?",
+      "range": {
+        "startLine": 34,
+        "startChar": 0,
+        "endLine": 40,
+        "endChar": 1
+      },
+      "revId": "97b8f4e22a12e8ac0574d2239495249ceda28f48",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
