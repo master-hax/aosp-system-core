@@ -3,6 +3,29 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "fc30cd1c_f0c00b7a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2020-10-07T16:33:21Z",
+      "side": 1,
+      "message": "Perhaps this is answered somewhere else. Why don\u0027t we let the second stage init to load props from /boot/etc/build.prop? Is it due to a permission problem?",
+      "range": {
+        "startLine": 13,
+        "startChar": 0,
+        "endLine": 19,
+        "endChar": 36
+      },
+      "revId": "7a4018258d725accd29388f60708ca2b7840d69b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "6a1753ea_585b858e",
         "filename": "init/first_stage_init.cpp",
         "patchSetId": 3
@@ -19,6 +42,29 @@
         "startChar": 54,
         "endLine": 292,
         "endChar": 62
+      },
+      "revId": "7a4018258d725accd29388f60708ca2b7840d69b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "774a5b6f_19bc8841",
+        "filename": "init/first_stage_init.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 296,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2020-10-07T16:33:21Z",
+      "side": 1,
+      "message": "nit: this will be printed even when there were errors",
+      "range": {
+        "startLine": 296,
+        "startChar": 8,
+        "endLine": 296,
+        "endChar": 55
       },
       "revId": "7a4018258d725accd29388f60708ca2b7840d69b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
@@ -89,6 +135,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "adb21a75_7f379b55",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 787,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2020-10-07T16:33:21Z",
+      "side": 1,
+      "message": "+1",
+      "parentUuid": "6bfd7780_5c131ef4",
+      "revId": "7a4018258d725accd29388f60708ca2b7840d69b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "a06e89c5_499f09ef",
         "filename": "init/second_stage_resources.cpp",
         "patchSetId": 3
@@ -100,6 +164,24 @@
       "writtenOn": "2020-10-07T16:11:16Z",
       "side": 1,
       "message": "We might as well inline this in the header.  It\u0027s a trivial enough function.",
+      "revId": "7a4018258d725accd29388f60708ca2b7840d69b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f90b827d_67e8f96a",
+        "filename": "init/second_stage_resources.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2020-10-07T16:33:21Z",
+      "side": 1,
+      "message": "+1",
+      "parentUuid": "a06e89c5_499f09ef",
       "revId": "7a4018258d725accd29388f60708ca2b7840d69b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
