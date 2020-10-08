@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "14f0decc_3cee9099",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-10-08T20:14:26Z",
+      "side": 1,
+      "message": "where? seems like the destructor for that class and its superclasses is empty, other than member data?",
+      "revId": "efdc885ca1d6609a43a82c1c8e3e6b0da0e9ea8b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
