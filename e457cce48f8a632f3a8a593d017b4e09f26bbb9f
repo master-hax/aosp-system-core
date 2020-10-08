@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b1bb678d_ea7b5637",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1018026
+      },
+      "writtenOn": "2020-10-08T14:19:47Z",
+      "side": 1,
+      "message": "Verified with local build (aosp_crosshatch-userdebug)",
+      "revId": "e457cce48f8a632f3a8a593d017b4e09f26bbb9f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
