@@ -16,6 +16,23 @@
       "message": "Verified with local build (aosp_crosshatch-userdebug)",
       "revId": "e457cce48f8a632f3a8a593d017b4e09f26bbb9f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "40d043b3_0ea68c14",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-10-08T15:21:04Z",
+      "side": 1,
+      "message": "(I was going to ask if this was meant to be temporary, but see b/170387172 that confirms that it is)",
+      "revId": "e457cce48f8a632f3a8a593d017b4e09f26bbb9f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
