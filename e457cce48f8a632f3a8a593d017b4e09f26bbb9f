@@ -33,6 +33,24 @@
       "message": "(I was going to ask if this was meant to be temporary, but see b/170387172 that confirms that it is)",
       "revId": "e457cce48f8a632f3a8a593d017b4e09f26bbb9f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2dd850de_a5e26540",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1018026
+      },
+      "writtenOn": "2020-10-08T15:26:05Z",
+      "side": 1,
+      "message": "Thanks - yes - we can cleanup (which may take a while to perform).",
+      "parentUuid": "40d043b3_0ea68c14",
+      "revId": "e457cce48f8a632f3a8a593d017b4e09f26bbb9f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
