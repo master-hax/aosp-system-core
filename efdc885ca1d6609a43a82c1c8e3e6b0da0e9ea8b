@@ -16,6 +16,24 @@
       "message": "where? seems like the destructor for that class and its superclasses is empty, other than member data?",
       "revId": "efdc885ca1d6609a43a82c1c8e3e6b0da0e9ea8b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1830e563_f8fe4f45",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-10-08T20:25:54Z",
+      "side": 1,
+      "message": "Stacktrace below, though it\u0027s not going to look pretty.  Yes, it\u0027s the member destructors that cause this.\n\ntl;dr: ~SingleBufferOperation() -\u003e ~LogBuffer() -\u003e ~SerializedLogChunk()\n\n#0  __GI_raise (sig\u003dsig@entry\u003d6) at ../sysdeps/unix/sysv/linux/raise.c:50\n#1  0x00007ffff7b3a537 in __GI_abort () at abort.c:79\n#2  0x00005555555df116 in __android_log_default_aborter (abort_message\u003d\u003coptimized out\u003e) at system/core/liblog/logger_write.cpp:173\n#3  0x00005555555b62e3 in android::base::LogMessage::~LogMessage (this\u003d0x7fffffffcb78) at system/libbase/logging.cpp:513\n#4  0x00005555555dacc0 in SerializedLogChunk::~SerializedLogChunk (this\u003d\u003coptimized out\u003e) at system/core/logd/SerializedLogChunk.cpp:24\n#5  0x00005555555d9c0d in std::__1::allocator_traits\u003cstd::__1::allocator\u003cstd::__1::__list_node\u003cSerializedLogChunk, void*\u003e \u003e \u003e::__destroy\u003cSerializedLogChunk\u003e (__p\u003d0x2) at external/libcxx/include/memory:1748\n#6  std::__1::allocator_traits\u003cstd::__1::allocator\u003cstd::__1::__list_node\u003cSerializedLogChunk, void*\u003e \u003e \u003e::destroy\u003cSerializedLogChunk\u003e (__a\u003d..., __p\u003d0x2) at external/libcxx/include/memory:1596\n#7  std::__1::__list_imp\u003cSerializedLogChunk, std::__1::allocator\u003cSerializedLogChunk\u003e \u003e::clear (this\u003d0x555555718c00) at external/libcxx/include/list:762\n#8  std::__1::__list_imp\u003cSerializedLogChunk, std::__1::allocator\u003cSerializedLogChunk\u003e \u003e::~__list_imp (this\u003d0x555555718c00) at external/libcxx/include/list:741\n#9  SerializedLogBuffer::~SerializedLogBuffer (this\u003d0x555555718b40) at system/core/logd/SerializedLogBuffer.h:37\n#10 SerializedLogBuffer::~SerializedLogBuffer (this\u003d0x555555718b40) at system/core/logd/SerializedLogBuffer.h:37\n#11 0x00005555555b269e in std::__1::default_delete\u003cLogBuffer\u003e::operator() (this\u003d0x5555557184b8, __ptr\u003d0x555555718b40) at external/libcxx/include/memory:2339\n#12 std::__1::unique_ptr\u003cLogBuffer, std::__1::default_delete\u003cLogBuffer\u003e \u003e::reset (this\u003d0x5555557184b8, __p\u003d0x0) at external/libcxx/include/memory:2652\n#13 std::__1::unique_ptr\u003cLogBuffer, std::__1::default_delete\u003cLogBuffer\u003e \u003e::~unique_ptr (this\u003d0x5555557184b8) at external/libcxx/include/memory:2606\n#14 SingleBufferOperation::~SingleBufferOperation (this\u003d0x555555718300) at system/core/logd/ReplayMessages.cpp:241\n#15 0x00005555555b2d49 in PrintAllLogs::~PrintAllLogs (this\u003d0x555555718300) at system/core/logd/ReplayMessages.cpp:371\n#16 0x00005555555b0ade in std::__1::default_delete\u003cOperation\u003e::operator() (this\u003d\u003coptimized out\u003e, __ptr\u003d0x555555718300) at external/libcxx/include/memory:2339\n#17 std::__1::unique_ptr\u003cOperation, std::__1::default_delete\u003cOperation\u003e \u003e::reset (this\u003d\u003coptimized out\u003e, __p\u003d0x0) at external/libcxx/include/memory:2652\n#18 std::__1::unique_ptr\u003cOperation, std::__1::default_delete\u003cOperation\u003e \u003e::~unique_ptr (this\u003d\u003coptimized out\u003e) at external/libcxx/include/memory:2606\n#19 main (argc\u003d\u003coptimized out\u003e, argv\u003d\u003coptimized out\u003e) at system/core/logd/ReplayMessages.cpp:473",
+      "parentUuid": "14f0decc_3cee9099",
+      "revId": "efdc885ca1d6609a43a82c1c8e3e6b0da0e9ea8b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
