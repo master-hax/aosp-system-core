@@ -34,6 +34,24 @@
       "parentUuid": "14f0decc_3cee9099",
       "revId": "efdc885ca1d6609a43a82c1c8e3e6b0da0e9ea8b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5d4e88a1_c9f8ed1e",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-10-08T22:07:18Z",
+      "side": 1,
+      "message": "can probably turn the constraint into English for the commit message though...\n\n(especially since it looks like you need to fix the build anyway :-) )",
+      "parentUuid": "1830e563_f8fe4f45",
+      "revId": "efdc885ca1d6609a43a82c1c8e3e6b0da0e9ea8b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
