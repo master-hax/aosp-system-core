@@ -52,6 +52,24 @@
       "parentUuid": "1830e563_f8fe4f45",
       "revId": "efdc885ca1d6609a43a82c1c8e3e6b0da0e9ea8b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f7ef3ee6_d361932d",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-10-08T22:12:30Z",
+      "side": 1,
+      "message": "Is the latest PS better?\n\nThe build is fine, it\u0027s just racing against automerger and the commit I just submitted before running presubmit with this one.",
+      "parentUuid": "5d4e88a1_c9f8ed1e",
+      "revId": "efdc885ca1d6609a43a82c1c8e3e6b0da0e9ea8b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
