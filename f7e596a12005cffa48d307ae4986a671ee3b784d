@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a8fbd286_0eacf5c0",
+        "filename": "adb/client/bugreport.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 240,
+      "author": {
+        "id": 1371409
+      },
+      "writtenOn": "2020-10-08T10:16:28Z",
+      "side": 1,
+      "message": "Should we also need to check bugz_version here?",
+      "range": {
+        "startLine": 240,
+        "startChar": 16,
+        "endLine": 240,
+        "endChar": 22
+      },
+      "revId": "f7e596a12005cffa48d307ae4986a671ee3b784d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
