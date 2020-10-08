@@ -16,6 +16,23 @@
       "message": "Adding an OWNERS block so we can migrate away the logging subdirectories per b/168791309.\n\nWill revert, once migration is over.",
       "revId": "23007f0e4837f9c3be61a33525afdd9ab240164d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cfaa637a_e69a98bf",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1018026
+      },
+      "writtenOn": "2020-10-08T23:05:24Z",
+      "side": 1,
+      "message": "OWNERS file has no presubmit support.",
+      "revId": "23007f0e4837f9c3be61a33525afdd9ab240164d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
