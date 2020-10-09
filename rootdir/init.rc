@@ -1039,6 +1039,17 @@ on property:security.perf_harden=1
     write /proc/sys/kernel/perf_cpu_time_max_percent 25
     write /proc/sys/kernel/perf_event_mlock_kb 516
 
+on property:security.lower_kptr_restrict=1
+    write /proc/sys/kernel/kptr_restrict 1
+    # Users of lower_kptr_restrict are expected to lower kptr_restrict only
+    # for a small window, to read and parse kallsyms, and then put it back.
+    # The statement below is a safety measure to prevent that kptr_restrict
+    # is left unrestricted indefinitely in case of a crash or a bug.
+    exec_background u:r:su:s0 -- /system/bin/sh -c "sleep 10; setprop security.lower_kptr_restrict 0"
+
+on property:security.lower_kptr_restrict=0
+    write /proc/sys/kernel/kptr_restrict 2
+
 
 # on shutdown
 # In device's init.rc, this trigger can be used to do device-specific actions
