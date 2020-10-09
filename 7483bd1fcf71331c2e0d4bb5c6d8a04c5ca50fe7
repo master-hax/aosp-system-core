@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "85dee305_763f71f7",
+        "filename": "logd/LogCommand.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 160,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-10-09T21:31:09Z",
+      "side": 1,
+      "message": "have you seen that in practice? i\u0027d have assumed ENOPROTOOPT?",
+      "range": {
+        "startLine": 160,
+        "startChar": 21,
+        "endLine": 160,
+        "endChar": 27
+      },
+      "revId": "7483bd1fcf71331c2e0d4bb5c6d8a04c5ca50fe7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
