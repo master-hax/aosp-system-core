@@ -46,6 +46,30 @@
       },
       "revId": "7483bd1fcf71331c2e0d4bb5c6d8a04c5ca50fe7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "535d9045_546449e5",
+        "filename": "logd/LogCommand.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 160,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-10-09T22:29:40Z",
+      "side": 1,
+      "message": "d\u0027oh, sorry, i wasn\u0027t paying enough attention and just assumed this was the fallback to /proc.\n\ni promise i\u0027ll pay more attention when this change reappears in its new home :-)",
+      "parentUuid": "b445a3a6_00811266",
+      "range": {
+        "startLine": 160,
+        "startChar": 21,
+        "endLine": 160,
+        "endChar": 27
+      },
+      "revId": "7483bd1fcf71331c2e0d4bb5c6d8a04c5ca50fe7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
