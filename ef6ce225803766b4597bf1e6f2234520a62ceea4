@@ -39,6 +39,30 @@
       },
       "revId": "ef6ce225803766b4597bf1e6f2234520a62ceea4",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6cf40bbe_05f7325a",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 3
+      },
+      "lineNbr": 1048,
+      "author": {
+        "id": 1040443
+      },
+      "writtenOn": "2020-10-13T21:47:02Z",
+      "side": 1,
+      "message": "ah dang. Any idea on how to do that differently? Looks like i can\u0027t just exec sh as init.te (I guess for very good reasons after all).\nThe options I can think about here are:\n\n1. Creating a dedicated selinux domain along the lines of \"modprobe.te\" just for the sake of running this one command. seems overkill\n\n2. Creating another property which allows only the one way transition back to restrict\u003d2 and allow shell.te to set that (seems overkill as well)\n\n3. Remove this fallback completely, maybe the attempt itself is overkill.\n\nThoughts?",
+      "parentUuid": "52ac37b7_d987cffc",
+      "range": {
+        "startLine": 1048,
+        "startChar": 20,
+        "endLine": 1048,
+        "endChar": 29
+      },
+      "revId": "ef6ce225803766b4597bf1e6f2234520a62ceea4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
