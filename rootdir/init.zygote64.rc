@@ -12,4 +12,6 @@ service zygote /system/bin/app_process64 -Xzygote /system/bin --zygote --start-s
     onrestart restart media
     onrestart restart netd
     onrestart restart wificond
+    onrestart interface_stop android.hardware.wifi.hostapd@1.0::IHostapd/default
+    onrestart interface_stop android.hardware.wifi.supplicant@1.0::ISupplicant/default
     writepid /dev/cpuset/foreground/tasks
