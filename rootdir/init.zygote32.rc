@@ -12,4 +12,6 @@ service zygote /system/bin/app_process -Xzygote /system/bin --zygote --start-sys
     onrestart restart media
     onrestart restart netd
     onrestart restart wificond
+    onrestart stop hostapd
+    onrestart stop wpa_supplicant
     writepid /dev/cpuset/foreground/tasks
