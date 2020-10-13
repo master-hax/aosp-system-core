@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "26704d7a_f8d595cc",
+        "filename": "adb/client/bugreport.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 240,
+      "author": {
+        "id": 1371409
+      },
+      "writtenOn": "2020-10-13T02:04:41Z",
+      "side": 1,
+      "message": "This will be a problem if bugz_version upgrades to \"1.3\".",
+      "range": {
+        "startLine": 240,
+        "startChar": 47,
+        "endLine": 240,
+        "endChar": 68
+      },
+      "revId": "73f28b6c6baaf416385389bee429806af121ca14",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
