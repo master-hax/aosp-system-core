@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "09fade04_92bc8265",
+        "filename": "adb/client/bugreport.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 233,
+      "author": {
+        "id": 1371409
+      },
+      "writtenOn": "2020-10-14T04:33:31Z",
+      "side": 1,
+      "message": "nit: why not using std::stof to convert the string to a float?",
+      "range": {
+        "startLine": 233,
+        "startChar": 9,
+        "endLine": 233,
+        "endChar": 15
+      },
+      "revId": "0feb15a8704861fe9d03c9f8d7a393dfdc434019",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4371c068_f2df7ed8",
+        "filename": "adb/client/bugreport.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 246,
+      "author": {
+        "id": 1371409
+      },
+      "writtenOn": "2020-10-14T04:33:31Z",
+      "side": 1,
+      "message": "nit: does",
+      "range": {
+        "startLine": 246,
+        "startChar": 60,
+        "endLine": 246,
+        "endChar": 62
+      },
+      "revId": "0feb15a8704861fe9d03c9f8d7a393dfdc434019",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
