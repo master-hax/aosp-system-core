@@ -15,5 +15,6 @@
 cc_fuzz {
     name: "trusty_gatekeeper_fuzzer",
     defaults: ["trusty_fuzzer_defaults"],
+    corpus: ["corpus/*"],
     srcs: ["fuzz.cpp"],
 }
