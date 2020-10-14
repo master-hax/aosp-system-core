@@ -21,9 +21,9 @@
 
 #include <android-base/macros.h>
 
-#include <utils/RefBase.h>
+#include <log/log.h>
 
-#include <utils/CallStack.h>
+#include <utils/RefBase.h>
 
 #include <utils/Mutex.h>
 
@@ -54,6 +54,17 @@
 // count has never been incremented. Normally we conspicuously crash in that
 // case.
 #define DEBUG_REFBASE_DESTRUCTION 1
+
+#if !defined(_WIN32)
+// CallStack is only supported on linux type platforms.
+#define CALLSTACK_ENABLED 1
+#else
+#define CALLSTACK_ENABLED 0
+#endif
+
+#if CALLSTACK_ENABLED
+#include <utils/CallStack.h>
+#endif
 
 // ---------------------------------------------------------------------------
 
@@ -196,7 +207,7 @@ public:
             while (refs) {
                 char inc = refs->ref >= 0 ? '+' : '-';
                 ALOGD("\t%c ID %p (ref %d):", inc, refs->id, refs->ref);
-#if DEBUG_REFS_CALLSTACK_ENABLED
+#if DEBUG_REFS_CALLSTACK_ENABLED && CALLSTACK_ENABLED
                 CallStack::logStack(LOG_TAG, refs->stack.get());
 #endif
                 refs = refs->next;
@@ -210,7 +221,7 @@ public:
             while (refs) {
                 char inc = refs->ref >= 0 ? '+' : '-';
                 ALOGD("\t%c ID %p (ref %d):", inc, refs->id, refs->ref);
-#if DEBUG_REFS_CALLSTACK_ENABLED
+#if DEBUG_REFS_CALLSTACK_ENABLED && CALLSTACK_ENABLED
                 CallStack::logStack(LOG_TAG, refs->stack.get());
 #endif
                 refs = refs->next;
@@ -218,7 +229,9 @@ public:
         }
         if (dumpStack) {
             ALOGE("above errors at:");
+#if CALLSTACK_ENABLED
             CallStack::logStack(LOG_TAG);
+#endif
         }
     }
 
@@ -306,7 +319,7 @@ private:
     {
         ref_entry* next;
         const void* id;
-#if DEBUG_REFS_CALLSTACK_ENABLED
+#if DEBUG_REFS_CALLSTACK_ENABLED && CALLSTACK_ENABLED
         CallStack::CallStackUPtr stack;
 #endif
         int32_t ref;
@@ -323,7 +336,7 @@ private:
             // decrement the reference count.
             ref->ref = mRef;
             ref->id = id;
-#if DEBUG_REFS_CALLSTACK_ENABLED
+#if DEBUG_REFS_CALLSTACK_ENABLED && CALLSTACK_ENABLED
             ref->stack = CallStack::getCurrent(2);
 #endif
             ref->next = *refs;
@@ -359,7 +372,9 @@ private:
                 ref = ref->next;
             }
 
+#if CALLSTACK_ENABLED
             CallStack::logStack(LOG_TAG);
+#endif
         }
     }
 
@@ -385,7 +400,7 @@ private:
             snprintf(buf, sizeof(buf), "\t%c ID %p (ref %d):\n",
                      inc, refs->id, refs->ref);
             out->append(buf);
-#if DEBUG_REFS_CALLSTACK_ENABLED
+#if DEBUG_REFS_CALLSTACK_ENABLED && CALLSTACK_ENABLED
             out->append(CallStack::stackToString("\t\t", refs->stack.get()));
 #else
             out->append("\t\t(call stacks disabled)");
@@ -719,7 +734,10 @@ RefBase::~RefBase()
         // Treating this as fatal is prone to causing boot loops. For debugging, it's
         // better to treat as non-fatal.
         ALOGD("RefBase: Explicit destruction, weak count = %d (in %p)", mRefs->mWeak.load(), this);
+
+#if CALLSTACK_ENABLED
         CallStack::logStack(LOG_TAG);
+#endif
 #else
         LOG_ALWAYS_FATAL("RefBase: Explicit destruction, weak count = %d", mRefs->mWeak.load());
 #endif
