@@ -599,16 +599,31 @@ TYPED_TEST_P(DwarfOpTest, op_over) {
 
 TYPED_TEST_P(DwarfOpTest, op_pick) {
   std::vector<uint8_t> opcode_buffer = {
+      // Choose a zero index with an empty stack.
+      0x15,
+      0x0,
       // Push a few values.
-      0x08, 0x1a, 0x08, 0xed, 0x08, 0x34,
+      0x08,
+      0x1a,
+      0x08,
+      0xed,
+      0x08,
+      0x34,
       // Copy the value at offset 2.
-      0x15, 0x01,
+      0x15,
+      0x01,
       // Copy the last value in the stack.
-      0x15, 0x03,
+      0x15,
+      0x03,
       // Choose an invalid index.
-      0x15, 0x10,
+      0x15,
+      0x10,
   };
   this->op_memory_.SetMemory(0, opcode_buffer);
+
+  ASSERT_FALSE(this->op_->Decode());
+  ASSERT_EQ(0x15, this->op_->cur_op());
+  ASSERT_EQ(DWARF_ERROR_STACK_INDEX_NOT_VALID, this->op_->LastErrorCode());
 
   ASSERT_TRUE(this->op_->Decode());
   ASSERT_EQ(1U, this->op_->StackSize());

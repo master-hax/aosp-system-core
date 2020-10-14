@@ -1671,7 +1671,7 @@ bool DwarfOp<AddressType>::op_over() {
 template <typename AddressType>
 bool DwarfOp<AddressType>::op_pick() {
   AddressType index = OperandAt(0);
-  if (index > StackSize()) {
+  if (index >= StackSize()) {
     last_error_.code = DWARF_ERROR_STACK_INDEX_NOT_VALID;
     return false;
   }
