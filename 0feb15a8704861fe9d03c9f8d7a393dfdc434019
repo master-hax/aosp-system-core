@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "fc71d324_6d0cd686",
+        "filename": "adb/client/bugreport.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 233,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-10-15T22:06:04Z",
+      "side": 1,
+      "message": "the std::sto* functions are usually a bad idea in Android because most code has exceptions disabled and they\u0027ll just terminate your program.\n\n(of course, that might be an improvement here, where any failure to parse is just being ignored :-/ )\n\nyou might want to look at libbase\u0027s various Parse* functions for convenient functions that return boolean success/failure.\n\nbut in this particular case, i think sscanf is a good idea --- you avoid any floating point weirdness with representation and equality, for example. and if you really want a more convenient value to compare against, you might still want an integer (such as `maj*100 + min`) to avoid that kind of thing.",
+      "parentUuid": "09fade04_92bc8265",
+      "range": {
+        "startLine": 233,
+        "startChar": 9,
+        "endLine": 233,
+        "endChar": 15
+      },
+      "revId": "0feb15a8704861fe9d03c9f8d7a393dfdc434019",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "4371c068_f2df7ed8",
         "filename": "adb/client/bugreport.cpp",
         "patchSetId": 6
