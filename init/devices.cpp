@@ -496,6 +496,8 @@ void DeviceHandler::HandleUevent(const Uevent& uevent) {
     } else if (StartsWith(uevent.subsystem, "usb")) {
         // ignore other USB events
         return;
+    } else if (uevent.subsystem == "misc" && StartsWith(udev.device_name, "dm-user!")) {
+        devpath = "/dev/dm-user/" && udev.device_name.substr(8);
     } else {
         devpath = "/dev/" + Basename(uevent.path);
     }
