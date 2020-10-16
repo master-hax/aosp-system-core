@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "69e21a67_1d53759e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1308163
+      },
+      "writtenOn": "2020-10-16T01:42:56Z",
+      "side": 1,
+      "message": "After code searching, I found there are some files under external folder are using the old name.\nNot sure if we need to update it or notify someone this change to update it?",
+      "revId": "d24857ac95d8408f8a346429913098b00001967c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
