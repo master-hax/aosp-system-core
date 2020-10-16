@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b9621645_03b61aa8",
+        "filename": "fs_mgr/libsnapshot/cow_snapuserd_test.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-10-16T00:20:00Z",
+      "side": 1,
+      "message": "Does /data/gsi/ota/test work? (You can mkdir it on startup if it doesn\u0027t exist). I think we have sepolicy in place and our other tests work within there.",
+      "revId": "a67b83978139a9f0535f79be13de9ec40bd59d18",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "00d391b9_1140cc97",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/snapuserd.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-10-16T00:20:00Z",
+      "side": 1,
+      "message": "Do we need to differentiate the path from device, or can we pass the path in directly?",
+      "revId": "a67b83978139a9f0535f79be13de9ec40bd59d18",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
