@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d7c162dd_58338fe4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1088085
+      },
+      "writtenOn": "2020-10-16T02:35:39Z",
+      "side": 1,
+      "message": "okay, Colin points out that I cannot revert this one, because the existing per-partition BUILD_FINGERPRINT is computed with $(PLATFORM_VERSION). https://source.corp.google.com/android/build/make/core/sysprop.mk;l\u003d150\n\nI feel $(PLATFORM_VERSION) would better represent the device\u0027s fingerprint in this sense. So I will abandon this revert, and add conditional logics in the ota script:\nFor pre-S devices, use ro.build.version.release\nFor S+ devices, use ro.build.version.release_or_codename\n\n\njiyong, WDYT?",
+      "revId": "6a3969330471e639a44f16118b7d9433038080c2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
