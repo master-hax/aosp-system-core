@@ -20,6 +20,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "1a106396_e16a7211",
+        "filename": "fs_mgr/libsnapshot/cow_snapuserd_test.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2020-10-16T00:24:43Z",
+      "side": 1,
+      "message": "I did try /data/gsi/ota/test; it still continues to fail with selinux denial.",
+      "parentUuid": "b9621645_03b61aa8",
+      "revId": "a67b83978139a9f0535f79be13de9ec40bd59d18",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "00d391b9_1140cc97",
         "filename": "fs_mgr/libsnapshot/include/libsnapshot/snapuserd.h",
         "patchSetId": 3
@@ -31,6 +49,24 @@
       "writtenOn": "2020-10-16T00:20:00Z",
       "side": 1,
       "message": "Do we need to differentiate the path from device, or can we pass the path in directly?",
+      "revId": "a67b83978139a9f0535f79be13de9ec40bd59d18",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e650adc0_f95acd88",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/snapuserd.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2020-10-16T00:24:43Z",
+      "side": 1,
+      "message": "yeah.. that can be done.. caller has to call the complete path. I can fix this as it will be in sync with other two arguments which takes the complete path.",
+      "parentUuid": "00d391b9_1140cc97",
       "revId": "a67b83978139a9f0535f79be13de9ec40bd59d18",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
