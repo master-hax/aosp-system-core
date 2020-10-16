@@ -54,6 +54,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "af691779_42eb809c",
+        "filename": "fs_mgr/libsnapshot/cow_snapuserd_test.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2020-10-16T02:38:35Z",
+      "side": 1,
+      "message": "As discussed offline, temp files are created current working directory",
+      "parentUuid": "5abf2413_387478d9",
+      "revId": "a67b83978139a9f0535f79be13de9ec40bd59d18",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "00d391b9_1140cc97",
@@ -85,6 +103,24 @@
       "side": 1,
       "message": "yeah.. that can be done.. caller has to call the complete path. I can fix this as it will be in sync with other two arguments which takes the complete path.",
       "parentUuid": "00d391b9_1140cc97",
+      "revId": "a67b83978139a9f0535f79be13de9ec40bd59d18",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4f1fbf76_f73910b6",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/snapuserd.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2020-10-16T02:38:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e650adc0_f95acd88",
       "revId": "a67b83978139a9f0535f79be13de9ec40bd59d18",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
