@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e007ca57_482d0996",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1018026
+      },
+      "writtenOn": "2020-10-17T00:31:31Z",
+      "side": 1,
+      "message": "self+1 as an owner, but also getting a CR (+2) from some one else.",
+      "revId": "2ac7ea47f6b681751872360a70c3d042d91266c2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
