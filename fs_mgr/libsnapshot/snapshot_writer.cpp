@@ -82,6 +82,11 @@ bool OnlineKernelSnapshotWriter::EmitCopy(uint64_t new_block, uint64_t old_block
     return EmitRawBlocks(new_block, buffer.data(), buffer.size());
 }
 
+bool OnlineKernelSnapshotWriter::EmitLabel(uint64_t) {
+    // Not implemented
+    return true;
+}
+
 std::unique_ptr<FileDescriptor> OnlineKernelSnapshotWriter::OpenReader() {
     LOG(ERROR) << "OnlineKernelSnapshotWriter::OpenReader not yet implemented";
     return nullptr;
