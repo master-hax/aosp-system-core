@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2cbe2da3_12b8b98c",
+        "filename": "fs_mgr/libsnapshot/cow_api_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 473,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2020-10-19T22:13:19Z",
+      "side": 1,
+      "message": "An additional test:\n\n1: Writes the header and crashes\n2: Write header, label, operation, crash (no finalize)",
+      "revId": "977792e881ff7b39e66e49a01ce5cb2194571a1b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6e3f6263_16cf03c7",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_reader.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2020-10-19T22:13:19Z",
+      "side": 1,
+      "message": "A comment here or in the cow_footer_operation structure on what exactly the label corresponds to with respect to integrating with Update engine is required.",
+      "revId": "977792e881ff7b39e66e49a01ce5cb2194571a1b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
