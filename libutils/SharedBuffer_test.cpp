@@ -28,12 +28,10 @@ TEST(SharedBufferTest, TestAlloc) {
   EXPECT_DEATH(android::SharedBuffer::alloc(SIZE_MAX - sizeof(android::SharedBuffer)), "");
 
   // Make sure we don't die here.
-  // Check that null is returned, as we are asking for the whole address space.
-  android::SharedBuffer* buf =
-      android::SharedBuffer::alloc(SIZE_MAX - sizeof(android::SharedBuffer) - 1);
-  ASSERT_EQ(nullptr, buf);
+  // Check that null is returned, as we are making an unreasonable request.
+  ASSERT_EQ(nullptr, android::SharedBuffer::alloc(SIZE_MAX / 2));
 
-  buf = android::SharedBuffer::alloc(0);
+  android::SharedBuffer* buf = android::SharedBuffer::alloc(0);
   ASSERT_NE(nullptr, buf);
   ASSERT_EQ(0U, buf->size());
   buf->release();
@@ -47,9 +45,8 @@ TEST(SharedBufferTest, TestEditResize) {
 
   buf = android::SharedBuffer::alloc(10);
   // Make sure we don't die here.
-  // Check that null is returned, as we are asking for the whole address space.
-  buf = buf->editResize(SIZE_MAX - sizeof(android::SharedBuffer) - 1);
-  ASSERT_EQ(nullptr, buf);
+  // Check that null is returned, as we are making an unreasonable request.
+  ASSERT_EQ(nullptr, android::SharedBuffer::alloc(SIZE_MAX / 2));
 
   buf = android::SharedBuffer::alloc(10);
   buf = buf->editResize(0);
