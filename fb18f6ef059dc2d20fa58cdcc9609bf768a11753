@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2f43934e_410aac88",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1139038
+      },
+      "writtenOn": "2020-10-19T11:30:59Z",
+      "side": 1,
+      "message": "The included regression test would previously pass as the first dependency matches the dependant so dependencies[0] would still match the module path, just not in the intended way. It might be too specific to the implementation so let me know if you\u0027d like it changed.",
+      "revId": "fb18f6ef059dc2d20fa58cdcc9609bf768a11753",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
