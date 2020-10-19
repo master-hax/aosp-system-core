@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ec31ff62_e0a58735",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1005967
+      },
+      "writtenOn": "2020-10-19T20:33:50Z",
+      "side": 1,
+      "message": "Does not help,\n\n\u003d\u003d21337\u003d\u003dERROR: HWAddressSanitizer: requested allocation size 0x8000000000000017 exceeds maximum supported size of 0x80000000\n\nPerhaps EXPECT_DEATH(assert(alloc(a_lot) !\u003d nullptr)) would work?\n",
+      "revId": "d3ebe494669d6351a28b5a984848bbc92aab2e0f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
