@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "27114cb8_b3fd2ffc",
+        "filename": "fs_mgr/libsnapshot/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 144,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2020-10-19T21:54:52Z",
+      "side": 1,
+      "message": "This should probably be in the subsequent patch. I don\u0027t see cow_format.cpp file in this patch.",
+      "revId": "812b83625dc0310fe168d3a356ef720c87d284e5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "69661cd5_b760c9d3",
+        "filename": "fs_mgr/libsnapshot/cow_reader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 158,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2020-10-19T21:54:52Z",
+      "side": 1,
+      "message": "I believe this is where we are skipping the last operation if the footer is missing or failed to write. A comment here would be helpful.",
+      "revId": "812b83625dc0310fe168d3a356ef720c87d284e5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "932a5bdd_ce8ae19e",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2020-10-19T21:54:52Z",
+      "side": 1,
+      "message": "nit: comment seems to be not in sync with the code below. seems like it was copied from struct CowOperation",
+      "revId": "812b83625dc0310fe168d3a356ef720c87d284e5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "56d341a4_40f49da9",
+        "filename": "fs_mgr/libsnapshot/snapuserd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 382,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2020-10-19T21:54:52Z",
+      "side": 1,
+      "message": "should for kCowLabelOp as well..",
+      "revId": "812b83625dc0310fe168d3a356ef720c87d284e5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
