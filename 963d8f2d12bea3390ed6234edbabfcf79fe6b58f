@@ -16,6 +16,23 @@
       "message": "Not sure if this is the best way to do it, but I tested this version and it appears to work.",
       "revId": "963d8f2d12bea3390ed6234edbabfcf79fe6b58f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c095e16e_207b8b5b",
+        "filename": "init/devices.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 499,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2020-10-20T03:00:39Z",
+      "side": 1,
+      "message": "We also need to remove dm-user folder once all misc devices are removed",
+      "revId": "963d8f2d12bea3390ed6234edbabfcf79fe6b58f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
