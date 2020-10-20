@@ -72,6 +72,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "b942135a_2bc62109",
+        "filename": "adb/client/bugreport.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 233,
+      "author": {
+        "id": 1371409
+      },
+      "writtenOn": "2020-10-20T07:31:40Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "df8c726d_0250731f",
+      "range": {
+        "startLine": 233,
+        "startChar": 9,
+        "endLine": 233,
+        "endChar": 15
+      },
+      "revId": "0feb15a8704861fe9d03c9f8d7a393dfdc434019",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "4371c068_f2df7ed8",
@@ -109,6 +133,30 @@
       "side": 1,
       "message": "Done",
       "parentUuid": "4371c068_f2df7ed8",
+      "range": {
+        "startLine": 246,
+        "startChar": 60,
+        "endLine": 246,
+        "endChar": 62
+      },
+      "revId": "0feb15a8704861fe9d03c9f8d7a393dfdc434019",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f057e7ff_6c02ed34",
+        "filename": "adb/client/bugreport.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 246,
+      "author": {
+        "id": 1371409
+      },
+      "writtenOn": "2020-10-20T07:31:40Z",
+      "side": 1,
+      "message": "You seems missing this one",
+      "parentUuid": "9d2485b0_e580df38",
       "range": {
         "startLine": 246,
         "startChar": 60,
