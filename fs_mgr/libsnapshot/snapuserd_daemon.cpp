@@ -20,16 +20,12 @@
 namespace android {
 namespace snapshot {
 
-int Daemon::StartServer(std::string socketname) {
-    int ret;
-
-    ret = server_.Start(socketname);
-    if (ret < 0) {
+bool Daemon::StartServer(const std::string& socketname) {
+    if (!server_.Start(socketname)) {
         LOG(ERROR) << "Snapuserd daemon failed to start...";
         exit(EXIT_FAILURE);
     }
-
-    return ret;
+    return true;
 }
 
 void Daemon::MaskAllSignalsExceptIntAndTerm() {
@@ -51,19 +47,7 @@ void Daemon::MaskAllSignals() {
     }
 }
 
-Daemon::Daemon() {
-    is_running_ = true;
-}
-
-bool Daemon::IsRunning() {
-    return is_running_;
-}
-
 void Daemon::Run() {
-    poll_fd_ = std::make_unique<struct pollfd>();
-    poll_fd_->fd = server_.GetSocketFd().get();
-    poll_fd_->events = POLLIN;
-
     sigfillset(&signal_mask_);
     sigdelset(&signal_mask_, SIGINT);
     sigdelset(&signal_mask_, SIGTERM);
@@ -77,25 +61,13 @@ void Daemon::Run() {
 
     LOG(DEBUG) << "Snapuserd-server: ready to accept connections";
 
-    while (IsRunning()) {
-        int ret = ppoll(poll_fd_.get(), 1, nullptr, &signal_mask_);
-        MaskAllSignalsExceptIntAndTerm();
+    MaskAllSignalsExceptIntAndTerm();
 
-        if (ret == -1) {
-            PLOG(ERROR) << "Snapuserd:ppoll error";
-            break;
-        }
+    server_.Run();
+}
 
-        if (poll_fd_->revents == POLLIN) {
-            if (server_.AcceptClient() == static_cast<int>(DaemonOperations::STOP)) {
-                Daemon::Instance().is_running_ = false;
-            }
-        }
-
-        // Mask all signals to ensure that is_running_ can't become false between
-        // checking it in the while condition and calling into ppoll()
-        MaskAllSignals();
-    }
+void Daemon::Interrupt() {
+    server_.Interrupt();
 }
 
 void Daemon::SignalHandler(int signal) {
@@ -103,7 +75,7 @@ void Daemon::SignalHandler(int signal) {
     switch (signal) {
         case SIGINT:
         case SIGTERM: {
-            Daemon::Instance().is_running_ = false;
+            Daemon::Instance().Interrupt();
             break;
         }
         case SIGPIPE: {
