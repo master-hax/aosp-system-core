@@ -16,6 +16,23 @@
       "message": "I think this will break adt3 and other targets with a dedicated recovery partition, but I am unsure. This may be similar to b/170411692. I\u0027ll use forrest to make sure it works on devices with a dedicated recovery partition.",
       "revId": "42c55f5ce914e5c7b6789c3d752565e197beebd0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "908f1106_a97f223f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2020-10-20T21:58:21Z",
+      "side": 1,
+      "message": "I mean, aosp_hawk like b/170364317",
+      "revId": "42c55f5ce914e5c7b6789c3d752565e197beebd0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
