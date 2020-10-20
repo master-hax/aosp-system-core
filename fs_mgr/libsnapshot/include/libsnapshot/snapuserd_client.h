@@ -34,9 +34,6 @@ static constexpr char kSnapuserdSocket[] = "snapuserd";
 // Ensure that the second-stage daemon for snapuserd is running.
 bool EnsureSnapuserdStarted();
 
-static constexpr char kSnapuserdSocketFirstStage[] = "snapuserd_first_stage";
-static constexpr char kSnapuserdSocket[] = "snapuserd";
-
 class SnapuserdClient {
   private:
     android::base::unique_fd sockfd_;
