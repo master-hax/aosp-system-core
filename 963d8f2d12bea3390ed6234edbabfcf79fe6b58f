@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2999df61_45f8529a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-10-20T02:55:42Z",
+      "side": 1,
+      "message": "Not sure if this is the best way to do it, but I tested this version and it appears to work.",
+      "revId": "963d8f2d12bea3390ed6234edbabfcf79fe6b58f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
