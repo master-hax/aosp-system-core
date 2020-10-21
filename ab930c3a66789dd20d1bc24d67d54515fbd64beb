@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "18f641dd_ae0d291c",
+        "filename": "rootdir/etc/linker.config.json",
+        "patchSetId": 1
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-10-21T22:28:58Z",
+      "side": 1,
+      "message": "this list seems really random. can we add some comments? the NDK libraries are obvious, but there\u0027s a lot of surprising (to me) stuff in this list that feels like it could use some explanatory text?",
+      "revId": "ab930c3a66789dd20d1bc24d67d54515fbd64beb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
