@@ -18,6 +18,57 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "5bf80e07_1e5dd08a",
+        "filename": "fs_mgr/libsnapshot/cow_reader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-10-21T21:59:31Z",
+      "side": 1,
+      "message": "nit: move below \u003climits\u003e (keep C++ STL includes bunched together)",
+      "revId": "812b83625dc0310fe168d3a356ef720c87d284e5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5c4a4602_7ca7e152",
+        "filename": "fs_mgr/libsnapshot/cow_reader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 111,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-10-21T21:59:31Z",
+      "side": 1,
+      "message": "uber-nit but might consider std::optional\u003cCowFooter\u003e here",
+      "revId": "812b83625dc0310fe168d3a356ef720c87d284e5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fa406156_22a7ccd6",
+        "filename": "fs_mgr/libsnapshot/cow_reader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 130,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-10-21T21:59:31Z",
+      "side": 1,
+      "message": "IIRC there was a possibility you were going to switch to shared_ptr here - if that didn\u0027t (or doesn\u0027t) pan out, you can just do \"std::vector\u003cCowOperation\u003e\u0026\u0026\" and drop the unique_ptr.",
+      "revId": "812b83625dc0310fe168d3a356ef720c87d284e5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "69661cd5_b760c9d3",
@@ -37,6 +88,40 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "47b3bd74_2056ae45",
+        "filename": "fs_mgr/libsnapshot/cow_reader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 168,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-10-21T21:59:31Z",
+      "side": 1,
+      "message": "auto\u0026 current_op to avoid a copy",
+      "revId": "812b83625dc0310fe168d3a356ef720c87d284e5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8972b043_18a7f9af",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-10-21T21:59:31Z",
+      "side": 1,
+      "message": "Can this inherit from CowOperation?",
+      "revId": "812b83625dc0310fe168d3a356ef720c87d284e5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "932a5bdd_ce8ae19e",
         "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
         "patchSetId": 1
@@ -48,6 +133,23 @@
       "writtenOn": "2020-10-19T21:54:52Z",
       "side": 1,
       "message": "nit: comment seems to be not in sync with the code below. seems like it was copied from struct CowOperation",
+      "revId": "812b83625dc0310fe168d3a356ef720c87d284e5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a7a9a16e_69ec7af2",
+        "filename": "fs_mgr/libsnapshot/snapshot_writer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-10-21T21:59:31Z",
+      "side": 1,
+      "message": "Or more accurately, \"not needed\" :)",
       "revId": "812b83625dc0310fe168d3a356ef720c87d284e5",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
