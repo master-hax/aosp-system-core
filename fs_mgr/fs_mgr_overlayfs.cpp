@@ -171,6 +171,10 @@ constexpr char kScratchImageMetadata[] = "/metadata/gsi/remount/lp_metadata";
 
 // Note: this is meant only for recovery/first-stage init.
 bool ScratchIsOnData() {
+    // The scratch partition of DSU is managed by gsid.
+    if (android::gsi::IsGsiRunning()) {
+        return false;
+    }
     return fs_mgr_access(kScratchImageMetadata);
 }
 
@@ -467,6 +471,11 @@ bool fs_mgr_overlayfs_teardown_scratch(const std::string& overlay, bool* change)
     auto save_errno = errno;
     if (fs_mgr_overlayfs_already_mounted(kScratchMountPoint, false)) {
         fs_mgr_overlayfs_umount_scratch();
+    }
+
+    // Do nothing if within a DSU because the scratch partition is managed by gsid.
+    if (android::gsi::IsGsiRunning()) {
+        return true;
     }
 
     const auto partition_name = android::base::Basename(kScratchMountPoint);
@@ -881,12 +890,29 @@ static std::string GetPhysicalScratchDevice() {
     return "";
 }
 
+// Note: The scratch partition of DSU is managed by gsid, and should be initialized during
+// first-stage-init. Just check if the DM device for DSU scratch partition is created or not.
+static std::string GetDsuScratchDevice() {
+    auto& dm = DeviceMapper::Instance();
+    std::string device;
+    if (dm.GetState(android::gsi::kDsuScratch) != DmDeviceState::INVALID &&
+        dm.GetDmDevicePathByName(android::gsi::kDsuScratch, &device)) {
+        return device;
+    }
+    return "";
+}
+
 // This returns the scratch device that was detected during early boot (first-
 // stage init). If the device was created later, for example during setup for
 // the adb remount command, it can return an empty string since it does not
 // query ImageManager. (Note that ImageManager in first-stage init will always
 // use device-mapper, since /data is not available to use loop devices.)
 static std::string GetBootScratchDevice() {
+    // The scratch partition of DSU is managed by gsid.
+    if (android::gsi::IsGsiRunning()) {
+        return GetDsuScratchDevice();
+    }
+
     auto& dm = DeviceMapper::Instance();
 
     // If there is a scratch partition allocated in /data or on super, we
@@ -1108,6 +1134,14 @@ static bool CanUseSuperPartition(const Fstab& fstab, bool* is_virtual_ab) {
 
 bool fs_mgr_overlayfs_create_scratch(const Fstab& fstab, std::string* scratch_device,
                                      bool* partition_exists, bool* change) {
+    // The scratch partition of DSU is managed by gsid.
+    if (android::gsi::IsGsiRunning()) {
+        *scratch_device = GetDsuScratchDevice();
+        *partition_exists = !scratch_device->empty();
+        *change = false;
+        return *partition_exists;
+    }
+
     // Try a physical partition first.
     *scratch_device = GetPhysicalScratchDevice();
     if (!scratch_device->empty() && fs_mgr_rw_access(*scratch_device)) {
@@ -1166,12 +1200,8 @@ bool fs_mgr_overlayfs_setup_scratch(const Fstab& fstab, bool* change) {
 bool fs_mgr_overlayfs_invalid() {
     if (fs_mgr_overlayfs_valid() == OverlayfsValidResult::kNotSupported) return true;
 
-    // in recovery, fastbootd, or gsi mode, not allowed!
-    if (fs_mgr_access("/system/bin/recovery")) return true;
-    auto save_errno = errno;
-    auto ret = android::gsi::IsGsiRunning();
-    errno = save_errno;
-    return ret;
+    // in recovery or fastbootd, not allowed!
+    return fs_mgr_access("/system/bin/recovery");
 }
 
 }  // namespace
