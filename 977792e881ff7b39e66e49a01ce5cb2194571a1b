@@ -20,6 +20,23 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "e83d3652_217b2422",
+        "filename": "fs_mgr/libsnapshot/cow_format.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-10-21T22:02:10Z",
+      "side": 1,
+      "message": "This is a great idea, AFAIK there\u0027s no way to dump the contents of a COW right now. Maybe we should drop the #ifdef, and return an std::stringstream or something? Then we can expose it in cow_format.h for anyone to use.",
+      "revId": "977792e881ff7b39e66e49a01ce5cb2194571a1b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "6e3f6263_16cf03c7",
         "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_reader.h",
         "patchSetId": 1
