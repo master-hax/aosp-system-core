@@ -33,6 +33,24 @@
       "message": "A comment here or in the cow_footer_operation structure on what exactly the label corresponds to with respect to integrating with Update engine is required.",
       "revId": "977792e881ff7b39e66e49a01ce5cb2194571a1b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7bc9552a_534eb1c0",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_reader.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 1045980
+      },
+      "writtenOn": "2020-10-21T03:13:00Z",
+      "side": 1,
+      "message": "The label you put in is the same as the label you get out. The meaning is whatever update engine wants it to be, though I envisioned it being related to the ota operation. It\u0027s just serving as a convenient place to restart writing at.",
+      "parentUuid": "6e3f6263_16cf03c7",
+      "revId": "977792e881ff7b39e66e49a01ce5cb2194571a1b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
