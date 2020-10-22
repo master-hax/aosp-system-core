@@ -16,6 +16,23 @@
       "message": "Note: I put dm_users_ under a lock, not strictly necessary for this CL, but we\u0027ll need it later. If a thread exists of its own accord, it should remove its corresponding entry from the table.",
       "revId": "bf42f4da8619227f0f16043f0d73e010c2b82e07",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8959b9de_f1c9ddf3",
+        "filename": "fs_mgr/libsnapshot/snapuserd_server.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2020-10-22T03:17:53Z",
+      "side": 1,
+      "message": "Shouldn\u0027t this be DaemonOperations::DELETE ?",
+      "revId": "bf42f4da8619227f0f16043f0d73e010c2b82e07",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
