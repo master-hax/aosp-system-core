@@ -215,4 +215,21 @@ TEST(String16Test, EmptyStringIsStatic) {
     EXPECT_TRUE(tmp.isStaticString());
 }
 
+TEST(String16Test, InvalidUtf8) {
+    char tmp[2];
+    tmp[0] = 0xff;
+    tmp[1] = 0;
+    String16 another(tmp);
+    EXPECT_TRUE(another.size() == 0);
+}
+
+TEST(String16Test, InvalidUtf16) {
+    char16_t tmp[3];
+    tmp[0] = 0x0d8f;
+    tmp[1] = 0xAF11;
+    tmp[2] = 0;
+    String16 another(tmp);
+    EXPECT_TRUE(another.size() == 0);
+}
+
 }  // namespace android
