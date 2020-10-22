@@ -16,6 +16,24 @@
       "message": "this list seems really random. can we add some comments? the NDK libraries are obvious, but there\u0027s a lot of surprising (to me) stuff in this list that feels like it could use some explanatory text?",
       "revId": "ab930c3a66789dd20d1bc24d67d54515fbd64beb",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6751aa8a_e00a3ab4",
+        "filename": "rootdir/etc/linker.config.json",
+        "patchSetId": 1
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1413436
+      },
+      "writtenOn": "2020-10-22T08:33:40Z",
+      "side": 1,
+      "message": "Those are libraries in system image which defined stub interface. As a follow-up task I will try to generate this list during build time. Anyway, I added a readme file to make some comments on the json configuration. Thanks.",
+      "parentUuid": "18f641dd_ae0d291c",
+      "revId": "ab930c3a66789dd20d1bc24d67d54515fbd64beb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
