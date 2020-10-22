@@ -51,3 +51,11 @@ phony {
         "toybox_vendor",
     ],
 }
+
+phony {
+    name: "shell_and_utilities_vendor_ramdisk",
+    required: [
+        "sh_vendor_ramdisk",
+        "toybox_vendor_ramdisk",
+    ],
+}
