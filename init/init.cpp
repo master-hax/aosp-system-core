@@ -547,7 +547,7 @@ static void SetUsbController() {
 
     dirent* dp;
     while ((dp = readdir(dir.get())) != nullptr) {
-        if (dp->d_name[0] == '.') continue;
+        if (dp->d_name[0] == '.' || !strcmp(dp->d_name, "dummy_udc.0")) continue;
 
         SetProperty("sys.usb.controller", dp->d_name);
         controller_set = true;
