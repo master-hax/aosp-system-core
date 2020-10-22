@@ -45,6 +45,7 @@ public:
     explicit                    String8(const char* o);
     explicit                    String8(const char* o, size_t numChars);
 
+    // If any codepoint is invalid, it will dropped from the conversion
     explicit                    String8(const String16& o);
     explicit                    String8(const char16_t* o);
     explicit                    String8(const char16_t* o, size_t numChars);
