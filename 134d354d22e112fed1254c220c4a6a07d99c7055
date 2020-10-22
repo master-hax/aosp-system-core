@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "03ad5299_6e95d0bb",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2020-10-22T16:13:36Z",
+      "side": 1,
+      "message": "(yeah, that\u0027s what TEST_MAPPING does --- they just sed s/// the comments out before use!)",
+      "parentUuid": "c24ff8e6_c13560ba",
+      "revId": "134d354d22e112fed1254c220c4a6a07d99c7055",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "c62d72db_e9979dd7",
