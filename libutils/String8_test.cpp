@@ -96,4 +96,12 @@ TEST_F(String8Test, CheckUtf32Conversion) {
     EXPECT_EQ(10U, string8.length());
 }
 
+TEST_F(String8Test, InvalidString) {
+    char16_t tmp[3];
+    tmp[0] = 0xd841;
+    tmp[1] = 0xd841;
+    tmp[2] = 0;
+    String8 invalid = String8(String16(tmp));
+    EXPECT_EQ(0U, invalid.length());
+}
 }
