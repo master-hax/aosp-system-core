@@ -21,6 +21,7 @@
 #include <functional>
 #include <future>
 #include <iostream>
+#include <mutex>
 #include <sstream>
 #include <string>
 #include <thread>
@@ -37,19 +38,24 @@ enum class DaemonOperations {
     START,
     QUERY,
     STOP,
+    DELETE,
     INVALID,
 };
 
 class DmUserHandler {
   private:
+    std::string control_device_;
     std::unique_ptr<std::thread> threadHandler_;
 
   public:
+    DmUserHandler(const std::string& control_device) : control_device_(control_device) {}
+
     void SetThreadHandler(std::function<void(void)> func) {
         threadHandler_ = std::make_unique<std::thread>(func);
     }
 
     std::unique_ptr<std::thread>& GetThreadHandler() { return threadHandler_; }
+    const std::string& control_device() const { return control_device_; }
 };
 
 class Stoppable {
@@ -78,8 +84,10 @@ class SnapuserdServer : public Stoppable {
   private:
     android::base::unique_fd sockfd_;
     bool terminating_;
-    std::vector<std::unique_ptr<DmUserHandler>> dm_users_;
     std::vector<struct pollfd> watched_fds_;
+
+    std::mutex lock_;
+    std::vector<std::unique_ptr<DmUserHandler>> dm_users_;
 
     void AddWatchedFd(android::base::borrowed_fd fd);
     void AcceptClient();
@@ -91,6 +99,7 @@ class SnapuserdServer : public Stoppable {
     void ThreadStart(std::string cow_device, std::string backing_device,
                      std::string control_device) override;
     void ShutdownThreads();
+    bool WaitForDelete(const std::string& control_device);
     DaemonOperations Resolveop(std::string& input);
     std::string GetDaemonStatus();
     void Parsemsg(std::string const& msg, const char delim, std::vector<std::string>& out);

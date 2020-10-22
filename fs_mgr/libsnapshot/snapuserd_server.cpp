@@ -36,6 +36,7 @@ DaemonOperations SnapuserdServer::Resolveop(std::string& input) {
     if (input == "start") return DaemonOperations::START;
     if (input == "stop") return DaemonOperations::STOP;
     if (input == "query") return DaemonOperations::QUERY;
+    if (input == "delete") return DaemonOperations::STOP;
 
     return DaemonOperations::INVALID;
 }
@@ -90,7 +91,14 @@ void SnapuserdServer::ThreadStart(std::string cow_device, std::string backing_de
 void SnapuserdServer::ShutdownThreads() {
     StopThreads();
 
-    for (auto& client : dm_users_) {
+    // Acquire the thread list within the lock.
+    std::vector<std::unique_ptr<DmUserHandler>> dm_users;
+    {
+        std::lock_guard<std::mutex> guard(lock_);
+        dm_users = std::move(dm_users_);
+    }
+
+    for (auto& client : dm_users) {
         auto& th = client->GetThreadHandler();
 
         if (th->joinable()) th->join();
@@ -135,10 +143,17 @@ bool SnapuserdServer::Receivemsg(android::base::borrowed_fd fd, const std::strin
             // start,<cow_device_path>,<source_device_path>,<control_device>
             //
             // Start the new thread which binds to dm-user misc device
-            auto handler = std::make_unique<DmUserHandler>();
+            if (out.size() != 4) {
+                LOG(ERROR) << "Malformed start message, " << out.size() << " parts";
+                return Sendmsg(fd, "fail");
+            }
+            auto handler = std::make_unique<DmUserHandler>(out[3]);
             handler->SetThreadHandler(
                     std::bind(&SnapuserdServer::ThreadStart, this, out[1], out[2], out[3]));
-            dm_users_.push_back(std::move(handler));
+            {
+                std::lock_guard<std::mutex> lock(lock_);
+                dm_users_.push_back(std::move(handler));
+            }
             return Sendmsg(fd, "success");
         }
         case DaemonOperations::STOP: {
@@ -161,6 +176,18 @@ bool SnapuserdServer::Receivemsg(android::base::borrowed_fd fd, const std::strin
             // Second stage daemon is marked as active and hence will
             // be ready to receive control message.
             return Sendmsg(fd, GetDaemonStatus());
+        }
+        case DaemonOperations::DELETE: {
+            // Message format:
+            // delete,<cow_device_path>
+            if (out.size() != 2) {
+                LOG(ERROR) << "Malformed delete message, " << out.size() << " parts";
+                return Sendmsg(fd, "fail");
+            }
+            if (!WaitForDelete(out[1])) {
+                return Sendmsg(fd, "fail");
+            }
+            return Sendmsg(fd, "success");
         }
         default: {
             LOG(ERROR) << "Received unknown message type from client";
@@ -258,6 +285,33 @@ void SnapuserdServer::Interrupt() {
     // Force close the socket so poll() fails.
     sockfd_ = {};
     SetTerminating();
+}
+
+bool SnapuserdServer::WaitForDelete(const std::string& control_device) {
+    std::unique_ptr<DmUserHandler> client;
+    {
+        std::lock_guard<std::mutex> lock(lock_);
+        auto iter = dm_users_.begin();
+        while (iter != dm_users_.end()) {
+            if ((*iter)->control_device() == control_device) {
+                client = std::move(*iter);
+                iter = dm_users_.erase(iter);
+                break;
+            }
+            iter++;
+        }
+    }
+
+    // Client already deleted.
+    if (!client) {
+        return true;
+    }
+
+    auto& th = client->GetThreadHandler();
+    if (th->joinable()) {
+        th->join();
+    }
+    return true;
 }
 
 }  // namespace snapshot
