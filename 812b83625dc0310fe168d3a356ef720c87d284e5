@@ -89,6 +89,24 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "4ff0031c_a9e38c34",
+        "filename": "fs_mgr/libsnapshot/cow_reader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 130,
+      "author": {
+        "id": 1045980
+      },
+      "writtenOn": "2020-10-22T09:46:09Z",
+      "side": 1,
+      "message": "I did that in the next one, when I moved the intial reading of ops up to support the last label function.",
+      "parentUuid": "fa406156_22a7ccd6",
+      "revId": "812b83625dc0310fe168d3a356ef720c87d284e5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "69661cd5_b760c9d3",
         "filename": "fs_mgr/libsnapshot/cow_reader.cpp",
         "patchSetId": 1
