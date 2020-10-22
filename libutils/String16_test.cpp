@@ -30,6 +30,7 @@ namespace android {
 }
 
 #define EXPECT_STR16EQ(a, b) EXPECT_TRUE(Char16_tStringEquals(a, b))
+#define EXPECT_STR16NE(a, b) EXPECT_FALSE(Char16_tStringEquals(a, b))
 
 TEST(String16Test, FromChar16_t) {
     String16 tmp(u"Verify me");
@@ -213,6 +214,66 @@ TEST(String16Test, StringMoveFromStaticString) {
 TEST(String16Test, EmptyStringIsStatic) {
     String16 tmp("");
     EXPECT_TRUE(tmp.isStaticString());
+}
+
+TEST(String16Test, InvalidUtf8Conversion) {
+    char tmp[2];
+    tmp[0] = 0xff;
+    tmp[1] = 0;
+    String16 another(tmp);
+    EXPECT_TRUE(another.size() == 0);
+}
+
+TEST(String16Test, InvalidPartialUtf8Conversion) {
+    char tmp[8];
+    tmp[0] = 'a';
+    tmp[1] = 'b';
+    tmp[2] = 0xff;
+    tmp[3] = 0xff;
+    tmp[4] = 'c';
+    tmp[5] = 'd';
+    tmp[6] = 'e';
+    tmp[7] = 0;
+    String16 another(tmp);
+    EXPECT_EQ(5U, another.size());
+    EXPECT_STR16NE(another, u"ab");
+    EXPECT_STR16NE(another, u"abcde");
+    EXPECT_STR16NE(another, u"abe");
+
+    const char16_t* testString = another.string();
+    EXPECT_EQ(testString[0], u'a');
+    EXPECT_EQ(testString[1], u'b');
+    EXPECT_EQ(testString[2], 0xdfbe);
+    EXPECT_EQ(testString[3], 0xdce4);
+    EXPECT_EQ(testString[4], u'e');
+}
+
+TEST(String16Test, InvalidPartialUtf8Conversion2) {
+    char tmp[8];
+    tmp[0] = 'a';
+    tmp[1] = 'b';
+    tmp[2] = 'c';
+    tmp[3] = 'd';
+    tmp[4] = 0xff;
+    tmp[5] = 'e';
+    tmp[6] = 'f';
+    tmp[7] = 0;
+    String16 another(tmp);
+    EXPECT_EQ(0U, another.size());
+}
+
+TEST(String16Test, ValidUtf8Conversion) {
+    char tmp[7];
+    tmp[0] = 'a';
+    tmp[1] = 'b';
+    tmp[2] = 'c';
+    tmp[3] = 'd';
+    tmp[4] = 'e';
+    tmp[5] = 'f';
+    tmp[6] = 0;
+    String16 another(tmp);
+    EXPECT_EQ(6U, another.size());
+    EXPECT_STR16EQ(another, u"abcdef");
 }
 
 }  // namespace android

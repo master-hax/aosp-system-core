@@ -46,6 +46,8 @@ public:
                                          size_t begin=0);
     explicit                    String16(const char16_t* o);
     explicit                    String16(const char16_t* o, size_t len);
+
+    // If the utf-8 string is malformed, the resulting String16 will be empty or also malformed
     explicit                    String16(const String8& o);
     explicit                    String16(const char* o);
     explicit                    String16(const char* o, size_t len);

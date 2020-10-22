@@ -96,4 +96,67 @@ TEST_F(String8Test, CheckUtf32Conversion) {
     EXPECT_EQ(10U, string8.length());
 }
 
+TEST_F(String8Test, InvalidUtf16Conversion) {
+    char16_t tmp[3];
+    tmp[0] = 0xd841;
+    tmp[1] = 0xd841;
+    tmp[2] = 0;
+    String8 invalid = String8(String16(tmp));
+    EXPECT_EQ(0U, invalid.length());
+}
+
+TEST_F(String8Test, InvalidPartialUtf16Conversion) {
+    char16_t tmp[7];
+    tmp[0] = u'a';
+    tmp[1] = u'b';
+    tmp[2] = 0xd841;
+    tmp[3] = 0xd841;
+    tmp[4] = u'c';
+    tmp[5] = u'd';
+    tmp[6] = 0;
+    String8 invalid = String8(String16(tmp));
+    EXPECT_EQ(4U, invalid.length());
+    EXPECT_STREQ(invalid, "abcd");
+}
+
+TEST_F(String8Test, InvalidPartialUtf16Conversion2) {
+    char16_t tmp[9];
+    tmp[0] = u'a';
+    tmp[1] = 0xd841;
+    tmp[2] = 0xd841;
+    tmp[3] = u'b';
+    tmp[4] = 0xd841;
+    tmp[5] = 0xd841;
+    tmp[6] = u'c';
+    tmp[7] = u'd';
+    tmp[8] = 0;
+    String8 invalid = String8(String16(tmp));
+    EXPECT_EQ(4U, invalid.length());
+    EXPECT_STREQ(invalid, "abcd");
+}
+
+TEST_F(String8Test, InvalidPartialUtf16Conversion3) {
+    char16_t tmp[4];
+    tmp[0] = u'a';
+    tmp[1] = 0xd841;
+    tmp[2] = 0xd841;
+    tmp[3] = 0;
+    String8 invalid = String8(String16(tmp));
+    EXPECT_EQ(1U, invalid.length());
+    EXPECT_STREQ(invalid, "a");
+}
+
+TEST_F(String8Test, ValidUtf16Conversion) {
+    char16_t tmp[7];
+    tmp[0] = u'a';
+    tmp[1] = u'b';
+    tmp[2] = u'c';
+    tmp[3] = u'd';
+    tmp[4] = u'e';
+    tmp[5] = u'f';
+    tmp[6] = 0;
+    String8 invalid = String8(String16(tmp));
+    EXPECT_EQ(6U, invalid.length());
+    EXPECT_STREQ(invalid, "abcdef");
+}
 }
