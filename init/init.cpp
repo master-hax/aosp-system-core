@@ -539,6 +539,8 @@ static Result<void> queue_property_triggers_action(const BuiltinArguments& args)
 // Set the UDC controller for the ConfigFS USB Gadgets.
 // Read the UDC controller in use from "/sys/class/udc".
 // In case of multiple UDC controllers select the first one.
+// Note readdir() doesn't guarantee an order, so it may not
+// be the first alphanumerically.
 static void SetUsbController() {
     static auto controller_set = false;
     if (controller_set) return;
@@ -547,7 +549,9 @@ static void SetUsbController() {
 
     dirent* dp;
     while ((dp = readdir(dir.get())) != nullptr) {
-        if (dp->d_name[0] == '.') continue;
+        // Also skip dummy_udc in case kernel supports CONFIG_USB_DUMMY_HCD
+        if (dp->d_name[0] == '.' || !strcmp(dp->d_name, "dummy_udc.0"))
+            continue;
 
         SetProperty("sys.usb.controller", dp->d_name);
         controller_set = true;
