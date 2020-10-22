@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "946e7d7e_9f911a5d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-10-22T03:08:08Z",
+      "side": 1,
+      "message": "Note: I put dm_users_ under a lock, not strictly necessary for this CL, but we\u0027ll need it later. If a thread exists of its own accord, it should remove its corresponding entry from the table.",
+      "revId": "bf42f4da8619227f0f16043f0d73e010c2b82e07",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
