@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "69c49399_041a60d8",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-10-23T17:09:01Z",
+      "side": 1,
+      "message": "I\u0027ll defer to badhri@/sspatil@ for +2.",
+      "revId": "34a4909a5d08c07976fc6d16ccb65f0769ee0f49",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
