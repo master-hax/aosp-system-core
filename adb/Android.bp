@@ -652,6 +652,7 @@ cc_binary {
 
     srcs: [
         "daemon/main.cpp",
+        "daemon/property_monitor.cpp",
     ],
 
     cflags: [
@@ -751,6 +752,8 @@ cc_test {
 
     recovery_available: false,
     srcs: libadb_test_srcs + [
+        "daemon/property_monitor.cpp",
+        "daemon/property_monitor_test.cpp",
         "daemon/services.cpp",
         "daemon/shell_service.cpp",
         "daemon/shell_service_test.cpp",
