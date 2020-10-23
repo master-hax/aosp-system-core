@@ -653,6 +653,7 @@ cc_binary {
     srcs: [
         "daemon/main.cpp",
         "daemon/property_monitor.cpp",
+        "daemon/watchdog.cpp",
     ],
 
     cflags: [
