@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "869a24a2_4ce007f1",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-10-23T05:11:47Z",
+      "side": 1,
+      "message": "Comment doesn\u0027t apply to footers? (Rename to compression_unused?)",
+      "revId": "2d2fd72502c3b64658085816e5dcfeaa29fdc8e3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5d5f7bc4_b4cbcfd0",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2020-10-23T05:11:47Z",
+      "side": 1,
+      "message": "Does this comment apply to footers?",
+      "revId": "2d2fd72502c3b64658085816e5dcfeaa29fdc8e3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
