@@ -36,6 +36,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "903515b3_adfd3608",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1413436
+      },
+      "writtenOn": "2020-10-23T03:45:45Z",
+      "side": 1,
+      "message": "I made an extra change to filter out lines starting with \"//\". aosp/1471502",
+      "parentUuid": "03ad5299_6e95d0bb",
+      "revId": "134d354d22e112fed1254c220c4a6a07d99c7055",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "c62d72db_e9979dd7",
@@ -49,6 +67,30 @@
       "writtenOn": "2020-10-22T10:34:57Z",
       "side": 1,
       "message": "nit: could you sort the libs?",
+      "range": {
+        "startLine": 2,
+        "startChar": 0,
+        "endLine": 52,
+        "endChar": 3
+      },
+      "revId": "134d354d22e112fed1254c220c4a6a07d99c7055",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "12341a3e_f231cb64",
+        "filename": "rootdir/etc/linker.config.json",
+        "patchSetId": 2
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 1413436
+      },
+      "writtenOn": "2020-10-23T03:45:45Z",
+      "side": 1,
+      "message": "provideLibs(stub libraries) are sorted now. However, I left requireLibs as it is, because the list is ordered based on the group.",
+      "parentUuid": "c62d72db_e9979dd7",
       "range": {
         "startLine": 2,
         "startChar": 0,
