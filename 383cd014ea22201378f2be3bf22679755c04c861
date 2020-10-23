@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d28abbbc_ceed4d2c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2020-10-23T03:34:48Z",
+      "side": 1,
+      "message": "Should this go into android::base? I\u0027d be a bit surprised if adbd is the only one that wants to wait on multiple properties at the same time, but I can\u0027t think of a good way to grep for this...",
+      "revId": "383cd014ea22201378f2be3bf22679755c04c861",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
