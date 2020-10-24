@@ -67,7 +67,7 @@ class OfflineSnapshotTest : public ::testing::Test {
         ASSERT_TRUE(writer->AddCopy(3, 0));
         ASSERT_TRUE(writer->AddRawBlocks(5, new_block.data(), new_block.size()));
         ASSERT_TRUE(writer->AddZeroBlocks(7, 2));
-        ASSERT_TRUE(writer->Flush());
+        ASSERT_TRUE(writer->Finalize());
     }
 
     void TestBlockReads(ISnapshotWriter* writer) {
@@ -157,6 +157,7 @@ TEST_F(OfflineSnapshotTest, CompressedSnapshot) {
     auto writer = std::make_unique<CompressedSnapshotWriter>(options);
     writer->SetSourceDevice(base_->path);
     ASSERT_TRUE(writer->SetCowDevice(std::move(cow_fd)));
+    ASSERT_TRUE(writer->Initialize());
     ASSERT_NO_FATAL_FAILURE(WriteCow(writer.get()));
     ASSERT_NO_FATAL_FAILURE(TestReads(writer.get()));
 }
