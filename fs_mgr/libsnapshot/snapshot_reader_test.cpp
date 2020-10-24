@@ -67,7 +67,7 @@ class OfflineSnapshotTest : public ::testing::Test {
         ASSERT_TRUE(writer->AddCopy(3, 0));
         ASSERT_TRUE(writer->AddRawBlocks(5, new_block.data(), new_block.size()));
         ASSERT_TRUE(writer->AddZeroBlocks(7, 2));
-        ASSERT_TRUE(writer->Flush());
+        ASSERT_TRUE(writer->Finalize());
     }
 
     void TestBlockReads(ISnapshotWriter* writer) {
