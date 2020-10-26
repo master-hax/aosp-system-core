@@ -139,6 +139,17 @@ class SetCgroupAction : public ProfileAction {
     bool IsFdValid() const { return fd_ > FDS_INACCESSIBLE; }
 };
 
+class AddToFileNodeAction : public ProfileAction {
+  public:
+    AddToFileNodeAction(const std::string& filenode) noexcept : filenode_(filenode) {}
+
+    virtual bool ExecuteForProcess(uid_t uid, pid_t pid) const;
+    virtual bool ExecuteForTask(int tid) const;
+
+  private:
+    std::string filenode_;
+};
+
 class TaskProfile {
   public:
     TaskProfile() : res_cached_(false) {}

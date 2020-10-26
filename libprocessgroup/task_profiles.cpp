@@ -257,6 +257,21 @@ bool SetCgroupAction::ExecuteForTask(int tid) const {
     return true;
 }
 
+bool AddToFileNodeAction::ExecuteForProcess(uid_t, pid_t pid) const {
+    return ExecuteForTask(pid);
+}
+
+bool AddToFileNodeAction::ExecuteForTask(int tid) const {
+    std::string value = std::to_string(tid);
+
+    if (!WriteStringToFile(value, filenode_)) {
+        PLOG(ERROR) << "Failed to write '" << value << "' to " << filenode_;
+        return false;
+    }
+
+    return true;
+}
+
 bool ApplyProfileAction::ExecuteForProcess(uid_t uid, pid_t pid) const {
     for (const auto& profile : profiles_) {
         if (!profile->ExecuteForProcess(uid, pid)) {
@@ -459,6 +474,9 @@ bool TaskProfiles::Load(const CgroupMap& cg_map, const std::string& file_name) {
                 } else {
                     LOG(WARNING) << "SetClamps: invalid parameter: " << boost_value;
                 }
+            } else if (action_name == "AddToFileNode") {
+                std::string attr_filenode = params_val["FileNode"].asString();
+                profile->Add(std::make_unique<AddToFileNodeAction>(attr_filenode));
             } else {
                 LOG(WARNING) << "Unknown profile action: " << action_name;
             }
