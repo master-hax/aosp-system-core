@@ -111,6 +111,30 @@
       },
       "revId": "ef6ce225803766b4597bf1e6f2234520a62ceea4",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c67208c4_5026fd00",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 3
+      },
+      "lineNbr": 1048,
+      "author": {
+        "id": 1054468
+      },
+      "writtenOn": "2020-10-26T09:20:08Z",
+      "side": 1,
+      "message": "\u003e Hmm imho that would have some unexpected side-effects if somebody lowers the property in some .rc file for some local testing (e.g. for labs/CI) and then traced_probes flips it back. It would be a bit unexpected.\nThat\u0027s why I\u0027m suggesting that you look at the value of the property which only traced_probes can change and not the value of actual kptr_restrict file which people doing debugging on userdebug builds may change manually. I agree that we want to avoid messing with people\u0027s local debugging environment.\n\u003e Given that this is going to be only for userdebug and we can\u0027t rely on this property for user, IMHO the risk is low enough and I\u0027d avoid introduce surprise factors around that.\nThat sounds fine to me.",
+      "parentUuid": "62436b4c_76cf749e",
+      "range": {
+        "startLine": 1048,
+        "startChar": 20,
+        "endLine": 1048,
+        "endChar": 29
+      },
+      "revId": "ef6ce225803766b4597bf1e6f2234520a62ceea4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
