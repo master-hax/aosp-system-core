@@ -1,6 +1,29 @@
 {
   "comments": [
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "6f13499e_e4d08ec8",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2020-10-26T12:07:56Z",
+      "side": 1,
+      "message": "We like to see some body to the commit message. For instance, I have no idea why checking base devt has been changed from error to warning. What values did you see for the devt, and maybe an explanation why.\n\nIt is OK to mute flakey tests IMHO.\n\nAFAIR the test was added because we had a bug in the overlayfs driver that messed up the xattr and devt etc in their cache layers. This was checking the kernel driver in partners hands was appropriately patched. We may no longer need these tests given that older kernels are no longer in our support grid, but bugs can return ... Not sure if we can abandon these tests yet. Do we have another bug in the overlayfs driver to worry about, which kernel(s) are you testing this on?\n\nAFAIK these devt\u0027s changed b/c the original assumption was that the data was sourced by a scratch partition made in the dynamic partition pool, so modified or not they had a similar source. Now that they are sourced on userdata, the assumption is now a bit more slippery? So at this juncture I am asking what aspects of the devt are the same (ie devt minor changes to denote a different partition for the underlying data)?\n\nThe test uses /system/bin/stat as the file being examined because it is also assumed not to be overridden (b/c if it is, the test assumptions that stat _works_ could be false), so logically it should have the same devt as reported by the overlayfs driver.",
+      "range": {
+        "startLine": 7,
+        "startChar": 31,
+        "endLine": 7,
+        "endChar": 51
+      },
+      "revId": "af24da368ecedf0c40bc4fd257e2e9af44d53470",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "aaa545bb_e7e5407a",
