@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "095303a5_94432bbe",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1096713
+      },
+      "writtenOn": "2020-10-26T13:36:02Z",
+      "side": 1,
+      "message": "Actually, this is wrong, since we\u0027re doing SEEK_CUR and not SEEK_SET.  Sorry.",
+      "revId": "6c4d72c2434622a02bdc5d4b4060927f56a586a9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
