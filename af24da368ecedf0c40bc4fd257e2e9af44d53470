@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "44201ef2_283d48d2",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2020-10-26T12:19:07Z",
+      "side": 1,
+      "message": "okay I\u0027ll update description in next revision, I\u0027d like to discuss first so that\u0027s why I omit the message, as the details youre asking is in the bug, and I don\u0027t want to duplicate the details when I\u0027m not even sure if this is the right path.\n\nwhat I\u0027m seeing is the device id flaking between 16 and 17, so I suspect it\u0027s something to do with dm init order. however the dm number of the system partition is always dm-7 as far as I can tell.\n\nI\u0027m not sure about the kernel version tho, would need to check tomorrow.",
+      "parentUuid": "6f13499e_e4d08ec8",
+      "range": {
+        "startLine": 7,
+        "startChar": 31,
+        "endLine": 7,
+        "endChar": 51
+      },
+      "revId": "af24da368ecedf0c40bc4fd257e2e9af44d53470",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "aaa545bb_e7e5407a",
