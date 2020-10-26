@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "aaa545bb_e7e5407a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2020-10-26T11:42:21Z",
+      "side": 1,
+      "message": "It seems the device id changes across reboots. Maybe it\u0027s because `stat` command doesn\u0027t produce correct output for dm-linear devices?\n\nI feel like ignoring the device id error might not be the best fix.. What\u0027s your opinion Mark. Is it reasonable to require the device id to not change across reboots? Or is it fine that we make this non fatal?",
+      "revId": "af24da368ecedf0c40bc4fd257e2e9af44d53470",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
