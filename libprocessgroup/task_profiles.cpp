@@ -21,6 +21,8 @@
 #include <task_profiles.h>
 #include <string>
 
+#include <regex>
+
 #include <android-base/file.h>
 #include <android-base/logging.h>
 #include <android-base/stringprintf.h>
@@ -257,6 +259,39 @@ bool SetCgroupAction::ExecuteForTask(int tid) const {
     return true;
 }
 
+bool WriteFileAction::ExecuteForProcess(uid_t uid, pid_t pid) const {
+    std::string filepath(filepath_), value(value_);
+
+    filepath = regex_replace(filepath, std::regex("<uid>"), std::to_string(uid));
+    filepath = regex_replace(filepath, std::regex("<pid>"), std::to_string(pid));
+    value = regex_replace(value, std::regex("<uid>"), std::to_string(uid));
+    value = regex_replace(value, std::regex("<pid>"), std::to_string(pid));
+
+    if (!WriteStringToFile(value, filepath)) {
+        PLOG(ERROR) << "Failed to write '" << value << "' to " << filepath;
+        return false;
+    }
+
+    return true;
+}
+
+bool WriteFileAction::ExecuteForTask(int tid) const {
+    std::string filepath(filepath_), value(value_);
+    int uid = getuid();
+
+    filepath = regex_replace(filepath, std::regex("<uid>"), std::to_string(uid));
+    filepath = regex_replace(filepath, std::regex("<pid>"), std::to_string(tid));
+    value = regex_replace(value, std::regex("<uid>"), std::to_string(uid));
+    value = regex_replace(value, std::regex("<pid>"), std::to_string(tid));
+
+    if (!WriteStringToFile(value, filepath)) {
+        PLOG(ERROR) << "Failed to write '" << value << "' to " << filepath;
+        return false;
+    }
+
+    return true;
+}
+
 bool ApplyProfileAction::ExecuteForProcess(uid_t uid, pid_t pid) const {
     for (const auto& profile : profiles_) {
         if (!profile->ExecuteForProcess(uid, pid)) {
@@ -458,6 +493,18 @@ bool TaskProfiles::Load(const CgroupMap& cg_map, const std::string& file_name) {
                     }
                 } else {
                     LOG(WARNING) << "SetClamps: invalid parameter: " << boost_value;
+                }
+            } else if (action_name == "WriteFile") {
+                std::string attr_filepath = params_val["FilePath"].asString();
+                std::string attr_value = params_val["Value"].asString();
+                if (!attr_filepath.empty() && !attr_value.empty()) {
+                    profile->Add(std::make_unique<WriteFileAction>(attr_filepath, attr_value));
+                } else if (attr_filepath.empty()) {
+                    LOG(WARNING) << "WriteFile: invalid parameter: "
+                                 << "empty filepath";
+                } else if (attr_value.empty()) {
+                    LOG(WARNING) << "WriteFile: invalid parameter: "
+                                 << "empty value";
                 }
             } else {
                 LOG(WARNING) << "Unknown profile action: " << action_name;
