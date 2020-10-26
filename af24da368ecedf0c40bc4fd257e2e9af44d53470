@@ -48,6 +48,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "2fbdbda4_8f5c5a8d",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2020-10-26T16:09:53Z",
+      "side": 1,
+      "message": "Thanks for the comments, I\u0027ve updated the bug with newer findings. Seems like the overlayfs driver is indeed returning some strange values, and this \"flaky device id\" problem doesn\u0027t seem to be caused by DSU, as I can observe the same behaviors on a regular device image. Could you take a look to see if there is any existing bug for this? Else we may fork a new bug for this.",
+      "parentUuid": "44201ef2_283d48d2",
+      "range": {
+        "startLine": 7,
+        "startChar": 31,
+        "endLine": 7,
+        "endChar": 51
+      },
+      "revId": "af24da368ecedf0c40bc4fd257e2e9af44d53470",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "aaa545bb_e7e5407a",
