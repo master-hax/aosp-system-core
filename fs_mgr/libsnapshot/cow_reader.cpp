@@ -134,8 +134,9 @@ bool CowReader::ParseOps() {
             return false;
         }
         auto& current_op = ops_buffer->data()[current_op_num];
-        pos = lseek(fd_.get(), GetNextOpOffset(current_op), SEEK_CUR);
-        if (pos < 0) {
+        const next_offset = GetNextOpOffset(current_op);
+        pos = lseek(fd_.get(), next_offset, SEEK_CUR);
+        if (pos != next_offset) {
             PLOG(ERROR) << "lseek next op failed";
             return false;
         }
