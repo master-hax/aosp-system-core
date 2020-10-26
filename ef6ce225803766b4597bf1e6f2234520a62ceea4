@@ -87,6 +87,30 @@
       },
       "revId": "ef6ce225803766b4597bf1e6f2234520a62ceea4",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "62436b4c_76cf749e",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 3
+      },
+      "lineNbr": 1048,
+      "author": {
+        "id": 1040443
+      },
+      "writtenOn": "2020-10-26T09:17:13Z",
+      "side": 1,
+      "message": "yeah TBH I start feeling the complexity it introduced was higher than the problem it was trying to solve (dying in that precise moment).\n\n\u003e traced_probes that checks the property value on traced_probes init and resets if it\u0027s left in an unsafe state?\n\nHmm imho that would have some unexpected side-effects if somebody lowers the property in some .rc file for some local testing (e.g. for labs/CI) and then traced_probes flips it back. It would be a bit unexpected.\nGiven that this is going to be only for userdebug and we can\u0027t rely on this property for user, IMHO the risk is low enough and I\u0027d avoid introduce surprise factors around that.",
+      "parentUuid": "7d0ca684_a95075ee",
+      "range": {
+        "startLine": 1048,
+        "startChar": 20,
+        "endLine": 1048,
+        "endChar": 29
+      },
+      "revId": "ef6ce225803766b4597bf1e6f2234520a62ceea4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
