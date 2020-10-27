@@ -1,0 +1,90 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9b764f20_da6bd681",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2020-10-27T15:38:36Z",
+      "side": 1,
+      "message": "I was expecting things to look simpler, code growth.\n\nBut what I got was something that looks easier to maintain.",
+      "revId": "d919127ee95056992e823a83d94d4c1d55f4fa52",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a0921d74_8cdf2416",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 132,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2020-10-27T15:38:36Z",
+      "side": 1,
+      "message": "nit: (As in no action required, I have to state this publicly) An anti-pattern for the legacy interface here (see const char* in fs_mgr_overlayfs_teardown above), harkens to a time when fs_mgr was to export \u0027C\u0027 interfaces, although freely to use C++ internally. Since that time, fs_mgr was rewritten to use C++ interfaces externally and these above functions were not part of that cleanup.\n\nSo this function is _correct_ for the new order, but it does leave us with technical debt to look into changing the other interfaces to C++ based.\n\nNB: One of the other pieces of C++ technical debt is the return values use errno here, preserving the value in some places, when they should be returning the string based error/success return class \u003cmumble\u003e.",
+      "range": {
+        "startLine": 132,
+        "startChar": 35,
+        "endLine": 132,
+        "endChar": 53
+      },
+      "revId": "d919127ee95056992e823a83d94d4c1d55f4fa52",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "11a58bb4_fe1c5d07",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1381,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2020-10-27T15:38:36Z",
+      "side": 1,
+      "message": "Hmmm, we should have add errno \u003d EINVAL; here before. But the call is no longer in \u0027C\u0027 interface path now so no longer _needed_.",
+      "range": {
+        "startLine": 1381,
+        "startChar": 31,
+        "endLine": 1381,
+        "endChar": 32
+      },
+      "revId": "d919127ee95056992e823a83d94d4c1d55f4fa52",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ebe1d1a8_facaf056",
+        "filename": "fs_mgr/include/fs_mgr_overlayfs.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2020-10-27T15:38:36Z",
+      "side": 1,
+      "message": "C++ interface now, I believe our google coding standards require us to use CaMelCaSe",
+      "range": {
+        "startLine": 40,
+        "startChar": 5,
+        "endLine": 40,
+        "endChar": 34
+      },
+      "revId": "d919127ee95056992e823a83d94d4c1d55f4fa52",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
