@@ -77,7 +77,12 @@ int FastBootTest::MatchFastboot(usb_ifc_info* info, const std::string& local_ser
 }
 
 bool FastBootTest::IsFastbootOverTcp() {
+<<<<<<< HEAD   (798834 Merge "[automerger skipped] Merge "VtsKernelMemInfoTest: onl)
     return android::base::StartsWith(device_serial, "tcp:");
+=======
+    // serial contains ":" is treated as host ip and port number
+    return (device_serial.find(":") != std::string::npos);
+>>>>>>> BRANCH (ea5c4a Merge "Allow fuzzy_fastboot test devices over internet" into)
 }
 
 bool FastBootTest::UsbStillAvailible() {
@@ -182,6 +187,7 @@ void FastBootTest::TearDownSerial() {
 }
 
 void FastBootTest::ConnectTcpFastbootDevice() {
+<<<<<<< HEAD   (798834 Merge "[automerger skipped] Merge "VtsKernelMemInfoTest: onl)
     for (int i = 0; i < MAX_TCP_TRIES && !transport; i++) {
         std::string error;
         std::unique_ptr<Transport> tcp(
@@ -190,6 +196,21 @@ void FastBootTest::ConnectTcpFastbootDevice() {
             transport = std::unique_ptr<TransportSniffer>(new TransportSniffer(std::move(tcp), 0));
         if (transport != nullptr) break;
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
+=======
+    std::size_t found = device_serial.find(":");
+    if (found != std::string::npos) {
+        for (int i = 0; i < MAX_TCP_TRIES && !transport; i++) {
+            std::string error;
+            std::unique_ptr<Transport> tcp(
+                    tcp::Connect(device_serial.substr(0, found), tcp::kDefaultPort, &error)
+                            .release());
+            if (tcp)
+                transport =
+                        std::unique_ptr<TransportSniffer>(new TransportSniffer(std::move(tcp), 0));
+            if (transport != nullptr) break;
+            std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        }
+>>>>>>> BRANCH (ea5c4a Merge "Allow fuzzy_fastboot test devices over internet" into)
     }
 }
 
