@@ -151,6 +151,9 @@ bool CowReader::ParseOps() {
                 next_last_label = current_op.source;
                 has_next = true;
             }
+        } else if (current_op.type == kCowFooterOp) {
+            has_footer_ = true;
+            break;
         }
     }
 
