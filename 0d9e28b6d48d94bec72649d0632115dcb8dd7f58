@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fe53b12e_51ea36dc",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2020-10-27T12:51:27Z",
+      "side": 1,
+      "message": "nit: There appears to be no fixes for this in newer kernels, so maybe this should be dropped, or \"We may want to turn this check back on if there are fixes in the overlayfs driver to help provide a stable devt\"\n\n(no action required, this is just a comment)",
+      "range": {
+        "startLine": 22,
+        "startChar": 17,
+        "endLine": 23,
+        "endChar": 22
+      },
+      "revId": "0d9e28b6d48d94bec72649d0632115dcb8dd7f58",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
