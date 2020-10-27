@@ -21,6 +21,7 @@
 
 #include <chrono>
 #include <deque>
+#include <filesystem>
 #include <future>
 #include <iostream>
 
@@ -1934,6 +1935,9 @@ void SnapshotTestEnvironment::SetUp() {
             // clang-format on
     };
     for (const auto& path : paths) {
+        std::error_code ec;
+        std::filesystem::remove_all(path, ec);
+
         ASSERT_TRUE(Mkdir(path));
     }
 
