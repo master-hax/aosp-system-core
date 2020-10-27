@@ -21,6 +21,12 @@ cc_library_shared {
     cflags: ["-Werror"],
 
     export_include_dirs: ["include"],
+    // TODO: remove connectivity module dependency, or have this lib build against the ndk
+    apex_available: [
+        "//apex_available:platform",
+        "com.android.tethering.connectivity",
+        "com.android.tethering.next"
+    ],
 }
 
 cc_library_static {
