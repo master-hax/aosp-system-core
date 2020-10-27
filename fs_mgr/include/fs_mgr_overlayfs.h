@@ -35,6 +35,10 @@ bool fs_mgr_overlayfs_is_setup();
 bool fs_mgr_has_shared_blocks(const std::string& mount_point, const std::string& dev);
 std::string fs_mgr_get_context(const std::string& mount_point);
 
+// This should be called if and only if in recovery or fastbootd to teardown overlays
+// of all sources if any partition is flashed or updated.
+void fs_mgr_overlayfs_teardown_all(const std::string& mount_point = "");
+
 enum class OverlayfsValidResult {
     kNotSupported = 0,
     kOk,
