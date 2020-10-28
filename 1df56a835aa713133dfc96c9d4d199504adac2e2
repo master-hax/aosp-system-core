@@ -1,0 +1,47 @@
+{
+  "comments": [
+    {
+      "robotId": "ayeaye",
+      "robotRunId": "AR00000000000005781150",
+      "url": "https://android-build.googleplex.com/builds/treetop/android-review/1476596?revision\u003d2",
+      "fixSuggestions": [
+        {
+          "fixId": "35c0f758_fe8066c1",
+          "description": "Change to \"fs_mgr/fs_mgr_overlayfs.cpp\"",
+          "replacements": [
+            {
+              "path": "fs_mgr/fs_mgr_overlayfs.cpp",
+              "range": {
+                "startLine": 1402,
+                "startChar": 39,
+                "endLine": 1402,
+                "endChar": 46
+              },
+              "replacement": "the"
+            }
+          ]
+        }
+      ],
+      "key": {
+        "uuid": "3bec86ba_76f7ae97",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1402,
+      "author": {
+        "id": 1757831
+      },
+      "writtenOn": "2020-10-28T07:55:43Z",
+      "side": 1,
+      "message": "Common typo found: \"the the\" -- should it be \"the\"?\nNote: a line containing \"common_typos_disable\" or \"common_typos_enable\" will turn off or on (respectively) the linter for subsequent lines in the file. Alternatively include the token \"NOTYPO\" within a line to skip typo linting that line or include \u0027NO_TYPO_CHECK\u003d\u003creason\u003e\u0027in the commit message.",
+      "range": {
+        "startLine": 1402,
+        "startChar": 39,
+        "endLine": 1402,
+        "endChar": 46
+      },
+      "revId": "1df56a835aa713133dfc96c9d4d199504adac2e2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
