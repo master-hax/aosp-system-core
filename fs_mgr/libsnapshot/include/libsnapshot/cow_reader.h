@@ -91,6 +91,27 @@ class ICowOpIter {
 
     // Advance to the next item.
     virtual void Next() = 0;
+
+    // Read the current operation from backwards
+    virtual const CowOperation& RGet() = 0;
+
+    // Advance to the next item backwards.
+    virtual void RNext() = 0;
+
+    // True if there are more operations to be read from backwards, false otherwise.
+    virtual bool RDone() = 0;
+
+    // True if the merge operation is complete
+    virtual bool MergeDone() = 0;
+
+    // Advance the merge operation
+    virtual void MergeNext() = 0;
+
+    // Iterator to track merge progress
+    virtual const CowOperation& GetMergeIter() = 0;
+
+    // Reset the iterators
+    virtual void ResetIters() = 0;
 };
 
 class CowReader : public ICowReader {
@@ -99,6 +120,7 @@ class CowReader : public ICowReader {
 
     bool Parse(android::base::unique_fd&& fd);
     bool Parse(android::base::borrowed_fd fd);
+    bool ParseForMerge(android::base::borrowed_fd fd);
 
     bool GetHeader(CowHeader* header) override;
     bool GetFooter(CowFooter* footer) override;
@@ -113,8 +135,13 @@ class CowReader : public ICowReader {
 
     bool GetRawBytes(uint64_t offset, void* buffer, size_t len, size_t* read);
 
+    // This just updates in-memory.
+    void UpdateMergeProgress(loff_t offset) { header_.offset += offset; }
+
   private:
     bool ParseOps();
+    bool ParseOpsForMerge();
+    bool ValidateHeaderFooter();
 
     android::base::unique_fd owned_fd_;
     android::base::borrowed_fd fd_;

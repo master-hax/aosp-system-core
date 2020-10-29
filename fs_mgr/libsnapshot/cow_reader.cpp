@@ -48,14 +48,7 @@ static void SHA256(const void*, size_t, uint8_t[]) {
 #endif
 }
 
-bool CowReader::Parse(android::base::unique_fd&& fd) {
-    owned_fd_ = std::move(fd);
-    return Parse(android::base::borrowed_fd{owned_fd_});
-}
-
-bool CowReader::Parse(android::base::borrowed_fd fd) {
-    fd_ = fd;
-
+bool CowReader::ValidateHeaderFooter() {
     auto pos = lseek(fd_.get(), 0, SEEK_END);
     if (pos < 0) {
         PLOG(ERROR) << "lseek end failed";
@@ -107,8 +100,70 @@ bool CowReader::Parse(android::base::borrowed_fd fd) {
         PLOG(ERROR) << "read footer failed";
         return false;
     }
+
     has_footer_ = (footer_.op.type == kCowFooterOp);
+
+    return true;
+}
+
+bool CowReader::Parse(android::base::unique_fd&& fd) {
+    owned_fd_ = std::move(fd);
+    return Parse(android::base::borrowed_fd{owned_fd_});
+}
+
+bool CowReader::Parse(android::base::borrowed_fd fd) {
+    fd_ = fd;
+
+    if (!ValidateHeaderFooter()) return false;
+
     return ParseOps();
+}
+
+bool CowReader::ParseForMerge(android::base::borrowed_fd fd) {
+    fd_ = fd;
+
+    if (!ValidateHeaderFooter()) return false;
+
+    return ParseOpsForMerge();
+}
+
+bool CowReader::ParseOpsForMerge() {
+    uint64_t pos = lseek(fd_.get(), (header_.offset + sizeof(header_)), SEEK_SET);
+    if (pos == uint64_t(-1)) {
+        PLOG(ERROR) << "lseek header_.offset failed";
+        return false;
+    }
+
+    auto ops_buffer = std::make_shared<std::vector<CowOperation>>();
+
+    uint64_t current_op_num = 0;
+    uint64_t last_pos = fd_size_;
+
+    // Alternating op and data
+    while (pos < last_pos) {
+        ops_buffer->resize(current_op_num + 1);
+        if (!android::base::ReadFully(fd_, ops_buffer->data() + current_op_num,
+                                      sizeof(CowOperation))) {
+            PLOG(ERROR) << "read op failed";
+            return false;
+        }
+        auto& current_op = ops_buffer->data()[current_op_num];
+
+        if (current_op.type == kCowFooterOp) {
+            break;
+        }
+
+        pos = lseek(fd_.get(), GetNextOpOffset(current_op), SEEK_CUR);
+        if (pos == uint64_t(-1)) {
+            PLOG(ERROR) << "lseek next op failed";
+            return false;
+        }
+
+        current_op_num++;
+    }
+
+    ops_ = ops_buffer;
+    return true;
 }
 
 bool CowReader::ParseOps() {
@@ -195,14 +250,34 @@ class CowOpIter final : public ICowOpIter {
     const CowOperation& Get() override;
     void Next() override;
 
+    bool RDone() override;
+    const CowOperation& RGet() override;
+    void RNext() override;
+
+    bool MergeDone() override;
+    const CowOperation& GetMergeIter() override;
+    void MergeNext() override;
+
+    void ResetIters() override;
+
   private:
     std::shared_ptr<std::vector<CowOperation>> ops_;
     std::vector<CowOperation>::iterator op_iter_;
+    std::vector<CowOperation>::reverse_iterator op_riter_;
+    std::vector<CowOperation>::iterator op_merge_iter_;
 };
 
 CowOpIter::CowOpIter(std::shared_ptr<std::vector<CowOperation>>& ops) {
     ops_ = ops;
     op_iter_ = ops_.get()->begin();
+    op_riter_ = ops_.get()->rbegin();
+    op_merge_iter_ = ops_.get()->begin();
+}
+
+void CowOpIter::ResetIters() {
+    op_iter_ = ops_.get()->begin();
+    op_riter_ = ops_.get()->rbegin();
+    op_merge_iter_ = ops_.get()->begin();
 }
 
 bool CowOpIter::Done() {
@@ -214,9 +289,37 @@ void CowOpIter::Next() {
     op_iter_++;
 }
 
+bool CowOpIter::RDone() {
+    return op_riter_ == ops_.get()->rend();
+}
+
+void CowOpIter::RNext() {
+    CHECK(!RDone());
+    op_riter_++;
+}
+
+const CowOperation& CowOpIter::RGet() {
+    CHECK(!RDone());
+    return (*op_riter_);
+}
+
 const CowOperation& CowOpIter::Get() {
     CHECK(!Done());
     return (*op_iter_);
+}
+
+bool CowOpIter::MergeDone() {
+    return op_merge_iter_ == ops_.get()->end();
+}
+
+void CowOpIter::MergeNext() {
+    CHECK(!MergeDone());
+    op_merge_iter_++;
+}
+
+const CowOperation& CowOpIter::GetMergeIter() {
+    CHECK(!MergeDone());
+    return (*op_merge_iter_);
 }
 
 std::unique_ptr<ICowOpIter> CowReader::GetOpIter() {
