@@ -91,6 +91,7 @@ void CowWriter::SetupHeaders() {
     header_.header_size = sizeof(CowHeader);
     header_.footer_size = sizeof(CowFooter);
     header_.block_size = options_.block_size;
+    header_.offset = 0;
     footer_ = {};
     footer_.op.data_length = 64;
     footer_.op.type = kCowFooterOp;
@@ -108,6 +109,11 @@ bool CowWriter::ParseOptions() {
         return false;
     }
     return true;
+}
+
+void CowWriter::InitializeForMerge(borrowed_fd fd, CowHeader* header) {
+    fd_ = fd;
+    memcpy(&header_, header, sizeof(CowHeader));
 }
 
 bool CowWriter::Initialize(unique_fd&& fd, OpenMode mode) {
@@ -396,6 +402,7 @@ bool CowWriter::Finalize() {
 
     SHA256(ops_.data(), ops_.size(), footer_.data.ops_checksum);
     SHA256(&footer_.op, sizeof(footer_.op), footer_.data.footer_checksum);
+
     // Write out footer at end of file
     if (!android::base::WriteFully(fd_, reinterpret_cast<const uint8_t*>(&footer_),
                                    sizeof(footer_))) {
@@ -406,6 +413,11 @@ bool CowWriter::Finalize() {
     // Re-position for any subsequent writes.
     if (lseek(fd_.get(), pos, SEEK_SET) < 0) {
         PLOG(ERROR) << "lseek ops failed";
+        return false;
+    }
+
+    if (fsync(fd_.get()) != 0) {
+        PLOG(ERROR) << "fsync in Finalize() failed...";
         return false;
     }
     return true;
@@ -446,6 +458,18 @@ bool CowWriter::WriteRawData(const void* data, size_t size) {
         return false;
     }
     return true;
+}
+
+bool CowWriter::CommitMerge(CowHeader* header) {
+    memcpy(&header_, header, sizeof(CowHeader));
+    int ret = pwrite(fd_.get(), reinterpret_cast<const uint8_t*>(&header_), sizeof(header_), 0);
+
+    if (ret < 0 || ret != sizeof(header_)) {
+        PLOG(ERROR) << "Failed to write the footer during merge";
+        return false;
+    }
+
+    return (fsync(fd_.get()) == 0);
 }
 
 }  // namespace snapshot

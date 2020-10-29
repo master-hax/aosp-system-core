@@ -59,6 +59,9 @@ struct CowHeader {
 
     // The size of block operations, in bytes.
     uint32_t block_size;
+
+    // Offset in the file to resume the merge
+    uint64_t offset;
 } __attribute__((packed));
 
 // This structure is the same size of a normal Operation, but is repurposed for the footer.
@@ -78,6 +81,7 @@ struct CowFooterOperation {
 
     // The number of cow operations in the file
     uint64_t num_ops;
+
 } __attribute__((packed));
 
 struct CowFooterData {
