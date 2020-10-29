@@ -955,7 +955,6 @@ on boot
 
     class_start core
 
-    # Requires keystore (currently a core service) to be ready first.
     exec -- /system/bin/fsverity_init
 
 on nonencrypted
