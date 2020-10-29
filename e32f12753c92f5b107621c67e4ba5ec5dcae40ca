@@ -1,0 +1,30 @@
+{
+  "comments": [
+    {
+      "robotId": "ayeaye",
+      "robotRunId": "AR00000000000005802520",
+      "url": "https://android-build.googleplex.com/builds/treetop/android-review/1478508?revision\u003d1",
+      "fixSuggestions": [],
+      "key": {
+        "uuid": "d442db8a_600585eb",
+        "filename": "fs_mgr/tools/dmuserd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1757831
+      },
+      "writtenOn": "2020-10-29T02:17:02Z",
+      "side": 1,
+      "message": "Third-party license (GPL2) disallowed in repository platform/system/core:\nSPDX-License-Identifier: GPL-2.0-or-later\n",
+      "range": {
+        "startLine": 1,
+        "startChar": 4,
+        "endLine": 1,
+        "endChar": 45
+      },
+      "revId": "e32f12753c92f5b107621c67e4ba5ec5dcae40ca",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
