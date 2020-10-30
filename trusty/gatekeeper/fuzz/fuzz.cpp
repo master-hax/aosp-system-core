@@ -25,17 +25,21 @@
 #define TIPC_DEV "/dev/trusty-ipc-dev0"
 #define GATEKEEPER_PORT "com.android.trusty.gatekeeper"
 
+using namespace android::trusty;
+
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size) {
     static uint8_t buf[TIPC_MAX_MSG_SIZE];
 
-    android::trusty::fuzz::TrustyApp ta(TIPC_DEV, GATEKEEPER_PORT);
+    fuzz::TrustyApp ta(TIPC_DEV, GATEKEEPER_PORT);
 
     auto ret = ta.Connect();
     /*
      * If we can't connect, then assume TA crashed.
      * TODO: Get some more info, e.g. stacks, to help Haiku dedup crashes.
      */
-    assert(ret.ok());
+    if (!ret.ok()) {
+        fuzz::Abort();
+    }
 
     /* Send message to test server */
     ret = ta.Write(data, size);
