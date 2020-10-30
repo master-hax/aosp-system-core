@@ -53,6 +53,7 @@
 #include <keyutils.h>
 #include <libavb/libavb.h>
 #include <libgsi/libgsi.h>
+#include <libsnapshot/snapshot.h>
 #include <processgroup/processgroup.h>
 #include <processgroup/setup.h>
 #include <selinux/android.h>
@@ -94,6 +95,7 @@ using android::base::StringPrintf;
 using android::base::Timer;
 using android::base::Trim;
 using android::fs_mgr::AvbHandle;
+using android::snapshot::SnapshotManager;
 
 namespace android {
 namespace init {
@@ -722,6 +724,31 @@ void SendLoadPersistentPropertiesMessage() {
     }
 }
 
+void TransitionSnapuserd() {
+    if (!SnapshotManager::IsSnapshotManagerNeeded() ||
+        !android::base::GetBoolProperty(android::snapshot::kVirtualAbCompressionProp, false)) {
+        return;
+    }
+
+    auto sm = SnapshotManager::New();
+    if (!sm) {
+        LOG(ERROR) << "Failed to create SnapshotManager, will not transition snapuserd";
+        return;
+    }
+
+    ServiceList& service_list = ServiceList::GetInstance();
+    auto svc = service_list.FindService("snapuserd");
+    if (!svc) {
+        LOG(ERROR) << "Failed to find snapuserd service, aborting transition";
+        return;
+    }
+    svc->Start();
+
+    if (!sm->PerformSecondStageTransition()) {
+        LOG(ERROR) << "Failed to transition snapuserd to second-stage";
+    }
+}
+
 int SecondStageMain(int argc, char** argv) {
     if (REBOOT_BOOTLOADER_ON_PANIC) {
         InstallRebootSignalHandlers();
@@ -845,6 +872,8 @@ int SecondStageMain(int argc, char** argv) {
     SetProperty(gsi::kGsiBootedProp, is_running);
     auto is_installed = android::gsi::IsGsiInstalled() ? "1" : "0";
     SetProperty(gsi::kGsiInstalledProp, is_installed);
+
+    TransitionSnapuserd();
 
     am.QueueBuiltinAction(SetupCgroupsAction, "SetupCgroups");
     am.QueueBuiltinAction(SetKptrRestrictAction, "SetKptrRestrict");
