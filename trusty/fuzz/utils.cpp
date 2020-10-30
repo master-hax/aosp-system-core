@@ -23,7 +23,11 @@
 #include <linux/ioctl.h>
 #include <linux/types.h>
 #include <linux/uio.h>
+#include <log/log_read.h>
+#include <time.h>
+#include <iostream>
 
+using namespace std;
 using android::base::ErrnoError;
 using android::base::Error;
 using android::base::Result;
@@ -32,7 +36,50 @@ using android::base::unique_fd;
 #define TIPC_IOC_MAGIC 'r'
 #define TIPC_IOC_CONNECT _IOW(TIPC_IOC_MAGIC, 0x80, char*)
 
-static const size_t kTimeoutSeconds = 5;
+namespace {
+const size_t kTimeoutSeconds = 5;
+const string kTrustyLogTag = "trusty-log";
+
+class InitialTime {
+  public:
+    InitialTime() { seconds_ = time(nullptr); }
+
+    uint32_t seconds() { return seconds_; }
+
+  private:
+    time_t seconds_;
+};
+
+InitialTime initialTime;
+
+void print_trusty_log() {
+    auto logger_list = android_logger_list_open(LOG_ID_KERNEL, ANDROID_LOG_NONBLOCK, 1000, 0);
+    if (logger_list == nullptr) {
+        cerr << "Could not open android kernel log\n";
+        return;
+    }
+
+    while (true) {
+        log_msg log_msg;
+        int rc = android_logger_list_read(logger_list, &log_msg);
+        if (rc < 0) {
+            break;
+        }
+        if (log_msg.entry.sec < initialTime.seconds()) {
+            continue;
+        }
+        char* msg = log_msg.msg();
+        if (msg) {
+            string line(msg, log_msg.entry.len);
+            if (line.find(kTrustyLogTag) != string::npos) {
+                cerr << line.substr(kTrustyLogTag.length() + 2) << endl;
+            }
+        }
+    }
+
+    android_logger_list_free(logger_list);
+}
+}  // namespace
 
 namespace android {
 namespace trusty {
@@ -102,6 +149,11 @@ Result<int> TrustyApp::GetRawFd() {
     }
 
     return ta_fd_;
+}
+
+void Abort() {
+    print_trusty_log();
+    exit(-1);
 }
 
 }  // namespace fuzz
