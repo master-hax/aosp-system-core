@@ -174,6 +174,7 @@ bool CowWriter::OpenForWrite() {
 bool CowWriter::OpenForAppend() {
     auto reader = std::make_unique<CowReader>();
     bool incomplete = false;
+    bool add_next = false;
     std::queue<CowOperation> toAdd;
     if (!reader->Parse(fd_) || !reader->GetHeader(&header_)) {
         return false;
@@ -191,14 +192,18 @@ bool CowWriter::OpenForAppend() {
         CowOperation op = iter->Get();
         if (op.type == kCowFooterOp) break;
         if (incomplete) {
-            // Last operation translation may be corrupt. Wait to add it.
-            if (op.type == kCowLabelOp) {
+            // Last set of labeled operations may be corrupt. Wait to add it.
+            // We always sync after a label. If we see ops after a label, we
+            // can infer that sync must have completed.
+            if (add_next) {
+                add_next = false;
                 while (!toAdd.empty()) {
                     AddOperation(toAdd.front());
                     toAdd.pop();
                 }
             }
             toAdd.push(op);
+            if (op.type == kCowLabelOp) add_next = true;
         } else {
             AddOperation(op);
         }
@@ -235,11 +240,10 @@ bool CowWriter::OpenForAppend(uint64_t label) {
     next_op_pos_ = sizeof(header_);
 
     auto iter = reader->GetOpIter();
-    while (!iter->Done()) {
+    while (!iter->Done() && !found_label) {
         CowOperation op = iter->Get();
         if (op.type == kCowFooterOp) break;
         if (op.type == kCowLabelOp) {
-            if (found_label) break;
             if (op.source == label) found_label = true;
         }
         AddOperation(op);
@@ -329,7 +333,10 @@ bool CowWriter::EmitLabel(uint64_t label) {
     CowOperation op = {};
     op.type = kCowLabelOp;
     op.source = label;
-    return WriteOperation(op);
+    if (WriteOperation(op)) {
+        return !fsync(fd_.get());
+    }
+    return false;
 }
 
 std::basic_string<uint8_t> CowWriter::Compress(const void* data, size_t length) {
@@ -408,7 +415,8 @@ bool CowWriter::Finalize() {
         PLOG(ERROR) << "lseek ops failed";
         return false;
     }
-    return true;
+    return !fsync(fd_.get());
+    ;
 }
 
 uint64_t CowWriter::GetCowSize() {
@@ -432,7 +440,7 @@ bool CowWriter::WriteOperation(const CowOperation& op, const void* data, size_t 
     if (data != NULL && size > 0)
         if (!WriteRawData(data, size)) return false;
     AddOperation(op);
-    return !fsync(fd_.get());
+    return true;
 }
 
 void CowWriter::AddOperation(const CowOperation& op) {
