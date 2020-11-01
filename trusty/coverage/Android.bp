@@ -1,4 +1,4 @@
-// Copyright (C) 2015 The Android Open Source Project
+// Copyright (C) 2020 The Android Open-Source Project
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,25 +12,34 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-cc_defaults {
-    name: "libtrusty_defaults",
-    srcs: ["trusty.c"],
-    export_include_dirs: ["include"],
-    cflags: [
-        "-Wall",
-        "-Werror",
-    ],
-
-    shared_libs: ["liblog"],
-}
-
 cc_library {
-    name: "libtrusty",
-    vendor: true,
-    defaults: ["libtrusty_defaults"],
+    name: "libtrusty_coverage",
+    srcs: [
+        "coverage.cpp",
+    ],
+    export_include_dirs: [
+        "include",
+    ],
+    static_libs: [
+        "libtrusty_test",
+    ],
+    shared_libs: [
+        "libbase",
+        "liblog",
+    ],
 }
 
-cc_test_library {
-    name: "libtrusty_test",
-    defaults: ["libtrusty_defaults"],
+cc_test {
+    name: "libtrusty_coverage_test",
+    srcs: [
+        "coverage_test.cpp",
+    ],
+    static_libs: [
+        "libtrusty_coverage",
+        "libtrusty_test",
+    ],
+    shared_libs: [
+        "libbase",
+        "liblog",
+    ],
 }
