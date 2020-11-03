@@ -357,8 +357,39 @@ int Snapuserd::GetNumberOfMergedOps(void* merged_buffer, void* unmerged_buffer, 
         }
     }
 
-    if (*copy_op) {
-        CHECK(merged_ops_cur_iter == 1);
+    return merged_ops_cur_iter;
+}
+
+bool Snapuserd::AdvanceMergedOps(int merged_ops_cur_iter) {
+    // Advance the merge operation pointer in the
+    // vector.
+    //
+    // cowop_iter_ is already initialized in ReadMetadata(). Just resume the
+    // merge process
+    while (!cowop_iter_->Done() && merged_ops_cur_iter) {
+        const CowOperation* cow_op = &cowop_iter_->Get();
+        CHECK(cow_op != nullptr);
+
+        if (IsMetadataOp(*cow_op)) {
+            cowop_iter_->Next();
+            continue;
+        }
+
+        if (!(cow_op->type == kCowReplaceOp || cow_op->type == kCowZeroOp ||
+              cow_op->type == kCowCopyOp)) {
+            LOG(ERROR) << "Unknown operation-type found during merge: " << cow_op->type;
+            return false;
+        }
+
+        merged_ops_cur_iter -= 1;
+        LOG(DEBUG) << "Merge op found of type " << cow_op->type
+                   << "Pending-merge-ops: " << merged_ops_cur_iter;
+        cowop_iter_->Next();
+    }
+
+    if (cowop_iter_->Done()) {
+        CHECK(merged_ops_cur_iter == 0);
+        LOG(DEBUG) << "All cow operations merged successfully in this cycle";
     }
     return merged_ops_cur_iter;
 }
@@ -545,7 +576,7 @@ bool Snapuserd::ReadMetadata() {
         struct disk_exception* de =
                 reinterpret_cast<struct disk_exception*>((char*)de_ptr.get() + offset);
 
-        if (cow_op->type == kCowFooterOp || cow_op->type == kCowLabelOp) {
+        if (IsMetadataOp(*cow_op)) {
             cowop_riter_->Next();
             continue;
         }
