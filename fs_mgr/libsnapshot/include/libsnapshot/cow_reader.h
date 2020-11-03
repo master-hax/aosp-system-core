@@ -18,6 +18,7 @@
 
 #include <functional>
 #include <memory>
+#include <optional>
 
 #include <android-base/unique_fd.h>
 #include <libsnapshot/cow_format.h>
@@ -119,11 +120,9 @@ class CowReader : public ICowReader {
     android::base::unique_fd owned_fd_;
     android::base::borrowed_fd fd_;
     CowHeader header_;
-    CowFooter footer_;
+    std::optional<CowFooter> footer_;
     uint64_t fd_size_;
-    bool has_footer_;
-    uint64_t last_label_;
-    bool has_last_label_;
+    std::optional<uint64_t> last_label_;
     std::shared_ptr<std::vector<CowOperation>> ops_;
 };
 
