@@ -27,6 +27,7 @@ import android.service.gatekeeper.GateKeeperResponse;
  *
  * @hide
  */
+@ClearTransactionData
 interface IGateKeeperService {
     /**
      * Enrolls a password, returning the handle to the enrollment to be stored locally.
