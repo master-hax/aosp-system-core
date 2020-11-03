@@ -88,6 +88,13 @@ bool CowReader::Parse(android::base::borrowed_fd fd) {
                    << sizeof(CowFooter);
         return false;
     }
+    if (header_.cluster_size > 0 && header_.cluster_size < 2 * sizeof(CowOperation)) {
+        LOG(ERROR) << "Cluster size must be large enough for two operations to function.";
+        return false;
+    }
+    if (header_.cluster_size % sizeof(CowOperation) != 0) {
+        LOG(ERROR) << "Cluster size must be multiple of CowOperation size.";
+    }
 
     if ((header_.major_version != kCowVersionMajor) ||
         (header_.minor_version != kCowVersionMinor)) {
@@ -122,28 +129,47 @@ bool CowReader::ParseOps() {
     auto ops_buffer = std::make_shared<std::vector<CowOperation>>();
     if (has_footer_) ops_buffer->reserve(footer_.op.num_ops);
     uint64_t current_op_num = 0;
+
     // Look until we reach the last possible non-footer position.
     uint64_t last_pos = fd_size_ - (has_footer_ ? sizeof(footer_) : sizeof(CowOperation));
-
-    // Alternating op and data
+    uint32_t cluster_size = std::max(header_.cluster_size, (uint32_t)sizeof(CowOperation));
+    bool bad_op = false;
     while (pos < last_pos) {
-        ops_buffer->resize(current_op_num + 1);
+        ops_buffer->resize(current_op_num + cluster_size / sizeof(CowOperation));
         if (!android::base::ReadFully(fd_, ops_buffer->data() + current_op_num,
-                                      sizeof(CowOperation))) {
+                                      std::min((uint64_t)cluster_size, fd_size_ - pos))) {
             PLOG(ERROR) << "read op failed";
             return false;
         }
-        auto& current_op = ops_buffer->data()[current_op_num];
-        pos = lseek(fd_.get(), GetNextOpOffset(current_op), SEEK_CUR);
-        if (pos == uint64_t(-1)) {
-            PLOG(ERROR) << "lseek next op failed";
-            return false;
+        while (current_op_num < ops_buffer->size()) {
+            auto& current_op = ops_buffer->data()[current_op_num];
+            if (!validateOp(current_op)) {
+                bad_op = true;
+                break;
+            }
+
+            current_op_num++;
+            pos += sizeof(CowOperation) + GetNextOpOffset(current_op, header_.cluster_size);
+            if (next_last_label) {
+                last_label_ = next_last_label.value();
+                has_last_label_ = true;
+                next_last_label.reset();
+            }
+            if (current_op.type == kCowLabelOp) {
+                // If we don't have a footer, the last label may be incomplete.
+                // If we see any operation after it, we can infer the flush finished.
+                if (has_footer_) {
+                    has_last_label_ = true;
+                    last_label_ = current_op.source;
+                } else {
+                    next_last_label = {current_op.source};
+                }
+            } else if (current_op.type == kCowFooterOp || current_op.type == kCowClusterOp) {
+                break;
+            }
         }
-        current_op_num++;
-        if (next_last_label) {
-            last_label_ = next_last_label.value();
-            has_last_label_ = true;
-        }
+        if (bad_op || current_op_num == 0) break;
+        auto& current_op = ops_buffer->data()[current_op_num - 1];
         if (current_op.type == kCowLabelOp) {
             // If we don't have a footer, the last label may be incomplete.
             // If we see any operation after it, we can infer the flush finished.
@@ -159,6 +185,7 @@ bool CowReader::ParseOps() {
             current_op_num--;
             if (android::base::ReadFully(fd_, &footer_.data, sizeof(footer_.data))) {
                 has_footer_ = true;
+
                 if (next_last_label) {
                     last_label_ = next_last_label.value();
                     has_last_label_ = true;
@@ -166,8 +193,14 @@ bool CowReader::ParseOps() {
             }
             break;
         }
-    }
 
+        pos = lseek(fd_.get(), pos, SEEK_SET);
+        if (pos == uint64_t(-1)) {
+            PLOG(ERROR) << "lseek next op set failed";
+            return false;
+        }
+    }
+    ops_buffer->resize(current_op_num);
     uint8_t csum[32];
     memset(csum, 0, sizeof(uint8_t) * 32);
 

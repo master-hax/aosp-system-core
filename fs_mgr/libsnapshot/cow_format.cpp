@@ -35,6 +35,10 @@ std::ostream& operator<<(std::ostream& os, CowOperation const& op) {
         os << "kCowFooterOp,  ";
     else if (op.type == kCowLabelOp)
         os << "kCowLabelOp,   ";
+    else if (op.type == kCowClusterOp)
+        os << "kCowClusterOp  ";
+    else if (op.type == kCowFooterOp)
+        os << "kCowFooterOp  ";
     else
         os << (int)op.type << "?,";
     os << "compression:";
@@ -52,11 +56,45 @@ std::ostream& operator<<(std::ostream& os, CowOperation const& op) {
     return os;
 }
 
-int64_t GetNextOpOffset(const CowOperation& op) {
-    if (op.type == kCowReplaceOp)
+int64_t GetNextOpOffset(const CowOperation& op, uint32_t cluster_size) {
+    if (op.type == kCowClusterOp)
+        return op.source;
+    else if (op.type == kCowReplaceOp && cluster_size == 0)
         return op.data_length;
     else
         return 0;
+}
+
+int64_t GetNextDataOffset(const CowOperation& op, uint32_t cluster_size) {
+    if (op.type == kCowClusterOp)
+        return cluster_size;
+    else if (cluster_size == 0)
+        return sizeof(CowOperation);
+    else
+        return 0;
+}
+
+bool validateOp(const CowOperation& op) {
+    if (op.type != kCowCopyOp && op.type != kCowReplaceOp && op.type != kCowZeroOp &&
+        op.type != kCowFooterOp && op.type != kCowLabelOp && op.type != kCowClusterOp &&
+        op.type != kCowFooterOp) {
+        return false;
+    }
+    // zero ops must have source set to 0.
+    if (op.type == kCowZeroOp && op.source != 0) return false;
+
+    // Footer must have data length for the footer data. Otherwise, only CowReplaceOp has data
+    // associated
+    if (op.type == kCowFooterOp) {
+        if (op.data_length != sizeof(CowFooterData)) return false;
+    } else if (op.type != kCowReplaceOp && op.data_length > 0) {
+        return false;
+    }
+
+    if (op.type != kCowReplaceOp && op.data_length > 0) return false;
+    // footer must have space for footer data
+
+    return true;
 }
 
 }  // namespace snapshot
