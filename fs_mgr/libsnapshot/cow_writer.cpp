@@ -91,6 +91,7 @@ void CowWriter::SetupHeaders() {
     header_.header_size = sizeof(CowHeader);
     header_.footer_size = sizeof(CowFooter);
     header_.block_size = options_.block_size;
+    header_.cluster_size = options_.cluster_size;
     footer_ = {};
     footer_.op.data_length = 64;
     footer_.op.type = kCowFooterOp;
@@ -106,6 +107,13 @@ bool CowWriter::ParseOptions() {
     } else if (!options_.compression.empty()) {
         LOG(ERROR) << "unrecognized compression: " << options_.compression;
         return false;
+    }
+    if (options_.cluster_size > 0 && options_.cluster_size < 2 * sizeof(CowOperation)) {
+        LOG(ERROR) << "Cluster size must be large enough for two operations to function.";
+        return false;
+    }
+    if (options_.cluster_size % sizeof(CowOperation) != 0) {
+        LOG(ERROR) << "Cluster size must be multiple of CowOperation size.";
     }
     return true;
 }
@@ -148,6 +156,17 @@ bool CowWriter::InitializeAppend(android::base::borrowed_fd fd, uint64_t label) 
     return OpenForAppend(label);
 }
 
+void CowWriter::InitPos() {
+    next_op_pos_ = sizeof(header_);
+    if (header_.cluster_size)
+        next_data_pos_ = next_op_pos_ + header_.cluster_size;
+    else
+        next_data_pos_ = next_op_pos_ + sizeof(CowOperation);
+    ops_.resize(0);
+    current_cluster_size_ = 0;
+    current_data_size_ = 0;
+}
+
 bool CowWriter::OpenForWrite() {
     // This limitation is tied to the data field size in CowOperation.
     if (header_.block_size > std::numeric_limits<uint16_t>::max()) {
@@ -167,7 +186,7 @@ bool CowWriter::OpenForWrite() {
         return false;
     }
 
-    next_op_pos_ = sizeof(header_);
+    InitPos();
     return true;
 }
 
@@ -175,27 +194,25 @@ bool CowWriter::OpenForAppend(std::optional<uint64_t> label) {
     auto reader = std::make_unique<CowReader>();
     bool incomplete = false;
     bool add_next = false;
-    std::queue<CowOperation> toAdd;
     bool found_label = false;
-
+    std::queue<CowOperation> toAdd;
     if (!reader->Parse(fd_) || !reader->GetHeader(&header_)) {
         return false;
     }
     incomplete = !reader->GetFooter(&footer_);
 
     options_.block_size = header_.block_size;
+    options_.cluster_size = header_.cluster_size;
 
     // Reset this, since we're going to reimport all operations.
     footer_.op.num_ops = 0;
-    next_op_pos_ = sizeof(header_);
-    ops_.resize(0);
+    InitPos();
 
     auto iter = reader->GetOpIter();
     while (!iter->Done() && !found_label) {
         CowOperation op = iter->Get();
         if (op.type == kCowFooterOp) break;
         if (label.has_value()) {
-            if (op.type == kCowFooterOp) break;
             if (op.type == kCowLabelOp) {
                 if (op.source == label) found_label = true;
             }
@@ -215,7 +232,16 @@ bool CowWriter::OpenForAppend(std::optional<uint64_t> label) {
                 toAdd.push(op);
                 if (op.type == kCowLabelOp) add_next = true;
             } else {
-                AddOperation(op);
+                // We don't care about kCowClusterOp if it goes straight to footer
+                if (op.type == kCowClusterOp)
+                    toAdd.push(op);
+                else {
+                    while (!toAdd.empty()) {
+                        AddOperation(toAdd.front());
+                        toAdd.pop();
+                    }
+                    AddOperation(op);
+                }
             }
         }
         iter->Next();
@@ -230,7 +256,7 @@ bool CowWriter::OpenForAppend(std::optional<uint64_t> label) {
     reader = nullptr;
 
     // Position for new writing
-    if (ftruncate(fd_.get(), next_op_pos_) != 0) {
+    if (ftruncate(fd_.get(), next_data_pos_) != 0) {
         PLOG(ERROR) << "Failed to trim file";
         return false;
     }
@@ -251,13 +277,11 @@ bool CowWriter::EmitCopy(uint64_t new_block, uint64_t old_block) {
 
 bool CowWriter::EmitRawBlocks(uint64_t new_block_start, const void* data, size_t size) {
     const uint8_t* iter = reinterpret_cast<const uint8_t*>(data);
-    uint64_t pos;
     for (size_t i = 0; i < size / header_.block_size; i++) {
         CowOperation op = {};
         op.type = kCowReplaceOp;
         op.new_block = new_block_start + i;
-        GetDataPos(&pos);
-        op.source = pos + sizeof(op);
+        op.source = next_data_pos_;
 
         if (compression_) {
             auto data = Compress(iter, header_.block_size);
@@ -305,6 +329,15 @@ bool CowWriter::EmitLabel(uint64_t label) {
     op.type = kCowLabelOp;
     op.source = label;
     return WriteOperation(op) && !fsync(fd_.get());
+}
+
+bool CowWriter::EmitCluster() {
+    CowOperation op = {};
+    op.type = kCowClusterOp;
+    // Next cluster starts after remainder of current cluster and the next data block.
+    op.source = current_data_size_ + options_.cluster_size - current_cluster_size_ -
+                sizeof(CowOperation);
+    return WriteOperation(op);
 }
 
 std::basic_string<uint8_t> CowWriter::Compress(const void* data, size_t length) {
@@ -359,11 +392,23 @@ static void SHA256(const void*, size_t, uint8_t[]) {
 }
 
 bool CowWriter::Finalize() {
-    footer_.op.ops_size = ops_.size();
-    uint64_t pos;
+    auto continue_cluster_size = current_cluster_size_;
+    auto continue_data_size = current_data_size_;
+    auto continue_data_pos = next_data_pos_;
+    auto continue_op_pos = next_op_pos_;
+    auto continue_size = ops_.size();
+    bool extra_cluster = false;
 
-    if (!GetDataPos(&pos)) {
-        PLOG(ERROR) << "failed to get file position";
+    // Footer should be at the end of a file, so if there is data after the current block, end it
+    // and start a new cluster.
+    if (options_.cluster_size && current_data_size_ > 0) {
+        EmitCluster();
+        extra_cluster = true;
+    }
+
+    footer_.op.ops_size = ops_.size();
+    if (lseek(fd_.get(), next_op_pos_, SEEK_SET) < 0) {
+        PLOG(ERROR) << "Failed to seek to footer position.";
         return false;
     }
     memset(&footer_.data.ops_checksum, 0, sizeof(uint8_t) * 32);
@@ -378,16 +423,23 @@ bool CowWriter::Finalize() {
         return false;
     }
 
-    // Re-position for any subsequent writes.
-    if (lseek(fd_.get(), pos, SEEK_SET) < 0) {
-        PLOG(ERROR) << "lseek ops failed";
-        return false;
+    // Reposition for additional Writing
+    if (extra_cluster) {
+        current_cluster_size_ = continue_cluster_size;
+        current_data_size_ = continue_data_size;
+        next_data_pos_ = continue_data_pos;
+        next_op_pos_ = continue_op_pos;
+        ops_.resize(continue_size);
     }
+
     return !fsync(fd_.get());
 }
 
 uint64_t CowWriter::GetCowSize() {
-    return next_op_pos_ + sizeof(footer_);
+    if (current_data_size_ > 0)
+        return next_data_pos_ + sizeof(footer_);
+    else
+        return next_op_pos_ + sizeof(footer_);
 }
 
 bool CowWriter::GetDataPos(uint64_t* pos) {
@@ -401,6 +453,15 @@ bool CowWriter::GetDataPos(uint64_t* pos) {
 }
 
 bool CowWriter::WriteOperation(const CowOperation& op, const void* data, size_t size) {
+    // If there isn't room for this op and the cluster end op, end the current cluster
+    if (options_.cluster_size && op.type != kCowClusterOp &&
+        options_.cluster_size < current_cluster_size_ + 2 * sizeof(op)) {
+        if (!EmitCluster()) return false;
+    }
+    if (lseek(fd_.get(), next_op_pos_, SEEK_SET) < 0) {
+        PLOG(ERROR) << "lseek failed for writing operation.";
+        return false;
+    }
     if (!android::base::WriteFully(fd_, reinterpret_cast<const uint8_t*>(&op), sizeof(op))) {
         return false;
     }
@@ -413,11 +474,26 @@ bool CowWriter::WriteOperation(const CowOperation& op, const void* data, size_t 
 
 void CowWriter::AddOperation(const CowOperation& op) {
     footer_.op.num_ops++;
-    next_op_pos_ += sizeof(CowOperation) + GetNextOpOffset(op);
+
+    if (op.type == kCowClusterOp) {
+        current_cluster_size_ = 0;
+        current_data_size_ = 0;
+    } else if (header_.cluster_size) {
+        current_cluster_size_ += sizeof(op);
+        current_data_size_ += op.data_length;
+    }
+
+    next_data_pos_ += op.data_length + GetNextDataOffset(op, header_.cluster_size);
+    next_op_pos_ += sizeof(CowOperation) + GetNextOpOffset(op, header_.cluster_size);
     ops_.insert(ops_.size(), reinterpret_cast<const uint8_t*>(&op), sizeof(op));
 }
 
 bool CowWriter::WriteRawData(const void* data, size_t size) {
+    if (lseek(fd_.get(), next_data_pos_, SEEK_SET) < 0) {
+        PLOG(ERROR) << "lseek failed for writing data.";
+        return false;
+    }
+
     if (!android::base::WriteFully(fd_, data, size)) {
         return false;
     }
