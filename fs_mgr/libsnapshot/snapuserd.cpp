@@ -384,7 +384,7 @@ bool Snapuserd::AdvanceMergedOps(int merged_ops_cur_iter) {
         const CowOperation* cow_op = &cowop_iter_->Get();
         CHECK(cow_op != nullptr);
 
-        if (cow_op->type == kCowFooterOp || cow_op->type == kCowLabelOp) {
+        if (IsMetadataOp(*cow_op)) {
             cowop_iter_->Next();
             continue;
         }
@@ -563,7 +563,7 @@ bool Snapuserd::ReadMetadata() {
         struct disk_exception* de =
                 reinterpret_cast<struct disk_exception*>((char*)de_ptr.get() + offset);
 
-        if (cow_op->type == kCowFooterOp || cow_op->type == kCowLabelOp) {
+        if (IsMetadataOp(*cow_op)) {
             cowop_riter_->Next();
             continue;
         }
