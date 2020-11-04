@@ -1,0 +1,10 @@
+Code-Review+2: Raff Tsai <rafftsai@google.com>
+Build-Cop-Override+1: Raff Tsai <rafftsai@google.com>
+Autosubmit+1: Yo Chiang <yochiang@google.com>
+Presubmit-Verified+1: Treehugger Robot <treehugger-gerrit@google.com>
+Open-Source-Licensing+1: Lint 🤖 <ayeaye-gerrit@google.com>
+Submitted-by: Treehugger Robot <treehugger-gerrit@google.com>
+Submitted-at: Wed, 04 Nov 2020 10:47:33 +0000
+Reviewed-on: https://android-review.googlesource.com/c/platform/system/core/+/1487337
+Project: platform/system/core
+Branch: refs/heads/master
