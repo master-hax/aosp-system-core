@@ -113,7 +113,8 @@ static int exec_cmd(const char* path, const char** argv, const char** envp) {
 
 static int generate_ext4_image(const char* fileName, long long partSize,
                                const std::string& initial_dir, unsigned eraseBlkSize,
-                               unsigned logicalBlkSize) {
+                               unsigned logicalBlkSize, const bool /* unused */,
+                               const bool wants_projid) {
     static constexpr int block_size = 4096;
     const std::string exec_dir = android::base::GetExecutableDirectory();
 
@@ -137,6 +138,12 @@ static int generate_ext4_image(const char* fileName, long long partSize,
     mke2fs_args.push_back(ext_attr.c_str());
     mke2fs_args.push_back("-O");
     mke2fs_args.push_back("uninit_bg");
+
+    if (wants_projid) {
+        mke2fs_args.push_back("-I");
+        mke2fs_args.push_back("512");
+    }
+
     mke2fs_args.push_back(fileName);
 
     std::string size_str = std::to_string(partSize / block_size);
@@ -162,9 +169,10 @@ static int generate_ext4_image(const char* fileName, long long partSize,
     return exec_cmd(e2fsdroid_args[0], e2fsdroid_args.data(), nullptr);
 }
 
-static int generate_f2fs_image(const char* fileName, long long partSize, const std::string& initial_dir,
-                               unsigned /* unused */, unsigned /* unused */)
-{
+static int generate_f2fs_image(const char* fileName, long long partSize,
+                               const std::string& initial_dir, unsigned /* unused */,
+                               unsigned /* unused */, const bool wants_casefold,
+                               const bool wants_projid) {
     const std::string exec_dir = android::base::GetExecutableDirectory();
     const std::string mkf2fs_path = exec_dir + "/make_f2fs";
     std::vector<const char*> mkf2fs_args = {mkf2fs_path.c_str()};
@@ -174,6 +182,18 @@ static int generate_f2fs_image(const char* fileName, long long partSize, const s
     mkf2fs_args.push_back(size_str.c_str());
     mkf2fs_args.push_back("-g");
     mkf2fs_args.push_back("android");
+
+    if (wants_projid) {
+        mkf2fs_args.push_back("-O");
+        mkf2fs_args.push_back("project_quota,extra_attr");
+    }
+    if (wants_casefold) {
+        mkf2fs_args.push_back("-O");
+        mkf2fs_args.push_back("casefold");
+        mkf2fs_args.push_back("-C");
+        mkf2fs_args.push_back("utf8");
+    }
+
     mkf2fs_args.push_back(fileName);
     mkf2fs_args.push_back(nullptr);
 
@@ -198,7 +218,8 @@ static const struct fs_generator {
 
     //returns 0 or error value
     int (*generate)(const char* fileName, long long partSize, const std::string& initial_dir,
-                    unsigned eraseBlkSize, unsigned logicalBlkSize);
+                    unsigned eraseBlkSize, unsigned logicalBlkSize, const bool wants_casefold,
+                    const bool wants_projid);
 
 } generators[] = {
     { "ext4", generate_ext4_image},
@@ -215,7 +236,9 @@ const struct fs_generator* fs_get_generator(const std::string& fs_type) {
 }
 
 int fs_generator_generate(const struct fs_generator* gen, const char* fileName, long long partSize,
-    const std::string& initial_dir, unsigned eraseBlkSize, unsigned logicalBlkSize)
-{
-    return gen->generate(fileName, partSize, initial_dir, eraseBlkSize, logicalBlkSize);
+                          const std::string& initial_dir, unsigned eraseBlkSize,
+                          unsigned logicalBlkSize, const bool wants_casefold,
+                          const bool wants_projid) {
+    return gen->generate(fileName, partSize, initial_dir, eraseBlkSize, logicalBlkSize,
+                         wants_casefold, wants_projid);
 }
