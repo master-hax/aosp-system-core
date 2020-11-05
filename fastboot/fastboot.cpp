@@ -452,6 +452,8 @@ static int show_help() {
             " --set-active[=SLOT]        Sets the active slot before rebooting.\n"
             " --skip-secondary           Don't flash secondary slots in flashall/update.\n"
             " --skip-reboot              Don't reboot device after flashing.\n"
+            " --enable-casefold          Enable casefold when formatting the disk.\n"
+            " --enable-projid            Enable projid when formatting the disk.\n"
             " --disable-verity           Sets disable-verity when flashing vbmeta.\n"
             " --disable-verification     Sets disable-verification when flashing vbmeta.\n"
 #if !defined(_WIN32)
@@ -1581,7 +1583,8 @@ static unsigned fb_get_flash_block_size(std::string name) {
 static void fb_perform_format(
                               const std::string& partition, int skip_if_not_supported,
                               const std::string& type_override, const std::string& size_override,
-                              const std::string& initial_dir) {
+                              const std::string& initial_dir,
+                              const bool wants_casefold, const bool wants_projid) {
     std::string partition_type, partition_size;
 
     struct fastboot_buffer buf;
@@ -1644,7 +1647,7 @@ static void fb_perform_format(
     logicalBlkSize = fb_get_flash_block_size("logical-block-size");
 
     if (fs_generator_generate(gen, output.path, size, initial_dir,
-            eraseBlkSize, logicalBlkSize)) {
+            eraseBlkSize, logicalBlkSize, wants_casefold, wants_projid)) {
         die("Cannot generate image for %s", partition.c_str());
     }
 
@@ -1769,6 +1772,8 @@ static void do_wipe_super(const std::string& image, const std::string& slot_over
 
 int FastBootTool::Main(int argc, char* argv[]) {
     bool wants_wipe = false;
+    bool wants_casefold = false;
+    bool wants_projid = false;
     bool wants_reboot = false;
     bool wants_reboot_bootloader = false;
     bool wants_reboot_recovery = false;
@@ -1815,6 +1820,8 @@ int FastBootTool::Main(int argc, char* argv[]) {
 #if !defined(_WIN32)
         {"wipe-and-use-fbe", no_argument, 0, 0},
 #endif
+        {"enable-casefold", no_argument, 0, 0},
+        {"enable-projid", no_argument, 0, 0},
         {0, 0, 0, 0}
     };
 
@@ -1871,6 +1878,10 @@ int FastBootTool::Main(int argc, char* argv[]) {
                 wants_wipe = true;
                 set_fbe_marker = true;
 #endif
+            } else if (name == "enable-casefold") {
+                wants_casefold = true;
+            } else if (name == "enable-projid") {
+                wants_projid = true;
             } else {
                 die("unknown option %s", longopts[longindex].name);
             }
@@ -1990,7 +2001,8 @@ int FastBootTool::Main(int argc, char* argv[]) {
             std::string partition = next_arg(&args);
 
             auto format = [&](const std::string& partition) {
-                fb_perform_format(partition, 0, type_override, size_override, "");
+                fb_perform_format(partition, 0, type_override, size_override, "",
+                                  wants_casefold, wants_projid);
             };
             do_for_partitions(partition, slot_override, format, true);
         } else if (command == "signature") {
@@ -2180,10 +2192,12 @@ int FastBootTool::Main(int argc, char* argv[]) {
             if (partition == "userdata" && set_fbe_marker) {
                 fprintf(stderr, "setting FBE marker on initial userdata...\n");
                 std::string initial_userdata_dir = create_fbemarker_tmpdir();
-                fb_perform_format(partition, 1, partition_type, "", initial_userdata_dir);
+                fb_perform_format(partition, 1, partition_type, "", initial_userdata_dir,
+                                  wants_casefold, wants_projid);
                 delete_fbemarker_tmpdir(initial_userdata_dir);
             } else {
-                fb_perform_format(partition, 1, partition_type, "", "");
+                fb_perform_format(partition, 1, partition_type, "", "",
+                                  wants_casefold, wants_projid);
             }
         }
     }
