@@ -1003,6 +1003,11 @@ static bool has_vbmeta_partition() {
            fb->GetVar("partition-type:vbmeta_b", &partition_type) == fastboot::SUCCESS;
 }
 
+static bool is_logical(const std::string& partition) {
+    std::string value;
+    return fb->GetVar("is-logical:" + partition, &value) == fastboot::SUCCESS && value == "yes";
+}
+
 static std::string fb_fix_numeric_var(std::string var) {
     // Some bootloaders (angler, for example), send spurious leading whitespace.
     var = android::base::Trim(var);
@@ -1025,6 +1030,9 @@ static void copy_boot_avb_footer(const std::string& partition, struct fastboot_b
     partition_size_str = fb_fix_numeric_var(partition_size_str);
     int64_t partition_size;
     if (!android::base::ParseInt(partition_size_str, &partition_size)) {
+        if (!is_logical(partition)) {
+            return;
+        }
         die("Couldn't parse partition size '%s'.", partition_size_str.c_str());
     }
     if (partition_size == buf->sz) {
@@ -1232,11 +1240,6 @@ static void do_for_partitions(const std::string& part, const std::string& slot,
     } else {
         do_for_partition(part, slot, func, force_slot);
     }
-}
-
-static bool is_logical(const std::string& partition) {
-    std::string value;
-    return fb->GetVar("is-logical:" + partition, &value) == fastboot::SUCCESS && value == "yes";
 }
 
 static bool is_retrofit_device() {
