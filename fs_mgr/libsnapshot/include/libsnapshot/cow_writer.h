@@ -111,7 +111,7 @@ class CowWriter : public ICowWriter {
     virtual bool EmitLabel(uint64_t label) override;
 
   private:
-    bool EmitCluster();
+    bool EmitCluster(std::optional<uint64_t> offset = std::nullopt);
     void SetupHeaders();
     bool ParseOptions();
     bool OpenForWrite();

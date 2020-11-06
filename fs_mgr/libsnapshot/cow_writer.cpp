@@ -296,11 +296,15 @@ bool CowWriter::EmitLabel(uint64_t label) {
     return WriteOperation(op) && Sync();
 }
 
-bool CowWriter::EmitCluster() {
+bool CowWriter::EmitCluster(std::optional<uint64_t> offset) {
     CowOperation op = {};
     op.type = kCowClusterOp;
     // Next cluster starts after remainder of current cluster and the next data block.
-    op.source = current_data_size_ + cluster_size_ - current_cluster_size_ - sizeof(CowOperation);
+    if (offset.has_value())
+        op.source = offset.value();
+    else
+        op.source =
+                current_data_size_ + cluster_size_ - current_cluster_size_ - sizeof(CowOperation);
     return WriteOperation(op);
 }
 
@@ -362,6 +366,19 @@ bool CowWriter::Finalize() {
     auto continue_op_pos = next_op_pos_;
     auto continue_size = ops_.size();
     bool extra_cluster = false;
+
+    // Position for new writing
+    uint64_t size = GetCowSize();
+    if (!Truncate(size)) return false;
+
+    uint64_t eof = lseek(fd_.get(), 0, SEEK_END);
+    if (eof != (uint64_t)-1 && eof != size) {
+        // We're probably not in a normal file in this case. Place footer at the end.
+        if (!EmitCluster(eof - next_op_pos_ - sizeof(CowOperation) - sizeof(CowFooter))) {
+            LOG(ERROR) << "Failed to write pointer to footer.";
+            return false;
+        }
+    }
 
     // Footer should be at the end of a file, so if there is data after the current block, end it
     // and start a new cluster.

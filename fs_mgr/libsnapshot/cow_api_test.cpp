@@ -14,14 +14,18 @@
 
 #include <sys/stat.h>
 
+#include <chrono>
 #include <cstdio>
 #include <iostream>
 #include <memory>
 #include <string_view>
 
+#include <stdio.h>
+
 #include <android-base/file.h>
 #include <android-base/logging.h>
 #include <gtest/gtest.h>
+#include <libdm/loop_control.h>
 #include <libsnapshot/cow_reader.h>
 #include <libsnapshot/cow_writer.h>
 
@@ -686,6 +690,45 @@ TEST_F(CowTest, ClusterAppendTest) {
 
     ASSERT_TRUE(iter->Done());
 }
+
+class CowBlockTest : public ::testing::Test {
+  protected:
+    virtual void SetUp() override {}
+
+    virtual void TearDown() override {}
+};
+
+#ifdef 0
+// This test requires selinux to be disabled to run as it makes a loop device on /data/local/tmp
+TEST_F(CowBlockTest, FooterBlockDeviceTest) {
+    std::unique_ptr<TemporaryFile> backing_ = std::make_unique<TemporaryFile>();
+    off_t length = 4096;
+    ftruncate(backing_->fd, length);
+    android::dm::LoopDevice dev_(backing_->fd, std::chrono::milliseconds(5000), true);
+    android::base::unique_fd cow_(open(dev_.device().c_str(), O_RDWR));
+
+    CowOptions options;
+    auto writer = std::make_unique<CowWriter>(options);
+    ASSERT_TRUE(writer->Initialize(cow_.get()));
+    ASSERT_TRUE(writer->Finalize());
+    // Read back all ops
+    CowReader reader;
+    ASSERT_TRUE(reader.Parse(cow_.get()));
+
+    StringSink sink;
+
+    auto iter = reader.GetOpIter();
+    ASSERT_NE(iter, nullptr);
+
+    ASSERT_FALSE(iter->Done());
+    auto op = &iter->Get();
+    ASSERT_EQ(op->type, kCowClusterOp);
+    ASSERT_EQ(op->source, length - sizeof(CowOperation) - sizeof(CowHeader) - sizeof(CowFooter));
+
+    iter->Next();
+    ASSERT_TRUE(iter->Done());
+}
+#endif
 
 }  // namespace snapshot
 }  // namespace android
