@@ -91,6 +91,7 @@ void CowWriter::SetupHeaders() {
     header_.header_size = sizeof(CowHeader);
     header_.footer_size = sizeof(CowFooter);
     header_.block_size = options_.block_size;
+    header_.num_merge_ops = 0;
     footer_ = {};
     footer_.op.data_length = 64;
     footer_.op.type = kCowFooterOp;
@@ -123,6 +124,11 @@ bool CowWriter::SetFd(android::base::borrowed_fd fd) {
         fd_ = fd;
     }
     return true;
+}
+
+void CowWriter::InitializeMerge(borrowed_fd fd, CowHeader* header) {
+    fd_ = fd;
+    memcpy(&header_, header, sizeof(CowHeader));
 }
 
 bool CowWriter::Initialize(unique_fd&& fd, OpenMode mode) {
@@ -444,6 +450,18 @@ bool CowWriter::Sync() {
         return false;
     }
     return true;
+}
+
+bool CowWriter::CommitMerge(CowHeader* header) {
+    memcpy(&header_, header, sizeof(CowHeader));
+    int ret = pwrite(fd_.get(), reinterpret_cast<const uint8_t*>(&header_), sizeof(header_), 0);
+
+    if (ret < 0 || ret != sizeof(header_)) {
+        PLOG(ERROR) << "Failed to write the footer during merge";
+        return false;
+    }
+
+    return Sync();
 }
 
 }  // namespace snapshot
