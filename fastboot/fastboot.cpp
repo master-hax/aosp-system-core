@@ -1018,7 +1018,8 @@ static void copy_boot_avb_footer(const std::string& partition, struct fastboot_b
     }
 
     std::string partition_size_str;
-    if (fb->GetVar("partition-size:" + partition, &partition_size_str) != fastboot::SUCCESS) {
+    if (fb->GetVar("partition-size:" + partition, &partition_size_str) != fastboot::SUCCESS &&
+        (is_userspace_fastboot() || should_flash_in_userspace(partition))) {
         die("cannot get boot partition size");
     }
 
