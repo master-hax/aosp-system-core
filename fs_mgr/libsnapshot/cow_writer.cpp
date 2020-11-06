@@ -126,7 +126,10 @@ bool CowWriter::SetFd(android::base::borrowed_fd fd) {
         fd_ = owned_fd_;
         is_dev_null_ = true;
     } else {
+        struct stat stat;
         fd_ = fd;
+        if (fstat(fd.get(), &stat) < 0) return false;
+        is_block_device_ = S_ISBLK(stat.st_mode);
     }
     return true;
 }
@@ -225,12 +228,8 @@ bool CowWriter::OpenForAppend(uint64_t label) {
     // Free reader so we own the descriptor position again.
     reader = nullptr;
 
-    // Position for new writing
-    if (ftruncate(fd_.get(), next_data_pos_) != 0) {
-        PLOG(ERROR) << "Failed to trim file";
-        return false;
-    }
-    return true;
+    // Remove excess data
+    return Truncate(next_data_pos_);
 }
 
 bool CowWriter::EmitCopy(uint64_t new_block, uint64_t old_block) {
@@ -471,6 +470,17 @@ bool CowWriter::Sync() {
     }
     if (fsync(fd_.get()) < 0) {
         PLOG(ERROR) << "fsync failed";
+        return false;
+    }
+    return true;
+}
+
+bool CowWriter::Truncate(off_t length) {
+    if (is_dev_null_ || is_block_device_) {
+        return true;
+    }
+    if (ftruncate(fd_.get(), length) < 0) {
+        PLOG(ERROR) << "Failed to truncate.";
         return false;
     }
     return true;

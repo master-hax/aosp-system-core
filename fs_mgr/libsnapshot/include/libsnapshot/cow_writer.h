@@ -125,6 +125,7 @@ class CowWriter : public ICowWriter {
 
     bool SetFd(android::base::borrowed_fd fd);
     bool Sync();
+    bool Truncate(off_t length);
 
   private:
     android::base::unique_fd owned_fd_;
@@ -134,6 +135,7 @@ class CowWriter : public ICowWriter {
     int compression_ = 0;
     uint64_t next_op_pos_ = 0;
     bool is_dev_null_ = false;
+    bool is_block_device_ = false;
     uint64_t next_data_pos_ = 0;
     uint32_t cluster_size_ = 0;
     uint32_t current_cluster_size_ = 0;
