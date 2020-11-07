@@ -114,7 +114,7 @@ static int exec_cmd(const char* path, const char** argv, const char** envp) {
 static int generate_ext4_image(const char* fileName, long long partSize,
                                const std::string& initial_dir, unsigned eraseBlkSize,
                                unsigned logicalBlkSize, const bool /* unused */,
-                               const bool wants_projid) {
+                               const bool wants_projid, const bool /* unused */) {
     static constexpr int block_size = 4096;
     const std::string exec_dir = android::base::GetExecutableDirectory();
 
@@ -172,7 +172,7 @@ static int generate_ext4_image(const char* fileName, long long partSize,
 static int generate_f2fs_image(const char* fileName, long long partSize,
                                const std::string& initial_dir, unsigned /* unused */,
                                unsigned /* unused */, const bool wants_casefold,
-                               const bool wants_projid) {
+                               const bool wants_projid, const bool wants_compress) {
     const std::string exec_dir = android::base::GetExecutableDirectory();
     const std::string mkf2fs_path = exec_dir + "/make_f2fs";
     std::vector<const char*> mkf2fs_args = {mkf2fs_path.c_str()};
@@ -193,7 +193,12 @@ static int generate_f2fs_image(const char* fileName, long long partSize,
         mkf2fs_args.push_back("-C");
         mkf2fs_args.push_back("utf8");
     }
-
+    if (wants_compress) {
+        mkf2fs_args.push_back("-O");
+        mkf2fs_args.push_back("compression");
+        mkf2fs_args.push_back("-O");
+        mkf2fs_args.push_back("extra_attr");
+    }
     mkf2fs_args.push_back(fileName);
     mkf2fs_args.push_back(nullptr);
 
@@ -219,7 +224,7 @@ static const struct fs_generator {
     //returns 0 or error value
     int (*generate)(const char* fileName, long long partSize, const std::string& initial_dir,
                     unsigned eraseBlkSize, unsigned logicalBlkSize, const bool wants_casefold,
-                    const bool wants_projid);
+                    const bool wants_projid, const bool wants_compress);
 
 } generators[] = {
     { "ext4", generate_ext4_image},
@@ -238,7 +243,7 @@ const struct fs_generator* fs_get_generator(const std::string& fs_type) {
 int fs_generator_generate(const struct fs_generator* gen, const char* fileName, long long partSize,
                           const std::string& initial_dir, unsigned eraseBlkSize,
                           unsigned logicalBlkSize, const bool wants_casefold,
-                          const bool wants_projid) {
+                          const bool wants_projid, const bool wants_compress) {
     return gen->generate(fileName, partSize, initial_dir, eraseBlkSize, logicalBlkSize,
-                         wants_casefold, wants_projid);
+                         wants_casefold, wants_projid, wants_compress);
 }

@@ -454,6 +454,7 @@ static int show_help() {
             " --skip-reboot              Don't reboot device after flashing.\n"
             " --enable-casefold          Enable casefold when formatting the disk.\n"
             " --enable-projid            Enable projid when formatting the disk.\n"
+            " --enable-compress          Enable compression when formatting the disk.\n"
             " --disable-verity           Sets disable-verity when flashing vbmeta.\n"
             " --disable-verification     Sets disable-verification when flashing vbmeta.\n"
 #if !defined(_WIN32)
@@ -1584,7 +1585,7 @@ static void fb_perform_format(
                               const std::string& partition, int skip_if_not_supported,
                               const std::string& type_override, const std::string& size_override,
                               const std::string& initial_dir,
-                              const bool wants_casefold, const bool wants_projid) {
+                              const bool wants_casefold, const bool wants_projid, const bool wants_compress) {
     std::string partition_type, partition_size;
 
     struct fastboot_buffer buf;
@@ -1647,7 +1648,7 @@ static void fb_perform_format(
     logicalBlkSize = fb_get_flash_block_size("logical-block-size");
 
     if (fs_generator_generate(gen, output.path, size, initial_dir,
-            eraseBlkSize, logicalBlkSize, wants_casefold, wants_projid)) {
+            eraseBlkSize, logicalBlkSize, wants_casefold, wants_projid, wants_compress)) {
         die("Cannot generate image for %s", partition.c_str());
     }
 
@@ -1774,6 +1775,7 @@ int FastBootTool::Main(int argc, char* argv[]) {
     bool wants_wipe = false;
     bool wants_casefold = false;
     bool wants_projid = false;
+    bool wants_compress = false;
     bool wants_reboot = false;
     bool wants_reboot_bootloader = false;
     bool wants_reboot_recovery = false;
@@ -1822,6 +1824,7 @@ int FastBootTool::Main(int argc, char* argv[]) {
 #endif
         {"enable-casefold", no_argument, 0, 0},
         {"enable-projid", no_argument, 0, 0},
+        {"enable-compress", no_argument, 0, 0},
         {0, 0, 0, 0}
     };
 
@@ -1882,6 +1885,8 @@ int FastBootTool::Main(int argc, char* argv[]) {
                 wants_casefold = true;
             } else if (name == "enable-projid") {
                 wants_projid = true;
+            } else if (name == "enable-compress") {
+                wants_compress = true;
             } else {
                 die("unknown option %s", longopts[longindex].name);
             }
@@ -2002,7 +2007,7 @@ int FastBootTool::Main(int argc, char* argv[]) {
 
             auto format = [&](const std::string& partition) {
                 fb_perform_format(partition, 0, type_override, size_override, "",
-                                  wants_casefold, wants_projid);
+                                  wants_casefold, wants_projid, wants_compress);
             };
             do_for_partitions(partition, slot_override, format, true);
         } else if (command == "signature") {
@@ -2193,11 +2198,11 @@ int FastBootTool::Main(int argc, char* argv[]) {
                 fprintf(stderr, "setting FBE marker on initial userdata...\n");
                 std::string initial_userdata_dir = create_fbemarker_tmpdir();
                 fb_perform_format(partition, 1, partition_type, "", initial_userdata_dir,
-                                  wants_casefold, wants_projid);
+                                  wants_casefold, wants_projid, wants_compress);
                 delete_fbemarker_tmpdir(initial_userdata_dir);
             } else {
                 fb_perform_format(partition, 1, partition_type, "", "",
-                                  wants_casefold, wants_projid);
+                                  wants_casefold, wants_projid, wants_compress);
             }
         }
     }
