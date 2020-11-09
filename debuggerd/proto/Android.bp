@@ -1,0 +1,24 @@
+cc_library {
+    name: "libtombstone_proto",
+    cflags: [
+        "-Wall",
+        "-Wextra",
+        "-Wthread-safety",
+        "-Werror",
+    ],
+
+    compile_multilib: "both",
+
+    proto: {
+        export_proto_headers: true,
+        type: "lite",
+    },
+
+    srcs: [
+        "tombstone.proto",
+    ],
+
+    stl: "libc++_static",
+    recovery_available: true,
+    vendor_ramdisk_available: true,
+}
