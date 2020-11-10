@@ -638,6 +638,8 @@ Result<void> ServiceParser::EndSection() {
         }
     }
 
+    service_->set_filename(filename_);
+
     if (SelinuxGetVendorAndroidVersion() >= __ANDROID_API_R__) {
         if ((service_->flags() & SVC_CRITICAL) != 0 && (service_->flags() & SVC_ONESHOT) != 0) {
             return Error() << "service '" << service_->name()

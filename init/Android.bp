@@ -352,6 +352,7 @@ cc_binary {
         "libcutils",
         "libhidl-gen-utils",
         "libhidlmetadata",
+        "libjsoncpp",
         "liblog",
         "libprocessgroup",
         "libprotobuf-cpp-lite",

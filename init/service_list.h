@@ -74,6 +74,10 @@ class ServiceList {
     void MarkServicesUpdate();
     bool IsServicesUpdated() const { return services_update_finished_; }
     void DelayService(const Service& service);
+    void TrackRemovedServices() { track_removed_services_ = true; }
+    const std::vector<std::unique_ptr<Service>>& removed_services() const {
+        return removed_services_;
+    }
 
     void ResetState() {
         post_data_ = false;
@@ -86,6 +90,8 @@ class ServiceList {
     bool post_data_ = false;
     bool services_update_finished_ = false;
     std::vector<std::string> delayed_service_names_;
+    bool track_removed_services_ = false;
+    std::vector<std::unique_ptr<Service>> removed_services_;
 };
 
 }  // namespace init
