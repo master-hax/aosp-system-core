@@ -638,6 +638,8 @@ Result<void> ServiceParser::EndSection() {
         }
     }
 
+    service_->set_filename(filename_);
+
     if (SelinuxGetVendorAndroidVersion() >= __ANDROID_API_R__) {
         if ((service_->flags() & SVC_CRITICAL) != 0 && (service_->flags() & SVC_ONESHOT) != 0) {
             return Error() << "service '" << service_->name()
@@ -655,6 +657,13 @@ Result<void> ServiceParser::EndSection() {
         if (StartsWith(filename_, "/apex/") && !old_service->is_updatable()) {
             return Error() << "cannot update a non-updatable service '" << service_->name()
                            << "' with a config in APEX";
+        }
+
+        if (subcontext_) {
+            if (subcontext_->PathMatchesSubcontext(service_->filename()) !=
+                subcontext_->PathMatchesSubcontext(old_service->filename())) {
+                return Error() << "override crosses subcontext";
+            }
         }
 
         service_list_->RemoveService(*old_service);
