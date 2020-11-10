@@ -36,6 +36,10 @@ size_t ServiceList::CheckAllCommands() {
     return failures;
 }
 
+void ServiceList::TrackRemovedServices() {
+    track_removed_services_ = true;
+}
+
 void ServiceList::AddService(std::unique_ptr<Service> service) {
     services_.emplace_back(std::move(service));
 }
@@ -58,6 +62,8 @@ void ServiceList::RemoveService(const Service& svc) {
     if (svc_it == services_.end()) {
         return;
     }
+
+    if (track_removed_services_) removed_services_.emplace_back(move(*svc_it));
 
     services_.erase(svc_it);
 }

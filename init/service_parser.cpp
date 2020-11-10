@@ -661,6 +661,8 @@ Result<void> ServiceParser::EndSection() {
         old_service = nullptr;
     }
 
+    service_->set_filename(filename_);
+
     service_list_->AddService(std::move(service_));
 
     return {};

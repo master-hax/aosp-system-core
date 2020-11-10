@@ -31,6 +31,10 @@ class ServiceList {
     // Exposed for testing
     ServiceList();
     size_t CheckAllCommands();
+    void TrackRemovedServices();
+    const std::vector<std::unique_ptr<Service>>& removed_services() const {
+        return removed_services_;
+    }
 
     void AddService(std::unique_ptr<Service> service);
     void RemoveService(const Service& svc);
@@ -86,6 +90,8 @@ class ServiceList {
     bool post_data_ = false;
     bool services_update_finished_ = false;
     std::vector<std::string> delayed_service_names_;
+    bool track_removed_services_ = false;
+    std::vector<std::unique_ptr<Service>> removed_services_;
 };
 
 }  // namespace init
