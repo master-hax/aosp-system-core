@@ -137,6 +137,8 @@ class Service {
             flags_ &= ~SVC_ONESHOT;
         }
     }
+    void set_filename(const std::string& filename) { filename_ = filename; }
+    std::string filename() const { return filename_; }
 
   private:
     void NotifyStateChange(const std::string& new_state) const;
@@ -214,6 +216,8 @@ class Service {
     std::optional<std::string> on_failure_reboot_target_;
 
     bool from_apex_ = false;
+
+    std::string filename_;
 };
 
 }  // namespace init

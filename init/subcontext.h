@@ -33,12 +33,15 @@ namespace init {
 static constexpr const char kInitContext[] = "u:r:init:s0";
 static constexpr const char kVendorContext[] = "u:r:vendor_init:s0";
 static constexpr const char kTestContext[] = "test-test-test";
+static constexpr const char kVendorHostContext[] = "vendor-host";
 
 class Subcontext {
   public:
-    Subcontext(std::vector<std::string> path_prefixes, std::string context)
+    Subcontext(std::vector<std::string> path_prefixes, std::string context, bool host = false)
         : path_prefixes_(std::move(path_prefixes)), context_(std::move(context)), pid_(0) {
-        Fork();
+        if (!host) {
+            Fork();
+        }
     }
 
     Result<void> Execute(const std::vector<std::string>& args);
@@ -61,6 +64,7 @@ class Subcontext {
 
 int SubcontextMain(int argc, char** argv, const BuiltinFunctionMap* function_map);
 void InitializeSubcontext();
+void InitializeHostSubcontext(std::vector<std::string> vendor_prefixes);
 Subcontext* GetSubcontext();
 bool SubcontextChildReap(pid_t pid);
 void SubcontextTerminate();
