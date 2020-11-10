@@ -657,6 +657,12 @@ Result<void> ServiceParser::EndSection() {
                            << "' with a config in APEX";
         }
 
+        std::string context = subcontext_ ? subcontext_->context() : "";
+        if (context != old_service->context()) {
+            return Error() << "service '" << service_->name() << "' overrides another service "
+                           << "across the treble boundary.";
+        }
+
         service_list_->RemoveService(*old_service);
         old_service = nullptr;
     }

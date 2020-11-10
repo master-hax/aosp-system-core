@@ -137,6 +137,12 @@ class Service {
             flags_ &= ~SVC_ONESHOT;
         }
     }
+    std::string context() const {
+        if (subcontext_) {
+            return subcontext_->context();
+        }
+        return "";
+    }
 
   private:
     void NotifyStateChange(const std::string& new_state) const;
@@ -168,6 +174,7 @@ class Service {
     std::vector<FileDescriptor> files_;
     std::vector<std::pair<std::string, std::string>> environment_vars_;
 
+    Subcontext* subcontext_;
     Action onrestart_;  // Commands to execute on restart.
 
     std::vector<std::string> writepid_files_;
