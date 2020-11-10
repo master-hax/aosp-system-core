@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4f8f0666_cfbd2d59",
+        "filename": "init/host_init_verifier.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 330,
+      "author": {
+        "id": 1455782
+      },
+      "writtenOn": "2020-11-10T19:20:02Z",
+      "side": 1,
+      "message": "In the future, this style of using host_init_verifier can also be expanded to more verification checks that use the whole set of init rc files. e.g.\n\nsl \u003d BuildServiceListFromPartitions()\nif (check_overrides) { CheckOverrides() }\nif (check_otherthing) { CheckOtherThing() }",
+      "range": {
+        "startLine": 330,
+        "startChar": 0,
+        "endLine": 330,
+        "endChar": 60
+      },
+      "revId": "cc46050d3b24cde56592d47ef5d96f80b494179f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
