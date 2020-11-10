@@ -18,6 +18,7 @@
 
 #include <errno.h>
 #include <getopt.h>
+#include <glob.h>
 #include <pwd.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -25,12 +26,14 @@
 #include <fstream>
 #include <iostream>
 #include <iterator>
+#include <map>
 #include <string>
 #include <vector>
 
 #include <android-base/file.h>
 #include <android-base/logging.h>
 #include <android-base/parseint.h>
+#include <android-base/scopeguard.h>
 #include <android-base/strings.h>
 #include <generated_android_ids.h>
 #include <hidl/metadata.h>
@@ -60,6 +63,7 @@ using android::properties::PropertyInfoArea;
 using android::properties::PropertyInfoEntry;
 
 static std::vector<std::string> passwd_files;
+static std::map<std::string, std::string> partition_map;
 
 static std::vector<std::pair<std::string, int>> GetVendorPasswd(const std::string& passwd_file) {
     std::string passwd;
@@ -178,6 +182,69 @@ Result<InterfaceInheritanceHierarchyMap> ReadInterfaceInheritanceHierarchy() {
     return result;
 }
 
+// TODO: Basic correctness checking for a collection of init_rc files.
+ServiceList& CheckInitRcInPartitions(const std::map<std::string, std::string>& partition_map) {
+    const BuiltinFunctionMap& function_map = GetBuiltinFunctionMap();
+    Action::set_function_map(&function_map);
+    ActionManager& am = ActionManager::GetInstance();
+    ServiceList& sl = ServiceList::GetInstance();
+    sl.TrackRemovedServices();
+    Parser parser;
+    parser.AddSectionParser("service", std::make_unique<ServiceParser>(&sl, nullptr, std::nullopt));
+    parser.AddSectionParser("on", std::make_unique<ActionParser>(&am, nullptr));
+    parser.AddSectionParser("import", std::make_unique<HostImportParser>());
+
+    for (const auto& p : partition_map) {
+        std::string partition = p.first;
+        std::string partition_path = p.second;
+        parser.ParseConfig(partition_path + "/etc/init");
+    }
+
+    for (const auto& service : sl) {
+        if (service->is_override()) {
+            LOG(ERROR) << service->name();
+        }
+    }
+    for (const auto& service : sl.removed_services()) {
+        LOG(ERROR) << service->name();
+    }
+
+    return sl;
+}
+
+/*
+bool ParseInitMap(const std::map<std::string, std::vector<std::string>>& init_map) {
+  const BuiltinFunctionMap& function_map = GetBuiltinFunctionMap();
+  Action::set_function_map(&function_map);
+  ActionManager& am = ActionManager::GetInstance();
+  ServiceList& sl = ServiceList::GetInstance();
+  Parser parser;
+  parser.AddSectionParser("service", std::make_unique<ServiceParser>(&sl, nullptr, std::nullopt));
+  parser.AddSectionParser("on", std::make_unique<ActionParser>(&am, nullptr));
+  parser.AddSectionParser("import", std::make_unique<HostImportParser>());
+
+  parser.ParseConfig("out/target/product/vsoc_x86/vendor/etc/init");
+
+  for (const auto& p : init_map) {
+    std::string partition = p.first;
+    for (const auto& init_rc : p.second) {
+      if (!parser.ParseConfigFileInsecure(init_rc)) {
+        LOG(ERROR) << "Failed to open init rc script '" << init_rc << "'";
+        return false;
+      }
+      size_t failures = parser.parse_error_count();
+      if (failures > 0) {
+          LOG(ERROR) << "Failed to parse init script '" << init_rc << "' with " << failures
+                     << " errors";
+          return false;
+      }
+      LOG(ERROR) << "Parsed init rc script '" << init_rc << "'";
+    }
+  }
+  return true;
+}
+*/
+
 const PropertyInfoArea* property_info_area;
 
 void HandlePropertyContexts(const std::string& filename,
@@ -206,8 +273,10 @@ int main(int argc, char** argv) {
 
     while (true) {
         static const char kPropertyContexts[] = "property-contexts=";
+        static const char kPartition[] = "partition=";
         static const struct option long_options[] = {
                 {"help", no_argument, nullptr, 'h'},
+                {kPartition, required_argument, nullptr, 0},
                 {kPropertyContexts, required_argument, nullptr, 0},
                 {nullptr, 0, nullptr, 0},
         };
@@ -223,6 +292,14 @@ int main(int argc, char** argv) {
             case 0:
                 if (long_options[option_index].name == kPropertyContexts) {
                     HandlePropertyContexts(optarg, &property_infos);
+                }
+                if (long_options[option_index].name == kPartition) {
+                    auto partition_and_path = Split(optarg, ":");
+                    if (partition_and_path.size() != 2) {
+                        LOG(ERROR) << "Expected --partition format name:path";
+                        exit(EXIT_FAILURE);
+                    }
+                    partition_map[partition_and_path[0]] = partition_and_path[1];
                 }
                 break;
             case 'h':
@@ -243,6 +320,12 @@ int main(int argc, char** argv) {
     if (argc != 1) {
         PrintUsage();
         return EXIT_FAILURE;
+    }
+
+    if (!partition_map.empty()) {
+        CheckInitRcInPartitions(partition_map);
+        // ParseInitMap(init_map);
+        exit(0);
     }
 
     auto interface_inheritance_hierarchy_map = ReadInterfaceInheritanceHierarchy();
