@@ -59,6 +59,8 @@ void ServiceList::RemoveService(const Service& svc) {
         return;
     }
 
+    if (track_removed_services_) removed_services_.emplace_back(move(*svc_it));
+
     services_.erase(svc_it);
 }
 

@@ -25,6 +25,8 @@
 #include <fstream>
 #include <iostream>
 #include <iterator>
+#include <map>
+#include <set>
 #include <string>
 #include <vector>
 
@@ -34,6 +36,8 @@
 #include <android-base/strings.h>
 #include <generated_android_ids.h>
 #include <hidl/metadata.h>
+#include <json/json.h>
+#include <json/writer.h>
 #include <property_info_serializer/property_info_serializer.h>
 
 #include "action.h"
@@ -51,15 +55,21 @@
 
 using namespace std::literals;
 
+using android::base::EndsWith;
 using android::base::ParseInt;
 using android::base::ReadFileToString;
 using android::base::Split;
+using android::base::StartsWith;
 using android::properties::BuildTrie;
 using android::properties::ParsePropertyInfoFile;
 using android::properties::PropertyInfoArea;
 using android::properties::PropertyInfoEntry;
 
 static std::vector<std::string> passwd_files;
+
+// NOTE: Keep this in sync with the order used by init.cpp LoadBootScripts()
+static const std::vector<std::string> partition_search_order =
+        std::vector<std::string>({"system", "system_ext", "odm", "vendor", "product"});
 
 static std::vector<std::pair<std::string, int>> GetVendorPasswd(const std::string& passwd_file) {
     std::string passwd;
@@ -148,12 +158,27 @@ static Result<void> check_stub(const BuiltinArguments& args) {
 #include "generated_stub_builtin_function_map.h"
 
 void PrintUsage() {
-    std::cout << "usage: host_init_verifier [options] <init rc file>\n"
+    std::cout << "usage: host_init_verifier [options]\n"
                  "\n"
-                 "Tests an init script for correctness\n"
+                 "Tests init script(s) for correctness.\n"
                  "\n"
-                 "-p FILE\tSearch this passwd file for users and groups\n"
-                 "--property_contexts=FILE\t Use this file for property_contexts\n"
+                 "Single script mode options:\n"
+                 "  -p FILE\tSearch this passwd file for users and groups\n"
+                 "  --property_contexts=FILE\t Use this file for property_contexts\n"
+                 "  [init rc file]\tPositional argument; test this init script.\n"
+                 "\n"
+                 "Multiple script mode options:\n"
+                 "  --overrides\tOutput a JSON to stdout describing service overrides.\n"
+                 "  --out_system=DIR\tPath to the output product directory for the "
+                 "system partition.\n"
+                 "  --out_system_ext=DIR\tPath to the output product directory for the "
+                 "system_ext partition.\n"
+                 "  --out_odm=DIR\tPath to the output product directory for the "
+                 "odm partition.\n"
+                 "  --out_vendor=DIR\tPath to the output product directory for the "
+                 "vendor partition.\n"
+                 "  --out_product=DIR\tPath to the output product directory for the "
+                 "product partition.\n"
               << std::endl;
 }
 
@@ -175,6 +200,65 @@ Result<InterfaceInheritanceHierarchyMap> ReadInterfaceInheritanceHierarchy() {
         result[fqname] = inherited_interfaces;
     }
 
+    return result;
+}
+
+// Builds a ServiceList by scanning partition directories.
+// partition_map is a map from partition_name -> directory.
+ServiceList& BuildServiceListFromPartitions(
+        const std::map<std::string, std::string>& partition_map) {
+    const BuiltinFunctionMap& function_map = GetBuiltinFunctionMap();
+    Action::set_function_map(&function_map);
+    ActionManager& am = ActionManager::GetInstance();
+    ServiceList& sl = ServiceList::GetInstance();
+    sl.TrackRemovedServices();
+
+    Parser parser;
+    parser.AddSectionParser("service", std::make_unique<ServiceParser>(&sl, nullptr, std::nullopt));
+    parser.AddSectionParser("on", std::make_unique<ActionParser>(&am, nullptr));
+    parser.AddSectionParser("import", std::make_unique<HostImportParser>());
+
+    for (const auto& p : partition_search_order) {
+        if (partition_map.find(p) != partition_map.end()) {
+            parser.ParseConfig(partition_map.at(p) + "etc/init");
+        }
+    }
+    return sl;
+}
+
+std::string GetServiceFilenamePartition(const std::unique_ptr<Service>& service,
+                                        const std::map<std::string, std::string>& partition_map) {
+    for (const auto& p : partition_map) {
+        if (StartsWith(service->filename(), p.second)) {
+            return p.first;
+        }
+    }
+    return "UNKNOWN";
+}
+
+// Returns a JSON map of services that override other services.
+// Format:
+//   key:    service name
+//   value:  partition list, the location of the service's init rc files.
+Json::Value CheckOverrides(const ServiceList& sl,
+                           const std::map<std::string, std::string>& partition_map) {
+    Json::Value result;
+    for (const auto& service : sl) {
+        if (service->is_override()) {
+            std::set<std::string> partitions = {
+                    GetServiceFilenamePartition(service, partition_map)};
+            for (const auto& removed_service : sl.removed_services()) {
+                if (removed_service->name() == service->name()) {
+                    partitions.insert(GetServiceFilenamePartition(removed_service, partition_map));
+                }
+            }
+            Json::Value partitions_entry(Json::arrayValue);
+            for (const auto& partition : partitions) {
+                partitions_entry.append(partition);
+            }
+            result[service->name()] = partitions_entry;
+        }
+    }
     return result;
 }
 
@@ -203,12 +287,21 @@ int main(int argc, char** argv) {
     android::base::SetMinimumLogSeverity(android::base::ERROR);
 
     auto property_infos = std::vector<PropertyInfoEntry>();
+    bool check_overrides = false;
+    std::map<std::string, std::string> partition_map;
 
     while (true) {
         static const char kPropertyContexts[] = "property-contexts=";
+        static const char kOverrides[] = "overrides";
         static const struct option long_options[] = {
                 {"help", no_argument, nullptr, 'h'},
                 {kPropertyContexts, required_argument, nullptr, 0},
+                {kOverrides, no_argument, nullptr, 0},
+                {"out_system", required_argument, nullptr, 0},
+                {"out_system_ext", required_argument, nullptr, 0},
+                {"out_odm", required_argument, nullptr, 0},
+                {"out_vendor", required_argument, nullptr, 0},
+                {"out_product", required_argument, nullptr, 0},
                 {nullptr, 0, nullptr, 0},
         };
 
@@ -223,6 +316,15 @@ int main(int argc, char** argv) {
             case 0:
                 if (long_options[option_index].name == kPropertyContexts) {
                     HandlePropertyContexts(optarg, &property_infos);
+                }
+                if (long_options[option_index].name == kOverrides) {
+                    check_overrides = true;
+                }
+                for (const auto& p : partition_search_order) {
+                    if (long_options[option_index].name == "out_" + p) {
+                        partition_map[p] =
+                                EndsWith(optarg, "/") ? optarg : std::string(optarg) + "/";
+                    }
                 }
                 break;
             case 'h':
@@ -239,6 +341,21 @@ int main(int argc, char** argv) {
 
     argc -= optind;
     argv += optind;
+
+    // If checking service overrides, use the partition map.
+    if (check_overrides) {
+        if (argc != 0) {
+            PrintUsage();
+            return EXIT_FAILURE;
+        }
+        ServiceList& sl = BuildServiceListFromPartitions(partition_map);
+        Json::Value overrides = CheckOverrides(sl, partition_map);
+        Json::StyledStreamWriter writer(/*indentation=*/" ");
+        writer.write(std::cout, overrides);
+        return EXIT_SUCCESS;
+    }
+
+    // Otherwise, check a single init rc file.
 
     if (argc != 1) {
         PrintUsage();
