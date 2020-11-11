@@ -52,7 +52,7 @@ ClientTcpTransport::ClientTcpTransport() {
     android::base::SetProperty("sys.usb.ffs.ready", "1");
 }
 
-ssize_t ClientTcpTransport::Read(void* data, size_t len) {
+ssize_t ClientTcpTransport::Read(void* data, size_t len, bool allow_partial) {
     if (len > SSIZE_MAX) {
         return -1;
     }
@@ -71,8 +71,7 @@ ssize_t ClientTcpTransport::Read(void* data, size_t len) {
             } else {
                 // If connection is closed by host, Receive will return 0 immediately.
                 socket_.reset(nullptr);
-                // In DATA phase, return error.
-                if (downloading_) {
+                if (!allow_partial) {
                     return -1;
                 }
             }
@@ -91,10 +90,7 @@ ssize_t ClientTcpTransport::Read(void* data, size_t len) {
             message_bytes_left_ -= bytes_read;
             total_read += bytes_read;
         }
-    // There are more than one DATA phases if the downloading buffer is too
-    // large, like a very big system image. All of data phases should be
-    // received until the whole buffer is filled in that case.
-    } while (downloading_ && total_read < len);
+    } while (!allow_partial && total_read < len);
 
     return total_read;
 }
@@ -111,13 +107,6 @@ ssize_t ClientTcpTransport::Write(const void* data, size_t len) {
     if (!socket_->Send(std::vector<cutils_socket_buffer_t>{{header, 8}, {data, len}})) {
         socket_.reset(nullptr);
         return -1;
-    }
-
-    // In DATA phase
-    if (android::base::StartsWith(reinterpret_cast<const char*>(data), RESPONSE_DATA)) {
-        downloading_ = true;
-    } else {
-        downloading_ = false;
     }
 
     return len;

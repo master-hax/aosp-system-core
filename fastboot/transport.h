@@ -27,7 +27,7 @@ class Transport {
 
     // Reads |len| bytes into |data|. Returns the number of bytes actually
     // read or -1 on error.
-    virtual ssize_t Read(void* data, size_t len) = 0;
+    virtual ssize_t Read(void* data, size_t len, bool allow_partial = true) = 0;
 
     // Writes |len| bytes from |data|. Returns the number of bytes actually
     // written or -1 on error.

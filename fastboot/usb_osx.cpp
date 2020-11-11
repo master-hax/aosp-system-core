@@ -72,7 +72,7 @@ class OsxUsbTransport : public UsbTransport {
         : handle_(std::move(handle)), ms_timeout_(ms_timeout) {}
     ~OsxUsbTransport() override;
 
-    ssize_t Read(void* data, size_t len) override;
+    ssize_t Read(void* data, size_t len, bool allow_partial = true) override;
     ssize_t Write(const void* data, size_t len) override;
     int Close() override;
     int Reset() override;
@@ -494,7 +494,7 @@ int OsxUsbTransport::Reset() {
     return -1;
 }
 
-ssize_t OsxUsbTransport::Read(void* data, size_t len) {
+ssize_t OsxUsbTransport::Read(void* data, size_t len, bool /* allow_partial */) {
     IOReturn result;
     UInt32 numBytes = len;
 

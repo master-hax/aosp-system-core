@@ -106,7 +106,7 @@ class UdpTransport : public Transport {
                                                       std::string* error);
     ~UdpTransport() override = default;
 
-    ssize_t Read(void* data, size_t length) override;
+    ssize_t Read(void* data, size_t length, bool allow_partial = true) override;
     ssize_t Write(const void* data, size_t length) override;
     int Close() override;
     int Reset() override;
@@ -325,7 +325,7 @@ ssize_t UdpTransport::SendSinglePacketHelper(
     return total_data_bytes;
 }
 
-ssize_t UdpTransport::Read(void* data, size_t length) {
+ssize_t UdpTransport::Read(void* data, size_t length, bool /* allow_partial */) {
     // Read from the target by sending an empty packet.
     std::string error;
     ssize_t bytes = SendData(kIdFastboot, nullptr, 0, reinterpret_cast<uint8_t*>(data), length,

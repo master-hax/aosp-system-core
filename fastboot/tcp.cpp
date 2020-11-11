@@ -61,7 +61,7 @@ class TcpTransport : public Transport {
 
     ~TcpTransport() override = default;
 
-    ssize_t Read(void* data, size_t length) override;
+    ssize_t Read(void* data, size_t length, bool allow_partial = true) override;
     ssize_t Write(const void* data, size_t length) override;
     int Close() override;
     int Reset() override;
@@ -125,7 +125,7 @@ bool TcpTransport::InitializeProtocol(std::string* error) {
     return true;
 }
 
-ssize_t TcpTransport::Read(void* data, size_t length) {
+ssize_t TcpTransport::Read(void* data, size_t length, bool /* allow_partial */) {
     if (socket_ == nullptr) {
         return -1;
     }

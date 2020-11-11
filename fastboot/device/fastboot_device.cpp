@@ -142,7 +142,7 @@ bool FastbootDevice::HandleData(bool read, std::vector<char>* data) {
 }
 
 bool FastbootDevice::HandleData(bool read, char* data, uint64_t size) {
-    auto read_write_data_size = read ? this->get_transport()->Read(data, size)
+    auto read_write_data_size = read ? this->get_transport()->Read(data, size, false)
                                      : this->get_transport()->Write(data, size);
     if (read_write_data_size == -1) {
         LOG(ERROR) << (read ? "read from" : "write to") << " transport failed";

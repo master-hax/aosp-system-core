@@ -16,10 +16,10 @@ TransportSniffer::~TransportSniffer() {
     Close();
 }
 
-ssize_t TransportSniffer::Read(void* data, size_t len) {
+ssize_t TransportSniffer::Read(void* data, size_t len, bool allow_partial) {
     ProcessSerial();
 
-    ssize_t ret = transport_->Read(data, len);
+    ssize_t ret = transport_->Read(data, len, allow_partial);
     if (ret < 0) {
         const char* err = strerror(errno);
         std::vector<char> buf(err, err + strlen(err));

@@ -25,7 +25,7 @@ class ClientTcpTransport : public Transport {
     ClientTcpTransport();
     ~ClientTcpTransport() override = default;
 
-    ssize_t Read(void* data, size_t len) override;
+    ssize_t Read(void* data, size_t len, bool allow_partial = true) override;
     ssize_t Write(const void* data, size_t len) override;
     int Close() override;
     int Reset() override;
@@ -36,7 +36,6 @@ class ClientTcpTransport : public Transport {
     std::unique_ptr<Socket> service_;
     std::unique_ptr<Socket> socket_;
     uint64_t message_bytes_left_ = 0;
-    bool downloading_ = false;
 
     DISALLOW_COPY_AND_ASSIGN(ClientTcpTransport);
 };

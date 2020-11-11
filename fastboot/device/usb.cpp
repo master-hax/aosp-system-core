@@ -126,16 +126,25 @@ static int usb_ffs_read(usb_handle* h, void* data, int len, bool allow_partial) 
     return orig_len;
 }
 
-static int usb_ffs_do_aio(usb_handle* h, const void* data, int len, bool read) {
+static int usb_ffs_do_aio(usb_handle* h, const void* data, int len, bool read,
+                          bool allow_partial = true) {
     aio_block* aiob = read ? &h->read_aiob : &h->write_aiob;
     bool zero_packet = false;
 
     int num_bufs = len / h->io_size + (len % h->io_size == 0 ? 0 : 1);
-    const char* cur_data = reinterpret_cast<const char*>(data);
+    const char* cur_data;
+    std::vector<char> reading_data;
+    const char* out_data = reinterpret_cast<const char*>(data);
+    if (read && !allow_partial) {
+        reading_data.resize(len);
+        cur_data = reinterpret_cast<const char*>(reading_data.data());
+    } else {
+        cur_data = reinterpret_cast<const char*>(data);
+    }
     int packet_size = getMaxPacketSize(aiob->fd);
 
-    if (posix_madvise(const_cast<void*>(data), len, POSIX_MADV_SEQUENTIAL | POSIX_MADV_WILLNEED) <
-        0) {
+    if (posix_madvise(const_cast<char*>(cur_data), len,
+                      POSIX_MADV_SEQUENTIAL | POSIX_MADV_WILLNEED) < 0) {
         D("[ Failed to madvise: %d ]", errno);
     }
 
@@ -179,14 +188,20 @@ static int usb_ffs_do_aio(usb_handle* h, const void* data, int len, bool read) {
                             << " total bufs " << num_bufs;
                 return -1;
             }
+            if (read && !allow_partial) {
+                iocb* event_iocb = reinterpret_cast<iocb*>(aiob->events[i].obj);
+                memcpy(const_cast<char*>(out_data),
+                       reinterpret_cast<const void*>(event_iocb->aio_buf), aiob->events[i].res);
+                out_data += aiob->events[i].res;
+            }
             ret += aiob->events[i].res;
         }
         return ret;
     }
 }
 
-static int usb_ffs_aio_read(usb_handle* h, void* data, int len, bool /* allow_partial */) {
-    return usb_ffs_do_aio(h, data, len, true);
+static int usb_ffs_aio_read(usb_handle* h, void* data, int len, bool allow_partial) {
+    return usb_ffs_do_aio(h, data, len, true, allow_partial);
 }
 
 static int usb_ffs_aio_write(usb_handle* h, const void* data, int len) {

@@ -70,7 +70,7 @@ class TransportSniffer : public Transport {
     TransportSniffer(std::unique_ptr<Transport> transport, const int serial_fd = 0);
     ~TransportSniffer() override;
 
-    virtual ssize_t Read(void* data, size_t len) override;
+    virtual ssize_t Read(void* data, size_t len, bool allow_partial = true) override;
     virtual ssize_t Write(const void* data, size_t len) override;
     virtual int Close() override final;  // note usage in destructor
     virtual int Reset() override;

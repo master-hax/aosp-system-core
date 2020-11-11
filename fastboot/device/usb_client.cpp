@@ -247,7 +247,7 @@ ClientUsbTransport::ClientUsbTransport()
     }
 }
 
-ssize_t ClientUsbTransport::Read(void* data, size_t len) {
+ssize_t ClientUsbTransport::Read(void* data, size_t len, bool allow_partial) {
     if (handle_ == nullptr) {
         LOG(ERROR) << "ClientUsbTransport: no handle";
         return -1;
@@ -260,15 +260,14 @@ ssize_t ClientUsbTransport::Read(void* data, size_t len) {
     size_t bytes_read_total = 0;
     while (bytes_read_total < len) {
         auto bytes_to_read = std::min(len - bytes_read_total, kFbFfsNumBufs * kFbFfsBufSize);
-        auto bytes_read_now =
-                handle_->read(handle_.get(), char_data, bytes_to_read, true /* allow_partial */);
+        auto bytes_read_now = handle_->read(handle_.get(), char_data, bytes_to_read, allow_partial);
         if (bytes_read_now < 0) {
             PLOG(ERROR) << "ClientUsbTransport: read failed";
             return bytes_read_total == 0 ? -1 : bytes_read_total;
         }
         bytes_read_total += bytes_read_now;
         char_data += bytes_read_now;
-        if (static_cast<size_t>(bytes_read_now) < bytes_to_read) {
+        if (allow_partial && static_cast<size_t>(bytes_read_now) < bytes_to_read) {
             break;
         }
     }

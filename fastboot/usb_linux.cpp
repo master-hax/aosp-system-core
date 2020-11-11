@@ -99,7 +99,7 @@ class LinuxUsbTransport : public UsbTransport {
         : handle_(std::move(handle)), ms_timeout_(ms_timeout) {}
     ~LinuxUsbTransport() override;
 
-    ssize_t Read(void* data, size_t len) override;
+    ssize_t Read(void* data, size_t len, bool allow_partial = true) override;
     ssize_t Write(const void* data, size_t len) override;
     int Close() override;
     int Reset() override;
@@ -435,8 +435,7 @@ ssize_t LinuxUsbTransport::Write(const void* _data, size_t len)
     return count;
 }
 
-ssize_t LinuxUsbTransport::Read(void* _data, size_t len)
-{
+ssize_t LinuxUsbTransport::Read(void* _data, size_t len, bool /* allow_partial */) {
     unsigned char *data = (unsigned char*) _data;
     unsigned count = 0;
     struct usbdevfs_bulktransfer bulk;

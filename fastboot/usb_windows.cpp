@@ -71,7 +71,7 @@ class WindowsUsbTransport : public UsbTransport {
     WindowsUsbTransport(std::unique_ptr<usb_handle> handle) : handle_(std::move(handle)) {}
     ~WindowsUsbTransport() override;
 
-    ssize_t Read(void* data, size_t len) override;
+    ssize_t Read(void* data, size_t len, bool allow_partial = true) override;
     ssize_t Write(const void* data, size_t len) override;
     int Close() override;
     int Reset() override;
@@ -192,7 +192,7 @@ ssize_t WindowsUsbTransport::Write(const void* data, size_t len) {
     return -1;
 }
 
-ssize_t WindowsUsbTransport::Read(void* data, size_t len) {
+ssize_t WindowsUsbTransport::Read(void* data, size_t len, bool /* allow_partial */) {
     unsigned long time_out = 0;
     unsigned long read = 0;
     size_t count = 0;
