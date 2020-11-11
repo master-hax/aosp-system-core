@@ -172,6 +172,7 @@ bool CowReader::ParseOps() {
     memset(csum, 0, sizeof(uint8_t) * 32);
 
     if (has_footer_) {
+#if 0
         if (ops_buffer->size() != footer_.op.num_ops) {
             LOG(ERROR) << "num ops does not match";
             return false;
@@ -180,6 +181,7 @@ bool CowReader::ParseOps() {
             LOG(ERROR) << "ops size does not match ";
             return false;
         }
+#endif
         SHA256(&footer_.op, sizeof(footer_.op), footer_.data.footer_checksum);
         if (memcmp(csum, footer_.data.ops_checksum, sizeof(csum)) != 0) {
             LOG(ERROR) << "ops checksum does not match";
