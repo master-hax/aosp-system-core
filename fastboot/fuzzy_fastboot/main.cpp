@@ -261,10 +261,13 @@ TEST_F(LogicalPartitionCompliance, CreateResizeDeleteLP) {
     GTEST_LOG_(INFO) << "Flashing a logical partition..";
     EXPECT_EQ(fb->FlashPartition(test_partition_name, buf), SUCCESS)
             << "flash logical -partition failed";
+<<<<<<< HEAD   (b4ca02 Merge "[automerger skipped] Merge "Allow fuzzy_fastboot test)
 
     GTEST_LOG_(INFO) << "Testing 'fastboot delete-logical-partition' command";
     EXPECT_EQ(fb->DeletePartition(test_partition_name), SUCCESS)
             << "delete logical-partition failed";
+=======
+>>>>>>> BRANCH (cd7a01 Merge "Don't require bootloader fastboot for VTS compliance.)
 }
 
 // Conformance tests
