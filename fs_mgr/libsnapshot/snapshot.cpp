@@ -409,10 +409,12 @@ bool SnapshotManager::MapDmUserCow(LockedFile* lock, const std::string& name,
     if (!dm.CreateDevice(name, table, path, timeout_ms)) {
         return false;
     }
+    if (!WaitForDevice(*path, timeout_ms)) {
+        return false;
+    }
 
     auto control_device = "/dev/dm-user/" + misc_name;
-    if (!android::fs_mgr::WaitForFile(control_device, timeout_ms)) {
-        LOG(ERROR) << "Timed out waiting for dm-user misc device: " << control_device;
+    if (!WaitForDevice(control_device, timeout_ms)) {
         return false;
     }
 
@@ -612,6 +614,7 @@ bool SnapshotManager::DeleteSnapshot(LockedFile* lock, const std::string& name) 
 }
 
 bool SnapshotManager::InitiateMerge(uint64_t* cow_file_size) {
+    return true;
     auto lock = LockExclusive();
     if (!lock) return false;
 
@@ -1370,8 +1373,7 @@ bool SnapshotManager::PerformSecondStageTransition() {
 
         // Wait for ueventd to acknowledge and create the control device node.
         std::string control_device = "/dev/dm-user/" + user_cow_name;
-        if (!android::fs_mgr::WaitForFile(control_device, 10s)) {
-            LOG(ERROR) << "Could not find control device: " << control_device;
+        if (!WaitForDevice(control_device, 10s)) {
             continue;
         }
 
@@ -1924,10 +1926,17 @@ bool SnapshotManager::MapPartitionWithSnapshot(LockedFile* lock,
     if (live_snapshot_status->compression_enabled()) {
         auto name = GetDmUserCowName(params.GetPartitionName());
 
-        // :TODO: need to force init to process uevents for these in first-stage.
         std::string cow_path;
         if (!GetMappedImageDevicePath(cow_name, &cow_path)) {
             LOG(ERROR) << "Could not determine path for: " << cow_name;
+            return false;
+        }
+
+        // Ensure both |base_path| and |cow_path| are created, for snapuserd.
+        if (!WaitForDevice(base_path, remaining_time)) {
+            return false;
+        }
+        if (!WaitForDevice(cow_path, remaining_time)) {
             return false;
         }
 
@@ -2070,7 +2079,7 @@ bool SnapshotManager::UnmapCowDevices(LockedFile* lock, const std::string& name)
         if (!EnsureSnapuserdConnected()) {
             return false;
         }
-        if (!dm.DeleteDevice(dm_user_name)) {
+        if (!dm.DeleteDeviceIfExists(dm_user_name)) {
             LOG(ERROR) << "Cannot unmap " << dm_user_name;
             return false;
         }
@@ -3299,6 +3308,40 @@ bool SnapshotManager::GetMappedImageDeviceStringOrPath(const std::string& device
     LOG(WARNING) << "Calling GetMappedImageDevice with local image manager; device "
                  << (device_string_or_mapped_path ? *device_string_or_mapped_path : "(nullptr)")
                  << "may not be available in first stage init! ";
+    return true;
+}
+
+bool SnapshotManager::WaitForDevice(const std::string& device,
+                                    std::chrono::milliseconds timeout_ms) {
+    if (!android::base::StartsWith(device, "/")) {
+        return true;
+    }
+
+    // In first-stage init, we rely on init setting a callback which can
+    // regenerate uevents and populate /dev for us.
+    if (uevent_regen_callback_) {
+        if (!uevent_regen_callback_(device)) {
+            LOG(ERROR) << "Failed to find device after regenerating uevents: " << device;
+            return false;
+        }
+        return true;
+    }
+
+    // Otherwise, the only kind of device we need to wait for is a dm-user
+    // misc device. Normal calls to DeviceMapper::CreateDevice() guarantee
+    // the path has been created.
+    if (!android::base::StartsWith(device, "/dev/dm-user/")) {
+        return true;
+    }
+
+    if (timeout_ms.count() == 0) {
+        LOG(ERROR) << "No timeout was specified to wait for device: " << device;
+        return false;
+    }
+    if (!android::fs_mgr::WaitForFile(device, timeout_ms)) {
+        LOG(ERROR) << "Timed out waiting for device to appear: " << device;
+        return false;
+    }
     return true;
 }
 
