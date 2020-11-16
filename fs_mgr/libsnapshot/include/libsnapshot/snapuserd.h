@@ -72,20 +72,20 @@ class Snapuserd final {
     bool IsAttached() const { return ctrl_fd_ >= 0; }
 
   private:
-    int ReadDmUserHeader();
+    bool ReadDmUserHeader();
     bool ReadDmUserPayload(void* buffer, size_t size);
-    int WriteDmUserPayload(size_t size);
-    int ConstructKernelCowHeader();
+    bool WriteDmUserPayload(size_t size);
+    void ConstructKernelCowHeader();
     bool ReadMetadata();
-    int ZerofillDiskExceptions(size_t read_size);
-    int ReadDiskExceptions(chunk_t chunk, size_t size);
-    int ReadData(chunk_t chunk, size_t size);
+    bool ZerofillDiskExceptions(size_t read_size);
+    bool ReadDiskExceptions(chunk_t chunk, size_t size);
+    bool ReadData(chunk_t chunk, size_t size);
     bool IsChunkIdMetadata(chunk_t chunk);
     chunk_t GetNextAllocatableChunkId(chunk_t chunk);
 
-    int ProcessReplaceOp(const CowOperation* cow_op);
-    int ProcessCopyOp(const CowOperation* cow_op);
-    int ProcessZeroOp();
+    bool ProcessReplaceOp(const CowOperation* cow_op);
+    bool ProcessCopyOp(const CowOperation* cow_op);
+    bool ProcessZeroOp();
 
     loff_t GetMergeStartOffset(void* merged_buffer, void* unmerged_buffer,
                                int* unmerged_exceptions);
