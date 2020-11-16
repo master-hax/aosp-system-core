@@ -1,0 +1,47 @@
+{
+  "comments": [
+    {
+      "robotId": "ayeaye",
+      "robotRunId": "AR00000000000006176267",
+      "url": "https://android-build.googleplex.com/builds/treetop/android-review/1500250?revision\u003d1",
+      "fixSuggestions": [
+        {
+          "fixId": "5eb72b09_7ddbe24c",
+          "description": "Change to \"fs_mgr/libsnapshot/snapuserd.cpp\"",
+          "replacements": [
+            {
+              "path": "fs_mgr/libsnapshot/snapuserd.cpp",
+              "range": {
+                "startLine": 786,
+                "startChar": 15,
+                "endLine": 786,
+                "endChar": 28
+              },
+              "replacement": "responsibility"
+            }
+          ]
+        }
+      ],
+      "key": {
+        "uuid": "d245986a_f8ecb6f7",
+        "filename": "fs_mgr/libsnapshot/snapuserd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 786,
+      "author": {
+        "id": 1757831
+      },
+      "writtenOn": "2020-11-16T17:45:43Z",
+      "side": 1,
+      "message": "Common typo found: \"responsibilty\" -- should it be \"responsibility\"?\nNote: a line containing \"common_typos_disable\" or \"common_typos_enable\" will turn off or on (respectively) the linter for subsequent lines in the file. Alternatively include the token \"NOTYPO\" within a line to skip typo linting that line or include \u0027NO_TYPO_CHECK\u003d\u003creason\u003e\u0027in the commit message.",
+      "range": {
+        "startLine": 786,
+        "startChar": 15,
+        "endLine": 786,
+        "endChar": 28
+      },
+      "revId": "3b7b78aa6cd46219f311c7ca537843d6a4fe8d90",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
