@@ -37,7 +37,10 @@ class CoverageRecord {
     Result<void> Open();
     void Reset();
     void GetRawData(volatile void** begin, volatile void** end);
-    uint64_t CountEdges();
+    void GetRawCounts(volatile uint8_t** begin, volatile uint8_t** end);
+    void GetRawPCs(volatile uintptr_t** begin, volatile uintptr_t** end);
+    uint64_t TotalEdgeCounts();
+    Result<void> SaveToFile(const std::string& filename);
 
   private:
     Result<void> Rpc(coverage_client_req* req, int req_fd, coverage_client_resp* resp);
@@ -46,6 +49,7 @@ class CoverageRecord {
     unique_fd coverage_srv_fd_;
     struct uuid uuid_;
     size_t record_len_;
+    size_t num_counters_;
     volatile void* shm_;
     size_t shm_len_;
 };

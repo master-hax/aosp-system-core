@@ -16,9 +16,11 @@
 
 #define LOG_TAG "spi_proxy"
 
+#include <android-base/file.h>
 #include <android-base/logging.h>
 #include <android-base/unique_fd.h>
 #include <assert.h>
+#include <stdio.h>
 #include <sys/mman.h>
 #include <sys/uio.h>
 #include <trusty/coverage/coverage.h>
@@ -107,6 +109,7 @@ Result<void> CoverageRecord::Open() {
         return Error() << "failed to open coverage client: ";
     }
     record_len_ = resp.open_args.record_len;
+    num_counters_ = resp.open_args.num_counters;
 
     /* round up to page size */
     shm_len_ = record_len_;
@@ -151,7 +154,23 @@ void CoverageRecord::GetRawData(volatile void** begin, volatile void** end) {
     *end = (uint8_t*)(*begin) + record_len_;
 }
 
-uint64_t CoverageRecord::CountEdges() {
+void CoverageRecord::GetRawCounts(volatile uint8_t** begin, volatile uint8_t** end) {
+    assert(shm_);
+    assert(num_counters_ <= record_len_);
+
+    *begin = (volatile uint8_t*)shm_;
+    *end = (*begin) + num_counters_;
+}
+
+void CoverageRecord::GetRawPCs(volatile uintptr_t** begin, volatile uintptr_t** end) {
+    assert(shm_);
+    assert(num_counters_ + sizeof(uintptr_t) * num_counters_ <= record_len_);
+
+    *begin = (volatile uintptr_t*)((volatile uint8_t*)shm_ + num_counters_);
+    *end = (*begin) + sizeof(uintptr_t) * num_counters_;
+}
+
+uint64_t CoverageRecord::TotalEdgeCounts() {
     assert(shm_);
 
     uint64_t counter = 0;
@@ -159,13 +178,42 @@ uint64_t CoverageRecord::CountEdges() {
     volatile uint8_t* begin = NULL;
     volatile uint8_t* end = NULL;
 
-    GetRawData((volatile void**)&begin, (volatile void**)&end);
+    GetRawCounts(&begin, &end);
 
-    for (volatile uint8_t* x = begin; x < (volatile uint8_t*)end; x++) {
+    for (volatile uint8_t* x = begin; x < end; x++) {
         counter += *x;
     }
 
     return counter;
+}
+
+Result<void> CoverageRecord::SaveToFile(const std::string& filename) {
+    android::base::unique_fd output_fd(TEMP_FAILURE_RETRY(creat(filename.c_str(), 00644)));
+    if (!output_fd.ok()) {
+        return ErrnoError() << "Could not open sancov file";
+    }
+
+    uint64_t magic;
+    if (sizeof(uintptr_t) == 8) {
+        magic = 0xC0BFFFFFFFFFFF64;
+    } else if (sizeof(uintptr_t) == 4) {
+        magic = 0xC0BFFFFFFFFFFF32;
+    }
+    WriteFully(output_fd, &magic, sizeof(magic));
+
+    volatile uintptr_t* begin = nullptr;
+    volatile uintptr_t* end = nullptr;
+
+    GetRawPCs(&begin, &end);
+
+    for (volatile uintptr_t* pc_ptr = begin; pc_ptr < end; pc_ptr++) {
+        uintptr_t pc = *pc_ptr;
+        if (pc) {
+            WriteFully(output_fd, &pc, sizeof(pc));
+        }
+    }
+
+    return {};
 }
 
 }  // namespace coverage

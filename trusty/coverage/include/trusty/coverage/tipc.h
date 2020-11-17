@@ -46,6 +46,7 @@ struct coverage_client_open_req {
 
 struct coverage_client_open_resp {
     uint32_t record_len;
+    uint32_t num_counters;
 };
 
 struct coverage_client_share_record_req {

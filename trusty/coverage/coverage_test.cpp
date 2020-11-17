@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include <android-base/stringprintf.h>
 #include <gtest/gtest.h>
 #include <trusty/coverage/coverage.h>
 #include <trusty/tipc.h>
@@ -27,6 +28,7 @@ using std::unique_ptr;
 
 #define TIPC_DEV "/dev/trusty-ipc-dev0"
 #define TEST_SRV_PORT "com.android.trusty.sancov.test.srv"
+#define TEST_SRV_MODULE "srv.syms.elf"
 
 namespace android {
 namespace trusty {
@@ -55,7 +57,7 @@ class CoverageTest : public ::testing::Test {
 
 TEST_F(CoverageTest, CoverageReset) {
     record_->Reset();
-    auto counter = record_->CountEdges();
+    auto counter = record_->TotalEdgeCounts();
     ASSERT_EQ(counter, 0);
 }
 
@@ -81,10 +83,14 @@ TEST_F(CoverageTest, TestServerCoverage) {
         ASSERT_EQ(rc, sizeof(msg));
 
         /* Count number of non-unique blocks executed */
-        auto counter = record_->CountEdges();
+        auto counter = record_->TotalEdgeCounts();
         /* Each consecutive input should exercise more or same blocks */
         ASSERT_GE(counter, high_watermark);
         high_watermark = counter;
+
+        auto sancov_filename = android::base::StringPrintf(TEST_SRV_MODULE ".%d.sancov", getpid());
+        auto res = record_->SaveToFile(sancov_filename);
+        ASSERT_TRUE(res.ok());
     }
 
     ASSERT_GT(high_watermark, 0);
