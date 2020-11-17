@@ -76,7 +76,7 @@ pid_t StartFirstStageSnapuserd() {
 SnapuserdClient::SnapuserdClient(android::base::unique_fd&& sockfd) : sockfd_(std::move(sockfd)) {}
 
 static inline bool IsRetryErrno() {
-    return errno == ECONNREFUSED || errno == EINTR;
+    return errno == ECONNREFUSED || errno == EINTR || errno == ENOENT;
 }
 
 std::unique_ptr<SnapuserdClient> SnapuserdClient::Connect(const std::string& socket_name,
