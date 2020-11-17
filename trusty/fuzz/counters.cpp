@@ -44,7 +44,7 @@ ExtraCounters::ExtraCounters(coverage::CoverageRecord* record) : record_(record)
 
     uint8_t* begin = NULL;
     uint8_t* end = NULL;
-    record_->GetRawData((volatile void**)&begin, (volatile void**)&end);
+    record_->GetRawCounts(&begin, &end);
     assert(end - begin <= sizeof(counters));
 }
 
@@ -61,7 +61,7 @@ void ExtraCounters::Flush() {
     volatile uint8_t* begin = NULL;
     volatile uint8_t* end = NULL;
 
-    record_->GetRawData((volatile void**)&begin, (volatile void**)&end);
+    record_->GetRawCounts(&begin, &end);
 
     size_t num_counters = end - begin;
     for (size_t i = 0; i < num_counters; i++) {

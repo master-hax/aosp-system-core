@@ -16,12 +16,15 @@
 
 #define LOG_TAG "coverage"
 
+#include <android-base/file.h>
 #include <android-base/logging.h>
 #include <android-base/unique_fd.h>
 #include <assert.h>
+#include <stdio.h>
 #include <sys/mman.h>
 #include <sys/uio.h>
 #include <trusty/coverage/coverage.h>
+#include <trusty/coverage/record.h>
 #include <trusty/coverage/tipc.h>
 #include <trusty/tipc.h>
 
@@ -45,7 +48,11 @@ CoverageRecord::CoverageRecord(string tipc_dev, struct uuid* uuid)
       uuid_(*uuid),
       record_len_(0),
       shm_(NULL),
-      shm_len_(0) {}
+      shm_len_(0),
+      num_counters_(0),
+      header_len_(0),
+      byte_counter_offset_(0),
+      pcs_offset_(0) {}
 
 CoverageRecord::~CoverageRecord() {
     if (shm_) {
@@ -138,9 +145,44 @@ Result<void> CoverageRecord::Open() {
 }
 
 void CoverageRecord::Reset() {
-    for (size_t i = 0; i < shm_len_; i++) {
+    ParseHeader();
+    for (size_t i = header_len_; i < shm_len_; i++) {
         *((volatile uint8_t*)shm_ + i) = 0;
     }
+}
+
+Result<void> CoverageRecord::ParseHeader() {
+    assert(shm_);
+
+    if (num_counters_) {
+        // Already parsed
+        return {};
+    }
+
+    auto header = (volatile struct coverage_record_header*)shm_;
+
+    if (header->type != COV_START) {
+        return Error() << "Header not yet valid";
+    }
+
+    header_len_ = (header + 1)->offset;
+
+    for (++header; header->type != COV_TOTAL_LENGTH; ++header) {
+        switch (header->type) {
+            case COV_8BIT_COUNTERS:
+                byte_counter_offset_ = header->offset;
+                num_counters_ = (header + 1)->offset - header->offset;
+                break;
+            case COV_INSTR_PCS:
+                pcs_offset_ = header->offset;
+                break;
+            default:
+                return Error() << "unrecognized coverage header type: " << header->type;
+                break;
+        }
+    }
+
+    return {};
 }
 
 void CoverageRecord::GetRawData(volatile void** begin, volatile void** end) {
@@ -150,7 +192,27 @@ void CoverageRecord::GetRawData(volatile void** begin, volatile void** end) {
     *end = (uint8_t*)(*begin) + record_len_;
 }
 
-uint64_t CoverageRecord::CountEdges() {
+void CoverageRecord::GetRawCounts(volatile uint8_t** begin, volatile uint8_t** end) {
+    assert(shm_);
+
+    ParseHeader();
+    assert(byte_counter_offset_ + num_counters_ <= record_len_);
+
+    *begin = (volatile uint8_t*)shm_ + byte_counter_offset_;
+    *end = (*begin) + num_counters_;
+}
+
+void CoverageRecord::GetRawPCs(volatile uintptr_t** begin, volatile uintptr_t** end) {
+    assert(shm_);
+
+    ParseHeader();
+    assert(pcs_offset_ + sizeof(uintptr_t) * num_counters_ <= record_len_);
+
+    *begin = (volatile uintptr_t*)((volatile uint8_t*)shm_ + pcs_offset_);
+    *end = (*begin) + sizeof(uintptr_t) * num_counters_;
+}
+
+uint64_t CoverageRecord::TotalEdgeCounts() {
     assert(shm_);
 
     uint64_t counter = 0;
@@ -158,13 +220,42 @@ uint64_t CoverageRecord::CountEdges() {
     volatile uint8_t* begin = NULL;
     volatile uint8_t* end = NULL;
 
-    GetRawData((volatile void**)&begin, (volatile void**)&end);
+    GetRawCounts(&begin, &end);
 
     for (volatile uint8_t* x = begin; x < end; x++) {
         counter += *x;
     }
 
     return counter;
+}
+
+Result<void> CoverageRecord::SaveToFile(const std::string& filename) {
+    android::base::unique_fd output_fd(TEMP_FAILURE_RETRY(creat(filename.c_str(), 00644)));
+    if (!output_fd.ok()) {
+        return ErrnoError() << "Could not open sancov file";
+    }
+
+    uint64_t magic;
+    if (sizeof(uintptr_t) == 8) {
+        magic = 0xC0BFFFFFFFFFFF64;
+    } else if (sizeof(uintptr_t) == 4) {
+        magic = 0xC0BFFFFFFFFFFF32;
+    }
+    WriteFully(output_fd, &magic, sizeof(magic));
+
+    volatile uintptr_t* begin = nullptr;
+    volatile uintptr_t* end = nullptr;
+
+    GetRawPCs(&begin, &end);
+
+    for (volatile uintptr_t* pc_ptr = begin; pc_ptr < end; pc_ptr++) {
+        uintptr_t pc = *pc_ptr;
+        if (pc) {
+            WriteFully(output_fd, &pc, sizeof(pc));
+        }
+    }
+
+    return {};
 }
 
 }  // namespace coverage
