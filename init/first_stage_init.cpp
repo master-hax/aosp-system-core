@@ -99,31 +99,46 @@ bool ForceNormalBoot(const std::string& cmdline) {
     return cmdline.find("androidboot.force_normal_boot=1") != std::string::npos;
 }
 
-// Move e2fsck before switching root, so that it is available at the same path
+// Move binaries before switching root, so that it is available at the same path
 // after switching root.
 void PrepareSwitchRoot() {
-    constexpr const char* src = "/system/bin/e2fsck";
-    constexpr const char* dst = "/first_stage_ramdisk/system/bin/e2fsck";
+    constexpr const char* src_dir = "/system/bin/";
+    constexpr const char* dst_dir = "/first_stage_ramdisk/system/bin/";
 
-    if (access(dst, X_OK) == 0) {
-        LOG(INFO) << dst << " already exists and it can be executed";
+    std::unique_ptr<DIR, decltype(&closedir)> src_dir_p(opendir(src_dir), closedir);
+    if (!src_dir_p) {
+        LOG(INFO) << "Unable to open " << src_dir << ", not moving content to " << dst_dir;
         return;
     }
+    dirent* entry;
+    while ((entry = readdir(src_dir_p.get()))) {
+        if (entry->d_type != DT_REG) {
+            continue;
+        }
 
-    if (access(src, F_OK) != 0) {
-        PLOG(INFO) << "Not moving " << src << " because it cannot be accessed";
-        return;
-    }
+        auto src = std::string{src_dir} + entry->d_name;
+        auto dst = std::string{dst_dir} + entry->d_name;
 
-    auto dst_dir = android::base::Dirname(dst);
-    std::error_code ec;
-    if (!fs::create_directories(dst_dir, ec)) {
-        LOG(FATAL) << "Cannot create " << dst_dir << ": " << ec.message();
-    }
-    if (rename(src, dst) != 0) {
-        PLOG(FATAL) << "Cannot move " << src << " to " << dst
-                    << ". Either install e2fsck.ramdisk so that it is at the correct place (" << dst
-                    << "), or make ramdisk writable";
+        if (access(dst.c_str(), X_OK) == 0) {
+            LOG(INFO) << dst << " already exists and it can be executed";
+            continue;
+        }
+
+        if (access(src.c_str(), F_OK) != 0) {
+            PLOG(INFO) << "Not moving " << src << " because it cannot be accessed";
+            continue;
+        }
+
+        std::error_code ec;
+        if (!fs::create_directories(dst_dir, ec)) {
+            LOG(FATAL) << "Cannot create " << dst_dir << ": " << ec.message();
+        }
+        if (rename(src.c_str(), dst.c_str()) != 0) {
+            PLOG(FATAL) << "Cannot move " << src << " to " << dst
+                        << ". Either install the ramdisk variant of " << entry->d_name
+                        << " so that it is at the correct place (" << dst
+                        << "), or make ramdisk writable";
+        }
     }
 }
 
