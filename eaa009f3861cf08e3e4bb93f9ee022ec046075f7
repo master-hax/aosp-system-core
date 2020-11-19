@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "27f1b1dc_db4dc8ae",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2020-11-19T04:27:51Z",
+      "side": 1,
+      "message": "I thought I need this for aosp/1504158, but I don\u0027t",
+      "revId": "eaa009f3861cf08e3e4bb93f9ee022ec046075f7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
