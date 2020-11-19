@@ -150,7 +150,13 @@ Permissions::Permissions(const std::string& name, mode_t perm, uid_t uid, gid_t 
 
 bool Permissions::Match(const std::string& path) const {
     if (prefix_) return StartsWith(path, name_);
-    if (wildcard_) return fnmatch(name_.c_str(), path.c_str(), FNM_PATHNAME) == 0;
+    if (wildcard_) {
+        int flags = FNM_PATHNAME;
+        if (name_.back() == '*') {
+            flags |= FNM_LEADING_DIR;
+        }
+        return fnmatch(name_.c_str(), path.c_str(), flags) == 0;
+    }
     return path == name_;
 }
 
