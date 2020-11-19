@@ -265,8 +265,11 @@ TEST(device_handler, DevPermissionsMatchWildcardPrefix) {
     EXPECT_TRUE(permissions.Match("/dev/device123name"));
     EXPECT_TRUE(permissions.Match("/dev/deviceabcname"));
     EXPECT_TRUE(permissions.Match("/dev/device123namesomething"));
-    // FNM_PATHNAME doesn't match '/' with *
-    EXPECT_FALSE(permissions.Match("/dev/device123name/something"));
+    // Trailing '*' matches any number of directories
+    EXPECT_TRUE(permissions.Match("/dev/device123name/something"));
+    EXPECT_TRUE(permissions.Match("/dev/device123name/something/another"));
+    // Middle '*' does not match '/'
+    EXPECT_FALSE(permissions.Match("/dev/device/name"));
     EXPECT_FALSE(permissions.Match("/dev/deviceame"));
     EXPECT_EQ(0666U, permissions.perm());
     EXPECT_EQ(0U, permissions.uid());
