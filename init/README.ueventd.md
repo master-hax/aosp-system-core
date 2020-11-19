@@ -78,7 +78,8 @@ When a uevent that matches the pattern `/sys/devices/system/cpu/cpu*` is sent, t
 attribute, `cpufreq/scaling_max_freq`, will have its mode set to `0664`, its user to to `system` and
 its group set to `system`.
 
-Note that `*` matches as a wildcard and can be used anywhere in a path.
+Note that `*` matches as a wildcard and can be used anywhere in a path.  A `*` within a path does
+not match `/`, however a `/*` at the end of a path matches any number of `/`'s.
 
 ## Firmware loading
 ----------------

@@ -257,17 +257,37 @@ TEST(device_handler, DevPermissionsMatchWildcard) {
     EXPECT_EQ(1000U, permissions.gid());
 }
 
-TEST(device_handler, DevPermissionsMatchWildcardPrefix) {
-    // Wildcard+Prefix example
+TEST(device_handler, DevPermissionsMatchWildcardTrailingStar) {
+    // Wildcard with trailing * but not `/*`
     // /dev/device*name*                0666   root       graphics
     Permissions permissions("/dev/device*name*", 0666, 0, 1000);
     EXPECT_TRUE(permissions.Match("/dev/devicename"));
     EXPECT_TRUE(permissions.Match("/dev/device123name"));
     EXPECT_TRUE(permissions.Match("/dev/deviceabcname"));
     EXPECT_TRUE(permissions.Match("/dev/device123namesomething"));
-    // FNM_PATHNAME doesn't match '/' with *
+    // Trailing '*' does not match '/'
     EXPECT_FALSE(permissions.Match("/dev/device123name/something"));
+    EXPECT_FALSE(permissions.Match("/dev/device123name/something/another"));
+    // Middle '*' does not match '/'
+    EXPECT_FALSE(permissions.Match("/dev/device/name"));
     EXPECT_FALSE(permissions.Match("/dev/deviceame"));
+    EXPECT_EQ(0666U, permissions.perm());
+    EXPECT_EQ(0U, permissions.uid());
+    EXPECT_EQ(1000U, permissions.gid());
+}
+
+TEST(device_handler, DevPermissionsMatchWildcardPrefix) {
+    // Wildcard+Prefix example, a wildcard with trailing /*
+    // /dev/device*name/*               0666   root       graphics
+    Permissions permissions("/dev/device*name/*", 0666, 0, 1000);
+    EXPECT_FALSE(permissions.Match("/dev/devicename"));
+    EXPECT_FALSE(permissions.Match("/dev/device123namesomething"));
+    // Trailing '/*' matches any number of directories
+    EXPECT_TRUE(permissions.Match("/dev/device123name/something"));
+    EXPECT_TRUE(permissions.Match("/dev/device123name/something/another"));
+    // Middle '*' does not match '/'
+    EXPECT_FALSE(permissions.Match("/dev/device/name"));
+    EXPECT_FALSE(permissions.Match("/dev/device/name/subdir"));
     EXPECT_EQ(0666U, permissions.perm());
     EXPECT_EQ(0U, permissions.uid());
     EXPECT_EQ(1000U, permissions.gid());
