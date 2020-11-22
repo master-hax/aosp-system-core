@@ -306,13 +306,15 @@ class SnapshotManager final : public ISnapshotManager {
     // Helper function for second stage init to restorecon on the rollback indicator.
     static std::string GetGlobalRollbackIndicatorPath();
 
+    enum class InitTransition { SELINUX, SECOND_STAGE };
+
     // Initiate the transition from first-stage to second-stage snapuserd. This
     // process involves re-creating the dm-user table entries for each device,
     // so that they connect to the new daemon. Once all new tables have been
     // activated, we ask the first-stage daemon to cleanly exit.
     //
     // The caller must pass a function which starts snapuserd.
-    bool PerformSecondStageTransition();
+    bool PerformInitTransition(InitTransition transition);
 
     // ISnapshotManager overrides.
     bool BeginUpdate() override;
