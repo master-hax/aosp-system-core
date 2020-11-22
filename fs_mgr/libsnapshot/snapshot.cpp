@@ -2282,6 +2282,7 @@ SnapshotUpdateStatus SnapshotManager::ReadSnapshotUpdateStatus(LockedFile* lock)
 bool SnapshotManager::WriteUpdateState(LockedFile* lock, UpdateState state) {
     SnapshotUpdateStatus status = {};
     status.set_state(state);
+    status.set_compression_enabled(IsCompressionEnabled());
     return WriteSnapshotUpdateStatus(lock, status);
 }
 
@@ -2854,7 +2855,7 @@ std::unique_ptr<ISnapshotWriter> SnapshotManager::OpenSnapshotWriter(
         return nullptr;
     }
 
-    if (IsCompressionEnabled()) {
+    if (status.compression_enabled()) {
         return OpenCompressedSnapshotWriter(lock.get(), source_device, params.GetPartitionName(),
                                             status, paths);
     }
@@ -3335,6 +3336,14 @@ bool SnapshotManager::WaitForDevice(const std::string& device,
         return false;
     }
     return true;
+}
+
+bool SnapshotManager::IsSnapuserdRequired() {
+    auto lock = LockExclusive();
+    if (!lock) return false;
+
+    auto status = ReadSnapshotUpdateStatus(lock.get());
+    return status.state() != UpdateState::None && status.compression_enabled();
 }
 
 }  // namespace snapshot
