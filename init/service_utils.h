@@ -86,5 +86,7 @@ Result<void> SetProcessAttributes(const ProcessAttributes& attr);
 
 Result<void> WritePidToFiles(std::vector<std::string>* files);
 
+Result<std::string> ComputeContextFromExecutable(const std::string& service_path);
+
 }  // namespace init
 }  // namespace android
