@@ -1291,8 +1291,8 @@ bool SnapshotManager::HandleCancelledUpdate(LockedFile* lock,
     return RemoveAllUpdateState(lock, before_cancel);
 }
 
-bool SnapshotManager::PerformSecondStageTransition() {
-    LOG(INFO) << "Performing second-stage transition for snapuserd.";
+bool SnapshotManager::PerformInitTransition(InitTransition transition) {
+    LOG(INFO) << "Performing transition for snapuserd.";
 
     // Don't use EnsuerSnapuserdConnected() because this is called from init,
     // and attempting to do so will deadlock.
@@ -1343,6 +1343,9 @@ bool SnapshotManager::PerformSecondStageTransition() {
         }
 
         auto misc_name = user_cow_name;
+        if (transition == InitTransition::SELINUX) {
+            misc_name += "-selinux";
+        }
 
         DmTable table;
         table.Emplace<DmTargetUser>(0, target.spec.length, misc_name);

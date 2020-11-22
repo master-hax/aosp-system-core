@@ -63,44 +63,6 @@ using android::base::WriteStringToFile;
 namespace android {
 namespace init {
 
-static Result<std::string> ComputeContextFromExecutable(const std::string& service_path) {
-    std::string computed_context;
-
-    char* raw_con = nullptr;
-    char* raw_filecon = nullptr;
-
-    if (getcon(&raw_con) == -1) {
-        return Error() << "Could not get security context";
-    }
-    std::unique_ptr<char> mycon(raw_con);
-
-    if (getfilecon(service_path.c_str(), &raw_filecon) == -1) {
-        return Error() << "Could not get file context";
-    }
-    std::unique_ptr<char> filecon(raw_filecon);
-
-    char* new_con = nullptr;
-    int rc = security_compute_create(mycon.get(), filecon.get(),
-                                     string_to_security_class("process"), &new_con);
-    if (rc == 0) {
-        computed_context = new_con;
-        free(new_con);
-    }
-    if (rc == 0 && computed_context == mycon.get()) {
-        return Error() << "File " << service_path << "(labeled \"" << filecon.get()
-                       << "\") has incorrect label or no domain transition from " << mycon.get()
-                       << " to another SELinux domain defined. Have you configured your "
-                          "service correctly? https://source.android.com/security/selinux/"
-                          "device-policy#label_new_services_and_address_denials. Note: this "
-                          "error shows up even in permissive mode in order to make auditing "
-                          "denials possible.";
-    }
-    if (rc < 0) {
-        return Error() << "Could not get process context";
-    }
-    return computed_context;
-}
-
 static bool ExpandArgsAndExecv(const std::vector<std::string>& args, bool sigstop) {
     std::vector<std::string> expanded_args;
     std::vector<char*> c_strings;
