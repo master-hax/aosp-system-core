@@ -1,0 +1,47 @@
+{
+  "comments": [
+    {
+      "robotId": "ayeaye",
+      "robotRunId": "AR00000000000006342111",
+      "url": "https://android-build.googleplex.com/builds/treetop/android-review/1507923?revision\u003d4",
+      "fixSuggestions": [
+        {
+          "fixId": "c158b676_eb7d63c8",
+          "description": "Change to \"init/snapuserd_transition.h\"",
+          "replacements": [
+            {
+              "path": "init/snapuserd_transition.h",
+              "range": {
+                "startLine": 30,
+                "startChar": 23,
+                "endLine": 30,
+                "endChar": 30
+              },
+              "replacement": "requests"
+            }
+          ]
+        }
+      ],
+      "key": {
+        "uuid": "f550ed14_bb7342bb",
+        "filename": "init/snapuserd_transition.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1757831
+      },
+      "writtenOn": "2020-11-23T22:07:10Z",
+      "side": 1,
+      "message": "Common typo found: \"requets\" -- should it be \"requests\"?\nNote: a line containing \"common_typos_disable\" or \"common_typos_enable\" will turn off or on (respectively) the linter for subsequent lines in the file. Alternatively include the token \"NOTYPO\" within a line to skip typo linting that line or include \u0027NO_TYPO_CHECK\u003d\u003creason\u003e\u0027in the commit message.",
+      "range": {
+        "startLine": 30,
+        "startChar": 23,
+        "endLine": 30,
+        "endChar": 30
+      },
+      "revId": "399bba50083c4532c1d2c38934d562892955efc4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
