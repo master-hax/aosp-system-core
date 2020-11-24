@@ -22,9 +22,8 @@ cc_library {
     // that links to the static library will behave unexpectedly. All on-device
     // modules should use libprocessgroup which links to the LL-NDK library
     // defined below. The static library is built for tests.
-    vendor_available: false,
-    native_bridge_supported: true,
     llndk_stubs: "libcgrouprc.llndk",
+    native_bridge_supported: true,
     srcs: [
         "cgroup_controller.cpp",
         "cgroup_file.cpp",
