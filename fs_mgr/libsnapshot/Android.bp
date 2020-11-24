@@ -568,7 +568,8 @@ cc_test {
         "libsnapshot_snapuserd",
         "libcutils_sockets",
         "libz",
-	"libdm",
+	"libfs_mgr",
+        "libdm",
     ],
     header_libs: [
         "libstorage_literals_headers",
