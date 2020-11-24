@@ -16,7 +16,6 @@
 
 cc_library_headers {
     name: "libqtaguid_headers",
-    vendor_available: false,
     host_supported: false,
     export_include_dirs: ["include"],
     target: {
@@ -28,7 +27,6 @@ cc_library_headers {
 
 cc_library {
     name: "libqtaguid",
-    vendor_available: false,
     host_supported: false,
     target: {
         android: {
