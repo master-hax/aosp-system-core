@@ -732,6 +732,8 @@ on post-fs-data
     mkdir /data/misc/snapshotctl_log 0755 root root
     # create location to store pre-reboot information
     mkdir /data/misc/prereboot 0700 system system
+    # directory used for on-device signing key blob
+    mkdir /data/misc/odsign 0700 root root
 
     mkdir /data/preloads 0775 system system encryption=None
 
@@ -855,6 +857,16 @@ on post-fs-data
     # Wait for apexd to finish activating APEXes before starting more processes.
     wait_for_prop apexd.status activated
     perform_apex_config
+
+    # See b/174740982 - /data/misc may not yet be labeled correctly at this
+    # point, yet we need these dirs to be labeled correctly for odsign to run.
+    # Do it manually for now.
+    restorecon /data/misc
+    restorecon /data/misc/odsign
+
+    # Start the on-device signing daemon, and wait for it to finish, to ensure
+    # ART artifacts are generated if needed.
+    exec_start odsign
 
     # Lock the fs-verity keyring, so no more keys can be added
     exec -- /system/bin/fsverity_init --lock
