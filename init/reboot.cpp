@@ -531,10 +531,17 @@ static void StopServices(const std::vector<Service*>& services, std::chrono::mil
 // Returns number of violators.
 static int StopServicesAndLogViolations(const std::vector<Service*>& services,
                                         std::chrono::milliseconds timeout, bool terminate) {
+    // Call to StopServices function below will destroy unique_ptr holding a Service object, which
+    // invalidates raw pointer. To avoid use-after-free bug, store names of the services we are
+    // stopping in a separate set.
+    std::set<std::string> to_stop;
+    for (const auto& s : services) {
+        to_stop.insert(s->name());
+    }
     StopServices(services, timeout, terminate);
     int still_running = 0;
-    for (const auto& s : services) {
-        if (s->IsRunning()) {
+    for (const auto& s : ServiceList::GetInstance()) {
+        if (s->IsRunning() && to_stop.count(s->name()) != 0) {
             LOG(ERROR) << "[service-misbehaving] : service '" << s->name() << "' is still running "
                        << timeout.count() << "ms after receiving "
                        << (terminate ? "SIGTERM" : "SIGKILL");
