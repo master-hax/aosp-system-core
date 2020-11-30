@@ -173,6 +173,12 @@ on init
     chmod 0664 /dev/cpuctl/rt/tasks
     chmod 0664 /dev/cpuctl/system/tasks
 
+    # Create a cpu group for camera-specific processes
+    mkdir /dev/cpuctl/camera-daemon
+    chown system system /dev/cpuctl/camera-daemon
+    chown system system /dev/cpuctl/camera-daemon/tasks
+    chmod 0664 /dev/cpuctl/camera-daemon/tasks
+
     # Create a cpu group for NNAPI HAL processes
     mkdir /dev/cpuctl/nnapi-hal
     chown system system /dev/cpuctl/nnapi-hal
@@ -198,11 +204,19 @@ on init
     write /dev/cpuctl/rt/cpu.rt_period_us 1000000
     write /dev/cpuctl/system/cpu.rt_runtime_us 100000
     write /dev/cpuctl/system/cpu.rt_period_us 1000000
-    write /dev/cpuctl/nnapi-hal/cpu.rt_runtime_us 100000
+    write /dev/cpuctl/nnapi-hal/cpu.rt_runtime_us 50000
     write /dev/cpuctl/nnapi-hal/cpu.rt_period_us 1000000
+    write /dev/cpuctl/camera-daemon/cpu.rt_runtime_us 50000
+    write /dev/cpuctl/camera-daemon/cpu.rt_period_us 1000000
 
     # Migrate root group to system subgroup
     copy_per_line /dev/cpuctl/tasks /dev/cpuctl/system/tasks
+
+    # Create an stune group for camera-specific processes
+    mkdir /dev/stune/camera-daemon
+    chown system system /dev/stune/camera-daemon
+    chown system system /dev/stune/camera-daemon/tasks
+    chmod 0664 /dev/stune/camera-daemon/tasks
 
     # Create an stune group for NNAPI HAL processes
     mkdir /dev/stune/nnapi-hal
@@ -373,6 +387,14 @@ on init
     chmod 0664 /dev/cpuset/top-app/tasks
     chmod 0664 /dev/cpuset/restricted/tasks
     chmod 0664 /dev/cpuset/tasks
+
+    # Create a cpuset for camera-specific processes
+    mkdir /dev/cpuset/camera-daemon
+    copy /dev/cpuset/cpus /dev/cpuset/camera-daemon/cpus
+    copy /dev/cpuset/mems /dev/cpuset/camera-daemon/mems
+    chown system system /dev/cpuset/camera-daemon
+    chown system system /dev/cpuset/camera-daemon/tasks
+    chmod 0664 /dev/cpuset/camera-daemon/tasks
 
     # make the PSI monitor accessible to others
     chown system system /proc/pressure/memory
