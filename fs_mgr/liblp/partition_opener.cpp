@@ -57,6 +57,10 @@ std::string GetPartitionAbsolutePath(const std::string& path) {
         if (android::base::StartsWith(path, "mmcblk")) {
             return "/dev/block/" + path;
         }
+
+        if (android::base::StartsWith(path, "nand")) {
+            return "/dev/block/" + path;
+        }
     }
     return by_name;
 #endif
