@@ -553,8 +553,8 @@ static void dump_logs(log_t* log, pid_t pid, unsigned int tail) {
   dump_log_file(log, pid, "main", tail);
 }
 
-void engrave_tombstone_ucontext(int tombstone_fd, uint64_t abort_msg_address, siginfo_t* siginfo,
-                                ucontext_t* ucontext) {
+void engrave_tombstone_ucontext(int tombstone_fd, int proto_fd, uint64_t abort_msg_address,
+                                siginfo_t* siginfo, ucontext_t* ucontext) {
   pid_t uid = getuid();
   pid_t pid = getpid();
   pid_t tid = gettid();
@@ -589,16 +589,18 @@ void engrave_tombstone_ucontext(int tombstone_fd, uint64_t abort_msg_address, si
 
   ProcessInfo process_info;
   process_info.abort_msg_address = abort_msg_address;
-  engrave_tombstone(unique_fd(dup(tombstone_fd)), &unwinder, threads, tid, process_info, nullptr,
-                    nullptr);
+  engrave_tombstone(unique_fd(dup(tombstone_fd)), unique_fd(dup(proto_fd)), &unwinder, threads, tid,
+                    process_info, nullptr, nullptr);
 }
 
-void engrave_tombstone(unique_fd output_fd, unwindstack::Unwinder* unwinder,
+void engrave_tombstone(unique_fd output_fd, unique_fd proto_fd, unwindstack::Unwinder* unwinder,
                        const std::map<pid_t, ThreadInfo>& threads, pid_t target_thread,
                        const ProcessInfo& process_info, OpenFilesList* open_files,
                        std::string* amfd_data) {
   // Don't copy log messages to tombstone unless this is a development device.
   bool want_logs = GetBoolProperty("ro.debuggable", false);
+
+  android::base::WriteStringToFd("TODO: implement me\n", proto_fd);
 
   log_t log;
   log.current_tid = target_thread;
