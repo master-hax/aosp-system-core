@@ -94,6 +94,8 @@ class TempDevice {
 class CowSnapuserdTest final {
   public:
     bool Setup();
+    void CreateCowDeviceForOverlappingCopy();
+    void CreateCowDeviceForFullUpdate();
     bool Merge();
     void ValidateMerge();
     void ReadSnapshotDeviceAndValidate();
@@ -106,7 +108,6 @@ class CowSnapuserdTest final {
   private:
     void SetupImpl();
     void MergeImpl();
-    void CreateCowDevice();
     void CreateBaseDevice();
     void InitCowDevice();
     void SetDeviceControlName();
@@ -133,6 +134,7 @@ class CowSnapuserdTest final {
     size_t size_ = 1_MiB;
     int cow_num_sectors_;
     int total_base_size_;
+    pid_t daemonPid_;
 };
 
 unique_fd CowSnapuserdTest::CreateTempFile(const std::string& name, size_t size) {
@@ -157,6 +159,7 @@ void CowSnapuserdTest::Shutdown() {
     ASSERT_TRUE(client_->StopSnapuserd());
     ASSERT_TRUE(snapshot_dev_->Destroy());
     ASSERT_TRUE(dmuser_dev_->Destroy());
+    ASSERT_EQ(kill(daemonPid_, SIGTERM), 0);
 }
 
 bool CowSnapuserdTest::Setup() {
@@ -175,13 +178,13 @@ void CowSnapuserdTest::StartSnapuserdDaemon() {
     } else {
         client_ = SnapuserdClient::Connect(kSnapuserdSocketTest, 10s);
         ASSERT_NE(client_, nullptr);
+        daemonPid_ = pid;
     }
 }
 
 void CowSnapuserdTest::CreateBaseDevice() {
     unique_fd rnd_fd;
 
-    total_base_size_ = (size_ * 4);
     base_fd_ = CreateTempFile("base_device", total_base_size_);
     ASSERT_GE(base_fd_, 0);
 
@@ -228,7 +231,80 @@ void CowSnapuserdTest::ReadSnapshotDeviceAndValidate() {
     ASSERT_EQ(memcmp(snapuserd_buffer.get(), (char*)orig_buffer_.get() + (size_ * 3), size_), 0);
 }
 
-void CowSnapuserdTest::CreateCowDevice() {
+void CowSnapuserdTest::CreateCowDeviceForOverlappingCopy() {
+    unique_fd rnd_fd;
+    loff_t offset = 0;
+
+    std::string path = android::base::GetExecutableDirectory();
+    cow_system_ = std::make_unique<TemporaryFile>(path);
+
+    rnd_fd.reset(open("/dev/random", O_RDONLY));
+    ASSERT_TRUE(rnd_fd > 0);
+
+    std::unique_ptr<uint8_t[]> random_buffer_1_ = std::make_unique<uint8_t[]>(size_);
+
+    // Fill random data
+    for (size_t j = 0; j < (size_ / 1_MiB); j++) {
+        ASSERT_EQ(ReadFullyAtOffset(rnd_fd, (char*)random_buffer_1_.get() + offset, 1_MiB, 0),
+                  true);
+
+        offset += 1_MiB;
+    }
+
+    CowOptions options;
+    options.compression = "gz";
+    CowWriter writer(options);
+
+    ASSERT_TRUE(writer.Initialize(cow_system_->fd));
+
+    size_t num_blocks = size_ / options.block_size;
+
+    size_t source_copy = num_blocks - 1;
+    size_t dest_copy = num_blocks + (num_blocks >> 1) - 1;
+    size_t total_copy_blocks = num_blocks;
+    // 50% of the blocks are overlapping
+    while (true) {
+        ASSERT_TRUE(writer.AddCopy(dest_copy, source_copy));
+        total_copy_blocks -= 1;
+        if (total_copy_blocks == 0) break;
+        dest_copy -= 1;
+        source_copy -= 1;
+    }
+    size_t blk_zero_copy_start = num_blocks + (num_blocks >> 1);
+
+    ASSERT_TRUE(writer.AddZeroBlocks(blk_zero_copy_start, num_blocks >> 1));
+
+    // Flush operations
+    ASSERT_TRUE(writer.Finalize());
+
+    // Create base device
+    total_base_size_ = (size_ * 2);
+    CreateBaseDevice();
+
+    // Construct the buffer required for validation
+    orig_buffer_ = std::make_unique<uint8_t[]>(total_base_size_);
+    size_t size_half = (size_ >> 1);
+    std::string zero_buffer(size_half, 0);
+
+    // First half - no change is done during merge
+    ASSERT_EQ(android::base::ReadFullyAtOffset(base_fd_, orig_buffer_.get(), size_half, 0), true);
+
+    // Second half - this should be same as first half
+    ASSERT_EQ(android::base::ReadFullyAtOffset(base_fd_, (char*)orig_buffer_.get() + size_half,
+                                               size_half, 0),
+              true);
+
+    // Read the second half from the base device
+    ASSERT_EQ(android::base::ReadFullyAtOffset(base_fd_, (char*)orig_buffer_.get() + size_,
+                                               size_half, size_half),
+              true);
+
+    // Zero out the last part
+    memcpy((char*)orig_buffer_.get() + (size_ + (size_half)), (void*)zero_buffer.c_str(),
+           size_half);
+}
+
+void CowSnapuserdTest::CreateCowDeviceForFullUpdate() {
     unique_fd rnd_fd;
     loff_t offset = 0;
 
@@ -263,13 +339,18 @@ void CowSnapuserdTest::CreateCowDevice() {
     size_t blk_end_copy = blk_src_copy + num_blocks;
     size_t source_blk = 0;
 
-    while (source_blk < num_blocks) {
-        ASSERT_TRUE(writer.AddCopy(source_blk, blk_src_copy));
-        source_blk += 1;
-        blk_src_copy += 1;
+    size_t source_copy = blk_end_copy - 1;
+    size_t dest_copy = num_blocks - 1;
+    size_t total_copy_blocks = num_blocks;
+    while (true) {
+        ASSERT_TRUE(writer.AddCopy(dest_copy, source_copy));
+        total_copy_blocks -= 1;
+        if (total_copy_blocks == 0) break;
+        dest_copy -= 1;
+        source_copy -= 1;
     }
 
-    ASSERT_EQ(blk_src_copy, blk_end_copy);
+    source_blk = num_blocks;
 
     ASSERT_TRUE(writer.AddRawBlocks(source_blk, random_buffer_1_.get(), size_));
 
@@ -284,6 +365,9 @@ void CowSnapuserdTest::CreateCowDevice() {
 
     // Flush operations
     ASSERT_TRUE(writer.Finalize());
+
+    total_base_size_ = (size_ * 4);
+    CreateBaseDevice();
 
     // Construct the buffer required for validation
     orig_buffer_ = std::make_unique<uint8_t[]>(total_base_size_);
@@ -347,17 +431,11 @@ void CowSnapuserdTest::CreateSnapshotDevice() {
 }
 
 void CowSnapuserdTest::SetupImpl() {
-    CreateBaseDevice();
-    CreateCowDevice();
-
     SetDeviceControlName();
-
     StartSnapuserdDaemon();
     InitCowDevice();
-
     CreateDmUserDevice();
     InitDaemon();
-
     CreateSnapshotDevice();
     setup_ok_ = true;
 }
@@ -405,10 +483,20 @@ void CowSnapuserdTest::ValidateMerge() {
     ASSERT_EQ(memcmp(merged_buffer_.get(), orig_buffer_.get(), total_base_size_), 0);
 }
 
-TEST(Snapuserd_Test, Snapshot) {
+TEST(CowSnapuserdTest, Fullupdate) {
     CowSnapuserdTest harness;
+    harness.CreateCowDeviceForFullUpdate();
     ASSERT_TRUE(harness.Setup());
     harness.ReadSnapshotDeviceAndValidate();
+    ASSERT_TRUE(harness.Merge());
+    harness.ValidateMerge();
+    harness.Shutdown();
+}
+
+TEST(CowSnapuserdTest, OverlappingCopy) {
+    CowSnapuserdTest harness;
+    harness.CreateCowDeviceForOverlappingCopy();
+    ASSERT_TRUE(harness.Setup());
     ASSERT_TRUE(harness.Merge());
     harness.ValidateMerge();
     harness.Shutdown();

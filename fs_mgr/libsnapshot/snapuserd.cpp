@@ -16,6 +16,8 @@
 
 #include <csignal>
 
+#include <set>
+
 #include <libsnapshot/snapuserd.h>
 #include <libsnapshot/snapuserd_client.h>
 #include <libsnapshot/snapuserd_daemon.h>
@@ -203,10 +205,6 @@ bool Snapuserd::ReadData(chunk_t chunk, size_t size) {
         // constructing the metadata, we know that the chunk IDs
         // are contiguous
         chunk_key += 1;
-
-        if (cow_op->type == kCowCopyOp) {
-            CHECK(read_size == 0);
-        }
     }
 
     // Reset the buffer offset
@@ -314,7 +312,7 @@ loff_t Snapuserd::GetMergeStartOffset(void* merged_buffer, void* unmerged_buffer
 }
 
 int Snapuserd::GetNumberOfMergedOps(void* merged_buffer, void* unmerged_buffer, loff_t offset,
-                                    int unmerged_exceptions, bool* copy_op) {
+                                    int unmerged_exceptions) {
     int merged_ops_cur_iter = 0;
 
     // Find the operations which are merged in this cycle.
@@ -333,9 +331,6 @@ int Snapuserd::GetNumberOfMergedOps(void* merged_buffer, void* unmerged_buffer, 
             const CowOperation* cow_op = chunk_map_[cow_de->new_chunk];
             CHECK(cow_op != nullptr);
             CHECK(cow_op->new_block == cow_de->old_chunk);
-            if (cow_op->type == kCowCopyOp) {
-                *copy_op = true;
-            }
             // zero out to indicate that operation is merged.
             cow_de->old_chunk = 0;
             cow_de->new_chunk = 0;
@@ -357,9 +352,6 @@ int Snapuserd::GetNumberOfMergedOps(void* merged_buffer, void* unmerged_buffer, 
         }
     }
 
-    if (*copy_op) {
-        CHECK(merged_ops_cur_iter == 1);
-    }
     return merged_ops_cur_iter;
 }
 
@@ -381,42 +373,15 @@ bool Snapuserd::ProcessMergeComplete(chunk_t chunk, void* buffer) {
     int unmerged_exceptions = 0;
     loff_t offset = GetMergeStartOffset(buffer, vec_[divresult.quot].get(), &unmerged_exceptions);
 
-    bool copy_op = false;
-    // Check if the merged operation is a copy operation. If so, then we need
-    // to explicitly sync the metadata before initiating the next merge.
-    // For ex: Consider a following sequence of copy operations in the COW file:
-    //
-    // Op-1: Copy 2 -> 3
-    // Op-2: Copy 1 -> 2
-    // Op-3: Copy 5 -> 10
-    //
-    // Op-1 and Op-2 are overlapping copy operations. The merge sequence will
-    // look like:
-    //
-    // Merge op-1: Copy 2 -> 3
-    // Merge op-2: Copy 1 -> 2
-    // Merge op-3: Copy 5 -> 10
-    //
-    // Now, let's say we have a crash _after_ Merge op-2; Block 2 contents would
-    // have been over-written by Block-1 after merge op-2. During next reboot,
-    // kernel will request the metadata for all the un-merged blocks. If we had
-    // not sync the metadata after Merge-op 1 and Merge op-2, snapuser daemon
-    // will think that these merge operations are still pending and hence will
-    // inform the kernel that Op-1 and Op-2 are un-merged blocks. When kernel
-    // resumes back the merging process, it will attempt to redo the Merge op-1
-    // once again. However, block 2 contents are wrong as it has the contents
-    // of block 1 from previous merge cycle. Although, merge will silently succeed,
-    // this will lead to silent data corruption.
-    //
-    int merged_ops_cur_iter = GetNumberOfMergedOps(buffer, vec_[divresult.quot].get(), offset,
-                                                   unmerged_exceptions, &copy_op);
+    int merged_ops_cur_iter =
+            GetNumberOfMergedOps(buffer, vec_[divresult.quot].get(), offset, unmerged_exceptions);
 
     // There should be at least one operation merged in this cycle
     CHECK(merged_ops_cur_iter > 0);
 
     header.num_merge_ops += merged_ops_cur_iter;
     reader_->UpdateMergeProgress(merged_ops_cur_iter);
-    if (!writer_->CommitMerge(merged_ops_cur_iter, copy_op)) {
+    if (!writer_->CommitMerge(merged_ops_cur_iter)) {
         SNAP_LOG(ERROR) << "CommitMerge failed...";
         return false;
     }
@@ -440,6 +405,7 @@ chunk_t Snapuserd::GetNextAllocatableChunkId(chunk_t chunk) {
     if (IsChunkIdMetadata(next_chunk)) {
         next_chunk += 1;
     }
+
     return next_chunk;
 }
 
@@ -469,13 +435,7 @@ chunk_t Snapuserd::GetNextAllocatableChunkId(chunk_t chunk) {
  *      metadata so that when kernel starts the merging from backwards,
  *      those ops correspond to the beginning of our COW format.
  *      b: Kernel can merge successive operations if the two chunk IDs
- *      are contiguous. This can be problematic when there is a crash
- *      during merge; specifically when the merge operation has dependency.
- *      These dependencies can only happen during copy operations.
- *
- *      To avoid this problem, we make sure that no two copy-operations
- *      do not have contiguous chunk IDs. Additionally, we make sure
- *      that each copy operation is merged individually.
+ *      are contiguous.
  * 6: Use a monotonically increasing chunk number to assign the
  *    new_chunk
  * 7: Each chunk-id represents either a: Metadata page or b: Data page
@@ -540,6 +500,8 @@ bool Snapuserd::ReadMetadata() {
     // this memset will ensure that metadata read is completed.
     memset(de_ptr.get(), 0, (exceptions_per_area_ * sizeof(struct disk_exception)));
 
+    std::set<uint64_t> dest_blocks;
+
     while (!cowop_riter_->Done()) {
         const CowOperation* cow_op = &cowop_riter_->Get();
         struct disk_exception* de =
@@ -551,8 +513,63 @@ bool Snapuserd::ReadMetadata() {
         }
 
         metadata_found = true;
-        if ((cow_op->type == kCowCopyOp || prev_copy_op)) {
+
+        if (!prev_copy_op && cow_op->type == kCowCopyOp) {
+            // Create a new merge window once the copy operations begin.
+            // Although, there shouldn't be any issue batch merging copy and
+            // replace ops, we will split it just to be sure that copy ops
+            // are merged separately.
             data_chunk_id = GetNextAllocatableChunkId(data_chunk_id);
+        }
+
+        // Copy operations are always at the beginning of the COW format and
+        // blocks are always in descending order.
+        //
+        // We should not batch merge copy operations which are overlapping.
+        // Consider an example:
+        //
+        // COW file with COPY Ops:
+        //            Source Destination
+        // Copy op-1: 20 -> 23
+        // Copy op-2: 19 -> 22
+        // Copy op-3: 18 -> 21
+        // Copy op-4: 17 -> 20
+        // Copy op-5: 16 -> 19
+        // Copy op-6: 15 -> 18
+        //
+        // The above operations are overlapping with blocks 18, 19, 20.
+        // We cannot batch merge all 6 operations in one shot. A crash after
+        // copy-op 4 will overwrite block 20; during next boot we may end up
+        // copying block 20 to block 23 which has the contents of block 17
+        // leading to a silent data corruption.
+        //
+        // Thus, we split the merge process for all overlapping blocks.
+        // In this example we will have two batch merge operations:
+        //
+        // Merge-cycle-1 :
+        // ======================
+        // Copy op-1: 20 -> 23
+        // Copy op-2: 19 -> 22
+        // Copy op-3: 18 -> 21
+        // ======================
+        // Merge-cycle-2 :
+        // ======================
+        // Copy op-4: 17 -> 20
+        // Copy op-5: 16 -> 19
+        // Copy op-6: 15 -> 18
+        // =======================
+        //
+        if (cow_op->type == kCowCopyOp) {
+            std::pair<std::set<uint64_t>::iterator, bool> retval;
+
+            if (dest_blocks.count(cow_op->source) != 0) {
+                // Start the new merge window as we have a overlap
+                dest_blocks.clear();
+                data_chunk_id = GetNextAllocatableChunkId(data_chunk_id);
+            }
+            retval = dest_blocks.insert(cow_op->new_block);
+            CHECK(retval.second) << "block: " << cow_op->new_block
+                                 << " is being over-written in this merge window";
         }
 
         prev_copy_op = (cow_op->type == kCowCopyOp);
@@ -561,7 +578,8 @@ bool Snapuserd::ReadMetadata() {
         de->old_chunk = cow_op->new_block;
         de->new_chunk = data_chunk_id;
 
-        SNAP_LOG(DEBUG) << "Old-chunk: " << de->old_chunk << "New-chunk: " << de->new_chunk;
+        SNAP_LOG(DEBUG) << "Source: " << cow_op->source << " Old-chunk: " << de->old_chunk
+                        << "New-chunk: " << de->new_chunk;
 
         // Store operation pointer.
         chunk_map_[data_chunk_id] = cow_op;
