@@ -1,0 +1,262 @@
+{
+  "comments": [
+    {
+      "robotId": "ayeaye",
+      "robotRunId": "AR00000000000006577231",
+      "url": "https://android-build.googleplex.com/builds/treetop/android-review/1518564?revision\u003d1",
+      "fixSuggestions": [
+        {
+          "fixId": "304c3701_7ae8b35d",
+          "description": "Change to \"debuggerd/client/debuggerd_client.cpp\"",
+          "replacements": [
+            {
+              "path": "debuggerd/client/debuggerd_client.cpp",
+              "range": {
+                "startLine": 49,
+                "startChar": 8,
+                "endLine": 49,
+                "endChar": 14
+              },
+              "replacement": "UNKNOWN"
+            }
+          ]
+        }
+      ],
+      "key": {
+        "uuid": "791845b0_f04c11b7",
+        "filename": "debuggerd/client/debuggerd_client.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1757831
+      },
+      "writtenOn": "2020-12-06T11:28:26Z",
+      "side": 1,
+      "message": "Common typo found: \"UNKNOW\" -- should it be \"UNKNOWN\"?\nNote: a line containing \"common_typos_disable\" or \"common_typos_enable\" will turn off or on (respectively) the linter for subsequent lines in the file. Alternatively include the token \"NOTYPO\" within a line to skip typo linting that line or include \u0027NO_TYPO_CHECK\u003d\u003creason\u003e\u0027in the commit message.",
+      "range": {
+        "startLine": 49,
+        "startChar": 8,
+        "endLine": 49,
+        "endChar": 14
+      },
+      "revId": "15b41a362ae0e2b6344096825cf27d7be22d6787",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "robotId": "ayeaye",
+      "robotRunId": "AR00000000000006577231",
+      "url": "https://android-build.googleplex.com/builds/treetop/android-review/1518564?revision\u003d1",
+      "fixSuggestions": [
+        {
+          "fixId": "06bc6113_da041008",
+          "description": "Change to \"debuggerd/client/debuggerd_client.cpp\"",
+          "replacements": [
+            {
+              "path": "debuggerd/client/debuggerd_client.cpp",
+              "range": {
+                "startLine": 64,
+                "startChar": 11,
+                "endLine": 64,
+                "endChar": 17
+              },
+              "replacement": "UNKNOWN"
+            }
+          ]
+        }
+      ],
+      "key": {
+        "uuid": "e4f475cf_24c303e1",
+        "filename": "debuggerd/client/debuggerd_client.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1757831
+      },
+      "writtenOn": "2020-12-06T11:28:26Z",
+      "side": 1,
+      "message": "Common typo found: \"UNKNOW\" -- should it be \"UNKNOWN\"?\nNote: a line containing \"common_typos_disable\" or \"common_typos_enable\" will turn off or on (respectively) the linter for subsequent lines in the file. Alternatively include the token \"NOTYPO\" within a line to skip typo linting that line or include \u0027NO_TYPO_CHECK\u003d\u003creason\u003e\u0027in the commit message.",
+      "range": {
+        "startLine": 64,
+        "startChar": 11,
+        "endLine": 64,
+        "endChar": 17
+      },
+      "revId": "15b41a362ae0e2b6344096825cf27d7be22d6787",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "robotId": "ayeaye",
+      "robotRunId": "AR00000000000006577231",
+      "url": "https://android-build.googleplex.com/builds/treetop/android-review/1518564?revision\u003d1",
+      "fixSuggestions": [
+        {
+          "fixId": "86d6c174_deac5716",
+          "description": "Change to \"debuggerd/client/debuggerd_client.cpp\"",
+          "replacements": [
+            {
+              "path": "debuggerd/client/debuggerd_client.cpp",
+              "range": {
+                "startLine": 68,
+                "startChar": 40,
+                "endLine": 68,
+                "endChar": 46
+              },
+              "replacement": "unknown"
+            }
+          ]
+        }
+      ],
+      "key": {
+        "uuid": "634777ff_245da91f",
+        "filename": "debuggerd/client/debuggerd_client.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 1757831
+      },
+      "writtenOn": "2020-12-06T11:28:26Z",
+      "side": 1,
+      "message": "Common typo found: \"unknow\" -- should it be \"unknown\"?\nNote: a line containing \"common_typos_disable\" or \"common_typos_enable\" will turn off or on (respectively) the linter for subsequent lines in the file. Alternatively include the token \"NOTYPO\" within a line to skip typo linting that line or include \u0027NO_TYPO_CHECK\u003d\u003creason\u003e\u0027in the commit message.",
+      "range": {
+        "startLine": 68,
+        "startChar": 40,
+        "endLine": 68,
+        "endChar": 46
+      },
+      "revId": "15b41a362ae0e2b6344096825cf27d7be22d6787",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "robotId": "ayeaye",
+      "robotRunId": "AR00000000000006577231",
+      "url": "https://android-build.googleplex.com/builds/treetop/android-review/1518564?revision\u003d1",
+      "fixSuggestions": [
+        {
+          "fixId": "957f873d_4960b63e",
+          "description": "Change to \"debuggerd/client/debuggerd_client.cpp\"",
+          "replacements": [
+            {
+              "path": "debuggerd/client/debuggerd_client.cpp",
+              "range": {
+                "startLine": 68,
+                "startChar": 68,
+                "endLine": 68,
+                "endChar": 74
+              },
+              "replacement": "UNKNOWN"
+            }
+          ]
+        }
+      ],
+      "key": {
+        "uuid": "94fd06ed_8a3ca995",
+        "filename": "debuggerd/client/debuggerd_client.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 1757831
+      },
+      "writtenOn": "2020-12-06T11:28:26Z",
+      "side": 1,
+      "message": "Common typo found: \"UNKNOW\" -- should it be \"UNKNOWN\"?\nNote: a line containing \"common_typos_disable\" or \"common_typos_enable\" will turn off or on (respectively) the linter for subsequent lines in the file. Alternatively include the token \"NOTYPO\" within a line to skip typo linting that line or include \u0027NO_TYPO_CHECK\u003d\u003creason\u003e\u0027in the commit message.",
+      "range": {
+        "startLine": 68,
+        "startChar": 68,
+        "endLine": 68,
+        "endChar": 74
+      },
+      "revId": "15b41a362ae0e2b6344096825cf27d7be22d6787",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "robotId": "ayeaye",
+      "robotRunId": "AR00000000000006577231",
+      "url": "https://android-build.googleplex.com/builds/treetop/android-review/1518564?revision\u003d1",
+      "fixSuggestions": [
+        {
+          "fixId": "dd1cb8da_dd8866a0",
+          "description": "Change to \"debuggerd/client/debuggerd_client.cpp\"",
+          "replacements": [
+            {
+              "path": "debuggerd/client/debuggerd_client.cpp",
+              "range": {
+                "startLine": 69,
+                "startChar": 11,
+                "endLine": 69,
+                "endChar": 17
+              },
+              "replacement": "UNKNOWN"
+            }
+          ]
+        }
+      ],
+      "key": {
+        "uuid": "5bb4c915_01a0fc66",
+        "filename": "debuggerd/client/debuggerd_client.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 1757831
+      },
+      "writtenOn": "2020-12-06T11:28:26Z",
+      "side": 1,
+      "message": "Common typo found: \"UNKNOW\" -- should it be \"UNKNOWN\"?\nNote: a line containing \"common_typos_disable\" or \"common_typos_enable\" will turn off or on (respectively) the linter for subsequent lines in the file. Alternatively include the token \"NOTYPO\" within a line to skip typo linting that line or include \u0027NO_TYPO_CHECK\u003d\u003creason\u003e\u0027in the commit message.",
+      "range": {
+        "startLine": 69,
+        "startChar": 11,
+        "endLine": 69,
+        "endChar": 17
+      },
+      "revId": "15b41a362ae0e2b6344096825cf27d7be22d6787",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "robotId": "ayeaye",
+      "robotRunId": "AR00000000000006577231",
+      "url": "https://android-build.googleplex.com/builds/treetop/android-review/1518564?revision\u003d1",
+      "fixSuggestions": [
+        {
+          "fixId": "fa02ba8e_127bdd03",
+          "description": "Change to \"debuggerd/client/debuggerd_client.cpp\"",
+          "replacements": [
+            {
+              "path": "debuggerd/client/debuggerd_client.cpp",
+              "range": {
+                "startLine": 153,
+                "startChar": 38,
+                "endLine": 153,
+                "endChar": 44
+              },
+              "replacement": "Unknown"
+            }
+          ]
+        }
+      ],
+      "key": {
+        "uuid": "22af6359_403e789d",
+        "filename": "debuggerd/client/debuggerd_client.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 153,
+      "author": {
+        "id": 1757831
+      },
+      "writtenOn": "2020-12-06T11:28:26Z",
+      "side": 1,
+      "message": "Common typo found: \"Unknow\" -- should it be \"Unknown\"?\nNote: a line containing \"common_typos_disable\" or \"common_typos_enable\" will turn off or on (respectively) the linter for subsequent lines in the file. Alternatively include the token \"NOTYPO\" within a line to skip typo linting that line or include \u0027NO_TYPO_CHECK\u003d\u003creason\u003e\u0027in the commit message.",
+      "range": {
+        "startLine": 153,
+        "startChar": 38,
+        "endLine": 153,
+        "endChar": 44
+      },
+      "revId": "15b41a362ae0e2b6344096825cf27d7be22d6787",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
