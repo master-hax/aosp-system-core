@@ -43,12 +43,34 @@
 #include "protocol.h"
 #include "util.h"
 
+#define OOM_SCORE_ADJ_MAX 1000
+#define OOM_SCORE_ADJ_MIN (-1000)
+#define SYSTEM_ADJ (-900)
+#define UNKNOWN_ADJ (-2000)
+
 using namespace std::chrono_literals;
 
 using android::base::ReadFileToString;
 using android::base::SendFileDescriptors;
 using android::base::unique_fd;
 using android::base::WriteStringToFd;
+
+static int get_pid_oomadj(pid_t pid) {
+  int oomadj;
+  std::string adj_result;
+  std::string adj_path = "/proc/" + std::to_string(pid) +"/oom_score_adj";
+  if (!ReadFileToString(adj_path, &adj_result, true)) {
+    LOG(ERROR) << "libdebuggerd_client: Failed to read \"" << adj_path << "\"";
+    return UNKNOWN_ADJ;
+  }
+  oomadj = std::stoi(adj_result);
+  if (oomadj > OOM_SCORE_ADJ_MAX || oomadj < OOM_SCORE_ADJ_MIN) {
+    LOG(ERROR) << "libdebuggerd_client: unknown oomadj reset to " << UNKNOWN_ADJ;
+    return UNKNOWN_ADJ;
+  }
+  LOG(WARNING) << "libdebuggerd_client: oomadj of pid(" << pid << ") is " << oomadj;
+  return oomadj;
+}
 
 static bool send_signal(pid_t pid, const DebuggerdDumpType dump_type) {
   const int signal = (dump_type == kDebuggerdJavaBacktrace) ? SIGQUIT : BIONIC_SIGNAL_DEBUGGER;
@@ -123,6 +145,15 @@ bool debuggerd_trigger_dump(pid_t tid, DebuggerdDumpType dump_type, unsigned int
       return false;
     }
     pid = procinfo.pid;
+    if (pid != tid) {
+      if (get_pid_oomadj(pid) < SYSTEM_ADJ) {
+        //When there is pid multiplexing, the pid we found through tid may be a Native process,
+        //sending it SIGQUIT signals will cause an abnormal crash.
+        LOG(ERROR) << "libdebuggerd_client: WARNING!!! pid(" << pid << ")/tid(" << tid
+                   << ") is Native or Unknown process";
+        return -1;
+      }
+    }
   }
 
   LOG(INFO) << "libdebuggerd_client: started dumping process " << pid;
