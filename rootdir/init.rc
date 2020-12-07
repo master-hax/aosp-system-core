@@ -1040,6 +1040,8 @@ on boot
 
     class_start core
 
+    start media.transcoding
+
 on nonencrypted
     class_start main
     class_start late_start
