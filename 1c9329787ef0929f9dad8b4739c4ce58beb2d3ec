@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "robotId": "ayeaye",
+      "robotRunId": "AR00000000000006613667",
+      "url": "https://android-build.googleplex.com/builds/treetop/android-review/1446115?revision\u003d2",
+      "fixSuggestions": [],
+      "key": {
+        "uuid": "d9ad6555_1a5f8d8f",
+        "filename": "adb/client/osp/udp_socket.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 492,
+      "author": {
+        "id": 1757831
+      },
+      "writtenOn": "2020-12-08T07:32:51Z",
+      "side": 1,
+      "message": "Prefer to use inclusive terms like \u0027valid\u0027, \u0027validity check\u0027 or \u0027initial check\u0027; see https://source.android.com/setup/contribute/respectful-code for more details. In the case of a false positive add BYPASS_INCLUSIVE_LANGUAGE_REASON\u003dmy_reason_here to your commit message to disable this check.",
+      "range": {
+        "startLine": 492,
+        "startChar": 11,
+        "endLine": 492,
+        "endChar": 17
+      },
+      "revId": "1c9329787ef0929f9dad8b4739c4ce58beb2d3ec",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "robotId": "ayeaye",
+      "robotRunId": "AR00000000000006613666",
+      "url": "https://android-build.googleplex.com/builds/treetop/android-review/1446115?revision\u003d2",
+      "fixSuggestions": [
+        {
+          "fixId": "08564899_42920977",
+          "description": "Change to \"adb/client/transport_mdns.cpp\"",
+          "replacements": [
+            {
+              "path": "adb/client/transport_mdns.cpp",
+              "range": {
+                "startLine": 151,
+                "startChar": 66,
+                "endLine": 151,
+                "endChar": 74
+              },
+              "replacement": "support"
+            }
+          ]
+        }
+      ],
+      "key": {
+        "uuid": "1e0d3d76_440fce54",
+        "filename": "adb/client/transport_mdns.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 151,
+      "author": {
+        "id": 1757831
+      },
+      "writtenOn": "2020-12-08T07:32:51Z",
+      "side": 1,
+      "message": "Common typo found: \"suppport\" -- should it be \"support\"?\nNote: a line containing \"common_typos_disable\" or \"common_typos_enable\" will turn off or on (respectively) the linter for subsequent lines in the file. Alternatively include the token \"NOTYPO\" within a line to skip typo linting that line or include \u0027NO_TYPO_CHECK\u003d\u003creason\u003e\u0027in the commit message.",
+      "range": {
+        "startLine": 151,
+        "startChar": 66,
+        "endLine": 151,
+        "endChar": 74
+      },
+      "revId": "1c9329787ef0929f9dad8b4739c4ce58beb2d3ec",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
