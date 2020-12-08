@@ -40,6 +40,8 @@ cc_binary {
         "libhidlbase",
         "android.hardware.gatekeeper@1.0",
         "libgatekeeper_aidl",
+        "android.hardware.keymint-unstable-ndk_platform",
+        "android.security.authorizations-ndk_platform",
     ],
 
     static_libs: ["libscrypt_static"],
