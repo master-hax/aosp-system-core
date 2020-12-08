@@ -36,7 +36,7 @@ struct UeventdConfiguration {
     bool enable_parallel_restorecon = false;
 };
 
-UeventdConfiguration ParseConfig(const std::vector<std::string>& configs);
+UeventdConfiguration ParseConfig(const std::string& configs);
 
 }  // namespace init
 }  // namespace android
