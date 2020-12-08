@@ -18,6 +18,7 @@
 
 #include <csignal>
 
+#include <gflags/gflags.h>
 #include <libsnapshot/snapuserd_client.h>
 
 namespace android {
