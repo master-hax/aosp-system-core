@@ -43,6 +43,20 @@ int TrustyKeymaster::Initialize() {
         return -1;
     }
 
+    GetVersionRequest request;
+    GetVersionResponse response;
+    GetVersion(request, &response);
+    if (response.error != KM_ERROR_OK) {
+        ALOGE("Failed to get Keymaster version from TA.");
+        return -1;
+    }
+    ALOGI("TA is version %d.%d.%d.", response.major_ver, response.minor_ver, response.subminor_ver);
+    if (response.major_ver < 4) {
+        ALOGE("TA is too old.");
+        return -1;
+    }
+    message_version_ = response.MessageVersion();
+
     return 0;
 }
 
@@ -175,21 +189,21 @@ void TrustyKeymaster::AbortOperation(const AbortOperationRequest& request,
 GetHmacSharingParametersResponse TrustyKeymaster::GetHmacSharingParameters() {
     // Empty buffer to allow ForwardCommand to have something to serialize
     Buffer request;
-    GetHmacSharingParametersResponse response;
+    GetHmacSharingParametersResponse response(MessageVersion());
     ForwardCommand(KM_GET_HMAC_SHARING_PARAMETERS, request, &response);
     return response;
 }
 
 ComputeSharedHmacResponse TrustyKeymaster::ComputeSharedHmac(
         const ComputeSharedHmacRequest& request) {
-    ComputeSharedHmacResponse response;
+    ComputeSharedHmacResponse response(MessageVersion());
     ForwardCommand(KM_COMPUTE_SHARED_HMAC, request, &response);
     return response;
 }
 
 VerifyAuthorizationResponse TrustyKeymaster::VerifyAuthorization(
         const VerifyAuthorizationRequest& request) {
-    VerifyAuthorizationResponse response;
+    VerifyAuthorizationResponse response(MessageVersion());
     ForwardCommand(KM_VERIFY_AUTHORIZATION, request, &response);
     return response;
 }

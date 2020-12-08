@@ -59,6 +59,11 @@ class TrustyKeymaster {
     GetHmacSharingParametersResponse GetHmacSharingParameters();
     ComputeSharedHmacResponse ComputeSharedHmac(const ComputeSharedHmacRequest& request);
     VerifyAuthorizationResponse VerifyAuthorization(const VerifyAuthorizationRequest& request);
+
+    int32_t MessageVersion() const { return message_version_; }
+
+  private:
+    int32_t message_version_;
 };
 
 }  // namespace keymaster
