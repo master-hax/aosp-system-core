@@ -74,6 +74,7 @@
 #include "block_dev_initializer.h"
 #include "debug_ramdisk.h"
 #include "reboot_utils.h"
+#include "snapuserd_transition.h"
 #include "util.h"
 
 using namespace std::string_literals;
@@ -468,12 +469,7 @@ bool LoadPolicy() {
     return IsSplitPolicyDevice() ? LoadSplitPolicy() : LoadMonolithicPolicy();
 }
 
-void SelinuxInitialize() {
-    LOG(INFO) << "Loading SELinux policy";
-    if (!LoadPolicy()) {
-        LOG(FATAL) << "Unable to load SELinux policy";
-    }
-
+void SelinuxSetEnforcement() {
     bool kernel_enforcing = (security_getenforce() == 1);
     bool is_enforcing = IsEnforcing();
     if (kernel_enforcing != is_enforcing) {
@@ -684,7 +680,16 @@ int SetupSelinux(char** argv) {
 
     // Set up SELinux, loading the SELinux policy.
     SelinuxSetupKernelLogging();
-    SelinuxInitialize();
+
+    LOG(INFO) << "Loading SELinux policy";
+    if (!LoadPolicy()) {
+        LOG(FATAL) << "Unable to load SELinux policy";
+    }
+
+    // Before enforcing, transition snapuserd if needed.
+    PerformSelinuxSnapuserdTransition();
+
+    SelinuxSetEnforcement();
 
     // We're in the kernel domain and want to transition to the init domain.  File systems that
     // store SELabels in their xattrs, such as ext4 do not need an explicit restorecon here,
