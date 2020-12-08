@@ -26,24 +26,28 @@
 #include <unistd.h>
 #include <memory>
 
-#include <android/security/keystore/IKeystoreService.h>
 #include <android-base/logging.h>
 #include <android-base/properties.h>
+#include <android/binder_ibinder.h>
+#include <android/binder_manager.h>
+#include <android/security/keystore/IKeystoreService.h>
 #include <binder/IPCThreadState.h>
 #include <binder/IServiceManager.h>
 #include <binder/PermissionCache.h>
-#include <gatekeeper/password_handle.h> // for password_handle_t
+#include <gatekeeper/password_handle.h>  // for password_handle_t
 #include <hardware/gatekeeper.h>
 #include <hardware/hw_auth_token.h>
-#include <keystore/keystore.h> // For error code
+#include <keystore/keystore.h>  // For error code
 #include <keystore/keystore_return_types.h>
 #include <libgsi/libgsi.h>
 #include <log/log.h>
 #include <utils/Log.h>
 #include <utils/String16.h>
 
-#include <hidl/HidlSupport.h>
+#include <aidl/android/hardware/keymint/HardwareAuthToken.h>
+#include <aidl/android/security/authorizations/IKeystoreAuthorization.h>
 #include <android/hardware/gatekeeper/1.0/IGatekeeper.h>
+#include <hidl/HidlSupport.h>
 
 using android::sp;
 using android::hardware::gatekeeper::V1_0::IGatekeeper;
@@ -55,6 +59,8 @@ using ::android::binder::Status;
 using ::android::service::gatekeeper::BnGateKeeperService;
 using GKResponse = ::android::service::gatekeeper::GateKeeperResponse;
 using GKResponseCode = ::android::service::gatekeeper::ResponseCode;
+using ::aidl::android::hardware::keymint::HardwareAuthToken;
+using ::aidl::android::security::authorizations::IKeystoreAuthorization;
 
 namespace android {
 
@@ -299,20 +305,41 @@ public:
 
         if (gkResponse->response_code() == GKResponseCode::OK) {
             if (gkResponse->payload().size() != 0) {
-                sp<IServiceManager> sm = defaultServiceManager();
-                sp<IBinder> binder = sm->getService(String16("android.security.keystore"));
-                sp<security::keystore::IKeystoreService> service =
-                        interface_cast<security::keystore::IKeystoreService>(binder);
+                // try to connect to IKeystoreAuthorization AIDL service first.
+                ::ndk::SpAIBinder authzBinder(
+                        AServiceManager_getService("android.security.authorizations"));
+                auto authzService = IKeystoreAuthorization::fromBinder(authzBinder);
+                if (authzService) {
+                    if (gkResponse->payload().size() != sizeof(HardwareAuthToken)) {
+                        LOG(ERROR) << "Incorrect size of AuthToken payload.";
+                    }
 
-                if (service) {
-                    int result = 0;
-                    auto binder_result = service->addAuthToken(gkResponse->payload(), &result);
-                    if (!binder_result.isOk() ||
-                        !keystore::KeyStoreServiceReturnCode(result).isOk()) {
-                        LOG(ERROR) << "Failure sending auth token to KeyStore: " << result;
+                    HardwareAuthToken authToken;
+                    memcpy(reinterpret_cast<void*>(&authToken), gkResponse->payload().data(),
+                           sizeof(HardwareAuthToken));
+                    auto result = authzService->addAuthToken(authToken);
+                    if (!result.isOk()) {
+                        LOG(ERROR) << "Failure in sending AuthToken to AuthorizationService.";
                     }
                 } else {
-                    LOG(ERROR) << "Cannot deliver auth token. Unable to communicate with Keystore.";
+                    // if Keystore2 is not enabled, connect to legacy keystore.
+                    sp<IServiceManager> sm = defaultServiceManager();
+
+                    sp<IBinder> binder = sm->getService(String16("android.security.keystore"));
+                    sp<security::keystore::IKeystoreService> service =
+                            interface_cast<security::keystore::IKeystoreService>(binder);
+
+                    if (service) {
+                        int result = 0;
+                        auto binder_result = service->addAuthToken(gkResponse->payload(), &result);
+                        if (!binder_result.isOk() ||
+                            !keystore::KeyStoreServiceReturnCode(result).isOk()) {
+                            LOG(ERROR) << "Failure sending auth token to KeyStore: " << result;
+                        }
+                    } else {
+                        LOG(ERROR) << "Cannot deliver auth token. Unable to communicate with "
+                                      "Keystore.";
+                    }
                 }
             }
 
