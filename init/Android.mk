@@ -57,6 +57,7 @@ LOCAL_SRC_FILES := \
     reboot_utils.cpp \
     selabel.cpp \
     selinux.cpp \
+    snapuserd_transition.cpp \
     switch_root.cpp \
     uevent_listener.cpp \
     util.cpp \
