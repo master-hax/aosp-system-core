@@ -240,6 +240,7 @@ AvbUniquePtr AvbHandle::LoadAndVerifyVbmeta(
             avb_handle->vbmeta_images_[0].GetVBMetaHeader();
     bool verification_disabled = ((AvbVBMetaImageFlags)vbmeta_header->flags &
                                   AVB_VBMETA_IMAGE_FLAGS_VERIFICATION_DISABLED);
+    verification_disabled = true;
     bool hashtree_disabled =
             ((AvbVBMetaImageFlags)vbmeta_header->flags & AVB_VBMETA_IMAGE_FLAGS_HASHTREE_DISABLED);
     if (verification_disabled) {
@@ -292,7 +293,7 @@ AvbUniquePtr AvbHandle::LoadAndVerifyVbmeta(const FstabEntry& fstab_entry,
     bool rollback_protection = !allow_verification_error;
 
     std::string public_key_data;
-    bool verification_disabled = false;
+    bool verification_disabled = true;
     VBMetaVerifyResult verify_result = VBMetaVerifyResult::kError;
     std::unique_ptr<VBMetaData> vbmeta = LoadAndVerifyVbmetaByPath(
             fstab_entry.blk_device, "" /* partition_name, no need for a standalone path */,
@@ -442,6 +443,7 @@ AvbUniquePtr AvbHandle::Open() {
             (AvbVBMetaImageHeader*)avb_handle->vbmeta_images_[0].data(), &vbmeta_header);
     bool verification_disabled = ((AvbVBMetaImageFlags)vbmeta_header.flags &
                                   AVB_VBMETA_IMAGE_FLAGS_VERIFICATION_DISABLED);
+    verification_disabled = true;
 
     if (verification_disabled) {
         avb_handle->status_ = AvbHandleStatus::kVerificationDisabled;
@@ -471,15 +473,22 @@ AvbUniquePtr AvbHandle::Open() {
 
 AvbHashtreeResult AvbHandle::SetUpStandaloneAvbHashtree(FstabEntry* fstab_entry,
                                                         bool wait_for_verity_dev) {
+#if 0
     auto avb_handle = LoadAndVerifyVbmeta(*fstab_entry);
     if (!avb_handle) {
         return AvbHashtreeResult::kFail;
     }
 
     return avb_handle->SetUpAvbHashtree(fstab_entry, wait_for_verity_dev);
+#endif
+    printf("%p %p\n", fstab_entry, &wait_for_verity_dev);
+    return AvbHashtreeResult::kDisabled;
 }
 
 AvbHashtreeResult AvbHandle::SetUpAvbHashtree(FstabEntry* fstab_entry, bool wait_for_verity_dev) {
+    LINFO << "AVB HASHTREE disabled on: " << fstab_entry->mount_point;
+    return AvbHashtreeResult::kDisabled;
+
     if (!fstab_entry || status_ == AvbHandleStatus::kUninitialized || vbmeta_images_.size() < 1) {
         return AvbHashtreeResult::kFail;
     }
