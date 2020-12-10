@@ -283,7 +283,12 @@ int ueventd_main(int argc, char** argv) {
 
     std::vector<std::unique_ptr<UeventHandler>> uevent_handlers;
 
-    auto ueventd_configuration = ParseConfig("/system/etc/ueventd.rc");
+    // TODO: Remove once Android S is no longer supported.
+    auto ueventd_configuration = ParseConfig({"/system/etc/ueventd.rc"});
+    if (android::base::GetIntProperty("ro.product.first_api_level", 0) <= 30) {
+      ueventd_configuration = ParseConfig(
+          {"/odm/ueventd.rc", "/system/etc/ueventd.rc", "/vendor/ueventd.rc"});
+    }
 
     uevent_handlers.emplace_back(std::make_unique<DeviceHandler>(
             std::move(ueventd_configuration.dev_permissions),
