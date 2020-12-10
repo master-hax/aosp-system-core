@@ -1,0 +1,47 @@
+{
+  "comments": [
+    {
+      "robotId": "ayeaye",
+      "robotRunId": "AR00000000000006691191",
+      "url": "https://android-build.googleplex.com/builds/treetop/android-review/1501022?revision\u003d2",
+      "fixSuggestions": [
+        {
+          "fixId": "d6d1749d_583fac7b",
+          "description": "Change to \"trusty/coverage/include/trusty/coverage/record.h\"",
+          "replacements": [
+            {
+              "path": "trusty/coverage/include/trusty/coverage/record.h",
+              "range": {
+                "startLine": 57,
+                "startChar": 3,
+                "endLine": 57,
+                "endChar": 10
+              },
+              "replacement": "the"
+            }
+          ]
+        }
+      ],
+      "key": {
+        "uuid": "055a761b_dfafa68f",
+        "filename": "trusty/coverage/include/trusty/coverage/record.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1757831
+      },
+      "writtenOn": "2020-12-10T20:04:59Z",
+      "side": 1,
+      "message": "Common typo found: \"the the\" -- should it be \"the\"?\nNote: a line containing \"common_typos_disable\" or \"common_typos_enable\" will turn off or on (respectively) the linter for subsequent lines in the file. Alternatively include the token \"NOTYPO\" within a line to skip typo linting that line or include \u0027NO_TYPO_CHECK\u003d\u003creason\u003e\u0027in the commit message.",
+      "range": {
+        "startLine": 57,
+        "startChar": 3,
+        "endLine": 57,
+        "endChar": 10
+      },
+      "revId": "ffd083bba5c6f1c22353b34ab9ee4bfd27fac155",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
