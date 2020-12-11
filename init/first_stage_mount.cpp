@@ -250,6 +250,8 @@ bool FirstStageMount::DoFirstStageMount() {
 
     if (!InitDevices()) return false;
 
+    if (!CreateLogicalPartitions()) return false;
+
     if (!MountPartitions()) return false;
 
     return true;
@@ -495,8 +497,6 @@ bool FirstStageMount::TrySwitchSystemAsRoot() {
 }
 
 bool FirstStageMount::MountPartitions() {
-    if (!CreateLogicalPartitions()) return false;
-
     if (!TrySwitchSystemAsRoot()) return false;
 
     if (!SkipMountingPartitions(&fstab_)) return false;
