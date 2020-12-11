@@ -266,6 +266,17 @@ void ColdBoot::Run() {
     LOG(INFO) << "Coldboot took " << cold_boot_timer.duration().count() / 1000.0f << " seconds";
 }
 
+static UeventdConfiguration GetConfiguration() {
+    // TODO: Remove these legacy paths once Android S is no longer supported.
+    if (android::base::GetIntProperty("ro.product.first_api_level", 10000) <= 31) {
+        auto hardware = android::base::GetProperty("ro.hardware", "");
+        return ParseConfig({"/system/etc/ueventd.rc", "/vendor/ueventd.rc", "/odm/ueventd.rc",
+                            "/ueventd." + hardware + ".rc"});
+    }
+
+    return ParseConfig({"/system/etc/ueventd.rc"});
+}
+
 int ueventd_main(int argc, char** argv) {
     /*
      * init sets the umask to 077 for forked processes. We need to
@@ -283,7 +294,7 @@ int ueventd_main(int argc, char** argv) {
 
     std::vector<std::unique_ptr<UeventHandler>> uevent_handlers;
 
-    auto ueventd_configuration = ParseConfig("/system/etc/ueventd.rc");
+    auto ueventd_configuration = GetConfiguration();
 
     uevent_handlers.emplace_back(std::make_unique<DeviceHandler>(
             std::move(ueventd_configuration.dev_permissions),
