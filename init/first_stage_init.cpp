@@ -279,7 +279,12 @@ int FirstStageMain(int argc, char** argv) {
         }
     }
 
+    bool created_devices = false;
     if (want_console == FirstStageConsoleParam::CONSOLE_ON_FAILURE) {
+        created_devices = DoCreateDevices();
+        if (!created_devices) {
+            LOG(WARNING) << "Failed to create partitions before console ...";
+        }
         StartConsole(cmdline);
     }
 
@@ -317,6 +322,12 @@ int FirstStageMain(int argc, char** argv) {
         } else {
             // setenv for second-stage init to read above kDebugRamdisk* files.
             setenv("INIT_FORCE_DEBUGGABLE", "true", 1);
+        }
+    }
+
+    if (!created_devices) {
+        if (!DoCreateDevices()) {
+            LOG(FATAL) << "Failed to create block devices early ...";
         }
     }
 
