@@ -280,6 +280,9 @@ int FirstStageMain(int argc, char** argv) {
     }
 
     if (want_console == FirstStageConsoleParam::CONSOLE_ON_FAILURE) {
+        if (!DoCreateDevices()) {
+            LOG(WARNING) << "Failed to create partitions before console ...";
+        }
         StartConsole(cmdline);
     }
 
