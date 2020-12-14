@@ -708,6 +708,11 @@ TEST(liblp, UpdateNonRetrofit) {
 }
 
 TEST(liblp, ReadSuperPartition) {
+    if (android::base::GetBoolProperty("ro.boot.dynamic_partitions", false) &&
+        android::base::GetBoolProperty("ro.boot.dynamic_partitions_retrofit", false)) {
+        GTEST_SKIP();
+    }
+
     //This test requires dynamic partition which is not mandatory for
     //Automotive in Android Q or lower
     std::string api_level = GetProperty("ro.build.version.sdk","");
