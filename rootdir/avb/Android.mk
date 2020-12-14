@@ -1,5 +1,6 @@
 LOCAL_PATH:= $(call my-dir)
 
+my_gsi_avb_keys_path :=
 ifeq ($(BOARD_MOVE_GSI_AVB_KEYS_TO_VENDOR_BOOT),true) # AVB keys are installed to vendor ramdisk
   ifeq ($(BOARD_MOVE_RECOVERY_RESOURCES_TO_VENDOR_BOOT),true) # no dedicated recovery partition
     my_gsi_avb_keys_path := $(TARGET_VENDOR_RAMDISK_OUT)/first_stage_ramdisk/avb
@@ -9,10 +10,12 @@ ifeq ($(BOARD_MOVE_GSI_AVB_KEYS_TO_VENDOR_BOOT),true) # AVB keys are installed t
 else
   ifeq ($(BOARD_USES_RECOVERY_AS_BOOT),true) # no dedicated recovery partition
     my_gsi_avb_keys_path := $(TARGET_RECOVERY_ROOT_OUT)/first_stage_ramdisk/avb
-  else # device has a dedicated recovery partition
+  else ifneq ($(PRODUCT_BUILD_RAMDISK_IMAGE),false) # device has a dedicated recovery partition
     my_gsi_avb_keys_path := $(TARGET_RAMDISK_OUT)/avb
   endif
 endif
+
+ifneq ($(my_gsi_avb_keys_path),)
 
 #######################################
 # q-gsi.avbpubkey
@@ -79,5 +82,7 @@ LOCAL_SRC_FILES := $(LOCAL_MODULE)
 LOCAL_MODULE_PATH := $(my_gsi_avb_keys_path)
 
 include $(BUILD_PREBUILT)
+
+endif # my_gsi_avb_keys_path
 
 my_gsi_avb_keys_path :=
