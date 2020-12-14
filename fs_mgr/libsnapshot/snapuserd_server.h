@@ -120,6 +120,11 @@ class SnapuserdServer : public Stoppable {
     bool Start(const std::string& socketname);
     bool Run();
     void Interrupt();
+
+    std::shared_ptr<DmUserHandler> AddHandler(const std::string& misc_name,
+                                              const std::string& cow_device_path,
+                                              const std::string& backing_device);
+    bool StartHandler(const std::shared_ptr<DmUserHandler>& handler);
 };
 
 }  // namespace snapshot
