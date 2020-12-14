@@ -20,6 +20,7 @@
 #include <sys/syscall.h>
 
 #include <android-base/file.h>
+#include <android-base/properties.h>
 #include <android-base/unique_fd.h>
 #include <fs_mgr.h>
 #include <fstab/fstab.h>
@@ -706,6 +707,11 @@ TEST(liblp, UpdateNonRetrofit) {
 }
 
 TEST(liblp, ReadSuperPartition) {
+    if (android::base::GetBoolProperty("ro.boot.dynamic_partitions", false) &&
+        android::base::GetBoolProperty("ro.boot.dynamic_partitions_retrofit", false)) {
+        GTEST_SKIP();
+    }
+
     auto slot_suffix = fs_mgr_get_slot_suffix();
     auto slot_number = SlotNumberForSlotSuffix(slot_suffix);
     auto super_name = fs_mgr_get_super_partition_name(slot_number);
