@@ -20,6 +20,7 @@
 #include <sys/syscall.h>
 
 #include <android-base/file.h>
+#include <android-base/properties.h>
 #include <android-base/unique_fd.h>
 #include <android-base/properties.h>
 #include <fs_mgr.h>
@@ -708,6 +709,7 @@ TEST(liblp, UpdateNonRetrofit) {
 }
 
 TEST(liblp, ReadSuperPartition) {
+<<<<<<< HEAD   (21ef3a Merge "Skip test for Automotive in Android Q" into android10)
     //This test requires dynamic partition which is not mandatory for
     //Automotive in Android Q or lower
     std::string api_level = GetProperty("ro.build.version.sdk","");
@@ -715,6 +717,13 @@ TEST(liblp, ReadSuperPartition) {
     if (std::stoi(api_level) <= 29 && hw_type == "automotive") {
       return;
     }
+=======
+    if (android::base::GetBoolProperty("ro.boot.dynamic_partitions", false) &&
+        android::base::GetBoolProperty("ro.boot.dynamic_partitions_retrofit", false)) {
+        GTEST_SKIP();
+    }
+
+>>>>>>> CHANGE (380f62 Skip the test to confirm super partition)
     auto slot_suffix = fs_mgr_get_slot_suffix();
     auto slot_number = SlotNumberForSlotSuffix(slot_suffix);
     auto super_name = fs_mgr_get_super_partition_name(slot_number);
