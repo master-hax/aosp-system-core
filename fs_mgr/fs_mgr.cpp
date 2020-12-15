@@ -1324,6 +1324,7 @@ MountAllResult fs_mgr_mount_all(Fstab* fstab, int mount_mode) {
     int error_count = 0;
     CheckpointManager checkpoint_manager;
     AvbUniquePtr avb_handle(nullptr);
+    bool wiped = false;
 
     bool userdata_mounted = false;
     if (fstab->empty()) {
@@ -1457,7 +1458,8 @@ MountAllResult fs_mgr_mount_all(Fstab* fstab, int mount_mode) {
                 encryptable = status;
                 if (status == FS_MGR_MNTALL_DEV_NEEDS_METADATA_ENCRYPTION) {
                     if (!call_vdc({"cryptfs", "encryptFstab", attempted_entry.blk_device,
-                                   attempted_entry.mount_point},
+                                   attempted_entry.mount_point, wiped ? "true" : "false",
+                                   attempted_entry.fs_type},
                                   nullptr)) {
                         LERROR << "Encryption failed";
                         set_type_property(encryptable);
@@ -1474,7 +1476,7 @@ MountAllResult fs_mgr_mount_all(Fstab* fstab, int mount_mode) {
         }
 
         // Mounting failed, understand why and retry.
-        bool wiped = partition_wiped(current_entry.blk_device.c_str());
+        wiped = partition_wiped(current_entry.blk_device.c_str());
         bool crypt_footer = false;
         if (mount_errno != EBUSY && mount_errno != EACCES &&
             current_entry.fs_mgr_flags.formattable && wiped) {
@@ -1499,6 +1501,20 @@ MountAllResult fs_mgr_mount_all(Fstab* fstab, int mount_mode) {
             } else if (current_entry.is_encryptable() && current_entry.key_loc == KEY_IN_FOOTER) {
                 crypt_footer = true;
             }
+
+            if (should_use_metadata_encryption(current_entry)) {
+                if (!call_vdc(
+                            {"cryptfs", "encryptFstab", current_entry.blk_device,
+                             current_entry.mount_point, "true" /* wiped */, current_entry.fs_type},
+                            nullptr)) {
+                    LERROR << "Encryption failed";
+                } else if (current_entry.mount_point == "/data") {
+                    userdata_mounted = true;
+                    encryptable = FS_MGR_MNTALL_DEV_IS_METADATA_ENCRYPTED;
+                    continue;
+                }
+            }
+
             if (fs_mgr_do_format(current_entry, crypt_footer) == 0) {
                 // Let's replay the mount actions.
                 i = top_idx - 1;
