@@ -22,3 +22,13 @@ cc_fuzz {
     // password in the emulator.
     corpus: ["corpus/*"],
 }
+
+cc_binary {
+    name: "trusty_gatekeeper_coverage",
+    defaults: ["trusty_fuzzer_defaults"],
+    static_libs: [
+        "libtrusty_coverage_tool",
+    ],
+    srcs: ["fuzz.cpp"],
+    cflags: ["-DCOVERAGE_TOOL"],
+}

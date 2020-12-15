@@ -24,12 +24,17 @@
 #include <trusty/fuzz/utils.h>
 #include <unistd.h>
 
+#ifdef COVERAGE_TOOL
+#include <trusty/coverage/coverage_tool.h>
+#endif  // COVERAGE_TOOL
+
 using android::trusty::coverage::CoverageRecord;
 using android::trusty::fuzz::ExtraCounters;
 using android::trusty::fuzz::TrustyApp;
 
 #define TIPC_DEV "/dev/trusty-ipc-dev0"
 #define GATEKEEPER_PORT "com.android.trusty.gatekeeper"
+#define GATEKEEPER_MODULE_FILENAME "gatekeeper.syms.elf"
 
 /* Gatekeeper TA's UUID is 38ba0cdc-df0e-11e4-9869-233fb6ae4795 */
 static struct uuid gatekeeper_uuid = {
@@ -73,3 +78,9 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size) {
 
     return 0;
 }
+
+#ifdef COVERAGE_TOOL
+int main(int argc, char* argv[]) {
+    return coverage_tool_main(argc, argv, record, GATEKEEPER_MODULE_FILENAME);
+}
+#endif  // COVERAGE_TOOL
