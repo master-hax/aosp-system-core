@@ -20,6 +20,7 @@
 #include <grp.h>
 #include <sys/mount.h>
 #include <sys/prctl.h>
+#include <sys/un.h>
 #include <sys/wait.h>
 #include <unistd.h>
 
@@ -124,6 +125,27 @@ Result<void> SetUpPidNamespace(const char* name) {
     return {};
 }
 
+static bool ConnectStdioFdToLogd(int stdio_fd) {
+    auto fd = unique_fd{socket(AF_LOCAL, SOCK_DGRAM | SOCK_NONBLOCK, 0)};
+    if (fd == -1) {
+        return false;
+    }
+
+    sockaddr_un addr = {.sun_family = AF_LOCAL};
+    if (stdio_fd == STDOUT_FILENO) {
+        snprintf(addr.sun_path, sizeof(addr.sun_path), "/dev/socket/logdw_stdout");
+    } else {
+        snprintf(addr.sun_path, sizeof(addr.sun_path), "/dev/socket/logdw_stdout");
+    }
+
+    dup2(fd, stdio_fd);
+    if (connect(stdio_fd, reinterpret_cast<sockaddr*>(&addr), sizeof(addr)) == -1) {
+        return false;
+    }
+
+    return true;
+}
+
 void SetupStdio(bool stdio_to_kmsg) {
     auto fd = unique_fd{open("/dev/null", O_RDWR | O_CLOEXEC)};
     dup2(fd, STDIN_FILENO);
@@ -133,6 +155,12 @@ void SetupStdio(bool stdio_to_kmsg) {
     }
     dup2(fd, STDOUT_FILENO);
     dup2(fd, STDERR_FILENO);
+    if (!ConnectStdioFdToLogd(STDOUT_FILENO)) {
+        dup2(fd, STDOUT_FILENO);
+    }
+    if (!ConnectStdioFdToLogd(STDERR_FILENO)) {
+        dup2(fd, STDERR_FILENO);
+    }
 }
 
 void OpenConsole(const std::string& console) {
