@@ -31,6 +31,8 @@ namespace fs_mgr {
 
 struct FstabEntry {
     std::string blk_device;
+    bool wiped = false;
+    std::string crypto_device;
     std::string logical_partition_name;
     std::string mount_point;
     std::string fs_type;
