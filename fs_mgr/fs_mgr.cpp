@@ -1499,6 +1499,10 @@ MountAllResult fs_mgr_mount_all(Fstab* fstab, int mount_mode) {
             } else if (current_entry.is_encryptable() && current_entry.key_loc == KEY_IN_FOOTER) {
                 crypt_footer = true;
             }
+
+            // vdc checks this for metadata encryption
+            SetProperty("ro.crypto.wiped", "true");
+
             if (fs_mgr_do_format(current_entry, crypt_footer) == 0) {
                 // Let's replay the mount actions.
                 i = top_idx - 1;

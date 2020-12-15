@@ -160,7 +160,12 @@ static int format_f2fs(const std::string& fs_blkdev, uint64_t dev_sz, bool crypt
 }
 
 int fs_mgr_do_format(const FstabEntry& entry, bool crypt_footer) {
-    LERROR << __FUNCTION__ << ": Format " << entry.blk_device << " as '" << entry.fs_type << "'";
+    std::string blk_device = entry.crypto_device;
+    if (blk_device.empty()) {
+        blk_device = entry.blk_device;
+    }
+
+    LERROR << __FUNCTION__ << ": Format " << blk_device << " as '" << entry.fs_type << "'";
 
     bool needs_casefold = false;
     bool needs_projid = false;
@@ -171,10 +176,10 @@ int fs_mgr_do_format(const FstabEntry& entry, bool crypt_footer) {
     }
 
     if (entry.fs_type == "f2fs") {
-        return format_f2fs(entry.blk_device, entry.length, crypt_footer, needs_projid,
-                           needs_casefold, entry.fs_mgr_flags.fs_compress);
+        return format_f2fs(blk_device, entry.length, crypt_footer, needs_projid, needs_casefold,
+                           entry.fs_mgr_flags.fs_compress);
     } else if (entry.fs_type == "ext4") {
-        return format_ext4(entry.blk_device, entry.mount_point, crypt_footer, needs_projid,
+        return format_ext4(blk_device, entry.mount_point, crypt_footer, needs_projid,
                            entry.fs_mgr_flags.ext_meta_csum);
     } else {
         LERROR << "File system type '" << entry.fs_type << "' is not supported";
