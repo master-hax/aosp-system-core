@@ -297,6 +297,7 @@ class DmTargetDefaultKey final : public DmTarget {
     void SetUseLegacyOptionsFormat() { use_legacy_options_format_ = true; }
     void SetSetDun() { set_dun_ = true; }
     void SetWrappedKeyV0() { is_hw_wrapped_ = true; }
+    void SetIvOffset(uint64_t iv_offset) { iv_offset_ = iv_offset; }
 
   private:
     inline static const std::string kName = "default-key";
@@ -304,6 +305,7 @@ class DmTargetDefaultKey final : public DmTarget {
     std::string cipher_;
     std::string key_;
     std::string blockdev_;
+    uint64_t iv_offset_ = 0;
     uint64_t start_sector_;
     bool use_legacy_options_format_ = false;
     bool set_dun_ = false;

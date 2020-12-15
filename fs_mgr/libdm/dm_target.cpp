@@ -264,7 +264,7 @@ std::string DmTargetDefaultKey::GetParameterString() const {
     argv.emplace_back(cipher_);
     argv.emplace_back(key_);
     if (!use_legacy_options_format_) {
-        argv.emplace_back("0");  // iv_offset
+        argv.emplace_back(std::to_string(iv_offset_));  // iv_offset
     }
     argv.emplace_back(blockdev_);
     argv.push_back(std::to_string(start_sector_));
