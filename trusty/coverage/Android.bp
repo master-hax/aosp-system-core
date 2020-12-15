@@ -44,3 +44,16 @@ cc_test {
     ],
     require_root: true,
 }
+
+cc_library_static {
+    name: "libtrusty_coverage_tool",
+    srcs: [
+        "coverage_tool.cpp",
+    ],
+    shared_libs: [
+        "libbase",
+    ],
+    export_include_dirs: [
+        "include",
+    ],
+}
