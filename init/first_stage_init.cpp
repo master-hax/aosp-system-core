@@ -209,6 +209,12 @@ int FirstStageMain(int argc, char** argv) {
     CHECKCALL(chmod("/proc/cmdline", 0440));
     std::string cmdline;
     android::base::ReadFileToString("/proc/cmdline", &cmdline);
+    // /proc/bootconfig only exists if the kernel supports it
+    struct stat bootconfig_info;
+    if (stat("/proc/bootconfig", &bootconfig_info) == 0) {
+        // Don't expose the raw bootconfig to unprivileged processes.
+        CHECKCALL(chmod("/proc/bootconfig", 0440));
+    };
     gid_t groups[] = {AID_READPROC};
     CHECKCALL(setgroups(arraysize(groups), groups));
     CHECKCALL(mount("sysfs", "/sys", "sysfs", 0, NULL));
