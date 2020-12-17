@@ -22,18 +22,26 @@
 #include <string.h>
 #include <sys/uio.h>
 #include <unistd.h>
+#include <iostream>
 
+#include <android-base/stringprintf.h>
+#include <trusty/coverage/coverage.h>
+#include <trusty/coverage/tipc.h>
 #include <trusty/tipc.h>
+
+using android::trusty::coverage::CoverageRecord;
 
 #define TIPC_DEFAULT_DEVNAME "/dev/trusty-ipc-dev0"
 
 static const char* dev_name = NULL;
 static const char* ut_app = NULL;
+static const char* coverage_uuid = NULL;
 
 static const char* _sopts = "hD:";
 static const struct option _lopts[] = {
         {"help", no_argument, 0, 'h'},
         {"dev", required_argument, 0, 'D'},
+        {"coverage", required_argument, 0, 'C'},
         {0, 0, 0, 0},
 };
 
@@ -43,6 +51,7 @@ static const char* usage =
         "options:\n"
         "  -h, --help            prints this message and exit\n"
         "  -D, --dev name        Trusty device name\n"
+        "  -C, --coverage UUID   Collect coverage for service with given UUID\n"
         "\n";
 
 static const char* usage_long = "\n";
@@ -70,6 +79,10 @@ static void parse_options(int argc, char** argv) {
         switch (c) {
             case 'D':
                 dev_name = strdup(optarg);
+                break;
+
+            case 'C':
+                coverage_uuid = strdup(optarg);
                 break;
 
             case 's':
@@ -137,6 +150,7 @@ static int run_trusty_unitest(const char* utapp) {
 
 int main(int argc, char** argv) {
     int rc = 0;
+    std::unique_ptr<CoverageRecord> coverage;
 
     if (argc <= 1) {
         print_usage_and_exit(argv[0], EXIT_FAILURE, false);
@@ -153,7 +167,36 @@ int main(int argc, char** argv) {
         print_usage_and_exit(argv[0], EXIT_FAILURE, false);
     }
 
+    if (coverage_uuid) {
+        struct uuid service_uuid = {};
+        uint16_t clock_seq;
+        uint64_t node;
+        sscanf(coverage_uuid, "%x-%hx-%hx-%hx-%lx", &service_uuid.time_low, &service_uuid.time_mid,
+               &service_uuid.time_hi_and_version, &clock_seq, &node);
+        service_uuid.clock_seq_and_node[0] = clock_seq >> 8 & 0xff;
+        service_uuid.clock_seq_and_node[1] = clock_seq & 0xff;
+        service_uuid.clock_seq_and_node[2] = node >> 40 & 0xff;
+        service_uuid.clock_seq_and_node[3] = node >> 32 & 0xff;
+        service_uuid.clock_seq_and_node[4] = node >> 24 & 0xff;
+        service_uuid.clock_seq_and_node[5] = node >> 16 & 0xff;
+        service_uuid.clock_seq_and_node[6] = node >> 8 & 0xff;
+        service_uuid.clock_seq_and_node[7] = node & 0xff;
+        coverage = std::make_unique<CoverageRecord>(dev_name, &service_uuid);
+        auto res = coverage->Open();
+        if (!res) {
+            std::cerr << "Could not open coverage record: " << res.error() << std::endl;
+        }
+    }
+
     rc = run_trusty_unitest(ut_app);
+
+    if (coverage) {
+        auto sancov_filename = android::base::StringPrintf("%s.%d.sancov", ut_app, getpid());
+        auto res = coverage->SaveSancovFile(sancov_filename);
+        if (!res) {
+            std::cerr << "Could not save sancov file: " << res.error() << std::endl;
+        }
+    }
 
     return rc == 0 ? EXIT_SUCCESS : EXIT_FAILURE;
 }
