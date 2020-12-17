@@ -16,13 +16,15 @@ cc_binary {
     name: "trusty-ut-ctrl",
     vendor: true,
 
-    srcs: ["ut-ctrl.c"],
+    srcs: ["ut-ctrl.cpp"],
     shared_libs: [
         "libc",
         "liblog",
+        "libbase",
     ],
     static_libs: [
         "libtrusty",
+        "libtrusty_coverage",
     ],
     cflags: [
         "-Wall",

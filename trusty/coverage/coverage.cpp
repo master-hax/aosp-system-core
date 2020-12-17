@@ -246,6 +246,10 @@ uint64_t CoverageRecord::TotalEdgeCounts() {
 }
 
 Result<void> CoverageRecord::SaveSancovFile(const std::string& filename) {
+    if (!shm_) {
+        return Error() << "Coverage record has not been opened. Call Open().";
+    }
+
     android::base::unique_fd output_fd(TEMP_FAILURE_RETRY(creat(filename.c_str(), 00644)));
     if (!output_fd.ok()) {
         return ErrnoError() << "Could not open sancov file";
