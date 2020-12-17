@@ -260,6 +260,9 @@ on init
     # Allow up to 32K FDs per process
     setrlimit nofile 32768 32768
 
+    # set RLIMIT_MEMLOCK to 64MB
+    setrlimit 8 67108864 67108864
+
     # This allows the ledtrig-transient properties to be created here so
     # that they can be chown'd to system:system later on boot
     write /sys/class/leds/vibrator/trigger "transient"
