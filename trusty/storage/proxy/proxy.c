@@ -242,22 +242,34 @@ int main(int argc, char* argv[]) {
     int rc;
 
     /* drop privileges */
-    if (drop_privs() < 0) return EXIT_FAILURE;
+    if (drop_privs() < 0) {
+        ALOGE("fail to drop privileges\n");
+        return EXIT_FAILURE;
+    }
 
     /* parse arguments */
     parse_args(argc, argv);
 
     /* initialize secure storage directory */
     rc = storage_init(ss_data_root);
-    if (rc < 0) return EXIT_FAILURE;
+    if (rc < 0) {
+        ALOGE("fail to initialize secure storage directory: rc=(%d)\n", rc);
+        return EXIT_FAILURE;
+    }
 
     /* open rpmb device */
     rc = rpmb_open(rpmb_devname, dev_type);
-    if (rc < 0) return EXIT_FAILURE;
+    if (rc < 0) {
+        ALOGE("fail to open rpmb device: rc=(%d)\n", rc);
+        return EXIT_FAILURE;
+    }
 
     /* connect to Trusty secure storage server */
     rc = ipc_connect(trusty_devname, ss_srv_name);
-    if (rc < 0) return EXIT_FAILURE;
+    if (rc < 0) {
+        ALOGE("fail to connect to Trusty secure storage server: rc=(%d)\n", rc);
+        return EXIT_FAILURE;
+    }
 
     /* enter main loop */
     rc = proxy_loop();
