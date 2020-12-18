@@ -133,34 +133,58 @@ static int handle_req(struct storage_msg* msg, const void* req, size_t req_len) 
     switch (msg->cmd) {
         case STORAGE_FILE_DELETE:
             rc = storage_file_delete(msg, req, req_len);
+            if (rc) {
+                ALOGE("storage_file_delete() fails\n");
+            }
             break;
 
         case STORAGE_FILE_OPEN:
             rc = storage_file_open(msg, req, req_len);
+            if (rc) {
+                ALOGE("storage_file_open() fails\n");
+            }
             break;
 
         case STORAGE_FILE_CLOSE:
             rc = storage_file_close(msg, req, req_len);
+            if (rc) {
+                ALOGE("storage_file_close() fails\n");
+            }
             break;
 
         case STORAGE_FILE_WRITE:
             rc = storage_file_write(msg, req, req_len);
+            if (rc) {
+                ALOGE("storage_file_write() fails\n");
+            }
             break;
 
         case STORAGE_FILE_READ:
             rc = storage_file_read(msg, req, req_len);
+            if (rc) {
+                ALOGE("storage_file_read() fails\n");
+            }
             break;
 
         case STORAGE_FILE_GET_SIZE:
             rc = storage_file_get_size(msg, req, req_len);
+            if (rc) {
+                ALOGE("storage_file_get_size() fails\n");
+            }
             break;
 
         case STORAGE_FILE_SET_SIZE:
             rc = storage_file_set_size(msg, req, req_len);
+            if (rc) {
+                ALOGE("storage_file_set_size() fails\n");
+            }
             break;
 
         case STORAGE_RPMB_SEND:
             rc = rpmb_send(msg, req, req_len);
+            if (rc) {
+                ALOGE("rpmb_send() fails\n");
+            }
             break;
 
         default:
@@ -242,22 +266,34 @@ int main(int argc, char* argv[]) {
     int rc;
 
     /* drop privileges */
-    if (drop_privs() < 0) return EXIT_FAILURE;
+    if (drop_privs() < 0) {
+        ALOGE("fail to drop privileges\n");
+        return EXIT_FAILURE;
+    }
 
     /* parse arguments */
     parse_args(argc, argv);
 
     /* initialize secure storage directory */
     rc = storage_init(ss_data_root);
-    if (rc < 0) return EXIT_FAILURE;
+    if (rc < 0) {
+        ALOGE("fail to initialize secure storage directory: rc=(%d)\n", rc);
+        return EXIT_FAILURE;
+    }
 
     /* open rpmb device */
     rc = rpmb_open(rpmb_devname, dev_type);
-    if (rc < 0) return EXIT_FAILURE;
+    if (rc < 0) {
+        ALOGE("fail to open rpmb device: rc=(%d)\n", rc);
+        return EXIT_FAILURE;
+    }
 
     /* connect to Trusty secure storage server */
     rc = ipc_connect(trusty_devname, ss_srv_name);
-    if (rc < 0) return EXIT_FAILURE;
+    if (rc < 0) {
+        ALOGE("fail to connect to Trusty secure storage server: rc=(%d)\n", rc);
+        return EXIT_FAILURE;
+    }
 
     /* enter main loop */
     rc = proxy_loop();
