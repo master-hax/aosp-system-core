@@ -72,7 +72,7 @@ on early-init
     exec_start apexd-bootstrap
 
     # Generate linker config based on apex mounted in bootstrap namespace
-    update_linker_config
+    update_linker_config allow_to_use_bootstrap
 
     # These must already exist by the time boringssl_self_test32 / boringssl_self_test64 run.
     mkdir /dev/boringssl 0755 root root
