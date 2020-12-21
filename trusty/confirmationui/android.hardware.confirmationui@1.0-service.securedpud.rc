@@ -1,0 +1,7 @@
+on post-fs-data
+start securedpud
+
+service securedpud /vendor/bin/hw/securedpud -d /dev/trusty-ipc-dev0
+    class main
+    disabled
+    user root
