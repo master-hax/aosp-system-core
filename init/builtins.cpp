@@ -1231,10 +1231,19 @@ static Result<void> do_mark_post_data(const BuiltinArguments& args) {
     return {};
 }
 
-static Result<void> GenerateLinkerConfiguration() {
+static Result<void> GenerateLinkerConfiguration(bool allow_to_use_bootstrap) {
     const char* linkerconfig_binary = "/apex/com.android.runtime/bin/linkerconfig";
+    const char* linkerconfig_bootstrap_binary = "/system/bin/bootstrap/linkerconfig";
     const char* linkerconfig_target = "/linkerconfig";
-    const char* arguments[] = {linkerconfig_binary, "--target", linkerconfig_target};
+    const char* linkerconfig_exec = linkerconfig_binary;
+
+    if (access(linkerconfig_exec, 0) != 0 && allow_to_use_bootstrap) {
+        LOG(INFO) << "Failed to find linkerconfig from runtime APEX. Using linkerconfig from "
+                     "bootstrap instead.";
+        linkerconfig_exec = linkerconfig_bootstrap_binary;
+    }
+
+    const char* arguments[] = {linkerconfig_exec, "--target", linkerconfig_target};
 
     if (logwrap_fork_execvp(arraysize(arguments), arguments, nullptr, false, LOG_KLOG, false,
                             nullptr) != 0) {
@@ -1266,11 +1275,17 @@ static bool IsApexUpdatable() {
     return updatable;
 }
 
-static Result<void> do_update_linker_config(const BuiltinArguments&) {
+static Result<void> do_update_linker_config(const BuiltinArguments& args) {
+    bool allow_to_use_bootstrap = false;
+    for (const std::string& arg : args) {
+        if (arg == "allow_to_use_bootstrap") {
+            allow_to_use_bootstrap = true;
+        }
+    }
     // If APEX is not updatable, then all APEX information are already included in the first
     // linker config generation, so there is no need to update linker configuration again.
     if (IsApexUpdatable()) {
-        return GenerateLinkerConfiguration();
+        return GenerateLinkerConfiguration(allow_to_use_bootstrap);
     }
 
     return {};
@@ -1413,7 +1428,7 @@ const BuiltinFunctionMap& GetBuiltinFunctionMap() {
         {"perform_apex_config",     {0,     0,    {false,  do_perform_apex_config}}},
         {"umount",                  {1,     1,    {false,  do_umount}}},
         {"umount_all",              {0,     1,    {false,  do_umount_all}}},
-        {"update_linker_config",    {0,     0,    {false,  do_update_linker_config}}},
+        {"update_linker_config",    {0,     1,    {false,  do_update_linker_config}}},
         {"readahead",               {1,     2,    {true,   do_readahead}}},
         {"remount_userdata",        {0,     0,    {false,  do_remount_userdata}}},
         {"restart",                 {1,     1,    {false,  do_restart}}},
