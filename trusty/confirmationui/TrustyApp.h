@@ -148,6 +148,51 @@ class TrustyApp {
         return TrustyAppError::OK;
     }
 
+    template <typename... T> TrustyAppError getCmd(uint8_t buf[], size_t size) {
+        std::lock_guard<std::mutex> lock(mutex_);
+
+        if (handle_ == kInvalidHandle) {
+            LOG(ERROR) << "TrustyApp not connected";
+            return TrustyAppError::ERROR;
+        }
+
+        iovec iov[] = {
+            {
+                .iov_base = buf,
+                .iov_len = size,
+            },
+        };
+        int rc = readv(handle_, iov, 1);
+        if (rc <= 0) {
+            LOG(ERROR) << "Error get message from TrustyApp: " << rc;
+            return TrustyAppError::ERROR;
+        }
+
+        return TrustyAppError::OK;
+    }
+
+    template <typename... T> TrustyAppError respondCmd(uint8_t buf[], size_t size) {
+        std::lock_guard<std::mutex> lock(mutex_);
+
+        if (handle_ == kInvalidHandle) {
+            LOG(ERROR) << "TrustyApp not connected";
+            return TrustyAppError::ERROR;
+        }
+
+        iovec iov[] = {
+            {
+                .iov_base = buf,
+                .iov_len = size,
+            },
+        };
+        int rc = writev(handle_, iov, 1);
+        if (rc <= 0) {
+            LOG(ERROR) << "Error respond result to TrustyApp: " << rc;
+            return TrustyAppError::ERROR;
+        }
+        return TrustyAppError::OK;
+    }
+
     operator bool() const { return handle_ != kInvalidHandle; }
 };
 
