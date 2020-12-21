@@ -93,3 +93,31 @@ cc_library {
         "-DTEEUI_USE_STD_VECTOR",
     ],
 }
+
+cc_binary {
+    name: "securedpud",
+    relative_install_path: "hw",
+    vendor: true,
+
+    srcs: [
+        "SecureDPUD.cpp",
+        "MockDPUHandler.cpp",
+    ],
+
+    shared_libs: [
+        "android.hardware.confirmationui@1.0-lib.trusty",
+        "libbase",
+        "libhidlbase",
+        "libteeui_hal_support",
+        "libtrusty",
+        "libutils",
+    ],
+
+    init_rc: ["android.hardware.confirmationui@1.0-service.securedpud.rc"],
+
+    cflags: [
+        "-Wall",
+        "-Werror",
+        "-DTEEUI_USE_STD_VECTOR",
+    ],
+}

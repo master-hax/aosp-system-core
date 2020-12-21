@@ -148,6 +148,48 @@ class TrustyApp {
         return TrustyAppError::OK;
     }
 
+    template <typename... T>
+    std::tuple<TrustyAppError, int> getCmd(uint8_t buf[], size_t size) {
+        if (handle_ == kInvalidHandle) {
+            LOG(ERROR) << "TrustyApp not connected";
+            return {TrustyAppError::ERROR, -1};
+        }
+
+        iovec iov[] = {
+            {
+                .iov_base = buf,
+                .iov_len = size,
+            },
+        };
+        int rc = readv(handle_, iov, 1);
+        if (rc <= 0) {
+            LOG(ERROR) << "Error get message from TrustyApp: " << rc;
+            return {TrustyAppError::ERROR, rc};
+        }
+
+        return {TrustyAppError::OK, rc};
+    }
+
+    template <typename... T> TrustyAppError respondCmd(uint8_t buf[], size_t size) {
+        if (handle_ == kInvalidHandle) {
+            LOG(ERROR) << "TrustyApp not connected";
+            return TrustyAppError::ERROR;
+        }
+
+        iovec iov[] = {
+            {
+                .iov_base = buf,
+                .iov_len = size,
+            },
+        };
+        int rc = writev(handle_, iov, 1);
+        if (rc <= 0) {
+            LOG(ERROR) << "Error respond result to TrustyApp: " << rc;
+            return TrustyAppError::ERROR;
+        }
+        return TrustyAppError::OK;
+    }
+
     operator bool() const { return handle_ != kInvalidHandle; }
 };
 
