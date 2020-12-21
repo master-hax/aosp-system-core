@@ -16,6 +16,7 @@
  */
 
 #include "TrustyConfirmationUI.h"
+#include "DPUHandler.h"
 
 #include <android-base/logging.h>
 #include <android/hardware/confirmationui/1.0/types.h>
@@ -72,6 +73,7 @@ using TeeuiRc = ::teeui::ResponseCode;
 
 constexpr const char kTrustyDeviceName[] = "/dev/trusty-ipc-dev0";
 constexpr const char kConfirmationuiAppName[] = "com.android.trusty.confirmationui";
+constexpr const char kConfirmationuiDPUAppName[] = "com.android.trusty.secure_dpu";
 
 namespace {
 
@@ -219,6 +221,35 @@ TrustyConfirmationUI::promptUserConfirmation_(const MsgString& promptText,
 
     listener_state_ = ListenerState::Starting;
 
+    auto dpu_app = std::make_shared<TrustyApp>(kTrustyDeviceName, kConfirmationuiDPUAppName);
+    if (!dpu_app) return result;  // TeeuiRc::SystemError
+
+    auto dpu_handler = std::make_shared<dpu_handler::DPUHandler>(
+        [&](uint8_t buf[], size_t size) -> int {
+            auto rc = dpu_app->respondCmd(buf, size);
+            return rc == TrustyAppError::OK ? 0 : 1;
+        });
+    if (!dpu_handler) return result;  // TeeuiRc::SystemError
+
+    auto dpu_app_thread = std::thread([dpu_app, dpu_handler] {
+        LOG(INFO) << "DPU app thread started";
+        uint8_t buf[dpu_handler::DPUHandler::maxBufferSize];
+        while (1) {
+            auto result = dpu_app->getCmd(buf, sizeof(buf));
+            if (result == TrustyAppError::OK) {
+              auto [rc, err_msg] = dpu_handler->handle(buf, sizeof(buf));
+              if (rc) {
+                LOG(ERROR) << err_msg;
+                break;
+              }
+            } else {
+              LOG(ERROR) << "Failed to get message to TrustyApp";
+              break;
+            }
+        }
+        LOG(INFO) << "DPU app thread done";
+    });
+
     auto app = std::make_shared<TrustyApp>(kTrustyDeviceName, kConfirmationuiAppName);
     if (!app) return result;  // TeeuiRc::SystemError
 
@@ -277,9 +308,10 @@ TrustyConfirmationUI::promptUserConfirmation_(const MsgString& promptText,
         return result;  // TeeuiRc::SystemError;
     }
 
-    Finalize finalizeConfirmationPrompt([app] {
-        LOG(INFO) << "Calling abort for cleanup";
+    Finalize finalizeConfirmationPrompt([app, dpu_handler, &dpu_app_thread] {
         app->issueCmd<AbortMsg>();
+        dpu_handler->sendAbort();
+        dpu_app_thread.join();
     });
 
     // initiate prompt
