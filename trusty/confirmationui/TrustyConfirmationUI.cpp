@@ -16,6 +16,7 @@
  */
 
 #include "TrustyConfirmationUI.h"
+#include "ProxyHandler.h"
 
 #include <android-base/logging.h>
 #include <android/hardware/confirmationui/1.0/types.h>
@@ -72,6 +73,7 @@ using TeeuiRc = ::teeui::ResponseCode;
 
 constexpr const char kTrustyDeviceName[] = "/dev/trusty-ipc-dev0";
 constexpr const char kConfirmationuiAppName[] = "com.android.trusty.confirmationui";
+constexpr const char kConfirmationuiProxyAppName[] = "com.android.trusty.secure_fb_proxy";
 
 namespace {
 
@@ -219,6 +221,35 @@ TrustyConfirmationUI::promptUserConfirmation_(const MsgString& promptText,
 
     listener_state_ = ListenerState::Starting;
 
+    auto proxy_app = std::make_shared<TrustyApp>(kTrustyDeviceName, kConfirmationuiProxyAppName);
+    if (!proxy_app) return result;  // TeeuiRc::SystemError
+
+    auto proxy_handler = std::make_shared<proxy_handler::ProxyHandler>(
+        [&](uint8_t buf[], size_t size) -> int {
+            auto rc = proxy_app->respondCmd(buf, size);
+            return rc == TrustyAppError::OK ? 0 : 1;
+        });
+    if (!proxy_handler) return result;  // TeeuiRc::SystemError
+
+    auto proxy_app_thread = std::thread([proxy_app, proxy_handler] {
+        LOG(INFO) << "Proxy app thread started";
+        uint8_t buf[proxy_handler::ProxyHandler::maxBufferSize];
+        while (1) {
+            auto result = proxy_app->getCmd(buf, sizeof(buf));
+            if (result == TrustyAppError::OK) {
+              auto [rc, err_msg] = proxy_handler->handle(buf, sizeof(buf));
+              if (rc) {
+                LOG(ERROR) << err_msg;
+                break;
+              }
+            } else {
+              LOG(ERROR) << "Failed to get message to TrustyApp";
+              break;
+            }
+        }
+        LOG(INFO) << "Proxy app thread done";
+    });
+
     auto app = std::make_shared<TrustyApp>(kTrustyDeviceName, kConfirmationuiAppName);
     if (!app) return result;  // TeeuiRc::SystemError
 
@@ -277,9 +308,10 @@ TrustyConfirmationUI::promptUserConfirmation_(const MsgString& promptText,
         return result;  // TeeuiRc::SystemError;
     }
 
-    Finalize finalizeConfirmationPrompt([app] {
-        LOG(INFO) << "Calling abort for cleanup";
+    Finalize finalizeConfirmationPrompt([app, proxy_handler, &proxy_app_thread] {
         app->issueCmd<AbortMsg>();
+        proxy_handler->sendAbort();
+        proxy_app_thread.join();
     });
 
     // initiate prompt
