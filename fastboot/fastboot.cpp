@@ -127,6 +127,17 @@ enum class ImageType {
     Extra
 };
 
+enum {
+    FSCK_SUCCESS = 0,
+    FSCK_ERROR_CORRECTED = 1 << 0,
+    FSCK_SYSTEM_SHOULD_REBOOT = 1 << 1,
+    FSCK_ERRORS_LEFT_UNCORRECTED = 1 << 2,
+    FSCK_OPERATIONAL_ERROR = 1 << 3,
+    FSCK_USAGE_OR_SYNTAX_ERROR = 1 << 4,
+    FSCK_USER_CANCELLED = 1 << 5,
+    FSCK_SHARED_LIB_ERROR = 1 << 7,
+};
+
 struct Image {
     const char* nickname;
     const char* img_name;
@@ -1645,8 +1656,9 @@ static void fb_perform_format(
     eraseBlkSize = fb_get_flash_block_size("erase-block-size");
     logicalBlkSize = fb_get_flash_block_size("logical-block-size");
 
-    if (fs_generator_generate(gen, output.path, size, initial_dir,
-            eraseBlkSize, logicalBlkSize, fs_options)) {
+    int res = fs_generator_generate(gen, output.path, size, initial_dir,
+            eraseBlkSize, logicalBlkSize, fs_options);
+    if (res && res != FSCK_ERROR_CORRECTED) {
         die("Cannot generate image for %s", partition.c_str());
     }
 
