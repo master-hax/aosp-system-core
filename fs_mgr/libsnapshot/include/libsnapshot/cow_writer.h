@@ -53,6 +53,10 @@ class ICowWriter {
     // Encode a sequence of raw blocks. |size| must be a multiple of the block size.
     bool AddRawBlocks(uint64_t new_block_start, const void* data, size_t size);
 
+    // Add a sequence of xor'd blocks. |size| must be a multiple of the block size.
+    bool AddXorBlocks(uint64_t new_block_start, const void* data, size_t size, uint64_t old_block,
+                      uint16_t offset);
+
     // Encode a sequence of zeroed blocks. |size| must be a multiple of the block size.
     bool AddZeroBlocks(uint64_t new_block_start, uint64_t num_blocks);
 
@@ -74,6 +78,8 @@ class ICowWriter {
   protected:
     virtual bool EmitCopy(uint64_t new_block, uint64_t old_block) = 0;
     virtual bool EmitRawBlocks(uint64_t new_block_start, const void* data, size_t size) = 0;
+    virtual bool EmitXorBlocks(uint64_t new_block_start, const void* data, size_t size,
+                               uint64_t old_block, uint16_t offset) = 0;
     virtual bool EmitZeroBlocks(uint64_t new_block_start, uint64_t num_blocks) = 0;
     virtual bool EmitLabel(uint64_t label) = 0;
 
@@ -110,11 +116,15 @@ class CowWriter : public ICowWriter {
   protected:
     virtual bool EmitCopy(uint64_t new_block, uint64_t old_block) override;
     virtual bool EmitRawBlocks(uint64_t new_block_start, const void* data, size_t size) override;
+    virtual bool EmitXorBlocks(uint64_t new_block_start, const void* data, size_t size,
+                               uint64_t old_block, uint16_t offset) override;
     virtual bool EmitZeroBlocks(uint64_t new_block_start, uint64_t num_blocks) override;
     virtual bool EmitLabel(uint64_t label) override;
 
   private:
     bool EmitCluster();
+    bool EmitBlocks(uint64_t new_block_start, const void* data, size_t size, uint64_t old_block,
+                    uint16_t offset, uint8_t type);
     void SetupHeaders();
     bool ParseOptions();
     bool OpenForWrite();
