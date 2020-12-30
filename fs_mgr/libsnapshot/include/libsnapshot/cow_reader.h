@@ -19,6 +19,7 @@
 #include <functional>
 #include <memory>
 #include <optional>
+#include <unordered_map>
 
 #include <android-base/unique_fd.h>
 #include <libsnapshot/cow_format.h>
@@ -152,6 +153,7 @@ class CowReader : public ICowReader {
     uint64_t fd_size_;
     std::optional<uint64_t> last_label_;
     std::shared_ptr<std::vector<CowOperation>> ops_;
+    std::unordered_map<uint64_t, uint64_t> xor_data_loc_;
 };
 
 }  // namespace snapshot

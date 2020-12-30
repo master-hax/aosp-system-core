@@ -115,9 +115,17 @@ bool CowReader::Parse(android::base::borrowed_fd fd, std::optional<uint64_t> lab
 
 bool CowReader::ParseOps(std::optional<uint64_t> label) {
     uint64_t pos = lseek(fd_.get(), sizeof(header_), SEEK_SET);
+    uint64_t data_pos = 0;
+
     if (pos != sizeof(header_)) {
         PLOG(ERROR) << "lseek ops failed";
         return false;
+    }
+
+    if (header_.cluster_ops) {
+        data_pos = pos + header_.cluster_ops * sizeof(CowOperation);
+    } else {
+        data_pos = pos + sizeof(CowOperation);
     }
 
     auto ops_buffer = std::make_shared<std::vector<CowOperation>>();
@@ -139,7 +147,9 @@ bool CowReader::ParseOps(std::optional<uint64_t> label) {
         while (current_op_num < ops_buffer->size()) {
             auto& current_op = ops_buffer->data()[current_op_num];
             current_op_num++;
+            if (current_op.type == kCowXorOp) xor_data_loc_[current_op.new_block] = data_pos;
             pos += sizeof(CowOperation) + GetNextOpOffset(current_op, header_.cluster_ops);
+            data_pos += current_op.data_length + GetNextDataOffset(current_op, header_.cluster_ops);
 
             if (current_op.type == kCowClusterOp) {
                 break;
@@ -494,6 +504,7 @@ class CowDataStream final : public IByteStream {
 };
 
 bool CowReader::ReadData(const CowOperation& op, IByteSink* sink) {
+    uint64_t offset;
     std::unique_ptr<IDecompressor> decompressor;
     switch (op.compression) {
         case kCowCompressNone:
@@ -510,7 +521,12 @@ bool CowReader::ReadData(const CowOperation& op, IByteSink* sink) {
             return false;
     }
 
-    CowDataStream stream(this, op.source, op.data_length);
+    if (op.type == kCowXorOp) {
+        offset = xor_data_loc_[op.new_block];
+    } else {
+        offset = op.source;
+    }
+    CowDataStream stream(this, offset, op.data_length);
     decompressor->set_stream(&stream);
     decompressor->set_sink(sink);
     return decompressor->Decompress(header_.block_size);
