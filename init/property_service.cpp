@@ -76,6 +76,7 @@
 using namespace std::literals;
 
 using android::base::GetProperty;
+using android::base::Join;
 using android::base::ParseInt;
 using android::base::ReadFileToString;
 using android::base::Split;
@@ -890,6 +891,68 @@ static void property_derive_build_fingerprint() {
     }
 }
 
+// If the ro.product.cpu.abilist(|32|64) properties have not been explicitly
+// set, derive them from ro.${partition}.product.cpu.abilist(|32|64) properties
+static void property_initialize_ro_cpu_abilist() {
+    const char* RO_CPU_ABILIST_PROPS[] = {
+            "product.cpu.abilist",
+            "product.cpu.abilist32",
+            "product.cpu.abilist64",
+    };
+    // From high to low priority.
+    const char* RO_CPU_ABILIST_PROPS_SOURCES[] = {
+            "oem",
+            "vendor",
+            "system",
+    };
+    const std::string UNDEFINED = "<undefined>";
+
+    for (const auto& ro_cpu_abilist_prop : RO_CPU_ABILIST_PROPS) {
+        std::string base_prop("ro.");
+        base_prop += ro_cpu_abilist_prop;
+
+        // If the property is defined explicitly, just use it.
+        std::string base_prop_val = GetProperty(base_prop, UNDEFINED);
+        if (base_prop_val != UNDEFINED) {
+            continue;
+        }
+
+        bool hasReadFirstProperty = false;
+        std::vector<std::string> abilist;
+        for (const auto& source : RO_CPU_ABILIST_PROPS_SOURCES) {
+            std::string target_prop("ro.");
+            target_prop += source;
+            target_prop += '.';
+            target_prop += ro_cpu_abilist_prop;
+
+            std::string target_prop_val = GetProperty(target_prop, UNDEFINED);
+            if (target_prop_val != UNDEFINED) {
+                auto next_abilist = Split(target_prop_val, ",");
+                if (!hasReadFirstProperty) {
+                    abilist.swap(next_abilist);
+                    hasReadFirstProperty = true;
+                } else {
+                    // Only keep the intersect items
+                    std::remove_if(
+                            abilist.begin(), abilist.end(), [&next_abilist](const std::string& x) {
+                                return std::find(next_abilist.begin(), next_abilist.end(), x) ==
+                                       next_abilist.end();
+                            });
+                }
+            }
+        }
+        const std::string abilist_prop_val = Join(abilist, ',');
+        LOG(INFO) << "Setting property '" << base_prop << "' to '" << abilist_prop_val << "'";
+
+        std::string error;
+        uint32_t res = PropertySet(base_prop, abilist_prop_val, &error);
+        if (res != PROP_SUCCESS) {
+            LOG(ERROR) << "Error setting property '" << base_prop << "': err=" << res << " ("
+                       << error << ")";
+        }
+    }
+}
+
 void PropertyLoadBootDefaults() {
     // We read the properties and their values into a map, in order to always allow properties
     // loaded in the later property files to override the properties in loaded in the earlier
@@ -974,6 +1037,7 @@ void PropertyLoadBootDefaults() {
 
     property_initialize_ro_product_props();
     property_derive_build_fingerprint();
+    property_initialize_ro_cpu_abilist();
 
     update_sys_usb_config();
 }
