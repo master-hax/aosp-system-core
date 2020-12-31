@@ -76,6 +76,7 @@
 using namespace std::literals;
 
 using android::base::GetProperty;
+using android::base::Join;
 using android::base::ParseInt;
 using android::base::ReadFileToString;
 using android::base::Split;
@@ -890,6 +891,65 @@ static void property_derive_build_fingerprint() {
     }
 }
 
+// If the ro.product.cpu.abilist* properties have not been explicitly
+// set, derive them from ro.${partition}.product.cpu.abilist* properties.
+static void property_initialize_ro_cpu_abilist() {
+    // From high to low priority.
+    const char* RO_CPU_ABILIST_PROPS_SOURCES[] = {
+            "product",
+            "odm",
+            "vendor",
+            "system",
+    };
+    const std::string EMPTY = "";
+    const char* RO_PRODUCT_CPU_ABILIST = "ro.product.cpu.abilist";
+    const char* RO_PRODUCT_CPU_ABILIST32 = "ro.product.cpu.abilist32";
+    const char* RO_PRODUCT_CPU_ABILIST64 = "ro.product.cpu.abilist64";
+
+    // If the properties are defined explicitly, just use them.
+    if (GetProperty(RO_PRODUCT_CPU_ABILIST32, EMPTY) != EMPTY ||
+        GetProperty(RO_PRODUCT_CPU_ABILIST64, EMPTY) != EMPTY) {
+        return;
+    }
+
+    std::string abilist32_prop_val = EMPTY;
+    std::string abilist64_prop_val = EMPTY;
+    for (const auto& source : RO_CPU_ABILIST_PROPS_SOURCES) {
+        const auto abilist32_prop = std::string("ro.") + source + ".product.cpu.abilist32";
+        const auto abilist64_prop = std::string("ro.") + source + ".product.cpu.abilist64";
+        abilist32_prop_val = GetProperty(abilist32_prop, EMPTY);
+        abilist64_prop_val = GetProperty(abilist64_prop, EMPTY);
+        if (abilist32_prop_val != EMPTY || abilist64_prop_val != EMPTY) {
+            break;
+        }
+    }
+
+    auto abilist_prop_val = abilist64_prop_val;
+    if (abilist32_prop_val != EMPTY) {
+        if (abilist_prop_val != EMPTY) {
+            abilist_prop_val += ",";
+        }
+        abilist_prop_val += abilist32_prop_val;
+    }
+
+    const std::tuple<const char*, const std::string&> set_prop_list[] = {
+            {RO_PRODUCT_CPU_ABILIST, abilist_prop_val},
+            {RO_PRODUCT_CPU_ABILIST32, abilist32_prop_val},
+            {RO_PRODUCT_CPU_ABILIST64, abilist64_prop_val}};
+    for (const auto& set_prop : set_prop_list) {
+        const auto prop = std::get<0>(set_prop);
+        const auto prop_val = std::get<1>(set_prop);
+        LOG(INFO) << "Setting property '" << prop << "' to '" << prop_val << "'";
+
+        std::string error;
+        uint32_t res = PropertySet(prop, prop_val, &error);
+        if (res != PROP_SUCCESS) {
+            LOG(ERROR) << "Error setting property '" << prop << "': err=" << res << " (" << error
+                       << ")";
+        }
+    }
+}
+
 void PropertyLoadBootDefaults() {
     // We read the properties and their values into a map, in order to always allow properties
     // loaded in the later property files to override the properties in loaded in the earlier
@@ -974,6 +1034,7 @@ void PropertyLoadBootDefaults() {
 
     property_initialize_ro_product_props();
     property_derive_build_fingerprint();
+    property_initialize_ro_cpu_abilist();
 
     update_sys_usb_config();
 }
