@@ -1,0 +1,15 @@
+Open-Source-Licensing+1: Lint 🤖 <ayeaye-gerrit@google.com>
+Autosubmit+1: Karthik Ramakrishnan <karthikmr@google.com>
+Lint+1: Lint 🤖 <ayeaye-gerrit@google.com>
+Code-Review+2: Bowgo Tsai <bowgotsai@google.com>
+Code-Review+2: SzuWei Lin <szuweilin@google.com>
+Code-Review+1: Dojip Kim <dojip.kim@lge.com>
+Code-Review+1: Jiyong Park <jiyong@google.com>
+Verified+1: Dojip Kim <dojip.kim@lge.com>
+DrNo-Review+1: Robin Jacob <robinjacob@google.com>
+Presubmit-Verified+2: Treehugger Robot <treehugger-gerrit@google.com>
+Submitted-by: Treehugger Robot <treehugger-gerrit@google.com>
+Submitted-at: Tue, 05 Jan 2021 20:36:36 +0000
+Reviewed-on: https://android-review.googlesource.com/c/platform/system/core/+/1535382
+Project: platform/system/core
+Branch: refs/heads/android10-tests-dev
