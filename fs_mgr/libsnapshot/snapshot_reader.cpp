@@ -277,6 +277,29 @@ ssize_t CompressedSnapshotReader::ReadBlock(uint64_t chunk, IByteSink* sink, siz
             errno = EIO;
             return -1;
         }
+    } else if (op->type == kCowXorOp) {
+        borrowed_fd fd = GetSourceFd();
+        if (fd < 0) {
+            // GetSourceFd sets errno.
+            return -1;
+        }
+
+        off64_t offset = op->source + start_offset;
+        char data[4096];
+        if (!android::base::ReadFullyAtOffset(fd, &data, bytes_to_read, offset)) {
+            PLOG(ERROR) << "read " << *source_device_;
+            // ReadFullyAtOffset sets errno.
+            return -1;
+        }
+        PartialSink partial_sink(buffer, bytes_to_read, start_offset);
+        if (!cow_->ReadData(*op, &partial_sink)) {
+            LOG(ERROR) << "CompressedSnapshotReader failed to read xor op";
+            errno = EIO;
+            return -1;
+        }
+        for (int i = 0; i < bytes_to_read; i++) {
+            ((char*)buffer)[i] ^= data[i];
+        }
     } else {
         LOG(ERROR) << "CompressedSnapshotReader unknown op type: " << uint32_t(op->type);
         errno = EINVAL;

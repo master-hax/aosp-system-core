@@ -89,5 +89,15 @@ bool IsMetadataOp(const CowOperation& op) {
     }
 }
 
+bool IsSourceDependentOp(const CowOperation& op) {
+    switch (op.type) {
+        case kCowCopyOp:
+        case kCowXorOp:
+            return true;
+        default:
+            return false;
+    }
+}
+
 }  // namespace snapshot
 }  // namespace android
