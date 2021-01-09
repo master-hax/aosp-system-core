@@ -26,6 +26,8 @@
 namespace android {
 namespace snapshot {
 
+static constexpr uint32_t BLOCK_SIZE = 4096;
+
 class ReadOnlyFileDescriptor : public chromeos_update_engine::FileDescriptor {
   public:
     bool Open(const char* path, int flags, mode_t mode) override;

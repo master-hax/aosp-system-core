@@ -158,6 +158,7 @@ int64_t GetNextOpOffset(const CowOperation& op, uint32_t cluster_size);
 int64_t GetNextDataOffset(const CowOperation& op, uint32_t cluster_size);
 
 bool IsMetadataOp(const CowOperation& op);
+bool IsSourceDependentOp(const CowOperation& op);
 
 }  // namespace snapshot
 }  // namespace android
