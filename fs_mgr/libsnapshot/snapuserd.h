@@ -91,6 +91,7 @@ class Snapuserd final {
     bool ProcessCowOp(const CowOperation* cow_op);
     bool ProcessReplaceOp(const CowOperation* cow_op);
     bool ProcessCopyOp(const CowOperation* cow_op);
+    bool ProcessXorOp(const CowOperation* cow_op);
     bool ProcessZeroOp();
 
     loff_t GetMergeStartOffset(void* merged_buffer, void* unmerged_buffer,

@@ -120,6 +120,33 @@ bool Snapuserd::ProcessCopyOp(const CowOperation* cow_op) {
     return true;
 }
 
+// Start the Xor operation. This will read and potentially
+// decompress the data from the COW format, and xor the result
+// against the data from the backing block device at cow_op->source.
+bool Snapuserd::ProcessXorOp(const CowOperation* cow_op) {
+    void* buffer = bufsink_.GetPayloadBuffer(BLOCK_SIZE);
+    char tmp_buffer[BLOCK_SIZE];
+    CHECK(buffer != nullptr);
+
+    // Issue a single 4K IO. However, this can be optimized
+    // if the successive blocks are contiguous.
+    if (!android::base::ReadFullyAtOffset(backing_store_fd_, tmp_buffer, BLOCK_SIZE,
+                                          cow_op->source)) {
+        SNAP_LOG(ERROR) << "Xor-op failed. Read from backing store at: " << cow_op->source;
+        return false;
+    }
+
+    if (!reader_->ReadData(*cow_op, &bufsink_)) {
+        SNAP_LOG(ERROR) << "ReadData failed for chunk: " << cow_op->new_block;
+        return false;
+    }
+
+    for (uint32_t i = 0; i < BLOCK_SIZE; i++) {
+        ((char*)buffer)[i] ^= tmp_buffer[i];
+    }
+    return true;
+}
+
 bool Snapuserd::ProcessZeroOp() {
     // Zero out the entire block
     void* buffer = bufsink_.GetPayloadBuffer(BLOCK_SIZE);
@@ -143,6 +170,10 @@ bool Snapuserd::ProcessCowOp(const CowOperation* cow_op) {
 
         case kCowCopyOp: {
             return ProcessCopyOp(cow_op);
+        }
+
+        case kCowXorOp: {
+            return ProcessXorOp(cow_op);
         }
 
         default: {
@@ -349,7 +380,7 @@ loff_t Snapuserd::GetMergeStartOffset(void* merged_buffer, void* unmerged_buffer
 }
 
 int Snapuserd::GetNumberOfMergedOps(void* merged_buffer, void* unmerged_buffer, loff_t offset,
-                                    int unmerged_exceptions, bool* copy_op) {
+                                    int unmerged_exceptions, bool* source_op) {
     int merged_ops_cur_iter = 0;
 
     // Find the operations which are merged in this cycle.
@@ -368,8 +399,8 @@ int Snapuserd::GetNumberOfMergedOps(void* merged_buffer, void* unmerged_buffer, 
             const CowOperation* cow_op = chunk_map_[ChunkToSector(cow_de->new_chunk)];
             CHECK(cow_op != nullptr);
             CHECK(cow_op->new_block == cow_de->old_chunk);
-            if (cow_op->type == kCowCopyOp) {
-                *copy_op = true;
+            if (IsSourceDependentOp(*cow_op)) {
+                *source_op = true;
             }
             // zero out to indicate that operation is merged.
             cow_de->old_chunk = 0;
@@ -392,7 +423,7 @@ int Snapuserd::GetNumberOfMergedOps(void* merged_buffer, void* unmerged_buffer, 
         }
     }
 
-    if (*copy_op) {
+    if (*source_op) {
         CHECK(merged_ops_cur_iter == 1);
     }
     return merged_ops_cur_iter;
@@ -416,9 +447,9 @@ bool Snapuserd::ProcessMergeComplete(chunk_t chunk, void* buffer) {
     int unmerged_exceptions = 0;
     loff_t offset = GetMergeStartOffset(buffer, vec_[divresult.quot].get(), &unmerged_exceptions);
 
-    bool copy_op = false;
-    // Check if the merged operation is a copy operation. If so, then we need
-    // to explicitly sync the metadata before initiating the next merge.
+    bool source_op = false;
+    // Check if the merged operation is a source dependent, as in a copy operation.
+    // If so, then we need to explicitly sync the metadata before initiating the next merge.
     // For ex: Consider a following sequence of copy operations in the COW file:
     //
     // Op-1: Copy 2 -> 3
@@ -444,14 +475,14 @@ bool Snapuserd::ProcessMergeComplete(chunk_t chunk, void* buffer) {
     // this will lead to silent data corruption.
     //
     int merged_ops_cur_iter = GetNumberOfMergedOps(buffer, vec_[divresult.quot].get(), offset,
-                                                   unmerged_exceptions, &copy_op);
+                                                   unmerged_exceptions, &source_op);
 
     // There should be at least one operation merged in this cycle
     CHECK(merged_ops_cur_iter > 0);
 
     header.num_merge_ops += merged_ops_cur_iter;
     reader_->UpdateMergeProgress(merged_ops_cur_iter);
-    if (!writer_->CommitMerge(merged_ops_cur_iter, copy_op)) {
+    if (!writer_->CommitMerge(merged_ops_cur_iter, source_op)) {
         SNAP_LOG(ERROR) << "CommitMerge failed...";
         return false;
     }
@@ -533,7 +564,7 @@ bool Snapuserd::ReadMetadata() {
     reader_ = std::make_unique<CowReader>();
     CowHeader header;
     CowOptions options;
-    bool prev_copy_op = false;
+    bool prev_source_op = false;
     bool metadata_found = false;
 
     SNAP_LOG(DEBUG) << "ReadMetadata Start...";
@@ -586,11 +617,11 @@ bool Snapuserd::ReadMetadata() {
         }
 
         metadata_found = true;
-        if ((cow_op->type == kCowCopyOp || prev_copy_op)) {
+        if ((IsSourceDependentOp(*cow_op) || prev_source_op)) {
             data_chunk_id = GetNextAllocatableChunkId(data_chunk_id);
         }
 
-        prev_copy_op = (cow_op->type == kCowCopyOp);
+        prev_source_op = IsSourceDependentOp(*cow_op);
 
         // Construct the disk-exception
         de->old_chunk = cow_op->new_block;
