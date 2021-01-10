@@ -455,6 +455,7 @@ on init
     chown system system /sys/power/state
     chown system system /sys/power/wakeup_count
     chmod 0660 /sys/power/state
+    chown system system /sys/class/leds
 
     chown radio wakelock /sys/power/wake_lock
     chown radio wakelock /sys/power/wake_unlock
