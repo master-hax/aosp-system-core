@@ -22,9 +22,9 @@
 #include <cstring>
 #include <iostream>
 #include <limits>
+#include <map>
 #include <string>
 #include <thread>
-#include <unordered_map>
 #include <vector>
 
 #include <android-base/file.h>
@@ -79,10 +79,13 @@ class Snapuserd final {
     bool ReadMetadata();
     bool ZerofillDiskExceptions(size_t read_size);
     bool ReadDiskExceptions(chunk_t chunk, size_t size);
-    bool ReadData(chunk_t chunk, size_t size);
+    int ReadUnalignedSector(sector_t sector, size_t size,
+                            std::map<sector_t, const CowOperation*>::iterator& it);
+    int ReadData(sector_t sector, size_t size);
     bool IsChunkIdMetadata(chunk_t chunk);
     chunk_t GetNextAllocatableChunkId(chunk_t chunk_id);
 
+    bool ProcessCowOp(const CowOperation* cow_op);
     bool ProcessReplaceOp(const CowOperation* cow_op);
     bool ProcessCopyOp(const CowOperation* cow_op);
     bool ProcessZeroOp();
@@ -94,6 +97,7 @@ class Snapuserd final {
     bool ProcessMergeComplete(chunk_t chunk, void* buffer);
     sector_t ChunkToSector(chunk_t chunk) { return chunk << CHUNK_SHIFT; }
     chunk_t SectorToChunk(sector_t sector) { return sector >> CHUNK_SHIFT; }
+    bool IsBlockAligned(int read_size) { return ((read_size & (BLOCK_SIZE - 1)) == 0); }
 
     std::string cow_device_;
     std::string backing_store_device_;
@@ -118,7 +122,7 @@ class Snapuserd final {
 
     // Key - Chunk ID
     // Value - cow operation
-    std::unordered_map<chunk_t, const CowOperation*> chunk_map_;
+    std::map<chunk_t, const CowOperation*> chunk_map_;
 
     bool metadata_read_done_ = false;
     BufferSink bufsink_;
