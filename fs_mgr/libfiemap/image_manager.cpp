@@ -102,7 +102,10 @@ void ImageManager::set_partition_opener(std::unique_ptr<IPartitionOpener>&& open
 
 bool ImageManager::IsImageMapped(const std::string& image_name) {
     auto prop_name = GetStatusPropertyName(image_name);
-    if (android::base::GetProperty(prop_name, "").empty()) {
+    auto status = android::base::GetProperty(prop_name, "");
+    if (status == "0") {
+        return false;
+    } else if (status.empty()) {
         // If mapped in first-stage init, the dm-device will exist but not the
         // property.
         auto& dm = DeviceMapper::Instance();
@@ -613,7 +616,7 @@ bool ImageManager::UnmapImageDevice(const std::string& name, bool force) {
     }
 
     auto status_prop = GetStatusPropertyName(name);
-    android::base::SetProperty(status_prop, "");
+    android::base::SetProperty(status_prop, "0");
     return true;
 }
 
