@@ -601,6 +601,9 @@ bool ImageManager::UnmapImageDevice(const std::string& name, bool force) {
         } else if (pieces[0] == "loop") {
             // Failure to remove a loop device is not fatal, since we can still
             // remove the backing file if we want.
+            if (!dm.DeleteDeviceIfExists(name)) {
+                LOG(ERROR) << "Failed to DeleteDevice the loop device " << name;
+            }
             loop.Detach(pieces[1]);
         } else {
             LOG(ERROR) << "Unknown status: " << pieces[0];
