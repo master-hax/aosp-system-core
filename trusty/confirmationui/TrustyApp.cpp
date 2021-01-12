@@ -16,6 +16,7 @@
 
 #include "TrustyApp.h"
 
+#include <android-base/file.h>
 #include <android-base/logging.h>
 #include <sys/uio.h>
 #include <trusty/tipc.h>
@@ -36,6 +37,11 @@ enum class PacketType : uint32_t {
 struct PacketHeader {
     PacketType type;
     uint32_t remaining;
+
+    std::string toString() {
+        return "type = " + std::to_string((uint32_t)type) +
+               ", remaining = " + std::to_string(remaining);
+    }
 };
 
 const char* toString(PacketType t) {
@@ -53,9 +59,20 @@ const char* toString(PacketType t) {
 
 static constexpr const uint32_t kHeaderSize = sizeof(PacketHeader);
 static constexpr const uint32_t kPayloadSize = kPacketSize - kHeaderSize;
+static uint8_t file_bytes[8192];
+static uint8_t input_bytes[1024];
 
 ssize_t TrustyRpc(int handle, const uint8_t* obegin, const uint8_t* oend, uint8_t* ibegin,
                   uint8_t* iend) {
+    // get corpus
+    bool has_send = false;
+    uint32_t file_index = 0;
+    TemporaryFile tf;
+    tf.DoNotRemove();
+    LOG(INFO) << tf.fd;
+    LOG(INFO) << tf.path;
+    // get corpus
+
     while (obegin != oend) {
         PacketHeader header = {
             .type = PacketType::SND,
@@ -73,6 +90,32 @@ ssize_t TrustyRpc(int handle, const uint8_t* obegin, const uint8_t* oend, uint8_
             },
         };
         int rc = writev(handle, iov, 2);
+
+        // get corpus
+        LOG(INFO) << "file_index " << file_index;
+        uint16_t* payload_size = (uint16_t*)&file_bytes[file_index];
+        *payload_size = kHeaderSize + body_size;
+        file_index += 2;
+
+        LOG(INFO) << "file_index " << file_index;
+
+        LOG(INFO) << header.toString();
+        const uint8_t* bytes = (uint8_t*)&header;
+        for (uint32_t i = 0; i < kHeaderSize; i++) {
+            LOG(INFO) << i << " " << bytes[i];
+            file_bytes[file_index + i] = bytes[i];
+        }
+        file_index += kHeaderSize;
+
+        LOG(INFO) << "file_index " << file_index;
+        bytes = obegin;
+        for (uint32_t i = 0; i < body_size; i++) {
+            // LOG(INFO) << i << " " << bytes[i];
+            file_bytes[file_index + i] = bytes[i];
+        }
+        file_index += body_size;
+        // get corpus
+
         if (!rc) {
             PLOG(ERROR) << "Error sending SND message. " << rc;
             return rc;
@@ -112,6 +155,31 @@ ssize_t TrustyRpc(int handle, const uint8_t* obegin, const uint8_t* oend, uint8_
         };
 
         ssize_t rc = writev(handle, iov, 1);
+
+        // get corpus
+        LOG(INFO) << "file_index " << file_index;
+        uint16_t* payload_size = (uint16_t*)&file_bytes[file_index];
+        *payload_size = kHeaderSize;
+        file_index += 2;
+        LOG(INFO) << "file_index " << file_index;
+
+        uint8_t* bytes = (uint8_t*)&header;
+        LOG(INFO) << header.toString();
+        for (uint32_t i = 0; i < kHeaderSize; i++) {
+            LOG(INFO) << i << " " << bytes[i];
+            file_bytes[file_index + i] = bytes[i];
+        }
+        file_index += kHeaderSize;
+        LOG(INFO) << "file_index " << file_index;
+
+        //        bytes = begin;
+        //        for (uint32_t i = 0; i < uint32_t(iend - begin); i++) {
+        //            //LOG(INFO) << i << " " << bytes[i];
+        //            file_bytes[file_index + i] = bytes[i];
+        //        }
+        //        file_index += uint32_t(iend - begin);
+        // get corpus
+
         if (!rc) {
             PLOG(ERROR) << "Error sending RCV message. " << rc;
             return rc;
@@ -129,9 +197,29 @@ ssize_t TrustyRpc(int handle, const uint8_t* obegin, const uint8_t* oend, uint8_
             return -1;
         }
 
+        has_send = true;
+        LOG(INFO) << tf.path;
+        LOG(INFO) << tf.path;
         remaining = header.remaining - body_size;
         begin += body_size;
     } while (remaining);
+
+    // get corpus
+    if (has_send) {
+        bool rc = base::WriteFully(tf.fd, file_bytes, file_index);
+        LOG(INFO) << "WriteFully " << rc;
+        LOG(INFO) << "file_index " << file_index;
+        if (file_index < 1024) {
+            lseek(tf.fd, 0, SEEK_SET);
+            rc = base::ReadFully(tf.fd, &input_bytes[0], file_index);
+            LOG(INFO) << "ReadFully " << rc;
+            for (uint32_t i = 0; i < file_index; i++) {
+                LOG(INFO) << +i << " input_bytes " << +input_bytes[i];
+                LOG(INFO) << +i << " file_types " << +file_bytes[i];
+            }
+        }
+    }
+    // get corpus
 
     return begin - ibegin;
 }
