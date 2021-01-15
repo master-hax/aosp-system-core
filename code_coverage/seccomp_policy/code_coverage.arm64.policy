@@ -4,6 +4,9 @@ msync: 1
 munmap: 1
 openat: 1
 write: 1
+// fchmod allowed to set libprofile-clang-extras, which wraps `open` calls, to
+// set correct permission for coverage files.
+fchmod: 1
 fcntl: 1
 fstat: 1
 ftruncate: 1
