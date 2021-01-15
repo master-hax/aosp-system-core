@@ -1106,6 +1106,7 @@ TEST_F(SnapshotUpdateTest, FullUpdateFlow) {
 
     // Initiate the merge and wait for it to be completed.
     ASSERT_TRUE(init->InitiateMerge());
+    ASSERT_EQ(init->IsSnapuserdRequired(), IsCompressionEnabled());
     ASSERT_EQ(UpdateState::MergeCompleted, init->ProcessUpdateState());
 
     // Check that the target partitions have the same content after the merge.
