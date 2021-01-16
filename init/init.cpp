@@ -881,10 +881,15 @@ int SecondStageMain(int argc, char** argv) {
      * Dumpstate will also unmount debugfs after bugreport creation.
      * first_api_level comparison is done here instead
      * of init.rc since init.rc parser does not support >/< operators.
+     * Devices which launched earlier than Android S can set the property
+     * debug.mount_debugfs in their device.mk file to override the first API
+     * level check.
      */
     auto api_level = android::base::GetIntProperty("ro.product.first_api_level", 0);
     bool is_debuggable = android::base::GetBoolProperty("ro.debuggable", false);
-    auto mount_debugfs = (is_debuggable && (api_level >= 31)) ? "1" : "0";
+    bool first_api_level_override = android::base::GetBoolProperty("debug.mount_debugfs", false);
+    auto mount_debugfs =
+            (is_debuggable && ((api_level >= 31) || first_api_level_override)) ? "1" : "0";
     SetProperty("init.mount_debugfs", mount_debugfs);
 
     am.QueueBuiltinAction(SetupCgroupsAction, "SetupCgroups");
