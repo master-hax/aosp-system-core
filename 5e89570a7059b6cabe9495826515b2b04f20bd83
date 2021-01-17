@@ -1,0 +1,30 @@
+{
+  "comments": [
+    {
+      "robotId": "ayeaye",
+      "robotRunId": "AR00000000000007357314",
+      "url": "https://android-build.googleplex.com/builds/treetop/android-review/1553474?revision\u003d1",
+      "fixSuggestions": [],
+      "key": {
+        "uuid": "462d7e29_f058e5ca",
+        "filename": "adb/sysdeps_win32.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2162,
+      "author": {
+        "id": 1757831
+      },
+      "writtenOn": "2021-01-17T02:42:31Z",
+      "side": 1,
+      "message": "Third-party license (BSD) disallowed in repository platform/system/core:\nRedistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:\n",
+      "range": {
+        "startLine": 2160,
+        "startChar": 4,
+        "endLine": 2162,
+        "endChar": 12
+      },
+      "revId": "5e89570a7059b6cabe9495826515b2b04f20bd83",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
