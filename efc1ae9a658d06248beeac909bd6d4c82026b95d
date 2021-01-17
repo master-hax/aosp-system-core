@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "02599c2b_7f11e7df",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1042828
+      },
+      "writtenOn": "2021-01-17T21:59:42Z",
+      "side": 1,
+      "message": "It looks like this might be easier to fix than revert. Didn\u0027t investigate in detail.",
+      "revId": "efc1ae9a658d06248beeac909bd6d4c82026b95d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
