@@ -324,7 +324,8 @@ void Service::Reap(const siginfo_t& siginfo) {
                 auto exit_reason = boot_completed ?
                     "in " + std::to_string(fatal_crash_window_.count()) + " minutes" :
                     "before boot completed";
-                if (flags_ & SVC_CRITICAL) {
+                if (flags_ & SVC_CRITICAL &&
+                    GetProperty("init.svc_debug.no_fatal." + name_, "") != "true") {
                     // Aborts into `fatal_reboot_target_'.
                     SetFatalRebootTarget(fatal_reboot_target_);
                     LOG(FATAL) << "critical process '" << name_ << "' exited 4 times "
