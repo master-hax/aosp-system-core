@@ -568,12 +568,7 @@ class SnapshotManager final : public ISnapshotManager {
     std::string GetSnapshotBootIndicatorPath();
     std::string GetRollbackIndicatorPath();
     std::string GetForwardMergeIndicatorPath();
-
-    // Return the name of the device holding the "snapshot" or "snapshot-merge"
-    // target. This may not be the final device presented via MapSnapshot(), if
-    // for example there is a linear segment.
-    std::string GetSnapshotDeviceName(const std::string& snapshot_name,
-                                      const SnapshotStatus& status);
+    std::string GetOldPartitionMetadataPath();
 
     bool MapAllPartitions(LockedFile* lock, const std::string& super_device, uint32_t slot,
                           const std::chrono::milliseconds& timeout_ms);
