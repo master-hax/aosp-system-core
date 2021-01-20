@@ -21,6 +21,9 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+// Returns non-zero if the qemu pipe is available to open.
+int qemu_pipe_is_available();
+
 // Try to open a new Qemu fast-pipe. This function returns a file descriptor
 // that can be used to communicate with a named service managed by the
 // emulator.

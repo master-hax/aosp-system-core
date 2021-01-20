@@ -27,6 +27,9 @@
 using android::base::ReadFully;
 using android::base::WriteFully;
 
+constexpr char kPipeFilename[] = "/dev/qemu_pipe";
+constexpr int kPipeOpenMode = O_RDWR;
+
 // Define QEMU_PIPE_DEBUG if you want to print error messages when an error
 // occurs during pipe operations. The macro should simply take a printf-style
 // formatting string followed by optional arguments.
@@ -34,16 +37,19 @@ using android::base::WriteFully;
 #  define  QEMU_PIPE_DEBUG(...)   (void)0
 #endif
 
+int qemu_pipe_is_available() {
+    return access(kPipeFilename, kPipeOpenMode) == 0;
+}
+
 int qemu_pipe_open(const char* pipeName) {
     if (!pipeName) {
         errno = EINVAL;
         return -1;
     }
 
-    int fd = TEMP_FAILURE_RETRY(open("/dev/qemu_pipe", O_RDWR));
+    int fd = TEMP_FAILURE_RETRY(open(kPipeFilename, kPipeOpenMode));
     if (fd < 0) {
-        QEMU_PIPE_DEBUG("%s: Could not open /dev/qemu_pipe: %s", __FUNCTION__,
-                        strerror(errno));
+        QEMU_PIPE_DEBUG("%s: Could not open %s: %s", __FUNCTION__, kPipeFilename, strerror(errno));
         return -1;
     }
 
