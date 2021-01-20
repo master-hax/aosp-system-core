@@ -224,7 +224,7 @@ class SnapshotTest : public ::testing::Test {
     }
 
     AssertionResult MapUpdateSnapshot(const std::string& name,
-                                      std::unique_ptr<ICowWriter>* writer) {
+                                      std::unique_ptr<ISnapshotWriter>* writer) {
         TestPartitionOpener opener(fake_super);
         CreateLogicalPartitionParams params{
                 .block_device = fake_super,
@@ -317,7 +317,7 @@ class SnapshotTest : public ::testing::Test {
 
     // Prepare A/B slot for a partition named "test_partition".
     AssertionResult PrepareOneSnapshot(uint64_t device_size,
-                                       std::unique_ptr<ICowWriter>* writer = nullptr) {
+                                       std::unique_ptr<ISnapshotWriter>* writer = nullptr) {
         lock_ = nullptr;
 
         DeltaArchiveManifest manifest;
@@ -524,7 +524,7 @@ TEST_F(SnapshotTest, Merge) {
 
     static const uint64_t kDeviceSize = 1024 * 1024;
 
-    std::unique_ptr<ICowWriter> writer;
+    std::unique_ptr<ISnapshotWriter> writer;
     ASSERT_TRUE(PrepareOneSnapshot(kDeviceSize, &writer));
 
     // Release the lock.
@@ -960,7 +960,7 @@ class SnapshotUpdateTest : public SnapshotTest {
 
     AssertionResult MapOneUpdateSnapshot(const std::string& name) {
         if (IsCompressionEnabled()) {
-            std::unique_ptr<ICowWriter> writer;
+            std::unique_ptr<ISnapshotWriter> writer;
             return MapUpdateSnapshot(name, &writer);
         } else {
             std::string path;
@@ -970,7 +970,7 @@ class SnapshotUpdateTest : public SnapshotTest {
 
     AssertionResult WriteSnapshotAndHash(const std::string& name) {
         if (IsCompressionEnabled()) {
-            std::unique_ptr<ICowWriter> writer;
+            std::unique_ptr<ISnapshotWriter> writer;
             auto res = MapUpdateSnapshot(name, &writer);
             if (!res) {
                 return res;
@@ -997,6 +997,42 @@ class SnapshotUpdateTest : public SnapshotTest {
 
         return AssertionSuccess() << "Written random data to snapshot " << name
                                   << ", hash: " << hashes_[name];
+    }
+
+    // Generate a snapshot that moves all the upper blocks down to the start.
+    // It doesn't really matter the order, we just want copies that reference
+    // blocks that won't exist if the partition shrinks.
+    AssertionResult ShiftAllSnapshotBlocks(const std::string& name, uint64_t old_size) {
+        std::unique_ptr<ISnapshotWriter> writer;
+        if (auto res = MapUpdateSnapshot(name, &writer); !res) {
+            return res;
+        }
+        if (!writer->options().max_blocks || !*writer->options().max_blocks) {
+            return AssertionFailure() << "No max blocks set for " << name << " writer";
+        }
+
+        uint64_t src_block = (old_size / writer->options().block_size) - 1;
+        uint64_t dst_block = 0;
+        uint64_t max_blocks = *writer->options().max_blocks;
+        while (dst_block < max_blocks && dst_block < src_block) {
+            if (!writer->AddCopy(dst_block, src_block)) {
+                return AssertionFailure() << "Unable to add copy for " << name << " for blocks "
+                                          << src_block << ", " << dst_block;
+            }
+            dst_block++;
+            src_block--;
+        }
+        if (!writer->Finalize()) {
+            return AssertionFailure() << "Unable to finalize writer for " << name;
+        }
+
+        auto hash = HashSnapshot(writer.get());
+        if (hash.empty()) {
+            return AssertionFailure() << "Unable to hash snapshot writer for " << name;
+        }
+        hashes_[name] = hash;
+
+        return AssertionSuccess();
     }
 
     AssertionResult MapUpdateSnapshots(const std::vector<std::string>& names = {"sys_b", "vnd_b",
@@ -1079,6 +1115,69 @@ TEST_F(SnapshotUpdateTest, FullUpdateFlow) {
     for (const auto& name : {"sys_b", "vnd_b", "prd_b"}) {
         ASSERT_TRUE(WriteSnapshotAndHash(name));
     }
+
+    // Assert that source partitions aren't affected.
+    for (const auto& name : {"sys_a", "vnd_a", "prd_a"}) {
+        ASSERT_TRUE(IsPartitionUnchanged(name));
+    }
+
+    ASSERT_TRUE(sm->FinishedSnapshotWrites(false));
+
+    // Simulate shutting down the device.
+    ASSERT_TRUE(UnmapAll());
+
+    // After reboot, init does first stage mount.
+    auto init = NewManagerForFirstStageMount("_b");
+    ASSERT_NE(init, nullptr);
+    ASSERT_TRUE(init->NeedSnapshotsInFirstStageMount());
+    ASSERT_TRUE(init->CreateLogicalAndSnapshotPartitions("super", snapshot_timeout_));
+
+    auto indicator = sm->GetRollbackIndicatorPath();
+    ASSERT_NE(access(indicator.c_str(), R_OK), 0);
+
+    // Check that the target partitions have the same content.
+    for (const auto& name : {"sys_b", "vnd_b", "prd_b"}) {
+        ASSERT_TRUE(IsPartitionUnchanged(name));
+    }
+
+    // Initiate the merge and wait for it to be completed.
+    ASSERT_TRUE(init->InitiateMerge());
+    ASSERT_EQ(init->IsSnapuserdRequired(), IsCompressionEnabled());
+    ASSERT_EQ(UpdateState::MergeCompleted, init->ProcessUpdateState());
+
+    // Check that the target partitions have the same content after the merge.
+    for (const auto& name : {"sys_b", "vnd_b", "prd_b"}) {
+        ASSERT_TRUE(IsPartitionUnchanged(name))
+                << "Content of " << name << " changes after the merge";
+    }
+}
+
+// Test that shrinking and growing partitions at the same time is handled
+// correctly in VABC.
+TEST_F(SnapshotUpdateTest, SpaceSwapUpdate) {
+    // OTA client blindly unmaps all partitions that are possibly mapped.
+    for (const auto& name : {"sys_b", "vnd_b", "prd_b"}) {
+        ASSERT_TRUE(sm->UnmapUpdateSnapshot(name));
+    }
+
+    auto old_prd_size = GetSize(prd_);
+
+    // Grow |sys| but shrink |prd|.
+    SetSize(sys_, GetSize(sys_) * 2);
+    sys_->set_estimate_cow_size(8_MiB);
+    SetSize(prd_, GetSize(prd_) / 2);
+    prd_->set_estimate_cow_size(1_MiB);
+
+    AddOperationForPartitions();
+
+    // Execute the update.
+    ASSERT_TRUE(sm->BeginUpdate());
+    ASSERT_TRUE(sm->CreateUpdateSnapshots(manifest_));
+    ASSERT_TRUE(WriteSnapshotAndHash("sys_b"));
+    ASSERT_TRUE(WriteSnapshotAndHash("vnd_b"));
+    ASSERT_TRUE(ShiftAllSnapshotBlocks("prd_b", old_prd_size));
+
+    sync();
 
     // Assert that source partitions aren't affected.
     for (const auto& name : {"sys_a", "vnd_a", "prd_a"}) {

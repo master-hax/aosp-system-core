@@ -379,6 +379,7 @@ class SnapshotManager final : public ISnapshotManager {
     FRIEND_TEST(SnapshotUpdateTest, MergeCannotRemoveCow);
     FRIEND_TEST(SnapshotUpdateTest, MergeInRecovery);
     FRIEND_TEST(SnapshotUpdateTest, SnapshotStatusFileWithoutCow);
+    FRIEND_TEST(SnapshotUpdateTest, SpaceSwapUpdate);
     friend class SnapshotTest;
     friend class SnapshotUpdateTest;
     friend class FlashAfterUpdateTest;
