@@ -1,3 +1,4 @@
 third_party {
-  license_type: NOTICE
+  # would be NOTICE save for deprecated-adf/libadf/original-kernel-headers/video/adf.h
+  license_type: RESTRICTED
 }
