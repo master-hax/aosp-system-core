@@ -16,7 +16,6 @@
 
 #include <errno.h>
 #include <getopt.h>
-#include <libavb_user/libavb_user.h>
 #include <stdio.h>
 #include <sys/mount.h>
 #include <sys/types.h>
@@ -40,6 +39,8 @@
 #include <fs_mgr_overlayfs.h>
 #include <fs_mgr_priv.h>
 #include <fstab/fstab.h>
+#include <libavb_user/libavb_user.h>
+#include <libgsi/libgsid.h>
 
 namespace {
 
@@ -190,6 +191,31 @@ static int do_remount(int argc, char* argv[]) {
     if (::getuid() != 0) {
         LOG(ERROR) << "Not running as root. Try \"adb root\" first.";
         return NOT_ROOT;
+    }
+
+    // If -R flag is specified, make sure DSU is either not running or running
+    // and enabled.
+    if (can_reboot) {
+        if (auto gsid = android::gsi::GetGsiService()) {
+            bool dsu_running = false;
+            bool dsu_enabled = false;
+            if (!gsid->isGsiRunning(&dsu_running).isOk()) {
+                LOG(ERROR) << "Failed to get DSU running state";
+            } else if (!gsid->isGsiEnabled(&dsu_enabled).isOk()) {
+                LOG(ERROR) << "Failed to get DSU enabled state";
+            } else {
+                // If DSU is running but disabled, in other words the next
+                // reboot would take us back to the host system, then ignore
+                // the -R flag and emit a warning, because that probably isn't
+                // what the user intended to do.
+                if (dsu_running && !dsu_enabled) {
+                    LOG(WARNING) << "DSU running but disabled, ignoring reboot argument: -R\n"
+                                 << "Consider enabling DSU before reboot "
+                                 << "\"adb shell gsi_tool enable -s\"";
+                    can_reboot = false;
+                }
+            }
+        }
     }
 
     // Read the selected fstab.
