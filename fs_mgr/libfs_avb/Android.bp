@@ -97,6 +97,9 @@ cc_test_host {
     shared_libs: [
         "libcrypto",
     ],
+    data: [
+        ":avbtool",
+    ],
     srcs: [
         "tests/basic_test.cpp",
         "tests/fs_avb_test.cpp",
@@ -110,6 +113,9 @@ cc_test_host {
     test_suites: ["general-tests"],
     static_libs: [
         "libfs_avb_test_util",
+    ],
+    data: [
+        ":avbtool",
     ],
     srcs: [
         "avb_util.cpp",
