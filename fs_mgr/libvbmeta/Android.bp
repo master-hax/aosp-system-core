@@ -46,11 +46,14 @@ cc_test_host {
         "builder_test.cpp",
         "super_vbmeta_test.cpp",
     ],
-    required: [
-        "avbtool",
-        "vbmake",
-    ],
+    test_options: {
+        unit_test: true,
+    },
+    compile_multilib: "first",
     data: [
+        ":avbtool",
+        ":fec",
+        ":vbmake",
         "data/*",
     ],
 }
