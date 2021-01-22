@@ -273,7 +273,6 @@ bool WriteFileAction::ExecuteForProcess(uid_t uid, pid_t pid) const {
     value = StringReplace(value, "<pid>", std::to_string(pid), true);
 
     if (!WriteStringToFile(value, filepath)) {
-        PLOG(ERROR) << "Failed to write '" << value << "' to " << filepath;
         return false;
     }
 
@@ -290,7 +289,6 @@ bool WriteFileAction::ExecuteForTask(int tid) const {
     value = StringReplace(value, "<pid>", std::to_string(tid), true);
 
     if (!WriteStringToFile(value, filepath)) {
-        PLOG(ERROR) << "Failed to write '" << value << "' to " << filepath;
         return false;
     }
 
