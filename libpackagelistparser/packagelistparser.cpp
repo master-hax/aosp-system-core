@@ -67,10 +67,12 @@ static bool parse_line(const char* path, size_t line_number, const char* line, p
   int debuggable;
   char* gid_list;
   int profileable_from_shell = 0;
+  char* profiling_recipients = nullptr;
 
   int fields =
-      sscanf(line, "%ms %lu %d %ms %ms %ms %d %ld", &info->name, &uid, &debuggable, &info->data_dir,
-             &info->seinfo, &gid_list, &profileable_from_shell, &info->version_code);
+      sscanf(line, "%ms %lu %d %ms %ms %ms %d %ld %ms", &info->name, &uid, &debuggable,
+             &info->data_dir, &info->seinfo, &gid_list, &profileable_from_shell,
+             &info->version_code, &profiling_recipients);
 
   // Handle the more complicated gids field and free the temporary string.
   bool gids_okay = parse_gids(path, line_number, gid_list, info);
@@ -94,6 +96,13 @@ static bool parse_line(const char* path, size_t line_number, const char* line, p
   // Integer to bool conversions.
   info->debuggable = debuggable;
   info->profileable_from_shell = profileable_from_shell;
+
+  if (profiling_recipients && strcmp(profiling_recipients, "none") != 0) {
+    info->profiling_recipients = profiling_recipients;
+  } else {
+    free(profiling_recipients);
+    info->profiling_recipients = nullptr;
+  }
 
   return true;
 }
