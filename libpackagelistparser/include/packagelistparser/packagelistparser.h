@@ -56,6 +56,9 @@ typedef struct pkg_info {
 
   /** Package's AndroidManifest.xml version code. */
   long version_code;
+
+  /** Package's AndroidManifest.xml <recipient> in profileable flag. */
+  char* profiling_recipients;
 } pkg_info;
 
 /**
