@@ -142,14 +142,15 @@ class SetCgroupAction : public ProfileAction {
 // Write to file action
 class WriteFileAction : public ProfileAction {
   public:
-    WriteFileAction(const std::string& filepath, const std::string& value) noexcept
-        : filepath_(filepath), value_(value) {}
+    WriteFileAction(const std::string& filepath, const std::string& value, bool printlog) noexcept
+        : filepath_(filepath), value_(value), printlog_(printlog) {}
 
     virtual bool ExecuteForProcess(uid_t uid, pid_t pid) const;
     virtual bool ExecuteForTask(int tid) const;
 
   private:
     std::string filepath_, value_;
+    bool printlog_;
 };
 
 class TaskProfile {
