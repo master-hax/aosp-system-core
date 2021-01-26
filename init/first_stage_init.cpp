@@ -286,8 +286,7 @@ int FirstStageMain(int argc, char** argv) {
         }
     }
 
-
-    if (want_console == FirstStageConsoleParam::CONSOLE_ON_FAILURE) {
+    if (want_console == FirstStageConsoleParam::CONSOLE_ON_FAILURE && !IsRecoveryMode()) {
         if (!DoCreateDevices()) {
             LOG(ERROR) << "Failed to create device nodes early";
         }
