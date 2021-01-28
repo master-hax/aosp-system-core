@@ -1656,8 +1656,10 @@ echo "${GREEN}[       OK ]${NORMAL} remount command works from setup" >&2
 # This also saves a lot of 'noise' from the command doing a mkfs on backing
 # storage and all the related tuning and adjustment.
 for d in ${OVERLAYFS_BACKING}; do
-  adb_su rm -rf /${d}/overlay </dev/null ||
-    die "/${d}/overlay wipe"
+  if adb_su ls -d /${d}/overlay </dev/null >/dev/null 2>/dev/null; then
+    adb_su rm -rf /${d}/overlay </dev/null ||
+      die "/${d}/overlay wipe"
+  fi
 done
 adb_reboot &&
   adb_wait ${ADB_WAIT} ||
