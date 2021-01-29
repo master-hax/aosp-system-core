@@ -238,7 +238,7 @@ static void perform_request(Crash* crash) {
     goto fail;
   } else {
     // TODO: Make this configurable by the interceptor?
-    struct timeval timeout = { 10, 0 };
+    struct timeval timeout = {10 * android::base::GetIntProperty("ro.timeout_multiplier", 1), 0};
 
     event_base* base = event_get_base(crash->crash_event);
     event_assign(crash->crash_event, base, crash->crash_socket_fd, EV_TIMEOUT | EV_READ,
@@ -260,7 +260,7 @@ static void crash_accept_cb(evconnlistener* listener, evutil_socket_t sockfd, so
 
   // TODO: Make sure that only java crashes come in on the java socket
   // and only native crashes on the native socket.
-  struct timeval timeout = { 1, 0 };
+  struct timeval timeout = {1 * android::base::GetIntProperty("ro.timeout_multiplier", 1), 0};
   event* crash_event = event_new(base, sockfd, EV_TIMEOUT | EV_READ, crash_request_cb, crash);
   crash->crash_socket_fd.reset(sockfd);
   crash->crash_event = crash_event;
