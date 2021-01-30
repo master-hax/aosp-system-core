@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "73ed8178_05722f31",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1638873
+      },
+      "writtenOn": "2021-01-30T00:25:23Z",
+      "side": 1,
+      "message": "Post-revert version of https://android-review.googlesource.com/c/platform/system/core/+/1516552.",
+      "revId": "569fb9291ca1c1e60b6ba5f0d754aa02d1432f34",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
