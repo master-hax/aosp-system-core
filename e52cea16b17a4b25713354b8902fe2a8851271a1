@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0cc36a26_60b12ed2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2021-02-02T00:57:35Z",
+      "side": 1,
+      "message": "Context for this: after an app uninstallation/user removal, system_server needs to be able to delete a tombstone given a file descriptor to it. There isn\u0027t a way to do this atomically, because tombstoned might come along and replace the tombstone with another one as we\u0027re about to unlink, so I chose to truncate the file instead, which means tombstones have to be created as 0660 and we need to give system_server write permission in selinux.\n\nI\u0027m not super happy with this as a solution, since it lets system_server write arbitrary garbage into tombstones, but I can only think of one other option: a setuid tombstoned (with domain_auto_trans from system_server) that inherits a file descriptor, opens /proc/self/fd/$FD to reopen the fd as read/write, and then truncates it. I think this is probably strictly more constrained, but it also sounds awful.\n\n(Maybe this doesn\u0027t really matter too much, since if system_server is compromised, you are probably fucked anyway, and libprotobuf should be able to handle malicious input, and the only thing that\u0027s parsing the protos in the system is system_server itself?)\n\nThoughts?",
+      "revId": "e52cea16b17a4b25713354b8902fe2a8851271a1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
