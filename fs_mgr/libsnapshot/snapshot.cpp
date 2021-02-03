@@ -1683,6 +1683,14 @@ UpdateState SnapshotManager::GetUpdateState(double* progress) {
     return state;
 }
 
+bool SnapshotManager::IsCompressionEnabled() {
+    auto lock = LockShared();
+    if (!lock) return false;
+
+    SnapshotUpdateStatus update_status = ReadSnapshotUpdateStatus(lock.get());
+    return update_status.compression_enabled();
+}
+
 bool SnapshotManager::ListSnapshots(LockedFile* lock, std::vector<std::string>* snapshots) {
     CHECK(lock);
 
