@@ -166,6 +166,7 @@ bool LoadKernelModules(bool recovery, bool want_console) {
         bool retval = m.LoadListedModules(!want_console);
         int modules_loaded = m.GetModuleCount();
         if (modules_loaded > 0) {
+            setenv(kEnvInitModuleCount, std::to_string(modules_loaded).c_str(), 1);
             return retval;
         }
     }
@@ -174,6 +175,7 @@ bool LoadKernelModules(bool recovery, bool want_console) {
     bool retval = m.LoadListedModules(!want_console);
     int modules_loaded = m.GetModuleCount();
     if (modules_loaded > 0) {
+        setenv(kEnvInitModuleCount, std::to_string(modules_loaded).c_str(), 1);
         return retval;
     }
     return true;
@@ -278,12 +280,20 @@ int FirstStageMain(int argc, char** argv) {
 
     auto want_console = ALLOW_FIRST_STAGE_CONSOLE ? FirstStageConsole(cmdline) : 0;
 
+    boot_clock::time_point module_start_time = boot_clock::now();
     if (!LoadKernelModules(IsRecoveryMode() && !ForceNormalBoot(cmdline), want_console)) {
         if (want_console != FirstStageConsoleParam::DISABLED) {
             LOG(ERROR) << "Failed to load kernel modules, starting console";
         } else {
             LOG(FATAL) << "Failed to load kernel modules";
         }
+    }
+    if (auto init_module_count_str = getenv(kEnvInitModuleCount); init_module_count_str) {
+        auto module_elapse_time = std::chrono::duration_cast<std::chrono::milliseconds>(
+                boot_clock::now() - module_start_time);
+        setenv(kEnvInitModuleDurationMs, std::to_string(module_elapse_time.count()).c_str(), 1);
+        LOG(INFO) << "Loaded " << init_module_count_str << " kernel modules took "
+                  << module_elapse_time.count() << " ms";
     }
 
     if (want_console == FirstStageConsoleParam::CONSOLE_ON_FAILURE) {
