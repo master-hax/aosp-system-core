@@ -713,6 +713,8 @@ static void RecordStageBoottimes(const boot_clock::time_point& second_stage_star
     SetProperty("ro.boottime.init.selinux",
                 std::to_string(second_stage_start_time.time_since_epoch().count() -
                                selinux_start_time_ns));
+    SetProperty("ro.boottime.init.modules", getenv(kEnvInitModuleStartedAt));
+    unsetenv(kEnvInitModuleStartedAt);
 }
 
 void SendLoadPersistentPropertiesMessage() {

@@ -170,10 +170,16 @@ bool LoadKernelModules(bool recovery, bool want_console) {
         }
     }
 
+    boot_clock::time_point module_start_time = boot_clock::now();
     Modprobe m({MODULE_BASE_DIR}, GetModuleLoadList(recovery, MODULE_BASE_DIR));
     bool retval = m.LoadListedModules(!want_console);
     int modules_loaded = m.GetModuleCount();
+    auto module_elapse_time = std::chrono::duration_cast<std::chrono::milliseconds>(
+            boot_clock::now() - module_start_time);
     if (modules_loaded > 0) {
+        setenv(kEnvInitModuleStartedAt, std::to_string(module_elapse_time.count()).c_str(), 1);
+        LOG(INFO) << "Loaded " << modules_loaded << " kernel modules in "
+                  << module_elapse_time.count() << " ms";
         return retval;
     }
     return true;
