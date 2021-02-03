@@ -1,0 +1,47 @@
+# NOTE: THIS FILE IS EXPERIMENTAL FOR THE BAZEL MIGRATION AND NOT USED FOR
+# YOUR BUILDS CURRENTLY.
+#
+# It is not yet the source of truth for your build. If you're looking to modify
+# the build file, modify the Android.bp file instead. Do *not* modify this file
+# unless you have coordinated with the team managing the Soong to Bazel
+# migration.
+
+# Targets required to build property_service for the target device.
+# There are many internal utility targets here.
+package(default_visibility = ["//visibility:public"])
+
+cc_library(
+    name = "includes",
+    hdrs = glob(["include/**/*.h"]),
+    includes = ["include"],
+    deps = [
+        "//bionic/libc:includes",
+        "//bionic/libc:includes_for_bionic",
+    ],
+)
+
+cc_library(
+    name = "libpropertyinfoparser",
+    srcs = [
+        "property_info_parser.cpp",
+    ],
+    copts = [
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+    ],
+    # Migration mapping note:
+    #
+    # Is it not clear why this is needed, and which "experimental" STL this was
+    # referring to.
+    #
+    # If this means c++17, then we can remove this. If this means c++20, then
+    # it should be refactored to say c++20, not "experimental" as a name.
+    features = ["cpp_std_experimental"],
+    deps = [
+        ":includes",
+        "//bionic/libc:bionic_includes",
+        "//bionic/libc:includes",
+        "//bionic/libc:includes_for_bionic",
+    ],
+)
