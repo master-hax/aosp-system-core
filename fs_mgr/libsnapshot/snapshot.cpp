@@ -1683,6 +1683,17 @@ UpdateState SnapshotManager::GetUpdateState(double* progress) {
     return state;
 }
 
+bool SnapshotManager::IsCompressionEnabled() {
+    auto lock = LockShared();
+    if (!lock) return false;
+    return IsCompressionEnabled(lock.get());
+}
+
+bool SnapshotManager::IsCompressionEnabled(LockedFile* lock) {
+    SnapshotUpdateStatus update_status = ReadSnapshotUpdateStatus(lock);
+    return update_status.compression_enabled();
+}
+
 bool SnapshotManager::ListSnapshots(LockedFile* lock, std::vector<std::string>* snapshots) {
     CHECK(lock);
 
@@ -2109,7 +2120,7 @@ bool SnapshotManager::UnmapCowDevices(LockedFile* lock, const std::string& name)
 
     auto& dm = DeviceMapper::Instance();
 
-    if (IsCompressionEnabled() && !UnmapDmUserDevice(name)) {
+    if (IsCompressionEnabled(lock) && !UnmapDmUserDevice(name)) {
         return false;
     }
 
@@ -2616,7 +2627,7 @@ Return SnapshotManager::CreateUpdateSnapshots(const DeltaArchiveManifest& manife
     // these devices.
     AutoDeviceList created_devices;
 
-    bool use_compression = IsCompressionEnabled() &&
+    bool use_compression = IsCompressionEnabled(lock) &&
                            manifest.dynamic_partition_metadata().vabc_enabled() &&
                            !device_->IsRecovery();
 
