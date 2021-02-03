@@ -578,6 +578,15 @@ on post-fs
     chown system log /proc/last_kmsg
     chmod 0440 /proc/last_kmsg
 
+    # Set up a tracing instance for system_server to monitor error_report_end events.
+    # These are sent by kernel tools like KASAN and KFENCE when a memory corruption
+    # is detected.
+    mkdir /sys/kernel/tracing/instances/bootreceiver 0700 system system
+    restorecon_recursive /sys/kernel/tracing/instances/bootreceiver
+    write /sys/kernel/tracing/instances/bootreceiver/buffer_size_kb 1
+    write /sys/kernel/tracing/instances/bootreceiver/trace_options disable_on_free
+    write /sys/kernel/tracing/instances/bootreceiver/events/error_report/error_report_end/enable 1
+
     # make the selinux kernel policy world-readable
     chmod 0444 /sys/fs/selinux/policy
 
