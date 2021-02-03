@@ -1,0 +1,32 @@
+# Targets required to build property_service for the target device.
+# There are many internal utility targets here.
+package(default_visibility = ["//visibility:public"])
+
+cc_library(
+    name = "includes",
+    hdrs = glob(["include/**/*.h"]),
+    includes = ["include"],
+    deps = [
+        "//bionic/libc:includes",
+        "//bionic/libc:includes_for_bionic",
+    ],
+)
+
+cc_library(
+    name = "libpropertyinfoparser",
+    srcs = [
+        "property_info_parser.cpp",
+    ],
+    copts = [
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+    ],
+    features = ["cpp_std_experimental"],
+    deps = [
+        ":includes",
+        "//bionic/libc:bionic_includes",
+        "//bionic/libc:includes",
+        "//bionic/libc:includes_for_bionic",
+    ],
+)
