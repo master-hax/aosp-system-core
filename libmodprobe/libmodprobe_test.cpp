@@ -188,7 +188,9 @@ TEST(libmodprobe, Test) {
 
     EXPECT_TRUE(modules_loaded == expected_after_remove);
 
-    m = Modprobe({dir.path});
+    m.~Modprobe();
+    new (&m) Modprobe({dir.path});
+
     EXPECT_FALSE(m.LoadWithAliases("test4", true));
     while (modules_loaded.size() > 0) EXPECT_TRUE(m.Remove(modules_loaded.front()));
     EXPECT_TRUE(m.LoadListedModules());
