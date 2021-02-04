@@ -21,8 +21,11 @@
 #include <sys/syscall.h>
 
 #include <algorithm>
+#include <list>
+#include <map>
 #include <set>
 #include <string>
+#include <thread>
 #include <vector>
 
 #include <android-base/chrono_utils.h>
@@ -435,6 +438,96 @@ bool Modprobe::IsBlocklisted(const std::string& module_name) {
     }
 
     return module_blocklist_.count(canonical_name) > 0;
+}
+
+bool Modprobe::LoadModulesParallel(int num_threads) {
+    bool ret = true;
+    std::map<std::string, std::set<std::string>> mod_WithDeps;
+    std::map<std::string, std::set<std::string>> mod_WithSoftDeps;
+
+    // Get dependencies
+    for (const auto& module : module_load_) {
+        auto dependencies = GetDependencies(MakeCanonical(module));
+
+        for (auto dep = dependencies.rbegin(); dep != dependencies.rend(); dep++) {
+            mod_WithDeps[module].emplace(*dep);
+        }
+    }
+
+    // Get soft dependencies
+    for (auto [it_mod, it_softdep] : module_pre_softdep_) {
+        mod_WithSoftDeps[MakeCanonical(it_mod)].emplace(it_softdep);
+    }
+
+    // Get soft post dependencies
+    for (auto [it_mod, it_softdep] : module_post_softdep_) {
+        mod_WithSoftDeps[MakeCanonical(it_mod)].emplace(it_softdep);
+    }
+
+    while (!mod_WithDeps.empty()) {
+        std::vector<std::thread> threads;
+        std::vector<std::string> mods_path_to_load;
+        std::vector<std::string> mods_with_soft_dep_to_load;
+        std::mutex vector_lock;
+
+        // Find independent modules and modules only having soft dependencies
+        for (auto [it_mod, it_dep] : mod_WithDeps) {
+            if (it_dep.size() == 1 && mod_WithSoftDeps[it_mod].empty()) {
+                mods_path_to_load.emplace_back(*(it_dep.begin()));
+            } else if (it_dep.size() == 1) {
+                mods_with_soft_dep_to_load.emplace_back(it_mod);
+            }
+        }
+
+        // Load independent modules in parallel
+        auto thread_function = [&] {
+            std::unique_lock lk(vector_lock);
+            while (!mods_path_to_load.empty()) {
+                auto mod_path_to_load = std::move(mods_path_to_load.back());
+                mods_path_to_load.pop_back();
+
+                lk.unlock();
+                ret &= Insmod(mod_path_to_load, "");
+                lk.lock();
+            }
+        };
+
+        std::generate_n(std::back_inserter(threads), num_threads,
+                        [&] { return std::thread(thread_function); });
+
+        // Wait for the threads.
+        for (auto& thread : threads) {
+            thread.join();
+        }
+
+        // Since we cannot assure if these soft dependencies tree are overlap,
+        // we loaded these modules one by one.
+        while (!mods_with_soft_dep_to_load.empty()) {
+            auto mod_with_soft_dep_to_load = std::move(mods_with_soft_dep_to_load.back());
+            mods_with_soft_dep_to_load.pop_back();
+
+            ret &= LoadWithAliases(mod_with_soft_dep_to_load, true);
+        }
+
+        std::lock_guard guard(module_loaded_lock_);
+        // Remove loaded module form mod_WithDeps and soft dependencies of other modules
+        for (auto module_loaded : module_loaded_) {
+            mod_WithDeps.erase(module_loaded);
+
+            for (auto it = mod_WithSoftDeps.begin(); it != mod_WithSoftDeps.end(); it++) {
+                it->second.erase(module_loaded);
+            }
+        }
+
+        // Remove loaded module form dependencies of other modules which are not loaded yet
+        for (auto module_loaded_path : module_loaded_paths) {
+            for (auto it = mod_WithDeps.begin(); it != mod_WithDeps.end(); it++) {
+                it->second.erase(module_loaded_path);
+            }
+        }
+    }
+
+    return ret;
 }
 
 bool Modprobe::LoadListedModules(bool strict) {
