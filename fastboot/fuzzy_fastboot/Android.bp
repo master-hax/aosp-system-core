@@ -1,3 +1,10 @@
+package {
+    // A large-scale-change added 'default_applicable_licenses' to import
+    // the below license kinds from "system_core_license":
+    //   SPDX-license-identifier-BSD
+    default_applicable_licenses: ["system_core_license"],
+}
+
 cc_test_host {
   name: "fuzzy_fastboot",
   compile_multilib: "first",
