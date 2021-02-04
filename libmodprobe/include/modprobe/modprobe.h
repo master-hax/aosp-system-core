@@ -16,17 +16,22 @@
 
 #pragma once
 
+#include <optional>
 #include <set>
+#include <shared_mutex>
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
+
+#include <android-base/thread_annotations.h>
 
 class Modprobe {
   public:
     Modprobe(const std::vector<std::string>&, const std::string load_file = "modules.load",
              bool use_blocklist = true);
 
+    bool LoadModulesParallel(int num_threads);
     bool LoadListedModules(bool strict = true);
     bool LoadWithAliases(const std::string& module_name, bool strict,
                          const std::string& parameters = "");
@@ -37,6 +42,20 @@ class Modprobe {
                             std::vector<std::string>* post_dependencies);
     void ResetModuleCount() { module_count_ = 0; }
     int GetModuleCount() { return module_count_; }
+    Modprobe& operator=(const Modprobe& o) {
+        this->module_aliases_ = o.module_aliases_;
+        this->module_deps_ = o.module_deps_;
+        this->module_pre_softdep_ = o.module_pre_softdep_;
+        this->module_post_softdep_ = o.module_post_softdep_;
+        this->module_load_ = o.module_load_;
+        this->module_options_ = o.module_options_;
+        this->module_blocklist_ = o.module_blocklist_;
+        this->module_loaded_ = o.module_loaded_;
+        this->module_loaded_paths = o.module_loaded_paths;
+        this->module_count_ = o.module_count_;
+        this->blocklist_enabled = o.blocklist_enabled;
+        return *this;
+    }
 
   private:
     std::string MakeCanonical(const std::string& module_path);
@@ -66,7 +85,9 @@ class Modprobe {
     std::vector<std::string> module_load_;
     std::unordered_map<std::string, std::string> module_options_;
     std::set<std::string> module_blocklist_;
+    std::shared_timed_mutex module_loaded_lock_;
     std::unordered_set<std::string> module_loaded_;
+    std::unordered_set<std::string> module_loaded_paths;
     int module_count_ = 0;
     bool blocklist_enabled = false;
 };
