@@ -27,6 +27,13 @@ template<typename T> class wp;
 
 // ---------------------------------------------------------------------------
 
+// Reference-counted smart pointers. Use it when there is an ownership relation.
+// T needs to have RefBase or LightRefBase as a base class. Use LightRefBase with care, as it's
+// not used and tested well as RefBase.
+// The primary use of this class in Android is for Binder. Please see RefBase.h to learn more.
+//
+// Prefer using std::shared_ptr<T>/std::weak_ptr<T> if T doesn't have RefBase/LightRefBase as
+// an ancestor.
 template<typename T>
 class sp {
 public:
