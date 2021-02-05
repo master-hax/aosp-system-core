@@ -23,14 +23,22 @@
 // ---------------------------------------------------------------------------
 namespace android {
 
-template<typename T> class wp;
+template <typename T>
+class wp;
 
 // ---------------------------------------------------------------------------
 
-template<typename T>
+// Reference-counted smart pointers. Use it when there is an ownership relation.
+// T needs to have RefBase or LightRefBase as a base class. Use LightRefBase with care, as it's
+// not used and tested well as RefBase.
+// The primary use of this class in Android is for Binder. Please see RefBase.h to learn more.
+//
+// Prefer using std::shared_ptr<T>/std::weak_ptr<T> if T doesn't have RefBase/LightRefBase as
+// an ancestor.
+template <typename T>
 class sp {
-public:
-    inline sp() : m_ptr(nullptr) { }
+  public:
+    inline sp() : m_ptr(nullptr) {}
 
     // TODO: switch everyone to using this over new, and make RefBase operator
     // new private to that class so that we can avoid RefBase being used with
@@ -41,21 +49,27 @@ public:
     sp(T* other);  // NOLINT(implicit)
     sp(const sp<T>& other);
     sp(sp<T>&& other) noexcept;
-    template<typename U> sp(U* other);  // NOLINT(implicit)
-    template<typename U> sp(const sp<U>& other);  // NOLINT(implicit)
-    template<typename U> sp(sp<U>&& other);  // NOLINT(implicit)
+    template <typename U>
+    sp(U* other);  // NOLINT(implicit)
+    template <typename U>
+    sp(const sp<U>& other);  // NOLINT(implicit)
+    template <typename U>
+    sp(sp<U>&& other);  // NOLINT(implicit)
 
     ~sp();
 
     // Assignment
 
-    sp& operator = (T* other);
-    sp& operator = (const sp<T>& other);
+    sp& operator=(T* other);
+    sp& operator=(const sp<T>& other);
     sp& operator=(sp<T>&& other) noexcept;
 
-    template<typename U> sp& operator = (const sp<U>& other);
-    template<typename U> sp& operator = (sp<U>&& other);
-    template<typename U> sp& operator = (U* other);
+    template <typename U>
+    sp& operator=(const sp<U>& other);
+    template <typename U>
+    sp& operator=(sp<U>&& other);
+    template <typename U>
+    sp& operator=(U* other);
 
     //! Special optimization for use by ProcessState (and nobody else).
     void force_set(T* other);
@@ -66,25 +80,27 @@ public:
 
     // Accessors
 
-    inline T&       operator* () const     { return *m_ptr; }
-    inline T*       operator-> () const    { return m_ptr;  }
-    inline T*       get() const            { return m_ptr; }
-    inline explicit operator bool () const { return m_ptr != nullptr; }
+    inline T& operator*() const { return *m_ptr; }
+    inline T* operator->() const { return m_ptr; }
+    inline T* get() const { return m_ptr; }
+    inline explicit operator bool() const { return m_ptr != nullptr; }
 
     // Punt these to the wp<> implementation.
-    template<typename U>
-    inline bool operator == (const wp<U>& o) const {
+    template <typename U>
+    inline bool operator==(const wp<U>& o) const {
         return o == *this;
     }
 
-    template<typename U>
-    inline bool operator != (const wp<U>& o) const {
+    template <typename U>
+    inline bool operator!=(const wp<U>& o) const {
         return o != *this;
     }
 
-private:
-    template<typename Y> friend class sp;
-    template<typename Y> friend class wp;
+  private:
+    template <typename Y>
+    friend class sp;
+    template <typename Y>
+    friend class wp;
     void set_pointer(T* ptr);
     static inline void check_not_on_stack(const void* ptr);
     T* m_ptr;
@@ -189,20 +205,17 @@ sp<T> sp<T>::make(Args&&... args) {
     return result;
 }
 
-template<typename T>
-sp<T>::sp(T* other)
-        : m_ptr(other) {
+template <typename T>
+sp<T>::sp(T* other) : m_ptr(other) {
     if (other) {
         check_not_on_stack(other);
         other->incStrong(this);
     }
 }
 
-template<typename T>
-sp<T>::sp(const sp<T>& other)
-        : m_ptr(other.m_ptr) {
-    if (m_ptr)
-        m_ptr->incStrong(this);
+template <typename T>
+sp<T>::sp(const sp<T>& other) : m_ptr(other.m_ptr) {
+    if (m_ptr) m_ptr->incStrong(this);
 }
 
 template <typename T>
@@ -210,36 +223,34 @@ sp<T>::sp(sp<T>&& other) noexcept : m_ptr(other.m_ptr) {
     other.m_ptr = nullptr;
 }
 
-template<typename T> template<typename U>
-sp<T>::sp(U* other)
-        : m_ptr(other) {
+template <typename T>
+template <typename U>
+sp<T>::sp(U* other) : m_ptr(other) {
     if (other) {
         check_not_on_stack(other);
         (static_cast<T*>(other))->incStrong(this);
     }
 }
 
-template<typename T> template<typename U>
-sp<T>::sp(const sp<U>& other)
-        : m_ptr(other.m_ptr) {
-    if (m_ptr)
-        m_ptr->incStrong(this);
+template <typename T>
+template <typename U>
+sp<T>::sp(const sp<U>& other) : m_ptr(other.m_ptr) {
+    if (m_ptr) m_ptr->incStrong(this);
 }
 
-template<typename T> template<typename U>
-sp<T>::sp(sp<U>&& other)
-        : m_ptr(other.m_ptr) {
+template <typename T>
+template <typename U>
+sp<T>::sp(sp<U>&& other) : m_ptr(other.m_ptr) {
     other.m_ptr = nullptr;
 }
 
-template<typename T>
+template <typename T>
 sp<T>::~sp() {
-    if (m_ptr)
-        m_ptr->decStrong(this);
+    if (m_ptr) m_ptr->decStrong(this);
 }
 
-template<typename T>
-sp<T>& sp<T>::operator =(const sp<T>& other) {
+template <typename T>
+sp<T>& sp<T>::operator=(const sp<T>& other) {
     // Force m_ptr to be read twice, to heuristically check for data races.
     T* oldPtr(*const_cast<T* volatile*>(&m_ptr));
     T* otherPtr(other.m_ptr);
@@ -260,8 +271,8 @@ sp<T>& sp<T>::operator=(sp<T>&& other) noexcept {
     return *this;
 }
 
-template<typename T>
-sp<T>& sp<T>::operator =(T* other) {
+template <typename T>
+sp<T>& sp<T>::operator=(T* other) {
     T* oldPtr(*const_cast<T* volatile*>(&m_ptr));
     if (other) {
         check_not_on_stack(other);
@@ -273,8 +284,9 @@ sp<T>& sp<T>::operator =(T* other) {
     return *this;
 }
 
-template<typename T> template<typename U>
-sp<T>& sp<T>::operator =(const sp<U>& other) {
+template <typename T>
+template <typename U>
+sp<T>& sp<T>::operator=(const sp<U>& other) {
     T* oldPtr(*const_cast<T* volatile*>(&m_ptr));
     T* otherPtr(other.m_ptr);
     if (otherPtr) otherPtr->incStrong(this);
@@ -284,8 +296,9 @@ sp<T>& sp<T>::operator =(const sp<U>& other) {
     return *this;
 }
 
-template<typename T> template<typename U>
-sp<T>& sp<T>::operator =(sp<U>&& other) {
+template <typename T>
+template <typename U>
+sp<T>& sp<T>::operator=(sp<U>&& other) {
     T* oldPtr(*const_cast<T* volatile*>(&m_ptr));
     if (m_ptr) m_ptr->decStrong(this);
     if (oldPtr != *const_cast<T* volatile*>(&m_ptr)) sp_report_race();
@@ -294,8 +307,9 @@ sp<T>& sp<T>::operator =(sp<U>&& other) {
     return *this;
 }
 
-template<typename T> template<typename U>
-sp<T>& sp<T>::operator =(U* other) {
+template <typename T>
+template <typename U>
+sp<T>& sp<T>::operator=(U* other) {
     T* oldPtr(*const_cast<T* volatile*>(&m_ptr));
     if (other) (static_cast<T*>(other))->incStrong(this);
     if (oldPtr) oldPtr->decStrong(this);
@@ -304,13 +318,13 @@ sp<T>& sp<T>::operator =(U* other) {
     return *this;
 }
 
-template<typename T>
+template <typename T>
 void sp<T>::force_set(T* other) {
     other->forceIncStrong(this);
     m_ptr = other;
 }
 
-template<typename T>
+template <typename T>
 void sp<T>::clear() {
     T* oldPtr(*const_cast<T* volatile*>(&m_ptr));
     if (oldPtr) {
@@ -320,7 +334,7 @@ void sp<T>::clear() {
     }
 }
 
-template<typename T>
+template <typename T>
 void sp<T>::set_pointer(T* ptr) {
     m_ptr = ptr;
 }
@@ -329,4 +343,4 @@ void sp<T>::set_pointer(T* ptr) {
 
 // ---------------------------------------------------------------------------
 
-#endif // ANDROID_STRONG_POINTER_H
+#endif  // ANDROID_STRONG_POINTER_H
