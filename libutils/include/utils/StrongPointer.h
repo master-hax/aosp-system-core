@@ -27,6 +27,10 @@ template<typename T> class wp;
 
 // ---------------------------------------------------------------------------
 
+// Reference-counted smart pointers.
+//
+// T needs to have RefBase or LightRefBase as a base class. Use LightRefBase
+// when weak pointers (android::wp) are not needed.
 template<typename T>
 class sp {
 public:
