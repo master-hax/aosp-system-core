@@ -70,6 +70,11 @@ class Snapuserd final {
     const std::string& GetMiscName() { return misc_name_; }
     uint64_t GetNumSectors() { return num_sectors_; }
     bool IsAttached() const { return ctrl_fd_ >= 0; }
+    void CloseFds() {
+        ctrl_fd_.reset(-1);
+        cow_fd_.reset(-1);
+        backing_store_fd_.reset(-1);
+    }
 
   private:
     bool DmuserReadRequest();

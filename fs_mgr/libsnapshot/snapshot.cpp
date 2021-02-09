@@ -1292,9 +1292,20 @@ bool SnapshotManager::CollapseSnapshotDevice(const std::string& name,
     if (!dm.DeleteDeviceIfExists(base_name)) {
         LOG(ERROR) << "Unable to delete base device for snapshot: " << base_name;
     }
-    auto source_name = GetSourceDeviceName(name);
-    if (!dm.DeleteDeviceIfExists(source_name)) {
-        LOG(ERROR) << "Unable to delete source device for snapshot: " << source_name;
+
+    std::chrono::milliseconds timeout_ms = 3000ms;
+    auto start = std::chrono::steady_clock::now();
+    while (true) {
+        auto source_name = GetSourceDeviceName(name);
+        if (dm.DeleteDeviceIfExists(source_name)) {
+            break;
+        }
+        auto now = std::chrono::steady_clock::now();
+        auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(now - start);
+        if (elapsed >= timeout_ms) {
+            LOG(ERROR) << "Unable to delete source device for snapshot: " << source_name;
+        }
+        std::this_thread::sleep_for(200ms);
     }
     return true;
 }
@@ -2128,10 +2139,23 @@ bool SnapshotManager::UnmapCowDevices(LockedFile* lock, const std::string& name)
         return false;
     }
 
-    auto cow_name = GetCowName(name);
-    if (!dm.DeleteDeviceIfExists(cow_name)) {
-        LOG(ERROR) << "Cannot unmap " << cow_name;
-        return false;
+    std::chrono::milliseconds timeout_ms = 3000ms;
+    auto start = std::chrono::steady_clock::now();
+    while (true) {
+        // We don't have socket connection setup for snapuserd.
+        // Hence, wait until all the threads in the daemon are terminated
+        // before removing COW device.
+        auto cow_name = GetCowName(name);
+        if (dm.DeleteDeviceIfExists(cow_name)) {
+            break;
+        }
+        auto now = std::chrono::steady_clock::now();
+        auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(now - start);
+        if (elapsed >= timeout_ms) {
+            LOG(ERROR) << "Cannot unmap: " << cow_name;
+            return false;
+        }
+        std::this_thread::sleep_for(200ms);
     }
 
     std::string cow_image_name = GetCowImageDeviceName(name);
@@ -2155,14 +2179,7 @@ bool SnapshotManager::UnmapDmUserDevice(const std::string& snapshot_name) {
         return false;
     }
 
-    if (!EnsureSnapuserdConnected()) {
-        return false;
-    }
-    if (!snapuserd_client_->WaitForDeviceDelete(dm_user_name)) {
-        LOG(ERROR) << "Failed to wait for " << dm_user_name << " control device to delete";
-        return false;
-    }
-
+    dm_user_name += "-selinux";
     // Ensure the control device is gone so we don't run into ABA problems.
     auto control_device = "/dev/dm-user/" + dm_user_name;
     if (!android::fs_mgr::WaitForFileDeleted(control_device, 10s)) {
