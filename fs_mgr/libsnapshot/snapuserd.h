@@ -72,6 +72,11 @@ class Snapuserd final {
     bool IsAttached() const { return ctrl_fd_ >= 0; }
     size_t GetMetadataAreaSize() { return vec_.size(); }
     void* GetExceptionBuffer(size_t i) { return vec_[i].get(); }
+    void CloseFds() {
+        ctrl_fd_.reset(-1);
+        cow_fd_.reset(-1);
+        backing_store_fd_.reset(-1);
+    }
 
   private:
     bool DmuserReadRequest();
