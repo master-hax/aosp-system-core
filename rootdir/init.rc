@@ -658,6 +658,7 @@ on post-fs-data
     mkdir /data/apex/hashtree 0700 root system
     mkdir /data/apex/sessions 0700 root system
     mkdir /data/app-staging 0751 system system encryption=DeleteIfNecessary
+    mkdir /data/apex/reserved 0700 root system
     start apexd
 
     # Avoid predictable entropy pool. Carry over entropy from previous boot.
