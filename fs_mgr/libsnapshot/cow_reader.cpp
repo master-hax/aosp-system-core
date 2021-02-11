@@ -237,6 +237,7 @@ void CowReader::InitializeMerge() {
                                [](CowOperation& op) { return IsMetadataOp(op); }),
                 ops_.get()->end());
 
+    SetTotalDataops(ops_->size());
     // We will re-arrange the vector in such a way that
     // kernel can batch merge. Ex:
     //
