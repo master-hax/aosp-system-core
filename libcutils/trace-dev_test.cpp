@@ -292,3 +292,15 @@ TEST_F(TraceDevTest, atrace_int64_body_truncated) {
   expected += android::base::StringPrintf("%.*s|17179869183", expected_len, name.c_str());
   ASSERT_STREQ(expected.c_str(), actual.c_str());
 }
+
+TEST_F(TraceDevTest, atrace_globmatch) {
+  EXPECT_TRUE(atrace_globmatch("*", "com.android.foo"));
+  EXPECT_TRUE(atrace_globmatch("com.android.f*", "com.android.foo"));
+  EXPECT_TRUE(atrace_globmatch("com.android.foo*", "com.android.foo"));
+  EXPECT_TRUE(atrace_globmatch("com.android.bar", "com.android.bar"));
+
+  EXPECT_FALSE(atrace_globmatch("com.android.fooo*", "com.android.foo"));
+  EXPECT_FALSE(atrace_globmatch("com.android.f*", "com.android.bar"));
+  EXPECT_FALSE(atrace_globmatch("com.android.foo", "com.android.bar"));
+  EXPECT_FALSE(atrace_globmatch("com.android.barr", "com.android.bar"));
+}
