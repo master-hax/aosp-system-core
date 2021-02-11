@@ -104,6 +104,28 @@ void atrace_set_debuggable(bool debuggable)
     atrace_update_tags();
 }
 
+static bool atrace_globmatch(const char* pattern, const char* cmdline) {
+    size_t pattern_len = strlen(pattern);
+    if (pattern_len == 0) {
+        return false;
+    }
+    size_t cmdline_len = strlen(cmdline);
+    if (pattern[pattern_len - 1] == '*') {
+        // Do a prefix match, ignore the '*' but allow mismatched pattern and
+        // cmdline size.
+        pattern_len--;
+    } else if (pattern_len != cmdline_len) {
+        // Exact match, so the cmdline has to be the same size as the pattern.
+        return false;
+    }
+    if (pattern_len > cmdline_len) {
+        return false;
+    }
+    // If we are prefix matching, pattern_len <= cmdline_len. Otherwise,
+    // pattern_len == cmdline_len.
+    return strncmp(pattern, cmdline, pattern_len) == 0;
+}
+
 // Check whether the given command line matches one of the comma-separated
 // values listed in the app_cmdlines property.
 static bool atrace_is_cmdline_match(const char* cmdline)
@@ -116,7 +138,7 @@ static bool atrace_is_cmdline_match(const char* cmdline)
     for (int i = 0; i < count; i++) {
         snprintf(buf, sizeof(buf), "debug.atrace.app_%d", i);
         property_get(buf, value, "");
-        if (strcmp(value, "*") == 0 || strcmp(value, cmdline) == 0) {
+        if (atrace_globmatch(value, cmdline)) {
             return true;
         }
     }
