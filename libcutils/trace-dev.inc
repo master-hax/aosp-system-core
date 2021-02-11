@@ -51,7 +51,6 @@ constexpr uint32_t kSeqNoNotInit = static_cast<uint32_t>(-1);
 atomic_bool              atrace_is_ready      = ATOMIC_VAR_INIT(false);
 int                      atrace_marker_fd     = -1;
 uint64_t                 atrace_enabled_tags  = ATRACE_TAG_NOT_READY;
-static bool              atrace_is_debuggable = false;
 static atomic_bool       atrace_is_enabled    = ATOMIC_VAR_INIT(true);
 static pthread_mutex_t   atrace_tags_mutex    = PTHREAD_MUTEX_INITIALIZER;
 
@@ -95,12 +94,11 @@ uint64_t atrace_get_enabled_tags()
     return atrace_enabled_tags;
 }
 
-// Set whether this process is debuggable, which determines whether
-// application-level tracing is allowed when the ro.debuggable system property
-// is not set to '1'.
-void atrace_set_debuggable(bool debuggable)
+// Since S, We do no longer treat debuggable apps differently. Leaving this
+// here because it is an exported symbol. Updating the atrace tags because it
+// also did that before, so some caller might depend on that.
+void atrace_set_debuggable(bool)
 {
-    atrace_is_debuggable = debuggable;
     atrace_update_tags();
 }
 
@@ -127,24 +125,21 @@ static bool atrace_is_cmdline_match(const char* cmdline)
 // Determine whether application-level tracing is enabled for this process.
 static bool atrace_is_app_tracing_enabled()
 {
-    bool sys_debuggable = property_get_bool("ro.debuggable", 0);
     bool result = false;
 
-    if (sys_debuggable || atrace_is_debuggable) {
-        // Check whether tracing is enabled for this process.
-        FILE * file = fopen("/proc/self/cmdline", "re");
-        if (file) {
-            char cmdline[4096];
-            if (fgets(cmdline, sizeof(cmdline), file)) {
-                result = atrace_is_cmdline_match(cmdline);
-            } else {
-                ALOGE("Error reading cmdline: %s (%d)", strerror(errno), errno);
-            }
-            fclose(file);
+    // Check whether tracing is enabled for this process.
+    FILE * file = fopen("/proc/self/cmdline", "re");
+    if (file) {
+        char cmdline[4096];
+        if (fgets(cmdline, sizeof(cmdline), file)) {
+            result = atrace_is_cmdline_match(cmdline);
         } else {
-            ALOGE("Error opening /proc/self/cmdline: %s (%d)", strerror(errno),
-                    errno);
+            ALOGE("Error reading cmdline: %s (%d)", strerror(errno), errno);
         }
+        fclose(file);
+    } else {
+        ALOGE("Error opening /proc/self/cmdline: %s (%d)", strerror(errno),
+                errno);
     }
 
     return result;
