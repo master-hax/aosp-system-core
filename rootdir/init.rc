@@ -1104,6 +1104,17 @@ on property:sys.boot_completed=1
 on property:sys.sysctl.extra_free_kbytes=*
     write /proc/sys/vm/extra_free_kbytes ${sys.sysctl.extra_free_kbytes}
 
+# Users can drop caches through this service.
+service drop_caches /bin/true
+  disabled
+  seclabel u:r:drop_caches:s0
+  user root
+  group root
+  oneshot
+
+on property:init.svc.drop_caches=running
+  write /proc/sys/vm/drop_caches 3
+
 # "tcp_default_init_rwnd" Is too long!
 on property:net.tcp_def_init_rwnd=*
     write /proc/sys/net/ipv4/tcp_default_init_rwnd ${net.tcp_def_init_rwnd}
