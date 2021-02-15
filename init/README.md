@@ -493,6 +493,11 @@ Commands
   global environment (which will be inherited by all processes
   started after this command is executed)
 
+`export_from <path>`
+> Open the file at _path_ and export global environment variables declared
+  there. Each line must be in the format `export <name> <value>`, as described
+  above.
+
 `hostname <name>`
 > Set the host name.
 
