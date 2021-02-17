@@ -131,6 +131,13 @@ RetCode FastBootDriver::SnapshotUpdateCommand(const std::string& command, std::s
     return result;
 }
 
+RetCode FastBootDriver::Fetch(const std::string& partition, const std::string& outfile,
+                              std::string* response, std::vector<std::string>* info) {
+    // FIXME should split into chunks
+    std::string raw = FB_CMD_FETCH ":" + partition;
+    return UploadInner(raw, outfile, response, info);
+}
+
 RetCode FastBootDriver::FlashPartition(const std::string& partition,
                                        const std::vector<char>& data) {
     RetCode ret;
@@ -292,16 +299,17 @@ RetCode FastBootDriver::Download(sparse_file* s, bool use_crc, std::string* resp
 RetCode FastBootDriver::Upload(const std::string& outfile, std::string* response,
                                std::vector<std::string>* info) {
     prolog_("Uploading '" + outfile + "'");
-    auto result = UploadInner(outfile, response, info);
+    auto result = UploadInner(FB_CMD_UPLOAD, outfile, response, info);
     epilog_(result);
     return result;
 }
 
-RetCode FastBootDriver::UploadInner(const std::string& outfile, std::string* response,
-                                    std::vector<std::string>* info) {
+RetCode FastBootDriver::UploadInner(const std::string& cmd,
+        const std::string& outfile, std::string* response,
+        std::vector<std::string>* info) {
     RetCode ret;
     int dsize = 0;
-    if ((ret = RawCommand(FB_CMD_UPLOAD, response, info, &dsize))) {
+    if ((ret = RawCommand(cmd, response, info, &dsize))) {
         error_ = "Upload request failed: " + error_;
         return ret;
     }

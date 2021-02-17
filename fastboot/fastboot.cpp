@@ -414,6 +414,7 @@ static int show_help() {
             " snapshot-update merge      On devices that support snapshot-based updates, finish\n"
             "                            an in-progress update if it is in the \"merging\"\n"
             "                            phase.\n"
+            " fetch PARTITION            Fetch a partition image from the device."
             "\n"
             "boot image:\n"
             " boot KERNEL [RAMDISK [SECOND]]\n"
@@ -2167,6 +2168,10 @@ int FastBootTool::Main(int argc, char* argv[]) {
                 syntax_error("expected: snapshot-update [cancel|merge]");
             }
             fb->SnapshotUpdateCommand(arg);
+        } else if (command == FB_CMD_FETCH) {
+            std::string partition = next_arg(&args);
+            std::string outfile = next_arg(&args);
+            fb->Fetch(partition, outfile);
         } else {
             syntax_error("unknown command %s", command.c_str());
         }

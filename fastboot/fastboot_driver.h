@@ -107,6 +107,9 @@ class FastBootDriver {
     RetCode SnapshotUpdateCommand(const std::string& command, std::string* response = nullptr,
                                   std::vector<std::string>* info = nullptr);
 
+    RetCode Fetch(const std::string& partition, const std::string& outfile,
+                  std::string* response = nullptr, std::vector<std::string>* info = nullptr);
+
     /* HIGHER LEVEL COMMANDS -- Composed of the commands above */
     RetCode FlashPartition(const std::string& partition, const std::vector<char>& data);
     RetCode FlashPartition(const std::string& partition, int fd, uint32_t sz);
@@ -152,8 +155,8 @@ class FastBootDriver {
     RetCode ReadBuffer(std::vector<char>& buf);
     RetCode ReadBuffer(void* buf, size_t size);
 
-    RetCode UploadInner(const std::string& outfile, std::string* response = nullptr,
-                        std::vector<std::string>* info = nullptr);
+    RetCode UploadInner(const std::string& cmd, const std::string& outfile,
+                        std::string* response = nullptr, std::vector<std::string>* info = nullptr);
 
     int SparseWriteCallback(std::vector<char>& tpbuf, const char* data, size_t len);
 
