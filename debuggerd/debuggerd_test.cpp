@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include <dirent.h>
 #include <err.h>
 #include <fcntl.h>
 #include <malloc.h>
@@ -1445,8 +1446,16 @@ TEST(tombstoned, proto) {
 
   // Find the tombstone.
   std::optional<int> tombstone_index;
-  for (int i = 0; i < 50; ++i) {
-    std::string path = android::base::StringPrintf("/data/tombstones/tombstone_%02d", i);
+  DIR* dir_h = opendir("/data/tombstones");
+  ASSERT_TRUE(dir_h != nullptr);
+  dirent* entry;
+  while ((entry = readdir(dir_h)) != nullptr) {
+    if (strncmp("tombstone_", entry->d_name, 10) != 0 &&
+        !android::base::EndsWith(entry->d_name, ".pb")) {
+      continue;
+    }
+    std::string path("/data/tombstones/");
+    path += entry->d_name;
 
     struct stat st;
     if (TEMP_FAILURE_RETRY(stat(path.c_str(), &st)) != 0) {
@@ -1454,10 +1463,11 @@ TEST(tombstoned, proto) {
     }
 
     if (st.st_dev == text_st.st_dev && st.st_ino == text_st.st_ino) {
-      tombstone_index = i;
+      tombstone_index = atoi(&entry->d_name[10]);
       break;
     }
   }
+  closedir(dir_h);
 
   ASSERT_TRUE(tombstone_index);
   std::string proto_path =
