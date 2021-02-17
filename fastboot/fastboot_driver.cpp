@@ -30,6 +30,7 @@
 
 #include <errno.h>
 #include <fcntl.h>
+#include <inttypes.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -42,6 +43,7 @@
 
 #include <android-base/file.h>
 #include <android-base/mapped_file.h>
+#include <android-base/parseint.h>
 #include <android-base/stringprintf.h>
 #include <android-base/strings.h>
 #include <android-base/unique_fd.h>
@@ -354,6 +356,30 @@ RetCode FastBootDriver::UploadInner(const std::string& outfile, std::string* res
     };
     RetCode ret = RunAndReadBuffer(FB_CMD_UPLOAD, response, info, write_chunk);
     ofs.close();
+    return ret;
+}
+
+RetCode FastBootDriver::FetchToFd(const std::string& partition, android::base::borrowed_fd fd,
+                                  int64_t offset, int64_t size, std::string* response,
+                                  std::vector<std::string>* info) {
+    prolog_(android::base::StringPrintf("Fetching %s (offset=%" PRIx64 ", size=%" PRIx64 ")",
+                                        partition.c_str(), offset, size));
+    std::string raw = FB_CMD_FETCH ":" + partition;
+    if (offset >= 0) {
+        raw += android::base::StringPrintf(":0x%08" PRIx64, offset);
+        if (size >= 0) {
+            raw += android::base::StringPrintf(":0x%08" PRIx64, size);
+        }
+    }
+    RetCode ret = RunAndReadBuffer(raw, response, info, [&](const char* data, uint64_t size) {
+        if (!android::base::WriteFully(fd, data, size)) {
+            int saved_errno = errno;
+            error_ = android::base::StringPrintf("Cannot write: %s", strerror(saved_errno));
+            return IO_ERROR;
+        }
+        return SUCCESS;
+    });
+    epilog_(ret);
     return ret;
 }
 
