@@ -110,6 +110,12 @@ cc_binary {
 
     recovery: true,
 
+    product_variables: {
+        debuggable: {
+            cppflags: ["-DFB_ENABLE_FETCH"]
+        },
+    },
+
     srcs: [
         "device/commands.cpp",
         "device/fastboot_device.cpp",
@@ -155,6 +161,7 @@ cc_binary {
     header_libs: [
         "avb_headers",
         "libsnapshot_headers",
+        "libstorage_literals_headers",
     ]
 }
 
