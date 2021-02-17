@@ -509,3 +509,9 @@ bool GetTrebleEnabled(FastbootDevice* /* device */, const std::vector<std::strin
     *message = android::base::GetProperty("ro.treble.enabled", "");
     return true;
 }
+
+bool GetMaxFetchSize(FastbootDevice* /* device */, const std::vector<std::string>& /* args */,
+                     std::string* message) {
+    *message = android::base::StringPrintf("0x%X", kMaxFetchSizeDefault);
+    return true;
+}
