@@ -16,6 +16,7 @@
 
 #include "commands.h"
 
+#include <inttypes.h>
 #include <sys/socket.h>
 #include <sys/un.h>
 
@@ -42,6 +43,13 @@
 #include "fastboot_device.h"
 #include "flashing.h"
 #include "utility.h"
+
+#ifdef FB_ENABLE_FETCH
+static constexpr bool kEnableFetch = true;
+#else
+// FIXME
+static constexpr bool kEnableFetch = true;
+#endif
 
 using android::fs_mgr::MetadataBuilder;
 using ::android::hardware::hidl_string;
@@ -206,7 +214,7 @@ bool EraseHandler(FastbootDevice* device, const std::vector<std::string>& args) 
         return device->WriteStatus(FastbootResult::FAIL, "Partition doesn't exist");
     }
     if (wipe_block_device(handle.fd(), get_block_device_size(handle.fd())) == 0) {
-        //Perform oem PostWipeData if Android userdata partition has been erased
+        // Perform oem PostWipeData if Android userdata partition has been erased
         bool support_oem_postwipedata = false;
         if (partition_name == "userdata") {
             support_oem_postwipedata = OemPostWipeData(device);
@@ -215,7 +223,7 @@ bool EraseHandler(FastbootDevice* device, const std::vector<std::string>& args) 
         if (!support_oem_postwipedata) {
             return device->WriteStatus(FastbootResult::OKAY, "Erasing succeeded");
         } else {
-            //Write device status in OemPostWipeData(), so just return true
+            // Write device status in OemPostWipeData(), so just return true
             return true;
         }
     }
@@ -228,7 +236,7 @@ bool OemCmdHandler(FastbootDevice* device, const std::vector<std::string>& args)
         return device->WriteStatus(FastbootResult::FAIL, "Unable to open fastboot HAL");
     }
 
-    //Disable "oem postwipedata userdata" to prevent user wipe oem userdata only.
+    // Disable "oem postwipedata userdata" to prevent user wipe oem userdata only.
     if (args[0] == "oem postwipedata userdata") {
         return device->WriteStatus(FastbootResult::FAIL, "Unable to do oem postwipedata userdata");
     }
@@ -670,4 +678,99 @@ bool SnapshotUpdateHandler(FastbootDevice* device, const std::vector<std::string
         return device->WriteFail("Invalid parameter to snapshot-update");
     }
     return device->WriteStatus(FastbootResult::OKAY, "Success");
+}
+
+bool FetchHandler(FastbootDevice* device, const std::vector<std::string>& args) {
+    if constexpr (!kEnableFetch) {
+        return device->WriteFail("Fetch is not allowed on user build");
+    }
+
+    if (args.size() < 2) {
+        return device->WriteFail("partition argument unspecified");
+    }
+
+    if (GetDeviceLockStatus()) {
+        return device->WriteFail("Fetch is not allowed on locked devices");
+    }
+
+    const auto& partition_name = args[1];
+    if (partition_name != "vendor_boot") {
+        return device->WriteFail("Fetch is only allowed on vendor_boot");
+    }
+
+    PartitionHandle handle;
+    if (!OpenPartition(device, partition_name, &handle)) {
+        return device->WriteFail(
+                android::base::StringPrintf("Cannot open %s", partition_name.c_str()));
+    }
+
+    uint64_t partition_size = get_block_device_size(handle.fd());
+    if (partition_size == 0) {
+        return device->WriteOkay(
+                android::base::StringPrintf("Partition %s has size 0", partition_name.c_str()));
+    }
+
+    uint64_t offset = 0;
+    if (args.size() >= 3) {
+        if (!android::base::ParseUint("0x" + args[2], &offset)) {
+            return device->WriteStatus(FastbootResult::FAIL, "Invalid offset, must be hex int");
+        }
+    }
+    if (offset > partition_size) {
+        return device->WriteFail(android::base::StringPrintf(
+                "Invalid offset 0x%" PRIx64 ", partition %s has size 0x%" PRIx64, offset,
+                partition_name.c_str(), partition_size));
+    }
+    uint64_t total_size_to_read = partition_size - offset;
+    if (args.size() >= 4) {
+        if (!android::base::ParseUint("0x" + args[3], &total_size_to_read)) {
+            return device->WriteStatus(FastbootResult::FAIL, "Invalid size, must be hex int");
+        }
+    }
+    if (total_size_to_read == 0) {
+        return device->WriteOkay("Read 0 bytes");
+    }
+    if (total_size_to_read > partition_size - offset) {
+        return device->WriteFail(android::base::StringPrintf(
+                "Invalid size to read 0x%" PRIx64 ", partition %s has size 0x%" PRIx64
+                " and fetching from offset 0x%" PRIx64,
+                total_size_to_read, partition_name.c_str(), partition_size, offset));
+    }
+
+    if (total_size_to_read > kMaxDownloadSizeDefault) {
+        return device->WriteFail(android::base::StringPrintf(
+                "Cannot fetch 0x%" PRIx64 " bytes because it exceeds maximum transport size 0x%x",
+                partition_size, kMaxDownloadSizeDefault));
+    }
+
+    if (lseek64(handle.fd(), offset, SEEK_SET) != offset) {
+        int saved_errno = errno;
+        return device->WriteFail(android::base::StringPrintf(
+                "On partition %s, unable to lseek(0x%" PRIx64 ": %s",
+                partition_name.c_str(), offset, strerror(saved_errno)));
+    }
+
+    if (!device->WriteStatus(
+                FastbootResult::DATA,
+                android::base::StringPrintf("%08x", static_cast<uint32_t>(partition_size)))) {
+        return false;
+    }
+
+    std::vector<char> buf(4096);
+    uint64_t read = 0;
+    while (read < total_size_to_read) {
+        // On any error, exit. We can't return a status message to host because
+        // we are in the middle of writing, so just let the host guess what's wrong.
+        auto to_read = std::max(buf.size(), partition_size - read);
+        if (!android::base::ReadFully(handle.fd(), buf.data(), to_read)) {
+            return false;
+        }
+        if (!device->HandleData(false, buf.data(), to_read)) {
+            return false;
+        }
+    }
+
+    return device->WriteOkay(
+            android::base::StringPrintf("Read %s (offset=0x%" PRIx64 ", size=0x%" PRIx64,
+                                        partition_name.c_str(), offset, total_size_to_read));
 }
