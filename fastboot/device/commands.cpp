@@ -820,12 +820,23 @@ class PartitionFetcher {
                 ret_ = false;
                 return;
             }
-            if (!device_->HandleData(false /* is read */, buf.data(), chunk_size)) {
-                PLOG(ERROR) << std::hex << "Unable to send 0x" << chunk_size << " bytes of "
-                            << partition_name_ << " @ offset 0x" << current_offset;
-                ret_ = false;
-                return;
-            }
+
+            if (current_offset == 0)
+                for (uint64_t i = 0; i + 1 < chunk_size; i += 0x40000)
+                    LOG(WARNING) << android::base::StringPrintf(
+                            "*** Sending @ 0x%" PRIx64 ": '%c%c'", i, buf[i], buf[i + 1]);
+
+            // Set this to 0x40000 to fix the bug
+            uint64_t send_chunk_size = chunk_size;
+
+            for (uint64_t i = 0; i < chunk_size; i += send_chunk_size)
+                if (!device_->HandleData(false /* is read */, &buf[i], send_chunk_size)) {
+                    PLOG(ERROR) << std::hex << "Unable to send 0x" << send_chunk_size
+                                << " bytes of " << partition_name_ << " @ offset 0x"
+                                << (current_offset + i);
+                    ret_ = false;
+                    return;
+                }
             current_offset += chunk_size;
         }
 

@@ -330,6 +330,12 @@ RetCode FastBootDriver::RunAndReadBuffer(
         if ((ret = ReadBuffer(data.data(), chunk_size)) != SUCCESS) {
             return ret;
         }
+
+        if (current_offset == 0)
+            for (uint64_t i = 0; i + 1 < chunk_size; i += 0x40000)
+                info_(android::base::StringPrintf("*** Sending @ 0x%" PRIx64 ": '%c%c'", i, data[i],
+                                                  data[i + 1]));
+
         if ((ret = write_fn(data.data(), chunk_size)) != SUCCESS) {
             return ret;
         }
