@@ -35,7 +35,13 @@
 #include <string>
 #include <vector>
 
+#include <android-base/unique_fd.h>
+
 boot_img_hdr_v2* mkbootimg(const std::vector<char>& kernel, const std::vector<char>& ramdisk,
                            const std::vector<char>& second, const std::vector<char>& dtb,
                            size_t base, const boot_img_hdr_v2& src, std::vector<char>* out);
 void bootimg_set_cmdline(boot_img_hdr_v2* h, const std::string& cmdline);
+
+void replace_vendor_ramdisk(android::base::borrowed_fd vendor_boot_fd, uint64_t vendor_boot_size,
+                            const std::string& ramdisk_name,
+                            android::base::borrowed_fd new_ramdisk_fd, uint64_t new_ramdisk_size);
