@@ -56,6 +56,11 @@ using android::base::boot_clock;
 using android::base::StartsWith;
 using namespace std::literals::string_literals;
 
+namespace {
+// Check if default mount namespace is ready to be used with APEX modules
+static bool is_default_mount_namespace_ready = false;
+}  // namespace
+
 namespace android {
 namespace init {
 
@@ -733,6 +738,14 @@ void InitKernelLogging(char** argv) {
 
 bool IsRecoveryMode() {
     return access("/system/bin/recovery", F_OK) == 0;
+}
+
+bool IsDefaultMountNamespaceReady() {
+    return is_default_mount_namespace_ready;
+}
+
+void SetDefaultMountNamespaceReady(bool value) {
+    is_default_mount_namespace_ready = value;
 }
 
 }  // namespace init
