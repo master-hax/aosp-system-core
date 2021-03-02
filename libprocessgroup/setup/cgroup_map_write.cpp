@@ -15,6 +15,7 @@
  */
 
 //#define LOG_NDEBUG 0
+#include <limits>
 #define LOG_TAG "libprocessgroup"
 
 #include <dirent.h>
@@ -97,7 +98,8 @@ static bool ChangeDirModeAndOwner(const std::string& path, mode_t mode, const st
 
         std::string file_path = path + "/" + dir_entry->d_name;
 
-        if (pw_uid != -1 && lchown(file_path.c_str(), pw_uid, gr_gid) < 0) {
+        if (pw_uid != std::numeric_limits<uid_t>::max() &&
+            lchown(file_path.c_str(), pw_uid, gr_gid) < 0) {
             PLOG(ERROR) << "lchown() failed for " << file_path;
             return false;
         }

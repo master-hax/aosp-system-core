@@ -861,7 +861,7 @@ static bool mount_with_alternatives(const Fstab& fstab, int start_idx, int* end_
             if (!__mount(fstab[i].blk_device, fstab[i].mount_point, fstab[i])) {
                 *attempted_idx = i;
                 mounted = true;
-                if (i != start_idx) {
+                if (i != static_cast<uint64_t>(start_idx)) {
                     LERROR << __FUNCTION__ << "(): Mounted " << fstab[i].blk_device << " on "
                            << fstab[i].mount_point << " with fs_type=" << fstab[i].fs_type
                            << " instead of " << fstab[start_idx].fs_type;

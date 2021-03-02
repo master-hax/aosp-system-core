@@ -87,7 +87,7 @@ bool SnapuserdServer::Sendmsg(android::base::borrowed_fd fd, const std::string& 
         return false;
     }
 
-    if (ret < msg.size()) {
+    if (static_cast<size_t>(ret) < msg.size()) {
         LOG(ERROR) << "Partial send; expected " << msg.size() << " bytes, sent " << ret;
         return false;
     }

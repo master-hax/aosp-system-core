@@ -713,8 +713,8 @@ bool MetadataBuilder::GrowPartition(Partition* partition, uint64_t aligned_size,
         free_regions = Interval::Intersect(free_regions, free_region_hint);
 
     const uint64_t sectors_per_block = geometry_.logical_block_size / LP_SECTOR_SIZE;
-    CHECK_NE(sectors_per_block, 0);
-    CHECK(sectors_needed % sectors_per_block == 0);
+    CHECK_NE(sectors_per_block, 0U);
+    CHECK(sectors_needed % sectors_per_block == 0U);
 
     if (IsABDevice() && ShouldHalveSuper() && GetPartitionSlotSuffix(partition->name()) == "_b") {
         // Allocate "a" partitions top-down and "b" partitions bottom-up, to

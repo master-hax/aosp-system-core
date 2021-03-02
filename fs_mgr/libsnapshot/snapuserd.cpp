@@ -320,7 +320,7 @@ loff_t Snapuserd::GetMergeStartOffset(void* merged_buffer, void* unmerged_buffer
     loff_t offset = 0;
     *unmerged_exceptions = 0;
 
-    while (*unmerged_exceptions <= exceptions_per_area_) {
+    while (*unmerged_exceptions <= static_cast<int64_t>(exceptions_per_area_)) {
         struct disk_exception* merged_de =
                 reinterpret_cast<struct disk_exception*>((char*)merged_buffer + offset);
         struct disk_exception* cow_de =
@@ -339,7 +339,7 @@ loff_t Snapuserd::GetMergeStartOffset(void* merged_buffer, void* unmerged_buffer
         break;
     }
 
-    CHECK(!(*unmerged_exceptions == exceptions_per_area_));
+    CHECK(!(*unmerged_exceptions == static_cast<int64_t>(exceptions_per_area_)));
 
     SNAP_LOG(DEBUG) << "Unmerged_Exceptions: " << *unmerged_exceptions << " Offset: " << offset;
     return offset;
@@ -350,7 +350,8 @@ int Snapuserd::GetNumberOfMergedOps(void* merged_buffer, void* unmerged_buffer, 
     int merged_ops_cur_iter = 0;
 
     // Find the operations which are merged in this cycle.
-    while ((unmerged_exceptions + merged_ops_cur_iter) < exceptions_per_area_) {
+    while ((unmerged_exceptions + merged_ops_cur_iter) <
+           static_cast<int64_t>(exceptions_per_area_)) {
         struct disk_exception* merged_de =
                 reinterpret_cast<struct disk_exception*>((char*)merged_buffer + offset);
         struct disk_exception* cow_de =

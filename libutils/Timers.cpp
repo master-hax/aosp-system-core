@@ -28,7 +28,7 @@
 static constexpr size_t clock_id_max = 5;
 
 static void checkClockId(int clock) {
-    if (clock < 0 || clock >= clock_id_max) abort();
+    if (clock < 0 || static_cast<size_t>(clock) >= clock_id_max) abort();
 }
 
 #if defined(__linux__)

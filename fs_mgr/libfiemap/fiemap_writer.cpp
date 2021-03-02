@@ -398,7 +398,7 @@ static FiemapStatus WriteZeroes(int file_fd, const std::string& file_path, size_
     }
 
     int permille = -1;
-    while (offset < file_size) {
+    while (static_cast<uint64_t>(offset) < file_size) {
         if (!::android::base::WriteFully(file_fd, buffer.get(), blocksz)) {
             PLOG(ERROR) << "Failed to write" << blocksz << " bytes at offset" << offset
                         << " in file " << file_path;

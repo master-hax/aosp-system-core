@@ -206,12 +206,13 @@ static int merge_bb(struct backed_block_list* bbl, struct backed_block* a, struc
       break;
     case BACKED_BLOCK_FILE:
       /* Already make sure b->type is BACKED_BLOCK_FILE */
-      if (strcmp(a->file.filename, b->file.filename) || a->file.offset + a->len != b->file.offset) {
+      if (strcmp(a->file.filename, b->file.filename) ||
+          static_cast<int64_t>(a->file.offset + a->len) != b->file.offset) {
         return -EINVAL;
       }
       break;
     case BACKED_BLOCK_FD:
-      if (a->fd.fd != b->fd.fd || a->fd.offset + a->len != b->fd.offset) {
+      if (a->fd.fd != b->fd.fd || static_cast<int64_t>(a->fd.offset + a->len) != b->fd.offset) {
         return -EINVAL;
       }
       break;

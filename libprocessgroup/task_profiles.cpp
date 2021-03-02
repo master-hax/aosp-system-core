@@ -113,7 +113,7 @@ bool SetTimerSlackAction::ExecuteForTask(int tid) const {
     }
 
     // TODO: Remove when /proc/<tid>/timerslack_ns interface is backported.
-    if (tid == 0 || tid == GetThreadId()) {
+    if (tid == 0 || static_cast<std::size_t>(tid) == GetThreadId()) {
         if (prctl(PR_SET_TIMERSLACK, slack_) == -1) {
             PLOG(ERROR) << "set_timerslack_ns prctl failed";
         }

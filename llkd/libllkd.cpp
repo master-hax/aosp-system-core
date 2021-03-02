@@ -1062,7 +1062,7 @@ milliseconds llkCheck(bool checkRunning) {
                 procp->updated = true;
                 // pid/ppid/tid wrap?
                 if (((procp->update != prevUpdate) && (procp->update != llkUpdate)) ||
-                    (procp->ppid != ppid) || (procp->pid != pid)) {
+                    (procp->ppid != static_cast<int64_t>(ppid)) || (procp->pid != pid)) {
                     procp->reset();
                 } else if (procp->time != (utime + stime)) {  // secondary ABA.
                     // watching utime+stime granularity jiffy
@@ -1095,7 +1095,7 @@ milliseconds llkCheck(bool checkRunning) {
 #else
             if (!llkIsMonitorState(state)) continue;
 #endif
-            if ((tid == myTid) || llkSkipPid(tid)) {
+            if ((static_cast<int64_t>(tid) == myTid) || llkSkipPid(tid)) {
                 continue;
             }
             if (procp->isFrozen()) {

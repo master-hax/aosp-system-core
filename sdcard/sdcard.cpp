@@ -110,9 +110,9 @@ static bool sdcardfs_setup(const std::string& source_path, const std::string& de
     if (unshared_obb) new_opts_list.push_back("unshared_obb,");
     // Try several attempts, each time with one less option, to gracefully
     // handle older kernels that aren't updated yet.
-    for (int i = 0; i <= new_opts_list.size(); ++i) {
+    for (std::size_t i = 0; i <= new_opts_list.size(); ++i) {
         std::string new_opts;
-        for (int j = 0; j < new_opts_list.size() - i; ++j) {
+        for (std::size_t j = 0; j < new_opts_list.size() - i; ++j) {
             new_opts += new_opts_list[j];
         }
 

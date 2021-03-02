@@ -260,9 +260,9 @@ void Modprobe::ParseKernelCmdlineOptions(void) {
     bool in_option = false;
     bool in_value = false;
     bool in_quotes = false;
-    int start = 0;
+    std::size_t start = 0;
 
-    for (int i = 0; i < cmdline.size(); i++) {
+    for (std::size_t i = 0; i < cmdline.size(); i++) {
         if (cmdline[i] == '"') {
             in_quotes = !in_quotes;
         }
