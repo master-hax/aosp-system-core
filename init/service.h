@@ -207,7 +207,7 @@ class Service {
 
     std::vector<std::function<void(const siginfo_t& siginfo)>> reap_callbacks_;
 
-    bool pre_apexd_ = false;
+    bool default_mount_ns_ready_ = false;
 
     bool post_data_ = false;
 
