@@ -56,6 +56,10 @@ using android::base::boot_clock;
 using android::base::StartsWith;
 using namespace std::literals::string_literals;
 
+namespace {
+static bool pre_apexd = false;
+}
+
 namespace android {
 namespace init {
 
@@ -733,6 +737,14 @@ void InitKernelLogging(char** argv) {
 
 bool IsRecoveryMode() {
     return access("/system/bin/recovery", F_OK) == 0;
+}
+
+bool IsPreApexd() {
+    return pre_apexd;
+}
+
+void SetPreApexd(bool value) {
+    pre_apexd = value;
 }
 
 }  // namespace init

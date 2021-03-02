@@ -1278,6 +1278,8 @@ static Result<void> GenerateLinkerConfiguration() {
         return ErrnoError() << "failed to execute linkerconfig";
     }
 
+    SetPreApexd(false);
+
     LOG(INFO) << "linkerconfig generated " << linkerconfig_target
               << " with mounted APEX modules info";
 
@@ -1401,6 +1403,9 @@ static Result<void> do_enter_default_mount_ns(const BuiltinArguments& args) {
     }
     if (auto result = MountLinkerConfigForDefaultNamespace(); !result.ok()) {
         return result.error();
+    }
+    if (IsApexUpdatable()) {
+        SetPreApexd(true);
     }
     LOG(INFO) << "Switched to default mount namespace";
     return {};

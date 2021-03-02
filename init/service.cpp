@@ -125,11 +125,6 @@ static bool ExpandArgsAndExecv(const std::vector<std::string>& args, bool sigsto
     return execv(c_strings[0], c_strings.data()) == 0;
 }
 
-static bool AreRuntimeApexesReady() {
-    struct stat buf;
-    return stat("/apex/com.android.runtime/", &buf) == 0;
-}
-
 unsigned long Service::next_start_order_ = 1;
 bool Service::is_exec_service_running_ = false;
 
@@ -465,9 +460,9 @@ Result<void> Service::Start() {
         scon = *result;
     }
 
-    if (!AreRuntimeApexesReady() && !pre_apexd_) {
-        // If this service is started before the Runtime and ART APEXes get
-        // available, mark it as pre-apexd one. Note that this marking is
+    if (IsPreApexd() && name_ != "apexd") {
+        // If this service is started before APEXes and corresponding linker configuration
+        // get available, mark it as pre-apexd one. Note that this marking is
         // permanent. So for example, if the service is re-launched (e.g., due
         // to crash), it is still recognized as pre-apexd... for consistency.
         pre_apexd_ = true;
