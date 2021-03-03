@@ -32,10 +32,6 @@ using android::base::unique_fd;
 #define SNAP_LOG(level) LOG(level) << misc_name_ << ": "
 #define SNAP_PLOG(level) PLOG(level) << misc_name_ << ": "
 
-static constexpr size_t PAYLOAD_SIZE = (1UL << 20);
-
-static_assert(PAYLOAD_SIZE >= BLOCK_SZ);
-
 void BufferSink::Initialize(size_t size) {
     buffer_size_ = size;
     buffer_offset_ = 0;
@@ -80,7 +76,7 @@ Snapuserd::Snapuserd(const std::string& misc_name, const std::string& cow_device
 // request will always be 4k. After constructing
 // the header, zero out the remaining block.
 void Snapuserd::ConstructKernelCowHeader() {
-    void* buffer = bufsink_.GetPayloadBuffer(BLOCK_SZ);
+    void* buffer = GetBuffer(BLOCK_SZ);
     CHECK(buffer != nullptr);
 
     memset(buffer, 0, BLOCK_SZ);
@@ -97,8 +93,12 @@ void Snapuserd::ConstructKernelCowHeader() {
 // internal COW format and if the block is compressed,
 // it will be de-compressed.
 bool Snapuserd::ProcessReplaceOp(const CowOperation* cow_op) {
-    if (!reader_->ReadData(*cow_op, &bufsink_)) {
-        SNAP_LOG(ERROR) << "ProcessReplaceOp failed for block " << cow_op->new_block;
+    BufferSink* bufptr = bufsink_[Getid()].get();
+    CowReader* reader = reader_vec_[Getid()].get();
+
+    if (!reader->ReadData(*cow_op, bufptr)) {
+        SNAP_LOG(ERROR) << "ProcessReplaceOp failed for block " << cow_op->new_block
+                        << "Thread: " << Getid();
         return false;
     }
 
@@ -108,7 +108,7 @@ bool Snapuserd::ProcessReplaceOp(const CowOperation* cow_op) {
 // Start the copy operation. This will read the backing
 // block device which is represented by cow_op->source.
 bool Snapuserd::ProcessCopyOp(const CowOperation* cow_op) {
-    void* buffer = bufsink_.GetPayloadBuffer(BLOCK_SZ);
+    void* buffer = GetBuffer(BLOCK_SZ);
     CHECK(buffer != nullptr);
 
     // Issue a single 4K IO. However, this can be optimized
@@ -125,7 +125,7 @@ bool Snapuserd::ProcessCopyOp(const CowOperation* cow_op) {
 
 bool Snapuserd::ProcessZeroOp() {
     // Zero out the entire block
-    void* buffer = bufsink_.GetPayloadBuffer(BLOCK_SZ);
+    void* buffer = GetBuffer(BLOCK_SZ);
     CHECK(buffer != nullptr);
 
     memset(buffer, 0, BLOCK_SZ);
@@ -171,14 +171,14 @@ int Snapuserd::ReadUnalignedSector(sector_t sector, size_t size,
 
     if (num_sectors_skip > 0) {
         skip_sector_size = num_sectors_skip << SECTOR_SHIFT;
-        char* buffer = reinterpret_cast<char*>(bufsink_.GetBufPtr());
+        char* buffer = reinterpret_cast<char*>(GetBufPtr());
         struct dm_user_message* msg = (struct dm_user_message*)(&(buffer[0]));
 
         memmove(msg->payload.buf, (char*)msg->payload.buf + skip_sector_size,
                 (BLOCK_SZ - skip_sector_size));
     }
 
-    bufsink_.ResetBufferOffset();
+    ResetBufferOffset();
     return std::min(size, (BLOCK_SZ - skip_sector_size));
 }
 
@@ -244,13 +244,13 @@ int Snapuserd::ReadData(sector_t sector, size_t size) {
         num_ops -= 1;
         it++;
         // Update the buffer offset
-        bufsink_.UpdateBufferOffset(BLOCK_SZ);
+        UpdateBufferOffset(BLOCK_SZ);
 
         SNAP_LOG(DEBUG) << "ReadData at sector: " << sector << " size: " << size;
     }
 
     // Reset the buffer offset
-    bufsink_.ResetBufferOffset();
+    ResetBufferOffset();
     return size;
 }
 
@@ -272,7 +272,7 @@ bool Snapuserd::ZerofillDiskExceptions(size_t read_size) {
         return false;
     }
 
-    void* buffer = bufsink_.GetPayloadBuffer(size);
+    void* buffer = GetBuffer(size);
     CHECK(buffer != nullptr);
 
     memset(buffer, 0, size);
@@ -304,7 +304,7 @@ bool Snapuserd::ReadDiskExceptions(chunk_t chunk, size_t read_size) {
 
         CHECK(read_size == size);
 
-        void* buffer = bufsink_.GetPayloadBuffer(size);
+        void* buffer = GetBuffer(size);
         CHECK(buffer != nullptr);
 
         memcpy(buffer, vec_[divresult.quot].get(), size);
@@ -417,10 +417,13 @@ bool Snapuserd::ProcessMergeComplete(chunk_t chunk, void* buffer) {
     CHECK(merged_ops_cur_iter > 0);
 
     header.num_merge_ops += merged_ops_cur_iter;
-    reader_->UpdateMergeProgress(merged_ops_cur_iter);
-    if (!writer_->CommitMerge(merged_ops_cur_iter)) {
-        SNAP_LOG(ERROR) << "CommitMerge failed... merged_ops_cur_iter: " << merged_ops_cur_iter;
-        return false;
+    {
+        std::lock_guard<std::mutex> lock(lock_);
+        reader_->UpdateMergeProgress(merged_ops_cur_iter);
+        if (!writer_->CommitMerge(merged_ops_cur_iter)) {
+            SNAP_LOG(ERROR) << "CommitMerge failed... merged_ops_cur_iter: " << merged_ops_cur_iter;
+            return false;
+        }
     }
 
     SNAP_LOG(DEBUG) << "Merge success: " << merged_ops_cur_iter << "chunk: " << chunk;
@@ -853,8 +856,11 @@ void MyLogger(android::base::LogId, android::base::LogSeverity severity, const c
 // Read Header from dm-user misc device. This gives
 // us the sector number for which IO is issued by dm-snapshot device
 bool Snapuserd::ReadDmUserHeader() {
-    if (!android::base::ReadFully(ctrl_fd_, bufsink_.GetBufPtr(), sizeof(struct dm_user_header))) {
-        SNAP_PLOG(ERROR) << "Control-read failed";
+    unique_fd* fd = ctrl_fd_vec_[Getid()].get();
+    if (!android::base::ReadFully(*fd, GetBufPtr(), sizeof(struct dm_user_header))) {
+        if (errno != ENOTBLK) {
+            SNAP_PLOG(ERROR) << "Control-read failed";
+        }
         return false;
     }
 
@@ -863,8 +869,8 @@ bool Snapuserd::ReadDmUserHeader() {
 
 // Send the payload/data back to dm-user misc device.
 bool Snapuserd::WriteDmUserPayload(size_t size) {
-    if (!android::base::WriteFully(ctrl_fd_, bufsink_.GetBufPtr(),
-                                   sizeof(struct dm_user_header) + size)) {
+    unique_fd* fd = ctrl_fd_vec_[Getid()].get();
+    if (!android::base::WriteFully(*fd, GetBufPtr(), sizeof(struct dm_user_header) + size)) {
         SNAP_PLOG(ERROR) << "Write to dm-user failed size: " << size;
         return false;
     }
@@ -873,7 +879,8 @@ bool Snapuserd::WriteDmUserPayload(size_t size) {
 }
 
 bool Snapuserd::ReadDmUserPayload(void* buffer, size_t size) {
-    if (!android::base::ReadFully(ctrl_fd_, buffer, size)) {
+    unique_fd* fd = ctrl_fd_vec_[Getid()].get();
+    if (!android::base::ReadFully(*fd, buffer, size)) {
         SNAP_PLOG(ERROR) << "ReadDmUserPayload failed size: " << size;
         return false;
     }
@@ -888,13 +895,6 @@ bool Snapuserd::InitCowDevice() {
         return false;
     }
 
-    // Allocate the buffer which is used to communicate between
-    // daemon and dm-user. The buffer comprises of header and a fixed payload.
-    // If the dm-user requests a big IO, the IO will be broken into chunks
-    // of PAYLOAD_SIZE.
-    size_t buf_size = sizeof(struct dm_user_header) + PAYLOAD_SIZE;
-    bufsink_.Initialize(buf_size);
-
     return ReadMetadata();
 }
 
@@ -904,18 +904,12 @@ bool Snapuserd::InitBackingAndControlDevice() {
         SNAP_PLOG(ERROR) << "Open Failed: " << backing_store_device_;
         return false;
     }
-
-    ctrl_fd_.reset(open(control_device_.c_str(), O_RDWR));
-    if (ctrl_fd_ < 0) {
-        SNAP_PLOG(ERROR) << "Unable to open " << control_device_;
-        return false;
-    }
-
+    attached_ = true;
     return true;
 }
 
 bool Snapuserd::DmuserWriteRequest() {
-    struct dm_user_header* header = bufsink_.GetHeaderPtr();
+    struct dm_user_header* header = GetHeaderPtr();
 
     // device mapper has the capability to allow
     // targets to flush the cache when writes are completed. This
@@ -942,13 +936,13 @@ bool Snapuserd::DmuserWriteRequest() {
 
     size_t remaining_size = header->len;
     size_t read_size = std::min(PAYLOAD_SIZE, remaining_size);
-    CHECK(read_size == BLOCK_SZ);
+    CHECK(read_size == BLOCK_SZ) << "DmuserWriteRequest: read_size: " << read_size;
 
     CHECK(header->sector > 0);
     chunk_t chunk = SectorToChunk(header->sector);
     CHECK(chunk_map_.find(header->sector) == chunk_map_.end());
 
-    void* buffer = bufsink_.GetPayloadBuffer(read_size);
+    void* buffer = GetBuffer(read_size);
     CHECK(buffer != nullptr);
     header->type = DM_USER_RESP_SUCCESS;
 
@@ -975,7 +969,7 @@ bool Snapuserd::DmuserWriteRequest() {
 }
 
 bool Snapuserd::DmuserReadRequest() {
-    struct dm_user_header* header = bufsink_.GetHeaderPtr();
+    struct dm_user_header* header = GetHeaderPtr();
     size_t remaining_size = header->len;
     loff_t offset = 0;
     sector_t sector = header->sector;
@@ -993,7 +987,7 @@ bool Snapuserd::DmuserReadRequest() {
         // will always be a single 4k.
         if (header->sector == 0) {
             CHECK(metadata_read_done_ == true);
-            CHECK(read_size == BLOCK_SZ);
+            CHECK(read_size == BLOCK_SZ) << " Sector 0 read request of size: " << read_size;
             ConstructKernelCowHeader();
             SNAP_LOG(DEBUG) << "Kernel header constructed";
         } else {
@@ -1035,13 +1029,118 @@ bool Snapuserd::DmuserReadRequest() {
     return true;
 }
 
-bool Snapuserd::Run() {
-    struct dm_user_header* header = bufsink_.GetHeaderPtr();
+bool Snapuserd::Start() {
+    futureObj_ = startSignal_.get_future();
 
-    bufsink_.Clear();
+    bufsink_.reserve(num_threads_per_partition);
+    reader_vec_.reserve(num_threads_per_partition);
+    ctrl_fd_vec_.reserve(num_threads_per_partition);
+
+    std::vector<std::future<bool>> threads;
+    for (size_t i = 0; i < num_threads_per_partition; i++) {
+        threads.emplace_back(std::async(std::launch::async, &Snapuserd::RunThread, this, i));
+    }
+
+    while (true) {
+        {
+            std::lock_guard<std::mutex> lock(lock_);
+            if (thread_bits_.count() == num_threads_per_partition) {
+                break;
+            }
+        }
+        std::this_thread::sleep_for(100ms);
+    }
+
+    // All threads are launched
+    startSignal_.set_value();
+    bool ret = true;
+    for (auto& t : threads) {
+        ret = t.get() && ret;
+    }
+
+    ctrl_fd_vec_.clear();
+    reader_vec_.clear();
+    bufsink_.clear();
+
+    return ret;
+}
+
+bool Snapuserd::RunThread(size_t id) {
+    AddThreadId(std::this_thread::get_id(), id);
+
+    /*
+     * We wait for all threads to be launched and ID's inserted to
+     * the map. This is because, we want to avoid using shared locks
+     * in Getid() as the map is accessed in IO path. Getid() is
+     * lockless as the map is not modified in the IO path. Without,
+     * this wait, we will have to use shared lock which will be redundant in
+     * IO path and impacting 4k IO performance.
+     * Hence, wait until all the insertion to the maps are completed.
+     */
+    if (!AllThreadsStarted(5s)) {
+        SNAP_LOG(ERROR) << "Failed to start all the worker threads";
+        return false;
+    }
+
+    /*
+     * Create separate channel for each thread so that there
+     * is no lock contention in dm-user per channel
+     */
+    if (!InitializeControlDevice()) {
+        SNAP_PLOG(ERROR) << "Unable to open " << control_device_;
+        return false;
+    }
+
+    InitializeBufsink();
+
+    /*
+     * Each thread gets a copy of reader instance as the access
+     * to the COW fd will be independent
+     */
+    if (!InitializeReader()) {
+        SNAP_LOG(ERROR) << "Failed to InitWorkerThreadsForMerge: " << Getid();
+        return false;
+    }
+
+    // Start serving IO
+    while (true) {
+        if (!ProcessIORequest()) {
+            break;
+        }
+    }
+
+    // Explicitly close the FD's instead of waiting for the destructors;
+    // We don't have snapuserd client handle during selinux transition.
+    // Hence, when snapshot devices have to be destroyed, there is
+    // no way to know if the threads have been terminated. Without
+    // closing these FD's, snapshot devices cannot be destroyed.
+    CloseCowFd();
+    CloseControlDevice();
+
+    return true;
+}
+
+bool Snapuserd::AllThreadsStarted(std::chrono::milliseconds timeout_ms) {
+    auto start = std::chrono::steady_clock::now();
+    while (true) {
+        if (ThreadsStarted()) {
+            return true;
+        }
+
+        auto now = std::chrono::steady_clock::now();
+        auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(now - start);
+        if (elapsed >= timeout_ms) {
+            SNAP_LOG(ERROR) << "Timeout: Threads not started";
+            return false;
+        }
+        std::this_thread::sleep_for(100ms);
+    }
+}
+
+bool Snapuserd::ProcessIORequest() {
+    struct dm_user_header* header = GetHeaderPtr();
 
     if (!ReadDmUserHeader()) {
-        SNAP_LOG(ERROR) << "ReadDmUserHeader failed";
         return false;
     }
 
@@ -1068,6 +1167,76 @@ bool Snapuserd::Run() {
     }
 
     return true;
+}
+
+int Snapuserd::Getid() {
+    std::thread::id id = std::this_thread::get_id();
+    // No lock is required as there are no insertion/deletion
+    // operations at this point.
+    auto iter = thread_ids_.find(id);
+    if (iter == thread_ids_.end()) {
+        SNAP_LOG(FATAL) << " Thread-ID not found: " << id;
+    }
+    return iter->second;
+}
+
+void Snapuserd::AddThreadId(std::thread::id threadID, std::size_t id) {
+    {
+        std::lock_guard<std::mutex> lock(lock_);
+
+        std::pair<std::unordered_map<std::thread::id, std::size_t>::iterator, bool> ret;
+        ret = thread_ids_.insert(std::pair<std::thread::id, std::size_t>(threadID, id));
+        if (ret.second == false) {
+            SNAP_LOG(FATAL) << " threadID: " << threadID
+                            << " existed with id: " << ret.first->second;
+        }
+
+        thread_bits_[id] = 1;
+    }
+}
+
+bool Snapuserd::InitializeControlDevice() {
+    std::unique_ptr<unique_fd> ctrl_fd = std::make_unique<unique_fd>();
+    ctrl_fd->reset(open(control_device_.c_str(), O_RDWR));
+    if (ctrl_fd < 0) {
+        return false;
+    }
+    ctrl_fd_vec_[Getid()] = std::move(ctrl_fd);
+    return true;
+}
+
+void Snapuserd::CloseControlDevice() {
+    unique_fd* fd = ctrl_fd_vec_[Getid()].get();
+    *fd = {};
+}
+
+bool Snapuserd::InitializeReader() {
+    unique_fd fd(open(cow_device_.c_str(), O_RDWR));
+    if (fd < 0) {
+        return false;
+    }
+    std::unique_ptr<CowReader> reader = std::make_unique<CowReader>();
+    if (!reader->InitWorkerThreadsForMerge(std::move(fd))) {
+        return false;
+    }
+
+    reader_vec_[Getid()] = std::move(reader);
+    return true;
+}
+
+void Snapuserd::CloseCowFd() {
+    CowReader* reader = reader_vec_[Getid()].get();
+    reader->CloseCowFd();
+}
+
+void Snapuserd::InitializeBufsink() {
+    // Allocate the buffer which is used to communicate between
+    // daemon and dm-user. The buffer comprises of header and a fixed payload.
+    // If the dm-user requests a big IO, the IO will be broken into chunks
+    // of PAYLOAD_SIZE.
+    std::unique_ptr<BufferSink> buffer = std::make_unique<BufferSink>();
+    buffer->Initialize(sizeof(struct dm_user_header) + PAYLOAD_SIZE);
+    bufsink_[Getid()] = std::move(buffer);
 }
 
 }  // namespace snapshot

@@ -1262,7 +1262,7 @@ static bool DeleteDmDevice(const std::string& name, const std::chrono::milliseco
             LOG(ERROR) << "DeleteDevice timeout: " << name;
             return false;
         }
-        std::this_thread::sleep_for(250ms);
+        std::this_thread::sleep_for(400ms);
     }
 
     return true;
@@ -1327,7 +1327,7 @@ bool SnapshotManager::CollapseSnapshotDevice(const std::string& name,
         LOG(ERROR) << "Unable to delete base device for snapshot: " << base_name;
     }
 
-    if (!DeleteDmDevice(GetSourceDeviceName(name), 4000ms)) {
+    if (!DeleteDmDevice(GetSourceDeviceName(name), 6000ms)) {
         LOG(ERROR) << "Unable to delete source device for snapshot: " << GetSourceDeviceName(name);
     }
 
@@ -2160,7 +2160,7 @@ bool SnapshotManager::UnmapCowDevices(LockedFile* lock, const std::string& name)
         return false;
     }
 
-    if (!DeleteDmDevice(GetCowName(name), 4000ms)) {
+    if (!DeleteDmDevice(GetCowName(name), 6000ms)) {
         LOG(ERROR) << "Cannot unmap: " << GetCowName(name);
         return false;
     }
