@@ -18,13 +18,17 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+#include <bitset>
 #include <csignal>
 #include <cstring>
+#include <future>
 #include <iostream>
 #include <limits>
 #include <map>
+#include <mutex>
 #include <string>
 #include <thread>
+#include <unordered_map>
 #include <vector>
 
 #include <android-base/file.h>
@@ -40,6 +44,17 @@ namespace android {
 namespace snapshot {
 
 using android::base::unique_fd;
+using namespace std::chrono_literals;
+
+static constexpr size_t PAYLOAD_SIZE = (1UL << 20);
+static_assert(PAYLOAD_SIZE >= BLOCK_SZ);
+
+/*
+ * With 4 threads, we get optimal performance
+ * when update_verifier reads the partition during
+ * boot.
+ */
+static constexpr int num_threads_per_partition = 4;
 
 class BufferSink : public IByteSink {
   public:
@@ -65,14 +80,13 @@ class Snapuserd final {
               const std::string& backing_device);
     bool InitBackingAndControlDevice();
     bool InitCowDevice();
-    bool Run();
+    bool Start();
     const std::string& GetControlDevicePath() { return control_device_; }
     const std::string& GetMiscName() { return misc_name_; }
     uint64_t GetNumSectors() { return num_sectors_; }
-    bool IsAttached() const { return ctrl_fd_ >= 0; }
+    bool IsAttached() const { return attached_; }
     void CheckMergeCompletionStatus();
     void CloseFds() {
-        ctrl_fd_ = {};
         cow_fd_ = {};
         backing_store_fd_ = {};
     }
@@ -80,13 +94,16 @@ class Snapuserd final {
     void* GetExceptionBuffer(size_t i) { return vec_[i].get(); }
 
   private:
+    // Functions interacting with dm-user
+    bool ProcessIORequest();
     bool DmuserReadRequest();
     bool DmuserWriteRequest();
-
     bool ReadDmUserHeader();
     bool ReadDmUserPayload(void* buffer, size_t size);
     bool WriteDmUserPayload(size_t size);
     void ConstructKernelCowHeader();
+
+    // Kernel specific functions in IO path
     bool ReadMetadata();
     bool ZerofillDiskExceptions(size_t read_size);
     bool ReadDiskExceptions(chunk_t chunk, size_t size);
@@ -96,11 +113,13 @@ class Snapuserd final {
     bool IsChunkIdMetadata(chunk_t chunk);
     chunk_t GetNextAllocatableChunkId(chunk_t chunk_id);
 
+    // Processing COW operations
     bool ProcessCowOp(const CowOperation* cow_op);
     bool ProcessReplaceOp(const CowOperation* cow_op);
     bool ProcessCopyOp(const CowOperation* cow_op);
     bool ProcessZeroOp();
 
+    // Merge related operations
     loff_t GetMergeStartOffset(void* merged_buffer, void* unmerged_buffer,
                                int* unmerged_exceptions);
     int GetNumberOfMergedOps(void* merged_buffer, void* unmerged_buffer, loff_t offset,
@@ -110,6 +129,49 @@ class Snapuserd final {
     chunk_t SectorToChunk(sector_t sector) { return sector >> CHUNK_SHIFT; }
     bool IsBlockAligned(int read_size) { return ((read_size & (BLOCK_SZ - 1)) == 0); }
 
+    // Functions specific to worker threads
+    bool AllThreadsStarted(std::chrono::milliseconds timeout_ms);
+    bool ThreadsStarted() {
+        if (futureObj_.wait_for(std::chrono::milliseconds(0)) == std::future_status::timeout) {
+            return false;
+        }
+        return true;
+    }
+    bool RunThread(size_t id);
+    void AddThreadId(std::thread::id threadID, std::size_t id);
+    int Getid();
+    bool InitializeControlDevice();
+    void CloseControlDevice();
+    bool InitializeReader();
+    void CloseCowFd();
+    void InitializeBufsink();
+
+    // Wrapper functions for per thread specific buffers
+    void* GetBuffer(size_t size) {
+        BufferSink* bufptr = bufsink_[Getid()].get();
+        return bufptr->GetPayloadBuffer(size);
+    }
+    struct dm_user_header* GetHeaderPtr() {
+        BufferSink* bufptr = bufsink_[Getid()].get();
+        return bufptr->GetHeaderPtr();
+    }
+    void* GetBufPtr() {
+        BufferSink* bufptr = bufsink_[Getid()].get();
+        return bufptr->GetBufPtr();
+    }
+    void ResetBufferOffset() {
+        BufferSink* bufptr = bufsink_[Getid()].get();
+        bufptr->ResetBufferOffset();
+    }
+    void UpdateBufferOffset(size_t size) {
+        BufferSink* bufptr = bufsink_[Getid()].get();
+        bufptr->UpdateBufferOffset(size);
+    }
+    void ClearBuffer() {
+        BufferSink* bufptr = bufsink_[Getid()].get();
+        bufptr->Clear();
+    }
+
     std::string cow_device_;
     std::string backing_store_device_;
     std::string control_device_;
@@ -117,7 +179,6 @@ class Snapuserd final {
 
     unique_fd cow_fd_;
     unique_fd backing_store_fd_;
-    unique_fd ctrl_fd_;
 
     uint32_t exceptions_per_area_;
     uint64_t num_sectors_;
@@ -141,9 +202,21 @@ class Snapuserd final {
     // in the chunk_map to find the nearest COW op.
     std::map<sector_t, const CowOperation*> chunk_map_;
 
+    std::vector<std::unique_ptr<BufferSink>> bufsink_;
+    std::vector<std::unique_ptr<CowReader>> reader_vec_;
+    std::vector<std::unique_ptr<unique_fd>> ctrl_fd_vec_;
+
+    std::unordered_map<std::thread::id, std::size_t> thread_ids_;
+    std::promise<void> startSignal_;
+    std::future<void> futureObj_;
+
+    std::bitset<num_threads_per_partition> thread_bits_;
+
+    std::mutex lock_;
+
     bool metadata_read_done_ = false;
     bool merge_initiated_ = false;
-    BufferSink bufsink_;
+    bool attached_ = false;
 };
 
 }  // namespace snapshot

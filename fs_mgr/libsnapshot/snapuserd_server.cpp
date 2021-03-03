@@ -204,10 +204,8 @@ bool SnapuserdServer::Receivemsg(android::base::borrowed_fd fd, const std::strin
 void SnapuserdServer::RunThread(std::shared_ptr<DmUserHandler> handler) {
     LOG(INFO) << "Entering thread for handler: " << handler->misc_name();
 
-    while (!StopRequested()) {
-        if (!handler->snapuserd()->Run()) {
-            break;
-        }
+    if (!handler->snapuserd()->Start()) {
+        LOG(ERROR) << " Failed to launch all worker threads";
     }
 
     handler->snapuserd()->CloseFds();
