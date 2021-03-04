@@ -299,7 +299,8 @@ void ParseFsMgrFlags(const std::string& flags, FstabEntry* entry) {
 std::string InitAndroidDtDir() {
     std::string android_dt_dir;
     // The platform may specify a custom Android DT path in kernel cmdline
-    if (!fs_mgr_get_boot_config_from_kernel_cmdline("android_dt_dir", &android_dt_dir)) {
+    if (!fs_mgr_get_boot_config_from_bootconfig_source("android_dt_dir", &android_dt_dir) &&
+        !fs_mgr_get_boot_config_from_kernel_cmdline("android_dt_dir", &android_dt_dir)) {
         // Fall back to the standard procfs-based path
         android_dt_dir = kDefaultAndroidDtDir;
     }
@@ -842,27 +843,19 @@ std::vector<FstabEntry*> GetEntriesForMountPoint(Fstab* fstab, const std::string
 }
 
 std::set<std::string> GetBootDevices() {
-    // First check the kernel commandline, then try the device tree otherwise
+    // First check bootconfig, then kernel commandline, then the device tree
     std::string dt_file_name = get_android_dt_dir() + "/boot_devices";
     std::string value;
-    if (fs_mgr_get_boot_config_from_kernel_cmdline("boot_devices", &value) ||
+    if (fs_mgr_get_boot_config_from_bootconfig_source("boot_devices", &value) ||
+        fs_mgr_get_boot_config_from_kernel_cmdline("boot_devices", &value) ||
         ReadDtFile(dt_file_name, &value)) {
         auto boot_devices = Split(value, ",");
         return std::set<std::string>(boot_devices.begin(), boot_devices.end());
     }
 
-    std::string cmdline;
-    if (android::base::ReadFileToString("/proc/cmdline", &cmdline)) {
-        std::set<std::string> boot_devices;
-        const std::string cmdline_key = "androidboot.boot_device";
-        for (const auto& [key, value] : fs_mgr_parse_cmdline(cmdline)) {
-            if (key == cmdline_key) {
-                boot_devices.emplace(value);
-            }
-        }
-        if (!boot_devices.empty()) {
-            return boot_devices;
-        }
+    if (fs_mgr_get_boot_config_from_bootconfig_source("boot_device", &value) ||
+        fs_mgr_get_boot_config_from_kernel_cmdline("boot_device", &value)) {
+        return {value};
     }
 
     // Fallback to extract boot devices from fstab.
