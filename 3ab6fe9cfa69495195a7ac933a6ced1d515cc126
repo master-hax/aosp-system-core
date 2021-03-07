@@ -1,0 +1,47 @@
+{
+  "comments": [
+    {
+      "robotId": "ayeaye",
+      "robotRunId": "AR00000000000008743610",
+      "url": "https://android-build.googleplex.com/builds/treetop/android-review/1622125?revision\u003d1",
+      "fixSuggestions": [
+        {
+          "fixId": "8e2fd2b5_b6f13971",
+          "description": "Change to \"fs_mgr/libsnapshot/snapuserd.cpp\"",
+          "replacements": [
+            {
+              "path": "fs_mgr/libsnapshot/snapuserd.cpp",
+              "range": {
+                "startLine": 1086,
+                "startChar": 14,
+                "endLine": 1086,
+                "endChar": 22
+              },
+              "replacement": "separate"
+            }
+          ]
+        }
+      ],
+      "key": {
+        "uuid": "75836e1e_96521ee5",
+        "filename": "fs_mgr/libsnapshot/snapuserd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1086,
+      "author": {
+        "id": 1757831
+      },
+      "writtenOn": "2021-03-07T06:25:03Z",
+      "side": 1,
+      "message": "Common typo found: \"seperate\" -- should it be \"separate\"?\nNote: a line containing \"common_typos_disable\" or \"common_typos_enable\" will turn off or on (respectively) the linter for subsequent lines in the file. Alternatively include the token \"NOTYPO\" within a line to skip typo linting that line or include \u0027No-Typo-Check: \u003creason\u003e\u0027in the commit message.",
+      "range": {
+        "startLine": 1086,
+        "startChar": 14,
+        "endLine": 1086,
+        "endChar": 22
+      },
+      "revId": "3ab6fe9cfa69495195a7ac933a6ced1d515cc126",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
