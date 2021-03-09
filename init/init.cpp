@@ -518,11 +518,8 @@ static void export_oem_lock_status() {
     if (!android::base::GetBoolProperty("ro.oem_unlock_supported", false)) {
         return;
     }
-    ImportKernelCmdline([](const std::string& key, const std::string& value) {
-        if (key == "androidboot.verifiedbootstate") {
-            SetProperty("ro.boot.flash.locked", value == "orange" ? "0" : "1");
-        }
-    });
+    std::string bootstate = android::base::GetProperty("ro.boot.verifiedbootstate", "");
+    SetProperty("ro.boot.flash.locked", bootstate == "orange" ? "0" : "1");
 }
 
 static Result<void> property_enable_triggers_action(const BuiltinArguments& args) {
