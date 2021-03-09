@@ -44,6 +44,7 @@
 #include <mutex>
 #include <optional>
 #include <queue>
+#include <string_view>
 #include <thread>
 #include <vector>
 
@@ -1163,21 +1164,19 @@ static void ProcessKernelDt() {
 }
 
 static void ProcessKernelCmdline() {
-    bool for_emulator = false;
     ImportKernelCmdline([&](const std::string& key, const std::string& value) {
-        if (key == "qemu") {
-            for_emulator = true;
-        } else if (StartsWith(key, "androidboot.")) {
-            InitPropertySet("ro.boot." + key.substr(12), value);
+        using namespace std::literals;
+
+        constexpr auto androidBootPrefix = "androidboot."sv;
+        constexpr auto qemuKey = "qemu"sv;
+        constexpr auto qemuPrefix = "qemu."sv;
+
+        if (StartsWith(key, androidBootPrefix)) {
+            InitPropertySet("ro.boot." + key.substr(androidBootPrefix.size()), value);
+        } else if (StartsWith(key, qemuPrefix) || (key == qemuKey)) {
+            InitPropertySet("ro.kernel." + key, value);
         }
     });
-
-    if (for_emulator) {
-        ImportKernelCmdline([&](const std::string& key, const std::string& value) {
-            // In the emulator, export any kernel option with the "ro.kernel." prefix.
-            InitPropertySet("ro.kernel." + key, value);
-        });
-    }
 }
 
 static void ProcessBootconfig() {
