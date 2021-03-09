@@ -523,6 +523,12 @@ static void export_oem_lock_status() {
             SetProperty("ro.boot.flash.locked", value == "orange" ? "0" : "1");
         }
     });
+    // Or bootconfig. Allow it to be overwritten if it exists in both places.
+    ImportBootconfig([](const std::string& key, const std::string& value) {
+        if (key == "androidboot.verifiedbootstate") {
+            SetProperty("ro.boot.flash.locked", value == "orange" ? "0" : "1");
+        }
+    });
 }
 
 static Result<void> property_enable_triggers_action(const BuiltinArguments& args) {
