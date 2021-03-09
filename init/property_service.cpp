@@ -1174,7 +1174,8 @@ static void ProcessKernelCmdline() {
         if (StartsWith(key, androidBootPrefix)) {
             InitPropertySet("ro.boot." + key.substr(androidBootPrefix.size()), value);
         } else if (StartsWith(key, qemuPrefix) || (key == qemuKey)) {
-            InitPropertySet("ro.kernel." + key, value);
+            InitPropertySet("ro.kernel." + key, value);  // emulator specific, deprecated
+            InitPropertySet("ro.boot." + key, value);
         }
     });
 }
