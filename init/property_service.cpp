@@ -1163,16 +1163,17 @@ static void ProcessKernelDt() {
     }
 }
 
+using namespace std::literals;
+constexpr auto androidbootPrefix = "androidboot."sv;
+
 static void ProcessKernelCmdline() {
     ImportKernelCmdline([&](const std::string& key, const std::string& value) {
-        using namespace std::literals;
 
-        constexpr auto androidBootPrefix = "androidboot."sv;
         constexpr auto qemuKey = "qemu"sv;
         constexpr auto qemuPrefix = "qemu."sv;
 
-        if (StartsWith(key, androidBootPrefix)) {
-            InitPropertySet("ro.boot." + key.substr(androidBootPrefix.size()), value);
+        if (StartsWith(key, androidbootPrefix)) {
+            InitPropertySet("ro.boot." + key.substr(androidbootPrefix.size()), value);
         } else if (StartsWith(key, qemuPrefix) || (key == qemuKey)) {
             InitPropertySet("ro.kernel." + key, value);
         }
@@ -1181,8 +1182,8 @@ static void ProcessKernelCmdline() {
 
 static void ProcessBootconfig() {
     ImportBootconfig([&](const std::string& key, const std::string& value) {
-        if (StartsWith(key, "androidboot.")) {
-            InitPropertySet("ro.boot." + key.substr(12), value);
+        if (StartsWith(key, androidbootPrefix)) {
+            InitPropertySet("ro.boot." + key.substr(androidbootPrefix.size()), value);
         }
     });
 }
