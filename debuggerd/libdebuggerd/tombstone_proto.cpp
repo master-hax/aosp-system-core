@@ -274,12 +274,12 @@ static void dump_thread(Tombstone* tombstone, unwindstack::Unwinder* unwinder,
       if (!frame.function_name.empty()) {
         // TODO: Should this happen here, or on the display side?
         char* demangled_name =
-            __cxa_demangle(frame.function_name.c_str(), nullptr, nullptr, nullptr);
+            __cxa_demangle(frame.function_name.data(), nullptr, nullptr, nullptr);
         if (demangled_name) {
           f->set_function_name(demangled_name);
           free(demangled_name);
         } else {
-          f->set_function_name(frame.function_name);
+          f->set_function_name(frame.function_name.data());
         }
       }
 
