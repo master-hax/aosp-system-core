@@ -34,6 +34,7 @@
 
 #include <android/fdsan.h>
 #include <android/set_abort_message.h>
+#include <bionic/malloc.h>
 #include <bionic/mte.h>
 #include <bionic/reserved_signals.h>
 
@@ -97,6 +98,13 @@ constexpr char kWaitForGdbKey[] = "debug.debuggerd.wait_for_gdb";
 #define ASSERT_BACKTRACE_FRAME(result, frame_name) \
   ASSERT_MATCH(result,                             \
                R"(#\d\d pc [0-9a-f]+\s+ \S+ (\(offset 0x[0-9a-f]+\) )?\()" frame_name R"(\+)");
+
+// Enable GWP-ASan at the start of this process. GWP-ASan is enabled using
+// process sampling, so we need to ensure we force GWP-ASan on.
+__attribute__((constructor)) static void enable_gwp_asan() {
+  bool force = true;
+  android_mallopt(M_INITIALIZE_GWP_ASAN, &force, sizeof(force));
+}
 
 static void tombstoned_intercept(pid_t target_pid, unique_fd* intercept_fd, unique_fd* output_fd,
                                  InterceptStatus* status, DebuggerdDumpType intercept_type) {
@@ -391,6 +399,155 @@ static void SetTagCheckingLevelSync() {
   }
 }
 #endif
+
+// Number of iterations required to reliably guarantee a GWP-ASan crash.
+// GWP-ASan's sample rate is not truly nondeterministic, it initialises a
+// thread-local counter at 2*SampleRate, and decrements on each malloc(). Once
+// the counter reaches zero, we provide a sampled allocation.
+#define GWP_ASAN_ITERATIONS_TO_ENSURE_CRASH (0x10000)
+
+TEST_F(CrasherTest, gwp_asan_uaf) {
+  if (mte_supported()) {
+    // Skip this test on MTE hardware, as MTE will reliably catch these errors
+    // instead of GWP-ASan.
+    GTEST_SKIP() << "Skipped on MTE.";
+  }
+
+  int intercept_result;
+  unique_fd output_fd;
+  StartProcess([]() {
+    //
+    for (unsigned i = 0; i < GWP_ASAN_ITERATIONS_TO_ENSURE_CRASH; ++i) {
+      volatile int* p = (volatile int*)malloc(7);
+      free((void *)p);
+      p[0] = 42;
+    }
+  });
+
+  StartIntercept(&output_fd);
+  FinishCrasher();
+  AssertDeath(SIGSEGV);
+  FinishIntercept(&intercept_result);
+
+  ASSERT_EQ(1, intercept_result) << "tombstoned reported failure";
+
+  std::string result;
+  ConsumeFd(std::move(output_fd), &result);
+
+  ASSERT_MATCH(result, R"(signal 11 \(SIGSEGV\), code 2 \(SEGV_ACCERR\))");
+  ASSERT_MATCH(result, R"(Cause: \[GWP-ASan\]: Use After Free, 0 bytes into a 7-byte allocation)");
+  ASSERT_MATCH(result, R"(deallocated by thread .*
+      #00 pc)");
+  ASSERT_MATCH(result, R"(allocated by thread .*
+      #00 pc)");
+}
+
+TEST_F(CrasherTest, gwp_asan_uaf_1_byte_into) {
+  if (mte_supported()) {
+    // Skip this test on MTE hardware, as MTE will reliably catch these errors
+    // instead of GWP-ASan.
+    GTEST_SKIP() << "Skipped on MTE.";
+  }
+
+  int intercept_result;
+  unique_fd output_fd;
+  StartProcess([]() {
+    //
+    for (unsigned i = 0; i < GWP_ASAN_ITERATIONS_TO_ENSURE_CRASH; ++i) {
+      volatile char* p = (volatile char*)malloc(7);
+      free((void*)p);
+      p[1] = 42;
+    }
+  });
+
+  StartIntercept(&output_fd);
+  FinishCrasher();
+  AssertDeath(SIGSEGV);
+  FinishIntercept(&intercept_result);
+
+  ASSERT_EQ(1, intercept_result) << "tombstoned reported failure";
+
+  std::string result;
+  ConsumeFd(std::move(output_fd), &result);
+
+  ASSERT_MATCH(result, R"(signal 11 \(SIGSEGV\), code 2 \(SEGV_ACCERR\))");
+  ASSERT_MATCH(result, R"(Cause: \[GWP-ASan\]: Use After Free, 1 byte into a 7-byte allocation)");
+  ASSERT_MATCH(result, R"(deallocated by thread .*
+      #00 pc)");
+  ASSERT_MATCH(result, R"(allocated by thread .*
+      #00 pc)");
+}
+
+TEST_F(CrasherTest, gwp_asan_overflow) {
+  if (mte_supported()) {
+    // Skip this test on MTE hardware, as MTE will reliably catch these errors
+    // instead of GWP-ASan.
+    GTEST_SKIP() << "Skipped on MTE.";
+  }
+
+  int intercept_result;
+  unique_fd output_fd;
+  StartProcess([]() {
+    // Double the iterations to allow for left/right alignment randomness.
+    for (unsigned i = 0; i < GWP_ASAN_ITERATIONS_TO_ENSURE_CRASH * 2; ++i) {
+      volatile char* p = (volatile char*)malloc(7);
+      p[16] = 42;
+      free((void*) p);
+    }
+  });
+
+  StartIntercept(&output_fd);
+  FinishCrasher();
+  AssertDeath(SIGSEGV);
+  FinishIntercept(&intercept_result);
+
+  ASSERT_EQ(1, intercept_result) << "tombstoned reported failure";
+
+  std::string result;
+  ConsumeFd(std::move(output_fd), &result);
+
+  ASSERT_MATCH(result, R"(signal 11 \(SIGSEGV\), code 2 \(SEGV_ACCERR\))");
+  ASSERT_MATCH(result,
+               R"(Cause: \[GWP-ASan\]: Buffer Overflow, 9 bytes right of a 7-byte allocation)");
+  ASSERT_MATCH(result, R"(allocated by thread .*
+      #00 pc)");
+}
+
+TEST_F(CrasherTest, gwp_asan_underflow) {
+  if (mte_supported()) {
+    // Skip this test on MTE hardware, as MTE will reliably catch these errors
+    // instead of GWP-ASan.
+    GTEST_SKIP() << "Skipped on MTE.";
+  }
+
+  int intercept_result;
+  unique_fd output_fd;
+  StartProcess([]() {
+    // Double the iterations to allow for left/right alignment randomness.
+    for (unsigned i = 0; i < GWP_ASAN_ITERATIONS_TO_ENSURE_CRASH * 2; ++i) {
+      volatile char* p = (volatile char*)malloc(16);
+      p[-1] = 42;
+      free((void*) p);
+    }
+  });
+
+  StartIntercept(&output_fd);
+  FinishCrasher();
+  AssertDeath(SIGSEGV);
+  FinishIntercept(&intercept_result);
+
+  ASSERT_EQ(1, intercept_result) << "tombstoned reported failure";
+
+  std::string result;
+  ConsumeFd(std::move(output_fd), &result);
+
+  ASSERT_MATCH(result, R"(signal 11 \(SIGSEGV\), code 2 \(SEGV_ACCERR\))");
+  ASSERT_MATCH(result,
+               R"(Cause: \[GWP-ASan\]: Buffer Underflow, 1 byte left of a 16-byte allocation.*)");
+  ASSERT_MATCH(result, R"(allocated by thread .*
+      #00 pc)");
+}
+
 
 TEST_F(CrasherTest, mte_uaf) {
 #if defined(__aarch64__)
