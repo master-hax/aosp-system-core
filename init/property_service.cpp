@@ -1166,21 +1166,16 @@ static void ProcessKernelDt() {
 constexpr auto androidbootPrefix = "androidboot."sv;
 
 static void ProcessKernelCmdline() {
-    bool for_emulator = false;
     ImportKernelCmdline([&](const std::string& key, const std::string& value) {
-        if (key == "qemu") {
-            for_emulator = true;
-        } else if (StartsWith(key, androidbootPrefix)) {
+        constexpr auto qemu_key = "qemu"sv;
+        constexpr auto qemu_prefix = "qemu."sv;
+
+        if (StartsWith(key, androidbootPrefix)) {
             InitPropertySet("ro.boot." + key.substr(androidbootPrefix.size()), value);
+        } else if (StartsWith(key, qemu_prefix) || (key == qemu_key)) {
+            InitPropertySet("ro.kernel." + key, value);
         }
     });
-
-    if (for_emulator) {
-        ImportKernelCmdline([&](const std::string& key, const std::string& value) {
-            // In the emulator, export any kernel option with the "ro.kernel." prefix.
-            InitPropertySet("ro.kernel." + key, value);
-        });
-    }
 }
 
 static void ProcessBootconfig() {
