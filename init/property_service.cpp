@@ -1165,12 +1165,23 @@ static void ProcessKernelDt() {
 
 constexpr auto ANDROIDBOOT_PREFIX = "androidboot."sv;
 
+// emulator specific, should be removed once emulator is migrated to
+// bootconfig, see b/182291166.
+static std::string RemapEmulatorPropertyName(const std::string_view qemu_key) {
+    return std::string(qemu_key);
+}
+
 static void ProcessKernelCmdline() {
     ImportKernelCmdline([&](const std::string& key, const std::string& value) {
+        constexpr auto qemu_prefix = "qemu."sv;
+
         if (StartsWith(key, ANDROIDBOOT_PREFIX)) {
             InitPropertySet("ro.boot." + key.substr(ANDROIDBOOT_PREFIX.size()), value);
-        } else if (StartsWith(key, "qemu."sv)) {
-            InitPropertySet("ro.kernel." + key, value);
+        } else if (StartsWith(key, qemu_prefix)) {
+            InitPropertySet("ro.kernel." + key, value);  // emulator specific, deprecated
+
+            const auto key_sv = std::string_view(key).substr(qemu_prefix.size());
+            InitPropertySet("ro.boot." + RemapEmulatorPropertyName(key_sv), value);
         } else if (key == "qemu") {
             InitPropertySet("ro.kernel." + key, value);  // emulator specific, deprecated
             InitPropertySet("ro.boot." + key, value);
