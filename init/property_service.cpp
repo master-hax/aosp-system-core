@@ -1164,17 +1164,22 @@ static void ProcessKernelDt() {
 }
 
 using namespace std::literals;
+
 constexpr auto androidbootPrefix = "androidboot."sv;
+constexpr auto qemuKey = "qemu"sv;
+constexpr auto qemuPrefix = "qemu."sv;
+
+static std::string RemapEmulatorPropertyName(const std::string_view key) {
+    return std::string(key.substr(qemuPrefix.size()));
+}
 
 static void ProcessKernelCmdline() {
     ImportKernelCmdline([&](const std::string& key, const std::string& value) {
-        constexpr auto qemuKey = "qemu"sv;
-        constexpr auto qemuPrefix = "qemu."sv;
-
         if (StartsWith(key, androidbootPrefix)) {
             InitPropertySet("ro.boot." + key.substr(androidbootPrefix.size()), value);
         } else if (StartsWith(key, qemuPrefix)) {
             InitPropertySet("ro.kernel." + key, value);  // emulator specific, deprecated
+            InitPropertySet("ro.boot." + RemapEmulatorPropertyName(key), value);
         } else if (key == qemuKey) {
             InitPropertySet("ro.kernel.qemu", value);  // emulator specific, deprecated
             InitPropertySet("ro.boot.qemu", value);
