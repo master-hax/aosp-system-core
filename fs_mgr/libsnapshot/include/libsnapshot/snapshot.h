@@ -283,6 +283,10 @@ class ISnapshotManager {
 
     // Return the associated ISnapshotMergeStats instance. Never null.
     virtual ISnapshotMergeStats* GetSnapshotMergeStatsInstance() = 0;
+
+    // If merging, return the number of milliseconds that elapsed in between
+    // sys.boot_complete and initiating the merge.
+    virtual uint32_t GetBootCompleteToMergeStartTimeMs() = 0;
 };
 
 class SnapshotManager final : public ISnapshotManager {
@@ -358,6 +362,9 @@ class SnapshotManager final : public ISnapshotManager {
     ISnapshotMergeStats* GetSnapshotMergeStatsInstance() override;
     bool MapAllSnapshots(const std::chrono::milliseconds& timeout_ms = {}) override;
     bool UnmapAllSnapshots() override;
+    uint32_t GetBootCompleteToMergeStartTimeMs() override;
+
+    void UpdateBootCompleteStat();
 
     // We can't use WaitForFile during first-stage init, because ueventd is not
     // running and therefore will not automatically create symlinks. Instead,

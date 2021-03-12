@@ -721,12 +721,14 @@ bool SnapshotManager::InitiateMerge() {
         }
     }
 
-    SnapshotUpdateStatus initial_status;
+    SnapshotUpdateStatus initial_status = ReadSnapshotUpdateStatus(lock.get());
     initial_status.set_state(UpdateState::Merging);
     initial_status.set_sectors_allocated(initial_target_values.sectors_allocated);
     initial_status.set_total_sectors(initial_target_values.total_sectors);
     initial_status.set_metadata_sectors(initial_target_values.metadata_sectors);
     initial_status.set_compression_enabled(compression_enabled);
+    initial_status.set_boot_complete_to_merge_start_time_ms(GetBootClockMs() -
+                                                            initial_status.boot_complete_time_ms());
 
     // If any partitions shrunk, we need to merge them before we merge any other
     // partitions (see b/177935716). Otherwise, a merge from another partition
@@ -3152,9 +3154,10 @@ bool SnapshotManager::Dump(std::ostream& os) {
 
     std::stringstream ss;
 
-    ss << "Update state: " << ReadUpdateState(file.get()) << std::endl;
-    ss << "Compression: " << ReadSnapshotUpdateStatus(file.get()).compression_enabled()
-       << std::endl;
+    auto update_status = ReadSnapshotUpdateStatus(file.get());
+
+    ss << "Update state: " << update_status.state() << std::endl;
+    ss << "Compression: " << update_status.compression_enabled() << std::endl;
     ss << "Current slot: " << device_->GetSlotSuffix() << std::endl;
     ss << "Boot indicator: booting from " << GetCurrentSlot() << " slot" << std::endl;
     ss << "Rollback indicator: "
@@ -3163,6 +3166,9 @@ bool SnapshotManager::Dump(std::ostream& os) {
     ss << "Forward merge indicator: "
        << (access(GetForwardMergeIndicatorPath().c_str(), F_OK) == 0 ? "exists" : strerror(errno))
        << std::endl;
+    ss << "Boot complete time: " << update_status.boot_complete_time_ms() << "ms" << std::endl;
+    ss << "Merge start time after boot complete: "
+       << update_status.boot_complete_to_merge_start_time_ms() << "ms" << std::endl;
 
     bool ok = true;
     std::vector<std::string> snapshots;
@@ -3601,6 +3607,29 @@ void SnapshotManager::UpdateCowStats(ISnapshotMergeStats* stats) {
     stats->set_cow_file_size(cow_file_size);
     stats->set_total_cow_size_bytes(total_cow_size);
     stats->set_estimated_cow_size_bytes(estimated_cow_size);
+
+    auto status = ReadSnapshotUpdateStatus(lock.get());
+    stats->set_boot_complete_time_ms(status.boot_complete_time_ms());
+}
+
+void SnapshotManager::UpdateBootCompleteStat() {
+    auto lock = LockExclusive();
+    if (!lock) return;
+
+    auto status = ReadSnapshotUpdateStatus(lock.get());
+    if (status.state() != UpdateState::Unverified || GetCurrentSlot() != Slot::Target) {
+        return;
+    }
+
+    status.set_boot_complete_time_ms(GetBootClockMs());
+    WriteSnapshotUpdateStatus(lock.get(), status);
+}
+
+uint32_t SnapshotManager::GetBootCompleteToMergeStartTimeMs() {
+    auto lock = LockExclusive();
+    if (!lock) return 0;
+
+    return ReadSnapshotUpdateStatus(lock.get()).boot_complete_to_merge_start_time_ms();
 }
 
 }  // namespace snapshot

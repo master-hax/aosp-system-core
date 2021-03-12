@@ -34,9 +34,7 @@ int Usage() {
                  "Usage: snapshotctl [action] [flags]\n"
                  "Actions:\n"
                  "  dump\n"
-                 "    Print snapshot states.\n"
-                 "  merge\n"
-                 "    Deprecated.\n";
+                 "    Print snapshot states.\n";
     return EX_USAGE;
 }
 
@@ -46,6 +44,12 @@ namespace snapshot {
 bool DumpCmdHandler(int /*argc*/, char** argv) {
     android::base::InitLogging(argv, &android::base::StderrLogger);
     return SnapshotManager::New()->Dump(std::cout);
+}
+
+bool RecordBootCompleteHandler(int /*argc*/, char** argv) {
+    android::base::InitLogging(argv);
+    SnapshotManager::New()->UpdateBootCompleteStat();
+    return true;
 }
 
 bool MergeCmdHandler(int /*argc*/, char** argv) {
@@ -58,6 +62,7 @@ static std::map<std::string, std::function<bool(int, char**)>> kCmdMap = {
         // clang-format off
         {"dump", DumpCmdHandler},
         {"merge", MergeCmdHandler},
+        {"record_boot_complete", RecordBootCompleteHandler},
         // clang-format on
 };
 
