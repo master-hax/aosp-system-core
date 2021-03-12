@@ -26,10 +26,20 @@
 #include <android-base/strings.h>
 #include "protocol.h"
 
+std::string get_command_line(pid_t pid) {
+  std::string result = "<unknown>";
+  android::base::ReadFileToString(android::base::StringPrintf("/proc/%d/cmdline", pid), &result);
+  // We need to replace the NULs with spaces.
+  std::replace(result.begin(), result.end(), '\0', ' ');
+  // And then trim because the zygote modifies argv[] and can leave trailing NULs.
+  return android::base::Trim(result);
+}
+
 std::string get_process_name(pid_t pid) {
   std::string result = "<unknown>";
   android::base::ReadFileToString(android::base::StringPrintf("/proc/%d/cmdline", pid), &result);
-  return result;
+  // We only want the name, not the whole command line, so truncate at the first NUL.
+  return result.c_str();
 }
 
 std::string get_thread_name(pid_t tid) {

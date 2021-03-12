@@ -51,4 +51,6 @@ struct ProcessInfo {
   bool has_fault_address = false;
   uintptr_t untagged_fault_address = 0;
   uintptr_t maybe_tagged_fault_address = 0;
+
+  std::string command_line;
 };

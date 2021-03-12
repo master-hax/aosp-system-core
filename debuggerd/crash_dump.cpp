@@ -450,7 +450,7 @@ int main(int argc, char** argv) {
   //       unwind, do not make this too small. b/62828735
   alarm(30 * android::base::TimeoutMultiplier());
 
-  // Get the process name (aka cmdline).
+  process_info.command_line = get_command_line(g_target_thread);
   std::string process_name = get_process_name(g_target_thread);
 
   // Collect the list of open files.
