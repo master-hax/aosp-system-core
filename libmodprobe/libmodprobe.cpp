@@ -313,7 +313,8 @@ void Modprobe::ParseKernelCmdlineOptions(void) {
     }
 }
 
-Modprobe::Modprobe(const std::vector<std::string>& base_paths, const std::string load_file) {
+Modprobe::Modprobe(const std::vector<std::string>& base_paths, const std::string load_file,
+                   bool use_blocklist) {
     using namespace std::placeholders;
 
     for (const auto& base_path : base_paths) {
@@ -334,6 +335,8 @@ Modprobe::Modprobe(const std::vector<std::string>& base_paths, const std::string
 
         auto blocklist_callback = std::bind(&Modprobe::ParseBlocklistCallback, this, _1);
         ParseCfg(base_path + "/modules.blocklist", blocklist_callback);
+
+        if (use_blocklist && !module_blocklist_.empty()) EnableBlocklist(true);
     }
 
     ParseKernelCmdlineOptions();
@@ -412,6 +415,12 @@ bool Modprobe::LoadWithAliases(const std::string& module_name, bool strict,
         LOG(VERBOSE) << "Found alias for '" << module_name << "': '" << aliased_module;
         if (module_loaded_.count(MakeCanonical(aliased_module))) continue;
         modules_to_load.emplace(aliased_module);
+    }
+
+    if (blocklist_enabled && module_blocklist_.count(canonical_name)) {
+        LOG(INFO) << "LoadWithAliases: module " << canonical_name << " is blocklisted";
+        // Don't fail module loading for non-aliased blocklisted modules
+        return true;
     }
 
     // attempt to load all modules aliased to this name
