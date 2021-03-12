@@ -24,7 +24,8 @@
 
 class Modprobe {
   public:
-    Modprobe(const std::vector<std::string>&, const std::string load_file = "modules.load");
+    Modprobe(const std::vector<std::string>&, const std::string load_file = "modules.load",
+             bool use_blocklist = false);
 
     bool LoadListedModules(bool strict = true);
     bool LoadWithAliases(const std::string& module_name, bool strict,
