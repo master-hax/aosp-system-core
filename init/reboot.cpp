@@ -32,6 +32,7 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
+#include <filesystem>
 #include <chrono>
 #include <memory>
 #include <set>
@@ -694,12 +695,20 @@ static void DoReboot(unsigned int cmd, const std::string& reason, const std::str
     // Reap subcontext pids.
     ReapAnyOutstandingChildren();
 
-    // 3. send volume abort_fuse and volume shutdown to vold
+    // 3. abort_fuse directly and send volume shutdown to vold
+    // Manually abort FUSE connections, since the FUSE daemon is already dead
+    // at this point, and unmounting it might hang.
+    namespace fs = std::filesystem;
+    for (const auto& itEntry : fs::directory_iterator("/sys/fs/fuse/connections")) {
+        std::string abortPath = itEntry.path().string() + "/abort";
+        LOG(DEBUG) << "Aborting fuse connection entry " << abortPath;
+        bool ret = WriteStringToFile("1", abortPath);
+        if (!ret) {
+            LOG(WARNING) << "Failed to write to " << abortPath;
+        }
+    }
     Service* vold_service = ServiceList::GetInstance().FindService("vold");
     if (vold_service != nullptr && vold_service->IsRunning()) {
-        // Manually abort FUSE connections, since the FUSE daemon is already dead
-        // at this point, and unmounting it might hang.
-        CallVdc("volume", "abort_fuse");
         CallVdc("volume", "shutdown");
         vold_service->Stop();
     } else {
