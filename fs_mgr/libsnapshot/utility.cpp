@@ -20,6 +20,7 @@
 #include <iomanip>
 #include <sstream>
 
+#include <android-base/chrono_utils.h>
 #include <android-base/file.h>
 #include <android-base/logging.h>
 #include <android-base/properties.h>
@@ -193,6 +194,12 @@ std::string GetOtherPartitionName(const std::string& name) {
 
     auto other_suffix = (suffix == "_a") ? "_b" : "_a";
     return name.substr(0, name.size() - suffix.size()) + other_suffix;
+}
+
+uint32_t GetBootClockMs() {
+    auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(
+            android::base::boot_clock::now().time_since_epoch());
+    return ms.count();
 }
 
 }  // namespace snapshot

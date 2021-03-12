@@ -131,6 +131,10 @@ class SnapshotMergeStatsStub : public ISnapshotMergeStats {
     void set_estimated_cow_size_bytes(uint64_t) override {}
     uint64_t total_cow_size_bytes() override { return 0; }
     uint64_t estimated_cow_size_bytes() override { return 0; }
+    void set_boot_complete_time_ms(uint32_t) override {}
+    uint32_t boot_complete_time_ms() override { return 0; }
+    void set_boot_complete_to_merge_start_time_ms(uint32_t) override {}
+    uint32_t boot_complete_to_merge_start_time_ms() override { return 0; }
 };
 
 ISnapshotMergeStats* SnapshotManagerStub::GetSnapshotMergeStatsInstance() {
@@ -157,6 +161,11 @@ bool SnapshotManagerStub::UnmapAllSnapshots() {
 
 void SnapshotManagerStub::UpdateCowStats(ISnapshotMergeStats*) {
     LOG(ERROR) << __FUNCTION__ << " should never be called.";
+}
+
+uint32_t SnapshotManagerStub::GetBootCompleteToMergeStartTimeMs() {
+    LOG(ERROR) << __FUNCTION__ << " should never be called.";
+    return 0;
 }
 
 }  // namespace android::snapshot

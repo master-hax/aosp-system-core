@@ -134,5 +134,8 @@ bool IsCompressionEnabled();
 // Swap the suffix of a partition name.
 std::string GetOtherPartitionName(const std::string& name);
 
+// Get android::boot_clock time in milliseconds.
+uint32_t GetBootClockMs();
+
 }  // namespace snapshot
 }  // namespace android

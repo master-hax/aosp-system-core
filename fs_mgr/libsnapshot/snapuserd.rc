@@ -5,3 +5,6 @@ service snapuserd /system/bin/snapuserd
     user root
     group root system
     seclabel u:r:snapuserd:s0
+
+on property:sys.boot_completed=1
+    exec_background /system/bin/snapshotctl record_boot_complete
