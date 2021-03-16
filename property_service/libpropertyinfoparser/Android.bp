@@ -21,4 +21,7 @@ cc_library_static {
     system_shared_libs: [],
     header_libs: ["libc_headers"],
     export_include_dirs: ["include"],
+
+    // FIXME: support bp2build
+    // bazel_module: { bp2build_available: true },
 }
