@@ -975,6 +975,10 @@ on boot && property:ro.config.low_ram=true
 on property:sys.boot_completed=1 && property:init.mount_debugfs=1
    umount /sys/kernel/debug
 
+# "tcp_default_init_rwnd" Is too long!
+on property:net.tcp_def_init_rwnd=*
+    write /proc/sys/net/ipv4/tcp_default_init_rwnd ${net.tcp_def_init_rwnd}
+
 on boot
     # basic network init
     ifup lo
@@ -1074,7 +1078,7 @@ on boot
     chown root radio /proc/cmdline
 
     # Define default initial receive window size in segments.
-    setprop net.tcp.default_init_rwnd 60
+    setprop net.tcp_def_init_rwnd 60
 
     # Start standard binderized HAL daemons
     class_start hal
@@ -1133,10 +1137,6 @@ on property:sys.boot_completed=1
 # So proxy writes through init.
 on property:sys.sysctl.extra_free_kbytes=*
     write /proc/sys/vm/extra_free_kbytes ${sys.sysctl.extra_free_kbytes}
-
-# "tcp_default_init_rwnd" Is too long!
-on property:net.tcp_def_init_rwnd=*
-    write /proc/sys/net/ipv4/tcp_default_init_rwnd ${net.tcp_def_init_rwnd}
 
 # perf_event_open syscall security:
 # Newer kernels have the ability to control the use of the syscall via SELinux
