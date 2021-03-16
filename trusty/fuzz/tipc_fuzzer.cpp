@@ -38,7 +38,8 @@ using android::trusty::fuzz::TrustyApp;
 #endif
 
 #ifndef TRUSTY_APP_FILENAME
-#error "Binary file name must be parameterized using -DTRUSTY_APP_FILENAME."
+/* We don't have symbolized binaries for all TAs */
+#define TRUSTY_APP_FILENAME "default_filename"
 #endif
 
 static std::unique_ptr<CoverageRecord> record;
