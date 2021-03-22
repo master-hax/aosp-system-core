@@ -76,7 +76,6 @@ cc_library_host_static {
 
     header_libs: [
         "bootimg_headers",
-        "libstorage_literals_headers",
     ],
 
     export_header_lib_headers: [
@@ -276,9 +275,6 @@ cc_library_host_static {
     // Only version the final binaries
     use_version_lib: false,
     static_libs: ["libbuildversion"],
-    header_libs: [
-        "libstorage_literals_headers",
-    ],
 
     generated_headers: ["platform_tools_version"],
 
