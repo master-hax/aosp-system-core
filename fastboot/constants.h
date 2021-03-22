@@ -35,7 +35,6 @@
 #define FB_CMD_OEM "oem"
 #define FB_CMD_GSI "gsi"
 #define FB_CMD_SNAPSHOT_UPDATE "snapshot-update"
-#define FB_CMD_FETCH "fetch"
 
 #define RESPONSE_OKAY "OKAY"
 #define RESPONSE_FAIL "FAIL"
