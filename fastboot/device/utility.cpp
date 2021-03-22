@@ -90,8 +90,7 @@ bool OpenPartition(FastbootDevice* device, const std::string& name, PartitionHan
         return false;
     }
 
-    int flags = (read ? O_RDONLY : O_WRONLY);
-    flags |= (O_EXCL | O_CLOEXEC | O_BINARY);
+    int flags = O_EXCL | (read ? O_RDONLY : O_WRONLY);
     unique_fd fd(TEMP_FAILURE_RETRY(open(handle->path().c_str(), flags)));
     if (fd < 0) {
         PLOG(ERROR) << "Failed to open block device: " << handle->path();
