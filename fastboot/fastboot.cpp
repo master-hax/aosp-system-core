@@ -897,19 +897,19 @@ static int64_t get_sparse_limit(int64_t size) {
 }
 
 static bool load_buf_fd(unique_fd fd, struct fastboot_buffer* buf) {
-    int64_t sz = get_file_size(fd);
+    int64_t sz = get_file_size(fd.get());
     if (sz == -1) {
         return false;
     }
 
-    if (sparse_file* s = sparse_file_import(fd, false, false)) {
+    if (sparse_file* s = sparse_file_import(fd.get(), false, false)) {
         buf->image_size = sparse_file_len(s, false, false);
         sparse_file_destroy(s);
     } else {
         buf->image_size = sz;
     }
 
-    lseek(fd, 0, SEEK_SET);
+    lseek(fd.get(), 0, SEEK_SET);
     int64_t limit = get_sparse_limit(sz);
     buf->fd = std::move(fd);
     if (limit) {
@@ -1538,7 +1538,7 @@ void FlashAllTool::FlashImage(const Image& image, const std::string& slot, fastb
 }
 
 void FlashAllTool::UpdateSuperPartition() {
-    int fd = source_.OpenFile("super_empty.img");
+    unique_fd fd = source_.OpenFile("super_empty.img");
     if (fd < 0) {
         return;
     }
@@ -1550,7 +1550,7 @@ void FlashAllTool::UpdateSuperPartition() {
     if (fb->GetVar("super-partition-name", &super_name) != fastboot::RetCode::SUCCESS) {
         super_name = "super";
     }
-    fb->Download(super_name, fd, get_file_size(fd));
+    fb->Download(super_name, fd.get(), get_file_size(fd.get()));
 
     std::string command = "update-super:" + super_name;
     if (wipe_) {
