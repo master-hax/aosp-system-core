@@ -184,7 +184,10 @@ class DataUpdater {
     if (!android::base::WriteStringToFd(data, fd)) {
         return ErrnoErrorf("Cannot write new content to {}", what);
     }
-    if (TEMP_FAILURE_RETRY(ftruncate64(fd.get(), data.size())) == -1) {
+    if (data.size() >= std::numeric_limits<off_t>::max()) {
+        return Errorf("Truncating new vendor boot image file size overflows: 0x{:x}", data.size());
+    }
+    if (TEMP_FAILURE_RETRY(ftruncate(fd.get(), static_cast<off_t>(data.size()))) == -1) {
         return ErrnoErrorf("Truncating new vendor boot image to 0x{:x} fails", data.size());
     }
     return {};
