@@ -372,6 +372,12 @@ bool OpenSplitPolicy(PolicyFile* policy_file) {
         system_ext_mapping_file.clear();
     }
 
+    std::string system_ext_compat_cil_file("/system_ext/etc/selinux/mapping/" + vend_plat_vers +
+                                           ".compat.cil");
+    if (access(system_ext_compat_cil_file.c_str(), F_OK) == -1) {
+        system_ext_compat_cil_file.clear();
+    }
+
     std::string product_policy_cil_file("/product/etc/selinux/product_sepolicy.cil");
     if (access(product_policy_cil_file.c_str(), F_OK) == -1) {
         product_policy_cil_file.clear();
@@ -380,6 +386,12 @@ bool OpenSplitPolicy(PolicyFile* policy_file) {
     std::string product_mapping_file("/product/etc/selinux/mapping/" + vend_plat_vers + ".cil");
     if (access(product_mapping_file.c_str(), F_OK) == -1) {
         product_mapping_file.clear();
+    }
+
+    std::string product_compat_cil_file("/product/etc/selinux/mapping/" + vend_plat_vers +
+                                        ".compat.cil");
+    if (access(product_compat_cil_file.c_str(), F_OK) == -1) {
+        product_compat_cil_file.clear();
     }
 
     // vendor_sepolicy.cil and plat_pub_versioned.cil are the new design to replace
@@ -426,11 +438,17 @@ bool OpenSplitPolicy(PolicyFile* policy_file) {
     if (!system_ext_mapping_file.empty()) {
         compile_args.push_back(system_ext_mapping_file.c_str());
     }
+    if (!system_ext_compat_cil_file.empty()) {
+        compile_args.push_back(system_ext_compat_cil_file.c_str());
+    }
     if (!product_policy_cil_file.empty()) {
         compile_args.push_back(product_policy_cil_file.c_str());
     }
     if (!product_mapping_file.empty()) {
         compile_args.push_back(product_mapping_file.c_str());
+    }
+    if (!product_compat_cil_file.empty()) {
+        compile_args.push_back(product_compat_cil_file.c_str());
     }
     if (!plat_pub_versioned_cil_file.empty()) {
         compile_args.push_back(plat_pub_versioned_cil_file.c_str());
