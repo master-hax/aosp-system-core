@@ -20,7 +20,10 @@ prebuilt_etc {
     name: "init.rc",
     src: "init.rc",
     sub_dir: "init/hw",
-    required: ["fsverity_init"],
+    required: [
+        "fsverity_init",
+        "classpaths_system_config",
+    ],
 }
 
 prebuilt_etc {
@@ -34,4 +37,8 @@ linker_config {
     name: "system_linker_config",
     src: "etc/linker.config.json",
     installable: false,
+}
+
+classpaths_system_config {
+    name: "classpaths_system_config",
 }
