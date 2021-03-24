@@ -1,0 +1,108 @@
+{
+  "comments": [
+    {
+      "robotId": "ayeaye",
+      "robotRunId": "AR00000000000009328138",
+      "url": "https://android-build.googleplex.com/builds/treetop/android-review/1532176?revision\u003d2",
+      "fixSuggestions": [],
+      "key": {
+        "uuid": "1fa48bb9_8850531b",
+        "filename": "libcutils/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 365,
+      "author": {
+        "id": 1757831
+      },
+      "writtenOn": "2021-03-24T18:53:47Z",
+      "side": 1,
+      "message": "Prefer to use inclusive terms like \u0027deny list\u0027 or \u0027allow list\u0027; see https://developers.google.com/style/word-list#blacklist for more details. In the case of a false positive add BYPASS_INCLUSIVE_LANGUAGE_REASON\u003dmy_reason_here to your commit message to disable this check.",
+      "range": {
+        "startLine": 365,
+        "startChar": 11,
+        "endLine": 365,
+        "endChar": 20
+      },
+      "revId": "796cc6e13f9426e308a87def70ffc5b97b87b8aa",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "robotId": "ayeaye",
+      "robotRunId": "AR00000000000009328138",
+      "url": "https://android-build.googleplex.com/builds/treetop/android-review/1532176?revision\u003d2",
+      "fixSuggestions": [],
+      "key": {
+        "uuid": "1937cae8_e947c2ff",
+        "filename": "libcutils/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 366,
+      "author": {
+        "id": 1757831
+      },
+      "writtenOn": "2021-03-24T18:53:47Z",
+      "side": 1,
+      "message": "Prefer to use inclusive terms like \u0027deny list\u0027 or \u0027allow list\u0027; see https://developers.google.com/style/word-list#blacklist for more details. In the case of a false positive add BYPASS_INCLUSIVE_LANGUAGE_REASON\u003dmy_reason_here to your commit message to disable this check.",
+      "range": {
+        "startLine": 366,
+        "startChar": 11,
+        "endLine": 366,
+        "endChar": 20
+      },
+      "revId": "796cc6e13f9426e308a87def70ffc5b97b87b8aa",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "robotId": "ayeaye",
+      "robotRunId": "AR00000000000009328138",
+      "url": "https://android-build.googleplex.com/builds/treetop/android-review/1532176?revision\u003d2",
+      "fixSuggestions": [],
+      "key": {
+        "uuid": "a970c7c5_06c2c9bf",
+        "filename": "libcutils/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 367,
+      "author": {
+        "id": 1757831
+      },
+      "writtenOn": "2021-03-24T18:53:47Z",
+      "side": 1,
+      "message": "Prefer to use inclusive terms like \u0027deny list\u0027 or \u0027allow list\u0027; see https://developers.google.com/style/word-list#blacklist for more details. In the case of a false positive add BYPASS_INCLUSIVE_LANGUAGE_REASON\u003dmy_reason_here to your commit message to disable this check.",
+      "range": {
+        "startLine": 367,
+        "startChar": 11,
+        "endLine": 367,
+        "endChar": 20
+      },
+      "revId": "796cc6e13f9426e308a87def70ffc5b97b87b8aa",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "robotId": "ayeaye",
+      "robotRunId": "AR00000000000009328138",
+      "url": "https://android-build.googleplex.com/builds/treetop/android-review/1532176?revision\u003d2",
+      "fixSuggestions": [],
+      "key": {
+        "uuid": "b5fd1cb1_6ea02485",
+        "filename": "libcutils/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 368,
+      "author": {
+        "id": 1757831
+      },
+      "writtenOn": "2021-03-24T18:53:47Z",
+      "side": 1,
+      "message": "Prefer to use inclusive terms like \u0027deny list\u0027 or \u0027allow list\u0027; see https://developers.google.com/style/word-list#blacklist for more details. In the case of a false positive add BYPASS_INCLUSIVE_LANGUAGE_REASON\u003dmy_reason_here to your commit message to disable this check.",
+      "range": {
+        "startLine": 368,
+        "startChar": 11,
+        "endLine": 368,
+        "endChar": 20
+      },
+      "revId": "796cc6e13f9426e308a87def70ffc5b97b87b8aa",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
