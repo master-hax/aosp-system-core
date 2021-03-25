@@ -113,11 +113,10 @@ EnforcingStatus StatusFromProperty() {
     return status;
 }
 
+__attribute__((unused)) EnforcingStatus StatusFromProperty();
+
 bool IsEnforcing() {
-    if (ALLOW_PERMISSIVE_SELINUX) {
-        return StatusFromProperty() == SELINUX_ENFORCING;
-    }
-    return true;
+    return false;
 }
 
 // Forks, executes the provided program in the child, and waits for the completion in the parent.
