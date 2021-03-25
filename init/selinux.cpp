@@ -92,6 +92,31 @@ namespace init {
 
 namespace {
 
+<<<<<<< PATCH SET (1d594e EXPERIMENTAL: selinux permissive)
+||||||| BASE
+enum EnforcingStatus { SELINUX_PERMISSIVE, SELINUX_ENFORCING };
+
+EnforcingStatus StatusFromProperty() {
+    EnforcingStatus status = SELINUX_ENFORCING;
+
+    ImportKernelCmdline([&](const std::string& key, const std::string& value) {
+        if (key == "androidboot.selinux" && value == "permissive") {
+            status = SELINUX_PERMISSIVE;
+        }
+    });
+
+    if (status == SELINUX_ENFORCING) {
+        ImportBootconfig([&](const std::string& key, const std::string& value) {
+            if (key == "androidboot.selinux" && value == "permissive") {
+                status = SELINUX_PERMISSIVE;
+            }
+        });
+    }
+
+    return status;
+}
+
+=======
 enum EnforcingStatus { SELINUX_PERMISSIVE, SELINUX_ENFORCING };
 
 EnforcingStatus StatusFromProperty() {
@@ -105,11 +130,9 @@ EnforcingStatus StatusFromProperty() {
     return SELINUX_ENFORCING;
 }
 
+>>>>>>> BASE      (7a813f Merge "Merge "libsnapshot: Fix MapAllSnapshotsWithoutSlotSwi)
 bool IsEnforcing() {
-    if (ALLOW_PERMISSIVE_SELINUX) {
-        return StatusFromProperty() == SELINUX_ENFORCING;
-    }
-    return true;
+    return false;
 }
 
 bool ReadFirstLine(const char* file, std::string* line) {
