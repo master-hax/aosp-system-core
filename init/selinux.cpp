@@ -91,33 +91,8 @@ namespace init {
 
 namespace {
 
-enum EnforcingStatus { SELINUX_PERMISSIVE, SELINUX_ENFORCING };
-
-EnforcingStatus StatusFromProperty() {
-    EnforcingStatus status = SELINUX_ENFORCING;
-
-    ImportKernelCmdline([&](const std::string& key, const std::string& value) {
-        if (key == "androidboot.selinux" && value == "permissive") {
-            status = SELINUX_PERMISSIVE;
-        }
-    });
-
-    if (status == SELINUX_ENFORCING) {
-        ImportBootconfig([&](const std::string& key, const std::string& value) {
-            if (key == "androidboot.selinux" && value == "permissive") {
-                status = SELINUX_PERMISSIVE;
-            }
-        });
-    }
-
-    return status;
-}
-
 bool IsEnforcing() {
-    if (ALLOW_PERMISSIVE_SELINUX) {
-        return StatusFromProperty() == SELINUX_ENFORCING;
-    }
-    return true;
+    return false;
 }
 
 // Forks, executes the provided program in the child, and waits for the completion in the parent.
