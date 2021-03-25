@@ -36,6 +36,7 @@
 #include <liblp/liblp.h>
 #include <libsnapshot/snapshot.h>
 #include <sparse/sparse.h>
+#include <android-base/properties.h>
 
 #include "fastboot_device.h"
 #include "utility.h"
@@ -162,7 +163,9 @@ int Flash(FastbootDevice* device, const std::string& partition_name) {
                 partition_name == "boot_b")) {
         CopyAVBFooter(&data, block_device_size);
     }
-    WipeOverlayfsForPartition(device, partition_name);
+    if (android::base::GetProperty("ro.system.build.type", "") != "user") {
+        WipeOverlayfsForPartition(device, partition_name);
+    }
     int result = FlashBlockDevice(handle.fd(), data);
     sync();
     return result;
