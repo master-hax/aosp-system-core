@@ -20,11 +20,15 @@
 
 #include <functional>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 #include "result.h"
 #include "uevent.h"
 #include "uevent_handler.h"
+
+#define FIRMWARE_MAX_LOAD_BOOTING 1
+#define FIRMWARE_MAX_LOAD 4
 
 namespace android {
 namespace init {
@@ -52,11 +56,14 @@ class FirmwareHandler : public UeventHandler {
     Result<std::string> RunExternalHandler(const std::string& handler, uid_t uid,
                                            const Uevent& uevent) const;
     std::string GetFirmwarePath(const Uevent& uevent) const;
-    void ProcessFirmwareEvent(const std::string& root, const std::string& firmware) const;
-    bool ForEachFirmwareDirectory(std::function<bool(const std::string&)> handler) const;
+    void ProcessFirmwareEvent(const std::string& root, const std::string& firmware,
+                              int request_count) const;
+    bool ForEachFirmwareDirectory(std::function<bool(const std::string&)> handler,
+                                  bool apexFirst) const;
 
     std::vector<std::string> firmware_directories_;
     std::vector<ExternalFirmwareHandler> external_firmware_handlers_;
+    std::unordered_map<std::string, int> firmware_names_;
 };
 
 }  // namespace init
