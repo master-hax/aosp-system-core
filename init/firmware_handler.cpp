@@ -31,10 +31,12 @@
 #include <android-base/chrono_utils.h>
 #include <android-base/file.h>
 #include <android-base/logging.h>
+#include <android-base/properties.h>
 #include <android-base/scopeguard.h>
 #include <android-base/strings.h>
 #include <android-base/unique_fd.h>
 
+using android::base::GetBoolProperty;
 using android::base::ReadFdToString;
 using android::base::Socketpair;
 using android::base::Split;
@@ -187,10 +189,12 @@ std::string FirmwareHandler::GetFirmwarePath(const Uevent& uevent) const {
     return uevent.firmware;
 }
 
-void FirmwareHandler::ProcessFirmwareEvent(const std::string& root,
-                                           const std::string& firmware) const {
+void FirmwareHandler::ProcessFirmwareEvent(const std::string& root, const std::string& firmware,
+                                           int request_count) const {
     std::string loading = root + "/loading";
     std::string data = root + "/data";
+    bool boot_completed;
+    bool apex_first = true;
 
     unique_fd loading_fd(open(loading.c_str(), O_WRONLY | O_CLOEXEC));
     if (loading_fd == -1) {
@@ -226,7 +230,19 @@ void FirmwareHandler::ProcessFirmwareEvent(const std::string& root,
     int booting = IsBooting();
 try_loading_again:
     attempted_paths_and_errors.clear();
-    if (ForEachFirmwareDirectory(TryLoadFirmware)) {
+
+    boot_completed = android::base::GetBoolProperty("sys.boot_completed", false);
+    // Considering fallback, the firmware can be installed in two locations: /vendor and /apex.
+    // So it can check the request count when a failure occurs in the kernel
+    // and decide where to load the firmware.
+    // During boot, run fallback immediately upon failure or five times after boot.
+    if ((!boot_completed && request_count > FIRMWARE_MAX_LOAD_BOOTING) ||
+        request_count > FIRMWARE_MAX_LOAD) {
+        LOG(INFO) << "firmware: " << firmware
+                  << " loaded multiple times. Use default without scanning the apex directories";
+        apex_first = false;
+    }
+    if (ForEachFirmwareDirectory(TryLoadFirmware, apex_first)) {
         return;
     }
 
@@ -247,26 +263,29 @@ try_loading_again:
     write(loading_fd, "-1", 2);
 }
 
-bool FirmwareHandler::ForEachFirmwareDirectory(
-        std::function<bool(const std::string&)> handler) const {
-    for (const std::string& firmware_directory : firmware_directories_) {
-        if (std::invoke(handler, firmware_directory)) {
-            return true;
+bool FirmwareHandler::ForEachFirmwareDirectory(std::function<bool(const std::string&)> handler,
+                                               bool apex_first) const {
+    if (apex_first) {
+        // Try to load firmware from Apexes first
+        glob_t glob_result;
+        glob("/apex/*/etc/firmware/", GLOB_MARK, nullptr, &glob_result);
+        auto free_glob = android::base::make_scope_guard(std::bind(&globfree, &glob_result));
+        for (size_t i = 0; i < glob_result.gl_pathc; i++) {
+            char* apex_firmware_directory = glob_result.gl_pathv[i];
+            // Filter-out /apex/<name>@<ver> paths. The paths are bind-mounted to
+            // /apex/<name> paths, so unless we filter them out, we will look into the
+            // same apex twice.
+            if (strchr(apex_firmware_directory, '@')) {
+                continue;
+            }
+            if (std::invoke(handler, apex_firmware_directory)) {
+                return true;
+            }
         }
     }
 
-    glob_t glob_result;
-    glob("/apex/*/etc/firmware/", GLOB_MARK, nullptr, &glob_result);
-    auto free_glob = android::base::make_scope_guard(std::bind(&globfree, &glob_result));
-    for (size_t i = 0; i < glob_result.gl_pathc; i++) {
-        char* apex_firmware_directory = glob_result.gl_pathv[i];
-        // Filter-out /apex/<name>@<ver> paths. The paths are bind-mounted to
-        // /apex/<name> paths, so unless we filter them out, we will look into the
-        // same apex twice.
-        if (strchr(apex_firmware_directory, '@')) {
-            continue;
-        }
-        if (std::invoke(handler, apex_firmware_directory)) {
+    for (const std::string& firmware_directory : firmware_directories_) {
+        if (std::invoke(handler, firmware_directory)) {
             return true;
         }
     }
@@ -277,6 +296,15 @@ bool FirmwareHandler::ForEachFirmwareDirectory(
 void FirmwareHandler::HandleUevent(const Uevent& uevent) {
     if (uevent.subsystem != "firmware" || uevent.action != "add") return;
 
+    int request_count;
+    auto item = firmware_names_.find(uevent.firmware);
+    if (item != firmware_names_.end()) {
+        request_count = ++item->second;
+    } else {
+        request_count = 1;
+        firmware_names_.insert(std::make_pair(uevent.firmware, request_count));
+    }
+
     // Loading the firmware in a child means we can do that in parallel...
     auto pid = fork();
     if (pid == -1) {
@@ -285,7 +313,7 @@ void FirmwareHandler::HandleUevent(const Uevent& uevent) {
     if (pid == 0) {
         Timer t;
         auto firmware = GetFirmwarePath(uevent);
-        ProcessFirmwareEvent("/sys" + uevent.path, firmware);
+        ProcessFirmwareEvent("/sys" + uevent.path, firmware, request_count);
         LOG(INFO) << "loading " << uevent.path << " took " << t;
         _exit(EXIT_SUCCESS);
     }
