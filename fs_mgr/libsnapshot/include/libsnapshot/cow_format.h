@@ -33,6 +33,8 @@ static constexpr uint32_t BLOCK_SHIFT = (__builtin_ffs(BLOCK_SZ) - 1);
 //      +-----------------------+
 //      |     Header (fixed)    |
 //      +-----------------------+
+//      |     Scratch space     |
+//      +-----------------------+
 //      | Operation  (variable) |
 //      | Data       (variable) |
 //      +-----------------------+
@@ -144,16 +146,32 @@ static constexpr uint8_t kCowReplaceOp = 2;
 static constexpr uint8_t kCowZeroOp = 3;
 static constexpr uint8_t kCowLabelOp = 4;
 static constexpr uint8_t kCowClusterOp = 5;
-static constexpr uint8_t kCowBufferOp = 6;
 static constexpr uint8_t kCowFooterOp = -1;
 
 static constexpr uint8_t kCowCompressNone = 0;
 static constexpr uint8_t kCowCompressGz = 1;
 static constexpr uint8_t kCowCompressBrotli = 2;
 
+static constexpr uint8_t kCowReadAheadNotStarted = 0;
+static constexpr uint8_t kCowReadAheadInProgress = 1;
+static constexpr uint8_t kCowReadAheadDone = 2;
+
 struct CowFooter {
     CowFooterOperation op;
     CowFooterData data;
+} __attribute__((packed));
+
+struct Buffer_Metadata {
+    // Block of data in the image that operation modifies
+    // and read-ahead thread stores the modified data
+    // in the scratch space
+    uint64_t new_block;
+    // Offset within the file to read the data
+    uint64_t file_offset;
+} __attribute__((packed));
+
+struct Buffer_State {
+    uint8_t read_ahead_state;
 } __attribute__((packed));
 
 // 2MB Scratch space used for read-ahead
@@ -165,6 +183,11 @@ int64_t GetNextOpOffset(const CowOperation& op, uint32_t cluster_size);
 int64_t GetNextDataOffset(const CowOperation& op, uint32_t cluster_size);
 
 bool IsMetadataOp(const CowOperation& op);
+
+uint64_t GetMetadataOffset();
+size_t GetMetadataBytes();
+size_t GetBufferDataOffset();
+size_t GetBufferDataSize();
 
 }  // namespace snapshot
 }  // namespace android
