@@ -168,6 +168,7 @@ bool CowWriter::InitializeAppend(android::base::borrowed_fd fd, uint64_t label) 
 bool CowWriter::InitPos() {
     CowOperation op = {};
     op.type = kCowBufferOp;
+    op.read_ahead_state = kCowReadAheadNotStarted;
     op.source = BUFFER_REGION;
 
     next_op_pos_ = sizeof(header_);

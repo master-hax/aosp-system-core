@@ -142,6 +142,7 @@ bool CowReader::ParseOps(std::optional<uint64_t> label) {
         return false;
     }
 
+    // Skip the scratch space
     if (header_.major_version >= 2) {
         std::unique_ptr<CowOperation> buffer_op = std::make_unique<CowOperation>();
 
@@ -395,6 +396,17 @@ void CowReader::InitializeMerge() {
         CHECK(ops_->size() >= header_.num_merge_ops);
         ops_->erase(ops_.get()->begin(), ops_.get()->begin() + header_.num_merge_ops);
     }
+
+    num_copy_ops = 0;
+    for (uint64_t i = 0; i < ops_->size(); i++) {
+        auto& current_op = ops_->data()[i];
+        if (current_op.type != kCowCopyOp) {
+            break;
+        }
+        num_copy_ops += 1;
+    }
+
+    set_copy_ops(num_copy_ops);
 }
 
 bool CowReader::GetHeader(CowHeader* header) {
