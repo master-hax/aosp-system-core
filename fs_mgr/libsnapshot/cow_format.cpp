@@ -87,5 +87,35 @@ bool IsMetadataOp(const CowOperation& op) {
     }
 }
 
+uint64_t GetMetadataOffset() {
+    size_t size = sizeof(CowHeader) + sizeof(CowOperation);
+    return size;
+}
+
+/*
+ * Metadata for read-ahead is 16 bytes. For a 2 MB region, we will
+ * end up with 8k (2 PAGE) worth of metadata. Thus, a 2MB buffer
+ * region is split into:
+ *
+ * 1: 8k metadata
+ * 2: 2MB - 8K will be the buffer region to hold the data.
+ *
+ */
+size_t GetMetadataBytes() {
+    size_t metadata_bytes = (BUFFER_REGION * sizeof(struct Buffer_Metadata)) / BLOCK_SZ;
+    return metadata_bytes;
+}
+
+size_t GetBufferDataOffset() {
+    size_t metadata_bytes = GetMetadataBytes();
+    size_t size = GetMetadataOffset() + metadata_bytes;
+    return size;
+}
+
+size_t GetBufferDataSize() {
+    size_t size = BUFFER_REGION - GetMetadataBytes();
+    return size;
+}
+
 }  // namespace snapshot
 }  // namespace android
