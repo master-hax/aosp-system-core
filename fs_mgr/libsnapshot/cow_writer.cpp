@@ -94,6 +94,7 @@ void CowWriter::SetupHeaders() {
     header_.block_size = options_.block_size;
     header_.num_merge_ops = 0;
     header_.cluster_ops = options_.cluster_ops;
+    header_.buffer_size = 0;
     footer_ = {};
     footer_.op.data_length = 64;
     footer_.op.type = kCowFooterOp;
@@ -144,12 +145,12 @@ bool CowWriter::Initialize(unique_fd&& fd) {
     return Initialize(borrowed_fd{owned_fd_});
 }
 
-bool CowWriter::Initialize(borrowed_fd fd) {
+bool CowWriter::Initialize(borrowed_fd fd, bool scratch_space) {
     if (!SetFd(fd) || !ParseOptions()) {
         return false;
     }
 
-    return OpenForWrite();
+    return OpenForWrite(scratch_space);
 }
 
 bool CowWriter::InitializeAppend(android::base::unique_fd&& fd, uint64_t label) {
@@ -166,7 +167,7 @@ bool CowWriter::InitializeAppend(android::base::borrowed_fd fd, uint64_t label) 
 }
 
 void CowWriter::InitPos() {
-    next_op_pos_ = sizeof(header_);
+    next_op_pos_ = sizeof(header_) + header_.buffer_size;
     cluster_size_ = header_.cluster_ops * sizeof(CowOperation);
     if (header_.cluster_ops) {
         next_data_pos_ = next_op_pos_ + cluster_size_;
@@ -178,7 +179,7 @@ void CowWriter::InitPos() {
     current_data_size_ = 0;
 }
 
-bool CowWriter::OpenForWrite() {
+bool CowWriter::OpenForWrite(bool scratch_space) {
     // This limitation is tied to the data field size in CowOperation.
     if (header_.block_size > std::numeric_limits<uint16_t>::max()) {
         LOG(ERROR) << "Block size is too large";
@@ -190,6 +191,10 @@ bool CowWriter::OpenForWrite() {
         return false;
     }
 
+    if (scratch_space) {
+        header_.buffer_size = BUFFER_REGION;
+    }
+
     // Headers are not complete, but this ensures the file is at the right
     // position.
     if (!android::base::WriteFully(fd_, &header_, sizeof(header_))) {
@@ -197,7 +202,27 @@ bool CowWriter::OpenForWrite() {
         return false;
     }
 
+    if (scratch_space) {
+        // Initialize the scratch space
+        std::string data(header_.buffer_size, 0);
+        if (!android::base::WriteFully(fd_, data.data(), header_.buffer_size)) {
+            PLOG(ERROR) << "writing scratch space failed";
+            return false;
+        }
+    }
+
+    if (!Sync()) {
+        LOG(ERROR) << "Header sync failed";
+        return false;
+    }
+
+    if (lseek(fd_.get(), sizeof(header_) + header_.buffer_size, SEEK_SET) < 0) {
+        PLOG(ERROR) << "lseek failed";
+        return false;
+    }
+
     InitPos();
+
     return true;
 }
 

@@ -42,6 +42,10 @@ class ISnapshotWriter : public ICowWriter {
     // Open the writer in write mode (no append).
     virtual bool Initialize() = 0;
 
+    // Open the writer with an option to toggle scratch space
+    // Primiary used for vts tests which doesn't use the scratch space
+    virtual bool Initialize(bool scratch_space) = 0;
+
     // Open the writer in append mode, with the last label to resume
     // from. See CowWriter::InitializeAppend.
     virtual bool InitializeAppend(uint64_t label) = 0;
@@ -66,6 +70,7 @@ class CompressedSnapshotWriter : public ISnapshotWriter {
     bool SetCowDevice(android::base::unique_fd&& cow_device);
 
     bool Initialize() override;
+    bool Initialize(bool scratch_space) override;
     bool InitializeAppend(uint64_t label) override;
     bool Finalize() override;
     uint64_t GetCowSize() override;
@@ -93,6 +98,7 @@ class OnlineKernelSnapshotWriter : public ISnapshotWriter {
 
     bool Initialize() override { return true; }
     bool InitializeAppend(uint64_t) override { return true; }
+    bool Initialize(bool) override { return true; }
 
     bool Finalize() override;
     uint64_t GetCowSize() override { return cow_size_; }

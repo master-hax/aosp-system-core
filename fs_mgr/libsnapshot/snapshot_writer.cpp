@@ -116,6 +116,10 @@ bool CompressedSnapshotWriter::Initialize() {
     return cow_->Initialize(cow_device_);
 }
 
+bool CompressedSnapshotWriter::Initialize(bool scratch_space) {
+    return cow_->Initialize(cow_device_, scratch_space);
+}
+
 bool CompressedSnapshotWriter::InitializeAppend(uint64_t label) {
     return cow_->InitializeAppend(cow_device_, label);
 }
