@@ -172,6 +172,9 @@ class Snapuserd : public std::enable_shared_from_this<Snapuserd> {
         return p1.first < p2.first;
     }
 
+    void UnmapBufferRegion() { munmap(mapped_addr_, total_mapped_addr_length_); };
+    bool MmapMetadata();
+
   private:
     std::vector<std::unique_ptr<WorkerThread>> worker_threads_;
 
@@ -196,7 +199,6 @@ class Snapuserd : public std::enable_shared_from_this<Snapuserd> {
     std::unique_ptr<ICowOpIter> cowop_iter_;
     std::unique_ptr<ICowOpReverseIter> cowop_riter_;
     std::unique_ptr<CowReader> reader_;
-    std::unique_ptr<CowWriter> writer_;
 
     // Vector of disk exception which is a
     // mapping of old-chunk to new-chunk
@@ -207,6 +209,9 @@ class Snapuserd : public std::enable_shared_from_this<Snapuserd> {
     std::vector<std::pair<sector_t, const CowOperation*>> chunk_vec_;
 
     std::mutex lock_;
+
+    void* mapped_addr_;
+    size_t total_mapped_addr_length_;
 
     bool merge_initiated_ = false;
     bool attached_ = false;
