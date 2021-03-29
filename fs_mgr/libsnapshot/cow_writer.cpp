@@ -165,17 +165,29 @@ bool CowWriter::InitializeAppend(android::base::borrowed_fd fd, uint64_t label) 
     return OpenForAppend(label);
 }
 
-void CowWriter::InitPos() {
+bool CowWriter::InitPos() {
+    CowOperation op = {};
+    op.type = kCowBufferOp;
+    op.source = BUFFER_REGION;
+
     next_op_pos_ = sizeof(header_);
-    cluster_size_ = header_.cluster_ops * sizeof(CowOperation);
-    if (header_.cluster_ops) {
-        next_data_pos_ = next_op_pos_ + cluster_size_;
-    } else {
-        next_data_pos_ = next_op_pos_ + sizeof(CowOperation);
+
+    if (lseek(fd_.get(), next_op_pos_, SEEK_SET) < 0) {
+        PLOG(ERROR) << "lseek failed for writing operation.";
+        return false;
     }
-    ops_.clear();
-    current_cluster_size_ = 0;
-    current_data_size_ = 0;
+    if (!android::base::WriteFully(fd_, reinterpret_cast<const uint8_t*>(&op), sizeof(op))) {
+        return false;
+    }
+
+    std::string data(BUFFER_REGION, 0);
+    next_data_pos_ = sizeof(header_) + sizeof(CowOperation);
+
+    if (!WriteRawData(data.data(), BUFFER_REGION)) {
+        return false;
+    }
+    AddOperation(op);
+    return true;
 }
 
 bool CowWriter::OpenForWrite() {
@@ -197,7 +209,11 @@ bool CowWriter::OpenForWrite() {
         return false;
     }
 
-    InitPos();
+    if (!InitPos()) {
+        LOG(ERROR) << "InitPos failed";
+        return false;
+    }
+
     return true;
 }
 
@@ -214,7 +230,10 @@ bool CowWriter::OpenForAppend(uint64_t label) {
 
     // Reset this, since we're going to reimport all operations.
     footer_.op.num_ops = 0;
-    InitPos();
+    if (!InitPos()) {
+        LOG(ERROR) << "InitPos failed";
+        return false;
+    }
 
     auto iter = reader->GetOpIter();
 
@@ -448,9 +467,7 @@ bool CowWriter::WriteOperation(const CowOperation& op, const void* data, size_t 
 }
 
 void CowWriter::AddOperation(const CowOperation& op) {
-    footer_.op.num_ops++;
-
-    if (op.type == kCowClusterOp) {
+    if (op.type == kCowClusterOp || op.type == kCowBufferOp) {
         current_cluster_size_ = 0;
         current_data_size_ = 0;
     } else if (header_.cluster_ops) {
@@ -458,9 +475,21 @@ void CowWriter::AddOperation(const CowOperation& op) {
         current_data_size_ += op.data_length;
     }
 
-    next_data_pos_ += op.data_length + GetNextDataOffset(op, header_.cluster_ops);
-    next_op_pos_ += sizeof(CowOperation) + GetNextOpOffset(op, header_.cluster_ops);
-    ops_.insert(ops_.size(), reinterpret_cast<const uint8_t*>(&op), sizeof(op));
+    if (op.type == kCowBufferOp) {
+        ops_.clear();
+        cluster_size_ = header_.cluster_ops * sizeof(CowOperation);
+        next_op_pos_ = sizeof(header_) + sizeof(CowOperation) + BUFFER_REGION;
+        if (header_.cluster_ops) {
+            next_data_pos_ = next_op_pos_ + cluster_size_;
+        } else {
+            next_data_pos_ = next_op_pos_ + sizeof(CowOperation);
+        }
+    } else {
+        next_data_pos_ += op.data_length + GetNextDataOffset(op, header_.cluster_ops);
+        next_op_pos_ += sizeof(CowOperation) + GetNextOpOffset(op, header_.cluster_ops);
+        footer_.op.num_ops++;
+        ops_.insert(ops_.size(), reinterpret_cast<const uint8_t*>(&op), sizeof(op));
+    }
 }
 
 bool CowWriter::WriteRawData(const void* data, size_t size) {

@@ -122,7 +122,7 @@ class CowWriter : public ICowWriter {
     bool WriteOperation(const CowOperation& op, const void* data = nullptr, size_t size = 0);
     void AddOperation(const CowOperation& op);
     std::basic_string<uint8_t> Compress(const void* data, size_t length);
-    void InitPos();
+    bool InitPos();
 
     bool SetFd(android::base::borrowed_fd fd);
     bool Sync();
