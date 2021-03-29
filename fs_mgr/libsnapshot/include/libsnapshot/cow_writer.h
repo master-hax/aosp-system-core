@@ -15,6 +15,7 @@
 #pragma once
 
 #include <stdint.h>
+#include <sys/mman.h>
 
 #include <memory>
 #include <optional>
@@ -99,9 +100,6 @@ class CowWriter : public ICowWriter {
     // if the given label does not appear.
     bool InitializeAppend(android::base::unique_fd&&, uint64_t label);
     bool InitializeAppend(android::base::borrowed_fd fd, uint64_t label);
-
-    void InitializeMerge(android::base::borrowed_fd fd, CowHeader* header);
-    bool CommitMerge(int merged_ops);
 
     bool Finalize() override;
 
