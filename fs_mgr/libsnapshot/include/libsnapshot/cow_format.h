@@ -21,14 +21,19 @@ namespace android {
 namespace snapshot {
 
 static constexpr uint64_t kCowMagicNumber = 0x436f77634f572121ULL;
-static constexpr uint32_t kCowVersionMajor = 1;
+static constexpr uint32_t kCowVersionMajor = 2;
 static constexpr uint32_t kCowVersionMinor = 0;
+
+static constexpr uint32_t BLOCK_SZ = 4096;
+static constexpr uint32_t BLOCK_SHIFT = (__builtin_ffs(BLOCK_SZ) - 1);
 
 // This header appears as the first sequence of bytes in the COW. All fields
 // in the layout are little-endian encoded. The on-disk layout is:
 //
 //      +-----------------------+
 //      |     Header (fixed)    |
+//      +-----------------------+
+//      |    Scratch space      |
 //      +-----------------------+
 //      | Operation  (variable) |
 //      | Data       (variable) |
@@ -138,6 +143,7 @@ static constexpr uint8_t kCowReplaceOp = 2;
 static constexpr uint8_t kCowZeroOp = 3;
 static constexpr uint8_t kCowLabelOp = 4;
 static constexpr uint8_t kCowClusterOp = 5;
+static constexpr uint8_t kCowBufferOp = 6;
 static constexpr uint8_t kCowFooterOp = -1;
 
 static constexpr uint8_t kCowCompressNone = 0;
@@ -148,6 +154,9 @@ struct CowFooter {
     CowFooterOperation op;
     CowFooterData data;
 } __attribute__((packed));
+
+// 2MB Scratch space used for read-ahead
+static constexpr uint64_t BUFFER_REGION = (1ULL << 21);
 
 std::ostream& operator<<(std::ostream& os, CowOperation const& arg);
 
