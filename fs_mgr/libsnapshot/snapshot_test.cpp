@@ -240,7 +240,7 @@ class SnapshotTest : public ::testing::Test {
         if (!result) {
             return AssertionFailure() << "Cannot open snapshot for writing: " << name;
         }
-        if (!result->Initialize()) {
+        if (!result->Initialize(false)) {
             return AssertionFailure() << "Cannot initialize snapshot for writing: " << name;
         }
 

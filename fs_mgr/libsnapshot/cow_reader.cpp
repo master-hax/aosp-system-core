@@ -123,8 +123,7 @@ bool CowReader::Parse(android::base::borrowed_fd fd, std::optional<uint64_t> lab
         return false;
     }
 
-    if ((header_.major_version != kCowVersionMajor) ||
-        (header_.minor_version != kCowVersionMinor)) {
+    if ((header_.major_version > kCowVersionMajor) || (header_.minor_version != kCowVersionMinor)) {
         LOG(ERROR) << "Header version mismatch";
         LOG(ERROR) << "Major version: " << header_.major_version
                    << "Expected: " << kCowVersionMajor;
@@ -141,6 +140,18 @@ bool CowReader::ParseOps(std::optional<uint64_t> label) {
     if (pos != sizeof(header_)) {
         PLOG(ERROR) << "lseek ops failed";
         return false;
+    }
+
+    if (header_.major_version >= 2) {
+        if (header_.buffer_size > 0) {
+            LOG(DEBUG) << " Scratch space found of size: " << header_.buffer_size;
+            size_t init_offset = sizeof(header_) + header_.buffer_size;
+            pos = lseek(fd_.get(), init_offset, SEEK_SET);
+            if (pos != init_offset) {
+                PLOG(ERROR) << "lseek ops failed";
+                return false;
+            }
+        }
     }
 
     auto ops_buffer = std::make_shared<std::vector<CowOperation>>();

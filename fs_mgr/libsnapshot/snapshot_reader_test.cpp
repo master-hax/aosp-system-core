@@ -157,7 +157,7 @@ TEST_F(OfflineSnapshotTest, CompressedSnapshot) {
     auto writer = std::make_unique<CompressedSnapshotWriter>(options);
     writer->SetSourceDevice(base_->path);
     ASSERT_TRUE(writer->SetCowDevice(std::move(cow_fd)));
-    ASSERT_TRUE(writer->Initialize());
+    ASSERT_TRUE(writer->Initialize(false));
     ASSERT_NO_FATAL_FAILURE(WriteCow(writer.get()));
     ASSERT_NO_FATAL_FAILURE(TestReads(writer.get()));
 }

@@ -2941,8 +2941,12 @@ Return SnapshotManager::InitializeUpdateSnapshots(
                 return Return::Error();
             }
 
+            bool scratch_space = true;
+            if (device()->IsTestDevice()) {
+                scratch_space = false;
+            }
             CowWriter writer(CowOptions{.compression = it->second.compression_algorithm()});
-            if (!writer.Initialize(fd) || !writer.Finalize()) {
+            if (!writer.Initialize(fd, scratch_space) || !writer.Finalize()) {
                 LOG(ERROR) << "Could not initialize COW device for " << target_partition->name();
                 return Return::Error();
             }

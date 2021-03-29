@@ -94,7 +94,7 @@ class CowWriter : public ICowWriter {
     // If fd is < 0, the CowWriter will be opened against /dev/null. This is for
     // computing COW sizes without using storage space.
     bool Initialize(android::base::unique_fd&& fd);
-    bool Initialize(android::base::borrowed_fd fd);
+    bool Initialize(android::base::borrowed_fd fd, bool scratch_space = true);
     // Set up a writer, assuming that the given label is the last valid label.
     // This will result in dropping any labels that occur after the given on, and will fail
     // if the given label does not appear.
@@ -115,7 +115,7 @@ class CowWriter : public ICowWriter {
     bool EmitCluster();
     void SetupHeaders();
     bool ParseOptions();
-    bool OpenForWrite();
+    bool OpenForWrite(bool scratch_space);
     bool OpenForAppend(uint64_t label);
     bool GetDataPos(uint64_t* pos);
     bool WriteRawData(const void* data, size_t size);
