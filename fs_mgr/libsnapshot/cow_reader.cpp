@@ -137,6 +137,7 @@ bool CowReader::ParseOps(std::optional<uint64_t> label) {
         return false;
     }
 
+    // Skip the scratch space
     if (header_.major_version >= 2) {
         if (header_.buffer_size > 0) {
             LOG(DEBUG) << " Scratch space found of size: " << header_.buffer_size;
@@ -366,13 +367,7 @@ void CowReader::InitializeMerge() {
     //                        Replace-op-4, Zero-op-9, Replace-op-5 }
     //==============================================================
 
-    for (uint64_t i = 0; i < ops_->size(); i++) {
-        auto& current_op = ops_->data()[i];
-        if (current_op.type != kCowCopyOp) {
-            break;
-        }
-        num_copy_ops += 1;
-    }
+    num_copy_ops = FindNumCopyops();
 
     std::sort(ops_.get()->begin() + num_copy_ops, ops_.get()->end(),
               [](CowOperation& op1, CowOperation& op2) -> bool {
@@ -383,6 +378,23 @@ void CowReader::InitializeMerge() {
         CHECK(ops_->size() >= header_.num_merge_ops);
         ops_->erase(ops_.get()->begin(), ops_.get()->begin() + header_.num_merge_ops);
     }
+
+    num_copy_ops = FindNumCopyops();
+    set_copy_ops(num_copy_ops);
+}
+
+uint64_t CowReader::FindNumCopyops() {
+    uint64_t num_copy_ops = 0;
+
+    for (uint64_t i = 0; i < ops_->size(); i++) {
+        auto& current_op = ops_->data()[i];
+        if (current_op.type != kCowCopyOp) {
+            break;
+        }
+        num_copy_ops += 1;
+    }
+
+    return num_copy_ops;
 }
 
 bool CowReader::GetHeader(CowHeader* header) {
