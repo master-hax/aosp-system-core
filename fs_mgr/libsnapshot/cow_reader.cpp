@@ -123,8 +123,7 @@ bool CowReader::Parse(android::base::borrowed_fd fd, std::optional<uint64_t> lab
         return false;
     }
 
-    if ((header_.major_version != kCowVersionMajor) ||
-        (header_.minor_version != kCowVersionMinor)) {
+    if ((header_.major_version > kCowVersionMajor) || (header_.minor_version != kCowVersionMinor)) {
         LOG(ERROR) << "Header version mismatch";
         LOG(ERROR) << "Major version: " << header_.major_version
                    << "Expected: " << kCowVersionMajor;
@@ -141,6 +140,25 @@ bool CowReader::ParseOps(std::optional<uint64_t> label) {
     if (pos != sizeof(header_)) {
         PLOG(ERROR) << "lseek ops failed";
         return false;
+    }
+
+    if (header_.major_version >= 2) {
+        std::unique_ptr<CowOperation> buffer_op = std::make_unique<CowOperation>();
+
+        if (!android::base::ReadFully(fd_, buffer_op.get(), sizeof(CowOperation))) {
+            PLOG(ERROR) << "Could not read buffer op";
+            return false;
+        }
+
+        CHECK(buffer_op->type == kCowBufferOp);
+        CHECK(buffer_op->source == BUFFER_REGION);
+
+        size_t init_offset = sizeof(header_) + sizeof(CowOperation) + BUFFER_REGION;
+        pos = lseek(fd_.get(), init_offset, SEEK_SET);
+        if (pos != init_offset) {
+            PLOG(ERROR) << "lseek ops failed";
+            return false;
+        }
     }
 
     auto ops_buffer = std::make_shared<std::vector<CowOperation>>();
