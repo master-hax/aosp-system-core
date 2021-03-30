@@ -361,6 +361,43 @@ __attribute__((weak)) void CrasherTest::Trap(void* ptr ATTRIBUTE_UNUSED) {
   __builtin_trap();
 }
 
+TEST_F(CrasherTest, register_dump) {
+#if defined(__i386__)
+  GTEST_SKIP() << "architecture does not pass arguments in registers";
+#endif
+  int intercept_result;
+  unique_fd output_fd;
+  StartProcess([]() {
+    // Crash with 0xdead in the first argument register.
+    uintptr_t arg = 0xdead;
+    Trap(reinterpret_cast<void*>(arg));
+  });
+
+  StartIntercept(&output_fd);
+  FinishCrasher();
+  int status;
+  ASSERT_EQ(crasher_pid, TIMEOUT(30, waitpid(crasher_pid, &status, 0)));
+  ASSERT_TRUE(WIFSIGNALED(status)) << "crasher didn't terminate via a signal";
+  // Don't test the signal number because different architectures use different signals for
+  // __builtin_trap().
+  FinishIntercept(&intercept_result);
+
+  ASSERT_EQ(1, intercept_result) << "tombstoned reported failure";
+
+  std::string result;
+  ConsumeFd(std::move(output_fd), &result);
+
+#if defined(__aarch64__)
+  ASSERT_MATCH(result, R"(registers:\n\s*x0  000000000000dead)");
+#elif defined(__arm__)
+  ASSERT_MATCH(result, R"(registers:\n\s*r0  0000dead)");
+#elif defined(__x86_64__)
+  ASSERT_MATCH(result, R"(registers:\n\s*rdi 000000000000dead)");
+#else
+  ASSERT_TRUE(false) << "unsupported architecture";
+#endif
+}
+
 TEST_F(CrasherTest, heap_addr_in_register) {
 #if defined(__i386__)
   GTEST_SKIP() << "architecture does not pass arguments in registers";

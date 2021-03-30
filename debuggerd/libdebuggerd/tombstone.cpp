@@ -335,6 +335,8 @@ void dump_registers(log_t* log, unwindstack::Regs* regs) {
   static constexpr const char* special_registers[] = {};
 #endif
 
+  _LOG(log, logtype::REGISTERS, "\nregisters:\n");
+
   regs->IterateRegisters([log, &current_row, &special_row](const char* name, uint64_t value) {
     auto row = &current_row;
     for (const char* special_name : special_registers) {
@@ -403,8 +405,6 @@ static bool dump_thread(log_t* log, unwindstack::Unwinder* unwinder, const Threa
     dump_abort_message(log, unwinder->GetProcessMemory().get(), process_info.abort_msg_address);
   }
 
-  dump_registers(log, thread_info.registers.get());
-
   // Unwind will mutate the registers, so make a copy first.
   std::unique_ptr<unwindstack::Regs> regs_copy(thread_info.registers->Clone());
   unwinder->SetRegs(regs_copy.get());
@@ -430,7 +430,11 @@ static bool dump_thread(log_t* log, unwindstack::Unwinder* unwinder, const Threa
     }
 
     scudo_crash_data->DumpCause(log, unwinder);
+  }
 
+  dump_registers(log, regs_copy.get());
+
+  if (primary_thread) {
     unwindstack::Maps* maps = unwinder->GetMaps();
     dump_memory_and_code(log, maps, unwinder->GetProcessMemory().get(),
                          thread_info.registers.get());

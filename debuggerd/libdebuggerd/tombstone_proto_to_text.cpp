@@ -119,6 +119,9 @@ static void print_thread_registers(CallbackType callback, const Tombstone& tombs
       async_safe_fatal("unknown architecture");
   }
 
+  callback("", should_log);
+  callback("registers:", should_log);
+
   for (const auto& reg : thread.registers()) {
     auto row = &current_row;
     if (special_registers.count(reg.name()) == 1) {
@@ -257,7 +260,6 @@ static void print_main_thread(CallbackType callback, const Tombstone& tombstone,
     CBL("Abort message: '%s'", tombstone.abort_message().c_str());
   }
 
-  print_thread_registers(callback, tombstone, thread, true);
   print_thread_backtrace(callback, tombstone, thread, true);
 
   if (tombstone.causes_size() > 1) {
@@ -288,6 +290,8 @@ static void print_main_thread(CallbackType callback, const Tombstone& tombstone,
       }
     }
   }
+
+  print_thread_registers(callback, tombstone, thread, true);
 
   print_thread_memory_dump(callback, tombstone, thread);
 
