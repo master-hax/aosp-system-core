@@ -364,11 +364,22 @@ public:
     typedef typename RefBase::weakref_type weakref_type;
 
     inline wp() : m_ptr(nullptr), m_refs(nullptr) { }
+    wp(std::nullptr_t) : wp() {}
 
+#if defined(ANDROID_UTILS_REF_BASE_DISABLE_IMPLICIT_CONVERSION)
+    explicit wp(T* other);
+#else
     wp(T* other);  // NOLINT(implicit)
+#endif
     wp(const wp<T>& other);
     explicit wp(const sp<T>& other);
+
+#if defined(ANDROID_UTILS_REF_BASE_DISABLE_IMPLICIT_CONVERSION)
+    template <typename U>
+    explicit wp(U* other);
+#else
     template<typename U> wp(U* other);  // NOLINT(implicit)
+#endif
     template<typename U> wp(const sp<U>& other);  // NOLINT(implicit)
     template<typename U> wp(const wp<U>& other);  // NOLINT(implicit)
 
@@ -376,11 +387,15 @@ public:
 
     // Assignment
 
+#if !defined(ANDROID_UTILS_REF_BASE_DISABLE_IMPLICIT_CONVERSION)
     wp& operator = (T* other);
+#endif
     wp& operator = (const wp<T>& other);
     wp& operator = (const sp<T>& other);
 
+#if !defined(ANDROID_UTILS_REF_BASE_DISABLE_IMPLICIT_CONVERSION)
     template<typename U> wp& operator = (U* other);
+#endif
     template<typename U> wp& operator = (const wp<U>& other);
     template<typename U> wp& operator = (const sp<U>& other);
 
@@ -534,6 +549,7 @@ wp<T>::~wp()
     if (m_ptr) m_refs->decWeak(this);
 }
 
+#if !defined(ANDROID_UTILS_REF_BASE_DISABLE_IMPLICIT_CONVERSION)
 template<typename T>
 wp<T>& wp<T>::operator = (T* other)
 {
@@ -544,6 +560,7 @@ wp<T>& wp<T>::operator = (T* other)
     m_refs = newRefs;
     return *this;
 }
+#endif
 
 template<typename T>
 wp<T>& wp<T>::operator = (const wp<T>& other)
@@ -569,6 +586,7 @@ wp<T>& wp<T>::operator = (const sp<T>& other)
     return *this;
 }
 
+#if !defined(ANDROID_UTILS_REF_BASE_DISABLE_IMPLICIT_CONVERSION)
 template<typename T> template<typename U>
 wp<T>& wp<T>::operator = (U* other)
 {
@@ -579,6 +597,7 @@ wp<T>& wp<T>::operator = (U* other)
     m_refs = newRefs;
     return *this;
 }
+#endif
 
 template<typename T> template<typename U>
 wp<T>& wp<T>::operator = (const wp<U>& other)
