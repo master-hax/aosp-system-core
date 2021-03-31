@@ -443,6 +443,20 @@ void RefBase::incStrong(const void* id) const
     refs->mBase->onFirstRef();
 }
 
+void RefBase::incStrongRequireStrong(const void* id) const {
+    weakref_impl* const refs = mRefs;
+    refs->incWeak(id);
+
+    refs->addStrongRef(id);
+    const int32_t c = refs->mStrong.fetch_add(1, std::memory_order_relaxed);
+
+    LOG_ALWAYS_FATAL_IF(c <= 0 || c == INITIAL_STRONG_VALUE,
+                        "incStrongRequireStrong() called on %p which isn't already owned", refs);
+#if PRINT_REFS
+    ALOGD("incStrong (requiring strong) of %p from %p: cnt=%d\n", this, id, c);
+#endif
+}
+
 void RefBase::decStrong(const void* id) const
 {
     weakref_impl* const refs = mRefs;
