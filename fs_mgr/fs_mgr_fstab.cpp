@@ -773,11 +773,14 @@ bool SkipMountingPartitions(Fstab* fstab) {
         }
         auto it = std::remove_if(fstab->begin(), fstab->end(),
                                  [&skip_mount_point](const auto& entry) {
-                                     return entry.mount_point == skip_mount_point;
+                                     if (entry.mount_point == skip_mount_point) {
+                                         return true;
+                                     }
+                                     return StartsWith(entry.mount_point, skip_mount_point + "/");
                                  });
-        if (it == fstab->end()) continue;
-        fstab->erase(it, fstab->end());
-        LOG(INFO) << "Skip mounting partition: " << skip_mount_point;
+        if (it != fstab->end()) {
+            fstab->erase(it, fstab->end());
+        }
     }
 
     return true;
