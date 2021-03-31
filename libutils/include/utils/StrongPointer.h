@@ -38,10 +38,21 @@ public:
     template <typename... Args>
     static inline sp<T> make(Args&&... args);
 
+#if defined(ANDROID_UTILS_SP_DISABLE_IMPLICIT_CONVERSION)
+    explicit sp(T* other);
+    sp(std::nullptr_t) : sp() {}
+#else
     sp(T* other);  // NOLINT(implicit)
+#endif
     sp(const sp<T>& other);
     sp(sp<T>&& other) noexcept;
+
+#if defined(ANDROID_UTILS_SP_DISABLE_IMPLICIT_CONVERSION)
+    template <typename U>
+    explicit sp(U* other);
+#else
     template<typename U> sp(U* other);  // NOLINT(implicit)
+#endif
     template<typename U> sp(const sp<U>& other);  // NOLINT(implicit)
     template<typename U> sp(sp<U>&& other);  // NOLINT(implicit)
 
@@ -49,13 +60,17 @@ public:
 
     // Assignment
 
+#if !defined(ANDROID_UTILS_SP_DISABLE_IMPLICIT_CONVERSION)
     sp& operator = (T* other);
+#endif
     sp& operator = (const sp<T>& other);
     sp& operator=(sp<T>&& other) noexcept;
 
     template<typename U> sp& operator = (const sp<U>& other);
     template<typename U> sp& operator = (sp<U>&& other);
+#if !defined(ANDROID_UTILS_SP_DISABLE_IMPLICIT_CONVERSION)
     template<typename U> sp& operator = (U* other);
+#endif
 
     //! Special optimization for use by ProcessState (and nobody else).
     void force_set(T* other);
@@ -260,6 +275,7 @@ sp<T>& sp<T>::operator=(sp<T>&& other) noexcept {
     return *this;
 }
 
+#if !defined(ANDROID_UTILS_SP_DISABLE_IMPLICIT_CONVERSION)
 template<typename T>
 sp<T>& sp<T>::operator =(T* other) {
     T* oldPtr(*const_cast<T* volatile*>(&m_ptr));
@@ -272,6 +288,7 @@ sp<T>& sp<T>::operator =(T* other) {
     m_ptr = other;
     return *this;
 }
+#endif
 
 template<typename T> template<typename U>
 sp<T>& sp<T>::operator =(const sp<U>& other) {
@@ -294,6 +311,7 @@ sp<T>& sp<T>::operator =(sp<U>&& other) {
     return *this;
 }
 
+#if !defined(ANDROID_UTILS_SP_DISABLE_IMPLICIT_CONVERSION)
 template<typename T> template<typename U>
 sp<T>& sp<T>::operator =(U* other) {
     T* oldPtr(*const_cast<T* volatile*>(&m_ptr));
@@ -303,6 +321,7 @@ sp<T>& sp<T>::operator =(U* other) {
     m_ptr = other;
     return *this;
 }
+#endif
 
 template<typename T>
 void sp<T>::force_set(T* other) {

@@ -76,6 +76,7 @@ cc_defaults {
         "-Wall",
         "-Werror",
         "-Wno-exit-time-destructors",
+        "-DANDROID_UTILS_SP_DISABLE_IMPLICIT_CONVERSION",
     ],
     header_libs: [
         "libbase_headers",
