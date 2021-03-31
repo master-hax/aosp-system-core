@@ -244,6 +244,7 @@ class RefBase
 {
 public:
             void            incStrong(const void* id) const;
+            void            incStrongRequireStrong(const void* id) const;
             void            decStrong(const void* id) const;
     
             void            forceIncStrong(const void* id) const;
@@ -364,11 +365,17 @@ public:
     typedef typename RefBase::weakref_type weakref_type;
 
     inline wp() : m_ptr(nullptr), m_refs(nullptr) { }
+    wp(std::nullptr_t) : wp() {}
 
+#if !defined(ANDROID_UTILS_REF_BASE_DISABLE_IMPLICIT_CONSTRUCTION)
     wp(T* other);  // NOLINT(implicit)
+#endif
     wp(const wp<T>& other);
     explicit wp(const sp<T>& other);
+
+#if !defined(ANDROID_UTILS_REF_BASE_DISABLE_IMPLICIT_CONSTRUCTION)
     template<typename U> wp(U* other);  // NOLINT(implicit)
+#endif
     template<typename U> wp(const sp<U>& other);  // NOLINT(implicit)
     template<typename U> wp(const wp<U>& other);  // NOLINT(implicit)
 
@@ -376,11 +383,15 @@ public:
 
     // Assignment
 
+#if !defined(ANDROID_UTILS_REF_BASE_DISABLE_IMPLICIT_CONSTRUCTION)
     wp& operator = (T* other);
+#endif
     wp& operator = (const wp<T>& other);
     wp& operator = (const sp<T>& other);
 
+#if !defined(ANDROID_UTILS_REF_BASE_DISABLE_IMPLICIT_CONSTRUCTION)
     template<typename U> wp& operator = (U* other);
+#endif
     template<typename U> wp& operator = (const wp<U>& other);
     template<typename U> wp& operator = (const sp<U>& other);
 
@@ -481,12 +492,14 @@ private:
 // Note that the above comparison operations go out of their way to provide an ordering consistent
 // with ordinary pointer comparison; otherwise they could ignore m_ptr, and just compare m_refs.
 
+#if !defined(ANDROID_UTILS_REF_BASE_DISABLE_IMPLICIT_CONSTRUCTION)
 template<typename T>
 wp<T>::wp(T* other)
     : m_ptr(other)
 {
     m_refs = other ? m_refs = other->createWeak(this) : nullptr;
 }
+#endif
 
 template<typename T>
 wp<T>::wp(const wp<T>& other)
@@ -502,12 +515,14 @@ wp<T>::wp(const sp<T>& other)
     m_refs = m_ptr ? m_ptr->createWeak(this) : nullptr;
 }
 
+#if !defined(ANDROID_UTILS_REF_BASE_DISABLE_IMPLICIT_CONSTRUCTION)
 template<typename T> template<typename U>
 wp<T>::wp(U* other)
     : m_ptr(other)
 {
     m_refs = other ? other->createWeak(this) : nullptr;
 }
+#endif
 
 template<typename T> template<typename U>
 wp<T>::wp(const wp<U>& other)
@@ -534,6 +549,7 @@ wp<T>::~wp()
     if (m_ptr) m_refs->decWeak(this);
 }
 
+#if !defined(ANDROID_UTILS_REF_BASE_DISABLE_IMPLICIT_CONSTRUCTION)
 template<typename T>
 wp<T>& wp<T>::operator = (T* other)
 {
@@ -544,6 +560,7 @@ wp<T>& wp<T>::operator = (T* other)
     m_refs = newRefs;
     return *this;
 }
+#endif
 
 template<typename T>
 wp<T>& wp<T>::operator = (const wp<T>& other)
@@ -569,6 +586,7 @@ wp<T>& wp<T>::operator = (const sp<T>& other)
     return *this;
 }
 
+#if !defined(ANDROID_UTILS_REF_BASE_DISABLE_IMPLICIT_CONSTRUCTION)
 template<typename T> template<typename U>
 wp<T>& wp<T>::operator = (U* other)
 {
@@ -579,6 +597,7 @@ wp<T>& wp<T>::operator = (U* other)
     m_refs = newRefs;
     return *this;
 }
+#endif
 
 template<typename T> template<typename U>
 wp<T>& wp<T>::operator = (const wp<U>& other)
