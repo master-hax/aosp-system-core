@@ -213,6 +213,7 @@ void SnapuserdServer::RunThread(std::shared_ptr<DmUserHandler> handler) {
     auto misc_name = handler->misc_name();
     LOG(INFO) << "Handler thread about to exit: " << misc_name;
     handler->snapuserd()->CheckMergeCompletionStatus();
+    handler->snapuserd()->FreeResources();
 
     {
         std::lock_guard<std::mutex> lock(lock_);
@@ -221,6 +222,7 @@ void SnapuserdServer::RunThread(std::shared_ptr<DmUserHandler> handler) {
             // RemoveAndJoinHandler() already removed us from the list, and is
             // now waiting on a join(), so just return.
             LOG(INFO) << "Exiting handler thread to allow for join: " << misc_name;
+            handler->FreeResources();
             return;
         }
 
