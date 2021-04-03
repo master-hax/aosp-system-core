@@ -1,0 +1,30 @@
+{
+  "comments": [
+    {
+      "robotId": "ayeaye",
+      "robotRunId": "AR00000000000009568736",
+      "url": "https://android-build.googleplex.com/builds/treetop/android-review/1663719?revision\u003d1",
+      "fixSuggestions": [],
+      "key": {
+        "uuid": "23aa816b_33435916",
+        "filename": "libcutils/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 369,
+      "author": {
+        "id": 1757831
+      },
+      "writtenOn": "2021-04-03T03:01:03Z",
+      "side": 1,
+      "message": "Prefer to use inclusive terms like \u0027deny list\u0027 or \u0027allow list\u0027; see https://developers.google.com/style/word-list#blacklist for more details. In the case of a false positive add BYPASS_INCLUSIVE_LANGUAGE_REASON\u003dmy_reason_here to your commit message to disable this check.",
+      "range": {
+        "startLine": 369,
+        "startChar": 11,
+        "endLine": 369,
+        "endChar": 20
+      },
+      "revId": "00b14d90c96173de41715ab01fa1c6567eecc13c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
