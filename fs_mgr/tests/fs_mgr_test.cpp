@@ -1097,3 +1097,41 @@ TEST(fs_mgr, UserdataMountedFromDefaultFstab) {
     ASSERT_NE(nullptr, fs_mgr_get_mounted_entry_for_userdata(&fstab, block_device))
             << "/data wasn't mounted from default fstab";
 }
+
+TEST(fs_mgr, ReadFstabFromFile_FsMgrOptions_Readahead_Size_KB) {
+    TemporaryFile tf;
+    ASSERT_TRUE(tf.fd != -1);
+    std::string fstab_contents = R"fs(
+source none0       swap   defaults      readahead_size_kb=blah
+source none1       swap   defaults      readahead_size_kb=12345
+source none2       swap   defaults      readahead_size_kb=5%
+source none3       swap   defaults      readahead_size_kb=5kb
+)fs";
+    ASSERT_TRUE(android::base::WriteStringToFile(fstab_contents, tf.path));
+
+    Fstab fstab;
+    EXPECT_TRUE(ReadFstabFromFile(tf.path, &fstab));
+    ASSERT_EQ(3U, fstab.size());
+
+    FstabEntry::FsMgrFlags flags = {};
+
+    auto entry = fstab.begin();
+    EXPECT_EQ("none0", entry->mount_point);
+    EXPECT_TRUE(CompareFlags(flags, entry->fs_mgr_flags));
+    EXPECT_EQ(0, entry->readahead_size_kb);
+    entry++;
+
+    EXPECT_EQ("none1", entry->mount_point);
+    EXPECT_TRUE(CompareFlags(flags, entry->fs_mgr_flags));
+    EXPECT_EQ(12345, entry->readahead_size_kb);
+    entry++;
+
+    EXPECT_EQ("none2", entry->mount_point);
+    EXPECT_TRUE(CompareFlags(flags, entry->fs_mgr_flags));
+    EXPECT_EQ(0, entry->readahead_size_kb);
+    entry++;
+
+    EXPECT_EQ("none3", entry->mount_point);
+    EXPECT_TRUE(CompareFlags(flags, entry->fs_mgr_flags));
+    EXPECT_NE(0, entry->readahead_size_kb);
+}
