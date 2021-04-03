@@ -471,9 +471,6 @@ on init
     chmod 0664 /sys/module/lowmemorykiller/parameters/minfree
     start lmkd
 
-    # Set an initial boot level - start at 10 in case we need to add earlier ones.
-    setprop keystore.boot_level 10
-
     # Start essential services.
     start servicemanager
     start hwservicemanager
@@ -630,8 +627,6 @@ on late-fs
     write /sys/kernel/tracing/instances/bootreceiver/events/error_report/error_report_end/enable 1
 
 on post-fs-data
-    # Boot level 30 - at this point daemons like apexd and odsign run
-    setprop keystore.boot_level 30
 
     mark_post_data
 
@@ -667,16 +662,6 @@ on post-fs-data
     # Make sure that apexd is started in the default namespace
     enter_default_mount_ns
 
-    # /data/apex is now available. Start apexd to scan and activate APEXes.
-    mkdir /data/apex 0755 root system encryption=None
-    mkdir /data/apex/active 0755 root system
-    mkdir /data/apex/backup 0700 root system
-    mkdir /data/apex/decompressed 0700 root system encryption=Require
-    mkdir /data/apex/hashtree 0700 root system
-    mkdir /data/apex/sessions 0700 root system
-    mkdir /data/app-staging 0751 system system encryption=DeleteIfNecessary
-    mkdir /data/apex/ota_reserved 0700 root system encryption=Require
-    start apexd
 
     # Avoid predictable entropy pool. Carry over entropy from previous boot.
     copy /data/system/entropy.dat /dev/urandom
@@ -844,6 +829,29 @@ on post-fs-data
     mkdir /data/user/0 0700 system system encryption=None
     mount none /data/data /data/user/0 bind rec
 
+    # Boot level 30
+    # odsign signing keys have MAX_BOOT_LEVEL=30
+    # This is currently the earliest boot level, but we start at 30
+    # to leave room for earlier levels.
+    setprop keystore.boot_level 30
+
+    # Now that /data is mounted and we have created /data/misc/keystore,
+    # we can tell keystore to stop allowing use of early-boot keys,
+    # and access its database for the first time to support creation and
+    # use of MAX_BOOT_LEVEL keys.
+    exec - system system -- /system/bin/vdc keymaster earlyBootEnded
+
+    # /data/apex is now available. Start apexd to scan and activate APEXes.
+    mkdir /data/apex 0755 root system encryption=None
+    mkdir /data/apex/active 0755 root system
+    mkdir /data/apex/backup 0700 root system
+    mkdir /data/apex/decompressed 0700 root system encryption=Require
+    mkdir /data/apex/hashtree 0700 root system
+    mkdir /data/apex/sessions 0700 root system
+    mkdir /data/app-staging 0751 system system encryption=DeleteIfNecessary
+    mkdir /data/apex/ota_reserved 0700 root system encryption=Require
+    start apexd
+
     # A tmpfs directory, which will contain all apps CE DE data directory that
     # bind mount from the original source.
     mount tmpfs tmpfs /data_mirror nodev noexec nosuid mode=0700,uid=0,gid=1000
@@ -914,14 +922,13 @@ on post-fs-data
     # odsign to be done with the key
     wait_for_prop odsign.key.done 1
 
-    # After apexes are mounted, tell keymaster early boot has ended, so it will
-    # stop allowing use of early-boot keys
-    exec - system system -- /system/bin/vdc keymaster earlyBootEnded
-
     # Lock the fs-verity keyring, so no more keys can be added
     exec -- /system/bin/fsverity_init --lock
 
-    setprop keystore.boot_level 40
+    # Bump the boot level to 1000000000; this prevents further on-device signing.
+    # This is a special value that shuts down the thread which listens for
+    # further updates.
+    setprop keystore.boot_level 1000000000
 
     # Allow apexd to snapshot and restore device encrypted apex data in the case
     # of a rollback. This should be done immediately after DE_user data keys
