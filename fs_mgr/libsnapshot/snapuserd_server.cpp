@@ -409,6 +409,13 @@ bool SnapuserdServer::RemoveAndJoinHandler(const std::string& misc_name) {
         }
         handler = std::move(*iter);
         dm_users_.erase(iter);
+        // When the final dm-user handler is removed, daemon is terminated.
+        // Also, this is the only place where the handlers are removed
+        // from the vector; hence making sure that daemon is not terminated
+        // early
+        if (dm_users_.size() == 0) {
+            terminating_ = true;
+        }
     }
 
     auto& th = handler->thread();

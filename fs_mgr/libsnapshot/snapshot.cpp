@@ -2297,6 +2297,12 @@ bool SnapshotManager::UnmapAllSnapshots(LockedFile* lock) {
             return false;
         }
     }
+
+    if (snapuserd_client_) {
+        LOG(INFO) << "Closing snapuserd connection";
+        snapuserd_client_->CloseConnection();
+        snapuserd_client_ = nullptr;
+    }
     return true;
 }
 
