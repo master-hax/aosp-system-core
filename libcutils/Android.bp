@@ -366,5 +366,6 @@ rust_bindgen {
         "--whitelist-function", "multiuser_get_user_id",
         "--whitelist-function", "multiuser_get_uid",
         "--whitelist-var", "AID_USER_OFFSET",
+        "--whitelist-var", "AID_KEYSTORE",
     ],
 }
