@@ -647,6 +647,51 @@ bool fs_mgr_is_f2fs(const std::string& blk_device) {
     return sb == cpu_to_le32(F2FS_SUPER_MAGIC);
 }
 
+static void SetReadAheadSize(const std::string& entry_block_device, off64_t size_kb) {
+    if (!size_kb) {
+        return;
+    }
+
+    std::string block_device;
+    if (!Realpath(entry_block_device, &block_device)) {
+        PERROR << "Failed to realpath " << entry_block_device;
+        return;
+    }
+
+    static constexpr std::string_view kDevBlockPrefix("/dev/block/");
+    if (!android::base::StartsWith(block_device, kDevBlockPrefix)) {
+        LWARNING << block_device << " is not a block device";
+        return;
+    }
+
+    bool stop = false;
+    DeviceMapper& dm = DeviceMapper::Instance();
+    while (true) {
+        if (!dm.IsDmBlockDevice(block_device)) {
+            block_device.erase(std::remove_if(block_device.begin(), block_device.end(), &isdigit),
+                               block_device.end());
+            stop = true;
+        }
+        std::string block_name = block_device;
+        if (android::base::StartsWith(block_device, kDevBlockPrefix)) {
+            block_name = block_device.substr(kDevBlockPrefix.length());
+        }
+        std::string sys_device = "/sys/block/" + block_name + "/queue/read_ahead_kb";
+        std::string size = android::base::StringPrintf("%llu", (long long)size_kb);
+        android::base::WriteStringToFile(size, sys_device.c_str());
+        LINFO << "Set readahead_kb: " << size << " on " << sys_device;
+
+        if (stop) {
+            break;
+        }
+        auto parent = dm.GetParentBlockDeviceByPath(block_device);
+        if (!parent) {
+            return;
+        }
+        block_device = *parent;
+    }
+}
+
 //
 // Prepare the filesystem on the given block device to be mounted.
 //
@@ -666,6 +711,9 @@ static int prepare_fs_for_mount(const std::string& blk_device, const FstabEntry&
         unlink(mount_point.c_str());
     }
     mkdir(mount_point.c_str(), 0755);
+
+    // Don't need to return error, since it's a salt
+    SetReadAheadSize(blk_device, entry.readahead_size_kb);
 
     int fs_stat = 0;
 
