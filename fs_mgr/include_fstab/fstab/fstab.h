@@ -47,6 +47,7 @@ struct FstabEntry {
     int max_comp_streams = 0;
     off64_t zram_size = 0;
     off64_t reserved_size = 0;
+    off64_t readahead_size_kb = 0;
     std::string encryption_options;
     off64_t erase_blk_size = 0;
     off64_t logical_blk_size = 0;
