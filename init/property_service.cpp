@@ -38,7 +38,6 @@
 
 #define _REALLY_INCLUDE_SYS__SYSTEM_PROPERTIES_H_
 #include <sys/_system_properties.h>
-
 #include <map>
 #include <memory>
 #include <mutex>
@@ -94,6 +93,12 @@ using android::sysprop::InitProperties::is_userspace_reboot_supported;
 
 namespace android {
 namespace init {
+constexpr auto FINGERPRINT_PROP = "ro.build.fingerprint";
+constexpr auto LEGACY_FINGERPRINT_PROP = "ro.build.legacy.fingerprint";
+constexpr auto ID_PROP = "ro.build.id";
+constexpr auto LEGACY_ID_PROP = "ro.build.legacy.id";
+constexpr auto VBMETA_DIGEST_PROP = "ro.boot.vbmeta.digest";
+constexpr auto DIGEST_SIZE_USED = 8;
 
 static bool persistent_properties_loaded = false;
 
@@ -857,6 +862,80 @@ static void property_initialize_ro_product_props() {
     }
 }
 
+static void property_initialize_build_id() {
+    std::string build_id = GetProperty(ID_PROP, "");
+    if (!build_id.empty()) {
+        return;
+    }
+
+    std::string legacy_build_id = GetProperty(LEGACY_ID_PROP, "");
+    std::string vbmeta_digest = GetProperty(VBMETA_DIGEST_PROP, "");
+    if (vbmeta_digest.size() < DIGEST_SIZE_USED) {
+        LOG(ERROR) << "vbmeta digest size too small " << vbmeta_digest;
+        // Still try to set the id field in the unexpected case.
+        build_id = legacy_build_id;
+    } else {
+        build_id = legacy_build_id + "." + vbmeta_digest.substr(0, DIGEST_SIZE_USED);
+    }
+
+    std::string error;
+    auto res = PropertySet(ID_PROP, build_id, &error);
+    if (res != PROP_SUCCESS) {
+        LOG(ERROR) << "Failed to set " << ID_PROP << " to " << build_id;
+    }
+}
+
+std::string ConstructBuildFingerprint(
+        bool legacy,
+        const std::function<std::string(const std::string&, const std::string&)>& get_prop_func) {
+    const std::string UNKNOWN = "unknown";
+    std::string build_fingerprint = get_prop_func("ro.product.brand", UNKNOWN);
+    build_fingerprint += '/';
+    build_fingerprint += get_prop_func("ro.product.name", UNKNOWN);
+    build_fingerprint += '/';
+    build_fingerprint += get_prop_func("ro.product.device", UNKNOWN);
+    build_fingerprint += ':';
+    build_fingerprint += get_prop_func("ro.build.version.release_or_codename", UNKNOWN);
+    build_fingerprint += '/';
+
+    std::string build_id =
+            legacy ? get_prop_func(LEGACY_ID_PROP, UNKNOWN) : get_prop_func(ID_PROP, UNKNOWN);
+    build_fingerprint += build_id;
+    build_fingerprint += '/';
+    build_fingerprint += get_prop_func("ro.build.version.incremental", UNKNOWN);
+    build_fingerprint += ':';
+    build_fingerprint += get_prop_func("ro.build.type", UNKNOWN);
+    build_fingerprint += '/';
+    build_fingerprint += get_prop_func("ro.build.tags", UNKNOWN);
+
+    return build_fingerprint;
+}
+
+// Derive the legacy build fingerprint if we overwrite the build id at runtime.
+static void property_derive_legacy_build_fingerprint() {
+    std::string legacy_build_fingerprint = GetProperty(LEGACY_FINGERPRINT_PROP, "");
+    if (!legacy_build_fingerprint.empty()) {
+        return;
+    }
+
+    // The device doesn't have a legacy build id, skipping the legacy fingerprint.
+    std::string legacy_build_id = GetProperty(LEGACY_ID_PROP, "");
+    if (legacy_build_id.empty()) {
+        return;
+    }
+
+    legacy_build_fingerprint = ConstructBuildFingerprint(true, GetProperty);
+    LOG(INFO) << "Setting property '" << LEGACY_FINGERPRINT_PROP << "' to '"
+              << legacy_build_fingerprint << "'";
+
+    std::string error;
+    uint32_t res = PropertySet(LEGACY_FINGERPRINT_PROP, legacy_build_fingerprint, &error);
+    if (res != PROP_SUCCESS) {
+        LOG(ERROR) << "Error setting property '" << LEGACY_FINGERPRINT_PROP << "': err=" << res
+                   << " (" << error << ")";
+    }
+}
+
 // If the ro.build.fingerprint property has not been set, derive it from constituent pieces
 static void property_derive_build_fingerprint() {
     std::string build_fingerprint = GetProperty("ro.build.fingerprint", "");
@@ -864,30 +943,14 @@ static void property_derive_build_fingerprint() {
         return;
     }
 
-    const std::string UNKNOWN = "unknown";
-    build_fingerprint = GetProperty("ro.product.brand", UNKNOWN);
-    build_fingerprint += '/';
-    build_fingerprint += GetProperty("ro.product.name", UNKNOWN);
-    build_fingerprint += '/';
-    build_fingerprint += GetProperty("ro.product.device", UNKNOWN);
-    build_fingerprint += ':';
-    build_fingerprint += GetProperty("ro.build.version.release_or_codename", UNKNOWN);
-    build_fingerprint += '/';
-    build_fingerprint += GetProperty("ro.build.id", UNKNOWN);
-    build_fingerprint += '/';
-    build_fingerprint += GetProperty("ro.build.version.incremental", UNKNOWN);
-    build_fingerprint += ':';
-    build_fingerprint += GetProperty("ro.build.type", UNKNOWN);
-    build_fingerprint += '/';
-    build_fingerprint += GetProperty("ro.build.tags", UNKNOWN);
-
-    LOG(INFO) << "Setting property 'ro.build.fingerprint' to '" << build_fingerprint << "'";
+    build_fingerprint = ConstructBuildFingerprint(false, GetProperty);
+    LOG(INFO) << "Setting property '" << FINGERPRINT_PROP << "' to '" << build_fingerprint << "'";
 
     std::string error;
-    uint32_t res = PropertySet("ro.build.fingerprint", build_fingerprint, &error);
+    uint32_t res = PropertySet(FINGERPRINT_PROP, build_fingerprint, &error);
     if (res != PROP_SUCCESS) {
-        LOG(ERROR) << "Error setting property 'ro.build.fingerprint': err=" << res << " (" << error
-                   << ")";
+        LOG(ERROR) << "Error setting property '" << FINGERPRINT_PROP << "': err=" << res << " ("
+                   << error << ")";
     }
 }
 
@@ -1035,7 +1098,9 @@ void PropertyLoadBootDefaults() {
     }
 
     property_initialize_ro_product_props();
+    property_initialize_build_id();
     property_derive_build_fingerprint();
+    property_derive_legacy_build_fingerprint();
     property_initialize_ro_cpu_abilist();
 
     update_sys_usb_config();
