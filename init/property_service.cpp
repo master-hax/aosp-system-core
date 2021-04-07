@@ -1204,6 +1204,18 @@ static void ProcessKernelCmdline() {
             // emulator specific, should be retired once emulator migrates to
             // androidboot.
             InitPropertySet("ro.boot.debug.sf.nobootanimation", "1");
+        } else if (key == "android.checkjni") {
+            // emulator specific, should be retired once emulator migrates to
+            // androidboot.
+            std::string valueBool;
+            if (value == "0") {
+                valueBool = "false";
+            } else if (value == "1") {
+                valueBool = "true";
+            } else {
+                valueBool = value;
+            }
+            InitPropertySet("ro.boot.dalvik.vm.checkjni", valueBool);
         }
     });
 }
