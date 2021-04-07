@@ -18,6 +18,7 @@
 
 #include <sys/socket.h>
 
+#include <functional>
 #include <string>
 
 #include "epoll.h"
@@ -35,5 +36,9 @@ void StartPropertyService(int* epoll_socket);
 void StartSendingMessages();
 void StopSendingMessages();
 
+// Construct the build fingerprint at boot time from build properties.
+std::string ConstructBuildFingerprint(
+        bool legacy,
+        const std::function<std::string(const std::string&, const std::string&)>& get_prop_func);
 }  // namespace init
 }  // namespace android

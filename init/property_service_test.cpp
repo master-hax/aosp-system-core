@@ -18,12 +18,16 @@
 #include <sys/socket.h>
 #include <sys/un.h>
 
+#include <map>
+
 #define _REALLY_INCLUDE_SYS__SYSTEM_PROPERTIES_H_
 #include <sys/_system_properties.h>
 
 #include <android-base/properties.h>
 #include <android-base/scopeguard.h>
 #include <gtest/gtest.h>
+
+#include "property_service.h"
 
 using android::base::GetProperty;
 using android::base::SetProperty;
@@ -88,6 +92,34 @@ TEST(property_service, userspace_reboot_not_supported) {
 
     ASSERT_TRUE(SetProperty("init.userspace_reboot.is_supported", "false"));
     EXPECT_FALSE(SetProperty("sys.powerctl", "reboot,userspace"));
+}
+
+TEST(property_service, construct_build_fingerprint) {
+    std::map<std::string, std::string> prop_map = {
+            {"ro.product.brand", "Android"},
+            {"ro.product.name", "generic"},
+            {"ro.product.device", "generic"},
+            {"ro.build.version.release_or_codename", "S"},
+            {"ro.build.id", "MASTER.abcde123"},
+            {"ro.build.legacy.id", "MASTER"},
+            {"ro.build.version.incremental", "12345"},
+            {"ro.build.type", "user"},
+            {"ro.build.tags", "test-keys"},
+    };
+
+    auto get_prop_func = [&prop_map](const std::string& prop, const std::string& default_value) {
+        if (prop_map.find(prop) != prop_map.end()) {
+            return prop_map.at(prop);
+        }
+
+        return default_value;
+    };
+
+    auto fingerprint = ConstructBuildFingerprint(false, get_prop_func);
+    ASSERT_EQ("Android/generic/generic:S/MASTER.abcde123/12345:user/test-keys", fingerprint);
+
+    std::string legacy_fingerprint = ConstructBuildFingerprint(true, get_prop_func);
+    ASSERT_EQ("Android/generic/generic:S/MASTER/12345:user/test-keys", legacy_fingerprint);
 }
 
 }  // namespace init
