@@ -1181,6 +1181,8 @@ static std::string RemapEmulatorPropertyName(const std::string_view qemu_key) {
 }
 
 static void ProcessKernelCmdline() {
+    /* test psq */
+
     ImportKernelCmdline([&](const std::string& key, const std::string& value) {
         constexpr auto qemu_prefix = "qemu."sv;
 
