@@ -248,6 +248,7 @@ TEST(RefBase, AssertWeakRefExistsSuccess) {
     wp<Foo> weakFoo = foo;
 
     EXPECT_EQ(weakFoo, wp<Foo>::fromExisting(foo.get()));
+    EXPECT_EQ(weakFoo.unsafe_get(), wp<Foo>::fromExisting(foo.get()).unsafe_get());
 
     EXPECT_FALSE(isDeleted);
     foo = nullptr;
