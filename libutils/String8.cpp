@@ -415,50 +415,28 @@ bool String8::removeAll(const char* other) {
 
 void String8::toLower()
 {
-    toLower(0, size());
-}
-
-void String8::toLower(size_t start, size_t length)
-{
-    const size_t len = size();
-    if (start >= len) {
-        return;
-    }
-    if (start+length > len) {
-        length = len-start;
-    }
-    char* buf = lockBuffer(len);
-    buf += start;
+    size_t length = size();
+    if (length < 1) return;
+    char* buf = lockBuffer(length);
     while (length > 0) {
         *buf = static_cast<char>(tolower(*buf));
         buf++;
         length--;
     }
-    unlockBuffer(len);
+    unlockBuffer(length);
 }
 
 void String8::toUpper()
 {
-    toUpper(0, size());
-}
-
-void String8::toUpper(size_t start, size_t length)
-{
-    const size_t len = size();
-    if (start >= len) {
-        return;
-    }
-    if (start+length > len) {
-        length = len-start;
-    }
-    char* buf = lockBuffer(len);
-    buf += start;
+    size_t length = size();
+    if (length < 1) return;
+    char* buf = lockBuffer(length);
     while (length > 0) {
         *buf = static_cast<char>(toupper(*buf));
         buf++;
         length--;
     }
-    unlockBuffer(len);
+    unlockBuffer(length);
 }
 
 // ---------------------------------------------------------------------------
