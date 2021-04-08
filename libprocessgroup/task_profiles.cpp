@@ -518,10 +518,10 @@ bool TaskProfiles::Load(const CgroupMap& cg_map, const std::string& file_name) {
                 std::string attr_filepath = params_val["FilePath"].asString();
                 std::string attr_value = params_val["Value"].asString();
                 if (!attr_filepath.empty() && !attr_value.empty()) {
-                    const Json::Value& logfailures = params_val["LogFailures"];
-                    bool attr_logfailures = logfailures.isNull() || logfailures.asBool();
+                    std::string attr_logfailures = params_val["LogFailures"].asString();
+                    bool attr_logfailures_ = attr_logfailures.empty() || attr_logfailures == "true";
                     profile->Add(std::make_unique<WriteFileAction>(attr_filepath, attr_value,
-                                                                   attr_logfailures));
+                                                                   attr_logfailures_));
                 } else if (attr_filepath.empty()) {
                     LOG(WARNING) << "WriteFile: invalid parameter: "
                                  << "empty filepath";
