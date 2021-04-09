@@ -282,6 +282,19 @@ TrustyConfirmationUI::promptUserConfirmation_(const MsgString& promptText,
         app->issueCmd<AbortMsg>();
     });
 
+    LOG(INFO) << "Grabbing event devices";
+    EventLoop eventloop;
+    bool grabbed =
+        grabAllEvDevsAndRegisterCallbacks(&eventloop, [&](short flags, const EventDev& evDev) {
+            if (!(flags & POLLIN)) return;
+            secureInput->handleEvent(evDev);
+        });
+
+    if (!grabbed) {
+        rc = TeeuiRc::SystemError;
+        return result;
+    }
+
     // initiate prompt
     LOG(INFO) << "Initiating prompt";
     TrustyAppError error;
@@ -299,19 +312,6 @@ TrustyConfirmationUI::promptUserConfirmation_(const MsgString& promptText,
     }
     if (rc != TeeuiRc::OK) {
         LOG(ERROR) << "PromptUserConfirmationMsg failed: " << uint32_t(rc);
-        return result;
-    }
-
-    LOG(INFO) << "Grabbing event devices";
-    EventLoop eventloop;
-    bool grabbed =
-        grabAllEvDevsAndRegisterCallbacks(&eventloop, [&](short flags, const EventDev& evDev) {
-            if (!(flags & POLLIN)) return;
-            secureInput->handleEvent(evDev);
-        });
-
-    if (!grabbed) {
-        rc = TeeuiRc::SystemError;
         return result;
     }
 
