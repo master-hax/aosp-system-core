@@ -208,8 +208,8 @@ static int process_fill_chunk(struct sparse_file* s, unsigned int chunk_size,
   int ret;
   int chunk;
   int64_t len = (int64_t)blocks * s->block_size;
-  uint32_t fill_val;
-  uint32_t* fillbuf;
+  uint64_t fill_val;
+  uint64_t* fillbuf;
   unsigned int i;
 
   if (chunk_size != sizeof(fill_val)) {
@@ -228,7 +228,7 @@ static int process_fill_chunk(struct sparse_file* s, unsigned int chunk_size,
 
   if (crc32) {
     /* Fill copy_buf with the fill value */
-    fillbuf = (uint32_t*)copybuf;
+    fillbuf = (uint64_t*)copybuf;
     for (i = 0; i < (COPY_BUF_SIZE / sizeof(fill_val)); i++) {
       fillbuf[i] = fill_val;
     }
@@ -412,7 +412,7 @@ static int sparse_file_read_sparse(struct sparse_file* s, SparseFileSource* sour
 
 static int sparse_file_read_normal(struct sparse_file* s, int fd) {
   int ret;
-  uint32_t* buf = (uint32_t*)malloc(s->block_size);
+  uint64_t* buf = (uint64_t*)malloc(s->block_size);
   unsigned int block = 0;
   int64_t remain = s->len;
   int64_t offset = 0;
@@ -435,7 +435,7 @@ static int sparse_file_read_normal(struct sparse_file* s, int fd) {
 
     if (to_read == s->block_size) {
       sparse_block = true;
-      for (i = 1; i < s->block_size / sizeof(uint32_t); i++) {
+      for (i = 1; i < s->block_size / sizeof(uint64_t); i++) {
         if (buf[0] != buf[i]) {
           sparse_block = false;
           break;

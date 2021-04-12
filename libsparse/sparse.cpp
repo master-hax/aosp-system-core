@@ -54,7 +54,7 @@ int sparse_file_add_data(struct sparse_file* s, void* data, unsigned int len, un
   return backed_block_add_data(s->backed_block_list, data, len, block);
 }
 
-int sparse_file_add_fill(struct sparse_file* s, uint32_t fill_val, unsigned int len,
+int sparse_file_add_fill(struct sparse_file* s, uint64_t fill_val, unsigned int len,
                          unsigned int block) {
   return backed_block_add_fill(s->backed_block_list, fill_val, len, block);
 }

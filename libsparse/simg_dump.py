@@ -149,17 +149,17 @@ def main():
             h.update(data)
             curhash = h.hexdigest()
       elif chunk_type == 0xCAC2:
-        if data_sz != 4:
+        if data_sz != 8:
           print("Fill chunk should have 4 bytes of fill, but this has %u"
                 % (data_sz))
           break
         else:
-          fill_bin = FH.read(4)
-          fill = struct.unpack("<I", fill_bin)
+          fill_bin = FH.read(8)
+          fill = struct.unpack("<II", fill_bin)
           curtype = format("Fill with 0x%08X" % (fill))
           if showhash:
             h = hashlib.sha1()
-            data = fill_bin * (blk_sz / 4);
+            data = fill_bin * (blk_sz / 8);
             for block in xrange(chunk_sz):
               h.update(data)
             curhash = h.hexdigest()
