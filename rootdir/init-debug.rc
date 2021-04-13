@@ -11,5 +11,6 @@ on early-init && property:ro.product.enforce_debugfs_restrictions=true
     mount debugfs debugfs /sys/kernel/debug
     chmod 0755 /sys/kernel/debug
 
-on property:sys.boot_completed=1 && property:ro.product.enforce_debugfs_restrictions=true
+on property:sys.boot_completed=1 && property:ro.product.enforce_debugfs_restrictions=true && \
+   property:persist.dbg.keep_debugfs_mounted=""
    umount /sys/kernel/debug
