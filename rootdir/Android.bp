@@ -35,3 +35,10 @@ linker_config {
     src: "etc/linker.config.json",
     installable: false,
 }
+
+prebuilt_etc {
+    name: "public.libraries.android.txt",
+    src: "etc/public.libraries.android.txt",
+    filename: "public.libraries.txt",
+    installable: false,
+}
