@@ -171,6 +171,15 @@ ReadAheadThread::ReadAheadThread(const std::string& cow_device, const std::strin
     snapuserd_ = snapuserd;
 }
 
+void ReadAheadThread::CheckOverlap(const CowOperation* cow_op) {
+    if (dest_blocks_.count(cow_op->new_block) || source_blocks_.count(cow_op->source)) {
+        overlap_ = true;
+    }
+
+    dest_blocks_.insert(cow_op->source);
+    source_blocks_.insert(cow_op->new_block);
+}
+
 void ReadAheadThread::PrepareReadAhead(uint64_t* source_block, int* pending_ops,
                                        std::vector<uint64_t>& blocks) {
     int num_ops = *pending_ops;
@@ -185,6 +194,10 @@ void ReadAheadThread::PrepareReadAhead(uint64_t* source_block, int* pending_ops,
         nr_consecutive = 1;
         blocks.push_back(cow_op->new_block);
 
+        if (!overlap_) {
+            CheckOverlap(cow_op);
+        }
+
         /*
          * Find number of consecutive blocks working backwards.
          */
@@ -197,6 +210,10 @@ void ReadAheadThread::PrepareReadAhead(uint64_t* source_block, int* pending_ops,
             num_ops -= 1;
             blocks.push_back(op->new_block);
             IterNext();
+
+            if (!overlap_) {
+                CheckOverlap(op);
+            }
         }
     }
 }
@@ -249,7 +266,7 @@ bool ReadAheadThread::ReconstructDataFromCow() {
 
     snapuserd_->ReconstructDataFromCowFinish();
 
-    if (!snapuserd_->ReadAheadIOCompleted()) {
+    if (!snapuserd_->ReadAheadIOCompleted(true)) {
         SNAP_LOG(ERROR) << "ReadAheadIOCompleted failed...";
         snapuserd_->ReadAheadIOFailed();
         return false;
@@ -287,6 +304,9 @@ bool ReadAheadThread::ReadAheadIOStart() {
     loff_t offset = 0;
     loff_t file_offset = snapuserd_->GetBufferDataOffset();
     int total_blocks_merged = 0;
+    overlap_ = false;
+    dest_blocks_.clear();
+    source_blocks_.clear();
 
     while (true) {
         PrepareReadAhead(&source_block, &num_ops, blocks);
@@ -355,7 +375,8 @@ bool ReadAheadThread::ReadAheadIOStart() {
 
     snapuserd_->SetTotal_Ra_Blocks_Merged(total_blocks_merged);
 
-    if (!snapuserd_->ReadAheadIOCompleted()) {
+    // Flush the data only if we have a overlapping blocks in the region
+    if (!snapuserd_->ReadAheadIOCompleted(overlap_)) {
         SNAP_LOG(ERROR) << "ReadAheadIOCompleted failed...";
         snapuserd_->ReadAheadIOFailed();
         return false;
