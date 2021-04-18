@@ -30,6 +30,7 @@
 #include <string>
 #include <thread>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 #include <android-base/file.h>
@@ -128,6 +129,7 @@ class ReadAheadThread {
     bool ReadAheadIOStart();
     void PrepareReadAhead(uint64_t* source_block, int* pending_ops, std::vector<uint64_t>& blocks);
     bool ReconstructDataFromCow();
+    void CheckOverlap(const CowOperation* cow_op);
 
     void* read_ahead_buffer_;
     void* metadata_buffer_;
@@ -140,6 +142,10 @@ class ReadAheadThread {
     unique_fd backing_store_fd_;
 
     std::shared_ptr<Snapuserd> snapuserd_;
+
+    std::unordered_set<uint64_t> dest_blocks_;
+    std::unordered_set<uint64_t> source_blocks_;
+    bool overlap_;
 };
 
 class WorkerThread {
@@ -257,7 +263,7 @@ class Snapuserd : public std::enable_shared_from_this<Snapuserd> {
     void PrepareReadAhead();
     void StartReadAhead();
     void MergeCompleted();
-    bool ReadAheadIOCompleted();
+    bool ReadAheadIOCompleted(bool sync);
     void ReadAheadIOFailed();
     bool WaitForMergeToComplete();
     bool GetReadAheadPopulatedBuffer(uint64_t block, void* buffer);
