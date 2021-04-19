@@ -29,6 +29,7 @@
 #include <android-base/strings.h>
 #include <android-base/unique_fd.h>
 #include <async_safe/log.h>
+#include <bionic/macros.h>
 
 #include "tombstone.pb.h"
 
@@ -228,6 +229,52 @@ static void print_thread(CallbackType callback, const Tombstone& tombstone, cons
   print_thread_memory_dump(callback, tombstone, thread);
 }
 
+static void print_tag_dump(CallbackType callback, const Tombstone& tombstone) {
+  if (!tombstone.has_signal_info()) return;
+
+  const Signal& signal = tombstone.signal_info();
+
+  if (!signal.has_fault_address() || !signal.has_fault_adjacent_tags() ||
+      signal.fault_adjacent_tags().tags().length() == 0) {
+    return;
+  }
+
+  CBS("");
+  CBS("Memory tags around the fault address (0x%" PRIx64 "), one tag per %zu bytes:",
+      signal.fault_address(), kTagGranuleSize);
+  const TagDump& tag_dump = signal.fault_adjacent_tags();
+  constexpr uintptr_t kRowStartMask = ~(kNumTagColumns * kTagGranuleSize - 1);
+
+  size_t tag_index = 0;
+  size_t num_tags = tag_dump.tags().length();
+  uintptr_t fault_granule = untag_address(signal.fault_address()) & ~(kTagGranuleSize - 1);
+  for (size_t row = 0; tag_index < num_tags; ++row) {
+    uintptr_t row_addr =
+        (tag_dump.begin_address() + row * kNumTagColumns * kTagGranuleSize) & kRowStartMask;
+    std::string row_contents;
+    bool row_has_fault = false;
+
+    for (size_t column = 0; column < kNumTagColumns; ++column) {
+      uintptr_t granule_addr = row_addr + column * kTagGranuleSize;
+      if (granule_addr < tag_dump.begin_address() ||
+          granule_addr >= tag_dump.begin_address() + num_tags * kTagGranuleSize) {
+        row_contents += " . ";
+      } else if (granule_addr == fault_granule) {
+        row_contents += StringPrintf("[%1hhx]", tag_dump.tags()[tag_index++]);
+        row_has_fault = true;
+      } else {
+        row_contents += StringPrintf(" %1hhx ", tag_dump.tags()[tag_index++]);
+      }
+    }
+
+    if (row_has_fault) {
+      CBS("    =>0x%" PRIxPTR ":%s", row_addr, row_contents.c_str());
+    } else {
+      CBS("      0x%" PRIxPTR ":%s", row_addr, row_contents.c_str());
+    }
+  }
+}
+
 static void print_main_thread(CallbackType callback, const Tombstone& tombstone,
                               const Thread& thread) {
   print_thread_header(callback, tombstone, thread, true);
@@ -294,6 +341,8 @@ static void print_main_thread(CallbackType callback, const Tombstone& tombstone,
       }
     }
   }
+
+  print_tag_dump(callback, tombstone);
 
   print_thread_memory_dump(callback, tombstone, thread);
 

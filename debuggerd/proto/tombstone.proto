@@ -56,8 +56,9 @@ message Signal {
 
   bool has_fault_address = 8;
   uint64 fault_address = 9;
+  TagDump fault_adjacent_tags = 10;
 
-  reserved 10 to 999;
+  reserved 11 to 999;
 }
 
 message HeapObject {
@@ -139,6 +140,13 @@ message BacktraceFrame {
   string build_id = 8;
 
   reserved 9 to 999;
+}
+
+message TagDump {
+  uint64 begin_address = 1;
+  bytes tags = 2;
+
+  reserved 3 to 999;
 }
 
 message MemoryDump {

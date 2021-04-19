@@ -522,6 +522,42 @@ static void dump_logcat(Tombstone* tombstone, pid_t pid) {
   dump_log_file(tombstone, "main", pid);
 }
 
+static void dump_tags_around_fault_addr(Signal* signal, const Tombstone& tombstone,
+                                        unwindstack::Unwinder* unwinder, uintptr_t fault_addr) {
+  if (tombstone.arch() != Architecture::ARM64) return;
+
+  fault_addr = untag_address(fault_addr);
+  constexpr size_t kNumGranules = kNumTagRows * kNumTagColumns;
+
+  // If the low part of the tag dump would underflow to the high address space, it's probably not
+  // a valid address for us to dump tags from.
+  if (fault_addr < kNumGranules * kTagGranuleSize / 2) {
+    return;
+  }
+
+  unwindstack::Memory* memory = unwinder->GetProcessMemory().get();
+
+  constexpr uintptr_t kRowStartMask = ~(kNumTagColumns * kTagGranuleSize - 1);
+  size_t start_address = (fault_addr & kRowStartMask) - kNumGranules * kTagGranuleSize / 2;
+  TagDump tag_dump;
+  tag_dump.set_begin_address(start_address);
+
+  bool has_tags = false;
+  for (size_t i = 0; i < kNumGranules; ++i) {
+    long tag = memory->ReadTag(start_address + i * kTagGranuleSize);
+    uint8_t tag_byte = 0;
+    if (tag >= 0) {
+      tag_byte = static_cast<uint8_t>(tag);
+      has_tags = true;
+    }
+    tag_dump.mutable_tags()->push_back(tag_byte);
+  }
+
+  if (has_tags) {
+    *signal->mutable_fault_adjacent_tags() = tag_dump;
+  }
+}
+
 static std::optional<uint64_t> read_uptime_secs() {
   std::string uptime;
   if (!android::base::ReadFileToString("/proc/uptime", &uptime)) {
@@ -585,7 +621,9 @@ void engrave_tombstone_proto(Tombstone* tombstone, unwindstack::Unwinder* unwind
 
   if (process_info.has_fault_address) {
     sig.set_has_fault_address(true);
-    sig.set_fault_address(process_info.maybe_tagged_fault_address);
+    uintptr_t fault_addr = process_info.maybe_tagged_fault_address;
+    sig.set_fault_address(fault_addr);
+    dump_tags_around_fault_addr(&sig, result, unwinder, fault_addr);
   }
 
   *result.mutable_signal_info() = sig;

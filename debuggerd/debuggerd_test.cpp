@@ -507,6 +507,7 @@ TEST_P(SizeParamCrasherTest, mte_uaf) {
       #00 pc)");
   ASSERT_MATCH(result, R"(allocated by thread .*
       #00 pc)");
+  ASSERT_MATCH(result, "Memory tags around the fault address");
 #else
   GTEST_SKIP() << "Requires aarch64";
 #endif
@@ -541,6 +542,7 @@ TEST_P(SizeParamCrasherTest, mte_overflow) {
                            std::to_string(GetParam()) + R"(-byte allocation)");
   ASSERT_MATCH(result, R"(allocated by thread .*
       #00 pc)");
+  ASSERT_MATCH(result, "Memory tags around the fault address");
 #else
   GTEST_SKIP() << "Requires aarch64";
 #endif
@@ -575,6 +577,7 @@ TEST_P(SizeParamCrasherTest, mte_underflow) {
                            std::to_string(GetParam()) + R"(-byte allocation)");
   ASSERT_MATCH(result, R"(allocated by thread .*
       #00 pc)");
+  ASSERT_MATCH(result, "Memory tags around the fault address");
 #else
   GTEST_SKIP() << "Requires aarch64";
 #endif
@@ -629,6 +632,7 @@ TEST_F(CrasherTest, mte_multiple_causes) {
   // Adjacent untracked allocations may cause us to see the wrong underflow here (or only
   // overflows), so we can't match explicitly for an underflow message.
   ASSERT_MATCH(result, R"(Cause: \[MTE\]: Buffer Overflow, 0 bytes right of a 16-byte allocation)");
+  ASSERT_MATCH(result, "Memory tags around the fault address");
 #else
   GTEST_SKIP() << "Requires aarch64";
 #endif
@@ -650,7 +654,7 @@ static uintptr_t CreateTagMapping() {
 }
 #endif
 
-TEST_F(CrasherTest, mte_tag_dump) {
+TEST_F(CrasherTest, mte_register_tag_dump) {
 #if defined(__aarch64__)
   if (!mte_supported()) {
     GTEST_SKIP() << "Requires MTE";
@@ -678,6 +682,37 @@ TEST_F(CrasherTest, mte_tag_dump) {
 .*
     01.............0 0000000000000000 0000000000000000  ................
     00.............0)");
+#else
+  GTEST_SKIP() << "Requires aarch64";
+#endif
+}
+
+TEST_F(CrasherTest, mte_fault_tag_dump) {
+#if defined(__aarch64__)
+  if (!mte_supported()) {
+    GTEST_SKIP() << "Requires MTE";
+  }
+
+  int intercept_result;
+  unique_fd output_fd;
+  StartProcess([&]() {
+    SetTagCheckingLevelSync();
+    volatile char* p = reinterpret_cast<char*>(CreateTagMapping());
+    p[0] = 0; // Untagged pointer, tagged memory.
+  });
+
+  StartIntercept(&output_fd);
+  FinishCrasher();
+  AssertDeath(SIGSEGV);
+  FinishIntercept(&intercept_result);
+
+  ASSERT_EQ(1, intercept_result) << "tombstoned reported failure";
+
+  std::string result;
+  ConsumeFd(std::move(output_fd), &result);
+
+  ASSERT_MATCH(result, "Memory tags around the fault address");
+  ASSERT_MATCH(result, R"(=>0x[0-9a-f]+:\[1\] 0)");
 #else
   GTEST_SKIP() << "Requires aarch64";
 #endif
