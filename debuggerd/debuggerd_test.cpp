@@ -57,6 +57,7 @@
 #include <scoped_minijail.h>
 
 #include "debuggerd/handler.h"
+#include "libdebuggerd/utility.h"
 #include "protocol.h"
 #include "tombstoned/tombstoned.h"
 #include "util.h"
@@ -509,6 +510,7 @@ TEST_P(SizeParamCrasherTest, mte_uaf) {
       #00 pc)");
   ASSERT_MATCH(result, R"(allocated by thread .*
       #00 pc)");
+  ASSERT_MATCH(result, "Memory tags around the fault address");
 #else
   GTEST_SKIP() << "Requires aarch64";
 #endif
@@ -543,6 +545,7 @@ TEST_P(SizeParamCrasherTest, mte_overflow) {
                            std::to_string(GetParam()) + R"(-byte allocation)");
   ASSERT_MATCH(result, R"(allocated by thread .*
       #00 pc)");
+  ASSERT_MATCH(result, "Memory tags around the fault address");
 #else
   GTEST_SKIP() << "Requires aarch64";
 #endif
@@ -577,6 +580,7 @@ TEST_P(SizeParamCrasherTest, mte_underflow) {
                            std::to_string(GetParam()) + R"(-byte allocation)");
   ASSERT_MATCH(result, R"(allocated by thread .*
       #00 pc)");
+  ASSERT_MATCH(result, "Memory tags around the fault address");
 #else
   GTEST_SKIP() << "Requires aarch64";
 #endif
@@ -631,6 +635,7 @@ TEST_F(CrasherTest, mte_multiple_causes) {
   // Adjacent untracked allocations may cause us to see the wrong underflow here (or only
   // overflows), so we can't match explicitly for an underflow message.
   ASSERT_MATCH(result, R"(Cause: \[MTE\]: Buffer Overflow, 0 bytes right of a 16-byte allocation)");
+  ASSERT_MATCH(result, "Memory tags around the fault address");
 #else
   GTEST_SKIP() << "Requires aarch64";
 #endif
@@ -638,21 +643,30 @@ TEST_F(CrasherTest, mte_multiple_causes) {
 
 #if defined(__aarch64__)
 static uintptr_t CreateTagMapping() {
-  uintptr_t mapping =
-      reinterpret_cast<uintptr_t>(mmap(nullptr, getpagesize(), PROT_READ | PROT_WRITE | PROT_MTE,
-                                       MAP_PRIVATE | MAP_ANONYMOUS, -1, 0));
-  if (reinterpret_cast<void*>(mapping) == MAP_FAILED) {
+  // Some of the MTE tag dump tests assert that there is an inaccessible page to the left and right
+  // of the PROT_MTE page, so map three pages and set the two guard pages to PROT_NONE.
+  size_t page_size = getpagesize();
+  void* mapping = mmap(nullptr, page_size * 3, PROT_NONE,
+                    MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+  uintptr_t mapping_uptr = reinterpret_cast<uintptr_t>(mapping);
+  if (mapping == MAP_FAILED) {
     return 0;
   }
-  __asm__ __volatile__(".arch_extension mte; stg %0, [%0]"
-                       :
-                       : "r"(mapping + (1ULL << 56))
-                       : "memory");
-  return mapping;
+  mprotect(reinterpret_cast<void*>(mapping_uptr + page_size), page_size,
+           PROT_READ | PROT_WRITE | PROT_MTE);
+  // Stripe the mapping, where even granules get tag '1', and odd granules get tag '0'.
+  for (uintptr_t offset = 0; offset < page_size; offset += 2 * kTagGranuleSize) {
+    uintptr_t tagged_addr = mapping_uptr + page_size + offset + (1ULL << 56);
+      __asm__ __volatile__(".arch_extension mte; stg %0, [%0]"
+                          :
+                          : "r"(tagged_addr)
+                          : "memory");
+  }
+  return mapping_uptr + page_size;
 }
 #endif
 
-TEST_F(CrasherTest, mte_tag_dump) {
+TEST_F(CrasherTest, mte_register_tag_dump) {
 #if defined(__aarch64__)
   if (!mte_supported()) {
     GTEST_SKIP() << "Requires MTE";
@@ -680,6 +694,107 @@ TEST_F(CrasherTest, mte_tag_dump) {
 .*
     01.............0 0000000000000000 0000000000000000  ................
     00.............0)");
+#else
+  GTEST_SKIP() << "Requires aarch64";
+#endif
+}
+
+TEST_F(CrasherTest, mte_fault_tag_dump_front_truncated) {
+#if defined(__aarch64__)
+  if (!mte_supported()) {
+    GTEST_SKIP() << "Requires MTE";
+  }
+
+  int intercept_result;
+  unique_fd output_fd;
+  StartProcess([&]() {
+    SetTagCheckingLevelSync();
+    volatile char* p = reinterpret_cast<char*>(CreateTagMapping());
+    p[0] = 0; // Untagged pointer, tagged memory.
+  });
+
+  StartIntercept(&output_fd);
+  FinishCrasher();
+  AssertDeath(SIGSEGV);
+  FinishIntercept(&intercept_result);
+
+  ASSERT_EQ(1, intercept_result) << "tombstoned reported failure";
+
+  std::string result;
+  ConsumeFd(std::move(output_fd), &result);
+
+  ASSERT_MATCH(result, R"(Memory tags around the fault address.*
+\s*=>0x[0-9a-f]+000:\[1\] 0  1  0)");
+#else
+  GTEST_SKIP() << "Requires aarch64";
+#endif
+}
+
+TEST_F(CrasherTest, mte_fault_tag_dump) {
+#if defined(__aarch64__)
+  if (!mte_supported()) {
+    GTEST_SKIP() << "Requires MTE";
+  }
+
+  int intercept_result;
+  unique_fd output_fd;
+  StartProcess([&]() {
+    SetTagCheckingLevelSync();
+    volatile char* p = reinterpret_cast<char*>(CreateTagMapping());
+    p[320] = 0; // Untagged pointer, tagged memory.
+  });
+
+  StartIntercept(&output_fd);
+  FinishCrasher();
+  AssertDeath(SIGSEGV);
+  FinishIntercept(&intercept_result);
+
+  ASSERT_EQ(1, intercept_result) << "tombstoned reported failure";
+
+  std::string result;
+  ConsumeFd(std::move(output_fd), &result);
+
+  ASSERT_MATCH(result, R"(Memory tags around the fault address.*
+\s*0x[0-9a-f]+: 1  0  1  0  1  0  1  0  1  0  1  0  1  0  1  0
+\s*=>0x[0-9a-f]+: 1  0  1  0 \[1\] 0  1  0  1  0  1  0  1  0  1  0
+\s*0x[0-9a-f]+: 1  0  1  0  1  0  1  0  1  0  1  0  1  0  1  0
+)");
+#else
+  GTEST_SKIP() << "Requires aarch64";
+#endif
+}
+
+TEST_F(CrasherTest, mte_fault_tag_dump_rear_truncated) {
+#if defined(__aarch64__)
+  if (!mte_supported()) {
+    GTEST_SKIP() << "Requires MTE";
+  }
+
+  int intercept_result;
+  unique_fd output_fd;
+  StartProcess([&]() {
+    SetTagCheckingLevelSync();
+    size_t page_size = getpagesize();
+    volatile char* p = reinterpret_cast<char*>(CreateTagMapping());
+    p[page_size - kTagGranuleSize * 2] = 0; // Untagged pointer, tagged memory.
+  });
+
+  StartIntercept(&output_fd);
+  FinishCrasher();
+  AssertDeath(SIGSEGV);
+  FinishIntercept(&intercept_result);
+
+  ASSERT_EQ(1, intercept_result) << "tombstoned reported failure";
+
+  std::string result;
+  ConsumeFd(std::move(output_fd), &result);
+
+  ASSERT_MATCH(result, R"(Memory tags around the fault address)");
+  ASSERT_MATCH(result,
+R"(\s*0x[0-9a-f]+: 1  0  1  0  1  0  1  0  1  0  1  0  1  0  1  0
+\s*=>0x[0-9a-f]+: 1  0  1  0  1  0  1  0  1  0  1  0  1  0 \[1\] 0
+
+)"); // Ensure truncation happened and there's a newline after the tag fault.
 #else
   GTEST_SKIP() << "Requires aarch64";
 #endif

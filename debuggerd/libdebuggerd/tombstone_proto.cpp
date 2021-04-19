@@ -531,6 +531,48 @@ static void dump_logcat(Tombstone* tombstone, pid_t pid) {
   dump_log_file(tombstone, "main", pid);
 }
 
+static void dump_tags_around_fault_addr(Signal* signal, const Tombstone& tombstone,
+                                        unwindstack::Unwinder* unwinder, uintptr_t fault_addr) {
+  if (tombstone.arch() != Architecture::ARM64) return;
+
+  fault_addr = untag_address(fault_addr);
+  constexpr size_t kNumGranules = kNumTagRows * kNumTagColumns;
+  constexpr size_t kBytesToRead = kNumGranules * kTagGranuleSize;
+
+  // If the low part of the tag dump would underflow to the high address space, it's probably not
+  // a valid address for us to dump tags from.
+  if (fault_addr < kBytesToRead / 2) return;
+
+  unwindstack::Memory* memory = unwinder->GetProcessMemory().get();
+
+  constexpr uintptr_t kRowStartMask = ~(kNumTagColumns * kTagGranuleSize - 1);
+  size_t start_address = (fault_addr & kRowStartMask) - kBytesToRead / 2;
+  TagDump tag_dump;
+  size_t granules_to_read = kNumGranules;
+
+  // Attempt to read the first tag. If reading fails, this likely indicates the
+  // lowest touched page is inaccessible or not marked with PROT_MTE.
+  // Fast-forward to the next page.
+  if (memory->ReadTag(start_address) < 0) {
+    size_t page_size = sysconf(_SC_PAGE_SIZE);
+    size_t bytes_to_next_page = page_size - (start_address % page_size);
+    if (bytes_to_next_page >= granules_to_read * kTagGranuleSize) return;
+    start_address += bytes_to_next_page;
+    granules_to_read -= bytes_to_next_page / kTagGranuleSize;
+  }
+  tag_dump.set_begin_address(start_address);
+
+  for (size_t i = 0; i < granules_to_read; ++i) {
+    long tag = memory->ReadTag(start_address + i * kTagGranuleSize);
+    if (tag < 0) break;
+    tag_dump.mutable_tags()->push_back(static_cast<uint8_t>(tag));
+  }
+
+  if (tag_dump.tags().length()) {
+    *signal->mutable_fault_adjacent_tags() = tag_dump;
+  }
+}
+
 static std::optional<uint64_t> read_uptime_secs() {
   std::string uptime;
   if (!android::base::ReadFileToString("/proc/uptime", &uptime)) {
@@ -594,7 +636,9 @@ void engrave_tombstone_proto(Tombstone* tombstone, unwindstack::Unwinder* unwind
 
   if (process_info.has_fault_address) {
     sig.set_has_fault_address(true);
-    sig.set_fault_address(process_info.maybe_tagged_fault_address);
+    uintptr_t fault_addr = process_info.maybe_tagged_fault_address;
+    sig.set_fault_address(fault_addr);
+    dump_tags_around_fault_addr(&sig, result, unwinder, fault_addr);
   }
 
   *result.mutable_signal_info() = sig;
