@@ -693,6 +693,7 @@ on post-fs-data
     mkdir /data/apex/sessions 0700 root system
     mkdir /data/app-staging 0751 system system encryption=DeleteIfNecessary
     mkdir /data/apex/ota_reserved 0700 root system encryption=Require
+    setprop apexd.status ""
     start apexd
 
     # create rest of basic filesystem structure
@@ -1240,7 +1241,6 @@ on userspace-reboot-requested
   setprop dev.bootcomplete ""
   setprop sys.init.updatable_crashing ""
   setprop sys.init.updatable_crashing_process_name ""
-  setprop apexd.status ""
   setprop sys.user.0.ce_available ""
   setprop sys.shutdown.requested ""
   setprop service.bootanim.exit ""
