@@ -1,0 +1,47 @@
+{
+  "comments": [
+    {
+      "robotId": "ayeaye",
+      "robotRunId": "AR00000000000010294400",
+      "url": "https://android-build.googleplex.com/builds/treetop/android-review/1656315?revision\u003d15",
+      "fixSuggestions": [
+        {
+          "fixId": "d0ba1c91_df29a6b4",
+          "description": "Change to \"fs_mgr/libsnapshot/snapuserd_readahead.cpp\"",
+          "replacements": [
+            {
+              "path": "fs_mgr/libsnapshot/snapuserd_readahead.cpp",
+              "range": {
+                "startLine": 155,
+                "startChar": 59,
+                "endLine": 155,
+                "endChar": 64
+              },
+              "replacement": " i.e. "
+            }
+          ]
+        }
+      ],
+      "key": {
+        "uuid": "4f760c3f_1d3b6174",
+        "filename": "fs_mgr/libsnapshot/snapuserd_readahead.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 155,
+      "author": {
+        "id": 1757831
+      },
+      "writtenOn": "2021-04-28T00:52:36Z",
+      "side": 1,
+      "message": "Common typo found: \" i.e \" -- should it be \" i.e. \"?\nNote: a line containing \"common_typos_disable\" or \"common_typos_enable\" will turn off or on (respectively) the linter for subsequent lines in the file. Alternatively include the token \"NOTYPO\" within a line to skip typo linting that line or include \u0027No-Typo-Check: \u003creason\u003e\u0027in the commit message.",
+      "range": {
+        "startLine": 155,
+        "startChar": 59,
+        "endLine": 155,
+        "endChar": 64
+      },
+      "revId": "92fc56db846777a2a78d5daf9b618c3ce485de3d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
