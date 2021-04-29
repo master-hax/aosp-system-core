@@ -17,7 +17,11 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 #include <liblp/builder.h>
+<<<<<<< HEAD   (ff18b4 Merge "[automerger skipped] Merge "Adding Car GSI public key)
 #include <storage_literals/storage_literals.h>
+=======
+#include <android-base/properties.h>
+>>>>>>> BRANCH (21ef3a Merge "Skip test for Automotive in Android Q" into android10)
 
 #include "liblp_test.h"
 #include "utility.h"
@@ -29,8 +33,12 @@ using namespace android::fs_mgr::testing;
 using ::testing::_;
 using ::testing::AnyNumber;
 using ::testing::ElementsAre;
+<<<<<<< HEAD   (ff18b4 Merge "[automerger skipped] Merge "Adding Car GSI public key)
 using ::testing::NiceMock;
 using ::testing::Return;
+=======
+using android::base::GetProperty;
+>>>>>>> BRANCH (21ef3a Merge "Skip test for Automotive in Android Q" into android10)
 
 class Environment : public ::testing::Environment {
   public:
@@ -450,6 +458,33 @@ TEST_F(BuilderTest, MetadataTooLarge) {
     EXPECT_EQ(builder, nullptr);
 }
 
+<<<<<<< HEAD   (ff18b4 Merge "[automerger skipped] Merge "Adding Car GSI public key)
+=======
+TEST_F(BuilderTest, block_device_info) {
+    //This test requires dynamic partition which is not mandatory for
+    //Automotive in Android Q or lower
+    std::string api_level = GetProperty("ro.build.version.sdk","");
+    std::string hw_type = GetProperty("ro.hardware.type","");
+    if (std::stoi(api_level) <= 29 && hw_type == "automotive") {
+      return;
+    }
+    PartitionOpener opener;
+
+    BlockDeviceInfo device_info;
+    ASSERT_TRUE(opener.GetInfo(fs_mgr_get_super_partition_name(), &device_info));
+
+    // Sanity check that the device doesn't give us some weird inefficient
+    // alignment.
+    ASSERT_EQ(device_info.alignment % LP_SECTOR_SIZE, 0);
+    ASSERT_EQ(device_info.alignment_offset % LP_SECTOR_SIZE, 0);
+    ASSERT_LE(device_info.alignment_offset, INT_MAX);
+    ASSERT_EQ(device_info.logical_block_size % LP_SECTOR_SIZE, 0);
+
+    // Having an alignment offset > alignment doesn't really make sense.
+    ASSERT_LT(device_info.alignment_offset, device_info.alignment);
+}
+
+>>>>>>> BRANCH (21ef3a Merge "Skip test for Automotive in Android Q" into android10)
 TEST_F(BuilderTest, UpdateBlockDeviceInfo) {
     BlockDeviceInfo device_info("super", 1024 * 1024, 4096, 1024, 4096);
     unique_ptr<MetadataBuilder> builder = MetadataBuilder::New(device_info, 1024, 1);
