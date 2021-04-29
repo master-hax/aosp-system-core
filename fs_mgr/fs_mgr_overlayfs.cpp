@@ -92,6 +92,10 @@ bool fs_mgr_overlayfs_mount_all(Fstab*) {
     return false;
 }
 
+bool fs_mgr_overlayfs_fstab_entry(std::string&,std::string&) {
+    return false;
+}
+
 std::vector<std::string> fs_mgr_overlayfs_required_devices(Fstab*) {
     return {};
 }
@@ -1293,6 +1297,20 @@ static void TryMountScratch() {
     if (has_overlayfs_dir) {
         fs_mgr_overlayfs_mount_scratch(scratch_device, mount_type);
     }
+}
+
+bool fs_mgr_overlayfs_fstab_entry(std::string& lowers, std::string& upper) {
+    auto ret = false;
+    std::string aux;
+
+    if (fs_mgr_overlayfs_invalid()) return ret;
+
+    aux = "lowerdir=" + lowers + ",override_creds=off";
+    auto ret2 = mount("overlay", upper.c_str(), "overlay", MS_RDONLY | MS_NOATIME, aux.c_str());
+
+    if (ret2==0) ret=true;
+
+    return ret;
 }
 
 bool fs_mgr_overlayfs_mount_all(Fstab* fstab) {

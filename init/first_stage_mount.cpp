@@ -331,6 +331,12 @@ bool FirstStageMount::InitRequiredDevices(std::set<std::string> devices) {
     if (devices.empty()) {
         return true;
     }
+    // excluding overlays
+    for (auto iter = devices.begin(); iter != devices.end(); ) {
+        if (*iter=="overlay")  iter = devices.erase(iter);
+        else iter++;
+    }
+
     return block_dev_init_.InitDevices(std::move(devices));
 }
 
@@ -531,6 +537,8 @@ bool FirstStageMount::TrySwitchSystemAsRoot() {
 }
 
 bool FirstStageMount::MountPartitions() {
+    std::string lowers;
+    std::string upper;
     if (!TrySwitchSystemAsRoot()) return false;
 
     if (!SkipMountingPartitions(&fstab_, true /* verbose */)) return false;
@@ -538,6 +546,11 @@ bool FirstStageMount::MountPartitions() {
     for (auto current = fstab_.begin(); current != fstab_.end();) {
         // We've already mounted /system above.
         if (current->mount_point == "/system") {
+            ++current;
+            continue;
+        }
+
+        if (current->fs_type == "overlay") {
             ++current;
             continue;
         }
@@ -590,6 +603,15 @@ bool FirstStageMount::MountPartitions() {
         return InitRequiredDevices(std::move(devices));
     };
     MapScratchPartitionIfNeeded(&fstab_, init_devices);
+
+    for (auto current = fstab_.begin(); current != fstab_.end(); ) {
+        if (current->fs_type == "overlay") {
+            lowers = current->lowerdir;
+            upper = current->mount_point;
+            fs_mgr_overlayfs_fstab_entry ( lowers, upper );
+        }
+        ++current;
+    }
 
     fs_mgr_overlayfs_mount_all(&fstab_);
 
