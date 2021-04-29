@@ -111,3 +111,23 @@ cc_binary {
         "-Werror",
     ],
 }
+
+cc_fuzz {
+    name: "trusty_keymaster_proto_fuzzer",
+    defaults: ["trusty_fuzzer_defaults"],
+    srcs: [
+        "fuzz/keymaster_protocol_fuzzer.cpp",
+        "fuzz/keymaster_fuzzer.proto",
+    ],
+
+    shared_libs: [
+        "libprotobuf-mutator",
+        "libkeymaster_messages",
+    ],
+
+    local_include_dirs: ["include"],
+
+    proto: {
+        type: "full",
+    },
+}

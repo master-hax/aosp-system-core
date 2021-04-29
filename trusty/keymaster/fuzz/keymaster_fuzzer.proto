@@ -1,0 +1,136 @@
+syntax = "proto3";
+package android.trusty.keymaster.fuzz;
+
+message Transcript {
+  repeated Request messages = 1;
+}
+
+message Request {
+  int32 message_version = 1;
+  oneof message_cmd {
+    GenerateKeyRequest generate_key_request = 2;
+    BeginOperationRequest begin_operation_request = 3;
+  }
+}
+
+message GenerateKeyRequest {
+  AuthorizationSet key_descriptor = 1;
+  Blob attestation_signing_key_blob = 2;
+  AuthorizationSet attest_key_params = 3;
+  Blob issuer_subject = 4;
+}
+
+message BeginOperationRequest {
+  Purpose purpose = 1;
+  Blob key_blob = 2;
+  AuthorizationSet additional_params = 3;
+}
+
+message AuthorizationSet {
+  repeated KeyParam elements = 1;
+}
+
+message Blob {
+  bytes data = 1;
+}
+
+message KeyParam {
+  enum Tag {
+    KM_TAG_INVALID = 0;
+    KM_TAG_PURPOSE = 1;
+    KM_TAG_ALGORITHM = 2;
+    KM_TAG_KEY_SIZE = 3;
+    KM_TAG_BLOCK_MODE = 4;
+    KM_TAG_DIGEST = 5;
+    KM_TAG_PADDING = 6;
+    KM_TAG_CALLER_NONCE = 7;
+    KM_TAG_MIN_MAC_LENGTH = 8;
+    KM_TAG_KDF = 9;
+    KM_TAG_EC_CURVE = 10;
+
+    KM_TAG_RSA_PUBLIC_EXPONENT = 200;
+    KM_TAG_ECIES_SINGLE_HASH_MODE = 201;
+    KM_TAG_INCLUDE_UNIQUE_ID = 202;
+    KM_TAG_RSA_OAEP_MGF_DIGEST = 203;
+
+    KM_TAG_BLOB_USAGE_REQUIREMENTS = 301;
+    KM_TAG_BOOTLOADER_ONLY = 302;
+    KM_TAG_ROLLBACK_RESISTANCE = 303;
+    KM_TAG_EARLY_BOOT_ONLY = 305;
+
+    KM_TAG_ACTIVE_DATETIME = 400;
+    KM_TAG_ORIGINATION_EXPIRE_DATETIME = 401;
+    KM_TAG_USAGE_EXPIRE_DATETIME = 402;
+    KM_TAG_MIN_SECONDS_BETWEEN_OPS = 403;
+    KM_TAG_MAX_USES_PER_BOOT = 404;
+    KM_TAG_USAGE_COUNT_LIMIT = 405;
+
+    KM_TAG_ALL_USERS = 500;
+    KM_TAG_USER_ID = 501;
+    KM_TAG_USER_SECURE_ID = 502;
+    KM_TAG_NO_AUTH_REQUIRED = 503;
+    KM_TAG_USER_AUTH_TYPE = 504;
+    KM_TAG_AUTH_TIMEOUT = 505;
+    KM_TAG_ALLOW_WHILE_ON_BODY = 506;
+    KM_TAG_TRUSTED_USER_PRESENCE_REQUIRED = 507;
+    KM_TAG_TRUSTED_CONFIRMATION_REQUIRED = 508;
+    KM_TAG_UNLOCKED_DEVICE_REQUIRED = 509;
+    KM_TAG_ALL_APPLICATIONS = 600;
+    KM_TAG_APPLICATION_ID = 601;
+    KM_TAG_EXPORTABLE = 602;
+    KM_TAG_APPLICATION_DATA = 700;
+    KM_TAG_CREATION_DATETIME = 701;
+    KM_TAG_ORIGIN = 702;
+    KM_TAG_ROLLBACK_RESISTANT = 703;
+    KM_TAG_ROOT_OF_TRUST = 704;
+    KM_TAG_OS_VERSION = 705;
+    KM_TAG_OS_PATCHLEVEL = 706;
+    KM_TAG_UNIQUE_ID = 707;
+    KM_TAG_ATTESTATION_CHALLENGE = 708;
+    KM_TAG_ATTESTATION_APPLICATION_ID = 709;
+    KM_TAG_ATTESTATION_ID_BRAND = 710;
+    KM_TAG_ATTESTATION_ID_DEVICE = 711;
+    KM_TAG_ATTESTATION_ID_PRODUCT = 712;
+    KM_TAG_ATTESTATION_ID_SERIAL = 713;
+    KM_TAG_ATTESTATION_ID_IMEI = 714;
+    KM_TAG_ATTESTATION_ID_MEID = 715;
+    KM_TAG_ATTESTATION_ID_MANUFACTURER = 716;
+    KM_TAG_ATTESTATION_ID_MODEL = 717;
+    KM_TAG_VENDOR_PATCHLEVEL = 718;
+    KM_TAG_BOOT_PATCHLEVEL = 719;
+    KM_TAG_DEVICE_UNIQUE_ATTESTATION = 720;
+    KM_TAG_IDENTITY_CREDENTIAL_KEY = 721;
+    KM_TAG_STORAGE_KEY = 722;
+    KM_TAG_ASSOCIATED_DATA = 1000;
+    KM_TAG_NONCE = 1001;
+    KM_TAG_AUTH_TOKEN = 1002;
+    KM_TAG_MAC_LENGTH = 1003;
+    KM_TAG_RESET_SINCE_ID_ROTATION = 1004;
+    KM_TAG_CONFIRMATION_TOKEN = 1005;
+    KM_TAG_CERTIFICATE_SERIAL = 1006;
+    KM_TAG_CERTIFICATE_SUBJECT = 1007;
+    KM_TAG_CERTIFICATE_NOT_BEFORE = 1008;
+    KM_TAG_CERTIFICATE_NOT_AFTER = 1009;
+    KM_TAG_MAX_BOOT_LEVEL = 1010;
+  }
+  Tag tag = 1;
+  oneof value_selector {
+    uint32 enumerated = 2;
+    bool boolean = 3;
+    uint32 integer = 4;
+    uint64 long_integer = 5;
+    uint64 date_time = 6;
+    Blob blob = 7;
+  }
+}
+
+enum Purpose {
+  KM_PURPOSE_ENCRYPT = 0;
+  KM_PURPOSE_DECRYPT = 1;
+  KM_PURPOSE_SIGN = 2;
+  KM_PURPOSE_VERIFY = 3;
+  KM_PURPOSE_DERIVE_KEY = 4;
+  KM_PURPOSE_WRAP = 5;
+  KM_PURPOSE_AGREE_KEY = 6;
+  KM_PURPOSE_ATTEST_KEY = 7;
+}

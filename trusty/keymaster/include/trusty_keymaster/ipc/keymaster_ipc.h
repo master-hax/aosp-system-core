@@ -18,6 +18,8 @@
 
 // clang-format off
 
+#include <stdint.h>
+
 #define KEYMASTER_PORT "com.android.trusty.keymaster"
 #define KEYMASTER_MAX_BUFFER_LENGTH 4096
 
