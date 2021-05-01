@@ -108,6 +108,8 @@
 // the uevent listener resumes in polling mode and will handle the uevents that occurred during
 // coldboot.
 
+#include <iomanip>
+
 namespace android {
 namespace init {
 
@@ -115,11 +117,12 @@ class ColdBoot {
   public:
     ColdBoot(UeventListener& uevent_listener,
              std::vector<std::unique_ptr<UeventHandler>>& uevent_handlers,
-             bool enable_parallel_restorecon)
+             bool enable_parallel_restorecon, std::vector<std::string> parallel_restorecon_queue)
         : uevent_listener_(uevent_listener),
           uevent_handlers_(uevent_handlers),
           num_handler_subprocesses_(std::thread::hardware_concurrency() ?: 4),
-          enable_parallel_restorecon_(enable_parallel_restorecon) {}
+          enable_parallel_restorecon_(enable_parallel_restorecon),
+          parallel_restorecon_queue_(parallel_restorecon_queue) {}
 
     void Run();
 
@@ -142,6 +145,8 @@ class ColdBoot {
     std::set<pid_t> subprocess_pids_;
 
     std::vector<std::string> restorecon_queue_;
+
+    std::vector<std::string> parallel_restorecon_queue_;
 };
 
 void ColdBoot::UeventHandlerMain(unsigned int process_num, unsigned int total_processes) {
@@ -155,17 +160,31 @@ void ColdBoot::UeventHandlerMain(unsigned int process_num, unsigned int total_pr
 }
 
 void ColdBoot::RestoreConHandler(unsigned int process_num, unsigned int total_processes) {
+    android::base::Timer t_process;
+
     for (unsigned int i = process_num; i < restorecon_queue_.size(); i += total_processes) {
+        android::base::Timer t;
         auto& dir = restorecon_queue_[i];
 
         selinux_android_restorecon(dir.c_str(), SELINUX_ANDROID_RESTORECON_RECURSE);
+
+        if (t.duration() > 50ms) {
+            LOG(INFO) << "took " << std::fixed << std::setprecision(3) << t.duration().count() / 1000.0f
+                << "s restorecon dir=" << dir.c_str() << " process=" << process_num;
+        }
     }
+
+    LOG(INFO) << "process " << process_num << " took " << std::fixed << std::setprecision(3)
+                << t_process.duration().count() / 1000.0f << "s";
 }
 
 void ColdBoot::GenerateRestoreCon(const std::string& directory) {
     std::unique_ptr<DIR, decltype(&closedir)> dir(opendir(directory.c_str()), &closedir);
 
-    if (!dir) return;
+    if (!dir) {
+        LOG(INFO) << "opendir " << directory.c_str() << " failed: No such directory";
+        return;
+    }
 
     struct dirent* dent;
     while ((dent = readdir(dir.get())) != NULL) {
@@ -175,8 +194,16 @@ void ColdBoot::GenerateRestoreCon(const std::string& directory) {
         if (fstatat(dirfd(dir.get()), dent->d_name, &st, 0) == -1) continue;
 
         if (S_ISDIR(st.st_mode)) {
+            unsigned int i;
             std::string fullpath = directory + "/" + dent->d_name;
-            if (fullpath != "/sys/devices") {
+
+            for (i = 0; i < parallel_restorecon_queue_.size(); i++) {
+                if (fullpath == parallel_restorecon_queue_[i].c_str()) {
+                    break;
+                }
+            }
+
+            if (i == parallel_restorecon_queue_.size()) {
                 restorecon_queue_.emplace_back(fullpath);
             }
         }
@@ -248,11 +275,10 @@ void ColdBoot::Run() {
     RegenerateUevents();
 
     if (enable_parallel_restorecon_) {
-        selinux_android_restorecon("/sys", 0);
-        selinux_android_restorecon("/sys/devices", 0);
-        GenerateRestoreCon("/sys");
-        // takes long time for /sys/devices, parallelize it
-        GenerateRestoreCon("/sys/devices");
+        for (unsigned int i = 0; i < parallel_restorecon_queue_.size(); i++) {
+            selinux_android_restorecon(parallel_restorecon_queue_[i].c_str(), 0);
+            GenerateRestoreCon(parallel_restorecon_queue_[i].c_str());
+        }
     }
 
     ForkSubProcesses();
@@ -313,7 +339,7 @@ int ueventd_main(int argc, char** argv) {
 
     if (!android::base::GetBoolProperty(kColdBootDoneProp, false)) {
         ColdBoot cold_boot(uevent_listener, uevent_handlers,
-                           ueventd_configuration.enable_parallel_restorecon);
+                           ueventd_configuration.enable_parallel_restorecon, ueventd_configuration.parallel_restorecon_dirs);
         cold_boot.Run();
     }
 
