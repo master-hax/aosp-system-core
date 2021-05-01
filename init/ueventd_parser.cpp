@@ -139,6 +139,17 @@ Result<void> ParseEnabledDisabledLine(std::vector<std::string>&& args, bool* fea
     return {};
 }
 
+Result<void> ParseParallelRestoreconDirsLine(std::vector<std::string>&& args,
+                                          std::vector<std::string>* parallel_restorecon_dirs) {
+    if (args.size() < 2) {
+        return Error() << "parallel_restorecon_dirs must have at least 1 entry";
+    }
+
+    std::move(std::next(args.begin()), args.end(), std::back_inserter(*parallel_restorecon_dirs));
+
+    return {};
+}
+
 Result<void> ParseUeventSocketRcvbufSizeLine(std::vector<std::string>&& args,
                                              size_t* uevent_socket_rcvbuf_size) {
     if (args.size() != 2) {
@@ -259,6 +270,10 @@ UeventdConfiguration ParseConfig(const std::vector<std::string>& configs) {
     parser.AddSingleLineParser("parallel_restorecon",
                                std::bind(ParseEnabledDisabledLine, _1,
                                          &ueventd_configuration.enable_parallel_restorecon));
+    parser.AddSingleLineParser("restorecon_dirs",
+                               std::bind(ParseParallelRestoreconDirsLine, _1,
+                                         &ueventd_configuration.parallel_restorecon_dirs));
+
 
     for (const auto& config : configs) {
         parser.ParseConfig(config);
