@@ -34,6 +34,7 @@ struct UeventdConfiguration {
     bool enable_modalias_handling = false;
     size_t uevent_socket_rcvbuf_size = 0;
     bool enable_parallel_restorecon = false;
+    std::vector<std::string> parallel_restorecon_dirs;
 };
 
 UeventdConfiguration ParseConfig(const std::vector<std::string>& configs);
