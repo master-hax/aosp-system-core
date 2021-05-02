@@ -8,7 +8,9 @@ cc_binary_host {
     name: "mkbootfs",
     srcs: ["mkbootfs.c"],
     cflags: ["-Werror"],
-    shared_libs: ["libcutils"],
+    static_libs: [
+        "libcutils",
+    ],
     dist: {
         targets: ["dist_files"],
     },
