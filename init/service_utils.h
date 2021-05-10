@@ -76,6 +76,15 @@ struct NamespaceInfo {
 Result<void> EnterNamespaces(const NamespaceInfo& info, const std::string& name,
                              std::optional<MountNamespace> override_mount_namespace);
 
+struct IsolatedMountPointInfo {
+    // List of mount-points to remount as REC | PRIVATE for this service after entering the
+    // namespace. Flags could be added if different points need to be either not REC or
+    // UNBINDABLE instead?
+    std::vector<std::string> mountpoints;
+};
+Result<void> IsolateMountPoints(const IsolatedMountPointInfo& info,
+                                const NamespaceInfo& namespace_info);
+
 struct ProcessAttributes {
     std::string console;
     IoSchedClass ioprio_class;

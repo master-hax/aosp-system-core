@@ -523,6 +523,11 @@ Result<void> Service::Start() {
                        << "' failed to set up namespaces: " << result.error();
         }
 
+        if (auto result = IsolateMountPoints(mountpoints_to_isolate_, namespaces_); !result.ok()) {
+            LOG(FATAL) << "Service '" << name_
+                       << "' failed to isolate mount points: " << result.error();
+        }
+
         for (const auto& [key, value] : environment_vars_) {
             setenv(key.c_str(), value.c_str(), 1);
         }

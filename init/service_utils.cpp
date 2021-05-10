@@ -232,6 +232,27 @@ Result<void> EnterNamespaces(const NamespaceInfo& info, const std::string& name,
     return {};
 }
 
+Result<void> IsolateMountPoints(const IsolatedMountPointInfo& info,
+                                const NamespaceInfo& namespace_info) {
+    // We need to make sure this isn't affecting the global namespace, and limit it to just new
+    // namespaces created for services. Consider something adding something like
+    // std::none_of(namesspace_info.namespaces_to_enter.begin(),
+    // namesspace_info.namespaces_to_enter.end(), [](auto const &[type, name]) { return type ==
+    // CLONE_NEWNS; }) to expand the scope of this to existing namespaces, if necessary
+    if (info.mountpoints.size() > 0 && !(namespace_info.flags & CLONE_NEWNS)) {
+        return Error() << "Refusing to change mount point propagation without new namespace "
+                          "('isolate_mountpoints' was likely used without 'namespace mnt')";
+    }
+    for (const auto& mount_point : info.mountpoints) {
+        // Recursively change the propagation of selected mountpoints to private
+        if (mount("", mount_point.c_str(), NULL, MS_REC | MS_PRIVATE, NULL) < 0) {
+            return ErrnoError() << "Could not change propagation of " << mount_point.c_str()
+                                << " to private when trying to isolate mount point.";
+        }
+    }
+    return {};
+}
+
 Result<void> SetProcessAttributes(const ProcessAttributes& attr) {
     if (attr.ioprio_class != IoSchedClass_NONE) {
         if (android_set_ioprio(getpid(), attr.ioprio_class, attr.ioprio_pri)) {

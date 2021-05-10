@@ -163,6 +163,7 @@ class Service {
     std::optional<CapSet> capabilities_;
     ProcessAttributes proc_attr_;
     NamespaceInfo namespaces_;
+    IsolatedMountPointInfo mountpoints_to_isolate_;
 
     std::string seclabel_;
 

@@ -294,6 +294,13 @@ Result<void> ServiceParser::ParseNamespace(std::vector<std::string>&& args) {
     return {};
 }
 
+Result<void> ServiceParser::ParseIsolateMountPoints(std::vector<std::string>&& args) {
+    for (size_t i = 1; i < args.size(); i++) {
+        service_->mountpoints_to_isolate_.mountpoints.push_back(args[i]);
+    }
+    return {};
+}
+
 Result<void> ServiceParser::ParseOomScoreAdjust(std::vector<std::string>&& args) {
     if (!ParseInt(args[1], &service_->oom_score_adjust_, MIN_OOM_SCORE_ADJUST,
                   MAX_OOM_SCORE_ADJUST)) {
@@ -554,6 +561,7 @@ const KeywordMap<ServiceParser::OptionParser>& ServiceParser::GetParserMap() con
                                     {1,     1,    &ServiceParser::ParseMemcgSoftLimitInBytes}},
         {"memcg.swappiness",        {1,     1,    &ServiceParser::ParseMemcgSwappiness}},
         {"namespace",               {1,     2,    &ServiceParser::ParseNamespace}},
+        {"isolate_mountpoints",     {1,     kMax, &ServiceParser::ParseIsolateMountPoints}},
         {"oneshot",                 {0,     0,    &ServiceParser::ParseOneshot}},
         {"onrestart",               {1,     kMax, &ServiceParser::ParseOnrestart}},
         {"oom_score_adjust",        {1,     1,    &ServiceParser::ParseOomScoreAdjust}},
