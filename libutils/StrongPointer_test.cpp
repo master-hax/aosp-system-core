@@ -51,7 +51,25 @@ class StrongPointer : public ::testing::Test {};
 using RefBaseTypes = ::testing::Types<SPFoo, SPLightFoo>;
 TYPED_TEST_CASE(StrongPointer, RefBaseTypes);
 
-TYPED_TEST(StrongPointer, move) {
+TYPED_TEST(StrongPointer, Make) {
+    bool isDeleted;
+    sp<TypeParam> foo = sp<TypeParam>::make(&isDeleted);
+    ASSERT_NE(foo, nullptr);
+    EXPECT_FALSE(isDeleted);
+    foo = nullptr;
+    EXPECT_TRUE(isDeleted);
+}
+
+TYPED_TEST(StrongPointer, TryMake) {
+    bool isDeleted;
+    sp<TypeParam> foo = sp<TypeParam>::tryMake(&isDeleted);
+    ASSERT_NE(foo, nullptr);
+    EXPECT_FALSE(isDeleted);
+    foo = nullptr;
+    EXPECT_TRUE(isDeleted);
+}
+
+TYPED_TEST(StrongPointer, Move) {
     bool isDeleted;
     sp<TypeParam> sp1 = sp<TypeParam>::make(&isDeleted);
     TypeParam* foo = sp1.get();

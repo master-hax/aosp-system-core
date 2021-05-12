@@ -50,6 +50,13 @@ public:
     template <typename... Args>
     static inline sp<T> make(Args&&... args);
 
+    // For low-level or critical environments, like sp::make, but uses the
+    // std::nothrow allocator. In most places in Android, you want the default
+    // behavior (low memory -> lmkd not keeping up -> abort, because exceptions
+    // are turned off).
+    template <typename... Args>
+    static inline sp<T> tryMake(Args&&... args);
+
     // if nullptr, returns nullptr
     //
     // if a strong pointer is already available, this will retrieve it,
@@ -211,12 +218,23 @@ void sp<T>::check_not_on_stack(const void* ptr) {
     }
 }
 
-// TODO: Ideally we should find a way to increment the reference count before running the
-// constructor, so that generating an sp<> to this in the constructor is no longer dangerous.
+// TODO: After ANDROID_UTILS_REF_BASE_DISABLE_IMPLICIT_CONSTRUCTION is at 100%, we could make the
+// default strong count '1' instead and avoid the increment here. This way, sp<>
+// to this could be taken in the constructor. Currently, this will crash.
 template <typename T>
 template <typename... Args>
 sp<T> sp<T>::make(Args&&... args) {
     T* t = new T(std::forward<Args>(args)...);
+    sp<T> result;
+    result.m_ptr = t;
+    t->incStrong(t);  // bypass check_not_on_stack for heap allocation
+    return result;
+}
+
+template <typename T>
+template <typename... Args>
+sp<T> sp<T>::tryMake(Args&&... args) {
+    T* t = new (std::nothrow) T(std::forward<Args>(args)...);
     sp<T> result;
     result.m_ptr = t;
     t->incStrong(t);  // bypass check_not_on_stack for heap allocation
