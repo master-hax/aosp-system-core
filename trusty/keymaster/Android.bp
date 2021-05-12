@@ -118,6 +118,8 @@ cc_fuzz {
     srcs: [
         "fuzz/keymaster_protocol_fuzzer.cpp",
         "fuzz/keymaster_fuzzer.proto",
+        "fuzz/keymaster_defs.proto",
+        "fuzz/messages.proto",
     ],
 
     shared_libs: [

@@ -1,0 +1,53 @@
+syntax = "proto2";
+package android.trusty.keymaster.fuzz;
+
+import "system/core/trusty/keymaster/fuzz/keymaster_defs.proto";
+
+message GenerateKeyRequest {
+    required AuthorizationSet key_description = 1;
+    required Blob attestation_signing_key_blob = 2;
+    required AuthorizationSet attest_key_params = 3;
+    required Blob issuer_subject = 4;
+}
+
+message BeginOperationRequest {
+    required Purpose purpose = 1;
+    required Blob key_blob = 2;
+    required AuthorizationSet additional_params = 3;
+}
+
+message UpdateOperationRequest {
+    required uint64 op_handle = 1;
+    required Buffer input = 2;
+    required AuthorizationSet additional_params = 3;
+}
+
+message FinishOperationRequest {
+    required uint64 op_handle = 1;
+    required Buffer input = 2;
+    required Buffer signature = 3;
+    required AuthorizationSet additional_params = 4;
+}
+
+message AbortOperationRequest {
+    required uint64 op_handle = 1;
+}
+
+message ImportKeyRequest {
+    required AuthorizationSet key_description = 1;
+    required KeyFormat key_format = 2;
+    required Blob key_data = 3;
+    required Blob attestation_signing_key_blob = 4;
+    required AuthorizationSet attest_key_params = 5;
+    required Blob issuer_subject = 6;
+}
+
+message ExportKeyRequest {
+    required AuthorizationSet additional_params = 1;
+    required KeyFormat key_format = 2;
+    required bytes key_blob = 3;
+}
+
+message AddEntropyRequest {
+    required Buffer random_data = 1;
+}
