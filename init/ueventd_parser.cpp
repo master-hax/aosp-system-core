@@ -112,12 +112,27 @@ Result<void> ParseExternalFirmwareHandlerLine(
                        << args[1] << "'";
     }
 
-    passwd* pwd = getpwnam(args[2].c_str());
-    if (!pwd) {
-        return ErrnoError() << "invalid handler uid'" << args[2] << "'";
+    std::string user_name = args[2];
+    gid_t gid = 0;
+
+    size_t pos = args[2].find(':');
+    if (pos != std::string::npos) {
+        user_name = args[2].substr(0, pos);
+
+        std::string grp_name = args[2].substr(pos + 1, std::string::npos);
+        struct group* grp = getgrnam(grp_name.c_str());
+        if (!grp) {
+            return Error() << "invalid handler gid '" << grp_name << "'";
+        }
+        gid = grp->gr_gid;
     }
 
-    ExternalFirmwareHandler handler(std::move(args[1]), pwd->pw_uid, std::move(args[3]));
+    passwd* pwd = getpwnam(user_name.c_str());
+    if (!pwd) {
+        return ErrnoError() << "invalid handler uid'" << user_name << "'";
+    }
+
+    ExternalFirmwareHandler handler(std::move(args[1]), pwd->pw_uid, gid, std::move(args[3]));
     external_firmware_handlers->emplace_back(std::move(handler));
 
     return {};
