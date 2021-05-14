@@ -15,21 +15,4 @@
  */
 
 //
-// Android endian-ness defines.
-//
-#ifndef _LIBS_UTILS_ENDIAN_H
-#define _LIBS_UTILS_ENDIAN_H
 
-#if defined(__APPLE__) || defined(_WIN32)
-
-#define __BIG_ENDIAN 0x1000
-#define __LITTLE_ENDIAN 0x0001
-#define __BYTE_ORDER __LITTLE_ENDIAN
-
-#else
-
-#include <endian.h>
-
-#endif
-
-#endif /*_LIBS_UTILS_ENDIAN_H*/
