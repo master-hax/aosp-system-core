@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-#ifndef ANDROID_STRING16_H
-#define ANDROID_STRING16_H
+#pragma once
 
 #include <iostream>
 #include <string>
@@ -55,9 +54,6 @@ public:
 
     inline  const char16_t*     string() const;
 
-private:
-    static inline std::string   std_string(const String16& str);
-public:
             size_t              size() const;
             void                setTo(const String16& other);
             status_t            setTo(const char16_t* other);
@@ -224,117 +220,88 @@ StaticString16(const F&)->StaticString16<sizeof(F) / sizeof(char16_t)>;
 // ---------------------------------------------------------------------------
 // No user servicable parts below.
 
-inline int compare_type(const String16& lhs, const String16& rhs)
-{
+inline int compare_type(const String16& lhs, const String16& rhs) {
     return lhs.compare(rhs);
 }
 
-inline int strictly_order_type(const String16& lhs, const String16& rhs)
-{
+inline int strictly_order_type(const String16& lhs, const String16& rhs) {
     return compare_type(lhs, rhs) < 0;
 }
 
-inline const char16_t* String16::string() const
-{
+inline const char16_t* String16::string() const {
     return mString;
 }
 
-inline std::string String16::std_string(const String16& str)
-{
-    return std::string(String8(str).string());
-}
-
-inline String16& String16::operator=(const String16& other)
-{
+inline String16& String16::operator=(const String16& other) {
     setTo(other);
     return *this;
 }
 
-inline String16& String16::operator+=(const String16& other)
-{
+inline String16& String16::operator+=(const String16& other) {
     append(other);
     return *this;
 }
 
-inline String16 String16::operator+(const String16& other) const
-{
+inline String16 String16::operator+(const String16& other) const {
     String16 tmp(*this);
     tmp += other;
     return tmp;
 }
 
-inline int String16::compare(const String16& other) const
-{
+inline int String16::compare(const String16& other) const {
     return strzcmp16(mString, size(), other.mString, other.size());
 }
 
-inline bool String16::operator<(const String16& other) const
-{
+inline bool String16::operator<(const String16& other) const {
     return strzcmp16(mString, size(), other.mString, other.size()) < 0;
 }
 
-inline bool String16::operator<=(const String16& other) const
-{
+inline bool String16::operator<=(const String16& other) const {
     return strzcmp16(mString, size(), other.mString, other.size()) <= 0;
 }
 
-inline bool String16::operator==(const String16& other) const
-{
+inline bool String16::operator==(const String16& other) const {
     return strzcmp16(mString, size(), other.mString, other.size()) == 0;
 }
 
-inline bool String16::operator!=(const String16& other) const
-{
+inline bool String16::operator!=(const String16& other) const {
     return strzcmp16(mString, size(), other.mString, other.size()) != 0;
 }
 
-inline bool String16::operator>=(const String16& other) const
-{
+inline bool String16::operator>=(const String16& other) const {
     return strzcmp16(mString, size(), other.mString, other.size()) >= 0;
 }
 
-inline bool String16::operator>(const String16& other) const
-{
+inline bool String16::operator>(const String16& other) const {
     return strzcmp16(mString, size(), other.mString, other.size()) > 0;
 }
 
-inline bool String16::operator<(const char16_t* other) const
-{
+inline bool String16::operator<(const char16_t* other) const {
     return strcmp16(mString, other) < 0;
 }
 
-inline bool String16::operator<=(const char16_t* other) const
-{
+inline bool String16::operator<=(const char16_t* other) const {
     return strcmp16(mString, other) <= 0;
 }
 
-inline bool String16::operator==(const char16_t* other) const
-{
+inline bool String16::operator==(const char16_t* other) const {
     return strcmp16(mString, other) == 0;
 }
 
-inline bool String16::operator!=(const char16_t* other) const
-{
+inline bool String16::operator!=(const char16_t* other) const {
     return strcmp16(mString, other) != 0;
 }
 
-inline bool String16::operator>=(const char16_t* other) const
-{
+inline bool String16::operator>=(const char16_t* other) const {
     return strcmp16(mString, other) >= 0;
 }
 
-inline bool String16::operator>(const char16_t* other) const
-{
+inline bool String16::operator>(const char16_t* other) const {
     return strcmp16(mString, other) > 0;
 }
 
-inline String16::operator const char16_t*() const
-{
+inline String16::operator const char16_t*() const {
     return mString;
 }
 
 }  // namespace android
-
-// ---------------------------------------------------------------------------
-
-#endif // ANDROID_STRING16_H
