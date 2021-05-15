@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-#ifndef ANDROID_STRING8_H
-#define ANDROID_STRING8_H
+#pragma once
 
 #include <iostream>
 #include <string>
@@ -59,10 +58,6 @@ public:
 
     inline  const char*         c_str() const;
     inline  const char*         string() const;
-
-private:
-    static inline std::string   std_string(const String8& str);
-public:
 
     inline  size_t              size() const;
     inline  size_t              bytes() const;
@@ -131,75 +126,87 @@ public:
 
             void                toLower();
 
+            /*
+             * These methods operate on the string as if it were a path name.
+             * They're pretty badly specified and implemented, so you probably don't
+             * want to use these.
+             *
+             * TODO: when aapt is removed in favor of aapt2, we can probably remove most
+             * of these...
+             */
 
-    /*
-     * These methods operate on the string as if it were a path name.
-     */
+            /*
+             * Sets this string to `name`, but removes one trailing '/' if present.
+             * Note that it will also translate "/" to "".
+             */
+            void setPathName(const char* name);
+            void setPathName(const char* name, size_t numChars);
 
-    /*
-     * Get just the filename component.
-     *
-     * "/tmp/foo/bar.c" --> "bar.c"
-     */
-    String8 getPathLeaf(void) const;
+            /*
+             * Return the filename component.
+             *
+             * "/tmp/foo/bar.c" --> "bar.c"
+             */
+            String8 getPathLeaf(void) const;
 
-    /*
-     * Remove the last (file name) component, leaving just the directory
-     * name.
-     *
-     * "/tmp/foo/bar.c" --> "/tmp/foo"
-     * "/tmp" --> "" // ????? shouldn't this be "/" ???? XXX
-     * "bar.c" --> ""
-     */
-    String8 getPathDir(void) const;
+            /*
+             * Returns everything except the last (file name) component.
+             *
+             * "/tmp/foo/bar.c" --> "/tmp/foo"
+             * "/tmp" --> "" // ????? shouldn't this be "/" ???? XXX
+             * "bar.c" --> ""
+             */
+            String8 getPathDir(void) const;
 
-    /*
-     * Retrieve the front (root dir) component.  Optionally also return the
-     * remaining components.
-     *
-     * "/tmp/foo/bar.c" --> "tmp" (remain = "foo/bar.c")
-     * "/tmp" --> "tmp" (remain = "")
-     * "bar.c" --> "bar.c" (remain = "")
-     */
-    String8 walkPath(String8* outRemains = nullptr) const;
+            /*
+             * Returns the front (root dir) component.  Optionally also return the
+             * remaining components.
+             *
+             * "/tmp/foo/bar.c" --> "tmp" (remain = "foo/bar.c")
+             * "/tmp" --> "tmp" (remain = "")
+             * "bar.c" --> "bar.c" (remain = "")
+             */
+            String8 walkPath(String8* outRemains = nullptr) const;
 
-    /*
-     * Return the filename extension.  This is the last '.' and any number
-     * of characters that follow it.  The '.' is included in case we
-     * decide to expand our definition of what constitutes an extension.
-     *
-     * "/tmp/foo/bar.c" --> ".c"
-     * "/tmp" --> ""
-     * "/tmp/foo.bar/baz" --> ""
-     * "foo.jpeg" --> ".jpeg"
-     * "foo." --> ""
-     */
-    String8 getPathExtension(void) const;
+            /*
+             * Return the filename extension.  This is the last '.' and any number
+             * of characters that follow it.
+             *
+             * "/tmp/foo/bar.c" --> ".c"
+             * "/tmp" --> ""
+             * "/tmp/foo.bar/baz" --> ""
+             * "foo.jpeg" --> ".jpeg"
+             * "foo." --> ""
+             */
+            String8 getPathExtension(void) const;
 
-    /*
-     * Return the path without the extension.  Rules for what constitutes
-     * an extension are described in the comment for getPathExtension().
-     *
-     * "/tmp/foo/bar.c" --> "/tmp/foo/bar"
-     */
-    String8 getBasePath(void) const;
+            /*
+             * Return the path without the extension.  Rules for what constitutes
+             * an extension are described in the comment for getPathExtension().
+             *
+             * "/tmp/foo/bar.c" --> "/tmp/foo/bar"
+             */
+            String8 getBasePath(void) const;
 
-    /*
-     * Add a component to the pathname.  We guarantee that there is
-     * exactly one path separator between the old path and the new.
-     * If there is no existing name, we just copy the new name in.
-     *
-     * If leaf is a fully qualified path (i.e. starts with '/', it
-     * replaces whatever was there before.
-     */
-    String8& appendPath(const char* leaf);
-    String8& appendPath(const String8& leaf)  { return appendPath(leaf.string()); }
+            /*
+             * Add a component to the pathname.  We guarantee that there is
+             * exactly one path separator between the old path and the new.
+             * If there is no existing name, we just copy the new name in.
+             *
+             * If leaf is a fully qualified path (i.e. starts with '/', it
+             * replaces whatever was there before.
+             */
+            String8& appendPath(const char* leaf);
+            String8& appendPath(const String8& leaf) { return appendPath(leaf.string()); }
 
-    /*
-     * Like appendPath(), but does not affect this string.  Returns a new one instead.
-     */
-    String8 appendPathCopy(const char* leaf) const
-                                             { String8 p(*this); p.appendPath(leaf); return p; }
+            /*
+             * Like appendPath(), but does not affect this string.  Returns a new one instead.
+             */
+            String8 appendPathCopy(const char* leaf) const {
+                String8 p(*this);
+                p.appendPath(leaf);
+                return p;
+            }
     String8 appendPathCopy(const String8& leaf) const { return appendPathCopy(leaf.string()); }
 
     /*
@@ -212,7 +219,6 @@ public:
     String8& convertToResPath();
 
 private:
-            status_t            real_append(const char* other, size_t numChars);
             char*               find_extension(void) const;
 
             const char* mString;
@@ -230,13 +236,11 @@ static inline std::ostream& operator<<(std::ostream& os, const String8& str) {
 // ---------------------------------------------------------------------------
 // No user servicable parts below.
 
-inline int compare_type(const String8& lhs, const String8& rhs)
-{
+inline int compare_type(const String8& lhs, const String8& rhs) {
     return lhs.compare(rhs);
 }
 
-inline int strictly_order_type(const String8& lhs, const String8& rhs)
-{
+inline int strictly_order_type(const String8& lhs, const String8& rhs) {
     return compare_type(lhs, rhs) < 0;
 }
 
@@ -244,150 +248,116 @@ inline const String8 String8::empty() {
     return String8();
 }
 
-inline const char* String8::c_str() const
-{
-    return mString;
-}
-inline const char* String8::string() const
-{
+inline const char* String8::c_str() const {
     return mString;
 }
 
-inline std::string String8::std_string(const String8& str)
-{
-    return std::string(str.string());
+inline const char* String8::string() const {
+    return mString;
 }
 
-inline size_t String8::size() const
-{
+inline size_t String8::size() const {
     return length();
 }
 
-inline bool String8::isEmpty() const
-{
+inline bool String8::isEmpty() const {
     return length() == 0;
 }
 
-inline size_t String8::bytes() const
-{
+inline size_t String8::bytes() const {
     return length();
 }
 
-inline bool String8::contains(const char* other) const
-{
+inline bool String8::contains(const char* other) const {
     return find(other) >= 0;
 }
 
-inline String8& String8::operator=(const String8& other)
-{
+inline String8& String8::operator=(const String8& other) {
     setTo(other);
     return *this;
 }
 
-inline String8& String8::operator=(const char* other)
-{
+inline String8& String8::operator=(const char* other) {
     setTo(other);
     return *this;
 }
 
-inline String8& String8::operator+=(const String8& other)
-{
+inline String8& String8::operator+=(const String8& other) {
     append(other);
     return *this;
 }
 
-inline String8 String8::operator+(const String8& other) const
-{
+inline String8 String8::operator+(const String8& other) const {
     String8 tmp(*this);
     tmp += other;
     return tmp;
 }
 
-inline String8& String8::operator+=(const char* other)
-{
+inline String8& String8::operator+=(const char* other) {
     append(other);
     return *this;
 }
 
-inline String8 String8::operator+(const char* other) const
-{
+inline String8 String8::operator+(const char* other) const {
     String8 tmp(*this);
     tmp += other;
     return tmp;
 }
 
-inline int String8::compare(const String8& other) const
-{
+inline int String8::compare(const String8& other) const {
     return strcmp(mString, other.mString);
 }
 
-inline bool String8::operator<(const String8& other) const
-{
+inline bool String8::operator<(const String8& other) const {
     return strcmp(mString, other.mString) < 0;
 }
 
-inline bool String8::operator<=(const String8& other) const
-{
+inline bool String8::operator<=(const String8& other) const {
     return strcmp(mString, other.mString) <= 0;
 }
 
-inline bool String8::operator==(const String8& other) const
-{
+inline bool String8::operator==(const String8& other) const {
     return strcmp(mString, other.mString) == 0;
 }
 
-inline bool String8::operator!=(const String8& other) const
-{
+inline bool String8::operator!=(const String8& other) const {
     return strcmp(mString, other.mString) != 0;
 }
 
-inline bool String8::operator>=(const String8& other) const
-{
+inline bool String8::operator>=(const String8& other) const {
     return strcmp(mString, other.mString) >= 0;
 }
 
-inline bool String8::operator>(const String8& other) const
-{
+inline bool String8::operator>(const String8& other) const {
     return strcmp(mString, other.mString) > 0;
 }
 
-inline bool String8::operator<(const char* other) const
-{
+inline bool String8::operator<(const char* other) const {
     return strcmp(mString, other) < 0;
 }
 
-inline bool String8::operator<=(const char* other) const
-{
+inline bool String8::operator<=(const char* other) const {
     return strcmp(mString, other) <= 0;
 }
 
-inline bool String8::operator==(const char* other) const
-{
+inline bool String8::operator==(const char* other) const {
     return strcmp(mString, other) == 0;
 }
 
-inline bool String8::operator!=(const char* other) const
-{
+inline bool String8::operator!=(const char* other) const {
     return strcmp(mString, other) != 0;
 }
 
-inline bool String8::operator>=(const char* other) const
-{
+inline bool String8::operator>=(const char* other) const {
     return strcmp(mString, other) >= 0;
 }
 
-inline bool String8::operator>(const char* other) const
-{
+inline bool String8::operator>(const char* other) const {
     return strcmp(mString, other) > 0;
 }
 
-inline String8::operator const char*() const
-{
+inline String8::operator const char*() const {
     return mString;
 }
 
 }  // namespace android
-
-// ---------------------------------------------------------------------------
-
-#endif // ANDROID_STRING8_H
