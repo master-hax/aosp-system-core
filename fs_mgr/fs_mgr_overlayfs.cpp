@@ -1303,12 +1303,21 @@ bool fs_mgr_overlayfs_mount_fstab_entry(const std::string& lowers,
                                         const std::string& mount_point) {
     if (fs_mgr_overlayfs_invalid()) return false;
 
-    std::string aux = "lowerdir=" + lowers + ",override_creds=off";
-    auto rc = mount("overlay", mount_point.c_str(), "overlay", MS_RDONLY | MS_NOATIME, aux.c_str());
+    std::string options = kLowerdirOption + lowers;
+    if (fs_mgr_overlayfs_valid() == OverlayfsValidResult::kOverrideCredsRequired) {
+        options += ",override_creds=off";
+    }
 
-    if (rc == 0) return true;
-
-    return false;
+    auto report =
+            "__mount(source=overlay,target=" + mount_point + ",type=overlay," + options + ")=";
+    auto ret = mount("overlay", mount_point.c_str(), "overlay", MS_RDONLY | MS_NOATIME,
+                     options.c_str());
+    if (ret) {
+        PERROR << report << ret;
+        return false;
+    }
+    LINFO << report << ret;
+    return true;
 }
 
 bool fs_mgr_overlayfs_mount_all(Fstab* fstab) {
