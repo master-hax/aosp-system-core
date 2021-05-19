@@ -2265,3 +2265,33 @@ std::string fs_mgr_get_super_partition_name(int slot) {
     }
     return LP_METADATA_DEFAULT_PARTITION_NAME;
 }
+
+int fs_mgr_mount_overlayfs_from_fstab_entry(const FstabEntry& entry) {
+    auto overlayfs_valid_result = fs_mgr_overlayfs_valid();
+    if (overlayfs_valid_result == OverlayfsValidResult::kNotSupported) {
+        LERROR << __FUNCTION__ << "(): kernel does not support overlayfs";
+        return -1;
+    }
+
+    // Create the mount point in case it doesn't exist.
+    mkdir(entry.mount_point.c_str(), 0755);
+
+    auto options = "lowerdir=" + entry.lowerdir;
+    if (overlayfs_valid_result == OverlayfsValidResult::kOverrideCredsRequired) {
+        options += ",override_creds=off";
+    }
+
+    // Use .blk_device as the mount() source for debugging purposes.
+    // Overlayfs is pseudo filesystem, so the source device is a symbolic value and isn't used to
+    // back the filesystem. /proc/mounts would show the source as the device name of the mount.
+    auto report = "__mount(source=" + entry.blk_device + ",target=" + entry.mount_point +
+                  ",type=overlay," + options + ")=";
+    auto ret = mount(entry.blk_device.c_str(), entry.mount_point.c_str(), "overlay",
+                     MS_RDONLY | MS_NOATIME, options.c_str());
+    if (ret) {
+        PERROR << report << ret;
+    } else {
+        LINFO << report << ret;
+    }
+    return ret;
+}
