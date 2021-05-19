@@ -2265,3 +2265,35 @@ std::string fs_mgr_get_super_partition_name(int slot) {
     }
     return LP_METADATA_DEFAULT_PARTITION_NAME;
 }
+
+int fs_mgr_mount_overlayfs_fstab_entry(const FstabEntry& entry) {
+    auto overlayfs_valid_result = fs_mgr_overlayfs_valid();
+    if (overlayfs_valid_result == OverlayfsValidResult::kNotSupported) {
+        LERROR << __FUNCTION__ << "(): kernel does not support overlayfs";
+        return -1;
+    }
+
+    // Create the mount point in case it doesn't exist.
+    mkdir(entry.mount_point.c_str(), 0755);
+
+    auto options = "lowerdir=" + entry.lowerdir;
+    if (overlayfs_valid_result == OverlayfsValidResult::kOverrideCredsRequired) {
+        options += ",override_creds=off";
+    }
+
+    // Use "overlay-" + entry.blk_device as the mount() source, so that adb-remout-test don't
+    // confuse this with adb remount overlay, whose device name is "overlay".
+    // Overlayfs is a pseudo filesystem, so the source device is a symbolic value and isn't used to
+    // back the filesystem. However the device name would be shown in /proc/mounts.
+    auto source = "overlay-" + entry.blk_device;
+    auto report = "__mount(source=" + source + ",target=" + entry.mount_point + ",type=overlay," +
+                  options + ")=";
+    auto ret = mount(source.c_str(), entry.mount_point.c_str(), "overlay", MS_RDONLY | MS_NOATIME,
+                     options.c_str());
+    if (ret) {
+        PERROR << report << ret;
+    } else {
+        LINFO << report << ret;
+    }
+    return ret;
+}
