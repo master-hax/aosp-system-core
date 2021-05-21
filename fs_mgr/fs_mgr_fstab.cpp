@@ -127,11 +127,23 @@ void ParseMountFlags(const std::string& flags, FstabEntry* entry) {
             }
             fs_options.append(flag);
 
-            if (entry->fs_type == "f2fs" && StartsWith(flag, "reserve_root=")) {
-                std::string arg;
-                if (auto equal_sign = flag.find('='); equal_sign != std::string::npos) {
-                    arg = flag.substr(equal_sign + 1);
+            std::string arg;
+            if (auto equal_sign = flag.find('='); equal_sign != std::string::npos) {
+                arg = flag.substr(equal_sign + 1);
+            }
+
+            if (entry->fs_type == "overlay") {
+                if (StartsWith(flag, "lowerdir=")) {
+                    entry->lowerdir = arg;
+                } else if (StartsWith(flag, "override_creds=") || flag == "seclabel") {
+                    // Do nothing, don't even log any warning. This prevents
+                    // log spam when parsing fstab from /proc/mounts.
+                } else {
+                    LWARNING << "Warning: ignored overlayfs flag: " << flag;
                 }
+            }
+
+            if (entry->fs_type == "f2fs" && StartsWith(flag, "reserve_root=")) {
                 if (!ParseInt(arg, &entry->reserved_size)) {
                     LWARNING << "Warning: reserve_root= flag malformed: " << arg;
                 } else {
