@@ -92,6 +92,10 @@ bool ConstructVerityTable(const FsAvbHashtreeDescriptor& hashtree_desc,
     // Always use ignore_zero_blocks.
     target.IgnoreZeroBlocks();
 
+    if (hashtree_desc.check_at_most_once) {
+        target.CheckAtMostOnce();
+    }
+
     LINFO << "Built verity table: '" << target.GetParameterString() << "'";
 
     return table->AddTarget(std::make_unique<android::dm::DmTargetVerity>(target));
