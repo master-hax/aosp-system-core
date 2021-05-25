@@ -35,6 +35,10 @@
 
 #include "utility.h"
 
+#ifndef DM_DEFERRED_REMOVE
+#define DM_DEFERRED_REMOVE (1 << 17)
+#endif
+
 namespace android {
 namespace dm {
 
@@ -131,6 +135,28 @@ bool DeviceMapper::DeleteDevice(const std::string& name,
 
 bool DeviceMapper::DeleteDevice(const std::string& name) {
     return DeleteDevice(name, 0ms);
+}
+
+bool DeviceMapper::DeleteDeviceDeferred(const std::string& name) {
+    struct dm_ioctl io;
+    InitIo(&io, name);
+
+    io.flags |= DM_DEFERRED_REMOVE;
+    if (ioctl(fd_, DM_DEV_REMOVE, &io)) {
+        PLOG(ERROR) << "DM_DEV_REMOVE failed for [" << name << "]";
+        return false;
+    }
+
+    // TODO: should we check that DM_UEVENT_GENERATED_FLAG was generated? Need
+    // to investigate.
+    return true;
+}
+
+bool DeviceMapper::DeleteDeviceIfExistsDeferred(const std::string& name) {
+    if (GetState(name) == DmDeviceState::INVALID) {
+        return true;
+    }
+    return DeleteDeviceDeferred(name);
 }
 
 static std::string GenerateUuid() {
