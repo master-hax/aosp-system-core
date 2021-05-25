@@ -78,7 +78,8 @@ TEST_F(PublicFsAvbUtilTest, GetHashtreeDescriptor) {
             "      Partition Name:        system\n"
             "      Salt:                  d00df00d\n"
             "      Root Digest:           a3d5dd307341393d85de356c384ff543ec1ed81b\n"
-            "      Flags:                 0\n",
+            "      Flags:                 0\n"
+            "      Check At Most Once:    0\n",
             InfoImage(system_path));
 
     EXPECT_EQ(1UL, hashtree_desc->dm_verity_version);

@@ -237,7 +237,8 @@ TEST_F(AvbUtilTest, GetAvbFooter) {
             "      Partition Name:        system\n"
             "      Salt:                  d00df00d\n"
             "      Root Digest:           a3d5dd307341393d85de356c384ff543ec1ed81b\n"
-            "      Flags:                 0\n",
+            "      Flags:                 0\n"
+            "      Check At Most Once:    0\n",
             InfoImage(system_path));
 
     // Checks each field from GetAvbFooter(fd).
@@ -975,7 +976,8 @@ TEST_F(AvbUtilTest, GetChainPartitionInfoNone) {
             "      Partition Name:        system\n"
             "      Salt:                  d00df00d\n"
             "      Root Digest:           a3d5dd307341393d85de356c384ff543ec1ed81b\n"
-            "      Flags:                 0\n",
+            "      Flags:                 0\n"
+            "      Check At Most Once:    0\n",
             InfoImage("vbmeta.img"));
 
     // Checks none of chain descriptors is found.

@@ -151,7 +151,8 @@ TEST_F(BaseFsAvbTest, AddHashtreeFooter) {
             "      Partition Name:        system\n"
             "      Salt:                  d00df00d\n"
             "      Root Digest:           d20d40c02298e385ab6d398a61a3b91dc9947d99\n"
-            "      Flags:                 0\n",
+            "      Flags:                 0\n"
+            "      Check At Most Once:    0\n",
             InfoImage("system-vbmeta.img"));
 }
 
@@ -215,7 +216,8 @@ TEST_F(BaseFsAvbTest, GenerateVBMetaImageWithDescriptors) {
             "      Partition Name:        system\n"
             "      Salt:                  d00df00d\n"
             "      Root Digest:           a3d5dd307341393d85de356c384ff543ec1ed81b\n"
-            "      Flags:                 0\n",
+            "      Flags:                 0\n"
+            "      Check At Most Once:    0\n",
             InfoImage("vbmeta.img"));
 }
 
