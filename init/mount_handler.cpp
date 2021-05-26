@@ -73,6 +73,8 @@ void SetMountProperty(const MountHandlerEntry& entry, bool add) {
     std::string value;
     if (add) {
         value = entry.blk_device.substr(strlen(devblock));
+        if (entry.mount_point == "/data")
+            android::base::SetProperty("dev.mnt.blk.userdata", value);
         if (android::base::StartsWith(value, "sd")) {
             // All sd partitions inherit their queue characteristics
             // from the whole device reference.  Strip partition number.
