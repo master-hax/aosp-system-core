@@ -420,6 +420,18 @@ bool FirstStageMount::MountPartition(const Fstab::iterator& begin, bool erase_sa
         *end = begin + 1;
     }
 
+    // We need this because sometimes we have legacy symlinks that are
+    // lingering around and need cleaning up.
+    struct stat st;
+    if (!lstat(begin->mount_point.c_str(), &st) && S_ISLNK(st.st_mode)) {
+        unlink(begin->mount_point.c_str());
+    }
+    mkdir(begin->mount_point.c_str(), 0755);
+
+    if (!fs_mgr_mount_point_is_canonical(begin->mount_point)) {
+        return false;
+    }
+
     if (begin->fs_mgr_flags.logical) {
         if (!fs_mgr_update_logical_partition(&(*begin))) {
             return false;
