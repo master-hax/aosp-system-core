@@ -506,6 +506,9 @@ static void crash_completed_cb(evutil_socket_t sockfd, short ev, void* arg) {
 int main(int, char* []) {
   umask(0117);
 
+  if (android::base::GetProperty("ro.crypto.type", "") == "block")
+    android::base::WaitForProperty("vold.decrypt", "trigger_restart_framework");
+
   // Don't try to connect to ourselves if we crash.
   struct sigaction action = {};
   action.sa_handler = [](int signal) {
