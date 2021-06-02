@@ -21,7 +21,13 @@
 
 #include <android-base/file.h>
 #include <android-base/unique_fd.h>
+<<<<<<< TARGET BRANCH (ff18b4 Merge "[automerger skipped] Merge "Adding Car GSI public key)
 #include <gmock/gmock.h>
+=======
+#include <android-base/properties.h>
+#include <fs_mgr.h>
+#include <fstab/fstab.h>
+>>>>>>> SOURCE BRANCH (21ef3a Merge "Skip test for Automotive in Android Q" into android10)
 #include <gtest/gtest.h>
 #include <liblp/builder.h>
 
@@ -38,6 +44,7 @@ using namespace android::fs_mgr::testing;
 using ::testing::_;
 using ::testing::Return;
 using unique_fd = android::base::unique_fd;
+using android::base::GetProperty;
 
 // Our tests assume a 128KiB disk with two 512 byte metadata slots.
 static const size_t kDiskSize = 131072;
@@ -714,9 +721,25 @@ TEST_F(LiblpTest, UpdateNonRetrofit) {
     EXPECT_EQ(GetBlockDevicePartitionName(updated->block_devices[0]), "super");
 }
 
+<<<<<<< TARGET BRANCH (ff18b4 Merge "[automerger skipped] Merge "Adding Car GSI public key)
 TEST_F(LiblpTest, UpdateVirtualAB) {
     ON_CALL(*GetMockedPropertyFetcher(), GetBoolProperty("ro.virtual_ab.enabled", _))
             .WillByDefault(Return(true));
+=======
+TEST(liblp, ReadSuperPartition) {
+    //This test requires dynamic partition which is not mandatory for
+    //Automotive in Android Q or lower
+    std::string api_level = GetProperty("ro.build.version.sdk","");
+    std::string hw_type = GetProperty("ro.hardware.type","");
+    if (std::stoi(api_level) <= 29 && hw_type == "automotive") {
+      return;
+    }
+    auto slot_suffix = fs_mgr_get_slot_suffix();
+    auto slot_number = SlotNumberForSlotSuffix(slot_suffix);
+    auto super_name = fs_mgr_get_super_partition_name(slot_number);
+    auto metadata = ReadMetadata(super_name, slot_number);
+    ASSERT_NE(metadata, nullptr);
+>>>>>>> SOURCE BRANCH (21ef3a Merge "Skip test for Automotive in Android Q" into android10)
 
     unique_fd fd = CreateFlashedDisk();
     ASSERT_GE(fd, 0);
