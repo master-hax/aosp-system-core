@@ -42,11 +42,19 @@ using std::string;
 constexpr const char kTrustyDefaultDeviceName[] = "/dev/trusty-ipc-dev0";
 
 static const char* dev_name = kTrustyDefaultDeviceName;
+static bool infinite_timeout_retries = false;
+
+enum ApploaderOption {
+    APPLOADER_OPTION_HELP = 'h',
+    APPLOADER_OPTION_DEV = 'D',
+    APPLOADER_OPTION_INFINITE_TIMEOUT_RETRIES = 256,
+};
 
 static const char* _sopts = "hD:";
 static const struct option _lopts[] = {
-        {"help", no_argument, 0, 'h'},
-        {"dev", required_argument, 0, 'D'},
+        {"help", no_argument, 0, APPLOADER_OPTION_HELP},
+        {"dev", required_argument, 0, APPLOADER_OPTION_DEV},
+        {"infinite-timeout-retries", no_argument, 0, APPLOADER_OPTION_INFINITE_TIMEOUT_RETRIES},
         {0, 0, 0, 0},
 };
 
@@ -56,6 +64,9 @@ static const char* usage =
         "options:\n"
         "  -h, --help            prints this message and exit\n"
         "  -D, --dev name        Trusty device name\n"
+        "  --infinite-timeout-retries\n"
+        "                        Retry to connect to the apploader after\n"
+        "                        a timeout on a connection attempt\n"
         "\n";
 
 static void print_usage_and_exit(const char* prog, int code) {
@@ -74,12 +85,16 @@ static void parse_options(int argc, char** argv) {
         }
 
         switch (c) {
-            case 'h':
+            case APPLOADER_OPTION_HELP:
                 print_usage_and_exit(argv[0], EXIT_SUCCESS);
                 break;
 
-            case 'D':
+            case APPLOADER_OPTION_DEV:
                 dev_name = strdup(optarg);
+                break;
+
+            case APPLOADER_OPTION_INFINITE_TIMEOUT_RETRIES:
+                infinite_timeout_retries = true;
                 break;
 
             default:
@@ -242,7 +257,9 @@ static ssize_t send_app_package(const char* package_file_name) {
         goto err_read_file;
     }
 
-    tipc_fd = tipc_connect(dev_name, APPLOADER_PORT);
+    do {
+        tipc_fd = tipc_connect(dev_name, APPLOADER_PORT);
+    } while (infinite_timeout_retries && tipc_fd == -ETIMEDOUT);
     if (tipc_fd < 0) {
         LOG(ERROR) << "Failed to connect to Trusty app loader: " << strerror(-tipc_fd);
         rc = tipc_fd;
