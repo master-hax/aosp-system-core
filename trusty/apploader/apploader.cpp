@@ -42,11 +42,13 @@ using std::string;
 constexpr const char kTrustyDefaultDeviceName[] = "/dev/trusty-ipc-dev0";
 
 static const char* dev_name = kTrustyDefaultDeviceName;
+static bool wait_connect = false;
 
-static const char* _sopts = "hD:";
+static const char* _sopts = "hD:w";
 static const struct option _lopts[] = {
         {"help", no_argument, 0, 'h'},
         {"dev", required_argument, 0, 'D'},
+        {"wait", no_argument, 0, 'w'},
         {0, 0, 0, 0},
 };
 
@@ -56,6 +58,8 @@ static const char* usage =
         "options:\n"
         "  -h, --help            prints this message and exit\n"
         "  -D, --dev name        Trusty device name\n"
+        "  -w, --wait            Wait indefinitely for a connection to\n"
+        "                        the apploader to succeed\n"
         "\n";
 
 static void print_usage_and_exit(const char* prog, int code) {
@@ -80,6 +84,10 @@ static void parse_options(int argc, char** argv) {
 
             case 'D':
                 dev_name = strdup(optarg);
+                break;
+
+            case 'w':
+                wait_connect = true;
                 break;
 
             default:
@@ -242,7 +250,9 @@ static ssize_t send_app_package(const char* package_file_name) {
         goto err_read_file;
     }
 
-    tipc_fd = tipc_connect(dev_name, APPLOADER_PORT);
+    do {
+        tipc_fd = tipc_connect(dev_name, APPLOADER_PORT);
+    } while (wait_connect && tipc_fd == -ETIMEDOUT);
     if (tipc_fd < 0) {
         LOG(ERROR) << "Failed to connect to Trusty app loader: " << strerror(-tipc_fd);
         rc = tipc_fd;
