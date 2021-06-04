@@ -745,7 +745,7 @@ TEST_F(AvbUtilTest, VerifyVBMetaDataError) {
                  data_dir_.Append("testkey_rsa8192.pem"), "d00df00d",
                  "--internal_release_string \"unit test\"");
 
-    android::base::unique_fd fd(open(system_path.value().c_str(), O_RDONLY | O_CLOEXEC));
+    int fd = open(system_path.value().c_str(), O_RDONLY | O_CLOEXEC);
     ASSERT_TRUE(fd > 0);
 
     std::unique_ptr<AvbFooter> footer = GetAvbFooter(fd);
@@ -757,6 +757,7 @@ TEST_F(AvbUtilTest, VerifyVBMetaDataError) {
             fd, "system", "" /*expected_public_key_blob */, &out_public_key_data, &verify_result);
     EXPECT_NE(nullptr, vbmeta);
     EXPECT_EQ(VBMetaVerifyResult::kSuccess, verify_result);
+    ASSERT_EQ(0, close(fd));
 
     auto rsa8192_public_key_blob = ExtractPublicKeyAvbBlob(data_dir_.Append("testkey_rsa8192.pem"));
     EXPECT_EQ(rsa8192_public_key_blob, out_public_key_data);
@@ -770,12 +771,12 @@ TEST_F(AvbUtilTest, VerifyVBMetaDataError) {
     ModifyFile(system_path,
                footer->vbmeta_offset + authentication_block_offset + header->hash_offset,
                header->hash_size);
-    android::base::unique_fd hash_modified_fd(
-            open(system_path.value().c_str(), O_RDONLY | O_CLOEXEC));
+    int hash_modified_fd = open(system_path.value().c_str(), O_RDONLY | O_CLOEXEC);
     ASSERT_TRUE(hash_modified_fd > 0);
     // Should return ErrorVerification.
     vbmeta = VerifyVBMetaData(hash_modified_fd, "system", "" /*expected_public_key_blob */,
                               nullptr /* out_public_key_data */, &verify_result);
+    ASSERT_EQ(0, close(hash_modified_fd));
     EXPECT_NE(nullptr, vbmeta);
     EXPECT_TRUE(CompareVBMeta(system_path, *vbmeta));
     EXPECT_EQ(VBMetaVerifyResult::kErrorVerification, verify_result);
@@ -785,23 +786,24 @@ TEST_F(AvbUtilTest, VerifyVBMetaDataError) {
             authentication_block_offset + header->authentication_data_block_size;
     ModifyFile(system_path, footer->vbmeta_offset + auxiliary_block_offset,
                header->auxiliary_data_block_size);
-    android::base::unique_fd aux_modified_fd(
-            open(system_path.value().c_str(), O_RDONLY | O_CLOEXEC));
+    int aux_modified_fd = open(system_path.value().c_str(), O_RDONLY | O_CLOEXEC);
     ASSERT_TRUE(aux_modified_fd > 0);
     // Should return ErrorVerification.
     vbmeta = VerifyVBMetaData(aux_modified_fd, "system", "" /*expected_public_key_blob */,
                               nullptr /* out_public_key_data */, &verify_result);
+    ASSERT_EQ(0, close(aux_modified_fd));
     EXPECT_NE(nullptr, vbmeta);
     EXPECT_TRUE(CompareVBMeta(system_path, *vbmeta));
     EXPECT_EQ(VBMetaVerifyResult::kErrorVerification, verify_result);
 
     // Resets previous modification by setting offset to -1, and checks the verification can pass.
     ModifyFile(system_path, 0 /* offset */, -1 /* length */);
-    android::base::unique_fd ok_fd(open(system_path.value().c_str(), O_RDONLY | O_CLOEXEC));
+    int ok_fd = open(system_path.value().c_str(), O_RDONLY | O_CLOEXEC);
     ASSERT_TRUE(ok_fd > 0);
     // Should return ResultOK..
     vbmeta = VerifyVBMetaData(ok_fd, "system", "" /*expected_public_key_blob */,
                               nullptr /* out_public_key_data */, &verify_result);
+    ASSERT_EQ(0, close(ok_fd));
     EXPECT_NE(nullptr, vbmeta);
     EXPECT_TRUE(CompareVBMeta(system_path, *vbmeta));
     EXPECT_EQ(VBMetaVerifyResult::kSuccess, verify_result);
