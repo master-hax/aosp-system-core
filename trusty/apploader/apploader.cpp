@@ -223,6 +223,9 @@ static ssize_t read_response(int tipc_fd) {
         case APPLOADER_ERR_INVALID_VERSION:
             LOG(ERROR) << "Error: invalid application version";
             break;
+        case APPLOADER_ERR_INVALID_OS_VERSION:
+            LOG(ERROR) << "Error: incompatible OS version";
+            break;
         default:
             LOG(ERROR) << "Unrecognized error: " << resp.error;
             break;
