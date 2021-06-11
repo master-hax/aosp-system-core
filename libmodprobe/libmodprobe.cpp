@@ -243,11 +243,54 @@ void Modprobe::AddOption(const std::string& module_name, const std::string& opti
                          const std::string& value) {
     auto canonical_name = MakeCanonical(module_name);
     auto options_iter = module_options_.find(canonical_name);
-    auto option_str = option_name + "=" + value;
+    auto option_str = option_name;
+    if (value.size() > 0) option_str += "=" + value;
+
     if (options_iter != module_options_.end()) {
         options_iter->second = options_iter->second + " " + option_str;
     } else {
         module_options_.emplace(canonical_name, option_str);
+    }
+}
+
+void Modprobe::ParseBootConfigOptions(void) {
+    std::string bootconfig;
+    android::base::ReadFileToString("/proc/bootconfig", &bootconfig);
+
+    size_t pos = 0;
+    while (pos != std::string::npos) {
+        size_t eol = bootconfig.find("\n", pos);
+        if (eol == std::string::npos) break;
+
+        std::string line(bootconfig, pos, eol - pos);
+        size_t key_end = line.find(" = ");
+        if (key_end == std::string::npos) {
+            // Bad key-value pair. Skip it.
+            pos = eol + 1;
+            continue;
+        }
+        size_t module_name_end = line.find(".");
+        if (module_name_end == std::string::npos || module_name_end > key_end) {
+            // Not a module parameter. Skip it.
+            pos = eol + 1;
+            continue;
+        }
+
+        // Note: As an optimization, we are not verifying the module name. We
+        // will add all key-value pairs that match the format KEY.WORD = "VALUE".
+        // This is fine since we use a hashmap to store the module parameters
+        // and Insmod() uses the module name to look them up.
+        std::string module_name(line, 0, module_name_end);
+        std::string param_name(line, module_name_end + 1, key_end - module_name_end - 1);
+        size_t quote_start = line.find("\"");
+        if (quote_start != std::string::npos) {
+            size_t quote_end = line.find("\"", quote_start + 1);
+            if (quote_end != std::string::npos) {
+                std::string value(line, quote_start + 1, quote_end - quote_start - 1);
+                AddOption(module_name, param_name, value);
+            }
+        }
+        pos = eol + 1;
     }
 }
 
@@ -339,6 +382,7 @@ Modprobe::Modprobe(const std::vector<std::string>& base_paths, const std::string
     }
 
     ParseKernelCmdlineOptions();
+    ParseBootConfigOptions();
 }
 
 std::vector<std::string> Modprobe::GetDependencies(const std::string& module) {
