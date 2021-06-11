@@ -614,6 +614,9 @@ on late-fs
     # HALs required before storage encryption can get unlocked (FBE/FDE)
     class_start early_hal
 
+    # exec and wait for vold_seed_binding to be set if exists, must start before mount_all --late
+    exec_start vold_seed_binding
+
     # Load trusted keys from dm-verity protected partitions
     exec -- /system/bin/fsverity_init --load-verified-keys
 
