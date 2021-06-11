@@ -57,6 +57,7 @@ class Modprobe {
     bool ParseOptionsCallback(const std::vector<std::string>& args);
     bool ParseBlocklistCallback(const std::vector<std::string>& args);
     void ParseKernelCmdlineOptions();
+    void ParseBootConfigOptions();
     void ParseCfg(const std::string& cfg, std::function<bool(const std::vector<std::string>&)> f);
 
     std::vector<std::pair<std::string, std::string>> module_aliases_;
