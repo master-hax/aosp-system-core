@@ -230,6 +230,7 @@ cc_binary {
     static_libs: ["libinit"],
     required: [
         "e2fsdroid",
+        "extra_free_kbytes.sh",
         "init.rc",
         "mke2fs",
         "sload_f2fs",
@@ -541,4 +542,9 @@ cc_binary {
             enabled: false,
         },
     },
+}
+
+sh_binary {
+    name: "extra_free_kbytes.sh",
+    src: "extra_free_kbytes.sh",
 }
