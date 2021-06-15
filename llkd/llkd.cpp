@@ -15,6 +15,7 @@
  */
 
 #include "llkd.h"
+#include "llkd_service.h"
 
 #include <sched.h>
 #include <sys/prctl.h>
@@ -23,13 +24,67 @@
 #include <chrono>
 
 #include <android-base/logging.h>
+#include <android-base/parseint.h>
+#include <android/system/core/llkd/ILlkdService.h>
 
-using namespace std::chrono;
+using android::sp;
+using android::base::ParseInt;
+using android::system::core::llkd::DumpKernelStack;
+using android::system::core::llkd::IsUserBuild;
+using android::system::core::llkd::LlkdService;
+using std::chrono::duration_cast;
+using std::chrono::microseconds;
 
-int main(int, char**) {
+static void Usage() {
+    std::cerr << "\nUsage:\n"
+              << "\t./llkd          - Starts llkd deamon\n"
+              << "\t./llkd -d <pid> - Dumps kernel stack of each thread for the specified pid\n\n";
+}
+
+static bool ParseArgs(int argc, char* argv[], bool* dumpStack, int* pid) {
+    *dumpStack = false;
+    *pid = -1;
+
+    if (argc == 1) {
+        return true;
+    }
+    if (argc == 3 && std::string(argv[1]) == "-d") {
+        *dumpStack = true;
+        return ParseInt(argv[2], pid);
+    }
+    return false;
+}
+
+int main(int argc, char* argv[]) {
     prctl(PR_SET_DUMPABLE, 0);
 
     LOG(INFO) << "started";
+
+    bool dump_stack;
+    int pid;
+    sp<LlkdService> llkd_service = nullptr;
+
+    if (!ParseArgs(argc, argv, &dump_stack, &pid)) {
+        Usage();
+        std::exit(EXIT_FAILURE);
+    }
+
+    if (!IsUserBuild()) {
+        if (dump_stack) {
+            // We only have the required permissions to dump kernel stack traces
+            // on userdebug and eng builds.
+            if (DumpKernelStack(pid)) {
+                std::exit(EXIT_SUCCESS);
+            }
+            std::exit(EXIT_FAILURE);
+        } else {
+            // Only serve the llkd AIDL service on non-user builds.
+            llkd_service = new LlkdService();
+            if (!RegisterLlkdService(llkd_service)) {
+                LOG(FATAL) << "Failed to register llkd_service";
+            }
+        }
+    }
 
     bool enabled = llkInit();
 

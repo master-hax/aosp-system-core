@@ -29,6 +29,9 @@ cc_library_static {
         debuggable: {
             cppflags: ["-D__PTRACE_ENABLED__"],
         },
+        eng: {
+            cppflags: ["-D__PTRACE_ENABLED__"],
+        },
     },
 }
 
@@ -37,11 +40,16 @@ cc_binary {
 
     srcs: [
         "llkd.cpp",
+        "llkd_service.cpp",
     ],
     shared_libs: [
+        "android.system.core.llkd-service-cpp",
         "libbase",
+        "libbinder",
         "libcutils",
         "liblog",
+        "libprocinfo",
+        "libutils",
     ],
     static_libs: [
         "libllkd",
@@ -52,6 +60,9 @@ cc_binary {
     product_variables: {
         debuggable: {
             init_rc: ["llkd-debuggable.rc"],
-	},
+        },
+        eng: {
+            init_rc: ["llkd-debuggable.rc"],
+        },
     },
 }
