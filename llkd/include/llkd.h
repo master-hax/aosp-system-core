@@ -75,6 +75,7 @@ __BEGIN_DECLS
 bool llkInit(const char* threadname = nullptr);
 __END_DECLS
 std::chrono::milliseconds llkCheck(bool checkRunning = false);
+bool skipStackDump(int pid);
 
 /* clang-format off */
 #define LLK_TIMEOUT_MS_DEFAULT  std::chrono::duration_cast<milliseconds>(std::chrono::minutes(10))

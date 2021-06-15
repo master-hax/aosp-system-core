@@ -1443,3 +1443,11 @@ bool llkInit(const char* threadname) {
 
     return llkEnable;
 }
+
+bool skipStackDump(int pid) {
+    auto comm = llkProcGetName(pid, "/comm");
+    auto cmdline = llkProcGetName(pid);
+
+    return llkSkipName(comm, llkIgnorelistStack) || llkSkipName(cmdline, llkIgnorelistStack) ||
+           llkSkipName(android::base::Basename(cmdline), llkIgnorelistStack);
+}
