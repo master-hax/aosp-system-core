@@ -78,6 +78,24 @@ int32_t property_get_int32(const char* key, int32_t default_value) {
     return property_get_int<int32_t>(key, default_value);
 }
 
+float property_get_float(const char* key, float default_value) {
+    if (!key) return default_value;
+
+    char value[PROPERTY_VALUE_MAX] = {};
+    if (property_get(key, value, "") < 1) return default_value;
+
+    float result = default_value;
+    int saved_errno = errno;
+    errno = 0;
+    char* end = nullptr;
+    float v = strtof(value, &end);
+    if (errno != ERANGE && end != value) {
+        result = v;
+    }
+    errno = saved_errno;
+    return result;
+}
+
 int property_set(const char* key, const char* value) {
     return __system_property_set(key, value);
 }
