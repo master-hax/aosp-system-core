@@ -28,10 +28,12 @@
 #include <chrono>
 #include <iomanip>
 
+#include <DumpstateUtil.h>
 #include <android-base/cmsg.h>
 #include <android-base/file.h>
 #include <android-base/logging.h>
 #include <android-base/parseint.h>
+#include <android-base/properties.h>
 #include <android-base/stringprintf.h>
 #include <android-base/strings.h>
 #include <android-base/unique_fd.h>
@@ -49,6 +51,7 @@ using android::base::ReadFileToString;
 using android::base::SendFileDescriptors;
 using android::base::unique_fd;
 using android::base::WriteStringToFd;
+using android::os::dumpstate::RunCommandToFd;
 
 static bool send_signal(pid_t pid, const DebuggerdDumpType dump_type) {
   const int signal = (dump_type == kDebuggerdJavaBacktrace) ? SIGQUIT : BIONIC_SIGNAL_DEBUGGER;
@@ -109,6 +112,19 @@ static void dump_wchan_data(const std::string& data, int fd, pid_t pid) {
   if (!WriteStringToFd(data, fd)) {
     LOG(WARNING) << "libdebuggerd_client: Failed to dump wchan data for pid: " << pid;
   }
+}
+
+/**
+ * Dumps the kernel stack for each thread in the process.
+ */
+static void dump_kernel_stack(int fd, pid_t pid) {
+  std::string header = "Kernel Stack: " + android::base::Join(get_command_line(pid), " ") +
+                       " (pid: " + std::to_string(pid) + ") at " + get_timestamp();
+  if (RunCommandToFd(fd, header, {"/system/bin/llkd", "-d", std::to_string(pid)}) < 0) {
+    LOG(ERROR) << "Failed to dump kernel stack for pid " << pid;
+  }
+  std::string footer = "----- end " + std::to_string(pid) + " -----\n\n";
+  WriteStringToFd(footer, fd);
 }
 
 bool debuggerd_trigger_dump(pid_t tid, DebuggerdDumpType dump_type, unsigned int timeout_ms,
@@ -309,6 +325,11 @@ int dump_backtrace_to_file_timeout(pid_t tid, DebuggerdDumpType dump_type, int t
   android::base::unique_fd copy(dup(fd));
   if (copy == -1) {
     return -1;
+  }
+
+  // Try to dump the kernel stacks if not user build
+  if (android::base::GetProperty("ro.build.type", "") != "user") {
+    dump_kernel_stack(fd, tid);
   }
 
   // debuggerd_trigger_dump results in every thread in the process being interrupted

@@ -177,6 +177,7 @@ cc_library {
     shared_libs: [
         "libbase",
         "libcutils",
+        "libdumpstateutil",
         "libprocinfo",
     ],
 
