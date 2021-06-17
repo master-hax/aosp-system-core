@@ -47,8 +47,31 @@ using namespace std::chrono_literals;
 
 using android::base::ReadFileToString;
 using android::base::SendFileDescriptors;
+using android::base::StringAppendV;
 using android::base::unique_fd;
 using android::base::WriteStringToFd;
+
+const char* TAG = "libdebuggerd_client";
+
+/* LOG(ERROR) to both logcat and dump fd */
+static inline void log_err(int fd, int errnum, const char* format, ...) {
+  std::string message;
+
+  va_list ap;
+  va_start(ap, format);
+  StringAppendV(&message, format, ap);
+  va_end(ap);
+
+  if (errno != 0) {
+    message = message + ": " + strerror(errnum);
+  }
+
+  if (fd >= 0) {
+    dprintf(fd, "%s\n", message.c_str());
+  }
+
+  LOG(ERROR) << message;
+}
 
 static bool send_signal(pid_t pid, const DebuggerdDumpType dump_type) {
   const int signal = (dump_type == kDebuggerdJavaBacktrace) ? SIGQUIT : BIONIC_SIGNAL_DEBUGGER;
@@ -56,7 +79,7 @@ static bool send_signal(pid_t pid, const DebuggerdDumpType dump_type) {
   val.sival_int = (dump_type == kDebuggerdNativeBacktrace) ? 1 : 0;
 
   if (sigqueue(pid, signal, val) != 0) {
-    PLOG(ERROR) << "libdebuggerd_client: failed to send signal to pid " << pid;
+    PLOG(ERROR) << TAG << ": failed to send signal to pid " << pid;
     return false;
   }
   return true;
@@ -79,7 +102,7 @@ static std::string get_wchan_data(pid_t pid) {
   std::vector<pid_t> tids;
 
   if (!android::procinfo::GetProcessTids(pid, &tids)) {
-    LOG(WARNING) << "libdebuggerd_client: Failed to get process tids";
+    LOG(WARNING) << TAG << ": Failed to get process tids";
     return buffer.str();
   }
 
@@ -88,7 +111,7 @@ static std::string get_wchan_data(pid_t pid) {
     std::string path = "/proc/" + std::to_string(pid) + "/task/" + std::to_string(tid) + "/wchan";
     std::string wchan_str;
     if (!ReadFileToString(path, &wchan_str, true)) {
-      PLOG(WARNING) << "libdebuggerd_client: Failed to read \"" << path << "\"";
+      PLOG(WARNING) << TAG << ": Failed to read \"" << path << "\"";
       continue;
     }
     data << "sysTid=" << std::left << std::setw(10) << tid << wchan_str << "\n";
@@ -107,7 +130,7 @@ static std::string get_wchan_data(pid_t pid) {
 
 static void dump_wchan_data(const std::string& data, int fd, pid_t pid) {
   if (!WriteStringToFd(data, fd)) {
-    LOG(WARNING) << "libdebuggerd_client: Failed to dump wchan data for pid: " << pid;
+    LOG(WARNING) << TAG << ": Failed to dump wchan data for pid: " << pid;
   }
 }
 
@@ -119,13 +142,13 @@ bool debuggerd_trigger_dump(pid_t tid, DebuggerdDumpType dump_type, unsigned int
     android::procinfo::ProcessInfo procinfo;
     std::string error;
     if (!android::procinfo::GetProcessInfo(tid, &procinfo, &error)) {
-      LOG(ERROR) << "libdebugged_client: failed to get process info: " << error;
+      log_err(output_fd, errno, "%s: failed to get process info: %s", TAG, error.c_str());
       return false;
     }
     pid = procinfo.pid;
   }
 
-  LOG(INFO) << "libdebuggerd_client: started dumping process " << pid;
+  LOG(INFO) << TAG << ": started dumping process " << pid;
   unique_fd sockfd;
   const auto end = std::chrono::steady_clock::now() + std::chrono::milliseconds(timeout_ms);
   auto time_left = [&end]() { return end - std::chrono::steady_clock::now(); };
@@ -136,7 +159,7 @@ bool debuggerd_trigger_dump(pid_t tid, DebuggerdDumpType dump_type, unsigned int
 
     auto remaining = time_left();
     if (remaining < decltype(remaining)::zero()) {
-      LOG(ERROR) << "libdebuggerd_client: timeout expired";
+      LOG(ERROR) << TAG << ": timeout expired";
       return -1;
     }
 
@@ -144,11 +167,11 @@ bool debuggerd_trigger_dump(pid_t tid, DebuggerdDumpType dump_type, unsigned int
     populate_timeval(&timeout, remaining);
 
     if (setsockopt(sockfd, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout)) != 0) {
-      PLOG(ERROR) << "libdebuggerd_client: failed to set receive timeout";
+      PLOG(ERROR) << TAG << ": failed to set receive timeout";
       return -1;
     }
     if (setsockopt(sockfd, SOL_SOCKET, SO_SNDTIMEO, &timeout, sizeof(timeout)) != 0) {
-      PLOG(ERROR) << "libdebuggerd_client: failed to set send timeout";
+      PLOG(ERROR) << TAG << ": failed to set send timeout";
       return -1;
     }
 
@@ -157,13 +180,13 @@ bool debuggerd_trigger_dump(pid_t tid, DebuggerdDumpType dump_type, unsigned int
 
   sockfd.reset(socket(AF_LOCAL, SOCK_SEQPACKET, 0));
   if (sockfd == -1) {
-    PLOG(ERROR) << "libdebugger_client: failed to create socket";
+    log_err(output_fd, errno, "%s: failed to create socket", TAG);
     return false;
   }
 
   if (socket_local_client_connect(set_timeout(sockfd.get()), kTombstonedInterceptSocketName,
                                   ANDROID_SOCKET_NAMESPACE_RESERVED, SOCK_SEQPACKET) == -1) {
-    PLOG(ERROR) << "libdebuggerd_client: failed to connect to tombstoned";
+    log_err(output_fd, errno, "%s: failed to connect to tombstoned", TAG);
     return false;
   }
 
@@ -172,14 +195,14 @@ bool debuggerd_trigger_dump(pid_t tid, DebuggerdDumpType dump_type, unsigned int
       .pid = pid,
   };
   if (!set_timeout(sockfd)) {
-    PLOG(ERROR) << "libdebugger_client: failed to set timeout";
+    log_err(output_fd, errno, "%s: failed to set timeout", TAG);
     return false;
   }
 
   // Create an intermediate pipe to pass to the other end.
   unique_fd pipe_read, pipe_write;
   if (!Pipe(&pipe_read, &pipe_write)) {
-    PLOG(ERROR) << "libdebuggerd_client: failed to create pipe";
+    log_err(output_fd, errno, "%s: failed to create pipe", TAG);
     return false;
   }
 
@@ -200,7 +223,7 @@ bool debuggerd_trigger_dump(pid_t tid, DebuggerdDumpType dump_type, unsigned int
   ssize_t rc = SendFileDescriptors(set_timeout(sockfd), &req, sizeof(req), pipe_write.get());
   pipe_write.reset();
   if (rc != sizeof(req)) {
-    PLOG(ERROR) << "libdebuggerd_client: failed to send output fd to tombstoned";
+    log_err(output_fd, errno, "%s: failed to send output fd to tombstoned", TAG);
     return false;
   }
 
@@ -208,47 +231,50 @@ bool debuggerd_trigger_dump(pid_t tid, DebuggerdDumpType dump_type, unsigned int
   InterceptResponse response;
   rc = TEMP_FAILURE_RETRY(recv(set_timeout(sockfd.get()), &response, sizeof(response), MSG_TRUNC));
   if (rc == 0) {
-    LOG(ERROR) << "libdebuggerd_client: failed to read initial response from tombstoned: "
-               << "timeout reached?";
+    log_err(output_fd, errno,
+            "%s: failed to read initial response from tombstoned: timeout reached?", TAG);
     return false;
   } else if (rc == -1) {
-    PLOG(ERROR) << "libdebuggerd_client: failed to read initial response from tombstoned";
+    log_err(output_fd, errno, "%s: failed to read initial response from tombstoned", TAG);
     return false;
   } else if (rc != sizeof(response)) {
-    LOG(ERROR) << "libdebuggerd_client: received packet of unexpected length from tombstoned while "
-                  "reading initial response: expected "
-               << sizeof(response) << ", received " << rc;
+    log_err(output_fd, errno,
+            "%s: received packet of unexpected length from tombstoned while reading initial "
+            "response: expected %zd, received %zd",
+            TAG, sizeof(response), rc);
     return false;
   }
 
   if (response.status != InterceptStatus::kRegistered) {
-    LOG(ERROR) << "libdebuggerd_client: unexpected registration response: "
-               << static_cast<int>(response.status);
+    log_err(output_fd, errno, "%s: unexpected registration response: %d", TAG,
+            static_cast<int>(response.status));
     return false;
   }
 
   if (!send_signal(tid, dump_type)) {
+    log_err(output_fd, errno, "%s: send_signal() failed", TAG);
     return false;
   }
 
   rc = TEMP_FAILURE_RETRY(recv(set_timeout(sockfd.get()), &response, sizeof(response), MSG_TRUNC));
   if (rc == 0) {
-    LOG(ERROR) << "libdebuggerd_client: failed to read status response from tombstoned: "
-                  "timeout reached?";
+    log_err(output_fd, errno,
+            "%s: failed to read status response from tombstoned: timeout reached?", TAG);
     return false;
   } else if (rc == -1) {
-    PLOG(ERROR) << "libdebuggerd_client: failed to read status response from tombstoned";
+    log_err(output_fd, errno, "%s: failed to read status response from tombstoned", TAG);
     return false;
   } else if (rc != sizeof(response)) {
-    LOG(ERROR) << "libdebuggerd_client: received packet of unexpected length from tombstoned while "
-                  "reading confirmation response: expected "
-               << sizeof(response) << ", received " << rc;
+    log_err(output_fd, errno,
+            "%s: received packet of unexpected length from tombstoned while reading confirmation "
+            "response: expected %zd, received %zd",
+            TAG, sizeof(response), rc);
     return false;
   }
 
   if (response.status != InterceptStatus::kStarted) {
     response.error_message[sizeof(response.error_message) - 1] = '\0';
-    LOG(ERROR) << "libdebuggerd_client: tombstoned reported failure: " << response.error_message;
+    log_err(output_fd, errno, "%s: tombstoned reported failure: %s", TAG, response.error_message);
     return false;
   }
 
@@ -258,7 +284,7 @@ bool debuggerd_trigger_dump(pid_t tid, DebuggerdDumpType dump_type, unsigned int
     if (timeout_ms <= 0) {
       remaining_ms = -1;
     } else if (remaining_ms < 0) {
-      LOG(ERROR) << "libdebuggerd_client: timeout expired";
+      log_err(output_fd, errno, "%s: timeout expired", TAG);
       return false;
     }
 
@@ -271,11 +297,11 @@ bool debuggerd_trigger_dump(pid_t tid, DebuggerdDumpType dump_type, unsigned int
       if (errno == EINTR) {
         continue;
       } else {
-        PLOG(ERROR) << "libdebuggerd_client: error while polling";
+        log_err(output_fd, errno, "%s: error while polling", TAG);
         return false;
       }
     } else if (rc == 0) {
-      LOG(ERROR) << "libdebuggerd_client: timeout expired";
+      log_err(output_fd, errno, "%s: timeout expired", TAG);
       return false;
     }
 
@@ -285,17 +311,17 @@ bool debuggerd_trigger_dump(pid_t tid, DebuggerdDumpType dump_type, unsigned int
       // Done.
       break;
     } else if (rc == -1) {
-      PLOG(ERROR) << "libdebuggerd_client: error while reading";
+      log_err(output_fd, errno, "%s: error while reading", TAG);
       return false;
     }
 
     if (!android::base::WriteFully(output_fd.get(), buf, rc)) {
-      PLOG(ERROR) << "libdebuggerd_client: error while writing";
+      PLOG(ERROR) << TAG << ": error while writing";
       return false;
     }
   }
 
-  LOG(INFO) << "libdebuggerd_client: done dumping process " << pid;
+  LOG(INFO) << TAG << ": done dumping process " << pid;
 
   return true;
 }
