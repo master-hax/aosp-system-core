@@ -309,6 +309,9 @@ Result<void> WritePidToFiles(std::vector<std::string>* files) {
     }
     std::string pid_str = std::to_string(getpid());
     for (const auto& file : *files) {
+        if (CgroupGetControllerFromPath(file, nullptr)) {
+            LOG(WARNING) << "writepid usage with cgroups is obsolete, please use task_profiles!";
+        }
         if (!WriteStringToFile(pid_str, file)) {
             return ErrnoError() << "couldn't write " << pid_str << " to " << file;
         }
