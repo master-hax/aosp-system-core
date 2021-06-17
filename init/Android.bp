@@ -228,14 +228,6 @@ cc_binary {
     stem: "init",
     defaults: ["init_defaults"],
     static_libs: ["libinit"],
-    required: [
-        "e2fsdroid",
-        "init.rc",
-        "mke2fs",
-        "sload_f2fs",
-        "make_f2fs",
-        "ueventd.rc",
-    ],
     srcs: ["main.cpp"],
     symlinks: ["ueventd"],
     target: {
@@ -248,7 +240,25 @@ cc_binary {
                 "libbinder",
                 "libutils",
             ],
+            required: [
+                "e2fsdroid.recovery",
+                "init_recovery.rc",
+                "mke2fs.recovery",
+                "sload_f2fs.recovery",
+                "make_f2fs.recovery",
+                "ueventd.rc.recovery",
+            ],
         },
+        platform: {
+            required: [
+                "e2fsdroid",
+                "init.rc",
+                "mke2fs",
+                "sload_f2fs",
+                "make_f2fs",
+                "ueventd.rc",
+            ],
+        }
     },
     visibility: ["//packages/modules/Virtualization/microdroid"],
 }
