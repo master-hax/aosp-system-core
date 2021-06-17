@@ -47,8 +47,24 @@ using namespace std::chrono_literals;
 
 using android::base::ReadFileToString;
 using android::base::SendFileDescriptors;
+using android::base::StringPrintf;
 using android::base::unique_fd;
 using android::base::WriteStringToFd;
+
+/* LOG(ERROR) to both logcat and dump fd */
+static inline void log_err(const std::string& tag, const std::string& err, int fd = -1) {
+  std::string msg = tag + ": " + err;
+  if (fd >= 0) {
+    dprintf(fd, "%s\n", msg.c_str());
+  }
+  LOG(ERROR) << msg;
+}
+
+/* PLOG(ERROR) to both logcat and dump fd */
+static inline void plog_err(const std::string& tag, const std::string& err, int fd = -1) {
+  std::string plog_err = err + ": " + std::strerror(errno);
+  log_err(tag, plog_err, fd);
+}
 
 static bool send_signal(pid_t pid, const DebuggerdDumpType dump_type) {
   const int signal = (dump_type == kDebuggerdJavaBacktrace) ? SIGQUIT : BIONIC_SIGNAL_DEBUGGER;
@@ -107,19 +123,21 @@ static std::string get_wchan_data(pid_t pid) {
 
 static void dump_wchan_data(const std::string& data, int fd, pid_t pid) {
   if (!WriteStringToFd(data, fd)) {
-    LOG(WARNING) << "libdebuggerd_client: Failed to dump wchan data for pid: " << pid;
+    log_err("libdebuggerd_client", StringPrintf("failed to dump wchan data for pid %d", pid), fd);
   }
 }
 
 bool debuggerd_trigger_dump(pid_t tid, DebuggerdDumpType dump_type, unsigned int timeout_ms,
                             unique_fd output_fd) {
   pid_t pid = tid;
+  std::string tag = "libdebuggerd_client";
+
   if (dump_type == kDebuggerdJavaBacktrace) {
     // Java dumps always get sent to the tgid, so we need to resolve our tid to a tgid.
     android::procinfo::ProcessInfo procinfo;
     std::string error;
     if (!android::procinfo::GetProcessInfo(tid, &procinfo, &error)) {
-      LOG(ERROR) << "libdebugged_client: failed to get process info: " << error;
+      log_err(tag, "failed to get process info: " + error, output_fd);
       return false;
     }
     pid = procinfo.pid;
@@ -157,13 +175,13 @@ bool debuggerd_trigger_dump(pid_t tid, DebuggerdDumpType dump_type, unsigned int
 
   sockfd.reset(socket(AF_LOCAL, SOCK_SEQPACKET, 0));
   if (sockfd == -1) {
-    PLOG(ERROR) << "libdebugger_client: failed to create socket";
+    plog_err(tag, "failed to create socket", output_fd);
     return false;
   }
 
   if (socket_local_client_connect(set_timeout(sockfd.get()), kTombstonedInterceptSocketName,
                                   ANDROID_SOCKET_NAMESPACE_RESERVED, SOCK_SEQPACKET) == -1) {
-    PLOG(ERROR) << "libdebuggerd_client: failed to connect to tombstoned";
+    plog_err(tag, "failed to connect to tombstoned", output_fd);
     return false;
   }
 
@@ -172,14 +190,14 @@ bool debuggerd_trigger_dump(pid_t tid, DebuggerdDumpType dump_type, unsigned int
       .pid = pid,
   };
   if (!set_timeout(sockfd)) {
-    PLOG(ERROR) << "libdebugger_client: failed to set timeout";
+    plog_err(tag, "failed to set timeout", output_fd);
     return false;
   }
 
   // Create an intermediate pipe to pass to the other end.
   unique_fd pipe_read, pipe_write;
   if (!Pipe(&pipe_read, &pipe_write)) {
-    PLOG(ERROR) << "libdebuggerd_client: failed to create pipe";
+    plog_err(tag, "failed to create pipe", output_fd);
     return false;
   }
 
@@ -200,7 +218,7 @@ bool debuggerd_trigger_dump(pid_t tid, DebuggerdDumpType dump_type, unsigned int
   ssize_t rc = SendFileDescriptors(set_timeout(sockfd), &req, sizeof(req), pipe_write.get());
   pipe_write.reset();
   if (rc != sizeof(req)) {
-    PLOG(ERROR) << "libdebuggerd_client: failed to send output fd to tombstoned";
+    plog_err(tag, "failed to send output fd to tombstoned", output_fd);
     return false;
   }
 
@@ -208,47 +226,52 @@ bool debuggerd_trigger_dump(pid_t tid, DebuggerdDumpType dump_type, unsigned int
   InterceptResponse response;
   rc = TEMP_FAILURE_RETRY(recv(set_timeout(sockfd.get()), &response, sizeof(response), MSG_TRUNC));
   if (rc == 0) {
-    LOG(ERROR) << "libdebuggerd_client: failed to read initial response from tombstoned: "
-               << "timeout reached?";
+    log_err(tag, "failed to read initial response from tombstoned: timeout reached?", output_fd);
     return false;
   } else if (rc == -1) {
-    PLOG(ERROR) << "libdebuggerd_client: failed to read initial response from tombstoned";
+    plog_err(tag, "failed to read initial response from tombstoned", output_fd);
     return false;
   } else if (rc != sizeof(response)) {
-    LOG(ERROR) << "libdebuggerd_client: received packet of unexpected length from tombstoned while "
-                  "reading initial response: expected "
-               << sizeof(response) << ", received " << rc;
+    auto err = StringPrintf(
+        "received packet of unexpected length from tombstoned while reading initial response: "
+        "expected %zd , received %zd",
+        sizeof(response), rc);
+    log_err(tag, err, output_fd);
     return false;
   }
 
   if (response.status != InterceptStatus::kRegistered) {
-    LOG(ERROR) << "libdebuggerd_client: unexpected registration response: "
-               << static_cast<int>(response.status);
+    auto err =
+        StringPrintf("unexpected registration response: %d", static_cast<int>(response.status));
+    log_err(tag, err, output_fd);
     return false;
   }
 
   if (!send_signal(tid, dump_type)) {
+    log_err(tag, "send_signal() failed", output_fd);
     return false;
   }
 
   rc = TEMP_FAILURE_RETRY(recv(set_timeout(sockfd.get()), &response, sizeof(response), MSG_TRUNC));
   if (rc == 0) {
-    LOG(ERROR) << "libdebuggerd_client: failed to read status response from tombstoned: "
-                  "timeout reached?";
+    log_err(tag, "failed to read status response from tombstoned: timeout reached?", output_fd);
     return false;
   } else if (rc == -1) {
-    PLOG(ERROR) << "libdebuggerd_client: failed to read status response from tombstoned";
+    plog_err(tag, "failed to read status response from tombstoned", output_fd);
     return false;
   } else if (rc != sizeof(response)) {
-    LOG(ERROR) << "libdebuggerd_client: received packet of unexpected length from tombstoned while "
-                  "reading confirmation response: expected "
-               << sizeof(response) << ", received " << rc;
+    auto err = StringPrintf(
+        "received packet of unexpected length from tombstoned while reading confirmation response: "
+        "expected %zd , received %zd",
+        sizeof(response), rc);
+    log_err(tag, err, output_fd);
     return false;
   }
 
   if (response.status != InterceptStatus::kStarted) {
     response.error_message[sizeof(response.error_message) - 1] = '\0';
-    LOG(ERROR) << "libdebuggerd_client: tombstoned reported failure: " << response.error_message;
+    auto err = StringPrintf("tombstoned reported failure: %s", response.error_message);
+    log_err(tag, err, output_fd);
     return false;
   }
 
@@ -258,7 +281,7 @@ bool debuggerd_trigger_dump(pid_t tid, DebuggerdDumpType dump_type, unsigned int
     if (timeout_ms <= 0) {
       remaining_ms = -1;
     } else if (remaining_ms < 0) {
-      LOG(ERROR) << "libdebuggerd_client: timeout expired";
+      log_err(tag, "timeout expired", output_fd);
       return false;
     }
 
@@ -271,11 +294,11 @@ bool debuggerd_trigger_dump(pid_t tid, DebuggerdDumpType dump_type, unsigned int
       if (errno == EINTR) {
         continue;
       } else {
-        PLOG(ERROR) << "libdebuggerd_client: error while polling";
+        plog_err(tag, "error while polling", output_fd);
         return false;
       }
     } else if (rc == 0) {
-      LOG(ERROR) << "libdebuggerd_client: timeout expired";
+      log_err(tag, "timeout expired", output_fd);
       return false;
     }
 
@@ -285,12 +308,12 @@ bool debuggerd_trigger_dump(pid_t tid, DebuggerdDumpType dump_type, unsigned int
       // Done.
       break;
     } else if (rc == -1) {
-      PLOG(ERROR) << "libdebuggerd_client: error while reading";
+      plog_err(tag, "error while reading", output_fd);
       return false;
     }
 
     if (!android::base::WriteFully(output_fd.get(), buf, rc)) {
-      PLOG(ERROR) << "libdebuggerd_client: error while writing";
+      plog_err(tag, "error while writing", output_fd);
       return false;
     }
   }
