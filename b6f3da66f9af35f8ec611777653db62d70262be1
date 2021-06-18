@@ -25,6 +25,32 @@
       },
       "revId": "b6f3da66f9af35f8ec611777653db62d70262be1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "robotId": "ayeaye",
+      "robotRunId": "AR00000000000011941873",
+      "url": "https://android-build.googleplex.com/builds/treetop/android-review/1740444?revision\u003d1",
+      "fixSuggestions": [],
+      "key": {
+        "uuid": "0b6386b4_d656d6d8",
+        "filename": "libkeyutils/NOTICE",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1757831
+      },
+      "writtenOn": "2021-06-18T22:56:41Z",
+      "side": 1,
+      "message": "Third-party license (BSD) disallowed in repository platform/system/core:\nRedistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:...Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and or other materials provided with the distribution.\n",
+      "range": {
+        "startLine": 4,
+        "startChar": 1,
+        "endLine": 12,
+        "endChar": 17
+      },
+      "revId": "b6f3da66f9af35f8ec611777653db62d70262be1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
