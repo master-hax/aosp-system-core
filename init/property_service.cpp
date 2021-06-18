@@ -1238,13 +1238,10 @@ static void ProcessKernelCmdline() {
     });
 }
 
-// bootconfig does not allow to populate `key=value` simultaneously with
-// `key.subkey=value` which does not work with the existing code for
-// `hardware` (e.g. we want both `ro.boot.hardware=value` and
-// `ro.boot.hardware.sku=value`) and for `qemu` (Android Stidio Emulator
-// specific).
+// TODO(b/191502832) change the qemu bootconfig parameter back to androidboot.qemu now
+// that the kernel supports it.
 static bool IsAllowedBootconfigKey(const std::string_view key) {
-    return (key == "hardware"sv) || (key == "qemu"sv);
+    return key == "qemu"sv;
 }
 
 static void ProcessBootconfig() {
