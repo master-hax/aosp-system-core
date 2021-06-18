@@ -1193,12 +1193,14 @@ static void ExportKernelBootProps() {
         { "ro.boot.mode",       "ro.bootmode",   "unknown", },
         { "ro.boot.baseband",   "ro.baseband",   "unknown", },
         { "ro.boot.bootloader", "ro.bootloader", "unknown", },
-        { "ro.boot.hardware",   "ro.hardware",   "unknown", },
+        { "ro.boot.hardware",   "ro.hardware",   UNSET, },
         { "ro.boot.revision",   "ro.revision",   "0", },
             // clang-format on
     };
     for (const auto& prop : prop_map) {
         std::string value = GetProperty(prop.src_prop, prop.default_value);
+        if (value == UNSET || value == "unknown")
+            PLOG(ERROR) << "Failed to get property " << prop.src_prop << "!";
         if (value != UNSET) InitPropertySet(prop.dst_prop, value);
     }
 }

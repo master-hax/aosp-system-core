@@ -305,6 +305,7 @@ static UeventdConfiguration GetConfiguration() {
 
     if (android::base::GetIntProperty("ro.product.first_api_level", 10000) <= __ANDROID_API_S__) {
         // TODO: Remove these legacy paths once Android S is no longer supported.
+        if (hardware.empty()) LOG(FATAL) << "androidboot.hardware is not set!";
         canonical.insert(canonical.end(), legacy_paths.begin(), legacy_paths.end());
     } else {
         // Warn if newer device is using legacy paths.
