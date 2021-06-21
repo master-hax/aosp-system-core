@@ -38,31 +38,55 @@ namespace init {
 static std::string init_fatal_reboot_target = "bootloader";
 static bool init_fatal_panic = false;
 
+static std::optional<std::string>
+SubStringBetween(const std::string& str, const std::string& start_str, const std::string& end_str,
+                 bool use_eol = false) {
+    auto start_pos = str.find(start_str);
+    if (start_pos == std::string::npos) {
+        return {};
+    }
+    start_pos += start_str.size();
+    auto end_pos = str.find(end_str, start_pos);
+    // Cut start_pos to EOL as sub string result when use_eol is true and end_str is not found.
+    if (!use_eol && end_pos == std::string::npos) {
+        return {};
+    }
+    auto size = end_pos == std::string::npos ? -1 : end_pos - start_pos;
+    return {str.substr(start_pos, size)};
+}
+
+static std::optional<std::string>
+GetConfig(const std::string& cmdline, const std::string& bootconfig, const std::string& key) {
+    auto sub_cmdline = SubStringBetween(cmdline, key + "=", " ", true);
+    if (sub_cmdline)
+        return sub_cmdline;
+
+    auto sub_bootconfig = SubStringBetween(bootconfig, key + " = \"", "\"");
+    if (sub_bootconfig)
+        return sub_bootconfig;
+
+    return {};
+}
+
 void SetFatalRebootTarget(const std::optional<std::string>& reboot_target) {
     std::string cmdline;
-    android::base::ReadFileToString("/proc/cmdline", &cmdline);
-    cmdline = android::base::Trim(cmdline);
+    std::string bootconfig;
 
-    const char kInitFatalPanicString[] = "androidboot.init_fatal_panic=true";
-    init_fatal_panic = cmdline.find(kInitFatalPanicString) != std::string::npos;
+    android::base::ReadFileToString("/proc/cmdline", &cmdline);
+    android::base::ReadFileToString("/proc/bootconfig", &bootconfig);
+
+    auto should_fatal = GetConfig(cmdline, bootconfig, "androidboot.init_fatal_panic");
+    init_fatal_panic = should_fatal && *should_fatal == "true";
 
     if (reboot_target) {
         init_fatal_reboot_target = *reboot_target;
         return;
     }
 
-    const char kRebootTargetString[] = "androidboot.init_fatal_reboot_target=";
-    auto start_pos = cmdline.find(kRebootTargetString);
-    if (start_pos == std::string::npos) {
-        return;  // We already default to bootloader if no setting is provided.
+    auto config_target = GetConfig(cmdline, bootconfig, "androidboot.init_fatal_reboot_target");
+    if (config_target) {
+        init_fatal_reboot_target = *config_target;
     }
-    start_pos += sizeof(kRebootTargetString) - 1;
-
-    auto end_pos = cmdline.find(' ', start_pos);
-    // if end_pos isn't found, then we've run off the end, but this is okay as this is the last
-    // entry, and -1 is a valid size for string::substr();
-    auto size = end_pos == std::string::npos ? -1 : end_pos - start_pos;
-    init_fatal_reboot_target = cmdline.substr(start_pos, size);
 }
 
 bool IsRebootCapable() {
