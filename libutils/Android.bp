@@ -116,6 +116,17 @@ cc_defaults {
             enabled: true,
         },
 
+        linux_glibc: {
+            clang_cflags: [
+                "-fprofile-instr-generate",
+                "-fcoverage-mapping",
+            ],
+            ldflags: [
+                "-fprofile-instr-generate",
+                "-fcoverage-mapping",
+            ],
+        },
+
         darwin: {
             cflags: ["-Wno-unused-parameter"],
         },
@@ -337,6 +348,17 @@ cc_test {
                 "libbase",
             ],
         },
+        linux_glibc: {
+            clang_cflags: [
+                "-fprofile-instr-generate",
+                "-fcoverage-mapping",
+            ],
+            ldflags: [
+                "-fprofile-instr-generate",
+                "-fcoverage-mapping",
+            ],
+        },
+
     },
 
     data_libs: [
