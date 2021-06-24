@@ -50,10 +50,14 @@
 #include <private/android_filesystem_config.h>
 
 #include <procinfo/process.h>
+
+#include <rustc_demangle.h>
+
 #include <unwindstack/Maps.h>
 #include <unwindstack/Memory.h>
 #include <unwindstack/Regs.h>
 #include <unwindstack/Unwinder.h>
+
 
 #include "libdebuggerd/open_files_list.h"
 #include "libdebuggerd/utility.h"
@@ -308,6 +312,10 @@ void fill_in_backtrace_frame(BacktraceFrame* f, const unwindstack::FrameData& fr
   if (!frame.function_name.empty()) {
     // TODO: Should this happen here, or on the display side?
     char* demangled_name = __cxa_demangle(frame.function_name.c_str(), nullptr, nullptr, nullptr);
+    // If C++ demangling failed, try Rust demangling
+    if (!demangled_name) {
+      demangled_name = rustc_demangle(frame.function_name.c_str(), nullptr, nullptr, nullptr);
+    }
     if (demangled_name) {
       f->set_function_name(demangled_name);
       free(demangled_name);

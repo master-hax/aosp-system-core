@@ -132,6 +132,7 @@ cc_library_static {
         "libasync_safe",
         "libbase",
         "libdebuggerd",
+	"librustc_demangle_capi",
         "libunwindstack_no_dex",
         "liblzma",
         "libcutils",
