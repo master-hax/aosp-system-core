@@ -115,6 +115,13 @@ class DeviceMapper final {
     // - ACTIVE: resumes the device.
     bool ChangeState(const std::string& name, DmDeviceState state);
 
+    // Creates empty device.
+    bool CreateEmptyDevice(const std::string& name);
+
+    // Waits for device paths to be created in the user space.
+    bool WaitForDevice(const std::string& name, const std::chrono::milliseconds& timeout_ms,
+                       std::string* path);
+
     // Creates a device, loads the given table, and activates it. If the device
     // is not able to be activated, it is destroyed, and false is returned.
     // After creation, |path| contains the result of calling
