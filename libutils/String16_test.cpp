@@ -64,6 +64,13 @@ TEST(String16Test, Move) {
     EXPECT_STR16EQ(u"Verify me", another);
 }
 
+TEST(String16Test, MoveAssign) {
+    String16 tmp("Verify me");
+    String16 another;
+    another = std::move(tmp);
+    EXPECT_STR16EQ(u"Verify me", another);
+}
+
 TEST(String16Test, Size) {
     String16 tmp("Verify me");
     EXPECT_EQ(9U, tmp.size());
@@ -123,6 +130,9 @@ TEST(String16Test, StaticStringMove) {
     String16 another(std::move(tmp));
     EXPECT_STR16EQ(u"Verify me", another);
     EXPECT_TRUE(another.isStaticString());
+    // StaticString16's data is not moved awas
+    EXPECT_STR16EQ(u"Verify me", tmp);
+    EXPECT_TRUE(tmp.isStaticString());
 }
 
 TEST(String16Test, StaticStringSize) {
@@ -174,10 +184,15 @@ TEST(String16Test, StringSetToStaticString) {
     EXPECT_STR16EQ(u"Verify me", another);
 }
 
-TEST(String16Test, StringMoveFromStaticString) {
+TEST(String16Test, StringMoveAssignFromStaticString) {
     StaticString16 tmp(u"Verify me");
-    String16 another(std::move(tmp));
+    String16 another(u"nonstatic");
+    another = std::move(tmp);
     EXPECT_STR16EQ(u"Verify me", another);
+    EXPECT_TRUE(another.isStaticString());
+    // StaticString16's data is not moved awas
+    EXPECT_STR16EQ(u"Verify me", tmp);
+    EXPECT_TRUE(tmp.isStaticString());
 }
 
 TEST(String16Test, EmptyStringIsStatic) {
