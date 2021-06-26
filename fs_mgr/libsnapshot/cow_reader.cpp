@@ -449,7 +449,7 @@ const CowOperation& CowOpIter::Get() {
     return (*op_iter_);
 }
 
-class CowOpReverseIter final : public ICowOpReverseIter {
+class CowOpReverseIter final : public ICowOpIter {
   public:
     explicit CowOpReverseIter(std::shared_ptr<std::vector<CowOperation>> ops);
 
@@ -485,7 +485,7 @@ std::unique_ptr<ICowOpIter> CowReader::GetOpIter() {
     return std::make_unique<CowOpIter>(ops_);
 }
 
-std::unique_ptr<ICowOpReverseIter> CowReader::GetRevOpIter() {
+std::unique_ptr<ICowOpIter> CowReader::GetRevOpIter() {
     return std::make_unique<CowOpReverseIter>(ops_);
 }
 
