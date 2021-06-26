@@ -96,6 +96,12 @@ String16::String16(const String16& o)
     acquire();
 }
 
+String16::String16(String16&& o) noexcept
+    : mString(o.mString)
+{
+    o.mString = getEmptyString();
+}
+
 String16::String16(const String16& o, size_t len, size_t begin)
     : mString(getEmptyString())
 {
@@ -238,6 +244,12 @@ status_t String16::append(const char16_t* chrs, size_t otherLen)
         return OK;
     }
     return NO_MEMORY;
+}
+
+String16& String16::operator=(String16&& other) noexcept {
+    mString = other.mString;
+    other.mString = getEmptyString();
+    return *this;
 }
 
 status_t String16::insert(size_t pos, const char16_t* chrs)
