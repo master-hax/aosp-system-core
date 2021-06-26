@@ -76,9 +76,8 @@ bool ICowWriter::AddLabel(uint64_t label) {
     return EmitLabel(label);
 }
 
-bool ICowWriter::AddSequenceData(size_t /*num_ops*/, const uint32_t* /*data*/) {
-    LOG(ERROR) << "AddSequenceData not yet implemented";
-    return false;
+bool ICowWriter::AddSequenceData(size_t num_ops, const uint32_t* data) {
+    return EmitSequenceData(num_ops, data);
 }
 
 bool ICowWriter::ValidateNewBlock(uint64_t new_block) {
@@ -335,6 +334,15 @@ bool CowWriter::EmitLabel(uint64_t label) {
     op.type = kCowLabelOp;
     op.source = label;
     return WriteOperation(op) && Sync();
+}
+
+bool CowWriter::EmitSequenceData(size_t num_ops, const uint32_t* data) {
+    CHECK(!merge_in_progress_);
+    CowOperation op = {};
+    op.type = kCowSequenceOp;
+    op.source = next_data_pos_;
+    op.data_length = num_ops * sizeof(uint32_t);
+    return WriteOperation(op, data, op.data_length);
 }
 
 bool CowWriter::EmitCluster() {
