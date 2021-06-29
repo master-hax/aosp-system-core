@@ -1,0 +1,17 @@
+syntax = "proto2";
+package android.trusty.keymaster.fuzz;
+
+import "system/core/trusty/keymaster/fuzz/keymaster_defs.proto";
+import "system/core/trusty/keymaster/fuzz/requests.proto";
+
+message Test {
+    oneof test {
+        SigningTest signing_test = 1;
+    }
+}
+
+message SigningTest {
+    required BeginOperationRequest begin_op = 1;
+    required UpdateOperationRequest update_op = 2;
+    required FinishOperationRequest finish_op = 3;
+}
