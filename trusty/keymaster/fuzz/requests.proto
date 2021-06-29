@@ -1,0 +1,176 @@
+syntax = "proto2";
+package android.trusty.keymaster.fuzz;
+
+import "fuzz/keymaster_defs.proto";
+
+message GenerateKeyRequest {
+    required AuthorizationSet key_description = 1;
+    required Blob attestation_signing_key_blob = 2;
+    required AuthorizationSet attest_key_params = 3;
+    required Blob issuer_subject = 4;
+}
+
+message BeginOperationRequest {
+    required Purpose purpose = 1;
+    required Blob key_blob = 2;
+    required AuthorizationSet additional_params = 3;
+}
+
+message UpdateOperationRequest {
+    required uint64 op_handle = 1;
+    required Buffer input = 2;
+    required AuthorizationSet additional_params = 3;
+}
+
+message FinishOperationRequest {
+    required uint64 op_handle = 1;
+    required Buffer input = 2;
+    required Buffer signature = 3;
+    required AuthorizationSet additional_params = 4;
+}
+
+message AbortOperationRequest {
+    required uint64 op_handle = 1;
+}
+
+message ImportKeyRequest {
+    required AuthorizationSet key_description = 1;
+    required KeyFormat key_format = 2;
+    required Blob key_data = 3;
+    required Blob attestation_signing_key_blob = 4;
+    required AuthorizationSet attest_key_params = 5;
+    required Blob issuer_subject = 6;
+}
+
+message ExportKeyRequest {
+    required AuthorizationSet additional_params = 1;
+    required KeyFormat key_format = 2;
+    required Blob key_blob = 3;
+}
+
+message GetVersionRequest {}
+
+message AddEntropyRequest {
+    required Buffer random_data = 1;
+}
+
+message GetSupportedAlgorithms {}
+
+message GetSupportedBlockModes {
+    required Algorithm algorithm = 1;
+    required Purpose purpose = 2;
+}
+message GetSupportedPaddingModes {
+    required Algorithm algorithm = 1;
+    required Purpose purpose = 2;
+}
+message GetSupportedDigests {
+    required Algorithm algorithm = 1;
+    required Purpose purpose = 2;
+}
+message GetSupportedImportFormats {
+    repeated KeyFormat results = 1;
+    required uint64 results_length = 2;
+}
+message GetSupportedExportFormats {
+    repeated KeyFormat results = 1;
+    required uint64 results_length = 2;
+}
+message GetKeyCharacteristics {
+    required Blob key_blob = 1;
+    required AuthorizationSet additional_params = 2;
+}
+message AttestKey {
+    required Blob key_blob = 1;
+    required AuthorizationSet attest_params = 2;
+}
+message UpgradeKey {
+    required Blob key_blob = 1;
+    required AuthorizationSet upgrade_params = 2;
+}
+message Configure {
+    required uint32 os_version = 1;
+    required uint32 os_patchlevel = 2;
+}
+message GetHmacSharingParameters {}
+
+message ComputeSharedHmac {
+    required HmacSharingParametersArray params_array = 1;
+}
+message VerifyAuthorization {
+    required uint64 challenge = 1;
+    required AuthorizationSet parameters_to_verify = 2;
+    required HardwareAuthToken auth_token = 3;
+}
+message DeleteKey {
+    required Blob key_blob = 1;
+}
+message DeleteAllKeys {}
+
+message DestroyAttestationIds {}
+message ImportWrappedKey {
+    required Blob wrapped_key = 1;
+    required Blob wrapping_key = 2;
+    required Blob masking_key = 3;
+    required AuthorizationSet additional_params = 4;
+    required uint64 password_sid = 5;
+    required uint64 biometric_sid = 6;
+}
+message EarlyBootEnded {}
+
+message DeviceLocked {
+    required bool password_only = 1;
+    required VerificationToken token = 2;
+}
+message GetVersion2 {
+    required uint32 max_message_version = 1;
+}
+message GenerateRkpKey {
+    required bool test_mode = 1;
+}
+message GenerateCsr {
+    required bool test_mode = 1;
+    // required uint64 num_keys = 2;
+    // repeated Blob keys_to_sign_array = 3;
+    required Blob endpoint_enc_cert_chain = 4;
+    required Blob challenge = 5;
+}
+message GenerateTimestampToken {
+    required uint64 challenge = 1;
+}
+
+message SetBootParams {
+    required uint32 os_version = 1;
+    required uint32 os_patchlevel = 2;
+    required uint32 device_locked = 3;
+    required VerifiedBoot verified_boot_state = 4;
+    required Buffer verified_boot_key = 5;
+    required Buffer verified_boot_hash = 6;
+}
+message SetAttestationKey {
+    required Algorithm algorithm = 1;
+    required Buffer key_data = 2;
+}
+message AppendAttestationCertChain {
+    required Algorithm algorithm = 1;
+    required Buffer cert_data = 2;
+}
+message AtapGetCaRequest {
+}
+message AtapSetCaResponseBegin {
+}
+message AtapSetCaResponseUpdate {
+}
+message AtapSetCaResponseFinish {
+}
+message AtapReadUuid {
+}
+message SetProductId {
+}
+message ClearAttestationCertChain {
+    required Algorithm algorithm = 1;
+}
+message SetWrappedAttestationKey {
+    required Algorithm algorithm = 1;
+    required Buffer key_data = 2;
+}
