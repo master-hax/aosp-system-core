@@ -55,9 +55,16 @@
 
 using namespace android;
 
+static android_create_thread_fn gCreateThreadFn = androidCreateRawThreadEtc;
+
 // ----------------------------------------------------------------------------
 #if !defined(_WIN32)
 // ----------------------------------------------------------------------------
+
+static android::thread_hook_t gThreadPreHook = nullptr;
+static void* gThreadPreHookUserdata = nullptr;
+static android::thread_hook_t gThreadPostHook = nullptr;
+static void* gThreadPostHookUserdata = nullptr;
 
 /*
  * Create and run a new thread.
@@ -67,7 +74,6 @@ using namespace android;
 
 typedef void* (*android_pthread_entry)(void*);
 
-#if defined(__ANDROID__)
 struct thread_data_t {
     thread_func_t   entryFunction;
     void*           userData;
@@ -79,9 +85,11 @@ struct thread_data_t {
     static int trampoline(const thread_data_t* t) {
         thread_func_t f = t->entryFunction;
         void* u = t->userData;
-        int prio = t->priority;
-        char * name = t->threadName;
+        __android_unused int prio = t->priority;
+        std::unique_ptr<char, decltype(&free)> name(t->threadName, &free);
         delete t;
+
+#if defined(__ANDROID__)
         setpriority(PRIO_PROCESS, 0, prio);
 
         // A new thread will be in its parent's sched group by default,
@@ -89,15 +97,24 @@ struct thread_data_t {
         if (prio >= ANDROID_PRIORITY_BACKGROUND) {
             SetTaskProfiles(0, {"SCHED_SP_BACKGROUND"}, true);
         }
+#endif  // __ANDROID__
 
-        if (name) {
-            androidSetThreadName(name);
-            free(name);
+        if (name != nullptr) {
+            androidSetThreadName(name.get());
         }
-        return f(u);
+
+        if (gThreadPreHook) {
+            int hookRet = gThreadPreHook(gThreadPreHookUserdata, name.get());
+            if (hookRet != 0) return hookRet;
+        }
+        int ret = f(u);
+        if (gThreadPostHook) {
+            int hookRet = gThreadPostHook(gThreadPostHookUserdata, name.get());
+            if (hookRet != 0) return hookRet;
+        }
+        return ret;
     }
 };
-#endif
 
 void androidSetThreadName(const char* name) {
 #if defined(__linux__)
@@ -120,35 +137,27 @@ void androidSetThreadName(const char* name) {
 #endif
 }
 
-int androidCreateRawThreadEtc(android_thread_func_t entryFunction,
-                               void *userData,
-                               const char* threadName __android_unused,
-                               int32_t threadPriority,
-                               size_t threadStackSize,
-                               android_thread_id_t *threadId)
-{
+int androidCreateRawThreadEtc(android_thread_func_t entryFunction, void* userData,
+                              const char* threadName, int32_t threadPriority,
+                              size_t threadStackSize, android_thread_id_t* threadId) {
     pthread_attr_t attr;
     pthread_attr_init(&attr);
     pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
 
-#if defined(__ANDROID__)  /* valgrind is rejecting RT-priority create reqs */
-    if (threadPriority != PRIORITY_DEFAULT || threadName != NULL) {
-        // Now that the pthread_t has a method to find the associated
-        // android_thread_id_t (pid) from pthread_t, it would be possible to avoid
-        // this trampoline in some cases as the parent could set the properties
-        // for the child.  However, there would be a race condition because the
-        // child becomes ready immediately, and it doesn't work for the name.
-        // prctl(PR_SET_NAME) only works for self; prctl(PR_SET_THREAD_NAME) was
-        // proposed but not yet accepted.
-        thread_data_t* t = new thread_data_t;
-        t->priority = threadPriority;
-        t->threadName = threadName ? strdup(threadName) : NULL;
-        t->entryFunction = entryFunction;
-        t->userData = userData;
-        entryFunction = (android_thread_func_t)&thread_data_t::trampoline;
-        userData = t;
-    }
-#endif
+    // Now that the pthread_t has a method to find the associated
+    // android_thread_id_t (pid) from pthread_t, it would be possible to avoid
+    // this trampoline in some cases as the parent could set the properties
+    // for the child.  However, there would be a race condition because the
+    // child becomes ready immediately, and it doesn't work for the name.
+    // prctl(PR_SET_NAME) only works for self; prctl(PR_SET_THREAD_NAME) was
+    // proposed but not yet accepted.
+    thread_data_t* t = new thread_data_t;
+    t->priority = threadPriority;
+    t->threadName = threadName ? strdup(threadName) : NULL;
+    t->entryFunction = entryFunction;
+    t->userData = userData;
+    entryFunction = (android_thread_func_t)&thread_data_t::trampoline;
+    userData = t;
 
     if (threadStackSize) {
         pthread_attr_setstacksize(&attr, threadStackSize);
@@ -283,8 +292,6 @@ int androidCreateThreadGetID(android_thread_func_t fn, void *arg, android_thread
                            PRIORITY_DEFAULT, 0, id);
 }
 
-static android_create_thread_fn gCreateThreadFn = androidCreateRawThreadEtc;
-
 int androidCreateThreadEtc(android_thread_func_t entryFunction,
                             void *userData,
                             const char* threadName,
@@ -298,6 +305,12 @@ int androidCreateThreadEtc(android_thread_func_t entryFunction,
 
 void androidSetCreateThreadFunc(android_create_thread_fn func)
 {
+#if !defined(_WIN32)
+    LOG_ALWAYS_FATAL_IF(gThreadPreHook != nullptr || gThreadPreHookUserdata != nullptr,
+                        "androidSetCreateThreadFunc conflicts with androidSetThreadPreHook");
+    LOG_ALWAYS_FATAL_IF(gThreadPostHook != nullptr || gThreadPreHookUserdata != nullptr,
+                        "androidSetCreateThreadFunc conflicts with androidSetThreadPostHook");
+#endif  // !_WIN32
     gCreateThreadFn = func;
 }
 
@@ -341,6 +354,33 @@ int androidGetThreadPriority(pid_t tid) {
 #endif
 
 namespace android {
+
+#if !defined(_WIN32)
+
+void setThreadPreHook(thread_hook_t hook, void* userdata) {
+    LOG_ALWAYS_FATAL_IF(gCreateThreadFn != androidCreateRawThreadEtc,
+                        "androidSetThreadPreHook conflicts with androidSetCreateThreadFunc");
+    gThreadPreHook = hook;
+    gThreadPreHookUserdata = userdata;
+}
+void getThreadPreHook(thread_hook_t* hook, void** userdata) {
+    if (hook) *hook = gThreadPreHook;
+    if (userdata) *userdata = gThreadPreHookUserdata;
+}
+
+void setThreadPostHook(thread_hook_t hook, void* userdata) {
+    LOG_ALWAYS_FATAL_IF(gCreateThreadFn != androidCreateRawThreadEtc,
+                        "androidSetThreadPostHook conflicts with androidSetCreateThreadFunc");
+    gThreadPostHook = hook;
+    gThreadPostHookUserdata = userdata;
+}
+
+void getThreadPostHook(thread_hook_t* hook, void** userdata) {
+    if (hook) *hook = gThreadPostHook;
+    if (userdata) *userdata = gThreadPostHookUserdata;
+}
+
+#endif
 
 /*
  * ===========================================================================
