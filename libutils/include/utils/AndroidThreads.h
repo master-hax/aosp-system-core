@@ -61,6 +61,8 @@ extern void androidSetThreadName(const char* name);
 
 // Used by the Java Runtime to control how threads are created, so that
 // they can be proper and lovely Java threads.
+// Note: this conflicts with androidSetThreadPreHook and
+// androidSetThreadPostHook.
 typedef int (*android_create_thread_fn)(android_thread_func_t entryFunction,
                                         void *userData,
                                         const char* threadName,
@@ -116,6 +118,34 @@ inline bool createThreadEtc(thread_func_t entryFunction,
 inline thread_id_t getThreadId() {
     return androidGetThreadId();
 }
+
+#if !defined(_WIN32)
+
+// Right after a thread is created, androidCreateRawThreadEtc ensures that
+// hook(userdata, threadName) runs on the new thread before the entry function.
+// If hook(userdata, threadName) returns non-zero value, the thread will
+// terminate early without executing the entryFunction or the post hook.
+// Note: this conflicts with androidSetCreateThreadFunc.
+// Note: this function itself is not thread-safe.
+void setThreadPreHook(thread_hook_t hook, void* userdata);
+
+// Returns the pre-hook set by androidSetThreadPreHook.
+// Note: this function itself is not thread-safe.
+void getThreadPreHook(thread_hook_t* hook, void** userdata);
+
+// After the entry function ends, androidCreateRawThreadEtc ensures that
+// hook(userdata, threadName) runs on the new thread.
+// If the pre-hook passes, i.e. there are no pre-hook set or pre hook returns 0,
+// regardless of the result of the entry function, the post-hook always runs.
+// Note: this conflicts with androidSetCreateThreadFunc.
+// Note: this function itself is not thread-safe.
+void setThreadPostHook(thread_hook_t hook, void* userdata);
+
+// Returns the post-hook set by androidSetThreadPostHook.
+// Note: this function itself is not thread-safe.
+void getThreadPostHook(thread_hook_t* hook, void** userdata);
+
+#endif  // _WIN32
 
 // ----------------------------------------------------------------------------
 }  // namespace android

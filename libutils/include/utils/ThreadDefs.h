@@ -49,6 +49,7 @@ namespace android {
 
 typedef android_thread_id_t thread_id_t;
 typedef android_thread_func_t thread_func_t;
+typedef int (*thread_hook_t)(void*, const char*);
 
 enum {
     PRIORITY_LOWEST         = ANDROID_PRIORITY_LOWEST,
