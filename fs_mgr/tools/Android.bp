@@ -45,3 +45,16 @@ cc_binary {
 
     cflags: ["-Werror"],
 }
+
+cc_binary {
+    name: "iostat",
+    srcs: [
+        "iostat.c",
+        "count.c",
+        "rd_stats.c",
+        "ioconf.c",
+	"common.c",
+    ],
+
+    cflags: ["-Wno-unused-parameter", "-Werror"],
+}
