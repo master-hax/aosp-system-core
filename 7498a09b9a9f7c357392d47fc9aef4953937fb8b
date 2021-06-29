@@ -1,0 +1,56 @@
+{
+  "comments": [
+    {
+      "robotId": "ayeaye",
+      "robotRunId": "AR00000000000012447671",
+      "url": "https://android-build.googleplex.com/builds/treetop/android-review/1749683?revision\u003d1",
+      "fixSuggestions": [],
+      "key": {
+        "uuid": "48be0a9b_35e5a3a3",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1757831
+      },
+      "writtenOn": "2021-06-29T08:13:23Z",
+      "side": 1,
+      "message": "Unrecognized finding :\nlicense\n",
+      "range": {
+        "startLine": 7,
+        "startChar": 17,
+        "endLine": 7,
+        "endChar": 24
+      },
+      "revId": "7498a09b9a9f7c357392d47fc9aef4953937fb8b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "robotId": "ayeaye",
+      "robotRunId": "AR00000000000012447671",
+      "url": "https://android-build.googleplex.com/builds/treetop/android-review/1749683?revision\u003d1",
+      "fixSuggestions": [],
+      "key": {
+        "uuid": "1e5054c6_849b0664",
+        "filename": "fs_mgr/NOTICE",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1757831
+      },
+      "writtenOn": "2021-06-29T08:13:23Z",
+      "side": 1,
+      "message": "Third-party license (MIT) disallowed in repository platform/system/core:\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions: The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n",
+      "range": {
+        "startLine": 3,
+        "startChar": 1,
+        "endLine": 12,
+        "endChar": 64
+      },
+      "revId": "7498a09b9a9f7c357392d47fc9aef4953937fb8b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
