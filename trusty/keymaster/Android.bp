@@ -175,3 +175,32 @@ cc_binary {
         "-Werror",
     ],
 }
+
+cc_fuzz {
+    name: "trusty_keymaster_proto_fuzzer",
+    defaults: ["trusty_fuzzer_defaults"],
+    srcs: [
+        "fuzz/keymaster_protocol_fuzzer.cpp",
+        "fuzz/keymaster_defs_builder.cpp",
+        "fuzz/keymaster_fuzzer.proto",
+        "fuzz/keymaster_defs.proto",
+        "fuzz/requests.proto",
+        "fuzz/requests_builder.cpp",
+    ],
+
+    shared_libs: [
+        "libprotobuf-mutator",
+        "libkeymaster_messages",
+    ],
+
+    cflags: [
+        "-Wno-date-time",
+    ],
+
+    local_include_dirs: ["include"],
+
+    proto: {
+        type: "full",
+        canonical_path_from_root: false,
+    },
+}
