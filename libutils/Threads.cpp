@@ -55,8 +55,6 @@
 
 using namespace android;
 
-static android_create_thread_fn gCreateThreadFn = androidCreateRawThreadEtc;
-
 // ----------------------------------------------------------------------------
 #if !defined(_WIN32)
 // ----------------------------------------------------------------------------
@@ -299,19 +297,8 @@ int androidCreateThreadEtc(android_thread_func_t entryFunction,
                             size_t threadStackSize,
                             android_thread_id_t *threadId)
 {
-    return gCreateThreadFn(entryFunction, userData, threadName,
-        threadPriority, threadStackSize, threadId);
-}
-
-void androidSetCreateThreadFunc(android_create_thread_fn func)
-{
-#if !defined(_WIN32)
-    LOG_ALWAYS_FATAL_IF(gThreadPreHook != nullptr || gThreadPreHookUserdata != nullptr,
-                        "androidSetCreateThreadFunc conflicts with androidSetThreadPreHook");
-    LOG_ALWAYS_FATAL_IF(gThreadPostHook != nullptr || gThreadPreHookUserdata != nullptr,
-                        "androidSetCreateThreadFunc conflicts with androidSetThreadPostHook");
-#endif  // !_WIN32
-    gCreateThreadFn = func;
+    return androidCreateRawThreadEtc(entryFunction, userData, threadName, threadPriority,
+                                     threadStackSize, threadId);
 }
 
 #if defined(__ANDROID__)
@@ -358,8 +345,6 @@ namespace android {
 #if !defined(_WIN32)
 
 void setThreadPreHook(thread_hook_t hook, void* userdata) {
-    LOG_ALWAYS_FATAL_IF(gCreateThreadFn != androidCreateRawThreadEtc,
-                        "androidSetThreadPreHook conflicts with androidSetCreateThreadFunc");
     gThreadPreHook = hook;
     gThreadPreHookUserdata = userdata;
 }
@@ -369,8 +354,6 @@ void getThreadPreHook(thread_hook_t* hook, void** userdata) {
 }
 
 void setThreadPostHook(thread_hook_t hook, void* userdata) {
-    LOG_ALWAYS_FATAL_IF(gCreateThreadFn != androidCreateRawThreadEtc,
-                        "androidSetThreadPostHook conflicts with androidSetCreateThreadFunc");
     gThreadPostHook = hook;
     gThreadPostHookUserdata = userdata;
 }
