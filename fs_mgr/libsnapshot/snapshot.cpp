@@ -2515,15 +2515,25 @@ bool SnapshotManager::WriteUpdateState(LockedFile* lock, UpdateState state,
     SnapshotUpdateStatus status;
     status.set_state(state);
 
-    if (state == UpdateState::MergeFailed) {
-        status.set_merge_failure_code(failure_code);
+    switch (state) {
+        case UpdateState::MergeFailed:
+            status.set_merge_failure_code(failure_code);
+            break;
+        case UpdateState::Initiated:
+            status.set_source_build_fingerprint(
+                    android::base::GetProperty("ro.build.fingerprint", ""));
+            break;
+        default:
+            break;
     }
 
     // If we're transitioning between two valid states (eg, we're not beginning
-    // or ending an OTA), then make sure to propagate the compression bit.
+    // or ending an OTA), then make sure to propagate the compression bit and
+    // build fingerprint.
     if (!(state == UpdateState::Initiated || state == UpdateState::None)) {
         SnapshotUpdateStatus old_status = ReadSnapshotUpdateStatus(lock);
         status.set_compression_enabled(old_status.compression_enabled());
+        status.set_source_build_fingerprint(old_status.source_build_fingerprint());
     }
     return WriteSnapshotUpdateStatus(lock, status);
 }
@@ -3790,6 +3800,14 @@ MergeFailureCode SnapshotManager::ReadMergeFailureCode() {
         return MergeFailureCode::Ok;
     }
     return status.merge_failure_code();
+}
+
+std::string SnapshotManager::ReadSourceBuildFingerprint() {
+    auto lock = LockExclusive();
+    if (!lock) return {};
+
+    SnapshotUpdateStatus status = ReadSnapshotUpdateStatus(lock.get());
+    return status.source_build_fingerprint();
 }
 
 }  // namespace snapshot
