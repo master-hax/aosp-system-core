@@ -77,6 +77,7 @@ struct thread_data_t {
     void*           userData;
     int             priority;
     char *          threadName;
+    bool canCallJava;
 
     // we use this trampoline when we need to set the priority with
     // nice/setpriority, and name with prctl.
@@ -85,6 +86,7 @@ struct thread_data_t {
         void* u = t->userData;
         __android_unused int prio = t->priority;
         std::unique_ptr<char, decltype(&free)> name(t->threadName, &free);
+        bool canCallJava = t->canCallJava;
         delete t;
 
 #if defined(__ANDROID__)
@@ -101,12 +103,12 @@ struct thread_data_t {
             androidSetThreadName(name.get());
         }
 
-        if (gThreadPreHook) {
+        if (canCallJava && gThreadPreHook) {
             int hookRet = gThreadPreHook(gThreadPreHookUserdata, name.get());
             if (hookRet != 0) return hookRet;
         }
         int ret = f(u);
-        if (gThreadPostHook) {
+        if (canCallJava && gThreadPostHook) {
             int hookRet = gThreadPostHook(gThreadPostHookUserdata, name.get());
             if (hookRet != 0) return hookRet;
         }
@@ -137,7 +139,8 @@ void androidSetThreadName(const char* name) {
 
 static int androidCreateRawThreadEtc(android_thread_func_t entryFunction, void* userData,
                                      const char* threadName, int32_t threadPriority,
-                                     size_t threadStackSize, android_thread_id_t* threadId) {
+                                     size_t threadStackSize, bool canCallJava,
+                                     android_thread_id_t* threadId) {
     pthread_attr_t attr;
     pthread_attr_init(&attr);
     pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
@@ -154,6 +157,7 @@ static int androidCreateRawThreadEtc(android_thread_func_t entryFunction, void* 
     t->threadName = threadName ? strdup(threadName) : NULL;
     t->entryFunction = entryFunction;
     t->userData = userData;
+    t->canCallJava = canCallJava;
     entryFunction = (android_thread_func_t)&thread_data_t::trampoline;
     userData = t;
 
@@ -259,13 +263,9 @@ static bool doCreateThread(android_thread_func_t fn, void* arg, android_thread_i
     return true;
 }
 
-int androidCreateRawThreadEtc(android_thread_func_t fn,
-                               void *userData,
-                               const char* /*threadName*/,
-                               int32_t /*threadPriority*/,
-                               size_t /*threadStackSize*/,
-                               android_thread_id_t *threadId)
-{
+int androidCreateRawThreadEtc(android_thread_func_t fn, void* userData, const char* /*threadName*/,
+                              int32_t /*threadPriority*/, size_t /*threadStackSize*/,
+                              bool /*canCallJava*/, android_thread_id_t* threadId) {
     return doCreateThread(  fn, userData, threadId);
 }
 
@@ -298,7 +298,7 @@ int androidCreateThreadEtc(android_thread_func_t entryFunction,
                             android_thread_id_t *threadId)
 {
     return androidCreateRawThreadEtc(entryFunction, userData, threadName, threadPriority,
-                                     threadStackSize, threadId);
+                                     threadStackSize, true /* canCallJava */, threadId);
 }
 
 #if defined(__ANDROID__)
@@ -721,8 +721,8 @@ status_t Thread::run(const char* name, int32_t priority, size_t stack)
     mRunning = true;
 
     bool res;
-    // TODO(elsk): disable hooks when !mCanCallJava
-    res = createThreadEtc(_threadLoop, this, name, priority, stack, &mThread);
+    res = androidCreateRawThreadEtc(_threadLoop, this, name, priority, stack, mCanCallJava,
+                                    &mThread);
 
     if (res == false) {
         mStatus = UNKNOWN_ERROR;   // something happened!
