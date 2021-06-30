@@ -135,9 +135,9 @@ void androidSetThreadName(const char* name) {
 #endif
 }
 
-int androidCreateRawThreadEtc(android_thread_func_t entryFunction, void* userData,
-                              const char* threadName, int32_t threadPriority,
-                              size_t threadStackSize, android_thread_id_t* threadId) {
+static int androidCreateRawThreadEtc(android_thread_func_t entryFunction, void* userData,
+                                     const char* threadName, int32_t threadPriority,
+                                     size_t threadStackSize, android_thread_id_t* threadId) {
     pthread_attr_t attr;
     pthread_attr_init(&attr);
     pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);

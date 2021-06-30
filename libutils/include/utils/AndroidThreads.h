@@ -47,17 +47,6 @@ extern int androidCreateThreadEtc(android_thread_func_t entryFunction,
 // Get some sort of unique identifier for the current thread.
 extern android_thread_id_t androidGetThreadId();
 
-// Low-level thread creation -- never creates threads that can
-// interact with the Java VM.
-// Deprecated: without using androidSetCreateThreadFunc, this is equivalent
-// to androidCreateThreadEtc.
-extern int androidCreateRawThreadEtc(android_thread_func_t entryFunction,
-                                     void *userData,
-                                     const char* threadName,
-                                     int32_t threadPriority,
-                                     size_t threadStackSize,
-                                     android_thread_id_t *threadId);
-
 // set the same of the running thread
 extern void androidSetThreadName(const char* name);
 
