@@ -187,7 +187,8 @@ class WorkerThread {
     // Processing COW operations
     bool ProcessCowOp(const CowOperation* cow_op);
     bool ProcessReplaceOp(const CowOperation* cow_op);
-    bool ProcessCopyOp(const CowOperation* cow_op);
+    // Handles Copy and Xor
+    bool ProcessOrderedOp(const CowOperation* cow_op);
     bool ProcessZeroOp();
 
     bool ReadFromBaseDevice(const CowOperation* cow_op);
