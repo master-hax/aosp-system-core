@@ -241,7 +241,7 @@ void CowSnapuserdTest::StartSnapuserdDaemon() {
 void CowSnapuserdTest::CreateBaseDevice() {
     unique_fd rnd_fd;
 
-    total_base_size_ = (size_ * 4);
+    total_base_size_ = (size_ * 5);
     base_fd_ = CreateTempFile("base_device", total_base_size_);
     ASSERT_GE(base_fd_, 0);
 
@@ -286,6 +286,11 @@ void CowSnapuserdTest::ReadSnapshotDeviceAndValidate() {
     offset += size_;
     ASSERT_EQ(ReadFullyAtOffset(snapshot_fd, snapuserd_buffer.get(), size_, offset), true);
     ASSERT_EQ(memcmp(snapuserd_buffer.get(), (char*)orig_buffer_.get() + (size_ * 3), size_), 0);
+
+    // XOR
+    offset += size_;
+    ASSERT_EQ(ReadFullyAtOffset(snapshot_fd, snapuserd_buffer.get(), size_, offset), true);
+    ASSERT_EQ(memcmp(snapuserd_buffer.get(), (char*)orig_buffer_.get() + (size_ * 4), size_), 0);
 }
 
 void CowSnapuserdTest::CreateCowDeviceWithCopyOverlap_2() {
@@ -414,6 +419,17 @@ void CowSnapuserdTest::CreateCowDevice() {
     size_t source_blk = num_blocks - 1;
     size_t blk_src_copy = blk_end_copy - 1;
 
+    uint32_t sequence[num_blocks * 2];
+    // Sequence for Copy ops
+    for (int i = 0; i < num_blocks; i++) {
+        sequence[i] = num_blocks - 1 - i;
+    }
+    // Sequence for Xor ops
+    for (int i = 0; i < num_blocks; i++) {
+        sequence[num_blocks + i] = 5 * num_blocks - 1 - i;
+    }
+    ASSERT_TRUE(writer.AddSequenceData(2 * num_blocks, sequence));
+
     size_t x = num_blocks;
     while (1) {
         ASSERT_TRUE(writer.AddCopy(source_blk, blk_src_copy));
@@ -439,6 +455,11 @@ void CowSnapuserdTest::CreateCowDevice() {
 
     ASSERT_TRUE(writer.AddRawBlocks(blk_random2_replace_start, random_buffer_1_.get(), size_));
 
+    size_t blk_xor_start = blk_random2_replace_start + num_blocks;
+    size_t xor_offset = BLOCK_SZ / 2;
+    ASSERT_TRUE(writer.AddXorBlocks(blk_xor_start, random_buffer_1_.get(), size_, num_blocks,
+                                    xor_offset));
+
     // Flush operations
     ASSERT_TRUE(writer.Finalize());
     // Construct the buffer required for validation
@@ -448,6 +469,13 @@ void CowSnapuserdTest::CreateCowDevice() {
     memcpy((char*)orig_buffer_.get() + size_, random_buffer_1_.get(), size_);
     memcpy((char*)orig_buffer_.get() + (size_ * 2), (void*)zero_buffer.c_str(), size_);
     memcpy((char*)orig_buffer_.get() + (size_ * 3), random_buffer_1_.get(), size_);
+    ASSERT_EQ(android::base::ReadFullyAtOffset(base_fd_, &orig_buffer_.get()[size_ * 4], size_,
+                                               size_ + xor_offset),
+              true);
+    for (int i = 0; i < size_; i++) {
+        orig_buffer_.get()[(size_ * 4) + i] =
+                (uint8_t)(orig_buffer_.get()[(size_ * 4) + i] ^ random_buffer_1_.get()[i]);
+    }
 }
 
 void CowSnapuserdTest::InitCowDevice() {
