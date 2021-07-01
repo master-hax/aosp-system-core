@@ -443,12 +443,12 @@ bool Snapuserd::ReadMetadata() {
     std::optional<chunk_t> prev_id = {};
     std::map<uint64_t, const CowOperation*> map;
     std::set<uint64_t> dest_blocks;
-    size_t pending_copy_ops = exceptions_per_area_ - num_ops;
+    size_t pending_ordered_ops = exceptions_per_area_ - num_ops;
     uint64_t total_copy_ops = reader_->get_num_ordered_ops_to_merge();
 
     SNAP_LOG(DEBUG) << " Processing copy-ops at Area: " << vec_.size()
                     << " Number of replace/zero ops completed in this area: " << num_ops
-                    << " Pending copy ops for this area: " << pending_copy_ops;
+                    << " Pending copy ops for this area: " << pending_ordered_ops;
 
     while (!cowop_rm_iter->Done()) {
         do {
@@ -564,17 +564,17 @@ bool Snapuserd::ReadMetadata() {
                 }
             }
             metadata_found = true;
-            pending_copy_ops -= 1;
+            pending_ordered_ops -= 1;
             map[cow_op->new_block] = cow_op;
             dest_blocks.insert(cow_op->source);
             prev_id = cow_op->new_block;
             cowop_rm_iter->Next();
-        } while (!cowop_rm_iter->Done() && pending_copy_ops);
+        } while (!cowop_rm_iter->Done() && pending_ordered_ops);
 
         data_chunk_id = GetNextAllocatableChunkId(data_chunk_id);
         SNAP_LOG(DEBUG) << "Batch Merge copy-ops of size: " << map.size()
                         << " Area: " << vec_.size() << " Area offset: " << offset
-                        << " Pending-copy-ops in this area: " << pending_copy_ops;
+                        << " Pending-ordered-ops in this area: " << pending_ordered_ops;
 
         for (auto it = map.begin(); it != map.end(); it++) {
             struct disk_exception* de =
@@ -612,12 +612,12 @@ bool Snapuserd::ReadMetadata() {
                     SNAP_LOG(DEBUG) << "ReadMetadata() completed; Number of Areas: " << vec_.size();
                 }
 
-                if (!(pending_copy_ops == 0)) {
-                    SNAP_LOG(ERROR)
-                            << "Invalid pending_copy_ops: expected: 0 found: " << pending_copy_ops;
+                if (!(pending_ordered_ops == 0)) {
+                    SNAP_LOG(ERROR) << "Invalid pending_ordered_ops: expected: 0 found: "
+                                    << pending_ordered_ops;
                     return false;
                 }
-                pending_copy_ops = exceptions_per_area_;
+                pending_ordered_ops = exceptions_per_area_;
             }
 
             data_chunk_id = GetNextAllocatableChunkId(data_chunk_id);
