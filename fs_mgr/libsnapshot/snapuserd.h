@@ -201,7 +201,9 @@ class WorkerThread {
     // Processing COW operations
     bool ProcessCowOp(const CowOperation* cow_op);
     bool ProcessReplaceOp(const CowOperation* cow_op);
+    // Handles Copy and Xor
     bool ProcessCopyOp(const CowOperation* cow_op);
+    bool ProcessXorOp(const CowOperation* cow_op);
     bool ProcessZeroOp();
 
     bool ReadFromBaseDevice(const CowOperation* cow_op);
@@ -220,6 +222,7 @@ class WorkerThread {
 
     std::unique_ptr<CowReader> reader_;
     BufferSink bufsink_;
+    XorSink xorsink_;
 
     std::string cow_device_;
     std::string backing_store_device_;
