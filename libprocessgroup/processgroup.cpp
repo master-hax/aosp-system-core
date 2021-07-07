@@ -244,11 +244,21 @@ static bool MkdirAndChown(const std::string& path, mode_t mode, uid_t uid, gid_t
         std::string file_path = path + "/" + dir_entry->d_name;
 
         if (lchown(file_path.c_str(), uid, gid) < 0) {
+            // Ignore if a process in the same uid group got killed after we called readdir
+            if (errno == ENOENT) {
+                PLOG(WARNING) << "Ignoring lchown failure for " << file_path;
+                continue;
+            }
             PLOG(ERROR) << "lchown failed for " << file_path;
             goto err;
         }
 
         if (fchmodat(AT_FDCWD, file_path.c_str(), mode, AT_SYMLINK_NOFOLLOW) != 0) {
+            // Ignore if a process in the same uid group got killed after we called readdir
+            if (errno == ENOENT) {
+                PLOG(WARNING) << "Ignoring fchmodat failure for " << file_path;
+                continue;
+            }
             PLOG(ERROR) << "fchmodat failed for " << file_path;
             goto err;
         }
