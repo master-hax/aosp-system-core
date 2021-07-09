@@ -802,7 +802,7 @@ static int __mount(const std::string& source, const std::string& target, const F
             opts = entry.fs_options + entry.fs_checkpoint_opts + ":" +
                    std::to_string(gc_allowance) + "%";
         } else {
-            opts = entry.fs_options;
+            opts = entry.fs_options + entry.fs_checkpoint_opts;
         }
         if (save_errno == EAGAIN) {
             PINFO << "Retrying mount (source=" << source << ",target=" << target
