@@ -688,7 +688,7 @@ bool Snapuserd::MmapMetadata() {
 
     if (header.major_version >= 2 && header.buffer_size > 0) {
         total_mapped_addr_length_ = header.header_size + BUFFER_REGION_DEFAULT_SIZE;
-        read_ahead_feature_ = false;
+        read_ahead_feature_ = true;
     } else {
         // mmap the first 4k page - older COW format
         total_mapped_addr_length_ = BLOCK_SZ;

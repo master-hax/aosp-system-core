@@ -143,7 +143,7 @@ class ReadAheadThread {
     }
 
     bool ReadAheadIOStart();
-    void PrepareReadAhead(uint64_t* source_block, int* pending_ops, std::vector<uint64_t>& blocks);
+    void PrepareReadAhead(uint64_t* source_offset, int* pending_ops, std::vector<uint64_t>& blocks);
     bool ReconstructDataFromCow();
     void CheckOverlap(const CowOperation* cow_op);
 
