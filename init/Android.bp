@@ -390,10 +390,6 @@ cc_binary {
         hwaddress: false,
     },
 
-    // Install adb_debug.prop into debug ramdisk.
-    // This allows adb root on a user build, when debug ramdisk is used.
-    required: ["adb_debug.prop"],
-
     ramdisk: true,
 
     install_in_root: true,
