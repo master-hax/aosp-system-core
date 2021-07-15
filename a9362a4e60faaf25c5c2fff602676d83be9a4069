@@ -20,6 +20,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "a7bfec34_e4bbd3f8",
+        "filename": "trusty/keymaster/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 1416371
+      },
+      "writtenOn": "2021-07-15T16:59:38Z",
+      "side": 1,
+      "message": "(and also for the other two binaries, in case it was unclear)",
+      "parentUuid": "5c9e9cf4_ea9a85b0",
+      "revId": "a9362a4e60faaf25c5c2fff602676d83be9a4069",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "bb5e3537_5bb7d8ba",
         "filename": "trusty/keymaster/Android.bp",
         "patchSetId": 1
