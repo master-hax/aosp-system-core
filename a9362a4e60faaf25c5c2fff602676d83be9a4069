@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "64f83f9d_ce8c9947",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1416371
+      },
+      "writtenOn": "2021-07-15T17:06:54Z",
+      "side": 1,
+      "message": "Yeah, I gave +1 after I saw it was already merged to avoid conflicts, but this probably should have been done slightly more carefully in the first place.",
+      "parentUuid": "8747df3e_976b4aaa",
+      "revId": "a9362a4e60faaf25c5c2fff602676d83be9a4069",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "5c9e9cf4_ea9a85b0",
