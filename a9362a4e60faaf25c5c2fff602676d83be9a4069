@@ -3,6 +3,40 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "5c9e9cf4_ea9a85b0",
+        "filename": "trusty/keymaster/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 1416371
+      },
+      "writtenOn": "2021-07-15T16:58:51Z",
+      "side": 1,
+      "message": "If you\u0027re splitting trusty_keymaster_ipc into a library, perhaps you should link against it here rather than using the source in two places?",
+      "revId": "a9362a4e60faaf25c5c2fff602676d83be9a4069",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bb5e3537_5bb7d8ba",
+        "filename": "trusty/keymaster/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 1416371
+      },
+      "writtenOn": "2021-07-15T16:58:51Z",
+      "side": 1,
+      "message": "If you take the above advice and add libtrusty_ipc as a dependency here, you can probably drop some of these.",
+      "revId": "a9362a4e60faaf25c5c2fff602676d83be9a4069",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "28fde2b1_4ce8d9f2",
         "filename": "trusty/keymaster/include/trusty_keymaster/ipc/keymaster_ipc.h",
         "patchSetId": 1
