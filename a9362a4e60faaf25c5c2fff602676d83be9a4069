@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "28fde2b1_4ce8d9f2",
+        "filename": "trusty/keymaster/include/trusty_keymaster/ipc/keymaster_ipc.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1416371
+      },
+      "writtenOn": "2021-07-15T16:57:09Z",
+      "side": 1,
+      "message": "This should probably be in a separate change. Did you add this to the corresponding header in trusty/user/app/keymaster as well?",
+      "revId": "a9362a4e60faaf25c5c2fff602676d83be9a4069",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
