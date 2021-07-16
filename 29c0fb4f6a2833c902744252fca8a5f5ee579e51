@@ -38,6 +38,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "445ff770_381b3250",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1543914
+      },
+      "writtenOn": "2021-07-16T05:40:05Z",
+      "side": 1,
+      "message": "I\u0027ve compare the performance between with and without the wakelock. There is no big difference for StorageThroughputTest.",
+      "parentUuid": "f298b4b5_fade8fb8",
+      "revId": "29c0fb4f6a2833c902744252fca8a5f5ee579e51",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "03ef1028_73ce3a5d",
         "filename": "trusty/storage/proxy/rpmb.c",
         "patchSetId": 1
@@ -49,6 +67,24 @@
       "writtenOn": "2021-07-16T05:00:29Z",
       "side": 1,
       "message": "I think this bugfix should go in a separate patch before this.",
+      "revId": "29c0fb4f6a2833c902744252fca8a5f5ee579e51",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e90c443b_99d00c7e",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 226,
+      "author": {
+        "id": 1543914
+      },
+      "writtenOn": "2021-07-16T05:40:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "03ef1028_73ce3a5d",
       "revId": "29c0fb4f6a2833c902744252fca8a5f5ee579e51",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -66,6 +102,24 @@
       "writtenOn": "2021-07-16T05:00:29Z",
       "side": 1,
       "message": "we don\u0027t really need to return this error. If you failed to release the wake lock it does not not affect the result of the rpmb operation, it will prevent suspend.",
+      "revId": "29c0fb4f6a2833c902744252fca8a5f5ee579e51",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "084e0748_9ffec1df",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 262,
+      "author": {
+        "id": 1543914
+      },
+      "writtenOn": "2021-07-16T05:40:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3d27900d_abdc6276",
       "revId": "29c0fb4f6a2833c902744252fca8a5f5ee579e51",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
