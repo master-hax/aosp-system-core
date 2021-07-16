@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b3789755_537a6324",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-07-16T18:15:51Z",
+      "side": 1,
+      "message": "libdm (and this test) should be owned by everyone under fs_mgr/OWNERS - why do we need a separate OWNERS file?",
+      "revId": "b5c21704e3ccaef0b4bf43c84f143d17dbb2848e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
