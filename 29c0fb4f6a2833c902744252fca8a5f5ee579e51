@@ -20,6 +20,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "f298b4b5_fade8fb8",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000205
+      },
+      "writtenOn": "2021-07-16T05:08:19Z",
+      "side": 1,
+      "message": "Also, did you test if this actually avoids the error in b/193456223. We know the bug triggers after suspend, but does it only trigger if we suspend between these sub-commands, or can it also trigger on the first command?",
+      "parentUuid": "d8b05028_130a0c15",
+      "revId": "29c0fb4f6a2833c902744252fca8a5f5ee579e51",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "03ef1028_73ce3a5d",
         "filename": "trusty/storage/proxy/rpmb.c",
         "patchSetId": 1
