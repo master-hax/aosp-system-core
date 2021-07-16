@@ -16,6 +16,24 @@
       "message": "libdm (and this test) should be owned by everyone under fs_mgr/OWNERS - why do we need a separate OWNERS file?",
       "revId": "b5c21704e3ccaef0b4bf43c84f143d17dbb2848e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4a68a38e_87bd3efd",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1408266
+      },
+      "writtenOn": "2021-07-16T21:18:06Z",
+      "side": 1,
+      "message": "I just verified that we don\u0027t need a new OWNERS file if there is one in the parent directory. Sorry for the spamming. I\u0027m running a pipeline to backfill VTS module owners recorded in go/vts-reviewers to Android source tree. It doesn\u0027t detect the existence of parent OWNERS file so this CL is created. I\u0027ll abandon this CL.",
+      "parentUuid": "b3789755_537a6324",
+      "revId": "b5c21704e3ccaef0b4bf43c84f143d17dbb2848e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
