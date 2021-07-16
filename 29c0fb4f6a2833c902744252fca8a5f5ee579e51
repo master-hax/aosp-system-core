@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d8b05028_130a0c15",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000205
+      },
+      "writtenOn": "2021-07-16T05:00:29Z",
+      "side": 1,
+      "message": "Did you measure if this affect the performance in any measurable way?",
+      "revId": "29c0fb4f6a2833c902744252fca8a5f5ee579e51",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "03ef1028_73ce3a5d",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 226,
+      "author": {
+        "id": 1000205
+      },
+      "writtenOn": "2021-07-16T05:00:29Z",
+      "side": 1,
+      "message": "I think this bugfix should go in a separate patch before this.",
+      "revId": "29c0fb4f6a2833c902744252fca8a5f5ee579e51",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3d27900d_abdc6276",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 262,
+      "author": {
+        "id": 1000205
+      },
+      "writtenOn": "2021-07-16T05:00:29Z",
+      "side": 1,
+      "message": "we don\u0027t really need to return this error. If you failed to release the wake lock it does not not affect the result of the rpmb operation, it will prevent suspend.",
+      "revId": "29c0fb4f6a2833c902744252fca8a5f5ee579e51",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
