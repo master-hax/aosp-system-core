@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "26f3ce51_fb23b110",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1888040
+      },
+      "writtenOn": "2021-07-16T18:56:21Z",
+      "side": 1,
+      "message": "git commit --amend",
+      "revId": "09b493b1431d5905842c180c91fb0de2d9a57d21",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
