@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fddd2f8b_3c66ce09",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1096713
+      },
+      "writtenOn": "2021-07-19T20:20:26Z",
+      "side": 1,
+      "message": "No auto-submit, because I want to manually verify some of the targets I expect get run in TreeHugger.",
+      "revId": "d03851e54999c11076468d61e85d343972a99942",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
