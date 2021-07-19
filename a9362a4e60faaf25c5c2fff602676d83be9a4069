@@ -157,6 +157,24 @@
       "parentUuid": "28fde2b1_4ce8d9f2",
       "revId": "a9362a4e60faaf25c5c2fff602676d83be9a4069",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b349eed8_ebbcce24",
+        "filename": "trusty/keymaster/include/trusty_keymaster/ipc/keymaster_ipc.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1836235
+      },
+      "writtenOn": "2021-07-19T12:25:22Z",
+      "side": 1,
+      "message": "(also, KM_SET_ATTESTATION_IDS was already added to rusty/user/app/keymaster in aosp/1736674)",
+      "parentUuid": "f7524590_32ad1c6a",
+      "revId": "a9362a4e60faaf25c5c2fff602676d83be9a4069",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
