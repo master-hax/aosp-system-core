@@ -1,0 +1,242 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6ae46b12_e69d6338",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2021-07-19T19:07:14Z",
+      "side": 1,
+      "message": "I haven\u0027t really finished, but here\u0027s a start. I think maybe you should get rid of Invariant in the builders, unless you really plan to support multiple modes for each request.",
+      "revId": "c014c64a15332bbadef2a56bfd6d184e6c4ab8cf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7a1bb4c6_75c90bf7",
+        "filename": "trusty/keymaster/Android.bp",
+        "patchSetId": 6
+      },
+      "lineNbr": 181,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2021-07-19T19:07:14Z",
+      "side": 1,
+      "message": "Add `canonical_path_from_root: false,` and change the proto import statements to be relative to this dir.",
+      "revId": "c014c64a15332bbadef2a56bfd6d184e6c4ab8cf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d13feb83_d541642b",
+        "filename": "trusty/keymaster/fuzz/keymaster_defs_builder.h",
+        "patchSetId": 6
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2021-07-19T19:07:14Z",
+      "side": 1,
+      "message": "Needs #pragma once (all headers need this).",
+      "revId": "c014c64a15332bbadef2a56bfd6d184e6c4ab8cf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d17c370f_798bd074",
+        "filename": "trusty/keymaster/fuzz/keymaster_defs_builder.h",
+        "patchSetId": 6
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2021-07-19T19:07:14Z",
+      "side": 1,
+      "message": "Comment this enum to explain how invariants work and what these particular invariants do.",
+      "revId": "c014c64a15332bbadef2a56bfd6d184e6c4ab8cf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5caf87e9_86603ffb",
+        "filename": "trusty/keymaster/fuzz/keymaster_protocol_fuzzer.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2021-07-19T19:07:14Z",
+      "side": 1,
+      "message": "We\u0027re going to want to fuzz all supported versions eventually.",
+      "revId": "c014c64a15332bbadef2a56bfd6d184e6c4ab8cf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d8a6afc0_76c9126d",
+        "filename": "trusty/keymaster/fuzz/keymaster_protocol_fuzzer.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2021-07-19T19:07:14Z",
+      "side": 1,
+      "message": "Comment describing what this is for.",
+      "revId": "c014c64a15332bbadef2a56bfd6d184e6c4ab8cf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "39b8f3bc_cc6d060e",
+        "filename": "trusty/keymaster/fuzz/keymaster_protocol_fuzzer.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2021-07-19T19:07:14Z",
+      "side": 1,
+      "message": "Just return resp.Deserialize(...);",
+      "revId": "c014c64a15332bbadef2a56bfd6d184e6c4ab8cf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fa5c5f5f_b3f571b9",
+        "filename": "trusty/keymaster/fuzz/keymaster_protocol_fuzzer.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 150,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2021-07-19T19:07:14Z",
+      "side": 1,
+      "message": "Do we really care about the abort command? Could just send one before the whole operation.",
+      "revId": "c014c64a15332bbadef2a56bfd6d184e6c4ab8cf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "98080063_f0aa2b2d",
+        "filename": "trusty/keymaster/fuzz/keymaster_protocol_fuzzer.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 153,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2021-07-19T19:07:14Z",
+      "side": 1,
+      "message": "This looks like a driver for UpdateOperation, would that be a better name?",
+      "revId": "c014c64a15332bbadef2a56bfd6d184e6c4ab8cf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "09094824_3e8a835d",
+        "filename": "trusty/keymaster/fuzz/keymaster_protocol_fuzzer.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 165,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2021-07-19T19:07:14Z",
+      "side": 1,
+      "message": "These key_material assignments look unused?",
+      "revId": "c014c64a15332bbadef2a56bfd6d184e6c4ab8cf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "72592a4d_8f713251",
+        "filename": "trusty/keymaster/fuzz/keymaster_protocol_fuzzer.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 229,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2021-07-19T19:07:14Z",
+      "side": 1,
+      "message": "During fuzzing you won\u0027t want this print (or any prints) so that you don\u0027t slow down fuzzing.",
+      "revId": "c014c64a15332bbadef2a56bfd6d184e6c4ab8cf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "52b117f6_33c3d010",
+        "filename": "trusty/keymaster/fuzz/keymaster_protocol_fuzzer.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 233,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2021-07-19T19:07:14Z",
+      "side": 1,
+      "message": "You should reconnect to the service here to make sure it is still up. We want any crashes to be reported on the iteration they happen, not on the next iteration. See tipc_fuzzer.cpp.",
+      "revId": "c014c64a15332bbadef2a56bfd6d184e6c4ab8cf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "dcaf179b_6ee9c4e1",
+        "filename": "trusty/keymaster/fuzz/requests_builder.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2021-07-19T19:07:14Z",
+      "side": 1,
+      "message": "I\u0027m wondering if it might make more sense to just make a different variant of the message builder (e.g., BuildBeginOpMsgFixed) rather than using a generic invariants enum. Are there going to be many examples of message builders that accept more than one invariant?",
+      "revId": "c014c64a15332bbadef2a56bfd6d184e6c4ab8cf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "110caa83_ce548fb6",
+        "filename": "trusty/keymaster/fuzz/requests_builder.h",
+        "patchSetId": 6
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2021-07-19T19:07:14Z",
+      "side": 1,
+      "message": "Missing import of \u003cfuzz/keymaster_defs_builder.h\u003e (alternatively move the declaration of Invariant to here).\n\nAlso, #pragma once.",
+      "revId": "c014c64a15332bbadef2a56bfd6d184e6c4ab8cf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
