@@ -35,6 +35,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "3abe5c0d_88b865e6",
+        "filename": "trusty/keymaster/Android.bp",
+        "patchSetId": 6
+      },
+      "lineNbr": 181,
+      "author": {
+        "id": 1880310
+      },
+      "writtenOn": "2021-07-20T16:50:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a1bb4c6_75c90bf7",
+      "revId": "c014c64a15332bbadef2a56bfd6d184e6c4ab8cf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d13feb83_d541642b",
@@ -48,6 +66,24 @@
       "writtenOn": "2021-07-19T19:07:14Z",
       "side": 1,
       "message": "Needs #pragma once (all headers need this).",
+      "revId": "c014c64a15332bbadef2a56bfd6d184e6c4ab8cf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1b91ada2_e9dbf794",
+        "filename": "trusty/keymaster/fuzz/keymaster_defs_builder.h",
+        "patchSetId": 6
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1880310
+      },
+      "writtenOn": "2021-07-20T16:50:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d13feb83_d541642b",
       "revId": "c014c64a15332bbadef2a56bfd6d184e6c4ab8cf",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -120,6 +156,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "493b7e38_cef2746d",
+        "filename": "trusty/keymaster/fuzz/keymaster_protocol_fuzzer.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 1880310
+      },
+      "writtenOn": "2021-07-20T16:50:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "39b8f3bc_cc6d060e",
+      "revId": "c014c64a15332bbadef2a56bfd6d184e6c4ab8cf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "fa5c5f5f_b3f571b9",
@@ -133,6 +187,24 @@
       "writtenOn": "2021-07-19T19:07:14Z",
       "side": 1,
       "message": "Do we really care about the abort command? Could just send one before the whole operation.",
+      "revId": "c014c64a15332bbadef2a56bfd6d184e6c4ab8cf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "30960655_e6dc9c62",
+        "filename": "trusty/keymaster/fuzz/keymaster_protocol_fuzzer.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 150,
+      "author": {
+        "id": 1880310
+      },
+      "writtenOn": "2021-07-20T16:50:14Z",
+      "side": 1,
+      "message": "It\u0027s not strictly necessary, but it would ensure that keymaster\u0027s state (excluding generated keys) is reset between calls to `TestSigning`. The abort command takes an operation handle parameter which is why I planned on sending it after failed commands. But tracking the `op_handle` of the previous test case and calling it once before each test should also work.",
+      "parentUuid": "fa5c5f5f_b3f571b9",
       "revId": "c014c64a15332bbadef2a56bfd6d184e6c4ab8cf",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -190,6 +262,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "d1dec2ca_8a4d364c",
+        "filename": "trusty/keymaster/fuzz/keymaster_protocol_fuzzer.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 229,
+      "author": {
+        "id": 1880310
+      },
+      "writtenOn": "2021-07-20T16:50:14Z",
+      "side": 1,
+      "message": "Is there a standard way of logging to stdout/stderr in aosp or should I just keep all the logging stuff in my dev branch since it\u0027s just for debugging the fuzzer itself?",
+      "parentUuid": "72592a4d_8f713251",
+      "revId": "c014c64a15332bbadef2a56bfd6d184e6c4ab8cf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "52b117f6_33c3d010",
         "filename": "trusty/keymaster/fuzz/keymaster_protocol_fuzzer.cpp",
         "patchSetId": 6
@@ -201,6 +291,24 @@
       "writtenOn": "2021-07-19T19:07:14Z",
       "side": 1,
       "message": "You should reconnect to the service here to make sure it is still up. We want any crashes to be reported on the iteration they happen, not on the next iteration. See tipc_fuzzer.cpp.",
+      "revId": "c014c64a15332bbadef2a56bfd6d184e6c4ab8cf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f00ed959_a0a84363",
+        "filename": "trusty/keymaster/fuzz/keymaster_protocol_fuzzer.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 233,
+      "author": {
+        "id": 1880310
+      },
+      "writtenOn": "2021-07-20T16:50:14Z",
+      "side": 1,
+      "message": "Is it necessary to disconnect like in tipc_fuzzer.cpp?",
+      "parentUuid": "52b117f6_33c3d010",
       "revId": "c014c64a15332bbadef2a56bfd6d184e6c4ab8cf",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -235,6 +343,24 @@
       "writtenOn": "2021-07-19T19:07:14Z",
       "side": 1,
       "message": "Missing import of \u003cfuzz/keymaster_defs_builder.h\u003e (alternatively move the declaration of Invariant to here).\n\nAlso, #pragma once.",
+      "revId": "c014c64a15332bbadef2a56bfd6d184e6c4ab8cf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b8d45696_2ccb69f7",
+        "filename": "trusty/keymaster/fuzz/requests_builder.h",
+        "patchSetId": 6
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1880310
+      },
+      "writtenOn": "2021-07-20T16:50:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "110caa83_ce548fb6",
       "revId": "c014c64a15332bbadef2a56bfd6d184e6c4ab8cf",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
