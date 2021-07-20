@@ -280,6 +280,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "774a41e1_42470340",
+        "filename": "trusty/keymaster/fuzz/keymaster_protocol_fuzzer.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 229,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2021-07-20T19:29:49Z",
+      "side": 1,
+      "message": "You should probably log using the ALOG* macros from liblog (system/logging/liblog). However, you still don\u0027t want to do that during fuzzing because it\u0027s slow.",
+      "parentUuid": "d1dec2ca_8a4d364c",
+      "revId": "c014c64a15332bbadef2a56bfd6d184e6c4ab8cf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "52b117f6_33c3d010",
         "filename": "trusty/keymaster/fuzz/keymaster_protocol_fuzzer.cpp",
         "patchSetId": 6
@@ -309,6 +327,24 @@
       "side": 1,
       "message": "Is it necessary to disconnect like in tipc_fuzzer.cpp?",
       "parentUuid": "52b117f6_33c3d010",
+      "revId": "c014c64a15332bbadef2a56bfd6d184e6c4ab8cf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "34ab3833_75864209",
+        "filename": "trusty/keymaster/fuzz/keymaster_protocol_fuzzer.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 233,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2021-07-20T19:29:49Z",
+      "side": 1,
+      "message": "Yes, we need to disconnect and reconnect to make sure the service is still alive.",
+      "parentUuid": "f00ed959_a0a84363",
       "revId": "c014c64a15332bbadef2a56bfd6d184e6c4ab8cf",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
