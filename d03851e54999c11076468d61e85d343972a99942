@@ -67,6 +67,23 @@
       "message": "Enabling autosubmit since this built cleanly on the target we worried about.",
       "revId": "d03851e54999c11076468d61e85d343972a99942",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "737fc443_ecbf31aa",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1096713
+      },
+      "writtenOn": "2021-07-20T00:55:50Z",
+      "side": 1,
+      "message": "I approve of this revert of a revert I created.  But unlike when I was fixing a broken build, I don\u0027t think there\u0027s a rush that should have me +2 my own CL here.  So ideally I\u0027d like a +2 (or at least +1) from someone else.",
+      "revId": "d03851e54999c11076468d61e85d343972a99942",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
