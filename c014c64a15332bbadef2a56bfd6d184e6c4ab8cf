@@ -228,6 +228,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "4741a8d0_c1de10ae",
+        "filename": "trusty/keymaster/fuzz/keymaster_protocol_fuzzer.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 153,
+      "author": {
+        "id": 1880310
+      },
+      "writtenOn": "2021-07-21T19:23:22Z",
+      "side": 1,
+      "message": "The only fixed parts of these three requests is the `purpose` of the BeginOpRequest which is `KM_PURPOSE_SIGN` and the additional_params AuthorizationSet required for signing. Maybe `TestPurposeSign` might be clearer than `TestSigning`?",
+      "parentUuid": "98080063_f0aa2b2d",
+      "revId": "c014c64a15332bbadef2a56bfd6d184e6c4ab8cf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "09094824_3e8a835d",
         "filename": "trusty/keymaster/fuzz/keymaster_protocol_fuzzer.cpp",
         "patchSetId": 6
@@ -257,6 +275,24 @@
       "side": 1,
       "message": "Turns out this isn\u0027t necessary when `SetKeyMaterial` is used to set `begin_req`\u0027s key blob so we can remove it.",
       "parentUuid": "09094824_3e8a835d",
+      "revId": "c014c64a15332bbadef2a56bfd6d184e6c4ab8cf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a35c9d75_b57dc2c6",
+        "filename": "trusty/keymaster/fuzz/keymaster_protocol_fuzzer.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 165,
+      "author": {
+        "id": 1880310
+      },
+      "writtenOn": "2021-07-21T19:23:22Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7e2fa183_c96065a8",
       "revId": "c014c64a15332bbadef2a56bfd6d184e6c4ab8cf",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -416,6 +452,24 @@
       "writtenOn": "2021-07-19T19:07:14Z",
       "side": 1,
       "message": "I\u0027m wondering if it might make more sense to just make a different variant of the message builder (e.g., BuildBeginOpMsgFixed) rather than using a generic invariants enum. Are there going to be many examples of message builders that accept more than one invariant?",
+      "revId": "c014c64a15332bbadef2a56bfd6d184e6c4ab8cf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f630a71d_135b79f5",
+        "filename": "trusty/keymaster/fuzz/requests_builder.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1880310
+      },
+      "writtenOn": "2021-07-21T19:23:22Z",
+      "side": 1,
+      "message": "The two `BuildAuthorizationSet` variants were originally one function that accepted both values of the `Invariant` enum, but I ended up splitting it since it doesn\u0027t make sense to take in a random `proto_set` param when generating the initial key (in `LLVMFuzzerInitialize`). There are probably more cases where message builders could accept more than one enum value, but I agree that renaming the variants of the message builders would be simpler.",
+      "parentUuid": "dcaf179b_6ee9c4e1",
       "revId": "c014c64a15332bbadef2a56bfd6d184e6c4ab8cf",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
