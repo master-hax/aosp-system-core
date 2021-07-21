@@ -1194,6 +1194,9 @@ service ueventd /system/bin/ueventd
     class core
     critical
     seclabel u:r:ueventd:s0
+    # "ueventd" is supposed to be run in "default" mount namespace even if it's pre-apexd
+    # to support loading firmwares from APEXes.
+    mount_namespace default
     shutdown critical
 
 service console /system/bin/sh

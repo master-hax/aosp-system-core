@@ -461,25 +461,27 @@ Result<void> Service::Start() {
         scon = *result;
     }
 
-    // APEXd is always started in the "current" namespace because it is the process to set up
-    // the current namespace.
-    const bool is_apexd = args_[0] == "/system/bin/apexd";
+    std::optional<MountNamespace> override_mount_namespace;
 
-    if (!IsDefaultMountNamespaceReady() && !is_apexd) {
-        // If this service is started before APEXes and corresponding linker configuration
-        // get available, mark it as pre-apexd one. Note that this marking is
+    if (args_[0] == "/system/bin/apexd") {
+        // APEXd is always started in the "current" namespace because it is the process to set up
+        // the current namespace.
+    } else if (mount_namespace_.has_value()) {
+        // if service description overrides mount namespace, use it
+        if (*mount_namespace_ == "default") {
+            override_mount_namespace = NS_DEFAULT;
+        } else if (*mount_namespace_ == "current") {
+            // do nothing
+        } else {
+            return Error() << "invalid mount namespace: " << *mount_namespace_;
+        }
+    } else if (!IsDefaultMountNamespaceReady()) {
+        // If this service is started before "default" mount namespace is ready
+        // (APEXes are activated and corresponding linker configurations get available),
+        // mark it as pre-apexd one. Note that this marking is
         // permanent. So for example, if the service is re-launched (e.g., due
         // to crash), it is still recognized as pre-apexd... for consistency.
         use_bootstrap_ns_ = true;
-    }
-
-    // For pre-apexd services, override mount namespace as "bootstrap" one before starting.
-    // Note: "ueventd" is supposed to be run in "default" mount namespace even if it's pre-apexd
-    // to support loading firmwares from APEXes.
-    std::optional<MountNamespace> override_mount_namespace;
-    if (name_ == "ueventd") {
-        override_mount_namespace = NS_DEFAULT;
-    } else if (use_bootstrap_ns_) {
         override_mount_namespace = NS_BOOTSTRAP;
     }
 

@@ -247,6 +247,17 @@ runs the service.
 > Sets the child's memory.swappiness to the specified value (only if memcg is mounted),
   which must be equal or greater than 0.
 
+`mount_namespace <value>`
+> Override the mount namespace when forking the service.
+  Init process starts in "bootstrap" mount namespace and switches to "default" mount namespace on
+  `enter_default_mount_ns`. If _value_ is not set, the service enters "default"
+  mount namespace only if "default" namespace is ready. Otherwise, it enters "bootstrap" mount
+  namespace.
+  If _value_ is set "current", the service enters init process'es current mount namespace. (It can
+  be either "default" or "bootstrap".)
+  If _value_ is set "default", the service enters init process'es "default" mount namespace even
+  if init process'es current mount namespace is "bootstrap".
+
 `namespace <pid|mnt>`
 > Enter a new PID or mount namespace when forking the service.
 

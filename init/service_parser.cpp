@@ -136,6 +136,15 @@ Result<void> ServiceParser::ParseDisabled(std::vector<std::string>&& args) {
     return {};
 }
 
+Result<void> ServiceParser::ParseMountNamespace(std::vector<std::string>&& args) {
+    if (args[1] == "current" || args[1] == "default") {
+        service_->mount_namespace_.emplace(std::move(args[1]));
+        return {};
+    } else {
+        return Error() << "Mount namespace can be one of current or default";
+    }
+}
+
 Result<void> ServiceParser::ParseEnterNamespace(std::vector<std::string>&& args) {
     if (args[1] != "net") {
         return Error() << "Init only supports entering network namespaces";
@@ -553,6 +562,7 @@ const KeywordMap<ServiceParser::OptionParser>& ServiceParser::GetParserMap() con
         {"memcg.soft_limit_in_bytes",
                                     {1,     1,    &ServiceParser::ParseMemcgSoftLimitInBytes}},
         {"memcg.swappiness",        {1,     1,    &ServiceParser::ParseMemcgSwappiness}},
+        {"mount_namespace",         {1,     1,    &ServiceParser::ParseMountNamespace}},
         {"namespace",               {1,     2,    &ServiceParser::ParseNamespace}},
         {"oneshot",                 {0,     0,    &ServiceParser::ParseOneshot}},
         {"onrestart",               {1,     kMax, &ServiceParser::ParseOnrestart}},
