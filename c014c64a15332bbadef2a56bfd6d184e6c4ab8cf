@@ -245,6 +245,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "7e2fa183_c96065a8",
+        "filename": "trusty/keymaster/fuzz/keymaster_protocol_fuzzer.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 165,
+      "author": {
+        "id": 1880310
+      },
+      "writtenOn": "2021-07-21T18:11:16Z",
+      "side": 1,
+      "message": "Turns out this isn\u0027t necessary when `SetKeyMaterial` is used to set `begin_req`\u0027s key blob so we can remove it.",
+      "parentUuid": "09094824_3e8a835d",
+      "revId": "c014c64a15332bbadef2a56bfd6d184e6c4ab8cf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "72592a4d_8f713251",
         "filename": "trusty/keymaster/fuzz/keymaster_protocol_fuzzer.cpp",
         "patchSetId": 6
@@ -298,6 +316,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "1ac3b8ba_41f0fd25",
+        "filename": "trusty/keymaster/fuzz/keymaster_protocol_fuzzer.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 229,
+      "author": {
+        "id": 1880310
+      },
+      "writtenOn": "2021-07-21T18:11:16Z",
+      "side": 1,
+      "message": "Good to know. I\u0027ll remove all the logging stuff then.",
+      "parentUuid": "774a41e1_42470340",
+      "revId": "c014c64a15332bbadef2a56bfd6d184e6c4ab8cf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "52b117f6_33c3d010",
         "filename": "trusty/keymaster/fuzz/keymaster_protocol_fuzzer.cpp",
         "patchSetId": 6
@@ -345,6 +381,24 @@
       "side": 1,
       "message": "Yes, we need to disconnect and reconnect to make sure the service is still alive.",
       "parentUuid": "f00ed959_a0a84363",
+      "revId": "c014c64a15332bbadef2a56bfd6d184e6c4ab8cf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "819b1a39_a27819b9",
+        "filename": "trusty/keymaster/fuzz/keymaster_protocol_fuzzer.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 233,
+      "author": {
+        "id": 1880310
+      },
+      "writtenOn": "2021-07-21T18:11:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "34ab3833_75864209",
       "revId": "c014c64a15332bbadef2a56bfd6d184e6c4ab8cf",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
