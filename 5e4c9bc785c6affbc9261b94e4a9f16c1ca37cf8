@@ -46,6 +46,30 @@
       },
       "revId": "5e4c9bc785c6affbc9261b94e4a9f16c1ca37cf8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e2736c84_fd00379d",
+        "filename": "init/service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 261,
+      "author": {
+        "id": 1013030
+      },
+      "writtenOn": "2021-07-22T17:12:19Z",
+      "side": 1,
+      "message": "Thanks. reboot_on_failure is a critical safety feature, so we do need to fix this on S. What do we think is the safest fix here? Nikita\u0027s proposal sounds reasonable.",
+      "parentUuid": "bff4f980_2fd6be0e",
+      "range": {
+        "startLine": 259,
+        "startChar": 3,
+        "endLine": 261,
+        "endChar": 32
+      },
+      "revId": "5e4c9bc785c6affbc9261b94e4a9f16c1ca37cf8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
