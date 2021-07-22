@@ -94,6 +94,7 @@ class SnapuserdServer : public Stoppable {
     android::base::unique_fd sockfd_;
     bool terminating_;
     std::vector<struct pollfd> watched_fds_;
+    bool is_socket_present_ = false;
 
     std::mutex lock_;
 

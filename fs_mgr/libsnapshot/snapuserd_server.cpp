@@ -204,6 +204,7 @@ bool SnapuserdServer::Receivemsg(android::base::borrowed_fd fd, const std::strin
 void SnapuserdServer::RunThread(std::shared_ptr<DmUserHandler> handler) {
     LOG(INFO) << "Entering thread for handler: " << handler->misc_name();
 
+    handler->snapuserd()->SetSocketPresent(is_socket_present_);
     if (!handler->snapuserd()->Start()) {
         LOG(ERROR) << " Failed to launch all worker threads";
     }
@@ -261,6 +262,7 @@ bool SnapuserdServer::Start(const std::string& socketname) {
     }
 
     AddWatchedFd(sockfd_);
+    is_socket_present_ = true;
 
     LOG(DEBUG) << "Snapuserd server successfully started with socket name " << socketname;
     return true;
