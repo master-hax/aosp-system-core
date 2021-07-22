@@ -46,6 +46,30 @@
       },
       "revId": "8a63a664bc5c056acb1df3cc6f80c946d4942dd3",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a013df0f_20467b84",
+        "filename": "init/service.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 198,
+      "author": {
+        "id": 1137063
+      },
+      "writtenOn": "2021-07-22T17:39:54Z",
+      "side": 1,
+      "message": "The reason I put it here is that I thought the \"ignore reboot_on_failure\" behavior should apply to Service::Terminate() and Service::Timeout() as well.  Do you think it shouldn\u0027t apply in those cases?",
+      "parentUuid": "8b15613e_982cbcaf",
+      "range": {
+        "startLine": 198,
+        "startChar": 8,
+        "endLine": 198,
+        "endChar": 31
+      },
+      "revId": "8a63a664bc5c056acb1df3cc6f80c946d4942dd3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
