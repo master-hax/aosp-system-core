@@ -31,6 +31,7 @@ namespace snapshot {
 static constexpr uint32_t PACKET_SIZE = 512;
 
 static constexpr char kSnapuserdSocket[] = "snapuserd";
+static constexpr char kSnapuserdSocketProxy[] = "snapuserd_proxy";
 
 // Ensure that the second-stage daemon for snapuserd is running.
 bool EnsureSnapuserdStarted();
