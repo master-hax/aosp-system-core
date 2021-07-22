@@ -256,6 +256,10 @@ void Service::SetProcessAttributesAndCaps() {
 }
 
 void Service::Reap(const siginfo_t& siginfo) {
+    // We need to differentiate between reaping a service on request, vs reaping a service if
+    // it exits abnormally. In the former case, we don't want reboot_on_failure to apply, but
+    // in the latter case we do.
+    bool was_stopping = flags & SVC_STOPPING;
     if (!(flags_ & SVC_ONESHOT) || (flags_ & SVC_RESTART)) {
         KillProcessGroup(SIGKILL, false);
     } else {
@@ -280,7 +284,7 @@ void Service::Reap(const siginfo_t& siginfo) {
     }
 
     if ((siginfo.si_code != CLD_EXITED || siginfo.si_status != 0) && on_failure_reboot_target_ &&
-        !(flags_ & SVC_STOPPING)) {
+        !was_stopping) {
         LOG(ERROR) << "Service with 'reboot_on_failure' option failed, shutting down system.";
         trigger_shutdown(*on_failure_reboot_target_);
     }
