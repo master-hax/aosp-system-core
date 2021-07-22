@@ -16,9 +16,22 @@
 
 #include "snapuserd.h"
 
+#include <dirent.h>
+#include <fcntl.h>
+#include <linux/fs.h>
+#include <unistd.h>
+#include <algorithm>
+
 #include <csignal>
 #include <optional>
 #include <set>
+
+#include <android-base/file.h>
+#include <android-base/logging.h>
+#include <android-base/parseint.h>
+#include <android-base/properties.h>
+#include <android-base/strings.h>
+#include <android-base/unique_fd.h>
 
 #include <libsnapshot/snapuserd_client.h>
 
@@ -712,6 +725,139 @@ bool Snapuserd::InitCowDevice() {
     return ReadMetadata();
 }
 
+static int get_dev_sz(const std::string& fs_blkdev, uint64_t* dev_sz) {
+    unique_fd fd(TEMP_FAILURE_RETRY(open(fs_blkdev.c_str(), O_RDONLY | O_CLOEXEC)));
+
+    if (fd < 0) {
+        LOG(ERROR) << "Cannot open block device";
+        return -1;
+    }
+
+    if ((ioctl(fd, BLKGETSIZE64, dev_sz)) == -1) {
+        LOG(ERROR) << "Cannot get block device size";
+        return -1;
+    }
+
+    return 0;
+}
+
+// Find directories in format of "/sys/block/dm-X".
+static int dm_name_filter(const dirent* de) {
+    if (android::base::StartsWith(de->d_name, "dm-")) {
+        return 1;
+    }
+    return 0;
+}
+
+// Iterate the content of "/sys/block/dm-X/dm/name" and find all the dm-wrapped block devices.
+// We will later read all the blocks from "/dev/block/dm-X".
+//
+// Note: This logic of finding the block device mapping for each dynamic
+// partition basically comes from update-verifier code.
+static std::map<std::string, std::string> FindDmPartitions() {
+    static constexpr auto DM_PATH_PREFIX = "/sys/block/";
+    dirent** namelist;
+    int n = scandir(DM_PATH_PREFIX, &namelist, dm_name_filter, alphasort);
+    if (n == -1) {
+        PLOG(ERROR) << "Failed to scan dir " << DM_PATH_PREFIX;
+        return {};
+    }
+    if (n == 0) {
+        LOG(ERROR) << "No dm block device found.";
+        return {};
+    }
+
+    static constexpr auto DM_PATH_SUFFIX = "/dm/name";
+    static constexpr auto DEV_PATH = "/dev/block/";
+    std::map<std::string, std::string> dm_block_devices;
+    while (n--) {
+        std::string path = DM_PATH_PREFIX + std::string(namelist[n]->d_name) + DM_PATH_SUFFIX;
+        std::string content;
+        if (!android::base::ReadFileToString(path, &content)) {
+            PLOG(WARNING) << "Failed to read " << path;
+        } else {
+            std::string dm_block_name = android::base::Trim(content);
+            // AVB is using 'vroot' for the root block device but we're expecting 'system'.
+            if (dm_block_name == "vroot") {
+                dm_block_name = "system";
+            } else if (android::base::EndsWith(dm_block_name, "-verity")) {
+                auto npos = dm_block_name.rfind("-verity");
+                dm_block_name = dm_block_name.substr(0, npos);
+            } else if (!android::base::GetProperty("ro.boot.avb_version", "").empty()) {
+                // Verified Boot 1.0 doesn't add a -verity suffix. On AVB 2 devices,
+                // if DAP is enabled, then a -verity suffix must be used to
+                // differentiate between dm-linear and dm-verity devices. If we get
+                // here, we're AVB 2 and looking at a non-verity partition.
+                continue;
+            }
+
+            dm_block_devices.emplace(dm_block_name, DEV_PATH + std::string(namelist[n]->d_name));
+        }
+        free(namelist[n]);
+    }
+    free(namelist);
+
+    return dm_block_devices;
+}
+
+void Snapuserd::ReadBlocksToCache(const std::string& dm_block_device,
+                                  const std::string partition_name, off_t offset, size_t size) {
+    android::base::unique_fd fd(TEMP_FAILURE_RETRY(open(dm_block_device.c_str(), O_RDONLY)));
+    if (fd.get() == -1) {
+        PLOG(ERROR) << "Error reading " << dm_block_device << " partition-name: " << partition_name;
+        return;
+    }
+
+    size_t remain = size;
+    off_t file_offset = offset;
+    size_t read_sz = 1024 * BLOCK_SZ;
+    std::vector<uint8_t> buf(read_sz);
+
+    while (remain > 0) {
+        size_t to_read = std::min(remain, read_sz);
+
+        if (!android::base::ReadFullyAtOffset(fd.get(), buf.data(), to_read, file_offset)) {
+            PLOG(ERROR) << "Failed to read block from block device: " << dm_block_device
+                        << " at offset: " << file_offset << " partition-name: " << partition_name
+                        << " total-size: " << size << " remain_size: " << remain;
+            return;
+        }
+
+        file_offset += to_read;
+        remain -= to_read;
+    }
+
+    LOG(INFO) << "Finished reading block-device: " << dm_block_device
+              << " partition: " << partition_name << " size: " << size << " offset: " << offset;
+}
+
+void Snapuserd::ReadBlocks(const std::string partition_name, const std::string& dm_block_device) {
+    LOG(DEBUG) << "Reading partition: " << partition_name << " Block-Device: " << dm_block_device;
+
+    uint64_t dev_sz;
+    int ret = 0;
+
+    ret = get_dev_sz(dm_block_device, &dev_sz);
+    if (ret) {
+        LOG(ERROR) << "Failed to get device size for block-device: " << dm_block_device
+                   << " for partition " << partition_name;
+        return;
+    }
+
+    int num_threads = 2;
+    size_t num_blocks = dev_sz >> BLOCK_SHIFT;
+    size_t num_blocks_per_thread = num_blocks / num_threads;
+    size_t read_sz_per_thread = num_blocks_per_thread << BLOCK_SHIFT;
+    off_t offset = 0;
+
+    for (int i = 0; i < num_threads; i++) {
+        std::async(std::launch::async, &Snapuserd::ReadBlocksToCache, this, dm_block_device,
+                   partition_name, offset, read_sz_per_thread);
+
+        offset += read_sz_per_thread;
+    }
+}
+
 /*
  * Entry point to launch threads
  */
@@ -738,6 +884,47 @@ bool Snapuserd::Start() {
     for (int i = 0; i < worker_threads_.size(); i++) {
         threads.emplace_back(
                 std::async(std::launch::async, &WorkerThread::RunThread, worker_threads_[i].get()));
+    }
+
+    bool second_stage_init = true;
+    bool read_block_device = false;
+
+    // We don't want to read the blocks during first stage init.
+    if (android::base::EndsWith(misc_name_, "-init")) {
+        second_stage_init = false;
+    }
+
+    // Read the blocks to cache only if the boot_complete on the new
+    // slot is not yet done. This happens only when a OTA is applied
+    // and the device is rebooted.
+    auto val = android::base::GetProperty("sys.boot_completed", "");
+    if (val.empty() || val == "0") {
+        read_block_device = true;
+    }
+
+    if (second_stage_init && read_block_device) {
+        SNAP_LOG(INFO) << "Reading blocks to cache.... sys.boot_completed...:" << val;
+        auto dm_block_devices = FindDmPartitions();
+        if (dm_block_devices.empty()) {
+            SNAP_LOG(ERROR) << "No dm-enabled block device is found.";
+        } else {
+            auto parts = android::base::Split(misc_name_, "-");
+            std::string partition_name = parts[0];
+
+            const char* suffix_b = "_b";
+            const char* suffix_a = "_a";
+
+            partition_name.erase(partition_name.find_last_not_of(suffix_b) + 1);
+            partition_name.erase(partition_name.find_last_not_of(suffix_a) + 1);
+
+            if (dm_block_devices.find(partition_name) == dm_block_devices.end()) {
+                SNAP_LOG(ERROR) << "Failed to find dm block device for " << partition_name;
+            } else {
+                ReadBlocks(partition_name, dm_block_devices.at(partition_name));
+            }
+        }
+    } else {
+        SNAP_LOG(INFO) << "Not reading block device into cache";
     }
 
     bool ret = true;

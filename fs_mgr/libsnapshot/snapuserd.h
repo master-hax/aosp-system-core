@@ -296,6 +296,10 @@ class Snapuserd : public std::enable_shared_from_this<Snapuserd> {
     bool IsBlockAligned(int read_size) { return ((read_size & (BLOCK_SZ - 1)) == 0); }
     struct BufferState* GetBufferState();
 
+    void ReadBlocks(const std::string partition_name, const std::string& dm_block_device);
+    void ReadBlocksToCache(const std::string& dm_block_device, const std::string partition_name,
+                           off_t offset, size_t size);
+
     std::string cow_device_;
     std::string backing_store_device_;
     std::string control_device_;
