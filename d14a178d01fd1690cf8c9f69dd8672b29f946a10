@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c032cc2d_aedbd0e8",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1137063
+      },
+      "writtenOn": "2021-07-22T22:45:59Z",
+      "side": 1,
+      "message": "Retried presubmit due to flaky tests b/194408223 and b/187522327",
+      "revId": "d14a178d01fd1690cf8c9f69dd8672b29f946a10",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
