@@ -94,6 +94,30 @@
       },
       "revId": "5e4c9bc785c6affbc9261b94e4a9f16c1ca37cf8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fe1f7823_f991624c",
+        "filename": "init/service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 261,
+      "author": {
+        "id": 1137063
+      },
+      "writtenOn": "2021-07-22T20:12:11Z",
+      "side": 1,
+      "message": "Revert uploaded at https://android-review.googlesource.com/c/platform/system/core/+/1775427",
+      "parentUuid": "cfe974d0_dbef2354",
+      "range": {
+        "startLine": 259,
+        "startChar": 3,
+        "endLine": 261,
+        "endChar": 32
+      },
+      "revId": "5e4c9bc785c6affbc9261b94e4a9f16c1ca37cf8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
