@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "59e23b9e_bfbf25d6",
+        "filename": "init/service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 261,
+      "author": {
+        "id": 1013030
+      },
+      "writtenOn": "2021-07-22T10:32:46Z",
+      "side": 1,
+      "message": "this is just a proposed fix, open to better ideas here. Eric, is there an easy way to test this with FDE?",
+      "range": {
+        "startLine": 259,
+        "startChar": 3,
+        "endLine": 261,
+        "endChar": 32
+      },
+      "revId": "5e4c9bc785c6affbc9261b94e4a9f16c1ca37cf8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
