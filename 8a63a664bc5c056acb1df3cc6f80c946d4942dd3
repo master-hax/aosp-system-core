@@ -70,6 +70,30 @@
       },
       "revId": "8a63a664bc5c056acb1df3cc6f80c946d4942dd3",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d0f2c442_d439ee40",
+        "filename": "init/service.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 198,
+      "author": {
+        "id": 1432579
+      },
+      "writtenOn": "2021-07-22T18:03:06Z",
+      "side": 1,
+      "message": "AFAIR Terminate() is only called during reboot sequence. I think we should set SVC_STOPPING there.\n\nFor Timeout(), I\u0027m not very familiar with it. From quick look at README.md it feels a little bit weird for a service to set both timeout_period and reboot_on_failure. Maybe for the time being we can explicitly disable such configuration? And take a look again when there is a valid use case for it.",
+      "parentUuid": "a013df0f_20467b84",
+      "range": {
+        "startLine": 198,
+        "startChar": 8,
+        "endLine": 198,
+        "endChar": 31
+      },
+      "revId": "8a63a664bc5c056acb1df3cc6f80c946d4942dd3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
