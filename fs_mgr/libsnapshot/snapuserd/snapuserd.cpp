@@ -16,10 +16,22 @@
 
 #include "snapuserd.h"
 
+#include <dirent.h>
+#include <fcntl.h>
+#include <linux/fs.h>
+#include <unistd.h>
+#include <algorithm>
+
 #include <csignal>
 #include <optional>
 #include <set>
 
+#include <android-base/file.h>
+#include <android-base/logging.h>
+#include <android-base/parseint.h>
+#include <android-base/properties.h>
+#include <android-base/strings.h>
+#include <android-base/unique_fd.h>
 #include <snapuserd/snapuserd_client.h>
 
 namespace android {
@@ -659,6 +671,68 @@ bool Snapuserd::InitCowDevice() {
     return ReadMetadata();
 }
 
+void Snapuserd::ReadBlocksToCache(const std::string& dm_block_device,
+                                  const std::string partition_name, off_t offset, size_t size) {
+    android::base::unique_fd fd(TEMP_FAILURE_RETRY(open(dm_block_device.c_str(), O_RDONLY)));
+    if (fd.get() == -1) {
+        PLOG(ERROR) << "Error reading " << dm_block_device << " partition-name: " << partition_name;
+        return;
+    }
+
+    size_t remain = size;
+    off_t file_offset = offset;
+    size_t read_sz = 1024 * BLOCK_SZ;
+    std::vector<uint8_t> buf(read_sz);
+
+    while (remain > 0) {
+        size_t to_read = std::min(remain, read_sz);
+
+        if (!android::base::ReadFullyAtOffset(fd.get(), buf.data(), to_read, file_offset)) {
+            PLOG(ERROR) << "Failed to read block from block device: " << dm_block_device
+                        << " at offset: " << file_offset << " partition-name: " << partition_name
+                        << " total-size: " << size << " remain_size: " << remain;
+            return;
+        }
+
+        file_offset += to_read;
+        remain -= to_read;
+    }
+
+    LOG(INFO) << "Finished reading block-device: " << dm_block_device
+              << " partition: " << partition_name << " size: " << size << " offset: " << offset;
+}
+
+void Snapuserd::ReadBlocks(const std::string partition_name, const std::string& dm_block_device) {
+    LOG(DEBUG) << "Reading partition: " << partition_name << " Block-Device: " << dm_block_device;
+
+    uint64_t dev_sz = 0;
+
+    unique_fd fd(TEMP_FAILURE_RETRY(open(dm_block_device.c_str(), O_RDONLY | O_CLOEXEC)));
+    if (fd < 0) {
+        LOG(ERROR) << "Cannot open block device";
+        return;
+    }
+
+    dev_sz = get_block_device_size(fd.get());
+    if (!dev_sz) {
+        SNAP_PLOG(ERROR) << "Could not determine block device size: " << dm_block_device;
+        return;
+    }
+
+    int num_threads = 2;
+    size_t num_blocks = dev_sz >> BLOCK_SHIFT;
+    size_t num_blocks_per_thread = num_blocks / num_threads;
+    size_t read_sz_per_thread = num_blocks_per_thread << BLOCK_SHIFT;
+    off_t offset = 0;
+
+    for (int i = 0; i < num_threads; i++) {
+        std::async(std::launch::async, &Snapuserd::ReadBlocksToCache, this, dm_block_device,
+                   partition_name, offset, read_sz_per_thread);
+
+        offset += read_sz_per_thread;
+    }
+}
+
 /*
  * Entry point to launch threads
  */
@@ -685,6 +759,48 @@ bool Snapuserd::Start() {
     for (int i = 0; i < worker_threads_.size(); i++) {
         threads.emplace_back(
                 std::async(std::launch::async, &WorkerThread::RunThread, worker_threads_[i].get()));
+    }
+
+    bool second_stage_init = true;
+    bool read_block_device = false;
+
+    // We don't want to read the blocks during first stage init.
+    if (android::base::EndsWith(misc_name_, "-init") || is_socket_present_) {
+        second_stage_init = false;
+    }
+
+    // Read the blocks to cache only if the boot_complete on the new
+    // slot is not yet done. This happens only when a OTA is applied
+    // and the device is rebooted.
+    auto val = android::base::GetProperty("sys.boot_completed", "");
+    if (val.empty() || val == "0") {
+        read_block_device = true;
+    }
+
+    if (second_stage_init && read_block_device) {
+        SNAP_LOG(INFO) << "Reading blocks to cache.... sys.boot_completed...:" << val;
+        auto& dm = DeviceMapper::Instance();
+        auto dm_block_devices = dm.FindDmPartitions();
+        if (dm_block_devices.empty()) {
+            SNAP_LOG(ERROR) << "No dm-enabled block device is found.";
+        } else {
+            auto parts = android::base::Split(misc_name_, "-");
+            std::string partition_name = parts[0];
+
+            const char* suffix_b = "_b";
+            const char* suffix_a = "_a";
+
+            partition_name.erase(partition_name.find_last_not_of(suffix_b) + 1);
+            partition_name.erase(partition_name.find_last_not_of(suffix_a) + 1);
+
+            if (dm_block_devices.find(partition_name) == dm_block_devices.end()) {
+                SNAP_LOG(ERROR) << "Failed to find dm block device for " << partition_name;
+            } else {
+                ReadBlocks(partition_name, dm_block_devices.at(partition_name));
+            }
+        }
+    } else {
+        SNAP_LOG(INFO) << "Not reading block device into cache";
     }
 
     bool ret = true;
