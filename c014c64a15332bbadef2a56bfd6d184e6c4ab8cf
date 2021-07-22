@@ -105,6 +105,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "4ca24cdb_f8211e74",
+        "filename": "trusty/keymaster/fuzz/keymaster_defs_builder.h",
+        "patchSetId": 6
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1880310
+      },
+      "writtenOn": "2021-07-22T06:00:54Z",
+      "side": 1,
+      "message": "This enum is no longer needed.",
+      "parentUuid": "d17c370f_798bd074",
+      "revId": "c014c64a15332bbadef2a56bfd6d184e6c4ab8cf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "5caf87e9_86603ffb",
@@ -122,6 +140,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "c0d17f42_6db58f65",
+        "filename": "trusty/keymaster/fuzz/keymaster_protocol_fuzzer.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 1880310
+      },
+      "writtenOn": "2021-07-22T06:00:54Z",
+      "side": 1,
+      "message": "Yep, I initially included the version as part of each test case in keymaster_fuzzer.proto but I decided to stick with version 4 while I made sure that the fuzzer got further along in keymaster. Switching back to a variable version later should be straightforward though.",
+      "parentUuid": "5caf87e9_86603ffb",
+      "revId": "c014c64a15332bbadef2a56bfd6d184e6c4ab8cf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d8a6afc0_76c9126d",
@@ -135,6 +171,24 @@
       "writtenOn": "2021-07-19T19:07:14Z",
       "side": 1,
       "message": "Comment describing what this is for.",
+      "revId": "c014c64a15332bbadef2a56bfd6d184e6c4ab8cf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "67e7525e_62b4d00f",
+        "filename": "trusty/keymaster/fuzz/keymaster_protocol_fuzzer.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1880310
+      },
+      "writtenOn": "2021-07-22T06:00:54Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d8a6afc0_76c9126d",
       "revId": "c014c64a15332bbadef2a56bfd6d184e6c4ab8cf",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -368,6 +422,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "94f95bba_8b2ff769",
+        "filename": "trusty/keymaster/fuzz/keymaster_protocol_fuzzer.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 229,
+      "author": {
+        "id": 1880310
+      },
+      "writtenOn": "2021-07-22T06:00:54Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1ac3b8ba_41f0fd25",
+      "revId": "c014c64a15332bbadef2a56bfd6d184e6c4ab8cf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "52b117f6_33c3d010",
@@ -470,6 +542,24 @@
       "side": 1,
       "message": "The two `BuildAuthorizationSet` variants were originally one function that accepted both values of the `Invariant` enum, but I ended up splitting it since it doesn\u0027t make sense to take in a random `proto_set` param when generating the initial key (in `LLVMFuzzerInitialize`). There are probably more cases where message builders could accept more than one enum value, but I agree that renaming the variants of the message builders would be simpler.",
       "parentUuid": "dcaf179b_6ee9c4e1",
+      "revId": "c014c64a15332bbadef2a56bfd6d184e6c4ab8cf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cb250114_d4c47c13",
+        "filename": "trusty/keymaster/fuzz/requests_builder.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1880310
+      },
+      "writtenOn": "2021-07-22T06:00:54Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f630a71d_135b79f5",
       "revId": "c014c64a15332bbadef2a56bfd6d184e6c4ab8cf",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
