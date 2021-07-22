@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e7cbb4f7_00a9caa0",
+        "filename": "init/service.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 198,
+      "author": {
+        "id": 1432579
+      },
+      "writtenOn": "2021-07-22T11:49:00Z",
+      "side": 1,
+      "message": "Will it be cleaner to set SVC_STOPPING in StopOrReset?",
+      "range": {
+        "startLine": 198,
+        "startChar": 8,
+        "endLine": 198,
+        "endChar": 31
+      },
+      "revId": "8a63a664bc5c056acb1df3cc6f80c946d4942dd3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
