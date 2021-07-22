@@ -22,6 +22,30 @@
       },
       "revId": "5e4c9bc785c6affbc9261b94e4a9f16c1ca37cf8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bff4f980_2fd6be0e",
+        "filename": "init/service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 261,
+      "author": {
+        "id": 1137063
+      },
+      "writtenOn": "2021-07-22T16:04:18Z",
+      "side": 1,
+      "message": "I have been testing FDE on sc-dev on Cuttlefish using the change https://googleplex-android-review.git.corp.google.com/c/device/google/cuttlefish/+/15341202.\n\nUnfortunately it no longer works, as adb no longer comes up.  I\u0027m trying to figure out why.  (This isn\u0027t necessarily unexpected, as FDE has no real testing, so nothing is stopping it from being broken other than me happening to notice in manual testing, or a partner happening to notice long after the fact.  Historically, a change that breaks it has gotten merged every couple months.)\n\nFDE is even less likely to work on AOSP master, as no one is testing FDE there.",
+      "parentUuid": "59e23b9e_bfbf25d6",
+      "range": {
+        "startLine": 259,
+        "startChar": 3,
+        "endLine": 261,
+        "endChar": 32
+      },
+      "revId": "5e4c9bc785c6affbc9261b94e4a9f16c1ca37cf8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
