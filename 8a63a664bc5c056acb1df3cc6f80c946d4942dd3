@@ -22,6 +22,30 @@
       },
       "revId": "8a63a664bc5c056acb1df3cc6f80c946d4942dd3",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8b15613e_982cbcaf",
+        "filename": "init/service.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 198,
+      "author": {
+        "id": 1013030
+      },
+      "writtenOn": "2021-07-22T14:34:13Z",
+      "side": 1,
+      "message": "I think that should also work, it\u0027s a more targeted change.",
+      "parentUuid": "e7cbb4f7_00a9caa0",
+      "range": {
+        "startLine": 198,
+        "startChar": 8,
+        "endLine": 198,
+        "endChar": 31
+      },
+      "revId": "8a63a664bc5c056acb1df3cc6f80c946d4942dd3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
