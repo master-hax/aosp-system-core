@@ -1,0 +1,47 @@
+{
+  "comments": [
+    {
+      "robotId": "ayeaye",
+      "robotRunId": "AR00000000000013628166",
+      "url": "https://android-build.googleplex.com/builds/treetop/android-review/1774685?revision\u003d2",
+      "fixSuggestions": [
+        {
+          "fixId": "f2aea42e_f44e7e0b",
+          "description": "Change to \"fs_mgr/libsnapshot/snapuserd_daemon.cpp\"",
+          "replacements": [
+            {
+              "path": "fs_mgr/libsnapshot/snapuserd_daemon.cpp",
+              "range": {
+                "startLine": 120,
+                "startChar": 26,
+                "endLine": 120,
+                "endChar": 34
+              },
+              "replacement": "Received"
+            }
+          ]
+        }
+      ],
+      "key": {
+        "uuid": "adf4f823_9cc226de",
+        "filename": "fs_mgr/libsnapshot/snapuserd_daemon.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 120,
+      "author": {
+        "id": 1757831
+      },
+      "writtenOn": "2021-07-22T05:15:48Z",
+      "side": 1,
+      "message": "Common typo found: \"Recieved\" -- should it be \"Received\"?\nNote: a line containing \"common_typos_disable\" or \"common_typos_enable\" will turn off or on (respectively) the linter for subsequent lines in the file. Alternatively include the token \"NOTYPO\" within a line to skip typo linting that line or include \u0027No-Typo-Check: \u003creason\u003e\u0027in the commit message.",
+      "range": {
+        "startLine": 120,
+        "startChar": 26,
+        "endLine": 120,
+        "endChar": 34
+      },
+      "revId": "51496280adf5363afe50ae8dd7a99d981eb7bc31",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
