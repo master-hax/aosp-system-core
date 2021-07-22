@@ -16,6 +16,24 @@
       "message": "Jerry noticed in the kernel logs:\n[   11.088548] init: [libfs_mgr]Kernel does not support checkpoint\u003ddisable:[n]%, trying without.: Invalid argument\n",
       "revId": "38038f65254335ecff8bd2cff2e538c919713ac1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2b2b5c14_02f03325",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1101326
+      },
+      "writtenOn": "2021-07-22T23:55:53Z",
+      "side": 1,
+      "message": "\u003e Jerry noticed in the kernel logs:\n\u003e [   11.088548] init: [libfs_mgr]Kernel does not support checkpoint\u003ddisable:[n]%, trying without.: Invalid argument\n\u003e \n\nHi fs_mgr team, I believe the log / test failure implies that cf_x86_64_phone doesn\u0027t support checkpoint\u003ddisable:[n]% nor checkpoint\u003ddisable.  It appears that aosp-cf-x86-64-phone is on kernel 5.10 (5.10.47-android13-0-00872-gd870ecaadb22).  Does that make sense?",
+      "parentUuid": "afd9f5f7_5a40f83b",
+      "revId": "38038f65254335ecff8bd2cff2e538c919713ac1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
