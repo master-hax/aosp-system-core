@@ -70,6 +70,30 @@
       },
       "revId": "5e4c9bc785c6affbc9261b94e4a9f16c1ca37cf8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cfe974d0_dbef2354",
+        "filename": "init/service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 261,
+      "author": {
+        "id": 1137063
+      },
+      "writtenOn": "2021-07-22T19:06:03Z",
+      "side": 1,
+      "message": "Okay, an interesting update:  On sc-dev, FDE now only works with the aosp_cf_x86_phone_noapex build target, not with aosp_cf_x86_phone.  Moreover, with the noapex build, my original change https://android-review.googlesource.com/c/platform/system/core/+/1684056 which caused this regression doesn\u0027t appear to be needed, as the device still boots with it reverted.\n\nI think this was a mistake in the testing I did earlier; I should have been testing FDE with the noapex Cuttlefish build target rather than the regular Cuttlefish build target.  This is because FDE is (apparently) not supported in combination with updateable APEXes, so the noapex build corresponds to what a real FDE device would be like.\n\nSo, if you\u0027d prefer to, I think you could just revert my change instead of trying to fix it.\n\nCaveat: the noapex build target doesn\u0027t actually build on sc-dev, as it doesn\u0027t have an automated build, so naturally it got broken.  But cherry-picking https://googleplex-android-review.git.corp.google.com/c/device/google/cuttlefish/+/15208799 fixes it.",
+      "parentUuid": "e2736c84_fd00379d",
+      "range": {
+        "startLine": 259,
+        "startChar": 3,
+        "endLine": 261,
+        "endChar": 32
+      },
+      "revId": "5e4c9bc785c6affbc9261b94e4a9f16c1ca37cf8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
