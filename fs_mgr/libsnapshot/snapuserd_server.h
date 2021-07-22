@@ -93,6 +93,7 @@ class SnapuserdServer : public Stoppable {
   private:
     android::base::unique_fd sockfd_;
     bool terminating_;
+    volatile bool received_socket_signal_ = false;
     std::vector<struct pollfd> watched_fds_;
 
     std::mutex lock_;
@@ -100,7 +101,7 @@ class SnapuserdServer : public Stoppable {
     using HandlerList = std::vector<std::shared_ptr<DmUserHandler>>;
     HandlerList dm_users_;
 
-    void AddWatchedFd(android::base::borrowed_fd fd);
+    void AddWatchedFd(android::base::borrowed_fd fd, int events);
     void AcceptClient();
     bool HandleClient(android::base::borrowed_fd fd, int revents);
     bool Recv(android::base::borrowed_fd fd, std::string* data);
@@ -117,6 +118,7 @@ class SnapuserdServer : public Stoppable {
 
     void RunThread(std::shared_ptr<DmUserHandler> handler);
     void JoinAllThreads();
+    bool StartWithSocket(bool start_listening);
 
     // Find a DmUserHandler within a lock.
     HandlerList::iterator FindHandler(std::lock_guard<std::mutex>* proof_of_lock,
@@ -129,6 +131,8 @@ class SnapuserdServer : public Stoppable {
     bool Start(const std::string& socketname);
     bool Run();
     void Interrupt();
+    bool RunForSocketHandoff();
+    bool WaitForSocket();
 
     std::shared_ptr<DmUserHandler> AddHandler(const std::string& misc_name,
                                               const std::string& cow_device_path,
@@ -136,6 +140,7 @@ class SnapuserdServer : public Stoppable {
     bool StartHandler(const std::shared_ptr<DmUserHandler>& handler);
 
     void SetTerminating() { terminating_ = true; }
+    void ReceivedSocketSignal() { received_socket_signal_ = true; }
 };
 
 }  // namespace snapshot
