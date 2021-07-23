@@ -1,0 +1,106 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e8757b92_f78f6629",
+        "filename": "fs_mgr/libsnapshot/snapuserd.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 728,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-07-23T00:17:46Z",
+      "side": 1,
+      "message": "There\u0027s a helper for this: https://source.corp.google.com/android/system/extras/ext4_utils/include/ext4_utils/ext4_utils.h;l\u003d122?q\u003dget_block_device_Size\u0026sq\u003dpackage:%5Eandroid$",
+      "revId": "27cf624b72ee1a03674ef9acb494d4a3879bd0fc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "da6d43ea_3e03431e",
+        "filename": "fs_mgr/libsnapshot/snapuserd.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 745,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-07-23T00:17:46Z",
+      "side": 1,
+      "message": "nit: DmNameFilter",
+      "revId": "27cf624b72ee1a03674ef9acb494d4a3879bd0fc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bf95c738_69b413bf",
+        "filename": "fs_mgr/libsnapshot/snapuserd.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 757,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-07-23T00:17:46Z",
+      "side": 1,
+      "message": "Should we factor this out into a utility file?",
+      "revId": "27cf624b72ee1a03674ef9acb494d4a3879bd0fc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "69c961ba_b2a3b7ed",
+        "filename": "fs_mgr/libsnapshot/snapuserd.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 767,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-07-23T00:17:46Z",
+      "side": 1,
+      "message": "does namelist have to be freed in this case?",
+      "revId": "27cf624b72ee1a03674ef9acb494d4a3879bd0fc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "78510fd1_64c8e8e2",
+        "filename": "fs_mgr/libsnapshot/snapuserd.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 791,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-07-23T00:17:46Z",
+      "side": 1,
+      "message": "this misses the free(), I think? It\u0027s probably worth either using opendir() or translating namelist into an std::vector\u003cstd::string\u003e immediately. std::unique_ptr\u003c\u003e is an option too but it gets messy.\n\nBut another thought: can we ReadDefaultFstab() instead, and use any entry backed by logical partitions + has a slot suffix?",
+      "revId": "27cf624b72ee1a03674ef9acb494d4a3879bd0fc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5b0d4bc7_0efaa2f5",
+        "filename": "fs_mgr/libsnapshot/snapuserd.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 900,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-07-23T00:17:46Z",
+      "side": 1,
+      "message": "This works implicitly because the property service is not up when snapuserd is launched in the selinux stage. Is it possible for snapuserd to start before boot_complete otherwise? Maybe we should be explicit and use the \"no_socket\" flag from the daemon, which is only set in the selinux stage?",
+      "revId": "27cf624b72ee1a03674ef9acb494d4a3879bd0fc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
