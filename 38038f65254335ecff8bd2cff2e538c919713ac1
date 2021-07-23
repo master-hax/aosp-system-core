@@ -34,6 +34,24 @@
       "parentUuid": "afd9f5f7_5a40f83b",
       "revId": "38038f65254335ecff8bd2cff2e538c919713ac1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bdd0994a_6af9c76a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1045980
+      },
+      "writtenOn": "2021-07-23T00:20:50Z",
+      "side": 1,
+      "message": "That\u0027s expected if the kernel does not support that form. After that, we\u0027d expect it to then attempt to mount with just checkpoint\u003ddisable.",
+      "parentUuid": "afd9f5f7_5a40f83b",
+      "revId": "38038f65254335ecff8bd2cff2e538c919713ac1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
