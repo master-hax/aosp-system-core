@@ -52,6 +52,24 @@
       "parentUuid": "d8d8ca40_df06dc76",
       "revId": "6137112b7418a95d076e36a73283d695d5eeaff8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "382a6afb_69ad3fae",
+        "filename": "fs_mgr/libsnapshot/snapuserd_server.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 440,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-07-23T06:19:53Z",
+      "side": 1,
+      "message": "New version is a bit more clever. It uses inotify to wait for /dev/socket/snapuserd_proxy to appear, and then waits for a property that is set once listen() is available.\n\nThis will keep init changes quite minimal.",
+      "parentUuid": "0c174ecd_aa08e40b",
+      "revId": "6137112b7418a95d076e36a73283d695d5eeaff8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
