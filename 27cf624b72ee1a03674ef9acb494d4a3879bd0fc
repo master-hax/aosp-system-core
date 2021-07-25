@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "72add084_2f050389",
+        "filename": "fs_mgr/libsnapshot/snapuserd.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 728,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-07-25T22:38:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e8757b92_f78f6629",
+      "revId": "27cf624b72ee1a03674ef9acb494d4a3879bd0fc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "da6d43ea_3e03431e",
@@ -31,6 +49,24 @@
       "writtenOn": "2021-07-23T00:17:46Z",
       "side": 1,
       "message": "nit: DmNameFilter",
+      "revId": "27cf624b72ee1a03674ef9acb494d4a3879bd0fc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "95a7fc04_265fb163",
+        "filename": "fs_mgr/libsnapshot/snapuserd.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 745,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-07-25T22:38:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "da6d43ea_3e03431e",
       "revId": "27cf624b72ee1a03674ef9acb494d4a3879bd0fc",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -52,6 +88,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "ae61dc1f_1153cc98",
+        "filename": "fs_mgr/libsnapshot/snapuserd.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 757,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-07-25T22:38:52Z",
+      "side": 1,
+      "message": "Moved to libdm",
+      "parentUuid": "bf95c738_69b413bf",
+      "revId": "27cf624b72ee1a03674ef9acb494d4a3879bd0fc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "69c961ba_b2a3b7ed",
@@ -65,6 +119,24 @@
       "writtenOn": "2021-07-23T00:17:46Z",
       "side": 1,
       "message": "does namelist have to be freed in this case?",
+      "revId": "27cf624b72ee1a03674ef9acb494d4a3879bd0fc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cd7f9b80_8af9a32a",
+        "filename": "fs_mgr/libsnapshot/snapuserd.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 767,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-07-25T22:38:52Z",
+      "side": 1,
+      "message": "It\u0027s not very clear from the documentation if the memory is allocated.. however, it is ok to free as \"free\" will just skip if the pointer is NULL.",
+      "parentUuid": "69c961ba_b2a3b7ed",
       "revId": "27cf624b72ee1a03674ef9acb494d4a3879bd0fc",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -86,6 +158,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "20c1af8e_23590254",
+        "filename": "fs_mgr/libsnapshot/snapuserd.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 791,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-07-25T22:38:52Z",
+      "side": 1,
+      "message": "I have fixed couple of missing free\u0027s. I have kept the logic as-is as it has been well tested both here and in update-verifier code.\n\nI have moved all of this to libdm",
+      "parentUuid": "78510fd1_64c8e8e2",
+      "revId": "27cf624b72ee1a03674ef9acb494d4a3879bd0fc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "5b0d4bc7_0efaa2f5",
@@ -99,6 +189,24 @@
       "writtenOn": "2021-07-23T00:17:46Z",
       "side": 1,
       "message": "This works implicitly because the property service is not up when snapuserd is launched in the selinux stage. Is it possible for snapuserd to start before boot_complete otherwise? Maybe we should be explicit and use the \"no_socket\" flag from the daemon, which is only set in the selinux stage?",
+      "revId": "27cf624b72ee1a03674ef9acb494d4a3879bd0fc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e8939ba4_f288c37d",
+        "filename": "fs_mgr/libsnapshot/snapuserd.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 900,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-07-25T22:38:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5b0d4bc7_0efaa2f5",
       "revId": "27cf624b72ee1a03674ef9acb494d4a3879bd0fc",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
