@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "150030c7_bdb978f7",
+        "filename": "fs_mgr/libsnapshot/snapuserd_server.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 443,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-07-26T07:35:38Z",
+      "side": 1,
+      "message": "JoinAllThreads() is a blocking call; who is going to terminate the threads here ? Prior to this change, we used to spin up the threads and proceed with the boot up post selinux.\n\nThis is going to wait for all the threads to terminate before connecting to proxy socket. Is that right ? Client threads will terminate only if dm-user devices are removed. Am I missing something here during the init transition ?",
+      "revId": "a679ec1cdd529395036ac72084fe2edf11aee46e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
