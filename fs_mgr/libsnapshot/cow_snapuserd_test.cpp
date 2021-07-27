@@ -96,6 +96,7 @@ class TempDevice {
 class CowSnapuserdTest final {
   public:
     bool Setup();
+    bool SetupOrderedOps();
     bool SetupCopyOverlap_1();
     bool SetupCopyOverlap_2();
     bool Merge();
@@ -117,6 +118,7 @@ class CowSnapuserdTest final {
     void StartMerge();
 
     void CreateCowDevice();
+    void CreateCowDeviceOrderedOps();
     void CreateCowDeviceWithCopyOverlap_1();
     void CreateCowDeviceWithCopyOverlap_2();
     bool SetupDaemon();
@@ -195,6 +197,12 @@ void CowSnapuserdTest::Shutdown() {
 bool CowSnapuserdTest::Setup() {
     SetupImpl();
     return setup_ok_;
+}
+
+bool CowSnapuserdTest::SetupOrderedOps() {
+    CreateBaseDevice();
+    CreateCowDeviceOrderedOps();
+    return SetupDaemon();
 }
 
 bool CowSnapuserdTest::SetupCopyOverlap_1() {
@@ -381,6 +389,71 @@ void CowSnapuserdTest::CreateCowDeviceWithCopyOverlap_1() {
     ASSERT_EQ(android::base::ReadFullyAtOffset(
                       base_fd_, (char*)orig_buffer_.get() + options.block_size, size_, 0),
               true);
+}
+
+void CowSnapuserdTest::CreateCowDeviceOrderedOps() {
+    unique_fd rnd_fd;
+    loff_t offset = 0;
+
+    std::string path = android::base::GetExecutableDirectory();
+    cow_system_ = std::make_unique<TemporaryFile>(path);
+
+    rnd_fd.reset(open("/dev/random", O_RDONLY));
+    ASSERT_TRUE(rnd_fd > 0);
+
+    std::unique_ptr<uint8_t[]> random_buffer_1_ = std::make_unique<uint8_t[]>(size_);
+
+    // Fill random data
+    for (size_t j = 0; j < (size_ / 1_MiB); j++) {
+        ASSERT_EQ(ReadFullyAtOffset(rnd_fd, (char*)random_buffer_1_.get() + offset, 1_MiB, 0),
+                  true);
+
+        offset += 1_MiB;
+    }
+
+    CowOptions options;
+    options.compression = "gz";
+    CowWriter writer(options);
+
+    ASSERT_TRUE(writer.Initialize(cow_system_->fd));
+
+    size_t num_blocks = size_ / options.block_size;
+    size_t blk_end_copy = num_blocks * 2;
+    size_t source_blk = num_blocks - 1;
+    size_t blk_src_copy = blk_end_copy - 1;
+
+    uint32_t sequence[num_blocks];
+    // Sequence for Copy ops
+    for (int i = 0; i < num_blocks; i++) {
+        sequence[i] = num_blocks - 1 - i;
+    }
+
+    ASSERT_TRUE(writer.AddSequenceData(num_blocks, sequence));
+
+    size_t x = num_blocks;
+    while (1) {
+        std::cout << "COPY Source: "  << blk_src_copy
+                  << " Destination: " << source_blk
+                  << std::endl;
+
+        ASSERT_TRUE(writer.AddCopy(source_blk, blk_src_copy));
+        x -= 1;
+        if (x == 0) {
+            break;
+        }
+        source_blk -= 1;
+        blk_src_copy -= 1;
+    }
+
+    // Flush operations
+    ASSERT_TRUE(writer.Finalize());
+    // Construct the buffer required for validation
+    orig_buffer_ = std::make_unique<uint8_t[]>(total_base_size_);
+    // Read the entire base device
+    ASSERT_EQ(android::base::ReadFullyAtOffset(base_fd_, orig_buffer_.get(), total_base_size_, 0),
+              true);
+    // Merged Buffer
+    ASSERT_EQ(android::base::ReadFullyAtOffset(base_fd_, orig_buffer_.get(), size_, size_), true);
 }
 
 void CowSnapuserdTest::CreateCowDevice() {
@@ -578,6 +651,10 @@ void CowSnapuserdTest::MergeImpl() {
         DmTargetSnapshot::Status merge_status;
         ASSERT_TRUE(DmTargetSnapshot::ParseStatusText(status[0].data, &merge_status));
         ASSERT_TRUE(merge_status.error.empty());
+        std::cout << "Sectors_allocated: " << merge_status.sectors_allocated
+                  << " metadata_sectors: " << merge_status.metadata_sectors
+                  << std::endl;
+
         if (merge_status.sectors_allocated == merge_status.metadata_sectors) {
             break;
         }
@@ -597,6 +674,8 @@ void CowSnapuserdTest::ValidateMerge() {
 
 void CowSnapuserdTest::SimulateDaemonRestart() {
     Shutdown();
+    std::cout << "Snapuserd shutdown completed... sleeping for 5s" << std::endl;
+    std::this_thread::sleep_for(5s);
     SetDeviceControlName();
     StartSnapuserdDaemon();
     InitCowDevice();
@@ -608,9 +687,15 @@ void CowSnapuserdTest::SimulateDaemonRestart() {
 void CowSnapuserdTest::MergeInterrupt() {
     // Interrupt merge at various intervals
     StartMerge();
-    std::this_thread::sleep_for(250ms);
-    SimulateDaemonRestart();
 
+    for (int i = 0; i < 25; i++) {
+      //std::cout << " Sleeping for 5 seconds... " << std::endl;
+      //std::this_thread::sleep_for(5s);
+      SimulateDaemonRestart();
+      StartMerge();
+    }
+    SimulateDaemonRestart();
+#if 0
     StartMerge();
     std::this_thread::sleep_for(250ms);
     SimulateDaemonRestart();
@@ -630,7 +715,7 @@ void CowSnapuserdTest::MergeInterrupt() {
     StartMerge();
     std::this_thread::sleep_for(600ms);
     SimulateDaemonRestart();
-
+#endif
     ASSERT_TRUE(Merge());
 }
 
@@ -887,6 +972,7 @@ void CowSnapuserdMetadataTest::ValidateMetadata() {
     }
 }
 
+#if 0
 TEST(Snapuserd_Test, Snapshot_Metadata) {
     CowSnapuserdMetadataTest harness;
     harness.Setup();
@@ -906,7 +992,18 @@ TEST(Snapuserd_Test, Snapshot_Merge_Resume) {
     harness.ValidateMerge();
     harness.Shutdown();
 }
+#endif
 
+TEST(Snapuserd_Test, Snapshot_Merge_Resume_Ordered_TEST) {
+    CowSnapuserdTest harness;
+    ASSERT_TRUE(harness.SetupOrderedOps());
+    harness.MergeInterrupt();
+    //ASSERT_TRUE(harness.Merge());
+    harness.ValidateMerge();
+    harness.Shutdown();
+}
+
+#if 0
 TEST(Snapuserd_Test, Snapshot_IO_TEST) {
     CowSnapuserdTest harness;
     ASSERT_TRUE(harness.Setup());
@@ -944,6 +1041,7 @@ TEST(Snapuserd_Test, ReadDmUserBlockWithoutDaemon) {
     CowSnapuserdTest harness;
     harness.ReadDmUserBlockWithoutDaemon();
 }
+#endif
 
 }  // namespace snapshot
 }  // namespace android
