@@ -46,6 +46,30 @@
       },
       "revId": "aa2b3cee4382a9d5e5351c85ecd90c9fa3162599",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0349e46e_4ead3da1",
+        "filename": "fs_mgr/libsnapshot/snapshot_reader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 288,
+      "author": {
+        "id": 1045980
+      },
+      "writtenOn": "2021-07-27T21:53:24Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fad01c12_24242ea1",
+      "range": {
+        "startLine": 288,
+        "startChar": 18,
+        "endLine": 288,
+        "endChar": 22
+      },
+      "revId": "aa2b3cee4382a9d5e5351c85ecd90c9fa3162599",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
