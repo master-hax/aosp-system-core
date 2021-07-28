@@ -191,6 +191,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "eba40777_014a6cfb",
+        "filename": "fs_mgr/libsnapshot/cow_writer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 293,
+      "author": {
+        "id": 1045980
+      },
+      "writtenOn": "2021-07-28T08:10:26Z",
+      "side": 1,
+      "message": "I\u0027m actually favoring going the other way, and eventually moving replace ops and other data ops to also be implicit. We currently need that in memory either way, and re-deriving it on parse is no more expensive. It\u0027s just a matter of if we store a uint64 in one location or another, except one doesn\u0027t also require the disk space.\n\nAs for the cloning reader data, none of that has any actual impact. We\u0027re just sharing the shared pointer, not duplicating the data.",
+      "parentUuid": "461eeaaf_201cae49",
+      "revId": "91381343dc538d779b9349b67b5c85f90ae03b6c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "0e4dbba9_3ed69021",
         "filename": "fs_mgr/libsnapshot/snapshot_writer.cpp",
         "patchSetId": 1
