@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5e3be16d_de91f90d",
+        "filename": "fs_mgr/libsnapshot/snapuserd_server.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 469,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-07-28T00:05:03Z",
+      "side": 1,
+      "message": "What does this do ?",
+      "revId": "32a4da85d3fce2e99cc20e297d1715c8ac47ae60",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6ecdb20d_f9a835e9",
+        "filename": "init/init.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 736,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-07-28T00:05:03Z",
+      "side": 1,
+      "message": "Why do we need to check if daemon support socket-handoff explicitly ? Is this because snapuserd from Android S cannot support - backward compatibility ?",
+      "revId": "32a4da85d3fce2e99cc20e297d1715c8ac47ae60",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "92789f92_a3771975",
+        "filename": "init/init.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 753,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-07-28T00:05:03Z",
+      "side": 1,
+      "message": "Since we marked the socket as persistent, where does the reap happen given the fact that we are bypassing socket_reap() based on the new \"persist\" flag.",
+      "revId": "32a4da85d3fce2e99cc20e297d1715c8ac47ae60",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
