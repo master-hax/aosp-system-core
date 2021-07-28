@@ -173,6 +173,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "461eeaaf_201cae49",
+        "filename": "fs_mgr/libsnapshot/cow_writer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 293,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-07-28T03:53:42Z",
+      "side": 1,
+      "message": "(And looking ahead to the next patch - if we clone the reader per-worker, that\u0027s 4x the memory impact.)",
+      "parentUuid": "b4971401_bb90836d",
+      "revId": "91381343dc538d779b9349b67b5c85f90ae03b6c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "0e4dbba9_3ed69021",
         "filename": "fs_mgr/libsnapshot/snapshot_writer.cpp",
         "patchSetId": 1
