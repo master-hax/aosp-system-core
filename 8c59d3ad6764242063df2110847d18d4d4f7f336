@@ -20,6 +20,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "ed94c4b8_f78a3843",
+        "filename": "fs_mgr/libsnapshot/cow_reader.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 163,
+      "author": {
+        "id": 1045980
+      },
+      "writtenOn": "2021-07-28T23:27:17Z",
+      "side": 1,
+      "message": "Yes. Data starts after the first cluster. At this point, pos is set to the end of the header/scratch space area, which is the start of the first cluster. The data goes after the cluster of ops, which is always header_.cluster_ops * sizeof(CowOperation) away. At this point, the first cluster is the only cluster, and we run through the rest of the opts to reposition the data_pos and pos locations to the end of the given label.",
+      "parentUuid": "9430b50a_2204ebec",
+      "revId": "8c59d3ad6764242063df2110847d18d4d4f7f336",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "d46f63ba_1048f154",
         "filename": "fs_mgr/libsnapshot/cow_reader.cpp",
         "patchSetId": 14
@@ -31,6 +49,24 @@
       "writtenOn": "2021-07-28T03:50:19Z",
       "side": 1,
       "message": "nit: move offset declaration above the |if| so it\u0027s closer to its first use",
+      "revId": "8c59d3ad6764242063df2110847d18d4d4f7f336",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7c5e13cb_59646b68",
+        "filename": "fs_mgr/libsnapshot/cow_reader.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 621,
+      "author": {
+        "id": 1045980
+      },
+      "writtenOn": "2021-07-28T23:27:17Z",
+      "side": 1,
+      "message": "Sure. C habit.",
+      "parentUuid": "d46f63ba_1048f154",
       "revId": "8c59d3ad6764242063df2110847d18d4d4f7f336",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
