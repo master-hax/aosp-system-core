@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "1d0964e7_0654e4e9",
+        "filename": "fs_mgr/libsnapshot/snapuserd_server.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 469,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-07-28T02:36:09Z",
+      "side": 1,
+      "message": "The property service is implemented in bionic, which implements it as shared mmap\u0027d files. This method is called very early in a program\u0027s startup.\n\nBut at the time we launch snapuserd, there hasn\u0027t been a restorecon on any of the property context files. So initialization fails (or gives us a property service that can\u0027t see any properties). We could do an earlier restorecon, but this would require more kernel privileged \"allows\" in sepolicy, which we\u0027ve very carefully tried to avoid.\n\nSo instead, we manually call it here, since we know at this point that /dev has been properly labelled.",
+      "parentUuid": "5e3be16d_de91f90d",
+      "revId": "32a4da85d3fce2e99cc20e297d1715c8ac47ae60",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "6ecdb20d_f9a835e9",
@@ -35,6 +53,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "674d4a8f_d16c2994",
+        "filename": "init/init.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 736,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-07-28T02:36:09Z",
+      "side": 1,
+      "message": "Right, we could have a T system and an S snapuserd, which won\u0027t respect the socket handoff protocol. We don\u0027t have any kind of vendor property to gate this behavior yet, so it seemed best to do it programmatically.",
+      "parentUuid": "6ecdb20d_f9a835e9",
+      "revId": "32a4da85d3fce2e99cc20e297d1715c8ac47ae60",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "92789f92_a3771975",
@@ -48,6 +84,24 @@
       "writtenOn": "2021-07-28T00:05:03Z",
       "side": 1,
       "message": "Since we marked the socket as persistent, where does the reap happen given the fact that we are bypassing socket_reap() based on the new \"persist\" flag.",
+      "revId": "32a4da85d3fce2e99cc20e297d1715c8ac47ae60",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "97d12c70_24991d1e",
+        "filename": "init/init.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 753,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-07-28T02:36:09Z",
+      "side": 1,
+      "message": "The reap happens for snapuserd - there\u0027s two different services declaring the same socket. So this is a hack to transfer \"reap\" ownership from snapuserd_proxy to snapuserd. It was the least invasive thing I could think of. I also considered letting snapuserd_proxy live forever, but that seemed less ideal.\n\nNotably, snapuserd will live forever after this change. I\u0027ll do a follow-up CL to put it in shutdown mode after the merge.",
+      "parentUuid": "92789f92_a3771975",
       "revId": "32a4da85d3fce2e99cc20e297d1715c8ac47ae60",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
