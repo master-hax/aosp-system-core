@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1496eb1c_ca281236",
+        "filename": "fs_mgr/libsnapshot/snapshot_reader.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 300,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-07-28T23:36:04Z",
+      "side": 1,
+      "message": "size_t",
+      "revId": "542a473fed89a062861e49b17bdd0fb78bca1830",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
