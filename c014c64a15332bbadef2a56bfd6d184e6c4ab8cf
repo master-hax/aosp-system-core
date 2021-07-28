@@ -263,6 +263,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "b77d71e9_f4a87d2a",
+        "filename": "trusty/keymaster/fuzz/keymaster_protocol_fuzzer.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 150,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2021-07-28T19:49:49Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "30960655_e6dc9c62",
+      "revId": "c014c64a15332bbadef2a56bfd6d184e6c4ab8cf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "98080063_f0aa2b2d",
@@ -294,6 +312,24 @@
       "side": 1,
       "message": "The only fixed parts of these three requests is the `purpose` of the BeginOpRequest which is `KM_PURPOSE_SIGN` and the additional_params AuthorizationSet required for signing. Maybe `TestPurposeSign` might be clearer than `TestSigning`?",
       "parentUuid": "98080063_f0aa2b2d",
+      "revId": "c014c64a15332bbadef2a56bfd6d184e6c4ab8cf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "977b5bbb_84813ba5",
+        "filename": "trusty/keymaster/fuzz/keymaster_protocol_fuzzer.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 153,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2021-07-28T19:49:49Z",
+      "side": 1,
+      "message": "Ack, it\u0027s fine as is.",
+      "parentUuid": "4741a8d0_c1de10ae",
       "revId": "c014c64a15332bbadef2a56bfd6d184e6c4ab8cf",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },

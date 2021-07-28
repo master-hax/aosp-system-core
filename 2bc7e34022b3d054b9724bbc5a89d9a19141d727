@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9db31c82_f59b27f9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 10
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2021-07-28T19:49:49Z",
+      "side": 1,
+      "message": "I think it\u0027s looking good, just needs to be fleshed out further now. I\u0027m generally concerned that we might be sticking to \"too valid\" of inputs, and not deviating enough to properly fuzz. How are you planning to perturb the cases so that we test unexpected input?",
+      "revId": "2bc7e34022b3d054b9724bbc5a89d9a19141d727",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c93ffdf4_2657b5ed",
+        "filename": "trusty/keymaster/fuzz/keymaster_defs_builder.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 194,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2021-07-28T19:49:49Z",
+      "side": 1,
+      "message": "Outdated comment",
+      "revId": "2bc7e34022b3d054b9724bbc5a89d9a19141d727",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
