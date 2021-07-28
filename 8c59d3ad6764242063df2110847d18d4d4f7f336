@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9430b50a_2204ebec",
+        "filename": "fs_mgr/libsnapshot/cow_reader.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 163,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-07-28T03:50:19Z",
+      "side": 1,
+      "message": "If the first cluster is also the last cluster, is it the full cluster size?",
+      "revId": "8c59d3ad6764242063df2110847d18d4d4f7f336",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d46f63ba_1048f154",
+        "filename": "fs_mgr/libsnapshot/cow_reader.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 621,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-07-28T03:50:19Z",
+      "side": 1,
+      "message": "nit: move offset declaration above the |if| so it\u0027s closer to its first use",
+      "revId": "8c59d3ad6764242063df2110847d18d4d4f7f336",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
