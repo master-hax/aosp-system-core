@@ -550,7 +550,9 @@ bool Snapuserd::ReadMetadata() {
                 chunk_t diff = (cow_op->new_block > prev_id.value())
                                        ? (cow_op->new_block - prev_id.value())
                                        : (prev_id.value() - cow_op->new_block);
-                if (diff != 1) {
+
+                // Don't allow batch merge
+                if (diff >= 1) {
                     break;
                 }
 
