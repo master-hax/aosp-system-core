@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "31c213c8_28a2565f",
+        "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd_worker.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-07-28T23:27:17Z",
+      "side": 1,
+      "message": "shouldn\u0027t need reinterpret_cast here, buffer.get() will work",
+      "revId": "5afa756c2b12b9678453d558f7dfda847994c5ca",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3455481f_4012a382",
+        "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd_worker.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-07-28T23:27:17Z",
+      "side": 1,
+      "message": "size_t",
+      "revId": "5afa756c2b12b9678453d558f7dfda847994c5ca",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e42c5ad0_fa22a0b3",
+        "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd_worker.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-07-28T23:27:17Z",
+      "side": 1,
+      "message": "nit: early return instead,\n        if (buff \u003d\u003d nullptr) {\n            return false;\n        }",
+      "revId": "5afa756c2b12b9678453d558f7dfda847994c5ca",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
