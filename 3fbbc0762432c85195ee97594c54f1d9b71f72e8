@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "14026ab3_433a536f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-07-29T23:23:37Z",
+      "side": 1,
+      "message": "shouldn\u0027t this get its own project in system/ like system/libbase, rather than being dumped in system/core?\n\ni\u0027m assuming there isn\u0027t already a git project for \"random rust stuff\"? (not that i think that\u0027s a great idea anyway --- that\u0027s how we got in the system/core and system/extras mess...)",
+      "revId": "3fbbc0762432c85195ee97594c54f1d9b71f72e8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
