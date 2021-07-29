@@ -70,6 +70,24 @@
       "parentUuid": "bdd0994a_6af9c76a",
       "revId": "38038f65254335ecff8bd2cff2e538c919713ac1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "709374a3_f16cbbd5",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1101326
+      },
+      "writtenOn": "2021-07-29T00:52:52Z",
+      "side": 1,
+      "message": "Hi Daniel \u0026 Jay, ok, made a more significant change by also falling back to not mounting with checkpoint options (as the behavior without my CL).  This should solve the case when the kernel doesn\u0027t support checkpoint.\n\nI tried my best to simplify the logic.  Cheers!",
+      "parentUuid": "d77834eb_e13a75aa",
+      "revId": "38038f65254335ecff8bd2cff2e538c919713ac1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
