@@ -87,6 +87,24 @@
       "parentUuid": "fda974cc_1dea6aee",
       "revId": "892aefe52d6cebef74e83773418f27304c55bd33",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "020c437c_be48536f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2021-07-29T07:40:01Z",
+      "side": 1,
+      "message": "You can directly test if the product (or device) is microdroid or not. Testing the \u0027VM\u0027 mode might not work because the includes ARCVM as well.",
+      "parentUuid": "0bf682af_59fbd907",
+      "revId": "892aefe52d6cebef74e83773418f27304c55bd33",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
