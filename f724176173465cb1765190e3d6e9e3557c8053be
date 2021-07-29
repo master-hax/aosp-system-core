@@ -16,6 +16,24 @@
       "message": "Wouldn\u0027t this end up degrading performance significantly? My understanding is that the reordering is what allows batch processing by the kernel. The issue was that a batch would get split, and then we\u0027d commit the partial result which caused issues with resume. So original order is, say, 1,2,3,4,5,6. We reorder 6,5,4,3,2,1. The IO gets split into 6,5,4 and 3,2,1. We commit 6,5,4, and merge gets interrupted. On resume, we drop 1,2,3, and merge 6,5,4 again. Let me know if my understanding there is incorrect.\n\nI sorta figured we\u0027d do a fix similar to what readahead does, and not commit until the given batch is done. But if you\u0027ve tested if this impacts merge performance much I\u0027m fine with it.",
       "revId": "f724176173465cb1765190e3d6e9e3557c8053be",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "506674a3_596f2a9e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-07-29T06:31:40Z",
+      "side": 1,
+      "message": "yes, we will see some performance degradation in the merge time if the block ordering is inverted in the COW file. \n\nI did test the merge timings on one of the incremental OTA. I don\u0027t see a big impact.\n\n1: Top of the tree sc-dev (with bug) - merge time: 7 minutes 20 seconds\n\n2: Fix - 1 - Disable batch merge completely - (This will preserve the COW op sequence as mentioned in COW file but each COPY block will be done one 4k at a time) - Merge time is 17 minutes\n\n3: Fix - 2 (This CL) - Batch merge and preserve COW op sequence as mentioned in COW file. Batch merge will happen if kernel can do it.. user-space will not re-order it forcefully. Merge time - 7 minutes 55 seconds.\n\nI didn\u0027t want to touch the entire core logic as we are already in the tail end of the release. With this, we are making sure that the ordering is always the same.\n\nIn fact, since we have to maintain the S code down the line, we can fix this in subsequent check-in once sc-dev freezes.",
+      "parentUuid": "0a758b27_c1f31516",
+      "revId": "f724176173465cb1765190e3d6e9e3557c8053be",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
