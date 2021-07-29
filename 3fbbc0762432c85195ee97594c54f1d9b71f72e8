@@ -70,6 +70,24 @@
       "parentUuid": "a5b98185_c80fc2ab",
       "revId": "3fbbc0762432c85195ee97594c54f1d9b71f72e8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8c4af5c4_53f1a879",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1010056
+      },
+      "writtenOn": "2021-07-29T23:39:16Z",
+      "side": 1,
+      "message": "I\u0027m perfectly fine with `system/librustutils`.",
+      "parentUuid": "a6ac7254_3e2064a4",
+      "revId": "3fbbc0762432c85195ee97594c54f1d9b71f72e8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
