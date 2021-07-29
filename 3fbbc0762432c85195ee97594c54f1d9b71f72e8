@@ -34,6 +34,24 @@
       "parentUuid": "14026ab3_433a536f",
       "revId": "3fbbc0762432c85195ee97594c54f1d9b71f72e8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a5b98185_c80fc2ab",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-07-29T23:27:21Z",
+      "side": 1,
+      "message": "yeah, the system/core dumping ground is a bug not a feature. system/lib* is the usual way forward.",
+      "parentUuid": "1a03c731_1fec4c2c",
+      "revId": "3fbbc0762432c85195ee97594c54f1d9b71f72e8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
