@@ -69,6 +69,24 @@
       "parentUuid": "8bdaf9b5_b4ef6c4f",
       "revId": "892aefe52d6cebef74e83773418f27304c55bd33",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0bf682af_59fbd907",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2021-07-29T07:38:33Z",
+      "side": 1,
+      "message": "Okay, let me try that idea. It would require additional system property like \"we are in vm mode\" or \"apexes are not updatable even though ro.apex.updatable is true\"",
+      "parentUuid": "fda974cc_1dea6aee",
+      "revId": "892aefe52d6cebef74e83773418f27304c55bd33",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
