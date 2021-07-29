@@ -16,6 +16,24 @@
       "message": "shouldn\u0027t this get its own project in system/ like system/libbase, rather than being dumped in system/core?\n\ni\u0027m assuming there isn\u0027t already a git project for \"random rust stuff\"? (not that i think that\u0027s a great idea anyway --- that\u0027s how we got in the system/core and system/extras mess...)",
       "revId": "3fbbc0762432c85195ee97594c54f1d9b71f72e8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1a03c731_1fec4c2c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1208973
+      },
+      "writtenOn": "2021-07-29T23:25:44Z",
+      "side": 1,
+      "message": "Our thought was that this is something like a Rust version of libcutils, so putting it as a sibling of that would make sense.  But I don\u0027t have a strong opinion on where this should live, so if you prefer something else we can do that.",
+      "parentUuid": "14026ab3_433a536f",
+      "revId": "3fbbc0762432c85195ee97594c54f1d9b71f72e8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
