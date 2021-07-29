@@ -165,8 +165,14 @@ static void log_signal_summary(const siginfo_t* info) {
   }
 
   if (info->si_signo == BIONIC_SIGNAL_DEBUGGER) {
-    async_safe_format_log(ANDROID_LOG_INFO, "libc", "Requested dump for tid %d (%s)", __gettid(),
-                          thread_name);
+    if (__getpid() == __gettid()) {
+      async_safe_format_log(ANDROID_LOG_INFO, "libc", "Requested dump for tid %d (%s)", __gettid(),
+                            thread_name);
+    } else {
+      async_safe_format_log(ANDROID_LOG_INFO, "libc",
+                            "Requested dump for pid %d occurred on tid %d (%s)", __getpid(),
+                            __gettid(), thread_name);
+    }
     return;
   }
 
@@ -532,8 +538,12 @@ static void debuggerd_signal_handler(int signal_number, siginfo_t* info, void* c
 
   log_signal_summary(info);
 
+  // If we got here due to the signal BIONIC_SIGNAL_DEBUGGER, it's possible
+  // this is not the main thread, which can cause the intercept logic to fail
+  // since the intercept is not based on the current thread. In this case,
+  // force the crashing_tid to be the current pid instead.
   debugger_thread_info thread_info = {
-      .crashing_tid = __gettid(),
+      .crashing_tid = (signal_number == BIONIC_SIGNAL_DEBUGGER) ? __getpid() : __gettid(),
       .pseudothread_tid = -1,
       .siginfo = info,
       .ucontext = context,

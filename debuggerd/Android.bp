@@ -420,6 +420,7 @@ cc_binary {
         "libcutils",
         "libevent",
         "liblog",
+        "libprocinfo",
     ],
 
     init_rc: ["tombstoned/tombstoned.rc"],
