@@ -33,6 +33,24 @@
       "message": "Which process other than ueventd need this? ueventd is a special process, so I think hardcoding something about it is not bad at all.\n\nIMO, this looks like an over-abstraction. What if someone (in Google or in partners) accidentally or intentionally use this? How can we ensure that the use of this option doesn\u0027t cause a problem especially given that we also have `namespace mnt`?\n\nI wish we could deprecate `namespace mnt` option because nobody used it. But recently the new camera HAL started to use it for the reason which I believe is unnecessary. Nevertheless, from now on, it\u0027s extremely difficult to remove the option because we know that there\u0027s at least a user. The same applies to this one. We need to be careful when adding a knob.",
       "revId": "892aefe52d6cebef74e83773418f27304c55bd33",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8bdaf9b5_b4ef6c4f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2021-07-29T07:23:12Z",
+      "side": 1,
+      "message": "\u003e  We need to be careful when adding a knob.\n\nAgreed. That\u0027s why we didn\u0027t introduce the service option when we hard-coded ueventd. But now I don\u0027t know how to make microdroid_manager start before apexd but still see the \"default\" mount namespace.",
+      "parentUuid": "e3916b86_eaccfc81",
+      "revId": "892aefe52d6cebef74e83773418f27304c55bd33",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
