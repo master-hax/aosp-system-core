@@ -105,6 +105,24 @@
       "parentUuid": "0bf682af_59fbd907",
       "revId": "892aefe52d6cebef74e83773418f27304c55bd33",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2e90397e_d7d3e426",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2021-07-29T07:45:08Z",
+      "side": 1,
+      "message": "I think ARCVM can choose to follow the same path if they want.",
+      "parentUuid": "020c437c_be48536f",
+      "revId": "892aefe52d6cebef74e83773418f27304c55bd33",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
