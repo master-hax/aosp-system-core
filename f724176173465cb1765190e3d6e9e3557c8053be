@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0a758b27_c1f31516",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1045980
+      },
+      "writtenOn": "2021-07-29T05:48:41Z",
+      "side": 1,
+      "message": "Wouldn\u0027t this end up degrading performance significantly? My understanding is that the reordering is what allows batch processing by the kernel. The issue was that a batch would get split, and then we\u0027d commit the partial result which caused issues with resume. So original order is, say, 1,2,3,4,5,6. We reorder 6,5,4,3,2,1. The IO gets split into 6,5,4 and 3,2,1. We commit 6,5,4, and merge gets interrupted. On resume, we drop 1,2,3, and merge 6,5,4 again. Let me know if my understanding there is incorrect.\n\nI sorta figured we\u0027d do a fix similar to what readahead does, and not commit until the given batch is done. But if you\u0027ve tested if this impacts merge performance much I\u0027m fine with it.",
+      "revId": "f724176173465cb1765190e3d6e9e3557c8053be",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
