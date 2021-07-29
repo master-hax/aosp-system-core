@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "60d0ba85_664ae6cd",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2021-07-29T06:30:50Z",
+      "side": 1,
+      "message": "This was discussed long before in https://android-review.googlesource.com/c/platform/system/core/+/1325695/6/init/service.cpp#472\n\nIn the other change in this topic, microdroid_manager is needed to start in \"default\" mount namespace, but hard-coding it in init like ueventd doesn\u0027t make sense because microdroid_manager exists in microdroid (VM instance).\n\n",
+      "revId": "892aefe52d6cebef74e83773418f27304c55bd33",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
