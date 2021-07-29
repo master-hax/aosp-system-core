@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "877123f5_fe0daef8",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1208973
+      },
+      "writtenOn": "2021-07-29T23:18:53Z",
+      "side": 1,
+      "message": "Elliott, in aosp/1774006 you and Matt recommended making a librustutils for random Rust utilities (like the properties bindings in that CL).  This CL starts that process and its child CLs will start to populate it.  What do you think?",
+      "revId": "1624db1bde326acfdf31e158e051059080600567",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
