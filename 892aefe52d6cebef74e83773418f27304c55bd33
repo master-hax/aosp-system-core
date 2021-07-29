@@ -123,6 +123,24 @@
       "parentUuid": "020c437c_be48536f",
       "revId": "892aefe52d6cebef74e83773418f27304c55bd33",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "347567e4_6e0f6991",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2021-07-29T07:51:52Z",
+      "side": 1,
+      "message": "I am not sure. ARCVM tries to be as similar to as Android. I agree with you that they don\u0027t need to care about APEXes in the data partition, but I don\u0027t think they want to have a boot procedure that is different from Android.",
+      "parentUuid": "2e90397e_d7d3e426",
+      "revId": "892aefe52d6cebef74e83773418f27304c55bd33",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
