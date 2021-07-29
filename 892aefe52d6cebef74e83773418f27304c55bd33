@@ -51,6 +51,24 @@
       "parentUuid": "e3916b86_eaccfc81",
       "revId": "892aefe52d6cebef74e83773418f27304c55bd33",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fda974cc_1dea6aee",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2021-07-29T07:28:49Z",
+      "side": 1,
+      "message": "As I commented in the other CL, we don\u0027t really need to have two mount namespaces in microdroid. The only reason we have the two in \"Android\" is because we have two sets of APEXes (the bootstrap ones and the ordinary ones). We don\u0027t have such a distinction in microdroid.",
+      "parentUuid": "8bdaf9b5_b4ef6c4f",
+      "revId": "892aefe52d6cebef74e83773418f27304c55bd33",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
