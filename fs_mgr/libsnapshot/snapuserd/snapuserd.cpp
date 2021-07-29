@@ -436,8 +436,9 @@ bool Snapuserd::ReadMetadata() {
 
     int num_ra_ops_per_iter = ((GetBufferDataSize()) / BLOCK_SZ);
     std::optional<chunk_t> prev_id = {};
-    std::map<uint64_t, const CowOperation*> map;
+    std::vector<const CowOperation*> vec;
     std::set<uint64_t> dest_blocks;
+    std::set<uint64_t> source_blocks;
     size_t pending_copy_ops = exceptions_per_area_ - num_ops;
     uint64_t total_copy_ops = reader_->get_num_ordered_ops_to_merge();
 
@@ -547,43 +548,39 @@ bool Snapuserd::ReadMetadata() {
             //
             //===================================================================
             if (prev_id.has_value()) {
-                chunk_t diff = (cow_op->new_block > prev_id.value())
-                                       ? (cow_op->new_block - prev_id.value())
-                                       : (prev_id.value() - cow_op->new_block);
-                if (diff != 1) {
-                    break;
-                }
-
-                if (dest_blocks.count(cow_op->new_block) || map.count(cow_op->source) > 0) {
+                if (dest_blocks.count(cow_op->new_block) || source_blocks.count(cow_op->source)) {
                     break;
                 }
             }
             metadata_found = true;
             pending_copy_ops -= 1;
-            map[cow_op->new_block] = cow_op;
+            vec.push_back(cow_op);
             dest_blocks.insert(cow_op->source);
+            source_blocks.insert(cow_op->new_block);
             prev_id = cow_op->new_block;
             cowop_rm_iter->Next();
         } while (!cowop_rm_iter->Done() && pending_copy_ops);
 
         data_chunk_id = GetNextAllocatableChunkId(data_chunk_id);
-        SNAP_LOG(DEBUG) << "Batch Merge copy-ops of size: " << map.size()
+        SNAP_LOG(DEBUG) << "Batch Merge copy-ops of size: " << vec.size()
                         << " Area: " << vec_.size() << " Area offset: " << offset
                         << " Pending-copy-ops in this area: " << pending_copy_ops;
 
-        for (auto it = map.begin(); it != map.end(); it++) {
+        for (int i = 0; i < vec.size(); i++) {
             struct disk_exception* de =
                     reinterpret_cast<struct disk_exception*>((char*)de_ptr.get() + offset);
-            de->old_chunk = it->first;
+            const CowOperation* cow_op = vec[i];
+
+            de->old_chunk = cow_op->new_block;
             de->new_chunk = data_chunk_id;
 
             // Store operation pointer.
-            chunk_vec_.push_back(std::make_pair(ChunkToSector(data_chunk_id), it->second));
+            chunk_vec_.push_back(std::make_pair(ChunkToSector(data_chunk_id), cow_op));
             offset += sizeof(struct disk_exception);
             num_ops += 1;
             copy_ops++;
             if (read_ahead_feature_) {
-                read_ahead_ops_.push_back(it->second);
+                read_ahead_ops_.push_back(cow_op);
             }
 
             SNAP_LOG(DEBUG) << num_ops << ":"
@@ -626,8 +623,9 @@ bool Snapuserd::ReadMetadata() {
                 data_chunk_id = GetNextAllocatableChunkId(data_chunk_id);
             }
         }
-        map.clear();
+        vec.clear();
         dest_blocks.clear();
+        source_blocks.clear();
         prev_id.reset();
     }
 
