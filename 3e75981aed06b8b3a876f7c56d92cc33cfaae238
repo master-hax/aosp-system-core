@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "973cf2b9_6912ae90",
+        "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 569,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-07-29T00:43:30Z",
+      "side": 1,
+      "message": "size_t",
+      "revId": "3e75981aed06b8b3a876f7c56d92cc33cfaae238",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
