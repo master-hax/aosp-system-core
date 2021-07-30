@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2c62cd0d_8baea88b",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2052,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-07-30T00:29:12Z",
+      "side": 1,
+      "message": "I\u0027d just use \"+\" operator here (or android::base::StringPrintf), ostringstream isn\u0027t necessary.",
+      "revId": "ba314d2ec0f503979bec6928655bec7c2e3b3dd0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
