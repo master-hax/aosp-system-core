@@ -48,6 +48,7 @@
 #include <android-base/chrono_utils.h>
 #include <android-base/file.h>
 #include <android-base/properties.h>
+#include <android-base/result.h>
 #include <android-base/stringprintf.h>
 #include <android-base/strings.h>
 #include <android-base/unique_fd.h>
@@ -98,9 +99,13 @@
 #define ARRAY_SIZE(a) (sizeof(a) / sizeof(*(a)))
 
 using android::base::Basename;
+using android::base::ErrnoError;
+using android::base::Error;
 using android::base::GetBoolProperty;
 using android::base::GetUintProperty;
 using android::base::Realpath;
+using android::base::Result;
+using android::base::ResultError;
 using android::base::SetProperty;
 using android::base::StartsWith;
 using android::base::StringPrintf;
@@ -2076,6 +2081,142 @@ static bool ConfigureIoScheduler(const std::string& device_path) {
     return false;
 }
 
+// Return the sysfs path of the first child of a block device.
+static std::string ChildBlockDev(const std::string& blockdev) {
+    if (blockdev.find('/') != std::string::npos) {
+        LOG(ERROR) << __func__ << ": invalid argument " << blockdev;
+        return {};
+    }
+    std::string result;
+    const std::string children_path = StringPrintf("/sys/class/block/%s/slaves", blockdev.c_str());
+    DIR* dir = opendir(children_path.c_str());
+    if (dir) {
+        for (struct dirent* ent = readdir(dir); ent; ent = readdir(dir)) {
+            if (ent->d_name[0] == '.') {
+                continue;
+            }
+            result = ent->d_name;
+            break;
+        }
+        closedir(dir);
+    }
+    return result;
+}
+
+static std::string PartitionParent(const std::string& blockdev) {
+    if (blockdev.find('/') != std::string::npos) {
+        LOG(ERROR) << __func__ << ": invalid argument " << blockdev;
+        return blockdev;
+    }
+    std::string result = blockdev;
+    DIR* dir = opendir("/sys/class/block");
+    if (dir) {
+        for (struct dirent* ent = readdir(dir); ent; ent = readdir(dir)) {
+            if (ent->d_name[0] == '.') {
+                continue;
+            }
+            std::string path =
+                    StringPrintf("/sys/class/block/%s/%s", ent->d_name, blockdev.c_str());
+            struct stat statbuf;
+            if (stat(path.c_str(), &statbuf) >= 0) {
+                result = ent->d_name;
+                break;
+            }
+        }
+        closedir(dir);
+    }
+    return result;
+}
+
+static std::string BlockdevName(dev_t dev) {
+    std::string result;
+    DIR* dir = opendir("/dev/block");
+    if (dir) {
+        for (struct dirent* ent = readdir(dir); ent; ent = readdir(dir)) {
+            if (ent->d_name[0] == '.') {
+                continue;
+            }
+            const std::string path = std::string("/dev/block/") + ent->d_name;
+            struct stat statbuf;
+            if (stat(path.c_str(), &statbuf) >= 0 && dev == statbuf.st_rdev) {
+                result = ent->d_name;
+                break;
+            }
+        }
+    }
+    return result;
+}
+
+static void rtrim(std::string& s) {
+    s.erase(s.find_last_not_of('\n') + 1, s.length());
+}
+
+// For file `file_path`, retrieve the block device backing the filesystem on
+// which the file exists and return the queue depth of the block device.
+Result<uint32_t> BlockDeviceQueueDepth(const std::string& file_path) {
+    struct stat statbuf;
+    int res = stat(file_path.c_str(), &statbuf);
+    if (res < 0) {
+        return ErrnoError() << "stat(" << file_path << ")";
+    }
+    std::string blockdev = BlockdevName(statbuf.st_dev);
+    LOG(DEBUG) << file_path << " -> " << blockdev;
+    if (blockdev.empty()) {
+        const std::string err_msg =
+                StringPrintf("Failed to convert %u:%u (path %s)", major(statbuf.st_dev),
+                             minor(statbuf.st_dev), file_path.c_str());
+        return ResultError(err_msg, 0);
+    }
+    for (;;) {
+        std::string child = ChildBlockDev(blockdev);
+        if (child.empty()) {
+            break;
+        }
+        LOG(DEBUG) << blockdev << " -> " << child;
+        blockdev = child;
+    }
+    blockdev = PartitionParent(blockdev);
+    LOG(DEBUG) << "Partition parent: " << blockdev;
+    const std::string nr_tags_path =
+            StringPrintf("/sys/class/block/%s/mq/0/nr_tags", blockdev.c_str());
+    std::string nr_tags;
+    if (!android::base::ReadFileToString(nr_tags_path, &nr_tags))
+        return ResultError("Failed to read " + nr_tags_path, 0);
+    rtrim(nr_tags);
+    LOG(DEBUG) << file_path << " is backed by /dev/" << blockdev
+               << " and that block device supports queue depth " << nr_tags;
+    return strtol(nr_tags.c_str(), NULL, 0);
+}
+
+// Set 'nr_requests' of `loop_device_path` to two times the queue depth of
+// the block device backing `file_path`.
+Result<void> ConfigureQueueDepth(const std::string& loop_device_path,
+                                 const std::string& file_path) {
+    if (!StartsWith(loop_device_path, "/dev/"))
+        return Error() << "Invalid argument " << loop_device_path;
+
+    const std::string loop_device_name = Basename(loop_device_path);
+
+    const std::string sysfs_path =
+            StringPrintf("/sys/block/%s/queue/nr_requests", loop_device_name.c_str());
+    unique_fd sysfs_fd(open(sysfs_path.c_str(), O_RDWR | O_CLOEXEC));
+    if (sysfs_fd.get() == -1) {
+        return ErrnoError() << "Failed to open " << sysfs_path;
+    }
+
+    const Result<uint32_t> qd = BlockDeviceQueueDepth(file_path);
+    if (!qd.ok()) {
+        LOG(DEBUG) << "BlockDeviceQueueDepth() returned " << qd.error();
+        return ResultError(qd.error());
+    }
+    const std::string nr_requests = StringPrintf("%u", *qd);
+    const int res = write(sysfs_fd.get(), nr_requests.data(), nr_requests.length());
+    if (res < 0) {
+        return ErrnoError() << "Failed to write to " << sysfs_path;
+    }
+    return {};
+}
+
 static bool InstallZramDevice(const std::string& device) {
     if (!android::base::WriteStringToFile(device, ZRAM_BACK_DEV)) {
         PERROR << "Cannot write " << device << " in: " << ZRAM_BACK_DEV;
@@ -2109,6 +2250,8 @@ static bool PrepareZramBackingDevice(off64_t size) {
     }
 
     ConfigureIoScheduler(loop_device);
+
+    ConfigureQueueDepth(loop_device, "/");
 
     // set block size & direct IO
     unique_fd loop_fd(TEMP_FAILURE_RETRY(open(loop_device.c_str(), O_RDWR | O_CLOEXEC)));
