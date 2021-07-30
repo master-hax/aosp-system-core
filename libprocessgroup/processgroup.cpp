@@ -416,7 +416,8 @@ int killProcessGroupOnce(uid_t uid, int initialPid, int signal, int* max_process
     return KillProcessGroup(uid, initialPid, signal, 0 /*retries*/, max_processes);
 }
 
-static int createProcessGroupInternal(uid_t uid, int initialPid, std::string cgroup) {
+static int createProcessGroupInternal(uid_t uid, int initialPid, std::string cgroup,
+                                      bool activate_controllers) {
     auto uid_path = ConvertUidToPath(cgroup.c_str(), uid);
 
     struct stat cgroup_stat;
@@ -436,12 +437,24 @@ static int createProcessGroupInternal(uid_t uid, int initialPid, std::string cgr
         PLOG(ERROR) << "Failed to make and chown " << uid_path;
         return -errno;
     }
+    if (activate_controllers) {
+        if (!CgroupMap::GetInstance().ActivateControllers(uid_path)) {
+            LOG(ERROR) << "Failed to activate controllers in " << uid_path;
+            return false;
+        }
+    }
 
     auto uid_pid_path = ConvertUidPidToPath(cgroup.c_str(), uid, initialPid);
 
     if (!MkdirAndChown(uid_pid_path, cgroup_mode, cgroup_uid, cgroup_gid)) {
         PLOG(ERROR) << "Failed to make and chown " << uid_pid_path;
         return -errno;
+    }
+    if (activate_controllers) {
+        if (!CgroupMap::GetInstance().ActivateControllers(uid_pid_path)) {
+            LOG(ERROR) << "Failed to activate controllers in " << uid_pid_path;
+            return false;
+        }
     }
 
     auto uid_pid_procs_file = uid_pid_path + PROCESSGROUP_CGROUP_PROCS_FILE;
@@ -466,14 +479,14 @@ int createProcessGroup(uid_t uid, int initialPid, bool memControl) {
     if (isMemoryCgroupSupported() && UsePerAppMemcg()) {
         CgroupGetControllerPath("memory", &cgroup);
         cgroup += "/apps";
-        int ret = createProcessGroupInternal(uid, initialPid, cgroup);
+        int ret = createProcessGroupInternal(uid, initialPid, cgroup, false);
         if (ret != 0) {
             return ret;
         }
     }
 
     CgroupGetControllerPath(CGROUPV2_CONTROLLER_NAME, &cgroup);
-    return createProcessGroupInternal(uid, initialPid, cgroup);
+    return createProcessGroupInternal(uid, initialPid, cgroup, true);
 }
 
 static bool SetProcessGroupValue(int tid, const std::string& attr_name, int64_t value) {
