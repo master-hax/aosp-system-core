@@ -88,9 +88,10 @@ cc_defaults {
     ],
     static_libs: [
         "libavb",
+        "libc++fs",
+        "libdm",
         "libfs_avb",
         "libfstab",
-        "libdm",
         "libgsi",
     ],
     export_static_lib_headers: [
