@@ -16,6 +16,24 @@
       "message": "I\u0027d just use \"+\" operator here (or android::base::StringPrintf), ostringstream isn\u0027t necessary.",
       "revId": "ba314d2ec0f503979bec6928655bec7c2e3b3dd0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c8b603cd_1a43b58a",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2052,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2021-07-30T00:38:20Z",
+      "side": 1,
+      "message": "The compiler did not allow me to use \u0027+\u0027 - it complained that string concatenation is efficient. So I used StringPrintf().",
+      "parentUuid": "2c62cd0d_8baea88b",
+      "revId": "ba314d2ec0f503979bec6928655bec7c2e3b3dd0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
