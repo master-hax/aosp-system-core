@@ -124,6 +124,24 @@
       "parentUuid": "75844c02_82e19bbd",
       "revId": "3fbbc0762432c85195ee97594c54f1d9b71f72e8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "33e42606_fda8a79e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1208973
+      },
+      "writtenOn": "2021-07-30T14:54:34Z",
+      "side": 1,
+      "message": "Okay, aosp/1783009 is a copy of this CL in the new place.  Thanks, all!",
+      "parentUuid": "553a9b07_5d7950af",
+      "revId": "3fbbc0762432c85195ee97594c54f1d9b71f72e8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
