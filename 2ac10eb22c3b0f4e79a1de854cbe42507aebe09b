@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d8aee987_881cef51",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1137063
+      },
+      "writtenOn": "2021-07-30T21:34:59Z",
+      "side": 1,
+      "message": "Are there any concerns with the path actually having to be /system/etc, and not /etc as was suggested on the other change?",
+      "range": {
+        "startLine": 31,
+        "startChar": 59,
+        "endLine": 31,
+        "endChar": 70
+      },
+      "revId": "2ac10eb22c3b0f4e79a1de854cbe42507aebe09b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
