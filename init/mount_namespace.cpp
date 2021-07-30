@@ -81,7 +81,6 @@ static bool IsApexUpdatable() {
     static bool updatable = android::sysprop::ApexProperties::updatable().value_or(false);
     return updatable;
 }
-
 static bool IsMicrodroid() {
     static bool is_microdroid = android::base::GetProperty("ro.hardware", "") == "microdroid";
     return is_microdroid;
