@@ -16,6 +16,75 @@
       "message": "Ping",
       "revId": "8b83ffad8717565dd91ab788b6452bb9bf9acf3d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9c01a5a8_a9d15c63",
+        "filename": "debuggerd/debuggerd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-07-30T20:10:48Z",
+      "side": 1,
+      "message": "s/process/thread/?\n\nthe \"requested dump of tid\" is a bit misleadingly worded now? is \"request was for tid %d\" clearer?",
+      "range": {
+        "startLine": 106,
+        "startChar": 41,
+        "endLine": 106,
+        "endChar": 48
+      },
+      "revId": "8b83ffad8717565dd91ab788b6452bb9bf9acf3d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d1355a88_7fa9efc0",
+        "filename": "debuggerd/debuggerd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 122,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-07-30T20:10:48Z",
+      "side": 1,
+      "message": "same",
+      "range": {
+        "startLine": 122,
+        "startChar": 35,
+        "endLine": 122,
+        "endChar": 42
+      },
+      "revId": "8b83ffad8717565dd91ab788b6452bb9bf9acf3d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "354a2203_0e102839",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 173,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-07-30T20:10:48Z",
+      "side": 1,
+      "message": "i\u0027m a bit confused by the \"occurred on\" here (and i\u0027m reading this with all the context of this fresh bug, not 6 months later)... is this sentence less confusing if we just say \"pid %d tid %d\"?",
+      "range": {
+        "startLine": 173,
+        "startChar": 55,
+        "endLine": 173,
+        "endChar": 66
+      },
+      "revId": "8b83ffad8717565dd91ab788b6452bb9bf9acf3d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
