@@ -41,6 +41,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "223ed776_1623b124",
+        "filename": "debuggerd/debuggerd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2021-07-30T21:07:26Z",
+      "side": 1,
+      "message": "It mostly inline with your suggestion.",
+      "parentUuid": "9c01a5a8_a9d15c63",
+      "range": {
+        "startLine": 106,
+        "startChar": 41,
+        "endLine": 106,
+        "endChar": 48
+      },
+      "revId": "8b83ffad8717565dd91ab788b6452bb9bf9acf3d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d1355a88_7fa9efc0",
@@ -64,6 +88,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "07ead712_1093c862",
+        "filename": "debuggerd/debuggerd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 122,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2021-07-30T21:07:26Z",
+      "side": 1,
+      "message": "same change.",
+      "parentUuid": "d1355a88_7fa9efc0",
+      "range": {
+        "startLine": 122,
+        "startChar": 35,
+        "endLine": 122,
+        "endChar": 42
+      },
+      "revId": "8b83ffad8717565dd91ab788b6452bb9bf9acf3d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "354a2203_0e102839",
@@ -77,6 +125,30 @@
       "writtenOn": "2021-07-30T20:10:48Z",
       "side": 1,
       "message": "i\u0027m a bit confused by the \"occurred on\" here (and i\u0027m reading this with all the context of this fresh bug, not 6 months later)... is this sentence less confusing if we just say \"pid %d tid %d\"?",
+      "range": {
+        "startLine": 173,
+        "startChar": 55,
+        "endLine": 173,
+        "endChar": 66
+      },
+      "revId": "8b83ffad8717565dd91ab788b6452bb9bf9acf3d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3475c6fe_d825e2e2",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 173,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2021-07-30T21:07:26Z",
+      "side": 1,
+      "message": "Actually, I realized that this message is really not right at all. So I\u0027ve rearranged the code slightly and changed the message so it\u0027s not different in either case.\n\nIt\u0027s still possible to tell if the signal arrived on a side thread by looking at the log message itself. Specifically, the pid and tid of the log message will be different if the signal arrives on the side thread. But I don\u0027t think that information is very useful.",
+      "parentUuid": "354a2203_0e102839",
       "range": {
         "startLine": 173,
         "startChar": 55,
