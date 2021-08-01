@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "999201b2_c05228f9",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 208,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2021-08-01T05:53:44Z",
+      "side": 1,
+      "message": "nit:\n\nif (!__builtin_available(android 30, *)) {\n    return false;\n}\n....\n\nso you can save one level of indent.",
+      "range": {
+        "startLine": 208,
+        "startChar": 4,
+        "endLine": 208,
+        "endChar": 44
+      },
+      "revId": "d742af8a2eccd0b18bafff05f759e24e87ec6d72",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "514b1c20_d0d73884",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 443,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2021-08-01T05:53:44Z",
+      "side": 1,
+      "message": "this function returns 0 as success right? same below",
+      "range": {
+        "startLine": 443,
+        "startChar": 19,
+        "endLine": 443,
+        "endChar": 24
+      },
+      "revId": "d742af8a2eccd0b18bafff05f759e24e87ec6d72",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
