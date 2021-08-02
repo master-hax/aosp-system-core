@@ -45,6 +45,29 @@
       },
       "revId": "d742af8a2eccd0b18bafff05f759e24e87ec6d72",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1343d951_73208df0",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 458,
+      "author": {
+        "id": 1120612
+      },
+      "writtenOn": "2021-08-02T04:12:33Z",
+      "side": 1,
+      "message": "Hi Suren,\n\nI was able to track the -EBUSY failure from L465 that I had told you about to this error check in the kernel code: https://source.corp.google.com/kernel-upstream/kernel/cgroup/cgroup.c;l\u003d2547\n\nOn the documentation about the internal process constraint for cgroup v2, it looks like the cgroup.subtree_control file must be empty for leaf cgroups. The documentation says that \"the rule is that a (nonroot) cgroup can\u0027t both (1) have member processes, and (2) distribute resources into child cgroups—that is, have a nonempty cgroup.subtree_control file.\" The error goes away if I remove L453-458. I verified that the leaf cgroup(pid_xxxx) does have the controller enabled without L453-458(without the cgroup.subtree_control file being written into into pid_xxxx).",
+      "range": {
+        "startLine": 453,
+        "startChar": 4,
+        "endLine": 458,
+        "endChar": 5
+      },
+      "revId": "d742af8a2eccd0b18bafff05f759e24e87ec6d72",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
