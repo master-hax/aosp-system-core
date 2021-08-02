@@ -182,6 +182,30 @@
       },
       "revId": "2ac10eb22c3b0f4e79a1de854cbe42507aebe09b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6b65a8ed_0046db96",
+        "filename": "fs_mgr/fs_mgr_fstab.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 432,
+      "author": {
+        "id": 1137063
+      },
+      "writtenOn": "2021-08-02T16:52:06Z",
+      "side": 1,
+      "message": "Yes, it is unfortunate that the same paths mean different things at different times, but I don\u0027t think there will be a problem here.",
+      "parentUuid": "baaee656_da691e3d",
+      "range": {
+        "startLine": 432,
+        "startChar": 36,
+        "endLine": 432,
+        "endChar": 54
+      },
+      "revId": "2ac10eb22c3b0f4e79a1de854cbe42507aebe09b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
