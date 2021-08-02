@@ -158,6 +158,30 @@
       },
       "revId": "2ac10eb22c3b0f4e79a1de854cbe42507aebe09b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "baaee656_da691e3d",
+        "filename": "fs_mgr/fs_mgr_fstab.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 432,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2021-08-02T13:10:09Z",
+      "side": 1,
+      "message": "Right, but the same code GetFstabPath() will still be used after SwitchRoot(\"/system\");  \n\nNormally we have duplicate fstab.* files under:\n  + The vendor ramdisk (will be freed after SwitchRoot(\"/system\");)\n  + /vendor/etc/fstab.*\n\nThe former is for the first-stage mount (e.g., /system, /vendor) and the latter is for the second-stage mount (e.g., /data).\n\nI was thinking if it\u0027s possible for someone to misplace a fstab file under /system/etc/fstab.*.\n\nThen we might get different content of GetFstabPath() in the first-stage v.s. the second-stage. Anyway, this still can be fixed by removing the fstab file in system.img if it happens somehow.\n\nps: I\u0027m ok with the change but just raised some discussions.",
+      "parentUuid": "e313bc10_ab992746",
+      "range": {
+        "startLine": 432,
+        "startChar": 36,
+        "endLine": 432,
+        "endChar": 54
+      },
+      "revId": "2ac10eb22c3b0f4e79a1de854cbe42507aebe09b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
