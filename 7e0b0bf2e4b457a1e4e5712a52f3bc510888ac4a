@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "826e6a15_3295542a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1889245
+      },
+      "writtenOn": "2021-08-02T12:56:11Z",
+      "side": 1,
+      "message": "Changed and added more meaning-ful message.",
+      "parentUuid": "338a0942_2dc8e349",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 18
+      },
+      "revId": "7e0b0bf2e4b457a1e4e5712a52f3bc510888ac4a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "1c71b90d_794a01dc",
@@ -37,6 +61,30 @@
       "writtenOn": "2021-08-02T11:54:53Z",
       "side": 1,
       "message": "nit: there should be an empty line between change description and Test: stanza.",
+      "range": {
+        "startLine": 8,
+        "startChar": 0,
+        "endLine": 8,
+        "endChar": 4
+      },
+      "revId": "7e0b0bf2e4b457a1e4e5712a52f3bc510888ac4a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5ee25db0_1a972e82",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1889245
+      },
+      "writtenOn": "2021-08-02T12:56:11Z",
+      "side": 1,
+      "message": "Added",
+      "parentUuid": "1c71b90d_794a01dc",
       "range": {
         "startLine": 8,
         "startChar": 0,
