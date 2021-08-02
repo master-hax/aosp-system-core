@@ -134,6 +134,30 @@
       },
       "revId": "2ac10eb22c3b0f4e79a1de854cbe42507aebe09b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e313bc10_ab992746",
+        "filename": "fs_mgr/fs_mgr_fstab.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 432,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2021-08-02T11:08:46Z",
+      "side": 1,
+      "message": "I think this is not referring to /system partition, but actually the fstab in ramdisk, as after we SwitchRoot(\"/first_stage_ramdisk\"), the fstab path \"/first_stage_ramdisk/system/etc/fstab.\" would become \"/system/etc/fstab.\"",
+      "parentUuid": "c7fa6709_b1c6468e",
+      "range": {
+        "startLine": 432,
+        "startChar": 36,
+        "endLine": 432,
+        "endChar": 54
+      },
+      "revId": "2ac10eb22c3b0f4e79a1de854cbe42507aebe09b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
