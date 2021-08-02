@@ -96,6 +96,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "73bcc06d_fca0ee8f",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1137063
+      },
+      "writtenOn": "2021-08-02T17:03:43Z",
+      "side": 1,
+      "message": "Added a clarification to the commit message.",
+      "parentUuid": "0571bbd7_df2feb09",
+      "range": {
+        "startLine": 31,
+        "startChar": 59,
+        "endLine": 31,
+        "endChar": 70
+      },
+      "revId": "2ac10eb22c3b0f4e79a1de854cbe42507aebe09b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "403941de_f9da50f8",
@@ -198,6 +222,30 @@
       "side": 1,
       "message": "Yes, it is unfortunate that the same paths mean different things at different times, but I don\u0027t think there will be a problem here.",
       "parentUuid": "baaee656_da691e3d",
+      "range": {
+        "startLine": 432,
+        "startChar": 36,
+        "endLine": 432,
+        "endChar": 54
+      },
+      "revId": "2ac10eb22c3b0f4e79a1de854cbe42507aebe09b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fb31dd86_818aae64",
+        "filename": "fs_mgr/fs_mgr_fstab.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 432,
+      "author": {
+        "id": 1137063
+      },
+      "writtenOn": "2021-08-02T17:03:43Z",
+      "side": 1,
+      "message": "Added a clarification to the commit message.",
+      "parentUuid": "6b65a8ed_0046db96",
       "range": {
         "startLine": 432,
         "startChar": 36,
