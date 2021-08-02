@@ -84,6 +84,11 @@ struct FstabEntry {
         bool slot_select_other : 1;
         bool fs_verity : 1;
         bool ext_meta_csum : 1;
+<<<<<<< HEAD   (be94c9 Merge changes from topic "skip_mount.cfg-skips-submount-andr)
+=======
+        bool fs_compress : 1;
+        bool overlayfs_remove_missing_lowerdir : 1;
+>>>>>>> CHANGE (e7783a fs_mgr: Add fs_mgr_flag overlayfs_remove_missing_lowerdir)
     } fs_mgr_flags = {};
 
     bool is_encryptable() const {

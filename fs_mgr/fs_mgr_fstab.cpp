@@ -180,6 +180,11 @@ void ParseFsMgrFlags(const std::string& flags, FstabEntry* entry) {
         CheckFlag("slotselect_other", slot_select_other);
         CheckFlag("fsverity", fs_verity);
         CheckFlag("metadata_csum", ext_meta_csum);
+<<<<<<< HEAD   (be94c9 Merge changes from topic "skip_mount.cfg-skips-submount-andr)
+=======
+        CheckFlag("fscompress", fs_compress);
+        CheckFlag("overlayfs_remove_missing_lowerdir", overlayfs_remove_missing_lowerdir);
+>>>>>>> CHANGE (e7783a fs_mgr: Add fs_mgr_flag overlayfs_remove_missing_lowerdir)
 
 #undef CheckFlag
 
