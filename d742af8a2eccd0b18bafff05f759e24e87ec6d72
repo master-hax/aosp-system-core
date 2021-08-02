@@ -48,6 +48,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "983b6f6a_9e714fd0",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 208,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-08-02T18:30:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0295fb6d_0b5904fd",
+      "range": {
+        "startLine": 208,
+        "startChar": 4,
+        "endLine": 208,
+        "endChar": 44
+      },
+      "revId": "d742af8a2eccd0b18bafff05f759e24e87ec6d72",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "514b1c20_d0d73884",
@@ -95,6 +119,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "e5498421_71a9223e",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 443,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-08-02T18:30:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "45f40675_f0bcd872",
+      "range": {
+        "startLine": 443,
+        "startChar": 19,
+        "endLine": 443,
+        "endChar": 24
+      },
+      "revId": "d742af8a2eccd0b18bafff05f759e24e87ec6d72",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "1343d951_73208df0",
@@ -132,6 +180,30 @@
       "side": 1,
       "message": "Got it. I\u0027ll remove these lines.",
       "parentUuid": "1343d951_73208df0",
+      "range": {
+        "startLine": 453,
+        "startChar": 4,
+        "endLine": 458,
+        "endChar": 5
+      },
+      "revId": "d742af8a2eccd0b18bafff05f759e24e87ec6d72",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "062c3678_99894985",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 458,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-08-02T18:30:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a7d541bc_9d8dea22",
       "range": {
         "startLine": 453,
         "startChar": 4,
