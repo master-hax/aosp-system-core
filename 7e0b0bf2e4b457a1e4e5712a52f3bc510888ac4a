@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "338a0942_2dc8e349",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1432579
+      },
+      "writtenOn": "2021-08-02T11:54:53Z",
+      "side": 1,
+      "message": "Please update the description following best practices from go/cl-descriptions",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 18
+      },
+      "revId": "7e0b0bf2e4b457a1e4e5712a52f3bc510888ac4a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1c71b90d_794a01dc",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1432579
+      },
+      "writtenOn": "2021-08-02T11:54:53Z",
+      "side": 1,
+      "message": "nit: there should be an empty line between change description and Test: stanza.",
+      "range": {
+        "startLine": 8,
+        "startChar": 0,
+        "endLine": 8,
+        "endChar": 4
+      },
+      "revId": "7e0b0bf2e4b457a1e4e5712a52f3bc510888ac4a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
