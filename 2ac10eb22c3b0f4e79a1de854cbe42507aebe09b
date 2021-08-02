@@ -111,6 +111,29 @@
       "message": "Retrying presubmit due to flaky test b/194819935",
       "revId": "2ac10eb22c3b0f4e79a1de854cbe42507aebe09b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c7fa6709_b1c6468e",
+        "filename": "fs_mgr/fs_mgr_fstab.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 432,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2021-08-02T03:34:00Z",
+      "side": 1,
+      "message": "Just to be clear, usually the fstab is \"device-specific\" and won\u0027t be placed under /system.\n\nThat\u0027s because:\n\n1. If they were in /system, the fstab will be gone after /system is flashed with a GSI image (for CTS-on-GSI and VTS compliance test).\n   https://source.android.com/setup/build/gsi\n   \n2. Many OEMs or SoC vendors defines their own SSI (single system image) that can be used across various vendor.img. In this case, the fstab usually will be under ramdisk and vendor.img.\n\n  https://source.android.com/devices/bootloader/partitions/shared-system-image#defining-ssi",
+      "range": {
+        "startLine": 432,
+        "startChar": 36,
+        "endLine": 432,
+        "endChar": 54
+      },
+      "revId": "2ac10eb22c3b0f4e79a1de854cbe42507aebe09b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
