@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "1d2a8236_2bf1bb90",
+        "filename": "trusty/storage/proxy/storage.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 477,
+      "author": {
+        "id": 1124693
+      },
+      "writtenOn": "2021-08-02T23:42:18Z",
+      "side": 1,
+      "message": "This FD is \u003c 0 after this. It should be safe to use since all operations will just fail.",
+      "parentUuid": "2cb83ccb_6f6970e8",
+      "range": {
+        "startLine": 477,
+        "startChar": 8,
+        "endLine": 477,
+        "endChar": 16
+      },
+      "revId": "91e475068d7f9b69d2cee70de405b69cb6588efe",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "1d6f5ba4_0acb7c6c",
@@ -37,6 +61,30 @@
       "writtenOn": "2021-08-02T22:25:52Z",
       "side": 1,
       "message": "Polish: should be suppressed in cases we know it is not an error.  (Command line argument first time we launch?)",
+      "range": {
+        "startLine": 478,
+        "startChar": 0,
+        "endLine": 479,
+        "endChar": 41
+      },
+      "revId": "91e475068d7f9b69d2cee70de405b69cb6588efe",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "74408334_aa1fe818",
+        "filename": "trusty/storage/proxy/storage.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 479,
+      "author": {
+        "id": 1124693
+      },
+      "writtenOn": "2021-08-02T23:42:18Z",
+      "side": 1,
+      "message": "I don\u0027t think it\u0027s worth adding a command line flag for this. Also, I\u0027d like to see this message to differentiate the two times we start the process.",
+      "parentUuid": "1d6f5ba4_0acb7c6c",
       "range": {
         "startLine": 478,
         "startChar": 0,
