@@ -500,6 +500,7 @@ on late-init
     trigger firmware_mounts_complete
 
     trigger early-boot
+    verity_update_state
     trigger boot
 
 on early-fs
