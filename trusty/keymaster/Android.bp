@@ -81,6 +81,40 @@ cc_binary {
 }
 
 cc_binary {
+    name: "android.hardware.keymaster@4.1-service.trusty",
+    defaults: ["hidl_defaults"],
+    relative_install_path: "hw",
+    vendor: true,
+    init_rc: ["4.1/android.hardware.keymaster@4.1-service.trusty.rc"],
+    srcs: [
+        "4.1/service.cpp",
+        "4.1/TrustyKeymaster41Device.cpp",
+        "4.0/TrustyKeymaster4Device.cpp",
+        "ipc/trusty_keymaster_ipc.cpp",
+        "TrustyKeymaster.cpp",
+    ],
+
+    local_include_dirs: ["include"],
+
+    shared_libs: [
+        "liblog",
+        "libcutils",
+        "libdl",
+        "libbase",
+        "libutils",
+        "libhardware",
+        "libhidlbase",
+        "libtrusty",
+        "libkeymaster_messages",
+        "libkeymaster4",
+        "android.hardware.keymaster@4.1",
+        "android.hardware.keymaster@4.0"
+    ],
+
+    vintf_fragments: ["4.1/android.hardware.keymaster@4.1-service.trusty.xml"],
+}
+
+cc_binary {
     name: "android.hardware.security.keymint-service.trusty",
     relative_install_path: "hw",
     init_rc: ["keymint/android.hardware.security.keymint-service.trusty.rc"],

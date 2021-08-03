@@ -95,7 +95,7 @@ class TrustyKeymaster4Device : public IKeymasterDevice {
                         const VerificationToken& verificationToken, finish_cb _hidl_cb) override;
     Return<ErrorCode> abort(uint64_t operationHandle) override;
 
-  private:
+  protected:
     std::unique_ptr<::keymaster::TrustyKeymaster> impl_;
 };
 
