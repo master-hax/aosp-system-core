@@ -384,6 +384,24 @@
       "parentUuid": "46c90599_2d513992",
       "revId": "dde634ae23e4d3c146dc01268e2fe0ead90686b8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b9e8ee39_b0b2cc3b",
+        "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 775,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-08-03T17:26:48Z",
+      "side": 1,
+      "message": "We shouldn\u0027t be reading during postinstall phase. The current check will make sure it does not:\n\n    if (android::base::EndsWith(misc_name_, \"-init\") || is_socket_present_) {\n        second_stage_init \u003d false;\n    }\n    \n\"is_socket_present_\" will be \"true\" during post-install phase; or am i missing something here ?",
+      "parentUuid": "e8cf3e53_01b39b5d",
+      "revId": "dde634ae23e4d3c146dc01268e2fe0ead90686b8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
