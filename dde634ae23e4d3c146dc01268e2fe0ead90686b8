@@ -16,6 +16,176 @@
       "message": "Rebase with ToT",
       "revId": "dde634ae23e4d3c146dc01268e2fe0ead90686b8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "feb42be3_f95fc3dc",
+        "filename": "fs_mgr/libdm/dm.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 662,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-08-03T04:07:35Z",
+      "side": 1,
+      "message": "Okay, I see now that this code is identical to update_verifier - let\u0027s remove it from there once this lands. Especially since you\u0027ve fixed a memory leak that exists in the verifier version. If we ever refactor this it\u0027d be nice to try out std::filesystem.",
+      "revId": "dde634ae23e4d3c146dc01268e2fe0ead90686b8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bf53bb0d_5273142a",
+        "filename": "fs_mgr/libsnapshot/snapuserd/Android.bp",
+        "patchSetId": 7
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-08-03T04:07:35Z",
+      "side": 1,
+      "message": "accidental hard tab?",
+      "revId": "dde634ae23e4d3c146dc01268e2fe0ead90686b8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a0cf6194_d0c0c89e",
+        "filename": "fs_mgr/libsnapshot/snapuserd/Android.bp",
+        "patchSetId": 7
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-08-03T04:07:35Z",
+      "side": 1,
+      "message": "ditto",
+      "revId": "dde634ae23e4d3c146dc01268e2fe0ead90686b8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7e8bc048_594951b8",
+        "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 678,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-08-03T04:07:35Z",
+      "side": 1,
+      "message": "SNAP_PLOG",
+      "revId": "dde634ae23e4d3c146dc01268e2fe0ead90686b8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "647ec64f_608dcf3c",
+        "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 684,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-08-03T04:07:35Z",
+      "side": 1,
+      "message": "Can we add a comment about the rationale behind 1024? Is it something that might differ across devices?\n\nRelatedly, do we expect this to have any adverse effects on low-memory devices?",
+      "revId": "dde634ae23e4d3c146dc01268e2fe0ead90686b8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3d7e417d_00abbd09",
+        "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 691,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-08-03T04:07:35Z",
+      "side": 1,
+      "message": "SNAP_PLOG",
+      "revId": "dde634ae23e4d3c146dc01268e2fe0ead90686b8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4f62a03e_0a0d8950",
+        "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 701,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-08-03T04:07:35Z",
+      "side": 1,
+      "message": "SNAP_LOG",
+      "revId": "dde634ae23e4d3c146dc01268e2fe0ead90686b8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7dfcf251_d7f52f6b",
+        "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 706,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-08-03T04:07:35Z",
+      "side": 1,
+      "message": "SNAP_LOG",
+      "revId": "dde634ae23e4d3c146dc01268e2fe0ead90686b8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fc261569_61e7fb3f",
+        "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 712,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-08-03T04:07:35Z",
+      "side": 1,
+      "message": "SNAP_LOG",
+      "revId": "dde634ae23e4d3c146dc01268e2fe0ead90686b8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "358bcd79_4c061ac9",
+        "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 775,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-08-03T04:07:35Z",
+      "side": 1,
+      "message": "Thinking about this again.. the property service isn\u0027t online during the selinux stage of init, so the value will always be empty, and we\u0027ll readahead every time we boot with snapshots.\n\nIf that\u0027s the intent, can we drop the property check altogether? I\u0027m a little worried it could race with __system_properties_init. To limit readhead only to current slot partitions, we could check against fs_mgr_get_slot_suffix().",
+      "revId": "dde634ae23e4d3c146dc01268e2fe0ead90686b8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
