@@ -175,6 +175,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "085a7511_cc5b90b1",
+        "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 684,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-08-03T17:15:31Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "d205e15b_4879174c",
+      "revId": "dde634ae23e4d3c146dc01268e2fe0ead90686b8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "3d7e417d_00abbd09",
@@ -346,6 +364,24 @@
       "side": 1,
       "message": "\u003e To limit readhead only to current slot partitions, we could check against fs_mgr_get_slot_suffix().\n\nWhy do we need this explicit check ? If the device falls back to old slot, daemon should never spin up and hence this code will never execute.",
       "parentUuid": "358bcd79_4c061ac9",
+      "revId": "dde634ae23e4d3c146dc01268e2fe0ead90686b8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e8cf3e53_01b39b5d",
+        "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 775,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-08-03T17:15:31Z",
+      "side": 1,
+      "message": "Do we want to readahead when doing the postinstall step on the source slot?",
+      "parentUuid": "46c90599_2d513992",
       "revId": "dde634ae23e4d3c146dc01268e2fe0ead90686b8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
