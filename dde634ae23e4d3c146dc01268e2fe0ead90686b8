@@ -105,6 +105,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "d205e15b_4879174c",
+        "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 684,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-08-03T06:16:23Z",
+      "side": 1,
+      "message": "\u003e Can we add a comment about the rationale behind 1024? Is it something that might differ across devices?\n\nWell, the primary reason to pick 4M is because the current update_verifier uses 4M as the read size. That said, when I integrate the io_uring API\u0027s, I will experiment with the rith I/O size. For now, this is in sync with update_verifier code.\n\n\n\u003e Relatedly, do we expect this to have any adverse effects on low-memory devices?\n\nI did think about this; there shouldn\u0027t be any issue. On low memory systems, pages will get thrashed out if the sum of all partition size is greater than the memory which is mostly on \u003c 2GB devices. One way to address this is to read blocks only from the largest partition which is just fits into memory. I didn\u0027t do that as it requires a little more effort. Let me know if it is worth the effort, I will think through and will try to optimize in a follow up check-in.",
+      "parentUuid": "647ec64f_608dcf3c",
+      "revId": "dde634ae23e4d3c146dc01268e2fe0ead90686b8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "3d7e417d_00abbd09",
         "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd.cpp",
         "patchSetId": 7
@@ -184,6 +202,24 @@
       "writtenOn": "2021-08-03T04:07:35Z",
       "side": 1,
       "message": "Thinking about this again.. the property service isn\u0027t online during the selinux stage of init, so the value will always be empty, and we\u0027ll readahead every time we boot with snapshots.\n\nIf that\u0027s the intent, can we drop the property check altogether? I\u0027m a little worried it could race with __system_properties_init. To limit readhead only to current slot partitions, we could check against fs_mgr_get_slot_suffix().",
+      "revId": "dde634ae23e4d3c146dc01268e2fe0ead90686b8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "46c90599_2d513992",
+        "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 775,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-08-03T06:16:23Z",
+      "side": 1,
+      "message": "\u003e To limit readhead only to current slot partitions, we could check against fs_mgr_get_slot_suffix().\n\nWhy do we need this explicit check ? If the device falls back to old slot, daemon should never spin up and hence this code will never execute.",
+      "parentUuid": "358bcd79_4c061ac9",
       "revId": "dde634ae23e4d3c146dc01268e2fe0ead90686b8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
