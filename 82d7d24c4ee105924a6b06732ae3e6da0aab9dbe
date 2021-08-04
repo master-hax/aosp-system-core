@@ -66,6 +66,29 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "0726d0fe_6b91ccf6",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 1309,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2021-08-04T13:06:19Z",
+      "side": 1,
+      "message": "Could you elaborate the reason? I don\u0027t think this comment would be useful as it is just explaining what the code does, but not \"why\".",
+      "range": {
+        "startLine": 1309,
+        "startChar": 0,
+        "endLine": 1309,
+        "endChar": 80
+      },
+      "revId": "82d7d24c4ee105924a6b06732ae3e6da0aab9dbe",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "fc08a562_a5cbaea9",
         "filename": "init/mount_namespace.cpp",
         "patchSetId": 6
