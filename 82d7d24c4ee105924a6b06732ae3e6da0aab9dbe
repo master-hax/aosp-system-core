@@ -49,6 +49,54 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "ea7f3ee9_76dc74af",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1889245
+      },
+      "writtenOn": "2021-08-05T08:20:35Z",
+      "side": 1,
+      "message": "Changed.",
+      "parentUuid": "3328d907_3e47f789",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 8,
+        "endChar": 7
+      },
+      "revId": "82d7d24c4ee105924a6b06732ae3e6da0aab9dbe",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6a84f7fb_1a3c45e0",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1889245
+      },
+      "writtenOn": "2021-08-05T08:20:35Z",
+      "side": 1,
+      "message": "Changed.",
+      "parentUuid": "97173cda_fc0c1013",
+      "range": {
+        "startLine": 8,
+        "startChar": 9,
+        "endLine": 8,
+        "endChar": 72
+      },
+      "revId": "82d7d24c4ee105924a6b06732ae3e6da0aab9dbe",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "b6a060fb_8678968b",
         "filename": "/PATCHSET_LEVEL",
         "patchSetId": 6
@@ -87,6 +135,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "4f2bf787_9c4b8e47",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 1309,
+      "author": {
+        "id": 1889245
+      },
+      "writtenOn": "2021-08-05T08:20:35Z",
+      "side": 1,
+      "message": "You are right. Before the change, there was a check to only update it when APEX was \nupdatable, since in non-updatable mode, the APEX was flattened much before this step and the linker configuration was already taken care of. \n\nI will just remove this comment altogether, as the situation right now, does not need an explanation of this.",
+      "parentUuid": "0726d0fe_6b91ccf6",
+      "range": {
+        "startLine": 1309,
+        "startChar": 0,
+        "endLine": 1309,
+        "endChar": 80
+      },
+      "revId": "82d7d24c4ee105924a6b06732ae3e6da0aab9dbe",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "fc08a562_a5cbaea9",
@@ -100,6 +172,30 @@
       "writtenOn": "2021-08-04T12:57:39Z",
       "side": 1,
       "message": "nit: remove?",
+      "range": {
+        "startLine": 192,
+        "startChar": 4,
+        "endLine": 194,
+        "endChar": 12
+      },
+      "revId": "82d7d24c4ee105924a6b06732ae3e6da0aab9dbe",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0d89e056_5f9b0e6d",
+        "filename": "init/mount_namespace.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 194,
+      "author": {
+        "id": 1889245
+      },
+      "writtenOn": "2021-08-05T08:20:35Z",
+      "side": 1,
+      "message": "removed.",
+      "parentUuid": "fc08a562_a5cbaea9",
       "range": {
         "startLine": 192,
         "startChar": 4,
