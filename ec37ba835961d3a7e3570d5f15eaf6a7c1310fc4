@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e5c0bc89_5036fb61",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1084624
+      },
+      "writtenOn": "2021-08-05T18:47:47Z",
+      "side": 1,
+      "message": "\u003e Patch Set 3: Code-Review+2\n\u003e \n\u003e (1 comment)\n\u003e \n\u003e By voting Code-Review+2 the following files are now code-owner approved by \u003cGERRIT_ACCOUNT_1120458\u003e:\n\u003e * rootdir/init.rc\n\u003e \n\nUpdated the description: vendors report ~6Mb memory spent on these traces.",
+      "revId": "ec37ba835961d3a7e3570d5f15eaf6a7c1310fc4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
