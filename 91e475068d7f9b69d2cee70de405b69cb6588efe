@@ -48,6 +48,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "7b87230d_d2f6f4a8",
+        "filename": "trusty/storage/proxy/storage.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 477,
+      "author": {
+        "id": 1114938
+      },
+      "writtenOn": "2021-08-05T22:19:11Z",
+      "side": 1,
+      "message": "Right, I was indirectly asking if you had checked all the use cites to verify it would work right.",
+      "parentUuid": "1d2a8236_2bf1bb90",
+      "range": {
+        "startLine": 477,
+        "startChar": 8,
+        "endLine": 477,
+        "endChar": 16
+      },
+      "revId": "91e475068d7f9b69d2cee70de405b69cb6588efe",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "1d6f5ba4_0acb7c6c",
@@ -85,6 +109,30 @@
       "side": 1,
       "message": "I don\u0027t think it\u0027s worth adding a command line flag for this. Also, I\u0027d like to see this message to differentiate the two times we start the process.",
       "parentUuid": "1d6f5ba4_0acb7c6c",
+      "range": {
+        "startLine": 478,
+        "startChar": 0,
+        "endLine": 479,
+        "endChar": 41
+      },
+      "revId": "91e475068d7f9b69d2cee70de405b69cb6588efe",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "68e0f1b7_21f6246e",
+        "filename": "trusty/storage/proxy/storage.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 479,
+      "author": {
+        "id": 1114938
+      },
+      "writtenOn": "2021-08-05T22:19:11Z",
+      "side": 1,
+      "message": "When \"ERROR\" shows up in the log, you end up getting spurious bug reports.  I won\u0027t make this a blocker for the CL, but code should never print \"ERROR\" during normal operation.  It confuses everyone else, and you keep needing to tell everyone \"no, that error is fine, ignore it.\"  Death by a thousand cuts.",
+      "parentUuid": "74408334_aa1fe818",
       "range": {
         "startLine": 478,
         "startChar": 0,
