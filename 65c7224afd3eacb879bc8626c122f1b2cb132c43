@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "360c3e5d_a2e75b49",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 10
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1889245
+      },
+      "writtenOn": "2021-08-05T18:07:27Z",
+      "side": 1,
+      "message": "Fixed the trailing whitespace",
+      "revId": "65c7224afd3eacb879bc8626c122f1b2cb132c43",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
