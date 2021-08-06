@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "af648b9a_1759983b",
+        "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd.h",
+        "patchSetId": 9
+      },
+      "lineNbr": 301,
+      "author": {
+        "id": 1096713
+      },
+      "writtenOn": "2021-08-06T20:44:30Z",
+      "side": 1,
+      "message": "Is there a reason (maybe matching API somewhere that limits this?) that we are not passing \u0027partition_name\u0027 by a const reference?  We\u0027re using a const reference for \u0027dm_block_device\u0027, but it seems like we could do the same with \u0027partition_name\u0027 to avoid creating an unnecessary copy of it when we call this function.",
+      "revId": "a11a338e2b46248b927d3dc092e7c5fd44eeb0e7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5e9ce0c5_da3e9cd7",
+        "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd.h",
+        "patchSetId": 9
+      },
+      "lineNbr": 302,
+      "author": {
+        "id": 1096713
+      },
+      "writtenOn": "2021-08-06T20:44:30Z",
+      "side": 1,
+      "message": "Same question for the \u0027partition_name\u0027 argument here.",
+      "revId": "a11a338e2b46248b927d3dc092e7c5fd44eeb0e7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
