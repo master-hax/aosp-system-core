@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b8adfb1a_4324bad0",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 13
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1880310
+      },
+      "writtenOn": "2021-08-06T20:05:46Z",
+      "side": 1,
+      "message": "The last patchsets address Tri\u0027s concerns about commenting thoroughly and making sure the fuzzer is maintainable. I also removed unused protobuf definitions from requests.proto for now. Some definitions were incomplete and it wasn\u0027t clear to me what fields are actually required in a few cases, so I removed it until we actually start fuzzing them.",
+      "revId": "f6b8bfa958d882a6cb10714d44ea266e5e5e5e6c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}

@@ -33,6 +33,24 @@
       "message": "Outdated comment",
       "revId": "2bc7e34022b3d054b9724bbc5a89d9a19141d727",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3544b940_96081cb6",
+        "filename": "trusty/keymaster/fuzz/keymaster_defs_builder.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 194,
+      "author": {
+        "id": 1880310
+      },
+      "writtenOn": "2021-08-06T20:05:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c93ffdf4_2657b5ed",
+      "revId": "2bc7e34022b3d054b9724bbc5a89d9a19141d727",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
