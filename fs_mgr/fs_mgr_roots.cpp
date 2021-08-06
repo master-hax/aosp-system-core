@@ -33,22 +33,40 @@ static constexpr const char* kSystemRoot = "/system";
 
 static bool gDidMapLogicalPartitions = false;
 
+static bool parsePathSlash(std::string& str) {
+    if (str == "/") return true;
+    auto slash = str.find_last_of('/');
+    if (slash == std::string::npos) return true;
+    if (slash == 0) {
+        str = "/";
+    } else {
+        str = str.substr(0, slash);
+    }
+    return false;
+}
+
 FstabEntry* GetEntryForPath(Fstab* fstab, const std::string& path) {
     if (path.empty()) return nullptr;
     std::string str(path);
     while (true) {
         auto entry = GetEntryForMountPoint(fstab, str);
         if (entry != nullptr) return entry;
-        if (str == "/") break;
-        auto slash = str.find_last_of('/');
-        if (slash == std::string::npos) break;
-        if (slash == 0) {
-            str = "/";
-        } else {
-            str = str.substr(0, slash);
-        }
+        if (parsePathSlash(str) == true) break;
     }
     return nullptr;
+}
+
+std::vector<FstabEntry*> GetEntriesForPath(Fstab* fstab, const std::string& path) {
+    std::vector<FstabEntry*> entries;
+    if (path.empty()) return entries;
+
+    std::string str(path);
+    while (true) {
+        entries = GetEntriesForMountPoint(fstab, str);
+        if (!entries.empty()) return entries;
+        if (parsePathSlash(str) == true) break;
+    }
+    return entries;
 }
 
 enum class MountState {
@@ -71,12 +89,7 @@ static MountState GetMountState(const std::string& mount_point) {
     return MountState::NOT_MOUNTED;
 }
 
-bool EnsurePathMounted(Fstab* fstab, const std::string& path, const std::string& mount_pt) {
-    auto rec = GetEntryForPath(fstab, path);
-    if (rec == nullptr) {
-        LERROR << "unknown volume for path [" << path << "]";
-        return false;
-    }
+bool TryPathMount(FstabEntry* rec, const std::string& mount_pt) {
     if (rec->fs_type == "ramdisk") {
         // The ramdisk is always mounted.
         return true;
@@ -134,6 +147,19 @@ bool EnsurePathMounted(Fstab* fstab, const std::string& path, const std::string&
         return false;
     }
     return true;
+}
+
+bool EnsurePathMounted(Fstab* fstab, const std::string& path, const std::string& mount_point) {
+    auto entries = GetEntriesForPath(fstab, path);
+    if (entries.empty()) {
+        LERROR << "unknown volume for path [" << path << "]";
+        return false;
+    }
+
+    for (auto entry : entries) {
+        if (TryPathMount(entry, mount_point) == true) return true;
+    }
+    return false;
 }
 
 bool EnsurePathUnmounted(Fstab* fstab, const std::string& path) {
