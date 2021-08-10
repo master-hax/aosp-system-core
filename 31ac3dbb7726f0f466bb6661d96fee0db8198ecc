@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ee01b116_3b07f3cb",
+        "filename": "init/extra_free_kbytes.sh",
+        "patchSetId": 4
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 1323232
+      },
+      "writtenOn": "2021-08-10T16:47:57Z",
+      "side": 1,
+      "message": "Is the comment should be reversed ?\n\n# if (managed_pages * (watermark_scale / 10000) \u003c min / 4)\n#     watermark_scale_new \u003d (min / 4) * 10000 / managed_pages + watermark_delta\n# else\n#     watermark_scale_new \u003d watermark_scale + watermark_delta",
+      "range": {
+        "startLine": 59,
+        "startChar": 0,
+        "endLine": 62,
+        "endChar": 79
+      },
+      "revId": "31ac3dbb7726f0f466bb6661d96fee0db8198ecc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
