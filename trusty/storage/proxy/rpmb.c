@@ -16,6 +16,7 @@
 
 #include <errno.h>
 #include <fcntl.h>
+#include <scsi/scsi.h>
 #include <scsi/sg.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -34,6 +35,7 @@
 #include "ipc.h"
 #include "log.h"
 #include "rpmb.h"
+#include "sg_err.h"
 #include "storage.h"
 
 #define MMC_READ_MULTIPLE_BLOCK 18
@@ -196,6 +198,73 @@ static int send_mmc_rpmb_req(int mmc_fd, const struct storage_rpmb_send_req* req
     return rc;
 }
 
+/*
+ * The sg_err_category_new function is copied from
+ * external/ltp/testcases/kernel/fs/scsi/ltpscsi/sg_err.c
+ */
+static int sg_err_category_new(uint8_t scsi_status, uint8_t host_status, uint8_t driver_status,
+                               const uint8_t* sense_buffer, int sb_len) {
+    if (scsi_status & 0x1) {
+        ALOGE("%s: The lowest bit of the SCSI status code should not be set\n", __func__);
+    }
+    if ((scsi_status == 0) && (host_status == 0) && (driver_status == 0)) {
+        return SG_ERR_CAT_CLEAN;
+    }
+    if (scsi_status == SCSI_CHECK_CONDITION) {
+        if (sense_buffer && (sb_len > 2)) {
+            int sense_key;
+            unsigned char asc;
+
+            if (sense_buffer[0] & 0x2) {
+                /* Descriptor format sense data */
+                sense_key = sense_buffer[1] & 0xf;
+                asc = sense_buffer[2];
+            } else {
+                /*  Fixed format sense data */
+                sense_key = sense_buffer[2] & 0xf;
+                asc = (sb_len > 12) ? sense_buffer[12] : 0;
+            }
+
+            if (sense_key == RECOVERED_ERROR)
+                return SG_ERR_CAT_RECOVERED;
+            else if (sense_key == UNIT_ATTENTION) {
+                if (asc == 0x28) {
+                    return SG_ERR_CAT_MEDIA_CHANGED;
+                }
+                if (asc == 0x29) {
+                    return SG_ERR_CAT_RESET;
+                }
+            }
+        }
+        return SG_ERR_CAT_SENSE;
+    }
+    if (host_status != 0) {
+        if ((host_status == SG_ERR_DID_NO_CONNECT) || (host_status == SG_ERR_DID_BUS_BUSY) ||
+            (host_status == SG_ERR_DID_TIME_OUT)) {
+            return SG_ERR_CAT_TIMEOUT;
+        }
+    }
+    if (driver_status != 0) {
+        if (driver_status == SG_ERR_DRIVER_TIMEOUT) {
+            return SG_ERR_CAT_TIMEOUT;
+        }
+    }
+    return SG_ERR_CAT_OTHER;
+}
+
+static int check_sg_io_hdr(const sg_io_hdr_t* io_hdrp) {
+    int rc;
+    rc = sg_err_category_new(io_hdrp->status, io_hdrp->host_status, io_hdrp->driver_status,
+                             io_hdrp->sbp, io_hdrp->sb_len_wr);
+    switch (rc) {
+        case SG_ERR_CAT_CLEAN:
+        case SG_ERR_CAT_RECOVERED:
+            return 0;
+        default:
+            return -1;
+    }
+}
+
 static int send_ufs_rpmb_req(int sg_fd, const struct storage_rpmb_send_req* req) {
     int rc;
     int wl_rc;
@@ -225,6 +294,10 @@ static int send_ufs_rpmb_req(int sg_fd, const struct storage_rpmb_send_req* req)
             ALOGE("%s: ufs ioctl failed: %d, %s\n", __func__, rc, strerror(errno));
             goto err_op;
         }
+
+        if (check_sg_io_hdr(&io_hdr) < 0) {
+            ALOGE("%s: SECURITY PROTOCOL OUT command failed for reliable_write_data\n", __func__);
+        }
         write_buf += req->reliable_write_size;
     }
 
@@ -239,6 +312,10 @@ static int send_ufs_rpmb_req(int sg_fd, const struct storage_rpmb_send_req* req)
             ALOGE("%s: ufs ioctl failed: %d, %s\n", __func__, rc, strerror(errno));
             goto err_op;
         }
+
+        if (check_sg_io_hdr(&io_hdr) < 0) {
+            ALOGE("%s: SECURITY PROTOCOL OUT command failed for write_data\n", __func__);
+        }
         write_buf += req->write_size;
     }
 
@@ -251,6 +328,10 @@ static int send_ufs_rpmb_req(int sg_fd, const struct storage_rpmb_send_req* req)
         rc = ioctl(sg_fd, SG_IO, &io_hdr);
         if (rc < 0) {
             ALOGE("%s: ufs ioctl failed: %d, %s\n", __func__, rc, strerror(errno));
+        }
+
+        if (check_sg_io_hdr(&io_hdr) < 0) {
+            ALOGE("%s: SECURITY PROTOCOL IN command failed for read_data\n", __func__);
         }
     }
 
