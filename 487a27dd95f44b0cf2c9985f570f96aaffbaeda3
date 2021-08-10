@@ -16,6 +16,23 @@
       "message": "Elliott, can you please check if this makes sense? Thanks!",
       "revId": "487a27dd95f44b0cf2c9985f570f96aaffbaeda3",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ee2a348f_9b3f2bd1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1084624
+      },
+      "writtenOn": "2021-08-10T16:25:33Z",
+      "side": 1,
+      "message": "Hi David, can you please take a look? (CCed you to 195089948 as well)\nI am not really sure what is the best practice for naming the properties and introducing such APIs altogether, maybe this can be done better.",
+      "revId": "487a27dd95f44b0cf2c9985f570f96aaffbaeda3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
