@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "20cd29a7_bb0daf09",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 3
+      },
+      "lineNbr": 203,
+      "author": {
+        "id": 1543914
+      },
+      "writtenOn": "2021-08-10T23:22:18Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "3fc9b519_1eb157f6",
+      "revId": "8e08605f1b245a17a60fd03cdbc5c4174e72f340",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "b67a8f4c_16ec9acc",
@@ -31,6 +49,30 @@
       "writtenOn": "2021-08-10T17:36:57Z",
       "side": 1,
       "message": "Please change the data types of scsi_status, host_status and driver_status from int to uint8_t since these three variables are unsigned 8-bit variables.",
+      "range": {
+        "startLine": 205,
+        "startChar": 31,
+        "endLine": 205,
+        "endChar": 82
+      },
+      "revId": "8e08605f1b245a17a60fd03cdbc5c4174e72f340",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8d9fd579_a2046523",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 3
+      },
+      "lineNbr": 205,
+      "author": {
+        "id": 1543914
+      },
+      "writtenOn": "2021-08-10T23:22:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b67a8f4c_16ec9acc",
       "range": {
         "startLine": 205,
         "startChar": 31,
@@ -64,6 +106,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "c8659c61_54b26127",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 3
+      },
+      "lineNbr": 206,
+      "author": {
+        "id": 1543914
+      },
+      "writtenOn": "2021-08-10T23:22:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c5db6601_4c74482f",
+      "range": {
+        "startLine": 206,
+        "startChar": 37,
+        "endLine": 206,
+        "endChar": 50
+      },
+      "revId": "8e08605f1b245a17a60fd03cdbc5c4174e72f340",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "39a197ec_2e2bc23e",
@@ -77,6 +143,30 @@
       "writtenOn": "2021-08-10T17:36:57Z",
       "side": 1,
       "message": "Clearing the lowest bit of the SCSI status code was necessary with SCSI equipment from 30 years ago but is no longer necessary today. Please log an error message if the lowest bit of the SCSI status code is set.",
+      "range": {
+        "startLine": 207,
+        "startChar": 4,
+        "endLine": 207,
+        "endChar": 24
+      },
+      "revId": "8e08605f1b245a17a60fd03cdbc5c4174e72f340",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d43456c1_d261725d",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 3
+      },
+      "lineNbr": 207,
+      "author": {
+        "id": 1543914
+      },
+      "writtenOn": "2021-08-10T23:22:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "39a197ec_2e2bc23e",
       "range": {
         "startLine": 207,
         "startChar": 4,
@@ -110,6 +200,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "2a495439_dac2a6ad",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 3
+      },
+      "lineNbr": 208,
+      "author": {
+        "id": 1543914
+      },
+      "writtenOn": "2021-08-10T23:22:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "92214973_f02082ab",
+      "range": {
+        "startLine": 208,
+        "startChar": 9,
+        "endLine": 208,
+        "endChar": 25
+      },
+      "revId": "8e08605f1b245a17a60fd03cdbc5c4174e72f340",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "bcdd2a08_820f2499",
@@ -123,6 +237,30 @@
       "writtenOn": "2021-08-10T17:36:57Z",
       "side": 1,
       "message": "The COMMAND TERMINATED status code was declared obsolete about 20 years ago. It shouldn\u0027t be reported by any UFS device.",
+      "range": {
+        "startLine": 209,
+        "startChar": 49,
+        "endLine": 209,
+        "endChar": 89
+      },
+      "revId": "8e08605f1b245a17a60fd03cdbc5c4174e72f340",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9ee7fd08_ad7142ff",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 3
+      },
+      "lineNbr": 209,
+      "author": {
+        "id": 1543914
+      },
+      "writtenOn": "2021-08-10T23:22:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "bcdd2a08_820f2499",
       "range": {
         "startLine": 209,
         "startChar": 49,
@@ -156,6 +294,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f927a51f_5f55a478",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 3
+      },
+      "lineNbr": 210,
+      "author": {
+        "id": 1543914
+      },
+      "writtenOn": "2021-08-10T23:22:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "76bdad54_78f4f28d",
+      "range": {
+        "startLine": 210,
+        "startChar": 8,
+        "endLine": 210,
+        "endChar": 54
+      },
+      "revId": "8e08605f1b245a17a60fd03cdbc5c4174e72f340",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "672b2c73_acc766a3",
@@ -179,6 +341,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "e86fb39d_cbe567d8",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 3
+      },
+      "lineNbr": 215,
+      "author": {
+        "id": 1543914
+      },
+      "writtenOn": "2021-08-10T23:22:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "672b2c73_acc766a3",
+      "range": {
+        "startLine": 215,
+        "startChar": 39,
+        "endLine": 215,
+        "endChar": 40
+      },
+      "revId": "8e08605f1b245a17a60fd03cdbc5c4174e72f340",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "460d9f9d_f9a8fcaf",
@@ -192,6 +378,30 @@
       "writtenOn": "2021-08-10T17:36:57Z",
       "side": 1,
       "message": "Please change \u0027sg_io_hdr_t* io_hdrp\u0027 into \u0027const sg_io_hdr_t* io_hdr\u0027.",
+      "range": {
+        "startLine": 243,
+        "startChar": 27,
+        "endLine": 243,
+        "endChar": 47
+      },
+      "revId": "8e08605f1b245a17a60fd03cdbc5c4174e72f340",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "17bc4d6e_6836bc7a",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 3
+      },
+      "lineNbr": 243,
+      "author": {
+        "id": 1543914
+      },
+      "writtenOn": "2021-08-10T23:22:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "460d9f9d_f9a8fcaf",
       "range": {
         "startLine": 243,
         "startChar": 27,
@@ -248,6 +458,54 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "353fc8a7_757ac502",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 3
+      },
+      "lineNbr": 286,
+      "author": {
+        "id": 1543914
+      },
+      "writtenOn": "2021-08-10T23:22:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "abb8a707_e9f08bef",
+      "range": {
+        "startLine": 286,
+        "startChar": 12,
+        "endLine": 286,
+        "endChar": 27
+      },
+      "revId": "8e08605f1b245a17a60fd03cdbc5c4174e72f340",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b17769e7_78044e61",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 3
+      },
+      "lineNbr": 286,
+      "author": {
+        "id": 1543914
+      },
+      "writtenOn": "2021-08-10T23:22:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "105856cd_6d999716",
+      "range": {
+        "startLine": 286,
+        "startChar": 12,
+        "endLine": 286,
+        "endChar": 31
+      },
+      "revId": "8e08605f1b245a17a60fd03cdbc5c4174e72f340",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f3f1758b_90dfafd0",
@@ -284,6 +542,48 @@
         "endLine": 288,
         "endChar": 43
       },
+      "revId": "8e08605f1b245a17a60fd03cdbc5c4174e72f340",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e8a2f557_c34c5490",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 3
+      },
+      "lineNbr": 288,
+      "author": {
+        "id": 1543914
+      },
+      "writtenOn": "2021-08-10T23:22:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d9aea96a_57309da1",
+      "range": {
+        "startLine": 288,
+        "startChar": 28,
+        "endLine": 288,
+        "endChar": 43
+      },
+      "revId": "8e08605f1b245a17a60fd03cdbc5c4174e72f340",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0a9b918d_687c61a2",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 3
+      },
+      "lineNbr": 288,
+      "author": {
+        "id": 1543914
+      },
+      "writtenOn": "2021-08-10T23:22:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f3f1758b_90dfafd0",
       "revId": "8e08605f1b245a17a60fd03cdbc5c4174e72f340",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
