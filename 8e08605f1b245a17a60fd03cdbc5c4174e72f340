@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "abb8a707_e9f08bef",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 3
+      },
+      "lineNbr": 286,
+      "author": {
+        "id": 1114938
+      },
+      "writtenOn": "2021-08-10T17:21:08Z",
+      "side": 1,
+      "message": "Should be a function call?   x3?",
+      "range": {
+        "startLine": 286,
+        "startChar": 12,
+        "endLine": 286,
+        "endChar": 27
+      },
+      "revId": "8e08605f1b245a17a60fd03cdbc5c4174e72f340",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f3f1758b_90dfafd0",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 3
+      },
+      "lineNbr": 288,
+      "author": {
+        "id": 1114938
+      },
+      "writtenOn": "2021-08-10T17:21:08Z",
+      "side": 1,
+      "message": "Should we be changing our behavior on error?",
+      "revId": "8e08605f1b245a17a60fd03cdbc5c4174e72f340",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
