@@ -1,0 +1,90 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e0268c96_2d1a7a80",
+        "filename": "fs_mgr/fs_mgr_roots.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2021-08-10T20:28:04Z",
+      "side": 1,
+      "message": "Use a pointer to indicate that this is an input / output parameter.\n\nAn even better function signature would be\n\n```\nstatic std::string dirName(const std::string\u0026)\n```\n\n(and replace `return false` to `return {}`)",
+      "range": {
+        "startLine": 36,
+        "startChar": 31,
+        "endLine": 36,
+        "endChar": 32
+      },
+      "revId": "26e214b4f781c1ca82be03c2d6a9546c503106b8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "466b56dc_1170cd76",
+        "filename": "fs_mgr/fs_mgr_roots.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2021-08-10T20:28:04Z",
+      "side": 1,
+      "message": "Elliot, should we use android::base::Dirname here?\n\nEDIT: Ah, it was from GetEntryForPath previously. Though, the same question still applies.",
+      "range": {
+        "startLine": 36,
+        "startChar": 12,
+        "endLine": 36,
+        "endChar": 19
+      },
+      "revId": "26e214b4f781c1ca82be03c2d6a9546c503106b8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9a77ca58_d4b8b305",
+        "filename": "fs_mgr/fs_mgr_roots.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 160,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2021-08-10T20:28:04Z",
+      "side": 1,
+      "message": "not necessary",
+      "range": {
+        "startLine": 160,
+        "startChar": 44,
+        "endLine": 160,
+        "endChar": 52
+      },
+      "revId": "26e214b4f781c1ca82be03c2d6a9546c503106b8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "df2a2be3_edcf54d9",
+        "filename": "fs_mgr/fs_mgr_roots.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 161,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2021-08-10T20:28:04Z",
+      "side": 1,
+      "message": "nit: LERROR here",
+      "revId": "26e214b4f781c1ca82be03c2d6a9546c503106b8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
