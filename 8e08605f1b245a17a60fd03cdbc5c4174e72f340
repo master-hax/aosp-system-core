@@ -3,6 +3,23 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "3fc9b519_1eb157f6",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 3
+      },
+      "lineNbr": 203,
+      "author": {
+        "id": 1114938
+      },
+      "writtenOn": "2021-08-10T23:12:45Z",
+      "side": 1,
+      "message": "New third party code should only be added in the external/ directory.  This particular third party code also does not have a compatible license, so we cannot link it in.\n\nUnfortunately, I think we have to abandon this CL.",
+      "revId": "8e08605f1b245a17a60fd03cdbc5c4174e72f340",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "b67a8f4c_16ec9acc",
         "filename": "trusty/storage/proxy/rpmb.c",
         "patchSetId": 3
