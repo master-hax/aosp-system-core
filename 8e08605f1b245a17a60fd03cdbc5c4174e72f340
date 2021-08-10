@@ -3,6 +3,190 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "b67a8f4c_16ec9acc",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 3
+      },
+      "lineNbr": 205,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2021-08-10T17:36:57Z",
+      "side": 1,
+      "message": "Please change the data types of scsi_status, host_status and driver_status from int to uint8_t since these three variables are unsigned 8-bit variables.",
+      "range": {
+        "startLine": 205,
+        "startChar": 31,
+        "endLine": 205,
+        "endChar": 82
+      },
+      "revId": "8e08605f1b245a17a60fd03cdbc5c4174e72f340",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c5db6601_4c74482f",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 3
+      },
+      "lineNbr": 206,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2021-08-10T17:36:57Z",
+      "side": 1,
+      "message": "How about using uint8_t instead of unsigned char to make it more clear that \u0027sense_buffer\u0027 is a byte buffer instead of a buffer that contains ASCII text?",
+      "range": {
+        "startLine": 206,
+        "startChar": 37,
+        "endLine": 206,
+        "endChar": 50
+      },
+      "revId": "8e08605f1b245a17a60fd03cdbc5c4174e72f340",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "39a197ec_2e2bc23e",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 3
+      },
+      "lineNbr": 207,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2021-08-10T17:36:57Z",
+      "side": 1,
+      "message": "Clearing the lowest bit of the SCSI status code was necessary with SCSI equipment from 30 years ago but is no longer necessary today. Please log an error message if the lowest bit of the SCSI status code is set.",
+      "range": {
+        "startLine": 207,
+        "startChar": 4,
+        "endLine": 207,
+        "endChar": 24
+      },
+      "revId": "8e08605f1b245a17a60fd03cdbc5c4174e72f340",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "92214973_f02082ab",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 3
+      },
+      "lineNbr": 208,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2021-08-10T17:36:57Z",
+      "side": 1,
+      "message": "Please follow the Google coding style and place constants at the right side of the comparison.",
+      "range": {
+        "startLine": 208,
+        "startChar": 9,
+        "endLine": 208,
+        "endChar": 25
+      },
+      "revId": "8e08605f1b245a17a60fd03cdbc5c4174e72f340",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bcdd2a08_820f2499",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 3
+      },
+      "lineNbr": 209,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2021-08-10T17:36:57Z",
+      "side": 1,
+      "message": "The COMMAND TERMINATED status code was declared obsolete about 20 years ago. It shouldn\u0027t be reported by any UFS device.",
+      "range": {
+        "startLine": 209,
+        "startChar": 49,
+        "endLine": 209,
+        "endChar": 89
+      },
+      "revId": "8e08605f1b245a17a60fd03cdbc5c4174e72f340",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "76bdad54_78f4f28d",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 3
+      },
+      "lineNbr": 210,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2021-08-10T17:36:57Z",
+      "side": 1,
+      "message": "This check can be left out since it is redundant. From the Linux kernel source code:\n\n/*\n * Obsolete DRIVER_SENSE driver byte\n *\n * Originally the SCSI midlayer would set the DRIVER_SENSE driver byte when\n * a sense code was generated and a sense buffer was allocated.\n * However, as nowadays every scsi command has a sense code allocated this\n * distinction became moot as one could check the sense buffer directly.\n * Consequently this byte is not set anymore from the midlayer, but SG will\n * keep setting this byte to be compatible with previous releases.\n */",
+      "range": {
+        "startLine": 210,
+        "startChar": 8,
+        "endLine": 210,
+        "endChar": 54
+      },
+      "revId": "8e08605f1b245a17a60fd03cdbc5c4174e72f340",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "672b2c73_acc766a3",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 3
+      },
+      "lineNbr": 215,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2021-08-10T17:36:57Z",
+      "side": 1,
+      "message": "Please add comments here: /* Descriptor format sense data */ in the if-body and /*  Fixed format sense data */ under \"} else {\".",
+      "range": {
+        "startLine": 215,
+        "startChar": 39,
+        "endLine": 215,
+        "endChar": 40
+      },
+      "revId": "8e08605f1b245a17a60fd03cdbc5c4174e72f340",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "460d9f9d_f9a8fcaf",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 3
+      },
+      "lineNbr": 243,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2021-08-10T17:36:57Z",
+      "side": 1,
+      "message": "Please change \u0027sg_io_hdr_t* io_hdrp\u0027 into \u0027const sg_io_hdr_t* io_hdr\u0027.",
+      "range": {
+        "startLine": 243,
+        "startChar": 27,
+        "endLine": 243,
+        "endChar": 47
+      },
+      "revId": "8e08605f1b245a17a60fd03cdbc5c4174e72f340",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "abb8a707_e9f08bef",
         "filename": "trusty/storage/proxy/rpmb.c",
         "patchSetId": 3
@@ -26,6 +210,29 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "105856cd_6d999716",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 3
+      },
+      "lineNbr": 286,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2021-08-10T17:36:57Z",
+      "side": 1,
+      "message": "Is this expression checking whether a function pointer is negative? That seems weird to me ...",
+      "range": {
+        "startLine": 286,
+        "startChar": 12,
+        "endLine": 286,
+        "endChar": 31
+      },
+      "revId": "8e08605f1b245a17a60fd03cdbc5c4174e72f340",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "f3f1758b_90dfafd0",
         "filename": "trusty/storage/proxy/rpmb.c",
         "patchSetId": 3
@@ -37,6 +244,29 @@
       "writtenOn": "2021-08-10T17:21:08Z",
       "side": 1,
       "message": "Should we be changing our behavior on error?",
+      "revId": "8e08605f1b245a17a60fd03cdbc5c4174e72f340",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d9aea96a_57309da1",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 3
+      },
+      "lineNbr": 288,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2021-08-10T17:36:57Z",
+      "side": 1,
+      "message": "As far as I can see check_sg_io_hdr() does not set `errno`?",
+      "range": {
+        "startLine": 288,
+        "startChar": 28,
+        "endLine": 288,
+        "endChar": 43
+      },
       "revId": "8e08605f1b245a17a60fd03cdbc5c4174e72f340",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
