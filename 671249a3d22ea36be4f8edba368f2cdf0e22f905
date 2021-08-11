@@ -16,6 +16,24 @@
       "message": "Note: would probably trigger UBSAN if this happened",
       "revId": "671249a3d22ea36be4f8edba368f2cdf0e22f905",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a1c9ff83_ede90adf",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1026,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2021-08-11T02:24:58Z",
+      "side": 1,
+      "message": "You meant UBSAN might be triggered if get_partition_size() returns zero?\n\nAnyway, maybe we can fix that separately if needed.",
+      "parentUuid": "12012b62_812cb9e4",
+      "revId": "671249a3d22ea36be4f8edba368f2cdf0e22f905",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
