@@ -34,6 +34,24 @@
       "parentUuid": "12012b62_812cb9e4",
       "revId": "671249a3d22ea36be4f8edba368f2cdf0e22f905",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "884f8907_2f659d31",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1026,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-08-11T16:24:56Z",
+      "side": 1,
+      "message": "(note that you need to opt _in_ to sanitization, and fastboot does not currently. search for sanitize: in Android.bp files for examples of how to do this, but also expect that you\u0027ll have to fix a *lot* of code, especially for integer sanitization...)",
+      "parentUuid": "a1c9ff83_ede90adf",
+      "revId": "671249a3d22ea36be4f8edba368f2cdf0e22f905",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
