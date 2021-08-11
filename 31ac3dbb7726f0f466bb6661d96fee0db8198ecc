@@ -22,6 +22,30 @@
       },
       "revId": "31ac3dbb7726f0f466bb6661d96fee0db8198ecc",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c905f2fe_92af1d50",
+        "filename": "init/extra_free_kbytes.sh",
+        "patchSetId": 4
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-08-11T17:47:27Z",
+      "side": 1,
+      "message": "Yes, the condition should be reversed. Will fix.\nThe actual calculation in the script is correct because it implements:\n\nif (managed_pages * (watermark_scale / 10000) \u003e min / 4)\n     watermark_scale_new \u003d watermark_scale + watermark_delta\nelse\n     watermark_scale_new \u003d (min / 4) * 10000 / managed_pages + watermark_delta",
+      "parentUuid": "ee01b116_3b07f3cb",
+      "range": {
+        "startLine": 59,
+        "startChar": 0,
+        "endLine": 62,
+        "endChar": 79
+      },
+      "revId": "31ac3dbb7726f0f466bb6661d96fee0db8198ecc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
