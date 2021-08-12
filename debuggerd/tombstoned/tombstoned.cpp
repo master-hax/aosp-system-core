@@ -449,7 +449,8 @@ static void crash_completed(borrowed_fd sockfd, std::unique_ptr<Crash> crash) {
   }
 
   if (crash->output.text.fd == -1) {
-    LOG(WARNING) << "missing output fd";
+    // This happens normally whenever an intercept was set up before hand.
+    LOG(WARNING) << "skipping tombstone file creation";
     return;
   }
 
