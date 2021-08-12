@@ -611,7 +611,7 @@ std::optional<std::string> DeviceMapper::GetDmDeviceNameByPath(const std::string
     return dm_name;
 }
 
-std::optional<std::string> DeviceMapper::GetParentBlockDeviceByPath(const std::string& path) {
+std::optional<std::string> GetParentBlockDeviceByPath(const std::string& path) {
     std::optional<std::string> name = ExtractBlockDeviceName(path);
     if (!name) {
         LOG(WARNING) << path << " is not a block device";

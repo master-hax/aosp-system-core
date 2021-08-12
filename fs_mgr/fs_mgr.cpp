@@ -663,7 +663,6 @@ static void SetReadAheadSize(const std::string& entry_block_device, off64_t size
         return;
     }
 
-    DeviceMapper& dm = DeviceMapper::Instance();
     while (true) {
         std::string block_name = block_device;
         if (android::base::StartsWith(block_device, kDevBlockPrefix)) {
@@ -682,7 +681,7 @@ static void SetReadAheadSize(const std::string& entry_block_device, off64_t size
         android::base::WriteStringToFile(size, sys_ra.c_str());
         LINFO << "Set readahead_kb: " << size << " on " << sys_ra;
 
-        auto parent = dm.GetParentBlockDeviceByPath(block_device);
+        std::optional<std::string> parent = android::dm::GetParentBlockDeviceByPath(block_device);
         if (!parent) {
             return;
         }
@@ -1761,7 +1760,7 @@ static bool UnwindDmDeviceStack(const std::string& block_device,
         if (!dm.IsDmBlockDevice(current)) {
             break;
         }
-        auto parent = dm.GetParentBlockDeviceByPath(current);
+        std::optional<std::string> parent = android::dm::GetParentBlockDeviceByPath(current);
         if (!parent) {
             return false;
         }
@@ -1854,7 +1853,8 @@ int fs_mgr_remount_userdata_into_checkpointing(Fstab* fstab) {
         }
         DeviceMapper& dm = DeviceMapper::Instance();
         while (dm.IsDmBlockDevice(block_device)) {
-            auto next_device = dm.GetParentBlockDeviceByPath(block_device);
+            std::optional<std::string> next_device =
+                    android::dm::GetParentBlockDeviceByPath(block_device);
             auto name = dm.GetDmDeviceNameByPath(block_device);
             if (!name) {
                 LERROR << "Failed to get dm-name for " << block_device;

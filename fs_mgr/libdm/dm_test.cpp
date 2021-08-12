@@ -614,9 +614,8 @@ TEST(libdm, GetParentBlockDeviceByPath) {
     TempDevice dev("libdm-test-dm-linear", table);
     ASSERT_TRUE(dev.valid());
 
-    DeviceMapper& dm = DeviceMapper::Instance();
-    ASSERT_FALSE(dm.GetParentBlockDeviceByPath(loop.device()));
-    auto sub_block_device = dm.GetParentBlockDeviceByPath(dev.path());
+    ASSERT_FALSE(GetParentBlockDeviceByPath(loop.device()));
+    auto sub_block_device = GetParentBlockDeviceByPath(dev.path());
     ASSERT_EQ(loop.device(), *sub_block_device);
 }
 

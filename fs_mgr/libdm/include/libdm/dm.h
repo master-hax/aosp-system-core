@@ -55,6 +55,12 @@ static constexpr uint64_t kSectorSize = 512;
 // that prefix.
 std::optional<std::string> ExtractBlockDeviceName(const std::string& path);
 
+// Returns a parent block device of a dm device with the given path, or std::nullopt if:
+//  * Given path doesn't correspond to a dm device.
+//  * A dm device is based on top of more than one block devices.
+//  * A failure occurred.
+std::optional<std::string> GetParentBlockDeviceByPath(const std::string& path);
+
 class DeviceMapper final {
   public:
     class DmBlockDevice final {
@@ -254,12 +260,6 @@ class DeviceMapper final {
     // Returns name of a dm-device with the given path, or std::nulloptr if given path is not a
     // dm-device.
     std::optional<std::string> GetDmDeviceNameByPath(const std::string& path);
-
-    // Returns a parent block device of a dm device with the given path, or std::nullopt if:
-    //  * Given path doesn't correspond to a dm device.
-    //  * A dm device is based on top of more than one block devices.
-    //  * A failure occurred.
-    std::optional<std::string> GetParentBlockDeviceByPath(const std::string& path);
 
     // Iterate the content over "/sys/block/dm-x/dm/name" and find
     // all the dm-wrapped block devices.
