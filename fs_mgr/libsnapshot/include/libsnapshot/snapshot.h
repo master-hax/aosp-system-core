@@ -488,7 +488,8 @@ class SnapshotManager final : public ISnapshotManager {
 
     // Create a dm-user device for a given snapshot.
     bool MapDmUserCow(LockedFile* lock, const std::string& name, const std::string& cow_file,
-                      const std::string& base_device, const std::chrono::milliseconds& timeout_ms,
+                      const std::string& base_device, const std::string& base_path_merge,
+                      const std::chrono::milliseconds& timeout_ms,
                       std::string* path);
 
     // Map the source device used for dm-user.

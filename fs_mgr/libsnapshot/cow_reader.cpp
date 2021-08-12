@@ -414,7 +414,7 @@ bool CowReader::ParseOps(std::optional<uint64_t> label) {
 //==============================================================
 bool CowReader::PrepMergeOps() {
     auto merge_op_blocks = std::make_shared<std::vector<uint32_t>>();
-    std::set<int, std::greater<int>> other_ops;
+    std::set<int, std::less<int>> other_ops;
     auto seq_ops_set = std::unordered_set<uint32_t>();
     auto block_map = std::make_shared<std::unordered_map<uint32_t, int>>();
     size_t num_seqs = 0;
@@ -573,6 +573,51 @@ std::unique_ptr<ICowOpIter> CowReader::GetOpIter() {
 
 std::unique_ptr<ICowOpIter> CowReader::GetRevMergeOpIter() {
     return std::make_unique<CowRevMergeOpIter>(ops_, merge_op_blocks_, block_map_);
+}
+
+class CowMergeOpIter final : public ICowOpIter {
+  public:
+    explicit CowMergeOpIter(std::shared_ptr<std::vector<CowOperation>> ops,
+                               std::shared_ptr<std::vector<uint32_t>> merge_op_blocks,
+                               std::shared_ptr<std::unordered_map<uint32_t, int>> map);
+
+    bool Done() override;
+    const CowOperation& Get() override;
+    void Next() override;
+
+  private:
+    std::shared_ptr<std::vector<CowOperation>> ops_;
+    std::shared_ptr<std::vector<uint32_t>> merge_op_blocks_;
+    std::shared_ptr<std::unordered_map<uint32_t, int>> map_;
+    std::vector<uint32_t>::iterator block_iter_;
+};
+
+CowMergeOpIter::CowMergeOpIter(std::shared_ptr<std::vector<CowOperation>> ops,
+                                     std::shared_ptr<std::vector<uint32_t>> merge_op_blocks,
+                                     std::shared_ptr<std::unordered_map<uint32_t, int>> map) {
+    ops_ = ops;
+    merge_op_blocks_ = merge_op_blocks;
+    map_ = map;
+
+    block_iter_ = merge_op_blocks->begin();
+}
+
+bool CowMergeOpIter::Done() {
+    return block_iter_ == merge_op_blocks_->end();
+}
+
+void CowMergeOpIter::Next() {
+    CHECK(!Done());
+    block_iter_++;
+}
+
+const CowOperation& CowMergeOpIter::Get() {
+    CHECK(!Done());
+    return ops_->data()[map_->at(*block_iter_)];
+}
+
+std::unique_ptr<ICowOpIter> CowReader::GetMergeOpIter() {
+    return std::make_unique<CowMergeOpIter>(ops_, merge_op_blocks_, block_map_);
 }
 
 bool CowReader::GetRawBytes(uint64_t offset, void* buffer, size_t len, size_t* read) {

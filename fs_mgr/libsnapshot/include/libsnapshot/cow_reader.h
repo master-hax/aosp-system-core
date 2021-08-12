@@ -78,6 +78,9 @@ class ICowReader {
     // Return an iterator for retrieving CowOperation entries in merge order
     virtual std::unique_ptr<ICowOpIter> GetRevMergeOpIter() = 0;
 
+    // Return an iterator for retrieving CowOperation entries in merge order
+    virtual std::unique_ptr<ICowOpIter> GetMergeOpIter() = 0;
+
     // Get decoded bytes from the data section, handling any decompression.
     // All retrieved data is passed to the sink.
     virtual bool ReadData(const CowOperation& op, IByteSink* sink) = 0;
@@ -121,6 +124,8 @@ class CowReader : public ICowReader {
     // value of these will never be null.
     std::unique_ptr<ICowOpIter> GetOpIter() override;
     std::unique_ptr<ICowOpIter> GetRevMergeOpIter() override;
+    // User-space merging
+    std::unique_ptr<ICowOpIter> GetMergeOpIter() override;
 
     bool ReadData(const CowOperation& op, IByteSink* sink) override;
 

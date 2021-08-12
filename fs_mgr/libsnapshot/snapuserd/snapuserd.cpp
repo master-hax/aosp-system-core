@@ -45,17 +45,20 @@ using android::base::unique_fd;
 #define SNAP_PLOG(level) PLOG(level) << misc_name_ << ": "
 
 Snapuserd::Snapuserd(const std::string& misc_name, const std::string& cow_device,
-                     const std::string& backing_device) {
+                     const std::string& backing_device,
+                     const std::string& base_path_merge) {
     misc_name_ = misc_name;
     cow_device_ = cow_device;
     backing_store_device_ = backing_device;
     control_device_ = "/dev/dm-user/" + misc_name;
+    base_path_merge_ = base_path_merge;
 }
 
 bool Snapuserd::InitializeWorkers() {
     for (int i = 0; i < NUM_THREADS_PER_PARTITION; i++) {
         std::unique_ptr<WorkerThread> wt = std::make_unique<WorkerThread>(
-                cow_device_, backing_store_device_, control_device_, misc_name_, GetSharedPtr());
+                cow_device_, backing_store_device_, control_device_, misc_name_,
+                base_path_merge_, GetSharedPtr());
 
         worker_threads_.push_back(std::move(wt));
     }
