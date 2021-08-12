@@ -16,6 +16,23 @@
       "message": "I know we are working on KM5.\nBut enabling KM4.1 allow us to test 4.1 features using qemu trusty without using real hardware directly.",
       "revId": "184286ce7a920f6fc9c4fa0fc50e2113a2de9e01",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "939753f9_d5bf9df3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1595133
+      },
+      "writtenOn": "2021-08-12T18:36:43Z",
+      "side": 1,
+      "message": "Hey Keith, if you don\u0027t mind, can you add the steps to reproduce the manual test/build.",
+      "revId": "184286ce7a920f6fc9c4fa0fc50e2113a2de9e01",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
