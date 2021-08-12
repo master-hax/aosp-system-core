@@ -1,0 +1,123 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9fc9402d_4651dbf7",
+        "filename": "fs_mgr/blockdev.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-08-12T00:13:13Z",
+      "side": 1,
+      "message": "It looks like this might already exist in libdm? https://cs.android.com/android/platform/superproject/+/master:system/core/fs_mgr/libdm/include/libdm/dm.h;l\u003d258?q\u003dGetParentBlockDeviceByPath\u0026ss\u003dandroid\n\n(It calls it \"parent\" instead of \"child\" but it\u0027s reading the same thing)",
+      "revId": "1e231c7937d3c802e733718af05b98690046a7b9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "262e0c4b_79cb2161",
+        "filename": "fs_mgr/blockdev.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-08-12T00:13:13Z",
+      "side": 1,
+      "message": "you can drop the closedir by using raii:\n\n    std::unique_ptr\u003cDIR, decltype(\u0026closedir)\u003e dir(children_path.c_str(), closedir);\n\n(and ideally early return if !dir to save some indenting)\n\n(Note there\u0027s some similar logic in SetReadAheadSize)",
+      "revId": "1e231c7937d3c802e733718af05b98690046a7b9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c4ac7538_90b0bada",
+        "filename": "fs_mgr/blockdev.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-08-12T00:13:13Z",
+      "side": 1,
+      "message": "same here, this could benefit from RAII and an early-return",
+      "revId": "1e231c7937d3c802e733718af05b98690046a7b9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "22395b77_8fb6a15e",
+        "filename": "fs_mgr/blockdev.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 121,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-08-12T00:13:13Z",
+      "side": 1,
+      "message": "were these debug lines left in intentionally? it should probably have some context or prefix or something",
+      "revId": "1e231c7937d3c802e733718af05b98690046a7b9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8ef6053c_83a3f756",
+        "filename": "fs_mgr/blockdev.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 141,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-08-12T00:13:13Z",
+      "side": 1,
+      "message": "nit: |if| is always {} braced in system/core - unfortunately clang-format cannot enforce this for some reason :(",
+      "revId": "1e231c7937d3c802e733718af05b98690046a7b9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7d89999c_0feae3c1",
+        "filename": "fs_mgr/blockdev.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 153,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-08-12T00:13:13Z",
+      "side": 1,
+      "message": "same here with braces",
+      "revId": "1e231c7937d3c802e733718af05b98690046a7b9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b9413a26_8747edbb",
+        "filename": "fs_mgr/blockdev.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 162,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-08-12T00:13:13Z",
+      "side": 1,
+      "message": "sysfs_fd \u003d\u003d -1 will work here as there\u0027s an overload",
+      "revId": "1e231c7937d3c802e733718af05b98690046a7b9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
