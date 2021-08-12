@@ -106,12 +106,14 @@ bool XorSink::ReturnData(void* buffer, size_t len) {
 
 WorkerThread::WorkerThread(const std::string& cow_device, const std::string& backing_device,
                            const std::string& control_device, const std::string& misc_name,
+                           const std::string& base_path_merge,
                            std::shared_ptr<Snapuserd> snapuserd) {
     cow_device_ = cow_device;
     backing_store_device_ = backing_device;
     control_device_ = control_device;
     misc_name_ = misc_name;
     snapuserd_ = snapuserd;
+    base_path_merge_ = base_path_merge;
     exceptions_per_area_ = (CHUNK_SIZE << SECTOR_SHIFT) / sizeof(struct disk_exception);
 }
 
@@ -131,6 +133,12 @@ bool WorkerThread::InitializeFds() {
     ctrl_fd_.reset(open(control_device_.c_str(), O_RDWR));
     if (ctrl_fd_ < 0) {
         SNAP_PLOG(ERROR) << "Unable to open " << control_device_;
+        return false;
+    }
+
+    base_path_merge_fd_.reset(open(base_path_merge_.c_str(), O_RDWR));
+    if (base_path_merge_fd_ < 0) {
+        SNAP_PLOG(ERROR) << "Open Failed: " << base_path_merge_;
         return false;
     }
 

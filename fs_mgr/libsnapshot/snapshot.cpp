@@ -399,6 +399,7 @@ Return SnapshotManager::CreateCowImage(LockedFile* lock, const std::string& name
 
 bool SnapshotManager::MapDmUserCow(LockedFile* lock, const std::string& name,
                                    const std::string& cow_file, const std::string& base_device,
+                                   const std::string& base_path_merge,
                                    const std::chrono::milliseconds& timeout_ms, std::string* path) {
     CHECK(lock);
 
@@ -415,7 +416,7 @@ bool SnapshotManager::MapDmUserCow(LockedFile* lock, const std::string& name,
         return false;
     }
 
-    uint64_t base_sectors = snapuserd_client_->InitDmUserCow(misc_name, cow_file, base_device);
+    uint64_t base_sectors = snapuserd_client_->InitDmUserCow(misc_name, cow_file, base_device, base_path_merge);
     if (base_sectors == 0) {
         LOG(ERROR) << "Failed to retrieve base_sectors from Snapuserd";
         return false;
@@ -1515,6 +1516,12 @@ bool SnapshotManager::PerformInitTransition(InitTransition transition,
             continue;
         }
 
+        std::string base_path_merge;
+        if (!dm.GetDmDevicePathByName(GetBaseDeviceName(snapshot), &base_path_merge)) {
+            LOG(ERROR) << "Could not get device path for " << GetSourceDeviceName(snapshot);
+            continue;
+        }
+
         std::string cow_image_name = GetMappedCowDeviceName(snapshot, snapshot_status);
 
         std::string cow_image_device;
@@ -1531,7 +1538,7 @@ bool SnapshotManager::PerformInitTransition(InitTransition transition,
         }
 
         if (transition == InitTransition::SELINUX_DETACH) {
-            auto message = misc_name + "," + cow_image_device + "," + source_device;
+            auto message = misc_name + "," + cow_image_device + "," + source_device + "," + base_path_merge;
             snapuserd_argv->emplace_back(std::move(message));
 
             // Do not attempt to connect to the new snapuserd yet, it hasn't
@@ -1542,7 +1549,7 @@ bool SnapshotManager::PerformInitTransition(InitTransition transition,
         }
 
         uint64_t base_sectors =
-                snapuserd_client_->InitDmUserCow(misc_name, cow_image_device, source_device);
+                snapuserd_client_->InitDmUserCow(misc_name, cow_image_device, source_device, base_path_merge);
         if (base_sectors == 0) {
             // Unrecoverable as metadata reads from cow device failed
             LOG(FATAL) << "Failed to retrieve base_sectors from Snapuserd";
@@ -2044,6 +2051,15 @@ bool SnapshotManager::MapPartitionWithSnapshot(LockedFile* lock,
         paths->target_device = base_path;
     }
 
+    auto remaining_time = GetRemainingTime(params.timeout_ms, begin);
+    if (remaining_time.count() < 0) {
+        return false;
+    }
+
+    if (!WaitForDevice(base_path, remaining_time)) {
+      return false;
+    }
+
     if (!live_snapshot_status.has_value()) {
         created_devices.Release();
         return true;
@@ -2057,7 +2073,7 @@ bool SnapshotManager::MapPartitionWithSnapshot(LockedFile* lock,
         return false;
     }
 
-    auto remaining_time = GetRemainingTime(params.timeout_ms, begin);
+    remaining_time = GetRemainingTime(params.timeout_ms, begin);
     if (remaining_time.count() < 0) return false;
 
     std::string cow_name;
@@ -2112,7 +2128,7 @@ bool SnapshotManager::MapPartitionWithSnapshot(LockedFile* lock,
         auto name = GetDmUserCowName(params.GetPartitionName());
 
         std::string new_cow_device;
-        if (!MapDmUserCow(lock, name, cow_path, source_device_path, remaining_time,
+        if (!MapDmUserCow(lock, name, cow_path, source_device_path, base_path, remaining_time,
                           &new_cow_device)) {
             LOG(ERROR) << "Could not map dm-user device for partition "
                        << params.GetPartitionName();
