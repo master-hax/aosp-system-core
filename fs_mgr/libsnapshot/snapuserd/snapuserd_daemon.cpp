@@ -65,7 +65,7 @@ bool Daemon::StartServer(int argc, char** argv) {
             LOG(ERROR) << "Malformed message, expected three sub-arguments.";
             return false;
         }
-        auto handler = server_.AddHandler(parts[0], parts[1], parts[2]);
+        auto handler = server_.AddHandler(parts[0], parts[1], parts[2], parts[3]);
         if (!handler || !server_.StartHandler(handler)) {
             return false;
         }

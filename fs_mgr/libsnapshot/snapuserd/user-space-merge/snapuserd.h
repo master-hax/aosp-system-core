@@ -58,33 +58,13 @@ static_assert(PAYLOAD_SIZE >= BLOCK_SZ);
  * when update_verifier reads the partition during
  * boot.
  */
-static constexpr int NUM_THREADS_PER_PARTITION = 4;
+static constexpr int NUM_THREADS_PER_PARTITION = 1;
 
-/*
- * State transitions between worker threads and read-ahead
- * threads.
- *
- * READ_AHEAD_BEGIN: Worker threads initiates the read-ahead
- *                   thread to begin reading the copy operations
- *                   for each bounded region.
- *
- * READ_AHEAD_IN_PROGRESS: When read ahead thread is in-flight
- *                         and reading the copy operations.
- *
- * IO_IN_PROGRESS: Merge operation is in-progress by worker threads.
- *
- * IO_TERMINATED: When all the worker threads are done, request the
- *                read-ahead thread to terminate
- *
- * READ_AHEAD_FAILURE: If there are any IO failures when read-ahead
- *                     thread is reading from COW device.
- *
- * The transition of each states is described in snapuserd_readahead.cpp
- */
 enum class READ_AHEAD_IO_TRANSITION {
-    READ_AHEAD_BEGIN,
-    READ_AHEAD_IN_PROGRESS,
-    IO_IN_PROGRESS,
+    MERGE_READY,
+    MERGE_BEGIN,
+    MERGE_FAILED,
+    MERGE_COMPLETE,
     IO_TERMINATED,
     READ_AHEAD_FAILURE,
 };
@@ -135,22 +115,25 @@ class ReadAheadThread {
     bool RAIterDone();
     void RAIterNext();
     const CowOperation* GetRAOpIter();
-    void InitializeBuffer();
 
+    void InitializeBuffer();
+    bool InitReader();
     bool InitializeFds();
+
     void CloseFds() {
-        cow_fd_ = {};
         backing_store_fd_ = {};
     }
 
     bool ReadAheadIOStart();
-    void PrepareReadAhead(uint64_t* source_offset, int* pending_ops, std::vector<uint64_t>& blocks);
+    int PrepareReadAhead(uint64_t* source_offset, int* pending_ops,
+                         std::vector<uint64_t>& blocks,
+                         std::vector<const CowOperation*>& xor_op_vec);
     bool ReconstructDataFromCow();
     void CheckOverlap(const CowOperation* cow_op);
 
     void* read_ahead_buffer_;
     void* metadata_buffer_;
-    std::vector<const CowOperation*>::reverse_iterator read_ahead_iter_;
+    std::vector<const CowOperation*>::iterator read_ahead_iter_;
     std::string cow_device_;
     std::string backing_store_device_;
     std::string misc_name_;
@@ -159,10 +142,12 @@ class ReadAheadThread {
     unique_fd backing_store_fd_;
 
     std::shared_ptr<Snapuserd> snapuserd_;
+    std::unique_ptr<CowReader> reader_;
 
     std::unordered_set<uint64_t> dest_blocks_;
     std::unordered_set<uint64_t> source_blocks_;
     bool overlap_;
+    BufferSink bufsink_;
 };
 
 class WorkerThread {
@@ -172,6 +157,7 @@ class WorkerThread {
                  const std::string& base_path_merge,
                  std::shared_ptr<Snapuserd> snapuserd);
     bool RunThread();
+    bool RunMergeThread();
 
   private:
     // Initialization
@@ -181,18 +167,8 @@ class WorkerThread {
     void CloseFds() {
         ctrl_fd_ = {};
         backing_store_fd_ = {};
+        base_path_merge_fd_ = {};
     }
-
-    // Functions interacting with dm-user
-    bool ReadDmUserHeader();
-    bool DmuserReadRequest();
-    bool DmuserWriteRequest();
-    bool ReadDmUserPayload(void* buffer, size_t size);
-    bool WriteDmUserPayload(size_t size, bool header_response);
-
-    bool ReadDiskExceptions(chunk_t chunk, size_t size);
-    bool ZerofillDiskExceptions(size_t read_size);
-    void ConstructKernelCowHeader();
 
     // IO Path
     bool ProcessIORequest();
@@ -203,21 +179,21 @@ class WorkerThread {
     // Processing COW operations
     bool ProcessCowOp(const CowOperation* cow_op);
     bool ProcessReplaceOp(const CowOperation* cow_op);
+
     // Handles Copy and Xor
     bool ProcessCopyOp(const CowOperation* cow_op);
     bool ProcessXorOp(const CowOperation* cow_op);
     bool ProcessZeroOp();
 
+    // Merge related ops
+    bool Merge();
+    bool MergeOrderedOps(std::unique_ptr<ICowOpIter>& cowop_iter);
+    bool MergeReplaceZeroOps(std::unique_ptr<ICowOpIter>& cowop_iter);
+    int PrepareMerge(uint64_t* source_offset, int* pending_ops,
+                      std::unique_ptr<ICowOpIter>& cowop_iter,
+                      std::vector<const CowOperation*>* replace_zero_vec = nullptr);
+
     bool ReadFromBaseDevice(const CowOperation* cow_op);
-    bool GetReadAheadPopulatedBuffer(const CowOperation* cow_op);
-
-    // Merge related functions
-    bool ProcessMergeComplete(chunk_t chunk, void* buffer);
-    loff_t GetMergeStartOffset(void* merged_buffer, void* unmerged_buffer,
-                               int* unmerged_exceptions);
-
-    int GetNumberOfMergedOps(void* merged_buffer, void* unmerged_buffer, loff_t offset,
-                             int unmerged_exceptions, bool* copy_op, bool* commit);
 
     sector_t ChunkToSector(chunk_t chunk) { return chunk << CHUNK_SHIFT; }
     chunk_t SectorToChunk(sector_t sector) { return sector >> CHUNK_SHIFT; }
@@ -238,7 +214,6 @@ class WorkerThread {
     unique_fd ctrl_fd_;
 
     std::shared_ptr<Snapuserd> snapuserd_;
-    uint32_t exceptions_per_area_;
 };
 
 class Snapuserd : public std::enable_shared_from_this<Snapuserd> {
@@ -248,6 +223,7 @@ class Snapuserd : public std::enable_shared_from_this<Snapuserd> {
               const std::string& base_path_merge);
     bool InitCowDevice();
     bool Start();
+
     const std::string& GetControlDevicePath() { return control_device_; }
     const std::string& GetMiscName() { return misc_name_; }
     uint64_t GetNumSectors() { return num_sectors_; }
@@ -257,20 +233,20 @@ class Snapuserd : public std::enable_shared_from_this<Snapuserd> {
     void CheckMergeCompletionStatus();
     bool CommitMerge(int num_merge_ops);
 
-    void CloseFds() { cow_fd_ = {}; }
+    void CloseFds() {
+      cow_fd_ = {};
+    }
     void FreeResources() {
         worker_threads_.clear();
         read_ahead_thread_ = nullptr;
+        merge_thread_ = nullptr;
     }
-    size_t GetMetadataAreaSize() { return vec_.size(); }
-    void* GetExceptionBuffer(size_t i) { return vec_[i].get(); }
 
     bool InitializeWorkers();
     std::unique_ptr<CowReader> CloneReaderForWorker();
     std::shared_ptr<Snapuserd> GetSharedPtr() { return shared_from_this(); }
 
     std::vector<std::pair<sector_t, const CowOperation*>>& GetChunkVec() { return chunk_vec_; }
-    const std::vector<std::unique_ptr<uint8_t[]>>& GetMetadataVec() const { return vec_; }
 
     static bool compare(std::pair<sector_t, const CowOperation*> p1,
                         std::pair<sector_t, const CowOperation*> p2) {
@@ -285,40 +261,44 @@ class Snapuserd : public std::enable_shared_from_this<Snapuserd> {
     std::unordered_map<uint64_t, void*>& GetReadAheadMap() { return read_ahead_buffer_map_; }
     void* GetMappedAddr() { return mapped_addr_; }
     bool IsReadAheadFeaturePresent() { return read_ahead_feature_; }
+
     void PrepareReadAhead();
-    void StartReadAhead();
     void MergeCompleted();
-    bool ReadAheadIOCompleted(bool sync);
+    void MergeFailed();
     void ReadAheadIOFailed();
-    bool WaitForMergeToComplete();
-    bool GetReadAheadPopulatedBuffer(uint64_t block, void* buffer);
+
+    //user-space merge transitions
+    bool WaitForMergeReady();
+    void NotifyRAForMergeReady();
+    bool ReadAheadIOCompleted(bool sync);
+    bool WaitForMergeBegin();
+    void NotifyIOTerminated();
+    void InitiateMerge();
+    void WaitForMergeComplete();
+
     bool ReconstructDataFromCow() { return populate_data_from_cow_; }
     void ReconstructDataFromCowFinish() { populate_data_from_cow_ = false; }
-    bool WaitForReadAheadToStart();
 
+    // RA related functions
     uint64_t GetBufferMetadataOffset();
     size_t GetBufferMetadataSize();
     size_t GetBufferDataOffset();
     size_t GetBufferDataSize();
 
-    // Final block to be merged in a given read-ahead buffer region
-    void SetFinalBlockMerged(uint64_t x) { final_block_merged_ = x; }
-    uint64_t GetFinalBlockMerged() { return final_block_merged_; }
     // Total number of blocks to be merged in a given read-ahead buffer region
     void SetTotalRaBlocksMerged(int x) { total_ra_blocks_merged_ = x; }
     int GetTotalRaBlocksMerged() { return total_ra_blocks_merged_; }
     void SetSocketPresent(bool socket) { is_socket_present_ = socket; }
+    bool MergeInitiated() { return merge_initiated_; }
+    double GetMergePercentage() { return merge_completion_percentage_; }
 
   private:
-    bool IsChunkIdMetadata(chunk_t chunk);
-    chunk_t GetNextAllocatableChunkId(chunk_t chunk_id);
-
-    bool GetRABuffer(std::unique_lock<std::mutex>* lock, uint64_t block, void* buffer);
     bool ReadMetadata();
     sector_t ChunkToSector(chunk_t chunk) { return chunk << CHUNK_SHIFT; }
     chunk_t SectorToChunk(sector_t sector) { return sector >> CHUNK_SHIFT; }
     bool IsBlockAligned(int read_size) { return ((read_size & (BLOCK_SZ - 1)) == 0); }
     struct BufferState* GetBufferState();
+    void UpdateMergeCompletionPercentage();
 
     void ReadBlocks(const std::string partition_name, const std::string& dm_block_device);
     void ReadBlocksToCache(const std::string& dm_block_device, const std::string partition_name,
@@ -332,14 +312,9 @@ class Snapuserd : public std::enable_shared_from_this<Snapuserd> {
 
     unique_fd cow_fd_;
 
-    uint32_t exceptions_per_area_;
     uint64_t num_sectors_;
 
     std::unique_ptr<CowReader> reader_;
-
-    // Vector of disk exception which is a
-    // mapping of old-chunk to new-chunk
-    std::vector<std::unique_ptr<uint8_t[]>> vec_;
 
     // chunk_vec stores the pseudo mapping of sector
     // to COW operations.
@@ -357,10 +332,14 @@ class Snapuserd : public std::enable_shared_from_this<Snapuserd> {
     std::vector<const CowOperation*> read_ahead_ops_;
     bool populate_data_from_cow_ = false;
     bool read_ahead_feature_;
-    uint64_t final_block_merged_;
     int total_ra_blocks_merged_ = 0;
     READ_AHEAD_IO_TRANSITION io_state_;
     std::unique_ptr<ReadAheadThread> read_ahead_thread_;
+
+    // user-space-merging
+    std::unordered_map<uint64_t, int> block_to_ra_index_;
+    std::unique_ptr<WorkerThread> merge_thread_;
+    double merge_completion_percentage_;
 
     bool merge_initiated_ = false;
     bool attached_ = false;

@@ -31,7 +31,7 @@
 #include <android-base/scopeguard.h>
 #include <fs_mgr/file_wait.h>
 #include <snapuserd/snapuserd_client.h>
-#include "snapuserd.h"
+#include "user-space-merge/snapuserd.h"
 #include "snapuserd_server.h"
 
 #define _REALLY_INCLUDE_SYS__SYSTEM_PROPERTIES_H_
@@ -53,6 +53,8 @@ DaemonOperations SnapuserdServer::Resolveop(std::string& input) {
     if (input == "delete") return DaemonOperations::DELETE;
     if (input == "detach") return DaemonOperations::DETACH;
     if (input == "supports") return DaemonOperations::SUPPORTS;
+    if (input == "initiate") return DaemonOperations::INITIATE;
+    if (input == "percentage") return DaemonOperations::PERCENTAGE;
 
     return DaemonOperations::INVALID;
 }
@@ -128,15 +130,15 @@ bool SnapuserdServer::Receivemsg(android::base::borrowed_fd fd, const std::strin
     switch (op) {
         case DaemonOperations::INIT: {
             // Message format:
-            // init,<misc_name>,<cow_device_path>,<backing_device>
+            // init,<misc_name>,<cow_device_path>,<backing_device>,<base_path_merge>
             //
             // Reads the metadata and send the number of sectors
-            if (out.size() != 4) {
+            if (out.size() != 5) {
                 LOG(ERROR) << "Malformed init message, " << out.size() << " parts";
                 return Sendmsg(fd, "fail");
             }
 
-            auto handler = AddHandler(out[1], out[2], out[3]);
+            auto handler = AddHandler(out[1], out[2], out[3], out[4]);
             if (!handler) {
                 return Sendmsg(fd, "fail");
             }
@@ -216,6 +218,33 @@ bool SnapuserdServer::Receivemsg(android::base::borrowed_fd fd, const std::strin
             }
             return Sendmsg(fd, "fail");
         }
+        case DaemonOperations::INITIATE: {
+            if (out.size() != 3) {
+                LOG(ERROR) << "Malformed initiate-merge message, " << out.size() << " parts";
+                return Sendmsg(fd, "fail");
+            }
+            if (out[1] == "merge") {
+                std::lock_guard<std::mutex> lock(lock_);
+                auto iter = FindHandler(&lock, out[2]);
+                if (iter == dm_users_.end()) {
+                    LOG(ERROR) << "Could not find handler: " << out[1];
+                    return Sendmsg(fd, "fail");
+                }
+
+                if (!StartMerge(*iter)) {
+                    return Sendmsg(fd, "fail");
+                }
+
+                return Sendmsg(fd, "success");
+            }
+            return Sendmsg(fd, "fail");
+        }
+        case DaemonOperations::PERCENTAGE: {
+            std::lock_guard<std::mutex> lock(lock_);
+            double percentage = GetMergePercentage(&lock);
+
+            return Sendmsg(fd, std::to_string(percentage));
+        }
         default: {
             LOG(ERROR) << "Received unknown message type from client";
             Sendmsg(fd, "fail");
@@ -241,6 +270,7 @@ void SnapuserdServer::RunThread(std::shared_ptr<DmUserHandler> handler) {
 
     {
         std::lock_guard<std::mutex> lock(lock_);
+        num_partitions_merge_complete_ += 1;
         auto iter = FindHandler(&lock, handler->misc_name());
         if (iter == dm_users_.end()) {
             // RemoveAndJoinHandler() already removed us from the list, and is
@@ -394,8 +424,10 @@ void SnapuserdServer::Interrupt() {
 
 std::shared_ptr<DmUserHandler> SnapuserdServer::AddHandler(const std::string& misc_name,
                                                            const std::string& cow_device_path,
-                                                           const std::string& backing_device) {
-    auto snapuserd = std::make_shared<Snapuserd>(misc_name, cow_device_path, backing_device);
+                                                           const std::string& backing_device,
+                                                           const std::string& base_path_merge) {
+    auto snapuserd = std::make_shared<Snapuserd>(misc_name, cow_device_path,
+                                                 backing_device, base_path_merge);
     if (!snapuserd->InitCowDevice()) {
         LOG(ERROR) << "Failed to initialize Snapuserd";
         return nullptr;
@@ -430,6 +462,16 @@ bool SnapuserdServer::StartHandler(const std::shared_ptr<DmUserHandler>& handler
     return true;
 }
 
+bool SnapuserdServer::StartMerge(const std::shared_ptr<DmUserHandler>& handler) {
+    if (!handler->snapuserd()->IsAttached()) {
+        LOG(ERROR) << "Handler not attached to dm-user - Merge thread cannot be started";
+        return false;
+    }
+
+    handler->snapuserd()->InitiateMerge();
+    return true;
+}
+
 auto SnapuserdServer::FindHandler(std::lock_guard<std::mutex>* proof_of_lock,
                                   const std::string& misc_name) -> HandlerList::iterator {
     CHECK(proof_of_lock);
@@ -440,6 +482,38 @@ auto SnapuserdServer::FindHandler(std::lock_guard<std::mutex>* proof_of_lock,
         }
     }
     return dm_users_.end();
+}
+
+double SnapuserdServer::GetMergePercentage(std::lock_guard<std::mutex>* proof_of_lock)
+{
+    CHECK(proof_of_lock);
+    double percentage = 0.0;
+    int n = 0;
+
+    for (auto iter = dm_users_.begin(); iter != dm_users_.end(); iter++) {
+        auto& th = (*iter)->thread();
+        if (th.joinable()) {
+            // Merge percentage by individual partitions wherein merge is still
+            // in-progress
+            percentage += (*iter)->snapuserd()->GetMergePercentage();
+            n += 1;
+        }
+    }
+
+    // Calculate final merge including those partitions where merge was already
+    // completed - num_partitions_merge_complete_ will track them when each
+    // thread exists in RunThread.
+    int total_partitions = n + num_partitions_merge_complete_;
+
+    if (total_partitions) {
+        percentage = ((num_partitions_merge_complete_ * 100.0) + percentage) / total_partitions;
+    }
+
+    LOG(DEBUG) << "Merge %: " << percentage << " num_partitions_merge_complete_: "
+              << num_partitions_merge_complete_
+              << " total_partitions: " << total_partitions
+              << " n: " << n;
+    return percentage;
 }
 
 bool SnapuserdServer::RemoveAndJoinHandler(const std::string& misc_name) {

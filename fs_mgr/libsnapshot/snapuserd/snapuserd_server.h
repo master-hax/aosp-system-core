@@ -28,7 +28,7 @@
 #include <vector>
 
 #include <android-base/unique_fd.h>
-#include "snapuserd.h"
+#include "user-space-merge/snapuserd.h"
 
 namespace android {
 namespace snapshot {
@@ -43,6 +43,8 @@ enum class DaemonOperations {
     DELETE,
     DETACH,
     SUPPORTS,
+    INITIATE,
+    PERCENTAGE,
     INVALID,
 };
 
@@ -97,6 +99,7 @@ class SnapuserdServer : public Stoppable {
     volatile bool received_socket_signal_ = false;
     std::vector<struct pollfd> watched_fds_;
     bool is_socket_present_ = false;
+    int num_partitions_merge_complete_ = 0;
 
     std::mutex lock_;
 
@@ -126,6 +129,8 @@ class SnapuserdServer : public Stoppable {
     HandlerList::iterator FindHandler(std::lock_guard<std::mutex>* proof_of_lock,
                                       const std::string& misc_name);
 
+    double GetMergePercentage(std::lock_guard<std::mutex>* proof_of_lock);
+
   public:
     SnapuserdServer() { terminating_ = false; }
     ~SnapuserdServer();
@@ -138,8 +143,10 @@ class SnapuserdServer : public Stoppable {
 
     std::shared_ptr<DmUserHandler> AddHandler(const std::string& misc_name,
                                               const std::string& cow_device_path,
-                                              const std::string& backing_device);
+                                              const std::string& backing_device,
+                                              const std::string& base_path_merge);
     bool StartHandler(const std::shared_ptr<DmUserHandler>& handler);
+    bool StartMerge(const std::shared_ptr<DmUserHandler>& handler);
 
     void SetTerminating() { terminating_ = true; }
     void ReceivedSocketSignal() { received_socket_signal_ = true; }

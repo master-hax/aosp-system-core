@@ -195,8 +195,10 @@ bool SnapuserdClient::AttachDmUser(const std::string& misc_name) {
 }
 
 uint64_t SnapuserdClient::InitDmUserCow(const std::string& misc_name, const std::string& cow_device,
-                                        const std::string& backing_device) {
-    std::vector<std::string> parts = {"init", misc_name, cow_device, backing_device};
+                                        const std::string& backing_device,
+                                        const std::string& base_path_merge) {
+    std::vector<std::string> parts = {"init", misc_name, cow_device, backing_device,
+                                      base_path_merge};
     std::string msg = android::base::Join(parts, ",");
     if (!Sendmsg(msg)) {
         LOG(ERROR) << "Failed to send message " << msg << " to snapuserd daemon";
@@ -229,6 +231,27 @@ bool SnapuserdClient::DetachSnapuserd() {
         return false;
     }
     return true;
+}
+
+bool SnapuserdClient::InitiateMerge(const std::string& misc_name) {
+    std::string msg = "initiate,merge," + misc_name;
+    if (!Sendmsg(msg)) {
+        LOG(ERROR) << "Failed to send message " << msg << " to snapuserd";
+        return false;
+    }
+    std::string response = Receivemsg();
+    return response == "success";
+}
+
+double SnapuserdClient::GetMergePercent() {
+    std::string msg = "percentage";
+    if (!Sendmsg(msg)) {
+        LOG(ERROR) << "Failed to send message " << msg << " to snapuserd";
+        return false;
+    }
+    std::string response = Receivemsg();
+
+    return std::stod(response);
 }
 
 }  // namespace snapshot
