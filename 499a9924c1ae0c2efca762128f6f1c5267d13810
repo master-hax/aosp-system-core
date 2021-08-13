@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e438dea8_6f7b18fe",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1407716
+      },
+      "writtenOn": "2021-08-13T13:40:23Z",
+      "side": 1,
+      "message": "Hi folks,\n\nPTAL at this fix to ensure Looper uses sequence numbers to track requests in epoll.\n\nThanks!",
+      "revId": "499a9924c1ae0c2efca762128f6f1c5267d13810",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
