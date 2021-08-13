@@ -55,6 +55,9 @@
       "name": "memunreachable_binder_test"
     },
     {
+      "name": "MicrodroidHostTestCases"
+    },
+    {
       "name": "propertyinfoserializer_tests"
     }
   ],
