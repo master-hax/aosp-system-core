@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ea7c0959_99bd838d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-08-13T17:19:33Z",
+      "side": 1,
+      "message": "can you document the \"why\" in the commit message? (especially because all of system/core just has one big TEST_MAPPING rather than us actually specifying which tests matter to which projects. i notice in particular that all the adb tests should probably have moved out when adb did!)",
+      "revId": "f7671d4c514e3a850d0366365895cffa00c7c79f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
