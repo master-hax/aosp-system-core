@@ -28,6 +28,7 @@
 
 #include <unordered_map>
 #include <utility>
+#include <vector>
 
 namespace android {
 
@@ -425,9 +426,11 @@ private:
   using SequenceNumber = uint64_t;
 
   struct Request {
-      int fd;
-      int ident;
-      int events;
+      inline Request(int fd, int ident, int events, const sp<LooperCallback>& cb, void* data)
+          : fd(fd), ident(ident), events(events), callback(cb), data(data){};
+      const int fd;
+      const int ident;
+      const int events;
       sp<LooperCallback> callback;
       void* data;
 
@@ -435,6 +438,8 @@ private:
   };
 
     struct Response {
+        inline Response(SequenceNumber seq, int events, Request request)
+            : seq(seq), events(events), request(std::move(request)){};
         SequenceNumber seq;
         int events;
         Request request;
@@ -453,7 +458,7 @@ private:
 
     const bool mAllowNonCallbacks; // immutable
 
-    android::base::unique_fd mWakeEventFd;  // immutable
+    const android::base::unique_fd mWakeEventFd;  // immutable
     Mutex mLock;
 
     Vector<MessageEnvelope> mMessageEnvelopes; // guarded by mLock
@@ -477,19 +482,18 @@ private:
 
     // This state is only used privately by pollOnce and does not require a lock since
     // it runs on a single thread.
-    Vector<Response> mResponses;
+    std::vector<Response> mResponses;
     size_t mResponseIndex;
     nsecs_t mNextMessageUptime; // set to LLONG_MAX when none
 
     int pollInner(int timeoutMillis);
     int removeFdLocked(SequenceNumber seq);  // requires mLock
     void awoken();
-    void rebuildEpollLocked();
-    void scheduleEpollRebuildLocked();
+    void rebuildEpollLocked();          // requires mLock
+    void scheduleEpollRebuildLocked();  // requires mLock
 
     static void initTLSKey();
     static void threadDestructor(void *st);
-    static void initEpollEvent(struct epoll_event* eventItem);
 };
 
 } // namespace android

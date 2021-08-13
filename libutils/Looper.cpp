@@ -22,6 +22,12 @@ namespace android {
 
 namespace {
 
+base::unique_fd createWakeEventFd() {
+    base::unique_fd fd(eventfd(0, EFD_NONBLOCK | EFD_CLOEXEC));
+    LOG_ALWAYS_FATAL_IF(!fd.ok(), "Could not make wake event fd: %s", strerror(errno));
+    return fd;
+}
+
 epoll_event createEpollEvent(uint32_t events, uint64_t seq) {
     return {.events = events, .data = {.u64 = seq}};
 }
@@ -69,15 +75,13 @@ static pthread_key_t gTLSKey = 0;
 
 Looper::Looper(bool allowNonCallbacks)
     : mAllowNonCallbacks(allowNonCallbacks),
+      mWakeEventFd(createWakeEventFd()),
       mSendingMessage(false),
       mPolling(false),
       mEpollRebuildRequired(false),
       mNextRequestSeq(1),
       mResponseIndex(0),
       mNextMessageUptime(LLONG_MAX) {
-    mWakeEventFd.reset(eventfd(0, EFD_NONBLOCK | EFD_CLOEXEC));
-    LOG_ALWAYS_FATAL_IF(mWakeEventFd.get() < 0, "Could not make wake event fd: %s", strerror(errno));
-
     AutoMutex _l(mLock);
     rebuildEpollLocked();
 }
@@ -180,7 +184,7 @@ int Looper::pollOnce(int timeoutMillis, int* outFd, int* outEvents, void** outDa
     int result = 0;
     for (;;) {
         while (mResponseIndex < mResponses.size()) {
-            const Response& response = mResponses.itemAt(mResponseIndex++);
+            const Response& response = mResponses.at(mResponseIndex++);
             int ident = response.request.ident;
             if (ident >= 0) {
                 int fd = response.request.fd;
@@ -297,7 +301,7 @@ int Looper::pollInner(int timeoutMillis) {
                 if (epollEvents & EPOLLOUT) events |= EVENT_OUTPUT;
                 if (epollEvents & EPOLLERR) events |= EVENT_ERROR;
                 if (epollEvents & EPOLLHUP) events |= EVENT_HANGUP;
-                mResponses.push({.seq = seq, .events = events, .request = request});
+                mResponses.emplace_back(seq, events, request);
             } else {
                 ALOGW("Ignoring unexpected epoll events 0x%x for sequence number %" PRIu64
                       " that is no longer registered.",
@@ -345,8 +349,7 @@ Done: ;
     mLock.unlock();
 
     // Invoke all response callbacks.
-    for (size_t i = 0; i < mResponses.size(); i++) {
-        Response& response = mResponses.editItemAt(i);
+    for (auto& response : mResponses) {
         if (response.request.ident == POLL_CALLBACK) {
             int fd = response.request.fd;
             int events = response.events;
@@ -452,13 +455,7 @@ int Looper::addFd(int fd, int ident, int events, const sp<LooperCallback>& callb
         // The sequence number 0 is reserved for the WakeEventFd.
         if (mNextRequestSeq == 0) mNextRequestSeq = 1;
         const SequenceNumber seq = mNextRequestSeq++;
-
-        Request request;
-        request.fd = fd;
-        request.ident = ident;
-        request.events = events;
-        request.callback = callback;
-        request.data = data;
+        const Request request(fd, ident, events, callback, data);
 
         epoll_event eventItem = createEpollEvent(request.getEpollEvents(), seq);
         auto seq_it = mSequenceNumberByFd.find(fd);
