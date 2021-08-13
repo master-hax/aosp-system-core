@@ -33,6 +33,24 @@
       "message": "Hey Keith, if you don\u0027t mind, can you add the steps to reproduce the manual test/build.",
       "revId": "184286ce7a920f6fc9c4fa0fc50e2113a2de9e01",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "622daa00_456a64b6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1880185
+      },
+      "writtenOn": "2021-08-13T17:18:07Z",
+      "side": 1,
+      "message": "The build need to start using trusty TEE code base. running emulator does not start the target.\n\nmkdir  trusty ; cd trusty\nrepo init -u https://android.googlesource.com/trusty/manifest -b master\nrepo sync -j32 -c --no-tags\ntrusty/vendor/google/aosp/scripts/check_system_dependencies.sh   # Follow the instructions, if any.\ntrusty/vendor/google/aosp/scripts/build.py --skip-tests qemu-generic-arm64-test-debug\nbuild-root/build-qemu-generic-arm64-test-debug/run --android path/to/your/android/source/dir\n\nIn target \nRun /data/nativetest/VtsHalKeymasterV4_1TargetTest",
+      "parentUuid": "939753f9_d5bf9df3",
+      "revId": "184286ce7a920f6fc9c4fa0fc50e2113a2de9e01",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
