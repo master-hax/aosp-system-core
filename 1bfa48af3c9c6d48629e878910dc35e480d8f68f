@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "86f92f14_3c1e9428",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-08-13T17:06:35Z",
+      "side": 1,
+      "message": "SGTM, the same functionality exists in second-stage init.",
+      "revId": "1bfa48af3c9c6d48629e878910dc35e480d8f68f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
