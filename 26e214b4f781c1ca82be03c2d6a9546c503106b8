@@ -73,6 +73,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "cb651923_fea2ebd8",
+        "filename": "fs_mgr/fs_mgr_roots.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2021-08-13T03:17:15Z",
+      "side": 1,
+      "message": "\u003e Use a pointer to indicate that this is an input / output parameter.\n\nJust to discussion the style here.\n\nIt seems changed to non-optional in/out can be a reference.\n\nhttps://google.github.io/styleguide/cppguide.html#Inputs_and_Outputs\n\n+ while non-optional output and input/output parameters should usually be references (which cannot be null).\n\n+ Use non-const pointers to represent optional outputs and optional input/output parameters.",
+      "parentUuid": "e0268c96_2d1a7a80",
+      "range": {
+        "startLine": 36,
+        "startChar": 31,
+        "endLine": 36,
+        "endChar": 32
+      },
+      "revId": "26e214b4f781c1ca82be03c2d6a9546c503106b8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "9a77ca58_d4b8b305",
         "filename": "fs_mgr/fs_mgr_roots.cpp",
         "patchSetId": 2
