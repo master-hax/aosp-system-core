@@ -16,6 +16,23 @@
       "message": "can you document the \"why\" in the commit message? (especially because all of system/core just has one big TEST_MAPPING rather than us actually specifying which tests matter to which projects. i notice in particular that all the adb tests should probably have moved out when adb did!)",
       "revId": "f7671d4c514e3a850d0366365895cffa00c7c79f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ce120945_575c102d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-08-16T23:43:10Z",
+      "side": 1,
+      "message": "see also https://android-review.googlesource.com/q/topic:system-core-test-mapping where i\u0027ve broken this file up --- it was already causing us problems because various entries hadn\u0027t moved when the code they were meant to correspond to had moved into a different project :-(",
+      "revId": "f7671d4c514e3a850d0366365895cffa00c7c79f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
