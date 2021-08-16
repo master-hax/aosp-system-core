@@ -16,6 +16,213 @@
       "message": "Hi folks,\n\nPTAL at this fix to ensure Looper uses sequence numbers to track requests in epoll.\n\nThanks!",
       "revId": "499a9924c1ae0c2efca762128f6f1c5267d13810",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a18ad944_bdf323e2",
+        "filename": "libutils/Looper.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 153,
+      "author": {
+        "id": 1149384
+      },
+      "writtenOn": "2021-08-16T19:02:27Z",
+      "side": 1,
+      "message": "should this be made a constant?",
+      "range": {
+        "startLine": 153,
+        "startChar": 54,
+        "endLine": 153,
+        "endChar": 55
+      },
+      "revId": "499a9924c1ae0c2efca762128f6f1c5267d13810",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "13cde9ee_41b0104f",
+        "filename": "libutils/Looper.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 159,
+      "author": {
+        "id": 1149384
+      },
+      "writtenOn": "2021-08-16T19:02:27Z",
+      "side": 1,
+      "message": "nit: There\u0027s a compiler option to prohibit shadowed variables. Not sure if it makes sense to turn it on to prevent this naming overlap in the future.",
+      "range": {
+        "startLine": 159,
+        "startChar": 20,
+        "endLine": 159,
+        "endChar": 29
+      },
+      "revId": "499a9924c1ae0c2efca762128f6f1c5267d13810",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c2e14789_dafb3603",
+        "filename": "libutils/Looper.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 285,
+      "author": {
+        "id": 1149384
+      },
+      "writtenOn": "2021-08-16T19:02:27Z",
+      "side": 1,
+      "message": "nit: use constant",
+      "range": {
+        "startLine": 285,
+        "startChar": 19,
+        "endLine": 285,
+        "endChar": 20
+      },
+      "revId": "499a9924c1ae0c2efca762128f6f1c5267d13810",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "67091329_13d9bc1e",
+        "filename": "libutils/Looper.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 553,
+      "author": {
+        "id": 1149384
+      },
+      "writtenOn": "2021-08-16T19:02:27Z",
+      "side": 1,
+      "message": "delete",
+      "range": {
+        "startLine": 553,
+        "startChar": 60,
+        "endLine": 553,
+        "endChar": 61
+      },
+      "revId": "499a9924c1ae0c2efca762128f6f1c5267d13810",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4b888454_a858d352",
+        "filename": "libutils/Looper_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 733,
+      "author": {
+        "id": 1149384
+      },
+      "writtenOn": "2021-08-16T19:02:27Z",
+      "side": 1,
+      "message": "nit: use std::chrono::milliseconds and then call .count() in the next line",
+      "range": {
+        "startLine": 733,
+        "startChar": 37,
+        "endLine": 733,
+        "endChar": 58
+      },
+      "revId": "499a9924c1ae0c2efca762128f6f1c5267d13810",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cb65b1cd_9c88cf24",
+        "filename": "libutils/Looper_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 823,
+      "author": {
+        "id": 1149384
+      },
+      "writtenOn": "2021-08-16T19:02:27Z",
+      "side": 1,
+      "message": "can we rely on this always being true? My understanding is that the fd numbers are per-process. Is there any risk of the test process doing some additional i/o at this time, which wold cause this to flake?\n\nIf there is such risk, and the fd\u0027s don\u0027t match, should we just \"continue\" here and try again?",
+      "range": {
+        "startLine": 822,
+        "startChar": 8,
+        "endLine": 823,
+        "endChar": 88
+      },
+      "revId": "499a9924c1ae0c2efca762128f6f1c5267d13810",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3cae00cb_bf60e4f6",
+        "filename": "libutils/Looper_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 828,
+      "author": {
+        "id": 1149384
+      },
+      "writtenOn": "2021-08-16T19:02:27Z",
+      "side": 1,
+      "message": "maybe just ASSERT_TRUE() ?",
+      "range": {
+        "startLine": 828,
+        "startChar": 8,
+        "endLine": 828,
+        "endChar": 47
+      },
+      "revId": "499a9924c1ae0c2efca762128f6f1c5267d13810",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e20c6a06_26f8b630",
+        "filename": "libutils/include/utils/Looper.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1149384
+      },
+      "writtenOn": "2021-08-16T19:02:27Z",
+      "side": 1,
+      "message": "can this be deleted now?",
+      "range": {
+        "startLine": 22,
+        "startChar": 0,
+        "endLine": 22,
+        "endChar": 30
+      },
+      "revId": "499a9924c1ae0c2efca762128f6f1c5267d13810",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9f7abeba_225297b0",
+        "filename": "libutils/include/utils/Looper.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 471,
+      "author": {
+        "id": 1149384
+      },
+      "writtenOn": "2021-08-16T19:02:27Z",
+      "side": 1,
+      "message": "I remember adding GUARDED_BY annotations for AutoMutex a while back. You can probably use a real annotation (or just convert to std::mutex)",
+      "range": {
+        "startLine": 471,
+        "startChar": 73,
+        "endLine": 471,
+        "endChar": 92
+      },
+      "revId": "499a9924c1ae0c2efca762128f6f1c5267d13810",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
