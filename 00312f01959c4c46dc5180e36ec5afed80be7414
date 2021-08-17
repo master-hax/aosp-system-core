@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "af88554e_d05613da",
+        "filename": "libutils/Looper.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1149384
+      },
+      "writtenOn": "2021-08-17T19:43:50Z",
+      "side": 1,
+      "message": "nit: not needed?",
+      "range": {
+        "startLine": 25,
+        "startChar": 10,
+        "endLine": 25,
+        "endChar": 15
+      },
+      "revId": "00312f01959c4c46dc5180e36ec5afed80be7414",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7cde243a_2e601194",
+        "filename": "libutils/Looper_test.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 808,
+      "author": {
+        "id": 1149384
+      },
+      "writtenOn": "2021-08-17T19:43:50Z",
+      "side": 1,
+      "message": "I wonder if it\u0027s possible to make this test deterministic.\n\nFor example:\n\n1. Create first pipe\n2. Call close (fd hangup)\n3. In the fd hangup handler (\"removeCallback\"), you block \"indefinitely\" (wait on a condition variable)\n4. Call mLooper-\u003eremoveFd\n5. Create second pipe\n6. Unblock the \"removeCallback\" by signaling the condition variable\n7. Check whether second pipe was removed\n\nWould that work?",
+      "range": {
+        "startLine": 808,
+        "startChar": 24,
+        "endLine": 808,
+        "endChar": 28
+      },
+      "revId": "00312f01959c4c46dc5180e36ec5afed80be7414",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}

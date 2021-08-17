@@ -206,6 +206,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "09e89f35_3ba4d347",
+        "filename": "libutils/Looper.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 553,
+      "author": {
+        "id": 1149384
+      },
+      "writtenOn": "2021-08-17T19:43:50Z",
+      "side": 1,
+      "message": "nit: one more change on L554",
+      "parentUuid": "8d25f523_b83f3933",
+      "range": {
+        "startLine": 553,
+        "startChar": 60,
+        "endLine": 553,
+        "endChar": 61
+      },
+      "revId": "499a9924c1ae0c2efca762128f6f1c5267d13810",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "4b888454_a858d352",
@@ -290,6 +314,30 @@
       "side": 1,
       "message": "Yeah, fd numbers should be per-process, and this relies on the test process not opening any other fds.\n\nAt least experimentally, it doesn\u0027t seem like gtest opens any other files, as I\u0027ve never run into this failure experimentally. Perhaps it can happen if gtest opens another file to send test stats? And if so, that should happen before or after the test executes. \n\nIf we \"continue\" without it affecting the test result, then I\u0027m worried that we won\u0027t be able to tell if the main part was skipped for all the iterations. I\u0027m thinking of leaving it as is; and if we do see this failure, then we can add logic to \"continue\" a limited number of times before it fails. WDYT?",
       "parentUuid": "cb65b1cd_9c88cf24",
+      "range": {
+        "startLine": 822,
+        "startChar": 8,
+        "endLine": 823,
+        "endChar": 88
+      },
+      "revId": "499a9924c1ae0c2efca762128f6f1c5267d13810",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4e12844a_4406810b",
+        "filename": "libutils/Looper_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 823,
+      "author": {
+        "id": 1149384
+      },
+      "writtenOn": "2021-08-17T19:43:50Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "195101f7_63198362",
       "range": {
         "startLine": 822,
         "startChar": 8,
