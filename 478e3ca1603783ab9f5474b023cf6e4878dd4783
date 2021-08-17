@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5bbe77c8_689af3e0",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-08-17T16:45:03Z",
+      "side": 1,
+      "message": "so this is kind of my point ... adb moved out a while ago. https://android-review.googlesource.com/q/topic:system-core-test-mapping moves all of the content of this file into corresponding project-specific files. so if you want this for init, say, wait until that topic is merged and then add your tests to the new init/TEST_MAPPING. that way you\u0027re future-proofed (and, like i say, immediately aware that expecting adb changes to run your tests wouldn\u0027t work :-) ).\n\n\n(i should probably explicitly say that having \"one big TEST_MAPPING\" for system/core/ was my idea, and it\u0027s taken me this long to realize it was a bad idea. but the number of tests that had to move out in the topic above shows how hard it was for humans to keep this updated. obviously long term we want to get to a state where we run all the tests for all changes, but i wouldn\u0027t recommend holding your breath for that!)",
+      "range": {
+        "startLine": 10,
+        "startChar": 31,
+        "endLine": 10,
+        "endChar": 34
+      },
+      "revId": "478e3ca1603783ab9f5474b023cf6e4878dd4783",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
