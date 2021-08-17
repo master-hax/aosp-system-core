@@ -72,7 +72,6 @@
 #include <log/log_properties.h>
 #include <logwrap/logwrap.h>
 
-#include "blockdev.h"
 #include "fs_mgr_priv.h"
 
 #define KEY_LOC_PROP   "ro.crypto.keyfile.userdata"
@@ -2110,8 +2109,6 @@ static bool PrepareZramBackingDevice(off64_t size) {
     }
 
     ConfigureIoScheduler(loop_device);
-
-    ConfigureQueueDepth(loop_device, "/");
 
     // set block size & direct IO
     unique_fd loop_fd(TEMP_FAILURE_RETRY(open(loop_device.c_str(), O_RDWR | O_CLOEXEC)));
