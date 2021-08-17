@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "77d7707b_f32b64cd",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1045980
+      },
+      "writtenOn": "2021-08-17T21:32:23Z",
+      "side": 1,
+      "message": "We should add this to InspectCow as well, but that\u0027s a separate small change.",
+      "revId": "193e86d5d4af3bd8ab36016c07e45062021be3c1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
