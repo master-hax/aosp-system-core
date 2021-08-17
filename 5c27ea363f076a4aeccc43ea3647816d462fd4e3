@@ -33,6 +33,24 @@
       "message": "Per discussion with Suren, the script couldn\u0027t keep the high watermark value with old value so kswapd will run longer than old. It potentially will introduce the side effect for the power/performance but there is no good way how it\u0027s severe at this moment. If someone reports it\u0027s problem that kswapd runs longer than old with good number to prove, we will tackle this issue to be able to set the only single high watermark independently against upstream and then correct the math again.\n\nThere is no user to use the knob directly due to sepolicy so this script will cover all use cases. \n\nAbout deprecating this knobs from AMS, since vendors have used it(i.e., API), we couldn\u0027t deprecate it.",
       "revId": "5c27ea363f076a4aeccc43ea3647816d462fd4e3",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2a14096f_cc5c84e6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-08-17T17:02:12Z",
+      "side": 1,
+      "message": "Your observations are correct and your next comment explains why we can\u0027t deprecate the knob outright. My plan is to merge this approach and look for possible regressions. If any occur we will have evidence that the current upstream knobs are not enough for our usecases and will try upstreaming a way to control high watermark independently.",
+      "parentUuid": "74128b2a_5475e3fa",
+      "revId": "5c27ea363f076a4aeccc43ea3647816d462fd4e3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
