@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "67248071_1dd04eeb",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2021-08-17T18:40:16Z",
+      "side": 1,
+      "message": "Bug 196982345 is about SELinux. This patch is not related to SELinux so please don\u0027t revert it.",
+      "revId": "7d0d4206cdafae55e4c7ca3b3fcbc8cc51d6cd3b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
