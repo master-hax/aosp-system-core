@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "46010ffe_0558f965",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2021-08-17T18:39:42Z",
+      "side": 1,
+      "message": "Bug 196982345 is about SELinux. Patch \"libdm: Export ExtractBlockDeviceName()\" is not related to SELinux so please don\u0027t revert it.",
+      "revId": "d98ccbff8482459e54f07ff6658b432572d4a0f8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
