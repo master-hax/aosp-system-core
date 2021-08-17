@@ -63,6 +63,15 @@ std::unique_ptr<CowReader> SnapshotHandler::CloneReaderForWorker() {
     return reader_->CloneCowReader();
 }
 
+void SnapshotHandler::UpdateMergeCompletionPercentage() {
+    struct CowHeader* ch = reinterpret_cast<struct CowHeader*>(mapped_addr_);
+    merge_completion_percentage_ = (ch->num_merge_ops * 100.0) / reader_->get_num_total_data_ops();
+
+    SNAP_LOG(DEBUG) << "Merge-complete %: " << merge_completion_percentage_
+                    << " num_merge_ops: " << ch->num_merge_ops
+                    << " total-ops: " << reader_->get_num_total_data_ops();
+}
+
 bool SnapshotHandler::CommitMerge(int num_merge_ops) {
     struct CowHeader* ch = reinterpret_cast<struct CowHeader*>(mapped_addr_);
     ch->num_merge_ops += num_merge_ops;
@@ -77,6 +86,12 @@ bool SnapshotHandler::CommitMerge(int num_merge_ops) {
         SNAP_PLOG(ERROR) << "msync header failed: " << ret;
         return false;
     }
+
+    // Update the merge completion - this is used by update engine
+    // to track the completion. No need to take a lock. It is ok
+    // even if there is a miss on reading a latest updated value.
+    // Subsequent polling will eventually converge to completion.
+    UpdateMergeCompletionPercentage();
 
     return true;
 }
@@ -138,6 +153,8 @@ bool SnapshotHandler::ReadMetadata() {
         SNAP_LOG(ERROR) << "mmap failed";
         return false;
     }
+
+    UpdateMergeCompletionPercentage();
 
     // Initialize the iterator for reading metadata
     std::unique_ptr<ICowOpIter> cowop_iter = reader_->GetMergeOpIter();
