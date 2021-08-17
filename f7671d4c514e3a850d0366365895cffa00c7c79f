@@ -69,6 +69,24 @@
       "parentUuid": "ce120945_575c102d",
       "revId": "f7671d4c514e3a850d0366365895cffa00c7c79f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5da628ae_f98a11fc",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1291338
+      },
+      "writtenOn": "2021-08-17T14:36:26Z",
+      "side": 1,
+      "message": "updated the commit message. PTAL.",
+      "parentUuid": "06e663ab_66c8cfb6",
+      "revId": "f7671d4c514e3a850d0366365895cffa00c7c79f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
