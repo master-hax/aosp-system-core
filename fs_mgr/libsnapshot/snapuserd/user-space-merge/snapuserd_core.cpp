@@ -126,7 +126,7 @@ void SnapshotHandler::CheckMergeCompletionStatus() {
 }
 
 bool SnapshotHandler::ReadMetadata() {
-    reader_ = std::make_unique<CowReader>();
+    reader_ = std::make_unique<CowReader>(true);
     CowHeader header;
     CowOptions options;
 
