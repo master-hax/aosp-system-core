@@ -19,15 +19,19 @@
 
 #include <utils/RefBase.h>
 #include <utils/Timers.h>
-#include <utils/Vector.h>
 #include <utils/threads.h>
 
 #include <sys/epoll.h>
 
 #include <android-base/unique_fd.h>
 
+#include <deque>
 #include <unordered_map>
 #include <utility>
+#include <vector>
+
+// Keep unused import because downstream code uses it implicitly.
+#include <utils/Vector.h>
 
 namespace android {
 
@@ -89,8 +93,8 @@ protected:
     virtual ~WeakMessageHandler();
 
 public:
-    WeakMessageHandler(const wp<MessageHandler>& handler);
-    virtual void handleMessage(const Message& message);
+  explicit WeakMessageHandler(const wp<MessageHandler>& handler);
+  void handleMessage(const Message& message) override;
 
 private:
     wp<MessageHandler> mHandler;
@@ -126,9 +130,9 @@ protected:
 
 public:
     SimpleLooperCallback(Looper_callbackFunc callback);
-    virtual int handleEvent(int fd, int events, void* data);
+    virtual int handleEvent(int fd, int events, void* data) override;
 
-private:
+  private:
     Looper_callbackFunc mCallback;
 };
 
@@ -425,9 +429,11 @@ private:
   using SequenceNumber = uint64_t;
 
   struct Request {
-      int fd;
-      int ident;
-      int events;
+      inline Request(int fd, int ident, int events, const sp<LooperCallback>& cb, void* data)
+          : fd(fd), ident(ident), events(events), callback(cb), data(data){};
+      const int fd;
+      const int ident;
+      const int events;
       sp<LooperCallback> callback;
       void* data;
 
@@ -435,61 +441,60 @@ private:
   };
 
     struct Response {
+        inline Response(SequenceNumber seq, int events, Request request)
+            : seq(seq), events(events), request(std::move(request)){};
         SequenceNumber seq;
         int events;
         Request request;
     };
 
     struct MessageEnvelope {
-        MessageEnvelope() : uptime(0) { }
-
-        MessageEnvelope(nsecs_t u, sp<MessageHandler> h, const Message& m)
-            : uptime(u), handler(std::move(h)), message(m) {}
+        inline MessageEnvelope(nsecs_t u, const sp<MessageHandler>& h, const Message& m)
+            : uptime(u), handler(h), message(m) {}
 
         nsecs_t uptime;
         sp<MessageHandler> handler;
         Message message;
     };
 
-    const bool mAllowNonCallbacks; // immutable
+    const bool mAllowNonCallbacks;
+    const android::base::unique_fd mWakeEventFd;
 
-    android::base::unique_fd mWakeEventFd;  // immutable
     Mutex mLock;
 
-    Vector<MessageEnvelope> mMessageEnvelopes; // guarded by mLock
-    bool mSendingMessage; // guarded by mLock
+    std::deque<MessageEnvelope> mMessageEnvelopes GUARDED_BY(mLock);
+    bool mSendingMessage GUARDED_BY(mLock);
 
     // Whether we are currently waiting for work.  Not protected by a lock,
     // any use of it is racy anyway.
     volatile bool mPolling;
 
-    android::base::unique_fd mEpollFd;  // guarded by mLock but only modified on the looper thread
-    bool mEpollRebuildRequired; // guarded by mLock
+    android::base::unique_fd mEpollFd;  // only modified from the looper thread
+    bool mEpollRebuildRequired GUARDED_BY(mLock);
 
     // Locked maps of fds and sequence numbers monitoring requests.
     // Both maps must be kept in sync at all times.
-    std::unordered_map<SequenceNumber, Request> mRequests;               // guarded by mLock
-    std::unordered_map<int /*fd*/, SequenceNumber> mSequenceNumberByFd;  // guarded by mLock
+    std::unordered_map<SequenceNumber, Request> mRequests GUARDED_BY(mLock);
+    std::unordered_map<int /*fd*/, SequenceNumber> mSequenceNumberByFd GUARDED_BY(mLock);
 
     // The sequence number to use for the next fd that is added to the looper.
     // The sequence number 0 is reserved for the WakeEventFd.
-    SequenceNumber mNextRequestSeq;  // guarded by mLock
+    SequenceNumber mNextRequestSeq GUARDED_BY(mLock);
 
     // This state is only used privately by pollOnce and does not require a lock since
     // it runs on a single thread.
-    Vector<Response> mResponses;
+    std::vector<Response> mResponses;
     size_t mResponseIndex;
     nsecs_t mNextMessageUptime; // set to LLONG_MAX when none
 
     int pollInner(int timeoutMillis);
-    int removeFdLocked(SequenceNumber seq);  // requires mLock
+    int removeFdLocked(SequenceNumber seq) REQUIRES(mLock);
     void awoken();
-    void rebuildEpollLocked();
-    void scheduleEpollRebuildLocked();
+    void rebuildEpollLocked() REQUIRES(mLock);
+    void scheduleEpollRebuildLocked() REQUIRES(mLock);
 
     static void initTLSKey();
     static void threadDestructor(void *st);
-    static void initEpollEvent(struct epoll_event* eventItem);
 };
 
 } // namespace android
