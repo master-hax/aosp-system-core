@@ -367,5 +367,186 @@ void SnapshotHandler::WaitForMergeComplete() {
     }
 }
 
+//========== End of Read-ahead state transition functions ====================
+
+/*
+ * Root partitions are mounted off dm-user and the I/O's are served
+ * by snapuserd worker threads.
+ *
+ * When there is an I/O request to be served by worker threads, we check
+ * if the corresponding sector is "changed" due to OTA by doing a lookup.
+ * If the lookup succeeds then the sector has been changed and that can
+ * either fall into 4 COW operations viz: COPY, XOR, REPLACE and ZERO.
+ *
+ * For the case of REPLACE and ZERO ops, there is not much of a concern
+ * as there is no dependency between blocks. Hence all the I/O request
+ * mapped to these two COW operations will be served by reading the COW device.
+ *
+ * However, COPY and XOR ops are tricky. Since the merge operations are
+ * in-progress, we cannot just go and read from the source device. We need
+ * to be in sync with the state of the merge thread before serving the I/O.
+ *
+ * Given that we know merge thread processes a set of COW ops called as RA
+ * Blocks - These set of COW ops are fixed size wherein each Block comprises
+ * of 510 COW ops.
+ *
+ *  +--------------------------+
+ *  |op-1|op-2|op-3|....|op-510|
+ *  +--------------------------+
+ *
+ *  <------ Merge Block N ------>
+ *
+ * Thus, a Merge Block N, will fall into one of these states and will
+ * transition the states in the following order:
+ *
+ * 1: MERGE_PENDING
+ * 2: MERGE_IN_PROGRESS
+ * 3: MERGE_COMPLETED
+ * 4: MERGE_FAILED
+ *
+ * Let's say that we have the I/O request from dm-user whose sector gets mapped
+ * to a COPY operation with op-10 in the above "Merge Block N".
+ *
+ * 1: If the Block is in "MERGE_PENDING" state:
+ *
+ *    Just read the data from source block based on COW op->source field. Note,
+ *    that we will take a ref count on "Block N". This ref count will prevent
+ *    merge thread to begin merging if there are any pending I/Os. Once the I/O
+ *    is completed, ref count on "Block N" is decremented. Merge thread will
+ *    resume merging "Block N" if there are no pending I/Os.
+ *
+ * 2: If the Block is in "MERGE_PROGRESS" state:
+ *
+ *    I/O will wait for the merge to complete. Once "Block N" merge is complete,
+ *    I/O thread will be woken up. Note that, once the thread is woken up, block
+ *    is already merged and hence we just read the data directly from "Base"
+ *    device. We should not be reading the COW op->source field.
+ *
+ * 3: If the Block is in "MERGE_COMPLETED" state:
+ *
+ *    This is straightforward. We just read the data directly from "Base"
+ *    device. We should not be reading the COW op->source field.
+ *
+ * 4: If the Block is in "MERGE_FAILED" state:
+ *
+ *    Terminate the I/O with an I/O error as we don't know which "op" in the
+ *    "Block N" failed.
+ */
+
+// Invoked by Merge thread. If there are any pending in-flight I/O requests
+// from dm-user, wake them up
+void SnapshotHandler::SetMergeCompleted(size_t block_index) {
+    {
+        std::lock_guard<std::mutex> lock(m_lock_);
+        MergeBlockState* blk_state = merge_blk_state_[block_index].get();
+
+        CHECK(blk_state->merge_state_ == MERGE_BLOCK_STATE::MERGE_IN_PROGRESS);
+        CHECK(blk_state->num_ios_in_progress_ == 0);
+
+        blk_state->merge_state_ = MERGE_BLOCK_STATE::MERGE_COMPLETED;
+    }
+
+    // Wake all I/O threads waiting on this Block
+    m_cv_.notify_all();
+}
+
+// Invoked by Merge thread. This is called just before the beginning
+// of merging a given Block of 510 ops. If there are any in-flight I/O's
+// from dm-user then wait for them to complete.
+void SnapshotHandler::SetMergeInProgress(size_t block_index) {
+    {
+        std::unique_lock<std::mutex> lock(m_lock_);
+        MergeBlockState* blk_state = merge_blk_state_[block_index].get();
+        // Wait if there are any in-flight I/O's - we cannot merge at this point
+        while (!(blk_state->num_ios_in_progress_ == 0)) {
+            SNAP_LOG(INFO) << "Merge - waiting for in-flight I/O to complete...";
+            m_cv_.wait(lock);
+        }
+
+        CHECK(blk_state->merge_state_ == MERGE_BLOCK_STATE::MERGE_PENDING);
+
+        blk_state->merge_state_ = MERGE_BLOCK_STATE::MERGE_IN_PROGRESS;
+    }
+}
+
+// Invoked by Merge thread on failure
+void SnapshotHandler::SetMergeFailed(size_t block_index) {
+    {
+        std::unique_lock<std::mutex> lock(m_lock_);
+        MergeBlockState* blk_state = merge_blk_state_[block_index].get();
+
+        blk_state->merge_state_ = MERGE_BLOCK_STATE::MERGE_FAILED;
+    }
+
+    m_cv_.notify_all();
+}
+
+// Invoked by worker threads when I/O is complete on a "MERGE_PENDING"
+// Block. If there are no more in-flight I/Os, wake up merge thread
+// to resume merging.
+void SnapshotHandler::NotifyIOCompletion(uint64_t new_block) {
+    auto it = block_to_ra_index_.find(new_block);
+    CHECK(it != block_to_ra_index_.end()) << " invalid block: " << new_block;
+
+    bool pending_ios = true;
+
+    int block_index = it->second;
+    {
+        std::unique_lock<std::mutex> lock(m_lock_);
+        MergeBlockState* blk_state = merge_blk_state_[block_index].get();
+
+        CHECK(blk_state->merge_state_ == MERGE_BLOCK_STATE::MERGE_PENDING);
+        blk_state->num_ios_in_progress_ -= 1;
+        if (blk_state->num_ios_in_progress_ == 0) {
+            pending_ios = false;
+        }
+    }
+
+    // Give a chance to merge-thread to resume merge
+    // as there are no pending I/O.
+    if (!pending_ios) {
+        m_cv_.notify_all();
+    }
+}
+
+// Invoked by worker threads in the I/O path. This is called when a sector
+// is mapped to a COPY/XOR COW op.
+MERGE_BLOCK_STATE SnapshotHandler::GetMergeBlockState(uint64_t new_block) {
+    auto it = block_to_ra_index_.find(new_block);
+    if (it == block_to_ra_index_.end()) {
+        return MERGE_BLOCK_STATE::INVALID;
+    }
+
+    int block_index = it->second;
+    {
+        std::unique_lock<std::mutex> lock(m_lock_);
+        MergeBlockState* blk_state = merge_blk_state_[block_index].get();
+
+        MERGE_BLOCK_STATE state = blk_state->merge_state_;
+        switch (state) {
+            case MERGE_BLOCK_STATE::MERGE_COMPLETED:
+                [[fallthrough]];
+            case MERGE_BLOCK_STATE::MERGE_PENDING:
+                blk_state->num_ios_in_progress_ += 1;  // ref count
+                [[fallthrough]];
+            case MERGE_BLOCK_STATE::MERGE_FAILED: {
+                return state;
+            }
+            case MERGE_BLOCK_STATE::MERGE_IN_PROGRESS: {
+                // Merge is in-progress - wait for it to complete
+                while (!(blk_state->merge_state_ == MERGE_BLOCK_STATE::MERGE_COMPLETED ||
+                         blk_state->merge_state_ == MERGE_BLOCK_STATE::MERGE_FAILED)) {
+                    m_cv_.wait(lock);
+                }
+
+                return blk_state->merge_state_;
+            }
+            default: {
+                return MERGE_BLOCK_STATE::INVALID;
+            }
+        }
+    }
+}
+
 }  // namespace snapshot
 }  // namespace android
