@@ -55,7 +55,6 @@ int Worker::PrepareMerge(uint64_t* source_offset, int* pending_ops,
                     break;
                 }
 
-                // Check for consecutive blocks
                 uint64_t next_offset = op->new_block * BLOCK_SZ;
                 if (next_offset != (*source_offset + nr_consecutive * BLOCK_SZ)) {
                     break;
@@ -242,6 +241,7 @@ bool Worker::MergeOrderedOps(const std::unique_ptr<ICowOpIter>& cowop_iter) {
     void* mapped_addr = snapuserd_->GetMappedAddr();
     void* read_ahead_buffer =
             static_cast<void*>((char*)mapped_addr + snapuserd_->GetBufferDataOffset());
+    size_t block_index = 0;
 
     SNAP_LOG(INFO) << "MergeOrderedOps started....";
 
@@ -255,8 +255,11 @@ bool Worker::MergeOrderedOps(const std::unique_ptr<ICowOpIter>& cowop_iter) {
         // Wait for RA thread to notify that the merge window
         // is ready for merging.
         if (!snapuserd_->WaitForMergeBegin()) {
+            snapuserd_->SetMergeFailed(block_index);
             return false;
         }
+
+        snapuserd_->SetMergeInProgress(block_index);
 
         loff_t offset = 0;
         int num_ops = snapuserd_->GetTotalRaBlocksMerged();
@@ -278,6 +281,7 @@ bool Worker::MergeOrderedOps(const std::unique_ptr<ICowOpIter>& cowop_iter) {
             if (ret < 0 || ret != io_size) {
                 SNAP_LOG(ERROR) << "Failed to write to backing device while merging "
                                 << " at offset: " << source_offset << " io_size: " << io_size;
+                snapuserd_->SetMergeFailed(block_index);
                 return false;
             }
 
@@ -291,6 +295,7 @@ bool Worker::MergeOrderedOps(const std::unique_ptr<ICowOpIter>& cowop_iter) {
         // Flush the data
         if (fsync(base_path_merge_fd_.get()) < 0) {
             SNAP_LOG(ERROR) << " Failed to fsync merged data";
+            snapuserd_->SetMergeFailed(block_index);
             return false;
         }
 
@@ -298,14 +303,21 @@ bool Worker::MergeOrderedOps(const std::unique_ptr<ICowOpIter>& cowop_iter) {
         // the merge completion
         if (!snapuserd_->CommitMerge(snapuserd_->GetTotalRaBlocksMerged())) {
             SNAP_LOG(ERROR) << " Failed to commit the merged block in the header";
+            snapuserd_->SetMergeFailed(block_index);
             return false;
         }
+
+        // Mark the block as merge complete
+        snapuserd_->SetMergeCompleted(block_index);
 
         SNAP_LOG(DEBUG) << "Block commit of size: " << snapuserd_->GetTotalRaBlocksMerged();
 
         // Notify RA thread that the merge thread is ready to merge the next
         // window
         snapuserd_->NotifyRAForMergeReady();
+
+        // Get the next block
+        block_index += 1;
     }
 
     return true;
