@@ -34,6 +34,24 @@
       "parentUuid": "67248071_1dd04eeb",
       "revId": "7d0d4206cdafae55e4c7ca3b3fcbc8cc51d6cd3b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c95d1739_4cafab7e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2021-08-17T18:51:47Z",
+      "side": 1,
+      "message": "Oops, I posted my reply to the wrong patch. Patch \"Reduce the queue depth of loop devices used by the zram driver\" can indeed trigger the following SELinux denials:\n\n08-17 17:38:06.380     1     1 I auditd  : type\u003d1400 audit(0.0:4): avc: denied { read } for comm\u003d\"init\" name\u003d\"nr_tags\" dev\u003d\"sysfs\" ino\u003d59258 scontext\u003du:r:init:s0 tcontext\u003du:object_r:sysfs_scsi_devices_0000:s0 tclass\u003dfile permissive\u003d0\n08-17 17:38:06.380     1     1 I auditd  : type\u003d1400 audit(0.0:4): avc: denied { read } for comm\u003d\"init\" name\u003d\"nr_tags\" dev\u003d\"sysfs\" ino\u003d59258 scontext\u003du:r:init:s0 tcontext\u003du:object_r:sysfs_scsi_devices_0000:s0 tclass\u003dfile permissive\u003d0\n\nHowever, patch https://googleplex-android-review.git.corp.google.com/c/platform/system/sepolicy/+/15515665 granted the init and apexd processes permission to read these sysfs attributes and that patch was merged in AOSP before the patch that reduces the queue depth.\n\nBug https://b.corp.google.com/issues/196982345 is about the git_sc-qpr1-dev-plus-aosp so a revert should happen on that branch instead of on the AOSP branch.",
+      "parentUuid": "b600e695_5fa775d4",
+      "revId": "7d0d4206cdafae55e4c7ca3b3fcbc8cc51d6cd3b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
