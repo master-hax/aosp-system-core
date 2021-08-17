@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9ecfc9d7_917ba093",
+        "filename": "TEST_MAPPING",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2021-08-17T17:51:18Z",
+      "side": 1,
+      "message": "Should any of these tests also be triggered by changes in the system/core code? For example, adb depends on many different parts, so should it also trigger on some types of system/core changes?",
+      "revId": "22e082e87a0d4e2d1000d9e029619677d378c41d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
