@@ -41,6 +41,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "6b6a12ca_e3f63c74",
+        "filename": "libutils/Looper.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 153,
+      "author": {
+        "id": 1407716
+      },
+      "writtenOn": "2021-08-17T12:19:34Z",
+      "side": 1,
+      "message": "epoll_ctl expects a pointer to a non-const struct, so unfortunately we can\u0027t mark it as const.",
+      "parentUuid": "a18ad944_bdf323e2",
+      "range": {
+        "startLine": 153,
+        "startChar": 54,
+        "endLine": 153,
+        "endChar": 55
+      },
+      "revId": "499a9924c1ae0c2efca762128f6f1c5267d13810",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "13cde9ee_41b0104f",
@@ -64,6 +88,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "2a2ab426_a97f44c8",
+        "filename": "libutils/Looper.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 159,
+      "author": {
+        "id": 1407716
+      },
+      "writtenOn": "2021-08-17T12:19:34Z",
+      "side": 1,
+      "message": "I\u0027ll try it on a separate CL as a cleanup.",
+      "parentUuid": "13cde9ee_41b0104f",
+      "range": {
+        "startLine": 159,
+        "startChar": 20,
+        "endLine": 159,
+        "endChar": 29
+      },
+      "revId": "499a9924c1ae0c2efca762128f6f1c5267d13810",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "c2e14789_dafb3603",
@@ -77,6 +125,30 @@
       "writtenOn": "2021-08-16T19:02:27Z",
       "side": 1,
       "message": "nit: use constant",
+      "range": {
+        "startLine": 285,
+        "startChar": 19,
+        "endLine": 285,
+        "endChar": 20
+      },
+      "revId": "499a9924c1ae0c2efca762128f6f1c5267d13810",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "adb2bdf4_29b8a25d",
+        "filename": "libutils/Looper.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 285,
+      "author": {
+        "id": 1407716
+      },
+      "writtenOn": "2021-08-17T12:19:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c2e14789_dafb3603",
       "range": {
         "startLine": 285,
         "startChar": 19,
@@ -112,6 +184,30 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "8d25f523_b83f3933",
+        "filename": "libutils/Looper.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 553,
+      "author": {
+        "id": 1407716
+      },
+      "writtenOn": "2021-08-17T12:19:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "67091329_13d9bc1e",
+      "range": {
+        "startLine": 553,
+        "startChar": 60,
+        "endLine": 553,
+        "endChar": 61
+      },
+      "revId": "499a9924c1ae0c2efca762128f6f1c5267d13810",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "4b888454_a858d352",
         "filename": "libutils/Looper_test.cpp",
         "patchSetId": 1
@@ -123,6 +219,30 @@
       "writtenOn": "2021-08-16T19:02:27Z",
       "side": 1,
       "message": "nit: use std::chrono::milliseconds and then call .count() in the next line",
+      "range": {
+        "startLine": 733,
+        "startChar": 37,
+        "endLine": 733,
+        "endChar": 58
+      },
+      "revId": "499a9924c1ae0c2efca762128f6f1c5267d13810",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "372ab515_5c89c7fe",
+        "filename": "libutils/Looper_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 733,
+      "author": {
+        "id": 1407716
+      },
+      "writtenOn": "2021-08-17T12:19:34Z",
+      "side": 1,
+      "message": "Done.",
+      "parentUuid": "4b888454_a858d352",
       "range": {
         "startLine": 733,
         "startChar": 37,
@@ -158,6 +278,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "195101f7_63198362",
+        "filename": "libutils/Looper_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 823,
+      "author": {
+        "id": 1407716
+      },
+      "writtenOn": "2021-08-17T12:19:34Z",
+      "side": 1,
+      "message": "Yeah, fd numbers should be per-process, and this relies on the test process not opening any other fds.\n\nAt least experimentally, it doesn\u0027t seem like gtest opens any other files, as I\u0027ve never run into this failure experimentally. Perhaps it can happen if gtest opens another file to send test stats? And if so, that should happen before or after the test executes. \n\nIf we \"continue\" without it affecting the test result, then I\u0027m worried that we won\u0027t be able to tell if the main part was skipped for all the iterations. I\u0027m thinking of leaving it as is; and if we do see this failure, then we can add logic to \"continue\" a limited number of times before it fails. WDYT?",
+      "parentUuid": "cb65b1cd_9c88cf24",
+      "range": {
+        "startLine": 822,
+        "startChar": 8,
+        "endLine": 823,
+        "endChar": 88
+      },
+      "revId": "499a9924c1ae0c2efca762128f6f1c5267d13810",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "3cae00cb_bf60e4f6",
         "filename": "libutils/Looper_test.cpp",
         "patchSetId": 1
@@ -169,6 +313,30 @@
       "writtenOn": "2021-08-16T19:02:27Z",
       "side": 1,
       "message": "maybe just ASSERT_TRUE() ?",
+      "range": {
+        "startLine": 828,
+        "startChar": 8,
+        "endLine": 828,
+        "endChar": 47
+      },
+      "revId": "499a9924c1ae0c2efca762128f6f1c5267d13810",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9d3090ab_283a7c83",
+        "filename": "libutils/Looper_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 828,
+      "author": {
+        "id": 1407716
+      },
+      "writtenOn": "2021-08-17T12:19:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3cae00cb_bf60e4f6",
       "range": {
         "startLine": 828,
         "startChar": 8,
@@ -202,6 +370,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "cb0f5c5f_74c032f4",
+        "filename": "libutils/include/utils/Looper.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1407716
+      },
+      "writtenOn": "2021-08-17T12:19:34Z",
+      "side": 1,
+      "message": "There\u0027s still a Vector being used, so changing the import.",
+      "parentUuid": "e20c6a06_26f8b630",
+      "range": {
+        "startLine": 22,
+        "startChar": 0,
+        "endLine": 22,
+        "endChar": 30
+      },
+      "revId": "499a9924c1ae0c2efca762128f6f1c5267d13810",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "9f7abeba_225297b0",
@@ -215,6 +407,30 @@
       "writtenOn": "2021-08-16T19:02:27Z",
       "side": 1,
       "message": "I remember adding GUARDED_BY annotations for AutoMutex a while back. You can probably use a real annotation (or just convert to std::mutex)",
+      "range": {
+        "startLine": 471,
+        "startChar": 73,
+        "endLine": 471,
+        "endChar": 92
+      },
+      "revId": "499a9924c1ae0c2efca762128f6f1c5267d13810",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "678b17de_e56e8085",
+        "filename": "libutils/include/utils/Looper.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 471,
+      "author": {
+        "id": 1407716
+      },
+      "writtenOn": "2021-08-17T12:19:34Z",
+      "side": 1,
+      "message": "I\u0027ll look into adding thread annotations in another CL.",
+      "parentUuid": "9f7abeba_225297b0",
       "range": {
         "startLine": 471,
         "startChar": 73,
