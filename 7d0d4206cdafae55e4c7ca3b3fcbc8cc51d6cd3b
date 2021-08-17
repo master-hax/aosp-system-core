@@ -52,6 +52,24 @@
       "parentUuid": "b600e695_5fa775d4",
       "revId": "7d0d4206cdafae55e4c7ca3b3fcbc8cc51d6cd3b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f8c78de6_d3d5122d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1827146
+      },
+      "writtenOn": "2021-08-17T19:04:07Z",
+      "side": 1,
+      "message": "Thanks for you comment, I will test mentioned patch with forrest run, thanks for pointing this out",
+      "parentUuid": "c95d1739_4cafab7e",
+      "revId": "7d0d4206cdafae55e4c7ca3b3fcbc8cc51d6cd3b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
