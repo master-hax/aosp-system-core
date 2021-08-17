@@ -76,6 +76,8 @@ cc_defaults {
         "-Wall",
         "-Werror",
         "-Wno-exit-time-destructors",
+        "-Wshadow",
+        "-Wthread-safety",
     ],
     header_libs: [
         "libbase_headers",
