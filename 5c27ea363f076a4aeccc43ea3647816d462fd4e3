@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "74128b2a_5475e3fa",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2021-08-17T15:29:33Z",
+      "side": 1,
+      "message": "Based on the description, Looks like you are trying to keep old tune values we had carried extra_free_kbytes for low/high watermark with new watermark_scale_factor?\n\nIs it possible? I guessed one of watermark between low and high will be different in the end. \n\nI thought we are transitioning to upstream solution with deprecating old custom knobs. If upstream solution(2x times bigger for high watermark) has some problem(for example, kswapd runs too long), it would be better to tackle them directly(would need some knobs to tune min/low/high each directly rather than 2x, 3x proportional) once we get real problem.",
+      "revId": "5c27ea363f076a4aeccc43ea3647816d462fd4e3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
