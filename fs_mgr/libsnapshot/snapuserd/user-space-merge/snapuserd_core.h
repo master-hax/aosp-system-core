@@ -61,6 +61,22 @@ enum class MERGE_IO_TRANSITION {
     READ_AHEAD_FAILURE,
 };
 
+enum class MERGE_BLOCK_STATE {
+    MERGE_PENDING,
+    MERGE_IN_PROGRESS,
+    MERGE_COMPLETED,
+    MERGE_FAILED,
+    INVALID,
+};
+
+struct MergeBlockState {
+    MERGE_BLOCK_STATE merge_state_;
+    size_t num_ios_in_progress_;
+
+    MergeBlockState(MERGE_BLOCK_STATE state, size_t n_ios)
+        : merge_state_(state), num_ios_in_progress_(n_ios) {}
+};
+
 class Bufsink : public IByteSink {
   public:
     void Initialize(size_t size);
@@ -160,12 +176,27 @@ class Worker {
         base_path_merge_fd_ = {};
     }
 
+    // Functions interacting with dm-user
+    bool ReadDmUserHeader();
+    bool WriteDmUserPayload(size_t size, bool header_response);
+    bool DmuserReadRequest();
+
     // IO Path
     bool ProcessIORequest();
+    bool IsBlockAligned(size_t size) { return ((size & (BLOCK_SZ - 1)) == 0); }
+
+    bool ReadDataFromBaseDevice(sector_t sector, size_t read_size);
+    bool ReadFromSourceDevice(const CowOperation* cow_op);
 
     // Processing COW operations
+    bool ProcessCowOp(const CowOperation* cow_op);
     bool ProcessReplaceOp(const CowOperation* cow_op);
     bool ProcessZeroOp();
+
+    // Handles Copy and Xor
+    bool ProcessCopyOp(const CowOperation* cow_op);
+    bool ProcessXorOp(const CowOperation* cow_op);
+    bool ProcessOrderedOp(const CowOperation* cow_op);
 
     // Merge related ops
     bool Merge();
@@ -174,6 +205,9 @@ class Worker {
     int PrepareMerge(uint64_t* source_offset, int* pending_ops,
                      std::unique_ptr<ICowOpIter>& cowop_iter,
                      std::vector<const CowOperation*>* replace_zero_vec = nullptr);
+
+    sector_t ChunkToSector(chunk_t chunk) { return chunk << CHUNK_SHIFT; }
+    chunk_t SectorToChunk(sector_t sector) { return sector >> CHUNK_SHIFT; }
 
     std::unique_ptr<CowReader> reader_;
     Bufsink bufsink_;
@@ -262,10 +296,18 @@ class Snapuser : public std::enable_shared_from_this<Snapuser> {
     void SetSocketPresent(bool socket) { is_socket_present_ = socket; }
     bool MergeInitiated() { return merge_initiated_; }
 
+    // Merge Block State Transitions
+    void SetMergeCompleted(size_t block_index);
+    void SetMergeInProgress(size_t block_index);
+    void SetMergeFailed(size_t block_index);
+    void NotifyIOCompletion(uint64_t new_block);
+    MERGE_BLOCK_STATE GetMergeBlockState(uint64_t new_block);
+
   private:
     bool ReadMetadata();
     sector_t ChunkToSector(chunk_t chunk) { return chunk << CHUNK_SHIFT; }
     chunk_t SectorToChunk(sector_t sector) { return sector >> CHUNK_SHIFT; }
+    bool IsBlockAligned(int read_size) { return ((read_size & (BLOCK_SZ - 1)) == 0); }
     struct BufferState* GetBufferState();
 
     void ReadBlocks(const std::string partition_name, const std::string& dm_block_device);
@@ -284,7 +326,6 @@ class Snapuser : public std::enable_shared_from_this<Snapuser> {
 
     unique_fd cow_fd_;
 
-    // Number of sectors required when initializing dm-user
     uint64_t num_sectors_;
 
     std::unique_ptr<CowReader> reader_;
@@ -307,6 +348,14 @@ class Snapuser : public std::enable_shared_from_this<Snapuser> {
     int total_ra_blocks_merged_ = 0;
     MERGE_IO_TRANSITION io_state_;
     std::unique_ptr<ReadAhead> read_ahead_thread_;
+
+    // user-space-merging
+    std::unordered_map<uint64_t, int> block_to_ra_index_;
+
+    // Merge Block state
+    std::vector<std::unique_ptr<MergeBlockState>> merge_blk_state_;
+    std::mutex m_lock_;
+    std::condition_variable m_cv_;
 
     std::unique_ptr<Worker> merge_thread_;
 

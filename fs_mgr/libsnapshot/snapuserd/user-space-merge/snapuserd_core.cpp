@@ -137,14 +137,32 @@ bool Snapuser::ReadMetadata() {
     // Initialize the iterator for reading metadata
     std::unique_ptr<ICowOpIter> cowop_iter = reader_->GetMergeOpIter();
 
+    int num_ra_ops_per_iter = ((GetBufferDataSize()) / BLOCK_SZ);
+    int ra_index = 0;
+
     while (!cowop_iter->Done()) {
         const CowOperation* cow_op = &cowop_iter->Get();
 
         chunk_vec_.push_back(std::make_pair(ChunkToSector(cow_op->new_block), cow_op));
         cowop_iter->Next();
 
-        if (IsOrderedOp(*cow_op) && !ra_thread_) {
+        if (IsOrderedOp(*cow_op)) {
             ra_thread_ = true;
+            block_to_ra_index_[cow_op->new_block] = ra_index;
+            num_ra_ops_per_iter -= 1;
+
+            if ((ra_index + 1) - merge_blk_state_.size() == 1) {
+                std::unique_ptr<MergeBlockState> blk_state =
+                        std::make_unique<MergeBlockState>(MERGE_BLOCK_STATE::MERGE_PENDING, 0);
+
+                merge_blk_state_.push_back(std::move(blk_state));
+            }
+
+            // Move to next RA block
+            if (num_ra_ops_per_iter == 0) {
+                num_ra_ops_per_iter = ((GetBufferDataSize()) / BLOCK_SZ);
+                ra_index += 1;
+            }
         }
     }
 
