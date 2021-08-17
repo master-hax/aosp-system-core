@@ -104,7 +104,7 @@ class ICowOpIter {
 
 class CowReader final : public ICowReader {
   public:
-    CowReader();
+    CowReader(bool is_merge_user_space = false);
     ~CowReader() { owned_fd_ = {}; }
 
     // Parse the COW, optionally, up to the given label. If no label is
@@ -164,6 +164,7 @@ class CowReader final : public ICowReader {
     uint64_t num_ordered_ops_to_merge_;
     bool has_seq_ops_;
     std::shared_ptr<std::unordered_map<uint64_t, uint64_t>> data_loc_;
+    bool is_merge_user_space_ = false;
 };
 
 }  // namespace snapshot
