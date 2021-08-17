@@ -33,6 +33,42 @@
       "message": "see also https://android-review.googlesource.com/q/topic:system-core-test-mapping where i\u0027ve broken this file up --- it was already causing us problems because various entries hadn\u0027t moved when the code they were meant to correspond to had moved into a different project :-(",
       "revId": "f7671d4c514e3a850d0366365895cffa00c7c79f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "06e663ab_66c8cfb6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2021-08-17T09:59:05Z",
+      "side": 1,
+      "message": "+1 Inseob, please add the reasons.\n\nTo answer that here, it\u0027s because many (but not all) components under /system/core are used also in microdroid and therefore any change here could potentially break microdroid. This can happen especially when the change (ex: in `init`) requires additional changes in sepolicy where we have separate *.te files for Android and microdroid (because microdroid is much smaller/simpler than Android and thus policies for Android is too permissive for microdroid). TEST_MAPPING in /system/sepolicy already triggers the microdroid tests, but we need the same here as well in case when a change in /system/core doesn\u0027t involve a change in /system/sepolicy because the change is already granted by the existing *.te files for Android, but not by *.te files for microdroid.",
+      "parentUuid": "ea7c0959_99bd838d",
+      "revId": "f7671d4c514e3a850d0366365895cffa00c7c79f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2e72d44f_3c31524c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2021-08-17T09:59:05Z",
+      "side": 1,
+      "message": "Sure. I am fine with adding microdroid tests to only a subset of components that are likely to break microdroid. init (and ueventd), logd, and adbd might be on the initial list and we could adjust the list in the future.",
+      "parentUuid": "ce120945_575c102d",
+      "revId": "f7671d4c514e3a850d0366365895cffa00c7c79f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
