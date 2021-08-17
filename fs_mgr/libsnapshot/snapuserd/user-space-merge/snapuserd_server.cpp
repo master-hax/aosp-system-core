@@ -44,26 +44,28 @@ using namespace std::string_literals;
 using android::base::borrowed_fd;
 using android::base::unique_fd;
 
-DaemonOperations SnapuserdServer::Resolveop(std::string& input) {
-    if (input == "init") return DaemonOperations::INIT;
-    if (input == "start") return DaemonOperations::START;
-    if (input == "stop") return DaemonOperations::STOP;
-    if (input == "query") return DaemonOperations::QUERY;
-    if (input == "delete") return DaemonOperations::DELETE;
-    if (input == "detach") return DaemonOperations::DETACH;
-    if (input == "supports") return DaemonOperations::SUPPORTS;
+DaemonOps SnapuserServer::Resolveop(std::string& input) {
+    if (input == "init") return DaemonOps::INIT;
+    if (input == "start") return DaemonOps::START;
+    if (input == "stop") return DaemonOps::STOP;
+    if (input == "query") return DaemonOps::QUERY;
+    if (input == "delete") return DaemonOps::DELETE;
+    if (input == "detach") return DaemonOps::DETACH;
+    if (input == "supports") return DaemonOps::SUPPORTS;
+    if (input == "initiate") return DaemonOps::INITIATE;
+    if (input == "percentage") return DaemonOps::PERCENTAGE;
 
-    return DaemonOperations::INVALID;
+    return DaemonOps::INVALID;
 }
 
-SnapuserdServer::~SnapuserdServer() {
+SnapuserServer::~SnapuserServer() {
     // Close any client sockets that were added via AcceptClient().
     for (size_t i = 1; i < watched_fds_.size(); i++) {
         close(watched_fds_[i].fd);
     }
 }
 
-std::string SnapuserdServer::GetDaemonStatus() {
+std::string SnapuserServer::GetDaemonStatus() {
     std::string msg = "";
 
     if (IsTerminating())
@@ -74,8 +76,8 @@ std::string SnapuserdServer::GetDaemonStatus() {
     return msg;
 }
 
-void SnapuserdServer::Parsemsg(std::string const& msg, const char delim,
-                               std::vector<std::string>& out) {
+void SnapuserServer::Parsemsg(std::string const& msg, const char delim,
+                              std::vector<std::string>& out) {
     std::stringstream ss(msg);
     std::string s;
 
@@ -84,15 +86,15 @@ void SnapuserdServer::Parsemsg(std::string const& msg, const char delim,
     }
 }
 
-void SnapuserdServer::ShutdownThreads() {
-    StopThreads();
+void SnapuserServer::ShutdownThreads() {
+    terminating_ = true;
     JoinAllThreads();
 }
 
-DmUserHandler::DmUserHandler(std::shared_ptr<Snapuserd> snapuserd)
+DmUserHandler::DmUserHandler(std::shared_ptr<SnapshotHandler> snapuserd)
     : snapuserd_(snapuserd), misc_name_(snapuserd_->GetMiscName()) {}
 
-bool SnapuserdServer::Sendmsg(android::base::borrowed_fd fd, const std::string& msg) {
+bool SnapuserServer::Sendmsg(android::base::borrowed_fd fd, const std::string& msg) {
     ssize_t ret = TEMP_FAILURE_RETRY(send(fd.get(), msg.data(), msg.size(), MSG_NOSIGNAL));
     if (ret < 0) {
         PLOG(ERROR) << "Snapuserd:server: send() failed";
@@ -106,7 +108,7 @@ bool SnapuserdServer::Sendmsg(android::base::borrowed_fd fd, const std::string& 
     return true;
 }
 
-bool SnapuserdServer::Recv(android::base::borrowed_fd fd, std::string* data) {
+bool SnapuserServer::Recv(android::base::borrowed_fd fd, std::string* data) {
     char msg[MAX_PACKET_SIZE];
     ssize_t rv = TEMP_FAILURE_RETRY(recv(fd.get(), msg, sizeof(msg), 0));
     if (rv < 0) {
@@ -117,25 +119,25 @@ bool SnapuserdServer::Recv(android::base::borrowed_fd fd, std::string* data) {
     return true;
 }
 
-bool SnapuserdServer::Receivemsg(android::base::borrowed_fd fd, const std::string& str) {
+bool SnapuserServer::Receivemsg(android::base::borrowed_fd fd, const std::string& str) {
     const char delim = ',';
 
     std::vector<std::string> out;
     Parsemsg(str, delim, out);
-    DaemonOperations op = Resolveop(out[0]);
+    DaemonOps op = Resolveop(out[0]);
 
     switch (op) {
-        case DaemonOperations::INIT: {
+        case DaemonOps::INIT: {
             // Message format:
-            // init,<misc_name>,<cow_device_path>,<backing_device>
+            // init,<misc_name>,<cow_device_path>,<backing_device>,<base_path_merge>
             //
             // Reads the metadata and send the number of sectors
-            if (out.size() != 4) {
+            if (out.size() != 5) {
                 LOG(ERROR) << "Malformed init message, " << out.size() << " parts";
                 return Sendmsg(fd, "fail");
             }
 
-            auto handler = AddHandler(out[1], out[2], out[3]);
+            auto handler = AddHandler(out[1], out[2], out[3], out[4]);
             if (!handler) {
                 return Sendmsg(fd, "fail");
             }
@@ -143,7 +145,7 @@ bool SnapuserdServer::Receivemsg(android::base::borrowed_fd fd, const std::strin
             auto retval = "success," + std::to_string(handler->snapuserd()->GetNumSectors());
             return Sendmsg(fd, retval);
         }
-        case DaemonOperations::START: {
+        case DaemonOps::START: {
             // Message format:
             // start,<misc_name>
             //
@@ -168,7 +170,7 @@ bool SnapuserdServer::Receivemsg(android::base::borrowed_fd fd, const std::strin
             }
             return Sendmsg(fd, "success");
         }
-        case DaemonOperations::STOP: {
+        case DaemonOps::STOP: {
             // Message format: stop
             //
             // Stop all the threads gracefully and then shutdown the
@@ -177,7 +179,7 @@ bool SnapuserdServer::Receivemsg(android::base::borrowed_fd fd, const std::strin
             ShutdownThreads();
             return true;
         }
-        case DaemonOperations::QUERY: {
+        case DaemonOps::QUERY: {
             // Message format: query
             //
             // As part of transition, Second stage daemon will be
@@ -189,23 +191,41 @@ bool SnapuserdServer::Receivemsg(android::base::borrowed_fd fd, const std::strin
             // be ready to receive control message.
             return Sendmsg(fd, GetDaemonStatus());
         }
-        case DaemonOperations::DELETE: {
+        case DaemonOps::DELETE: {
             // Message format:
             // delete,<misc_name>
             if (out.size() != 2) {
                 LOG(ERROR) << "Malformed delete message, " << out.size() << " parts";
                 return Sendmsg(fd, "fail");
             }
+            {
+                std::lock_guard<std::mutex> lock(lock_);
+                auto iter = FindHandler(&lock, out[1]);
+                if (iter == dm_users_.end()) {
+                    // After merge is completed, we swap dm-user table with
+                    // the underlying dm-linear base device. Hence, worker
+                    // threads would have terminted and was removed from
+                    // the list.
+                    LOG(DEBUG) << "Could not find handler: " << out[1];
+                    return Sendmsg(fd, "success");
+                }
+
+                if (!(*iter)->ThreadTerminated()) {
+                    (*iter)->snapuserd()->NotifyIOTerminated();
+                }
+            }
             if (!RemoveAndJoinHandler(out[1])) {
                 return Sendmsg(fd, "fail");
             }
             return Sendmsg(fd, "success");
         }
-        case DaemonOperations::DETACH: {
+        case DaemonOps::DETACH: {
+            std::lock_guard<std::mutex> lock(lock_);
+            TerminateMergeThreads(&lock);
             terminating_ = true;
             return true;
         }
-        case DaemonOperations::SUPPORTS: {
+        case DaemonOps::SUPPORTS: {
             if (out.size() != 2) {
                 LOG(ERROR) << "Malformed supports message, " << out.size() << " parts";
                 return Sendmsg(fd, "fail");
@@ -215,6 +235,33 @@ bool SnapuserdServer::Receivemsg(android::base::borrowed_fd fd, const std::strin
             }
             return Sendmsg(fd, "fail");
         }
+        case DaemonOps::INITIATE: {
+            if (out.size() != 3) {
+                LOG(ERROR) << "Malformed initiate-merge message, " << out.size() << " parts";
+                return Sendmsg(fd, "fail");
+            }
+            if (out[1] == "merge") {
+                std::lock_guard<std::mutex> lock(lock_);
+                auto iter = FindHandler(&lock, out[2]);
+                if (iter == dm_users_.end()) {
+                    LOG(ERROR) << "Could not find handler: " << out[1];
+                    return Sendmsg(fd, "fail");
+                }
+
+                if (!StartMerge(*iter)) {
+                    return Sendmsg(fd, "fail");
+                }
+
+                return Sendmsg(fd, "success");
+            }
+            return Sendmsg(fd, "fail");
+        }
+        case DaemonOps::PERCENTAGE: {
+            std::lock_guard<std::mutex> lock(lock_);
+            double percentage = GetMergePercentage(&lock);
+
+            return Sendmsg(fd, std::to_string(percentage));
+        }
         default: {
             LOG(ERROR) << "Received unknown message type from client";
             Sendmsg(fd, "fail");
@@ -223,7 +270,7 @@ bool SnapuserdServer::Receivemsg(android::base::borrowed_fd fd, const std::strin
     }
 }
 
-void SnapuserdServer::RunThread(std::shared_ptr<DmUserHandler> handler) {
+void SnapuserServer::RunThread(std::shared_ptr<DmUserHandler> handler) {
     LOG(INFO) << "Entering thread for handler: " << handler->misc_name();
 
     handler->snapuserd()->SetSocketPresent(is_socket_present_);
@@ -240,6 +287,8 @@ void SnapuserdServer::RunThread(std::shared_ptr<DmUserHandler> handler) {
 
     {
         std::lock_guard<std::mutex> lock(lock_);
+        num_partitions_merge_complete_ += 1;
+        handler->SetThreadTerminated();
         auto iter = FindHandler(&lock, handler->misc_name());
         if (iter == dm_users_.end()) {
             // RemoveAndJoinHandler() already removed us from the list, and is
@@ -264,10 +313,11 @@ void SnapuserdServer::RunThread(std::shared_ptr<DmUserHandler> handler) {
         // WaitForDelete() is called, the handler is either in the list, or
         // it's not and its resources are guaranteed to be freed.
         handler->FreeResources();
+        dm_users_.erase(iter);
     }
 }
 
-bool SnapuserdServer::Start(const std::string& socketname) {
+bool SnapuserServer::Start(const std::string& socketname) {
     bool start_listening = true;
 
     sockfd_.reset(android_get_control_socket(socketname.c_str()));
@@ -283,7 +333,7 @@ bool SnapuserdServer::Start(const std::string& socketname) {
     return StartWithSocket(start_listening);
 }
 
-bool SnapuserdServer::StartWithSocket(bool start_listening) {
+bool SnapuserServer::StartWithSocket(bool start_listening) {
     if (start_listening && listen(sockfd_.get(), 4) < 0) {
         PLOG(ERROR) << "listen socket failed";
         return false;
@@ -304,7 +354,7 @@ bool SnapuserdServer::StartWithSocket(bool start_listening) {
     return true;
 }
 
-bool SnapuserdServer::Run() {
+bool SnapuserServer::Run() {
     LOG(INFO) << "Now listening on snapuserd socket";
 
     while (!IsTerminating()) {
@@ -336,7 +386,7 @@ bool SnapuserdServer::Run() {
     return true;
 }
 
-void SnapuserdServer::JoinAllThreads() {
+void SnapuserServer::JoinAllThreads() {
     // Acquire the thread list within the lock.
     std::vector<std::shared_ptr<DmUserHandler>> dm_users;
     {
@@ -351,14 +401,14 @@ void SnapuserdServer::JoinAllThreads() {
     }
 }
 
-void SnapuserdServer::AddWatchedFd(android::base::borrowed_fd fd, int events) {
+void SnapuserServer::AddWatchedFd(android::base::borrowed_fd fd, int events) {
     struct pollfd p = {};
     p.fd = fd.get();
     p.events = events;
     watched_fds_.emplace_back(std::move(p));
 }
 
-void SnapuserdServer::AcceptClient() {
+void SnapuserServer::AcceptClient() {
     int fd = TEMP_FAILURE_RETRY(accept4(sockfd_.get(), nullptr, nullptr, SOCK_CLOEXEC));
     if (fd < 0) {
         PLOG(ERROR) << "accept4 failed";
@@ -368,7 +418,7 @@ void SnapuserdServer::AcceptClient() {
     AddWatchedFd(fd, POLLIN);
 }
 
-bool SnapuserdServer::HandleClient(android::base::borrowed_fd fd, int revents) {
+bool SnapuserServer::HandleClient(android::base::borrowed_fd fd, int revents) {
     if (revents & POLLHUP) {
         LOG(DEBUG) << "Snapuserd client disconnected";
         return false;
@@ -385,16 +435,18 @@ bool SnapuserdServer::HandleClient(android::base::borrowed_fd fd, int revents) {
     return true;
 }
 
-void SnapuserdServer::Interrupt() {
+void SnapuserServer::Interrupt() {
     // Force close the socket so poll() fails.
     sockfd_ = {};
     SetTerminating();
 }
 
-std::shared_ptr<DmUserHandler> SnapuserdServer::AddHandler(const std::string& misc_name,
-                                                           const std::string& cow_device_path,
-                                                           const std::string& backing_device) {
-    auto snapuserd = std::make_shared<Snapuserd>(misc_name, cow_device_path, backing_device);
+std::shared_ptr<DmUserHandler> SnapuserServer::AddHandler(const std::string& misc_name,
+                                                          const std::string& cow_device_path,
+                                                          const std::string& backing_device,
+                                                          const std::string& base_path_merge) {
+    auto snapuserd = std::make_shared<SnapshotHandler>(misc_name, cow_device_path, backing_device,
+                                                       base_path_merge);
     if (!snapuserd->InitCowDevice()) {
         LOG(ERROR) << "Failed to initialize Snapuserd";
         return nullptr;
@@ -417,7 +469,7 @@ std::shared_ptr<DmUserHandler> SnapuserdServer::AddHandler(const std::string& mi
     return handler;
 }
 
-bool SnapuserdServer::StartHandler(const std::shared_ptr<DmUserHandler>& handler) {
+bool SnapuserServer::StartHandler(const std::shared_ptr<DmUserHandler>& handler) {
     if (handler->snapuserd()->IsAttached()) {
         LOG(ERROR) << "Handler already attached";
         return false;
@@ -425,12 +477,22 @@ bool SnapuserdServer::StartHandler(const std::shared_ptr<DmUserHandler>& handler
 
     handler->snapuserd()->AttachControlDevice();
 
-    handler->thread() = std::thread(std::bind(&SnapuserdServer::RunThread, this, handler));
+    handler->thread() = std::thread(std::bind(&SnapuserServer::RunThread, this, handler));
     return true;
 }
 
-auto SnapuserdServer::FindHandler(std::lock_guard<std::mutex>* proof_of_lock,
-                                  const std::string& misc_name) -> HandlerList::iterator {
+bool SnapuserServer::StartMerge(const std::shared_ptr<DmUserHandler>& handler) {
+    if (!handler->snapuserd()->IsAttached()) {
+        LOG(ERROR) << "Handler not attached to dm-user - Merge thread cannot be started";
+        return false;
+    }
+
+    handler->snapuserd()->InitiateMerge();
+    return true;
+}
+
+auto SnapuserServer::FindHandler(std::lock_guard<std::mutex>* proof_of_lock,
+                                 const std::string& misc_name) -> HandlerList::iterator {
     CHECK(proof_of_lock);
 
     for (auto iter = dm_users_.begin(); iter != dm_users_.end(); iter++) {
@@ -441,7 +503,47 @@ auto SnapuserdServer::FindHandler(std::lock_guard<std::mutex>* proof_of_lock,
     return dm_users_.end();
 }
 
-bool SnapuserdServer::RemoveAndJoinHandler(const std::string& misc_name) {
+void SnapuserServer::TerminateMergeThreads(std::lock_guard<std::mutex>* proof_of_lock) {
+    CHECK(proof_of_lock);
+
+    for (auto iter = dm_users_.begin(); iter != dm_users_.end(); iter++) {
+        if (!(*iter)->ThreadTerminated()) {
+            (*iter)->snapuserd()->NotifyIOTerminated();
+        }
+    }
+}
+
+double SnapuserServer::GetMergePercentage(std::lock_guard<std::mutex>* proof_of_lock) {
+    CHECK(proof_of_lock);
+    double percentage = 0.0;
+    int n = 0;
+
+    for (auto iter = dm_users_.begin(); iter != dm_users_.end(); iter++) {
+        auto& th = (*iter)->thread();
+        if (th.joinable()) {
+            // Merge percentage by individual partitions wherein merge is still
+            // in-progress
+            percentage += (*iter)->snapuserd()->GetMergePercentage();
+            n += 1;
+        }
+    }
+
+    // Calculate final merge including those partitions where merge was already
+    // completed - num_partitions_merge_complete_ will track them when each
+    // thread exists in RunThread.
+    int total_partitions = n + num_partitions_merge_complete_;
+
+    if (total_partitions) {
+        percentage = ((num_partitions_merge_complete_ * 100.0) + percentage) / total_partitions;
+    }
+
+    LOG(DEBUG) << "Merge %: " << percentage
+               << " num_partitions_merge_complete_: " << num_partitions_merge_complete_
+               << " total_partitions: " << total_partitions << " n: " << n;
+    return percentage;
+}
+
+bool SnapuserServer::RemoveAndJoinHandler(const std::string& misc_name) {
     std::shared_ptr<DmUserHandler> handler;
     {
         std::lock_guard<std::mutex> lock(lock_);
@@ -462,7 +564,7 @@ bool SnapuserdServer::RemoveAndJoinHandler(const std::string& misc_name) {
     return true;
 }
 
-bool SnapuserdServer::WaitForSocket() {
+bool SnapuserServer::WaitForSocket() {
     auto scope_guard = android::base::make_scope_guard([this]() -> void { JoinAllThreads(); });
 
     auto socket_path = ANDROID_SOCKET_DIR "/"s + kSnapuserdSocketProxy;
@@ -516,7 +618,7 @@ bool SnapuserdServer::WaitForSocket() {
     return Run();
 }
 
-bool SnapuserdServer::RunForSocketHandoff() {
+bool SnapuserServer::RunForSocketHandoff() {
     unique_fd proxy_fd(android_get_control_socket(kSnapuserdSocketProxy));
     if (proxy_fd < 0) {
         PLOG(FATAL) << "Proxy could not get android control socket " << kSnapuserdSocketProxy;
