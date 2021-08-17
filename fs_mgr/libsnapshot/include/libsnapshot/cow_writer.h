@@ -141,7 +141,8 @@ class CowWriter : public ICowWriter {
     bool OpenForAppend(uint64_t label);
     bool GetDataPos(uint64_t* pos);
     bool WriteRawData(const void* data, size_t size);
-    bool WriteOperation(const CowOperation& op, const void* data = nullptr, size_t size = 0);
+    bool WriteOperationC(const CowOp& op, const void* data = nullptr, size_t size = 0);
+    void AddOperationC(const CowOp& op);
     void AddOperation(const CowOperation& op);
     std::basic_string<uint8_t> Compress(const void* data, size_t length);
     void InitPos();
