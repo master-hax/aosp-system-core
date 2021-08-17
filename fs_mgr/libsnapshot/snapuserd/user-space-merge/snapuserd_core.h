@@ -295,6 +295,7 @@ class Snapuser : public std::enable_shared_from_this<Snapuser> {
     int GetTotalRaBlocksMerged() { return total_ra_blocks_merged_; }
     void SetSocketPresent(bool socket) { is_socket_present_ = socket; }
     bool MergeInitiated() { return merge_initiated_; }
+    double GetMergePercentage() { return merge_completion_percentage_; }
 
     // Merge Block State Transitions
     void SetMergeCompleted(size_t block_index);
@@ -309,6 +310,7 @@ class Snapuser : public std::enable_shared_from_this<Snapuser> {
     chunk_t SectorToChunk(sector_t sector) { return sector >> CHUNK_SHIFT; }
     bool IsBlockAligned(int read_size) { return ((read_size & (BLOCK_SZ - 1)) == 0); }
     struct BufferState* GetBufferState();
+    void UpdateMergeCompletionPercentage();
 
     void ReadBlocks(const std::string partition_name, const std::string& dm_block_device);
     void ReadBlocksToCache(const std::string& dm_block_device, const std::string partition_name,
@@ -358,6 +360,7 @@ class Snapuser : public std::enable_shared_from_this<Snapuser> {
     std::condition_variable m_cv_;
 
     std::unique_ptr<Worker> merge_thread_;
+    double merge_completion_percentage_;
 
     bool merge_initiated_ = false;
     bool attached_ = false;
