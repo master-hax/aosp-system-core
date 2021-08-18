@@ -46,6 +46,23 @@
       },
       "revId": "478e3ca1603783ab9f5474b023cf6e4878dd4783",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e15d26f9_de2a5518",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1291338
+      },
+      "writtenOn": "2021-08-18T01:09:11Z",
+      "side": 1,
+      "message": "I\u0027ll wait until Elliott\u0027s change is merged.",
+      "revId": "478e3ca1603783ab9f5474b023cf6e4878dd4783",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
