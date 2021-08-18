@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "6586bcce_b8e9be34",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2021-08-18T22:18:18Z",
+      "side": 1,
+      "message": "Good point, split (a) and (b) and removed (c) (spurious clang-format).",
+      "parentUuid": "522f36d6_7143961a",
+      "range": {
+        "startLine": 109,
+        "startChar": 12,
+        "endLine": 109,
+        "endChar": 36
+      },
+      "revId": "8db7a66569b232d73735586d2578af8a26924985",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "189d562c_ad2283dc",
@@ -37,6 +61,30 @@
       "writtenOn": "2021-08-18T20:21:12Z",
       "side": 1,
       "message": "Since this function only returns 0 or 1, should the return type perhaps be changed into \u0027bool\u0027?",
+      "range": {
+        "startLine": 137,
+        "startChar": 7,
+        "endLine": 137,
+        "endChar": 10
+      },
+      "revId": "8db7a66569b232d73735586d2578af8a26924985",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b78c44f4_5834a01f",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 137,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2021-08-18T22:18:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "189d562c_ad2283dc",
       "range": {
         "startLine": 137,
         "startChar": 7,
@@ -70,6 +118,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "ff5d3aa4_f15a6d40",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 214,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2021-08-18T22:18:18Z",
+      "side": 1,
+      "message": "Done, but I don\u0027t think it\u0027s going to be interesting. It seems the field only ever holds DRIVER_SENSE: https://android.googlesource.com/kernel/common/+/464a00c9e0ad45e3f42ff6ea705491a356df818e",
+      "parentUuid": "4bba5363_a5b3d45e",
+      "range": {
+        "startLine": 213,
+        "startChar": 12,
+        "endLine": 214,
+        "endChar": 64
+      },
+      "revId": "8db7a66569b232d73735586d2578af8a26924985",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f370c577_a729cadc",
@@ -83,6 +155,30 @@
       "writtenOn": "2021-08-18T20:21:12Z",
       "side": 1,
       "message": "Please also log driver_status.",
+      "range": {
+        "startLine": 229,
+        "startChar": 4,
+        "endLine": 231,
+        "endChar": 5
+      },
+      "revId": "8db7a66569b232d73735586d2578af8a26924985",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a1d4ac83_e1d26991",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 231,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2021-08-18T22:18:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f370c577_a729cadc",
       "range": {
         "startLine": 229,
         "startChar": 4,

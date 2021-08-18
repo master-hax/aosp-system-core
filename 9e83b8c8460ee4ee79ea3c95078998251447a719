@@ -183,6 +183,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "7bafb3e5_18f68fed",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 187,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2021-08-18T22:18:18Z",
+      "side": 1,
+      "message": "afaict, no, it doesn\u0027t. I\u0027ve switched to debug-level logging of the codes for anything that looks successful and error-level logging for everything else.",
+      "parentUuid": "a1e278e4_a59aeb37",
+      "revId": "9e83b8c8460ee4ee79ea3c95078998251447a719",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "bfb132ca_c9536607",
