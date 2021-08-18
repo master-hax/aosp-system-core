@@ -20,6 +20,52 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "2bee88df_3fdc2af1",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2021-08-18T16:32:37Z",
+      "side": 1,
+      "message": "No assert() statements in production code please. From https://g3doc.corp.google.com/devtools/library_club/g3doc/totw/113.md?cl\u003dhead, about CHECK(): \"Use for undesired and unexpected events, that the program cannot recover from. Use extremely sparingly, only to protect code invariants from which no sane recovery is possible, or in situations where the most likely explanation is memory corruption that could lead to permanent damage to user data.\"",
+      "range": {
+        "startLine": 17,
+        "startChar": 0,
+        "endLine": 17,
+        "endChar": 19
+      },
+      "revId": "9e83b8c8460ee4ee79ea3c95078998251447a719",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fdd0d5d0_4f1a8332",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 138,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2021-08-18T16:32:37Z",
+      "side": 1,
+      "message": "Sense data is not specific to the SG/IO interface but applies to all of SCSI. Should this function perhaps be renamed into check_scsi_sense()?",
+      "range": {
+        "startLine": 138,
+        "startChar": 11,
+        "endLine": 138,
+        "endChar": 25
+      },
+      "revId": "9e83b8c8460ee4ee79ea3c95078998251447a719",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "f3317515_824144a6",
         "filename": "trusty/storage/proxy/rpmb.c",
         "patchSetId": 1
@@ -31,6 +77,93 @@
       "writtenOn": "2021-08-18T09:32:01Z",
       "side": 1,
       "message": "I wasn\u0027t sure if we wanted to log the sense buffer for recovered errors here.",
+      "revId": "9e83b8c8460ee4ee79ea3c95078998251447a719",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b5e3d6dc_77f03d1e",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 187,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2021-08-18T16:32:37Z",
+      "side": 1,
+      "message": "Please log the sense code, ASC and ASCQ since these three numbers combined define the meaning of the sense code. See also https://www.t10.org/lists/asc-num.htm.",
+      "parentUuid": "f3317515_824144a6",
+      "revId": "9e83b8c8460ee4ee79ea3c95078998251447a719",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bfb132ca_c9536607",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 191,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2021-08-18T16:32:37Z",
+      "side": 1,
+      "message": "Not all sense codes indicate a failure. E.g. (UNIT_ATTENTION (6), 0x3F, 0xE) indicates that the logical unit data changed and does not indicate command failure but rather that the command should be retried.",
+      "range": {
+        "startLine": 191,
+        "startChar": 17,
+        "endLine": 191,
+        "endChar": 23
+      },
+      "revId": "9e83b8c8460ee4ee79ea3c95078998251447a719",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "467f29f5_510a5c7e",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 201,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2021-08-18T16:32:37Z",
+      "side": 1,
+      "message": "Where does this constant come from? From SPC-6, section 5.3 Status:\n\n00h GOOD\n02h CHECK CONDITION\n04h CONDITION MET\n08h BUSY\n18h RESERVATION CONFLICT\n28h TASK SET FULL\n30h ACA ACTIVE\n40h TASK ABORTED\n\nAs one can see, CHECK CONDITION is a valid status and a status code for which one of the lower four bits has been set.",
+      "range": {
+        "startLine": 201,
+        "startChar": 26,
+        "endLine": 201,
+        "endChar": 30
+      },
+      "revId": "9e83b8c8460ee4ee79ea3c95078998251447a719",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f60dca16_c6939654",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 208,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2021-08-18T16:32:37Z",
+      "side": 1,
+      "message": "Not all sense codes indicate failure.",
+      "range": {
+        "startLine": 208,
+        "startChar": 25,
+        "endLine": 208,
+        "endChar": 31
+      },
       "revId": "9e83b8c8460ee4ee79ea3c95078998251447a719",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
