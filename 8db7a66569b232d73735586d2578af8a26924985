@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "522f36d6_7143961a",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2021-08-18T20:21:12Z",
+      "side": 1,
+      "message": "There are multiple changes in this patch: (a) adding the FILE * argument to print_buf(), logging of sense codes and (c) coding style fixes. One patch per change please.",
+      "range": {
+        "startLine": 109,
+        "startChar": 12,
+        "endLine": 109,
+        "endChar": 36
+      },
+      "revId": "8db7a66569b232d73735586d2578af8a26924985",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "189d562c_ad2283dc",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 137,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2021-08-18T20:21:12Z",
+      "side": 1,
+      "message": "Since this function only returns 0 or 1, should the return type perhaps be changed into \u0027bool\u0027?",
+      "range": {
+        "startLine": 137,
+        "startChar": 7,
+        "endLine": 137,
+        "endChar": 10
+      },
+      "revId": "8db7a66569b232d73735586d2578af8a26924985",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4bba5363_a5b3d45e",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 214,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2021-08-18T20:21:12Z",
+      "side": 1,
+      "message": "Please also log the driver_status.",
+      "range": {
+        "startLine": 213,
+        "startChar": 12,
+        "endLine": 214,
+        "endChar": 64
+      },
+      "revId": "8db7a66569b232d73735586d2578af8a26924985",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f370c577_a729cadc",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 231,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2021-08-18T20:21:12Z",
+      "side": 1,
+      "message": "Please also log driver_status.",
+      "range": {
+        "startLine": 229,
+        "startChar": 4,
+        "endLine": 231,
+        "endChar": 5
+      },
+      "revId": "8db7a66569b232d73735586d2578af8a26924985",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}

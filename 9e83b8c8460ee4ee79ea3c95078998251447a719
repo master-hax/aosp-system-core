@@ -167,6 +167,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "a1e278e4_a59aeb37",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 187,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2021-08-18T20:21:12Z",
+      "side": 1,
+      "message": "Does a UFS controller ever report the RECOVERED ERROR sense code?\n\nParsing a sense buffer manually is tedious. For people who analyze logs it is much easier if software decodes the sense code, ASC and ASCQ and also logs these values. I think it is useful to log these values every time sense data is present.",
+      "parentUuid": "057e6f9d_835f94ba",
+      "revId": "9e83b8c8460ee4ee79ea3c95078998251447a719",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "bfb132ca_c9536607",
         "filename": "trusty/storage/proxy/rpmb.c",
         "patchSetId": 1
