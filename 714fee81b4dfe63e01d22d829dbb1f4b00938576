@@ -22,6 +22,30 @@
       },
       "revId": "714fee81b4dfe63e01d22d829dbb1f4b00938576",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ad6972af_b941c62d",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 3
+      },
+      "lineNbr": 211,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2021-08-18T23:26:29Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ce2c7d14_9a2d493e",
+      "range": {
+        "startLine": 211,
+        "startChar": 8,
+        "endLine": 211,
+        "endChar": 11
+      },
+      "revId": "714fee81b4dfe63e01d22d829dbb1f4b00938576",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
