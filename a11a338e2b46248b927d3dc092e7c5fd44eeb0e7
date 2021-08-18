@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "04f45826_317c2222",
+        "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd.h",
+        "patchSetId": 9
+      },
+      "lineNbr": 301,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-08-18T22:51:17Z",
+      "side": 1,
+      "message": "Thanks. https://r.android.com/1801248 to fix this.\n\nPart of this code was carried over from update-verifier - we should probably fix there as well..",
+      "parentUuid": "af648b9a_1759983b",
+      "revId": "a11a338e2b46248b927d3dc092e7c5fd44eeb0e7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "5e9ce0c5_da3e9cd7",
@@ -31,6 +49,24 @@
       "writtenOn": "2021-08-06T20:44:30Z",
       "side": 1,
       "message": "Same question for the \u0027partition_name\u0027 argument here.",
+      "revId": "a11a338e2b46248b927d3dc092e7c5fd44eeb0e7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b7bdd4e9_2fa7d91d",
+        "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd.h",
+        "patchSetId": 9
+      },
+      "lineNbr": 302,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-08-18T22:51:17Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5e9ce0c5_da3e9cd7",
       "revId": "a11a338e2b46248b927d3dc092e7c5fd44eeb0e7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
