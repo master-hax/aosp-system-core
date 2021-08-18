@@ -41,6 +41,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "5393dee4_ad3da8c1",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2021-08-18T18:28:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2bee88df_3fdc2af1",
+      "range": {
+        "startLine": 17,
+        "startChar": 0,
+        "endLine": 17,
+        "endChar": 19
+      },
+      "revId": "9e83b8c8460ee4ee79ea3c95078998251447a719",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "fdd0d5d0_4f1a8332",
@@ -54,6 +78,30 @@
       "writtenOn": "2021-08-18T16:32:37Z",
       "side": 1,
       "message": "Sense data is not specific to the SG/IO interface but applies to all of SCSI. Should this function perhaps be renamed into check_scsi_sense()?",
+      "range": {
+        "startLine": 138,
+        "startChar": 11,
+        "endLine": 138,
+        "endChar": 25
+      },
+      "revId": "9e83b8c8460ee4ee79ea3c95078998251447a719",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "05f29c1f_a5887d99",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 138,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2021-08-18T18:28:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fdd0d5d0_4f1a8332",
       "range": {
         "startLine": 138,
         "startChar": 11,
@@ -101,6 +149,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "057e6f9d_835f94ba",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 187,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2021-08-18T18:28:45Z",
+      "side": 1,
+      "message": "I assume you mean for RECOVERED_ERROR? Do we need to log more of the buffer for other errors or just the ASC and ASCQ?",
+      "parentUuid": "b5e3d6dc_77f03d1e",
+      "revId": "9e83b8c8460ee4ee79ea3c95078998251447a719",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "bfb132ca_c9536607",
         "filename": "trusty/storage/proxy/rpmb.c",
         "patchSetId": 1
@@ -112,6 +178,30 @@
       "writtenOn": "2021-08-18T16:32:37Z",
       "side": 1,
       "message": "Not all sense codes indicate a failure. E.g. (UNIT_ATTENTION (6), 0x3F, 0xE) indicates that the logical unit data changed and does not indicate command failure but rather that the command should be retried.",
+      "range": {
+        "startLine": 191,
+        "startChar": 17,
+        "endLine": 191,
+        "endChar": 23
+      },
+      "revId": "9e83b8c8460ee4ee79ea3c95078998251447a719",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "80c4169f_f7f2cfac",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 191,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2021-08-18T18:28:45Z",
+      "side": 1,
+      "message": "Until we actually do retry, I think we need to log anything that doesn\u0027t indicate success as an error, since the transaction will fail. I\u0027ve updated the message to not imply that the sense key indicates an error.",
+      "parentUuid": "bfb132ca_c9536607",
       "range": {
         "startLine": 191,
         "startChar": 17,
@@ -145,6 +235,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "05fc9f65_929129cd",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 201,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2021-08-18T18:28:45Z",
+      "side": 1,
+      "message": "Was supposed to be LSB (0x01) not 0x0f, fixed.",
+      "parentUuid": "467f29f5_510a5c7e",
+      "range": {
+        "startLine": 201,
+        "startChar": 26,
+        "endLine": 201,
+        "endChar": 30
+      },
+      "revId": "9e83b8c8460ee4ee79ea3c95078998251447a719",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f60dca16_c6939654",
@@ -158,6 +272,30 @@
       "writtenOn": "2021-08-18T16:32:37Z",
       "side": 1,
       "message": "Not all sense codes indicate failure.",
+      "range": {
+        "startLine": 208,
+        "startChar": 25,
+        "endLine": 208,
+        "endChar": 31
+      },
+      "revId": "9e83b8c8460ee4ee79ea3c95078998251447a719",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "483912f5_262c2fcc",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 208,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2021-08-18T18:28:45Z",
+      "side": 1,
+      "message": "Updated the text. I\u0027m planning to return an enum from check_scsi_sense indicating that we should retry, and we won\u0027t log an error immediately in that case.",
+      "parentUuid": "f60dca16_c6939654",
       "range": {
         "startLine": 208,
         "startChar": 25,
