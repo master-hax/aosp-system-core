@@ -1,0 +1,208 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "140549be_c3853676",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-08-18T17:23:04Z",
+      "side": 1,
+      "message": "Added comments pointing to new code to make code review easy.\n\nHere is how I would read the code:\n\n1: snapuserd_core.cpp - Start() -\u003e Start the merge thread\n2: snapuserd_merge.cpp - Core of the merge logic and should be easy to read.\n3: snapuserd_ra.cpp - Read-Ahead logic - I have put comments on where to focus and interaction with the merge thread.\n4: snapuserd_transitions.cpp - This is core of state transitions.\n",
+      "revId": "55d2182601d9ea1df84ba4f0883738942de86555",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b501b488_1f34dda9",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_core.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-08-18T17:23:04Z",
+      "side": 1,
+      "message": "I have put comments in the code below pointing to the new changes. Rest all are existing code from Android S.",
+      "revId": "55d2182601d9ea1df84ba4f0883738942de86555",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5201df71_64c78e30",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_core.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-08-18T17:23:04Z",
+      "side": 1,
+      "message": "We will need to pass the \"Base\" device additionally which will be used for merging.",
+      "revId": "55d2182601d9ea1df84ba4f0883738942de86555",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b2966907_a34d832e",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_core.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 140,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-08-18T17:23:04Z",
+      "side": 1,
+      "message": "This is the new change - no more assigning of pseudo chunk-id as compared to dm-snapshot.",
+      "revId": "55d2182601d9ea1df84ba4f0883738942de86555",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ebc5b6ec_0a177852",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_core.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 204,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-08-18T17:23:04Z",
+      "side": 1,
+      "message": "We will be setting the size of dm-user device based on the size of the \"Base\" device.",
+      "revId": "55d2182601d9ea1df84ba4f0883738942de86555",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a50a3bf5_34879002",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_core.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 338,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-08-18T17:23:04Z",
+      "side": 1,
+      "message": "Start the merge thread",
+      "revId": "55d2182601d9ea1df84ba4f0883738942de86555",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3d273678_6667a762",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_dm_user.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 208,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-08-18T17:23:04Z",
+      "side": 1,
+      "message": "No new code changes in this file - it is just a copy of the existing code and does only the initialization. No communication to dm-user yet - this will be done in the next patch",
+      "revId": "55d2182601d9ea1df84ba4f0883738942de86555",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fd585ccf_13b86e53",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_merge.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 268,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-08-18T17:23:04Z",
+      "side": 1,
+      "message": "This entire file is the core of the merge logic.",
+      "revId": "55d2182601d9ea1df84ba4f0883738942de86555",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "48fc018a_19e2f8de",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_ra.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-08-18T17:23:04Z",
+      "side": 1,
+      "message": "No change in this function.",
+      "revId": "55d2182601d9ea1df84ba4f0883738942de86555",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "20f0f634_2a15854b",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_ra.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 194,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-08-18T17:23:04Z",
+      "side": 1,
+      "message": "The logic of this function slightly changes as we now have to interact with the merge thread. The transition is explained in detail under snapuserd_transitions.cpp.\n\nAt a high level, this will read the fixed set of COW ops and wait for the merge thread to begin merging. Comments have been added.",
+      "revId": "55d2182601d9ea1df84ba4f0883738942de86555",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "be75f5cc_b2101a21",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_ra.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 377,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-08-18T17:23:04Z",
+      "side": 1,
+      "message": "No new changes in rest of the functions..",
+      "revId": "55d2182601d9ea1df84ba4f0883738942de86555",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9899a257_c69362a1",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_transitions.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-08-18T17:23:04Z",
+      "side": 1,
+      "message": "This is the state transition between merge thread and RA thread. Comments have been added in detail to explain the flow.",
+      "revId": "55d2182601d9ea1df84ba4f0883738942de86555",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
