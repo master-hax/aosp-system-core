@@ -45,6 +45,30 @@
       },
       "revId": "00312f01959c4c46dc5180e36ec5afed80be7414",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "400393c4_25c75f52",
+        "filename": "libutils/Looper_test.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 808,
+      "author": {
+        "id": 1407716
+      },
+      "writtenOn": "2021-08-18T15:27:10Z",
+      "side": 1,
+      "message": "This was the exact case the existing sequence numbers (prior to this change) were designed for. The test case you mentioned would pass before as well.\n\nThis is because by the time the fd hangup handler is called, Looper has already acquired the lock to obtain the callback from the epoll event.\n\nTo make the test case deterministic, we would have to separate the Looper impl from the header and add protected methods to peer into or change the state of the impl from the test.",
+      "parentUuid": "7cde243a_2e601194",
+      "range": {
+        "startLine": 808,
+        "startChar": 24,
+        "endLine": 808,
+        "endChar": 28
+      },
+      "revId": "00312f01959c4c46dc5180e36ec5afed80be7414",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
