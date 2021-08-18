@@ -62,6 +62,12 @@
 #define TIMEOUT 20000
 
 /*
+ * Maximum number of retries to attempt. The kernel retries various SCSI
+ * conditions, so this is on top of the kernel retry count.
+ */
+#define RETRIES 5
+
+/*
  * The sg device driver that supports new interface has a major version number of "3".
  * SG_GET_VERSION_NUM ioctl() will yield a number greater than or 30000.
  */
@@ -120,19 +126,28 @@ static void print_buf(const char* prefix, const uint8_t* buf, size_t size) {
 
 #endif
 
-static void set_sg_io_hdr(sg_io_hdr_t* io_hdrp, int dxfer_direction, unsigned char cmd_len,
-                          unsigned char mx_sb_len, unsigned int dxfer_len, void* dxferp,
-                          unsigned char* cmdp, void* sbp) {
-    memset(io_hdrp, 0, sizeof(sg_io_hdr_t));
-    io_hdrp->interface_id = 'S';
-    io_hdrp->dxfer_direction = dxfer_direction;
-    io_hdrp->cmd_len = cmd_len;
-    io_hdrp->mx_sb_len = mx_sb_len;
-    io_hdrp->dxfer_len = dxfer_len;
-    io_hdrp->dxferp = dxferp;
-    io_hdrp->cmdp = cmdp;
-    io_hdrp->sbp = sbp;
-    io_hdrp->timeout = TIMEOUT;
+static int do_sg_io_with_retries(int sg_fd, int dxfer_direction, unsigned char cmd_len,
+                                 unsigned char mx_sb_len, unsigned int dxfer_len, void* dxferp,
+                                 unsigned char* cmdp, void* sbp) {
+    int rc;
+    sg_io_hdr_t io_hdr;
+    for (int count = RETRIES; count > 0; count--) {
+        io_hdr = (sg_io_hdr_t){0};
+        io_hdr.interface_id = 'S';
+        io_hdr.dxfer_direction = dxfer_direction;
+        io_hdr.cmd_len = cmd_len;
+        io_hdr.mx_sb_len = mx_sb_len;
+        io_hdr.dxfer_len = dxfer_len;
+        io_hdr.dxferp = dxferp;
+        io_hdr.cmdp = cmdp;
+        io_hdr.sbp = sbp;
+        io_hdr.timeout = TIMEOUT;
+        rc = ioctl(sg_fd, SG_IO, &io_hdr);
+        if (rc >= 0 || (errno != EIO && errno != ENOMEM && errno != EAGAIN && errno != EBUSY)) {
+            break;
+        }
+    }
+    return rc;
 }
 
 static int send_mmc_rpmb_req(int mmc_fd, const struct storage_rpmb_send_req* req) {
@@ -216,11 +231,9 @@ static int send_ufs_rpmb_req(int sg_fd, const struct storage_rpmb_send_req* req)
     if (req->reliable_write_size) {
         /* Prepare SECURITY PROTOCOL OUT command. */
         out_cdb.length = __builtin_bswap32(req->reliable_write_size);
-        sg_io_hdr_t io_hdr;
-        set_sg_io_hdr(&io_hdr, SG_DXFER_TO_DEV, sizeof(out_cdb), sizeof(sense_buffer),
-                      req->reliable_write_size, (void*)write_buf, (unsigned char*)&out_cdb,
-                      sense_buffer);
-        rc = ioctl(sg_fd, SG_IO, &io_hdr);
+        rc = do_sg_io_with_retries(sg_fd, SG_DXFER_TO_DEV, sizeof(out_cdb), sizeof(sense_buffer),
+                                   req->reliable_write_size, (void*)write_buf,
+                                   (unsigned char*)&out_cdb, sense_buffer);
         if (rc < 0) {
             ALOGE("%s: ufs ioctl failed: %d, %s\n", __func__, rc, strerror(errno));
             goto err_op;
@@ -231,10 +244,9 @@ static int send_ufs_rpmb_req(int sg_fd, const struct storage_rpmb_send_req* req)
     if (req->write_size) {
         /* Prepare SECURITY PROTOCOL OUT command. */
         out_cdb.length = __builtin_bswap32(req->write_size);
-        sg_io_hdr_t io_hdr;
-        set_sg_io_hdr(&io_hdr, SG_DXFER_TO_DEV, sizeof(out_cdb), sizeof(sense_buffer),
-                      req->write_size, (void*)write_buf, (unsigned char*)&out_cdb, sense_buffer);
-        rc = ioctl(sg_fd, SG_IO, &io_hdr);
+        rc = do_sg_io_with_retries(sg_fd, SG_DXFER_TO_DEV, sizeof(out_cdb), sizeof(sense_buffer),
+                                   req->write_size, (void*)write_buf, (unsigned char*)&out_cdb,
+                                   sense_buffer);
         if (rc < 0) {
             ALOGE("%s: ufs ioctl failed: %d, %s\n", __func__, rc, strerror(errno));
             goto err_op;
@@ -245,10 +257,8 @@ static int send_ufs_rpmb_req(int sg_fd, const struct storage_rpmb_send_req* req)
     if (req->read_size) {
         /* Prepare SECURITY PROTOCOL IN command. */
         in_cdb.length = __builtin_bswap32(req->read_size);
-        sg_io_hdr_t io_hdr;
-        set_sg_io_hdr(&io_hdr, SG_DXFER_FROM_DEV, sizeof(in_cdb), sizeof(sense_buffer),
-                      req->read_size, read_buf, (unsigned char*)&in_cdb, sense_buffer);
-        rc = ioctl(sg_fd, SG_IO, &io_hdr);
+        rc = do_sg_io_with_retries(sg_fd, SG_DXFER_FROM_DEV, sizeof(in_cdb), sizeof(sense_buffer),
+                                   req->read_size, read_buf, (unsigned char*)&in_cdb, sense_buffer);
         if (rc < 0) {
             ALOGE("%s: ufs ioctl failed: %d, %s\n", __func__, rc, strerror(errno));
         }
