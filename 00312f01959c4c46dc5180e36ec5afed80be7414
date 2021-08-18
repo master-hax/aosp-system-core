@@ -69,6 +69,30 @@
       },
       "revId": "00312f01959c4c46dc5180e36ec5afed80be7414",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b0766417_0c6ceeb0",
+        "filename": "libutils/Looper_test.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 808,
+      "author": {
+        "id": 1149384
+      },
+      "writtenOn": "2021-08-18T19:16:03Z",
+      "side": 1,
+      "message": "That makes sense, thanks Prabir. I agree that we don\u0027t need to modify looper just for this test, especially since we have non-deterministic test that works well enough.",
+      "parentUuid": "400393c4_25c75f52",
+      "range": {
+        "startLine": 808,
+        "startChar": 24,
+        "endLine": 808,
+        "endChar": 28
+      },
+      "revId": "00312f01959c4c46dc5180e36ec5afed80be7414",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
