@@ -22,6 +22,30 @@
       },
       "revId": "478e3ca1603783ab9f5474b023cf6e4878dd4783",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0d363c98_e346c7db",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2021-08-18T00:56:56Z",
+      "side": 1,
+      "message": "\u003e wait until that topic is merged and then add your tests to the new init/TEST_MAPPING\n\nYeah, I think this is the right way.",
+      "parentUuid": "5bbe77c8_689af3e0",
+      "range": {
+        "startLine": 10,
+        "startChar": 31,
+        "endLine": 10,
+        "endChar": 34
+      },
+      "revId": "478e3ca1603783ab9f5474b023cf6e4878dd4783",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
