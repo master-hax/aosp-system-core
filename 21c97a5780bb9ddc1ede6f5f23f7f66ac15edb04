@@ -16,6 +16,24 @@
       "message": "dvander: remember that a non-googler can\u0027t hit \"submit\", so you\u0027ll have to do it for them... (i could do it for you, but since i don\u0027t actually know whether you\u0027re deliberately waiting for something i don\u0027t know about [like some extra manual testing you\u0027re doing, say], i\u0027ll leave it to you!)",
       "revId": "21c97a5780bb9ddc1ede6f5f23f7f66ac15edb04",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1aa33dd0_f8b40c14",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-08-18T17:26:07Z",
+      "side": 1,
+      "message": "Sorry, I forgot to do it - thanks for reminding me!",
+      "parentUuid": "ce8ca09b_957c9ad9",
+      "revId": "21c97a5780bb9ddc1ede6f5f23f7f66ac15edb04",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
