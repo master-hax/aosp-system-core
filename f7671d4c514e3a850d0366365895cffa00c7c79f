@@ -87,6 +87,24 @@
       "parentUuid": "06e663ab_66c8cfb6",
       "revId": "f7671d4c514e3a850d0366365895cffa00c7c79f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0aeaa54f_d46e653f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-08-18T17:15:56Z",
+      "side": 1,
+      "message": "heh, logd is also one that already moved out a while ago :-)\n\nthe other change is in now, so i\u0027ll expect to see you again shortly in system/core/init/, system/logging/, and packages/modules/adbd/ :-)",
+      "parentUuid": "2e72d44f_3c31524c",
+      "revId": "f7671d4c514e3a850d0366365895cffa00c7c79f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
