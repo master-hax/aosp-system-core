@@ -30,7 +30,7 @@ void SetFatalRebootTarget(const std::optional<std::string>& reboot_target = std:
 bool IsRebootCapable();
 // This is a wrapper around the actual reboot calls.
 void __attribute__((noreturn)) RebootSystem(unsigned int cmd, const std::string& reboot_target);
-void __attribute__((noreturn)) InitFatalReboot(int signal_number);
+void __attribute__((noreturn)) InitFatalReboot(int signal_number, const char* abort_message = NULL);
 void InstallRebootSignalHandlers();
 
 }  // namespace init

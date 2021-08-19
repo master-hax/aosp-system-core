@@ -171,6 +171,7 @@ cc_defaults {
         "libprocessgroup_setup",
         "libselinux",
         "libutils",
+        "libuserpanic",
     ],
     bootstrap: true,
     visibility: [":__subpackages__"],
@@ -342,6 +343,7 @@ cc_binary {
         "libsnapshot_init",
         "update_metadata-protos",
         "libprocinfo",
+        "libuserpanic",
     ],
 
     static_executable: true,
