@@ -16,4 +16,5 @@ service llkd-1 /system/bin/llkd
     capabilities KILL IPC_LOCK SYS_PTRACE DAC_OVERRIDE SYS_ADMIN
     file /dev/kmsg w
     file /proc/sysrq-trigger w
+    file /dev/userspace_panic w
     task_profiles ServiceCapacityLow
