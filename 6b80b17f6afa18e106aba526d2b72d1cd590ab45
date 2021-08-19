@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "748e02e7_e79c39ef",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2021-08-19T22:20:50Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "90376d89_45d1ff12",
+      "range": {
+        "startLine": 129,
+        "startChar": 11,
+        "endLine": 129,
+        "endChar": 32
+      },
+      "revId": "6b80b17f6afa18e106aba526d2b72d1cd590ab45",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f4b0ef91_a3d8952a",
@@ -37,6 +61,30 @@
       "writtenOn": "2021-08-19T16:55:05Z",
       "side": 1,
       "message": "Please declare this argument const such that callers do not have to cast this argument.",
+      "range": {
+        "startLine": 131,
+        "startChar": 33,
+        "endLine": 131,
+        "endChar": 52
+      },
+      "revId": "6b80b17f6afa18e106aba526d2b72d1cd590ab45",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ed0e2f74_6a40aa60",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 131,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2021-08-19T22:20:50Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f4b0ef91_a3d8952a",
       "range": {
         "startLine": 131,
         "startChar": 33,
@@ -70,6 +118,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "2e90f5cf_8a055d82",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 133,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2021-08-19T22:20:50Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "06392141_79bb5716",
+      "range": {
+        "startLine": 132,
+        "startChar": 0,
+        "endLine": 133,
+        "endChar": 23
+      },
+      "revId": "6b80b17f6afa18e106aba526d2b72d1cd590ab45",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "715e7647_0b094972",
@@ -83,6 +155,30 @@
       "writtenOn": "2021-08-19T16:55:05Z",
       "side": 1,
       "message": "{ } should be sufficient, isn\u0027t it? I think both gcc and clang support \"{ }\". Not sure whether this is allowed by the C standard.",
+      "range": {
+        "startLine": 135,
+        "startChar": 30,
+        "endLine": 135,
+        "endChar": 33
+      },
+      "revId": "6b80b17f6afa18e106aba526d2b72d1cd590ab45",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "52f50845_65160ebe",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 135,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2021-08-19T22:20:50Z",
+      "side": 1,
+      "message": "An empty initializer list is allowed in C++ but not in ISO C.",
+      "parentUuid": "715e7647_0b094972",
       "range": {
         "startLine": 135,
         "startChar": 30,
@@ -118,6 +214,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "36eebda3_4e0f27df",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 146,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2021-08-19T22:20:50Z",
+      "side": 1,
+      "message": "Removed EIO. I don\u0027t want to add retries that depend on the returned SCSI data in this change. We can add that separately if desired.",
+      "parentUuid": "22f18e34_370fa34b",
+      "range": {
+        "startLine": 146,
+        "startChar": 24,
+        "endLine": 146,
+        "endChar": 36
+      },
+      "revId": "6b80b17f6afa18e106aba526d2b72d1cd590ab45",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "620150df_87e7f178",
         "filename": "trusty/storage/proxy/rpmb.c",
         "patchSetId": 1
@@ -129,6 +249,30 @@
       "writtenOn": "2021-08-19T16:55:05Z",
       "side": 1,
       "message": "Please change this into \u0027return rc;\u0027.",
+      "range": {
+        "startLine": 147,
+        "startChar": 12,
+        "endLine": 147,
+        "endChar": 18
+      },
+      "revId": "6b80b17f6afa18e106aba526d2b72d1cd590ab45",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7630f5a5_3b69425d",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 147,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2021-08-19T22:20:50Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "620150df_87e7f178",
       "range": {
         "startLine": 147,
         "startChar": 12,
