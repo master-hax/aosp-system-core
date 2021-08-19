@@ -39,6 +39,30 @@
       },
       "revId": "2c66096d347fb975dc0395ddea65f6fab180dbe6",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "573d7ff8_15c66af4",
+        "filename": "debuggerd/tombstoned/tombstoned.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 453,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2021-08-19T00:12:48Z",
+      "side": 1,
+      "message": "I don\u0027t like the idea of removing the message entirely, so I changed the message slightly to say skipping due to an intercept. I also went through the code and verified that the only really valid situation that this could occur is if it is an intercept. I believe I convinced myself that if the output failed, there would be another error message coming and that path would not be called.",
+      "parentUuid": "03553830_c46dcbfc",
+      "range": {
+        "startLine": 453,
+        "startChar": 21,
+        "endLine": 453,
+        "endChar": 53
+      },
+      "revId": "2c66096d347fb975dc0395ddea65f6fab180dbe6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
