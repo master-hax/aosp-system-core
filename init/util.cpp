@@ -704,7 +704,7 @@ static void InitAborter(const char* abort_message) {
         return;
     }
 
-    InitFatalReboot(SIGABRT);
+    InitFatalReboot(SIGABRT, abort_message);
 }
 
 // The kernel opens /dev/console and uses that fd for stdin/stdout/stderr if there is a serial
