@@ -47,7 +47,9 @@
 #include <android-base/logging.h>
 #include <android-base/parseint.h>
 #include <android-base/properties.h>
+#include <android-base/stringprintf.h>
 #include <android-base/strings.h>
+#include <android/userpanic.h>
 #include <cutils/android_get_control_file.h>
 #include <log/log_main.h>
 
@@ -521,7 +523,8 @@ bool llkWriteStringToFileConfirm(const std::string& string, const std::string& f
     return android::base::Trim(content) == string;
 }
 
-void llkPanicKernel(bool dump, pid_t tid, const char* state, const std::string& message = "") {
+void llkPanicKernel(bool dump, pid_t tid, const char* state, const std::string& message = "",
+                    const std::string& process_comm = "") {
     if (!message.empty()) LOG(ERROR) << message;
     auto sysrqTriggerFd = llkFileToWriteFd("/proc/sysrq-trigger");
     if (sysrqTriggerFd < 0) {
@@ -561,7 +564,9 @@ void llkPanicKernel(bool dump, pid_t tid, const char* state, const std::string& 
         PLOG(WARNING) << piddir;
         return;
     }
-    android::base::WriteStringToFd("c", sysrqTriggerFd);
+    auto panicSignature = android::base::StringPrintf(
+        "process=%s state=%s", process_comm.c_str(), state);
+    android_panic_kernel(panicSignature.c_str());
     // NOTREACHED
     // DYB
     llkKillOneProcess(initPid, 'R', tid);
@@ -1221,7 +1226,7 @@ milliseconds llkCheck(bool checkRunning) {
                                  "}";
             llkPanicKernel(dump, tid,
                            (state == 'Z') ? "zombie" : (state == 'D') ? "driver" : "sleeping",
-                           message);
+                           message, process_comm);
             dump = false;
         }
         LOG(VERBOSE) << "+closedir()";
