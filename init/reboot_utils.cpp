@@ -25,7 +25,9 @@
 #include <android-base/file.h>
 #include <android-base/logging.h>
 #include <android-base/properties.h>
+#include <android-base/stringprintf.h>
 #include <android-base/strings.h>
+#include <android/userpanic.h>
 #include <backtrace/Backtrace.h>
 #include <cutils/android_reboot.h>
 
@@ -141,7 +143,7 @@ void __attribute__((noreturn)) RebootSystem(unsigned int cmd, const std::string&
     abort();
 }
 
-void __attribute__((noreturn)) InitFatalReboot(int signal_number) {
+void __attribute__((noreturn)) InitFatalReboot(int signal_number, const char* abort_message) {
     auto pid = fork();
 
     if (pid == -1) {
@@ -166,6 +168,8 @@ void __attribute__((noreturn)) InitFatalReboot(int signal_number) {
         LOG(ERROR) << backtrace->FormatFrameData(i);
     }
     if (init_fatal_panic) {
+        android_panic_kernel(abort_message ?: android::base::StringPrintf(
+                             "init-fatal: signal %d", signal_number).c_str());
         LOG(ERROR) << __FUNCTION__ << ": Trigger crash";
         android::base::WriteStringToFile("c", PROC_SYSRQ);
         LOG(ERROR) << __FUNCTION__ << ": Sys-Rq failed to crash the system; fallback to exit().";

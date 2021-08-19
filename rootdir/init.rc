@@ -552,6 +552,8 @@ on post-fs
     chmod 0220 /proc/sysrq-trigger
     chown system log /proc/last_kmsg
     chmod 0440 /proc/last_kmsg
+    chown root system /dev/userspace_panic
+    chmod 0220 /dev/userspace_panic
 
     # make the selinux kernel policy world-readable
     chmod 0444 /sys/fs/selinux/policy
