@@ -1,0 +1,18 @@
+// Copyright 2021 The Android Open Source Project
+
+package {
+    default_applicable_licenses: ["Android-Apache-2.0"],
+}
+
+cc_library {
+    name: "libuserpanic",
+    srcs: ["libuserpanic.cpp"],
+    ramdisk_available: true,
+    recovery_available: true,
+    local_include_dirs: ["include"],
+    export_include_dirs: ["include"],
+    shared_libs: [
+        "libbase",
+    ],
+    cflags: ["-Werror"],
+}
