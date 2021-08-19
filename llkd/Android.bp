@@ -19,6 +19,8 @@ cc_library_static {
         "libbase",
         "libcutils",
         "liblog",
+        "libbacktrace",
+        "libuserpanic",
     ],
 
     export_include_dirs: ["include"],
@@ -42,6 +44,8 @@ cc_binary {
         "libbase",
         "libcutils",
         "liblog",
+        "libbacktrace",
+        "libuserpanic",
     ],
     static_libs: [
         "libllkd",
