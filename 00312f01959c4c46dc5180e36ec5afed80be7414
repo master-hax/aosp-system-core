@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "936468e1_7fc99072",
+        "filename": "libutils/Looper.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1407716
+      },
+      "writtenOn": "2021-08-19T16:43:53Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "af88554e_d05613da",
+      "range": {
+        "startLine": 25,
+        "startChar": 10,
+        "endLine": 25,
+        "endChar": 15
+      },
+      "revId": "00312f01959c4c46dc5180e36ec5afed80be7414",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "7cde243a_2e601194",
@@ -84,6 +108,30 @@
       "writtenOn": "2021-08-18T19:16:03Z",
       "side": 1,
       "message": "That makes sense, thanks Prabir. I agree that we don\u0027t need to modify looper just for this test, especially since we have non-deterministic test that works well enough.",
+      "parentUuid": "400393c4_25c75f52",
+      "range": {
+        "startLine": 808,
+        "startChar": 24,
+        "endLine": 808,
+        "endChar": 28
+      },
+      "revId": "00312f01959c4c46dc5180e36ec5afed80be7414",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c9ebc9b1_970b0c23",
+        "filename": "libutils/Looper_test.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 808,
+      "author": {
+        "id": 1407716
+      },
+      "writtenOn": "2021-08-19T16:43:53Z",
+      "side": 1,
+      "message": "Ack",
       "parentUuid": "400393c4_25c75f52",
       "range": {
         "startLine": 808,
