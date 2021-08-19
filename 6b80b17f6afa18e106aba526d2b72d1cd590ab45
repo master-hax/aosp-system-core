@@ -1,0 +1,142 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "90376d89_45d1ff12",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2021-08-19T16:55:05Z",
+      "side": 1,
+      "message": "Please add a comment that explains the meaning of the arguments.",
+      "range": {
+        "startLine": 129,
+        "startChar": 11,
+        "endLine": 129,
+        "endChar": 32
+      },
+      "revId": "6b80b17f6afa18e106aba526d2b72d1cd590ab45",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f4b0ef91_a3d8952a",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 131,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2021-08-19T16:55:05Z",
+      "side": 1,
+      "message": "Please declare this argument const such that callers do not have to cast this argument.",
+      "range": {
+        "startLine": 131,
+        "startChar": 33,
+        "endLine": 131,
+        "endChar": 52
+      },
+      "revId": "6b80b17f6afa18e106aba526d2b72d1cd590ab45",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "06392141_79bb5716",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 133,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2021-08-19T16:55:05Z",
+      "side": 1,
+      "message": "Please move both variables into the for-loop and change the \u0027return rc\u0027 at the end into \u0027return -1\u0027.",
+      "range": {
+        "startLine": 132,
+        "startChar": 0,
+        "endLine": 133,
+        "endChar": 23
+      },
+      "revId": "6b80b17f6afa18e106aba526d2b72d1cd590ab45",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "715e7647_0b094972",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 135,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2021-08-19T16:55:05Z",
+      "side": 1,
+      "message": "{ } should be sufficient, isn\u0027t it? I think both gcc and clang support \"{ }\". Not sure whether this is allowed by the C standard.",
+      "range": {
+        "startLine": 135,
+        "startChar": 30,
+        "endLine": 135,
+        "endChar": 33
+      },
+      "revId": "6b80b17f6afa18e106aba526d2b72d1cd590ab45",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "22f18e34_370fa34b",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 146,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2021-08-19T16:55:05Z",
+      "side": 1,
+      "message": "I don\u0027t think that -EIO is a retryable error. Additionally, checks are missing here for the SCSI status, host_status, driver_status and sense data.",
+      "range": {
+        "startLine": 146,
+        "startChar": 24,
+        "endLine": 146,
+        "endChar": 36
+      },
+      "revId": "6b80b17f6afa18e106aba526d2b72d1cd590ab45",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "620150df_87e7f178",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 147,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2021-08-19T16:55:05Z",
+      "side": 1,
+      "message": "Please change this into \u0027return rc;\u0027.",
+      "range": {
+        "startLine": 147,
+        "startChar": 12,
+        "endLine": 147,
+        "endChar": 18
+      },
+      "revId": "6b80b17f6afa18e106aba526d2b72d1cd590ab45",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
