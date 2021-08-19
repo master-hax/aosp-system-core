@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6a5f3d2e_a497d6d5",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 158,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2021-08-19T22:45:26Z",
+      "side": 1,
+      "message": "If ioctl(SG_IO) returns 0 that does not mean that the ioctl succeeded. Please log SCSI status, host status and driver status if one of these is not zero. Please also log sense data if any sense data is present.\n\nSince this patch conflicts with https://android-review.googlesource.com/c/platform/system/core/+/1799827, please rebase this patch on top of patch \"Add logging of failed RPMB transactions\".",
+      "range": {
+        "startLine": 158,
+        "startChar": 12,
+        "endLine": 158,
+        "endChar": 19
+      },
+      "revId": "a63f661282ea0fff9c11b35b602f6faf29feca25",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
