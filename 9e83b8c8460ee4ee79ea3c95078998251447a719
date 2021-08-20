@@ -272,6 +272,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "d422c079_1f9c4c47",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 191,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2021-08-20T23:06:29Z",
+      "side": 1,
+      "message": "Thanks for the clarification.",
+      "parentUuid": "80c4169f_f7f2cfac",
+      "range": {
+        "startLine": 191,
+        "startChar": 17,
+        "endLine": 191,
+        "endChar": 23
+      },
+      "revId": "9e83b8c8460ee4ee79ea3c95078998251447a719",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "467f29f5_510a5c7e",

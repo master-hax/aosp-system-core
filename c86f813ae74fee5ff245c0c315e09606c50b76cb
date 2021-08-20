@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2f4cf7ca_4fcc5d2c",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 4
+      },
+      "lineNbr": 228,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2021-08-20T23:06:29Z",
+      "side": 1,
+      "message": "There are three log statements in this function that log all or some of SCSI status, host status and driver status. Please consolidate these statements into a single log statement and move it near the start of this function.",
+      "range": {
+        "startLine": 227,
+        "startChar": 12,
+        "endLine": 228,
+        "endChar": 88
+      },
+      "revId": "c86f813ae74fee5ff245c0c315e09606c50b76cb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
