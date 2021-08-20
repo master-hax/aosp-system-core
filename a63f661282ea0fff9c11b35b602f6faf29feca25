@@ -22,6 +22,30 @@
       },
       "revId": "a63f661282ea0fff9c11b35b602f6faf29feca25",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "af73ca52_67d0cd3a",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 158,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2021-08-20T22:55:30Z",
+      "side": 1,
+      "message": "Done. As mentioned elsewhere, I want to hold off on retrying based on scsi status, etc. unless the kernel isn\u0027t retrying something it should.",
+      "parentUuid": "6a5f3d2e_a497d6d5",
+      "range": {
+        "startLine": 158,
+        "startChar": 12,
+        "endLine": 158,
+        "endChar": 19
+      },
+      "revId": "a63f661282ea0fff9c11b35b602f6faf29feca25",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
