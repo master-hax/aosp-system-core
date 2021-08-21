@@ -22,6 +22,30 @@
       },
       "revId": "c86f813ae74fee5ff245c0c315e09606c50b76cb",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3d44e2b0_a3346163",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 4
+      },
+      "lineNbr": 228,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2021-08-21T00:43:47Z",
+      "side": 1,
+      "message": "I\u0027ve simplified the logic for logging statuses now. I\u0027m not sure how we can move the status logging earlier unless we want to log every transaction with any status, including CHECK_CONDITION \u0026\u0026 NO_SENSE (unless that combination is just non-sensical, I wasn\u0027t sure just from the spec).",
+      "parentUuid": "2f4cf7ca_4fcc5d2c",
+      "range": {
+        "startLine": 227,
+        "startChar": 12,
+        "endLine": 228,
+        "endChar": 88
+      },
+      "revId": "c86f813ae74fee5ff245c0c315e09606c50b76cb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
