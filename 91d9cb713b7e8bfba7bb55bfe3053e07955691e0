@@ -192,6 +192,23 @@
       "parentUuid": "ee524a61_4eb02f56",
       "revId": "91d9cb713b7e8bfba7bb55bfe3053e07955691e0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "16614c07_f604c5bf",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1684060
+      },
+      "writtenOn": "2021-08-23T20:16:38Z",
+      "side": 1,
+      "message": "Or even better solution is to select dummy only if it is the only one available, otherwise select the real one.",
+      "revId": "91d9cb713b7e8bfba7bb55bfe3053e07955691e0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
