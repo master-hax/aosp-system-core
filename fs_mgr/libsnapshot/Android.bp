@@ -437,6 +437,7 @@ cc_binary {
         "libsparse",
         "libxz",
         "libz",
+        "libzucchini",
         "libziparchive",
         "update_metadata-protos",
     ],
