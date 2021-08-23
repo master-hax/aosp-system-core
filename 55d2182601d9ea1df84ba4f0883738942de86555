@@ -18,6 +18,23 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "94ef30da_99b0785a",
+        "filename": "fs_mgr/libsnapshot/snapuserd/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-08-23T22:20:59Z",
+      "side": 1,
+      "message": "nit: \"userspace\"",
+      "revId": "55d2182601d9ea1df84ba4f0883738942de86555",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "b501b488_1f34dda9",
@@ -99,6 +116,40 @@
       "writtenOn": "2021-08-18T17:23:04Z",
       "side": 1,
       "message": "Start the merge thread",
+      "revId": "55d2182601d9ea1df84ba4f0883738942de86555",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "73129e73_cc0dc2db",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_core.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-08-23T22:20:59Z",
+      "side": 1,
+      "message": "Is this identical to the old one? If so, we should split it out. If not, rename to BufferSink?",
+      "revId": "55d2182601d9ea1df84ba4f0883738942de86555",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "33951273_b997126c",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_core.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-08-23T22:20:59Z",
+      "side": 1,
+      "message": "Similarly, XorBufferSink?\n\nI\u0027d also advocate that we remove XOR support from the old snapuserd and only keep it in the new one. No point in porting new features to something we\u0027re trying to obsolete.",
       "revId": "55d2182601d9ea1df84ba4f0883738942de86555",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
