@@ -18,6 +18,23 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "85eceb0a_70e8987e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-08-23T22:50:54Z",
+      "side": 1,
+      "message": "Doing another pass, I used a diff tool to compare this against the legacy merge code to get an idea for what changed...",
+      "revId": "55d2182601d9ea1df84ba4f0883738942de86555",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "94ef30da_99b0785a",
@@ -31,6 +48,23 @@
       "writtenOn": "2021-08-23T22:20:59Z",
       "side": 1,
       "message": "nit: \"userspace\"",
+      "revId": "55d2182601d9ea1df84ba4f0883738942de86555",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "65cd9be2_04da6cda",
+        "filename": "fs_mgr/libsnapshot/snapuserd/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-08-23T22:50:54Z",
+      "side": 1,
+      "message": "\"readahead\"?",
       "revId": "55d2182601d9ea1df84ba4f0883738942de86555",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -122,6 +156,40 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "f67aafe0_29a2dd2d",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_core.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 362,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-08-23T22:50:54Z",
+      "side": 1,
+      "message": "needs an initial value since it\u0027s conditionally assigned and unconditionally read",
+      "revId": "55d2182601d9ea1df84ba4f0883738942de86555",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f862b835_ac3ee695",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_core.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 364,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-08-23T22:50:54Z",
+      "side": 1,
+      "message": "move declaration here",
+      "revId": "55d2182601d9ea1df84ba4f0883738942de86555",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "73129e73_cc0dc2db",
         "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_core.h",
         "patchSetId": 2
@@ -150,6 +218,23 @@
       "writtenOn": "2021-08-23T22:20:59Z",
       "side": 1,
       "message": "Similarly, XorBufferSink?\n\nI\u0027d also advocate that we remove XOR support from the old snapuserd and only keep it in the new one. No point in porting new features to something we\u0027re trying to obsolete.",
+      "revId": "55d2182601d9ea1df84ba4f0883738942de86555",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "61518863_441d4931",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_core.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 196,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-08-23T22:50:54Z",
+      "side": 1,
+      "message": "I think it\u0027s time we give this a new name, since \"snapuserd\" appears in a lot of places in lots of forms. SnapshotThread? SnapshotHandler?",
       "revId": "55d2182601d9ea1df84ba4f0883738942de86555",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -205,6 +290,23 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "0a31ef44_604c1a29",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_ra.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 166,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-08-23T22:50:54Z",
+      "side": 1,
+      "message": "What\u0027s the expected logging impact of this, and the logging loop above? Is it a few lines, or potentially tens? Or hundreds?\n\nIf the intent is for post-mortem analysis of failed merges, we might want to consider storing it somewhere else as update_engine does.",
+      "revId": "55d2182601d9ea1df84ba4f0883738942de86555",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "20f0f634_2a15854b",
@@ -218,6 +320,57 @@
       "writtenOn": "2021-08-18T17:23:04Z",
       "side": 1,
       "message": "The logic of this function slightly changes as we now have to interact with the merge thread. The transition is explained in detail under snapuserd_transitions.cpp.\n\nAt a high level, this will read the fixed set of COW ops and wait for the merge thread to begin merging. Comments have been added.",
+      "revId": "55d2182601d9ea1df84ba4f0883738942de86555",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "64f6bc1b_369d0026",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_ra.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 212,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-08-23T22:50:54Z",
+      "side": 1,
+      "message": "If you want to save on typing for lines like this, you can use \"auto ra_temp_buffer \u003d ...\"",
+      "revId": "55d2182601d9ea1df84ba4f0883738942de86555",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3c425a30_51784059",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_ra.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 259,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-08-23T22:50:54Z",
+      "side": 1,
+      "message": "Same for these two lines, \"auto\" would improve readability quite a bit.",
+      "revId": "55d2182601d9ea1df84ba4f0883738942de86555",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "34c55155_39b0bada",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_ra.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 271,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-08-23T22:50:54Z",
+      "side": 1,
+      "message": "size_t for \"i\" and \"j\". But on those names... when we have nested loops like this, with multiple iterators, it\u0027d be nice if we can find better ones, and/or use STL iterators where appropriate. Eg \"i\" is a block index, \"j\" is a xor index, and \"k\" is a byte offset. Otherwise it\u0027s very easy to confuse which letters go where.",
       "revId": "55d2182601d9ea1df84ba4f0883738942de86555",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
