@@ -314,7 +314,6 @@ cc_binary {
         "libfs_mgr",
         "libfec",
         "libfec_rs",
-        "libsquashfs_utils",
         "liblogwrap",
         "libext4_utils",
         "libcrypto_utils",
