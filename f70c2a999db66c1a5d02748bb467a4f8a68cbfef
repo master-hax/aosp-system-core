@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "364308f7_21ca062d",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2100,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-08-24T07:06:50Z",
+      "side": 1,
+      "message": "We need this for source_device path as well...\n\nI think that seems to be the postsubmit failure:\n\n```\n[    7.676931] init: [libfs_mgr]Created logical partition product_b-base on device /dev/block/dm-0\n[    7.678804] init: Mapped COW device for product_b at /dev/block/dm-1\n[    7.680647] init: [libfs_mgr]Created logical partition product_b-src on device /dev/block/dm-2\n[    7.956542] snapuserd: product_b-user-cow-init: ReadMetadata completed. Final-chunk-id: 65511 Num Sector: 524088 Replace-ops: 65255 Zero-ops: 0 Copy-ops: 0 Xor-ops: 0 Areas: 255 Num-ops-merged: 0 Total-data-ops: 65255\n[    7.960667] snapuserd: Entering thread for handler: product_b-user-cow-init\n[    7.961142] snapuserd: product_b-user-cow-init: Not reading block device into cache\n[    7.962378] snapuserd: product_b-user-cow-init: Open Failed: /dev/block/dm-2: No such file or directory\n[    7.966533] snapuserd: product_b-user-cow-init: Open Failed: /dev/block/dm-2: No such file or directory\n[    7.971192] snapuserd: product_b-user-cow-init: Open Failed: /dev/block/dm-2: No such file or directory\n[    7.974999] snapuserd: product_b-user-cow-init: Open Failed: /dev/block/dm-2: No such file or directory\n[    7.975700] snapuserd:  Failed to launch all worker threads\n[    7.976015] snapuserd: product_b-user-cow-init: Merge was not initiated. Total-data-ops: 65255\n[    7.977037] snapuserd: Handler thread about to exit: product_b-user-cow-init\n[    7.977491] snapuserd: Exiting handler thread and freeing resources: product_b-user-cow-init\n[   12.125156] I/O error: sector 0: no user-space daemon for dm-user/product_b-user-cow-init target\n[   12.126507] device-mapper: table: 254:4: snapshot: Failed to read snapshot metadata\n[   12.126720] device-mapper: ioctl: error adding target to table\n[   12.126984] init: DM_TABLE_LOAD failed: I/O error\n[   12.141944] init: Could not create snapshot device: product_b\n[   12.142371] init: Could not map snapshot for partition: product_b\n[   12.269728] init: Failed to mount required partitions early ...\n[   12.271594] init: InitFatalReboot: signal 6\n[   12.272385] init: #00 pc 000000000031f14b  /init\n[   12.272768] init: Reboot ending, jumping to kernel\n```",
+      "revId": "f70c2a999db66c1a5d02748bb467a4f8a68cbfef",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
