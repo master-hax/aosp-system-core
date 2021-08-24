@@ -2087,17 +2087,20 @@ bool SnapshotManager::MapPartitionWithSnapshot(LockedFile* lock,
     if (live_snapshot_status->compression_enabled()) {
         // Get the source device (eg the view of the partition from before it was resized).
         std::string source_device_path;
-        if (!MapSourceDevice(lock, params.GetPartitionName(), remaining_time,
-                             &source_device_path)) {
-            LOG(ERROR) << "Could not map source device for: " << cow_name;
-            return false;
-        }
+        if (live_snapshot_status->old_partition_size() > 0) {
+            if (!MapSourceDevice(lock, params.GetPartitionName(), remaining_time,
+                                 &source_device_path)) {
+                LOG(ERROR) << "Could not map source device for: " << cow_name;
+                return false;
+            }
 
-        auto source_device = GetSourceDeviceName(params.GetPartitionName());
-        created_devices.EmplaceBack<AutoUnmapDevice>(&dm, source_device);
-
-        if (!WaitForDevice(source_device_path, remaining_time)) {
-            return false;
+            auto source_device = GetSourceDeviceName(params.GetPartitionName());
+            created_devices.EmplaceBack<AutoUnmapDevice>(&dm, source_device);
+        } else {
+            if (!WaitForDevice(base_path, remaining_time)) {
+                return false;
+            }
+            source_device_path = base_path;
         }
 
         std::string cow_path;
