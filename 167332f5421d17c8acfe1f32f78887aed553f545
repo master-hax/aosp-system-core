@@ -1,0 +1,437 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c176f693_ce36ee91",
+        "filename": "libuserpanic/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-08-24T20:44:15Z",
+      "side": 1,
+      "message": "new code should use libunwindstack instead. +cferris wants to remove libbacktrace in T...",
+      "revId": "167332f5421d17c8acfe1f32f78887aed553f545",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "365c2d66_22664c36",
+        "filename": "libuserpanic/include/android/userpanic.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-08-24T20:44:15Z",
+      "side": 1,
+      "message": "please use the standard header. (check any of the other files.)",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 5,
+        "endChar": 2
+      },
+      "revId": "167332f5421d17c8acfe1f32f78887aed553f545",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9419d7a9_6820bf93",
+        "filename": "libuserpanic/include/android/userpanic.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-08-24T20:44:15Z",
+      "side": 1,
+      "message": "#pragma once",
+      "revId": "167332f5421d17c8acfe1f32f78887aed553f545",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8da794a7_9eaeb53b",
+        "filename": "libuserpanic/include/android/userpanic.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-08-24T20:44:15Z",
+      "side": 1,
+      "message": "you need #include `\u003csys/cdefs.h\u003e` before this.",
+      "revId": "167332f5421d17c8acfe1f32f78887aed553f545",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "602bf997_6009cf6d",
+        "filename": "libuserpanic/include/android/userpanic.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-08-24T20:44:15Z",
+      "side": 1,
+      "message": "this is what __BEGIN_DECLS just did :-)",
+      "revId": "167332f5421d17c8acfe1f32f78887aed553f545",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "74c73674_d3b36c88",
+        "filename": "libuserpanic/include/android/userpanic.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-08-24T20:44:15Z",
+      "side": 1,
+      "message": "missing doc comment. (in particular, explain the difference between `title` and `msg`!)",
+      "revId": "167332f5421d17c8acfe1f32f78887aed553f545",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6a368f63_250b7103",
+        "filename": "libuserpanic/include/android/userpanic.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-08-24T20:44:15Z",
+      "side": 1,
+      "message": "type*",
+      "range": {
+        "startLine": 28,
+        "startChar": 26,
+        "endLine": 28,
+        "endChar": 38
+      },
+      "revId": "167332f5421d17c8acfe1f32f78887aed553f545",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "037ad520_f2820199",
+        "filename": "libuserpanic/include/android/userpanic.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-08-24T20:44:15Z",
+      "side": 1,
+      "message": "avoid default parameters in interfaces.",
+      "range": {
+        "startLine": 28,
+        "startChar": 60,
+        "endLine": 28,
+        "endChar": 67
+      },
+      "revId": "167332f5421d17c8acfe1f32f78887aed553f545",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "898455bd_1604a207",
+        "filename": "libuserpanic/include/android/userpanic.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-08-24T20:44:15Z",
+      "side": 1,
+      "message": "...and this is what __END_DECLS is about to do.",
+      "revId": "167332f5421d17c8acfe1f32f78887aed553f545",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0a1a5f99_d444da89",
+        "filename": "libuserpanic/libuserpanic.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-08-24T20:44:15Z",
+      "side": 1,
+      "message": "(same comment as other file)",
+      "revId": "167332f5421d17c8acfe1f32f78887aed553f545",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "81ec4964_be580565",
+        "filename": "libuserpanic/libuserpanic.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-08-24T20:44:15Z",
+      "side": 1,
+      "message": "don\u0027t do this in a .cpp file. you can just `extern \"C\"` the individual function you want to export ... but you don\u0027t have to do that as long as you #include your .h file (which is missing here, and should be added, and this is one of the reasons why!)",
+      "revId": "167332f5421d17c8acfe1f32f78887aed553f545",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0f81637e_593d7cf0",
+        "filename": "libuserpanic/libuserpanic.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-08-24T20:44:15Z",
+      "side": 1,
+      "message": "don\u0027t abstract out constants that are only used once. just inline them.",
+      "revId": "167332f5421d17c8acfe1f32f78887aed553f545",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a318ca1b_4ced6a9d",
+        "filename": "libuserpanic/libuserpanic.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-08-24T20:44:15Z",
+      "side": 1,
+      "message": "likewise.",
+      "revId": "167332f5421d17c8acfe1f32f78887aed553f545",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d7ae2c44_5ce10d34",
+        "filename": "libuserpanic/libuserpanic.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-08-24T20:44:15Z",
+      "side": 1,
+      "message": "type* here and elsewhere...\n\n...but this function is only used once, and is trivial, so just inline it? you can make it even shorter if you want:\n```\n  userpanic_crash_info ci \u003d { .title \u003d title, .msg \u003d msg };\n  ioctl(fd, CRASH_INFO, \u0026ci);\n```",
+      "range": {
+        "startLine": 47,
+        "startChar": 46,
+        "endLine": 47,
+        "endChar": 52
+      },
+      "revId": "167332f5421d17c8acfe1f32f78887aed553f545",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "94e18c10_632394fc",
+        "filename": "libuserpanic/libuserpanic.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-08-24T20:44:15Z",
+      "side": 1,
+      "message": "no need for struct in C++",
+      "range": {
+        "startLine": 49,
+        "startChar": 4,
+        "endLine": 49,
+        "endChar": 10
+      },
+      "revId": "167332f5421d17c8acfe1f32f78887aed553f545",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "361e4d3e_1c05251f",
+        "filename": "libuserpanic/libuserpanic.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-08-24T20:44:15Z",
+      "side": 1,
+      "message": "new code should use libunwindstack.\n\n+cferris",
+      "revId": "167332f5421d17c8acfe1f32f78887aed553f545",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d3f6ba38_c0f99555",
+        "filename": "libuserpanic/libuserpanic.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-08-24T20:44:15Z",
+      "side": 1,
+      "message": "use unique_fd rather than raw fds.",
+      "revId": "167332f5421d17c8acfe1f32f78887aed553f545",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ba5eaa16_a6cad1a3",
+        "filename": "libuserpanic/libuserpanic.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-08-24T20:44:15Z",
+      "side": 1,
+      "message": "`| O_CLOEXEC`",
+      "range": {
+        "startLine": 80,
+        "startChar": 35,
+        "endLine": 80,
+        "endChar": 43
+      },
+      "revId": "167332f5421d17c8acfe1f32f78887aed553f545",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5cc3ca19_8ed82706",
+        "filename": "libuserpanic/libuserpanic.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-08-24T20:44:15Z",
+      "side": 1,
+      "message": "`if (fd \u003d\u003d -1) return;`",
+      "revId": "167332f5421d17c8acfe1f32f78887aed553f545",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0c220745_b7433c59",
+        "filename": "libuserpanic/libuserpanic.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-08-24T20:44:15Z",
+      "side": 1,
+      "message": "you don\u0027t check the return value even though the ioctl() can fail. (this will be more obvious when you inline the function here :-) )",
+      "revId": "167332f5421d17c8acfe1f32f78887aed553f545",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "25150b4b_ea1144ab",
+        "filename": "libuserpanic/libuserpanic.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-08-24T20:44:15Z",
+      "side": 1,
+      "message": "use PLOG for logging with a decoded errno. (you can remember the \u0027P\u0027 by analogy to perror(3)...)",
+      "range": {
+        "startLine": 85,
+        "startChar": 18,
+        "endLine": 85,
+        "endChar": 33
+      },
+      "revId": "167332f5421d17c8acfe1f32f78887aed553f545",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a8614fd6_773989b1",
+        "filename": "libuserpanic/libuserpanic.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-08-24T20:44:15Z",
+      "side": 1,
+      "message": "have you tested this? is this guaranteed synchronous, or do you need a TEMP_FAILURE_RETRY and a close()?\n\ni also wonder for the ioctl() whether that syscall actually returns on success, or the kernel reboots and never returns?\n\n(if the ioctl() or the write() can return, you probably want something like `while (true) pause();` at the end of this function.)",
+      "revId": "167332f5421d17c8acfe1f32f78887aed553f545",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "acc0e166_a95ae39c",
+        "filename": "libuserpanic/libuserpanic.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-08-24T20:44:15Z",
+      "side": 1,
+      "message": "seems wrong to just return having done nothing though?",
+      "revId": "167332f5421d17c8acfe1f32f78887aed553f545",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
