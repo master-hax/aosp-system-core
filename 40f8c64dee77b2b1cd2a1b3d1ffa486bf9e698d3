@@ -3,6 +3,29 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "4a8c4786_d8d938b7",
+        "filename": "libutils/Looper.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-08-25T18:14:00Z",
+      "side": 1,
+      "message": "is 0 a good idea, since that\u0027s also the \"uninitialized\" value?",
+      "range": {
+        "startLine": 25,
+        "startChar": 39,
+        "endLine": 25,
+        "endChar": 40
+      },
+      "revId": "40f8c64dee77b2b1cd2a1b3d1ffa486bf9e698d3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "1f8fc960_b4b35481",
         "filename": "libutils/Looper.cpp",
         "patchSetId": 5
@@ -14,6 +37,30 @@
       "writtenOn": "2021-08-25T17:23:52Z",
       "side": 1,
       "message": "btw, I\u0027m waiting on Elliott to review since I\u0027m not very familiar with the Looper code. However, b/197635089 is another crash that was recently reported here. We\u0027ll likely make the changes to this log to increase debugability once this change is reviewed, but I am wondering, do you think this change could fix that issue? If it is related at all, would you consider extending the logs here to print all relevant information?",
+      "range": {
+        "startLine": 156,
+        "startChar": 0,
+        "endLine": 157,
+        "endChar": 41
+      },
+      "revId": "40f8c64dee77b2b1cd2a1b3d1ffa486bf9e698d3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "14d6214b_a57c5921",
+        "filename": "libutils/Looper.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 157,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-08-25T18:14:00Z",
+      "side": 1,
+      "message": "the bad news here is that i was deferring to you because i don\u0027t know what looper is and assumed it was some binder thing you\u0027d know about...\n\ni think once this CL is in, whether he likes it or not, prabirmsp becomes the new owner of Looper --- just making a change of this complexity suggests he\u0027s spent more time on this code than anyone else in the last 5+ years :-)",
+      "parentUuid": "1f8fc960_b4b35481",
       "range": {
         "startLine": 156,
         "startChar": 0,
