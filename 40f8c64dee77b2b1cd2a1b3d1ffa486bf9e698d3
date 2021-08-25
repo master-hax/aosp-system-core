@@ -97,6 +97,53 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "919bef50_508416af",
+        "filename": "libutils/Looper.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 157,
+      "author": {
+        "id": 1006497
+      },
+      "writtenOn": "2021-08-25T18:30:38Z",
+      "side": 1,
+      "message": "Given jeffbrown@ was the previous owner, it coming back to my team probably makes sense 😂. I\u0027ve been thinking about giving it a more modern C++ + Linux update anyways.",
+      "parentUuid": "14d6214b_a57c5921",
+      "range": {
+        "startLine": 156,
+        "startChar": 0,
+        "endLine": 157,
+        "endChar": 41
+      },
+      "revId": "40f8c64dee77b2b1cd2a1b3d1ffa486bf9e698d3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d81df156_f357b8f3",
+        "filename": "libutils/Looper.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 526,
+      "author": {
+        "id": 1006497
+      },
+      "writtenOn": "2021-08-25T18:30:38Z",
+      "side": 1,
+      "message": "nit: should this be something like removeSequenceNumberLocked or removeRequestLocked?\n\nI think having removeFd and removeFdLocked take different arguments is rather surprising, especially since I\u0027m not sure that the compiler would actually prevent a transformation like:\n\n    removeFd(fd);\n\nto:\n\n   AutoMutex _l(mLock);\n   // Perform some operations on things protected by mLock\n   removeFdLocked(fd);\n\nWhich looks totally natural but is actually completely wrong.",
+      "range": {
+        "startLine": 526,
+        "startChar": 12,
+        "endLine": 526,
+        "endChar": 26
+      },
+      "revId": "40f8c64dee77b2b1cd2a1b3d1ffa486bf9e698d3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "d2c3a778_82561e54",
         "filename": "libutils/include/utils/Looper.h",
         "patchSetId": 5
