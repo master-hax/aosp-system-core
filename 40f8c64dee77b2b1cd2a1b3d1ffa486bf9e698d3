@@ -69,6 +69,53 @@
       },
       "revId": "40f8c64dee77b2b1cd2a1b3d1ffa486bf9e698d3",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bd763b4e_5335f3dc",
+        "filename": "libutils/Looper.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 157,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2021-08-25T18:25:08Z",
+      "side": 1,
+      "message": "Well, I know at least it is an epoll wrapper :) - okay - let me look in detail.",
+      "parentUuid": "14d6214b_a57c5921",
+      "range": {
+        "startLine": 156,
+        "startChar": 0,
+        "endLine": 157,
+        "endChar": 41
+      },
+      "revId": "40f8c64dee77b2b1cd2a1b3d1ffa486bf9e698d3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d2c3a778_82561e54",
+        "filename": "libutils/include/utils/Looper.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 425,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2021-08-25T18:25:08Z",
+      "side": 1,
+      "message": "nit: typedef in C++ doesn\u0027t add any type safety from the compiler, only something we have to keep in mind if we\u0027re working on this. If the code isn\u0027t clear enough with \u0027uint64_t\u0027 directly (which I\u0027d recommend), then would you consider:\n\n    struct SequenceNumber { uint64_t value; }\n\ninstead of the alias?",
+      "range": {
+        "startLine": 425,
+        "startChar": 0,
+        "endLine": 425,
+        "endChar": 34
+      },
+      "revId": "40f8c64dee77b2b1cd2a1b3d1ffa486bf9e698d3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
