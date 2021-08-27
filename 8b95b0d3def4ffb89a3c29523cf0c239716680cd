@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9f5b6dac_00f3ca87",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 779,
+      "author": {
+        "id": 1002751
+      },
+      "writtenOn": "2021-08-27T20:44:39Z",
+      "side": 1,
+      "message": "Add these permissions for product, system and vendor too.  A comment that they need to be +x for root for debuggerd would be useful.",
+      "revId": "8b95b0d3def4ffb89a3c29523cf0c239716680cd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
