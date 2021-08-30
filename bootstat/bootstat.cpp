@@ -439,6 +439,23 @@ const std::map<std::string, int32_t> kBootReasonMap = {
     {"reboot,forcedsilent", 191},
     {"reboot,forcednonsilent", 192},
     {"reboot,thermal,tj", 193},
+    {"watchdog,apc", 194},
+    {"watchdog,pmucal", 195},
+    {"watchdog,aoc", 196},
+    {"watchdog,apm", 197},
+    {"watchdog,gsa,soft", 198},
+    {"watchdog,gsa,hard", 199},
+    {"watchdog,apc,bl,early", 200},
+    {"watchdog,apc,bl,debug,early", 201},
+    {"watchdog,apc,early", 202},
+    {"reboot,pin", 203},
+    {"reboot,gsa,soft", 204},
+    {"reboot,gsa,hard", 205},
+    {"reboot,uvlo", 206},
+    {"reboot,ocp", 207},
+    {"reboot,fastboot", 208},
+    {"reboot,factory", 209},
+    {"reboot,rom_recovery", 210},
 };
 
 // Converts a string value representing the reason the system booted to an
