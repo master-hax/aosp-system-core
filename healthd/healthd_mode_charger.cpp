@@ -218,9 +218,7 @@ static void dump_last_kmsg(void) {
     char* ptr;
     size_t len;
 
-    LOGW("\n");
     LOGW("*************** LAST KMSG ***************\n");
-    LOGW("\n");
     const char* kmsg[] = {
         // clang-format off
         "/sys/fs/pstore/console-ramoops-0",
@@ -263,9 +261,7 @@ static void dump_last_kmsg(void) {
     }
 
 out:
-    LOGW("\n");
     LOGW("************* END LAST KMSG *************\n");
-    LOGW("\n");
 }
 
 static int request_suspend(bool enable) {

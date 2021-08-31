@@ -25,6 +25,9 @@
 #define LOGW(x...) KLOG_WARNING("charger", x);
 #define LOGV(x...) KLOG_DEBUG("charger", x);
 
+#define MAX_RETRY_TIMES 10
+#define SLEEP_RETRY_USEC 500000  /* 500 msec */
+
 static bool get_split_screen() {
     return android::sysprop::ChargerProperties::draw_split_screen().value_or(false);
 }
@@ -49,9 +52,20 @@ HealthdDraw::HealthdDraw(animation* anim)
     int ret = gr_init();
 
     if (ret < 0) {
-        LOGE("gr_init failed\n");
-        graphics_available = false;
-        return;
+        LOGE("gr_init failed, retry...\n");
+        for (int retry = 0; retry < MAX_RETRY_TIMES; retry++) {
+            usleep(SLEEP_RETRY_USEC);
+            ret = gr_init();
+            LOGW("retry %d times, ret %d\n", retry, ret);
+            if (ret >= 0) break;
+        }
+        if (ret < 0) {
+            LOGE("gr_init retry failed.\n");
+            graphics_available = false;
+            return;
+        } else {
+            LOGW("gr_init retry success.\n");
+        }
     }
 
     graphics_available = true;
