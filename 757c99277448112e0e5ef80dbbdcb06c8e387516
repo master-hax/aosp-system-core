@@ -16,6 +16,74 @@
       "message": "elsk@google.com",
       "revId": "757c99277448112e0e5ef80dbbdcb06c8e387516",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ff2ce5de_d6261bc2",
+        "filename": "healthd/healthd_draw.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-08-31T16:27:47Z",
+      "side": 1,
+      "message": "don\u0027t invent named constants for constants that are only used once.",
+      "revId": "757c99277448112e0e5ef80dbbdcb06c8e387516",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3790c539_6d643cb5",
+        "filename": "healthd/healthd_draw.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-08-31T16:27:47Z",
+      "side": 1,
+      "message": "merge this with the retry loop.",
+      "revId": "757c99277448112e0e5ef80dbbdcb06c8e387516",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2e953d58_f3891c9b",
+        "filename": "healthd/healthd_draw.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-08-31T16:27:47Z",
+      "side": 1,
+      "message": "note that you can literally say `std::this_thread::sleep_for(500ms);` instead instead of needing a comment. (`#include \u003candroid-base/chrono_utils.h\u003e` or import std::chrono_literals manually.)",
+      "revId": "757c99277448112e0e5ef80dbbdcb06c8e387516",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "59d2f455_f10574cc",
+        "filename": "healthd/healthd_draw.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-08-31T16:27:47Z",
+      "side": 1,
+      "message": "\"success\" seems like a weird warning :-) i think you meant LOGI. (also, no `else` after `return`.)",
+      "revId": "757c99277448112e0e5ef80dbbdcb06c8e387516",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }

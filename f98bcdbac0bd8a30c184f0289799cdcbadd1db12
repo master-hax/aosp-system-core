@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e3472c50_2e4f731f",
+        "filename": "healthd/healthd_mode_charger.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 221,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-08-31T16:27:47Z",
+      "side": 0,
+      "message": "unrelated changes?",
+      "revId": "f98bcdbac0bd8a30c184f0289799cdcbadd1db12",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
