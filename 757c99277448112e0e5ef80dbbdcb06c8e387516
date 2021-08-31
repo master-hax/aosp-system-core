@@ -20,6 +20,23 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "6e60d756_45dc802f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2021-08-31T20:02:40Z",
+      "side": 1,
+      "message": "Thanks for your patch, xiaohuin@. \n\nBesides Elliot\u0027s comments, here\u0027s one general question. This patch seems to lower the chance of the race condition, but doesn\u0027t eliminate it. \n\nWhat if the display is ready after 5 seconds, for example? Are there any other indicators to tell charger that the display is ready?\n\nOr maybe we should retry gr_init() indefinitely?\n\nTianjie, WDYT?",
+      "revId": "757c99277448112e0e5ef80dbbdcb06c8e387516",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "ff2ce5de_d6261bc2",
         "filename": "healthd/healthd_draw.cpp",
         "patchSetId": 1
