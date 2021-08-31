@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "702571ed_afe15b65",
+        "filename": "libuserpanic/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1345812
+      },
+      "writtenOn": "2021-08-31T07:49:54Z",
+      "side": 1,
+      "message": "Done; I ended up removing the unwind feature in this lib, since currently there is only init process needs this, but it has it\u0027s own unwinding implementation already. I can bring this back when it\u0027s needed widely.",
+      "parentUuid": "c176f693_ce36ee91",
+      "revId": "167332f5421d17c8acfe1f32f78887aed553f545",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "365c2d66_22664c36",
@@ -31,6 +49,30 @@
       "writtenOn": "2021-08-24T20:44:15Z",
       "side": 1,
       "message": "please use the standard header. (check any of the other files.)",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 5,
+        "endChar": 2
+      },
+      "revId": "167332f5421d17c8acfe1f32f78887aed553f545",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c64ce006_2f00f713",
+        "filename": "libuserpanic/include/android/userpanic.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 1345812
+      },
+      "writtenOn": "2021-08-31T07:49:54Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "365c2d66_22664c36",
       "range": {
         "startLine": 1,
         "startChar": 0,
@@ -58,6 +100,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "90908d47_4509b598",
+        "filename": "libuserpanic/include/android/userpanic.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1345812
+      },
+      "writtenOn": "2021-08-31T07:49:54Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9419d7a9_6820bf93",
+      "revId": "167332f5421d17c8acfe1f32f78887aed553f545",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "8da794a7_9eaeb53b",
@@ -75,6 +135,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "4adf01cf_f5cca62a",
+        "filename": "libuserpanic/include/android/userpanic.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1345812
+      },
+      "writtenOn": "2021-08-31T07:49:54Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8da794a7_9eaeb53b",
+      "revId": "167332f5421d17c8acfe1f32f78887aed553f545",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "602bf997_6009cf6d",
@@ -88,6 +166,24 @@
       "writtenOn": "2021-08-24T20:44:15Z",
       "side": 1,
       "message": "this is what __BEGIN_DECLS just did :-)",
+      "revId": "167332f5421d17c8acfe1f32f78887aed553f545",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4f64efcd_fe2e9b6d",
+        "filename": "libuserpanic/include/android/userpanic.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1345812
+      },
+      "writtenOn": "2021-08-31T07:49:54Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "602bf997_6009cf6d",
       "revId": "167332f5421d17c8acfe1f32f78887aed553f545",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -155,6 +251,72 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "64f71c7d_3e7dc197",
+        "filename": "libuserpanic/include/android/userpanic.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1345812
+      },
+      "writtenOn": "2021-08-31T07:49:54Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6a368f63_250b7103",
+      "range": {
+        "startLine": 28,
+        "startChar": 26,
+        "endLine": 28,
+        "endChar": 38
+      },
+      "revId": "167332f5421d17c8acfe1f32f78887aed553f545",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1073a858_d13c0e8e",
+        "filename": "libuserpanic/include/android/userpanic.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1345812
+      },
+      "writtenOn": "2021-08-31T07:49:54Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "74c73674_d3b36c88",
+      "revId": "167332f5421d17c8acfe1f32f78887aed553f545",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "054170c2_6370b28f",
+        "filename": "libuserpanic/include/android/userpanic.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1345812
+      },
+      "writtenOn": "2021-08-31T07:49:54Z",
+      "side": 1,
+      "message": "Done; the argument `msg\u0027 is actually unused. I can add it back when there is such an usage.",
+      "parentUuid": "037ad520_f2820199",
+      "range": {
+        "startLine": 28,
+        "startChar": 60,
+        "endLine": 28,
+        "endChar": 67
+      },
+      "revId": "167332f5421d17c8acfe1f32f78887aed553f545",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "898455bd_1604a207",
@@ -168,6 +330,24 @@
       "writtenOn": "2021-08-24T20:44:15Z",
       "side": 1,
       "message": "...and this is what __END_DECLS is about to do.",
+      "revId": "167332f5421d17c8acfe1f32f78887aed553f545",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d29570f3_dd727982",
+        "filename": "libuserpanic/include/android/userpanic.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1345812
+      },
+      "writtenOn": "2021-08-31T07:49:54Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "898455bd_1604a207",
       "revId": "167332f5421d17c8acfe1f32f78887aed553f545",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -189,6 +369,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "36ede9f0_903474ec",
+        "filename": "libuserpanic/libuserpanic.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1345812
+      },
+      "writtenOn": "2021-08-31T07:49:54Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0a1a5f99_d444da89",
+      "revId": "167332f5421d17c8acfe1f32f78887aed553f545",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "81ec4964_be580565",
@@ -202,6 +400,24 @@
       "writtenOn": "2021-08-24T20:44:15Z",
       "side": 1,
       "message": "don\u0027t do this in a .cpp file. you can just `extern \"C\"` the individual function you want to export ... but you don\u0027t have to do that as long as you #include your .h file (which is missing here, and should be added, and this is one of the reasons why!)",
+      "revId": "167332f5421d17c8acfe1f32f78887aed553f545",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0a2969f2_450530db",
+        "filename": "libuserpanic/libuserpanic.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1345812
+      },
+      "writtenOn": "2021-08-31T07:49:54Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "81ec4964_be580565",
       "revId": "167332f5421d17c8acfe1f32f78887aed553f545",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -223,6 +439,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "1e36e998_4cee5a13",
+        "filename": "libuserpanic/libuserpanic.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1345812
+      },
+      "writtenOn": "2021-08-31T07:49:54Z",
+      "side": 1,
+      "message": "Done; this is used more than once now.",
+      "parentUuid": "0f81637e_593d7cf0",
+      "revId": "167332f5421d17c8acfe1f32f78887aed553f545",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a318ca1b_4ced6a9d",
@@ -240,6 +474,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "4ea7169d_c81d67cb",
+        "filename": "libuserpanic/libuserpanic.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1345812
+      },
+      "writtenOn": "2021-08-31T07:49:54Z",
+      "side": 1,
+      "message": "Done; this is used more than once now.",
+      "parentUuid": "a318ca1b_4ced6a9d",
+      "revId": "167332f5421d17c8acfe1f32f78887aed553f545",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d7ae2c44_5ce10d34",
@@ -253,6 +505,30 @@
       "writtenOn": "2021-08-24T20:44:15Z",
       "side": 1,
       "message": "type* here and elsewhere...\n\n...but this function is only used once, and is trivial, so just inline it? you can make it even shorter if you want:\n```\n  userpanic_crash_info ci \u003d { .title \u003d title, .msg \u003d msg };\n  ioctl(fd, CRASH_INFO, \u0026ci);\n```",
+      "range": {
+        "startLine": 47,
+        "startChar": 46,
+        "endLine": 47,
+        "endChar": 52
+      },
+      "revId": "167332f5421d17c8acfe1f32f78887aed553f545",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f5fa03f9_fbbaa955",
+        "filename": "libuserpanic/libuserpanic.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1345812
+      },
+      "writtenOn": "2021-08-31T07:49:54Z",
+      "side": 1,
+      "message": "Done (removed).",
+      "parentUuid": "d7ae2c44_5ce10d34",
       "range": {
         "startLine": 47,
         "startChar": 46,
@@ -286,6 +562,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "9d5baa61_b2714980",
+        "filename": "libuserpanic/libuserpanic.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1345812
+      },
+      "writtenOn": "2021-08-31T07:49:54Z",
+      "side": 1,
+      "message": "Done (removed).",
+      "parentUuid": "94e18c10_632394fc",
+      "range": {
+        "startLine": 49,
+        "startChar": 4,
+        "endLine": 49,
+        "endChar": 10
+      },
+      "revId": "167332f5421d17c8acfe1f32f78887aed553f545",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "361e4d3e_1c05251f",
@@ -299,6 +599,24 @@
       "writtenOn": "2021-08-24T20:44:15Z",
       "side": 1,
       "message": "new code should use libunwindstack.\n\n+cferris",
+      "revId": "167332f5421d17c8acfe1f32f78887aed553f545",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bedab073_22995b33",
+        "filename": "libuserpanic/libuserpanic.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 1345812
+      },
+      "writtenOn": "2021-08-31T07:49:54Z",
+      "side": 1,
+      "message": "Done (removed).",
+      "parentUuid": "361e4d3e_1c05251f",
       "revId": "167332f5421d17c8acfe1f32f78887aed553f545",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -343,6 +661,48 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f645d395_dd94d380",
+        "filename": "libuserpanic/libuserpanic.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 1345812
+      },
+      "writtenOn": "2021-08-31T07:49:54Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d3f6ba38_c0f99555",
+      "revId": "167332f5421d17c8acfe1f32f78887aed553f545",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "400d3759_63bd70ba",
+        "filename": "libuserpanic/libuserpanic.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 1345812
+      },
+      "writtenOn": "2021-08-31T07:49:54Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba5eaa16_a6cad1a3",
+      "range": {
+        "startLine": 80,
+        "startChar": 35,
+        "endLine": 80,
+        "endChar": 43
+      },
+      "revId": "167332f5421d17c8acfe1f32f78887aed553f545",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "5cc3ca19_8ed82706",
@@ -362,6 +722,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "aa055efd_dba37df3",
+        "filename": "libuserpanic/libuserpanic.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 1345812
+      },
+      "writtenOn": "2021-08-31T07:49:54Z",
+      "side": 1,
+      "message": "But we want to fallback to /proc/sysrq-trigger when /dev/userspace_panic is not available (it\u0027s available only on some Pixel products at this moment).",
+      "parentUuid": "5cc3ca19_8ed82706",
+      "revId": "167332f5421d17c8acfe1f32f78887aed553f545",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "0c220745_b7433c59",
         "filename": "libuserpanic/libuserpanic.cpp",
         "patchSetId": 2
@@ -373,6 +751,24 @@
       "writtenOn": "2021-08-24T20:44:15Z",
       "side": 1,
       "message": "you don\u0027t check the return value even though the ioctl() can fail. (this will be more obvious when you inline the function here :-) )",
+      "revId": "167332f5421d17c8acfe1f32f78887aed553f545",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1728d727_232358e7",
+        "filename": "libuserpanic/libuserpanic.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 1345812
+      },
+      "writtenOn": "2021-08-31T07:49:54Z",
+      "side": 1,
+      "message": "ioctl is replaced by the write syscall since kernel driver reviewer suggested. And the write is now inlined and return value is checked.",
+      "parentUuid": "0c220745_b7433c59",
       "revId": "167332f5421d17c8acfe1f32f78887aed553f545",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -400,6 +796,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "caf47977_4abcdca6",
+        "filename": "libuserpanic/libuserpanic.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 1345812
+      },
+      "writtenOn": "2021-08-31T07:49:54Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "25150b4b_ea1144ab",
+      "range": {
+        "startLine": 85,
+        "startChar": 18,
+        "endLine": 85,
+        "endChar": 33
+      },
+      "revId": "167332f5421d17c8acfe1f32f78887aed553f545",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a8614fd6_773989b1",
@@ -417,6 +837,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "e7b24a50_68169153",
+        "filename": "libuserpanic/libuserpanic.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 1345812
+      },
+      "writtenOn": "2021-08-31T07:49:54Z",
+      "side": 1,
+      "message": "It\u0027s tested and it\u0027s guaranteed synchronous and will not return on success.",
+      "parentUuid": "a8614fd6_773989b1",
+      "revId": "167332f5421d17c8acfe1f32f78887aed553f545",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "acc0e166_a95ae39c",
@@ -430,6 +868,24 @@
       "writtenOn": "2021-08-24T20:44:15Z",
       "side": 1,
       "message": "seems wrong to just return having done nothing though?",
+      "revId": "167332f5421d17c8acfe1f32f78887aed553f545",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d450039a_949c4c14",
+        "filename": "libuserpanic/libuserpanic.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 1345812
+      },
+      "writtenOn": "2021-08-31T07:49:54Z",
+      "side": 1,
+      "message": "Done; I added a \"while (true) pause()\" since it\u0027s not supposed to return.",
+      "parentUuid": "acc0e166_a95ae39c",
       "revId": "167332f5421d17c8acfe1f32f78887aed553f545",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }

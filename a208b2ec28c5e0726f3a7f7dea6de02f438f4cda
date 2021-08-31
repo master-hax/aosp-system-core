@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "325f5957_6c3681c3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1345812
+      },
+      "writtenOn": "2021-08-31T07:49:54Z",
+      "side": 1,
+      "message": "Hi Elliott, thanks for the review and suggestions. Kindly check the new revision when you have a chance. Thank you!",
+      "revId": "a208b2ec28c5e0726f3a7f7dea6de02f438f4cda",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
