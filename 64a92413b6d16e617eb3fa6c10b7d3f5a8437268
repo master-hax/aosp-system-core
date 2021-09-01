@@ -75,6 +75,30 @@
       },
       "revId": "64a92413b6d16e617eb3fa6c10b7d3f5a8437268",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e4ad3d0b_72f5de5b",
+        "filename": "debuggerd/tombstoned/tombstoned.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 452,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-09-01T00:57:15Z",
+      "side": 1,
+      "message": "in my defense at having misread this diff, i _did_ need new glasses at the time... :-)",
+      "parentUuid": "d4fa0b95_26e43a43",
+      "range": {
+        "startLine": 451,
+        "startChar": 0,
+        "endLine": 452,
+        "endChar": 38
+      },
+      "revId": "64a92413b6d16e617eb3fa6c10b7d3f5a8437268",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
