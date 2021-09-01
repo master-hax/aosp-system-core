@@ -55,6 +55,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "878a0981_e068ec48",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1088085
+      },
+      "writtenOn": "2021-09-01T00:19:28Z",
+      "side": 1,
+      "message": "From experiences in gmscore, I suggest using a non-linear(or exponential) waiting intervals; as the recovery chance is lower as the wait extends. Though I don\u0027t have a strong opinion on the strategy because the retry isn\u0027t resource intensive.",
+      "parentUuid": "3931f1fa_7947435a",
+      "revId": "757c99277448112e0e5ef80dbbdcb06c8e387516",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "ff2ce5de_d6261bc2",
         "filename": "healthd/healthd_draw.cpp",
         "patchSetId": 1
