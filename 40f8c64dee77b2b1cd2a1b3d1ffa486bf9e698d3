@@ -184,6 +184,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "991bd437_e3c01982",
+        "filename": "libutils/Looper.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 157,
+      "author": {
+        "id": 1407716
+      },
+      "writtenOn": "2021-09-01T14:54:00Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "f00405e8_f4bf062d",
+      "range": {
+        "startLine": 156,
+        "startChar": 0,
+        "endLine": 157,
+        "endChar": 41
+      },
+      "revId": "40f8c64dee77b2b1cd2a1b3d1ffa486bf9e698d3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d81df156_f357b8f3",
