@@ -16,6 +16,24 @@
       "message": "unrelated changes?",
       "revId": "f98bcdbac0bd8a30c184f0289799cdcbadd1db12",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "79a989ee_527f85f2",
+        "filename": "healthd/healthd_mode_charger.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 221,
+      "author": {
+        "id": 1881965
+      },
+      "writtenOn": "2021-09-02T03:14:29Z",
+      "side": 0,
+      "message": "printk suppresses kernel log lines, only output 10 lines per 5 seconds. The error log cannot output due to log lines occupies by meaningless log.",
+      "parentUuid": "e3472c50_2e4f731f",
+      "revId": "f98bcdbac0bd8a30c184f0289799cdcbadd1db12",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
