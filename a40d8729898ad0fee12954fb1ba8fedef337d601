@@ -16,6 +16,23 @@
       "message": "I am okay with this patch, though I would also want Tianjie and Elliot to comment before finally approving it.",
       "revId": "a40d8729898ad0fee12954fb1ba8fedef337d601",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9832ba11_66fc8d5a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1088085
+      },
+      "writtenOn": "2021-09-03T05:39:09Z",
+      "side": 1,
+      "message": "I don\u0027t see any retry logic for gr_init() failure in ps3. Do I miss anything?",
+      "revId": "a40d8729898ad0fee12954fb1ba8fedef337d601",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
