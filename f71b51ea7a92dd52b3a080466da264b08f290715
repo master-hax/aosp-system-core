@@ -22,6 +22,30 @@
       },
       "revId": "f71b51ea7a92dd52b3a080466da264b08f290715",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6f0ea1cd_644a0899",
+        "filename": "bootstat/bootstat.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 450,
+      "author": {
+        "id": 1317839
+      },
+      "writtenOn": "2021-09-03T18:24:43Z",
+      "side": 1,
+      "message": "making them distinguishable brings us higher flexibility, especially they are not 100% the same with each other.",
+      "parentUuid": "b2e1f60a_387e83a2",
+      "range": {
+        "startLine": 448,
+        "startChar": 2,
+        "endLine": 450,
+        "endChar": 32
+      },
+      "revId": "f71b51ea7a92dd52b3a080466da264b08f290715",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
