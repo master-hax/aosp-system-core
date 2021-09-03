@@ -68,6 +68,23 @@
       "message": "I c. Thanks for explaining",
       "revId": "a40d8729898ad0fee12954fb1ba8fedef337d601",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "24924574_8d0f277a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2021-09-03T22:37:37Z",
+      "side": 1,
+      "message": "Xiaohui, please also provide Qualcomm-review vote from your side.",
+      "revId": "a40d8729898ad0fee12954fb1ba8fedef337d601",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
