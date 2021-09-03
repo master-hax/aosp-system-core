@@ -33,6 +33,24 @@
       "message": "I don\u0027t see any retry logic for gr_init() failure in ps3. Do I miss anything?",
       "revId": "a40d8729898ad0fee12954fb1ba8fedef337d601",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3bf3c34d_85d0f916",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1881965
+      },
+      "writtenOn": "2021-09-03T06:45:00Z",
+      "side": 1,
+      "message": "Retry logic: charger main loop -\u003e Heartbeat -\u003e UpdateScreenState.\n\nIn UpdateScreenState, return nullptr to healthd_draw_ when gr_init fail in HealthdDraw::Create so it can gr_init again in the next heartbeat in UpdateScreenState.",
+      "parentUuid": "9832ba11_66fc8d5a",
+      "revId": "a40d8729898ad0fee12954fb1ba8fedef337d601",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
