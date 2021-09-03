@@ -34,6 +34,40 @@
       "parentUuid": "9600e05a_aeaa4dd3",
       "revId": "789a4204728a02a3f7d9d05a2335cc6a4d1f4035",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1df0a880_f86c6dcc",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 207,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-09-03T22:41:25Z",
+      "side": 1,
+      "message": "should this be once for the whole system, or once per cpuset?",
+      "revId": "789a4204728a02a3f7d9d05a2335cc6a4d1f4035",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4bd1fef5_63092efe",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 216,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-09-03T22:41:25Z",
+      "side": 1,
+      "message": "this logic is getting a bit complicated now... better case by case like this?\n```\n  if (TEMP_FAILURE_RETRY(write(fd, value.c_str(), value.length())) \u003d\u003d value.length()) return true;\n\n  if (errno \u003d\u003d ENOSPC \u0026\u0026 ...) {\n  }\n\n  // If the thread is in the process of exiting, don\u0027t flag an error\n  if (errno \u003d\u003d ESRCH) return true;\n\n  PLOG(ERROR) \u003c\u003c \"AddTidToCgroup failed to write \u0027\" \u003c\u003c value \u003c\u003c \"\u0027; fd\u003d\" \u003c\u003c fd;\n  return false;\n}\n```\n\n(which also makes it more obvious that short writes currently return true. the suggested rephrasing makes that false [but would include a bogus strerror, so \"less wrong\" but not quite \"right\"]...)",
+      "revId": "789a4204728a02a3f7d9d05a2335cc6a4d1f4035",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
