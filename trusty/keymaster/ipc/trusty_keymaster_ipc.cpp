@@ -19,6 +19,7 @@
 // TODO: make this generic in libtrusty
 
 #include <errno.h>
+#include <poll.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/uio.h>
@@ -84,6 +85,22 @@ std::variant<int, std::vector<uint8_t>> trusty_keymaster_call_2(uint32_t cmd, vo
     msg->cmd = cmd;
     memcpy(msg->payload, in, in_size);
 
+    {
+        struct pollfd pfd;
+        pfd.fd = handle_;
+        pfd.events = POLLOUT;
+        pfd.revents = 0;
+
+        int p = poll(&pfd, 1, 30000);
+        if (p == 0) {
+            ALOGW("timeout waiting to write");
+        } else if (p < 0) {
+            ALOGE("write poll error: %d", errno);
+        } else if (pfd.revents != POLLOUT) {
+            ALOGW("unexpected poll() result: %d", pfd.revents);
+        }
+    }
+
     ssize_t rc = write(handle_, msg, msg_size);
     free(msg);
 
@@ -122,7 +139,21 @@ std::variant<int, std::vector<uint8_t>> trusty_keymaster_call_2(uint32_t cmd, vo
             return -EOVERFLOW;
         }
         iov[1] = {.iov_base = write_pos, .iov_len = buffer_size};
+        {
+            struct pollfd pfd;
+            pfd.fd = handle_;
+            pfd.events = POLLIN;
+            pfd.revents = 0;
 
+            int p = poll(&pfd, 1, 30000);
+            if (p == 0) {
+                ALOGW("timeout waiting to read");
+            } else if (p < 0) {
+                ALOGE("read poll error: %d", errno);
+            } else if (pfd.revents != POLLIN) {
+                ALOGW("unexpected poll() result: %d", pfd.revents");
+            }
+        }
         rc = readv(handle_, iov, 2);
         if (rc < 0) {
             ALOGE("failed to retrieve response for cmd (%d) to %s: %s\n", cmd, KEYMASTER_PORT,
