@@ -19,6 +19,7 @@
 // TODO: make this generic in libtrusty
 
 #include <errno.h>
+#include <poll.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/uio.h>
@@ -33,10 +34,14 @@
 
 #include <trusty_keymaster/ipc/keymaster_ipc.h>
 #include <trusty_keymaster/ipc/trusty_keymaster_ipc.h>
+#include <utils/Timers.h>
 
 #define TRUSTY_DEVICE_NAME "/dev/trusty-ipc-dev0"
 
 static int handle_ = -1;
+
+static const int64_t timeout_ns = seconds_to_nanoseconds(10);
+static const int timeout_ms = nanoseconds_to_milliseconds(timeout_ns);
 
 int trusty_keymaster_connect() {
     int rc = tipc_connect(TRUSTY_DEVICE_NAME, KEYMASTER_PORT);
@@ -84,7 +89,29 @@ std::variant<int, std::vector<uint8_t>> trusty_keymaster_call_2(uint32_t cmd, vo
     msg->cmd = cmd;
     memcpy(msg->payload, in, in_size);
 
+    nsecs_t timeout_time = 0;
+    {
+        struct pollfd pfd;
+        pfd.fd = handle_;
+        pfd.events = POLLOUT;
+        pfd.revents = 0;
+
+        int p = poll(&pfd, 1, timeout_ms);
+        if (p == 0) {
+            timeout_time = systemTime(SYSTEM_TIME_MONOTONIC);
+            ALOGW("write is taking more than %ld nsecs", timeout_ns);
+        } else if (p < 0) {
+            ALOGE("write poll error: %d", errno);
+        } else if (pfd.revents != POLLOUT) {
+            ALOGW("unexpected poll() result: %d", pfd.revents);
+        }
+    }
+
     ssize_t rc = write(handle_, msg, msg_size);
+    if (timeout_time != 0) {
+        nsecs_t write_done = systemTime(SYSTEM_TIME_MONOTONIC);
+        ALOGW("write finished after %ld nsecs", write_done - timeout_time + timeout_ns);
+    }
     free(msg);
 
     if (rc < 0) {
@@ -122,8 +149,28 @@ std::variant<int, std::vector<uint8_t>> trusty_keymaster_call_2(uint32_t cmd, vo
             return -EOVERFLOW;
         }
         iov[1] = {.iov_base = write_pos, .iov_len = buffer_size};
+        timeout_time = 0;
+        {
+            struct pollfd pfd;
+            pfd.fd = handle_;
+            pfd.events = POLLIN;
+            pfd.revents = 0;
 
+            int p = poll(&pfd, 1, timeout_ms);
+            if (p == 0) {
+                timeout_time = systemTime(SYSTEM_TIME_MONOTONIC);
+                ALOGW("readv is taking more than %ld nsecs", timeout_ns);
+            } else if (p < 0) {
+                ALOGE("read poll error: %d", errno);
+            } else if (pfd.revents != POLLIN) {
+                ALOGW("unexpected poll() result: %d", pfd.revents);
+            }
+        }
         rc = readv(handle_, iov, 2);
+        if (timeout_time != 0) {
+            nsecs_t read_done = systemTime(SYSTEM_TIME_MONOTONIC);
+            ALOGW("readv finished after %ld nsecs", read_done - timeout_time + timeout_ns);
+        }
         if (rc < 0) {
             ALOGE("failed to retrieve response for cmd (%d) to %s: %s\n", cmd, KEYMASTER_PORT,
                   strerror(errno));
