@@ -133,6 +133,17 @@ bool LoopControl::EnableDirectIo(int fd) {
     return true;
 }
 
+bool LoopControl::SetAutoClearStatus(int fd) {
+    struct loop_info64 info;
+
+    memset(&info, 0, sizeof(info));
+    info.lo_flags |= LO_FLAGS_AUTOCLEAR;
+    if (ioctl(fd, LOOP_SET_STATUS64, &info)) {
+        PLOG(ERROR) << "Could not set LO_FLAGS_AUTOCLEAR to loop device";
+    }
+    return true;
+}
+
 LoopDevice::LoopDevice(android::base::borrowed_fd fd, const std::chrono::milliseconds& timeout_ms,
                        bool auto_close)
     : fd_(fd), owned_fd_(-1) {
