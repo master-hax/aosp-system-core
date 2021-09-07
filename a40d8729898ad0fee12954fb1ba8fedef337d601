@@ -85,6 +85,24 @@
       "message": "Xiaohui, please also provide Qualcomm-review vote from your side.",
       "revId": "a40d8729898ad0fee12954fb1ba8fedef337d601",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d57fde3e_b196b38e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1871254
+      },
+      "writtenOn": "2021-09-07T01:43:37Z",
+      "side": 1,
+      "message": "Qualcomm review done.",
+      "parentUuid": "24924574_8d0f277a",
+      "revId": "a40d8729898ad0fee12954fb1ba8fedef337d601",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
