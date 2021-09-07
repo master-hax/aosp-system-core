@@ -1,6 +1,23 @@
 {
   "comments": [
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "3594f62a_a478a624",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1140895
+      },
+      "writtenOn": "2021-09-07T17:31:16Z",
+      "side": 1,
+      "message": "not sure why my reply was not published. reposting again :/\n",
+      "revId": "f71b51ea7a92dd52b3a080466da264b08f290715",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "b2e1f60a_387e83a2",
@@ -86,6 +103,30 @@
       "side": 1,
       "message": "Done",
       "parentUuid": "9bdd2c63_7736df88",
+      "range": {
+        "startLine": 448,
+        "startChar": 2,
+        "endLine": 450,
+        "endChar": 32
+      },
+      "revId": "f71b51ea7a92dd52b3a080466da264b08f290715",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "178d245b_49b8ae27",
+        "filename": "bootstat/bootstat.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 450,
+      "author": {
+        "id": 1140895
+      },
+      "writtenOn": "2021-09-07T17:31:16Z",
+      "side": 1,
+      "message": "to clarify request, this is what I meant by grouping:\n{\"watchdog,apc\", 194},\n{\"watchdog,apc,bl,early\", 195},\n{\"watchdog,apc,bl,debug,early\", 196},\n{\"watchdog,apc,early\", 197},",
+      "parentUuid": "0254df26_cbdabf44",
       "range": {
         "startLine": 448,
         "startChar": 2,
