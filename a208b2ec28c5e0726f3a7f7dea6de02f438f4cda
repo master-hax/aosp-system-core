@@ -16,6 +16,52 @@
       "message": "Hi Elliott, thanks for the review and suggestions. Kindly check the new revision when you have a chance. Thank you!",
       "revId": "a208b2ec28c5e0726f3a7f7dea6de02f438f4cda",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2f25e243_ebfa6770",
+        "filename": "libuserpanic/libuserpanic.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-09-07T20:40:35Z",
+      "side": 1,
+      "message": "no C-style casts.\n\nseems like you\u0027re actually missing a type here?",
+      "range": {
+        "startLine": 50,
+        "startChar": 20,
+        "endLine": 50,
+        "endChar": 33
+      },
+      "revId": "a208b2ec28c5e0726f3a7f7dea6de02f438f4cda",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5fd80d20_1e5b722b",
+        "filename": "libuserpanic/libuserpanic.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-09-07T20:40:35Z",
+      "side": 1,
+      "message": "data.size()\n\nif you\u0027re not going to reuse the libbase WriteStringToFile code, you should still remove the duplication in this file. (and then DEV_USERSPACE_PANIC and PROC_SYSRQ_TRIGGER go back to only being used once, when they\u0027re passed as arguments to that function.)",
+      "range": {
+        "startLine": 53,
+        "startChar": 69,
+        "endLine": 53,
+        "endChar": 70
+      },
+      "revId": "a208b2ec28c5e0726f3a7f7dea6de02f438f4cda",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
