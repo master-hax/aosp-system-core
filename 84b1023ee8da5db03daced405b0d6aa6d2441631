@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c5824dac_685bcd5c",
+        "filename": "llkd/libllkd.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 577,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-09-08T16:13:55Z",
+      "side": 1,
+      "message": "dead code?",
+      "range": {
+        "startLine": 570,
+        "startChar": 4,
+        "endLine": 577,
+        "endChar": 17
+      },
+      "revId": "84b1023ee8da5db03daced405b0d6aa6d2441631",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
