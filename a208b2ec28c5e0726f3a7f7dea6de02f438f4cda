@@ -41,6 +41,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "0adab13b_4fdf04fd",
+        "filename": "libuserpanic/libuserpanic.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1345812
+      },
+      "writtenOn": "2021-09-08T06:25:32Z",
+      "side": 1,
+      "message": "\u003e no C-style casts.\nFixed.\n\n\u003e seems like you\u0027re actually missing a type here?\nDone if you meant the structure type for the panic request. But it\u0027s defined inline currently, since so far the driver exposing /dev/userspace_panic is available on new Pixel products as a vendor module.",
+      "parentUuid": "2f25e243_ebfa6770",
+      "range": {
+        "startLine": 50,
+        "startChar": 20,
+        "endLine": 50,
+        "endChar": 33
+      },
+      "revId": "a208b2ec28c5e0726f3a7f7dea6de02f438f4cda",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "5fd80d20_1e5b722b",
@@ -54,6 +78,30 @@
       "writtenOn": "2021-09-07T20:40:35Z",
       "side": 1,
       "message": "data.size()\n\nif you\u0027re not going to reuse the libbase WriteStringToFile code, you should still remove the duplication in this file. (and then DEV_USERSPACE_PANIC and PROC_SYSRQ_TRIGGER go back to only being used once, when they\u0027re passed as arguments to that function.)",
+      "range": {
+        "startLine": 53,
+        "startChar": 69,
+        "endLine": 53,
+        "endChar": 70
+      },
+      "revId": "a208b2ec28c5e0726f3a7f7dea6de02f438f4cda",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8b124e53_b7200da0",
+        "filename": "libuserpanic/libuserpanic.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 1345812
+      },
+      "writtenOn": "2021-09-08T06:25:32Z",
+      "side": 1,
+      "message": "Done; I added a common function \u0027write_to_file\u0027 and using WriteStringToFile in it. Now DEV_USERSPACE_PANIC and PROC_SYSRQ_TRIGGER are used once.",
+      "parentUuid": "5fd80d20_1e5b722b",
       "range": {
         "startLine": 53,
         "startChar": 69,
