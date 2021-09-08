@@ -128,6 +128,23 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "445b23b1_950e1d52",
+        "filename": "libuserpanic/libuserpanic.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-09-08T18:31:40Z",
+      "side": 1,
+      "message": "oh, and even if it\u0027s working now, you should add the missing `__packed` to this struct...",
+      "revId": "6cb5b00338ab4d766a5c48a8c7ea34d6eb9629b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "db57fe4d_6b4f75c7",
         "filename": "libuserpanic/libuserpanic.cpp",
         "patchSetId": 4
