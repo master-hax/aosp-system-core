@@ -22,6 +22,54 @@
       },
       "revId": "07059bafc755e9558e6b1d5b5d869b3aac8e0729",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "28b501d0_4a01f33e",
+        "filename": "init/reboot_utils.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 176,
+      "author": {
+        "id": 1345812
+      },
+      "writtenOn": "2021-09-09T07:05:21Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "293188a8_ab717456",
+      "range": {
+        "startLine": 173,
+        "startChar": 8,
+        "endLine": 176,
+        "endChar": 29
+      },
+      "revId": "07059bafc755e9558e6b1d5b5d869b3aac8e0729",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7e995078_e84de716",
+        "filename": "init/reboot_utils.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 176,
+      "author": {
+        "id": 1345812
+      },
+      "writtenOn": "2021-09-09T07:05:21Z",
+      "side": 1,
+      "message": "Done; removed the unused but keep fallback code.",
+      "parentUuid": "293188a8_ab717456",
+      "range": {
+        "startLine": 173,
+        "startChar": 8,
+        "endLine": 176,
+        "endChar": 29
+      },
+      "revId": "07059bafc755e9558e6b1d5b5d869b3aac8e0729",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
