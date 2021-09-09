@@ -35,6 +35,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "c56e12a8_f9bb531d",
+        "filename": "libuserpanic/include/android/userpanic.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1345812
+      },
+      "writtenOn": "2021-09-09T07:03:46Z",
+      "side": 1,
+      "message": "I updated comment to indicate that callers should handle fallback when it returns.",
+      "parentUuid": "d2ce0e93_45962dbc",
+      "revId": "6cb5b00338ab4d766a5c48a8c7ea34d6eb9629b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "7fd887ea_17ebab65",
@@ -48,6 +66,24 @@
       "writtenOn": "2021-09-08T16:16:30Z",
       "side": 1,
       "message": "LOG_TAG isn\u0027t used for libbase logging.",
+      "revId": "6cb5b00338ab4d766a5c48a8c7ea34d6eb9629b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1d73746f_ce237b48",
+        "filename": "libuserpanic/libuserpanic.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1345812
+      },
+      "writtenOn": "2021-09-09T07:03:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7fd887ea_17ebab65",
       "revId": "6cb5b00338ab4d766a5c48a8c7ea34d6eb9629b0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -69,6 +105,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "703741ae_a34f4641",
+        "filename": "libuserpanic/libuserpanic.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1345812
+      },
+      "writtenOn": "2021-09-09T07:03:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "abb94288_42a17dd5",
+      "revId": "6cb5b00338ab4d766a5c48a8c7ea34d6eb9629b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "e152adac_64f3e7a5",
@@ -86,6 +140,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "a52a7509_90faa724",
+        "filename": "libuserpanic/libuserpanic.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1345812
+      },
+      "writtenOn": "2021-09-09T07:03:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e152adac_64f3e7a5",
+      "revId": "6cb5b00338ab4d766a5c48a8c7ea34d6eb9629b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a45c7b89_ddf7fd0e",
@@ -99,6 +171,24 @@
       "writtenOn": "2021-09-08T16:16:30Z",
       "side": 1,
       "message": "(it\u0027s traditional to put your own #include first, if only to check that it works stand-alone :-) )",
+      "revId": "6cb5b00338ab4d766a5c48a8c7ea34d6eb9629b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "682c1a0f_fe00f19f",
+        "filename": "libuserpanic/libuserpanic.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1345812
+      },
+      "writtenOn": "2021-09-09T07:03:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a45c7b89_ddf7fd0e",
       "revId": "6cb5b00338ab4d766a5c48a8c7ea34d6eb9629b0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -126,6 +216,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "9558e77c_97b82112",
+        "filename": "libuserpanic/libuserpanic.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1345812
+      },
+      "writtenOn": "2021-09-09T07:03:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0d545e96_bae5278d",
+      "range": {
+        "startLine": 28,
+        "startChar": 0,
+        "endLine": 31,
+        "endChar": 0
+      },
+      "revId": "6cb5b00338ab4d766a5c48a8c7ea34d6eb9629b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "445b23b1_950e1d52",
@@ -143,6 +257,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "ea1dcf79_cdd632c8",
+        "filename": "libuserpanic/libuserpanic.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1345812
+      },
+      "writtenOn": "2021-09-09T07:03:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "445b23b1_950e1d52",
+      "revId": "6cb5b00338ab4d766a5c48a8c7ea34d6eb9629b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "db57fe4d_6b4f75c7",
@@ -156,6 +288,24 @@
       "writtenOn": "2021-09-08T16:16:30Z",
       "side": 1,
       "message": "probably more helpful to say \"Successful writes should cause a reboot synchronously and never return. Just in case...\".\n\nif there\u0027s a reason why we don\u0027t just call the old-school reboot() function here, it\u0027s probably worth mentioning that too?",
+      "revId": "6cb5b00338ab4d766a5c48a8c7ea34d6eb9629b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c213aa33_75391574",
+        "filename": "libuserpanic/libuserpanic.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1345812
+      },
+      "writtenOn": "2021-09-09T07:03:46Z",
+      "side": 1,
+      "message": "I updated comment to indicate that callers should handle fallback when it returns. It\u0027s because the writings here might fail (e.g.: permission denied) and only callers know best how to handle this case.",
+      "parentUuid": "db57fe4d_6b4f75c7",
       "revId": "6cb5b00338ab4d766a5c48a8c7ea34d6eb9629b0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
