@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b02f6132_cfc809ad",
+        "filename": "init/reboot_utils.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 175,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-09-09T19:33:20Z",
+      "side": 1,
+      "message": "you don\u0027t get a warning that this is dead code?",
+      "range": {
+        "startLine": 173,
+        "startChar": 8,
+        "endLine": 175,
+        "endChar": 29
+      },
+      "revId": "cd2153dee0968127b72d3110c31e2a690e274dc7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
