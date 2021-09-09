@@ -22,6 +22,30 @@
       },
       "revId": "84b1023ee8da5db03daced405b0d6aa6d2441631",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "95252e50_91e5eab1",
+        "filename": "llkd/libllkd.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 577,
+      "author": {
+        "id": 1345812
+      },
+      "writtenOn": "2021-09-09T07:05:17Z",
+      "side": 1,
+      "message": "Done; removed the unused but keep fallback code.",
+      "parentUuid": "c5824dac_685bcd5c",
+      "range": {
+        "startLine": 570,
+        "startChar": 4,
+        "endLine": 577,
+        "endChar": 17
+      },
+      "revId": "84b1023ee8da5db03daced405b0d6aa6d2441631",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
