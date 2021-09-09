@@ -22,6 +22,30 @@
       },
       "revId": "ccd4b77440ea934582546843729f487be950d1bc",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0acc5366_485f94c9",
+        "filename": "fs_mgr/libfs_avb/tests/avb_util_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 782,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2021-09-09T10:07:51Z",
+      "side": 1,
+      "message": "Did you mean still call CompareVBMeta() then log the error?\n\nBut there are some EXPECT_* assertions down the calling path.\n\ne.g., \n\nhttp://cs/android/system/core/fs_mgr/libfs_avb/tests/avb_util_test.cpp;l\u003d613;rcl\u003d05343a638f33645fb99cec0aa96038be34ec1a03 \n\nhttp://cs/android/system/core/fs_mgr/libfs_avb/tests/fs_avb_test_util.cpp;l\u003d126;rcl\u003d05343a638f33645fb99cec0aa96038be34ec1a03 \n\nLet me think about how to avoid those EXPECT_* assertions.",
+      "parentUuid": "0513c6b6_cab38b3c",
+      "range": {
+        "startLine": 782,
+        "startChar": 4,
+        "endLine": 782,
+        "endChar": 7
+      },
+      "revId": "ccd4b77440ea934582546843729f487be950d1bc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
