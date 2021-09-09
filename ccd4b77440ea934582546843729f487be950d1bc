@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0513c6b6_cab38b3c",
+        "filename": "fs_mgr/libfs_avb/tests/avb_util_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 782,
+      "author": {
+        "id": 1130827
+      },
+      "writtenOn": "2021-09-09T07:08:28Z",
+      "side": 1,
+      "message": "Could you write a message to stderr so that the user can still see this result?",
+      "range": {
+        "startLine": 782,
+        "startChar": 4,
+        "endLine": 782,
+        "endChar": 7
+      },
+      "revId": "ccd4b77440ea934582546843729f487be950d1bc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
