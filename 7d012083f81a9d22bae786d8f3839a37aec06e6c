@@ -16,6 +16,24 @@
       "message": "this seems like a worse idea? it doesn\u0027t make sense to have a system panic function that doesn\u0027t do what it says. we\u0027ve made this mistake before, and it leads to people _not writing the fallback code_ (which obviously doesn\u0027t get tested often/at all). we should just do our best here and mark this function as noreturn.",
       "revId": "7d012083f81a9d22bae786d8f3839a37aec06e6c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "13aa09f1_ad7f7aa1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1345812
+      },
+      "writtenOn": "2021-09-10T15:04:48Z",
+      "side": 1,
+      "message": "Got it, thanks for sharing this. I will revise this to be a noreturn function. Will update soon.",
+      "parentUuid": "3fdcd8ed_bc676c91",
+      "revId": "7d012083f81a9d22bae786d8f3839a37aec06e6c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
