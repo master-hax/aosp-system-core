@@ -46,6 +46,54 @@
       },
       "revId": "ccd4b77440ea934582546843729f487be950d1bc",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d752f99d_2a9ddae2",
+        "filename": "fs_mgr/libfs_avb/tests/avb_util_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 782,
+      "author": {
+        "id": 1130827
+      },
+      "writtenOn": "2021-09-10T03:43:51Z",
+      "side": 1,
+      "message": "Ack. It seems not easy to skip those assertions in the subroutines.",
+      "parentUuid": "0acc5366_485f94c9",
+      "range": {
+        "startLine": 782,
+        "startChar": 4,
+        "endLine": 782,
+        "endChar": 7
+      },
+      "revId": "ccd4b77440ea934582546843729f487be950d1bc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9e926814_428e81f0",
+        "filename": "fs_mgr/libfs_avb/tests/avb_util_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 782,
+      "author": {
+        "id": 1130827
+      },
+      "writtenOn": "2021-09-10T03:43:51Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "0acc5366_485f94c9",
+      "range": {
+        "startLine": 782,
+        "startChar": 4,
+        "endLine": 782,
+        "endChar": 7
+      },
+      "revId": "ccd4b77440ea934582546843729f487be950d1bc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
