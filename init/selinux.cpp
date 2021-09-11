@@ -295,6 +295,16 @@ bool IsSplitPolicyDevice() {
     return access(plat_policy_cil_file, R_OK) != -1;
 }
 
+std::optional<const char*> GetUserdebugPlatformPolicyFile() {
+    for (const char* debug_policy :
+         {"/system_ext/etc/selinux/userdebug_plat_sepolicy.cil", kDebugRamdiskSEPolicy}) {
+        if (access(debug_policy, F_OK) == 0) {
+            return debug_policy;
+        }
+    }
+    return std::nullopt;
+}
+
 struct PolicyFile {
     unique_fd fd;
     std::string path;
@@ -312,11 +322,11 @@ bool OpenSplitPolicy(PolicyFile* policy_file) {
 
     // See if we need to load userdebug_plat_sepolicy.cil instead of plat_sepolicy.cil.
     const char* force_debuggable_env = getenv("INIT_FORCE_DEBUGGABLE");
-    bool use_userdebug_policy =
-            ((force_debuggable_env && "true"s == force_debuggable_env) &&
-             AvbHandle::IsDeviceUnlocked() && access(kDebugRamdiskSEPolicy, F_OK) == 0);
+    const auto userdebug_plat_sepolicy = GetUserdebugPlatformPolicyFile();
+    const bool use_userdebug_policy = (force_debuggable_env && "true"s == force_debuggable_env) &&
+                                      AvbHandle::IsDeviceUnlocked() && userdebug_plat_sepolicy;
     if (use_userdebug_policy) {
-        LOG(WARNING) << "Using userdebug system sepolicy";
+        LOG(WARNING) << "Using userdebug system sepolicy " << *userdebug_plat_sepolicy;
     }
 
     // Load precompiled policy from vendor image, if a matching policy is found there. The policy
@@ -413,7 +423,7 @@ bool OpenSplitPolicy(PolicyFile* policy_file) {
     // clang-format off
     std::vector<const char*> compile_args {
         "/system/bin/secilc",
-        use_userdebug_policy ? kDebugRamdiskSEPolicy: plat_policy_cil_file,
+        use_userdebug_policy ? *userdebug_plat_sepolicy : plat_policy_cil_file,
         "-m", "-M", "true", "-G", "-N",
         "-c", version_as_string.c_str(),
         plat_mapping_file.c_str(),
