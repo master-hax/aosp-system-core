@@ -33,6 +33,24 @@
       "message": "Shouldn\u0027t we handle any non-empty error?",
       "revId": "0a4ff7b5b0225b0fa4c41c10e82272e01456b5dd",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fbf2933e_d397bf49",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 897,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-09-13T22:28:52Z",
+      "side": 1,
+      "message": "These are the only three error codes which are assigned to \"status-\u003eerror\".",
+      "parentUuid": "5c42aa41_ad3d0f34",
+      "revId": "0a4ff7b5b0225b0fa4c41c10e82272e01456b5dd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
