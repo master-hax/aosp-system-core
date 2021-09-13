@@ -34,6 +34,24 @@
       "parentUuid": "3fdcd8ed_bc676c91",
       "revId": "7d012083f81a9d22bae786d8f3839a37aec06e6c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bf68c545_a0f8379e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1345812
+      },
+      "writtenOn": "2021-09-13T11:53:42Z",
+      "side": 1,
+      "message": "Hi Elliott, thanks again for reviewing CLs of this topic. However looks like the kernel driver CL that creates this file node has been rejected by kernel reviewers (b/188777408#comment13). I\u0027m abandoning these CLs for now while studying another alternative solution, and will depend on the result to restore them.",
+      "parentUuid": "13aa09f1_ad7f7aa1",
+      "revId": "7d012083f81a9d22bae786d8f3839a37aec06e6c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
