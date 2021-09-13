@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7664e4e3_dfb963f6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-09-13T22:27:08Z",
+      "side": 1,
+      "message": "Filed b/199785546 as a follow-up to make this testable.",
+      "revId": "0a4ff7b5b0225b0fa4c41c10e82272e01456b5dd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5c42aa41_ad3d0f34",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 897,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-09-13T22:27:08Z",
+      "side": 1,
+      "message": "Shouldn\u0027t we handle any non-empty error?",
+      "revId": "0a4ff7b5b0225b0fa4c41c10e82272e01456b5dd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
