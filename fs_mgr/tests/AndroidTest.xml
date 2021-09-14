@@ -18,14 +18,14 @@
     <option name="config-descriptor:metadata" key="parameter" value="secondary_user" />
     <target_preparer class="com.android.compatibility.common.tradefed.targetprep.FilePusher">
         <option name="cleanup" value="true" />
-        <option name="push" value="CtsFsMgrTestCases->/data/local/tmp/CtsFsMgrTestCases" />
+        <option name="push" value="CtsFsMgrTestCases->/data/local/tests/unrestricted/CtsFsMgrTestCases" />
         <option name="append-bitness" value="true" />
     </target_preparer>
     <target_preparer class="com.android.tradefed.targetprep.RootTargetPreparer">
         <option name="throw-on-error" value="false" />
     </target_preparer>
     <test class="com.android.tradefed.testtype.GTest" >
-        <option name="native-test-device-path" value="/data/local/tmp" />
+        <option name="native-test-device-path" value="/data/local/tests/unrestricted" />
         <option name="module-name" value="CtsFsMgrTestCases" />
         <option name="runtime-hint" value="65s" />
     </test>

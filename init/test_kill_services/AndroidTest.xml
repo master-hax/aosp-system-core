@@ -33,11 +33,11 @@
 
     <target_preparer class="com.android.tradefed.targetprep.PushFilePreparer">
         <option name="cleanup" value="true" />
-        <option name="push" value="init_kill_services_test->/data/local/tmp/init_kill_services_test" />
+        <option name="push" value="init_kill_services_test->/data/local/tests/unrestricted/init_kill_services_test" />
     </target_preparer>
 
     <test class="com.android.tradefed.testtype.GTest" >
-        <option name="native-test-device-path" value="/data/local/tmp" />
+        <option name="native-test-device-path" value="/data/local/tests/unrestricted" />
         <option name="module-name" value="init_kill_services_test" />
     </test>
 </configuration>
