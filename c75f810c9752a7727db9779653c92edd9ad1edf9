@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "9cb39688_ab114796",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2021-09-15T01:48:40Z",
+      "side": 1,
+      "message": "It does, however, for this to happen someone would need an approximately 160 character long prefix (since we cap each line to 32 bytes). I can log an error here but it didn\u0027t seem like a particularly important case besides not writing past the end of the buffer.",
+      "parentUuid": "b956bc9d_91770582",
+      "range": {
+        "startLine": 118,
+        "startChar": 18,
+        "endLine": 118,
+        "endChar": 35
+      },
+      "revId": "c75f810c9752a7727db9779653c92edd9ad1edf9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "bf48c451_39e6e3c1",
         "filename": "trusty/storage/proxy/rpmb.c",
         "patchSetId": 1
@@ -37,6 +61,24 @@
       "writtenOn": "2021-09-15T01:16:16Z",
       "side": 1,
       "message": "In general, document your thinking?  Took a second to understand what you are doing here.\n\nAlso, that i \u003d\u003d 0 flushes the prefix line was not immediately obvious.",
+      "revId": "c75f810c9752a7727db9779653c92edd9ad1edf9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a524d569_564309b6",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 127,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2021-09-15T01:48:40Z",
+      "side": 1,
+      "message": "Heh, this is a port of what was here before. I\u0027ve documented it now. I also changed the behavior slightly, now the first line is actually flushed before the buffer is printed.",
+      "parentUuid": "bf48c451_39e6e3c1",
       "revId": "c75f810c9752a7727db9779653c92edd9ad1edf9",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -54,6 +96,30 @@
       "writtenOn": "2021-09-15T01:16:16Z",
       "side": 1,
       "message": "In general, should this be \u003e\u003d due to how snprintf does null?",
+      "range": {
+        "startLine": 128,
+        "startChar": 29,
+        "endLine": 128,
+        "endChar": 30
+      },
+      "revId": "c75f810c9752a7727db9779653c92edd9ad1edf9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fc10080c_ddb535c0",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 128,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2021-09-15T01:48:40Z",
+      "side": 1,
+      "message": "Good point, the returned number of characters excludes the null character, had to go check.",
+      "parentUuid": "2a04a3dc_466f46e5",
       "range": {
         "startLine": 128,
         "startChar": 29,
