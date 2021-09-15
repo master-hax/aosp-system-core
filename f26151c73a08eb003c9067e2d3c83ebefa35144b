@@ -16,6 +16,29 @@
       "message": "I let Nick have the final say since he needs to review the latest update.",
       "revId": "f26151c73a08eb003c9067e2d3c83ebefa35144b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "61c71fe5_2b64914c",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 3
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2021-09-15T17:30:49Z",
+      "side": 1,
+      "message": "Shouldn\u0027t -1 be returned instead of a value \u003e LOG_BUF_SIZE in case of a failure?",
+      "range": {
+        "startLine": 129,
+        "startChar": 15,
+        "endLine": 129,
+        "endChar": 17
+      },
+      "revId": "f26151c73a08eb003c9067e2d3c83ebefa35144b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
