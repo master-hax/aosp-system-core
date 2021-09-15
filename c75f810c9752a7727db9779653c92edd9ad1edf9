@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b956bc9d_91770582",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 1114938
+      },
+      "writtenOn": "2021-09-15T01:16:16Z",
+      "side": 1,
+      "message": "Nit: This seems slightly questionable?  Specifically, a long log... silently disappears?  The return value is the number of characters that would have been  written if there were no limit, so rc \u003e LOG_BUF_SIZE does not indicate an API-level error.",
+      "range": {
+        "startLine": 118,
+        "startChar": 18,
+        "endLine": 118,
+        "endChar": 35
+      },
+      "revId": "c75f810c9752a7727db9779653c92edd9ad1edf9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bf48c451_39e6e3c1",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 127,
+      "author": {
+        "id": 1114938
+      },
+      "writtenOn": "2021-09-15T01:16:16Z",
+      "side": 1,
+      "message": "In general, document your thinking?  Took a second to understand what you are doing here.\n\nAlso, that i \u003d\u003d 0 flushes the prefix line was not immediately obvious.",
+      "revId": "c75f810c9752a7727db9779653c92edd9ad1edf9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2a04a3dc_466f46e5",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 128,
+      "author": {
+        "id": 1114938
+      },
+      "writtenOn": "2021-09-15T01:16:16Z",
+      "side": 1,
+      "message": "In general, should this be \u003e\u003d due to how snprintf does null?",
+      "range": {
+        "startLine": 128,
+        "startChar": 29,
+        "endLine": 128,
+        "endChar": 30
+      },
+      "revId": "c75f810c9752a7727db9779653c92edd9ad1edf9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
