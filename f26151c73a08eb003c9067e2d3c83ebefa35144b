@@ -39,6 +39,30 @@
       },
       "revId": "f26151c73a08eb003c9067e2d3c83ebefa35144b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6a399a27_39c9b6f8",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 3
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2021-09-15T21:18:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "61c71fe5_2b64914c",
+      "range": {
+        "startLine": 129,
+        "startChar": 15,
+        "endLine": 129,
+        "endChar": 17
+      },
+      "revId": "f26151c73a08eb003c9067e2d3c83ebefa35144b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
