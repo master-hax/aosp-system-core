@@ -48,6 +48,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "fccdda2c_e48a1282",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2021-09-15T02:37:54Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9cb39688_ab114796",
+      "range": {
+        "startLine": 118,
+        "startChar": 18,
+        "endLine": 118,
+        "endChar": 35
+      },
+      "revId": "c75f810c9752a7727db9779653c92edd9ad1edf9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "bf48c451_39e6e3c1",
