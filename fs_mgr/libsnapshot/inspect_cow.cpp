@@ -44,10 +44,11 @@ static void usage(void) {
     LOG(ERROR) << "\t -b Show data for failed decompress";
     LOG(ERROR) << "\t -l Show ops";
     LOG(ERROR) << "\t -m Show ops in reverse merge order";
-    LOG(ERROR) << "\t -o Shows sequence op block order\n";
+    LOG(ERROR) << "\t -n Show ops in merge order";
+    LOG(ERROR) << "\t -o Shows sequence op block order";
 }
 
-enum OpIter { Normal, RevMerge };
+enum OpIter { Normal, RevMerge, Merge };
 
 struct Options {
     bool silent;
@@ -137,6 +138,8 @@ static bool Inspect(const std::string& path, Options opt) {
         iter = reader.GetOpIter();
     } else if (opt.iter_type == RevMerge) {
         iter = reader.GetRevMergeOpIter();
+    } else if (opt.iter_type == Merge) {
+        iter = reader.GetMergeOpIter();
     }
     StringSink sink;
     bool success = true;
@@ -188,7 +191,7 @@ int main(int argc, char** argv) {
     opt.decompress = false;
     opt.show_bad = false;
     opt.iter_type = android::snapshot::Normal;
-    while ((ch = getopt(argc, argv, "sdbmol")) != -1) {
+    while ((ch = getopt(argc, argv, "sdbmnol")) != -1) {
         switch (ch) {
             case 's':
                 opt.silent = true;
@@ -201,6 +204,9 @@ int main(int argc, char** argv) {
                 break;
             case 'm':
                 opt.iter_type = android::snapshot::RevMerge;
+                break;
+            case 'n':
+                opt.iter_type = android::snapshot::Merge;
                 break;
             case 'o':
                 opt.show_seq = true;
