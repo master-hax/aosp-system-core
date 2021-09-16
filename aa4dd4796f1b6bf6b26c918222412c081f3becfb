@@ -16,6 +16,23 @@
       "message": "This is getting used only on debug now ? what will happen when there is a crash during merge and merge resume during next boot ?",
       "revId": "aa4dd4796f1b6bf6b26c918222412c081f3becfb",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0d840f0d_6e2b30b0",
+        "filename": "fs_mgr/libsnapshot/inspect_cow.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-09-16T22:41:17Z",
+      "side": 1,
+      "message": "Is there any reason not to put this in libsnapshot_cow, and check it when we\u0027re done writing snapshots?",
+      "revId": "aa4dd4796f1b6bf6b26c918222412c081f3becfb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
