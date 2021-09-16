@@ -19,6 +19,7 @@
 #include <iomanip>
 #include <iostream>
 #include <string>
+#include <unordered_set>
 #include <vector>
 
 #include <android-base/logging.h>
@@ -44,10 +45,12 @@ static void usage(void) {
     LOG(ERROR) << "\t -b Show data for failed decompress";
     LOG(ERROR) << "\t -l Show ops";
     LOG(ERROR) << "\t -m Show ops in reverse merge order";
-    LOG(ERROR) << "\t -o Shows sequence op block order\n";
+    LOG(ERROR) << "\t -n Show ops in merge order";
+    LOG(ERROR) << "\t -o Shows sequence op block order";
+    LOG(ERROR) << "\t -v Verifies merge order has no conflicts\n";
 }
 
-enum OpIter { Normal, RevMerge };
+enum OpIter { Normal, RevMerge, Merge };
 
 struct Options {
     bool silent;
@@ -55,6 +58,7 @@ struct Options {
     bool show_ops;
     bool show_bad;
     bool show_seq;
+    bool verify_sequence;
     OpIter iter_type;
 };
 
@@ -92,6 +96,43 @@ static void ShowBad(CowReader& reader, const struct CowOperation& op) {
             std::cout << "The start, as an op, would be " << *(CowOperation*)buffer.get() << "\n";
         }
     }
+}
+
+static bool verify_sequence(CowReader& reader) {
+    auto itr = reader.GetMergeOpIter(true);
+    std::unordered_map<uint64_t, CowOperation> overwritten_blocks;
+
+    while (!itr->Done()) {
+        CowOperation op = itr->Get();
+        uint64_t block;
+        bool offset;
+        if (op.type == kCowCopyOp) {
+            block = op.source;
+            offset = false;
+        } else if (op.type == kCowClusterOp) {
+            block = op.source / BLOCK_SZ;
+            offset = (op.source % BLOCK_SZ) == 0;
+        } else {
+            itr->Next();
+            continue;
+        }
+
+        CowOperation* overwrite = nullptr;
+        if (overwritten_blocks.count(block)) {
+            overwrite = &overwritten_blocks[block];
+            std::cout << "Invalid Sequence! Block needed for " << op
+                      << "overwritten by previously merged op " << *overwrite;
+        }
+        if (offset && overwritten_blocks.count(block + 1)) {
+            overwrite = &overwritten_blocks[block + 1];
+            std::cout << "Invalid Sequence! Block needed for " << op
+                      << "overwritten by previously merged op " << *overwrite;
+        }
+        if (overwrite != nullptr) return false;
+        overwritten_blocks[op.new_block] = op;
+        itr->Next();
+    }
+    return true;
 }
 
 static bool Inspect(const std::string& path, Options opt) {
@@ -132,11 +173,21 @@ static bool Inspect(const std::string& path, Options opt) {
         }
     }
 
+    if (opt.verify_sequence) {
+        if (verify_sequence(reader)) {
+            std::cout << "\nMerge sequence is consistent.\n";
+        } else {
+            std::cout << "\nMerge sequence is inconsistent!\n";
+        }
+    }
+
     std::unique_ptr<ICowOpIter> iter;
     if (opt.iter_type == Normal) {
         iter = reader.GetOpIter();
     } else if (opt.iter_type == RevMerge) {
         iter = reader.GetRevMergeOpIter();
+    } else if (opt.iter_type == Merge) {
+        iter = reader.GetMergeOpIter();
     }
     StringSink sink;
     bool success = true;
@@ -188,7 +239,8 @@ int main(int argc, char** argv) {
     opt.decompress = false;
     opt.show_bad = false;
     opt.iter_type = android::snapshot::Normal;
-    while ((ch = getopt(argc, argv, "sdbmol")) != -1) {
+    opt.verify_sequence = false;
+    while ((ch = getopt(argc, argv, "sdbmnolv")) != -1) {
         switch (ch) {
             case 's':
                 opt.silent = true;
@@ -202,11 +254,17 @@ int main(int argc, char** argv) {
             case 'm':
                 opt.iter_type = android::snapshot::RevMerge;
                 break;
+            case 'n':
+                opt.iter_type = android::snapshot::Merge;
+                break;
             case 'o':
                 opt.show_seq = true;
                 break;
             case 'l':
                 opt.show_ops = true;
+                break;
+            case 'v':
+                opt.verify_sequence = true;
                 break;
             default:
                 android::snapshot::usage();
