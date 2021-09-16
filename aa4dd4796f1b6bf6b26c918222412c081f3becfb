@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1f8c2d7d_cccf2474",
+        "filename": "fs_mgr/libsnapshot/cow_reader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 472,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-09-16T22:38:03Z",
+      "side": 1,
+      "message": "This is getting used only on debug now ? what will happen when there is a crash during merge and merge resume during next boot ?",
+      "revId": "aa4dd4796f1b6bf6b26c918222412c081f3becfb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
