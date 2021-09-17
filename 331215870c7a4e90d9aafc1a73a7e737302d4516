@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ef94dd06_04007e35",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1001525
+      },
+      "writtenOn": "2021-09-17T21:02:34Z",
+      "side": 1,
+      "message": "Now using poll() instead of select(). Tested the same way as before, by setting a really low timeout. With the lowest possible value of 1 (millisecond), I\u0027m seeing it occasionally log a timeout. With a larger value it doesn\u0027t log anymore.",
+      "revId": "331215870c7a4e90d9aafc1a73a7e737302d4516",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
