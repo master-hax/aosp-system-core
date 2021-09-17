@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8aa65074_2e172498",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 303,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2021-09-17T16:17:57Z",
+      "side": 1,
+      "message": "Just to be clear, this flag will only be set for /system/bin/init in a GSI system.img (gsi_arm gsi_arm64 gsi_x86 gsi_x86_64): \n\nhttps://android-review.googlesource.com/c/platform/build/+/1825193/3/core/product_config.mk\n\nOther target\u0027s system.img will not be affected.",
+      "range": {
+        "startLine": 303,
+        "startChar": 4,
+        "endLine": 303,
+        "endChar": 38
+      },
+      "revId": "1466e52633d638e73e56764c1183dd8d4c2bdbbf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
