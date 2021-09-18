@@ -20,6 +20,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "a1e25efd_9584362c",
+        "filename": "fs_mgr/libsnapshot/cow_reader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 472,
+      "author": {
+        "id": 1045980
+      },
+      "writtenOn": "2021-09-18T00:51:41Z",
+      "side": 1,
+      "message": "We\u0027re not deleting the values since we want the ability to access them in the iterator in debug mode. What you see from the iterator is unchanged unless you put it in debug mode, and then it\u0027ll see all the ops.",
+      "parentUuid": "1f8c2d7d_cccf2474",
+      "revId": "aa4dd4796f1b6bf6b26c918222412c081f3becfb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "0d840f0d_6e2b30b0",
         "filename": "fs_mgr/libsnapshot/inspect_cow.cpp",
         "patchSetId": 1
@@ -49,6 +67,24 @@
       "side": 1,
       "message": "Yes. This should certainly be part of OTA write path as well",
       "parentUuid": "0d840f0d_6e2b30b0",
+      "revId": "aa4dd4796f1b6bf6b26c918222412c081f3becfb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a2fa898c_4d00193e",
+        "filename": "fs_mgr/libsnapshot/inspect_cow.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 1045980
+      },
+      "writtenOn": "2021-09-18T00:51:41Z",
+      "side": 1,
+      "message": "Like, run it after Finalize? The easiest place to put it would be in the reader code.",
+      "parentUuid": "af16cf30_cf36ed7b",
       "revId": "aa4dd4796f1b6bf6b26c918222412c081f3becfb",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
