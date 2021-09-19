@@ -16,6 +16,24 @@
       "message": "Could help apply 4 current available reasons also ? Thx\n\"reboot,warm\"\n\"reboot,emergency\"\n\"reboot,master_dc,fault_n,.*\"\n\"reboot,master_dc,reset,.*\"",
       "revId": "860b4fca710f99dad7667965b4975f3e6b9219a7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "34e21235_8f95ac49",
+        "filename": "bootstat/bootstat.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 458,
+      "author": {
+        "id": 1317839
+      },
+      "writtenOn": "2021-09-19T19:11:55Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fb49f242_09f7f68d",
+      "revId": "860b4fca710f99dad7667965b4975f3e6b9219a7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
