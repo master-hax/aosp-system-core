@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "94ca43d5_12e16442",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1317839
+      },
+      "writtenOn": "2021-09-20T20:38:50Z",
+      "side": 1,
+      "message": "presubmit failed at TargetSetupError, should not related to this patch, re-trigger",
+      "revId": "d5f24c5bb9f2a88af1ee45b6eab308e1346976de",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
