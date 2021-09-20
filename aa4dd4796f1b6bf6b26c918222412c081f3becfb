@@ -36,6 +36,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "c2d0c96e_587c820f",
+        "filename": "fs_mgr/libsnapshot/cow_reader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 472,
+      "author": {
+        "id": 1045980
+      },
+      "writtenOn": "2021-09-20T21:22:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a1e25efd_9584362c",
+      "revId": "aa4dd4796f1b6bf6b26c918222412c081f3becfb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "0d840f0d_6e2b30b0",
@@ -89,6 +107,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "afa6fe03_859b1692",
+        "filename": "fs_mgr/libsnapshot/inspect_cow.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 1045980
+      },
+      "writtenOn": "2021-09-20T21:22:48Z",
+      "side": 1,
+      "message": "I went and made it public, so update engine can call it after setup. I don\u0027t see a need to redo that every time, but it would be straightforward to change that in the future if we want.",
+      "parentUuid": "a2fa898c_4d00193e",
+      "revId": "aa4dd4796f1b6bf6b26c918222412c081f3becfb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "e83cb833_7136a604",
@@ -125,6 +161,30 @@
       "writtenOn": "2021-09-18T02:02:47Z",
       "side": 1,
       "message": "!",
+      "range": {
+        "startLine": 114,
+        "startChar": 44,
+        "endLine": 114,
+        "endChar": 45
+      },
+      "revId": "aa4dd4796f1b6bf6b26c918222412c081f3becfb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b98051f4_142436d4",
+        "filename": "fs_mgr/libsnapshot/inspect_cow.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 1045980
+      },
+      "writtenOn": "2021-09-20T21:22:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4da67906_9b03d62b",
       "range": {
         "startLine": 114,
         "startChar": 44,
