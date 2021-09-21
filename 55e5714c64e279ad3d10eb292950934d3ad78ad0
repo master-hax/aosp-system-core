@@ -16,6 +16,24 @@
       "message": "is the timeout in ms, so it is right now set to 30sec?\nwas there a specific rationale for choosing 30sec?\nwould be good to check with Janis to gauge what is a good number.",
       "revId": "55e5714c64e279ad3d10eb292950934d3ad78ad0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "dc351e11_c40e6852",
+        "filename": "trusty/keymaster/ipc/trusty_keymaster_ipc.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 1001525
+      },
+      "writtenOn": "2021-09-21T17:56:39Z",
+      "side": 1,
+      "message": "Yes, it\u0027s 30 seconds, and I just picked that arbitrarily. It seems like something we shouldn\u0027t hit under normal circumstances (and in my testing we don\u0027t), and a decent indicator of whether something is stuck.",
+      "parentUuid": "2b55826a_e9433fc4",
+      "revId": "55e5714c64e279ad3d10eb292950934d3ad78ad0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
