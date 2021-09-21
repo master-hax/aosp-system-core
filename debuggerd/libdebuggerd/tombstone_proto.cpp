@@ -28,6 +28,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/mman.h>
+#include <sys/sysinfo.h>
 #include <time.h>
 
 #include <memory>
@@ -596,14 +597,6 @@ static void dump_tags_around_fault_addr(Signal* signal, const Tombstone& tombsto
   }
 }
 
-static std::optional<uint64_t> read_uptime_secs() {
-  std::string uptime;
-  if (!android::base::ReadFileToString("/proc/uptime", &uptime)) {
-    return {};
-  }
-  return strtoll(uptime.c_str(), nullptr, 10);
-}
-
 void engrave_tombstone_proto(Tombstone* tombstone, unwindstack::Unwinder* unwinder,
                              const std::map<pid_t, ThreadInfo>& threads, pid_t target_thread,
                              const ProcessInfo& process_info, const OpenFilesList* open_files) {
@@ -614,20 +607,16 @@ void engrave_tombstone_proto(Tombstone* tombstone, unwindstack::Unwinder* unwind
   result.set_revision(android::base::GetProperty("ro.revision", "unknown"));
   result.set_timestamp(get_timestamp());
 
-  std::optional<uint64_t> system_uptime = read_uptime_secs();
-  if (system_uptime) {
-    android::procinfo::ProcessInfo proc_info;
-    std::string error;
-    if (android::procinfo::GetProcessInfo(target_thread, &proc_info, &error)) {
-      uint64_t starttime = proc_info.starttime / sysconf(_SC_CLK_TCK);
-      result.set_process_uptime(*system_uptime - starttime);
-    } else {
-      async_safe_format_log(ANDROID_LOG_ERROR, LOG_TAG, "failed to read process info: %s",
-                            error.c_str());
-    }
+  struct sysinfo si;
+  sysinfo(&si);
+  android::procinfo::ProcessInfo proc_info;
+  std::string error;
+  if (android::procinfo::GetProcessInfo(target_thread, &proc_info, &error)) {
+    uint64_t starttime = proc_info.starttime / sysconf(_SC_CLK_TCK);
+    result.set_process_uptime(si.uptime - starttime);
   } else {
-    async_safe_format_log(ANDROID_LOG_ERROR, LOG_TAG, "failed to read /proc/uptime: %s",
-                          strerror(errno));
+    async_safe_format_log(ANDROID_LOG_ERROR, LOG_TAG, "failed to read process info: %s",
+                          error.c_str());
   }
 
   const ThreadInfo& main_thread = threads.at(target_thread);
