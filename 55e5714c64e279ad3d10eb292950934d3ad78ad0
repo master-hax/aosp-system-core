@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2b55826a_e9433fc4",
+        "filename": "trusty/keymaster/ipc/trusty_keymaster_ipc.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 1856745
+      },
+      "writtenOn": "2021-09-21T15:25:44Z",
+      "side": 1,
+      "message": "is the timeout in ms, so it is right now set to 30sec?\nwas there a specific rationale for choosing 30sec?\nwould be good to check with Janis to gauge what is a good number.",
+      "revId": "55e5714c64e279ad3d10eb292950934d3ad78ad0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
