@@ -50,6 +50,24 @@
       "message": "Did you run against a media process? I think we\u0027ve had problems in the past where that path might trip a minijail fail given the new syscall. Since it uses a different path for generating that doesn\u0027t go through crash_dump, if my memory serves me.",
       "revId": "32d3cdda22287584081a55eb3d646c0e8f53a92d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5dc917b5_d22988b6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1076798
+      },
+      "writtenOn": "2021-09-22T22:47:53Z",
+      "side": 1,
+      "message": "Those should be @including the crash_dump policies, although it\u0027s certainly possible that new policies that don\u0027t do that have been introduced: e.g. https://cs.android.com/android/platform/superproject/+/master:frameworks/av/services/mediaextractor/seccomp_policy/mediaextractor-arm.policy;l\u003d63?q\u003dcrash_dump.arm.policy",
+      "parentUuid": "ba91c82a_4e44b7da",
+      "revId": "32d3cdda22287584081a55eb3d646c0e8f53a92d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
