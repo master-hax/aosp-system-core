@@ -33,6 +33,23 @@
       "message": "heh, \"non-author-code-review\" doesn\u0027t believe josh is a person any more... that\u0027s harsh!",
       "revId": "32d3cdda22287584081a55eb3d646c0e8f53a92d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ba91c82a_4e44b7da",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2021-09-22T22:37:40Z",
+      "side": 1,
+      "message": "Did you run against a media process? I think we\u0027ve had problems in the past where that path might trip a minijail fail given the new syscall. Since it uses a different path for generating that doesn\u0027t go through crash_dump, if my memory serves me.",
+      "revId": "32d3cdda22287584081a55eb3d646c0e8f53a92d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
