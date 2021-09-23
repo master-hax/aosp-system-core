@@ -58,6 +58,12 @@
 #define MMC_BLOCK_SIZE 512
 
 /*
+ * Number of retry attempts when an RPMB authenticated write triggers a UNIT
+ * ATTENTION
+ */
+#define UFS_RPMB_WRITE_RETRY_COUNT 1
+
+/*
  * There should be no timeout for security protocol ioctl call, so we choose a
  * large number for timeout.
  * 20000 millisecs == 20 seconds
@@ -180,14 +186,19 @@ static void set_sg_io_hdr(sg_io_hdr_t* io_hdrp, int dxfer_direction, unsigned ch
 }
 
 /**
- * unexpected_scsi_sense - Check for unexpected codes in the sense buffer.
- * @sense_buf: buffer containing sense data
- * @len:       length of @sense_buf
+ * enum scsi_result - Results of checking the SCSI status and sense buffer
  *
- * Return: %true if the sense data is not valid or contains an unexpected sense
- * code, %false otherwise.
+ * @SCSI_RES_OK: SCSI status and sense are good
+ * @SCSI_RES_ERR: SCSI status or sense contain an unhandled error
+ * @SCSI_RES_UNIT_ATTENTION: SCSI sense buffer indicates UNIT ATTENTION status
  */
-static bool unexpected_scsi_sense(const uint8_t* sense_buf, size_t len) {
+enum scsi_result {
+    SCSI_RES_OK = 0,
+    SCSI_RES_ERR,
+    SCSI_RES_UNIT_ATTENTION,
+};
+
+static enum scsi_result check_scsi_sense(const uint8_t* sense_buf, size_t len) {
     uint8_t response_code = 0;
     uint8_t sense_key = 0;
     uint8_t additional_sense_code = 0;
@@ -196,14 +207,14 @@ static bool unexpected_scsi_sense(const uint8_t* sense_buf, size_t len) {
 
     if (!sense_buf || len == 0) {
         ALOGE("Invalid SCSI sense buffer, length: %zu\n", len);
-        return true;
+        return SCSI_RES_ERR;
     }
 
     response_code = 0x7f & sense_buf[0];
 
     if (response_code < 0x70 || response_code > 0x73) {
         ALOGE("Invalid SCSI sense response code: %hhu\n", response_code);
-        return true;
+        return SCSI_RES_ERR;
     }
 
     if (response_code >= 0x72) {
@@ -241,18 +252,22 @@ static bool unexpected_scsi_sense(const uint8_t* sense_buf, size_t len) {
         case 0x0f: /* COMPLETED, not present in kernel headers */
             ALOGD("SCSI success with sense data: key=%hhu, asc=%hhu, ascq=%hhu\n", sense_key,
                   additional_sense_code, additional_sense_code_qualifier);
-            return false;
+            return SCSI_RES_OK;
+        case UNIT_ATTENTION:
+            ALOGD("UNIT ATTENTION with sense data: key=%hhu, asc=%hhu, ascq=%hhu\n", sense_key,
+                  additional_sense_code, additional_sense_code_qualifier);
+            return SCSI_RES_UNIT_ATTENTION;
     }
 
     ALOGE("Unexpected SCSI sense data: key=%hhu, asc=%hhu, ascq=%hhu\n", sense_key,
           additional_sense_code, additional_sense_code_qualifier);
     log_buf(ANDROID_LOG_ERROR, "sense buffer: ", sense_buf, len);
-    return true;
+    return SCSI_RES_ERR;
 }
 
-static void check_sg_io_hdr(const sg_io_hdr_t* io_hdrp) {
+static enum scsi_result check_sg_io_hdr(const sg_io_hdr_t* io_hdrp) {
     if (io_hdrp->status == 0 && io_hdrp->host_status == 0 && io_hdrp->driver_status == 0) {
-        return;
+        return SCSI_RES_OK;
     }
 
     if (io_hdrp->status & 0x01) {
@@ -260,12 +275,14 @@ static void check_sg_io_hdr(const sg_io_hdr_t* io_hdrp) {
     }
 
     if (io_hdrp->masked_status != GOOD && io_hdrp->sb_len_wr > 0) {
-        bool sense_error = unexpected_scsi_sense(io_hdrp->sbp, io_hdrp->sb_len_wr);
-        if (sense_error) {
+        enum scsi_result scsi_res = check_scsi_sense(io_hdrp->sbp, io_hdrp->sb_len_wr);
+        if (scsi_res == SCSI_RES_UNIT_ATTENTION) {
+            return SCSI_RES_UNIT_ATTENTION;
+        } else if (scsi_res != SCSI_RES_OK) {
             ALOGE("Unexpected SCSI sense. masked_status: %hhu, host_status: %hu, driver_status: "
                   "%hu\n",
                   io_hdrp->masked_status, io_hdrp->host_status, io_hdrp->driver_status);
-            return;
+            return scsi_res;
         }
     }
 
@@ -278,7 +295,7 @@ static void check_sg_io_hdr(const sg_io_hdr_t* io_hdrp) {
         default:
             ALOGE("SG_IO failed with masked_status: %hhu, host_status: %hu, driver_status: %hu\n",
                   io_hdrp->masked_status, io_hdrp->host_status, io_hdrp->driver_status);
-            return;
+            return SCSI_RES_ERR;
     }
 
     if (io_hdrp->host_status != 0) {
@@ -289,6 +306,7 @@ static void check_sg_io_hdr(const sg_io_hdr_t* io_hdrp) {
     if (io_hdrp->resid != 0) {
         ALOGE("SG_IO resid was non-zero: %d\n", io_hdrp->resid);
     }
+    return SCSI_RES_ERR;
 }
 
 static int send_mmc_rpmb_req(int mmc_fd, const struct storage_rpmb_send_req* req) {
@@ -371,17 +389,19 @@ static int send_ufs_rpmb_req(int sg_fd, const struct storage_rpmb_send_req* req)
 
     if (req->reliable_write_size) {
         /* Prepare SECURITY PROTOCOL OUT command. */
-        out_cdb.length = __builtin_bswap32(req->reliable_write_size);
         sg_io_hdr_t io_hdr;
-        set_sg_io_hdr(&io_hdr, SG_DXFER_TO_DEV, sizeof(out_cdb), sizeof(sense_buffer),
-                      req->reliable_write_size, (void*)write_buf, (unsigned char*)&out_cdb,
-                      sense_buffer);
-        rc = ioctl(sg_fd, SG_IO, &io_hdr);
-        if (rc < 0) {
-            ALOGE("%s: ufs ioctl failed: %d, %s\n", __func__, rc, strerror(errno));
-            goto err_op;
-        }
-        check_sg_io_hdr(&io_hdr);
+        int retry_count = UFS_RPMB_WRITE_RETRY_COUNT;
+        do {
+            out_cdb.length = __builtin_bswap32(req->reliable_write_size);
+            set_sg_io_hdr(&io_hdr, SG_DXFER_TO_DEV, sizeof(out_cdb), sizeof(sense_buffer),
+                          req->reliable_write_size, (void*)write_buf, (unsigned char*)&out_cdb,
+                          sense_buffer);
+            rc = ioctl(sg_fd, SG_IO, &io_hdr);
+            if (rc < 0) {
+                ALOGE("%s: ufs ioctl failed: %d, %s\n", __func__, rc, strerror(errno));
+                goto err_op;
+            }
+        } while (check_sg_io_hdr(&io_hdr) == SCSI_RES_UNIT_ATTENTION && retry_count-- > 0);
         write_buf += req->reliable_write_size;
     }
 
