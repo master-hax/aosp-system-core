@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "11271f23_00748291",
+        "filename": "fastboot/fuzzer/fastboot_fuzzer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 234,
+      "author": {
+        "id": 1559553
+      },
+      "writtenOn": "2021-09-23T00:26:36Z",
+      "side": 1,
+      "message": "What is this supposed to do? It looks like it\u0027s writing fuzzy data to some files and then reading it back into some strings. Why not just use it directly?",
+      "range": {
+        "startLine": 234,
+        "startChar": 5,
+        "endLine": 234,
+        "endChar": 45
+      },
+      "revId": "048ce12212f05e32ce5fb11df1504e5b3300f05e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
