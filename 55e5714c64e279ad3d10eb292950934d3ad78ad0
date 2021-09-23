@@ -70,6 +70,24 @@
       "parentUuid": "1611955f_4078a378",
       "revId": "55e5714c64e279ad3d10eb292950934d3ad78ad0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a83d186c_7682baba",
+        "filename": "trusty/keymaster/ipc/trusty_keymaster_ipc.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 1092085
+      },
+      "writtenOn": "2021-09-23T20:23:50Z",
+      "side": 1,
+      "message": "I missed that we are actually waiting indefinitely on the following wait. In that case I would suggest the following behavior: Wait for 10 seconds on the first poll. even a 4K RSA key generation should finish in 10 seconds normally. If that times out, keep polling in a loop with 1s timeout and log on any time out. This way we would see if it stalls forever or recovers. Another option would be to save the fact that we logged a timeout and if we recover, we log that we did. Something like:\n\n ssize_t rc \u003d write() ...\n if (timeout_logged \u0026\u0026 is_success(rc)) {\n     ALOGI(\"yay, we recovered after %u ms\", ...)\n }",
+      "parentUuid": "e4e25565_64f38c8b",
+      "revId": "55e5714c64e279ad3d10eb292950934d3ad78ad0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
