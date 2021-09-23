@@ -52,6 +52,24 @@
       "parentUuid": "dc351e11_c40e6852",
       "revId": "55e5714c64e279ad3d10eb292950934d3ad78ad0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e4e25565_64f38c8b",
+        "filename": "trusty/keymaster/ipc/trusty_keymaster_ipc.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 1001525
+      },
+      "writtenOn": "2021-09-23T17:29:45Z",
+      "side": 1,
+      "message": "It was my understanding that at this point we don\u0027t want to error out, because that path hasn\u0027t been tested. That\u0027s why this change just logs if the fd is not ready to read/write within the given interval, but then continues on to the read/write calls anyway, allowing those calls to potentially still complete eventually.",
+      "parentUuid": "1611955f_4078a378",
+      "revId": "55e5714c64e279ad3d10eb292950934d3ad78ad0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
