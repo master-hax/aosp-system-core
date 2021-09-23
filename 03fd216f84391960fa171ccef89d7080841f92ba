@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e5bb7860_85267f64",
+        "filename": "fs_mgr/libsnapshot/cow_reader.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 665,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2021-09-23T01:15:39Z",
+      "side": 1,
+      "message": "Maybe call it something like \"resume\" ?",
+      "range": {
+        "startLine": 665,
+        "startChar": 59,
+        "endLine": 665,
+        "endChar": 64
+      },
+      "revId": "03fd216f84391960fa171ccef89d7080841f92ba",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
