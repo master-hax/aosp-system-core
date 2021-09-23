@@ -34,6 +34,24 @@
       "parentUuid": "2b55826a_e9433fc4",
       "revId": "55e5714c64e279ad3d10eb292950934d3ad78ad0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1611955f_4078a378",
+        "filename": "trusty/keymaster/ipc/trusty_keymaster_ipc.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 1092085
+      },
+      "writtenOn": "2021-09-23T17:24:26Z",
+      "side": 1,
+      "message": "I would suggest using a much shorter timeout after which we start getting noisy without actually causing an error. You could error out after all of the tries add up to 30 seconds. (I don\u0027t think there is ever a good argument to make for any timeout other then 0 or infinity).",
+      "parentUuid": "dc351e11_c40e6852",
+      "revId": "55e5714c64e279ad3d10eb292950934d3ad78ad0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
