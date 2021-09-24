@@ -130,6 +130,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "0867130f_59c8bc6f",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 314,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2021-09-24T19:47:02Z",
+      "side": 1,
+      "message": "Submitting a REQUEST SENSE to clear a unit attention makes the code slower than necessary because an additional command is submitted.\n\nA quote from the SCSI Architecture Model (SAM) document: \"The device server shall maintain a queue of unit attention conditions of undefined order for each I_T nexus. The queue should be large enough to hold every unit attention condition that the device server is capable of reporting. [ ... ] A unit attention condition shall persist until the device server clears the unit attention condition. conditions are affected by the processing of commands as follows: [ ... ] c) if a REQUEST SENSE command enters the enabled command state while a unit attention condition exists for the SCSI initiator port associated with the I_T nexus on which the REQUEST SENSE command was received, then the device server shall process the command [ ... ] e) if a command other than INQUIRY, REPORT LUNS, REQUEST SENSE, or NOTIFY DATA TRANSFER DEVICE enters the enabled command state while a unit attention condition exists for the SCSI initiator port associated with the I_T nexus on which the command was received, then the device server shall terminate the command with a CHECK CONDITION status. The device server shall provide sense data that reports a unit attention condition for the SCSI initiator port that sent the command on the I_T nexus. If a device server reports a unit attention condition with a CHECK CONDITION status and the UA_INTLCK_CTRL field in the Control mode page contains 00b (see SPC-5), then the device server shall clear the reported unit attention condition for the SCSI initiator port associated with that I_T nexus on the logical unit. [ ... ]\"\n\nIn other words, whether a REQUEST SENSE or SECURITY PROTOCOL OUT or IN command is submitted, the effect is the same: the unit attention condition is dequeued and is reported to the initiator.",
+      "parentUuid": "acea7eed_7e0992c4",
+      "range": {
+        "startLine": 304,
+        "startChar": 0,
+        "endLine": 314,
+        "endChar": 1
+      },
+      "revId": "52b735093f845d7deeec02b64727fa1ccb410ade",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "d407ef1f_6c5bd6a8",
         "filename": "trusty/storage/proxy/rpmb.c",
         "patchSetId": 1
@@ -258,6 +282,30 @@
       "side": 1,
       "message": "That makes sense. I think we need to fail the entire transaction then from the Trusty side, because we don\u0027t know at that point whether the block was correctly written before the reset. If so, this means that this patch is basically not required if we a) don\u0027t have to submit a REQUEST SENSE command, and b) need to fail the transaction anyway.",
       "parentUuid": "7276bc79_15e6f624",
+      "range": {
+        "startLine": 482,
+        "startChar": 0,
+        "endLine": 493,
+        "endChar": 36
+      },
+      "revId": "52b735093f845d7deeec02b64727fa1ccb410ade",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ef3057c5_80823b0d",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 493,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2021-09-24T19:47:02Z",
+      "side": 1,
+      "message": "I don\u0027t have a strong opinion about this but it may be a good idea to keep the retry loop in this code around the SECURITY PROTOCOL OUT command.",
+      "parentUuid": "49148ec9_b670d55f",
       "range": {
         "startLine": 482,
         "startChar": 0,
