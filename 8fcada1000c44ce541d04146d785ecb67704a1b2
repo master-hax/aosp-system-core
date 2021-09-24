@@ -33,6 +33,75 @@
       "message": "Adding zram folks...",
       "revId": "8fcada1000c44ce541d04146d785ecb67704a1b2",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9220f224_1efdd842",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2123,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2021-09-24T18:53:54Z",
+      "side": 1,
+      "message": "It seems like a word is missing here, e.g. \"for\"?",
+      "range": {
+        "startLine": 2123,
+        "startChar": 49,
+        "endLine": 2123,
+        "endChar": 50
+      },
+      "revId": "8fcada1000c44ce541d04146d785ecb67704a1b2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8161cfab_9784217e",
+        "filename": "fs_mgr/libdm/loop_control.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 139,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2021-09-24T18:53:54Z",
+      "side": 1,
+      "message": "This can be changed into struct loop_info64 info \u003d { };\n\nSee also https://en.cppreference.com/w/cpp/language/zero_initialization.",
+      "range": {
+        "startLine": 137,
+        "startChar": 0,
+        "endLine": 139,
+        "endChar": 35
+      },
+      "revId": "8fcada1000c44ce541d04146d785ecb67704a1b2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0d4044b7_727f72de",
+        "filename": "fs_mgr/libdm/loop_control.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 142,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2021-09-24T18:53:54Z",
+      "side": 1,
+      "message": "Since the caller already logs an error message I don\u0027t think that this function should log an error message?",
+      "range": {
+        "startLine": 142,
+        "startChar": 23,
+        "endLine": 142,
+        "endChar": 73
+      },
+      "revId": "8fcada1000c44ce541d04146d785ecb67704a1b2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
