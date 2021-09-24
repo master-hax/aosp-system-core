@@ -22,6 +22,30 @@
       },
       "revId": "048ce12212f05e32ce5fb11df1504e5b3300f05e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6f228fca_d6566c8d",
+        "filename": "fastboot/fuzzer/fastboot_fuzzer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 234,
+      "author": {
+        "id": 1619864
+      },
+      "writtenOn": "2021-09-24T10:51:04Z",
+      "side": 1,
+      "message": "This function invokes replace_vendor_ramdisk() API. \n\nThe API expects \u0027fd\u0027 as it\u0027s first and third arguments. So, for the \u0027first\u0027 and \u0027third\u0027 arguments, \u0027vendorBootFd\u0027 and \u0027ramdiskFd\u0027 are created and \u0027data\u0027 received from libFuzzer is written to these files.\n\nThe 2nd and 5th arguments for the API expect the size of the data that is contained in these \u0027fd\u0027s. So, only for deriving the size of the \u0027data\u0027, call to android::base::ReadFdToString(vendorBootFd, \u0026contentVendorBootFd) is made and contentVendorBootFd.size is then passed as the valid size. (replace_vendor_ramdisk() also internally has a check for the size sent in the argument and uses android::base::ReadFdToString() for the same - https://cs.android.com/android/platform/superproject/+/master:system/core/fastboot/vendor_boot_img_utils.cpp;l\u003d168;drc\u003dmaster?q\u003dreplace_vendor_ramdisk\u0026ss\u003dandroid%2Fplatform%2Fsuperproject)\n\nFor the case where invalid size is sent, we are directly deriving size from FDP.",
+      "parentUuid": "11271f23_00748291",
+      "range": {
+        "startLine": 234,
+        "startChar": 5,
+        "endLine": 234,
+        "endChar": 45
+      },
+      "revId": "048ce12212f05e32ce5fb11df1504e5b3300f05e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
