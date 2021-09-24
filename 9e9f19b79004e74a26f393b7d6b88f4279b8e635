@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c6fdd678_4a7a5bfd",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 182,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2021-09-24T17:12:48Z",
+      "side": 1,
+      "message": "Please use the present tense for function documentation. I\u0027m not sure what style guide applies to Android C/C++ code. This comment does not follow a style guide I\u0027m familiar with, namely the Google C++ style guide (https://google.github.io/styleguide/cppguide.html#Function_Comments).",
+      "range": {
+        "startLine": 182,
+        "startChar": 0,
+        "endLine": 182,
+        "endChar": 74
+      },
+      "revId": "9e9f19b79004e74a26f393b7d6b88f4279b8e635",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
