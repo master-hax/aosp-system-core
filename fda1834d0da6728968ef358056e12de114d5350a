@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fead158a_eb9986d4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1856745
+      },
+      "writtenOn": "2021-09-24T13:47:38Z",
+      "side": 1,
+      "message": "Nice, thanks for improving tipc-test!\n",
+      "revId": "fda1834d0da6728968ef358056e12de114d5350a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
