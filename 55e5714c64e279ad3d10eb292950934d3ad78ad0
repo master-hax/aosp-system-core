@@ -88,6 +88,24 @@
       "parentUuid": "e4e25565_64f38c8b",
       "revId": "55e5714c64e279ad3d10eb292950934d3ad78ad0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "506c3168_fd91aae1",
+        "filename": "trusty/keymaster/ipc/trusty_keymaster_ipc.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 1856745
+      },
+      "writtenOn": "2021-09-24T14:11:15Z",
+      "side": 1,
+      "message": "like the idea of the \"recovered\" log!",
+      "parentUuid": "a83d186c_7682baba",
+      "revId": "55e5714c64e279ad3d10eb292950934d3ad78ad0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
