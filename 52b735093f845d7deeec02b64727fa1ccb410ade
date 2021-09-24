@@ -106,6 +106,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "acea7eed_7e0992c4",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 314,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2021-09-24T19:20:21Z",
+      "side": 1,
+      "message": "I was under the impression that we needed to basically move https://android-review.googlesource.com/c/kernel/common/+/1835335 out into userspace to clear the unit attention condition, is that not the case?",
+      "parentUuid": "8161b146_a58324f9",
+      "range": {
+        "startLine": 304,
+        "startChar": 0,
+        "endLine": 314,
+        "endChar": 1
+      },
+      "revId": "52b735093f845d7deeec02b64727fa1ccb410ade",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "d407ef1f_6c5bd6a8",
         "filename": "trusty/storage/proxy/rpmb.c",
         "patchSetId": 1
@@ -186,6 +210,30 @@
       "writtenOn": "2021-09-24T18:39:10Z",
       "side": 1,
       "message": "Retrying a SECURITY PROTOCOL OUT command until it succeeds is fine but retrying a SECURITY PROTOCOL IN command after a UFS device has been reset is not. What I think needs to happen if",
+      "range": {
+        "startLine": 482,
+        "startChar": 0,
+        "endLine": 493,
+        "endChar": 36
+      },
+      "revId": "52b735093f845d7deeec02b64727fa1ccb410ade",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "49148ec9_b670d55f",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 493,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2021-09-24T19:20:21Z",
+      "side": 1,
+      "message": "That makes sense. I think we need to fail the entire transaction then from the Trusty side, because we don\u0027t know at that point whether the block was correctly written before the reset. If so, this means that this patch is basically not required if we a) don\u0027t have to submit a REQUEST SENSE command, and b) need to fail the transaction anyway.",
+      "parentUuid": "7276bc79_15e6f624",
       "range": {
         "startLine": 482,
         "startChar": 0,
