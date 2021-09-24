@@ -22,6 +22,30 @@
       },
       "revId": "9e9f19b79004e74a26f393b7d6b88f4279b8e635",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "01a29f06_a0d376f9",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 182,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2021-09-24T17:22:20Z",
+      "side": 1,
+      "message": "We use kerneldoc-style comments in Trusty and associated C code in AOSP. Updated the comment to be a proper kerneldoc function comment.",
+      "parentUuid": "c6fdd678_4a7a5bfd",
+      "range": {
+        "startLine": 182,
+        "startChar": 0,
+        "endLine": 182,
+        "endChar": 74
+      },
+      "revId": "9e9f19b79004e74a26f393b7d6b88f4279b8e635",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
