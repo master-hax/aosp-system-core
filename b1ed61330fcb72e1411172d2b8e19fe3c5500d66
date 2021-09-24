@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4c536963_ab22ca1a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2021-09-24T16:45:09Z",
+      "side": 1,
+      "message": "I noticed this while adding the unit attention handling. I fixed it there as well by returning an enum, but I wanted to make sure this was landed in the meantime.",
+      "revId": "b1ed61330fcb72e1411172d2b8e19fe3c5500d66",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
