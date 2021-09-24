@@ -33,6 +33,167 @@
       "message": "Please use the sense data from the SG_IO ioctl response. Submitting a REQUEST SENSE command separately is not necessary.",
       "revId": "52b735093f845d7deeec02b64727fa1ccb410ade",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "dbdd2464_09dcd3f3",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 233,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2021-09-24T18:39:10Z",
+      "side": 1,
+      "message": "What is the meaning of these status codes? Please document the meaning of these status codes.",
+      "range": {
+        "startLine": 228,
+        "startChar": 0,
+        "endLine": 233,
+        "endChar": 2
+      },
+      "revId": "52b735093f845d7deeec02b64727fa1ccb410ade",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a2c8f77d_9824f08c",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 293,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2021-09-24T18:39:10Z",
+      "side": 1,
+      "message": "Logging the ASC and ASCQ codes is not sufficient. The action taken by the caller must depend on the ASC and ASCQ codes reported by the UFS device. A list of ASC/ASCQ codes is available at https://www.t10.org/lists/asc-num.htm.",
+      "range": {
+        "startLine": 290,
+        "startChar": 0,
+        "endLine": 293,
+        "endChar": 43
+      },
+      "revId": "52b735093f845d7deeec02b64727fa1ccb410ade",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8161b146_a58324f9",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 314,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2021-09-24T18:39:10Z",
+      "side": 1,
+      "message": "Please remove this function. With modern SCSI devices like UFS devices it is not necessary to submit a REQUEST SENSE command explicitly. Sense data is returned in the SG_IO ioctl reply.",
+      "range": {
+        "startLine": 304,
+        "startChar": 0,
+        "endLine": 314,
+        "endChar": 1
+      },
+      "revId": "52b735093f845d7deeec02b64727fa1ccb410ade",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d407ef1f_6c5bd6a8",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 331,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2021-09-24T18:39:10Z",
+      "side": 1,
+      "message": "What does this return value mean?",
+      "range": {
+        "startLine": 331,
+        "startChar": 12,
+        "endLine": 331,
+        "endChar": 34
+      },
+      "revId": "52b735093f845d7deeec02b64727fa1ccb410ade",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1428975c_f04a69c2",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 454,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2021-09-24T18:39:10Z",
+      "side": 1,
+      "message": "Do all negative SG_IO ioctl return values indicate a non-retryable error?",
+      "range": {
+        "startLine": 450,
+        "startChar": 0,
+        "endLine": 454,
+        "endChar": 13
+      },
+      "revId": "52b735093f845d7deeec02b64727fa1ccb410ade",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7276bc79_15e6f624",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 493,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2021-09-24T18:39:10Z",
+      "side": 1,
+      "message": "Retrying a SECURITY PROTOCOL OUT command until it succeeds is fine but retrying a SECURITY PROTOCOL IN command after a UFS device has been reset is not. What I think needs to happen if a POWER ON, RESET, OR BUS DEVICE RESET OCCURRED unit attention is reported is that the write counter is queried from the UFS device, that any other write counter values than (current write counter) and (current write counter) - 1 are rejected and that the entire transaction is restarted with the proper write counter.",
+      "range": {
+        "startLine": 482,
+        "startChar": 0,
+        "endLine": 493,
+        "endChar": 36
+      },
+      "revId": "52b735093f845d7deeec02b64727fa1ccb410ade",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "48c12bb9_e2c19b2f",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 493,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2021-09-24T18:39:10Z",
+      "side": 1,
+      "message": "Retrying a SECURITY PROTOCOL OUT command until it succeeds is fine but retrying a SECURITY PROTOCOL IN command after a UFS device has been reset is not. What I think needs to happen if",
+      "range": {
+        "startLine": 482,
+        "startChar": 0,
+        "endLine": 493,
+        "endChar": 36
+      },
+      "revId": "52b735093f845d7deeec02b64727fa1ccb410ade",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
