@@ -58,6 +58,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "8f62d486_a49721b4",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 233,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2021-09-24T23:48:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "dbdd2464_09dcd3f3",
+      "range": {
+        "startLine": 228,
+        "startChar": 0,
+        "endLine": 233,
+        "endChar": 2
+      },
+      "revId": "52b735093f845d7deeec02b64727fa1ccb410ade",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a2c8f77d_9824f08c",
@@ -71,6 +95,30 @@
       "writtenOn": "2021-09-24T18:39:10Z",
       "side": 1,
       "message": "Logging the ASC and ASCQ codes is not sufficient. The action taken by the caller must depend on the ASC and ASCQ codes reported by the UFS device. A list of ASC/ASCQ codes is available at https://www.t10.org/lists/asc-num.htm.",
+      "range": {
+        "startLine": 290,
+        "startChar": 0,
+        "endLine": 293,
+        "endChar": 43
+      },
+      "revId": "52b735093f845d7deeec02b64727fa1ccb410ade",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ec71359a_f4cdb195",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 293,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2021-09-24T23:48:12Z",
+      "side": 1,
+      "message": "I\u0027m not sure which ASC codes are relevant here, should we be retrying only on a subset of UA codes?",
+      "parentUuid": "a2c8f77d_9824f08c",
       "range": {
         "startLine": 290,
         "startChar": 0,
@@ -152,6 +200,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "55b7f735_7d19addb",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 314,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2021-09-24T23:48:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0867130f_59c8bc6f",
+      "range": {
+        "startLine": 304,
+        "startChar": 0,
+        "endLine": 314,
+        "endChar": 1
+      },
+      "revId": "52b735093f845d7deeec02b64727fa1ccb410ade",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d407ef1f_6c5bd6a8",
@@ -165,6 +237,54 @@
       "writtenOn": "2021-09-24T18:39:10Z",
       "side": 1,
       "message": "What does this return value mean?",
+      "range": {
+        "startLine": 331,
+        "startChar": 12,
+        "endLine": 331,
+        "endChar": 34
+      },
+      "revId": "52b735093f845d7deeec02b64727fa1ccb410ade",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7ee2ae08_63cace31",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 331,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2021-09-24T23:48:12Z",
+      "side": 1,
+      "message": "Removed, was intended to mean that we successfully reset the UA.",
+      "parentUuid": "d407ef1f_6c5bd6a8",
+      "range": {
+        "startLine": 331,
+        "startChar": 12,
+        "endLine": 331,
+        "endChar": 34
+      },
+      "revId": "52b735093f845d7deeec02b64727fa1ccb410ade",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "af26f34f_51cc3f6e",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 331,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2021-09-24T23:48:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d407ef1f_6c5bd6a8",
       "range": {
         "startLine": 331,
         "startChar": 12,
@@ -306,6 +426,54 @@
       "side": 1,
       "message": "I don\u0027t have a strong opinion about this but it may be a good idea to keep the retry loop in this code around the SECURITY PROTOCOL OUT command.",
       "parentUuid": "49148ec9_b670d55f",
+      "range": {
+        "startLine": 482,
+        "startChar": 0,
+        "endLine": 493,
+        "endChar": 36
+      },
+      "revId": "52b735093f845d7deeec02b64727fa1ccb410ade",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "02a4550c_4f6707e9",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 493,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2021-09-24T23:48:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "48c12bb9_e2c19b2f",
+      "range": {
+        "startLine": 482,
+        "startChar": 0,
+        "endLine": 493,
+        "endChar": 36
+      },
+      "revId": "52b735093f845d7deeec02b64727fa1ccb410ade",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c71193b7_4eb52c79",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 493,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2021-09-24T23:48:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ef3057c5_80823b0d",
       "range": {
         "startLine": 482,
         "startChar": 0,
