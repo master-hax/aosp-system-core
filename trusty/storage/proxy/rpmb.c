@@ -29,13 +29,19 @@
 #include <sys/un.h>
 #include <unistd.h>
 
+int kmsg_file = -1;
+#define ALOGD(...) ((void)dprintf(kmsg_file, __VA_ARGS__))
+#define ALOGE(...) ((void)dprintf(kmsg_file, __VA_ARGS__))
+#define ALOGW(...) ((void)dprintf(kmsg_file, __VA_ARGS__))
+#define ANDROID_LOG_ERROR 0
+#define ANDROID_LOG_INFO 0
+
 #include <linux/major.h>
 #include <linux/mmc/ioctl.h>
 
 #include <hardware_legacy/power.h>
 
 #include "ipc.h"
-#include "log.h"
 #include "rpmb.h"
 #include "storage.h"
 
@@ -133,6 +139,7 @@ static int log_buf(int priority, const char* prefix, const uint8_t* buf, size_t 
     size_t i;
     char line[LOG_BUF_SIZE] = {0};
     char* cur = line;
+    (void)priority;
 
     rc = snprintf(line, LOG_BUF_SIZE, "%s @%p [%zu]", prefix, buf, size);
     if (rc < 0 || rc >= LOG_BUF_SIZE) {
@@ -146,7 +153,7 @@ static int log_buf(int priority, const char* prefix, const uint8_t* buf, size_t 
              * (also flushes the header line on the first iteration and sets up
              * for printing the buffer itself)
              */
-            LOG_PRI(priority, LOG_TAG, "%s", line);
+            dprintf(kmsg_file, "%s", line);
             memset(line, 0, LOG_BUF_SIZE);
             cur = line;
             /* Shift output over by the length of the prefix */
@@ -162,7 +169,7 @@ static int log_buf(int priority, const char* prefix, const uint8_t* buf, size_t 
         }
         cur += rc;
     }
-    LOG_PRI(priority, LOG_TAG, "%s", line);
+    dprintf(kmsg_file, "%s", line);
 
     return 0;
 
@@ -569,6 +576,9 @@ err_response:
 int rpmb_open(const char* rpmb_devname, enum dev_type open_dev_type) {
     int rc, sg_version_num;
     dev_type = open_dev_type;
+
+    kmsg_file = open("/dev/kmsg", O_WRONLY | O_CLOEXEC);
+    ALOGE("storageproxyd: testing\n");
 
     if (dev_type != SOCK_RPMB) {
         rc = open(rpmb_devname, O_RDWR, 0);
