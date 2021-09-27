@@ -42,6 +42,12 @@ enum DirectRenderManager {
     DRM_OUTER,
 };
 
+enum SrceenSwitch {
+    SCREEN_SWITCH_DEFAULT,
+    SCREEN_SWITCH_DISABLE,
+    SCREEN_SWITCH_ENABLE,
+};
+
 class Charger : public ::android::hardware::health::V2_1::implementation::HalHealthLoop {
   public:
     using HealthInfo_1_0 = android::hardware::health::V1_0::HealthInfo;
@@ -67,9 +73,11 @@ class Charger : public ::android::hardware::health::V2_1::implementation::HalHea
     void InitDefaultAnimationFrames();
     void UpdateScreenState(int64_t now);
     int SetKeyCallback(int code, int value);
+    int SetSwCallback(int code, int value);
     void UpdateInputState(input_event* ev);
     void SetNextKeyCheck(key_state* key, int64_t timeout);
     void ProcessKey(int code, int64_t now);
+    void ProcessHallSensor(int code);
     void HandleInputState(int64_t now);
     void HandlePowerSupplyState(int64_t now);
     int InputCallback(int fd, unsigned int epevents);
@@ -83,6 +91,7 @@ class Charger : public ::android::hardware::health::V2_1::implementation::HalHea
     int64_t wait_batt_level_timestamp_ = 0;
 
     DirectRenderManager drm_;
+    SrceenSwitch screen_switch_;
 
     key_state keys_[KEY_MAX + 1] = {};
 
