@@ -62,9 +62,11 @@ class Charger : public ::android::hardware::health::V2_1::implementation::HalHea
     void InitDefaultAnimationFrames();
     void UpdateScreenState(int64_t now);
     int SetKeyCallback(int code, int value);
+    int SetSwCallback(int code, int value);
     void UpdateInputState(input_event* ev);
     void SetNextKeyCheck(key_state* key, int64_t timeout);
     void ProcessKey(int code, int64_t now);
+    void ProcessHallSensor(int code);
     void HandleInputState(int64_t now);
     void HandlePowerSupplyState(int64_t now);
     int InputCallback(int fd, unsigned int epevents);
@@ -79,6 +81,7 @@ class Charger : public ::android::hardware::health::V2_1::implementation::HalHea
 
     // 0: inner, 1: outer
     int drm_path_;
+    int screen_switch_;
 
     key_state keys_[KEY_MAX + 1] = {};
 
