@@ -131,6 +131,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "dd5b3878_d847738a",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 293,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2021-09-27T16:26:47Z",
+      "side": 1,
+      "message": "How about treating ASC \u003d\u003d 0x2a / ASCQ \u003d\u003d 0 as \"power on\"?\n\nThis is what I found in the JEDEC standard: \"UNIT ATTENTION – Indicates that the unit has been reset or unexpectedly powered-on or that removable media has changed.\"\n\nI think we should continue treating \"medium changed\" as an error.",
+      "parentUuid": "ec71359a_f4cdb195",
+      "range": {
+        "startLine": 290,
+        "startChar": 0,
+        "endLine": 293,
+        "endChar": 43
+      },
+      "revId": "52b735093f845d7deeec02b64727fa1ccb410ade",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "8161b146_a58324f9",
         "filename": "trusty/storage/proxy/rpmb.c",
         "patchSetId": 1
