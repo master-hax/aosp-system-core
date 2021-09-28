@@ -221,6 +221,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "09c66e88_75a879b2",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 293,
+      "author": {
+        "id": 1176763
+      },
+      "writtenOn": "2021-09-28T18:23:33Z",
+      "side": 1,
+      "message": "I got this once.\n09-28 11:06:13.966   451   451 D storageproxyd: UNIT ATTENTION with sense data: key\u003d6, asc\u003d0, ascq\u003d0",
+      "parentUuid": "29dee470_0d488789",
+      "range": {
+        "startLine": 290,
+        "startChar": 0,
+        "endLine": 293,
+        "endChar": 43
+      },
+      "revId": "52b735093f845d7deeec02b64727fa1ccb410ade",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "8161b146_a58324f9",
         "filename": "trusty/storage/proxy/rpmb.c",
         "patchSetId": 1
