@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "abb71fd7_bfedff59",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2021-09-28T23:58:17Z",
+      "side": 1,
+      "message": "Hi. This is a cherry-pick from git_master. PTAL.",
+      "revId": "7c7ec7b7bf4e518179c4985d1b9e20d40f3f0acc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
