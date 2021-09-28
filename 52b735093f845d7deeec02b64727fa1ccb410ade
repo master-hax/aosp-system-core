@@ -197,6 +197,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "29dee470_0d488789",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 293,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2021-09-28T17:24:48Z",
+      "side": 1,
+      "message": "The above link points at scsi_io_completion_action(). That function is not called from the regular completion path but only if a command completed partially (this does not happen with UFS devices as far as I know). The regular completion path is as follows:\n* The UFS driver calls scmd-\u003escsi_done(scmd).\n* The above results in calling scsi_mq_done().\n* scsi_mq_done() invokes blk_mq_complete_request().\n* blk_complete_request() calls rq-\u003eq-\u003emq_ops-\u003ecomplete(rq). For SCSI that involves calling scsi_complete().\n* scsi_complete() calls scsi_decide_disposition(). Depending on the value returned by that function, scsi_finish_command(), scsi_queue_insert() or scsi_eh_scmd_add() is called.\n* If the command should be completed, scsi_finish_command() calls drv-\u003edone(cmd) and scsi_io_completion().\n* scsi_io_completion() checks the SCSI result code. If it is not zero, scsi_io_completion_nz_result() is called.\n* scsi_end_request() is called.\n\nscsi_decide_disposition() calls scsi_check_sense() to decide how to proceed. As one can see in scsi_check_sense() some but not all unit attention conditions are retried.\n\nI prefer to retry only for certain unit attention conditions since I think that we should not retry commands if an unexpected unit attention code is received, e.g. because of cosmic radiation.\n\nAdditionally, retrying if the device reports e.g. \"INVALID FIELD IN CDB\" seems weird to me.",
+      "parentUuid": "e0fe83d5_c4103980",
+      "range": {
+        "startLine": 290,
+        "startChar": 0,
+        "endLine": 293,
+        "endChar": 43
+      },
+      "revId": "52b735093f845d7deeec02b64727fa1ccb410ade",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "8161b146_a58324f9",
         "filename": "trusty/storage/proxy/rpmb.c",
         "patchSetId": 1
