@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "28b377ef_bafe2ff7",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 4
+      },
+      "lineNbr": 277,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2021-09-29T17:18:02Z",
+      "side": 1,
+      "message": "I propose to leave out this code since if the device reports \"becoming ready\" a delay is required between retries.",
+      "range": {
+        "startLine": 269,
+        "startChar": 0,
+        "endLine": 277,
+        "endChar": 13
+      },
+      "revId": "b00843841e97e44891cd4054f1004ec21e155793",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4915a879_d133d339",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 4
+      },
+      "lineNbr": 289,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2021-09-29T17:18:02Z",
+      "side": 1,
+      "message": "Changing the LUN configuration of a UFS device requires a reboot so a UFS device should not report that \"REPORTED LUNS DATA HAS CHANGED\".",
+      "range": {
+        "startLine": 282,
+        "startChar": 0,
+        "endLine": 289,
+        "endChar": 13
+      },
+      "revId": "b00843841e97e44891cd4054f1004ec21e155793",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "574d238d_404107a6",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 4
+      },
+      "lineNbr": 296,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2021-09-29T17:18:02Z",
+      "side": 1,
+      "message": "Hmm ... I have not yet encountered this ASC code.",
+      "range": {
+        "startLine": 290,
+        "startChar": 0,
+        "endLine": 296,
+        "endChar": 13
+      },
+      "revId": "b00843841e97e44891cd4054f1004ec21e155793",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}

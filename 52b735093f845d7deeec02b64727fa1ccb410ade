@@ -267,6 +267,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "4d6c6bc5_d091bf6c",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 293,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2021-09-29T17:18:02Z",
+      "side": 1,
+      "message": "In scsi_io_completion() blk_stat is set by scsi_result_to_blk_status(). The latter function translates SAM_STAT_CHECK_CONDITION into BLK_STS_IOERR. I think the following code from scsi_io_completion() prevents the call to \nscsi_io_completion_action():\n\n\tif (unlikely(blk_stat \u0026\u0026 scsi_noretry_cmd(cmd))) {\n\t\tif (scsi_end_request(req, blk_stat, blk_rq_bytes(req)))\n\t\t\tWARN_ONCE(true,\n\t\t\t    \"Bytes remaining after failed, no-retry command\");\n\t\treturn;\n\t}\n\n\nscsi_noretry_cmd() returns 1 for pass-through commands if the host byte of the SCSI result is DID_OK and the SCSI status is SAM_STAT_CHECK_CONDITION.",
+      "parentUuid": "5b0b11d3_3d4c8b31",
+      "range": {
+        "startLine": 290,
+        "startChar": 0,
+        "endLine": 293,
+        "endChar": 43
+      },
+      "revId": "52b735093f845d7deeec02b64727fa1ccb410ade",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "8161b146_a58324f9",
@@ -470,6 +494,30 @@
       "side": 1,
       "message": "I have another change to retry on some ioctl errors (https://android-review.googlesource.com/c/platform/system/core/+/1801250/), but I don\u0027t think we\u0027ve ever actually seen that happen, so it\u0027s been lower priority.",
       "parentUuid": "1428975c_f04a69c2",
+      "range": {
+        "startLine": 450,
+        "startChar": 0,
+        "endLine": 454,
+        "endChar": 13
+      },
+      "revId": "52b735093f845d7deeec02b64727fa1ccb410ade",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f7db169c_7a2ff1bd",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 454,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2021-09-29T17:18:02Z",
+      "side": 1,
+      "message": "Agreed that this is lower priority.",
+      "parentUuid": "84d4123f_089a3046",
       "range": {
         "startLine": 450,
         "startChar": 0,
