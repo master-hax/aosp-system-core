@@ -70,6 +70,30 @@
       },
       "revId": "002ce446047aecf3e20417bab872d76755b7415e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e3d03c06_6dbc7942",
+        "filename": "init/subcontext.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 341,
+      "author": {
+        "id": 1291338
+      },
+      "writtenOn": "2021-09-29T01:44:59Z",
+      "side": 1,
+      "message": "Hmm. I didn\u0027t know the isMicrodroid() function. Rather than creating a new property (which will result in similar issues), I think using isMicrodroid() function seems fine for now. Further reliability issue could be resolved as a follow up task.",
+      "parentUuid": "98e82a9d_5c078611",
+      "range": {
+        "startLine": 341,
+        "startChar": 42,
+        "endLine": 341,
+        "endChar": 54
+      },
+      "revId": "002ce446047aecf3e20417bab872d76755b7415e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
