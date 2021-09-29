@@ -52,6 +52,24 @@
       "parentUuid": "4a68a38e_87bd3efd",
       "revId": "b5c21704e3ccaef0b4bf43c84f143d17dbb2848e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a94f1170_46f3822b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1408266
+      },
+      "writtenOn": "2021-09-29T02:13:01Z",
+      "side": 1,
+      "message": "I updated the existing fs_mgr/OWNERS instead. Please let me know if you want to add/remove owners from it.",
+      "parentUuid": "4ac6dcec_f39e1ab2",
+      "revId": "b5c21704e3ccaef0b4bf43c84f143d17dbb2848e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
