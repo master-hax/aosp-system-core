@@ -325,7 +325,7 @@ void Charger::UpdateScreenState(int64_t now) {
         if (healthd_draw_ == nullptr) return;
 
         if (android::sysprop::ChargerProperties::disable_init_blank().value_or(false)) {
-            healthd_draw_->blank_screen(true);
+            healthd_draw_->blank_screen(true, drm_path_);
             screen_blanked_ = true;
         }
     }
@@ -334,7 +334,7 @@ void Charger::UpdateScreenState(int64_t now) {
     if (batt_anim_.num_cycles > 0 && batt_anim_.cur_cycle == batt_anim_.num_cycles) {
         reset_animation(&batt_anim_);
         next_screen_transition_ = -1;
-        healthd_draw_->blank_screen(true);
+        healthd_draw_->blank_screen(true, drm_path_);
         screen_blanked_ = true;
         LOGV("[%" PRId64 "] animation done\n", now);
         if (charger_online()) request_suspend(true);
@@ -344,7 +344,7 @@ void Charger::UpdateScreenState(int64_t now) {
     disp_time = batt_anim_.frames[batt_anim_.cur_frame].disp_time;
 
     if (screen_blanked_) {
-        healthd_draw_->blank_screen(false);
+        healthd_draw_->blank_screen(false, drm_path_);
         screen_blanked_ = false;
     }
 
@@ -721,6 +721,7 @@ void Charger::Init(struct healthd_config* config) {
             batt_anim_.frames[i].surface = scale_frames[i];
         }
     }
+    drm_path_ = 0;
     ev_sync_key_state(std::bind(&Charger::SetKeyCallback, this, std::placeholders::_1,
                                 std::placeholders::_2));
 

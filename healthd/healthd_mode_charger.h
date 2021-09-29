@@ -77,6 +77,9 @@ class Charger : public ::android::hardware::health::V2_1::implementation::HalHea
     int64_t next_pwr_check_ = 0;
     int64_t wait_batt_level_timestamp_ = 0;
 
+    // 0: inner, 1: outer
+    int drm_path_;
+
     key_state keys_[KEY_MAX + 1] = {};
 
     animation batt_anim_;
