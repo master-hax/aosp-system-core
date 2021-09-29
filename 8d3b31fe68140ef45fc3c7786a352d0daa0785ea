@@ -38,6 +38,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "4e718b07_66f8a554",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-09-29T21:57:02Z",
+      "side": 1,
+      "message": "+primiano for \"Maybe traced and heapprofd...\"\n\n\u003e We could also consider changing the default action for these to ignore rather than kill.\n\nwe can\u0027t change the kernel, but maybe the static libc startup code should do that to be more like (or at least \"less unlike\") the dynamic libc startup code. i\u0027m a bit confused by dvander\u0027s \"since we\u0027re statically linked, we were not getting these builtin signal handlers\" though --- i thought static and dynamic were the same these days? ah, crap, looks like that\u0027s something we did for debuggerd (where we actually have functional parity) but the new BIONIC_SIGNAL_PROFILER stuff is indeed only for dynamic binaries.\n\nthat just seems like a bionic bug? shouldn\u0027t we revert this change and just `signal(BIONIC_SIGNAL_ART_PROFILER, SIG_IGN);` in bionic\u0027s static libc startup code? otherwise everyone [with a static binary] has to deal with this. (and hard-code magic like `SIGRT_MIN+4` and so on.) that seems pretty terrible?\n\n(that would also mean nothing for primiano\u0027s folks to do, i think.)",
+      "parentUuid": "90ee52d2_6dadb67a",
+      "revId": "8d3b31fe68140ef45fc3c7786a352d0daa0785ea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "96ea915b_089908ad",
         "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd_daemon.cpp",
         "patchSetId": 1
