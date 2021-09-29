@@ -37,6 +37,11 @@ struct key_state {
     int64_t timestamp;
 };
 
+enum DirectRenderManager {
+    DRM_INNER,
+    DRM_OUTER,
+};
+
 class Charger : public ::android::hardware::health::V2_1::implementation::HalHealthLoop {
   public:
     using HealthInfo_1_0 = android::hardware::health::V1_0::HealthInfo;
@@ -76,6 +81,8 @@ class Charger : public ::android::hardware::health::V2_1::implementation::HalHea
     int64_t next_key_check_ = 0;
     int64_t next_pwr_check_ = 0;
     int64_t wait_batt_level_timestamp_ = 0;
+
+    DirectRenderManager drm_;
 
     key_state keys_[KEY_MAX + 1] = {};
 
