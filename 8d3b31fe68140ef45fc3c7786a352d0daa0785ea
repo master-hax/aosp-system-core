@@ -1,0 +1,61 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3e631bf9_38635ee3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-09-29T21:12:01Z",
+      "side": 1,
+      "message": "+pirama in case he knows any more background here...",
+      "revId": "8d3b31fe68140ef45fc3c7786a352d0daa0785ea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "96ea915b_089908ad",
+        "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd_daemon.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-09-29T21:12:01Z",
+      "side": 1,
+      "message": "not the best name any more :-)",
+      "range": {
+        "startLine": 83,
+        "startChar": 13,
+        "endLine": 83,
+        "endChar": 43
+      },
+      "revId": "8d3b31fe68140ef45fc3c7786a352d0daa0785ea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fa760abd_aa9215f2",
+        "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd_daemon.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-09-29T21:12:01Z",
+      "side": 1,
+      "message": "this is weird... something\u0027s not right here. this should automatically be done for you (and this call should be a no-op). see filter_reserved_signals() in bionic.",
+      "revId": "8d3b31fe68140ef45fc3c7786a352d0daa0785ea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
