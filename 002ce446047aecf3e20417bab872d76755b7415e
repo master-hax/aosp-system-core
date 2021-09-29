@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "32d881e1_3d5a3731",
+        "filename": "init/subcontext.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 341,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2021-09-29T00:53:34Z",
+      "side": 1,
+      "message": "I\u0027m curious if this can break any downstream devices which happen to use the same name?",
+      "range": {
+        "startLine": 341,
+        "startChar": 42,
+        "endLine": 341,
+        "endChar": 54
+      },
+      "revId": "002ce446047aecf3e20417bab872d76755b7415e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
