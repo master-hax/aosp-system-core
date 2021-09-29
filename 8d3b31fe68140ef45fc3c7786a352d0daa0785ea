@@ -74,6 +74,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "afb022d6_d8a0447e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-09-29T23:56:07Z",
+      "side": 1,
+      "message": "not even built (because my p920 is busy running build benchmarks today) but something like https://android-review.googlesource.com/c/platform/bionic/+/1840754 seems like it should make this go away, without weird hacks in every static binary?\n\nthere\u0027s still probably the race condition that pirama mentions, but (a) that would need to be addressed in perfetto anyway [if it isn\u0027t already] and (b) this CL doesn\u0027t avoid that either.\n\nakailash: assuming that CL builds (!), can you test and see if that fixes things for you?",
+      "parentUuid": "ea6a38f7_4f866762",
+      "revId": "8d3b31fe68140ef45fc3c7786a352d0daa0785ea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "96ea915b_089908ad",
         "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd_daemon.cpp",
         "patchSetId": 1
