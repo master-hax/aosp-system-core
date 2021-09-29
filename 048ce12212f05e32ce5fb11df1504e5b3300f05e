@@ -3,6 +3,23 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "0374e881_fc3013fb",
+        "filename": "fastboot/fuzzer/fastboot_fuzzer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-09-29T01:37:31Z",
+      "side": 1,
+      "message": "This class should follow the C++ style guide, eg, \"InvokeParseApi\" instead of \"invokeParseApi\", and \"fdp_\" instead of \"mFdp\".",
+      "revId": "048ce12212f05e32ce5fb11df1504e5b3300f05e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "11271f23_00748291",
         "filename": "fastboot/fuzzer/fastboot_fuzzer.cpp",
         "patchSetId": 1
