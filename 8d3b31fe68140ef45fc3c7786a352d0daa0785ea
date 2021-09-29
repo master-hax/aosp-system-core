@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "90ee52d2_6dadb67a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1058860
+      },
+      "writtenOn": "2021-09-29T21:44:53Z",
+      "side": 1,
+      "message": "FWIW, for the code-coverage flush signal (37), we look at SigCgt for a pid to check if a handler is installed before sending that signal.  Maybe traced and heapprofd (https://cs.android.com/android/platform/superproject/+/master:bionic/libc/platform/bionic/reserved_signals.h;l\u003d42?q\u003dbionic%2Flibc%2Fplatform%2Fbionic%2Freserved_signals.h\u0026ss\u003dandroid) should do the same as well?\n\nWe could also consider changing the default action for these to ignore rather than kill.  We didn\u0027t do this for code coverage since we\u0027re moving away from using signals there.\n\nBoth suggestions won\u0027t help older releases though.  If snapuserd is a mainline module, this change would help older releases and it seems like a better solution.",
+      "parentUuid": "3e631bf9_38635ee3",
+      "revId": "8d3b31fe68140ef45fc3c7786a352d0daa0785ea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "96ea915b_089908ad",
