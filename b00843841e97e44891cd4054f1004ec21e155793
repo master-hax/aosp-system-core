@@ -26,6 +26,30 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "2722dece_b6668f85",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 4
+      },
+      "lineNbr": 277,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2021-09-29T17:30:43Z",
+      "side": 1,
+      "message": "Removed, makes sense.",
+      "parentUuid": "28b377ef_bafe2ff7",
+      "range": {
+        "startLine": 269,
+        "startChar": 0,
+        "endLine": 277,
+        "endChar": 13
+      },
+      "revId": "b00843841e97e44891cd4054f1004ec21e155793",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "4915a879_d133d339",
         "filename": "trusty/storage/proxy/rpmb.c",
         "patchSetId": 4
@@ -49,6 +73,30 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "06d84223_7926d435",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 4
+      },
+      "lineNbr": 289,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2021-09-29T17:30:43Z",
+      "side": 1,
+      "message": "Removed.",
+      "parentUuid": "4915a879_d133d339",
+      "range": {
+        "startLine": 282,
+        "startChar": 0,
+        "endLine": 289,
+        "endChar": 13
+      },
+      "revId": "b00843841e97e44891cd4054f1004ec21e155793",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "574d238d_404107a6",
         "filename": "trusty/storage/proxy/rpmb.c",
         "patchSetId": 4
@@ -60,6 +108,30 @@
       "writtenOn": "2021-09-29T17:18:02Z",
       "side": 1,
       "message": "Hmm ... I have not yet encountered this ASC code.",
+      "range": {
+        "startLine": 290,
+        "startChar": 0,
+        "endLine": 296,
+        "endChar": 13
+      },
+      "revId": "b00843841e97e44891cd4054f1004ec21e155793",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "36345261_451b0649",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 4
+      },
+      "lineNbr": 296,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2021-09-29T17:30:43Z",
+      "side": 1,
+      "message": "Then we shouldn\u0027t need it here, removed.",
+      "parentUuid": "574d238d_404107a6",
       "range": {
         "startLine": 290,
         "startChar": 0,
