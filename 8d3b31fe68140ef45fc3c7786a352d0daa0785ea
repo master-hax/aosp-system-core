@@ -56,6 +56,24 @@
       "message": "this is weird... something\u0027s not right here. this should automatically be done for you (and this call should be a no-op). see filter_reserved_signals() in bionic.",
       "revId": "8d3b31fe68140ef45fc3c7786a352d0daa0785ea",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "46c8bea7_9d4ee0e3",
+        "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd_daemon.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-09-29T21:19:04Z",
+      "side": 1,
+      "message": "The bug we hit was that, since we\u0027re statically linked, we were not getting these builtin signal handlers. The choice to statically link was to limit the number of things that get entrained with snapuserd, since the binary gets execveat()\u0027d off the ramdisk while /system is mounted (and during that time we cannot read from /system).\n\nSince snapuserd dying will cause a failed OTA, we thought blocking the signals would be a good defense measure.",
+      "parentUuid": "fa760abd_aa9215f2",
+      "revId": "8d3b31fe68140ef45fc3c7786a352d0daa0785ea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
