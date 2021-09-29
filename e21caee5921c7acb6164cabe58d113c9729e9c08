@@ -37,6 +37,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "e8cafd40_9220eec5",
+        "filename": "init/init.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 565,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-09-29T21:22:33Z",
+      "side": 1,
+      "message": "(i\u0027m usually the first one to ask for more logging of errors, but since this can only fail with EFAULT and we\u0027re passing a stack address, tbh i usually don\u0027t check the return value. though i see it is checked in LoadKernelModules(). splitting L127-134 [minus L131] of LoadKernelModules() out and calling it here too would be an option.)",
+      "parentUuid": "9c1e3a9c_00239c57",
+      "revId": "e21caee5921c7acb6164cabe58d113c9729e9c08",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "cea3e21c_95dec05b",
         "filename": "init/init.cpp",
         "patchSetId": 3
@@ -48,6 +66,24 @@
       "writtenOn": "2021-09-29T18:25:00Z",
       "side": 1,
       "message": "If we\u0027re going to check the return value of snprintf(), it should be \u003c 0 or \u003c sizeof(buf) I think. Or, just use android::base::StringPrintf.",
+      "revId": "e21caee5921c7acb6164cabe58d113c9729e9c08",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ffd8db72_592cb21f",
+        "filename": "init/init.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 567,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-09-29T21:22:33Z",
+      "side": 1,
+      "message": "+1 to StringPrintf and not thinking about it.\n\n(or, alternatively, not checking for the \"can\u0027t happen\" error given the fixed-size buffer and two 32-bit unsigned integers plus a dot plus a NUL \u003d\u003d 10+1+10+1 \u003d\u003d 22, so we have a whole 10 spare bytes. like with the uname() call, there\u0027s little value to checking and logging something that can only really happen if there\u0027s a miscompile.)\n\n-*-\n\nif i was going to check and log anything, it would be the sscanf() :-) i\u0027d hope we never see a \"weird\" string there, but since that is just string data coming from outside, that seems like the one we can\u0027t actually trust. (other than \"imagine how many other things would be broken if upstream switched to SHAs or whatever\"!)",
+      "parentUuid": "cea3e21c_95dec05b",
       "revId": "e21caee5921c7acb6164cabe58d113c9729e9c08",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
