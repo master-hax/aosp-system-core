@@ -92,6 +92,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "0ddc5a03_5c96c09a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-09-30T07:22:50Z",
+      "side": 1,
+      "message": "\u003e akailash: assuming that CL builds (!), can you test and see if that fixes things for you?\n\nYes.. that works - verified that the signal is ignored. I will go ahead and revert this patch.\n\n\u003e this should automatically be done for you (and this call should be a no-op). see \u003e filter_reserved_signals() in bionic.\n\nThis isn\u0027t true; having an explicit signal handler will override the bionic\u0027s handler; in this case, bionic\u0027s SIG_IGN will not be honored but will invoke process signal handler.",
+      "parentUuid": "afb022d6_d8a0447e",
+      "revId": "8d3b31fe68140ef45fc3c7786a352d0daa0785ea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "96ea915b_089908ad",
         "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd_daemon.cpp",
         "patchSetId": 1
