@@ -110,6 +110,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "c8df8ac5_4dc544a6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1040443
+      },
+      "writtenOn": "2021-09-30T09:36:29Z",
+      "side": 1,
+      "message": "\u003e +primiano for \"Maybe traced and heapprofd...\"\n\nFYI we (perfetto team, +rsavitski) are looking to move away from signals for traced_perf (callstack sampling) in T, likely with some sandboxed ptrace-like broker process that can hand out read-only /proc/pid/mem.\n\nThese signals always made me nervous because I was fearing that something like this would have happened one day. But at the same time there wasn\u0027t a good option back then.\n\nThere is also a inherent race (between the kernel creating the process and libc initializer ignoring the signal) but today we avoid that in 99% cases with a load-bearing sleep() in traced_perf (which is another reason why I don\u0027t like those signals)\n\nInstead, we won\u0027t be able to avoid signals for heap profiling (heapprofd) because there we need to trigger the installation of malloc hooks and come client initialization.\n\nBut heapprofd is less problematic (and also doesn\u0027t have that race issue) because we never profile arbitrary processes (unlike the case of callstack sampling). We always decide upfront which processes we want to profile, which avoids suprises like this.",
+      "parentUuid": "0ddc5a03_5c96c09a",
+      "revId": "8d3b31fe68140ef45fc3c7786a352d0daa0785ea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "96ea915b_089908ad",
         "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd_daemon.cpp",
         "patchSetId": 1
