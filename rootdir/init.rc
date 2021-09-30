@@ -791,6 +791,9 @@ on post-fs-data
     # group), update_engine and update_verifier.
     mkdir /data/ota_package 0770 system cache encryption=Require
 
+    # create the checkin directory. It will be accessed by Gmscore.
+    mkdir /data/checkin 0770 system cache encryption=Require
+
     # create resource-cache and double-check the perms
     mkdir /data/resource-cache 0771 system system encryption=Require
     chown system system /data/resource-cache
