@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a1bee4a7_eafafc07",
+        "filename": "init/init.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 568,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-09-30T16:21:40Z",
+      "side": 1,
+      "message": "nit: no need for a local; this will fit in the SetProperty() call.",
+      "revId": "d209c9181faded7cae88cbc3720459fb7714b505",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
