@@ -53,6 +53,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "87a4dbbb_59d09e84",
+        "filename": "init/init.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 565,
+      "author": {
+        "id": 1084624
+      },
+      "writtenOn": "2021-09-30T13:52:43Z",
+      "side": 1,
+      "message": "I\u0027m going to resort to a single if-clause for uname || sscanf. Also, the result of sscanf should be exactly 2, not just non-zero.\n\nAdding logging is fine, but PLOG(ERROR) seems to also print some random errno, is that expected?\n\n`Could not parse the kernel version from uname: No such file or directory`",
+      "parentUuid": "e8cafd40_9220eec5",
+      "revId": "e21caee5921c7acb6164cabe58d113c9729e9c08",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "cea3e21c_95dec05b",
@@ -84,6 +102,24 @@
       "side": 1,
       "message": "+1 to StringPrintf and not thinking about it.\n\n(or, alternatively, not checking for the \"can\u0027t happen\" error given the fixed-size buffer and two 32-bit unsigned integers plus a dot plus a NUL \u003d\u003d 10+1+10+1 \u003d\u003d 22, so we have a whole 10 spare bytes. like with the uname() call, there\u0027s little value to checking and logging something that can only really happen if there\u0027s a miscompile.)\n\n-*-\n\nif i was going to check and log anything, it would be the sscanf() :-) i\u0027d hope we never see a \"weird\" string there, but since that is just string data coming from outside, that seems like the one we can\u0027t actually trust. (other than \"imagine how many other things would be broken if upstream switched to SHAs or whatever\"!)",
       "parentUuid": "cea3e21c_95dec05b",
+      "revId": "e21caee5921c7acb6164cabe58d113c9729e9c08",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6a4c1ca4_323c3ee5",
+        "filename": "init/init.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 567,
+      "author": {
+        "id": 1084624
+      },
+      "writtenOn": "2021-09-30T13:52:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ffd8db72_592cb21f",
       "revId": "e21caee5921c7acb6164cabe58d113c9729e9c08",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
