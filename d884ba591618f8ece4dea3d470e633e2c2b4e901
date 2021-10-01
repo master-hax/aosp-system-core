@@ -51,6 +51,23 @@
       "parentUuid": "4bea3631_0f7289d9",
       "revId": "d884ba591618f8ece4dea3d470e633e2c2b4e901",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "25af503d_831a987c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-10-01T03:43:31Z",
+      "side": 1,
+      "message": "Thanks, retrying presubmit.",
+      "revId": "d884ba591618f8ece4dea3d470e633e2c2b4e901",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
