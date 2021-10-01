@@ -33,6 +33,24 @@
       "message": "It looks like this needs an accompanying selinux patch:\n\n09-30 06:00:26.992     1     1 I auditd  : type\u003d1400 audit(0.0:4): avc: denied { ioctl } for comm\u003d\"init\" path\u003d\"/dev/block/loop32\" dev\u003d\"tmpfs\" ino\u003d23974 ioctlcmd\u003d0x4c04 scontext\u003du:r:init:s0 tcontext\u003du:object_r:loop_device:s0 tclass\u003dblk_file permissive\u003d0",
       "revId": "d884ba591618f8ece4dea3d470e633e2c2b4e901",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "72a7d364_4043c1ec",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1639060
+      },
+      "writtenOn": "2021-10-01T02:54:29Z",
+      "side": 1,
+      "message": "update new patch：\nhttps://android-review.googlesource.com/c/platform/system/sepolicy/+/1843133",
+      "parentUuid": "4bea3631_0f7289d9",
+      "revId": "d884ba591618f8ece4dea3d470e633e2c2b4e901",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
