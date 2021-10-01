@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c866279e_d18ef40a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1146974
+      },
+      "writtenOn": "2021-10-01T01:51:03Z",
+      "side": 1,
+      "message": "Hung-ying and Robert, could you PTAL at the CL for the vendor api level representation?",
+      "revId": "dfbdd9333699c32ab85e80845d030c06d873638d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
