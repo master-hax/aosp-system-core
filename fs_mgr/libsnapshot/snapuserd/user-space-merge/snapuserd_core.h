@@ -258,6 +258,9 @@ class SnapshotHandler : public std::enable_shared_from_this<SnapshotHandler> {
     bool ReadAheadIOCompleted(bool sync);
     void ReadAheadIOFailed();
 
+    // Return the snapshot status
+    std::string GetMergeStatus();
+
     bool ReconstructDataFromCow() { return populate_data_from_cow_; }
     void ReconstructDataFromCowFinish() { populate_data_from_cow_ = false; }
 
