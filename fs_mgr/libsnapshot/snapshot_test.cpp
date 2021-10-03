@@ -45,6 +45,8 @@
 #include "partition_cow_creator.h"
 #include "utility.h"
 
+#include <android-base/properties.h>
+
 // Mock classes are not used. Header included to ensure mocked class definition aligns with the
 // class itself.
 #include <libsnapshot/mock_device_info.h>
@@ -272,7 +274,7 @@ class SnapshotTest : public ::testing::Test {
     AssertionResult DeleteSnapshotDevice(const std::string& snapshot) {
         AssertionResult res = AssertionSuccess();
         if (!(res = DeleteDevice(snapshot))) return res;
-        if (!sm->UnmapDmUserDevice(snapshot)) {
+        if (!sm->UnmapDmUserDevice(snapshot + "-user-cow")) {
             return AssertionFailure() << "Cannot delete dm-user device for " << snapshot;
         }
         if (!(res = DeleteDevice(snapshot + "-inner"))) return res;
@@ -2559,5 +2561,17 @@ void SnapshotTestEnvironment::TearDown() {
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);
     ::testing::AddGlobalTestEnvironment(new ::android::snapshot::SnapshotTestEnvironment());
+    if (!android::base::SetProperty("virtual_ab.userspace.snapshots.enabled", "0")) {
+        return testing::AssertionFailure()
+               << "Failed to disable property: virtual_ab.userspace.snapshots.enabled";
+    }
+
+    pid_t pid = android::snapshot::GetPidByName("snapuserd");
+    if (pid != 0) {
+        if (kill(pid, SIGKILL) < 0) {
+            return testing::AssertionFailure() << "Failed to kill snapuserd process";
+        }
+    }
+
     return RUN_ALL_TESTS();
 }
