@@ -58,7 +58,7 @@ static constexpr char kSnapuserdFirstStageInfoVar[] = "FIRST_STAGE_SNAPUSERD_INF
 static constexpr char kSnapuserdLabel[] = "u:object_r:snapuserd_exec:s0";
 static constexpr char kSnapuserdSocketLabel[] = "u:object_r:snapuserd_socket:s0";
 
-void LaunchFirstStageSnapuserd() {
+void LaunchFirstStageSnapuserd(SnapshotDriver driver) {
     SocketDescriptor socket_desc;
     socket_desc.name = android::snapshot::kSnapuserdSocket;
     socket_desc.type = SOCK_STREAM;
@@ -80,14 +80,45 @@ void LaunchFirstStageSnapuserd() {
     }
     if (pid == 0) {
         socket->Publish();
-        char arg0[] = "/system/bin/snapuserd";
-        char* const argv[] = {arg0, nullptr};
-        if (execv(arg0, argv) < 0) {
+
+        if (driver == SnapshotDriver::DM_USER) {
+            LOG(INFO) << "Launching user-space snapshot daemon";
+            char arg0[] = "/system/bin/snapuserd";
+            char arg1[] = "-user_snapshot";
+            char* const argv[] = {arg0, arg1, nullptr};
+            if (execv(arg0, argv) < 0) {
+                PLOG(FATAL) << "Cannot launch snapuserd; execv failed";
+            }
+            _exit(127);
+        } else {
+            LOG(INFO) << "Launching dm-snapshot snapuserd daemon";
+            char arg0[] = "/system/bin/snapuserd";
+            char* const argv[] = {arg0, nullptr};
+            if (execv(arg0, argv) < 0) {
+                PLOG(FATAL) << "Cannot launch snapuserd; execv failed";
+            }
+            _exit(127);
+        }
+
+#if 0
+        std::string user_snapshot = "-user_snapshot";
+        std::vector<char*> argv;
+        if (driver == SnapshotDriver::DM_USER) {
+            argv.emplace_back(user_snapshot.data());
+            argv.emplace_back(nullptr);
+        } else {
+            argv.emplace_back(nullptr);
+        }
+
+        if (execv(arg0, reinterpret_cast<char* const*>(argv.data())) < 0) {
             PLOG(FATAL) << "Cannot launch snapuserd; execv failed";
         }
+
         _exit(127);
+#endif
     }
 
+    LOG(INFO) << "Connecting to snapused daemon....";
     auto client = SnapuserdClient::Connect(android::snapshot::kSnapuserdSocket, 10s);
     if (!client) {
         LOG(FATAL) << "Could not connect to first-stage snapuserd";

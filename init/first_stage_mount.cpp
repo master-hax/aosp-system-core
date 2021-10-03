@@ -391,7 +391,14 @@ bool FirstStageMount::CreateSnapshotPartitions(SnapshotManager* sm) {
 
     use_snapuserd_ = sm->IsSnapuserdRequired();
     if (use_snapuserd_) {
-        LaunchFirstStageSnapuserd();
+        LOG(INFO) << "Init Calling UpdateUsesUsersnapshots";
+        if (sm->UpdateUsesUsersnapshots()) {
+            LOG(INFO) << "LaunchFirstStageSnapuserd with DM_USER";
+            LaunchFirstStageSnapuserd(SnapshotDriver::DM_USER);
+        } else {
+            LOG(INFO) << "LaunchFirstStageSnapuserd with DM_SNAPSHOT";
+            LaunchFirstStageSnapuserd(SnapshotDriver::DM_SNAPSHOT);
+        }
     }
 
     sm->SetUeventRegenCallback([this](const std::string& device) -> bool {
