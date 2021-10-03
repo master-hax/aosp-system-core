@@ -187,6 +187,10 @@ bool IsCompressionEnabled() {
     return android::base::GetBoolProperty("ro.virtual_ab.compression.enabled", false);
 }
 
+bool IsUserspaceSnapshotsEnabled() {
+    return android::base::GetBoolProperty("ro.virtual_ab.userspace.snapshots.enabled", false);
+}
+
 std::string GetOtherPartitionName(const std::string& name) {
     auto suffix = android::fs_mgr::GetPartitionSlotSuffix(name);
     CHECK(suffix == "_a" || suffix == "_b");
