@@ -272,7 +272,7 @@ class SnapshotTest : public ::testing::Test {
     AssertionResult DeleteSnapshotDevice(const std::string& snapshot) {
         AssertionResult res = AssertionSuccess();
         if (!(res = DeleteDevice(snapshot))) return res;
-        if (!sm->UnmapDmUserDevice(snapshot)) {
+        if (!sm->UnmapDmUserDevice(snapshot + "-user-cow")) {
             return AssertionFailure() << "Cannot delete dm-user device for " << snapshot;
         }
         if (!(res = DeleteDevice(snapshot + "-inner"))) return res;
