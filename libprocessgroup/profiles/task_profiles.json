@@ -613,6 +613,10 @@
       "Profiles": [ "RealtimePerformance", "MaxIoPriority", "TimerSlackNormal" ]
     },
     {
+      "Name": "SCHED_SP_BACKGROUND_PRIO",
+      "Profiles": [ "NormalPerformance", "LowIoPriority", "TimerSlackHigh" ]
+    },
+    {
       "Name": "CPUSET_SP_DEFAULT",
       "Profiles": [ "TimerSlackNormal" ]
     },
