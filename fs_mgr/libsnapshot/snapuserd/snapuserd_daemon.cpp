@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-#include "snapuserd_daemon.h"
-
 #include <android-base/logging.h>
+#include <android-base/properties.h>
 #include <android-base/strings.h>
 #include <gflags/gflags.h>
 #include <snapuserd/snapuserd_client.h>
+
+#include "snapuserd_daemon.h"
 
 DEFINE_string(socket, android::snapshot::kSnapuserdSocket, "Named socket or socket path.");
 DEFINE_bool(no_socket, false,
@@ -30,7 +31,55 @@ DEFINE_bool(socket_handoff, false,
 namespace android {
 namespace snapshot {
 
-bool Daemon::StartServer(int argc, char** argv) {
+bool Daemon::IsUserspaceSnapshotsEnabled() {
+    return android::base::GetBoolProperty("ro.virtual_ab.userspace.snapshots", false);
+}
+
+bool Daemon::StartServerForUserspaceSnapshots(int argc, char** argv) {
+    int arg_start = gflags::ParseCommandLineFlags(&argc, &argv, true);
+
+    sigfillset(&signal_mask_);
+    sigdelset(&signal_mask_, SIGINT);
+    sigdelset(&signal_mask_, SIGTERM);
+    sigdelset(&signal_mask_, SIGUSR1);
+
+    // Masking signals here ensure that after this point, we won't handle INT/TERM
+    // until after we call into ppoll()
+    signal(SIGINT, Daemon::SignalHandler);
+    signal(SIGTERM, Daemon::SignalHandler);
+    signal(SIGPIPE, Daemon::SignalHandler);
+    signal(SIGUSR1, Daemon::SignalHandler);
+
+    MaskAllSignalsExceptIntAndTerm();
+
+    if (FLAGS_socket_handoff) {
+        return usrsvr_.RunForSocketHandoff();
+    }
+    if (!FLAGS_no_socket) {
+        if (!usrsvr_.Start(FLAGS_socket)) {
+            return false;
+        }
+        return usrsvr_.Run();
+    }
+
+    for (int i = arg_start; i < argc; i++) {
+        auto parts = android::base::Split(argv[i], ",");
+        if (parts.size() != 4) {
+            LOG(ERROR) << "Malformed message, expected three sub-arguments.";
+            return false;
+        }
+        auto handler = usrsvr_.AddHandler(parts[0], parts[1], parts[2], parts[3]);
+        if (!handler || !usrsvr_.StartHandler(handler)) {
+            return false;
+        }
+    }
+
+    // Skip the accept() call to avoid spurious log spam. The server will still
+    // run until all handlers have completed.
+    return usrsvr_.WaitForSocket();
+}
+
+bool Daemon::StartServerForDmSnapshot(int argc, char** argv) {
     int arg_start = gflags::ParseCommandLineFlags(&argc, &argv, true);
 
     sigfillset(&signal_mask_);
@@ -95,11 +144,19 @@ void Daemon::MaskAllSignals() {
 }
 
 void Daemon::Interrupt() {
-    server_.Interrupt();
+    if (IsUserspaceSnapshotsEnabled()) {
+        usrsvr_.Interrupt();
+    } else {
+        server_.Interrupt();
+    }
 }
 
 void Daemon::ReceivedSocketSignal() {
-    server_.ReceivedSocketSignal();
+    if (IsUserspaceSnapshotsEnabled()) {
+        usrsvr_.ReceivedSocketSignal();
+    } else {
+        server_.ReceivedSocketSignal();
+    }
 }
 
 void Daemon::SignalHandler(int signal) {
@@ -133,9 +190,17 @@ int main(int argc, char** argv) {
 
     android::snapshot::Daemon& daemon = android::snapshot::Daemon::Instance();
 
-    if (!daemon.StartServer(argc, argv)) {
-        LOG(ERROR) << "Snapuserd daemon failed to start.";
-        exit(EXIT_FAILURE);
+    if (daemon.IsUserspaceSnapshotsEnabled()) {
+        if (!daemon.StartServerForUserspaceSnapshots(argc, argv)) {
+            LOG(ERROR) << "Snapuserd daemon failed to start for userspace snapshots.";
+            exit(EXIT_FAILURE);
+        }
+    } else {
+        if (!daemon.StartServerForDmSnapshot(argc, argv)) {
+            LOG(ERROR) << "Snapuserd daemon failed to start for dm-snapshots.";
+            exit(EXIT_FAILURE);
+        }
     }
+
     return 0;
 }
