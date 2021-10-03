@@ -491,8 +491,8 @@ class SnapshotManager final : public ISnapshotManager {
 
     // Create a dm-user device for a given snapshot.
     bool MapDmUserCow(LockedFile* lock, const std::string& name, const std::string& cow_file,
-                      const std::string& base_device, const std::chrono::milliseconds& timeout_ms,
-                      std::string* path);
+                      const std::string& base_device, const std::string& base_path_merge,
+                      const std::chrono::milliseconds& timeout_ms, std::string* path);
 
     // Map the source device used for dm-user.
     bool MapSourceDevice(LockedFile* lock, const std::string& name,
@@ -691,6 +691,9 @@ class SnapshotManager final : public ISnapshotManager {
     // Unmap a dm-user device through snapuserd.
     bool UnmapDmUserDevice(const std::string& snapshot_name);
 
+    // Unmap a dm-user device for user space snapshots
+    bool UnmapUserspaceSnapshotDevice(LockedFile* lock, const std::string& snapshot_name);
+
     // If there isn't a previous update, return true. |needs_merge| is set to false.
     // If there is a previous update but the device has not boot into it, tries to cancel the
     //   update and delete any snapshots. Return true if successful. |needs_merge| is set to false.
@@ -792,6 +795,7 @@ class SnapshotManager final : public ISnapshotManager {
     std::function<bool(const std::string&)> uevent_regen_callback_;
     std::unique_ptr<SnapuserdClient> snapuserd_client_;
     std::unique_ptr<LpMetadata> old_partition_metadata_;
+    bool snapshot_user_space_ = false;
 };
 
 }  // namespace snapshot
