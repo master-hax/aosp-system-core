@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e75951ed_b14974b1",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_dm_user.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 256,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-10-03T10:09:54Z",
+      "side": 1,
+      "message": "I am working on adding wrapper API\u0027s to test I/O path so that we don\u0027t have to rely on dm-user/block layer in the kernel.",
+      "revId": "2e66dccf467ce94b3b2d44dc4256d3a5344ad6ea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
