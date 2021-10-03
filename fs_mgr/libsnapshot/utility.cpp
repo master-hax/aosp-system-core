@@ -22,6 +22,7 @@
 
 #include <android-base/file.h>
 #include <android-base/logging.h>
+#include <android-base/parseint.h>
 #include <android-base/properties.h>
 #include <android-base/strings.h>
 #include <fs_mgr/roots.h>
@@ -187,12 +188,42 @@ bool IsCompressionEnabled() {
     return android::base::GetBoolProperty("ro.virtual_ab.compression.enabled", false);
 }
 
+bool IsUserspaceSnapshotsEnabled() {
+    return android::base::GetBoolProperty("virtual_ab.userspace.snapshots.enabled", false);
+}
+
 std::string GetOtherPartitionName(const std::string& name) {
     auto suffix = android::fs_mgr::GetPartitionSlotSuffix(name);
     CHECK(suffix == "_a" || suffix == "_b");
 
     auto other_suffix = (suffix == "_a") ? "_b" : "_a";
     return name.substr(0, name.size() - suffix.size()) + other_suffix;
+}
+
+pid_t GetPidByName(const std::string& name) {
+    std::string cmd = "pidof " + name;
+    std::unique_ptr<FILE, decltype(&pclose)> fd(popen(cmd.c_str(), "r"), pclose);
+    if (fd) {
+        char buf[128];
+        if (fgets(buf, sizeof(buf), fd.get()) != nullptr) {
+            pid_t pid;
+            std::string str(buf);
+            if (android::base::ParseInt(android::base::Trim(buf), &pid, 0)) {
+                return pid;
+            } else {
+                LOG(ERROR) << "ParseInt failed while getting pid for process: " << name;
+            }
+        } else {
+            if (ferror(fd.get())) {
+                LOG(ERROR) << "I/O error when reading pid of... " << name;
+            } else if (feof(fd.get())) {
+                LOG(ERROR) << "end of file reached when reading pid of... " << name;
+            }
+        }
+    } else {
+        LOG(ERROR) << "popen failed for : " << cmd;
+    }
+    return 0;
 }
 
 }  // namespace snapshot
