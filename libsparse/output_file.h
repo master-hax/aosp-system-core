@@ -31,7 +31,7 @@ struct output_file* output_file_open_callback(int (*write)(void*, const void*, s
                                               unsigned int block_size, int64_t len, int gz,
                                               int sparse, int chunks, int crc);
 int write_data_chunk(struct output_file* out, uint64_t len, void* data);
-int write_fill_chunk(struct output_file* out, uint64_t len, uint32_t fill_val);
+int write_fill_chunk(struct output_file* out, uint64_t len, uint64_t fill_val);
 int write_file_chunk(struct output_file* out, uint64_t len, const char* file, int64_t offset);
 int write_fd_chunk(struct output_file* out, uint64_t len, int fd, int64_t offset);
 int write_skip_chunk(struct output_file* out, uint64_t len);

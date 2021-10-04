@@ -40,7 +40,7 @@ struct backed_block {
       int64_t offset;
     } fd;
     struct {
-      uint32_t val;
+      uint64_t val;
     } fill;
   };
   struct backed_block* next;
@@ -92,7 +92,7 @@ int64_t backed_block_file_offset(struct backed_block* bb) {
   }
 }
 
-uint32_t backed_block_fill_val(struct backed_block* bb) {
+uint64_t backed_block_fill_val(struct backed_block* bb) {
   assert(bb->type == BACKED_BLOCK_FILL);
   return bb->fill.val;
 }
@@ -270,7 +270,7 @@ static int queue_bb(struct backed_block_list* bbl, struct backed_block* new_bb) 
 }
 
 /* Queues a fill block of memory to be written to the specified data blocks */
-int backed_block_add_fill(struct backed_block_list* bbl, unsigned int fill_val, uint64_t len,
+int backed_block_add_fill(struct backed_block_list* bbl, unsigned long int fill_val, uint64_t len,
                           unsigned int block) {
   struct backed_block* bb = reinterpret_cast<backed_block*>(calloc(1, sizeof(struct backed_block)));
   if (bb == nullptr) {

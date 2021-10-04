@@ -81,7 +81,7 @@ int sparse_file_add_data(struct sparse_file* s, void* data, uint64_t len, unsign
  * sparse_file_add_fill - associate a fill chunk with a sparse file
  *
  * @s - sparse file cookie
- * @fill_val - 32 bit fill data
+ * @fill_val - 64 bit fill data
  * @len - length of the fill block
  * @block - offset in blocks into the sparse file to place the fill chunk
  *
@@ -92,7 +92,7 @@ int sparse_file_add_data(struct sparse_file* s, void* data, uint64_t len, unsign
  *
  * Returns 0 on success, negative errno on error.
  */
-int sparse_file_add_fill(struct sparse_file* s, uint32_t fill_val, uint64_t len,
+int sparse_file_add_fill(struct sparse_file* s, uint64_t fill_val, uint64_t len,
                          unsigned int block);
 
 /**

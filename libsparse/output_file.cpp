@@ -66,7 +66,7 @@ struct output_file_ops {
 
 struct sparse_file_ops {
   int (*write_data_chunk)(struct output_file* out, uint64_t len, void* data);
-  int (*write_fill_chunk)(struct output_file* out, uint64_t len, uint32_t fill_val);
+  int (*write_fill_chunk)(struct output_file* out, uint64_t len, uint64_t fill_val);
   int (*write_skip_chunk)(struct output_file* out, uint64_t len);
   int (*write_end_chunk)(struct output_file* out);
 };
@@ -81,7 +81,7 @@ struct output_file {
   unsigned int block_size;
   int64_t len;
   char* zero_buf;
-  uint32_t* fill_buf;
+  uint64_t* fill_buf;
   char* buf;
 };
 
@@ -340,7 +340,7 @@ static int write_sparse_skip_chunk(struct output_file* out, uint64_t skip_len) {
   return 0;
 }
 
-static int write_sparse_fill_chunk(struct output_file* out, uint64_t len, uint32_t fill_val) {
+static int write_sparse_fill_chunk(struct output_file* out, uint64_t len, uint64_t fill_val) {
   chunk_header_t chunk_header;
   uint64_t rnd_up_len;
   int count;
@@ -362,7 +362,7 @@ static int write_sparse_fill_chunk(struct output_file* out, uint64_t len, uint32
 
   if (out->use_crc) {
     count = out->block_size / sizeof(uint32_t);
-    while (count--) out->crc32 = sparse_crc32(out->crc32, &fill_val, sizeof(uint32_t));
+    while (count--) out->crc32 = sparse_crc32(out->crc32, &fill_val, sizeof(uint64_t));
   }
 
   out->cur_out_ptr += rnd_up_len;
@@ -454,13 +454,13 @@ static int write_normal_data_chunk(struct output_file* out, uint64_t len, void* 
   return ret;
 }
 
-static int write_normal_fill_chunk(struct output_file* out, uint64_t len, uint32_t fill_val) {
+static int write_normal_fill_chunk(struct output_file* out, uint64_t len, uint64_t fill_val) {
   int ret;
   unsigned int i;
   uint64_t write_len;
 
   /* Initialize fill_buf with the fill_val */
-  for (i = 0; i < out->block_size / sizeof(uint32_t); i++) {
+  for (i = 0; i < out->block_size / sizeof(uint64_t); i++) {
     out->fill_buf[i] = fill_val;
   }
 
@@ -518,7 +518,7 @@ static int output_file_init(struct output_file* out, int block_size, int64_t len
     return -ENOMEM;
   }
 
-  out->fill_buf = reinterpret_cast<uint32_t*>(calloc(block_size, 1));
+  out->fill_buf = reinterpret_cast<uint64_t*>(calloc(block_size, 1));
   if (!out->fill_buf) {
     error_errno("malloc fill_buf");
     ret = -ENOMEM;
@@ -645,7 +645,7 @@ int write_data_chunk(struct output_file* out, uint64_t len, void* data) {
 }
 
 /* Write a contiguous region of data blocks with a fill value */
-int write_fill_chunk(struct output_file* out, uint64_t len, uint32_t fill_val) {
+int write_fill_chunk(struct output_file* out, uint64_t len, uint64_t fill_val) {
   return out->sparse_ops->write_fill_chunk(out, len, fill_val);
 }
 
