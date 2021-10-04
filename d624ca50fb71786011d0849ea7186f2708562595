@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2af03a25_fcb04437",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-10-04T22:49:45Z",
+      "side": 1,
+      "message": "i\u0027ve never heard of a sysprop library before today. +jiyong?\n\n(also, isn\u0027t there a more specific home for this than system/core?)",
+      "revId": "d624ca50fb71786011d0849ea7186f2708562595",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8833ca90_ae946013",
+        "filename": "hypervisor/sysprop/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-10-04T22:49:45Z",
+      "side": 1,
+      "message": "no it didn\u0027t :-)",
+      "revId": "d624ca50fb71786011d0849ea7186f2708562595",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
