@@ -1,0 +1,234 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0f25024d_0635a6d8",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_core.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 179,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2021-10-05T22:03:54Z",
+      "side": 1,
+      "message": "I\u0027m slightly worried that mapped_addr_ isn\u0027t managed by RAII. Consider wrapping this in a unique_ptr with custom deleter?",
+      "range": {
+        "startLine": 179,
+        "startChar": 4,
+        "endLine": 179,
+        "endChar": 16
+      },
+      "revId": "a5f6b36ca55d256520b73f990d70a4d2e8e8f9d2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "163c540a_a57449ff",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_core.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 177,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2021-10-05T22:03:54Z",
+      "side": 1,
+      "message": "Pass a const ref or raw pointer unless you need to mutate the unique ptr itself.",
+      "range": {
+        "startLine": 177,
+        "startChar": 25,
+        "endLine": 177,
+        "endChar": 63
+      },
+      "revId": "a5f6b36ca55d256520b73f990d70a4d2e8e8f9d2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "da348dad_434122fa",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_core.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 178,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2021-10-05T22:03:54Z",
+      "side": 1,
+      "message": "same here",
+      "range": {
+        "startLine": 178,
+        "startChar": 33,
+        "endLine": 178,
+        "endChar": 73
+      },
+      "revId": "a5f6b36ca55d256520b73f990d70a4d2e8e8f9d2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a5737cb7_451978a5",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_core.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 179,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2021-10-05T22:03:54Z",
+      "side": 1,
+      "message": "and here",
+      "range": {
+        "startLine": 179,
+        "startChar": 29,
+        "endLine": 179,
+        "endChar": 68
+      },
+      "revId": "a5f6b36ca55d256520b73f990d70a4d2e8e8f9d2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "260c751b_b53c587c",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_core.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 181,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2021-10-05T22:03:54Z",
+      "side": 1,
+      "message": "here",
+      "range": {
+        "startLine": 181,
+        "startChar": 21,
+        "endLine": 181,
+        "endChar": 60
+      },
+      "revId": "a5f6b36ca55d256520b73f990d70a4d2e8e8f9d2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7ef4507a_28ce3ef6",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_core.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 204,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2021-10-05T22:03:54Z",
+      "side": 1,
+      "message": "If SnapshotHandler is going to make a copy of these strings anyway, pass by value then move construct it? This allows the caller to choose either copy or move the string in.",
+      "range": {
+        "startLine": 204,
+        "startChar": 20,
+        "endLine": 204,
+        "endChar": 38
+      },
+      "revId": "a5f6b36ca55d256520b73f990d70a4d2e8e8f9d2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ce467c0f_5163ccf3",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_core.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 212,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2021-10-05T22:03:54Z",
+      "side": 1,
+      "message": "these can be const",
+      "range": {
+        "startLine": 209,
+        "startChar": 0,
+        "endLine": 212,
+        "endChar": 49
+      },
+      "revId": "a5f6b36ca55d256520b73f990d70a4d2e8e8f9d2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bac48704_7f57cb30",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_core.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 279,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2021-10-05T22:03:54Z",
+      "side": 1,
+      "message": "take in a reference? Unless you need to mutate the parameter somehow.",
+      "range": {
+        "startLine": 279,
+        "startChar": 81,
+        "endLine": 279,
+        "endChar": 95
+      },
+      "revId": "a5f6b36ca55d256520b73f990d70a4d2e8e8f9d2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "05f1eead_7a4e55c7",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_transitions.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 343,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2021-10-05T22:03:54Z",
+      "side": 1,
+      "message": "Not needed?",
+      "range": {
+        "startLine": 343,
+        "startChar": 0,
+        "endLine": 343,
+        "endChar": 5
+      },
+      "revId": "a5f6b36ca55d256520b73f990d70a4d2e8e8f9d2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1a42296b_8e52ef1c",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_transitions.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 360,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2021-10-05T22:03:54Z",
+      "side": 1,
+      "message": "Not needed?",
+      "range": {
+        "startLine": 360,
+        "startChar": 0,
+        "endLine": 360,
+        "endChar": 5
+      },
+      "revId": "a5f6b36ca55d256520b73f990d70a4d2e8e8f9d2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
