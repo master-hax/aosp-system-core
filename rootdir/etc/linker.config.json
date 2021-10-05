@@ -18,6 +18,8 @@
     // and libicui18n.so are kept for app compat.
     "libicui18n.so",
     "libicuuc.so",
+    // netd
+    "libnetd_linked_bpf.so",
     // resolv
     "libnetd_resolv.so",
     // nn
