@@ -38,6 +38,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "4fb27ec0_e88c87a1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2021-10-05T01:15:09Z",
+      "side": 1,
+      "message": "\u003e i\u0027ve never heard of a sysprop library before today\n\nIt\u0027s a wrapper generated around the raw libc APIs. It has been there since around Android Q. https://source.android.com/devices/architecture/configuration/add-system-properties#sysprop-as_api\n\n\n\u003e also, isn\u0027t there a more specific home for this than system/core?\n\nsystem/libsysprop/srcs/android/sysprop/",
+      "parentUuid": "b5605b78_30622803",
+      "revId": "d624ca50fb71786011d0849ea7186f2708562595",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "8833ca90_ae946013",
         "filename": "hypervisor/sysprop/Android.bp",
         "patchSetId": 1
