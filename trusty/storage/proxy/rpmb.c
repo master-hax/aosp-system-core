@@ -262,6 +262,10 @@ static enum scsi_result check_scsi_sense(const uint8_t* sense_buf, size_t len) {
         case UNIT_ATTENTION:
             ALOGD("UNIT ATTENTION with sense data: key=%hhu, asc=%hhu, ascq=%hhu\n", sense_key,
                   additional_sense_code, additional_sense_code_qualifier);
+            if (additional_sense_code == 0) {
+                /* Kernel has cleared the ASC, which was probably a RESET */
+                return SCSI_RES_RETRY;
+            }
             if (additional_sense_code == 0x29) {
                 /* POWER ON or RESET condition */
                 return SCSI_RES_RETRY;
