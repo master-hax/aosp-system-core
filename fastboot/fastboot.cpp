@@ -2044,17 +2044,23 @@ int FastBootTool::Main(int argc, char* argv[]) {
             DisplayVarOrError(variable, variable);
         } else if (command == FB_CMD_ERASE) {
             std::string partition = next_arg(&args);
-            auto erase = [&](const std::string& partition) {
-                std::string partition_type;
-                if (fb->GetVar("partition-type:" + partition, &partition_type) == fastboot::SUCCESS &&
-                    fs_get_generator(partition_type) != nullptr) {
-                    fprintf(stderr, "******** Did you mean to fastboot format this %s partition?\n",
-                            partition_type.c_str());
-                }
+            if (partition == "userdata") {
+                wants_wipe = true;
+            } else {
+                auto erase = [&](const std::string& partition) {
+                    std::string partition_type;
+                    if (fb->GetVar("partition-type:" + partition, &partition_type) ==
+                                fastboot::SUCCESS &&
+                        fs_get_generator(partition_type) != nullptr) {
+                        fprintf(stderr,
+                                "******** Did you mean to fastboot format this %s partition?\n",
+                                partition_type.c_str());
+                    }
 
-                fb->Erase(partition);
-            };
-            do_for_partitions(partition, slot_override, erase, true);
+                    fb->Erase(partition);
+                };
+                do_for_partitions(partition, slot_override, erase, true);
+            }
         } else if (android::base::StartsWith(command, "format")) {
             // Parsing for: "format[:[type][:[size]]]"
             // Some valid things:
