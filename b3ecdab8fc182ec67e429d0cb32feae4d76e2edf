@@ -1,6 +1,23 @@
 {
   "comments": [
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "b904d1c9_a4eea0be",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_core.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-10-06T04:48:12Z",
+      "side": 1,
+      "message": "Move these into snapuserd_core.h?",
+      "revId": "b3ecdab8fc182ec67e429d0cb32feae4d76e2edf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "57608b56_d895c60c",
@@ -20,6 +37,193 @@
         "endLine": 31,
         "endChar": 38
       },
+      "revId": "b3ecdab8fc182ec67e429d0cb32feae4d76e2edf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1e635f52_0f6b2d93",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_core.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 296,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-10-06T04:48:12Z",
+      "side": 1,
+      "message": "Can we make these local names more descriptive? They are almost identical to each other and to \"ra_thread_\".\n\nCan we set ra_thread_ only if read_ahead_feature_ is true?",
+      "revId": "b3ecdab8fc182ec67e429d0cb32feae4d76e2edf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d8cb67a3_a3e3692e",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_core.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 345,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-10-06T04:48:12Z",
+      "side": 1,
+      "message": "std::future\u003cbool\u003e merge_thread \u003d\n         ...",
+      "revId": "b3ecdab8fc182ec67e429d0cb32feae4d76e2edf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "dc12eae7_397661b0",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_core.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 387,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-10-06T04:48:12Z",
+      "side": 1,
+      "message": "return directly?",
+      "revId": "b3ecdab8fc182ec67e429d0cb32feae4d76e2edf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5212c0b4_b47d4ec2",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_core.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 422,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-10-06T04:48:12Z",
+      "side": 1,
+      "message": "return directly?",
+      "revId": "b3ecdab8fc182ec67e429d0cb32feae4d76e2edf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c0c99fd2_effae5a3",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_dm_user.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 174,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-10-06T04:48:12Z",
+      "side": 1,
+      "message": "Do this and ProcessXorOp get filled in later in the series?",
+      "revId": "b3ecdab8fc182ec67e429d0cb32feae4d76e2edf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5319d118_ed1a41f3",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_readahead.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-10-06T04:48:12Z",
+      "side": 1,
+      "message": "Looks like we can invert this and unindent most of the body?",
+      "revId": "b3ecdab8fc182ec67e429d0cb32feae4d76e2edf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6961f16c_56782b3e",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_readahead.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 148,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-10-06T04:48:12Z",
+      "side": 1,
+      "message": "The control flow here is pretty tricky to follow. Putting a \"continue\" here and removing the else block might help. Or, invert the test, which would let you early break if num_ops \u003d\u003d 0.",
+      "revId": "b3ecdab8fc182ec67e429d0cb32feae4d76e2edf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "509c6e09_cb5b6417",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_readahead.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 180,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-10-06T04:48:12Z",
+      "side": 1,
+      "message": "This name is a bit confusing since \"total\" here, I think, refers to the uncommitted total, rather than the total for the snapshot? Can we clarify that somehow? \"SetMergedBlockCountForNextCommit\"?",
+      "revId": "b3ecdab8fc182ec67e429d0cb32feae4d76e2edf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6d881d0c_1bc8aa85",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_readahead.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 182,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-10-06T04:48:12Z",
+      "side": 1,
+      "message": "nit: \"ReconstructDataFromCowFinished\" or \"FinishReconstructDataFromCow\"",
+      "revId": "b3ecdab8fc182ec67e429d0cb32feae4d76e2edf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8bc76807_477a67d6",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_readahead.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 198,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-10-06T04:48:12Z",
+      "side": 1,
+      "message": "nit: ShouldReconstructDataFromCow. We should comment for the underlying field (and others like it) which threads are allowed to read/write. It looks like this one is initialized on the handler thread but read/written exclusively on the RA thread.",
+      "revId": "b3ecdab8fc182ec67e429d0cb32feae4d76e2edf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2788ac1a_239871ba",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_readahead.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 220,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-10-06T04:48:12Z",
+      "side": 1,
+      "message": "There\u0027s an identically named function in SnapshotHandler, is that one-shot? If so, can we name this something like \"PrepareNextReadAhead\"?",
       "revId": "b3ecdab8fc182ec67e429d0cb32feae4d76e2edf",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
