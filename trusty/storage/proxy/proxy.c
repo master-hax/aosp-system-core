@@ -26,6 +26,7 @@
 
 #include <cutils/android_filesystem_config.h>
 
+#include "checkpoint_handling.h"
 #include "ipc.h"
 #include "log.h"
 #include "rpmb.h"
@@ -246,6 +247,15 @@ int main(int argc, char* argv[]) {
 
     /* parse arguments */
     parse_args(argc, argv);
+
+    /* temporary example */
+    bool is_checkpoint_active = false;
+    rc = is_data_checkpoint_active(&is_checkpoint_active);
+    if (rc == 0) {
+        ALOGI("is_data_checkpoint_active: %d", is_checkpoint_active);
+    } else {
+        ALOGE("Could not check checkpoint state: %d", rc);
+    }
 
     /* initialize secure storage directory */
     rc = storage_init(ss_data_root);
