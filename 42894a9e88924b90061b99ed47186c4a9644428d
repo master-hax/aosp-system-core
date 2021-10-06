@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "44d07825_f00e6c52",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1079753
+      },
+      "writtenOn": "2021-10-06T22:29:12Z",
+      "side": 1,
+      "message": "i\u0027m a little worried about what this will do for devices that don\u0027t support all the partitions erased by fastboot -w (e.g. will cause scripts for those devices to start failing because). Additionally, doesn\u0027t this mean that \u0027fastboot erase userdata\u0027 will do more than \u0027fastboot format userdata\u0027.\n\nWhat do you think of printing a big warning instead suggesting use of \u0027fastboot -w\u0027? I think there is definitely room for improvement here though to allow users to explicitly trigger the device\u0027s factory reset functionality through a fastboot command (e.g. \u0027fastboot factory-reset\u0027)",
+      "revId": "42894a9e88924b90061b99ed47186c4a9644428d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
