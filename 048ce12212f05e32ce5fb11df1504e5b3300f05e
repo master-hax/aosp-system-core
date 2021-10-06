@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "db034b70_93ae74de",
+        "filename": "fastboot/fuzzer/fastboot_fuzzer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 1619864
+      },
+      "writtenOn": "2021-10-06T05:09:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0374e881_fc3013fb",
+      "revId": "048ce12212f05e32ce5fb11df1504e5b3300f05e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "11271f23_00748291",
