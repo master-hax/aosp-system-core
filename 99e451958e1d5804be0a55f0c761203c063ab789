@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8208065e_b51958d2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1114938
+      },
+      "writtenOn": "2021-10-06T20:55:09Z",
+      "side": 1,
+      "message": "Structurally OK, defering to the storage team on the semantics.",
+      "revId": "99e451958e1d5804be0a55f0c761203c063ab789",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
