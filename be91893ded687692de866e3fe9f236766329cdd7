@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "227ab8c7_01bb0570",
+        "filename": "trusty/storage/proxy/checkpoint_handling.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2021-10-07T23:20:02Z",
+      "side": 1,
+      "message": "I think we can safely set active false and return 0 here. There can\u0027t be a checkpoint if there\u0027s not userdata.",
+      "revId": "be91893ded687692de866e3fe9f236766329cdd7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "95fcaf42_61d5b98d",
+        "filename": "trusty/storage/proxy/checkpoint_handling.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2021-10-07T23:20:02Z",
+      "side": 1,
+      "message": "We should cache this case, set active false, and not log an error. This will always be hit once the checkpoint is committed (the checkpoint\u003ddisable flag is removed).",
+      "revId": "be91893ded687692de866e3fe9f236766329cdd7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
