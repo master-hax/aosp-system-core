@@ -155,6 +155,13 @@ The various currently defined commands are:
                        the bootloader and then upgrading other partitions
                        using the new bootloader.
 
+    factory-reset      Factory reset the device, securely wiping secrets that
+                       that protect old userdata. If this fails, users
+                       should fall back to manually erasing the userdata
+                       and metadata partitions. A "continue" sent after
+                       this command will fail; the device must reboot
+                       before the boot can continue as normal ie "reboot"
+                       or "reboot-bootloader" must be sent first.
 
 
 ## Client Variables
