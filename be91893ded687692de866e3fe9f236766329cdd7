@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "2397738b_1204c562",
+        "filename": "trusty/storage/proxy/checkpoint_handling.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 1888075
+      },
+      "writtenOn": "2021-10-07T23:37:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "227ab8c7_01bb0570",
+      "revId": "be91893ded687692de866e3fe9f236766329cdd7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "95fcaf42_61d5b98d",
@@ -31,6 +49,24 @@
       "writtenOn": "2021-10-07T23:20:02Z",
       "side": 1,
       "message": "We should cache this case, set active false, and not log an error. This will always be hit once the checkpoint is committed (the checkpoint\u003ddisable flag is removed).",
+      "revId": "be91893ded687692de866e3fe9f236766329cdd7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2d2b1a67_a306a0e8",
+        "filename": "trusty/storage/proxy/checkpoint_handling.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 1888075
+      },
+      "writtenOn": "2021-10-07T23:37:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "95fcaf42_61d5b98d",
       "revId": "be91893ded687692de866e3fe9f236766329cdd7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
