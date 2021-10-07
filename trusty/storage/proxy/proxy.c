@@ -22,14 +22,20 @@
 #include <sys/capability.h>
 #include <sys/prctl.h>
 #include <sys/stat.h>
+#include <time.h>
 #include <unistd.h>
 
 #include <cutils/android_filesystem_config.h>
 
+#include "checkpoint_handling.h"
 #include "ipc.h"
 #include "log.h"
 #include "rpmb.h"
 #include "storage.h"
+
+#define CHECKPOINT_POLLING_NS 10000000
+/* Set to small value for debugging when checkpointing is permanently off. */
+#define CHECKPOINT_MAX_SLEEPS INT_MAX
 
 #define REQ_BUFFER_SIZE 4096
 static uint8_t req_buffer[REQ_BUFFER_SIZE + 1];
@@ -127,6 +133,25 @@ static int handle_req(struct storage_msg* msg, const void* req, size_t req_len) 
         if (rc < 0) {
             msg->result = STORAGE_ERR_GENERIC;
             return ipc_respond(msg, NULL, 0);
+        }
+    }
+
+    if (msg->flags & STORAGE_MSG_FLAG_PRE_COMMIT_CHECKPOINT) {
+        bool is_checkpoint_active = false;
+        struct timespec ts;
+        ts.tv_sec = 0;
+        ts.tv_nsec = CHECKPOINT_POLLING_NS;
+
+        int numSleeps = CHECKPOINT_MAX_SLEEPS;
+
+        rc = is_data_checkpoint_active(&is_checkpoint_active);
+        while ((rc == 0) && is_checkpoint_active && (numSleeps > 0)) {
+            ALOGE("Checkpoint in progress, stalling on RPMB_SEND ...\n");
+            /* May be interrupted by signals, but no harm */
+            nanosleep(&ts, NULL);
+            rc = is_data_checkpoint_active(&is_checkpoint_active);
+
+            numSleeps--;
         }
     }
 
