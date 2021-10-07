@@ -34,6 +34,24 @@
       "parentUuid": "44d07825_f00e6c52",
       "revId": "42894a9e88924b90061b99ed47186c4a9644428d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e235767d_a242984d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1079753
+      },
+      "writtenOn": "2021-10-07T17:05:54Z",
+      "side": 1,
+      "message": "\u003e `fastboot erase userdata` will do more than just \"userdata\"\nI also realized the behavior is more confusing because while it will not only touch additional partitions it will not simply erase the userdata partition, it will attempt to format it (fastboot format userdata) because that\u0027s what fastboot -w does. While i\u0027m not sure this is bad for most devices it would be very confusing behavior difference to me\n\n\u003e cannot issue `fastboot -w` to it?\nYes, there are devices that don\u0027t have all the partitions and issue a FAIL response when you try to format the missing partitions\n\n\u003e Both of them make sense to me BTW.\nYah if possible both would be good\n\n\u003e fastboot factory-reset\nyah I was chatting with Paul about this yesterday",
+      "parentUuid": "d2c4f2e5_121d54b8",
+      "revId": "42894a9e88924b90061b99ed47186c4a9644428d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
