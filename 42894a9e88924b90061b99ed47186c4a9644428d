@@ -16,6 +16,24 @@
       "message": "i\u0027m a little worried about what this will do for devices that don\u0027t support all the partitions erased by fastboot -w (e.g. will cause scripts for those devices to start failing because). Additionally, doesn\u0027t this mean that \u0027fastboot erase userdata\u0027 will do more than \u0027fastboot format userdata\u0027.\n\nWhat do you think of printing a big warning instead suggesting use of \u0027fastboot -w\u0027? I think there is definitely room for improvement here though to allow users to explicitly trigger the device\u0027s factory reset functionality through a fastboot command (e.g. \u0027fastboot factory-reset\u0027)",
       "revId": "42894a9e88924b90061b99ed47186c4a9644428d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d2c4f2e5_121d54b8",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1347934
+      },
+      "writtenOn": "2021-10-07T09:27:54Z",
+      "side": 1,
+      "message": "Yes, this means `fastboot erase userdata` will do more than just \"userdata\". I was also think about that but since FBE requires all these partitions be bind together when whiping, shall we allow users to erase them one by one?\nWith regards to the device which doesn\u0027t support all partitions defined in \"-w\", does that mean we cannot issue `fastboot -w` to it?\n\nPrint a big warning on HOST or DEVICE? Both of them make sense to me BTW.\n\nFor the improvment, I think Paul has a plan to do things like `fastboot factory-reset`. @Paul would you like sure us some more detail?",
+      "parentUuid": "44d07825_f00e6c52",
+      "revId": "42894a9e88924b90061b99ed47186c4a9644428d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
