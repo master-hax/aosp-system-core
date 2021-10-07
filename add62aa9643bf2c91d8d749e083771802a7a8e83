@@ -33,6 +33,23 @@
       "message": "@Shubhangi, PTAL for DrNo-review.",
       "revId": "add62aa9643bf2c91d8d749e083771802a7a8e83",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cb7a87f6_1e81e24f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1222074
+      },
+      "writtenOn": "2021-10-07T23:08:45Z",
+      "side": 1,
+      "message": "Please set Autosubmit vote",
+      "revId": "add62aa9643bf2c91d8d749e083771802a7a8e83",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
