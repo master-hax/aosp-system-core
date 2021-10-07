@@ -22,6 +22,7 @@
 
 #include <android-base/file.h>
 #include <android-base/stringprintf.h>
+#include <android-base/test_utils.h>
 #include <gtest/gtest.h>
 
 using namespace std::literals::string_literals;
@@ -34,7 +35,7 @@ TEST(util, ReadFile_ENOENT) {
     auto file_contents = ReadFile("/proc/does-not-exist");
     EXPECT_EQ(ENOENT, errno);
     ASSERT_FALSE(file_contents.ok());
-    EXPECT_EQ("open() failed: No such file or directory", file_contents.error().message());
+    ASSERT_MATCH(file_contents.error().message(), "open\\(\\) failed: No such file or directory.*");
 }
 
 TEST(util, ReadFileGroupWriteable) {
@@ -65,8 +66,8 @@ TEST(util, ReadFileSymbolicLink) {
     auto file_contents = ReadFile("/system/bin/ps");
     EXPECT_EQ(ELOOP, errno);
     ASSERT_FALSE(file_contents.ok());
-    EXPECT_EQ("open() failed: Too many symbolic links encountered",
-              file_contents.error().message());
+    ASSERT_MATCH(file_contents.error().message(),
+                 "open\\(\\) failed: Too many symbolic links encountered.*");
 }
 
 TEST(util, ReadFileSuccess) {
@@ -125,16 +126,20 @@ TEST(util, WriteFileExist) {
     EXPECT_EQ("2ll2", *file_contents);
 }
 
-TEST(util, DecodeUid) {
+TEST(util, DecodeUid_root) {
     auto decoded_uid = DecodeUid("root");
     EXPECT_TRUE(decoded_uid.ok());
     EXPECT_EQ(0U, *decoded_uid);
+}
 
-    decoded_uid = DecodeUid("toot");
-    EXPECT_FALSE(decoded_uid.ok());
-    EXPECT_EQ("getpwnam failed: No such file or directory", decoded_uid.error().message());
+TEST(util, DecodeUid_toot) {
+    auto decoded_uid = DecodeUid("toot");
+    ASSERT_FALSE(decoded_uid.ok());
+    ASSERT_MATCH(decoded_uid.error().message(), "getpwnam failed: No such file or directory.*");
+}
 
-    decoded_uid = DecodeUid("123");
+TEST(util, DecodeUid_123) {
+    auto decoded_uid = DecodeUid("123");
     EXPECT_RESULT_OK(decoded_uid);
     EXPECT_EQ(123U, *decoded_uid);
 }
