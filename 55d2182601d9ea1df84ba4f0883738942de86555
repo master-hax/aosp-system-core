@@ -682,6 +682,24 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "e983d887_08d6b9a7",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_ra.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 166,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-10-07T07:42:19Z",
+      "side": 1,
+      "message": "I removed these logs - if there is a failure, we can infer them from COW file itself. Perhaps, we can extend inspect_cow to dump the scratch space region.",
+      "parentUuid": "2e4e0eec_76ac4c2d",
+      "revId": "55d2182601d9ea1df84ba4f0883738942de86555",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "20f0f634_2a15854b",
         "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_ra.cpp",
         "patchSetId": 2
@@ -779,6 +797,24 @@
       "writtenOn": "2021-08-18T17:23:04Z",
       "side": 1,
       "message": "No new changes in rest of the functions..",
+      "revId": "55d2182601d9ea1df84ba4f0883738942de86555",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d3831e9e_cf7f7835",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_readahead.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 182,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-10-07T07:42:19Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6d881d0c_1bc8aa85",
       "revId": "55d2182601d9ea1df84ba4f0883738942de86555",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },

@@ -41,6 +41,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "739c93a9_ec4ed6ea",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_core.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-10-07T07:42:19Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "57608b56_d895c60c",
+      "range": {
+        "startLine": 31,
+        "startChar": 33,
+        "endLine": 31,
+        "endChar": 38
+      },
+      "revId": "b3ecdab8fc182ec67e429d0cb32feae4d76e2edf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "1e635f52_0f6b2d93",
@@ -54,6 +78,24 @@
       "writtenOn": "2021-10-06T04:48:12Z",
       "side": 1,
       "message": "Can we make these local names more descriptive? They are almost identical to each other and to \"ra_thread_\".\n\nCan we set ra_thread_ only if read_ahead_feature_ is true?",
+      "revId": "b3ecdab8fc182ec67e429d0cb32feae4d76e2edf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "346d3d3e_b05bb38b",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_core.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 296,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-10-07T07:42:19Z",
+      "side": 1,
+      "message": "we no longer need read_ahead_feature_ flag.. Just one flag is enough.",
+      "parentUuid": "1e635f52_0f6b2d93",
       "revId": "b3ecdab8fc182ec67e429d0cb32feae4d76e2edf",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -75,6 +117,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "ac72f5f7_113ebfc6",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_core.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 345,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-10-07T07:42:19Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d8cb67a3_a3e3692e",
+      "revId": "b3ecdab8fc182ec67e429d0cb32feae4d76e2edf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "dc12eae7_397661b0",
@@ -88,6 +148,24 @@
       "writtenOn": "2021-10-06T04:48:12Z",
       "side": 1,
       "message": "return directly?",
+      "revId": "b3ecdab8fc182ec67e429d0cb32feae4d76e2edf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6d3ceada_67a81633",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_core.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 387,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-10-07T07:42:19Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "dc12eae7_397661b0",
       "revId": "b3ecdab8fc182ec67e429d0cb32feae4d76e2edf",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -111,6 +189,24 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "1e8c53ed_42844f20",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_core.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 422,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-10-07T07:42:19Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5212c0b4_b47d4ec2",
+      "revId": "b3ecdab8fc182ec67e429d0cb32feae4d76e2edf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "c0c99fd2_effae5a3",
         "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_dm_user.cpp",
         "patchSetId": 4
@@ -122,6 +218,24 @@
       "writtenOn": "2021-10-06T04:48:12Z",
       "side": 1,
       "message": "Do this and ProcessXorOp get filled in later in the series?",
+      "revId": "b3ecdab8fc182ec67e429d0cb32feae4d76e2edf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "290a0cce_ca92e7fa",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_dm_user.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 174,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-10-07T07:42:19Z",
+      "side": 1,
+      "message": "yes. it is implemented in the next patch",
+      "parentUuid": "c0c99fd2_effae5a3",
       "revId": "b3ecdab8fc182ec67e429d0cb32feae4d76e2edf",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -143,6 +257,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "63558f07_7919d30b",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_readahead.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-10-07T07:42:19Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5319d118_ed1a41f3",
+      "revId": "b3ecdab8fc182ec67e429d0cb32feae4d76e2edf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "6961f16c_56782b3e",
@@ -156,6 +288,24 @@
       "writtenOn": "2021-10-06T04:48:12Z",
       "side": 1,
       "message": "The control flow here is pretty tricky to follow. Putting a \"continue\" here and removing the else block might help. Or, invert the test, which would let you early break if num_ops \u003d\u003d 0.",
+      "revId": "b3ecdab8fc182ec67e429d0cb32feae4d76e2edf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f6df1986_ef0eb47f",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_readahead.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 148,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-10-07T07:42:19Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6961f16c_56782b3e",
       "revId": "b3ecdab8fc182ec67e429d0cb32feae4d76e2edf",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -177,6 +327,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "acfa50bd_dadb3291",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_readahead.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 180,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-10-07T07:42:19Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "509c6e09_cb5b6417",
+      "revId": "b3ecdab8fc182ec67e429d0cb32feae4d76e2edf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "6d881d0c_1bc8aa85",
@@ -190,6 +358,24 @@
       "writtenOn": "2021-10-06T04:48:12Z",
       "side": 1,
       "message": "nit: \"ReconstructDataFromCowFinished\" or \"FinishReconstructDataFromCow\"",
+      "revId": "b3ecdab8fc182ec67e429d0cb32feae4d76e2edf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "80b33571_305527c4",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_readahead.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 182,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-10-07T07:42:19Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6d881d0c_1bc8aa85",
       "revId": "b3ecdab8fc182ec67e429d0cb32feae4d76e2edf",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -211,6 +397,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "bc355884_a9dec13a",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_readahead.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 198,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-10-07T07:42:19Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8bc76807_477a67d6",
+      "revId": "b3ecdab8fc182ec67e429d0cb32feae4d76e2edf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "2788ac1a_239871ba",
@@ -224,6 +428,24 @@
       "writtenOn": "2021-10-06T04:48:12Z",
       "side": 1,
       "message": "There\u0027s an identically named function in SnapshotHandler, is that one-shot? If so, can we name this something like \"PrepareNextReadAhead\"?",
+      "revId": "b3ecdab8fc182ec67e429d0cb32feae4d76e2edf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "833288d4_1d26497f",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_readahead.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 220,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-10-07T07:42:19Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2788ac1a_239871ba",
       "revId": "b3ecdab8fc182ec67e429d0cb32feae4d76e2edf",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
