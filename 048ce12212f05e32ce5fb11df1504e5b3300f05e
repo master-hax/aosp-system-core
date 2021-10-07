@@ -81,6 +81,30 @@
       },
       "revId": "048ce12212f05e32ce5fb11df1504e5b3300f05e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a71fa745_5aafbef5",
+        "filename": "fastboot/fuzzer/fastboot_fuzzer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 234,
+      "author": {
+        "id": 1559553
+      },
+      "writtenOn": "2021-10-07T00:19:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6f228fca_d6566c8d",
+      "range": {
+        "startLine": 234,
+        "startChar": 5,
+        "endLine": 234,
+        "endChar": 45
+      },
+      "revId": "048ce12212f05e32ce5fb11df1504e5b3300f05e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
