@@ -138,6 +138,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "d8e75112_84c8cb14",
+        "filename": "trusty/storage/proxy/checkpoint_handling.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1888075
+      },
+      "writtenOn": "2021-10-08T05:43:12Z",
+      "side": 1,
+      "message": "Refactored in the newest patch set.",
+      "parentUuid": "bd3684fd_2edba2b0",
+      "revId": "8fb56b7175d062e76fcc7c5786164ebdbb5a96da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "89dc1a76_cb532763",
         "filename": "trusty/storage/proxy/checkpoint_handling.cpp",
         "patchSetId": 3
@@ -231,6 +249,30 @@
       "writtenOn": "2021-10-08T05:42:30Z",
       "side": 1,
       "message": "We handle that case with return 0 now, so it could be an error except for the non-f2fs case for qemu or other devices without f2fs userdata.",
+      "parentUuid": "206b2c16_4f16abb4",
+      "range": {
+        "startLine": 148,
+        "startChar": 16,
+        "endLine": 148,
+        "endChar": 23
+      },
+      "revId": "8fb56b7175d062e76fcc7c5786164ebdbb5a96da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e2d62f79_34ff3287",
+        "filename": "trusty/storage/proxy/proxy.c",
+        "patchSetId": 3
+      },
+      "lineNbr": 148,
+      "author": {
+        "id": 1888075
+      },
+      "writtenOn": "2021-10-08T05:43:12Z",
+      "side": 1,
+      "message": "Refactored out in the newest patch set.",
       "parentUuid": "206b2c16_4f16abb4",
       "range": {
         "startLine": 148,
