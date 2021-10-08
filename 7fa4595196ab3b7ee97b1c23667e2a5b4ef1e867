@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "455ef528_18909b4f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2021-10-08T01:12:00Z",
+      "side": 1,
+      "message": "I\u0027ve tested effectively this CL with an OTA and early write to TD, verified to work.",
+      "revId": "7fa4595196ab3b7ee97b1c23667e2a5b4ef1e867",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
