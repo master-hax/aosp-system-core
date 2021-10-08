@@ -310,6 +310,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "c36800e9_c0defa80",
+        "filename": "trusty/storage/proxy/checkpoint_handling.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2021-10-08T07:22:23Z",
+      "side": 1,
+      "message": "The option can include other stuff after `disable`, see https://www.kernel.org/doc/Documentation/filesystems/f2fs.txt. I think just checking `strlen(\"disable\")` length bytes is the simplest thing we can do, and we can ignore finding the comma.",
+      "parentUuid": "5108debc_4406e01a",
+      "revId": "8fb56b7175d062e76fcc7c5786164ebdbb5a96da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "19bb0e2f_128d0243",
         "filename": "trusty/storage/proxy/proxy.c",
         "patchSetId": 3
