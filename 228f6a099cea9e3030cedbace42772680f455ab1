@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d9a9f5b1_a0c8e1e8",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-10-08T01:09:04Z",
+      "side": 1,
+      "message": "Great to see the slow path get unified - hopefully we can eventually fix up vts_libsnapshot_test to remove the need for pre-scratch-space logic.",
+      "revId": "228f6a099cea9e3030cedbace42772680f455ab1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
