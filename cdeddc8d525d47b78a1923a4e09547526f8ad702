@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e13b36a9_0f05a56f",
+        "filename": "trusty/storage/proxy/checkpoint_handling.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 1114938
+      },
+      "writtenOn": "2021-10-08T05:59:14Z",
+      "side": 1,
+      "message": "Isn\u0027t this exactly the case where we shouldn\u0027t be caching?",
+      "revId": "cdeddc8d525d47b78a1923a4e09547526f8ad702",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}

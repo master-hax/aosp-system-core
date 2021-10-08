@@ -156,6 +156,29 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "9bf9fc48_5eeeea5d",
+        "filename": "trusty/storage/proxy/checkpoint_handling.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 1114938
+      },
+      "writtenOn": "2021-10-08T05:59:14Z",
+      "side": 1,
+      "message": "Nit: checkpointValueStart?",
+      "range": {
+        "startLine": 72,
+        "startChar": 64,
+        "endLine": 72,
+        "endChar": 77
+      },
+      "revId": "8fb56b7175d062e76fcc7c5786164ebdbb5a96da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "89dc1a76_cb532763",
         "filename": "trusty/storage/proxy/checkpoint_handling.cpp",
         "patchSetId": 3
@@ -185,6 +208,24 @@
       "side": 1,
       "message": "It was overly cautious to avoid reading past the end of the buffer in the following statement:\ndataEntry-\u003efs_options.substr(checkpointValueStart,checkpointSize)\n\nsubstr truncates as needed, so I\u0027ll refactor it out.",
       "parentUuid": "89dc1a76_cb532763",
+      "revId": "8fb56b7175d062e76fcc7c5786164ebdbb5a96da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "71d7c5cd_df306761",
+        "filename": "trusty/storage/proxy/checkpoint_handling.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 1114938
+      },
+      "writtenOn": "2021-10-08T05:59:14Z",
+      "side": 1,
+      "message": "checkpointValueEnd \u003c\u003d s.length()\ncheckpointValueStart \u003c\u003d checkpointValueEnd\ns.substr(checkpointValueStart, checkpointValueEnd-checkpointValueStart) should always be inside the string?\nAnd if it couldn\u0027t, clamping checkpointValueEnd-checkpointValueStart to 6 would likely not fix all the corner cases?\n\nThe fix you did seems the opposite direction you should go... you should be picking out the value between \"checkpoint\u003d\" and \",\"|EOF, whatever it is.",
+      "parentUuid": "5dfdc31c_4afe9f9b",
       "revId": "8fb56b7175d062e76fcc7c5786164ebdbb5a96da",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
