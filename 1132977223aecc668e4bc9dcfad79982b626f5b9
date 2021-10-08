@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d143363d_0bc04270",
+        "filename": "trusty/storage/interface/include/trusty/interface/storage.h",
+        "patchSetId": 9
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2021-10-08T21:54:21Z",
+      "side": 0,
+      "message": "Missing doc for the new flag.",
+      "revId": "1132977223aecc668e4bc9dcfad79982b626f5b9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
