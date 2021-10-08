@@ -1861,9 +1861,11 @@ int fs_mgr_remount_userdata_into_checkpointing(Fstab* fstab) {
                 LERROR << "Failed to get dm-name for " << block_device;
                 return -1;
             }
-            LINFO << "Deleting " << block_device << " named " << *name;
-            if (!dm.DeleteDevice(*name, 3s)) {
+            if (!android::base::StartsWith(*name, "userdata_gsi")) {
+              LINFO << "Deleting " << block_device << " named " << *name;
+              if (!dm.DeleteDevice(*name, 3s)) {
                 return -1;
+              }
             }
             if (!next_device) {
                 LERROR << "Failed to find parent device for " << block_device;
