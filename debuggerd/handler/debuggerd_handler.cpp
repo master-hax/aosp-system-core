@@ -38,6 +38,7 @@
 #include <unistd.h>
 
 #include <android-base/macros.h>
+#include <android-base/properties.h>
 #include <android-base/unique_fd.h>
 #include <async_safe/log.h>
 #include <bionic/reserved_signals.h>
@@ -80,6 +81,12 @@ static pid_t __getpid() {
 
 static pid_t __gettid() {
   return syscall(__NR_gettid);
+}
+
+static bool is_unsafe_mte() {
+  char* unsafe_env = getenv("MTE_UNSAFE_MODE");
+  return android::base::GetBoolProperty("persist.sys.mte.unsafe", false) ||
+          (unsafe_env && strcmp(unsafe_env, "1") == 0);
 }
 
 static inline void futex_wait(volatile void* ftx, int value) {
@@ -592,7 +599,23 @@ static void debuggerd_signal_handler(int signal_number, siginfo_t* info, void* c
     // If the signal is fatal, don't unlock the mutex to prevent other crashing threads from
     // starting to dump right before our death.
     pthread_mutex_unlock(&crash_mutex);
-  } else {
+  }
+#ifdef __aarch64__
+  else if ((info->si_code == SEGV_MTESERR || info->si_code == SEGV_MTEAERR) && is_unsafe_mte()) {
+    int tagged_addr_ctrl = prctl(PR_GET_TAGGED_ADDR_CTRL, 0, 0, 0, 0);
+    if (tagged_addr_ctrl < 0) {
+      fatal_errno("failed to PR_GET_TAGGED_ADDR_CTRL");
+    }
+    tagged_addr_ctrl = (tagged_addr_ctrl & ~PR_MTE_TCF_MASK) | PR_MTE_TCF_NONE;
+    if (prctl(PR_SET_TAGGED_ADDR_CTRL, tagged_addr_ctrl, 0, 0, 0) < 0) {
+      fatal_errno("failed to PR_SET_TAGGED_ADDR_CTRL");
+    }
+    async_safe_format_log(ANDROID_LOG_ERROR, "libc",
+        "MTE ERROR DETECTED BUT RUNNING IN UNSAFE MODE. CONTINUING.");
+    pthread_mutex_unlock(&crash_mutex);
+  }
+#endif
+  else {
     // Resend the signal, so that either the debugger or the parent's waitpid sees it.
     resend_signal(info);
   }
