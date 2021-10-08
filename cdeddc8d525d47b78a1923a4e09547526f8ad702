@@ -34,6 +34,24 @@
       "parentUuid": "e13b36a9_0f05a56f",
       "revId": "cdeddc8d525d47b78a1923a4e09547526f8ad702",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3a9470a3_df70cc73",
+        "filename": "trusty/storage/proxy/checkpoint_handling.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 1888075
+      },
+      "writtenOn": "2021-10-08T06:52:34Z",
+      "side": 1,
+      "message": "On second thought, I think it\u0027s safe to cache because whether or not /data is mounted doesn\u0027t change during the lifetime of storageproxyd (it is restarted after /data gets mounted). But it\u0027s a micro-optimization so I\u0027ll leave caching off, to avoid needing to reason it through.",
+      "parentUuid": "534ed6fc_bddf0fb9",
+      "revId": "cdeddc8d525d47b78a1923a4e09547526f8ad702",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
