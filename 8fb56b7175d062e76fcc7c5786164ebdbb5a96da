@@ -232,6 +232,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "5108debc_4406e01a",
+        "filename": "trusty/storage/proxy/checkpoint_handling.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 1888075
+      },
+      "writtenOn": "2021-10-08T05:59:52Z",
+      "side": 1,
+      "message": "My bad, that\u0027s to prevent reading past:\n    \"blah blah,checkpoint\u003ddisable,more stuff here\"\nWe only want to read up to \"disable,\". Will upload another CL reverting this.",
+      "parentUuid": "5dfdc31c_4afe9f9b",
+      "revId": "8fb56b7175d062e76fcc7c5786164ebdbb5a96da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "19bb0e2f_128d0243",
         "filename": "trusty/storage/proxy/proxy.c",
         "patchSetId": 3
