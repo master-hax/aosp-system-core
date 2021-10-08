@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "caf8dc91_d4725e97",
+        "filename": "trusty/storage/proxy/checkpoint_handling.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1888075
+      },
+      "writtenOn": "2021-10-08T05:32:42Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "9e740a29_16ce7d28",
+      "revId": "8fb56b7175d062e76fcc7c5786164ebdbb5a96da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "8efac401_4a32304c",
@@ -43,6 +61,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "dd58debb_64bbc195",
+        "filename": "trusty/storage/proxy/checkpoint_handling.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1888075
+      },
+      "writtenOn": "2021-10-08T05:32:42Z",
+      "side": 1,
+      "message": "Stephen preferred separate variables for flexibility: \"we could possibly reset the cache state to handle userspace reboots or other remounts, but then we need a mechanism to do that\".",
+      "parentUuid": "8efac401_4a32304c",
+      "range": {
+        "startLine": 38,
+        "startChar": 8,
+        "endLine": 38,
+        "endChar": 49
+      },
+      "revId": "8fb56b7175d062e76fcc7c5786164ebdbb5a96da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "99937452_1f1907f1",
         "filename": "trusty/storage/proxy/checkpoint_handling.cpp",
         "patchSetId": 3
@@ -54,6 +96,24 @@
       "writtenOn": "2021-10-08T05:16:07Z",
       "side": 1,
       "message": "Why is this an internal error and not:\n        isCheckpointing \u003d false;\n        checkpointStateCached \u003d true;\n        *active \u003d false;\n        return 0;",
+      "revId": "8fb56b7175d062e76fcc7c5786164ebdbb5a96da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bd3684fd_2edba2b0",
+        "filename": "trusty/storage/proxy/checkpoint_handling.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1888075
+      },
+      "writtenOn": "2021-10-08T05:32:42Z",
+      "side": 1,
+      "message": "It\u0027s not something we expect to encounter in the wild.\n\nreturn value of 0 is used in \"known\" case (/data is not mounted the first time storageproxyd boots, or it is mounted and we can infer the checkpointing or absence thereforeof).",
+      "parentUuid": "99937452_1f1907f1",
       "revId": "8fb56b7175d062e76fcc7c5786164ebdbb5a96da",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -88,6 +148,30 @@
       "writtenOn": "2021-10-08T05:16:07Z",
       "side": 1,
       "message": "A key question is what we should do if we don\u0027t know if checkpointing is active or not due to internal errors.  Arguably we should be cautious.  On the other hand, there might be some corner cases we\u0027re gumming up.  Documenting why unknown \u003d\u003d go for it.",
+      "range": {
+        "startLine": 148,
+        "startChar": 16,
+        "endLine": 148,
+        "endChar": 23
+      },
+      "revId": "8fb56b7175d062e76fcc7c5786164ebdbb5a96da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "206b2c16_4f16abb4",
+        "filename": "trusty/storage/proxy/proxy.c",
+        "patchSetId": 3
+      },
+      "lineNbr": 148,
+      "author": {
+        "id": 1888075
+      },
+      "writtenOn": "2021-10-08T05:32:42Z",
+      "side": 1,
+      "message": "/data not being mounted is the corner case.",
+      "parentUuid": "19bb0e2f_128d0243",
       "range": {
         "startLine": 148,
         "startChar": 16,
