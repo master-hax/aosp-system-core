@@ -16,6 +16,23 @@
       "message": "Not ready to land this yet - it should be accompanied by changes in fastboot and ABL to make use of it - but wanted to flag it for your attention and get some opinions. Thanks!",
       "revId": "d3d877b8b0203a2b46391f854143df040d74efd7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "66382898_c584b903",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-10-08T00:20:55Z",
+      "side": 1,
+      "message": "Currently bootloaders will automatically wipe TEE as part of a request to \"erase userdata\" or \"metadata\". But having an explicit protocol command for all of this seems like a good idea. Is it something we can support from userspace fastboot in the same way recovery can wipe Titan?",
+      "revId": "d3d877b8b0203a2b46391f854143df040d74efd7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
