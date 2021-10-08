@@ -326,6 +326,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "8b6fb07c_0ef35e7d",
+        "filename": "trusty/storage/proxy/checkpoint_handling.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 1888075
+      },
+      "writtenOn": "2021-10-08T07:40:10Z",
+      "side": 1,
+      "message": "Ok, back to simplified.",
+      "parentUuid": "c36800e9_c0defa80",
+      "revId": "8fb56b7175d062e76fcc7c5786164ebdbb5a96da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "19bb0e2f_128d0243",
