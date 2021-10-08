@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8cc9b38d_9a4ece55",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1060907
+      },
+      "writtenOn": "2021-10-08T00:00:04Z",
+      "side": 1,
+      "message": "Not ready to land this yet - it should be accompanied by changes in fastboot and ABL to make use of it - but wanted to flag it for your attention and get some opinions. Thanks!",
+      "revId": "d3d877b8b0203a2b46391f854143df040d74efd7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
