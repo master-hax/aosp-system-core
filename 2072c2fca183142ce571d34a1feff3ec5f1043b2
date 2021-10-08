@@ -3,6 +3,52 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "b105666d_077054aa",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_core.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 183,
+      "author": {
+        "id": 1045980
+      },
+      "writtenOn": "2021-10-08T23:31:50Z",
+      "side": 1,
+      "message": "Is there a particular reason we add 1 here, vs just checking \u003d\u003d 0?",
+      "range": {
+        "startLine": 183,
+        "startChar": 26,
+        "endLine": 183,
+        "endChar": 29
+      },
+      "revId": "2072c2fca183142ce571d34a1feff3ec5f1043b2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c6738a9a_a1d2e5b4",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_transitions.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 415,
+      "author": {
+        "id": 1045980
+      },
+      "writtenOn": "2021-10-08T23:31:50Z",
+      "side": 1,
+      "message": "Why do we need to wait here? The blocks we need to access are always available. Can\u0027t we just get them from the readahead buffer here? We\u0027d need to hold up the readahead thread from making forwards progress until those I/Os are completed, but a reader/writer style lock for the read ahead buffer should cover that.\n\nIt may be possible to do the same as in MERGE_PENDING, if the source is not getting overwritten, but it\u0027s almost certainly better to go with what\u0027s in the readahead cache, since that\u0027s already there.",
+      "range": {
+        "startLine": 412,
+        "startChar": 6,
+        "endLine": 415,
+        "endChar": 64
+      },
+      "revId": "2072c2fca183142ce571d34a1feff3ec5f1043b2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "2aba5421_a347ebb7",
         "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_transitions.cpp",
         "patchSetId": 5
