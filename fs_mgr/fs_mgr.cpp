@@ -65,6 +65,7 @@
 #include <fscrypt/fscrypt.h>
 #include <libdm/dm.h>
 #include <libdm/loop_control.h>
+#include <libgsi/libgsi.h>
 #include <liblp/metadata_format.h>
 #include <linux/fs.h>
 #include <linux/loop.h>
@@ -1861,9 +1862,13 @@ int fs_mgr_remount_userdata_into_checkpointing(Fstab* fstab) {
                 LERROR << "Failed to get dm-name for " << block_device;
                 return -1;
             }
+            if (android::gsi::IsGsiRunning() && (*name == "userdata_gsi")) {
+              block_device = *next_device;
+              continue;
+            }
             LINFO << "Deleting " << block_device << " named " << *name;
             if (!dm.DeleteDevice(*name, 3s)) {
-                return -1;
+              return -1;
             }
             if (!next_device) {
                 LERROR << "Failed to find parent device for " << block_device;
