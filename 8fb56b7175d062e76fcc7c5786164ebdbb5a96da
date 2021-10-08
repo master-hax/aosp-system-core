@@ -137,6 +137,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "5dfdc31c_4afe9f9b",
+        "filename": "trusty/storage/proxy/checkpoint_handling.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 1888075
+      },
+      "writtenOn": "2021-10-08T05:40:48Z",
+      "side": 1,
+      "message": "It was overly cautious to avoid reading past the end of the buffer in the following statement:\ndataEntry-\u003efs_options.substr(checkpointValueStart,checkpointSize)\n\nsubstr truncates as needed, so I\u0027ll refactor it out.",
+      "parentUuid": "89dc1a76_cb532763",
+      "revId": "8fb56b7175d062e76fcc7c5786164ebdbb5a96da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "19bb0e2f_128d0243",
         "filename": "trusty/storage/proxy/proxy.c",
         "patchSetId": 3
