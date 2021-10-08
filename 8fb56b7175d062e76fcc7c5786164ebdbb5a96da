@@ -177,6 +177,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "b97078a5_10dd9599",
+        "filename": "trusty/storage/proxy/checkpoint_handling.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 1888075
+      },
+      "writtenOn": "2021-10-08T06:24:44Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "9bf9fc48_5eeeea5d",
+      "range": {
+        "startLine": 72,
+        "startChar": 64,
+        "endLine": 72,
+        "endChar": 77
+      },
+      "revId": "8fb56b7175d062e76fcc7c5786164ebdbb5a96da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "89dc1a76_cb532763",
@@ -244,6 +268,24 @@
       "side": 1,
       "message": "My bad, that\u0027s to prevent reading past:\n    \"blah blah,checkpoint\u003ddisable,more stuff here\"\nWe only want to read up to \"disable,\". Will upload another CL reverting this.",
       "parentUuid": "5dfdc31c_4afe9f9b",
+      "revId": "8fb56b7175d062e76fcc7c5786164ebdbb5a96da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "66487611_5cb76d5e",
+        "filename": "trusty/storage/proxy/checkpoint_handling.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 1888075
+      },
+      "writtenOn": "2021-10-08T06:24:44Z",
+      "side": 1,
+      "message": "Let\u0027s try again:\n\nThe data entry looks like \"... blah,checkpoint\u003ddisable:0,blah ...\".\n\nWe want to know if the checkpoint value is prefixed by \"disable\", but we only scan up to the first comma (or end of the string)",
+      "parentUuid": "5108debc_4406e01a",
       "revId": "8fb56b7175d062e76fcc7c5786164ebdbb5a96da",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
