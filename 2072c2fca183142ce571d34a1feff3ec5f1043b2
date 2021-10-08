@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2aba5421_a347ebb7",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_transitions.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 506,
+      "author": {
+        "id": 1045980
+      },
+      "writtenOn": "2021-10-08T20:07:02Z",
+      "side": 1,
+      "message": "This name doesn\u0027t indicate that the function may block. By the name, I would expect it to simply return the state, but it actually attempts set up for I/O.\n\nCan we rename it, perhaps something like RequestIOStart? Not sure if that\u0027s the best name, but this is a companion to NotifyIOCompletion.",
+      "range": {
+        "startLine": 506,
+        "startChar": 35,
+        "endLine": 506,
+        "endChar": 53
+      },
+      "revId": "2072c2fca183142ce571d34a1feff3ec5f1043b2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
