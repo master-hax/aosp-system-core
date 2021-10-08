@@ -401,6 +401,30 @@
       },
       "revId": "8fb56b7175d062e76fcc7c5786164ebdbb5a96da",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9e5c3515_774abaa4",
+        "filename": "trusty/storage/proxy/proxy.c",
+        "patchSetId": 3
+      },
+      "lineNbr": 148,
+      "author": {
+        "id": 1888075
+      },
+      "writtenOn": "2021-10-08T06:40:41Z",
+      "side": 1,
+      "message": "Both proxy.c::is_checkpoint_active and checkpoint_handling.cpp::isCheckpointing both default to false, hence the (rc \u003d\u003d 0) check was actually redundant i.e., if rc !\u003d 0, then is_checkpoint_active is false, hence it won\u0027t enter the while loop anyway.",
+      "parentUuid": "e2d62f79_34ff3287",
+      "range": {
+        "startLine": 148,
+        "startChar": 16,
+        "endLine": 148,
+        "endChar": 23
+      },
+      "revId": "8fb56b7175d062e76fcc7c5786164ebdbb5a96da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
