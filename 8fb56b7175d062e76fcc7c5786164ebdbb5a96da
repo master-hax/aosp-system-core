@@ -292,6 +292,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "bdcfe848_2045a2cb",
+        "filename": "trusty/storage/proxy/checkpoint_handling.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 1888075
+      },
+      "writtenOn": "2021-10-08T06:30:12Z",
+      "side": 1,
+      "message": "Just matching the following 6 characters against \"disable\" would work in this specific case, but checkpointValueEnd and checkpointValueSize goes through the motions of parsing comma-separated entries.",
+      "parentUuid": "66487611_5cb76d5e",
+      "revId": "8fb56b7175d062e76fcc7c5786164ebdbb5a96da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "19bb0e2f_128d0243",
         "filename": "trusty/storage/proxy/proxy.c",
         "patchSetId": 3
