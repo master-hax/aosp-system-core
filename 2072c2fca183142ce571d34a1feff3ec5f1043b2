@@ -49,6 +49,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "9d826a16_f12bbbce",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_transitions.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 415,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-10-09T06:36:21Z",
+      "side": 1,
+      "message": "Yes, we could get them from readahead buffer but that will hold the read-ahead thread to make forward progress if we have high volume I/O\u0027s coming from root filesystem; read-ahead thread will have to wait until all I/O\u0027s are completed as we cannot wipe the buffer when there are in-flight I/O\u0027s being served from the buffer. If read-ahead thread doesn\u0027t make forward progress, then merge thread also will be held up.\n\nAs I mentioned above, the I/O wait here is extremely minimal and is bound only for one window of the merge. Now the only concern here is what if some application just keeps pumping I/O\u0027s on one region - then as I mentioned above, merge will be held up. This is unlikely as we have never seen this till date.\n\nLet me think through if I can address the merge starvation issue.",
+      "parentUuid": "c6738a9a_a1d2e5b4",
+      "range": {
+        "startLine": 412,
+        "startChar": 6,
+        "endLine": 415,
+        "endChar": 64
+      },
+      "revId": "2072c2fca183142ce571d34a1feff3ec5f1043b2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "4f3a08d5_094a6e3c",
         "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_transitions.cpp",
         "patchSetId": 5
@@ -60,6 +84,30 @@
       "writtenOn": "2021-10-08T23:49:33Z",
       "side": 1,
       "message": "Potential starvation issue if we have a high volume of accesses. This is probably what we want to have minimal user impact, just wanted to mention that, especially if we get reports of slow application time.",
+      "range": {
+        "startLine": 453,
+        "startChar": 8,
+        "endLine": 456,
+        "endChar": 9
+      },
+      "revId": "2072c2fca183142ce571d34a1feff3ec5f1043b2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b47744b1_ebcee275",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_transitions.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 456,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-10-09T06:36:21Z",
+      "side": 1,
+      "message": "I did think through this when working on this design. The starvation here is not on the application side. All the I/O from dm-user a.k.a root filesystem will be served immediately. However, it will wait only during the merge window. Now, this cannot be a starvation as the merge thread will _always_ make forward progress - The wait here is only for a specific window of merge which is 510 blocks and not on entire merge completion. Thus this wait should be less than 500ms.\n\nNow, the starvation can happen the other way around wherein we have high volume I/O from application continuously and merge thread could potentially wait indefinitely. However, this is the same design we have in the kernel snapshots as well. It is ok for merge thread to wait as that will not have impact on the application. However, if we want to address this starvation, we need some flow control mechanics and make sure both make forward progress.",
+      "parentUuid": "4f3a08d5_094a6e3c",
       "range": {
         "startLine": 453,
         "startChar": 8,
