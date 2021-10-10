@@ -50,6 +50,23 @@
       "message": "Please set Autosubmit vote",
       "revId": "add62aa9643bf2c91d8d749e083771802a7a8e83",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "48284cdc_01407bb4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1609269
+      },
+      "writtenOn": "2021-10-10T00:05:36Z",
+      "side": 1,
+      "message": "Looks like I don\u0027t have permission to submit this change.\nLooking at b/196046606, b/154161550, etc looks like submit blocker depends on topics, owners group, etc. Is there any more submit requirements I have to fulfill to land this CL?",
+      "revId": "add62aa9643bf2c91d8d749e083771802a7a8e83",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
