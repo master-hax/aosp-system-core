@@ -3,6 +3,23 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "380631d1_f674f87f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1045980
+      },
+      "writtenOn": "2021-10-11T22:00:10Z",
+      "side": 1,
+      "message": "So, we can avoid the possibility of userspace having to wait, and of the readahead process getting starved with a change of how our state flow goes here. I\u0027m renaming some of the states for this because I find them a bit misleading and easy to mix up. I\u0027m ignoring the error states since they\u0027re not really relevant to describing the setup.\n\nThe readahead thread is either populating the next set of blocks, or waiting for them to be written out.\nFor copy/xor blocks, these are dealt with in a given Read Ahead Block. \n\nFor MERGE_IO_TRANSITION, we have\n    MERGE_READY -- signal to RA that blocks have all been merged\n    MERGE_BEGIN, -- signal from RA buffer is full and flushed if necessary, merge can begin\n    MERGE_COMPLETE,\n\nFor MERGE_BLOCK_STATE (might want a better name? maybe MERGE_GROUP_STATE to avoid overload with block). It also makes more sense to have these track what readers for that group should do\n\nGROUP_SOURCE\nGROUP_BUFFER\nGROUP_NORMAL\n\nfeel free to come up with better names there\n\nWe need an additional counter here. Also, we only care about tracking reads, so we can change the counter names to show that.\n\nnum_source_reads_in_progress_;\nnum_buffer_reads_in_progress_;\n\nWhen we request for new block I/O, we can read from one of 3 locations: The source listed in the cow operation(GROUP_SOURCE), the readahead buffer(GROUP_BUFFER), or the final data (GROUP_NORMAL) that has been written out.\n\nInitially, all read ahead groups are set to GROUP_SOURCE. When a read comes in, we ref count with num_source_reads_in_progress_. When the RA buffer has prepped the buffer for a group, we transition it to GROUP_BUFFER. At this point, all future read requests get directed to the buffer, and counted under num_buffer_reads_in_progress_. num_source_reads_in_progress_ will drain as no new reads can go there. Once num_source_reads_in_progress_ hits zero, it is safe to write out the RA buffer. Once that has been written out, we transition the group to GROUP_NORMAL, and direct all future reads to the backing device which has the correct block already in place. At this point, num_buffer_reads_in_progress_ can be nonzero, but can only decrease. Once it hits zero, it is safe to wipe the RA buffer and start the next group.\n\nThis allows us to always make forwards progress without starvation, while always immediately handling user I/O.\n\nLet me know if there\u0027s anything missing there.",
+      "revId": "2072c2fca183142ce571d34a1feff3ec5f1043b2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "b105666d_077054aa",
         "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_core.cpp",
         "patchSetId": 5
@@ -19,6 +36,52 @@
         "startChar": 26,
         "endLine": 183,
         "endChar": 29
+      },
+      "revId": "2072c2fca183142ce571d34a1feff3ec5f1043b2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3e34a310_11b2609f",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_core.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 1045980
+      },
+      "writtenOn": "2021-10-11T22:00:10Z",
+      "side": 1,
+      "message": "The use of BLOCK here is overloaded with filesystem blocks, while we\u0027re just talking of ra specific ones. It\u0027s easy to mix these up with MERGE_IO_TRANSITION. Maybe we should think of it as a read ahead group?\n\nGROUP_PENDING\nGROUP_IN_PROGRESS\nGROUP_COMPLETED\n\nalthough it may be better to name there in terms of where new I/O should be going to, like\n\nGROUP_SOURCE - from device with cow modifications applied\nGROUP_BUFFER - from read ahead buffer\nGROUP_NORMAL - direct from device\n\nthis is also assuming we allow serving data from the readahead buffer, which I think we really want to do to avoid any extra userspace impact during merge.",
+      "range": {
+        "startLine": 71,
+        "startChar": 4,
+        "endLine": 75,
+        "endChar": 12
+      },
+      "revId": "2072c2fca183142ce571d34a1feff3ec5f1043b2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ece75864_dfc6826a",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_core.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 1045980
+      },
+      "writtenOn": "2021-10-11T22:00:10Z",
+      "side": 1,
+      "message": "Probably will want a few counters here, accounting for where the reads are going. We\u0027d need to track reads from the source locations, and reads from the ra buffer",
+      "range": {
+        "startLine": 80,
+        "startChar": 11,
+        "endLine": 80,
+        "endChar": 31
       },
       "revId": "2072c2fca183142ce571d34a1feff3ec5f1043b2",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
@@ -61,6 +124,30 @@
       "side": 1,
       "message": "Yes, we could get them from readahead buffer but that will hold the read-ahead thread to make forward progress if we have high volume I/O\u0027s coming from root filesystem; read-ahead thread will have to wait until all I/O\u0027s are completed as we cannot wipe the buffer when there are in-flight I/O\u0027s being served from the buffer. If read-ahead thread doesn\u0027t make forward progress, then merge thread also will be held up.\n\nAs I mentioned above, the I/O wait here is extremely minimal and is bound only for one window of the merge. Now the only concern here is what if some application just keeps pumping I/O\u0027s on one region - then as I mentioned above, merge will be held up. This is unlikely as we have never seen this till date.\n\nLet me think through if I can address the merge starvation issue.",
       "parentUuid": "c6738a9a_a1d2e5b4",
+      "range": {
+        "startLine": 412,
+        "startChar": 6,
+        "endLine": 415,
+        "endChar": 64
+      },
+      "revId": "2072c2fca183142ce571d34a1feff3ec5f1043b2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fb5eb09b_919c7a51",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_transitions.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 415,
+      "author": {
+        "id": 1045980
+      },
+      "writtenOn": "2021-10-11T22:00:10Z",
+      "side": 1,
+      "message": "I don\u0027t see any issue that isn\u0027t already present. It\u0027s not like reading from the merge buffer prevents the read ahead thread from merging that buffer, and once merged, all new I/O will be directed to the new location. No new I/O can hold up forward progress.",
+      "parentUuid": "9d826a16_f12bbbce",
       "range": {
         "startLine": 412,
         "startChar": 6,
@@ -136,6 +223,29 @@
         "startChar": 35,
         "endLine": 506,
         "endChar": 53
+      },
+      "revId": "2072c2fca183142ce571d34a1feff3ec5f1043b2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3ba81103_ebba7b52",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_transitions.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 512,
+      "author": {
+        "id": 1045980
+      },
+      "writtenOn": "2021-10-11T22:00:10Z",
+      "side": 1,
+      "message": "It would probably be clearer to call all occurences of this ra_index to not mix it up with the block from cow operations",
+      "range": {
+        "startLine": 512,
+        "startChar": 8,
+        "endLine": 512,
+        "endChar": 19
       },
       "revId": "2072c2fca183142ce571d34a1feff3ec5f1043b2",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
