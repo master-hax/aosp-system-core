@@ -1,0 +1,47 @@
+{
+  "comments": [
+    {
+      "robotId": "ayeaye",
+      "robotRunId": "AR00000000000016135905",
+      "url": "https://android-build.googleplex.com/builds/treetop/android-review/1850058?revision\u003d15",
+      "fixSuggestions": [
+        {
+          "fixId": "f6648d18_a39e7812",
+          "description": "Change to \"trusty/storage/interface/include/trusty/interface/storage.h\"",
+          "replacements": [
+            {
+              "path": "trusty/storage/interface/include/trusty/interface/storage.h",
+              "range": {
+                "startLine": 118,
+                "startChar": 58,
+                "endLine": 118,
+                "endChar": 69
+              },
+              "replacement": "cumulative"
+            }
+          ]
+        }
+      ],
+      "key": {
+        "uuid": "ef0870de_81f56849",
+        "filename": "trusty/storage/interface/include/trusty/interface/storage.h",
+        "patchSetId": 15
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 1757831
+      },
+      "writtenOn": "2021-10-11T20:38:02Z",
+      "side": 1,
+      "message": "Common typo found: \"cummulative\" -- should it be \"cumulative\"?\nNote: a line containing \"common_typos_disable\" or \"common_typos_enable\" will turn off or on (respectively) the linter for subsequent lines in the file. Alternatively include the token \"NOTYPO\" within a line to skip typo linting that line or include \u0027No-Typo-Check: \u003creason\u003e\u0027in the commit message.",
+      "range": {
+        "startLine": 118,
+        "startChar": 58,
+        "endLine": 118,
+        "endChar": 69
+      },
+      "revId": "9f5b0d7c42d82f2fc78678aaef93ff226b79642e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
