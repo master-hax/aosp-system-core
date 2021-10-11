@@ -16,6 +16,24 @@
       "message": "Nit: checkpointingDoneForever \u003d true;  ?",
       "revId": "45f8f1db7e0f52f0a837528fbfbbb7fef3a3aa93",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "696d1799_e142d2c4",
+        "filename": "trusty/storage/proxy/checkpoint_handling.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1888075
+      },
+      "writtenOn": "2021-10-11T23:27:00Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "837c9527_86187754",
+      "revId": "45f8f1db7e0f52f0a837528fbfbbb7fef3a3aa93",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
