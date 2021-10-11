@@ -85,6 +85,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "0f9fd566_7ee569dd",
+        "filename": "trusty/storage/proxy/checkpoint_handling.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2021-10-11T20:02:47Z",
+      "side": 1,
+      "message": "I don\u0027t have a strong preference here, but in the future we may need to reset the cached state.",
+      "parentUuid": "dd58debb_64bbc195",
+      "range": {
+        "startLine": 38,
+        "startChar": 8,
+        "endLine": 38,
+        "endChar": 49
+      },
+      "revId": "8fb56b7175d062e76fcc7c5786164ebdbb5a96da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "99937452_1f1907f1",
         "filename": "trusty/storage/proxy/checkpoint_handling.cpp",
         "patchSetId": 3
