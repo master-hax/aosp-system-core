@@ -85,6 +85,24 @@
       "parentUuid": "48284cdc_01407bb4",
       "revId": "add62aa9643bf2c91d8d749e083771802a7a8e83",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "747965a7_3750fb29",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1609269
+      },
+      "writtenOn": "2021-10-11T23:06:47Z",
+      "side": 1,
+      "message": "Ah, I see.\nWhen something like this happens again in the future I\u0027ll autosubmit+1 \u0026\u0026 ask tavila/ipalant/samccone.\nThanks for the explanation!",
+      "parentUuid": "dd175610_ec227381",
+      "revId": "add62aa9643bf2c91d8d749e083771802a7a8e83",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
