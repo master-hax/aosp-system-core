@@ -109,6 +109,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "78445268_e1aec8ea",
+        "filename": "trusty/storage/proxy/checkpoint_handling.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1114938
+      },
+      "writtenOn": "2021-10-11T20:20:38Z",
+      "side": 1,
+      "message": "Nit: That doesn\u0027t require two variables.  Right now, we effectively have one variable that says \"we know for sure checkpointing will not occur now or in the future\".  (Except expressed inefficiently.)  If that variable gets cleared, then we start looking again.  If we think checkpointing is on, it is never cached because we need to keep re-evaluating it.",
+      "parentUuid": "dd58debb_64bbc195",
+      "range": {
+        "startLine": 38,
+        "startChar": 8,
+        "endLine": 38,
+        "endChar": 49
+      },
+      "revId": "8fb56b7175d062e76fcc7c5786164ebdbb5a96da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "99937452_1f1907f1",
         "filename": "trusty/storage/proxy/checkpoint_handling.cpp",
         "patchSetId": 3

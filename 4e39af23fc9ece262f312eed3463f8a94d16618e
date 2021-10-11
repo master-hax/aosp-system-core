@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "635879a1_96f5ce3e",
+        "filename": "trusty/storage/proxy/checkpoint_handling.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1114938
+      },
+      "writtenOn": "2021-10-11T20:20:38Z",
+      "side": 1,
+      "message": "Nit: formatting, first and last lines empty on multi-line comments:\n\n  /* \n   * comment style\n   */",
+      "revId": "4e39af23fc9ece262f312eed3463f8a94d16618e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bd42fc5a_d6a7724c",
+        "filename": "trusty/storage/proxy/checkpoint_handling.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1114938
+      },
+      "writtenOn": "2021-10-11T20:20:38Z",
+      "side": 1,
+      "message": "Shouldn\u0027t happen during normal operation, message is misleading.",
+      "revId": "4e39af23fc9ece262f312eed3463f8a94d16618e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ae332d3b_45a766a6",
+        "filename": "trusty/storage/proxy/proxy.c",
+        "patchSetId": 12
+      },
+      "lineNbr": 140,
+      "author": {
+        "id": 1114938
+      },
+      "writtenOn": "2021-10-11T20:20:38Z",
+      "side": 1,
+      "message": "Consistent formatting between cases.",
+      "revId": "4e39af23fc9ece262f312eed3463f8a94d16618e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
