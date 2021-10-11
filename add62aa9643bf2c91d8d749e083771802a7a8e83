@@ -67,6 +67,24 @@
       "message": "Looks like I don\u0027t have permission to submit this change.\nLooking at b/196046606, b/154161550, etc looks like submit blocker depends on topics, owners group, etc. Is there any more submit requirements I have to fulfill to land this CL?",
       "revId": "add62aa9643bf2c91d8d749e083771802a7a8e83",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "dd175610_ec227381",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-10-11T17:07:18Z",
+      "side": 1,
+      "message": "no, you just needed to know \"one simple trick\". sometimes you won\u0027t have *submit* permission. most commonly for changes to the manifest, but occasionally for stuff like like. the trick is to set autosubmit+1 because the machine does have the power. _sometimes_ you won\u0027t have permission to autosubmit+1, and then you really do need to find a human with magic powers. tavila and ipalant are often good places to start: they tend to have the powers or know who you _should_ be talking to. (though ideally (a) we\u0027d explain the problem in the interface and (b) have a more direct link to \"find me the human i need\". +samccone because we were just talking earlier today about the many ways in which gerrit\u0027s [mostly inherent, but still unfortunate] complexity makes it hard for people to do their jobs :-) )",
+      "parentUuid": "48284cdc_01407bb4",
+      "revId": "add62aa9643bf2c91d8d749e083771802a7a8e83",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
