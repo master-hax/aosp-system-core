@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "ab34e953_8cc6e702",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-10-11T23:34:16Z",
+      "side": 1,
+      "message": "Somewhere in init/README.md would be good.",
+      "parentUuid": "1ac3e69e_afa9c615",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 9,
+        "endChar": 40
+      },
+      "revId": "5f0ccd5345fda46ae454abbbc126fdd34589d0c5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "4ac18ebd_ca1859d6",
@@ -37,6 +61,40 @@
       "writtenOn": "2021-10-11T22:52:44Z",
       "side": 1,
       "message": "moved from internal to aosp to make it official.",
+      "revId": "5f0ccd5345fda46ae454abbbc126fdd34589d0c5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c1477ccc_d2a0d505",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1362,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-10-11T23:34:16Z",
+      "side": 1,
+      "message": "nit: const auto\u0026 suffix \u003d parts.back();\n\n(And if you do this, make \"parts\" const for good measure)",
+      "revId": "5f0ccd5345fda46ae454abbbc126fdd34589d0c5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4a25803f_550ce06b",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1389,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-10-11T23:34:16Z",
+      "side": 1,
+      "message": "nit: can combine these into one condition?",
       "revId": "5f0ccd5345fda46ae454abbbc126fdd34589d0c5",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
