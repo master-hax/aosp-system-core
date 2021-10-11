@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "804d95b2_0ac6c49d",
+        "filename": "trusty/storage/proxy/checkpoint_handling.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1888075
+      },
+      "writtenOn": "2021-10-11T20:29:55Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "635879a1_96f5ce3e",
+      "revId": "4e39af23fc9ece262f312eed3463f8a94d16618e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "bd42fc5a_d6a7724c",
@@ -35,6 +53,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "4c800180_5e450359",
+        "filename": "trusty/storage/proxy/checkpoint_handling.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1888075
+      },
+      "writtenOn": "2021-10-11T20:29:55Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "bd42fc5a_d6a7724c",
+      "revId": "4e39af23fc9ece262f312eed3463f8a94d16618e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "ae332d3b_45a766a6",
@@ -48,6 +84,24 @@
       "writtenOn": "2021-10-11T20:20:38Z",
       "side": 1,
       "message": "Consistent formatting between cases.",
+      "revId": "4e39af23fc9ece262f312eed3463f8a94d16618e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7a3f9789_d1303fd8",
+        "filename": "trusty/storage/proxy/proxy.c",
+        "patchSetId": 12
+      },
+      "lineNbr": 140,
+      "author": {
+        "id": 1888075
+      },
+      "writtenOn": "2021-10-11T20:29:55Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ae332d3b_45a766a6",
       "revId": "4e39af23fc9ece262f312eed3463f8a94d16618e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
