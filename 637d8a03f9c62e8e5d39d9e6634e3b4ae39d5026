@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e4af5b1c_5675e60a",
+        "filename": "libcutils/include/private/android_filesystem_config.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 133,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-10-12T19:59:38Z",
+      "side": 1,
+      "message": "given that (aiui) Google\u0027s had *two* different not-quite-compatible projects called \"Thread\" (the Nest one and the Google one), i think we should have a clarifying link here. i\u0027m also uncomfortable with AID_THREAD as a name. i think that\u0027s far too generic, and most people won\u0027t think of what you\u0027re thinking of when the hear that.\n\nwhat process(es) are expected to have this group? (i\u0027m wondering if the name should match the user [like llkd] rather than the protocol?)",
+      "range": {
+        "startLine": 133,
+        "startChar": 37,
+        "endLine": 133,
+        "endChar": 43
+      },
+      "revId": "637d8a03f9c62e8e5d39d9e6634e3b4ae39d5026",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
