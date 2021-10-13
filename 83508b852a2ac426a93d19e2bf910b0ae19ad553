@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "deb9001c_c1ad0680",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2021-10-13T16:14:58Z",
+      "side": 1,
+      "message": "Three things:\n- could we get this property in some of the other places where we need it and make sure it matches up with the logic in other places?\n- could we file a bug to add a test to init, which will read fake .prop files in a test, so that we can add tests for the logic here? (or can you please add the test)\n- could we update the documentation on SAC to reflect this new property?",
+      "range": {
+        "startLine": 13,
+        "startChar": 0,
+        "endLine": 13,
+        "endChar": 33
+      },
+      "revId": "83508b852a2ac426a93d19e2bf910b0ae19ad553",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "732a9ddf_6fbf63d2",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1046,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2021-10-13T16:14:58Z",
+      "side": 1,
+      "message": "nit: std::min(board_api_level, device_api_level)",
+      "range": {
+        "startLine": 1046,
+        "startChar": 20,
+        "endLine": 1046,
+        "endChar": 91
+      },
+      "revId": "83508b852a2ac426a93d19e2bf910b0ae19ad553",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2d1ce381_a7c0bd5a",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1052,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2021-10-13T16:14:58Z",
+      "side": 1,
+      "message": "should we also print res?",
+      "range": {
+        "startLine": 1052,
+        "startChar": 22,
+        "endLine": 1052,
+        "endChar": 27
+      },
+      "revId": "83508b852a2ac426a93d19e2bf910b0ae19ad553",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
