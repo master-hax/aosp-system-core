@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "86bca37e_be31a1d6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-10-13T22:44:14Z",
+      "side": 1,
+      "message": "Thanks. I have updated the change. The new patch ensures that we no longer have to wait in the I/O path and the I/O\u0027s are served directly from Read ahead buffer.",
+      "parentUuid": "380631d1_f674f87f",
+      "revId": "2072c2fca183142ce571d34a1feff3ec5f1043b2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "b105666d_077054aa",
@@ -31,6 +49,30 @@
       "writtenOn": "2021-10-08T23:31:50Z",
       "side": 1,
       "message": "Is there a particular reason we add 1 here, vs just checking \u003d\u003d 0?",
+      "range": {
+        "startLine": 183,
+        "startChar": 26,
+        "endLine": 183,
+        "endChar": 29
+      },
+      "revId": "2072c2fca183142ce571d34a1feff3ec5f1043b2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "71290697_2a442dd4",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_core.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 183,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-10-13T22:44:14Z",
+      "side": 1,
+      "message": "ra_index tracks the index for each group which is 510 blocks. Each group here is represented by \"MergeBlockState\" to track the status of the merge for every group. \n\nAt L193, we bump the index after every 510 blocks are processed. Once the new index is created, we need to create a new \"MergeBlockState\". The check here ensures that we create a new \"MergeBlockState\" structure.",
+      "parentUuid": "b105666d_077054aa",
       "range": {
         "startLine": 183,
         "startChar": 26,
@@ -64,6 +106,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "400c44c5_23921187",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_core.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-10-13T22:44:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3e34a310_11b2609f",
+      "range": {
+        "startLine": 71,
+        "startChar": 4,
+        "endLine": 75,
+        "endChar": 12
+      },
+      "revId": "2072c2fca183142ce571d34a1feff3ec5f1043b2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "ece75864_dfc6826a",
@@ -77,6 +143,30 @@
       "writtenOn": "2021-10-11T22:00:10Z",
       "side": 1,
       "message": "Probably will want a few counters here, accounting for where the reads are going. We\u0027d need to track reads from the source locations, and reads from the ra buffer",
+      "range": {
+        "startLine": 80,
+        "startChar": 11,
+        "endLine": 80,
+        "endChar": 31
+      },
+      "revId": "2072c2fca183142ce571d34a1feff3ec5f1043b2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "254227af_f9ee2f95",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_core.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-10-13T22:44:14Z",
+      "side": 1,
+      "message": "With the new changes, we don\u0027t need additional counters.",
+      "parentUuid": "ece75864_dfc6826a",
       "range": {
         "startLine": 80,
         "startChar": 11,
@@ -158,6 +248,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "3a67784d_f7cb9aea",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_transitions.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 415,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-10-13T22:44:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fb5eb09b_919c7a51",
+      "range": {
+        "startLine": 412,
+        "startChar": 6,
+        "endLine": 415,
+        "endChar": 64
+      },
+      "revId": "2072c2fca183142ce571d34a1feff3ec5f1043b2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "4f3a08d5_094a6e3c",
@@ -205,6 +319,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "0bcb2c19_d7419cf6",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_transitions.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 456,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-10-13T22:44:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b47744b1_ebcee275",
+      "range": {
+        "startLine": 453,
+        "startChar": 8,
+        "endLine": 456,
+        "endChar": 9
+      },
+      "revId": "2072c2fca183142ce571d34a1feff3ec5f1043b2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "2aba5421_a347ebb7",
@@ -228,6 +366,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "c4404e0d_26d85a4c",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_transitions.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 506,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-10-13T22:44:14Z",
+      "side": 1,
+      "message": "I have renamed it to ProcessMergingBlock().. Hope that is ok.",
+      "parentUuid": "2aba5421_a347ebb7",
+      "range": {
+        "startLine": 506,
+        "startChar": 35,
+        "endLine": 506,
+        "endChar": 53
+      },
+      "revId": "2072c2fca183142ce571d34a1feff3ec5f1043b2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "3ba81103_ebba7b52",
@@ -241,6 +403,30 @@
       "writtenOn": "2021-10-11T22:00:10Z",
       "side": 1,
       "message": "It would probably be clearer to call all occurences of this ra_index to not mix it up with the block from cow operations",
+      "range": {
+        "startLine": 512,
+        "startChar": 8,
+        "endLine": 512,
+        "endChar": 19
+      },
+      "revId": "2072c2fca183142ce571d34a1feff3ec5f1043b2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6ba419d1_440240c0",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_transitions.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 512,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-10-13T22:44:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3ba81103_ebba7b52",
       "range": {
         "startLine": 512,
         "startChar": 8,
