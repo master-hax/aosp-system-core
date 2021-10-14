@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e8829737_c4c0d462",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_dm_user.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 436,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-10-14T23:27:16Z",
+      "side": 1,
+      "message": "This should be moved down to where it\u0027s first defined.",
+      "revId": "d2eb7c63083084a9cb3e6ec5274d66beb9d818b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4a32b2b3_04a5b2ac",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_dm_user.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 441,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-10-14T23:27:16Z",
+      "side": 1,
+      "message": "Same with these.",
+      "revId": "d2eb7c63083084a9cb3e6ec5274d66beb9d818b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
