@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "5996aa3d_61c4151b",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1146974
+      },
+      "writtenOn": "2021-10-14T00:57:00Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "deb9001c_c1ad0680",
+      "range": {
+        "startLine": 13,
+        "startChar": 0,
+        "endLine": 13,
+        "endChar": 33
+      },
+      "revId": "83508b852a2ac426a93d19e2bf910b0ae19ad553",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "732a9ddf_6fbf63d2",
@@ -47,6 +71,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "0570038d_9a4b8356",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1046,
+      "author": {
+        "id": 1146974
+      },
+      "writtenOn": "2021-10-14T00:57:00Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "732a9ddf_6fbf63d2",
+      "range": {
+        "startLine": 1046,
+        "startChar": 20,
+        "endLine": 1046,
+        "endChar": 91
+      },
+      "revId": "83508b852a2ac426a93d19e2bf910b0ae19ad553",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "2d1ce381_a7c0bd5a",
@@ -60,6 +108,30 @@
       "writtenOn": "2021-10-13T16:14:58Z",
       "side": 1,
       "message": "should we also print res?",
+      "range": {
+        "startLine": 1052,
+        "startChar": 22,
+        "endLine": 1052,
+        "endChar": 27
+      },
+      "revId": "83508b852a2ac426a93d19e2bf910b0ae19ad553",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "70168178_791f6417",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1052,
+      "author": {
+        "id": 1146974
+      },
+      "writtenOn": "2021-10-14T00:57:00Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2d1ce381_a7c0bd5a",
       "range": {
         "startLine": 1052,
         "startChar": 22,
