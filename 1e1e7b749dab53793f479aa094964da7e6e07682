@@ -20,6 +20,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "a0e3321f_16cc2ada",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 1146974
+      },
+      "writtenOn": "2021-10-14T03:20:21Z",
+      "side": 1,
+      "message": "This value is not a random large number but has a convention.\n\u002710000\u0027 is used for the API level before the API is assigned to the current version.",
+      "parentUuid": "29e91c8b_fcd9abc9",
+      "revId": "1e1e7b749dab53793f479aa094964da7e6e07682",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "c528e138_1eec31bf",
         "filename": "init/property_service.cpp",
         "patchSetId": 2
@@ -31,6 +49,24 @@
       "writtenOn": "2021-10-14T02:09:53Z",
       "side": 1,
       "message": "const std::vector\u003cstd::string\u003e\u0026 api_level_props",
+      "revId": "1e1e7b749dab53793f479aa094964da7e6e07682",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8fe077c9_a9fc9476",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1021,
+      "author": {
+        "id": 1146974
+      },
+      "writtenOn": "2021-10-14T03:20:21Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c528e138_1eec31bf",
       "revId": "1e1e7b749dab53793f479aa094964da7e6e07682",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
