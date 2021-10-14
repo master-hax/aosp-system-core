@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "19b09101_84beb78d",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_core.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-10-14T02:20:25Z",
+      "side": 1,
+      "message": "Since these are public, you can drop the \"_\" suffix.",
+      "revId": "22c4c48e469ca609c1bc5f0cac661e9ab48fb4a4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
