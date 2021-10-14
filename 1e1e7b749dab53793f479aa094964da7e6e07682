@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "29e91c8b_fcd9abc9",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-10-14T02:09:53Z",
+      "side": 1,
+      "message": "nit: prefer something like INT_MAX",
+      "revId": "1e1e7b749dab53793f479aa094964da7e6e07682",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c528e138_1eec31bf",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1021,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-10-14T02:09:53Z",
+      "side": 1,
+      "message": "const std::vector\u003cstd::string\u003e\u0026 api_level_props",
+      "revId": "1e1e7b749dab53793f479aa094964da7e6e07682",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
