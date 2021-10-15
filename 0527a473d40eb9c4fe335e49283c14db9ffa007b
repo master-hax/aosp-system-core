@@ -20,6 +20,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "e5b13c12_b1a3dc9a",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/snapshot.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 798,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-10-15T05:27:14Z",
+      "side": 1,
+      "message": "Setting this true will enable user-space snapshots. For now this is disabled. Once we have all the CL\u0027s in (there are couple of more pending CL viz snapshot_test.cpp and one minor change in snapuserd_daemon). Once they are in, we toggle this.",
+      "parentUuid": "7208b4fb_b25a4d1f",
+      "revId": "0527a473d40eb9c4fe335e49283c14db9ffa007b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "6dfc8c93_1f9d7127",
         "filename": "fs_mgr/libsnapshot/snapshot.cpp",
         "patchSetId": 7
