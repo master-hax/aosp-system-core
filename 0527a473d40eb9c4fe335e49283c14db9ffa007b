@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7208b4fb_b25a4d1f",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/snapshot.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 798,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-10-15T03:47:03Z",
+      "side": 1,
+      "message": "When is this set to true?",
+      "revId": "0527a473d40eb9c4fe335e49283c14db9ffa007b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6dfc8c93_1f9d7127",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 124,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-10-15T03:47:03Z",
+      "side": 1,
+      "message": "This would be a good place to have an enum as well. Something like\n\n    enum class SnapshotDriver {\n        DM_SNAPSHOT,\n        DM_USER,\n    };",
+      "revId": "0527a473d40eb9c4fe335e49283c14db9ffa007b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
