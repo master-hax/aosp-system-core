@@ -1,0 +1,89 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bf0c40bf_577abaa3",
+        "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd_client.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 235,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-10-15T03:38:11Z",
+      "side": 1,
+      "message": "initiate_merge? Is there a reason to have sub-commands here?",
+      "revId": "712820b11f1c7fa8c5b6cda824cf40906873d82a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a5a010c6_2b9196eb",
+        "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd_client.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 245,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-10-15T03:38:11Z",
+      "side": 1,
+      "message": "merge_percent?",
+      "revId": "712820b11f1c7fa8c5b6cda824cf40906873d82a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a76a6f37_dc774218",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_core.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-10-15T03:38:11Z",
+      "side": 1,
+      "message": "Is there any possible tearing here if it\u0027s updated on another thread? (I\u0027m guessing not on 64-bit at least?)",
+      "revId": "712820b11f1c7fa8c5b6cda824cf40906873d82a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c83a6500_249c0a60",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_server.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-10-15T03:38:11Z",
+      "side": 1,
+      "message": "Maybe time to convert this to std::unordered_map so we can use a literal to define these.",
+      "revId": "712820b11f1c7fa8c5b6cda824cf40906873d82a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "840724c9_7fab0f74",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_server.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 209,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-10-15T03:38:11Z",
+      "side": 1,
+      "message": "nit: this error is a bit misleading even with DEBUG. Maybe, \"Delete requested but handler already gone\"?",
+      "revId": "712820b11f1c7fa8c5b6cda824cf40906873d82a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
