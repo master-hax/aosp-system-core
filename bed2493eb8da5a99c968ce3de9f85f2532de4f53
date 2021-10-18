@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "25845ec9_f4cb1c99",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 302,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2021-10-18T13:12:30Z",
+      "side": 1,
+      "message": "This creates a divergence between userdebug v.s. user builds, which might make debug harder.\n\ne.g., if a vendor_boot-debug.img contains a incompatible userdebug_plat_sepolicy.ci, userdebug builds will be bootable but user build won\u0027t boot.\n\nHowever, in general, if an issue occurs on user build, it\u0027s better to be detectable on userdebug build as well. So we can catch the issue earlier because it fits better to our test infra: test userdebug builds on *-dev branches first, then test user builds on release branches later.\n\nOtherwise, we might have a last-minute surprise on the release branch like b/192248690 (and need b/192983362#comment3).",
+      "range": {
+        "startLine": 302,
+        "startChar": 4,
+        "endLine": 302,
+        "endChar": 40
+      },
+      "revId": "bed2493eb8da5a99c968ce3de9f85f2532de4f53",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
