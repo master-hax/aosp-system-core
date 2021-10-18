@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b3a7cb84_4d0e50c0",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1408266
+      },
+      "writtenOn": "2021-10-18T23:10:47Z",
+      "side": 1,
+      "message": "Dan could you confirm that the owners are up-to-date? In go/vts-reviewers it\u0027s drosen@google.com, not sure if I should overwrite the current owners.",
+      "revId": "72ae61b6446cef08d01671e82d97a47a4a872425",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
