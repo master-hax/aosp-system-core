@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "702c60cd_9691ccbd",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1408266
+      },
+      "writtenOn": "2021-10-18T23:36:28Z",
+      "side": 1,
+      "message": "Hi David could you confirm that the owners in this file are up-to-date? And 30545 is the right bug component?",
+      "revId": "ac84a8ded6d6e73f810374504c6811b3c8c283d4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
