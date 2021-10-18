@@ -22,6 +22,30 @@
       },
       "revId": "bed2493eb8da5a99c968ce3de9f85f2532de4f53",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "11c524ca_25763d77",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 302,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2021-10-18T15:41:46Z",
+      "side": 1,
+      "message": "\u003e This creates a divergence between userdebug v.s. user builds, which might make debug harder.\n\u003e \n\u003e e.g., if a vendor_boot-debug.img contains a incompatible userdebug_plat_sepolicy.ci, userdebug builds will be bootable but user build won\u0027t boot.\n\nYes but this divergence actually improves compatibility, so in a way, makes debugging easier?\n\n\u003e However, in general, if an issue occurs on user build, it\u0027s better to be detectable on userdebug build as well. So we can catch the issue earlier because it fits better to our test infra: test userdebug builds on *-dev branches first, then test user builds on release branches later.\n\nBy definition the debug policy from debug_ramdisk is exactly the same as the platform policy of a userdebug build, so this change doesn\u0027t affect the bug visibility like you worried?\n\n(As long as we\u0027re talking about same-buildid testing) If a userdebug image + vendor_boot-debug combo fails w/o this change, then this combo would still fail w/ this change, because the userdebug_plat_policy from vendor_boot.img is exactly the same as the platform policy from userdebug-system.img. \n\nThis change only affects the case when vendor_boot-debug.img and system.img are from different build id. Such case only happen on -release branches where the API surface is stable. On -dev branch, we only test with same build id builds. (This change affects the -dev branch/userdebug case)\n\n\u003e Otherwise, we might have a last-minute surprise on the release branch like b/192248690 (and need b/192983362#comment3).\n\nTIt doesn\u0027t sound reasonable to me that this should stop anyone from adding new code. his sound like something our pre/post-submit test should take care of? Plus we are at the beginning of Tiramisu development, so what better time than now?",
+      "parentUuid": "25845ec9_f4cb1c99",
+      "range": {
+        "startLine": 302,
+        "startChar": 4,
+        "endLine": 302,
+        "endChar": 40
+      },
+      "revId": "bed2493eb8da5a99c968ce3de9f85f2532de4f53",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
