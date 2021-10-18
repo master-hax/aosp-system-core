@@ -122,6 +122,7 @@ libinit_cc_defaults {
         "-DSHUTDOWN_ZERO_TIMEOUT=0",
         "-DINIT_FULL_SOURCES",
         "-DINSTALL_DEBUG_POLICY_TO_SYSTEM_EXT=0",
+        "-DPLATFORM_POLICY_IS_USERDEBUG_VARIANT=0",
     ],
     product_variables: {
         debuggable: {
@@ -138,6 +139,8 @@ libinit_cc_defaults {
                 "-DWORLD_WRITABLE_KMSG=1",
                 "-UDUMP_ON_UMOUNT_FAILURE",
                 "-DDUMP_ON_UMOUNT_FAILURE=1",
+                "-UPLATFORM_POLICY_IS_USERDEBUG_VARIANT",
+                "-DPLATFORM_POLICY_IS_USERDEBUG_VARIANT=1",
             ],
         },
         eng: {

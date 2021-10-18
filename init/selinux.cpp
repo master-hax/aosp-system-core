@@ -299,6 +299,11 @@ std::optional<const char*> GetUserdebugPlatformPolicyFile() {
     // See if we need to load userdebug_plat_sepolicy.cil instead of plat_sepolicy.cil.
     const char* force_debuggable_env = getenv("INIT_FORCE_DEBUGGABLE");
     if (force_debuggable_env && "true"s == force_debuggable_env && AvbHandle::IsDeviceUnlocked()) {
+#if PLATFORM_POLICY_IS_USERDEBUG_VARIANT == 1
+        LOG(INFO) << "Platform sepolicy already is userdebug variant, so skip finding an userdebug "
+                     "platform sepolicy file";
+        return std::nullopt;
+#endif  // PLATFORM_POLICY_IS_USERDEBUG_VARIANT == 1
         const std::vector<const char*> debug_policy_candidates = {
 #if INSTALL_DEBUG_POLICY_TO_SYSTEM_EXT == 1
             "/system_ext/etc/selinux/userdebug_plat_sepolicy.cil",
