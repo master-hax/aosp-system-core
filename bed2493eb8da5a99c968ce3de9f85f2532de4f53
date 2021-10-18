@@ -46,6 +46,30 @@
       },
       "revId": "bed2493eb8da5a99c968ce3de9f85f2532de4f53",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3cb34b8e_334e89c1",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 302,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2021-10-18T15:50:26Z",
+      "side": 1,
+      "message": "\u003e This change only affects the case when vendor_boot-debug.img and system.img are from different build id. Such case only happen on -release branches where the API surface is stable. On -dev branch, we only test with same build id builds. (This change affects the -dev branch/userdebug case)\n\nOh I misread you, I see what you mean now. Right now if vendor_boot.img and system.img are from different build id, then it could fail due to incompatible sepolicy (regardless of user/userdebug); after this change,\n\n* vendor_boot.img + user system.img \u003d\u003e fail due to incompatible\n* vendor_boot.img + userdebug system.img \u003d\u003e won\u0027t fail because ignoring the debug policy in vendor_boot.img",
+      "parentUuid": "11c524ca_25763d77",
+      "range": {
+        "startLine": 302,
+        "startChar": 4,
+        "endLine": 302,
+        "endChar": 40
+      },
+      "revId": "bed2493eb8da5a99c968ce3de9f85f2532de4f53",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
