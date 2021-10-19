@@ -124,6 +124,24 @@
       "parentUuid": "506c3168_fd91aae1",
       "revId": "55e5714c64e279ad3d10eb292950934d3ad78ad0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8a359605_26f6cfff",
+        "filename": "trusty/keymaster/ipc/trusty_keymaster_ipc.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 1856745
+      },
+      "writtenOn": "2021-10-19T02:59:03Z",
+      "side": 1,
+      "message": "we don\u0027t seem to have the keep polling in a loop, don\u0027t we?\nwith the current implementation, we would not observe issues that would have happened way in the past beyond the logcat persistence. or am I missing something?",
+      "parentUuid": "b0853aca_19bb9dd2",
+      "revId": "55e5714c64e279ad3d10eb292950934d3ad78ad0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
