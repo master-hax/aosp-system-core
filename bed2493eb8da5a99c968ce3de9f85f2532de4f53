@@ -118,6 +118,30 @@
       },
       "revId": "bed2493eb8da5a99c968ce3de9f85f2532de4f53",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7da2c851_3bceb76a",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 302,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2021-10-19T06:12:27Z",
+      "side": 1,
+      "message": "My main point is that it\u0027s better to have the same call path for both userdebug and user builds if possible.\n\nBut if we submit this CL, it seems harder to catch the issue on dev branches first? (because on dev branches it can pass with userdebug builds).\n\n+ vendor_boot-debug.img + user system.img (on release branches) \u003d\u003e fail due to incompatible\n\n+ vendor_boot-debug.img + userdebug system.img (on dev branches) \u003d\u003e won\u0027t fail because ignoring the debug policy in vendor_boot.img",
+      "parentUuid": "e72a8e62_504736db",
+      "range": {
+        "startLine": 302,
+        "startChar": 4,
+        "endLine": 302,
+        "endChar": 40
+      },
+      "revId": "bed2493eb8da5a99c968ce3de9f85f2532de4f53",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
