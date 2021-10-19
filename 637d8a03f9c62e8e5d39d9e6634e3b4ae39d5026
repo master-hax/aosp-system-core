@@ -22,6 +22,30 @@
       },
       "revId": "637d8a03f9c62e8e5d39d9e6634e3b4ae39d5026",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ecb8c27a_22d33239",
+        "filename": "libcutils/include/private/android_filesystem_config.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 133,
+      "author": {
+        "id": 1837411
+      },
+      "writtenOn": "2021-10-19T01:26:50Z",
+      "side": 1,
+      "message": "The processes `otbr-agent` and `ThreadDriver` will use this this group. As discussed in issue b/202786090, we would like to use the name `THREAD_NETWORK`. What do you think about it?",
+      "parentUuid": "e4af5b1c_5675e60a",
+      "range": {
+        "startLine": 133,
+        "startChar": 37,
+        "endLine": 133,
+        "endChar": 43
+      },
+      "revId": "637d8a03f9c62e8e5d39d9e6634e3b4ae39d5026",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
