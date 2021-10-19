@@ -70,6 +70,30 @@
       },
       "revId": "bed2493eb8da5a99c968ce3de9f85f2532de4f53",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "420ed10f_a0d9f1f6",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 302,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2021-10-19T02:47:06Z",
+      "side": 1,
+      "message": "Correct, my concern is exactly your last comment.\n\nIf we have a method to avoid the last-minutes surprise in the release branches, then I\u0027m ok with this change. Otherwise, we might have to do a post-mortem again some day in the future.",
+      "parentUuid": "3cb34b8e_334e89c1",
+      "range": {
+        "startLine": 302,
+        "startChar": 4,
+        "endLine": 302,
+        "endChar": 40
+      },
+      "revId": "bed2493eb8da5a99c968ce3de9f85f2532de4f53",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
