@@ -106,6 +106,24 @@
       "parentUuid": "a83d186c_7682baba",
       "revId": "55e5714c64e279ad3d10eb292950934d3ad78ad0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b0853aca_19bb9dd2",
+        "filename": "trusty/keymaster/ipc/trusty_keymaster_ipc.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 1001525
+      },
+      "writtenOn": "2021-10-19T00:15:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "506c3168_fd91aae1",
+      "revId": "55e5714c64e279ad3d10eb292950934d3ad78ad0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
