@@ -142,6 +142,24 @@
       "parentUuid": "b0853aca_19bb9dd2",
       "revId": "55e5714c64e279ad3d10eb292950934d3ad78ad0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c0950cde_8c6f9f56",
+        "filename": "trusty/keymaster/ipc/trusty_keymaster_ipc.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 1001525
+      },
+      "writtenOn": "2021-10-19T14:56:11Z",
+      "side": 1,
+      "message": "No, I went with the other option Janis mentioned above. It will log if the poll() times out, and then if the blocking read that follows succeeds after poll() timed out, it will log that.\n\nYou\u0027re right that it\u0027s possible for the poll timeout log to have been purged from the log, but I don\u0027t think that\u0027s a good enough reason to fill up the log.",
+      "parentUuid": "8a359605_26f6cfff",
+      "revId": "55e5714c64e279ad3d10eb292950934d3ad78ad0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
