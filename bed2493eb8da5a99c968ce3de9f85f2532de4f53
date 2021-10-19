@@ -94,6 +94,30 @@
       },
       "revId": "bed2493eb8da5a99c968ce3de9f85f2532de4f53",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e72a8e62_504736db",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 302,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2021-10-19T05:49:03Z",
+      "side": 1,
+      "message": "\u003e If we have a method to avoid the last-minutes surprise in the release branches, then I\u0027m ok with this change. Otherwise, we might have to do a post-mortem again some day in the future.\n\nI mean the best way to avoid that is to not do that at all, which means now is the best time to submit this change. Now is literally the opposite of *last-minute*.",
+      "parentUuid": "420ed10f_a0d9f1f6",
+      "range": {
+        "startLine": 302,
+        "startChar": 4,
+        "endLine": 302,
+        "endChar": 40
+      },
+      "revId": "bed2493eb8da5a99c968ce3de9f85f2532de4f53",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
