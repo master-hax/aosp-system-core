@@ -16,6 +16,23 @@
       "message": "Dan could you confirm that the owners are up-to-date? In go/vts-reviewers it\u0027s drosen@google.com, not sure if I should overwrite the current owners.",
       "revId": "72ae61b6446cef08d01671e82d97a47a4a872425",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3719da40_7b9f76a1",
+        "filename": "libcutils/OWNERS",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-10-19T00:47:07Z",
+      "side": 1,
+      "message": "is this right? there\u0027s not really any \"kernel\" testing here, right? this is just someone running the libcutils tests again for some reason?",
+      "revId": "72ae61b6446cef08d01671e82d97a47a4a872425",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
