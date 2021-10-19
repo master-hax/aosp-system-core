@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "02cb6f42_7464033a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 8
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1001525
+      },
+      "writtenOn": "2021-10-19T16:14:52Z",
+      "side": 1,
+      "message": "(patch set 8 also logs the command being sent, which is probably useful)",
+      "revId": "b98eccb6ea5be930a0e0381d6e3a39994fd60dc3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
