@@ -1,0 +1,11 @@
+cc_binary {
+    name: "stub_zygote",
+    srcs: ["stub_zygote.cpp"],
+    cpp_std: "c++2a",
+    static_libs: [
+        "libasync_safe",
+        "libbase",
+        "libcutils",
+        "liblog",
+    ],
+}
