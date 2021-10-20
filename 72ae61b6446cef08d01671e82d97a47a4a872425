@@ -33,6 +33,24 @@
       "message": "is this right? there\u0027s not really any \"kernel\" testing here, right? this is just someone running the libcutils tests again for some reason?",
       "revId": "72ae61b6446cef08d01671e82d97a47a4a872425",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6073639c_19a46fd0",
+        "filename": "libcutils/OWNERS",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1408266
+      },
+      "writtenOn": "2021-10-20T22:20:14Z",
+      "side": 1,
+      "message": "I assume this question is for Dan? I can\u0027t confirm, though the component name looks related to \"kernal\": Android \u003e Android OS \u0026 Apps \u003e Systems \u003e Kernel Tests",
+      "parentUuid": "3719da40_7b9f76a1",
+      "revId": "72ae61b6446cef08d01671e82d97a47a4a872425",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
