@@ -160,6 +160,24 @@
       "parentUuid": "8a359605_26f6cfff",
       "revId": "55e5714c64e279ad3d10eb292950934d3ad78ad0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "edf8bb4a_aadc6591",
+        "filename": "trusty/keymaster/ipc/trusty_keymaster_ipc.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 1856745
+      },
+      "writtenOn": "2021-10-20T15:06:19Z",
+      "side": 1,
+      "message": "patch9 nicely addresses the above concern, thanks!",
+      "parentUuid": "c0950cde_8c6f9f56",
+      "revId": "55e5714c64e279ad3d10eb292950934d3ad78ad0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
