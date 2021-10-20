@@ -51,6 +51,24 @@
       "parentUuid": "3719da40_7b9f76a1",
       "revId": "72ae61b6446cef08d01671e82d97a47a4a872425",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4659c8cc_f73878c6",
+        "filename": "libcutils/OWNERS",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-10-20T22:23:02Z",
+      "side": 1,
+      "message": "no, it was a question for you... i don\u0027t think anyone knows who if anyone owns/cares about this. given that the OWNERS is just the janitors... maybe we should delete it instead?",
+      "parentUuid": "6073639c_19a46fd0",
+      "revId": "72ae61b6446cef08d01671e82d97a47a4a872425",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
