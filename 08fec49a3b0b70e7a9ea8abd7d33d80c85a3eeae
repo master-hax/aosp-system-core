@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c603adb6_2be8d526",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 9
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1001525
+      },
+      "writtenOn": "2021-10-20T14:54:30Z",
+      "side": 1,
+      "message": "after discussion with Armelle I changed it so it logs at regular intervals (every minute after a while, a little more often initially) until completion, to prevent the initial log from getting lost.",
+      "revId": "08fec49a3b0b70e7a9ea8abd7d33d80c85a3eeae",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
