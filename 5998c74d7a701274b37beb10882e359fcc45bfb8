@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1f708563_63c8bdc9",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 3
+      },
+      "lineNbr": 1101,
+      "author": {
+        "id": 1088085
+      },
+      "writtenOn": "2021-10-21T18:54:01Z",
+      "side": 1,
+      "message": "The existing one in devices trigger on early-boot. Does that make a difference. btw, I guess we also want to clear the device specific copy :)",
+      "range": {
+        "startLine": 1101,
+        "startChar": 4,
+        "endLine": 1101,
+        "endChar": 23
+      },
+      "revId": "5998c74d7a701274b37beb10882e359fcc45bfb8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
