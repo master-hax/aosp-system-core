@@ -120,21 +120,19 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "libhealthd_charger",
+    name: "libhealthd_charger_ui",
     local_include_dirs: ["include"],
     export_include_dirs: [".", "include"],
 
     static_libs: [
-        "android.hardware.health@1.0-convert",
+        "android.hardware.health@1.0",
         "libcharger_sysprop",
         "libhealthd_draw",
         "libhealthloop",
-        "libhealth2impl",
         "libminui",
     ],
 
     shared_libs: [
-        "android.hardware.health@2.1",
         "libbase",
         "libcutils",
         "liblog",
@@ -143,9 +141,37 @@ cc_library_static {
         "libutils",
     ],
 
+    header_libs: [
+        "libhealthd_headers",
+    ],
+
     srcs: [
         "healthd_mode_charger.cpp",
         "AnimationParser.cpp",
+    ],
+}
+
+cc_library_static {
+    name: "libhealthd_charger",
+    local_include_dirs: ["include"],
+    export_include_dirs: [".", "include"],
+
+    static_libs: [
+        "android.hardware.health@1.0-convert",
+        "libhealth2impl",
+        "libhealthd_charger_ui",
+    ],
+
+    shared_libs: [
+        "android.hardware.health@2.1",
+        "libbase",
+        "libcutils",
+        "liblog",
+        "libutils",
+    ],
+
+    srcs: [
+        "healthd_mode_charger_hidl.cpp",
     ],
 }
 
@@ -183,6 +209,7 @@ cc_defaults {
         // system charger only
         "libhealthd_draw",
         "libhealthd_charger",
+        "libhealthd_charger_ui",
         "libminui",
         "libsuspend",
     ],
@@ -209,6 +236,7 @@ cc_binary {
             exclude_static_libs: [
                 "libhealthd_draw",
                 "libhealthd_charger",
+                "libhealthd_charger_ui",
                 "libminui",
                 "libsuspend",
             ],
