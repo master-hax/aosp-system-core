@@ -99,6 +99,7 @@ cc_library_static {
 sysprop_library {
     name: "charger_sysprop",
     recovery_available: true,
+    vendor_available: true,
     srcs: ["charger.sysprop"],
     property_owner: "Platform",
     api_packages: ["android.sysprop"],
