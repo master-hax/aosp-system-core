@@ -69,6 +69,24 @@
       "parentUuid": "6073639c_19a46fd0",
       "revId": "72ae61b6446cef08d01671e82d97a47a4a872425",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3bb349e8_06fb26ee",
+        "filename": "libcutils/OWNERS",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1408266
+      },
+      "writtenOn": "2021-10-21T00:16:48Z",
+      "side": 1,
+      "message": "Per offline discussion, I\u0027ll ask whoever contributed to this code base for the owner information.",
+      "parentUuid": "4659c8cc_f73878c6",
+      "revId": "72ae61b6446cef08d01671e82d97a47a4a872425",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
