@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4c1cdc37_744d7201",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2021-10-21T16:27:18Z",
+      "side": 1,
+      "message": "Alternative, you can override this in google device task_profiles, but pushing to aosp first sgtm",
+      "revId": "7dc9050bab5ddb34351629fcba2bc79409615305",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "04fb6f71_b8d3a360",
+        "filename": "libprocessgroup/profiles/task_profiles.json",
+        "patchSetId": 2
+      },
+      "lineNbr": 198,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2021-10-21T16:27:18Z",
+      "side": 1,
+      "message": "I think you need change older API\u0027s task_profiles.json which are using schedtune, e.g. mappping it to existing background schedtune group.\n\nsince Dex2OatBootComplete will be called when those device upgraded.",
+      "range": {
+        "startLine": 185,
+        "startChar": 3,
+        "endLine": 198,
+        "endChar": 6
+      },
+      "revId": "7dc9050bab5ddb34351629fcba2bc79409615305",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
