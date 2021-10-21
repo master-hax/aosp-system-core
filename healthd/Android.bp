@@ -99,6 +99,7 @@ cc_library_static {
 sysprop_library {
     name: "charger_sysprop",
     recovery_available: true,
+    vendor_available: true,
     srcs: ["charger.sysprop"],
     property_owner: "Platform",
     api_packages: ["android.sysprop"],
@@ -106,6 +107,7 @@ sysprop_library {
 
 cc_library_static {
     name: "libhealthd_draw",
+    vendor_available: true,
     export_include_dirs: ["."],
     static_libs: [
         "libcharger_sysprop",
@@ -121,6 +123,7 @@ cc_library_static {
 
 cc_library_static {
     name: "libhealthd_charger_ui",
+    vendor_available: true,
     local_include_dirs: ["include"],
     export_include_dirs: [".", "include"],
 
