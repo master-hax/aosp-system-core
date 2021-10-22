@@ -99,6 +99,14 @@ void HealthdDraw::blank_screen(bool blank, int drm) {
     gr_fb_blank(blank, drm);
 }
 
+void HealthdDraw::rotate_screen(int drm) {
+    if (!graphics_available) return;
+    if (!drm)
+        gr_rotate(GRRotation::RIGHT);
+    else
+        gr_rotate(GRRotation::NONE);
+}
+
 void HealthdDraw::clear_screen(void) {
     if (!graphics_available) return;
     gr_color(0, 0, 0, 255);
