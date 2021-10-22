@@ -357,6 +357,7 @@ void Charger::UpdateScreenState(int64_t now) {
     }
 
     if (screen_blanked_) {
+        healthd_draw_->rotate_screen(static_cast<int>(drm_));
         healthd_draw_->blank_screen(false, static_cast<int>(drm_));
         screen_blanked_ = false;
     }
