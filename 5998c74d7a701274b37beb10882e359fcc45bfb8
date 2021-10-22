@@ -22,6 +22,30 @@
       },
       "revId": "5998c74d7a701274b37beb10882e359fcc45bfb8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5baae2ec_b2f872fa",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 3
+      },
+      "lineNbr": 1101,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2021-10-22T01:54:33Z",
+      "side": 1,
+      "message": "Right, I\u0027ll send other CLs to clean up the device copy later.\n\nMy plan is to:\n  1) Merge this CL first, then monitor, see if any partner/device doesn\u0027t want this.\n  2) If no, starts to clean up device-specific copies.\n\n\u003e Does that make a difference.\n\nI actually dumped logs to check, the time between \"on early-boot\" and \"on boot\" is quite close so I don\u0027t think it makes the diff 😎\n\n\n[   39.238088] init: processing action (early-boot) from (/vendor/etc/init/hw/init.sm8150.rc:363)\n[   39.250675] init: start_waiting_for_property(\"vendor.all.modules.ready\", \"1\"): already set\n[   39.260346] init: verity_update_state\n…\n[   39.435249] init: processing action (boot) from (/system/etc/init/hw/init.rc:999)\n[   39.447263] init: verity_update_state\n[   39.459923] init: starting service \u0027hidl_memory\u0027...",
+      "parentUuid": "1f708563_63c8bdc9",
+      "range": {
+        "startLine": 1101,
+        "startChar": 4,
+        "endLine": 1101,
+        "endChar": 23
+      },
+      "revId": "5998c74d7a701274b37beb10882e359fcc45bfb8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
