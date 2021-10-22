@@ -537,6 +537,7 @@ void Charger::ProcessHallSensor(int code) {
 
     if (code == SW_LID) {
         if (key->pending) {
+            healthd_draw_->rotate_screen(drm_path_);
             reset_animation(&batt_anim_);
             kick_animation(&batt_anim_);
             request_suspend(false);
