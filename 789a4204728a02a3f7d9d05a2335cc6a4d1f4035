@@ -55,6 +55,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "7de3439c_03c53f46",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 207,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-10-25T23:22:07Z",
+      "side": 1,
+      "message": "I don\u0027t think we need to do that per cpuset. If everything is fine, we should see no such error at all. If we see the error it should mean either that we are in the test environment which forces the system to offline cpus or something is really wrong. If the latter case, the error logged one time should be enough to identify the issue.",
+      "parentUuid": "1df0a880_f86c6dcc",
+      "revId": "789a4204728a02a3f7d9d05a2335cc6a4d1f4035",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "4bd1fef5_63092efe",
         "filename": "libprocessgroup/task_profiles.cpp",
         "patchSetId": 3
@@ -66,6 +84,24 @@
       "writtenOn": "2021-09-03T22:41:25Z",
       "side": 1,
       "message": "this logic is getting a bit complicated now... better case by case like this?\n```\n  if (TEMP_FAILURE_RETRY(write(fd, value.c_str(), value.length())) \u003d\u003d value.length()) return true;\n\n  if (errno \u003d\u003d ENOSPC \u0026\u0026 ...) {\n  }\n\n  // If the thread is in the process of exiting, don\u0027t flag an error\n  if (errno \u003d\u003d ESRCH) return true;\n\n  PLOG(ERROR) \u003c\u003c \"AddTidToCgroup failed to write \u0027\" \u003c\u003c value \u003c\u003c \"\u0027; fd\u003d\" \u003c\u003c fd;\n  return false;\n}\n```\n\n(which also makes it more obvious that short writes currently return true. the suggested rephrasing makes that false [but would include a bogus strerror, so \"less wrong\" but not quite \"right\"]...)",
+      "revId": "789a4204728a02a3f7d9d05a2335cc6a4d1f4035",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9b96d7d0_d9d90b7e",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 216,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-10-25T23:22:07Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "4bd1fef5_63092efe",
       "revId": "789a4204728a02a3f7d9d05a2335cc6a4d1f4035",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
