@@ -22,6 +22,30 @@
       },
       "revId": "eb60972daa69d8e62e44fed952f33254d1193a8c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "46f349a1_c03e6ce8",
+        "filename": "healthd/healthd_mode_charger.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 1653796
+      },
+      "writtenOn": "2021-10-26T14:21:48Z",
+      "side": 1,
+      "message": "Thanks for the advice. change this to an enum",
+      "parentUuid": "7222d9d0_caa25c11",
+      "range": {
+        "startLine": 84,
+        "startChar": 4,
+        "endLine": 84,
+        "endChar": 7
+      },
+      "revId": "eb60972daa69d8e62e44fed952f33254d1193a8c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
