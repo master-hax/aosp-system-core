@@ -69,6 +69,24 @@
       "parentUuid": "706a3b88_b2d15382",
       "revId": "5beec40d23c721de33c9321564463d618df24628",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "61dcb664_cc9d6a4f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2021-10-26T18:25:08Z",
+      "side": 1,
+      "message": "So, it really is a sysprop set by vendor and read by vendor. It is just \"owned\" by platform due to legacy reasons. It is also read by platform.\n\nIf you insist, I\u0027ll drop this and let the vendors deal with configuring charger by hardcoding the values directly.",
+      "parentUuid": "e8645d85_19fa6fa5",
+      "revId": "5beec40d23c721de33c9321564463d618df24628",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
