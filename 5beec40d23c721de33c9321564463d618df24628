@@ -51,6 +51,24 @@
       "parentUuid": "8fe0b1b2_f55d173e",
       "revId": "5beec40d23c721de33c9321564463d618df24628",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e8645d85_19fa6fa5",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1006497
+      },
+      "writtenOn": "2021-10-26T18:23:09Z",
+      "side": 1,
+      "message": "\u003e Michael, what do you mean by normal APIs? This can\u0027t be a Java API because it is not Java, and I think the sysprop library already serve as a native API.\n\nJava APIs are not the only option; there\u0027s also stable AIDL (i.e. HAL) or NDK.\n\nSee https://docs.google.com/document/d/1pIIZYw4qJcWUDBl-p7yKasfTrYNLcNvqmAfuosAhfVA/edit?resourcekey\u003d0-j40JcwUtCWpnf8YqY7d5fA#heading\u003dh.ja06gsfj2bdl\n\nSpecifically, the section under \"Does it have to be a system property?\"",
+      "parentUuid": "706a3b88_b2d15382",
+      "revId": "5beec40d23c721de33c9321564463d618df24628",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
