@@ -1,0 +1,30 @@
+{
+  "comments": [
+    {
+      "robotId": "ayeaye",
+      "robotRunId": "AR00000000000016564645",
+      "url": "https://android-build.googleplex.com/builds/treetop/android-review/1870494?revision\u003d1",
+      "fixSuggestions": [],
+      "key": {
+        "uuid": "55c79979_d357d85f",
+        "filename": "fs_mgr/fuzz/fstab.dict",
+        "patchSetId": 1
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1757831
+      },
+      "writtenOn": "2021-10-26T15:02:28Z",
+      "side": 1,
+      "message": "Prefer to use inclusive terms like \u0027primary/secondary\u0027 or \u0027manager/worker\u0027; see https://source.android.com/setup/contribute/respectful-code for more details. In the case of a false positive add BYPASS_INCLUSIVE_LANGUAGE_REASON\u003dmy_reason_here to your commit message to disable this check.",
+      "range": {
+        "startLine": 20,
+        "startChar": 1,
+        "endLine": 20,
+        "endChar": 6
+      },
+      "revId": "c788dcdb5e66db17245563ea01cfe839c201b239",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
