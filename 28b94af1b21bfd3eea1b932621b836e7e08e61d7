@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "77ef8871_882d0781",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003247
+      },
+      "writtenOn": "2021-10-26T00:39:20Z",
+      "side": 1,
+      "message": "The personality dance is per thread (verified it in kernel), so it doesn\u0027t actually matter when exactly it happens, and there\u0027s really no sane way it can fail.\n\nThat said presumably the C++ initializer trick would cause it to happen much earlier too.",
+      "parentUuid": "7b7e4dce_0fe03a74",
+      "revId": "28b94af1b21bfd3eea1b932621b836e7e08e61d7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "181a4087_61e1ab8c",
@@ -31,6 +49,30 @@
       "writtenOn": "2021-10-26T00:29:11Z",
       "side": 1,
       "message": "(you\u0027re in C++ here so you can lose the C `typedef` boilerplate and just have `struct ulog_packet_msg32_t` instead with the same effect...)",
+      "range": {
+        "startLine": 94,
+        "startChar": 0,
+        "endLine": 94,
+        "endChar": 14
+      },
+      "revId": "28b94af1b21bfd3eea1b932621b836e7e08e61d7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e758df01_f83f8b23",
+        "filename": "libsysutils/src/NetlinkEvent.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 1003247
+      },
+      "writtenOn": "2021-10-26T00:39:20Z",
+      "side": 1,
+      "message": "Ah, yes, I\u0027m a C programmer as you can tell.  Hehe.",
+      "parentUuid": "181a4087_61e1ab8c",
       "range": {
         "startLine": 94,
         "startChar": 0,
@@ -58,6 +100,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "3ce3469b_48486372",
+        "filename": "libsysutils/src/NetlinkEvent.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 1003247
+      },
+      "writtenOn": "2021-10-26T00:39:20Z",
+      "side": 1,
+      "message": "I\u0027d have to #define size_t, then #include then #undef.\nNot to mention can\u0027t #define unsigned long {something} because of the space.\n#define long typedef doesn\u0027t work due to unsigned typedef being invalid.\n\nI guess I\u0027d have to #define long int\nWow that\u0027s hokey! :-)\n#undef long\n\nI could of course use something like \u0027LONG\u0027 \u0027ULONG\u0027 \u0027SIZE_T\u0027 in the #include\u0027d file, but then it wouldn\u0027t quite match the kernel definition either.\n\nI think I prefer it this way.  Seems more legible - if much more verbose.",
+      "parentUuid": "f1f85f38_36694cc0",
+      "revId": "28b94af1b21bfd3eea1b932621b836e7e08e61d7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "900f2076_ad2e3a12",
@@ -71,6 +131,24 @@
       "writtenOn": "2021-10-26T00:29:11Z",
       "side": 1,
       "message": "(also #defined as __LP64__  if you prefer...)",
+      "revId": "28b94af1b21bfd3eea1b932621b836e7e08e61d7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "97d5e432_43bbaaee",
+        "filename": "libsysutils/src/NetlinkEvent.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 142,
+      "author": {
+        "id": 1003247
+      },
+      "writtenOn": "2021-10-26T00:39:20Z",
+      "side": 1,
+      "message": "good to know, but that actually ends up being longer\n\n#ifdef __LP64__\n  return true;\n#else\n  return false;\n#endif\n\nI guess maybe it would less if just got rid of the function entirely...\nand just had\n\n#ifdef __LP64__\n  return true;\n#endif\n\nat the call site - but that might trigger dead code warnings??  Not sure how smart the compiler is.\n\nEh, not worth fixing.",
+      "parentUuid": "900f2076_ad2e3a12",
       "revId": "28b94af1b21bfd3eea1b932621b836e7e08e61d7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
