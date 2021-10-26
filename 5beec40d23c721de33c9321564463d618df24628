@@ -87,6 +87,24 @@
       "parentUuid": "e8645d85_19fa6fa5",
       "revId": "5beec40d23c721de33c9321564463d618df24628",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c384d43e_2561d006",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2021-10-26T23:39:49Z",
+      "side": 1,
+      "message": "Let me explain it in a bit more detail.\n\nWhen these properties are introduced, charger is in system and these system properties is in vendor. The sysprops are \"owned\" by platform, though. Charger wasn\u0027t able to talk to HALs in vendor at that time.\n\nRight now (before these changes), charger is still in system, but it is now allowed to talk to HALs in vendor.\n\nHowever, I argue that charger should belong to vendor, and these changes move charger to vendor. However, charger wouldn\u0027t be able to read these properties without this change, even though they are set in vendor.\n\nAlternatively, I can have the vendor implementation of charger hard code these values instead.\n\nWhat would you suggest?",
+      "parentUuid": "61dcb664_cc9d6a4f",
+      "revId": "5beec40d23c721de33c9321564463d618df24628",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
