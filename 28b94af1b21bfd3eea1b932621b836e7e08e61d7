@@ -1,0 +1,112 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7b7e4dce_0fe03a74",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-10-26T00:29:11Z",
+      "side": 1,
+      "message": "is this used in many places? i\u0027m wondering whether we can have more control over _when_ the personality() dance happens (ideally before we\u0027re creating threads)...",
+      "revId": "28b94af1b21bfd3eea1b932621b836e7e08e61d7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "181a4087_61e1ab8c",
+        "filename": "libsysutils/src/NetlinkEvent.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-10-26T00:29:11Z",
+      "side": 1,
+      "message": "(you\u0027re in C++ here so you can lose the C `typedef` boilerplate and just have `struct ulog_packet_msg32_t` instead with the same effect...)",
+      "range": {
+        "startLine": 94,
+        "startChar": 0,
+        "endLine": 94,
+        "endChar": 14
+      },
+      "revId": "28b94af1b21bfd3eea1b932621b836e7e08e61d7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f1f85f38_36694cc0",
+        "filename": "libsysutils/src/NetlinkEvent.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-10-26T00:29:11Z",
+      "side": 1,
+      "message": "(an alternative to copying these out twice would be to have the definition in a file on its own [without an include guard], #define appropriately both ways and #include it twice. but since this is never going to change, and we\u0027ve both eyeballed it for correctness, and someone\u0027s going to test it for us, it probably doesn\u0027t matter. just mentioning it in case you like the idea...)",
+      "revId": "28b94af1b21bfd3eea1b932621b836e7e08e61d7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "900f2076_ad2e3a12",
+        "filename": "libsysutils/src/NetlinkEvent.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 142,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-10-26T00:29:11Z",
+      "side": 1,
+      "message": "(also #defined as __LP64__  if you prefer...)",
+      "revId": "28b94af1b21bfd3eea1b932621b836e7e08e61d7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "324f5d28_cd52628b",
+        "filename": "libsysutils/src/NetlinkEvent.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 154,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-10-26T00:29:11Z",
+      "side": 1,
+      "message": "i think i\u0027d rewrite this to take advantage of C++\u0027s free locking on static initializers? (since the \"calculation\" involves global state like the personality, i\u0027d feel more comfortable with the lock.)\n\nso more like:\n```\nstatic bool checkKernel() {\n  \u003c\u003cL156-L190 go here\u003e\u003e\n}\nstatic bool isKernel64Bit() {\n  static bool answer \u003d checkKernel();\n  return answer;\n}\n```",
+      "revId": "28b94af1b21bfd3eea1b932621b836e7e08e61d7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "97a4c439_4ffb8c2a",
+        "filename": "libsysutils/src/NetlinkEvent.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 171,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-10-26T00:29:11Z",
+      "side": 1,
+      "message": "(you might want UNUSED() from \u003candroid-base/macros.h\u003e --- that way ensuring that the compiler is happy is the compiler folks\u0027 problem rather than yours :-) )",
+      "revId": "28b94af1b21bfd3eea1b932621b836e7e08e61d7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
