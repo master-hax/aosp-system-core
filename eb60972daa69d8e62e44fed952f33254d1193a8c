@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7222d9d0_caa25c11",
+        "filename": "healthd/healthd_mode_charger.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2021-10-26T03:19:22Z",
+      "side": 1,
+      "message": "nit: add a comment?\n\nAlso, it seems like there are only 3 values. Maybe use an enum or std::optional\u003cbool\u003e?",
+      "range": {
+        "startLine": 84,
+        "startChar": 4,
+        "endLine": 84,
+        "endChar": 7
+      },
+      "revId": "eb60972daa69d8e62e44fed952f33254d1193a8c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
