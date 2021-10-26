@@ -33,6 +33,24 @@
       "message": "Why are exposing these as syprops rather than normal APIs? That wasn\u0027t clear to me from the bug.\n\nAlso, please document all of the sysprops; if they\u0027re an API then it needs to be well-defined.",
       "revId": "5beec40d23c721de33c9321564463d618df24628",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "706a3b88_b2d15382",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2021-10-26T18:08:16Z",
+      "side": 1,
+      "message": "These properties are \"owned\" by platform but \"set\" by vendor partition. However, vendor domains aren\u0027t allowed to read these properties.\n\nThe change allows vendor domains to set these properties.\n\nMichael, what do you mean by normal APIs? This can\u0027t be a Java API because it is not Java, and I think the sysprop library already serve as a native API.",
+      "parentUuid": "8fe0b1b2_f55d173e",
+      "revId": "5beec40d23c721de33c9321564463d618df24628",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
