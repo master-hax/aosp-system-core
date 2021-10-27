@@ -36,6 +36,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "6a02c6a1_ff99b84b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-10-27T00:39:46Z",
+      "side": 1,
+      "message": "\u003e That said presumably the C++ initializer trick would cause it to happen much earlier too.\n\nno, it would be run at exactly the same time as in the current \"two bools\" implementation. if you _want_ it to be earlier, you could move the `static bool` to be a global; then it would be run when the ELF constructors (not to be confused with C++ constructors!) run when the .so is dlopen()ed.",
+      "parentUuid": "77ef8871_882d0781",
+      "revId": "28b94af1b21bfd3eea1b932621b836e7e08e61d7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "181a4087_61e1ab8c",
