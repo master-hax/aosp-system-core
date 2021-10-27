@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d45b89d9_e3dd4bb2",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1864,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-10-27T18:56:07Z",
+      "side": 1,
+      "message": "Would it make more sense to instead do this?\n\n    if (android::base::StartsWith(*name, \"userdata_gsi\")) {\n        break;\n    }\n\nI think that as soon as we skip deleting a device, the rest of the stack cannot be deleted.\n\n(Alternately, we could factor this into a separate function, and check IsGsiRunning before calling it.)",
+      "revId": "ee51e5ec8b34ac86f0c97c2d42d76a13feb7bc3c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
