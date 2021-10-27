@@ -676,6 +676,10 @@ on post-fs-data
     # use of MAX_BOOT_LEVEL keys.
     exec - system system -- /system/bin/vdc keymaster earlyBootEnded
 
+    # Multi-installed APEXes are selected using persist props.
+    # Load persist props before starting apexd.
+    load_persist_props
+
     # /data/apex is now available. Start apexd to scan and activate APEXes.
     #
     # To handle userspace reboots as well as devices that use FDE, make sure
