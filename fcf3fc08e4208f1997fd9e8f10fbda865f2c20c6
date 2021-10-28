@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b4e09c60_9709176c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1836235
+      },
+      "writtenOn": "2021-10-28T17:16:32Z",
+      "side": 1,
+      "message": "Hi Steven,\n\nDo you think there\u0027s any chance that the shared_ptr use in the \"before\" code might cause the ASAN report in the attached bug?\n\nFrom aosp/1235494 it seems that the \"after\" code is the preferred way of doing things (although interestingly, making SharedRefBase::operator new private doesn\u0027t seem to prevent use of make_shared\u003cT\u003e, because it uses ::new())\n\nThanks!",
+      "revId": "fcf3fc08e4208f1997fd9e8f10fbda865f2c20c6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
