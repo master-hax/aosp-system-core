@@ -34,6 +34,24 @@
       "parentUuid": "d45b89d9_e3dd4bb2",
       "revId": "ee51e5ec8b34ac86f0c97c2d42d76a13feb7bc3c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b87d83da_6ca68c6c",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1864,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2021-10-28T09:21:26Z",
+      "side": 1,
+      "message": "To David, should this be handled similar to https://source.corp.google.com/android/system/core/fs_mgr/fs_mgr.cpp;l\u003d1774;bpv\u003d0;bpt\u003d1;rcl\u003dHEAD\n\nWe should unwind \u0026 delete the dm-stack until we see the device of \u0027/data\u0027 fstab entry, and if the entry is logical then we don\u0027t delete the /data dm device (ths is the case of userdata_gsi), else we delete the /data dm device because it is backed by physical partition and its dm-node would be recreated later.",
+      "parentUuid": "72a0c0d2_7e4bbffa",
+      "revId": "ee51e5ec8b34ac86f0c97c2d42d76a13feb7bc3c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
