@@ -70,6 +70,24 @@
       "parentUuid": "b87d83da_6ca68c6c",
       "revId": "ee51e5ec8b34ac86f0c97c2d42d76a13feb7bc3c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "af5af02c_197b34f9",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1864,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2021-10-29T11:52:08Z",
+      "side": 1,
+      "message": "So i *guess* this would work:\n\n```\nif (block_device \u003d\u003d fstab_entry.blk_device) {\n  break;\n}\n```\n\nProblem is I cannot verify this locally, I just cannot seem to make a device hit the problematic codes. The `fs_mgr_unmount_all_data_mounts()` as L1852 always fails because the /data block device failed to umount() due to some process still accessing it. I;ve left a comment on bug to see if we can just skip the failing test case",
+      "parentUuid": "bd75f6f7_2588931a",
+      "revId": "ee51e5ec8b34ac86f0c97c2d42d76a13feb7bc3c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
