@@ -52,6 +52,24 @@
       "parentUuid": "26fcfc33_4009f21f",
       "revId": "c8cf2a4155dd297dc2b55ab362593cba52060c97",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b3ac07eb_9e5dde61",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1088085
+      },
+      "writtenOn": "2021-10-29T18:13:32Z",
+      "side": 1,
+      "message": "It\u0027s triggered by aosp/1870401. I guess init tests aren\u0027t run there.",
+      "parentUuid": "ae841153_cf09859f",
+      "revId": "c8cf2a4155dd297dc2b55ab362593cba52060c97",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
