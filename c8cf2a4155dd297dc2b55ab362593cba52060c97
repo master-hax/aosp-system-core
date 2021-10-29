@@ -16,6 +16,24 @@
       "message": "any idea how this passed presubmit? are we missing a test in TEST_MAPPING?",
       "revId": "c8cf2a4155dd297dc2b55ab362593cba52060c97",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "26fcfc33_4009f21f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1088085
+      },
+      "writtenOn": "2021-10-29T17:34:51Z",
+      "side": 1,
+      "message": "I believe this test is never enabled, until we turn on a config in device/google/cuttlefish a few days ago... And that device dir isn\u0027t included in the test_map",
+      "parentUuid": "dcca88bf_4879cc0f",
+      "revId": "c8cf2a4155dd297dc2b55ab362593cba52060c97",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
