@@ -1477,14 +1477,6 @@ MountAllResult fs_mgr_mount_all(Fstab* fstab, int mount_mode) {
                 // Skips mounting the device.
                 continue;
             }
-        } else if ((current_entry.fs_mgr_flags.verify)) {
-            int rc = fs_mgr_setup_verity(&current_entry, true);
-            if (rc == FS_MGR_SETUP_VERITY_DISABLED || rc == FS_MGR_SETUP_VERITY_SKIPPED) {
-                LINFO << "Verity disabled";
-            } else if (rc != FS_MGR_SETUP_VERITY_SUCCESS) {
-                LERROR << "Could not set up verified partition, skipping!";
-                continue;
-            }
         }
 
         int last_idx_inspected;
@@ -1679,13 +1671,6 @@ int fs_mgr_umount_all(android::fs_mgr::Fstab* fstab) {
         if (current_entry.fs_mgr_flags.avb || !current_entry.avb_keys.empty()) {
             if (!AvbHandle::TearDownAvbHashtree(&current_entry, true /* wait */)) {
                 LERROR << "Failed to tear down AVB on mount point: " << current_entry.mount_point;
-                ret |= FsMgrUmountStatus::ERROR_VERITY;
-                continue;
-            }
-        } else if ((current_entry.fs_mgr_flags.verify)) {
-            if (!fs_mgr_teardown_verity(&current_entry)) {
-                LERROR << "Failed to tear down verified partition on mount point: "
-                       << current_entry.mount_point;
                 ret |= FsMgrUmountStatus::ERROR_VERITY;
                 continue;
             }
@@ -1981,14 +1966,6 @@ static int fs_mgr_do_mount_helper(Fstab* fstab, const std::string& n_name,
                 // Skips mounting the device.
                 continue;
             }
-        } else if (fstab_entry.fs_mgr_flags.verify) {
-            int rc = fs_mgr_setup_verity(&fstab_entry, true);
-            if (rc == FS_MGR_SETUP_VERITY_DISABLED || rc == FS_MGR_SETUP_VERITY_SKIPPED) {
-                LINFO << "Verity disabled";
-            } else if (rc != FS_MGR_SETUP_VERITY_SUCCESS) {
-                LERROR << "Could not set up verified partition, skipping!";
-                continue;
-            }
         }
 
         int retry_count = 2;
@@ -2205,7 +2182,7 @@ bool fs_mgr_swapon_all(const Fstab& fstab) {
 }
 
 bool fs_mgr_is_verity_enabled(const FstabEntry& entry) {
-    if (!entry.fs_mgr_flags.verify && !entry.fs_mgr_flags.avb) {
+    if (!entry.fs_mgr_flags.avb) {
         return false;
     }
 
@@ -2216,17 +2193,12 @@ bool fs_mgr_is_verity_enabled(const FstabEntry& entry) {
         return false;
     }
 
-    const char* status;
     std::vector<DeviceMapper::TargetInfo> table;
     if (!dm.GetTableStatus(mount_point, &table) || table.empty() || table[0].data.empty()) {
-        if (!entry.fs_mgr_flags.verify_at_boot) {
-            return false;
-        }
-        status = "V";
-    } else {
-        status = table[0].data.c_str();
+        return false;
     }
 
+    auto status = table[0].data.c_str();
     if (*status == 'C' || *status == 'V') {
         return true;
     }
@@ -2235,7 +2207,7 @@ bool fs_mgr_is_verity_enabled(const FstabEntry& entry) {
 }
 
 std::optional<HashtreeInfo> fs_mgr_get_hashtree_info(const android::fs_mgr::FstabEntry& entry) {
-    if (!entry.fs_mgr_flags.verify && !entry.fs_mgr_flags.avb) {
+    if (!entry.fs_mgr_flags.avb) {
         return {};
     }
     DeviceMapper& dm = DeviceMapper::Instance();
@@ -2271,7 +2243,7 @@ std::optional<HashtreeInfo> fs_mgr_get_hashtree_info(const android::fs_mgr::Fsta
 }
 
 bool fs_mgr_verity_is_check_at_most_once(const android::fs_mgr::FstabEntry& entry) {
-    if (!entry.fs_mgr_flags.verify && !entry.fs_mgr_flags.avb) {
+    if (!entry.fs_mgr_flags.avb) {
         return false;
     }
 
@@ -2405,5 +2377,24 @@ bool fs_mgr_mount_overlayfs_fstab_entry(const FstabEntry& entry) {
         return false;
     }
     LINFO << report << ret;
+    return true;
+}
+
+bool fs_mgr_load_verity_state(int* mode) {
+    // unless otherwise specified, use EIO mode.
+    *mode = VERITY_MODE_EIO;
+
+    // The bootloader communicates verity mode via the kernel commandline
+    std::string verity_mode;
+    if (!fs_mgr_get_boot_config("veritymode", &verity_mode)) {
+        return false;
+    }
+
+    if (verity_mode == "enforcing") {
+        *mode = VERITY_MODE_DEFAULT;
+    } else if (verity_mode == "logging") {
+        *mode = VERITY_MODE_LOGGING;
+    }
+
     return true;
 }
