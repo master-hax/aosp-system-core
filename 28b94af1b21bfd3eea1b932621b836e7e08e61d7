@@ -54,6 +54,23 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "7eb86f29_a8ac0cb4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003247
+      },
+      "writtenOn": "2021-10-30T20:04:22Z",
+      "side": 1,
+      "message": "We have confirmation this works as is, I\u0027m going to submit this and follow up with another change to fix some of the issues Elliot mentioned and hopefully add tests.",
+      "revId": "28b94af1b21bfd3eea1b932621b836e7e08e61d7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "181a4087_61e1ab8c",
