@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "97da4880_4f9d76f3",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 2
+      },
+      "lineNbr": 495,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2021-10-31T12:17:21Z",
+      "side": 1,
+      "message": "Part of this became obsolete.",
+      "range": {
+        "startLine": 495,
+        "startChar": 0,
+        "endLine": 495,
+        "endChar": 37
+      },
+      "revId": "ad98e827e76b6e1f5112216660b1fabf4df31a6c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
