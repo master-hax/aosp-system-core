@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "51d547a1_266a68b3",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 472,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-11-01T23:52:17Z",
+      "side": 1,
+      "message": "i tend to avoid changing output unless i\u0027m adding genuinely new and useful information, just in case someone\u0027s got a script that\u0027s parsing the output?",
+      "revId": "d63b6d0d80ea66944fac34090762c317bab051bc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "26c0cf39_37f203a1",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 489,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-11-01T23:52:17Z",
+      "side": 1,
+      "message": "or add a line in the MUST_REBOOT case above that says `result \u003d 0;`?\n\n(i know they\u0027re equivalent, but i genuinely misunderstood this line the first time i read it... i\u0027ll be interested to see whether cferris got it first time, in which case \"ignore me\", and what +dvander thinks...)",
+      "revId": "d63b6d0d80ea66944fac34090762c317bab051bc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
