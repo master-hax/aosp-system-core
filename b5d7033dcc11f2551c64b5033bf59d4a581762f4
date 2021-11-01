@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2a1f39fb_7367e83f",
+        "filename": "healthd/include_charger/charger/healthd_mode_charger.h",
+        "patchSetId": 12
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1120612
+      },
+      "writtenOn": "2021-11-01T21:13:23Z",
+      "side": 1,
+      "message": "2021",
+      "range": {
+        "startLine": 2,
+        "startChar": 17,
+        "endLine": 2,
+        "endChar": 21
+      },
+      "revId": "b5d7033dcc11f2551c64b5033bf59d4a581762f4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
