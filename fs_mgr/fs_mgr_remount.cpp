@@ -469,7 +469,7 @@ static int do_remount(int argc, char* argv[]) {
 
     if (reboot_later) reboot(setup_overlayfs);
     if (user_please_reboot_later) {
-        LOG(INFO) << "Now reboot your device for settings to take effect";
+        LOG(INFO) << "remount succeeded.. now reboot device for settings refresh.";
         return 0;
     }
 
@@ -486,5 +486,5 @@ int main(int argc, char* argv[]) {
     } else {
         printf("remount failed\n");
     }
-    return result;
+    return (MUST_REBOOT == result ? 0 : result);
 }
