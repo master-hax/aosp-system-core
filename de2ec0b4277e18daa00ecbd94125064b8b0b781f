@@ -22,6 +22,30 @@
       },
       "revId": "de2ec0b4277e18daa00ecbd94125064b8b0b781f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c11c4cdb_2be47805",
+        "filename": "fs_mgr/libfiemap/fiemap_writer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 517,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2021-11-02T04:25:11Z",
+      "side": 1,
+      "message": "aosp/1878079",
+      "parentUuid": "d3c3c65b_00c356a3",
+      "range": {
+        "startLine": 517,
+        "startChar": 66,
+        "endLine": 517,
+        "endChar": 81
+      },
+      "revId": "de2ec0b4277e18daa00ecbd94125064b8b0b781f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
