@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "b1dc23bd_f0922a57",
+        "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd_client.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 235,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-11-02T14:54:54Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "bf0c40bf_577abaa3",
+      "revId": "712820b11f1c7fa8c5b6cda824cf40906873d82a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a5a010c6_2b9196eb",
@@ -35,6 +53,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f1b27120_54f5ac49",
+        "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd_client.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 245,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-11-02T14:54:54Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a5a010c6_2b9196eb",
+      "revId": "712820b11f1c7fa8c5b6cda824cf40906873d82a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a76a6f37_dc774218",
@@ -48,6 +84,24 @@
       "writtenOn": "2021-10-15T03:38:11Z",
       "side": 1,
       "message": "Is there any possible tearing here if it\u0027s updated on another thread? (I\u0027m guessing not on 64-bit at least?)",
+      "revId": "712820b11f1c7fa8c5b6cda824cf40906873d82a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e2f06cef_8fc83316",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_core.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-11-02T14:54:54Z",
+      "side": 1,
+      "message": "I didn\u0027t want to use locks here as this is constantly probed by libsnapshot - that said, there shouldn\u0027t be any issue. At the max, we may end up seeing a value which is not the latest - that is ok as in the subsequent call we will converge. There is no requirement to have a strong consistency here..",
+      "parentUuid": "a76a6f37_dc774218",
       "revId": "712820b11f1c7fa8c5b6cda824cf40906873d82a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
