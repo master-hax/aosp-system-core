@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "148042b0_479beafa",
+        "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd_client.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 199,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-11-02T21:35:14Z",
+      "side": 1,
+      "message": "const std::string\u0026",
+      "revId": "6b659835440473372b057cf18b873d87733753bc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cf93c8b2_cc66cd2a",
+        "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd_daemon.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 193,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-11-02T21:35:14Z",
+      "side": 1,
+      "message": "This isn\u0027t going to work in first-stage init, so assumedly we\u0027ll need some other way to control this, possibly via a FLAG.\n\nThe bit can be communicated to first-stage init via the update state protobuf (it should be a global bit, not per-snapshot). We\u0027d then need to plumb it from libsnapshot to first_stage_mount, and then to selinux stage... it\u0027ll be a little gross, but I don\u0027t think we have a choice?",
+      "revId": "6b659835440473372b057cf18b873d87733753bc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6c460736_760f7747",
+        "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd_daemon.h",
+        "patchSetId": 8
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-11-02T21:35:14Z",
+      "side": 1,
+      "message": "user_server_?",
+      "revId": "6b659835440473372b057cf18b873d87733753bc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
