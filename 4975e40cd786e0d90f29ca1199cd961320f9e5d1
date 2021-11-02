@@ -16,6 +16,24 @@
       "message": "It\u0027s hard to tell what the boolean means when you see something like \"CowReader(true)\". Can we make a one-off enum for this? Eg,\n\n    enum ReaderFlags {\n        DEFAULT \u003d 0,\n        USERSPACE_MERGE \u003d 1,\n    };\n\n    ..\n\n    make_unique\u003cCowReader\u003e(CowReader::USERSPACE_MERGE);\n\nOr something like,\n\n    enum OpOrder {\n        UPDATE_ORDER,\n        MERGE_ORDER,\n    };",
       "revId": "4975e40cd786e0d90f29ca1199cd961320f9e5d1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cfb6d30c_8dc3734f",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_reader.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-11-02T14:55:10Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "60500496_2e9d30c1",
+      "revId": "4975e40cd786e0d90f29ca1199cd961320f9e5d1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
