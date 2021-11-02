@@ -54,6 +54,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "7c51ba6e_eaae51cc",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/snapshot.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 798,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-11-02T20:41:15Z",
+      "side": 1,
+      "message": "It is now controlled by a property which is disabled for now.",
+      "parentUuid": "bc6bb627_188506fe",
+      "revId": "0527a473d40eb9c4fe335e49283c14db9ffa007b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "6dfc8c93_1f9d7127",
@@ -67,6 +85,24 @@
       "writtenOn": "2021-10-15T03:47:03Z",
       "side": 1,
       "message": "This would be a good place to have an enum as well. Something like\n\n    enum class SnapshotDriver {\n        DM_SNAPSHOT,\n        DM_USER,\n    };",
+      "revId": "0527a473d40eb9c4fe335e49283c14db9ffa007b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7cb186e6_c136235e",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 124,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-11-02T20:41:15Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6dfc8c93_1f9d7127",
       "revId": "0527a473d40eb9c4fe335e49283c14db9ffa007b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
