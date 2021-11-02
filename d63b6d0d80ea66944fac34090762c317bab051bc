@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "c7ef17b9_e75496b0",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 472,
+      "author": {
+        "id": 1579231
+      },
+      "writtenOn": "2021-11-02T01:07:24Z",
+      "side": 1,
+      "message": "That\u0027s a thoughtful standard to follow - done.\nPS: I was trying to address the comment about ADB_REBOOT not actually being an error (https://buganizer.corp.google.com/issues/201596822#comment8), however I agree it\u0027s less valuable considering the potential risk.",
+      "parentUuid": "51d547a1_266a68b3",
+      "revId": "d63b6d0d80ea66944fac34090762c317bab051bc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "26c0cf39_37f203a1",
@@ -31,6 +49,24 @@
       "writtenOn": "2021-11-01T23:52:17Z",
       "side": 1,
       "message": "or add a line in the MUST_REBOOT case above that says `result \u003d 0;`?\n\n(i know they\u0027re equivalent, but i genuinely misunderstood this line the first time i read it... i\u0027ll be interested to see whether cferris got it first time, in which case \"ignore me\", and what +dvander thinks...)",
+      "revId": "d63b6d0d80ea66944fac34090762c317bab051bc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "67ae89f6_2e576d83",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 489,
+      "author": {
+        "id": 1579231
+      },
+      "writtenOn": "2021-11-02T01:07:24Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "26c0cf39_37f203a1",
       "revId": "d63b6d0d80ea66944fac34090762c317bab051bc",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
