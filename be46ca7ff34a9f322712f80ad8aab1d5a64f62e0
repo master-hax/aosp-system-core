@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "731aaa6e_5533b796",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_transitions.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 582,
+      "author": {
+        "id": 1045980
+      },
+      "writtenOn": "2021-11-02T23:20:00Z",
+      "side": 1,
+      "message": "Just minor note that we\u0027re doing this I/O copy under the lock. It\u0027s all in memory, so shouldn\u0027t be awful, but it\u0027s something we\u0027d want to keep an eye on to ensure it\u0027s not a performance bottleneck in the instances it pops up. I don\u0027t know how often we\u0027d have heavy load on an in progress block, but we\u0027re forcing serialization here as a simplification. It\u0027s something I\u0027d consider having a follow up patch for at some point.",
+      "range": {
+        "startLine": 579,
+        "startChar": 16,
+        "endLine": 582,
+        "endChar": 29
+      },
+      "revId": "be46ca7ff34a9f322712f80ad8aab1d5a64f62e0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
