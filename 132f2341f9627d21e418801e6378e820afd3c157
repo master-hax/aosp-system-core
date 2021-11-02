@@ -22,6 +22,30 @@
       },
       "revId": "132f2341f9627d21e418801e6378e820afd3c157",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "92c91307_a40d1996",
+        "filename": "healthd/healthd_mode_charger.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 585,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2021-11-02T01:19:16Z",
+      "side": 0,
+      "message": "This (and L574) is now executed by the parent function, e.g. in healthd_mode_charger_hidl.cpp:\n\nhttps://android-review.googlesource.com/c/platform/system/core/+/1866337/12/healthd/healthd_mode_charger_hidl.cpp\n\nand in the AIDL version:\n\nhttps://android-review.googlesource.com/c/platform/hardware/interfaces/+/1550322/20/health/aidl/default/HalHealthLoop.cpp#56 \n\n(this calls into https://android-review.googlesource.com/c/platform/hardware/interfaces/+/1866345/11/health/aidl/default/ChargerUtils.cpp#81)",
+      "parentUuid": "6ccfdbcc_ff6b3ad2",
+      "range": {
+        "startLine": 585,
+        "startChar": 4,
+        "endLine": 585,
+        "endChar": 44
+      },
+      "revId": "132f2341f9627d21e418801e6378e820afd3c157",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
