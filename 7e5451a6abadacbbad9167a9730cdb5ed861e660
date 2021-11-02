@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c95b2942_ac73bce1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-11-02T01:35:41Z",
+      "side": 1,
+      "message": "lgtm, but i\u0027ll let dvander approve (or make an alternative suggestion)...",
+      "revId": "7e5451a6abadacbbad9167a9730cdb5ed861e660",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
