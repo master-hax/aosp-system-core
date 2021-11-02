@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "eb2296ce_f94d4b6c",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_dm_user.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 436,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-11-02T14:54:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e8829737_c4c0d462",
+      "revId": "d2eb7c63083084a9cb3e6ec5274d66beb9d818b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "4a32b2b3_04a5b2ac",
@@ -31,6 +49,24 @@
       "writtenOn": "2021-10-14T23:27:16Z",
       "side": 1,
       "message": "Same with these.",
+      "revId": "d2eb7c63083084a9cb3e6ec5274d66beb9d818b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6e05d499_b8b79714",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_dm_user.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 441,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-11-02T14:54:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4a32b2b3_04a5b2ac",
       "revId": "d2eb7c63083084a9cb3e6ec5274d66beb9d818b0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
