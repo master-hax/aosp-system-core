@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d3c3c65b_00c356a3",
+        "filename": "fs_mgr/libfiemap/fiemap_writer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 517,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2021-11-02T02:53:37Z",
+      "side": 1,
+      "message": "Check |num_extents| !\u003d 0 here? else |num_extents - 1| could underflow",
+      "range": {
+        "startLine": 517,
+        "startChar": 66,
+        "endLine": 517,
+        "endChar": 81
+      },
+      "revId": "de2ec0b4277e18daa00ecbd94125064b8b0b781f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
