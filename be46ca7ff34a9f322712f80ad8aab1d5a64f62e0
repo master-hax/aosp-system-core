@@ -22,6 +22,30 @@
       },
       "revId": "be46ca7ff34a9f322712f80ad8aab1d5a64f62e0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b8eadb60_536203a3",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_transitions.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 582,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-11-03T01:38:16Z",
+      "side": 1,
+      "message": "Thanks for the review.\n\nI did do some measurements on the overhead during boot up and did not notice any regressions. It all boils down to how \"slow\" the merge operation is as that is the entire window when I/O from root filesystem will be served from daemon. I will certainly do a follow up when I intergrate io_uring API\u0027s.",
+      "parentUuid": "731aaa6e_5533b796",
+      "range": {
+        "startLine": 579,
+        "startChar": 16,
+        "endLine": 582,
+        "endChar": 29
+      },
+      "revId": "be46ca7ff34a9f322712f80ad8aab1d5a64f62e0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
