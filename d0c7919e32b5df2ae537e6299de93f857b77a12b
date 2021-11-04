@@ -54,6 +54,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "547e6660_62926fb6",
+        "filename": "fastboot/device/flashing.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1590141
+      },
+      "writtenOn": "2021-11-04T20:25:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9958e3f0_9814dcf4",
+      "revId": "d0c7919e32b5df2ae537e6299de93f857b77a12b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a34966aa_25c82e80",
