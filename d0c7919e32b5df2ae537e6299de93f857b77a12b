@@ -38,6 +38,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "9958e3f0_9814dcf4",
+        "filename": "fastboot/device/flashing.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-11-04T19:15:07Z",
+      "side": 1,
+      "message": "(in general you should always prefer the .h headers... my rule of thumb is that if you can\u0027t name _three_ differences between the .h and the \u003cc headers, and you don\u0027t _need_ one of those things, stick with the .h headers because everyone already knows what they do.)",
+      "parentUuid": "4de0872b_ed54de30",
+      "revId": "d0c7919e32b5df2ae537e6299de93f857b77a12b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "a34966aa_25c82e80",
         "filename": "fastboot/device/flashing.cpp",
         "patchSetId": 2
