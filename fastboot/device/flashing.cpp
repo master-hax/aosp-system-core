@@ -15,6 +15,7 @@
  */
 #include "flashing.h"
 
+#include <cstring>
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -77,16 +78,27 @@ void WipeOverlayfsForPartition(FastbootDevice* device, const std::string& partit
 
 int FlashRawDataChunk(int fd, const char* data, size_t len) {
     size_t ret = 0;
+    const size_t max_write_size = 1048576;
+    void* aligned_buffer;
+
+    if (posix_memalign(&aligned_buffer, 4096, max_write_size)) {
+        PLOG(ERROR) << "Failed to allocate write buffer";
+        return -ENOMEM;
+    }
+
     while (ret < len) {
-        int this_len = std::min(static_cast<size_t>(1048576UL * 8), len - ret);
-        int this_ret = write(fd, data, this_len);
+        int this_len = std::min(max_write_size, len - ret);
+        memcpy(aligned_buffer, data, this_len);
+        int this_ret = write(fd, aligned_buffer, this_len);
         if (this_ret < 0) {
             PLOG(ERROR) << "Failed to flash data of len " << len;
+            free(aligned_buffer);
             return -1;
         }
         data += this_ret;
         ret += this_ret;
     }
+    free(aligned_buffer);
     return 0;
 }
 
@@ -147,7 +159,7 @@ static void CopyAVBFooter(std::vector<char>* data, const uint64_t block_device_s
 
 int Flash(FastbootDevice* device, const std::string& partition_name) {
     PartitionHandle handle;
-    if (!OpenPartition(device, partition_name, &handle)) {
+    if (!OpenPartition(device, partition_name, &handle, O_DIRECT)) {
         return -ENOENT;
     }
 
