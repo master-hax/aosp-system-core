@@ -63,6 +63,30 @@
       },
       "revId": "d0c7919e32b5df2ae537e6299de93f857b77a12b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e63a6d8f_651c664c",
+        "filename": "fastboot/device/flashing.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 1590141
+      },
+      "writtenOn": "2021-11-04T18:55:48Z",
+      "side": 1,
+      "message": "I do test my code Bart :)\n\nPer https://man7.org/linux/man-pages/man3/posix_memalign.3.html\nposix_memalign() returns zero on success, or one of the error\n       values listed in the next section on failure.  The value of errno\n       is not set.  On Linux (and other systems), posix_memalign() does\n       not modify memptr on failure.  A requirement standardizing this\n       behavior was added in POSIX.1-2008 TC2.",
+      "parentUuid": "4bca8ad8_2d42e006",
+      "range": {
+        "startLine": 84,
+        "startChar": 8,
+        "endLine": 84,
+        "endChar": 22
+      },
+      "revId": "d0c7919e32b5df2ae537e6299de93f857b77a12b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
