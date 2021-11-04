@@ -3,6 +3,23 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "c32d99ee_8f26c062",
+        "filename": "fastboot/device/flashing.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-11-04T18:50:35Z",
+      "side": 1,
+      "message": "nit: move down to C++ include block below (or use string.h)",
+      "revId": "d0c7919e32b5df2ae537e6299de93f857b77a12b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "a34966aa_25c82e80",
         "filename": "fastboot/device/flashing.cpp",
         "patchSetId": 2
@@ -14,6 +31,30 @@
       "writtenOn": "2021-11-04T18:38:59Z",
       "side": 1,
       "message": "From the man page: \"aligned_alloc(), memalign(), valloc(), and pvalloc() return a pointer  to  the  allocated memory on success.  On error, NULL is returned, and errno is set to indicate the cause of the error.\"\n\nShould \"if (posix_memalign(\" perhaps be changed into \"if (!posix_memalign(\"?\n\nAn additional comment: many C++ maintainers prefer that std::unique_ptr\u003c\u003e is used instead of explicit allocation and deallocation calls. An example:\n\nposix_memalign(\u0026aligned_buffer, 4096, max_write_size);\nauto aligned_buffer_unique_ptr \u003d std::unique_ptr\u003cvoid, decltype(\u0026free)\u003e{aligned_buffer, free};",
+      "range": {
+        "startLine": 84,
+        "startChar": 8,
+        "endLine": 84,
+        "endChar": 22
+      },
+      "revId": "d0c7919e32b5df2ae537e6299de93f857b77a12b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4bca8ad8_2d42e006",
+        "filename": "fastboot/device/flashing.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-11-04T18:50:35Z",
+      "side": 1,
+      "message": "Thanks, using RAII here would definitely be preferable.",
+      "parentUuid": "a34966aa_25c82e80",
       "range": {
         "startLine": 84,
         "startChar": 8,
