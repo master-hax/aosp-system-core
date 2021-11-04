@@ -79,6 +79,10 @@ bool LogicalPartitionExists(FastbootDevice* device, const std::string& name,
 // If read, partition is readonly. Else it is write only.
 bool OpenPartition(FastbootDevice* device, const std::string& name, PartitionHandle* handle,
                    bool read = false);
+// Allow passing additional flags for when opening partition
+bool OpenPartition(FastbootDevice* device, const std::string& name, PartitionHandle* handle,
+                   int flags, bool read = false);
+
 
 bool GetSlotNumber(const std::string& slot, android::hardware::boot::V1_0::Slot* number);
 std::vector<std::string> ListPartitions(FastbootDevice* device);
