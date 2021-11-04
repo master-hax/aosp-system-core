@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "af04d947_d53b59c8",
+        "filename": "fastboot/device/utility.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-11-04T18:29:09Z",
+      "side": 1,
+      "message": "If we\u0027re adding a flags parameter, can we fix up callers to pass O_RDONLY/O_WRONLY and avoid having two parameters?",
+      "revId": "2a7abb4e8c55baa1bdd0611ce8cb1eaeec520bbc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c6428bea_06c235a6",
+        "filename": "fastboot/device/utility.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-11-04T18:29:09Z",
+      "side": 1,
+      "message": "Nit: underscore is for private member variables, maybe \"actual_flags\"?",
+      "revId": "2a7abb4e8c55baa1bdd0611ce8cb1eaeec520bbc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
