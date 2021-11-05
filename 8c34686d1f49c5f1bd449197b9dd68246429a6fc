@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6309fb79_c2db1f09",
+        "filename": "healthd/healthd_draw.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2021-11-05T19:05:21Z",
+      "side": 1,
+      "message": "drm !\u003d 0",
+      "range": {
+        "startLine": 104,
+        "startChar": 8,
+        "endLine": 104,
+        "endChar": 12
+      },
+      "revId": "8c34686d1f49c5f1bd449197b9dd68246429a6fc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "14b700fd_8b18967c",
+        "filename": "healthd/healthd_draw.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2021-11-05T19:05:21Z",
+      "side": 1,
+      "message": "Why right? Isn\u0027t it possible to rotate the the left?",
+      "range": {
+        "startLine": 105,
+        "startChar": 18,
+        "endLine": 105,
+        "endChar": 35
+      },
+      "revId": "8c34686d1f49c5f1bd449197b9dd68246429a6fc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1c333182_f697dc62",
+        "filename": "healthd/healthd_mode_charger.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 546,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2021-11-05T19:05:21Z",
+      "side": 1,
+      "message": "prefer static_cast",
+      "range": {
+        "startLine": 546,
+        "startChar": 42,
+        "endLine": 546,
+        "endChar": 45
+      },
+      "revId": "8c34686d1f49c5f1bd449197b9dd68246429a6fc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
