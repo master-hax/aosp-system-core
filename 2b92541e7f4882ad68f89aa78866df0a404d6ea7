@@ -70,6 +70,30 @@
       },
       "revId": "2b92541e7f4882ad68f89aa78866df0a404d6ea7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e3eaf343_92414934",
+        "filename": "llkd/llkd-debuggable.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-11-05T16:03:02Z",
+      "side": 1,
+      "message": "Oh, I see what you mean. Looks like the code itself needs some cleanup. I don\u0027t think I removed any LLK_ENABLE_WRITEABLE_PROPERTY usage, so this dead code is unrelated to this change. Or am I missing something?",
+      "parentUuid": "676da3b9_03736a79",
+      "range": {
+        "startLine": 5,
+        "startChar": 0,
+        "endLine": 9,
+        "endChar": 48
+      },
+      "revId": "2b92541e7f4882ad68f89aa78866df0a404d6ea7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
