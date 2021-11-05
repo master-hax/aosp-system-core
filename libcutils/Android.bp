@@ -280,6 +280,7 @@ cc_defaults {
                 "android_get_control_file_test.cpp",
                 "android_get_control_socket_test.cpp",
                 "ashmem_test.cpp",
+                "drop_caches_test.cpp",
                 "fs_config_test.cpp",
                 "multiuser_test.cpp",
                 "sched_policy_test.cpp",
