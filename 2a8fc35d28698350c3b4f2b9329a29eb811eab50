@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0e8ea0d8_7ddab153",
+        "filename": "healthd/healthd_mode_charger.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 353,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2021-11-05T19:04:09Z",
+      "side": 1,
+      "message": "nit: 0 /* drm */\n\nsame below",
+      "range": {
+        "startLine": 353,
+        "startChar": 42,
+        "endLine": 353,
+        "endChar": 43
+      },
+      "revId": "2a8fc35d28698350c3b4f2b9329a29eb811eab50",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4ee14a89_6f31dbe9",
+        "filename": "healthd/healthd_mode_charger.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 469,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2021-11-05T19:04:09Z",
+      "side": 1,
+      "message": "nit: value !\u003d 0, same above\n\nThis is an int not a boolean, right?",
+      "range": {
+        "startLine": 469,
+        "startChar": 19,
+        "endLine": 469,
+        "endChar": 24
+      },
+      "revId": "2a8fc35d28698350c3b4f2b9329a29eb811eab50",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "37637f87_6d935e11",
+        "filename": "healthd/healthd_mode_charger.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 794,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2021-11-05T19:04:09Z",
+      "side": 1,
+      "message": "nit: (void)ev_sync_sw_state\n\nto explicitly ignore the return value",
+      "range": {
+        "startLine": 794,
+        "startChar": 4,
+        "endLine": 794,
+        "endChar": 20
+      },
+      "revId": "2a8fc35d28698350c3b4f2b9329a29eb811eab50",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
