@@ -46,6 +46,30 @@
       },
       "revId": "ad98e827e76b6e1f5112216660b1fabf4df31a6c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b828aea0_68a0718b",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 2
+      },
+      "lineNbr": 495,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2021-11-05T01:16:33Z",
+      "side": 1,
+      "message": "Sorry, I think I was wrong. I see that some vendor-specific rc files have `on load_persist_props_action` [1]. So if we remove this line, those won\u0027t be executed. But at the same time, it looks very odd to trigger it here because it no longer loads persist props.\n\n\n[1] https://source.corp.google.com/search?q\u003don%5C%20load_persist_props_action%20%20f:%5C.rc\u0026sq\u003dpackage:%5Eandroid$",
+      "parentUuid": "648e3aae_ba7b1b7f",
+      "range": {
+        "startLine": 495,
+        "startChar": 0,
+        "endLine": 495,
+        "endChar": 37
+      },
+      "revId": "ad98e827e76b6e1f5112216660b1fabf4df31a6c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
