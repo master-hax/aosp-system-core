@@ -16,6 +16,29 @@
       "message": "comment what \"drm\" is",
       "revId": "dac96f8fc42074e1f08747ddc26238cf6f2e5a19",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "af58f25d_a4dc3820",
+        "filename": "healthd/healthd_mode_charger.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 330,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2021-11-05T19:06:31Z",
+      "side": 1,
+      "message": "prefer static_cast / reinterpret_cast, same below\n\nWhy can\u0027t / shouldn\u0027t healthd_draw_-\u003eblank_screen take an enum argument?",
+      "range": {
+        "startLine": 330,
+        "startChar": 47,
+        "endLine": 330,
+        "endChar": 50
+      },
+      "revId": "dac96f8fc42074e1f08747ddc26238cf6f2e5a19",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
