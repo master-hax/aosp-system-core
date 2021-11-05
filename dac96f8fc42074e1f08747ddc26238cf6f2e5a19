@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c459c142_9f2ce578",
+        "filename": "healthd/healthd_draw.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2021-11-05T19:01:19Z",
+      "side": 1,
+      "message": "comment what \"drm\" is",
+      "revId": "dac96f8fc42074e1f08747ddc26238cf6f2e5a19",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
