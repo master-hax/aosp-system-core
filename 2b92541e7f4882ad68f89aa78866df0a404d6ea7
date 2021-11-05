@@ -46,6 +46,30 @@
       },
       "revId": "2b92541e7f4882ad68f89aa78866df0a404d6ea7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "676da3b9_03736a79",
+        "filename": "llkd/llkd-debuggable.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2021-11-05T15:53:31Z",
+      "side": 1,
+      "message": "#define LLK_ENABLE_WRITEABLE_PROPERTY   \"llk.enable\"\n#define LLK_ENABLE_PROPERTY             \"ro.\" LLK_ENABLE_WRITEABLE_PROPERTY\n\ncode search shows \"llk.enable\" only used in test.\n\nhttps://cs.android.com/search?q\u003dLLK_ENABLE_WRITEABLE_PROPERTY\u0026sq\u003d\n\nand LLK_ENABLE_WRITEABLE_PROPERTY \"khungtask.enable\" never used:\n\nhttps://cs.android.com/android/platform/superproject/+/master:system/core/llkd/include/llkd.h?q\u003dKHT_ENABLE_WRITEABLE_PROPERTY\n \n \ndid I miss something?",
+      "parentUuid": "27ae674c_fc86a1f7",
+      "range": {
+        "startLine": 5,
+        "startChar": 0,
+        "endLine": 9,
+        "endChar": 48
+      },
+      "revId": "2b92541e7f4882ad68f89aa78866df0a404d6ea7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
