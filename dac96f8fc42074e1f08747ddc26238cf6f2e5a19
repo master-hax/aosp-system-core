@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "58b53876_94e1047f",
+        "filename": "healthd/healthd_draw.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1653796
+      },
+      "writtenOn": "2021-11-06T12:41:44Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c459c142_9f2ce578",
+      "revId": "dac96f8fc42074e1f08747ddc26238cf6f2e5a19",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "af58f25d_a4dc3820",
@@ -31,6 +49,30 @@
       "writtenOn": "2021-11-05T19:06:31Z",
       "side": 1,
       "message": "prefer static_cast / reinterpret_cast, same below\n\nWhy can\u0027t / shouldn\u0027t healthd_draw_-\u003eblank_screen take an enum argument?",
+      "range": {
+        "startLine": 330,
+        "startChar": 47,
+        "endLine": 330,
+        "endChar": 50
+      },
+      "revId": "dac96f8fc42074e1f08747ddc26238cf6f2e5a19",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9fb53866_7be67b66",
+        "filename": "healthd/healthd_mode_charger.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 330,
+      "author": {
+        "id": 1653796
+      },
+      "writtenOn": "2021-11-06T12:41:44Z",
+      "side": 1,
+      "message": "drm_ is dependent on the value of hall sensor event and pass the result into this function.",
+      "parentUuid": "af58f25d_a4dc3820",
       "range": {
         "startLine": 330,
         "startChar": 47,
