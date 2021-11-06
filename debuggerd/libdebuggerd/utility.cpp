@@ -42,6 +42,7 @@
 #include <unwindstack/Unwinder.h>
 
 using android::base::unique_fd;
+using android::base::StringPrintf;
 
 bool is_allowed_in_logcat(enum logtype ltype) {
   if ((ltype == HEADER)
@@ -442,6 +443,33 @@ const char* get_sigcode(const siginfo_t* si) {
   }
   // Then give up...
   return "?";
+}
+
+std::string describe_tagged_addr_ctrl(long ctrl) {
+  std::string desc;
+  if (ctrl & PR_TAGGED_ADDR_ENABLE) {
+    desc += ", PR_TAGGED_ADDR_ENABLE";
+    ctrl &= ~PR_TAGGED_ADDR_ENABLE;
+  }
+  if (ctrl & PR_MTE_TCF_SYNC) {
+    desc += ", PR_MTE_TCF_SYNC";
+    ctrl &= ~PR_MTE_TCF_SYNC;
+  }
+  if (ctrl & PR_MTE_TCF_ASYNC) {
+    desc += ", PR_MTE_TCF_ASYNC";
+    ctrl &= ~PR_MTE_TCF_ASYNC;
+  }
+  if (ctrl & PR_MTE_TAG_MASK) {
+    desc += StringPrintf(", mask 0x%04lx", (ctrl & PR_MTE_TAG_MASK) >> PR_MTE_TAG_SHIFT);
+    ctrl &= ~PR_MTE_TAG_MASK;
+  }
+  if (ctrl) {
+    desc += StringPrintf(", unknown 0x%lx", ctrl);
+  }
+  if (desc.empty()) {
+    return "";
+  }
+  return " (" + desc.substr(2) + ")";
 }
 
 void log_backtrace(log_t* log, unwindstack::Unwinder* unwinder, const char* prefix) {
