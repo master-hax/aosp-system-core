@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "b0504180_e757987d",
+        "filename": "healthd/healthd_draw.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 1653796
+      },
+      "writtenOn": "2021-11-06T12:58:33Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6309fb79_c2db1f09",
+      "range": {
+        "startLine": 104,
+        "startChar": 8,
+        "endLine": 104,
+        "endChar": 12
+      },
+      "revId": "8c34686d1f49c5f1bd449197b9dd68246429a6fc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "14b700fd_8b18967c",
@@ -49,6 +73,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "b0432555_4983da1b",
+        "filename": "healthd/healthd_draw.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 1653796
+      },
+      "writtenOn": "2021-11-06T12:58:33Z",
+      "side": 1,
+      "message": "According to the design of foldable phone, the rotation of 1st display should be right.",
+      "parentUuid": "14b700fd_8b18967c",
+      "range": {
+        "startLine": 105,
+        "startChar": 18,
+        "endLine": 105,
+        "endChar": 35
+      },
+      "revId": "8c34686d1f49c5f1bd449197b9dd68246429a6fc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "1c333182_f697dc62",
         "filename": "healthd/healthd_mode_charger.cpp",
         "patchSetId": 5
@@ -60,6 +108,30 @@
       "writtenOn": "2021-11-05T19:05:21Z",
       "side": 1,
       "message": "prefer static_cast",
+      "range": {
+        "startLine": 546,
+        "startChar": 42,
+        "endLine": 546,
+        "endChar": 45
+      },
+      "revId": "8c34686d1f49c5f1bd449197b9dd68246429a6fc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a4a39c7c_39a04fb4",
+        "filename": "healthd/healthd_mode_charger.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 546,
+      "author": {
+        "id": 1653796
+      },
+      "writtenOn": "2021-11-06T12:58:33Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1c333182_f697dc62",
       "range": {
         "startLine": 546,
         "startChar": 42,
