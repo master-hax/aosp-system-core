@@ -88,6 +88,24 @@
       "parentUuid": "bd75f6f7_2588931a",
       "revId": "ee51e5ec8b34ac86f0c97c2d42d76a13feb7bc3c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e4151fca_a111828f",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1864,
+      "author": {
+        "id": 1584563
+      },
+      "writtenOn": "2021-11-08T11:17:52Z",
+      "side": 1,
+      "message": "1) Updated the patchset with IsGsiRunning check\n2) Added *name \u003d\u003d \"userdata_gsi\" in updated patchset\n3) We are evaluating how to unwind and delete the /data dm-device stack. We are trying to find out the logic to identify physical and logical dm-device",
+      "parentUuid": "af5af02c_197b34f9",
+      "revId": "ee51e5ec8b34ac86f0c97c2d42d76a13feb7bc3c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
