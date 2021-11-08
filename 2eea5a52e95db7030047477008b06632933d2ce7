@@ -20,6 +20,29 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "1882d429_b5f0def3",
+        "filename": "libprocessgroup/tools/Android.bp",
+        "patchSetId": 3
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2021-11-08T21:23:03Z",
+      "side": 1,
+      "message": "can we include this neat tool into system image?",
+      "range": {
+        "startLine": 20,
+        "startChar": 11,
+        "endLine": 20,
+        "endChar": 25
+      },
+      "revId": "2eea5a52e95db7030047477008b06632933d2ce7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "78feca65_1d0e23f8",
         "filename": "libprocessgroup/tools/settaskprofile.cpp",
         "patchSetId": 3
