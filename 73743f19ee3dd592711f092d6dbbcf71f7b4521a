@@ -46,6 +46,30 @@
       },
       "revId": "73743f19ee3dd592711f092d6dbbcf71f7b4521a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e2b7f57d_85a5ff40",
+        "filename": "init/service_utils.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 314,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-11-08T21:19:00Z",
+      "side": 1,
+      "message": "I looked into this closer and because of task profile aliasing there might be multiple profiles using the same path. Moreover, some profiles can do multiple things, so suggesting them might be wrong. Overall, I don\u0027t think the added complexity of trying to find the right profile to report is really worth it. This warning should happen only when some developer is trying to introduce a new cgroups manipulation and this warning should be enough for them to figure out what to do, considering that these commands are well-documented in https://cs.android.com/android/platform/superproject/+/master:system/core/init/README.md and in https://source.android.com/devices/tech/perf/cgroups#taskprofiles-init-language-command",
+      "parentUuid": "f0f8969d_d4cce75b",
+      "range": {
+        "startLine": 312,
+        "startChar": 8,
+        "endLine": 314,
+        "endChar": 9
+      },
+      "revId": "73743f19ee3dd592711f092d6dbbcf71f7b4521a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
