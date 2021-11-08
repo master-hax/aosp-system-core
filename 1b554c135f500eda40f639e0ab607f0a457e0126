@@ -1,0 +1,30 @@
+{
+  "comments": [
+    {
+      "robotId": "ayeaye",
+      "robotRunId": "AR00000000000017001785",
+      "url": "https://android-build.googleplex.com/builds/treetop/android-review/1883573?revision\u003d1",
+      "fixSuggestions": [],
+      "key": {
+        "uuid": "90c6863f_1a06a55e",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1757831
+      },
+      "writtenOn": "2021-11-08T05:42:25Z",
+      "side": 1,
+      "message": "Unrecognized finding :\nlicense\n",
+      "range": {
+        "startLine": 7,
+        "startChar": 16,
+        "endLine": 7,
+        "endChar": 23
+      },
+      "revId": "1b554c135f500eda40f639e0ab607f0a457e0126",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
