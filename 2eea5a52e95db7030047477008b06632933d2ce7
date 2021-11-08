@@ -43,6 +43,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "614e238c_d6b861a8",
+        "filename": "libprocessgroup/tools/Android.bp",
+        "patchSetId": 3
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-11-08T21:40:58Z",
+      "side": 1,
+      "message": "Hmm. I believe for that we would need to add it as \"required\" for some other component. Which component should require it?\nOr maybe there is another way to add it as a default system component?",
+      "parentUuid": "1882d429_b5f0def3",
+      "range": {
+        "startLine": 20,
+        "startChar": 11,
+        "endLine": 20,
+        "endChar": 25
+      },
+      "revId": "2eea5a52e95db7030047477008b06632933d2ce7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "78feca65_1d0e23f8",
         "filename": "libprocessgroup/tools/settaskprofile.cpp",
         "patchSetId": 3
@@ -54,6 +78,30 @@
       "writtenOn": "2021-11-08T21:19:40Z",
       "side": 1,
       "message": "if we don\u0027t support use this binary to launch new process, then probably we need this binary to support set current bash process to given process and then launch new process.\n\n\ne.g. \ntaskprofile 0 //process_for_newtask\nexec_task\ntaskprofile 0 //default\n\nbut still support directly launch new process would be better, as we don\u0027t reall need set shell to given profile (not to mention setting shell to bg would slow down command execution).",
+      "range": {
+        "startLine": 39,
+        "startChar": 0,
+        "endLine": 39,
+        "endChar": 19
+      },
+      "revId": "2eea5a52e95db7030047477008b06632933d2ce7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "09ca6c33_5028c1db",
+        "filename": "libprocessgroup/tools/settaskprofile.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-11-08T21:40:58Z",
+      "side": 1,
+      "message": "Can\u0027t the same be achieved with:\n\n\u003csome-prog\u003e \u0026\nsettaskprofile $! \u003cprofiles\u003e\n\n?\nWhy complicate the simple tool?",
+      "parentUuid": "78feca65_1d0e23f8",
       "range": {
         "startLine": 39,
         "startChar": 0,
