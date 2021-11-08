@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "445e9a4d_e7d6fabf",
+        "filename": "trusty/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1359095
+      },
+      "writtenOn": "2021-11-08T19:55:30Z",
+      "side": 0,
+      "message": "Pretending the MIT-licensed code isn\u0027t there doesn\u0027t work.\n\nhttps://android.googlesource.com/platform/system/core/+/refs/heads/master/trusty/utils/rpmb_dev/rpmb_dev.c",
+      "revId": "d0a4e710e9241fbf427fbebf107648841663e0a4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6d8ef921_9fb6a5f0",
+        "filename": "trusty/utils/rpmb_dev/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1359095
+      },
+      "writtenOn": "2021-11-08T19:55:30Z",
+      "side": 0,
+      "message": "Pretending the MIT licensed-coded isn\u0027t there doesn\u0027t work.\n\nhttps://android.googlesource.com/platform/system/core/+/refs/heads/master/trusty/utils/rpmb_dev/rpmb_dev.c",
+      "revId": "d0a4e710e9241fbf427fbebf107648841663e0a4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
