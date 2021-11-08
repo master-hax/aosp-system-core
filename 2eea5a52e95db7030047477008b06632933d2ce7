@@ -67,6 +67,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "7f3f40ba_c78550e5",
+        "filename": "libprocessgroup/tools/Android.bp",
+        "patchSetId": 3
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2021-11-08T21:47:50Z",
+      "side": 1,
+      "message": "probably default system component?",
+      "parentUuid": "614e238c_d6b861a8",
+      "range": {
+        "startLine": 20,
+        "startChar": 11,
+        "endLine": 20,
+        "endChar": 25
+      },
+      "revId": "2eea5a52e95db7030047477008b06632933d2ce7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "78feca65_1d0e23f8",
         "filename": "libprocessgroup/tools/settaskprofile.cpp",
         "patchSetId": 3
@@ -102,6 +126,30 @@
       "side": 1,
       "message": "Can\u0027t the same be achieved with:\n\n\u003csome-prog\u003e \u0026\nsettaskprofile $! \u003cprofiles\u003e\n\n?\nWhy complicate the simple tool?",
       "parentUuid": "78feca65_1d0e23f8",
+      "range": {
+        "startLine": 39,
+        "startChar": 0,
+        "endLine": 39,
+        "endChar": 19
+      },
+      "revId": "2eea5a52e95db7030047477008b06632933d2ce7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4f875cc5_ce736279",
+        "filename": "libprocessgroup/tools/settaskprofile.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2021-11-08T21:47:50Z",
+      "side": 1,
+      "message": "while I believe \n1)we need change the policy more than the main thread.\n2)also we would like to get it right from the timing  (imaging you are running multi-threading benchmarks)",
+      "parentUuid": "09ca6c33_5028c1db",
       "range": {
         "startLine": 39,
         "startChar": 0,
