@@ -22,6 +22,30 @@
       },
       "revId": "9e3ace52bba69b3fb9b6700e02c9380bd06b0351",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4666b6ed_d14e8c70",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 209,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-11-08T21:47:29Z",
+      "side": 1,
+      "message": "All constant strings in this file use \"const string\u0026\" in all APIs. If there is real benefit in refactoring this, I would prefer to do that in a separate patch.\nI\u0027m not an expert in C++17, so if there are benefits I\u0027ll accept a new bug for refactoring while keeping this function as is.",
+      "parentUuid": "59bb84e6_e7088083",
+      "range": {
+        "startLine": 209,
+        "startChar": 49,
+        "endLine": 209,
+        "endChar": 58
+      },
+      "revId": "9e3ace52bba69b3fb9b6700e02c9380bd06b0351",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
