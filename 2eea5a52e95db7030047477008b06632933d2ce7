@@ -254,6 +254,30 @@
       },
       "revId": "2eea5a52e95db7030047477008b06632933d2ce7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9aaeb06c_b50c66b7",
+        "filename": "libprocessgroup/tools/settaskprofile.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-11-09T22:31:51Z",
+      "side": 1,
+      "message": "(init\u0027s pid 1 :-) pid 0 is invalid. all the toybox commands that take a pid argument effectively use `if (atoi(s) \u003d\u003d 0)` as a test for validity, so treating 0 as an error is consistent with everything else.)",
+      "parentUuid": "97c62fd5_d907ef05",
+      "range": {
+        "startLine": 39,
+        "startChar": 0,
+        "endLine": 39,
+        "endChar": 19
+      },
+      "revId": "2eea5a52e95db7030047477008b06632933d2ce7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
