@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "54c90f78_04a38b3f",
+        "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd_client.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 199,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-11-09T08:51:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "148042b0_479beafa",
+      "revId": "6b659835440473372b057cf18b873d87733753bc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "cf93c8b2_cc66cd2a",
@@ -35,6 +53,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "d9f44f54_745f3412",
+        "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd_daemon.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 193,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-11-09T08:51:35Z",
+      "side": 1,
+      "message": "Thanks. As discussed, we will have the information routed from libsnapshot-\u003einit-\u003esnapuserd.\n\nI think once we have everything landed, we can clear all this \"if(Usersnapshots)\" check everywhere.",
+      "parentUuid": "cf93c8b2_cc66cd2a",
+      "revId": "6b659835440473372b057cf18b873d87733753bc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "6c460736_760f7747",
@@ -48,6 +84,24 @@
       "writtenOn": "2021-11-02T21:35:14Z",
       "side": 1,
       "message": "user_server_?",
+      "revId": "6b659835440473372b057cf18b873d87733753bc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "61569879_1d7d9bcb",
+        "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd_daemon.h",
+        "patchSetId": 8
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-11-09T08:51:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6c460736_760f7747",
       "revId": "6b659835440473372b057cf18b873d87733753bc",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
