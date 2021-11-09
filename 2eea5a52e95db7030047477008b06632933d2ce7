@@ -206,6 +206,30 @@
       },
       "revId": "2eea5a52e95db7030047477008b06632933d2ce7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b48362c8_ba70e076",
+        "filename": "libprocessgroup/tools/settaskprofile.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2021-11-09T22:13:05Z",
+      "side": 1,
+      "message": "yeah, that is similar to what I mentioned:\n\ntaskprofile 0 //process_for_newtask\nexec_task\ntaskprofile 0 //default\n\nbut since we have always treat 0 a special case\n\nhttps://source.corp.google.com/android/system/core/libprocessgroup/task_profiles.cpp;rcl\u003dHEAD;l\u003d359\n\n    if (tid \u003d\u003d 0) {\n        tid \u003d GetThreadId();\n    }\n    \nso maybe passing 0 is also acceptable?",
+      "parentUuid": "8bbc9cde_293f86af",
+      "range": {
+        "startLine": 39,
+        "startChar": 0,
+        "endLine": 39,
+        "endChar": 19
+      },
+      "revId": "2eea5a52e95db7030047477008b06632933d2ce7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
