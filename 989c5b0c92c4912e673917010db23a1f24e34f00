@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6de94cb4_c8a00c43",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 238,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2021-11-10T21:23:28Z",
+      "side": 1,
+      "message": "operator[] here is delegating to operator[] for std::vector which won\u0027t do bounds checks. L233 and L1490 are coupled here. Consider asserting arg size is 2 or 3?",
+      "range": {
+        "startLine": 238,
+        "startChar": 24,
+        "endLine": 238,
+        "endChar": 27
+      },
+      "revId": "989c5b0c92c4912e673917010db23a1f24e34f00",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "38f93025_3dd68043",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 250,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2021-11-10T21:23:28Z",
+      "side": 1,
+      "message": "nit: add RestartIfEnabled function in order to reuse ForEachServiceInClass and allow us to use this function for a similar argument to \u0027interface_restart\u0027 or \u0027restart\u0027",
+      "range": {
+        "startLine": 247,
+        "startChar": 0,
+        "endLine": 250,
+        "endChar": 27
+      },
+      "revId": "989c5b0c92c4912e673917010db23a1f24e34f00",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
