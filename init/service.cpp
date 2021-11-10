@@ -717,6 +717,12 @@ void Service::Restart() {
     } /* else: Service is restarting anyways. */
 }
 
+void Service::RestartIfEnabled() {
+    if (IsEnabled()) {
+        Restart();
+    }
+}
+
 // The how field should be either SVC_DISABLED, SVC_RESET, or SVC_RESTART.
 void Service::StopOrReset(int how) {
     // The service is still SVC_RUNNING until its process exits, but if it has

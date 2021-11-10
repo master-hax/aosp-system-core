@@ -88,6 +88,7 @@ class Service {
     void Terminate();
     void Timeout();
     void Restart();
+    void RestartIfEnabled();
     void Reap(const siginfo_t& siginfo);
     void DumpState() const;
     void SetShutdownCritical() { flags_ |= SVC_SHUTDOWN_CRITICAL; }
