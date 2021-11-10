@@ -505,8 +505,9 @@ Commands
 > Like `class_reset`, but only considers services that were started
   after /data was mounted. Only used for FDE devices.
 
-`class_restart <serviceclass>`
-> Restarts all services of the specified class.
+`class_restart [--only-enabled] <serviceclass>`
+> Restarts all services of the specified class. If `--only-enabled` is
+  specified, then disabled services are skipped.
 
 `copy <src> <dst>`
 > Copies a file. Similar to write, but useful for binary/large
