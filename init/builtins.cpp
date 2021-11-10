@@ -226,7 +226,29 @@ static Result<void> do_class_restart(const BuiltinArguments& args) {
     // Do not restart a class if it has a property persist.dont_start_class.CLASS set to 1.
     if (android::base::GetBoolProperty("persist.init.dont_start_class." + args[1], false))
         return {};
-    ForEachServiceInClass(args[1], &Service::Restart);
+
+    std::string classname;
+
+    bool only_enabled = false;
+    if (args.size() == 3) {
+        if (args[1] != "--only-enabled") {
+            return Error() << "Unexpected argument: " << args[1];
+        }
+        only_enabled = true;
+        classname = args[2];
+    } else {
+        classname = args[1];
+    }
+
+    for (const auto& service : ServiceList::GetInstance()) {
+        if (!service->classnames().count(classname)) {
+            continue;
+        }
+        if (only_enabled && !service->IsEnabled()) {
+            continue;
+        }
+        service->Restart();
+    }
     return {};
 }
 
@@ -1465,7 +1487,7 @@ const BuiltinFunctionMap& GetBuiltinFunctionMap() {
         {"chown",                   {2,     3,    {true,   do_chown}}},
         {"class_reset",             {1,     1,    {false,  do_class_reset}}},
         {"class_reset_post_data",   {1,     1,    {false,  do_class_reset_post_data}}},
-        {"class_restart",           {1,     1,    {false,  do_class_restart}}},
+        {"class_restart",           {1,     2,    {false,  do_class_restart}}},
         {"class_start",             {1,     1,    {false,  do_class_start}}},
         {"class_start_post_data",   {1,     1,    {false,  do_class_start_post_data}}},
         {"class_stop",              {1,     1,    {false,  do_class_stop}}},
