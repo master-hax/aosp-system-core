@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "c38af5aa_268732bf",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 238,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-11-10T22:51:40Z",
+      "side": 1,
+      "message": "Argument count is checked higher up and the builtins all rely on this. I\u0027ll change the \"else\" branch to explicitly check for size() \u003d\u003d 2 though so it\u0027s clearer.",
+      "parentUuid": "6de94cb4_c8a00c43",
+      "range": {
+        "startLine": 238,
+        "startChar": 24,
+        "endLine": 238,
+        "endChar": 27
+      },
+      "revId": "989c5b0c92c4912e673917010db23a1f24e34f00",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "38f93025_3dd68043",
@@ -37,6 +61,30 @@
       "writtenOn": "2021-11-10T21:23:28Z",
       "side": 1,
       "message": "nit: add RestartIfEnabled function in order to reuse ForEachServiceInClass and allow us to use this function for a similar argument to \u0027interface_restart\u0027 or \u0027restart\u0027",
+      "range": {
+        "startLine": 247,
+        "startChar": 0,
+        "endLine": 250,
+        "endChar": 27
+      },
+      "revId": "989c5b0c92c4912e673917010db23a1f24e34f00",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "43e38963_4bd50e88",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 250,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-11-10T22:51:40Z",
+      "side": 1,
+      "message": "Ok, though if we ever add more arguments to these, the helper won\u0027t work anymore.",
+      "parentUuid": "38f93025_3dd68043",
       "range": {
         "startLine": 247,
         "startChar": 0,
