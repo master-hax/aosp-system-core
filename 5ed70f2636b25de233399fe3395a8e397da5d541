@@ -16,6 +16,24 @@
       "message": "maybe replace all this \u0027p\u0027 stuff with a check for `fields.size() \u003d\u003d 0 || StartsWith(fields[0], \"#\")` line in your earlier CL?\n\ni don\u0027t think that doing the work twice is a huge problem, but it is a bit confusing --- it took me a while to work out that it\u0027s fine to use line instead of p on L551.",
       "revId": "5ed70f2636b25de233399fe3395a8e397da5d541",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fcdbb931_b3aa965a",
+        "filename": "fs_mgr/fs_mgr_fstab.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 548,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2021-11-11T17:46:55Z",
+      "side": 1,
+      "message": "I\u0027ll do the other cleanups (getline(), goto err; ... etc) in another change. for this change I just want to focus on replacing strtok.",
+      "parentUuid": "9153e0d3_e2da3b96",
+      "revId": "5ed70f2636b25de233399fe3395a8e397da5d541",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
