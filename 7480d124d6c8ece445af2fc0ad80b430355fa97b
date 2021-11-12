@@ -103,6 +103,23 @@
       "message": "..What we are trying to fix here? commit text doesn\u0027t elaborate the problem we are trying to fix except it explain what this patch does. ",
       "revId": "7480d124d6c8ece445af2fc0ad80b430355fa97b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8a432b1b_5889a342",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1293738
+      },
+      "writtenOn": "2021-11-12T23:41:54Z",
+      "side": 1,
+      "message": "Trilok: this is adding support for passing module parameters via bootconfig instead of kernel command line. I don\u0027t think this can cause you concern, since you must already support bootconfig for 5.10 and new boot headers in S+. This is just making more userspace paths use bootconfig, which can only be a good thing.",
+      "revId": "7480d124d6c8ece445af2fc0ad80b430355fa97b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
