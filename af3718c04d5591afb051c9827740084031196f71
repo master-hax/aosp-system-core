@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f24bb1ca_83f58c89",
+        "filename": "fs_mgr/fs_mgr_fstab.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 539,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2021-11-12T11:39:48Z",
+      "side": 1,
+      "message": "Split() ensures line doesn\u0027t end with \u0027\\n\u0027, Tokenize() ensures the first token doesn\u0027t have leading spaces, so LHS and RHS are semantically equivalent.",
+      "range": {
+        "startLine": 533,
+        "startChar": 4,
+        "endLine": 539,
+        "endChar": 9
+      },
+      "revId": "af3718c04d5591afb051c9827740084031196f71",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "77f8a7de_77c8457e",
+        "filename": "fs_mgr/fs_mgr_fstab.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 680,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2021-11-12T11:39:48Z",
+      "side": 1,
+      "message": "The /proc/mounts node could be a symbolic link.",
+      "range": {
+        "startLine": 680,
+        "startChar": 15,
+        "endLine": 680,
+        "endChar": 30
+      },
+      "revId": "af3718c04d5591afb051c9827740084031196f71",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
