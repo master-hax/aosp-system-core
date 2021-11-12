@@ -69,6 +69,23 @@
       "parentUuid": "44c74ba7_3f2e9ca8",
       "revId": "7480d124d6c8ece445af2fc0ad80b430355fa97b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "79f137be_be132449",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1001801
+      },
+      "writtenOn": "2021-11-12T21:59:51Z",
+      "side": 1,
+      "message": "I prefer to have partner discussion on buganizer for these patches and design first. ",
+      "revId": "7480d124d6c8ece445af2fc0ad80b430355fa97b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
