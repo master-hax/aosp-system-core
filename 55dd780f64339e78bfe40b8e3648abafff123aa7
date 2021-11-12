@@ -104,6 +104,24 @@
       "parentUuid": "1e2c659b_7fa09b24",
       "revId": "55dd780f64339e78bfe40b8e3648abafff123aa7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6ed286ac_931b7b17",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 2062,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-11-12T23:53:42Z",
+      "side": 1,
+      "message": "Doesn\u0027t this negate the point of std::optional then? Like if we\u0027re not using userspace snapshots (eg, it\u0027s an S upgrade not using VABC), it\u0027ll be querying the disk state every call, which you were trying to avoid.",
+      "parentUuid": "12177fa6_a65447c6",
+      "revId": "55dd780f64339e78bfe40b8e3648abafff123aa7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
