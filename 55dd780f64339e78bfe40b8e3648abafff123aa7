@@ -86,6 +86,24 @@
       "message": "Should it be like this?\n\n    if (is_snapshot_userspace_.has_value()) {\n        return is_snapshot_userspace_.value();\n    }",
       "revId": "55dd780f64339e78bfe40b8e3648abafff123aa7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "12177fa6_a65447c6",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 2062,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-11-12T23:13:37Z",
+      "side": 1,
+      "message": "I was about to make this change but no; This should return true only if the value is true. Since this is std::optional, even if the value is set to \"false\", has_value() will be true - We shouldn\u0027t be returning \"false\" as the value.",
+      "parentUuid": "1e2c659b_7fa09b24",
+      "revId": "55dd780f64339e78bfe40b8e3648abafff123aa7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
