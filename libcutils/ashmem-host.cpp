@@ -85,12 +85,10 @@ int ashmem_unpin_region(int /*fd*/, size_t /*offset*/, size_t /*len*/) {
     return 0 /*ASHMEM_IS_UNPINNED*/;
 }
 
-int ashmem_get_size_region(int fd)
-{
+size_t ashmem_get_size_region(int fd) {
     struct stat buf;
     if (!ashmem_validate_stat(fd, &buf)) {
         return -1;
     }
-
     return buf.st_size;
 }
