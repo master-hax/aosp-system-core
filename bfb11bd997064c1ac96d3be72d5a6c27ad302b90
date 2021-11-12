@@ -69,6 +69,24 @@
       "parentUuid": "4d1ab4bd_2935f5c7",
       "revId": "bfb11bd997064c1ac96d3be72d5a6c27ad302b90",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0850347f_bc11de62",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-11-12T20:28:11Z",
+      "side": 1,
+      "message": "+1 to keeping it simple, maybe remove the std::move.",
+      "parentUuid": "3e8214df_5932dd2d",
+      "revId": "bfb11bd997064c1ac96d3be72d5a6c27ad302b90",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
