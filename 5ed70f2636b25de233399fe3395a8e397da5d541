@@ -34,6 +34,24 @@
       "parentUuid": "9153e0d3_e2da3b96",
       "revId": "5ed70f2636b25de233399fe3395a8e397da5d541",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "eb3103a5_14a236a1",
+        "filename": "fs_mgr/fs_mgr_fstab.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 548,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2021-11-12T11:32:20Z",
+      "side": 1,
+      "message": "Done in aosp/1890098",
+      "parentUuid": "fcdbb931_b3aa965a",
+      "revId": "5ed70f2636b25de233399fe3395a8e397da5d541",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
