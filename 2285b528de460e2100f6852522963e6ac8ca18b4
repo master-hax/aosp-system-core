@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1ff6b950_53af6efd",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-11-12T22:36:34Z",
+      "side": 1,
+      "message": "The post_data stuff is now gone, so when rebasing this I reverted back to the original patch. I\u0027m not a big fan of the one-off helpers in Service. If we get more callers and it becomes clear they\u0027d be useful, we can add them then.",
+      "revId": "2285b528de460e2100f6852522963e6ac8ca18b4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
