@@ -128,7 +128,7 @@ void ParseMountFlags(const std::string& flags, FstabEntry* entry) {
             fs_options.append(flag);
 
             if (auto equal_sign = flag.find('='); equal_sign != std::string::npos) {
-                const auto arg = flag.substr(equal_sign + 1);
+                auto arg = flag.substr(equal_sign + 1);
                 if (entry->fs_type == "f2fs" && StartsWith(flag, "reserve_root=")) {
                     off64_t size_in_4k_blocks;
                     if (!ParseInt(arg, &size_in_4k_blocks, static_cast<off64_t>(0),
