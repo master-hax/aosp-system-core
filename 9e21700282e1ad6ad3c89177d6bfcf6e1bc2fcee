@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "be5bddf8_e94c2e0b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1060907
+      },
+      "writtenOn": "2021-11-12T20:58:27Z",
+      "side": 1,
+      "message": "I guess there\u0027s no real point in warning if it\u0027s wrong, is there? Just another ignored warning to clutter up logs :(",
+      "revId": "9e21700282e1ad6ad3c89177d6bfcf6e1bc2fcee",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
