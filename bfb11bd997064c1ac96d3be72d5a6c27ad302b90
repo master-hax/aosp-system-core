@@ -33,6 +33,24 @@
       "message": "tbh, i\u0027m not sure std::move is worth worrying about in code like this... how many mount flags do we have to parse? how many times per boot do we read fstab? what fraction of total boot time is that?\n\ni think move semantics is something even relative experts have trouble with, that\u0027s only really justified in hotspots, and we\u0027re probably better off with the simplest code otherwise...",
       "revId": "bfb11bd997064c1ac96d3be72d5a6c27ad302b90",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4d1ab4bd_2935f5c7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2021-11-12T19:30:33Z",
+      "side": 1,
+      "message": "yeah, just fixing something I see, I can\u0027t unsee this useless move() lying here, especially since I\u0027m the one who added it in the first place.\nFstab is read at least three times. afaict by first and second init and vold. \n\nI really hoped we had a strict_move() or a compiler flag that makes useless move() scream a compilation error.",
+      "parentUuid": "e45230e1_0f633a9f",
+      "revId": "bfb11bd997064c1ac96d3be72d5a6c27ad302b90",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
