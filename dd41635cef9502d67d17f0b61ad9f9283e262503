@@ -16,6 +16,23 @@
       "message": "Thanks, glad to see these go as well.",
       "revId": "dd41635cef9502d67d17f0b61ad9f9283e262503",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a072a1ec_8e20bf94",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1013030
+      },
+      "writtenOn": "2021-11-12T08:10:57Z",
+      "side": 1,
+      "message": "Thanks Eric!",
+      "revId": "dd41635cef9502d67d17f0b61ad9f9283e262503",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
