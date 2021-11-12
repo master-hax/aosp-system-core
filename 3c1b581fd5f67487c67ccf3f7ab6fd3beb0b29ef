@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e7c74b72_af786829",
+        "filename": "fs_mgr/fs_mgr_fstab.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 551,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2021-11-12T13:06:21Z",
+      "side": 1,
+      "message": "this is not const modified so std::move() can work its magic",
+      "range": {
+        "startLine": 551,
+        "startChar": 8,
+        "endLine": 551,
+        "endChar": 12
+      },
+      "revId": "3c1b581fd5f67487c67ccf3f7ab6fd3beb0b29ef",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
