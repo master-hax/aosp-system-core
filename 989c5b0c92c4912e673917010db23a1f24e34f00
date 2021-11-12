@@ -48,6 +48,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "240f9fc0_4e0e6448",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 238,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2021-11-12T20:50:51Z",
+      "side": 1,
+      "message": "I would prefer abort on inconsistent internal state (vs now, we try to restart empty string class). Do we have a fuzzer for these? Might be worth adding.",
+      "parentUuid": "c38af5aa_268732bf",
+      "range": {
+        "startLine": 238,
+        "startChar": 24,
+        "endLine": 238,
+        "endChar": 27
+      },
+      "revId": "989c5b0c92c4912e673917010db23a1f24e34f00",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "38f93025_3dd68043",
@@ -85,6 +109,30 @@
       "side": 1,
       "message": "Ok, though if we ever add more arguments to these, the helper won\u0027t work anymore.",
       "parentUuid": "38f93025_3dd68043",
+      "range": {
+        "startLine": 247,
+        "startChar": 0,
+        "endLine": 250,
+        "endChar": 27
+      },
+      "revId": "989c5b0c92c4912e673917010db23a1f24e34f00",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "01cfb2f0_b1458ef5",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 250,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2021-11-12T20:50:51Z",
+      "side": 1,
+      "message": "`decltype(Restart) ParameterizedRestart(args...);`",
+      "parentUuid": "43e38963_4bd50e88",
       "range": {
         "startLine": 247,
         "startChar": 0,
