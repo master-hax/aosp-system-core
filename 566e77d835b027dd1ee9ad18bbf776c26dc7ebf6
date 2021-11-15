@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "fbaa664f_48defb43",
+        "filename": "fs_mgr/fs_mgr_fstab.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 680,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2021-11-15T06:28:24Z",
+      "side": 1,
+      "message": "Yes",
+      "parentUuid": "3a897d39_84ed08c6",
+      "revId": "566e77d835b027dd1ee9ad18bbf776c26dc7ebf6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "849621a0_39e0e15b",
@@ -31,6 +49,30 @@
       "writtenOn": "2021-11-12T17:48:07Z",
       "side": 1,
       "message": "not a regression, but while you\u0027re here this might be clearer as make_fstab_str()? (at first glance i thought it was a very complicated type :-) )",
+      "range": {
+        "startLine": 22,
+        "startChar": 16,
+        "endLine": 22,
+        "endChar": 25
+      },
+      "revId": "566e77d835b027dd1ee9ad18bbf776c26dc7ebf6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b8693e78_85d3385d",
+        "filename": "fs_mgr/fuzz/fs_mgr_fstab_fuzzer.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2021-11-15T06:28:24Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "849621a0_39e0e15b",
       "range": {
         "startLine": 22,
         "startChar": 16,
