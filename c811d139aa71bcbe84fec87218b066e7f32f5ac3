@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "057d617d_6295e199",
+        "filename": "fs_mgr/fs_mgr_fstab.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 680,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-11-15T23:44:13Z",
+      "side": 1,
+      "message": "how? (i\u0027m genuinely curious; i had no idea that was possible, and i\u0027m still curious to know when/why that happens :-) )",
+      "revId": "c811d139aa71bcbe84fec87218b066e7f32f5ac3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
