@@ -34,6 +34,24 @@
       "parentUuid": "b4799c9e_632ccfe1",
       "revId": "40907cb33a5cab0e9c2c0a365a935337aa0976da",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "20d872c1_559fd124",
+        "filename": "libcutils/ashmem_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 219,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-11-16T17:09:49Z",
+      "side": 1,
+      "message": "if you replied to my \"the ioctl does indeed only return the bottom 32 bits\" comment on chat on friday, it threw it away over the weekend.\n\ni could make the test memfd-only, i suppose.\n\nseparately i\u0027m curious whether we can remove the ashmem code for T... it seems possible, but i might be off by one with my years? any idea who\u0027d know?",
+      "parentUuid": "ec162aa1_2ab5679f",
+      "revId": "40907cb33a5cab0e9c2c0a365a935337aa0976da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
