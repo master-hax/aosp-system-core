@@ -16,6 +16,24 @@
       "message": "how? (i\u0027m genuinely curious; i had no idea that was possible, and i\u0027m still curious to know when/why that happens :-) )",
       "revId": "c811d139aa71bcbe84fec87218b066e7f32f5ac3",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c32c6bff_5411c2b5",
+        "filename": "fs_mgr/fs_mgr_fstab.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 680,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2021-11-16T05:26:58Z",
+      "side": 1,
+      "message": "This is an (optional, I think, because namespaces is optional?) kernel feature (https://man7.org/linux/man-pages/man5/proc.5.html) tied to linux namespaces\n\n\u003e  /proc/mounts\n\u003e              Before kernel 2.4.19, this file was a list of all the\n\u003e              filesystems currently mounted on the system.  With the\n\u003e              introduction of per-process mount namespaces in Linux\n\u003e              2.4.19 (see mount_namespaces(7)), this file became a link\n\u003e              to /proc/self/mounts, which lists the mounts of the\n\u003e              process\u0027s own mount namespace.  The format of this file is\n\u003e              documented in fstab(5).",
+      "parentUuid": "057d617d_6295e199",
+      "revId": "c811d139aa71bcbe84fec87218b066e7f32f5ac3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
