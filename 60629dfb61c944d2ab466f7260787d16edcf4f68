@@ -1,6 +1,23 @@
 {
   "comments": [
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "b891163d_8ed545b4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1608690
+      },
+      "writtenOn": "2021-11-16T04:52:25Z",
+      "side": 1,
+      "message": "Fixed.",
+      "revId": "60629dfb61c944d2ab466f7260787d16edcf4f68",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "53769864_27a40c60",
@@ -14,6 +31,30 @@
       "writtenOn": "2021-11-16T04:37:14Z",
       "side": 1,
       "message": "we seem to have sorted the list here.",
+      "range": {
+        "startLine": 10,
+        "startChar": 0,
+        "endLine": 15,
+        "endChar": 33
+      },
+      "revId": "60629dfb61c944d2ab466f7260787d16edcf4f68",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0bbb6834_729b874f",
+        "filename": "rootdir/init.zygote32.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1608690
+      },
+      "writtenOn": "2021-11-16T04:52:25Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "53769864_27a40c60",
       "range": {
         "startLine": 10,
         "startChar": 0,
