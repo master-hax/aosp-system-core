@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ecb0df3f_108d2af9",
+        "filename": "fs_mgr/fs_mgr_fstab.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 687,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2021-11-17T16:54:53Z",
+      "side": 1,
+      "message": "https://cs.android.com/android/platform/superproject/+/master:packages/modules/Virtualization/microdroid/Android.bp;l\u003d306\n\n\"plain\" fstab file can be a symlink too...",
+      "range": {
+        "startLine": 687,
+        "startChar": 83,
+        "endLine": 687,
+        "endChar": 87
+      },
+      "revId": "97f2fdff68cd647202610f6c973a2f80f7ef1238",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
