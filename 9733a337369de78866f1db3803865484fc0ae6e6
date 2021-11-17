@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fc04f15e_c415e27b",
+        "filename": "libcutils/ashmem-host.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-11-17T22:55:16Z",
+      "side": 1,
+      "message": "ps2 updates these comments. i\u0027ll upload a separate change to see if we actually need this for macOS or not (that just stops building it), and if so we can at least move the host over and get rid of this entire file...",
+      "revId": "9733a337369de78866f1db3803865484fc0ae6e6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
