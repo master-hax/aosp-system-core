@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9cb84f34_1dc63ac6",
+        "filename": "libcutils/drop_caches_test.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1131148
+      },
+      "writtenOn": "2021-11-17T21:28:47Z",
+      "side": 1,
+      "message": "There has to be a better way to do this rather than creating 32,000,000 random characters (or using some slightly larger multi-byte type). Is there a \"create garbage data\" standard?",
+      "range": {
+        "startLine": 42,
+        "startChar": 0,
+        "endLine": 42,
+        "endChar": 43
+      },
+      "revId": "d15349be8e6d1ee63aa79aea2c4967f0bedaed10",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "812e43e5_a9a23446",
+        "filename": "libcutils/drop_caches_test.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 1131148
+      },
+      "writtenOn": "2021-11-17T21:28:47Z",
+      "side": 1,
+      "message": "This doesn\u0027t impact the results at all as of now.",
+      "range": {
+        "startLine": 62,
+        "startChar": 0,
+        "endLine": 62,
+        "endChar": 40
+      },
+      "revId": "d15349be8e6d1ee63aa79aea2c4967f0bedaed10",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bdf6e967_70a9b394",
+        "filename": "libcutils/drop_caches_test.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 1131148
+      },
+      "writtenOn": "2021-11-17T21:28:47Z",
+      "side": 1,
+      "message": "Make ALOGV/D instead of ALOGI or remove from the end result. Same with the ALOGI above.",
+      "range": {
+        "startLine": 96,
+        "startChar": 4,
+        "endLine": 96,
+        "endChar": 9
+      },
+      "revId": "d15349be8e6d1ee63aa79aea2c4967f0bedaed10",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}

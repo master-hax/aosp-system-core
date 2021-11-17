@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5fd450ae_757091d9",
+        "filename": "libcutils/drop_caches_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1131148
+      },
+      "writtenOn": "2021-11-17T21:28:47Z",
+      "side": 1,
+      "message": "Move these to top-level constants that can be used in helper methods.",
+      "range": {
+        "startLine": 29,
+        "startChar": 0,
+        "endLine": 29,
+        "endChar": 31
+      },
+      "revId": "415cfd25c7ff9ffa48d4e23a0c2fbe22b33bda36",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
