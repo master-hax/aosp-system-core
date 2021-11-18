@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "de64700d_bc56dd6d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 17
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-11-18T23:44:29Z",
+      "side": 1,
+      "message": "Uploaded latest patch which terminates daemon when new OTA is being installed.\n\nAlso, the property to toggle userspace snapshots is now read-write instead of read-only as we need it to toggle this for vts tests.",
+      "revId": "71005fa0c6ee354e780fcf458763de7cafa5b4b6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
