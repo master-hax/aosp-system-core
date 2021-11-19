@@ -89,6 +89,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "a40d6783_81dfbd0a",
+        "filename": "fs_mgr/libsnapshot/snapshot_test.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 2569,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-11-19T03:31:38Z",
+      "side": 1,
+      "message": "We do create a service around it now, right? During second-stage init we do some trickery to add it into the service list.",
+      "parentUuid": "6967c6f0_e55c9d55",
+      "revId": "71005fa0c6ee354e780fcf458763de7cafa5b4b6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "e87eff31_9b37349c",
         "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd_daemon.cpp",
         "patchSetId": 17
@@ -118,6 +136,24 @@
       "side": 1,
       "message": "This is primarily needed to for vts tests. If this is a read-only property, then how will vts tests communicate to daemon which type of server to start ?",
       "parentUuid": "e87eff31_9b37349c",
+      "revId": "71005fa0c6ee354e780fcf458763de7cafa5b4b6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c88ec0ed_dfa72d7f",
+        "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd_daemon.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-11-19T03:31:38Z",
+      "side": 1,
+      "message": "I would keep the ro property and add a second mutable one for testing only. That way when we remove the legacy snapuserd code it\u0027s easy to remove the testing flag.\n\nIt\u0027d also be okay to keep this as-is, and have a bug for switching back to the ro one. We just don\u0027t want to, long-term, ship the feature gated on a writable property.",
+      "parentUuid": "6348a28e_8c72eebb",
       "revId": "71005fa0c6ee354e780fcf458763de7cafa5b4b6",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
