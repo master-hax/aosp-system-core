@@ -35,6 +35,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "516c9ad0_2b32f152",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 3189,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-11-19T23:51:12Z",
+      "side": 1,
+      "message": "Ack.",
+      "parentUuid": "0ab4584f_50f6bb71",
+      "revId": "71005fa0c6ee354e780fcf458763de7cafa5b4b6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f73be4fb_5eaa4c8e",
@@ -48,6 +66,24 @@
       "writtenOn": "2021-11-19T01:00:35Z",
       "side": 1,
       "message": "Is the intent to never test userspace snapshots here? If so, using IDeviceInfo would probably be cleaner.",
+      "revId": "71005fa0c6ee354e780fcf458763de7cafa5b4b6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b7c1b3ad_f8af4335",
+        "filename": "fs_mgr/libsnapshot/snapshot_test.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 2564,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-11-19T23:51:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f73be4fb_5eaa4c8e",
       "revId": "71005fa0c6ee354e780fcf458763de7cafa5b4b6",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -105,6 +141,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "49431ccc_ea9e4c37",
+        "filename": "fs_mgr/libsnapshot/snapshot_test.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 2569,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-11-19T23:51:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a40d6783_81dfbd0a",
+      "revId": "71005fa0c6ee354e780fcf458763de7cafa5b4b6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "e87eff31_9b37349c",
@@ -154,6 +208,24 @@
       "side": 1,
       "message": "I would keep the ro property and add a second mutable one for testing only. That way when we remove the legacy snapuserd code it\u0027s easy to remove the testing flag.\n\nIt\u0027d also be okay to keep this as-is, and have a bug for switching back to the ro one. We just don\u0027t want to, long-term, ship the feature gated on a writable property.",
       "parentUuid": "6348a28e_8c72eebb",
+      "revId": "71005fa0c6ee354e780fcf458763de7cafa5b4b6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1ae885d3_80a26292",
+        "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd_daemon.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-11-19T23:51:12Z",
+      "side": 1,
+      "message": "A new mutable property is added to toggle between these tests. Existing property is reverted back to read-only.",
+      "parentUuid": "c88ec0ed_dfa72d7f",
       "revId": "71005fa0c6ee354e780fcf458763de7cafa5b4b6",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
