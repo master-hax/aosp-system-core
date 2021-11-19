@@ -71,6 +71,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "6967c6f0_e55c9d55",
+        "filename": "fs_mgr/libsnapshot/snapshot_test.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 2569,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-11-19T01:30:59Z",
+      "side": 1,
+      "message": "this may not work as snapuserd is not started as init service during first stage boot. This is used to terminate daemon which is spin up duing first stage boot \"snapuserd -no_socket\".",
+      "parentUuid": "eaf69643_ff5ffaa6",
+      "revId": "71005fa0c6ee354e780fcf458763de7cafa5b4b6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "e87eff31_9b37349c",
         "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd_daemon.cpp",
         "patchSetId": 17
