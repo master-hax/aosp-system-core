@@ -16,6 +16,74 @@
       "message": "Uploaded latest patch which terminates daemon when new OTA is being installed.\n\nAlso, the property to toggle userspace snapshots is now read-write instead of read-only as we need it to toggle this for vts tests.",
       "revId": "71005fa0c6ee354e780fcf458763de7cafa5b4b6",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0ab4584f_50f6bb71",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 3189,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-11-19T01:00:35Z",
+      "side": 1,
+      "message": "Do we need to clear the cached client for good measure here?",
+      "revId": "71005fa0c6ee354e780fcf458763de7cafa5b4b6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f73be4fb_5eaa4c8e",
+        "filename": "fs_mgr/libsnapshot/snapshot_test.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 2564,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-11-19T01:00:35Z",
+      "side": 1,
+      "message": "Is the intent to never test userspace snapshots here? If so, using IDeviceInfo would probably be cleaner.",
+      "revId": "71005fa0c6ee354e780fcf458763de7cafa5b4b6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "eaf69643_ff5ffaa6",
+        "filename": "fs_mgr/libsnapshot/snapshot_test.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 2569,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-11-19T01:00:35Z",
+      "side": 1,
+      "message": "The usual way to do this is to SetProperty(\"ctl.stop\", \"snapuserd\")",
+      "revId": "71005fa0c6ee354e780fcf458763de7cafa5b4b6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e87eff31_9b37349c",
+        "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd_daemon.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-11-19T01:00:35Z",
+      "side": 1,
+      "message": "We want this to be a ro. property (which init will refuse to toggle or fiddle with after being initialized). If we want to have testing overrides we can use writable props.",
+      "revId": "71005fa0c6ee354e780fcf458763de7cafa5b4b6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
