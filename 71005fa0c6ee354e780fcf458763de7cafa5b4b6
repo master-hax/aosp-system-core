@@ -84,6 +84,24 @@
       "message": "We want this to be a ro. property (which init will refuse to toggle or fiddle with after being initialized). If we want to have testing overrides we can use writable props.",
       "revId": "71005fa0c6ee354e780fcf458763de7cafa5b4b6",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6348a28e_8c72eebb",
+        "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd_daemon.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-11-19T01:08:03Z",
+      "side": 1,
+      "message": "This is primarily needed to for vts tests. If this is a read-only property, then how will vts tests communicate to daemon which type of server to start ?",
+      "parentUuid": "e87eff31_9b37349c",
+      "revId": "71005fa0c6ee354e780fcf458763de7cafa5b4b6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
