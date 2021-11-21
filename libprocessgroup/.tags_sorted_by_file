@@ -1,0 +1,294 @@
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+ActivateControllers	cgroup_map.cpp	/^int CgroupMap::ActivateControllers(const std::string& path) const {$/;"	f	class:CgroupMap
+CGROUP_PROCS_FILE	cgroup_map.cpp	/^static constexpr const char* CGROUP_PROCS_FILE = "\/cgroup.procs";$/;"	v	file:
+CGROUP_TASKS_FILE	cgroup_map.cpp	/^static constexpr const char* CGROUP_TASKS_FILE = "\/tasks";$/;"	v	file:
+CGROUP_TASKS_FILE_V2	cgroup_map.cpp	/^static constexpr const char* CGROUP_TASKS_FILE_V2 = "\/cgroup.tasks";$/;"	v	file:
+CgroupMap	cgroup_map.cpp	/^CgroupMap::CgroupMap() {$/;"	f	class:CgroupMap
+FindController	cgroup_map.cpp	/^CgroupController CgroupMap::FindController(const std::string& name) const {$/;"	f	class:CgroupMap
+FindControllerByPath	cgroup_map.cpp	/^CgroupController CgroupMap::FindControllerByPath(const std::string& path) const {$/;"	f	class:CgroupMap
+GetInstance	cgroup_map.cpp	/^CgroupMap& CgroupMap::GetInstance() {$/;"	f	class:CgroupMap
+GetProcsFilePath	cgroup_map.cpp	/^std::string CgroupController::GetProcsFilePath(const std::string& rel_path, uid_t uid,$/;"	f	class:CgroupController
+GetTaskGroup	cgroup_map.cpp	/^bool CgroupController::GetTaskGroup(int tid, std::string* group) const {$/;"	f	class:CgroupController
+GetTasksFilePath	cgroup_map.cpp	/^std::string CgroupController::GetTasksFilePath(const std::string& rel_path) const {$/;"	f	class:CgroupController
+HasValue	cgroup_map.cpp	/^bool CgroupController::HasValue() const {$/;"	f	class:CgroupController
+IsUsable	cgroup_map.cpp	/^bool CgroupController::IsUsable() {$/;"	f	class:CgroupController
+LOG_TAG	cgroup_map.cpp	18;"	d	file:
+LoadRcFile	cgroup_map.cpp	/^bool CgroupMap::LoadRcFile() {$/;"	f	class:CgroupMap
+Print	cgroup_map.cpp	/^void CgroupMap::Print() const {$/;"	f	class:CgroupMap
+name	cgroup_map.cpp	/^const char* CgroupController::name() const {$/;"	f	class:CgroupController
+path	cgroup_map.cpp	/^const char* CgroupController::path() const {$/;"	f	class:CgroupController
+version	cgroup_map.cpp	/^uint32_t CgroupController::version() const {$/;"	f	class:CgroupController
+CgroupController	cgroup_map.h	/^    explicit CgroupController(const ACgroupController* controller)$/;"	f	class:CgroupController
+CgroupController	cgroup_map.h	/^class CgroupController {$/;"	c
+CgroupMap	cgroup_map.h	/^class CgroupMap {$/;"	c
+ControllerState	cgroup_map.h	/^    enum ControllerState {$/;"	g	class:CgroupController
+MISSING	cgroup_map.h	/^        MISSING = 2,$/;"	e	enum:CgroupController::ControllerState
+UNKNOWN	cgroup_map.h	/^        UNKNOWN = 0,$/;"	e	enum:CgroupController::ControllerState
+USABLE	cgroup_map.h	/^        USABLE = 1,$/;"	e	enum:CgroupController::ControllerState
+controller_	cgroup_map.h	/^    const ACgroupController* controller_ = nullptr;$/;"	m	class:CgroupController
+loaded_	cgroup_map.h	/^    bool loaded_ = false;$/;"	m	class:CgroupMap
+state_	cgroup_map.h	/^    ControllerState state_;$/;"	m	class:CgroupController
+ACgroupController_getFlags	cgrouprc/cgroup_controller.cpp	/^uint32_t ACgroupController_getFlags(const ACgroupController* controller) {$/;"	f
+ACgroupController_getName	cgrouprc/cgroup_controller.cpp	/^const char* ACgroupController_getName(const ACgroupController* controller) {$/;"	f
+ACgroupController_getPath	cgrouprc/cgroup_controller.cpp	/^const char* ACgroupController_getPath(const ACgroupController* controller) {$/;"	f
+ACgroupController_getVersion	cgrouprc/cgroup_controller.cpp	/^uint32_t ACgroupController_getVersion(const ACgroupController* controller) {$/;"	f
+ACgroupFile_getController	cgrouprc/cgroup_file.cpp	/^const ACgroupController* ACgroupFile_getController(uint32_t index) {$/;"	f
+ACgroupFile_getControllerCount	cgrouprc/cgroup_file.cpp	/^uint32_t ACgroupFile_getControllerCount() {$/;"	f
+ACgroupFile_getVersion	cgrouprc/cgroup_file.cpp	/^uint32_t ACgroupFile_getVersion() {$/;"	f
+GetInstance	cgrouprc/cgroup_file.cpp	/^static CgroupFile* GetInstance() {$/;"	f	file:
+LoadRcFile	cgrouprc/cgroup_file.cpp	/^static CgroupFile* LoadRcFile() {$/;"	f	file:
+ACgroupController	cgrouprc/cgrouprc_internal.h	/^struct ACgroupController : android::cgrouprc::format::CgroupController {};$/;"	s
+ACgroupController	cgrouprc/include/android/cgrouprc.h	/^typedef struct ACgroupController ACgroupController;$/;"	t	typeref:struct:ACgroupController
+CGROUPRC_CONTROLLER_FLAG_MOUNTED	cgrouprc/include/android/cgrouprc.h	70;"	d
+CGROUPRC_CONTROLLER_FLAG_NEEDS_ACTIVATION	cgrouprc/include/android/cgrouprc.h	71;"	d
+CGROUPRC_CONTROLLER_FLAG_OPTIONAL	cgrouprc/include/android/cgrouprc.h	72;"	d
+__INTRODUCED_IN	cgrouprc/include/android/cgrouprc.h	26;"	d
+CgroupController	cgrouprc_format/cgroup_controller.cpp	/^CgroupController::CgroupController() : version_(0), flags_(0) {$/;"	f	class:android::cgrouprc::format::CgroupController
+CgroupController	cgrouprc_format/cgroup_controller.cpp	/^CgroupController::CgroupController(uint32_t version, uint32_t flags, const std::string& name,$/;"	f	class:android::cgrouprc::format::CgroupController
+android	cgrouprc_format/cgroup_controller.cpp	/^namespace android {$/;"	n	file:
+cgrouprc	cgrouprc_format/cgroup_controller.cpp	/^namespace cgrouprc {$/;"	n	namespace:android	file:
+flags	cgrouprc_format/cgroup_controller.cpp	/^uint32_t CgroupController::flags() const {$/;"	f	class:android::cgrouprc::format::CgroupController
+format	cgrouprc_format/cgroup_controller.cpp	/^namespace format {$/;"	n	namespace:android::cgrouprc	file:
+name	cgrouprc_format/cgroup_controller.cpp	/^const char* CgroupController::name() const {$/;"	f	class:android::cgrouprc::format::CgroupController
+path	cgrouprc_format/cgroup_controller.cpp	/^const char* CgroupController::path() const {$/;"	f	class:android::cgrouprc::format::CgroupController
+set_flags	cgrouprc_format/cgroup_controller.cpp	/^void CgroupController::set_flags(uint32_t flags) {$/;"	f	class:android::cgrouprc::format::CgroupController
+version	cgrouprc_format/cgroup_controller.cpp	/^uint32_t CgroupController::version() const {$/;"	f	class:android::cgrouprc::format::CgroupController
+CGROUP_NAME_BUF_SZ	cgrouprc_format/include/processgroup/format/cgroup_controller.h	/^    static constexpr size_t CGROUP_NAME_BUF_SZ = 16;$/;"	m	struct:android::cgrouprc::format::CgroupController
+CGROUP_PATH_BUF_SZ	cgrouprc_format/include/processgroup/format/cgroup_controller.h	/^    static constexpr size_t CGROUP_PATH_BUF_SZ = 32;$/;"	m	struct:android::cgrouprc::format::CgroupController
+CgroupController	cgrouprc_format/include/processgroup/format/cgroup_controller.h	/^struct CgroupController {$/;"	s	namespace:android::cgrouprc::format
+android	cgrouprc_format/include/processgroup/format/cgroup_controller.h	/^namespace android {$/;"	n
+cgrouprc	cgrouprc_format/include/processgroup/format/cgroup_controller.h	/^namespace cgrouprc {$/;"	n	namespace:android
+flags_	cgrouprc_format/include/processgroup/format/cgroup_controller.h	/^    uint32_t flags_;$/;"	m	struct:android::cgrouprc::format::CgroupController
+format	cgrouprc_format/include/processgroup/format/cgroup_controller.h	/^namespace format {$/;"	n	namespace:android::cgrouprc
+name_	cgrouprc_format/include/processgroup/format/cgroup_controller.h	/^    char name_[CGROUP_NAME_BUF_SZ];$/;"	m	struct:android::cgrouprc::format::CgroupController
+path_	cgrouprc_format/include/processgroup/format/cgroup_controller.h	/^    char path_[CGROUP_PATH_BUF_SZ];$/;"	m	struct:android::cgrouprc::format::CgroupController
+version_	cgrouprc_format/include/processgroup/format/cgroup_controller.h	/^    uint32_t version_;$/;"	m	struct:android::cgrouprc::format::CgroupController
+CgroupFile	cgrouprc_format/include/processgroup/format/cgroup_file.h	/^struct CgroupFile {$/;"	s	namespace:android::cgrouprc::format
+FILE_CURR_VERSION	cgrouprc_format/include/processgroup/format/cgroup_file.h	/^    static constexpr uint32_t FILE_CURR_VERSION = FILE_VERSION_1;$/;"	m	struct:android::cgrouprc::format::CgroupFile
+FILE_VERSION_1	cgrouprc_format/include/processgroup/format/cgroup_file.h	/^    static constexpr uint32_t FILE_VERSION_1 = 1;$/;"	m	struct:android::cgrouprc::format::CgroupFile
+android	cgrouprc_format/include/processgroup/format/cgroup_file.h	/^namespace android {$/;"	n
+cgrouprc	cgrouprc_format/include/processgroup/format/cgroup_file.h	/^namespace cgrouprc {$/;"	n	namespace:android
+controller_count_	cgrouprc_format/include/processgroup/format/cgroup_file.h	/^    uint32_t controller_count_;$/;"	m	struct:android::cgrouprc::format::CgroupFile
+controllers_	cgrouprc_format/include/processgroup/format/cgroup_file.h	/^    CgroupController controllers_[];$/;"	m	struct:android::cgrouprc::format::CgroupFile
+format	cgrouprc_format/include/processgroup/format/cgroup_file.h	/^namespace format {$/;"	n	namespace:android::cgrouprc
+version_	cgrouprc_format/include/processgroup/format/cgroup_file.h	/^    uint32_t version_;$/;"	m	struct:android::cgrouprc::format::CgroupFile
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+CGROUPS_RC_PATH	include/processgroup/processgroup.h	/^static constexpr const char* CGROUPS_RC_PATH = "\/dev\/cgroup_info\/cgroup.rc";$/;"	v
+CGROUPV2_CONTROLLER_NAME	include/processgroup/processgroup.h	/^static constexpr const char* CGROUPV2_CONTROLLER_NAME = "cgroup2";$/;"	v
+SP_AUDIO_APP	include/processgroup/sched_policy.h	/^    SP_AUDIO_APP = 3,$/;"	e	enum:__anon1
+SP_AUDIO_SYS	include/processgroup/sched_policy.h	/^    SP_AUDIO_SYS = 4,$/;"	e	enum:__anon1
+SP_BACKGROUND	include/processgroup/sched_policy.h	/^    SP_BACKGROUND = 0,$/;"	e	enum:__anon1
+SP_CNT	include/processgroup/sched_policy.h	/^    SP_CNT,$/;"	e	enum:__anon1
+SP_DEFAULT	include/processgroup/sched_policy.h	/^    SP_DEFAULT = -1,$/;"	e	enum:__anon1
+SP_FOREGROUND	include/processgroup/sched_policy.h	/^    SP_FOREGROUND = 1,$/;"	e	enum:__anon1
+SP_MAX	include/processgroup/sched_policy.h	/^    SP_MAX = SP_CNT - 1,$/;"	e	enum:__anon1
+SP_RESTRICTED	include/processgroup/sched_policy.h	/^    SP_RESTRICTED = 7,$/;"	e	enum:__anon1
+SP_RT_APP	include/processgroup/sched_policy.h	/^    SP_RT_APP = 6,$/;"	e	enum:__anon1
+SP_SYSTEM	include/processgroup/sched_policy.h	/^    SP_SYSTEM = 2,$/;"	e	enum:__anon1
+SP_SYSTEM_DEFAULT	include/processgroup/sched_policy.h	/^    SP_SYSTEM_DEFAULT = SP_FOREGROUND,$/;"	e	enum:__anon1
+SP_TOP_APP	include/processgroup/sched_policy.h	/^    SP_TOP_APP = 5,$/;"	e	enum:__anon1
+SchedPolicy	include/processgroup/sched_policy.h	/^} SchedPolicy;$/;"	t	typeref:enum:__anon1
+CgroupGetAttributePath	processgroup.cpp	/^bool CgroupGetAttributePath(const std::string& attr_name, std::string* path) {$/;"	f
+CgroupGetAttributePathForTask	processgroup.cpp	/^bool CgroupGetAttributePathForTask(const std::string& attr_name, int tid, std::string* path) {$/;"	f
+CgroupGetControllerFromPath	processgroup.cpp	/^bool CgroupGetControllerFromPath(const std::string& path, std::string* cgroup_name) {$/;"	f
+CgroupGetControllerPath	processgroup.cpp	/^bool CgroupGetControllerPath(const std::string& cgroup_name, std::string* path) {$/;"	f
+ConvertUidPidToPath	processgroup.cpp	/^static std::string ConvertUidPidToPath(const char* cgroup, uid_t uid, int pid) {$/;"	f	file:
+ConvertUidToPath	processgroup.cpp	/^static std::string ConvertUidToPath(const char* cgroup, uid_t uid) {$/;"	f	file:
+DoKillProcessGroupOnce	processgroup.cpp	/^static int DoKillProcessGroupOnce(const char* cgroup, uid_t uid, int initialPid, int signal) {$/;"	f	file:
+DropTaskProfilesResourceCaching	processgroup.cpp	/^void DropTaskProfilesResourceCaching() {$/;"	f
+KillProcessGroup	processgroup.cpp	/^static int KillProcessGroup(uid_t uid, int initialPid, int signal, int retries,$/;"	f	file:
+LOG_TAG	processgroup.cpp	18;"	d	file:
+MkdirAndChown	processgroup.cpp	/^static bool MkdirAndChown(const std::string& path, mode_t mode, uid_t uid, gid_t gid) {$/;"	f	file:
+PROCESSGROUP_CGROUP_PROCS_FILE	processgroup.cpp	56;"	d	file:
+RemoveProcessGroup	processgroup.cpp	/^static int RemoveProcessGroup(const char* cgroup, uid_t uid, int pid, unsigned int retries) {$/;"	f	file:
+RemoveUidProcessGroups	processgroup.cpp	/^static bool RemoveUidProcessGroups(const std::string& uid_path) {$/;"	f	file:
+SetProcessGroupValue	processgroup.cpp	/^static bool SetProcessGroupValue(int tid, const std::string& attr_name, int64_t value) {$/;"	f	file:
+SetProcessProfiles	processgroup.cpp	/^bool SetProcessProfiles(uid_t uid, pid_t pid, const std::vector<std::string>& profiles) {$/;"	f
+SetTaskProfiles	processgroup.cpp	/^bool SetTaskProfiles(int tid, const std::vector<std::string>& profiles, bool use_fd_cache) {$/;"	f
+UsePerAppMemcg	processgroup.cpp	/^bool UsePerAppMemcg() {$/;"	f
+createProcessGroup	processgroup.cpp	/^int createProcessGroup(uid_t uid, int initialPid, bool memControl) {$/;"	f
+createProcessGroupInternal	processgroup.cpp	/^static int createProcessGroupInternal(uid_t uid, int initialPid, std::string cgroup,$/;"	f	file:
+getAttributePathForTask	processgroup.cpp	/^bool getAttributePathForTask(const std::string& attr_name, int tid, std::string* path) {$/;"	f
+isMemoryCgroupSupported	processgroup.cpp	/^static bool isMemoryCgroupSupported() {$/;"	f	file:
+killProcessGroup	processgroup.cpp	/^int killProcessGroup(uid_t uid, int initialPid, int signal, int* max_processes) {$/;"	f
+killProcessGroupOnce	processgroup.cpp	/^int killProcessGroupOnce(uid_t uid, int initialPid, int signal, int* max_processes) {$/;"	f
+removeAllProcessGroups	processgroup.cpp	/^void removeAllProcessGroups() {$/;"	f
+setProcessGroupLimit	processgroup.cpp	/^bool setProcessGroupLimit(uid_t, int pid, int64_t limit_in_bytes) {$/;"	f
+setProcessGroupSoftLimit	processgroup.cpp	/^bool setProcessGroupSoftLimit(uid_t, int pid, int64_t soft_limit_in_bytes) {$/;"	f
+setProcessGroupSwappiness	processgroup.cpp	/^bool setProcessGroupSwappiness(uid_t, int pid, int swappiness) {$/;"	f
+CgroupsTest	profiles/cgroups_test.h	/^class CgroupsTest : public jsonpb::JsonSchemaTest {$/;"	c	namespace:android::profiles
+REGEX_MODE	profiles/cgroups_test.h	/^static inline constexpr const char* REGEX_MODE = "(0[0-7]{3})?";$/;"	m	namespace:android::profiles
+TEST_P	profiles/cgroups_test.h	/^TEST_P(CgroupsTest, Cgroup2Mode) {$/;"	f	namespace:android::profiles
+TEST_P	profiles/cgroups_test.h	/^TEST_P(CgroupsTest, Cgroup2RequiredFields) {$/;"	f	namespace:android::profiles
+TEST_P	profiles/cgroups_test.h	/^TEST_P(CgroupsTest, CgroupMode) {$/;"	f	namespace:android::profiles
+TEST_P	profiles/cgroups_test.h	/^TEST_P(CgroupsTest, CgroupRequiredFields) {$/;"	f	namespace:android::profiles
+android	profiles/cgroups_test.h	/^namespace android {$/;"	n
+cgroups_	profiles/cgroups_test.h	/^    Cgroups* cgroups_;$/;"	m	class:android::profiles::CgroupsTest
+profiles	profiles/cgroups_test.h	/^namespace profiles {$/;"	n	namespace:android
+TEST_P	profiles/task_profiles_test.h	/^TEST_P(TaskProfilesTest, AttributeRequiredFields) {$/;"	f	namespace:android::profiles
+TEST_P	profiles/task_profiles_test.h	/^TEST_P(TaskProfilesTest, ProfileRequiredFields) {$/;"	f	namespace:android::profiles
+TaskProfilesTest	profiles/task_profiles_test.h	/^class TaskProfilesTest : public jsonpb::JsonSchemaTest {$/;"	c	namespace:android::profiles
+android	profiles/task_profiles_test.h	/^namespace android {$/;"	n
+profiles	profiles/task_profiles_test.h	/^namespace profiles {$/;"	n	namespace:android
+task_profiles_	profiles/task_profiles_test.h	/^    TaskProfiles* task_profiles_;$/;"	m	class:android::profiles::TaskProfilesTest
+MakeTestParam	profiles/test.cpp	/^JsonSchemaTestConfigFactory MakeTestParam(const std::string& path) {$/;"	f	namespace:android::profiles
+android	profiles/test.cpp	/^namespace android {$/;"	n	file:
+main	profiles/test.cpp	/^int main(int argc, char** argv) {$/;"	f
+profiles	profiles/test.cpp	/^namespace profiles {$/;"	n	namespace:android	file:
+MakeTestParam	profiles/test_vendor.cpp	/^JsonSchemaTestConfigFactory MakeTestParam(const std::string& path) {$/;"	f	namespace:android::profiles
+TestConfig	profiles/test_vendor.cpp	/^    TestConfig(const std::string& path) : file_path_(path){};$/;"	f	class:android::profiles::TestConfig
+TestConfig	profiles/test_vendor.cpp	/^class TestConfig : public JsonSchemaTestConfig {$/;"	c	namespace:android::profiles	file:
+android	profiles/test_vendor.cpp	/^namespace android {$/;"	n	file:
+file_path_	profiles/test_vendor.cpp	/^    std::string file_path_;$/;"	m	class:android::profiles::TestConfig	file:
+kVendorCgroups	profiles/test_vendor.cpp	/^static constexpr const char* kVendorCgroups = "\/vendor\/etc\/cgroups.json";$/;"	m	namespace:android::profiles	file:
+kVendorTaskProfiles	profiles/test_vendor.cpp	/^static constexpr const char* kVendorTaskProfiles = "\/vendor\/etc\/task_profiles.json";$/;"	m	namespace:android::profiles	file:
+main	profiles/test_vendor.cpp	/^int main(int argc, char** argv) {$/;"	f
+profiles	profiles/test_vendor.cpp	/^namespace profiles {$/;"	n	namespace:android	file:
+LOG_TAG	sched_policy.cpp	19;"	d	file:
+_policy	sched_policy.cpp	/^static inline SchedPolicy _policy(SchedPolicy p) {$/;"	f	file:
+cpuctl_enabled	sched_policy.cpp	/^static bool cpuctl_enabled() {$/;"	f	file:
+cpusets_enabled	sched_policy.cpp	/^bool cpusets_enabled() {$/;"	f
+getCGroupSubsys	sched_policy.cpp	/^static int getCGroupSubsys(int tid, const char* subsys, std::string& subgroup) {$/;"	f	file:
+get_cpuset_policy_profile_name	sched_policy.cpp	/^const char* get_cpuset_policy_profile_name(SchedPolicy policy) {$/;"	f
+get_sched_policy	sched_policy.cpp	/^int get_sched_policy(int tid, SchedPolicy* policy) {$/;"	f
+get_sched_policy	sched_policy.cpp	/^int get_sched_policy(int, SchedPolicy* policy) {$/;"	f
+get_sched_policy_name	sched_policy.cpp	/^const char* get_sched_policy_name(SchedPolicy policy) {$/;"	f
+get_sched_policy_profile_name	sched_policy.cpp	/^const char* get_sched_policy_profile_name(SchedPolicy policy) {$/;"	f
+schedboost_enabled	sched_policy.cpp	/^bool schedboost_enabled() {$/;"	f
+schedtune_enabled	sched_policy.cpp	/^static bool schedtune_enabled() {$/;"	f	file:
+set_cpuset_policy	sched_policy.cpp	/^int set_cpuset_policy(int tid, SchedPolicy policy) {$/;"	f
+set_sched_policy	sched_policy.cpp	/^int set_sched_policy(int tid, SchedPolicy policy) {$/;"	f
+set_sched_policy	sched_policy.cpp	/^int set_sched_policy(int, SchedPolicy) {$/;"	f
+CgroupDescriptor	setup/cgroup_descriptor.h	/^class CgroupDescriptor {$/;"	c	namespace:android::cgrouprc
+android	setup/cgroup_descriptor.h	/^namespace android {$/;"	n
+cgrouprc	setup/cgroup_descriptor.h	/^namespace cgrouprc {$/;"	n	namespace:android
+controller	setup/cgroup_descriptor.h	/^    const format::CgroupController* controller() const { return &controller_; }$/;"	f	class:android::cgrouprc::CgroupDescriptor
+controller_	setup/cgroup_descriptor.h	/^    format::CgroupController controller_;$/;"	m	class:android::cgrouprc::CgroupDescriptor
+gid	setup/cgroup_descriptor.h	/^    std::string gid() const { return gid_; }$/;"	f	class:android::cgrouprc::CgroupDescriptor
+gid_	setup/cgroup_descriptor.h	/^    std::string gid_;$/;"	m	class:android::cgrouprc::CgroupDescriptor
+mode	setup/cgroup_descriptor.h	/^    mode_t mode() const { return mode_; }$/;"	f	class:android::cgrouprc::CgroupDescriptor
+mode_	setup/cgroup_descriptor.h	/^    mode_t mode_ = 0;$/;"	m	class:android::cgrouprc::CgroupDescriptor
+uid	setup/cgroup_descriptor.h	/^    std::string uid() const { return uid_; }$/;"	f	class:android::cgrouprc::CgroupDescriptor
+uid_	setup/cgroup_descriptor.h	/^    std::string uid_;$/;"	m	class:android::cgrouprc::CgroupDescriptor
+CGROUPS_DESC_FILE	setup/cgroup_map_write.cpp	/^static constexpr const char* CGROUPS_DESC_FILE = "\/etc\/cgroups.json";$/;"	m	namespace:android::cgrouprc	file:
+CGROUPS_DESC_VENDOR_FILE	setup/cgroup_map_write.cpp	/^static constexpr const char* CGROUPS_DESC_VENDOR_FILE = "\/vendor\/etc\/cgroups.json";$/;"	m	namespace:android::cgrouprc	file:
+CgroupDescriptor	setup/cgroup_map_write.cpp	/^CgroupDescriptor::CgroupDescriptor(uint32_t version, const std::string& name,$/;"	f	class:android::cgrouprc::CgroupDescriptor
+CgroupSetup	setup/cgroup_map_write.cpp	/^bool CgroupSetup() {$/;"	f
+ChangeDirModeAndOwner	setup/cgroup_map_write.cpp	/^static bool ChangeDirModeAndOwner(const std::string& path, mode_t mode, const std::string& uid,$/;"	f	namespace:android::cgrouprc
+LOG_TAG	setup/cgroup_map_write.cpp	18;"	d	file:
+MergeCgroupToDescriptors	setup/cgroup_map_write.cpp	/^static void MergeCgroupToDescriptors(std::map<std::string, CgroupDescriptor>* descriptors,$/;"	f	namespace:android::cgrouprc
+Mkdir	setup/cgroup_map_write.cpp	/^static bool Mkdir(const std::string& path, mode_t mode, const std::string& uid,$/;"	f	namespace:android::cgrouprc
+ReadDescriptors	setup/cgroup_map_write.cpp	/^static bool ReadDescriptors(std::map<std::string, CgroupDescriptor>* descriptors) {$/;"	f	namespace:android::cgrouprc
+ReadDescriptorsFromFile	setup/cgroup_map_write.cpp	/^static bool ReadDescriptorsFromFile(const std::string& file_name,$/;"	f	namespace:android::cgrouprc
+SetupCgroup	setup/cgroup_map_write.cpp	/^static bool SetupCgroup(const CgroupDescriptor& descriptor) {$/;"	f	namespace:android::cgrouprc
+SetupCgroup	setup/cgroup_map_write.cpp	/^static bool SetupCgroup(const CgroupDescriptor&) {$/;"	f	namespace:android::cgrouprc
+TEMPLATE_CGROUPS_DESC_API_FILE	setup/cgroup_map_write.cpp	/^static constexpr const char* TEMPLATE_CGROUPS_DESC_API_FILE = "\/etc\/task_profiles\/cgroups_%u.json";$/;"	m	namespace:android::cgrouprc	file:
+WriteRcFile	setup/cgroup_map_write.cpp	/^static bool WriteRcFile(const std::map<std::string, CgroupDescriptor>& descriptors) {$/;"	f	namespace:android::cgrouprc
+android	setup/cgroup_map_write.cpp	/^namespace android {$/;"	n	file:
+cgrouprc	setup/cgroup_map_write.cpp	/^namespace cgrouprc {$/;"	n	namespace:android	file:
+set_mounted	setup/cgroup_map_write.cpp	/^void CgroupDescriptor::set_mounted(bool mounted) {$/;"	f	class:android::cgrouprc::CgroupDescriptor
+AddTidToCgroup	task_profiles.cpp	/^bool SetCgroupAction::AddTidToCgroup(int tid, int fd, const char* controller_name) {$/;"	f	class:SetCgroupAction
+DropResourceCaching	task_profiles.cpp	/^void ApplyProfileAction::DropResourceCaching() {$/;"	f	class:ApplyProfileAction
+DropResourceCaching	task_profiles.cpp	/^void SetCgroupAction::DropResourceCaching() {$/;"	f	class:SetCgroupAction
+DropResourceCaching	task_profiles.cpp	/^void TaskProfile::DropResourceCaching() {$/;"	f	class:TaskProfile
+DropResourceCaching	task_profiles.cpp	/^void TaskProfiles::DropResourceCaching() const {$/;"	f	class:TaskProfiles
+EnableResourceCaching	task_profiles.cpp	/^void ApplyProfileAction::EnableResourceCaching() {$/;"	f	class:ApplyProfileAction
+EnableResourceCaching	task_profiles.cpp	/^void SetCgroupAction::EnableResourceCaching() {$/;"	f	class:SetCgroupAction
+EnableResourceCaching	task_profiles.cpp	/^void TaskProfile::EnableResourceCaching() {$/;"	f	class:TaskProfile
+EnableResourceCaching	task_profiles.cpp	/^void WriteFileAction::EnableResourceCaching() {$/;"	f	class:WriteFileAction
+ExecuteForProcess	task_profiles.cpp	/^bool ApplyProfileAction::ExecuteForProcess(uid_t uid, pid_t pid) const {$/;"	f	class:ApplyProfileAction
+ExecuteForProcess	task_profiles.cpp	/^bool SetAttributeAction::ExecuteForProcess(uid_t, pid_t pid) const {$/;"	f	class:SetAttributeAction
+ExecuteForProcess	task_profiles.cpp	/^bool SetCgroupAction::ExecuteForProcess(uid_t uid, pid_t pid) const {$/;"	f	class:SetCgroupAction
+ExecuteForProcess	task_profiles.cpp	/^bool SetClampsAction::ExecuteForProcess(uid_t, pid_t) const {$/;"	f	class:SetClampsAction
+ExecuteForProcess	task_profiles.cpp	/^bool TaskProfile::ExecuteForProcess(uid_t uid, pid_t pid) const {$/;"	f	class:TaskProfile
+ExecuteForProcess	task_profiles.cpp	/^bool WriteFileAction::ExecuteForProcess(uid_t uid, pid_t pid) const {$/;"	f	class:WriteFileAction
+ExecuteForTask	task_profiles.cpp	/^bool ApplyProfileAction::ExecuteForTask(int tid) const {$/;"	f	class:ApplyProfileAction
+ExecuteForTask	task_profiles.cpp	/^bool SetAttributeAction::ExecuteForTask(int tid) const {$/;"	f	class:SetAttributeAction
+ExecuteForTask	task_profiles.cpp	/^bool SetCgroupAction::ExecuteForTask(int tid) const {$/;"	f	class:SetCgroupAction
+ExecuteForTask	task_profiles.cpp	/^bool SetClampsAction::ExecuteForTask(int) const {$/;"	f	class:SetClampsAction
+ExecuteForTask	task_profiles.cpp	/^bool SetTimerSlackAction::ExecuteForTask(int tid) const {$/;"	f	class:SetTimerSlackAction
+ExecuteForTask	task_profiles.cpp	/^bool TaskProfile::ExecuteForTask(int tid) const {$/;"	f	class:TaskProfile
+ExecuteForTask	task_profiles.cpp	/^bool WriteFileAction::ExecuteForTask(int tid) const {$/;"	f	class:WriteFileAction
+GetAttribute	task_profiles.cpp	/^const ProfileAttribute* TaskProfiles::GetAttribute(const std::string& name) const {$/;"	f	class:TaskProfiles
+GetInstance	task_profiles.cpp	/^TaskProfiles& TaskProfiles::GetInstance() {$/;"	f	class:TaskProfiles
+GetPathForTask	task_profiles.cpp	/^bool ProfileAttribute::GetPathForTask(int tid, std::string* path) const {$/;"	f	class:ProfileAttribute
+GetProfile	task_profiles.cpp	/^TaskProfile* TaskProfiles::GetProfile(const std::string& name) const {$/;"	f	class:TaskProfiles
+IsAppDependentPath	task_profiles.cpp	/^bool SetCgroupAction::IsAppDependentPath(const std::string& path) {$/;"	f	class:SetCgroupAction
+IsAppDependentPath	task_profiles.cpp	/^bool WriteFileAction::IsAppDependentPath(const std::string& path) {$/;"	f	class:WriteFileAction
+IsTimerSlackSupported	task_profiles.cpp	/^bool SetTimerSlackAction::IsTimerSlackSupported(int tid) {$/;"	f	class:SetTimerSlackAction
+LOG_TAG	task_profiles.cpp	18;"	d	file:
+Load	task_profiles.cpp	/^bool TaskProfiles::Load(const CgroupMap& cg_map, const std::string& file_name) {$/;"	f	class:TaskProfiles
+MoveTo	task_profiles.cpp	/^void TaskProfile::MoveTo(TaskProfile* profile) {$/;"	f	class:TaskProfile
+Reset	task_profiles.cpp	/^void ProfileAttribute::Reset(const CgroupController& controller, const std::string& file_name) {$/;"	f	class:ProfileAttribute
+SetCgroupAction	task_profiles.cpp	/^SetCgroupAction::SetCgroupAction(const CgroupController& c, const std::string& p)$/;"	f	class:SetCgroupAction
+SetProcessProfiles	task_profiles.cpp	/^bool TaskProfiles::SetProcessProfiles(uid_t uid, pid_t pid,$/;"	f	class:TaskProfiles
+SetTaskProfiles	task_profiles.cpp	/^bool TaskProfiles::SetTaskProfiles(int tid, const std::vector<std::string>& profiles,$/;"	f	class:TaskProfiles
+TASK_PROFILE_DB_FILE	task_profiles.cpp	/^static constexpr const char* TASK_PROFILE_DB_FILE = "\/etc\/task_profiles.json";$/;"	v	file:
+TASK_PROFILE_DB_VENDOR_FILE	task_profiles.cpp	/^static constexpr const char* TASK_PROFILE_DB_VENDOR_FILE = "\/vendor\/etc\/task_profiles.json";$/;"	v	file:
+TEMPLATE_TASK_PROFILE_API_FILE	task_profiles.cpp	/^static constexpr const char* TEMPLATE_TASK_PROFILE_API_FILE =$/;"	v	file:
+TaskProfiles	task_profiles.cpp	/^TaskProfiles::TaskProfiles() {$/;"	f	class:TaskProfiles
+WriteFileAction	task_profiles.cpp	/^WriteFileAction::WriteFileAction(const std::string& filepath, const std::string& value,$/;"	f	class:WriteFileAction
+Add	task_profiles.h	/^    void Add(std::unique_ptr<ProfileAction> e) { elements_.push_back(std::move(e)); }$/;"	f	class:TaskProfile
+ApplyProfileAction	task_profiles.h	/^    ApplyProfileAction(const std::vector<std::shared_ptr<TaskProfile>>& profiles)$/;"	f	class:ApplyProfileAction
+ApplyProfileAction	task_profiles.h	/^class ApplyProfileAction : public ProfileAction {$/;"	c
+DropResourceCaching	task_profiles.h	/^    virtual void DropResourceCaching() {}$/;"	f	class:ProfileAction
+EnableResourceCaching	task_profiles.h	/^    virtual void EnableResourceCaching() {}$/;"	f	class:ProfileAction
+ExecuteForProcess	task_profiles.h	/^    virtual bool ExecuteForProcess(uid_t, pid_t) const { return false; };$/;"	f	class:ProfileAction
+ExecuteForTask	task_profiles.h	/^    virtual bool ExecuteForTask(int) const { return false; };$/;"	f	class:ProfileAction
+ExecuteForTask	task_profiles.h	/^    virtual bool ExecuteForTask(int) const { return true; }$/;"	f	class:SetTimerSlackAction
+FDS_APP_DEPENDENT	task_profiles.h	/^        FDS_APP_DEPENDENT = -2,$/;"	e	enum:SetCgroupAction::FdState
+FDS_APP_DEPENDENT	task_profiles.h	/^        FDS_APP_DEPENDENT = -2,$/;"	e	enum:WriteFileAction::FdState
+FDS_INACCESSIBLE	task_profiles.h	/^        FDS_INACCESSIBLE = -1,$/;"	e	enum:SetCgroupAction::FdState
+FDS_INACCESSIBLE	task_profiles.h	/^        FDS_INACCESSIBLE = -1,$/;"	e	enum:WriteFileAction::FdState
+FDS_NOT_CACHED	task_profiles.h	/^        FDS_NOT_CACHED = -3,$/;"	e	enum:SetCgroupAction::FdState
+FDS_NOT_CACHED	task_profiles.h	/^        FDS_NOT_CACHED = -3,$/;"	e	enum:WriteFileAction::FdState
+FdState	task_profiles.h	/^    enum FdState {$/;"	g	class:SetCgroupAction
+FdState	task_profiles.h	/^    enum FdState {$/;"	g	class:WriteFileAction
+IsFdValid	task_profiles.h	/^    bool IsFdValid() const { return fd_ > FDS_INACCESSIBLE; }$/;"	f	class:SetCgroupAction
+IsFdValid	task_profiles.h	/^    bool IsFdValid() const { return fd_ > FDS_INACCESSIBLE; }$/;"	f	class:WriteFileAction
+ProfileAction	task_profiles.h	/^class ProfileAction {$/;"	c
+ProfileAttribute	task_profiles.h	/^    ProfileAttribute(const CgroupController& controller, const std::string& file_name)$/;"	f	class:ProfileAttribute
+ProfileAttribute	task_profiles.h	/^class ProfileAttribute {$/;"	c
+SetAttributeAction	task_profiles.h	/^    SetAttributeAction(const ProfileAttribute* attribute, const std::string& value)$/;"	f	class:SetAttributeAction
+SetAttributeAction	task_profiles.h	/^class SetAttributeAction : public ProfileAction {$/;"	c
+SetCgroupAction	task_profiles.h	/^class SetCgroupAction : public ProfileAction {$/;"	c
+SetClampsAction	task_profiles.h	/^class SetClampsAction : public ProfileAction {$/;"	c
+SetTimerSlackAction	task_profiles.h	/^class SetTimerSlackAction : public ProfileAction {$/;"	c
+TaskProfile	task_profiles.h	/^    TaskProfile() : res_cached_(false) {}$/;"	f	class:TaskProfile
+TaskProfile	task_profiles.h	/^class TaskProfile {$/;"	c
+TaskProfiles	task_profiles.h	/^class TaskProfiles {$/;"	c
+WriteFileAction	task_profiles.h	/^class WriteFileAction : public ProfileAction {$/;"	c
+attribute_	task_profiles.h	/^    const ProfileAttribute* attribute_;$/;"	m	class:SetAttributeAction
+attributes_	task_profiles.h	/^    std::map<std::string, std::unique_ptr<ProfileAttribute>> attributes_;$/;"	m	class:TaskProfiles
+boost_	task_profiles.h	/^    int boost_;$/;"	m	class:SetClampsAction
+clamp_	task_profiles.h	/^    SetClampsAction(int boost, int clamp) noexcept : boost_(boost), clamp_(clamp) {}$/;"	f	class:SetClampsAction
+clamp_	task_profiles.h	/^    int clamp_;$/;"	m	class:SetClampsAction
+controller	task_profiles.h	/^    const CgroupController* controller() const { return &controller_; }$/;"	f	class:ProfileAttribute
+controller	task_profiles.h	/^    const CgroupController* controller() const { return &controller_; }$/;"	f	class:SetCgroupAction
+controller_	task_profiles.h	/^    CgroupController controller_;$/;"	m	class:ProfileAttribute
+controller_	task_profiles.h	/^    CgroupController controller_;$/;"	m	class:SetCgroupAction
+elements_	task_profiles.h	/^    std::vector<std::unique_ptr<ProfileAction>> elements_;$/;"	m	class:TaskProfile
+fd_	task_profiles.h	/^    android::base::unique_fd fd_;$/;"	m	class:SetCgroupAction
+fd_	task_profiles.h	/^    android::base::unique_fd fd_;$/;"	m	class:WriteFileAction
+fd_mutex_	task_profiles.h	/^    mutable std::mutex fd_mutex_;$/;"	m	class:SetCgroupAction
+fd_mutex_	task_profiles.h	/^    mutable std::mutex fd_mutex_;$/;"	m	class:WriteFileAction
+file_name	task_profiles.h	/^    const std::string& file_name() const { return file_name_; }$/;"	f	class:ProfileAttribute
+file_name_	task_profiles.h	/^    std::string file_name_;$/;"	m	class:ProfileAttribute
+filepath_	task_profiles.h	/^    std::string filepath_, value_;$/;"	m	class:WriteFileAction
+logfailures_	task_profiles.h	/^    bool logfailures_;$/;"	m	class:WriteFileAction
+path	task_profiles.h	/^    std::string path() const { return path_; }$/;"	f	class:SetCgroupAction
+path_	task_profiles.h	/^    std::string path_;$/;"	m	class:SetCgroupAction
+profiles_	task_profiles.h	/^    std::map<std::string, std::shared_ptr<TaskProfile>> profiles_;$/;"	m	class:TaskProfiles
+profiles_	task_profiles.h	/^    std::vector<std::shared_ptr<TaskProfile>> profiles_;$/;"	m	class:ApplyProfileAction
+res_cached_	task_profiles.h	/^    bool res_cached_;$/;"	m	class:TaskProfile
+slack_	task_profiles.h	/^    SetTimerSlackAction(unsigned long slack) noexcept : slack_(slack) {}$/;"	f	class:SetTimerSlackAction
+slack_	task_profiles.h	/^    unsigned long slack_;$/;"	m	class:SetTimerSlackAction
+value_	task_profiles.h	/^    std::string filepath_, value_;$/;"	m	class:WriteFileAction
+value_	task_profiles.h	/^    std::string value_;$/;"	m	class:SetAttributeAction
+~ProfileAction	task_profiles.h	/^    virtual ~ProfileAction() {}$/;"	f	class:ProfileAction
+main	tools/settaskprofile.cpp	/^int main(int argc, char* argv[]) {$/;"	f
+usage	tools/settaskprofile.cpp	/^[[noreturn]] static void usage(int exit_status) {$/;"	f	file:
