@@ -108,49 +108,56 @@ class SetAttributeAction : public ProfileAction {
     std::string value_;
 };
 
-// Set cgroup profile element
-class SetCgroupAction : public ProfileAction {
+// Abstract profile element for cached fd
+class CachedFdProfileAction : public ProfileAction {
   public:
-    SetCgroupAction(const CgroupController& c, const std::string& p);
-
-    virtual bool ExecuteForProcess(uid_t uid, pid_t pid) const;
-    virtual bool ExecuteForTask(int tid) const;
     virtual void EnableResourceCaching();
     virtual void DropResourceCaching();
 
-    const CgroupController* controller() const { return &controller_; }
-    std::string path() const { return path_; }
-
-  private:
+  protected:
     enum FdState {
         FDS_INACCESSIBLE = -1,
         FDS_APP_DEPENDENT = -2,
         FDS_NOT_CACHED = -3,
     };
 
-    CgroupController controller_;
-    std::string path_;
     android::base::unique_fd fd_;
     mutable std::mutex fd_mutex_;
+    std::string tasks_path;
 
     static bool IsAppDependentPath(const std::string& path);
-    static bool AddTidToCgroup(int tid, int fd, const char* controller_name);
 
+    void init_fd(const std::string& path);
     bool IsFdValid() const { return fd_ > FDS_INACCESSIBLE; }
 };
 
-// Write to file action
-class WriteFileAction : public ProfileAction {
+// Set cgroup profile element
+class SetCgroupAction : public CachedFdProfileAction {
   public:
-    WriteFileAction(const std::string& filepath, const std::string& value,
-                    bool logfailures) noexcept
-        : filepath_(filepath), value_(value), logfailures_(logfailures) {}
+    SetCgroupAction(const CgroupController& c, const std::string& p);
+
+    virtual bool ExecuteForProcess(uid_t uid, pid_t pid) const;
+    virtual bool ExecuteForTask(int tid) const;
+
+    const CgroupController* controller() const { return &controller_; }
+
+  private:
+    CgroupController controller_;
+    std::string path_;
+
+    static bool AddTidToCgroup(int tid, int fd, const char* controller_name);
+};
+
+// Write to file action
+class WriteFileAction : public CachedFdProfileAction {
+  public:
+    WriteFileAction(const std::string& path, const std::string& value, bool logfailures);
 
     virtual bool ExecuteForProcess(uid_t uid, pid_t pid) const;
     virtual bool ExecuteForTask(int tid) const;
 
   private:
-    std::string filepath_, value_;
+    std::string path_, value_;
     bool logfailures_;
 };
 
