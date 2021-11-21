@@ -281,15 +281,73 @@ bool SetCgroupAction::ExecuteForTask(int tid) const {
     return true;
 }
 
-bool WriteFileAction::ExecuteForProcess(uid_t uid, pid_t pid) const {
-    std::string filepath(filepath_), value(value_);
+bool WriteFileAction::IsAppDependentPath(const std::string& path) {
+    return path.find("<uid>", 0) != std::string::npos || path.find("<pid>", 0) != std::string::npos;
+}
 
-    filepath = StringReplace(filepath, "<uid>", std::to_string(uid), true);
-    filepath = StringReplace(filepath, "<pid>", std::to_string(pid), true);
+WriteFileAction::WriteFileAction(const std::string& filepath, const std::string& value,
+                                 bool logfailures)
+    : filepath_(filepath), value_(value), logfailures_(logfailures) {
+    // file descriptors for app-dependent paths can't be cached
+    if (IsAppDependentPath(filepath_)) {
+        // file descriptor is not cached
+        fd_.reset(FDS_APP_DEPENDENT);
+        return;
+    }
+
+    // file descriptor can be cached later on request
+    fd_.reset(FDS_NOT_CACHED);
+}
+
+void WriteFileAction::EnableResourceCaching() {
+    std::lock_guard<std::mutex> lock(fd_mutex_);
+    if (fd_ != FDS_NOT_CACHED) {
+        return;
+    }
+
+    if (access(filepath_.c_str(), W_OK) != 0) {
+        // file is not accessible
+        fd_.reset(FDS_INACCESSIBLE);
+        return;
+    }
+
+    unique_fd fd(TEMP_FAILURE_RETRY(open(filepath_.c_str(), O_WRONLY | O_CLOEXEC)));
+    if (fd < 0) {
+        PLOG(ERROR) << "Failed to cache fd '" << filepath_ << "'";
+        fd_.reset(FDS_INACCESSIBLE);
+        return;
+    }
+
+    fd_ = std::move(fd);
+}
+
+bool WriteFileAction::ExecuteForProcess(uid_t uid, pid_t pid) const {
+    std::lock_guard<std::mutex> lock(fd_mutex_);
+    std::string value(value_);
     value = StringReplace(value, "<uid>", std::to_string(uid), true);
     value = StringReplace(value, "<pid>", std::to_string(pid), true);
 
-    if (!WriteStringToFile(value, filepath)) {
+    if (IsFdValid()) {
+        // fd is cached, reuse it
+        if (!WriteStringToFd(value, fd_)) {
+            if (logfailures_) PLOG(ERROR) << "Failed to write '" << value << "' to " << filepath_;
+            return false;
+        }
+        return true;
+    }
+
+    std::string filepath(filepath_);
+    filepath = StringReplace(filepath, "<uid>", std::to_string(uid), true);
+    filepath = StringReplace(filepath, "<pid>", std::to_string(pid), true);
+
+    unique_fd tmp_fd(TEMP_FAILURE_RETRY(open(filepath.c_str(), O_WRONLY | O_CLOEXEC)));
+
+    if (tmp_fd < 0) {
+        PLOG(WARNING) << "Failed to open " << filepath << ": " << strerror(errno);
+        return false;
+    }
+
+    if (!WriteStringToFd(value, tmp_fd)) {
         if (logfailures_) PLOG(ERROR) << "Failed to write '" << value << "' to " << filepath;
         return false;
     }
@@ -298,15 +356,30 @@ bool WriteFileAction::ExecuteForProcess(uid_t uid, pid_t pid) const {
 }
 
 bool WriteFileAction::ExecuteForTask(int tid) const {
-    std::string filepath(filepath_), value(value_);
-    int uid = getuid();
-
-    filepath = StringReplace(filepath, "<uid>", std::to_string(uid), true);
-    filepath = StringReplace(filepath, "<pid>", std::to_string(tid), true);
-    value = StringReplace(value, "<uid>", std::to_string(uid), true);
+    std::lock_guard<std::mutex> lock(fd_mutex_);
+    std::string value(value_);
     value = StringReplace(value, "<pid>", std::to_string(tid), true);
 
-    if (!WriteStringToFile(value, filepath)) {
+    if (IsFdValid()) {
+        // fd is cached, reuse it
+        if (!WriteStringToFd(value, fd_)) {
+            if (logfailures_) PLOG(ERROR) << "Failed to write '" << value << "' to " << filepath_;
+            return false;
+        }
+        return true;
+    }
+
+    std::string filepath(filepath_);
+    filepath = StringReplace(filepath, "<pid>", std::to_string(tid), true);
+
+    unique_fd tmp_fd(TEMP_FAILURE_RETRY(open(filepath.c_str(), O_WRONLY | O_CLOEXEC)));
+
+    if (tmp_fd < 0) {
+        PLOG(WARNING) << "Failed to open " << filepath << ": " << strerror(errno);
+        return false;
+    }
+
+    if (!WriteStringToFd(value, tmp_fd)) {
         if (logfailures_) PLOG(ERROR) << "Failed to write '" << value << "' to " << filepath;
         return false;
     }

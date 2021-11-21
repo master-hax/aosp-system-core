@@ -142,16 +142,27 @@ class SetCgroupAction : public ProfileAction {
 // Write to file action
 class WriteFileAction : public ProfileAction {
   public:
-    WriteFileAction(const std::string& filepath, const std::string& value,
-                    bool logfailures) noexcept
-        : filepath_(filepath), value_(value), logfailures_(logfailures) {}
+    WriteFileAction(const std::string& filepath, const std::string& value, bool logfailures);
 
     virtual bool ExecuteForProcess(uid_t uid, pid_t pid) const;
     virtual bool ExecuteForTask(int tid) const;
+    virtual void EnableResourceCaching();
 
   private:
+    enum FdState {
+        FDS_INACCESSIBLE = -1,
+        FDS_APP_DEPENDENT = -2,
+        FDS_NOT_CACHED = -3,
+    };
+
     std::string filepath_, value_;
+    android::base::unique_fd fd_;
+    mutable std::mutex fd_mutex_;
     bool logfailures_;
+
+    static bool IsAppDependentPath(const std::string& path);
+
+    bool IsFdValid() const { return fd_ > FDS_INACCESSIBLE; }
 };
 
 class TaskProfile {
