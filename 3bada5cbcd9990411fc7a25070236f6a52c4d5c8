@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c7b066e3_5cd510a9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1054468
+      },
+      "writtenOn": "2021-11-22T20:43:12Z",
+      "side": 1,
+      "message": "Fixes (on same-topic change):\n\nerror: system/security/fsverity_init/Android.bp:28:1: dependency \"libmini_keyctl_static\" of \"libfsverity_init\" missing variant:\n  os:android,image:recovery,arch:arm64_armv8-a,sdk:,link:static",
+      "revId": "3bada5cbcd9990411fc7a25070236f6a52c4d5c8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
