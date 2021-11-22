@@ -34,6 +34,24 @@
       "parentUuid": "338efdbd_4afd2f94",
       "revId": "b77377e62f21f77983fa14c210487bd8794181ca",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b99c3ff4_273c9fa6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1146974
+      },
+      "writtenOn": "2021-11-22T08:50:16Z",
+      "side": 1,
+      "message": "The rule is that system section (and system apexes) loads sphals from the \u0027sphal\u0027 namespace;\nvendor section loads sphals from the \u0027default\u0027 namespace; and\nvendor apexes load sphals from the \u0027vendor\u0027 namespace.\n\nWith this, vendor section must not defined neither \u0027sphal\u0027 nor \u0027vendor\u0027 namespace; and\nvendor apexes must not defined \u0027sphal\u0027 namespace (this must be the problem that we wanted to avoid.)\n\nI don\u0027t know what restrictions \u0027the other sections\u0027 may have. Should we block using either \u0027sphal\u0027 or \u0027vendor\u0027 namespace? I think we don\u0027t need to care about this case.",
+      "parentUuid": "6f23e199_3848300c",
+      "revId": "b77377e62f21f77983fa14c210487bd8794181ca",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
