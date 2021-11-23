@@ -99,7 +99,7 @@ cc_defaults {
 
             shared_libs: [
                 "libprocessgroup",
-                "libdl",
+                // "libdl", // TODO(cparsons): This shouldn't be necessary, as it's included in system_shared_libs.
                 "libvndksupport",
             ],
 
