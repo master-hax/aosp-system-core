@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cf2bdbed_3f7ec83e",
+        "filename": "mini_keyctl/OWNERS",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1060831
+      },
+      "writtenOn": "2021-11-23T11:10:03Z",
+      "side": 1,
+      "message": "Could this be an include of a canonical list somewhere, say the fsverity one, to avoid duplication?",
+      "revId": "358f09476af85ae1f6615b6a54714ac05fa0009d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
