@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "dd1b9157_6e4df639",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-11-23T20:56:44Z",
+      "side": 1,
+      "message": "Large parts of this code is a copy from SetCgroupAction members. Can this code be reused instead?",
+      "revId": "fd3146e730e4a7836f6b4aa9bae57b85d976e72f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
