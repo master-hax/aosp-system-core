@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "877ca067_0b6eefdc",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 195,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-11-24T19:01:28Z",
+      "side": 1,
+      "message": "This code is used in both SetCgroupAction and WriteFileAction. Let\u0027s move it too into CachedFdProfileAction like this:\n\nvoid CachedFdProfileAction::init_fd(const string\u0026 path)\n{\n    // file descriptors for app-dependent paths can\u0027t be cached\n    if (IsAppDependentPath(path)) {\n        // file descriptor is not cached\n        fd_.reset(FDS_APP_DEPENDENT);\n        return;\n    }\n\n    // file descriptor can be cached later on request\n    fd_.reset(FDS_NOT_CACHED);\n}",
+      "range": {
+        "startLine": 186,
+        "startChar": 0,
+        "endLine": 195,
+        "endChar": 0
+      },
+      "revId": "355066a420144b5500f142f9b75c2667b67bc4b2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2637e501_16eb4548",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 337,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-11-24T19:01:28Z",
+      "side": 1,
+      "message": "why no \u003cuid\u003e replacement?",
+      "range": {
+        "startLine": 337,
+        "startChar": 4,
+        "endLine": 337,
+        "endChar": 69
+      },
+      "revId": "355066a420144b5500f142f9b75c2667b67bc4b2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0ef1552b_b052da83",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 349,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-11-24T19:01:28Z",
+      "side": 1,
+      "message": "ditto",
+      "range": {
+        "startLine": 349,
+        "startChar": 4,
+        "endLine": 349,
+        "endChar": 67
+      },
+      "revId": "355066a420144b5500f142f9b75c2667b67bc4b2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "202cfa9f_b5c5b28e",
+        "filename": "libprocessgroup/task_profiles.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 126,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-11-24T19:01:28Z",
+      "side": 1,
+      "message": "This member does not really belong in this class. I suggest instead:\n\nabstract class CachedFdProfileAction : public ProfileAction {\n...\nprotected:\n    abstract const char* GetPath();\n};\n\nclass SetCgroupAction : public CachedFdProfileAction {\nprotected:\n    override const char* GetPath() { return controller_.GetTasksFilePath(path_); }\n};\n\nclass WriteFileAction : public CachedFdProfileAction {\nprotected:\n    override const char* GetPath() { return path_; }\n};",
+      "range": {
+        "startLine": 126,
+        "startChar": 4,
+        "endLine": 126,
+        "endChar": 27
+      },
+      "revId": "355066a420144b5500f142f9b75c2667b67bc4b2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
