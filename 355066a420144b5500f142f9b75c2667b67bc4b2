@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "d6b62091_2d63a27b",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 195,
+      "author": {
+        "id": 1324603
+      },
+      "writtenOn": "2021-11-25T04:14:23Z",
+      "side": 1,
+      "message": "Done. Thanks for the suggestion!",
+      "parentUuid": "877ca067_0b6eefdc",
+      "range": {
+        "startLine": 186,
+        "startChar": 0,
+        "endLine": 195,
+        "endChar": 0
+      },
+      "revId": "355066a420144b5500f142f9b75c2667b67bc4b2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "2637e501_16eb4548",
@@ -37,6 +61,30 @@
       "writtenOn": "2021-11-24T19:01:28Z",
       "side": 1,
       "message": "why no \u003cuid\u003e replacement?",
+      "range": {
+        "startLine": 337,
+        "startChar": 4,
+        "endLine": 337,
+        "endChar": 69
+      },
+      "revId": "355066a420144b5500f142f9b75c2667b67bc4b2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "aa5de79c_5c2619e5",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 337,
+      "author": {
+        "id": 1324603
+      },
+      "writtenOn": "2021-11-25T04:14:23Z",
+      "side": 1,
+      "message": "I was thinking uid may not be used for ExecuteForTask case, but added it back just in case. Thanks.",
+      "parentUuid": "2637e501_16eb4548",
       "range": {
         "startLine": 337,
         "startChar": 4,
@@ -70,6 +118,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "e0731100_fbf204f7",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 349,
+      "author": {
+        "id": 1324603
+      },
+      "writtenOn": "2021-11-25T04:14:23Z",
+      "side": 1,
+      "message": "Replied above.",
+      "parentUuid": "0ef1552b_b052da83",
+      "range": {
+        "startLine": 349,
+        "startChar": 4,
+        "endLine": 349,
+        "endChar": 67
+      },
+      "revId": "355066a420144b5500f142f9b75c2667b67bc4b2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "202cfa9f_b5c5b28e",
@@ -83,6 +155,30 @@
       "writtenOn": "2021-11-24T19:01:28Z",
       "side": 1,
       "message": "This member does not really belong in this class. I suggest instead:\n\nabstract class CachedFdProfileAction : public ProfileAction {\n...\nprotected:\n    abstract const char* GetPath();\n};\n\nclass SetCgroupAction : public CachedFdProfileAction {\nprotected:\n    override const char* GetPath() { return controller_.GetTasksFilePath(path_); }\n};\n\nclass WriteFileAction : public CachedFdProfileAction {\nprotected:\n    override const char* GetPath() { return path_; }\n};",
+      "range": {
+        "startLine": 126,
+        "startChar": 4,
+        "endLine": 126,
+        "endChar": 27
+      },
+      "revId": "355066a420144b5500f142f9b75c2667b67bc4b2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d8bc7d4f_795fd226",
+        "filename": "libprocessgroup/task_profiles.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 126,
+      "author": {
+        "id": 1324603
+      },
+      "writtenOn": "2021-11-25T04:14:23Z",
+      "side": 1,
+      "message": "Done. Thanks for the suggestion! Just I suppose abstract keyword is for Java :)",
+      "parentUuid": "202cfa9f_b5c5b28e",
       "range": {
         "startLine": 126,
         "startChar": 4,
