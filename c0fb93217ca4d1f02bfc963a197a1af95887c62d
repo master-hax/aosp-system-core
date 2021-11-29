@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "10817852_75318d39",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1605027
+      },
+      "writtenOn": "2021-11-29T22:40:16Z",
+      "side": 1,
+      "message": "Friendly ping. This blocks some work on Bazel.",
+      "revId": "c0fb93217ca4d1f02bfc963a197a1af95887c62d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
