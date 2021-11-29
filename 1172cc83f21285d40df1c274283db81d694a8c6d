@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "21158b23_d346b321",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 312,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-11-29T17:54:04Z",
+      "side": 1,
+      "message": "this is definitely worth a code comment since it\u0027s \"obviously\" wrong and begging to be simplified by replacing all this boilerplate with a single-line call to WriteStringToFile() :-)",
+      "revId": "1172cc83f21285d40df1c274283db81d694a8c6d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e98f1f28_e0517f0d",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 315,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-11-29T17:54:04Z",
+      "side": 1,
+      "message": "PLOG already includes strerror(errno).",
+      "revId": "1172cc83f21285d40df1c274283db81d694a8c6d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "20b04913_7fd8845e",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 351,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-11-29T17:54:04Z",
+      "side": 1,
+      "message": "two copies of the same code? seems like this could usefully be factored out? (that might be a good place to put the missing code comment explaining the motivation for this.)\n\n\n(isn\u0027t this entire function just `return ExecuteForProcess(getuid(), tid);`? if not, it\u0027s probably worth making the differences clearer...)",
+      "revId": "1172cc83f21285d40df1c274283db81d694a8c6d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
