@@ -43,6 +43,7 @@ cc_library_shared {
         "//apex_available:platform",
         "com.android.tethering",
     ],
+    min_sdk_version: "30",
 }
 
 cc_library_static {
