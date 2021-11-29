@@ -16,6 +16,23 @@
       "message": "Friendly ping. This blocks some work on Bazel.",
       "revId": "c0fb93217ca4d1f02bfc963a197a1af95887c62d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cbb38549_91a12f9e",
+        "filename": "libutils/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 102,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-11-29T22:41:18Z",
+      "side": 1,
+      "message": "delete it rather than comment it out :-)",
+      "revId": "c0fb93217ca4d1f02bfc963a197a1af95887c62d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
