@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "51951f0a_9b48e8be",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 312,
+      "author": {
+        "id": 1324603
+      },
+      "writtenOn": "2021-11-30T13:31:38Z",
+      "side": 1,
+      "message": "Comment added. Thanks.",
+      "parentUuid": "21158b23_d346b321",
+      "revId": "1172cc83f21285d40df1c274283db81d694a8c6d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "e98f1f28_e0517f0d",
@@ -35,6 +53,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "e4fe0635_d16a2ef9",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 315,
+      "author": {
+        "id": 1324603
+      },
+      "writtenOn": "2021-11-30T13:31:38Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e98f1f28_e0517f0d",
+      "revId": "1172cc83f21285d40df1c274283db81d694a8c6d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "20b04913_7fd8845e",
@@ -48,6 +84,24 @@
       "writtenOn": "2021-11-29T17:54:04Z",
       "side": 1,
       "message": "two copies of the same code? seems like this could usefully be factored out? (that might be a good place to put the missing code comment explaining the motivation for this.)\n\n\n(isn\u0027t this entire function just `return ExecuteForProcess(getuid(), tid);`? if not, it\u0027s probably worth making the differences clearer...)",
+      "revId": "1172cc83f21285d40df1c274283db81d694a8c6d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5d146a1b_f50bf337",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 351,
+      "author": {
+        "id": 1324603
+      },
+      "writtenOn": "2021-11-30T13:31:38Z",
+      "side": 1,
+      "message": "Thanks for pointing this out. After checking it again, these 2 functions should have different implementation. I have made the modification.",
+      "parentUuid": "20b04913_7fd8845e",
       "revId": "1172cc83f21285d40df1c274283db81d694a8c6d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -77,6 +131,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "da295eb2_2b98a345",
+        "filename": "libprocessgroup/task_profiles.h",
+        "patchSetId": 6
+      },
+      "lineNbr": 150,
+      "author": {
+        "id": 1324603
+      },
+      "writtenOn": "2021-11-30T13:31:38Z",
+      "side": 1,
+      "message": "Actually I put path in CachedFdProfileAction in earlier patch, but Suren suggests to move it to its derived class...",
+      "parentUuid": "130b2136_3c8c2342",
+      "range": {
+        "startLine": 150,
+        "startChar": 4,
+        "endLine": 150,
+        "endChar": 22
+      },
+      "revId": "1172cc83f21285d40df1c274283db81d694a8c6d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "0c55896d_aaf952cb",
         "filename": "libprocessgroup/task_profiles.h",
         "patchSetId": 6
@@ -88,6 +166,30 @@
       "writtenOn": "2021-11-29T18:03:32Z",
       "side": 1,
       "message": "ProfileAction already has value_",
+      "range": {
+        "startLine": 167,
+        "startChar": 23,
+        "endLine": 167,
+        "endChar": 29
+      },
+      "revId": "1172cc83f21285d40df1c274283db81d694a8c6d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "21849330_212bd3f3",
+        "filename": "libprocessgroup/task_profiles.h",
+        "patchSetId": 6
+      },
+      "lineNbr": 167,
+      "author": {
+        "id": 1324603
+      },
+      "writtenOn": "2021-11-30T13:31:38Z",
+      "side": 1,
+      "message": "I didn\u0027t see value_ in ProfileAction, do you mean elsewhere?",
+      "parentUuid": "0c55896d_aaf952cb",
       "range": {
         "startLine": 167,
         "startChar": 23,
