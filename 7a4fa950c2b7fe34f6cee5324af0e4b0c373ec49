@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "492a979c_c067f84b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-11-30T01:57:25Z",
+      "side": 1,
+      "message": "should this library move to system/netd?",
+      "revId": "7a4fa950c2b7fe34f6cee5324af0e4b0c373ec49",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
