@@ -198,6 +198,30 @@
       },
       "revId": "1172cc83f21285d40df1c274283db81d694a8c6d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ca6b6f64_7275c861",
+        "filename": "libprocessgroup/task_profiles.h",
+        "patchSetId": 6
+      },
+      "lineNbr": 167,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2021-11-30T17:12:49Z",
+      "side": 1,
+      "message": "yeah, gerrit rolled things up.",
+      "parentUuid": "21849330_212bd3f3",
+      "range": {
+        "startLine": 167,
+        "startChar": 23,
+        "endLine": 167,
+        "endChar": 29
+      },
+      "revId": "1172cc83f21285d40df1c274283db81d694a8c6d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
