@@ -16,6 +16,24 @@
       "message": "Ping?",
       "revId": "6d74716d62d7150f226400737916c4883c723b3d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "17bae8bd_942614ba",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-12-01T21:24:59Z",
+      "side": 1,
+      "message": "can we make these inherit rather than hard-code 30?",
+      "parentUuid": "1c0b00cd_8385d9d1",
+      "revId": "6d74716d62d7150f226400737916c4883c723b3d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
