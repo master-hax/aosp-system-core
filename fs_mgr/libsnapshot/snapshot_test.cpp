@@ -548,7 +548,11 @@ TEST_F(SnapshotTest, Merge) {
     // The device should have been switched to a snapshot-merge target.
     DeviceMapper::TargetInfo target;
     ASSERT_TRUE(sm->IsSnapshotDevice("test_partition_b", &target));
+#ifdef USERSPACE_MERGES
+    ASSERT_EQ(DeviceMapper::GetTargetType(target.spec), "user");
+#else
     ASSERT_EQ(DeviceMapper::GetTargetType(target.spec), "snapshot-merge");
+#endif
 
     // We should not be able to cancel an update now.
     ASSERT_FALSE(sm->CancelUpdate());
@@ -596,7 +600,11 @@ TEST_F(SnapshotTest, FirstStageMountAndMerge) {
 
     DeviceMapper::TargetInfo target;
     ASSERT_TRUE(init->IsSnapshotDevice("test_partition_b", &target));
+#ifdef USERSPACE_MERGES
+    ASSERT_EQ(DeviceMapper::GetTargetType(target.spec), "user");
+#else
     ASSERT_EQ(DeviceMapper::GetTargetType(target.spec), "snapshot");
+#endif
 }
 
 TEST_F(SnapshotTest, FlashSuperDuringUpdate) {
@@ -1320,11 +1328,20 @@ TEST_F(SnapshotUpdateTest, SpaceSwapUpdate) {
     // Check that we used the correct types after rebooting mid-merge.
     DeviceMapper::TargetInfo target;
     ASSERT_TRUE(init->IsSnapshotDevice("prd_b", &target));
+
+#ifdef USERSPACE_MERGES
+    ASSERT_EQ(DeviceMapper::GetTargetType(target.spec), "user");
+    ASSERT_TRUE(init->IsSnapshotDevice("sys_b", &target));
+    ASSERT_EQ(DeviceMapper::GetTargetType(target.spec), "user");
+    ASSERT_TRUE(init->IsSnapshotDevice("vnd_b", &target));
+    ASSERT_EQ(DeviceMapper::GetTargetType(target.spec), "user");
+#else
     ASSERT_EQ(DeviceMapper::GetTargetType(target.spec), "snapshot-merge");
     ASSERT_TRUE(init->IsSnapshotDevice("sys_b", &target));
     ASSERT_EQ(DeviceMapper::GetTargetType(target.spec), "snapshot");
     ASSERT_TRUE(init->IsSnapshotDevice("vnd_b", &target));
     ASSERT_EQ(DeviceMapper::GetTargetType(target.spec), "snapshot");
+#endif
 
     // Complete the merge.
     ASSERT_EQ(UpdateState::MergeCompleted, init->ProcessUpdateState());
@@ -1802,6 +1819,8 @@ TEST_F(SnapshotUpdateTest, MergeInFastboot) {
 
     ASSERT_TRUE(new_sm->FinishMergeInRecovery());
 
+    ASSERT_TRUE(UnmapAll());
+
     auto mount = new_sm->EnsureMetadataMounted();
     ASSERT_TRUE(mount && mount->HasDevice());
     ASSERT_EQ(new_sm->ProcessUpdateState(), UpdateState::MergeCompleted);
@@ -1894,6 +1913,8 @@ TEST_F(SnapshotUpdateTest, DataWipeRequiredInPackage) {
     ASSERT_FALSE(test_device->IsSlotUnbootable(1));
     ASSERT_FALSE(test_device->IsSlotUnbootable(0));
 
+    ASSERT_TRUE(UnmapAll());
+
     // Now reboot into new slot.
     test_device = new TestDeviceInfo(fake_super, "_b");
     auto init = NewManagerForFirstStageMount(test_device);
@@ -1954,6 +1975,8 @@ TEST_F(SnapshotUpdateTest, DataWipeWithStaleSnapshots) {
     EXPECT_EQ(new_sm->GetUpdateState(), UpdateState::None);
     ASSERT_FALSE(test_device->IsSlotUnbootable(1));
     ASSERT_FALSE(test_device->IsSlotUnbootable(0));
+
+    ASSERT_TRUE(UnmapAll());
 
     // Now reboot into new slot.
     test_device = new TestDeviceInfo(fake_super, "_b");
@@ -2178,14 +2201,28 @@ TEST_F(SnapshotUpdateTest, DaemonTransition) {
     ASSERT_TRUE(init->NeedSnapshotsInFirstStageMount());
     ASSERT_TRUE(init->CreateLogicalAndSnapshotPartitions("super", snapshot_timeout_));
 
+#ifdef USERSPACE_MERGES
+    ASSERT_EQ(access("/dev/dm-user/sys_b-init", F_OK), 0);
+    ASSERT_EQ(access("/dev/dm-user/sys_b", F_OK), -1);
+#else
     ASSERT_EQ(access("/dev/dm-user/sys_b-user-cow-init", F_OK), 0);
     ASSERT_EQ(access("/dev/dm-user/sys_b-user-cow", F_OK), -1);
+#endif
 
     ASSERT_TRUE(init->PerformInitTransition(SnapshotManager::InitTransition::SECOND_STAGE));
 
     // :TODO: this is a workaround to ensure the handler list stays empty. We
     // should make this test more like actual init, and spawn two copies of
     // snapuserd, given how many other tests we now have for normal snapuserd.
+#ifdef USERSPACE_MERGES
+    ASSERT_TRUE(init->snapuserd_client()->WaitForDeviceDelete("sys_b-init"));
+    ASSERT_TRUE(init->snapuserd_client()->WaitForDeviceDelete("vnd_b-init"));
+    ASSERT_TRUE(init->snapuserd_client()->WaitForDeviceDelete("prd_b-init"));
+
+    // The control device should have been renamed.
+    ASSERT_TRUE(android::fs_mgr::WaitForFileDeleted("/dev/dm-user/sys_b-init", 10s));
+    ASSERT_EQ(access("/dev/dm-user/sys_b", F_OK), 0);
+#else
     ASSERT_TRUE(init->snapuserd_client()->WaitForDeviceDelete("sys_b-user-cow-init"));
     ASSERT_TRUE(init->snapuserd_client()->WaitForDeviceDelete("vnd_b-user-cow-init"));
     ASSERT_TRUE(init->snapuserd_client()->WaitForDeviceDelete("prd_b-user-cow-init"));
@@ -2193,6 +2230,7 @@ TEST_F(SnapshotUpdateTest, DaemonTransition) {
     // The control device should have been renamed.
     ASSERT_TRUE(android::fs_mgr::WaitForFileDeleted("/dev/dm-user/sys_b-user-cow-init", 10s));
     ASSERT_EQ(access("/dev/dm-user/sys_b-user-cow", F_OK), 0);
+#endif
 }
 
 TEST_F(SnapshotUpdateTest, MapAllSnapshots) {
@@ -2231,8 +2269,10 @@ TEST_F(SnapshotUpdateTest, CancelOnTargetSlot) {
             },
             &path));
 
+#ifndef USERSPACE_MERGES
     // Hold sys_a open so it can't be unmapped.
     unique_fd fd(open(path.c_str(), O_RDONLY));
+#endif
 
     // Switch back to "A", make sure we can cancel. Instead of unmapping sys_a
     // we should simply delete the old snapshots.
@@ -2240,6 +2280,7 @@ TEST_F(SnapshotUpdateTest, CancelOnTargetSlot) {
     ASSERT_TRUE(sm->BeginUpdate());
 }
 
+#ifndef USERSPACE_MERGES
 TEST_F(SnapshotUpdateTest, QueryStatusError) {
     // Grow all partitions. Set |prd| large enough that |sys| and |vnd|'s COWs
     // fit in super, but not |prd|.
@@ -2293,6 +2334,7 @@ TEST_F(SnapshotUpdateTest, QueryStatusError) {
     ASSERT_TRUE(init->CreateLogicalAndSnapshotPartitions("super", snapshot_timeout_));
     ASSERT_EQ(UpdateState::MergeCompleted, init->ProcessUpdateState());
 }
+#endif
 
 class FlashAfterUpdateTest : public SnapshotUpdateTest,
                              public WithParamInterface<std::tuple<uint32_t, bool>> {
@@ -2564,12 +2606,18 @@ int main(int argc, char** argv) {
 
     android::base::SetProperty("ctl.stop", "snapuserd");
 
+#ifdef USERSPACE_MERGES
     if (!android::base::SetProperty("snapuserd.test.dm.snapshots", "1")) {
         return testing::AssertionFailure()
                << "Failed to disable property: virtual_ab.userspace.snapshots.enabled";
     }
+#endif
 
     int ret = RUN_ALL_TESTS();
+
+#ifdef USERSPACE_MERGES
     android::base::SetProperty("snapuserd.test.dm.snapshots", "0");
+#endif
+
     return ret;
 }
