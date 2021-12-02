@@ -16,6 +16,24 @@
       "message": "(probably want to update the commit message too?)",
       "revId": "b1ac9b427533d181ea3bc0309c1392553c858500",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "39c41913_f18efacf",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2021-12-02T02:27:33Z",
+      "side": 1,
+      "message": "The current message seems to be OK.",
+      "parentUuid": "701b188d_db07c020",
+      "revId": "b1ac9b427533d181ea3bc0309c1392553c858500",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
