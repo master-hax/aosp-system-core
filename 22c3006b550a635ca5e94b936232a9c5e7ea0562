@@ -16,6 +16,23 @@
       "message": "Completely new approach here, since the #ifdef method wasn\u0027t working very well.\n\nThis passes on CF in default mode, but not yet on \"dmsnap\" mode.",
       "revId": "22c3006b550a635ca5e94b936232a9c5e7ea0562",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1878ee70_50e7bb11",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-12-03T17:59:54Z",
+      "side": 1,
+      "message": "This is nicely done. Thanks for cleaning this up.",
+      "revId": "22c3006b550a635ca5e94b936232a9c5e7ea0562",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
