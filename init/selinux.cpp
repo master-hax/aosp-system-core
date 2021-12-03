@@ -58,19 +58,25 @@
 #include <stdlib.h>
 #include <sys/wait.h>
 #include <unistd.h>
+#include <fstream>
 
+#include <CertUtils.h>
 #include <android-base/chrono_utils.h>
 #include <android-base/file.h>
 #include <android-base/logging.h>
 #include <android-base/parseint.h>
 #include <android-base/result.h>
+#include <android-base/scopeguard.h>
 #include <android-base/strings.h>
 #include <android-base/unique_fd.h>
 #include <fs_avb/fs_avb.h>
 #include <fs_mgr.h>
+#include <fsverity_init.h>
 #include <libgsi/libgsi.h>
 #include <libsnapshot/snapshot.h>
+#include <mini_keyctl_utils.h>
 #include <selinux/android.h>
+#include <ziparchive/zip_archive.h>
 
 #include "block_dev_initializer.h"
 #include "debug_ramdisk.h"
@@ -421,6 +427,12 @@ bool OpenSplitPolicy(PolicyFile* policy_file) {
     if (access(odm_policy_cil_file.c_str(), F_OK) == -1) {
         odm_policy_cil_file.clear();
     }
+
+    // mainline_sepolicy.cil is default but optional.
+    std::string mainline_policy_cil_file("/dev/selinux/mainline_sepolicy.cil");
+    if (access(mainline_policy_cil_file.c_str(), F_OK) == -1) {
+        mainline_policy_cil_file.clear();
+    }
     const std::string version_as_string = std::to_string(SEPOLICY_VERSION);
 
     // clang-format off
@@ -463,6 +475,9 @@ bool OpenSplitPolicy(PolicyFile* policy_file) {
     if (!odm_policy_cil_file.empty()) {
         compile_args.push_back(odm_policy_cil_file.c_str());
     }
+    if (!mainline_policy_cil_file.empty()) {
+        compile_args.push_back(mainline_policy_cil_file.c_str());
+    }
     compile_args.push_back(nullptr);
 
     if (!ForkExecveAndWaitForCompletion(compile_args[0], (char**)compile_args.data())) {
@@ -487,6 +502,187 @@ bool OpenMonolithicPolicy(PolicyFile* policy_file) {
     }
     policy_file->path = kSepolicyFile;
     return true;
+}
+
+constexpr const char* kSigningCertDebug = "/system/etc/selinux/com.android.sepolicy.cert-debug.der";
+constexpr const char* kSigningCertRelease =
+        "/system/etc/selinux/com.android.sepolicy.cert-release.der";
+constexpr const char* kFsVerityProcPath = "/proc/sys/fs/verity";
+const std::string kSepolicyApk = "/metadata/sepolicy/SEPolicy.apk";
+const std::string kSepolicySignature = "/metadata/sepolicy/SEPolicy.apk.sig";
+
+const std::string kApkAssetsDir = "assets/";
+const std::string kTmpfsDir = "/dev/selinux/";
+
+// Files that are deleted after policy is compiled/loaded.
+const std::vector<std::string> kApkSepolicyTmp{"mainline_sepolicy.cil", "mainline_sepolicy.sha256"};
+// Files that need to persist because they are used by userspace processes.
+const std::vector<std::string> kApkSepolicy{"mainline_file_contexts", "mainline_property_contexts",
+                                            "mainline_service_contexts", "mainline_seapp_contexts",
+                                            "mainline_test"};
+
+Result<void> PutFileInTmpfs(ZipArchiveHandle archive, const std::string& fileName) {
+    ZipEntry entry;
+    std::string srcPath = kApkAssetsDir + fileName;
+    std::string dstPath = kTmpfsDir + fileName;
+
+    int ret = FindEntry(archive, srcPath, &entry);
+    if (ret != 0) {
+        // All files are optional. If a file doesn't exist, return without error.
+        return {};
+    }
+
+    unique_fd fd(TEMP_FAILURE_RETRY(
+            open(dstPath.c_str(), O_WRONLY | O_CREAT | O_TRUNC | O_CLOEXEC, S_IRUSR | S_IWUSR)));
+    if (fd == -1) {
+        return Error() << "Failed to open " << dstPath;
+    }
+
+    ret = ExtractEntryToFile(archive, &entry, fd);
+    if (ret != 0) {
+        return Error() << "Failed to extract entry \"" << srcPath << "\" ("
+                       << entry.uncompressed_length << " bytes) to \"" << dstPath
+                       << "\": " << ErrorCodeString(ret);
+    }
+
+    return {};
+}
+
+Result<void> GetPolicyFromApk() {
+    unique_fd fd(open(kSepolicyApk.c_str(), O_RDONLY | O_BINARY | O_CLOEXEC));
+    if (fd < 0) {
+        return ErrnoError() << "Failed to open package " << kSepolicyApk;
+    }
+
+    ZipArchiveHandle handle;
+    auto handle_guard = android::base::make_scope_guard([&handle] { CloseArchive(handle); });
+    int ret = OpenArchiveFd(fd.get(), kSepolicyApk.c_str(), &handle, /*assume_ownership=*/false);
+    if (ret < 0) {
+        return Error() << "Failed to open package " << kSepolicyApk << ": " << ErrorCodeString(ret);
+    }
+
+    for (const auto& file : kApkSepolicy) {
+        auto extract = PutFileInTmpfs(handle, file);
+        if (!extract.ok()) {
+            LOG(INFO) << "Error 0100010 " << extract.error();
+        }
+    }
+    for (const auto& file : kApkSepolicyTmp) {
+        auto extract = PutFileInTmpfs(handle, file);
+        if (!extract.ok()) {
+            LOG(INFO) << "Error 0100010 " << extract.error();
+        }
+    }
+    return {};
+}
+
+Result<void> LoadSepolicyMainlineCerts() {
+    key_serial_t keyring_id = android::GetKeyringId(".fs-verity");
+    if (keyring_id < 0) {
+        return Error() << "Failed to find .fs-verity keyring id";
+    }
+
+    // Load both debug and release certs. Note that the debug cert does not exist on release
+    // builds. TODO(jeffv) don't even try to load debug cert on non-debug builds.
+    if (access(kSigningCertDebug, F_OK) < 0) {
+        LoadKeyFromFile(keyring_id, "fsv_sepolicy_mainline_debug", kSigningCertDebug);
+    }
+    // TODO(jeffv) the release key should always exist. Once it's checked in, start
+    // throwing an error here if it doesn't exist.
+    if (access(kSigningCertRelease, F_OK) < 0) {
+        LoadKeyFromFile(keyring_id, "fsv_sepolicy_mainline_release", kSigningCertRelease);
+    }
+    return {};
+}
+
+Result<void> SepolicyFsVerityCheck() {
+    return Error() << "TODO implementent support for fsverity SEPolicy.";
+}
+
+Result<void> SepolicySignature() {
+    std::string signature;
+    if (!android::base::ReadFileToString(kSepolicySignature, &signature)) {
+        return ErrnoError() << "Failed to read " << kSepolicySignature;
+    }
+
+    std::fstream sepolicyApk(kSepolicyApk, std::ios::in | std::ios::binary);
+    if (!sepolicyApk) {
+        return Error() << "Failed to open " << kSepolicyApk;
+    }
+    sepolicyApk.seekg(0);
+    std::string sepolicyApkStr((std::istreambuf_iterator<char>(sepolicyApk)),
+                               std::istreambuf_iterator<char>());
+
+    auto releaseKey = extractPublicKeyFromX509(kSigningCertRelease);
+    if (!releaseKey.ok()) {
+        return releaseKey.error();
+    }
+
+    return verifySignature(sepolicyApkStr, signature, *releaseKey);
+}
+
+Result<void> SepolicyVerify(bool supportsFsVerity) {
+    if (supportsFsVerity) {
+        auto fsVerityCheck = SepolicyFsVerityCheck();
+        if (fsVerityCheck.ok()) {
+            return fsVerityCheck;
+        }
+        // TODO(jeffv) If the device supports fsverity, but we fail here, we should fail to
+        // boot and not carry on. For now, fallback to a signature checkuntil the fsverity
+        // logic is implemented.
+        LOG(INFO) << "Falling back to standard signature check. " << fsVerityCheck.error();
+    }
+
+    auto sepolicySignature = SepolicySignature();
+    if (!sepolicySignature.ok()) {
+        return Error() << "Mainline SEPolicy failed to signature check";
+    }
+    return {};
+}
+
+void CleanupMainlineSepolicy() {
+    for (const auto& file : kApkSepolicyTmp) {
+        std::string path = kTmpfsDir + file;
+        unlink(path.c_str());
+    }
+}
+
+// Mainline sepolicy is shipped within an APK within an APEX. Because
+// it needs to be available before Apexes are mounted, apexd copies
+// the APK from the APEX and stores it in /metadata/sepolicy. Init then
+// performs the following steps on the next boot:
+//
+// 1. Validates the APK by checking its signature against a public
+// key that is stored in /system/etc/selinux.
+// 2. Unzips the APK and stores files in /dev/selinux.
+// 3. Performs an on-device compile of the policy and loads the policy
+// into the kernel. This is the same flow as on-device compilation of
+// policy for Treble.
+// 4. Cleans up files in /dev/selinux which are no longer needed.
+// 5. Restorecons the remaining files in /dev/selinux.
+// 6. Sets selinux into enforcing mode and continues normal booting.
+void PrepareMainlineSepolicy() {
+    bool supportsFsVerity = access(kFsVerityProcPath, F_OK) == 0;
+    if (supportsFsVerity) {
+        auto loadSepolicyMainlineCerts = LoadSepolicyMainlineCerts();
+        if (!loadSepolicyMainlineCerts.ok()) {
+            // TODO(jeffv) If the device supports fsverity, but we fail here, we should fail to
+            // boot and not carry on. For now, fallback to a signature checkuntil the fsverity
+            // logic is implemented.
+            LOG(INFO) << loadSepolicyMainlineCerts.error();
+        }
+    }
+
+    auto sepolicyVerify = SepolicyVerify(supportsFsVerity);
+    if (!sepolicyVerify.ok()) {
+        LOG(INFO) << "Error: " << sepolicyVerify.error();
+        return;
+    }
+
+    auto apk = GetPolicyFromApk();
+    if (!apk.ok()) {
+        LOG(ERROR) << apk.error();
+    }
 }
 
 void ReadPolicy(std::string* policy) {
@@ -740,9 +936,13 @@ int SetupSelinux(char** argv) {
 
     LOG(INFO) << "Opening SELinux policy";
 
+    // TODO(jeffv) Prepare mainline sepolicy
+    PrepareMainlineSepolicy();
+
     // Read the policy before potentially killing snapuserd.
     std::string policy;
     ReadPolicy(&policy);
+    CleanupMainlineSepolicy();
 
     auto snapuserd_helper = SnapuserdSelinuxHelper::CreateIfNeeded();
     if (snapuserd_helper) {
@@ -758,6 +958,13 @@ int SetupSelinux(char** argv) {
         // Before enforcing, finish the pending snapuserd transition.
         snapuserd_helper->FinishTransition();
         snapuserd_helper = nullptr;
+    }
+
+    // This restorecon is intentionally done before SelinuxSetEnforcement because the permissions
+    // needed to transition files from tmpfs to *_contexts_file context should not be granted to
+    // any process after selinux is set into enforcing mode.
+    if (selinux_android_restorecon("/dev/selinux/", SELINUX_ANDROID_RESTORECON_RECURSE) == -1) {
+        PLOG(FATAL) << "restorecon failed of /dev/selinux failed";
     }
 
     SelinuxSetEnforcement();
