@@ -200,6 +200,7 @@ int FirstStageMain(int argc, char** argv) {
     // on / and then we'll let the rc file figure out the rest.
     CHECKCALL(mount("tmpfs", "/dev", "tmpfs", MS_NOSUID, "mode=0755"));
     CHECKCALL(mkdir("/dev/pts", 0755));
+    CHECKCALL(mkdir("/dev/selinux", 0755));
     CHECKCALL(mkdir("/dev/socket", 0755));
     CHECKCALL(mkdir("/dev/dm-user", 0755));
     CHECKCALL(mount("devpts", "/dev/pts", "devpts", 0, NULL));
