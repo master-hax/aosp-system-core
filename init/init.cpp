@@ -446,6 +446,12 @@ static bool HandleControlMessage(std::string_view message, const std::string& na
     }
     const auto& function = it->second;
 
+    std::string prop = "debug.apexd.updating." + service->name();
+    if (GetProperty(prop, "") == "installing" && action == "start") {
+        LOG(ERROR) << "danielnorman skipping mid-install interface_start for " << service->name();
+        return false;
+    }
+
     if (auto result = function(service); !result.ok()) {
         LOG(ERROR) << "Control message: Could not ctl." << message << " for '" << name
                    << "' from pid: " << from_pid << " (" << process_cmdline
