@@ -63,6 +63,30 @@
       },
       "revId": "790ae0465ee2c631ce34807ab44caa7aed45991d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "857b47c5_fa3e2188",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 584,
+      "author": {
+        "id": 1056364
+      },
+      "writtenOn": "2021-12-06T20:52:21Z",
+      "side": 1,
+      "message": "moved to https://android-review.googlesource.com/c/platform/frameworks/native/+/1912034.",
+      "parentUuid": "d40ee9e8_bc46c600",
+      "range": {
+        "startLine": 584,
+        "startChar": 4,
+        "endLine": 584,
+        "endChar": 9
+      },
+      "revId": "790ae0465ee2c631ce34807ab44caa7aed45991d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
