@@ -19,7 +19,7 @@
       "name": "fs_mgr_vendor_overlay_test"
     },
     {
-      "name": "vts_libsnapshot_test"
+      "name": "run_snapshot_tests"
     },
     {
       "name": "libsnapshot_fuzzer_test"
