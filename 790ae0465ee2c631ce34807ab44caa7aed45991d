@@ -39,6 +39,30 @@
       },
       "revId": "790ae0465ee2c631ce34807ab44caa7aed45991d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d40ee9e8_bc46c600",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 584,
+      "author": {
+        "id": 1056364
+      },
+      "writtenOn": "2021-12-06T20:05:50Z",
+      "side": 1,
+      "message": "Because I am trying to fix simpleperf test instead of atrace test. It looks like atrace.rc already covers sched_switch. I will do it in atrace.rc.",
+      "parentUuid": "e8fe19b1_8266044d",
+      "range": {
+        "startLine": 584,
+        "startChar": 4,
+        "endLine": 584,
+        "endChar": 9
+      },
+      "revId": "790ae0465ee2c631ce34807ab44caa7aed45991d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
