@@ -95,6 +95,54 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "021f9375_fde83cda",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 567,
+      "author": {
+        "id": 1054468
+      },
+      "writtenOn": "2021-12-06T13:47:00Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "602f3627_73dfbece",
+      "range": {
+        "startLine": 567,
+        "startChar": 11,
+        "endLine": 567,
+        "endChar": 22
+      },
+      "revId": "be34c697072c6b5717acca6252c4c07b82ba1671",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ad835a05_063cb693",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 567,
+      "author": {
+        "id": 1054468
+      },
+      "writtenOn": "2021-12-06T13:47:00Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0ce614cb_2482ad8b",
+      "range": {
+        "startLine": 567,
+        "startChar": 32,
+        "endLine": 567,
+        "endChar": 39
+      },
+      "revId": "be34c697072c6b5717acca6252c4c07b82ba1671",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "95c1bfe9_f7c42044",
@@ -142,6 +190,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "9f24fd21_0b2bfb60",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 657,
+      "author": {
+        "id": 1054468
+      },
+      "writtenOn": "2021-12-06T13:47:00Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3afdd1f7_94d22dc0",
+      "range": {
+        "startLine": 657,
+        "startChar": 6,
+        "endLine": 657,
+        "endChar": 54
+      },
+      "revId": "be34c697072c6b5717acca6252c4c07b82ba1671",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "2a866e41_dc4d3c91",
@@ -179,6 +251,30 @@
       "side": 1,
       "message": "We continue booting using non Apex sepolicy.",
       "parentUuid": "2a866e41_dc4d3c91",
+      "range": {
+        "startLine": 684,
+        "startChar": 8,
+        "endLine": 684,
+        "endChar": 34
+      },
+      "revId": "be34c697072c6b5717acca6252c4c07b82ba1671",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4df842f3_db9d9752",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 684,
+      "author": {
+        "id": 1054468
+      },
+      "writtenOn": "2021-12-06T13:47:00Z",
+      "side": 1,
+      "message": "Adding a TODO for metrics collection.",
+      "parentUuid": "124f4196_f3c67248",
       "range": {
         "startLine": 684,
         "startChar": 8,
