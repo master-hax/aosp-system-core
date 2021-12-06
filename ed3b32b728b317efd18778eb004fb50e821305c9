@@ -34,6 +34,24 @@
       "parentUuid": "86b028d1_d57c3301",
       "revId": "ed3b32b728b317efd18778eb004fb50e821305c9",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "030ccfe4_b78f2ed8",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2432,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-12-06T06:06:32Z",
+      "side": 1,
+      "message": "I reworked this a bit, the only case I\u0027m sure it won\u0027t work is if UnmapPartitionWithSnapshot is called when |target_partition_name| is not a snapshot. But I\u0027m not sure that was ever a supported case.",
+      "parentUuid": "6f583031_342f0378",
+      "revId": "ed3b32b728b317efd18778eb004fb50e821305c9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
