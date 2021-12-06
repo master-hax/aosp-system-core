@@ -1,4 +1,14 @@
-#!/system/bin/sh
+#!/bin/sh
+
+###############################################################################
+# This is a helper script intended for Cuttlefish. It tests each supported
+# configuration of vts_libsnapshot_test. It is run on presubmit and should be
+# run manually after material changes to libsnapshot.
+#
+# This script is not intended to be run on real devices. For devices under
+# test, use vts_libsnapshot_test, which only tests the device's actual shipping
+# configuration.
+###############################################################################
 
 # Detect host or AOSP.
 getprop ro.build.version.sdk > /dev/null 2>&1
@@ -32,4 +42,14 @@ fi
 set -x
 set -e
 
+echo "Testing VAB with userspace snapshots"
 time ${cmd_prefix} ${testpath}
+
+echo "Testing VAB with dm-snapshot and compression"
+time ${cmd_prefix} ${testpath} -force_mode vabc-legacy
+
+echo "Testing VAB with dm-snapshot"
+time ${cmd_prefix} ${testpath} -force_mode vab-legacy
+
+echo "Testing VAB with userspace snapshots and no compression"
+time ${cmd_prefix} ${testpath} -compression_method none
