@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "183acaee_6833bd26",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 4040,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-12-06T04:15:49Z",
+      "side": 1,
+      "message": "If compression is not enabled, then we will rely on the check UpdateUsesUserSnapshots() to see if snapuserd daemon is required.\n\nHowever, at L3164\n\nhttps://android-review.googlesource.com/c/platform/system/core/+/1911213/1/fs_mgr/libsnapshot/snapshot.cpp#3164\n\nWe will mark UserSnapshots only if compression is enabled.. So, we need to break this up at L3164 as well and not create any dependency.\n\nUserspace snapshots will work without compression but the property \"ro.virtual_ab.compression.enabled\u003dtrue\" has to be true which is what that dependency is about.",
+      "revId": "920a96cdf4589ac5e5821cf3eb1eebea7a5d7bb0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
