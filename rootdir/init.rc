@@ -581,6 +581,9 @@ on late-fs
     # This does not work correctly if it is called in post-fs.
     chmod 0755 /sys/kernel/tracing
     chmod 0755 /sys/kernel/debug/tracing
+    chmod 0755 /sys/kernel/tracing/events
+    chmod 0755 /sys/kernel/tracing/events/sched
+    chmod 0755 /sys/kernel/tracing/events/sched/sched_switch
 
     # HALs required before storage encryption can get unlocked (FBE/FDE)
     class_start early_hal
