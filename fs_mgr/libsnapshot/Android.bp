@@ -273,9 +273,12 @@ sh_test {
     test_suites: [
         "device-tests",
     ],
-    required: [
+    target_required: [
         "vts_libsnapshot_test",
     ],
+    host_supported: true,
+    device_supported: false,
+    require_root: true,
 }
 
 cc_test {
