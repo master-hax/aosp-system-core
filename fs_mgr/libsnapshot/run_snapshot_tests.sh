@@ -42,4 +42,11 @@ fi
 set -x
 set -e
 
-time ${cmd_prefix} ${testpath}
+echo "Testing VAB with userspace merges"
+time ${cmd_prefix} ${testpath} -force_config vab
+
+echo "Testing VAB with userspace merges and compression"
+time ${cmd_prefix} ${testpath} -force_config vabc
+
+echo "Testing legacy VAB with dm-snapshot"
+time ${cmd_prefix} ${testpath} -force_config dmsnap
