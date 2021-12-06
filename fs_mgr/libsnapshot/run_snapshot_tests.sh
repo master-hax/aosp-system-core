@@ -1,5 +1,15 @@
 #!/system/bin/sh
 
+###############################################################################
+# This is a helper script intended for Cuttlefish. It tests each supported
+# configuration of vts_libsnapshot_test. It is run on presubmit and should be
+# run manually after material changes to libsnapshot.
+#
+# This script is not intended to be run on real devices. For devices under
+# test, use vts_libsnapshot_test, which only tests the device's actual shipping
+# configuration.
+###############################################################################
+
 # Detect host or AOSP.
 getprop ro.build.version.sdk > /dev/null 2>&1
 if [ $? -eq 0 ]; then
