@@ -2429,10 +2429,8 @@ bool SnapshotManager::UnmapPartitionWithSnapshot(LockedFile* lock,
                                                  const std::string& target_partition_name) {
     CHECK(lock);
 
-    if (!UpdateUsesUserSnapshots(lock)) {
-        if (!UnmapSnapshot(lock, target_partition_name)) {
-            return false;
-        }
+    if (!UnmapSnapshot(lock, target_partition_name)) {
+        return false;
     }
 
     if (!UnmapCowDevices(lock, target_partition_name)) {
