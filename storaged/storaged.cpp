@@ -31,6 +31,8 @@
 #include <android-base/file.h>
 #include <android-base/logging.h>
 #include <android-base/unique_fd.h>
+#include <android/binder_manager.h>
+#include <android/binder_ibinder.h>
 #include <android/hidl/manager/1.0/IServiceManager.h>
 #include <batteryservice/BatteryServiceConstants.h>
 #include <cutils/properties.h>
@@ -64,16 +66,14 @@ constexpr ssize_t min_benchmark_size = 128 * 1024;  // 128KB
 
 const uint32_t storaged_t::current_version = 4;
 
+using aidl::android::hardware::health::BatteryStatus;
+using aidl::android::hardware::health::HealthInfo;
+using aidl::android::hardware::health::IHealth;
 using android::hardware::interfacesEqual;
-using android::hardware::Return;
-using android::hardware::health::V1_0::BatteryStatus;
-using android::hardware::health::V1_0::toString;
 using android::hardware::health::V2_0::get_health_service;
-using android::hardware::health::V2_0::HealthInfo;
-using android::hardware::health::V2_0::IHealth;
-using android::hardware::health::V2_0::Result;
 using android::hidl::manager::V1_0::IServiceManager;
-
+using HidlHealth = android::hardware::health::V2_0::IHealth;
+using aidl::android::hardware::health::HealthShim;
 
 inline charger_stat_t is_charger_on(BatteryStatus prop) {
     return (prop == BatteryStatus::CHARGING || prop == BatteryStatus::FULL) ?
@@ -92,44 +92,65 @@ void storaged_t::init() {
 }
 
 void storaged_t::init_health_service() {
+
     if (!mUidm.enabled())
         return;
 
-    health = get_health_service();
-    if (health == NULL) {
+    auto service_name = IHealth::descriptor + "/default"s;
+    if (AServiceManager_isDeclared(service_name.c_str())) {
+        ndk::SpAIBinder binder(AServiceManager_waitForService(service_name.c_str()));
+        health = IHealth::fromBinder(binder);
+        if (health == nullptr) {
+            LOG(WARNING) << "AIDL health service is declared, but it cannot be retrieved.";
+        }
+    }
+    android::sp<HidlHealth> hidl_health;
+    if (health == nullptr) {
+        LOG(INFO) << "Unable to get AIDL health service, trying HIDL...";
+        hidl_health = get_health_service();
+        if (hidl_health != nullptr) {
+            health = ndk::SharedRefBase::make<HealthShim>(hidl_health);
+        }
+    }
+    if (health == nullptr) {
         LOG(WARNING) << "health: failed to find IHealth service";
         return;
     }
 
     BatteryStatus status = BatteryStatus::UNKNOWN;
-    auto ret = health->getChargeStatus([&](Result r, BatteryStatus v) {
-        if (r != Result::SUCCESS) {
-            LOG(WARNING) << "health: cannot get battery status " << toString(r);
-            return;
-        }
-        if (v == BatteryStatus::UNKNOWN) {
-            LOG(WARNING) << "health: invalid battery status";
-        }
-        status = v;
-    });
+    auto ret = health->getChargeStatus(&status);
     if (!ret.isOk()) {
-        LOG(WARNING) << "health: get charge status transaction error " << ret.description();
+        LOG(WARNING) << "health: cannot get battery status " << ret.getDescription();
+    }
+    if (status == BatteryStatus::UNKNOWN) {
+        LOG(WARNING) << "health: invalid battery status";
     }
 
     mUidm.init(is_charger_on(status));
     // register listener after init uid_monitor
     health->registerCallback(this);
-    health->linkToDeath(this, 0 /* cookie */);
+
+    if (hidl_health != nullptr) {
+        // FIXME
+        // hidl_health->linkToDeath(this, 0 /* cookie */);
+    } else {
+        // FIXME
+    }
 }
 
-void storaged_t::serviceDied(uint64_t cookie, const wp<::android::hidl::base::V1_0::IBase>& who) {
-    if (health != NULL && interfacesEqual(health, who.promote())) {
+void hidl_health_death_recipient::serviceDied(uint64_t cookie,
+                                              const wp<::android::hidl::base::V1_0::IBase>& who) {
+    if (health_ != nullptr && interfacesEqual(health, who.promote())) {
         LOG(ERROR) << "health service died, exiting";
         android::hardware::IPCThreadState::self()->stopProcess();
         exit(1);
     } else {
         LOG(ERROR) << "unknown service died";
     }
+}
+
+static void onHealthBinderDied(void* cookie) {
+    // FIXME
 }
 
 void storaged_t::report_storage_info() {

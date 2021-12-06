@@ -28,6 +28,7 @@
 
 #include <utils/Mutex.h>
 
+#include <aidl/android/hardware/health/IHealth.h>
 #include <android/hardware/health/2.0/IHealth.h>
 
 #define FRIEND_TEST(test_case_name, test_name) \
@@ -75,15 +76,22 @@ struct storaged_config {
     int event_time_check_usec;  // check how much cputime spent in event loop
 };
 
-class storaged_t : public android::hardware::health::V2_0::IHealthInfoCallback,
-                   public android::hardware::hidl_death_recipient {
+class hidl_health_death_recipient : public android::hardware::hidl_death_recipient {
+  public:
+    hidl_health_death_recipient(const android::sp<android::hardware::health::V2_0::IHealth>& health) : health_(health) {}
+    void serviceDied(uint64_t cookie, const wp<::android::hidl::base::V1_0::IBase>& who);
+  private:
+    android::sp<android::hardware::health::V2_0::IHealth> health_;
+};
+
+class storaged_t : public aidl::android::hardware::health::IHealthInfoCallback {
   private:
     time_t mTimer;
     storaged_config mConfig;
     unique_ptr<disk_stats_monitor> mDsm;
     uid_monitor mUidm;
     time_t mStarttime;
-    sp<android::hardware::health::V2_0::IHealth> health;
+    std::shared_ptr<aidl::android::hardware::health::IHealth> health;
     unique_ptr<storage_info_t> storage_info;
     static const uint32_t current_version;
     Mutex proto_lock;
@@ -135,9 +143,8 @@ class storaged_t : public android::hardware::health::V2_0::IHealthInfoCallback,
     void add_user_ce(userid_t user_id);
     void remove_user_ce(userid_t user_id);
 
-    virtual ::android::hardware::Return<void> healthInfoChanged(
-        const ::android::hardware::health::V2_0::HealthInfo& info);
-    void serviceDied(uint64_t cookie, const wp<::android::hidl::base::V1_0::IBase>& who);
+    ndk::ScopedAStatus healthInfoChanged(
+        const ::aidl::android::hardware::health::HealthInfo& info) override;
 
     void report_storage_info();
 
