@@ -49,6 +49,54 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "0ce614cb_2482ad8b",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 567,
+      "author": {
+        "id": 1054468
+      },
+      "writtenOn": "2021-12-06T13:29:01Z",
+      "side": 1,
+      "message": "Doh! Was supposed to delete this before pushing the change. This was just for local debugging. Thanks for catching it.\n\nhttps://www.youtube.com/watch?v\u003d_4TPlwwHM8Q",
+      "parentUuid": "6b6542d5_6df20bc6",
+      "range": {
+        "startLine": 567,
+        "startChar": 32,
+        "endLine": 567,
+        "endChar": 39
+      },
+      "revId": "be34c697072c6b5717acca6252c4c07b82ba1671",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "602f3627_73dfbece",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 567,
+      "author": {
+        "id": 1054468
+      },
+      "writtenOn": "2021-12-06T13:29:01Z",
+      "side": 1,
+      "message": "Since we\u0027re in early boot, logs go to dmesg, and then to logcat once it\u0027s available.",
+      "parentUuid": "318c4294_7833e44f",
+      "range": {
+        "startLine": 567,
+        "startChar": 11,
+        "endLine": 567,
+        "endChar": 22
+      },
+      "revId": "be34c697072c6b5717acca6252c4c07b82ba1671",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "95c1bfe9_f7c42044",
         "filename": "init/selinux.cpp",
         "patchSetId": 2
@@ -72,6 +120,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "3afdd1f7_94d22dc0",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 657,
+      "author": {
+        "id": 1054468
+      },
+      "writtenOn": "2021-12-06T13:29:01Z",
+      "side": 1,
+      "message": "Good point.",
+      "parentUuid": "95c1bfe9_f7c42044",
+      "range": {
+        "startLine": 657,
+        "startChar": 6,
+        "endLine": 657,
+        "endChar": 54
+      },
+      "revId": "be34c697072c6b5717acca6252c4c07b82ba1671",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "2a866e41_dc4d3c91",
         "filename": "init/selinux.cpp",
         "patchSetId": 2
@@ -83,6 +155,30 @@
       "writtenOn": "2021-12-06T12:59:10Z",
       "side": 1,
       "message": "so... what happens in this case beside just error log?",
+      "range": {
+        "startLine": 684,
+        "startChar": 8,
+        "endLine": 684,
+        "endChar": 34
+      },
+      "revId": "be34c697072c6b5717acca6252c4c07b82ba1671",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "124f4196_f3c67248",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 684,
+      "author": {
+        "id": 1054468
+      },
+      "writtenOn": "2021-12-06T13:29:01Z",
+      "side": 1,
+      "message": "We continue booting using non Apex sepolicy.",
+      "parentUuid": "2a866e41_dc4d3c91",
       "range": {
         "startLine": 684,
         "startChar": 8,
