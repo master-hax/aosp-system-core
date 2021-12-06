@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "86b028d1_d57c3301",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2432,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2021-12-06T04:04:40Z",
+      "side": 1,
+      "message": "I can\u0027t recollect why but I think this might fail in the OTA path.\n\nWhen we call UnmapCowDevices() we will unmap the snapshot device (which is the dm-user device in this case)\n\nhttps://source.corp.google.com/android/system/core/fs_mgr/libsnapshot/snapshot.cpp;l\u003d2535",
+      "revId": "ed3b32b728b317efd18778eb004fb50e821305c9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
