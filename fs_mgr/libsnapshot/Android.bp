@@ -270,12 +270,16 @@ cc_test {
 sh_test {
     name: "run_snapshot_tests",
     src: "run_snapshot_tests.sh",
+    filename: "run_snapshot_tests.sh",
     test_suites: [
         "device-tests",
     ],
-    required: [
+    target_required: [
         "vts_libsnapshot_test",
     ],
+    host_supported: true,
+    device_supported: false,
+    require_root: true,
 }
 
 cc_test {
