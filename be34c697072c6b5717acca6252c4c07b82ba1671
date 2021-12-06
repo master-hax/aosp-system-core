@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6b6542d5_6df20bc6",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 567,
+      "author": {
+        "id": 1061164
+      },
+      "writtenOn": "2021-12-06T12:59:10Z",
+      "side": 1,
+      "message": "OOC, what\u0027s this magic number?",
+      "range": {
+        "startLine": 567,
+        "startChar": 32,
+        "endLine": 567,
+        "endChar": 39
+      },
+      "revId": "be34c697072c6b5717acca6252c4c07b82ba1671",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "318c4294_7833e44f",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 567,
+      "author": {
+        "id": 1061164
+      },
+      "writtenOn": "2021-12-06T12:59:10Z",
+      "side": 1,
+      "message": "For my education, where do these logs go? Logcat?\n\nWould Googlers be able to report issues here via bugreport or some other mechanism for us to debug?",
+      "range": {
+        "startLine": 567,
+        "startChar": 11,
+        "endLine": 567,
+        "endChar": 22
+      },
+      "revId": "be34c697072c6b5717acca6252c4c07b82ba1671",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "95c1bfe9_f7c42044",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 657,
+      "author": {
+        "id": 1061164
+      },
+      "writtenOn": "2021-12-06T12:59:10Z",
+      "side": 1,
+      "message": "nit: you are not really unzipping the whole apk, but rather just extracting some files from it into /dev/selinux",
+      "range": {
+        "startLine": 657,
+        "startChar": 6,
+        "endLine": 657,
+        "endChar": 54
+      },
+      "revId": "be34c697072c6b5717acca6252c4c07b82ba1671",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2a866e41_dc4d3c91",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 684,
+      "author": {
+        "id": 1061164
+      },
+      "writtenOn": "2021-12-06T12:59:10Z",
+      "side": 1,
+      "message": "so... what happens in this case beside just error log?",
+      "range": {
+        "startLine": 684,
+        "startChar": 8,
+        "endLine": 684,
+        "endChar": 34
+      },
+      "revId": "be34c697072c6b5717acca6252c4c07b82ba1671",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
