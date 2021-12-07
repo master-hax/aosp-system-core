@@ -249,6 +249,13 @@ TEST(storaged_test, disk_stats_monitor) {
     // testing if detect() will return the right value
     disk_stats_monitor dsm_detect{healthService};
     ASSERT_TRUE(dsm_detect.enabled());
+
+    // Even if enabled(), healthService may not support disk stats. Check if it is supported.
+    std::vector<aidl::android::hardware::health::DiskStats> halStats;
+    if (healthService->getDiskStats(&halStats).getExceptionCode() == EX_UNSUPPORTED_OPERATION) {
+        GTEST_SKIP();
+    }
+
     // feed monitor with constant perf data for io perf baseline
     // using constant perf is reasonable since the functionality of stream_stats
     // has already been tested
