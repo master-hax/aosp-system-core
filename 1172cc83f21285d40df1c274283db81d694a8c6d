@@ -179,6 +179,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "0c21439c_184a2474",
+        "filename": "libprocessgroup/task_profiles.h",
+        "patchSetId": 6
+      },
+      "lineNbr": 150,
+      "author": {
+        "id": 1324603
+      },
+      "writtenOn": "2021-12-07T14:21:45Z",
+      "side": 1,
+      "message": "OK, I moved path_ to CachedFdProfileAction, however, we can only keep the original value of path_ in CachedFdProfileAction, because SetCgroupAction::ExecuteForProcess will call controller()-\u003eGetProcsFilePath(path_, uid, pid), which uses path_, we have to keep the GetPath() in the derived classes.",
+      "parentUuid": "a799f399_28d45755",
+      "range": {
+        "startLine": 150,
+        "startChar": 4,
+        "endLine": 150,
+        "endChar": 22
+      },
+      "revId": "1172cc83f21285d40df1c274283db81d694a8c6d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "0c55896d_aaf952cb",
         "filename": "libprocessgroup/task_profiles.h",
         "patchSetId": 6
