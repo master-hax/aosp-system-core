@@ -16,6 +16,24 @@
       "message": "why is this needed on all builds? shouldn\u0027t this just be like strace, built as-needed? (otherwise i worry about folks starting to depend on it.)",
       "revId": "e67e2cf865b28e97d15e95b4259d68b7052d7a80",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f855cae3_a054b8d1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-12-07T19:21:38Z",
+      "side": 1,
+      "message": "is anyone making any progress on getting this functionality into anything that\u0027s packaged by debian?",
+      "parentUuid": "0329fb9a_2ba331c3",
+      "revId": "e67e2cf865b28e97d15e95b4259d68b7052d7a80",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
