@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "76a30d67_5f6ea235",
+        "filename": "libprocessgroup/profiles/task_profiles.json",
+        "patchSetId": 2
+      },
+      "lineNbr": 657,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2021-12-08T17:03:30Z",
+      "side": 1,
+      "message": "let us keep the behavior of older devices so let us make this \n\nOTAProfiles -\u003e ServiceCapacityLow, LowIoPriority, HighEnergySaving\n\nby default",
+      "range": {
+        "startLine": 657,
+        "startChar": 21,
+        "endLine": 657,
+        "endChar": 40
+      },
+      "revId": "225064cfd2aa51da56d7bc71212b2809b37ba4f0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
