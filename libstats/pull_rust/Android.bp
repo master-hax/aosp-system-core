@@ -44,6 +44,9 @@ rust_bindgen {
             ],
         },
     },
+    apex_available: [
+        "com.android.virt",
+    ]
 }
 
 rust_library {
