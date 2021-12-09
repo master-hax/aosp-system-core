@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "96892392_787147d9",
+        "filename": "libprocessgroup/profiles/task_profiles.json",
+        "patchSetId": 4
+      },
+      "lineNbr": 656,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2021-12-09T00:59:23Z",
+      "side": 1,
+      "message": "nit: I think the convention is to treat abbreviations as a word:\n\n```\nOtaProfiles\n```",
+      "range": {
+        "startLine": 656,
+        "startChar": 15,
+        "endLine": 656,
+        "endChar": 26
+      },
+      "revId": "8bb1762b1dbfce9d0d40dc32ac84ae0ba967afd2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
