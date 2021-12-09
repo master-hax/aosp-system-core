@@ -29,6 +29,7 @@
 #include <sys/types.h>
 #include <sys/utsname.h>
 #include <unistd.h>
+#include <bootloader_message/bootloader_message.h>
 
 #define _REALLY_INCLUDE_SYS__SYSTEM_PROPERTIES_H_
 #include <sys/_system_properties.h>
@@ -327,6 +328,43 @@ static void LoadBootScripts(ActionManager& action_manager, ServiceList& service_
     }
 }
 
+static void HandleMemtagBootctl(const std::string& value) {
+    misc_memtag_message m = { .version = MISC_MEMTAG_MESSAGE_VERSION,
+                              .magic = MISC_MEMTAG_MAGIC_HEADER };
+    size_t start = 0;
+    while (start < value.size()) {
+        size_t next_delim = value.find(",", start);
+        size_t len = std::string::npos;
+        if (next_delim != std::string::npos) {
+            len = next_delim - start;
+        }
+        std::string substr = value.substr(start, len);
+        if (substr == "memtag") {
+            m.memtag_mode |= MISC_MEMTAG_MODE_MEMTAG;
+        } else if (substr == "memtag-once") {
+            m.memtag_mode |= MISC_MEMTAG_MODE_MEMTAG_ONCE;
+        } else if (substr == "memtag-kernel") {
+            m.memtag_mode |= MISC_MEMTAG_MODE_MEMTAG_KERNEL;
+        } else if (substr == "memtag-kernel-once") {
+            m.memtag_mode |= MISC_MEMTAG_MODE_MEMTAG_KERNEL_ONCE;
+        } else if (substr != "none") {
+            LOG(ERROR) << "Unknown value for arm64.memtag.bootctl: " << substr;
+            return;
+        }
+        if (next_delim != std::string::npos) {
+            start = next_delim + 1;
+        } else {
+            break;
+        }
+    }
+    std::string err;
+    if (!WriteMiscMemtagMessage(m, &err)) {
+        LOG(ERROR) << "Failed to apply arm64.memtag.bootctl: " << err;
+    } else {
+        LOG(INFO) << "Applied arm64.memtag.bootctl: " << value;
+    }
+}
+
 void PropertyChanged(const std::string& name, const std::string& value) {
     // If the property is sys.powerctl, we bypass the event queue and immediately handle it.
     // This is to ensure that init will always and immediately shutdown/reboot, regardless of
@@ -336,6 +374,9 @@ void PropertyChanged(const std::string& name, const std::string& value) {
     // commands to be executed.
     if (name == "sys.powerctl") {
         trigger_shutdown(value);
+    } else if (name == "arm64.memtag.bootctl") {
+        HandleMemtagBootctl(value);
+        return;
     }
 
     if (property_triggers_enabled) {
