@@ -52,6 +52,41 @@
       "parentUuid": "f855cae3_a054b8d1",
       "revId": "e67e2cf865b28e97d15e95b4259d68b7052d7a80",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c85f6a99_fa1be14f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2021-12-09T16:40:35Z",
+      "side": 1,
+      "message": "\u003e why is this needed on all builds?\n\nGKI kernel has this support, so probably all build should have the tool? \n\n\u003e is anyone making any progress on getting this functionality into anything that\u0027s packaged by debian?\n\nI think ARM has done it since we talked last time: https://man7.org/linux/man-pages/man1/uclampset.1.html",
+      "parentUuid": "f753a7d8_1850a3f2",
+      "revId": "e67e2cf865b28e97d15e95b4259d68b7052d7a80",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ac30c9ca_558a0758",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2021-12-09T16:40:35Z",
+      "side": 1,
+      "message": "no, we don\u0027t have ",
+      "revId": "e67e2cf865b28e97d15e95b4259d68b7052d7a80",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
