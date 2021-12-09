@@ -203,6 +203,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "01dbf949_413d5dcd",
+        "filename": "libprocessgroup/task_profiles.h",
+        "patchSetId": 6
+      },
+      "lineNbr": 150,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-12-09T16:34:11Z",
+      "side": 1,
+      "message": "Ah, now that reminds me why I wanted GetPath(). If CachedFdProfileAction accesses path_ only via GetPath() then I don\u0027t really think path_ belongs to that class. It\u0027s a nit but IMHO the previous version is cleaner. In any case it\u0027s a minor point and I\u0027ll leave it up to you whether to revert to previous version or keep this one.",
+      "parentUuid": "0c21439c_184a2474",
+      "range": {
+        "startLine": 150,
+        "startChar": 4,
+        "endLine": 150,
+        "endChar": 22
+      },
+      "revId": "1172cc83f21285d40df1c274283db81d694a8c6d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "0c55896d_aaf952cb",
         "filename": "libprocessgroup/task_profiles.h",
         "patchSetId": 6
