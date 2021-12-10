@@ -19,8 +19,11 @@
 
 #include <stdint.h>
 #include <sys/types.h>
+
+#if !defined(__TRUSTY__)
 #include <system/graphics.h>
 #include <system/thread_defs.h>
+#endif
 
 // ---------------------------------------------------------------------------
 // C API
