@@ -41,6 +41,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "8893f67f_aced7968",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 558,
+      "author": {
+        "id": 1054468
+      },
+      "writtenOn": "2021-12-10T13:28:05Z",
+      "side": 1,
+      "message": "Great point.",
+      "parentUuid": "0de4a59b_563432b4",
+      "range": {
+        "startLine": 558,
+        "startChar": 68,
+        "endLine": 558,
+        "endChar": 80
+      },
+      "revId": "ccf5073f2aab97ab4df46479c12e96f98921cc08",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "e0d0ee96_20e46fed",
@@ -64,6 +88,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "32e78c61_8e60ce08",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 587,
+      "author": {
+        "id": 1054468
+      },
+      "writtenOn": "2021-12-10T13:28:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e0d0ee96_20e46fed",
+      "range": {
+        "startLine": 587,
+        "startChar": 40,
+        "endLine": 587,
+        "endChar": 41
+      },
+      "revId": "ccf5073f2aab97ab4df46479c12e96f98921cc08",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "25898d6c_c848111a",
@@ -77,6 +125,30 @@
       "writtenOn": "2021-12-06T19:20:09Z",
       "side": 1,
       "message": "ditto",
+      "range": {
+        "startLine": 592,
+        "startChar": 42,
+        "endLine": 592,
+        "endChar": 43
+      },
+      "revId": "ccf5073f2aab97ab4df46479c12e96f98921cc08",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4edbbdc7_f3dca25b",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 592,
+      "author": {
+        "id": 1054468
+      },
+      "writtenOn": "2021-12-10T13:28:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "25898d6c_c848111a",
       "range": {
         "startLine": 592,
         "startChar": 42,
