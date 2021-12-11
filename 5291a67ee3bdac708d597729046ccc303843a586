@@ -16,6 +16,24 @@
       "message": "It looks like we got this check backwards.  When size() is 0, we do not want to take a code path that accesses halInfos[0].\n\nI\u0027ve put up a fix in https://android-review.googlesource.com/c/platform/system/core/+/1915078",
       "revId": "5291a67ee3bdac708d597729046ccc303843a586",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c21f05a5_3340726b",
+        "filename": "storaged/storaged_info.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 331,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2021-12-11T01:04:41Z",
+      "side": 1,
+      "message": "Thank you! I should\u0027ve used !empty()",
+      "parentUuid": "09a0ec37_e149db75",
+      "revId": "5291a67ee3bdac708d597729046ccc303843a586",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
