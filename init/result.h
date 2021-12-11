@@ -24,4 +24,3 @@
 using android::base::ErrnoError;
 using android::base::Error;
 using android::base::Result;
-using android::base::ResultError;
