@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4c59b58c_b1a53866",
+        "filename": "libstats/bootstrap/BootstrapClientInternal.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1431413
+      },
+      "writtenOn": "2021-12-13T17:36:25Z",
+      "side": 1,
+      "message": "Is this an sp\u003c\u003e requirement?",
+      "range": {
+        "startLine": 47,
+        "startChar": 35,
+        "endLine": 47,
+        "endChar": 39
+      },
+      "revId": "f222dc36c2e5ef812fc1c7e8209cf54edc00c0ab",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
