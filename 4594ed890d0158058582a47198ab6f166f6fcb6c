@@ -1,0 +1,89 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "707aa54e_bfd89bae",
+        "filename": "libcutils/canned_fs_config.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-12-13T21:54:41Z",
+      "side": 1,
+      "message": "\u003cstdlib.h\u003e\n\n(even if _you_ can name 3 differences between the \u003cc*\u003e headers and the \u003c*.h\u003e headers, your readers can\u0027t, so don\u0027t use them unless you _need_ them, and if you _need_ them, comment why.)",
+      "revId": "4594ed890d0158058582a47198ab6f166f6fcb6c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "68890fd1_14f5bd43",
+        "filename": "libcutils/canned_fs_config.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-12-13T21:54:41Z",
+      "side": 1,
+      "message": "StartsWith() means i don\u0027t have to think about front() on an empty string...",
+      "revId": "4594ed890d0158058582a47198ab6f166f6fcb6c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4dc77e1d_f36194d1",
+        "filename": "libcutils/canned_fs_config.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-12-13T21:54:41Z",
+      "side": 1,
+      "message": "am i missing something, or should the original code (and the new code too) just be sscanf()?",
+      "revId": "4594ed890d0158058582a47198ab6f166f6fcb6c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cf611bcb_ebf4bfec",
+        "filename": "libcutils/canned_fs_config.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-12-13T21:54:41Z",
+      "side": 1,
+      "message": "ah, there can be random crap on the end too...",
+      "revId": "4594ed890d0158058582a47198ab6f166f6fcb6c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "67cbef00_7836ddcd",
+        "filename": "libcutils/canned_fs_config.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-12-13T21:54:41Z",
+      "side": 1,
+      "message": "should there be an `else` here that at least _warns_ about crap?",
+      "revId": "4594ed890d0158058582a47198ab6f166f6fcb6c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
