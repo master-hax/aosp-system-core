@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "450fe603_d0d07c15",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-12-13T21:56:39Z",
+      "side": 1,
+      "message": "are you _sure_ you want globs rather than \"real\" regular expressions? tomcherry has some horror stories about globs in init. the corner cases (in particular around whether or not * should include \u0027/\u0027es) can get quite hairy...",
+      "range": {
+        "startLine": 11,
+        "startChar": 15,
+        "endLine": 11,
+        "endChar": 70
+      },
+      "revId": "ceaef3173ebaf92ae81f9fbffd4a8d2011157189",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
