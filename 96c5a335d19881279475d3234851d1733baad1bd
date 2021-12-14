@@ -98,6 +98,30 @@
       },
       "revId": "96c5a335d19881279475d3234851d1733baad1bd",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b4e04201_a57304dc",
+        "filename": "libcutils/include/cutils/trace.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 211,
+      "author": {
+        "id": 1312644
+      },
+      "writtenOn": "2021-12-14T20:10:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "af6318c4_f3c0b43c",
+      "range": {
+        "startLine": 211,
+        "startChar": 12,
+        "endLine": 211,
+        "endChar": 25
+      },
+      "revId": "96c5a335d19881279475d3234851d1733baad1bd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
