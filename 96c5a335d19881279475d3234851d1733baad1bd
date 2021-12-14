@@ -56,6 +56,30 @@
       },
       "revId": "96c5a335d19881279475d3234851d1733baad1bd",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "af6318c4_f3c0b43c",
+        "filename": "libcutils/include/cutils/trace.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 211,
+      "author": {
+        "id": 1040443
+      },
+      "writtenOn": "2021-12-14T17:33:58Z",
+      "side": 1,
+      "message": "Oh fair enough. I think the description here should be something like.\n\nAn \"instant\" is an event with no defined duration. Visually is displayed like a single marker in the timeline (rather than a span, in the case of begin/end events).\n\nBy default instant events are added into a dedicated track that has the same name of the event. Use atrace_instant_for_track to put different instant events into the same timeline track/row.",
+      "parentUuid": "4b8c3605_abe9ffd1",
+      "range": {
+        "startLine": 211,
+        "startChar": 12,
+        "endLine": 211,
+        "endChar": 25
+      },
+      "revId": "96c5a335d19881279475d3234851d1733baad1bd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
