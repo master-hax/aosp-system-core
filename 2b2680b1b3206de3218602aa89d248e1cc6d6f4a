@@ -16,6 +16,24 @@
       "message": "I don\u0027t think we want to do this unconditionally. It could accidentally create a persist directory if the symlink is missing.",
       "revId": "2b2680b1b3206de3218602aa89d248e1cc6d6f4a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a36f904e_c0b02f31",
+        "filename": "trusty/storage/proxy/storage.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 275,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2021-12-14T20:43:48Z",
+      "side": 1,
+      "message": "Good point. I wanted to do this in init, but we don\u0027t have a signal there we can use (yet). I\u0027ll scope this to \"alternate/\".",
+      "parentUuid": "24f19bda_5a9a28df",
+      "revId": "2b2680b1b3206de3218602aa89d248e1cc6d6f4a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
