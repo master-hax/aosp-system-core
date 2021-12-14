@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5017d1cd_d8fac488",
+        "filename": "trusty/storage/proxy/storage.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 339,
+      "author": {
+        "id": 1000205
+      },
+      "writtenOn": "2021-12-14T23:53:05Z",
+      "side": 1,
+      "message": "This is only used if we actually created the file. Since this happens one per per factory reset, would it be simpler to just fsync the parent directory immediately in that case instead of waiting? Also if the parent path is a symlink, does this open call follow the link to get to the actual directory, or does it open the symlink itself?",
+      "revId": "4e0ddeb82abd5dd6ed545a19036cb5b705014495",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7336e59a_8b0599d1",
+        "filename": "trusty/storage/proxy/storage.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 583,
+      "author": {
+        "id": 1000205
+      },
+      "writtenOn": "2021-12-14T23:53:05Z",
+      "side": 1,
+      "message": "Or we could do a full sync of all filesystems. We should not actually hit this code path under normal conditions as the table size should be large enough to hold all our files",
+      "revId": "4e0ddeb82abd5dd6ed545a19036cb5b705014495",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
