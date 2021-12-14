@@ -22,6 +22,30 @@
       },
       "revId": "ceaef3173ebaf92ae81f9fbffd4a8d2011157189",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0441d5e9_06f7bb9e",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2021-12-14T00:59:31Z",
+      "side": 1,
+      "message": "Treating path patterns as regex breaks existing use cases like \"/lib/libc++.so\". For exact matching, \u0027+\u0027, \u0027.\u0027 should be escaped but that\u0027s a breaking change to the clients.\n\nI\u0027ve also thought about doing the exact match first and then falling back to regex match. But that doesn\u0027t work if there is a valid path but an illegal regex (ex \"[\"). Constructing std::regex will throw an exception and we can\u0027t catch it due to -fno-exceptions.\n\nBut I share your concern about glob. For now, let me drop pattern matching here and always do the exact match. The only change would then be allowing multiple same paths and giving the highest priority to the last one.",
+      "parentUuid": "450fe603_d0d07c15",
+      "range": {
+        "startLine": 11,
+        "startChar": 15,
+        "endLine": 11,
+        "endChar": 70
+      },
+      "revId": "ceaef3173ebaf92ae81f9fbffd4a8d2011157189",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
