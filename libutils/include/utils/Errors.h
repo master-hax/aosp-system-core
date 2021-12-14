@@ -16,6 +16,9 @@
 
 #pragma once
 
+#include <android-base/errors.h>
+#include <android-base/result.h>
+
 #include <errno.h>
 #include <stdint.h>
 #include <sys/types.h>
@@ -81,5 +84,32 @@ std::string statusToString(status_t status);
 #ifdef _WIN32
 # define NO_ERROR 0L
 #endif
+
+namespace base {
+
+struct StatusPrinter {
+    static std::string print(const status_t& s) { return statusToString(s); }
+};
+
+// Specialization of android::base::OkOrFail<V> for V = status_t. See android-base/errors.h
+// for the contract.
+template <>
+struct OkOrFail<status_t> {
+    static bool is_ok(const status_t& s) { return s == OK; }
+    static status_t unwrap(status_t&& s) { return s; }
+
+    OkOrFail(status_t&& s) : val_(s) {}
+    status_t val_;
+
+    operator status_t() const { return val_; }
+    template <typename T>
+    operator Result<T, status_t>() const {
+        return Error<status_t, StatusPrinter>(val_);
+    }
+
+    std::string error_message() const { return statusToString(val_); }
+};
+
+}  // namespace base
 
 }  // namespace android
