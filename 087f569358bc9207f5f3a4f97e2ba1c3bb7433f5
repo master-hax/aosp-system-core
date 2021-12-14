@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "50652d67_48995457",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1080238
+      },
+      "writtenOn": "2021-12-14T01:24:05Z",
+      "side": 1,
+      "message": "LG with one nit.",
+      "revId": "087f569358bc9207f5f3a4f97e2ba1c3bb7433f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b891a90d_0c806f42",
+        "filename": "libcutils/include/cutils/trace.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 222,
+      "author": {
+        "id": 1080238
+      },
+      "writtenOn": "2021-12-14T01:24:05Z",
+      "side": 1,
+      "message": "I\u0027d also add a small comment about track name and what that means here.",
+      "range": {
+        "startLine": 221,
+        "startChar": 3,
+        "endLine": 222,
+        "endChar": 72
+      },
+      "revId": "087f569358bc9207f5f3a4f97e2ba1c3bb7433f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
