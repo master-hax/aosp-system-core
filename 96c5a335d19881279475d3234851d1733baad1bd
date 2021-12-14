@@ -16,6 +16,23 @@
       "message": "Thanks, I am supportive of this!\nLalit can you have a second pass on this? ",
       "revId": "96c5a335d19881279475d3234851d1733baad1bd",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a0eed15f_f5c0ed65",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1080238
+      },
+      "writtenOn": "2021-12-14T17:08:50Z",
+      "side": 1,
+      "message": "Still LGTM",
+      "revId": "96c5a335d19881279475d3234851d1733baad1bd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
