@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "67ea17c0_61e82092",
+        "filename": "libcutils/canned_fs_config.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2021-12-14T00:59:53Z",
+      "side": 1,
+      "message": "Removed.",
+      "parentUuid": "707aa54e_bfd89bae",
+      "revId": "4594ed890d0158058582a47198ab6f166f6fcb6c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "68890fd1_14f5bd43",
@@ -31,6 +49,24 @@
       "writtenOn": "2021-12-13T21:54:41Z",
       "side": 1,
       "message": "StartsWith() means i don\u0027t have to think about front() on an empty string...",
+      "revId": "4594ed890d0158058582a47198ab6f166f6fcb6c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9f31a3bd_5de733b4",
+        "filename": "libcutils/canned_fs_config.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2021-12-14T00:59:53Z",
+      "side": 1,
+      "message": "Ah, I missed that point. Thanks. Fixed.",
+      "parentUuid": "68890fd1_14f5bd43",
       "revId": "4594ed890d0158058582a47198ab6f166f6fcb6c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -52,6 +88,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "17983265_41ccb6c3",
+        "filename": "libcutils/canned_fs_config.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2021-12-14T00:59:53Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4dc77e1d_f36194d1",
+      "revId": "4594ed890d0158058582a47198ab6f166f6fcb6c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "cf611bcb_ebf4bfec",
@@ -69,6 +123,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "e568352d_e3e01ef1",
+        "filename": "libcutils/canned_fs_config.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2021-12-14T00:59:53Z",
+      "side": 1,
+      "message": "Right. The line can actually be something like this:\n\n/path 100 100 0644 selabel\u003dxxxx capabilities\u003dyyyy\n\nselabel has been ignored.",
+      "parentUuid": "cf611bcb_ebf4bfec",
+      "revId": "4594ed890d0158058582a47198ab6f166f6fcb6c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "67cbef00_7836ddcd",
@@ -82,6 +154,24 @@
       "writtenOn": "2021-12-13T21:54:41Z",
       "side": 1,
       "message": "should there be an `else` here that at least _warns_ about crap?",
+      "revId": "4594ed890d0158058582a47198ab6f166f6fcb6c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4d432a40_b478d705",
+        "filename": "libcutils/canned_fs_config.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2021-12-14T00:59:53Z",
+      "side": 1,
+      "message": "I don\u0027t feel strong because (1) they have been ignored, and (2) this code is included in e2fsdroid which in turn is executed in a python script. The script doesn\u0027t emit stdout/stderr unless e2fsdroid fails. So users (developers) won\u0027t have a chance to see the warnings. Nevertheless, I\u0027ve added a warning here at least to show to the people who will be touching this that there can be other tokens.",
+      "parentUuid": "67cbef00_7836ddcd",
       "revId": "4594ed890d0158058582a47198ab6f166f6fcb6c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
