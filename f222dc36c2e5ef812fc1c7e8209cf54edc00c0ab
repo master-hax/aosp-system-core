@@ -22,6 +22,30 @@
       },
       "revId": "f222dc36c2e5ef812fc1c7e8209cf54edc00c0ab",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cf2fb25b_e98289cb",
+        "filename": "libstats/bootstrap/BootstrapClientInternal.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1286922
+      },
+      "writtenOn": "2021-12-14T03:19:42Z",
+      "side": 1,
+      "message": "Removed it. I think I put it there when things were not working earlier as a debugging attempt, but I don\u0027t think it\u0027s needed.",
+      "parentUuid": "4c59b58c_b1a53866",
+      "range": {
+        "startLine": 47,
+        "startChar": 35,
+        "endLine": 47,
+        "endChar": 39
+      },
+      "revId": "f222dc36c2e5ef812fc1c7e8209cf54edc00c0ab",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
