@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "996553a8_2fca42d1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-12-14T16:34:18Z",
+      "side": 1,
+      "message": "yeah, that seems easier to reason about... if we do come back to globs, it might make sense to factor out what heuristics init has so we\u0027re at least _consistently_ confusing :-) ",
+      "revId": "4bd3687422df9d3a53ffbcc3d60ba51f3f451fe6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
