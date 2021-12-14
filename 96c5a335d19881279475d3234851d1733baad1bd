@@ -33,6 +33,29 @@
       "message": "Still LGTM",
       "revId": "96c5a335d19881279475d3234851d1733baad1bd",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4b8c3605_abe9ffd1",
+        "filename": "libcutils/include/cutils/trace.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 211,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2021-12-14T17:11:14Z",
+      "side": 1,
+      "message": "i think this needs a definition (and maybe an example too), and a contrast with the alternatives.\n\ni still have no idea what this new functionality is...",
+      "range": {
+        "startLine": 211,
+        "startChar": 12,
+        "endLine": 211,
+        "endChar": 25
+      },
+      "revId": "96c5a335d19881279475d3234851d1733baad1bd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
