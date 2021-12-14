@@ -42,11 +42,16 @@ enum sync_state {
 };
 
 static int ssdir_fd = -1;
+struct file_state {
+    enum sync_state sync_state;
+    int parent_fd;
+    enum sync_state parent_sync_state;
+};
+
 static const char *ssdir_name;
 
 static enum sync_state fs_state;
-static enum sync_state dir_state;
-static enum sync_state fd_state[FD_TBL_SIZE];
+static struct file_state fd_state[FD_TBL_SIZE];
 
 static bool alternate_mode;
 
@@ -55,8 +60,9 @@ static struct {
    uint8_t data[MAX_READ_SIZE];
 }  read_rsp;
 
-static uint32_t insert_fd(int open_flags, int fd)
-{
+static uint32_t insert_fd(int open_flags, int fd, int parent_fd) {
+    enum sync_state file_state = SS_CLEAN;
+    enum sync_state dir_state = SS_CLEAN;
     uint32_t handle = fd;
 
     if (open_flags & O_CREAT) {
@@ -64,15 +70,17 @@ static uint32_t insert_fd(int open_flags, int fd)
     }
 
     if (handle < FD_TBL_SIZE) {
-            fd_state[fd] = SS_CLEAN; /* fd clean */
             if (open_flags & O_TRUNC) {
-                fd_state[fd] = SS_DIRTY;  /* set fd dirty */
+                file_state = SS_DIRTY;
             }
+            fd_state[fd] = (struct file_state){.sync_state = file_state,
+                                               .parent_fd = parent_fd,
+                                               .parent_sync_state = dir_state};
     } else {
-            ALOGW("%s: untracked fd %u\n", __func__, fd);
-            if (open_flags & (O_TRUNC | O_CREAT)) {
-                fs_state = SS_DIRTY;
-            }
+        ALOGW("%s: untracked fd %u\n", __func__, fd);
+        if (open_flags & (O_TRUNC | O_CREAT)) {
+            fs_state = SS_DIRTY;
+        }
     }
     return handle;
 }
@@ -81,7 +89,7 @@ static int lookup_fd(uint32_t handle, bool dirty)
 {
     if (dirty) {
         if (handle < FD_TBL_SIZE) {
-            fd_state[handle] = SS_DIRTY;
+            fd_state[handle].sync_state = SS_DIRTY;
         } else {
             fs_state = SS_DIRTY;
         }
@@ -92,7 +100,12 @@ static int lookup_fd(uint32_t handle, bool dirty)
 static int remove_fd(uint32_t handle)
 {
     if (handle < FD_TBL_SIZE) {
-        fd_state[handle] = SS_UNUSED; /* set to uninstalled */
+        if (fd_state[handle].parent_fd >= 0) {
+            close(fd_state[handle].parent_fd);
+            fd_state[handle].parent_fd = -1;
+            fd_state[handle].parent_sync_state = SS_UNUSED;
+        }
+        fd_state[handle].sync_state = SS_UNUSED; /* set to uninstalled */
     }
     return handle;
 }
@@ -193,7 +206,6 @@ int storage_file_delete(struct storage_msg *msg,
         goto err_response;
     }
 
-    dir_state = SS_DIRTY;
     rc = unlink(path);
     if (rc < 0) {
         rc = errno;
@@ -223,6 +235,7 @@ int storage_file_open(struct storage_msg *msg,
 {
     char *path = NULL;
     char* parent_path;
+    int parent_fd;
     const struct storage_file_open_req *req = r;
     struct storage_file_open_resp resp = {0};
 
@@ -323,8 +336,14 @@ int storage_file_open(struct storage_msg *msg,
     free(path);
 
     /* at this point rc contains storage file fd */
+    parent_fd = TEMP_FAILURE_RETRY(open(parent_path, O_RDONLY));
+    if (parent_fd < 0) {
+        ALOGE("%s: failed to open parent directory \"%s\": %s\n", __func__, parent_path,
+              strerror(errno));
+    }
+
     msg->result = STORAGE_NO_ERROR;
-    resp.handle = insert_fd(open_flags, rc);
+    resp.handle = insert_fd(open_flags, rc, parent_fd);
     ALOGV("%s: \"%s\": fd = %u: handle = %d\n",
           __func__, path, rc, resp.handle);
 
@@ -512,9 +531,10 @@ int storage_init(const char *dirname)
     alternate_mode = is_gsi_running();
 
     fs_state = SS_CLEAN;
-    dir_state = SS_CLEAN;
     for (uint i = 0; i < FD_TBL_SIZE; i++) {
-        fd_state[i] = SS_UNUSED;  /* uninstalled */
+        fd_state[i].sync_state = SS_UNUSED; /* uninstalled */
+        fd_state[i].parent_fd = -1;         /* no parent */
+        fd_state[i].parent_sync_state = SS_UNUSED;
     }
 
     ssdir_fd = open(dirname, O_RDONLY);
@@ -532,33 +552,35 @@ int storage_sync_checkpoint(void)
 
     /* sync fd table and reset it to clean state first */
     for (uint fd = 0; fd < FD_TBL_SIZE; fd++) {
-         if (fd_state[fd] == SS_DIRTY) {
-             if (fs_state == SS_CLEAN) {
-                 /* need to sync individual fd */
-                 rc = fsync(fd);
-                 if (rc < 0) {
-                     ALOGE("fsync for fd=%d failed: %s\n", fd, strerror(errno));
-                     return rc;
-                 }
-             }
-             fd_state[fd] = SS_CLEAN; /* set to clean */
-         }
-    }
+        if (fd_state[fd].sync_state == SS_DIRTY) {
+            if (fs_state == SS_CLEAN) {
+                /* need to sync individual fd */
+                rc = fsync(fd);
+                if (rc < 0) {
+                    ALOGE("fsync for fd=%d failed: %s\n", fd, strerror(errno));
+                    return rc;
+                }
+            }
+            fd_state[fd].sync_state = SS_CLEAN; /* set to clean */
+        }
 
-    /* check if we need to sync the directory */
-    if (dir_state == SS_DIRTY) {
-        if (fs_state == SS_CLEAN) {
-            rc = fsync(ssdir_fd);
+        /* check if we need to sync the directory */
+        if (fd_state[fd].parent_sync_state == SS_DIRTY) {
+            rc = fsync(fd_state[fd].parent_fd);
             if (rc < 0) {
                 ALOGE("fsync for ssdir failed: %s\n", strerror(errno));
                 return rc;
             }
+            fd_state[fd].parent_sync_state = SS_CLEAN;
         }
-        dir_state = SS_CLEAN;  /* set to clean */
     }
 
     /* check if we need to sync the whole fs */
     if (fs_state == SS_DIRTY) {
+        /*
+         * This doesn't actually sync any filesystems symlinked under the root
+         * dir, but we might need to.
+         */
         rc = syscall(SYS_syncfs, ssdir_fd);
         if (rc < 0) {
             ALOGE("syncfs failed: %s\n", strerror(errno));
