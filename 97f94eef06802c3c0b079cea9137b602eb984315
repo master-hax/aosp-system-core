@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1725d30d_d9e358a7",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1561651
+      },
+      "writtenOn": "2021-12-15T23:17:02Z",
+      "side": 1,
+      "message": "nit: indentation",
+      "revId": "97f94eef06802c3c0b079cea9137b602eb984315",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bc0b580f_6e909900",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 575,
+      "author": {
+        "id": 1561651
+      },
+      "writtenOn": "2021-12-15T23:17:02Z",
+      "side": 1,
+      "message": "This logs but doesn\u0027t return an error. It seems that returning the error would make sense?",
+      "revId": "97f94eef06802c3c0b079cea9137b602eb984315",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bddb2be4_5f877496",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 607,
+      "author": {
+        "id": 1561651
+      },
+      "writtenOn": "2021-12-15T23:17:02Z",
+      "side": 1,
+      "message": "dir is used for both the zip and its signature. Shouldn\u0027t the signature always be read from /system/etc/?",
+      "revId": "97f94eef06802c3c0b079cea9137b602eb984315",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "377a9407_33c315eb",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 656,
+      "author": {
+        "id": 1561651
+      },
+      "writtenOn": "2021-12-15T23:17:02Z",
+      "side": 1,
+      "message": "nit: not -\u003e no\nnit: then updatable policy \u003d\u003e then the updatable policy",
+      "revId": "97f94eef06802c3c0b079cea9137b602eb984315",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
