@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ef5604cb_74429cc2",
+        "filename": "trusty/storage/proxy/storage.c",
+        "patchSetId": 4
+      },
+      "lineNbr": 321,
+      "author": {
+        "id": 1000205
+      },
+      "writtenOn": "2021-12-15T15:43:56Z",
+      "side": 1,
+      "message": "Why not \"open_flags \u0026 O_CREAT\" and avoid a duplicate state variable?",
+      "range": {
+        "startLine": 321,
+        "startChar": 8,
+        "endLine": 321,
+        "endChar": 19
+      },
+      "revId": "c14f356f0cb8e962c89ba7427a90b4e8be11bc43",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
