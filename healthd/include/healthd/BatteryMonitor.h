@@ -42,13 +42,13 @@ struct HealthInfo;
 
 class BatteryMonitor {
   public:
-
     enum PowerSupplyType {
         ANDROID_POWER_SUPPLY_TYPE_UNKNOWN = 0,
         ANDROID_POWER_SUPPLY_TYPE_AC,
         ANDROID_POWER_SUPPLY_TYPE_USB,
         ANDROID_POWER_SUPPLY_TYPE_WIRELESS,
-        ANDROID_POWER_SUPPLY_TYPE_BATTERY
+        ANDROID_POWER_SUPPLY_TYPE_BATTERY,
+        ANDROID_POWER_SUPPLY_TYPE_DOCK
     };
 
     BatteryMonitor();
@@ -66,8 +66,8 @@ class BatteryMonitor {
     void logValues(void);
     bool isChargerOnline();
 
-    static void logValues(const android::hardware::health::V2_1::HealthInfo& health_info,
-                          const struct healthd_config& healthd_config);
+    void logValues(const android::hardware::health::V2_1::HealthInfo& health_info,
+                   const struct healthd_config& healthd_config);
 
   private:
     struct healthd_config *mHealthdConfig;
@@ -75,6 +75,8 @@ class BatteryMonitor {
     bool mBatteryDevicePresent;
     int mBatteryFixedCapacity;
     int mBatteryFixedTemperature;
+    // TODO(b/214126090): to migrate to AIDL HealthInfo
+    bool mChargerDockOnline;
     std::unique_ptr<android::hardware::health::V2_1::HealthInfo> mHealthInfo;
 
     int readFromFile(const String8& path, std::string* buf);
