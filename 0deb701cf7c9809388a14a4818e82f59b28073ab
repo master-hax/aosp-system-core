@@ -93,6 +93,54 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "9eba40ff_822eee62",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 605,
+      "author": {
+        "id": 1054468
+      },
+      "writtenOn": "2021-12-15T17:32:04Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3f775f4e_4d2cf7bc",
+      "range": {
+        "startLine": 605,
+        "startChar": 13,
+        "endLine": 605,
+        "endChar": 30
+      },
+      "revId": "0deb701cf7c9809388a14a4818e82f59b28073ab",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1a0db90a_e97b5aa9",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 605,
+      "author": {
+        "id": 1054468
+      },
+      "writtenOn": "2021-12-15T17:32:04Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d4882031_88455e51",
+      "range": {
+        "startLine": 605,
+        "startChar": 31,
+        "endLine": 605,
+        "endChar": 42
+      },
+      "revId": "0deb701cf7c9809388a14a4818e82f59b28073ab",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "ff9e38be_cbbbd87c",
@@ -106,6 +154,30 @@
       "writtenOn": "2021-12-15T13:58:56Z",
       "side": 1,
       "message": "const std::string\u0026",
+      "range": {
+        "startLine": 627,
+        "startChar": 28,
+        "endLine": 627,
+        "endChar": 39
+      },
+      "revId": "0deb701cf7c9809388a14a4818e82f59b28073ab",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "de5bf709_ae7f32d2",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 627,
+      "author": {
+        "id": 1054468
+      },
+      "writtenOn": "2021-12-15T17:32:04Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ff9e38be_cbbbd87c",
       "range": {
         "startLine": 627,
         "startChar": 28,
