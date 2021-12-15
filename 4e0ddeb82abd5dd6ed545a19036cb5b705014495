@@ -54,6 +54,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "63543ae5_a96159b6",
+        "filename": "trusty/storage/proxy/storage.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 339,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2021-12-15T01:33:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5371bd18_ab0e4a3c",
+      "revId": "4e0ddeb82abd5dd6ed545a19036cb5b705014495",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "7336e59a_8b0599d1",
@@ -67,6 +85,24 @@
       "writtenOn": "2021-12-14T23:53:05Z",
       "side": 1,
       "message": "Or we could do a full sync of all filesystems. We should not actually hit this code path under normal conditions as the table size should be large enough to hold all our files",
+      "revId": "4e0ddeb82abd5dd6ed545a19036cb5b705014495",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d6a3b193_648dc887",
+        "filename": "trusty/storage/proxy/storage.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 583,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2021-12-15T01:33:12Z",
+      "side": 1,
+      "message": "Done and noted why in a comment.",
+      "parentUuid": "7336e59a_8b0599d1",
       "revId": "4e0ddeb82abd5dd6ed545a19036cb5b705014495",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
