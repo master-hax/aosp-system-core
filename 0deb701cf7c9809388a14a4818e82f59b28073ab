@@ -1,0 +1,119 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "df751b4e_dbfcbb72",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2021-12-15T13:58:56Z",
+      "side": 1,
+      "message": "How is it guaranteed that things listed in the updatable policy are not in conflict with those in non-updatable policy?",
+      "range": {
+        "startLine": 12,
+        "startChar": 51,
+        "endLine": 12,
+        "endChar": 67
+      },
+      "revId": "0deb701cf7c9809388a14a4818e82f59b28073ab",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f275e0e5_0ef9c1d4",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2021-12-15T13:58:56Z",
+      "side": 1,
+      "message": "To be clear. We have to pay this overhead on \"every\" boot, right?",
+      "range": {
+        "startLine": 21,
+        "startChar": 11,
+        "endLine": 21,
+        "endChar": 54
+      },
+      "revId": "0deb701cf7c9809388a14a4818e82f59b28073ab",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3f775f4e_4d2cf7bc",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 605,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2021-12-15T13:58:56Z",
+      "side": 1,
+      "message": "Rename to SepolicyCheckSignature?",
+      "range": {
+        "startLine": 605,
+        "startChar": 13,
+        "endLine": 605,
+        "endChar": 30
+      },
+      "revId": "0deb701cf7c9809388a14a4818e82f59b28073ab",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d4882031_88455e51",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 605,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2021-12-15T13:58:56Z",
+      "side": 1,
+      "message": "const std::string\u0026",
+      "range": {
+        "startLine": 605,
+        "startChar": 31,
+        "endLine": 605,
+        "endChar": 42
+      },
+      "revId": "0deb701cf7c9809388a14a4818e82f59b28073ab",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ff9e38be_cbbbd87c",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 627,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2021-12-15T13:58:56Z",
+      "side": 1,
+      "message": "const std::string\u0026",
+      "range": {
+        "startLine": 627,
+        "startChar": 28,
+        "endLine": 627,
+        "endChar": 39
+      },
+      "revId": "0deb701cf7c9809388a14a4818e82f59b28073ab",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
