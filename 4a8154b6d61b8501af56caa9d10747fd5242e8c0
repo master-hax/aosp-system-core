@@ -1,0 +1,47 @@
+{
+  "comments": [
+    {
+      "robotId": "ayeaye",
+      "robotRunId": "AR00000000000018439763",
+      "url": "https://android-build.googleplex.com/builds/treetop/android-review/1910032?revision\u003d5",
+      "fixSuggestions": [
+        {
+          "fixId": "3069ca26_89016384",
+          "description": "Change to \"init/selinux.cpp\"",
+          "replacements": [
+            {
+              "path": "init/selinux.cpp",
+              "range": {
+                "startLine": 690,
+                "startChar": 24,
+                "endLine": 690,
+                "endChar": 35
+              },
+              "replacement": "verification"
+            }
+          ]
+        }
+      ],
+      "key": {
+        "uuid": "f611de50_f8652e62",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 690,
+      "author": {
+        "id": 1757831
+      },
+      "writtenOn": "2021-12-15T08:38:43Z",
+      "side": 1,
+      "message": "Common typo found: \"verifcation\" -- should it be \"verification\"?\nNote: a line containing \"common_typos_disable\" or \"common_typos_enable\" will turn off or on (respectively) the linter for subsequent lines in the file. Alternatively include the token \"NOTYPO\" within a line to skip typo linting that line or include \u0027No-Typo-Check: \u003creason\u003e\u0027in the commit message.",
+      "range": {
+        "startLine": 690,
+        "startChar": 24,
+        "endLine": 690,
+        "endChar": 35
+      },
+      "revId": "4a8154b6d61b8501af56caa9d10747fd5242e8c0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
