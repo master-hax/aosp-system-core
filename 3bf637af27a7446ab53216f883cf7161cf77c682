@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c6e7d3fa_91197253",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-12-16T04:16:15Z",
+      "side": 1,
+      "message": "This fixes presubmit failures in the parent CL.",
+      "revId": "3bf637af27a7446ab53216f883cf7161cf77c682",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
