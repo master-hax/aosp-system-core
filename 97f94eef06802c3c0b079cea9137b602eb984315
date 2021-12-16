@@ -1,6 +1,23 @@
 {
   "comments": [
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f55896b5_ee2571e7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1432579
+      },
+      "writtenOn": "2021-12-16T04:22:12Z",
+      "side": 1,
+      "message": "My OCD is a little bit twitching from mix of different code styles in selinux.cpp, but I can handle it :)",
+      "revId": "97f94eef06802c3c0b079cea9137b602eb984315",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "1725d30d_d9e358a7",
