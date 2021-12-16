@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e2833472_c9e88dda",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-12-16T06:10:26Z",
+      "side": 1,
+      "message": "Requesting review again since I changed two more places that check for compression.",
+      "revId": "5c1d54e092b2baec1b10785f419c3aaaf5b8559f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
