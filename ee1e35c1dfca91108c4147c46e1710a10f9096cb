@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "23d32042_267b6e00",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003247
+      },
+      "writtenOn": "2021-12-16T19:38:31Z",
+      "side": 1,
+      "message": "Still expect failure in samsung slsi, but let\u0027s see if anything else fails.",
+      "revId": "ee1e35c1dfca91108c4147c46e1710a10f9096cb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
