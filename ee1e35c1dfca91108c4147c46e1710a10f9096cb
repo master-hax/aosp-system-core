@@ -16,6 +16,23 @@
       "message": "Still expect failure in samsung slsi, but let\u0027s see if anything else fails.",
       "revId": "ee1e35c1dfca91108c4147c46e1710a10f9096cb",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "89ae3b63_905da417",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003247
+      },
+      "writtenOn": "2021-12-17T04:21:42Z",
+      "side": 1,
+      "message": "Failure looks unrelated - https://android-build.googleplex.com/builds/pending/P28407220/aosp_bramble-userdebug/latest/view/logs/build_error.log - but trying again",
+      "revId": "ee1e35c1dfca91108c4147c46e1710a10f9096cb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
