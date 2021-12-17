@@ -33,6 +33,23 @@
       "message": "Failure looks unrelated - https://android-build.googleplex.com/builds/pending/P28407220/aosp_bramble-userdebug/latest/view/logs/build_error.log - but trying again",
       "revId": "ee1e35c1dfca91108c4147c46e1710a10f9096cb",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "02985acc_b0340734",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003247
+      },
+      "writtenOn": "2021-12-17T06:34:14Z",
+      "side": 1,
+      "message": "Build failure is on aosp_bramble-userdebug on git_master\n\n\nout/soong/.intermediates/frameworks/base/offline-system-sdk-referenceonly-docs/android_common/srcjars/android/media/tv/tuner/filter/SectionSettings.java:42: lint: Unknown tag: @linkSectionSettingsWithSectionBits [103]\nout/soong/.intermediates/frameworks/base/offline-system-sdk-referenceonly-docs/android_common/srcjars/android/media/tv/tuner/filter/SectionSettings.java:90: lint: Unknown tag: @linkSectionSettingsWithSectionBits [103]\n\nwhich is not related to this cl.\n\ngo/ab for git_master also shows aosp_bramble userdebug in red.",
+      "revId": "ee1e35c1dfca91108c4147c46e1710a10f9096cb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
