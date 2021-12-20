@@ -33,6 +33,7 @@
 #include <android-base/chrono_utils.h>
 #include <android-base/file.h>
 #include <android-base/logging.h>
+#include <android-base/properties.h>
 #include <android-base/scopeguard.h>
 #include <android-base/strings.h>
 #include <android-base/unique_fd.h>
@@ -43,6 +44,7 @@ using android::base::Split;
 using android::base::Timer;
 using android::base::Trim;
 using android::base::unique_fd;
+using android::base::WaitForProperty;
 using android::base::WriteFully;
 
 namespace android {
@@ -109,6 +111,13 @@ FirmwareHandler::FirmwareHandler(std::vector<std::string> firmware_directories,
 
 Result<std::string> FirmwareHandler::RunExternalHandler(const std::string& handler, uid_t uid,
                                                         gid_t gid, const Uevent& uevent) const {
+    // Wait for com.android.runtime.apex activation
+    // Property name and value must be kept in sync with system/apexd/apex/apex_constants.h
+    // 60s is the default firmware sysfs fallback timeout. (/sys/class/firmware/timeout)
+    if (!WaitForProperty("apexd.status", "activated", 60s)) {
+        return Error() << "Apexd activation wait timeout";
+    }
+
     unique_fd child_stdout;
     unique_fd parent_stdout;
     if (!Socketpair(AF_UNIX, SOCK_STREAM | SOCK_CLOEXEC, 0, &child_stdout, &parent_stdout)) {
