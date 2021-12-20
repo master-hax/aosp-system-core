@@ -109,6 +109,11 @@ FirmwareHandler::FirmwareHandler(std::vector<std::string> firmware_directories,
 
 Result<std::string> FirmwareHandler::RunExternalHandler(const std::string& handler, uid_t uid,
                                                         gid_t gid, const Uevent& uevent) const {
+    // Wait for com.android.runtime.apex activation
+    while (IsBooting()) {
+        std::this_thread::sleep_for(100ms);
+    }
+
     unique_fd child_stdout;
     unique_fd parent_stdout;
     if (!Socketpair(AF_UNIX, SOCK_STREAM | SOCK_CLOEXEC, 0, &child_stdout, &parent_stdout)) {
