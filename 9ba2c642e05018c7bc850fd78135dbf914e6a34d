@@ -16,6 +16,46 @@
       "message": "Joel, can you please take a look as well? Thanks. I believe this is the first Rust logging usage from an APEX.",
       "revId": "9ba2c642e05018c7bc850fd78135dbf914e6a34d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ce7ae194_093e3c7e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1208973
+      },
+      "writtenOn": "2021-12-21T18:24:31Z",
+      "side": 1,
+      "message": "You don\u0027t also need min_sdk_version?",
+      "revId": "9ba2c642e05018c7bc850fd78135dbf914e6a34d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4e6dcf01_58bafce4",
+        "filename": "libstats/pull_rust/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1208973
+      },
+      "writtenOn": "2021-12-21T18:24:31Z",
+      "side": 1,
+      "message": "Nit: Spaces not tabs",
+      "range": {
+        "startLine": 49,
+        "startChar": 0,
+        "endLine": 49,
+        "endChar": 1
+      },
+      "revId": "9ba2c642e05018c7bc850fd78135dbf914e6a34d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
