@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "be52d93d_79160b85",
+        "filename": "libutils/include/utils/ErrorsMacros.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1574221
+      },
+      "writtenOn": "2021-12-22T20:10:44Z",
+      "side": 1,
+      "message": "If I understand correctly, for base::expected, Unwrap() asserts that the result is OK and extracts the value. It seems inconsistent for Unwrap operating over a pure error code to return the error code itself.\n\nWhat is the meaning of Unwrapping an error value? Do we actually need this contract for pure error values? If so, would it make more sense for consistency\u0027s sake to return void in that case?",
+      "range": {
+        "startLine": 59,
+        "startChar": 0,
+        "endLine": 59,
+        "endChar": 42
+      },
+      "revId": "af8ef0a5b53782bc0d1333b36c6e326d3462d9d6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
