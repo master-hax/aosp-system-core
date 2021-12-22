@@ -3,6 +3,69 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "75565f55_56d7ba50",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1380243
+      },
+      "writtenOn": "2021-12-22T15:38:41Z",
+      "side": 1,
+      "message": "Nit: just one space is enough.",
+      "range": {
+        "startLine": 7,
+        "startChar": 4,
+        "endLine": 7,
+        "endChar": 6
+      },
+      "revId": "9ba2c642e05018c7bc850fd78135dbf914e6a34d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "41329220_7f527b01",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1380243
+      },
+      "writtenOn": "2021-12-22T15:38:41Z",
+      "side": 1,
+      "message": "Typo: library",
+      "range": {
+        "startLine": 9,
+        "startChar": 4,
+        "endLine": 9,
+        "endChar": 12
+      },
+      "revId": "9ba2c642e05018c7bc850fd78135dbf914e6a34d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "35c10fce_640adc4f",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1380243
+      },
+      "writtenOn": "2021-12-22T15:38:41Z",
+      "side": 1,
+      "message": "One Change-Id is enough, please don\u0027t include two in the same changelist.\n\n(I think probably what happened is you added the Test line after the existing Change-Id, so the commit hook added another. Pick one to keep, and make sure it\u0027s the last line.)",
+      "revId": "9ba2c642e05018c7bc850fd78135dbf914e6a34d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "638d4417_ed220c23",
         "filename": "/PATCHSET_LEVEL",
         "patchSetId": 2
