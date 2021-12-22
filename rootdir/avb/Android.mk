@@ -91,6 +91,7 @@ LOCAL_SRC_FILES := $(LOCAL_MODULE)
 LOCAL_MODULE_PATH := $(my_gsi_avb_keys_path)
 
 include $(BUILD_PREBUILT)
+<<<<<<< TARGET BRANCH (99a5f9 Merge "[automerger skipped] Merge "liblog: use unique log ta)
 
 #######################################
 # qcar-gsi.avbpubkey
@@ -106,3 +107,19 @@ LOCAL_MODULE_PATH := $(my_gsi_avb_keys_path)
 include $(BUILD_PREBUILT)
 
 my_gsi_avb_keys_path :=
+=======
+#######################################
+# qcar-gsi.avbpubkey
+include $(CLEAR_VARS)
+
+LOCAL_MODULE := qcar-gsi.avbpubkey
+LOCAL_MODULE_CLASS := ETC
+LOCAL_SRC_FILES := $(LOCAL_MODULE)
+ifeq ($(BOARD_USES_RECOVERY_AS_BOOT),true)
+LOCAL_MODULE_PATH := $(TARGET_RECOVERY_ROOT_OUT)/first_stage_ramdisk/avb
+else
+LOCAL_MODULE_PATH := $(TARGET_RAMDISK_OUT)/avb
+endif
+
+include $(BUILD_PREBUILT)
+>>>>>>> SOURCE BRANCH (efcca3 Merge "Adding Car GSI public key" into android11-tests-dev)
