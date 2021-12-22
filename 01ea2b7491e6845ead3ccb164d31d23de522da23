@@ -16,6 +16,24 @@
       "message": "does this need to be added as an init builtin, or is there a command-line tool for the bootloader message stuff (so we could just do this in a .rc file)? i feel like i\u0027ve seen such a thing? +xunchang who might either know what i\u0027m vaguely remembering, or be a canonical reference for \"no dude, you\u0027re imagining it\" :-) ",
       "revId": "01ea2b7491e6845ead3ccb164d31d23de522da23",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c5552497_bc8ed3ce",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1088085
+      },
+      "writtenOn": "2021-12-22T20:09:41Z",
+      "side": 1,
+      "message": "There is a misc_writer for Pixel that writes to the vendor space of /misc, so callers won\u0027t contend the offset. Though we don\u0027t have similar mechanism for the system space of /misc; as the contention is unlikely when system components call though the bootloader_messager library.  \n\nhttps://cs.android.com/android/platform/superproject/+/master:hardware/google/pixel/misc_writer/include/misc_writer/?q\u003dmisc_writer\u0026ss\u003dandroid%2Fplatform%2Fsuperproject",
+      "parentUuid": "c739ef0b_8b2db6a1",
+      "revId": "01ea2b7491e6845ead3ccb164d31d23de522da23",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
