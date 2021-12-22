@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "a0c9167f_bdcee5ed",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1897307
+      },
+      "writtenOn": "2021-12-22T18:21:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "75565f55_56d7ba50",
+      "range": {
+        "startLine": 7,
+        "startChar": 4,
+        "endLine": 7,
+        "endChar": 6
+      },
+      "revId": "9ba2c642e05018c7bc850fd78135dbf914e6a34d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "41329220_7f527b01",
@@ -47,6 +71,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "1af61feb_9b6cce72",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1897307
+      },
+      "writtenOn": "2021-12-22T18:21:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "41329220_7f527b01",
+      "range": {
+        "startLine": 9,
+        "startChar": 4,
+        "endLine": 9,
+        "endChar": 12
+      },
+      "revId": "9ba2c642e05018c7bc850fd78135dbf914e6a34d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "35c10fce_640adc4f",
@@ -60,6 +108,24 @@
       "writtenOn": "2021-12-22T15:38:41Z",
       "side": 1,
       "message": "One Change-Id is enough, please don\u0027t include two in the same changelist.\n\n(I think probably what happened is you added the Test line after the existing Change-Id, so the commit hook added another. Pick one to keep, and make sure it\u0027s the last line.)",
+      "revId": "9ba2c642e05018c7bc850fd78135dbf914e6a34d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c50a7be0_95b8a931",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1897307
+      },
+      "writtenOn": "2021-12-22T18:21:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "35c10fce_640adc4f",
       "revId": "9ba2c642e05018c7bc850fd78135dbf914e6a34d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -100,6 +166,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "6600da8e_9cef6cd5",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1897307
+      },
+      "writtenOn": "2021-12-22T18:21:42Z",
+      "side": 1,
+      "message": "If I understand it correctly, min_sdk_version is used to limit the library to some version and higher. The virt apex will be released released in T, along with which we want to land these telemetry CLs, so we basically need the library in all versions of apex.\n\n@Andrew, can you confirm",
+      "parentUuid": "ce7ae194_093e3c7e",
+      "revId": "9ba2c642e05018c7bc850fd78135dbf914e6a34d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "4e6dcf01_58bafce4",
         "filename": "libstats/pull_rust/Android.bp",
         "patchSetId": 2
@@ -111,6 +195,30 @@
       "writtenOn": "2021-12-21T18:24:31Z",
       "side": 1,
       "message": "Nit: Spaces not tabs",
+      "range": {
+        "startLine": 49,
+        "startChar": 0,
+        "endLine": 49,
+        "endChar": 1
+      },
+      "revId": "9ba2c642e05018c7bc850fd78135dbf914e6a34d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2baa6bc5_2434344c",
+        "filename": "libstats/pull_rust/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1897307
+      },
+      "writtenOn": "2021-12-22T18:21:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4e6dcf01_58bafce4",
       "range": {
         "startLine": 49,
         "startChar": 0,
