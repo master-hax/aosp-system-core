@@ -202,6 +202,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "a73c7faa_e0b037ba",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1208973
+      },
+      "writtenOn": "2021-12-22T18:46:41Z",
+      "side": 1,
+      "message": "But this won\u0027t work on older versions of the SDK, right?  Rust supported wasn\u0027t added that long ago.",
+      "parentUuid": "c39169fc_37837aa4",
+      "revId": "9ba2c642e05018c7bc850fd78135dbf914e6a34d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "4e6dcf01_58bafce4",
         "filename": "libstats/pull_rust/Android.bp",
         "patchSetId": 2
