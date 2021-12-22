@@ -16,6 +16,24 @@
       "message": "I don\u0027t know what these are for. But since Bowgo +2\u0027ed, let me rubberstamp this.",
       "revId": "f6f7ec0835382bbcb035997467eb8ff41afb6d6d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d9fe2bf3_4ee2d211",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2021-12-22T02:50:11Z",
+      "side": 1,
+      "message": "That\u0027s the old usage that requires installing GSI keys into the ramdisk.\n\nIn master, we don\u0027t do this now and only include the GSI key into the VTS.\n\ne.g., https://r.android.com/1912736",
+      "parentUuid": "14346068_8b91f31a",
+      "revId": "f6f7ec0835382bbcb035997467eb8ff41afb6d6d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
