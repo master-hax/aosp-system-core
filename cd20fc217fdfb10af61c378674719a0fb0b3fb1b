@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cd1450ce_e811e65a",
+        "filename": "libstats/pull_rust/Android.bp",
+        "patchSetId": 3
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1208973
+      },
+      "writtenOn": "2021-12-22T18:23:55Z",
+      "side": 1,
+      "message": "No //apex_available:platform?",
+      "revId": "cd20fc217fdfb10af61c378674719a0fb0b3fb1b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
