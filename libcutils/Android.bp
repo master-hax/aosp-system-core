@@ -61,6 +61,7 @@ cc_library_headers {
             enabled: true,
         },
     },
+    min_sdk_version: "29",
 }
 
 // Socket specific parts of libcutils that are safe to statically link into an APEX.
@@ -114,6 +115,7 @@ cc_library {
             ],
         },
     },
+    min_sdk_version: "29",
 }
 
 cc_test {
@@ -251,6 +253,7 @@ cc_library {
     ],
     header_libs: [
         "libbase_headers",
+        "liblog_headers",
         "libcutils_headers",
         "libprocessgroup_headers",
     ],
@@ -265,6 +268,7 @@ cc_library {
         "-Wall",
         "-Wextra",
     ],
+    min_sdk_version: "29",
 }
 
 cc_defaults {
