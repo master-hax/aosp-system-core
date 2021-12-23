@@ -238,6 +238,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "736098d5_16bf59f0",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1208973
+      },
+      "writtenOn": "2021-12-23T15:43:27Z",
+      "side": 1,
+      "message": "That seems reasonable, but I don\u0027t know its semantics.  +Jiyong, who might know more.",
+      "parentUuid": "0d23b3f3_18fa9747",
+      "revId": "9ba2c642e05018c7bc850fd78135dbf914e6a34d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "4e6dcf01_58bafce4",
         "filename": "libstats/pull_rust/Android.bp",
         "patchSetId": 2
