@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bf78679a_1e5f687a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2021-12-23T21:53:42Z",
+      "side": 1,
+      "message": "is there any data on the pros/cons of this (in terms of binary size, memory usage, test performance)? which profiles are used to inform the optimization of this library?",
+      "revId": "6ee028f16596bf617e2d8b817c13734ef65c51fb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
