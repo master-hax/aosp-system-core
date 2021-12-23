@@ -59,6 +59,7 @@ cc_library_headers {
             enabled: true,
         },
     },
+    sdk_version: "current",
 }
 
 cc_defaults {

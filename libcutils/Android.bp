@@ -39,6 +39,7 @@ cc_defaults {
         "//apex_available:platform",
         "//apex_available:anyapex",
     ],
+    stl: "libc++",
     min_sdk_version: "29",
 }
 
@@ -61,6 +62,8 @@ cc_library_headers {
             enabled: true,
         },
     },
+    min_sdk_version: "29",
+    sdk_version: "current",
 }
 
 // Socket specific parts of libcutils that are safe to statically link into an APEX.
@@ -114,6 +117,8 @@ cc_library {
             ],
         },
     },
+    min_sdk_version: "29",
+    sdk_version: "current",
 }
 
 cc_test {
@@ -251,6 +256,7 @@ cc_library {
     ],
     header_libs: [
         "libbase_headers",
+        "liblog_headers",
         "libcutils_headers",
         "libprocessgroup_headers",
     ],
@@ -265,6 +271,9 @@ cc_library {
         "-Wall",
         "-Wextra",
     ],
+    stl: "libc++",
+    min_sdk_version: "29",
+    sdk_version: "current",
 }
 
 cc_defaults {
