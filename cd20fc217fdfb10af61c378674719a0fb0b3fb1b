@@ -16,6 +16,24 @@
       "message": "No //apex_available:platform?",
       "revId": "cd20fc217fdfb10af61c378674719a0fb0b3fb1b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "314a8312_5725d1c1",
+        "filename": "libstats/pull_rust/Android.bp",
+        "patchSetId": 3
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1897307
+      },
+      "writtenOn": "2021-12-23T15:36:50Z",
+      "side": 1,
+      "message": "Thanks for pointing that. Yes, I think it should be there, surprisingly nothing broke when apex_available was overwritten to just the virt apex. Possibly because at present,it is not being used.\n\nAdded it now.",
+      "parentUuid": "cd1450ce_e811e65a",
+      "revId": "cd20fc217fdfb10af61c378674719a0fb0b3fb1b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }

@@ -220,6 +220,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "0d23b3f3_18fa9747",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1897307
+      },
+      "writtenOn": "2021-12-23T15:36:50Z",
+      "side": 1,
+      "message": "I can set min_sdk_version: \"apex_inherit\". This will track the oldest SDK version of the containing apexes. And it seems like the right think to do for each Apex that contain this module. Do you think this is right?",
+      "parentUuid": "a73c7faa_e0b037ba",
+      "revId": "9ba2c642e05018c7bc850fd78135dbf914e6a34d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "4e6dcf01_58bafce4",
         "filename": "libstats/pull_rust/Android.bp",
         "patchSetId": 2
