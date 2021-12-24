@@ -50,6 +50,30 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "3ba8e1da_7066b097",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2021-12-24T05:01:36Z",
+      "side": 1,
+      "message": "Ack. Thanks.",
+      "parentUuid": "8906ea5a_3034d159",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 10,
+        "endChar": 10
+      },
+      "revId": "1fc949157cb002e0590ff622ce55005b7600be07",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "03270c0c_6499cec7",
         "filename": "/PATCHSET_LEVEL",
         "patchSetId": 1
@@ -102,6 +126,30 @@
       "side": 1,
       "message": "\u0027IsBooting\u0027 is already used to wait for firmware file ready. (https://cs.android.com/android/platform/superproject/+/master:system/core/init/firmware_handler.cpp;l\u003d269)\nIt waits for deleting \u0027/dev/.booting\u0027 by firmware_mounts_complete init action (https://cs.android.com/android/platform/superproject/+/master:system/core/rootdir/init.rc;l\u003d464) which is triggered on late-init (https://cs.android.com/android/platform/superproject/+/master:system/core/rootdir/init.rc;l\u003d496).\n\nI would like to suggest to use \u0027apexd.status\u0027 like the following code;\n```\nwhile (IsBooting()) {\n     if (GetProperty(kApexStatusSysprop, kApexStatusStarting) !\u003d kApexStatusStarting) {\n         break;\n     }\n     std::this_thread::sleep_for(100ms);\n}\n```\nOne concern I have is that it requires additional permissions - \u0027get_prop(ueventd, apexd_prop)\u0027.",
       "parentUuid": "72edb9cd_9c2b3eb1",
+      "range": {
+        "startLine": 113,
+        "startChar": 11,
+        "endLine": 113,
+        "endChar": 22
+      },
+      "revId": "1fc949157cb002e0590ff622ce55005b7600be07",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "409237b2_9f1055ca",
+        "filename": "init/firmware_handler.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2021-12-24T05:01:36Z",
+      "side": 1,
+      "message": "I like that better. get_prop(...) should be fine.\n\nTip: you could eliminate the sleep call (and the while-loop as well) by using the WaitForProperty API.",
+      "parentUuid": "6e6b198d_e301fd94",
       "range": {
         "startLine": 113,
         "startChar": 11,
