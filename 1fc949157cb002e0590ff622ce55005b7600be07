@@ -1,6 +1,29 @@
 {
   "comments": [
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "be593e8a_f8b7c054",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2021-12-24T03:06:06Z",
+      "side": 1,
+      "message": "Could you elaborate? Even when the runtime APEX is not activated, they have access to the bootstrap bionic libraries.",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 10,
+        "endChar": 10
+      },
+      "revId": "1fc949157cb002e0590ff622ce55005b7600be07",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "03270c0c_6499cec7",
@@ -14,6 +37,29 @@
       "writtenOn": "2021-12-22T00:38:19Z",
       "side": 1,
       "message": "Adding jiyong@ to comment on the APEX interaction.",
+      "revId": "1fc949157cb002e0590ff622ce55005b7600be07",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "72edb9cd_9c2b3eb1",
+        "filename": "init/firmware_handler.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2021-12-24T03:06:06Z",
+      "side": 1,
+      "message": "Potential deadlock? What if \u0027IsBooting\u0027 is indirectly depending on some of firmware?",
+      "range": {
+        "startLine": 113,
+        "startChar": 11,
+        "endLine": 113,
+        "endChar": 22
+      },
       "revId": "1fc949157cb002e0590ff622ce55005b7600be07",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
