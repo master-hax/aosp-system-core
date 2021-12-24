@@ -16,6 +16,24 @@
       "message": "is there any data on the pros/cons of this (in terms of binary size, memory usage, test performance)? which profiles are used to inform the optimization of this library?",
       "revId": "6ee028f16596bf617e2d8b817c13734ef65c51fb",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b02a52c0_36bfada9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1087625
+      },
+      "writtenOn": "2021-12-24T05:34:46Z",
+      "side": 1,
+      "message": "\u003e is there any data on the pros/cons of this (in terms of binary size, memory usage, test performance)?\n\nWe did extensive performance analysis for the first several libraries that enabled afdo, and they showed significantly improved app launch performance (over 10% combined). We are now confident with turning afdo on for more libraries without repeating benchmark process for each library.\n\nThe only downside of afdo is slightly increased build time (in the magnitude of seconds and is not observable with RBE).\n\n\u003e which profiles are used to inform the optimization of this library?\n\nWe use profiles collected from Droidfooders. They reflect real-world use behaviour.",
+      "parentUuid": "bf78679a_1e5f687a",
+      "revId": "6ee028f16596bf617e2d8b817c13734ef65c51fb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
