@@ -22,6 +22,30 @@
       },
       "revId": "af8ef0a5b53782bc0d1333b36c6e326d3462d9d6",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6107efd9_ecb63cc3",
+        "filename": "libutils/include/utils/ErrorsMacros.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2021-12-27T05:05:13Z",
+      "side": 1,
+      "message": "For status_t, unwrapping doesn\u0027t do anything interesting because it can carry both a success value and failure values. But other types like Result definitely need this. The existence of Unwrap is needed just to satisfy the contract with the macros.",
+      "parentUuid": "be52d93d_79160b85",
+      "range": {
+        "startLine": 59,
+        "startChar": 0,
+        "endLine": 59,
+        "endChar": 42
+      },
+      "revId": "af8ef0a5b53782bc0d1333b36c6e326d3462d9d6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
