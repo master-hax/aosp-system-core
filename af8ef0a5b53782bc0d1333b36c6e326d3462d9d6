@@ -87,6 +87,29 @@
       },
       "revId": "af8ef0a5b53782bc0d1333b36c6e326d3462d9d6",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8903588e_9e640ceb",
+        "filename": "libutils/include/utils/ErrorsMacros.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 1574221
+      },
+      "writtenOn": "2021-12-29T19:14:35Z",
+      "side": 1,
+      "message": "Isn\u0027t this forcing me to use Result? One of the explicit requirements was that I can use the macros with any base::expected, for example, base::expected\u003cT, status_t\u003e.\nWhat I don\u0027t like about Result is that it is opinionated about the error type (specifically, that it carries a string, instead of the \"error code with string\" being just one possible type that can be used),",
+      "range": {
+        "startLine": 78,
+        "startChar": 13,
+        "endLine": 78,
+        "endChar": 19
+      },
+      "revId": "af8ef0a5b53782bc0d1333b36c6e326d3462d9d6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
