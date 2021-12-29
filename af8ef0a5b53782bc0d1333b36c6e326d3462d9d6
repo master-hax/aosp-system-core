@@ -3,6 +3,23 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "fd9c2bab_62a21c6a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2021-12-29T00:43:28Z",
+      "side": 1,
+      "message": "Thanks David.\n\nSteven and Elliott, I need your vote for ErrorsMacros.h where David is not an owner of.",
+      "revId": "af8ef0a5b53782bc0d1333b36c6e326d3462d9d6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "be52d93d_79160b85",
         "filename": "libutils/include/utils/ErrorsMacros.h",
         "patchSetId": 7
