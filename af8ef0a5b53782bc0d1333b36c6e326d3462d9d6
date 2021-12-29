@@ -91,6 +91,29 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "5344ac46_2b1a6b54",
+        "filename": "libutils/include/utils/ErrorsMacros.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1574221
+      },
+      "writtenOn": "2021-12-29T20:49:37Z",
+      "side": 1,
+      "message": "I could not get this to work with OR_RETURN(Result\u003cT, StatusT\u003e) in a function returning status_t.",
+      "range": {
+        "startLine": 73,
+        "startChar": 0,
+        "endLine": 73,
+        "endChar": 1
+      },
+      "revId": "af8ef0a5b53782bc0d1333b36c6e326d3462d9d6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "8903588e_9e640ceb",
         "filename": "libutils/include/utils/ErrorsMacros.h",
         "patchSetId": 7
