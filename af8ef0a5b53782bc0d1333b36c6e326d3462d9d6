@@ -63,6 +63,30 @@
       },
       "revId": "af8ef0a5b53782bc0d1333b36c6e326d3462d9d6",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e863506e_3c087309",
+        "filename": "libutils/include/utils/ErrorsMacros.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1574221
+      },
+      "writtenOn": "2021-12-29T18:07:20Z",
+      "side": 1,
+      "message": "But why return the error and not void in this case? Isn\u0027t this inconsistent?",
+      "parentUuid": "6107efd9_ecb63cc3",
+      "range": {
+        "startLine": 59,
+        "startChar": 0,
+        "endLine": 59,
+        "endChar": 42
+      },
+      "revId": "af8ef0a5b53782bc0d1333b36c6e326d3462d9d6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
