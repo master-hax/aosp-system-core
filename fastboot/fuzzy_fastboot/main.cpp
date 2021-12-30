@@ -890,28 +890,51 @@ TEST_F(Fuzz, GetVarAllSpam) {
 
 TEST_F(Fuzz, BadCommandTooLarge) {
     std::string s = RandomString(FB_COMMAND_SZ + 1, rand_legal);
-    EXPECT_EQ(fb->RawCommand(s), DEVICE_FAIL)
+    RetCode ret = fb->RawCommand(s);
+    EXPECT_TRUE(ret == DEVICE_FAIL || ret == IO_ERROR)
             << "Device did not respond with failure after sending length " << s.size()
             << " string of random ASCII chars";
+    if (ret == IO_ERROR) EXPECT_EQ(transport->Reset(), 0) << "USB reset failed";
     std::string s1 = RandomString(1000, rand_legal);
-    EXPECT_EQ(fb->RawCommand(s1), DEVICE_FAIL)
+    ret = fb->RawCommand(s1);
+    EXPECT_TRUE(ret == DEVICE_FAIL || ret == IO_ERROR)
             << "Device did not respond with failure after sending length " << s1.size()
             << " string of random ASCII chars";
+    if (ret == IO_ERROR) EXPECT_EQ(transport->Reset(), 0) << "USB reset failed";
     std::string s2 = RandomString(1000, rand_illegal);
-    EXPECT_EQ(fb->RawCommand(s2), DEVICE_FAIL)
-            << "Device did not respond with failure after sending length " << s1.size()
+    ret = fb->RawCommand(s2);
+    EXPECT_TRUE(ret == DEVICE_FAIL || ret == IO_ERROR)
+            << "Device did not respond with failure after sending length " << s2.size()
             << " string of random non-ASCII chars";
+    if (ret == IO_ERROR) EXPECT_EQ(transport->Reset(), 0) << "USB reset failed";
     std::string s3 = RandomString(1000, rand_char);
-    EXPECT_EQ(fb->RawCommand(s3), DEVICE_FAIL)
-            << "Device did not respond with failure after sending length " << s1.size()
+    ret = fb->RawCommand(s3);
+    EXPECT_TRUE(ret == DEVICE_FAIL || ret == IO_ERROR)
+            << "Device did not respond with failure after sending length " << s3.size()
             << " string of random chars";
+    if (ret == IO_ERROR) EXPECT_EQ(transport->Reset(), 0) << "USB reset failed";
+
+    std::string s4 = RandomString(10 * 1024 * 1024, rand_legal);
+    ret = fb->RawCommand(s);
+    EXPECT_TRUE(ret == DEVICE_FAIL || ret == IO_ERROR)
+            << "Device did not respond with failure after sending length " << s4.size()
+            << " string of random ASCII chars ";
+    if (ret == IO_ERROR) EXPECT_EQ(transport->Reset(), 0) << "USB reset failed";
+
+    ASSERT_TRUE(UsbStillAvailible()) << USB_PORT_GONE;
+    std::string resp;
+    EXPECT_EQ(fb->GetVar("product", &resp), SUCCESS)
+                << "Device is unresponsive to getvar command";
 }
 
 TEST_F(Fuzz, CommandTooLarge) {
     for (const std::string& s : CMDS) {
         std::string rs = RandomString(1000, rand_char);
-        EXPECT_EQ(fb->RawCommand(s + rs), DEVICE_FAIL)
-                << "Device did not respond with failure after '" << s + rs << "'";
+        RetCode ret;
+        ret = fb->RawCommand(s + rs);
+        EXPECT_TRUE(ret == DEVICE_FAIL || ret == IO_ERROR)
+                << "Device did not respond with failure " << ret << "after '" << s + rs << "'";
+        if (ret == IO_ERROR) EXPECT_EQ(transport->Reset(), 0) << "USB reset failed";
         ASSERT_TRUE(UsbStillAvailible()) << USB_PORT_GONE;
         std::string resp;
         EXPECT_EQ(fb->GetVar("product", &resp), SUCCESS)
@@ -938,6 +961,8 @@ TEST_F(Fuzz, CommandMissingArgs) {
     }
 }
 
+// A zero length sparse leng is still legal
+#if 0
 TEST_F(Fuzz, SparseZeroLength) {
     SparseWrapper sparse(4096, 0);
     ASSERT_TRUE(*sparse) << "Sparse image creation failed";
@@ -953,6 +978,7 @@ TEST_F(Fuzz, SparseZeroLength) {
                 << "Flashing zero length sparse image did not fail " << sparse.Rep();
     }
 }
+#endif
 
 TEST_F(Fuzz, SparseTooManyChunks) {
     SparseWrapper sparse(4096, 4096);  // 1 block, but we send two chunks that will use 2 blocks
