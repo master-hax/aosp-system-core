@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8f44f7e9_edc60d10",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2021-12-30T18:22:39Z",
+      "side": 1,
+      "message": "Two weeks ago I was able to reproduce the original failure quite consistently, but I can\u0027t anymore after syncing. I ran the test overnight in a loop and saw no failures. It also passes consistently with --gtest_shuffle.\n\nI\u0027d like to try relanding this to see if the failure was transient.",
+      "revId": "16378996320164254a4f4db42b56c6adb3130872",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
