@@ -89,6 +89,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "a5adc66e_138dc65c",
+        "filename": "libutils/include/utils/ErrorsMacros.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2021-12-31T02:05:39Z",
+      "side": 1,
+      "message": "Done.",
+      "parentUuid": "e863506e_3c087309",
+      "range": {
+        "startLine": 59,
+        "startChar": 0,
+        "endLine": 59,
+        "endChar": 42
+      },
+      "revId": "af8ef0a5b53782bc0d1333b36c6e326d3462d9d6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "5344ac46_2b1a6b54",
@@ -112,6 +136,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "b123900c_71015e56",
+        "filename": "libutils/include/utils/ErrorsMacros.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2021-12-31T02:05:39Z",
+      "side": 1,
+      "message": "This is fixed in the new patchset and I\u0027ve added a test for it.",
+      "parentUuid": "5344ac46_2b1a6b54",
+      "range": {
+        "startLine": 73,
+        "startChar": 0,
+        "endLine": 73,
+        "endChar": 1
+      },
+      "revId": "af8ef0a5b53782bc0d1333b36c6e326d3462d9d6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "8903588e_9e640ceb",
@@ -125,6 +173,30 @@
       "writtenOn": "2021-12-29T19:14:35Z",
       "side": 1,
       "message": "Isn\u0027t this forcing me to use Result? One of the explicit requirements was that I can use the macros with any base::expected, for example, base::expected\u003cT, status_t\u003e.\nWhat I don\u0027t like about Result is that it is opinionated about the error type (specifically, that it carries a string, instead of the \"error code with string\" being just one possible type that can be used),",
+      "range": {
+        "startLine": 78,
+        "startChar": 13,
+        "endLine": 78,
+        "endChar": 19
+      },
+      "revId": "af8ef0a5b53782bc0d1333b36c6e326d3462d9d6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "98e3705a_00296dfb",
+        "filename": "libutils/include/utils/ErrorsMacros.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2021-12-31T02:05:39Z",
+      "side": 1,
+      "message": "android::base::expected is NOT expected to be used outside of libbase from the beginning. If you want a Result that does not carry a string, we could make a specialization of ResultError for StatusT (possibly in a follow-up change).",
+      "parentUuid": "8903588e_9e640ceb",
       "range": {
         "startLine": 78,
         "startChar": 13,
