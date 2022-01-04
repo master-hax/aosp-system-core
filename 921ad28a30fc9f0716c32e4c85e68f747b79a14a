@@ -1,0 +1,47 @@
+{
+  "comments": [
+    {
+      "robotId": "ayeaye",
+      "robotRunId": "AR00000000000018882978",
+      "url": "https://android-build.googleplex.com/builds/treetop/android-review/1935478?revision\u003d2",
+      "fixSuggestions": [
+        {
+          "fixId": "0b034cac_80a68e89",
+          "description": "Change to \"fastboot/fuzzy_fastboot/main.cpp\"",
+          "replacements": [
+            {
+              "path": "fastboot/fuzzy_fastboot/main.cpp",
+              "range": {
+                "startLine": 924,
+                "startChar": 24,
+                "endLine": 924,
+                "endChar": 33
+              },
+              "replacement": "Available"
+            }
+          ]
+        }
+      ],
+      "key": {
+        "uuid": "2fa66eed_883ee881",
+        "filename": "fastboot/fuzzy_fastboot/main.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 924,
+      "author": {
+        "id": 1757831
+      },
+      "writtenOn": "2022-01-04T23:25:22Z",
+      "side": 1,
+      "message": "Common typo found: \"Availible\" -- should it be \"Available\"?\nNote: a line containing \"common_typos_disable\" or \"common_typos_enable\" will turn off or on (respectively) the linter for subsequent lines in the file. Alternatively include the token \"NOTYPO\" within a line to skip typo linting that line or include \u0027No-Typo-Check: \u003creason\u003e\u0027in the commit message.",
+      "range": {
+        "startLine": 924,
+        "startChar": 24,
+        "endLine": 924,
+        "endChar": 33
+      },
+      "revId": "921ad28a30fc9f0716c32e4c85e68f747b79a14a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
