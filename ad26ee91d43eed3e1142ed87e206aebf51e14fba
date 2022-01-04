@@ -16,6 +16,24 @@
       "message": "These usages of optind get pretty complicated, can you add some extra variables to simplify this?  Maybe something like:\n\nchar* num_extra_args \u003d argc - optind;\nchar* extra_args[] \u003d \u0026argv[optind];",
       "revId": "ad26ee91d43eed3e1142ed87e206aebf51e14fba",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "37675672_903bb1de",
+        "filename": "libsparse/img2simg.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 1932220
+      },
+      "writtenOn": "2022-01-04T21:40:44Z",
+      "side": 1,
+      "message": "I\u0027ve added some helper variables for the arguments and adjusted `argc` by `optind`.",
+      "parentUuid": "c69ceeac_79b99a90",
+      "revId": "ad26ee91d43eed3e1142ed87e206aebf51e14fba",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
