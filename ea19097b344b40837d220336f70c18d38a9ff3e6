@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f48698fc_443d9cbd",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 9
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2022-01-04T22:58:20Z",
+      "side": 1,
+      "message": "the idea of this is to avoid implicit conversion? Do we really need a wrapper type? Of course, I wish we had \u0027struct status_t { int32_t v; };\u0027 in the first place. You know I don\u0027t like typedef! Though, we will never have all status_t or all StatusT.\n\nGiven that we have an implicit conversion to int32_t for StatusT, what do we get for it?",
+      "range": {
+        "startLine": 14,
+        "startChar": 9,
+        "endLine": 14,
+        "endChar": 53
+      },
+      "revId": "ea19097b344b40837d220336f70c18d38a9ff3e6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "19b16030_3e3aa780",
+        "filename": "libutils/include/utils/ErrorsMacros.h",
+        "patchSetId": 9
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2022-01-04T22:58:20Z",
+      "side": 1,
+      "message": "This is actually OkOrFail\u003cint32_t\u003e, right? The type system won\u0027t distinguish between status_t and other integer types.",
+      "range": {
+        "startLine": 53,
+        "startChar": 16,
+        "endLine": 53,
+        "endChar": 24
+      },
+      "revId": "ea19097b344b40837d220336f70c18d38a9ff3e6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
