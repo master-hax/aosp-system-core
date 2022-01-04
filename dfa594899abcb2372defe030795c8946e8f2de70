@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8dbefda8_886a7d6d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1932220
+      },
+      "writtenOn": "2022-01-04T21:39:52Z",
+      "side": 1,
+      "message": "This patchset removes some unused variables and fixes some typos in the documentation and commit message.",
+      "revId": "dfa594899abcb2372defe030795c8946e8f2de70",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
