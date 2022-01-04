@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8f285b16_d4624527",
+        "filename": "libsparse/img2simg.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1002751
+      },
+      "writtenOn": "2022-01-04T23:44:32Z",
+      "side": 1,
+      "message": "This is invalid if argc \u003c 3",
+      "revId": "a4ddf715972c2dbd96a41b6e9775d7067bda1d88",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
