@@ -162,6 +162,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "79621bd1_7dadf6a4",
+        "filename": "libutils/include/utils/ErrorsMacros.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1574221
+      },
+      "writtenOn": "2022-01-04T21:03:02Z",
+      "side": 1,
+      "message": "Did you forget to upload the new PS?",
+      "parentUuid": "b123900c_71015e56",
+      "range": {
+        "startLine": 73,
+        "startChar": 0,
+        "endLine": 73,
+        "endChar": 1
+      },
+      "revId": "af8ef0a5b53782bc0d1333b36c6e326d3462d9d6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "8903588e_9e640ceb",
         "filename": "libutils/include/utils/ErrorsMacros.h",
         "patchSetId": 7
@@ -197,6 +221,30 @@
       "side": 1,
       "message": "android::base::expected is NOT expected to be used outside of libbase from the beginning. If you want a Result that does not carry a string, we could make a specialization of ResultError for StatusT (possibly in a follow-up change).",
       "parentUuid": "8903588e_9e640ceb",
+      "range": {
+        "startLine": 78,
+        "startChar": 13,
+        "endLine": 78,
+        "endChar": 19
+      },
+      "revId": "af8ef0a5b53782bc0d1333b36c6e326d3462d9d6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f080aa70_91098a8c",
+        "filename": "libutils/include/utils/ErrorsMacros.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 1574221
+      },
+      "writtenOn": "2022-01-04T21:03:02Z",
+      "side": 1,
+      "message": "\u003e android::base::expected is NOT expected to be used outside of libbase\nWhy is this the case? What\u0027s wrong with it (esp. given that it might become a standard C++ feature and is a well-understood feature in other languages such as Rust)?\nWhat is the benefit that Result adds other than adding a string to its error value?\n\n\u003e we could make a specialization of ResultError for StatusT\nWhy do you regard special-casing as a superior solution? And what if someone else does want \u003cstatus_t + string\u003e? I don\u0027t see any benefit in limiting the flexibility here.",
+      "parentUuid": "98e3705a_00296dfb",
       "range": {
         "startLine": 78,
         "startChar": 13,
