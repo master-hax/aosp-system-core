@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2e543e42_0172575f",
+        "filename": "fastboot/fuzzy_fastboot/main.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 895,
+      "author": {
+        "id": 1595133
+      },
+      "writtenOn": "2022-01-04T18:23:18Z",
+      "side": 1,
+      "message": "nit: consider a const string for the repeats, maybe even a marco/template?",
+      "range": {
+        "startLine": 895,
+        "startChar": 16,
+        "endLine": 895,
+        "endChar": 72
+      },
+      "revId": "402ed6b3f0e1216c2a100b78c83f4b2598366301",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
