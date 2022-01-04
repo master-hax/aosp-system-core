@@ -33,6 +33,24 @@
       "message": "Do I need to review the results from the TreeHugger run? I don\u0027t have a \"moma\" sign-in, so I can\u0027t view it.",
       "revId": "dfa594899abcb2372defe030795c8946e8f2de70",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0d2b2a3c_1364fc23",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1002751
+      },
+      "writtenOn": "2022-01-04T23:50:31Z",
+      "side": 1,
+      "message": "The results are only available internally, but it is detecting a build error:\n\nsystem/core/libsparse/img2simg.cpp:96:9: error: no matching function for call to \u0027sparse_file_read\u0027\n  ret \u003d sparse_file_read(s, in, false, false);\n        ^~~~~~~~~~~~~~~~\nsystem/core/libsparse/include/sparse/sparse.h:263:5: note: candidate function not viable: no known conversion from \u0027bool\u0027 to \u0027enum sparse_read_mode\u0027 for 3rd argument\nint sparse_file_read(struct sparse_file *s, int fd, enum sparse_read_mode mode, bool crc);\n    ^\n1 error generated.",
+      "parentUuid": "aadcaabd_b0f9c513",
+      "revId": "dfa594899abcb2372defe030795c8946e8f2de70",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
