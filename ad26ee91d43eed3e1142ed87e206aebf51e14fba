@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c69ceeac_79b99a90",
+        "filename": "libsparse/img2simg.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 1002751
+      },
+      "writtenOn": "2022-01-04T20:46:48Z",
+      "side": 1,
+      "message": "These usages of optind get pretty complicated, can you add some extra variables to simplify this?  Maybe something like:\n\nchar* num_extra_args \u003d argc - optind;\nchar* extra_args[] \u003d \u0026argv[optind];",
+      "revId": "ad26ee91d43eed3e1142ed87e206aebf51e14fba",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
