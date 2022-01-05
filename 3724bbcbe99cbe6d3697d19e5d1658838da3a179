@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ce2aa590_5fb702b7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1611820
+      },
+      "writtenOn": "2022-01-05T00:13:48Z",
+      "side": 1,
+      "message": "Do we have a vulnerability report?",
+      "revId": "3724bbcbe99cbe6d3697d19e5d1658838da3a179",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
