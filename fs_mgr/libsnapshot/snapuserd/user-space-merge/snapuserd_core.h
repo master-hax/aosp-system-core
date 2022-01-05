@@ -42,6 +42,8 @@
 #include <snapuserd/snapuserd_buffer.h>
 #include <snapuserd/snapuserd_kernel.h>
 
+#include <liburing.h>
+
 namespace android {
 namespace snapshot {
 
@@ -113,6 +115,19 @@ class ReadAhead {
     bool ReconstructDataFromCow();
     void CheckOverlap(const CowOperation* cow_op);
 
+    bool ReadAheadAsyncIO();
+    bool ReapIoCompletions(int pending_ios_to_complete);
+    bool ReadXorData(size_t block_index, size_t xor_op_index,
+                     std::vector<const CowOperation*>& xor_op_vec);
+    void ProcessXorData(size_t& block_xor_index, size_t& xor_index,
+                        std::vector<const CowOperation*>& xor_op_vec, void* buffer,
+                        loff_t& buffer_offset);
+    void UpdateScratchMetadata();
+
+    bool ReadAheadSyncIO();
+    bool Initialize_Iouring();
+    void Finalize_Iouring();
+
     void* read_ahead_buffer_;
     void* metadata_buffer_;
 
@@ -131,7 +146,15 @@ class ReadAhead {
     std::unordered_set<uint64_t> dest_blocks_;
     std::unordered_set<uint64_t> source_blocks_;
     bool overlap_;
+    std::vector<uint64_t> blocks_;
+    int total_blocks_merged_ = 0;
+    std::unique_ptr<uint8_t[]> ra_temp_buffer_;
+    std::unique_ptr<uint8_t[]> ra_temp_meta_buffer_;
     BufferSink bufsink_;
+
+    bool read_ahead_async_ = false;
+    int queue_depth_ = 32;
+    std::unique_ptr<struct io_uring> ring_;
 };
 
 class Worker {
@@ -185,6 +208,7 @@ class Worker {
     // Merge related ops
     bool Merge();
     bool MergeOrderedOps(const std::unique_ptr<ICowOpIter>& cowop_iter);
+    bool MergeOrderedOpsAsync(const std::unique_ptr<ICowOpIter>& cowop_iter);
     bool MergeReplaceZeroOps(const std::unique_ptr<ICowOpIter>& cowop_iter);
     int PrepareMerge(uint64_t* source_offset, int* pending_ops,
                      const std::unique_ptr<ICowOpIter>& cowop_iter,
@@ -192,6 +216,9 @@ class Worker {
 
     sector_t ChunkToSector(chunk_t chunk) { return chunk << CHUNK_SHIFT; }
     chunk_t SectorToChunk(sector_t sector) { return sector >> CHUNK_SHIFT; }
+
+    bool Initialize_Iouring();
+    void Finalize_Iouring();
 
     std::unique_ptr<CowReader> reader_;
     BufferSink bufsink_;
@@ -207,6 +234,10 @@ class Worker {
     unique_fd backing_store_fd_;
     unique_fd base_path_merge_fd_;
     unique_fd ctrl_fd_;
+
+    bool merge_async_ = false;
+    int queue_depth_ = 32;
+    std::unique_ptr<struct io_uring> ring_;
 
     std::shared_ptr<SnapshotHandler> snapuserd_;
 };
@@ -291,6 +322,8 @@ class SnapshotHandler : public std::enable_shared_from_this<SnapshotHandler> {
     void NotifyIOCompletion(uint64_t new_block);
     bool GetRABuffer(std::unique_lock<std::mutex>* lock, uint64_t block, void* buffer);
     MERGE_GROUP_STATE ProcessMergingBlock(uint64_t new_block, void* buffer);
+
+    bool IsIouringSupported();
 
   private:
     bool ReadMetadata();
