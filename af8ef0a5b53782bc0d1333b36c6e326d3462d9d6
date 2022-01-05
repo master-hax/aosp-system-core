@@ -184,6 +184,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "4d4bac16_a6c473d5",
+        "filename": "libutils/include/utils/ErrorsMacros.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-01-05T01:59:43Z",
+      "side": 1,
+      "message": "The fix in the other CL. https://android-review.googlesource.com/c/platform/system/libbase/+/1922101/8..9",
+      "parentUuid": "79621bd1_7dadf6a4",
+      "range": {
+        "startLine": 73,
+        "startChar": 0,
+        "endLine": 73,
+        "endChar": 1
+      },
+      "revId": "af8ef0a5b53782bc0d1333b36c6e326d3462d9d6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "8903588e_9e640ceb",
@@ -245,6 +269,30 @@
       "side": 1,
       "message": "\u003e android::base::expected is NOT expected to be used outside of libbase\nWhy is this the case? What\u0027s wrong with it (esp. given that it might become a standard C++ feature and is a well-understood feature in other languages such as Rust)?\nWhat is the benefit that Result adds other than adding a string to its error value?\n\n\u003e we could make a specialization of ResultError for StatusT\nWhy do you regard special-casing as a superior solution? And what if someone else does want \u003cstatus_t + string\u003e? I don\u0027t see any benefit in limiting the flexibility here.",
       "parentUuid": "98e3705a_00296dfb",
+      "range": {
+        "startLine": 78,
+        "startChar": 13,
+        "endLine": 78,
+        "endChar": 19
+      },
+      "revId": "af8ef0a5b53782bc0d1333b36c6e326d3462d9d6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8a01274a_80b3af05",
+        "filename": "libutils/include/utils/ErrorsMacros.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-01-05T01:59:43Z",
+      "side": 1,
+      "message": "What\u0027s missing with std::expected (and android::base::expected as well) is the standard type for (or at least contract around) E. I see a separate effort like [1] to address that. Even in Rust, we have things like anyhow [2] on top of the standard Result\u003cT, E\u003e and it is becoming the de-facto standard for Rust programmers. Given these, I don\u0027t think it\u0027s wise to \"encourage\" people to directly use expected\u003cT, E\u003e because then the handling (creation, stringfy, etc.) of E will vary a lot and people have to learn different ways of handling E in each places.\n\nBy the way, I have a separate CL for optionally removing the string message from ResultError. [3]\n\n[1] http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2020/p1028r3.pdf\n[2] https://docs.rs/anyhow/latest/anyhow/\n[3] aosp/1935966",
+      "parentUuid": "f080aa70_91098a8c",
       "range": {
         "startLine": 78,
         "startChar": 13,

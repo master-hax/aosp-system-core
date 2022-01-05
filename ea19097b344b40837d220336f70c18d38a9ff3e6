@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "97532ebc_d4f8d999",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 9
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-01-05T01:59:43Z",
+      "side": 1,
+      "message": "This is to distinguish status_t with errno, both of which are ints.\n\n```\nreturn Error(3); // returns Result\u003cT, Errno\u003e\n\nreturn Error\u003cStatusT\u003e(-3); // returns Result\u003cT, StatusT\u003e.\n```\n\nWhen the resulting Result objects are printed, they are handled differently.",
+      "parentUuid": "f48698fc_443d9cbd",
+      "range": {
+        "startLine": 14,
+        "startChar": 9,
+        "endLine": 14,
+        "endChar": 53
+      },
+      "revId": "ea19097b344b40837d220336f70c18d38a9ff3e6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "19b16030_3e3aa780",
@@ -37,6 +61,30 @@
       "writtenOn": "2022-01-04T22:58:20Z",
       "side": 1,
       "message": "This is actually OkOrFail\u003cint32_t\u003e, right? The type system won\u0027t distinguish between status_t and other integer types.",
+      "range": {
+        "startLine": 53,
+        "startChar": 16,
+        "endLine": 53,
+        "endChar": 24
+      },
+      "revId": "ea19097b344b40837d220336f70c18d38a9ff3e6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5a85ca8b_3742503c",
+        "filename": "libutils/include/utils/ErrorsMacros.h",
+        "patchSetId": 9
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-01-05T01:59:43Z",
+      "side": 1,
+      "message": "Yes, this is actually OkOrFail\u003cint\u003e. So it will be instantiated for the following case as well.\n\n```\nint add(int a, int b);\n\nOR_RETURN(add(1, 1))); // this will incorrectly return to the caller because 2 is not OK.\n```\n\nThe purpose of OkOrFail is to implement the contract (IsOK, stringfy, ...) around the macros in a coherent way, but not to provide any type safety. As long as status_t \u003d\u003d int, and we have both status_t foo() and int add(int, int) at the same time, we can\u0027t have type safety by any means.",
+      "parentUuid": "19b16030_3e3aa780",
       "range": {
         "startLine": 53,
         "startChar": 16,
