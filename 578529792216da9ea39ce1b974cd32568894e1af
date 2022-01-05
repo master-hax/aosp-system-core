@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0b985378_efe8abbc",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_merge.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-01-05T18:14:50Z",
+      "side": 0,
+      "message": "Looks like there\u0027s still a reference to 2048 in here. Is it worth preserving the question below (or answering it inline?)",
+      "revId": "578529792216da9ea39ce1b974cd32568894e1af",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}

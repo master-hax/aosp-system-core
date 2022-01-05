@@ -1,0 +1,208 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9aa9734c_5ea0a47c",
+        "filename": "fs_mgr/libsnapshot/snapuserd/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-01-05T18:14:50Z",
+      "side": 1,
+      "message": "nit: should be soft tab here",
+      "revId": "307fc214b3f28db5201e94f73e8ad224638fdb2a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "30c03790_90cefb44",
+        "filename": "fs_mgr/libsnapshot/snapuserd/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 187,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-01-05T18:14:50Z",
+      "side": 1,
+      "message": "nit: should be soft tab here",
+      "revId": "307fc214b3f28db5201e94f73e8ad224638fdb2a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d833cbf7_52d6ea0d",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_core.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 531,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-01-05T18:14:50Z",
+      "side": 1,
+      "message": "This test will fail on a 6.0 kernel.",
+      "revId": "307fc214b3f28db5201e94f73e8ad224638fdb2a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f0d1cefc_1b4822e9",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_core.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-01-05T18:14:50Z",
+      "side": 1,
+      "message": "nit: move into the previous #include block",
+      "revId": "307fc214b3f28db5201e94f73e8ad224638fdb2a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6afe2cd3_0a4aeff7",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_core.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-01-05T18:14:50Z",
+      "side": 1,
+      "message": "nit: InitializeIouring and FinalizeIouring (or IoUring, or IOUring)",
+      "revId": "307fc214b3f28db5201e94f73e8ad224638fdb2a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "24efc4b9_758cd9dd",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_core.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 156,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-01-05T18:14:50Z",
+      "side": 1,
+      "message": "There should be a brief comment explaining how this constant was chosen and what it affects.",
+      "revId": "307fc214b3f28db5201e94f73e8ad224638fdb2a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2f8bcab4_003f75e3",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_core.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 221,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-01-05T18:14:50Z",
+      "side": 1,
+      "message": "nit: InitializeIoUring/FinalizeIoUring",
+      "revId": "307fc214b3f28db5201e94f73e8ad224638fdb2a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d3d0583b_81c83b0b",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_core.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 239,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-01-05T18:14:50Z",
+      "side": 1,
+      "message": "Same here re: queue depth constant.",
+      "revId": "307fc214b3f28db5201e94f73e8ad224638fdb2a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f46341d6_76c8c2f6",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_merge.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 186,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-01-05T18:14:50Z",
+      "side": 1,
+      "message": "These declarations should be near first point of use since they aren\u0027t needed in this scope (it looks like).",
+      "revId": "307fc214b3f28db5201e94f73e8ad224638fdb2a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b13dfe86_415b8611",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_readahead.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 383,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-01-05T18:14:50Z",
+      "side": 1,
+      "message": "Is this intentional?",
+      "revId": "307fc214b3f28db5201e94f73e8ad224638fdb2a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "29698c0b_cc1215c1",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_readahead.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 616,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-01-05T18:14:50Z",
+      "side": 1,
+      "message": "if this is an errno, strerror()?",
+      "revId": "307fc214b3f28db5201e94f73e8ad224638fdb2a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "43c37d20_1f393814",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_readahead.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 617,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-01-05T18:14:50Z",
+      "side": 1,
+      "message": "Make the default value false, so you don\u0027t need to set it in any failure path?",
+      "revId": "307fc214b3f28db5201e94f73e8ad224638fdb2a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
