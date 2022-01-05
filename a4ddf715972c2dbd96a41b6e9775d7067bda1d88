@@ -34,6 +34,24 @@
       "parentUuid": "8f285b16_d4624527",
       "revId": "a4ddf715972c2dbd96a41b6e9775d7067bda1d88",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "53a61b02_30f70299",
+        "filename": "libsparse/img2simg.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1002751
+      },
+      "writtenOn": "2022-01-05T00:01:10Z",
+      "side": 1,
+      "message": "Accessing past the end of the array is undefined behavior even if you don\u0027t use the result.  It could segfault.",
+      "parentUuid": "0c19e90b_30f6dada",
+      "revId": "a4ddf715972c2dbd96a41b6e9775d7067bda1d88",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
