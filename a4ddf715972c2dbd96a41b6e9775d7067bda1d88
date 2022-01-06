@@ -52,6 +52,24 @@
       "parentUuid": "0c19e90b_30f6dada",
       "revId": "a4ddf715972c2dbd96a41b6e9775d7067bda1d88",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d2a5f55e_43bedbb0",
+        "filename": "libsparse/img2simg.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1932220
+      },
+      "writtenOn": "2022-01-06T19:38:43Z",
+      "side": 1,
+      "message": "Ok, I\u0027ve removed references to arguments before we check argc.",
+      "parentUuid": "53a61b02_30f70299",
+      "revId": "a4ddf715972c2dbd96a41b6e9775d7067bda1d88",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
