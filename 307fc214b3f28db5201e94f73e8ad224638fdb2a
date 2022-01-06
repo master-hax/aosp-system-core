@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "5dca73db_7534fa44",
+        "filename": "fs_mgr/libsnapshot/snapuserd/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-01-06T03:25:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9aa9734c_5ea0a47c",
+      "revId": "307fc214b3f28db5201e94f73e8ad224638fdb2a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "30c03790_90cefb44",
@@ -31,6 +49,24 @@
       "writtenOn": "2022-01-05T18:14:50Z",
       "side": 1,
       "message": "nit: should be soft tab here",
+      "revId": "307fc214b3f28db5201e94f73e8ad224638fdb2a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "098ac3e2_cf7111d5",
+        "filename": "fs_mgr/libsnapshot/snapuserd/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 187,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-01-06T03:25:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "30c03790_90cefb44",
       "revId": "307fc214b3f28db5201e94f73e8ad224638fdb2a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -52,6 +88,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "ec6841e7_f89fe3d2",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_core.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 531,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-01-06T03:25:26Z",
+      "side": 1,
+      "message": "Good catch. Thanks",
+      "parentUuid": "d833cbf7_52d6ea0d",
+      "revId": "307fc214b3f28db5201e94f73e8ad224638fdb2a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f0d1cefc_1b4822e9",
@@ -65,6 +119,24 @@
       "writtenOn": "2022-01-05T18:14:50Z",
       "side": 1,
       "message": "nit: move into the previous #include block",
+      "revId": "307fc214b3f28db5201e94f73e8ad224638fdb2a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7f64f68e_cacdbba5",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_core.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-01-06T03:25:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f0d1cefc_1b4822e9",
       "revId": "307fc214b3f28db5201e94f73e8ad224638fdb2a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -86,6 +158,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "13003671_b0d567a7",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_core.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-01-06T03:25:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6afe2cd3_0a4aeff7",
+      "revId": "307fc214b3f28db5201e94f73e8ad224638fdb2a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "24efc4b9_758cd9dd",
@@ -99,6 +189,24 @@
       "writtenOn": "2022-01-05T18:14:50Z",
       "side": 1,
       "message": "There should be a brief comment explaining how this constant was chosen and what it affects.",
+      "revId": "307fc214b3f28db5201e94f73e8ad224638fdb2a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7c8b367d_6d9db51c",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_core.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 156,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-01-06T03:25:26Z",
+      "side": 1,
+      "message": "I have couple of lines of comment. However, I have couple of ideas to improve this; we don\u0027t want a constant queue depth for all partitions - especially for smaller partitions like vendor_dlkm.\n\nAdditionally, we can increase queue depth a little more probably to 64 or 96; for that, we should make some changes. COPY OPERATIONS, have perfectly aligned 4k blocks. We can issue DIRECT IO and get the data directly to user-space buffers. Currently, there is quite a lot of page-cache pollution. For a given COPY block merge, we have the following flow:\n\n1: Copy data to page-cache\n2: Copy to user-space memory\n3: copy from user-space memory to page-cache (via merge write)\n4: Flush the page-cache buffers after write\n\nWe have quite a few COPY OPERATIONS with incremental OTAs. We can cut down (1) and probably (3). Also with O_DIRECT, io_uring gives us API\u0027s to pre-register the buffers speeding up the operation. Also, I see that UFS now supports IO_POLL - that will help further.\n\nI will do a follow up CL as an optimization as it requires some perf profiling..",
+      "parentUuid": "24efc4b9_758cd9dd",
       "revId": "307fc214b3f28db5201e94f73e8ad224638fdb2a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -120,6 +228,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "ccd8782b_7e81ab78",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_core.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 221,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-01-06T03:25:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2f8bcab4_003f75e3",
+      "revId": "307fc214b3f28db5201e94f73e8ad224638fdb2a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d3d0583b_81c83b0b",
@@ -133,6 +259,24 @@
       "writtenOn": "2022-01-05T18:14:50Z",
       "side": 1,
       "message": "Same here re: queue depth constant.",
+      "revId": "307fc214b3f28db5201e94f73e8ad224638fdb2a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6dd71669_9dfc34aa",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_core.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 239,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-01-06T03:25:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d3d0583b_81c83b0b",
       "revId": "307fc214b3f28db5201e94f73e8ad224638fdb2a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -154,6 +298,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "0e700906_b9e04166",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_merge.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 186,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-01-06T03:25:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f46341d6_76c8c2f6",
+      "revId": "307fc214b3f28db5201e94f73e8ad224638fdb2a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "b13dfe86_415b8611",
@@ -167,6 +329,24 @@
       "writtenOn": "2022-01-05T18:14:50Z",
       "side": 1,
       "message": "Is this intentional?",
+      "revId": "307fc214b3f28db5201e94f73e8ad224638fdb2a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9f802a4a_18bc85a8",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_readahead.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 383,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-01-06T03:25:26Z",
+      "side": 1,
+      "message": "No - naming is bad. I was debugging a bug and while re-arranging the code, i didn\u0027t rename the variables properly",
+      "parentUuid": "b13dfe86_415b8611",
       "revId": "307fc214b3f28db5201e94f73e8ad224638fdb2a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -188,6 +368,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "792467e6_26c76622",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_readahead.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 616,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-01-06T03:25:26Z",
+      "side": 1,
+      "message": "No. I checked it. errno is not set her - return value is in ret.",
+      "parentUuid": "29698c0b_cc1215c1",
+      "revId": "307fc214b3f28db5201e94f73e8ad224638fdb2a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "43c37d20_1f393814",
@@ -201,6 +399,24 @@
       "writtenOn": "2022-01-05T18:14:50Z",
       "side": 1,
       "message": "Make the default value false, so you don\u0027t need to set it in any failure path?",
+      "revId": "307fc214b3f28db5201e94f73e8ad224638fdb2a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "90de188d_3304cb3b",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_readahead.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 617,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-01-06T03:25:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "43c37d20_1f393814",
       "revId": "307fc214b3f28db5201e94f73e8ad224638fdb2a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
