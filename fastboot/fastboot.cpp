@@ -104,6 +104,8 @@ static std::string g_dtb_path;
 static bool g_disable_verity = false;
 static bool g_disable_verification = false;
 
+static bool is_userspace_fastboot();
+
 fastboot::FastBootDriver* fb = nullptr;
 
 enum fb_buffer_type {
@@ -280,6 +282,11 @@ static int list_devices_callback(usb_ifc_info* info) {
         if (interface.empty()) {
             interface = "fastboot";
         }
+
+        if(is_userspace_fastboot()) {
+            interface = "fastbootd";
+        }
+
         if (!info->writable) {
             serial = UsbNoPermissionsShortHelpText();
         }
@@ -1997,11 +2004,6 @@ int FastBootTool::Main(int argc, char* argv[]) {
 
     if (argc == 0 && !wants_wipe && !wants_set_active) syntax_error("no command");
 
-    if (argc > 0 && !strcmp(*argv, "devices")) {
-        list_devices();
-        return 0;
-    }
-
     if (argc > 0 && !strcmp(*argv, "help")) {
         return show_help();
     }
@@ -2017,6 +2019,11 @@ int FastBootTool::Main(int argc, char* argv[]) {
     };
     fastboot::FastBootDriver fastboot_driver(transport, driver_callbacks, false);
     fb = &fastboot_driver;
+
+    if (argc > 0 && !strcmp(*argv, "devices")) {
+        list_devices();
+        return 0;
+    }
 
     const double start = now();
 
