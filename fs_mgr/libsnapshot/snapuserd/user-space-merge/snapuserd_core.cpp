@@ -291,6 +291,152 @@ bool SnapshotHandler::InitCowDevice() {
     return ReadMetadata();
 }
 
+void SnapshotHandler::FinalizeIouring() {
+    io_uring_queue_exit(ring_.get());
+}
+
+bool SnapshotHandler::InitializeIouring(int io_depth) {
+    ring_ = std::make_unique<struct io_uring>();
+
+    int ret = io_uring_queue_init(io_depth, ring_.get(), 0);
+    if (ret) {
+        LOG(ERROR) << "io_uring_queue_init failed with ret: " << ret;
+        return false;
+    }
+
+    LOG(INFO) << "io_uring_queue_init success with io_depth: " << io_depth;
+    return true;
+}
+
+bool SnapshotHandler::ReadBlocksAsync(const std::string& dm_block_device,
+                                      const std::string& partition_name, size_t size) {
+    // 64k block size with io_depth of 64 is optimal
+    // for a single thread. We just need a single thread
+    // to read all the blocks from all dynamic partitions.
+    size_t io_depth = 64;
+    size_t bs = (64 * 1024);
+    int i;
+
+    if (!InitializeIouring(io_depth)) {
+        return false;
+    }
+
+    LOG(INFO) << "ReadBlockAsync start "
+              << " Block-device: " << dm_block_device << " Partition-name: " << partition_name
+              << " Size: " << size;
+    auto start = std::chrono::steady_clock::now();
+
+    auto vecs = std::unique_ptr<struct iovec[]>(new iovec[io_depth]);
+    using AlignedBuf = std::unique_ptr<void, decltype(free)*>;
+    std::vector<AlignedBuf> alignedBufVector;
+
+    /*
+     * TODO: We need aligned memory for DIRECT-IO. However, if we do
+     * a DIRECT-IO and verify the blocks then we need to inform
+     * update-verifier that block verification has been done and
+     * there is no need to repeat the same. We are not there yet
+     * as we need to see if there are any boot time improvements doing
+     * a DIRECT-IO.
+     *
+     * Also, we could you the same function post merge for block verification;
+     * again, we can do a DIRECT-IO instead of thrashing page-cache and
+     * hurting other applications.
+     *
+     * For now, we will just create aligned buffers but rely on buffered
+     * I/O until we have perf numbers to justify DIRECT-IO.
+     */
+    for (i = 0; i < io_depth; i++) {
+        if (posix_memalign(&vecs[i].iov_base, BLOCK_SZ, bs)) {
+            LOG(ERROR) << "posix_memalign failed";
+            FinalizeIouring();
+            return false;
+        }
+
+        vecs[i].iov_len = bs;
+        alignedBufVector.push_back(std::unique_ptr<void, decltype(free)*>(vecs[i].iov_base, free));
+    }
+
+    struct io_uring_sqe* sqe;
+    struct io_uring_cqe* cqe;
+
+    android::base::unique_fd fd(TEMP_FAILURE_RETRY(open(dm_block_device.c_str(), O_RDONLY)));
+    if (fd.get() == -1) {
+        SNAP_PLOG(ERROR) << "File open failed - block-device " << dm_block_device
+                         << " partition-name: " << partition_name;
+        FinalizeIouring();
+        return false;
+    }
+
+    int ret = 0;
+    ret = io_uring_register_buffers(ring_.get(), vecs.get(), io_depth);
+    if (ret) {
+        SNAP_PLOG(ERROR) << "io_uring_register_buffers failed with ret: " << ret;
+        FinalizeIouring();
+        return false;
+    }
+
+    loff_t offset = 0;
+    size_t remain = size;
+    size_t read_sz = io_depth * bs;
+
+    while (remain > 0) {
+        size_t to_read = std::min(remain, read_sz);
+        size_t queue_size = to_read / bs;
+
+        for (i = 0; i < queue_size; i++) {
+            sqe = io_uring_get_sqe(ring_.get());
+            if (!sqe) {
+                SNAP_LOG(ERROR) << "io_uring_get_sqe() failed";
+                io_uring_unregister_buffers(ring_.get());
+                FinalizeIouring();
+                return false;
+            }
+
+            io_uring_prep_read_fixed(sqe, fd.get(), vecs[i].iov_base, vecs[i].iov_len, offset, i);
+            sqe->flags |= IOSQE_ASYNC;
+            offset += bs;
+        }
+
+        ret = io_uring_submit(ring_.get());
+        if (ret != queue_size) {
+            SNAP_LOG(ERROR) << "submit got: " << ret << " wanted: " << queue_size;
+            io_uring_unregister_buffers(ring_.get());
+            FinalizeIouring();
+            return false;
+        }
+
+        for (i = 0; i < queue_size; i++) {
+            ret = io_uring_wait_cqe(ring_.get(), &cqe);
+            if (ret) {
+                SNAP_PLOG(ERROR) << "wait_cqe failed" << ret;
+                io_uring_unregister_buffers(ring_.get());
+                FinalizeIouring();
+                return false;
+            }
+
+            if (cqe->res < 0) {
+                SNAP_LOG(ERROR) << "io failed with res: " << cqe->res;
+                io_uring_unregister_buffers(ring_.get());
+                FinalizeIouring();
+                return false;
+            }
+            io_uring_cqe_seen(ring_.get(), cqe);
+        }
+
+        remain -= to_read;
+    }
+
+    io_uring_unregister_buffers(ring_.get());
+    FinalizeIouring();
+
+    auto now = std::chrono::steady_clock::now();
+    auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(now - start);
+    LOG(INFO) << "ReadBlockAsync complete: " << elapsed.count() << " ms"
+              << " Block-device: " << dm_block_device << " Partition-name: " << partition_name
+              << " Size: " << size;
+    return true;
+}
+
 void SnapshotHandler::ReadBlocksToCache(const std::string& dm_block_device,
                                         const std::string& partition_name, off_t offset,
                                         size_t size) {
@@ -347,17 +493,22 @@ void SnapshotHandler::ReadBlocks(const std::string partition_name,
         return;
     }
 
-    int num_threads = 2;
-    size_t num_blocks = dev_sz >> BLOCK_SHIFT;
-    size_t num_blocks_per_thread = num_blocks / num_threads;
-    size_t read_sz_per_thread = num_blocks_per_thread << BLOCK_SHIFT;
-    off_t offset = 0;
+    if (IsIouringSupported()) {
+        std::async(std::launch::async, &SnapshotHandler::ReadBlocksAsync, this, dm_block_device,
+                   partition_name, dev_sz);
+    } else {
+        int num_threads = 2;
+        size_t num_blocks = dev_sz >> BLOCK_SHIFT;
+        size_t num_blocks_per_thread = num_blocks / num_threads;
+        size_t read_sz_per_thread = num_blocks_per_thread << BLOCK_SHIFT;
+        off_t offset = 0;
 
-    for (int i = 0; i < num_threads; i++) {
-        std::async(std::launch::async, &SnapshotHandler::ReadBlocksToCache, this, dm_block_device,
-                   partition_name, offset, read_sz_per_thread);
+        for (int i = 0; i < num_threads; i++) {
+            std::async(std::launch::async, &SnapshotHandler::ReadBlocksToCache, this,
+                       dm_block_device, partition_name, offset, read_sz_per_thread);
 
-        offset += read_sz_per_thread;
+            offset += read_sz_per_thread;
+        }
     }
 }
 
