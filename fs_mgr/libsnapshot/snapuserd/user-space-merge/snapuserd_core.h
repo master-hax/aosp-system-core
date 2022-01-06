@@ -393,6 +393,8 @@ class SnapshotHandler : public std::enable_shared_from_this<SnapshotHandler> {
     bool attached_ = false;
     bool is_socket_present_;
     bool scratch_space_ = false;
+
+    std::unique_ptr<struct io_uring> ring_;
 };
 
 }  // namespace snapshot
