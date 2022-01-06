@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1c6679f3_c57fffe1",
+        "filename": "libsparse/img2simg.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 1002751
+      },
+      "writtenOn": "2022-01-06T19:44:38Z",
+      "side": 1,
+      "message": "I\u0027d prefer to use a new variable for this, argc has specific semantics that don\u0027t match here (argv[0] is the command, so argc \u003d\u003d 1 means no arguments).",
+      "revId": "ca82ccfee21db94aea75bbaaedddf2664fda328c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
