@@ -1,0 +1,157 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0f3e41b6_9013c0bf",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-01-07T06:18:31Z",
+      "side": 1,
+      "message": "Can we add a comment explaining how the data flow changes when iouring is enabled? Eg, there is a new way of processing XOR ops, and there\u0027s more going on in parallel, it would be good to have this documented.",
+      "revId": "6750ff9ae0a912cd15426263b084361e2206701f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "93856bd3_4b61f34a",
+        "filename": "fs_mgr/libsnapshot/snapuserd/Android.bp",
+        "patchSetId": 4
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-01-07T06:18:31Z",
+      "side": 1,
+      "message": "still a hard tab here",
+      "revId": "6750ff9ae0a912cd15426263b084361e2206701f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b131187a_b201f788",
+        "filename": "fs_mgr/libsnapshot/snapuserd/Android.bp",
+        "patchSetId": 4
+      },
+      "lineNbr": 187,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-01-07T06:18:31Z",
+      "side": 1,
+      "message": "ditto",
+      "revId": "6750ff9ae0a912cd15426263b084361e2206701f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "37f33398_3a9f3bb4",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_core.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-01-07T06:18:31Z",
+      "side": 1,
+      "message": "nit: should be in the #include block below.",
+      "revId": "6750ff9ae0a912cd15426263b084361e2206701f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f59e9892_d7478704",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_merge.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 206,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-01-07T06:18:31Z",
+      "side": 1,
+      "message": "These three (sqe, cqe, ret) are not used outside their scope of definition, so they can be moved down further, eg",
+      "revId": "6750ff9ae0a912cd15426263b084361e2206701f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f0ae5c69_a178be15",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_merge.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 221,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-01-07T06:18:31Z",
+      "side": 1,
+      "message": "struct io_uring_sqe* sqe \u003d io_uring_get_sqe...",
+      "revId": "6750ff9ae0a912cd15426263b084361e2206701f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b728281d_bea55866",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_readahead.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 222,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-01-07T06:18:31Z",
+      "side": 1,
+      "message": "Same here, move declaration here.",
+      "revId": "6750ff9ae0a912cd15426263b084361e2206701f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1a2adcd5_c850185c",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_readahead.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 251,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-01-07T06:18:31Z",
+      "side": 1,
+      "message": "And here, int ret \u003d ...",
+      "revId": "6750ff9ae0a912cd15426263b084361e2206701f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c640e1da_8b6743d2",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_readahead.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 344,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-01-07T06:18:31Z",
+      "side": 1,
+      "message": "And here, \"int ret \u003d \"...",
+      "revId": "6750ff9ae0a912cd15426263b084361e2206701f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
