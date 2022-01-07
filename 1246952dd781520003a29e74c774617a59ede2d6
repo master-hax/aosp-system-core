@@ -1,0 +1,47 @@
+{
+  "comments": [
+    {
+      "robotId": "ayeaye",
+      "robotRunId": "AR00000000000019000410",
+      "url": "https://android-build.googleplex.com/builds/treetop/android-review/1936918?revision\u003d5",
+      "fixSuggestions": [
+        {
+          "fixId": "b1dc8c30_0c2569d3",
+          "description": "Change to \"fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_readahead.cpp\"",
+          "replacements": [
+            {
+              "path": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_readahead.cpp",
+              "range": {
+                "startLine": 228,
+                "startChar": 60,
+                "endLine": 228,
+                "endChar": 67
+              },
+              "replacement": "entries"
+            }
+          ]
+        }
+      ],
+      "key": {
+        "uuid": "533887ac_cc9c4ce0",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_readahead.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 228,
+      "author": {
+        "id": 1757831
+      },
+      "writtenOn": "2022-01-07T22:32:14Z",
+      "side": 1,
+      "message": "Common typo found: \"entires\" -- should it be \"entries\"?\nNote: a line containing \"common_typos_disable\" or \"common_typos_enable\" will turn off or on (respectively) the linter for subsequent lines in the file. Alternatively include the token \"NOTYPO\" within a line to skip typo linting that line or include \u0027No-Typo-Check: \u003creason\u003e\u0027in the commit message.",
+      "range": {
+        "startLine": 228,
+        "startChar": 60,
+        "endLine": 228,
+        "endChar": 67
+      },
+      "revId": "1246952dd781520003a29e74c774617a59ede2d6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
