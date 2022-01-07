@@ -54,6 +54,8 @@
 #include <libsnapshot/mock_snapshot.h>
 
 DEFINE_string(force_config, "", "Force testing mode (dmsnap, vab, vabc) ignoring device config.");
+DEFINE_string(force_iouring_disable, "",
+              "Force testing mode (iouring_disabled) - disable io_uring");
 
 namespace android {
 namespace snapshot {
@@ -2682,10 +2684,22 @@ int main(int argc, char** argv) {
         }
     }
 
+    if (FLAGS_force_iouring_disable == "iouring_disabled") {
+        if (!android::base::SetProperty("snapuserd.test.io_uring.disabled", "1")) {
+            return testing::AssertionFailure()
+                   << "Failed to disable property: snapuserd.test.io_uring.disabled";
+        }
+    }
+
     int ret = RUN_ALL_TESTS();
 
     if (FLAGS_force_config == "dmsnap") {
         android::base::SetProperty("snapuserd.test.dm.snapshots", "0");
     }
+
+    if (FLAGS_force_iouring_disable == "iouring_disabled") {
+        android::base::SetProperty("snapuserd.test.io_uring.disabled", "0");
+    }
+
     return ret;
 }
