@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "838ce689_2756564a",
+        "filename": "fs_mgr/libsnapshot/snapshot_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2688,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-01-07T01:53:30Z",
+      "side": 1,
+      "message": "true/false would be more typical here (GetBoolProperty will handle it)",
+      "revId": "71dd9f7133553d3da443756086286d9954665ad2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
