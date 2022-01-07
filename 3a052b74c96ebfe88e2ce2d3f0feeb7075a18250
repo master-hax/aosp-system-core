@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fa823fb7_0bfd9d71",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1683114
+      },
+      "writtenOn": "2022-01-07T06:32:59Z",
+      "side": 1,
+      "message": "In Vts_12-R2,testcase FastbootVerifyUserspaceTest will require fastboot devices show fastbootd if in userspace instead of fastboot.",
+      "revId": "3a052b74c96ebfe88e2ce2d3f0feeb7075a18250",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
