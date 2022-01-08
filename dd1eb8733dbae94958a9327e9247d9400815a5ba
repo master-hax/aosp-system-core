@@ -33,6 +33,24 @@
       "message": "Is this yet another time when fastboot binary is going to be updated?\nThis really should\u0027ve been made generic a long time ago!",
       "revId": "dd1eb8733dbae94958a9327e9247d9400815a5ba",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b3b20b37_e2a330fa",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1247518
+      },
+      "writtenOn": "2022-01-08T02:17:20Z",
+      "side": 1,
+      "message": "Can you promise to remove this hardcoding before adding any more partitions plz.",
+      "parentUuid": "4d049ce3_7692f32e",
+      "revId": "dd1eb8733dbae94958a9327e9247d9400815a5ba",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
