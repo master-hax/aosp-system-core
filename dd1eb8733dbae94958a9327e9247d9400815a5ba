@@ -16,6 +16,23 @@
       "message": "There isn\u0027t any hardware to test this on yet - I did make sure I could still flash the boot image on a pixel with these changes.\nCuttlefish doesn\u0027t support fastboot right now either: https://b.corp.google.com/issues/209707539",
       "revId": "dd1eb8733dbae94958a9327e9247d9400815a5ba",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4d049ce3_7692f32e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1247518
+      },
+      "writtenOn": "2022-01-08T02:16:39Z",
+      "side": 1,
+      "message": "Is this yet another time when fastboot binary is going to be updated?\nThis really should\u0027ve been made generic a long time ago!",
+      "revId": "dd1eb8733dbae94958a9327e9247d9400815a5ba",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
