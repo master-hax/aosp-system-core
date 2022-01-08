@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ae5fa1b5_dd12a8e3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-01-08T01:06:30Z",
+      "side": 1,
+      "message": "Thanks for the comment! That was super helpful in understanding the new data flow.",
+      "revId": "ec125addcb728134ca22012017d7eeebc9c4045b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "71831bd4_c902ceb2",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_merge.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 209,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-01-08T01:06:30Z",
+      "side": 1,
+      "message": "this should be moved down, to...",
+      "revId": "ec125addcb728134ca22012017d7eeebc9c4045b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7060307e_7b21c39b",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_merge.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 217,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-01-08T01:06:30Z",
+      "side": 1,
+      "message": "here, and",
+      "revId": "ec125addcb728134ca22012017d7eeebc9c4045b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3bfe619d_6c9d2a25",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_merge.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 247,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-01-08T01:06:30Z",
+      "side": 1,
+      "message": "here. I know this isn\u0027t the style for kernel C, but understanding data flow is much easier in C++ this way. Eg, someone reading the code doesn\u0027t have to look to see where \"sqe\" might be used after the assigning scope exits.",
+      "revId": "ec125addcb728134ca22012017d7eeebc9c4045b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
