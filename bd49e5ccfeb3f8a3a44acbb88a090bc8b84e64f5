@@ -20,6 +20,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "dce99158_89394542",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_core.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 314,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-01-09T19:46:46Z",
+      "side": 1,
+      "message": "decision was based on by running I/O benchmark tests on FIO with io_uring.. The point here is to minimize the number of threads which is 1 in this case to read all partitions as opposed to spinning up 8 threads like update_verifier does today.",
+      "parentUuid": "6b4fa119_a380af53",
+      "revId": "bd49e5ccfeb3f8a3a44acbb88a090bc8b84e64f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "bad2a6a5_3f1031ae",
         "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_core.cpp",
         "patchSetId": 7
