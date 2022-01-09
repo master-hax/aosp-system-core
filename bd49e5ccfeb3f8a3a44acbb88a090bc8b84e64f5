@@ -1,0 +1,174 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6b4fa119_a380af53",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_core.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 314,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-01-09T19:07:28Z",
+      "side": 1,
+      "message": "What was this decision based on? Should it be configurable at all? (I\u0027m guessing that\u0027s a little tough since we can\u0027t read properties early on).",
+      "revId": "bd49e5ccfeb3f8a3a44acbb88a090bc8b84e64f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bad2a6a5_3f1031ae",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_core.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 318,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-01-09T19:07:28Z",
+      "side": 1,
+      "message": "why is this declared outside of the loop?",
+      "revId": "bd49e5ccfeb3f8a3a44acbb88a090bc8b84e64f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7309a2d3_877fa241",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_core.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 329,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-01-09T19:07:28Z",
+      "side": 1,
+      "message": "Using std::vector would be preferred here since it will handle the length for you.",
+      "revId": "bd49e5ccfeb3f8a3a44acbb88a090bc8b84e64f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4b7d6e63_a08060af",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_core.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 331,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-01-09T19:07:28Z",
+      "side": 1,
+      "message": "nit: aligned_buf_vector",
+      "revId": "bd49e5ccfeb3f8a3a44acbb88a090bc8b84e64f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a5b20bcb_67259cf9",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_core.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 351,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-01-09T19:07:28Z",
+      "side": 1,
+      "message": "Rather than require this at every failure point (which is error-prone), you can make_scope_guard. Eg...\n\n    bool succeeded \u003d false;\n    auto finalize_on_failure \u003d make_scope_guard([]() -\u003e void {\n        if (!succeeded) {\n            FinalizeIouring();\n        }\n    });\n\n\n    ...\n\n\n    succeeded \u003d true;\n    return true;",
+      "revId": "bd49e5ccfeb3f8a3a44acbb88a090bc8b84e64f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c8dfd1fb_5197cd26",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_core.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 356,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-01-09T19:07:28Z",
+      "side": 1,
+      "message": "emplace_back?",
+      "revId": "bd49e5ccfeb3f8a3a44acbb88a090bc8b84e64f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ca118189_2c88ff39",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_core.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 360,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-01-09T19:07:28Z",
+      "side": 1,
+      "message": "\"cqe\" isn\u0027t used until line 409.",
+      "revId": "bd49e5ccfeb3f8a3a44acbb88a090bc8b84e64f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cf9e61df_8e49c4e5",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_core.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 371,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-01-09T19:07:28Z",
+      "side": 1,
+      "message": "int ret \u003d ....",
+      "revId": "bd49e5ccfeb3f8a3a44acbb88a090bc8b84e64f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2eef36ce_9f21ffcb",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_core.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 386,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-01-09T19:07:28Z",
+      "side": 1,
+      "message": "int i \u003d",
+      "revId": "bd49e5ccfeb3f8a3a44acbb88a090bc8b84e64f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d8cb38e3_8a677e87",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_core.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 387,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-01-09T19:07:28Z",
+      "side": 1,
+      "message": "struct io_uring_sqe* sqe \u003d ...",
+      "revId": "bd49e5ccfeb3f8a3a44acbb88a090bc8b84e64f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
