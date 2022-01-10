@@ -69,6 +69,24 @@
       "parentUuid": "b3b20b37_e2a330fa",
       "revId": "dd1eb8733dbae94958a9327e9247d9400815a5ba",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "02595ed9_f3d0ea4a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1644679
+      },
+      "writtenOn": "2022-01-10T17:06:32Z",
+      "side": 1,
+      "message": "Just saw https://buganizer.corp.google.com/issues/194686221 while going through my emails. Looks like you did exactly that many months ago :) Thanks!",
+      "parentUuid": "4e4f2ff8_803c7e64",
+      "revId": "dd1eb8733dbae94958a9327e9247d9400815a5ba",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
