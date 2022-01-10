@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6a6ec9b3_528050f3",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 174,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-01-10T17:44:30Z",
+      "side": 1,
+      "message": "{ should be on previous line - did clang-format run?",
+      "revId": "962584fb09ea346040b20f7c6e620b7d48ae2a92",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
