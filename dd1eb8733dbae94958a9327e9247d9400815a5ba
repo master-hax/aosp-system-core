@@ -51,6 +51,24 @@
       "parentUuid": "4d049ce3_7692f32e",
       "revId": "dd1eb8733dbae94958a9327e9247d9400815a5ba",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4e4f2ff8_803c7e64",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1644679
+      },
+      "writtenOn": "2022-01-10T16:46:01Z",
+      "side": 1,
+      "message": "To allow any partition to be updated by fastboot in a generic way?\nI can\u0027t promise that. You could create a bug/feature request for the owners of fastboot to see if that\u0027s possible/desirable.",
+      "parentUuid": "b3b20b37_e2a330fa",
+      "revId": "dd1eb8733dbae94958a9327e9247d9400815a5ba",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
