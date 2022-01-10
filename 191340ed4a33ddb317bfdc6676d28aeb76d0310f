@@ -16,6 +16,24 @@
       "message": "Same here. This CL actually has no changes on files.\n\nThe original CL has been merged from android11-tests-dev to android11-tests-release.\n\nhttps://android.googlesource.com/platform/system/core/+log/refs/heads/android11-tests-release/rootdir/avb\n\nIIUC, we don\u0027t need the cherry-pick here.",
       "revId": "191340ed4a33ddb317bfdc6676d28aeb76d0310f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7e3b5551_9e5b5d69",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1101616
+      },
+      "writtenOn": "2022-01-10T17:10:19Z",
+      "side": 1,
+      "message": "I see. Thanks!",
+      "parentUuid": "0312147f_2fe67af0",
+      "revId": "191340ed4a33ddb317bfdc6676d28aeb76d0310f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
