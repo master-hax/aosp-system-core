@@ -48,6 +48,23 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "20960f34_7272fd0c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 9
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-01-10T16:34:46Z",
+      "side": 1,
+      "message": "Ping to Elliott and Steven for owner-review vote.",
+      "revId": "ea19097b344b40837d220336f70c18d38a9ff3e6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "19b16030_3e3aa780",

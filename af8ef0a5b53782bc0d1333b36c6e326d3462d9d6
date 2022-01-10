@@ -301,6 +301,30 @@
       },
       "revId": "af8ef0a5b53782bc0d1333b36c6e326d3462d9d6",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f431781b_e7964cee",
+        "filename": "libutils/include/utils/ErrorsMacros.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-01-10T16:34:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8a01274a_80b3af05",
+      "range": {
+        "startLine": 78,
+        "startChar": 13,
+        "endLine": 78,
+        "endChar": 19
+      },
+      "revId": "af8ef0a5b53782bc0d1333b36c6e326d3462d9d6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
