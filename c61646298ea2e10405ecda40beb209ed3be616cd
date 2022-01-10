@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4fc523f6_6174bbb9",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2022-01-10T08:09:33Z",
+      "side": 1,
+      "message": "Let\u0027s also do some tests:\n\ne.g.,\n  Test: atest --host libfs_avb_test\n  Test: atest --host libfs_avb_internal_test\n\nOr simply run `system/core/fs_mgr/libfs_avb/run_tests.sh`.\n\nLooks like it has some build failure with this CL for now.\n\nps: I should probably include them into the presubmit test.\nLet me try to add a CL for that.",
+      "range": {
+        "startLine": 12,
+        "startChar": 6,
+        "endLine": 12,
+        "endChar": 15
+      },
+      "revId": "c61646298ea2e10405ecda40beb209ed3be616cd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
