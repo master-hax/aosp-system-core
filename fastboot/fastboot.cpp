@@ -1025,7 +1025,7 @@ static uint64_t get_partition_size(const std::string& partition) {
     return partition_size;
 }
 
-static void copy_avb_footer(const std::string& partition, struct fastboot_buffer* buf) {
+static void copy_boot_avb_footer(const std::string& partition, struct fastboot_buffer* buf) {
     if (buf->sz < AVB_FOOTER_SIZE) {
         return;
     }
@@ -1040,9 +1040,9 @@ static void copy_avb_footer(const std::string& partition, struct fastboot_buffer
     // In this case, partition_size will be zero.
     if (partition_size < buf->sz) {
         fprintf(stderr,
-                "Warning: skip copying %s image avb footer"
-                " (%s partition size: %" PRId64 ", %s image size: %" PRId64 ").\n",
-                partition.c_str(), partition.c_str(), partition_size, partition.c_str(), buf->sz);
+                "Warning: skip copying boot image avb footer"
+                " (boot partition size: %" PRId64 ", boot image size: %" PRId64 ").\n",
+                partition_size, buf->sz);
         return;
     }
 
@@ -1050,7 +1050,7 @@ static void copy_avb_footer(const std::string& partition, struct fastboot_buffer
     // Because buf->fd will still be used afterwards.
     std::string data;
     if (!android::base::ReadFdToString(buf->fd, &data)) {
-        die("Failed reading from %s", partition.c_str());
+        die("Failed reading from boot");
     }
 
     uint64_t footer_offset = buf->sz - AVB_FOOTER_SIZE;
@@ -1059,14 +1059,13 @@ static void copy_avb_footer(const std::string& partition, struct fastboot_buffer
         return;
     }
 
-    const std::string tmp_fd_template = partition + " rewriting";
-    unique_fd fd(make_temporary_fd(tmp_fd_template.c_str()));
+    unique_fd fd(make_temporary_fd("boot rewriting"));
     if (!android::base::WriteStringToFd(data, fd)) {
-        die("Failed writing to modified %s", partition.c_str());
+        die("Failed writing to modified boot");
     }
     lseek(fd.get(), partition_size - AVB_FOOTER_SIZE, SEEK_SET);
     if (!android::base::WriteStringToFd(data.substr(footer_offset), fd)) {
-        die("Failed copying AVB footer in %s", partition.c_str());
+        die("Failed copying AVB footer in boot");
     }
     buf->fd = std::move(fd);
     buf->sz = partition_size;
@@ -1079,7 +1078,7 @@ static void flash_buf(const std::string& partition, struct fastboot_buffer *buf)
 
     if (partition == "boot" || partition == "boot_a" || partition == "boot_b" ||
         partition == "init_boot" || partition == "init_boot_a" || partition == "init_boot_b") {
-        copy_avb_footer(partition, buf);
+        copy_boot_avb_footer(partition, buf);
     }
 
     // Rewrite vbmeta if that's what we're flashing and modification has been requested.
