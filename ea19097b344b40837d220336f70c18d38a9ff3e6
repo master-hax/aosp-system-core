@@ -67,6 +67,57 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "947367da_fb9be163",
+        "filename": "libutils/Android.bp",
+        "patchSetId": 9
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-01-11T19:18:15Z",
+      "side": 1,
+      "message": "|sort",
+      "revId": "ea19097b344b40837d220336f70c18d38a9ff3e6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8ff1ef06_051ffe9c",
+        "filename": "libutils/Android.bp",
+        "patchSetId": 9
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-01-11T19:18:15Z",
+      "side": 1,
+      "message": "|sort",
+      "revId": "ea19097b344b40837d220336f70c18d38a9ff3e6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6606ec37_83c8fe8e",
+        "filename": "libutils/Android.bp",
+        "patchSetId": 9
+      },
+      "lineNbr": 313,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-01-11T19:18:15Z",
+      "side": 1,
+      "message": "|sort",
+      "revId": "ea19097b344b40837d220336f70c18d38a9ff3e6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "19b16030_3e3aa780",
         "filename": "libutils/include/utils/ErrorsMacros.h",
         "patchSetId": 9
