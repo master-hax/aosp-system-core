@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5af775ec_74e389f2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2022-01-11T04:51:28Z",
+      "side": 1,
+      "message": "Sorry, I missed PS-5, which LGTM.",
+      "revId": "78aa69637b5063d38f798c6e89e0c7ee881fd470",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
