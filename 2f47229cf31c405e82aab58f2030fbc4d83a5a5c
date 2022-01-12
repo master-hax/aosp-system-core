@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6b7cc842_dff7e37a",
+        "filename": "healthd/BatteryMonitor.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 327,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2022-01-12T18:45:37Z",
+      "side": 1,
+      "message": "I think we shouldn\u0027t rely on the name of the charger, but only on the type. Can\u0027t we fix the kernel driver to report the type correctly?",
+      "range": {
+        "startLine": 327,
+        "startChar": 17,
+        "endLine": 327,
+        "endChar": 50
+      },
+      "revId": "2f47229cf31c405e82aab58f2030fbc4d83a5a5c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3c3a3feb_23219338",
+        "filename": "healthd/BatteryMonitor.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 708,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2022-01-12T18:45:37Z",
+      "side": 1,
+      "message": "same here",
+      "revId": "2f47229cf31c405e82aab58f2030fbc4d83a5a5c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
