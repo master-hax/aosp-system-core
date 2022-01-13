@@ -88,6 +88,24 @@
       "parentUuid": "5a499af4_17d8e622",
       "revId": "1c2626d7aee8887fdba80b4f07eb54fe4377a83f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8b6c9e43_06fb9032",
+        "filename": "fs_mgr/libsnapshot/cow_writer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 329,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2022-01-13T20:04:46Z",
+      "side": 1,
+      "message": "We usually tell partners to use newer otatools when generating OTA across dessert releases. Backward compatibility is carefully maintained over the past years.",
+      "parentUuid": "71efc376_6fd471dd",
+      "revId": "1c2626d7aee8887fdba80b4f07eb54fe4377a83f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
