@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8cc4c401_092bf50f",
+        "filename": "debuggerd/libdebuggerd/utility.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 482,
+      "author": {
+        "id": 1076798
+      },
+      "writtenOn": "2022-01-13T17:28:32Z",
+      "side": 1,
+      "message": "PR_PAC_APDAKEY",
+      "range": {
+        "startLine": 482,
+        "startChar": 47,
+        "endLine": 482,
+        "endChar": 61
+      },
+      "revId": "fb0565876cab09289e3fc122589c4f0d04466555",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fdab6d3f_c730bdd3",
+        "filename": "debuggerd/libdebuggerd/utility.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 483,
+      "author": {
+        "id": 1076798
+      },
+      "writtenOn": "2022-01-13T17:28:32Z",
+      "side": 1,
+      "message": "PR_PAC_APDBKEY",
+      "range": {
+        "startLine": 483,
+        "startChar": 47,
+        "endLine": 483,
+        "endChar": 61
+      },
+      "revId": "fb0565876cab09289e3fc122589c4f0d04466555",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
