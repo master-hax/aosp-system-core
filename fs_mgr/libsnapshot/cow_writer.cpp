@@ -324,12 +324,24 @@ bool CowWriter::EmitBlocks(uint64_t new_block_start, const void* data, size_t si
                 LOG(ERROR) << "Compressed block is too large: " << data.size() << " bytes";
                 return false;
             }
-            op.compression = compression_;
-            op.data_length = static_cast<uint16_t>(data.size());
 
-            if (!WriteOperation(op, data.data(), data.size())) {
-                PLOG(ERROR) << "AddRawBlocks: write failed";
-                return false;
+            // Don't store compressed blocks if it cannot be truly compressed
+            if (data.size() >= header_.block_size) {
+                op.compression = kCowCompressNone;
+                op.data_length = static_cast<uint16_t>(header_.block_size);
+
+                if (!WriteOperation(op, iter, header_.block_size)) {
+                    PLOG(ERROR) << "AddRawBlocks: write failed";
+                    return false;
+                }
+            } else {
+                op.compression = compression_;
+                op.data_length = static_cast<uint16_t>(data.size());
+
+                if (!WriteOperation(op, data.data(), data.size())) {
+                    PLOG(ERROR) << "AddRawBlocks: write failed";
+                    return false;
+                }
             }
         } else {
             op.data_length = static_cast<uint16_t>(header_.block_size);
