@@ -36,6 +36,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "38f0c600_99a1d0d5",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1067098
+      },
+      "writtenOn": "2022-01-13T23:06:34Z",
+      "side": 1,
+      "message": "I wrote an end-to-end test for this that also revealed a bug that I fixed. Pushed to this change as patchset 4.",
+      "parentUuid": "f34921e0_012e8be2",
+      "revId": "2212a665ee7c474fb3698e9d3df006d8ad294de0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "63a0d0e6_f4358a91",
