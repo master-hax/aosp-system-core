@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4205c0bc_b444639e",
+        "filename": "fs_mgr/libsnapshot/cow_writer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 329,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-01-13T18:31:45Z",
+      "side": 1,
+      "message": "A build on T will creates a payload estimate based on this new logic, but an S build applying the T OTA does not have this logic. A full OTA will be entirely replace ops. What\u0027s the upper bound on miscalculated bytes? Is there a risk this results in a COW image being too small?",
+      "revId": "1c2626d7aee8887fdba80b4f07eb54fe4377a83f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
