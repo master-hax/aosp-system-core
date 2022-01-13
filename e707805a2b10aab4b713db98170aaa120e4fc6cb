@@ -33,6 +33,24 @@
       "message": "nit: this should require a semicolon with a (void)0 or wrapped in a do while (0)",
       "revId": "e707805a2b10aab4b713db98170aaa120e4fc6cb",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7a3c5ee7_3f20d749",
+        "filename": "debuggerd/libdebuggerd/utility.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 454,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-01-13T18:57:41Z",
+      "side": 1,
+      "message": "since i was trying to reduce copy \u0026 paste, i did both of these on purpose as a \"what\u0027s the smallest thing we can get away with?\" --- it\u0027s not like this is going in a header file. (it didn\u0027t seem like the ability to choose different names for `desc` or `value` was worth anything either?)",
+      "parentUuid": "0a902adb_e8e7d9f2",
+      "revId": "e707805a2b10aab4b713db98170aaa120e4fc6cb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
