@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1b0fd072_1f5e19cd",
+        "filename": "debuggerd/libdebuggerd/utility.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 449,
+      "author": {
+        "id": 1076798
+      },
+      "writtenOn": "2022-01-13T18:28:25Z",
+      "side": 1,
+      "message": "It\u0027s a bit gross that this doesn\u0027t actually take value...",
+      "revId": "e707805a2b10aab4b713db98170aaa120e4fc6cb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0a902adb_e8e7d9f2",
+        "filename": "debuggerd/libdebuggerd/utility.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 454,
+      "author": {
+        "id": 1076798
+      },
+      "writtenOn": "2022-01-13T18:28:25Z",
+      "side": 1,
+      "message": "nit: this should require a semicolon with a (void)0 or wrapped in a do while (0)",
+      "revId": "e707805a2b10aab4b713db98170aaa120e4fc6cb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
