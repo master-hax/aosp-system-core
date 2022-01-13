@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "2a4117cf_09265872",
+        "filename": "debuggerd/libdebuggerd/utility.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 482,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-01-13T17:48:10Z",
+      "side": 1,
+      "message": "i don\u0027t always code ... but when i do, i copy \u0026 paste.\n\nfixed, thanks!",
+      "parentUuid": "8cc4c401_092bf50f",
+      "range": {
+        "startLine": 482,
+        "startChar": 47,
+        "endLine": 482,
+        "endChar": 61
+      },
+      "revId": "fb0565876cab09289e3fc122589c4f0d04466555",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "fdab6d3f_c730bdd3",
@@ -37,6 +61,30 @@
       "writtenOn": "2022-01-13T17:28:32Z",
       "side": 1,
       "message": "PR_PAC_APDBKEY",
+      "range": {
+        "startLine": 483,
+        "startChar": 47,
+        "endLine": 483,
+        "endChar": 61
+      },
+      "revId": "fb0565876cab09289e3fc122589c4f0d04466555",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4dc6f413_46f45fb1",
+        "filename": "debuggerd/libdebuggerd/utility.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 483,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-01-13T17:48:10Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fdab6d3f_c730bdd3",
       "range": {
         "startLine": 483,
         "startChar": 47,
