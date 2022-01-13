@@ -254,6 +254,42 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "66dc3a9c_463d8d05",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1897307
+      },
+      "writtenOn": "2022-01-13T17:49:59Z",
+      "side": 1,
+      "message": "Resolving, discussed in the other comment",
+      "parentUuid": "638d4417_ed220c23",
+      "revId": "9ba2c642e05018c7bc850fd78135dbf914e6a34d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "23dd638f_2b5089aa",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1897307
+      },
+      "writtenOn": "2022-01-13T17:49:59Z",
+      "side": 1,
+      "message": "Resolving Jiyong +2ed",
+      "parentUuid": "736098d5_16bf59f0",
+      "revId": "9ba2c642e05018c7bc850fd78135dbf914e6a34d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "4e6dcf01_58bafce4",
