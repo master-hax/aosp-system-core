@@ -74,6 +74,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "5f45512e_d73605ee",
+        "filename": "debuggerd/libdebuggerd/utility.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 482,
+      "author": {
+        "id": 1076798
+      },
+      "writtenOn": "2022-01-13T17:58:24Z",
+      "side": 1,
+      "message": "Yeah, I think a macro would be cleaner here. If there\u0027s ever a need for a custom string, you can always just add another macro that takes it as an argument.",
+      "parentUuid": "e0454a35_3d8b9c7f",
+      "range": {
+        "startLine": 482,
+        "startChar": 47,
+        "endLine": 482,
+        "endChar": 61
+      },
+      "revId": "fb0565876cab09289e3fc122589c4f0d04466555",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "fdab6d3f_c730bdd3",
         "filename": "debuggerd/libdebuggerd/utility.cpp",
         "patchSetId": 1
