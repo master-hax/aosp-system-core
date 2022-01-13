@@ -20,6 +20,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "f34921e0_012e8be2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-01-13T18:24:49Z",
+      "side": 1,
+      "message": "yeah, they\u0027re promising us M1 availability \"real soon now\" but i continue to avoid holding my breath :-(\n\nsince treehugger also doesn\u0027t have PAC-capable hardware i didn\u0027t want to risk just guessing.",
+      "parentUuid": "aa284279_95494644",
+      "revId": "2212a665ee7c474fb3698e9d3df006d8ad294de0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "63a0d0e6_f4358a91",
         "filename": "debuggerd/libdebuggerd/test/utility_test.cpp",
         "patchSetId": 2
@@ -31,6 +49,24 @@
       "writtenOn": "2022-01-13T18:05:38Z",
       "side": 1,
       "message": "Will this test pass? The delimiter is \", \", not \"|\".",
+      "revId": "2212a665ee7c474fb3698e9d3df006d8ad294de0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a8349a1b_db90889c",
+        "filename": "debuggerd/libdebuggerd/test/utility_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-01-13T18:24:49Z",
+      "side": 1,
+      "message": "d\u0027oh! yeah, i don\u0027t yet have a working device since coming back, so i\u0027m reliant on treehugger/reviewers today.",
+      "parentUuid": "63a0d0e6_f4358a91",
       "revId": "2212a665ee7c474fb3698e9d3df006d8ad294de0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }

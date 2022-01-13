@@ -96,6 +96,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "eb585744_44f5ccd6",
+        "filename": "debuggerd/libdebuggerd/utility.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 482,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-01-13T18:24:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5f45512e_d73605ee",
+      "range": {
+        "startLine": 482,
+        "startChar": 47,
+        "endLine": 482,
+        "endChar": 61
+      },
+      "revId": "fb0565876cab09289e3fc122589c4f0d04466555",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "fdab6d3f_c730bdd3",
