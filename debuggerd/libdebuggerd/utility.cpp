@@ -446,24 +446,14 @@ const char* get_sigcode(const siginfo_t* si) {
   return "?";
 }
 
-std::string describe_tagged_addr_ctrl(long ctrl) {
-  std::string desc;
-  if (ctrl & PR_TAGGED_ADDR_ENABLE) {
-    desc += ", PR_TAGGED_ADDR_ENABLE";
-    ctrl &= ~PR_TAGGED_ADDR_ENABLE;
+static void describe_flag(long& x, std::string& desc, long value, const char* name) {
+  if (x & value) {
+    desc += name;
+    x &= ~value;
   }
-  if (ctrl & PR_MTE_TCF_SYNC) {
-    desc += ", PR_MTE_TCF_SYNC";
-    ctrl &= ~PR_MTE_TCF_SYNC;
-  }
-  if (ctrl & PR_MTE_TCF_ASYNC) {
-    desc += ", PR_MTE_TCF_ASYNC";
-    ctrl &= ~PR_MTE_TCF_ASYNC;
-  }
-  if (ctrl & PR_MTE_TAG_MASK) {
-    desc += StringPrintf(", mask 0x%04lx", (ctrl & PR_MTE_TAG_MASK) >> PR_MTE_TAG_SHIFT);
-    ctrl &= ~PR_MTE_TAG_MASK;
-  }
+}
+
+static std::string describe_end(long ctrl, std::string& desc) {
   if (ctrl) {
     desc += StringPrintf(", unknown 0x%lx", ctrl);
   }
@@ -471,6 +461,28 @@ std::string describe_tagged_addr_ctrl(long ctrl) {
     return "";
   }
   return " (" + desc.substr(2) + ")";
+}
+
+std::string describe_tagged_addr_ctrl(long ctrl) {
+  std::string desc;
+  describe_flag(ctrl, desc, PR_TAGGED_ADDR_ENABLE, ", PR_TAGGED_ADDR_ENABLE");
+  describe_flag(ctrl, desc, PR_MTE_TCF_SYNC, ", PR_MTE_TCF_SYNC");
+  describe_flag(ctrl, desc, PR_MTE_TCF_ASYNC, ", PR_MTE_TCF_ASYNC");
+  if (ctrl & PR_MTE_TAG_MASK) {
+    desc += StringPrintf(", mask 0x%04lx", (ctrl & PR_MTE_TAG_MASK) >> PR_MTE_TAG_SHIFT);
+    ctrl &= ~PR_MTE_TAG_MASK;
+  }
+  return describe_end(ctrl, desc);
+}
+
+std::string describe_pac_enabled_keys(long keys) {
+  std::string desc;
+  describe_flag(keys, desc, PR_PAC_APIAKEY, ", PR_PAC_APIAKEY");
+  describe_flag(keys, desc, PR_PAC_APIBKEY, ", PR_PAC_APIBKEY");
+  describe_flag(keys, desc, PR_PAC_APDAKEY, ", PR_PAC_APIAKEY");
+  describe_flag(keys, desc, PR_PAC_APDBKEY, ", PR_PAC_APIBKEY");
+  describe_flag(keys, desc, PR_PAC_APGAKEY, ", PR_PAC_APGAKEY");
+  return describe_end(keys, desc);
 }
 
 void log_backtrace(log_t* log, unwindstack::Unwinder* unwinder, const char* prefix) {
