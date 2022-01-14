@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ecbcb216_9798d756",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 514,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-01-14T17:55:17Z",
+      "side": 1,
+      "message": "What\u0027s the expected size impact to /metadata? Is this for T+ devices or for all devices?",
+      "revId": "57930f351d09af28f2571699188f01c3e8555ac2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
