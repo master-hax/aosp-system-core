@@ -56,6 +56,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "73d269c9_f4439831",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-01-18T22:13:22Z",
+      "side": 1,
+      "message": "Yeah, an init builtin (if this will be used in .rc files) or a cli tool would be much better. A new \"magic property\" would need a very compelling use case since they are very rare, and the existing ones are a lot more generic than this.",
+      "parentUuid": "be6211e8_058637d8",
+      "revId": "01ea2b7491e6845ead3ccb164d31d23de522da23",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "19e94b9b_cda72ae2",
         "filename": "init/init.cpp",
         "patchSetId": 3
