@@ -1,0 +1,56 @@
+{
+  "comments": [
+    {
+      "robotId": "ayeaye",
+      "robotRunId": "AR00000000000019388377",
+      "url": "https://android-build.googleplex.com/builds/treetop/android-review/1953533?revision\u003d2",
+      "fixSuggestions": [],
+      "key": {
+        "uuid": "c4e10d89_df3d99c3",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1757831
+      },
+      "writtenOn": "2022-01-18T22:06:36Z",
+      "side": 1,
+      "message": "Third-party license (BSD) disallowed in repository platform/system/core:\nBSD license\n",
+      "range": {
+        "startLine": 9,
+        "startChar": 5,
+        "endLine": 9,
+        "endChar": 16
+      },
+      "revId": "99373794b3ea4a366343ad9bfc6f9df11df77be3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "robotId": "ayeaye",
+      "robotRunId": "AR00000000000019388377",
+      "url": "https://android-build.googleplex.com/builds/treetop/android-review/1953533?revision\u003d2",
+      "fixSuggestions": [],
+      "key": {
+        "uuid": "48409c67_8dd3c6a0",
+        "filename": "fastboot/LICENSE",
+        "patchSetId": 2
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1757831
+      },
+      "writtenOn": "2022-01-18T22:06:36Z",
+      "side": 1,
+      "message": "Third-party license (BSD) disallowed in repository platform/system/core:\nRedistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:...Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and or other materials provided with the distribution.\n",
+      "range": {
+        "startLine": 1,
+        "startChar": 2,
+        "endLine": 9,
+        "endChar": 18
+      },
+      "revId": "99373794b3ea4a366343ad9bfc6f9df11df77be3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
