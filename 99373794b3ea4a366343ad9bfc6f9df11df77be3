@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "691eb2f2_e4bfb4de",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1359095
+      },
+      "writtenOn": "2022-01-18T23:08:06Z",
+      "side": 1,
+      "message": "You will also have to +2 the Open-Source-Licensing label.",
+      "revId": "99373794b3ea4a366343ad9bfc6f9df11df77be3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
