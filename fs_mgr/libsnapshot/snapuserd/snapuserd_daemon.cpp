@@ -211,6 +211,7 @@ int main(int argc, char** argv) {
 
     android::snapshot::Daemon& daemon = android::snapshot::Daemon::Instance();
 
+    close(open("/dev/.snapuserd", O_WRONLY | O_CREAT | O_CLOEXEC, 0000));
     if (!daemon.StartDaemon(argc, argv)) {
         LOG(ERROR) << "Snapuserd daemon failed to start";
         exit(EXIT_FAILURE);

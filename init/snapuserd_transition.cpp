@@ -25,6 +25,7 @@
 #include <filesystem>
 #include <string>
 #include <string_view>
+#include <thread>
 
 #include <android-base/file.h>
 #include <android-base/logging.h>
@@ -267,6 +268,14 @@ void SnapuserdSelinuxHelper::RelaunchFirstStageSnapuserd() {
 
         setenv(kSnapuserdFirstStagePidVar, std::to_string(pid).c_str(), 1);
 
+        while (access("/dev/.snapuserd", F_OK) != 0) {
+            std::this_thread::sleep_for(100ms);
+        }
+
+        if (unlink("/dev/.snapuserd") < 0) {
+            PLOG(ERROR) << "unlink /dev/.snapuserd failed";
+        }
+
         LOG(INFO) << "Relaunched snapuserd with pid: " << pid;
         return;
     }
@@ -311,6 +320,10 @@ void KillFirstStageSnapuserd(pid_t pid) {
         LOG(ERROR) << "Kill snapuserd pid failed: " << pid;
     } else {
         LOG(INFO) << "Sent SIGTERM to snapuserd process " << pid;
+    }
+
+    if (unlink("/dev/.snapuserd") < 0) {
+        PLOG(ERROR) << "unlink /dev/.snapuserd failed";
     }
 }
 

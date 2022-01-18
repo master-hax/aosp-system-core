@@ -117,6 +117,15 @@ cc_binary {
     }
 }
 
+cc_binary {
+    name: "snapuserd_ramdisk",
+    stem: "snapuserd",
+    defaults: ["snapuserd_defaults"],
+    static_executable: true,
+    system_shared_libs: [],
+    ramdisk: true,
+}
+
 cc_test {
     name: "cow_snapuserd_test",
     defaults: [
