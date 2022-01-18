@@ -74,6 +74,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "e3784ae7_6b682d06",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-01-18T22:15:27Z",
+      "side": 1,
+      "message": "The precedent for a cli tool to modify misc is probably bootctl. Most of it goes through a HAL but the default HAL writes to misc.",
+      "parentUuid": "73d269c9_f4439831",
+      "revId": "01ea2b7491e6845ead3ccb164d31d23de522da23",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "19e94b9b_cda72ae2",
         "filename": "init/init.cpp",
         "patchSetId": 3
