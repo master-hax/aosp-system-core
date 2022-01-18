@@ -76,7 +76,7 @@ struct usb_host_context {
     int                         wddbus;
 };
 
-#define MAX_DESCRIPTORS_LENGTH 4096
+#define MAX_DESCRIPTORS_LENGTH 8192
 
 struct usb_device {
     char dev_name[64];
