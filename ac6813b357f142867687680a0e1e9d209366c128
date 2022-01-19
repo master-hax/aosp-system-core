@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "33e82459_c0bcdb73",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1041495
+      },
+      "writtenOn": "2022-01-19T12:13:25Z",
+      "side": 1,
+      "message": "Solved the problem on our devices, builds successfully for Redfin.\n\nRelates to https://android-review.googlesource.com/c/platform/frameworks/base/+/1952960",
+      "revId": "ac6813b357f142867687680a0e1e9d209366c128",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
