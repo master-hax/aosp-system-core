@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fe67a605_4d91ac74",
+        "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd_daemon.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-01-19T16:45:13Z",
+      "side": 1,
+      "message": "Alternately, we could remove all of this code, and just call StartServerForUserspaceSnapshots? It\u0027s enabled everywhere I think?",
+      "revId": "5d04189b4378f4c48415b934a31b3dadac8f9f0a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
