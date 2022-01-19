@@ -28,6 +28,7 @@ DEFINE_bool(no_socket, false,
 DEFINE_bool(socket_handoff, false,
             "If true, perform a socket hand-off with an existing snapuserd instance, then exit.");
 DEFINE_bool(user_snapshot, false, "If true, user-space snapshots are used");
+DEFINE_bool(first_stage, false, "If true, daemon launched from first-stage init");
 
 namespace android {
 namespace snapshot {
@@ -40,8 +41,100 @@ bool Daemon::IsDmSnapshotTestingEnabled() {
     return android::base::GetBoolProperty("snapuserd.test.dm.snapshots", false);
 }
 
+bool Daemon::Lockpages(std::string path) {
+    unique_fd fd(TEMP_FAILURE_RETRY(open(path.c_str(), O_RDONLY)));
+
+    if (fd < 0) {
+        PLOG(ERROR) << "Failed to open file: " << path;
+        return false;
+    }
+
+    struct stat sb;
+    int res = fstat(fd.get(), &sb);
+
+    if (res) {
+        PLOG(ERROR) << "fstat failed for file: " << path;
+        return false;
+    }
+
+    uint64_t len_of_file = sb.st_size;
+
+    if (len_of_file == 0) {
+        LOG(ERROR) << "File: " << path << " length is 0";
+        return false;
+    }
+
+    off_t offset = 0;
+    uint64_t len_of_range = len_of_file - offset;
+
+    void* mem = mmap(NULL, len_of_range, PROT_READ, MAP_SHARED, fd.get(), 0);
+
+    if (mem == MAP_FAILED) {
+        LOG(ERROR) << "mmap failed for path: " << path;
+        return false;
+    }
+
+    if (!IsAligned(mem)) {
+        munmap(mem, len_of_range);
+        LOG(ERROR) << "mmap memory not aligned for path: " << path;
+        return false;
+    }
+
+    mapped_vec_.emplace_back(mem, len_of_range);
+
+    uint64_t pages_in_range = ((len_of_range + pagesize_ - 1) / pagesize_);
+
+    uint64_t temp_counter = 0;
+    // Touch all the pages
+    for (uint64_t i = 0; i < pages_in_range; i++) {
+        temp_counter = ((char*)mem)[i * pagesize_];
+        LOG(DEBUG) << "Page: " << i << " byte: " << temp_counter << " touched from path: " << path;
+    }
+
+    if (mlock(mem, len_of_range)) {
+        LOG(ERROR) << "mlock failed for path: " << path;
+        return false;
+    }
+
+    return true;
+}
+
+void Daemon::LockFilesystemPages() {
+    bool success = true;
+    std::vector<std::string> paths = {"/system/etc/selinux/plat_property_contexts",
+                                      "/vendor/etc/selinux/vendor_property_contexts",
+                                      "/system/usr/share/zoneinfo/tzdata"};
+
+    for (auto path : paths) {
+        if (!Lockpages(path)) {
+            LOG(ERROR) << "Failed to lock pages from: " << path;
+            success = false;
+        }
+    }
+
+    if (success) {
+        LOG(INFO) << "****** All pages locked in RAM as required";
+    } else {
+        LOG(INFO) << "xxxxxx Failed to lock all pages in RAM";
+    }
+}
+
+void Daemon::UnlockFilesystemPages() {
+    munlockall();
+
+    for (auto map_addr : mapped_vec_) {
+        munmap(map_addr.first, map_addr.second);
+    }
+
+    LOG(INFO) << "UnlockFilesystemPages success";
+}
+
 bool Daemon::StartDaemon(int argc, char** argv) {
     int arg_start = gflags::ParseCommandLineFlags(&argc, &argv, true);
+
+    if (FLAGS_first_stage) {
+        LockFilesystemPages();
+    }
 
     // Daemon launched from first stage init and during selinux transition
     // will have the command line "-user_snapshot" flag set if the user-space
@@ -51,12 +144,32 @@ bool Daemon::StartDaemon(int argc, char** argv) {
     // is applied will check for the property. This is ok as the system
     // properties are valid at this point. We can't do this during first
     // stage init and hence use the command line flags to get the information.
-    if (!IsDmSnapshotTestingEnabled() && (FLAGS_user_snapshot || IsUserspaceSnapshotsEnabled())) {
+    bool user_snapshots = FLAGS_user_snapshot;
+    if (!user_snapshots) {
+        user_snapshots = (!IsDmSnapshotTestingEnabled() && IsUserspaceSnapshotsEnabled());
+    }
+
+    bool ret;
+    if (user_snapshots) {
         LOG(INFO) << "Starting daemon for user-space snapshots.....";
-        return StartServerForUserspaceSnapshots(arg_start, argc, argv);
+        ret = StartServerForUserspaceSnapshots(arg_start, argc, argv);
     } else {
         LOG(INFO) << "Starting daemon for dm-snapshots.....";
-        return StartServerForDmSnapshot(arg_start, argc, argv);
+        ret = StartServerForDmSnapshot(arg_start, argc, argv);
+    }
+
+    if (FLAGS_first_stage) {
+        UnlockFilesystemPages();
+    }
+
+    return ret;
+}
+
+void Daemon::KillFirstStageSnapuserd(pid_t pid) {
+    if (kill(pid, SIGTERM) < 0 && errno != ESRCH) {
+        LOG(ERROR) << "Kill snapuserd pid failed: " << pid;
+    } else {
+        LOG(INFO) << "Sent SIGTERM to snapuserd process " << pid;
     }
 }
 
@@ -185,6 +298,7 @@ void Daemon::SignalHandler(int signal) {
     switch (signal) {
         case SIGINT:
         case SIGTERM: {
+            LOG(INFO) << "Received SIGTERM signal";
             Daemon::Instance().Interrupt();
             break;
         }

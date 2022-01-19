@@ -29,7 +29,12 @@ class Daemon {
     // The Daemon class is a singleton to avoid
     // instantiating more than once
   public:
-    Daemon() {}
+    Daemon() {
+        pagesize_ = sysconf(_SC_PAGE_SIZE);
+        if (pagesize_ == 0) {
+            pagesize_ = 4096;
+        }
+    }
 
     static Daemon& Instance() {
         static Daemon instance;
@@ -56,6 +61,16 @@ class Daemon {
     void MaskAllSignalsExceptIntAndTerm();
     void MaskAllSignals();
     static void SignalHandler(int signal);
+
+    bool IsAligned(void* p) { return (0 == ((long)p & (pagesize_ - 1))); }
+
+    void UnlockFilesystemPages();
+    void LockFilesystemPages();
+    void KillFirstStageSnapuserd(pid_t pid);
+
+    bool Lockpages(std::string path);
+    std::vector<std::pair<void*, uint64_t>> mapped_vec_;
+    uint64_t pagesize_ = 0;
 };
 
 }  // namespace snapshot

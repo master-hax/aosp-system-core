@@ -84,7 +84,8 @@ void LaunchFirstStageSnapuserd(SnapshotDriver driver) {
         if (driver == SnapshotDriver::DM_USER) {
             char arg0[] = "/system/bin/snapuserd";
             char arg1[] = "-user_snapshot";
-            char* const argv[] = {arg0, arg1, nullptr};
+            char arg2[] = "-first_stage";
+            char* const argv[] = {arg0, arg1, arg2, nullptr};
             if (execv(arg0, argv) < 0) {
                 PLOG(FATAL) << "Cannot launch snapuserd; execv failed";
             }
@@ -226,9 +227,8 @@ void SnapuserdSelinuxHelper::StartTransition() {
     if (!sm_->DetachSnapuserdForSelinux(&argv_)) {
         LOG(FATAL) << "Could not perform selinux transition";
     }
-
-    // Make sure the process is gone so we don't have any selinux audits.
-    KillFirstStageSnapuserd(old_pid_);
+    // Stick the first stage snapuserd daemon pid and send it
+    argv_.emplace_back(std::to_string(old_pid_));
 }
 
 void SnapuserdSelinuxHelper::FinishTransition() {
