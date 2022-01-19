@@ -34,7 +34,9 @@ cc_library {
                 "-g",
                 "-DUSE_LIBLOG",
             ],
+            header_libs: ["jni_headers"],
             shared_libs: ["liblog"],
+            srcs: ["usbhost_jni.cpp"],
         },
         darwin: {
             enabled: false,

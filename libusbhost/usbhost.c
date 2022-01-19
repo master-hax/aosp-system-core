@@ -18,6 +18,10 @@
 #define _GNU_SOURCE
 #endif
 
+#include <usbhost/usbhost.h>
+
+#include "usbhost_private.h"
+
 // #define DEBUG 1
 #if DEBUG
 
@@ -51,9 +55,6 @@
 #include <pthread.h>
 
 #include <linux/usbdevice_fs.h>
-#include <asm/byteorder.h>
-
-#include "usbhost/usbhost.h"
 
 #define DEV_DIR             "/dev"
 #define DEV_BUS_DIR         DEV_DIR "/bus"
@@ -75,8 +76,6 @@ struct usb_host_context {
     int                         wdd;
     int                         wddbus;
 };
-
-#define MAX_DESCRIPTORS_LENGTH 4096
 
 struct usb_device {
     char dev_name[64];
