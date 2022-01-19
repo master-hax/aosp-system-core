@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "49734e38_ef5cf81f",
+        "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd_daemon.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-01-19T21:29:26Z",
+      "side": 1,
+      "message": "No need for \"res\" here?",
+      "revId": "2377645f169a31be7998b30c6a7dcb2621ca90c8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "85530b52_7c0e50b9",
+        "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd_daemon.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 169,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-01-19T21:29:26Z",
+      "side": 1,
+      "message": "I\u0027m surprised this doesn\u0027t get denied by selinux, since only init should have cross-domain kill. Do we fallthrough to the second case most of the time?",
+      "revId": "2377645f169a31be7998b30c6a7dcb2621ca90c8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bd85cc56_2658904b",
+        "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd_daemon.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-01-19T21:29:26Z",
+      "side": 1,
+      "message": "(long) should be (uint64_t)",
+      "revId": "2377645f169a31be7998b30c6a7dcb2621ca90c8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "653b9123_89925738",
+        "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd_daemon.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-01-19T21:29:26Z",
+      "side": 1,
+      "message": "std::string_view or const std::string\u0026",
+      "revId": "2377645f169a31be7998b30c6a7dcb2621ca90c8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
