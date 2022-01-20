@@ -30,6 +30,12 @@ TEST(UtilityTest, describe_tagged_addr_ctrl) {
       "0xf0000000)",
       describe_tagged_addr_ctrl(0xf0000000 | PR_TAGGED_ADDR_ENABLE | PR_MTE_TCF_SYNC |
                                 PR_MTE_TCF_ASYNC | (0xfffe << PR_MTE_TAG_SHIFT)));
+  EXPECT_EQ(
+      " (PR_TAGGED_ADDR_ENABLE, PR_MTE_TCF_SYNC, PR_MTE_TCF_ASYMM, PR_MTE_TCF_ASYNC, mask 0xfffe, "
+      "unknown 0xf0000000)",
+      describe_tagged_addr_ctrl(0xf0000000 | PR_TAGGED_ADDR_ENABLE | PR_MTE_TCF_SYNC |
+                                PR_MTE_TCF_ASYMM | PR_MTE_TCF_ASYNC |
+                                (0xfffe << PR_MTE_TAG_SHIFT)));
 }
 
 TEST(UtilityTest, describe_pac_enabled_keys) {

@@ -464,6 +464,7 @@ std::string describe_tagged_addr_ctrl(long value) {
   std::string desc;
   DESCRIBE_FLAG(PR_TAGGED_ADDR_ENABLE);
   DESCRIBE_FLAG(PR_MTE_TCF_SYNC);
+  DESCRIBE_FLAG(PR_MTE_TCF_ASYMM);
   DESCRIBE_FLAG(PR_MTE_TCF_ASYNC);
   if (value & PR_MTE_TAG_MASK) {
     desc += StringPrintf(", mask 0x%04lx", (value & PR_MTE_TAG_MASK) >> PR_MTE_TAG_SHIFT);
