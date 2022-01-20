@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "aa30c25f_3eb7f085",
+        "filename": "trusty/storage/proxy/storage.c",
+        "patchSetId": 6
+      },
+      "lineNbr": 291,
+      "author": {
+        "id": 1000205
+      },
+      "writtenOn": "2022-01-20T20:14:08Z",
+      "side": 1,
+      "message": "you don\u0027t need to sync if mkdir failed with EEXIST",
+      "revId": "f098d36cc6ee431651e11fd3d05c52b8ce2cb2d4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
