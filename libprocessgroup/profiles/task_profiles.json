@@ -49,6 +49,21 @@
       "Name": "FreezerState",
       "Controller": "freezer",
       "File": "cgroup.freeze"
+    },
+    {
+      "Name": "BfqWeight",
+      "Controller": "blkio",
+      "File": "blkio.bfq.weight"
+    },
+    {
+      "Name": "CfqGroupIdle",
+      "Controller": "blkio",
+      "File": "blkio.group_idle"
+    },
+    {
+      "Name": "CfqWeight",
+      "Controller": "blkio",
+      "File": "blkio.weight"
     }
   ],
 
@@ -419,6 +434,33 @@
             "Controller": "blkio",
             "Path": "background"
           }
+        },
+        {
+          "Name": "SetAttribute",
+          "Params":
+          {
+            "Name": "BfqWeight",
+            "Value": "10",
+            "IgnoreFailure": "true"
+          }
+        },
+        {
+          "Name": "SetAttribute",
+          "Params":
+          {
+            "Name": "CfqGroupIdle",
+            "Value": "0",
+            "IgnoreFailure": "true"
+          }
+        },
+        {
+          "Name": "SetAttribute",
+          "Params":
+          {
+            "Name": "CfqWeight",
+            "Value": "200",
+            "IgnoreFailure": "true"
+          }
         }
       ]
     },
@@ -431,6 +473,33 @@
           {
             "Controller": "blkio",
             "Path": ""
+          }
+        },
+        {
+          "Name": "SetAttribute",
+          "Params":
+          {
+            "Name": "BfqWeight",
+            "Value": "100",
+            "IgnoreFailure": "true"
+          }
+        },
+        {
+          "Name": "SetAttribute",
+          "Params":
+          {
+            "Name": "CfqGroupIdle",
+            "Value": "2000",
+            "IgnoreFailure": "true"
+          }
+        },
+        {
+          "Name": "SetAttribute",
+          "Params":
+          {
+            "Name": "CfqWeight",
+            "Value": "1000",
+            "IgnoreFailure": "true"
           }
         }
       ]
@@ -445,6 +514,33 @@
             "Controller": "blkio",
             "Path": ""
           }
+        },
+        {
+          "Name": "SetAttribute",
+          "Params":
+          {
+            "Name": "BfqWeight",
+            "Value": "100",
+            "IgnoreFailure": "true"
+          }
+        },
+        {
+          "Name": "SetAttribute",
+          "Params":
+          {
+            "Name": "CfqGroupIdle",
+            "Value": "2000",
+            "IgnoreFailure": "true"
+          }
+        },
+        {
+          "Name": "SetAttribute",
+          "Params":
+          {
+            "Name": "CfqWeight",
+            "Value": "1000",
+            "IgnoreFailure": "true"
+          }
         }
       ]
     },
@@ -457,6 +553,33 @@
           {
             "Controller": "blkio",
             "Path": ""
+          }
+        },
+        {
+          "Name": "SetAttribute",
+          "Params":
+          {
+            "Name": "BfqWeight",
+            "Value": "100",
+            "IgnoreFailure": "true"
+          }
+        },
+        {
+          "Name": "SetAttribute",
+          "Params":
+          {
+            "Name": "CfqGroupIdle",
+            "Value": "2000",
+            "IgnoreFailure": "true"
+          }
+        },
+        {
+          "Name": "SetAttribute",
+          "Params":
+          {
+            "Name": "CfqWeight",
+            "Value": "1000",
+            "IgnoreFailure": "true"
           }
         }
       ]
