@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4d1250aa_aa3762ed",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1349877
+      },
+      "writtenOn": "2022-01-20T07:00:16Z",
+      "side": 1,
+      "message": "Hi Jiyong,\nwould you help to review this change? The new library libnetd_mainline.so in tethering module will be loaded by Netd. Not sure if you remember that you helped to review the design doc (go/ml-netd-bpf) at the end of the last year. :-)",
+      "revId": "cfa94bc14252062356ab051fb8bf060295ff75ad",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
