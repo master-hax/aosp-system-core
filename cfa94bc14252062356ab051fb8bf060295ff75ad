@@ -33,6 +33,24 @@
       "message": "Looks fine, though the existence of \"_mainline\" in the lib name is not perfectly satisfying to me, because mainline is not an AOSP thing.",
       "revId": "cfa94bc14252062356ab051fb8bf060295ff75ad",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "36639edf_c9e880c7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003247
+      },
+      "writtenOn": "2022-01-20T20:17:32Z",
+      "side": 1,
+      "message": "hmm, but we build mainline modules from aosp/master (well from (sc-)mainline-prod, but that automerges aosp/master, so it\u0027s basically the same thing as far as the networking code is concerned)...",
+      "parentUuid": "944f1a1a_0e389e70",
+      "revId": "cfa94bc14252062356ab051fb8bf060295ff75ad",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
