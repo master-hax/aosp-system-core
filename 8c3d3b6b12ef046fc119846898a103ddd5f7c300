@@ -16,6 +16,24 @@
       "message": "don\u0027t you need to sync the parent of this one as well?",
       "revId": "8c3d3b6b12ef046fc119846898a103ddd5f7c300",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "31048a3d_f03ed469",
+        "filename": "trusty/storage/proxy/storage.c",
+        "patchSetId": 5
+      },
+      "lineNbr": 278,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2022-01-20T19:35:59Z",
+      "side": 1,
+      "message": "Yes, I think we do. Done.",
+      "parentUuid": "d9c5ace4_88931e00",
+      "revId": "8c3d3b6b12ef046fc119846898a103ddd5f7c300",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
