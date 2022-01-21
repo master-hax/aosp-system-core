@@ -69,6 +69,24 @@
       "parentUuid": "36639edf_c9e880c7",
       "revId": "cfa94bc14252062356ab051fb8bf060295ff75ad",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "669f54e7_4fb26312",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003247
+      },
+      "writtenOn": "2022-01-21T02:04:45Z",
+      "side": 1,
+      "message": "I guess this is a nomenclature thing.\n\nI almost always develop against cuttlefish in aosp master.\n\nAFAIK then everything - including all \u0027mainline modules\u0027 - are built from their AOSP source.\nBut I still think of them as being \u0027mainline\u0027 (although they\u0027re of course tip-of-tree preview versions of what will hopefully ship in a month or two).\n\nI\u0027m not really sure what to call them, if not mainline.  Any suggestions?\n\nIn AOSP we\u0027re still building apexes and shipping them (nearly?) as if they were mainline (though I guess maybe there\u0027s subtle differences from a file dedup perspective for example? or a version number or something??).  So from a development perspective it behaves basically like mainline.  One could argue that from a development perspective this simply is the true mainline, or at least I\u0027m not aware of another way to develop mainline modules...\n\nThat said, I\u0027m certainly open to ideas on how to call this?\nlibnetd_apex.so  ?",
+      "parentUuid": "543b5e28_57111bc6",
+      "revId": "cfa94bc14252062356ab051fb8bf060295ff75ad",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
