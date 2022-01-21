@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1749e3d2_b5a43891",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2022-01-21T06:54:03Z",
+      "side": 1,
+      "message": "Reverting until we can get the permissions change to the right places.",
+      "revId": "49d7ce24ddea15c3ae046e7b1a169d7489a37d1b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
