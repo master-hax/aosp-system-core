@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "3ff1d78f_f842d23a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1054468
+      },
+      "writtenOn": "2022-01-21T07:18:03Z",
+      "side": 1,
+      "message": "We\u0027ll have tests to prevent this from happening.",
+      "parentUuid": "df751b4e_dbfcbb72",
+      "range": {
+        "startLine": 12,
+        "startChar": 51,
+        "endLine": 12,
+        "endChar": 67
+      },
+      "revId": "0deb701cf7c9809388a14a4818e82f59b28073ab",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f275e0e5_0ef9c1d4",
@@ -37,6 +61,30 @@
       "writtenOn": "2021-12-15T13:58:56Z",
       "side": 1,
       "message": "To be clear. We have to pay this overhead on \"every\" boot, right?",
+      "range": {
+        "startLine": 21,
+        "startChar": 11,
+        "endLine": 21,
+        "endChar": 54
+      },
+      "revId": "0deb701cf7c9809388a14a4818e82f59b28073ab",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "10e5d3ba_6cc781fd",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1054468
+      },
+      "writtenOn": "2022-01-21T07:18:03Z",
+      "side": 1,
+      "message": "Yes, but we have a proposed fix for that.",
+      "parentUuid": "f275e0e5_0ef9c1d4",
       "range": {
         "startLine": 21,
         "startChar": 11,
