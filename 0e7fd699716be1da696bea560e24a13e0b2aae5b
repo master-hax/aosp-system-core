@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "80e3c6ae_57a8e379",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1002751
+      },
+      "writtenOn": "2022-01-22T23:24:09Z",
+      "side": 1,
+      "message": "Now the problem is that windows doesn\u0027t have SEEK_HOLE or SEEK_DATA:\n\n system/core/libsparse/sparse_read.cpp:530:28: error: use of undeclared identifier \u0027SEEK_DATA\u0027\n     start \u003d lseek(fd, end, SEEK_DATA);\n                            ^\n system/core/libsparse/sparse_read.cpp:543:28: error: use of undeclared identifier \u0027SEEK_HOLE\u0027\n     end \u003d lseek(fd, start, SEEK_HOLE);\n                            ^\n",
+      "revId": "0e7fd699716be1da696bea560e24a13e0b2aae5b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
