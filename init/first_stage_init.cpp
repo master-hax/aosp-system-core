@@ -245,6 +245,7 @@ int FirstStageMain(int argc, char** argv) {
     // /mnt/product is used to mount product-specific partitions that can not be
     // part of the product partition, e.g. because they are mounted read-write.
     CHECKCALL(mkdir("/mnt/product", 0755));
+    CHECKCALL(mkdir("/mnt/first_stage_ramdisk", 0755));
 
     // /debug_ramdisk is used to preserve additional files from the debug ramdisk
     CHECKCALL(mount("tmpfs", "/debug_ramdisk", "tmpfs", MS_NOEXEC | MS_NOSUID | MS_NODEV,
@@ -352,7 +353,7 @@ int FirstStageMain(int argc, char** argv) {
         // SwitchRoot() must be called with a mount point as the target, so we bind mount the
         // target directory to itself here.
         if (mount("/first_stage_ramdisk", "/first_stage_ramdisk", nullptr, MS_BIND, nullptr) != 0) {
-            LOG(FATAL) << "Could not bind mount /first_stage_ramdisk to itself";
+            PLOG(FATAL) << "Could not bind mount /first_stage_ramdisk to itself";
         }
         SwitchRoot("/first_stage_ramdisk");
     }

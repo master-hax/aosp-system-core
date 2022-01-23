@@ -91,5 +91,7 @@ void SaveRamdiskPathToSnapuserd();
 // Returns true if first-stage snapuserd is running.
 bool IsFirstStageSnapuserdRunning();
 
+void RestoreconRamdiskSnapuserd();
+
 }  // namespace init
 }  // namespace android
