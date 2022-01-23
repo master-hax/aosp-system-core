@@ -17,6 +17,7 @@
 #include "snapuserd_transition.h"
 
 #include <sys/mman.h>
+#include <sys/mount.h>
 #include <sys/socket.h>
 #include <sys/syscall.h>
 #include <sys/xattr.h>
@@ -51,12 +52,11 @@ using android::base::unique_fd;
 using android::snapshot::SnapshotManager;
 using android::snapshot::SnapuserdClient;
 
-static constexpr char kSnapuserdPath[] = "/system/bin/snapuserd";
 static constexpr char kSnapuserdFirstStagePidVar[] = "FIRST_STAGE_SNAPUSERD_PID";
-static constexpr char kSnapuserdFirstStageFdVar[] = "FIRST_STAGE_SNAPUSERD_FD";
 static constexpr char kSnapuserdFirstStageInfoVar[] = "FIRST_STAGE_SNAPUSERD_INFO";
 static constexpr char kSnapuserdLabel[] = "u:object_r:snapuserd_exec:s0";
 static constexpr char kSnapuserdSocketLabel[] = "u:object_r:snapuserd_socket:s0";
+static constexpr char kSnapuserdSecondStagePath[] = "/mnt/first_stage_ramdisk/snapuserd";
 
 void LaunchFirstStageSnapuserd(SnapshotDriver driver) {
     SocketDescriptor socket_desc;
@@ -147,23 +147,10 @@ static void RelabelDeviceMapper() {
     }
 }
 
-static std::optional<int> GetRamdiskSnapuserdFd() {
-    const char* fd_str = getenv(kSnapuserdFirstStageFdVar);
-    if (!fd_str) {
-        return {};
-    }
-
-    int fd;
-    if (!android::base::ParseInt(fd_str, &fd)) {
-        LOG(FATAL) << "Could not parse fd in environment, " << kSnapuserdFirstStageFdVar << "="
-                   << fd_str;
-    }
-    return {fd};
-}
-
-void RestoreconRamdiskSnapuserd(int fd) {
-    if (fsetxattr(fd, XATTR_NAME_SELINUX, kSnapuserdLabel, strlen(kSnapuserdLabel) + 1, 0) < 0) {
-        PLOG(FATAL) << "fsetxattr snapuserd failed";
+void RestoreconRamdiskSnapuserd() {
+    if (setxattr(kSnapuserdSecondStagePath, XATTR_NAME_SELINUX, kSnapuserdLabel,
+                 strlen(kSnapuserdLabel) + 1, 0)) {
+        PLOG(FATAL) << "setxattr snapuserd failed";
     }
 }
 
@@ -223,6 +210,7 @@ void SnapuserdSelinuxHelper::StartTransition() {
 
     argv_.emplace_back("snapuserd");
     argv_.emplace_back("-no_socket");
+    argv_.emplace_back("-mlock");
     if (!sm_->DetachSnapuserdForSelinux(&argv_)) {
         LOG(FATAL) << "Could not perform selinux transition";
     }
@@ -248,32 +236,17 @@ void SnapuserdSelinuxHelper::FinishTransition() {
 }
 
 void SnapuserdSelinuxHelper::RelaunchFirstStageSnapuserd() {
-    auto fd = GetRamdiskSnapuserdFd();
-    if (!fd) {
-        LOG(FATAL) << "Environment variable " << kSnapuserdFirstStageFdVar << " was not set!";
-    }
-    unsetenv(kSnapuserdFirstStageFdVar);
-
-    RestoreconRamdiskSnapuserd(fd.value());
+    RestoreconRamdiskSnapuserd();
 
     pid_t pid = fork();
     if (pid < 0) {
         PLOG(FATAL) << "Fork to relaunch snapuserd failed";
     }
     if (pid > 0) {
-        // We don't need the descriptor anymore, and it should be closed to
-        // avoid leaking into subprocesses.
-        close(fd.value());
-
         setenv(kSnapuserdFirstStagePidVar, std::to_string(pid).c_str(), 1);
 
         LOG(INFO) << "Relaunched snapuserd with pid: " << pid;
         return;
-    }
-
-    // Make sure the descriptor is gone after we exec.
-    if (fcntl(fd.value(), F_SETFD, FD_CLOEXEC) < 0) {
-        PLOG(FATAL) << "fcntl FD_CLOEXEC failed for snapuserd fd";
     }
 
     std::vector<char*> argv;
@@ -282,8 +255,8 @@ void SnapuserdSelinuxHelper::RelaunchFirstStageSnapuserd() {
     }
     argv.emplace_back(nullptr);
 
-    int rv = syscall(SYS_execveat, fd.value(), "", reinterpret_cast<char* const*>(argv.data()),
-                     nullptr, AT_EMPTY_PATH);
+    int rv =
+            execve(kSnapuserdSecondStagePath, reinterpret_cast<char* const*>(argv.data()), nullptr);
     if (rv < 0) {
         PLOG(FATAL) << "Failed to execveat() snapuserd";
     }
@@ -333,14 +306,11 @@ void CleanupSnapuserdSocket() {
 }
 
 void SaveRamdiskPathToSnapuserd() {
-    int fd = open(kSnapuserdPath, O_PATH);
-    if (fd < 0) {
-        PLOG(FATAL) << "Unable to open snapuserd: " << kSnapuserdPath;
+    if (mkdir("/mnt/first_stage_ramdisk", 0755) < 0) {
+        PLOG(FATAL) << "Could not mkdir /mnt/first_stage_ramdisk";
     }
-
-    auto value = std::to_string(fd);
-    if (setenv(kSnapuserdFirstStageFdVar, value.c_str(), 1) < 0) {
-        PLOG(FATAL) << "setenv failed: " << kSnapuserdFirstStageFdVar << "=" << value;
+    if (mount("/system/bin", "/mnt/first_stage_ramdisk", nullptr, MS_BIND, nullptr) != 0) {
+        PLOG(FATAL) << "Could not bind first stage ramdisk";
     }
 }
 

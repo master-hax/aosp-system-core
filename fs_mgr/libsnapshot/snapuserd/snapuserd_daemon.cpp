@@ -14,10 +14,13 @@
  * limitations under the License.
  */
 
+#include <sys/mman.h>
+
 #include <android-base/logging.h>
 #include <android-base/properties.h>
 #include <android-base/strings.h>
 #include <gflags/gflags.h>
+#include <procinfo/process_map.h>
 #include <snapuserd/snapuserd_client.h>
 
 #include "snapuserd_daemon.h"
@@ -28,6 +31,7 @@ DEFINE_bool(no_socket, false,
 DEFINE_bool(socket_handoff, false,
             "If true, perform a socket hand-off with an existing snapuserd instance, then exit.");
 DEFINE_bool(user_snapshot, false, "If true, user-space snapshots are used");
+DEFINE_bool(mlock, false, "If true, mlock all snapuserd pages immediately upon starting");
 
 namespace android {
 namespace snapshot {
@@ -40,8 +44,39 @@ bool Daemon::IsDmSnapshotTestingEnabled() {
     return android::base::GetBoolProperty("snapuserd.test.dm.snapshots", false);
 }
 
+static void LockAllSystemPages() {
+    bool ok = true;
+    auto callback = [&](const android::procinfo::MapInfo& map) -> void {
+        if (!ok || android::base::StartsWith(map.name, "/dev/") ||
+            !android::base::StartsWith(map.name, "/")) {
+            return;
+        }
+        auto start = reinterpret_cast<const void*>(map.start);
+        auto len = map.end - map.start;
+        if (!len) {
+            return;
+        }
+        if (mlock(start, len) < 0) {
+            LOG(ERROR) << "mlock failed, " << start << " for " << len << " bytes.";
+            ok = false;
+        }
+    };
+
+    if (!android::procinfo::ReadProcessMaps(getpid(), callback) || !ok) {
+        LOG(ERROR) << "Could not process /proc/" << getpid() << "/maps file for init, "
+                   << "falling back to mlockall().";
+        if (mlockall(MCL_CURRENT) < 0) {
+            LOG(FATAL) << "mlockall failed";
+        }
+    }
+}
+
 bool Daemon::StartDaemon(int argc, char** argv) {
     int arg_start = gflags::ParseCommandLineFlags(&argc, &argv, true);
+
+    if (FLAGS_mlock) {
+        LockAllSystemPages();
+    }
 
     // Daemon launched from first stage init and during selinux transition
     // will have the command line "-user_snapshot" flag set if the user-space

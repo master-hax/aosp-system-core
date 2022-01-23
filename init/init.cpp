@@ -772,6 +772,16 @@ static Result<void> ConnectEarlyStageSnapuserdAction(const BuiltinArguments& arg
     if (auto result = svc->Start(); !result.ok()) {
         LOG(FATAL) << "Could not start snapuserd_proxy: " << result.error();
     }
+
+    // Clean up first stage ramdisk.
+    static constexpr char kRamdiskPath[] = "/mnt/first_stage_ramdisk";
+
+    if (umount2(kRamdiskPath, MNT_DETACH) < 0) {
+        PLOG(ERROR) << "umount failed: " << kRamdiskPath;
+    }
+    if (rmdir(kRamdiskPath) < 0) {
+        PLOG(ERROR) << "unlink failed: " << kRamdiskPath;
+    }
     return {};
 }
 
