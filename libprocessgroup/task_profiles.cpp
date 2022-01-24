@@ -206,6 +206,8 @@ bool SetAttributeAction::ExecuteForTask(int tid) const {
     if (!WriteStringToFile(value_, path)) {
         PLOG(ERROR) << "Failed to write '" << value_ << "' to " << path;
         return false;
+    } else {
+        LOG(VERBOSE) << "Wrote " << value_ << " to " << path;
     }
 
     return true;
@@ -473,8 +475,11 @@ void TaskProfile::MoveTo(TaskProfile* profile) {
 }
 
 bool TaskProfile::ExecuteForProcess(uid_t uid, pid_t pid) const {
+    LOG(VERBOSE) << "Applying task profile " << this << " to pid " << pid;
     for (const auto& element : elements_) {
+        LOG(VERBOSE) << "Applying profile action " << &element;
         if (!element->ExecuteForProcess(uid, pid)) {
+            LOG(VERBOSE) << "Applying profile action " << &element << " failed";
             return false;
         }
     }
@@ -485,8 +490,11 @@ bool TaskProfile::ExecuteForTask(int tid) const {
     if (tid == 0) {
         tid = GetThreadId();
     }
+    LOG(VERBOSE) << "Applying task profile " << Name() << " to tid " << tid;
     for (const auto& element : elements_) {
+        LOG(VERBOSE) << "Applying profile action " << element->Name();
         if (!element->ExecuteForTask(tid)) {
+            LOG(VERBOSE) << "Applying profile action " << element->Name() << " failed";
             return false;
         }
     }
@@ -598,7 +606,7 @@ bool TaskProfiles::Load(const CgroupMap& cg_map, const std::string& file_name) {
 
         std::string profile_name = profile_val["Name"].asString();
         const Json::Value& actions = profile_val["Actions"];
-        auto profile = std::make_shared<TaskProfile>();
+        auto profile = std::make_shared<TaskProfile>(profile_name);
 
         for (Json::Value::ArrayIndex act_idx = 0; act_idx < actions.size(); ++act_idx) {
             const Json::Value& action_val = actions[act_idx];
@@ -708,7 +716,7 @@ bool TaskProfiles::Load(const CgroupMap& cg_map, const std::string& file_name) {
             }
         }
         if (ret) {
-            auto profile = std::make_shared<TaskProfile>();
+            auto profile = std::make_shared<TaskProfile>(aggregateprofile_name);
             profile->Add(std::make_unique<ApplyProfileAction>(profiles));
             profiles_[aggregateprofile_name] = profile;
         }
