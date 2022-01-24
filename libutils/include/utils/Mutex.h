@@ -22,7 +22,8 @@
 #include <time.h>
 
 #if !defined(_WIN32)
-# include <pthread.h>
+#include <errno.h>
+#include <pthread.h>
 #endif
 
 #include <utils/Errors.h>
@@ -118,10 +119,7 @@ class CAPABILITY("mutex") Mutex {
     // capabilities consistent across host OSes, this method is only available
     // when building Android binaries.
     //
-    // FIXME?: pthread_mutex_timedlock is based on CLOCK_REALTIME,
-    // which is subject to NTP adjustments, and includes time during suspend,
-    // so a timeout may occur even though no processes could run.
-    // Not holding a partial wakelock may lead to a system suspend.
+    // FIXME?: Not holding a partial wakelock may lead to a system suspend.
     status_t timedLock(nsecs_t timeoutNs) TRY_ACQUIRE(0);
 #endif
 
@@ -190,12 +188,22 @@ inline status_t Mutex::tryLock() {
 }
 #if defined(__ANDROID__)
 inline status_t Mutex::timedLock(nsecs_t timeoutNs) {
-    timeoutNs += systemTime(SYSTEM_TIME_REALTIME);
-    const struct timespec ts = {
-        /* .tv_sec = */ static_cast<time_t>(timeoutNs / 1000000000),
-        /* .tv_nsec = */ static_cast<long>(timeoutNs % 1000000000),
-    };
-    return -pthread_mutex_timedlock(&mMutex, &ts);
+    struct timespec ts;
+    int ret = clock_gettime(CLOCK_MONOTONIC, &ts);
+    if (ret < 0) {
+        return -errno;
+    }
+    ts.tv_sec += timeoutNs / 1000000000LL;
+    ts.tv_nsec += timeoutNs % 1000000000LL;
+    if (ts.tv_nsec >= 1000000000LL) {
+        ts.tv_sec++;
+        ts.tv_nsec -= 1000000000LL;
+    }
+#if __ANDROID_API__ >= 30
+    return -pthread_mutex_clocklock(&mMutex, CLOCK_MONOTONIC, &ts);
+#else
+    return -pthread_mutex_timedlock_monotonic_np(&mMutex, &ts);
+#endif
 }
 #endif
 
