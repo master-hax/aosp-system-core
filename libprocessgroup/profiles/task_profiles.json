@@ -16,6 +16,11 @@
       "File": "top-app/cpus"
     },
     {
+      "Name": "MemStats",
+      "Controller": "memory",
+      "File": "memory.stat"
+    },
+    {
       "Name": "MemLimit",
       "Controller": "memory",
       "File": "memory.limit_in_bytes"
