@@ -205,9 +205,17 @@ bool SetAttributeAction::ExecuteForTask(int tid) const {
         return false;
     }
 
+    // Call access() before WriteStingToFile() because otherwise the call to access() would
+    // overwrite errno.
+    const bool attr_exists = access(path.c_str(), 0600) == 0;
     if (!WriteStringToFile(value_, path)) {
-        PLOG(ERROR) << "Failed to write '" << value_ << "' to " << path;
-        return false;
+        if (!optional_ || attr_exists) {
+            PLOG(ERROR) << "Failed to write '" << value_ << "' to " << path;
+            return false;
+        } else {
+            PLOG(VERBOSE) << "Ignored failure to write '" << value_ << "' to " << path
+                          << " by process " << getpid();
+        }
     } else {
         LOG(VERBOSE) << "Wrote " << value_ << " to " << path;
     }
@@ -638,11 +646,12 @@ bool TaskProfiles::Load(const CgroupMap& cg_map, const std::string& file_name) {
             } else if (action_name == "SetAttribute") {
                 std::string attr_name = params_val["Name"].asString();
                 std::string attr_value = params_val["Value"].asString();
+                bool optional = strcmp(params_val["Optional"].asString().c_str(), "true") == 0;
 
                 auto iter = attributes_.find(attr_name);
                 if (iter != attributes_.end()) {
-                    profile->Add(
-                            std::make_unique<SetAttributeAction>(iter->second.get(), attr_value));
+                    profile->Add(std::make_unique<SetAttributeAction>(iter->second.get(),
+                                                                      attr_value, optional));
                 } else {
                     LOG(WARNING) << "SetAttribute: unknown attribute: " << attr_name;
                 }

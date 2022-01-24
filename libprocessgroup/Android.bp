@@ -73,3 +73,33 @@ cc_library {
     ],
     min_sdk_version: "29",
 }
+
+cc_test_host {
+    name: "task_profiles_test",
+    cflags: [
+        "-Wall",
+        "-Werror",
+        "-Wexit-time-destructors",
+        "-Wno-unused-parameter",
+    ],
+    srcs: [
+        "task_profiles_test.cpp",
+    ],
+    header_libs: [
+        "libcutils_headers",
+        "libprocessgroup_headers",
+    ],
+    shared_libs: [
+        "libbase",
+        "libcgrouprc",
+    ],
+    static_libs: [
+        "libgmock",
+        "liblog",
+        "libjsoncpp",
+        "libjsonpbverify",
+        "libjsonpbparse",
+        "libprocessgroup",
+        "libprocessgroup_proto",
+    ],
+}
