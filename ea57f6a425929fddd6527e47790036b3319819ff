@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "9168b4e2_ba439dc4",
+        "filename": "libusbhost/usbhost_jni.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-01-24T21:35:48Z",
+      "side": 1,
+      "message": "nah, 16KiB\u0027s too small to worry about. (one of the existing callers already did, and by definition any caller is a Java thread, so... not our usual customers, and unlikely to be running in small amounts of stack anyway :-) )",
+      "parentUuid": "10c98bd6_20952e98",
+      "range": {
+        "startLine": 31,
+        "startChar": 0,
+        "endLine": 31,
+        "endChar": 38
+      },
+      "revId": "ea57f6a425929fddd6527e47790036b3319819ff",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "11e05c5e_e32848f7",
@@ -47,6 +71,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "23d73b0d_6ea4f37d",
+        "filename": "libusbhost/usbhost_jni.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-01-24T21:35:48Z",
+      "side": 1,
+      "message": "ah, good point. will fix.\n\n(tbh, i\u0027m a bit unsure about the whole \"single read\" thing here, but \"not a regression\" and no-one\u0027s complained in all the years it\u0027s been like that, so for now i\u0027m pretending i don\u0027t find that odd...)\n\nactually, looking at the two copies of this code that this replaces, they disagreed on whether 0 bytes was an error at this level, or should just correspond to an empty byte[]. personally i\u0027m inclined to believe that empty byte[] makes more sense. the higher-level UsbDescriptorParser class also copes with an empty byte[] too, so... resolved in that way instead.",
+      "parentUuid": "11e05c5e_e32848f7",
+      "range": {
+        "startLine": 34,
+        "startChar": 15,
+        "endLine": 34,
+        "endChar": 39
+      },
+      "revId": "ea57f6a425929fddd6527e47790036b3319819ff",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "609b9d30_51a6fb82",
@@ -60,6 +108,30 @@
       "writtenOn": "2022-01-24T21:07:44Z",
       "side": 1,
       "message": "Should you add a comment about how you came up with number? Something like what is in the summary?",
+      "range": {
+        "startLine": 22,
+        "startChar": 8,
+        "endLine": 22,
+        "endChar": 30
+      },
+      "revId": "ea57f6a425929fddd6527e47790036b3319819ff",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a7cfecd3_3d7bea88",
+        "filename": "libusbhost/usbhost_private.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-01-24T21:35:48Z",
+      "side": 1,
+      "message": "heh, it\u0027s not a very satisfactory explanation, but \"done\" :-)",
+      "parentUuid": "609b9d30_51a6fb82",
       "range": {
         "startLine": 22,
         "startChar": 8,
