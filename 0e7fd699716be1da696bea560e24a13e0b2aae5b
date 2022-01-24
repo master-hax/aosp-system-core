@@ -16,6 +16,24 @@
       "message": "Now the problem is that windows doesn\u0027t have SEEK_HOLE or SEEK_DATA:\n\n system/core/libsparse/sparse_read.cpp:530:28: error: use of undeclared identifier \u0027SEEK_DATA\u0027\n     start \u003d lseek(fd, end, SEEK_DATA);\n                            ^\n system/core/libsparse/sparse_read.cpp:543:28: error: use of undeclared identifier \u0027SEEK_HOLE\u0027\n     end \u003d lseek(fd, start, SEEK_HOLE);\n                            ^\n",
       "revId": "0e7fd699716be1da696bea560e24a13e0b2aae5b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "68795e75_737ec7b5",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1932220
+      },
+      "writtenOn": "2022-01-24T16:43:07Z",
+      "side": 1,
+      "message": "Ah, I wasn\u0027t aware that we needed to support Windows. I don\u0027t have a machine to test this on. Perhaps something like\n\n```\n#if defined(SEEK_DATA) \u0026\u0026 defined(SEEK_HOLE)\nstatic int sparse_file_read_hole(struct sparse_file* s, int fd) {\n  /* ... */\n}\n#else\nstatic int sparse_file_read_hole(struct sparse_file* s, int fd) {\n\treturn -EINVAL;\n}\n#endif\n```",
+      "parentUuid": "80e3c6ae_57a8e379",
+      "revId": "0e7fd699716be1da696bea560e24a13e0b2aae5b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
