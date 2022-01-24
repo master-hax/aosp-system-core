@@ -92,8 +92,9 @@ class SetTimerSlackAction : public ProfileAction {
 // Set attribute profile element
 class SetAttributeAction : public ProfileAction {
   public:
-    SetAttributeAction(const ProfileAttribute* attribute, const std::string& value)
-        : attribute_(attribute), value_(value) {}
+    SetAttributeAction(const ProfileAttribute* attribute, const std::string& value,
+                       bool ignore_failure)
+        : attribute_(attribute), value_(value), ignore_failure_(ignore_failure) {}
 
     const char* Name() const override { return "SetAttribute"; }
     bool ExecuteForProcess(uid_t uid, pid_t pid) const override;
@@ -102,6 +103,7 @@ class SetAttributeAction : public ProfileAction {
   private:
     const ProfileAttribute* attribute_;
     std::string value_;
+    bool ignore_failure_;
 };
 
 // Set cgroup profile element
