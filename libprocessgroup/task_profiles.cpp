@@ -204,8 +204,13 @@ bool SetAttributeAction::ExecuteForTask(int tid) const {
     }
 
     if (!WriteStringToFile(value_, path)) {
-        PLOG(ERROR) << "Failed to write '" << value_ << "' to " << path;
-        return false;
+        if (!ignore_failure_) {
+            PLOG(ERROR) << "Failed to write '" << value_ << "' to " << path;
+            return false;
+        } else {
+            PLOG(INFO) << "Ignored failure to write '" << value_ << "' to " << path
+                       << " by process " << getpid();
+        }
     } else {
         LOG(VERBOSE) << "Wrote " << value_ << " to " << path;
     }
@@ -636,11 +641,12 @@ bool TaskProfiles::Load(const CgroupMap& cg_map, const std::string& file_name) {
             } else if (action_name == "SetAttribute") {
                 std::string attr_name = params_val["Name"].asString();
                 std::string attr_value = params_val["Value"].asString();
+                bool ignore_failure = strcmp(params_val["IgnoreFailure"].asString(), "true") == 0;
 
                 auto iter = attributes_.find(attr_name);
                 if (iter != attributes_.end()) {
-                    profile->Add(
-                            std::make_unique<SetAttributeAction>(iter->second.get(), attr_value));
+                    profile->Add(std::make_unique<SetAttributeAction>(iter->second.get(),
+                                                                      attr_value, ignore_failure));
                 } else {
                     LOG(WARNING) << "SetAttribute: unknown attribute: " << attr_name;
                 }
