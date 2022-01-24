@@ -52,6 +52,47 @@
       "parentUuid": "68795e75_737ec7b5",
       "revId": "0e7fd699716be1da696bea560e24a13e0b2aae5b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "85056467_65065cbd",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1932220
+      },
+      "writtenOn": "2022-01-24T20:31:07Z",
+      "side": 1,
+      "message": "Well, the reason I did it like that is because according to lseek(2),\n\n\u003e SEEK_DATA and SEEK_HOLE are nonstandard extensions also present in Solaris, FreeBSD, and DragonFly BSD; they are proposed for inclusion in the next POSIX revision (Issue 8).\n\nwhich would presumably cause the build to fail on e.g macOS/OpenBSD as well.",
+      "parentUuid": "3239e244_90025ca3",
+      "revId": "0e7fd699716be1da696bea560e24a13e0b2aae5b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "460f0641_7672f07d",
+        "filename": "libsparse/include/sparse/sparse.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 263,
+      "author": {
+        "id": 1932220
+      },
+      "writtenOn": "2022-01-24T20:31:07Z",
+      "side": 1,
+      "message": "And thinking about it again, this could cause some binary compatibility issues, since sizeof(bool) \u003d\u003d 1 and sizeof(enum) \u003d\u003d sizeof(int) which is generally not 1. So maybe we need a new function?",
+      "range": {
+        "startLine": 263,
+        "startChar": 52,
+        "endLine": 263,
+        "endChar": 78
+      },
+      "revId": "0e7fd699716be1da696bea560e24a13e0b2aae5b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
