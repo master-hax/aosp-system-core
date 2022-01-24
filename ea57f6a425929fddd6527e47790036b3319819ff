@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "10c98bd6_20952e98",
+        "filename": "libusbhost/usbhost_jni.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2022-01-24T21:07:44Z",
+      "side": 1,
+      "message": "Any worry that putting this on the stack would cause it to overflow? It\u0027s rather large but I don\u0027t know if that is a problem.",
+      "range": {
+        "startLine": 31,
+        "startChar": 0,
+        "endLine": 31,
+        "endChar": 38
+      },
+      "revId": "ea57f6a425929fddd6527e47790036b3319819ff",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "11e05c5e_e32848f7",
+        "filename": "libusbhost/usbhost_jni.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2022-01-24T21:07:44Z",
+      "side": 1,
+      "message": "I don\u0027t think this matters that much, but if you read 0 bytes, then errno will not be set, so you would likely get some random value. Should you have a separate 0 byte error message, or is this not worth the effort?",
+      "range": {
+        "startLine": 34,
+        "startChar": 15,
+        "endLine": 34,
+        "endChar": 39
+      },
+      "revId": "ea57f6a425929fddd6527e47790036b3319819ff",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "609b9d30_51a6fb82",
+        "filename": "libusbhost/usbhost_private.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2022-01-24T21:07:44Z",
+      "side": 1,
+      "message": "Should you add a comment about how you came up with number? Something like what is in the summary?",
+      "range": {
+        "startLine": 22,
+        "startChar": 8,
+        "endLine": 22,
+        "endChar": 30
+      },
+      "revId": "ea57f6a425929fddd6527e47790036b3319819ff",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
