@@ -34,6 +34,24 @@
       "parentUuid": "80e3c6ae_57a8e379",
       "revId": "0e7fd699716be1da696bea560e24a13e0b2aae5b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3239e244_90025ca3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1002751
+      },
+      "writtenOn": "2022-01-24T20:20:09Z",
+      "side": 1,
+      "message": "#ifdef _WIN32 is probably better, that way we don\u0027t unexpectedly lose features if we switch to a libc that doesn\u0027t have SEEK_DATA.",
+      "parentUuid": "68795e75_737ec7b5",
+      "revId": "0e7fd699716be1da696bea560e24a13e0b2aae5b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
