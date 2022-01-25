@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f6e2dfb4_b4be3915",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-01-25T19:33:39Z",
+      "side": 1,
+      "message": "Do we want to leave it in for a week or two just in case? No objections either way.",
+      "revId": "3d9ef7af31f6ccce94a00dc579424388a48f7662",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
