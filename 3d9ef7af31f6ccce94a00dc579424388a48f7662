@@ -16,6 +16,24 @@
       "message": "Do we want to leave it in for a week or two just in case? No objections either way.",
       "revId": "3d9ef7af31f6ccce94a00dc579424388a48f7662",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "63a45e45_60598ba9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-01-25T20:03:45Z",
+      "side": 1,
+      "message": "Sure. Let\u0027s wait for a week before reverting this CL.",
+      "parentUuid": "f6e2dfb4_b4be3915",
+      "revId": "3d9ef7af31f6ccce94a00dc579424388a48f7662",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
