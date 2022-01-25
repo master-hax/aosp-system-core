@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ecf77d3c_a64574bb",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2022-01-25T23:03:28Z",
+      "side": 1,
+      "message": "The change to call is_userspace_fastboot LGTM, but I don\u0027t understand the other part.",
+      "revId": "b00235748ee957c2fa8af7fb8e66cbd4f7d50b05",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a93e1c81_5a0dc229",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 2026,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2022-01-25T23:03:28Z",
+      "side": 1,
+      "message": "Why do you need to move this?",
+      "range": {
+        "startLine": 2023,
+        "startChar": 0,
+        "endLine": 2026,
+        "endChar": 5
+      },
+      "revId": "b00235748ee957c2fa8af7fb8e66cbd4f7d50b05",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
