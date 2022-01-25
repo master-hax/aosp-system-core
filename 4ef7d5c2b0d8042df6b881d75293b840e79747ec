@@ -52,6 +52,23 @@
       "parentUuid": "f992f70c_50dc9eb9",
       "revId": "4ef7d5c2b0d8042df6b881d75293b840e79747ec",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9a1265b8_4828c24b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2022-01-25T22:06:39Z",
+      "side": 1,
+      "message": "How does this affect memory? If it does, is this setting right for low-RAM devices?",
+      "revId": "4ef7d5c2b0d8042df6b881d75293b840e79747ec",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
