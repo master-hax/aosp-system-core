@@ -34,6 +34,75 @@
       "parentUuid": "ecbcb216_9798d756",
       "revId": "57930f351d09af28f2571699188f01c3e8555ac2",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9633fc2b_073da8dc",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 514,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-01-25T04:49:55Z",
+      "side": 1,
+      "message": "Ack, thanks",
+      "parentUuid": "62ef4456_b9b8e4bd",
+      "revId": "57930f351d09af28f2571699188f01c3e8555ac2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4f82d74c_cb529352",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 554,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-01-25T04:49:55Z",
+      "side": 1,
+      "message": "nit: const std::string\u0026 dir",
+      "revId": "57930f351d09af28f2571699188f01c3e8555ac2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cfc73fc4_92813ce1",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 562,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-01-25T04:49:55Z",
+      "side": 1,
+      "message": "(dir + kSepolicyZip) gets repeated a few times... use a temporary?",
+      "revId": "57930f351d09af28f2571699188f01c3e8555ac2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f24d2caf_035e477f",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 979,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-01-25T04:49:55Z",
+      "side": 1,
+      "message": "Are there any new audits as a result of this?",
+      "revId": "57930f351d09af28f2571699188f01c3e8555ac2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
