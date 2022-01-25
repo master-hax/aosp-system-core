@@ -124,6 +124,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "bcffdd6e_86373241",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 562,
+      "author": {
+        "id": 1054468
+      },
+      "writtenOn": "2022-01-25T18:17:18Z",
+      "side": 1,
+      "message": "addressed in aosp/1958829",
+      "parentUuid": "745274da_a77a8115",
+      "revId": "57930f351d09af28f2571699188f01c3e8555ac2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f24d2caf_035e477f",
@@ -155,6 +173,24 @@
       "side": 1,
       "message": "No (otherwise it would fail presubmit). Audit messages for these were addressed in aosp/1907858.",
       "parentUuid": "f24d2caf_035e477f",
+      "revId": "57930f351d09af28f2571699188f01c3e8555ac2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9e02af9b_585ac2b8",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 979,
+      "author": {
+        "id": 1054468
+      },
+      "writtenOn": "2022-01-25T18:17:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1ee3abd7_ea2c878a",
       "revId": "57930f351d09af28f2571699188f01c3e8555ac2",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
