@@ -74,6 +74,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "e9e08bad_7a485dd7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1002751
+      },
+      "writtenOn": "2022-01-26T02:25:47Z",
+      "side": 1,
+      "message": "True, how about #ifdef __linux__ then?",
+      "parentUuid": "85056467_65065cbd",
+      "revId": "0e7fd699716be1da696bea560e24a13e0b2aae5b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "460f0641_7672f07d",
         "filename": "libsparse/include/sparse/sparse.h",
         "patchSetId": 4
@@ -85,6 +103,30 @@
       "writtenOn": "2022-01-24T20:31:07Z",
       "side": 1,
       "message": "And thinking about it again, this could cause some binary compatibility issues, since sizeof(bool) \u003d\u003d 1 and sizeof(enum) \u003d\u003d sizeof(int) which is generally not 1. So maybe we need a new function?",
+      "range": {
+        "startLine": 263,
+        "startChar": 52,
+        "endLine": 263,
+        "endChar": 78
+      },
+      "revId": "0e7fd699716be1da696bea560e24a13e0b2aae5b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "627c9664_b791e658",
+        "filename": "libsparse/include/sparse/sparse.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 263,
+      "author": {
+        "id": 1002751
+      },
+      "writtenOn": "2022-01-26T02:25:47Z",
+      "side": 1,
+      "message": "We don\u0027t care about binary compatibility here, everything that depends on this will get recompiled when this is submitted.",
+      "parentUuid": "460f0641_7672f07d",
       "range": {
         "startLine": 263,
         "startChar": 52,
