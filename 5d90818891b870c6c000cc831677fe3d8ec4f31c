@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "17c5c47b_8ec367ab",
+        "filename": "libsparse/sparse_read.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 523,
+      "author": {
+        "id": 1002751
+      },
+      "writtenOn": "2022-01-27T19:44:37Z",
+      "side": 1,
+      "message": "windows cross compiles are getting a fatal warning:\n\n system/core/libsparse/sparse_read.cpp:570:54: error: unused parameter \u0027s\u0027 [-Werror,-Wunused-parameter]\n static int sparse_file_read_hole(struct sparse_file* s, int fd) {\n                                                      ^\n system/core/libsparse/sparse_read.cpp:570:61: error: unused parameter \u0027fd\u0027 [-Werror,-Wunused-parameter]\n static int sparse_file_read_hole(struct sparse_file* s, int fd) {",
+      "revId": "5d90818891b870c6c000cc831677fe3d8ec4f31c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
