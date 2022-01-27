@@ -34,6 +34,24 @@
       "parentUuid": "f90864bb_267f37dc",
       "revId": "f96466b05543b984ef7315d830bab4a409228d35",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b3cc3869_a6431b8b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1002751
+      },
+      "writtenOn": "2022-01-27T22:40:47Z",
+      "side": 1,
+      "message": "You can upload a separate CL to system/extras and put both of them in the same topic to submit them atomically.",
+      "parentUuid": "03d5844b_50400792",
+      "revId": "f96466b05543b984ef7315d830bab4a409228d35",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
