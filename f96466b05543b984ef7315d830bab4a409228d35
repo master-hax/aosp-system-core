@@ -16,6 +16,24 @@
       "message": "It looks like there is another caller to sparse_file_read that needs updating at https://cs.android.com/android/platform/superproject/+/master:system/extras/partition_tools/lpadd.cc;l\u003d401?q\u003dsparse_file_read\u0026ss\u003dandroid%2Fplatform%2Fsuperproject",
       "revId": "f96466b05543b984ef7315d830bab4a409228d35",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "03d5844b_50400792",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1932220
+      },
+      "writtenOn": "2022-01-27T20:19:38Z",
+      "side": 1,
+      "message": "Maybe I need to split this patch into two parts?\n\nE.g. the first patch would add the `sparse_read_mode` enum and could be applied on its own. Then I would send a patch for system/extras. And once that was applied, we could apply the rest of this series.",
+      "parentUuid": "f90864bb_267f37dc",
+      "revId": "f96466b05543b984ef7315d830bab4a409228d35",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
