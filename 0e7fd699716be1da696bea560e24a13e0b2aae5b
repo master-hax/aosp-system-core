@@ -90,6 +90,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "9859705d_107a4237",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1932220
+      },
+      "writtenOn": "2022-01-27T19:17:59Z",
+      "side": 1,
+      "message": "Ok, I will use that.",
+      "parentUuid": "e9e08bad_7a485dd7",
+      "revId": "0e7fd699716be1da696bea560e24a13e0b2aae5b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "460f0641_7672f07d",
@@ -127,6 +145,30 @@
       "side": 1,
       "message": "We don\u0027t care about binary compatibility here, everything that depends on this will get recompiled when this is submitted.",
       "parentUuid": "460f0641_7672f07d",
+      "range": {
+        "startLine": 263,
+        "startChar": 52,
+        "endLine": 263,
+        "endChar": 78
+      },
+      "revId": "0e7fd699716be1da696bea560e24a13e0b2aae5b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4b73e01f_a32f304d",
+        "filename": "libsparse/include/sparse/sparse.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 263,
+      "author": {
+        "id": 1932220
+      },
+      "writtenOn": "2022-01-27T19:17:59Z",
+      "side": 1,
+      "message": "OK. So e.g. Debian\u0027s packaging of this shared library is unsupported?",
+      "parentUuid": "627c9664_b791e658",
       "range": {
         "startLine": 263,
         "startChar": 52,
