@@ -177,6 +177,30 @@
       },
       "revId": "0e7fd699716be1da696bea560e24a13e0b2aae5b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f9cf545a_6e148e54",
+        "filename": "libsparse/include/sparse/sparse.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 263,
+      "author": {
+        "id": 1002751
+      },
+      "writtenOn": "2022-01-27T19:26:42Z",
+      "side": 1,
+      "message": "I have no knowledge of how Debian packages this library, but we don\u0027t keep binary compatibility except across specific boundaries.",
+      "parentUuid": "4b73e01f_a32f304d",
+      "range": {
+        "startLine": 263,
+        "startChar": 52,
+        "endLine": 263,
+        "endChar": 78
+      },
+      "revId": "0e7fd699716be1da696bea560e24a13e0b2aae5b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
