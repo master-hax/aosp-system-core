@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f90864bb_267f37dc",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1002751
+      },
+      "writtenOn": "2022-01-27T20:15:08Z",
+      "side": 1,
+      "message": "It looks like there is another caller to sparse_file_read that needs updating at https://cs.android.com/android/platform/superproject/+/master:system/extras/partition_tools/lpadd.cc;l\u003d401?q\u003dsparse_file_read\u0026ss\u003dandroid%2Fplatform%2Fsuperproject",
+      "revId": "f96466b05543b984ef7315d830bab4a409228d35",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
