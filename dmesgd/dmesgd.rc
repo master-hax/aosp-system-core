@@ -1,0 +1,6 @@
+service dmesgd /system/bin/dmesgd
+    user dmesgd
+    group system
+    class main
+    oneshot
+
