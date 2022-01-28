@@ -1115,6 +1115,7 @@ void PropertyLoadBootDefaults() {
     load_properties_from_file("/vendor/build.prop", nullptr, &properties);
     load_properties_from_file("/vendor_dlkm/etc/build.prop", nullptr, &properties);
     load_properties_from_file("/odm_dlkm/etc/build.prop", nullptr, &properties);
+    load_properties_from_file("/system_dlkm/etc/build.prop", nullptr, &properties);
     load_properties_from_partition("odm", /* support_legacy_path_until */ 28);
     load_properties_from_partition("product", /* support_legacy_path_until */ 30);
 
