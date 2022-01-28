@@ -22,6 +22,30 @@
       },
       "revId": "b773a0bbb68e9284ebd877871cdef23f98872c77",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "74f0ca6e_dd6ab248",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1889091
+      },
+      "writtenOn": "2022-01-28T19:57:46Z",
+      "side": 1,
+      "message": "Since other dlkm has the unguarded; I did this way. But I agree, it should be guarded so non GKI platform builds don\u0027t have this folder created.\n\nI\u0027ll dig further on guarding with other review comments on the topic.",
+      "parentUuid": "5ac64103_70e3c871",
+      "range": {
+        "startLine": 10,
+        "startChar": 3,
+        "endLine": 10,
+        "endChar": 30
+      },
+      "revId": "b773a0bbb68e9284ebd877871cdef23f98872c77",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
