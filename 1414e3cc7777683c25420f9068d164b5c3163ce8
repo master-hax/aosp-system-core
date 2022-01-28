@@ -16,6 +16,24 @@
       "message": "i\u0027m surprised +jiyong\u0027s folks haven\u0027t already had this with microdroid or whatever?",
       "revId": "1414e3cc7777683c25420f9068d164b5c3163ce8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d5bb0e22_d9128e48",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1067098
+      },
+      "writtenOn": "2022-01-28T20:18:40Z",
+      "side": 1,
+      "message": "Yeah, I was wondering about that; looks like they solve it by having their own init.rc:\n\nhttps://cs.android.com/android/platform/superproject/+/master:packages/modules/Virtualization/microdroid/init.rc\n\nI also considered changing fvp_mini to be based on microdroid, but I found that the microdroid images are built in a different way from other targets:\n\nhttps://cs.android.com/android/platform/superproject/+/master:packages/modules/Virtualization/microdroid/Android.bp\n\nand it\u0027s unclear whether these \"soong-based targets\" have enough flexibility to be used for fvp_mini.",
+      "parentUuid": "f735e019_438c0014",
+      "revId": "1414e3cc7777683c25420f9068d164b5c3163ce8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
