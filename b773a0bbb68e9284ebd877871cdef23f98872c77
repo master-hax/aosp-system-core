@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5ac64103_70e3c871",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-01-28T04:00:07Z",
+      "side": 1,
+      "message": "Why can\u0027t we set BOARD_USES_SYSTEM_DLKM_PARTITION to true when building those pre-built images?",
+      "range": {
+        "startLine": 10,
+        "startChar": 3,
+        "endLine": 10,
+        "endChar": 30
+      },
+      "revId": "b773a0bbb68e9284ebd877871cdef23f98872c77",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
