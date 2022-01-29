@@ -34,6 +34,24 @@
       "parentUuid": "f735e019_438c0014",
       "revId": "1414e3cc7777683c25420f9068d164b5c3163ce8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a31dcf68_1d2734b5",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-01-29T01:20:19Z",
+      "side": 1,
+      "message": "Yes, we have our own init.rc, because the absence of zygote is not the only difference from Android.\n\nThe soong-based target is quite flexible actually, but I don\u0027t intend to force you to use it.",
+      "parentUuid": "d5bb0e22_d9128e48",
+      "revId": "1414e3cc7777683c25420f9068d164b5c3163ce8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
