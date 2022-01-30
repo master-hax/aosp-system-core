@@ -46,6 +46,30 @@
       },
       "revId": "b773a0bbb68e9284ebd877871cdef23f98872c77",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f859ecaf_ab5dfc3e",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1889091
+      },
+      "writtenOn": "2022-01-30T20:19:06Z",
+      "side": 1,
+      "message": "Updated to protect it with the new flag which is named as per other dynamic images for the template code to work.",
+      "parentUuid": "74f0ca6e_dd6ab248",
+      "range": {
+        "startLine": 10,
+        "startChar": 3,
+        "endLine": 10,
+        "endChar": 30
+      },
+      "revId": "b773a0bbb68e9284ebd877871cdef23f98872c77",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
