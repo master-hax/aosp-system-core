@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a1c62b51_b67213d7",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1106,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-01-31T02:19:29Z",
+      "side": 1,
+      "message": "Have you considered this? system_dlkm seems to be less specific than odm_dlkm. If that\u0027s correct, shouldn\u0027t system_dlkm come prior to odm_dlkm?",
+      "range": {
+        "startLine": 1105,
+        "startChar": 0,
+        "endLine": 1106,
+        "endChar": 21
+      },
+      "revId": "0f74475ab3e91f2cd7bf8f6f7f0f0feff7a299e2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
