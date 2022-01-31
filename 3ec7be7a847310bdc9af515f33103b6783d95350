@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7b58fde9_703d38c5",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1936257
+      },
+      "writtenOn": "2022-01-31T07:44:14Z",
+      "side": 1,
+      "message": "1166132: Revert \"Revert \"Support socket activation of adb server\"\" | https://android-review.googlesource.com/c/platform/system/core/+/1166132",
+      "revId": "3ec7be7a847310bdc9af515f33103b6783d95350",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
