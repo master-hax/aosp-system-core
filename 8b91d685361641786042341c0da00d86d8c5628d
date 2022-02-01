@@ -16,6 +16,24 @@
       "message": "This shouldn\u0027t be necessary, it already depends on liblog",
       "revId": "8b91d685361641786042341c0da00d86d8c5628d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "91e5bd8f_06d76ee6",
+        "filename": "libcutils/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 256,
+      "author": {
+        "id": 1888950
+      },
+      "writtenOn": "2022-02-01T22:30:01Z",
+      "side": 1,
+      "message": "yes, This CL isnt necessary - libcutils_headers has the min_sdk which applies to the rest.",
+      "parentUuid": "67671593_5c956eb1",
+      "revId": "8b91d685361641786042341c0da00d86d8c5628d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
