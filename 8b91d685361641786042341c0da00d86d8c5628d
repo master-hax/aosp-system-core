@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "67671593_5c956eb1",
+        "filename": "libcutils/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 256,
+      "author": {
+        "id": 1002751
+      },
+      "writtenOn": "2022-02-01T21:48:47Z",
+      "side": 1,
+      "message": "This shouldn\u0027t be necessary, it already depends on liblog",
+      "revId": "8b91d685361641786042341c0da00d86d8c5628d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
