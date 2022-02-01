@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f07edd40_40e1d1c3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-02-01T05:43:40Z",
+      "side": 1,
+      "message": "EROFS/F2FS reqs are in b/211488373",
+      "revId": "57bc6ebb8f4b76fbdf1c1e4458e08efb2bb35e37",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
