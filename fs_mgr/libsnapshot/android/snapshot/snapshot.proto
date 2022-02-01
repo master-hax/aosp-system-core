@@ -195,8 +195,7 @@ message SnapshotUpdateStatus {
     // Source build fingerprint.
     string source_build_fingerprint = 8;
 
-    // user-space snapshots
-    bool userspace_snapshots = 9;
+    bool userspace_snapshots = 9 [deprecated = true];
 }
 
 // Next: 10

@@ -131,10 +131,6 @@ void AppendExtent(google::protobuf::RepeatedPtrField<chromeos_update_engine::Ext
 
 bool IsCompressionEnabled();
 
-bool IsUserspaceSnapshotsEnabled();
-
-bool IsDmSnapshotTestingEnabled();
-
 // Swap the suffix of a partition name.
 std::string GetOtherPartitionName(const std::string& name);
 }  // namespace snapshot
