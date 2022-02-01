@@ -22,6 +22,30 @@
       },
       "revId": "0f74475ab3e91f2cd7bf8f6f7f0f0feff7a299e2",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e56b363d_de2a4d04",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1106,
+      "author": {
+        "id": 1889091
+      },
+      "writtenOn": "2022-02-01T23:23:23Z",
+      "side": 1,
+      "message": "Yes, but I thought the less specific to product means less priority means lower in this order; so put it after vendor_dlkm and odm_dlkm.\n\nDon\u0027t really know why the order matters here; that will give better idea. Do you?",
+      "parentUuid": "a1c62b51_b67213d7",
+      "range": {
+        "startLine": 1105,
+        "startChar": 0,
+        "endLine": 1106,
+        "endChar": 21
+      },
+      "revId": "0f74475ab3e91f2cd7bf8f6f7f0f0feff7a299e2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
