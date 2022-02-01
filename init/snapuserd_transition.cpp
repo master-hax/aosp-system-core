@@ -84,19 +84,13 @@ void LaunchFirstStageSnapuserd(SnapshotDriver driver) {
 
         if (driver == SnapshotDriver::DM_USER) {
             char arg0[] = "/system/bin/snapuserd";
-            char arg1[] = "-user_snapshot";
-            char* const argv[] = {arg0, arg1, nullptr};
-            if (execv(arg0, argv) < 0) {
-                PLOG(FATAL) << "Cannot launch snapuserd; execv failed";
-            }
-            _exit(127);
-        } else {
-            char arg0[] = "/system/bin/snapuserd";
             char* const argv[] = {arg0, nullptr};
             if (execv(arg0, argv) < 0) {
                 PLOG(FATAL) << "Cannot launch snapuserd; execv failed";
             }
             _exit(127);
+        } else {
+            PLOG(FATAL) << "Invalid Snapshot driver";
         }
     }
 
