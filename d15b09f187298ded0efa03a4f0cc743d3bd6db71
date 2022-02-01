@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "11fb6d42_74de06ef",
+        "filename": "fs_mgr/libsnapshot/android/snapshot/snapshot.proto",
+        "patchSetId": 1
+      },
+      "lineNbr": 199,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-02-01T20:40:39Z",
+      "side": 0,
+      "message": "For compatibility reasons we can\u0027t change these protos once they ship. The risk is that we add another field @ position 9, and then an OTA from tm-dev sets that bit to true, and the target build thinks the proto is corrupt (or worse).\n\nYou could do something like:\n\n    bool userspace_snapshots \u003d 9 [deprecated \u003d true];\n\nOr:\n\n    reserved 9;\n    \n(I don\u0027t think we serialize the name anywhere? Adding elsk@ just in case, but we can reserve names too)",
+      "revId": "d15b09f187298ded0efa03a4f0cc743d3bd6db71",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}

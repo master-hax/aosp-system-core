@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2f925188_f5a4bc73",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-02-01T20:40:39Z",
+      "side": 1,
+      "message": "Delta +132 -5292\n\nLove it!",
+      "revId": "349f0b57e466285bda39c6abc25343d7abe0a6ab",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
