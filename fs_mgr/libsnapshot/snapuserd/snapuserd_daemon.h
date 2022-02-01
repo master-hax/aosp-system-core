@@ -19,7 +19,6 @@
 #include <string>
 #include <vector>
 
-#include "dm-snapshot-merge/snapuserd_server.h"
 #include "user-space-merge/snapuserd_server.h"
 
 namespace android {
@@ -51,7 +50,6 @@ class Daemon {
     Daemon(Daemon const&) = delete;
     void operator=(Daemon const&) = delete;
 
-    SnapuserdServer server_;
     UserSnapshotServer user_server_;
     void MaskAllSignalsExceptIntAndTerm();
     void MaskAllSignals();
