@@ -27,37 +27,15 @@ DEFINE_bool(no_socket, false,
             "If true, no socket is used. Each additional argument is an INIT message.");
 DEFINE_bool(socket_handoff, false,
             "If true, perform a socket hand-off with an existing snapuserd instance, then exit.");
-DEFINE_bool(user_snapshot, false, "If true, user-space snapshots are used");
 
 namespace android {
 namespace snapshot {
 
-bool Daemon::IsUserspaceSnapshotsEnabled() {
-    return android::base::GetBoolProperty("ro.virtual_ab.userspace.snapshots.enabled", false);
-}
-
-bool Daemon::IsDmSnapshotTestingEnabled() {
-    return android::base::GetBoolProperty("snapuserd.test.dm.snapshots", false);
-}
-
 bool Daemon::StartDaemon(int argc, char** argv) {
     int arg_start = gflags::ParseCommandLineFlags(&argc, &argv, true);
 
-    // Daemon launched from first stage init and during selinux transition
-    // will have the command line "-user_snapshot" flag set if the user-space
-    // snapshots are enabled.
-    //
-    // Daemon launched as a init service during "socket-handoff" and when OTA
-    // is applied will check for the property. This is ok as the system
-    // properties are valid at this point. We can't do this during first
-    // stage init and hence use the command line flags to get the information.
-    if (!IsDmSnapshotTestingEnabled() && (FLAGS_user_snapshot || IsUserspaceSnapshotsEnabled())) {
-        LOG(INFO) << "Starting daemon for user-space snapshots.....";
-        return StartServerForUserspaceSnapshots(arg_start, argc, argv);
-    } else {
-        LOG(INFO) << "Starting daemon for dm-snapshots.....";
-        return StartServerForDmSnapshot(arg_start, argc, argv);
-    }
+    LOG(INFO) << "Starting daemon for user-space snapshots.....";
+    return StartServerForUserspaceSnapshots(arg_start, argc, argv);
 }
 
 bool Daemon::StartServerForUserspaceSnapshots(int arg_start, int argc, char** argv) {
@@ -102,48 +80,6 @@ bool Daemon::StartServerForUserspaceSnapshots(int arg_start, int argc, char** ar
     return user_server_.WaitForSocket();
 }
 
-bool Daemon::StartServerForDmSnapshot(int arg_start, int argc, char** argv) {
-    sigfillset(&signal_mask_);
-    sigdelset(&signal_mask_, SIGINT);
-    sigdelset(&signal_mask_, SIGTERM);
-    sigdelset(&signal_mask_, SIGUSR1);
-
-    // Masking signals here ensure that after this point, we won't handle INT/TERM
-    // until after we call into ppoll()
-    signal(SIGINT, Daemon::SignalHandler);
-    signal(SIGTERM, Daemon::SignalHandler);
-    signal(SIGPIPE, Daemon::SignalHandler);
-    signal(SIGUSR1, Daemon::SignalHandler);
-
-    MaskAllSignalsExceptIntAndTerm();
-
-    if (FLAGS_socket_handoff) {
-        return server_.RunForSocketHandoff();
-    }
-    if (!FLAGS_no_socket) {
-        if (!server_.Start(FLAGS_socket)) {
-            return false;
-        }
-        return server_.Run();
-    }
-
-    for (int i = arg_start; i < argc; i++) {
-        auto parts = android::base::Split(argv[i], ",");
-        if (parts.size() != 3) {
-            LOG(ERROR) << "Malformed message, expected three sub-arguments.";
-            return false;
-        }
-        auto handler = server_.AddHandler(parts[0], parts[1], parts[2]);
-        if (!handler || !server_.StartHandler(handler)) {
-            return false;
-        }
-    }
-
-    // Skip the accept() call to avoid spurious log spam. The server will still
-    // run until all handlers have completed.
-    return server_.WaitForSocket();
-}
-
 void Daemon::MaskAllSignalsExceptIntAndTerm() {
     sigset_t signal_mask;
     sigfillset(&signal_mask);
@@ -165,19 +101,11 @@ void Daemon::MaskAllSignals() {
 }
 
 void Daemon::Interrupt() {
-    if (IsUserspaceSnapshotsEnabled()) {
-        user_server_.Interrupt();
-    } else {
-        server_.Interrupt();
-    }
+    user_server_.Interrupt();
 }
 
 void Daemon::ReceivedSocketSignal() {
-    if (IsUserspaceSnapshotsEnabled()) {
-        user_server_.ReceivedSocketSignal();
-    } else {
-        server_.ReceivedSocketSignal();
-    }
+    user_server_.ReceivedSocketSignal();
 }
 
 void Daemon::SignalHandler(int signal) {
@@ -208,8 +136,6 @@ void Daemon::SignalHandler(int signal) {
 
 int main(int argc, char** argv) {
     android::base::InitLogging(argv, &android::base::KernelLogger);
-
-    LOG(INFO) << "snapuserd daemon about to start";
 
     android::snapshot::Daemon& daemon = android::snapshot::Daemon::Instance();
 

@@ -56,10 +56,6 @@ cc_defaults {
         "fs_mgr_defaults",
     ],
     srcs: [
-        "dm-snapshot-merge/snapuserd_server.cpp",
-        "dm-snapshot-merge/snapuserd.cpp",
-        "dm-snapshot-merge/snapuserd_worker.cpp",
-        "dm-snapshot-merge/snapuserd_readahead.cpp",
         "snapuserd_daemon.cpp",
         "snapuserd_buffer.cpp",
         "user-space-merge/snapuserd_core.cpp",
@@ -115,47 +111,6 @@ cc_binary {
     lto: {
          never: true,
     }
-}
-
-cc_test {
-    name: "cow_snapuserd_test",
-    defaults: [
-        "fs_mgr_defaults",
-    ],
-    srcs: [
-        "dm-snapshot-merge/cow_snapuserd_test.cpp",
-        "dm-snapshot-merge/snapuserd.cpp",
-        "dm-snapshot-merge/snapuserd_worker.cpp",
-        "snapuserd_buffer.cpp",
-    ],
-    cflags: [
-        "-Wall",
-        "-Werror",
-    ],
-    shared_libs: [
-        "libbase",
-        "liblog",
-    ],
-    static_libs: [
-        "libbrotli",
-        "libgtest",
-        "libsnapshot_cow",
-        "libsnapshot_snapuserd",
-        "libcutils_sockets",
-        "libz",
-        "libfs_mgr",
-        "libdm",
-        "libext4_utils",
-    ],
-    header_libs: [
-        "libstorage_literals_headers",
-        "libfiemap_headers",
-    ],
-    test_options: {
-        min_shipping_api_level: 30,
-    },
-    auto_gen_config: true,
-    require_root: false,
 }
 
 cc_test {
