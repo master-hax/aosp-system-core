@@ -142,6 +142,24 @@
       "parentUuid": "827d632f_d4c49b66",
       "revId": "ad053c9d6068ca94c4695f188629fe69f5f940d0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3d9001e1_12097b67",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2022-02-02T20:36:07Z",
+      "side": 1,
+      "message": "to play safe you can have device task_prifles.json added into this topic to keep device specific setting, or just leave out the older device as v1.",
+      "parentUuid": "0eb0c107_95596cde",
+      "revId": "ad053c9d6068ca94c4695f188629fe69f5f940d0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
