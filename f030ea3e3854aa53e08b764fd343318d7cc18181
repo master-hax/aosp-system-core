@@ -20,6 +20,149 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "3a25ac62_030625d4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-02-02T20:41:47Z",
+      "side": 1,
+      "message": "yeah, i just can\u0027t think of a better place?\n\nshould we go for system/dmesgd?\n\n(either way, you\u0027re right that we need an OWNERS file :-) )",
+      "parentUuid": "418bd4fd_9d373ddc",
+      "revId": "f030ea3e3854aa53e08b764fd343318d7cc18181",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "996d7488_c9d98d66",
+        "filename": "dmesgd/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-02-02T20:41:47Z",
+      "side": 1,
+      "message": "seems unlikely :-)",
+      "revId": "f030ea3e3854aa53e08b764fd343318d7cc18181",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7f032bef_9f4a5087",
+        "filename": "dmesgd/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-02-02T20:41:47Z",
+      "side": 1,
+      "message": "surely this is all new code and just APL2?",
+      "revId": "f030ea3e3854aa53e08b764fd343318d7cc18181",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ae74215a_a91783de",
+        "filename": "dmesgd/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-02-02T20:41:47Z",
+      "side": 1,
+      "message": "what needs this?",
+      "revId": "f030ea3e3854aa53e08b764fd343318d7cc18181",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1f59e5f7_0f49cc98",
+        "filename": "dmesgd/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-02-02T20:41:47Z",
+      "side": 1,
+      "message": "why the mix of static and shared? why not just all shared if you have one shared?",
+      "revId": "f030ea3e3854aa53e08b764fd343318d7cc18181",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bcaca2cd_d6553a90",
+        "filename": "dmesgd/dmesg_parser.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-02-02T20:41:47Z",
+      "side": 1,
+      "message": "copyright header in every file\n\n(also, don\u0027t use \u003cc*\u003e headers over \u003c*.h\u003e unless you need to; the subtle differences just cause trouble.)",
+      "revId": "f030ea3e3854aa53e08b764fd343318d7cc18181",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f471d51b_c8969569",
+        "filename": "dmesgd/dmesg_parser.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-02-02T20:41:47Z",
+      "side": 1,
+      "message": "braces",
+      "revId": "f030ea3e3854aa53e08b764fd343318d7cc18181",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "20e64d1d_72aee0f1",
+        "filename": "dmesgd/dmesg_parser.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-02-02T20:41:47Z",
+      "side": 1,
+      "message": "CHECK_EQ or remove; assert does nothing on Android.",
+      "range": {
+        "startLine": 47,
+        "startChar": 12,
+        "endLine": 47,
+        "endChar": 18
+      },
+      "revId": "f030ea3e3854aa53e08b764fd343318d7cc18181",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "f0061f71_53aa04c1",
         "filename": "dmesgd/dmesg_parser.cpp",
         "patchSetId": 2
@@ -54,6 +197,23 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "d696b704_a27744a8",
+        "filename": "dmesgd/dmesg_parser.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-02-02T20:41:47Z",
+      "side": 1,
+      "message": "inline single-use constants for better readability.\n\n(even the one of these that\u0027s used twice is probably more helpful just being in the .cpp file)",
+      "revId": "f030ea3e3854aa53e08b764fd343318d7cc18181",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "dba87bdd_61ff002d",
         "filename": "dmesgd/dmesg_parser.h",
         "patchSetId": 2
@@ -65,6 +225,234 @@
       "writtenOn": "2022-02-02T18:38:58Z",
       "side": 1,
       "message": "C++ style here should have a trailing underscore for private variable names, eg \"current_report_\"",
+      "revId": "f030ea3e3854aa53e08b764fd343318d7cc18181",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c6d075f5_39f1c6c2",
+        "filename": "dmesgd/dmesgd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-02-02T20:41:47Z",
+      "side": 1,
+      "message": "either inline this, or have the helper *function* out of line and replace the vector with multiple calls. would avoid the .first/.second too.",
+      "revId": "f030ea3e3854aa53e08b764fd343318d7cc18181",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "177a79a9_dc302a22",
+        "filename": "dmesgd/dmesgd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-02-02T20:41:47Z",
+      "side": 1,
+      "message": "(google3 naming here too)",
+      "range": {
+        "startLine": 48,
+        "startChar": 19,
+        "endLine": 48,
+        "endChar": 33
+      },
+      "revId": "f030ea3e3854aa53e08b764fd343318d7cc18181",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1bcdaa5d_2342644d",
+        "filename": "dmesgd/dmesgd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-02-02T20:41:47Z",
+      "side": 1,
+      "message": "unnecessary assignment",
+      "revId": "f030ea3e3854aa53e08b764fd343318d7cc18181",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e1a3bc0c_c9cc8709",
+        "filename": "dmesgd/dmesgd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-02-02T20:41:47Z",
+      "side": 1,
+      "message": "PLOG?",
+      "revId": "f030ea3e3854aa53e08b764fd343318d7cc18181",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2cd8e95a_55c1cc06",
+        "filename": "dmesgd/dmesgd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-02-02T20:41:47Z",
+      "side": 1,
+      "message": "prefer getline(3) over fgets(3)\n\nis there actually a reason we don\u0027t just read the whole thing into memory at once?",
+      "revId": "f030ea3e3854aa53e08b764fd343318d7cc18181",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1c50e8d7_b8b8407b",
+        "filename": "dmesgd/dmesgd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-02-02T20:41:47Z",
+      "side": 1,
+      "message": "prefer while loops over do",
+      "revId": "f030ea3e3854aa53e08b764fd343318d7cc18181",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "880bfc70_5527d7ea",
+        "filename": "dmesgd/dmesgd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-02-02T20:41:47Z",
+      "side": 1,
+      "message": "when does this happen? fgets() should only return a single line at a time.\n\n(even if it didn\u0027t, prefer android::base::Split() to manually breaking lines)",
+      "revId": "f030ea3e3854aa53e08b764fd343318d7cc18181",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f305cfb6_b5509c23",
+        "filename": "dmesgd/dmesgd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-02-02T20:41:47Z",
+      "side": 1,
+      "message": "PLOG",
+      "range": {
+        "startLine": 112,
+        "startChar": 8,
+        "endLine": 112,
+        "endChar": 11
+      },
+      "revId": "f030ea3e3854aa53e08b764fd343318d7cc18181",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c901ae25_21d93b1f",
+        "filename": "dmesgd/dmesgd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-02-02T20:41:47Z",
+      "side": 1,
+      "message": "PLOG",
+      "range": {
+        "startLine": 118,
+        "startChar": 8,
+        "endLine": 118,
+        "endChar": 11
+      },
+      "revId": "f030ea3e3854aa53e08b764fd343318d7cc18181",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a7251ce8_20684cd9",
+        "filename": "dmesgd/dmesgd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 126,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-02-02T20:41:47Z",
+      "side": 1,
+      "message": "PLOG",
+      "range": {
+        "startLine": 126,
+        "startChar": 8,
+        "endLine": 126,
+        "endChar": 11
+      },
+      "revId": "f030ea3e3854aa53e08b764fd343318d7cc18181",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e1214432_b1fa111c",
+        "filename": "dmesgd/dmesgd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 131,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-02-02T20:41:47Z",
+      "side": 1,
+      "message": "TEMP_FAILURE_RETRY around this?\n\nlog and exit on epoll_wait failure too?",
+      "revId": "f030ea3e3854aa53e08b764fd343318d7cc18181",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1dc4cf91_2fc77bf7",
+        "filename": "dmesgd/dmesgd.rc",
+        "patchSetId": 2
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-02-02T20:41:47Z",
+      "side": 1,
+      "message": "why? (i assumed that was why you were happily just exiting in main() if anything went wrong...)",
       "revId": "f030ea3e3854aa53e08b764fd343318d7cc18181",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
