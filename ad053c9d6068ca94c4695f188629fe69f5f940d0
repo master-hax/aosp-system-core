@@ -52,6 +52,24 @@
       "parentUuid": "5945e066_81e1f6c1",
       "revId": "ad053c9d6068ca94c4695f188629fe69f5f940d0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6ae061a3_08057c45",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-02-02T18:03:49Z",
+      "side": 1,
+      "message": "The behavior for older devices should not change. However, changes may be required in startup scripts that refer to the /dev/blkio mountpoint since that mountpoint is removed by this patch series. An example is available in https://android-review.googlesource.com/c/device/google/sunfish/+/1962021 .",
+      "parentUuid": "25eccea0_050994e9",
+      "revId": "ad053c9d6068ca94c4695f188629fe69f5f940d0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
