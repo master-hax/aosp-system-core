@@ -88,6 +88,24 @@
       "parentUuid": "6ae061a3_08057c45",
       "revId": "ad053c9d6068ca94c4695f188629fe69f5f940d0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "751dde1b_f9075c0d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-02-02T19:13:50Z",
+      "side": 1,
+      "message": "My understanding of how the blkio cgroup controller works is as follows:\n* The /sys/fs/cgroup interface allows to set a value for each blkio parameter per process.\n* With the existing v1 hierarchy, there are only two sets of parameters: one set of parameters for foreground processes and one set of parameters for background processes.\n* With this patch applied, there is one set of parameters per process (PID \u003d process ID). I have verified that the values of the parameters are the same with and without this patch.\n* This patch introduces one behavior change, namely that with this patch applied cgroup parameters also apply to buffered writes. Without this patch buffered writes are not affected by the blkio cgroup policy and hence background buffered writes are assigned a higher priority than they should.",
+      "parentUuid": "c710c202_a469a6bf",
+      "revId": "ad053c9d6068ca94c4695f188629fe69f5f940d0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
