@@ -70,6 +70,24 @@
       "parentUuid": "25eccea0_050994e9",
       "revId": "ad053c9d6068ca94c4695f188629fe69f5f940d0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c710c202_a469a6bf",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2022-02-02T18:38:41Z",
+      "side": 1,
+      "message": "Do we have the required change in this series? I see the CL removed the obsolete settings, but I see https://android-review.googlesource.com/c/platform/system/core/+/1962325/3 have different settings, are we sure the behavior is same?",
+      "parentUuid": "6ae061a3_08057c45",
+      "revId": "ad053c9d6068ca94c4695f188629fe69f5f940d0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
