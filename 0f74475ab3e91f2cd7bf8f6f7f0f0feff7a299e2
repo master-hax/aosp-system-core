@@ -46,6 +46,30 @@
       },
       "revId": "0f74475ab3e91f2cd7bf8f6f7f0f0feff7a299e2",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bc6569aa_92cfd7c2",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1106,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-02-02T01:22:36Z",
+      "side": 1,
+      "message": "load_properties_from_[file|partition] overwrites system properties that were loaded before [1]. So, the lowest priority partition should come first.\n\n[1] https://cs.android.com/android/platform/superproject/+/master:system/core/init/property_service.cpp;drc\u003d5638fcc22bc6d5e31a3e0a7fcf436c8379b1ae48;l\u003d726",
+      "parentUuid": "e56b363d_de2a4d04",
+      "range": {
+        "startLine": 1105,
+        "startChar": 0,
+        "endLine": 1106,
+        "endChar": 21
+      },
+      "revId": "0f74475ab3e91f2cd7bf8f6f7f0f0feff7a299e2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
