@@ -34,6 +34,24 @@
       "parentUuid": "b2d32914_8fe15998",
       "revId": "ad053c9d6068ca94c4695f188629fe69f5f940d0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "25eccea0_050994e9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2022-02-02T04:08:05Z",
+      "side": 1,
+      "message": "In another word, is there any behavior change for older devices?",
+      "parentUuid": "5945e066_81e1f6c1",
+      "revId": "ad053c9d6068ca94c4695f188629fe69f5f940d0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
