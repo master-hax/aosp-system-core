@@ -70,6 +70,30 @@
       },
       "revId": "0f74475ab3e91f2cd7bf8f6f7f0f0feff7a299e2",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9a71c27c_321aecbb",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1106,
+      "author": {
+        "id": 1889091
+      },
+      "writtenOn": "2022-02-02T02:45:15Z",
+      "side": 1,
+      "message": "Thanks Jiyong for taking time to review this. I\u0027ve updated it before any other product specific stuff from vendor/odm; and closer to the system.",
+      "parentUuid": "bc6569aa_92cfd7c2",
+      "range": {
+        "startLine": 1105,
+        "startChar": 0,
+        "endLine": 1106,
+        "endChar": 21
+      },
+      "revId": "0f74475ab3e91f2cd7bf8f6f7f0f0feff7a299e2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
