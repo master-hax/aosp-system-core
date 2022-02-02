@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "418bd4fd_9d373ddc",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-02-02T18:38:58Z",
+      "side": 1,
+      "message": "enh@ has reservations about adding new things to system/core - if he\u0027s okay with it here, let\u0027s at least make sure dmesgd/ has an OWNERS.",
+      "revId": "f030ea3e3854aa53e08b764fd343318d7cc18181",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f0061f71_53aa04c1",
+        "filename": "dmesgd/dmesg_parser.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 136,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-02-02T18:38:58Z",
+      "side": 1,
+      "message": "nit: body should be braced (unfortunately clang-format cannot fix this)",
+      "revId": "f030ea3e3854aa53e08b764fd343318d7cc18181",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8d196a7a_524889fb",
+        "filename": "dmesgd/dmesg_parser.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-02-02T18:38:58Z",
+      "side": 1,
+      "message": "C++ style here is FlushReport, ProcessLine, etc, for function names.",
+      "revId": "f030ea3e3854aa53e08b764fd343318d7cc18181",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "dba87bdd_61ff002d",
+        "filename": "dmesgd/dmesg_parser.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-02-02T18:38:58Z",
+      "side": 1,
+      "message": "C++ style here should have a trailing underscore for private variable names, eg \"current_report_\"",
+      "revId": "f030ea3e3854aa53e08b764fd343318d7cc18181",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
