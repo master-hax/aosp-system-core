@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b2d32914_8fe15998",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2022-02-02T01:40:25Z",
+      "side": 1,
+      "message": "do we have keep older devices with v1? in such case probably need a snap of current version.",
+      "revId": "ad053c9d6068ca94c4695f188629fe69f5f940d0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
