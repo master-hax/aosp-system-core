@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ab8b3893_66aaa8f7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-02-03T21:21:36Z",
+      "side": 1,
+      "message": "lgtm, though it\u0027s probably easier to merge this straight into its new home (which should hopefully be ready tomorrow) than to merge it here and then move it...",
+      "revId": "7822090f52c32a00396014e15f2c30b56ec45e34",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e85d35bf_aa7959ed",
+        "filename": "dmesgd/dmesgd.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-02-03T21:21:36Z",
+      "side": 1,
+      "message": "missed one :-)",
+      "range": {
+        "startLine": 125,
+        "startChar": 27,
+        "endLine": 125,
+        "endChar": 28
+      },
+      "revId": "7822090f52c32a00396014e15f2c30b56ec45e34",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
