@@ -93,6 +93,30 @@
       },
       "revId": "84b4326373bcb76435094d29a041e49e58f81180",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e2bf4511_17509d38",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 212,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-02-03T18:24:26Z",
+      "side": 1,
+      "message": "From the description of this patch: \"Cgroup attributes like io.weight or io.bfq.weight only exist if the corresponding I/O scheduler has been loaded.\"\nSo, this means we do expect that these attributes might not exist and therefore we mark them with \"IgnoreFailure\". I think a better name for this tag would be \"Optional\" so that it\u0027s clear that we expect that the attribute might not exist and that\u0027s not an error.\n\nWe should also check for (errno \u003d\u003d ENOENT) before we ignore the error reporting.\n\nCould you please clarify \"task_profiles.json must be improved\"? Worded as such it\u0027s not very actionable. If there are other cases when a missing attribute should not be considered as a failure then sure, we absolutely should mart them as Optional too.",
+      "parentUuid": "19f117ab_5f64365c",
+      "range": {
+        "startLine": 211,
+        "startChar": 12,
+        "endLine": 212,
+        "endChar": 53
+      },
+      "revId": "84b4326373bcb76435094d29a041e49e58f81180",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
