@@ -141,6 +141,30 @@
       },
       "revId": "84b4326373bcb76435094d29a041e49e58f81180",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "57e1224b_be7afb26",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 212,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-02-03T18:54:04Z",
+      "side": 1,
+      "message": "For Optional attributes we should ignore the error only when errno \u003d\u003d ENOENT, otherwise we should report an error as usual. IOW:\n\nif (!WriteStringToFile(value_, path)) {\n  if (!optional || errno !\u003d ENOENT) {\n    PLOG(ERROR) \u003c\u003c \"Failed to write \u0027\" \u003c\u003c value_ \u003c\u003c \"\u0027 to \" \u003c\u003c path;\n    return false;\n  }\n} else {\n  LOG(VERBOSE) \u003c\u003c \"Wrote \" \u003c\u003c value_ \u003c\u003c \" to \" \u003c\u003c path;\n}",
+      "parentUuid": "49fc96c4_229a55cb",
+      "range": {
+        "startLine": 211,
+        "startChar": 12,
+        "endLine": 212,
+        "endChar": 53
+      },
+      "revId": "84b4326373bcb76435094d29a041e49e58f81180",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
