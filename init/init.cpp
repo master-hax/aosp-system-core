@@ -385,6 +385,11 @@ static Result<void> DoControlStop(Service* service) {
     return {};
 }
 
+static Result<void> DoControlTerminate(Service* service) {
+    service->Terminate();
+    return {};
+}
+
 static Result<void> DoControlRestart(Service* service) {
     service->Restart();
     return {};
@@ -406,6 +411,7 @@ static const std::map<std::string, ControlMessageFunction, std::less<>>& GetCont
         {"oneshot_off",       [](auto* service) { service->set_oneshot(false); return Result<void>{}; }},
         {"start",             DoControlStart},
         {"stop",              DoControlStop},
+        {"terminate",         DoControlTerminate},
         {"restart",           DoControlRestart},
     };
     // clang-format on
@@ -445,6 +451,13 @@ static bool HandleControlMessage(std::string_view message, const std::string& na
         return false;
     }
     const auto& function = it->second;
+
+    std::string prop = "apexd.pause_restarts." + service->name();
+    if (GetProperty(prop, "") == "true" && action == "start") {
+        LOG(ERROR) << "rebootless not starting " << service->name()
+                   << "; apexd asked us to pause restarts";
+        return false;
+    }
 
     if (auto result = function(service); !result.ok()) {
         LOG(ERROR) << "Control message: Could not ctl." << message << " for '" << name
