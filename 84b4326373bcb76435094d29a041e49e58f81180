@@ -22,6 +22,53 @@
       },
       "revId": "84b4326373bcb76435094d29a041e49e58f81180",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ab5ee4ea_f3586464",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 206,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-02-03T17:08:41Z",
+      "side": 1,
+      "message": "Yeah. We discussed that with Li yesterday and I need to change couple things to allow fds of attributes to be cached. Li filed b/217610371 for that.",
+      "parentUuid": "01cee941_9543d922",
+      "range": {
+        "startLine": 206,
+        "startChar": 9,
+        "endLine": 206,
+        "endChar": 26
+      },
+      "revId": "84b4326373bcb76435094d29a041e49e58f81180",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d63fb6d1_509f1689",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 212,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-02-03T17:08:41Z",
+      "side": 1,
+      "message": "Wouldn\u0027t this spam the logcat?",
+      "range": {
+        "startLine": 211,
+        "startChar": 12,
+        "endLine": 212,
+        "endChar": 53
+      },
+      "revId": "84b4326373bcb76435094d29a041e49e58f81180",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
