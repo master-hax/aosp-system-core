@@ -74,6 +74,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "49cab02d_86a68ecd",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-02-03T21:08:35Z",
+      "side": 1,
+      "message": "yeah, i\u0027ve been chasing the new project side of things too, so hopefully you\u0027ll have a new git project by tomorrow morning :-)\n\n(i also plan on putting this on the list of \"20%-sized rust projects\" for U :-) )",
+      "parentUuid": "069c98a8_b6cded66",
+      "revId": "f030ea3e3854aa53e08b764fd343318d7cc18181",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "996d7488_c9d98d66",
         "filename": "dmesgd/Android.bp",
         "patchSetId": 2
