@@ -448,6 +448,13 @@ static bool HandleControlMessage(std::string_view message, const std::string& na
     }
     const auto& function = it->second;
 
+    std::string prop = "apexd.pause_restarts." + service->name();
+    if (GetProperty(prop, "") == "true" && action == "start") {
+        LOG(ERROR) << "rebootless not starting " << service->name()
+                   << "; apexd asked us to pause restarts";
+        return false;
+    }
+
     if (auto result = function(service); !result.ok()) {
         LOG(ERROR) << "Control message: Could not ctl." << message << " for '" << name
                    << "' from pid: " << from_pid << " (" << process_cmdline
