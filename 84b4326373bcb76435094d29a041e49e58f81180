@@ -69,6 +69,30 @@
       },
       "revId": "84b4326373bcb76435094d29a041e49e58f81180",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "19f117ab_5f64365c",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 212,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-02-03T17:54:28Z",
+      "side": 1,
+      "message": "If this log line would spam the logcat then to me this means that task_profiles.json must be improved. TaskProfile::ExecuteForProcess() and TaskProfile::ExecuteForTask() both give up if applying a single attribute fails. As a result, other attributes mentioned later in task_profiles.json are not applied after a failure occurred. So I think that every single failure to apply an attribute should be analyzed and annotated with \"IgnoreFailure\": \"true\" if necessary.",
+      "parentUuid": "d63fb6d1_509f1689",
+      "range": {
+        "startLine": 211,
+        "startChar": 12,
+        "endLine": 212,
+        "endChar": 53
+      },
+      "revId": "84b4326373bcb76435094d29a041e49e58f81180",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
