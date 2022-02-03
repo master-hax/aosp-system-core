@@ -56,6 +56,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "069c98a8_b6cded66",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1084624
+      },
+      "writtenOn": "2022-02-03T20:00:09Z",
+      "side": 1,
+      "message": "enh@: will you do me the honor of co-owning this? :)",
+      "parentUuid": "977db094_307af384",
+      "revId": "f030ea3e3854aa53e08b764fd343318d7cc18181",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "996d7488_c9d98d66",
         "filename": "dmesgd/Android.bp",
         "patchSetId": 2
@@ -67,6 +85,24 @@
       "writtenOn": "2022-02-02T20:41:47Z",
       "side": 1,
       "message": "seems unlikely :-)",
+      "revId": "f030ea3e3854aa53e08b764fd343318d7cc18181",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5999ffe5_be99ca2f",
+        "filename": "dmesgd/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 1084624
+      },
+      "writtenOn": "2022-02-03T20:00:09Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "996d7488_c9d98d66",
       "revId": "f030ea3e3854aa53e08b764fd343318d7cc18181",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -88,6 +124,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "2951f4e0_0bdae997",
+        "filename": "dmesgd/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1084624
+      },
+      "writtenOn": "2022-02-03T20:00:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7f032bef_9f4a5087",
+      "revId": "f030ea3e3854aa53e08b764fd343318d7cc18181",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "ae74215a_a91783de",
@@ -101,6 +155,24 @@
       "writtenOn": "2022-02-02T20:41:47Z",
       "side": 1,
       "message": "what needs this?",
+      "revId": "f030ea3e3854aa53e08b764fd343318d7cc18181",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7fe8bffc_794899f5",
+        "filename": "dmesgd/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 1084624
+      },
+      "writtenOn": "2022-02-03T20:00:09Z",
+      "side": 1,
+      "message": "Removed libcutils.\n(OMG it takes 4 minutes to test a single-line change to Android.bp)",
+      "parentUuid": "ae74215a_a91783de",
       "revId": "f030ea3e3854aa53e08b764fd343318d7cc18181",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -122,6 +194,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "1dfbf77c_2e44990f",
+        "filename": "dmesgd/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1084624
+      },
+      "writtenOn": "2022-02-03T20:00:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1f59e5f7_0f49cc98",
+      "revId": "f030ea3e3854aa53e08b764fd343318d7cc18181",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "bcaca2cd_d6553a90",
@@ -139,6 +229,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "d7988421_4115e5a6",
+        "filename": "dmesgd/dmesg_parser.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1084624
+      },
+      "writtenOn": "2022-02-03T20:00:09Z",
+      "side": 1,
+      "message": "Done. In fact I also didn\u0027t need any of those C includes.",
+      "parentUuid": "bcaca2cd_d6553a90",
+      "revId": "f030ea3e3854aa53e08b764fd343318d7cc18181",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f471d51b_c8969569",
@@ -152,6 +260,24 @@
       "writtenOn": "2022-02-02T20:41:47Z",
       "side": 1,
       "message": "braces",
+      "revId": "f030ea3e3854aa53e08b764fd343318d7cc18181",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e1b0fb6e_8d6af668",
+        "filename": "dmesgd/dmesg_parser.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1084624
+      },
+      "writtenOn": "2022-02-03T20:00:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f471d51b_c8969569",
       "revId": "f030ea3e3854aa53e08b764fd343318d7cc18181",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -179,6 +305,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "34e5ece4_b0e8b9cc",
+        "filename": "dmesgd/dmesg_parser.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1084624
+      },
+      "writtenOn": "2022-02-03T20:00:09Z",
+      "side": 1,
+      "message": "Removed.\nbug_pattern shall guarantee that the size is 4.",
+      "parentUuid": "20e64d1d_72aee0f1",
+      "range": {
+        "startLine": 47,
+        "startChar": 12,
+        "endLine": 47,
+        "endChar": 18
+      },
+      "revId": "f030ea3e3854aa53e08b764fd343318d7cc18181",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f0061f71_53aa04c1",
@@ -192,6 +342,24 @@
       "writtenOn": "2022-02-02T18:38:58Z",
       "side": 1,
       "message": "nit: body should be braced (unfortunately clang-format cannot fix this)",
+      "revId": "f030ea3e3854aa53e08b764fd343318d7cc18181",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a7960ca9_2f61b427",
+        "filename": "dmesgd/dmesg_parser.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 136,
+      "author": {
+        "id": 1084624
+      },
+      "writtenOn": "2022-02-03T20:00:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f0061f71_53aa04c1",
       "revId": "f030ea3e3854aa53e08b764fd343318d7cc18181",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -213,6 +381,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "ba39674d_b47c4dd4",
+        "filename": "dmesgd/dmesg_parser.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1084624
+      },
+      "writtenOn": "2022-02-03T20:00:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8d196a7a_524889fb",
+      "revId": "f030ea3e3854aa53e08b764fd343318d7cc18181",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d696b704_a27744a8",
@@ -226,6 +412,24 @@
       "writtenOn": "2022-02-02T20:41:47Z",
       "side": 1,
       "message": "inline single-use constants for better readability.\n\n(even the one of these that\u0027s used twice is probably more helpful just being in the .cpp file)",
+      "revId": "f030ea3e3854aa53e08b764fd343318d7cc18181",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4a7b8bd1_1dce42ad",
+        "filename": "dmesgd/dmesg_parser.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1084624
+      },
+      "writtenOn": "2022-02-03T20:00:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d696b704_a27744a8",
       "revId": "f030ea3e3854aa53e08b764fd343318d7cc18181",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -247,6 +451,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "d27a7c51_13e68401",
+        "filename": "dmesgd/dmesg_parser.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1084624
+      },
+      "writtenOn": "2022-02-03T20:00:09Z",
+      "side": 1,
+      "message": "It\u0027s been a while, thank you!\n(also wonder why clang-format didn\u0027t bark at me)",
+      "parentUuid": "dba87bdd_61ff002d",
+      "revId": "f030ea3e3854aa53e08b764fd343318d7cc18181",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "c6d075f5_39f1c6c2",
@@ -260,6 +482,24 @@
       "writtenOn": "2022-02-02T20:41:47Z",
       "side": 1,
       "message": "either inline this, or have the helper *function* out of line and replace the vector with multiple calls. would avoid the .first/.second too.",
+      "revId": "f030ea3e3854aa53e08b764fd343318d7cc18181",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5ee94613_1dc158af",
+        "filename": "dmesgd/dmesgd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1084624
+      },
+      "writtenOn": "2022-02-03T20:00:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c6d075f5_39f1c6c2",
       "revId": "f030ea3e3854aa53e08b764fd343318d7cc18181",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -287,6 +527,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "926dc717_227f7f37",
+        "filename": "dmesgd/dmesgd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1084624
+      },
+      "writtenOn": "2022-02-03T20:00:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "177a79a9_dc302a22",
+      "range": {
+        "startLine": 48,
+        "startChar": 19,
+        "endLine": 48,
+        "endChar": 33
+      },
+      "revId": "f030ea3e3854aa53e08b764fd343318d7cc18181",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "1bcdaa5d_2342644d",
@@ -300,6 +564,24 @@
       "writtenOn": "2022-02-02T20:41:47Z",
       "side": 1,
       "message": "unnecessary assignment",
+      "revId": "f030ea3e3854aa53e08b764fd343318d7cc18181",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d7ab58dd_3f36f82c",
+        "filename": "dmesgd/dmesgd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1084624
+      },
+      "writtenOn": "2022-02-03T20:00:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1bcdaa5d_2342644d",
       "revId": "f030ea3e3854aa53e08b764fd343318d7cc18181",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -321,6 +603,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "700532dd_f7ff42a1",
+        "filename": "dmesgd/dmesgd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1084624
+      },
+      "writtenOn": "2022-02-03T20:00:09Z",
+      "side": 1,
+      "message": "Done here and in other places where applicable.",
+      "parentUuid": "e1a3bc0c_c9cc8709",
+      "revId": "f030ea3e3854aa53e08b764fd343318d7cc18181",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "2cd8e95a_55c1cc06",
@@ -334,6 +634,24 @@
       "writtenOn": "2022-02-02T20:41:47Z",
       "side": 1,
       "message": "prefer getline(3) over fgets(3)\n\nis there actually a reason we don\u0027t just read the whole thing into memory at once?",
+      "revId": "f030ea3e3854aa53e08b764fd343318d7cc18181",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b2ed35c0_222896ce",
+        "filename": "dmesgd/dmesgd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 1084624
+      },
+      "writtenOn": "2022-02-03T20:00:09Z",
+      "side": 1,
+      "message": "Although the size of dmesg buffer is capped at 128k, the length of its output is potentially unlimited. Some vendors may not be happy with wasting too much memory.\n\nReplaced fgets() with getline().",
+      "parentUuid": "2cd8e95a_55c1cc06",
       "revId": "f030ea3e3854aa53e08b764fd343318d7cc18181",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -355,6 +673,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "0bc998e3_594674ea",
+        "filename": "dmesgd/dmesgd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 1084624
+      },
+      "writtenOn": "2022-02-03T20:00:09Z",
+      "side": 1,
+      "message": "Ack. This loop is not needed anymore though.\n\n(also wonder if the advice has something to do with C++ allowing to write `if (...) {...} while (true)`, which I\u0027ve been happily debugging today).",
+      "parentUuid": "1c50e8d7_b8b8407b",
+      "revId": "f030ea3e3854aa53e08b764fd343318d7cc18181",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "880bfc70_5527d7ea",
@@ -372,6 +708,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "c395906a_a51035ca",
+        "filename": "dmesgd/dmesgd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 1084624
+      },
+      "writtenOn": "2022-02-03T20:00:09Z",
+      "side": 1,
+      "message": "Removed this part.",
+      "parentUuid": "880bfc70_5527d7ea",
+      "revId": "f030ea3e3854aa53e08b764fd343318d7cc18181",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f305cfb6_b5509c23",
@@ -385,6 +739,30 @@
       "writtenOn": "2022-02-02T20:41:47Z",
       "side": 1,
       "message": "PLOG",
+      "range": {
+        "startLine": 112,
+        "startChar": 8,
+        "endLine": 112,
+        "endChar": 11
+      },
+      "revId": "f030ea3e3854aa53e08b764fd343318d7cc18181",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9e5a420d_b9bf2de1",
+        "filename": "dmesgd/dmesgd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 1084624
+      },
+      "writtenOn": "2022-02-03T20:00:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f305cfb6_b5509c23",
       "range": {
         "startLine": 112,
         "startChar": 8,
@@ -418,6 +796,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "767a2d10_311d20eb",
+        "filename": "dmesgd/dmesgd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 1084624
+      },
+      "writtenOn": "2022-02-03T20:00:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c901ae25_21d93b1f",
+      "range": {
+        "startLine": 118,
+        "startChar": 8,
+        "endLine": 118,
+        "endChar": 11
+      },
+      "revId": "f030ea3e3854aa53e08b764fd343318d7cc18181",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a7251ce8_20684cd9",
@@ -431,6 +833,30 @@
       "writtenOn": "2022-02-02T20:41:47Z",
       "side": 1,
       "message": "PLOG",
+      "range": {
+        "startLine": 126,
+        "startChar": 8,
+        "endLine": 126,
+        "endChar": 11
+      },
+      "revId": "f030ea3e3854aa53e08b764fd343318d7cc18181",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "07aa1e47_1faf72b2",
+        "filename": "dmesgd/dmesgd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 126,
+      "author": {
+        "id": 1084624
+      },
+      "writtenOn": "2022-02-03T20:00:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a7251ce8_20684cd9",
       "range": {
         "startLine": 126,
         "startChar": 8,
@@ -458,6 +884,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "c9306ea9_47079a11",
+        "filename": "dmesgd/dmesgd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 131,
+      "author": {
+        "id": 1084624
+      },
+      "writtenOn": "2022-02-03T20:00:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e1214432_b1fa111c",
+      "revId": "f030ea3e3854aa53e08b764fd343318d7cc18181",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "1dc4cf91_2fc77bf7",
@@ -471,6 +915,24 @@
       "writtenOn": "2022-02-02T20:41:47Z",
       "side": 1,
       "message": "why? (i assumed that was why you were happily just exiting in main() if anything went wrong...)",
+      "revId": "f030ea3e3854aa53e08b764fd343318d7cc18181",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "107d654c_1917b831",
+        "filename": "dmesgd/dmesgd.rc",
+        "patchSetId": 2
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 1084624
+      },
+      "writtenOn": "2022-02-03T20:00:09Z",
+      "side": 1,
+      "message": "Yeah, right.",
+      "parentUuid": "1dc4cf91_2fc77bf7",
       "revId": "f030ea3e3854aa53e08b764fd343318d7cc18181",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
