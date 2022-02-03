@@ -117,6 +117,30 @@
       },
       "revId": "84b4326373bcb76435094d29a041e49e58f81180",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "49fc96c4_229a55cb",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 212,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-02-03T18:42:27Z",
+      "side": 1,
+      "message": "I will rename \"IgnoreFailure\" into \"Optional\".\n\nIt is not clear to me why ENOENT should be checked separately? In case an attribute does not exist the attempt to write to the attribute will fail and PLOG() will report the value of errno in textual format.\n\nRegarding my comment \"task_profiles.json must be improved\": a failure to write to a cgroup attribute could indicate a typo in the attribute name or attribute value in task_profiles.json. Hence my comment.",
+      "parentUuid": "e2bf4511_17509d38",
+      "range": {
+        "startLine": 211,
+        "startChar": 12,
+        "endLine": 212,
+        "endChar": 53
+      },
+      "revId": "84b4326373bcb76435094d29a041e49e58f81180",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
