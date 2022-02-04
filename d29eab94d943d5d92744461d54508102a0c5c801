@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "9ab163ef_e04c6c94",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 218,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-02-04T19:07:23Z",
+      "side": 1,
+      "message": "The PLOG() calls use the value written into \u0027errno\u0027 by WriteStringToFile(). Hence, access() must be called before WriteStringToFile() or the access() call would overwrite \u0027errno\u0027.",
+      "parentUuid": "9068661a_3235fc17",
+      "range": {
+        "startLine": 208,
+        "startChar": 0,
+        "endLine": 218,
+        "endChar": 9
+      },
+      "revId": "d29eab94d943d5d92744461d54508102a0c5c801",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f125f265_7d56e1e4",
@@ -37,6 +61,30 @@
       "writtenOn": "2022-02-04T02:06:52Z",
       "side": 1,
       "message": "Can we use CgroupGetControllerPath(CGROUPV2_CONTROLLER_NAME, \u0026path) ?",
+      "range": {
+        "startLine": 79,
+        "startChar": 17,
+        "endLine": 79,
+        "endChar": 32
+      },
+      "revId": "d29eab94d943d5d92744461d54508102a0c5c801",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "76cf9158_4cf1175d",
+        "filename": "libprocessgroup/task_profiles_test.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-02-04T19:07:23Z",
+      "side": 1,
+      "message": "I tried but ran into the following:\n\ntask_profiles_test E 02-04 19:06:23 2357707 2357707 cgroup_file.cpp:41] open() failed for /dev/cgroup_info/cgroup.rc: No such file or directory\nlibprocessgroup E 02-04 19:06:23 2357707 2357707 cgroup_map.cpp:146] CgroupMap::LoadRcFile called for [2357707] failed\nlibprocessgroup E 02-04 19:06:23 2357707 2357707 cgroup_map.cpp:193] CgroupMap::FindController called for [2357707] failed, RC file was not initialized properly\ntask_profiles_test F 02-04 19:06:23 2357707 2357707 task_profiles_test.cpp:89] Check failed: CgroupGetControllerPath(CGROUPV2_CONTROLLER_NAME, path)",
+      "parentUuid": "f125f265_7d56e1e4",
       "range": {
         "startLine": 79,
         "startChar": 17,
