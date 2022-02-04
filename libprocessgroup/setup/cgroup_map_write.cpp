@@ -264,7 +264,7 @@ static bool SetupCgroup(const CgroupDescriptor& descriptor) {
             }
 
             result = mount("none", controller->path(), "cgroup2", MS_NODEV | MS_NOEXEC | MS_NOSUID,
-                           nullptr);
+                           "memory_recursiveprot");
 
             // selinux permissions change after mounting, so it's ok to change mode and owner now
             if (!ChangeDirModeAndOwner(controller->path(), descriptor.mode(), descriptor.uid(),
