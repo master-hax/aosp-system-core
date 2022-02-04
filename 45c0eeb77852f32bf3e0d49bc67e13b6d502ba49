@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "93902e72_b8e72129",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 300,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-02-04T02:10:02Z",
+      "side": 1,
+      "message": "Let\u0027s use uniform message formats. Either add \u0027:\u0027 in both places or remove here.",
+      "range": {
+        "startLine": 300,
+        "startChar": 38,
+        "endLine": 300,
+        "endChar": 39
+      },
+      "revId": "45c0eeb77852f32bf3e0d49bc67e13b6d502ba49",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
