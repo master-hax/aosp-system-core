@@ -69,6 +69,23 @@ bool CgroupGetControllerPath(const std::string& cgroup_name, std::string* path) 
     return true;
 }
 
+static bool CgroupGetMemoryAppsPath(std::string* path) {
+    auto controller = CgroupMap::GetInstance().FindController("memory");
+
+    if (!controller.HasValue()) {
+        return false;
+    }
+
+    if (path) {
+        *path = controller.path();
+        if (controller.version() == 1) {
+            *path += "/apps";
+        }
+    }
+
+    return true;
+}
+
 bool CgroupGetControllerFromPath(const std::string& path, std::string* cgroup_name) {
     auto controller = CgroupMap::GetInstance().FindControllerByPath(path);
 
@@ -199,13 +216,13 @@ void removeAllProcessGroups() {
     LOG(VERBOSE) << "removeAllProcessGroups()";
 
     std::vector<std::string> cgroups;
-    std::string path;
+    std::string path, memcg_apps_path;
 
     if (CgroupGetControllerPath(CGROUPV2_CONTROLLER_NAME, &path)) {
         cgroups.push_back(path);
     }
-    if (CgroupGetControllerPath("memory", &path)) {
-        cgroups.push_back(path + "/apps");
+    if (CgroupGetMemoryAppsPath(&memcg_apps_path) && memcg_apps_path != path) {
+        cgroups.push_back(memcg_apps_path);
     }
 
     for (std::string cgroup_root_path : cgroups) {
@@ -411,10 +428,11 @@ static int KillProcessGroup(uid_t uid, int initialPid, int signal, int retries,
         int err = RemoveProcessGroup(cgroup, uid, initialPid, retries);
 
         if (isMemoryCgroupSupported() && UsePerAppMemcg()) {
-            std::string memory_path;
-            CgroupGetControllerPath("memory", &memory_path);
-            memory_path += "/apps";
-            if (RemoveProcessGroup(memory_path.c_str(), uid, initialPid, retries)) return -1;
+            std::string memcg_apps_path;
+            if (CgroupGetMemoryAppsPath(&memcg_apps_path) &&
+                RemoveProcessGroup(memcg_apps_path.c_str(), uid, initialPid, retries) < 0) {
+                return -1;
+            }
         }
 
         return err;
@@ -491,10 +509,9 @@ int createProcessGroup(uid_t uid, int initialPid, bool memControl) {
         return -EINVAL;
     }
 
-    if (isMemoryCgroupSupported() && UsePerAppMemcg()) {
-        CgroupGetControllerPath("memory", &cgroup);
-        cgroup += "/apps";
-        int ret = createProcessGroupInternal(uid, initialPid, cgroup, false);
+    if (std::string memcg_apps_path; isMemoryCgroupSupported() && UsePerAppMemcg() &&
+                                     CgroupGetMemoryAppsPath(&memcg_apps_path)) {
+        int ret = createProcessGroupInternal(uid, initialPid, memcg_apps_path, false);
         if (ret != 0) {
             return ret;
         }
