@@ -263,8 +263,21 @@ static bool SetupCgroup(const CgroupDescriptor& descriptor) {
                 return false;
             }
 
-            result = mount("none", controller->path(), "cgroup2", MS_NODEV | MS_NOEXEC | MS_NOSUID,
-                           nullptr);
+            // The memory_recursiveprot mount option has been introduced by kernel commit
+            // 8a931f801340 ("mm: memcontrol: recursive memory.low protection"; v5.7). Try first to
+            // mount with that option enabled. If mounting fails because the kernel is too old,
+            // retry without that mount option.
+            static const char* mount_options[] = {"memory_recursiveprot", nullptr};
+            for (const char* options : mount_options) {
+                result = mount("none", controller->path(), "cgroup2",
+                               MS_NODEV | MS_NOEXEC | MS_NOSUID, options);
+                if (result == 0) {
+                    break;
+                }
+                if (options) {
+                    LOG(INFO) << "Mounting memcg with " << options << " failed. Retrying without.";
+                }
+            }
 
             // selinux permissions change after mounting, so it's ok to change mode and owner now
             if (!ChangeDirModeAndOwner(controller->path(), descriptor.mode(), descriptor.uid(),
