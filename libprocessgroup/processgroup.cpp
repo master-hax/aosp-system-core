@@ -69,6 +69,21 @@ bool CgroupGetControllerPath(const std::string& cgroup_name, std::string* path) 
     return true;
 }
 
+static bool CgroupGetV1ControllerPath(const std::string& cgroup_name, std::string* path) {
+    auto controller = CgroupMap::GetInstance().FindController(cgroup_name);
+
+    DCHECK(controller.version() == 1 || controller.version() == 2);
+    if (!controller.HasValue() || controller.version() != 1) {
+        return false;
+    }
+
+    if (path) {
+        *path = controller.path();
+    }
+
+    return true;
+}
+
 bool CgroupGetControllerFromPath(const std::string& path, std::string* cgroup_name) {
     auto controller = CgroupMap::GetInstance().FindControllerByPath(path);
 
@@ -204,7 +219,7 @@ void removeAllProcessGroups() {
     if (CgroupGetControllerPath(CGROUPV2_CONTROLLER_NAME, &path)) {
         cgroups.push_back(path);
     }
-    if (CgroupGetControllerPath("memory", &path)) {
+    if (CgroupGetV1ControllerPath("memory", &path)) {
         cgroups.push_back(path + "/apps");
     }
 
@@ -412,9 +427,12 @@ static int KillProcessGroup(uid_t uid, int initialPid, int signal, int retries,
 
         if (isMemoryCgroupSupported() && UsePerAppMemcg()) {
             std::string memory_path;
-            CgroupGetControllerPath("memory", &memory_path);
-            memory_path += "/apps";
-            if (RemoveProcessGroup(memory_path.c_str(), uid, initialPid, retries)) return -1;
+            if (CgroupGetV1ControllerPath("memory", &memory_path)) {
+                memory_path += "/apps";
+                if (RemoveProcessGroup(memory_path.c_str(), uid, initialPid, retries)) {
+                    return -1;
+                }
+            }
         }
 
         return err;
@@ -491,8 +509,8 @@ int createProcessGroup(uid_t uid, int initialPid, bool memControl) {
         return -EINVAL;
     }
 
-    if (isMemoryCgroupSupported() && UsePerAppMemcg()) {
-        CgroupGetControllerPath("memory", &cgroup);
+    if (isMemoryCgroupSupported() && UsePerAppMemcg() &&
+        CgroupGetV1ControllerPath("memory", &cgroup)) {
         cgroup += "/apps";
         int ret = createProcessGroupInternal(uid, initialPid, cgroup, false);
         if (ret != 0) {
