@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9068661a_3235fc17",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 218,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-02-04T02:06:52Z",
+      "side": 1,
+      "message": "Why not simply add this:\n\nif (optional_ \u0026\u0026 access(path.c_str(), F_OK) !\u003d 0) {\n  return true;\n}\n\nand the rest is unchanged:\n\nif (!WriteStringToFile(value_, path)) {\n  PLOG(ERROR) \u003c\u003c \"Failed to write \u0027\" \u003c\u003c value_ \u003c\u003c \"\u0027 to \" \u003c\u003c path;\n  return false;\n} else {\n  LOG(VERBOSE) \u003c\u003c \"Wrote \" \u003c\u003c value_ \u003c\u003c \" to \" \u003c\u003c path;\n}\nreturn true;",
+      "range": {
+        "startLine": 208,
+        "startChar": 0,
+        "endLine": 218,
+        "endChar": 9
+      },
+      "revId": "d29eab94d943d5d92744461d54508102a0c5c801",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f125f265_7d56e1e4",
+        "filename": "libprocessgroup/task_profiles_test.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-02-04T02:06:52Z",
+      "side": 1,
+      "message": "Can we use CgroupGetControllerPath(CGROUPV2_CONTROLLER_NAME, \u0026path) ?",
+      "range": {
+        "startLine": 79,
+        "startChar": 17,
+        "endLine": 79,
+        "endChar": 32
+      },
+      "revId": "d29eab94d943d5d92744461d54508102a0c5c801",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
