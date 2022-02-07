@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "524abbaf_b22f227a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-02-07T00:31:23Z",
+      "side": 1,
+      "message": "Cool. But how can it be resumed? If apexd.pause_restarts.foo becomes false, does it resume the suspended restart?",
+      "revId": "7e5e563a9e1f759f0446d2221d56d65f54d36823",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
