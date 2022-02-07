@@ -52,6 +52,24 @@
       "parentUuid": "d64784dc_10bacf87",
       "revId": "8f2a5a8672ddee349769d49b4a8c25b7d8222308",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "542b606e_b19b0f4b",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 665,
+      "author": {
+        "id": 1084624
+      },
+      "writtenOn": "2022-02-07T17:46:03Z",
+      "side": 1,
+      "message": "On the other hand, renaming /sys/kernel/tracing/instances/bootreceiver will also trigger sepolicy changes. Perhaps I\u0027d better start with just moving the code as is and then cleaning everything up in a separate patch.",
+      "parentUuid": "d64784dc_10bacf87",
+      "revId": "8f2a5a8672ddee349769d49b4a8c25b7d8222308",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
