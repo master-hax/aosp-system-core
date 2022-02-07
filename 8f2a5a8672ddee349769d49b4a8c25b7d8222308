@@ -70,6 +70,24 @@
       "parentUuid": "d64784dc_10bacf87",
       "revId": "8f2a5a8672ddee349769d49b4a8c25b7d8222308",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "457d05ba_866c79be",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 665,
+      "author": {
+        "id": 1084624
+      },
+      "writtenOn": "2022-02-07T18:38:16Z",
+      "side": 1,
+      "message": "Hmm, this works in a twisted way now...\n\nAccording to logcat, dmesgd is started before the file is created, then it exits and starts once again:\n\n```\n$ cat logcat.txt | grep dmesgd\n02-07 19:12:37.776     1     1 I init    : Parsing file /system/etc/init/dmesgd.rc...\n02-07 19:12:54.582     1     1 I init    : starting service \u0027dmesgd\u0027...\n02-07 19:12:54.635     1     1 I init    : Service \u0027dmesgd\u0027 (pid 932) exited with status 1\n02-07 19:12:54.657     1     1 I init    : Sending signal 9 to service \u0027dmesgd\u0027 (pid 932) process group...\n02-07 19:12:55.232     1     1 I init    : processing action (bootreceiver.enable\u003d1 \u0026\u0026 ro.product.cpu.abilist64\u003d*) from (/system/etc/init/dmesgd.rc:1)\n02-07 19:12:57.487     1     1 I init    : starting service \u0027dmesgd\u0027...\n```\n\nAs far as I remember, there are no means to synchronize two actions in init.rc?",
+      "parentUuid": "542b606e_b19b0f4b",
+      "revId": "8f2a5a8672ddee349769d49b4a8c25b7d8222308",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
