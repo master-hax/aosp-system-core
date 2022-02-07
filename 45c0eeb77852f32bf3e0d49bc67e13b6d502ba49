@@ -22,6 +22,30 @@
       },
       "revId": "45c0eeb77852f32bf3e0d49bc67e13b6d502ba49",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "26b99ef7_09ba6bcb",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 300,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-02-07T23:14:24Z",
+      "side": 1,
+      "message": "The colon has been removed from one of the two logging statements.",
+      "parentUuid": "93902e72_b8e72129",
+      "range": {
+        "startLine": 300,
+        "startChar": 38,
+        "endLine": 300,
+        "endChar": 39
+      },
+      "revId": "45c0eeb77852f32bf3e0d49bc67e13b6d502ba49",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
