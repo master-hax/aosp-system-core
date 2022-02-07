@@ -141,6 +141,30 @@
       },
       "revId": "d29eab94d943d5d92744461d54508102a0c5c801",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "47ba9260_3f581bbb",
+        "filename": "libprocessgroup/task_profiles_test.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-02-07T23:15:47Z",
+      "side": 1,
+      "message": "Although I have prior experience with C++ and googletest, I\u0027m new to Android unit testing. Anyway, there are now two variants of this unit test in Android.bp: one Android test and one host test.",
+      "parentUuid": "85a74d2c_472c956f",
+      "range": {
+        "startLine": 79,
+        "startChar": 17,
+        "endLine": 79,
+        "endChar": 32
+      },
+      "revId": "d29eab94d943d5d92744461d54508102a0c5c801",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
