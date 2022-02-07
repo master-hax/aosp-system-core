@@ -88,6 +88,24 @@
       "parentUuid": "542b606e_b19b0f4b",
       "revId": "8f2a5a8672ddee349769d49b4a8c25b7d8222308",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c632a635_1dbb4f4a",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 665,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-02-07T19:04:09Z",
+      "side": 1,
+      "message": "Is there a reason it\u0027s started from both .rc files? (It also looks like the service should be marked \"disabled\"?)",
+      "parentUuid": "457d05ba_866c79be",
+      "revId": "8f2a5a8672ddee349769d49b4a8c25b7d8222308",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
