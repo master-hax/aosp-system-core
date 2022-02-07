@@ -16,6 +16,24 @@
       "message": "longer-term i wonder whether this should move into a dmesgd.rc instead, but this isn\u0027t a regression, so...",
       "revId": "8f2a5a8672ddee349769d49b4a8c25b7d8222308",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d64784dc_10bacf87",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 665,
+      "author": {
+        "id": 1084624
+      },
+      "writtenOn": "2022-02-07T17:41:24Z",
+      "side": 1,
+      "message": "Hm, it didn\u0027t come to my mind, but you are right.\nThe name \"bootreceiver\" was also picked poorly, as the code has nothing to do with BootReceiver.java now. I can rename the tracing instance, but not sure we can rename property:bootreceiver.enable\u003d1 - is it considered a part of API?",
+      "parentUuid": "8a330adc_628f957e",
+      "revId": "8f2a5a8672ddee349769d49b4a8c25b7d8222308",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
