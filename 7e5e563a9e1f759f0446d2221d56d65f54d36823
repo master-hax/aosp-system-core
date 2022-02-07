@@ -16,6 +16,24 @@
       "message": "Cool. But how can it be resumed? If apexd.pause_restarts.foo becomes false, does it resume the suspended restart?",
       "revId": "7e5e563a9e1f759f0446d2221d56d65f54d36823",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "27e76495_f250b285",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1455782
+      },
+      "writtenOn": "2022-02-07T19:36:46Z",
+      "side": 1,
+      "message": "The prototype currently sets this false after the APEX update Install command returns (successful or not): https://android-review.googlesource.com/c/platform/system/apex/+/1918985/18/apexd/apexservice.cpp#558\n\nThere\u0027s nothing currently to \"store\" these start requests in a queue to be handled later, but that could be added if we think it\u0027s necessary.\nThis prototype currently relies on the fact that the default ServiceManager.getService() method will continuously retry.",
+      "parentUuid": "524abbaf_b22f227a",
+      "revId": "7e5e563a9e1f759f0446d2221d56d65f54d36823",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
