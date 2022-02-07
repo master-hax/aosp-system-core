@@ -34,6 +34,24 @@
       "parentUuid": "8a330adc_628f957e",
       "revId": "8f2a5a8672ddee349769d49b4a8c25b7d8222308",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c6d85650_aa893351",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 665,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-02-07T17:45:54Z",
+      "side": 1,
+      "message": "i\u0027d hope not, but maybe do the rename as a separate change later in case that needs to be reverted?",
+      "parentUuid": "d64784dc_10bacf87",
+      "revId": "8f2a5a8672ddee349769d49b4a8c25b7d8222308",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
