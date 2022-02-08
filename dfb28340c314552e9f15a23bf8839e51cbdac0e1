@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "c9521278_c6a8f7b3",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-02-08T20:57:12Z",
+      "side": 1,
+      "message": "i\u0027m more concerned that *fixing* this can introduce issues... this is legacy code, but it\u0027s used transitively in all kinds of places. i definitely think this is too late for T, but maybe we can try for U?\n\n(std::mutex already does the right thing, and is the better answer for new code.)",
+      "parentUuid": "f511f856_02a32b5b",
+      "range": {
+        "startLine": 12,
+        "startChar": 17,
+        "endLine": 12,
+        "endChar": 25
+      },
+      "revId": "dfb28340c314552e9f15a23bf8839e51cbdac0e1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "27ed9d5d_a9f158a8",
         "filename": "libutils/include/utils/Mutex.h",
         "patchSetId": 1
