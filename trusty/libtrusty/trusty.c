@@ -29,7 +29,20 @@
 
 #include <trusty/ipc.h>
 
+#define ATRACE_TAG ATRACE_TAG_HAL
+#include <cutils/trace.h>
+
+#define EVENT_BUFFER_LEN 256
+
 int tipc_connect(const char* dev_name, const char* srv_name) {
+    char buffer[EVENT_BUFFER_LEN];
+    if (ATRACE_ENABLED()) {
+        snprintf(buffer, EVENT_BUFFER_LEN, "%s_%s", __func__, srv_name);
+    } else {
+        snprintf(buffer, EVENT_BUFFER_LEN, "");
+    }
+
+    ATRACE_BEGIN(buffer);
     int fd;
     int rc;
 
@@ -37,7 +50,8 @@ int tipc_connect(const char* dev_name, const char* srv_name) {
     if (fd < 0) {
         rc = -errno;
         ALOGE("%s: cannot open tipc device \"%s\": %s\n", __func__, dev_name, strerror(errno));
-        return rc < 0 ? rc : -1;
+        fd = rc < 0 ? rc : -1;
+        goto err_cleanup;
     }
 
     rc = TEMP_FAILURE_RETRY(ioctl(fd, TIPC_IOC_CONNECT, srv_name));
@@ -45,15 +59,30 @@ int tipc_connect(const char* dev_name, const char* srv_name) {
         rc = -errno;
         ALOGE("%s: can't connect to tipc service \"%s\" (err=%d)\n", __func__, srv_name, errno);
         close(fd);
-        return rc < 0 ? rc : -1;
+        fd = rc < 0 ? rc : -1;
+        goto err_cleanup;
     }
 
+    ATRACE_INT("tipc_connect_fd", fd);
     ALOGV("%s: connected to \"%s\" fd %d\n", __func__, srv_name, fd);
+
+err_cleanup:
+    ATRACE_END();
     return fd;
 }
 
 ssize_t tipc_send(int fd, const struct iovec* iov, int iovcnt, struct trusty_shm* shms,
                   int shmcnt) {
+    char buffer[EVENT_BUFFER_LEN];
+    if (ATRACE_ENABLED()) {
+        snprintf(buffer, EVENT_BUFFER_LEN, "%s_%d_%08x", __func__, fd,
+                 (iovcnt > 0 && iov[0].iov_len > 0 ? *(uint32_t*)(iov[0].iov_base) : 0));
+    } else {
+        snprintf(buffer, EVENT_BUFFER_LEN, "");
+    }
+
+    ATRACE_BEGIN(buffer);
+
     struct tipc_send_msg_req req;
     req.iov = (__u64)iov;
     req.iov_cnt = (__u64)iovcnt;
@@ -65,6 +94,7 @@ ssize_t tipc_send(int fd, const struct iovec* iov, int iovcnt, struct trusty_shm
         ALOGE("%s: failed to send message (err=%d)\n", __func__, rc);
     }
 
+    ATRACE_END();
     return rc;
 }
 
