@@ -29,7 +29,11 @@
 
 #include <trusty/ipc.h>
 
+#define ATRACE_TAG ATRACE_TAG_APP
+#include <cutils/trace.h>
+
 int tipc_connect(const char* dev_name, const char* srv_name) {
+    ATRACE_BEGIN("libtrusty::tipc_connect");
     int fd;
     int rc;
 
@@ -37,7 +41,8 @@ int tipc_connect(const char* dev_name, const char* srv_name) {
     if (fd < 0) {
         rc = -errno;
         ALOGE("%s: cannot open tipc device \"%s\": %s\n", __func__, dev_name, strerror(errno));
-        return rc < 0 ? rc : -1;
+        fd = rc < 0 ? rc : -1;
+        goto err_cleanup;
     }
 
     rc = TEMP_FAILURE_RETRY(ioctl(fd, TIPC_IOC_CONNECT, srv_name));
@@ -45,15 +50,21 @@ int tipc_connect(const char* dev_name, const char* srv_name) {
         rc = -errno;
         ALOGE("%s: can't connect to tipc service \"%s\" (err=%d)\n", __func__, srv_name, errno);
         close(fd);
-        return rc < 0 ? rc : -1;
+        fd = rc < 0 ? rc : -1;
+        goto err_cleanup;
     }
 
     ALOGV("%s: connected to \"%s\" fd %d\n", __func__, srv_name, fd);
+
+err_cleanup:
+    ATRACE_END();
     return fd;
 }
 
 ssize_t tipc_send(int fd, const struct iovec* iov, int iovcnt, struct trusty_shm* shms,
                   int shmcnt) {
+    ATRACE_BEGIN("libtrusty::tipc_send");
+
     struct tipc_send_msg_req req;
     req.iov = (__u64)iov;
     req.iov_cnt = (__u64)iovcnt;
@@ -65,6 +76,7 @@ ssize_t tipc_send(int fd, const struct iovec* iov, int iovcnt, struct trusty_shm
         ALOGE("%s: failed to send message (err=%d)\n", __func__, rc);
     }
 
+    ATRACE_END();
     return rc;
 }
 
