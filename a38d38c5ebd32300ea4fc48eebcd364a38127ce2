@@ -34,6 +34,24 @@
       "parentUuid": "222c9384_5385c4f5",
       "revId": "a38d38c5ebd32300ea4fc48eebcd364a38127ce2",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "08ff70c5_39bf822d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-02-08T02:30:52Z",
+      "side": 1,
+      "message": "Amen! (The Greek Old Testament usually translates amen as “so be it”)",
+      "parentUuid": "e436ae68_3879481f",
+      "revId": "a38d38c5ebd32300ea4fc48eebcd364a38127ce2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
