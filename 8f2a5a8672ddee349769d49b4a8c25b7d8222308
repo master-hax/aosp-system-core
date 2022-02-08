@@ -106,6 +106,24 @@
       "parentUuid": "457d05ba_866c79be",
       "revId": "8f2a5a8672ddee349769d49b4a8c25b7d8222308",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9f67d01f_48365443",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 665,
+      "author": {
+        "id": 1084624
+      },
+      "writtenOn": "2022-02-08T11:14:36Z",
+      "side": 1,
+      "message": "Thanks, I didn\u0027t realize `service` starts the service by default. Adding \"disabled\" and moving all relevant bits to dmesg.rc helped!",
+      "parentUuid": "c632a635_1dbb4f4a",
+      "revId": "8f2a5a8672ddee349769d49b4a8c25b7d8222308",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
