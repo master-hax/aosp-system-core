@@ -37,6 +37,24 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "33007a87_be2fd448",
+        "filename": "libutils/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2022-02-08T17:32:42Z",
+      "side": 1,
+      "message": "Err - see my previous comment here. I\u0027m not sure, but I want to follow-up, since this should have never been exported, but some things might be relying it. I\u0027ll throw a CL on top of this now so we don\u0027t forget.",
+      "parentUuid": "b118533f_3a7454cf",
+      "revId": "39fc18b0cdbaec21b0d6a86ae51a991ba0dd540b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "cc4ecfa5_70d3693f",
         "filename": "libutils/Android.bp",
         "patchSetId": 1
