@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f511f856_02a32b5b",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2022-02-08T20:41:15Z",
+      "side": 1,
+      "message": "is there any way we can test the behavior or simulate this? Seems like this would have caused a number of bugs",
+      "range": {
+        "startLine": 12,
+        "startChar": 17,
+        "endLine": 12,
+        "endChar": 25
+      },
+      "revId": "dfb28340c314552e9f15a23bf8839e51cbdac0e1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "27ed9d5d_a9f158a8",
+        "filename": "libutils/include/utils/Mutex.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 205,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2022-02-08T20:41:15Z",
+      "side": 1,
+      "message": "which APEX needs the old API? could we remove it? Or, could we only use the monotonic_np API? (want to check if we can always have the same behavior)",
+      "range": {
+        "startLine": 205,
+        "startChar": 0,
+        "endLine": 205,
+        "endChar": 63
+      },
+      "revId": "dfb28340c314552e9f15a23bf8839e51cbdac0e1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
