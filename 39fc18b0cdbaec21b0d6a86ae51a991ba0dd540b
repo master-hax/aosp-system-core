@@ -55,6 +55,24 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "8cc5a36d_22276342",
+        "filename": "libutils/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2022-02-08T23:03:58Z",
+      "side": 1,
+      "message": "https://android-review.googlesource.com/c/platform/system/core/+/1977089",
+      "parentUuid": "33007a87_be2fd448",
+      "revId": "39fc18b0cdbaec21b0d6a86ae51a991ba0dd540b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "cc4ecfa5_70d3693f",
         "filename": "libutils/Android.bp",
         "patchSetId": 1
@@ -75,6 +93,5 @@
       "revId": "39fc18b0cdbaec21b0d6a86ae51a991ba0dd540b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
-  ],
-  "submitRequirementResults": []
+  ]
 }
