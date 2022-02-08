@@ -16,6 +16,29 @@
       "message": "I like this. Description should probably be changed before merging to eliminate jokes and logistical considerations.",
       "revId": "39fc18b0cdbaec21b0d6a86ae51a991ba0dd540b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cc4ecfa5_70d3693f",
+        "filename": "libutils/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2022-02-08T16:37:23Z",
+      "side": 1,
+      "message": "will clean up this type of thing later",
+      "range": {
+        "startLine": 41,
+        "startChar": 0,
+        "endLine": 41,
+        "endChar": 34
+      },
+      "revId": "39fc18b0cdbaec21b0d6a86ae51a991ba0dd540b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
