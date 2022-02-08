@@ -16,6 +16,24 @@
       "message": "Woah! If we can do this, there are actually a few really cool cleanups we can do!",
       "revId": "a38d38c5ebd32300ea4fc48eebcd364a38127ce2",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e436ae68_3879481f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1017430
+      },
+      "writtenOn": "2022-02-08T02:00:53Z",
+      "side": 1,
+      "message": "The per-thread cgroup modifications seem to descend from the initial implementation of cgroups in Android. I never understood the justification for it; my first CL around platform perf in 2015 kept it even though I didn\u0027t think it was necessary because nobody else knew how necessary it was either. As we\u0027ve gotten more threads, we\u0027re spending additional CPU in libprocessgroup, hitting the cgroup lock in the kernel constantly, and suffering all sorts of priority inversions when a background thread holds the cgroup lock and doesn\u0027t get scheduled. It doesn\u0027t make sense, so I\u0027ve decided that from now on, all threads in standard user apps will be in the same cgroups (for v1). Probably makes a v2 migration easier too.\n\nAll of that is kind of separate from this change, though; thread priority is not an indicator of IO priority, CPU affinity, or anything else. This case in particular is causing critical threads in system_server to stall in congestion_wait, which is obviously wrong.",
+      "parentUuid": "222c9384_5385c4f5",
+      "revId": "a38d38c5ebd32300ea4fc48eebcd364a38127ce2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
