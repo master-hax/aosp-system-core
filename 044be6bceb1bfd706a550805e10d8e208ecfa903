@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7c8f40e8_cae894e1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1096713
+      },
+      "writtenOn": "2022-02-08T15:44:03Z",
+      "side": 1,
+      "message": "Follow-up to https://android-review.googlesource.com/c/platform/system/core/+/1975808",
+      "revId": "044be6bceb1bfd706a550805e10d8e208ecfa903",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "93f42c03_a311e0fc",
+        "filename": "libutils/Threads.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 312,
+      "author": {
+        "id": 1096713
+      },
+      "writtenOn": "2022-02-08T15:44:03Z",
+      "side": 1,
+      "message": "I don\u0027t know if we\u0027d want to remove this entire \u0027else\u0027 clause (which would technically change behavior here, but might be what we want).",
+      "range": {
+        "startLine": 310,
+        "startChar": 0,
+        "endLine": 312,
+        "endChar": 5
+      },
+      "revId": "044be6bceb1bfd706a550805e10d8e208ecfa903",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
