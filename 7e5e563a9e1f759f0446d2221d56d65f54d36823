@@ -34,6 +34,24 @@
       "parentUuid": "524abbaf_b22f227a",
       "revId": "7e5e563a9e1f759f0446d2221d56d65f54d36823",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3950c1b1_de3126c9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-02-08T00:27:16Z",
+      "side": 1,
+      "message": "\u003e ServiceManager.getService() method will continuously retry\n\nGot it. But note that, in general, not all services serve a binder object. Some services—like logd, tombstoned—are purely socket-based.\n\nI know that our focus is HAL and they are all AIDL/HIDL services, but since we are adding a mechanism to init, it should be generic.\n\nI am not saying it should be fixed in this round though.",
+      "parentUuid": "27e76495_f250b285",
+      "revId": "7e5e563a9e1f759f0446d2221d56d65f54d36823",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
