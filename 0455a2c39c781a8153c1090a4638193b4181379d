@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8668ad9a_463e3923",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-02-08T02:24:07Z",
+      "side": 1,
+      "message": "I support any simplification if it does not introduce a regression. I assume this is the case here.",
+      "revId": "0455a2c39c781a8153c1090a4638193b4181379d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
