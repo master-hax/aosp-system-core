@@ -34,6 +34,7 @@ cc_binary {
         "libbase",
         "liblog",
         "libhardware_legacy",
+        "libcutils",
     ],
     header_libs: [
         "libcutils_headers",
