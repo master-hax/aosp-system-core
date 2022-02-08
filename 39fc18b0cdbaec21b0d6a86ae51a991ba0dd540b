@@ -18,6 +18,23 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "b118533f_3a7454cf",
+        "filename": "libutils/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-02-08T16:43:15Z",
+      "side": 1,
+      "message": "is this still needed?",
+      "revId": "39fc18b0cdbaec21b0d6a86ae51a991ba0dd540b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "cc4ecfa5_70d3693f",
