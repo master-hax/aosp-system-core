@@ -16,6 +16,29 @@
       "message": "I support any simplification if it does not introduce a regression. I assume this is the case here.",
       "revId": "0455a2c39c781a8153c1090a4638193b4181379d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6de1de37_6796260a",
+        "filename": "libutils/Threads.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 309,
+      "author": {
+        "id": 1096713
+      },
+      "writtenOn": "2022-02-08T15:43:32Z",
+      "side": 1,
+      "message": "This check is always false now, since we never set \u0027rc\u0027 to non-zero before this.  I\u0027ve put up a small cleanup CL just to avoid potentially confusing future readers: https://android-review.googlesource.com/c/platform/system/core/+/1977026",
+      "range": {
+        "startLine": 309,
+        "startChar": 0,
+        "endLine": 309,
+        "endChar": 13
+      },
+      "revId": "0455a2c39c781a8153c1090a4638193b4181379d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
