@@ -24,6 +24,7 @@ cc_binary {
     shared_libs: [
         "libc",
         "liblog",
+        "libcutils",
     ],
     static_libs: [
         "libtrusty",
