@@ -101,6 +101,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "68256b98_60b0c8a7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1205833
+      },
+      "writtenOn": "2022-02-09T19:20:17Z",
+      "side": 1,
+      "message": "The additional prefix on vbmeta partition is reported when Android is running in hypervisor.",
+      "parentUuid": "cd743967_a5edeb2e",
+      "revId": "faf5599c305fdad77dfa8fa23756db810fa095cd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "18ce69b8_6c6cd370",
