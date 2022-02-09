@@ -50,6 +50,23 @@
       "message": "See also discussion on aosp/1845976",
       "revId": "d3d877b8b0203a2b46391f854143df040d74efd7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "328122c2_27ecf090",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1937825
+      },
+      "writtenOn": "2022-02-09T18:38:50Z",
+      "side": 1,
+      "message": "c92f0b9223189a5dc42fcf5048b4e74574264136",
+      "revId": "d3d877b8b0203a2b46391f854143df040d74efd7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
