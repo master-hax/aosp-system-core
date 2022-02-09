@@ -16,6 +16,24 @@
       "message": "I believe you also want to propagate this bit in WriteUpdateState, as we do for compression.",
       "revId": "eafe3069ce52e1119967c1ced4e5598b9a02495d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a10bf0d3_dfb1a710",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 3211,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-02-09T22:48:07Z",
+      "side": 1,
+      "message": "Good catch ! thanks.",
+      "parentUuid": "ed471878_badf0afa",
+      "revId": "eafe3069ce52e1119967c1ced4e5598b9a02495d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
