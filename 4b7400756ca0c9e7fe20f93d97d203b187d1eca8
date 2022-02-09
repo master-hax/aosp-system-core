@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "38883a6b_6d3df8b9",
+        "filename": "libutils/Threads.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 318,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2022-02-09T00:04:28Z",
+      "side": 0,
+      "message": "potentially this means we will have more prefer_idle tasks in the system_server. but totally up for getting rid of this dependency in userspace.",
+      "range": {
+        "startLine": 318,
+        "startChar": 8,
+        "endLine": 318,
+        "endChar": 70
+      },
+      "revId": "4b7400756ca0c9e7fe20f93d97d203b187d1eca8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
