@@ -161,6 +161,9 @@ cc_library {
     srcs: [
         ":libfiemap_passthrough_srcs",
     ],
+    cflags: [
+        "-DFS_MGR_NO_BINDER",
+    ],
 }
 
 cc_library {
