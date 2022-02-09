@@ -83,6 +83,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "cd743967_a5edeb2e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2022-02-09T03:59:10Z",
+      "side": 1,
+      "message": "Sorry, I probably read the question incorrectly before.\n\nNo, this is not in the spec.\n\nWe didn\u0027t hear other use case that using additional prefix for vbmeta partition (e.g., guest_vbmeta_a). This seems like a special setting for some virtual machine enviornment.\n\nPawel, Kamaljeet might have more context.\n\nBut I thought it\u0027s no harm to support this so I +2-ed for it.",
+      "parentUuid": "6f148dc0_98780e34",
+      "revId": "faf5599c305fdad77dfa8fa23756db810fa095cd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "18ce69b8_6c6cd370",
