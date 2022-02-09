@@ -161,6 +161,18 @@ cc_library {
     srcs: [
         ":libfiemap_passthrough_srcs",
     ],
+    target: {
+        vendor_ramdisk: {
+            cflags: [
+                "-DFS_MGR_RECOVERY",
+            ],
+        },
+        recovery: {
+            cflags: [
+                "-DFS_MGR_RECOVERY",
+            ],
+        },
+    },
 }
 
 cc_library {
