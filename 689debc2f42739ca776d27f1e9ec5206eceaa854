@@ -1,0 +1,119 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "02a61c47_53f6494e",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 562,
+      "author": {
+        "id": 1432579
+      },
+      "writtenOn": "2022-02-10T01:17:40Z",
+      "side": 1,
+      "message": "nit: remove parentheses",
+      "range": {
+        "startLine": 562,
+        "startChar": 39,
+        "endLine": 562,
+        "endChar": 54
+      },
+      "revId": "689debc2f42739ca776d27f1e9ec5206eceaa854",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d174e6a6_f20f0a41",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 600,
+      "author": {
+        "id": 1432579
+      },
+      "writtenOn": "2022-02-10T01:17:40Z",
+      "side": 1,
+      "message": "const std::string\u0026",
+      "range": {
+        "startLine": 600,
+        "startChar": 29,
+        "endLine": 600,
+        "endChar": 40
+      },
+      "revId": "689debc2f42739ca776d27f1e9ec5206eceaa854",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "39e0d901_8790a064",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 615,
+      "author": {
+        "id": 1432579
+      },
+      "writtenOn": "2022-02-10T01:17:40Z",
+      "side": 1,
+      "message": "nit: PLOG",
+      "range": {
+        "startLine": 615,
+        "startChar": 8,
+        "endLine": 615,
+        "endChar": 11
+      },
+      "revId": "689debc2f42739ca776d27f1e9ec5206eceaa854",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d7c72d8e_2de018d0",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 621,
+      "author": {
+        "id": 1432579
+      },
+      "writtenOn": "2022-02-10T01:17:40Z",
+      "side": 1,
+      "message": "ditto",
+      "range": {
+        "startLine": 621,
+        "startChar": 8,
+        "endLine": 621,
+        "endChar": 11
+      },
+      "revId": "689debc2f42739ca776d27f1e9ec5206eceaa854",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "894b4c08_301aaf1c",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 728,
+      "author": {
+        "id": 1432579
+      },
+      "writtenOn": "2022-02-10T01:17:40Z",
+      "side": 1,
+      "message": "nit: should this be ERROR?",
+      "range": {
+        "startLine": 728,
+        "startChar": 12,
+        "endLine": 728,
+        "endChar": 16
+      },
+      "revId": "689debc2f42739ca776d27f1e9ec5206eceaa854",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
