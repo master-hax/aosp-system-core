@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9cd1d7bb_b72f1d99",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-02-10T17:33:44Z",
+      "side": 1,
+      "message": "this title does not reflect what patch introduces. WriteFileAction::SetProcessProfiles is already supported. You are adding support for a separate file if the profile is applied to a task vs to a process.",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 45
+      },
+      "revId": "e46abb0e14cfdbfe2043c09938f9423a04d8872c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "dfbc6ef9_c824ddd2",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 351,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-02-10T17:33:44Z",
+      "side": 1,
+      "message": "ProcFilePath is optional, so we should handle the case when proc_path_ in empty. I think in that case we can use the same FD for both RCT_TASK and RCT_PROCESS:\n\nfd_[RCT_TASK] \u003d\u003d fd_[RCT_PROCESS]",
+      "range": {
+        "startLine": 351,
+        "startChar": 24,
+        "endLine": 351,
+        "endChar": 34
+      },
+      "revId": "e46abb0e14cfdbfe2043c09938f9423a04d8872c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d665de05_1e803452",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 422,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-02-10T17:33:44Z",
+      "side": 1,
+      "message": "proc_path_ can be empty and we should use task_path_",
+      "range": {
+        "startLine": 422,
+        "startChar": 21,
+        "endLine": 422,
+        "endChar": 31
+      },
+      "revId": "e46abb0e14cfdbfe2043c09938f9423a04d8872c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
