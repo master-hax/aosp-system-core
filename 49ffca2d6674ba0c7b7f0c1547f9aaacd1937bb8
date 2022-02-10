@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "89fcee3c_83a52325",
+        "filename": "fs_mgr/libfiemap/binder.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 225,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-02-10T17:35:24Z",
+      "side": 1,
+      "message": "shouldn\u0027t we define isImage*Disabled*() in the binder ImageService?",
+      "range": {
+        "startLine": 225,
+        "startChar": 28,
+        "endLine": 225,
+        "endChar": 41
+      },
+      "revId": "49ffca2d6674ba0c7b7f0c1547f9aaacd1937bb8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
