@@ -898,6 +898,10 @@ static Result<void> do_verity_update_state(const BuiltinArguments& args) {
         if (!hash_alg.empty()) {
             SetProperty("partition." + partition + ".verified.hash_alg", hash_alg);
         }
+        std::string root_digest = fs_mgr_get_root_digest(entry);
+        if (!root_digest.empty()) {
+            SetProperty("partition." + partition + ".verified.root_digest", root_digest);
+        }
     }
 
     return {};
