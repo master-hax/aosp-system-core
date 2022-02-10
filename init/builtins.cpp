@@ -879,6 +879,10 @@ static Result<void> do_verity_update_state(const BuiltinArguments& args) {
             SetProperty("partition." + partition + ".verified.root_digest",
                         hashtree_info->root_digest);
         }
+        std::string root_digest = fs_mgr_get_root_digest(entry);
+        if (!root_digest.empty()) {
+            SetProperty("partition." + partition + ".verified.root_digest", root_digest);
+        }
     }
 
     return {};
