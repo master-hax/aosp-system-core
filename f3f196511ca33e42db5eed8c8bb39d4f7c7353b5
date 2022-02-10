@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7677042c_94c8f552",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1084624
+      },
+      "writtenOn": "2022-02-10T12:50:15Z",
+      "side": 1,
+      "message": "Looks like this patch is not needed anymore.\nWe won\u0027t be touching the tracing instance setup, which is still needed for BootReceiver.java. Once a bug is detected, system_server will notify dmesgd via a system property, so nothing else needs to be done here.",
+      "revId": "f3f196511ca33e42db5eed8c8bb39d4f7c7353b5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
