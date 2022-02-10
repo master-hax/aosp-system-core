@@ -48,6 +48,7 @@
 
 #include <android/log.h>
 #include <bionic/macros.h>
+#include <bionic/reserved_signals.h>
 #include <log/log.h>
 #include <log/log_read.h>
 #include <log/logprint.h>
@@ -344,6 +345,57 @@ void fill_in_backtrace_frame(BacktraceFrame* f, const unwindstack::FrameData& fr
   f->set_file_map_offset(frame.map_info->elf_start_offset());
 
   f->set_build_id(frame.map_info->GetPrintableBuildID());
+}
+
+static void dump_local_thread(Tombstone* tombstone, unwindstack::Unwinder* unwinder,
+                              const ThreadInfo& thread_info) {
+  Thread thread;
+
+  thread.set_id(thread_info.tid);
+  thread.set_name(thread_info.thread_name);
+  thread.set_tagged_addr_ctrl(thread_info.tagged_addr_ctrl);
+  thread.set_pac_enabled_keys(thread_info.pac_enabled_keys);
+
+  unwindstack::ThreadUnwinder thread_unwinder(512, unwinder->GetMaps());
+  if (!thread_unwinder.Init()) {
+    return;
+  }
+  std::unique_ptr<unwindstack::Regs> initial_regs;
+  thread_unwinder.UnwindWithSignal(BIONIC_SIGNAL_BACKTRACE, thread_info.tid, &initial_regs);
+  if (thread_unwinder.NumFrames() == 0) {
+    async_safe_format_log(ANDROID_LOG_ERROR, LOG_TAG, "failed to unwind");
+    if (thread_unwinder.LastErrorCode() != unwindstack::ERROR_NONE) {
+      async_safe_format_log(ANDROID_LOG_ERROR, LOG_TAG, "  error code: %s",
+                            thread_unwinder.LastErrorCodeString());
+      async_safe_format_log(ANDROID_LOG_ERROR, LOG_TAG, "  error address: 0x%" PRIx64,
+                            thread_unwinder.LastErrorAddress());
+    }
+  } else {
+    initial_regs->IterateRegisters([&thread](const char* name, uint64_t value) {
+      Register r;
+      r.set_name(name);
+      r.set_u64(value);
+      *thread.add_registers() = r;
+    });
+
+    if (thread_unwinder.elf_from_memory_not_file()) {
+      auto backtrace_note = thread.mutable_backtrace_note();
+      *backtrace_note->Add() =
+          "Function names and BuildId information is missing for some frames due";
+      *backtrace_note->Add() =
+          "to unreadable libraries. For unwinds of apps, only shared libraries";
+      *backtrace_note->Add() = "found under the lib/ directory are readable.";
+      *backtrace_note->Add() = "On this device, run setenforce 0 to make the libraries readable.";
+    }
+    thread_unwinder.SetDisplayBuildID(true);
+    for (const auto& frame : thread_unwinder.frames()) {
+      BacktraceFrame* f = thread.add_current_backtrace();
+      fill_in_backtrace_frame(f, frame);
+    }
+  }
+
+  auto& threads = *tombstone->mutable_threads();
+  threads[thread_info.tid] = thread;
 }
 
 static void dump_thread(Tombstone* tombstone, unwindstack::Unwinder* unwinder,
@@ -667,7 +719,13 @@ void engrave_tombstone_proto(Tombstone* tombstone, unwindstack::Unwinder* unwind
 
   for (const auto& [tid, thread_info] : threads) {
     if (tid != target_thread) {
-      dump_thread(&result, unwinder, thread_info);
+      if (target_thread == getpid()) {
+        // Called from the fallback path, so need to use a different method
+        // to dump the thread data.
+        dump_local_thread(&result, unwinder, thread_info);
+      } else {
+        dump_thread(&result, unwinder, thread_info);
+      }
     }
   }
 
