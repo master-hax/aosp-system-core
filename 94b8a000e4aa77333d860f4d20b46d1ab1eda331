@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d06779b1_99dc36f0",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1108919
+      },
+      "writtenOn": "2022-02-10T00:45:39Z",
+      "side": 1,
+      "message": "all TH failures are in tests; this CL would cause a build time failure if anything.",
+      "revId": "94b8a000e4aa77333d860f4d20b46d1ab1eda331",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
