@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "42e2294b_67f990ad",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-02-10T20:23:11Z",
+      "side": 1,
+      "message": "I forgot that we build \"no binder\" instances in normal Android, so we actually do need to full distinguish the ramdisk cases.",
+      "revId": "3b8398d5178e42f4b5a6ee88dd1ce74f538c85da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
