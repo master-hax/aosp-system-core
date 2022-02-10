@@ -20,6 +20,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "7fddf46a_a6d48fa7",
+        "filename": "trusty/libtrusty/trusty.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2022-02-10T23:27:36Z",
+      "side": 1,
+      "message": "We discussed this offline, and APP seems fine since that still allows us to filter on service path, i.e. `/vendor/bin/some_trusty_service`",
+      "parentUuid": "0a6dc1d3_db8023ac",
+      "revId": "fee775b0bc9852e9532a942955c0d2cf68ff9622",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "a750c70e_a4375a62",
         "filename": "trusty/libtrusty/trusty.c",
         "patchSetId": 1
