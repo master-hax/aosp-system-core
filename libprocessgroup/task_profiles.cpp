@@ -350,14 +350,33 @@ void SetCgroupAction::DropResourceCaching(ResourceCacheType cache_type) {
     FdCacheHelper::Drop(fd_[cache_type]);
 }
 
-WriteFileAction::WriteFileAction(const std::string& path, const std::string& value,
-                                 bool logfailures)
-    : path_(path), value_(value), logfailures_(logfailures) {
-    FdCacheHelper::Init(path_, fd_);
+WriteFileAction::WriteFileAction(const std::string& task_path, const std::string& proc_path,
+                                 const std::string& value, bool logfailures)
+    : task_path_(task_path), proc_path_(proc_path), value_(value), logfailures_(logfailures) {
+    FdCacheHelper::Init(task_path_, fd_[ProfileAction::RCT_TASK]);
+
+    if (proc_path_.empty())
+        fd_[ProfileAction::RCT_PROCESS].reset(fd_[ProfileAction::RCT_TASK]);
+    else
+        FdCacheHelper::Init(proc_path_, fd_[ProfileAction::RCT_PROCESS]);
 }
 
-bool WriteFileAction::WriteValueToFile(const std::string& value, const std::string& path,
-                                       bool logfailures) {
+bool WriteFileAction::WriteValueToFile(const std::string& value_, const std::string& path_, int uid,
+                                       int pid, bool logfailures) const {
+    std::string value(value_);
+
+    value = StringReplace(value, "<uid>", std::to_string(uid), true);
+    value = StringReplace(value, "<pid>", std::to_string(pid), true);
+
+    CacheUseResult result = UseCachedFd(ProfileAction::RCT_PROCESS, value);
+    if (result != ProfileAction::UNUSED) {
+        return result == ProfileAction::SUCCESS;
+    }
+
+    std::string path(path_);
+    path = StringReplace(path, "<uid>", std::to_string(uid), true);
+    path = StringReplace(path, "<pid>", std::to_string(pid), true);
+
     // Use WriteStringToFd instead of WriteStringToFile because the latter will open file with
     // O_TRUNC which causes kernfs_mutex contention
     unique_fd tmp_fd(TEMP_FAILURE_RETRY(open(path.c_str(), O_WRONLY | O_CLOEXEC)));
@@ -378,21 +397,28 @@ bool WriteFileAction::WriteValueToFile(const std::string& value, const std::stri
 ProfileAction::CacheUseResult WriteFileAction::UseCachedFd(ResourceCacheType cache_type,
                                                            const std::string& value) const {
     std::lock_guard<std::mutex> lock(fd_mutex_);
-    if (FdCacheHelper::IsCached(fd_)) {
+    if (FdCacheHelper::IsCached(fd_[cache_type])) {
         // fd is cached, reuse it
-        if (!WriteStringToFd(value, fd_)) {
-            if (logfailures_) PLOG(ERROR) << "Failed to write '" << value << "' to " << path_;
+        if (!WriteStringToFd(value, fd_[cache_type])) {
+            if (logfailures_) {
+                if (cache_type == ProfileAction::RCT_TASK || proc_path_.empty()) {
+                    PLOG(ERROR) << "Failed to write '" << value << "' to " << task_path_;
+                } else {
+                    PLOG(ERROR) << "Failed to write '" << value << "' to " << proc_path_;
+                }
+            }
             return ProfileAction::FAIL;
         }
         return ProfileAction::SUCCESS;
     }
 
-    if (fd_ == FdCacheHelper::FDS_INACCESSIBLE) {
+    if (fd_[cache_type] == FdCacheHelper::FDS_INACCESSIBLE) {
         // no permissions to access the file, ignore
         return ProfileAction::SUCCESS;
     }
 
-    if (cache_type == ResourceCacheType::RCT_TASK && fd_ == FdCacheHelper::FDS_APP_DEPENDENT) {
+    if (cache_type == ResourceCacheType::RCT_TASK &&
+        fd_[cache_type] == FdCacheHelper::FDS_APP_DEPENDENT) {
         // application-dependent path can't be used with tid
         PLOG(ERROR) << "Application profile can't be applied to a thread";
         return ProfileAction::FAIL;
@@ -401,46 +427,46 @@ ProfileAction::CacheUseResult WriteFileAction::UseCachedFd(ResourceCacheType cac
 }
 
 bool WriteFileAction::ExecuteForProcess(uid_t uid, pid_t pid) const {
-    std::string value(value_);
-
-    value = StringReplace(value, "<uid>", std::to_string(uid), true);
-    value = StringReplace(value, "<pid>", std::to_string(pid), true);
-
-    CacheUseResult result = UseCachedFd(ProfileAction::RCT_PROCESS, value);
-    if (result != ProfileAction::UNUSED) {
-        return result == ProfileAction::SUCCESS;
-    }
-
-    std::string path(path_);
-    path = StringReplace(path, "<uid>", std::to_string(uid), true);
-    path = StringReplace(path, "<pid>", std::to_string(pid), true);
-
-    return WriteValueToFile(value, path, logfailures_);
+    return WriteValueToFile(value_, proc_path_.empty() ? task_path_ : proc_path_, uid, pid,
+                            logfailures_);
 }
 
 bool WriteFileAction::ExecuteForTask(int tid) const {
-    std::string value(value_);
-    int uid = getuid();
+    return WriteValueToFile(value_, task_path_, getuid(), tid, logfailures_);
+}
 
-    value = StringReplace(value, "<uid>", std::to_string(uid), true);
-    value = StringReplace(value, "<pid>", std::to_string(tid), true);
-
-    CacheUseResult result = UseCachedFd(ProfileAction::RCT_TASK, value);
-    if (result != ProfileAction::UNUSED) {
-        return result == ProfileAction::SUCCESS;
+void WriteFileAction::EnableResourceCaching(ResourceCacheType cache_type) {
+    std::lock_guard<std::mutex> lock(fd_mutex_);
+    if (fd_[cache_type] != FdCacheHelper::FDS_NOT_CACHED) {
+        return;
     }
-
-    return WriteValueToFile(value, path_, logfailures_);
+    switch (cache_type) {
+        case (ProfileAction::RCT_TASK):
+            FdCacheHelper::Cache(task_path_, fd_[cache_type]);
+            break;
+        case (ProfileAction::RCT_PROCESS):
+            if (!proc_path_.empty()) {
+                FdCacheHelper::Cache(proc_path_, fd_[cache_type]);
+            } else {
+                if (FdCacheHelper::IsCached(fd_[ProfileAction::RCT_TASK])) {
+                    fd_[ProfileAction::RCT_PROCESS].reset(fd_[ProfileAction::RCT_TASK]);
+                } else if (fd_[ProfileAction::RCT_TASK] == FdCacheHelper::FDS_NOT_CACHED) {
+                    FdCacheHelper::Cache(task_path_, fd_[cache_type]);
+                    fd_[ProfileAction::RCT_TASK].reset(fd_[ProfileAction::RCT_PROCESS]);
+                } else {
+                    fd_[ProfileAction::RCT_PROCESS].reset(fd_[ProfileAction::RCT_TASK]);
+                }
+            }
+            break;
+        default:
+            LOG(ERROR) << "Invalid cache type is specified!";
+            break;
+    }
 }
 
-void WriteFileAction::EnableResourceCaching(ResourceCacheType) {
+void WriteFileAction::DropResourceCaching(ResourceCacheType cache_type) {
     std::lock_guard<std::mutex> lock(fd_mutex_);
-    FdCacheHelper::Cache(path_, fd_);
-}
-
-void WriteFileAction::DropResourceCaching(ResourceCacheType) {
-    std::lock_guard<std::mutex> lock(fd_mutex_);
-    FdCacheHelper::Drop(fd_);
+    FdCacheHelper::Drop(fd_[cache_type]);
 }
 
 bool ApplyProfileAction::ExecuteForProcess(uid_t uid, pid_t pid) const {
@@ -657,12 +683,14 @@ bool TaskProfiles::Load(const CgroupMap& cg_map, const std::string& file_name) {
                 }
             } else if (action_name == "WriteFile") {
                 std::string attr_filepath = params_val["FilePath"].asString();
+                std::string attr_procfilepath = params_val["ProcFilePath"].asString();
                 std::string attr_value = params_val["Value"].asString();
+                // FilePath and Value are mandatory
                 if (!attr_filepath.empty() && !attr_value.empty()) {
                     std::string attr_logfailures = params_val["LogFailures"].asString();
                     bool logfailures = attr_logfailures.empty() || attr_logfailures == "true";
-                    profile->Add(std::make_unique<WriteFileAction>(attr_filepath, attr_value,
-                                                                   logfailures));
+                    profile->Add(std::make_unique<WriteFileAction>(attr_filepath, attr_procfilepath,
+                                                                   attr_value, logfailures));
                 } else if (attr_filepath.empty()) {
                     LOG(WARNING) << "WriteFile: invalid parameter: "
                                  << "empty filepath";
