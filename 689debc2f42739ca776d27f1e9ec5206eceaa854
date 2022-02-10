@@ -93,6 +93,29 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "40447ef5_1f7162ec",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 684,
+      "author": {
+        "id": 1929300
+      },
+      "writtenOn": "2022-02-10T10:38:04Z",
+      "side": 1,
+      "message": "For my education, when does this case happen?",
+      "range": {
+        "startLine": 678,
+        "startChar": 4,
+        "endLine": 684,
+        "endChar": 5
+      },
+      "revId": "689debc2f42739ca776d27f1e9ec5206eceaa854",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "894b4c08_301aaf1c",
