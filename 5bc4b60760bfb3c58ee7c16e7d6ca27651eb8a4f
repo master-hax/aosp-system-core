@@ -3,6 +3,29 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "7ece3a18_8f36cde1",
+        "filename": "fs_mgr/Android.bp",
+        "patchSetId": 4
+      },
+      "lineNbr": 167,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-02-11T19:13:45Z",
+      "side": 1,
+      "message": "need to define this macro for \"target.ramdisk.cflags\" as well",
+      "range": {
+        "startLine": 167,
+        "startChar": 18,
+        "endLine": 167,
+        "endChar": 33
+      },
+      "revId": "5bc4b60760bfb3c58ee7c16e7d6ca27651eb8a4f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "6c0e6070_9c61e220",
         "filename": "fs_mgr/libfiemap/image_manager.cpp",
         "patchSetId": 4
@@ -85,6 +108,30 @@
       "side": 1,
       "message": "Since this code affects OTAs, and we\u0027re really far into T, I don\u0027t want to refactor this too much right now. I\u0027m happy to refactor it once T branches though. /data should never be mounted in first-stage init or recovery (eg, the ramdisk cases), and we should never be using gsid in between first-stage init and /data mounting. So the existing checks should be fine, we were just missing the inclusion of vendor_ramdisk here.\n\nJaegeuk and I tentatively have plans to deprecate file pinning this year, which will significantly change libfiemap/gsid. See b/210024407 - there\u0027s still some tough problems to solve though.",
       "parentUuid": "0e039abf_a4a70b50",
+      "range": {
+        "startLine": 554,
+        "startChar": 4,
+        "endLine": 555,
+        "endChar": 15
+      },
+      "revId": "5bc4b60760bfb3c58ee7c16e7d6ca27651eb8a4f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bbaa0819_8781895c",
+        "filename": "fs_mgr/libfiemap/image_manager.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 555,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-02-11T19:13:45Z",
+      "side": 1,
+      "message": "I see. The Android.bp still need updating though, see other comment",
+      "parentUuid": "6365c6ae_3d031662",
       "range": {
         "startLine": 554,
         "startChar": 4,
