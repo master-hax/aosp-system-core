@@ -51,6 +51,41 @@
       "message": "I\u0027m not familiar enough with atrace/perfetto, but is it useful/normal to include more context, e.g. the service name here? Not sure how filtering works or if this is just for a human-readable label.",
       "revId": "fee775b0bc9852e9532a942955c0d2cf68ff9622",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "840cf983_4395f4e0",
+        "filename": "trusty/libtrusty/trusty.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1856745
+      },
+      "writtenOn": "2022-02-11T17:42:00Z",
+      "side": 1,
+      "message": "Definitely, we want to have srv_name, as well as log the fd.\nthe string used in ATRACE_BEGIN needs to be constructed with above information.\n\nHere is what we have discussed in chat:\n\n* for tipc_connect - the name used for the tracepoints would be in the form of tipc_connect_%d_%s, fd, srv_name\n\n* tipc_send - the name used for the tracepoint would be tipc_send_%d_%d_%08x, fd,  cmd) with cmd \u003d (*uint32_t) red.iov[0] - of course checking the iovector length etc...\n\nArve then suggested for tipic_send, something even more complete, with dumping each byte of the iovec. I like this, but would still think that having the first 32bits in 0x08x format is going to be easier to decode as it usually includes the command.",
+      "parentUuid": "a750c70e_a4375a62",
+      "revId": "fee775b0bc9852e9532a942955c0d2cf68ff9622",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e9398e34_ec538b52",
+        "filename": "trusty/libtrusty/trusty.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1856745
+      },
+      "writtenOn": "2022-02-11T17:42:00Z",
+      "side": 1,
+      "message": "Here we also",
+      "revId": "fee775b0bc9852e9532a942955c0d2cf68ff9622",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
