@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f6def6a6_9ce33101",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1324603
+      },
+      "writtenOn": "2022-02-11T03:55:03Z",
+      "side": 1,
+      "message": "Modified. Thanks.",
+      "parentUuid": "9cd1d7bb_b72f1d99",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 45
+      },
+      "revId": "e46abb0e14cfdbfe2043c09938f9423a04d8872c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "dfbc6ef9_c824ddd2",
@@ -49,6 +73,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "68273e79_ae246f00",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 351,
+      "author": {
+        "id": 1324603
+      },
+      "writtenOn": "2022-02-11T03:55:03Z",
+      "side": 1,
+      "message": "It was handled in line #348 as below originally, this simplifies the code but will use 2 FDs pointing to the same file if proc_path_ is empty. I uploaded a new version to use the same FD if proc_path_ is empty. Thanks.\n\nif (proc_path_.empty()) proc_path_ \u003d task_path_;",
+      "parentUuid": "dfbc6ef9_c824ddd2",
+      "range": {
+        "startLine": 351,
+        "startChar": 24,
+        "endLine": 351,
+        "endChar": 34
+      },
+      "revId": "e46abb0e14cfdbfe2043c09938f9423a04d8872c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "d665de05_1e803452",
         "filename": "libprocessgroup/task_profiles.cpp",
         "patchSetId": 2
@@ -60,6 +108,30 @@
       "writtenOn": "2022-02-10T17:33:44Z",
       "side": 1,
       "message": "proc_path_ can be empty and we should use task_path_",
+      "range": {
+        "startLine": 422,
+        "startChar": 21,
+        "endLine": 422,
+        "endChar": 31
+      },
+      "revId": "e46abb0e14cfdbfe2043c09938f9423a04d8872c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "82ee1079_3c09423c",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 422,
+      "author": {
+        "id": 1324603
+      },
+      "writtenOn": "2022-02-11T03:55:03Z",
+      "side": 1,
+      "message": "ditto",
+      "parentUuid": "d665de05_1e803452",
       "range": {
         "startLine": 422,
         "startChar": 21,
