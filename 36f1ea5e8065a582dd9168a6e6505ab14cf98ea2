@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0be95853_a7ebc5e2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2022-02-11T22:56:48Z",
+      "side": 1,
+      "message": "Refactored the previous version to avoid as much copy-paste code.",
+      "revId": "36f1ea5e8065a582dd9168a6e6505ab14cf98ea2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
