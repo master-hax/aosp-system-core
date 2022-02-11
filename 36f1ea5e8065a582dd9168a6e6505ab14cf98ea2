@@ -1,6 +1,23 @@
 {
   "comments": [
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "ac801ddd_6d9146e6",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-02-11T23:35:09Z",
+      "side": 1,
+      "message": "worth letting pcc know to test this?",
+      "revId": "36f1ea5e8065a582dd9168a6e6505ab14cf98ea2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "0be95853_a7ebc5e2",
@@ -14,6 +31,40 @@
       "writtenOn": "2022-02-11T22:56:48Z",
       "side": 1,
       "message": "Refactored the previous version to avoid as much copy-paste code.",
+      "revId": "36f1ea5e8065a582dd9168a6e6505ab14cf98ea2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "81922e91_7f977ca9",
+        "filename": "debuggerd/libdebuggerd/tombstone.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-02-11T23:35:09Z",
+      "side": 1,
+      "message": "std::unique_ptr with closedir?",
+      "revId": "36f1ea5e8065a582dd9168a6e6505ab14cf98ea2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8e8a711f_b664a554",
+        "filename": "debuggerd/libdebuggerd/tombstone.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-02-11T23:35:09Z",
+      "side": 1,
+      "message": "(for pids, which can never be 0, i\u0027ve grown quite fond of the c programmer hack of `pid_t tid \u003d atoi(ent-\u003edname); if (tid !\u003d 0) ...`)",
       "revId": "36f1ea5e8065a582dd9168a6e6505ab14cf98ea2",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
