@@ -52,6 +52,24 @@
       "parentUuid": "ec5847c1_1fbaa6ed",
       "revId": "3b8398d5178e42f4b5a6ee88dd1ce74f538c85da",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "affa3998_a2534b7b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-02-11T07:58:57Z",
+      "side": 1,
+      "message": "I recall it\u0027s the opposite,\n\ninit-first-stage: only has \"ramdisk\" variant, doesn\u0027t have __ANDROID_RECOVERY__.\n  Could or could not have /system/bin/recovery depending on whether SwitchRoot(first_stage_ramdisk) happened or not.\n  First stage init itself also uses this to check recoverymode (https://cs.android.com/android/platform/superproject/+/master:system/core/init/first_stage_mount.cpp;l\u003d816;drc\u003d6cdd9bd784d87c55c324e73e7fcdc2d413c5a773)\n  \ninit-second-stage.recovery: has __ANDROID_RECOVERY__\ninit-second-stage: doesn\u0027t have __ANDROID_RECOVERY__",
+      "parentUuid": "9c8a6ecf_07f27404",
+      "revId": "3b8398d5178e42f4b5a6ee88dd1ce74f538c85da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
