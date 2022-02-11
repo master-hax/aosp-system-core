@@ -45,6 +45,30 @@
       },
       "revId": "5bc4b60760bfb3c58ee7c16e7d6ca27651eb8a4f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0e039abf_a4a70b50",
+        "filename": "fs_mgr/libfiemap/image_manager.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 555,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-02-11T13:32:34Z",
+      "side": 1,
+      "message": "or just check the |image_header| file exist, because |data_dir_| might be not in /data ?",
+      "parentUuid": "0032aa09_9a8956e2",
+      "range": {
+        "startLine": 554,
+        "startChar": 4,
+        "endLine": 555,
+        "endChar": 15
+      },
+      "revId": "5bc4b60760bfb3c58ee7c16e7d6ca27651eb8a4f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
