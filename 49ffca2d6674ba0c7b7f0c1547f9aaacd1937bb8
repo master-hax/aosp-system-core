@@ -46,6 +46,30 @@
       },
       "revId": "49ffca2d6674ba0c7b7f0c1547f9aaacd1937bb8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8dccd089_a868e1d2",
+        "filename": "fs_mgr/libfiemap/binder.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 225,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-02-11T07:13:07Z",
+      "side": 1,
+      "message": "I mean we should define isImageDisabled() in IImageService (gsid), so libfiemap/binder can plumb through gsid\n\nIImageService (gsid) \u003c--binder--\u003e IImageManager (libfiemap/binder.cpp)",
+      "parentUuid": "e60c3343_fca55973",
+      "range": {
+        "startLine": 225,
+        "startChar": 28,
+        "endLine": 225,
+        "endChar": 41
+      },
+      "revId": "49ffca2d6674ba0c7b7f0c1547f9aaacd1937bb8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
