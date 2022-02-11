@@ -57,6 +57,7 @@
 #include <android/api-level.h>
 #include <fcntl.h>
 #include <linux/audit.h>
+#include <linux/fs.h>
 #include <linux/netlink.h>
 #include <stdlib.h>
 #include <sys/wait.h>
@@ -511,11 +512,9 @@ bool OpenMonolithicPolicy(PolicyFile* policy_file) {
 constexpr const char* kSigningCertRelease =
         "/system/etc/selinux/com.android.sepolicy.cert-release.der";
 constexpr const char* kFsVerityProcPath = "/proc/sys/fs/verity";
-const std::string kSepolicyApexMetadataDir = "/metadata/sepolicy/";
-const std::string kSepolicyApexSystemDir = "/system/etc/selinux/apex/";
-const std::string kSepolicyZip = "SEPolicy.zip";
-const std::string kSepolicySignature = "SEPolicy.zip.sig";
-
+const std::string kSepolicyApexMetadataZip = "/metadata/sepolicy/SEPolicy.zip";
+const std::string kSepolicySignature = "/metadata/sepolicy/SEPolicy.zip.sig";
+const std::string kSepolicyApexSystemZip = "/system/etc/selinux/apex/SEPolicy.zip";
 const std::string kTmpfsDir = "/dev/selinux/";
 
 // Files that are deleted after policy is compiled/loaded.
@@ -551,18 +550,19 @@ Result<void> PutFileInTmpfs(ZipArchiveHandle archive, const std::string& fileNam
     return {};
 }
 
-Result<void> GetPolicyFromApex(const std::string& dir) {
-    LOG(INFO) << "Loading APEX Sepolicy from " << dir + kSepolicyZip;
-    unique_fd fd(open((dir + kSepolicyZip).c_str(), O_RDONLY | O_BINARY | O_CLOEXEC));
+Result<void> GetPolicyFromApex(const std::string& sepolicyZipFile) {
+    LOG(INFO) << "Loading APEX Sepolicy from " << sepolicyZipFile;
+    unique_fd fd(open(sepolicyZipFile.c_str(), O_RDONLY | O_BINARY | O_CLOEXEC));
+
     if (fd < 0) {
-        return ErrnoError() << "Failed to open package " << dir + kSepolicyZip;
+        return ErrnoError() << "Failed to open package " << sepolicyZipFile;
     }
 
     ZipArchiveHandle handle;
-    int ret = OpenArchiveFd(fd.get(), (dir + kSepolicyZip).c_str(), &handle,
+    int ret = OpenArchiveFd(fd.get(), (sepolicyZipFile).c_str(), &handle,
                             /*assume_ownership=*/false);
     if (ret < 0) {
-        return Error() << "Failed to open package " << dir + kSepolicyZip << ": "
+        return Error() << "Failed to open package " << sepolicyZipFile << ": "
                        << ErrorCodeString(ret);
     }
 
@@ -597,47 +597,90 @@ Result<void> LoadSepolicyApexCerts() {
     return {};
 }
 
-Result<void> SepolicyFsVerityCheck() {
-    return Error() << "TODO implementent support for fsverity SEPolicy.";
+bool FileProtectedByFsVerity(std::string& path) {
+    // Call statx and check STATX_ATTR_VERITY.
+    struct statx out = {};
+    if (statx(AT_FDCWD, path.c_str(), 0 /* flags */, STATX_ALL, &out) != 0) {
+        return false;
+    }
+
+    if (out.stx_attributes_mask & STATX_ATTR_VERITY) {
+        return (out.stx_attributes & STATX_ATTR_VERITY) != 0;
+    }
+
+    // STATX_ATTR_VERITY is not supported for the file path.
+    // In this case, call ioctl(FS_IOC_GETFLAGS) and check FS_VERITY_FL.
+    unique_fd fd(open(path.c_str(), O_RDONLY | O_CLOEXEC));
+    if (fd.get() < 0) {
+        PLOG(ERROR) << "open failed at " << path << ".";
+        return false;
+    }
+
+    unsigned int flags;
+    if (ioctl(fd.get(), FS_IOC_GETFLAGS, &flags) < 0) {
+        PLOG(ERROR) << "ioctl(FS_IOC_GETFLAGS) failed at " << path << ".";
+        return false;
+    }
+
+    return (flags & FS_VERITY_FL) != 0;
 }
 
-Result<void> SepolicyCheckSignature(const std::string& dir) {
-    std::string signature;
-    if (!android::base::ReadFileToString(dir + kSepolicySignature, &signature)) {
-        return ErrnoError() << "Failed to read " << kSepolicySignature;
+Result<void> SepolicyCheckFsVerity() {
+    if (!FileProtectedByFsVerity(kSepolicyApexMetadataZip)) {
+        return Error() << "Apex SEPolicy failed fs-verity signature check";
     }
+    return {};
+}
 
-    std::fstream sepolicyZip(dir + kSepolicyZip, std::ios::in | std::ios::binary);
-    if (!sepolicyZip) {
-        return Error() << "Failed to open " << kSepolicyZip;
-    }
-    sepolicyZip.seekg(0);
-    std::string sepolicyStr((std::istreambuf_iterator<char>(sepolicyZip)),
-                            std::istreambuf_iterator<char>());
-
+Result<void> SepolicyCheckSignature() {
     auto releaseKey = extractPublicKeyFromX509(kSigningCertRelease);
     if (!releaseKey.ok()) {
         return releaseKey.error();
     }
 
+    std::string signature;
+    if (!android::base::ReadFileToString(kSepolicySignature, &signature)) {
+        return Error() << "Failed to read " << kSepolicySignature;
+    }
+
+    std::fstream sepolicyZip(kSepolicyApexMetadataZip, std::ios::in | std::ios::binary);
+    if (!sepolicyZip) {
+        return Error() << "Failed to open " << kSepolicyApexMetadataZip;
+    }
+    sepolicyZip.seekg(0);
+    std::string sepolicyStr((std::istreambuf_iterator<char>(sepolicyZip)),
+                            std::istreambuf_iterator<char>());
+
     return verifySignature(sepolicyStr, signature, *releaseKey);
 }
 
-Result<void> SepolicyVerify(const std::string& dir, bool supportsFsVerity) {
-    if (supportsFsVerity) {
-        auto fsVerityCheck = SepolicyFsVerityCheck();
-        if (fsVerityCheck.ok()) {
-            return fsVerityCheck;
-        }
-        // TODO(b/199914227) If the device supports fsverity, but we fail here, we should fail to
-        // boot and not carry on. For now, fallback to a signature checkuntil the fsverity
-        // logic is implemented.
-        LOG(INFO) << "Falling back to standard signature check. " << fsVerityCheck.error();
+bool SupportsFsVerity() {
+    return access(kFsVerityProcPath, F_OK) == 0;
+}
+
+bool HasUpdatedSepolicy() {
+    return access((kSepolicyApexMetadataZip).c_str(), F_OK) == 0;
+}
+
+// Use fs-verity as the default signature verification mechanism. If the device doesn't support
+// fs-verity, fallback to a standard signature check.
+Result<void> SepolicySignatureVerify() {
+    if (!HasUpdatedSepolicy()) {
+        return Error() << "No Apex SEPolicy available at " << kSepolicyApexMetadataZip << ".";
     }
 
-    auto sepolicySignature = SepolicyCheckSignature(dir);
-    if (!sepolicySignature.ok()) {
-        return Error() << "Apex SEPolicy failed signature check";
+    if (SupportsFsVerity()) {
+        auto fsVerityCheck = SepolicyCheckFsVerity();
+        if (!fsVerityCheck.ok()) {
+            LOG(ERROR) << fsVerityCheck.error();
+            return Error() << "Apex SEPolicy failed fs-verity signature check.";
+        }
+    } else {
+        auto signatureCheck = SepolicyCheckSignature();
+        if (!signatureCheck.ok()) {
+            LOG(ERROR) << signatureCheck.error();
+            return Error() << "Apex SEPolicy failed signature check.";
+        }
     }
     return {};
 }
@@ -667,35 +710,31 @@ void CleanupApexSepolicy() {
 // 6. Sets selinux into enforcing mode and continues normal booting.
 //
 void PrepareApexSepolicy() {
-    bool supportsFsVerity = access(kFsVerityProcPath, F_OK) == 0;
-    if (supportsFsVerity) {
+    if (SupportsFsVerity()) {
         auto loadSepolicyApexCerts = LoadSepolicyApexCerts();
         if (!loadSepolicyApexCerts.ok()) {
-            // TODO(b/199914227) If the device supports fsverity, but we fail here, we should fail
-            // to boot and not carry on. For now, fallback to a signature checkuntil the fsverity
-            // logic is implemented.
-            LOG(INFO) << loadSepolicyApexCerts.error();
+            LOG(FATAL) << loadSepolicyApexCerts.error();
         }
     }
-    // If apex sepolicy zip exists in /metadata/sepolicy, use that, otherwise use version on
-    // /system.
-    auto dir = (access((kSepolicyApexMetadataDir + kSepolicyZip).c_str(), F_OK) == 0)
-                       ? kSepolicyApexMetadataDir
-                       : kSepolicyApexSystemDir;
 
-    auto sepolicyVerify = SepolicyVerify(dir, supportsFsVerity);
-    if (!sepolicyVerify.ok()) {
-        LOG(INFO) << "Error: " << sepolicyVerify.error();
+    // If apex sepolicy zip exists in /metadata/sepolicy, and the signature verification passes,
+    // use that, otherwise use version on /system.
+    std::string sepolicyZipFile;
+
+    auto sepolicyVerify = SepolicySignatureVerify();
+    if (sepolicyVerify.ok()) {
+        sepolicyZipFile = kSepolicyApexMetadataZip;
+    } else {
+        LOG(ERROR) << sepolicyVerify.error();
         // If signature verification fails, fall back to version on /system.
         // This file doesn't need to be verified because it lives on the system partition which
         // is signed and protected by verified boot.
-        dir = kSepolicyApexSystemDir;
+        sepolicyZipFile = kSepolicyApexSystemZip;
     }
 
-    auto apex = GetPolicyFromApex(dir);
+    auto apex = GetPolicyFromApex(sepolicyZipFile);
     if (!apex.ok()) {
-        // TODO(b/199914227) Make failure fatal. For now continue booting with non-apex sepolicy.
-        LOG(ERROR) << apex.error();
+        LOG(FATAL) << apex.error();
     }
 }
 
