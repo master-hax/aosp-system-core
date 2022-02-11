@@ -34,6 +34,24 @@
       "parentUuid": "42e2294b_67f990ad",
       "revId": "3b8398d5178e42f4b5a6ee88dd1ce74f538c85da",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9c8a6ecf_07f27404",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-02-11T07:34:07Z",
+      "side": 1,
+      "message": "It\u0027s a poorly named macro now that I look at it. It really means \"in the ramdisk\", because first-stage init (I believe) has __ANDROID_RECOVERY__ but not /system/bin/recovery.",
+      "parentUuid": "ec5847c1_1fbaa6ed",
+      "revId": "3b8398d5178e42f4b5a6ee88dd1ce74f538c85da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
