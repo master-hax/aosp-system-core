@@ -70,6 +70,24 @@
       "parentUuid": "9c8a6ecf_07f27404",
       "revId": "3b8398d5178e42f4b5a6ee88dd1ce74f538c85da",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e7ad4a9d_064cd0a8",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-02-11T09:15:07Z",
+      "side": 1,
+      "message": "This is where my memory gets fuzzy, but I suspect when BOARD_USE_RECOVERY_BOOT_IMAGE is set, the \"init-first-stage binary\" is actually replaced with a symlink to init-second-stage.recovery, which caused us to think \"first-stage-init has __ANDROID_RECOVERY__\"?\n---\n\nAnyway, I\u0027m a bit lost here, why do we need to check these states again?\nIt seems like neither checking __ANDROID_RECOVERY__ nor /system/bin/recovery is what we want? How about... see inline suggestion",
+      "parentUuid": "affa3998_a2534b7b",
+      "revId": "3b8398d5178e42f4b5a6ee88dd1ce74f538c85da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
