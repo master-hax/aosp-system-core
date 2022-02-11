@@ -16,6 +16,24 @@
       "message": "I forgot that we build \"no binder\" instances in normal Android, so we actually do need to full distinguish the ramdisk cases.",
       "revId": "3b8398d5178e42f4b5a6ee88dd1ce74f538c85da",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ec5847c1_1fbaa6ed",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-02-11T07:21:50Z",
+      "side": 1,
+      "message": "Instead of conditional compile, how about just check `access(\"/system/bin/recovery\")` during runtime to figure out whether we are in recovery mode or not?",
+      "parentUuid": "42e2294b_67f990ad",
+      "revId": "3b8398d5178e42f4b5a6ee88dd1ce74f538c85da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
