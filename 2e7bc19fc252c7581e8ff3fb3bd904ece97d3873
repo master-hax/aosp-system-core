@@ -22,6 +22,30 @@
       },
       "revId": "2e7bc19fc252c7581e8ff3fb3bd904ece97d3873",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "264ecb36_55689acb",
+        "filename": "libcutils/qtaguid.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-02-11T17:02:48Z",
+      "side": 0,
+      "message": "we\u0027ve certainly done that in the past when there\u0027s been a binary blob we couldn\u0027t immediately fix, but, yeah, if we can just remove things immediately, that\u0027s always preferable to having a multi-year disable/remove cycle.",
+      "parentUuid": "b334063d_b69ca249",
+      "range": {
+        "startLine": 118,
+        "startChar": 0,
+        "endLine": 118,
+        "endChar": 57
+      },
+      "revId": "2e7bc19fc252c7581e8ff3fb3bd904ece97d3873",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
