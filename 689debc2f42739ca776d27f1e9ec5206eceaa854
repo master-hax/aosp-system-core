@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "968b2109_05e97933",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 562,
+      "author": {
+        "id": 1054468
+      },
+      "writtenOn": "2022-02-11T07:23:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "02a61c47_53f6494e",
+      "range": {
+        "startLine": 562,
+        "startChar": 39,
+        "endLine": 562,
+        "endChar": 54
+      },
+      "revId": "689debc2f42739ca776d27f1e9ec5206eceaa854",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d174e6a6_f20f0a41",
@@ -47,6 +71,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "ae9fc971_382ab3a1",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 600,
+      "author": {
+        "id": 1054468
+      },
+      "writtenOn": "2022-02-11T07:23:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d174e6a6_f20f0a41",
+      "range": {
+        "startLine": 600,
+        "startChar": 29,
+        "endLine": 600,
+        "endChar": 40
+      },
+      "revId": "689debc2f42739ca776d27f1e9ec5206eceaa854",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "39e0d901_8790a064",
@@ -60,6 +108,30 @@
       "writtenOn": "2022-02-10T01:17:40Z",
       "side": 1,
       "message": "nit: PLOG",
+      "range": {
+        "startLine": 615,
+        "startChar": 8,
+        "endLine": 615,
+        "endChar": 11
+      },
+      "revId": "689debc2f42739ca776d27f1e9ec5206eceaa854",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "865c8b96_cc988c35",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 615,
+      "author": {
+        "id": 1054468
+      },
+      "writtenOn": "2022-02-11T07:23:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "39e0d901_8790a064",
       "range": {
         "startLine": 615,
         "startChar": 8,
@@ -95,6 +167,30 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "3f57c80e_edcd83ed",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 621,
+      "author": {
+        "id": 1054468
+      },
+      "writtenOn": "2022-02-11T07:23:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d7c72d8e_2de018d0",
+      "range": {
+        "startLine": 621,
+        "startChar": 8,
+        "endLine": 621,
+        "endChar": 11
+      },
+      "revId": "689debc2f42739ca776d27f1e9ec5206eceaa854",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "40447ef5_1f7162ec",
         "filename": "init/selinux.cpp",
         "patchSetId": 2
@@ -106,6 +202,30 @@
       "writtenOn": "2022-02-10T10:38:04Z",
       "side": 1,
       "message": "For my education, when does this case happen?",
+      "range": {
+        "startLine": 678,
+        "startChar": 4,
+        "endLine": 684,
+        "endChar": 5
+      },
+      "revId": "689debc2f42739ca776d27f1e9ec5206eceaa854",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a216b440_38b3812c",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 684,
+      "author": {
+        "id": 1054468
+      },
+      "writtenOn": "2022-02-11T07:23:45Z",
+      "side": 1,
+      "message": "We fall back to the version in /system/etc/selinux/apex",
+      "parentUuid": "40447ef5_1f7162ec",
       "range": {
         "startLine": 678,
         "startChar": 4,
