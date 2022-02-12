@@ -20,6 +20,24 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "7287c1c8_b5ef0abc",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2022-02-12T05:40:34Z",
+      "side": 1,
+      "message": "Good point, I\u0027ll let him know.",
+      "parentUuid": "ac801ddd_6d9146e6",
+      "revId": "36f1ea5e8065a582dd9168a6e6505ab14cf98ea2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "0be95853_a7ebc5e2",
         "filename": "/PATCHSET_LEVEL",
         "patchSetId": 2
@@ -52,6 +70,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "6adf0f39_da50cd33",
+        "filename": "debuggerd/libdebuggerd/tombstone.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2022-02-12T05:40:34Z",
+      "side": 1,
+      "message": "This is copy paste code, so moved into a single place and passing a lambda to do all of the different parts.",
+      "parentUuid": "81922e91_7f977ca9",
+      "revId": "36f1ea5e8065a582dd9168a6e6505ab14cf98ea2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "8e8a711f_b664a554",
@@ -65,6 +101,24 @@
       "writtenOn": "2022-02-11T23:35:09Z",
       "side": 1,
       "message": "(for pids, which can never be 0, i\u0027ve grown quite fond of the c programmer hack of `pid_t tid \u003d atoi(ent-\u003edname); if (tid !\u003d 0) ...`)",
+      "revId": "36f1ea5e8065a582dd9168a6e6505ab14cf98ea2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ee4f1d78_cd3edb83",
+        "filename": "debuggerd/libdebuggerd/tombstone.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2022-02-12T05:40:34Z",
+      "side": 1,
+      "message": "Done.",
+      "parentUuid": "8e8a711f_b664a554",
       "revId": "36f1ea5e8065a582dd9168a6e6505ab14cf98ea2",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }

@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6858628b_ba190740",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2022-02-12T05:40:34Z",
+      "side": 1,
+      "message": "Peter, I don\u0027t know if there is a way to add a mte test for the fallback path. Before this change the fallback path was not properly setting the mte variables.",
+      "revId": "f238f74aaf77802d959c6364fe8e2cb8a2725f35",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
