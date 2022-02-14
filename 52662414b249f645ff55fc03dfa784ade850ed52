@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9d12aa50_bfdbffdb",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-02-14T23:10:46Z",
+      "side": 1,
+      "message": "Please see my question. I\u0027m not convinced that logging successful actions is a good idea.",
+      "revId": "52662414b249f645ff55fc03dfa784ade850ed52",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "dcb2ed12_27650da9",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 210,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-02-14T23:10:46Z",
+      "side": 1,
+      "message": "We usually log errors, not successful actions which would cause flood of messages when API is used extensively. I know that this is in VERBOSE mode but still, too many of these hide the problems and increase the risk of useful information to be missed (we have seen cases when log messages are missing in the log buffer due to high volume of logs). Are these really so useful when debugging?\n\nSame question applies to all the following logs.",
+      "range": {
+        "startLine": 210,
+        "startChar": 8,
+        "endLine": 210,
+        "endChar": 20
+      },
+      "revId": "52662414b249f645ff55fc03dfa784ade850ed52",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
