@@ -46,6 +46,30 @@
       },
       "revId": "66379dd6b3fecab7b62a2df97bc6a7d8cd71874e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4571db5f_6005078a",
+        "filename": "libcutils/include/cutils/trace.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2022-02-14T07:33:13Z",
+      "side": 1,
+      "message": "maybe put an ignore... for now you can do --no-verify to bypass it.",
+      "parentUuid": "55d47678_e6b1b211",
+      "range": {
+        "startLine": 78,
+        "startChar": 26,
+        "endLine": 78,
+        "endChar": 27
+      },
+      "revId": "66379dd6b3fecab7b62a2df97bc6a7d8cd71874e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
