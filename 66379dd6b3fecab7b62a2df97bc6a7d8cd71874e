@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "df5b0987_bdaa9d1e",
+        "filename": "libcutils/include/cutils/trace.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2022-02-14T07:14:36Z",
+      "side": 1,
+      "message": "can we align this with more spaces?",
+      "range": {
+        "startLine": 78,
+        "startChar": 26,
+        "endLine": 78,
+        "endChar": 27
+      },
+      "revId": "66379dd6b3fecab7b62a2df97bc6a7d8cd71874e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
