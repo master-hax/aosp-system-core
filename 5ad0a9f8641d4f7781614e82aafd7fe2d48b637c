@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4b5236a6_9f6cf2f1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1391335
+      },
+      "writtenOn": "2022-02-14T09:53:43Z",
+      "side": 1,
+      "message": "There is a dependency in google_arc which source code is not in Android AOSP, need to discuss with the owner for the bring up plan.\n\nvendor/google_arc/services/arctraceservice/ArcTraceService.cpp:61:1: error: static_assert failed due to requirement \u0027(1 \u003c\u003c 27) \u003d\u003d (1 \u003c\u003c (sizeof (ArraySizeHelper(kCategories))))\u0027 \"Number of trace categories does not match that in cutils/trace.h. Please update the list.\"\n",
+      "revId": "5ad0a9f8641d4f7781614e82aafd7fe2d48b637c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
