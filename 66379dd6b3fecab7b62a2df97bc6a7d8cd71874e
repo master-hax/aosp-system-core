@@ -22,6 +22,30 @@
       },
       "revId": "66379dd6b3fecab7b62a2df97bc6a7d8cd71874e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "55d47678_e6b1b211",
+        "filename": "libcutils/include/cutils/trace.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 1391335
+      },
+      "writtenOn": "2022-02-14T07:17:34Z",
+      "side": 1,
+      "message": "This is modified by clang_format hook actually.",
+      "parentUuid": "df5b0987_bdaa9d1e",
+      "range": {
+        "startLine": 78,
+        "startChar": 26,
+        "endLine": 78,
+        "endChar": 27
+      },
+      "revId": "66379dd6b3fecab7b62a2df97bc6a7d8cd71874e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
