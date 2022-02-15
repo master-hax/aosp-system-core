@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "9ba49b9a_7bc65b6e",
+        "filename": "fs_mgr/Android.bp",
+        "patchSetId": 4
+      },
+      "lineNbr": 167,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-02-15T21:09:14Z",
+      "side": 1,
+      "message": "There\u0027s no cflags for ramdisk targets - it works as-is. Except, oddly, if building a separate recovery image. In this case, *recovery* cflags are not propagated correctly. So I updated the patch to also check for __ANDROID_RECOVERY__.\n\nThis is all pretty gross, but I don\u0027t want to touch the meaning of __ANDROID_RECOVERY__ until T has branched, since I have no idea what could break. If you prefer, I can look into adding a complementary __ANDROID_RAMDISK__ flag to make this a little better.",
+      "parentUuid": "7ece3a18_8f36cde1",
+      "range": {
+        "startLine": 167,
+        "startChar": 18,
+        "endLine": 167,
+        "endChar": 33
+      },
+      "revId": "5bc4b60760bfb3c58ee7c16e7d6ca27651eb8a4f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "6c0e6070_9c61e220",
         "filename": "fs_mgr/libfiemap/image_manager.cpp",
         "patchSetId": 4
@@ -132,6 +156,30 @@
       "side": 1,
       "message": "I see. The Android.bp still need updating though, see other comment",
       "parentUuid": "6365c6ae_3d031662",
+      "range": {
+        "startLine": 554,
+        "startChar": 4,
+        "endLine": 555,
+        "endChar": 15
+      },
+      "revId": "5bc4b60760bfb3c58ee7c16e7d6ca27651eb8a4f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ac413e4e_6939c6c1",
+        "filename": "fs_mgr/libfiemap/image_manager.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 555,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-02-15T21:09:14Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "bbaa0819_8781895c",
       "range": {
         "startLine": 554,
         "startChar": 4,
