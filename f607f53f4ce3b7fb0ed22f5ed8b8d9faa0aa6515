@@ -81,6 +81,30 @@
       },
       "revId": "f607f53f4ce3b7fb0ed22f5ed8b8d9faa0aa6515",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "016a1482_1bf9a6e8",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 211,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-02-15T00:53:44Z",
+      "side": 1,
+      "message": "Correct, WriteStringToFile() will fail if access() indicates that the file is missing. My question is: why do we need to call WriteStringToFile() if we know it will fail?\n\nre: The suggested alternative is not correct since it skips the WriteStringToFile() call if an attribute is optional and exists. \n\nI think it will skip WriteStringToFile() if attribute is optional and it doesn\u0027t exist. And I think that is what we want. No?",
+      "parentUuid": "e8e91f0d_02a4669b",
+      "range": {
+        "startLine": 211,
+        "startChar": 4,
+        "endLine": 211,
+        "endChar": 43
+      },
+      "revId": "f607f53f4ce3b7fb0ed22f5ed8b8d9faa0aa6515",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
