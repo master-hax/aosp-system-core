@@ -163,6 +163,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "0285aa9f_7fb4996f",
+        "filename": "trusty/libtrusty/trusty.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2022-02-15T18:40:30Z",
+      "side": 1,
+      "message": "Aren\u0027t the INT traces for counters? I.e. from the header:\n\n    * Traces an integer counter value.  name is used to identify the counter.\n    * This can be used to track how a value changes over time.\n    \nWhat exactly are we wanting to keep track of with the fd? Do we expect HALs to open multiple connections to Trusty? If not, do we really need the fd?",
+      "parentUuid": "56efcd84_8fdfca1d",
+      "revId": "fee775b0bc9852e9532a942955c0d2cf68ff9622",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "e9398e34_ec538b52",
         "filename": "trusty/libtrusty/trusty.c",
         "patchSetId": 1
