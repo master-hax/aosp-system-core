@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d2d1c6b5_1fec652a",
+        "filename": "trusty/keymaster/keymint/TrustyRemotelyProvisionedComponentDevice.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 1833664
+      },
+      "writtenOn": "2022-02-15T00:19:42Z",
+      "side": 1,
+      "message": "👍\n\nI got a chuckle out of this, but would you mind putting \"trusty\" in the name just to be sure nobody blindly copies this? (resulting in \"Pretty Bad Uniqueness\")",
+      "range": {
+        "startLine": 77,
+        "startChar": 22,
+        "endLine": 77,
+        "endChar": 25
+      },
+      "revId": "9c1f37ab3f2e8152d840898d0f6dbdc2cd402efd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
