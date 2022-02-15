@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "2e82f99d_5915afa4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-02-15T00:27:23Z",
+      "side": 1,
+      "message": "From https://engdoc.corp.google.com/eng/doc/devguide/testing/unit/overview.md?cl\u003dhead: \"Unit tests are tightly coupled with the code being tested and are submitted in the same CL.\"\n\nPlease reopen this comment if you want me to separate the unit test from the introduction of the support for optional attributes.",
+      "parentUuid": "fea87090_199e4f9f",
+      "revId": "f607f53f4ce3b7fb0ed22f5ed8b8d9faa0aa6515",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "cd51a7a2_e91537cc",
@@ -31,6 +49,30 @@
       "writtenOn": "2022-02-14T23:25:36Z",
       "side": 1,
       "message": "When attr_exists\u003d\u003dfalse why do you need to call WriteStringToFile? To set a cgroup attribute that attribute should exist. If it doesn\u0027t exist then the operation should fail unless it\u0027s optional. Suggest:\n\nif (access(path.c_str(), 0600) \u0026\u0026 optional_) {\n    return true;\n}\n\nif (!WriteStringToFile(value_, path)) {\n    PLOG(ERROR) \u003c\u003c \"Failed to write \u0027\" \u003c\u003c value_ \u003c\u003c \"\u0027 to \" \u003c\u003c path;\n    return false;\n}\n\nreturn true;",
+      "range": {
+        "startLine": 211,
+        "startChar": 4,
+        "endLine": 211,
+        "endChar": 43
+      },
+      "revId": "f607f53f4ce3b7fb0ed22f5ed8b8d9faa0aa6515",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e8e91f0d_02a4669b",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 211,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-02-15T00:27:23Z",
+      "side": 1,
+      "message": "The WriteStringToFile() does not create an attribute but instead writes into an existing attribute. Creating cgroup attributes from user space is not possible as far as I know. The suggested alternative is not correct since it skips the WriteStringToFile() call if an attribute is optional and exists. \n\nPlease reopen this comment with another suggestion if you want me to change the code.",
+      "parentUuid": "cd51a7a2_e91537cc",
       "range": {
         "startLine": 211,
         "startChar": 4,
