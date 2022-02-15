@@ -199,6 +199,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "595b132f_c63b041f",
+        "filename": "trusty/libtrusty/trusty.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1902326
+      },
+      "writtenOn": "2022-02-15T23:24:55Z",
+      "side": 1,
+      "message": "Logging the fd at connection time makes sense to me, though `ATRACE_INT` seems like an odd mechanism for doing so. Counters are really meant to track how a value changes over time, rather than logging a single value. I did implement it, though, and [this is how it looks](https://screenshot.googleplex.com/7q9aPHwENFTqtof.png). Note how Perfetto renders this as its own track, and you need to hover your mouse over the line to see the value at any given point in time. This would work fine for now, but is probably not the ideal solution.\n\nAnother potential alternative would be to emit an [instant event](https://cs.android.com/android/platform/superproject/+/master:system/core/libcutils/include/cutils/trace.h;l\u003d210-241;drc\u003d2c2c5d998e4de5f3d51ef91edbd1d95ac982a7b4), which would allow us to capture the value of `fd` but in a way that better indicates that it\u0027s a one-time log (rather than an ongoing counter). However, in testing this approach out it appears that Perfetto does not currently render instant events in the UI. The docs note that they intent to support instant events in the future, though, so it may be something we can help contribute if we find ourselves wanting to use them more.\n\nIn the meantime I\u0027ve updated the CL to use `ATRACE_INT`.",
+      "parentUuid": "1feddf32_4e2b6261",
+      "revId": "fee775b0bc9852e9532a942955c0d2cf68ff9622",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "e9398e34_ec538b52",
         "filename": "trusty/libtrusty/trusty.c",
         "patchSetId": 1
