@@ -187,6 +187,9 @@ static const struct fs_path_config android_files[] = {
     { 00444, AID_ROOT,      AID_ROOT,      0, ven_conf_dir + 1 },
     { 00444, AID_ROOT,      AID_ROOT,      0, ven_conf_file + 1 },
 
+    // set-gid on atrace binary to allow tracefs access
+    { 02755, AID_ROOT,      AID_READTRACEFS,  0, "system/bin/atrace" },
+
     // the following two files are INTENTIONALLY set-uid, but they
     // are NOT included on user builds.
     { 06755, AID_ROOT,      AID_ROOT,      0, "system/xbin/procmem" },
