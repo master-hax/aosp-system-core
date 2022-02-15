@@ -67,21 +67,28 @@ MountHandlerEntry ParseMount(const std::string& line) {
     return MountHandlerEntry(fields[0], fields[1], fields[2]);
 }
 
+// convert sda25 to sda, or mmcblk0p24 to mmcblk0
+std::string GetRootDisk(std::string blockdev) {
+    if (blockdev.find('/') != std::string::npos) {
+        return Error() << "Invalid argument " << blockdev;
+    }
+    std::error_code ec;
+    for (const auto& entry : std::filesystem::directory_iterator("/sys/block", ec)) {
+        const std::string path = entry.path().string();
+        if (std::filesystem::exists(StringPrintf("%s/%s", path.c_str(), blockdev.c_str()))) {
+            return Basename(path);
+        }
+    }
+}
+
 void SetMountProperty(const MountHandlerEntry& entry, bool add) {
     static constexpr char devblock[] = "/dev/block/";
     if (!android::base::StartsWith(entry.blk_device, devblock)) return;
     std::string value;
     if (add) {
-        value = entry.blk_device.substr(strlen(devblock));
-        if (android::base::StartsWith(value, "sd")) {
-            // All sd partitions inherit their queue characteristics
-            // from the whole device reference.  Strip partition number.
-            auto it = std::find_if(value.begin(), value.end(), [](char c) { return isdigit(c); });
-            if (it != value.end()) value.erase(it, value.end());
-        }
-        auto queue = "/sys/block/" + value + "/queue";
+        value = GetRootDisk(entry.blk_device.substr(strlen(devblock)));
+
         struct stat sb;
-        if (stat(queue.c_str(), &sb) || !S_ISDIR(sb.st_mode)) value = "";
         if (stat(entry.mount_point.c_str(), &sb) || !S_ISDIR(sb.st_mode)) value = "";
         // Clear the noise associated with loopback and APEX.
         if (android::base::StartsWith(value, "loop")) value = "";
