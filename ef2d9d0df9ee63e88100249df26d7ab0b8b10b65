@@ -22,6 +22,30 @@
       },
       "revId": "ef2d9d0df9ee63e88100249df26d7ab0b8b10b65",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ed6b2792_356bc094",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 1090,
+      "author": {
+        "id": 1066944
+      },
+      "writtenOn": "2022-02-15T17:25:34Z",
+      "side": 1,
+      "message": "I\u0027m not sure Ibcd7bb265f8fca9cd26f8770403f1bafad433acb was even tested properly, because before this patch, it directs to /sys/devices/virtual/block/, where SCSI devices don\u0027t exist.\n\nThe main issue that commit fixed was f2fs tunables (cp_interval, gc_urgent_sleep_time), but queue/discard_max_bytes wouldn\u0027t have been accessible.\n\nFor dm-n devices, dev.mnt.blk.data and dev.mnt.dev.data would have been the same, but for raw SCSI device (e.g., unencrypted), dev.mnt.dev.data would be sda20 while dev.mnt.blk.data is sda.\n\nqueue sysfs path doesn\u0027t exist for partitions, so dev.mnt.blk.data should be used.",
+      "parentUuid": "9a1b2a67_10630a4d",
+      "range": {
+        "startLine": 1090,
+        "startChar": 31,
+        "endLine": 1090,
+        "endChar": 47
+      },
+      "revId": "ef2d9d0df9ee63e88100249df26d7ab0b8b10b65",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
