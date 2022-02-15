@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a28b1993_c6901cf1",
+        "filename": "trusty/libtrusty/trusty.c",
+        "patchSetId": 3
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 1856745
+      },
+      "writtenOn": "2022-02-15T17:06:35Z",
+      "side": 1,
+      "message": "need to also `test iov[0].iov_len` and make sure it is larger than sizeof(uint32_t).\n\n\nstruct iovec {\n  void __user * iov_base;\n  __kernel_size_t iov_len;\n};",
+      "revId": "334f961835a2ee79926f5f9419aefa608266f5e0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
