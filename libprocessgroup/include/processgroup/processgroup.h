@@ -21,6 +21,15 @@
 #include <string>
 #include <vector>
 
+#include <optional>
+
+struct CgroupControllerInfo {
+    std::string path;
+    uint32_t version;
+};
+
+std::optional<CgroupControllerInfo> CgroupGetControllerInfo(const std::string& cgroup_name);
+
 __BEGIN_DECLS
 
 static constexpr const char* CGROUPV2_CONTROLLER_NAME = "cgroup2";
