@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0a395d4c_3900ac2f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-02-15T19:37:39Z",
+      "side": 1,
+      "message": "Can we extract a helper function for this so we can add s",
+      "revId": "2fb2cfd80f077b490bb6ba94efb6a7e99bf082e1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "554e9135_6f6d93e4",
+        "filename": "init/mount_handler.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 102,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-02-15T19:37:39Z",
+      "side": 1,
+      "message": "Can we extract this logic into a helper function, and add unit tests, showing the example paths that would now be supported?",
+      "revId": "2fb2cfd80f077b490bb6ba94efb6a7e99bf082e1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
