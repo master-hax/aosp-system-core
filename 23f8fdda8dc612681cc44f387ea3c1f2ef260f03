@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "172df4c5_d259f6ae",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-02-16T07:51:08Z",
+      "side": 1,
+      "message": "It failed two tests, but it seems flaky. Let me retry.",
+      "parentUuid": "0dff69fb_550f5cfa",
+      "revId": "23f8fdda8dc612681cc44f387ea3c1f2ef260f03",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "3257d269_72719461",
