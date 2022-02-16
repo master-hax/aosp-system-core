@@ -105,6 +105,30 @@
       },
       "revId": "f607f53f4ce3b7fb0ed22f5ed8b8d9faa0aa6515",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1921dc2d_dc6603d1",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 211,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-02-16T01:36:42Z",
+      "side": 1,
+      "message": "The code has been modified such that WriteStringToFile() is no longer called for optional attributes if the attribute does not exist. Please reopen this comment thread if you want me to make further changes to this code.\n\nAs one can see the current code still calls WriteStringToFile() even if access() indicates that the attribute does not exist. This is because the PLOG() statements below WriteStringToFile() depend on the errno value produced by WriteStringToFile.",
+      "parentUuid": "016a1482_1bf9a6e8",
+      "range": {
+        "startLine": 211,
+        "startChar": 4,
+        "endLine": 211,
+        "endChar": 43
+      },
+      "revId": "f607f53f4ce3b7fb0ed22f5ed8b8d9faa0aa6515",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
