@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3a6784b5_ceeb027a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2022-02-16T23:03:25Z",
+      "side": 1,
+      "message": "Moved the prctl related to mte only to be done on aarch64 so that secomp policy doesn\u0027t complain.",
+      "revId": "b999b82eb79b6b8aaabcca2a65028158fcb246f3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
