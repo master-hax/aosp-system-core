@@ -39,6 +39,30 @@
       },
       "revId": "52662414b249f645ff55fc03dfa784ade850ed52",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2690e6c4_a07c338b",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 210,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-02-16T01:32:29Z",
+      "side": 1,
+      "message": "I have removed all LOG(VERBOSE) statements for successful actions.",
+      "parentUuid": "dcb2ed12_27650da9",
+      "range": {
+        "startLine": 210,
+        "startChar": 8,
+        "endLine": 210,
+        "endChar": 20
+      },
+      "revId": "52662414b249f645ff55fc03dfa784ade850ed52",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
