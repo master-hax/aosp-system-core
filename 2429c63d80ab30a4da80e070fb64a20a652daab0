@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ff256078_72342f6d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-02-16T04:20:08Z",
+      "side": 1,
+      "message": "Although this is not needed but it will help folks who are already on bad builds. Once both these CL\u0027s land, we can pick that up as a candidate build.",
+      "revId": "2429c63d80ab30a4da80e070fb64a20a652daab0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
