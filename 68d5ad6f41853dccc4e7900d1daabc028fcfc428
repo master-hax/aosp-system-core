@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "eebbe0e5_43bbec6e",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1138,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-02-17T06:30:28Z",
+      "side": 1,
+      "message": "most examples I find uses |.f_frsize| as \"block size\".\nstatvfs.h also says the syscall returns |.f_blocks| in the unit of |.f_frsize|, so I assumed |.f_bfree|\u0027s unit is |.f_frsize| as well.\n\nAlso the upcast should happen before, not after, the multiplication to avoid overflow. static_cast\u003cuint64_t\u003e(X) * Y",
+      "range": {
+        "startLine": 1138,
+        "startChar": 48,
+        "endLine": 1138,
+        "endChar": 55
+      },
+      "revId": "68d5ad6f41853dccc4e7900d1daabc028fcfc428",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
