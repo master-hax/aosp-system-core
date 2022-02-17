@@ -50,6 +50,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "398db6ea_d6782c22",
+        "filename": "fs_mgr/Android.bp",
+        "patchSetId": 4
+      },
+      "lineNbr": 167,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-02-17T04:00:39Z",
+      "side": 1,
+      "message": "\u003e There\u0027s no cflags for ramdisk targets - it works as-is.\n\nWhy does it work? Like vendor_ramdisk, ramdisk doesn\u0027t have /data mounted during its execution time, so why doesn\u0027t need the same flags as vendor_ramdisk?\n\n\u003e *recovery* cflags are not propagated correctly.\n\nFS_MGR_RAMDISK is not propagated to recovery variant of libfs_mgr? or ramdisk variant of libfs_mgr? Sorry I still don\u0027t grasp what is expected to work but not. what is already working and shouldn\u0027t be changed.",
+      "parentUuid": "9ba49b9a_7bc65b6e",
+      "range": {
+        "startLine": 167,
+        "startChar": 18,
+        "endLine": 167,
+        "endChar": 33
+      },
+      "revId": "5bc4b60760bfb3c58ee7c16e7d6ca27651eb8a4f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "6c0e6070_9c61e220",
         "filename": "fs_mgr/libfiemap/image_manager.cpp",
         "patchSetId": 4
