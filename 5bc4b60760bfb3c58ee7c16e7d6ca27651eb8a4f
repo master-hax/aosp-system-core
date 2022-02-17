@@ -98,6 +98,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "6e85b446_aebf3c46",
+        "filename": "fs_mgr/Android.bp",
+        "patchSetId": 4
+      },
+      "lineNbr": 167,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-02-17T04:44:38Z",
+      "side": 1,
+      "message": "I experimented by adding a junk line at L554  to test whether the \"defined(FS_MGR_RAMDISK) || defined(__ANDROID_RECOVERY__)\" branch is taken or not, and I get:\n\nlibfs_mgr (system) \u003d\u003e success, not taken\nlibfs_mgr.ramdisk \u003d\u003e success, not taken\nlibfs_mgr.vendor_ramdisk \u003d\u003e compilation error, branch taken\nlibfs_mgr.recovery \u003d\u003e compilation error, branch taken",
+      "parentUuid": "480b5ee5_ba15eafd",
+      "range": {
+        "startLine": 167,
+        "startChar": 18,
+        "endLine": 167,
+        "endChar": 33
+      },
+      "revId": "5bc4b60760bfb3c58ee7c16e7d6ca27651eb8a4f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "6c0e6070_9c61e220",
         "filename": "fs_mgr/libfiemap/image_manager.cpp",
         "patchSetId": 4
