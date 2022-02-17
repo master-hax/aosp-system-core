@@ -74,6 +74,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "480b5ee5_ba15eafd",
+        "filename": "fs_mgr/Android.bp",
+        "patchSetId": 4
+      },
+      "lineNbr": 167,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-02-17T04:16:27Z",
+      "side": 1,
+      "message": "It does need the same flags, and it already has them, via the \"recovery\" target.\n\nHowever, the recovery cflags don\u0027t seem to apply when building a separate recovery image.",
+      "parentUuid": "398db6ea_d6782c22",
+      "range": {
+        "startLine": 167,
+        "startChar": 18,
+        "endLine": 167,
+        "endChar": 33
+      },
+      "revId": "5bc4b60760bfb3c58ee7c16e7d6ca27651eb8a4f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "6c0e6070_9c61e220",
         "filename": "fs_mgr/libfiemap/image_manager.cpp",
         "patchSetId": 4
