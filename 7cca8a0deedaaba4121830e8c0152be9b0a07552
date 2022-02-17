@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bc790dc7_6730b095",
+        "filename": "libsystem/include/system/graphics.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 1561731
+      },
+      "writtenOn": "2022-02-17T18:57:00Z",
+      "side": 1,
+      "message": "Is `packed channel depth` a used term?",
+      "range": {
+        "startLine": 67,
+        "startChar": 68,
+        "endLine": 68,
+        "endChar": 16
+      },
+      "revId": "7cca8a0deedaaba4121830e8c0152be9b0a07552",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
