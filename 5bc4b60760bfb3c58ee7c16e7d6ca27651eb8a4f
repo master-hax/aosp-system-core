@@ -146,6 +146,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "a8203378_77178bd5",
+        "filename": "fs_mgr/Android.bp",
+        "patchSetId": 4
+      },
+      "lineNbr": 167,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-02-17T05:02:26Z",
+      "side": 1,
+      "message": "I get the same result from building boot\u0026vendor_boot images too\n\nm bootimage \u003d\u003e success, because it depends on init_first_stage, which links libfs_mgr.ramdisk\nm vendorbootimage \u003d\u003e failure, because its files (either init_second_stage.recovery and possibly other files) links libfs_mgr.recovery (and/or libfs_mgr.vendor_ramdisk)\n\nIIUC, bootimage should fail the same way vendorbootimage does",
+      "parentUuid": "5c0908de_976818c0",
+      "range": {
+        "startLine": 167,
+        "startChar": 18,
+        "endLine": 167,
+        "endChar": 33
+      },
+      "revId": "5bc4b60760bfb3c58ee7c16e7d6ca27651eb8a4f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "6c0e6070_9c61e220",
         "filename": "fs_mgr/libfiemap/image_manager.cpp",
         "patchSetId": 4
