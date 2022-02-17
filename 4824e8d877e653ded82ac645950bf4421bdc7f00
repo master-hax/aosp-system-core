@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1ca1f0cf_db9e0432",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 351,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-02-17T14:36:44Z",
+      "side": 1,
+      "message": "We should do this here:\n\nif (fd_[ProfileAction::RCT_TASK] \u003d\u003d FDS_APP_DEPENDENT)\n    FdCacheHelper::Init(task_path_, fd_[ProfileAction::RCT_PROCESS]);",
+      "range": {
+        "startLine": 351,
+        "startChar": 46,
+        "endLine": 351,
+        "endChar": 74
+      },
+      "revId": "4824e8d877e653ded82ac645950bf4421bdc7f00",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f421747e_fdb43e05",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 394,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-02-17T14:36:44Z",
+      "side": 1,
+      "message": "How about this instead:\n\nif (cache_type \u003d\u003d ProfileAction::RCT_TASK || proc_path_.empty()) {\n    PLOG(ERROR) \u003c\u003c \"Failed to write \u0027\" \u003c\u003c value \u003c\u003c \"\u0027 to \" \u003c\u003c task_path_;\nelse {\n    PLOG(ERROR) \u003c\u003c \"Failed to write \u0027\" \u003c\u003c value \u003c\u003c \"\u0027 to \" \u003c\u003c proc_path_.empty()\n}",
+      "range": {
+        "startLine": 382,
+        "startChar": 16,
+        "endLine": 394,
+        "endChar": 17
+      },
+      "revId": "4824e8d877e653ded82ac645950bf4421bdc7f00",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8e8367f8_99107862",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 463,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-02-17T14:36:44Z",
+      "side": 1,
+      "message": "What do we do if fd_[ProfileAction::RCT_TASK] \u003d\u003d FdCacheHelper::FDS_APP_DEPENDENT ?",
+      "range": {
+        "startLine": 463,
+        "startChar": 27,
+        "endLine": 463,
+        "endChar": 88
+      },
+      "revId": "4824e8d877e653ded82ac645950bf4421bdc7f00",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
