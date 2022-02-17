@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fe592cc3_124e81e7",
+        "filename": "fs_mgr/tests/vts_fs_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-02-17T06:41:32Z",
+      "side": 1,
+      "message": "```\n\u003c\u003d __ANDROID_API_**R**__ \nor\n\u003c __ANDROID_API_S__\n```",
+      "range": {
+        "startLine": 32,
+        "startChar": 23,
+        "endLine": 32,
+        "endChar": 42
+      },
+      "revId": "9c03498b0a8ea17fc7c9315815b870f65e98a232",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
