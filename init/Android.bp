@@ -451,6 +451,10 @@ cc_test {
         },
     },
 
+    tidy_timeout_srcs: [
+        "devices_test.cpp",
+    ],
+
     srcs: [
         "devices_test.cpp",
         "epoll_test.cpp",

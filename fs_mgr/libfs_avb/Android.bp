@@ -137,6 +137,9 @@ cc_test_host {
         ":avbtool",
         ":fec",
     ],
+    tidy_timeout_srcs: [
+        "tests/avb_util_test.cpp",
+    ],
     srcs: [
         "avb_util.cpp",
         "util.cpp",

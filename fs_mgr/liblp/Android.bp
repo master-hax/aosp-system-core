@@ -90,6 +90,10 @@ cc_defaults {
         "libstorage_literals_headers",
     ],
     stl: "libc++_static",
+    tidy_timeout_srcs: [
+        "builder_test.cpp",
+        "io_test.cpp",
+    ],
     srcs: [":liblp_test_srcs"],
 }
 

@@ -84,6 +84,10 @@ cc_test {
         "testdata/file_32k",
     ],
 
+    tidy_timeout_srcs: [
+        "fiemap_writer_test.cpp",
+    ],
+
     srcs: [
         "fiemap_writer_test.cpp",
     ],

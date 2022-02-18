@@ -38,5 +38,7 @@ cc_test {
         "liblog",
     ],
 
+    tidy_timeout_srcs: ["main.cpp"],
+
     srcs: ["main.cpp"],
 }

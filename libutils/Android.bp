@@ -298,6 +298,10 @@ cc_test {
     name: "libutils_test",
     host_supported: true,
 
+    tidy_timeout_srcs: [
+        "LruCache_test.cpp",
+        "String16_test.cpp",
+    ],
     srcs: [
         "BitSet_test.cpp",
         "Errors_test.cpp",
@@ -328,6 +332,9 @@ cc_test {
             ],
         },
         linux: {
+            tidy_timeout_srcs: [
+                "Looper_test.cpp",
+            ],
             srcs: [
                 "Looper_test.cpp",
                 "RefBase_test.cpp",

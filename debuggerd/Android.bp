@@ -288,6 +288,9 @@ cc_test {
 
     target: {
         android: {
+            tidy_timeout_srcs: [
+                "debuggerd_test.cpp",
+            ],
             srcs: [
                 "client/debuggerd_client_test.cpp",
                 "debuggerd_test.cpp",

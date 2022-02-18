@@ -40,6 +40,9 @@ cc_test {
         "libfs_mgr",
         "libfstab",
     ],
+    tidy_timeout_srcs: [
+        "fs_mgr_test.cpp",
+    ],
     srcs: [
         "file_wait_test.cpp",
         "fs_mgr_test.cpp",

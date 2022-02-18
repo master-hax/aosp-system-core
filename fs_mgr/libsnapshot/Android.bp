@@ -215,6 +215,9 @@ cc_library_static {
 cc_defaults {
     name: "libsnapshot_test_defaults",
     defaults: ["libsnapshot_defaults"],
+    tidy_timeout_srcs: [
+        "snapshot_test.cpp",
+    ],
     srcs: [
         "partition_cow_creator_test.cpp",
         "snapshot_metadata_updater_test.cpp",
@@ -398,6 +401,9 @@ cc_test {
     name: "cow_api_test",
     defaults: [
         "fs_mgr_defaults",
+    ],
+    tidy_timeout_srcs: [
+        "cow_api_test.cpp",
     ],
     srcs: [
         "cow_api_test.cpp",
