@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "4a03e1eb_2590c542",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 351,
+      "author": {
+        "id": 1324603
+      },
+      "writtenOn": "2022-02-18T08:25:32Z",
+      "side": 1,
+      "message": "Previously I was assuming task path will not be app dependent but only process path, but I guess it may not be true for WriteFileAction, so I made some modification for it.\n\nAbout the suggestion here, if task path is already app dependent, calling Init with it will reset fd_[ProfileAction::RCT_PROCESS] to FDS_APP_DEPENDENT, which is the same as current code. WDYT?",
+      "parentUuid": "1ca1f0cf_db9e0432",
+      "range": {
+        "startLine": 351,
+        "startChar": 46,
+        "endLine": 351,
+        "endChar": 74
+      },
+      "revId": "4824e8d877e653ded82ac645950bf4421bdc7f00",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "f421747e_fdb43e05",
         "filename": "libprocessgroup/task_profiles.cpp",
         "patchSetId": 4
@@ -49,6 +73,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "f8dd6caa_bc04e39c",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 394,
+      "author": {
+        "id": 1324603
+      },
+      "writtenOn": "2022-02-18T08:25:32Z",
+      "side": 1,
+      "message": "Yeah, that\u0027s much better. Thanks.",
+      "parentUuid": "f421747e_fdb43e05",
+      "range": {
+        "startLine": 382,
+        "startChar": 16,
+        "endLine": 394,
+        "endChar": 17
+      },
+      "revId": "4824e8d877e653ded82ac645950bf4421bdc7f00",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "8e8367f8_99107862",
         "filename": "libprocessgroup/task_profiles.cpp",
         "patchSetId": 4
@@ -60,6 +108,30 @@
       "writtenOn": "2022-02-17T14:36:44Z",
       "side": 1,
       "message": "What do we do if fd_[ProfileAction::RCT_TASK] \u003d\u003d FdCacheHelper::FDS_APP_DEPENDENT ?",
+      "range": {
+        "startLine": 463,
+        "startChar": 27,
+        "endLine": 463,
+        "endChar": 88
+      },
+      "revId": "4824e8d877e653ded82ac645950bf4421bdc7f00",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4c0bdac6_e033740f",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 463,
+      "author": {
+        "id": 1324603
+      },
+      "writtenOn": "2022-02-18T08:25:32Z",
+      "side": 1,
+      "message": "Similarly, I was assuming task path will not be be app dependent. Added a else for the reaming cases.",
+      "parentUuid": "8e8367f8_99107862",
       "range": {
         "startLine": 463,
         "startChar": 27,
