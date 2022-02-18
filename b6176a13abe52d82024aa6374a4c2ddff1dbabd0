@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "5988b583_539e003a",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 404,
+      "author": {
+        "id": 1324603
+      },
+      "writtenOn": "2022-02-18T15:41:09Z",
+      "side": 1,
+      "message": "The original thought is to log the failed path, if proc_path_.empty(), we will use task_path_. Do you mean we only need to log cache_type but not path for all cases?",
+      "parentUuid": "4b66450d_614171b5",
+      "range": {
+        "startLine": 404,
+        "startChar": 61,
+        "endLine": 404,
+        "endChar": 79
+      },
+      "revId": "b6176a13abe52d82024aa6374a4c2ddff1dbabd0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "b2ae75d6_145fdc93",
         "filename": "libprocessgroup/task_profiles.cpp",
         "patchSetId": 6
@@ -37,6 +61,30 @@
       "writtenOn": "2022-02-18T08:31:20Z",
       "side": 1,
       "message": "while can we do\n\nif (proc_path_.empty()) we iterate with tasks in process. this matches with the behavior for S actually.",
+      "range": {
+        "startLine": 430,
+        "startChar": 11,
+        "endLine": 431,
+        "endChar": 42
+      },
+      "revId": "b6176a13abe52d82024aa6374a4c2ddff1dbabd0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f31a161e_5d3f320c",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 431,
+      "author": {
+        "id": 1324603
+      },
+      "writtenOn": "2022-02-18T15:41:09Z",
+      "side": 1,
+      "message": "Yeah, that makes sense. Will do. Thanks.",
+      "parentUuid": "b2ae75d6_145fdc93",
       "range": {
         "startLine": 430,
         "startChar": 11,
