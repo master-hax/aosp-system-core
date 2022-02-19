@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9abd59ef_915f31d0",
+        "filename": "trusty/test/driver/trusty_driver_test.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1895585
+      },
+      "writtenOn": "2022-02-19T00:19:34Z",
+      "side": 1,
+      "message": "should this be \"/sys/\" ?",
+      "range": {
+        "startLine": 57,
+        "startChar": 24,
+        "endLine": 57,
+        "endChar": 27
+      },
+      "revId": "23fc7c37a8be8228a38df12b029c3920ed5ccbd6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
