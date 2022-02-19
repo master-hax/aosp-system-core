@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f61b29f1_88393ae1",
+        "filename": "fs_mgr/fs_mgr_fstab.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 659,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2022-02-19T07:23:33Z",
+      "side": 1,
+      "message": "nit: could consider adding a comment.\n\n// In order for FirstStageMount() to retry mount, the mount lines have to\nbe grouped together by mount points.",
+      "revId": "6bcabc03d3f16bf267963758552bfcb648107b6a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
