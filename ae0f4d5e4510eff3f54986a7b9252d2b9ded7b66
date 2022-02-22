@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "547115b7_d87b2779",
+        "filename": "trusty/keymaster/3.0/TrustyKeymaster3Device.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1833664
+      },
+      "writtenOn": "2022-02-22T18:16:38Z",
+      "side": 0,
+      "message": "Looks like `AuthorizationSet` is still used by `addClientAndAppData` (in both files).",
+      "range": {
+        "startLine": 20,
+        "startChar": 10,
+        "endLine": 20,
+        "endChar": 27
+      },
+      "revId": "ae0f4d5e4510eff3f54986a7b9252d2b9ded7b66",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
