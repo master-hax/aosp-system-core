@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d2214a62_d33932d2",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 433,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-02-22T22:53:18Z",
+      "side": 1,
+      "message": "nit: In most cases in this file we use {} even for one-line blocks. Please be consistent.",
+      "range": {
+        "startLine": 432,
+        "startChar": 4,
+        "endLine": 433,
+        "endChar": 92
+      },
+      "revId": "02ff70154f72a2912373b3419de54925ccd8d6af",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
