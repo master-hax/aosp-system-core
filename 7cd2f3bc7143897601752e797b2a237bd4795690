@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "45f32078_843c5331",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 379,
+      "author": {
+        "id": 1324603
+      },
+      "writtenOn": "2022-02-22T04:38:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d651844a_2ada3afd",
+      "range": {
+        "startLine": 378,
+        "startChar": 4,
+        "endLine": 379,
+        "endChar": 67
+      },
+      "revId": "7cd2f3bc7143897601752e797b2a237bd4795690",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "2a195d7f_36f46c64",
@@ -37,6 +61,30 @@
       "writtenOn": "2022-02-21T20:43:33Z",
       "side": 1,
       "message": "Previously you used \"if (de-\u003ed_name[0] \u003d\u003d \u0027.\u0027) continue;\". Please use one or the other style but not both.",
+      "range": {
+        "startLine": 448,
+        "startChar": 8,
+        "endLine": 450,
+        "endChar": 9
+      },
+      "revId": "7cd2f3bc7143897601752e797b2a237bd4795690",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a79ca3d2_416a3f4b",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 450,
+      "author": {
+        "id": 1324603
+      },
+      "writtenOn": "2022-02-22T04:38:43Z",
+      "side": 1,
+      "message": "Done. Thanks!",
+      "parentUuid": "2a195d7f_36f46c64",
       "range": {
         "startLine": 448,
         "startChar": 8,
