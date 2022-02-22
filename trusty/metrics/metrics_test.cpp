@@ -19,6 +19,7 @@
 #include <gtest/gtest.h>
 #include <poll.h>
 #include <trusty/metrics/metrics.h>
+#include <trusty/test/common/utils.h>
 #include <trusty/tipc.h>
 
 #define TIPC_DEV "/dev/trusty-ipc-dev0"
@@ -29,6 +30,8 @@ namespace trusty {
 namespace metrics {
 
 using android::base::unique_fd;
+using android::trusty::test::GetTrustyFlavor;
+using android::trusty::test::TrustyFlavor;
 
 static void TriggerCrash() {
     size_t num_retries = 3;
@@ -59,6 +62,11 @@ class TrustyMetricsTest : public TrustyMetrics, public ::testing::Test {
     virtual void HandleEventDrop() override { event_drop_count_++; }
 
     virtual void SetUp() override {
+        auto trusty_flavor = android::trusty::test::GetTrustyFlavor();
+        if (trusty_flavor == TrustyFlavor::NotSupported) {
+            GTEST_SKIP() << "Device doesn't have Trusty";
+        }
+
         auto ret = Open();
         ASSERT_TRUE(ret.ok()) << ret.error();
     }

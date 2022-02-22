@@ -40,6 +40,7 @@ cc_test {
     ],
     static_libs: [
         "libtrusty_metrics",
+        "libtrusty_test_common",
     ],
     shared_libs: [
         "libbase",
@@ -48,4 +49,5 @@ cc_test {
         "libtrusty",
     ],
     require_root: true,
+    test_suites: ["general-tests"],
 }
