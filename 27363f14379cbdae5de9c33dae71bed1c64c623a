@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3fbd4fc4_5e81784e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-02-23T23:58:25Z",
+      "side": 1,
+      "message": "This solution seems kind of unfortunate. It adds a lot of extra stuff to the build files, and it assumes the source structure doesn\u0027t change materially.\n\nWas it considered at all to make the build automatically learn which files timeout, as needed, rather than baking in a hardcoded list?",
+      "revId": "27363f14379cbdae5de9c33dae71bed1c64c623a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
