@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "71d62c30_b41ac286",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 379,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2022-02-23T05:38:53Z",
+      "side": 1,
+      "message": "why not move these 2 lines out side if/else?I know we may change behavior a bit, but I guess those should not be any path named as \u003cuid\u003e/\u003cpid\u003e.\n\nwe can still use task_file_ if proc_path is empty for ExecuteForProcess, and for good symmetry, supporting uid/pid may make sense.",
+      "range": {
+        "startLine": 378,
+        "startChar": 7,
+        "endLine": 379,
+        "endChar": 71
+      },
+      "revId": "95c7347e7368a95688841bb01b9640a765b04fdf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c07c7899_9002dd08",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 405,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2022-02-23T05:38:53Z",
+      "side": 1,
+      "message": "can we at least combine the 2 if\n\n        if (!WriteStringToFd(value, fd_[cache_type]) \u0026\u0026 logfailures_) {",
+      "range": {
+        "startLine": 404,
+        "startChar": 0,
+        "endLine": 405,
+        "endChar": 29
+      },
+      "revId": "95c7347e7368a95688841bb01b9640a765b04fdf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a27de845_b39fc8b0",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 435,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2022-02-23T05:38:53Z",
+      "side": 1,
+      "message": "fix lint",
+      "range": {
+        "startLine": 435,
+        "startChar": 0,
+        "endLine": 435,
+        "endChar": 1
+      },
+      "revId": "95c7347e7368a95688841bb01b9640a765b04fdf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d712c592_45f4ace5",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 476,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2022-02-23T05:38:53Z",
+      "side": 1,
+      "message": "we don\u0027t support fdcache for path containing uid/pid, but eventually we may need some LRU cache for those.",
+      "range": {
+        "startLine": 476,
+        "startChar": 33,
+        "endLine": 476,
+        "endChar": 43
+      },
+      "revId": "95c7347e7368a95688841bb01b9640a765b04fdf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
