@@ -97,6 +97,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "623d238e_d47b22bc",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 405,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2022-02-23T07:03:45Z",
+      "side": 1,
+      "message": "that is issue for reading. shall we use a bool flag to cache the return of WriteStringToFd\n\nbool ret \u003d false;\n  if (FdCacheHelper::IsCached(fd_[cache_type])) {\n     ret \u003d WriteStringToFd(value, fd_[cache_type]);\n\n     if (!ret \u0026\u0026 logfailures_)...\n\n\nreturn ret ? ProfileAction::SUCCESS : ProfileAction::FAIL;",
+      "parentUuid": "690329be_6a25ffd7",
+      "range": {
+        "startLine": 404,
+        "startChar": 0,
+        "endLine": 405,
+        "endChar": 29
+      },
+      "revId": "95c7347e7368a95688841bb01b9640a765b04fdf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "a27de845_b39fc8b0",
         "filename": "libprocessgroup/task_profiles.cpp",
         "patchSetId": 9
