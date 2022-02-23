@@ -33,10 +33,15 @@ cc_test {
         "libtrustystorageinterface",
         "libtrustystorage",
         "libtrusty",
+        "libtrusty_test_common",
     ],
     shared_libs: [
+        "libbase",
         "liblog",
     ],
 
     srcs: ["main.cpp"],
+
+    require_root: true,
+    test_suites: ["general-tests"],
 }

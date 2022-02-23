@@ -14,6 +14,7 @@
 
 PRODUCT_PACKAGES += \
 	keymaster_soft_attestation_keys.xml \
+	secure-storage-unit-test \
 	spiproxyd \
 	trusty_driver_test \
 	trusty_keymaster_set_attestation_key \

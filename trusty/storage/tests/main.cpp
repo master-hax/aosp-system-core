@@ -19,6 +19,7 @@
 #include <gtest/gtest.h>
 
 #include <trusty/lib/storage.h>
+#include <trusty/test/common/utils.h>
 
 #define TRUSTY_DEVICE_NAME "/dev/trusty-ipc-dev0"
 
@@ -71,6 +72,8 @@ static bool check_value32(const uint32_t *buf, size_t len, uint32_t val)
     return true;
 }
 
+using android::trusty::test::GetTrustyFlavor;
+using android::trusty::test::TrustyFlavor;
 using testing::TestWithParam;
 
 class StorageServiceTest : public virtual TestWithParam<const char *> {
@@ -79,6 +82,11 @@ public:
     virtual ~StorageServiceTest() {}
 
     virtual void SetUp() {
+        auto trusty_flavor = android::trusty::test::GetTrustyFlavor();
+        if (trusty_flavor == TrustyFlavor::NotSupported) {
+            GTEST_SKIP() << "Device doesn't have Trusty";
+        }
+
         port_ = GetParam();
         test_buf_ = NULL;
         aux_session_ = STORAGE_INVALID_SESSION;
