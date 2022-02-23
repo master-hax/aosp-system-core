@@ -98,6 +98,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "070fc973_a8df7197",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 379,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-02-23T17:40:48Z",
+      "side": 1,
+      "message": "Technically a task should not have pid/uid, only tid. At least that\u0027s what we assumed. If proc_path_ needs to use pid/uid why can\u0027t we have proc_path_ specified instead of reusing task_path_ and keeping proc_path_ empty?",
+      "parentUuid": "b36cb680_d682360f",
+      "range": {
+        "startLine": 378,
+        "startChar": 7,
+        "endLine": 379,
+        "endChar": 71
+      },
+      "revId": "95c7347e7368a95688841bb01b9640a765b04fdf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "c07c7899_9002dd08",
         "filename": "libprocessgroup/task_profiles.cpp",
         "patchSetId": 9
