@@ -602,6 +602,7 @@ class CowMergeOpIter final : public ICowOpIter {
     bool Done() override;
     const CowOperation& Get() override;
     void Next() override;
+    void Prev() override;
 
   private:
     std::shared_ptr<std::vector<CowOperation>> ops_;
@@ -635,6 +636,11 @@ void CowMergeOpIter::Next() {
 const CowOperation& CowMergeOpIter::Get() {
     CHECK(!Done());
     return ops_->data()[map_->at(*block_iter_)];
+}
+
+void CowMergeOpIter::Prev() {
+    CHECK(block_iter_ != merge_op_blocks_->begin());
+    block_iter_--;
 }
 
 CowRevMergeOpIter::CowRevMergeOpIter(std::shared_ptr<std::vector<CowOperation>> ops,

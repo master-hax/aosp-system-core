@@ -117,8 +117,8 @@ bool Worker::MergeReplaceZeroOps(const std::unique_ptr<ICowOpIter>& cowop_iter) 
         size_t io_size = linear_blocks * BLOCK_SZ;
 
         // Merge - Write the contents back to base device
-        int ret = pwrite(base_path_merge_fd_.get(), bufsink_.GetPayloadBufPtr(), io_size,
-                         source_offset);
+        int ret = TEMP_FAILURE_RETRY(pwrite(base_path_merge_fd_.get(), bufsink_.GetPayloadBufPtr(),
+                                            io_size, source_offset));
         if (ret < 0 || ret != io_size) {
             SNAP_LOG(ERROR)
                     << "Merge: ReplaceZeroOps: Failed to write to backing device while merging "
@@ -176,7 +176,6 @@ bool Worker::MergeOrderedOpsAsync(const std::unique_ptr<ICowOpIter>& cowop_iter)
     void* mapped_addr = snapuserd_->GetMappedAddr();
     void* read_ahead_buffer =
             static_cast<void*>((char*)mapped_addr + snapuserd_->GetBufferDataOffset());
-    size_t block_index = 0;
 
     SNAP_LOG(INFO) << "MergeOrderedOpsAsync started....";
 
@@ -190,11 +189,10 @@ bool Worker::MergeOrderedOpsAsync(const std::unique_ptr<ICowOpIter>& cowop_iter)
         // Wait for RA thread to notify that the merge window
         // is ready for merging.
         if (!snapuserd_->WaitForMergeBegin()) {
-            snapuserd_->SetMergeFailed(block_index);
             return false;
         }
 
-        snapuserd_->SetMergeInProgress(block_index);
+        snapuserd_->SetMergeInProgress(ra_block_index_);
 
         loff_t offset = 0;
         int num_ops = snapuserd_->GetTotalBlocksToMerge();
@@ -202,6 +200,7 @@ bool Worker::MergeOrderedOpsAsync(const std::unique_ptr<ICowOpIter>& cowop_iter)
         int pending_sqe = queue_depth_;
         int pending_ios_to_submit = 0;
         bool flush_required = false;
+        blocks_merged_in_group_ = 0;
 
         SNAP_LOG(DEBUG) << "Merging copy-ops of size: " << num_ops;
         while (num_ops) {
@@ -216,7 +215,6 @@ bool Worker::MergeOrderedOpsAsync(const std::unique_ptr<ICowOpIter>& cowop_iter)
                 struct io_uring_sqe* sqe = io_uring_get_sqe(ring_.get());
                 if (!sqe) {
                     SNAP_PLOG(ERROR) << "io_uring_get_sqe failed during merge-ordered ops";
-                    snapuserd_->SetMergeFailed(block_index);
                     return false;
                 }
 
@@ -225,10 +223,18 @@ bool Worker::MergeOrderedOpsAsync(const std::unique_ptr<ICowOpIter>& cowop_iter)
 
                 offset += io_size;
                 num_ops -= linear_blocks;
+                blocks_merged_in_group_ += linear_blocks;
 
                 pending_sqe -= 1;
                 pending_ios_to_submit += 1;
-                sqe->flags |= IOSQE_ASYNC;
+                // These flags are important - We need to make sure that the
+                // blocks are linked and are written in the same order as
+                // populated. This is because of overlapping block writes.
+                //
+                // If there are no dependency, we can optimize this further by
+                // allowing parallel writes; but for now, just link all the SQ
+                // entries.
+                sqe->flags |= (IOSQE_IO_LINK | IOSQE_ASYNC);
             }
 
             // Ring is full or no more COW ops to be merged in this batch
@@ -256,7 +262,7 @@ bool Worker::MergeOrderedOpsAsync(const std::unique_ptr<ICowOpIter>& cowop_iter)
                             pending_sqe -= 1;
                             flush_required = false;
                             pending_ios_to_submit += 1;
-                            sqe->flags |= IOSQE_ASYNC;
+                            sqe->flags |= (IOSQE_IO_LINK | IOSQE_ASYNC);
                         }
                     } else {
                         flush_required = true;
@@ -269,33 +275,44 @@ bool Worker::MergeOrderedOpsAsync(const std::unique_ptr<ICowOpIter>& cowop_iter)
                     SNAP_PLOG(ERROR)
                             << "io_uring_submit failed for read-ahead: "
                             << " io submit: " << ret << " expected: " << pending_ios_to_submit;
-                    snapuserd_->SetMergeFailed(block_index);
                     return false;
                 }
 
                 int pending_ios_to_complete = pending_ios_to_submit;
                 pending_ios_to_submit = 0;
 
+                bool status = true;
+
                 // Reap I/O completions
                 while (pending_ios_to_complete) {
                     struct io_uring_cqe* cqe;
 
+                    // We need to make sure to reap all the I/O's submitted
+                    // even if there are any errors observed.
+                    //
+                    // io_uring_wait_cqe can potentially return -EAGAIN or -EINTR;
+                    // these error codes are not truly I/O errors; we can retry them
+                    // by re-populating the SQE entries and submitting the I/O
+                    // request back. However, we don't do that now; instead we
+                    // will fallback to synchronous I/O.
+
                     ret = io_uring_wait_cqe(ring_.get(), &cqe);
                     if (ret) {
-                        SNAP_LOG(ERROR) << "Read-ahead - io_uring_wait_cqe failed: " << ret;
-                        snapuserd_->SetMergeFailed(block_index);
-                        return false;
+                        SNAP_LOG(ERROR) << "Merge: io_uring_wait_cqe failed: " << ret;
+                        status = false;
                     }
 
                     if (cqe->res < 0) {
-                        SNAP_LOG(ERROR)
-                                << "Read-ahead - io_uring_Wait_cqe failed with res: " << cqe->res;
-                        snapuserd_->SetMergeFailed(block_index);
-                        return false;
+                        SNAP_LOG(ERROR) << "Merge: io_uring_wait_cqe failed with res: " << cqe->res;
+                        status = false;
                     }
 
                     io_uring_cqe_seen(ring_.get(), cqe);
                     pending_ios_to_complete -= 1;
+                }
+
+                if (!status) {
+                    return false;
                 }
 
                 pending_sqe = queue_depth_;
@@ -312,7 +329,6 @@ bool Worker::MergeOrderedOpsAsync(const std::unique_ptr<ICowOpIter>& cowop_iter)
         // Flush the data
         if (flush_required && (fsync(base_path_merge_fd_.get()) < 0)) {
             SNAP_LOG(ERROR) << " Failed to fsync merged data";
-            snapuserd_->SetMergeFailed(block_index);
             return false;
         }
 
@@ -320,20 +336,20 @@ bool Worker::MergeOrderedOpsAsync(const std::unique_ptr<ICowOpIter>& cowop_iter)
         // the merge completion
         if (!snapuserd_->CommitMerge(snapuserd_->GetTotalBlocksToMerge())) {
             SNAP_LOG(ERROR) << " Failed to commit the merged block in the header";
-            snapuserd_->SetMergeFailed(block_index);
             return false;
         }
 
         SNAP_LOG(DEBUG) << "Block commit of size: " << snapuserd_->GetTotalBlocksToMerge();
+
         // Mark the block as merge complete
-        snapuserd_->SetMergeCompleted(block_index);
+        snapuserd_->SetMergeCompleted(ra_block_index_);
 
         // Notify RA thread that the merge thread is ready to merge the next
         // window
         snapuserd_->NotifyRAForMergeReady();
 
         // Get the next block
-        block_index += 1;
+        ra_block_index_ += 1;
     }
 
     return true;
@@ -343,7 +359,6 @@ bool Worker::MergeOrderedOps(const std::unique_ptr<ICowOpIter>& cowop_iter) {
     void* mapped_addr = snapuserd_->GetMappedAddr();
     void* read_ahead_buffer =
             static_cast<void*>((char*)mapped_addr + snapuserd_->GetBufferDataOffset());
-    size_t block_index = 0;
 
     SNAP_LOG(INFO) << "MergeOrderedOps started....";
 
@@ -357,11 +372,11 @@ bool Worker::MergeOrderedOps(const std::unique_ptr<ICowOpIter>& cowop_iter) {
         // Wait for RA thread to notify that the merge window
         // is ready for merging.
         if (!snapuserd_->WaitForMergeBegin()) {
-            snapuserd_->SetMergeFailed(block_index);
+            snapuserd_->SetMergeFailed(ra_block_index_);
             return false;
         }
 
-        snapuserd_->SetMergeInProgress(block_index);
+        snapuserd_->SetMergeInProgress(ra_block_index_);
 
         loff_t offset = 0;
         int num_ops = snapuserd_->GetTotalBlocksToMerge();
@@ -378,12 +393,13 @@ bool Worker::MergeOrderedOps(const std::unique_ptr<ICowOpIter>& cowop_iter) {
             // Write to the base device. Data is already in the RA buffer. Note
             // that XOR ops is already handled by the RA thread. We just write
             // the contents out.
-            int ret = pwrite(base_path_merge_fd_.get(), (char*)read_ahead_buffer + offset, io_size,
-                             source_offset);
+            int ret = TEMP_FAILURE_RETRY(pwrite(base_path_merge_fd_.get(),
+                                                (char*)read_ahead_buffer + offset, io_size,
+                                                source_offset));
             if (ret < 0 || ret != io_size) {
                 SNAP_LOG(ERROR) << "Failed to write to backing device while merging "
                                 << " at offset: " << source_offset << " io_size: " << io_size;
-                snapuserd_->SetMergeFailed(block_index);
+                snapuserd_->SetMergeFailed(ra_block_index_);
                 return false;
             }
 
@@ -397,7 +413,7 @@ bool Worker::MergeOrderedOps(const std::unique_ptr<ICowOpIter>& cowop_iter) {
         // Flush the data
         if (fsync(base_path_merge_fd_.get()) < 0) {
             SNAP_LOG(ERROR) << " Failed to fsync merged data";
-            snapuserd_->SetMergeFailed(block_index);
+            snapuserd_->SetMergeFailed(ra_block_index_);
             return false;
         }
 
@@ -405,20 +421,20 @@ bool Worker::MergeOrderedOps(const std::unique_ptr<ICowOpIter>& cowop_iter) {
         // the merge completion
         if (!snapuserd_->CommitMerge(snapuserd_->GetTotalBlocksToMerge())) {
             SNAP_LOG(ERROR) << " Failed to commit the merged block in the header";
-            snapuserd_->SetMergeFailed(block_index);
+            snapuserd_->SetMergeFailed(ra_block_index_);
             return false;
         }
 
         SNAP_LOG(DEBUG) << "Block commit of size: " << snapuserd_->GetTotalBlocksToMerge();
         // Mark the block as merge complete
-        snapuserd_->SetMergeCompleted(block_index);
+        snapuserd_->SetMergeCompleted(ra_block_index_);
 
         // Notify RA thread that the merge thread is ready to merge the next
         // window
         snapuserd_->NotifyRAForMergeReady();
 
         // Get the next block
-        block_index += 1;
+        ra_block_index_ += 1;
     }
 
     return true;
@@ -427,22 +443,36 @@ bool Worker::MergeOrderedOps(const std::unique_ptr<ICowOpIter>& cowop_iter) {
 bool Worker::Merge() {
     std::unique_ptr<ICowOpIter> cowop_iter = reader_->GetMergeOpIter();
 
-    if (merge_async_) {
-        if (!MergeOrderedOpsAsync(cowop_iter)) {
-            SNAP_LOG(ERROR) << "Merge failed for ordered ops";
-            snapuserd_->MergeFailed();
-            return false;
+    bool retry = false;
+
+    do {
+        if (merge_async_) {
+            if (!MergeOrderedOpsAsync(cowop_iter)) {
+                SNAP_LOG(ERROR) << "MergeOrderedOpsAsync failed - Falling back to synchrounus I/O";
+                FinalizeIouring();
+                // Reset the iter so that we retry the merge
+                while (blocks_merged_in_group_) {
+                    cowop_iter->Prev();
+                    blocks_merged_in_group_ -= 1;
+                }
+                merge_async_ = false;
+                retry = true;
+            } else {
+                SNAP_LOG(INFO) << "MergeOrderedOpsAsync completed.....";
+                break;
+            }
+        } else {
+            // Start with Copy and Xor ops
+            if (!MergeOrderedOps(cowop_iter)) {
+                SNAP_LOG(ERROR) << "Merge failed for ordered ops";
+                snapuserd_->MergeFailed();
+                return false;
+            } else {
+                SNAP_LOG(INFO) << "MergeOrderedOps completed.....";
+                break;
+            }
         }
-        SNAP_LOG(INFO) << "MergeOrderedOpsAsync completed.....";
-    } else {
-        // Start with Copy and Xor ops
-        if (!MergeOrderedOps(cowop_iter)) {
-            SNAP_LOG(ERROR) << "Merge failed for ordered ops";
-            snapuserd_->MergeFailed();
-            return false;
-        }
-        SNAP_LOG(INFO) << "MergeOrderedOps completed.....";
-    }
+    } while (retry);
 
     // Replace and Zero ops
     if (!MergeReplaceZeroOps(cowop_iter)) {
@@ -459,14 +489,6 @@ bool Worker::Merge() {
 bool Worker::InitializeIouring() {
     if (!snapuserd_->IsIouringSupported()) {
         return false;
-    }
-
-    {
-        // TODO: b/219642530 - Disable io_uring for merge
-        // until we figure out the cause of intermittent
-        // IO failures.
-        merge_async_ = false;
-        return true;
     }
 
     ring_ = std::make_unique<struct io_uring>();

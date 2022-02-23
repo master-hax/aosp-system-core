@@ -100,6 +100,8 @@ class ICowOpIter {
 
     // Advance to the next item.
     virtual void Next() = 0;
+
+    virtual void Prev(){};
 };
 
 class CowReader final : public ICowReader {
