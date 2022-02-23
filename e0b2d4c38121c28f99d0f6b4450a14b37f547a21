@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f85eeb6a_92f86dab",
+        "filename": "libprocessgroup/profiles/task_profiles.json",
+        "patchSetId": 2
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-02-23T17:27:23Z",
+      "side": 1,
+      "message": "I don\u0027t think these are needed.If a system is using V2 controller then its task_profiles should not use the attributes which are not available in V2. If they do then there should be an error message logged and the profile should be fixed.",
+      "range": {
+        "startLine": 39,
+        "startChar": 7,
+        "endLine": 39,
+        "endChar": 44
+      },
+      "revId": "e0b2d4c38121c28f99d0f6b4450a14b37f547a21",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
