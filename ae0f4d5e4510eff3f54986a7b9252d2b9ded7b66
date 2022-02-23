@@ -22,6 +22,30 @@
       },
       "revId": "ae0f4d5e4510eff3f54986a7b9252d2b9ded7b66",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f8ede7b9_b83c489a",
+        "filename": "trusty/keymaster/3.0/TrustyKeymaster3Device.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1836235
+      },
+      "writtenOn": "2022-02-23T06:46:57Z",
+      "side": 0,
+      "message": "I believe it\u0027s using a different `AuthorizationSet` (`keymaster::AuthorizationSet` rather than `keymaster::ng::AuthorizationSet`), included transitively via `trusty_keymaster/TrustyKeymaster3Device.h` -\u003e `trusty_keymaster/TrustyKeymaster.h` -\u003e `keymaster/android_keymaster_messages.h` -\u003e `keymaster/android_keymaster_messages.h`.\n\nAdded explicit include.",
+      "parentUuid": "547115b7_d87b2779",
+      "range": {
+        "startLine": 20,
+        "startChar": 10,
+        "endLine": 20,
+        "endChar": 27
+      },
+      "revId": "ae0f4d5e4510eff3f54986a7b9252d2b9ded7b66",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
