@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fc39b7e3_5eabcfcc",
+        "filename": "libprocessgroup/profiles/task_profiles.json",
+        "patchSetId": 11
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-02-23T17:23:02Z",
+      "side": 1,
+      "message": "This does not seem related to this patch.",
+      "range": {
+        "startLine": 19,
+        "startChar": 0,
+        "endLine": 23,
+        "endChar": 0
+      },
+      "revId": "e308ac9ea011c170a3afe4e6ffe4f6f0cb8cc3db",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "928c76ad_65955a80",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 210,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-02-23T17:23:02Z",
+      "side": 1,
+      "message": "This is a normal case and IMO should not be logged.",
+      "range": {
+        "startLine": 210,
+        "startChar": 12,
+        "endLine": 210,
+        "endChar": 65
+      },
+      "revId": "e308ac9ea011c170a3afe4e6ffe4f6f0cb8cc3db",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b9ccf814_c86db6be",
+        "filename": "libprocessgroup/task_profiles_test.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-02-23T17:23:02Z",
+      "side": 1,
+      "message": "Where is this function used?",
+      "range": {
+        "startLine": 88,
+        "startChar": 9,
+        "endLine": 88,
+        "endChar": 23
+      },
+      "revId": "e308ac9ea011c170a3afe4e6ffe4f6f0cb8cc3db",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e4858447_043cd85a",
+        "filename": "libprocessgroup/task_profiles_test.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 143,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-02-23T17:23:02Z",
+      "side": 1,
+      "message": "IIUC these tests check functionality of SetAttributeAction. If would be good to have a description/comment on what is being tested.",
+      "range": {
+        "startLine": 143,
+        "startChar": 0,
+        "endLine": 143,
+        "endChar": 24
+      },
+      "revId": "e308ac9ea011c170a3afe4e6ffe4f6f0cb8cc3db",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
