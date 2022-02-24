@@ -52,6 +52,24 @@
       "parentUuid": "df0f1502_7d776703",
       "revId": "27363f14379cbdae5de9c33dae71bed1c64c623a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9b9c6eda_e8b7e5d5",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-02-24T01:00:34Z",
+      "side": 1,
+      "message": "that seems fine as an _option_ for projects that _want_ clang-tidy ... but this is adding it to all projects [that clang-tidy struggles with], right? that seems like a mistake.",
+      "parentUuid": "172eabab_84648937",
+      "revId": "27363f14379cbdae5de9c33dae71bed1c64c623a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
