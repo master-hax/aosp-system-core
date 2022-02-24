@@ -34,6 +34,24 @@
       "parentUuid": "3fbd4fc4_5e81784e",
       "revId": "27363f14379cbdae5de9c33dae71bed1c64c623a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "172eabab_84648937",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1052399
+      },
+      "writtenOn": "2022-02-24T00:59:04Z",
+      "side": 1,
+      "message": "Although originally this tidy_timeout_srcs was designed to be a solution to avoid flaky warnings in daily clean builds, it also helps developers to clean up one directory without wasting time in other directories. For example, one might want to have higher TIDY_TIMEOUT value to check files in art/runtime, but do not want to spend a lot of time waiting for clang-tidy on other files in system/core.\nIf we put this list globally or generate it automatically, we will need another mechanism to allow long clang-tidy time in art/runtime, but not in other directories.\n\nIt\u0027s true that clang-tidy is getting slower every month, with more and more checks. Most of the timed out cases we found in Android are due to large files, large functions, or excessive amount of warnings of some tidy check. So, the  tidy_timeout_srcs should grow with each clang-tidy release, but structural improvement of the source code can reduce this list. We can have another nightly build with special configuration to \"allow\" tidy_timeout_srcs files, and check if any of them is improved and can finish in time.",
+      "parentUuid": "df0f1502_7d776703",
+      "revId": "27363f14379cbdae5de9c33dae71bed1c64c623a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
