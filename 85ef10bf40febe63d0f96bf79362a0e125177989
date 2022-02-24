@@ -1,0 +1,89 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8064a035_072c4aff",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-02-24T00:21:34Z",
+      "side": 1,
+      "message": "How do we make this test repeatable?",
+      "revId": "85ef10bf40febe63d0f96bf79362a0e125177989",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "005c745a_67ae8b6b",
+        "filename": "fs_mgr/libsnapshot/cow_reader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 605,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-02-24T00:21:34Z",
+      "side": 1,
+      "message": "How does the caller know when it\u0027s safe to call Prev? (eg, \"Done\" only works in one direction)",
+      "revId": "85ef10bf40febe63d0f96bf79362a0e125177989",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1bdf8e17_62f12a92",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_reader.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-02-24T00:21:34Z",
+      "side": 1,
+      "message": "This should be pure virtual?",
+      "revId": "85ef10bf40febe63d0f96bf79362a0e125177989",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a1738354_e7f11e77",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_merge.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 455,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-02-24T00:21:34Z",
+      "side": 1,
+      "message": "A \"rewind\" style API might be more appropriate here",
+      "revId": "85ef10bf40febe63d0f96bf79362a0e125177989",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8afa4b50_de06faf8",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_merge.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 462,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-02-24T00:21:34Z",
+      "side": 1,
+      "message": "This control flow is kind of confusing. In four branches there are two breaks, an implicit continue, and a return. Pulling it out into a helper function would probably help, since then you could early return if the async merge succeeds. But maybe there is some other way to organize this.",
+      "revId": "85ef10bf40febe63d0f96bf79362a0e125177989",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
