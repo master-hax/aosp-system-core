@@ -16,6 +16,24 @@
       "message": "This solution seems kind of unfortunate. It adds a lot of extra stuff to the build files, and it assumes the source structure doesn\u0027t change materially.\n\nWas it considered at all to make the build automatically learn which files timeout, as needed, rather than baking in a hardcoded list?",
       "revId": "27363f14379cbdae5de9c33dae71bed1c64c623a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "df0f1502_7d776703",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-02-24T00:02:43Z",
+      "side": 1,
+      "message": "yeah, especially because \"clang-tidy is slow on file $f\" is a property of that version of clang-tidy more than anything inherent in the file.\n\neven if we do have a denylist somewhere, i don\u0027t think it should be distributed throughout the tree like this. (and, yes, obviously it would be better to just not have an explicit list at all.)",
+      "parentUuid": "3fbd4fc4_5e81784e",
+      "revId": "27363f14379cbdae5de9c33dae71bed1c64c623a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
