@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "a98e5b53_503eec1d",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-02-24T00:34:08Z",
+      "side": 1,
+      "message": "We need fault injection. There are couple of ways to do this:\n\n1: We can have a socket call \"fail-merge\", wherein when merge is in-progress, client can invoke the socket call; snapuserd daemon will then fail the merge and fall back. I am working on this test case and will update it as a separate CL. For now, this has been tested by explicitly injecting the fault by instrumenting in the actual OTA path.",
+      "parentUuid": "8064a035_072c4aff",
+      "revId": "85ef10bf40febe63d0f96bf79362a0e125177989",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "005c745a_67ae8b6b",
@@ -48,6 +66,24 @@
       "writtenOn": "2022-02-24T00:21:34Z",
       "side": 1,
       "message": "This should be pure virtual?",
+      "revId": "85ef10bf40febe63d0f96bf79362a0e125177989",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bcf8fb88_715fe446",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_reader.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-02-24T00:34:08Z",
+      "side": 1,
+      "message": "There is no need to implement this for other classes. Only the Merge Iterator is the one which actually needs it.",
+      "parentUuid": "1bdf8e17_62f12a92",
       "revId": "85ef10bf40febe63d0f96bf79362a0e125177989",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
