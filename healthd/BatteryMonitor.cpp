@@ -75,16 +75,14 @@ static std::optional<T> mapSysfsString(const char* str, SysfsStringEnumMap<T> ma
 }
 
 static void initHealthInfo(HealthInfo_2_1* health_info_2_1) {
-    *health_info_2_1 = HealthInfo_2_1{};
-
-    // HIDL enum values are zero initialized, so they need to be initialized
-    // properly.
-    health_info_2_1->batteryCapacityLevel = BatteryCapacityLevel::UNSUPPORTED;
-    health_info_2_1->batteryChargeTimeToFullNowSeconds =
-            (int64_t)Constants::BATTERY_CHARGE_TIME_TO_FULL_NOW_SECONDS_UNSUPPORTED;
-    auto* props = &health_info_2_1->legacy.legacy;
-    props->batteryStatus = BatteryStatus::UNKNOWN;
-    props->batteryHealth = BatteryHealth::UNKNOWN;
+    *health_info_2_1 = {
+            .batteryCapacityLevel = BatteryCapacityLevel::UNSUPPORTED,
+            .batteryChargeTimeToFullNowSeconds =
+                    (int64_t)Constants::BATTERY_CHARGE_TIME_TO_FULL_NOW_SECONDS_UNSUPPORTED,
+            .legacy.legacy = {
+                    .batteryStatus = BatteryStatus::UNKNOWN,
+                    .batteryHealth = BatteryHealth::UNKNOWN,
+            }};
 }
 
 BatteryMonitor::BatteryMonitor()
