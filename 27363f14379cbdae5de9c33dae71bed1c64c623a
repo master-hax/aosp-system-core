@@ -70,6 +70,24 @@
       "parentUuid": "172eabab_84648937",
       "revId": "27363f14379cbdae5de9c33dae71bed1c64c623a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "25766c57_4ea75796",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1052399
+      },
+      "writtenOn": "2022-02-24T19:34:04Z",
+      "side": 1,
+      "message": "Yes, tidy_timeout_srcs is optional and has no impact if TIDY_TIMEOUT is not set.\nIt is like a friendly notice that says: if you want to build this project with TIDY_TIMEOUT, here are the files that you can skip to save time.",
+      "parentUuid": "9b9c6eda_e8b7e5d5",
+      "revId": "27363f14379cbdae5de9c33dae71bed1c64c623a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
