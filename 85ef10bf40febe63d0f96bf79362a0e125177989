@@ -38,6 +38,24 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "61c67d32_2be0ab73",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-02-24T05:17:14Z",
+      "side": 1,
+      "message": "sgtm, as long as we don\u0027t forget to do it.",
+      "parentUuid": "a98e5b53_503eec1d",
+      "revId": "85ef10bf40febe63d0f96bf79362a0e125177989",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "005c745a_67ae8b6b",
         "filename": "fs_mgr/libsnapshot/cow_reader.cpp",
         "patchSetId": 2
