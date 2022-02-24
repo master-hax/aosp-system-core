@@ -159,24 +159,23 @@ void ExpectChargerResAt(const std::string& root) {
 
 // Test that if resources does not exist in /res or in /product/etc/res, load from /system.
 TEST(ChargerLoadAnimationRes, Empty) {
-    ForkTest("empty", std::bind(&ExpectChargerResAt, "/system/etc/res/images/"));
+    ForkTest("empty", []() { ExpectChargerResAt("/system/etc/res/images/"); });
 }
 
 // Test loading everything from /res
 TEST(ChargerLoadAnimationRes, Legacy) {
-    ForkTest("legacy", std::bind(&ExpectChargerResAt, "/res/images/"));
+    ForkTest("legacy", []() { ExpectChargerResAt("/res/images/"); });
 }
 
 // Test loading animation text from /res but images from /system if images does not exist under
 // /res.
 TEST(ChargerLoadAnimationRes, LegacyTextSystemImages) {
-    ForkTest("legacy_text_system_images",
-             std::bind(&ExpectChargerResAt, "/system/etc/res/images/"));
+    ForkTest("legacy_text_system_images", []() { ExpectChargerResAt("/system/etc/res/images/"); });
 }
 
 // Test loading everything from /product
 TEST(ChargerLoadAnimationRes, Product) {
-    ForkTest("product", std::bind(&ExpectChargerResAt, "/product/etc/res/images/"));
+    ForkTest("product", []() { ExpectChargerResAt("/product/etc/res/images/"); });
 }
 
 }  // namespace android
