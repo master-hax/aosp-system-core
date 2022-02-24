@@ -16,6 +16,29 @@
       "message": "Thanks, this is much easier to follow now.",
       "revId": "2e4018d914078fa74ee50c230081a7b918724f46",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "52eb4f8a_e3ec066f",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_merge.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 485,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2022-02-24T05:27:05Z",
+      "side": 1,
+      "message": "nit `const bool`",
+      "range": {
+        "startLine": 485,
+        "startChar": 4,
+        "endLine": 485,
+        "endChar": 8
+      },
+      "revId": "2e4018d914078fa74ee50c230081a7b918724f46",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
