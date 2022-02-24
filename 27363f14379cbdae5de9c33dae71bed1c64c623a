@@ -88,6 +88,24 @@
       "parentUuid": "9b9c6eda_e8b7e5d5",
       "revId": "27363f14379cbdae5de9c33dae71bed1c64c623a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "00887abb_17e82fe5",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-02-24T19:35:42Z",
+      "side": 1,
+      "message": "yeah, but it\u0027s combined with a global postsubmit?\n\ni think the amount of disruption here is past the point where we should have a design doc... (in particular, i\u0027m still confused about what the end state is here.)",
+      "parentUuid": "25766c57_4ea75796",
+      "revId": "27363f14379cbdae5de9c33dae71bed1c64c623a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
