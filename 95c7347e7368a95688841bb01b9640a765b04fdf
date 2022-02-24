@@ -146,6 +146,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "680957f3_b654af5d",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 379,
+      "author": {
+        "id": 1324603
+      },
+      "writtenOn": "2022-02-24T12:46:27Z",
+      "side": 1,
+      "message": "I am thinking if there will be some case in the future that we will want to write something to /proc/[pid|tid]/xxx, if so, maybe both could support it, if not, then we could remove it.",
+      "parentUuid": "cac35244_2bede082",
+      "range": {
+        "startLine": 378,
+        "startChar": 7,
+        "endLine": 379,
+        "endChar": 71
+      },
+      "revId": "95c7347e7368a95688841bb01b9640a765b04fdf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "c07c7899_9002dd08",
         "filename": "libprocessgroup/task_profiles.cpp",
         "patchSetId": 9
