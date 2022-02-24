@@ -745,8 +745,7 @@ void Charger::OnInit(struct healthd_config* config) {
 
     LOGW("--------------- STARTING CHARGER MODE ---------------\n");
 
-    ret = ev_init(
-            std::bind(&Charger::InputCallback, this, std::placeholders::_1, std::placeholders::_2));
+    ret = ev_init([this](int fd, uint32_t epevents) { return InputCallback(fd, epevents); });
     if (!ret) {
         epollfd = ev_get_epollfd();
         configuration_->ChargerRegisterEvent(epollfd, &charger_event_handler, EVENT_WAKEUP_FD);
