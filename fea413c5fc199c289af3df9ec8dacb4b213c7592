@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "b8511914_8661543d",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1124693
+      },
+      "writtenOn": "2022-02-25T20:35:36Z",
+      "side": 1,
+      "message": "Only `-r` is used in our test_map\nhttps://android.googlesource.com/trusty/vendor/google/aosp/+/refs/heads/master/scripts/test-map#183\n\nGtest has an equivalent `--gtest_repeat`.\nhttps://github.com/google/googletest/blob/main/docs/advanced.md#repeating-the-tests\n\nSo I\u0027m not sure it\u0027s much of a loss.",
+      "parentUuid": "592e07d0_0330b7a8",
+      "revId": "fea413c5fc199c289af3df9ec8dacb4b213c7592",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "d8e12e5e_f850f6b5",
