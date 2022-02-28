@@ -328,6 +328,8 @@ bool ReadAhead::ReadAheadAsyncIO() {
                 return false;
             }
 
+            TEST_MERGE_FAILURE;
+
             // Retrieve XOR'ed data
             if (xor_processing_required) {
                 ProcessXorData(block_index, xor_op_index, xor_op_vec, ra_temp_buffer_.get(),

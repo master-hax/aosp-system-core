@@ -315,6 +315,8 @@ bool Worker::MergeOrderedOpsAsync() {
                     return false;
                 }
 
+                TEST_MERGE_FAILURE;
+
                 pending_sqe = queue_depth_;
             }
 

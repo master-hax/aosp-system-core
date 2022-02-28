@@ -345,6 +345,15 @@ class SnapshotHandler : public std::enable_shared_from_this<SnapshotHandler> {
 
     bool IsIouringSupported();
 
+    // Used only during testing
+    bool FailMerge() {
+        if (merge_failed_.has_value()) {
+            return merge_failed_.value();
+        }
+        return false;
+    }
+    void SetMergeFailure() { merge_failed_ = true; }
+
   private:
     bool ReadMetadata();
     sector_t ChunkToSector(chunk_t chunk) { return chunk << CHUNK_SHIFT; }
@@ -397,6 +406,8 @@ class SnapshotHandler : public std::enable_shared_from_this<SnapshotHandler> {
     std::unique_ptr<ReadAhead> read_ahead_thread_;
     std::unordered_map<uint64_t, void*> read_ahead_buffer_map_;
 
+    std::optional<bool> merge_failed_;
+
     // user-space-merging
     std::unordered_map<uint64_t, int> block_to_ra_index_;
 
@@ -414,6 +425,14 @@ class SnapshotHandler : public std::enable_shared_from_this<SnapshotHandler> {
 
     std::unique_ptr<struct io_uring> ring_;
 };
+
+#define TEST_MERGE_FAILURE                                \
+    do {                                                  \
+        if (snapuserd_->FailMerge()) {                    \
+            SNAP_LOG(ERROR) << "Merge failure triggered"; \
+            return false;                                 \
+        }                                                 \
+    } while (0)
 
 }  // namespace snapshot
 }  // namespace android

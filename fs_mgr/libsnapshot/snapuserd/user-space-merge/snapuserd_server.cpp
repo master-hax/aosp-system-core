@@ -55,6 +55,7 @@ DaemonOps UserSnapshotServer::Resolveop(std::string& input) {
     if (input == "initiate_merge") return DaemonOps::INITIATE;
     if (input == "merge_percent") return DaemonOps::PERCENTAGE;
     if (input == "getstatus") return DaemonOps::GETSTATUS;
+    if (input == "merge_fail") return DaemonOps::FAIL_MERGE;
 
     return DaemonOps::INVALID;
 }
@@ -267,7 +268,7 @@ bool UserSnapshotServer::Receivemsg(android::base::borrowed_fd fd, const std::st
             // Message format:
             // getstatus,<misc_name>
             if (out.size() != 2) {
-                LOG(ERROR) << "Malformed delete message, " << out.size() << " parts";
+                LOG(ERROR) << "Malformed getstatus message, " << out.size() << " parts";
                 return Sendmsg(fd, "snapshot-merge-failed");
             }
             {
@@ -280,6 +281,25 @@ bool UserSnapshotServer::Receivemsg(android::base::borrowed_fd fd, const std::st
 
                 std::string merge_status = GetMergeStatus(*iter);
                 return Sendmsg(fd, merge_status);
+            }
+        }
+        case DaemonOps::FAIL_MERGE: {
+            // Message format:
+            // merge_fail,<misc_name>
+            if (out.size() != 2) {
+                LOG(ERROR) << "Malformed merge_fail message, " << out.size() << " parts";
+                return Sendmsg(fd, "fail");
+            }
+            {
+                std::lock_guard<std::mutex> lock(lock_);
+                auto iter = FindHandler(&lock, out[1]);
+                if (iter == dm_users_.end()) {
+                    LOG(ERROR) << "Could not find handler: " << out[1];
+                    return Sendmsg(fd, "fail");
+                }
+
+                (*iter)->snapuserd()->SetMergeFailure();
+                return Sendmsg(fd, "success");
             }
         }
         default: {
