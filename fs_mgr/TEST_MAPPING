@@ -26,6 +26,9 @@
     },
     {
       "name": "cow_api_test"
+    },
+    {
+      "name": "snapuserd_test"
     }
   ]
 }

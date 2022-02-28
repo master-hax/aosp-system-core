@@ -269,5 +269,16 @@ std::string SnapuserdClient::QuerySnapshotStatus(const std::string& misc_name) {
     return Receivemsg();
 }
 
+bool SnapuserdClient::TriggerMergeFailure(const std::string& misc_name) {
+    std::string msg = "merge_fail," + misc_name;
+    if (!Sendmsg(msg)) {
+        LOG(ERROR) << "Failed to send message " << msg << " to snapuserd";
+        return false;
+    }
+
+    std::string response = Receivemsg();
+    return response == "success";
+}
+
 }  // namespace snapshot
 }  // namespace android

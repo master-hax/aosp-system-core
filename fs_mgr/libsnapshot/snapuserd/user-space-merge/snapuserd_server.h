@@ -46,6 +46,7 @@ enum class DaemonOps {
     INITIATE,
     PERCENTAGE,
     GETSTATUS,
+    FAIL_MERGE,
     INVALID,
 };
 

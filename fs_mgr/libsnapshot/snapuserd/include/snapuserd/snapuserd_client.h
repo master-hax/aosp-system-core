@@ -89,6 +89,9 @@ class SnapuserdClient {
 
     // Return the status of the snapshot
     std::string QuerySnapshotStatus(const std::string& misc_name);
+
+    // Trigger Merge failure to simulate fallback to synchronous merge
+    bool TriggerMergeFailure(const std::string& misc_name);
 };
 
 }  // namespace snapshot

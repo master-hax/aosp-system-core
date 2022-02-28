@@ -115,6 +115,7 @@ class SnapuserTest final {
     void MergeInterruptRandomly(int max_duration);
     void StartMerge();
     void CheckMergeCompletion();
+    void TriggerMergeFailure();
 
     static const uint64_t kSectorSize = 512;
 
@@ -657,6 +658,11 @@ void SnapuserTest::CheckMergeCompletion() {
     }
 }
 
+void SnapuserTest::TriggerMergeFailure() {
+    bool ok = client_->TriggerMergeFailure(system_device_ctrl_name_);
+    ASSERT_TRUE(ok);
+}
+
 void SnapuserTest::SetupImpl() {
     CreateBaseDevice();
     CreateCowDevice();
@@ -856,6 +862,22 @@ TEST(Snapuserd_Test, Snapshot_Merge_Crash_Random_Inverted) {
     harness.MergeInterruptRandomly(50);
     harness.ValidateMerge();
     harness.Shutdown();
+}
+
+TEST(Snapuserd_Test, Snapshot_ASYNC_MERGE_FAILURE) {
+    SnapuserTest test;
+    ASSERT_TRUE(test.Setup());
+    // Start the merge
+    test.StartMerge();
+    // Allow merge to progress for sometime
+    std::this_thread::sleep_for(100ms);
+    // Force async merge failure
+    test.TriggerMergeFailure();
+    // Issue I/O in parallel when merge is in-progress
+    std::async(std::launch::async, &SnapuserTest::ReadSnapshotDeviceAndValidate, &test);
+    test.CheckMergeCompletion();
+    test.ValidateMerge();
+    test.Shutdown();
 }
 
 }  // namespace snapshot
