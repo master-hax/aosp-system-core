@@ -1,6 +1,23 @@
 {
   "comments": [
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "82713d54_53057af7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-03-01T00:44:16Z",
+      "side": 1,
+      "message": "The scalable way to test this would be to embed snapuserd as a library, so we don\u0027t have to spawn the daemon - and then to mock/abstract out the io_uring calls.\n\nThe direct injection method will get very difficult to extend because every failure point needs a different injection type. We\u0027ve done things like this in the past in libsnapshot, but we\u0027ve been trying to lean more in the direction of layers that can be recomposed.",
+      "revId": "beac0ab313f21a3e94aaf5c2347b3947630774f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "3b8947b5_b7bc9c4d",
