@@ -16,6 +16,24 @@
       "message": "Does it make sense to move the \"flags_ \u0026 SVC_CONSOLE\" check into CheckConsole, so it can early return no error? Then here we\u0027d just need:\n\n    if (auto result \u003d CheckConsole(); !result.ok() {\n        ....\n\nAnd then we don\u0027t need the single-use macro below.",
       "revId": "b37ab289a4046b9896e9e916bdf492b50c481d22",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3979596b_c58e9507",
+        "filename": "init/service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 466,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-03-01T01:40:11Z",
+      "side": 1,
+      "message": "Thanks for the quick feedback. This suggestion has been implemented.",
+      "parentUuid": "2c3d8c93_268ab3ad",
+      "revId": "b37ab289a4046b9896e9e916bdf492b50c481d22",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
