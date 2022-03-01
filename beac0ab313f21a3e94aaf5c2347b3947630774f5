@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "47f8897a_3f3c4c9a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-03-01T01:02:41Z",
+      "side": 1,
+      "message": "As I mentioned offline, the problem here is not just io_uring specific. We need abstraction for dm-user/block I/O layers as well in order to test all the negative paths. Some of the negative cases which needs fault injection testing is captured here:\n\nhttps://docs.google.com/document/d/1jp2iaKwNGqpelw0l0x3wIVrXS1YRnM8yq_x_5bEH75M/edit\n\nI agree the direct injection method isn\u0027t scalable and is not easy; if you prefer addressing this holistically by abstracting dm-user/io_uring layers then I will back off this CL. It will require some code abstraction but we will be helpful in the long run.",
+      "parentUuid": "82713d54_53057af7",
+      "revId": "beac0ab313f21a3e94aaf5c2347b3947630774f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "3b8947b5_b7bc9c4d",
