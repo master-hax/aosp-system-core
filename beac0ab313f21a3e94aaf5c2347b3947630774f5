@@ -1,0 +1,119 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3b8947b5_b7bc9c4d",
+        "filename": "fs_mgr/libsnapshot/snapuserd/include/snapuserd/snapuserd_client.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2022-03-01T00:25:27Z",
+      "side": 1,
+      "message": "It\u0027s less ideal to interleave testing code with production code. Maybe make `Sendmsg` and `Receivemsg` protected, and create a subclass which has `TriggerMergeFailure` ?",
+      "range": {
+        "startLine": 94,
+        "startChar": 9,
+        "endLine": 94,
+        "endChar": 28
+      },
+      "revId": "beac0ab313f21a3e94aaf5c2347b3947630774f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a30ff420_4b4c154b",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_core.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 349,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2022-03-01T00:25:27Z",
+      "side": 1,
+      "message": "const",
+      "range": {
+        "startLine": 349,
+        "startChar": 9,
+        "endLine": 349,
+        "endChar": 18
+      },
+      "revId": "beac0ab313f21a3e94aaf5c2347b3947630774f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "60e8dfd2_b1f80376",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_core.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 355,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2022-03-01T00:25:27Z",
+      "side": 1,
+      "message": "Guard this with #ifdef DEBUG? It\u0027s a bit scary that we are injecting testing code directly into prod classes. But I can\u0027t think of a better alternative. Upto you.",
+      "range": {
+        "startLine": 355,
+        "startChar": 0,
+        "endLine": 355,
+        "endChar": 52
+      },
+      "revId": "beac0ab313f21a3e94aaf5c2347b3947630774f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1e71d5e3_d4ca538c",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_core.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 429,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2022-03-01T00:25:27Z",
+      "side": 1,
+      "message": "I think it\u0027s more readable to just inline this everywhere, instead of defining a MACRO.",
+      "range": {
+        "startLine": 429,
+        "startChar": 8,
+        "endLine": 429,
+        "endChar": 26
+      },
+      "revId": "beac0ab313f21a3e94aaf5c2347b3947630774f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "357ea3b0_bda075f9",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_merge.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 329,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2022-03-01T00:25:27Z",
+      "side": 1,
+      "message": "CHECK_EQ(), but this can be done in a different CL.",
+      "range": {
+        "startLine": 329,
+        "startChar": 8,
+        "endLine": 329,
+        "endChar": 13
+      },
+      "revId": "beac0ab313f21a3e94aaf5c2347b3947630774f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
