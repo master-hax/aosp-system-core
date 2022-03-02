@@ -106,6 +106,24 @@
       "parentUuid": "e27281c6_51c5ad2a",
       "revId": "d32d3e03ac825bcba6d9e03e8a382ecc0fa49d99",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "14f46d00_c9c4a49e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1010056
+      },
+      "writtenOn": "2022-03-02T19:30:01Z",
+      "side": 1,
+      "message": "You can use C++20 now (except for library features, since libc++ is still not fully updated for it). You may have to set `cpp_std` appropriately if this gives you presubmit failures. https://cs.android.com/search?q\u003dcpp_std:\u0026sq\u003d\u0026ss\u003dandroid%2Fplatform%2Fsuperproject has some examples of how to do this in an Android.bp.",
+      "parentUuid": "6b3e08f0_ed721eac",
+      "revId": "d32d3e03ac825bcba6d9e03e8a382ecc0fa49d99",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
