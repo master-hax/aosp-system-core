@@ -175,7 +175,7 @@ BatteryHealth getBatteryHealth(const char* status) {
     return *ret;
 }
 
-int BatteryMonitor::readFromFile(const String8& path, std::string* buf) {
+static int readFromFile(const String8& path, std::string* buf) {
     buf->clear();
     if (android::base::ReadFileToString(path.c_str(), buf)) {
         *buf = android::base::Trim(*buf);
@@ -183,39 +183,40 @@ int BatteryMonitor::readFromFile(const String8& path, std::string* buf) {
     return buf->length();
 }
 
-BatteryMonitor::PowerSupplyType BatteryMonitor::readPowerSupplyType(const String8& path) {
+static BatteryMonitor::PowerSupplyType readPowerSupplyType(const String8& path) {
     static SysfsStringEnumMap<int> supplyTypeMap[] = {
-            {"Unknown", ANDROID_POWER_SUPPLY_TYPE_UNKNOWN},
-            {"Battery", ANDROID_POWER_SUPPLY_TYPE_BATTERY},
-            {"UPS", ANDROID_POWER_SUPPLY_TYPE_AC},
-            {"Mains", ANDROID_POWER_SUPPLY_TYPE_AC},
-            {"USB", ANDROID_POWER_SUPPLY_TYPE_USB},
-            {"USB_DCP", ANDROID_POWER_SUPPLY_TYPE_AC},
-            {"USB_HVDCP", ANDROID_POWER_SUPPLY_TYPE_AC},
-            {"USB_CDP", ANDROID_POWER_SUPPLY_TYPE_AC},
-            {"USB_ACA", ANDROID_POWER_SUPPLY_TYPE_AC},
-            {"USB_C", ANDROID_POWER_SUPPLY_TYPE_AC},
-            {"USB_PD", ANDROID_POWER_SUPPLY_TYPE_AC},
-            {"USB_PD_DRP", ANDROID_POWER_SUPPLY_TYPE_USB},
-            {"Wireless", ANDROID_POWER_SUPPLY_TYPE_WIRELESS},
-            {"Dock", ANDROID_POWER_SUPPLY_TYPE_DOCK},
+            {"Unknown", BatteryMonitor::ANDROID_POWER_SUPPLY_TYPE_UNKNOWN},
+            {"Battery", BatteryMonitor::ANDROID_POWER_SUPPLY_TYPE_BATTERY},
+            {"UPS", BatteryMonitor::ANDROID_POWER_SUPPLY_TYPE_AC},
+            {"Mains", BatteryMonitor::ANDROID_POWER_SUPPLY_TYPE_AC},
+            {"USB", BatteryMonitor::ANDROID_POWER_SUPPLY_TYPE_USB},
+            {"USB_DCP", BatteryMonitor::ANDROID_POWER_SUPPLY_TYPE_AC},
+            {"USB_HVDCP", BatteryMonitor::ANDROID_POWER_SUPPLY_TYPE_AC},
+            {"USB_CDP", BatteryMonitor::ANDROID_POWER_SUPPLY_TYPE_AC},
+            {"USB_ACA", BatteryMonitor::ANDROID_POWER_SUPPLY_TYPE_AC},
+            {"USB_C", BatteryMonitor::ANDROID_POWER_SUPPLY_TYPE_AC},
+            {"USB_PD", BatteryMonitor::ANDROID_POWER_SUPPLY_TYPE_AC},
+            {"USB_PD_DRP", BatteryMonitor::ANDROID_POWER_SUPPLY_TYPE_USB},
+            {"Wireless", BatteryMonitor::ANDROID_POWER_SUPPLY_TYPE_WIRELESS},
+            {"Dock", BatteryMonitor::ANDROID_POWER_SUPPLY_TYPE_DOCK},
             {NULL, 0},
     };
     std::string buf;
 
-    if (readFromFile(path, &buf) <= 0)
-        return ANDROID_POWER_SUPPLY_TYPE_UNKNOWN;
+    if (readFromFile(path, &buf) <= 0) {
+        return BatteryMonitor::ANDROID_POWER_SUPPLY_TYPE_UNKNOWN;
+    }
 
     auto ret = mapSysfsString(buf.c_str(), supplyTypeMap);
     if (!ret) {
         KLOG_WARNING(LOG_TAG, "Unknown power supply type '%s'\n", buf.c_str());
-        *ret = ANDROID_POWER_SUPPLY_TYPE_UNKNOWN;
+        *ret = BatteryMonitor::ANDROID_POWER_SUPPLY_TYPE_UNKNOWN;
     }
 
     return static_cast<BatteryMonitor::PowerSupplyType>(*ret);
 }
 
-bool BatteryMonitor::getBooleanField(const String8& path) {
+static bool getBooleanField(const String8& path) {
     std::string buf;
     bool value = false;
 
@@ -226,7 +227,7 @@ bool BatteryMonitor::getBooleanField(const String8& path) {
     return value;
 }
 
-int BatteryMonitor::getIntField(const String8& path) {
+static int getIntField(const String8& path) {
     std::string buf;
     int value = 0;
 
@@ -236,7 +237,7 @@ int BatteryMonitor::getIntField(const String8& path) {
     return value;
 }
 
-bool BatteryMonitor::isScopedPowerSupply(const char* name) {
+static bool isScopedPowerSupply(const char* name) {
     constexpr char kScopeDevice[] = "Device";
 
     String8 path;
