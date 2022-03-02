@@ -195,6 +195,24 @@
       "parentUuid": "33ae79e1_f1a0ba0f",
       "revId": "d32d3e03ac825bcba6d9e03e8a382ecc0fa49d99",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "76eba5d3_9e923472",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-03-02T21:04:51Z",
+      "side": 1,
+      "message": "The code in this patch builds fine without specifying the C++ standard level. Does this mean that I do not have to set cpp_std in Android.bp?",
+      "parentUuid": "3fbfd6e2_a4b636d3",
+      "revId": "d32d3e03ac825bcba6d9e03e8a382ecc0fa49d99",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
