@@ -79,12 +79,6 @@ class BatteryMonitor {
     // TODO(b/214126090): to migrate to AIDL HealthInfo
     bool mChargerDockOnline;
     std::unique_ptr<android::hardware::health::V2_1::HealthInfo> mHealthInfo;
-
-    int readFromFile(const String8& path, std::string* buf);
-    PowerSupplyType readPowerSupplyType(const String8& path);
-    bool getBooleanField(const String8& path);
-    int getIntField(const String8& path);
-    bool isScopedPowerSupply(const char* name);
 };
 
 }; // namespace android
