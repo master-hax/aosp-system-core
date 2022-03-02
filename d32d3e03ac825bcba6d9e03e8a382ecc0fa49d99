@@ -52,6 +52,24 @@
       "parentUuid": "21095d4c_722a7bba",
       "revId": "d32d3e03ac825bcba6d9e03e8a382ecc0fa49d99",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bf3012df_4e38f6cc",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-03-02T17:13:53Z",
+      "side": 1,
+      "message": "Right, this patch relies on a C++20 feature. Is it safe to raise the required conformance level from C++17 to C++20 or should I rather drop this patch?",
+      "parentUuid": "4eea686a_93477ed6",
+      "revId": "d32d3e03ac825bcba6d9e03e8a382ecc0fa49d99",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
