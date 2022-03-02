@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a29a960c_505918d6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2022-03-02T01:37:48Z",
+      "side": 1,
+      "message": "Hmm I am not sure about this. Will memberwise initialization zero-out the unspecified fields?\n\nAlso, this will conflict with aosp/2004731. Could you wait until that is merged before submitting this? Thanks!",
+      "revId": "d32d3e03ac825bcba6d9e03e8a382ecc0fa49d99",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
