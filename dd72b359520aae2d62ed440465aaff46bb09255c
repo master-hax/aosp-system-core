@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7d4cfed6_ef53c7c1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-03-02T23:15:20Z",
+      "side": 1,
+      "message": "i think you might need to wait a day... the trusty folks just grabbed the next three?\n\nhttps://android-review.googlesource.com/c/platform/system/core/+/2002211",
+      "revId": "dd72b359520aae2d62ed440465aaff46bb09255c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
