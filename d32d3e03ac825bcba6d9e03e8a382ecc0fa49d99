@@ -124,6 +124,24 @@
       "parentUuid": "6b3e08f0_ed721eac",
       "revId": "d32d3e03ac825bcba6d9e03e8a382ecc0fa49d99",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "046be279_09f8112f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2022-03-02T19:42:49Z",
+      "side": 1,
+      "message": "You mean like `cpp_std: \"experimental\"` or `cpp_std: \"gnu++20\"`? Would `cpp_std: \"c++20\"` work?\n\nAnyways, looks like TH is happy with it, so feel free to submit this change without an Android.bp change.",
+      "parentUuid": "14f46d00_c9c4a49e",
+      "revId": "d32d3e03ac825bcba6d9e03e8a382ecc0fa49d99",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
