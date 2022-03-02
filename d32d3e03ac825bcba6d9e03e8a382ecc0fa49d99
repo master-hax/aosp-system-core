@@ -88,6 +88,24 @@
       "parentUuid": "bf3012df_4e38f6cc",
       "revId": "d32d3e03ac825bcba6d9e03e8a382ecc0fa49d99",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6b3e08f0_ed721eac",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2022-03-02T19:24:36Z",
+      "side": 1,
+      "message": "Colin / Stephen, do we have C++20 support right now? Or does C++20 requires the experimental flag in Android.bp?\n\nIf it requires the experimental flag, I would rather drop this patch.",
+      "parentUuid": "e27281c6_51c5ad2a",
+      "revId": "d32d3e03ac825bcba6d9e03e8a382ecc0fa49d99",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
