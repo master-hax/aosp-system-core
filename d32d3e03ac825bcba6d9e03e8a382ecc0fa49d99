@@ -177,6 +177,24 @@
       "parentUuid": "046be279_09f8112f",
       "revId": "d32d3e03ac825bcba6d9e03e8a382ecc0fa49d99",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3fbfd6e2_a4b636d3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-03-02T21:01:01Z",
+      "side": 1,
+      "message": "(you may already know this but...) when we do bump the platform default to C++20, it\u0027ll be to *gnu++20* because almost everyone actually wants the various extensions. if you do prefer *c++20* please add a comment in the .bp file explaining _why_ you chose that, so whoever does the cleanup knows that it was deliberate (and then whoever does the C++23 bump will know whether or not you meant *max* 20, or *min* 20 --- yeah, none of our choices here are great, and ideally we\u0027d have gotten to the global C++20 bump sooner so you\u0027d never have been in this position; sadly C++20 changes some operator lookup rules, so it\u0027s a non-trivial bump :-( ).",
+      "parentUuid": "33ae79e1_f1a0ba0f",
+      "revId": "d32d3e03ac825bcba6d9e03e8a382ecc0fa49d99",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
