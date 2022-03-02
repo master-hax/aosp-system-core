@@ -34,6 +34,24 @@
       "parentUuid": "a29a960c_505918d6",
       "revId": "d32d3e03ac825bcba6d9e03e8a382ecc0fa49d99",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4eea686a_93477ed6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2022-03-02T01:47:53Z",
+      "side": 1,
+      "message": "https://en.cppreference.com/w/cpp/language/aggregate_initialization\n\nIt looks like designated initialization is available at C++20. I think we are at C++17 right now (unless I have outdated information)",
+      "parentUuid": "21095d4c_722a7bba",
+      "revId": "d32d3e03ac825bcba6d9e03e8a382ecc0fa49d99",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
