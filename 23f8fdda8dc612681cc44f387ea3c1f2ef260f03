@@ -55,6 +55,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "46ab0d42_597c8e75",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1814885
+      },
+      "writtenOn": "2022-03-03T04:14:53Z",
+      "side": 1,
+      "message": "WaitForProperty() doesn\u0027t seem to work on the test environment because the property \u0027apexd.status\u0027 doesn\u0027t exist or is not set to \u0027activated\u0027. On the normal boot, \u0027apexd.status\u0027 should have \u0027activated\u0027. Could you check that \u0027apexd.status\u0027 exists and what does it have on the test environment?",
+      "parentUuid": "8f9a033d_7194a9e0",
+      "revId": "23f8fdda8dc612681cc44f387ea3c1f2ef260f03",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "3257d269_72719461",
         "filename": "init/firmware_handler.cpp",
         "patchSetId": 2
