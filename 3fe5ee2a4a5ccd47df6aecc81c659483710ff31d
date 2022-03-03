@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "78517b77_cafe06e9",
+        "filename": "init/README.ueventd.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 152,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-03-03T01:28:18Z",
+      "side": 1,
+      "message": "nit: \"called\"",
+      "revId": "3fe5ee2a4a5ccd47df6aecc81c659483710ff31d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
