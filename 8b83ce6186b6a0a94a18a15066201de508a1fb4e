@@ -16,6 +16,24 @@
       "message": "+1 so you have OWNERS approval, but only +1 so that swillden (who actually knows something about this stuff) still has to actually sign off that it was _only_ the indentation he wasn\u0027t happy about :-)",
       "revId": "8b83ce6186b6a0a94a18a15066201de508a1fb4e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6d1fa48b_ae056b22",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1887766
+      },
+      "writtenOn": "2022-03-03T06:09:50Z",
+      "side": 1,
+      "message": "Resolving this as Shawn as given +2.",
+      "parentUuid": "d6d74d2b_a3644d79",
+      "revId": "8b83ce6186b6a0a94a18a15066201de508a1fb4e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
