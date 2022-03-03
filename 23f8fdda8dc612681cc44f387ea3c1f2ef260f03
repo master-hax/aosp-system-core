@@ -38,6 +38,23 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "8f9a033d_7194a9e0",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-03-03T02:51:11Z",
+      "side": 1,
+      "message": "It looks like this is causing \"CtsInitTestCases.firmware_handler#HandleChange\" to fail:\n\n    system/core/init/firmware_handler_test.cpp:46: Failure\n    system/core/init/firmware_handler_test.cpp:46: Failure\n    Expected equality of these values:\n        \"other_firmware001.bin\"\n        firmware_handler.GetFirmwarePath(uevent)\n    Which is: \"test_firmware001.bin\"",
+      "revId": "23f8fdda8dc612681cc44f387ea3c1f2ef260f03",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "3257d269_72719461",
         "filename": "init/firmware_handler.cpp",
         "patchSetId": 2
