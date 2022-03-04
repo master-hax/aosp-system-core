@@ -108,15 +108,44 @@ void SetMountProperty(const MountHandlerEntry& entry, bool add) {
     std::replace(mount_prop.begin(), mount_prop.end(), '/', '.');
     auto blk_mount_prop = "dev.mnt.blk" + mount_prop;
     auto dev_mount_prop = "dev.mnt.dev" + mount_prop;
+    auto rootdisk_mount_prop = "dev.mnt.rootdisk" + mount_prop;
     // Set property even if its value does not change to trigger 'on property:'
     // handling, except for clearing non-existent or already clear property.
     // Goal is reduction of empty properties and associated triggers.
     if (value.empty() && android::base::GetProperty(blk_mount_prop, "").empty()) return;
-    android::base::SetProperty(blk_mount_prop, value);
-    if (!value.empty()) {
-        android::base::SetProperty(dev_mount_prop, target);
-    } else {
+
+    while (android::base::StartsWith(value, "dm-")) {
+        auto& dm = dm::DeviceMapper::Instance();
+        std::optional<std::string> parent = dm.GetParentBlockDeviceByPath("/dev/block/" + value);
+        if (parent) {
+            value = android::base::Basename(*parent);
+        } else {
+            value = "";
+            break;
+        }
+    }
+    if (value.empty()) {
+        android::base::SetProperty(blk_mount_prop, "");
         android::base::SetProperty(dev_mount_prop, "");
+        return;
+    }
+
+
+    // 1. dm-N
+    //  dev.mnt.dev.data = dm-N
+    //  dev.mnt.blk.data = sdaN or mmcblk0pN
+    //  dev.mnt.rootdisk.data = sda or mmcblk0
+    //
+    // 2. sdaN or mmcblk0pN
+    //  dev.mnt.dev.data = sdaN or mmcblk0pN
+    //  dev.mnt.blk.data = sdaN or mmcblk0pN
+    //  dev.mnt.rootdisk.data = sda or mmcblk0
+    android::base::SetProperty(dev_mount_prop, target);
+    android::base::SetProperty(blk_mount_prop, value);
+
+    value = GetRootDisk(value);
+    if (!value.empty()) {
+        android::base::SetProperty(rootdisk_mount_prop, value);
     }
 }
 
