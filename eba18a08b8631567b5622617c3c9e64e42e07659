@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4e01fe86_88785abc",
+        "filename": "shell_and_utilities/README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-03-05T00:16:39Z",
+      "side": 1,
+      "message": "(only one addition this time...)",
+      "range": {
+        "startLine": 65,
+        "startChar": 40,
+        "endLine": 65,
+        "endChar": 49
+      },
+      "revId": "eba18a08b8631567b5622617c3c9e64e42e07659",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
