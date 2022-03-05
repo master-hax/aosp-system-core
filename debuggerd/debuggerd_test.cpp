@@ -65,6 +65,7 @@
 #include "crash_test.h"
 #include "debuggerd/handler.h"
 #include "libdebuggerd/utility.h"
+#include "libdebuggerd/utility_host.h"
 #include "protocol.h"
 #include "tombstoned/tombstoned.h"
 #include "util.h"

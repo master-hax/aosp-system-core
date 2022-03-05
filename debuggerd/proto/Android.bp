@@ -37,4 +37,5 @@ cc_library_static {
 
     recovery_available: true,
     vendor_ramdisk_available: true,
+    host_supported: true,
 }

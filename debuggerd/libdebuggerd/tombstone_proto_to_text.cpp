@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-#include <libdebuggerd/tombstone.h>
+#include <libdebuggerd/tombstone_proto_to_text.h>
+#include <libdebuggerd/utility_host.h>
 
 #include <inttypes.h>
 
@@ -28,8 +29,6 @@
 #include <android-base/stringprintf.h>
 #include <android-base/strings.h>
 #include <android-base/unique_fd.h>
-#include <async_safe/log.h>
-#include <bionic/macros.h>
 
 #include "tombstone.pb.h"
 
@@ -69,6 +68,13 @@ static int pointer_width(const Tombstone& tombstone) {
     default:
       return 8;
   }
+}
+
+static uint64_t untag_address(const Tombstone& tombstone, uint64_t addr) {
+  if (tombstone.arch() == Architecture::ARM64) {
+    return addr & ((1ULL << 56) - 1);
+  }
+  return addr;
 }
 
 static void print_thread_header(CallbackType callback, const Tombstone& tombstone,
@@ -128,7 +134,7 @@ static void print_thread_registers(CallbackType callback, const Tombstone& tombs
       break;
 
     default:
-      async_safe_fatal("unknown architecture");
+      break;
   }
 
   for (const auto& reg : thread.registers()) {
@@ -265,7 +271,7 @@ static void print_tag_dump(CallbackType callback, const Tombstone& tombstone) {
 
   size_t tag_index = 0;
   size_t num_tags = tags.length();
-  uintptr_t fault_granule = untag_address(signal.fault_address()) & ~(kTagGranuleSize - 1);
+  uintptr_t fault_granule = untag_address(tombstone, signal.fault_address()) & ~(kTagGranuleSize - 1);
   for (size_t row = 0; tag_index < num_tags; ++row) {
     uintptr_t row_addr =
         (memory_dump.begin_address() + row * kNumTagColumns * kTagGranuleSize) & kRowStartMask;
@@ -390,7 +396,7 @@ static void print_main_thread(CallbackType callback, const Tombstone& tombstone,
                    tombstone.memory_mappings().size() == 1 ? "entry" : "entries");
 
   bool has_fault_address = signal_info.has_fault_address();
-  uint64_t fault_address = untag_address(signal_info.fault_address());
+  uint64_t fault_address = untag_address(tombstone, signal_info.fault_address());
   bool preamble_printed = false;
   bool printed_fault_address_marker = false;
   for (const auto& map : tombstone.memory_mappings()) {

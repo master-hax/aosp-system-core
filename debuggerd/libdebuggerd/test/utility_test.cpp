@@ -17,7 +17,7 @@
 #include <gtest/gtest.h>
 #include <sys/prctl.h>
 
-#include "libdebuggerd/utility.h"
+#include "libdebuggerd/utility_host.h"
 
 TEST(UtilityTest, describe_tagged_addr_ctrl) {
   EXPECT_EQ("", describe_tagged_addr_ctrl(0));

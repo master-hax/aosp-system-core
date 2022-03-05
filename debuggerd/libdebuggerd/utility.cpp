@@ -17,6 +17,7 @@
 #define LOG_TAG "DEBUG"
 
 #include "libdebuggerd/utility.h"
+#include "libdebuggerd/utility_host.h"
 
 #include <errno.h>
 #include <signal.h>
@@ -444,42 +445,6 @@ const char* get_sigcode(const siginfo_t* si) {
   }
   // Then give up...
   return "?";
-}
-
-#define DESCRIBE_FLAG(flag) \
-  if (value & flag) {       \
-    desc += ", ";           \
-    desc += #flag;          \
-    value &= ~flag;         \
-  }
-
-static std::string describe_end(long value, std::string& desc) {
-  if (value) {
-    desc += StringPrintf(", unknown 0x%lx", value);
-  }
-  return desc.empty() ? "" : " (" + desc.substr(2) + ")";
-}
-
-std::string describe_tagged_addr_ctrl(long value) {
-  std::string desc;
-  DESCRIBE_FLAG(PR_TAGGED_ADDR_ENABLE);
-  DESCRIBE_FLAG(PR_MTE_TCF_SYNC);
-  DESCRIBE_FLAG(PR_MTE_TCF_ASYNC);
-  if (value & PR_MTE_TAG_MASK) {
-    desc += StringPrintf(", mask 0x%04lx", (value & PR_MTE_TAG_MASK) >> PR_MTE_TAG_SHIFT);
-    value &= ~PR_MTE_TAG_MASK;
-  }
-  return describe_end(value, desc);
-}
-
-std::string describe_pac_enabled_keys(long value) {
-  std::string desc;
-  DESCRIBE_FLAG(PR_PAC_APIAKEY);
-  DESCRIBE_FLAG(PR_PAC_APIBKEY);
-  DESCRIBE_FLAG(PR_PAC_APDAKEY);
-  DESCRIBE_FLAG(PR_PAC_APDBKEY);
-  DESCRIBE_FLAG(PR_PAC_APGAKEY);
-  return describe_end(value, desc);
 }
 
 void log_backtrace(log_t* log, unwindstack::Unwinder* unwinder, const char* prefix) {

@@ -182,7 +182,6 @@ cc_library_static {
         "libdebuggerd/open_files_list.cpp",
         "libdebuggerd/tombstone.cpp",
         "libdebuggerd/tombstone_proto.cpp",
-        "libdebuggerd/tombstone_proto_to_text.cpp",
         "libdebuggerd/utility.cpp",
     ],
 
@@ -213,6 +212,7 @@ cc_library_static {
     whole_static_libs: [
         "libasync_safe",
         "gwp_asan_crash_handler",
+        "libdebuggerd_proto_to_text",
         "libtombstone_proto",
         "libprocinfo",
         "libprotobuf-cpp-lite",
@@ -251,17 +251,45 @@ cc_library_static {
     },
 }
 
+cc_library_static {
+    name: "libdebuggerd_proto_to_text",
+    defaults: ["debuggerd_defaults"],
+    recovery_available: true,
+    vendor_ramdisk_available: true,
+    host_supported: true,
+
+    srcs: [
+        "libdebuggerd/tombstone_proto_to_text.cpp",
+        "libdebuggerd/utility_host.cpp",
+    ],
+
+    local_include_dirs: ["libdebuggerd/include"],
+    export_include_dirs: ["libdebuggerd/include"],
+
+    static_libs: [
+        "libbase",
+    ],
+    whole_static_libs: [
+        "libprotobuf-cpp-lite",
+        "libtombstone_proto",
+    ],
+
+    apex_available: [
+        "com.android.runtime",
+    ],
+}
+
 cc_binary {
     name: "pbtombstone",
+    host_supported: true,
     defaults: ["debuggerd_defaults"],
     srcs: ["pbtombstone.cpp"],
     static_libs: [
         "libbase",
-        "libdebuggerd",
+        "libdebuggerd_proto_to_text",
         "liblog",
         "libprotobuf-cpp-lite",
         "libtombstone_proto",
-        "libunwindstack",
     ],
 }
 
