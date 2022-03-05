@@ -36,6 +36,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "7cb59980_9f76b6d2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1176763
+      },
+      "writtenOn": "2022-03-05T23:27:18Z",
+      "side": 1,
+      "message": "Posted a modified patch.",
+      "parentUuid": "ad0a88a9_e30b40a7",
+      "revId": "ef2d9d0df9ee63e88100249df26d7ab0b8b10b65",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "9a1b2a67_10630a4d",
