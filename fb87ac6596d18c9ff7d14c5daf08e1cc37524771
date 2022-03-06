@@ -16,6 +16,24 @@
       "message": "Hi Jaegeuk, sorry for the late reply.\nIt\u0027s been a few busy weeks, prepping for the new semester and all.\n\nI feel like this patch can be improved and should not be merged as-is:\n\n1. I think GetRootDisk() should be done in I585ccf2d4a72f6ef8ecb203acdd72a1e32d3e749.\nI\u0027ll address David\u0027s comment and get that patch ready ASAP.\n\n2. I think we need to mention that the vendor should still label SELinux contexts correctly for non-dm-N\u0027s dev.mnt.rootdisk.data either in README.md or init.rc itself, just like how you\u0027ve mentioned \"sda/mmcblk0 should be tuned in vendor/init.rc\" previously.\n/dev/sys/block/by-name/rootdisk\u0027s realpath will differ between platforms (e.g., /sys/devices/platform/soc/1d84000.ufshc/host0/target0:0:0/0:0:0:0/block/sda), and since genfscon doesn\u0027t work on symlinks, there\u0027s no global way of applying the correct SELinux label there automatically, afaik.\nSo it\u0027s up to the vendor to label it correctly. (AOSP labels dm-N automatically as its realpath is fixed and consistent, so it\u0027s not a problem with devices using dm-N.)\n\n3. We probably don\u0027t need to write rootdisk\u0027s discard_max_bytes as the above line handles all /data mount cases. It\u0027ll just probably pollute the kmsg log saying that init failed to write to that node because the SELinux label isn\u0027t set correctly on devices that are expected to use dm-N for userdata.\n\nThanks,",
       "revId": "fb87ac6596d18c9ff7d14c5daf08e1cc37524771",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3c8887cb_45a5cf7c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1176763
+      },
+      "writtenOn": "2022-03-06T08:24:01Z",
+      "side": 1,
+      "message": "By the way, was there any selinux problem in non-dm-N case when setting /dev/sys/block/by-name/userdata/queue/discard_max_bytes?",
+      "parentUuid": "fb376574_1ff1c2f6",
+      "revId": "fb87ac6596d18c9ff7d14c5daf08e1cc37524771",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
