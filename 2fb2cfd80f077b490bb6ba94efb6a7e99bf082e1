@@ -50,6 +50,24 @@
       "message": "Can we extract this logic into a helper function, and add unit tests, showing the example paths that would now be supported?",
       "revId": "2fb2cfd80f077b490bb6ba94efb6a7e99bf082e1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9967adae_87b4a6e2",
+        "filename": "init/mount_handler.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 102,
+      "author": {
+        "id": 1066944
+      },
+      "writtenOn": "2022-03-06T07:58:48Z",
+      "side": 1,
+      "message": "\u003e Can we extract this logic into a helper function, and add unit tests, showing the example paths that would now be supported?\n\nHi David, sorry for the late reply.\n\nI\u0027ve separated that into a separate function, but I\u0027m not sure how to perform the unit tests.\nThe function relies on the test device actually having valid /sys/block/*/queue directory for testing each device. So if the testing device lacks an NVMe device, testing \"nvme0n1p3\" will fail regardless.\n\nI\u0027m quite unfamiliar with how unit tests are done under Android. If you have a better method in mind, please let me know. Thanks.",
+      "parentUuid": "554e9135_6f6d93e4",
+      "revId": "2fb2cfd80f077b490bb6ba94efb6a7e99bf082e1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
