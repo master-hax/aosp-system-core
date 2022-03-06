@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2a097b6d_dcd20744",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1066944
+      },
+      "writtenOn": "2022-03-06T06:58:15Z",
+      "side": 1,
+      "message": "Updated commit message to mention SELinux labels.",
+      "revId": "676a62f6e3476c19f739d6fe43442089e5b2f8b6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
