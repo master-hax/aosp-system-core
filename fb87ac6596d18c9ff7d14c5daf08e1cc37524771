@@ -34,6 +34,24 @@
       "parentUuid": "fb376574_1ff1c2f6",
       "revId": "fb87ac6596d18c9ff7d14c5daf08e1cc37524771",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d4591d77_4019fca8",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1066944
+      },
+      "writtenOn": "2022-03-06T08:30:17Z",
+      "side": 1,
+      "message": "\u003e By the way, was there any selinux problem in non-dm-N case when setting /dev/sys/block/by-name/userdata/queue/discard_max_bytes?\n\nYes, when I was testing on an unencrypted device. The BSP I had doesn\u0027t expect the users to run unencrypted, so I had to locally fix sepolicy and add /sys/devices/platform/soc/1d84000.ufshc/host0/target0:0:0/0:0:0:0/block/sda/queue. This obviously doesn\u0027t make sense for upstreaming as it was just me testing unencrypted userdata.\n\nHowever, as per https://android-review.googlesource.com/c/platform/system/core/+/1717435/comments/e123824a_abecd5f9 , it seems like it can happen on production devices without metadata encryption. I believe it\u0027s up to the vendor to fix sepolicy themselves.",
+      "parentUuid": "3c8887cb_45a5cf7c",
+      "revId": "fb87ac6596d18c9ff7d14c5daf08e1cc37524771",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
