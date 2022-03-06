@@ -70,6 +70,24 @@
       "parentUuid": "d4591d77_4019fca8",
       "revId": "fb87ac6596d18c9ff7d14c5daf08e1cc37524771",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "91cd9f6c_b9ac05c7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1066944
+      },
+      "writtenOn": "2022-03-06T08:51:38Z",
+      "side": 1,
+      "message": "\u003e Hmm, then, it seems we need to set discard_max_bytes for both dm-N and sda, and let vendor address selinux.\n\nSounds good to me :)",
+      "parentUuid": "95f77cec_60f5813b",
+      "revId": "fb87ac6596d18c9ff7d14c5daf08e1cc37524771",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
