@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "21353937_fb04981d",
+        "filename": "init/service_parser.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 205,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-03-07T21:43:03Z",
+      "side": 1,
+      "message": "extra parenthesis are not needed here",
+      "revId": "c1e07edb953f3d54fef14b8a49e1e723230cffef",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
