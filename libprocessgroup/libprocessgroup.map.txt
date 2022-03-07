@@ -1,0 +1,8 @@
+LIBPROCESSGROUP {
+  global:
+    get_sched_policy; # apex llndk
+    get_sched_policy_name; # apex llndk
+    set_sched_policy; # apex llndk
+  local:
+    *;
+};
