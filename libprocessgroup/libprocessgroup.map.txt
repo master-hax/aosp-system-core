@@ -1,0 +1,6 @@
+LIBPROCESSGROUP {
+  global:
+    set_sched_policy; # apex
+  local:
+    *;
+};
