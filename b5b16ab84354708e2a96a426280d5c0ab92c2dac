@@ -70,6 +70,30 @@
       },
       "revId": "b5b16ab84354708e2a96a426280d5c0ab92c2dac",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "af13be45_ce06a238",
+        "filename": "init/sigchld_handler.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 102,
+      "author": {
+        "id": 1156728
+      },
+      "writtenOn": "2022-03-08T03:57:09Z",
+      "side": 1,
+      "message": "I think it happens when a service forks something but doesn\u0027t handle sigchld itself",
+      "parentUuid": "adde8a31_64940337",
+      "range": {
+        "startLine": 98,
+        "startChar": 0,
+        "endLine": 102,
+        "endChar": 0
+      },
+      "revId": "b5b16ab84354708e2a96a426280d5c0ab92c2dac",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
