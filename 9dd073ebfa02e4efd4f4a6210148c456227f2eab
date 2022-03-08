@@ -34,6 +34,24 @@
       "tag": "mailMessageId\u003d\u003cCAJgzZopJrZYs2ArROUVf9ORzUnwk5FYjhok\u003dM2poaOjeGGPN0w@mail.gmail.com\u003e",
       "revId": "9dd073ebfa02e4efd4f4a6210148c456227f2eab",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3f61e8e5_05356168",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1090594
+      },
+      "writtenOn": "2022-03-08T08:41:04Z",
+      "side": 1,
+      "message": "I\u0027m trying to use fastboot -w while in fastbootd, and currently it does not work because `fastboot getvar partition-type:xxx` returns an error rather than fallback to \u0027raw\u0027. So while fastboot -w itself shows \u0027Finished. Total time: 0.007s\u0027, my data is still intact. With this change I get the following output instead:\n\n```\nErasing \u0027userdata\u0027                                 OKAY [  0.515s]\nErase successful, but not automatically formatting.\nFile system type raw not supported.\nErasing \u0027metadata\u0027                                 OKAY [  0.006s]\nErase successful, but not automatically formatting.\nFile system type raw not supported.\nFinished. Total time: 0.533s\n```",
+      "parentUuid": "8b5d5745_94b899d2",
+      "revId": "9dd073ebfa02e4efd4f4a6210148c456227f2eab",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
