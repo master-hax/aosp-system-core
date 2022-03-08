@@ -34,6 +34,24 @@
       "parentUuid": "1e0a0887_0cddff36",
       "revId": "1e80f2d47db6d568241e85aa13c881e8ebe86c0c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f129817f_5eb9c034",
+        "filename": "fastboot/device/variables.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 334,
+      "author": {
+        "id": 1090594
+      },
+      "writtenOn": "2022-03-08T00:22:10Z",
+      "side": 0,
+      "message": "Also, other HAL dependent commands simply won\u0027t work if the device doesn\u0027t provide a fastboot HAL. I think it\u0027s ok to have it that way, and if by chance someone really needs extra functionality then they can implement it.",
+      "parentUuid": "07ff7393_6562dc71",
+      "revId": "1e80f2d47db6d568241e85aa13c881e8ebe86c0c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
