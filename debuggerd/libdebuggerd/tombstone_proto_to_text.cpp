@@ -176,6 +176,11 @@ static void print_backtrace(CallbackType callback, const Tombstone& tombstone,
 
     CB(should_log, "      #%02d pc %0*" PRIx64 "  %s%s%s", index++, pointer_width(tombstone) * 2,
        frame.rel_pc(), frame.file_name().c_str(), function.c_str(), build_id.c_str());
+
+    for (const auto& sym_frame : frame.symbolized_frames()) {
+      CB(should_log, "          %s:%" PRId64 ":%" PRId64 " (%s)", sym_frame.file().c_str(),
+         sym_frame.line(), sym_frame.column(), sym_frame.function_name().c_str());
+    }
   }
 }
 

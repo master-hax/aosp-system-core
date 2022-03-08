@@ -20,6 +20,7 @@
 #include <unistd.h>
 
 #include <android-base/unique_fd.h>
+#include <libdebuggerd/tombstone_symbolize.h>
 #include <libdebuggerd/tombstone_proto_to_text.h>
 
 #include "tombstone.pb.h"
@@ -51,6 +52,7 @@ int main(int argc, const char* argv[]) {
     err(1, "failed to parse tombstone");
   }
 
+  tombstone_symbolize(tombstone);
   bool result = tombstone_proto_to_text(
       tombstone, [](const std::string& line, bool) { printf("%s\n", line.c_str()); });
 
