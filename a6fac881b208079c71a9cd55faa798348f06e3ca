@@ -16,6 +16,24 @@
       "message": "Thanks for cleaning this out, I thought this was being used in the proto code, but I was incorrect.\n\nAre there any tests we are missing for the gwp asan and scudo code?",
       "revId": "a6fac881b208079c71a9cd55faa798348f06e3ca",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2ad68825_87dd4550",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1067098
+      },
+      "writtenOn": "2022-03-08T01:27:29Z",
+      "side": 1,
+      "message": "For GWP-ASan we have an end-to-end test that covers most of the proto side of the tests that I\u0027m removing here: https://cs.android.com/android/platform/superproject/+/master:system/core/debuggerd/debuggerd_test.cpp;l\u003d483 (despite UAF in the name it also covers buffer underflow and overflow, but I don\u0027t think we have invalid free coverage).\n\nAnd for Scudo we only have end-to-end tests: https://cs.android.com/android/platform/superproject/+/master:system/core/debuggerd/debuggerd_test.cpp;l\u003d529-934",
+      "parentUuid": "eb710fa9_18020e01",
+      "revId": "a6fac881b208079c71a9cd55faa798348f06e3ca",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
