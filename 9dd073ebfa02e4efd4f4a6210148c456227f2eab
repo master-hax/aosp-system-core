@@ -16,6 +16,24 @@
       "message": "Bump",
       "revId": "9dd073ebfa02e4efd4f4a6210148c456227f2eab",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8b5d5745_94b899d2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-03-08T05:27:31Z",
+      "side": 1,
+      "message": "I assume this is someone who\u0027s trying to use current fastboot to flash an old device? (I think the Nexus/Pixel factory image downloads expect you to use the latest fastboot, and you might have to if you have particularly modern hardware. M1 Macs, say.)",
+      "tag": "mailMessageId\u003d\u003cCAJgzZopJrZYs2ArROUVf9ORzUnwk5FYjhok\u003dM2poaOjeGGPN0w@mail.gmail.com\u003e",
+      "revId": "9dd073ebfa02e4efd4f4a6210148c456227f2eab",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
