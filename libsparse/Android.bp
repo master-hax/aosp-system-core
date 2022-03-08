@@ -106,4 +106,7 @@ cc_fuzz {
         "libz",
         "liblog",
     ],
+    fuzz_config: {
+       cc: ["keithmok@google.com"],
+    },
 }
