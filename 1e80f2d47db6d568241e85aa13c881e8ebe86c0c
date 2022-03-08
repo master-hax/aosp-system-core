@@ -52,6 +52,24 @@
       "parentUuid": "07ff7393_6562dc71",
       "revId": "1e80f2d47db6d568241e85aa13c881e8ebe86c0c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d7e2c1cc_58f4fd2b",
+        "filename": "fastboot/device/variables.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 334,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-03-08T05:14:35Z",
+      "side": 0,
+      "message": "I guess I don\u0027t have strong objections to this, though it\u0027s a bit weird since the HAL was not intended to be optional. Let\u0027s see what Yifan thinks.",
+      "parentUuid": "f129817f_5eb9c034",
+      "revId": "1e80f2d47db6d568241e85aa13c881e8ebe86c0c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
