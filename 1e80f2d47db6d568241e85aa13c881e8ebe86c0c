@@ -16,6 +16,24 @@
       "message": "If this device doesn\u0027t have a fastboot HAL, how will the other HAL-dependent commands functions?",
       "revId": "1e80f2d47db6d568241e85aa13c881e8ebe86c0c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "07ff7393_6562dc71",
+        "filename": "fastboot/device/variables.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 334,
+      "author": {
+        "id": 1090594
+      },
+      "writtenOn": "2022-03-08T00:17:41Z",
+      "side": 0,
+      "message": "This is the only thing that can and should have a fallback in case device doesn\u0027t implement its own fastboot HAL.",
+      "parentUuid": "1e0a0887_0cddff36",
+      "revId": "1e80f2d47db6d568241e85aa13c881e8ebe86c0c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
