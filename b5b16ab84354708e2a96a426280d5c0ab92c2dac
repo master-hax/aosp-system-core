@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e546dab8_6986f17c",
+        "filename": "init/sigchld_handler.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 102,
+      "author": {
+        "id": 1156728
+      },
+      "writtenOn": "2022-03-08T03:20:33Z",
+      "side": 1,
+      "message": "Is this a breakage.  Normally for the !service case I get \"Untracked pid %d\" from line 88 and reap on 103.\n\nIf we don\u0027t reap it on 103, then no one reaps it and we\u0027re left with a hoard of zombies and end up running out of PIDs?",
+      "range": {
+        "startLine": 98,
+        "startChar": 0,
+        "endLine": 102,
+        "endChar": 0
+      },
+      "revId": "b5b16ab84354708e2a96a426280d5c0ab92c2dac",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
