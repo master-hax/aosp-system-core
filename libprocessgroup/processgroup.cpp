@@ -440,19 +440,14 @@ static int createProcessGroupInternal(uid_t uid, int initialPid, std::string cgr
                                       bool activate_controllers) {
     auto uid_path = ConvertUidToPath(cgroup.c_str(), uid);
 
-    struct stat cgroup_stat;
-    mode_t cgroup_mode = 0750;
-    gid_t cgroup_uid = AID_SYSTEM;
-    uid_t cgroup_gid = AID_SYSTEM;
+    // Some but not all processes have user ID 'system'. Hence assign user ID
+    // `uid`. Since this function may be called by init and by system_server and since
+    // system_server has user ID 'system' and is in group 'system', assign group 'system' and grant
+    // the group write permission.
+    mode_t cgroup_mode = 0770;
+    uid_t cgroup_uid = uid;
+    gid_t cgroup_gid = AID_SYSTEM;
     int ret = 0;
-
-    if (stat(cgroup.c_str(), &cgroup_stat) == 1) {
-        PLOG(ERROR) << "Failed to get stats for " << cgroup;
-    } else {
-        cgroup_mode = cgroup_stat.st_mode;
-        cgroup_uid = cgroup_stat.st_uid;
-        cgroup_gid = cgroup_stat.st_gid;
-    }
 
     if (!MkdirAndChown(uid_path, cgroup_mode, cgroup_uid, cgroup_gid)) {
         PLOG(ERROR) << "Failed to make and chown " << uid_path;
