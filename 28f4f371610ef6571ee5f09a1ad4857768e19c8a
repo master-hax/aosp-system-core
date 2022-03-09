@@ -22,6 +22,30 @@
       },
       "revId": "28f4f371610ef6571ee5f09a1ad4857768e19c8a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8f593bf4_901e0a22",
+        "filename": "libprocessgroup/profiles/cgroups.json",
+        "patchSetId": 1
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-03-09T22:55:55Z",
+      "side": 0,
+      "message": "Yes, since these attributes are identical to those of the \"Cgroups2\" parent.",
+      "parentUuid": "dd4b2d77_4ae4e80b",
+      "range": {
+        "startLine": 42,
+        "startChar": 8,
+        "endLine": 44,
+        "endChar": 23
+      },
+      "revId": "28f4f371610ef6571ee5f09a1ad4857768e19c8a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
