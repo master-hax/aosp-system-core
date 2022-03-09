@@ -440,19 +440,17 @@ static int createProcessGroupInternal(uid_t uid, int initialPid, std::string cgr
                                       bool activate_controllers) {
     auto uid_path = ConvertUidToPath(cgroup.c_str(), uid);
 
-    struct stat cgroup_stat;
-    mode_t cgroup_mode = 0750;
-    gid_t cgroup_uid = AID_SYSTEM;
-    uid_t cgroup_gid = AID_SYSTEM;
+    // Cgroup attributes are set from two different contexts:
+    // (1) From the process that creates the cgroup directories, e.g. `init` or `system_server`.
+    //     Such processes are in the system group.
+    // (2) From the created process (initialPid). Some but not all created processes have user ID
+    //     and/or group ID 'system'.
+    //
+    // Hence assign user ID `uid` and group 'system' and enable group write permission.
+    mode_t cgroup_mode = 0770;
+    uid_t cgroup_uid = uid;
+    gid_t cgroup_gid = AID_SYSTEM;
     int ret = 0;
-
-    if (stat(cgroup.c_str(), &cgroup_stat) == 1) {
-        PLOG(ERROR) << "Failed to get stats for " << cgroup;
-    } else {
-        cgroup_mode = cgroup_stat.st_mode;
-        cgroup_uid = cgroup_stat.st_uid;
-        cgroup_gid = cgroup_stat.st_gid;
-    }
 
     if (!MkdirAndChown(uid_path, cgroup_mode, cgroup_uid, cgroup_gid)) {
         PLOG(ERROR) << "Failed to make and chown " << uid_path;
