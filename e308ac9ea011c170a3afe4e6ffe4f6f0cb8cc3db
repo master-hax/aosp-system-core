@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "231c94cd_ac0e3d3e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 11
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-03-09T18:29:09Z",
+      "side": 1,
+      "message": "task_profiles.proto has been updated.",
+      "parentUuid": "bd47b066_49952441",
+      "revId": "e308ac9ea011c170a3afe4e6ffe4f6f0cb8cc3db",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "fc39b7e3_5eabcfcc",
@@ -41,6 +59,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "9ab1e745_47fed137",
+        "filename": "libprocessgroup/profiles/task_profiles.json",
+        "patchSetId": 11
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-03-09T18:29:09Z",
+      "side": 1,
+      "message": "I have moved this change into a separate patch.",
+      "parentUuid": "fc39b7e3_5eabcfcc",
+      "range": {
+        "startLine": 19,
+        "startChar": 0,
+        "endLine": 23,
+        "endChar": 0
+      },
+      "revId": "e308ac9ea011c170a3afe4e6ffe4f6f0cb8cc3db",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "928c76ad_65955a80",
@@ -54,6 +96,30 @@
       "writtenOn": "2022-02-23T17:23:02Z",
       "side": 1,
       "message": "This is a normal case and IMO should not be logged.",
+      "range": {
+        "startLine": 210,
+        "startChar": 12,
+        "endLine": 210,
+        "endChar": 65
+      },
+      "revId": "e308ac9ea011c170a3afe4e6ffe4f6f0cb8cc3db",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "57660d6d_cd1e6b5d",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 210,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-03-09T18:29:09Z",
+      "side": 1,
+      "message": "This log statement has been removed.",
+      "parentUuid": "928c76ad_65955a80",
       "range": {
         "startLine": 210,
         "startChar": 12,
@@ -111,6 +177,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "0fa4b0dc_e7d8b6cf",
+        "filename": "libprocessgroup/task_profiles_test.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-03-09T18:29:09Z",
+      "side": 1,
+      "message": ".",
+      "parentUuid": "92c08022_797d4ccb",
+      "range": {
+        "startLine": 88,
+        "startChar": 9,
+        "endLine": 88,
+        "endChar": 23
+      },
+      "revId": "e308ac9ea011c170a3afe4e6ffe4f6f0cb8cc3db",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "e4858447_043cd85a",
@@ -124,6 +214,30 @@
       "writtenOn": "2022-02-23T17:23:02Z",
       "side": 1,
       "message": "IIUC these tests check functionality of SetAttributeAction. If would be good to have a description/comment on what is being tested.",
+      "range": {
+        "startLine": 143,
+        "startChar": 0,
+        "endLine": 143,
+        "endChar": 24
+      },
+      "revId": "e308ac9ea011c170a3afe4e6ffe4f6f0cb8cc3db",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0bb1c29c_8faf2de7",
+        "filename": "libprocessgroup/task_profiles_test.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 143,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-03-09T18:29:09Z",
+      "side": 1,
+      "message": "Multiple comments have been added.",
+      "parentUuid": "e4858447_043cd85a",
       "range": {
         "startLine": 143,
         "startChar": 0,
