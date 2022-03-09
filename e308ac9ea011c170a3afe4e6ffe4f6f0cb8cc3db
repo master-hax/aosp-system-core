@@ -89,6 +89,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "92c08022_797d4ccb",
+        "filename": "libprocessgroup/task_profiles_test.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-03-09T18:27:30Z",
+      "side": 1,
+      "message": "The call stack for this function is as follows:\n\n#4  0x00005555555920d5 in ProfileAttributeMock::GetPathForTask(int, std::__1::basic_string\u003cchar, std::__1::char_traits\u003cchar\u003e, std::__1::allocator\u003cchar\u003e \u003e*) const ()\n#5  0x00005555555ebb0d in SetAttributeAction::ExecuteForTask(int) const ()\n#6  0x000055555558af75 in SetAttributeFixture_SetAttribute_Test::TestBody() ()\n#7  0x00005555555ac663 in testing::Test::Run() ()\n#8  0x00005555555adbb9 in testing::TestInfo::Run() ()\n#9  0x00005555555ae5c9 in testing::TestSuite::Run() ()\n#10 0x00005555555bfdff in testing::internal::UnitTestImpl::RunAllTests() ()\n#11 0x00005555555bf8b5 in testing::UnitTest::Run() ()\n#12 0x00005555555a0059 in main ()",
+      "parentUuid": "b9ccf814_c86db6be",
+      "range": {
+        "startLine": 88,
+        "startChar": 9,
+        "endLine": 88,
+        "endChar": 23
+      },
+      "revId": "e308ac9ea011c170a3afe4e6ffe4f6f0cb8cc3db",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "e4858447_043cd85a",
         "filename": "libprocessgroup/task_profiles_test.cpp",
         "patchSetId": 11
