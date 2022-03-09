@@ -22,6 +22,30 @@
       },
       "revId": "e0b2d4c38121c28f99d0f6b4450a14b37f547a21",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d1de1562_d40314f9",
+        "filename": "libprocessgroup/profiles/task_profiles.json",
+        "patchSetId": 2
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-03-09T18:29:51Z",
+      "side": 1,
+      "message": "This line and similar lines have been removed.",
+      "parentUuid": "f85eeb6a_92f86dab",
+      "range": {
+        "startLine": 39,
+        "startChar": 7,
+        "endLine": 39,
+        "endChar": 44
+      },
+      "revId": "e0b2d4c38121c28f99d0f6b4450a14b37f547a21",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
