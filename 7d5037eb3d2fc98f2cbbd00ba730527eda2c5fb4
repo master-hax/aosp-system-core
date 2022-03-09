@@ -33,6 +33,24 @@
       "message": "Do you see this used outside of a lunch environment? llvm-symbolized in ubuntu is usually named \"llvm-symbolizer-\u003cversion\u003e\", and in the NDK context the tool would need to do something special to find the binary, too.",
       "revId": "7d5037eb3d2fc98f2cbbd00ba730527eda2c5fb4",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e450199c_281a9065",
+        "filename": "debuggerd/libdebuggerd/tombstone_symbolize.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1067098
+      },
+      "writtenOn": "2022-03-09T19:29:58Z",
+      "side": 1,
+      "message": "Yes, the goal is that app developers would be able to use this with symbol servers. I imagine this will require some enhancements to find llvm-symbolizer in the NDK. For now I\u0027m manually adding it to $PATH. It wouldn\u0027t necessarily work to use a distro\u0027s copy of llvm-symbolizer because it may not support symbol servers (either because it isn\u0027t new enough or wasn\u0027t linked with libcurl).\n\nOf course the other route would be to link against the symbolizer library in the LLVM prebuilts. It doesn\u0027t look like we have any other platform binaries that link against those prebuilts so this may require some work on the build files. +srhines who may have opinions on this.",
+      "parentUuid": "bcbfa44e_dc49fe12",
+      "revId": "7d5037eb3d2fc98f2cbbd00ba730527eda2c5fb4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
