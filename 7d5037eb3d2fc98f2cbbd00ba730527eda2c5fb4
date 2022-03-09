@@ -69,6 +69,24 @@
       "parentUuid": "e450199c_281a9065",
       "revId": "7d5037eb3d2fc98f2cbbd00ba730527eda2c5fb4",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4b60de8a_6402cd62",
+        "filename": "debuggerd/libdebuggerd/tombstone_symbolize.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1067098
+      },
+      "writtenOn": "2022-03-09T20:53:20Z",
+      "side": 1,
+      "message": "Stephen, the goal would be to link against LLVM libraries only on the host, not on the device. I see that we\u0027re already building a prebuilt library for the host (e.g. prebuilts/clang/host/linux-x86/clang-r445002/lib64/libLLVM-14git.so), so I was imagining that we might be able to link against that.",
+      "parentUuid": "1f180916_d4e71b22",
+      "revId": "7d5037eb3d2fc98f2cbbd00ba730527eda2c5fb4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
