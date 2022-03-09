@@ -51,6 +51,24 @@
       "parentUuid": "bcbfa44e_dc49fe12",
       "revId": "7d5037eb3d2fc98f2cbbd00ba730527eda2c5fb4",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1f180916_d4e71b22",
+        "filename": "debuggerd/libdebuggerd/tombstone_symbolize.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1010056
+      },
+      "writtenOn": "2022-03-09T20:21:42Z",
+      "side": 1,
+      "message": "We currently don\u0027t have anything in the platform linking against LLVM libraries like that. In fact, we don\u0027t provide device versions of any non-runtime libraries at all. I think I\u0027d prefer that we not start doing so for just this feature, especially since it is only needed for debugging, and thus less helpful for regular users (while increasing device image sizes and complexity).",
+      "parentUuid": "e450199c_281a9065",
+      "revId": "7d5037eb3d2fc98f2cbbd00ba730527eda2c5fb4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
