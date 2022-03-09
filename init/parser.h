@@ -73,6 +73,7 @@ class Parser {
 
     bool ParseConfig(const std::string& path);
     bool ParseConfigFile(const std::string& path);
+    bool ParseConfigDir(const std::string& path, bool rc_only = false);
     void AddSectionParser(const std::string& name, std::unique_ptr<SectionParser> parser);
     void AddSingleLineParser(const std::string& prefix, LineCallback callback);
 
@@ -83,7 +84,6 @@ class Parser {
 
   private:
     void ParseData(const std::string& filename, std::string* data);
-    bool ParseConfigDir(const std::string& path);
 
     std::map<std::string, std::unique_ptr<SectionParser>> section_parsers_;
     std::vector<std::pair<std::string, LineCallback>> line_callbacks_;

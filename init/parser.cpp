@@ -140,7 +140,7 @@ bool Parser::ParseConfigFileInsecure(const std::string& path) {
 }
 
 bool Parser::ParseConfigFile(const std::string& path) {
-    LOG(INFO) << "Parsing file " << path << "...";
+    LOG(DEBUG) << "Parsing file " << path << "...";
     android::base::Timer t;
     auto config_contents = ReadFile(path);
     if (!config_contents.ok()) {
@@ -154,8 +154,8 @@ bool Parser::ParseConfigFile(const std::string& path) {
     return true;
 }
 
-bool Parser::ParseConfigDir(const std::string& path) {
-    LOG(INFO) << "Parsing directory " << path << "...";
+bool Parser::ParseConfigDir(const std::string& path, bool rc_only) {
+    LOG(DEBUG) << "Parsing directory " << path << "...";
     std::unique_ptr<DIR, decltype(&closedir)> config_dir(opendir(path.c_str()), closedir);
     if (!config_dir) {
         PLOG(INFO) << "Could not import directory '" << path << "'";
@@ -165,7 +165,8 @@ bool Parser::ParseConfigDir(const std::string& path) {
     std::vector<std::string> files;
     while ((current_file = readdir(config_dir.get()))) {
         // Ignore directories and only process regular files.
-        if (current_file->d_type == DT_REG) {
+        if (current_file->d_type == DT_REG &&
+            (!rc_only || android::base::EndsWith(current_file->d_name, "rc"))) {
             std::string current_path =
                 android::base::StringPrintf("%s/%s", path.c_str(), current_file->d_name);
             files.emplace_back(current_path);
