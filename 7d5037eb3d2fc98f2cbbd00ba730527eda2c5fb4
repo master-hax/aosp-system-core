@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "60d6cc56_7c177818",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1005967
+      },
+      "writtenOn": "2022-03-09T19:03:29Z",
+      "side": 1,
+      "message": "My only concern is that with this we have diverging symbolization paths for tombstones vs logcat.",
+      "revId": "7d5037eb3d2fc98f2cbbd00ba730527eda2c5fb4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bcbfa44e_dc49fe12",
+        "filename": "debuggerd/libdebuggerd/tombstone_symbolize.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1005967
+      },
+      "writtenOn": "2022-03-09T19:03:29Z",
+      "side": 1,
+      "message": "Do you see this used outside of a lunch environment? llvm-symbolized in ubuntu is usually named \"llvm-symbolizer-\u003cversion\u003e\", and in the NDK context the tool would need to do something special to find the binary, too.",
+      "revId": "7d5037eb3d2fc98f2cbbd00ba730527eda2c5fb4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
