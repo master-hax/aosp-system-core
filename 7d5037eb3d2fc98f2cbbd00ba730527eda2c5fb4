@@ -159,6 +159,24 @@
       "parentUuid": "1402e788_b06d8054",
       "revId": "7d5037eb3d2fc98f2cbbd00ba730527eda2c5fb4",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fdc9a203_c5cfe9d5",
+        "filename": "debuggerd/libdebuggerd/tombstone_symbolize.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-03-10T23:48:17Z",
+      "side": 1,
+      "message": "(for reference, https://issuetracker.google.com/issues/161939822#comment4 was the most recent complaint i\u0027ve heard about Studio\u0027s implementation, though i don\u0027t know enough to know what\u0027s different about the alternative mentioned there...)",
+      "parentUuid": "b25ba42c_17c848d3",
+      "revId": "7d5037eb3d2fc98f2cbbd00ba730527eda2c5fb4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
