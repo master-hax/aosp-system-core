@@ -16,6 +16,23 @@
       "message": "Could you please also give the code owner approval. ",
       "revId": "bc9b847e0fe95662e1569f863ebcd059dbf6348f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4700ee9c_4c8d0706",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1889245
+      },
+      "writtenOn": "2022-03-10T17:07:27Z",
+      "side": 1,
+      "message": "HI Elliot, Please provide the code owner approval here, to check it in! Thanks",
+      "revId": "bc9b847e0fe95662e1569f863ebcd059dbf6348f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
