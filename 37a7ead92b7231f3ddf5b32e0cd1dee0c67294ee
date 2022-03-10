@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "32ea8d28_653bbb14",
+        "filename": "libprocessgroup/setup/cgroup_map_write.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 277,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-03-10T21:50:47Z",
+      "side": 1,
+      "message": "What happens if it fails to mount even with nullptr? I know this is not an issue of this patch but look like we are just ignoring this failure. Maybe reconsider the loop and have simply:\n```\nif (mount(\"none\", controller-\u003epath(), \"cgroup2\",\n          MS_NODEV | MS_NOEXEC | MS_NOSUID, \"memory_recursiveprot\")) {\n\n    if (mount(\"none\", controller-\u003epath(), \"cgroup2\",\n              MS_NODEV | MS_NOEXEC | MS_NOSUID, nullptr)) {\n          PLOG(ERROR) \u003c\u003c \"Failed to mount cgroup v2\";\n    }\n}\n```\n\n?",
+      "range": {
+        "startLine": 277,
+        "startChar": 20,
+        "endLine": 277,
+        "endChar": 27
+      },
+      "revId": "37a7ead92b7231f3ddf5b32e0cd1dee0c67294ee",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
