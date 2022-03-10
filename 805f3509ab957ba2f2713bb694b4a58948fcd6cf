@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "43754ad9_d6da5ba5",
+        "filename": "libprocessgroup/profiles/task_profiles.json",
+        "patchSetId": 9
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-03-10T21:40:49Z",
+      "side": 1,
+      "message": "Are we using these? If not, I would suggest keeping them out to minimize unnecessary information.",
+      "range": {
+        "startLine": 41,
+        "startChar": 0,
+        "endLine": 60,
+        "endChar": 5
+      },
+      "revId": "805f3509ab957ba2f2713bb694b4a58948fcd6cf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
