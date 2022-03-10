@@ -105,6 +105,24 @@
       "parentUuid": "4b60de8a_6402cd62",
       "revId": "7d5037eb3d2fc98f2cbbd00ba730527eda2c5fb4",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f23438c2_aa0aa692",
+        "filename": "debuggerd/libdebuggerd/tombstone_symbolize.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-03-10T02:01:36Z",
+      "side": 1,
+      "message": "\u003e Do you see this used outside of a lunch environment? llvm-symbolized in ubuntu is usually named \"llvm-symbolizer-\u003cversion\u003e\", and in the NDK context the tool would need to do something special to find the binary, too.\n\n+danalbert for (a) the NDK view but also (b) whether there\u0027s someone we should talk to in Studio (because i think they have some kind of symbolization stuff in Studio, though i only [think i] know that because i\u0027ve heard users complain about it?).",
+      "parentUuid": "ca94b986_c309ee0f",
+      "revId": "7d5037eb3d2fc98f2cbbd00ba730527eda2c5fb4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
