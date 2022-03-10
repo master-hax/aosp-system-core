@@ -123,6 +123,24 @@
       "parentUuid": "ca94b986_c309ee0f",
       "revId": "7d5037eb3d2fc98f2cbbd00ba730527eda2c5fb4",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1402e788_b06d8054",
+        "filename": "debuggerd/libdebuggerd/tombstone_symbolize.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1067098
+      },
+      "writtenOn": "2022-03-10T22:38:55Z",
+      "side": 1,
+      "message": "\u003e Oh I missed that aspect, because I assumed that debuggerd was running on the device too. In that case, it should be possible to build a host-based tool\n\nAh, I could have sworn that we had something like that but I couldn\u0027t find it. So I can set LLVM_BUILD_HOST_TOOLS\u003dtrue to rebuild the existing tools. The build process seems a bit broken though:\n\n$ out.qm/host/linux-x86/bin/versioner\nout.qm/host/linux-x86/bin/versioner: error while loading shared libraries: libclang-cpp.so.14git: cannot open shared object file: No such file or directory\n\nWorked around with some symlinks:\n\nln -s libclang-cpp_host.so out.qm/host/linux-x86/lib64/libclang-cpp.so.14git\nln -s libc++.so out.qm/host/linux-x86/lib64/libc++.so.1\n\nAccording to a quick scan of the symbols in libclang-cpp.so it looks like it\u0027s missing the symbolizer library. I wonder whether we should be linking \"everything\" into libclang-cpp, and then potentially stop shipping libLLVM since it would be subsumed by libclang-cpp.",
+      "parentUuid": "f23438c2_aa0aa692",
+      "revId": "7d5037eb3d2fc98f2cbbd00ba730527eda2c5fb4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
