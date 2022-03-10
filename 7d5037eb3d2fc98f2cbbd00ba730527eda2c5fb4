@@ -87,6 +87,24 @@
       "parentUuid": "1f180916_d4e71b22",
       "revId": "7d5037eb3d2fc98f2cbbd00ba730527eda2c5fb4",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ca94b986_c309ee0f",
+        "filename": "debuggerd/libdebuggerd/tombstone_symbolize.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1010056
+      },
+      "writtenOn": "2022-03-10T01:54:41Z",
+      "side": 1,
+      "message": "Oh I missed that aspect, because I assumed that debuggerd was running on the device too. In that case, it should be possible to build a host-based tool similar to what already exists in https://android-build.googleplex.com/builds/branches/aosp-clang-tools/grid?. https://cs.android.com/search?q\u003dllvm-build-host-tools-defaults\u0026ss\u003dandroid%2Fplatform%2Fsuperproject is the relevant search for how those components are linking against a specific prebuilt LLVM. We don\u0027t allow direct linking against libLLVM.so* in the platform itself today.",
+      "parentUuid": "4b60de8a_6402cd62",
+      "revId": "7d5037eb3d2fc98f2cbbd00ba730527eda2c5fb4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
