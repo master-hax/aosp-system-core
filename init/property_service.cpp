@@ -795,6 +795,28 @@ static void load_override_properties() {
     }
 }
 
+// Override the system SPL with the vendor SPL, if the vendor SPL is lower
+static void property_override_spl(std::map<std::string, std::string>* properties) {
+    const std::string EMPTY = "";
+    auto vendor_spl = properties->find("ro.vendor.build.security_patch");
+    if (vendor_spl != properties->end()) {
+        auto vendor_spl_val = vendor_spl->second;
+        if (vendor_spl_val != EMPTY) {
+            // vendor SPL is set, so check it vs. the system spl
+            LOG(INFO) << "vendor_spl: " << vendor_spl_val;
+            auto system_spl = properties->find("ro.build.version.security_patch");
+            if (system_spl != properties->end()) {
+                auto system_spl_val = system_spl->second;
+                LOG(INFO) << "system_spl: " << system_spl_val;
+                if (system_spl_val > vendor_spl_val) {
+                    LOG(INFO) << "overriding system SPL to: " << vendor_spl_val;
+                    system_spl->second = vendor_spl_val;
+                }
+            }
+        }
+    }
+}
+
 // If the ro.product.[brand|device|manufacturer|model|name] properties have not been explicitly
 // set, derive them from ro.product.${partition}.* properties
 static void property_initialize_ro_product_props() {
@@ -1123,6 +1145,9 @@ void PropertyLoadBootDefaults() {
         LOG(INFO) << "Loading " << kDebugRamdiskProp;
         load_properties_from_file(kDebugRamdiskProp, nullptr, &properties);
     }
+
+    // Override the system SPL with the vendor SPL, if vendor SPL is lower.
+    property_override_spl(&properties);
 
     for (const auto& [name, value] : properties) {
         std::string error;
