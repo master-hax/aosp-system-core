@@ -9,6 +9,7 @@
 + [init_action_fuzzer](#InitAction)
 + [init_devices_fuzzer](#InitDevices)
 + [init_keychords_fuzzer](#InitKeychords)
++ [init_service_utils_fuzzer](#InitServiceUtils)
 
 # <a name="InitParser"></a> Fuzzer for InitParser
 
@@ -226,4 +227,26 @@ InitKeychords supports the following parameters:
 ```
   $ adb sync data
   $ adb shell /data/fuzz/arm64/init_keychords_fuzzer/init_keychords_fuzzer
+```
+
+# <a name="InitServiceUtils"></a> Fuzzer for InitServiceUtils
+
+InitServiceUtils supports the following parameters:
+  1. CapMap (parameter name: "kCapMap")
+  2. NameSpaceFlag (parameter name: "NameSpaceFlag")
+
+| Parameter| Valid Values |Configured Value|
+|-------------|----------|----- |
+`kCapMap `| 0.`CHOWN`,<br/> 1.`DAC_OVERRIDE`,<br/> 2.`DAC_READ_SEARCH`,<br/> 3.`FOWNER`,<br/> 4.`FSETID`,<br/> 5.`KILL`,<br/> 6.`SETGID`,<br/> 7.`SETUID`,<br/> 8.`SETPCAP`|Value obtained from FuzzedDataProvider|
+`NameSpaceFlag `| 0.`NEWNS_CASE`,<br/> 1.`NEWPID_CASE`,<br/> 2.`NEWPID_NEWNS`|Value obtained from FuzzedDataProvider|
+
+#### Steps to run
+1. Build the fuzzer
+```
+  $ mm -j$(nproc) init_service_utils_fuzzer
+```
+2. Run on device
+```
+  $ adb sync data
+  $ adb shell /data/fuzz/arm64/init_service_utils_fuzzer/init_service_utils_fuzzer
 ```
