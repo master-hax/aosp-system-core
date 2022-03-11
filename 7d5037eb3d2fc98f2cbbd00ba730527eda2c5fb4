@@ -195,6 +195,24 @@
       "parentUuid": "b25ba42c_17c848d3",
       "revId": "7d5037eb3d2fc98f2cbbd00ba730527eda2c5fb4",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4f7e7f2b_8e71cb72",
+        "filename": "debuggerd/libdebuggerd/tombstone_symbolize.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1010056
+      },
+      "writtenOn": "2022-03-11T04:18:50Z",
+      "side": 1,
+      "message": "http://b/150809112 is where we add libclang-cpp.so from upstream, but I also recall that we\u0027ve struggled a lot with upstream\u0027s definition of \"everything\". As for versioner, etc., those tools are merely built in that branch, and then checked in as prebuilts. I don\u0027t think anyone runs them from the out/ directory.",
+      "parentUuid": "c069ac6b_2cacbb0e",
+      "revId": "7d5037eb3d2fc98f2cbbd00ba730527eda2c5fb4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
