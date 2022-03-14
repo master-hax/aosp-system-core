@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b134f690_643562e7",
+        "filename": "libmodprobe/include/modprobe/modprobe.h",
+        "patchSetId": 11
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-03-14T18:57:31Z",
+      "side": 1,
+      "message": "Is \"module_loaded_lock_\" stopping you from using the default assignment operator here? If so, I\u0027d strongly suggest looking for a way to avoid this, since (1) there\u0027s no matching constructor, and (2) these things are difficult to maintain (someone will forget to add a new field everywhere that it\u0027s needed).\n\nOut of curiosity, where is the copy assignment being used in libmodprobe?",
+      "revId": "b0874fac23905dbf3e9c25faf78ef7d7eaeb8c12",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
