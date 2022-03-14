@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3b704923_97ec8aa0",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 20
+      },
+      "lineNbr": 209,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-03-14T22:29:41Z",
+      "side": 1,
+      "message": "access() can fail for other reasons, like permissions. Let\u0027s add a check for (errno \u003d\u003d ENOENT) here:\n```\nif (optional \u0026\u0026 errno \u003d\u003d ENOENT) {\n  return true;\n} else {\n  PLOG(ERROR) \u003c\u003c \"Failed to access cgroup attribute: \" \u003c\u003c path;\n  return false;\n}\n```",
+      "range": {
+        "startLine": 209,
+        "startChar": 12,
+        "endLine": 209,
+        "endChar": 21
+      },
+      "revId": "0352d49e3fd211e087d2f6e86d53562cb30b67f9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
