@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "599368f1_7deaa348",
+        "filename": "libutils/RefBase.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 750,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2022-03-14T16:59:25Z",
+      "side": 1,
+      "message": "I\u0027m marking this as a TODO, mostly so that someone sees more easily what is to be done here, but there\u0027s no specific effort (yet?) to turn this to fatal, because it\u0027s not something we have scheduled now.",
+      "parentUuid": "75f0ce40_85dc10ac",
+      "revId": "f164de8935a66522f83f8f3d2af3b6ead7cc713f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "914f24b6_4ba60aa8",
@@ -31,6 +49,24 @@
       "writtenOn": "2022-03-14T13:41:05Z",
       "side": 1,
       "message": "I would call out that this will warning will eventually abort the calling location (since we have general inflation on the severity of log messages in logcat). Also, \"use sp\u003c\u003e...\" may be unclear to callers, maybe identify what not to do (e.g. don\u0027t new/delete or put in unique_ptr).",
+      "revId": "f164de8935a66522f83f8f3d2af3b6ead7cc713f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "982256c4_75dd2d08",
+        "filename": "libutils/RefBase.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 755,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2022-03-14T16:59:25Z",
+      "side": 1,
+      "message": "Hey - I will merge this for now given TH is passed already. We can see if this causes problematic logspam and needs reverted. It\u0027s unlikely this will ever get moved to fatal in Android. Being able to say what to do (rather than what not to do) is a rare benefit in my mind. We can see if it causes any confusion.",
+      "parentUuid": "914f24b6_4ba60aa8",
       "revId": "f164de8935a66522f83f8f3d2af3b6ead7cc713f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
