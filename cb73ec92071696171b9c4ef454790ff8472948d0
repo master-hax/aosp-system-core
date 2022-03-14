@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1cdd6d98_df9ec2d0",
+        "filename": "init/mount_handler.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-03-14T17:58:37Z",
+      "side": 1,
+      "message": "This expression occurs twice. How about storing the result of this expression in a local variable?",
+      "range": {
+        "startLine": 114,
+        "startChar": 51,
+        "endLine": 114,
+        "endChar": 92
+      },
+      "revId": "cb73ec92071696171b9c4ef454790ff8472948d0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
