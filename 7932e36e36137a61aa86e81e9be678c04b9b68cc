@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "10bd31c9_5caede8c",
+        "filename": "init/mount_handler.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-03-14T17:10:35Z",
+      "side": 1,
+      "message": "Hmm ... is returning ::android::base::Error() compatible with the std::string return type?",
+      "range": {
+        "startLine": 73,
+        "startChar": 8,
+        "endLine": 73,
+        "endChar": 58
+      },
+      "revId": "7932e36e36137a61aa86e81e9be678c04b9b68cc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
