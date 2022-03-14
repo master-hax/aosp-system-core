@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "75f0ce40_85dc10ac",
+        "filename": "libutils/RefBase.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 750,
+      "author": {
+        "id": 1494236
+      },
+      "writtenOn": "2022-03-14T13:41:05Z",
+      "side": 1,
+      "message": "Perhaps add a bug number to this TODO, so we can track?",
+      "revId": "f164de8935a66522f83f8f3d2af3b6ead7cc713f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "914f24b6_4ba60aa8",
+        "filename": "libutils/RefBase.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 755,
+      "author": {
+        "id": 1494236
+      },
+      "writtenOn": "2022-03-14T13:41:05Z",
+      "side": 1,
+      "message": "I would call out that this will warning will eventually abort the calling location (since we have general inflation on the severity of log messages in logcat). Also, \"use sp\u003c\u003e...\" may be unclear to callers, maybe identify what not to do (e.g. don\u0027t new/delete or put in unique_ptr).",
+      "revId": "f164de8935a66522f83f8f3d2af3b6ead7cc713f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
