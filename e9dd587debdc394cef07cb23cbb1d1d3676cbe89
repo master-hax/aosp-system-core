@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fba57e9b_76174429",
+        "filename": "init/first_stage_init.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 175,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2022-03-14T06:24:54Z",
+      "side": 1,
+      "message": "std::thread::hardware_concurrency()",
+      "range": {
+        "startLine": 175,
+        "startChar": 58,
+        "endLine": 175,
+        "endChar": 59
+      },
+      "revId": "e9dd587debdc394cef07cb23cbb1d1d3676cbe89",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
