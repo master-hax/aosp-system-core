@@ -38,6 +38,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "063ab630_e4b75036",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-03-15T15:19:34Z",
+      "side": 1,
+      "message": "the only thing i could think of was not symbols (since that should be obvious, and you may have better symbols available at the time you\u0027re looking at the protobuf anyway) but -- and i don\u0027t know whether this really makes sense or not -- missing unwind information?",
+      "parentUuid": "fc8e6b42_4af7e914",
+      "revId": "711038dd4ba20c85b387cbd24bb90cfc5b58c0bb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "c58d944d_fdf7fade",
         "filename": "debuggerd/libdebuggerd/utility.cpp",
         "patchSetId": 2
