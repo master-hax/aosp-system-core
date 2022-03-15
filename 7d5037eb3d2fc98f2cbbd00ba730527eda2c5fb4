@@ -267,6 +267,24 @@
       "parentUuid": "fa2ff828_42c6bac8",
       "revId": "7d5037eb3d2fc98f2cbbd00ba730527eda2c5fb4",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b373d304_48f2b025",
+        "filename": "debuggerd/libdebuggerd/tombstone_symbolize.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1010056
+      },
+      "writtenOn": "2022-03-15T01:38:14Z",
+      "side": 1,
+      "message": "\u003e I guess my point was that one person\u0027s \"full set of functionality\" is another\u0027s \"useless bloat\".\n\nI guess I don\u0027t see how something that is intended to provide full Clang functionality to other users could be considered \"bloat\". Restricting it to what\u0027s currently used doesn\u0027t seem downstream-developer-friendly. I could also make the point that anyone concerned with that level of bloat should probably be building their own stripped-down components instead (much like old LLVM\u0027s on the Android device).\n\n\u003e \n\u003e Maybe one idea would be to make the list of projects linked into libLLVM.so configurable? So the default would just be llvm but you could also have it be llvm + clang + clang-tools-extra (or just llvm + clang if you don\u0027t care about the tools). Then the in-tree tools in your selected projects would dynamically link against libLLVM instead of being statically linked, and you could dynamically link against it from out of tree as well.\n\u003e \n\u003e It looks like there\u0027s something like that already with LLVM_DYLIB_COMPONENTS but that only covers LLVM components.\n\nPerhaps. It might be interesting to see what other upstream folks (especially those with other downstream tools) think about providing broader functionality. It\u0027s weird to me that we can\u0027t make the case for \"`llvm-symbolizer` and other utilities should be able to be built dynamically linked to reduce total size\".\n\n\u003e \n\u003e \u003e https://android.googlesource.com/platform/prebuilts/clang-tools/ is indeed where they live as prebuilts (both darwin and linux versions of the tools, although perhaps the darwin ones are obsolete now.\n\u003e \n\u003e I was more asking *why* they are prebuilts. If we can have them be built from source like the other host tools then I think that would simplify how they are developed.\n\nThey are prebuilts because the Clang/LLVM C++ APIs they depend on are unstable. If we had to build these as part of the platform, that means \"we\" (toolchain folks) are now responsible for updating everyone else\u0027s downstream tool sources (many of which have no tests). By decoupling the toolchain they build against, we can ensure that the platform toolchain (and NDK toolchain, and kernel toolchain, ...) can keep flowing along without other teams serving as an unnecessary blocker.",
+      "parentUuid": "0025c5a4_70736e84",
+      "revId": "7d5037eb3d2fc98f2cbbd00ba730527eda2c5fb4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
