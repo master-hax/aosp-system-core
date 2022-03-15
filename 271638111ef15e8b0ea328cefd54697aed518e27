@@ -123,6 +123,24 @@
       "parentUuid": "01feb06f_138a714d",
       "revId": "271638111ef15e8b0ea328cefd54697aed518e27",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5b58545f_3e529940",
+        "filename": "libutils/include/utils/Compat.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-03-15T23:47:35Z",
+      "side": 1,
+      "message": "except i thought macOS didn\u0027t \"do\" EINTR, so TEMP_FAILURE_RETRY there should be a no-op (and we should mention `__APPLE__`)? or is macOS \"not a BSD\" in that way?\n\ni\u0027m assuming someone\u0027s actually tried this recently and we can\u0027t just remove it? (that should at least tell us what the comment _should_ say... :-) )",
+      "parentUuid": "611ad96f_f887c103",
+      "revId": "271638111ef15e8b0ea328cefd54697aed518e27",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
