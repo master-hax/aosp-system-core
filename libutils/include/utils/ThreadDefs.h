@@ -19,8 +19,11 @@
 
 #include <stdint.h>
 #include <sys/types.h>
+
+#if defined(__ANDROID__)
 #include <system/graphics.h>
 #include <system/thread_defs.h>
+#endif
 
 // ---------------------------------------------------------------------------
 // C API
@@ -50,6 +53,7 @@ namespace android {
 typedef android_thread_id_t thread_id_t;
 typedef android_thread_func_t thread_func_t;
 
+#if defined(__ANDROID__)
 enum {
     PRIORITY_LOWEST         = ANDROID_PRIORITY_LOWEST,
     PRIORITY_BACKGROUND     = ANDROID_PRIORITY_BACKGROUND,
@@ -64,6 +68,11 @@ enum {
     PRIORITY_MORE_FAVORABLE = ANDROID_PRIORITY_MORE_FAVORABLE,
     PRIORITY_LESS_FAVORABLE = ANDROID_PRIORITY_LESS_FAVORABLE,
 };
+#else
+enum {
+    PRIORITY_DEFAULT = 0,
+};
+#endif
 
 // ---------------------------------------------------------------------------
 }  // namespace android
