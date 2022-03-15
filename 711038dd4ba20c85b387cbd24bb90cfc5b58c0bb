@@ -20,6 +20,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "fc8e6b42_4af7e914",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2022-03-15T03:47:20Z",
+      "side": 1,
+      "message": "I don\u0027t think there is much that can be done with this information other than just printing it out. So it kind of seems a waste to store it in another form. But I\u0027m kind of on the fence on this.\n\nI\u0027ll think about it overnight and see if I can convince myself one way or another.",
+      "parentUuid": "fab5688a_2d80faf0",
+      "revId": "711038dd4ba20c85b387cbd24bb90cfc5b58c0bb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "c58d944d_fdf7fade",
         "filename": "debuggerd/libdebuggerd/utility.cpp",
         "patchSetId": 2
@@ -31,6 +49,30 @@
       "writtenOn": "2022-03-14T23:53:26Z",
       "side": 1,
       "message": "ELF\n\n(or should we say \"shared libraries\" here, since that seems to be what we\u0027ve called them otherwise?)",
+      "range": {
+        "startLine": 506,
+        "startChar": 54,
+        "endLine": 506,
+        "endChar": 57
+      },
+      "revId": "711038dd4ba20c85b387cbd24bb90cfc5b58c0bb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4bc5776f_b5b356f7",
+        "filename": "debuggerd/libdebuggerd/utility.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 506,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2022-03-15T03:47:20Z",
+      "side": 1,
+      "message": "Changed to just libraries since that\u0027s the languages I use everywhere. They aren\u0027t necessarily shared libraries so that\u0027s why I\u0027m going with just libraries.\n\nChanged here and in tombstone_proto.cpp.",
+      "parentUuid": "c58d944d_fdf7fade",
       "range": {
         "startLine": 506,
         "startChar": 54,
