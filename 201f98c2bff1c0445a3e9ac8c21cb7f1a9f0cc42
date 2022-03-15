@@ -89,6 +89,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "2a4ec343_2fe769d1",
+        "filename": "libutils/include/utils/Errors.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2022-03-15T23:28:59Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6959b9c6_441fc6d3",
+      "range": {
+        "startLine": 42,
+        "startChar": 1,
+        "endLine": 42,
+        "endChar": 2
+      },
+      "revId": "201f98c2bff1c0445a3e9ac8c21cb7f1a9f0cc42",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "2188f43d_93f23ba9",
@@ -173,6 +197,30 @@
       "writtenOn": "2022-03-15T18:33:44Z",
       "side": 1,
       "message": "undef LIBUTILS_SAVED_NO_ERROR?",
+      "range": {
+        "startLine": 86,
+        "startChar": 0,
+        "endLine": 86,
+        "endChar": 29
+      },
+      "revId": "201f98c2bff1c0445a3e9ac8c21cb7f1a9f0cc42",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "36a60c60_1dcd2b02",
+        "filename": "libutils/include/utils/Errors.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2022-03-15T23:28:59Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5c00cf06_fa3354f2",
       "range": {
         "startLine": 86,
         "startChar": 0,
