@@ -211,8 +211,8 @@ cc_library_headers {
     visibility: [":__subpackages__"],
 }
 
-cc_library_static {
-    name: "libinit",
+cc_defaults {
+    name: "libinit_libraries_defaults",
     recovery_available: true,
     defaults: [
         "init_defaults",
@@ -252,6 +252,19 @@ cc_library_static {
     visibility: [
         "//system/apex/apexd",
         "//frameworks/native/cmds/installd",
+    ],
+}
+
+cc_library_static {
+    name: "libinit",
+    defaults: ["libinit_libraries_defaults"],
+}
+
+cc_library_static {
+    name: "libinit_no_poll_timeout",
+    defaults: ["libinit_libraries_defaults"],
+    cflags: [
+        "-DNO_POLL_TIMEOUT",
     ],
 }
 
