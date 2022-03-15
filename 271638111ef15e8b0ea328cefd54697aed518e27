@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "292aba3b_861d7e2d",
+        "filename": "libutils/include/utils/Compat.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-03-15T18:40:45Z",
+      "side": 1,
+      "message": "this matches what we\u0027ve done in bionic, so that sgtm...\n\n...but that makes me wonder who actually needs this? macOS and Windows don\u0027t have EINTR, right? should this just _move_ into trusty, if they\u0027re the only ones that need this?\n\n(at the very least we should fix the unhelpful \"alas\" comment above to be specific about when/where this is a problem!)",
+      "revId": "271638111ef15e8b0ea328cefd54697aed518e27",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
