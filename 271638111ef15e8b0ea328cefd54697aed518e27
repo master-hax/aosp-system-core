@@ -34,6 +34,29 @@
       "parentUuid": "292aba3b_861d7e2d",
       "revId": "271638111ef15e8b0ea328cefd54697aed518e27",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "86cfa0d1_e02c07cf",
+        "filename": "libutils/include/utils/Compat.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2022-03-15T21:10:29Z",
+      "side": 1,
+      "message": "changing this to \u0027int _rc\u0027 worked for a full build for me. I wonder, why does it need to be typeof/__typeof__? Do any syscalls return a 64-bit value that would be incorrectly truncated and cause a collision with -1 on L86?",
+      "range": {
+        "startLine": 83,
+        "startChar": 8,
+        "endLine": 83,
+        "endChar": 24
+      },
+      "revId": "271638111ef15e8b0ea328cefd54697aed518e27",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
