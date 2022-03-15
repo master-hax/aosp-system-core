@@ -231,6 +231,24 @@
       "parentUuid": "4f7e7f2b_8e71cb72",
       "revId": "7d5037eb3d2fc98f2cbbd00ba730527eda2c5fb4",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fa2ff828_42c6bac8",
+        "filename": "debuggerd/libdebuggerd/tombstone_symbolize.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1010056
+      },
+      "writtenOn": "2022-03-15T00:08:52Z",
+      "side": 1,
+      "message": "\u003e Oh, I hadn\u0027t realised that libclang-cpp was now upstream. That would seem to make it more difficult to change what is included.\n\u003e \n\u003e I wonder what you think about going back to having the build files live downstream since it seems difficult to have something that pleases everyone. The choice of which libraries to include depends to some extent on the downstream tools that link against it and that\u0027s going to be different for everyone.\n\nWe\u0027re trying to not diverge from upstream LLVM at all anymore, so perhaps the better solution is to ensure that something like libclang-cpp is actually a full set of functionality, and not some reduced subset. It might be better to influence upstream to make this library complete enough to build all the other LLVM tools with. IMO it seems weird to provide such a library that isn\u0027t even powerful/thorough enough for \"in-tree\" users.\n\n\u003e \n\u003e By the way, why do we check in those tools as prebuilts? It seems like they could be built in the same way as other host tools, modulo the soname issues that I discovered. If the concern is decoupling the LLVM version used by the compiler from that used by the tools, then it seems like it could be addressed by having the two version numbers be independent in the build system (LLVM_BINDGEN_PREBUILTS_VERSION is prior art).\n\nhttps://android.googlesource.com/platform/prebuilts/clang-tools/ is indeed where they live as prebuilts (both darwin and linux versions of the tools, although perhaps the darwin ones are obsolete now.\n\n\u003e \n\u003e At the same time, I don\u0027t think we should block landing this tool on this issue. I would propose that the first version of this tool can do the textual communication with llvm-symbolizer. This would at least allow it to be used in lunched environments. Then it can be changed to link against libclang-cpp (or something else) once this issue gets resolved.\n\nAgreed that nothing should be blocked here on improvements.",
+      "parentUuid": "f1d8acc3_7fb257f1",
+      "revId": "7d5037eb3d2fc98f2cbbd00ba730527eda2c5fb4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
