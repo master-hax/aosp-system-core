@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6a32c7cb_163073d5",
+        "filename": "libutils/include/utils/ThreadDefs.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2022-03-15T23:56:09Z",
+      "side": 1,
+      "message": "where is this used in code? Is \u00270\u0027 a value that makes sense on other OSes?\n\nHitting PR+1 on this to see how/if this affects host stuff.",
+      "range": {
+        "startLine": 73,
+        "startChar": 0,
+        "endLine": 73,
+        "endChar": 25
+      },
+      "revId": "f0b239e5ee5877eab1175fae93e02d7ddc99fb3e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
