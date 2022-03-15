@@ -36,8 +36,12 @@ typedef int32_t status_t;
 
 // Win32 #defines NO_ERROR as well.  It has the same value, so there's no
 // real conflict, though it's a bit awkward.
-#ifdef _WIN32
+#ifdef NO_ERROR
+#pragma push_macro("NO_ERROR")
+#define LIBUTILS_SAVED_NO_ERROR 1
 # undef NO_ERROR
+#else
+#define LIBUTILS_SAVED_NO_ERROR 0
 #endif
 
 enum {
@@ -78,8 +82,8 @@ std::string statusToString(status_t status);
 
 // Restore define; enumeration is in "android" namespace, so the value defined
 // there won't work for Win32 code in a different namespace.
-#ifdef _WIN32
-# define NO_ERROR 0L
+#if LIBUTILS_SAVED_NO_ERROR
+#pragma pop_macro("NO_ERROR")
 #endif
 
 }  // namespace android
