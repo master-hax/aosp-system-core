@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3821f7c6_ee0b7875",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 12
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-03-15T06:56:53Z",
+      "side": 1,
+      "message": "It would be good to add",
+      "revId": "fc2e3c6e5b9f5480bd3d98a6898aa597529469a0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "da9e5ea1_9b78a6ec",
+        "filename": "init/first_stage_init.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 289,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-03-15T06:56:53Z",
+      "side": 1,
+      "message": "I think this should check bootconfig as well, since it replaces cmdline these days?",
+      "revId": "fc2e3c6e5b9f5480bd3d98a6898aa597529469a0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
