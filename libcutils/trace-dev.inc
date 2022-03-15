@@ -185,21 +185,39 @@ void atrace_update_tags()
     }
 }
 
-#define WRITE_MSG(format_begin, format_end, name, value) { \
+#define WRITE_MSG(format_begin, format_end, trackName, name, value) { \
     char buf[ATRACE_MESSAGE_LENGTH] __attribute__((uninitialized));     \
+    const char* trackName_sep = strlen(trackName) > 0 ? "|" : ""; \
     int pid = getpid(); \
-    int len = snprintf(buf, sizeof(buf), format_begin "%s" format_end, pid, \
-        name, value); \
+    int len = snprintf(buf, sizeof(buf), format_begin "%s%s%s" format_end, pid, \
+        trackName, trackName_sep, name, value); \
     if (len >= (int) sizeof(buf)) { \
-        /* Given the sizeof(buf), and all of the current format buffers, \
-         * it is impossible for name_len to be < 0 if len >= sizeof(buf). */ \
         int name_len = strlen(name) - (len - sizeof(buf)) - 1; \
         /* Truncate the name to make the message fit. */ \
-        ALOGW("Truncated name in %s: %s\n", __FUNCTION__, name); \
-        len = snprintf(buf, sizeof(buf), format_begin "%.*s" format_end, pid, \
-            name_len, name, value); \
+        if (name_len > 0) { \
+            ALOGW("Truncated name in %s: %s\n", __FUNCTION__, name); \
+            len = snprintf(buf, sizeof(buf), format_begin "%s%s%.*s" format_end, pid, \
+                trackName, trackName_sep, name_len, name, value); \
+        } \
+        else { \
+            int trackName_len = strlen(trackName) - (len - strlen(name) - sizeof(buf)) - 2; \
+            if (trackName_len <= 0) { \
+                /* Data is still too long. Drop it. */ \
+                ALOGW("Data is too long in %s: %s\n", __FUNCTION__, name); \
+                len = 0; \
+            } \
+            else { \
+                /* Truncate the trackName and name to make the message fit */ \
+                ALOGW("Truncated name in %s: %s\n", __FUNCTION__, name); \
+                ALOGW("Truncated trackName in %s: %s\n", __FUNCTION__, trackName); \
+                len = snprintf(buf, sizeof(buf), format_begin "%.*s|%.1s" format_end, pid, \
+                    trackName_len, trackName, name, value); \
+            } \
+        } \
     } \
-    write(atrace_marker_fd, buf, len); \
+    if (len > 0) { \
+        write(atrace_marker_fd, buf, len); \
+    } \
 }
 
 #endif  // __TRACE_DEV_INC
