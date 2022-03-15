@@ -602,7 +602,7 @@
   "AggregateProfiles": [
     {
       "Name": "SCHED_SP_DEFAULT",
-      "Profiles": [ "TimerSlackNormal" ]
+      "Profiles": [ "NormalPerformance", "NormalIoPriority", "TimerSlackNormal" ]
     },
     {
       "Name": "SCHED_SP_BACKGROUND",
@@ -626,7 +626,7 @@
     },
     {
       "Name": "CPUSET_SP_DEFAULT",
-      "Profiles": [ "TimerSlackNormal" ]
+      "Profiles": [ "NormalPerformance", "ProcessCapacityNormal", "NormalIoPriority", "TimerSlackNormal" ]
     },
     {
       "Name": "CPUSET_SP_BACKGROUND",
@@ -642,7 +642,7 @@
     },
     {
       "Name": "CPUSET_SP_SYSTEM",
-      "Profiles": [ "ServiceCapacityLow", "TimerSlackNormal" ]
+      "Profiles": [ "ServicePerformance", "ServiceCapacityLow", "LowIoPriority", "TimerSlackNormal" ]
     },
     {
       "Name": "CPUSET_SP_RESTRICTED",
