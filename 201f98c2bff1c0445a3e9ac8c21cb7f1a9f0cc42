@@ -43,6 +43,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "ee2dd69e_7b56c076",
+        "filename": "libutils/include/utils/Errors.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2022-03-15T20:39:39Z",
+      "side": 1,
+      "message": "The original code was like this, and I tried adding the spaces to the new ones and clang-format removed them. Remove it here too?",
+      "parentUuid": "8cb794ff_b9d84af6",
+      "range": {
+        "startLine": 42,
+        "startChar": 1,
+        "endLine": 42,
+        "endChar": 2
+      },
+      "revId": "201f98c2bff1c0445a3e9ac8c21cb7f1a9f0cc42",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "2188f43d_93f23ba9",
         "filename": "libutils/include/utils/Errors.h",
         "patchSetId": 2
@@ -78,6 +102,30 @@
       "side": 1,
       "message": "i wondered why we don\u0027t just *always* do this for `_WIN32`? why do we need our own #define at all?",
       "parentUuid": "2188f43d_93f23ba9",
+      "range": {
+        "startLine": 43,
+        "startChar": 0,
+        "endLine": 44,
+        "endChar": 33
+      },
+      "revId": "201f98c2bff1c0445a3e9ac8c21cb7f1a9f0cc42",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e1f206d6_5deb8ee1",
+        "filename": "libutils/include/utils/Errors.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2022-03-15T20:39:39Z",
+      "side": 1,
+      "message": "\u003e #ifdef LIBUTILS_SAVED_NO_ERROR\n\nI was doing some defensive coding against LIBUTILS_SAVED_NO_ERROR already being defined somewhere else, but that\u0027s probably excessive. #ifdef wouldn\u0027t catch that, but that\u0027s probably fine.\n\n\u003e i wondered why we don\u0027t just *always* do this for  _WIN32 ? why do we need our own #define at all?\n\nThis is also needed for Trusty which also has its own NO_ERROR. I could remove the conditionals and always save NO_ERROR, if push_macro and #undef also work on undefined macros, e.g., on Linux/Android.",
+      "parentUuid": "73353723_48d0241c",
       "range": {
         "startLine": 43,
         "startChar": 0,

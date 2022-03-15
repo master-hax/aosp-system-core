@@ -22,6 +22,30 @@
       },
       "revId": "271638111ef15e8b0ea328cefd54697aed518e27",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "02568e1d_22ddb047",
+        "filename": "libutils/include/utils/Errors.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2022-03-15T20:39:39Z",
+      "side": 0,
+      "message": "Coincidentally it is 0 on Trusty, but it might be worth playing it safe and reusing the old value instead of assuming it\u0027s 0. As an alternative, we could go with the assumption but also statically check the value and use #error if it\u0027s not.",
+      "parentUuid": "19234ed5_1db92cbc",
+      "range": {
+        "startLine": 82,
+        "startChar": 18,
+        "endLine": 82,
+        "endChar": 20
+      },
+      "revId": "271638111ef15e8b0ea328cefd54697aed518e27",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
