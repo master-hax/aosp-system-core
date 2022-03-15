@@ -249,6 +249,24 @@
       "parentUuid": "f1d8acc3_7fb257f1",
       "revId": "7d5037eb3d2fc98f2cbbd00ba730527eda2c5fb4",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0025c5a4_70736e84",
+        "filename": "debuggerd/libdebuggerd/tombstone_symbolize.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1067098
+      },
+      "writtenOn": "2022-03-15T01:21:12Z",
+      "side": 1,
+      "message": "\u003e We\u0027re trying to not diverge from upstream LLVM at all anymore, so perhaps the better solution is to ensure that something like libclang-cpp is actually a full set of functionality, and not some reduced subset. It might be better to influence upstream to make this library complete enough to build all the other LLVM tools with. IMO it seems weird to provide such a library that isn\u0027t even powerful/thorough enough for \"in-tree\" users.\n\nI guess my point was that one person\u0027s \"full set of functionality\" is another\u0027s \"useless bloat\".\n\nMaybe one idea would be to make the list of projects linked into libLLVM.so configurable? So the default would just be llvm but you could also have it be llvm + clang + clang-tools-extra (or just llvm + clang if you don\u0027t care about the tools). Then the in-tree tools in your selected projects would dynamically link against libLLVM instead of being statically linked, and you could dynamically link against it from out of tree as well.\n\nIt looks like there\u0027s something like that already with LLVM_DYLIB_COMPONENTS but that only covers LLVM components.\n\n\u003e https://android.googlesource.com/platform/prebuilts/clang-tools/ is indeed where they live as prebuilts (both darwin and linux versions of the tools, although perhaps the darwin ones are obsolete now.\n\nI was more asking *why* they are prebuilts. If we can have them be built from source like the other host tools then I think that would simplify how they are developed.",
+      "parentUuid": "fa2ff828_42c6bac8",
+      "revId": "7d5037eb3d2fc98f2cbbd00ba730527eda2c5fb4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
