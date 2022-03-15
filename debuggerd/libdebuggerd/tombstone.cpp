@@ -36,9 +36,9 @@
 #include <async_safe/log.h>
 #include <log/log.h>
 #include <private/android_filesystem_config.h>
-#include <unwindstack/Memory.h>
+#include <unwindstack/AndroidUnwinder.h>
+#include <unwindstack/Error.h>
 #include <unwindstack/Regs.h>
-#include <unwindstack/Unwinder.h>
 
 #include "libdebuggerd/backtrace.h"
 #include "libdebuggerd/open_files_list.h"
@@ -101,12 +101,11 @@ void engrave_tombstone_ucontext(int tombstone_fd, int proto_fd, uint64_t abort_m
     }
   }
 
-  auto process_memory =
-      unwindstack::Memory::CreateProcessMemoryCached(getpid());
-  unwindstack::UnwinderFromPid unwinder(kMaxFrames, pid, unwindstack::Regs::CurrentArch(), nullptr,
-                                        process_memory);
-  if (!unwinder.Init()) {
-    async_safe_format_log(ANDROID_LOG_ERROR, LOG_TAG, "failed to init unwinder object");
+  unwindstack::AndroidLocalUnwinder unwinder;
+  unwindstack::ErrorData error;
+  if (!unwinder.Initialize(error)) {
+    async_safe_format_log(ANDROID_LOG_ERROR, LOG_TAG, "failed to init unwinder object: %s",
+                          unwindstack::GetErrorCodeString(error.code));
     return;
   }
 
@@ -116,7 +115,8 @@ void engrave_tombstone_ucontext(int tombstone_fd, int proto_fd, uint64_t abort_m
                     process_info, nullptr, nullptr);
 }
 
-void engrave_tombstone(unique_fd output_fd, unique_fd proto_fd, unwindstack::Unwinder* unwinder,
+void engrave_tombstone(unique_fd output_fd, unique_fd proto_fd,
+                       unwindstack::AndroidUnwinder* unwinder,
                        const std::map<pid_t, ThreadInfo>& threads, pid_t target_thread,
                        const ProcessInfo& process_info, OpenFilesList* open_files,
                        std::string* amfd_data) {
