@@ -54,6 +54,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "09b690e7_0bcd4a84",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2022-03-15T19:36:41Z",
+      "side": 1,
+      "message": "I decided to add them to the proto, but leave them also in the note. I can imagine that if we make the protobuf available to apps, they might want to know that these libraries exist.",
+      "parentUuid": "063ab630_e4b75036",
+      "revId": "711038dd4ba20c85b387cbd24bb90cfc5b58c0bb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "c58d944d_fdf7fade",
