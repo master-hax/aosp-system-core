@@ -22,6 +22,11 @@
 #include <fs_mgr.h>
 
 #include "block_dev_initializer.h"
+#ifdef NO_POLL_TIMEOUT
+constexpr std::chrono::milliseconds kPollTimeOut = std::chrono::milliseconds(0);
+#else
+constexpr std::chrono::milliseconds kPollTimeOut = std::chrono::milliseconds(10s);
+#endif
 
 namespace android {
 namespace init {
@@ -59,7 +64,7 @@ bool BlockDevInitializer::InitMiscDevice(const std::string& name) {
     if (!found) {
         LOG(INFO) << name << " device not found in /sys, waiting for its uevent";
         Timer t;
-        uevent_listener_.Poll(dm_callback, 10s);
+        uevent_listener_.Poll(dm_callback, kPollTimeOut);
         LOG(INFO) << "Wait for " << name << " returned after " << t;
     }
     if (!found) {
@@ -116,7 +121,7 @@ bool BlockDevInitializer::InitDevices(std::set<std::string> devices) {
                   << ": partition(s) not found in /sys, waiting for their uevent(s): "
                   << android::base::Join(devices, ", ");
         Timer t;
-        uevent_listener_.Poll(uevent_callback, 10s);
+        uevent_listener_.Poll(uevent_callback, kPollTimeOut);
         LOG(INFO) << "Wait for partitions returned after " << t;
     }
 
@@ -148,7 +153,7 @@ bool BlockDevInitializer::InitDmDevice(const std::string& device) {
     if (!found) {
         LOG(INFO) << "dm device '" << device << "' not found in /sys, waiting for its uevent";
         Timer t;
-        uevent_listener_.Poll(uevent_callback, 10s);
+        uevent_listener_.Poll(uevent_callback, kPollTimeOut);
         LOG(INFO) << "wait for dm device '" << device << "' returned after " << t;
     }
     if (!found) {
