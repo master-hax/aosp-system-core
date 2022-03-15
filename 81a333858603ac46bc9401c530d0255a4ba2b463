@@ -1,0 +1,227 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c0e0b249_aa181f8b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 13
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2022-03-15T15:54:15Z",
+      "side": 1,
+      "message": "Was the problem with my original CL that the order of softdeps wasn\u0027t respected or that the order of modules.load wasn\u0027t respected or both?\n\nIdeally, the order of modules.load doesn\u0027t matter, since iterating through that means that only dependencies are loaded in parallel, which is much less efficient than loading all modules from modules.load in parallel.",
+      "revId": "81a333858603ac46bc9401c530d0255a4ba2b463",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b32e071e_c9416053",
+        "filename": "init/first_stage_init.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 290,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2022-03-15T15:54:15Z",
+      "side": 1,
+      "message": "We should prefix this with `androidboot.` so it isn\u0027t confused with an actual kernel command line argument.\n\nIt may be reasonable to only search bootconfig and not the kernel command line. What devices will use this feature but won\u0027t use bootconfig?",
+      "revId": "81a333858603ac46bc9401c530d0255a4ba2b463",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2b22fc50_4afa0ab6",
+        "filename": "libmodprobe/include/modprobe/modprobe.h",
+        "patchSetId": 13
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2022-03-15T15:54:15Z",
+      "side": 1,
+      "message": "Why not a plain mutex? I don\u0027t see either shared or timed functionality used.",
+      "range": {
+        "startLine": 73,
+        "startChar": 9,
+        "endLine": 73,
+        "endChar": 28
+      },
+      "revId": "81a333858603ac46bc9401c530d0255a4ba2b463",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d700cfc0_10e6a5ec",
+        "filename": "libmodprobe/include/modprobe/modprobe.h",
+        "patchSetId": 13
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2022-03-15T15:54:15Z",
+      "side": 1,
+      "message": "module_loaded_paths_",
+      "range": {
+        "startLine": 75,
+        "startChar": 36,
+        "endLine": 75,
+        "endChar": 55
+      },
+      "revId": "81a333858603ac46bc9401c530d0255a4ba2b463",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "834569b2_caf6d32d",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 444,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2022-03-15T15:54:15Z",
+      "side": 1,
+      "message": "mod_with_deps\n\nSimilar formatting for other variables.",
+      "range": {
+        "startLine": 444,
+        "startChar": 49,
+        "endLine": 444,
+        "endChar": 61
+      },
+      "revId": "81a333858603ac46bc9401c530d0255a4ba2b463",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "162dfd79_1e13df3e",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 457,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2022-03-15T15:54:15Z",
+      "side": 1,
+      "message": "const auto\u0026\n\nSimilar const / reference for other for loops",
+      "range": {
+        "startLine": 457,
+        "startChar": 9,
+        "endLine": 457,
+        "endChar": 14
+      },
+      "revId": "81a333858603ac46bc9401c530d0255a4ba2b463",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "edb88e15_83b8eeaf",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 494,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2022-03-15T15:54:15Z",
+      "side": 1,
+      "message": "It\u0027s better to generate these threads once before the while loop starts and signal them with condition variables when there is data to process, instead of forking and joining them in each iteration of this loop.",
+      "revId": "81a333858603ac46bc9401c530d0255a4ba2b463",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "068b5d73_59c23ff5",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 503,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2022-03-15T15:54:15Z",
+      "side": 1,
+      "message": "Why can\u0027t this be assured? Couldn\u0027t we create a graph of the order the modules must be loaded in, including softdeps, then iterate through that?",
+      "range": {
+        "startLine": 502,
+        "startChar": 0,
+        "endLine": 503,
+        "endChar": 46
+      },
+      "revId": "81a333858603ac46bc9401c530d0255a4ba2b463",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6e48a459_0e9a1d09",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 506,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2022-03-15T15:54:15Z",
+      "side": 1,
+      "message": "You can use reverse iteratoes, like is done on line 451 since you\u0027re not consuming these items.",
+      "range": {
+        "startLine": 504,
+        "startChar": 0,
+        "endLine": 506,
+        "endChar": 50
+      },
+      "revId": "81a333858603ac46bc9401c530d0255a4ba2b463",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "070035a2_790b5b39",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 516,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2022-03-15T15:54:15Z",
+      "side": 1,
+      "message": "You can use structured bindings here and below on line 522.",
+      "revId": "81a333858603ac46bc9401c530d0255a4ba2b463",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e98f603d_99ee429e",
+        "filename": "libmodprobe/libmodprobe_test.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 192,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2022-03-15T15:54:15Z",
+      "side": 1,
+      "message": "You could/should rename this to m2 or m_without_load instead of doing this trick.",
+      "revId": "81a333858603ac46bc9401c530d0255a4ba2b463",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
