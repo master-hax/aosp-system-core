@@ -51,12 +51,8 @@
 #define ATRACE_TAG ATRACE_TAG_BIONIC
 #include <utils/Trace.h>
 
-#include <unwindstack/DexFiles.h>
-#include <unwindstack/JitDebug.h>
-#include <unwindstack/Maps.h>
-#include <unwindstack/Memory.h>
+#include <unwindstack/AndroidUnwinder.h>
 #include <unwindstack/Regs.h>
-#include <unwindstack/Unwinder.h>
 
 #include "libdebuggerd/backtrace.h"
 #include "libdebuggerd/tombstone.h"
@@ -623,9 +619,10 @@ int main(int argc, char** argv) {
   }
 
   // TODO: Use seccomp to lock ourselves down.
-  unwindstack::UnwinderFromPid unwinder(256, vm_pid, unwindstack::Regs::CurrentArch());
-  if (!unwinder.Init()) {
-    LOG(FATAL) << "Failed to init unwinder object.";
+
+  unwindstack::AndroidRemoteUnwinder unwinder(vm_pid, unwindstack::Regs::CurrentArch());
+  if (!unwinder.Initialize()) {
+    LOG(FATAL) << "Failed to initialize unwinder object.";
   }
 
   std::string amfd_data;
