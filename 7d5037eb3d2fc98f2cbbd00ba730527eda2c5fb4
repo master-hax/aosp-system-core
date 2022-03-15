@@ -285,6 +285,24 @@
       "parentUuid": "0025c5a4_70736e84",
       "revId": "7d5037eb3d2fc98f2cbbd00ba730527eda2c5fb4",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "da1186e9_df7d250c",
+        "filename": "debuggerd/libdebuggerd/tombstone_symbolize.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1067098
+      },
+      "writtenOn": "2022-03-15T02:09:04Z",
+      "side": 1,
+      "message": "\u003e I guess I don\u0027t see how something that is intended to provide full Clang functionality to other users could be considered \"bloat\". Restricting it to what\u0027s currently used doesn\u0027t seem downstream-developer-friendly. I could also make the point that anyone concerned with that level of bloat should probably be building their own stripped-down components instead (much like old LLVM\u0027s on the Android device).\n\nI agree that the default should be to provide everything in the project\u0027s lib directory if you\u0027ve opted to include that project in libLLVM. We can let developers contribute more customizations if they want.\n\n\u003e Perhaps. It might be interesting to see what other upstream folks (especially those with other downstream tools) think about providing broader functionality. It\u0027s weird to me that we can\u0027t make the case for \" llvm-symbolizer  and other utilities should be able to be built dynamically linked to reduce total size\".\n\nIt looks like it\u0027s possible to dynamically link the utilities that only use LLVM libraries against libLLVM.so by using LLVM_LINK_DYLIB, but this doesn\u0027t affect Clang tools as far as I\u0027m aware. It would be good to have an upstream solution for shipping both LLVM and Clang tools without shipping duplicate code. One upstream solution that\u0027s being worked on is a \"busybox\" for the LLVM tools (https://reviews.llvm.org/D109977) but this appears to only cover LLVM and not Clang or out-of-tree tools.\n\n\u003e They are prebuilts because the Clang/LLVM C++ APIs they depend on are unstable. If we had to build these as part of the platform, that means \"we\" (toolchain folks) are now responsible for updating everyone else\u0027s downstream tool sources (many of which have no tests). By decoupling the toolchain they build against, we can ensure that the platform toolchain (and NDK toolchain, and kernel toolchain, ...) can keep flowing along without other teams serving as an unnecessary blocker.\n\nRight, I thought it was something like that. But can\u0027t it be solved by making the toolchain version number independent of the tools version number, as I mentioned previously? The idea would be that when you upgrade the toolchain used to build the platform from version X to version Y by changing the value of ClangDefaultVersion in build/soong/cc/config/global.go, the tools would continue to link against version X because that version number would be specified in some other variable (similar to bindgenClangVersion in build/soong/rust/bindgen.go). And updating that to version Y can be done by a separate team independently of the toolchain upgrade.",
+      "parentUuid": "b373d304_48f2b025",
+      "revId": "7d5037eb3d2fc98f2cbbd00ba730527eda2c5fb4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
