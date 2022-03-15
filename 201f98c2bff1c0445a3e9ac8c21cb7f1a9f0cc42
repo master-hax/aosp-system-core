@@ -186,6 +186,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "b89f3d5f_b8de7431",
+        "filename": "libutils/include/utils/Errors.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2022-03-15T23:35:43Z",
+      "side": 1,
+      "message": "What about (in PS3) remove L39-L43, remove L47, remove L83-L86, then add:\n\n#ifndef NO_ERROR\n#define NO_ERROR 0\n#endif\n\n(switching to a macro definition of NO_ERROR instead of the enum definition)",
+      "parentUuid": "e1f206d6_5deb8ee1",
+      "range": {
+        "startLine": 43,
+        "startChar": 0,
+        "endLine": 44,
+        "endChar": 33
+      },
+      "revId": "201f98c2bff1c0445a3e9ac8c21cb7f1a9f0cc42",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "5c00cf06_fa3354f2",
         "filename": "libutils/include/utils/Errors.h",
         "patchSetId": 2

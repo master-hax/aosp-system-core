@@ -46,6 +46,30 @@
       },
       "revId": "271638111ef15e8b0ea328cefd54697aed518e27",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8ac394f4_a482b5ba",
+        "filename": "libutils/include/utils/Errors.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2022-03-15T23:35:43Z",
+      "side": 0,
+      "message": "Ack",
+      "parentUuid": "02568e1d_22ddb047",
+      "range": {
+        "startLine": 82,
+        "startChar": 18,
+        "endLine": 82,
+        "endChar": 20
+      },
+      "revId": "271638111ef15e8b0ea328cefd54697aed518e27",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
