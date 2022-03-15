@@ -141,6 +141,24 @@
       "parentUuid": "611ad96f_f887c103",
       "revId": "271638111ef15e8b0ea328cefd54697aed518e27",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "486eb03d_5b1283f0",
+        "filename": "libutils/include/utils/Compat.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2022-03-15T23:53:02Z",
+      "side": 1,
+      "message": "ambiguity on \u0027this\u0027 - the retry logic in macOS VS this macro definition VS what is highlighted etc...\n\nanyway - I think an Apple-specific alternative of TEMP_FAILURE_RETRY would be fine, but unrelated to this CL, also how to test?",
+      "parentUuid": "5b58545f_3e529940",
+      "revId": "271638111ef15e8b0ea328cefd54697aed518e27",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
