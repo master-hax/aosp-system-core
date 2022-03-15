@@ -16,6 +16,24 @@
       "message": "do we need to do anything in the pb2txt code, or does that reuse some of this?",
       "revId": "c95047dd20845f06532531ce83e0bedc8ee96038",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "66faaf5a_30a52222",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2022-03-15T19:45:41Z",
+      "side": 1,
+      "message": "No, the backtrace_note includes the same information. This only puts it in the protobuf in case somewhere in the future we decide that someone wants to extract this data from the protobuf.",
+      "parentUuid": "13e4f4e5_30c7f6d3",
+      "revId": "c95047dd20845f06532531ce83e0bedc8ee96038",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
