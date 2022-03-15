@@ -169,6 +169,60 @@ static inline uint64_t gettime(clockid_t clk_id)
     pthread_rwlock_unlock(&atrace_container_sock_rwlock); \
 }
 
+#define WRITE_MSG_FOR_TRACK_IN_CONTAINER_LOCKED(ph, sep_before_name, value_format, trackName,    \
+                                                name, value)                                     \
+    {                                                                                            \
+        char buf[CONTAINER_ATRACE_MESSAGE_LENGTH];                                               \
+        int pid = getpid();                                                                      \
+        int tid = gettid();                                                                      \
+        uint64_t ts = gettime(CLOCK_MONOTONIC);                                                  \
+        uint64_t tts = gettime(CLOCK_THREAD_CPUTIME_ID);                                         \
+        int len = snprintf(buf, sizeof(buf),                                                     \
+                           ph "|%d|%d|%" PRIu64 "|%" PRIu64 sep_before_name "%s" sep_before_name \
+                              "%s" value_format,                                                 \
+                           pid, tid, ts, tts, trackName, name, value);                           \
+        if (len >= (int)sizeof(buf)) {                                                           \
+            /* Prioritize truncating name before trackName */                                    \
+            int name_len = strlen(name) - (len - sizeof(buf)) - 1;                               \
+            /* Truncate the name to make the message fit */                                      \
+            ALOGW("Truncated name in %s: %s\n", __FUNCTION__, name);                             \
+            if (name_len <= 0) {                                                                 \
+                int trackName_len = strlen(trackName) - (len - strlen(name) - sizeof(buf)) - 2;  \
+                if (trackName_len <= 0) {                                                        \
+                    /* Data is still too long. Drop it. */                                       \
+                    ALOGW("Data is too long in %s: %s\n", __FUNCTION__, name);                   \
+                    len = 0;                                                                     \
+                } else {                                                                         \
+                    /* Truncate the trackName to make the message fit */                         \
+                    ALOGW("Truncated trackName in %s: %s\n", __FUNCTION__, trackName);           \
+                    len = snprintf(buf, sizeof(buf),                                             \
+                                   ph "|%d|%d|%" PRIu64 "|%" PRIu64 sep_before_name              \
+                                      "%.*s" sep_before_name "%.1s" value_format,                \
+                                   pid, tid, ts, tts, trackName_len, trackName, name, value);    \
+                }                                                                                \
+            } else {                                                                             \
+                len = snprintf(buf, sizeof(buf),                                                 \
+                               ph "|%d|%d|%" PRIu64 "|%" PRIu64 sep_before_name                  \
+                                  "%s" sep_before_name "%.*s" value_format,                      \
+                               pid, tid, ts, tts, trackName, name_len, name, value);             \
+            }                                                                                    \
+        }                                                                                        \
+        if (len > 0) {                                                                           \
+            write(atrace_container_sock_fd, buf, len);                                           \
+        }                                                                                        \
+    }
+
+#define WRITE_MSG_FOR_TRACK_IN_CONTAINER(ph, sep_before_name, value_format, trackName, name,      \
+                                         value)                                                   \
+    {                                                                                             \
+        pthread_rwlock_rdlock(&atrace_container_sock_rwlock);                                     \
+        if (atrace_container_sock_fd != -1) {                                                     \
+            WRITE_MSG_FOR_TRACK_IN_CONTAINER_LOCKED(ph, sep_before_name, value_format, trackName, \
+                                                    name, value);                                 \
+        }                                                                                         \
+        pthread_rwlock_unlock(&atrace_container_sock_rwlock);                                     \
+    }
+
 void atrace_begin_body(const char* name)
 {
     if (CC_LIKELY(atrace_use_container_sock)) {
@@ -230,13 +284,13 @@ void atrace_instant_body(const char* name) {
 
 void atrace_instant_for_track_body(const char* trackName, const char* name) {
     if (CC_LIKELY(atrace_use_container_sock)) {
-        WRITE_MSG_IN_CONTAINER("N", "|", "|%s", trackName, name);
+        WRITE_MSG_FOR_TRACK_IN_CONTAINER("N", "|", "%s", trackName, name, "");
         return;
     }
 
     if (atrace_marker_fd < 0) return;
 
-    WRITE_MSG("N|%d|", "|%s", name, trackName);
+    WRITE_MSG_FOR_TRACK("N|%d|", "%s", trackName, name, "");
 }
 
 void atrace_int_body(const char* name, int32_t value)

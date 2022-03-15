@@ -202,4 +202,32 @@ void atrace_update_tags()
     write(atrace_marker_fd, buf, len); \
 }
 
+#define WRITE_MSG_FOR_TRACK(format_begin, format_end, trackName, name, value) { \
+    char buf[ATRACE_MESSAGE_LENGTH] __attribute__((uninitialized));     \
+    int pid = getpid(); \
+    int len = snprintf(buf, sizeof(buf), format_begin "%s|%s" format_end, pid, \
+        trackName, name, value); \
+    if (len >= (int) sizeof(buf)) { \
+        /* Prioritize truncating name before trackName */ \
+        int name_len = strlen(name) - (len - sizeof(buf)) - 1; \
+        /* Truncate the name to make the message fit. */ \
+        ALOGW("Truncated name in %s: %s\n", __FUNCTION__, name); \
+        if(name_len <= 0){ \
+            /* Given sizeof(buf) and all of the current format buffers, \
+             * it is impossible for trackName_len_diff to be < 0 \
+             * if len >= sizeof(buf) and strlen(name) < (len - sizeof(buf))*/ \
+            int trackName_len = strlen(trackName) - (len - strlen(name) - sizeof(buf)) - 2; \
+            /* Truncate the trackName to make the message fit */ \
+            ALOGW("Truncated trackName in %s: %s\n", __FUNCTION__, trackName); \
+            len = snprintf(buf, sizeof(buf), format_begin "%.*s|%.1s" format_end, pid, \
+                trackName_len, trackName, name, value); \
+        } \
+        else { \
+            len = snprintf(buf, sizeof(buf), format_begin "%s|%.*s" format_end, pid, \
+                trackName, name_len, name, value); \
+        } \
+    } \
+    write(atrace_marker_fd, buf, len); \
+}
+
 #endif  // __TRACE_DEV_INC

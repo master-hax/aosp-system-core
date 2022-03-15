@@ -94,7 +94,7 @@ void atrace_instant_body(const char* name) {
 }
 
 void atrace_instant_for_track_body(const char* trackName, const char* name) {
-    WRITE_MSG("N|%d|", "|%s", trackName, name);
+    WRITE_MSG_FOR_TRACK("N|%d|", "%s", trackName, name, "");
 }
 
 void atrace_int_body(const char* name, int32_t value)
