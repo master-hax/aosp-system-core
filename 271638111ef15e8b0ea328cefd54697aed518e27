@@ -159,6 +159,24 @@
       "parentUuid": "5b58545f_3e529940",
       "revId": "271638111ef15e8b0ea328cefd54697aed518e27",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "781db562_c104df20",
+        "filename": "libutils/include/utils/Compat.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-03-15T23:54:47Z",
+      "side": 1,
+      "message": "my first question really is \"do we still need this?\" --- we\u0027ve turned down much of the macOS build anyway...",
+      "parentUuid": "486eb03d_5b1283f0",
+      "revId": "271638111ef15e8b0ea328cefd54697aed518e27",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
