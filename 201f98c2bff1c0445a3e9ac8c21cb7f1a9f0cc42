@@ -67,6 +67,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "6959b9c6_441fc6d3",
+        "filename": "libutils/include/utils/Errors.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2022-03-15T22:38:28Z",
+      "side": 1,
+      "message": "sgtm",
+      "parentUuid": "ee2dd69e_7b56c076",
+      "range": {
+        "startLine": 42,
+        "startChar": 1,
+        "endLine": 42,
+        "endChar": 2
+      },
+      "revId": "201f98c2bff1c0445a3e9ac8c21cb7f1a9f0cc42",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "2188f43d_93f23ba9",
         "filename": "libutils/include/utils/Errors.h",
         "patchSetId": 2
