@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "54bd4dbb_0b4610cb",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-03-15T23:40:25Z",
+      "side": 1,
+      "message": "ps3 lgtm, and my +2 applies to smoreland\u0027s alternative too. (in some ways his alternative seems less _obvious_ but i agree that his doesn\u0027t require any assumptions about names other than the very one we care about and we need the comment anyway, so i\u0027ll accept either argument :-) )",
+      "revId": "83650f2a026465756ec47ee37dafb53a7f685bc4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
