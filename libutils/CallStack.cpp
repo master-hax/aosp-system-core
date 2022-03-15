@@ -20,7 +20,7 @@
 #include <utils/Errors.h>
 #include <utils/Log.h>
 
-#include <backtrace/Backtrace.h>
+#include <unwindstack/AndroidUnwinder.h>
 
 #define CALLSTACK_WEAK  // Don't generate weak definitions.
 #include <utils/CallStack.h>
@@ -41,12 +41,13 @@ CallStack::~CallStack() {
 void CallStack::update(int32_t ignoreDepth, pid_t tid) {
     mFrameLines.clear();
 
-    std::unique_ptr<Backtrace> backtrace(Backtrace::Create(BACKTRACE_CURRENT_PROCESS, tid));
-    if (!backtrace->Unwind(ignoreDepth)) {
+    AndroidLocalUnwinder unwinder;
+    if (!unwinder.Unwind(tid)) {
         ALOGW("%s: Failed to unwind callstack.", __FUNCTION__);
     }
-    for (size_t i = 0; i < backtrace->NumFrames(); i++) {
-      mFrameLines.push_back(String8(backtrace->FormatFrameData(i).c_str()));
+    for (auto& frame : unwinder.frames()) {
+        frame.num -= ignoreDepth;
+        mFrameLines.push_back(String8(unwinder.FormatFrameData(frame).c_str()));
     }
 }
 

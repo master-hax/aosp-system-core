@@ -50,7 +50,6 @@
 #include <android-base/scopeguard.h>
 #include <android-base/stringprintf.h>
 #include <android-base/strings.h>
-#include <backtrace/Backtrace.h>
 #include <fs_avb/fs_avb.h>
 #include <fs_mgr_vendor_overlay.h>
 #include <keyutils.h>
@@ -60,6 +59,7 @@
 #include <processgroup/processgroup.h>
 #include <processgroup/setup.h>
 #include <selinux/android.h>
+#include <unwindstack/AndroidUnwinder.h>
 
 #include "action_parser.h"
 #include "builtins.h"
@@ -255,12 +255,12 @@ static class ShutdownState {
 } shutdown_state;
 
 static void UnwindMainThreadStack() {
-    std::unique_ptr<Backtrace> backtrace(Backtrace::Create(BACKTRACE_CURRENT_PROCESS, 1));
-    if (!backtrace->Unwind(0)) {
+    AndroidLocalUnwinder unwinder;
+    if (!unwinder.Unwind()) {
         LOG(ERROR) << __FUNCTION__ << "sys.powerctl: Failed to unwind callstack.";
     }
-    for (size_t i = 0; i < backtrace->NumFrames(); i++) {
-        LOG(ERROR) << "sys.powerctl: " << backtrace->FormatFrameData(i);
+    for (auto& frame : unwinder.frames()) {
+        LOG(ERROR) << "sys.powerctl: " << unwinder.FormatFrameData(frame);
     }
 }
 
