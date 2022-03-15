@@ -57,6 +57,30 @@
       },
       "revId": "271638111ef15e8b0ea328cefd54697aed518e27",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "470f0f92_8f9e5b4b",
+        "filename": "libutils/include/utils/Compat.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2022-03-15T22:52:20Z",
+      "side": 1,
+      "message": "write and read return a ssize_t, lseek64 returns an off64_t. Yeah if we used int, it would be truncated.",
+      "parentUuid": "86cfa0d1_e02c07cf",
+      "range": {
+        "startLine": 83,
+        "startChar": 8,
+        "endLine": 83,
+        "endChar": 24
+      },
+      "revId": "271638111ef15e8b0ea328cefd54697aed518e27",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
