@@ -56,6 +56,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "75c57f09_3842aa9f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 13
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1888377
+      },
+      "writtenOn": "2022-03-16T17:43:15Z",
+      "side": 1,
+      "message": "Here\u0027s the benchmark for original CL. b/180676019#comment9\n\nCreating the disjoint sets has around 400ms overhead, and some modules seems to be visited thousand times. Original save 200ms when loading modules. one of set includes 75% modules. which may be less efficient as expected.",
+      "parentUuid": "40c92244_190cd302",
+      "revId": "81a333858603ac46bc9401c530d0255a4ba2b463",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "b32e071e_c9416053",
         "filename": "init/first_stage_init.cpp",
         "patchSetId": 13
