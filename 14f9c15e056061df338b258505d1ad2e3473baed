@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "80e5a116_1d12d73e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1156728
+      },
+      "writtenOn": "2022-03-16T13:59:25Z",
+      "side": 1,
+      "message": "In the sigchld handler, do you want to remove this line\n\n        LOG(INFO) \u003c\u003c name \u003c\u003c \" did not have an associated service entry and will not be reaped\";\n\nI don\u0027t think it\u0027s useful, it\u0027s redundant with \"Untracked pid\" logs in the same function.",
+      "revId": "14f9c15e056061df338b258505d1ad2e3473baed",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
