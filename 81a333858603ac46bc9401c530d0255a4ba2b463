@@ -20,6 +20,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "a423ac07_3b0a28ff",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 13
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1888377
+      },
+      "writtenOn": "2022-03-16T08:02:22Z",
+      "side": 1,
+      "message": "Nope, the order of original CL is correct. However, original CL spent some time preparing disjoint sets and cannot get obvious benefits on pixel 6 pro. To reduce overhead, this patch only updates dependencies without creating disjoint set. And to make this patch be as similar as possible to the mainline version and original patch, I load dependencies in parallel first and then load softdeps. Ideally, we would also load softdeps in parallel but preparing the graph and sets of softdeps may also get some overhead as previous CL. so only load softdeps in sigle first.",
+      "parentUuid": "c0e0b249_aa181f8b",
+      "revId": "81a333858603ac46bc9401c530d0255a4ba2b463",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "b32e071e_c9416053",
         "filename": "init/first_stage_init.cpp",
         "patchSetId": 13
@@ -37,6 +55,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "7e6ed3aa_d5b3c624",
+        "filename": "init/first_stage_init.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 290,
+      "author": {
+        "id": 1888377
+      },
+      "writtenOn": "2022-03-16T08:02:22Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b32e071e_c9416053",
+      "revId": "81a333858603ac46bc9401c530d0255a4ba2b463",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "2b22fc50_4afa0ab6",
         "filename": "libmodprobe/include/modprobe/modprobe.h",
         "patchSetId": 13
@@ -48,6 +84,54 @@
       "writtenOn": "2022-03-15T15:54:15Z",
       "side": 1,
       "message": "Why not a plain mutex? I don\u0027t see either shared or timed functionality used.",
+      "range": {
+        "startLine": 73,
+        "startChar": 9,
+        "endLine": 73,
+        "endChar": 28
+      },
+      "revId": "81a333858603ac46bc9401c530d0255a4ba2b463",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4b412041_21713b59",
+        "filename": "libmodprobe/include/modprobe/modprobe.h",
+        "patchSetId": 13
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1888377
+      },
+      "writtenOn": "2022-03-16T08:02:22Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2b22fc50_4afa0ab6",
+      "range": {
+        "startLine": 73,
+        "startChar": 9,
+        "endLine": 73,
+        "endChar": 28
+      },
+      "revId": "81a333858603ac46bc9401c530d0255a4ba2b463",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d5f27e61_8e030a6a",
+        "filename": "libmodprobe/include/modprobe/modprobe.h",
+        "patchSetId": 13
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1888377
+      },
+      "writtenOn": "2022-03-16T08:02:22Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2b22fc50_4afa0ab6",
       "range": {
         "startLine": 73,
         "startChar": 9,
@@ -83,6 +167,54 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "73db17f8_0b9317d5",
+        "filename": "libmodprobe/include/modprobe/modprobe.h",
+        "patchSetId": 13
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 1888377
+      },
+      "writtenOn": "2022-03-16T08:02:22Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d700cfc0_10e6a5ec",
+      "range": {
+        "startLine": 75,
+        "startChar": 36,
+        "endLine": 75,
+        "endChar": 55
+      },
+      "revId": "81a333858603ac46bc9401c530d0255a4ba2b463",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "dd6a3852_a049d26c",
+        "filename": "libmodprobe/include/modprobe/modprobe.h",
+        "patchSetId": 13
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 1888377
+      },
+      "writtenOn": "2022-03-16T08:02:22Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d700cfc0_10e6a5ec",
+      "range": {
+        "startLine": 75,
+        "startChar": 36,
+        "endLine": 75,
+        "endChar": 55
+      },
+      "revId": "81a333858603ac46bc9401c530d0255a4ba2b463",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "834569b2_caf6d32d",
         "filename": "libmodprobe/libmodprobe.cpp",
         "patchSetId": 13
@@ -94,6 +226,54 @@
       "writtenOn": "2022-03-15T15:54:15Z",
       "side": 1,
       "message": "mod_with_deps\n\nSimilar formatting for other variables.",
+      "range": {
+        "startLine": 444,
+        "startChar": 49,
+        "endLine": 444,
+        "endChar": 61
+      },
+      "revId": "81a333858603ac46bc9401c530d0255a4ba2b463",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "108f04d3_8b8aa7bd",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 444,
+      "author": {
+        "id": 1888377
+      },
+      "writtenOn": "2022-03-16T08:02:22Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "834569b2_caf6d32d",
+      "range": {
+        "startLine": 444,
+        "startChar": 49,
+        "endLine": 444,
+        "endChar": 61
+      },
+      "revId": "81a333858603ac46bc9401c530d0255a4ba2b463",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5d274c67_d8cf789e",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 444,
+      "author": {
+        "id": 1888377
+      },
+      "writtenOn": "2022-03-16T08:02:22Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "834569b2_caf6d32d",
       "range": {
         "startLine": 444,
         "startChar": 49,
@@ -129,6 +309,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "6b5d93fd_56300049",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 457,
+      "author": {
+        "id": 1888377
+      },
+      "writtenOn": "2022-03-16T08:02:22Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "162dfd79_1e13df3e",
+      "range": {
+        "startLine": 457,
+        "startChar": 9,
+        "endLine": 457,
+        "endChar": 14
+      },
+      "revId": "81a333858603ac46bc9401c530d0255a4ba2b463",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "edb88e15_83b8eeaf",
         "filename": "libmodprobe/libmodprobe.cpp",
         "patchSetId": 13
@@ -146,6 +350,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "b86a5eca_a63a1d39",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 494,
+      "author": {
+        "id": 1888377
+      },
+      "writtenOn": "2022-03-16T08:02:22Z",
+      "side": 1,
+      "message": "Yes, it would be better but a bit complex. Maybe we can try it in future or next version.",
+      "parentUuid": "edb88e15_83b8eeaf",
+      "revId": "81a333858603ac46bc9401c530d0255a4ba2b463",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "068b5d73_59c23ff5",
         "filename": "libmodprobe/libmodprobe.cpp",
         "patchSetId": 13
@@ -157,6 +379,30 @@
       "writtenOn": "2022-03-15T15:54:15Z",
       "side": 1,
       "message": "Why can\u0027t this be assured? Couldn\u0027t we create a graph of the order the modules must be loaded in, including softdeps, then iterate through that?",
+      "range": {
+        "startLine": 502,
+        "startChar": 0,
+        "endLine": 503,
+        "endChar": 46
+      },
+      "revId": "81a333858603ac46bc9401c530d0255a4ba2b463",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d254ece1_4c791182",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 503,
+      "author": {
+        "id": 1888377
+      },
+      "writtenOn": "2022-03-16T08:02:22Z",
+      "side": 1,
+      "message": "Yes, we can create a graph before loading them like previous patch, but it may bring some overhead so I would load the modules in single first.",
+      "parentUuid": "068b5d73_59c23ff5",
       "range": {
         "startLine": 502,
         "startChar": 0,
@@ -192,6 +438,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "f9a3a09d_daa722aa",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 506,
+      "author": {
+        "id": 1888377
+      },
+      "writtenOn": "2022-03-16T08:02:22Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6e48a459_0e9a1d09",
+      "range": {
+        "startLine": 504,
+        "startChar": 0,
+        "endLine": 506,
+        "endChar": 50
+      },
+      "revId": "81a333858603ac46bc9401c530d0255a4ba2b463",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "070035a2_790b5b39",
         "filename": "libmodprobe/libmodprobe.cpp",
         "patchSetId": 13
@@ -209,6 +479,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "a0737a39_3df83874",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 516,
+      "author": {
+        "id": 1888377
+      },
+      "writtenOn": "2022-03-16T08:02:22Z",
+      "side": 1,
+      "message": "would you provide an example? thanks",
+      "parentUuid": "070035a2_790b5b39",
+      "revId": "81a333858603ac46bc9401c530d0255a4ba2b463",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "e98f603d_99ee429e",
         "filename": "libmodprobe/libmodprobe_test.cpp",
         "patchSetId": 13
@@ -220,6 +508,42 @@
       "writtenOn": "2022-03-15T15:54:15Z",
       "side": 1,
       "message": "You could/should rename this to m2 or m_without_load instead of doing this trick.",
+      "revId": "81a333858603ac46bc9401c530d0255a4ba2b463",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "dd05943b_fac973b1",
+        "filename": "libmodprobe/libmodprobe_test.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 192,
+      "author": {
+        "id": 1888377
+      },
+      "writtenOn": "2022-03-16T08:02:22Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e98f603d_99ee429e",
+      "revId": "81a333858603ac46bc9401c530d0255a4ba2b463",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "24b8f694_81102e06",
+        "filename": "libmodprobe/libmodprobe_test.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 192,
+      "author": {
+        "id": 1888377
+      },
+      "writtenOn": "2022-03-16T08:02:22Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e98f603d_99ee429e",
       "revId": "81a333858603ac46bc9401c530d0255a4ba2b463",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
