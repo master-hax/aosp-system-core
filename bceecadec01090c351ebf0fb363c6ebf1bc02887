@@ -26,6 +26,53 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "01b935a7_bf25e081",
+        "filename": "libcutils/trace-container.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 172,
+      "author": {
+        "id": 1938050
+      },
+      "writtenOn": "2022-03-16T18:29:02Z",
+      "side": 1,
+      "message": "Looking at it again; I think it\u0027s doable. My first approach I\u0027d take is just to check if trackName is an empty string before deciding to format it with the trackName trace format.",
+      "parentUuid": "48cffa8c_2de4f4c2",
+      "range": {
+        "startLine": 171,
+        "startChar": 0,
+        "endLine": 172,
+        "endChar": 98
+      },
+      "revId": "bceecadec01090c351ebf0fb363c6ebf1bc02887",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5a395278_ab62976b",
+        "filename": "libcutils/trace-dev.inc",
+        "patchSetId": 1
+      },
+      "lineNbr": 202,
+      "author": {
+        "id": 1938050
+      },
+      "writtenOn": "2022-03-16T18:29:02Z",
+      "side": 1,
+      "message": "From another reading of b/220499650, realized that in case of len \u003e sizeof(buf), still attempts to write a line that should just be dropped (resulting in write erroring out)",
+      "range": {
+        "startLine": 202,
+        "startChar": 4,
+        "endLine": 202,
+        "endChar": 40
+      },
+      "revId": "bceecadec01090c351ebf0fb363c6ebf1bc02887",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "37f3b9b8_212d37e3",
         "filename": "libcutils/trace-dev.inc",
         "patchSetId": 1
