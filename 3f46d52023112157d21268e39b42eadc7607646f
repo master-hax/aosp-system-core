@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "bc089470_a1bb24b2",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 21
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-03-16T00:53:04Z",
+      "side": 1,
+      "message": "The access() system call has been removed.\n\nThe functionality of this patch is needed to support the cgroup v1 and v2 hierarchies with a single task_profiles.json file.",
+      "parentUuid": "49eb3499_339d938e",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 11,
+        "endChar": 69
+      },
+      "revId": "3f46d52023112157d21268e39b42eadc7607646f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "fc84a627_2dc45371",
@@ -37,6 +61,30 @@
       "writtenOn": "2022-03-16T00:18:40Z",
       "side": 1,
       "message": "Wei\u0027s comment reminded that this would introduce an additional access syscall every time we execute this action. This might introduce additional overhead. I remember the early version had something like:\n```\nif (!WriteStringToFile(value_, path)) {\n    if (optional_ \u0026\u0026 errno \u003d\u003d ENOENT) {\n        return true;\n    }\n    PLOG(ERROR) \u003c\u003c \"Failed to write \u0027\" \u003c\u003c value_ \u003c\u003c \"\u0027 to \" \u003c\u003c path;\n    return false;\n}\n```\nbut there was some issue with some error being logged during the failure?",
+      "range": {
+        "startLine": 208,
+        "startChar": 4,
+        "endLine": 215,
+        "endChar": 5
+      },
+      "revId": "3f46d52023112157d21268e39b42eadc7607646f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5a3b3d02_33a2c830",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 21
+      },
+      "lineNbr": 215,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-03-16T00:53:04Z",
+      "side": 1,
+      "message": "The access() system call has been removed.",
+      "parentUuid": "fc84a627_2dc45371",
       "range": {
         "startLine": 208,
         "startChar": 4,
