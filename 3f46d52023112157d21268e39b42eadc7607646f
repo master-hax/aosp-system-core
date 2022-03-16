@@ -50,6 +50,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "356e4942_7e9d5467",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 21
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2022-03-16T05:34:41Z",
+      "side": 1,
+      "message": "while we still have WriteStringToFile the write syscall.\n\ne.g. for a CFQ device, we really don\u0027t need write to the BFQ attribute (and 50% of syscall is just pure waste and expected failure)\n\nSo for devices with CFQ can we have a device task_profiles.json to just include CFQ attribute, similarly for BFQ.",
+      "parentUuid": "bc089470_a1bb24b2",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 11,
+        "endChar": 69
+      },
+      "revId": "3f46d52023112157d21268e39b42eadc7607646f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "fc84a627_2dc45371",
         "filename": "libprocessgroup/task_profiles.cpp",
         "patchSetId": 21
