@@ -48,6 +48,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "563ebdac_03e14ffd",
+        "filename": "libcutils/trace-container.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 172,
+      "author": {
+        "id": 1938050
+      },
+      "writtenOn": "2022-03-16T22:42:15Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "01b935a7_bf25e081",
+      "range": {
+        "startLine": 171,
+        "startChar": 0,
+        "endLine": 172,
+        "endChar": 98
+      },
+      "revId": "bceecadec01090c351ebf0fb363c6ebf1bc02887",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "5a395278_ab62976b",
@@ -71,6 +95,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "27e4300e_426fba33",
+        "filename": "libcutils/trace-dev.inc",
+        "patchSetId": 1
+      },
+      "lineNbr": 202,
+      "author": {
+        "id": 1938050
+      },
+      "writtenOn": "2022-03-16T22:42:15Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5a395278_ab62976b",
+      "range": {
+        "startLine": 202,
+        "startChar": 4,
+        "endLine": 202,
+        "endChar": 40
+      },
+      "revId": "bceecadec01090c351ebf0fb363c6ebf1bc02887",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "37f3b9b8_212d37e3",
@@ -84,6 +132,30 @@
       "writtenOn": "2022-03-16T18:03:04Z",
       "side": 1,
       "message": "As above.",
+      "range": {
+        "startLine": 204,
+        "startChar": 0,
+        "endLine": 205,
+        "endChar": 81
+      },
+      "revId": "bceecadec01090c351ebf0fb363c6ebf1bc02887",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b17e993a_3bda8814",
+        "filename": "libcutils/trace-dev.inc",
+        "patchSetId": 1
+      },
+      "lineNbr": 205,
+      "author": {
+        "id": 1938050
+      },
+      "writtenOn": "2022-03-16T22:42:15Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "37f3b9b8_212d37e3",
       "range": {
         "startLine": 204,
         "startChar": 0,
