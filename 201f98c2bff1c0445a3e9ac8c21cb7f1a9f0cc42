@@ -306,6 +306,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "ec6a6f7d_7878659f",
+        "filename": "libutils/include/utils/Errors.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2022-03-16T01:05:14Z",
+      "side": 1,
+      "message": "I think it\u0027s accidentally fine there because everyone includes \u003cwindows.h\u003e first. It\u0027s probably also broken if you include Errors.h before it (NO_ERROR is actually in winerror.h but it\u0027s included by windows.h).",
+      "parentUuid": "5168f52c_eb566236",
+      "range": {
+        "startLine": 43,
+        "startChar": 0,
+        "endLine": 44,
+        "endChar": 33
+      },
+      "revId": "201f98c2bff1c0445a3e9ac8c21cb7f1a9f0cc42",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "5c00cf06_fa3354f2",
         "filename": "libutils/include/utils/Errors.h",
         "patchSetId": 2
