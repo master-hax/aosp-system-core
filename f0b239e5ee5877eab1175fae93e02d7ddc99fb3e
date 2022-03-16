@@ -22,6 +22,30 @@
       },
       "revId": "f0b239e5ee5877eab1175fae93e02d7ddc99fb3e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b0f0be10_5cbbd100",
+        "filename": "libutils/include/utils/ThreadDefs.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2022-03-16T00:36:15Z",
+      "side": 1,
+      "message": "This isn\u0027t needed for Trusty (it\u0027s not including Thread.h anymore), abandoning it.",
+      "parentUuid": "6a32c7cb_163073d5",
+      "range": {
+        "startLine": 73,
+        "startChar": 0,
+        "endLine": 73,
+        "endChar": 25
+      },
+      "revId": "f0b239e5ee5877eab1175fae93e02d7ddc99fb3e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
