@@ -38,6 +38,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "40c92244_190cd302",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 13
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2022-03-16T16:50:55Z",
+      "side": 1,
+      "message": "Interesting; I wouldn\u0027t have expected that. Did you benchmark the two changes? \n\nCreating the disjoint sets should not have much overhead, since it\u0027s only performs string comparisons and set manipulation, and it allows for higher parallelism. I worry that creating 4 threads then joining them in each iteration of the loop here has even more overhead.",
+      "parentUuid": "a423ac07_3b0a28ff",
+      "revId": "81a333858603ac46bc9401c530d0255a4ba2b463",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "b32e071e_c9416053",
         "filename": "init/first_stage_init.cpp",
         "patchSetId": 13
@@ -491,6 +509,24 @@
       "side": 1,
       "message": "would you provide an example? thanks",
       "parentUuid": "070035a2_790b5b39",
+      "revId": "81a333858603ac46bc9401c530d0255a4ba2b463",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e15d368c_e08f5c22",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 516,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2022-03-16T16:50:55Z",
+      "side": 1,
+      "message": "The below should work\n\n  for (const auto\u0026 [mod, softdeps] : mod_with_softdeps) {\n    softdeps.erase(module_loaded);\n  }",
+      "parentUuid": "a0737a39_3df83874",
       "revId": "81a333858603ac46bc9401c530d0255a4ba2b463",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
