@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2cf1a8af_2d29b7af",
+        "filename": "libcutils/trace-dev.inc",
+        "patchSetId": 2
+      },
+      "lineNbr": 212,
+      "author": {
+        "id": 1938050
+      },
+      "writtenOn": "2022-03-16T22:48:40Z",
+      "side": 1,
+      "message": "Should I be wary of how this spams log messages? How important is logging in WRITE_MSG?",
+      "range": {
+        "startLine": 211,
+        "startChar": 16,
+        "endLine": 212,
+        "endChar": 84
+      },
+      "revId": "a5a86b4a426c9d56c11b20f7c8a9d35d7c8cac98",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
