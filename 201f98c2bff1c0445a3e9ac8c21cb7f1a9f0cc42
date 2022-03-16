@@ -282,6 +282,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "5168f52c_eb566236",
+        "filename": "libutils/include/utils/Errors.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2022-03-16T01:00:12Z",
+      "side": 1,
+      "message": "constexpr, or one alternative:\n\n#ifndef NO_ERROR\nenum { NO_ERROR \u003d 0 }\n#endif\n\n\u003e This also doesn\u0027t work for headers that define  NO_ERROR  _after_ this header instead of before.\n\nthis must be a Trusty-specific problem, not a windows problem, right?",
+      "parentUuid": "32a1b820_77b555b7",
+      "range": {
+        "startLine": 43,
+        "startChar": 0,
+        "endLine": 44,
+        "endChar": 33
+      },
+      "revId": "201f98c2bff1c0445a3e9ac8c21cb7f1a9f0cc42",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "5c00cf06_fa3354f2",
         "filename": "libutils/include/utils/Errors.h",
         "patchSetId": 2
