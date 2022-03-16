@@ -72,6 +72,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "026cc5ed_8bad9606",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 21
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-03-16T17:15:44Z",
+      "side": 1,
+      "message": "I prefer to keep the current approach since all approaches I can think of to address the above comment involve a significant increase in complexity and hence involve the risk of introducing new bugs:\n* Split task_profiles.json into three files: attributes that are independent of the I/O scheduler, attributes that are CFQ specific and attributes that are BFQ specific. Only apply the CFQ and/or BFQ attributes if the corresponding I/O scheduler kernel module has been loaded.\n* Keep a single task_profiles.json profile and skip attributes that are known not to exist. Find a good approach for libprocessgroup to determine which cgroup attributes exist and which ones not.",
+      "parentUuid": "356e4942_7e9d5467",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 11,
+        "endChar": 69
+      },
+      "revId": "3f46d52023112157d21268e39b42eadc7607646f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "fc84a627_2dc45371",
