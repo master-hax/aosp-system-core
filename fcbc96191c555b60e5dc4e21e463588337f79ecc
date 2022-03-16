@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d3e6f8a3_4c061631",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-03-16T21:57:32Z",
+      "side": 1,
+      "message": "thanks, both for the patch and the \"TIL macOS isn\u0027t BSD enough to not have EINTR\" :-)",
+      "revId": "fcbc96191c555b60e5dc4e21e463588337f79ecc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
