@@ -21,12 +21,14 @@
 #include <paths.h>
 #include <stdlib.h>
 #include <sys/mount.h>
+#include <sys/sendfile.h>
 #include <sys/stat.h>
 #include <sys/sysmacros.h>
 #include <sys/types.h>
 #include <sys/utsname.h>
 #include <unistd.h>
 
+#include <chrono>
 #include <filesystem>
 #include <string>
 #include <vector>
@@ -107,6 +109,55 @@ bool ForceNormalBoot(const std::string& cmdline, const std::string& bootconfig) 
            cmdline.find("androidboot.force_normal_boot=1") != std::string::npos;
 }
 
+static void Copy(const char* src, const char* dst) {
+    if (link(src, dst) == 0) {
+        LOG(INFO) << "hard linking " << src << " to " << dst << " succeeded";
+        return;
+    }
+    PLOG(WARNING) << "hard linking " << src << " to " << dst << " failed, falling back to copy.";
+
+    base::unique_fd src_fd(open(src, O_RDONLY | O_CLOEXEC));
+    if (src_fd < 0) {
+        PLOG(FATAL) << "Failed to open " << src;
+    }
+    base::unique_fd dst_fd(open(dst, O_RDWR | O_CREAT | O_CLOEXEC, 0755));
+    if (dst_fd < 0) {
+        PLOG(FATAL) << "Failed to open " << dst;
+    }
+    off64_t offset = 0;
+    ssize_t bytes_copied = 0;
+    while ((bytes_copied = sendfile64(dst_fd, src_fd, &offset, 4096)) > 0) {
+    }
+    if (bytes_copied != 0) {
+        PLOG(FATAL) << "Failed to copy " << src << " to " << dst << ", offset: " << offset;
+    }
+}
+
+// Move e2fsck before switching root, so that it is available at the same path
+// after switching root.
+void PrepareSwitchRoot() {
+    constexpr const char* src = "/system/bin/snapuserd";
+    constexpr const char* dst = "/first_stage_ramdisk/system/bin/snapuserd";
+
+    if (access(dst, X_OK) == 0) {
+        LOG(INFO) << dst << " already exists and it can be executed";
+        return;
+    }
+
+    if (access(src, F_OK) != 0) {
+        PLOG(INFO) << "Not moving " << src << " because it cannot be accessed";
+        return;
+    }
+
+    auto dst_dir = android::base::Dirname(dst);
+    std::error_code ec;
+    if (access(dst_dir.c_str(), F_OK) != 0) {
+        if (!fs::create_directories(dst_dir, ec)) {
+            LOG(FATAL) << "Cannot create " << dst_dir << ": " << ec.message();
+        }
+    }
+    Copy(src, dst);
+}
 }  // namespace
 
 std::string GetModuleLoadList(bool recovery, const std::string& dir_path) {
@@ -304,12 +355,11 @@ int FirstStageMain(int argc, char** argv) {
                   << module_elapse_time.count() << " ms";
     }
 
-
     bool created_devices = false;
     if (want_console == FirstStageConsoleParam::CONSOLE_ON_FAILURE) {
         if (!IsRecoveryMode()) {
             created_devices = DoCreateDevices();
-            if (!created_devices){
+            if (!created_devices) {
                 LOG(ERROR) << "Failed to create device nodes early";
             }
         }
@@ -352,10 +402,11 @@ int FirstStageMain(int argc, char** argv) {
 
     if (ForceNormalBoot(cmdline, bootconfig)) {
         mkdir("/first_stage_ramdisk", 0755);
+        PrepareSwitchRoot();
         // SwitchRoot() must be called with a mount point as the target, so we bind mount the
         // target directory to itself here.
         if (mount("/first_stage_ramdisk", "/first_stage_ramdisk", nullptr, MS_BIND, nullptr) != 0) {
-            LOG(FATAL) << "Could not bind mount /first_stage_ramdisk to itself";
+            PLOG(FATAL) << "Could not bind mount /first_stage_ramdisk to itself";
         }
         SwitchRoot("/first_stage_ramdisk");
     }
