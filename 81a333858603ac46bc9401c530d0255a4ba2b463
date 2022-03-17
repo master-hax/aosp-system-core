@@ -74,6 +74,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "070f7907_cb44882c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 13
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2022-03-17T21:05:22Z",
+      "side": 1,
+      "message": "Understood. Is the issue that many modules depend on a common module, e.g. many modules depend on a common clock module? Makes sense that the original CL wasn\u0027t efficient in that case. A graph is likely the best solution, but you\u0027re right that it\u0027s computationally expensive to compute. It could be done offline,but that adds complexity to the build. \n\nYour approach makes sense given that.\n\nIt would help to add test cases to this CL, both as a best practice and since this logic is relatively complex.",
+      "parentUuid": "75c57f09_3842aa9f",
+      "revId": "81a333858603ac46bc9401c530d0255a4ba2b463",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "b32e071e_c9416053",
         "filename": "init/first_stage_init.cpp",
         "patchSetId": 13
@@ -402,6 +420,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "2ca54fd4_071011cb",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 494,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2022-03-17T21:05:22Z",
+      "side": 1,
+      "message": "Ack. If the main loop doesn\u0027t loop too many times, this won\u0027t be too much of an issue. It shouldn\u0027t be hard to move these threads outside of this loop in a future CL.",
+      "parentUuid": "b86a5eca_a63a1d39",
+      "revId": "81a333858603ac46bc9401c530d0255a4ba2b463",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "068b5d73_59c23ff5",
@@ -439,6 +475,30 @@
       "side": 1,
       "message": "Yes, we can create a graph before loading them like previous patch, but it may bring some overhead so I would load the modules in single first.",
       "parentUuid": "068b5d73_59c23ff5",
+      "range": {
+        "startLine": 502,
+        "startChar": 0,
+        "endLine": 503,
+        "endChar": 46
+      },
+      "revId": "81a333858603ac46bc9401c530d0255a4ba2b463",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8c7f5a33_b3d0ec26",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 503,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2022-03-17T21:05:22Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "d254ece1_4c791182",
       "range": {
         "startLine": 502,
         "startChar": 0,
