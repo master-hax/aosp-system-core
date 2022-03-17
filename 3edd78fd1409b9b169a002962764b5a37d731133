@@ -1,0 +1,159 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "23ee0be6_4f03e2ca",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1080238
+      },
+      "writtenOn": "2022-03-17T19:16:32Z",
+      "side": 1,
+      "message": "Much better - just some small nits.",
+      "revId": "3edd78fd1409b9b169a002962764b5a37d731133",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cf233a71_e6c44515",
+        "filename": "libcutils/trace-container.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 134,
+      "author": {
+        "id": 1080238
+      },
+      "writtenOn": "2022-03-17T19:16:32Z",
+      "side": 1,
+      "message": "nit: track_name for consistency.",
+      "range": {
+        "startLine": 134,
+        "startChar": 73,
+        "endLine": 134,
+        "endChar": 82
+      },
+      "revId": "3edd78fd1409b9b169a002962764b5a37d731133",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d83a30a9_b24917cf",
+        "filename": "libcutils/trace-container.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 136,
+      "author": {
+        "id": 1080238
+      },
+      "writtenOn": "2022-03-17T19:16:32Z",
+      "side": 1,
+      "message": "nit: this is just track_name \u0026\u0026 track_name[0] !\u003d \u0027\\0\u0027. I\u0027d use this to save you a full traversal through the string unnecessarily.",
+      "range": {
+        "startLine": 136,
+        "startChar": 32,
+        "endLine": 136,
+        "endChar": 53
+      },
+      "revId": "3edd78fd1409b9b169a002962764b5a37d731133",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9a1f368d_ab09795e",
+        "filename": "libcutils/trace-container.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 144,
+      "author": {
+        "id": 1080238
+      },
+      "writtenOn": "2022-03-17T19:16:32Z",
+      "side": 1,
+      "message": "track_name_sep",
+      "range": {
+        "startLine": 144,
+        "startChar": 42,
+        "endLine": 144,
+        "endChar": 55
+      },
+      "revId": "3edd78fd1409b9b169a002962764b5a37d731133",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "795c8963_eb595762",
+        "filename": "libcutils/trace-container.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 155,
+      "author": {
+        "id": 1080238
+      },
+      "writtenOn": "2022-03-17T19:16:32Z",
+      "side": 1,
+      "message": "track_name_len",
+      "range": {
+        "startLine": 155,
+        "startChar": 16,
+        "endLine": 155,
+        "endChar": 29
+      },
+      "revId": "3edd78fd1409b9b169a002962764b5a37d731133",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "546c720c_607ea485",
+        "filename": "libcutils/trace-container.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 174,
+      "author": {
+        "id": 1080238
+      },
+      "writtenOn": "2022-03-17T19:16:32Z",
+      "side": 1,
+      "message": "nit: track_name",
+      "range": {
+        "startLine": 174,
+        "startChar": 66,
+        "endLine": 174,
+        "endChar": 75
+      },
+      "revId": "3edd78fd1409b9b169a002962764b5a37d731133",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7e987482_0a2f8271",
+        "filename": "libcutils/trace-dev.inc",
+        "patchSetId": 4
+      },
+      "lineNbr": 190,
+      "author": {
+        "id": 1080238
+      },
+      "writtenOn": "2022-03-17T19:16:32Z",
+      "side": 1,
+      "message": "as above here and below",
+      "range": {
+        "startLine": 190,
+        "startChar": 16,
+        "endLine": 190,
+        "endChar": 29
+      },
+      "revId": "3edd78fd1409b9b169a002962764b5a37d731133",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
