@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "181105a4_c2a1322c",
+        "filename": "libcutils/trace-dev_test.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 299,
+      "author": {
+        "id": 1938050
+      },
+      "writtenOn": "2022-03-17T20:30:05Z",
+      "side": 1,
+      "message": "Was it okay to make these tests copies of the earlier exact and truncated tests? or should I try to merge them together into a whole atrace_instant_for_track_body_exact/truncated test?",
+      "range": {
+        "startLine": 299,
+        "startChar": 0,
+        "endLine": 299,
+        "endChar": 64
+      },
+      "revId": "c737ef5b2bd702ff81987f71b7eb72f691d1f34e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
