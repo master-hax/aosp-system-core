@@ -304,12 +304,11 @@ int FirstStageMain(int argc, char** argv) {
                   << module_elapse_time.count() << " ms";
     }
 
-
     bool created_devices = false;
     if (want_console == FirstStageConsoleParam::CONSOLE_ON_FAILURE) {
         if (!IsRecoveryMode()) {
             created_devices = DoCreateDevices();
-            if (!created_devices){
+            if (!created_devices) {
                 LOG(ERROR) << "Failed to create device nodes early";
             }
         }
@@ -352,10 +351,16 @@ int FirstStageMain(int argc, char** argv) {
 
     if (ForceNormalBoot(cmdline, bootconfig)) {
         mkdir("/first_stage_ramdisk", 0755);
+        mkdir("/first_stage_ramdisk/system/", 0755);
+        mkdir("/first_stage_ramdisk/system/bin", 0755);
         // SwitchRoot() must be called with a mount point as the target, so we bind mount the
         // target directory to itself here.
         if (mount("/first_stage_ramdisk", "/first_stage_ramdisk", nullptr, MS_BIND, nullptr) != 0) {
             LOG(FATAL) << "Could not bind mount /first_stage_ramdisk to itself";
+        }
+        if (mount("/system/bin", "/first_stage_ramdisk/system/bin", nullptr, MS_BIND, nullptr) !=
+            0) {
+            LOG(FATAL) << "Count not bind mount /system/bin to /first_stage_ramdisk/system/bin";
         }
         SwitchRoot("/first_stage_ramdisk");
     }
