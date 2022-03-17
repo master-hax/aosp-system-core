@@ -46,6 +46,30 @@
       },
       "revId": "c737ef5b2bd702ff81987f71b7eb72f691d1f34e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1aeed1d8_231501ab",
+        "filename": "libcutils/trace-dev_test.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 299,
+      "author": {
+        "id": 1938050
+      },
+      "writtenOn": "2022-03-17T21:42:41Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "73c3410f_94b8ad56",
+      "range": {
+        "startLine": 299,
+        "startChar": 0,
+        "endLine": 299,
+        "endChar": 64
+      },
+      "revId": "c737ef5b2bd702ff81987f71b7eb72f691d1f34e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }

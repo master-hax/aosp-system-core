@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "a58ad70d_2573c524",
+        "filename": "libcutils/trace-container.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 155,
+      "author": {
+        "id": 1938050
+      },
+      "writtenOn": "2022-03-17T21:42:41Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "67690714_8367bc26",
+      "range": {
+        "startLine": 153,
+        "startChar": 88,
+        "endLine": 155,
+        "endChar": 16
+      },
+      "revId": "6397c2330efc54c390464fb8c136992a5d076448",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d0849ea2_57ae7db0",
@@ -37,6 +61,30 @@
       "writtenOn": "2022-03-17T21:07:22Z",
       "side": 1,
       "message": "nit: as above",
+      "range": {
+        "startLine": 162,
+        "startChar": 26,
+        "endLine": 164,
+        "endChar": 20
+      },
+      "revId": "6397c2330efc54c390464fb8c136992a5d076448",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0ea0ad9d_da2e688a",
+        "filename": "libcutils/trace-container.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 164,
+      "author": {
+        "id": 1938050
+      },
+      "writtenOn": "2022-03-17T21:42:41Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d0849ea2_57ae7db0",
       "range": {
         "startLine": 162,
         "startChar": 26,
