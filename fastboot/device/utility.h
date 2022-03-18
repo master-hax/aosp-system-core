@@ -19,6 +19,7 @@
 #include <string>
 
 #include <android-base/unique_fd.h>
+#include <android-base/file.h>
 #include <android/hardware/boot/1.0/IBootControl.h>
 #include <fstab/fstab.h>
 #include <liblp/liblp.h>
@@ -45,10 +46,31 @@ class PartitionHandle {
     const std::string& path() const { return path_; }
     int fd() const { return fd_.get(); }
     void set_fd(android::base::unique_fd&& fd) { fd_ = std::move(fd); }
+    void set_flags(int flags) { flags_ = flags; }
+    bool reset_fd(int flags) {
+        if ((flags | (O_EXCL | O_CLOEXEC | O_BINARY)) == flags_) {
+            return true;
+        }
 
+        off_t offset = lseek(fd_.get(), 0, SEEK_CUR);
+        if (offset < 0) {
+            return false;
+        }
+
+        sync();
+        fd_.reset();
+        fd_ = android::base::unique_fd(TEMP_FAILURE_RETRY(open(path_.c_str(), flags)));
+
+        if (lseek64(fd_.get(), offset, SEEK_SET) != offset) {
+            return false;
+        }
+
+        return true;
+    }
   private:
     std::string path_;
     android::base::unique_fd fd_;
+    int flags_;
     std::function<void()> closer_;
 };
 
