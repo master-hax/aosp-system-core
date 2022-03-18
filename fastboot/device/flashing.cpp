@@ -91,6 +91,13 @@ int FlashRawDataChunk(PartitionHandle *handle, const char* data, size_t len) {
     while (ret < len) {
         int this_len = std::min(max_write_size, len - ret);
         memcpy(aligned_buffer_unique_ptr.get(), data, this_len);
+        if (this_len & 0xFFF) {
+            if (handle->reset_fd(O_WRONLY) != true) {
+                PLOG(ERROR) << "Failed to reset file descriptor";
+                return -1;
+            }
+        }
+
         int this_ret = write(handle->fd(), aligned_buffer_unique_ptr.get(), this_len);
         if (this_ret < 0) {
             PLOG(ERROR) << "Failed to flash data of len " << len;
