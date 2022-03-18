@@ -97,6 +97,7 @@ bool OpenPartition(FastbootDevice* device, const std::string& name, PartitionHan
         return false;
     }
     handle->set_fd(std::move(fd));
+    handle->set_flags(flags);
     return true;
 }
 
