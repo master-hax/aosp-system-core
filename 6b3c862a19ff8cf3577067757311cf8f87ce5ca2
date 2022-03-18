@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "887b3dd4_d1ed57ec",
+        "filename": "init/first_stage_init.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-03-18T23:00:19Z",
+      "side": 1,
+      "message": "Should we PLOG(FATAL) here instead? If it\u0027s going to fail we probably want to know why",
+      "revId": "6b3c862a19ff8cf3577067757311cf8f87ce5ca2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
