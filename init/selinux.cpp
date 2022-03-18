@@ -510,7 +510,8 @@ bool OpenMonolithicPolicy(PolicyFile* policy_file) {
 }
 
 constexpr const char* kSigningCertRelease =
-        "/system/etc/selinux/com.android.sepolicy.cert-release.der";
+        "/system/etc/selinux/com.android.sepolicy.cert-debug.der";
+// "/system/etc/selinux/com.android.sepolicy.cert-release.der";
 constexpr const char* kFsVerityProcPath = "/proc/sys/fs/verity";
 const std::string kSepolicyApexMetadataZip = "/metadata/sepolicy/SEPolicy.zip";
 const std::string kSepolicySignature = "/metadata/sepolicy/SEPolicy.zip.sig";
