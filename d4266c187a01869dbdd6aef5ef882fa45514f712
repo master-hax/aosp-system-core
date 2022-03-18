@@ -1,6 +1,29 @@
 {
   "comments": [
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "b38bc627_57eba238",
+        "filename": "fastboot/device/flashing.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 128,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-03-18T19:17:10Z",
+      "side": 1,
+      "message": "This might be a good opportunity to make sparse_file_callback() type-safe by changing the type of the fourth argument from int(*)(void*, const void*, size_t) into std::function\u003cint(const void*, size_t)\u003e.",
+      "range": {
+        "startLine": 128,
+        "startChar": 11,
+        "endLine": 128,
+        "endChar": 31
+      },
+      "revId": "d4266c187a01869dbdd6aef5ef882fa45514f712",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "4cdd477f_03c7610b",
@@ -38,6 +61,30 @@
       "side": 1,
       "message": "Are you asking about using the std namespace? In that case the rest of the file will need to be modified in a different CL.\nAm I misunderstanding your question?",
       "parentUuid": "4cdd477f_03c7610b",
+      "range": {
+        "startLine": 163,
+        "startChar": 4,
+        "endLine": 163,
+        "endChar": 20
+      },
+      "revId": "d4266c187a01869dbdd6aef5ef882fa45514f712",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "22f5c00e_0bfb5053",
+        "filename": "fastboot/device/flashing.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 163,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-03-18T19:17:10Z",
+      "side": 1,
+      "message": "Can the above line be changed into the following?\n\nPartitionHandle handle;\n\nstd::unique_ptr\u003c\u003e is great if ownership has to be transferred from one context to another or if a container owns a dynamically allocated object. Is my understanding correct that that\u0027s not the case here and that the scope of \u0027handle\u0027 is the same as the function in which that local variable has been defined?",
+      "parentUuid": "3471037d_2c38c365",
       "range": {
         "startLine": 163,
         "startChar": 4,
