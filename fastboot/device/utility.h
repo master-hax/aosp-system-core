@@ -18,6 +18,7 @@
 #include <optional>
 #include <string>
 
+#include <android-base/file.h>
 #include <android-base/unique_fd.h>
 #include <android/hardware/boot/1.0/IBootControl.h>
 #include <fstab/fstab.h>
@@ -44,11 +45,42 @@ class PartitionHandle {
     }
     const std::string& path() const { return path_; }
     int fd() const { return fd_.get(); }
-    void set_fd(android::base::unique_fd&& fd) { fd_ = std::move(fd); }
+    int Open(int flags) {
+        flags |= (O_EXCL | O_CLOEXEC | O_BINARY);
+        fd_ = android::base::unique_fd(TEMP_FAILURE_RETRY(open(path_.c_str(), flags)));
+        if (fd_ < 0) {
+            return false;
+        }
+        flags_ = flags;
 
+        return true;
+    }
+    bool Reset(int flags) {
+        if (fd_.ok() && (flags | O_EXCL | O_CLOEXEC | O_BINARY) == flags_) {
+            return true;
+        }
+
+        off_t offset = fd_.ok() ? lseek(fd_.get(), 0, SEEK_CUR) : 0;
+        if (offset < 0) {
+            return false;
+        }
+
+        sync();
+
+        if (Open(flags) == false) {
+            return false;
+        }
+
+        if (lseek64(fd_.get(), offset, SEEK_SET) != offset) {
+            return false;
+        }
+
+        return true;
+    }
   private:
     std::string path_;
     android::base::unique_fd fd_;
+    int flags_;
     std::function<void()> closer_;
 };
 
