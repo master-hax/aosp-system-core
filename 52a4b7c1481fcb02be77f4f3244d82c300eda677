@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d2d7fc4c_d936ded0",
+        "filename": "fastboot/device/utility.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-03-18T22:57:12Z",
+      "side": 1,
+      "message": "This initialization is starting to look a little fragmented. Can we add a function like this to PartitionHandle?\n\n    bool Open(int flags);\n\nAnd then it can save fd_ and flags_ as needed.",
+      "revId": "52a4b7c1481fcb02be77f4f3244d82c300eda677",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
