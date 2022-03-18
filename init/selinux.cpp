@@ -63,6 +63,7 @@
 #include <sys/wait.h>
 #include <unistd.h>
 #include <fstream>
+#include <system_error>
 
 #include <CertUtils.h>
 #include <android-base/chrono_utils.h>
@@ -514,6 +515,8 @@ constexpr const char* kSigningCertRelease =
 constexpr const char* kFsVerityProcPath = "/proc/sys/fs/verity";
 const std::string kSepolicyApexMetadataZip = "/metadata/sepolicy/SEPolicy.zip";
 const std::string kSepolicySignature = "/metadata/sepolicy/SEPolicy.zip.sig";
+const std::string kSepolicyStagedZip = "/metadata/sepolicy/staged/SEPolicy.zip";
+const std::string kSepolicyStagedSignature = "/metadata/sepolicy/staged/SEPolicy.zip.sig";
 const std::string kSepolicyApexSystemZip = "/system/etc/selinux/apex/SEPolicy.zip";
 const std::string kTmpfsDir = "/dev/selinux/";
 
@@ -625,30 +628,31 @@ bool FileProtectedByFsVerity(const std::string& path) {
     return (flags & FS_VERITY_FL) != 0;
 }
 
-Result<void> SepolicyCheckFsVerity() {
-    if (!FileProtectedByFsVerity(kSepolicyApexMetadataZip)) {
-        return Error() << "Apex SEPolicy failed fs-verity signature check";
+Result<void> SepolicyCheckFsVerity(const std::string& sepolicyZip) {
+    if (!FileProtectedByFsVerity(sepolicyZip)) {
+        return Error() << "Apex SEPolicy " << sepolicyZip << " failed fs-verity signature check";
     }
     return {};
 }
 
-Result<void> SepolicyCheckSignature() {
+Result<void> SepolicyCheckSignature(const std::string& sepolicyZip,
+                                    const std::string& sepolicySignature) {
     auto releaseKey = extractPublicKeyFromX509(kSigningCertRelease);
     if (!releaseKey.ok()) {
         return releaseKey.error();
     }
 
     std::string signature;
-    if (!android::base::ReadFileToString(kSepolicySignature, &signature)) {
-        return Error() << "Failed to read " << kSepolicySignature;
+    if (!android::base::ReadFileToString(sepolicySignature, &signature)) {
+        return Error() << "Failed to read " << sepolicySignature;
     }
 
-    std::fstream sepolicyZip(kSepolicyApexMetadataZip, std::ios::in | std::ios::binary);
-    if (!sepolicyZip) {
-        return Error() << "Failed to open " << kSepolicyApexMetadataZip;
+    std::fstream sepolicyZipFstream(sepolicyZip, std::ios::in | std::ios::binary);
+    if (!sepolicyZipFstream) {
+        return Error() << "Failed to open " << sepolicyZip;
     }
-    sepolicyZip.seekg(0);
-    std::string sepolicyStr((std::istreambuf_iterator<char>(sepolicyZip)),
+    sepolicyZipFstream.seekg(0);
+    std::string sepolicyStr((std::istreambuf_iterator<char>(sepolicyZipFstream)),
                             std::istreambuf_iterator<char>());
 
     return verifySignature(sepolicyStr, signature, *releaseKey);
@@ -658,25 +662,26 @@ bool SupportsFsVerity() {
     return access(kFsVerityProcPath, F_OK) == 0;
 }
 
-bool HasUpdatedSepolicy() {
-    return access((kSepolicyApexMetadataZip).c_str(), F_OK) == 0;
+bool HasUpdatedSepolicy(const std::string& sepolicyZip) {
+    return access((sepolicyZip).c_str(), F_OK) == 0;
 }
 
 // Use fs-verity as the default signature verification mechanism. If the device doesn't support
 // fs-verity, fallback to a standard signature check.
-Result<void> SepolicySignatureVerify() {
-    if (!HasUpdatedSepolicy()) {
-        return Error() << "No Apex SEPolicy available at " << kSepolicyApexMetadataZip << ".";
+Result<void> SepolicySignatureVerify(const std::string& sepolicyZip,
+                                     const std::string& sepolicySignature) {
+    if (!HasUpdatedSepolicy(sepolicyZip)) {
+        return Error() << "No Apex SEPolicy available at " << sepolicyZip << ".";
     }
 
     if (SupportsFsVerity()) {
-        auto fsVerityCheck = SepolicyCheckFsVerity();
+        auto fsVerityCheck = SepolicyCheckFsVerity(sepolicyZip);
         if (!fsVerityCheck.ok()) {
             LOG(ERROR) << fsVerityCheck.error();
-            return Error() << "Apex SEPolicy failed fs-verity signature check.";
+            return fsVerityCheck;
         }
     } else {
-        auto signatureCheck = SepolicyCheckSignature();
+        auto signatureCheck = SepolicyCheckSignature(sepolicyZip, sepolicySignature);
         if (!signatureCheck.ok()) {
             LOG(ERROR) << signatureCheck.error();
             return Error() << "Apex SEPolicy failed signature check.";
@@ -690,6 +695,36 @@ void CleanupApexSepolicy() {
         std::string path = kTmpfsDir + file;
         unlink(path.c_str());
     }
+}
+
+Result<void> StagedSepolicyVerifyAndExtract() {
+    auto sepolicyVerify = SepolicySignatureVerify(kSepolicyStagedZip, kSepolicyStagedSignature);
+    if (!sepolicyVerify.ok()) {
+        return sepolicyVerify;
+    }
+
+    auto apex = GetPolicyFromApex(kSepolicyStagedZip);
+    if (!apex.ok()) {
+        return apex;
+    }
+
+    // Move new policy out of staged directory.
+    std::error_code ec;
+    std::filesystem::rename(kSepolicyStagedZip, kSepolicyApexMetadataZip, ec);
+    if (ec) {
+        return Error() << "Failed to move " << kSepolicyStagedZip << " to "
+                       << kSepolicyApexMetadataZip << ": " << ec.message();
+    }
+    std::filesystem::rename(kSepolicyStagedSignature, kSepolicySignature, ec);
+    if (ec) {
+        return Error() << "Failed to move " << kSepolicyStagedSignature << " to "
+                       << kSepolicySignature << ": " << ec.message();
+    }
+    std::filesystem::remove_all("/metadata/sepolicy/staged", ec);
+    if (ec) {
+        LOG(WARNING) << "Failed to remove staged directory: " << ec.message();
+    }
+    return {};
 }
 
 // Updatable sepolicy is shipped within an zip within an APEX. Because
@@ -717,11 +752,18 @@ void PrepareApexSepolicy() {
         }
     }
 
-    // If apex sepolicy zip exists in /metadata/sepolicy, and the signature verification passes,
-    // use that, otherwise use version on /system.
+    // First, attempt to use the staged SEPolicy in /metadata if one exists.
+    auto sepolicyVerify = StagedSepolicyVerifyAndExtract();
+    if (sepolicyVerify.ok()) {
+        LOG(INFO) << "Sepolicy " << kSepolicyStagedZip << " loaded correctly.";
+        return;
+    }
+    LOG(WARNING) << "Could not extract Sepolicy: " << sepolicyVerify.error();
+
+    // Otherwise, try to use the previous non-staged sepolicy in /metadata.
     std::string sepolicyZipFile;
 
-    auto sepolicyVerify = SepolicySignatureVerify();
+    sepolicyVerify = SepolicySignatureVerify(kSepolicyApexMetadataZip, kSepolicySignature);
     if (sepolicyVerify.ok()) {
         sepolicyZipFile = kSepolicyApexMetadataZip;
     } else {
