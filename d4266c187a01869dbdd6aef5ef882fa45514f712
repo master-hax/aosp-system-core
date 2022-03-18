@@ -22,6 +22,30 @@
       },
       "revId": "d4266c187a01869dbdd6aef5ef882fa45514f712",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3471037d_2c38c365",
+        "filename": "fastboot/device/flashing.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 163,
+      "author": {
+        "id": 1590141
+      },
+      "writtenOn": "2022-03-18T18:36:19Z",
+      "side": 1,
+      "message": "Are you asking about using the std namespace? In that case the rest of the file will need to be modified in a different CL.\nAm I misunderstanding your question?",
+      "parentUuid": "4cdd477f_03c7610b",
+      "range": {
+        "startLine": 163,
+        "startChar": 4,
+        "endLine": 163,
+        "endChar": 20
+      },
+      "revId": "d4266c187a01869dbdd6aef5ef882fa45514f712",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
