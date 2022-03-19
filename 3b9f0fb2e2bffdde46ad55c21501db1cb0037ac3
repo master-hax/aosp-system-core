@@ -3,6 +3,23 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "622370ad_71e03d7c",
+        "filename": "init/parser.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 145,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-03-19T01:41:55Z",
+      "side": 1,
+      "message": "Is this intentional? We\u0027ll no longer see the parsing order in uart/startup logs. If you were trying to quash the message for host use, maybe the log level should be a variable on Parser.",
+      "revId": "3b9f0fb2e2bffdde46ad55c21501db1cb0037ac3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "6dad82df_af958c62",
         "filename": "init/parser.h",
         "patchSetId": 3
