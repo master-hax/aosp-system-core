@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e989bacd_73514906",
+        "filename": "init/first_stage_init.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-03-19T01:35:29Z",
+      "side": 1,
+      "message": "not needed anymore?",
+      "range": {
+        "startLine": 24,
+        "startChar": 14,
+        "endLine": 24,
+        "endChar": 15
+      },
+      "revId": "34c2498e897a3ff08c5d6a3109be8b1604f59255",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
