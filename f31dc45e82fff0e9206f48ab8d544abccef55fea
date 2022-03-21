@@ -16,6 +16,24 @@
       "message": "nit: did clang-format run? This should be \"PartitionHandle* handle\" (here and elsewhere)",
       "revId": "f31dc45e82fff0e9206f48ab8d544abccef55fea",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d2c34922_89d2343f",
+        "filename": "fastboot/device/flashing.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 1590141
+      },
+      "writtenOn": "2022-03-21T18:39:01Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a4b6ee9a_039646ed",
+      "revId": "f31dc45e82fff0e9206f48ab8d544abccef55fea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
