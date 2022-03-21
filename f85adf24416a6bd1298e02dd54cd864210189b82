@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e645f5d6_1ce5dbe4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1650040
+      },
+      "writtenOn": "2022-03-21T08:40:40Z",
+      "side": 1,
+      "message": "Please add haiku-code-review@google.com as a reviewer going forward, this will automatically reassign to someone from the Haiku team.",
+      "revId": "f85adf24416a6bd1298e02dd54cd864210189b82",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
