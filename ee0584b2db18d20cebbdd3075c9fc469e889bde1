@@ -46,6 +46,30 @@
       },
       "revId": "ee0584b2db18d20cebbdd3075c9fc469e889bde1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c017236d_9f7c843c",
+        "filename": "debuggerd/seccomp_policy/crash_dump.arm64.policy",
+        "patchSetId": 1
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-03-21T16:11:31Z",
+      "side": 0,
+      "message": "so PR_PAC_RESET_KEYS is known by minijail all the way back to before P?! that seems implausibly early. i\u0027m guessing we don\u0027t actually test this on pre-P? (a question which i think was answered by your other comment.)",
+      "parentUuid": "acb13fc5_5a259751",
+      "range": {
+        "startLine": 28,
+        "startChar": 46,
+        "endLine": 28,
+        "endChar": 56
+      },
+      "revId": "ee0584b2db18d20cebbdd3075c9fc469e889bde1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
