@@ -33,6 +33,24 @@
       "message": "reset() not needed here",
       "revId": "52a4b7c1481fcb02be77f4f3244d82c300eda677",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ae0b37b4_42f5b980",
+        "filename": "fastboot/device/utility.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1590141
+      },
+      "writtenOn": "2022-03-21T00:46:44Z",
+      "side": 1,
+      "message": "From my testing only one file descriptor can be opened on the block device we\u0027re using. We need to explicitly close the first one before attempting to open the new one.",
+      "parentUuid": "2b0f9467_4f1af136",
+      "revId": "52a4b7c1481fcb02be77f4f3244d82c300eda677",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
