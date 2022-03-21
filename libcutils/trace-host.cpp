@@ -28,6 +28,10 @@ void atrace_begin_body(const char* /*name*/) {}
 void atrace_end_body() { }
 void atrace_async_begin_body(const char* /*name*/, int32_t /*cookie*/) {}
 void atrace_async_end_body(const char* /*name*/, int32_t /*cookie*/) {}
+void atrace_async_for_track_begin_body(const char* /*track_name*/, const char* /*name*/,
+                                       int32_t /*cookie*/) {}
+void atrace_async_for_track_end_body(const char* /*track_name*/, const char* /*name*/,
+                                     int32_t /*cookie*/) {}
 void atrace_instant_body(const char* /*name*/) {}
 void atrace_instant_for_track_body(const char* /*trackName*/,
                                    const char* /*name*/) {}
