@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b9be5169_8192bfd7",
+        "filename": "debuggerd/seccomp_policy/crash_dump.arm64.policy",
+        "patchSetId": 1
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-03-21T15:42:09Z",
+      "side": 0,
+      "message": "do we actually need *this* magic number? i was going to ask if you could add a PR_SET_VMA too, but the next file already refers to PR_SET_VMA?",
+      "range": {
+        "startLine": 28,
+        "startChar": 46,
+        "endLine": 28,
+        "endChar": 56
+      },
+      "revId": "ee0584b2db18d20cebbdd3075c9fc469e889bde1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
