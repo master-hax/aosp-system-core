@@ -16,6 +16,24 @@
       "message": "is _older than P_ relevant to anyone? if so, can you add a comment saying who/why?",
       "revId": "c51a17b3719e8b3cad51b6571695378b8d1927e9",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "acbc87f9_6aa408d1",
+        "filename": "debuggerd/seccomp_policy/crash_dump.policy.def",
+        "patchSetId": 1
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1108919
+      },
+      "writtenOn": "2022-03-21T16:04:15Z",
+      "side": 1,
+      "message": "probably a better question for cferris@ than for me.\n\n\nwith \"pre P\" being O-MR1; how long can an O-MR1 /vendor match up with a later /system.  P and Q -- almost for sure.  R, S, and now T -- gets less likely.\n\nI was a bit worried because I wanted my change above for loading in modules that will run on Q, which would almost certainly fit in with the \"could be paired with an O-MR1 /vendor\", but realized that the copy of this file I\u0027d be dragging back to a Q device would be within the module and not located at /system/etc/seccomp_policy, so the old vendor partition would not be referencing this new instance of the file.",
+      "parentUuid": "74adb8c1_385957c8",
+      "revId": "c51a17b3719e8b3cad51b6571695378b8d1927e9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
