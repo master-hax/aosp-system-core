@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "8a3fad92_b5def5d1",
+        "filename": "fastboot/device/utility.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 1590141
+      },
+      "writtenOn": "2022-03-21T18:39:21Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d2d7fc4c_d936ded0",
+      "revId": "52a4b7c1481fcb02be77f4f3244d82c300eda677",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "2b0f9467_4f1af136",
@@ -49,6 +67,24 @@
       "side": 1,
       "message": "From my testing only one file descriptor can be opened on the block device we\u0027re using. We need to explicitly close the first one before attempting to open the new one.",
       "parentUuid": "2b0f9467_4f1af136",
+      "revId": "52a4b7c1481fcb02be77f4f3244d82c300eda677",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d7cc17bf_8597e0b7",
+        "filename": "fastboot/device/utility.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1590141
+      },
+      "writtenOn": "2022-03-21T18:39:21Z",
+      "side": 1,
+      "message": "I was wrong, reset() is indeed not needed here",
+      "parentUuid": "ae0b37b4_42f5b980",
       "revId": "52a4b7c1481fcb02be77f4f3244d82c300eda677",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
