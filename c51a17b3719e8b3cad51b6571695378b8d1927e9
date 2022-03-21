@@ -3,6 +3,29 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "c332364c_26e74c2d",
+        "filename": "debuggerd/seccomp_policy/crash_dump.policy.def",
+        "patchSetId": 1
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2022-03-21T20:54:45Z",
+      "side": 1,
+      "message": "It be good to explain why these need to be defined here so that if we need to add new values, there some kind of guide for making sure mainline doesn\u0027t break.\n\nIt would be even better if there was a test for this, but I\u0027m not sure if that\u0027s possible.",
+      "range": {
+        "startLine": 37,
+        "startChar": 11,
+        "endLine": 37,
+        "endChar": 36
+      },
+      "revId": "c51a17b3719e8b3cad51b6571695378b8d1927e9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "74adb8c1_385957c8",
         "filename": "debuggerd/seccomp_policy/crash_dump.policy.def",
         "patchSetId": 1
