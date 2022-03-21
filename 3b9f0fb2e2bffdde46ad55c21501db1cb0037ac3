@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "0f8c76c2_1204aeda",
+        "filename": "init/parser.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 145,
+      "author": {
+        "id": 1455782
+      },
+      "writtenOn": "2022-03-21T22:47:18Z",
+      "side": 1,
+      "message": "Intentional, but not necessary, so reverted. It felt a bit verbose for this use case, but for simplicity-sake it seems fine to keep it INFO for now.\n\nI may revisit the log level variable idea later if we continue doing more parsing like this and feeling flooded by messages.",
+      "parentUuid": "622370ad_71e03d7c",
+      "revId": "3b9f0fb2e2bffdde46ad55c21501db1cb0037ac3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "6dad82df_af958c62",
@@ -31,6 +49,30 @@
       "writtenOn": "2022-03-19T01:30:50Z",
       "side": 1,
       "message": "rm?",
+      "range": {
+        "startLine": 76,
+        "startChar": 0,
+        "endLine": 76,
+        "endChar": 56
+      },
+      "revId": "3b9f0fb2e2bffdde46ad55c21501db1cb0037ac3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f8c265f4_fbe9b777",
+        "filename": "init/parser.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1455782
+      },
+      "writtenOn": "2022-03-21T22:47:18Z",
+      "side": 1,
+      "message": "Yup, thanks!",
+      "parentUuid": "6dad82df_af958c62",
       "range": {
         "startLine": 76,
         "startChar": 0,
