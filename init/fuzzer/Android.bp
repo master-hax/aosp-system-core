@@ -101,3 +101,13 @@ cc_fuzz{
     defaults: ["libinit_defaults"],
     dictionary: "init_ueventd.dict",
 }
+
+cc_fuzz {
+    name: "init_action_fuzzer",
+    srcs: [
+        "init_action_fuzzer.cpp",
+    ],
+    defaults: [
+        "libinit_defaults",
+    ],
+}
