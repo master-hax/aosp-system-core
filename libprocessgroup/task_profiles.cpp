@@ -207,7 +207,7 @@ bool SetAttributeAction::ExecuteForTask(int tid) const {
     }
 
     if (!WriteStringToFile(value_, path)) {
-        if (errno == ENOENT) {
+        if (struct stat statbuf; stat(path.c_str(), &statbuf) < 0) {
             if (optional_) {
                 return true;
             } else {
