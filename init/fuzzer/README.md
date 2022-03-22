@@ -6,6 +6,7 @@
 + [init_ueventHandler_fuzzer](#InitUeventHandler)
 + [init_blockDev_fuzzer](#InitBlockDev)
 + [init_ueventd_fuzzer](#InitUeventD)
++ [init_action_fuzzer](#InitAction)
 
 # <a name="InitParser"></a> Fuzzer for InitParser
 
@@ -143,3 +144,30 @@ InitParser supports the following parameters:
 ```
   $ adb sync data
   $ adb shell /data/fuzz/arm64/init_ueventd_fuzzer/init_ueventd_fuzzer
+```
+
+# <a name="InitAction"></a> Fuzzer for InitAction
+
+InitService supports the following parameters:
+  1. PropertyName (parameter name: "name")
+  2. ValidActionCommand (parameter name: "validActionCommand")
+  3. ValidActionTrigger (parameter name: "validActionTrigger")
+  4. FileName (parameter name: "filename")
+
+| Parameter| Valid Values |Configured Value|
+|-------------|----------|----- |
+|`name`| `String`|Value obtained from FuzzedDataProvider|
+|`validActionCommand`| `String` |Value obtained from FuzzedDataProvider|
+|`validActionTrigger`| `String`|Value obtained from FuzzedDataProvider|
+|`filename`| `String`|Value obtained from FuzzedDataProvider|
+
+#### Steps to run
+1. Build the fuzzer
+```
+  $ mm -j$(nproc) init_action_fuzzer
+```
+2. Run on device
+```
+  $ adb sync data
+  $ adb shell /data/fuzz/arm64/init_action_fuzzer/init_action_fuzzer
+```
