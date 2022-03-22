@@ -51,6 +51,24 @@
       "parentUuid": "f7ef9db4_df3075b7",
       "revId": "926f753e201d24f103947c1c9fa91eda5ea0060a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "efc1762d_ed0b6538",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2022-03-22T19:03:25Z",
+      "side": 1,
+      "message": "I think if you made it clear what files were auto-generated leaving those as the numeric values should be fine. But another way is to have the numeric value and then the real name in a comment. That\u0027s the best of both worlds, but I don\u0027t know if it\u0027s easy to do.",
+      "parentUuid": "2a76a114_5300b709",
+      "revId": "926f753e201d24f103947c1c9fa91eda5ea0060a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
