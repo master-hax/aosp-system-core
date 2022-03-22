@@ -206,15 +206,15 @@ bool SetAttributeAction::ExecuteForTask(int tid) const {
         return false;
     }
 
-    if (!WriteStringToFile(value_, path)) {
-        if (errno == ENOENT) {
-            if (optional_) {
-                return true;
-            } else {
-                LOG(ERROR) << "No such cgroup attribute: " << path;
-                return false;
-            }
+    if (struct stat statbuf; stat(path.c_str(), &statbuf) < 0) {
+        if (optional_) {
+            return true;
+        } else {
+            LOG(ERROR) << "No such cgroup attribute: " << path;
+            return false;
         }
+    }
+    if (!WriteStringToFile(value_, path)) {
         PLOG(ERROR) << "Failed to write '" << value_ << "' to " << path;
         return false;
     }
