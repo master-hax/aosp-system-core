@@ -33,6 +33,24 @@
       "message": "+2 to unblock mainline crashes, but i\u0027m still curious about the minijail \"in headers\" part... the minijail build actually parses headers at build time? /me wonders whether we should just have some kind of generic minijail filter that turns everything into numbers based on the *current* build-time headers...",
       "revId": "926f753e201d24f103947c1c9fa91eda5ea0060a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2a76a114_5300b709",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1108919
+      },
+      "writtenOn": "2022-03-22T02:59:52Z",
+      "side": 1,
+      "message": "the minijail build has a script that includes a (reasonably complete) list of the header files related to system calls to get the #define values and preps a table of {\"name\", value}  that it will use.\n\n\nConverting everything to integers when we convert from our \"crash_dump.def\"\nto the per-machine \"crash_dump.arm64.policy\" would avoid the problem i had this time around.  It makes the *.policy files a little less readable/debuggable because they are now filled with raw numbers.  But it does mean that we won\u0027t have this sort of problem again.\n\nI used to be fairly hard onto the side of readability; i\u0027m now more wishy washy on that stance.  maybe if the all-numeric files include a line:\n# this generated from /some/path/seccomp_policy/readable.def\n\nthat would address my \"i want to know what they mean\" concerns.",
+      "parentUuid": "f7ef9db4_df3075b7",
+      "revId": "926f753e201d24f103947c1c9fa91eda5ea0060a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
