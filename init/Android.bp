@@ -260,6 +260,14 @@ cc_library_static {
     ],
 }
 
+cc_library_static {
+    name: "libinit_registerhandler_without_flags",
+    defaults: ["libinit_libraries_defaults"],
+    cflags: [
+        "-DREGISTERHANDLER_WITHOUT_FLAGS",
+    ],
+}
+
 phony {
     name: "init",
     required: [
