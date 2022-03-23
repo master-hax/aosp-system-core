@@ -87,6 +87,24 @@
       "parentUuid": "8109d457_2f756252",
       "revId": "9dd073ebfa02e4efd4f4a6210148c456227f2eab",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "05cb5ffe_31e235c0",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-03-23T04:29:52Z",
+      "side": 1,
+      "message": "If it\u0027s an old device, it shouldn\u0027t have fastbootd... and newer devices should have a HAL.\n\nAnyway, I think for practical purposes everything should present as \"RAW\" anyway, as we only want vold creating filesystems.",
+      "parentUuid": "3f61e8e5_05356168",
+      "revId": "9dd073ebfa02e4efd4f4a6210148c456227f2eab",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
