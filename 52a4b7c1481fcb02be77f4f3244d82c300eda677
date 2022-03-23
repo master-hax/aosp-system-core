@@ -123,6 +123,24 @@
       "parentUuid": "b4d66c3d_ffde180a",
       "revId": "52a4b7c1481fcb02be77f4f3244d82c300eda677",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f40e6288_4a53d687",
+        "filename": "fastboot/device/utility.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-03-23T16:57:06Z",
+      "side": 1,
+      "message": "Okay, I see we open with O_EXCL so that makes sense.",
+      "parentUuid": "bedb760a_32a9e94c",
+      "revId": "52a4b7c1481fcb02be77f4f3244d82c300eda677",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
