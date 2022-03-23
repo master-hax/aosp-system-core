@@ -141,6 +141,24 @@
       "parentUuid": "bedb760a_32a9e94c",
       "revId": "52a4b7c1481fcb02be77f4f3244d82c300eda677",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f421efdd_d8073835",
+        "filename": "fastboot/device/utility.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-03-23T18:25:34Z",
+      "side": 1,
+      "message": "I suggest adding a comment explaining the explicit fd_.reset() so we don\u0027t confuse ourselves sometime later.",
+      "parentUuid": "f40e6288_4a53d687",
+      "revId": "52a4b7c1481fcb02be77f4f3244d82c300eda677",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
