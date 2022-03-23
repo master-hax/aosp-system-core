@@ -87,6 +87,30 @@
       },
       "revId": "c60300a2cc59eb0f8091b5c7387bd923e4cb4a69",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b3982a7a_af19c156",
+        "filename": "init/first_stage_init.cpp",
+        "patchSetId": 19
+      },
+      "lineNbr": 290,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-03-23T03:34:05Z",
+      "side": 1,
+      "message": "At some point we should expose fs_mgr_get_boot_config to make this easier.\n\nhttps://source.corp.google.com/android/system/core/fs_mgr/fs_mgr_priv_boot_config.h;bpv\u003d1;bpt\u003d1;l\u003d30",
+      "parentUuid": "153a8393_b43a1ace",
+      "range": {
+        "startLine": 290,
+        "startChar": 62,
+        "endLine": 290,
+        "endChar": 74
+      },
+      "revId": "c60300a2cc59eb0f8091b5c7387bd923e4cb4a69",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
