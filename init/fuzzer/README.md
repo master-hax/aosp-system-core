@@ -8,6 +8,7 @@
 + [init_ueventd_fuzzer](#InitUeventD)
 + [init_action_fuzzer](#InitAction)
 + [init_devices_fuzzer](#InitDevices)
++ [init_keychords_fuzzer](#InitKeychords)
 
 # <a name="InitParser"></a> Fuzzer for InitParser
 
@@ -205,4 +206,24 @@ InitDevices supports the following parameters:
 ```
   $ adb sync data
   $ adb shell /data/fuzz/arm64/init_devices_fuzzer/init_devices_fuzzer
+```
+
+# <a name="InitKeychords"></a> Fuzzer for InitKeychords
+
+InitKeychords supports the following parameters:
+1. Byte (parameter name: "byte")
+
+| Parameter| Valid Values| Configured Value|
+|------------- |-------------| ----- |
+|`byte`| `8 bit Integer` |Value obtained from FuzzedDataProvider|
+
+#### Steps to run
+1. Build the fuzzer
+```
+  $ mm -j$(nproc) init_keychords_fuzzer
+```
+2. Run on device
+```
+  $ adb sync data
+  $ adb shell /data/fuzz/arm64/init_keychords_fuzzer/init_keychords_fuzzer
 ```

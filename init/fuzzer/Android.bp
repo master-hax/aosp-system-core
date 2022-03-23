@@ -120,3 +120,25 @@ cc_fuzz {
         "libinit_defaults",
     ],
 }
+
+cc_fuzz {
+    name: "init_keychords_fuzzer",
+    srcs: [
+        "init_keychords_fuzzer.cpp",
+    ],
+    static_libs: [
+        "libc++fs",
+        "libinit_registerhandler_without_flags",
+    ],
+    shared_libs: [
+        "libbase",
+        "libfs_mgr",
+    ],
+    header_libs: ["libinit_headers"],
+    fuzz_config: {
+        cc: [
+            "android-media-fuzzing-reports@google.com",
+        ],
+        componentid: 155276,
+    },
+}
