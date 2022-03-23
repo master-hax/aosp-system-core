@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "54dc8c38_0fe95c02",
+        "filename": "fastboot/device/utility.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-03-23T19:37:21Z",
+      "side": 1,
+      "message": "PLOG(ERROR)",
+      "revId": "06f6ddbdb3601adb3076128a34a0be3843522203",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "440dd0e8_5594b74a",
+        "filename": "fastboot/device/utility.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-03-23T19:37:21Z",
+      "side": 1,
+      "message": "PLOG(ERROR)",
+      "revId": "06f6ddbdb3601adb3076128a34a0be3843522203",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
