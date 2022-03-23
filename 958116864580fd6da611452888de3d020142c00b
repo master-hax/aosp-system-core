@@ -46,6 +46,30 @@
       },
       "revId": "958116864580fd6da611452888de3d020142c00b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "09a5d5c1_e8264bc1",
+        "filename": "fastboot/device/utility.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-03-23T17:20:33Z",
+      "side": 1,
+      "message": "(unless you have a #define lseek64 lseek somewhere, lseek64 will break the macOS build too... macOS never had a 32-bit off_t, so never added the _LARGE_FILE_SOURCE \"foo64\" cruft.)",
+      "parentUuid": "9569f087_bfcaa349",
+      "range": {
+        "startLine": 63,
+        "startChar": 34,
+        "endLine": 63,
+        "endChar": 39
+      },
+      "revId": "958116864580fd6da611452888de3d020142c00b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
