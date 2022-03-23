@@ -7,6 +7,7 @@
 + [init_blockDev_fuzzer](#InitBlockDev)
 + [init_ueventd_fuzzer](#InitUeventD)
 + [init_action_fuzzer](#InitAction)
++ [init_devices_fuzzer](#InitDevices)
 
 # <a name="InitParser"></a> Fuzzer for InitParser
 
@@ -170,4 +171,38 @@ InitService supports the following parameters:
 ```
   $ adb sync data
   $ adb shell /data/fuzz/arm64/init_action_fuzzer/init_action_fuzzer
+```
+
+# <a name="InitDevices"></a> Fuzzer for InitDevices
+
+InitDevices supports the following parameters:
+  1. PermissionType (parameter name: "kPermissionType")
+  2. Action (parameter name: "kAction")
+  3. Subsystem (parameter name: "kSubsystem")
+  4. DeviceName (parameter name: "kDeviceName")
+  5. Attribute (parameter name: "kAttribute")
+  6. GroupId (parameter name: "kGroupId")
+  7. DevicePaths (parameter name: "kDevicePaths")
+  8. ValidPaths (parameter name: "kValidPaths")
+
+| Parameter| Valid Values |Configured Value|
+|-------------|----------|----- |
+|`kPermissionType`| 0.`0660`,<br/> 1.`0440`,<br/> 2.`0600`,<br/> 3.`0700`,<br/> 4.`0777`,<br/> 5.`0755`|Value obtained from FuzzedDataProvider|
+|`kAction`| 0.`add`,<br/> 1.`change`,<br/> 2.`bind`,<br/> 3.`online`,<br/> 4.`remove`|Value obtained from FuzzedDataProvider|
+|`kSubsystem`| 0.`block`,<br/> 1.`usb`,<br/> 2.`misc`|Value obtained from FuzzedDataProvider|
+|`kDeviceName`| 0.`ashmem`,<br/> 1.`dm-user`|Value obtained from FuzzedDataProvider|
+`kAttribute`| 0.`enable`,<br/> 1.`trusty_version`,<br/> 2.`poll_delay`|Value obtained from FuzzedDataProvider|
+`kGroupId`| 0.`AID_RADIO`,<br/> 1.`AID_INPUT`,<br/> 2.`AID_LOG`|Value obtained from FuzzedDataProvider|
+`kDevicePaths`| 0.`/devices/platform/soc/soc:`,<br/> 1.`/devices/pci0000:00/0000:00:1f.2/`,<br/> 2.`/devices/vbd-1234/`,<br/> 3.`/devices/virtual/block/dm-`|Value obtained from FuzzedDataProvider|
+`kValidPaths`| 0.`/sys/bus/platform/devices/soc:*`,<br/> 1.`/sys/devices/virtual/block/dm-*`,<br/> 2.`/sys/bus/i2c/devices/i2c-*`,<br/> 3.`/sys/devices/virtual/input/input*`,<br/> 4.`/sys/class/input/event*`,<br/> 5.`/sys/class/input/input*`|Value obtained from FuzzedDataProvider|
+
+#### Steps to run
+1. Build the fuzzer
+```
+  $ mm -j$(nproc) init_devices_fuzzer
+```
+2. Run on device
+```
+  $ adb sync data
+  $ adb shell /data/fuzz/arm64/init_devices_fuzzer/init_devices_fuzzer
 ```
