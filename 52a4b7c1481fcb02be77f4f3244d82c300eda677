@@ -105,6 +105,24 @@
       "parentUuid": "d7cc17bf_8597e0b7",
       "revId": "52a4b7c1481fcb02be77f4f3244d82c300eda677",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bedb760a_32a9e94c",
+        "filename": "fastboot/device/utility.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-03-23T10:35:04Z",
+      "side": 1,
+      "message": "I just tested your stack of CLs, and I think we *do* need this .reset() to ensure the block device is closed first before re-opening it, else I get a EBUSY error.",
+      "parentUuid": "b4d66c3d_ffde180a",
+      "revId": "52a4b7c1481fcb02be77f4f3244d82c300eda677",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
