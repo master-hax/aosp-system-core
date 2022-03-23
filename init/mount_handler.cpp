@@ -166,8 +166,13 @@ bool MountHandlerEntry::operator<(const MountHandlerEntry& r) const {
 
 MountHandler::MountHandler(Epoll* epoll) : epoll_(epoll), fp_(fopen("/proc/mounts", "re"), fclose) {
     if (!fp_) PLOG(FATAL) << "Could not open /proc/mounts";
+#ifdef REGISTERHANDLER_WITHOUT_FLAGS
+    auto result =
+            epoll->RegisterHandler(fileno(fp_.get()), [this]() { this->MountHandlerFunction(); });
+#else
     auto result = epoll->RegisterHandler(
             fileno(fp_.get()), [this]() { this->MountHandlerFunction(); }, EPOLLERR | EPOLLPRI);
+#endif
     if (!result.ok()) LOG(FATAL) << result.error();
 }
 
