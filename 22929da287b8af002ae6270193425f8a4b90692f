@@ -1,5 +1,23 @@
 {
-  "comments": [],
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c4a044fe_e60136cf",
+        "filename": "init/first_stage_init.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2022-03-23T20:32:29Z",
+      "side": 1,
+      "message": "You aren\u0027t falling back to copy; delete the message?",
+      "revId": "22929da287b8af002ae6270193425f8a4b90692f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ],
   "submitRequirementResults": [
     {
       "submitRequirement": {
