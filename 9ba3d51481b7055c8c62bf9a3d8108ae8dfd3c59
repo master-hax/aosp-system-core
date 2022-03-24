@@ -122,6 +122,29 @@
       "parentUuid": "1ac4de41_63063cb4",
       "revId": "9ba3d51481b7055c8c62bf9a3d8108ae8dfd3c59",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f013fc15_c4a6ac95",
+        "filename": "debuggerd/tombstoned/rust/src/lib.rs",
+        "patchSetId": 2
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 1416371
+      },
+      "writtenOn": "2022-03-24T20:09:28Z",
+      "side": 1,
+      "message": "I think I might have used a `RawFd` and an `impl Drop` for this, but this is fine too.",
+      "range": {
+        "startLine": 33,
+        "startChar": 26,
+        "endLine": 33,
+        "endChar": 71
+      },
+      "revId": "9ba3d51481b7055c8c62bf9a3d8108ae8dfd3c59",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
