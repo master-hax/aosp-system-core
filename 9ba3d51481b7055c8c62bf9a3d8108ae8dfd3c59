@@ -68,6 +68,24 @@
       "parentUuid": "9c051ec1_900e8bbf",
       "revId": "9ba3d51481b7055c8c62bf9a3d8108ae8dfd3c59",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bcf62a03_42d31a3e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2022-03-24T18:57:05Z",
+      "side": 1,
+      "message": "Ah, sorry I should have remembered that this work was going on.\n\nUnfortunately, I didn\u0027t read the bug title or I would have remembered that\u0027s what this work is for.\n\nAs a general comment, I thought that you needed to add a subdirs directive to the debuggerd/Android.bp file for this to compile by default, but my build knowledge might be out of date.",
+      "parentUuid": "830fd51e_aa90c608",
+      "revId": "9ba3d51481b7055c8c62bf9a3d8108ae8dfd3c59",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
