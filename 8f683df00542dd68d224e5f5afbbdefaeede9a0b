@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "334b2dac_168b1bfe",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 463,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-03-24T20:58:52Z",
+      "side": 1,
+      "message": "This variable can be eliminated now and `uid` can be used directly.",
+      "range": {
+        "startLine": 463,
+        "startChar": 10,
+        "endLine": 463,
+        "endChar": 20
+      },
+      "revId": "8f683df00542dd68d224e5f5afbbdefaeede9a0b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
