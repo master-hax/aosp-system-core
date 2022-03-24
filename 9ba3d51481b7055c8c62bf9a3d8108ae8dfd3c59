@@ -86,6 +86,24 @@
       "parentUuid": "830fd51e_aa90c608",
       "revId": "9ba3d51481b7055c8c62bf9a3d8108ae8dfd3c59",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1ac4de41_63063cb4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-03-24T19:32:26Z",
+      "side": 1,
+      "message": "i think +ccross was saying just the other day that it\u0027s only .mk files that have that \"stop looking\" effect, not .bp files?",
+      "parentUuid": "bcf62a03_42d31a3e",
+      "revId": "9ba3d51481b7055c8c62bf9a3d8108ae8dfd3c59",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
