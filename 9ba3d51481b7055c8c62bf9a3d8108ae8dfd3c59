@@ -50,6 +50,24 @@
       "message": "Is the bug correct? It doesn\u0027t mention anything about tombstoned, and I\u0027m not sure why you are making this change. I think it would be great to rewrite all of tombstoned in rust (it\u0027s small and fairly self contained), but I\u0027m not sure that\u0027s what you are doing.",
       "revId": "9ba3d51481b7055c8c62bf9a3d8108ae8dfd3c59",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "830fd51e_aa90c608",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1380243
+      },
+      "writtenOn": "2022-03-24T18:53:00Z",
+      "side": 1,
+      "message": "Shikha can give more background of why this is needed, but my understanding is that as part of the Android Virtualization Framework which she\u0027s working on, the virtualizationservice (which is written in Rust) needs to forward tombstones from VMs to tombstoned on the host. This means that we need a Rust wrapper around the tombstoned client library, which is the title of the bug.",
+      "parentUuid": "9c051ec1_900e8bbf",
+      "revId": "9ba3d51481b7055c8c62bf9a3d8108ae8dfd3c59",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
