@@ -22,6 +22,30 @@
       },
       "revId": "c25a83c839e1a29e383d5f01f801971eeac7cf13",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d1e66413_ef62b99f",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-03-24T22:17:39Z",
+      "side": 1,
+      "message": "My understanding is that cgroup is based on kernfs and also that kernfs_open() is called to open a cgroup attribute. My understanding of kernfs_open() is that it returns -EACCES for both cases: insufficient permissions or cgroup attribute does not exist.",
+      "parentUuid": "8527511b_6780f2dc",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 11,
+        "endChar": 63
+      },
+      "revId": "c25a83c839e1a29e383d5f01f801971eeac7cf13",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
