@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8527511b_6780f2dc",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-03-24T21:13:21Z",
+      "side": 1,
+      "message": "I don\u0027t think this is Linux kernel behavior. It\u0027s probably has to do with how WriteStringToFile() is implemented: https://cs.android.com/android/platform/superproject/+/master:system/libbase/file.cpp;l\u003d301 . Have you checked which actual syscall fails in both cases? My assumption it\u0027s the open syscall that should fail and according to the manpage, it should distinguish between EACCES and ENOENT. Maybe the lack of access permissions to the directory causes open() to return EACCES in both cases (when the file exists and when it does not)?",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 11,
+        "endChar": 63
+      },
+      "revId": "c25a83c839e1a29e383d5f01f801971eeac7cf13",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
