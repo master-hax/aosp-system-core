@@ -33,6 +33,23 @@
       "message": "add a test, and add that to TEST_MAPPING? (see the existing tests for inspiration.)",
       "revId": "9ba3d51481b7055c8c62bf9a3d8108ae8dfd3c59",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9c051ec1_900e8bbf",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2022-03-24T18:30:11Z",
+      "side": 1,
+      "message": "Is the bug correct? It doesn\u0027t mention anything about tombstoned, and I\u0027m not sure why you are making this change. I think it would be great to rewrite all of tombstoned in rust (it\u0027s small and fairly self contained), but I\u0027m not sure that\u0027s what you are doing.",
+      "revId": "9ba3d51481b7055c8c62bf9a3d8108ae8dfd3c59",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
