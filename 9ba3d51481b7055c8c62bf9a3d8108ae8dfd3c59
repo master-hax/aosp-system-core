@@ -104,6 +104,24 @@
       "parentUuid": "bcf62a03_42d31a3e",
       "revId": "9ba3d51481b7055c8c62bf9a3d8108ae8dfd3c59",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5a88cab4_2fa6e98f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1002751
+      },
+      "writtenOn": "2022-03-24T19:39:44Z",
+      "side": 1,
+      "message": "Yeah, subdirs was obsoleted a while ago in favor of just parsing everything.",
+      "parentUuid": "1ac4de41_63063cb4",
+      "revId": "9ba3d51481b7055c8c62bf9a3d8108ae8dfd3c59",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
