@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "b895d3f5_0c7f5f13",
+        "filename": "libcutils/include/cutils/trace.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 234,
+      "author": {
+        "id": 1080238
+      },
+      "writtenOn": "2022-03-24T16:02:00Z",
+      "side": 1,
+      "message": "Yes there should and really trackName below should be track_name",
+      "parentUuid": "c022e1f8_b670eed9",
+      "range": {
+        "startLine": 234,
+        "startChar": 72,
+        "endLine": 234,
+        "endChar": 82
+      },
+      "revId": "618d685793cb87ad05946ef03dc28d98e6f28ffc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "aac0d92a_79816435",
         "filename": "libcutils/trace-host.cpp",
         "patchSetId": 1
@@ -37,6 +61,30 @@
       "writtenOn": "2022-03-22T22:43:04Z",
       "side": 1,
       "message": "Nit: Should there be variable name consistency with atrace_instant_for_track_body?",
+      "range": {
+        "startLine": 31,
+        "startChar": 53,
+        "endLine": 31,
+        "endChar": 63
+      },
+      "revId": "618d685793cb87ad05946ef03dc28d98e6f28ffc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "dc90f378_0ebbf37f",
+        "filename": "libcutils/trace-host.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1080238
+      },
+      "writtenOn": "2022-03-24T16:02:00Z",
+      "side": 1,
+      "message": "As above.",
+      "parentUuid": "aac0d92a_79816435",
       "range": {
         "startLine": 31,
         "startChar": 53,
