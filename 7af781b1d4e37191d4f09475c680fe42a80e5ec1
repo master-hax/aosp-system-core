@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "701bf0a7_e019b99c",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 467,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-03-24T20:51:27Z",
+      "side": 1,
+      "message": "Nice catch!\nnit: Maybe have this as `if (stat(cgroup.c_str(), \u0026cgroup_stat))`?  - anything other than 0 is an error.",
+      "range": {
+        "startLine": 467,
+        "startChar": 8,
+        "endLine": 467,
+        "endChar": 48
+      },
+      "revId": "7af781b1d4e37191d4f09475c680fe42a80e5ec1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
