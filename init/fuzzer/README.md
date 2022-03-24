@@ -10,6 +10,7 @@
 + [init_devices_fuzzer](#InitDevices)
 + [init_keychords_fuzzer](#InitKeychords)
 + [init_service_utils_fuzzer](#InitServiceUtils)
++ [init_service_fuzzer](#InitService)
 
 # <a name="InitParser"></a> Fuzzer for InitParser
 
@@ -249,4 +250,32 @@ InitServiceUtils supports the following parameters:
 ```
   $ adb sync data
   $ adb shell /data/fuzz/arm64/init_service_utils_fuzzer/init_service_utils_fuzzer
+```
+
+# <a name="InitService"></a> Fuzzer for InitService
+
+InitService supports the following parameters:
+  1. Services (parameter name: "kServices")
+  2. Sockets (parameter name: "kSockets")
+  3. SignalNumber (parameter name: "kSignalNumber")
+  4. SignalCode (parameter name: "kSignalCode")
+  5. IntegerServiceScripts (parameter name: "kServiceScripts")
+
+| Parameter| Valid Values |Configured Value|
+|-------------|----------|----- |
+|`kServices`| 0.`ueventd`,<br/> 1.`console`,<br/> 2.`snapuserd`,<br/> 3.`lmkd`,<br/> 4.`blank_screen`|Value obtained from FuzzedDataProvider|
+|`kSockets`| 0.`snapuserd`,<br/> 1.`snapuserd_proxy`|Value obtained from FuzzedDataProvider|
+|`kSignalNumber`| 0.`SIGABRT`,<br/> 1.`SIGBUS`,<br/> 2.`SIGFPE`,<br/> 3.`SIGILL`,<br/> 4.`SIGSEGV`,<br/> 5.`SIGSTKFLT`,<br/> 6.`SIGSTOP`,<br/> 7.`SIGSYS`,<br/> 8.`SIGTRAP`|Value obtained from FuzzedDataProvider|
+|`kSignalCode `| 0.`SI_USER`,<br/> 1.`SI_KERNEL`,<br/> 2.`SI_QUEUE`,<br/> 3.`SI_TIMER`,<br/> 4.`SI_MESGQ`,<br/> 5.`SI_ASYNCIO`,<br/> 6.`SI_SIGIO`,<br/> 7.`SI_TKILL`,<br/> 8.`SI_DETHREAD`,<br/> 9.`SI_ASYNCNL`|Value obtained from FuzzedDataProvider|
+`kServiceScripts`| 0.`oom_score_adjust`,<br/> 1.`priority`,<br/> 2.`capabilities`,<br/> 3.`ioprio rt`,<br/> 4.`rlimit rtprio`,<br/> 5.`memcg.swappiness`,<br/> 6.`memcg.limit_percent`,<br/> 7.`memcg.limit_property`,<br/> 8.`memcg.limit_in_bytes`,<br/> 9.`memcg.soft_limit_in_bytes`,<br/> 10.`timeout_period`,<br/> 11.`restart_period`|Value obtained from FuzzedDataProvider|
+
+#### Steps to run
+1. Build the fuzzer
+```
+  $ mm -j$(nproc) init_service_fuzzer
+```
+2. Run on device
+```
+  $ adb sync data
+  $ adb shell /data/fuzz/arm64/init_service_fuzzer/init_service_fuzzer
 ```
