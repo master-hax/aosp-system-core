@@ -126,6 +126,24 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "05c5eb63_2ef2e820",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1380243
+      },
+      "writtenOn": "2022-03-25T16:13:21Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ec22349f_25914d60",
+      "revId": "9ba3d51481b7055c8c62bf9a3d8108ae8dfd3c59",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "f013fc15_c4a6ac95",
         "filename": "debuggerd/tombstoned/rust/src/lib.rs",
         "patchSetId": 2
@@ -170,6 +188,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "15d58455_08e77ce7",
+        "filename": "debuggerd/tombstoned/rust/src/lib.rs",
+        "patchSetId": 2
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1380243
+      },
+      "writtenOn": "2022-03-25T16:13:21Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "eb1dcb56_96b30b0a",
+      "range": {
+        "startLine": 36,
+        "startChar": 8,
+        "endLine": 36,
+        "endChar": 19
+      },
+      "revId": "9ba3d51481b7055c8c62bf9a3d8108ae8dfd3c59",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d9ad2736_419543bc",
@@ -183,6 +225,24 @@
       "writtenOn": "2022-03-25T10:52:27Z",
       "side": 1,
       "message": "We should not rely on text_output_fd \u0026 proto_output_fd being valid after calling ffi::tombstoned_connect_files. So, maybe add if text_output !\u003d -1 \u0026 similar checks for others \u0026 calling File::from_raw_fd only on valid fd\n\nConsider the case when dumptype \u003d\u003d kDebuggerdTombstone,\n\ntombstoned actually checks for dumptype \u0026 DOES NOT SEND tmp_proto_fd if dumptype!\u003d kDebuggerdTombstoneProto (cs/android/system/core/debuggerd/tombstoned/tombstoned.cpp?l\u003d305-310\u0026rcl\u003dHEAD \u0026 cs/android/system/core/debuggerd/tombstoned/tombstoned.cpp?l\u003d378)\n\nSo tomsbstoned_client actually does not receive tmp_proto_fd.  cs/android/system/core/debuggerd/tombstoned/tombstoned_client.cpp?l\u003d68\u0026rcl\u003dHEAD",
+      "revId": "9ba3d51481b7055c8c62bf9a3d8108ae8dfd3c59",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8f50b17e_63ae1008",
+        "filename": "debuggerd/tombstoned/rust/src/lib.rs",
+        "patchSetId": 2
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1380243
+      },
+      "writtenOn": "2022-03-25T16:13:21Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d9ad2736_419543bc",
       "revId": "9ba3d51481b7055c8c62bf9a3d8108ae8dfd3c59",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
