@@ -16,6 +16,23 @@
       "message": "The presubmit build is broken due to an issue with the debuggerd binary having the same name as the debuggerd directory, I think. I\u0027m trying to find a way around that.",
       "revId": "b14bd6c9cbebc1a6f9a300b1290d07bc2298b8c9",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f1d22421_f65bcdd4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1897307
+      },
+      "writtenOn": "2022-03-25T16:38:58Z",
+      "side": 1,
+      "message": "I\u0027ve tested this by having virtualization service writing tombstones after talking to tombstoned. Works alright",
+      "revId": "b14bd6c9cbebc1a6f9a300b1290d07bc2298b8c9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
