@@ -149,6 +149,29 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "eb1dcb56_96b30b0a",
+        "filename": "debuggerd/tombstoned/rust/src/lib.rs",
+        "patchSetId": 2
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1897307
+      },
+      "writtenOn": "2022-03-25T12:59:54Z",
+      "side": 1,
+      "message": "Maybe convert proto_output_fd \u0026 text_output_fd into optional",
+      "range": {
+        "startLine": 36,
+        "startChar": 8,
+        "endLine": 36,
+        "endChar": 19
+      },
+      "revId": "9ba3d51481b7055c8c62bf9a3d8108ae8dfd3c59",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "d9ad2736_419543bc",
         "filename": "debuggerd/tombstoned/rust/src/lib.rs",
         "patchSetId": 2
