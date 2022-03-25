@@ -22,6 +22,30 @@
       },
       "revId": "e10057a0f6652dbb8a6cf4de890af03454845b5f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9cd50643_994695f6",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 210,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-03-25T23:18:41Z",
+      "side": 1,
+      "message": "I think so, so I have replaced the stat() call with an access() call.",
+      "parentUuid": "ebff1303_b08e1b9b",
+      "range": {
+        "startLine": 210,
+        "startChar": 12,
+        "endLine": 210,
+        "endChar": 65
+      },
+      "revId": "e10057a0f6652dbb8a6cf4de890af03454845b5f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
