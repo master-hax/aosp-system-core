@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b3d46094_7bc872fc",
+        "filename": "fastboot/device/utility.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-03-25T06:53:03Z",
+      "side": 1,
+      "message": "bool",
+      "range": {
+        "startLine": 49,
+        "startChar": 4,
+        "endLine": 49,
+        "endChar": 7
+      },
+      "revId": "f1a828550be4f765a4700b945ce0159ce2e09188",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
