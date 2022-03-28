@@ -16,6 +16,24 @@
       "message": "Two things don\u0027t seem right to me here..\n\n(1) fb will be for a single device, so how could it be accurate here?\n(2) \"fastbootd\" should be sent via the USB descriptor, here: https://cs.android.com/android/platform/superproject/+/master:system/core/fastboot/device/usb_client.cpp;l\u003d149;bpv\u003d1;bpt\u003d1 - why isn\u0027t that happening?",
       "revId": "4c9eae0f5b01f6f685d89c93dc8ee69fa827c0d3",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f656af48_af9c45aa",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 287,
+      "author": {
+        "id": 1683114
+      },
+      "writtenOn": "2022-03-28T02:01:12Z",
+      "side": 1,
+      "message": "1.fb will be for a single device, so how could it be accurate here?\nI guess it\u0027s accurate,because the code flow and arch don\u0027t have any changes.\n\n2.Why isn\u0027t that happening?Some device with Vendor Freeze miss below patch.\nhttps://android-review.googlesource.com/c/platform/system/core/+/1319796\n\nThe current way is to fix this problem through the fastboot tool.In fact, it could be repaired on the device side.Since this has been fixed on our devices, this modification is not that important.It\u0027s up to you to decide if it\u0027s necessary to incorporate this change,thanks.",
+      "parentUuid": "90ec3e33_c10d7a39",
+      "revId": "4c9eae0f5b01f6f685d89c93dc8ee69fa827c0d3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
