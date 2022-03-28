@@ -114,3 +114,81 @@ void do_report_sysprop_change() {
     }
 #endif
 }
+
+// experimental
+
+class __attribute__((capability("property"))) State {
+  public:
+    void Start() __attribute__((acquire_capability)) {}
+    void End() __attribute__((release_capability)) {}
+
+  private:
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-private-field"
+    int size[0];
+#pragma clang diagnostic pop
+};
+static_assert(sizeof(State) == 0);
+
+#define DECLARE_STATE(X) State _state_##X
+#define ENTER_STATE(X) __attribute__((acquire_capability(_state_##X)))
+#define LEAVES_STATE(X) __attribute__((release_capability(_state_##X)))
+#define REQUIRES_STATE(X) __attribute__((requires_capability(_state_##X)))
+#define START_STATE(X) _state_##X.Start()
+#define END_STATE(X) _state_##X.End()
+
+// TODO: could leave a state by dropping exclusive -> shared, so that
+// we can allow certain variables to be writable only in certain states,
+// but it's not clear what the impact of this would be in practice because
+// you might want a certain variable to be writable in a given number of states
+
+class ClassWithBuilder {
+  public:
+    ClassWithBuilder() ENTER_STATE(Constructing) { START_STATE(Constructing); }
+
+    void SetName(const std::string& name) REQUIRES_STATE(Constructing) { mName = name; }
+
+    void init() LEAVES_STATE(Constructing) ENTER_STATE(Running) {
+        // TODO: kind of annoying we have to do these things in the function declaration
+        // and the body, but it could matter for some things
+        END_STATE(Constructing);
+        START_STATE(Running);
+
+        // imagine we start a thread
+    }
+
+    void doSomethingWhileRunning() REQUIRES_STATE(Running) {
+        // guaranteed that init has been called
+    }
+
+  private:
+    DECLARE_STATE(Constructing);
+    DECLARE_STATE(Running);
+
+    std::string mName;
+};
+
+// the magic of 0-sized structures!
+static_assert(sizeof(ClassWithBuilder) == sizeof(std::string));
+static_assert(alignof(ClassWithBuilder) == alignof(std::string));
+
+void useClassRight() {
+    ClassWithBuilder foo;
+    foo.SetName("foo");
+    foo.init();
+    foo.doSomethingWhileRunning();
+}
+
+void useClassWrong1() {
+    ClassWithBuilder foo;
+    foo.SetName("foo");
+    foo.init();
+    // oops, can't set name after init
+    foo.SetName("bar");
+}
+
+void useClassWrong2() {
+    ClassWithBuilder foo;
+    // oops, not running yet
+    foo.doSomethingWhileRunning();
+}
