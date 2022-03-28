@@ -22,6 +22,30 @@
       },
       "revId": "f1a828550be4f765a4700b945ce0159ce2e09188",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b0b35617_590e1af0",
+        "filename": "fastboot/device/utility.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1590141
+      },
+      "writtenOn": "2022-03-28T17:58:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b3d46094_7bc872fc",
+      "range": {
+        "startLine": 49,
+        "startChar": 4,
+        "endLine": 49,
+        "endChar": 7
+      },
+      "revId": "f1a828550be4f765a4700b945ce0159ce2e09188",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
