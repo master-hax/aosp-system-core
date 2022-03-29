@@ -16,6 +16,23 @@
       "message": "+dvander as the real owner, but since this is a deletion i\u0027ll \"assume fine\"...",
       "revId": "07f6c82a4ce101ef74c1da03a655e5052285de0a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "322097fd_77b39034",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 35
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-03-29T18:22:33Z",
+      "side": 1,
+      "message": "(actually +dvander this time /facepalm)",
+      "revId": "07f6c82a4ce101ef74c1da03a655e5052285de0a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
