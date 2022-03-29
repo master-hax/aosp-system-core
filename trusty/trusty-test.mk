@@ -17,3 +17,4 @@ PRODUCT_PACKAGES += \
 	spiproxyd \
 	trusty_driver_test \
 	trusty_keymaster_set_attestation_key \
+	trusty_binder_test \
