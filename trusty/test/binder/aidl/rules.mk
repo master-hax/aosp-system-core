@@ -1,4 +1,4 @@
-# Copyright (C) 2020 The Android Open-Source Project
+# Copyright (C) 2022 The Android Open Source Project
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,10 +11,16 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
 
-PRODUCT_PACKAGES += \
-	keymaster_soft_attestation_keys.xml \
-	spiproxyd \
-	trusty_driver_test \
-	trusty_keymaster_set_attestation_key \
-	trusty_binder_test \
+LOCAL_DIR := $(GET_LOCAL_DIR)
+
+MODULE := $(LOCAL_DIR)
+
+MODULE_AIDLS := \
+	$(LOCAL_DIR)/ByteEnum.aidl \
+	$(LOCAL_DIR)/IntEnum.aidl \
+	$(LOCAL_DIR)/ITestService.aidl \
+	$(LOCAL_DIR)/LongEnum.aidl \
+
+include make/aidl.mk
