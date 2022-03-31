@@ -27,6 +27,7 @@
 #include <android-base/parseint.h>
 #include <android-base/strings.h>
 #include <hidl-util/FQName.h>
+#include <processgroup/processgroup.h>
 #include <system/thread_defs.h>
 
 #include "lmkd_service.h"
@@ -395,7 +396,15 @@ Result<void> ServiceParser::ParseShutdown(std::vector<std::string>&& args) {
 
 Result<void> ServiceParser::ParseTaskProfiles(std::vector<std::string>&& args) {
     args.erase(args.begin());
-    service_->task_profiles_ = std::move(args);
+    if (service_->task_profiles_.empty()) {
+        service_->task_profiles_ = std::move(args);
+    } else {
+        // Some task profiles might have been added during writepid conversions
+        service_->task_profiles_.insert(service_->task_profiles_.end(),
+                                        std::make_move_iterator(args.begin()),
+                                        std::make_move_iterator(args.end()));
+        args.clear();
+    }
     return {};
 }
 
@@ -521,9 +530,43 @@ Result<void> ServiceParser::ParseUser(std::vector<std::string>&& args) {
     return {};
 }
 
+// Convert legacy paths used to migrate processes between cgroups using writepid command.
+// We can't get these paths from TaskProfiles because profile definitions are changing
+// when we migrate to cgroups v2 while these hardcoded paths stay the same.
+static std::optional<const std::string> ConvertTaskFileToProfile(const std::string& file) {
+    static const std::map<const std::string, const std::string> map = {
+            {"/dev/stune/top-app/tasks", "MaxPerformance"},
+            {"/dev/stune/foreground/tasks", "HighPerformance"},
+            {"/dev/cpuset/camera-daemon/tasks", "CameraServiceCapacity"},
+            {"/dev/cpuset/foreground/tasks", "ProcessCapacityHigh"},
+            {"/dev/cpuset/system-background/tasks", "ServiceCapacityLow"},
+            {"/dev/stune/nnapi-hal/tasks", "NNApiHALPerformance"},
+            {"/dev/blkio/background/tasks", "LowIoPriority"},
+    };
+    auto iter = map.find(file);
+    return iter == map.end() ? std::nullopt : std::make_optional<const std::string>(iter->second);
+}
+
 Result<void> ServiceParser::ParseWritepid(std::vector<std::string>&& args) {
     args.erase(args.begin());
+    // Convert any cgroup writes into appropriate task_profiles
+    for (auto iter = args.begin(); iter != args.end();) {
+        if (CgroupGetControllerFromPath(*iter, nullptr)) {
+            auto task_profile = ConvertTaskFileToProfile(*iter);
+            if (task_profile) {
+                LOG(WARNING) << "'writepid " << *iter << "' is converted into 'task_profiles "
+                             << task_profile.value() << "'";
+                service_->task_profiles_.push_back(task_profile.value());
+                iter = args.erase(iter);
+                continue;
+            }
+            LOG(ERROR) << "writepid usage with cgroups path '" << *iter
+                       << "' is obsolete, please use task_profiles!";
+        }
+        ++iter;
+    }
     service_->writepid_files_ = std::move(args);
+
     return {};
 }
 
