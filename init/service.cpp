@@ -485,7 +485,8 @@ void Service::RunService(const std::optional<MountNamespace>& override_mount_nam
         descriptor.Publish();
     }
 
-    if (auto result = WritePidToFiles(&writepid_files_); !result.ok()) {
+    std::vector<std::string> task_profiles;
+    if (auto result = WritePidToFiles(&writepid_files_, &task_profiles); !result.ok()) {
         LOG(ERROR) << "failed to write pid to files: " << result.error();
     }
 
@@ -496,7 +497,8 @@ void Service::RunService(const std::optional<MountNamespace>& override_mount_nam
     }
     pipefd.reset();
 
-    if (task_profiles_.size() > 0 && !SetTaskProfiles(getpid(), task_profiles_)) {
+    if ((task_profiles.size() > 0 && !SetTaskProfiles(getpid(), task_profiles)) ||
+        (task_profiles_.size() > 0 && !SetTaskProfiles(getpid(), task_profiles_))) {
         LOG(ERROR) << "failed to set task profiles";
     }
 

@@ -90,7 +90,8 @@ struct ProcessAttributes {
 };
 Result<void> SetProcessAttributes(const ProcessAttributes& attr);
 
-Result<void> WritePidToFiles(std::vector<std::string>* files);
+Result<void> WritePidToFiles(std::vector<std::string>* files,
+                             std::vector<std::string>* task_profiles);
 
 }  // namespace init
 }  // namespace android
