@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ffdfdcf9_acabc44c",
+        "filename": "trusty/libtrusty-rs/tipc-test-rs/main.rs",
+        "patchSetId": 4
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2022-03-31T22:00:49Z",
+      "side": 1,
+      "message": "This constant should be defined in the base library.",
+      "revId": "301a47b0a520f23d48478670b4fb61864359640c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "88e9a43b_d88c9271",
+        "filename": "trusty/libtrusty-rs/tipc-test-rs/main.rs",
+        "patchSetId": 4
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2022-03-31T22:00:49Z",
+      "side": 1,
+      "message": "Why static and not const?",
+      "revId": "301a47b0a520f23d48478670b4fb61864359640c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "73bbf04b_ddd00243",
+        "filename": "trusty/libtrusty-rs/tipc-test-rs/main.rs",
+        "patchSetId": 4
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2022-03-31T22:00:49Z",
+      "side": 1,
+      "message": "heh. I think you should stick to something boring here, though, sorry. Would be nice to check the reply at least, or even better do the same thing that `echo_test()` does in C.",
+      "revId": "301a47b0a520f23d48478670b4fb61864359640c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
