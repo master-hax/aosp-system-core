@@ -37,11 +37,13 @@
 #include <sys/syscall.h>
 #include <sys/sysmacros.h>
 #include <sys/types.h>
+#include <sys/utsname.h>
 #include <unistd.h>
 
 #include <android-base/file.h>
 #include <android-base/properties.h>
 #include <android-base/strings.h>
+#include <android-base/stringprintf.h>
 #include <android-base/unique_fd.h>
 
 /* Will be added to UAPI once upstream change is merged */
@@ -144,8 +146,22 @@ static bool check_vendor_memfd_allowed() {
  * which will be cached by the caller.
  */
 static bool __has_memfd_support() {
+    struct utsname uts;
+    unsigned int major, minor;
+
     if (check_vendor_memfd_allowed() == false) {
         return false;
+    }
+
+    // ashmem is dropped in v5.18. So use memfd if we are running
+    // v5.18 or a newer kernel version.
+    // https://lore.kernel.org/all/20220315123457.2354812-1-hch@lst.de/.
+    // Parsing uname(2) for the kernel version because ro.kernel.version
+    // property is not available this early in the boot process.
+    if ((uname(&uts) != 0) || (sscanf(uts.release, "%u.%u", &major, &minor) != 2)) {
+        ALOGE("Could not parse the kernel version from uname\n");
+    } else if (std::stof(android::base::StringPrintf("%u.%u", major, minor)) > 5.17) {
+        return true;
     }
 
     /* Used to turn on/off the detection at runtime, in the future this
