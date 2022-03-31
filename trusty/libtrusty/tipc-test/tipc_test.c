@@ -45,7 +45,7 @@ static const char *closer3_name = "com.android.ipc-unittest.srv.closer3";
 static const char *main_ctrl_name = "com.android.ipc-unittest.ctrl";
 static const char* receiver_name = "com.android.trusty.memref.receiver";
 
-static const char* _sopts = "hsvDS:t:r:m:b:";
+static const char* _sopts = "hsvDS:t:r:m:b:k";
 /* clang-format off */
 static const struct option _lopts[] =  {
     {"help",    no_argument,       0, 'h'},
@@ -56,6 +56,7 @@ static const struct option _lopts[] =  {
     {"repeat",  required_argument, 0, 'r'},
     {"burst",   required_argument, 0, 'b'},
     {"msgsize", required_argument, 0, 'm'},
+    {"socket",  no_argument,       0, 'k'},
     {0, 0, 0, 0}
 };
 /* clang-format on */
@@ -73,6 +74,7 @@ static const char* usage =
         "  -m, --msgsize size    max message size\n"
         "  -v, --variable        variable message size\n"
         "  -s, --silent          silent\n"
+        "  -k, --socket          socket\n"
         "\n";
 
 static const char* usage_long =
@@ -100,6 +102,7 @@ static uint opt_msgsize = 32;
 static uint opt_msgburst = 32;
 static bool opt_variable = false;
 static bool opt_silent = false;
+static bool opt_socket = false;
 static char* srv_name = NULL;
 
 static void print_usage_and_exit(const char *prog, int code, bool verbose)
@@ -151,6 +154,10 @@ static void parse_options(int argc, char **argv)
                 opt_silent = true;
                 break;
 
+            case 'k':
+                opt_socket = true;
+                break;
+
             case 'h':
                 print_usage_and_exit(argv[0], EXIT_SUCCESS, true);
                 break;
@@ -159,6 +166,26 @@ static void parse_options(int argc, char **argv)
                 print_usage_and_exit(argv[0], EXIT_FAILURE, false);
         }
     }
+}
+
+static void fd_to_socket(int* fd) {
+    if (!opt_socket) {
+        return;
+    }
+
+    int old_fd = *fd;
+    int socket_fd = ioctl(old_fd, TIPC_IOC_GET_SOCKET);
+    if (socket_fd < 0) {
+        fprintf(stderr, "Failed to get socket\n");
+        return;
+    }
+
+    /*
+     * Close the old fd since the caller is supposed
+     * to replace it with socket_fd
+     */
+    tipc_close(old_fd);
+    *fd = socket_fd;
 }
 
 static int connect_test(uint repeat)
@@ -250,6 +277,7 @@ static int closer1_test(uint repeat)
         if (!opt_silent) {
             printf("%s: connected\n", __func__);
         }
+        fd_to_socket(&fd);
         tipc_close(fd);
     }
 
@@ -278,6 +306,7 @@ static int closer2_test(uint repeat)
         } else {
             /* this should always fail */
             fprintf(stderr, "connected to '%s' service\n", "closer2");
+            fd_to_socket(&fd);
             tipc_close(fd);
         }
     }
@@ -310,6 +339,7 @@ static int closer3_test(uint repeat)
                 if (!opt_silent) {
                     printf("%s: fd[%d]=%d: connected\n", __func__, j, fd[j]);
                 }
+                fd_to_socket(&fd[j]);
                 memset(buf, i + j, sizeof(buf));
                 rc = write(fd[j], buf, sizeof(buf));
                 if (rc != sizeof(buf)) {
@@ -371,6 +401,7 @@ static int echo_test(uint repeat, uint msgsz, bool var)
         fprintf(stderr, "Failed to connect to service\n");
         return echo_fd;
     }
+    fd_to_socket(&echo_fd);
 
     for (i = 0; i < repeat; i++) {
         msg_len = msgsz;
@@ -431,6 +462,7 @@ static int burst_write_test(uint repeat, uint msgburst, uint msgsz, bool var)
             fprintf(stderr, "Failed to connect to '%s' service\n", "datasink");
             break;
         }
+        fd_to_socket(&fd);
 
         for (j = 0; j < msgburst; j++) {
             msg_len = msgsz;
@@ -525,6 +557,7 @@ static int select_test(uint repeat, uint msgburst, uint msgsz)
         fprintf(stderr, "Failed to connect to '%s' service\n", "echo");
         return fd;
     }
+    fd_to_socket(&fd);
 
     for (i = 0; i < repeat; i++) {
         _wait_for_msg(fd, msgsz, 1);
@@ -568,6 +601,7 @@ static int blocked_read_test(uint repeat)
         fprintf(stderr, "Failed to connect to '%s' service\n", "echo");
         return fd;
     }
+    fd_to_socket(&fd);
 
     for (i = 0; i < repeat; i++) {
         rc = read(fd, rx_buf, sizeof(rx_buf));
@@ -611,6 +645,7 @@ static int ta2ta_ipc_test(void)
         fprintf(stderr, "Failed to connect to '%s' service\n", "main_ctrl");
         return fd;
     }
+    fd_to_socket(&fd);
 
     /* Wait for tests to complete and read status */
     while (true) {
@@ -667,6 +702,7 @@ static int dev_uuid_test(void)
         fprintf(stderr, "Failed to connect to '%s' service\n", "uuid");
         return fd;
     }
+    fd_to_socket(&fd);
 
     /* wait for test to complete */
     rc = read(fd, &uuid, sizeof(uuid));
@@ -733,6 +769,7 @@ static int writev_test(uint repeat, uint msgsz, bool var)
         fprintf(stderr, "Failed to connect to service\n");
         return echo_fd;
     }
+    fd_to_socket(&echo_fd);
 
     for (i = 0; i < repeat; i++) {
         msg_len = msgsz;
@@ -812,6 +849,7 @@ static int readv_test(uint repeat, uint msgsz, bool var)
         fprintf(stderr, "Failed to connect to service\n");
         return echo_fd;
     }
+    fd_to_socket(&echo_fd);
 
     for (i = 0; i < repeat; i++) {
         msg_len = msgsz;
