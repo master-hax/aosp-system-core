@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3818fc29_5b7aafef",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-03-31T20:01:08Z",
+      "side": 1,
+      "message": "interesting... +smoreland,sspatil\n\nif we\u0027re going to have to finally make this transition, should we just turn this on for everyone all the time then, rather than have subtle breakage on devices with newer kernels?\n\nand can we then delete the ashmem code? memfd is in 3.17, right, so it\u0027s just app compat that\u0027s kept us back, not kernel versions? and if we have to have a hard app compat break anyway...\n\n[if we have to have a hard app compat break anyway, should we try to cram in a \"if (target api level \u003e\u003d T) you_get_memfd()\" to T?]\n\nhas someone talked to chrome? do we know of anyone else who relies on ashmem actually being ashmem?",
+      "revId": "b4345f3711da1962c1cc9ba32cabf1e6806ffb7e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
