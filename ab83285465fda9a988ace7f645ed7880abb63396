@@ -3,6 +3,91 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "c600d183_46fd8215",
+        "filename": "trusty/libtrusty-rs/Android.bp",
+        "patchSetId": 3
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2022-03-31T21:13:46Z",
+      "side": 1,
+      "message": "Why is this line here?",
+      "revId": "ab83285465fda9a988ace7f645ed7880abb63396",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2318b40b_10e0b20c",
+        "filename": "trusty/libtrusty-rs/Android.bp",
+        "patchSetId": 3
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2022-03-31T21:13:46Z",
+      "side": 1,
+      "message": "Do we need host support?",
+      "revId": "ab83285465fda9a988ace7f645ed7880abb63396",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "dc7349a8_ae14d335",
+        "filename": "trusty/libtrusty-rs/Android.bp",
+        "patchSetId": 3
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2022-03-31T21:13:46Z",
+      "side": 1,
+      "message": "There\u0027s no cargo package here, so I don\u0027t think this field is relevant.",
+      "revId": "ab83285465fda9a988ace7f645ed7880abb63396",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d36fb71e_c3b1bfff",
+        "filename": "trusty/libtrusty-rs/Android.bp",
+        "patchSetId": 3
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2022-03-31T21:13:46Z",
+      "side": 1,
+      "message": "Can we use the default edition instead (i.e. leave this off)?",
+      "revId": "ab83285465fda9a988ace7f645ed7880abb63396",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fa495737_2ac5c5af",
+        "filename": "trusty/libtrusty-rs/src/lib.rs",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2022-03-31T21:13:46Z",
+      "side": 1,
+      "message": "You need to add the Apache 2 license block at the top.",
+      "revId": "ab83285465fda9a988ace7f645ed7880abb63396",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "44ab969e_6d99cb9c",
         "filename": "trusty/libtrusty-rs/src/lib.rs",
         "patchSetId": 3
