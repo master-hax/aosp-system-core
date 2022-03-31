@@ -18,6 +18,7 @@
 
 #include <fcntl.h>
 #include <grp.h>
+#include <map>
 #include <sys/mount.h>
 #include <sys/prctl.h>
 #include <sys/wait.h>
@@ -277,7 +278,22 @@ Result<void> SetProcessAttributes(const ProcessAttributes& attr) {
     return {};
 }
 
-Result<void> WritePidToFiles(std::vector<std::string>* files) {
+std::optional<const std::string> ConvertTaskFileToProfile(const std::string& file) {
+    static const std::map<const std::string, const std::string> map = {
+        { "/dev/stune/top-app/tasks", "MaxPerformance" },
+        { "/dev/stune/foreground/tasks", "HighPerformance" },
+        { "/dev/cpuset/camera-daemon/tasks", "CameraServiceCapacity" },
+        { "/dev/cpuset/foreground/tasks", "ProcessCapacityHigh" },
+        { "/dev/cpuset/system-background/tasks", "ServiceCapacityLow" },
+        { "/dev/stune/nnapi-hal/tasks", "NNApiHALPerformance" },
+        { "/dev/blkio/background/tasks", "LowIoPriority" },
+    };
+    auto iter = map.find(file);
+    return iter == map.end() ? std::nullopt : std::make_optional<const std::string>(iter->second);
+}
+
+Result<void> WritePidToFiles(std::vector<std::string>* files,
+                             std::vector<std::string>* task_profiles) {
     // See if there were "writepid" instructions to write to files under cpuset path.
     std::string cpuset_path;
     if (CgroupGetControllerPath("cpuset", &cpuset_path)) {
@@ -305,12 +321,24 @@ Result<void> WritePidToFiles(std::vector<std::string>* files) {
     } else {
         LOG(ERROR) << "cpuset cgroup controller is not mounted!";
     }
-    std::string pid_str = std::to_string(getpid());
+    int pid = getpid();
+    std::string pid_str = std::to_string(pid);
     for (const auto& file : *files) {
+        if (CgroupGetControllerFromPath(file, nullptr)) {
+            auto task_profile = ConvertTaskFileToProfile(file);
+            if (task_profile) {
+                LOG(WARNING) << "'writepid " << file << "' is converted into 'task_profiles "
+                             << task_profile.value() << "'";
+                task_profiles->push_back(task_profile.value());
+                continue;
+            }
+            LOG(WARNING) << "writepid usage with cgroups is obsolete, please use task_profiles!";
+        }
         if (!WriteStringToFile(pid_str, file)) {
             return ErrnoError() << "couldn't write " << pid_str << " to " << file;
         }
     }
+
     return {};
 }
 
