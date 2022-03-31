@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "4c7fab04_5d433519",
+        "filename": "trusty/libtrusty-rs/Android.bp",
+        "patchSetId": 3
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1902326
+      },
+      "writtenOn": "2022-03-31T23:33:27Z",
+      "side": 1,
+      "message": "Unnecessary copy-paste from another file.",
+      "parentUuid": "c600d183_46fd8215",
+      "revId": "ab83285465fda9a988ace7f645ed7880abb63396",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "2318b40b_10e0b20c",
@@ -35,6 +53,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "b2d58005_f391546d",
+        "filename": "trusty/libtrusty-rs/Android.bp",
+        "patchSetId": 3
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1902326
+      },
+      "writtenOn": "2022-03-31T23:33:27Z",
+      "side": 1,
+      "message": "Nope, don\u0027t think so! This was a copy-paste from another `Android.bp` that I was using as reference and is probably not relevant for us.",
+      "parentUuid": "2318b40b_10e0b20c",
+      "revId": "ab83285465fda9a988ace7f645ed7880abb63396",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "dc7349a8_ae14d335",
@@ -48,6 +84,24 @@
       "writtenOn": "2022-03-31T21:13:46Z",
       "side": 1,
       "message": "There\u0027s no cargo package here, so I don\u0027t think this field is relevant.",
+      "revId": "ab83285465fda9a988ace7f645ed7880abb63396",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "35a785eb_a21e7a33",
+        "filename": "trusty/libtrusty-rs/Android.bp",
+        "patchSetId": 3
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1902326
+      },
+      "writtenOn": "2022-03-31T23:33:27Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "dc7349a8_ae14d335",
       "revId": "ab83285465fda9a988ace7f645ed7880abb63396",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -71,6 +125,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "ca682b0a_a87b3e0a",
+        "filename": "trusty/libtrusty-rs/Android.bp",
+        "patchSetId": 3
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1902326
+      },
+      "writtenOn": "2022-03-31T23:33:27Z",
+      "side": 1,
+      "message": "Is the default edition in an `Android.bp` the latest one? I normally specify the edition in a `Cargo.toml` because otherwise it defaults to the 2015 edition. I don\u0027t know what the default would be here.",
+      "parentUuid": "d36fb71e_c3b1bfff",
+      "revId": "ab83285465fda9a988ace7f645ed7880abb63396",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "fa495737_2ac5c5af",
         "filename": "trusty/libtrusty-rs/src/lib.rs",
         "patchSetId": 3
@@ -82,6 +154,24 @@
       "writtenOn": "2022-03-31T21:13:46Z",
       "side": 1,
       "message": "You need to add the Apache 2 license block at the top.",
+      "revId": "ab83285465fda9a988ace7f645ed7880abb63396",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8bc66ce0_742f8f43",
+        "filename": "trusty/libtrusty-rs/src/lib.rs",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1902326
+      },
+      "writtenOn": "2022-03-31T23:33:27Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "fa495737_2ac5c5af",
       "revId": "ab83285465fda9a988ace7f645ed7880abb63396",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -103,6 +193,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "2ba6b467_2946da71",
+        "filename": "trusty/libtrusty-rs/src/lib.rs",
+        "patchSetId": 3
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1902326
+      },
+      "writtenOn": "2022-03-31T23:33:27Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "44ab969e_6d99cb9c",
+      "revId": "ab83285465fda9a988ace7f645ed7880abb63396",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "6fb6a91a_9e1b1807",
@@ -116,6 +224,30 @@
       "writtenOn": "2022-03-31T17:08:37Z",
       "side": 1,
       "message": "I\u0027d rather not call this anything with DNS, that\u0027s confusing. It\u0027s a port name, defined by the service you\u0027re talking to.",
+      "range": {
+        "startLine": 12,
+        "startChar": 62,
+        "endLine": 12,
+        "endChar": 73
+      },
+      "revId": "ab83285465fda9a988ace7f645ed7880abb63396",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "369ec7de_36bdeccf",
+        "filename": "trusty/libtrusty-rs/src/lib.rs",
+        "patchSetId": 3
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1902326
+      },
+      "writtenOn": "2022-03-31T23:33:27Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "6fb6a91a_9e1b1807",
       "range": {
         "startLine": 12,
         "startChar": 62,
@@ -149,6 +281,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "ca55e01d_8ffbc1dc",
+        "filename": "trusty/libtrusty-rs/src/lib.rs",
+        "patchSetId": 3
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1902326
+      },
+      "writtenOn": "2022-03-31T23:33:27Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "ce77c9ea_75f01227",
+      "range": {
+        "startLine": 18,
+        "startChar": 55,
+        "endLine": 18,
+        "endChar": 63
+      },
+      "revId": "ab83285465fda9a988ace7f645ed7880abb63396",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a6d1bf56_bce380fa",
@@ -162,6 +318,24 @@
       "writtenOn": "2022-03-31T17:08:37Z",
       "side": 1,
       "message": "Pretty sure we don\u0027t need to worry about this. Rust std doesn\u0027t bother with it. You really have to go out of your way to turn off SA_RESTART and I don\u0027t see anyplace we do this. If someone disables restarts with a sigaction, then that is on them and presumably they want that behavior.",
+      "revId": "ab83285465fda9a988ace7f645ed7880abb63396",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1de643f8_ec048493",
+        "filename": "trusty/libtrusty-rs/src/lib.rs",
+        "patchSetId": 3
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1902326
+      },
+      "writtenOn": "2022-03-31T23:33:27Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "a6d1bf56_bce380fa",
       "revId": "ab83285465fda9a988ace7f645ed7880abb63396",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -189,6 +363,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "3e347332_aeba133f",
+        "filename": "trusty/libtrusty-rs/src/lib.rs",
+        "patchSetId": 3
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 1902326
+      },
+      "writtenOn": "2022-03-31T23:33:27Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "6dce500a_fc120411",
+      "range": {
+        "startLine": 88,
+        "startChar": 54,
+        "endLine": 88,
+        "endChar": 62
+      },
+      "revId": "ab83285465fda9a988ace7f645ed7880abb63396",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "dc16b840_94e035af",
@@ -206,6 +404,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "77d55a7e_28a882df",
+        "filename": "trusty/libtrusty-rs/src/lib.rs",
+        "patchSetId": 3
+      },
+      "lineNbr": 115,
+      "author": {
+        "id": 1902326
+      },
+      "writtenOn": "2022-03-31T23:33:27Z",
+      "side": 1,
+      "message": "As we discussed in chat, it looks like Bindgen can\u0027t handle the defines for the ioctl numbers, so we\u0027d have to re-define those manually on the Rust side anyway 😢",
+      "parentUuid": "dc16b840_94e035af",
+      "revId": "ab83285465fda9a988ace7f645ed7880abb63396",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "1265bbb7_a239ac42",
@@ -219,6 +435,24 @@
       "writtenOn": "2022-03-31T17:08:37Z",
       "side": 1,
       "message": "Well this is just terrible. Not your fault. But it\u0027s not exactly a mismatch with the nix macro, it\u0027s that the kernel definition is just wrong. We really should get that documented in the IPC headers.\n\nYou can be stronger than there just being a mismatch here. The kernel and IPC header are wrong, but we need to be compatible with them.",
+      "revId": "ab83285465fda9a988ace7f645ed7880abb63396",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2d87c57b_ca34a4f1",
+        "filename": "trusty/libtrusty-rs/src/lib.rs",
+        "patchSetId": 3
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 1902326
+      },
+      "writtenOn": "2022-03-31T23:33:27Z",
+      "side": 1,
+      "message": "Ah, I was pretty sure that there was an issue somewhere, but I wasn\u0027t sure if it was with the definition in `ipc.h` or in the nix crate. I\u0027ll update the comment accordingly!",
+      "parentUuid": "1265bbb7_a239ac42",
       "revId": "ab83285465fda9a988ace7f645ed7880abb63396",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
