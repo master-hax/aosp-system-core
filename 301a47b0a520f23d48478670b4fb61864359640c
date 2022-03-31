@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "b0e71e77_51c1cb50",
+        "filename": "trusty/libtrusty-rs/tipc-test-rs/main.rs",
+        "patchSetId": 4
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1902326
+      },
+      "writtenOn": "2022-03-31T23:34:17Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "ffdfdcf9_acabc44c",
+      "revId": "301a47b0a520f23d48478670b4fb61864359640c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "88e9a43b_d88c9271",
@@ -31,6 +49,24 @@
       "writtenOn": "2022-03-31T22:00:49Z",
       "side": 1,
       "message": "Why static and not const?",
+      "revId": "301a47b0a520f23d48478670b4fb61864359640c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e193efef_bd505fd4",
+        "filename": "trusty/libtrusty-rs/tipc-test-rs/main.rs",
+        "patchSetId": 4
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1902326
+      },
+      "writtenOn": "2022-03-31T23:34:17Z",
+      "side": 1,
+      "message": "Because I had a brain fart while writing this and thought that you couldn\u0027t have const strings. I\u0027ll update both of them to be const instead.",
+      "parentUuid": "88e9a43b_d88c9271",
       "revId": "301a47b0a520f23d48478670b4fb61864359640c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
