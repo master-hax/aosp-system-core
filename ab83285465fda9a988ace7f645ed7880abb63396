@@ -1,0 +1,141 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "44ab969e_6d99cb9c",
+        "filename": "trusty/libtrusty-rs/src/lib.rs",
+        "patchSetId": 3
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2022-03-31T17:08:37Z",
+      "side": 1,
+      "message": "You should use backticks inside the brackets for code refs to get monospaced font.",
+      "revId": "ab83285465fda9a988ace7f645ed7880abb63396",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6fb6a91a_9e1b1807",
+        "filename": "trusty/libtrusty-rs/src/lib.rs",
+        "patchSetId": 3
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2022-03-31T17:08:37Z",
+      "side": 1,
+      "message": "I\u0027d rather not call this anything with DNS, that\u0027s confusing. It\u0027s a port name, defined by the service you\u0027re talking to.",
+      "range": {
+        "startLine": 12,
+        "startChar": 62,
+        "endLine": 12,
+        "endChar": 73
+      },
+      "revId": "ab83285465fda9a988ace7f645ed7880abb63396",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ce77c9ea_75f01227",
+        "filename": "trusty/libtrusty-rs/src/lib.rs",
+        "patchSetId": 3
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2022-03-31T17:08:37Z",
+      "side": 1,
+      "message": "Nit: \"in order\" is confusing to me in this context. I think you can just drop it?",
+      "range": {
+        "startLine": 18,
+        "startChar": 55,
+        "endLine": 18,
+        "endChar": 63
+      },
+      "revId": "ab83285465fda9a988ace7f645ed7880abb63396",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a6d1bf56_bce380fa",
+        "filename": "trusty/libtrusty-rs/src/lib.rs",
+        "patchSetId": 3
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2022-03-31T17:08:37Z",
+      "side": 1,
+      "message": "Pretty sure we don\u0027t need to worry about this. Rust std doesn\u0027t bother with it. You really have to go out of your way to turn off SA_RESTART and I don\u0027t see anyplace we do this. If someone disables restarts with a sigaction, then that is on them and presumably they want that behavior.",
+      "revId": "ab83285465fda9a988ace7f645ed7880abb63396",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6dce500a_fc120411",
+        "filename": "trusty/libtrusty-rs/src/lib.rs",
+        "patchSetId": 3
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2022-03-31T17:08:37Z",
+      "side": 1,
+      "message": "It\u0027s called service in the parameters, but maybe better to use \"Service name\".",
+      "range": {
+        "startLine": 88,
+        "startChar": 54,
+        "endLine": 88,
+        "endChar": 62
+      },
+      "revId": "ab83285465fda9a988ace7f645ed7880abb63396",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "dc16b840_94e035af",
+        "filename": "trusty/libtrusty-rs/src/lib.rs",
+        "patchSetId": 3
+      },
+      "lineNbr": 115,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2022-03-31T17:08:37Z",
+      "side": 1,
+      "message": "Rather than using a manually declared module here, I think we should bindgen the `include/trusty/ipc.h` header. That way we can skip the weird ioctl magic and just get the number, and ensure compatibility with the C library.",
+      "revId": "ab83285465fda9a988ace7f645ed7880abb63396",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1265bbb7_a239ac42",
+        "filename": "trusty/libtrusty-rs/src/lib.rs",
+        "patchSetId": 3
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2022-03-31T17:08:37Z",
+      "side": 1,
+      "message": "Well this is just terrible. Not your fault. But it\u0027s not exactly a mismatch with the nix macro, it\u0027s that the kernel definition is just wrong. We really should get that documented in the IPC headers.\n\nYou can be stronger than there just being a mismatch here. The kernel and IPC header are wrong, but we need to be compatible with them.",
+      "revId": "ab83285465fda9a988ace7f645ed7880abb63396",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
