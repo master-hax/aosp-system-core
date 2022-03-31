@@ -143,6 +143,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "f0e6d991_7fd77b1c",
+        "filename": "trusty/libtrusty-rs/Android.bp",
+        "patchSetId": 3
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2022-03-31T23:38:47Z",
+      "side": 1,
+      "message": "It\u0027s currently 2021: https://cs.android.com/android/platform/superproject/+/master:build/soong/rust/config/global.go;l\u003d29",
+      "parentUuid": "ca682b0a_a87b3e0a",
+      "revId": "ab83285465fda9a988ace7f645ed7880abb63396",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "fa495737_2ac5c5af",
         "filename": "trusty/libtrusty-rs/src/lib.rs",
         "patchSetId": 3
