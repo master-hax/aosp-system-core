@@ -159,6 +159,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "a83fae45_5df064c4",
+        "filename": "trusty/libtrusty-rs/src/lib.rs",
+        "patchSetId": 9
+      },
+      "lineNbr": 130,
+      "author": {
+        "id": 1902326
+      },
+      "writtenOn": "2022-04-01T22:40:41Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "7a0f4bdf_3f2ed7c7",
+      "revId": "3aafc68b632aaa07f841d6146786fe76a4e01810",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a02e02fd_4246cff3",
