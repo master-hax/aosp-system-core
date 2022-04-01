@@ -16,6 +16,24 @@
       "message": "char byte \u003d 0;",
       "revId": "a371cb2658dd265656e7f129c271f31beb4bc50c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0752265d_947a145a",
+        "filename": "init/service.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 494,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-04-01T19:15:57Z",
+      "side": 1,
+      "message": "Ah, good point. So, if we fail to read the pipe this should still be a fatal error.",
+      "parentUuid": "e9e78eea_20c42eed",
+      "revId": "a371cb2658dd265656e7f129c271f31beb4bc50c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
