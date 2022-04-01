@@ -74,6 +74,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "8dfd1730_bdd92334",
+        "filename": "trusty/libtrusty-rs/src/lib.rs",
+        "patchSetId": 9
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 1902326
+      },
+      "writtenOn": "2022-04-01T23:03:21Z",
+      "side": 1,
+      "message": "On a related note, what happens if the userspace code calls `read()` on the tipc fd with a buffer that isn\u0027t large enough to hold the entire incoming message? Do you need to do multiple read calls until you\u0027ve read the whole thing? Or is it an error to attempt to partially read a message? Either way we\u0027ll want to document the behavior,but if you\u0027re expected to do multiple reads to finish reading the message then we might also want to have a `recv_all` method that takes a `\u0026mut Vec\u003cu8\u003e` and handles that logic for you (akin to [`Read::read_to_end`](https://doc.rust-lang.org/stable/std/io/trait.Read.html#method.read_to_end).\n\nAlso, does TIPC do anything to delineate messages? Is there a sentinel value or anything between messages so that you know you\u0027ve received the full message? Or do you just keep calling `read()` until it doesn\u0027t completely fill the buffer?",
+      "parentUuid": "8afdefcc_87501c80",
+      "range": {
+        "startLine": 79,
+        "startChar": 9,
+        "endLine": 79,
+        "endChar": 15
+      },
+      "revId": "3aafc68b632aaa07f841d6146786fe76a4e01810",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "99741283_c6daf806",
         "filename": "trusty/libtrusty-rs/src/lib.rs",
         "patchSetId": 9
