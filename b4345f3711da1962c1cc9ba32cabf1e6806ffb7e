@@ -16,6 +16,24 @@
       "message": "interesting... +smoreland,sspatil\n\nif we\u0027re going to have to finally make this transition, should we just turn this on for everyone all the time then, rather than have subtle breakage on devices with newer kernels?\n\nand can we then delete the ashmem code? memfd is in 3.17, right, so it\u0027s just app compat that\u0027s kept us back, not kernel versions? and if we have to have a hard app compat break anyway...\n\n[if we have to have a hard app compat break anyway, should we try to cram in a \"if (target api level \u003e\u003d T) you_get_memfd()\" to T?]\n\nhas someone talked to chrome? do we know of anyone else who relies on ashmem actually being ashmem?",
       "revId": "b4345f3711da1962c1cc9ba32cabf1e6806ffb7e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f05bd089_52ec43d3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1031448
+      },
+      "writtenOn": "2022-04-01T07:31:33Z",
+      "side": 1,
+      "message": "Thank you for bringing up the chromimum. I was going to ask the same on android-webview-dev@chromium.org because I see the following ashmem error with memfd before org.chromium.webview_shell crash dump in logcat:\n\nE chromium: [ERROR:platform_shared_memory_region_android.cc(190)] Ashmem region has a wrong protection mask: it is not read-only but it should be\n\nI\u0027m using stock AOSP/external/chromium-webview/ prebuilts and I wonder if the upstream webview/chromium has moved on to memfd or do they still depend on ashmem.",
+      "parentUuid": "3818fc29_5b7aafef",
+      "revId": "b4345f3711da1962c1cc9ba32cabf1e6806ffb7e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
