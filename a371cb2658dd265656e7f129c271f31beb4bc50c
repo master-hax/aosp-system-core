@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e9e78eea_20c42eed",
+        "filename": "init/service.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 494,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-04-01T19:14:15Z",
+      "side": 1,
+      "message": "char byte \u003d 0;",
+      "revId": "a371cb2658dd265656e7f129c271f31beb4bc50c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
