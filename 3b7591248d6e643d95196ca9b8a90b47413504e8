@@ -16,6 +16,23 @@
       "message": "PTAL",
       "revId": "3b7591248d6e643d95196ca9b8a90b47413504e8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b3308d75_02272d69",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1380243
+      },
+      "writtenOn": "2022-04-01T09:47:08Z",
+      "side": 1,
+      "message": "The presubmit issue is with the Rust allowlist change not being propagated, trying again...\n\nPTAL at the change in the meantime.",
+      "revId": "3b7591248d6e643d95196ca9b8a90b47413504e8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
