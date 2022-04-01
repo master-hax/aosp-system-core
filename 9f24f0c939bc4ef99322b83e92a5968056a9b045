@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "0b99c9a6_ffc2a420",
+        "filename": "init/service_utils.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 283,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-04-01T22:34:18Z",
+      "side": 1,
+      "message": "I included all paths which I could find in git_master and aosp. Technically vendors might have others but then they will get a descriptive error message and should be able to handle that.",
+      "parentUuid": "3fb9b7b1_5a04952b",
+      "range": {
+        "startLine": 283,
+        "startChar": 3,
+        "endLine": 283,
+        "endChar": 74
+      },
+      "revId": "9f24f0c939bc4ef99322b83e92a5968056a9b045",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "ecffcc08_e8400d3e",
         "filename": "init/service_utils.cpp",
         "patchSetId": 7
@@ -37,6 +61,30 @@
       "writtenOn": "2022-04-01T22:10:04Z",
       "side": 1,
       "message": "what if task_profiles_ already contains it? also do we want to do in when parsing the service instead of starting?",
+      "range": {
+        "startLine": 334,
+        "startChar": 16,
+        "endLine": 334,
+        "endChar": 63
+      },
+      "revId": "9f24f0c939bc4ef99322b83e92a5968056a9b045",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "aa08eb3d_1577b7b5",
+        "filename": "init/service_utils.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 334,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-04-01T22:34:18Z",
+      "side": 1,
+      "message": "We are just following what is specified in the .rc. If it has both task_profiles and writepid, we have to do both. And that\u0027s what we do here.\n\nYeah, good idea. I think I can perform the conversion inside ServiceParser::ParseWritepid(). Will have to make sure we aggregate task_profiles_ so that later on ServiceParser::ParseTaskProfiles() does not override it.",
+      "parentUuid": "ecffcc08_e8400d3e",
       "range": {
         "startLine": 334,
         "startChar": 16,
