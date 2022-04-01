@@ -1,0 +1,95 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3c3d4b5e_f598d166",
+        "filename": "trusty/libtrusty-rs/src/lib.rs",
+        "patchSetId": 9
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 1416371
+      },
+      "writtenOn": "2022-04-01T21:09:49Z",
+      "side": 1,
+      "message": "tipc is a message-oriented protocol, not a stream-oriented protocol",
+      "range": {
+        "startLine": 79,
+        "startChar": 9,
+        "endLine": 79,
+        "endChar": 15
+      },
+      "revId": "3aafc68b632aaa07f841d6146786fe76a4e01810",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "99741283_c6daf806",
+        "filename": "trusty/libtrusty-rs/src/lib.rs",
+        "patchSetId": 9
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 1416371
+      },
+      "writtenOn": "2022-04-01T21:09:49Z",
+      "side": 1,
+      "message": "Did you really test this? This puts the tipc device file descriptor into to the tipc stream, not the return value of tipc_connect,which should be the connection fd.\n\nEven if this works (which I find unlikely) you\u0027re leaking a fd from tipc_connect.",
+      "revId": "3aafc68b632aaa07f841d6146786fe76a4e01810",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c744edc4_508f3bb1",
+        "filename": "trusty/libtrusty-rs/src/lib.rs",
+        "patchSetId": 9
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 1416371
+      },
+      "writtenOn": "2022-04-01T21:09:49Z",
+      "side": 1,
+      "message": "Flush isn\u0027t implemented for this file type. I don\u0027t know if that means it will error or no-op, but either way I\u0027m not sure that calling it makes any sense.",
+      "revId": "3aafc68b632aaa07f841d6146786fe76a4e01810",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7a0f4bdf_3f2ed7c7",
+        "filename": "trusty/libtrusty-rs/src/lib.rs",
+        "patchSetId": 9
+      },
+      "lineNbr": 130,
+      "author": {
+        "id": 1416371
+      },
+      "writtenOn": "2022-04-01T21:09:49Z",
+      "side": 1,
+      "message": "Might be worth factoring this out into its own file.",
+      "revId": "3aafc68b632aaa07f841d6146786fe76a4e01810",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a02e02fd_4246cff3",
+        "filename": "trusty/libtrusty-rs/src/lib.rs",
+        "patchSetId": 9
+      },
+      "lineNbr": 163,
+      "author": {
+        "id": 1416371
+      },
+      "writtenOn": "2022-04-01T21:09:49Z",
+      "side": 1,
+      "message": "This is defined, but not used anywhere - I\u0027m actually a bit surprised that the dead code lint doesn\u0027t fire on this, but that might be due to the macro-based declaration.\n\nEither add a method that uses this (e.g. to send both data and fds) or remove it and add it in the CL that will use it.",
+      "revId": "3aafc68b632aaa07f841d6146786fe76a4e01810",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
