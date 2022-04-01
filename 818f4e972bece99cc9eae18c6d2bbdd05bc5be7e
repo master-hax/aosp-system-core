@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4b44e12e_ddef0d34",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-04-01T22:01:15Z",
+      "side": 1,
+      "message": "I believe there were in-flight plans to use fs-verity on /metadata. Do you know why it forces us into recovery?",
+      "revId": "818f4e972bece99cc9eae18c6d2bbdd05bc5be7e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
