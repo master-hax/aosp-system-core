@@ -159,6 +159,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "9fcb5cbe_4b692418",
+        "filename": "trusty/libtrusty-rs/Android.bp",
+        "patchSetId": 3
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1902326
+      },
+      "writtenOn": "2022-04-01T17:34:20Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "f0e6d991_7fd77b1c",
+      "revId": "ab83285465fda9a988ace7f645ed7880abb63396",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "fa495737_2ac5c5af",
