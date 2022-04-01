@@ -98,6 +98,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "1f42dbe7_2468bd71",
+        "filename": "trusty/libtrusty-rs/src/lib.rs",
+        "patchSetId": 9
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2022-04-01T23:09:51Z",
+      "side": 1,
+      "message": "You can\u0027t do multiple reads. I think you\u0027ll get an error if your buffer isn\u0027t large enough, although I\u0027d have to go test or read code to confirm that.\n\nI think send/recv would make a better model. This really isn\u0027t file I/O, so it\u0027s odd to use the same trait even if it technically would work.",
+      "parentUuid": "8afdefcc_87501c80",
+      "range": {
+        "startLine": 79,
+        "startChar": 9,
+        "endLine": 79,
+        "endChar": 15
+      },
+      "revId": "3aafc68b632aaa07f841d6146786fe76a4e01810",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "99741283_c6daf806",
         "filename": "trusty/libtrusty-rs/src/lib.rs",
         "patchSetId": 9
