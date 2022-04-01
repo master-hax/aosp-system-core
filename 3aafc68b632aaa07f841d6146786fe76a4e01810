@@ -43,6 +43,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "34a837d6_d578e327",
+        "filename": "trusty/libtrusty-rs/src/lib.rs",
+        "patchSetId": 9
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2022-04-01T21:41:31Z",
+      "side": 1,
+      "message": "This is how tipc_connect works. The return value from the ioctl isn\u0027t a new fd, it\u0027s an error code. You first open the file, pass that to the ioctl, then return the file if the ioctl succeeded.",
+      "parentUuid": "99741283_c6daf806",
+      "revId": "3aafc68b632aaa07f841d6146786fe76a4e01810",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "c744edc4_508f3bb1",
         "filename": "trusty/libtrusty-rs/src/lib.rs",
         "patchSetId": 9
