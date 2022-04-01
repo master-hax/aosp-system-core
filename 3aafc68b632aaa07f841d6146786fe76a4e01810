@@ -50,6 +50,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "8afdefcc_87501c80",
+        "filename": "trusty/libtrusty-rs/src/lib.rs",
+        "patchSetId": 9
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 1902326
+      },
+      "writtenOn": "2022-04-01T22:40:11Z",
+      "side": 1,
+      "message": "Ah, thanks for clarifying! I had initially named this type `TipcChannel`, but with the way that we use `read()`/`write()` to send/receive data it seemed like it was behaving more like a byte stream. I can fix the name and update the docs to clarify.\n\nThough I\u0027m now wondering if it makes sense to use the `Read` and `Write` traits here. Between this comment and [your other comment](https://android-review.googlesource.com/c/platform/system/core/+/2050795/comments/c744edc4_508f3bb1) noting that flush isn\u0027t supported for this file type, it seems like it would be clearer and more direct to provide `send` and `recv` methods (plus maybe a `send_with_shared_memory` or something to handle the functionality that `tipc_send` does in the C lib).",
+      "parentUuid": "a8cb8c61_70139229",
+      "range": {
+        "startLine": 79,
+        "startChar": 9,
+        "endLine": 79,
+        "endChar": 15
+      },
+      "revId": "3aafc68b632aaa07f841d6146786fe76a4e01810",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "99741283_c6daf806",
         "filename": "trusty/libtrusty-rs/src/lib.rs",
         "patchSetId": 9
@@ -148,6 +172,24 @@
       "writtenOn": "2022-04-01T21:09:49Z",
       "side": 1,
       "message": "This is defined, but not used anywhere - I\u0027m actually a bit surprised that the dead code lint doesn\u0027t fire on this, but that might be due to the macro-based declaration.\n\nEither add a method that uses this (e.g. to send both data and fds) or remove it and add it in the CL that will use it.",
+      "revId": "3aafc68b632aaa07f841d6146786fe76a4e01810",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5ec22a5f_28f21383",
+        "filename": "trusty/libtrusty-rs/src/lib.rs",
+        "patchSetId": 9
+      },
+      "lineNbr": 163,
+      "author": {
+        "id": 1902326
+      },
+      "writtenOn": "2022-04-01T22:40:11Z",
+      "side": 1,
+      "message": "I\u0027ll remove this and re-add it when I port `tipc_send`. I had originally started porting it but ended up removing the rest of the code in order to simplify the initial CL. This is likely not generating a dead code warning because the macro generates a `pub` function, and iirc `pub` items never get marked as dead code even if they\u0027re never publicly exported.",
+      "parentUuid": "a02e02fd_4246cff3",
       "revId": "3aafc68b632aaa07f841d6146786fe76a4e01810",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
