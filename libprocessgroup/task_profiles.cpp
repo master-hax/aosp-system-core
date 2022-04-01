@@ -814,9 +814,11 @@ bool TaskProfiles::SetProcessProfiles(uid_t uid, pid_t pid,
             }
             if (!profile->ExecuteForProcess(uid, pid)) {
                 PLOG(WARNING) << "Failed to apply " << name << " process profile";
+                return false;
             }
         } else {
-            PLOG(WARNING) << "Failed to find " << name << "process profile";
+            PLOG(WARNING) << "Failed to find " << name << " process profile";
+            return false;
         }
     }
     return true;
@@ -832,9 +834,11 @@ bool TaskProfiles::SetTaskProfiles(int tid, const std::vector<std::string>& prof
             }
             if (!profile->ExecuteForTask(tid)) {
                 PLOG(WARNING) << "Failed to apply " << name << " task profile";
+                return false;
             }
         } else {
-            PLOG(WARNING) << "Failed to find " << name << "task profile";
+            PLOG(WARNING) << "Failed to find " << name << " task profile";
+            return false;
         }
     }
     return true;
