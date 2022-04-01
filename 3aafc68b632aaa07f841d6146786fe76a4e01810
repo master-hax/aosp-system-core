@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "a8cb8c61_70139229",
+        "filename": "trusty/libtrusty-rs/src/lib.rs",
+        "patchSetId": 9
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2022-04-01T21:50:34Z",
+      "side": 1,
+      "message": "Good point, probably also worth noting explicitly in the docstring that tipc is a datagram protocol and each write will be sent as a separate message.",
+      "parentUuid": "3c3d4b5e_f598d166",
+      "range": {
+        "startLine": 79,
+        "startChar": 9,
+        "endLine": 79,
+        "endChar": 15
+      },
+      "revId": "3aafc68b632aaa07f841d6146786fe76a4e01810",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "99741283_c6daf806",
         "filename": "trusty/libtrusty-rs/src/lib.rs",
         "patchSetId": 9
