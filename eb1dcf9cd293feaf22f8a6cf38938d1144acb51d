@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c23b4cf0_25d407a7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1244622
+      },
+      "writtenOn": "2022-04-02T00:56:18Z",
+      "side": 1,
+      "message": "aosp/1622690 overrides this change.",
+      "revId": "eb1dcf9cd293feaf22f8a6cf38938d1144acb51d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
