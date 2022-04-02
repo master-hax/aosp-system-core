@@ -34,6 +34,24 @@
       "parentUuid": "4b44e12e_ddef0d34",
       "revId": "818f4e972bece99cc9eae18c6d2bbdd05bc5be7e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e47e1728_293d524c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-04-02T03:03:25Z",
+      "side": 1,
+      "message": "Yeah, adding tune2fs to recovery seems good. We already put fsck there.",
+      "parentUuid": "08f24a83_58efce9b",
+      "revId": "818f4e972bece99cc9eae18c6d2bbdd05bc5be7e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
