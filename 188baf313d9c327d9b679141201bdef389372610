@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "aff0c0e5_652f4c92",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-04-04T21:15:29Z",
+      "side": 1,
+      "message": "+rust/build folks ... should we be trying to get rustfmt turned on _globally_ while rust is still new and it\u0027s relatively practical, instead of on a project-by-project basis?",
+      "revId": "188baf313d9c327d9b679141201bdef389372610",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
