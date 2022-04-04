@@ -69,6 +69,24 @@
       "parentUuid": "0992ee19_28a36b7c",
       "revId": "188baf313d9c327d9b679141201bdef389372610",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b9116523_ba8ca7f4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-04-04T21:49:01Z",
+      "side": 1,
+      "message": "yeah, OWNERS +1 given that. but in parallel we should try to get this fixed globally...",
+      "parentUuid": "678bb46b_e52b4164",
+      "revId": "188baf313d9c327d9b679141201bdef389372610",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
