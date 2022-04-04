@@ -1,5 +1,29 @@
 {
-  "comments": [],
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d7e6236f_3dcbc2a8",
+        "filename": "init/service.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 655,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-04-04T17:01:10Z",
+      "side": 1,
+      "message": "How about introducing an enum for the 0 and 1 constants?",
+      "range": {
+        "startLine": 655,
+        "startChar": 24,
+        "endLine": 655,
+        "endChar": 25
+      },
+      "revId": "1bd17464473a2ea7dd1e1c5abef50fa3f30a56b5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ],
   "submitRequirementResults": [
     {
       "submitRequirement": {
