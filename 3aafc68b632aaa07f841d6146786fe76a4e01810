@@ -120,6 +120,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "85e27500_93664fdc",
+        "filename": "trusty/libtrusty-rs/src/lib.rs",
+        "patchSetId": 9
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 1902326
+      },
+      "writtenOn": "2022-04-04T19:16:51Z",
+      "side": 1,
+      "message": "I\u0027ve removed the trait impls and added `send` and `recv` methods. I\u0027ve tried to accurately document the behavior of these based on my understanding of how they should work, but let me know if I missed anything or anything is wrong.",
+      "parentUuid": "1f42dbe7_2468bd71",
+      "range": {
+        "startLine": 79,
+        "startChar": 9,
+        "endLine": 79,
+        "endChar": 15
+      },
+      "revId": "3aafc68b632aaa07f841d6146786fe76a4e01810",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "99741283_c6daf806",
@@ -186,6 +210,24 @@
       "writtenOn": "2022-04-01T21:09:49Z",
       "side": 1,
       "message": "Flush isn\u0027t implemented for this file type. I don\u0027t know if that means it will error or no-op, but either way I\u0027m not sure that calling it makes any sense.",
+      "revId": "3aafc68b632aaa07f841d6146786fe76a4e01810",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9a7c5545_8a162c7f",
+        "filename": "trusty/libtrusty-rs/src/lib.rs",
+        "patchSetId": 9
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 1902326
+      },
+      "writtenOn": "2022-04-04T19:16:51Z",
+      "side": 1,
+      "message": "I\u0027ve removed the `Write` impl in favor of a `send` method, so we also no longer need to impl `flush`.",
+      "parentUuid": "c744edc4_508f3bb1",
       "revId": "3aafc68b632aaa07f841d6146786fe76a4e01810",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
