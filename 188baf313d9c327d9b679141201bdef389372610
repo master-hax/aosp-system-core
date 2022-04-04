@@ -33,6 +33,24 @@
       "message": "@jeffv: Any thoughts on this? I suspect that we should pick a default style for Android, and then allow individual projects to override.",
       "revId": "188baf313d9c327d9b679141201bdef389372610",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0992ee19_28a36b7c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1010056
+      },
+      "writtenOn": "2022-04-04T21:28:33Z",
+      "side": 1,
+      "message": "Doh, I just realized that this is using a symlink here for almost exactly that, but it seems unnecessary to make Rust sub-projects do this. We should just be applying our rustfmt.toml to any non-external/non-vendor/non-hardware projects.",
+      "parentUuid": "db3f6657_416bd4a4",
+      "revId": "188baf313d9c327d9b679141201bdef389372610",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
