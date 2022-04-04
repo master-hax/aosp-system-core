@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "27b89a6d_0bb6e97b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1031448
+      },
+      "writtenOn": "2022-04-04T10:32:18Z",
+      "side": 1,
+      "message": "Now that v5.18-rc1 is out, I bumped up the kernel version to check for from v5.16 to v5.17.",
+      "revId": "04d429d25b238f06d809b670ff83191a2fc2af46",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
