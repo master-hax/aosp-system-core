@@ -67,6 +67,23 @@
       "message": "The test doesn\u0027t run on my redfin. The error is that it can\u0027t load the libtombstoned_client.so library from the system. Normally, this gets fixed by adding a runtime_libs directive, but rust_test doesn\u0027t support this.\n\n\nColin, I tried a simple fix to put the Runtime_libs in the rust/test.go file but I don\u0027t think this field has been added for rust stuff.",
       "revId": "3b7591248d6e643d95196ca9b8a90b47413504e8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ba01bbd1_1405dfe4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2022-04-04T22:38:30Z",
+      "side": 1,
+      "message": "Never mind the runtime libs issue. The problem was I had flashed a 64 bit only build previously and didn\u0027t clear the user data section when flashing this build. I cleared everything and now the test passes without any issues.",
+      "revId": "3b7591248d6e643d95196ca9b8a90b47413504e8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
