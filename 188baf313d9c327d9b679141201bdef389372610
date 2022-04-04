@@ -51,6 +51,24 @@
       "parentUuid": "db3f6657_416bd4a4",
       "revId": "188baf313d9c327d9b679141201bdef389372610",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "678bb46b_e52b4164",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1010056
+      },
+      "writtenOn": "2022-04-04T21:46:08Z",
+      "side": 1,
+      "message": "http://b/160223496 has further discussion, but I see no reason to block this CL, since this is the prescribed way to do things: https://cs.android.com/android/platform/superproject/+/master:build/soong/rust/config/allowed_list.go;l\u003d4-7 and https://cs.android.com/search?q\u003drustfmt.toml%20-filepath:external%2F%20-filepath:prebuilts%2F\u0026sq\u003d are also good evidence for the current state of things.",
+      "parentUuid": "0992ee19_28a36b7c",
+      "revId": "188baf313d9c327d9b679141201bdef389372610",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
