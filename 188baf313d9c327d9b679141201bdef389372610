@@ -16,6 +16,23 @@
       "message": "+rust/build folks ... should we be trying to get rustfmt turned on _globally_ while rust is still new and it\u0027s relatively practical, instead of on a project-by-project basis?",
       "revId": "188baf313d9c327d9b679141201bdef389372610",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "db3f6657_416bd4a4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1010056
+      },
+      "writtenOn": "2022-04-04T21:26:54Z",
+      "side": 1,
+      "message": "@jeffv: Any thoughts on this? I suspect that we should pick a default style for Android, and then allow individual projects to override.",
+      "revId": "188baf313d9c327d9b679141201bdef389372610",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
