@@ -86,6 +86,24 @@
       "message": "heh. I think you should stick to something boring here, though, sorry. Would be nice to check the reply at least, or even better do the same thing that `echo_test()` does in C.",
       "revId": "301a47b0a520f23d48478670b4fb61864359640c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "16918764_e7e9678e",
+        "filename": "trusty/libtrusty-rs/tipc-test-rs/main.rs",
+        "patchSetId": 4
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1902326
+      },
+      "writtenOn": "2022-04-04T19:28:49Z",
+      "side": 1,
+      "message": "heh, that was something I meant to cleanup before uploading and forgot about. The updated version better matches the behavior of the original C version now.",
+      "parentUuid": "73bbf04b_ddd00243",
+      "revId": "301a47b0a520f23d48478670b4fb61864359640c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
