@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "33ae4c60_bc8f42b8",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 13
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1416371
+      },
+      "writtenOn": "2022-04-05T22:19:20Z",
+      "side": 1,
+      "message": "Do we really want to replicate tipc-test\u0027s \"test utility\" approach rather than making this a `rust_test`? The latter approach will make it easier to add to presubmit on devices using Trusty someday...",
+      "revId": "5a80ef2926e0ff43a9b0756135296593d750a50b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
