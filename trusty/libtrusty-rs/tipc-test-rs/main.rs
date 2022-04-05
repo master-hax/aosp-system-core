@@ -38,8 +38,9 @@ fn run_echo(opt: &Opt) {
         connection.send(send_buf.as_slice()).unwrap();
 
         // Receive the response message from the TA.
-        let mut recv_buf = vec![0u8; 8];
-        let read_len = connection.recv(&mut recv_buf[..]).expect("Failed to read from connection");
+        let mut recv_buf = Vec::new();
+        connection.recv(&mut recv_buf).expect("Failed to read from connection");
+        let read_len = recv_buf.len();
 
         assert_eq!(
             msg_len, read_len,
