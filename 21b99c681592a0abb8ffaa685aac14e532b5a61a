@@ -69,6 +69,24 @@
       "parentUuid": "4b2ffeea_60aff028",
       "revId": "21b99c681592a0abb8ffaa685aac14e532b5a61a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "eb75b327_eba7373e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1887575
+      },
+      "writtenOn": "2022-04-05T17:47:01Z",
+      "side": 1,
+      "message": "Sorry about that. The relevant line from the log is:\n\n`/buildbot/src/android/master/out/soong/workspace/system/core/debuggerd/rust/tombstoned_client/BUILD.bazel:9:8: no such target \u0027//external/rust/cxx/gen/cmd:cxxbridge\u0027: target \u0027cxxbridge\u0027 not declared in package \u0027external/rust/cxx/gen/cmd\u0027 defined by /buildbot/src/android/master/out/soong/workspace/external/rust/cxx/gen/cmd/BUILD.bazel and referenced by \u0027//system/core/debuggerd/rust/tombstoned_client:libtombstoned_client_rust_bridge_code\u0027`\n\nIt\u0027s an issue with the translation of the Android.bp into the BUILD.bazel.",
+      "parentUuid": "81a90219_0f42d2fc",
+      "revId": "21b99c681592a0abb8ffaa685aac14e532b5a61a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
