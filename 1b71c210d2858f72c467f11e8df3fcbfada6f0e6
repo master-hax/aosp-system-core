@@ -16,6 +16,24 @@
       "message": "Yi-yo, is this the right way to check for the vendor version?\n\nWe\u0027re trying to identify when system is T but vendor (incl vendor ramdisk) is S.",
       "revId": "1b71c210d2858f72c467f11e8df3fcbfada6f0e6",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "46a15ba1_87f3d5c2",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 3211,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-04-05T00:25:31Z",
+      "side": 1,
+      "message": "Just to set the context of hard coding 12 here:\n\nFrom this code:\n\nhttps://source.corp.google.com/android/build/make/tools/releasetools/common.py;l\u003d579?q\u003drelease_or_codename\u0026ct\u003dos\u0026sq\u003dpackage:%5Eandroid$\n\nIt says that once the API\u0027s are finalized, release_or_codename will be the same as release.",
+      "parentUuid": "57bd594b_ee875101",
+      "revId": "1b71c210d2858f72c467f11e8df3fcbfada6f0e6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
