@@ -16,6 +16,80 @@
       "message": "I\u0027ve implemented the updated `recv` using only safe `Vec` methods, though we could implement it more efficiently using the unsafe API. I figured started with the safe version makes sense, but if there\u0027s a reason to think the performance overhead would be prohibitive then I can rewrite it.",
       "revId": "e952a9b0ca9208b17f3b1a0e01758d27c09cee71",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6dacd202_7a938c92",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1416371
+      },
+      "writtenOn": "2022-04-05T22:05:13Z",
+      "side": 1,
+      "message": "I\u0027m not too sure this kind of API makes a ton of sense in the Trusty scenario, since all our APIs fundamentally have ",
+      "revId": "e952a9b0ca9208b17f3b1a0e01758d27c09cee71",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bcd91941_6ff434a6",
+        "filename": "trusty/libtrusty-rs/src/lib.rs",
+        "patchSetId": 1
+      },
+      "lineNbr": 148,
+      "author": {
+        "id": 1416371
+      },
+      "writtenOn": "2022-04-05T22:05:13Z",
+      "side": 1,
+      "message": "Have we considered just doing:\n1. If space is reserved, assume it\u0027s the right amount\n2. Otherwise, reserve 4096 bytes, more than any Trusty message can contain\n?\n\nThis avoids looping (though we might still want to loop to handle EINTR, I guess, but I don\u0027t think we ever return EINTR)",
+      "revId": "e952a9b0ca9208b17f3b1a0e01758d27c09cee71",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b946cd41_5ff30e2f",
+        "filename": "trusty/libtrusty-rs/src/lib.rs",
+        "patchSetId": 1
+      },
+      "lineNbr": 158,
+      "author": {
+        "id": 1416371
+      },
+      "writtenOn": "2022-04-05T22:05:13Z",
+      "side": 1,
+      "message": "recv_no_alloc",
+      "revId": "e952a9b0ca9208b17f3b1a0e01758d27c09cee71",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c4e6a43b_5cd37b5f",
+        "filename": "trusty/libtrusty-rs/src/lib.rs",
+        "patchSetId": 1
+      },
+      "lineNbr": 165,
+      "author": {
+        "id": 1416371
+      },
+      "writtenOn": "2022-04-05T22:05:13Z",
+      "side": 1,
+      "message": "libc::EMSGSIZE",
+      "range": {
+        "startLine": 165,
+        "startChar": 32,
+        "endLine": 165,
+        "endChar": 34
+      },
+      "revId": "e952a9b0ca9208b17f3b1a0e01758d27c09cee71",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
