@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "902302ed_8ad06ae9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1902326
+      },
+      "writtenOn": "2022-04-05T22:00:02Z",
+      "side": 1,
+      "message": "I\u0027ve implemented the updated `recv` using only safe `Vec` methods, though we could implement it more efficiently using the unsafe API. I figured started with the safe version makes sense, but if there\u0027s a reason to think the performance overhead would be prohibitive then I can rewrite it.",
+      "revId": "e952a9b0ca9208b17f3b1a0e01758d27c09cee71",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
