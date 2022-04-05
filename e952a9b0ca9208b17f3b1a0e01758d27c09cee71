@@ -90,6 +90,23 @@
       },
       "revId": "e952a9b0ca9208b17f3b1a0e01758d27c09cee71",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b15cebff_7ee73d96",
+        "filename": "trusty/libtrusty-rs/tipc-test-rs/main.rs",
+        "patchSetId": 1
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1416371
+      },
+      "writtenOn": "2022-04-05T22:08:08Z",
+      "side": 1,
+      "message": "Why are we using vec! for any of this? These are all fixed size buffers, so why isn\u0027t it just `let mut send_buf \u003d [0u8; msg_len]`;\nand later `let mut recv_buf \u003d [0u8; msg_len]`;\n?\n\nThis is fine since it\u0027s just test code, but we already know the expected sizes of everything, why use heap allocated, dynamically sized data.",
+      "revId": "e952a9b0ca9208b17f3b1a0e01758d27c09cee71",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
