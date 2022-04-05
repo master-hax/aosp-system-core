@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "57bd594b_ee875101",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 3211,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-04-05T00:18:08Z",
+      "side": 1,
+      "message": "Yi-yo, is this the right way to check for the vendor version?\n\nWe\u0027re trying to identify when system is T but vendor (incl vendor ramdisk) is S.",
+      "revId": "1b71c210d2858f72c467f11e8df3fcbfada6f0e6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
