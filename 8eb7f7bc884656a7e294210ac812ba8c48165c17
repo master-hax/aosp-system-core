@@ -20,6 +20,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "1fac5923_452f3cda",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 3216,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-04-05T20:29:14Z",
+      "side": 1,
+      "message": "I presume we need to support 4 releases - which means this code will remain until 4 versions - S, T, U, V; I think we can remove this in W ?",
+      "parentUuid": "aa655277_2325087d",
+      "revId": "8eb7f7bc884656a7e294210ac812ba8c48165c17",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "87eb01cd_cdb60921",
         "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd_daemon.cpp",
         "patchSetId": 2
