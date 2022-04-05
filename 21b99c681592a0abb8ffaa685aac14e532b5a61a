@@ -16,6 +16,41 @@
       "message": "Hi, what did this break? The presubmit all passed fine.",
       "revId": "21b99c681592a0abb8ffaa685aac14e532b5a61a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4b2ffeea_60aff028",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1887575
+      },
+      "writtenOn": "2022-04-05T17:39:16Z",
+      "side": 1,
+      "message": "https://storage.googleapis.com/android-build/builds/aosp-master-bazel-linux-bp2build-incremental/8404615/61d839c5af3bd23df9251f83ea25ee78f74f5ffaa6a337fe7a567565327836f6/logs/build_error.log\n\nThe issue is on the bp2build side, and I am currently working on a fix, to then reapply (2x revert) the original CL.",
+      "parentUuid": "519ce714_d7cf1b15",
+      "revId": "21b99c681592a0abb8ffaa685aac14e532b5a61a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1c0e758b_69666977",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1887575
+      },
+      "writtenOn": "2022-04-05T17:39:16Z",
+      "side": 1,
+      "message": "Working on fix.",
+      "revId": "21b99c681592a0abb8ffaa685aac14e532b5a61a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
