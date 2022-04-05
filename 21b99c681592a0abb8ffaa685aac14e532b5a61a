@@ -87,6 +87,41 @@
       "parentUuid": "81a90219_0f42d2fc",
       "revId": "21b99c681592a0abb8ffaa685aac14e532b5a61a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4bae97a7_ce7af070",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1887575
+      },
+      "writtenOn": "2022-04-05T18:08:10Z",
+      "side": 1,
+      "message": "The bugvtracking the reversion \u0026 fix: b/228203311",
+      "parentUuid": "eb75b327_eba7373e",
+      "revId": "21b99c681592a0abb8ffaa685aac14e532b5a61a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "df36b937_3c488283",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1887575
+      },
+      "writtenOn": "2022-04-05T18:08:10Z",
+      "side": 1,
+      "message": "Noted bug #",
+      "revId": "21b99c681592a0abb8ffaa685aac14e532b5a61a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
