@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e9718f24_50bca027",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 2
+      },
+      "lineNbr": 829,
+      "author": {
+        "id": 1060831
+      },
+      "writtenOn": "2022-04-06T15:14:29Z",
+      "side": 1,
+      "message": "Can we change this to 0770 so system server can delete the files?",
+      "range": {
+        "startLine": 829,
+        "startChar": 36,
+        "endLine": 829,
+        "endChar": 40
+      },
+      "revId": "86f1742249b130110eb9296876786a259534bde2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
