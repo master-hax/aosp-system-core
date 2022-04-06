@@ -107,6 +107,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "4e78e20a_5991fda5",
+        "filename": "trusty/libtrusty-rs/src/lib.rs",
+        "patchSetId": 3
+      },
+      "lineNbr": 167,
+      "author": {
+        "id": 1416371
+      },
+      "writtenOn": "2022-04-06T23:30:52Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "e6916383_bdd938b9",
+      "revId": "4140c7c70181682d0ae4a3c5991962af451fd6f0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "b5bafc9b_812adafe",
@@ -155,6 +173,24 @@
       "writtenOn": "2022-04-06T00:59:34Z",
       "side": 1,
       "message": "This method should handle that case IMHO.",
+      "revId": "4140c7c70181682d0ae4a3c5991962af451fd6f0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0a1d2d59_d5b98183",
+        "filename": "trusty/libtrusty-rs/src/lib.rs",
+        "patchSetId": 3
+      },
+      "lineNbr": 195,
+      "author": {
+        "id": 1416371
+      },
+      "writtenOn": "2022-04-06T23:30:52Z",
+      "side": 1,
+      "message": "It doesn\u0027t have to be exactly this API, but there should be some API that doesn\u0027t auto-retry.",
+      "parentUuid": "7c8c57e5_ffb8d9e5",
       "revId": "4140c7c70181682d0ae4a3c5991962af451fd6f0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
