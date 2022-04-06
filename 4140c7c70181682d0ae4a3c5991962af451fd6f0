@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a5924607_3aba1816",
+        "filename": "trusty/libtrusty-rs/src/lib.rs",
+        "patchSetId": 3
+      },
+      "lineNbr": 151,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2022-04-06T00:59:34Z",
+      "side": 1,
+      "message": "Do we want a second implementation with try_reserve()? Or to always use that here?",
+      "revId": "4140c7c70181682d0ae4a3c5991962af451fd6f0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bf60d41e_053f4df3",
+        "filename": "trusty/libtrusty-rs/src/lib.rs",
+        "patchSetId": 3
+      },
+      "lineNbr": 167,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2022-04-06T00:59:34Z",
+      "side": 1,
+      "message": "This looks like TEMP_FAILURE_RETRY. Does the libc crate have its own version of that?",
+      "revId": "4140c7c70181682d0ae4a3c5991962af451fd6f0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b5bafc9b_812adafe",
+        "filename": "trusty/libtrusty-rs/src/lib.rs",
+        "patchSetId": 3
+      },
+      "lineNbr": 188,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2022-04-06T00:59:34Z",
+      "side": 1,
+      "message": "Could we return something like Result\u003cOption\u003cusize\u003e\u003e instead, with Ok(None) for EMSGSIZE instead? We\u0027re forcing clients to include the libc crate otherwise.",
+      "revId": "4140c7c70181682d0ae4a3c5991962af451fd6f0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7c8c57e5_ffb8d9e5",
+        "filename": "trusty/libtrusty-rs/src/lib.rs",
+        "patchSetId": 3
+      },
+      "lineNbr": 195,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2022-04-06T00:59:34Z",
+      "side": 1,
+      "message": "This method should handle that case IMHO.",
+      "revId": "4140c7c70181682d0ae4a3c5991962af451fd6f0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
