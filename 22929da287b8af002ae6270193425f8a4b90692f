@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "fbf29c6d_a64b609e",
+        "filename": "init/first_stage_init.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2022-04-06T21:04:01Z",
+      "side": 1,
+      "message": "Done. addressed in aosp/2057947",
+      "parentUuid": "c4a044fe_e60136cf",
+      "revId": "22929da287b8af002ae6270193425f8a4b90692f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "ff88e9b2_bdb1085f",
@@ -41,6 +59,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "ceb5b070_11135bb0",
+        "filename": "init/first_stage_init.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2022-04-06T21:04:01Z",
+      "side": 1,
+      "message": "Done. addressed in aosp/2057947",
+      "parentUuid": "ff88e9b2_bdb1085f",
+      "range": {
+        "startLine": 119,
+        "startChar": 8,
+        "endLine": 119,
+        "endChar": 14
+      },
+      "revId": "22929da287b8af002ae6270193425f8a4b90692f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "3220bcbe_42539a92",
@@ -54,6 +96,24 @@
       "writtenOn": "2022-03-23T20:33:31Z",
       "side": 1,
       "message": "Should you also move e2fsck, tune2fs, fsck.f2fs etc.?",
+      "revId": "22929da287b8af002ae6270193425f8a4b90692f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "47cc2e58_fc55d7df",
+        "filename": "init/first_stage_init.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 122,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2022-04-06T21:04:01Z",
+      "side": 1,
+      "message": "We don\u0027t need it for now",
+      "parentUuid": "3220bcbe_42539a92",
       "revId": "22929da287b8af002ae6270193425f8a4b90692f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
