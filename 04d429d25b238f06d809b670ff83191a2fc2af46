@@ -16,6 +16,23 @@
       "message": "Now that v5.18-rc1 is out, I bumped up the kernel version to check for from v5.16 to v5.17.",
       "revId": "04d429d25b238f06d809b670ff83191a2fc2af46",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a9b07a3b_2e705796",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1945845
+      },
+      "writtenOn": "2022-04-06T04:37:42Z",
+      "side": 1,
+      "message": "I know this is still WIP, but pulling Kalesh and Joel in.\n\nHey Amit! :) Thanks for being ontop of this issue upstream and submitting this!\n\nI think from the last time I talked w/ Joel (Joel: Correct me if I\u0027m wrong) /dev/ashmem will still be needed (even if it can be reduced mostly to a memfd stub) for existing applications in the playstore that access it directly. But that can be carried in ACK until those apps can be properly considered deprecated.\n\nBut I do think this is a necessary change to drop the unnecessary dependency on it in AOSP.\n\nI\u0027m torn on using the kernel version as the switch, as future ACKs will likely have some sort of /dev/ashmem, so that might confuse folks, but I also suspect just switching the flag to default to true would cause grief on devices that need the seccomp/sepolicy change.\n\nShould the secomp / sepolicy changes instead be made in the shared policy files?",
+      "revId": "04d429d25b238f06d809b670ff83191a2fc2af46",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
