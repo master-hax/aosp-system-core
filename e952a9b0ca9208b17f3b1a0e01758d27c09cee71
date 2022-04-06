@@ -55,6 +55,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "028d6773_2c4b3d15",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1416371
+      },
+      "writtenOn": "2022-04-06T00:44:23Z",
+      "side": 1,
+      "message": "Yeah, I\u0027m fine adding it which is why I commented up the rest of it, it just felt a bit weird.\n\nHave we considered `recv_vec` and `recv`, by analogy with `read_string` and `read`? (rather than `recv` having a different signature than normal rust `recv`, and adding `recv_no_alloc` as a name)",
+      "parentUuid": "2cfa62e4_1c534e9e",
+      "revId": "e952a9b0ca9208b17f3b1a0e01758d27c09cee71",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "bcd91941_6ff434a6",
         "filename": "trusty/libtrusty-rs/src/lib.rs",
         "patchSetId": 1
@@ -84,6 +102,24 @@
       "side": 1,
       "message": "Ah, that would also be a good solution if we\u0027re not worried about allocating more than might be necessary (which is probably be fine here? idk how careful you have to be with allocations in a HAL process).",
       "parentUuid": "bcd91941_6ff434a6",
+      "revId": "e952a9b0ca9208b17f3b1a0e01758d27c09cee71",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "feab3eba_04670efc",
+        "filename": "trusty/libtrusty-rs/src/lib.rs",
+        "patchSetId": 1
+      },
+      "lineNbr": 148,
+      "author": {
+        "id": 1416371
+      },
+      "writtenOn": "2022-04-06T00:44:23Z",
+      "side": 1,
+      "message": "HALs having a single page allocated is generally not a problem, as they\u0027re in Android userspace, not an embedded component.",
+      "parentUuid": "094082d1_918f61ee",
       "revId": "e952a9b0ca9208b17f3b1a0e01758d27c09cee71",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -201,6 +237,24 @@
       "side": 1,
       "message": "`msg_len` is a variable, so we can\u0027t use a fixed-size array. We could instead use a fixed size array that\u0027s extra large and then carve a `msg_len` sized slice out of it, but that\u0027s way more cumbersome than just using `Vec`, especially for test code.",
       "parentUuid": "b15cebff_7ee73d96",
+      "revId": "e952a9b0ca9208b17f3b1a0e01758d27c09cee71",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c7c576e5_d12ce94a",
+        "filename": "trusty/libtrusty-rs/tipc-test-rs/main.rs",
+        "patchSetId": 1
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1416371
+      },
+      "writtenOn": "2022-04-06T00:44:23Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "23914665_66807632",
       "revId": "e952a9b0ca9208b17f3b1a0e01758d27c09cee71",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
