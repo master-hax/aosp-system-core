@@ -160,6 +160,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "2f5ab388_09f47d0b",
+        "filename": "trusty/libtrusty-rs/src/lib.rs",
+        "patchSetId": 1
+      },
+      "lineNbr": 148,
+      "author": {
+        "id": 1902326
+      },
+      "writtenOn": "2022-04-06T22:41:52Z",
+      "side": 1,
+      "message": "I\u0027ve updated the logic to always allocate enough space for 4096 bytes if we need to realloc, which means we should never go through the loop body more than twice (barring `EINTR`). I\u0027m gonna mark this as resolved, but feel free unresolve or leave a new comment if there are any issues with this approach.",
+      "parentUuid": "04243d1c_d0c190cc",
+      "revId": "e952a9b0ca9208b17f3b1a0e01758d27c09cee71",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "b946cd41_5ff30e2f",
