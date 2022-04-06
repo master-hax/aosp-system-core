@@ -20,6 +20,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "558ffbc3_541eb56a",
+        "filename": "trusty/libtrusty-rs/src/lib.rs",
+        "patchSetId": 3
+      },
+      "lineNbr": 151,
+      "author": {
+        "id": 1416371
+      },
+      "writtenOn": "2022-04-06T18:00:16Z",
+      "side": 1,
+      "message": "IMO if someone wants to try_reserve they should just use the manual buffer management mode - that\u0027s also going to be less common b/c this is specifically for the Android userspace tipc bus, not any kernel or bootloader one.",
+      "parentUuid": "a5924607_3aba1816",
+      "revId": "4140c7c70181682d0ae4a3c5991962af451fd6f0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "bf60d41e_053f4df3",
         "filename": "trusty/libtrusty-rs/src/lib.rs",
         "patchSetId": 3
@@ -37,6 +55,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "054fedc3_19ba3944",
+        "filename": "trusty/libtrusty-rs/src/lib.rs",
+        "patchSetId": 3
+      },
+      "lineNbr": 167,
+      "author": {
+        "id": 1416371
+      },
+      "writtenOn": "2022-04-06T18:00:16Z",
+      "side": 1,
+      "message": "I don\u0027t think libc does. Some higher level crates do (usually called `cvt_r` or similar and not-re-exported).",
+      "parentUuid": "bf60d41e_053f4df3",
+      "revId": "4140c7c70181682d0ae4a3c5991962af451fd6f0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "b5bafc9b_812adafe",
         "filename": "trusty/libtrusty-rs/src/lib.rs",
         "patchSetId": 3
@@ -48,6 +84,24 @@
       "writtenOn": "2022-04-06T00:59:34Z",
       "side": 1,
       "message": "Could we return something like Result\u003cOption\u003cusize\u003e\u003e instead, with Ok(None) for EMSGSIZE instead? We\u0027re forcing clients to include the libc crate otherwise.",
+      "revId": "4140c7c70181682d0ae4a3c5991962af451fd6f0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e82da9b9_d2291853",
+        "filename": "trusty/libtrusty-rs/src/lib.rs",
+        "patchSetId": 3
+      },
+      "lineNbr": 188,
+      "author": {
+        "id": 1416371
+      },
+      "writtenOn": "2022-04-06T18:00:16Z",
+      "side": 1,
+      "message": "All clients on Android will already have the libc crate due to libstd.",
+      "parentUuid": "b5bafc9b_812adafe",
       "revId": "4140c7c70181682d0ae4a3c5991962af451fd6f0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
