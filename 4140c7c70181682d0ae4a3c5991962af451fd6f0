@@ -36,6 +36,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "ac8f8f28_29668017",
+        "filename": "trusty/libtrusty-rs/src/lib.rs",
+        "patchSetId": 3
+      },
+      "lineNbr": 151,
+      "author": {
+        "id": 1902326
+      },
+      "writtenOn": "2022-04-06T22:08:02Z",
+      "side": 1,
+      "message": "Yup, seconding what Matt said; The reason I left `recv_no_alloc` is to allow for cases where users want to avoid automatic allocation. I think a version that uses `try_reserve` would be redundant.",
+      "parentUuid": "558ffbc3_541eb56a",
+      "revId": "4140c7c70181682d0ae4a3c5991962af451fd6f0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "bf60d41e_053f4df3",
@@ -67,6 +85,24 @@
       "side": 1,
       "message": "I don\u0027t think libc does. Some higher level crates do (usually called `cvt_r` or similar and not-re-exported).",
       "parentUuid": "bf60d41e_053f4df3",
+      "revId": "4140c7c70181682d0ae4a3c5991962af451fd6f0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e6916383_bdd938b9",
+        "filename": "trusty/libtrusty-rs/src/lib.rs",
+        "patchSetId": 3
+      },
+      "lineNbr": 167,
+      "author": {
+        "id": 1902326
+      },
+      "writtenOn": "2022-04-06T22:08:02Z",
+      "side": 1,
+      "message": "The original C version used `TEMP_FAILURE_RETRY`, but when I discussed it with Stephen he suggested that `EINTR` is probably not a case that\u0027s likely to come up (it sounded like you had to disable some default option for it to even happen?). The Rust std lib also generally doesn\u0027t handle it, with only the higher-level helper methods doing so, e.g. [`Read::read`](https://doc.rust-lang.org/stable/std/io/trait.Read.html#tymethod.read) doesn\u0027t handle it, but [`Read::read_to_end`](https://doc.rust-lang.org/stable/std/io/trait.Read.html#method.read_to_end) does. To address [your other comment](https://android-review.googlesource.com/c/platform/system/core/+/2056967/3..7/trusty/libtrusty-rs/src/lib.rs#b195), this is also why I\u0027m handling it in `recv` but not in `recv_no_alloc`: `recv_no_alloc` is the low-level, do-it-yourself version that is basically just a safe wrapper around `read`; `recv` is the high-level, ergonomic version that handles allocation and basic error handling for you.",
+      "parentUuid": "054fedc3_19ba3944",
       "revId": "4140c7c70181682d0ae4a3c5991962af451fd6f0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },

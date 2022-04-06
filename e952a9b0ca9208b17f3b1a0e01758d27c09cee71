@@ -73,6 +73,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "e3fdb2c0_fd8b3043",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1902326
+      },
+      "writtenOn": "2022-04-06T22:08:02Z",
+      "side": 1,
+      "message": "`recv_vec` is actually what I originally called it. But my intention is that the `Vec` version is the default version that users should be using since it\u0027s more ergonomic, so it seemed weird to give that one the more cumbersome name. I went with `recv_no_alloc` for the non-`Vec` version because I had seen that naming convention used elsewhere in a similar situation where the default method allocates (though I can\u0027t seem to remember where I saw that pattern used).",
+      "parentUuid": "028d6773_2c4b3d15",
+      "revId": "e952a9b0ca9208b17f3b1a0e01758d27c09cee71",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "bcd91941_6ff434a6",
         "filename": "trusty/libtrusty-rs/src/lib.rs",
         "patchSetId": 1
@@ -120,6 +138,24 @@
       "side": 1,
       "message": "HALs having a single page allocated is generally not a problem, as they\u0027re in Android userspace, not an embedded component.",
       "parentUuid": "094082d1_918f61ee",
+      "revId": "e952a9b0ca9208b17f3b1a0e01758d27c09cee71",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "04243d1c_d0c190cc",
+        "filename": "trusty/libtrusty-rs/src/lib.rs",
+        "patchSetId": 1
+      },
+      "lineNbr": 148,
+      "author": {
+        "id": 1902326
+      },
+      "writtenOn": "2022-04-06T22:08:02Z",
+      "side": 1,
+      "message": "Oh also, do you not think it\u0027s worth attempting to allocate additional space and retry the `read` call in the case where there is existing capacity in the buffer but it\u0027s still too small for the incoming message? I\u0027m fine with going with the approach of \"if we need to realloc, just realloc to 4k one time\" (rather than repeatedly doubling the capacity until its big enough), but if we\u0027re never going to attempt to expand the `Vec` that seems like a weird behavior for a function that takes a `\u0026mut Vec`.",
+      "parentUuid": "feab3eba_04670efc",
       "revId": "e952a9b0ca9208b17f3b1a0e01758d27c09cee71",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
