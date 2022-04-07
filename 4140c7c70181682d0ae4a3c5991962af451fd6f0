@@ -229,6 +229,24 @@
       "parentUuid": "0a1d2d59_d5b98183",
       "revId": "4140c7c70181682d0ae4a3c5991962af451fd6f0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c2d3567b_2a9613e3",
+        "filename": "trusty/libtrusty-rs/src/lib.rs",
+        "patchSetId": 3
+      },
+      "lineNbr": 195,
+      "author": {
+        "id": 1902326
+      },
+      "writtenOn": "2022-04-07T19:58:50Z",
+      "side": 1,
+      "message": "The assumption with this method is that users wouldn\u0027t be handling `EMSGSIZE` and would be pre-allocating a buffer large enough to handle any incoming message, otherwise they\u0027d be using `recv`. I\u0027m not opposed to having `recv_no_alloc` retry automatically, but it seems inconsistent with other low-level I/O method in the Rust std lib that don\u0027t.",
+      "parentUuid": "ca67ac97_a5749b34",
+      "revId": "4140c7c70181682d0ae4a3c5991962af451fd6f0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
