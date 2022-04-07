@@ -22,6 +22,30 @@
       },
       "revId": "4b91af7d24e6a83ec488d50f4d300adee78a75a6",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "428dc39a_0b90d922",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1060831
+      },
+      "writtenOn": "2022-04-07T09:36:58Z",
+      "side": 1,
+      "message": "odsign runs before statsd starts, so it can\u0027t talk directly to it. Instead it writes to a file which we then read later on.\nThe directory is used by the other CLs in the topic.",
+      "parentUuid": "d1cdcffb_8fa9fab5",
+      "range": {
+        "startLine": 9,
+        "startChar": 25,
+        "endLine": 10,
+        "endChar": 44
+      },
+      "revId": "4b91af7d24e6a83ec488d50f4d300adee78a75a6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
