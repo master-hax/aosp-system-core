@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d1cdcffb_8fa9fab5",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-04-07T02:02:56Z",
+      "side": 1,
+      "message": "I didn\u0027t know that system_server is involved here. I thought a data producer can directly talk to statsd? \n\nWhich component in system_server is reading the file? Who does it know that it needs to look into /data/misc/odsign?\n\nI can\u0027t find anywhere the path is mentioned. https://cs.android.com/search?q\u003d%22misc%2Fodsign%2Fmetrics%22%20\u0026sq\u003d\u0026ss\u003dandroid%2Fplatform%2Fsuperproject",
+      "range": {
+        "startLine": 9,
+        "startChar": 25,
+        "endLine": 10,
+        "endChar": 44
+      },
+      "revId": "4b91af7d24e6a83ec488d50f4d300adee78a75a6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
