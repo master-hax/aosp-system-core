@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "07365f98_f9519333",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 1308,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-04-07T02:36:02Z",
+      "side": 1,
+      "message": "Please label this property properly. See https://cs.android.com/search?q\u003dpersist.device_config%20f:sepolicy%20-f:prebuilt\u0026ss\u003dandroid%2Fplatform%2Fsuperproject",
+      "range": {
+        "startLine": 1308,
+        "startChar": 12,
+        "endLine": 1308,
+        "endChar": 62
+      },
+      "revId": "f5c781a0d09cc81f64d8d4b648a992f65f5ba282",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "588e91de_10bba604",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 1309,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-04-07T02:36:02Z",
+      "side": 1,
+      "message": "I think it\u0027s unsafe to feed a sysprop value directly to a sysfs node. Consider this:\n\n\non property:\u003cyour_prop\u003e\u003dtrue\n  write /sys/blah y\n  \non property:\u003cyour_prop\u003e\u003dfalse\n  write /sys/blah n\n  \nAnd make sure that your prop can only have either true or false. You can achieve that by making its type as an enum. ex)\n\n\u003cyour_prop\u003e  u:object_r:\u003ca_type\u003e:s0 exact enum true false",
+      "range": {
+        "startLine": 1309,
+        "startChar": 39,
+        "endLine": 1309,
+        "endChar": 95
+      },
+      "revId": "f5c781a0d09cc81f64d8d4b648a992f65f5ba282",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
