@@ -33,6 +33,40 @@
       "message": "I don\u0027t have +2 here.",
       "revId": "45dbdd1ef0bae2eab76c75a262041f0ea08a93b9",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "78266ddc_6094822c",
+        "filename": "trusty/apploader/apploader_ipc.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1856745
+      },
+      "writtenOn": "2022-04-07T19:39:32Z",
+      "side": 1,
+      "message": "It would also be great to add an overview of the apploader features here with an overview tag:\nhttps://docs.kernel.org/doc-guide/kernel-doc.html#overview-documentation-comments\n\nsee example:\n/**\n * DOC: Trusty IPC\n *\n * Trusty provides APIs for developing two classes of applications/services:\n *\n * *   Trusted applications or services that run on the TEE processor\n * *   Normal/untrusted applications that run on the main processor and use the\n *     services provided by trusted applications\n *\n * The Trusty API generally describes the Trusty inter-process\n */",
+      "revId": "45dbdd1ef0bae2eab76c75a262041f0ea08a93b9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2a335191_cbafaf4a",
+        "filename": "trusty/apploader/apploader_ipc.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 1856745
+      },
+      "writtenOn": "2022-04-07T19:39:32Z",
+      "side": 1,
+      "message": "would you also fix the kernel-doc comments (maybe in another CL).\nI believe that we\u0027re missing a `struct` prefix here.\nhttps://docs.kernel.org/doc-guide/kernel-doc.html#structure-union-and-enumeration-documentation\n\nyou can test using `external/linux/scripts/kernel-doc \u003chdr_path\u003e --rst`\n\na good example of a header with kernel-doc:\nhttps://docs.kernel.org/doc-guide/kernel-doc.html#structure-union-and-enumeration-documentation",
+      "revId": "45dbdd1ef0bae2eab76c75a262041f0ea08a93b9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
