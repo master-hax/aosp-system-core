@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2c2d6e5a_d97be42d",
+        "filename": "init/fuzzer/init_parser_fuzzer.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 133,
+      "author": {
+        "id": 1353865
+      },
+      "writtenOn": "2022-04-07T21:54:09Z",
+      "side": 1,
+      "message": "Consider calling the different APIs at random order (see go/fuzzer-review-checklist#random-function-order)",
+      "range": {
+        "startLine": 131,
+        "startChar": 0,
+        "endLine": 133,
+        "endChar": 24
+      },
+      "revId": "dc192d000cab2f869eaac5c2ab787eef1854fb2a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
