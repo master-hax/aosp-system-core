@@ -160,6 +160,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "a2476d92_2bc182d1",
+        "filename": "trusty/libtrusty-rs/src/lib.rs",
+        "patchSetId": 3
+      },
+      "lineNbr": 188,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2022-04-07T00:42:07Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "e82da9b9_d2291853",
+      "revId": "4140c7c70181682d0ae4a3c5991962af451fd6f0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "7c8c57e5_ffb8d9e5",
@@ -191,6 +209,24 @@
       "side": 1,
       "message": "It doesn\u0027t have to be exactly this API, but there should be some API that doesn\u0027t auto-retry.",
       "parentUuid": "7c8c57e5_ffb8d9e5",
+      "revId": "4140c7c70181682d0ae4a3c5991962af451fd6f0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ca67ac97_a5749b34",
+        "filename": "trusty/libtrusty-rs/src/lib.rs",
+        "patchSetId": 3
+      },
+      "lineNbr": 195,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2022-04-07T00:42:07Z",
+      "side": 1,
+      "message": "The API still feels a bit too low-level for me (because of both the EMSGSIZE and the retry semantics), but it\u0027s not unusable.\n\nStill, when would a caller not want to auto-retry?",
+      "parentUuid": "0a1d2d59_d5b98183",
       "revId": "4140c7c70181682d0ae4a3c5991962af451fd6f0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
