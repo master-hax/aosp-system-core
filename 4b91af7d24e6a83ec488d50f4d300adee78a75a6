@@ -46,6 +46,30 @@
       },
       "revId": "4b91af7d24e6a83ec488d50f4d300adee78a75a6",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0213f261_103a49a5",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1060831
+      },
+      "writtenOn": "2022-04-07T10:49:27Z",
+      "side": 1,
+      "message": "\u003e Which component in system_server is reading the file? Who does it know that it needs to look into /data/misc/odsign?\n\nSee OdsignStatsLogger in https://r.android.com/2058177",
+      "parentUuid": "428dc39a_0b90d922",
+      "range": {
+        "startLine": 9,
+        "startChar": 25,
+        "endLine": 10,
+        "endChar": 44
+      },
+      "revId": "4b91af7d24e6a83ec488d50f4d300adee78a75a6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
