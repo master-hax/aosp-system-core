@@ -247,6 +247,24 @@
       "parentUuid": "ca67ac97_a5749b34",
       "revId": "4140c7c70181682d0ae4a3c5991962af451fd6f0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a0c18c90_7fe5df19",
+        "filename": "trusty/libtrusty-rs/src/lib.rs",
+        "patchSetId": 3
+      },
+      "lineNbr": 195,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2022-04-08T22:28:09Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "c2d3567b_2a9613e3",
+      "revId": "4140c7c70181682d0ae4a3c5991962af451fd6f0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
