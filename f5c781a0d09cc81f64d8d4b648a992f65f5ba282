@@ -48,6 +48,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "9234d8a5_fd078db2",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 1308,
+      "author": {
+        "id": 1499410
+      },
+      "writtenOn": "2022-04-08T05:45:40Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6bff2b87_9f349b7e",
+      "range": {
+        "startLine": 1308,
+        "startChar": 12,
+        "endLine": 1308,
+        "endChar": 62
+      },
+      "revId": "f5c781a0d09cc81f64d8d4b648a992f65f5ba282",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "588e91de_10bba604",
@@ -109,6 +133,30 @@
       "side": 1,
       "message": "Done. Though the exact enum type doesn\u0027t work here:\n\n$ device_config put mglru_native lru_gen_enabled true\n\nSettingsToPropertiesMapper: Unable to set property persist.device_config.mglru_native.lru_gen_enabled value \u0027true\u0027\n\nI think the native experiment flag properties to need to be able to set empty.",
       "parentUuid": "4ff20bb5_559cec31",
+      "range": {
+        "startLine": 1309,
+        "startChar": 39,
+        "endLine": 1309,
+        "endChar": 95
+      },
+      "revId": "f5c781a0d09cc81f64d8d4b648a992f65f5ba282",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1437089b_42e61a0c",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 1309,
+      "author": {
+        "id": 1499410
+      },
+      "writtenOn": "2022-04-08T05:45:40Z",
+      "side": 1,
+      "message": "The property type in now an exact enum. So safe to write the sysprop value to the sysfs file. Even if we somehow get an invalid value here the kernel sysfs_store()  handles this.",
+      "parentUuid": "6bc7827f_dd2f6b3d",
       "range": {
         "startLine": 1309,
         "startChar": 39,
