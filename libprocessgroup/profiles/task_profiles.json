@@ -435,7 +435,19 @@
         }
       ]
     },
-
+    {
+      "Name": "VMCompilationPerformance",
+      "Actions": [
+        {
+          "Name": "JoinCgroup",
+          "Params":
+          {
+            "Controller": "cpu",
+            "Path": "system"
+          }
+        }
+      ]
+    },
     {
       "Name": "LowIoPriority",
       "Actions": [
