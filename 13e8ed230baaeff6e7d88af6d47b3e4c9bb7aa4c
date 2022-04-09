@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5f980fa5_2dde4b6a",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 817,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-04-09T14:41:34Z",
+      "side": 1,
+      "message": "IIRC, we do not return here because if one profile fails to apply we still want to apply the remaining profiles.",
+      "range": {
+        "startLine": 817,
+        "startChar": 16,
+        "endLine": 817,
+        "endChar": 29
+      },
+      "revId": "13e8ed230baaeff6e7d88af6d47b3e4c9bb7aa4c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
