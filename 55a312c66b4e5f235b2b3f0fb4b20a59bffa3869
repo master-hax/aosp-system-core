@@ -34,6 +34,24 @@
       "parentUuid": "0e531ea0_5c8ffc0f",
       "revId": "55a312c66b4e5f235b2b3f0fb4b20a59bffa3869",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "52e3a870_01d50081",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 809,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-04-10T16:52:21Z",
+      "side": 1,
+      "message": "We need to continue the loop even if we fail to apply one profile.",
+      "parentUuid": "c057a172_5b644067",
+      "revId": "55a312c66b4e5f235b2b3f0fb4b20a59bffa3869",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
