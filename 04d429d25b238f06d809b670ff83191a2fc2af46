@@ -33,6 +33,41 @@
       "message": "I know this is still WIP, but pulling Kalesh and Joel in.\n\nHey Amit! :) Thanks for being ontop of this issue upstream and submitting this!\n\nI think from the last time I talked w/ Joel (Joel: Correct me if I\u0027m wrong) /dev/ashmem will still be needed (even if it can be reduced mostly to a memfd stub) for existing applications in the playstore that access it directly. But that can be carried in ACK until those apps can be properly considered deprecated.\n\nBut I do think this is a necessary change to drop the unnecessary dependency on it in AOSP.\n\nI\u0027m torn on using the kernel version as the switch, as future ACKs will likely have some sort of /dev/ashmem, so that might confuse folks, but I also suspect just switching the flag to default to true would cause grief on devices that need the seccomp/sepolicy change.\n\nShould the secomp / sepolicy changes instead be made in the shared policy files?",
       "revId": "04d429d25b238f06d809b670ff83191a2fc2af46",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a2c3e952_155f0a56",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1031448
+      },
+      "writtenOn": "2022-04-11T08:54:01Z",
+      "side": 1,
+      "message": "Switching the sys.use_memfd flag is a better option because that handles the switch to memfd at the per device level. When I tried that, the selinux denials were too much too handle for me sadly, so I gave up there.",
+      "parentUuid": "a9b07a3b_2e705796",
+      "revId": "04d429d25b238f06d809b670ff83191a2fc2af46",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f738240f_50791cf5",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 163,
+      "author": {
+        "id": 1031448
+      },
+      "writtenOn": "2022-04-11T08:54:01Z",
+      "side": 1,
+      "message": "This check is broken on 5.4 kernel versions because 5.4 \u003e 5.17. I didn\u0027t think that thru.",
+      "revId": "04d429d25b238f06d809b670ff83191a2fc2af46",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
