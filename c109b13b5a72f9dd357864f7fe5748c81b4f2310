@@ -16,6 +16,23 @@
       "message": "Jiakai, could you force submit this, as this was proven to be the culprit?",
       "revId": "c109b13b5a72f9dd357864f7fe5748c81b4f2310",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a6153e82_f931a018",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-04-12T19:50:40Z",
+      "side": 1,
+      "message": "Oh, it looks like I can submit by myself. Doing.",
+      "revId": "c109b13b5a72f9dd357864f7fe5748c81b4f2310",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
