@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ce47b91b_b450a3c8",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-04-12T23:18:20Z",
+      "side": 1,
+      "message": "Do we know why there are invalid snapshots in the first place?",
+      "revId": "8d61a666101dcb8568357ff9d76221996f886c17",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "dad0ba6a_34fefd01",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 223,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-04-12T23:18:20Z",
+      "side": 1,
+      "message": "Why does this need to be gated on a test device? Ideally we should have as few of these checks as possible",
+      "revId": "8d61a666101dcb8568357ff9d76221996f886c17",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
