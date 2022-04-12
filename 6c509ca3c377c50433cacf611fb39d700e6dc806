@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3d2e08f6_99d3385d",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-04-12T03:22:08Z",
+      "side": 1,
+      "message": "nit: this doesn\u0027t make it easy, but makes the inclusion possible, because some APEXes have min_sdk_version: 29 and mandate the same for all of their dependencies.",
+      "range": {
+        "startLine": 9,
+        "startChar": 20,
+        "endLine": 9,
+        "endChar": 34
+      },
+      "revId": "6c509ca3c377c50433cacf611fb39d700e6dc806",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "df7f9e68_2fc3dd64",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-04-12T03:22:08Z",
+      "side": 1,
+      "message": "Yeah, this is guaranteed by the build system once we have \"min_sdk_version: 29\" here.",
+      "range": {
+        "startLine": 9,
+        "startChar": 61,
+        "endLine": 11,
+        "endChar": 38
+      },
+      "revId": "6c509ca3c377c50433cacf611fb39d700e6dc806",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
