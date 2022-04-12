@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "68456d6e_ccb3dec5",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 3
+      },
+      "lineNbr": 832,
+      "author": {
+        "id": 1042276
+      },
+      "writtenOn": "2022-04-12T23:32:54Z",
+      "side": 1,
+      "message": "How do we deal with remaining files or directories? Or do we need to?\n\n(Looks like mkdir does call `lchown`, which of course doesn\u0027t apply recursively)",
+      "range": {
+        "startLine": 832,
+        "startChar": 4,
+        "endLine": 832,
+        "endChar": 61
+      },
+      "revId": "aff9377473e4b8fce16355bc3fe786dd22d8b37f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
