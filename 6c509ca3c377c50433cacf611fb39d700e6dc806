@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "207720a8_8bfce35b",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2022-04-12T17:41:35Z",
+      "side": 1,
+      "message": "Yes, in this case \u0027easy\u0027 is probably less specific than what you\u0027re suggesting.",
+      "parentUuid": "3d2e08f6_99d3385d",
+      "range": {
+        "startLine": 9,
+        "startChar": 20,
+        "endLine": 9,
+        "endChar": 34
+      },
+      "revId": "6c509ca3c377c50433cacf611fb39d700e6dc806",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "df7f9e68_2fc3dd64",
@@ -37,6 +61,30 @@
       "writtenOn": "2022-04-12T03:22:08Z",
       "side": 1,
       "message": "Yeah, this is guaranteed by the build system once we have \"min_sdk_version: 29\" here.",
+      "range": {
+        "startLine": 9,
+        "startChar": 61,
+        "endLine": 11,
+        "endChar": 38
+      },
+      "revId": "6c509ca3c377c50433cacf611fb39d700e6dc806",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0ae3ead0_f779604d",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2022-04-12T17:41:35Z",
+      "side": 1,
+      "message": "yup!",
+      "parentUuid": "df7f9e68_2fc3dd64",
       "range": {
         "startLine": 9,
         "startChar": 61,
