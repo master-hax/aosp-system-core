@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7d2ef453_d3866743",
+        "filename": "fastboot/fastboot.bash",
+        "patchSetId": 2
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-04-12T04:33:28Z",
+      "side": 1,
+      "message": "just noticed |system_ext| and |vendor_boot| are missing from this list as well.",
+      "revId": "f0fb5dde89827a51926c6c7ce59384500a2b5b95",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
