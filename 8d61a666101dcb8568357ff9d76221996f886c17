@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "2ebdf2c5_e1d8699e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-04-13T04:49:33Z",
+      "side": 1,
+      "message": "It is because in recovery after merge is completed, we don\u0027t remove the snapshot state:\n\nhttps://source.corp.google.com/sc-dev/system/core/fs_mgr/libsnapshot/snapshot.cpp;l\u003d1288\n\nIt looks like this bug has been there since day one for virtual A/B",
+      "parentUuid": "ce47b91b_b450a3c8",
+      "revId": "8d61a666101dcb8568357ff9d76221996f886c17",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "dad0ba6a_34fefd01",
@@ -31,6 +49,24 @@
       "writtenOn": "2022-04-12T23:18:20Z",
       "side": 1,
       "message": "Why does this need to be gated on a test device? Ideally we should have as few of these checks as possible",
+      "revId": "8d61a666101dcb8568357ff9d76221996f886c17",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bc1ee8c4_7a47851d",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 223,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-04-13T04:49:33Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "dad0ba6a_34fefd01",
       "revId": "8d61a666101dcb8568357ff9d76221996f886c17",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
