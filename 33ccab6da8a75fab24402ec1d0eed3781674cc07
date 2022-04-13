@@ -16,6 +16,24 @@
       "message": "should this be declared in a header?",
       "revId": "33ccab6da8a75fab24402ec1d0eed3781674cc07",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "70d66ad4_4e149a47",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 163,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-04-13T17:22:23Z",
+      "side": 1,
+      "message": "No need to have the header because rust has it\u0027s own declaration of this foreign function. \n\nhttps://chromium-review.googlesource.com/c/chromiumos/platform/crosvm/+/3574427/5/src/linux/android.rs#12\n\nSince this function is only for rust, I didn\u0027t want to advertise it to other non-rust clients via header.",
+      "parentUuid": "415c0f8e_16a996f9",
+      "revId": "33ccab6da8a75fab24402ec1d0eed3781674cc07",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
