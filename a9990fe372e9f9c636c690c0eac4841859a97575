@@ -1,0 +1,165 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3869c725_f65a0ee9",
+        "filename": "init/devices.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 310,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-04-14T15:59:41Z",
+      "side": 1,
+      "message": "and the file mode",
+      "range": {
+        "startLine": 310,
+        "startChar": 58,
+        "endLine": 310,
+        "endChar": 59
+      },
+      "revId": "a9990fe372e9f9c636c690c0eac4841859a97575",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "67b8430d_21d50859",
+        "filename": "init/devices.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 311,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-04-14T15:59:41Z",
+      "side": 1,
+      "message": "and file mode",
+      "range": {
+        "startLine": 311,
+        "startChar": 44,
+        "endLine": 311,
+        "endChar": 45
+      },
+      "revId": "a9990fe372e9f9c636c690c0eac4841859a97575",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "51c2c631_72f7bb03",
+        "filename": "init/devices.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 333,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-04-14T15:59:41Z",
+      "side": 1,
+      "message": "Add spaces before and after !\u003d",
+      "range": {
+        "startLine": 333,
+        "startChar": 9,
+        "endLine": 333,
+        "endChar": 11
+      },
+      "revId": "a9990fe372e9f9c636c690c0eac4841859a97575",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bbecfde8_677649b1",
+        "filename": "init/devices.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 334,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-04-14T15:59:41Z",
+      "side": 1,
+      "message": "ditto",
+      "range": {
+        "startLine": 334,
+        "startChar": 31,
+        "endLine": 334,
+        "endChar": 33
+      },
+      "revId": "a9990fe372e9f9c636c690c0eac4841859a97575",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "776e2761_41b51ac4",
+        "filename": "init/devices.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 335,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-04-14T15:59:41Z",
+      "side": 1,
+      "message": "add space",
+      "range": {
+        "startLine": 335,
+        "startChar": 35,
+        "endLine": 335,
+        "endChar": 36
+      },
+      "revId": "a9990fe372e9f9c636c690c0eac4841859a97575",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "17686942_0743844e",
+        "filename": "init/devices.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 335,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-04-14T15:59:41Z",
+      "side": 1,
+      "message": "add space before and after.",
+      "range": {
+        "startLine": 335,
+        "startChar": 48,
+        "endLine": 335,
+        "endChar": 50
+      },
+      "revId": "a9990fe372e9f9c636c690c0eac4841859a97575",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "16271946_62e04e22",
+        "filename": "init/devices.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 335,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-04-14T15:59:41Z",
+      "side": 1,
+      "message": "Please use spaces for indentation",
+      "range": {
+        "startLine": 333,
+        "startChar": 0,
+        "endLine": 335,
+        "endChar": 60
+      },
+      "revId": "a9990fe372e9f9c636c690c0eac4841859a97575",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
