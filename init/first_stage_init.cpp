@@ -109,6 +109,13 @@ bool ForceNormalBoot(const std::string& cmdline, const std::string& bootconfig) 
 }
 
 static void Copy(const char* src, const char* dst) {
+    auto dst_dir = android::base::Dirname(dst);
+    std::error_code ec;
+    if (access(dst_dir.c_str(), F_OK) != 0) {
+        if (!fs::create_directories(dst_dir, ec)) {
+            LOG(FATAL) << "Cannot create " << dst_dir << ": " << ec.message();
+        }
+    }
     if (link(src, dst) == 0) {
         LOG(INFO) << "hard linking " << src << " to " << dst << " succeeded";
         return;
@@ -131,15 +138,8 @@ void PrepareSwitchRoot() {
         PLOG(INFO) << "Not moving " << src << " because it cannot be accessed";
         return;
     }
-
-    auto dst_dir = android::base::Dirname(dst);
-    std::error_code ec;
-    if (access(dst_dir.c_str(), F_OK) != 0) {
-        if (!fs::create_directories(dst_dir, ec)) {
-            LOG(FATAL) << "Cannot create " << dst_dir << ": " << ec.message();
-        }
-    }
     Copy(src, dst);
+    Copy("/system/etc/init/snapuserd.rc", "/first_stage_ramdisk/system/etc/snapuserd.rc");
 }
 }  // namespace
 
