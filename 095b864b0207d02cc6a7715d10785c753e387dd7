@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "487b634f_e634e609",
+        "filename": "init/fuzzer/Android.bp",
+        "patchSetId": 6
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1353865
+      },
+      "writtenOn": "2022-04-14T23:54:20Z",
+      "side": 1,
+      "message": "Consider adding:\n- seed corpus\n- ldap for fuzzer maintainer (or team)\n- component/hotlist where found bugs will be assigned",
+      "range": {
+        "startLine": 64,
+        "startChar": 0,
+        "endLine": 64,
+        "endChar": 7
+      },
+      "revId": "095b864b0207d02cc6a7715d10785c753e387dd7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
