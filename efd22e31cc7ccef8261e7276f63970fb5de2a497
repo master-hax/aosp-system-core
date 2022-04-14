@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bf81ea38_73bff8cd",
+        "filename": "init/fuzzer/Android.bp",
+        "patchSetId": 5
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 1353865
+      },
+      "writtenOn": "2022-04-14T23:49:43Z",
+      "side": 1,
+      "message": "Consider adding:\n- seed corpus\n- ldap for fuzzer maintainer (or team)\n- component/hotlist where found bugs will be assigned",
+      "range": {
+        "startLine": 96,
+        "startChar": 0,
+        "endLine": 96,
+        "endChar": 7
+      },
+      "revId": "efd22e31cc7ccef8261e7276f63970fb5de2a497",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b1edd16e_79e80a43",
+        "filename": "init/fuzzer/init_ueventd_fuzzer.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 149,
+      "author": {
+        "id": 1353865
+      },
+      "writtenOn": "2022-04-14T23:49:43Z",
+      "side": 1,
+      "message": "There is room for randomization in this method.",
+      "range": {
+        "startLine": 149,
+        "startChar": 24,
+        "endLine": 149,
+        "endChar": 31
+      },
+      "revId": "efd22e31cc7ccef8261e7276f63970fb5de2a497",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
