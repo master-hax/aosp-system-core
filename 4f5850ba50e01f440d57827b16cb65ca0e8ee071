@@ -26,6 +26,29 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "b5e8dbff_c69d76c9",
+        "filename": "init/fuzzer/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 156,
+      "author": {
+        "id": 1353865
+      },
+      "writtenOn": "2022-04-14T23:29:26Z",
+      "side": 1,
+      "message": "Add the owner the ldap of fuzzer maintainer and if there are hotlist/component where bugs should be filed to.",
+      "range": {
+        "startLine": 156,
+        "startChar": 8,
+        "endLine": 156,
+        "endChar": 9
+      },
+      "revId": "4f5850ba50e01f440d57827b16cb65ca0e8ee071",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "3c028b58_cf27eaa0",
         "filename": "init/fuzzer/init_service_fuzzer.cpp",
         "patchSetId": 2
