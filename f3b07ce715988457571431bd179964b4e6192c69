@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8e2ca401_1f99abc9",
+        "filename": "init/fuzzer/init_blockDev_fuzzer.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1353865
+      },
+      "writtenOn": "2022-04-14T23:51:06Z",
+      "side": 1,
+      "message": "Consider randomizing these calls.",
+      "range": {
+        "startLine": 28,
+        "startChar": 0,
+        "endLine": 34,
+        "endChar": 79
+      },
+      "revId": "f3b07ce715988457571431bd179964b4e6192c69",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
