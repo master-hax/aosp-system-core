@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a015ba5d_a1fd5628",
+        "filename": "init/fuzzer/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 156,
+      "author": {
+        "id": 1353865
+      },
+      "writtenOn": "2022-04-14T23:10:12Z",
+      "side": 1,
+      "message": "Consider adding a seed corpus.",
+      "range": {
+        "startLine": 156,
+        "startChar": 0,
+        "endLine": 156,
+        "endChar": 7
+      },
+      "revId": "4f5850ba50e01f440d57827b16cb65ca0e8ee071",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3c028b58_cf27eaa0",
+        "filename": "init/fuzzer/init_service_fuzzer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 229,
+      "author": {
+        "id": 1353865
+      },
+      "writtenOn": "2022-04-14T23:10:12Z",
+      "side": 1,
+      "message": "Does it make sense to randomize these calls as per our discussion with smoreland@?",
+      "range": {
+        "startLine": 225,
+        "startChar": 0,
+        "endLine": 229,
+        "endChar": 17
+      },
+      "revId": "4f5850ba50e01f440d57827b16cb65ca0e8ee071",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
