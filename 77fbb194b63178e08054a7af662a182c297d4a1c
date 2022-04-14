@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c867a235_63f78644",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 169,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-04-14T15:00:15Z",
+      "side": 1,
+      "message": "nit: `profiles_.reserve(num_profiles);` could be a good idea here.",
+      "range": {
+        "startLine": 169,
+        "startChar": 29,
+        "endLine": 169,
+        "endChar": 38
+      },
+      "revId": "77fbb194b63178e08054a7af662a182c297d4a1c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
