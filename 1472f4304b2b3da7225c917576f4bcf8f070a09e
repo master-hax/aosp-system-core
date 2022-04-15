@@ -134,6 +134,30 @@
       },
       "revId": "1472f4304b2b3da7225c917576f4bcf8f070a09e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "df65d27f_55e592e4",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2226,
+      "author": {
+        "id": 1947591
+      },
+      "writtenOn": "2022-04-15T09:47:22Z",
+      "side": 1,
+      "message": "Thank you for your understanding.\nYou\u0027re right, those properties are needed in CTS-on-GSI/VTS.\n\nIt will be very helpful if you will backport those CLs (selinux and my patch) to android12-gsi-dev and android12L-gsi-dev.",
+      "parentUuid": "2b1ae291_88e8b104",
+      "range": {
+        "startLine": 2226,
+        "startChar": 12,
+        "endLine": 2226,
+        "endChar": 34
+      },
+      "revId": "1472f4304b2b3da7225c917576f4bcf8f070a09e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
