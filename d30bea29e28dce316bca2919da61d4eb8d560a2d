@@ -175,6 +175,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "9eefd573_683ab7d9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1947591
+      },
+      "writtenOn": "2022-04-15T08:30:54Z",
+      "side": 1,
+      "message": "Thank you for your support.\n\nI will abandon this change when you finish to review below patch.\nhttps://android-review.googlesource.com/c/platform/system/core/+/2064970",
+      "parentUuid": "04de1575_8e854c65",
+      "revId": "d30bea29e28dce316bca2919da61d4eb8d560a2d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "d9e9c330_1d3d6de4",
         "filename": "fs_mgr/fs_mgr.cpp",
         "patchSetId": 1
