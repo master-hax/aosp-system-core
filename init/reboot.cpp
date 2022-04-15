@@ -18,6 +18,7 @@
 
 #include <dirent.h>
 #include <fcntl.h>
+#include <linux/f2fs.h>
 #include <linux/fs.h>
 #include <linux/loop.h>
 #include <mntent.h>
@@ -758,6 +759,16 @@ static void DoReboot(unsigned int cmd, const std::string& reason, const std::str
     sem_post(&reboot_semaphore);
 
     // Reboot regardless of umount status. If umount fails, fsck after reboot will fix it.
+    if (IsDataMounted()) {
+        uint32_t flag = F2FS_GOING_DOWN_FULLSYNC;
+        unique_fd fd(TEMP_FAILURE_RETRY(open("/data", O_RDONLY)));
+        int ret = ioctl(fd, F2FS_IOC_SHUTDOWN, &flag);
+        if (ret) {
+            PLOG(ERROR) << "Shutdown /data: ";
+        } else {
+            LOG(INFO) << "Shutdown /data";
+        }
+    }
     RebootSystem(cmd, reboot_target);
     abort();
 }
