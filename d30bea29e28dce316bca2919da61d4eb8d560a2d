@@ -121,6 +121,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "ca92734d_d0316539",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-04-15T08:04:17Z",
+      "side": 1,
+      "message": "Thanks. In the issue tracker, Samsung said \n\n\u003e 1) Review attached patch and apply to AOSP.\n\nIs your intention to have the patch for Android 12? Or for Android T (13) and beyond? If it\u0027s the former, please rebase this patch over the android12-dev branch. If it\u0027s the latter, then https://android-review.googlesource.com/c/platform/system/core/+/1814305 should be enough and there\u0027s no need for Samsung to upload a change.",
+      "parentUuid": "ddb001ab_5452a268",
+      "revId": "d30bea29e28dce316bca2919da61d4eb8d560a2d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "d9e9c330_1d3d6de4",
         "filename": "fs_mgr/fs_mgr.cpp",
         "patchSetId": 1
