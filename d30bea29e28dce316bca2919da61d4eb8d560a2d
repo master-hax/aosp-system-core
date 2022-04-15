@@ -49,6 +49,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "eec9803f_40cea756",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2187,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2022-04-15T07:03:02Z",
+      "side": 1,
+      "message": "Yup, this will have compile error in aosp/master:\n\nsystem/core/fs_mgr/fs_mgr.cpp:2187:29: error: no member named \u0027verify\u0027 in \u0027android::fs_mgr::FstabEntry::FsMgrFlags\u0027\n    if (!entry.fs_mgr_flags.verify \u0026\u0026 !entry.fs_mgr_flags.avb) {\n         ~~~~~~~~~~~~~~~~~~ ^\n\nBecause AVB 1.0 is removed:\n  https://android-review.googlesource.com/c/platform/system/core/+/1876217\n  \nps: AVB 2.0 is introduced in Oreo and we\u0027re assuming AVB 1.0 can be deprecated.\n    Are you still using AVB 1.0?",
+      "parentUuid": "d9e9c330_1d3d6de4",
+      "range": {
+        "startLine": 2187,
+        "startChar": 8,
+        "endLine": 2187,
+        "endChar": 34
+      },
+      "revId": "d30bea29e28dce316bca2919da61d4eb8d560a2d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "df27002f_2cb36764",
         "filename": "fs_mgr/fs_mgr.cpp",
         "patchSetId": 1
