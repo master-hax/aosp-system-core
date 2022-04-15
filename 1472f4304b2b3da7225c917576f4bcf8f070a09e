@@ -1,6 +1,29 @@
 {
   "comments": [
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "c2232846_78f71952",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2022-04-15T08:51:16Z",
+      "side": 1,
+      "message": "Please add bug info (i.e., 228409301, and keep 197973981 if cherry-picking aosp/1814305).\n\nBug: 197973981\nBug: 228409301\nTest: Build and flash a binary.",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 9,
+        "endChar": 31
+      },
+      "revId": "1472f4304b2b3da7225c917576f4bcf8f070a09e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "ad1c748d_a09bdcda",
@@ -14,6 +37,29 @@
       "writtenOn": "2022-04-15T08:30:43Z",
       "side": 1,
       "message": "LGTM for the init part. Over to Bowgo for fs_mgr.",
+      "revId": "1472f4304b2b3da7225c917576f4bcf8f070a09e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "587dc065_5ac8c0ef",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2226,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2022-04-15T08:51:16Z",
+      "side": 1,
+      "message": "This looks quite similar to fs_mgr_get_hashtree_algorithm() above.\n\nAny concern to just cherry-pick the following change to android-12-dev?\n  https://android-review.googlesource.com/c/platform/system/core/+/1814305",
+      "range": {
+        "startLine": 2226,
+        "startChar": 12,
+        "endLine": 2226,
+        "endChar": 34
+      },
       "revId": "1472f4304b2b3da7225c917576f4bcf8f070a09e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
