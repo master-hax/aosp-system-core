@@ -1,6 +1,24 @@
 {
   "comments": [
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "d57e564f_a7d6b401",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1948095
+      },
+      "writtenOn": "2022-04-15T18:52:41Z",
+      "side": 1,
+      "message": "my device system update ",
+      "revId": "74fa3cab4eb564678d3cdeefdd18da2504948b74",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
       "key": {
         "uuid": "cdd33652_b6d7a69a",
         "filename": "rootdir/init.rc",
@@ -20,10 +38,10 @@
         "endChar": 44
       },
       "revId": "74fa3cab4eb564678d3cdeefdd18da2504948b74",
-      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
-      "unresolved": false
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
       "key": {
         "uuid": "40a2faf2_54453e1a",
         "filename": "rootdir/init.rc",
@@ -44,10 +62,10 @@
         "endChar": 44
       },
       "revId": "74fa3cab4eb564678d3cdeefdd18da2504948b74",
-      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
-      "unresolved": false
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
       "key": {
         "uuid": "9d92c83b_e39bb973",
         "filename": "rootdir/init.rc",
@@ -68,10 +86,10 @@
         "endChar": 44
       },
       "revId": "74fa3cab4eb564678d3cdeefdd18da2504948b74",
-      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
-      "unresolved": false
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
       "key": {
         "uuid": "2851c3df_8c78622d",
         "filename": "rootdir/init.rc",
@@ -92,10 +110,10 @@
         "endChar": 44
       },
       "revId": "74fa3cab4eb564678d3cdeefdd18da2504948b74",
-      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
-      "unresolved": false
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
       "key": {
         "uuid": "01752733_23f7c95c",
         "filename": "rootdir/init.rc",
@@ -116,10 +134,10 @@
         "endChar": 44
       },
       "revId": "74fa3cab4eb564678d3cdeefdd18da2504948b74",
-      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
-      "unresolved": false
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
       "key": {
         "uuid": "273dc539_18f8d2e5",
         "filename": "rootdir/init.rc",
@@ -140,8 +158,7 @@
         "endChar": 44
       },
       "revId": "74fa3cab4eb564678d3cdeefdd18da2504948b74",
-      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
-      "unresolved": false
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
