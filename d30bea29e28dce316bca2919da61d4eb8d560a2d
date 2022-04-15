@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "55aa305e_f4e4279d",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1947591
+      },
+      "writtenOn": "2022-04-15T07:22:31Z",
+      "side": 1,
+      "message": "I didn\u0027t know below change.\nI worked on the android12-platform-release and the patch isn\u0027t there.\nThe patch isn\u0027t in my source repository.\nI thought that android12-platform-release and master are same.\nSo, I cherry-picked my patch.\n\nI think below change and my patch are similar to each other.\nI try to test below change.\n\nhttps://android-review.googlesource.com/c/platform/system/core/+/1814305",
+      "parentUuid": "31cfc878_d503deb7",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 66
+      },
+      "revId": "d30bea29e28dce316bca2919da61d4eb8d560a2d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "d9e9c330_1d3d6de4",
         "filename": "fs_mgr/fs_mgr.cpp",
         "patchSetId": 1
@@ -73,6 +97,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "3a196427_722f65aa",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2187,
+      "author": {
+        "id": 1947591
+      },
+      "writtenOn": "2022-04-15T07:22:31Z",
+      "side": 1,
+      "message": "I didn\u0027t check below change because I\u0027ve used a \"perforce\" tool.\nI try to test below change.\n\nhttps://android-review.googlesource.com/c/platform/system/core/+/1814305",
+      "parentUuid": "eec9803f_40cea756",
+      "range": {
+        "startLine": 2187,
+        "startChar": 8,
+        "endLine": 2187,
+        "endChar": 34
+      },
+      "revId": "d30bea29e28dce316bca2919da61d4eb8d560a2d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "df27002f_2cb36764",
         "filename": "fs_mgr/fs_mgr.cpp",
         "patchSetId": 1
@@ -96,6 +144,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "38cf9f79_f16dff50",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2219,
+      "author": {
+        "id": 1947591
+      },
+      "writtenOn": "2022-04-15T07:22:31Z",
+      "side": 1,
+      "message": "I didn\u0027t check below change.\n\nhttps://android-review.googlesource.com/c/platform/system/core/+/1814305",
+      "parentUuid": "df27002f_2cb36764",
+      "range": {
+        "startLine": 2186,
+        "startChar": 0,
+        "endLine": 2219,
+        "endChar": 1
+      },
+      "revId": "d30bea29e28dce316bca2919da61d4eb8d560a2d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "afde3884_3c29ff20",
         "filename": "init/builtins.cpp",
         "patchSetId": 1
@@ -107,6 +179,30 @@
       "writtenOn": "2022-04-15T06:42:30Z",
       "side": 1,
       "message": "This block does the same thing as the 5 lines of code just above.",
+      "range": {
+        "startLine": 882,
+        "startChar": 0,
+        "endLine": 885,
+        "endChar": 9
+      },
+      "revId": "d30bea29e28dce316bca2919da61d4eb8d560a2d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "14ed6695_a0fc12ea",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 885,
+      "author": {
+        "id": 1947591
+      },
+      "writtenOn": "2022-04-15T07:22:31Z",
+      "side": 1,
+      "message": "I didn\u0027t check below change.\n\nhttps://android-review.googlesource.com/c/platform/system/core/+/1814305",
+      "parentUuid": "afde3884_3c29ff20",
       "range": {
         "startLine": 882,
         "startChar": 0,
