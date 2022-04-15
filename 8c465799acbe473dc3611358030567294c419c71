@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "2e9bb14d_43f9b4a9",
+        "filename": "debuggerd/debuggerd_test.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 381,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2022-04-15T22:42:07Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5e0a77cd_941b21f4",
+      "revId": "8c465799acbe473dc3611358030567294c419c71",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a5a70c0e_e76f4658",
@@ -31,6 +49,30 @@
       "writtenOn": "2022-04-15T21:47:46Z",
       "side": 1,
       "message": "inherently unfixable, or is there a bug we should link to?",
+      "range": {
+        "startLine": 415,
+        "startChar": 63,
+        "endLine": 416,
+        "endChar": 10
+      },
+      "revId": "8c465799acbe473dc3611358030567294c419c71",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e56e5c67_f6862f48",
+        "filename": "debuggerd/debuggerd_test.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 416,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2022-04-15T22:42:07Z",
+      "side": 1,
+      "message": "It\u0027s not inherently unfixable (we could have some special logic to communicate the register dump we take in HWASan at the faulting context back to debuugerd to dump), but neither is there any plan to address this. I can file a bug to bookkeeping.",
+      "parentUuid": "a5a70c0e_e76f4658",
       "range": {
         "startLine": 415,
         "startChar": 63,
