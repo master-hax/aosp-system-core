@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5e0a77cd_941b21f4",
+        "filename": "debuggerd/debuggerd_test.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 381,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-04-15T21:47:46Z",
+      "side": 1,
+      "message": "\"what the bot said\" :-)\n\nbut also \"will we ever care enough to do that\"? if not \u003d\u003e skip the TODO. if you do plan on coming back, either file a new bug or just reference the existing bug. (or don\u0027t, since you\u0027re presumably not using a TODO in this file as your actual way of tracking this work :-) )",
+      "revId": "8c465799acbe473dc3611358030567294c419c71",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a5a70c0e_e76f4658",
+        "filename": "debuggerd/debuggerd_test.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 416,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-04-15T21:47:46Z",
+      "side": 1,
+      "message": "inherently unfixable, or is there a bug we should link to?",
+      "range": {
+        "startLine": 415,
+        "startChar": 63,
+        "endLine": 416,
+        "endChar": 10
+      },
+      "revId": "8c465799acbe473dc3611358030567294c419c71",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
