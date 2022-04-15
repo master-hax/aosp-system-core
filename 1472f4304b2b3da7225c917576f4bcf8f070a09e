@@ -110,6 +110,30 @@
       },
       "revId": "1472f4304b2b3da7225c917576f4bcf8f070a09e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2b1ae291_88e8b104",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2226,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2022-04-15T09:22:13Z",
+      "side": 1,
+      "message": "\u003e I\u0027ve tested my patch so I uploaded it.\n\nOK, sounds like this is the patch in your android12 codebase.\nIf so, you can keep it there.\nAnd you may need another CL in seolicy:\n  https://android-review.googlesource.com/q/topic:root_digest\n\nBtw, you\u0027ll need those CLs in GSI, right? (so it will have those properties in CTS-on-GSI/VTS). \nIf so, we\u0027ll backport above changes to branch android12-gsi-dev and android12L-gsi-dev.",
+      "parentUuid": "c89a718c_ba8f6192",
+      "range": {
+        "startLine": 2226,
+        "startChar": 12,
+        "endLine": 2226,
+        "endChar": 34
+      },
+      "revId": "1472f4304b2b3da7225c917576f4bcf8f070a09e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
