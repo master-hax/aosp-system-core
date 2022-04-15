@@ -20,6 +20,23 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "f8c67381_6a2bc29a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1948095
+      },
+      "writtenOn": "2022-04-15T18:53:21Z",
+      "side": 1,
+      "message": "dear management please my device system update ",
+      "revId": "74fa3cab4eb564678d3cdeefdd18da2504948b74",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "cdd33652_b6d7a69a",
         "filename": "rootdir/init.rc",
         "patchSetId": 2
