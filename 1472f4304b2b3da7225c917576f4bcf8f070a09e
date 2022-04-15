@@ -206,6 +206,30 @@
       },
       "revId": "1472f4304b2b3da7225c917576f4bcf8f070a09e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "96d4cd57_488340bc",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2226,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2022-04-15T09:57:44Z",
+      "side": 1,
+      "message": "Ok, will work on GSI branches. e.g., \n   https://android-review.googlesource.com/q/topic:root_digest-android12L-gsi\n   \nBut I would just cherry-pick both CLs from aosp-master (fs_mgr/init \u0026 sepolicy), not your patch here.\nI think function-wise, they\u0027re the same, right?",
+      "parentUuid": "c27f7881_ea174242",
+      "range": {
+        "startLine": 2226,
+        "startChar": 12,
+        "endLine": 2226,
+        "endChar": 34
+      },
+      "revId": "1472f4304b2b3da7225c917576f4bcf8f070a09e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
