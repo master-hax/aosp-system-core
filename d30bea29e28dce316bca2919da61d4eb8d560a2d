@@ -139,6 +139,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "6356aa24_50c3aea7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1947591
+      },
+      "writtenOn": "2022-04-15T08:09:15Z",
+      "side": 1,
+      "message": "Thanks!\nSamsung needs it for Android12 and later versions.\nDo you mean the earlier patch is enough for later versions,\nbut I need to submit it to the android12-dev for android 12, right?",
+      "parentUuid": "ca92734d_d0316539",
+      "revId": "d30bea29e28dce316bca2919da61d4eb8d560a2d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "d9e9c330_1d3d6de4",
         "filename": "fs_mgr/fs_mgr.cpp",
         "patchSetId": 1
