@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "31cfc878_d503deb7",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-04-15T06:42:30Z",
+      "side": 1,
+      "message": "Please explain why we need this change",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 66
+      },
+      "revId": "d30bea29e28dce316bca2919da61d4eb8d560a2d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d9e9c330_1d3d6de4",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2187,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-04-15T06:42:30Z",
+      "side": 1,
+      "message": "This condition is another difference. Why do you have that?",
+      "range": {
+        "startLine": 2187,
+        "startChar": 8,
+        "endLine": 2187,
+        "endChar": 34
+      },
+      "revId": "d30bea29e28dce316bca2919da61d4eb8d560a2d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "df27002f_2cb36764",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2219,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-04-15T06:42:30Z",
+      "side": 1,
+      "message": "This function looks almost identical to fs_mgr_get_hashtree_info, except that it returns only the 9th token, not 8th and 9th.",
+      "range": {
+        "startLine": 2186,
+        "startChar": 0,
+        "endLine": 2219,
+        "endChar": 1
+      },
+      "revId": "d30bea29e28dce316bca2919da61d4eb8d560a2d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "afde3884_3c29ff20",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 885,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-04-15T06:42:30Z",
+      "side": 1,
+      "message": "This block does the same thing as the 5 lines of code just above.",
+      "range": {
+        "startLine": 882,
+        "startChar": 0,
+        "endLine": 885,
+        "endChar": 9
+      },
+      "revId": "d30bea29e28dce316bca2919da61d4eb8d560a2d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
