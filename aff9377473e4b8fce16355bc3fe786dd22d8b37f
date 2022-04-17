@@ -22,6 +22,30 @@
       },
       "revId": "aff9377473e4b8fce16355bc3fe786dd22d8b37f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b4b54f67_b7bbff85",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 3
+      },
+      "lineNbr": 832,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-04-17T03:36:59Z",
+      "side": 1,
+      "message": "This directory becomes empty after a VM exits. So, this should be fine.",
+      "parentUuid": "68456d6e_ccb3dec5",
+      "range": {
+        "startLine": 832,
+        "startChar": 4,
+        "endLine": 832,
+        "endChar": 61
+      },
+      "revId": "aff9377473e4b8fce16355bc3fe786dd22d8b37f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
