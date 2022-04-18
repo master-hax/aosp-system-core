@@ -70,6 +70,30 @@
       },
       "revId": "aff9377473e4b8fce16355bc3fe786dd22d8b37f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5ee5d105_0c59bc09",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 3
+      },
+      "lineNbr": 832,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-04-18T16:27:55Z",
+      "side": 1,
+      "message": "Yes, since this is not in public, the side effect is limited to dogfooders. In the worst case, they could factory reset.\n\nAnd no, I don\u0027t think we will going to change this again, but even if we would, we could change the directory name as you said. Or we could run `chown -R \u003cuser\u003e:\u003cgroup\u003e /data/misc/virtualizationservice` during the OTA.",
+      "parentUuid": "cc0534dd_69d2eef6",
+      "range": {
+        "startLine": 832,
+        "startChar": 4,
+        "endLine": 832,
+        "endChar": 61
+      },
+      "revId": "aff9377473e4b8fce16355bc3fe786dd22d8b37f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
