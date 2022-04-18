@@ -46,6 +46,30 @@
       },
       "revId": "aff9377473e4b8fce16355bc3fe786dd22d8b37f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cc0534dd_69d2eef6",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 3
+      },
+      "lineNbr": 832,
+      "author": {
+        "id": 1042276
+      },
+      "writtenOn": "2022-04-18T15:40:18Z",
+      "side": 1,
+      "message": "I was worried about when the cleanup didn\u0027t complete for any reason. If /data/misc/virtualization/$CID failed to be deleted, probably a future VM with the same CID will fail to boot.  It\u0027s probably unlikely within the dogfooder population.\n\nBTW, just curious, do you think we would switch the UID again from system in the future?  At the very least, we could change the directory name...",
+      "parentUuid": "b4b54f67_b7bbff85",
+      "range": {
+        "startLine": 832,
+        "startChar": 4,
+        "endLine": 832,
+        "endChar": 61
+      },
+      "revId": "aff9377473e4b8fce16355bc3fe786dd22d8b37f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
