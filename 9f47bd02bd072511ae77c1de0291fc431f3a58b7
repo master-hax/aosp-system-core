@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0590ee67_1280efca",
+        "filename": "init/devices.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 334,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-04-19T01:21:46Z",
+      "side": 1,
+      "message": "Did clang-format run? There is still missing spaces between \"if\" and \"(\" , as well as \")\" and \"{\".",
+      "revId": "9f47bd02bd072511ae77c1de0291fc431f3a58b7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
