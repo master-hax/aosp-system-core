@@ -254,6 +254,30 @@
       },
       "revId": "1472f4304b2b3da7225c917576f4bcf8f070a09e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "696ed30c_be3b97a7",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2226,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2022-04-19T09:56:29Z",
+      "side": 1,
+      "message": "Hi,\n\nI\u0027m not sure about the usage of android12-dev branch.\nAnd we only accept backported CLs from aosp-master.\n\n(i.e., a CL needs to be reviewed and merged in aosp-master first, before back-port it back to the android12-dev branch).\n\nHowever, as I mentioned in the bug: b/228409301#comment10, it seems enough to me if:\n  1) You have the fix in your Android12 codebase (so the fix is included in the OEM system.img).\n  2) We have the fix in Android12 GSI branches (so the fix is included in the GSI system.img).\n\n\nIf so, then I think we can drop the CL here.\nThoughts?",
+      "parentUuid": "231023a0_5d6b40fd",
+      "range": {
+        "startLine": 2226,
+        "startChar": 12,
+        "endLine": 2226,
+        "endChar": 34
+      },
+      "revId": "1472f4304b2b3da7225c917576f4bcf8f070a09e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
