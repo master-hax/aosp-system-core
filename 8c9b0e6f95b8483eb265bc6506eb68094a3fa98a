@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "37171919_f9efbc82",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1324603
+      },
+      "writtenOn": "2022-04-19T06:31:39Z",
+      "side": 1,
+      "message": "Yes, Dex2OatPerformance is dedicated to dex2oat compilation, and its performance is actually restricted but not boosted. I suppose VM compilation is looking for performance boost. Please correct me if I was wrong.",
+      "parentUuid": "0fe5656d_c0a89c30",
+      "revId": "8c9b0e6f95b8483eb265bc6506eb68094a3fa98a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "cd16823d_8c1edbfc",
@@ -31,6 +49,30 @@
       "writtenOn": "2022-04-18T16:20:20Z",
       "side": 1,
       "message": "Please move it to be next to other \"Performance\" profiles which operate on \"cpu\" controller.",
+      "range": {
+        "startLine": 439,
+        "startChar": 15,
+        "endLine": 439,
+        "endChar": 39
+      },
+      "revId": "8c9b0e6f95b8483eb265bc6506eb68094a3fa98a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "962b9363_5ceab6c7",
+        "filename": "libprocessgroup/profiles/task_profiles.json",
+        "patchSetId": 1
+      },
+      "lineNbr": 439,
+      "author": {
+        "id": 1324603
+      },
+      "writtenOn": "2022-04-19T06:31:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "cd16823d_8c1edbfc",
       "range": {
         "startLine": 439,
         "startChar": 15,
