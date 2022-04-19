@@ -16,6 +16,24 @@
       "message": "Did clang-format run? There is still missing spaces between \"if\" and \"(\" , as well as \")\" and \"{\".",
       "revId": "9f47bd02bd072511ae77c1de0291fc431f3a58b7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1e20af49_b501f3f7",
+        "filename": "init/devices.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 334,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-04-19T01:51:51Z",
+      "side": 1,
+      "message": "I guess not. zexin hou@, please run the clang format as configured. Don\u0027t use \"--no-verify\" when uploading.",
+      "parentUuid": "0590ee67_1280efca",
+      "revId": "9f47bd02bd072511ae77c1de0291fc431f3a58b7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
