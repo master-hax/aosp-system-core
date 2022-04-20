@@ -190,6 +190,7 @@ on init
     chown system system /dev/cpuctl/system/cgroup.procs
     chown system system /dev/cpuctl/system-background/cgroup.procs
     chown system system /dev/cpuctl/dex2oat/cgroup.procs
+    chmod 0770 /dev/cpuctl
     chmod 0664 /dev/cpuctl/tasks
     chmod 0664 /dev/cpuctl/foreground/tasks
     chmod 0664 /dev/cpuctl/background/tasks
