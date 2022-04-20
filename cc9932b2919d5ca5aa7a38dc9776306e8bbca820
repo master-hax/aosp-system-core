@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9728982f_33d34a95",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-04-20T08:38:59Z",
+      "side": 1,
+      "message": "Hey Suren,\n\nYou correctly advised me to use reserve(), but I didn\u0027t and did it in a wrong way :( Now I am fixing it.",
+      "revId": "cc9932b2919d5ca5aa7a38dc9776306e8bbca820",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
