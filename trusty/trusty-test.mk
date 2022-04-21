@@ -15,5 +15,6 @@
 PRODUCT_PACKAGES += \
 	keymaster_soft_attestation_keys.xml \
 	spiproxyd \
+	trusty-flow-control-test \
 	trusty_driver_test \
 	trusty_keymaster_set_attestation_key \
