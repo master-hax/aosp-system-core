@@ -33,6 +33,24 @@
       "message": "(it was lost when you uploaded ps2...)",
       "revId": "1e0969997a7f992f79e975f391a4810ff10e63d7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "354aea69_49a19f52",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1453063
+      },
+      "writtenOn": "2022-04-21T18:12:31Z",
+      "side": 1,
+      "message": "I thought they were sticky nowadays, hmm",
+      "parentUuid": "6a37e937_ae50c870",
+      "revId": "1e0969997a7f992f79e975f391a4810ff10e63d7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
