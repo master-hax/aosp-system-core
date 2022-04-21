@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "96c8f293_7b9130c1",
+        "filename": "init/ueventd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 324,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-04-21T18:19:34Z",
+      "side": 1,
+      "message": "maybe be a bit clearer for non-native speakers and explicitly say \"Please move your configuration file to BLAH instead.\"?",
+      "range": {
+        "startLine": 324,
+        "startChar": 57,
+        "endLine": 324,
+        "endChar": 63
+      },
+      "revId": "80cb0d486296b299bca5562acbd31b86d6ab98b3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
