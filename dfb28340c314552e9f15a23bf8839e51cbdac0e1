@@ -98,6 +98,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "6675b6fb_4c9bb1a5",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1880185
+      },
+      "writtenOn": "2022-04-21T21:15:08Z",
+      "side": 1,
+      "message": "There are codes still using \u003cutils/Mutex.h\u003e, e.g.audioflinger.\nI create a bug b/230015765 with a test program to show the timeout will not works when system clock race condition hit.",
+      "parentUuid": "9e2118e5_f7207dd5",
+      "range": {
+        "startLine": 12,
+        "startChar": 17,
+        "endLine": 12,
+        "endChar": 25
+      },
+      "revId": "dfb28340c314552e9f15a23bf8839e51cbdac0e1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "27ed9d5d_a9f158a8",
         "filename": "libutils/include/utils/Mutex.h",
         "patchSetId": 1
