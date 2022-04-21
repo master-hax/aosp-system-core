@@ -120,9 +120,10 @@ class SetAttributeAction : public ProfileAction {
     bool optional_;
 };
 
-// Set cgroup profile element
-class SetCgroupAction : public ProfileAction {
+// Abstract profile element for cached fd
+class CachedFdProfileAction : public ProfileAction {
   public:
+<<<<<<< HEAD   (ed24f0 Merge "[automerger skipped] libprocessgroup: Prevent error s)
     SetCgroupAction(const CgroupController& c, const std::string& p);
 
     const char* Name() const override { return "SetCgroup"; }
@@ -130,24 +131,52 @@ class SetCgroupAction : public ProfileAction {
     bool ExecuteForTask(int tid) const override;
     void EnableResourceCaching(ResourceCacheType cache_type) override;
     void DropResourceCaching(ResourceCacheType cache_type) override;
+=======
+    virtual void EnableResourceCaching();
+    virtual void DropResourceCaching();
+>>>>>>> BRANCH (145835 libprocessgroup: Use WriteStringToFd for WriteFileAction)
 
+<<<<<<< HEAD   (ed24f0 Merge "[automerger skipped] libprocessgroup: Prevent error s)
     const CgroupController* controller() const { return &controller_; }
 
   private:
     CgroupController controller_;
     std::string path_;
     android::base::unique_fd fd_[ProfileAction::RCT_COUNT];
+=======
+  protected:
+    enum FdState {
+        FDS_INACCESSIBLE = -1,
+        FDS_APP_DEPENDENT = -2,
+        FDS_NOT_CACHED = -3,
+    };
+
+    android::base::unique_fd fd_;
+>>>>>>> BRANCH (145835 libprocessgroup: Use WriteStringToFd for WriteFileAction)
     mutable std::mutex fd_mutex_;
 
+<<<<<<< HEAD   (ed24f0 Merge "[automerger skipped] libprocessgroup: Prevent error s)
     static bool AddTidToCgroup(int tid, int fd, const char* controller_name);
     CacheUseResult UseCachedFd(ResourceCacheType cache_type, int id) const;
+=======
+    static bool IsAppDependentPath(const std::string& path);
+
+    void InitFd(const std::string& path);
+    bool IsFdValid() const { return fd_ > FDS_INACCESSIBLE; }
+
+    virtual const std::string GetPath() const = 0;
+>>>>>>> BRANCH (145835 libprocessgroup: Use WriteStringToFd for WriteFileAction)
 };
 
-// Write to file action
-class WriteFileAction : public ProfileAction {
+// Set cgroup profile element
+class SetCgroupAction : public CachedFdProfileAction {
   public:
+<<<<<<< HEAD   (ed24f0 Merge "[automerger skipped] libprocessgroup: Prevent error s)
     WriteFileAction(const std::string& task_path, const std::string& proc_path,
                     const std::string& value, bool logfailures);
+=======
+    SetCgroupAction(const CgroupController& c, const std::string& p);
+>>>>>>> BRANCH (145835 libprocessgroup: Use WriteStringToFd for WriteFileAction)
 
     const char* Name() const override { return "WriteFile"; }
     bool ExecuteForProcess(uid_t uid, pid_t pid) const override;
@@ -155,15 +184,48 @@ class WriteFileAction : public ProfileAction {
     void EnableResourceCaching(ResourceCacheType cache_type) override;
     void DropResourceCaching(ResourceCacheType cache_type) override;
 
+    const CgroupController* controller() const { return &controller_; }
+
+  protected:
+    const std::string GetPath() const override { return controller_.GetTasksFilePath(path_); }
+
   private:
+<<<<<<< HEAD   (ed24f0 Merge "[automerger skipped] libprocessgroup: Prevent error s)
     std::string task_path_, proc_path_, value_;
+=======
+    CgroupController controller_;
+    std::string path_;
+
+    static bool AddTidToCgroup(int tid, int fd, const char* controller_name);
+};
+
+// Write to file action
+class WriteFileAction : public CachedFdProfileAction {
+  public:
+    WriteFileAction(const std::string& path, const std::string& value, bool logfailures);
+
+    virtual bool ExecuteForProcess(uid_t uid, pid_t pid) const;
+    virtual bool ExecuteForTask(int tid) const;
+
+  protected:
+    const std::string GetPath() const override { return path_; }
+
+  private:
+    std::string path_, value_;
+>>>>>>> BRANCH (145835 libprocessgroup: Use WriteStringToFd for WriteFileAction)
     bool logfailures_;
+<<<<<<< HEAD   (ed24f0 Merge "[automerger skipped] libprocessgroup: Prevent error s)
     android::base::unique_fd fd_[ProfileAction::RCT_COUNT];
     mutable std::mutex fd_mutex_;
 
     bool WriteValueToFile(const std::string& value, ResourceCacheType cache_type, int uid, int pid,
                           bool logfailures) const;
     CacheUseResult UseCachedFd(ResourceCacheType cache_type, const std::string& value) const;
+=======
+
+    static bool WriteValueToFile(const std::string& value, const std::string& path,
+                                 bool logfailures);
+>>>>>>> BRANCH (145835 libprocessgroup: Use WriteStringToFd for WriteFileAction)
 };
 
 class TaskProfile {

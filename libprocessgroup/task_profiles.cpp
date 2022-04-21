@@ -225,11 +225,65 @@ bool SetAttributeAction::ExecuteForTask(int tid) const {
     return true;
 }
 
+<<<<<<< HEAD   (ed24f0 Merge "[automerger skipped] libprocessgroup: Prevent error s)
 SetCgroupAction::SetCgroupAction(const CgroupController& c, const std::string& p)
     : controller_(c), path_(p) {
     FdCacheHelper::Init(controller_.GetTasksFilePath(path_), fd_[ProfileAction::RCT_TASK]);
     // uid and pid don't matter because IsAppDependentPath ensures the path doesn't use them
     FdCacheHelper::Init(controller_.GetProcsFilePath(path_, 0, 0), fd_[ProfileAction::RCT_PROCESS]);
+=======
+void CachedFdProfileAction::EnableResourceCaching() {
+    std::lock_guard<std::mutex> lock(fd_mutex_);
+    if (fd_ != FDS_NOT_CACHED) {
+        return;
+    }
+
+    std::string tasks_path = GetPath();
+
+    if (access(tasks_path.c_str(), W_OK) != 0) {
+        // file is not accessible
+        fd_.reset(FDS_INACCESSIBLE);
+        return;
+    }
+
+    unique_fd fd(TEMP_FAILURE_RETRY(open(tasks_path.c_str(), O_WRONLY | O_CLOEXEC)));
+    if (fd < 0) {
+        PLOG(ERROR) << "Failed to cache fd '" << tasks_path << "'";
+        fd_.reset(FDS_INACCESSIBLE);
+        return;
+    }
+
+    fd_ = std::move(fd);
+}
+
+void CachedFdProfileAction::DropResourceCaching() {
+    std::lock_guard<std::mutex> lock(fd_mutex_);
+    if (fd_ == FDS_NOT_CACHED) {
+        return;
+    }
+
+    fd_.reset(FDS_NOT_CACHED);
+>>>>>>> BRANCH (145835 libprocessgroup: Use WriteStringToFd for WriteFileAction)
+}
+
+bool CachedFdProfileAction::IsAppDependentPath(const std::string& path) {
+    return path.find("<uid>", 0) != std::string::npos || path.find("<pid>", 0) != std::string::npos;
+}
+
+void CachedFdProfileAction::InitFd(const std::string& path) {
+    // file descriptors for app-dependent paths can't be cached
+    if (IsAppDependentPath(path)) {
+        // file descriptor is not cached
+        fd_.reset(FDS_APP_DEPENDENT);
+        return;
+    }
+    // file descriptor can be cached later on request
+    fd_.reset(FDS_NOT_CACHED);
+}
+
+SetCgroupAction::SetCgroupAction(const CgroupController& c, const std::string& p)
+    : controller_(c), path_(p) {
+    InitFd(controller_.GetTasksFilePath(path_));
 }
 
 bool SetCgroupAction::AddTidToCgroup(int tid, int fd, const char* controller_name) {
@@ -336,6 +390,7 @@ bool SetCgroupAction::ExecuteForTask(int tid) const {
     return true;
 }
 
+<<<<<<< HEAD   (ed24f0 Merge "[automerger skipped] libprocessgroup: Prevent error s)
 void SetCgroupAction::EnableResourceCaching(ResourceCacheType cache_type) {
     std::lock_guard<std::mutex> lock(fd_mutex_);
     // Return early to prevent unnecessary calls to controller_.Get{Tasks|Procs}FilePath() which
@@ -355,8 +410,15 @@ void SetCgroupAction::EnableResourceCaching(ResourceCacheType cache_type) {
             LOG(ERROR) << "Invalid cache type is specified!";
             break;
     }
+=======
+WriteFileAction::WriteFileAction(const std::string& path, const std::string& value,
+                                 bool logfailures)
+    : path_(path), value_(value), logfailures_(logfailures) {
+    InitFd(path_);
+>>>>>>> BRANCH (145835 libprocessgroup: Use WriteStringToFd for WriteFileAction)
 }
 
+<<<<<<< HEAD   (ed24f0 Merge "[automerger skipped] libprocessgroup: Prevent error s)
 void SetCgroupAction::DropResourceCaching(ResourceCacheType cache_type) {
     std::lock_guard<std::mutex> lock(fd_mutex_);
     FdCacheHelper::Drop(fd_[cache_type]);
@@ -375,7 +437,15 @@ bool WriteFileAction::WriteValueToFile(const std::string& value_, ResourceCacheT
 
     value = StringReplace(value, "<uid>", std::to_string(uid), true);
     value = StringReplace(value, "<pid>", std::to_string(pid), true);
+=======
+bool WriteFileAction::WriteValueToFile(const std::string& value, const std::string& path,
+                                       bool logfailures) {
+    // Use WriteStringToFd instead of WriteStringToFile because the latter will open file with
+    // O_TRUNC which causes kernfs_mutex contention
+    unique_fd tmp_fd(TEMP_FAILURE_RETRY(open(path.c_str(), O_WRONLY | O_CLOEXEC)));
+>>>>>>> BRANCH (145835 libprocessgroup: Use WriteStringToFd for WriteFileAction)
 
+<<<<<<< HEAD   (ed24f0 Merge "[automerger skipped] libprocessgroup: Prevent error s)
     CacheUseResult result = UseCachedFd(cache_type, value);
 
     if (result != ProfileAction::UNUSED) {
@@ -395,6 +465,15 @@ bool WriteFileAction::WriteValueToFile(const std::string& value_, ResourceCacheT
 
     if (tmp_fd < 0) {
         if (logfailures) PLOG(WARNING) << "Failed to open " << path;
+=======
+    if (tmp_fd < 0) {
+        if (logfailures) PLOG(WARNING) << "Failed to open " << path;
+        return false;
+    }
+
+    if (!WriteStringToFd(value, tmp_fd)) {
+        if (logfailures) PLOG(ERROR) << "Failed to write '" << value << "' to " << path;
+>>>>>>> BRANCH (145835 libprocessgroup: Use WriteStringToFd for WriteFileAction)
         return false;
     }
 
@@ -471,14 +550,57 @@ bool WriteFileAction::ExecuteForProcess(uid_t uid, pid_t pid) const {
     return true;
 }
 
-bool WriteFileAction::ExecuteForTask(int tid) const {
-    return WriteValueToFile(value_, ProfileAction::RCT_TASK, getuid(), tid, logfailures_);
+bool WriteFileAction::ExecuteForProcess(uid_t uid, pid_t pid) const {
+    std::lock_guard<std::mutex> lock(fd_mutex_);
+    std::string value(value_);
+    std::string path(path_);
+
+    value = StringReplace(value, "<uid>", std::to_string(uid), true);
+    value = StringReplace(value, "<pid>", std::to_string(pid), true);
+    path = StringReplace(path, "<uid>", std::to_string(uid), true);
+    path = StringReplace(path, "<pid>", std::to_string(pid), true);
+
+    return WriteValueToFile(value, path, logfailures_);
 }
 
+bool WriteFileAction::ExecuteForTask(int tid) const {
+<<<<<<< HEAD   (ed24f0 Merge "[automerger skipped] libprocessgroup: Prevent error s)
+    return WriteValueToFile(value_, ProfileAction::RCT_TASK, getuid(), tid, logfailures_);
+}
+=======
+    std::lock_guard<std::mutex> lock(fd_mutex_);
+    std::string value(value_);
+    int uid = getuid();
+>>>>>>> BRANCH (145835 libprocessgroup: Use WriteStringToFd for WriteFileAction)
+
+<<<<<<< HEAD   (ed24f0 Merge "[automerger skipped] libprocessgroup: Prevent error s)
 void WriteFileAction::EnableResourceCaching(ResourceCacheType cache_type) {
     std::lock_guard<std::mutex> lock(fd_mutex_);
     if (fd_[cache_type] != FdCacheHelper::FDS_NOT_CACHED) {
         return;
+=======
+    value = StringReplace(value, "<uid>", std::to_string(uid), true);
+    value = StringReplace(value, "<pid>", std::to_string(tid), true);
+
+    if (IsFdValid()) {
+        // fd is cached, reuse it
+        if (!WriteStringToFd(value, fd_)) {
+            if (logfailures_) PLOG(ERROR) << "Failed to write '" << value << "' to " << path_;
+            return false;
+        }
+        return true;
+    }
+
+    if (fd_ == FDS_INACCESSIBLE) {
+        // no permissions to access the file, ignore
+        return true;
+    }
+
+    if (fd_ == FDS_APP_DEPENDENT) {
+        // application-dependent path can't be used with tid
+        PLOG(ERROR) << "Application profile can't be applied to a thread";
+        return false;
+>>>>>>> BRANCH (145835 libprocessgroup: Use WriteStringToFd for WriteFileAction)
     }
     switch (cache_type) {
         case (ProfileAction::RCT_TASK):
@@ -493,9 +615,13 @@ void WriteFileAction::EnableResourceCaching(ResourceCacheType cache_type) {
     }
 }
 
+<<<<<<< HEAD   (ed24f0 Merge "[automerger skipped] libprocessgroup: Prevent error s)
 void WriteFileAction::DropResourceCaching(ResourceCacheType cache_type) {
     std::lock_guard<std::mutex> lock(fd_mutex_);
     FdCacheHelper::Drop(fd_[cache_type]);
+=======
+    return WriteValueToFile(value, path_, logfailures_);
+>>>>>>> BRANCH (145835 libprocessgroup: Use WriteStringToFd for WriteFileAction)
 }
 
 bool ApplyProfileAction::ExecuteForProcess(uid_t uid, pid_t pid) const {
