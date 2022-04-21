@@ -122,6 +122,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "9e1c9ddd_62a42d2f",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-04-21T21:19:30Z",
+      "side": 1,
+      "message": "yeah, we understand the problem in theory (and fixed it for std::mutex), but my point is that -- afaict -- you\u0027ve not hit this in _practice_. are you writing new code?",
+      "parentUuid": "6675b6fb_4c9bb1a5",
+      "range": {
+        "startLine": 12,
+        "startChar": 17,
+        "endLine": 12,
+        "endChar": 25
+      },
+      "revId": "dfb28340c314552e9f15a23bf8839e51cbdac0e1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "27ed9d5d_a9f158a8",
         "filename": "libutils/include/utils/Mutex.h",
         "patchSetId": 1
