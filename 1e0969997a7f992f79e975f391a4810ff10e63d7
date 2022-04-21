@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "084fd602_211d3708",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1453063
+      },
+      "writtenOn": "2022-04-21T17:55:15Z",
+      "side": 1,
+      "message": "not sure why CR+2 got dropped, @cferris, would you mind stamping again? thanks.",
+      "revId": "1e0969997a7f992f79e975f391a4810ff10e63d7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
