@@ -146,6 +146,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "6f32c411_b510000d",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1880185
+      },
+      "writtenOn": "2022-04-21T21:29:31Z",
+      "side": 1,
+      "message": "Not writing new code, just safe-guard for existing code.",
+      "parentUuid": "9e1c9ddd_62a42d2f",
+      "range": {
+        "startLine": 12,
+        "startChar": 17,
+        "endLine": 12,
+        "endChar": 25
+      },
+      "revId": "dfb28340c314552e9f15a23bf8839e51cbdac0e1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "27ed9d5d_a9f158a8",
         "filename": "libutils/include/utils/Mutex.h",
         "patchSetId": 1
