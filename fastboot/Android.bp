@@ -363,7 +363,7 @@ cc_binary_host {
 cc_test_host {
     name: "fastboot_test",
     defaults: ["fastboot_host_defaults"],
-
+    isolated: false,
     srcs: [
         "fastboot_test.cpp",
         "socket_mock.cpp",
