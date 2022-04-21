@@ -232,6 +232,42 @@ SetCgroupAction::SetCgroupAction(const CgroupController& c, const std::string& p
     FdCacheHelper::Init(controller_.GetProcsFilePath(path_, 0, 0), fd_[ProfileAction::RCT_PROCESS]);
 }
 
+<<<<<<< HEAD   (ff331c Merge "Update for SetProcessMemory removal.")
+=======
+void SetCgroupAction::EnableResourceCaching() {
+    std::lock_guard<std::mutex> lock(fd_mutex_);
+    if (fd_ != FDS_NOT_CACHED) {
+        return;
+    }
+
+    std::string tasks_path = controller_.GetTasksFilePath(path_);
+
+    if (access(tasks_path.c_str(), W_OK) != 0) {
+        // file is not accessible
+        fd_.reset(FDS_INACCESSIBLE);
+        return;
+    }
+
+    unique_fd fd(TEMP_FAILURE_RETRY(open(tasks_path.c_str(), O_WRONLY | O_CLOEXEC)));
+    if (fd < 0) {
+        PLOG(ERROR) << "Failed to cache fd '" << tasks_path << "'";
+        fd_.reset(FDS_INACCESSIBLE);
+        return;
+    }
+
+    fd_ = std::move(fd);
+}
+
+void SetCgroupAction::DropResourceCaching() {
+    std::lock_guard<std::mutex> lock(fd_mutex_);
+    if (fd_ == FDS_NOT_CACHED) {
+        return;
+    }
+
+    fd_.reset(FDS_NOT_CACHED);
+}
+
+>>>>>>> BRANCH (ea98b6 libprocessgroup: Prevent error spam when tests disable all c)
 bool SetCgroupAction::AddTidToCgroup(int tid, int fd, const char* controller_name) {
     if (tid <= 0) {
         return true;
@@ -265,6 +301,7 @@ bool SetCgroupAction::AddTidToCgroup(int tid, int fd, const char* controller_nam
     }
 
     return false;
+<<<<<<< HEAD   (ff331c Merge "Update for SetProcessMemory removal.")
 }
 
 ProfileAction::CacheUseResult SetCgroupAction::UseCachedFd(ResourceCacheType cache_type,
@@ -292,6 +329,8 @@ ProfileAction::CacheUseResult SetCgroupAction::UseCachedFd(ResourceCacheType cac
     }
 
     return ProfileAction::UNUSED;
+=======
+>>>>>>> BRANCH (ea98b6 libprocessgroup: Prevent error spam when tests disable all c)
 }
 
 bool SetCgroupAction::ExecuteForProcess(uid_t uid, pid_t pid) const {
@@ -316,9 +355,20 @@ bool SetCgroupAction::ExecuteForProcess(uid_t uid, pid_t pid) const {
 }
 
 bool SetCgroupAction::ExecuteForTask(int tid) const {
+<<<<<<< HEAD   (ff331c Merge "Update for SetProcessMemory removal.")
     CacheUseResult result = UseCachedFd(ProfileAction::RCT_TASK, tid);
     if (result != ProfileAction::UNUSED) {
         return result == ProfileAction::SUCCESS;
+=======
+    std::lock_guard<std::mutex> lock(fd_mutex_);
+    if (IsFdValid()) {
+        // fd is cached, reuse it
+        if (!AddTidToCgroup(tid, fd_, controller()->name())) {
+            LOG(ERROR) << "Failed to add task into cgroup";
+            return false;
+        }
+        return true;
+>>>>>>> BRANCH (ea98b6 libprocessgroup: Prevent error spam when tests disable all c)
     }
 
     // fd was not cached or cached fd can't be used

@@ -139,8 +139,15 @@ class SetCgroupAction : public ProfileAction {
     android::base::unique_fd fd_[ProfileAction::RCT_COUNT];
     mutable std::mutex fd_mutex_;
 
+<<<<<<< HEAD   (ff331c Merge "Update for SetProcessMemory removal.")
     static bool AddTidToCgroup(int tid, int fd, const char* controller_name);
     CacheUseResult UseCachedFd(ResourceCacheType cache_type, int id) const;
+=======
+    static bool IsAppDependentPath(const std::string& path);
+    static bool AddTidToCgroup(int tid, int fd, const char* controller_name);
+
+    bool IsFdValid() const { return fd_ > FDS_INACCESSIBLE; }
+>>>>>>> BRANCH (ea98b6 libprocessgroup: Prevent error spam when tests disable all c)
 };
 
 // Write to file action
