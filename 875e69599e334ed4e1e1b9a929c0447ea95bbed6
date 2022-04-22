@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e30b78e1_d5410686",
+        "filename": "init/reboot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 765,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-04-22T17:21:53Z",
+      "side": 1,
+      "message": "What if the data partition is not F2FS.. for example on upgrading devices?",
+      "range": {
+        "startLine": 763,
+        "startChar": 0,
+        "endLine": 765,
+        "endChar": 54
+      },
+      "revId": "875e69599e334ed4e1e1b9a929c0447ea95bbed6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
