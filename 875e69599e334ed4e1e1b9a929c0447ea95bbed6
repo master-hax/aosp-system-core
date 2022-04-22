@@ -22,6 +22,30 @@
       },
       "revId": "875e69599e334ed4e1e1b9a929c0447ea95bbed6",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "da862d8c_1b0ee5b9",
+        "filename": "init/reboot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 765,
+      "author": {
+        "id": 1176763
+      },
+      "writtenOn": "2022-04-22T19:56:35Z",
+      "side": 1,
+      "message": "How about checking the filesystem type like this?",
+      "parentUuid": "e30b78e1_d5410686",
+      "range": {
+        "startLine": 763,
+        "startChar": 0,
+        "endLine": 765,
+        "endChar": 54
+      },
+      "revId": "875e69599e334ed4e1e1b9a929c0447ea95bbed6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
