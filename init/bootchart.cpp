@@ -140,6 +140,13 @@ static void log_processes(FILE* log) {
 static void bootchart_thread_main() {
   LOG(INFO) << "Bootcharting started";
 
+  // Unshare the mount namespace of this thread so that the init process itself can switch
+  // the mount namespace later while this thread is still running.
+  // Otherwise, setns() call invoked as part of `enter_default_mount_ns` fails with EINVAL.
+  if (unshare(CLONE_NEWNS) == -1) {
+      PLOG(ERROR) << "Cannot create mount namespace";
+      return;
+  }
   // Open log files.
   auto stat_log = fopen_unique("/data/bootchart/proc_stat.log", "we");
   if (!stat_log) return;
