@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c1bf807d_c99002d7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-04-22T17:35:10Z",
+      "side": 1,
+      "message": "Did you check if bootchart captures work correctly (i.e. captures all events)?\n\nI wish we could minimize the number of things that run in the bootstrap mount namespace. Why can\u0027t we move bootchart start to after enter_default_mount_ns?",
+      "revId": "f1eee2a8515e7a3a4439b45494f8caf8da4e8db2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
