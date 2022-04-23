@@ -16,6 +16,24 @@
       "message": "Did you check if bootchart captures work correctly (i.e. captures all events)?\n\nI wish we could minimize the number of things that run in the bootstrap mount namespace. Why can\u0027t we move bootchart start to after enter_default_mount_ns?",
       "revId": "f1eee2a8515e7a3a4439b45494f8caf8da4e8db2",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "34958f80_506193e0",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2022-04-23T02:18:30Z",
+      "side": 1,
+      "message": "\u003e Did you check if bootchart captures work correctly (i.e. captures all events)?\n\nHmm, compared two captures (one without the change and the other with the change) and got the following:\n```\nprocess: baseline experiment (delta)\n - Unit is ms (a jiffy is 10 ms on the system)\n------------------------------------\n/system/bin/surfaceflinger: 4450 4510 (+60)\n/system/bin/bootanimation: 5150 5250 (+100)\nzygote64: 4120 4130 (+10)\nzygote: 4130 4130 (+0)\nsystem_server: 6870 6870 (+0)\nbootanimation ends at: 11490 11410 (-80)\n```\n\nLooks like there\u0027s no significant changes. I think this indicates bootchart worked as expected.\n\n\u003e I wish we could minimize the number of things that run in the bootstrap mount namespace. Why can\u0027t we move bootchart start to after enter_default_mount_ns?\n\nI think that when to start bootchart is a separate issue from making enter_default_mount_ns works even when bootchart is started before it. For now, we can have both (moving bootchart after enter_default_mount_ns AND this change). but with this change, we can change our mind in the future to move bootchart back to somewhere before enter_default_mount_ns without breaking.",
+      "parentUuid": "c1bf807d_c99002d7",
+      "revId": "f1eee2a8515e7a3a4439b45494f8caf8da4e8db2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
