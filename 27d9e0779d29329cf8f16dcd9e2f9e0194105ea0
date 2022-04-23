@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0a425d26_2a60faf4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1827146
+      },
+      "writtenOn": "2022-04-23T04:41:32Z",
+      "side": 1,
+      "message": "greetings colleagues\n\nplease take a look into the review\n\ninvestigation results are here\nhttps://b.corp.google.com/issues/219326874#comment22",
+      "revId": "27d9e0779d29329cf8f16dcd9e2f9e0194105ea0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
