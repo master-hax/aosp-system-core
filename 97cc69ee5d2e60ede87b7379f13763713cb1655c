@@ -1,5 +1,29 @@
 {
-  "comments": [],
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a1c2a2ef_8fdfa39b",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 834,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2022-04-25T03:27:19Z",
+      "side": 1,
+      "message": "btw, it\u0027s interesting that virtualizationservice is the only one experiencing the problem? (seeing so many mkdir\u0027s for other components without rmdir)",
+      "range": {
+        "startLine": 834,
+        "startChar": 4,
+        "endLine": 834,
+        "endChar": 9
+      },
+      "revId": "97cc69ee5d2e60ede87b7379f13763713cb1655c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ],
   "submitRequirementResults": [
     {
       "submitRequirement": {
