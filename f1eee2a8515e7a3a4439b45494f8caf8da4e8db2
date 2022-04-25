@@ -34,6 +34,24 @@
       "parentUuid": "c1bf807d_c99002d7",
       "revId": "f1eee2a8515e7a3a4439b45494f8caf8da4e8db2",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "56db4cca_5abe1ba3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-04-25T01:12:48Z",
+      "side": 1,
+      "message": "Running something in a separate mount namespace has many implications. Most notably, it doesn\u0027t receive mount and unmount events happening in other (e.g. main) mount namespaces unless the events are happening under a sharable mount. In case of bootchart, that might not be an issue since all it does is reading /proc/* and emitting outputs to /data... but that is highly dependent on how bootchart is implemented.\n\nSo, I will +2 this, but please amend the comment to explain why unshare is safe here.",
+      "parentUuid": "34958f80_506193e0",
+      "revId": "f1eee2a8515e7a3a4439b45494f8caf8da4e8db2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
