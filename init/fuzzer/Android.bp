@@ -92,3 +92,11 @@ cc_fuzz {
         componentid: 155276,
     },
 }
+
+cc_fuzz{
+    name: "init_ueventd_fuzzer",
+    srcs: [
+        "init_ueventd_fuzzer.cpp",
+    ],
+    defaults: ["libinit_defaults"],
+}
