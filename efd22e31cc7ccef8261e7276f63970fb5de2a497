@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "0e3a0f6b_92c4a45f",
+        "filename": "init/fuzzer/Android.bp",
+        "patchSetId": 5
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 1890836
+      },
+      "writtenOn": "2022-04-26T04:38:47Z",
+      "side": 1,
+      "message": "1. Email alias \"android-media-fuzzing-reports@google.com\" and componentId 155276 have already been added in fuzz_config field in the Android.bp of all the fuzz targets\n2. Seed corpus if applicable will be uploaded based on the fuzzer. For the current fuzzer, FuzzedDataProvider is used to derive the arguments and decide the order of APIs and hence seed corpus is not applicable",
+      "parentUuid": "bf81ea38_73bff8cd",
+      "range": {
+        "startLine": 96,
+        "startChar": 0,
+        "endLine": 96,
+        "endChar": 7
+      },
+      "revId": "efd22e31cc7ccef8261e7276f63970fb5de2a497",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "b1edd16e_79e80a43",
         "filename": "init/fuzzer/init_ueventd_fuzzer.cpp",
         "patchSetId": 5
@@ -37,6 +61,30 @@
       "writtenOn": "2022-04-14T23:49:43Z",
       "side": 1,
       "message": "There is room for randomization in this method.",
+      "range": {
+        "startLine": 149,
+        "startChar": 24,
+        "endLine": 149,
+        "endChar": 31
+      },
+      "revId": "efd22e31cc7ccef8261e7276f63970fb5de2a497",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e77e22af_1e72ff91",
+        "filename": "init/fuzzer/init_ueventd_fuzzer.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 149,
+      "author": {
+        "id": 1890836
+      },
+      "writtenOn": "2022-04-26T04:38:47Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b1edd16e_79e80a43",
       "range": {
         "startLine": 149,
         "startChar": 24,
