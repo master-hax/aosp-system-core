@@ -22,6 +22,30 @@
       },
       "revId": "095b864b0207d02cc6a7715d10785c753e387dd7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "68afbc25_a908b02b",
+        "filename": "init/fuzzer/Android.bp",
+        "patchSetId": 6
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1890836
+      },
+      "writtenOn": "2022-04-26T04:38:25Z",
+      "side": 1,
+      "message": "1. Email alias \"android-media-fuzzing-reports@google.com\" and componentId 155276 have already been added in fuzz_config field in the Android.bp of all the fuzz targets\n2. Seed corpus if applicable will be uploaded based on the fuzzer. For the current fuzzer, FuzzedDataProvider is used to derive the arguments and decide the order of APIs and hence seed corpus is not applicable",
+      "parentUuid": "487b634f_e634e609",
+      "range": {
+        "startLine": 64,
+        "startChar": 0,
+        "endLine": 64,
+        "endChar": 7
+      },
+      "revId": "095b864b0207d02cc6a7715d10785c753e387dd7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
