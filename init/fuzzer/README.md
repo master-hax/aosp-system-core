@@ -4,6 +4,7 @@
 + [init_parser_fuzzer](#InitParser)
 + [init_property_fuzzer](#InitProperty)
 + [init_ueventHandler_fuzzer](#InitUeventHandler)
++ [init_blockDev_fuzzer](#InitBlockDev)
 
 # <a name="InitParser"></a> Fuzzer for InitParser
 
@@ -95,4 +96,24 @@ $ mm -j$(nproc) init_ueventHandler_fuzzer
 ```
 $ adb sync data
 $ adb shell /data/fuzz/arm64/init_ueventHandler_fuzzer/init_ueventHandler_fuzzer
+```
+
+# <a name="InitBlockDev"></a> Fuzzer for InitBlockDev
+
+InitBlockDev supports the following parameters:
+  DeviceSet (parameter name: "devices")
+
+| Parameter| Valid Values |Configured Value|
+|-------------|----------|----- |
+| `devices` | `String` | Value obtained from FuzzedDataProvider|
+
+#### Steps to run
+1. Build the fuzzer
+```
+  $ mm -j$(nproc) init_blockDev_fuzzer
+```
+2. Run on device
+```
+  $ adb sync data
+  $ adb shell /data/fuzz/arm64/init_blockDev_fuzzer/init_blockDev_fuzzer
 ```
