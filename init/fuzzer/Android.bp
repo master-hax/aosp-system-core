@@ -70,3 +70,25 @@ cc_fuzz {
         "libinit_defaults",
     ],
 }
+
+cc_fuzz {
+    name: "init_blockDev_fuzzer",
+    srcs: [
+        "init_blockDev_fuzzer.cpp",
+    ],
+    static_libs: [
+        "libsnapshot_init",
+        "libinit_no_poll_timeout",
+    ],
+    shared_libs: [
+        "libbase",
+        "libselinux",
+    ],
+    header_libs: ["libinit_headers"],
+    fuzz_config: {
+        cc: [
+            "android-media-fuzzing-reports@google.com",
+        ],
+        componentid: 155276,
+    },
+}
