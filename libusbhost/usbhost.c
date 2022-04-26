@@ -62,6 +62,8 @@
 
 #define MAX_USBFS_WD_COUNT      10
 
+static pthread_mutex_t usb_lock = PTHREAD_MUTEX_INITIALIZER;
+
 struct usb_host_context {
     int                         fd;
     usb_device_added_cb         cb_added;
@@ -724,6 +726,13 @@ void usb_request_free(struct usb_request *req)
 
 int usb_request_queue(struct usb_request *req)
 {
+    if (!req || !req->dev || !req->dev->fd) {
+        D("Null pointer error!\n");
+        return -1;
+    }
+
+    pthread_mutex_lock(&usb_lock);
+
     struct usbdevfs_urb *urb = (struct usbdevfs_urb*)req->private_data;
     int res;
 
@@ -731,10 +740,9 @@ int usb_request_queue(struct usb_request *req)
     urb->buffer = req->buffer;
     urb->buffer_length = req->buffer_length;
 
-    do {
-        res = ioctl(req->dev->fd, USBDEVFS_SUBMITURB, urb);
-    } while((res < 0) && (errno == EINTR));
+    res = TEMP_FAILURE_RETRY(ioctl(req->dev->fd, USBDEVFS_SUBMITURB, urb));
 
+    pthread_mutex_unlock(&usb_lock);
     return res;
 }
 
