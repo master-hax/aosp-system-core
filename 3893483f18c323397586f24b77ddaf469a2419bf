@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "ea8ec23f_1fcf271c",
+        "filename": "init/fuzzer/Android.bp",
+        "patchSetId": 3
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 1890836
+      },
+      "writtenOn": "2022-04-26T04:39:10Z",
+      "side": 1,
+      "message": "1. Email alias \"android-media-fuzzing-reports@google.com\" and componentId 155276 have already been added in fuzz_config field in the Android.bp of all the fuzz targets\n2. Seed corpus if applicable will be uploaded based on the fuzzer. For the current fuzzer, FuzzedDataProvider is used to derive the arguments and decide the order of APIs and hence seed corpus is not applicable",
+      "parentUuid": "acd10865_50fb6133",
+      "range": {
+        "startLine": 114,
+        "startChar": 0,
+        "endLine": 114,
+        "endChar": 7
+      },
+      "revId": "3893483f18c323397586f24b77ddaf469a2419bf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "b4ffd003_57df2057",
         "filename": "init/fuzzer/init_devices_fuzzer.cpp",
         "patchSetId": 3
@@ -37,6 +61,30 @@
       "writtenOn": "2022-04-14T23:44:25Z",
       "side": 1,
       "message": "Consider randomizing these 3 blocks.",
+      "range": {
+        "startLine": 90,
+        "startChar": 0,
+        "endLine": 101,
+        "endChar": 41
+      },
+      "revId": "3893483f18c323397586f24b77ddaf469a2419bf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c5207cab_da0ced21",
+        "filename": "init/fuzzer/init_devices_fuzzer.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 1890836
+      },
+      "writtenOn": "2022-04-26T04:39:10Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b4ffd003_57df2057",
       "range": {
         "startLine": 90,
         "startChar": 0,
