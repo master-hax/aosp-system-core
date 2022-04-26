@@ -5,6 +5,7 @@
 + [init_property_fuzzer](#InitProperty)
 + [init_ueventHandler_fuzzer](#InitUeventHandler)
 + [init_blockDev_fuzzer](#InitBlockDev)
++ [init_ueventd_fuzzer](#InitUeventD)
 
 # <a name="InitParser"></a> Fuzzer for InitParser
 
@@ -117,3 +118,28 @@ InitBlockDev supports the following parameters:
   $ adb sync data
   $ adb shell /data/fuzz/arm64/init_blockDev_fuzzer/init_blockDev_fuzzer
 ```
+
+# <a name="InitUeventD"></a> Fuzzer for InitUeventD
+
+InitParser supports the following parameters:
+1. ValidPathNames (parameter name: "kValidPaths")
+2. ValidFscryptRefPath (parameter name: "kFscryptRefPath")
+3. ValidNamespace (parameter name: "kNamespace")
+4. FscryptActions (parameter name: "kActions")
+
+| Parameter| Valid Values| Configured Value|
+|------------- |-------------| ----- |
+|`kValidPaths`| 0.`/apex/`,<br/> 1.`/vendor/` 2.`/system/` |Value obtained from FuzzedDataProvider|
+|`kFscryptRefPath`| 0.`ref`,<br/> 1.`/unencrypted/per_boot_ref` |Value obtained from FuzzedDataProvider|
+|`kNamespace`| 0.`MountNamespace::NS_BOOTSTRAP`,<br/> 1.`MountNamespace::NS_DEFAULT` |Value obtained from FuzzedDataProvider|
+|`kAction`| 0.`FscryptAction::kNone`,<br/> 1.`FscryptAction::kAttempt`,<br/> 2.`FscryptAction::kRequire`,<br/> 3.`FscryptAction::kDeleteIfNecessary` |Value obtained from FuzzedDataProvider|
+
+#### Steps to run
+1. Build the fuzzer
+```
+  $ mm -j$(nproc) init_ueventd_fuzzer
+```
+2. Run on device
+```
+  $ adb sync data
+  $ adb shell /data/fuzz/arm64/init_ueventd_fuzzer/init_ueventd_fuzzer
