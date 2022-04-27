@@ -300,11 +300,21 @@ static bool MkdirAndChown(const std::string& path, mode_t mode, uid_t uid, gid_t
 
         if (lchown(file_path.c_str(), uid, gid) < 0) {
             PLOG(ERROR) << "lchown failed for " << file_path;
+            // TODO: b/228160715 remove these checks once we understand the reason
+            // If only file disappeared from under us just ignore it and carry on
+            if (errno == ENOENT && access(path.c_str(), F_OK) == 0) {
+                continue;
+            }
             goto err;
         }
 
         if (fchmodat(AT_FDCWD, file_path.c_str(), mode, AT_SYMLINK_NOFOLLOW) != 0) {
             PLOG(ERROR) << "fchmodat failed for " << file_path;
+            // TODO: b/228160715 remove these checks once we understand the reason
+            // If only file disappeared from under us just ignore it and carry on
+            if (errno == ENOENT && access(path.c_str(), F_OK) == 0) {
+                continue;
+            }
             goto err;
         }
     }
