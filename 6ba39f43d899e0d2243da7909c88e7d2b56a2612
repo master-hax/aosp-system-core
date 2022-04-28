@@ -16,6 +16,24 @@
       "message": "Removing +2 because someone in our issue tracker pointed out that T events clash with a different defintion of T events in Chrome (see https://github.com/google/perfetto/issues/283). Can we change T and U to some pair of letters which do not appear in the Chrome JSON - see https://docs.google.com/document/d/1CvAClvFfyA5R-PhYUmn5OOQtYMH4h6I0nSsKchNAySU/preview for the spec for it.\n\nMaybe G and H or Y and Z?",
       "revId": "6ba39f43d899e0d2243da7909c88e7d2b56a2612",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cff98db6_e061ff77",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1938050
+      },
+      "writtenOn": "2022-04-28T18:21:52Z",
+      "side": 1,
+      "message": "Changed from T/U to G/H",
+      "parentUuid": "3ce942da_618ca41b",
+      "revId": "6ba39f43d899e0d2243da7909c88e7d2b56a2612",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
