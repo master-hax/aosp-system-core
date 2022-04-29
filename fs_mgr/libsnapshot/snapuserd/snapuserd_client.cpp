@@ -198,7 +198,6 @@ uint64_t SnapuserdClient::InitDmUserCow(const std::string& misc_name, const std:
                                         const std::string& backing_device,
                                         const std::string& base_path_merge) {
     std::vector<std::string> parts;
-
     if (base_path_merge.empty()) {
         parts = {"init", misc_name, cow_device, backing_device};
     } else {
