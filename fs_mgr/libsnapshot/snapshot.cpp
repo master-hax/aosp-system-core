@@ -3273,9 +3273,9 @@ Return SnapshotManager::CreateUpdateSnapshots(const DeltaArchiveManifest& manife
                 snapuserd_client_ = nullptr;
             }
         } else {
-            status.set_userspace_snapshots(!IsDmSnapshotTestingEnabled());
-            if (IsDmSnapshotTestingEnabled()) {
-                is_snapshot_userspace_ = false;
+            status.set_userspace_snapshots(IsDmSnapshotTestingEnabled() || IsUserspaceSnapshotsEnabled());
+            is_snapshot_userspace_ = false;
+            if (!IsDmSnapshotTestingEnabled()) {
                 LOG(INFO) << "User-space snapshots disabled for testing";
             } else {
                 is_snapshot_userspace_ = true;
@@ -4092,8 +4092,17 @@ bool SnapshotManager::WaitForDevice(const std::string& device,
 bool SnapshotManager::IsSnapuserdRequired() {
     auto lock = LockExclusive();
     if (!lock) return false;
-
+    const std::string UNKNOWN = "unknown";
     auto status = ReadSnapshotUpdateStatus(lock.get());
+    const std::string vendor_release = android::base::GetProperty(
+                    "ro.vendor.build.version.release_or_codename", UNKNOWN);
+
+    // No user-space snapshots if vendor partition is on Android 12
+    if (vendor_release.find("12") != std::string::npos) {
+        LOG(INFO) << "Userspace snapshots disabled as vendor partition is on Android: "
+                    << vendor_release;
+        return false;
+    }
     return status.state() != UpdateState::None && status.compression_enabled();
 }
 
