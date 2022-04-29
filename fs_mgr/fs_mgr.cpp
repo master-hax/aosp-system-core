@@ -82,6 +82,7 @@
 #define RESIZE2FS_BIN "/system/bin/resize2fs"
 
 #define FSCK_LOG_FILE   "/dev/fscklogs/log"
+#define FSCK_F2FS_LOG   "/dev/fscklogs/f2fs"
 
 #define ZRAM_CONF_DEV   "/sys/block/zram0/disksize"
 #define ZRAM_CONF_MCS   "/sys/block/zram0/max_comp_streams"
@@ -271,12 +272,12 @@ static void check_fs(const std::string& blk_device, const std::string& fs_type,
             LINFO << "Running " << F2FS_FSCK_BIN << " -f -c 10000 --debug-cache "
                   << realpath(blk_device);
             ret = logwrap_fork_execvp(ARRAY_SIZE(f2fs_fsck_forced_argv), f2fs_fsck_forced_argv,
-                                      &status, false, LOG_KLOG | LOG_FILE, false, nullptr);
+                                      &status, false, LOG_KLOG | LOG_FILE, false, FSCK_F2FS_LOG);
         } else {
             LINFO << "Running " << F2FS_FSCK_BIN << " -a -c 10000 --debug-cache "
                   << realpath(blk_device);
             ret = logwrap_fork_execvp(ARRAY_SIZE(f2fs_fsck_argv), f2fs_fsck_argv, &status, false,
-                                      LOG_KLOG | LOG_FILE, false, nullptr);
+                                      LOG_KLOG | LOG_FILE, false, FSCK_F2FS_LOG);
         }
         if (ret < 0) {
             /* No need to check for error in fork, we can't really handle it now */
