@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "35409fda_24adfdef",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 222,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-04-29T16:50:47Z",
+      "side": 1,
+      "message": "nit: usual style is ` \u003d\u003d -1`",
+      "range": {
+        "startLine": 222,
+        "startChar": 50,
+        "endLine": 222,
+        "endChar": 53
+      },
+      "revId": "49d8df54660ac4bd631fb0a3361158f45ae22c93",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "81c24375_06551165",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 227,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-04-29T16:50:47Z",
+      "side": 1,
+      "message": "did you want to log (at least while you\u0027re still debugging these issues?)",
+      "revId": "49d8df54660ac4bd631fb0a3361158f45ae22c93",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
