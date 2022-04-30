@@ -106,6 +106,24 @@
       "parentUuid": "a833e857_f66c592d",
       "revId": "431e35ef7c55fd18f8c0126014c75a6fe4efd3b5",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bee20c5f_45b49e48",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 2
+      },
+      "lineNbr": 1103,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-04-30T10:56:49Z",
+      "side": 1,
+      "message": "Ack. Then wouldn\u0027t this cause an unnecessary error on ext4-based devices (because the knob doesn\u0027t exist there)? \n\nFailing to write to a file is not a fatal error; init will go on (thus +1), but would be nicer if this is done only when f2fs is used.",
+      "parentUuid": "1bf5c6b3_3512901e",
+      "revId": "431e35ef7c55fd18f8c0126014c75a6fe4efd3b5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
