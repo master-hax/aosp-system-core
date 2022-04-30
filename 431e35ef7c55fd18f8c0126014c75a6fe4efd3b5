@@ -16,6 +16,24 @@
       "message": "Are you sure that this is a safe default value? (if so, could you add the rationale as a comment?) b/192011293 seems to be motivated by Pixel and F2FS and the performance test was done only for the configuration. But this setting is applied any Android device even if it doesn\u0027t use F2FS. I thought such a tuning should be done in vendor-specific rc files. Am I missing something?",
       "revId": "431e35ef7c55fd18f8c0126014c75a6fe4efd3b5",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6b3540f9_e9666227",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 2
+      },
+      "lineNbr": 1103,
+      "author": {
+        "id": 1176763
+      },
+      "writtenOn": "2022-04-30T09:26:10Z",
+      "side": 1,
+      "message": "I believe this can help all the f2fs-enabled devices, not just for Pixel. The risk is low, since this affects fadvise()+read() case only. The f2fs became the default since T, and no one has complained the above f2fs tunings like cp_interval so far. Am I missing any from OEMs?",
+      "parentUuid": "1801a83f_6894888f",
+      "revId": "431e35ef7c55fd18f8c0126014c75a6fe4efd3b5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
