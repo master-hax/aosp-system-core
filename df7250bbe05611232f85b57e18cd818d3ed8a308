@@ -88,6 +88,24 @@
       "parentUuid": "83314997_39daa526",
       "revId": "df7250bbe05611232f85b57e18cd818d3ed8a308",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b2aefc87_8282eb3e",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 1176763
+      },
+      "writtenOn": "2022-04-30T10:41:22Z",
+      "side": 1,
+      "message": "I\u0027m saying I\u0027d like to kill it in both ext4 and f2fs. But, I couldn\u0027t do it for ext4, since I don\u0027t know who is using the stat. And, it requires lots of code changes such as selinux, BootReceiver, and so on.\n\nSo, I was thinking two approaches:\n1) keep fscklog for ext4 and f2fs, but remove BootReceiver report to keep the log for bug report.\n2) keep fscklog for ext4 along with BootReceiver, but add another log for f2fs only.",
+      "parentUuid": "8330a372_93f43367",
+      "revId": "df7250bbe05611232f85b57e18cd818d3ed8a308",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
