@@ -70,6 +70,24 @@
       "parentUuid": "a2aed131_bb7985fe",
       "revId": "df7250bbe05611232f85b57e18cd818d3ed8a308",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8330a372_93f43367",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-04-30T10:26:16Z",
+      "side": 1,
+      "message": "Sorry, but what you said doesn\u0027t explain the reason for such an inconsistent handling of log. If you think there\u0027s no benefit to keep the log in fsf2, why do you want to keep it for ext4? Why don\u0027t we drop the log for both filesystems?",
+      "parentUuid": "83314997_39daa526",
+      "revId": "df7250bbe05611232f85b57e18cd818d3ed8a308",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
