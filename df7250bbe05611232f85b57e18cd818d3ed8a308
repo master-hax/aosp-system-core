@@ -52,6 +52,24 @@
       "parentUuid": "95fbb7e4_3f2996af",
       "revId": "df7250bbe05611232f85b57e18cd818d3ed8a308",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "83314997_39daa526",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 1176763
+      },
+      "writtenOn": "2022-04-30T10:12:15Z",
+      "side": 1,
+      "message": "I don\u0027t see any benefit to keep the temp fscklog in f2fs, which was used only for ext4. See https://android.googlesource.com/platform/frameworks/base/+/e0b0bef/services/core/java/com/android/server/BootReceiver.java#247.\n\nPlease chime in, if there\u0027s any user to collect it, since there should have no report with f2fs for a long time. If there\u0027s no user, I\u0027d say we need to remove that obsolete code.\n\nOn the other hands, I realized that, it\u0027d be better to record the log in the bug report, which will be useful for debugging. Hence, I added another one.",
+      "parentUuid": "a2aed131_bb7985fe",
+      "revId": "df7250bbe05611232f85b57e18cd818d3ed8a308",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
