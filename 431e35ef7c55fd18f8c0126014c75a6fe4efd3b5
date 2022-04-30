@@ -52,6 +52,24 @@
       "parentUuid": "6b3540f9_e9666227",
       "revId": "431e35ef7c55fd18f8c0126014c75a6fe4efd3b5",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "234650c7_f923a66d",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 2
+      },
+      "lineNbr": 1103,
+      "author": {
+        "id": 1176763
+      },
+      "writtenOn": "2022-04-30T10:02:07Z",
+      "side": 1,
+      "message": "How much latency do you expect? Do we also need to migrate the above tunings into vendor rcs in all the products and hide them to OEMs having f2fs?\n\nfyi; what others such as memcg, zram, emmc, ufs, blkio,pass-through, /metadata, and so on?",
+      "parentUuid": "fda51267_55cf019a",
+      "revId": "431e35ef7c55fd18f8c0126014c75a6fe4efd3b5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
