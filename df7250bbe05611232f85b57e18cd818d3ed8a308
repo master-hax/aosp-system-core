@@ -34,6 +34,24 @@
       "parentUuid": "cb23a4bd_9c1a0e7a",
       "revId": "df7250bbe05611232f85b57e18cd818d3ed8a308",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a2aed131_bb7985fe",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-04-30T09:45:32Z",
+      "side": 1,
+      "message": "Hmm, actually I don\u0027t understand the rationale behind https://android-review.googlesource.com/c/platform/system/core/+/1943364\n\nb/210589189 doesn\u0027t seem to say anything about the reason why f2fs shouldn\u0027t be using the log file.\n\nMore fundamentally, could you please explain why we are okay with the log file being non-persistent when ext4 is used, but would like to keep the log for f2fs? What prevents us from having consistency across ext4 and f2fs regarding the log file?",
+      "parentUuid": "95fbb7e4_3f2996af",
+      "revId": "df7250bbe05611232f85b57e18cd818d3ed8a308",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
