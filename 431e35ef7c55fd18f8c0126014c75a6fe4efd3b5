@@ -88,6 +88,24 @@
       "parentUuid": "234650c7_f923a66d",
       "revId": "431e35ef7c55fd18f8c0126014c75a6fe4efd3b5",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1bf5c6b3_3512901e",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 2
+      },
+      "lineNbr": 1103,
+      "author": {
+        "id": 1176763
+      },
+      "writtenOn": "2022-04-30T10:47:03Z",
+      "side": 1,
+      "message": "This knob doesn\u0027t exist in ext4. IOWs, there\u0027s no impact to the ext4 devices.",
+      "parentUuid": "a833e857_f66c592d",
+      "revId": "431e35ef7c55fd18f8c0126014c75a6fe4efd3b5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
