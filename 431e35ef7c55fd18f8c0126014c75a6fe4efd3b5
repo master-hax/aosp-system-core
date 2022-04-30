@@ -34,6 +34,24 @@
       "parentUuid": "1801a83f_6894888f",
       "revId": "431e35ef7c55fd18f8c0126014c75a6fe4efd3b5",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fda51267_55cf019a",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 2
+      },
+      "lineNbr": 1103,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-04-30T09:34:36Z",
+      "side": 1,
+      "message": "This change has a side effect on upgrading OEM devices where /data is not formatted in F2FS.",
+      "parentUuid": "6b3540f9_e9666227",
+      "revId": "431e35ef7c55fd18f8c0126014c75a6fe4efd3b5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
