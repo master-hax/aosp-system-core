@@ -70,6 +70,24 @@
       "parentUuid": "fda51267_55cf019a",
       "revId": "431e35ef7c55fd18f8c0126014c75a6fe4efd3b5",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a833e857_f66c592d",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 2
+      },
+      "lineNbr": 1103,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-04-30T10:19:41Z",
+      "side": 1,
+      "message": "VSR mandates that a new release of Android platform shouldn\u0027t require an update to the existing vendor partition.\n\nAnd that\u0027s why I asked if this is a safe default value. If this is guaranteed to not harm existing OEM devices which have been (implicitly) relying on the kernel-defined default value (I don\u0027t know what that is though), and if that guarantee is true for not only f2fs, but also for ext4, we can keep this here. If not, this change would require a change in OEM\u0027s vendor partition and that is a VSR violation.\n\nBased on what you replied, it seems to be true for f2fs, but you didn\u0027t say anything about ext4. Could you make a confirmation?",
+      "parentUuid": "234650c7_f923a66d",
+      "revId": "431e35ef7c55fd18f8c0126014c75a6fe4efd3b5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
