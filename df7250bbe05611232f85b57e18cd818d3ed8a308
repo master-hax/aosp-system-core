@@ -141,6 +141,24 @@
       "parentUuid": "b2aefc87_8282eb3e",
       "revId": "df7250bbe05611232f85b57e18cd818d3ed8a308",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e590beae_d9d2ebc7",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 1041495
+      },
+      "writtenOn": "2022-05-02T06:35:34Z",
+      "side": 1,
+      "message": "\u003e However, I doubt if nobody will really be unhappy with this\n\nLooks like this change sprung from b/230637147, which is just me asking \"what does bug 210589189 say?\", and why aosp/1943364 did what it did. We didn\u0027t have access to that issue, and the commit message contained no details (an unfortunately common dilemma for those of us working on Android outside Google), so we couldn\u0027t determine whether the change was solving some observed _problem_ that we might risk reintroducing, or if it was just a matter of cleanup.\n\nThe background for wanting to know is that we\u0027ve carried a patch since Q where we also store f2fs fsck logs inside /dev/fscklogs/, with a filename based on the block device name (so as to keep logs for multiple filesystems). So there you have at least one data point for wanting to keep the logs even for f2fs. We do.",
+      "parentUuid": "dc16e3b3_bd37dbf1",
+      "revId": "df7250bbe05611232f85b57e18cd818d3ed8a308",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
