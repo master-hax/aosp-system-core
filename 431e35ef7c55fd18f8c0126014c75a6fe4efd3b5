@@ -124,6 +124,24 @@
       "parentUuid": "1bf5c6b3_3512901e",
       "revId": "431e35ef7c55fd18f8c0126014c75a6fe4efd3b5",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8abf4d6a_ac250f08",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 2
+      },
+      "lineNbr": 1103,
+      "author": {
+        "id": 1651802
+      },
+      "writtenOn": "2022-05-02T15:22:57Z",
+      "side": 1,
+      "message": "Sorry, I missed this conversation. I think we can go with this version now like other tunnables in init.rc and re-visit the whole filesystem specific tunnable later to consider Jiyong\u0027s comment.",
+      "parentUuid": "bee20c5f_45b49e48",
+      "revId": "431e35ef7c55fd18f8c0126014c75a6fe4efd3b5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
