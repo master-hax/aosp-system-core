@@ -39,6 +39,30 @@
       },
       "revId": "3aca50cb9ebc0eb3f6642abf076c9cdc54ea08d0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a42d346e_fbe69805",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 285,
+      "author": {
+        "id": 1176763
+      },
+      "writtenOn": "2022-05-03T22:32:30Z",
+      "side": 1,
+      "message": "Ah, not sure how to deal with. Just synced the above ext4 case.",
+      "parentUuid": "b93ac69e_c050cc53",
+      "range": {
+        "startLine": 285,
+        "startChar": 63,
+        "endLine": 285,
+        "endChar": 81
+      },
+      "revId": "3aca50cb9ebc0eb3f6642abf076c9cdc54ea08d0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
