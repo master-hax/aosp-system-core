@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0683cdbc_280004f2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1017430
+      },
+      "writtenOn": "2022-05-03T18:59:45Z",
+      "side": 1,
+      "message": "doesn\u0027t this still have a race when init creates a new process group because creating the process group and putting a process in there is not atomic?",
+      "revId": "4345f3f50adcea6f5e08842b7c949cd1770718e2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
