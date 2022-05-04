@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "eb726f4f_137055b6",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 4101,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-05-04T20:22:22Z",
+      "side": 1,
+      "message": "This check is disabling compression completely which doesn\u0027t sound right.\n\nWhat if Android 12 had compression enabled. Vendor S will still have compression enabled.",
+      "revId": "ee4a6b54e2d7d598ab67443d36b7e3154ead5775",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
