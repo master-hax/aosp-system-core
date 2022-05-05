@@ -22,6 +22,30 @@
       },
       "revId": "8ce8d636eb6183cb97f8e48bc0a6de72852f1867",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "38a7b9fa_1fc96eb8",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 2
+      },
+      "lineNbr": 1140,
+      "author": {
+        "id": 1894539
+      },
+      "writtenOn": "2022-05-05T07:23:38Z",
+      "side": 1,
+      "message": "I am wondering if a device without hotplug cpus may not trigger ueventd.",
+      "parentUuid": "81a1c263_20fede68",
+      "range": {
+        "startLine": 1138,
+        "startChar": 0,
+        "endLine": 1140,
+        "endChar": 68
+      },
+      "revId": "8ce8d636eb6183cb97f8e48bc0a6de72852f1867",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
