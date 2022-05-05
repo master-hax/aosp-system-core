@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "81a1c263_20fede68",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 2
+      },
+      "lineNbr": 1140,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2022-05-05T06:50:49Z",
+      "side": 1,
+      "message": "should we just remove this?\n\ndoes the ueventd cover this?\nhttp://cs/android/system/core/rootdir/ueventd.rc;l\u003d73;rcl\u003d393d3c57808ee820b9b8159b2ab601eb2448a25b\n\n/sys/devices/system/cpu/cpu*   cpufreq/scaling_max_freq   0664  system system",
+      "range": {
+        "startLine": 1138,
+        "startChar": 0,
+        "endLine": 1140,
+        "endChar": 68
+      },
+      "revId": "8ce8d636eb6183cb97f8e48bc0a6de72852f1867",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
