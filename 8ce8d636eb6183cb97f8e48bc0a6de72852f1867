@@ -46,6 +46,30 @@
       },
       "revId": "8ce8d636eb6183cb97f8e48bc0a6de72852f1867",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d62949ad_4bcc8f12",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 2
+      },
+      "lineNbr": 1140,
+      "author": {
+        "id": 1325114
+      },
+      "writtenOn": "2022-05-05T09:58:12Z",
+      "side": 1,
+      "message": "yeah. Likely cpu0 won\u0027t be hot-plugged in most architecture. This might explains why cpu0 remains 0660.",
+      "parentUuid": "38a7b9fa_1fc96eb8",
+      "range": {
+        "startLine": 1138,
+        "startChar": 0,
+        "endLine": 1140,
+        "endChar": 68
+      },
+      "revId": "8ce8d636eb6183cb97f8e48bc0a6de72852f1867",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
