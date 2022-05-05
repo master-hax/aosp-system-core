@@ -415,7 +415,8 @@ static void tune_reserved_size(const std::string& blk_device, const FstabEntry& 
     const uint64_t max_reserved_blocks = ext4_blocks_count(sb) * 0.02;
     uint64_t reserved_blocks = entry.reserved_size / EXT4_BLOCK_SIZE(sb);
 
-    if (reserved_blocks > max_reserved_blocks) {
+    // Virtual A/B devices may use /data as backing storage, so we don't limit its reserved size.
+    if (reserved_blocks > max_reserved_blocks && !android::base::GetBoolProperty("ro.virtual_ab.enabled", false)) {
         LWARNING << "Reserved blocks " << reserved_blocks << " is too large; "
                  << "capping to " << max_reserved_blocks;
         reserved_blocks = max_reserved_blocks;
