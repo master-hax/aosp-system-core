@@ -50,6 +50,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "89a9bbb0_1fd45b84",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-05-09T06:18:30Z",
+      "side": 1,
+      "message": "Ack. Could you amend the commit message to have a link to https://cs.android.com/android/platform/superproject/+/master:system/sepolicy/public/domain.te;drc\u003d8cd32cd93ef9624280ba23f5a1f3aacbe9b25c0a;l\u003d236 which shows that many processes have been having read access to these nodes already?",
+      "parentUuid": "89f47a21_c079d062",
+      "range": {
+        "startLine": 11,
+        "startChar": 18,
+        "endLine": 11,
+        "endChar": 22
+      },
+      "revId": "8ce8d636eb6183cb97f8e48bc0a6de72852f1867",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "51a9a895_c67c6d65",
         "filename": "/COMMIT_MSG",
         "patchSetId": 2
@@ -180,6 +204,30 @@
       "side": 1,
       "message": "Each cluster will share the same permissions.\n\n$ adb shell cat /sys/devices/system/cpu/cpufreq/policy0/affected_cpus                                                                                                          \n0 1 2 3\n$ adb shell cat /sys/devices/system/cpu/cpufreq/policy4/affected_cpus                                                                                                          \n4 5\n$ adb shell cat /sys/devices/system/cpu/cpufreq/policy6/affected_cpus                                                                                                          \n6 7",
       "parentUuid": "e7a17cfb_958eea8a",
+      "range": {
+        "startLine": 1138,
+        "startChar": 0,
+        "endLine": 1140,
+        "endChar": 68
+      },
+      "revId": "8ce8d636eb6183cb97f8e48bc0a6de72852f1867",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "66d32f0f_daa0e6b1",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 2
+      },
+      "lineNbr": 1140,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-05-09T06:18:30Z",
+      "side": 1,
+      "message": "Ack. Then could you amend the comment that this line below is for the initial cluster (cpu0...) that is not hot-plugged in most cases, and the rest of hot-plugged clusters are covered by ueventd?",
+      "parentUuid": "75a44844_2bdd744c",
       "range": {
         "startLine": 1138,
         "startChar": 0,
