@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e27fec6f_b99f7a81",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-05-10T05:27:28Z",
+      "side": 1,
+      "message": "if they are on \"boot\", but not when on \"init\" or similar. So I think we should eventually allow only apex-ready (and a few more like \"boot\").",
+      "range": {
+        "startLine": 14,
+        "startChar": 63,
+        "endLine": 14,
+        "endChar": 72
+      },
+      "revId": "ff796f31a0812afc1ea00059f3912ffb4fef48e4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
