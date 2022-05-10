@@ -308,6 +308,30 @@
       },
       "revId": "8ce8d636eb6183cb97f8e48bc0a6de72852f1867",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8e8ea07f_f0c3d8a3",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 2
+      },
+      "lineNbr": 1140,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2022-05-10T04:23:45Z",
+      "side": 1,
+      "message": "\u003e I am wondering if a device without hotplug cpus may not trigger ueventd.\n\n1) we don\u0027t do hotplug for s2idle devices. how does this work still?\n\ncoral:/ # ls -l /sys/devices/system/cpu/cpufreq/policy*/scaling_max_freq                                                                                           \n-rw-rw---- 1 system system 4096 2022-05-09 21:19 /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq\n-rw-rw-r-- 1 system system 4096 2022-05-09 21:19 /sys/devices/system/cpu/cpufreq/policy4/scaling_max_freq\n-rw-rw-r-- 1 system system 4096 2022-05-09 21:19 /sys/devices/system/cpu/cpufreq/policy7/scaling_max_freq\n\n2) the node is per cpufreq policy, why offline cpu would wipe a cpufreq node?\nafter cpu offlined, the node still exists on both cpu node and cpufreq node.\n\ncoral:/ # ls -l /sys/devices/system/cpu/cpu0/cpufreq                                                                                                               \nlrwxrwxrwx 1 root root 0 2022-05-09 21:19 /sys/devices/system/cpu/cpu0/cpufreq -\u003e ../cpufreq/policy0\n\n\ncoral:/ # ls -l /sys/devices/system/cpu/cpufreq/policy*/scaling_max_freq                                                                                           \n-rw-rw---- 1 system system 4096 2022-05-09 21:19 /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq\n-rw-rw-r-- 1 system system 4096 2022-05-09 21:19 /sys/devices/system/cpu/cpufreq/policy4/scaling_max_freq\n-rw-rw-r-- 1 system system 4096 2022-05-09 21:19 /sys/devices/system/cpu/cpufreq/policy7/scaling_max_freq\ncoral:/ # echo 0 \u003e /sys/devices/system/cpu/cpu4/online                                                                                                             \ncoral:/ # echo 0 \u003e /sys/devices/system/cpu/cpu5/online                                                                                                             \ncoral:/ # echo 0 \u003e /sys/devices/system/cpu/cpu6/online                                                                                                             \ncoral:/ # echo 0 \u003e /sys/devices/system/cpu/cpu7/online                                                                                                             \ncoral:/ # ls -l /sys/devices/system/cpu/cpufreq/policy*/scaling_max_freq                                                                                           \n-rw-rw---- 1 system system 4096 2022-05-09 21:19 /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq\n-rw-rw-r-- 1 system system 4096 2022-05-09 21:19 /sys/devices/system/cpu/cpufreq/policy4/scaling_max_freq\n-rw-rw-r-- 1 system system 4096 2022-05-09 21:19 /sys/devices/system/cpu/cpufreq/policy7/scaling_max_freq\ncoral:/ # ls -l /sys/devices/system/cpu/cpu4/cpufreq/scaling_max_freq                                                                                              \n-rw-rw-r-- 1 system system 4096 2022-05-09 21:19 /sys/devices/system/cpu/cpu4/cpufreq/scaling_max_freq\ncoral:/ # ls -l /sys/devices/system/cpu/cpu{4,5,6,7}/cpufreq/scaling_max_freq                                                                                      \n-rw-rw-r-- 1 system system 4096 2022-05-09 21:19 /sys/devices/system/cpu/cpu4/cpufreq/scaling_max_freq\n-rw-rw-r-- 1 system system 4096 2022-05-09 21:19 /sys/devices/system/cpu/cpu5/cpufreq/scaling_max_freq\n-rw-rw-r-- 1 system system 4096 2022-05-09 21:19 /sys/devices/system/cpu/cpu6/cpufreq/scaling_max_freq",
+      "parentUuid": "e12e8d11_808de8e3",
+      "range": {
+        "startLine": 1138,
+        "startChar": 0,
+        "endLine": 1140,
+        "endChar": 68
+      },
+      "revId": "8ce8d636eb6183cb97f8e48bc0a6de72852f1867",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
