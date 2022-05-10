@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0df2cd15_6db15715",
+        "filename": "init/init.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 315,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-05-10T05:33:02Z",
+      "side": 1,
+      "message": "Log something when the list is nil or file doesn\u0027t exist (or not accessible)?",
+      "range": {
+        "startLine": 315,
+        "startChar": 8,
+        "endLine": 315,
+        "endChar": 9
+      },
+      "revId": "65cf4f4635c2cf23fe87b743ee4bd9aac7db4a0b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
