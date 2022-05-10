@@ -119,6 +119,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "b22e53d5_d9c882ee",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1894539
+      },
+      "writtenOn": "2022-05-10T03:30:02Z",
+      "side": 1,
+      "message": "Checked on Cuttlefish and B3 device.",
+      "parentUuid": "51a9a895_c67c6d65",
+      "range": {
+        "startLine": 14,
+        "startChar": 6,
+        "endLine": 14,
+        "endChar": 11
+      },
+      "revId": "8ce8d636eb6183cb97f8e48bc0a6de72852f1867",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "81a1c263_20fede68",
