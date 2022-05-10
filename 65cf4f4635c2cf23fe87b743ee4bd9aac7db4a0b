@@ -22,6 +22,30 @@
       },
       "revId": "65cf4f4635c2cf23fe87b743ee4bd9aac7db4a0b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "185430d2_d4a7b357",
+        "filename": "init/init.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 315,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2022-05-10T06:22:59Z",
+      "side": 1,
+      "message": "Done. Added logging when failed to open xml file. Regarding the empty list, b/193885692.",
+      "parentUuid": "0df2cd15_6db15715",
+      "range": {
+        "startLine": 315,
+        "startChar": 8,
+        "endLine": 315,
+        "endChar": 9
+      },
+      "revId": "65cf4f4635c2cf23fe87b743ee4bd9aac7db4a0b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
