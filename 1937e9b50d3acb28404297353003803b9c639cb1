@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "74a5f724_6c0b4086",
+        "filename": "libutils/include/utils/Thread.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-05-10T23:15:10Z",
+      "side": 1,
+      "message": "worth adding \"Please consider std::thread instead for new code.\" here too?",
+      "revId": "1937e9b50d3acb28404297353003803b9c639cb1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
