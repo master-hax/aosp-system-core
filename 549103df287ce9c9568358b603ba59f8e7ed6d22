@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8e368bfe_6fb14fa0",
+        "filename": "init/action.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-05-10T05:18:03Z",
+      "side": 1,
+      "message": "CamelCase for consistency (yes, I see set_function_map, and a few more, but CamelCasing is dominant here.)",
+      "range": {
+        "startLine": 84,
+        "startChar": 9,
+        "endLine": 84,
+        "endChar": 21
+      },
+      "revId": "549103df287ce9c9568358b603ba59f8e7ed6d22",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d12c7a5a_26046412",
+        "filename": "init/init_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 280,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-05-10T05:18:03Z",
+      "side": 1,
+      "message": "on boot",
+      "range": {
+        "startLine": 280,
+        "startChar": 16,
+        "endLine": 280,
+        "endChar": 23
+      },
+      "revId": "549103df287ce9c9568358b603ba59f8e7ed6d22",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6dd8ed82_bf63cbad",
+        "filename": "init/reboot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 911,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-05-10T05:18:03Z",
+      "side": 1,
+      "message": "I don\u0027t understand why we do this upon userspace reboot. It\u0027s not your fault, but I just wanted to say that the comment at #895 is useless... and amending a useless comment is not worth.",
+      "range": {
+        "startLine": 895,
+        "startChar": 0,
+        "endLine": 911,
+        "endChar": 7
+      },
+      "revId": "549103df287ce9c9568358b603ba59f8e7ed6d22",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
