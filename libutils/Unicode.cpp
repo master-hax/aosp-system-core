@@ -222,6 +222,8 @@ int strncmp16(const char16_t *s1, const char16_t *s2, size_t n)
   return d;
 }
 
+#if !defined(__SSE4_2__)
+
 size_t strlen16(const char16_t *s)
 {
   const char16_t *ss = s;
@@ -242,6 +244,8 @@ size_t strnlen16(const char16_t *s, size_t maxlen)
   }
   return ss-s;
 }
+
+#endif  // !defined(__SSE4_2__)
 
 char16_t* strstr16(const char16_t* src, const char16_t* target)
 {
