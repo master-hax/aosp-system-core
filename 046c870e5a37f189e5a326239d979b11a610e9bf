@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "61c694f0_8dee1788",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 2
+      },
+      "lineNbr": 543,
+      "author": {
+        "id": 1455782
+      },
+      "writtenOn": "2022-05-10T20:04:03Z",
+      "side": 1,
+      "message": "Can we update system/core/init/README.md now too? There\u0027s a section \"Trigger Sequence\" which describes the non-builtin triggers used by init.rc.",
+      "revId": "046c870e5a37f189e5a326239d979b11a610e9bf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
