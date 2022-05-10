@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "01a12ad7_e112a453",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1069219
+      },
+      "writtenOn": "2022-05-10T09:27:30Z",
+      "side": 1,
+      "message": "PTL\n\nThis CL is to make strlen16() and strnlen16() faster on intel CPUs.",
+      "revId": "2834c978b4f42d0dd7a1f928ad8122bbfa1d3869",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
