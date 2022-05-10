@@ -20,6 +20,23 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "db71ce3e_eab63bed",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-05-10T17:41:36Z",
+      "side": 1,
+      "message": "i have a couple of high-level issues:\n\n1. (as mentioned on the bionic change) do we have a real-world case that this improves, or is this just speculative? a microbenchmark is fine _if it represents something that matters in the real world_, but not just \"because\".\n\n2. if this _does_ matter ... we should support the other architectures. (if there\u0027s a broader plan to find and fix more of these kinds of things, that might involve something like https://github.com/google/highway to make that easier.)\n\nin particular, this isn\u0027t even portable to 32-bit x86 or to newer x86-64 :-)",
+      "revId": "2834c978b4f42d0dd7a1f928ad8122bbfa1d3869",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "648cf14c_682fdd89",
         "filename": "libutils/Unicode_sse.cpp",
         "patchSetId": 2
