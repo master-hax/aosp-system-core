@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f6e3f278_dd62e5c5",
+        "filename": "init/action.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2022-05-10T05:34:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8e368bfe_6fb14fa0",
+      "range": {
+        "startLine": 84,
+        "startChar": 9,
+        "endLine": 84,
+        "endChar": 21
+      },
+      "revId": "549103df287ce9c9568358b603ba59f8e7ed6d22",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d12c7a5a_26046412",
@@ -47,6 +71,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "0e1e68d9_d5864fb8",
+        "filename": "init/init_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 280,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2022-05-10T05:34:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d12c7a5a_26046412",
+      "range": {
+        "startLine": 280,
+        "startChar": 16,
+        "endLine": 280,
+        "endChar": 23
+      },
+      "revId": "549103df287ce9c9568358b603ba59f8e7ed6d22",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "6dd8ed82_bf63cbad",
@@ -60,6 +108,30 @@
       "writtenOn": "2022-05-10T05:18:03Z",
       "side": 1,
       "message": "I don\u0027t understand why we do this upon userspace reboot. It\u0027s not your fault, but I just wanted to say that the comment at #895 is useless... and amending a useless comment is not worth.",
+      "range": {
+        "startLine": 895,
+        "startChar": 0,
+        "endLine": 911,
+        "endChar": 7
+      },
+      "revId": "549103df287ce9c9568358b603ba59f8e7ed6d22",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "41385425_b95462fe",
+        "filename": "init/reboot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 911,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2022-05-10T05:34:56Z",
+      "side": 1,
+      "message": "I\u0027m not sure if userspace reboot is still in use, but from my understanding, the code here resets what\u0027s from apexes after unmounting them all. After this, \u0027post-fs-data\u0027 is triggered and, hence, apexd will mount them all anew and init will parse APEX configs.",
+      "parentUuid": "6dd8ed82_bf63cbad",
       "range": {
         "startLine": 895,
         "startChar": 0,
