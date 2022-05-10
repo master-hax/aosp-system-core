@@ -332,6 +332,30 @@
       },
       "revId": "8ce8d636eb6183cb97f8e48bc0a6de72852f1867",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "28de5ced_589727c7",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 2
+      },
+      "lineNbr": 1140,
+      "author": {
+        "id": 1894539
+      },
+      "writtenOn": "2022-05-10T06:17:16Z",
+      "side": 1,
+      "message": "As Wei said, the ueventd will regenerate the uevents for all nodes in /sys/devices/. So ueventd.rc will cover all the 0664 permission cases. We don\u0027t need these lines in init.rc.\n\nWill have another patch to remove these lines since this commit is merged.\nSorry for the inconvenience.",
+      "parentUuid": "8e8ea07f_f0c3d8a3",
+      "range": {
+        "startLine": 1138,
+        "startChar": 0,
+        "endLine": 1140,
+        "endChar": 68
+      },
+      "revId": "8ce8d636eb6183cb97f8e48bc0a6de72852f1867",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
