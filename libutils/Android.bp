@@ -386,6 +386,9 @@ cc_test_library {
 
 cc_benchmark {
     name: "libutils_benchmark",
-    srcs: ["Vector_benchmark.cpp"],
+    srcs: [
+        "Unicode_benchmark.cpp",
+        "Vector_benchmark.cpp",
+    ],
     shared_libs: ["libutils"],
 }
