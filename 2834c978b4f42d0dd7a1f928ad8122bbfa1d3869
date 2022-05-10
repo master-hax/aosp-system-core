@@ -16,6 +16,52 @@
       "message": "PTL\n\nThis CL is to make strlen16() and strnlen16() faster on intel CPUs.",
       "revId": "2834c978b4f42d0dd7a1f928ad8122bbfa1d3869",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "648cf14c_682fdd89",
+        "filename": "libutils/Unicode_sse.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2022-05-10T17:17:32Z",
+      "side": 1,
+      "message": "nit: can/should this be adjacent to the alternatives? It is a bit difficult to find what the alternative is, defined elsewhere",
+      "range": {
+        "startLine": 25,
+        "startChar": 0,
+        "endLine": 25,
+        "endChar": 23
+      },
+      "revId": "2834c978b4f42d0dd7a1f928ad8122bbfa1d3869",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e541b5c7_49aa799d",
+        "filename": "libutils/Unicode_sse.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2022-05-10T17:17:32Z",
+      "side": 1,
+      "message": "can/should this be added with a compiler optimization rather than in libutils?",
+      "range": {
+        "startLine": 26,
+        "startChar": 0,
+        "endLine": 36,
+        "endChar": 1
+      },
+      "revId": "2834c978b4f42d0dd7a1f928ad8122bbfa1d3869",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
