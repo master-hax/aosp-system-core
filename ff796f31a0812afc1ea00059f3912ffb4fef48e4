@@ -22,6 +22,30 @@
       },
       "revId": "ff796f31a0812afc1ea00059f3912ffb4fef48e4",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "44db11d8_867ba38e",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2022-05-10T05:40:42Z",
+      "side": 1,
+      "message": "Ack. plus properties allowed for vendor subcontext.",
+      "parentUuid": "e27fec6f_b99f7a81",
+      "range": {
+        "startLine": 14,
+        "startChar": 63,
+        "endLine": 14,
+        "endChar": 72
+      },
+      "revId": "ff796f31a0812afc1ea00059f3912ffb4fef48e4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
