@@ -1,5 +1,24 @@
 {
-  "comments": [],
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d10f1ee1_2107edcc",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2022-05-10T05:26:07Z",
+      "side": 1,
+      "message": "I should have -1 this patch, I just could not think uevent would be broken, isn\u0027t we always regenerate uevent at boot (that\u0027s one of the things in our boot path used to bebslow)",
+      "tag": "mailMessageId\u003d\u003cCAGXk5yq8W1W8L-bEAB6KQnQhRWz4nVe9+h5dgJoJaGBONrYj4A@mail.gmail.com\u003e",
+      "revId": "cbd75b85a2ed2995fdc1dc344158dd080724be92",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ],
   "submitRequirementResults": [
     {
       "submitRequirement": {
