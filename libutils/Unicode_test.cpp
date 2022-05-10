@@ -117,6 +117,24 @@ TEST_F(UnicodeTest, UTF8toUTF16Normal) {
     EXPECT_EQ(0, output[5]) << "should be null terminated";
 }
 
+TEST_F(UnicodeTest, strlen16) {
+    for (size_t n = 0; n < 128; ++n) {
+        std::vector<char16_t> buf(n, u'x');
+        buf.push_back(0);
+        EXPECT_EQ(strlen16(buf.data()), n);
+    }
+}
+
+TEST_F(UnicodeTest, strnlen16) {
+    for (size_t maxlen = 0; maxlen < 128; ++maxlen) {
+        for (size_t n = 0; n <= maxlen; ++n) {
+            std::vector<char16_t> buf(maxlen, u'x');
+            if (n != maxlen) buf[n] = 0;
+            EXPECT_EQ(strnlen16(buf.data(), maxlen), n) << "maxlen = " << maxlen;
+        }
+    }
+}
+
 TEST_F(UnicodeTest, strstr16EmptyTarget) {
     EXPECT_EQ(strstr16(kSearchString, u""), kSearchString)
             << "should return the original pointer";
