@@ -22,6 +22,30 @@
       },
       "revId": "ef76c8103de6ca883a58a0fce330e2b1256f864c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "54598b01_30f61713",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 918,
+      "author": {
+        "id": 1605146
+      },
+      "writtenOn": "2022-05-11T22:52:54Z",
+      "side": 1,
+      "message": "No specific reason. Just followed other examples from the same file. Also the data currently stored in this folder is not sensitive so we just set it to None.",
+      "parentUuid": "74a2180e_a219b2b1",
+      "range": {
+        "startLine": 918,
+        "startChar": 44,
+        "endLine": 918,
+        "endChar": 59
+      },
+      "revId": "ef76c8103de6ca883a58a0fce330e2b1256f864c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
