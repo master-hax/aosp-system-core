@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "74a2180e_a219b2b1",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 918,
+      "author": {
+        "id": 1137063
+      },
+      "writtenOn": "2022-05-11T22:42:36Z",
+      "side": 1,
+      "message": "Why is encryption\u003dNone being used here?",
+      "range": {
+        "startLine": 918,
+        "startChar": 44,
+        "endLine": 918,
+        "endChar": 59
+      },
+      "revId": "ef76c8103de6ca883a58a0fce330e2b1256f864c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
