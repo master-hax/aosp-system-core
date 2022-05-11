@@ -81,6 +81,24 @@
       "parentUuid": "74a5f724_6c0b4086",
       "revId": "1937e9b50d3acb28404297353003803b9c639cb1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0264e350_73d7962e",
+        "filename": "libutils/include/utils/Thread.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-05-11T23:30:59Z",
+      "side": 1,
+      "message": "me too _in code_ --- in documentation it\u0027s an advantage. unless you\u0027re a very atypical programmer, you also don\u0027t read _all_ the documentation in a file; you just read the docs for the function you know you\u0027re interested in. (\"you don\u0027t know what you don\u0027t know\".)",
+      "parentUuid": "cc13d3f0_73cde034",
+      "revId": "1937e9b50d3acb28404297353003803b9c639cb1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
