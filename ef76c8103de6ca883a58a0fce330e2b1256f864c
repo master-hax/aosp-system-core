@@ -70,6 +70,30 @@
       },
       "revId": "ef76c8103de6ca883a58a0fce330e2b1256f864c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "91f6b75a_69c4d0b2",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 918,
+      "author": {
+        "id": 1605146
+      },
+      "writtenOn": "2022-05-11T23:04:47Z",
+      "side": 1,
+      "message": "I see. Filed b/232299581 to fix this.",
+      "parentUuid": "7fc248d3_39b72e0a",
+      "range": {
+        "startLine": 918,
+        "startChar": 44,
+        "endLine": 918,
+        "endChar": 59
+      },
+      "revId": "ef76c8103de6ca883a58a0fce330e2b1256f864c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
