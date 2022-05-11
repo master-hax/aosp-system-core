@@ -35,6 +35,7 @@
 #include <cutils/sockets.h>
 #include <processgroup/processgroup.h>
 #include <selinux/selinux.h>
+#include <string>
 
 #include "lmkd_service.h"
 #include "service_list.h"
@@ -53,6 +54,7 @@
 
 using android::base::boot_clock;
 using android::base::GetBoolProperty;
+using android::base::GetIntProperty;
 using android::base::GetProperty;
 using android::base::Join;
 using android::base::make_scope_guard;
@@ -255,6 +257,13 @@ void Service::SetProcessAttributesAndCaps() {
 }
 
 void Service::Reap(const siginfo_t& siginfo) {
+    // Get this property before killing the process to avoid any possibility of races.
+    std::string sicode_prop_name = "sys.crash_reason." + std::to_string(siginfo.si_pid) + ".sicode";
+    int sicode = GetIntProperty(sicode_prop_name, 0);
+    if (sicode) {
+        SetProperty(sicode_prop_name, "");
+    }
+
     if (!(flags_ & SVC_ONESHOT) || (flags_ & SVC_RESTART)) {
         KillProcessGroup(SIGKILL, false);
     } else {
@@ -316,6 +325,19 @@ void Service::Reap(const siginfo_t& siginfo) {
     static bool is_apex_updatable = false;
 #endif
     const bool is_process_updatable = !use_bootstrap_ns_ && is_apex_updatable;
+
+#ifdef SEGV_MTEAERR
+    // As a precaution, we only upgrade a service once per reboot, to limit
+    // the potential impact.
+    bool should_upgrade_mte = siginfo.si_code != CLD_EXITED && siginfo.si_status == SIGSEGV &&
+                              sicode == SEGV_MTEAERR && !upgraded_mte_;
+
+    if (should_upgrade_mte) {
+        LOG(INFO) << "Upgrading service " << name_ << " to sync MTE";
+        once_environment_vars_.emplace_back("TIMED_UPGRADE_MTE_TO_SYNC", "1");
+        upgraded_mte_ = true;
+    }
+#endif
 
     // If we crash > 4 times in 'fatal_crash_window_' minutes or before boot_completed,
     // reboot into bootloader or set crashing property
@@ -484,6 +506,9 @@ void Service::RunService(const std::optional<MountNamespace>& override_mount_nam
     for (const auto& [key, value] : environment_vars_) {
         setenv(key.c_str(), value.c_str(), 1);
     }
+    for (const auto& [key, value] : once_environment_vars_) {
+        setenv(key.c_str(), value.c_str(), 1);
+    }
 
     for (const auto& descriptor : descriptors) {
         descriptor.Publish();
@@ -641,6 +666,8 @@ Result<void> Service::Start() {
         pid_ = 0;
         return ErrnoError() << "Failed to fork";
     }
+
+    once_environment_vars_.clear();
 
     if (oom_score_adjust_ != DEFAULT_OOM_SCORE_ADJUST) {
         std::string oom_str = std::to_string(oom_score_adjust_);
