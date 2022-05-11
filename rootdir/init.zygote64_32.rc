@@ -15,6 +15,8 @@ service zygote /system/bin/app_process64 -Xzygote /system/bin --zygote --start-s
     onrestart restart wificond
     task_profiles ProcessCapacityHigh MaxPerformance
     critical window=${zygote.critical_window.minute:-off} target=zygote-fatal
+    # Timed MTE upgrade spawns a thread, which would block zygote from fork.
+    setenv MEMTAG_TIMED_UPGRADE_TO_SYNC 0
 
 service zygote_secondary /system/bin/app_process32 -Xzygote /system/bin --zygote --socket-name=zygote_secondary --enable-lazy-preload
     class main
@@ -25,3 +27,5 @@ service zygote_secondary /system/bin/app_process32 -Xzygote /system/bin --zygote
     socket usap_pool_secondary stream 660 root system
     onrestart restart zygote
     task_profiles ProcessCapacityHigh MaxPerformance
+    # Timed MTE upgrade spawns a thread, which would block zygote from fork.
+    setenv MEMTAG_TIMED_UPGRADE_TO_SYNC 0

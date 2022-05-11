@@ -15,3 +15,5 @@ service zygote /system/bin/app_process -Xzygote /system/bin --zygote --start-sys
     onrestart restart wificond
     task_profiles ProcessCapacityHigh
     critical window=${zygote.critical_window.minute:-off} target=zygote-fatal
+    # Timed MTE upgrade spawns a thread, which would block zygote from fork.
+    setenv MEMTAG_TIMED_UPGRADE_TO_SYNC 0
