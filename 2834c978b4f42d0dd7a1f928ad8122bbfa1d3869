@@ -37,6 +37,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "11a06cdb_651206c9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1069219
+      },
+      "writtenOn": "2022-05-11T09:11:45Z",
+      "side": 1,
+      "message": "\u003e i have a couple of high-level issues:\n\u003e \n\u003e 1. (as mentioned on the bionic change) do we have a real-world case that this improves, or is this just speculative? a microbenchmark is fine _if it represents something that matters in the real world_, but not just \"because\".\n\nI have no specific real-world benchmark, but unlike wmemcmp(), strlen16() is actually used in many places so I think this is worth doing.\nThat said, if we care about how frequently the function is used, probably strzcmp16() should be the top priority. I tried strlen16() first because it\u0027s the easiest one.\nDo you think I should try optimizing strzcmp16() before strlen16()?\n\n\u003e \n\u003e 2. if this _does_ matter ... we should support the other architectures. (if there\u0027s a broader plan to find and fix more of these kinds of things, that might involve something like https://github.com/google/highway to make that easier.)\n\nI believe we can do similar optimizations for ARM CPUs, but ATM it\u0027s not my priority. At least, this CL doesn\u0027t make ARM performance worse as it has no effect on ARM CPUs.\n\n\u003e \n\u003e in particular, this isn\u0027t even portable to 32-bit x86 or to newer x86-64 :-)\n\nThis is portable to 32-bit x86 with SSE 4.2 support. Also, the original version is used even for x86-64 if the selected architecture doesn\u0027t support SSE 4.2 (e.g. the host toolchain is built with plain x86-64 without SSE 4.2).",
+      "parentUuid": "db71ce3e_eab63bed",
+      "revId": "2834c978b4f42d0dd7a1f928ad8122bbfa1d3869",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "648cf14c_682fdd89",
         "filename": "libutils/Unicode_sse.cpp",
         "patchSetId": 2
@@ -48,6 +66,30 @@
       "writtenOn": "2022-05-10T17:17:32Z",
       "side": 1,
       "message": "nit: can/should this be adjacent to the alternatives? It is a bit difficult to find what the alternative is, defined elsewhere",
+      "range": {
+        "startLine": 25,
+        "startChar": 0,
+        "endLine": 25,
+        "endChar": 23
+      },
+      "revId": "2834c978b4f42d0dd7a1f928ad8122bbfa1d3869",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9a98aa61_f0774c69",
+        "filename": "libutils/Unicode_sse.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1069219
+      },
+      "writtenOn": "2022-05-11T09:11:45Z",
+      "side": 1,
+      "message": "Done.",
+      "parentUuid": "648cf14c_682fdd89",
       "range": {
         "startLine": 25,
         "startChar": 0,
@@ -71,6 +113,30 @@
       "writtenOn": "2022-05-10T17:17:32Z",
       "side": 1,
       "message": "can/should this be added with a compiler optimization rather than in libutils?",
+      "range": {
+        "startLine": 26,
+        "startChar": 0,
+        "endLine": 36,
+        "endChar": 1
+      },
+      "revId": "2834c978b4f42d0dd7a1f928ad8122bbfa1d3869",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ef91e0c1_596a52fd",
+        "filename": "libutils/Unicode_sse.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1069219
+      },
+      "writtenOn": "2022-05-11T09:11:45Z",
+      "side": 1,
+      "message": "Sorry, I\u0027m not sure what you\u0027re suggesting.\n\nDo you mean tweaking the compiler option to generate code which uses pcmpistri SIMD instruction?\n\nI also thought unrolling the loop may let the compiler generate SSE instructions, but unfortunately it didn\u0027t. Though the benchmark result was ~2x faster with unrolling (probably loop unroll can be beneficial for ARM CPUs too).",
+      "parentUuid": "e541b5c7_49aa799d",
       "range": {
         "startLine": 26,
         "startChar": 0,
