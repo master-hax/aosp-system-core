@@ -90,6 +90,9 @@ on early-init
     # checker programs.
     mkdir /dev/fscklogs 0770 root system
 
+    start prng_seeder
+
+
 # Run boringssl self test for each ABI so that later processes can skip it. http://b/139348610
 on early-init && property:ro.product.cpu.abilist32=*
     exec_start boringssl_self_test32
@@ -119,6 +122,10 @@ service boringssl_self_test_apex64 /apex/com.android.conscrypt/bin/boringssl_sel
     setenv BORINGSSL_SELF_TEST_CREATE_FLAG true # Any nonempty value counts as true
     reboot_on_failure reboot,boringssl-self-check-failed
     stdio_to_kmsg
+
+service prng_seeder /system/bin/prng_seeder
+    stdio_to_kmsg
+    socket prng_seeder stream+listen 0666 0 0 u:object_r:prng_seeder_socket:s0
 
 on init
     sysclktz 0
