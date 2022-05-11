@@ -16,6 +16,24 @@
       "message": "I am a little concerned here - we had an issue where snapuserd cannot handle real time signal. To mitigate it, http://cl/398758270 was introduced wherein \"snapuserd\" is explicitly added to avoid profiling. Now, I wonder if this re-naming might break.",
       "revId": "07c86bace1e7a7cc4dd975f10b077d21c3743749",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cbd7a66f_185cb237",
+        "filename": "init/first_stage_init.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-05-11T21:19:41Z",
+      "side": 1,
+      "message": "hmm.. ok.. looks like we have a workaround in bionic:\n\nhttps://r.android.com/1840754\n\nso, I think this is ok for now. Enh can confirm here as I recall debugging that bug was a pain.",
+      "parentUuid": "20869f99_31963fbc",
+      "revId": "07c86bace1e7a7cc4dd975f10b077d21c3743749",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
