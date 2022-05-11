@@ -16,6 +16,29 @@
       "message": "worth adding \"Please consider std::thread instead for new code.\" here too?",
       "revId": "1937e9b50d3acb28404297353003803b9c639cb1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0c1a547b_3cecf59f",
+        "filename": "libutils/include/utils/Thread.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1041495
+      },
+      "writtenOn": "2022-05-11T06:43:38Z",
+      "side": 1,
+      "message": "I think it\u0027d be helpful to describe the consequences: \"... or you\u0027ll get use-after-free problems and/or aborts\" or something to that effect.\n\n1. Might be useful for someone looking through the code because they are experiencing exactly those problems.\n2. When I see warnings like this, I get curious about why, and it distracts me from what I was actually looking for. :)",
+      "range": {
+        "startLine": 45,
+        "startChar": 49,
+        "endLine": 45,
+        "endChar": 61
+      },
+      "revId": "1937e9b50d3acb28404297353003803b9c639cb1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
