@@ -520,6 +520,8 @@ int main(int argc, char** argv) {
       if (thread == g_target_thread) {
         // Read the thread's registers along with the rest of the crash info out of the pipe.
         ReadCrashInfo(input_pipe, &siginfo, &info.registers, &process_info);
+        android::base::SetProperty("sys.crash_reason." + std::to_string(target_process) + ".sicode",
+                                   std::to_string(siginfo.si_code));
         info.siginfo = &siginfo;
         info.signo = info.siginfo->si_signo;
 
