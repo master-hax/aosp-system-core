@@ -16,6 +16,23 @@
       "message": "Random driveby test improvement",
       "revId": "6268f6ab7a0b4507bef21ce86bc2e9e0304e9ecd",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c8ec6727_186666ea",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2022-05-11T22:20:11Z",
+      "side": 1,
+      "message": "+dvander@ for owners as he\u0027s taken over this project.",
+      "revId": "6268f6ab7a0b4507bef21ce86bc2e9e0304e9ecd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
