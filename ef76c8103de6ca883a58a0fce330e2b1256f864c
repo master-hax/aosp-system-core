@@ -46,6 +46,30 @@
       },
       "revId": "ef76c8103de6ca883a58a0fce330e2b1256f864c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7fc248d3_39b72e0a",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 918,
+      "author": {
+        "id": 1137063
+      },
+      "writtenOn": "2022-05-11T22:55:09Z",
+      "side": 1,
+      "message": "encryption\u003dNone should only be used where absolutely required, so if there\u0027s no specific reason for it, it should be changed to encrypted.  Would it be acceptable to delete the contents of this directory upon taking an update?  If so, encryption\u003dDeleteIfNecessary could be used.  Otherwise it would have to be encryption\u003dAttempt to allow for an existing unencrypted directory.",
+      "parentUuid": "54598b01_30f61713",
+      "range": {
+        "startLine": 918,
+        "startChar": 44,
+        "endLine": 918,
+        "endChar": 59
+      },
+      "revId": "ef76c8103de6ca883a58a0fce330e2b1256f864c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
