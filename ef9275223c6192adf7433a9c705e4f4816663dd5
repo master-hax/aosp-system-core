@@ -46,6 +46,30 @@
       },
       "revId": "ef9275223c6192adf7433a9c705e4f4816663dd5",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "447732f1_b2e4e226",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 3
+      },
+      "lineNbr": 930,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-05-12T04:09:34Z",
+      "side": 1,
+      "message": "Got it. I now understand. Thanks for the detailed explanation.",
+      "parentUuid": "beae96f5_782fe8cc",
+      "range": {
+        "startLine": 930,
+        "startChar": 38,
+        "endLine": 930,
+        "endChar": 51
+      },
+      "revId": "ef9275223c6192adf7433a9c705e4f4816663dd5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
