@@ -22,6 +22,30 @@
       },
       "revId": "ef9275223c6192adf7433a9c705e4f4816663dd5",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "beae96f5_782fe8cc",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 3
+      },
+      "lineNbr": 930,
+      "author": {
+        "id": 1137063
+      },
+      "writtenOn": "2022-05-12T04:05:44Z",
+      "side": 1,
+      "message": "Yes, \"slave\" is what we need here.  It\u0027s only for the purpose stated -- to make the later bind mount of /data/data onto /data/user/0 also show up at /data_mirror/data_ce/null/0.\n\nThis wasn\u0027t needed before because the bind mount of /data/data onto /data/user/0 previously happened above, in one of the lines that this CL deletes.  The mount of /data/user below is recursive, so it was picking up the mount on /data/user/0.  With this CL, the mount on /data/user/0 doesn\u0027t exist yet here, so it needs to be propagated in later.\n\nAn alternate solution would be to make vold explicitly create the mount in /data_mirror.  But it seems a bit simpler to use the slave option to make it happen automatically.",
+      "parentUuid": "a78e1530_9e78c2ba",
+      "range": {
+        "startLine": 930,
+        "startChar": 38,
+        "endLine": 930,
+        "endChar": 51
+      },
+      "revId": "ef9275223c6192adf7433a9c705e4f4816663dd5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
