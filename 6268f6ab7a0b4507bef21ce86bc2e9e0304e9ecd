@@ -33,6 +33,23 @@
       "message": "+dvander@ for owners as he\u0027s taken over this project.",
       "revId": "6268f6ab7a0b4507bef21ce86bc2e9e0304e9ecd",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "114832df_bb9bbf81",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-05-12T00:04:47Z",
+      "side": 1,
+      "message": "foolishly dvander left me temporarily in charge, so if tomcherry\u0027s happy... rubber stamp!",
+      "revId": "6268f6ab7a0b4507bef21ce86bc2e9e0304e9ecd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
