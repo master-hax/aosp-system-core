@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a78e1530_9e78c2ba",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 3
+      },
+      "lineNbr": 930,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-05-12T03:57:28Z",
+      "side": 1,
+      "message": ".. but not in the other direction, thus slave not shared, right?\n\nWhy haven\u0027t this required before this change?",
+      "range": {
+        "startLine": 930,
+        "startChar": 38,
+        "endLine": 930,
+        "endChar": 51
+      },
+      "revId": "ef9275223c6192adf7433a9c705e4f4816663dd5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
