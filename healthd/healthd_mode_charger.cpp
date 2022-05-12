@@ -308,32 +308,6 @@ void Charger::UpdateScreenState(int64_t now) {
         // If timeout and battery level is still not ready, draw unknown battery
     }
 
-    if (healthd_draw_ == nullptr) {
-        std::optional<bool> out_screen_on = configuration_->ChargerShouldKeepScreenOn();
-        if (out_screen_on.has_value()) {
-            if (!*out_screen_on) {
-                LOGV("[%" PRId64 "] leave screen off\n", now);
-                batt_anim_.run = false;
-                next_screen_transition_ = -1;
-                if (configuration_->ChargerIsOnline()) {
-                    RequestEnableSuspend();
-                }
-                return;
-            }
-        }
-
-        healthd_draw_ = HealthdDraw::Create(&batt_anim_);
-        if (healthd_draw_ == nullptr) return;
-
-#if !defined(__ANDROID_VNDK__)
-        if (android::sysprop::ChargerProperties::disable_init_blank().value_or(false)) {
-            healthd_draw_->blank_screen(true, static_cast<int>(drm_));
-            screen_blanked_ = true;
-        }
-#endif
-    }
-
-    /* animation is over, blank screen and leave */
     if (batt_anim_.num_cycles > 0 && batt_anim_.cur_cycle == batt_anim_.num_cycles) {
         reset_animation(&batt_anim_);
         next_screen_transition_ = -1;
@@ -669,6 +643,7 @@ static void charger_event_handler(HealthLoop* /*charger_loop*/, uint32_t /*epeve
 
 void Charger::InitAnimation() {
     bool parse_success;
+    int64_t now = curr_time_ms();
 
     std::string content;
 
@@ -718,6 +693,32 @@ void Charger::InitAnimation() {
         batt_anim_.fail_file.assign(default_animation_root + "charger/battery_fail.png"s);
     }
 
+    if (healthd_draw_ == nullptr) {
+        std::optional<bool> out_screen_on = configuration_->ChargerShouldKeepScreenOn();
+        if (out_screen_on.has_value()) {
+            if (!*out_screen_on) {
+                LOGV("[%" PRId64 "] leave screen off\n", now);
+                batt_anim_.run = false;
+                next_screen_transition_ = -1;
+                if (configuration_->ChargerIsOnline()) {
+                    RequestEnableSuspend();
+                }
+                return;
+            }
+        }
+
+        healthd_draw_ = HealthdDraw::Create(&batt_anim_);
+        if (healthd_draw_ == nullptr) return;
+
+#if !defined(__ANDROID_VNDK__)
+        if (android::sysprop::ChargerProperties::disable_init_blank().value_or(false)) {
+            healthd_draw_->blank_screen(true, static_cast<int>(drm_));
+            screen_blanked_ = true;
+        }
+#endif
+    }
+
+    /* animation is over, blank screen and leave */
     LOGV("Animation Description:\n");
     LOGV("  animation: %d %d '%s' (%d)\n", batt_anim_.num_cycles, batt_anim_.first_frame_repeats,
          batt_anim_.animation_file.c_str(), batt_anim_.num_frames);
