@@ -34,6 +34,24 @@
       "parentUuid": "438bfab3_677effad",
       "revId": "ec9260070a735cd292a2e0624c58c25077098465",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ffbd14d4_51eb610d",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1137063
+      },
+      "writtenOn": "2022-05-13T17:01:54Z",
+      "side": 1,
+      "message": "The proposed commit message still doesn\u0027t really explain the change.  How about something like:\n\nDirectories should always be encrypted unless there is a specific reason\nthey can\u0027t be.  /data/bootanim is unencrypted without a specific reason,\nso fix it to be encrypted.  It is too late to use encryption\u003dRequire.\nHowever, the contents of this directory doesn\u0027t need to be preserved on\nupdates, so we can use encryption\u003dDeleteIfNecessary instead of\nencryption\u003dAttempt.",
+      "parentUuid": "c19ef9ea_13877750",
+      "revId": "ec9260070a735cd292a2e0624c58c25077098465",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
