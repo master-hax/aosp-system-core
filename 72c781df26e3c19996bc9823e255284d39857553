@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "216728c0_0ed131ba",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1137063
+      },
+      "writtenOn": "2022-05-13T17:49:41Z",
+      "side": 1,
+      "message": "The presubmit failure appears to have been caused by the automerger being behind.  It\u0027s caught up now, so let\u0027s retry...",
+      "revId": "72c781df26e3c19996bc9823e255284d39857553",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
