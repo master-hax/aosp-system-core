@@ -16,6 +16,24 @@
       "message": "Ping? It looks like this patch never got merged.",
       "revId": "6150b00b6025918da8c28e5c2f929ecdf480a9d6",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "12f205b4_4e504c6e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 8
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1002751
+      },
+      "writtenOn": "2022-05-13T17:32:49Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "6db157f0_3daf370c",
+      "revId": "6150b00b6025918da8c28e5c2f929ecdf480a9d6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
