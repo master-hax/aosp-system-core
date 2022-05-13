@@ -52,6 +52,24 @@
       "parentUuid": "c19ef9ea_13877750",
       "revId": "ec9260070a735cd292a2e0624c58c25077098465",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "24c610d4_413abaa7",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1605146
+      },
+      "writtenOn": "2022-05-13T17:03:11Z",
+      "side": 1,
+      "message": "Thanks for the comment. Updated the commit message.",
+      "parentUuid": "ffbd14d4_51eb610d",
+      "revId": "ec9260070a735cd292a2e0624c58c25077098465",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
