@@ -39,6 +39,29 @@
       "message": "Rick, how does this look?",
       "revId": "4e9b65c365ba31fab1351d477bc468d4a2c226e3",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8b8340f5_717216a7",
+        "filename": "libprocessgroup/profiles/task_profiles.json",
+        "patchSetId": 1
+      },
+      "lineNbr": 651,
+      "author": {
+        "id": 1324603
+      },
+      "writtenOn": "2022-05-13T01:28:37Z",
+      "side": 1,
+      "message": "This means the tasks could only run on fg cpuset, which is cpu 0-5 on Pixel (P21/P22). Cpu 0-5 only include little and mid cores but not big cores. Just want to make sure if that\u0027s what you want. Thanks.",
+      "range": {
+        "startLine": 651,
+        "startChar": 40,
+        "endLine": 651,
+        "endChar": 59
+      },
+      "revId": "4e9b65c365ba31fab1351d477bc468d4a2c226e3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
