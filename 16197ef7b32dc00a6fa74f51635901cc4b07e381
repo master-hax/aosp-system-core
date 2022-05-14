@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "058cb7a5_9a754941",
+        "filename": "init/util.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 487,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-05-14T09:51:18Z",
+      "side": 1,
+      "message": "nit: this is used only once. Move to the callsite?",
+      "range": {
+        "startLine": 485,
+        "startChar": 0,
+        "endLine": 487,
+        "endChar": 32
+      },
+      "revId": "16197ef7b32dc00a6fa74f51635901cc4b07e381",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
