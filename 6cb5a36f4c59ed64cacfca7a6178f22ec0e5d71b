@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "42665b3b_c96ec8ae",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-05-16T00:31:07Z",
+      "side": 1,
+      "message": "While this is indeed an enhancement, why don\u0027t you use `std::filesystem::path::lexically_normal()` and `parent_path()` to determine if a path is a top-level data directory?",
+      "revId": "6cb5a36f4c59ed64cacfca7a6178f22ec0e5d71b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
