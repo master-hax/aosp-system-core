@@ -16,6 +16,24 @@
       "message": "While this is indeed an enhancement, why don\u0027t you use `std::filesystem::path::lexically_normal()` and `parent_path()` to determine if a path is a top-level data directory?",
       "revId": "6cb5a36f4c59ed64cacfca7a6178f22ec0e5d71b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "801f9ee6_785cdf4d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1137063
+      },
+      "writtenOn": "2022-05-16T18:53:27Z",
+      "side": 1,
+      "message": "I am trying it, but `std::filesystem::path(\"/data/fonts/\").lexically_normal().parent_path()` actually returns `\"/data/fonts\"`, due to the unexpected way the C++ filesystem library handles trailing slashes.  So it doesn\u0027t solve the one problem we actually need solved.\n\nAlso this file is built into a host binary, and the behavior of the C++ filesystem library depends on the host system.  It is probably okay, since it appears that this file doesn\u0027t need to run on Windows, but it\u0027s still an unnecessary consideration.\n\nAlso it takes a lot of reading C++ documentation to understand this.\n\nSo I think we should stay with the solution I proposed.",
+      "parentUuid": "42665b3b_c96ec8ae",
+      "revId": "6cb5a36f4c59ed64cacfca7a6178f22ec0e5d71b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
