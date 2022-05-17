@@ -1,0 +1,78 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f5aeef8f_f629c859",
+        "filename": "healthd/healthd_mode_charger.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 700,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2022-05-17T21:39:14Z",
+      "side": 1,
+      "message": "nit: curr_time_ms()\n\nthen you don\u0027t need L646. It is also more correct.",
+      "revId": "fc2c4704c90faeff2150ba791987e581360643b5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "921525f7_a383dd91",
+        "filename": "healthd/healthd_mode_charger.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 706,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2022-05-17T21:39:14Z",
+      "side": 1,
+      "message": "nit: This skips the LOGV below, which we may want to retain even though healthd_draw_ \u003d\u003d nullptr.\n\nMaybe move the initialization of healthd_draw_ to a helper function and call the helper function here so we can still LOGV afterwards?",
+      "range": {
+        "startLine": 706,
+        "startChar": 16,
+        "endLine": 706,
+        "endChar": 22
+      },
+      "revId": "fc2c4704c90faeff2150ba791987e581360643b5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "42c60e25_fee76a72",
+        "filename": "healthd/healthd_mode_charger.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 711,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2022-05-17T21:39:14Z",
+      "side": 1,
+      "message": "nit: same here",
+      "revId": "fc2c4704c90faeff2150ba791987e581360643b5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "482e186f_4f6d730d",
+        "filename": "healthd/healthd_mode_charger.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 721,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2022-05-17T21:39:14Z",
+      "side": 1,
+      "message": "The comment should be left at the previous location.",
+      "revId": "fc2c4704c90faeff2150ba791987e581360643b5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
