@@ -922,6 +922,7 @@ on post-fs-data
     # contain any subdirectories other than the per-user ones.  /data/media/obb
     # is an exception that exists for legacy reasons.
     mkdir /data/media 0770 media_rw media_rw encryption=None
+    restorecon /data/media # relabel from media_rw_data_file if needed
     exec - media_rw media_rw -- /system/bin/chattr +F /data/media
     mkdir /data/misc_ce 01771 system misc encryption=None
     mkdir /data/misc_de 01771 system misc encryption=None
