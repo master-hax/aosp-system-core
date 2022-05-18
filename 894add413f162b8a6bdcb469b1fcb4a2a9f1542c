@@ -142,6 +142,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "4be85191_ba53a6fd",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-05-18T13:33:15Z",
+      "side": 1,
+      "message": "Got it. Thanks for the pointers.\n\nI think aosp/594443 which introduced blank_screen and made it a shutdown critical service, and aosp/594444 which tries *not* to start it when the reboot takes long (e.g. due to fsck) don\u0027t agree with each other. By being a shutdown critical service, it is started \"always\", even when we want to keep the screen on.\n\nI think the correct fix is to keep the code fragment that this CL removes, and instead drop \"shutdown critical\" from the rc file. That way we blank the screen only when we want to.",
+      "parentUuid": "cd11d736_284a9d9d",
+      "range": {
+        "startLine": 9,
+        "startChar": 33,
+        "endLine": 9,
+        "endChar": 75
+      },
+      "revId": "894add413f162b8a6bdcb469b1fcb4a2a9f1542c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "79b28697_1614ed1b",
@@ -190,6 +214,24 @@
       "side": 1,
       "message": "Not sure whether the code which has been here and comments doesn\u0027t match. So, may be this comment points below operation. So, not removed.",
       "parentUuid": "8bbe6d9a_5e017511",
+      "revId": "894add413f162b8a6bdcb469b1fcb4a2a9f1542c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b089dc41_ce55e6f0",
+        "filename": "init/reboot.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 670,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-05-18T13:33:15Z",
+      "side": 1,
+      "message": "The code and the comment were introduced together. See https://android-review.googlesource.com/c/platform/system/core/+/594444/2/init/reboot.cpp#385",
+      "parentUuid": "fa810216_8274034f",
       "revId": "894add413f162b8a6bdcb469b1fcb4a2a9f1542c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }

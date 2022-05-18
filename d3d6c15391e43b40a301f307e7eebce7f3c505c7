@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2d571c28_c5cf0c52",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-05-18T13:33:15Z",
+      "side": 1,
+      "message": "Let me invite Steven as this CL is touching his past topic https://android-review.googlesource.com/q/topic:init-blank-screen.\n\nPlease see the inlined comment.",
+      "revId": "d3d6c15391e43b40a301f307e7eebce7f3c505c7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
