@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "79b28697_1614ed1b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1400304
+      },
+      "writtenOn": "2022-05-18T09:37:43Z",
+      "side": 1,
+      "message": "} else if (s-\u003eIsShutdownCritical()) {\n            // Start shutdown critical service if not started.\n            if (auto result \u003d s-\u003eStart(); !result.ok()) {\n                LOG(ERROR) \u003c\u003c \"Could not start shutdown critical service \u0027\" \u003c\u003c s-\u003ename()\n                           \u003c\u003c \"\u0027: \" \u003c\u003c result.error();\n            }\n        }\n        \n        \nblank_screen service marked as shutdown critical",
+      "revId": "894add413f162b8a6bdcb469b1fcb4a2a9f1542c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
