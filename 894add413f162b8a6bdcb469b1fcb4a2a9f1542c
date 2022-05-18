@@ -1,6 +1,75 @@
 {
   "comments": [
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "36172acd_90fa5215",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-05-18T09:56:36Z",
+      "side": 1,
+      "message": "How bad is this? Any user-visible side effect? I guess not.",
+      "range": {
+        "startLine": 7,
+        "startChar": 31,
+        "endLine": 7,
+        "endChar": 36
+      },
+      "revId": "894add413f162b8a6bdcb469b1fcb4a2a9f1542c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c9273ae8_dcde704c",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-05-18T09:56:36Z",
+      "side": 1,
+      "message": "Is it guaranteed that the blank_screen has ran when the shutdown sequence hits here? If so, how? Could you elaborate?\n\nEven if it is the case as of today, I think the assumption could easily be broken unless it is asserted somehow. Doesn\u0027t it sound like running the service here again is a safer bet?",
+      "range": {
+        "startLine": 9,
+        "startChar": 25,
+        "endLine": 9,
+        "endChar": 32
+      },
+      "revId": "894add413f162b8a6bdcb469b1fcb4a2a9f1542c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9fe46cb7_5953ed2d",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-05-18T09:56:36Z",
+      "side": 1,
+      "message": "Could you let me know where in the code the blank_screen is started?",
+      "range": {
+        "startLine": 9,
+        "startChar": 33,
+        "endLine": 9,
+        "endChar": 75
+      },
+      "revId": "894add413f162b8a6bdcb469b1fcb4a2a9f1542c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "79b28697_1614ed1b",
@@ -14,6 +83,23 @@
       "writtenOn": "2022-05-18T09:37:43Z",
       "side": 1,
       "message": "} else if (s-\u003eIsShutdownCritical()) {\n            // Start shutdown critical service if not started.\n            if (auto result \u003d s-\u003eStart(); !result.ok()) {\n                LOG(ERROR) \u003c\u003c \"Could not start shutdown critical service \u0027\" \u003c\u003c s-\u003ename()\n                           \u003c\u003c \"\u0027: \" \u003c\u003c result.error();\n            }\n        }\n        \n        \nblank_screen service marked as shutdown critical",
+      "revId": "894add413f162b8a6bdcb469b1fcb4a2a9f1542c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8bbe6d9a_5e017511",
+        "filename": "init/reboot.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 670,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-05-18T09:56:36Z",
+      "side": 1,
+      "message": "This comment was explaining the reason for the blank_screen below. If the below code is removed, the comment should gone as well.",
       "revId": "894add413f162b8a6bdcb469b1fcb4a2a9f1542c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
