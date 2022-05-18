@@ -22,6 +22,30 @@
       },
       "revId": "0bf318489e018eaae586095d33a83a2afcf4c544",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2a885119_cd91338f",
+        "filename": "init/reboot.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 1013,
+      "author": {
+        "id": 1400304
+      },
+      "writtenOn": "2022-05-18T16:46:33Z",
+      "side": 1,
+      "message": "Every shutdown it will happen unless ro.init.shutdown_animation set to true.",
+      "parentUuid": "2813d10c_3f010ce8",
+      "range": {
+        "startLine": 1013,
+        "startChar": 0,
+        "endLine": 1013,
+        "endChar": 35
+      },
+      "revId": "0bf318489e018eaae586095d33a83a2afcf4c544",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
