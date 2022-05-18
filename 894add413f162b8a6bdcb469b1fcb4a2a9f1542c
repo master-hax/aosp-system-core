@@ -216,6 +216,30 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "48325a85_f939f426",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1400304
+      },
+      "writtenOn": "2022-05-18T16:47:50Z",
+      "side": 1,
+      "message": "Re-Correcting\n\n\u003e\u003e As this is a native service (utility written to shut the lights) and it will exit once his Job done. so, this will not live in the system throughout if you start.",
+      "parentUuid": "4a6556f3_ca3e98ac",
+      "range": {
+        "startLine": 9,
+        "startChar": 33,
+        "endLine": 9,
+        "endChar": 75
+      },
+      "revId": "894add413f162b8a6bdcb469b1fcb4a2a9f1542c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "79b28697_1614ed1b",
         "filename": "/PATCHSET_LEVEL",
         "patchSetId": 3
