@@ -16,6 +16,24 @@
       "message": "I think we should move these to a separate git project.",
       "revId": "6fb9dbeb27f9bb0aeaf4e394bc3dc5cb1a1bc89e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5137b579_75e9b8f5",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-05-18T22:06:58Z",
+      "side": 1,
+      "message": "more broadly: isn\u0027t it time trusty got its own git project rather than being in system/core?",
+      "parentUuid": "16c06c1a_58e3b56f",
+      "revId": "6fb9dbeb27f9bb0aeaf4e394bc3dc5cb1a1bc89e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
