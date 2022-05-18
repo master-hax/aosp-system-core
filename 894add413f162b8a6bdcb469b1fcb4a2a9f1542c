@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "05835c53_0eb0f333",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1400304
+      },
+      "writtenOn": "2022-05-18T10:29:08Z",
+      "side": 1,
+      "message": "Yes for the cases you don\u0027t suppose to be start even blank_screen for Set Top Box a.k.a. Android TV in shutdown Flow.\n\nReason is blank_screen will turn off the LED and then You are killing the services with SIGTERM and then you are sending SIGKILL if processes are not terminated by SIGTERM. This takes ~10-20 sec in worst cases. You are turning OFF the LED even device is not Fully shutdown.",
+      "parentUuid": "36172acd_90fa5215",
+      "range": {
+        "startLine": 7,
+        "startChar": 31,
+        "endLine": 7,
+        "endChar": 36
+      },
+      "revId": "894add413f162b8a6bdcb469b1fcb4a2a9f1542c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "c9273ae8_dcde704c",
@@ -72,6 +96,54 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "a7e084ce_2cf21846",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1400304
+      },
+      "writtenOn": "2022-05-18T10:29:08Z",
+      "side": 1,
+      "message": "Is it guaranteed that the blank_screen has ran when the shutdown sequence hits here? If so, how? Could you elaborate?\n\n\u003e\u003e Yes, Above Comments cover here\n\nDoesn\u0027t it sound like running the service here again is a safer bet?\n\u003e\u003e we can run , but Is it covers any usecase ?",
+      "parentUuid": "c9273ae8_dcde704c",
+      "range": {
+        "startLine": 9,
+        "startChar": 25,
+        "endLine": 9,
+        "endChar": 32
+      },
+      "revId": "894add413f162b8a6bdcb469b1fcb4a2a9f1542c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cd11d736_284a9d9d",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1400304
+      },
+      "writtenOn": "2022-05-18T10:29:08Z",
+      "side": 1,
+      "message": "} else if (s-\u003eIsShutdownCritical()) {\n            // Start shutdown critical service if not started.\n            if (auto result \u003d s-\u003eStart(); !result.ok()) {\n                LOG(ERROR) \u003c\u003c \"Could not start shutdown critical service \u0027\" \u003c\u003c s-\u003ename()\n                           \u003c\u003c \"\u0027: \" \u003c\u003c result.error();\n            }\n        } else {\n            stop_first.insert(s-\u003ename());\n        }\n    }\n\n    // remaining operations (specifically fsck) may take a substantial duration\n    \n    \n \u003e\u003e Above else if will start the blank_screen due to service marked as shutdown critical\n \n hardware/interfaces/light/utils/blank_screen.rc\n service blank_screen /system/bin/blank_screen\n    user system\n    oneshot\n    group system\n    shutdown critical",
+      "parentUuid": "9fe46cb7_5953ed2d",
+      "range": {
+        "startLine": 9,
+        "startChar": 33,
+        "endLine": 9,
+        "endChar": 75
+      },
+      "revId": "894add413f162b8a6bdcb469b1fcb4a2a9f1542c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "79b28697_1614ed1b",
         "filename": "/PATCHSET_LEVEL",
         "patchSetId": 3
@@ -100,6 +172,24 @@
       "writtenOn": "2022-05-18T09:56:36Z",
       "side": 1,
       "message": "This comment was explaining the reason for the blank_screen below. If the below code is removed, the comment should gone as well.",
+      "revId": "894add413f162b8a6bdcb469b1fcb4a2a9f1542c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fa810216_8274034f",
+        "filename": "init/reboot.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 670,
+      "author": {
+        "id": 1400304
+      },
+      "writtenOn": "2022-05-18T10:29:08Z",
+      "side": 1,
+      "message": "Not sure whether the code which has been here and comments doesn\u0027t match. So, may be this comment points below operation. So, not removed.",
+      "parentUuid": "8bbe6d9a_5e017511",
       "revId": "894add413f162b8a6bdcb469b1fcb4a2a9f1542c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
