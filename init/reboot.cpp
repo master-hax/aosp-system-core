@@ -667,11 +667,6 @@ static void DoReboot(unsigned int cmd, const std::string& reason, const std::str
         }
     }
 
-    // remaining operations (specifically fsck) may take a substantial duration
-    if (!do_shutdown_animation && (cmd == ANDROID_RB_POWEROFF || is_thermal_shutdown)) {
-        TurnOffBacklight();
-    }
-
     Service* boot_anim = ServiceList::GetInstance().FindService("bootanim");
     Service* surface_flinger = ServiceList::GetInstance().FindService("surfaceflinger");
     if (boot_anim != nullptr && surface_flinger != nullptr && surface_flinger->IsRunning()) {
