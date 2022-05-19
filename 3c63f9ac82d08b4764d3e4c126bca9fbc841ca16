@@ -103,6 +103,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "6116eff1_8bd30ca2",
+        "filename": "healthd/healthd_mode_charger.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 310,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2022-05-19T06:09:07Z",
+      "side": 1,
+      "message": "unresolving since InitHealthdDraw is not called here. This may cause segfault below.",
+      "parentUuid": "04772bd9_f35f0f33",
+      "revId": "3c63f9ac82d08b4764d3e4c126bca9fbc841ca16",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "d2c5ebe9_2f6f31bd",
         "filename": "healthd/healthd_mode_charger.cpp",
         "patchSetId": 2
