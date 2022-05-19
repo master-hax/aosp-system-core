@@ -135,6 +135,7 @@
 #define AID_SHELL 2000 /* adb and debug shell user */
 #define AID_CACHE 2001 /* cache access */
 #define AID_DIAG 2002  /* access to diagnostic resources */
+#define AID_SECURITY_LOG 2003 /* write to security log */
 
 /* The range 2900-2999 is reserved for the vendor partition */
 /* Note that the two 'OEM' ranges pre-dated the vendor partition, so they take the legacy 'OEM'
