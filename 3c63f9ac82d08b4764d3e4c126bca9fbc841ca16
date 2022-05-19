@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f8ef3e71_068d5a65",
+        "filename": "healthd/healthd_mode_charger.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 310,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2022-05-19T00:34:34Z",
+      "side": 1,
+      "message": "Sorry I missed this in the previous review, but\n\n```\nif (healthd_draw_ \u003d\u003d nullptr) return;\n```\n\notherwise you get segfault below",
+      "revId": "3c63f9ac82d08b4764d3e4c126bca9fbc841ca16",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d2c5ebe9_2f6f31bd",
+        "filename": "healthd/healthd_mode_charger.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 696,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2022-05-19T00:34:34Z",
+      "side": 1,
+      "message": "nit: this is correct, but IMO it is harder to read (especially L711; that line ensures the loop only executes once, but it is not very intuitive.) How about moving this to a helper function? \n\nOr maybe\n\n```\ndo {\n  if (healthd_draw_ !\u003d nullptr) break;\n  // ...\n} while(false);\n```",
+      "range": {
+        "startLine": 696,
+        "startChar": 0,
+        "endLine": 696,
+        "endChar": 38
+      },
+      "revId": "3c63f9ac82d08b4764d3e4c126bca9fbc841ca16",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
