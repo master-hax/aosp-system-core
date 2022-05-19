@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "0020b9e5_e7a0856c",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1941191
+      },
+      "writtenOn": "2022-05-19T02:09:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1b3c589a_a0275367",
+      "range": {
+        "startLine": 9,
+        "startChar": 36,
+        "endLine": 10,
+        "endChar": 44
+      },
+      "revId": "3c63f9ac82d08b4764d3e4c126bca9fbc841ca16",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f8ef3e71_068d5a65",
@@ -59,6 +83,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "04772bd9_f35f0f33",
+        "filename": "healthd/healthd_mode_charger.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 310,
+      "author": {
+        "id": 1941191
+      },
+      "writtenOn": "2022-05-19T02:09:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "84857a3d_b18c30be",
+      "revId": "3c63f9ac82d08b4764d3e4c126bca9fbc841ca16",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d2c5ebe9_2f6f31bd",
@@ -72,6 +114,30 @@
       "writtenOn": "2022-05-19T00:34:34Z",
       "side": 1,
       "message": "nit: this is correct, but IMO it is harder to read (especially L711; that line ensures the loop only executes once, but it is not very intuitive.) How about moving this to a helper function? \n\nOr maybe\n\n```\ndo {\n  if (healthd_draw_ !\u003d nullptr) break;\n  // ...\n} while(false);\n```",
+      "range": {
+        "startLine": 696,
+        "startChar": 0,
+        "endLine": 696,
+        "endChar": 38
+      },
+      "revId": "3c63f9ac82d08b4764d3e4c126bca9fbc841ca16",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "dc321447_4e5208bb",
+        "filename": "healthd/healthd_mode_charger.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 696,
+      "author": {
+        "id": 1941191
+      },
+      "writtenOn": "2022-05-19T02:09:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d2c5ebe9_2f6f31bd",
       "range": {
         "startLine": 696,
         "startChar": 0,
