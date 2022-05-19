@@ -16,6 +16,23 @@
       "message": "Original .aidl files would be useful here. And it would make it easier to move to the desired flow of auto-generating .cpp/.h files.",
       "revId": "6d2b9f0afdf5d63c1128f2e080ee55229e00f31e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "127e7887_fdbc2206",
+        "filename": "trusty/test/cast-auth/aidl-cpp/BpCastAuth.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1124693
+      },
+      "writtenOn": "2022-05-19T22:08:32Z",
+      "side": 1,
+      "message": "this one diverged from aosp/2100616\nyou could use `repo upload --no-verify` to drop the lint checks",
+      "revId": "6d2b9f0afdf5d63c1128f2e080ee55229e00f31e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
