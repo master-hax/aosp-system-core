@@ -36,6 +36,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "368b94da_3693034c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1400304
+      },
+      "writtenOn": "2022-05-19T16:37:17Z",
+      "side": 1,
+      "message": "Btw, it\u0027s not clear to me what issue running this twice would cause,\n\n\u003e\u003e Nothing will happen if we run twice. At the same time, Why to run twice ? Any purpose. So, this CL needed\n\n but it does seem like we run blank screen in some cases where it doesn\u0027t need to be run.\n\u003e\u003e\nSee from Android-10 Code base Point of View Where blank_screen doesn\u0027t need any parameter to run.\nIn Android TV where Set Top Box is the product. In those cases, blank_screen ran and LED is shut OFF but at that time device not actually shutdown because after this killing all the services by sending SIGTERM and then later on SIGKILL for the services which hasn\u0027t been killed by SIGTERM. Overall,~10-20 secs. So, running the blank_Screen wouldn\u0027t be proper here for user experience because if user presses the power immediately the LED will turn ON and user assumes that device is started",
+      "parentUuid": "94bd2697_bf8de6d5",
+      "revId": "0bf318489e018eaae586095d33a83a2afcf4c544",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "2813d10c_3f010ce8",
