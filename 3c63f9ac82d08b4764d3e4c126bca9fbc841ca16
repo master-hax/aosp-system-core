@@ -3,6 +3,29 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "1b3c589a_a0275367",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2022-05-19T00:37:07Z",
+      "side": 1,
+      "message": "Could you explain a bit further?\n\nI can see that gr_init (from HealthdDraw::Create()) is called earlier, but where are surfaces created? Isn\u0027t it in UpdateScreenState, and we always call HealthdDraw::Create before drawing?",
+      "range": {
+        "startLine": 9,
+        "startChar": 36,
+        "endLine": 10,
+        "endChar": 44
+      },
+      "revId": "3c63f9ac82d08b4764d3e4c126bca9fbc841ca16",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "f8ef3e71_068d5a65",
         "filename": "healthd/healthd_mode_charger.cpp",
         "patchSetId": 2
