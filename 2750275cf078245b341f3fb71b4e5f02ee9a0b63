@@ -22,6 +22,30 @@
       },
       "revId": "2750275cf078245b341f3fb71b4e5f02ee9a0b63",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6adfcd0d_6077555b",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_reader.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 178,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-05-19T20:04:47Z",
+      "side": 1,
+      "message": "this is more readable ?",
+      "parentUuid": "32f4be61_e67ab6f3",
+      "range": {
+        "startLine": 178,
+        "startChar": 21,
+        "endLine": 178,
+        "endChar": 29
+      },
+      "revId": "2750275cf078245b341f3fb71b4e5f02ee9a0b63",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
