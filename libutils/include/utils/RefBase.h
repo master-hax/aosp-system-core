@@ -779,6 +779,34 @@ void move_backward_type(wp<TYPE>* d, wp<TYPE> const* s, size_t n) {
 
 }  // namespace android
 
+namespace utils {
+namespace internal {
+template <typename T, typename = void>
+struct is_complete_type : std::false_type {};
+
+template <typename T>
+struct is_complete_type<T, decltype(void(sizeof(T)))> : std::true_type {};
+}  // namespace internal
+}  // namespace utils
+
+namespace std {
+
+template <typename T, typename... Args,
+          typename std::enable_if<utils::internal::is_complete_type<T>::value, bool>::value = true,
+          typename std::enable_if<std::is_base_of<android::RefBase, T>::value, bool>::value = true>
+shared_ptr<T> make_shared(Args...) {  // SEE COMMENT ABOVE.
+    static_assert(!std::is_base_of<android::RefBase, T>::value, "Must use RefBase with sp<>");
+}
+
+template <typename T, typename... Args,
+          typename std::enable_if<utils::internal::is_complete_type<T>::value, bool>::value = true,
+          typename std::enable_if<std::is_base_of<android::RefBase, T>::value, bool>::value = true>
+unique_ptr<T> make_unique(Args...) {  // SEE COMMENT ABOVE.
+    static_assert(!std::is_base_of<android::RefBase, T>::value, "Must use RefBase with sp<>");
+}
+
+}  // namespace std
+
 // ---------------------------------------------------------------------------
 
 #endif // ANDROID_REF_BASE_H
