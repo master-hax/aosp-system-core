@@ -752,9 +752,10 @@ RefBase::~RefBase()
         // However, this is dangerous because it's also common for code to use the
         // sp<T>(T*) constructor, assuming that if the object is around, it is already
         // owned by an sp<>.
-        ALOGW("RefBase: Explicit destruction, weak count = %d (in %p). Use sp<> to manage this "
-              "object.",
-              mRefs->mWeak.load(), this);
+        LOG_ALWAYS_FATAL(
+                "RefBase: Explicit destruction, weak count = %d (in %p). Use sp<> to manage this "
+                "object.",
+                mRefs->mWeak.load(), this);
 
 #if CALLSTACK_ENABLED
         CallStack::logStack(LOG_TAG);
