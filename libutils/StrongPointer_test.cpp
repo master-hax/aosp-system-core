@@ -104,5 +104,6 @@ TYPED_TEST(StrongPointer, AssertStrongRefExists) {
     bool isDeleted;
     TypeParam* foo = new TypeParam(&isDeleted);
     EXPECT_DEATH(sp<TypeParam>::fromExisting(foo), "");
-    delete foo;
+
+    sp<TypeParam> ownedFoo = foo;
 }

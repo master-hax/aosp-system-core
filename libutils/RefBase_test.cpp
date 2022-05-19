@@ -262,7 +262,7 @@ TEST(RefBase, AssertWeakRefExistsDeath) {
     // can only get a valid wp<> object when you construct it from an sp<>
     EXPECT_DEATH(wp<Foo>::fromExisting(foo), "");
 
-    delete foo;
+    sp<Foo> ownedFoo = foo;
 }
 
 // Set up a situation in which we race with visit2AndRremove() to delete
