@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4a9216d0_e4ce1670",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1124693
+      },
+      "writtenOn": "2022-05-19T21:12:08Z",
+      "side": 1,
+      "message": "Original .aidl files would be useful here. And it would make it easier to move to the desired flow of auto-generating .cpp/.h files.",
+      "revId": "6d2b9f0afdf5d63c1128f2e080ee55229e00f31e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
