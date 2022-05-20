@@ -119,6 +119,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "bca99bee_c52235e1",
+        "filename": "healthd/healthd_mode_charger.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 310,
+      "author": {
+        "id": 1941191
+      },
+      "writtenOn": "2022-05-20T01:16:35Z",
+      "side": 1,
+      "message": "I move InitHealthdDraw() to Charger::OnInit next to InitAnimation();",
+      "parentUuid": "6116eff1_8bd30ca2",
+      "revId": "3c63f9ac82d08b4764d3e4c126bca9fbc841ca16",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d2c5ebe9_2f6f31bd",
