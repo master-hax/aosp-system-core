@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "cbc2d6e5_fabffd55",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2022-05-20T21:17:53Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d424f4ea_ca730d6c",
+      "revId": "d82598b310ce3f1f770a97524ffff9f68bad8bab",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f3660659_3b973190",
@@ -35,6 +53,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f95517e7_62be0476",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 607,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2022-05-20T21:17:53Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f3660659_3b973190",
+      "revId": "d82598b310ce3f1f770a97524ffff9f68bad8bab",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "9687f1e5_dd333229",
@@ -48,6 +84,24 @@
       "writtenOn": "2022-05-20T20:47:53Z",
       "side": 1,
       "message": "I think this is the right approach, but for completeness, we could also use PSTATE.TCO to disable MTE checks in the current thread. AFAIK, these are mostly equivalent. AFAIK, disabling TCF in one thread does not interfere with allocation tag updates (i.e. malloc() in this thread will correctly set tags, it\u0027s only the checks that are disabled), but we end up in a state where bionic\u0027s HeapTaggingLevel does not match the actual TCF setting.\n\nAlternatively, we could do set_tcf_on_all_threads(), but that feels a little scary to do in an async signal context.\n\nWithout that we may also end up detecting the same bug on other threads -- and on other hand, we may detect new bugs on other threads. That\u0027s OK, the goal is not to stop all bug detection but to somehow skip past the current faulting instruction.\n\nWDYT about only disabling TCF for sync faults? Async faults should not get re-raised if we just return from the handler, I think.",
+      "revId": "d82598b310ce3f1f770a97524ffff9f68bad8bab",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d9ac28b8_f852c7ad",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 615,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2022-05-20T21:17:53Z",
+      "side": 1,
+      "message": "\u003e I think this is the right approach, but for completeness, we could also use PSTATE.TCO to disable MTE checks in the current thread.\n\nI tried this a long time ago, and (IIRC) upon returning from the signal handling, this got restored.\n\n\u003e Alternatively, we could do set_tcf_on_all_threads(), but that feels a little scary to do in an async signal context.\n\nthat grabs a lock, so we can\u0027t really do that.\n\n\u003e Without that we may also end up detecting the same bug on other threads -- and on other hand, we may detect new bugs on other threads. That\u0027s OK, the goal is not to stop all bug detection but to somehow skip past the current faulting instruction.\n\nI think that\u0027s fine? the clustering of crashes will take care of that\n\n\u003e WDYT about only disabling TCF for sync faults? Async faults should not get re-raised if we just return from the handler, I think.\n\ninteresting. i think it should work, but i\u0027m not entirely convinced it\u0027s worth special casing. and if we do get it wrong in some edge case, we are more likely to build an infinite loop.",
+      "parentUuid": "9687f1e5_dd333229",
       "revId": "d82598b310ce3f1f770a97524ffff9f68bad8bab",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
