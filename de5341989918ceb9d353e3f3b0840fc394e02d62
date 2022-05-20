@@ -55,6 +55,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "349deb7c_f5fe9ea7",
+        "filename": "healthd/healthd_mode_charger.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 310,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2022-05-20T01:27:56Z",
+      "side": 1,
+      "message": "But you should call it here, right? Otherwise, if InitHealthdDraw fails and leave healthd_draw_ nullptr, the code below will segfault.",
+      "parentUuid": "85d2df6e_2af98fe8",
+      "revId": "de5341989918ceb9d353e3f3b0840fc394e02d62",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "6476aa7e_0cc8236b",
         "filename": "healthd/healthd_mode_charger.cpp",
         "patchSetId": 3
