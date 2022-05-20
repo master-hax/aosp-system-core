@@ -72,6 +72,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "3cf5bbfd_a0a16384",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1400304
+      },
+      "writtenOn": "2022-05-20T17:05:44Z",
+      "side": 1,
+      "message": "Hi Jiyong,\n\n\nDoes dropping  shutdown critical  from  blank_screen.rc  (and abandoning this CL) fix the problem?\n\u003e\u003e Yes\n\nDo you have any concern with that approach?\n\u003e\u003eI don\u0027t have any concern.",
+      "parentUuid": "59e2838d_daed21ed",
+      "revId": "0bf318489e018eaae586095d33a83a2afcf4c544",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "2813d10c_3f010ce8",
