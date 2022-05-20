@@ -89,6 +89,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f9ad84a2_14b8ae2a",
+        "filename": "healthd/healthd_mode_charger.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 310,
+      "author": {
+        "id": 1941191
+      },
+      "writtenOn": "2022-05-20T03:34:46Z",
+      "side": 1,
+      "message": "health hal will call init beforce heartbeat start, so in UpdateScreenState the healthd_draw_ is already initialized.",
+      "parentUuid": "2f2fa796_a65acb35",
+      "revId": "de5341989918ceb9d353e3f3b0840fc394e02d62",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "6476aa7e_0cc8236b",
