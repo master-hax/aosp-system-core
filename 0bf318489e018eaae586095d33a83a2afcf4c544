@@ -56,6 +56,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "59e2838d_daed21ed",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-05-20T16:17:15Z",
+      "side": 1,
+      "message": "Hi Ashok,\n\nDoes dropping `shutdown critical` from `blank_screen.rc` (and abandoning this CL) fix the problem? Do you have any concern with that approach?",
+      "parentUuid": "368b94da_3693034c",
+      "revId": "0bf318489e018eaae586095d33a83a2afcf4c544",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "2813d10c_3f010ce8",
         "filename": "init/reboot.cpp",
         "patchSetId": 5
