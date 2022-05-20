@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2774709c_c9785280",
+        "filename": "init/action_parser.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 148,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-05-20T07:14:10Z",
+      "side": 1,
+      "message": "This is a bit subtle because we rely on the fact that Mainline modules use the main init context.",
+      "range": {
+        "startLine": 148,
+        "startChar": 32,
+        "endLine": 148,
+        "endChar": 67
+      },
+      "revId": "0870428a39afd5c417ea7dfb45cf5fd4b7d2a960",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
