@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d424f4ea_ca730d6c",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 1005967
+      },
+      "writtenOn": "2022-05-20T20:47:53Z",
+      "side": 1,
+      "message": "I\u0027d remove \"_MODE\"",
+      "revId": "d82598b310ce3f1f770a97524ffff9f68bad8bab",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f3660659_3b973190",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 607,
+      "author": {
+        "id": 1005967
+      },
+      "writtenOn": "2022-05-20T20:47:53Z",
+      "side": 1,
+      "message": "s/unsafe/permissive",
+      "revId": "d82598b310ce3f1f770a97524ffff9f68bad8bab",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9687f1e5_dd333229",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 615,
+      "author": {
+        "id": 1005967
+      },
+      "writtenOn": "2022-05-20T20:47:53Z",
+      "side": 1,
+      "message": "I think this is the right approach, but for completeness, we could also use PSTATE.TCO to disable MTE checks in the current thread. AFAIK, these are mostly equivalent. AFAIK, disabling TCF in one thread does not interfere with allocation tag updates (i.e. malloc() in this thread will correctly set tags, it\u0027s only the checks that are disabled), but we end up in a state where bionic\u0027s HeapTaggingLevel does not match the actual TCF setting.\n\nAlternatively, we could do set_tcf_on_all_threads(), but that feels a little scary to do in an async signal context.\n\nWithout that we may also end up detecting the same bug on other threads -- and on other hand, we may detect new bugs on other threads. That\u0027s OK, the goal is not to stop all bug detection but to somehow skip past the current faulting instruction.\n\nWDYT about only disabling TCF for sync faults? Async faults should not get re-raised if we just return from the handler, I think.",
+      "revId": "d82598b310ce3f1f770a97524ffff9f68bad8bab",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
