@@ -743,8 +743,8 @@ static bool load_properties_from_file(const char* filename, const char* filter,
     Timer t;
     auto file_contents = ReadFile(filename);
     if (!file_contents.ok()) {
-        PLOG(WARNING) << "Couldn't load property file '" << filename
-                      << "': " << file_contents.error();
+        PLOG(DEBUG) << "Couldn't load property file '" << filename
+                    << "': " << file_contents.error();
         return false;
     }
     file_contents->push_back('\n');
