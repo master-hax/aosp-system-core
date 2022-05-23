@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "be1f64bc_445ec9fd",
+        "filename": "libcutils/include/private/android_filesystem_config.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 138,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-05-23T17:02:43Z",
+      "side": 1,
+      "message": "maybe have \"WRITE\" (or \"WRONLY\" if you\u0027re feeling all POSIX) in the name, since AID_LOG is read _and_ write?\n\nalso, shouldn\u0027t this be in the 1000s? (i\u0027m actually not clear on the 1000s vs 2000s distinction [and if anyone knows, that would be a great comment!], but the fact that the 2000s start with AID_SHELL makes me think that these are more userdebug only kinds of things?)",
+      "range": {
+        "startLine": 138,
+        "startChar": 8,
+        "endLine": 138,
+        "endChar": 24
+      },
+      "revId": "0ebb5cc14fd5c9afacd9feb84460c9c610e75c88",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
