@@ -22,6 +22,30 @@
       },
       "revId": "570ec25678e325e3cbf03f7598b9493ad4145aef",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "844e784f_81684331",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 746,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-05-23T17:31:17Z",
+      "side": 1,
+      "message": "yeah, seems like the \"import\" use case should at least be a warning (or even fatal, as you suggest), but the other callers should all be silent in the ENOENT case. so either Result\u003c\u003e and logging in the caller or a `bool ignore_if_missing` sound like a good idea to me.\n\n(it seems like there are enough callers that want the ENOENT\u003d\u003efine behavior that the third alternative of having them check for file existence first would be a bad idea.)",
+      "parentUuid": "9ccdadb8_0f82e252",
+      "range": {
+        "startLine": 746,
+        "startChar": 8,
+        "endLine": 746,
+        "endChar": 19
+      },
+      "revId": "570ec25678e325e3cbf03f7598b9493ad4145aef",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
