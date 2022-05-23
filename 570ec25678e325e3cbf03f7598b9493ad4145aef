@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9ccdadb8_0f82e252",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 746,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-05-23T08:46:12Z",
+      "side": 1,
+      "message": "This could be fatal (or at least warning) in some cases. I suggest that this function returns `Result\u003cvoid\u003e`, and log at the caller.",
+      "range": {
+        "startLine": 746,
+        "startChar": 8,
+        "endLine": 746,
+        "endChar": 19
+      },
+      "revId": "570ec25678e325e3cbf03f7598b9493ad4145aef",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
