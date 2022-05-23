@@ -16,6 +16,24 @@
       "message": "Do you already have more usecases to use this profile? If not, I don\u0027t see why the new name is better than the old name. It\u0027s more generic but how do you know that the new usecases can reuse it as is until you know what they might be?",
       "revId": "29b26409e4a1d3053b45f566c936e784575d52cc",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "be0bf48b_05c5dcaf",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1042276
+      },
+      "writtenOn": "2022-05-23T23:47:07Z",
+      "side": 1,
+      "message": "Jiyong, what do you think? I remember a FR to support different types of VM, but I can\u0027t find it.  Is it ok to land this now or later?  I don\u0027t feel strongly either way to be honest.",
+      "parentUuid": "221594bd_24ef3915",
+      "revId": "29b26409e4a1d3053b45f566c936e784575d52cc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
