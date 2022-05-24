@@ -291,6 +291,7 @@ cc_test {
         "libdebuggerd/test/log_fake.cpp",
         "libdebuggerd/test/open_files_list_test.cpp",
         "libdebuggerd/test/utility_test.cpp",
+        "libdebuggerd/test/scudo_test.cpp",
     ],
 
     target: {
@@ -324,6 +325,7 @@ cc_test {
     header_libs: [
         "bionic_libc_platform_headers",
         "gwp_asan_headers",
+        "scudo_headers",
     ],
 
     local_include_dirs: [
