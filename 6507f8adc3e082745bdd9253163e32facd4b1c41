@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d9828271_cc7fe6d9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-05-24T17:01:59Z",
+      "side": 1,
+      "message": "rubber-stamp primiano\u0027s +2...",
+      "revId": "6507f8adc3e082745bdd9253163e32facd4b1c41",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
