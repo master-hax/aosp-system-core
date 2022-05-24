@@ -28,9 +28,7 @@
 std::unique_ptr<char[]> AllocAndReadFully(unwindstack::Memory* process_memory, uint64_t addr,
                                           size_t size) {
   auto buf = std::make_unique<char[]>(size);
-  if (!process_memory->ReadFully(addr, buf.get(), size)) {
-    return std::unique_ptr<char[]>();
-  }
+  process_memory->ReadFully(addr, buf.get(), size);
   return buf;
 }
 
