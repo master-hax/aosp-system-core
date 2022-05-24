@@ -46,6 +46,30 @@
       },
       "revId": "570ec25678e325e3cbf03f7598b9493ad4145aef",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "33ce2b91_3ef08f8a",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 746,
+      "author": {
+        "id": 1291338
+      },
+      "writtenOn": "2022-05-24T02:16:40Z",
+      "side": 1,
+      "message": "I updated the code. PTAL",
+      "parentUuid": "844e784f_81684331",
+      "range": {
+        "startLine": 746,
+        "startChar": 8,
+        "endLine": 746,
+        "endChar": 19
+      },
+      "revId": "570ec25678e325e3cbf03f7598b9493ad4145aef",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
