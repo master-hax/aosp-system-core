@@ -1,6 +1,23 @@
 {
   "comments": [
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "c637ddf3_d89d29f5",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 10
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-05-25T20:28:42Z",
+      "side": 1,
+      "message": "should it only work on ro.debuggable builds then?",
+      "revId": "6ef598aeb9aa5f6309217b7d0f05611d757152ae",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "3e1dd80f_af62808b",
@@ -14,6 +31,46 @@
       "writtenOn": "2022-05-25T18:36:45Z",
       "side": 1,
       "message": "FTR, I don\u0027t love this mode but I think it has to be done.",
+      "revId": "6ef598aeb9aa5f6309217b7d0f05611d757152ae",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3f7f37ff_6331ab97",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-05-25T20:28:42Z",
+      "side": 1,
+      "message": "why is there an environment variable at all? if it\u0027s just for test purposes, document that here? (well, document the intention either way :-) )",
+      "revId": "6ef598aeb9aa5f6309217b7d0f05611d757152ae",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5f0d9615_4c163998",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-05-25T20:28:42Z",
+      "side": 1,
+      "message": "ParseBool for consistency",
+      "range": {
+        "startLine": 89,
+        "startChar": 28,
+        "endLine": 89,
+        "endChar": 34
+      },
       "revId": "6ef598aeb9aa5f6309217b7d0f05611d757152ae",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
