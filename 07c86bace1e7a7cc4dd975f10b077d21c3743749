@@ -34,6 +34,47 @@
       "parentUuid": "20869f99_31963fbc",
       "revId": "07c86bace1e7a7cc4dd975f10b077d21c3743749",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "72df04e6_35838c6b",
+        "filename": "init/first_stage_init.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-05-25T00:05:54Z",
+      "side": 1,
+      "message": "yeah, should be fine now.\n\n(i do wonder though whether we should factor out the access()...LOG()...Copy() stuff so we don\u0027t need to name these otherwise single-use constants?)",
+      "parentUuid": "cbd7a66f_185cb237",
+      "revId": "07c86bace1e7a7cc4dd975f10b077d21c3743749",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c1edb2df_27be10f1",
+        "filename": "init/first_stage_init.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 143,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-05-25T00:05:54Z",
+      "side": 1,
+      "message": "snapuserd_ramdisk? (or s/snapuserd // in both of these messages, since the filename speaks for itself?)",
+      "range": {
+        "startLine": 143,
+        "startChar": 52,
+        "endLine": 143,
+        "endChar": 61
+      },
+      "revId": "07c86bace1e7a7cc4dd975f10b077d21c3743749",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
