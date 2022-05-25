@@ -122,6 +122,24 @@
       "parentUuid": "d9ac28b8_f852c7ad",
       "revId": "d82598b310ce3f1f770a97524ffff9f68bad8bab",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "42832cd8_08eb9a93",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 615,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2022-05-25T19:53:47Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "4f66029c_fd181059",
+      "revId": "d82598b310ce3f1f770a97524ffff9f68bad8bab",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
