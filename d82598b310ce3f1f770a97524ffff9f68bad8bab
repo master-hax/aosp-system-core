@@ -104,6 +104,24 @@
       "parentUuid": "9687f1e5_dd333229",
       "revId": "d82598b310ce3f1f770a97524ffff9f68bad8bab",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4f66029c_fd181059",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 615,
+      "author": {
+        "id": 1005967
+      },
+      "writtenOn": "2022-05-25T18:36:45Z",
+      "side": 1,
+      "message": "I\u0027m starting to think that not disabling TCF is unnecessarily dangerous, and it raises the question of rate limiting. This is fine as it is.",
+      "parentUuid": "d9ac28b8_f852c7ad",
+      "revId": "d82598b310ce3f1f770a97524ffff9f68bad8bab",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }

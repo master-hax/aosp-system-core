@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3e1dd80f_af62808b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 10
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1005967
+      },
+      "writtenOn": "2022-05-25T18:36:45Z",
+      "side": 1,
+      "message": "FTR, I don\u0027t love this mode but I think it has to be done.",
+      "revId": "6ef598aeb9aa5f6309217b7d0f05611d757152ae",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
