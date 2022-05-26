@@ -19,9 +19,6 @@ message Tombstone {
 
   repeated string command_line = 9;
 
-  // Process uptime in seconds.
-  uint32 process_uptime = 20;
-
   Signal signal_info = 10;
   string abort_message = 14;
   repeated Cause causes = 15;
@@ -31,7 +28,13 @@ message Tombstone {
   repeated LogBuffer log_buffers = 18;
   repeated FD open_fds = 19;
 
-  reserved 21 to 999;
+  // Process uptime in seconds.
+  uint32 process_uptime = 20;
+
+  string hardware = 21;
+  string kernel_version = 22;
+  
+  reserved 23 to 999;
 }
 
 enum Architecture {
