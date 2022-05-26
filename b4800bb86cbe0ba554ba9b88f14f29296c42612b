@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8fb7e002_0d3de036",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 625,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-05-26T15:57:26Z",
+      "side": 1,
+      "message": "hardware and kernel make sense to me, but i don\u0027t know why an app developer would want to know either of these? this is meant for app developers, with bugreports still being the appropriate \"document\" for OEMs.",
+      "range": {
+        "startLine": 624,
+        "startChar": 0,
+        "endLine": 625,
+        "endChar": 82
+      },
+      "revId": "b4800bb86cbe0ba554ba9b88f14f29296c42612b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0e6fc0e9_b0749a34",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 626,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-05-26T15:57:26Z",
+      "side": 1,
+      "message": "for kernel, why not just call uname(2)?",
+      "revId": "b4800bb86cbe0ba554ba9b88f14f29296c42612b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
