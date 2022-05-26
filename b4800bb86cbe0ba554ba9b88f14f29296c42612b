@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "5bb5b87a_a91f6dd3",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 625,
+      "author": {
+        "id": 1950557
+      },
+      "writtenOn": "2022-05-26T16:20:47Z",
+      "side": 1,
+      "message": "yes,you are right.\ndevice fingperint \u0026 hardware \u0026 kernel will be more important.",
+      "parentUuid": "8fb7e002_0d3de036",
+      "range": {
+        "startLine": 624,
+        "startChar": 0,
+        "endLine": 625,
+        "endChar": 82
+      },
+      "revId": "b4800bb86cbe0ba554ba9b88f14f29296c42612b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "0e6fc0e9_b0749a34",
         "filename": "debuggerd/libdebuggerd/tombstone_proto.cpp",
         "patchSetId": 4
@@ -37,6 +61,24 @@
       "writtenOn": "2022-05-26T15:57:26Z",
       "side": 1,
       "message": "for kernel, why not just call uname(2)?",
+      "revId": "b4800bb86cbe0ba554ba9b88f14f29296c42612b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fb1c58a6_762a2dcd",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 626,
+      "author": {
+        "id": 1950557
+      },
+      "writtenOn": "2022-05-26T16:20:47Z",
+      "side": 1,
+      "message": "uname is the comonly way to get current kernel version. I find the \u0027init\u0027 have set the kernel prop, i think maybe it is useful, so try to use it.\n\nThe /proc/version maybe more appropriate, i contained more info, but it is not allowed to access the node for app.",
+      "parentUuid": "0e6fc0e9_b0749a34",
       "revId": "b4800bb86cbe0ba554ba9b88f14f29296c42612b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
