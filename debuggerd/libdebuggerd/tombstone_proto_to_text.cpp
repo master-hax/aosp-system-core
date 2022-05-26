@@ -476,6 +476,10 @@ bool tombstone_proto_to_text(const Tombstone& tombstone, CallbackType callback) 
   CBL("*** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***");
   CBL("Build fingerprint: '%s'", tombstone.build_fingerprint().c_str());
   CBL("Revision: '%s'", tombstone.revision().c_str());
+  CBL("Hardware: '%s'", tombstone.hardware().c_str());
+  CBL("Bootloader: '%s'", tombstone.bootloader().c_str());
+  CBL("Radio: '%s'", tombstone.radio().c_str());
+  CBL("Kernel: '%s'", tombstone.kernel_version().c_str());
   CBL("ABI: '%s'", abi_string(tombstone));
   CBL("Timestamp: %s", tombstone.timestamp().c_str());
   CBL("Process uptime: %ds", tombstone.process_uptime());

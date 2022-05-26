@@ -620,6 +620,10 @@ void engrave_tombstone_proto(Tombstone* tombstone, unwindstack::AndroidUnwinder*
   result.set_build_fingerprint(android::base::GetProperty("ro.build.fingerprint", "unknown"));
   result.set_revision(android::base::GetProperty("ro.revision", "unknown"));
   result.set_timestamp(get_timestamp());
+  result.set_hardware(android::base::GetProperty("ro.hardware", "unknown"));
+  result.set_bootloader(android::base::GetProperty("ro.bootloader", "unknown"));
+  result.set_radio(android::base::GetProperty("gsm.version.baseband", "unknown"));
+  result.set_kernel_version(android::base::GetProperty("ro.kernel.version", "unknown"));
 
   const ThreadInfo& main_thread = threads.at(target_thread);
   result.set_pid(main_thread.pid);
