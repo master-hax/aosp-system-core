@@ -29,6 +29,7 @@
 #include <sys/resource.h>
 #include <sys/syscall.h>
 #include <sys/types.h>
+#include <sys/utsname.h>
 #include <unistd.h>
 
 #include <chrono>
@@ -2604,9 +2605,16 @@ TEST_F(CrasherTest, verify_header) {
   ConsumeFd(std::move(output_fd), &result);
 
   std::string match_str = android::base::StringPrintf(
-      "Build fingerprint: '%s'\\nRevision: '%s'\\n",
-      android::base::GetProperty("ro.build.fingerprint", "unknown").c_str(),
-      android::base::GetProperty("ro.revision", "unknown").c_str());
+      "Build fingerprint: '%s'\\n",
+      android::base::GetProperty("ro.build.fingerprint", "unknown").c_str());
+  match_str += android::base::StringPrintf(
+      "Revision: '%s'\\n", android::base::GetProperty("ro.revision", "unknown").c_str());
+  match_str += android::base::StringPrintf(
+      "Hardware: '%s'\n", android::base::GetProperty("ro.product.board", "unknown").c_str());
+
+  struct utsname data;
+  uname(&data);
+  match_str += android::base::StringPrintf("Kernel: '%s'\n", data.release);
   match_str += android::base::StringPrintf("ABI: '%s'\n", ABI_STRING);
   ASSERT_MATCH(result, match_str);
 }
