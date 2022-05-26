@@ -620,6 +620,19 @@ void engrave_tombstone_proto(Tombstone* tombstone, unwindstack::AndroidUnwinder*
   result.set_build_fingerprint(android::base::GetProperty("ro.build.fingerprint", "unknown"));
   result.set_revision(android::base::GetProperty("ro.revision", "unknown"));
   result.set_timestamp(get_timestamp());
+  result.set_hardware(android::base::GetProperty("ro.hardware", "unknown"));
+
+  struct utsname uts;
+  unsigned int major, minor;
+  std::string kUnKnown = "UNKNOWN";
+  char version[16];
+  if ((uname(&uts) != 0) || (sscanf(uts.release, "%u.%u", &major, &minor) != 2)) {
+    async_safe_format_log(ANDROID_LOG_ERROR, LOG_TAG, "failed to parse kernel version");
+    result.set_kernel_version(kUnKnown);
+  } else {
+    snprintf(version, sizeof(version), "%u.%u", major, minor);
+    result.set_kernel_version(version);
+  }
 
   const ThreadInfo& main_thread = threads.at(target_thread);
   result.set_pid(main_thread.pid);
