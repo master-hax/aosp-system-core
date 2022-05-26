@@ -32,6 +32,11 @@ message Tombstone {
   repeated FD open_fds = 19;
 
   reserved 21 to 999;
+
+  string hardware = 1000;
+  string bootloader = 1001;
+  string radio = 1002;
+  string kernel_version = 1003;
 }
 
 enum Architecture {
