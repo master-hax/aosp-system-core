@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ed841339_ba849954",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 524,
+      "author": {
+        "id": 1005967
+      },
+      "writtenOn": "2022-05-26T23:41:52Z",
+      "side": 1,
+      "message": "Can there be a race between two crashing services?",
+      "revId": "fdb7f67f8ba7ead422e7e52760c41f6eaa9c5114",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "57f4f52b_15681e68",
+        "filename": "init/test_upgrade_mte/mte_crash.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1005967
+      },
+      "writtenOn": "2022-05-26T23:41:52Z",
+      "side": 1,
+      "message": "maybe sleep a little between attempts?",
+      "revId": "fdb7f67f8ba7ead422e7e52760c41f6eaa9c5114",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "338c7658_67e63035",
+        "filename": "init/test_upgrade_mte/src/com/android/tests/init/MteUpgradeTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1005967
+      },
+      "writtenOn": "2022-05-26T23:41:52Z",
+      "side": 1,
+      "message": "Is that enough for 2 restarts? Even on fvp? On the contrary, is that enough for tombstones to overflow and replace the one with the SYNC crash (the service will keep crashing forever, right? what about the logic where 4 crashes in short period of time reboot to bootloader?)",
+      "revId": "fdb7f67f8ba7ead422e7e52760c41f6eaa9c5114",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "06f8afb6_f5384ae5",
+        "filename": "init/test_upgrade_mte/src/com/android/tests/init/MteUpgradeTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 1005967
+      },
+      "writtenOn": "2022-05-26T23:41:52Z",
+      "side": 1,
+      "message": "It\u0027s not unreasonable for the small core to default to SYNC, or even for everything to default to SYNC in some kind of testing build. I\u0027d add explicit diag:memtag_heap:false to the build file, and prctl to ASYNC in the test program before crashing.",
+      "revId": "fdb7f67f8ba7ead422e7e52760c41f6eaa9c5114",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
