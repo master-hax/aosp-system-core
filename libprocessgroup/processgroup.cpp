@@ -186,6 +186,18 @@ static int RemoveProcessGroup(const char* cgroup, uid_t uid, int pid, unsigned i
     int ret = 0;
     auto uid_pid_path = ConvertUidPidToPath(cgroup, uid, pid);
     auto uid_path = ConvertUidToPath(cgroup, uid);
+    static std::vector<std::string> *stale_groups = new std::vector<std::string>();
+
+    // Remove any stale groups first
+    auto iter = stale_groups->begin();
+    while (iter != stale_groups->end()) {
+        ret = rmdir(iter->c_str());
+        if (!ret || errno == ENOENT) {
+            iter = stale_groups->erase(iter);
+        } else {
+            ++iter;
+        }
+    }
 
     if (retries == 0) {
         retries = 1;
@@ -195,6 +207,11 @@ static int RemoveProcessGroup(const char* cgroup, uid_t uid, int pid, unsigned i
         ret = rmdir(uid_pid_path.c_str());
         if (!ret || errno != EBUSY) break;
         std::this_thread::sleep_for(5ms);
+    }
+    if (ret && errno == EBUSY) {
+        // There is still a live thread stuck in this group
+        // Store the group for later removal
+        stale_groups->push_back(uid_pid_path);
     }
 
     return ret;
