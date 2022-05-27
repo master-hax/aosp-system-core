@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0ef846a5_81197634",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1953286
+      },
+      "writtenOn": "2022-05-27T15:10:30Z",
+      "side": 1,
+      "message": "\u003e Uploaded patch set 1.\n\n",
+      "revId": "d61a25c17204b74b81558cb5d67c347f1e87fef1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
