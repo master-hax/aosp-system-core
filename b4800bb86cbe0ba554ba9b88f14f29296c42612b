@@ -50,6 +50,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "8a520aa5_dcd2850f",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 625,
+      "author": {
+        "id": 1950557
+      },
+      "writtenOn": "2022-05-27T10:49:40Z",
+      "side": 1,
+      "message": "mr Hughes, \nsometimes the crash maybe was related with the hardware platform or current kernel version. So i want to add more informationes to let developers know them.\n\nthanks.",
+      "parentUuid": "5bb5b87a_a91f6dd3",
+      "range": {
+        "startLine": 624,
+        "startChar": 0,
+        "endLine": 625,
+        "endChar": 82
+      },
+      "revId": "b4800bb86cbe0ba554ba9b88f14f29296c42612b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "0e6fc0e9_b0749a34",
         "filename": "debuggerd/libdebuggerd/tombstone_proto.cpp",
         "patchSetId": 4
@@ -79,6 +103,24 @@
       "side": 1,
       "message": "uname is the comonly way to get current kernel version. I find the \u0027init\u0027 have set the kernel prop, i think maybe it is useful, so try to use it.\n\nThe /proc/version maybe more appropriate, i contained more info, but it is not allowed to access the node for app.",
       "parentUuid": "0e6fc0e9_b0749a34",
+      "revId": "b4800bb86cbe0ba554ba9b88f14f29296c42612b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c4ef63f1_6175cd18",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 626,
+      "author": {
+        "id": 1950557
+      },
+      "writtenOn": "2022-05-27T10:49:40Z",
+      "side": 1,
+      "message": "sure, it is ok that i change the way to uname, it is more common.\n\n\nthanks.",
+      "parentUuid": "fb1c58a6_762a2dcd",
       "revId": "b4800bb86cbe0ba554ba9b88f14f29296c42612b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
