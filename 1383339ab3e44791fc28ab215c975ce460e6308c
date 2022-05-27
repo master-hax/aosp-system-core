@@ -16,6 +16,40 @@
       "message": "This is not yet verified with VTS tests.",
       "revId": "1383339ab3e44791fc28ab215c975ce460e6308c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "eb5abf1f_f2d04043",
+        "filename": "trusty/keymint/android.hardware.hardware_keystore.rust.trusty-keymint.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1836235
+      },
+      "writtenOn": "2022-05-27T15:50:47Z",
+      "side": 1,
+      "message": "I think the version should now be 200.",
+      "revId": "1383339ab3e44791fc28ab215c975ce460e6308c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8b47f942_e17b1a3f",
+        "filename": "trusty/keymint/src/keymint_hal_main.rs",
+        "patchSetId": 1
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1836235
+      },
+      "writtenOn": "2022-05-27T15:50:47Z",
+      "side": 1,
+      "message": "nit: Rust naming conventions would have this as `TipcChannel`.  Could maybe skip the `use` above and have `struct TipcChannel(trusty::TipcChannel)`?",
+      "revId": "1383339ab3e44791fc28ab215c975ce460e6308c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
