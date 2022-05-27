@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "e3b716a4_0c105243",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 524,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2022-05-27T00:13:16Z",
+      "side": 1,
+      "message": "No, how would that work? The PID will not go away until init reaps it. And init reads this before reaping (see service.cpp). Only init (and su for debugging) can read this, so for non services, no one looks at this.",
+      "parentUuid": "ed841339_ba849954",
+      "revId": "fdb7f67f8ba7ead422e7e52760c41f6eaa9c5114",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "57f4f52b_15681e68",
@@ -31,6 +49,24 @@
       "writtenOn": "2022-05-26T23:41:52Z",
       "side": 1,
       "message": "maybe sleep a little between attempts?",
+      "revId": "fdb7f67f8ba7ead422e7e52760c41f6eaa9c5114",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1e8d9a3a_479f155d",
+        "filename": "init/test_upgrade_mte/mte_crash.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2022-05-27T00:13:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "57f4f52b_15681e68",
       "revId": "fdb7f67f8ba7ead422e7e52760c41f6eaa9c5114",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -54,6 +90,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "bddcc205_6318d44d",
+        "filename": "init/test_upgrade_mte/src/com/android/tests/init/MteUpgradeTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2022-05-27T00:13:16Z",
+      "side": 1,
+      "message": "\u003e what about the logic where 4 crashes in short period of time reboot to bootloader?\n\ni think you are thinking about the logic for critical services\n\n\u003e Is that enough for 2 restarts? Even on fvp?\n\nit works fine on fvp_mini\n\n\u003e is that enough for tombstones to overflow and replace the one with the SYNC crash\n\"If a non-oneshot service exits, it will be restarted at its start time plus this period. It defaults to 5s to rate limit crashing services.\"\n\nThis means we get at most 20 / 5 \u003d 4",
+      "parentUuid": "338c7658_67e63035",
+      "revId": "fdb7f67f8ba7ead422e7e52760c41f6eaa9c5114",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "06f8afb6_f5384ae5",
         "filename": "init/test_upgrade_mte/src/com/android/tests/init/MteUpgradeTest.java",
         "patchSetId": 2
@@ -65,6 +119,24 @@
       "writtenOn": "2022-05-26T23:41:52Z",
       "side": 1,
       "message": "It\u0027s not unreasonable for the small core to default to SYNC, or even for everything to default to SYNC in some kind of testing build. I\u0027d add explicit diag:memtag_heap:false to the build file, and prctl to ASYNC in the test program before crashing.",
+      "revId": "fdb7f67f8ba7ead422e7e52760c41f6eaa9c5114",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4e212f4e_95722113",
+        "filename": "init/test_upgrade_mte/src/com/android/tests/init/MteUpgradeTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2022-05-27T00:13:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "06f8afb6_f5384ae5",
       "revId": "fdb7f67f8ba7ead422e7e52760c41f6eaa9c5114",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
