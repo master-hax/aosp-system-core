@@ -187,10 +187,6 @@ static int RemoveProcessGroup(const char* cgroup, uid_t uid, int pid, unsigned i
     auto uid_pid_path = ConvertUidPidToPath(cgroup, uid, pid);
     auto uid_path = ConvertUidToPath(cgroup, uid);
 
-    if (retries == 0) {
-        retries = 1;
-    }
-
     while (retries--) {
         ret = rmdir(uid_pid_path.c_str());
         if (!ret || errno != EBUSY) break;
@@ -463,12 +459,13 @@ static int KillProcessGroup(uid_t uid, int initialPid, int signal, int retries,
                       << " in " << static_cast<int>(ms) << "ms";
         }
 
-        int err = RemoveProcessGroup(cgroup, uid, initialPid, retries);
+	// 200 retries correspond to 1sec max timeout
+        int err = RemoveProcessGroup(cgroup, uid, initialPid, 200);
 
         if (isMemoryCgroupSupported() && UsePerAppMemcg()) {
             std::string memcg_apps_path;
             if (CgroupGetMemcgAppsPath(&memcg_apps_path) &&
-                RemoveProcessGroup(memcg_apps_path.c_str(), uid, initialPid, retries) < 0) {
+                RemoveProcessGroup(memcg_apps_path.c_str(), uid, initialPid, 200) < 0) {
                 return -1;
             }
         }
