@@ -639,6 +639,7 @@ void engrave_tombstone_proto(Tombstone* tombstone, unwindstack::AndroidUnwinder*
   } else {
     async_safe_format_log(ANDROID_LOG_ERROR, LOG_TAG, "failed to read process info: %s",
                           error.c_str());
+    // At the very least, we know that there is the main thread and the
   }
 
   auto cmd_line = result.mutable_command_line();
