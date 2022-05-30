@@ -72,6 +72,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "b7b91ab7_aaa31c02",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 625,
+      "author": {
+        "id": 1950557
+      },
+      "writtenOn": "2022-05-30T06:12:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8a520aa5_dcd2850f",
+      "range": {
+        "startLine": 624,
+        "startChar": 0,
+        "endLine": 625,
+        "endChar": 82
+      },
+      "revId": "b4800bb86cbe0ba554ba9b88f14f29296c42612b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "0e6fc0e9_b0749a34",
@@ -121,6 +145,24 @@
       "side": 1,
       "message": "sure, it is ok that i change the way to uname, it is more common.\n\n\nthanks.",
       "parentUuid": "fb1c58a6_762a2dcd",
+      "revId": "b4800bb86cbe0ba554ba9b88f14f29296c42612b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "594a307a_d1fe6483",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 626,
+      "author": {
+        "id": 1950557
+      },
+      "writtenOn": "2022-05-30T06:12:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c4ef63f1_6175cd18",
       "revId": "b4800bb86cbe0ba554ba9b88f14f29296c42612b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
