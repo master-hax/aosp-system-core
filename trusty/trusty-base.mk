@@ -23,6 +23,7 @@
 # HAL loading of gatekeeper.trusty.
 
 PRODUCT_PACKAGES += \
+	android.hardware.security.keymint-service.rust.trusty \
 	android.hardware.security.keymint-service.trusty \
 	android.hardware.gatekeeper@1.0-service.trusty \
 	trusty_apploader \
