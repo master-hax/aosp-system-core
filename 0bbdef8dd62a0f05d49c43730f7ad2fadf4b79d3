@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "7f815ac0_2233bf52",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 636,
+      "author": {
+        "id": 1950557
+      },
+      "writtenOn": "2022-06-01T14:02:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9aa38d79_28e2abc5",
+      "range": {
+        "startLine": 626,
+        "startChar": 0,
+        "endLine": 636,
+        "endChar": 0
+      },
+      "revId": "0bbdef8dd62a0f05d49c43730f7ad2fadf4b79d3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "bbc0c904_c62bd153",
@@ -37,6 +61,24 @@
       "writtenOn": "2022-06-01T00:47:01Z",
       "side": 1,
       "message": "heh, these should be 21 and 22, and you change the `reserved` line to start from 23 (and move it to the end of the file).\n\n(do `git log -p` on this file to see the previous change if that wasn\u0027t clear. an example is probably clearer!)",
+      "revId": "0bbdef8dd62a0f05d49c43730f7ad2fadf4b79d3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c48a4a05_f3adc149",
+        "filename": "debuggerd/proto/tombstone.proto",
+        "patchSetId": 7
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1950557
+      },
+      "writtenOn": "2022-06-01T14:02:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "bbc0c904_c62bd153",
       "revId": "0bbdef8dd62a0f05d49c43730f7ad2fadf4b79d3",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
