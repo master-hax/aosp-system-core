@@ -95,6 +95,54 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "61c5aef7_65948d0e",
+        "filename": "init/fuzzer/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 156,
+      "author": {
+        "id": 1953187
+      },
+      "writtenOn": "2022-06-01T22:45:17Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d360439e_3b558393",
+      "range": {
+        "startLine": 156,
+        "startChar": 0,
+        "endLine": 156,
+        "endChar": 7
+      },
+      "revId": "4f5850ba50e01f440d57827b16cb65ca0e8ee071",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0ed382c2_cd25ceee",
+        "filename": "init/fuzzer/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 156,
+      "author": {
+        "id": 1953187
+      },
+      "writtenOn": "2022-06-01T22:45:17Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "af619dc4_be612cae",
+      "range": {
+        "startLine": 156,
+        "startChar": 8,
+        "endLine": 156,
+        "endChar": 9
+      },
+      "revId": "4f5850ba50e01f440d57827b16cb65ca0e8ee071",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "3c028b58_cf27eaa0",
