@@ -1,6 +1,29 @@
 {
   "comments": [
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "c7267944_eba71280",
+        "filename": "init/fuzzer/Android.bp",
+        "patchSetId": 11
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1953187
+      },
+      "writtenOn": "2022-06-02T20:49:15Z",
+      "side": 1,
+      "message": "Do we know if the library under test can be built for Host (x86)? If so, we would want to add host_supported: true. (see go/fuzzer-review-checklist#correct-build-arch)",
+      "range": {
+        "startLine": 45,
+        "startChar": 0,
+        "endLine": 45,
+        "endChar": 4
+      },
+      "revId": "75720eaebdb47095242bf181dd62663dc72ec031",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "63daf2ad_76f0a096",
