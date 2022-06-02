@@ -53,6 +53,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "0866019e_74678f18",
+        "filename": "trusty/keymint/android.hardware.hardware_keystore.rust.trusty-keymint.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1836235
+      },
+      "writtenOn": "2022-06-02T07:00:59Z",
+      "side": 1,
+      "message": "This populates a Java-layer flag indicating roughly the level of the KeyMint that backs Keystore: https://cs.android.com/android/platform/superproject/+/master:frameworks/base/core/java/android/content/pm/PackageManager.java?q\u003dFEATURE_HARDWARE_KEYSTORE\n\n(The comment there needs updating to add a 200 value for KeyMint v2, with support for curve 25519 added.)",
+      "parentUuid": "bf7c9b99_9fe161be",
+      "revId": "1383339ab3e44791fc28ab215c975ce460e6308c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "8b47f942_e17b1a3f",
