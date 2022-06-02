@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f25f1744_e0c9d3c1",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 627,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-06-02T00:09:52Z",
+      "side": 1,
+      "message": "uname(2) can only fail if you pass in an invalid address for the buffer, and since that buffer\u0027s on the stack ... you\u0027ll never get here in that case. you can just assume uname() succeeds and delete all this.\n\nsee also the uname(1) command we use on Android: https://github.com/landley/toybox/blob/master/toys/posix/uname.c#L53",
+      "revId": "5c641464451f5f59a7e89db7432345b0864b3852",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
