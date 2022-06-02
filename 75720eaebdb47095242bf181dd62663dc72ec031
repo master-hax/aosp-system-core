@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "63daf2ad_76f0a096",
+        "filename": "init/fuzzer/init_parser_fuzzer.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1953187
+      },
+      "writtenOn": "2022-06-02T20:36:35Z",
+      "side": 1,
+      "message": "Lines 56-60 set input as a string of random characters ending in random numbers. Just curious, but why was this chosen over just a random string?",
+      "range": {
+        "startLine": 61,
+        "startChar": 20,
+        "endLine": 61,
+        "endChar": 25
+      },
+      "revId": "75720eaebdb47095242bf181dd62663dc72ec031",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "119d787e_50f662e6",
+        "filename": "init/fuzzer/init_parser_fuzzer.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 1953187
+      },
+      "writtenOn": "2022-06-02T20:36:35Z",
+      "side": 1,
+      "message": "Should the contents of this loop be using ConsumeBool() instead of PickValueInArray()? As written the three possible outcomes here have probability 50-25-25 of occurring, respectively, instead of 33-33-33. Forgive my comment if this was intentional.",
+      "range": {
+        "startLine": 108,
+        "startChar": 4,
+        "endLine": 108,
+        "endChar": 7
+      },
+      "revId": "75720eaebdb47095242bf181dd62663dc72ec031",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
