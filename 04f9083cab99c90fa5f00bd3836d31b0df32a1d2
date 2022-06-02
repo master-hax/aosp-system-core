@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7d9586db_7c482ac2",
+        "filename": "init/fuzzer/init_ueventd_fuzzer.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 167,
+      "author": {
+        "id": 1953187
+      },
+      "writtenOn": "2022-06-02T23:54:01Z",
+      "side": 1,
+      "message": "Could this index be out of bounds if line 155 produces a 0-length or very short string?",
+      "range": {
+        "startLine": 167,
+        "startChar": 26,
+        "endLine": 167,
+        "endChar": 27
+      },
+      "revId": "04f9083cab99c90fa5f00bd3836d31b0df32a1d2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
