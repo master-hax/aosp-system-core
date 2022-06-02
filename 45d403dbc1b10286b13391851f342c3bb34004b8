@@ -1,0 +1,188 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7e0d9f20_aead8ce0",
+        "filename": "fs_mgr/libsnapshot/snapuserd/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2022-06-02T20:42:47Z",
+      "side": 1,
+      "message": "accidental tab?",
+      "range": {
+        "startLine": 72,
+        "startChar": 0,
+        "endLine": 72,
+        "endChar": 1
+      },
+      "revId": "45d403dbc1b10286b13391851f342c3bb34004b8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3d569874_f2c8af00",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_verify.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2022-06-02T20:42:47Z",
+      "side": 1,
+      "message": "prefer \n\n```\nUpdateVerify::UpdateVerify(const std::string\u0026 misc_name):misc_name_(misc_name), state_(UpdateVerifyState::VERIFY_UNKNOWN)  {\n}\n```",
+      "range": {
+        "startLine": 31,
+        "startChar": 0,
+        "endLine": 31,
+        "endChar": 27
+      },
+      "revId": "45d403dbc1b10286b13391851f342c3bb34004b8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8ee6485d_c4a0822b",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_verify.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2022-06-02T20:42:47Z",
+      "side": 1,
+      "message": "const auto",
+      "range": {
+        "startLine": 75,
+        "startChar": 4,
+        "endLine": 75,
+        "endChar": 8
+      },
+      "revId": "45d403dbc1b10286b13391851f342c3bb34004b8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b7e7f323_2213b6ce",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_verify.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2022-06-02T20:42:47Z",
+      "side": 1,
+      "message": "constexpr auto\u0026\u0026",
+      "range": {
+        "startLine": 78,
+        "startChar": 4,
+        "endLine": 78,
+        "endChar": 15
+      },
+      "revId": "45d403dbc1b10286b13391851f342c3bb34004b8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b44314a9_db4e0a09",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_verify.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2022-06-02T20:42:47Z",
+      "side": 1,
+      "message": "constexpr auto\u0026\u0026",
+      "range": {
+        "startLine": 79,
+        "startChar": 4,
+        "endLine": 79,
+        "endChar": 15
+      },
+      "revId": "45d403dbc1b10286b13391851f342c3bb34004b8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b66b87fd_05962079",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_verify.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2022-06-02T20:42:47Z",
+      "side": 1,
+      "message": "Why launching another thread to do the work and then immediately block on it? Isn\u0027t that the same as just calling `UpdateVerify::VerifyPartition` from current thread?",
+      "range": {
+        "startLine": 92,
+        "startChar": 4,
+        "endLine": 92,
+        "endChar": 23
+      },
+      "revId": "45d403dbc1b10286b13391851f342c3bb34004b8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "138b2552_0e13cb80",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_verify.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2022-06-02T20:42:47Z",
+      "side": 1,
+      "message": "const",
+      "range": {
+        "startLine": 114,
+        "startChar": 4,
+        "endLine": 114,
+        "endChar": 12
+      },
+      "revId": "45d403dbc1b10286b13391851f342c3bb34004b8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ca54174f_fd3f4bd9",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_verify.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 200,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2022-06-02T20:42:47Z",
+      "side": 1,
+      "message": "const",
+      "range": {
+        "startLine": 200,
+        "startChar": 4,
+        "endLine": 200,
+        "endChar": 7
+      },
+      "revId": "45d403dbc1b10286b13391851f342c3bb34004b8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
