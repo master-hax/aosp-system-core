@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7500f51a_d3eabdec",
+        "filename": "init/fuzzer/init_keychords_fuzzer.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 1953187
+      },
+      "writtenOn": "2022-06-03T17:03:13Z",
+      "side": 1,
+      "message": "Is it possible for a user to make these calls on 94-95 in any order? If so, consider randomizing the order of these calls. (see go/fuzzer-review-checklist#random-function-order)",
+      "revId": "43ba77853f8193fa3cb657bd93a14cad8c6dfbea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
