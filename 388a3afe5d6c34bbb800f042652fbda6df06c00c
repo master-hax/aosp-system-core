@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6fda5a2a_5fe4f335",
+        "filename": "init/fuzzer/init_ueventHandler_fuzzer.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 1953187
+      },
+      "writtenOn": "2022-06-03T22:32:23Z",
+      "side": 1,
+      "message": "If the ModaliasHandler and FirmwareHandler classes affect the same data in some way, I think we may want to create a loop making calls to both libraries in a random order, to allow the fuzzer to explore any issues involving the interaction of the two libraries. (see go/fuzzer-review-checklist#random-function-order).",
+      "range": {
+        "startLine": 82,
+        "startChar": 4,
+        "endLine": 82,
+        "endChar": 6
+      },
+      "revId": "388a3afe5d6c34bbb800f042652fbda6df06c00c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
