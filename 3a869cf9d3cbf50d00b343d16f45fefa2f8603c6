@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b373d76c_47165482",
+        "filename": "init/fuzzer/init_service_utils_fuzzer.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 149,
+      "author": {
+        "id": 1953187
+      },
+      "writtenOn": "2022-06-03T21:29:45Z",
+      "side": 1,
+      "message": "Consider calling createTestFile(), invokeServiceUtils(), removeFile(), and invokecapabilities() in random order - I wonder if here it may allow the fuzzer to explore additional use cases. (see go/fuzzer-review-checklist#random-function-order)",
+      "range": {
+        "startLine": 149,
+        "startChar": 29,
+        "endLine": 149,
+        "endChar": 36
+      },
+      "revId": "3a869cf9d3cbf50d00b343d16f45fefa2f8603c6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
