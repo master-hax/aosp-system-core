@@ -250,12 +250,12 @@ cc_library_static {
             cflags: ["-DROOT_POSSIBLE"],
         },
 
-        malloc_not_svelte: {
-            cflags: ["-DUSE_SCUDO"],
-            whole_static_libs: ["libscudo"],
-            srcs: ["libdebuggerd/scudo.cpp"],
-            header_libs: ["scudo_headers"],
-        },
+        //malloc_not_svelte: {
+            //cflags: ["-DUSE_SCUDO"],
+            //whole_static_libs: ["libscudo"],
+            //srcs: ["libdebuggerd/scudo.cpp"],
+            //header_libs: ["scudo_headers"],
+        //},
     },
 }
 
@@ -294,10 +294,10 @@ cc_test {
     ],
 
     product_variables: {
-        malloc_not_svelte: {
-            srcs: ["libdebuggerd/test/scudo_test.cpp"],
-            header_libs: ["scudo_headers"],
-        },
+        //malloc_not_svelte: {
+            //srcs: ["libdebuggerd/test/scudo_test.cpp"],
+            //header_libs: ["scudo_headers"],
+        //},
     },
 
     target: {
