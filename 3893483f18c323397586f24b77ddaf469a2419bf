@@ -48,6 +48,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "a692a67a_f750b2ee",
+        "filename": "init/fuzzer/Android.bp",
+        "patchSetId": 3
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 1953187
+      },
+      "writtenOn": "2022-06-03T21:11:28Z",
+      "side": 1,
+      "message": "Thanks Devendra - sounds good, resolving.",
+      "parentUuid": "ea8ec23f_1fcf271c",
+      "range": {
+        "startLine": 114,
+        "startChar": 0,
+        "endLine": 114,
+        "endChar": 7
+      },
+      "revId": "3893483f18c323397586f24b77ddaf469a2419bf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "b4ffd003_57df2057",
