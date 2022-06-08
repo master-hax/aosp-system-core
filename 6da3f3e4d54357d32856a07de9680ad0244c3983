@@ -22,6 +22,30 @@
       },
       "revId": "6da3f3e4d54357d32856a07de9680ad0244c3983",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8b2924d7_067c5b2f",
+        "filename": "fs_mgr/tests/Android.bp",
+        "patchSetId": 4
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 1399011
+      },
+      "writtenOn": "2022-06-08T22:06:20Z",
+      "side": 1,
+      "message": "Thanks, already removed in latest patchset.",
+      "parentUuid": "764c6920_d57ffe18",
+      "range": {
+        "startLine": 65,
+        "startChar": 8,
+        "endLine": 67,
+        "endChar": 10
+      },
+      "revId": "6da3f3e4d54357d32856a07de9680ad0244c3983",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
