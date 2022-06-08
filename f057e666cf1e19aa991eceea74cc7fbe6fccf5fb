@@ -34,6 +34,24 @@
       "parentUuid": "fa1b6ae9_4121c2bb",
       "revId": "f057e666cf1e19aa991eceea74cc7fbe6fccf5fb",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0a99a437_d7c7fd1a",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 210,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-06-08T23:52:41Z",
+      "side": 1,
+      "message": "so why do we have a retry limit at all? is it better to just call attention to \"weird things are happening\" in that way, so that the blocked thread will be \"caught in the act\"?",
+      "parentUuid": "ba4caaf3_3cfab8c4",
+      "revId": "f057e666cf1e19aa991eceea74cc7fbe6fccf5fb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
