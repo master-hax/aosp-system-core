@@ -50,6 +50,30 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "1f6f4150_d345cd25",
+        "filename": "init/fuzzer/Android.bp",
+        "patchSetId": 11
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1953187
+      },
+      "writtenOn": "2022-06-08T16:00:05Z",
+      "side": 1,
+      "message": "I see - thanks Devendra for explaining that context!",
+      "parentUuid": "2ee9fb9e_e6b15018",
+      "range": {
+        "startLine": 45,
+        "startChar": 0,
+        "endLine": 45,
+        "endChar": 4
+      },
+      "revId": "75720eaebdb47095242bf181dd62663dc72ec031",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "63daf2ad_76f0a096",
         "filename": "init/fuzzer/init_parser_fuzzer.cpp",
         "patchSetId": 11
