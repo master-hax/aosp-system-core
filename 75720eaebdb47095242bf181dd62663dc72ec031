@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "2ee9fb9e_e6b15018",
+        "filename": "init/fuzzer/Android.bp",
+        "patchSetId": 11
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1890836
+      },
+      "writtenOn": "2022-06-08T05:40:18Z",
+      "side": 1,
+      "message": "Adding in host support to the library libinit was tried out initially. But, due to the increased dependencies on other libraries that are not host supported, adding it is not feasible.",
+      "parentUuid": "c7267944_eba71280",
+      "range": {
+        "startLine": 45,
+        "startChar": 0,
+        "endLine": 45,
+        "endChar": 4
+      },
+      "revId": "75720eaebdb47095242bf181dd62663dc72ec031",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "63daf2ad_76f0a096",
@@ -49,6 +73,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "c6264634_b7c6bacd",
+        "filename": "init/fuzzer/init_parser_fuzzer.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1890836
+      },
+      "writtenOn": "2022-06-08T05:40:18Z",
+      "side": 1,
+      "message": "For most of the cases, the code was checking for a string and them some numbers. But, after reexamining the code, using random strings looks like a better option as there are few more checks for strings later.",
+      "parentUuid": "63daf2ad_76f0a096",
+      "range": {
+        "startLine": 61,
+        "startChar": 20,
+        "endLine": 61,
+        "endChar": 25
+      },
+      "revId": "75720eaebdb47095242bf181dd62663dc72ec031",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "119d787e_50f662e6",
         "filename": "init/fuzzer/init_parser_fuzzer.cpp",
         "patchSetId": 11
@@ -60,6 +108,30 @@
       "writtenOn": "2022-06-02T20:36:35Z",
       "side": 1,
       "message": "Should the contents of this loop be using ConsumeBool() instead of PickValueInArray()? As written the three possible outcomes here have probability 50-25-25 of occurring, respectively, instead of 33-33-33. Forgive my comment if this was intentional.",
+      "range": {
+        "startLine": 108,
+        "startChar": 4,
+        "endLine": 108,
+        "endChar": 7
+      },
+      "revId": "75720eaebdb47095242bf181dd62663dc72ec031",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6e4c1304_fa9d80ad",
+        "filename": "init/fuzzer/init_parser_fuzzer.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 1890836
+      },
+      "writtenOn": "2022-06-08T05:40:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "119d787e_50f662e6",
       "range": {
         "startLine": 108,
         "startChar": 4,
