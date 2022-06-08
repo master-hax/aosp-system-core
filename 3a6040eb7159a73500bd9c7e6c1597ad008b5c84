@@ -33,6 +33,23 @@
       "message": "This introduces many failures of SELinuxUncheckedDenialBootTest, which is monitored by TestMonitors. ",
       "revId": "3a6040eb7159a73500bd9c7e6c1597ad008b5c84",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0ea45d47_e3d64515",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1458990
+      },
+      "writtenOn": "2022-06-08T09:01:10Z",
+      "side": 1,
+      "message": "Sorry, I did not notice that barbet still has these hidden avc denials.",
+      "revId": "3a6040eb7159a73500bd9c7e6c1597ad008b5c84",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
