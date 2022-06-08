@@ -16,6 +16,23 @@
       "message": "Can I get the code review, since David and Bart made +2 before?",
       "revId": "ff1e69feda0460397d5f4610efa1519ac7058682",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e72177ef_388be6e5",
+        "filename": "fs_mgr/fs_mgr_fstab.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 312,
+      "author": {
+        "id": 1060907
+      },
+      "writtenOn": "2022-06-08T18:04:29Z",
+      "side": 1,
+      "message": "What should happen here if either `ReadFileToString` or `StartsWith` return `false`? Presumably some sort of error should be reported?",
+      "revId": "ff1e69feda0460397d5f4610efa1519ac7058682",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
