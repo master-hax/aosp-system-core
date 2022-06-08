@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fa1b6ae9_4121c2bb",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 210,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-06-08T23:46:35Z",
+      "side": 1,
+      "message": "the trade-off of not having a specific \"reaper\" thread is that you can have arbitrarily many of these threads if things start to go bad, which might make things even slower and have you DoS yourself?",
+      "revId": "f057e666cf1e19aa991eceea74cc7fbe6fccf5fb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
