@@ -182,6 +182,17 @@ static std::string ConvertUidPidToPath(const char* cgroup, uid_t uid, int pid) {
     return StringPrintf("%s/uid_%d/pid_%d", cgroup, uid, pid);
 }
 
+static void remove_group_later(std::string *group)
+{
+    int retries = 5;
+    int ret;
+    do {
+        std::this_thread::sleep_for(1s);
+        ret = rmdir(group->c_str());
+    } while (ret && errno == EBUSY && retries--);
+    delete group;
+}
+
 static int RemoveProcessGroup(const char* cgroup, uid_t uid, int pid, unsigned int retries) {
     int ret = 0;
     auto uid_pid_path = ConvertUidPidToPath(cgroup, uid, pid);
@@ -191,6 +202,13 @@ static int RemoveProcessGroup(const char* cgroup, uid_t uid, int pid, unsigned i
         ret = rmdir(uid_pid_path.c_str());
         if (!ret || errno != EBUSY) break;
         std::this_thread::sleep_for(5ms);
+    }
+    // Even after all the retries the groups is still not empty. This should happen in etremely
+    // rare cases when the CPUs are so busy that exiting thread can't get CPU time to exit.
+    // Have to schedule removal for later to avoid leaving empty groups which consume memory.
+    if (ret && errno == EBUSY) {
+        std::thread t(remove_group_later, new std::string(uid_pid_path));
+        t.detach();
     }
 
     return ret;
