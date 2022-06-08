@@ -57,6 +57,24 @@
       "parentUuid": "82e79013_58f2563f",
       "revId": "84bfb02d029d551c011478abbf1dc090d6cfcdbd",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "065ac71e_dd5685c7",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 3279,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-06-08T13:14:34Z",
+      "side": 1,
+      "message": "To be frank, I\u0027m don\u0027t have a lot of experience with VSDK \u0026 *same* repo configuration. So +justinyun to confirm what i said...\n\n\u003e So, in that case if the vendor is built in a T platform tree, do the binary in vendor boot ramdisk is from T build ...\n\nAssuming VSDK is installed properly, and the vendor boot ramdisk snapuserd binary is built with VSDK, then yes.\n\n\u003e checking \"ro.vndk.version\u003d\u003d31\"seems to be the right way irrespective of whether vendor is build on T or S platform\n\nYes. \"ro.vndk.version\" \u003d\u003d VSDK version \u003d\u003d \"vendor binary\" version. snapuserd (vendor_ramdisk variant) being a vender-ish binary should be build using VSDK, so looking at \u0027ro.vndk.version\u0027 should be right.\n\n\u003e Whenever \"ro.vndk.version\u003d\u003d31\", \"snapuserd\" binary will always be from Android S from vendor_boot ramdisk. Is this the right claim ?\n\nJustin, Can we expect this for all \"ramdisk/vendor_ramdisk\" binaries built with VSDK? {VSDK + same repo} , {VSDK + split repo}",
+      "parentUuid": "7d10319a_1f3a1557",
+      "revId": "84bfb02d029d551c011478abbf1dc090d6cfcdbd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
