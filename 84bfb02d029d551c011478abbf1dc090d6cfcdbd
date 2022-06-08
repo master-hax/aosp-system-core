@@ -39,6 +39,24 @@
       "message": "Given that we\u0027re talking about GRF devices, we should instead look at the \"ro.vndk.version\" property as the \"vendor version\".\n\nIn aosp/2052147, I said both \"ro.vendor.build.version.release_or_codename\" and \"ro.vndk.version\" are fine, because the background is about *system only OTA*.\n\nOTOH, if device is GRF-ed, then it\u0027s possible that the vendor is built in a T platform tree with S VSDK (see https://docs.google.com/document/d/1BbMlwuMsKAFUZiDrNKBcpEcDKRuIN13lObEmGsGjgPQ/edit#heading\u003dh.huy79574x9gh), which leads to a *technically S vendor*, but built in the T platform tree, thus \"ro.vendor.build.version.release_or_codename\u003d13\" (T) \u0026\u0026 \"ro.vndk.version\u003d31\" (S).",
       "revId": "84bfb02d029d551c011478abbf1dc090d6cfcdbd",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7d10319a_1f3a1557",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 3279,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-06-08T07:58:51Z",
+      "side": 1,
+      "message": "Thanks for the review.\n\naosp/2052147 is also about GRF related change and not just *system only OTA*; which means aosp/2052147 is also in-correct.\n\nI will go through the link again but the underlying issue here is that the \"snapuserd\" binary resides in vendor_boot ramdisk. \n\nSo, in that case if the vendor is built in a T platform tree, do the binary in vendor boot ramdisk is from T build or S build as \"ro.vendor.build.version.release_or_codename\u003d13\".\n\n\nIIUC, checking \"ro.vndk.version\u003d\u003d31\"seems to be the right way irrespective of whether vendor is build on T or S platform ? Whenever \"ro.vndk.version\u003d\u003d31\", \"snapuserd\" binary will always be from Android S from vendor_boot ramdisk. Is this the right claim ?",
+      "parentUuid": "82e79013_58f2563f",
+      "revId": "84bfb02d029d551c011478abbf1dc090d6cfcdbd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
