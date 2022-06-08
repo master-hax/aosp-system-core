@@ -52,6 +52,24 @@
       "parentUuid": "ba4caaf3_3cfab8c4",
       "revId": "f057e666cf1e19aa991eceea74cc7fbe6fccf5fb",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f3edc633_edbe3aa4",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 210,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-06-08T23:58:49Z",
+      "side": 1,
+      "message": "A partner captured rare cases when a device was under such a stress that an exiting task could not get CPU time to exit for 2+ secs and the cgroup removal failed leaving empty cgroup and consuming memory. See: https://b.corp.google.com/issues/233319780#comment20 for details.",
+      "parentUuid": "0a99a437_d7c7fd1a",
+      "revId": "f057e666cf1e19aa991eceea74cc7fbe6fccf5fb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
