@@ -37,11 +37,13 @@ bool Daemon::IsUserspaceSnapshotsEnabled() {
     const std::string UNKNOWN = "unknown";
     const std::string vendor_release =
             android::base::GetProperty("ro.vendor.build.version.release_or_codename", UNKNOWN);
+    const std::string vndk_version = android::base::GetProperty("ro.vndk.version", UNKNOWN);
 
     // No user-space snapshots if vendor partition is on Android 12
-    if (vendor_release.find("12") != std::string::npos) {
-        LOG(INFO) << "Userspace snapshots disabled as vendor partition is on Android: "
-                  << vendor_release;
+    if (vendor_release.find("12") != std::string::npos ||
+        vndk_version.find("32") != std::string::npos) {
+        LOG(INFO) << "Userspace snapshots disabled as vendor release is on Android: "
+                  << vendor_release << " vndk.version: " << vndk_version;
         return false;
     }
 

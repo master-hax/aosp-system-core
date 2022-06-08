@@ -3234,28 +3234,62 @@ Return SnapshotManager::CreateUpdateSnapshots(const DeltaArchiveManifest& manife
     status.set_state(update_state);
     status.set_compression_enabled(cow_creator.compression_enabled);
     if (cow_creator.compression_enabled) {
+        bool userSnapshotsEnabled = true;
+        /*
+         * VABC was introduced in Android 12. One of the primary component
+         * of VABC is "snapuserd" daemon. "snapuserd" binary was part
+         * of vendor ramdisk in Android 12. For GRF (Google Requirement Freeze)
+         * devices, vendor partition can continue to stay on Android 12
+         * even though system partitions are updated. Thus, the "snapuserd"
+         * binary will be from Android 12.
+         *
+         * We cannot enable userspace snapshots because of backward
+         * compatibility for GRF devices as "snapuserd" binary can be
+         * on Android 12. Thus, we explicitly check these two cases:
+         *
+         * 1: ro.vendor.build.version.release_or_codename is Android 12.
+         *
+         * 2: ro.vndk.version is 32
+         *
+         * We need to check both the cases as ro.vendor.build.version.release_or_codename
+         * can still be set to Android 13 if vendor source is built on T platform.
+         * If either of these two is true, disable userspace snapshots.
+         *
+         * This is not a problem for T launch devices as we have init_boot
+         * and "snapuserd" binary has been moved to "system" side of treble
+         * boundary. Since VABC was launched in S, we need to maintain this
+         * backward compatibilty for all S launched devices.
+         *
+         * We will need to maintain this until Android V (S, T, U, V) as
+         * devices launched with Android S can technically be on "S" vendor
+         * for 4 updates.
+         *
+         */
+        const std::string UNKNOWN = "unknown";
+        const std::string vendor_release =
+                android::base::GetProperty("ro.vendor.build.version.release_or_codename", UNKNOWN);
+        const std::string vndk_version = android::base::GetProperty("ro.vndk.version", UNKNOWN);
+
+        if (vendor_release.find("12") != std::string::npos ||
+            vndk_version.find("32") != std::string::npos) {
+            userSnapshotsEnabled = false;
+        }
+
+        if (!userSnapshotsEnabled) {
+            LOG(INFO) << "Userspace snapshots disabled as vendor release is on Android: "
+                      << vendor_release << " vndk.version: " << vndk_version;
+        }
+
         if (!device()->IsTestDevice()) {
-            bool userSnapshotsEnabled = IsUserspaceSnapshotsEnabled();
-            const std::string UNKNOWN = "unknown";
-            const std::string vendor_release = android::base::GetProperty(
-                    "ro.vendor.build.version.release_or_codename", UNKNOWN);
-
-            // No user-space snapshots if vendor partition is on Android 12
-            if (vendor_release.find("12") != std::string::npos) {
-                LOG(INFO) << "Userspace snapshots disabled as vendor partition is on Android: "
-                          << vendor_release;
-                userSnapshotsEnabled = false;
-            }
-
-            // Userspace snapshots is enabled only if compression is enabled
+            userSnapshotsEnabled = (userSnapshotsEnabled && IsUserspaceSnapshotsEnabled());
             status.set_userspace_snapshots(userSnapshotsEnabled);
             if (userSnapshotsEnabled) {
                 is_snapshot_userspace_ = true;
                 status.set_io_uring_enabled(IsIouringEnabled());
-                LOG(INFO) << "Userspace snapshots enabled";
+                LOG(INFO) << "Userspace snapshots enabled.";
             } else {
                 is_snapshot_userspace_ = false;
-                LOG(INFO) << "Userspace snapshots disabled";
+                LOG(INFO) << "Userspace snapshots disabled.";
             }
 
             // Terminate stale daemon if any
@@ -3273,13 +3307,14 @@ Return SnapshotManager::CreateUpdateSnapshots(const DeltaArchiveManifest& manife
                 snapuserd_client_ = nullptr;
             }
         } else {
-            status.set_userspace_snapshots(!IsDmSnapshotTestingEnabled());
-            if (IsDmSnapshotTestingEnabled()) {
+            userSnapshotsEnabled = (userSnapshotsEnabled && !IsDmSnapshotTestingEnabled());
+            status.set_userspace_snapshots(userSnapshotsEnabled);
+            if (!userSnapshotsEnabled) {
                 is_snapshot_userspace_ = false;
-                LOG(INFO) << "User-space snapshots disabled for testing";
+                LOG(INFO) << "Userspace snapshots disabled for testing.";
             } else {
                 is_snapshot_userspace_ = true;
-                LOG(INFO) << "User-space snapshots enabled for testing";
+                LOG(INFO) << "Userspace snapshots enabled for testing.";
             }
         }
     }
