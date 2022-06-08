@@ -95,6 +95,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "a375ae71_1485727c",
+        "filename": "init/fuzzer/init_parser_fuzzer.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1890836
+      },
+      "writtenOn": "2022-06-08T05:43:45Z",
+      "side": 1,
+      "message": "Marking this as resolved",
+      "parentUuid": "c6264634_b7c6bacd",
+      "range": {
+        "startLine": 61,
+        "startChar": 20,
+        "endLine": 61,
+        "endChar": 25
+      },
+      "revId": "75720eaebdb47095242bf181dd62663dc72ec031",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "119d787e_50f662e6",
