@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fb457af7_43f472a1",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-06-08T07:36:34Z",
+      "side": 1,
+      "message": "d",
+      "range": {
+        "startLine": 7,
+        "startChar": 42,
+        "endLine": 7,
+        "endChar": 45
+      },
+      "revId": "84bfb02d029d551c011478abbf1dc090d6cfcdbd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "82e79013_58f2563f",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 3279,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-06-08T07:36:34Z",
+      "side": 1,
+      "message": "Given that we\u0027re talking about GRF devices, we should instead look at the \"ro.vndk.version\" property as the \"vendor version\".\n\nIn aosp/2052147, I said both \"ro.vendor.build.version.release_or_codename\" and \"ro.vndk.version\" are fine, because the background is about *system only OTA*.\n\nOTOH, if device is GRF-ed, then it\u0027s possible that the vendor is built in a T platform tree with S VSDK (see https://docs.google.com/document/d/1BbMlwuMsKAFUZiDrNKBcpEcDKRuIN13lObEmGsGjgPQ/edit#heading\u003dh.huy79574x9gh), which leads to a *technically S vendor*, but built in the T platform tree, thus \"ro.vendor.build.version.release_or_codename\u003d13\" (T) \u0026\u0026 \"ro.vndk.version\u003d31\" (S).",
+      "revId": "84bfb02d029d551c011478abbf1dc090d6cfcdbd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
