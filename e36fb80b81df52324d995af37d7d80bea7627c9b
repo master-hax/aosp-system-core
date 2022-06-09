@@ -16,6 +16,24 @@
       "message": "Consider calling createDeviceHandlerParam() and invokeDevice() in a random order - I think here it may allow the fuzzer to explore additional use cases. (see go/fuzzer-review-checklist#random-function-order)",
       "revId": "e36fb80b81df52324d995af37d7d80bea7627c9b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "17d243e9_f57c4d59",
+        "filename": "init/fuzzer/init_devices_fuzzer.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 124,
+      "author": {
+        "id": 1890836
+      },
+      "writtenOn": "2022-06-09T14:23:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1e8fe0b5_6bec58ee",
+      "revId": "e36fb80b81df52324d995af37d7d80bea7627c9b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
