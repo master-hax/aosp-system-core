@@ -88,6 +88,24 @@
       "parentUuid": "f3edc633_edbe3aa4",
       "revId": "f057e666cf1e19aa991eceea74cc7fbe6fccf5fb",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "701cd7d8_1ca8e559",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 210,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-06-09T00:01:28Z",
+      "side": 1,
+      "message": "exactly, yes. that seems like that might be the \"least worst\" option for a struggling device? (anything that adds _more_ load just seems like we\u0027re inviting an ANR :-) )",
+      "parentUuid": "3ad9595c_a7d61245",
+      "revId": "f057e666cf1e19aa991eceea74cc7fbe6fccf5fb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
