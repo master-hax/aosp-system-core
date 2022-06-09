@@ -124,6 +124,24 @@
       "parentUuid": "701cd7d8_1ca8e559",
       "revId": "f057e666cf1e19aa991eceea74cc7fbe6fccf5fb",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3373c6c1_e9b22486",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 210,
+      "author": {
+        "id": 1868565
+      },
+      "writtenOn": "2022-06-09T01:29:56Z",
+      "side": 1,
+      "message": "the more background proceses in cpu[0-3], it\u0027s possible that thread in the killed process could not be scheduled. If we don\u0027t want to adds _more_ load, how about this patch \n\nstatic int createProcessGroupInternal(uid_t uid, int initialPid, std::string cgr\n     gid_t cgroup_uid \u003d AID_SYSTEM;\n     uid_t cgroup_gid \u003d AID_SYSTEM;\n\n+    RemoveUidProcessGroups(uid_path);\n\nThe next time the program starts to clean up the files that remove failed the last program exit,",
+      "parentUuid": "b5c02900_e9a59c50",
+      "revId": "f057e666cf1e19aa991eceea74cc7fbe6fccf5fb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
