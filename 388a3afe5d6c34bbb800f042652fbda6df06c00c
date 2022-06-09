@@ -22,6 +22,30 @@
       },
       "revId": "388a3afe5d6c34bbb800f042652fbda6df06c00c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f6d59461_b7de593e",
+        "filename": "init/fuzzer/init_ueventHandler_fuzzer.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 1890836
+      },
+      "writtenOn": "2022-06-09T14:21:55Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6fda5a2a_5fe4f335",
+      "range": {
+        "startLine": 82,
+        "startChar": 4,
+        "endLine": 82,
+        "endChar": 6
+      },
+      "revId": "388a3afe5d6c34bbb800f042652fbda6df06c00c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
