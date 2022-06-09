@@ -22,6 +22,30 @@
       },
       "revId": "3a869cf9d3cbf50d00b343d16f45fefa2f8603c6",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ea8411f8_c51dda67",
+        "filename": "init/fuzzer/init_service_utils_fuzzer.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 149,
+      "author": {
+        "id": 1890836
+      },
+      "writtenOn": "2022-06-09T14:37:37Z",
+      "side": 1,
+      "message": "These cannot be randomized as the fuzzer-created file is used in invokeServiceUtils(). Therefore, moved createTestFile() and removeFile() APIs near to the usage.",
+      "parentUuid": "b373d76c_47165482",
+      "range": {
+        "startLine": 149,
+        "startChar": 29,
+        "endLine": 149,
+        "endChar": 36
+      },
+      "revId": "3a869cf9d3cbf50d00b343d16f45fefa2f8603c6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
