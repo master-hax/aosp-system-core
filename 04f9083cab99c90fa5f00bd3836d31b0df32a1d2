@@ -22,6 +22,30 @@
       },
       "revId": "04f9083cab99c90fa5f00bd3836d31b0df32a1d2",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1f6d4479_3b3cc06b",
+        "filename": "init/fuzzer/init_ueventd_fuzzer.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 167,
+      "author": {
+        "id": 1890836
+      },
+      "writtenOn": "2022-06-09T14:22:01Z",
+      "side": 1,
+      "message": "At line 155 we are adding some string value (maybe even an empty string) at the index 1 of the vector \u0027args\u0027 using \u0027std::vector::push_back()\u0027. Therefore, accessing index 1 at line 167 would not cause any out of bounds crash.",
+      "parentUuid": "7d9586db_7c482ac2",
+      "range": {
+        "startLine": 167,
+        "startChar": 26,
+        "endLine": 167,
+        "endChar": 27
+      },
+      "revId": "04f9083cab99c90fa5f00bd3836d31b0df32a1d2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
