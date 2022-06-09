@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e253bd67_b67ef823",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2022-06-09T14:16:22Z",
+      "side": 1,
+      "message": "LGTM, let\u0027s get David\u0027s review as well.",
+      "revId": "70c53f5d52fff73eff48c324883a5d670b78aa23",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
