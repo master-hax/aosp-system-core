@@ -46,6 +46,30 @@
       },
       "revId": "6af7c88777024fe958a6c07b1faf7b326fe2f11e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0ef99fc6_f578c906",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 3
+      },
+      "lineNbr": 1173,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-06-10T05:57:40Z",
+      "side": 1,
+      "message": "Yeah, I know that. But why do /proc/cmdline and /proc/bootconfig have to be in the \u0027radio\u0027 group?",
+      "parentUuid": "dc8edae3_6f40e3af",
+      "range": {
+        "startLine": 1173,
+        "startChar": 15,
+        "endLine": 1173,
+        "endChar": 20
+      },
+      "revId": "6af7c88777024fe958a6c07b1faf7b326fe2f11e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
