@@ -177,6 +177,24 @@
       "parentUuid": "84c8f531_262d807c",
       "revId": "84bfb02d029d551c011478abbf1dc090d6cfcdbd",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f74fb4d4_23defde3",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 3279,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-06-10T16:33:45Z",
+      "side": 1,
+      "message": "\u003e T branch\n\nOh I see. In that case we want minimal code logic change, so it\u0027s important to write simple to review code, even if it means duplicating code here and there. I\u0027m talking about the code dup between snapshot.cpp \u0026 snapuserd_daemon.cpp.\n\nThe suggestions I was asking doesn\u0027t need to be in this change, it can be in a future refactor that doesn\u0027t need to be backport to T.\n\n\u003e without impacting other non-GRF devices.\n\nall the more reason to have a means to precisely pinpoint the exact version of the running snapuserd binary? I suggest starting from U we define a formal channel to query this information. Mechanism as simple as \"snapuserd shall publish it\u0027s version and feature capabilities to some sysprops once it boots up\" could be useful, right?",
+      "parentUuid": "96ceb67d_4acc0067",
+      "revId": "84bfb02d029d551c011478abbf1dc090d6cfcdbd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
