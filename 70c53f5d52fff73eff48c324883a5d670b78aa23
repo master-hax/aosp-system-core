@@ -50,6 +50,24 @@
       "message": "This change itself looks fine, but I found that ro.force.debuggable is not correctly labeled. As a result, it defaults to `default_prop` and can be written to 1 by a random process even when debug ramdisk is not used.\n\nI suggest you give a specific label to the prop, and ensure that the prop can be written only by init. Perhaps you may also want to have ro.force.debuggable\u003d0 in build.prop so that it has the safe default value always when debug ramdisk is not used.",
       "revId": "70c53f5d52fff73eff48c324883a5d670b78aa23",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c346f87e_57ee39be",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-06-10T06:50:13Z",
+      "side": 1,
+      "message": "Actually the only \"random\" process that can set default_prop is `init` (and `root`) https://source.corp.google.com/android/system/sepolicy/private/property.te;l\u003d610?q\u003ddefault_prop%20f:te$%20-f:prebuilt%20f:%5Esystem\u0026sq\u003dpackage:%5Eandroid$\n\nBut those are very reasonable enhancements, I\u0027ll add the other changes.",
+      "parentUuid": "802b3dd3_8cf726d4",
+      "revId": "70c53f5d52fff73eff48c324883a5d670b78aa23",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
