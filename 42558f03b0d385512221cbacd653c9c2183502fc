@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "7e470ce5_d7d0620c",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1947866
+      },
+      "writtenOn": "2022-06-10T02:57:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d934dc8e_482475ca",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 8,
+        "endChar": 10
+      },
+      "revId": "42558f03b0d385512221cbacd653c9c2183502fc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f16e0932_55cda9b5",
@@ -37,6 +61,24 @@
       "writtenOn": "2022-06-09T09:43:37Z",
       "side": 1,
       "message": "please specify the reason why this is needed. any bug number?",
+      "revId": "42558f03b0d385512221cbacd653c9c2183502fc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9e78dc58_cc335492",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1947866
+      },
+      "writtenOn": "2022-06-10T02:57:52Z",
+      "side": 1,
+      "message": "The current/proc/bootconfig node is the root user group,but some Android modules of our company do not have permission to access the root user group node. We want to add the same permissions to /proc/cmdline for the proc/bootconfig node in init.rc\nI haven\u0027t submitted bug for this problem, if needed i can submit one.",
+      "parentUuid": "f16e0932_55cda9b5",
       "revId": "42558f03b0d385512221cbacd653c9c2183502fc",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
