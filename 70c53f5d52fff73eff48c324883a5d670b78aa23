@@ -16,6 +16,23 @@
       "message": "LGTM, let\u0027s get David\u0027s review as well.",
       "revId": "70c53f5d52fff73eff48c324883a5d670b78aa23",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4265d2c9_5380e52e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-06-10T05:19:52Z",
+      "side": 1,
+      "message": "Jiyong, could you review this change?",
+      "revId": "70c53f5d52fff73eff48c324883a5d670b78aa23",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
