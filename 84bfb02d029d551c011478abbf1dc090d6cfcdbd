@@ -159,6 +159,24 @@
       "parentUuid": "1581e912_5f347ee3",
       "revId": "84bfb02d029d551c011478abbf1dc090d6cfcdbd",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "96ceb67d_4acc0067",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 3279,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-06-10T16:06:36Z",
+      "side": 1,
+      "message": "Thanks for the review. Let me think through this as we are working with keystone team to test on one of the GRF configurations.\n\nI want to keep the changes as minimal as possible without impacting other non-GRF devices. Since this has to go to T branch, any subtle code change should be carefully tested.",
+      "parentUuid": "84c8f531_262d807c",
+      "revId": "84bfb02d029d551c011478abbf1dc090d6cfcdbd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
