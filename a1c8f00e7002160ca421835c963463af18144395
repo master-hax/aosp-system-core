@@ -98,6 +98,30 @@
       },
       "revId": "a1c8f00e7002160ca421835c963463af18144395",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3d673cbc_a10a9bd1",
+        "filename": "fs_mgr/tests/Android.bp",
+        "patchSetId": 5
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-06-10T16:15:23Z",
+      "side": 1,
+      "message": "yeah the `sh_test` one is for atest to run.\n\nthe `cc_prebuilt`, to be `sh_binary`, is the same file but installed under the host/bin path, so one can expect it under $PATH and execute it directly. It\u0027s just a more convenient way to run the test script manually, as `atest` has quite the long warm up time.",
+      "parentUuid": "b6808237_5e69f81c",
+      "range": {
+        "startLine": 68,
+        "startChar": 0,
+        "endLine": 71,
+        "endChar": 36
+      },
+      "revId": "a1c8f00e7002160ca421835c963463af18144395",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
