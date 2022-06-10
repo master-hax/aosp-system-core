@@ -81,6 +81,24 @@
       "parentUuid": "f16e0932_55cda9b5",
       "revId": "42558f03b0d385512221cbacd653c9c2183502fc",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9cf08f41_98544692",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-06-10T05:08:00Z",
+      "side": 1,
+      "message": "Thanks, but please add the reason to the commit message.",
+      "parentUuid": "9e78dc58_cc335492",
+      "revId": "42558f03b0d385512221cbacd653c9c2183502fc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
