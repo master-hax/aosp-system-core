@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "56e96280_a6ac5230",
+        "filename": "fs_mgr/tests/Android.bp",
+        "patchSetId": 5
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 1579231
+      },
+      "writtenOn": "2022-06-10T14:36:04Z",
+      "side": 0,
+      "message": "Do we need to remove this?",
+      "range": {
+        "startLine": 69,
+        "startChar": 4,
+        "endLine": 69,
+        "endChar": 19
+      },
+      "revId": "127616da9c283306088cf3ef564390b1cccae9d4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}

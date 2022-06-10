@@ -51,6 +51,29 @@
       "parentUuid": "967245f0_ee48f3d4",
       "revId": "a1c8f00e7002160ca421835c963463af18144395",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4d739383_99692bcc",
+        "filename": "fs_mgr/tests/Android.bp",
+        "patchSetId": 5
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1579231
+      },
+      "writtenOn": "2022-06-10T14:36:04Z",
+      "side": 1,
+      "message": "Do we have two rules for the same target?",
+      "range": {
+        "startLine": 68,
+        "startChar": 0,
+        "endLine": 71,
+        "endChar": 36
+      },
+      "revId": "a1c8f00e7002160ca421835c963463af18144395",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
