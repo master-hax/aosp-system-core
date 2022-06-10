@@ -1,0 +1,90 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d2ef613b_c2c0963c",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 3238,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-06-10T12:52:29Z",
+      "side": 1,
+      "message": "nit: I suggest moving large block of text to commit message and leave a brief inline comment here. This way these text won\u0027t stand out so much, and people who want to learn more can see the detailed reasoning by checking git-blame.",
+      "revId": "a7e15e3e2a2ed3ac6b81feea9252e91fc35710f6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2dda256d_4da8975a",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 3252,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-06-10T12:52:29Z",
+      "side": 1,
+      "message": "Is this correct?\n\nAPI level of 12 is 31\n12L is 32",
+      "range": {
+        "startLine": 3252,
+        "startChar": 33,
+        "endLine": 3252,
+        "endChar": 35
+      },
+      "revId": "a7e15e3e2a2ed3ac6b81feea9252e91fc35710f6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ab3705c1_5193bdec",
+        "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd_daemon.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-06-10T12:52:29Z",
+      "side": 1,
+      "message": "I might be missing something obvious, but why do we code this two times? why can\u0027t snapshot.cpp and snapuserd/snapuserd_daemon.cpp share the same code?\n\nFor example code this logic in some libsnapshot/.../common_utils.cpp that both libsnapshot \u0026 snapuserd can link to.",
+      "range": {
+        "startLine": 36,
+        "startChar": 13,
+        "endLine": 36,
+        "endChar": 40
+      },
+      "revId": "a7e15e3e2a2ed3ac6b81feea9252e91fc35710f6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "438667aa_8c58f70e",
+        "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd_daemon.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-06-10T12:52:29Z",
+      "side": 1,
+      "message": "I suppose we use `.find(\"12\")` instead of `\u003d\u003d \"12\"` to handle both \"12\" and \"12L\"?\n\nIf that\u0027s the case the following line should be comparing \"31\" and \"32\". You could use GetIntProperty\n\n```\nconst auto vndk_version \u003d GetIntProperty(\"ro.vndk.version\", __ANDROID_API_FUTURE__);\nif (vndk_version \u003c __ANDROID_API_T__) {\n  // vendor is pre-T, which means S, Sv2 ...\n}\n```",
+      "range": {
+        "startLine": 43,
+        "startChar": 8,
+        "endLine": 43,
+        "endChar": 33
+      },
+      "revId": "a7e15e3e2a2ed3ac6b81feea9252e91fc35710f6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}

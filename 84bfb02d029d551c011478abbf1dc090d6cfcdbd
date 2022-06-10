@@ -50,6 +50,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "bfeb3aef_6e5e0a46",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-06-10T12:52:29Z",
+      "side": 1,
+      "message": "sorry I didn\u0027t meant you to add a literal \u0027d\u0027 here.\n\nI just wanted to highlight the \u0027GRF\u0027 text for discussion, and since I cannot highlight a word without any comment, I left a meaningless \u0027d\u0027 as placeholder. Sorry for the confusion 🙏",
+      "parentUuid": "2b104c1c_eef97d6d",
+      "range": {
+        "startLine": 7,
+        "startChar": 42,
+        "endLine": 7,
+        "endChar": 45
+      },
+      "revId": "84bfb02d029d551c011478abbf1dc090d6cfcdbd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "82e79013_58f2563f",
         "filename": "fs_mgr/libsnapshot/snapshot.cpp",
         "patchSetId": 2
@@ -115,6 +139,24 @@
       "side": 1,
       "message": "Please see latest fix. Based on my reading of the above document, we now check both\n\n1: ro.vndk.version\n2: ro.vendor.build.version.release_or_codename\n\nI have put some comments on why we do this - Please correct me if something is missing.\n\nQcom recently tested this setup and it looks like just having \"ro.vendor.build.version.release_or_codename\" was sufficient as it was still on 12 and userspace snapshots was disabled on their testing. However, after reading the above document it all boils down to how the VSDK is installed by other SoCs. So, having both the check makes sense.",
       "parentUuid": "065ac71e_dd5685c7",
+      "revId": "84bfb02d029d551c011478abbf1dc090d6cfcdbd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "84c8f531_262d807c",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 3279,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-06-10T12:52:29Z",
+      "side": 1,
+      "message": "Yeah I agree this is the best we can do.\n\nTechnically both properties only gives an indication of the *vendor partition version*. We are assuming (hoping) \u0027vendor\u0027 and \u0027vendor_boot\u0027 is built and updated together, so have the same version. And like you said it all boils down to how SoC vendors set up their tree.\n\n---\n\nIs there really no other way to check \"version of snapuserd\"? because that\u0027s what you actually want to know right? You\u0027re checking the \"version of vendor\", in order to check the \"version of vendor_boot\", in order to check the \"version of snapuserd\".\n\nI\u0027m not familiar with snapuserd, but it\u0027s a daemon talking with the kernel right? So is it possible to check some /proc/... /sys/... nodes, or send an IPC to magically check the version of snapuserd (think something similar to dumpstate)? If there really isn\u0027t any way, then maybe consider add one?",
+      "parentUuid": "1581e912_5f347ee3",
       "revId": "84bfb02d029d551c011478abbf1dc090d6cfcdbd",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
