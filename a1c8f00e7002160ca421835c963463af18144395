@@ -33,6 +33,24 @@
       "message": "I think the change is fine, but you\u0027ll still need @dvander\u0027s blessing in order to submit this. David would be back sometime next week.\n\nIs the current module definition causing any problem? Is this change urgent?",
       "revId": "a1c8f00e7002160ca421835c963463af18144395",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a3f28acf_10f3cb34",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1399011
+      },
+      "writtenOn": "2022-06-10T14:12:09Z",
+      "side": 1,
+      "message": "Thanks very much!\n\nNot urgent, as we made a check-tool to scan all the modules\u0027 definition in Android.mk and Android.bp. Then noticed this module type does not match with its real one. So want to correct them all. This CL is one of them. ~~\n\nThanks again!",
+      "parentUuid": "967245f0_ee48f3d4",
+      "revId": "a1c8f00e7002160ca421835c963463af18144395",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
