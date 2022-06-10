@@ -22,6 +22,30 @@
       },
       "revId": "6af7c88777024fe958a6c07b1faf7b326fe2f11e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "dc8edae3_6f40e3af",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 3
+      },
+      "lineNbr": 1173,
+      "author": {
+        "id": 1947866
+      },
+      "writtenOn": "2022-06-10T05:45:01Z",
+      "side": 1,
+      "message": "The /proc/bootconfig node stores the androidboot.* parameters moved from the cmdline node,and the subsequent androidboot.* parameters will be obtained from the bootconfig node. The current user group of the bootconfig node is root,and we hope that the user group of the two nodes is the same.",
+      "parentUuid": "270864b7_917e7208",
+      "range": {
+        "startLine": 1173,
+        "startChar": 15,
+        "endLine": 1173,
+        "endChar": 20
+      },
+      "revId": "6af7c88777024fe958a6c07b1faf7b326fe2f11e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
