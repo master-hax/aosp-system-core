@@ -74,6 +74,30 @@
       },
       "revId": "a1c8f00e7002160ca421835c963463af18144395",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b6808237_5e69f81c",
+        "filename": "fs_mgr/tests/Android.bp",
+        "patchSetId": 5
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1399011
+      },
+      "writtenOn": "2022-06-10T15:32:58Z",
+      "side": 1,
+      "message": "I think they are not for same purpose. From subject of patch which added \"adb-remount-sh\" module: https://android-review.googlesource.com/c/platform/system/core/+/931428, it is for atest.\n\n\"adb-remount-test.sh\" module will generate itself under path out/host/linux-x86/bin/",
+      "parentUuid": "4d739383_99692bcc",
+      "range": {
+        "startLine": 68,
+        "startChar": 0,
+        "endLine": 71,
+        "endChar": 36
+      },
+      "revId": "a1c8f00e7002160ca421835c963463af18144395",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
