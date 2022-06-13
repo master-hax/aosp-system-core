@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cc1060c2_00869a35",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1414712
+      },
+      "writtenOn": "2022-06-13T07:28:28Z",
+      "side": 1,
+      "message": "Hi Kalesh\nWe are doing android12 + kernel 5.15 release.\nWe found several xTS cases(vts_core_meminfo_test/CtsSimpleperfTestCases) fail and your patches can fix this. Thanks for your work.\nI just cherry-pick your several patches from android12L-gsi to android12-gsi.\nWould you please have a check? Thanks for your time.\nThanks",
+      "revId": "66955e2748cf09ece781abf33899a864fc594212",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
