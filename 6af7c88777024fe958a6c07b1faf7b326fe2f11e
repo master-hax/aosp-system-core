@@ -94,6 +94,30 @@
       },
       "revId": "6af7c88777024fe958a6c07b1faf7b326fe2f11e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3ade1a5e_3df749fc",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 3
+      },
+      "lineNbr": 1173,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-06-13T01:51:38Z",
+      "side": 1,
+      "message": "system sounds fine.\n\nFor the record. The group of /proc/cmdline has been `radio` from the beginning of Android [1]. So I couldn\u0027t figure out why radio was chosen then.\n\n\n\n[1] https://android.googlesource.com/platform/system/core/+/4f6e8d7a00cbeda1e70cc15be9c4af1018bdad53/rootdir/init.rc#145",
+      "parentUuid": "aff2777c_af79c11a",
+      "range": {
+        "startLine": 1173,
+        "startChar": 15,
+        "endLine": 1173,
+        "endChar": 20
+      },
+      "revId": "6af7c88777024fe958a6c07b1faf7b326fe2f11e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
