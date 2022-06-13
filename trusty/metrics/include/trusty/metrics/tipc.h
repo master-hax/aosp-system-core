@@ -43,17 +43,20 @@
 
 /**
  * enum metrics_cmd - command identifiers for metrics interface
- * @METRICS_CMD_RESP_BIT:          message is a response
- * @METRICS_CMD_REQ_SHIFT:         number of bits used by @METRICS_CMD_RESP_BIT
- * @METRICS_CMD_REPORT_EVENT_DROP: report gaps in the event stream
- * @METRICS_CMD_REPORT_CRASH:      report an app crash event
+ * @METRICS_CMD_RESP_BIT:             message is a response
+ * @METRICS_CMD_REQ_SHIFT:            number of bits used by
+ *                                    METRICS_CMD_RESP_BIT
+ * @METRICS_CMD_REPORT_EVENT_DROP:    report gaps in the event stream
+ * @METRICS_CMD_REPORT_CRASH:         report an app crash event
+ * @METRICS_CMD_REPORT_STORAGE_ERROR: report a storage error
  */
 enum metrics_cmd {
     METRICS_CMD_RESP_BIT = 1,
     METRICS_CMD_REQ_SHIFT = 1,
 
-    METRICS_CMD_REPORT_EVENT_DROP = (1 << METRICS_CMD_REQ_SHIFT),
-    METRICS_CMD_REPORT_CRASH = (2 << METRICS_CMD_REQ_SHIFT),
+    METRICS_CMD_REPORT_EVENT_DROP = (1 << (METRICS_CMD_REQ_SHIFT + 0)),
+    METRICS_CMD_REPORT_CRASH = (1 << (METRICS_CMD_REQ_SHIFT + 1)),
+    METRICS_CMD_REPORT_STORAGE_ERROR = (1 << (METRICS_CMD_REQ_SHIFT + 2)),
 };
 
 /**
@@ -96,8 +99,26 @@ struct metrics_report_crash_req {
     uint32_t app_id_len;
 } __attribute__((__packed__));
 
-#define METRICS_MAX_APP_ID_LEN 256
+/**
+ * struct metrics_report_storage_error_req - arguments of
+ *                                           METRICS_CMD_REPORT_STORAGE_ERROR
+ *                                           requests
+ * @param error_type Which storage error occurred.
+ * @param error_code The LK error code.
+ * @param error_arg Optional numeric additional information about the error.
+ */
+struct metrics_report_storage_error_req {
+    int32_t error_type;
+    int64_t error_arg1;
+    int64_t error_arg2;
+    uint32_t path_len;
+} __attribute__((__packed__));
 
-#define METRICS_MAX_MSG_SIZE                                                \
-    (sizeof(struct metrics_req) + sizeof(struct metrics_report_crash_req) + \
-     METRICS_MAX_APP_ID_LEN)
+#define METRICS_MAX_MSG_SUFFIX_LEN 256
+
+#define MAX(a, b) (((a) > (b)) ? (a) : (b))
+#define METRICS_MAX_MSG_SIZE                                \
+    (sizeof(struct metrics_req) +                           \
+     MAX(sizeof(struct metrics_report_crash_req),           \
+         sizeof(struct metrics_report_storage_error_req)) + \
+     METRICS_MAX_MSG_SUFFIX_LEN)

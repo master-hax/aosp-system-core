@@ -56,6 +56,11 @@ class TrustyMetricsTest : public TrustyMetrics, public ::testing::Test {
 
     virtual void HandleCrash(const std::string& app_id) override { crashed_app_ = app_id; }
 
+    virtual void HandleStorageError(int32_t error_type, int64_t arg1, int64_t arg2,
+                                    const std::string& path) override {
+        error_type_ = error_type;
+    }
+
     virtual void HandleEventDrop() override { event_drop_count_++; }
 
     virtual void SetUp() override {
@@ -83,6 +88,7 @@ class TrustyMetricsTest : public TrustyMetrics, public ::testing::Test {
         ASSERT_TRUE(ret.ok()) << ret.error();
     }
 
+    int32_t error_type_;
     std::string crashed_app_;
     size_t event_drop_count_;
 };
@@ -150,6 +156,10 @@ TEST_F(TrustyMetricsTest, EventDrop) {
     }
 
     ASSERT_EQ(event_drop_count_, 1);
+}
+
+TEST_F(TrustyMetricsTest, StorageError) {
+    ASSERT_EQ(true, true);
 }
 
 }  // namespace metrics

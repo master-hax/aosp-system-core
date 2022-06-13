@@ -22,6 +22,7 @@
 
 #include <android-base/result.h>
 #include <android-base/unique_fd.h>
+#include <trusty/tipc.h>
 
 namespace android {
 namespace trusty {
@@ -45,6 +46,8 @@ class TrustyMetrics {
 
     Result<void> Open();
     virtual void HandleCrash(const std::string& app_id) = 0;
+    virtual void HandleStorageError(int32_t error_type, int64_t arg1, int64_t arg2,
+                                    const std::string& path) = 0;
     virtual void HandleEventDrop() = 0;
 
   private:

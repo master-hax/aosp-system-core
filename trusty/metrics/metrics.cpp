@@ -115,6 +115,25 @@ Result<void> TrustyMetrics::HandleEvent() {
             HandleEventDrop();
             break;
 
+        case METRICS_CMD_REPORT_STORAGE_ERROR: {
+            if (msg_len < offset + sizeof(metrics_report_storage_error_req)) {
+                return Error() << "message too small:" << rc;
+            }
+
+            auto error_args = reinterpret_cast<metrics_report_storage_error_req*>(msg + offset);
+            offset += sizeof(metrics_report_storage_error_req);
+
+            if (msg_len < offset + error_args->path_len) {
+                return Error() << "message too small: " << rc;
+            }
+            auto path_ptr = reinterpret_cast<char*>(msg + offset);
+            std::string path(path_ptr, error_args->path_len);
+
+            HandleStorageError(error_args->error_type, error_args->error_arg1,
+                               error_args->error_arg2, path);
+            break;
+        }
+
         default:
             status = METRICS_ERR_UNKNOWN_CMD;
             break;
