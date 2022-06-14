@@ -69,6 +69,24 @@
       "message": "Hi Kalesh,\nThanks for your comments.\n\nWe are using android13-5.15. \n\nWe are doing the below release at the same time.\n1. Android12L(SP2A)(android-12.1.0_r5)  + android13-5.15\n2. Android12 (SQ1A)(android-12.0.0_r28) + android13-5.15\n\nThe case I mentioned can pass in Android12L, but fail in Android12.\n\nI checked we already picked the below patch you mentioned in android13-5.15.\nhttps://android-review.googlesource.com/c/kernel/common/+/1985929\n\nI found your patch in Android12L can fix this, so I pick them back to android12-gsi.\n\nAs you mentioned in the commit message:\nOn Android T and S (QPR2) this is fixed by adding a gid mount option in userspace.",
       "revId": "66955e2748cf09ece781abf33899a864fc594212",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "96dc8c84_d7f1f40c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1499410
+      },
+      "writtenOn": "2022-06-14T04:44:59Z",
+      "side": 1,
+      "message": "Hi Jessie. Looking back my commit message was poorly worded. If you have the kernel revert, the user space changes aren\u0027t needed.\n\nCould you double check that the device kernel has this revert applied:\n\n$adb shell ls -l /sys/kernel/tracing/events\n\nIf the directory permissions are \"drwxr-x---\", then your kernel likely doesn\u0027t have the revert.",
+      "parentUuid": "8ac9b4b0_00d60a8d",
+      "revId": "66955e2748cf09ece781abf33899a864fc594212",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
