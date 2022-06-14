@@ -73,6 +73,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "3abe1bc8_deb3e0a9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-06-14T13:17:38Z",
+      "side": 1,
+      "message": "The test ran on Cuttlefish and I can confirm that the apexd.status prop exists there and the value is \u0027activated\u0027. I think the problem is that the test can\u0027t read the sysprop because it\u0027s not allowed in sepolicy.\n\nPossible workarounds:\n\n1. give `domain` read access to this prop\n\n2. wrap the added code with something like #ifndef __TEST__ and build the test with `-D__TEST__`.\n\n3. run the test with sepolicy off",
+      "parentUuid": "46ab0d42_597c8e75",
+      "revId": "23f8fdda8dc612681cc44f387ea3c1f2ef260f03",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "3257d269_72719461",
         "filename": "init/firmware_handler.cpp",
         "patchSetId": 2
