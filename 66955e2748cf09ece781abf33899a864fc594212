@@ -159,6 +159,24 @@
       "parentUuid": "6629d9f0_af072136",
       "revId": "66955e2748cf09ece781abf33899a864fc594212",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4313ce83_8f570256",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1499410
+      },
+      "writtenOn": "2022-06-14T16:09:18Z",
+      "side": 1,
+      "message": "Hi Jessie. The GID fix-ups here, didn\u0027t solve all the user space breakages we encountered with the permission changes from the kernel. So we decided to go with the kernel reverts instead for android13. I think in your kernel it looks like you also have this change:\n\ngit log 4e4f6e33d6f22b073697098ef6fa0f33e44c391c\n\n4e4f6e33d6f2 tracing: Disable \"other\" permission bits in the tracefs files\n\nCan you revert that commit also?\n\nThanks,\nKalesh",
+      "parentUuid": "23d4bdc2_2193f648",
+      "revId": "66955e2748cf09ece781abf33899a864fc594212",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
