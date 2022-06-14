@@ -363,7 +363,18 @@ bool OpenSplitPolicy(PolicyFile* policy_file) {
     }
     // No suitable precompiled policy could be loaded
 
-    LOG(INFO) << "Compiling SELinux policy";
+    char metadata_sepolicy[] = "/metadata/sepolicy/plat+apex-seamendc.binary";
+    if (access(metadata_sepolicy, R_OK) == 0) {
+        LOG(WARNING) << "Found metadata sepolicy " << metadata_sepolicy;
+        unique_fd metadata_sepolicy_fd(open(metadata_sepolicy, O_RDONLY | O_CLOEXEC | O_BINARY));
+        if (metadata_sepolicy_fd != -1) {
+            policy_file->fd = std::move(metadata_sepolicy_fd);
+            policy_file->path = metadata_sepolicy;
+            return true;
+        }
+    }
+
+    LOG(WARNING) << "Compiling SELinux policy";
 
     // We store the output of the compilation on /dev because this is the most convenient tmpfs
     // storage mount available this early in the boot sequence.
