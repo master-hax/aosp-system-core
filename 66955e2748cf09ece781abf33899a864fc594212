@@ -105,6 +105,24 @@
       "parentUuid": "96dc8c84_d7f1f40c",
       "revId": "66955e2748cf09ece781abf33899a864fc594212",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a565c066_996443ba",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1499410
+      },
+      "writtenOn": "2022-06-14T05:56:08Z",
+      "side": 1,
+      "message": "The file that bpf program needs to be able to read is /sys/kernel/tracing/events/gpu_mem/gpu_mem_total/format. It should be world readable by default and if the directory entries have the other bits restored, you shouldn\u0027t get the permission error. Can you check the access on this path?\n\nIt would be good if you can open a bug with an attached bugreport for the issue",
+      "parentUuid": "3fa91a68_7a634c86",
+      "revId": "66955e2748cf09ece781abf33899a864fc594212",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
