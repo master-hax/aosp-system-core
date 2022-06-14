@@ -34,6 +34,41 @@
       "parentUuid": "cc1060c2_00869a35",
       "revId": "66955e2748cf09ece781abf33899a864fc594212",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8ac9b4b0_00d60a8d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1414712
+      },
+      "writtenOn": "2022-06-14T04:06:05Z",
+      "side": 1,
+      "message": "Hi Kalesh,\nThanks for your comments.\n\nWe are using android13-5.15. \nI checked we already picked the below patch you mentioned in android13-5.15.\nhttps://android-review.googlesource.com/c/kernel/common/+/1985929\n\nWe are doing the below release at the same time.\n1. Android12L(SP2A)(android-12.1.0_r5)  + android13-5.15\n2. Android12 (SQ1A)(android-12.0.0_r28) + android13-5.15\n\nThe case I mentioned can pass in Android12L, but fail in Android12.\nAs you mentioned in the commit message: \"On Android T and S (QPR2) this is fixed by adding a gid mount option in userspace.\", to fix the issue, we still need to pick the userspace patch.\nYour patch in android12L-gsi userspace can fix this, so I pick them back to android12-gsi.\n\nPlease help review this series patch at:\nhttps://android-review.googlesource.com/q/topic:tracefs-access-android12-gsi\n\nThanks again for your time.",
+      "parentUuid": "ac4f9c4a_788c6d82",
+      "revId": "66955e2748cf09ece781abf33899a864fc594212",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bb26f1f2_1eb48046",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1414712
+      },
+      "writtenOn": "2022-06-14T04:06:05Z",
+      "side": 1,
+      "message": "Hi Kalesh,\nThanks for your comments.\n\nWe are using android13-5.15. \n\nWe are doing the below release at the same time.\n1. Android12L(SP2A)(android-12.1.0_r5)  + android13-5.15\n2. Android12 (SQ1A)(android-12.0.0_r28) + android13-5.15\n\nThe case I mentioned can pass in Android12L, but fail in Android12.\n\nI checked we already picked the below patch you mentioned in android13-5.15.\nhttps://android-review.googlesource.com/c/kernel/common/+/1985929\n\nI found your patch in Android12L can fix this, so I pick them back to android12-gsi.\n\nAs you mentioned in the commit message:\nOn Android T and S (QPR2) this is fixed by adding a gid mount option in userspace.",
+      "revId": "66955e2748cf09ece781abf33899a864fc594212",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
