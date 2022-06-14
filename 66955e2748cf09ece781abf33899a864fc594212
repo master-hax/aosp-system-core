@@ -123,6 +123,24 @@
       "parentUuid": "3fa91a68_7a634c86",
       "revId": "66955e2748cf09ece781abf33899a864fc594212",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6629d9f0_af072136",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1414712
+      },
+      "writtenOn": "2022-06-14T07:24:58Z",
+      "side": 1,
+      "message": "Hi Kalesh,\nI open a bug,please check the detail info.\nhttps://issuetracker.google.com/issues/235862484\n\nThe gpuservice need to read /sys/kernel/tracing/events/gpu_mem/gpu_mem_total/id.\n-r--r----- 1 root root 0 1970-01-01 00:00 /sys/kernel/tracing/events/gpu_mem/gpu_mem_total/id\nAs there is no read permission for OTH, it is reasonable it get Permission denied error.\n\nAfter you add readtracefs group,and add gpu service to readtracefs group, then it can access this path.\nhttps://android-review.googlesource.com/c/platform/system/core/+/2121295\nhttps://android-review.googlesource.com/c/platform/frameworks/native/+/2121517\n-r--r----- 1 root readtracefs 0 1970-01-01 00:00 /sys/kernel/tracing/events/gpu_mem/gpu_mem_total/id\n\nSo I think we need pick these user space patches.",
+      "parentUuid": "a565c066_996443ba",
+      "revId": "66955e2748cf09ece781abf33899a864fc594212",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
