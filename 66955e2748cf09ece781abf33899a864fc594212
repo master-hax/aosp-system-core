@@ -141,6 +141,24 @@
       "parentUuid": "a565c066_996443ba",
       "revId": "66955e2748cf09ece781abf33899a864fc594212",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "23d4bdc2_2193f648",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1414712
+      },
+      "writtenOn": "2022-06-14T07:29:43Z",
+      "side": 1,
+      "message": "FYI.\nThe related path permission:\nandroid 12:\ndrwxr-xr-x 2 root root 0 1970-01-01 00:00 /sys/kernel/tracing/events/gpu_mem/gpu_mem_total/\n\n$ ls -l /sys/kernel/tracing/events/gpu_mem/gpu_mem_total/            \ntotal 0\n-rw-rw-rw- 1 root root 0 1970-01-01 00:00 enable\n-rw-r----- 1 root root 0 1970-01-01 00:00 filter\n-r--r----- 1 root root 0 1970-01-01 00:00 format\n-r--r----- 1 root root 0 1970-01-01 00:00 hist\n-r--r----- 1 root root 0 1970-01-01 00:00 id\n-rw-r----- 1 root root 0 1970-01-01 00:00 trigger\n\nandroid 12L:\ndrwxr-xr-x 2 root readtracefs 0 1970-01-01 00:00 /sys/kernel/tracing/events/gpu_mem/gpu_mem_total/\n\n$ ls -l /sys/kernel/tracing/events/gpu_mem/gpu_mem_total/            \ntotal 0\n-rw-rw-rw- 1 root readtracefs 0 1970-01-01 00:00 enable\n-rw-r----- 1 root readtracefs 0 1970-01-01 00:00 filter\n-r--r----- 1 root readtracefs 0 1970-01-01 00:00 format\n-r--r----- 1 root readtracefs 0 1970-01-01 00:00 hist\n-r--r----- 1 root readtracefs 0 1970-01-01 00:00 id\n-rw-r----- 1 root readtracefs 0 1970-01-01 00:00 trigger",
+      "parentUuid": "6629d9f0_af072136",
+      "revId": "66955e2748cf09ece781abf33899a864fc594212",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
