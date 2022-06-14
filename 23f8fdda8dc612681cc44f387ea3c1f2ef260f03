@@ -91,6 +91,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "5fa6a769_cb8e57a9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1814885
+      },
+      "writtenOn": "2022-06-14T23:56:25Z",
+      "side": 1,
+      "message": "So, test will be failed until https://android-review.googlesource.com/c/platform/system/sepolicy/+/1933081 is merged.",
+      "parentUuid": "3abe1bc8_deb3e0a9",
+      "revId": "23f8fdda8dc612681cc44f387ea3c1f2ef260f03",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "3257d269_72719461",
         "filename": "init/firmware_handler.cpp",
         "patchSetId": 2
