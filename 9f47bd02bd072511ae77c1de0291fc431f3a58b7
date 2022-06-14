@@ -52,6 +52,24 @@
       "parentUuid": "1e20af49_b501f3f7",
       "revId": "9f47bd02bd072511ae77c1de0291fc431f3a58b7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b0cfc7d7_70290440",
+        "filename": "init/devices.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 334,
+      "author": {
+        "id": 1947866
+      },
+      "writtenOn": "2022-06-14T02:04:37Z",
+      "side": 1,
+      "message": "Dear Google,\n\nI just upload patch set 6, and how can I use clang-format to format the modified cpp file ? i use clang-format -i device.cpp -style\u003dgoogle, indent change to 2 space width",
+      "parentUuid": "1e20af49_b501f3f7",
+      "revId": "9f47bd02bd072511ae77c1de0291fc431f3a58b7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
