@@ -16,6 +16,24 @@
       "message": "Hi Kalesh\nWe are doing android12 + kernel 5.15 release.\nWe found several xTS cases(vts_core_meminfo_test/CtsSimpleperfTestCases) fail and your patches can fix this. Thanks for your work.\nI just cherry-pick your several patches from android12L-gsi to android12-gsi.\nWould you please have a check? Thanks for your time.\nThanks",
       "revId": "66955e2748cf09ece781abf33899a864fc594212",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ac4f9c4a_788c6d82",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1499410
+      },
+      "writtenOn": "2022-06-14T00:17:03Z",
+      "side": 1,
+      "message": "Hi Jessie. Which ACK branch is your kernel based on? We ended up reverting the kernel change in android13* kernels, due to some other user space breakage with the traceur app (which wouldn\u0027t be fixed on S). So I think you should cherry-pick the kernel revert from https://android-review.googlesource.com/c/kernel/common/+/1985929",
+      "parentUuid": "cc1060c2_00869a35",
+      "revId": "66955e2748cf09ece781abf33899a864fc594212",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
