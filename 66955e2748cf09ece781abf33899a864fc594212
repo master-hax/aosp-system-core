@@ -87,6 +87,24 @@
       "parentUuid": "8ac9b4b0_00d60a8d",
       "revId": "66955e2748cf09ece781abf33899a864fc594212",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3fa91a68_7a634c86",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1414712
+      },
+      "writtenOn": "2022-06-14T04:54:29Z",
+      "side": 1,
+      "message": "Hi Kalesh,\nThanks for your quick reply.\nActually, it shows as the below with the kernel has this revert.\ndrwxr-xr-x 109 root root 0 1970-01-01 00:00 /sys/kernel/tracing/events\nThe patch is reverted and take effect.\nHowever, the case still fails and we meet the below error message:\nE GpuMem : Failed to attach bpf program to gpu_mem/gpu_mem_total tracepoint [13(Permission denied)]\n\nAnd when apply the userspace patch,it shows as the below:\ndrwxr-xr-x 109 root readtracefs 0 1970-01-01 00:00 /sys/kernel/tracing/events\nAnd no Permission denied error log.",
+      "parentUuid": "96dc8c84_d7f1f40c",
+      "revId": "66955e2748cf09ece781abf33899a864fc594212",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
