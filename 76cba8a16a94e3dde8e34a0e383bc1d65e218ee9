@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9864d3b8_6cac18da",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1947406
+      },
+      "writtenOn": "2022-06-14T01:24:30Z",
+      "side": 1,
+      "message": "\u003e Patch Set 6: Code-Review+2\n\u003e \n\u003e By voting Code-Review+2 the following files are now code-owner approved by \u003cGERRIT_ACCOUNT_1132673\u003e:\n\u003e * init/devices.cpp\n\u003e \n\nseems like still not merged?",
+      "revId": "76cba8a16a94e3dde8e34a0e383bc1d65e218ee9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
