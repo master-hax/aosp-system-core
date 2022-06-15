@@ -163,6 +163,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "d91fab0f_583efc65",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1814885
+      },
+      "writtenOn": "2022-06-15T10:13:33Z",
+      "side": 1,
+      "message": "Yes. Patchset 2 includes the following steps:\nIf running the external handler is failed, check whether it is the first time or not. If it is the first time, wait until apex.status is \u0027activated\u0027 or 60 seconds. Then when apex is activated, retry to run the external handler. In other cases, just return an error as usual.\nI think that it doesn\u0027t need to check apex.status whenever running external handlers. And, to pass \"CtsInitTestCases.firmware_handler#HandleChange\" test without modifying any sepolicy, it is not bad to defer to check apex.status.",
+      "parentUuid": "b9141b6a_a7a5610b",
+      "revId": "23f8fdda8dc612681cc44f387ea3c1f2ef260f03",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "3257d269_72719461",
         "filename": "init/firmware_handler.cpp",
         "patchSetId": 2
