@@ -177,6 +177,24 @@
       "parentUuid": "23d4bdc2_2193f648",
       "revId": "66955e2748cf09ece781abf33899a864fc594212",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2230f089_1351e357",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1414712
+      },
+      "writtenOn": "2022-06-15T02:27:15Z",
+      "side": 1,
+      "message": "Hi Kalesh,\n\nYes you are right.\nRevert the below patch in kernel can also fix this issue.\n4e4f6e33d6f2 tracing: Disable \"other\" permission bits in the tracefs files\n\nHowever,our android12(L) + L5.15 releases will use the L5.15 GKI provided by Google (the first version will be ready on Jun 30th), so just reverting the patch in our native kernel won\u0027t fix the problem. \nNot sure if there is still a chance to revert the patches on the AOSP android13-5.15 kernel branch, if not, picking these user space patches might be the best option.\n\nThanks\nJessie",
+      "parentUuid": "4313ce83_8f570256",
+      "revId": "66955e2748cf09ece781abf33899a864fc594212",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
