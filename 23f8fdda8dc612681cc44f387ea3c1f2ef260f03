@@ -109,6 +109,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "89269ee6_235d14ee",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-06-15T01:29:14Z",
+      "side": 1,
+      "message": "Even with the change, only ueventd will have the permission. The test wouldn\u0027t have the permission.\n\nNote that this CL and the sepolicy CL are linked together with the topic. When the presubmit tests ran, both were applied.",
+      "parentUuid": "5fa6a769_cb8e57a9",
+      "revId": "23f8fdda8dc612681cc44f387ea3c1f2ef260f03",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "3257d269_72719461",
         "filename": "init/firmware_handler.cpp",
         "patchSetId": 2
