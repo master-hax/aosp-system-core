@@ -199,6 +199,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "e0abc9dd_bbbbc915",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-06-15T12:50:12Z",
+      "side": 1,
+      "message": "Why isn\u0027t running the test with sepolicy disabled an option?\n\n\u003e I think that it doesn\u0027t need to check apex.status whenever running external handlers.\n\nOk, then what is your suggestion? Could you express that in the next patchset?",
+      "parentUuid": "9ac65834_ae849e6b",
+      "revId": "23f8fdda8dc612681cc44f387ea3c1f2ef260f03",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "3257d269_72719461",
         "filename": "init/firmware_handler.cpp",
         "patchSetId": 2
