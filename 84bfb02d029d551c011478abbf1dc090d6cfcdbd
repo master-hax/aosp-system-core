@@ -72,6 +72,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "8ed2de2f_5390b86e",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-06-15T20:57:59Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "bfeb3aef_6e5e0a46",
+      "range": {
+        "startLine": 7,
+        "startChar": 42,
+        "endLine": 7,
+        "endChar": 45
+      },
+      "revId": "84bfb02d029d551c011478abbf1dc090d6cfcdbd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "82e79013_58f2563f",
@@ -193,6 +217,24 @@
       "side": 1,
       "message": "\u003e T branch\n\nOh I see. In that case we want minimal code logic change, so it\u0027s important to write simple to review code, even if it means duplicating code here and there. I\u0027m talking about the code dup between snapshot.cpp \u0026 snapuserd_daemon.cpp.\n\nThe suggestions I was asking doesn\u0027t need to be in this change, it can be in a future refactor that doesn\u0027t need to be backport to T.\n\n\u003e without impacting other non-GRF devices.\n\nall the more reason to have a means to precisely pinpoint the exact version of the running snapuserd binary? I suggest starting from U we define a formal channel to query this information. Mechanism as simple as \"snapuserd shall publish it\u0027s version and feature capabilities to some sysprops once it boots up\" could be useful, right?",
       "parentUuid": "96ceb67d_4acc0067",
+      "revId": "84bfb02d029d551c011478abbf1dc090d6cfcdbd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ec7367d1_ed44467f",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 3279,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-06-15T20:57:59Z",
+      "side": 1,
+      "message": "Both qualcomm and mediatek have verified the GRF setup and in both cases, ro.vendor.build.version.release_or_codename is set to 12. OTA is working fine with S vendor and T branch.\n\nSince this is a VTS test specific change and this has to go to T branch, I will prefer to keep the change as minimal as possible for this CL. Since this is a blocker, I would like to get this in.\n\nAs a follow up, I want to remove this entire version check; I am working on the change wherein we can retrieve the version from snapuserd daemon itself. However, that will require some testing both on pixel and GRF branches. I will do this as a follow up CL.",
+      "parentUuid": "f74fb4d4_23defde3",
       "revId": "84bfb02d029d551c011478abbf1dc090d6cfcdbd",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
