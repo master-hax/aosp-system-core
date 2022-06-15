@@ -213,6 +213,24 @@
       "parentUuid": "2230f089_1351e357",
       "revId": "66955e2748cf09ece781abf33899a864fc594212",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "22d914d7_6f690b76",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1414712
+      },
+      "writtenOn": "2022-06-15T04:07:11Z",
+      "side": 1,
+      "message": "Hi Kalesh,\nI file a bug to GKI: https://issuetracker.google.com/issues/236018289.\nThanks for your help again.\nI will abandon these usespace patches after your kernel patch merged.\nThanks\nJessie",
+      "parentUuid": "f0acaba4_ce396513",
+      "revId": "66955e2748cf09ece781abf33899a864fc594212",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
