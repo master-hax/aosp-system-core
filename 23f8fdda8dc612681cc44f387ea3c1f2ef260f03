@@ -181,6 +181,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "9ac65834_ae849e6b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1814885
+      },
+      "writtenOn": "2022-06-15T10:15:16Z",
+      "side": 1,
+      "message": "Sorry, it\u0027s patchset 3,not patchset 2.",
+      "parentUuid": "d91fab0f_583efc65",
+      "revId": "23f8fdda8dc612681cc44f387ea3c1f2ef260f03",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "3257d269_72719461",
         "filename": "init/firmware_handler.cpp",
         "patchSetId": 2
