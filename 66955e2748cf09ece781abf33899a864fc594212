@@ -195,6 +195,24 @@
       "parentUuid": "4313ce83_8f570256",
       "revId": "66955e2748cf09ece781abf33899a864fc594212",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f0acaba4_ce396513",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1499410
+      },
+      "writtenOn": "2022-06-15T03:43:07Z",
+      "side": 1,
+      "message": "Hi Jessie. I think we can still get this in since it doesn\u0027t affect the kernel ABI. Could you please file a bug to that effective -- we need some justification for the change. I will get the patch ready",
+      "parentUuid": "2230f089_1351e357",
+      "revId": "66955e2748cf09ece781abf33899a864fc594212",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
