@@ -217,6 +217,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "5eb24ba7_dac4128a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1814885
+      },
+      "writtenOn": "2022-06-16T00:10:11Z",
+      "side": 1,
+      "message": "\u003e Why isn\u0027t running the test with sepolicy disabled an option?\nCan sepolicy be disabled? On my cuttlefish, all tests are passed. But, there are failed tests on your test system that I don\u0027t have access to.\n\n\u003e Ok, then what is your suggestion? Could you express that in the next patchset?\nI think that Patchset 2 is good enough because reading a property is not a big burden. Patchset 3 is to pass the tests without modifying sepolicy.",
+      "parentUuid": "e0abc9dd_bbbbc915",
+      "revId": "23f8fdda8dc612681cc44f387ea3c1f2ef260f03",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "3257d269_72719461",
         "filename": "init/firmware_handler.cpp",
         "patchSetId": 2
