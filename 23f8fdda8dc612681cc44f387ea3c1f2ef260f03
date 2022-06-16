@@ -235,6 +235,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "a2c0f8ac_c460b592",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-06-16T02:24:03Z",
+      "side": 1,
+      "message": "\u003e Can sepolicy be disabled?\n\nYou may disable sepolicy as shown here [1].\n\n\n\n[1] https://cs.android.com/android/platform/superproject/+/master:packages/modules/Virtualization/authfs/tests/AndroidTest.xml;drc\u003dc0886c212f9d12a1019bdc82b55283957dc1ffa8;l\u003d22",
+      "parentUuid": "5eb24ba7_dac4128a",
+      "revId": "23f8fdda8dc612681cc44f387ea3c1f2ef260f03",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "3257d269_72719461",
         "filename": "init/firmware_handler.cpp",
         "patchSetId": 2
