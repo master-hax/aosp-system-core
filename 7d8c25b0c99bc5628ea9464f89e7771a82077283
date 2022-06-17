@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2fa0d5f9_f236cbdb",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-06-17T07:52:36Z",
+      "side": 1,
+      "message": "I think PS3 is fine. Let me land this.",
+      "revId": "7d8c25b0c99bc5628ea9464f89e7771a82077283",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
