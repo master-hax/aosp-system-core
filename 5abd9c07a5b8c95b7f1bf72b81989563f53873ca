@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "13e45ca7_4797d5ae",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1499410
+      },
+      "writtenOn": "2022-06-17T20:52:23Z",
+      "side": 1,
+      "message": "FYI kernel revert is here: https://android-review.googlesource.com/c/kernel/common/+/2127952\n\nSo the user space fix up isn\u0027t needed",
+      "revId": "5abd9c07a5b8c95b7f1bf72b81989563f53873ca",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
