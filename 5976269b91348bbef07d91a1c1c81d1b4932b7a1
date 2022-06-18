@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "051e24c4_632a1a20",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1579231
+      },
+      "writtenOn": "2022-06-18T07:40:15Z",
+      "side": 1,
+      "message": "Sweeping up tasks to get consistent with prior owner(jmgao@).",
+      "revId": "5976269b91348bbef07d91a1c1c81d1b4932b7a1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
