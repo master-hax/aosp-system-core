@@ -28,6 +28,7 @@
 #include <fs_mgr.h>
 #include <liblp/liblp.h>
 
+#include "constants.h"
 #include "fastboot_device.h"
 #include "flashing.h"
 #include "utility.h"
@@ -46,6 +47,7 @@ using ::android::hardware::fastboot::V1_0::Result;
 using ::android::hardware::fastboot::V1_0::Status;
 using IBootControl1_1 = ::android::hardware::boot::V1_1::IBootControl;
 using namespace android::fs_mgr;
+using namespace std::string_literals;
 
 constexpr char kFastbootProtocolVersion[] = "0.4";
 
@@ -516,5 +518,66 @@ bool GetMaxFetchSize(FastbootDevice* /* device */, const std::vector<std::string
         return false;
     }
     *message = android::base::StringPrintf("0x%X", kMaxFetchSizeDefault);
+    return true;
+}
+
+bool GetDmesg(FastbootDevice* device) {
+    if (GetDeviceLockStatus()) {
+        return device->WriteFail("Cannot use when device flashing is locked");
+    }
+
+    android::base::unique_fd fd(open("/dev/kmsg", O_RDONLY | O_NONBLOCK | O_NOFOLLOW));
+    if (fd < 0) {
+        int save_errno = errno;
+        PLOG(ERROR) << "Could not open /dev/kmsg";
+        return device->WriteFail("Error: "s + strerror(save_errno));
+    }
+
+    if (lseek(fd.get(), 0, SEEK_DATA) < 0) {
+        PLOG(ERROR) << "Could not seek /dev/kmsg to last clear point";
+        return device->WriteFail("Read /dev/kmsg failed");
+    }
+
+    while (true) {
+        char buffer[8193] = {};
+        ssize_t rv = read(fd.get(), buffer, sizeof(buffer));
+        if (rv < 0) {
+            if (errno == EPIPE) {
+                // Message expired as we read.
+                continue;
+            }
+            if (errno != EAGAIN) {
+                int save_errno = errno;
+                PLOG(ERROR) << "Could not read from /dev/kmsg";
+                return device->WriteFail("Error: "s + strerror(save_errno));
+            }
+            break;
+        }
+        if (rv == 0) {
+            break;
+        }
+        buffer[rv] = '\0';
+
+        int facpri, pos;
+        unsigned long long time_s, time_us;
+        if (sscanf(buffer, "%u,%*u,%llu,%*[^;]; %n", &facpri, &time_us, &pos) != 2) {
+            device->WriteInfo(buffer);
+            continue;
+        }
+
+        time_s = time_us / 1000000;
+        time_us %= 1000000;
+
+        // Strip any newlines.
+        if (char* pos = strchr(buffer, '\n'); pos) {
+            *pos = '\0';
+        }
+
+        std::string message =
+                android::base::StringPrintf("[%5llu.%06llu] %s", time_s, time_us, buffer + pos);
+
+        // Note that this will truncate buffer to 252 bytes.
+        device->WriteInfo(message);
+    }
     return true;
 }
