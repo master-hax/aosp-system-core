@@ -201,7 +201,7 @@ FiemapStatus ImageManager::CreateBackingImage(
     }
 
     bool readonly = !!(flags & CREATE_IMAGE_READONLY);
-    if (!UpdateMetadata(metadata_dir_, name, fw.get(), size, readonly)) {
+    if (!UpdateMetadata(metadata_dir_, name, fw.get(), fw->size(), readonly)) {
         return FiemapStatus::Error();
     }
 
@@ -834,7 +834,7 @@ bool ImageManager::ValidateImageMaps() {
         }
 
         auto partition_size = android::fs_mgr::GetPartitionSize(*metadata.get(), partition);
-        if (!FillPartitionExtents(builder.get(), new_p, fiemap.get(), partition_size)) {
+        if (!FillPartitionExtents(builder.get(), new_p, fiemap.get(), fiemap->size())) {
             LOG(ERROR) << "Could not fill partition extents: " << image_path;
             return false;
         }

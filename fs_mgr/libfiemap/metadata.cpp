@@ -129,8 +129,17 @@ bool RemoveAllMetadata(const std::string& dir) {
 bool FillPartitionExtents(MetadataBuilder* builder, Partition* partition, SplitFiemap* file,
                           uint64_t partition_size) {
     auto block_device = android::base::Basename(GetDevicePathForFile(file));
+    auto block_size = file->block_size();
 
-    uint64_t sectors_needed = partition_size / LP_SECTOR_SIZE;
+    uint64_t sectors_needed = 0;
+    if (block_size > LP_SECTOR_SIZE) {
+        // Align to block size or latter mapping will fail
+        uint64_t blocks_needed = partition_size / file->block_size();
+        sectors_needed = blocks_needed * (block_size / LP_SECTOR_SIZE);
+    } else {
+        sectors_needed = partition_size / LP_SECTOR_SIZE;
+    }
+
     for (const auto& extent : file->extents()) {
         if (extent.fe_length % LP_SECTOR_SIZE != 0) {
             LOG(ERROR) << "Extent is not sector-aligned: " << extent.fe_length;
