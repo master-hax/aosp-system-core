@@ -1,0 +1,92 @@
+#!/usr/local/bin/bash
+
+set -e
+set -x
+
+DEFS='-D_DEFAULT_SOURCE -DLWT_PTR_BITS=64'
+CFLAGS='-fomit-frame-pointer -pthread'
+
+CMD=$(basename $0)
+
+usage()
+{
+	echo "usage: $CMD [x64 | arm64]" 1>&2
+	exit 1
+}
+
+if [ $# -ne 1 ] ; then
+	usage
+fi
+
+ARCH="$1"
+
+if [ "$ARCH" = x64 ] ; then
+	DEFS="$DEFS -DLWT_X64"
+	CFLAGS="$CFLAGS -m64"
+	CC="gcc-11 -std=c17"
+	CXX=g++-11
+	CPP=cpp-11
+	DUMP=objdump
+	NM=nm
+elif [ "$ARCH" = arm64 ] ; then
+	DEFS="$DEFS -DLWT_ARM64"
+	CFLAGS="$CFLAGS -march=armv8.1-a"
+	CC="aarch64-linux-gnu-gcc-11 -std=c17"
+	CXX=aarch64-linux-gnu-g++-11 
+	CPP=aarch64-linux-gnu-cpp-11
+	DUMP=aarch64-linux-gnu-objdump 
+	NM=aarch64-linux-gnu-nm 
+else
+	usage
+fi
+
+$CC $DEFS $CFLAGS lwt_genassym.c -static -o lwt_genassym
+./lwt_genassym | pr -t -e28 > lwt_asm_gen.h
+
+$CC $DEFS $CFLAGS -S -O3 lwt_sched.c
+
+$CC $DEFS $CFLAGS -c -O3 lwt_sched.c
+
+$DUMP lwt_sched.o -d > lwt_sched.dump-$ARCH
+
+$CPP $DEFS lwt_arch.S > lwt_arch_gen.s
+$CC $DEFS $CFLAGS -c lwt_arch_gen.s
+$DUMP -d lwt_arch_gen.o > lwt_arch_gen.dump-$ARCH
+
+$CC -r -o lwt.o lwt_arch_gen.o lwt_sched.o
+$DUMP -d lwt.o > lwt.dump-ARCH
+
+{
+	$NM lwt.o | egrep ' [TDB] '
+	$NM lwt.o | fgrep ' U '
+} | tee lwt-syms-$ARCH
+
+$CC $DEFS $CFLAGS -c -O3 test.c
+
+$CC $DEFS $CFLAGS -DLWT_DEBUG -g -o test-g-$ARCH test.c lwt_sched.c lwt_arch_gen.s
+$CC $DEFS $CFLAGS -DLWT_DEBUG -g -o test_schedq-g-$ARCH test_schedq.c lwt_arch_gen.s
+
+$CC $DEFS $CFLAGS -DLWT_DEBUG -O3 -o test-O3-$ARCH test.c lwt_sched.c lwt_arch_gen.s
+$CC $DEFS $CFLAGS -DLWT_DEBUG -O3 -o test_schedq-O3-$ARCH test_schedq.c lwt_arch_gen.s
+
+$CC $DEFS $CFLAGS -DLWT_DEBUG -O3 -g -o test-O3-g-$ARCH test.c lwt_sched.c lwt_arch_gen.s
+$CC $DEFS $CFLAGS -DLWT_DEBUG -O3 -g -o test_schedq-O3-g-$ARCH test_schedq.c lwt_arch_gen.s
+
+
+if [ "$ARCH" = x64 ] ; then
+	clang -std=c17 $DEFS $CFLAGS -DLWT_DEBUG -g -o test_schedq-clang-g-$ARCH test_schedq.c lwt_arch_gen.s
+fi
+
+# $CXX -std=c++17 $DEFS $CFLAGS -DLWT_DEBUG -g -o test_schedq-c++-g-$ARCH test_schedq.c lwt_arch_gen.s
+
+$CC -DLWT_MP $DEFS $CFLAGS -DLWT_DEBUG -g -o test-mp-g-$ARCH test.c lwt_sched.c lwt_arch_gen.s
+$CC -DLWT_MP $DEFS $CFLAGS -DLWT_DEBUG -O3 -g -o test-mp-O3-g-$ARCH test.c lwt_sched.c lwt_arch_gen.s
+$CC -DLWT_MP $DEFS $CFLAGS -DLWT_DEBUG -O3 -o test-mp-O3-$ARCH test.c lwt_sched.c lwt_arch_gen.s
+
+$CC -DLWT_MP $DEFS $CFLAGS -g -o test-mp-g-no-LWT_DEBUG-$ARCH test.c lwt_sched.c lwt_arch_gen.s
+$CC -DLWT_MP $DEFS $CFLAGS -O3 -g -o test-mp-O3-g-no-LWT_DEBUG-$ARCH test.c lwt_sched.c lwt_arch_gen.s
+$CC -DLWT_MP $DEFS $CFLAGS -O3 -o test-mp-O3-no-LWT_DEBUG-$ARCH test.c lwt_sched.c lwt_arch_gen.s
+
+if [ "$ARCH" = x64 ] ; then
+	$CC $DEFS $CFLAGS -O3 -o test-pthread-O3-$ARCH test-pthread.c
+fi

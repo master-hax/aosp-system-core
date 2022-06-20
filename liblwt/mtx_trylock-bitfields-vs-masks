@@ -1,0 +1,39 @@
+	mrs	x1, tpidrro_el0			mrs	x1, tpidrro_el0
+	ldr	x1, [x1]			ldr	x1, [x1]
+	mov	x4, x0				mov	x4, x0
+	ldp	x5, x6, [x0]			ldp	x6, x5, [x0]
+	ldr	x7, [x1, 24]			mov	x8, 281474976710656
+	ubfx	x7, x7, 0, 24			ldr	x7, [x1, 24]
+.L62:	mov	x0, x5				and	x7, x7, 16777215
+	mov	x1, x6			.L119:	ands	x0, x5, 16777215
+	mov	x2, x5				bne	.L120
+	mov	x3, x6				orr	x3, x5, x7
+	lsr	x8, x5, 48			mov	x2, x6
+	mov	w9, w7			.L121:	mov	x0, x6
+	ands	x10, x6, 16777215		mov	x1, x5
+	bne	.L71				caspal	x0, x1, x2, x3, [x4]
+.L63:	bfi	x2, x8, 48, 16			eor	x6, x6, x0
+	bfi	x3, x9, 0, 24			eor	x5, x5, x1
+	caspal	x0, x1, x2, x3, [x4]		orr	x6, x6, x5
+	eor	x5, x0, x5			cbnz	x6, .L126
+	eor	x6, x6, x1			mov	w0, 0
+	orr	x5, x5, x6			ret
+	cbnz	x5, .L69		.L120:	add	x2, x6, x8
+	mov	w0, 0				mov	x3, x5
+	ret					cmp	x0, x7
+.L71:	add	w8, w8, 1			bne	.L124
+	mov	w9, w10				lsr	w0, w5, 24
+	and	w8, w8, 65535			cbz	w0, .L124
+	cmp	w7, w10				cmp	w0, 1
+	bne	.L67				bne	.L121
+	lsr	w10, w6, 24			mov	w0, 35
+	cbz	w10, .L67			ret
+	cmp	w10, 1			.L126:	mov	x5, x1
+	bne	.L63				mov	x6, x0
+	mov	w0, 35				b	.L119
+	ret	.L124:	mov			w0, 16
+.L69:	mov	x6, x1				ret
+	mov	x5, x0	
+	b	.L62	
+.L67:	mov	w0, 16	
+	ret	

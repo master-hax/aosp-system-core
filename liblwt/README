@@ -1,0 +1,7 @@
+This is work in progress, for now build with the mk script:
+	$ ./mk x64
+or:
+	$ ./mk arm64
+see:
+	go/LWT-light-weight-threads
+
