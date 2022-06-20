@@ -637,8 +637,13 @@ bool fs_mgr_overlayfs_teardown_one(const std::string& overlay, const std::string
 }
 
 bool fs_mgr_overlayfs_set_shared_mount(const std::string& mount_point, bool shared_flag) {
-    auto ret = mount(nullptr, mount_point.c_str(), nullptr, shared_flag ? MS_SHARED : MS_PRIVATE,
-                     nullptr);
+    int ret;
+
+    if (mount_point == "/system")
+        ret = mount(nullptr, "/", nullptr, shared_flag ? MS_SHARED : MS_PRIVATE, nullptr);
+    else
+        ret = mount(nullptr, mount_point.c_str(), nullptr, shared_flag ? MS_SHARED : MS_PRIVATE, nullptr);
+
     if (ret) {
         PERROR << "__mount(target=" << mount_point
                << ",flag=" << (shared_flag ? "MS_SHARED" : "MS_PRIVATE") << ")=" << ret;
