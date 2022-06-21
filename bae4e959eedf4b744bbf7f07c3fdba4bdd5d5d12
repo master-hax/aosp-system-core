@@ -57,6 +57,30 @@
       },
       "revId": "bae4e959eedf4b744bbf7f07c3fdba4bdd5d5d12",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "aa72aff3_2f75942f",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 788,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-06-21T15:06:13Z",
+      "side": 1,
+      "message": "If I remember correctly, submounts do not work otherwise (they\u0027d get hidden or the parent remount would fail).",
+      "parentUuid": "dd8f3ebf_b443e1fc",
+      "range": {
+        "startLine": 788,
+        "startChar": 34,
+        "endLine": 788,
+        "endChar": 67
+      },
+      "revId": "bae4e959eedf4b744bbf7f07c3fdba4bdd5d5d12",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
