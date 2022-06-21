@@ -16,6 +16,24 @@
       "message": "wouldn\u0027t it make more sense to call toybox dmesg? i thought we already included toybox in recovery? (if not, we already build it for everything else, so we may as well!)",
       "revId": "cfece1c051a0acd86d0821734bab75d3d84ee36a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1e9232de_6c948003",
+        "filename": "fastboot/device/variables.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 529,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-06-21T16:16:56Z",
+      "side": 1,
+      "message": "It\u0027s indeed in recovery, but I figured the code to spawn it \u0026 capture the output would be \u003e\u003d the complexity of reading from /dev/kmsg manually. Do we have any kind of helper for this?",
+      "parentUuid": "505b85d9_9d93ef75",
+      "revId": "cfece1c051a0acd86d0821734bab75d3d84ee36a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
