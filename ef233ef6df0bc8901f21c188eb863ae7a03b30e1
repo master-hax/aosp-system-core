@@ -16,6 +16,23 @@
       "message": "Please help review the patch",
       "revId": "ef233ef6df0bc8901f21c188eb863ae7a03b30e1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7d01f80a_d6d886d9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-06-21T19:55:23Z",
+      "side": 1,
+      "message": "What filesystem is being used for the backing image here? There are users of gsid that require 4KiB block alignment, and if the requested size isn\u0027t equal to the final partition size, it could lead to bugs.",
+      "revId": "ef233ef6df0bc8901f21c188eb863ae7a03b30e1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
