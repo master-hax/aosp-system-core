@@ -33,6 +33,24 @@
       "message": "probably makes more sense to split the bug component if you\u0027re getting a lot of fastboot bugs? fastboot is owned by the systems team (especially in the new world of \"fastbootd\").",
       "revId": "5976269b91348bbef07d91a1c1c81d1b4932b7a1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2e61ab65_45ae4cc0",
+        "filename": "fastboot/OWNERS",
+        "patchSetId": 1
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 1579231
+      },
+      "writtenOn": "2022-06-21T16:04:53Z",
+      "side": 1,
+      "message": "ah, didn\u0027t realize that - was going by the default ownership as it pertain(ed) to prior owners (jmgao@). Will revert this CL.",
+      "parentUuid": "4024363a_37a58a86",
+      "revId": "5976269b91348bbef07d91a1c1c81d1b4932b7a1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
