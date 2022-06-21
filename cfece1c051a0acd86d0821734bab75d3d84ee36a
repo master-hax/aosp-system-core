@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "505b85d9_9d93ef75",
+        "filename": "fastboot/device/variables.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 529,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-06-21T15:39:46Z",
+      "side": 1,
+      "message": "wouldn\u0027t it make more sense to call toybox dmesg? i thought we already included toybox in recovery? (if not, we already build it for everything else, so we may as well!)",
+      "revId": "cfece1c051a0acd86d0821734bab75d3d84ee36a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
