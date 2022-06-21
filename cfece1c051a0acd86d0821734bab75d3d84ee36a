@@ -34,6 +34,24 @@
       "parentUuid": "505b85d9_9d93ef75",
       "revId": "cfece1c051a0acd86d0821734bab75d3d84ee36a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "38393984_46a103f8",
+        "filename": "fastboot/device/variables.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 529,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-06-21T17:20:28Z",
+      "side": 1,
+      "message": "sadly, our attempts to get something like java\u0027s ProcessBuilder have always run aground on the rocks of bikeshedding (even though _anything_ would be better than nothing). there\u0027s the awful logwrap_fork_execvp() stuff, but here i suspect popen()+getline() is what you want? and that\u0027s just plain boilerplate rather than stuff that can change (and has changed) like dmesg.\n\n(you could also pass args through too, which is likely to be a feature request as soon as you ship this :-) )",
+      "parentUuid": "1e9232de_6c948003",
+      "revId": "cfece1c051a0acd86d0821734bab75d3d84ee36a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
