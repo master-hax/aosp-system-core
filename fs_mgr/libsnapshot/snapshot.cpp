@@ -53,6 +53,7 @@
 namespace android {
 namespace snapshot {
 
+using aidl::android::hardware::boot::MergeStatus;
 using android::base::unique_fd;
 using android::dm::DeviceMapper;
 using android::dm::DmDeviceState;
@@ -72,7 +73,6 @@ using android::fs_mgr::GetPartitionName;
 using android::fs_mgr::LpMetadata;
 using android::fs_mgr::MetadataBuilder;
 using android::fs_mgr::SlotNumberForSlotSuffix;
-using android::hardware::boot::V1_1::MergeStatus;
 using chromeos_update_engine::DeltaArchiveManifest;
 using chromeos_update_engine::Extent;
 using chromeos_update_engine::FileDescriptor;
@@ -2243,8 +2243,8 @@ bool SnapshotManager::MapAllPartitions(LockedFile* lock, const std::string& supe
                 .block_device = super_device,
                 .metadata = metadata.get(),
                 .partition = &partition,
-                .partition_opener = &opener,
                 .timeout_ms = timeout_ms,
+                .partition_opener = &opener,
         };
         if (!MapPartitionWithSnapshot(lock, std::move(params), SnapshotContext::Mount, nullptr)) {
             return false;
@@ -2721,8 +2721,8 @@ bool SnapshotManager::MapAllSnapshots(const std::chrono::milliseconds& timeout_m
                 .block_device = super_device,
                 .metadata = metadata.get(),
                 .partition_name = snapshot,
-                .partition_opener = &opener,
                 .timeout_ms = timeout_ms,
+                .partition_opener = &opener,
         };
         if (!MapPartitionWithSnapshot(lock.get(), std::move(params), SnapshotContext::Mount,
                                       nullptr)) {
@@ -2868,10 +2868,19 @@ UpdateState SnapshotManager::ReadUpdateState(LockedFile* lock) {
     return status.state();
 }
 
+bool FileExists(const char* path) {
+    return access(path, F_OK) == 0;
+}
+
 SnapshotUpdateStatus SnapshotManager::ReadSnapshotUpdateStatus(LockedFile* lock) {
     CHECK(lock);
-
     SnapshotUpdateStatus status = {};
+    if (!FileExists(GetStateFilePath().c_str())) {
+        PLOG(WARNING) << "State file does not exist";
+        status.set_state(UpdateState::None);
+        return status;
+    }
+
     std::string contents;
     if (!android::base::ReadFileToString(GetStateFilePath(), &contents)) {
         PLOG(ERROR) << "Read state file failed";
