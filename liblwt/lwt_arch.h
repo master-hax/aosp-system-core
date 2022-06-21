@@ -151,7 +151,7 @@ typedef struct {
 #endif //}
 
 #ifdef LWT_SCHED_C //{
- 
+
 //  uptr atomic operations
 
 #if 0

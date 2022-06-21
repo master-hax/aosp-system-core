@@ -88,5 +88,5 @@ $CC -DLWT_MP $DEFS $CFLAGS -O3 -g -o test-mp-O3-g-no-LWT_DEBUG-$ARCH test.c lwt_
 $CC -DLWT_MP $DEFS $CFLAGS -O3 -o test-mp-O3-no-LWT_DEBUG-$ARCH test.c lwt_sched.c lwt_arch_gen.s
 
 if [ "$ARCH" = x64 ] ; then
-	$CC $DEFS $CFLAGS -O3 -o test-pthread-O3-$ARCH test-pthread.c
+	$CC $DEFS $CFLAGS -O3 -g -o test-pthread-O3-g-$ARCH test-pthread.c
 fi

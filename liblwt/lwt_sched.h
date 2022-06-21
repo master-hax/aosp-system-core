@@ -96,11 +96,19 @@ struct stk_s {
 	size_t		 stk_guardsize;
 };
 
+
+typedef union stkbkt_atom_u {
+	struct {
+		size_t	 stkbkt_stacksize;
+		size_t	 stkbkt_guardsize;
+	};
+	uregx2_t	 uregx2;
+} aligned_uregx2 stkbkta_t;
+
 typedef struct {
-	lllist_t	stkbkt_lllist;
-	size_t		stkbkt_stacksize;
-	size_t		stkbkt_guardsize;
-} stkbkt_t;
+	stkbkta_t	 stkbkta;
+	lllist_t	 stkbkt_lllist;
+} aligned_uregx2 stkbkt_t;
 
 #define	STKCACHE_BUCKETS	6
 

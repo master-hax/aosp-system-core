@@ -34,17 +34,22 @@ FUNCTION_END(__lwt_ctx_save)
 //				 bool *new_running,		/* rsi */
 //				 bool *curr_running);		/* rdx */
 //
-//  new_running and curr_running are updated with this instructions:
+//  new_running and curr_running are updated with these instructions:
 //	stlrb - store release register byte
 //	ldarb - load acquire register byte
+//
+//  Storing 0 in curr_running with a store release ensures that all prior
+//  stores, particularly the ones that save the register in the ctx_t, are
+//  visible to other CPUs by the time they perform their corresponding load
+//  acquire thourgh new_running, and loop on that memory location until the
+//  value is 0, that transition from 1 to 0 indicates that the thread is no
+//  long running in the other CPU and can now start running on this CPU.
 FUNCTION_START(__lwt_ctx_load_idle_cpu)
 	stlrb	wzr, [x1]		// current thread no longer running
-	// TODO: add memory barrier to flush write buffers into coherency domain
 	b	2f
 FUNCTION_END(__lwt_ctx_load_idle_cpu)
 FUNCTION_START(__lwt_ctx_load)
 	stlrb	wzr, [x2]		// current thread no longer running
-	// TODO: add memory barrier to flush write buffers into coherency domain
 FUNCTION_END(__lwt_ctx_load)
 FUNCTION_START(__lwt_ctx_load_on_cpu)
 1:	ldarb	w4, [x1]		// loop while new thr is running ...
@@ -67,6 +72,14 @@ ctx_load_rest:
 	mov	x1, xzr
 	str	xzr, [x1]			// TODO cause an exception
 FUNCTION_END(__lwt_ctx_load_on_cpu)
+#endif
+
+#ifdef LWT_ARM64
+//  bool __lwt_bool_load_acq(bool *m);
+FUNCTION_START(__lwt_bool_load_acq)
+	ldarb	w0, [x0]
+	ret
+FUNCTION_END(__lwt_bool_load_acq)
 #endif
 
 #ifdef LWT_ARM64
@@ -139,6 +152,13 @@ ctx_load_rest:
 	movq	$0, %rcx
 	movq	$0, (%rcx)			// TODO cause an exception
 FUNCTION_END(__lwt_ctx_load_on_cpu)
+#endif
+
+#ifdef LWT_X64
+FUNCTION_START(__lwt_bool_load_acq)
+	movzbl  (%rdi), %eax
+	ret
+FUNCTION_END(__lwt_bool_load_acq)
 #endif
 
 #ifdef LWT_X64

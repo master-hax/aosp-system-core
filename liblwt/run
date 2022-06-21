@@ -1,0 +1,17 @@
+#!/usr/local/bin/bash
+
+set -x
+set -e
+
+./test-g-x64
+./test-O3-g-x64
+# ./test-O3-x64
+
+./test-mp-g-x64
+./test-mp-g-no-LWT_DEBUG-x64
+./test-mp-O3-g-x64
+./test-mp-O3-g-no-LWT_DEBUG-x64
+# ./test-mp-O3-x64
+# ./test-mp-O3-no-LWT_DEBUG-x64
+
+./test-pthread-O3-g-x64

@@ -274,6 +274,11 @@ noreturn void		 __lwt_ctx_load_on_cpu(ctx_t *ctx, bool *new_running);
 #define	ctx_load_idle_cpu(ctx, curr_running)				\
 	__lwt_ctx_load_idle_cpu(ctx, curr_running)
 
+bool 			 __lwt_bool_load_acq(bool *m);
+
+#define	bool_load_acq(m)						\
+	__lwt_bool_load_acq(m)
+
 static schdom_t		*schdom_from_thrattr(const thrattr_t *thrattr);
 
 static alloc_value_t	 arena_alloc(arena_t *arena);
@@ -440,6 +445,27 @@ static void stk_free(stk_t *stk)
 		assert(0);
 }
 
+inline_only stkbkta_t stkbkta_load(stkbkta_t *stkbkta)
+{
+	stkbkta_t sba;
+	sba.uregx2 = uregx2_load(&stkbkta->uregx2);
+	return sba;
+}
+
+inline_only stkbkta_t stkbkta_comp_and_swap_acq_rel(stkbkta_t old,
+						    stkbkta_t new,
+						    stkbkta_t *stkbkta)
+{
+	uregx2_t pre = uregx2_comp_and_swap_acq_rel(old.uregx2, new.uregx2,
+						    &stkbkta->uregx2);
+	return (stkbkta_t){.uregx2 = pre};
+}
+
+inline_only bool stkbkta_equal(stkbkta_t a, stkbkta_t b)
+{
+	return uregx2_equal(a.uregx2, b.uregx2);
+}
+
 static void stkcache_init(stkcache_t *stkcache)
 {
 	stkbkt_t *stkbkt = stkcache->stkcache_buckets;
@@ -447,8 +473,8 @@ static void stkcache_init(stkcache_t *stkcache)
 
 	for (; stkbkt < stkbktend; ++stkbkt) {
 		lllist_init(&stkbkt->stkbkt_lllist);
-		stkbkt->stkbkt_stacksize = 0;
-		stkbkt->stkbkt_guardsize = 0;
+		stkbkt->stkbkta.stkbkt_stacksize = 0;
+		stkbkt->stkbkta.stkbkt_guardsize = 0;
 	}
 }
 
@@ -459,8 +485,8 @@ static alloc_value_t stkcache_alloc_stk(stkcache_t *stkcache,
 	stkbkt_t *stkbktend = &stkcache->stkcache_buckets[STKCACHE_BUCKETS];
 
 	for (; stkbkt < stkbktend; ++stkbkt) {
-		if (stkbkt->stkbkt_stacksize == stacksize &&
-		    stkbkt->stkbkt_guardsize == guardsize) {
+		if (stkbkt->stkbkta.stkbkt_stacksize == stacksize &&
+		    stkbkt->stkbkta.stkbkt_guardsize == guardsize) {
 			llelem_t *elem;
 			elem = lllist_remove(&stkbkt->stkbkt_lllist);
 			if (!elem)
@@ -472,6 +498,10 @@ static alloc_value_t stkcache_alloc_stk(stkcache_t *stkcache,
 	return stk_alloc(stacksize, guardsize);
 }
 
+//  Free the stk onto a cache of freed stacks, if there is one available
+//  for its stack size and guard size, if not all the stkcache_t have been
+//  used allocate one.
+
 static void stkcache_free_stk(stkcache_t *stkcache, stk_t *stk)
 {
 	stkbkt_t *stkbkt = stkcache->stkcache_buckets;
@@ -480,12 +510,28 @@ static void stkcache_free_stk(stkcache_t *stkcache, stk_t *stk)
 	size_t guardsize = stk->stk_guardsize;
 
 	for (; stkbkt < stkbktend; ++stkbkt) {
-		if (stkbkt->stkbkt_stacksize == stacksize &&
-		    stkbkt->stkbkt_guardsize == guardsize) {
-			llelem_t *elem = (llelem_t *)stk - 1;
+		size_t stksz = stkbkt->stkbkta.stkbkt_stacksize;
+		if (stksz == stacksize &&
+		    stkbkt->stkbkta.stkbkt_guardsize == guardsize) {
+insert:;		llelem_t *elem = (llelem_t *)stk - 1;
 			lllist_insert(&stkbkt->stkbkt_lllist, elem);
 			return;
 		}
+		if (!stksz) {
+			stkbkta_t old = stkbkta_load(&stkbkt->stkbkta);
+retry:;			if (old.stkbkt_stacksize != 0)
+				continue;
+			stkbkta_t new;
+			new.stkbkt_stacksize = stacksize;
+			new.stkbkt_guardsize = guardsize;
+			stkbkta_t pre = stkbkta_comp_and_swap_acq_rel(old, new,
+							&stkbkt->stkbkta);
+			if (likely(stkbkta_equal(pre, old)))
+				goto insert;
+			old = pre;
+			goto retry;
+		}
+
 	}
 	stk_free(stk);
 }
@@ -1474,6 +1520,8 @@ static void thr_exited_cleanup(void)
 	while ((elem = lllist_remove(&thr_exited_lllist))) {
 		thr_t *thr = (thr_t *) elem;
 		thr->thr_cnd = NULL;
+		while (bool_load_acq(&thr->thr_running))
+			{}
 		thr_destroy(thr);
 	}
 }
@@ -2663,6 +2711,16 @@ static thr_t *schedq_get(schedq_t *schedq, ureg_t sqix)
 	return thr;
 }
 
+//  This is a light touch examination of schedq to see if it is empty,
+//  it does not touch the memory with a compare-and-swap, which most
+//  likely might cause unwanted cache effects.
+
+inline_only bool schedq_is_empty(schedq_t *schedq)
+{
+	return *(volatile ureg_t *)
+	       &schedq->sq_rem_remnxt_insprv_ins_state == 0;
+}
+
 static noreturn void sched_out(thr_t *currthr)
 {
 	schdom_t *schdom = currthr->thr_schdom;
@@ -2673,8 +2731,12 @@ static noreturn void sched_out(thr_t *currthr)
 	schedq_t *schedq = &schdom->schdom_sqcls[currthr->thr_prio].sqcl_schedq;
 #endif
 	ureg_t sqix = schedq_index(schedq);
-	thr_t *thr = schedq_get(schedq, sqix);
+retry:;	thr_t *thr = schedq_get(schedq, sqix);
 	if (!thr) {
+		int attempts = 32;	// don't idle CPUs too quickly
+		while (--attempts >= 0)
+			if (!schedq_is_empty(schedq))
+				goto retry;
 		cpu_t *cpu = cpu_current();
 		cpu_idle(cpu, currthr);
 	}
