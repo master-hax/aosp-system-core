@@ -20,6 +20,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "33e1ac25_fa35d0ee",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 642,
+      "author": {
+        "id": 1956079
+      },
+      "writtenOn": "2022-06-21T04:09:10Z",
+      "side": 1,
+      "message": "Yes, we have a sub-mount under /system/.\nReproduce steps:\n1. Add a sub-mount under /system/\n2. The run remount to overlay /system\n3. The sub-mount content disappeared",
+      "parentUuid": "a47ab607_b3bc48b4",
+      "revId": "bae4e959eedf4b744bbf7f07c3fdba4bdd5d5d12",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "dd8f3ebf_b443e1fc",
         "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
         "patchSetId": 1
