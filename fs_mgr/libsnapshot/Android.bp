@@ -75,6 +75,8 @@ cc_defaults {
     shared_libs: [
         "android.hardware.boot@1.0",
         "android.hardware.boot@1.1",
+        "android.hardware.boot-V1-ndk",
+        "libboot_control_client",
     ],
 }
 
@@ -298,6 +300,7 @@ cc_binary {
     srcs: [
         "snapshotctl.cpp",
     ],
+    defaults: ["libsnapshot_hal_deps"],
     static_libs: [
         "libbrotli",
         "libc++fs",
@@ -308,8 +311,6 @@ cc_binary {
         "update_metadata-protos",
     ],
     shared_libs: [
-        "android.hardware.boot@1.0",
-        "android.hardware.boot@1.1",
         "libbase",
         "libext2_uuid",
         "libext4_utils",
