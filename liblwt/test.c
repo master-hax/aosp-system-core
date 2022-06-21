@@ -128,13 +128,17 @@ arg_t	args[NREADERS + NWRITERS];
 
 int main(int argc, char *argv[])
 {
-	int error = lwt_init();
+	data_t nsteps = NSTEPS;
+	if (argc >= 2)
+		nsteps = atol(argv[1]);
+
+	size_t sched_attempt_steps = 0;
+	if (argc == 3)
+		sched_attempt_steps = atol(argv[2]);
+
+	int error = lwt_init(sched_attempt_steps);
 	if (error)
 		errexit("lwt_init() failed");
-
-	data_t nsteps = NSTEPS;
-	if (argc == 2)
-		nsteps = atol(argv[1]);
 
 	queue_t	queue;
 	error = queue_init(&queue);

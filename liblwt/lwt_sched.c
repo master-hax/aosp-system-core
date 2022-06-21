@@ -2378,6 +2378,8 @@ inline_only schedq_t schedq_insert_simple(schedq_t schedq, ureg_t sqix,
 	case INS | REMNXT:
 		state = INS | INSPRV | REM;
 		SCHEDQ_INSPRV_SET(schedq, SCHEDQ_INS(schedq));
+		SCHEDQ_REM_SET(schedq, SCHEDQ_REMNXT(schedq));
+		SCHEDQ_REMNXT_SET(schedq, THRID_NULL);
 		SCHEDQ_ISER_SET(schedq, oldicnt);
 		//  fallthrough
 	common_insert_into_INS:
@@ -2721,6 +2723,8 @@ inline_only bool schedq_is_empty(schedq_t *schedq)
 	       &schedq->sq_rem_remnxt_insprv_ins_state == 0;
 }
 
+static size_t sched_attempts = 1;
+
 static noreturn void sched_out(thr_t *currthr)
 {
 	schdom_t *schdom = currthr->thr_schdom;
@@ -2733,7 +2737,7 @@ static noreturn void sched_out(thr_t *currthr)
 	ureg_t sqix = schedq_index(schedq);
 retry:;	thr_t *thr = schedq_get(schedq, sqix);
 	if (!thr) {
-		int attempts = 32;	// don't idle CPUs too quickly
+		int attempts = sched_attempts;	// don't idle CPUs too quickly
 		while (--attempts >= 0)
 			if (!schedq_is_empty(schedq))
 				goto retry;
@@ -3197,8 +3201,10 @@ static thr_t *thr_dummy;
 static lwt_t lwt_main;
 static volatile ureg_t lwt_debugref;		//  reference debug data
 
-inline_only error_t init_data(void)
+inline_only error_t init_data(size_t sched_attempt_steps)
 {
+	if (sched_attempt_steps != 0)
+		sched_attempts = sched_attempt_steps;
 	hwsys_init();
 	mcores_init();
 
@@ -3239,9 +3245,9 @@ inline_only error_t init_data(void)
 	return error;
 }
 
-inline_only error_t init(void)
+inline_only error_t init(size_t sched_attempt_steps)
 {
-	error_t error = init_data();
+	error_t error = init_data(sched_attempt_steps);
 	if (error)
 		return error;
 
@@ -3269,9 +3275,9 @@ static noreturn void lwt_assert_fail(const char *file, int line,
 ///  This level of indirection costs nothing and removes the eye-sore of
 //{  all the __lwt_ prefixes.
 
-error_t __lwt_init(void)
+error_t __lwt_init(size_t sched_attempt_steps)
 {
-	return init();
+	return init(sched_attempt_steps);
 }
 
 //  __lwt_mtxattr_*() ABI entry points

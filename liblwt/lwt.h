@@ -17,11 +17,11 @@
 //  holding the associated mutex are not allowed), which leads to simpler
 //  and faster code, while reducing programming errors.
 
-int __lwt_init(void);
+int __lwt_init(size_t sched_attempt_steps);
 
-static inline int lwt_init(void)
+static inline int lwt_init(size_t sched_attempt_steps)
 {
-	return __lwt_init();
+	return __lwt_init(sched_attempt_steps);
 }
 
 

@@ -19,7 +19,7 @@ void errexit(const char *s)
 
 int main()
 {
-	int error = lwt_init();
+	int error = lwt_init(0);
 	if (error)
 		errexit("lwt_init() failed");
 
