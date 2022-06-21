@@ -56,6 +56,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "772d379f_e87edf1e",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 642,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-06-21T15:48:40Z",
+      "side": 1,
+      "message": "Instead of special casing \"/system\" here, I\u0027m thinking we can bind mount \"/system -\u003e /system\" at the end of TrySwitchSystemAsRoot().\n\nAlthough it have pretty much the same outcome, we can group special logic of \"/system\" in one place instead of scattering around.",
+      "parentUuid": "93b073d2_3a1f27a8",
+      "revId": "bae4e959eedf4b744bbf7f07c3fdba4bdd5d5d12",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "dd8f3ebf_b443e1fc",
         "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
         "patchSetId": 1
@@ -91,6 +109,30 @@
       "side": 1,
       "message": "If I remember correctly, submounts do not work otherwise (they\u0027d get hidden or the parent remount would fail).",
       "parentUuid": "dd8f3ebf_b443e1fc",
+      "range": {
+        "startLine": 788,
+        "startChar": 34,
+        "endLine": 788,
+        "endChar": 67
+      },
+      "revId": "bae4e959eedf4b744bbf7f07c3fdba4bdd5d5d12",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bed0492f_7df39485",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 788,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-06-21T15:48:40Z",
+      "side": 1,
+      "message": "ah right, thanks for pointing that out, double checking `man mount(2)` shows that MS_MOVE requires the moved mountpoint and parent of moved mountpoint to not be MS_SHARED. This is one of the EINVAL case.",
+      "parentUuid": "aa72aff3_2f75942f",
       "range": {
         "startLine": 788,
         "startChar": 34,
