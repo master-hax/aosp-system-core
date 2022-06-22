@@ -34,6 +34,24 @@
       "parentUuid": "3818fc29_5b7aafef",
       "revId": "b4345f3711da1962c1cc9ba32cabf1e6806ffb7e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ae167ed9_f69c1a13",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1365444
+      },
+      "writtenOn": "2022-06-22T20:48:59Z",
+      "side": 1,
+      "message": "Chromium works with sys.use_memfd since version 101.\nAlthough they may still want to reimplement the pinning/unpinning as they\u0027re noops in the memfd translation.\nSee also https://bugs.chromium.org/p/chromium/issues/detail?id\u003d1299437#c_ts1648492361\n\nWe\u0027ve been using sys.use_memfd at https://waydro.id (an android \"device\" that is actually an LXC container over mainline gnu/linux) for some months and so far have found no other broken apps.\n\nThe only thing left really is writing selinux and seccomp policies and flipping the switch!",
+      "parentUuid": "f05bd089_52ec43d3",
+      "revId": "b4345f3711da1962c1cc9ba32cabf1e6806ffb7e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
