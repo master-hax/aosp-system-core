@@ -106,6 +106,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "a10ebfd3_1ae1e6eb",
+        "filename": "fastboot/device/variables.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 543,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-06-22T18:48:35Z",
+      "side": 1,
+      "message": "depends what you mean... it can\u0027t _set_ errno because it can\u0027t fail (POSIX doesn\u0027t allow it), but, yeah, POSIX doesn\u0027t guarantee that success doesn\u0027t clobber errno. when we catch stuff like that, we treat it as a bug and fix it, but iswym and won\u0027t argue :-)",
+      "parentUuid": "66b3930e_1da2c14d",
+      "revId": "020c360c1d336542e279ea9a2d6109e684a2e416",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "4dd47ff8_6cd8cc00",
