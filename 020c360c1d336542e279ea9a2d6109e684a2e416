@@ -1,0 +1,89 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "23299607_782fd762",
+        "filename": "fastboot/device/variables.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 532,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-06-22T00:53:41Z",
+      "side": 1,
+      "message": "(you shouldn\u0027t need this. the LOG()/PLOG() stuff should preserve errno.)",
+      "revId": "020c360c1d336542e279ea9a2d6109e684a2e416",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5868d1b5_97ae7c5f",
+        "filename": "fastboot/device/variables.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 537,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-06-22T00:53:41Z",
+      "side": 1,
+      "message": "you can just loop on getline() if you prefer...",
+      "revId": "020c360c1d336542e279ea9a2d6109e684a2e416",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "987a85c2_65751e2c",
+        "filename": "fastboot/device/variables.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 543,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-06-22T00:53:41Z",
+      "side": 1,
+      "message": "...and then you only need one free(), outside the loop, and can reuse the same allocation for most lines (like the example in https://man7.org/linux/man-pages/man3/getline.3.html ).",
+      "revId": "020c360c1d336542e279ea9a2d6109e684a2e416",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4dd47ff8_6cd8cc00",
+        "filename": "fastboot/device/variables.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 551,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-06-22T00:53:41Z",
+      "side": 1,
+      "message": "not `return false;`?",
+      "revId": "020c360c1d336542e279ea9a2d6109e684a2e416",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c276babd_ce7f5aae",
+        "filename": "fastboot/device/variables.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 557,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-06-22T00:53:41Z",
+      "side": 1,
+      "message": "or `(line[rv] \u003d\u003d \u0027\\n\u0027) ? rv - 1 : rv` on L554?",
+      "revId": "020c360c1d336542e279ea9a2d6109e684a2e416",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
