@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "a1ffa137_ed5ff87b",
+        "filename": "fastboot/device/variables.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 532,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-06-22T02:32:58Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "23299607_782fd762",
+      "revId": "020c360c1d336542e279ea9a2d6109e684a2e416",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "5868d1b5_97ae7c5f",
@@ -31,6 +49,24 @@
       "writtenOn": "2022-06-22T00:53:41Z",
       "side": 1,
       "message": "you can just loop on getline() if you prefer...",
+      "revId": "020c360c1d336542e279ea9a2d6109e684a2e416",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9e0c08dc_ba8f3f56",
+        "filename": "fastboot/device/variables.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 537,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-06-22T02:32:58Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5868d1b5_97ae7c5f",
       "revId": "020c360c1d336542e279ea9a2d6109e684a2e416",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -52,6 +88,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "66b3930e_1da2c14d",
+        "filename": "fastboot/device/variables.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 543,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-06-22T02:32:58Z",
+      "side": 1,
+      "message": "Done, though free() can reset errno I think.",
+      "parentUuid": "987a85c2_65751e2c",
+      "revId": "020c360c1d336542e279ea9a2d6109e684a2e416",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "4dd47ff8_6cd8cc00",
@@ -69,6 +123,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "da92cfce_113e651a",
+        "filename": "fastboot/device/variables.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 551,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-06-22T02:32:58Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4dd47ff8_6cd8cc00",
+      "revId": "020c360c1d336542e279ea9a2d6109e684a2e416",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "c276babd_ce7f5aae",
@@ -82,6 +154,24 @@
       "writtenOn": "2022-06-22T00:53:41Z",
       "side": 1,
       "message": "or `(line[rv] \u003d\u003d \u0027\\n\u0027) ? rv - 1 : rv` on L554?",
+      "revId": "020c360c1d336542e279ea9a2d6109e684a2e416",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e706eb17_166b1b3f",
+        "filename": "fastboot/device/variables.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 557,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-06-22T02:32:58Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c276babd_ce7f5aae",
       "revId": "020c360c1d336542e279ea9a2d6109e684a2e416",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
