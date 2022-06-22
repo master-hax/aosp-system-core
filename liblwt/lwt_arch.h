@@ -1,7 +1,4 @@
 
-#define CACHE_LINE_SIZE_L2      6
-#define CACHE_LINE_SIZE         64
-
 //  The ctx_t is the integral context of a thread, these comments apply to
 //  all architextures.
 //
@@ -17,8 +14,11 @@
 //  case is when a half context when no floating point is to be loaded, both
 //  conditions are tested with a single compare against zero of ctx_fpctx.
 
-
 #ifdef LWT_ARM64 //{
+#ifdef LWT_C //{
+
+#define CACHE_LINE_SIZE_L2      6
+#define CACHE_LINE_SIZE         64
 
 //  On ARM64 (without SVE) there are 32 128 bit SIMD registers, the 32 bit
 //  floating point registers are held inside of them.  A non-SIMD version of
@@ -95,10 +95,18 @@ typedef struct {
 #define	ctx_thr_start_arg0	ctx_x19
 #define	ctx_thr_start_func	ctx_x20
 #define	ctx_thr_start_pc	ctx_x21
-
+#else //}{
+#define	reg_thr_start_arg0	x19
+#define	reg_thr_start_func	x20
+#define	reg_thr_start_pc	x21
 #endif //}
+#endif //} LWT_ARM64
 
 #ifdef LWT_X64 //{
+#ifdef LWT_C //{
+
+#define CACHE_LINE_SIZE_L2      6
+#define CACHE_LINE_SIZE         64
 
 //  TODO: fix FP context
 #define	FPCTX_NREG	16
@@ -147,10 +155,14 @@ typedef struct {
 #define	ctx_thr_start_arg0	ctx_rbp
 #define	ctx_thr_start_func	ctx_rbx
 #define	ctx_thr_start_pc	ctx_r12
-
+#else //}{
+#define	reg_thr_start_arg0	rbp
+#define	reg_thr_start_func	rbx
+#define	reg_thr_start_pc	r12
 #endif //}
+#endif //} LWT_X64
 
-#ifdef LWT_SCHED_C //{
+#ifdef LWT_C //{
 
 //  uptr atomic operations
 
@@ -203,9 +215,10 @@ inline_only uregx2_t uregx2_load(uregx2_t *m) {
 	return *m;
 }
 
+
 //  uregx2_t atomic operations
 
-#ifdef LWT_ARM64
+#ifdef LWT_ARM64 //{
 inline_only uregx2_t uregx2_comp_and_swap_acq_rel(uregx2_t old, uregx2_t new,
 						  uregx2_t *m)
 {
@@ -228,9 +241,22 @@ inline_only uregx2_t uregx2_comp_and_swap_acq_rel(uregx2_t old, uregx2_t new,
 			 : "r"(new_low), "r"(new_high), "r"(p));
 	return (uregx2_t) {.low = old_low, .high = old_high};
 }
-#endif
 
-#ifdef LWT_X64
+void cpu_current_set(cpu_t *cpu)
+{
+	// TODO: use x18 until tpidrro_el0 can be set from the kernel :-(
+	*((volatile int *)11) = 0xDEADBEEF;
+}
+
+inline_only cpu_t *cpu_current(void)
+{
+	cpu_t *cpu;
+	__asm__("mrs	%0, tpidrro_el0" : "=r"(cpu));
+	return cpu;
+}
+#endif //}
+
+#ifdef LWT_X64 //{
 inline_only uregx2_t uregx2_comp_and_swap_acq_rel(uregx2_t old, uregx2_t new,
 						  uregx2_t *m)
 {
@@ -243,45 +269,22 @@ inline_only uregx2_t uregx2_comp_and_swap_acq_rel(uregx2_t old, uregx2_t new,
 			 : "r"(new_low), "r"(new_high));
 	return (uregx2_t) {.low = old_low, .high = old_high};
 }
-#endif
 
-#ifdef LWT_ARM64
-void cpu_current_set(cpu_t *cpu)
-{
-	// TODO: use x18 until tpidrro_el0 can be set from the kernel :-(
-	*((volatile int *)11) = 0xDEADBEEF;
-}
-#endif
-
-#ifdef LWT_ARM64
-inline_only cpu_t *cpu_current(void)
-{
-	cpu_t *cpu;
-	__asm__("mrs	%0, tpidrro_el0" : "=r"(cpu));
-	return cpu;
-}
-#endif
-
-#ifdef LWT_X64
 inline_only void cpu_current_set_x64(cpu_t **cpu)
 {
 	register ureg_t gsb  __asm__("rdi") = (ureg_t) cpu;
 	__asm__ volatile("wrgsbase      %0" : : "r"(gsb) : "memory");
 
 }
-#endif
 
-#ifdef LWT_X64
 inline_only cpu_t *cpu_current()
 {
 	register ureg_t reg  __asm__("rax");
 	__asm__ volatile("mov %%gs:0, %0" : "=r"(reg));
 	return (cpu_t *) reg;
 }
-#endif
 
-#ifdef LWT_X64
 // cpu_t *cpu_current(void);
-#endif
+#endif //}
 
 #endif //}

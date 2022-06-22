@@ -3,8 +3,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "lwt.h"
+#define	LWT_C
 
+#include "lwt.h"
 #include "lwt_types.h"
 #include "lwt_arch.h"
 #include "lwt_sched.h"

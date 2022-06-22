@@ -6,13 +6,13 @@
 //  The bitfields are shown under a "bits" bitfield union to make debugging
 //  easier.
 
+typedef struct core_s		core_t;
 typedef struct thr_s		thr_t;
 typedef union thrln_s		thrln_t;
 
 typedef struct __lwt_mtx_s	mtx_t;
 typedef struct __lwt_cnd_s	cnd_t;
 typedef struct __lwt_spin_s	spin_t;
-
 
 //  Generic lockless list with support for insertion and removal from
 //  the head, the element in the list must have space for a uptr_t and
@@ -273,8 +273,9 @@ typedef struct {
 #define	SQ_PRIO_MAX	 (LWT_PRIO_HIGH + 1)
 
 typedef struct {
-	ureg_t		 schdom_mask;
 	sqcl_t		*schdom_sqcls;	  // points to entry in array
+	ureg_t		 schdom_mask;
+	core_t		*schdom_core;
 } schdom_t;
 
 #define	SCHEDQ_STATE(sq)						\
@@ -635,12 +636,15 @@ struct hw_s {
 	char		*hw_name;
 } aligned_cache_line;
 
-typedef hw_t core_t;
+struct core_s {
+	hw_t		 core_hw;
+	lllist_t	 core_idled_cpus;
+};
 
 struct cpu_s {
 	llelem_t	 cpu_idled_elem;
 	thr_t		*cpu_running_thr;
-	hw_t		*cpu_core;
+	core_t		*cpu_core;
 	char		*cpu_name;
 	kcpu_t		*cpu_kcpu;
 	ctx_t		 cpu_ctx;
