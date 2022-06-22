@@ -33,6 +33,24 @@
       "message": "What filesystem is being used for the backing image here? There are users of gsid that require 4KiB block alignment, and if the requested size isn\u0027t equal to the final partition size, it could lead to bugs.",
       "revId": "ef233ef6df0bc8901f21c188eb863ae7a03b30e1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6ebf6609_e52ab086",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1956079
+      },
+      "writtenOn": "2022-06-22T03:05:13Z",
+      "side": 1,
+      "message": "It\u0027s f2fs, the block size is 4KB. Here use block size to align instead of sector size can avoid this bug",
+      "parentUuid": "7d01f80a_d6d886d9",
+      "revId": "ef233ef6df0bc8901f21c188eb863ae7a03b30e1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
