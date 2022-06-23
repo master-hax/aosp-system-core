@@ -895,18 +895,8 @@ FstabEntry* GetEntryForMountPoint(Fstab* fstab, const std::string& path) {
 }
 
 std::vector<FstabEntry*> GetEntriesForMountPoint(Fstab* fstab, const std::string& path) {
-    std::vector<FstabEntry*> entries;
-    if (fstab == nullptr) {
-        return entries;
-    }
-
-    for (auto& entry : *fstab) {
-        if (entry.mount_point == path) {
-            entries.emplace_back(&entry);
-        }
-    }
-
-    return entries;
+    return GetEntriesByPred(fstab,
+                            [&path](const FstabEntry& entry) { return entry.mount_point == path; });
 }
 
 std::set<std::string> GetBootDevices() {
