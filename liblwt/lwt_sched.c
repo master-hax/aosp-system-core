@@ -368,12 +368,11 @@ static thr_t		*schedq_get(schedq_t *schedq, ureg_t sqix);
 static alloc_value_t	 arena_alloc(arena_t *arena);
 static void		 arena_free(arena_t *arena, void *mem);
 
-static void		 cpu_idle(cpu_t *cpu, thr_t *currthr);
 static void		 cpu_run(lllist_t *idled_list);
 
 static void		 core_run(core_t *core);
 
-inline_only thr_t	*thr_current(void)
+inline_only thr_t *thr_current(void)
 {
 	cpu_t *cpu = cpu_current();
 	return cpu->cpu_running_thr;
@@ -2853,7 +2852,7 @@ noreturn inline_only void thr_run_on_cpu(thr_t *thr, cpu_t *cpu)
 	ctx_load_on_cpu(ctx, &thr->thr_running);
 }
 
-static void cpu_idle(cpu_t *cpu, thr_t *currthr)
+noreturn inline_only void cpu_idle(cpu_t *cpu, thr_t *currthr)
 {
 	cpu->cpu_running_thr = NULL;
 	ctx_load_idle_cpu(&cpu->cpu_ctx, &currthr->thr_running);
