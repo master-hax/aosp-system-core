@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c7eca5e2_ce40ed4d",
+        "filename": "fs_mgr/fs_mgr_fstab.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 658,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-06-23T17:09:47Z",
+      "side": 1,
+      "message": "Mounting logic elsewhere in fs_mgr will only look at adjacent entries. Eg,\n\n    /blah ext4 /system ro none\n    /blah ext4 /vendor ro none\n    /blah erofs /system ro none\n\nIs not a valid fstab since the \"/system\" entries should be grouped together.",
+      "revId": "80d1afffc3a399784869d68d419685a512f158ab",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fd3246f5_dd8d7d78",
+        "filename": "fs_mgr/fs_mgr_fstab.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 706,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-06-23T17:09:47Z",
+      "side": 1,
+      "message": "We can probably drop barrier\u003d1 (and thus fs_options)? It looks like it only applies to writable filesystems.",
+      "revId": "80d1afffc3a399784869d68d419685a512f158ab",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
