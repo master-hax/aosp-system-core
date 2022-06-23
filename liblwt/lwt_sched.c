@@ -2864,7 +2864,7 @@ static thr_t *schedq_get(schedq_t *schedq, ureg_t sqix)
 	return thr;
 }
 
-static size_t sched_attempts = 1;
+static int sched_attempts = 1;
 
 static noreturn void sched_out(thr_t *currthr)
 {
@@ -3359,8 +3359,8 @@ static volatile ureg_t lwt_debugref;		//  reference debug data
 
 inline_only error_t init_data(size_t sched_attempt_steps)
 {
-	if (sched_attempt_steps != 0)
-		sched_attempts = sched_attempt_steps;
+	if (sched_attempt_steps > 0 && sched_attempt_steps <= 1000)
+		sched_attempts = (int) sched_attempt_steps;
 	hwsys_init();
 	mcores_init();
 
