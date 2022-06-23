@@ -96,7 +96,7 @@ static mtx_t *MTX_INDEX_BASE_ = MTX_INDEX_BASE;
 //    4 x Cortex-A55 @ 1.8 GHz
 //
 //  This should be determined at run-time from /proc, this is for testing in
-//  the meantime (TODO).  At that time deal with kcpus too.
+//  the meantime (TODO).  At that time deal with kcores too.
 
 #define LWT_HWSYS
 #define LWT_MCORES
@@ -352,14 +352,18 @@ noreturn void		 __lwt_ctx_load_on_cpu(ctx_t *ctx, bool *new_running);
 	__lwt_ctx_load_idle_cpu(ctx, curr_running)
 
 bool 			 __lwt_bool_load_acq(bool *m);
+ureg_t			 __lwt_ureg_load_acq(ureg_t *m);
 ureg_t			 __lwt_ureg_atomic_add_unseq(ureg_t *m, ureg_t v);
 ureg_t			 __lwt_ureg_atomic_or_acq_rel(ureg_t *m, ureg_t v);
 
 #define	bool_load_acq(m)		__lwt_bool_load_acq(m)
+#define	ureg_load_acq(m)		__lwt_ureg_load_acq(m)
 #define	ureg_atomic_add_unseq(m, v)	__lwt_ureg_atomic_add_unseq(m, v)
 #define	ureg_atomic_or_acq_rel(m, v)	__lwt_ureg_atomic_or_acq_rel(m, v)
 
 static schdom_t		*schdom_from_thrattr(const thrattr_t *thrattr);
+
+static thr_t		*schedq_get(schedq_t *schedq, ureg_t sqix);
 
 static alloc_value_t	 arena_alloc(arena_t *arena);
 static void		 arena_free(arena_t *arena, void *mem);
@@ -414,6 +418,11 @@ inline_only void lllist_init(lllist_t *list)
 {
 	list->lll_first = NULL;
 	list->lll_count_gen = 0;
+}
+
+inline_only void *lllist_head(lllist_t *list)
+{
+	return (void *) ureg_load_acq((ureg_t *) &list->lll_first);
 }
 
 inline_only lllist_t lllist_load(lllist_t *list)
@@ -1777,6 +1786,16 @@ static int thr_setcanceltype(int type, int *oldtype)
 
 //}{ Scheduler functions.
 
+//  This is a light touch examination of schedq to see if it is empty,
+//  it does not touch the memory with a compare-and-swap, which most
+//  likely might cause unwanted cache effects.
+
+inline_only bool schedq_is_empty(schedq_t *schedq)
+{
+	return *(volatile ureg_t *)
+	       &schedq->sq_rem_remnxt_insprv_ins_state == 0;
+}
+
 inline_only ureg_t schedq_index(schedq_t *schedq)
 {
 	//  sqcl_t has pad space, as long as a uniform set of indexes is
@@ -1869,6 +1888,40 @@ static schdom_t *schdom_from_thrattr(const thrattr_t *thrattr)
 	ureg_t rotor = ureg_atomic_add_unseq(&schedom_core_rotor, 1);
 	rotor %= NCORES;
 	return &cores[rotor].core_hw.hw_schdom;
+}
+
+static thr_t *schdom_get_thr(schdom_t *schdom)
+{
+	ureg_t mask = schdom->schdom_mask;
+	while (mask) {
+		int index = ffsl(mask);
+		--index;
+		ureg_t prio = LWT_PRIO_HIGH - index;
+		schedq_t *schedq = &schdom->schdom_sqcls[prio].sqcl_schedq;
+		ureg_t sqix = schedq_index(schedq);
+		thr_t *thr = schedq_get(schedq, sqix);
+		if (thr)
+			return thr;
+		mask &= ~(1uL << index);
+	}
+	return NULL;
+}
+
+//  Low touch examination of schdom to see if it is empty.
+
+static bool schdom_is_empty(schdom_t *schdom)
+{
+	ureg_t mask = schdom->schdom_mask;
+	while (mask) {
+		int index = ffsl(mask);
+		--index;
+		ureg_t prio = LWT_PRIO_HIGH - index;
+		schedq_t *schedq = &schdom->schdom_sqcls[prio].sqcl_schedq;
+		if (!schedq_is_empty(schedq))
+			return false;
+		mask &= ~(1uL << index);
+	}
+	return true;
 }
 
 //}{ Insert and remove algorithm for schedq_t.
@@ -2753,22 +2806,26 @@ retry:;
 
 //}{ More scheduler functions
 
+inline_only ureg_t thr_get_prio_with_ceiling(thr_t *thr)
+{
+	// TODO
+	//  A thread that owns mutexes has its priority boosted to the
+	//  maximum, this is a trivial implementation of priority ceiling
+	//  that prevents priority inversion for mutexes.
+	//
+	//  ureg_t prio = thr->thr_mtxcnt ? LWT_PRIO_HIGH : thr->thr_prio;
+
+	ureg_t prio = thr->thr_prio;
+	return prio;
+}
+
 //  This function must always return zero, its callers depend on it.
 //  Thr is ready to run, add it to the appropriate scheduling queue.
 
 static int sched_in(thr_t *thr)
 {
 	schdom_t *schdom = thr->thr_schdom;
-
-#if 0	// TODO
-	//  A thread that owns mutexes has its priority boosted to the
-	//  maximum, this is a trivial implementation of priority ceiling
-	//  that prevents priority inversion for mutexes.
-
-	ureg_t prio = thr->thr_mtxcnt ? LWT_PRIO_HIGH : thr->thr_prio;
-#else
-	ureg_t prio = thr->thr_prio;
-#endif
+	ureg_t prio = thr_get_prio_with_ceiling(thr);
 	ureg_t priomask = 1uL << (LWT_PRIO_HIGH - prio);
 	if (! (schdom->schdom_mask & priomask))
 		ureg_atomic_or_acq_rel(&schdom->schdom_mask, priomask);
@@ -2808,27 +2865,13 @@ static thr_t *schedq_get(schedq_t *schedq, ureg_t sqix)
 	return thr;
 }
 
-//  This is a light touch examination of schedq to see if it is empty,
-//  it does not touch the memory with a compare-and-swap, which most
-//  likely might cause unwanted cache effects.
-
-inline_only bool schedq_is_empty(schedq_t *schedq)
-{
-	return *(volatile ureg_t *)
-	       &schedq->sq_rem_remnxt_insprv_ins_state == 0;
-}
-
 static size_t sched_attempts = 1;
 
 static noreturn void sched_out(thr_t *currthr)
 {
 	schdom_t *schdom = currthr->thr_schdom;
-#if 0	// TODO
-	schedq_t *schedq = &schdom->schdom_sqcls[currthr->thr_mtxcnt ?
-				LWT_PRIO_HIGH : currthr->thr_prio].sqcl_schedq;
-#else
-	schedq_t *schedq = &schdom->schdom_sqcls[currthr->thr_prio].sqcl_schedq;
-#endif
+	ureg_t prio = thr_get_prio_with_ceiling(currthr);
+	schedq_t *schedq = &schdom->schdom_sqcls[prio].sqcl_schedq;
 	ureg_t sqix = schedq_index(schedq);
 retry:;	thr_t *thr = schedq_get(schedq, sqix);
 	if (!thr) {

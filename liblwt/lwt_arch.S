@@ -82,6 +82,13 @@ FUNCTION_START(__lwt_bool_load_acq)
 	ret
 FUNCTION_END(__lwt_bool_load_acq)
 
+//  ureg_t __lwt_ureg_load_acq(ureg_t *m);
+
+FUNCTION_START(__lwt_ureg_load_acq)
+	ldar	x0, [x0]
+	ret
+FUNCTION_END(__lwt_ureg_load_acq)
+
 //  ureg_t __lwt_ureg_atomic_or_acq_rel(ureg_t *m, ureg_t v);
 
 FUNCTION_START(__lwt_ureg_atomic_or_acq_rel)
@@ -176,6 +183,13 @@ FUNCTION_START(__lwt_bool_load_acq)
 	movzbl  (%rdi), %eax
 	ret
 FUNCTION_END(__lwt_bool_load_acq)
+
+//  ureg_t __lwt_ureg_load_acq(ureg_t *m);
+
+FUNCTION_START(__lwt_ureg_load_acq)
+	movq	(%rdi), %rax
+	ret
+FUNCTION_END(__lwt_ureg_load_acq)
 
 //  ureg_t __lwt_ureg_atomic_add_unseq(ureg_t *m, ureg_t v);
 
