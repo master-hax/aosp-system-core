@@ -539,6 +539,20 @@ bool EraseFstabEntry(Fstab* fstab, const std::string& mount_point) {
     return false;
 }
 
+template <typename Pred>
+std::vector<FstabEntry*> GetEntriesByPred(Fstab* fstab, const Pred& pred) {
+    if (fstab == nullptr) {
+        return {};
+    }
+    std::vector<FstabEntry*> entries;
+    for (auto&& entry : *fstab) {
+        if (pred(entry)) {
+            entries.push_back(&entry);
+        }
+    }
+    return entries;
+}
+
 }  // namespace
 
 bool ParseFstabFromString(const std::string& fstab_str, bool proc_mounts, Fstab* fstab_out) {
@@ -638,45 +652,61 @@ void TransformFstabForDsu(Fstab* fstab, const std::string& dsu_slot,
         //    vendor_gsi for vendor
         std::string lp_name = partition.substr(0, partition.length() - strlen(gsi::kDsuPostfix));
         std::string mount_point = "/" + lp_name;
-        std::vector<FstabEntry*> entries = GetEntriesForMountPoint(fstab, mount_point);
-        if (entries.empty()) {
-            FstabEntry entry = {
-                    .blk_device = partition,
-                    // .logical_partition_name is required to look up AVB Hashtree descriptors.
-                    .logical_partition_name = "system",
-                    .mount_point = mount_point,
-                    .fs_type = "ext4",
-                    .flags = MS_RDONLY,
-                    .fs_options = "barrier=1",
-                    .avb_keys = kDsuKeysDir,
+
+        // Only support early mount (first_stage_mount) partitions.
+        auto pred = [&mount_point](const FstabEntry& entry) {
+            return entry.fs_mgr_flags.first_stage_mount && entry.mount_point == mount_point;
+        };
+        std::vector<FstabEntry*> entries = GetEntriesByPred(fstab, pred);
+
+        bool want_ext4 = true;
+        bool want_erofs = true;
+
+        // Transform all matching entries.
+        for (auto&& entry : entries) {
+            // .avb_keys hints first_stage_mount to load the chained-vbmeta image from partition
+            // footer. See aosp/932779 for more details.
+            entry->avb_keys = kDsuKeysDir;
+            // .blk_device is replaced with the DSU partition.
+            entry->blk_device = partition;
+            // .logical_partition_name is required to look up AVB Hashtree descriptors.
+            entry->logical_partition_name = lp_name;
+            entry->fs_mgr_flags.logical = true;
+            entry->fs_mgr_flags.slot_select = false;
+            entry->fs_mgr_flags.slot_select_other = false;
+
+            want_ext4 = want_ext4 && (entry->fs_type != "ext4");
+            want_erofs = want_erofs && (entry->fs_type != "erofs");
+        }
+
+        if (want_ext4 || want_erofs) {
+            auto make_new_entry = [&](auto&& fs_type, auto&& fs_options) -> FstabEntry {
+                return {
+                        .blk_device = partition,
+                        .logical_partition_name = lp_name,
+                        .mount_point = mount_point,
+                        .fs_type = fs_type,
+                        .flags = MS_RDONLY,
+                        .fs_options = fs_options,
+                        .avb_keys = kDsuKeysDir,
+                        .fs_mgr_flags{
+                                .wait = true,
+                                .logical = true,
+                                .first_stage_mount = true,
+                        },
+                };
             };
-            entry.fs_mgr_flags.wait = true;
-            entry.fs_mgr_flags.logical = true;
-            entry.fs_mgr_flags.first_stage_mount = true;
-            fstab->emplace_back(entry);
-        } else {
-            // If the corresponding partition exists, transform all its Fstab
-            // by pointing .blk_device to the DSU partition.
-            for (auto&& entry : entries) {
-                entry->blk_device = partition;
-                // AVB keys for DSU should always be under kDsuKeysDir.
-                entry->avb_keys = kDsuKeysDir;
-                entry->fs_mgr_flags.logical = true;
+            // Insert at the end of an existing mountpoint group, or at the end of fstab.
+            auto it = entries.empty()
+                              ? fstab->end()
+                              : (fstab->begin() +
+                                 std::distance(std::find_if(fstab->rbegin(), fstab->rend(), pred),
+                                               fstab->rend()));
+            if (want_ext4) {
+                it = fstab->insert(it, make_new_entry("ext4", "barrier=1"));
             }
-            // Make sure the ext4 is included to support GSI.
-            auto partition_ext4 =
-                    std::find_if(fstab->begin(), fstab->end(), [&](const auto& entry) {
-                        return entry.mount_point == mount_point && entry.fs_type == "ext4";
-                    });
-            if (partition_ext4 == fstab->end()) {
-                auto new_entry = *GetEntryForMountPoint(fstab, mount_point);
-                new_entry.fs_type = "ext4";
-                auto it = std::find_if(fstab->rbegin(), fstab->rend(),
-                                       [&mount_point](const auto& entry) {
-                                           return entry.mount_point == mount_point;
-                                       });
-                auto end_of_mount_point_group = fstab->begin() + std::distance(it, fstab->rend());
-                fstab->insert(end_of_mount_point_group, new_entry);
+            if (want_erofs) {
+                it = fstab->insert(it, make_new_entry("erofs", ""));
             }
         }
     }
