@@ -51,6 +51,23 @@
       "parentUuid": "7d01f80a_d6d886d9",
       "revId": "ef233ef6df0bc8901f21c188eb863ae7a03b30e1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c9625f0a_8e500e30",
+        "filename": "fs_mgr/libfiemap/image_manager.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 204,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-06-24T19:39:06Z",
+      "side": 1,
+      "message": "I think the only change you need is to align size here, and then you don\u0027t need the other changes in this patch. Something like:\n\n    uint64_t aligned_size \u003d size;\n    if (aligned_size % fw-\u003eblock_size()) {\n        aligned_size +\u003d fw-\u003eblock_size() - (size % fw-\u003eblock_size());\n        if (aligned_size \u003e fw-\u003esize()) {\n            LOG(ERROR) \u003c\u003c \"Fiemap alignment error, requested \" \u003c\u003c size\n                       \u003c\u003c \" bytes, needed \" \u003c\u003c aligned_size \u003c\u003c \", but got \"\n                       \u003c\u003c fw-\u003esize() \" bytes.\";\n            return false;\n        }\n    }\n\nThis will keep the partition size close to the requested size. If you align to fw-\u003esize(), it could be much bigger (f2fs has 2MiB granularity).",
+      "revId": "ef233ef6df0bc8901f21c188eb863ae7a03b30e1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
