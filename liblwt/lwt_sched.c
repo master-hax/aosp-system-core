@@ -3237,6 +3237,25 @@ rescan:;	int index = ffsl(mask);
 	return NULL;
 }
 
+#ifdef LWT_NEW
+inline_only error_t kcore_init(kcore_t *kcore, core_t *core)
+{
+	core->core_kcore = kcore;
+	error_t error = pthread_cond_init(&kcore->kcore_cond, NULL);
+	if (error)
+		return error;
+	error = pthread_mutex_init(&kcore->kcore_mutex, NULL);
+	if (error)
+		pthread_cond_destroy(&kcore->kcore_cond);
+	return error;
+}
+
+inline_only void kcore_deinit(kcore_t *kcore)
+{
+	pthread_cond_destroy(&kcore->kcore_cond);
+	pthread_mutex_destroy(&kcore->kcore_mutex);
+}
+#else
 static error_t kcpu_init_common(kcpu_t *kcpu, cpu_t *cpu)
 {
 	cpu->cpu_kcpu = kcpu;
@@ -3257,6 +3276,7 @@ inline_only void kcpu_deinit_common(kcpu_t *kcpu)
 	pthread_mutex_destroy(&kcpu->kcpu_mutex);
 	pthread_cond_destroy(&kcpu->kcpu_cond);
 }
+#endif
 
 static stk_t *stk_cpu0;		// TODO: needs deinit error cleanup
 
@@ -3372,14 +3392,30 @@ static error_t kcores_init(void)
 	if (error)
 		return error;
 	error = pthread_attr_setstacksize(&cpu_pthread_attr, CPU_STACKSIZE);
-	if (error)
+	if (error) {
 		pthread_attr_destroy(&cpu_pthread_attr);
-	return error;
+		return error;
+	}
+
+#ifdef LWT_NEW
+	int i;
+	for (i = 0; i < NCORES; ++i)
+		if ((error = kcore_init(&kcores[i], &cores[i])))
+			break;
+
+	if (error) {
+		while (--i >= 0)
+			kcore_deinit(&kcores[i]);
+		pthread_attr_destroy(&cpu_pthread_attr);
+		return error;
+	}
+#endif
+
+	return 0;
 }
 
 static thr_t *thr_dummy;
 static lwt_t lwt_main;
-static volatile ureg_t lwt_debugref;		//  reference debug data
 
 inline_only error_t init_data(size_t sched_attempt_steps)
 {
@@ -3416,9 +3452,12 @@ inline_only error_t init_data(size_t sched_attempt_steps)
 				lwt_main = (lwt_t) thr_create_main()->
 						   thra.thra_thrid.thrid_all;
 
-				lwt_debugref = *(ureg_t *) (thr_by_index + 1) +
-					       *(ureg_t *) (thrx_by_index + 1) +
-					       *(ureg_t *) (mtx_by_index + 1);
+				//  Prevent removal of these debug variables
+
+				ureg_load_acq((ureg_t *) (thr_by_index + 1));
+				ureg_load_acq((ureg_t *) (thrx_by_index + 1));
+				ureg_load_acq((ureg_t *) (mtx_by_index + 1));
+
 				return 0;
 			}
 			error = av.error;
