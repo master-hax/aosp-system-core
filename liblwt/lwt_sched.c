@@ -3452,11 +3452,23 @@ inline_only void hw_deinit(hw_t *hw)
 	TODO();
 }
 
+#ifdef LWT_NEW
+inline_only void cpu_init(cpu_t *cpu)
+{
+	cpu->cpu_idled_elem.lll_next = CPU_NOT_IDLED;
+	cpu->cpu_running_thr = NULL;
+	core_t *core = cpu->cpu_core;
+	if (core->core_first_cpu == NULL)
+		core->core_first_cpu = cpu;
+	core->core_last_cpu = cpu;
+}
+#else
 inline_only void cpu_init(cpu_t *cpu)
 {
 	cpu->cpu_idled_elem.lll_next = CPU_NOT_IDLED;
 	cpu->cpu_running_thr = NULL;
 }
+#endif
 
 inline_only void core_init(core_t *core)
 {
