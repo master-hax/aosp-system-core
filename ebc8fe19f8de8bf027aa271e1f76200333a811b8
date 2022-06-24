@@ -16,6 +16,24 @@
       "message": "is it worth passing the args to these too? i wasn\u0027t joking when i bet that you\u0027ll get bugs asking you for the various dmesg flags. (though i guess something like `dmesg -w` is potentially tricky for fastboot...)",
       "revId": "ebc8fe19f8de8bf027aa271e1f76200333a811b8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a59618cd_b52daa8b",
+        "filename": "fastboot/device/commands.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 172,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-06-24T21:10:48Z",
+      "side": 1,
+      "message": "I think we can cross that bridge when it comes... the Pixel bootloader variant (fastboot oem dmesg) doesn\u0027t have any arguments.",
+      "parentUuid": "cd8b2b14_8344021a",
+      "revId": "ebc8fe19f8de8bf027aa271e1f76200333a811b8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
