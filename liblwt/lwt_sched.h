@@ -636,10 +636,20 @@ struct hw_s {
 	char		*hw_name;
 } aligned_cache_line;
 
+#ifdef LWT_NEW
+struct core_s {
+	lllist_t	 core_idled_cpu_lllist;
+	hw_t		 core_hw;
+	cpu_t		*core_first_cpu;
+	cpu_t		*core_last_cpu;
+	kcore_t		*core_kcore;
+};
+#else
 struct core_s {
 	hw_t		 core_hw;
 	lllist_t	 core_idled_cpus;
 };
+#endif
 
 struct cpu_s {
 	llelem_t	 cpu_idled_elem;

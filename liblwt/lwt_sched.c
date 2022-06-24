@@ -3470,11 +3470,19 @@ inline_only void cpu_init(cpu_t *cpu)
 }
 #endif
 
+#ifdef LWT_NEW
+inline_only void core_init(core_t *core)
+{
+	hw_init(&core->core_hw, core);
+	lllist_init(&core->core_idled_cpu_lllist);
+}
+#else
 inline_only void core_init(core_t *core)
 {
 	hw_init(&core->core_hw, core);
 	lllist_init(&core->core_idled_cpus);
 }
+#endif
 
 #ifdef LWT_HWSYS
 void hwsys_init()
