@@ -64,6 +64,10 @@ $DUMP -d lwt.o > lwt.dump-ARCH
 $CC $DEFS $CFLAGS -c -O3 test.c
 
 $CC $DEFS $CFLAGS -DLWT_DEBUG -g -o test-g-$ARCH test.c lwt_sched.c lwt_arch_gen.s
+
+# XXX
+### $CC $DEFS $CFLAGS -DLWT_DEBUG -DLWT_NEW -g -o test-g-$ARCH test.c lwt_sched.c lwt_arch_gen.s
+
 $CC $DEFS $CFLAGS -DLWT_DEBUG -g -o test_schedq-g-$ARCH test_schedq.c lwt_arch_gen.s
 
 $CC $DEFS $CFLAGS -DLWT_DEBUG -O3 -o test-O3-$ARCH test.c lwt_sched.c lwt_arch_gen.s

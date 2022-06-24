@@ -3175,9 +3175,27 @@ static void cpu_current_set(cpu_t *cpu)
 }
 #endif
 
-static void cpu_run(lllist_t *idled_list)
+#ifdef LWT_NEW
+static void core_run(core_t *core)
 {
-	llelem_t *elem = lllist_remove(idled_list);
+	if (!lllist_head(&core->core_idled_cpu_lllist))
+		return;
+
+	kcore_t *kcore = core->core_kcore;
+	pthread_mutex_lock(&kcore->kcore_mutex);
+
+	cpu_t *cpu = (cpu_t *) lllist_remove(&core->core_idled_cpu_lllist);
+	if (cpu) {
+		cpu->cpu_idled_elem.lll_next = CPU_NOT_IDLED;
+		pthread_cond_signal(&kcore->kcore_cond);
+	}
+
+	pthread_mutex_unlock(&kcore->kcore_mutex);
+}
+#else
+static void core_run(core_t *core)
+{
+	llelem_t *elem = lllist_remove(&core->core_idled_cpus);
 	if (!elem)
 		return;
 
@@ -3188,12 +3206,37 @@ static void cpu_run(lllist_t *idled_list)
 	pthread_cond_signal(&kcpu->kcpu_cond);
 	pthread_mutex_unlock(&kcpu->kcpu_mutex);
 }
+#endif
 
-static void core_run(core_t *core)
+#ifdef LWT_NEW
+static noreturn void *cpu_main(cpu_t *cpu)
 {
-	cpu_run(&core->core_idled_cpus);
-}
+	cpu_current_set(cpu);
+	core_t *core = cpu->cpu_core;
+	kcore_t *kcore = core->core_kcore;
+	schdom_t *schdom = &core->core_hw.hw_schdom;
 
+	for (;;) {
+		pthread_mutex_lock(&kcore->kcore_mutex);
+retry:;		thr_t *thr = schdom_get_thr(schdom);
+		if (!thr) {
+			if (cpu->cpu_idled_elem.lll_next == CPU_NOT_IDLED)
+				lllist_insert(&core->core_idled_cpu_lllist,
+					      &cpu->cpu_idled_elem);
+			pthread_cond_wait(&kcore->kcore_cond,
+					  &kcore->kcore_mutex);
+			goto retry;
+		}
+		pthread_mutex_unlock(&kcore->kcore_mutex);
+
+		if (ctx_save(&cpu->cpu_ctx))		// returs twice
+			thr_run_on_cpu(thr, cpu);	// first return
+
+		//  On the second return there are no runable threads the
+		//  cpu might be parked after it tries schedq_get() above.
+	}
+}
+#else
 static void *cpu_main(cpu_t *cpu)
 {
 	cpu_current_set(cpu);
@@ -3236,6 +3279,7 @@ rescan:;	int index = ffsl(mask);
 	}
 	return NULL;
 }
+#endif
 
 #ifdef LWT_NEW
 inline_only error_t kcore_init(kcore_t *kcore, core_t *core)
