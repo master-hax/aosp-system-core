@@ -2875,10 +2875,6 @@ static noreturn void sched_out(thr_t *currthr)
 	ureg_t sqix = schedq_index(schedq);
 retry:;	thr_t *thr = schedq_get(schedq, sqix);
 	if (!thr) {
-		int attempts = sched_attempts;	// don't idle CPUs too quickly
-		while (--attempts >= 0)
-			if (!schedq_is_empty(schedq))
-				goto retry;
 		cpu_t *cpu = cpu_current();
 		cpu_idle(cpu, currthr);
 	}
@@ -3208,7 +3204,7 @@ static void core_run(core_t *core)
 }
 #endif
 
-#ifdef LWT_NEW
+#ifdef LWT_NEW_TWO
 static noreturn void *cpu_main(cpu_t *cpu)
 {
 	cpu_current_set(cpu);
@@ -3218,11 +3214,26 @@ static noreturn void *cpu_main(cpu_t *cpu)
 
 	for (;;) {
 		pthread_mutex_lock(&kcore->kcore_mutex);
-retry:;		thr_t *thr = schdom_get_thr(schdom);
+retry:;		ureg_t mask = schdom->schdom_mask;
+rescan:;	int index = ffsl(mask);
+		thr_t *thr;
+		if (index != 0) {
+			--index;
+			index = LWT_PRIO_HIGH - index;
+			schedq_t *schedq =
+				&schdom->schdom_sqcls[index].sqcl_schedq;
+			ureg_t sqix = schedq_index(schedq);
+			thr = schedq_get(schedq, sqix);
+			if (!thr)
+				mask &= ~(1uL << index);
+		}
 		if (!thr) {
-			if (cpu->cpu_idled_elem.lll_next == CPU_NOT_IDLED)
+			if (mask)
+				goto rescan;
+			if (cpu->cpu_idled_elem.lll_next == CPU_NOT_IDLED) {
 				lllist_insert(&core->core_idled_cpu_lllist,
 					      &cpu->cpu_idled_elem);
+			}
 			pthread_cond_wait(&kcore->kcore_cond,
 					  &kcore->kcore_mutex);
 			goto retry;
@@ -3236,8 +3247,46 @@ retry:;		thr_t *thr = schdom_get_thr(schdom);
 		//  cpu might be parked after it tries schedq_get() above.
 	}
 }
+#elif defined(LWT_NEW)
+static noreturn void *cpu_main(cpu_t *cpu)
+{
+	cpu_current_set(cpu);
+	core_t *core = cpu->cpu_core;
+	kcore_t *kcore = core->core_kcore;
+	schdom_t *schdom = &core->core_hw.hw_schdom;
+
+	for (;;) {
+		pthread_mutex_lock(&kcore->kcore_mutex);
+		int attempts = sched_attempts;
+retry:;		thr_t *thr = schdom_get_thr(schdom);
+		if (!thr) {
+			if (schdom->schdom_mask != 0)
+				goto retry;
+			//  Don't idle CPU too quickly, kernel context switch is
+			//  expensive, wasting cycles here saves overall cycles.
+			if (--attempts >= 0)
+				goto retry;
+		}
+		if (schdom->schdom_mask == 0) {
+			if (cpu->cpu_idled_elem.lll_next == CPU_NOT_IDLED)
+				lllist_insert(&core->core_idled_cpu_lllist,
+					      &cpu->cpu_idled_elem);
+			pthread_cond_wait(&kcore->kcore_cond,
+					  &kcore->kcore_mutex);
+			goto retry;
+		}
+
+		pthread_mutex_unlock(&kcore->kcore_mutex);
+
+		if (ctx_save(&cpu->cpu_ctx))		// returs twice
+			thr_run_on_cpu(thr, cpu);	// first return
+
+		//  On the second return there are no runable threads the
+		//  cpu might be parked after it tries schedq_get() above.
+	}
+}
 #else
-static void *cpu_main(cpu_t *cpu)
+static noreturn void *cpu_main(cpu_t *cpu)
 {
 	cpu_current_set(cpu);
 	kcpu_t *kcpu = cpu->cpu_kcpu;
@@ -3277,7 +3326,6 @@ rescan:;	int index = ffsl(mask);
 		//  On the second return there are no runable threads the
 		//  kcpu might be parked after it tries schedq_get() above.
 	}
-	return NULL;
 }
 #endif
 

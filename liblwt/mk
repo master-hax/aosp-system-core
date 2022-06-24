@@ -3,7 +3,7 @@
 set -e
 set -x
 
-DEFS='-D_DEFAULT_SOURCE -DLWT_PTR_BITS=64'
+DEFS='-D_DEFAULT_SOURCE -DLWT_PTR_BITS=64 -DLWT_NEW'
 CFLAGS='-fomit-frame-pointer -pthread'
 
 CMD=$(basename $0)
@@ -64,18 +64,12 @@ $DUMP -d lwt.o > lwt.dump-ARCH
 $CC $DEFS $CFLAGS -c -O3 test.c
 
 $CC $DEFS $CFLAGS -DLWT_DEBUG -g -o test-g-$ARCH test.c lwt_sched.c lwt_arch_gen.s
-
-# XXX
-### $CC $DEFS $CFLAGS -DLWT_DEBUG -DLWT_NEW -g -o test-g-$ARCH test.c lwt_sched.c lwt_arch_gen.s
+$CC $DEFS $CFLAGS -DLWT_DEBUG -O3 -o test-O3-$ARCH test.c lwt_sched.c lwt_arch_gen.s
+$CC $DEFS $CFLAGS -DLWT_DEBUG -O3 -g -o test-O3-g-$ARCH test.c lwt_sched.c lwt_arch_gen.s
 
 $CC $DEFS $CFLAGS -DLWT_DEBUG -g -o test_schedq-g-$ARCH test_schedq.c lwt_arch_gen.s
-
-$CC $DEFS $CFLAGS -DLWT_DEBUG -O3 -o test-O3-$ARCH test.c lwt_sched.c lwt_arch_gen.s
 $CC $DEFS $CFLAGS -DLWT_DEBUG -O3 -o test_schedq-O3-$ARCH test_schedq.c lwt_arch_gen.s
-
-$CC $DEFS $CFLAGS -DLWT_DEBUG -O3 -g -o test-O3-g-$ARCH test.c lwt_sched.c lwt_arch_gen.s
 $CC $DEFS $CFLAGS -DLWT_DEBUG -O3 -g -o test_schedq-O3-g-$ARCH test_schedq.c lwt_arch_gen.s
-
 
 if [ "$ARCH" = x64 ] ; then
 	clang -std=c17 $DEFS $CFLAGS -DLWT_DEBUG -g -o test_schedq-clang-g-$ARCH test_schedq.c lwt_arch_gen.s
@@ -84,12 +78,16 @@ fi
 # $CXX -std=c++17 $DEFS $CFLAGS -DLWT_DEBUG -g -o test_schedq-c++-g-$ARCH test_schedq.c lwt_arch_gen.s
 
 $CC -DLWT_MP $DEFS $CFLAGS -DLWT_DEBUG -g -o test-mp-g-$ARCH test.c lwt_sched.c lwt_arch_gen.s
-$CC -DLWT_MP $DEFS $CFLAGS -DLWT_DEBUG -O3 -g -o test-mp-O3-g-$ARCH test.c lwt_sched.c lwt_arch_gen.s
 $CC -DLWT_MP $DEFS $CFLAGS -DLWT_DEBUG -O3 -o test-mp-O3-$ARCH test.c lwt_sched.c lwt_arch_gen.s
+$CC -DLWT_MP $DEFS $CFLAGS -DLWT_DEBUG -O3 -g -o test-mp-O3-g-$ARCH test.c lwt_sched.c lwt_arch_gen.s
 
 $CC -DLWT_MP $DEFS $CFLAGS -DLWT_BITS -g -o test-mp-g-no-LWT_DEBUG-$ARCH test.c lwt_sched.c lwt_arch_gen.s
-$CC -DLWT_MP $DEFS $CFLAGS -DLWT_BITS -O3 -g -o test-mp-O3-g-no-LWT_DEBUG-$ARCH test.c lwt_sched.c lwt_arch_gen.s
 $CC -DLWT_MP $DEFS $CFLAGS -DLWT_BITS -O3 -o test-mp-O3-no-LWT_DEBUG-$ARCH test.c lwt_sched.c lwt_arch_gen.s
+$CC -DLWT_MP $DEFS $CFLAGS -DLWT_BITS -O3 -g -o test-mp-O3-g-no-LWT_DEBUG-$ARCH test.c lwt_sched.c lwt_arch_gen.s
+
+$CC -DLWT_NEW -DLWT_MP $DEFS $CFLAGS -DLWT_DEBUG -g -o new-test-mp-g-$ARCH test.c lwt_sched.c lwt_arch_gen.s
+$CC -DLWT_NEW -DLWT_MP $DEFS $CFLAGS -DLWT_DEBUG -O3 -o new-test-mp-O3-$ARCH test.c lwt_sched.c lwt_arch_gen.s
+$CC -DLWT_NEW -DLWT_MP $DEFS $CFLAGS -DLWT_DEBUG -O3 -g -o new-test-mp-O3-g-$ARCH test.c lwt_sched.c lwt_arch_gen.s
 
 if [ "$ARCH" = x64 ] ; then
 	$CC $DEFS $CFLAGS -O3 -g -o test-pthread-O3-g-$ARCH test-pthread.c

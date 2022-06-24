@@ -10,7 +10,7 @@ while read start end ; do
 		i=$[ i + 10 ]
 	done
 done <<LIST
-0 450
+0 1000
 LIST
 
 # 0 60
