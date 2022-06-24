@@ -22,6 +22,30 @@
       },
       "revId": "9d8af6af656e86b67bc549d124c2fc21a68fa7cd",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "508066b0_f8cf205f",
+        "filename": "libutils/include/utils/RefBase.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 782,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2022-06-24T20:54:48Z",
+      "side": 1,
+      "message": "I didn\u0027t check, but this is in a header, so anonymous could be accessed accidentally or cause a conflict.\n\n\u0027namespace utils::internal\u0027 before caused ambiguous namespace errors (for references to relative namespaces)\n\nAlso - in case it isn\u0027t clear, some client was using C++11 (now fixed actually - b/236877636) but I\u0027d rather handle adding that requirement separately from this one.",
+      "parentUuid": "5095702b_7e77877a",
+      "range": {
+        "startLine": 782,
+        "startChar": 10,
+        "endLine": 782,
+        "endChar": 26
+      },
+      "revId": "9d8af6af656e86b67bc549d124c2fc21a68fa7cd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
