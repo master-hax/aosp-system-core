@@ -56,6 +56,24 @@
       "message": "We can probably drop barrier\u003d1 (and thus fs_options)? It looks like it only applies to writable filesystems.",
       "revId": "80d1afffc3a399784869d68d419685a512f158ab",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "83c1e749_cd521438",
+        "filename": "fs_mgr/fs_mgr_fstab.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 706,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-06-24T06:48:52Z",
+      "side": 1,
+      "message": "I guess it\u0027s only useful when doing traditional remount,rw, so \u0027ro,barrier\u003d1\u0027 would be remounted as \u0027rw,barrier\u003d1\u0027. \n\nActually the kernel doc says \u0027barrier\u0027 defaults to on for ext4, so let\u0027s just remove this since it is redundant.",
+      "parentUuid": "fd3246f5_dd8d7d78",
+      "revId": "80d1afffc3a399784869d68d419685a512f158ab",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
