@@ -3280,7 +3280,28 @@ inline_only void kcpu_deinit_common(kcpu_t *kcpu)
 
 static stk_t *stk_cpu0;		// TODO: needs deinit error cleanup
 
-inline_only error_t kcpu_init_cpu0(kcpu_t *kcpu, cpu_t *cpu)
+#ifdef LWT_NEW
+inline_only error_t cpu_init_cpu0(cpu_t *cpu)
+{
+	//  The main() program as a cpu has its own stack being used by main()
+	//  as a thr, it needs another stack to be used as a cpu so it can be
+	//  cpu_idle()'d like other cpus.  The first time the main() pthread
+	//  calls cpu_idle() it ends up in cpu_main() which makes it a proper
+	//  cpu to do its thr running duties and its cpu idling duties.
+
+	alloc_value_t av = stk_alloc(CPU_STACKSIZE, PAGE_SIZE);
+	if (av.error)
+		return av.error;
+	stk_t *stk = av.mem;
+	stk_cpu0 = stk;
+
+	cpu->cpu_kcpu = (kcpu_t *) pthread_self();
+	ctx_init(&cpu->cpu_ctx, (uptr_t) (stk - 1),
+		 (lwt_function_t) cpu_main, cpu);
+	return 0;
+}
+#else
+inline_only error_t cpu_init_cpu0(kcpu_t *kcpu, cpu_t *cpu)
 {
 	//  The main() program as a kcpu has its own stack being used by main()
 	//  as a thr, it needs another stack to be used as a kcpu so it can be
@@ -3302,6 +3323,7 @@ inline_only error_t kcpu_init_cpu0(kcpu_t *kcpu, cpu_t *cpu)
 	}
 	return error;
 }
+#endif
 
 static error_t kcpu_start(kcpu_t *kcpu, cpu_t *cpu)
 {
@@ -3331,7 +3353,7 @@ static error_t cpus_start(void)
 
 	//  Current cpu[0].
 
-	kcpu_init_cpu0(kcpu, cpu);
+	cpu_init_cpu0(kcpu, cpu);
 
 	while (++kcpu, ++cpu < cpuend) {	// cpu[0] already started
 		error_t error = kcpu_start(kcpu, cpu);
