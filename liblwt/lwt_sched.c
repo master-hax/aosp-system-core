@@ -3154,7 +3154,6 @@ struct kcpu_s {
 	pthread_cond_t	 kcpu_cond;
 	pthread_mutex_t	 kcpu_mutex;
 	pthread_t	 kcpu_pthread;
-	stk_t		*kcpu_stk;		// only cpu0 has one
 } aligned_cache_line;
 #endif
 
@@ -3251,7 +3250,7 @@ rescan:;	int index = ffsl(mask);
 	return NULL;
 }
 
-static error_t kcpu_init_common(kcpu_t *kcpu, cpu_t *cpu, stk_t *stk)
+static error_t kcpu_init_common(kcpu_t *kcpu, cpu_t *cpu)
 {
 	cpu->cpu_kcpu = kcpu;
 
@@ -3263,7 +3262,6 @@ static error_t kcpu_init_common(kcpu_t *kcpu, cpu_t *cpu, stk_t *stk)
 	if (error)
 		pthread_cond_destroy(&kcpu->kcpu_cond);
 
-	kcpu->kcpu_stk = stk;
 	return error;
 }
 
@@ -3271,12 +3269,9 @@ inline_only void kcpu_deinit_common(kcpu_t *kcpu)
 {
 	pthread_mutex_destroy(&kcpu->kcpu_mutex);
 	pthread_cond_destroy(&kcpu->kcpu_cond);
-	stk_t *stk = kcpu->kcpu_stk;
-	if (stk) {
-		stk_free(stk);
-		kcpu->kcpu_stk = NULL;
-	}
 }
+
+static stk_t *stk_cpu0;		// TODO: needs deinit error cleanup
 
 inline_only error_t kcpu_init_cpu0(kcpu_t *kcpu, cpu_t *cpu)
 {
@@ -3290,8 +3285,9 @@ inline_only error_t kcpu_init_cpu0(kcpu_t *kcpu, cpu_t *cpu)
 	if (av.error)
 		return av.error;
 	stk_t *stk = av.mem;
+	stk_cpu0 = stk;
 
-	error_t error = kcpu_init_common(kcpu, cpu, stk);
+	error_t error = kcpu_init_common(kcpu, cpu);
 	if (!error) {
 		kcpu->kcpu_pthread = pthread_self();
 		ctx_init(&cpu->cpu_ctx, (uptr_t) (stk - 1),
@@ -3304,7 +3300,7 @@ static error_t kcpu_start(kcpu_t *kcpu, cpu_t *cpu)
 {
 	cpu->cpu_kcpu = kcpu;
 
-	error_t error = kcpu_init_common(kcpu, cpu, NULL);
+	error_t error = kcpu_init_common(kcpu, cpu);
 	if (error)
 		return error;
 
