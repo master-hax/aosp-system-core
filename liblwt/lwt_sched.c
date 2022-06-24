@@ -2866,6 +2866,7 @@ static thr_t *schedq_get(schedq_t *schedq, ureg_t sqix)
 
 static int sched_attempts = 1;
 
+#ifdef LWT_NEW
 static noreturn void sched_out(thr_t *currthr)
 {
 	schdom_t *schdom = currthr->thr_schdom;
@@ -2883,6 +2884,25 @@ retry:;	thr_t *thr = schedq_get(schedq, sqix);
 	}
 	thr_run(thr, currthr);
 }
+#else
+static noreturn void sched_out(thr_t *currthr)
+{
+	schdom_t *schdom = currthr->thr_schdom;
+	ureg_t prio = thr_get_prio_with_ceiling(currthr);
+
+retry:;	thr_t *thr = schdom_get_thr(schdom);
+	if (!thr) {
+		int attempts = sched_attempts;	// don't idle CPUs too quickly
+		while (--attempts >= 0)
+			if (!schdom_is_empty(schdom))
+				goto retry;
+
+		cpu_t *cpu = cpu_current();
+		cpu_idle(cpu, currthr);
+	}
+	thr_run(thr, currthr);
+}
+#endif
 
 static int thr_context_save__thr_run(thr_t *currthr, thr_t *thr)
 {
@@ -3114,23 +3134,37 @@ inline_only void arena_free(arena_t *arena, void *mem)
 }
 
 
-//}  A kcpu_t is a kernel supported CPU, for now implemented on top of
-//{  pthreads but might later be implemented on top of clone(2) and futex(2)
+//} A kcore_t is a kernel supported core, for now implemented on top of
+//  pthreads but might later be implemented on top of clone(2) and futex(2).
+//  A kcore_t has the kernel synchronizers required to run and idle cpus
+//  associated with the core (e.g. a multi-threaded core might have more
+//{ than on cpu.
 
 #include <pthread.h>
 #define	CPU_STACKSIZE	(16 * 1024)
 #define	CPU_NOT_IDLED	((llelem_t *) 0x1)
 
+#ifdef LWT_NEW
+struct kcore_s {
+	pthread_cond_t	 kcore_cond;
+	pthread_mutex_t	 kcore_mutex;
+} aligned_cache_line;
+#else
 struct kcpu_s {
 	pthread_cond_t	 kcpu_cond;
 	pthread_mutex_t	 kcpu_mutex;
 	pthread_t	 kcpu_pthread;
 	stk_t		*kcpu_stk;		// only cpu0 has one
 } aligned_cache_line;
+#endif
 
+#ifdef LWT_NEW
+static kcore_t	kcores[NCORES];
+#else
 static kcpu_t	kcpus[NCPUS];
+#endif
 
-static pthread_attr_t kcpu_pthread_attr;
+static pthread_attr_t cpu_pthread_attr;
 
 #ifdef LWT_X64
 static void cpu_current_set(cpu_t *cpu)
@@ -3144,13 +3178,13 @@ static void cpu_current_set(cpu_t *cpu)
 
 inline_only error_t kcpus_init(void)
 {
-	error_t error = pthread_attr_init(&kcpu_pthread_attr);
+	error_t error = pthread_attr_init(&cpu_pthread_attr);
 	if (error)
 		return error;
 
-	error = pthread_attr_setstacksize(&kcpu_pthread_attr, CPU_STACKSIZE);
+	error = pthread_attr_setstacksize(&cpu_pthread_attr, CPU_STACKSIZE);
 	if (error)
-		pthread_attr_destroy(&kcpu_pthread_attr);
+		pthread_attr_destroy(&cpu_pthread_attr);
 
 	return error;
 }
@@ -3274,7 +3308,7 @@ static error_t kcpu_start(kcpu_t *kcpu, cpu_t *cpu)
 	if (error)
 		return error;
 
-	error = pthread_create(&kcpu->kcpu_pthread, &kcpu_pthread_attr,
+	error = pthread_create(&kcpu->kcpu_pthread, &cpu_pthread_attr,
 			       (void *(*)(void *)) cpu_main, cpu);
 	if (error)
 		kcpu_deinit_common(kcpu);
