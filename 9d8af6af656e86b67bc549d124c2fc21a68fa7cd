@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5095702b_7e77877a",
+        "filename": "libutils/include/utils/RefBase.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 782,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-06-24T20:52:40Z",
+      "side": 1,
+      "message": "not anonymous?\n\n(it\u0027s weird that this isn\u0027t available already, given how common a requirement it is.)",
+      "range": {
+        "startLine": 782,
+        "startChar": 10,
+        "endLine": 782,
+        "endChar": 26
+      },
+      "revId": "9d8af6af656e86b67bc549d124c2fc21a68fa7cd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
