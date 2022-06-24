@@ -46,6 +46,30 @@
       },
       "revId": "9d8af6af656e86b67bc549d124c2fc21a68fa7cd",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ef8f5681_3c8e5554",
+        "filename": "libutils/include/utils/RefBase.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 782,
+      "author": {
+        "id": 1944400
+      },
+      "writtenOn": "2022-06-24T22:13:09Z",
+      "side": 1,
+      "message": "yeah, anon namespaces aren\u0027t useful in headers unfortunately\n\ndo you mean this code won\u0027t work for C++11, but you want to fix it for that case later?",
+      "parentUuid": "508066b0_f8cf205f",
+      "range": {
+        "startLine": 782,
+        "startChar": 10,
+        "endLine": 782,
+        "endChar": 26
+      },
+      "revId": "9d8af6af656e86b67bc549d124c2fc21a68fa7cd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
