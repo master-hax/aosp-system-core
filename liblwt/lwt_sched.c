@@ -3175,19 +3175,6 @@ static void cpu_current_set(cpu_t *cpu)
 }
 #endif
 
-inline_only error_t kcpus_init(void)
-{
-	error_t error = pthread_attr_init(&cpu_pthread_attr);
-	if (error)
-		return error;
-
-	error = pthread_attr_setstacksize(&cpu_pthread_attr, CPU_STACKSIZE);
-	if (error)
-		pthread_attr_destroy(&cpu_pthread_attr);
-
-	return error;
-}
-
 static void cpu_run(lllist_t *idled_list)
 {
 	llelem_t *elem = lllist_remove(idled_list);
@@ -3318,10 +3305,6 @@ static error_t cpus_start(void)
 {
 	//  TODO: more work wrt LWT_PRIO_MID priorities and kcpu engines
 
-	error_t error = kcpus_init();
-	if (error)
-		return error;
-
 	cpu_t *cpu = cpus;
 	cpu_t *cpuend = &cpus[NCPUS];
 	kcpu_t *kcpu = kcpus;
@@ -3331,7 +3314,7 @@ static error_t cpus_start(void)
 	kcpu_init_cpu0(kcpu, cpu);
 
 	while (++kcpu, ++cpu < cpuend) {	// cpu[0] already started
-		error = kcpu_start(kcpu, cpu);
+		error_t error = kcpu_start(kcpu, cpu);
 		if (error) {
 			TODO();
 			return error;
@@ -3383,6 +3366,17 @@ void mcores_init(void)
 #define	mcores_init()	NOOP()
 #endif
 
+static error_t kcores_init(void)
+{
+	error_t error = pthread_attr_init(&cpu_pthread_attr);
+	if (error)
+		return error;
+	error = pthread_attr_setstacksize(&cpu_pthread_attr, CPU_STACKSIZE);
+	if (error)
+		pthread_attr_destroy(&cpu_pthread_attr);
+	return error;
+}
+
 static thr_t *thr_dummy;
 static lwt_t lwt_main;
 static volatile ureg_t lwt_debugref;		//  reference debug data
@@ -3393,6 +3387,9 @@ inline_only error_t init_data(size_t sched_attempt_steps)
 		sched_attempts = (int) sched_attempt_steps;
 	hwsys_init();
 	mcores_init();
+	error_t error = kcores_init();
+	if (error)
+		return error;
 
 	int i;
 	for (i = 0; i < NCORES; ++i)
@@ -3403,7 +3400,7 @@ inline_only error_t init_data(size_t sched_attempt_steps)
 	cpu_current_set(&cpus[0]);
 
 	lllist_init(&thr_exited_lllist);
-	error_t error = arenas_init();
+	error = arenas_init();
 	if (!error) {
 		error = mtx_create_outline(&thr_block_forever_mtx, NULL);
 		if (!error) {
