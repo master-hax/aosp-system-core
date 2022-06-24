@@ -2866,7 +2866,6 @@ static thr_t *schedq_get(schedq_t *schedq, ureg_t sqix)
 
 static int sched_attempts = 1;
 
-#ifdef LWT_NEW
 static noreturn void sched_out(thr_t *currthr)
 {
 	schdom_t *schdom = currthr->thr_schdom;
@@ -2880,25 +2879,6 @@ retry:;	thr_t *thr = schedq_get(schedq, sqix);
 	}
 	thr_run(thr, currthr);
 }
-#else
-static noreturn void sched_out(thr_t *currthr)
-{
-	schdom_t *schdom = currthr->thr_schdom;
-	ureg_t prio = thr_get_prio_with_ceiling(currthr);
-
-retry:;	thr_t *thr = schdom_get_thr(schdom);
-	if (!thr) {
-		int attempts = sched_attempts;	// don't idle CPUs too quickly
-		while (--attempts >= 0)
-			if (!schdom_is_empty(schdom))
-				goto retry;
-
-		cpu_t *cpu = cpu_current();
-		cpu_idle(cpu, currthr);
-	}
-	thr_run(thr, currthr);
-}
-#endif
 
 static int thr_context_save__thr_run(thr_t *currthr, thr_t *thr)
 {
@@ -3140,24 +3120,12 @@ inline_only void arena_free(arena_t *arena, void *mem)
 #define	CPU_STACKSIZE	(16 * 1024)
 #define	CPU_NOT_IDLED	((llelem_t *) 0x1)
 
-#ifdef LWT_NEW
 struct kcore_s {
 	pthread_cond_t	 kcore_cond;
 	pthread_mutex_t	 kcore_mutex;
 } aligned_cache_line;
-#else
-struct kcpu_s {
-	pthread_cond_t	 kcpu_cond;
-	pthread_mutex_t	 kcpu_mutex;
-	pthread_t	 kcpu_pthread;
-} aligned_cache_line;
-#endif
 
-#ifdef LWT_NEW
 static kcore_t	kcores[NCORES];
-#else
-static kcpu_t	kcpus[NCPUS];
-#endif
 
 static pthread_attr_t cpu_pthread_attr;
 
@@ -3171,7 +3139,6 @@ static void cpu_current_set(cpu_t *cpu)
 }
 #endif
 
-#ifdef LWT_NEW
 static void core_run(core_t *core)
 {
 	if (!lllist_head(&core->core_idled_cpu_lllist))
@@ -3188,66 +3155,7 @@ static void core_run(core_t *core)
 
 	pthread_mutex_unlock(&kcore->kcore_mutex);
 }
-#else
-static void core_run(core_t *core)
-{
-	llelem_t *elem = lllist_remove(&core->core_idled_cpus);
-	if (!elem)
-		return;
 
-	cpu_t *cpu = (cpu_t *) elem;
-	kcpu_t *kcpu = cpu->cpu_kcpu;
-	pthread_mutex_lock(&kcpu->kcpu_mutex);
-	cpu->cpu_idled_elem.lll_next = CPU_NOT_IDLED;
-	pthread_cond_signal(&kcpu->kcpu_cond);
-	pthread_mutex_unlock(&kcpu->kcpu_mutex);
-}
-#endif
-
-#ifdef LWT_NEW_TWO
-static noreturn void *cpu_main(cpu_t *cpu)
-{
-	cpu_current_set(cpu);
-	core_t *core = cpu->cpu_core;
-	kcore_t *kcore = core->core_kcore;
-	schdom_t *schdom = &core->core_hw.hw_schdom;
-
-	for (;;) {
-		pthread_mutex_lock(&kcore->kcore_mutex);
-retry:;		ureg_t mask = schdom->schdom_mask;
-rescan:;	int index = ffsl(mask);
-		thr_t *thr;
-		if (index != 0) {
-			--index;
-			index = LWT_PRIO_HIGH - index;
-			schedq_t *schedq =
-				&schdom->schdom_sqcls[index].sqcl_schedq;
-			ureg_t sqix = schedq_index(schedq);
-			thr = schedq_get(schedq, sqix);
-			if (!thr)
-				mask &= ~(1uL << index);
-		}
-		if (!thr) {
-			if (mask)
-				goto rescan;
-			if (cpu->cpu_idled_elem.lll_next == CPU_NOT_IDLED) {
-				lllist_insert(&core->core_idled_cpu_lllist,
-					      &cpu->cpu_idled_elem);
-			}
-			pthread_cond_wait(&kcore->kcore_cond,
-					  &kcore->kcore_mutex);
-			goto retry;
-		}
-		pthread_mutex_unlock(&kcore->kcore_mutex);
-
-		if (ctx_save(&cpu->cpu_ctx))		// returs twice
-			thr_run_on_cpu(thr, cpu);	// first return
-
-		//  On the second return there are no runable threads the
-		//  cpu might be parked after it tries schedq_get() above.
-	}
-}
-#elif defined(LWT_NEW)
 static noreturn void *cpu_main(cpu_t *cpu)
 {
 	cpu_current_set(cpu);
@@ -3285,51 +3193,7 @@ retry:;		thr_t *thr = schdom_get_thr(schdom);
 		//  cpu might be parked after it tries schedq_get() above.
 	}
 }
-#else
-static noreturn void *cpu_main(cpu_t *cpu)
-{
-	cpu_current_set(cpu);
-	kcpu_t *kcpu = cpu->cpu_kcpu;
-	core_t *core = cpu->cpu_core;
-	schdom_t *schdom = &core->core_hw.hw_schdom;
 
-	for (;;) {
-		pthread_mutex_lock(&kcpu->kcpu_mutex);
-retry:;		ureg_t mask = schdom->schdom_mask;
-rescan:;	int index = ffsl(mask);
-		thr_t *thr;
-		if (index != 0) {
-			--index;
-			index = LWT_PRIO_HIGH - index;
-			schedq_t *schedq =
-				&schdom->schdom_sqcls[index].sqcl_schedq;
-			ureg_t sqix = schedq_index(schedq);
-			thr = schedq_get(schedq, sqix);
-			if (!thr)
-				mask &= ~(1uL << index);
-		}
-		if (!thr) {
-			if (mask)
-				goto rescan;
-			if (cpu->cpu_idled_elem.lll_next == CPU_NOT_IDLED) {
-				lllist_insert(&core->core_idled_cpus,
-					      &cpu->cpu_idled_elem);
-			}
-			pthread_cond_wait(&kcpu->kcpu_cond, &kcpu->kcpu_mutex);
-			goto retry;
-		}
-		pthread_mutex_unlock(&kcpu->kcpu_mutex);
-
-		if (ctx_save(&cpu->cpu_ctx))		// returs twice
-			thr_run_on_cpu(thr, cpu);	// first return
-
-		//  On the second return there are no runable threads the
-		//  kcpu might be parked after it tries schedq_get() above.
-	}
-}
-#endif
-
-#ifdef LWT_NEW
 inline_only error_t kcore_init(kcore_t *kcore, core_t *core)
 {
 	core->core_kcore = kcore;
@@ -3347,32 +3211,9 @@ inline_only void kcore_deinit(kcore_t *kcore)
 	pthread_cond_destroy(&kcore->kcore_cond);
 	pthread_mutex_destroy(&kcore->kcore_mutex);
 }
-#else
-static error_t kcpu_init_common(kcpu_t *kcpu, cpu_t *cpu)
-{
-	cpu->cpu_kcpu = kcpu;
-
-	error_t error = pthread_cond_init(&kcpu->kcpu_cond, NULL);
-	if (error)
-		return error;
-
-	error = pthread_mutex_init(&kcpu->kcpu_mutex, NULL);
-	if (error)
-		pthread_cond_destroy(&kcpu->kcpu_cond);
-
-	return error;
-}
-
-inline_only void kcpu_deinit_common(kcpu_t *kcpu)
-{
-	pthread_mutex_destroy(&kcpu->kcpu_mutex);
-	pthread_cond_destroy(&kcpu->kcpu_cond);
-}
-#endif
 
 static stk_t *stk_cpu0;		// TODO: needs deinit error cleanup
 
-#ifdef LWT_NEW
 inline_only error_t cpu_init_cpu0(cpu_t *cpu)
 {
 	//  The main() program as a cpu has its own stack being used by main()
@@ -3392,32 +3233,7 @@ inline_only error_t cpu_init_cpu0(cpu_t *cpu)
 		 (lwt_function_t) cpu_main, cpu);
 	return 0;
 }
-#else
-inline_only error_t cpu_init_cpu0(kcpu_t *kcpu, cpu_t *cpu)
-{
-	//  The main() program as a kcpu has its own stack being used by main()
-	//  as a thr, it needs another stack to be used as a kcpu so it can be
-	//  cpu_idle()'d like other kcpus.  The first time the main() pthread
-	//  calls cpu_idle() it ends up in cpu_main() which makes it a proper
-	//  kcpu to do its thr running duties and its kcpu idling duties.
 
-	alloc_value_t av = stk_alloc(CPU_STACKSIZE, PAGE_SIZE);
-	if (av.error)
-		return av.error;
-	stk_t *stk = av.mem;
-	stk_cpu0 = stk;
-
-	error_t error = kcpu_init_common(kcpu, cpu);
-	if (!error) {
-		kcpu->kcpu_pthread = pthread_self();
-		ctx_init(&cpu->cpu_ctx, (uptr_t) (stk - 1),
-			 (lwt_function_t) cpu_main, cpu);
-	}
-	return error;
-}
-#endif
-
-#ifdef LWT_NEW
 static error_t cpu_start(cpu_t *cpu)
 {
 	pthread_t pthread;
@@ -3427,27 +3243,10 @@ static error_t cpu_start(cpu_t *cpu)
 		cpu->cpu_kcpu = (kcpu_t *) pthread;
 	return error;
 }
-#else
-static error_t kcpu_start(kcpu_t *kcpu, cpu_t *cpu)
-{
-	cpu->cpu_kcpu = kcpu;
-
-	error_t error = kcpu_init_common(kcpu, cpu);
-	if (error)
-		return error;
-
-	error = pthread_create(&kcpu->kcpu_pthread, &cpu_pthread_attr,
-			       (void *(*)(void *)) cpu_main, cpu);
-	if (error)
-		kcpu_deinit_common(kcpu);
-	return error;
-}
-#endif
 
 
 //}{ Initialization functions.
 
-#ifdef LWT_NEW
 static error_t cpus_start(void)
 {
 	//  TODO: more work wrt priorities
@@ -3465,29 +3264,6 @@ static error_t cpus_start(void)
 	}
 	return 0;
 }
-#else
-static error_t cpus_start(void)
-{
-	//  TODO: more work wrt LWT_PRIO_MID priorities and kcpu engines
-
-	cpu_t *cpu = cpus;
-	cpu_t *cpuend = &cpus[NCPUS];
-	kcpu_t *kcpu = kcpus;
-
-	//  Current cpu[0].
-
-	cpu_init_cpu0(kcpu, cpu);
-
-	while (++kcpu, ++cpu < cpuend) {	// cpu[0] already started
-		error_t error = kcpu_start(kcpu, cpu);
-		if (error) {
-			TODO();
-			return error;
-		}
-	}
-	return 0;
-}
-#endif
 
 inline_only void hw_init(hw_t *hw, core_t *core)
 {
@@ -3500,7 +3276,6 @@ inline_only void hw_deinit(hw_t *hw)
 	TODO();
 }
 
-#ifdef LWT_NEW
 inline_only void cpu_init(cpu_t *cpu)
 {
 	cpu->cpu_idled_elem.lll_next = CPU_NOT_IDLED;
@@ -3510,27 +3285,12 @@ inline_only void cpu_init(cpu_t *cpu)
 		core->core_first_cpu = cpu;
 	core->core_last_cpu = cpu;
 }
-#else
-inline_only void cpu_init(cpu_t *cpu)
-{
-	cpu->cpu_idled_elem.lll_next = CPU_NOT_IDLED;
-	cpu->cpu_running_thr = NULL;
-}
-#endif
 
-#ifdef LWT_NEW
 inline_only void core_init(core_t *core)
 {
 	hw_init(&core->core_hw, core);
 	lllist_init(&core->core_idled_cpu_lllist);
 }
-#else
-inline_only void core_init(core_t *core)
-{
-	hw_init(&core->core_hw, core);
-	lllist_init(&core->core_idled_cpus);
-}
-#endif
 
 #ifdef LWT_HWSYS
 void hwsys_init()
@@ -3563,7 +3323,6 @@ static error_t kcores_init(void)
 		return error;
 	}
 
-#ifdef LWT_NEW
 	int i;
 	for (i = 0; i < NCORES; ++i)
 		if ((error = kcore_init(&kcores[i], &cores[i])))
@@ -3575,7 +3334,6 @@ static error_t kcores_init(void)
 		pthread_attr_destroy(&cpu_pthread_attr);
 		return error;
 	}
-#endif
 
 	return 0;
 }
