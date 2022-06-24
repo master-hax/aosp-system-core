@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a80f2602_da3f210f",
+        "filename": "fs_mgr/fs_mgr_fstab.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 628,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-06-24T09:00:31Z",
+      "side": 1,
+      "message": "this branch seems to be useless, because \nGetEntryForMountPoint(fstab, \"/data\") \u003d\u003d nullptr\n\u003d\u003e EraseFstabEntry(fstab, \"/data\") \u003d\u003d false\n\u003d\u003e |userdata| entry would not be appended.\n\nI\u0027ll clean this up in a follow up refactor change.",
+      "revId": "c46c89228ce3c649267383f9b028e65daa14e534",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}

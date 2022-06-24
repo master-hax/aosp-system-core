@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "80605e2b_370139c4",
+        "filename": "fs_mgr/fs_mgr_fstab.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 658,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-06-24T09:00:31Z",
+      "side": 1,
+      "message": "That\u0027s the precondition of this function. I think the caller should ensure the mount entries with same mountpoint are grouped adjacent, in other words the fstab writer should do this.\n\nHere we just transform anything that looks worth transforming, ignoring the order (except for when we synthesis, then the order matters... urgh). I hope this keeps the complexity not going out of control, and the intended behavior of this function can be described concisely by its test.",
+      "parentUuid": "c7eca5e2_ce40ed4d",
+      "revId": "80d1afffc3a399784869d68d419685a512f158ab",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "43cf549f_28d35025",
