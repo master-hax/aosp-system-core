@@ -3369,6 +3369,17 @@ inline_only error_t cpu_init_cpu0(kcpu_t *kcpu, cpu_t *cpu)
 }
 #endif
 
+#ifdef LWT_NEW
+static error_t cpu_start(cpu_t *cpu)
+{
+	pthread_t pthread;
+	error_t error = pthread_create(&pthread, &cpu_pthread_attr,
+				       (void *(*)(void *)) cpu_main, cpu);
+	if (!error)
+		cpu->cpu_kcpu = (kcpu_t *) pthread;
+	return error;
+}
+#else
 static error_t kcpu_start(kcpu_t *kcpu, cpu_t *cpu)
 {
 	cpu->cpu_kcpu = kcpu;
@@ -3383,10 +3394,30 @@ static error_t kcpu_start(kcpu_t *kcpu, cpu_t *cpu)
 		kcpu_deinit_common(kcpu);
 	return error;
 }
+#endif
 
 
 //}{ Initialization functions.
 
+#ifdef LWT_NEW
+static error_t cpus_start(void)
+{
+	//  TODO: more work wrt priorities
+
+	cpu_t *cpu = cpus;
+	cpu_t *cpuend = &cpus[NCPUS];
+
+	cpu_init_cpu0(cpu);			// running on cpu[0]
+	while (++cpu < cpuend) {		// cpu[0] already started
+		error_t error = cpu_start(cpu);
+		if (error) {
+			TODO();
+			return error;
+		}
+	}
+	return 0;
+}
+#else
 static error_t cpus_start(void)
 {
 	//  TODO: more work wrt LWT_PRIO_MID priorities and kcpu engines
@@ -3408,6 +3439,7 @@ static error_t cpus_start(void)
 	}
 	return 0;
 }
+#endif
 
 inline_only void hw_init(hw_t *hw, core_t *core)
 {
