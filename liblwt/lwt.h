@@ -30,7 +30,7 @@ static inline int lwt_init(size_t sched_attempt_steps)
 //  prevents type confusion between values of this type and values of any
 //  other type (other than expressions of (void *) type).
 
-typedef struct lwt_undefined_s	*lwt_t;
+typedef uintptr_t lwt_t;
 
 
 //  The memory for the implementation of threads and synchronizers is kept
@@ -516,7 +516,7 @@ int  __lwt_thr_create(		lwt_t		 *thread,
 				const lwt_attr_t *thrattr,
 				lwt_function_t	  function,
 				void		 *arg);
-void __lwt_thr_exit(		void		 *retval);
+void _Noreturn __lwt_thr_exit(	void		 *retval);
 int  __lwt_thr_join(		lwt_t		  thread,
 				void		**retval);
 int  __lwt_thr_cancel(		lwt_t		  thread);
@@ -532,7 +532,7 @@ static inline int lwt_create(lwt_t *thread, const lwt_attr_t *attr,
 	return __lwt_thr_create(thread, attr, function, arg);
 }
 
-static inline void lwt_exit(void *retval)
+static _Noreturn inline void lwt_exit(void *retval)
 {
 	__lwt_thr_exit(retval);
 }

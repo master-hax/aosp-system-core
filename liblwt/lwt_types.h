@@ -82,27 +82,6 @@ typedef struct kcore_s	kcore_t;
 #define	really_unlikely(expr)						\
 	__builtin_expect_with_probability((expr), 0, 1e-100d)
 
-static noreturn void lwt_assert_fail(const char *file, int line,
-				     const char *msg);
-static noreturn void lwt_abort_fail(const char *file, int line);
-
-#define	lwt_abort()							\
-	lwt_abort_fail(__FILE__, __LINE__)
-
-#define	assert(expr)							\
-	do {								\
-		if (really_unlikely(!(expr)))				\
-			lwt_assert_fail(__FILE__, __LINE__, #expr);	\
-	} while (0)
-
-#ifdef LWT_DEBUG
-#define	debug(expr)	assert(expr)
-#else
-#define	debug(expr)	NOOP()
-#endif
-
-#define	TODO()		assert(0)
-
 #ifdef LWT_DEBUG
 #define	inline_only	static
 #define	LWT_BITS

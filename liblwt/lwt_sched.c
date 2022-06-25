@@ -34,7 +34,40 @@
 //	}
 
 
-//{  Various #defines.
+//{  Debugging support.
+//	assert(expr) are always compiled in, always run correct code
+//	debug(expr) are only compiled in if LWT_DEBUG is defined
+//	TODO() is for code that has not been written yet
+
+const char *volatile __lwt_assert_file;
+const char *volatile __lwt_assert_msg;
+int __lwt_assert_line;
+
+static noreturn void lwt_assert_fail(const char *file, int line,
+				     const char *msg)
+{
+	__lwt_assert_line = line;
+	__lwt_assert_msg = msg;
+	__lwt_assert_file = file;
+	for (;;)
+		*((volatile int *)11) = 0xDEADBEEF;
+}
+
+#define	assert(expr)							\
+	do {								\
+		if (really_unlikely(!(expr)))				\
+			lwt_assert_fail(__FILE__, __LINE__, #expr);	\
+	} while (0)
+
+#ifdef LWT_DEBUG
+#define	debug(expr)	assert(expr)
+#else
+#define	debug(expr)	NOOP()
+#endif
+
+#define	TODO()		assert(0)
+
+//}{  Various #defines.
 
 #define	NOOP()			do {} while (0)
 
@@ -79,15 +112,11 @@ static arena_t	 fpctx_arena;
 static arena_t	 mtx_arena;
 static arena_t	 cnd_arena;
 
+//  For debugging only.
+
 static mtx_t	*mtx_by_index = MTX_INDEX_BASE;
 static thr_t	*thr_by_index = THR_INDEX_BASE;
 static thrx_t	*thrx_by_index = THRX_INDEX_BASE;
-
-//  For debugging only.
-
-static thrx_t *THRX_INDEX_BASE_ = THRX_INDEX_BASE;
-static thr_t *THR_INDEX_BASE_ = THR_INDEX_BASE;
-static mtx_t *MTX_INDEX_BASE_ = MTX_INDEX_BASE;
 
 //  The following example configurations can be chosen at compile time.
 //  TODO: eventually these should be built dynamically at init() time, or
@@ -321,6 +350,10 @@ static cpu_t *cpuptrs[8] = {
 #define	NCPUS	(sizeof(cpus) / sizeof(cpus[0]))
 #define	NCORES	(sizeof(cores) / sizeof(cores[0]))
 
+#if (defined(LWT_HWSYS) || defined(LWT_HWUNITS) || defined(LWT_MCMS) || \
+     defined(LWT_CHIPS) || defined(LWT_MCORES))
+#define	LWT_HIERARCHICAL_HW
+#endif
 
 //}{  Various function like macros.
 
@@ -407,8 +440,6 @@ static thr_t		*schedq_get(schedq_t *schedq, ureg_t sqix);
 
 static alloc_value_t	 arena_alloc(arena_t *arena);
 static void		 arena_free(arena_t *arena, void *mem);
-
-static void		 cpu_run(lllist_t *idled_list);
 
 static void		 core_run(core_t *core);
 
@@ -708,16 +739,6 @@ inline_only void thr_free_stk(stk_t *stk)
 ///  Also miscellaneous thr_t functions that don't fit elsewhere.
 //{  These values live in the lwt_t variables that the API user uses.
 
-inline_only thr_t *thr_from_thrid(thrid_t thrid)
-{
-	thr_t *thr = THR_INDEX_BASE + THRID_INDEX(thrid);
-	if (thr >= (thr_t *) thr_arena.arena_next)
-		return NULL;
-	if (thrid.thrid_all != thr->thra.thra_thrid.thrid_all)
-		return NULL;
-	return thr;
-}
-
 inline_only thrx_t *thrx_from_thr(thr_t *thr)
 {
 	return THRX_INDEX_BASE + THRID_INDEX(thr->thra.thra_thrid);
@@ -813,11 +834,6 @@ inline_only mtxid_t mtx_get_mtxid(mtx_t *mtx)
 			  .mtxid_index = (u32_t)
 					 (mtx - (mtx_t *) MTX_ARENA_START) };
 	return mtxid;
-}
-
-inline_only bool mtxa_locked(mtx_atom_t mtxa)
-{
-	return MTXA_OWNER(mtxa) != MTX_UNLOCKED;
 }
 
 inline_only thr_t *mtx_lllist_to_thr(ureg_t mtxlllist)
@@ -1140,7 +1156,6 @@ int __lwt_cnd_wait(cnd_t *cnd, mtx_t *mtx)	//  aka cnd_wait()
 	//  several tests on mtx->mtx_type tests or duplicated code to reduce
 	//  those tests.
 
-	ureg_t reccnt = MTXA_RECCNT(mtx->mtxa);
 	thr->thr_mtxid = mtx_get_mtxid(mtx);
 	thr->thr_cnd = cnd;
 	ctx_t *ctx = ctx_from_thr(thr);
@@ -1656,7 +1671,7 @@ static void thr_exited_cleanup(void)
 	}
 }
 
-static void thr_exit(void *retval)
+static noreturn void thr_exit(void *retval)
 {
 	thr_exited_cleanup();
 
@@ -1724,7 +1739,7 @@ static int thr_join(lwt_t thread, void **retvalpp)
 	return 0;
 }
 
-static void thr_start(void *arg, void *(*function)(void *))
+static noreturn void thr_start(void *arg, void *(*function)(void *))
 {
 	thr_exit(function(arg));
 }
@@ -1829,11 +1844,13 @@ static int thr_setcanceltype(int type, int *oldtype)
 //  it does not touch the memory with a compare-and-swap, which most
 //  likely might cause unwanted cache effects.
 
+#if 0
 inline_only bool schedq_is_empty(schedq_t *schedq)
 {
 	return *(volatile ureg_t *)
 	       &schedq->sq_rem_remnxt_insprv_ins_state == 0;
 }
+#endif
 
 inline_only ureg_t schedq_index(schedq_t *schedq)
 {
@@ -1891,25 +1908,29 @@ inline_only bool thrln_equal(thrln_t a, thrln_t b)
 	return uregx2_equal(a.uregx2, b.uregx2);
 }
 
+inline_only void schedq_init(schedq_t *schedq)
+{
+	SCHEDQ_STATE_SET(*schedq, 0b000);
+	SCHEDQ_INS_SET   (*schedq, THRID_NULL);
+	SCHEDQ_INSPRV_SET(*schedq, THRID_NULL);
+	SCHEDQ_REMNXT_SET(*schedq, THRID_NULL);
+	SCHEDQ_REM_SET   (*schedq, THRID_NULL);
+	SCHEDQ_ICNT_SET(*schedq, 0uL);
+	SCHEDQ_ISER_SET(*schedq, 0uL);
+	SCHEDQ_RSER_SET(*schedq, 0uL);
+	SCHEDQ_RCNT_SET(*schedq, 0uL);
+}
+
 static void schdom_init_common(schdom_t *schdom)
 {
 	schdom->schdom_mask = 0uL;
 	sqcl_t *sqcl = schdom->schdom_sqcls;
 	sqcl_t *sqclend = sqcl + SQ_PRIO_MAX;
-	for (; sqcl < sqclend; ++sqcl) {
-		SCHEDQ_STATE_SET(sqcl->sqcl_schedq, 0b000);
-		SCHEDQ_INS_SET   (sqcl->sqcl_schedq, THRID_NULL);
-		SCHEDQ_INSPRV_SET(sqcl->sqcl_schedq, THRID_NULL);
-		SCHEDQ_REMNXT_SET(sqcl->sqcl_schedq, THRID_NULL);
-		SCHEDQ_REM_SET   (sqcl->sqcl_schedq, THRID_NULL);
-		SCHEDQ_ICNT_SET(sqcl->sqcl_schedq, 0uL);
-		SCHEDQ_ISER_SET(sqcl->sqcl_schedq, 0uL);
-		SCHEDQ_RSER_SET(sqcl->sqcl_schedq, 0uL);
-		SCHEDQ_RCNT_SET(sqcl->sqcl_schedq, 0uL);
-	}
+	for (; sqcl < sqclend; ++sqcl)
+		schedq_init(&sqcl->sqcl_schedq);
 }
 
-static void schdom_init_lowest(schdom_t *schdom, core_t *core)
+inline_only void schdom_init_lowest(schdom_t *schdom, core_t *core)
 {
 	//  This is the lowest level schdom_t.
 	schdom->schdom_is_not_lowest_level = NULL;
@@ -1919,12 +1940,16 @@ static void schdom_init_lowest(schdom_t *schdom, core_t *core)
 
 #define	SCHDOM_UNINITIALIZED_LOWER	((schdom_t *) 1)
 
-static void schdom_init_not_lowest(schdom_t *schdom)
+#ifdef LWT_HIERARCHICAL_HW
+
+inline_only void schdom_init(schdom_t *schdom)
 {
 	schdom->schdom_first_lower_schdom = SCHDOM_UNINITIALIZED_LOWER;
 	schdom->schdom_last_lower_schdom = SCHDOM_UNINITIALIZED_LOWER;
 	schdom_init_common(schdom);
 }
+
+#endif
 
 static ureg_t schedom_core_rotor = 0;
 
@@ -1964,6 +1989,7 @@ static thr_t *schdom_get_thr(schdom_t *schdom)
 
 //  Low touch examination of schdom to see if it is empty.
 
+#if 0
 static bool schdom_is_empty(schdom_t *schdom)
 {
 	ureg_t mask = schdom->schdom_mask;
@@ -1978,6 +2004,7 @@ static bool schdom_is_empty(schdom_t *schdom)
 	}
 	return true;
 }
+#endif
 
 //}{ Insert and remove algorithm for schedq_t.
 
@@ -2928,7 +2955,7 @@ static noreturn void sched_out(thr_t *currthr)
 	ureg_t prio = thr_get_prio_with_ceiling(currthr);
 	schedq_t *schedq = &schdom->schdom_sqcls[prio].sqcl_schedq;
 	ureg_t sqix = schedq_index(schedq);
-retry:;	thr_t *thr = schedq_get(schedq, sqix);
+	thr_t *thr = schedq_get(schedq, sqix);
 	if (!thr) {
 		cpu_t *cpu = cpu_current();
 		cpu_idle(cpu, currthr);
@@ -3327,16 +3354,22 @@ inline_only void hw_init_lowest(hw_t *hw, core_t *core)
 	stkcache_init(&hw->hw_stkcache);
 }
 
-inline_only void hw_init_not_lowest(hw_t *hw)
+#ifdef LWT_HIERARCHICAL_HW
+
+inline_only void hw_init(hw_t *hw)
 {
-	schdom_init_not_lowest(&hw->hw_schdom);
+	schdom_init(&hw->hw_schdom);
 	stkcache_init(&hw->hw_stkcache);
 }
 
-inline_only void hw_deinit(hw_t *hw)
+static void hws_init(hw_t *hw, size_t n)
 {
-	TODO();
+	hw_t *hwend = hw + n;
+	for (; hw < hwend; ++hw)
+		hw_init(hw);
 }
+
+#endif
 
 inline_only void cpu_init(cpu_t *cpu)
 {
@@ -3355,57 +3388,44 @@ inline_only void core_init(core_t *core)
 }
 
 #ifdef LWT_HWSYS
-void hwsys_init(hw_t *first, hw_t *last)
-{
-	hw_init_not_lowest(&hwsys);
-}
+inline_only void hwsys_init(void) { hw_init(&hwsys); }
 #else
 #define	hwsys_init()	NOOP()
 #endif
-
 #ifdef LWT_HWUNITS
-void hwunits_init()
-{
-	int i;
-	for (i = 0; i < NHWUNITS; i++)
-		hw_init_not_lowest(&hwunits[i]);
-}
+inline_only void hwunits_init() { hws_init(hwunits, NHWUNITS) }
 #else
 #define	hwunits_init()	NOOP()
 #endif
-
 #ifdef LWT_MCMS
-void mcms_init()
-{
-	int i;
-	for (i = 0; i < NMCMS; i++)
-		hw_init_not_lowest(&mcms[i]);
-}
+inline_only void mcms_init() { hws_init(mcms, NMCMS); }
 #else
 #define	mcms_init()	NOOP()
 #endif
-
 #ifdef LWT_CHIPS
-void chips_init()
-{
-	int i;
-	for (i = 0; i < NCHIPS; i++)
-		hw_init_not_lowest(&chips[i]);
-}
+inline_only void chips_init() { hws_init(chips, NCHIPS); }
 #else
 #define	chips_init()	NOOP()
 #endif
-
 #ifdef LWT_MCORES
-void mcores_init(void)
-{
-	int i;
-	for (i = 0; i < NMCORES; ++i)
-		hw_init_not_lowest(&mcores[i]);
-}
+inline_only void mcores_init(void) { hws_init(mcores, NMCORES); }
 #else
 #define	mcores_init()	NOOP()
 #endif
+
+inline_only void cores_init(void)
+{
+	int i;
+	for (i = 0; i < NCORES; ++i)
+		core_init(&cores[i]);
+}
+
+inline_only void cpus_init(void)
+{
+	int i;
+	for (i = 0; i < NCPUS; ++i)
+		cpu_init(&cpus[i]);
+}
 
 static error_t kcores_init(void)
 {
@@ -3446,15 +3466,12 @@ inline_only error_t init_data(size_t sched_attempt_steps)
 	mcms_init();
 	chips_init();
 	mcores_init();
+	cores_init();
+	cpus_init();
+
 	error_t error = kcores_init();
 	if (error)
 		return error;
-
-	int i;
-	for (i = 0; i < NCORES; ++i)
-		core_init(&cores[i]);
-	for (i = 0; i < NCPUS; ++i)
-		cpu_init(&cpus[i]);
 
 	cpu_current_set(&cpus[0]);
 
@@ -3498,16 +3515,6 @@ inline_only error_t init(size_t sched_attempt_steps)
 
 	error = cpus_start();
 	return error;
-}
-
-static noreturn void lwt_assert_fail(const char *file, int line,
-				     const char *msg)
-{
-	volatile int l = line;
-	const char *volatile m = msg;
-	const char *volatile f = file;
-	for (;;)
-		*((volatile int *)11) = 0xDEADBEEF;
 }
 
 
@@ -3799,7 +3806,7 @@ int __lwt_thr_create(lwt_t *thread, const lwt_attr_t *attr,
 	return thr_create(thread, (thrattr_t *) attr, function, arg);
 }
 
-void __lwt_thr_exit(void *retval)
+void noreturn __lwt_thr_exit(void *retval)
 {
 	thr_exit(retval);
 }

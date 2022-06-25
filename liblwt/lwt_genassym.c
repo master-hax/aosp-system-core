@@ -11,21 +11,24 @@
 #include "lwt_sched.h"
 
 #define GEN(type, field, name)						\
-        printf("#define " #name "\t0x%08x\n", offsetof(type, field))
+        printf("#define " #name "\t0x%08lx\n", offsetof(type, field))
 
 #define GEN_FIELD(type, field)	GEN(type, field, field)
 #define GEN_ARRAY(type, field)	GEN(type, field[0], field)
 
 #define GEN_FIELD_SIZEOF(type, field)					\
-        printf("#define SIZEOF_" #type "_" #field" \t0x%08x\n",		\
+        printf("#define SIZEOF_" #type "_" #field" \t0x%08lx\n",	\
 		SIZEOF_FIELD(type, field))
 
 #define GEN_SIZEOF(type)						\
-        printf("#define SIZEOF_" #type "\t0x%08x	// %d\n",	\
+        printf("#define SIZEOF_" #type "\t0x%08lx	// %ld\n",	\
 		sizeof(type), sizeof(type))
 
 #define GEN_CONSTANT(value)						\
         printf("#define " #value "\t0x%08x	// %d\n", value, value)
+
+#define GEN_CONSTANT64(value)						\
+        printf("#define " #value "\t0x%016lx	// %ld\n", value, value)
 
 int main()
 {
@@ -46,19 +49,19 @@ int main()
 	GEN_CONSTANT(STKCACHE_BUCKETS);
 
 	puts("");
-	GEN_CONSTANT(MTXID_NULL);
-	GEN_CONSTANT(MTXID_DUMMY);
+	GEN_CONSTANT64(MTXID_NULL);
+	GEN_CONSTANT64(MTXID_DUMMY);
 
 	puts("");
-	GEN_CONSTANT(THRID_NULL);
+	GEN_CONSTANT64(THRID_NULL);
 	GEN_CONSTANT(THRIX_BITS);
 	GEN_CONSTANT(THRIX_BITS);
-	GEN_CONSTANT(THRIX_MASK);
+	GEN_CONSTANT64(THRIX_MASK);
 	GEN_CONSTANT(THRIX_RESERVED_COUNT);
-	GEN_CONSTANT(THRIX_MAX);
-	GEN_CONSTANT(THRIX_RESERVED_THRLN);
-	GEN_CONSTANT(THRIX_INVALID_1);
-	GEN_CONSTANT(THRIX_INVALID_2);
+	GEN_CONSTANT64(THRIX_MAX);
+	GEN_CONSTANT64(THRIX_RESERVED_THRLN);
+	GEN_CONSTANT64(THRIX_INVALID_1);
+	GEN_CONSTANT64(THRIX_INVALID_2);
 
 	puts("");
 	GEN_CONSTANT(THRID_INDEX_SHIFT);
@@ -86,8 +89,6 @@ int main()
 	GEN_CONSTANT(SCHEDQ_ISER_BITS);
 	GEN_CONSTANT(SCHEDQ_ICNT_SHIFT);
 	GEN_CONSTANT(SCHEDQ_ICNT_BITS);
-	GEN_CONSTANT(SCHEDQ_INVALID_1);
-	GEN_CONSTANT(SCHEDQ_INVALID_2);
 
 	puts("");
 	GEN_CONSTANT(SQ_PRIO_MAX);
@@ -121,11 +122,7 @@ int main()
 	GEN_CONSTANT(THRLN_PREV_HIGH_BITS);
 
 	puts("");
-	GEN_CONSTANT(THRLN_HIGH_VALUE);
-
-	puts("");
-	GEN_CONSTANT(THRLN_INVALID_1);
-	GEN_CONSTANT(THRLN_INVALID_2);
+	GEN_CONSTANT64(THRLN_HIGH_VALUE);
 
 	puts("");
 	GEN_CONSTANT(THRA_HOLD_SHIFT);
