@@ -89,7 +89,14 @@ static thrx_t *THRX_INDEX_BASE_ = THRX_INDEX_BASE;
 static thr_t *THR_INDEX_BASE_ = THR_INDEX_BASE;
 static mtx_t *MTX_INDEX_BASE_ = MTX_INDEX_BASE;
 
+//  The following example configurations can be chosen at compile time.
+//  TODO: eventually these should be built dynamically at init() time, or
+//  alternatively, at library installation time (on systems where software
+//  installation allows for the underlying software configuration).  All of
+//  this should be derived from /proc on Linux kernel based systems.
+
 #ifdef LWT_ARM64 //{
+
 //  Pixel6 octa-core:
 //    2 x Cortex-X1  @ 2.8 GHz
 //    2 x Cortex-A76 @ 2.25 GHz 
@@ -98,12 +105,12 @@ static mtx_t *MTX_INDEX_BASE_ = MTX_INDEX_BASE;
 //  This should be determined at run-time from /proc, this is for testing in
 //  the meantime (TODO).  At that time deal with kcores too.
 
-#define LWT_HWSYS
+#define LWT_CHIPS
 #define LWT_MCORES
 
 static sqcl_t sqcls[(1 + 3 + 8) * SQ_PRIO_MAX];
-static hw_t hwsys = {.hw_name = "hwsys", .hw_parent = NULL,
-		     .hw_schdom = {.schdom_sqcls = &sqcls[0 * SQ_PRIO_MAX]}};
+static hw_t chips[1] = {.hw_name = "Google Tensor", .hw_parent = NULL,
+			.hw_schdom = {.schdom_sqcls = &sqcls[0 * SQ_PRIO_MAX]}};
 static hw_t mcores[3] = {
 	[0] = {.hw_name = "mcore0", .hw_parent = &hwsys,
 	       .hw_schdom = {.schdom_sqcls = &sqcls[(1+0) * SQ_PRIO_MAX]}},
@@ -156,10 +163,12 @@ static cpu_t cpus[8] = {
 	[6] = {.cpu_name = "cpu6(cortex-a55 1.8ghz)",  .cpu_core = &cores[6]},
 	[7] = {.cpu_name = "cpu7(cortex-a55 1.8ghz)",  .cpu_core = &cores[7]},
 };
+
 #endif //}
 
 #ifdef LWT_X64 //{
 #ifndef LWT_MP //{
+
 static sqcl_t sqcls[1 * SQ_PRIO_MAX];
 static core_t cores[1] = {
 	[0] = {.core_hw = {.hw_name = "core0", .hw_parent = NULL,
@@ -172,9 +181,15 @@ static cpu_t cpus[1] = {
 static cpu_t *cpuptrs[1] = {
 	[0] = &cpus[0],
 };
+
 #else //}{
+
 #define LWT_MCORES
+
 #ifdef LWT_MT_CORES //{
+
+//  Multi-threaded cores for testing.
+
 static sqcl_t sqcls[(1 + 4) * SQ_PRIO_MAX];
 static hw_t mcores[1] = {
 	[0] = {.hw_name = "mcore0", .hw_parent = NULL,
@@ -208,7 +223,11 @@ static cpu_t cpus[8] = {
 	[6] = {.cpu_name = "cpu7", .cpu_core = &cores[3]},
 	[7] = {.cpu_name = "cpu8", .cpu_core = &cores[3]},
 };
+
 #else //}{
+
+//  Single-threaded cores for testing.
+
 static sqcl_t sqcls[(1 + 8) * SQ_PRIO_MAX];
 static hw_t mcores[1] = {
 	[0] = {.hw_name = "mcore0", .hw_parent = NULL,
@@ -258,7 +277,9 @@ static cpu_t cpus[8] = {
 	[6] = {.cpu_name = "cpu7", .cpu_core = &cores[6]},
 	[7] = {.cpu_name = "cpu8", .cpu_core = &cores[7]},
 };
+
 #endif //}
+
 static cpu_t *cpuptrs[8] = {
 	[0] = &cpus[0],
 	[1] = &cpus[1],
@@ -269,13 +290,32 @@ static cpu_t *cpuptrs[8] = {
 	[6] = &cpus[6],
 	[7] = &cpus[7],
 };
+
 #endif //}
 #endif //}
 
 #ifdef LWT_MCORES
-#define	NMCORES	(sizeof(mcores) / sizeof(mcores[0]))
+#define	NMCORES		(sizeof(mcores) / sizeof(mcores[0]))
 #else
-#define	NMCORES	0
+#define	NMCORES		0
+#endif
+
+#ifdef LWT_CHIPS
+#define	NCHIPS		(sizeof(chips) / sizeof(chips[0]))
+#else
+#define	NCHIPS		0
+#endif
+
+#ifdef LWT_MCMS
+#define	NMCMS		(sizeof(mcms) / sizeof(mcms[0]))
+#else
+#define	NMCMS		0
+#endif
+
+#ifdef LWT_HWUNITS
+#define	NHWUNITS	(sizeof(hwunits) / sizeof(hwunits[0]))
+#else
+#define	NHWUNITS	0
 #endif
 
 #define	NCPUS	(sizeof(cpus) / sizeof(cpus[0]))
@@ -1851,9 +1891,8 @@ inline_only bool thrln_equal(thrln_t a, thrln_t b)
 	return uregx2_equal(a.uregx2, b.uregx2);
 }
 
-static void schdom_init(schdom_t *schdom, core_t *core)
+static void schdom_init_common(schdom_t *schdom)
 {
-	schdom->schdom_core = core;
 	schdom->schdom_mask = 0uL;
 	sqcl_t *sqcl = schdom->schdom_sqcls;
 	sqcl_t *sqclend = sqcl + SQ_PRIO_MAX;
@@ -1868,6 +1907,23 @@ static void schdom_init(schdom_t *schdom, core_t *core)
 		SCHEDQ_RSER_SET(sqcl->sqcl_schedq, 0uL);
 		SCHEDQ_RCNT_SET(sqcl->sqcl_schedq, 0uL);
 	}
+}
+
+static void schdom_init_lowest(schdom_t *schdom, core_t *core)
+{
+	//  This is the lowest level schdom_t.
+	schdom->schdom_is_not_lowest_level = NULL;
+	schdom->schdom_core = core;
+	schdom_init_common(schdom);
+}
+
+#define	SCHDOM_UNINITIALIZED_LOWER	((schdom_t *) 1)
+
+static void schdom_init_not_lowest(schdom_t *schdom)
+{
+	schdom->schdom_first_lower_schdom = SCHDOM_UNINITIALIZED_LOWER;
+	schdom->schdom_last_lower_schdom = SCHDOM_UNINITIALIZED_LOWER;
+	schdom_init_common(schdom);
 }
 
 static ureg_t schedom_core_rotor = 0;
@@ -3265,9 +3321,15 @@ static error_t cpus_start(void)
 	return 0;
 }
 
-inline_only void hw_init(hw_t *hw, core_t *core)
+inline_only void hw_init_lowest(hw_t *hw, core_t *core)
 {
-	schdom_init(&hw->hw_schdom, core);
+	schdom_init_lowest(&hw->hw_schdom, core);
+	stkcache_init(&hw->hw_stkcache);
+}
+
+inline_only void hw_init_not_lowest(hw_t *hw)
+{
+	schdom_init_not_lowest(&hw->hw_schdom);
 	stkcache_init(&hw->hw_stkcache);
 }
 
@@ -3288,17 +3350,50 @@ inline_only void cpu_init(cpu_t *cpu)
 
 inline_only void core_init(core_t *core)
 {
-	hw_init(&core->core_hw, core);
+	hw_init_lowest(&core->core_hw, core);
 	lllist_init(&core->core_idled_cpu_lllist);
 }
 
 #ifdef LWT_HWSYS
-void hwsys_init()
+void hwsys_init(hw_t *first, hw_t *last)
 {
-	hw_init(&hwsys, NULL);
+	hw_init_not_lowest(&hwsys);
 }
 #else
 #define	hwsys_init()	NOOP()
+#endif
+
+#ifdef LWT_HWUNITS
+void hwunits_init()
+{
+	int i;
+	for (i = 0; i < NHWUNITS; i++)
+		hw_init_not_lowest(&hwunits[i]);
+}
+#else
+#define	hwunits_init()	NOOP()
+#endif
+
+#ifdef LWT_MCMS
+void mcms_init()
+{
+	int i;
+	for (i = 0; i < NMCMS; i++)
+		hw_init_not_lowest(&mcms[i]);
+}
+#else
+#define	mcms_init()	NOOP()
+#endif
+
+#ifdef LWT_CHIPS
+void chips_init()
+{
+	int i;
+	for (i = 0; i < NCHIPS; i++)
+		hw_init_not_lowest(&chips[i]);
+}
+#else
+#define	chips_init()	NOOP()
 #endif
 
 #ifdef LWT_MCORES
@@ -3306,7 +3401,7 @@ void mcores_init(void)
 {
 	int i;
 	for (i = 0; i < NMCORES; ++i)
-		hw_init(&mcores[i], NULL);
+		hw_init_not_lowest(&mcores[i]);
 }
 #else
 #define	mcores_init()	NOOP()
@@ -3345,7 +3440,11 @@ inline_only error_t init_data(size_t sched_attempt_steps)
 {
 	if (sched_attempt_steps > 0 && sched_attempt_steps <= 1000)
 		sched_attempts = (int) sched_attempt_steps;
+
 	hwsys_init();
+	hwunits_init();
+	mcms_init();
+	chips_init();
 	mcores_init();
 	error_t error = kcores_init();
 	if (error)

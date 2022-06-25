@@ -6,6 +6,7 @@
 //  The bitfields are shown under a "bits" bitfield union to make debugging
 //  easier.
 
+typedef struct schdom_s		schdom_t;
 typedef struct core_s		core_t;
 typedef struct thr_s		thr_t;
 typedef union thrln_s		thrln_t;
@@ -267,16 +268,40 @@ typedef union {
 //  arrays where each element is in its own cache line..
 
 typedef struct {
-	schedq_t	sqcl_schedq;
+	schedq_t	 sqcl_schedq;
 } aligned_cache_line sqcl_t;
 
 #define	SQ_PRIO_MAX	 (LWT_PRIO_HIGH + 1)
 
-typedef struct {
+//  All SMP hardware is organized hierarchically, because of how it is built
+//  from building blocks at various levels.  See the much larger comment about
+//  hardware organization below.  Scheduling domains their queues exist at all
+//  levels of the hardware to dynamic ensure schduling affinity as much as
+//  possible while also ensuring good hardware utilization.
+
+//  A schdom_t is a scheduling domain, at the lowest level of the hardware
+//  representation, at the core_t level, the schdom_t refers to the underlying
+//  core_t which has one or more cpu_t associated with it (e.g. a hardware
+//  multi-threaded core).
+
+//  At higher levels, the schdom_t knows the underlying schduling domains which
+//  it points to with:
+//	[schdom_first_lower_schedom, schdom_last_lower_schedom]
+
+struct schdom_s {
 	sqcl_t		*schdom_sqcls;	  // points to entry in array
 	ureg_t		 schdom_mask;
-	core_t		*schdom_core;
-} schdom_t;
+	union {
+	   struct {
+	      void	*schdom_is_not_lowest_level;	// NULL when lowest
+	      core_t	*schdom_core;
+	   };
+	   struct {
+	      schdom_t	*schdom_first_lower_schdom; 	// non-NULL not lowest
+	      schdom_t	*schdom_last_lower_schdom;
+	   };
+	};
+};
 
 #define	SCHEDQ_STATE(sq)						\
 	BITS_GET(SCHEDQ_STATE, (sq).sq_rem_remnxt_insprv_ins_state)

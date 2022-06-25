@@ -1,23 +1,28 @@
 #!/usr/bin/bash
 
-while read start end ; do
-	i=$start
-	while [ $i -lt $end ] ; do
-		echo $i: $(/bin/time ./test-mp-O3-no-LWT_DEBUG-x64 123456 $i 2>&1)
-		echo $i: $(/bin/time ./test-mp-O3-no-LWT_DEBUG-x64 123456 $i 2>&1)
-		echo $i: $(/bin/time ./test-mp-O3-no-LWT_DEBUG-x64 123456 $i 2>&1)
-		echo $i: $(/bin/time ./test-mp-O3-no-LWT_DEBUG-x64 123456 $i 2>&1)
-		i=$[ i + 10 ]
+STEPS=1000000
+COUNT=4
+
+while read START END ; do
+	ATTEMPTS=$START
+	while [ $ATTEMPTS -le $END ] ; do
+		C=0
+		while [ $C -lt $COUNT ] ; do
+			echo $ATTEMPTS: $(/bin/time ./test-mp-O3-no-LWT_DEBUG-x64 $STEPS $ATTEMPTS 2>&1)
+			C=$[ C + 1 ]
+		done
+		ATTEMPTS=$[ ATTEMPTS + 10 ]
 	done
 done <<LIST
-0 1000
+400 600
 LIST
 
 # 0 60
 # 150 400
 
-echo pthreads: $(/bin/time ./test-pthread-O3-g-x64 123456 2>&1)
-echo pthreads: $(/bin/time ./test-pthread-O3-g-x64 123456 2>&1)
-echo pthreads: $(/bin/time ./test-pthread-O3-g-x64 123456 2>&1)
-echo pthreads: $(/bin/time ./test-pthread-O3-g-x64 123456 2>&1)
+C=0
+while [ $C -lt $COUNT ] ; do
+	echo pthreads: $(/bin/time ./test-pthread-O3-g-x64 $STEPS 2>&1)
+	C=$[ C + 1 ]
+done
 
