@@ -7,24 +7,16 @@ STEP_COUNT=100
 
 TEST_LIST=''
 
-TEST_LIST="$TEST_LIST ./test-g-x64"
-TEST_LIST="$TEST_LIST ./test-O3-g-x64"
-
-# TEST_LIST="$TEST_LIST ./test-O3-x64"
-
-TEST_LIST="$TEST_LIST ./test-mp-g-x64"
-TEST_LIST="$TEST_LIST ./test-mp-g-no-LWT_DEBUG-x64"
-TEST_LIST="$TEST_LIST ./test-mp-O3-g-x64"
-TEST_LIST="$TEST_LIST ./test-mp-O3-g-no-LWT_DEBUG-x64"
-
-# TEST_LIST="$TEST_LIST ./test-mp-O3-x64"
-# TEST_LIST="$TEST_LIST ./test-mp-O3-no-LWT_DEBUG-x64"
-
+TEST_LIST="$TEST_LIST ./test_schedq-g-x64"
+TEST_LIST="$TEST_LIST ./test_schedq-O3-g-x64"
+TEST_LIST="$TEST_LIST ./test_schedq-O3-x64"
 TEST_LIST="$TEST_LIST ./test-pthread-O3-g-x64"
+
+# TEST_LIST="$TEST_LIST ./test_schedq-clang-g-x64"
 
 go()
 {
-	for TEST in $TEST_LIST ; do
+	for TEST in $(cat binaries) $TEST_LIST ; do
 		echo -n "$TEST: "
 		$TEST
 		STATUS="$?"
@@ -41,7 +33,7 @@ go()
 			echo "gdb $TEST $TEST.core"
 		else
 			echo "FAILED: status = $STATUS"
-		fi
+		fi 1>&2
 		return 1
 	done
 	return 0
