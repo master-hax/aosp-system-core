@@ -6,6 +6,7 @@
 //  The bitfields are shown under a "bits" bitfield union to make debugging
 //  easier.
 
+typedef struct hw_s		hw_t;
 typedef struct schdom_s		schdom_t;
 typedef struct core_s		core_t;
 typedef struct thr_s		thr_t;
@@ -291,16 +292,6 @@ typedef struct {
 struct schdom_s {
 	sqcl_t		*schdom_sqcls;	  // points to entry in array
 	ureg_t		 schdom_mask;
-	union {
-	   struct {
-	      void	*schdom_is_not_lowest_level;	// NULL when lowest
-	      core_t	*schdom_core;
-	   };
-	   struct {
-	      schdom_t	*schdom_first_lower_schdom; 	// non-NULL not lowest
-	      schdom_t	*schdom_last_lower_schdom;
-	   };
-	};
 };
 
 #define	SCHEDQ_STATE(sq)						\
@@ -652,20 +643,26 @@ union thrln_s {
 //
 //  =-- core0 <-- cpu0
 
-typedef struct hw_s hw_t;
-
 struct hw_s {
 	schdom_t	 hw_schdom;
-	stkcache_t	 hw_stkcache;
 	hw_t		*hw_parent;
+	union {
+	    struct {			//  When the hw_t is a core_t
+		cpu_t	*hw_first_cpu;
+		cpu_t	*hw_last_cpu;
+	    };
+	    struct {			//  When the hw_t is not a core_t
+		hw_t	*hw_first_child;
+		hw_t	*hw_last_child;
+	    };
+	};
+	stkcache_t	 hw_stkcache;
 	char		*hw_name;
 } aligned_cache_line;
 
 struct core_s {
-	lllist_t	 core_idled_cpu_lllist;
 	hw_t		 core_hw;
-	cpu_t		*core_first_cpu;
-	cpu_t		*core_last_cpu;
+	lllist_t	 core_idled_cpu_lllist;
 	kcore_t		*core_kcore;
 };
 
@@ -782,7 +779,7 @@ struct thr_s {
 	u16_t		 thr_reccnt;		// |
 	u8_t		 thr_prio;
 	bool		 thr_running;		//
-	schdom_t	*thr_schdom;		//	...-31
+	core_t		*thr_core;		//	...-31
 	thr_atom_t	 thra;			//	32-47
 	thrln_t		 thr_ln;		//	48-63
 };

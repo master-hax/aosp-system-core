@@ -1,7 +1,7 @@
 #!/usr/bin/bash
 
 STEPS=1000000
-COUNT=4
+COUNT=10
 
 while read START END ; do
 	ATTEMPTS=$START
@@ -14,11 +14,8 @@ while read START END ; do
 		ATTEMPTS=$[ ATTEMPTS + 10 ]
 	done
 done <<LIST
-400 600
+0 1000
 LIST
-
-# 0 60
-# 150 400
 
 C=0
 while [ $C -lt $COUNT ] ; do

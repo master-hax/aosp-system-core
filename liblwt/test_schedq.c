@@ -47,7 +47,7 @@ int main()
 	thr_t *h = thr_create_main();
 	ureg_t hidix = THRID_INDEX(h->thra.thra_thrid);
 
-	schdom_t *schdom = a->thr_schdom;
+	schdom_t *schdom = &a->thr_core->core_hw.hw_schdom;
         schedq_t *schedq = &schdom->schdom_sqcls[a->thr_prio].sqcl_schedq;
         ureg_t sqix = schedq_index(schedq);
 

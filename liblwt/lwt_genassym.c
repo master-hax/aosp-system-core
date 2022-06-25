@@ -167,7 +167,7 @@ int main()
 	puts("\n// thr_t");
 	GEN_SIZEOF(thr_t);
 	GEN_FIELD(thr_t, thr_ln);
-	GEN_FIELD(thr_t, thr_schdom);
+	GEN_FIELD(thr_t, thr_core);
 	GEN_FIELD(thr_t, thr_running);
 
 	puts("\n// cpu_t");
