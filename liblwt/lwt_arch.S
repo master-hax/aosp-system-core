@@ -92,14 +92,14 @@ FUNCTION_END(__lwt_ureg_load_acq)
 //  ureg_t __lwt_ureg_atomic_or_acq_rel(ureg_t *m, ureg_t v);
 
 FUNCTION_START(__lwt_ureg_atomic_or_acq_rel)
-	ldsetal	x1, x0, [x0}
+	ldsetal	x1, x0, [x0]
 	ret
 FUNCTION_END(__lwt_ureg_atomic_or_acq_rel)
 
 //  ureg_t __lwt_ureg_atomic_add_unseq(ureg_t *m, ureg_t v);
 
 FUNCTION_START(__lwt_ureg_atomic_add_unseq)
-	ldadd	x0, x1, x0
+	ldadd	x0, x1, [x0]
 	ret
 FUNCTION_END(__lwt_ureg_atomic_add_unseq)
 

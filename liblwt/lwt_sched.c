@@ -139,19 +139,26 @@ static thrx_t	*thrx_by_index = THRX_INDEX_BASE;
 
 static cpu_t cpus[];
 static core_t cores[];
+static hw_t mcores[];
 
 static sqcl_t sqcls[(1 + 3 + 8) * SQ_PRIO_MAX];
-static hw_t chips[1] = {.hw_name = "Google Tensor Pixel 6", .hw_parent = NULL,
-			.hw_schdom = {.schdom_sqcls = &sqcls[0 * SQ_PRIO_MAX]}};
+static hw_t chips[1] = {
+	[0] = {.hw_name = "Google Tensor Pixel 6", .hw_parent = NULL,
+	       .hw_first_child = &mcores[0],
+	       .hw_last_child = &mcores[2],
+	       .hw_schdom = {.schdom_sqcls = &sqcls[0 * SQ_PRIO_MAX]}}};
 static hw_t mcores[3] = {
-	[0] = {.hw_name = "mcore0", .hw_parent = &hwsys,
-	       .hw_first_child = &cores[0], .hw_last_child = &cores[1],
+	[0] = {.hw_name = "mcore0", .hw_parent = &chips[0],
+	       .hw_first_child = &cores[0].core_hw,
+	       .hw_last_child = &cores[1].core_hw,
 	       .hw_schdom = {.schdom_sqcls = &sqcls[(1+0) * SQ_PRIO_MAX]}},
-	[1] = {.hw_name = "mcore1", .hw_parent = &hwsys,
-	       .hw_first_child = &cores[2], .hw_last_child = &cores[3],
+	[1] = {.hw_name = "mcore1", .hw_parent = &chips[0],
+	       .hw_first_child = &cores[2].core_hw,
+	       .hw_last_child = &cores[3].core_hw,
 	       .hw_schdom = {.schdom_sqcls = &sqcls[(1+1) * SQ_PRIO_MAX]}},
-	[2] = {.hw_name = "mcore2", .hw_parent = &hwsys,
-	       .hw_first_child = &cores[4], .hw_last_child = &cores[7],
+	[2] = {.hw_name = "mcore2", .hw_parent = &chips[0],
+	       .hw_first_child = &cores[4].core_hw,
+	       .hw_last_child = &cores[7].core_hw,
 	       .hw_schdom = {.schdom_sqcls = &sqcls[(1+2) * SQ_PRIO_MAX]}},
 };
 static core_t cores[8] = {
@@ -186,7 +193,7 @@ static core_t cores[8] = {
 	[7] = {.core_hw = {.hw_name = "core7", .hw_parent = &mcores[2],
 			   .hw_first_cpu = &cpus[7], .hw_last_cpu = &cpus[7],
 			   .hw_schdom = {.schdom_sqcls =
-						&sqcls[(4+7) * SQ_PRIO_MAX]}},
+						&sqcls[(4+7) * SQ_PRIO_MAX]}}},
 };
 static cpu_t cpus[8] = {
 	[0] = {.cpu_name = "cpu0(cortex-x1 2.8ghz)",   .cpu_core = &cores[0]},
