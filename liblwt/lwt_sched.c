@@ -1844,13 +1844,11 @@ static int thr_setcanceltype(int type, int *oldtype)
 //  it does not touch the memory with a compare-and-swap, which most
 //  likely might cause unwanted cache effects.
 
-#if 0
 inline_only bool schedq_is_empty(schedq_t *schedq)
 {
 	return *(volatile ureg_t *)
 	       &schedq->sq_rem_remnxt_insprv_ins_state == 0;
 }
-#endif
 
 inline_only ureg_t schedq_index(schedq_t *schedq)
 {
@@ -1989,7 +1987,6 @@ static thr_t *schdom_get_thr(schdom_t *schdom)
 
 //  Low touch examination of schdom to see if it is empty.
 
-#if 0
 static bool schdom_is_empty(schdom_t *schdom)
 {
 	ureg_t mask = schdom->schdom_mask;
@@ -2004,7 +2001,6 @@ static bool schdom_is_empty(schdom_t *schdom)
 	}
 	return true;
 }
-#endif
 
 //}{ Insert and remove algorithm for schedq_t.
 
@@ -3255,8 +3251,12 @@ retry:;		thr_t *thr = schdom_get_thr(schdom);
 				goto retry;
 			//  Don't idle CPU too quickly, kernel context switch is
 			//  expensive, wasting cycles here saves overall cycles.
-			if (--attempts >= 0)
+			if (attempts >= 2) {
+				while (--attempts >= 0)
+					if (schdom_is_empty(schdom))
+						break;
 				goto retry;
+			}
 		}
 		if (schdom->schdom_mask == 0) {
 			if (cpu->cpu_idled_elem.lll_next == CPU_NOT_IDLED)
