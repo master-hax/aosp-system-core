@@ -661,8 +661,8 @@ struct hw_s {
 } aligned_cache_line;
 
 struct core_s {
-	hw_t		 core_hw;
 	lllist_t	 core_idled_cpu_lllist;
+	hw_t		*core_hw;
 	kcore_t		*core_kcore;
 };
 

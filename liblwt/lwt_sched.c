@@ -124,6 +124,31 @@ static thrx_t	*thrx_by_index = THRX_INDEX_BASE;
 //  installation allows for the underlying software configuration).  All of
 //  this should be derived from /proc on Linux kernel based systems.
 
+#ifndef LWT_MP //{
+
+static cpu_t cpus[];
+
+static sqcl_t sqcls[1 * SQ_PRIO_MAX];
+static hw_t cores_[1] = {
+	[0] = {.hw_name = "core0", .hw_parent = NULL,
+	       .hw_first_cpu = &cpus[0], .hw_last_cpu = &cpus[0],
+	       .hw_schdom = {.schdom_sqcls = &sqcls[0]}},
+};
+static core_t cores[1] = {
+	[0] = {.core_hw = &cores_[0]},
+};
+static cpu_t cpus[1] = {
+	[0] = {.cpu_name = "cpu0(test)", .cpu_core = &cores[0]},
+};
+
+#ifdef LWT_X64
+static cpu_t *cpuptrs[1] = {
+	[0] = &cpus[0],
+};
+#endif
+
+#else //}{
+
 #ifdef LWT_ARM64 //{
 
 //  Pixel6 octa-core:
@@ -138,7 +163,7 @@ static thrx_t	*thrx_by_index = THRX_INDEX_BASE;
 #define LWT_MCORES
 
 static cpu_t cpus[];
-static core_t cores[];
+static hw_t cores_[];
 static hw_t mcores[];
 
 static sqcl_t sqcls[(1 + 3 + 8) * SQ_PRIO_MAX];
@@ -149,51 +174,53 @@ static hw_t chips[1] = {
 	       .hw_schdom = {.schdom_sqcls = &sqcls[0 * SQ_PRIO_MAX]}}};
 static hw_t mcores[3] = {
 	[0] = {.hw_name = "mcore0", .hw_parent = &chips[0],
-	       .hw_first_child = &cores[0].core_hw,
-	       .hw_last_child = &cores[1].core_hw,
+	       .hw_first_child = &cores_[0],
+	       .hw_last_child = &cores_[1],
 	       .hw_schdom = {.schdom_sqcls = &sqcls[(1+0) * SQ_PRIO_MAX]}},
 	[1] = {.hw_name = "mcore1", .hw_parent = &chips[0],
-	       .hw_first_child = &cores[2].core_hw,
-	       .hw_last_child = &cores[3].core_hw,
+	       .hw_first_child = &cores_[2],
+	       .hw_last_child = &cores_[3],
 	       .hw_schdom = {.schdom_sqcls = &sqcls[(1+1) * SQ_PRIO_MAX]}},
 	[2] = {.hw_name = "mcore2", .hw_parent = &chips[0],
-	       .hw_first_child = &cores[4].core_hw,
-	       .hw_last_child = &cores[7].core_hw,
+	       .hw_first_child = &cores_[4],
+	       .hw_last_child = &cores_[7],
 	       .hw_schdom = {.schdom_sqcls = &sqcls[(1+2) * SQ_PRIO_MAX]}},
 };
+static hw_t cores_[8] = {
+	[0] = {.hw_name = "core0", .hw_parent = &mcores[0],
+	       .hw_first_cpu = &cpus[0], .hw_last_cpu = &cpus[0],
+	       .hw_schdom = {.schdom_sqcls = &sqcls[(4+0) * SQ_PRIO_MAX]}},
+	[1] = {.hw_name = "core1", .hw_parent = &mcores[0],
+	       .hw_first_cpu = &cpus[1], .hw_last_cpu = &cpus[1],
+	       .hw_schdom = {.schdom_sqcls = &sqcls[(4+1) * SQ_PRIO_MAX]}},
+	[2] = {.hw_name = "core2", .hw_parent = &mcores[1],
+	       .hw_first_cpu = &cpus[2], .hw_last_cpu = &cpus[2],
+	       .hw_schdom = {.schdom_sqcls = &sqcls[(4+2) * SQ_PRIO_MAX]}},
+	[3] = {.hw_name = "core3", .hw_parent = &mcores[1],
+	       .hw_first_cpu = &cpus[3], .hw_last_cpu = &cpus[3],
+	       .hw_schdom = {.schdom_sqcls = &sqcls[(4+3) * SQ_PRIO_MAX]}},
+	[4] = {.hw_name = "core4", .hw_parent = &mcores[2],
+	       .hw_first_cpu = &cpus[4], .hw_last_cpu = &cpus[4],
+	       .hw_schdom = {.schdom_sqcls = &sqcls[(4+4) * SQ_PRIO_MAX]}},
+	[5] = {.hw_name = "core5", .hw_parent = &mcores[2],
+	       .hw_first_cpu = &cpus[5], .hw_last_cpu = &cpus[5],
+	       .hw_schdom = {.schdom_sqcls = &sqcls[(4+5) * SQ_PRIO_MAX]}},
+	[6] = {.hw_name = "core6", .hw_parent = &mcores[2],
+	       .hw_first_cpu = &cpus[6], .hw_last_cpu = &cpus[6],
+	       .hw_schdom = {.schdom_sqcls = &sqcls[(4+6) * SQ_PRIO_MAX]}},
+	[7] = {.hw_name = "core7", .hw_parent = &mcores[2],
+	       .hw_first_cpu = &cpus[7], .hw_last_cpu = &cpus[7],
+	       .hw_schdom = {.schdom_sqcls = &sqcls[(4+7) * SQ_PRIO_MAX]}},
+};
 static core_t cores[8] = {
-	[0] = {.core_hw = {.hw_name = "core0", .hw_parent = &mcores[0],
-			   .hw_first_cpu = &cpus[0], .hw_last_cpu = &cpus[0],
-			   .hw_schdom = {.schdom_sqcls =
-						&sqcls[(4+0) * SQ_PRIO_MAX]}}},
-	[1] = {.core_hw = {.hw_name = "core1", .hw_parent = &mcores[0],
-			   .hw_first_cpu = &cpus[1], .hw_last_cpu = &cpus[1],
-			   .hw_schdom = {.schdom_sqcls =
-						&sqcls[(4+1) * SQ_PRIO_MAX]}}},
-	[2] = {.core_hw = {.hw_name = "core2", .hw_parent = &mcores[1],
-			   .hw_first_cpu = &cpus[2], .hw_last_cpu = &cpus[2],
-			   .hw_schdom = {.schdom_sqcls =
-						&sqcls[(4+2) * SQ_PRIO_MAX]}}},
-	[3] = {.core_hw = {.hw_name = "core3", .hw_parent = &mcores[1],
-			   .hw_first_cpu = &cpus[3], .hw_last_cpu = &cpus[3],
-			   .hw_schdom = {.schdom_sqcls =
-						&sqcls[(4+3) * SQ_PRIO_MAX]}}},
-	[4] = {.core_hw = {.hw_name = "core4", .hw_parent = &mcores[2],
-			   .hw_first_cpu = &cpus[4], .hw_last_cpu = &cpus[4],
-			   .hw_schdom = {.schdom_sqcls =
-						&sqcls[(4+4) * SQ_PRIO_MAX]}}},
-	[5] = {.core_hw = {.hw_name = "core5", .hw_parent = &mcores[2],
-			   .hw_first_cpu = &cpus[5], .hw_last_cpu = &cpus[5],
-			   .hw_schdom = {.schdom_sqcls =
-						&sqcls[(4+5) * SQ_PRIO_MAX]}}},
-	[6] = {.core_hw = {.hw_name = "core6", .hw_parent = &mcores[2],
-			   .hw_first_cpu = &cpus[6], .hw_last_cpu = &cpus[6],
-			   .hw_schdom = {.schdom_sqcls =
-						&sqcls[(4+6) * SQ_PRIO_MAX]}}},
-	[7] = {.core_hw = {.hw_name = "core7", .hw_parent = &mcores[2],
-			   .hw_first_cpu = &cpus[7], .hw_last_cpu = &cpus[7],
-			   .hw_schdom = {.schdom_sqcls =
-						&sqcls[(4+7) * SQ_PRIO_MAX]}}},
+	[0] = {.core_hw = &cores_[0]},
+	[1] = {.core_hw = &cores_[1]},
+	[2] = {.core_hw = &cores_[2]},
+	[3] = {.core_hw = &cores_[3]},
+	[4] = {.core_hw = &cores_[4]},
+	[5] = {.core_hw = &cores_[5]},
+	[6] = {.core_hw = &cores_[6]},
+	[7] = {.core_hw = &cores_[7]},
 };
 static cpu_t cpus[8] = {
 	[0] = {.cpu_name = "cpu0(cortex-x1 2.8ghz)",   .cpu_core = &cores[0]},
@@ -209,57 +236,42 @@ static cpu_t cpus[8] = {
 #endif //}
 
 #ifdef LWT_X64 //{
-#ifndef LWT_MP //{
 
-static cpu_t cpus[];
-
-static sqcl_t sqcls[1 * SQ_PRIO_MAX];
-static core_t cores[1] = {
-	[0] = {.core_hw = {.hw_name = "core0", .hw_parent = NULL,
-			   .hw_first_cpu = &cpus[0], .hw_last_cpu = &cpus[0],
-			   .hw_schdom = {.schdom_sqcls = &sqcls[0]}}},
-};
-static cpu_t cpus[1] = {
-	[0] = {.cpu_name = "cpu0(test)", .cpu_core = &cores[0]},
-};
-static cpu_t *cpuptrs[1] = {
-	[0] = &cpus[0],
-};
-
-#else //}{
+#ifdef LWT_SMT //{
 
 #define LWT_MCORES
-
-#ifdef LWT_MT_CORES //{
 
 //  Multi-threaded cores for testing.
 
 static cpu_t cpus[];
-static core_t cores[];
+static hw_t cores_[];
 
 static sqcl_t sqcls[(1 + 4) * SQ_PRIO_MAX];
 static hw_t mcores[1] = {
 	[0] = {.hw_name = "mcore0", .hw_parent = NULL,
-	       .hw_first_child = &cores[0], .hw_last_child = &cores[3],
+	       .hw_first_child = &cores_[0],
+	       .hw_last_child = &cores_[7],
 	       .hw_schdom = {.schdom_sqcls = &sqcls[0 * SQ_PRIO_MAX]}},
 };
-static hw_t cores[4] = {
-	[0] = {.core_hw = {.hw_name = "core0", .hw_parent = &mcores[0],
-			   .hw_first_cpu = &cpus[0], .hw_last_cpu = &cpus[1],
-			   .hw_schdom = {.schdom_sqcls =
-						&sqcls[(1+0) * SQ_PRIO_MAX]}}},
-	[1] = {.core_hw = {.hw_name = "core1", .hw_parent = &mcores[0],
-			   .hw_first_cpu = &cpus[2], .hw_last_cpu = &cpus[3],
-			   .hw_schdom = {.schdom_sqcls =
-						&sqcls[(1+1) * SQ_PRIO_MAX]}}},
-	[2] = {.core_hw = {.hw_name = "core2", .hw_parent = &mcores[0],
-			   .hw_first_cpu = &cpus[4], .hw_last_cpu = &cpus[5],
-			   .hw_schdom = {.schdom_sqcls =
-						&sqcls[(1+2) * SQ_PRIO_MAX]}}},
-	[3] = {.core_hw = {.hw_name = "core3", .hw_parent = &mcores[0],
-			   .hw_first_cpu = &cpus[6], .hw_last_cpu = &cpus[7],
-			   .hw_schdom = {.schdom_sqcls =
-						&sqcls[(1+3) * SQ_PRIO_MAX]}}},
+static hw_t cores_[4] = {
+	[0] = {.hw_name = "core0", .hw_parent = &mcores[0],
+	       .hw_first_cpu = &cpus[0], .hw_last_cpu = &cpus[1],
+	       .hw_schdom = {.schdom_sqcls = &sqcls[(1+0) * SQ_PRIO_MAX]}},
+	[1] = {.hw_name = "core1", .hw_parent = &mcores[0],
+	       .hw_first_cpu = &cpus[2], .hw_last_cpu = &cpus[3],
+	       .hw_schdom = {.schdom_sqcls = &sqcls[(1+1) * SQ_PRIO_MAX]}},
+	[2] = {.hw_name = "core2", .hw_parent = &mcores[0],
+	       .hw_first_cpu = &cpus[4], .hw_last_cpu = &cpus[5],
+	       .hw_schdom = {.schdom_sqcls = &sqcls[(1+2) * SQ_PRIO_MAX]}},
+	[3] = {.hw_name = "core3", .hw_parent = &mcores[0],
+	       .hw_first_cpu = &cpus[6], .hw_last_cpu = &cpus[7],
+	       .hw_schdom = {.schdom_sqcls = &sqcls[(1+3) * SQ_PRIO_MAX]}},
+};
+static core_t cores[4] = {
+	[0] = {.core_hw = &cores_[0]},
+	[1] = {.core_hw = &cores_[1]},
+	[2] = {.core_hw = &cores_[2]},
+	[3] = {.core_hw = &cores_[3]},
 };
 static cpu_t cpus[8] = {
 	[0] = {.cpu_name = "cpu1", .cpu_core = &cores[0]},
@@ -274,51 +286,55 @@ static cpu_t cpus[8] = {
 
 #else //}{
 
+#define LWT_MCORES
+
 //  Single-threaded cores for testing.
 
 static cpu_t cpus[];
-static core_t cores[];
+static hw_t cores_[];
 
 static sqcl_t sqcls[(1 + 8) * SQ_PRIO_MAX];
 static hw_t mcores[1] = {
 	[0] = {.hw_name = "mcore0", .hw_parent = NULL,
-	       .hw_first_child = &cores[0].core_hw,
-	       .hw_last_child = &cores[7].core_hw,
+	       .hw_first_child = &cores_[0],
+	       .hw_last_child = &cores_[7],
 	       .hw_schdom = {.schdom_sqcls = &sqcls[0 * SQ_PRIO_MAX]}},
 };
+static hw_t cores_[8] = {
+	[0] = {.hw_name = "core0", .hw_parent = &mcores[0],
+	       .hw_first_cpu = &cpus[0], .hw_last_cpu = &cpus[0],
+	       .hw_schdom = {.schdom_sqcls = &sqcls[(1+0) * SQ_PRIO_MAX]}},
+	[1] = {.hw_name = "core1", .hw_parent = &mcores[0],
+	       .hw_first_cpu = &cpus[1], .hw_last_cpu = &cpus[1],
+	       .hw_schdom = {.schdom_sqcls = &sqcls[(1+1) * SQ_PRIO_MAX]}},
+	[2] = {.hw_name = "core2", .hw_parent = &mcores[0],
+	       .hw_first_cpu = &cpus[2], .hw_last_cpu = &cpus[2],
+	       .hw_schdom = {.schdom_sqcls = &sqcls[(1+2) * SQ_PRIO_MAX]}},
+	[3] = {.hw_name = "core3", .hw_parent = &mcores[0],
+	       .hw_first_cpu = &cpus[3], .hw_last_cpu = &cpus[3],
+	       .hw_schdom = {.schdom_sqcls = &sqcls[(1+3) * SQ_PRIO_MAX]}},
+	[4] = {.hw_name = "core4", .hw_parent = &mcores[0],
+	       .hw_first_cpu = &cpus[4], .hw_last_cpu = &cpus[4],
+	       .hw_schdom = {.schdom_sqcls = &sqcls[(1+4) * SQ_PRIO_MAX]}},
+	[5] = {.hw_name = "core5", .hw_parent = &mcores[0],
+	       .hw_first_cpu = &cpus[5], .hw_last_cpu = &cpus[5],
+	       .hw_schdom = {.schdom_sqcls = &sqcls[(1+5) * SQ_PRIO_MAX]}},
+	[6] = {.hw_name = "core6", .hw_parent = &mcores[0],
+	       .hw_first_cpu = &cpus[6], .hw_last_cpu = &cpus[6],
+	       .hw_schdom = {.schdom_sqcls = &sqcls[(1+6) * SQ_PRIO_MAX]}},
+	[7] = {.hw_name = "core7", .hw_parent = &mcores[0],
+	       .hw_first_cpu = &cpus[7], .hw_last_cpu = &cpus[7],
+	       .hw_schdom = {.schdom_sqcls = &sqcls[(1+7) * SQ_PRIO_MAX]}},
+};
 static core_t cores[8] = {
-	[0] = {.core_hw = {.hw_name = "core0", .hw_parent = &mcores[0],
-			   .hw_first_cpu = &cpus[0], .hw_last_cpu = &cpus[0],
-			   .hw_schdom = {.schdom_sqcls =
-						&sqcls[(1+0) * SQ_PRIO_MAX]}}},
-	[1] = {.core_hw = {.hw_name = "core1", .hw_parent = &mcores[0],
-			   .hw_first_cpu = &cpus[1], .hw_last_cpu = &cpus[1],
-			   .hw_schdom = {.schdom_sqcls =
-						&sqcls[(1+1) * SQ_PRIO_MAX]}}},
-	[2] = {.core_hw = {.hw_name = "core2", .hw_parent = &mcores[0],
-			   .hw_first_cpu = &cpus[2], .hw_last_cpu = &cpus[2],
-			   .hw_schdom = {.schdom_sqcls =
-						&sqcls[(1+2) * SQ_PRIO_MAX]}}},
-	[3] = {.core_hw = {.hw_name = "core3", .hw_parent = &mcores[0],
-			   .hw_first_cpu = &cpus[3], .hw_last_cpu = &cpus[3],
-			   .hw_schdom = {.schdom_sqcls =
-						&sqcls[(1+3) * SQ_PRIO_MAX]}}},
-	[4] = {.core_hw = {.hw_name = "core4", .hw_parent = &mcores[0],
-			   .hw_first_cpu = &cpus[4], .hw_last_cpu = &cpus[4],
-			   .hw_schdom = {.schdom_sqcls =
-						&sqcls[(1+4) * SQ_PRIO_MAX]}}},
-	[5] = {.core_hw = {.hw_name = "core5", .hw_parent = &mcores[0],
-			   .hw_first_cpu = &cpus[5], .hw_last_cpu = &cpus[5],
-			   .hw_schdom = {.schdom_sqcls =
-						&sqcls[(1+5) * SQ_PRIO_MAX]}}},
-	[6] = {.core_hw = {.hw_name = "core6", .hw_parent = &mcores[0],
-			   .hw_first_cpu = &cpus[6], .hw_last_cpu = &cpus[6],
-			   .hw_schdom = {.schdom_sqcls =
-						&sqcls[(1+6) * SQ_PRIO_MAX]}}},
-	[7] = {.core_hw = {.hw_name = "core7", .hw_parent = &mcores[0],
-			   .hw_first_cpu = &cpus[7], .hw_last_cpu = &cpus[7],
-			   .hw_schdom = {.schdom_sqcls =
-						&sqcls[(1+7) * SQ_PRIO_MAX]}}},
+	[0] = {.core_hw = &cores_[0]},
+	[1] = {.core_hw = &cores_[1]},
+	[2] = {.core_hw = &cores_[2]},
+	[3] = {.core_hw = &cores_[3]},
+	[4] = {.core_hw = &cores_[4]},
+	[5] = {.core_hw = &cores_[5]},
+	[6] = {.core_hw = &cores_[6]},
+	[7] = {.core_hw = &cores_[7]},
 };
 static cpu_t cpus[8] = {
 	[0] = {.cpu_name = "cpu1", .cpu_core = &cores[0]},
@@ -730,7 +746,7 @@ inline_only alloc_value_t thr_alloc_stk(const thrattr_t *thrattr)
 {
 	if (thrattr->thrattr_stackaddr == NULL) {
 		cpu_t *cpu = cpu_current();
-		return stkcache_alloc_stk(&cpu->cpu_core->core_hw.hw_stkcache,
+		return stkcache_alloc_stk(&cpu->cpu_core->core_hw->hw_stkcache,
 					  thrattr->thrattr_stacksize,
 					  thrattr->thrattr_guardsize);
 	}
@@ -744,17 +760,9 @@ inline_only alloc_value_t thr_alloc_stk(const thrattr_t *thrattr)
 
 inline_only void thr_free_stk(stk_t *stk)
 {
-	// XXX this needs to be called from a different stack or it might be
-	// acquired and reused while it is still being used by this thread
-	// or it needs to have its work done all in registers and its caller
-	// and all the way backwards to the scheduler all not touching the
-	// stack.  Lazily releasing the stack when the next thread is given
-	// this cpu would be the right way to do it, could be in per-CPU
-	// area until then and then this being called from that point.
-
 	if (stk->stk_guardsize != GUARDSIZE_USER_OWNS_STACK) {
 		cpu_t *cpu = cpu_current();
-		stkcache_free_stk(&cpu->cpu_core->core_hw.hw_stkcache, stk);
+		stkcache_free_stk(&cpu->cpu_core->core_hw->hw_stkcache, stk);
 	}
 }
 
@@ -1965,6 +1973,13 @@ static core_t *core_from_thrattr(const thrattr_t *thrattr)
 	return &cores[rotor];
 }
 
+inline_only void schdom_summary_update(schdom_t *schdom, ureg_t prio)
+{
+	ureg_t priomask = 1uL << (LWT_PRIO_HIGH - prio);
+	if (! (schdom->schdom_mask & priomask))
+		ureg_atomic_or_acq_rel(&schdom->schdom_mask, priomask);
+}
+
 static thr_t *schdom_get_thr(schdom_t *schdom)
 {
 	ureg_t mask = schdom->schdom_mask;
@@ -2900,12 +2915,9 @@ inline_only ureg_t thr_get_prio_with_ceiling(thr_t *thr)
 static int sched_in(thr_t *thr)
 {
 	core_t *core = thr->thr_core;
-	schdom_t *schdom = &core->core_hw.hw_schdom;
+	schdom_t *schdom = &core->core_hw->hw_schdom;
 	ureg_t prio = thr_get_prio_with_ceiling(thr);
-	ureg_t priomask = 1uL << (LWT_PRIO_HIGH - prio);
-	if (! (schdom->schdom_mask & priomask))
-		ureg_atomic_or_acq_rel(&schdom->schdom_mask, priomask);
-
+	schdom_summary_update(schdom, prio);
 	schedq_t *schedq = &schdom->schdom_sqcls[prio].sqcl_schedq;
 	ureg_t thridix = THRID_INDEX(thr->thra.thra_thrid);
 	ureg_t sqix = schedq_index(schedq);
@@ -2945,7 +2957,7 @@ static int sched_attempts = 1;
 
 static noreturn void sched_out(thr_t *currthr)
 {
-	schdom_t *schdom = &currthr->thr_core->core_hw.hw_schdom;
+	schdom_t *schdom = &currthr->thr_core->core_hw->hw_schdom;
 	ureg_t prio = thr_get_prio_with_ceiling(currthr);
 	schedq_t *schedq = &schdom->schdom_sqcls[prio].sqcl_schedq;
 	ureg_t sqix = schedq_index(schedq);
@@ -3222,7 +3234,11 @@ static void core_run(core_t *core)
 		return;
 
 	kcore_t *kcore = core->core_kcore;
-	pthread_mutex_lock(&kcore->kcore_mutex);
+	error_t error = pthread_mutex_trylock(&kcore->kcore_mutex);
+	if (error) {
+		assert(error == EBUSY);
+		return;
+	}
 
 	cpu_t *cpu = (cpu_t *) lllist_remove(&core->core_idled_cpu_lllist);
 	if (cpu) {
@@ -3238,11 +3254,11 @@ static noreturn void *cpu_main(cpu_t *cpu)
 	cpu_current_set(cpu);
 	core_t *core = cpu->cpu_core;
 	kcore_t *kcore = core->core_kcore;
-	schdom_t *schdom = &core->core_hw.hw_schdom;
+	schdom_t *schdom = &core->core_hw->hw_schdom;
 
 	for (;;) {
 		pthread_mutex_lock(&kcore->kcore_mutex);
-		int attempts = sched_attempts;
+restart:;	int attempts = sched_attempts;
 retry:;		thr_t *thr = schdom_get_thr(schdom);
 		if (!thr) {
 			if (schdom->schdom_mask != 0)
@@ -3255,14 +3271,12 @@ retry:;		thr_t *thr = schdom_get_thr(schdom);
 						break;
 				goto retry;
 			}
-		}
-		if (schdom->schdom_mask == 0) {
 			if (cpu->cpu_idled_elem.lll_next == CPU_NOT_IDLED)
 				lllist_insert(&core->core_idled_cpu_lllist,
 					      &cpu->cpu_idled_elem);
 			pthread_cond_wait(&kcore->kcore_cond,
 					  &kcore->kcore_mutex);
-			goto retry;
+			goto restart;;
 		}
 
 		pthread_mutex_unlock(&kcore->kcore_mutex);
@@ -3371,7 +3385,7 @@ inline_only void cpu_init(cpu_t *cpu)
 
 inline_only void core_init(core_t *core)
 {
-	hw_init(&core->core_hw);
+	hw_init(core->core_hw);
 	lllist_init(&core->core_idled_cpu_lllist);
 }
 

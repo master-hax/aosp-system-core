@@ -3,7 +3,7 @@
 set -e
 
 DEFS='-D_DEFAULT_SOURCE -DLWT_PTR_BITS=64'
-CFLAGS='-fomit-frame-pointer -pthread -Werror -Wall'
+CFLAGS='-fomit-frame-pointer -pthread -Werror -Wall -fno-diagnostics-color'
 
 CMD=$(basename $0)
 
@@ -71,8 +71,10 @@ run $CC $DEFS $CFLAGS -c -O3 test.c
 BINARIES=''
 
 for PROG in test ; do
-	for HW in -DLWT_MP '' ; do
+	for HW in '-DLWT_MP -DLWT_SMT' -DLWT_MP '' ; do
 		hw="${HW/DLWT_/}"
+		hw="${hw/DLWT_/}"
+		hw="${hw/ /}"
 		hw="${hw@L}"
 		for BUILD in -DLWT_DEBUG -DLWT_BITS '' ; do
 			build="${BUILD/DLWT_/}"
@@ -93,7 +95,7 @@ for PROG in test ; do
 	done
 done
 
-echo $BINARIES | tr ' ' '\012' > binaries
+echo $BINARIES | tr ' ' '\012' > binaries-$ARCH
 
 run $CC $DEFS $CFLAGS -DLWT_DEBUG -g -o test_schedq-g-$ARCH test_schedq.c lwt_arch_gen.s
 run $CC $DEFS $CFLAGS -DLWT_DEBUG -O3 -o test_schedq-O3-$ARCH test_schedq.c lwt_arch_gen.s
