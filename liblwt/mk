@@ -2,7 +2,10 @@
 
 set -e
 
-DEFS='-D_DEFAULT_SOURCE -DLWT_PTR_BITS=64'
+# DEFS='-D_DEFAULT_SOURCE'
+DEFS='-D_GNU_SOURCE'
+DEFS="$DEFS -DLWT_PTR_BITS=64"
+
 CFLAGS='-fomit-frame-pointer -pthread -Werror -Wall -fno-diagnostics-color'
 
 CMD=$(basename $0)

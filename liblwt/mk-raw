@@ -4,6 +4,7 @@ STEPS=1000000
 COUNT=10
 
 PROG=./test-mp-BITS-O3-g-x64
+# PROG=./test-mp-smt-BITS-O3-g-x64
 
 while read START END ; do
 	ATTEMPTS=$START

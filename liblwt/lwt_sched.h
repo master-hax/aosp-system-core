@@ -672,6 +672,7 @@ struct cpu_s {
 	core_t		*cpu_core;
 	char		*cpu_name;
 	kcpu_t		*cpu_kcpu;
+	ureg_t		 cpu_hwix;
 	ctx_t		 cpu_ctx;
 } aligned_cache_line;
 

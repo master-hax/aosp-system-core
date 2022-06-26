@@ -387,8 +387,9 @@ static cpu_t *cpuptrs[8] = {
 #define	NHWUNITS	0
 #endif
 
-#define	NCPUS	(sizeof(cpus) / sizeof(cpus[0]))
-#define	NCORES	(sizeof(cores) / sizeof(cores[0]))
+#define	NCPUS		(sizeof(cpus) / sizeof(cpus[0]))
+#define	NCORES		(sizeof(cores) / sizeof(cores[0]))
+#define	CPUS_PER_CORE	(NCPUS / NCORES)
 
 #if (defined(LWT_HWSYS) || defined(LWT_HWUNITS) || defined(LWT_MCMS) || \
      defined(LWT_CHIPS) || defined(LWT_MCORES))
@@ -3203,9 +3204,15 @@ inline_only void arena_free(arena_t *arena, void *mem)
 //  pthreads but might later be implemented on top of clone(2) and futex(2).
 //  A kcore_t has the kernel synchronizers required to run and idle cpus
 //  associated with the core (e.g. a multi-threaded core might have more
-//{ than on cpu.
+//{ than on cpu).
+
+//  Included late in this file to prevent misuse in code above that should
+//  not depend on these.
 
 #include <pthread.h>
+#include <sched.h>
+#include <unistd.h>
+
 #define	CPU_STACKSIZE	(16 * 1024)
 #define	CPU_NOT_IDLED	((llelem_t *) 0x1)
 
@@ -3214,9 +3221,7 @@ struct kcore_s {
 	pthread_mutex_t	 kcore_mutex;
 } aligned_cache_line;
 
-static kcore_t	kcores[NCORES];
-
-static pthread_attr_t cpu_pthread_attr;
+static kcore_t		kcores[NCORES];
 
 #ifdef LWT_X64
 static void cpu_current_set(cpu_t *cpu)
@@ -3227,6 +3232,15 @@ static void cpu_current_set(cpu_t *cpu)
 	cpu_current_set_x64(&cpuptrs[cpu - cpus]);
 }
 #endif
+
+inline_only void core_run_locked(core_t *core, kcore_t *kcore)
+{
+	cpu_t *cpu = (cpu_t *) lllist_remove(&core->core_idled_cpu_lllist);
+	if (cpu) {
+		cpu->cpu_idled_elem.lll_next = CPU_NOT_IDLED;
+		pthread_cond_signal(&kcore->kcore_cond);
+	}
+}
 
 static void core_run(core_t *core)
 {
@@ -3239,15 +3253,11 @@ static void core_run(core_t *core)
 		assert(error == EBUSY);
 		return;
 	}
-
-	cpu_t *cpu = (cpu_t *) lllist_remove(&core->core_idled_cpu_lllist);
-	if (cpu) {
-		cpu->cpu_idled_elem.lll_next = CPU_NOT_IDLED;
-		pthread_cond_signal(&kcore->kcore_cond);
-	}
-
+	core_run_locked(core, kcore);
 	pthread_mutex_unlock(&kcore->kcore_mutex);
 }
+
+#define	MAX_CPU	1024
 
 static noreturn void *cpu_main(cpu_t *cpu)
 {
@@ -3255,6 +3265,18 @@ static noreturn void *cpu_main(cpu_t *cpu)
 	core_t *core = cpu->cpu_core;
 	kcore_t *kcore = core->core_kcore;
 	schdom_t *schdom = &core->core_hw->hw_schdom;
+
+	if (cpu != &cpus[0]) {		// cpu0 handled in cpus_start()
+		cpu_set_t *cpuset = CPU_ALLOC(MAX_CPU);
+		size_t cpuset_size = CPU_ALLOC_SIZE(MAX_CPU);
+		int hwix = cpu->cpu_hwix;
+		CPU_ZERO_S(cpuset_size, cpuset);
+		CPU_SET_S(hwix, cpuset_size, cpuset);
+		error_t error = pthread_setaffinity_np(pthread_self(),
+						       cpuset_size, cpuset);
+		assert(!error);
+		CPU_FREE(cpuset);
+	}
 
 	for (;;) {
 		pthread_mutex_lock(&kcore->kcore_mutex);
@@ -3278,7 +3300,10 @@ retry:;		thr_t *thr = schdom_get_thr(schdom);
 					  &kcore->kcore_mutex);
 			goto restart;;
 		}
-
+		if (CPUS_PER_CORE > 1 &&
+		    lllist_head(&core->core_idled_cpu_lllist) &&
+		    !schdom_is_empty(schdom))
+			core_run_locked(core, kcore);
 		pthread_mutex_unlock(&kcore->kcore_mutex);
 
 		if (ctx_save(&cpu->cpu_ctx))		// returs twice
@@ -3329,6 +3354,8 @@ inline_only error_t cpu_init_cpu0(cpu_t *cpu)
 	return 0;
 }
 
+static pthread_attr_t cpu_pthread_attr;
+
 static error_t cpu_start(cpu_t *cpu)
 {
 	pthread_t pthread;
@@ -3346,17 +3373,54 @@ static error_t cpus_start(void)
 {
 	//  TODO: more work wrt priorities
 
-	cpu_t *cpu = cpus;
-	cpu_t *cpuend = &cpus[NCPUS];
+	cpu_init_cpu0(&cpus[0]);
 
-	cpu_init_cpu0(cpu);			// running on cpu[0]
-	while (++cpu < cpuend) {		// cpu[0] already started
-		error_t error = cpu_start(cpu);
-		if (error) {
-			TODO();
-			return error;
+	cpu_set_t *cpuset = CPU_ALLOC(MAX_CPU);
+	size_t cpuset_size = CPU_ALLOC_SIZE(MAX_CPU);
+	CPU_ZERO_S(cpuset_size, cpuset);
+	if (sched_getaffinity(getpid(), cpuset_size, cpuset) < 0)
+		return errno;
+
+	int cpu_count = CPU_COUNT_S(cpuset_size, cpuset);
+	assert(cpu_count >= NCPUS);
+
+	int hwix = 0;
+	int cpuix;
+	int coreix;
+	error_t error;
+
+	//  Handling all the per-CPU cpu_set_t in this function causes
+	//  CPU_ALLOC() to crash. Each cpu should set its own affinitiy
+	//  once it starts other than cpu0 which is set below.
+
+	for (cpuix = 0; cpuix < CPUS_PER_CORE; ++cpuix) {
+		for (coreix = 0; coreix < NCORES; ++coreix) {
+			while (!CPU_ISSET_S(hwix, cpuset_size, cpuset))
+				++hwix;
+
+			int index = coreix * CPUS_PER_CORE + cpuix;
+			cpu_t *cpu = &cpus[index];
+			cpu->cpu_hwix = hwix;
+			++hwix;
+			if (cpu == &cpus[0])
+				continue;
+
+			error = cpu_start(cpu);
+			if (error) {
+				TODO();
+				return error;
+			}
 		}
 	}
+
+
+	hwix = cpus[0].cpu_hwix;
+	CPU_ZERO_S(cpuset_size, cpuset);
+	CPU_SET_S(hwix, cpuset_size, cpuset);
+	error = pthread_setaffinity_np(pthread_self(), cpuset_size, cpuset);
+	CPU_FREE(cpuset);
+	if (error)
+		return error;
 	return 0;
 }
 
