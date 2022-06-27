@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "728eea07_672605d7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-06-27T17:54:49Z",
+      "side": 1,
+      "message": "\u003e GRF\n\nNo. we don\u0027t have soc that grf at Q. however there could be upgrading case. say a device launched with Android Q, thus it\u0027s boot.img and init binary is fixed at Q, when it upgrade to U (latest version) it would meet this problem.\nThe presibmit test v2/android-gsi/boot_test_qt_pixel4 is simulating this scenario.",
+      "parentUuid": "d0c541d5_5d76b969",
+      "revId": "09c3358caa58078e65d5b33f226f079d488fd4bc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "61289eff_66332d43",
