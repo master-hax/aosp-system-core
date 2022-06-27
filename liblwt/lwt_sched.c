@@ -3298,7 +3298,7 @@ retry:;		thr_t *thr = schdom_get_thr(schdom);
 					      &cpu->cpu_idled_elem);
 			pthread_cond_wait(&kcore->kcore_cond,
 					  &kcore->kcore_mutex);
-			goto restart;;
+			goto restart;
 		}
 		if (CPUS_PER_CORE > 1 &&
 		    lllist_head(&core->core_idled_cpu_lllist) &&
