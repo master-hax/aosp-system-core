@@ -69,9 +69,9 @@ typedef struct kcore_s	kcore_t;
 #define	noreturn _Noreturn
 #endif
 
-#ifdef __clang__
+// #ifdef __clang__
 #define	__builtin_expect_with_probability(e, v, p) __builtin_expect(e, v)
-#endif
+// #endif
 
 #define	likely(expr)							\
 	__builtin_expect_with_probability(!!(expr), 1, 0.99999d)

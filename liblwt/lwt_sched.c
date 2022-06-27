@@ -518,12 +518,16 @@ static void		 arena_free(arena_t *arena, void *mem);
 
 static void		 core_run(core_t *core);
 
+#ifdef LWT_CPU_PTHREAD_KEY //{
+static void		 cpu_current_set(cpu_t *cpu);
+static cpu_t		*cpu_current(void);
+#endif //}
+
 inline_only thr_t *thr_current(void)
 {
 	cpu_t *cpu = cpu_current();
 	return cpu->cpu_running_thr;
 }
-
 
 //}  This section contains entry points into this module and their supporting
 ///  functions inlined into the corresponding __lwt_() functions at the end of
@@ -3553,16 +3557,31 @@ inline_only void cpus_init(void)
 		cpu_init(&cpus[i]);
 }
 
+#ifdef LWT_CPU_PTHREAD_KEY
+pthread_key_t pthread_key;
+#endif
+
 static error_t kcores_init(void)
 {
+
 	error_t error = pthread_attr_init(&cpu_pthread_attr);
 	if (error)
 		return error;
+#if 0
 	error = pthread_attr_setstacksize(&cpu_pthread_attr, CPU_STACKSIZE);
 	if (error) {
 		pthread_attr_destroy(&cpu_pthread_attr);
 		return error;
 	}
+#endif
+
+#	ifdef LWT_CPU_PTHREAD_KEY
+		error = pthread_key_create(&pthread_key, NULL);
+		if (error) {
+			pthread_attr_destroy(&cpu_pthread_attr);
+			return error;
+		}
+#	endif
 
 	int i;
 	for (i = 0; i < NCORES; ++i)
@@ -3578,6 +3597,18 @@ static error_t kcores_init(void)
 
 	return 0;
 }
+
+#ifdef LWT_CPU_PTHREAD_KEY //{
+static void cpu_current_set(cpu_t *cpu)
+{
+	pthread_setspecific(pthread_key, cpu);
+}
+
+static cpu_t *cpu_current(void)
+{
+	return (cpu_t *) pthread_getspecific(pthread_key);
+}
+#endif //}
 
 static thr_t *thr_dummy;
 static lwt_t lwt_main;
