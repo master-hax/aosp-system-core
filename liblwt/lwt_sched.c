@@ -78,11 +78,29 @@ static noreturn void lwt_assert_fail(const char *file, int line,
 #define	PAGE_SIZE_ROUND_UP(size)					\
 	(((size) + PAGE_SIZE - 1) & ~(PAGE_SIZE - 1))
 
+#ifdef LWT_FIXED_ADDRESSES //{
+
 #define	THR_ARENA_START		(1uL << 22)
 #define	THRX_ARENA_START	(1uL << 23)
 #define	FPCTX_ARENA_START	(1uL << 26)
 #define	CND_ARENA_START		(2uL << (32 + 5))
 #define	MTX_ARENA_START		(3uL << (32 + 6))
+
+#else //}{
+
+#define	THR_ARENA_START		0uL
+#define	THRX_ARENA_START	0uL
+#define	FPCTX_ARENA_START	0uL
+#define	CND_ARENA_START		0uL
+#define	MTX_ARENA_START		0uL
+
+#endif //}
+
+ureg_t	thr_arena_start;
+ureg_t	thrx_arena_start;
+ureg_t	fpctx_arena_start;
+ureg_t	cnd_arena_start;
+ureg_t	mtx_arena_start;
 
 #define	THR_ARENA_LENGTH	(sizeof(thr_t) * THRIX_MAX)
 #define	THR_ARENA_RESERVED	PAGE_SIZE
@@ -99,9 +117,31 @@ static noreturn void lwt_assert_fail(const char *file, int line,
 #define	CND_ARENA_LENGTH	(sizeof(cnd_t) << 32)
 #define	CND_ARENA_RESERVED	PAGE_SIZE
 
+#ifdef LWT_FIXED_ADDRESSES //{
+
 #define	THRX_INDEX_BASE		((thrx_t *) THRX_ARENA_START)
 #define	THR_INDEX_BASE		((thr_t *) (THR_ARENA_START - sizeof(thr_t)))
 #define	MTX_INDEX_BASE		((mtx_t *) (MTX_ARENA_START - sizeof(mtx_t)))
+
+//  For debugging only.
+
+static mtx_t	*mtx_by_index = MTX_INDEX_BASE;
+static thr_t	*thr_by_index = THR_INDEX_BASE;
+static thrx_t	*thrx_by_index = THRX_INDEX_BASE;
+
+#else //}{
+
+#define	THRX_INDEX_BASE		((thrx_t *) thrx_arena_start)
+#define	THR_INDEX_BASE		((thr_t *) (thr_arena_start - sizeof(thr_t)))
+#define	MTX_INDEX_BASE		((mtx_t *) (mtx_arena_start - sizeof(mtx_t)))
+
+//  For debugging only.
+
+static mtx_t	*mtx_by_index;
+static thr_t	*thr_by_index;
+static thrx_t	*thrx_by_index;
+
+#endif //}
 
 //}{  Global variables.
 
@@ -111,12 +151,6 @@ static arena_t	 thrx_arena;
 static arena_t	 fpctx_arena;
 static arena_t	 mtx_arena;
 static arena_t	 cnd_arena;
-
-//  For debugging only.
-
-static mtx_t	*mtx_by_index = MTX_INDEX_BASE;
-static thr_t	*thr_by_index = THR_INDEX_BASE;
-static thrx_t	*thrx_by_index = THRX_INDEX_BASE;
 
 //  The following example configurations can be chosen at compile time.
 //  TODO: eventually these should be built dynamically at init() time, or
@@ -2987,7 +3021,7 @@ static int thr_context_save__thr_run(thr_t *currthr, thr_t *thr)
 
 inline_only error_t arena_init_without_mtx(arena_t *arena, void *base,
 					   size_t elemsize, size_t length,
-					   size_t reserved)
+					   size_t reserved, ureg_t *saveaddr)
 {
 	if (elemsize < sizeof(uptr_t) ||
             (elemsize & (sizeof(uptr_t) - 1)) != 0 ||
@@ -2998,17 +3032,29 @@ inline_only error_t arena_init_without_mtx(arena_t *arena, void *base,
 		return EINVAL;
 	}
 
-	void *start = mmap(base, length + reserved, PROT_READ | PROT_WRITE,
+	//  Two reserved redzones, one before and one after, to ensure that
+	//  MTXID_NULL and THRID_NULL cause exceptions if used incorrectly.
+
+	void *addr = base;
+	if (addr)
+		addr = (void *) ((uptr_t) addr - reserved);
+
+	void *start = mmap(addr, length + 2 * reserved, PROT_READ | PROT_WRITE,
 			   MAP_PRIVATE | MAP_ANONYMOUS, -1, (off_t) 0);
 
 	if (start == (void *) -1)
 		return errno;
 
-	if (start != base) {
-		munmap(start, length + reserved);
+	if ((addr && start != addr) ||
+	    mprotect(start, reserved, PROT_NONE) < 0 ||
+	    mprotect((void *) ((uptr_t) start + length + reserved),
+		     reserved, PROT_NONE) < 0) {
+		munmap(start, length + 2 * reserved);
 		return EINVAL;
 	}
 
+	start = (void *) ((uptr_t) start + reserved);
+	*saveaddr = (ureg_t) start;
 	lllist_init(&arena->arena_lllist);
 
 	uptr_t ptr = (uptr_t) start;
@@ -3074,10 +3120,11 @@ static error_t arena_grow_common_outline(arena_t *arena)
 }
 
 static error_t arena_init(arena_t *arena, void *base, size_t elemsize,
-			  size_t length, size_t reserved)
+			  size_t length, size_t reserved, ureg_t *saveaddr)
 {
 	error_t error;
-	error = arena_init_without_mtx(arena, base, elemsize, length, reserved);
+	error = arena_init_without_mtx(arena, base, elemsize,
+				       length, reserved, saveaddr);
 	if (error)
 		return error;
 
@@ -3114,7 +3161,9 @@ typedef struct {
 	size_t		 ai_elemsize;
 	size_t		 ai_length;
 	size_t		 ai_reserved;
+	ureg_t		*ai_saveaddr;
 } arena_init_t;
+
 
 static arena_init_t arena_init_table[] = {
 
@@ -3125,31 +3174,36 @@ static arena_init_t arena_init_table[] = {
 	 .ai_start    = (void *) MTX_ARENA_START,
 	 .ai_elemsize = sizeof(mtx_t),
 	 .ai_length   = MTX_ARENA_LENGTH,
-	 .ai_reserved = MTX_ARENA_RESERVED},
+	 .ai_reserved = MTX_ARENA_RESERVED,
+	 .ai_saveaddr = &mtx_arena_start},
 
 	{.ai_arena    = &cnd_arena,
 	 .ai_start    = (void *) CND_ARENA_START,
 	 .ai_elemsize = sizeof(cnd_t),
 	 .ai_length   = CND_ARENA_LENGTH,
-	 .ai_reserved = CND_ARENA_RESERVED},
+	 .ai_reserved = CND_ARENA_RESERVED,
+	 .ai_saveaddr = &cnd_arena_start},
 
 	{.ai_arena    = &thr_arena,
 	 .ai_start    = (void *) THR_ARENA_START,
 	 .ai_elemsize = sizeof(thr_t),
 	 .ai_length   = THR_ARENA_LENGTH,
-	 .ai_reserved = THR_ARENA_RESERVED},
+	 .ai_reserved = THR_ARENA_RESERVED,
+	 .ai_saveaddr = &thr_arena_start},
 
 	{.ai_arena    = &thrx_arena,
 	 .ai_start    = (void *) THRX_ARENA_START,
 	 .ai_elemsize = sizeof(thrx_t),
 	 .ai_length   = THRX_ARENA_LENGTH,
-	 .ai_reserved = THRX_ARENA_RESERVED},
+	 .ai_reserved = THRX_ARENA_RESERVED,
+	 .ai_saveaddr = &thrx_arena_start},
 
 	{.ai_arena    = &fpctx_arena,
 	 .ai_start    = (void *) FPCTX_ARENA_START,
 	 .ai_elemsize = sizeof(fpctx_t),
 	 .ai_length   = FPCTX_ARENA_LENGTH,
-	 .ai_reserved = FPCTX_ARENA_RESERVED},
+	 .ai_reserved = FPCTX_ARENA_RESERVED,
+	 .ai_saveaddr = &fpctx_arena_start},
 };
 
 static error_t arenas_init(void)
@@ -3161,13 +3215,19 @@ static error_t arenas_init(void)
 	for (; ai < aiend; ++ai) {
 		error_t error = arena_init(ai->ai_arena, ai->ai_start,
 					   ai->ai_elemsize, ai->ai_length,
-					   ai->ai_reserved);
+					   ai->ai_reserved, ai->ai_saveaddr);
 		if (error) {
 			for (; ai >= arena_init_table; --ai)
 				arena_deinit(ai->ai_arena);
 			return error;
 		}
 	}
+
+#	ifndef LWT_FIXED_ADDRESSES
+		mtx_by_index = MTX_INDEX_BASE;
+		thr_by_index = THR_INDEX_BASE;
+		thrx_by_index = THRX_INDEX_BASE;
+#	endif
 
 	//  Arena growth is protected by its mutex, which when acquired
 	//  requires that a current thread already exist,

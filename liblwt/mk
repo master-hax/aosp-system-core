@@ -5,6 +5,7 @@ set -e
 # DEFS='-D_DEFAULT_SOURCE'
 DEFS='-D_GNU_SOURCE'
 DEFS="$DEFS -DLWT_PTR_BITS=64"
+# DEFS="$DEFS -DLWT_FIXED_ADDRESSES"
 
 CFLAGS='-fomit-frame-pointer -pthread -Werror -Wall'
 CFLAGS="$CFLAGS -fdiagnostics-color=never"

@@ -6,9 +6,9 @@
 #include <assert.h>
 #include "lwt.h"
 
-void errexit(const char *s)
+void errexit(const char *s, int error)
 {
-	perror(s);
+	fprintf(stderr, "%s: %s\n", s, strerror(error));
 	exit(1);
 }
 
@@ -138,12 +138,12 @@ int main(int argc, char *argv[])
 
 	int error = lwt_init(sched_attempt_steps);
 	if (error)
-		errexit("lwt_init() failed");
+		errexit("lwt_init() failed", error);
 
 	queue_t	queue;
 	error = queue_init(&queue);
 	if (error)
-		errexit("queue_init() failed");
+		errexit("queue_init() failed", error);
 
 	arg_t *a = args;
 	int i;
@@ -157,7 +157,7 @@ int main(int argc, char *argv[])
 		a->a_steps = nsteps;
 		error = lwt_create(&a->a_lwt, NULL, (void *(*)(void *)) writer, a);
 		if (error)
-			errexit("lwt_create() writer failed");
+			errexit("lwt_create() writer failed", error);
 		++a;
 	}
 
@@ -175,7 +175,7 @@ int main(int argc, char *argv[])
 
 		error = lwt_create(&a->a_lwt, NULL, (void *(*)(void *)) reader, a);
 		if (error)
-			errexit("lwt_create() reader failed");
+			errexit("lwt_create() reader failed", error);
 		++a;
 	}
 
@@ -197,7 +197,7 @@ int main(int argc, char *argv[])
 		void *retval;
 		error = lwt_join(a->a_lwt, &retval);
 		if (error)
-			errexit("lwt_join() writer failed");
+			errexit("lwt_join() writer failed", error);
 		assert(retval == WRITER_RETVAL);
 		++a;
 	}
@@ -206,7 +206,7 @@ int main(int argc, char *argv[])
 		void *retval;
 		error = lwt_join(a->a_lwt, &retval);
 		if (error)
-			errexit("lwt_join() reader failed");
+			errexit("lwt_join() reader failed", error);
 		sum += (data_t) retval;
 		++a;
 	}
