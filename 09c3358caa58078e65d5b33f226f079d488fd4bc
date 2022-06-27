@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "61289eff_66332d43",
+        "filename": "fs_mgr/fs_mgr_fstab.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 770,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-06-27T16:14:38Z",
+      "side": 1,
+      "message": "I don\u0027t like this. It\u0027s gross, but I can\u0027t think of a better way other than open-coding this special case.\n\nMaybe I can open ImageManager in second_stage_init and create kGsiLpNamesFile there? That would be a lot of code just for this special case, so I doubt it\u0027s \"better\".",
+      "revId": "09c3358caa58078e65d5b33f226f079d488fd4bc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
