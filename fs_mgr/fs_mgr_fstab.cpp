@@ -742,6 +742,7 @@ bool ReadFstabFromFile(const std::string& path, Fstab* fstab_out) {
     }
     if (!is_proc_mounts) {
         if (!access(android::gsi::kGsiBootedIndicatorFile, F_OK)) {
+            bool maybe_q_first_stage_init = false;
             // This is expected to fail if host is android Q, since Q doesn't
             // support DSU slotting. The DSU "active" indicator file would be
             // non-existent or empty if DSU is enabled within the guest system.
@@ -752,14 +753,29 @@ bool ReadFstabFromFile(const std::string& path, Fstab* fstab_out) {
                 return false;
             }
             if (dsu_slot.empty()) {
+                maybe_q_first_stage_init = true;
                 dsu_slot = "dsu";
                 LWARNING << __FUNCTION__ << "(): assuming default DSU slot: " << dsu_slot;
+            } else {
+                LINFO << __FUNCTION__ << "(): DSU slot: " << dsu_slot;
             }
             // This file is non-existent on Q vendor.
             std::string lp_names;
             if (!ReadFileToString(gsi::kGsiLpNamesFile, &lp_names) && errno != ENOENT) {
                 PERROR << __FUNCTION__ << "(): failed to read DSU LP names";
                 return false;
+            }
+            if (lp_names.empty()) {
+                maybe_q_first_stage_init = true;
+                lp_names = "userdata_gsi,system_gsi";
+                LWARNING << __FUNCTION__ << "(): assuming default DSU partitions: " << lp_names;
+            } else {
+                LINFO << __FUNCTION__ << "(): DSU partitions: " << lp_names;
+            }
+            if (maybe_q_first_stage_init) {
+                LWARNING << __FUNCTION__
+                         << "(): using default DSU configuration for Android Q because the "
+                            "first_stage_init binary could be from Q";
             }
             TransformFstabForDsu(&fstab, dsu_slot, Split(lp_names, ","));
         } else if (errno != ENOENT) {
