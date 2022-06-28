@@ -104,6 +104,24 @@
       "parentUuid": "cc338c63_a065926e",
       "revId": "ef233ef6df0bc8901f21c188eb863ae7a03b30e1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4bf33724_72310b60",
+        "filename": "fs_mgr/libfiemap/image_manager.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 204,
+      "author": {
+        "id": 1956079
+      },
+      "writtenOn": "2022-06-28T02:54:48Z",
+      "side": 1,
+      "message": "When we do fallocate to a file, it will allocate disk space over the file size aligning the block size.\ne.g.\nPD:/data # touch a\nPD:/data # fallocate -l 2097159 a\nPD:/data # ls -ls a\n2052 -rw-rw-rw- 1 root root 2097159 2022-06-28 10:37 a\n\nThe file size is 2M+7 bytes, and it\u0027s disk size is (2048+4)kB. So if fseek over the file size, it will write the spare disk space of this file and will not bother other files.\n\nIf we want more safety and to make literally correct, I think we can pass \u0027fw-\u003esize() - fw-\u003eblock_size()\u0027 parameter here.",
+      "parentUuid": "116fafe4_db2c722a",
+      "revId": "ef233ef6df0bc8901f21c188eb863ae7a03b30e1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
