@@ -1821,7 +1821,7 @@ inline_only void ctx_init(ctx_t *ctx, uptr_t sp, lwt_function_t function,
 	ctx->ctx_thr_start_arg0 = (ureg_t) arg;
 	ctx->ctx_thr_start_pc = (ureg_t) thr_start;
 	ctx->ctx_sp = sp;
-	ctx->ctx_fpctx = NULL;
+	ctx->ctx_fpctx = 0;
 }
 
 static int thr_create(lwt_t *thread, const thrattr_t *thrattr,

@@ -174,12 +174,13 @@ int main()
 	GEN_SIZEOF(cpu_t);
         GEN_FIELD(cpu_t, cpu_running_thr);
 
+#ifndef LWT_CTX_ARRAY //{
 	puts("\n// ctx_t");
         GEN_SIZEOF(ctx_t);
         GEN_FIELD(ctx_t, ctx_pc);
         GEN_FIELD(ctx_t, ctx_flags);
 
-#ifdef LWT_ARM64
+#ifdef LWT_ARM64 //{
 	GEN_FIELD(ctx_t, ctx_x0);
 	GEN_FIELD(ctx_t, ctx_x1);
 	GEN_FIELD(ctx_t, ctx_x2);
@@ -214,9 +215,9 @@ int main()
 	GEN_FIELD(ctx_t, ctx_sp);
 	GEN_FIELD(ctx_t, ctx_flags);
 	GEN_FIELD(ctx_t, ctx_fpctx);
-#endif
+#endif //}
 
-#ifdef LWT_X64
+#ifdef LWT_X64 //{
 	GEN_FIELD(ctx_t, ctx_sp);
 	GEN_FIELD(ctx_t, ctx_rbp);
 	GEN_FIELD(ctx_t, ctx_r12);
@@ -235,5 +236,6 @@ int main()
 	GEN_FIELD(ctx_t, ctx_r11);
 	GEN_FIELD(ctx_t, ctx_flags);
 	GEN_FIELD(ctx_t, ctx_fpctx);
-#endif
+#endif //}
+#endif //}
 }

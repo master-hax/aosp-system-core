@@ -1,6 +1,8 @@
 
 #include "lwt_asm.h"
+#ifndef LWT_CTX_ARRAY
 #include "lwt_asm_gen.h"
+#endif
 #include "lwt_arch.h"
 
 #ifdef LWT_ARM64 //{

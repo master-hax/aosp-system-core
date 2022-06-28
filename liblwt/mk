@@ -10,6 +10,7 @@ fi
 DEFS='-D_GNU_SOURCE'
 DEFS="$DEFS -DLWT_PTR_BITS=64"
 # DEFS="$DEFS -DLWT_FIXED_ADDRESSES"
+DEFS="$DEFS -DLWT_CTX_ARRAY"
 
 CFLAGS='-fomit-frame-pointer -pthread -Werror -Wall'
 CFLAGS="$CFLAGS -fdiagnostics-color=never"
@@ -56,7 +57,7 @@ run()
 }
 
 run $CC $DEFS $CFLAGS lwt_genassym.c -o gen/lwt_genassym
-run gen/lwt_genassym | pr -t -e28 > lwt_asm_gen.h
+run gen/lwt_genassym | pr -t -e32 > lwt_asm_gen.h
 
 run $CC $DEFS $CFLAGS -S -O3 lwt_sched.c -o gen/lwt_sched.s
 
