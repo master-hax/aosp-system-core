@@ -3,10 +3,8 @@
 #include <errno.h>
 #include <stdbool.h>
 #include <string.h>
-
-#define	LWT_C
-
 #include "lwt.h"
+#define	LWT_C
 #include "lwt_types.h"
 #include "lwt_arch.h"
 #include "lwt_sched.h"

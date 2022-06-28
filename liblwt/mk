@@ -9,6 +9,7 @@ DEFS="$DEFS -DLWT_PTR_BITS=64"
 
 CFLAGS='-fomit-frame-pointer -pthread -Werror -Wall'
 CFLAGS="$CFLAGS -fdiagnostics-color=never"
+CFLAGS="$CFLAGS -static"
 
 CMD=$(basename $0)
 
@@ -50,7 +51,7 @@ run()
 	"$@"
 }
 
-run $CC $DEFS $CFLAGS lwt_genassym.c -static -o lwt_genassym
+run $CC $DEFS $CFLAGS lwt_genassym.c -o lwt_genassym
 run ./lwt_genassym | pr -t -e28 > lwt_asm_gen.h
 
 run $CC $DEFS $CFLAGS -S -O3 lwt_sched.c
