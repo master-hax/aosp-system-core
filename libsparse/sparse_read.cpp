@@ -696,5 +696,6 @@ struct sparse_file* sparse_file_import_auto(int fd, bool crc, bool verbose) {
     return nullptr;
   }
 
+  s->len = DIV_ROUND_UP(len, 4096) * 4096;
   return s;
 }
