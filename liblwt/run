@@ -21,20 +21,25 @@ if [ "$ARCH" != x64 -a "$ARCH" = arm64 ] ; then
 	usage
 fi
 
+if [ ! -f gen/binaries-$ARCH ] ; then
+	echo "$CMD: file produced by mk is missing: gen/binaries-$ARCH" 1>&2
+	exit 1
+fi
+
 STEP_COUNT=100
 
 TEST_LIST=''
 
-TEST_LIST="$TEST_LIST ./test_schedq-g-x64"
-TEST_LIST="$TEST_LIST ./test_schedq-O3-g-x64"
-TEST_LIST="$TEST_LIST ./test_schedq-O3-x64"
-TEST_LIST="$TEST_LIST ./test-pthread-O3-g-x64"
+TEST_LIST="$TEST_LIST ./gen/test_schedq-g-x64"
+TEST_LIST="$TEST_LIST ./gen/test_schedq-O3-g-x64"
+TEST_LIST="$TEST_LIST ./gen/test_schedq-O3-x64"
+TEST_LIST="$TEST_LIST ./gen/test-pthread-O3-g-x64"
 
-# TEST_LIST="$TEST_LIST ./test_schedq-clang-g-x64"
+# TEST_LIST="$TEST_LIST ./gen/test_schedq-clang-g-x64"
 
 go()
 {
-	for TEST in $(cat binaries-$ARCH) $TEST_LIST ; do
+	for TEST in $(cat gen/binaries-$ARCH) $TEST_LIST ; do
 		echo -n "$TEST: "
 		$TEST
 		STATUS="$?"

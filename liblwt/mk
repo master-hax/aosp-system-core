@@ -2,6 +2,10 @@
 
 set -e
 
+if [ ! -d gen ] ; then
+	mkdir gen
+fi
+
 # DEFS='-D_DEFAULT_SOURCE'
 DEFS='-D_GNU_SOURCE'
 DEFS="$DEFS -DLWT_PTR_BITS=64"
@@ -51,28 +55,28 @@ run()
 	"$@"
 }
 
-run $CC $DEFS $CFLAGS lwt_genassym.c -o lwt_genassym
-run ./lwt_genassym | pr -t -e28 > lwt_asm_gen.h
+run $CC $DEFS $CFLAGS lwt_genassym.c -o gen/lwt_genassym
+run gen/lwt_genassym | pr -t -e28 > lwt_asm_gen.h
 
-run $CC $DEFS $CFLAGS -S -O3 lwt_sched.c
+run $CC $DEFS $CFLAGS -S -O3 lwt_sched.c -o gen/lwt_sched.s
 
-run $CC $DEFS $CFLAGS -c -O3 lwt_sched.c
+run $CC $DEFS $CFLAGS -c -O3 lwt_sched.c -o gen/lwt_sched.o
 
-run $DUMP lwt_sched.o -d > lwt_sched.dump-$ARCH
+run $DUMP gen/lwt_sched.o -d > gen/lwt_sched.dump-$ARCH
 
-run $CPP $DEFS lwt_arch.S > lwt_arch_gen.s
-run $CC $DEFS $CFLAGS -c lwt_arch_gen.s
-run $DUMP -d lwt_arch_gen.o > lwt_arch_gen.dump-$ARCH
+run $CPP $DEFS lwt_arch.S > gen/lwt_arch_gen.s
+run $CC $DEFS $CFLAGS -c gen/lwt_arch_gen.s -o gen/lwt_arch_gen.o
+run $DUMP -d gen/lwt_arch_gen.o > gen/lwt_arch_gen.dump-$ARCH
 
-run $CC -r -o lwt.o lwt_arch_gen.o lwt_sched.o
-run $DUMP -d lwt.o > lwt.dump-ARCH
+run $CC -r -o gen/lwt.o gen/lwt_arch_gen.o gen/lwt_sched.o
+run $DUMP -d gen/lwt.o > gen/lwt.dump-$ARCH
 
 {
-	$NM lwt.o | egrep ' [TDB] '
-	$NM lwt.o | fgrep ' U '
-} | tee lwt-syms-$ARCH
+	run $NM gen/lwt.o | egrep ' [TDB] '
+	run $NM gen/lwt.o | fgrep ' U '
+} | tee gen/lwt-syms-$ARCH
 
-run $CC $DEFS $CFLAGS -c -O3 test.c
+run $CC $DEFS $CFLAGS -c -O3 test.c -o gen/test.o
 
 BINARIES=''
 
@@ -87,46 +91,32 @@ for PROG in test ; do
 			for COMP_OPT in -g -O3 '-O3 -g' ; do
 				comp_opt="${COMP_OPT/ /}"
 				BIN="${PROG}${hw}${build}${comp_opt}-${ARCH}"
-				BINARIES="$BINARIES ./$BIN"
+				BINARIES="$BINARIES ./gen/$BIN"
 				run $CC $DEFS $CFLAGS \
 					$HW \
 					$BUILD \
 					$COMP_OPT \
-					-o $BIN \
+					-o gen/$BIN \
 					$PROG.c \
 					lwt_sched.c \
-					lwt_arch_gen.s
+					gen/lwt_arch_gen.s
 			done
 		done
 	done
 done
 
-echo $BINARIES | tr ' ' '\012' > binaries-$ARCH
+echo $BINARIES | tr ' ' '\012' > gen/binaries-$ARCH
 
-run $CC $DEFS $CFLAGS -DLWT_DEBUG -g -o test_schedq-g-$ARCH test_schedq.c lwt_arch_gen.s
-run $CC $DEFS $CFLAGS -DLWT_DEBUG -O3 -o test_schedq-O3-$ARCH test_schedq.c lwt_arch_gen.s
-run $CC $DEFS $CFLAGS -DLWT_DEBUG -O3 -g -o test_schedq-O3-g-$ARCH test_schedq.c lwt_arch_gen.s
-
-if false ; then
-$CC $DEFS $CFLAGS -DLWT_DEBUG -g -o test-g-$ARCH test.c lwt_sched.c lwt_arch_gen.s
-$CC $DEFS $CFLAGS -DLWT_DEBUG -O3 -o test-O3-$ARCH test.c lwt_sched.c lwt_arch_gen.s
-$CC $DEFS $CFLAGS -DLWT_DEBUG -O3 -g -o test-O3-g-$ARCH test.c lwt_sched.c lwt_arch_gen.s
-
-$CC -DLWT_MP $DEFS $CFLAGS -DLWT_DEBUG -g -o test-mp-g-$ARCH test.c lwt_sched.c lwt_arch_gen.s
-$CC -DLWT_MP $DEFS $CFLAGS -DLWT_DEBUG -O3 -o test-mp-O3-$ARCH test.c lwt_sched.c lwt_arch_gen.s
-$CC -DLWT_MP $DEFS $CFLAGS -DLWT_DEBUG -O3 -g -o test-mp-O3-g-$ARCH test.c lwt_sched.c lwt_arch_gen.s
-
-$CC -DLWT_MP $DEFS $CFLAGS -DLWT_BITS -g -o test-mp-g-no-LWT_DEBUG-$ARCH test.c lwt_sched.c lwt_arch_gen.s
-$CC -DLWT_MP $DEFS $CFLAGS -DLWT_BITS -O3 -o test-mp-O3-no-LWT_DEBUG-$ARCH test.c lwt_sched.c lwt_arch_gen.s
-$CC -DLWT_MP $DEFS $CFLAGS -DLWT_BITS -O3 -g -o test-mp-O3-g-no-LWT_DEBUG-$ARCH test.c lwt_sched.c lwt_arch_gen.s
-fi
+run $CC $DEFS $CFLAGS -DLWT_DEBUG -g -o gen/test_schedq-g-$ARCH test_schedq.c gen/lwt_arch_gen.s
+run $CC $DEFS $CFLAGS -DLWT_DEBUG -O3 -o gen/test_schedq-O3-$ARCH test_schedq.c gen/lwt_arch_gen.s
+run $CC $DEFS $CFLAGS -DLWT_DEBUG -O3 -g -o gen/test_schedq-O3-g-$ARCH test_schedq.c gen/lwt_arch_gen.s
 
 if [ "$ARCH" = x64 ] ; then
-	run clang -std=c17 $DEFS $CFLAGS -DLWT_DEBUG -g -o test_schedq-clang-g-$ARCH test_schedq.c lwt_arch_gen.s
+	run clang -std=c17 $DEFS $CFLAGS -DLWT_DEBUG -g -o gen/test_schedq-clang-g-$ARCH test_schedq.c gen/lwt_arch_gen.s
 fi
 
-# $CXX -std=c++17 $DEFS $CFLAGS -DLWT_DEBUG -g -o test_schedq-c++-g-$ARCH test_schedq.c lwt_arch_gen.s
+# $CXX -std=c++17 $DEFS $CFLAGS -DLWT_DEBUG -g -o gen/test_schedq-c++-g-$ARCH test_schedq.c gen/lwt_arch_gen.s
 
 if [ "$ARCH" = x64 ] ; then
-	run $CC $DEFS $CFLAGS -O3 -g -o test-pthread-O3-g-$ARCH test-pthread.c
+	run $CC $DEFS $CFLAGS -O3 -g -o gen/test-pthread-O3-g-$ARCH test-pthread.c
 fi

@@ -1,10 +1,13 @@
 #!/usr/bin/bash
 
-STEPS=1000000
-COUNT=10
+# STEPS=1000000
+# COUNT=10
 
-PROG=./test-mp-BITS-O3-g-x64
-# PROG=./test-mp-smt-BITS-O3-g-x64
+STEPS=123456
+COUNT=2
+
+PROG=./gen/test-mp-BITS-O3-g-x64
+# PROG=./gen/test-mp-smt-BITS-O3-g-x64
 
 while read START END ; do
 	ATTEMPTS=$START
@@ -22,6 +25,6 @@ LIST
 
 C=0
 while [ $C -lt $COUNT ] ; do
-	echo pthreads: $(/bin/time ./test-pthread-O3-g-x64 $STEPS 2>&1)
+	echo pthreads: $(/bin/time ./gen/test-pthread-O3-g-x64 $STEPS 2>&1)
 	C=$[ C + 1 ]
 done
