@@ -28,6 +28,8 @@ if [ $# -ne 1 ] ; then
 	usage
 fi
 
+UNAME_M="$(uname -m)"
+
 ARCH="$1"
 
 if [ "$ARCH" = x64 ] ; then
@@ -41,14 +43,24 @@ if [ "$ARCH" = x64 ] ; then
 elif [ "$ARCH" = arm64 ] ; then
 	DEFS="$DEFS -DLWT_ARM64"
 	CFLAGS="$CFLAGS -march=armv8.1-a"
-	CC="aarch64-linux-gnu-gcc-11 -std=c17"
-	CXX=aarch64-linux-gnu-g++-11 
-	CPP=aarch64-linux-gnu-cpp-11
-	DUMP=aarch64-linux-gnu-objdump 
-	NM=aarch64-linux-gnu-nm 
+	if [ $UNAME_M = aarch64 ] ; then
+		CC=gcc
+		CXX=g++
+		CPP=cpp
+		DUMP=objdump
+		NM=nm
+		DEFS="$DEFS -DLWT_CPU_PTHREAD_KEY"
+	else
+		CC="aarch64-linux-gnu-gcc-11 -std=c17"
+		CXX=aarch64-linux-gnu-g++-11 
+		CPP=aarch64-linux-gnu-cpp-11
+		DUMP=aarch64-linux-gnu-objdump 
+		NM=aarch64-linux-gnu-nm 
+	fi
 else
 	usage
 fi
+
 
 run()
 {
@@ -69,13 +81,14 @@ run $CPP $DEFS lwt_arch.S > gen/lwt_arch_gen.s
 run $CC $DEFS $CFLAGS -c gen/lwt_arch_gen.s -o gen/lwt_arch_gen.o
 run $DUMP -d gen/lwt_arch_gen.o > gen/lwt_arch_gen.dump-$ARCH
 
-run $CC -r -o gen/lwt.o gen/lwt_arch_gen.o gen/lwt_sched.o
-run $DUMP -d gen/lwt.o > gen/lwt.dump-$ARCH
-
-{
-	run $NM gen/lwt.o | egrep ' [TDB] '
-	run $NM gen/lwt.o | fgrep ' U '
-} | tee gen/lwt-syms-$ARCH
+if [ $UNAME_M != aarch64 ] ; then
+	run $CC -r -o gen/lwt.o gen/lwt_arch_gen.o gen/lwt_sched.o
+	run $DUMP -d gen/lwt.o > gen/lwt.dump-$ARCH
+	{
+		run $NM gen/lwt.o | egrep ' [TDB] '
+		run $NM gen/lwt.o | fgrep ' U '
+	} | tee gen/lwt-syms-$ARCH
+fi
 
 run $CC $DEFS $CFLAGS -c -O3 test.c -o gen/test.o
 
@@ -86,7 +99,9 @@ for PROG in test ; do
 		hw="${HW/DLWT_/}"
 		hw="${hw/DLWT_/}"
 		hw="${hw/ /}"
-		hw="${hw@L}"
+		# adeb's bash (version 5.0.3(1)) does not support:
+		#	hw="${hw@L}"
+		hw=$(echo $hw | tr 'A-Z' 'a-z')
 		for BUILD in -DLWT_DEBUG -DLWT_BITS '' ; do
 			build="${BUILD/DLWT_/}"
 			for COMP_OPT in -g -O3 '-O3 -g' ; do
@@ -118,6 +133,4 @@ fi
 
 # $CXX -std=c++17 $DEFS $CFLAGS -DLWT_DEBUG -g -o gen/test_schedq-c++-g-$ARCH test_schedq.c gen/lwt_arch_gen.s
 
-if [ "$ARCH" = x64 ] ; then
-	run $CC $DEFS $CFLAGS -O3 -g -o gen/test-pthread-O3-g-$ARCH test-pthread.c
-fi
+run $CC $DEFS $CFLAGS -O3 -g -o gen/test-pthread-O3-g-$ARCH test-pthread.c

@@ -17,7 +17,7 @@ fi
 
 ARCH="$1"
 
-if [ "$ARCH" != x64 -a "$ARCH" = arm64 ] ; then
+if [ "$ARCH" != x64 -a "$ARCH" != arm64 ] ; then
 	usage
 fi
 
@@ -30,12 +30,12 @@ STEP_COUNT=100
 
 TEST_LIST=''
 
-TEST_LIST="$TEST_LIST ./gen/test_schedq-g-x64"
-TEST_LIST="$TEST_LIST ./gen/test_schedq-O3-g-x64"
-TEST_LIST="$TEST_LIST ./gen/test_schedq-O3-x64"
-TEST_LIST="$TEST_LIST ./gen/test-pthread-O3-g-x64"
+TEST_LIST="$TEST_LIST ./gen/test_schedq-g-$ARCH"
+TEST_LIST="$TEST_LIST ./gen/test_schedq-O3-g-$ARCH"
+TEST_LIST="$TEST_LIST ./gen/test_schedq-O3-$ARCH"
+TEST_LIST="$TEST_LIST ./gen/test-pthread-O3-g-$ARCH"
 
-# TEST_LIST="$TEST_LIST ./gen/test_schedq-clang-g-x64"
+# TEST_LIST="$TEST_LIST ./gen/test_schedq-clang-g-$ARCH"
 
 go()
 {

@@ -28,7 +28,7 @@
         printf("#define " #value "\t0x%08x	// %d\n", value, value)
 
 #define GEN_CONSTANT64(value)						\
-        printf("#define " #value "\t0x%016lx	// %ld\n", value, value)
+        printf("#define " #value "\t0x%016lxuL	// %ld\n", value, value)
 
 int main()
 {
