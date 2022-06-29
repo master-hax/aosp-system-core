@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "07c977a0_e6c9fd78",
+        "filename": "fs_mgr/libsnapshot/cow_writer.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-06-29T19:38:53Z",
+      "side": 1,
+      "message": "nit: move down into Android include block",
+      "revId": "f3e0c5b8010623b759b2f618d642bec2571a2a03",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fb00821b_31236ef3",
+        "filename": "fs_mgr/libsnapshot/cow_writer.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 412,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-06-29T19:38:53Z",
+      "side": 1,
+      "message": "I believe there was a reason for uint8_t[] here and it had something to do with UBSAN errors. But looking at it again now I can\u0027t see how any would trigger.",
+      "revId": "f3e0c5b8010623b759b2f618d642bec2571a2a03",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f383c56f_12892727",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
+        "patchSetId": 6
+      },
+      "lineNbr": 161,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-06-29T19:38:53Z",
+      "side": 1,
+      "message": "When we add metrics, it\u0027d be good to move/mirror this enum into the libsnapshot proto.",
+      "revId": "f3e0c5b8010623b759b2f618d642bec2571a2a03",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
