@@ -727,6 +727,10 @@ bool ReadAhead::RunThread() {
 
     InitializeIouring();
 
+    if (setpriority(PRIO_PROCESS, gettid(), kNiceValueForMergeThreads)) {
+        SNAP_PLOG(ERROR) << "Failed to priority for TID: " << gettid();
+    }
+
     while (!RAIterDone()) {
         if (!ReadAheadIOStart()) {
             break;
