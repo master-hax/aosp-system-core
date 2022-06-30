@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "722bd44b_08fc6d5c",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-06-30T19:24:08Z",
+      "side": 1,
+      "message": "are these pre- or post-patch numbers?",
+      "revId": "84065ea9f56800e1b71c40e32fdc55b3f399b357",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
