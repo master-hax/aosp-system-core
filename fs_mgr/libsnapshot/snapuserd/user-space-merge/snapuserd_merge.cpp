@@ -543,6 +543,10 @@ bool Worker::RunMergeThread() {
         return true;
     }
 
+    if (setpriority(PRIO_PROCESS, gettid(), kNiceValueForMergeThreads)) {
+        SNAP_PLOG(ERROR) << "Failed to priority for TID: " << gettid();
+    }
+
     SNAP_LOG(INFO) << "Merge starting..";
 
     if (!Init()) {
