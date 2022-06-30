@@ -6,7 +6,8 @@
 #include <stddef.h>
 #include <stdint.h>
 // #include <stdbool.h>
-#include <bits/types/struct_timespec.h>
+// #include <bits/types/struct_timespec.h>
+struct timespec;
 
 //  lwt - light weight threads
 //

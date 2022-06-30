@@ -1,4 +1,5 @@
 
+#include "lwt_config.h"
 #include "lwt_asm.h"
 #ifndef LWT_CTX_ARRAY
 #include "lwt_asm_gen.h"

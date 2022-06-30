@@ -90,11 +90,11 @@ if [ $UNAME_M != aarch64 ] ; then
 	} | tee gen/lwt-syms-$ARCH
 fi
 
-run $CC $DEFS $CFLAGS -c -O3 test.c -o gen/test.o
+run $CC $DEFS $CFLAGS -c -O3 test-lwt.c -o gen/test-lwt.o
 
 BINARIES=''
 
-for PROG in test ; do
+for PROG in test-lwt ; do
 	for HW in '-DLWT_MP -DLWT_SMT' -DLWT_MP '' ; do
 		hw="${HW/DLWT_/}"
 		hw="${hw/DLWT_/}"

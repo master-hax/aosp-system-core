@@ -1,8 +1,11 @@
+#include "lwt_config.h"
 
 #include <sys/mman.h>
 #include <errno.h>
 #include <stdbool.h>
 #include <string.h>
+#include <strings.h>
+#include <sched.h>
 #include "lwt.h"
 #define	LWT_C
 #include "lwt_types.h"
@@ -39,7 +42,7 @@
 
 const char *volatile __lwt_assert_file;
 const char *volatile __lwt_assert_msg;
-int __lwt_assert_line;
+int volatile __lwt_assert_line;
 
 static noreturn void lwt_assert_fail(const char *file, int line,
 				     const char *msg)
@@ -83,6 +86,7 @@ static noreturn void lwt_assert_fail(const char *file, int line,
 #define	FPCTX_ARENA_START	(1uL << 26)
 #define	CND_ARENA_START		(2uL << (32 + 5))
 #define	MTX_ARENA_START		(3uL << (32 + 6))
+#define	MTX_ARENA_START_VALUE	MTX_ARENA_START
 
 #else //}{
 
@@ -91,6 +95,7 @@ static noreturn void lwt_assert_fail(const char *file, int line,
 #define	FPCTX_ARENA_START	0uL
 #define	CND_ARENA_START		0uL
 #define	MTX_ARENA_START		0uL
+#define	MTX_ARENA_START_VALUE	mtx_arena_start
 
 #endif //}
 
@@ -823,7 +828,7 @@ inline_only thr_t *thr_from_index(ureg_t index)
 	return THR_INDEX_BASE + index;
 }
 
-static bool thr_can_use_current_cpu(thr_t *in)
+static bool thr_can_use_current_cpu(unused thr_t *in)
 {
 	//  TODO: revisit with respect to cpu/core affinity.
 	return true;
@@ -901,7 +906,7 @@ inline_only mtxid_t mtx_get_mtxid(mtx_t *mtx)
 {
 	mtxid_t mtxid = { .mtxid_reuse = MTXA_REUSE(mtx->mtxa),
 			  .mtxid_index = (u32_t)
-					 (mtx - (mtx_t *) MTX_ARENA_START) };
+				(mtx - (mtx_t *) MTX_ARENA_START_VALUE) };
 	return mtxid;
 }
 
@@ -1241,9 +1246,8 @@ int __lwt_cnd_wait(cnd_t *cnd, mtx_t *mtx)	//  aka cnd_wait()
 	return 0;
 }
 
-static inline int cnd_timedwait(cnd_t *cnd,
-				mtx_t *mtx,
-				const struct timespec *abstime)
+static inline int cnd_timedwait(unused cnd_t *cnd, unused mtx_t *mtx,
+				unused const struct timespec *abstime)
 {
 	TODO();
 }
@@ -1345,7 +1349,7 @@ inline_only void cnd_free(cnd_t *cnd)
 	arena_free(&cnd_arena, cnd);
 }
 
-inline_only int cnd_create(cnd_t **cndpp, const cndattr_t *cndattr)
+inline_only int cnd_create(cnd_t **cndpp, unused const cndattr_t *cndattr)
 {
 	alloc_value_t av = cnd_alloc();
 	if (av.error) {
@@ -1672,7 +1676,7 @@ inline_only bool thr_atom_equal(thr_atom_t a, thr_atom_t b)
 
 static mtx_t *thr_block_forever_mtx;
 
-static noreturn void thr_block_forever(const char *msg, void *arg)
+static noreturn void thr_block_forever(unused const char *msg, unused void *arg)
 {
 	(void) mtx_lock_outline(thr_block_forever_mtx);
 	assert(0);
@@ -1886,22 +1890,22 @@ static thr_t *thr_create_main(void)
 	return thr;
 }
 
-static int thr_cancel(lwt_t thread)
+static int thr_cancel(unused lwt_t thread)
 {
 	TODO();
 }
 
-static void thr_testcancel(void)
+static void thr_testcancel(unused void)
 {
 	TODO();
 }
 
-static int thr_setcancelstate(int state, int *oldstate)
+static int thr_setcancelstate(unused int state, unused int *oldstate)
 {
 	TODO();
 }
 
-static int thr_setcanceltype(int type, int *oldtype)
+static int thr_setcanceltype(unused int type, unused int *oldtype)
 {
 	TODO();
 }
@@ -2001,7 +2005,7 @@ static void schdom_init(schdom_t *schdom)
 
 static ureg_t schedom_core_rotor = 0;
 
-static core_t *core_from_thrattr(const thrattr_t *thrattr)
+static core_t *core_from_thrattr(unused const thrattr_t *thrattr)
 {
 	// TODO: cpu/core affinity
 
@@ -2784,8 +2788,7 @@ retry:;
 
 //  Move the INS stack to INSPRV and update ISER from ICNT.
 
-inline_only schedq_t schedq_move_ins_to_insprv(schedq_t schedq, ureg_t sqix,
-					       ureg_t state)
+inline_only schedq_t schedq_move_ins_to_insprv(schedq_t schedq, ureg_t state)
 {
 	ureg_t ins = SCHEDQ_INS(schedq);
 	if (ins != THRID_NULL) {
@@ -2802,8 +2805,7 @@ inline_only schedq_t schedq_move_ins_to_insprv(schedq_t schedq, ureg_t sqix,
 
 //  Move the REMNXT stack to REM.
 
-inline_only schedq_t schedq_move_remnxt_to_rem(schedq_t schedq, ureg_t sqix,
-					       ureg_t state)
+inline_only schedq_t schedq_move_remnxt_to_rem(schedq_t schedq, ureg_t state)
 {
 	ureg_t remnxt = SCHEDQ_REMNXT(schedq);
 	if (remnxt != THRID_NULL) {
@@ -2823,9 +2825,8 @@ inline_only schedq_t schedq_move_remnxt_to_rem(schedq_t schedq, ureg_t sqix,
 //  These preconditions imply that this function handles these states:
 //	0b0001	0b0011	0b1001	0b1011
 
-inline_only schedq_t schedq_remove_simple(schedq_t schedq, ureg_t sqix,
-					  ureg_t state, thr_t *thr,
-					  ureg_t thridix, ureg_t nextix)
+inline_only schedq_t schedq_remove_simple(schedq_t schedq,  ureg_t state,
+					  ureg_t nextix)
 {
 	if (nextix != THRID_NULL)
 		SCHEDQ_REM_SET(schedq, nextix);
@@ -2841,7 +2842,7 @@ inline_only schedq_t schedq_remove_simple(schedq_t schedq, ureg_t sqix,
 	}
 	SCHEDQ_STATE_SET(schedq, state);
 	schedq_debug(schedq);
-	return schedq_move_ins_to_insprv(schedq, sqix, state);
+	return schedq_move_ins_to_insprv(schedq, state);
 }
 
 //  Remove an entry from schedq when there are entries in REM and INSPRV is not
@@ -2891,8 +2892,7 @@ retry:;
 			if (SCHEDQ_IS_RETRY(new))
 				goto reload_and_retry;
 		} else
-			new = schedq_remove_simple(new, sqix, state,
-						   thr, thridix, nextix);
+			new = schedq_remove_simple(new, state, nextix);
 		SCHEDQ_RCNT_INC(new);
 	} else {
 		//  REM is empty, must check if INSPRV is not empty and
@@ -2906,13 +2906,11 @@ retry:;
 			//  These two moves can be done in one compare-and-swap.
 
 			if (state & REMNXT) {
-				new = schedq_move_remnxt_to_rem(new, sqix,
-								state);
+				new = schedq_move_remnxt_to_rem(new, state);
 				state = SCHEDQ_STATE(new);
 			}
 			if (state & INS)
-				new = schedq_move_ins_to_insprv(new, sqix,
-								state);
+				new = schedq_move_ins_to_insprv(new, state);
 		}
 	}
 
@@ -3321,6 +3319,18 @@ static void core_run(core_t *core)
 
 #define	MAX_CPU	1024
 
+#ifdef LWT_PTHREAD_SETAFFINITY
+inline_only int cpu_setaffinity(size_t size, cpu_set_t *cpu_set)
+{
+	return pthread_setaffinity_np(pthread_self(), size, cpu_set);
+}
+#else
+inline_only int cpu_setaffinity(size_t size, cpu_set_t *cpu_set)
+{
+	return sched_setaffinity(gettid(), size, cpu_set);
+}
+#endif
+
 static noreturn void *cpu_main(cpu_t *cpu)
 {
 	cpu_current_set(cpu);
@@ -3334,8 +3344,7 @@ static noreturn void *cpu_main(cpu_t *cpu)
 		int hwix = cpu->cpu_hwix;
 		CPU_ZERO_S(cpuset_size, cpuset);
 		CPU_SET_S(hwix, cpuset_size, cpuset);
-		error_t error = pthread_setaffinity_np(pthread_self(),
-						       cpuset_size, cpuset);
+		error_t error = cpu_setaffinity(cpuset_size, cpuset);
 		assert(!error);
 		CPU_FREE(cpuset);
 	}
@@ -3479,7 +3488,7 @@ static error_t cpus_start(void)
 	hwix = cpus[0].cpu_hwix;
 	CPU_ZERO_S(cpuset_size, cpuset);
 	CPU_SET_S(hwix, cpuset_size, cpuset);
-	error = pthread_setaffinity_np(pthread_self(), cpuset_size, cpuset);
+	error = cpu_setaffinity(cpuset_size, cpuset);
 	CPU_FREE(cpuset);
 	if (error)
 		return error;

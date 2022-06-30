@@ -3,8 +3,27 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <assert.h>
 #include "lwt.h"
+
+const char *volatile __assert_file;
+const char *volatile __assert_msg;
+int volatile __assert_line;
+
+static _Noreturn void assert_fail(const char *file, int line,
+				      const char *msg)
+{
+	__assert_line = line;
+	__assert_msg = msg;
+	__assert_file = file;
+	for (;;)
+		*((volatile int *)11) = 0xDEADFEED;
+}
+
+#define	test_assert(expr)						\
+	do {								\
+		if (__builtin_expect(!(expr), 0))			\
+			assert_fail(__FILE__, __LINE__, #expr);		\
+	} while (0)
 
 void errexit(const char *s, int error)
 {
@@ -126,7 +145,11 @@ void *reader(arg_t *a)
 
 arg_t	args[NREADERS + NWRITERS];
 
-int main(int argc, char *argv[])
+#ifndef LWT_NOT_ON_ANDROID
+#define	test_main(argc, argv)	main(argc, argv)
+#endif
+
+int test_main(int argc, char *argv[])
 {
 	data_t nsteps = NSTEPS;
 	if (argc >= 2)
@@ -198,7 +221,7 @@ int main(int argc, char *argv[])
 		error = lwt_join(a->a_lwt, &retval);
 		if (error)
 			errexit("lwt_join() writer failed", error);
-		assert(retval == WRITER_RETVAL);
+		test_assert(retval == WRITER_RETVAL);
 		++a;
 	}
 
@@ -211,7 +234,7 @@ int main(int argc, char *argv[])
 		++a;
 	}
 
-	assert(sum == (NWRITERS * nsteps) * (NWRITERS * nsteps + 1) / 2);
+	test_assert(sum == (NWRITERS * nsteps) * (NWRITERS * nsteps + 1) / 2);
 
 	exit(0);
 }
