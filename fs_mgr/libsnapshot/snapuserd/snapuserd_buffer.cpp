@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include <android-base/logging.h>
 #include <snapuserd/snapuserd_buffer.h>
 #include <snapuserd/snapuserd_kernel.h>
 
@@ -27,7 +28,11 @@ void BufferSink::Initialize(size_t size) {
 }
 
 void* BufferSink::GetPayloadBuffer(size_t size) {
-    if ((buffer_size_ - buffer_offset_) < size) return nullptr;
+    if ((buffer_size_ - buffer_offset_) < size) {
+        LOG(INFO) << "Insufficient buffer space left: " << buffer_size_ - buffer_offset_
+                  << ", requested: " << size;
+        return nullptr;
+    }
 
     char* buffer = reinterpret_cast<char*>(GetBufPtr());
     struct dm_user_message* msg = (struct dm_user_message*)(&(buffer[0]));
