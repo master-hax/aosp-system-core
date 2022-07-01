@@ -1,0 +1,119 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "66057618_96ebcd18",
+        "filename": "debuggerd/libdebuggerd/scudo.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2022-07-01T16:59:55Z",
+      "side": 1,
+      "message": "Can you switch this to a call to getpagesize()? We are trying to avoid using the constant because it\u0027s not necessarily constant.",
+      "range": {
+        "startLine": 54,
+        "startChar": 50,
+        "endLine": 54,
+        "endChar": 59
+      },
+      "revId": "7827991d7fbef20037e555a04dab269f0a20c132",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8ff6f786_6d967648",
+        "filename": "debuggerd/libdebuggerd/scudo.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2022-07-01T16:59:55Z",
+      "side": 1,
+      "message": "This isn\u0027t how you should check for a overflow. Use the builtin overflow. Also, just because the address is too low, doesn\u0027t mean there aren\u0027t valid pages around the fault. So you should be checking and using a different start value.",
+      "range": {
+        "startLine": 61,
+        "startChar": 0,
+        "endLine": 64,
+        "endChar": 3
+      },
+      "revId": "7827991d7fbef20037e555a04dab269f0a20c132",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "da4df775_2e24a1e1",
+        "filename": "debuggerd/libdebuggerd/scudo.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2022-07-01T16:59:55Z",
+      "side": 1,
+      "message": "Why aren\u0027t you using something like a vector and init\u0027ing the data to zero? Even though scudo is default to allocate zero\u0027s there is at least one place that someone turned it off, and oems can turn it off if they want.",
+      "range": {
+        "startLine": 66,
+        "startChar": 21,
+        "endLine": 66,
+        "endChar": 32
+      },
+      "revId": "7827991d7fbef20037e555a04dab269f0a20c132",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "806c095c_6ea701d1",
+        "filename": "debuggerd/libdebuggerd/scudo.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2022-07-01T16:59:55Z",
+      "side": 1,
+      "message": "This is an inefficient way to do this. You can actually read the entire data in one read, and then skip a page if it\u0027s you didn\u0027t get everything.",
+      "range": {
+        "startLine": 67,
+        "startChar": 0,
+        "endLine": 69,
+        "endChar": 3
+      },
+      "revId": "7827991d7fbef20037e555a04dab269f0a20c132",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c595b544_bee60db3",
+        "filename": "debuggerd/libdebuggerd/scudo.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2022-07-01T16:59:55Z",
+      "side": 1,
+      "message": "Can you add a comment here, or maybe before you start getting the data that explains why it\u0027s okay for the data to have holes, and/or what this function expects for the memory data?",
+      "range": {
+        "startLine": 76,
+        "startChar": 2,
+        "endLine": 78,
+        "endChar": 66
+      },
+      "revId": "7827991d7fbef20037e555a04dab269f0a20c132",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
