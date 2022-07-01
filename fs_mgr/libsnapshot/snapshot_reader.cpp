@@ -147,7 +147,15 @@ class MemoryByteSink : public IByteSink {
         return start;
     }
 
-    bool ReturnData(void*, size_t) override { return true; }
+    bool ReturnData(void* ptr, size_t size) override {
+        auto end = static_cast<uint8_t*>(ptr) + size;
+        // Cannot return more data than previously requested buffer size
+        if (end > pos_) {
+            return false;
+        }
+        pos_ = end;
+        return true;
+    }
 
     uint8_t* buf() const { return buf_; }
     uint8_t* pos() const { return pos_; }
