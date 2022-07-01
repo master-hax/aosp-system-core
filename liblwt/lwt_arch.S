@@ -1,3 +1,30 @@
+/*
+ * Copyright (C) 2022 The Android Open Source Project
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *  * Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *  * Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in
+ *    the documentation and/or other materials provided with the
+ *    distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+ * FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS
+ * OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED
+ * AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
+ * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ */
 
 #include "lwt_config.h"
 #ifndef LWT_CTX_ARRAY
@@ -33,15 +60,19 @@ FUNCTION_START(__lwt_ctx_save)
 	ret					// x0 is non-zero return value
 FUNCTION_END(__lwt_ctx_save)
 
-//  This functions must not use the run-time (thread or cpu) stack.
-//
-//  noreturn void __lwt_ctx_load_idle_cpu(ctx_t *ctx,		/* rdi */
-//					  bool *curr_running);	/* rsi */
-//  noreturn void __lwt_ctx_load_on_cpu(ctx_t *ctx,		/* rdi */
-//				 	bool *new_running);	/* rsi */
-//  noreturn void __lwt_ctx_load(ctx_t *ctx,			/* rdi */
-//				 bool *new_running,		/* rsi */
-//				 bool *curr_running);		/* rdx */
+//  These functions must not use the run-time (thread or cpu) stack.
+
+//  noreturn void __lwt_ctx_load(thr_t *thr,			x0
+//				 ctx_t *ctx,			x1
+//				 ctx_t *cpuctx,			x2
+//				 bool *new_running,		x3
+//				 bool *curr_running);		x4
+//  noreturn void __lwt_ctx_load_on_cpu(thr_t *thr,		x0
+//					ctx_t *ctx,		x1
+//					ctx_t *cpuctx,		x2
+//					bool *new_running);	x3
+//  noreturn void __lwt_ctx_load_idle_cpu(bool *curr_running,	x0
+//					  ctx_t *ctx);		x1
 //
 //  new_running and curr_running are updated with these instructions:
 //	stlrb - store release register byte
@@ -52,35 +83,45 @@ FUNCTION_END(__lwt_ctx_save)
 //  visible to other CPUs by the time they perform their corresponding load
 //  acquire thourgh new_running, and loop on that memory location until the
 //  value is 0, that transition from 1 to 0 indicates that the thread is no
-//  long running in the other CPU and can now start running on this CPU.
+//  longer running in the other CPU and can now start running on this CPU.
+
+#define	RETRY_COUNT	256
 
 FUNCTION_START(__lwt_ctx_load_idle_cpu)
-	stlrb	wzr, [x1]		// current thread no longer running
+	stlrb	wzr, [x0]		// current thread is no longer running
+	mov	x0, xzr			// return value, zero is 2nd return
 	b	2f
 FUNCTION_END(__lwt_ctx_load_idle_cpu)
 FUNCTION_START(__lwt_ctx_load)
-	stlrb	wzr, [x2]		// current thread no longer running
+	stlrb	wzr, [x4]		// current thread is no longer running
 FUNCTION_END(__lwt_ctx_load)
 FUNCTION_START(__lwt_ctx_load_on_cpu)
-1:	ldarb	w4, [x1]		// loop while new thr is running ...
-	cbnz	w4, 1b			// ... in another cpu
-	mov	w4, 1
-	stlrb	w4, [x1]		// new thr is now running on this cpu
-2:	ldp	x30, x1, [x0, ctx_pc]	// [pc, sp] can not use sp here
-	ldp	x18, x19, [x0, ctx_x18]
-	ldp	x20, x21, [x0, ctx_x20]
-	ldp	x22, x23, [x0, ctx_x22]
-	ldp	x24, x25, [x0, ctx_x24]
-	ldp	x26, x27, [x0, ctx_x26]
-	ldp	x28, x29, [x0, ctx_x28]
-	ldr	x0, [x0, ctx_fpctx]
-	mov	sp, x1
-	cbnz	x0, ctx_load_rest
+	mov	w5, RETRY_COUNT
+1:	ldarb	w6, [x3]		// loop while new thr is running ...
+	sub	w5, w5, 1
+	cbz	w5, 3f
+	cbnz	w6, 1b			// ... in another cpu
+	mov	w6, 1
+	stlrb	w6, [x3]		// new thr is now running on this cpu
+	mov	x0, xzr			// return value, zero is 2nd return
+2:	ldp	x30, x2, [x1, ctx_pc]	// [pc, sp] can not use sp here
+	ldp	x18, x19, [x1, ctx_x18]
+	ldp	x20, x21, [x1, ctx_x20]
+	ldp	x22, x23, [x1, ctx_x22]
+	ldp	x24, x25, [x1, ctx_x24]
+	ldp	x26, x27, [x1, ctx_x26]
+	ldp	x28, x29, [x1, ctx_x28]
+	ldr	x1, [x1, ctx_fpctx]
+	mov	sp, x2
+	cbnz	x1, ctx_load_rest
 	ret
+3:	// x0 is thr, its the 2nd return value, returned to cpu_main()
+	mov	x1, x2			// switch to cpu_main() to handle thr
+	b	2b			// thr->thr_running was set too long
 ctx_load_rest:
 	//  Restore rest of full context
-	mov	x1, xzr
-	str	xzr, [x1]			// TODO cause an exception
+	mov	x7, xzr
+	str	xzr, [x7]			// TODO cause an exception
 FUNCTION_END(__lwt_ctx_load_on_cpu)
 
 //  bool __lwt_bool_load_acq(bool *m);
@@ -145,40 +186,52 @@ FUNCTION_START(__lwt_ctx_save)
 	jmp	*%rsi
 FUNCTION_END(__lwt_ctx_save)
 
-//  This functions must not use the run-time (thread or cpu) stack.
-//
-//  noreturn void __lwt_ctx_load_idle_cpu(ctx_t *ctx,		/* rdi */
-//					  bool *curr_running);	/* rsi */
-//  noreturn void __lwt_ctx_load_on_cpu(ctx_t *ctx,		/* rdi */
-//				 	bool *new_running);	/* rsi */
-//  noreturn void __lwt_ctx_load(ctx_t *ctx,			/* rdi */
-//				 bool *new_running,		/* rsi */
-//				 bool *curr_running);		/* rdx */
+//  noreturn void __lwt_ctx_load(thr_t *thr,			rdi
+//				 ctx_t *ctx,			rsi
+//				 ctx_t *cpuctx,			rdx
+//				 bool *new_running,		rcx
+//				 bool *curr_running);		r8
+//  noreturn void __lwt_ctx_load_on_cpu(thr_t *thr,		rdi
+//					ctx_t *ctx,		rsi
+//					ctx_t *cpuctx,		rdx
+//					bool *new_running);	rcx
+//  noreturn void __lwt_ctx_load_idle_cpu(bool *curr_running,	rdi
+//					  ctx_t *ctx);		rsi
+
+#define	RETRY_COUNT	256
 
 FUNCTION_START(__lwt_ctx_load_idle_cpu)
-	movb	$0, (%rsi)		// current thread no longer running
+	movb	$0, (%rdi)		// current thread is no longer running
 	jmp	2f
 FUNCTION_END(__lwt_ctx_load_idle_cpu)
 FUNCTION_START(__lwt_ctx_load)
-	movb	$0, (%rdx)		// current thread no longer running
+	movb	$0, (%r8)		// current thread is no longer running
 FUNCTION_END(__lwt_ctx_load)
 FUNCTION_START(__lwt_ctx_load_on_cpu)
-1:	movzbl	(%rsi), %eax
+	movq	$RETRY_COUNT, %r9
+1:	movzbl	(%rcx), %eax
+	subq	$1, %r9
+	je	4f
 	testb	%al, %al		// loop while new thr is running ...
 	jne	1b			// ... in another cpu
-	movb	$1, (%rsi)		// new thr is now running on this cpu
-2:	movq	ctx_fpctx(%rdi), %rax
-	movq	ctx_pc(%rdi), %rsi
-	movq	ctx_sp(%rdi), %rsp
-	movq	ctx_rbp(%rdi), %rbp
-	movq	ctx_rbx(%rdi), %rbx
-	movq	ctx_r12(%rdi), %r12
-	movq	ctx_r13(%rdi), %r13
-	movq	ctx_r14(%rdi), %r14
-	movq	ctx_r15(%rdi), %r15
-	testq	%rax, %rax
+	movb	$1, (%rcx)		// new thr is now running on this cpu
+2:	xor	%rax, %rax		// return value, zero is 2nd return
+3:	movq	ctx_fpctx(%rsi), %rcx
+	movq	ctx_pc(%rsi), %rdi
+	movq	ctx_sp(%rsi), %rsp
+	movq	ctx_rbp(%rsi), %rbp
+	movq	ctx_rbx(%rsi), %rbx
+	movq	ctx_r12(%rsi), %r12
+	movq	ctx_r13(%rsi), %r13
+	movq	ctx_r14(%rsi), %r14
+	movq	ctx_r15(%rsi), %r15
+	testq	%rcx, %rcx
 	jne	ctx_load_rest
-	jmp	*%rsi			// zero rax, 2nd __lwt_ctx_save return
+	jmp	*%rdi			// zero rax, 2nd __lwt_ctx_save return
+4:	// rax is thr, its the 2nd return value, returned to cpu_main()
+	mov	%rdi, %rax
+	mov	%rdx, %rsi		// switch to cpu_main() to handle thr
+	jmp	3b			// thr->thr_running was set too long
 ctx_load_rest:
 	//  Restore rest of full context
 	movq	$0, %rcx

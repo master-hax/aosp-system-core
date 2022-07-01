@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2022 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 #include "lwt_config.h"
 
 #include <sys/mman.h>
@@ -486,21 +502,49 @@ static noreturn void	 thr_block_forever(const char *msg, void *arg);
 //  first return from ctx_save() returns a non-zero value, the second return
 //  returs the value zero.
 
-two_returns ureg_t	 __lwt_ctx_save(ctx_t *ctx);
-noreturn void		 __lwt_ctx_load(ctx_t *ctx, bool *new_running,
-					bool *curr_running);
-noreturn void		 __lwt_ctx_load_idle_cpu(ctx_t *ctx,
-						 bool *curr_running);
-noreturn void		 __lwt_ctx_load_on_cpu(ctx_t *ctx, bool *new_running);
+//  The signatures of ctx_load(), ctx_load_on_cpu() and ctx_load_idle_cpu()
+//  have ctx as their first argument, that is per the naming conventions of
+//  how LWT is implemented.  The functions that implement them (with the
+//  __lwt_ prefix below) are best implemented with the ctx argument as the
+//  second argument, and the thr argument (for the first two) as their first
+//  argument.
 
 #define	ctx_save(ctx)	 __lwt_ctx_save(ctx)
 
-#define	ctx_load(ctx, new_running, curr_running)			\
-	__lwt_ctx_load(ctx, new_running, curr_running)
-#define	ctx_load_on_cpu(ctx, new_running)				\
-	__lwt_ctx_load_on_cpu(ctx, new_running)
+#define	ctx_load(ctx, thr, cpuctx, new_running, curr_running)		\
+	__lwt_ctx_load(thr, ctx, cpuctx, new_running, curr_running)
+
+#define	ctx_load_on_cpu(ctx, thr, cpuctx, new_running)			\
+	__lwt_ctx_load_on_cpu(thr, ctx, cpuctx, new_running)
+
 #define	ctx_load_idle_cpu(ctx, curr_running)				\
-	__lwt_ctx_load_idle_cpu(ctx, curr_running)
+	__lwt_ctx_load_idle_cpu(curr_running, ctx)
+
+two_returns ureg_t	 __lwt_ctx_save(ctx_t *ctx);
+noreturn void		 __lwt_ctx_load(thr_t *thr, ctx_t *ctx, ctx_t *cpuctx,
+					bool *new_running, bool *curr_running);
+noreturn void		 __lwt_ctx_load_on_cpu(thr_t *thr, ctx_t *ctx,
+					       ctx_t *cpuctx,
+					       bool *new_running);
+noreturn void		 __lwt_ctx_load_idle_cpu(bool *curr_running,
+						 ctx_t *ctx);
+
+//  ctx_save_returns_thr() is used by cpu_main() to save its CPU context, the
+//  first return returns CTX_SAVED at context saving time, the second return
+//  is either a thread pointer or CTX_LOADED.  It is usually CTX_LOADED, but
+//  infrequently it is a thread pointer which corresponds to a thread whose
+//  context was being attempted to be loaded but the thread for that context
+//  kept its cpu_running set to true for too long, so instead the context of
+//  the CPU was loaded itself to have it handle the thread whose thr_running
+//  field remained true too long.  CTX_SAVED and CTX_LOADED have to be the
+//  values for true and false, ctx_save_returs_thr() behaves as a threelean 
+//  (isntead of as a boolean): CTX_SAVED, CTX_LOADED or a thread pointer.
+
+#define	CTX_SAVED	((thr_t *) 1)
+#define	CTX_LOADED	((thr_t *) 0)
+
+#define	ctx_save_returns_thr(ctx)					\
+	((thr_t *) __lwt_ctx_save(ctx))
 
 bool 			 __lwt_bool_load_acq(bool *m);
 ureg_t			 __lwt_ureg_load_acq(ureg_t *m);
@@ -2780,6 +2824,30 @@ retry:;
 	schedq_debug(new);
 }
 
+inline_only void schedq_insert_at_head(schedq_t *schedq, ureg_t sqix,
+				       thr_t *thr, ureg_t thridix)
+{
+	schedq_t old = schedq_loadatomic(schedq);
+retry:;
+	schedq_debug(old);
+	schedq_t new = old;
+	ureg_t state = SCHEDQ_STATE(new);
+	SCHEDQ_RCNT_DEC(new);
+	ureg_t rcnt = SCHEDQ_RCNT(new);
+	THRLN_NEXT_INIT(thr->thr_ln, sqix, rcnt, SCHEDQ_REM(new));
+	THRLN_PREV_INIT_INS(thr->thr_ln, sqix);
+	SCHEDQ_REM_SET(new, thridix);
+	state |= REM;
+	SCHEDQ_STATE_SET(new, state);
+	schedq_debug(new);
+	schedq_t pre = schedq_comp_and_swap_acq_rel(old, new, schedq);
+	if (unlikely(!schedq_equal(pre, old))) {
+		old = pre;
+		goto retry;
+	}
+	schedq_debug(new);
+}
+
 
 //}{ Functions that implement parts of schedq_remove().
 
@@ -2961,19 +3029,45 @@ static int sched_in(thr_t *thr)
 	return 0;	// must return zero for tail-recursion by caller
 }
 
+//  TODO: if called too frequently, a CPU has definitely been preempted while
+//  the thread scheduling itself out was almost done doing so, but remained
+//  thread running, if that is the case, the thr should be queued to a less
+//  frequently examined schdom.  How this is handled now by cpu_main(), allows
+//  for another thread to run prior to this one, and that will continue to be
+//  the case while runnable threads are found in the schdom, the only issue is
+//  that there is probably a measurable amount of overhead.  An alternative is
+//  to insert the thr at the tail of the queue instead of inserting at the head
+//  of the queue.  Inserting at the head of the queue is done for fairnes to
+//  the thread, the CPU it is running on might just be in an interrupt handler
+//  and when that returns all is well, the alternative is that the CPU (the
+//  kernel thread that supports it) has actually been context switched and the
+//  time until it resumes and allows the underlying LWT to finish scheduling
+//  itself out might be quire significant.
+
+static void sched_in_at_head(thr_t *thr)
+{
+	schdom_t *schdom = &thr->thr_core->core_hw->hw_schdom;
+	ureg_t prio = thr_get_prio_with_ceiling(thr);
+	schedq_t *schedq = &schdom->schdom_sqcls[prio].sqcl_schedq;
+	ureg_t sqix = schedq_index(schedq);
+	ureg_t thridix = THRID_INDEX(thr->thra.thra_thrid);
+	schedq_insert_at_head(schedq, sqix, thr, thridix);
+}
+
 noreturn inline_only void thr_run(thr_t *thr, thr_t *currthr)
 {
 	cpu_t *cpu = cpu_current();
 	cpu->cpu_running_thr = thr;
 	ctx_t *ctx = ctx_from_thr(thr);
-	ctx_load(ctx, &thr->thr_running, &currthr->thr_running);
+	ctx_load(ctx, thr, &cpu->cpu_ctx,
+		 &thr->thr_running, &currthr->thr_running);
 }
 
 noreturn inline_only void thr_run_on_cpu(thr_t *thr, cpu_t *cpu)
 {
 	cpu->cpu_running_thr = thr;
 	ctx_t *ctx = ctx_from_thr(thr);
-	ctx_load_on_cpu(ctx, &thr->thr_running);
+	ctx_load_on_cpu(ctx, thr, &cpu->cpu_ctx, &thr->thr_running);
 }
 
 noreturn inline_only void cpu_idle(cpu_t *cpu, thr_t *currthr)
@@ -2987,8 +3081,6 @@ static thr_t *schedq_get(schedq_t *schedq, ureg_t sqix)
 	thr_t *thr = schedq_remove(schedq, sqix);
 	return thr;
 }
-
-static int sched_attempts = 1;
 
 static noreturn void sched_out(thr_t *currthr)
 {
@@ -3331,6 +3423,8 @@ inline_only int cpu_setaffinity(size_t size, cpu_set_t *cpu_set)
 }
 #endif
 
+static int sched_attempts = 1;
+
 static noreturn void *cpu_main(cpu_t *cpu)
 {
 	cpu_current_set(cpu);
@@ -3349,10 +3443,28 @@ static noreturn void *cpu_main(cpu_t *cpu)
 		CPU_FREE(cpuset);
 	}
 
+	thr_t *thr_switching_out = NULL;
 	for (;;) {
 		pthread_mutex_lock(&kcore->kcore_mutex);
 restart:;	int attempts = sched_attempts;
 retry:;		thr_t *thr = schdom_get_thr(schdom);
+
+		//  A thread whose context could not be loaded because it's
+		//  cpu_running remained true too long (most likely because
+		//  the kernel preempted that CPU) has been returned by the
+		//  call to ctx_save_returns_thr(), schedule it out again by
+		//  putting it at the head of the right schedq within its
+		//  schdom above, after trying to remove some other thread to
+		//  run on this cpu.
+
+		if (unlikely(thr_switching_out != NULL)) {
+			if (!thr)
+				thr = thr_switching_out;
+			else
+				sched_in_at_head(thr_switching_out);
+			thr_switching_out = NULL;
+		}
+
 		if (!thr) {
 			if (schdom->schdom_mask != 0)
 				goto retry;
@@ -3377,11 +3489,14 @@ retry:;		thr_t *thr = schdom_get_thr(schdom);
 			core_run_locked(core, kcore);
 		pthread_mutex_unlock(&kcore->kcore_mutex);
 
-		if (ctx_save(&cpu->cpu_ctx))		// returs twice
+		thr_switching_out = ctx_save_returns_thr(&cpu->cpu_ctx);
+		if (thr_switching_out == CTX_SAVED)
 			thr_run_on_cpu(thr, cpu);	// first return
 
-		//  On the second return there are no runable threads the
-		//  cpu might be parked after it tries schedq_get() above.
+		//  Second return.  There probably are runable threads now.
+
+		if (likely(thr_switching_out == CTX_LOADED))
+			thr_switching_out = NULL;
 	}
 }
 

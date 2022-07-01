@@ -1,3 +1,18 @@
+/*
+ * Copyright (C) 2022 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 //  Many of the structures in this file use bitfields within 2 word structures
 //  that are updates with double word compare and swap.  The bit fields are
@@ -348,6 +363,8 @@ static_assert(SCHEDQ_ICNT_SHIFT + SCHEDQ_ICNT_BITS == UREG_BITS,
 	BITS_SET(SCHEDQ_RCNT, (sq).sq_rcnt_rser_iser_icnt, (ureg_t)(rcnt))
 #define	SCHEDQ_RCNT_INC(sq)						\
 	SCHEDQ_RCNT_SET(sq, SCHEDQ_RCNT(sq) + 1)
+#define	SCHEDQ_RCNT_DEC(sq)						\
+	SCHEDQ_RCNT_SET(sq, SCHEDQ_RCNT(sq) - 1)
 
 
 //  Thread links.
@@ -462,6 +479,9 @@ union thrln_s {
 
 #define	THRLN_NEXT_INIT_INS(thrln, sqix)				\
 	THRLN_NEXT_INIT(thrln, sqix, 0uL, THRIX_RESERVED_THRLN)
+
+#define	THRLN_PREV_INIT_INS(thrln, sqix)				\
+	THRLN_PREV_INIT(thrln, sqix, 0uL, THRIX_RESERVED_THRLN)
 
 #define	THRLN_PREV_INIT_NULL(thrln, sqix, icnt)				\
 	THRLN_PREV_INIT(thrln, sqix, icnt, THRID_NULL)
@@ -772,6 +792,35 @@ typedef union {
 //  the thrx_t arena.  Because threads that do not use floating are common,
 //  their floating point context is optional, thus a pointer to it the fpctx_t
 //  is in the ctx_t (NULL if not allocated).
+
+//  A thread while still running, enqueues itself onto queues or lists as
+//  part of voluntarily releasing the CPU (for example blocking on a mutex
+//  or waiting for a condition to occur), thr_running is used, and behaves as
+//  spinning barrier, when a thread is running its value is true, when it is
+//  no longer running its value is false, a thread can very quickly insert
+//  itself into a queue to wait (for a mutex or a condition) save its register
+//  context for when it resumes execution, and call into the scheduler to
+//  schedule itself out, after which another thread will run on that CPU, or
+//  if no threads are runnable, the CPU will be idled by switching to its
+//  cpu_main() function which eventually parks the CPU until there are runnable
+//  threads for it.
+
+//  Concurrently with the thread being on its way to schedule itself out, a
+//  different thread on a different CPU can awaken the first thread, insert it
+//  into a scheduling queue, schedule itself out and have the first thread
+//  chosen to run and have its context loaded on that different CPU (through
+//  ctx_load() or ctx_load_on_cpu()), thus that first thread could be running 
+//  on both CPUs (on the first CPU on the final throws of scheduling itself out
+//  and on the second CPU by loading its register context and resume from where
+//  it initially saved its context).  To prevent this concurrent execution:
+//  ctx_load_idle_cpu(), ctx_load() and ctx_load_on_cpu() serialize through
+//  cpu_running as a spinning barrier.  If the spinning is too much, it means
+//  that the first thread was involuntarily preempted by the kernel while
+//  thr_running was still set, in that case, the thread context can not be
+//  loaded, instead a switch to the per-CPU context is done and the thread
+//  pointer is returned as the value of the per-CPU ctx_save(), cpu_main()
+//  puts the thread back into a scheduling queue for it to be chosen to run
+//  later (once cpu_running is false).
 
 struct thr_s {
 	cnd_t		*thr_cnd;		// |	0-...
