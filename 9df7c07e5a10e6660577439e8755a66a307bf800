@@ -16,6 +16,24 @@
       "message": "Any reason not to use std::condition_variable for this?",
       "revId": "9df7c07e5a10e6660577439e8755a66a307bf800",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0e81c37c_b3d6d712",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_server.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 630,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-07-01T20:55:44Z",
+      "side": 1,
+      "message": "We could - there is no change in perf.. I felt this was simple.",
+      "parentUuid": "c854d0c7_e8be0b7b",
+      "revId": "9df7c07e5a10e6660577439e8755a66a307bf800",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
