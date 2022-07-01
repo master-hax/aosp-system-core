@@ -6,8 +6,27 @@
 STEPS=123456
 COUNT=2
 
-PROG=./gen/test-mp-BITS-O3-g-x64
-# PROG=./gen/test-mp-smt-BITS-O3-g-x64
+CMD=$(basename $0)
+
+usage()
+{
+	echo "usage: $CMD [x64 | arm64]" 1>&2
+	exit 1
+}
+
+if [ $# -ne 1 ] ; then
+	usage
+fi
+
+ARCH="$1"
+
+if [ "$ARCH" != x64 -a "$ARCH" != arm64 ] ; then
+	usage
+fi
+
+PROG=./gen/test-lwt-mp-BITS-O3-g-$ARCH
+# PROG=./gen/test-lwt-mp-smt-BITS-O3-g-$ARCH
+
 
 while read START END ; do
 	ATTEMPTS=$START
@@ -25,6 +44,6 @@ LIST
 
 C=0
 while [ $C -lt $COUNT ] ; do
-	echo pthreads: $(/bin/time ./gen/test-pthread-O3-g-x64 $STEPS 2>&1)
+	echo pthreads: $(/bin/time ./gen/test-pthread-O3-g-$ARCH $STEPS 2>&1)
 	C=$[ C + 1 ]
 done

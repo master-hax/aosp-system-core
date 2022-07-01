@@ -1,10 +1,15 @@
 
 #include "lwt_config.h"
-#include "lwt_asm.h"
 #ifndef LWT_CTX_ARRAY
 #include "lwt_asm_gen.h"
 #endif
 #include "lwt_arch.h"
+
+#define FUNCTION_START(name) \
+        .text; .align  2; .global name; .type name, %function; name:    
+
+#define FUNCTION_END(name)						\
+        .size name, .-name
 
 #ifdef LWT_ARM64 //{
 
