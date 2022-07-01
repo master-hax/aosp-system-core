@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7ae121fd_52b5c423",
+        "filename": "fs_mgr/tests/vts_fs_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-07-01T16:46:57Z",
+      "side": 1,
+      "message": "Let\u0027s change this instead. android13-5.10 has EROFS sysfs. However android12-5.10 doesn\u0027t. It should be:\n\n\n    if (GetVsrLevel() \u003c __ANDROID_API_T__) {",
+      "revId": "f6e82d3ef7815db8c22a4a887b53363ed35b801e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
