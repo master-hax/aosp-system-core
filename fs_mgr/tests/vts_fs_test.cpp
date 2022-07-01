@@ -48,6 +48,10 @@ TEST(fs, ErofsSupported) {
     ASSERT_TRUE(android::base::ReadFileToString("/proc/filesystems", &fs));
     EXPECT_THAT(fs, ::testing::HasSubstr("\terofs\n"));
 
+    // sysfs support for erofs only required in 5.15+
+    if (major < 5 || (major == 5 && minor < 15)) {
+        GTEST_SKIP();
+    }
     ASSERT_EQ(access("/sys/fs/erofs", F_OK), 0);
 }
 
