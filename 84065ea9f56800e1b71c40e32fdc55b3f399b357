@@ -34,6 +34,24 @@
       "parentUuid": "722bd44b_08fc6d5c",
       "revId": "84065ea9f56800e1b71c40e32fdc55b3f399b357",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "561383ab_3bf1eb55",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-07-01T01:44:59Z",
+      "side": 1,
+      "message": "Shouldn\u0027t baseline numbers be \"post-OTA without patch\"? Otherwise, it\u0027s not clear how to compare them.",
+      "parentUuid": "214ac343_5a006b98",
+      "revId": "84065ea9f56800e1b71c40e32fdc55b3f399b357",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
