@@ -455,7 +455,12 @@ std::basic_string<uint8_t> CowWriter::Compress(const void* data, size_t length) 
                            << ", compression bound: " << bound << ", ret: " << compressed_size;
                 return {};
             }
-            buffer.resize(compressed_size);
+            if (compressed_size >= length) {
+                buffer.resize(length);
+                memcpy(buffer.data(), data, length);
+            } else {
+                buffer.resize(compressed_size);
+            }
             return buffer;
         }
         default:
