@@ -52,6 +52,24 @@
       "parentUuid": "214ac343_5a006b98",
       "revId": "84065ea9f56800e1b71c40e32fdc55b3f399b357",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5aac2638_19f6c38d",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-07-01T06:34:25Z",
+      "side": 1,
+      "message": "Baseline numbers are after snapshot-merge is completed when there is no daemon running. Sorry for the confusion. I should have mentioned as \"snapshot-merge completion\" instead of saying \"no OTA is installed\".",
+      "parentUuid": "561383ab_3bf1eb55",
+      "revId": "84065ea9f56800e1b71c40e32fdc55b3f399b357",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
