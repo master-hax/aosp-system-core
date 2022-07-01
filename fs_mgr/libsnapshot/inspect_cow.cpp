@@ -72,12 +72,22 @@ class StringSink : public IByteSink {
         *actual = requested;
         return stream_.data() + old_size;
     }
-    bool ReturnData(void*, size_t) override { return true; }
+    bool ReturnData(void* ptr, size_t size) override {
+        auto end = static_cast<char*>(ptr) + size;
+        // Cannot return more data than previously requested buffer size
+        if (end > &stream_[stream_.size()]) {
+            return false;
+        }
+        returned_ += size;
+        stream_.resize(returned_);
+        return true;
+    }
     void Reset() { stream_.clear(); }
 
     std::string& stream() { return stream_; }
 
   private:
+    size_t returned_ = 0;
     std::string stream_;
 };
 

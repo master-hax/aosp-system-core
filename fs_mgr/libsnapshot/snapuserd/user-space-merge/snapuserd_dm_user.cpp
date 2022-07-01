@@ -232,7 +232,11 @@ void Worker::InitializeBufsink() {
     // daemon and dm-user. The buffer comprises of header and a fixed payload.
     // If the dm-user requests a big IO, the IO will be broken into chunks
     // of PAYLOAD_BUFFER_SZ.
-    size_t buf_size = sizeof(struct dm_user_header) + PAYLOAD_BUFFER_SZ;
+    // + BLOCK_SZ * 2 because some inplace decompression scheme require additional buffer size. For
+    // example, LZ4 require total buffer size of
+    // LZ4_DECOMPRESS_INPLACE_BUFFER_SIZE(PAYLOAD_BUFFER_SZ) which is PAYLOAD_BUFFER_SZ +
+    // (PAYLOAD_BUFFER_SZ>>8) + 32
+    const size_t buf_size = sizeof(struct dm_user_header) + PAYLOAD_BUFFER_SZ + BLOCK_SZ * 2;
     bufsink_.Initialize(buf_size);
 }
 

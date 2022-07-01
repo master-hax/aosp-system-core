@@ -130,10 +130,9 @@ borrowed_fd CompressedSnapshotReader::GetSourceFd() {
 
 class MemoryByteSink : public IByteSink {
   public:
-    MemoryByteSink(void* buf, size_t count) {
-        buf_ = reinterpret_cast<uint8_t*>(buf);
+    MemoryByteSink(void* buf, size_t count)
+        : buf_(reinterpret_cast<uint8_t*>(buf)), end_(buf_ + count) {
         pos_ = buf_;
-        end_ = buf_ + count;
     }
 
     void* GetBuffer(size_t requested, size_t* actual) override {
@@ -147,16 +146,28 @@ class MemoryByteSink : public IByteSink {
         return start;
     }
 
-    bool ReturnData(void*, size_t) override { return true; }
+    bool ReturnData(void* ptr, size_t size) override {
+        // Returning data outside of buffer boundary
+        if (ptr < buf_) {
+            return false;
+        }
+        auto end = static_cast<uint8_t*>(ptr) + size;
+        // Cannot return more data than previously requested buffer size
+        if (end > pos_) {
+            return false;
+        }
+        pos_ = end;
+        return true;
+    }
 
     uint8_t* buf() const { return buf_; }
     uint8_t* pos() const { return pos_; }
     size_t remaining() const { return end_ - pos_; }
 
   private:
-    uint8_t* buf_;
+    uint8_t* const buf_;
     uint8_t* pos_;
-    uint8_t* end_;
+    uint8_t* const end_;
 };
 
 ssize_t CompressedSnapshotReader::Read(void* buf, size_t count) {
@@ -217,6 +228,13 @@ class PartialSink : public MemoryByteSink {
             return discard_;
         }
         return MemoryByteSink::GetBuffer(requested, actual);
+    }
+
+    bool ReturnData(void* ptr, size_t size) override {
+        if (&discard_[0] <= ptr && ptr < &discard_[BLOCK_SZ]) {
+            return static_cast<char*>(ptr) + size < &discard_[BLOCK_SZ];
+        }
+        return MemoryByteSink::ReturnData(ptr, size);
     }
 
   private:
