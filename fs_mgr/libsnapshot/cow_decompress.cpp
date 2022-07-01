@@ -20,6 +20,7 @@
 
 #include <android-base/logging.h>
 #include <brotli/decode.h>
+#define LZ4_STATIC_LINKING_ONLY
 #include <lz4.h>
 #include <zlib.h>
 
@@ -265,7 +266,41 @@ class Lz4Decompressor final : public IDecompressor {
   public:
     ~Lz4Decompressor() override = default;
 
+    bool InplaceDecompress(const size_t output_size) {
+        const auto inplace_buffer_size = LZ4_DECOMPRESS_INPLACE_BUFFER_SIZE(output_size);
+        size_t actual_buffer_size = 0;
+        auto&& output_buffer = sink_->GetBuffer(inplace_buffer_size, &actual_buffer_size);
+        if (actual_buffer_size != inplace_buffer_size) {
+            LOG(ERROR) << "Failed to allocate buffer of size " << output_size << " only got "
+                       << actual_buffer_size << " bytes";
+            return false;
+        }
+        size_t bytes_read = 0;
+        auto input_buffer =
+                static_cast<char*>(output_buffer) + inplace_buffer_size - stream_->Size();
+        stream_->Read(input_buffer, stream_->Size(), &bytes_read);
+        if (bytes_read != stream_->Size()) {
+            LOG(ERROR) << "Failed to read all input at once. Expected: " << stream_->Size()
+                       << " actual: " << bytes_read;
+            return false;
+        }
+        const int bytes_decompressed = LZ4_decompress_safe(
+                input_buffer, static_cast<char*>(output_buffer), stream_->Size(), output_size);
+        if (bytes_decompressed != output_size) {
+            LOG(ERROR) << "Failed to decompress LZ4 block, expected output size: " << output_size
+                       << ", actual: " << bytes_decompressed;
+            return false;
+        }
+        sink_->ReturnData(output_buffer, output_size);
+        return true;
+    }
+
     bool Decompress(const size_t output_size) override {
+        // If input size >= output size, that means compression actually expanded data. Per LZ4
+        // documentation, inplace decompression cannot be used in such cases.
+        if (stream_->Size() < output_size) {
+            return InplaceDecompress(output_size);
+        }
         size_t actual_buffer_size = 0;
         auto&& output_buffer = sink_->GetBuffer(output_size, &actual_buffer_size);
         if (actual_buffer_size != output_size) {
