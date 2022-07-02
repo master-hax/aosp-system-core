@@ -16,6 +16,24 @@
       "message": "Let\u0027s change this instead. android13-5.10 has EROFS sysfs. However android12-5.10 doesn\u0027t. It should be:\n\n\n    if (GetVsrLevel() \u003c __ANDROID_API_T__) {",
       "revId": "f6e82d3ef7815db8c22a4a887b53363ed35b801e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fa030eee_9b7c1b13",
+        "filename": "fs_mgr/tests/vts_fs_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1707593
+      },
+      "writtenOn": "2022-07-02T04:55:55Z",
+      "side": 1,
+      "message": "The way as you commented is more reasonable.\nAnother method is adding this check before line 55, then we can check if EROFS is present or not in /proc/filesystems for android12-5.10.\nWhich do you think is better ?",
+      "parentUuid": "7ae121fd_52b5c423",
+      "revId": "f6e82d3ef7815db8c22a4a887b53363ed35b801e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
