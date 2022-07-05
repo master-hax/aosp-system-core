@@ -48,7 +48,11 @@ TEST(fs, ErofsSupported) {
     ASSERT_TRUE(android::base::ReadFileToString("/proc/filesystems", &fs));
     EXPECT_THAT(fs, ::testing::HasSubstr("\terofs\n"));
 
-    ASSERT_EQ(access("/sys/fs/erofs", F_OK), 0);
+    // EROFS sysfs not support in Android S
+    if ( GetVsrLevel()  >= __ANDROID_API_T__) {
+        ASSERT_EQ(access("/sys/fs/erofs", F_OK), 0);
+    }
+    
 }
 
 TEST(fs, PartitionTypes) {
