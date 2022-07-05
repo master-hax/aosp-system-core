@@ -16,6 +16,24 @@
       "message": "please check the comments left by the presubmit lint",
       "revId": "fc1c4c3078eb9eeb5eff82cd0dea9de784bdf8f4",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "09b8166d_7bda18c3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1355299
+      },
+      "writtenOn": "2022-07-05T07:18:55Z",
+      "side": 1,
+      "message": "We will upload a new patch to fix commit messages.",
+      "parentUuid": "6795e52b_4e672279",
+      "revId": "fc1c4c3078eb9eeb5eff82cd0dea9de784bdf8f4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
