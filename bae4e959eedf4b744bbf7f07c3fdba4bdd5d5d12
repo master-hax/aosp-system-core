@@ -128,6 +128,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "b7fb3435_ceca361b",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 642,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-07-06T13:58:11Z",
+      "side": 1,
+      "message": "Rather than hacking fs_mgr_overlayfs_set_shared_mount like this, I\u0027d prefer r.android.com/2146960 which fixes the precondition of remount.",
+      "parentUuid": "8d0b7b5d_c84afe53",
+      "revId": "bae4e959eedf4b744bbf7f07c3fdba4bdd5d5d12",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "dd8f3ebf_b443e1fc",
         "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
         "patchSetId": 1
