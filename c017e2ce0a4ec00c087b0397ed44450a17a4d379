@@ -16,6 +16,24 @@
       "message": "I went back to b/137267623 which has the CL that moved the self tests to early init (https://r.android.com/1119331). IIUC there were some SELinux issues related to the no longer used to marker file, can/should we drop that from the sepolicy now?",
       "revId": "c017e2ce0a4ec00c087b0397ed44450a17a4d379",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e5bf6db7_07b32943",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1334152
+      },
+      "writtenOn": "2022-07-07T15:38:00Z",
+      "side": 1,
+      "message": "We can indeed.  b/223164584 is tracking that.",
+      "parentUuid": "0323badf_c1765949",
+      "revId": "c017e2ce0a4ec00c087b0397ed44450a17a4d379",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
