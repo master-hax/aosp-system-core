@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "984c3c33_c158f2f4",
+        "filename": "fastboot/device/commands.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 682,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-07-08T17:17:39Z",
+      "side": 1,
+      "message": "Please split this up and just have the return value check..",
+      "revId": "15366c6e0399bf28a4398e046e4578e5a8c2894d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "84ce190d_1e553efb",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-07-08T17:17:39Z",
+      "side": 1,
+      "message": "Any of this breaks with GRF (S vendor) ?",
+      "revId": "15366c6e0399bf28a4398e046e4578e5a8c2894d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8958a4ca_7b4de5e0",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 2877,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-07-08T17:17:39Z",
+      "side": 1,
+      "message": "Shouldn\u0027t this be error ?\n\nbtw, how is this related to this change ? sounds like some additional check not related to this topic",
+      "revId": "15366c6e0399bf28a4398e046e4578e5a8c2894d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
