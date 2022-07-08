@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "c1ab9ed7_e75914a7",
+        "filename": "fastboot/device/commands.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 682,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2022-07-08T17:59:24Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "984c3c33_c158f2f4",
+      "revId": "15366c6e0399bf28a4398e046e4578e5a8c2894d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "84ce190d_1e553efb",
@@ -35,6 +53,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "67c60199_51692b03",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2022-07-08T17:59:24Z",
+      "side": 1,
+      "message": "It should be fine. libsnapshot is statically linked to update_engine. The only communication between system and vendor is via HALs. Since the new BootControl client is compatible with both AIDL and HIDL version of boot control HAL, we should be good with S vendor or T vendor.",
+      "parentUuid": "84ce190d_1e553efb",
+      "revId": "15366c6e0399bf28a4398e046e4578e5a8c2894d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "8958a4ca_7b4de5e0",
@@ -48,6 +84,24 @@
       "writtenOn": "2022-07-08T17:17:39Z",
       "side": 1,
       "message": "Shouldn\u0027t this be error ?\n\nbtw, how is this related to this change ? sounds like some additional check not related to this topic",
+      "revId": "15366c6e0399bf28a4398e046e4578e5a8c2894d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7d323f2a_8eb4af4d",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 2877,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2022-07-08T17:59:24Z",
+      "side": 1,
+      "message": "Done, reverted",
+      "parentUuid": "8958a4ca_7b4de5e0",
       "revId": "15366c6e0399bf28a4398e046e4578e5a8c2894d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
