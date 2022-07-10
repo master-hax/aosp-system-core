@@ -48,15 +48,30 @@
 //  two_returns ureg_t __lwt_ctx_save(ctx_t *ctx);
 
 FUNCTION_START(__lwt_ctx_save)
-	mov	x1, sp				// sp can not be used with stp
-	stp	x30, x1, [x0, ctx_pc]		// [pc, sp]
+	mov	x17, sp				// sp can not be used with stp
+
+	//  8 floating point registers stored into a cache line
+
+	stp	d8,  d9,  [x0, ctx_d8]
+	stp	d10, d11, [x0, ctx_d10]
+	stp	d12, d13, [x0, ctx_d12]
+	stp	d14, d15, [x0, ctx_d14]
+
+	//  8 registers stored into a cache line
+
 	stp	x18, x19, [x0, ctx_x18]
 	stp	x20, x21, [x0, ctx_x20]
 	stp	x22, x23, [x0, ctx_x22]
 	stp	x24, x25, [x0, ctx_x24]
+
+	//  8 registers stored into a cache line
+	//  pstate == 0 implies "half" context
+
 	stp	x26, x27, [x0, ctx_x26]
 	stp	x28, x29, [x0, ctx_x28]
-	str	xzr, [x0, ctx_fpctx]		// this implies half context
+	stp	x30, x17, [x0, ctx_x30]		// [return address, sp]
+	stp	x30, xzr, [x0, ctx_pc]		// [pc, pstate]
+
 	ret					// x0 is non-zero return value
 FUNCTION_END(__lwt_ctx_save)
 
@@ -92,11 +107,14 @@ FUNCTION_START(__lwt_ctx_load_idle_cpu)
 	mov	x0, xzr			// return value, zero is 2nd return
 	b	2f
 FUNCTION_END(__lwt_ctx_load_idle_cpu)
+
 FUNCTION_START(__lwt_ctx_load)
 	stlrb	wzr, [x4]		// current thread is no longer running
 FUNCTION_END(__lwt_ctx_load)
+
 FUNCTION_START(__lwt_ctx_load_on_cpu)
 	mov	w5, RETRY_COUNT
+
 1:	ldarb	w6, [x3]		// loop while new thr is running ...
 	sub	w5, w5, 1
 	cbz	w5, 3f
@@ -104,20 +122,35 @@ FUNCTION_START(__lwt_ctx_load_on_cpu)
 	mov	w6, 1
 	stlrb	w6, [x3]		// new thr is now running on this cpu
 	mov	x0, xzr			// return value, zero is 2nd return
-2:	ldp	x30, x2, [x1, ctx_pc]	// [pc, sp] can not use sp here
+
+2:	//  8 registers loaded from a cache line
+
+	ldp	x14, x15, [x1, ctx_pc]	// get [pc, pstate] as early as possible
+	ldp	x26, x27, [x1, ctx_x26]
+	ldp	x28, x29, [x1, ctx_x28]
+	ldp	x30, x17, [x1, ctx_x30]	// [x30, sp] can not use sp here
+
+	//  8 registers loaded from a cache line
+
 	ldp	x18, x19, [x1, ctx_x18]
 	ldp	x20, x21, [x1, ctx_x20]
 	ldp	x22, x23, [x1, ctx_x22]
 	ldp	x24, x25, [x1, ctx_x24]
-	ldp	x26, x27, [x1, ctx_x26]
-	ldp	x28, x29, [x1, ctx_x28]
-	ldr	x1, [x1, ctx_fpctx]
-	mov	sp, x2
-	cbnz	x1, ctx_load_rest
-	ret
+	mov	sp, x17
+	cbnz	x15, ctx_load_rest	// pstate == zero, means "half" context
+
+	//  8 floating point registers loaded from a cache line
+
+	ldp	d8,  d9,  [x1, ctx_d8]
+	ldp	d10, d11, [x1, ctx_d10]
+	ldp	d12, d13, [x1, ctx_d12]
+	ldp	d14, d15, [x1, ctx_d14]
+	br	x14
+
 3:	// x0 is thr, its the 2nd return value, returned to cpu_main()
 	mov	x1, x2			// switch to cpu_main() to handle thr
 	b	2b			// thr->thr_running was set too long
+
 ctx_load_rest:
 	//  Restore rest of full context
 	mov	x7, xzr
@@ -159,6 +192,16 @@ FUNCTION_START(__lwt_thr_start_glue)
 	mov	x1, reg_thr_start_func		// arg1
 	br	reg_thr_start_pc
 FUNCTION_END(__lwt_thr_start_glue)
+ 
+FUNCTION_START(__lwt_get_fpcr)
+	mrs	x0, fpcr
+	ret
+FUNCTION_END(__lwt_get_fpcr)
+ 
+FUNCTION_START(__lwt_set_fpcr)
+	msr	fpcr, x0
+	ret
+FUNCTION_END(__lwt_set_fpcr)
 
 #endif //}
 

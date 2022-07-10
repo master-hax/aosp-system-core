@@ -24,7 +24,7 @@ fi
 DEFS='-D_GNU_SOURCE'
 DEFS="$DEFS -DLWT_PTR_BITS=64"
 # DEFS="$DEFS -DLWT_FIXED_ADDRESSES"
-DEFS="$DEFS -DLWT_CTX_ARRAY"
+# DEFS="$DEFS -DLWT_CTX_ARRAY"
 
 CFLAGS='-fomit-frame-pointer -pthread -Werror -Wall'
 CFLAGS="$CFLAGS -fdiagnostics-color=never"

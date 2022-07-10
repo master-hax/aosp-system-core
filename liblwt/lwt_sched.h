@@ -877,14 +877,23 @@ static_assert(POWER_OF_TWO(sizeof(thr_t)), "thr_t size is wrong");
 	((thra).thra_reuse_index += 1uL << THRA_REUSE_SHIFT)
 
 typedef struct {
-	ctx_t		 thrx_ctx;
+	//  The fields prior to thrx_ctx use 6 ureg_t, this ensures that on
+	//  ARM64 thrx_ctx uses the last two ureg_t of the cache line, and
+	//  the remainder of the ctx_t's 32 fit exactly in 4 cache lines.
+	//  This reduces cache lines touched for a "half" contex register
+	//  save and restore to 3 cache lines. TODO: document and tune wrt
+	//  to X64 context.
+
+	ureg_t		 thrx_pad;
+	stk_t		*thrx_stk;
+	void		*thrx_retval;
 	mtx_t		*thrx_join_mtx;
 	cnd_t		*thrx_join_cnd;
+	bool		 thrx_pad2[sizeof(ureg_t) - 3];
 	bool		 thrx_detached;
 	bool		 thrx_exited;
 	bool		 thrx_joining;
-	void		*thrx_retval;
-	stk_t		*thrx_stk;
+	ctx_t		 thrx_ctx;
 } aligned_cache_line thrx_t;
 
 

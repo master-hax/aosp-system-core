@@ -53,62 +53,71 @@ typedef struct {
 
 #ifndef LWT_CTX_ARRAY //{
 
+//  The ctx_t register context is a subset prefix of the sigcontext structure,
+//  it excludes the fault_address at the start of it, and __reserved array at
+//  the end of it.  The fault address is excluded because it is not needed and
+//  would prevent the register pairs from being 16-byte aligned.
+
+//  The context is split into two areas, the "half" context and the "rest" of
+//  the context, together they make a "full" context. To keep ctx_t a prefix of
+//  sigcontext, the "rest" area is first.  The address of the ctx_t is chosen
+//  so that their first two ureg_t are at the last two ureg_t of a cache line.
+//  This makes the subsequent 32 ureg_t into 4 groups, each cache aligned.
+
 typedef struct {
-	//  This part is the "half" context.
-	//
-	//  First 16 are callee saved, keeping these 16 together puts them
-	//  in two cache lines. The ctx_fpctx is among those 16 so that FP
-	//  context, if any can be restored without touching the rest of this
-	//  structure.  Registers are kept as pairs to use load and store pair
-	//  instructions, the pairs are shown below as: [x, y].
-	//
-	//  x0 is not part of the callee saved set of registers, its both the
-	//  first argument and the return value of functions, instead of a pad
-	//  word to complete the 2nd cache line, having x0 here allows for a
-	//  newly created thread to start with a half context with its argument
-	//  value because the rest of the context is meaningless at that time.
 
-        ureg_t		 ctx_x0;	// [x0, fpctx]
-	fpctx_t		*ctx_fpctx;
-        ureg_t		 ctx_pc;	// [pc, sp]
-	ureg_t		 ctx_sp;
-	ureg_t		 ctx_x18;	// [x18, x19]
-	ureg_t		 ctx_x19;
-	ureg_t		 ctx_x20;	// [x20, x21]
-	ureg_t		 ctx_x21;
+	//  This is the "rest" of the context.
 
-	ureg_t		 ctx_x22;	// [x22, x23]
-	ureg_t		 ctx_x23;
-	ureg_t		 ctx_x24;	// [x24, x25]
-	ureg_t		 ctx_x25;
-	ureg_t		 ctx_x26;	// [x26, x27]
-	ureg_t		 ctx_x27;
-	ureg_t		 ctx_x28;	// [x28, x29]
-	ureg_t		 ctx_x29;
-
-	//  This is the rest of the context.
-
-	ureg_t		 ctx_x30;	// [x30, x1]
+	ureg_t		 ctx_x0;	// [x0, x1]
 	ureg_t		 ctx_x1;
+
 	ureg_t		 ctx_x2;	// [x2, x3]
 	ureg_t		 ctx_x3;
 	ureg_t		 ctx_x4;	// [x4, x5]
 	ureg_t		 ctx_x5;
 	ureg_t		 ctx_x6;	// [x6, x7]
 	ureg_t		 ctx_x7;
-
 	ureg_t		 ctx_x8;	// [x8, x9]
 	ureg_t		 ctx_x9;
-	ureg_t		 ctx_x10;	// [x10, x11]
-	ureg_t		 ctx_x11;
-	ureg_t		 ctx_x12;	// [x12, x13]
-	ureg_t		 ctx_x13;
-	ureg_t		 ctx_x14;	// [x14, x15]
-	ureg_t		 ctx_x15;
 
-	ureg_t		 ctx_x16;	// [x16, x17]
+	//  This part is the "half" context.
+	//
+	//  The first 8 are floating point registers that are callee saved.
+	//  In a "half" context d8-d15 are stored in the location for x10-x17
+	//  which is not used in a "half" context.  In a half context only the
+	//  low 64 bits of v8-v15 need to be saved, those low halves are saved
+	//  more efficiently in a single cache line by storing them here.
+	//
+	//  Last 16 are general purpose registers that are callee saved,
+	//  keeping these 16 together puts them in two cache lines.
+
+	ureg_t		 ctx_x10;	// [x10, x11] or [d8, d9]
+	ureg_t		 ctx_x11;
+	ureg_t		 ctx_x12;	// [x12, x13] or [d10, d11]
+	ureg_t		 ctx_x13;
+	ureg_t		 ctx_x14;	// [x14, x15] or [d12, d13]
+	ureg_t		 ctx_x15;
+	ureg_t		 ctx_x16;	// [x16, x17] or [d14, d15]
 	ureg_t		 ctx_x17;
-	ureg_t		 ctx_flags;
+
+	ureg_t		 ctx_x18;	// [x18, x19]
+	ureg_t		 ctx_x19;
+	ureg_t		 ctx_x20;	// [x20, x21]
+	ureg_t		 ctx_x21;
+	ureg_t		 ctx_x22;	// [x22, x23]
+	ureg_t		 ctx_x23;
+	ureg_t		 ctx_x24;	// [x24, x25]
+	ureg_t		 ctx_x25;
+
+	ureg_t		 ctx_x26;	// [x26, x27]
+	ureg_t		 ctx_x27;
+	ureg_t		 ctx_x28;	// [x28, x29]
+	ureg_t		 ctx_x29;
+        ureg_t		 ctx_x30;	// [x30, sp]
+	ureg_t		 ctx_sp;
+        ureg_t		 ctx_pc;	// [pc, pstate]
+	ureg_t		 ctx_pstate;
+
 } ctx_t;
 
 #else //}{ LWT_CTX_ARRAY
@@ -123,93 +132,91 @@ typedef struct {
 //  when compiling a program, generating a header file, and using it in
 //  the Android build to build other files is understood.
 
-#define	CTX_NREGS	 35
+#define	CTX_NREGS	 34
 typedef struct {
 	ureg_t		 ctx_regs[CTX_NREGS];
 } ctx_t;
 
-#define	ctx_x0		ctx_regs[CTX_X0_IX]
-#define	ctx_fpctx	ctx_regs[CTX_FPCTX_IX]
-#define	ctx_pc		ctx_regs[CTX_PC_IX]
-#define	ctx_sp		ctx_regs[CTX_SP_IX]
-#define	ctx_x18		ctx_regs[CTX_X18_IX]
-#define	ctx_x19		ctx_regs[CTX_X19_IX]
-#define	ctx_x20		ctx_regs[CTX_X20_IX]
-#define	ctx_x21		ctx_regs[CTX_X21_IX]
+#define	ctx_x0			ctx_regs[CTX_X0_IX]
+#define	ctx_x1			ctx_regs[CTX_X1_IX]
 
-#define	ctx_x22		ctx_regs[CTX_X22_IX]
-#define	ctx_x23		ctx_regs[CTX_X23_IX]
-#define	ctx_x24		ctx_regs[CTX_X24_IX]
-#define	ctx_x25		ctx_regs[CTX_X25_IX]
-#define	ctx_x26		ctx_regs[CTX_X26_IX]
-#define	ctx_x27		ctx_regs[CTX_X27_IX]
-#define	ctx_x28		ctx_regs[CTX_X28_IX]
-#define	ctx_x29		ctx_regs[CTX_X29_IX]
+#define	ctx_x2			ctx_regs[CTX_X2_IX]
+#define	ctx_x3			ctx_regs[CTX_X3_IX]
+#define	ctx_x4			ctx_regs[CTX_X4_IX]
+#define	ctx_x5			ctx_regs[CTX_X5_IX]
+#define	ctx_x6			ctx_regs[CTX_X6_IX]
+#define	ctx_x7			ctx_regs[CTX_X7_IX]
+#define	ctx_x8			ctx_regs[CTX_X8_IX]
+#define	ctx_x9			ctx_regs[CTX_X9_IX]
 
-#define	ctx_x30		ctx_regs[CTX_X30_IX]
-#define	ctx_x1		ctx_regs[CTX_X1_IX]
-#define	ctx_x2		ctx_regs[CTX_X2_IX]
-#define	ctx_x3		ctx_regs[CTX_X3_IX]
-#define	ctx_x4		ctx_regs[CTX_X4_IX]
-#define	ctx_x5		ctx_regs[CTX_X5_IX]
-#define	ctx_x6		ctx_regs[CTX_X6_IX]
-#define	ctx_x7		ctx_regs[CTX_X7_IX]
+#define	ctx_x10			ctx_regs[CTX_X10_IX]
+#define	ctx_x11			ctx_regs[CTX_X11_IX]
+#define	ctx_x12			ctx_regs[CTX_X12_IX]
+#define	ctx_x13			ctx_regs[CTX_X13_IX]
+#define	ctx_x14			ctx_regs[CTX_X14_IX]
+#define	ctx_x15			ctx_regs[CTX_X15_IX]
+#define	ctx_x16			ctx_regs[CTX_X16_IX]
+#define	ctx_x17			ctx_regs[CTX_X17_IX]
 
-#define	ctx_x8		ctx_regs[CTX_X8_IX]
-#define	ctx_x9		ctx_regs[CTX_X9_IX]
-#define	ctx_x10		ctx_regs[CTX_X10_IX]
-#define	ctx_x11		ctx_regs[CTX_X11_IX]
-#define	ctx_x12		ctx_regs[CTX_X12_IX]
-#define	ctx_x13		ctx_regs[CTX_X13_IX]
-#define	ctx_x14		ctx_regs[CTX_X14_IX]
-#define	ctx_x15		ctx_regs[CTX_X15_IX]
+#define	ctx_x18			ctx_regs[CTX_X18_IX]
+#define	ctx_x19			ctx_regs[CTX_X19_IX]
+#define	ctx_x20			ctx_regs[CTX_X20_IX]
+#define	ctx_x21			ctx_regs[CTX_X21_IX]
+#define	ctx_x22			ctx_regs[CTX_X22_IX]
+#define	ctx_x23			ctx_regs[CTX_X23_IX]
+#define	ctx_x24			ctx_regs[CTX_X24_IX]
+#define	ctx_x25			ctx_regs[CTX_X25_IX]
 
-#define	ctx_x16		ctx_regs[CTX_X16_IX]
-#define	ctx_x17		ctx_regs[CTX_X17_IX]
-#define	ctx_flags	ctx_regs[CTX_FLAGS_IX]
+#define	ctx_x26			ctx_regs[CTX_X26_IX]
+#define	ctx_x27			ctx_regs[CTX_X27_IX]
+#define	ctx_x28			ctx_regs[CTX_X28_IX]
+#define	ctx_x29			ctx_regs[CTX_X29_IX]
+#define	ctx_x30			ctx_regs[CTX_X30_IX]
+#define	ctx_sp			ctx_regs[CTX_SP_IX]
+#define	ctx_pc			ctx_regs[CTX_PC_IX]
+#define	ctx_pstate		ctx_regs[CTX_PSTATE_IX]
 
 #endif //} LWT_CTX_ARRAY
 #endif //} LWT_C
 
-#define CTX_X0_IX	0
-#define CTX_FPCTX_IX	1
-#define CTX_PC_IX	2
-#define CTX_SP_IX	3
-#define CTX_X18_IX	4
-#define CTX_X19_IX	5
-#define CTX_X20_IX	6
-#define CTX_X21_IX	7
+#define CTX_X0_IX		0
+#define CTX_X1_IX		1
 
-#define CTX_X22_IX	8
-#define CTX_X23_IX	9
-#define CTX_X24_IX	10
-#define CTX_X25_IX	11
-#define CTX_X26_IX	12
-#define CTX_X27_IX	13
-#define CTX_X28_IX	14
-#define CTX_X29_IX	15
+#define CTX_X2_IX		2
+#define CTX_X3_IX		3
+#define CTX_X4_IX		4
+#define CTX_X5_IX		5
+#define CTX_X6_IX		6
+#define CTX_X7_IX		7
+#define CTX_X8_IX		8
+#define CTX_X9_IX		9
 
-#define CTX_X30_IX	16
-#define CTX_X1_IX	17
-#define CTX_X2_IX	18
-#define CTX_X3_IX	19
-#define CTX_X4_IX	20
-#define CTX_X5_IX	21
-#define CTX_X6_IX	22
-#define CTX_X7_IX	23
+#define CTX_X10_IX		10
+#define CTX_X11_IX		11
+#define CTX_X12_IX		12
+#define CTX_X13_IX		13
+#define CTX_X14_IX		14
+#define CTX_X15_IX		15
+#define CTX_X16_IX		16
+#define CTX_X17_IX		17
 
-#define CTX_X8_IX	24
-#define CTX_X9_IX	25
-#define CTX_X10_IX	26
-#define CTX_X11_IX	27
-#define CTX_X12_IX	28
-#define CTX_X13_IX	29
-#define CTX_X14_IX	30
-#define CTX_X15_IX	31
+#define CTX_X18_IX		18
+#define CTX_X19_IX		19
+#define CTX_X20_IX		20
+#define CTX_X21_IX		21
+#define CTX_X22_IX		22
+#define CTX_X23_IX		23
+#define CTX_X24_IX		24
+#define CTX_X25_IX		25
 
-#define CTX_X16_IX	32
-#define CTX_X17_IX	33
-#define CTX_FLAGS_IX	34
+#define CTX_X26_IX		26
+#define CTX_X27_IX		27
+#define CTX_X28_IX		28
+#define CTX_X29_IX		29
+#define CTX_X30_IX		30
+#define CTX_SP_IX		31
+#define CTX_PC_IX		32
+#define CTX_PSTATE_IX		33
 
 #ifdef LWT_C //{
 
@@ -223,46 +230,57 @@ typedef struct {
 #define	reg_thr_start_func	x20
 #define	reg_thr_start_pc	x21
 
-#define	ctx_x0		(SIZEOF_UREG_T * CTX_X0_IX)
-#define	ctx_fpctx	(SIZEOF_UREG_T * CTX_FPCTX_IX)
-#define	ctx_pc		(SIZEOF_UREG_T * CTX_PC_IX)
-#define	ctx_sp		(SIZEOF_UREG_T * CTX_SP_IX)
-#define	ctx_x18		(SIZEOF_UREG_T * CTX_X18_IX)
-#define	ctx_x19		(SIZEOF_UREG_T * CTX_X19_IX)
-#define	ctx_x20		(SIZEOF_UREG_T * CTX_X20_IX)
-#define	ctx_x21		(SIZEOF_UREG_T * CTX_X21_IX)
+#define	ctx_d8		ctx_x10
+#define	ctx_d9		ctx_x11
+#define	ctx_d10		ctx_x12
+#define	ctx_d11		ctx_x13
+#define	ctx_d12		ctx_x14
+#define	ctx_d13		ctx_x15
+#define	ctx_d14		ctx_x16
+#define	ctx_d15		ctx_x17
 
-#define	ctx_x22		(SIZEOF_UREG_T * CTX_X22_IX)
-#define	ctx_x23		(SIZEOF_UREG_T * CTX_X23_IX)
-#define	ctx_x24		(SIZEOF_UREG_T * CTX_X24_IX)
-#define	ctx_x25		(SIZEOF_UREG_T * CTX_X25_IX)
-#define	ctx_x26		(SIZEOF_UREG_T * CTX_X26_IX)
-#define	ctx_x27		(SIZEOF_UREG_T * CTX_X27_IX)
-#define	ctx_x28		(SIZEOF_UREG_T * CTX_X28_IX)
-#define	ctx_x29		(SIZEOF_UREG_T * CTX_X29_IX)
+#ifdef LWT_CTX_ARRAY //{
 
-#define	ctx_x30		(SIZEOF_UREG_T * CTX_X30_IX)
-#define	ctx_x1		(SIZEOF_UREG_T * CTX_X1_IX)
-#define	ctx_x2		(SIZEOF_UREG_T * CTX_X2_IX)
-#define	ctx_x3		(SIZEOF_UREG_T * CTX_X3_IX)
-#define	ctx_x4		(SIZEOF_UREG_T * CTX_X4_IX)
-#define	ctx_x5		(SIZEOF_UREG_T * CTX_X5_IX)
-#define	ctx_x6		(SIZEOF_UREG_T * CTX_X6_IX)
-#define	ctx_x7		(SIZEOF_UREG_T * CTX_X7_IX)
+#define	ctx_x0			(SIZEOF_UREG_T * CTX_X0_IX)
+#define	ctx_x1			(SIZEOF_UREG_T * CTX_X1_IX)
 
-#define	ctx_x8		(SIZEOF_UREG_T * CTX_X8_IX)
-#define	ctx_x9		(SIZEOF_UREG_T * CTX_X9_IX)
-#define	ctx_x10		(SIZEOF_UREG_T * CTX_X10_IX)
-#define	ctx_x11		(SIZEOF_UREG_T * CTX_X11_IX)
-#define	ctx_x12		(SIZEOF_UREG_T * CTX_X12_IX)
-#define	ctx_x13		(SIZEOF_UREG_T * CTX_X13_IX)
-#define	ctx_x14		(SIZEOF_UREG_T * CTX_X14_IX)
-#define	ctx_x15		(SIZEOF_UREG_T * CTX_X15_IX)
+#define	ctx_x2			(SIZEOF_UREG_T * CTX_X2_IX)
+#define	ctx_x3			(SIZEOF_UREG_T * CTX_X3_IX)
+#define	ctx_x4			(SIZEOF_UREG_T * CTX_X4_IX)
+#define	ctx_x5			(SIZEOF_UREG_T * CTX_X5_IX)
+#define	ctx_x6			(SIZEOF_UREG_T * CTX_X6_IX)
+#define	ctx_x7			(SIZEOF_UREG_T * CTX_X7_IX)
+#define	ctx_x8			(SIZEOF_UREG_T * CTX_X8_IX)
+#define	ctx_x9			(SIZEOF_UREG_T * CTX_X9_IX)
 
-#define	ctx_x16		(SIZEOF_UREG_T * CTX_X16_IX)
-#define	ctx_x17		(SIZEOF_UREG_T * CTX_X17_IX)
-#define	ctx_flags	(SIZEOF_UREG_T * CTX_FLAGS_IX)
+#define	ctx_x10			(SIZEOF_UREG_T * CTX_X10_IX)
+#define	ctx_x11			(SIZEOF_UREG_T * CTX_X11_IX)
+#define	ctx_x12			(SIZEOF_UREG_T * CTX_X12_IX)
+#define	ctx_x13			(SIZEOF_UREG_T * CTX_X13_IX)
+#define	ctx_x14			(SIZEOF_UREG_T * CTX_X14_IX)
+#define	ctx_x15			(SIZEOF_UREG_T * CTX_X15_IX)
+#define	ctx_x16			(SIZEOF_UREG_T * CTX_X16_IX)
+#define	ctx_x17			(SIZEOF_UREG_T * CTX_X17_IX)
 
+#define	ctx_x18			(SIZEOF_UREG_T * CTX_X18_IX)
+#define	ctx_x19			(SIZEOF_UREG_T * CTX_X19_IX)
+#define	ctx_x20			(SIZEOF_UREG_T * CTX_X20_IX)
+#define	ctx_x21			(SIZEOF_UREG_T * CTX_X21_IX)
+#define	ctx_x22			(SIZEOF_UREG_T * CTX_X22_IX)
+#define	ctx_x23			(SIZEOF_UREG_T * CTX_X23_IX)
+#define	ctx_x24			(SIZEOF_UREG_T * CTX_X24_IX)
+#define	ctx_x25			(SIZEOF_UREG_T * CTX_X25_IX)
+
+#define	ctx_x26			(SIZEOF_UREG_T * CTX_X26_IX)
+#define	ctx_x27			(SIZEOF_UREG_T * CTX_X27_IX)
+#define	ctx_x28			(SIZEOF_UREG_T * CTX_X28_IX)
+#define	ctx_x29			(SIZEOF_UREG_T * CTX_X29_IX)
+#define	ctx_x30			(SIZEOF_UREG_T * CTX_X30_IX)
+#define	ctx_sp			(SIZEOF_UREG_T * CTX_SP_IX)
+#define	ctx_pc			(SIZEOF_UREG_T * CTX_PC_IX)
+#define	ctx_pstate		(SIZEOF_UREG_T * CTX_PSTATE_IX)
+
+#endif //} LWT_CTX_ARRAY
 #endif //} !LWT_C
 #endif //} LWT_ARM64
 
@@ -392,6 +410,8 @@ typedef struct {
 #define	reg_thr_start_func	rbx
 #define	reg_thr_start_pc	r12
 
+#ifdef LWT_CTX_ARRAY //{
+
 #define	ctx_fpctx	 (SIZEOF_UREG_T * CTX_FPCTX_IX)
 #define	ctx_pc		 (SIZEOF_UREG_T * CTX_PC_IX)
 #define	ctx_sp		 (SIZEOF_UREG_T * CTX_SP_IX)
@@ -413,6 +433,7 @@ typedef struct {
 #define	ctx_r10		 (SIZEOF_UREG_T * CTX_R10_IX)
 #define	ctx_r11		 (SIZEOF_UREG_T * CTX_R11_IX)
 
+#endif //} LWT_CTX_ARRAY
 #endif //} !LWT_C
 #endif //} LWT_X64
 

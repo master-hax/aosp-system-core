@@ -14,11 +14,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# STEPS=1000000
-# COUNT=10
+STEPS=1000000
+COUNT=10
 
-STEPS=123456
-COUNT=2
+# STEPS=123456
+# COUNT=2
+
+TIME=/usr/bin/time
+if [ -f /usr/bin/time-1.9 ] ; then
+	TIME=/usr/bin/time-1.9
+fi
 
 CMD=$(basename $0)
 
@@ -47,7 +52,7 @@ while read START END ; do
 	while [ $ATTEMPTS -le $END ] ; do
 		C=0
 		while [ $C -lt $COUNT ] ; do
-			echo $ATTEMPTS: $(/bin/time $PROG $STEPS $ATTEMPTS 2>&1)
+			echo $ATTEMPTS: $($TIME $PROG $STEPS $ATTEMPTS 2>&1)
 			C=$[ C + 1 ]
 		done
 		ATTEMPTS=$[ ATTEMPTS + 10 ]
@@ -58,6 +63,6 @@ LIST
 
 C=0
 while [ $C -lt $COUNT ] ; do
-	echo pthreads: $(/bin/time ./gen/test-pthread-O3-g-$ARCH $STEPS 2>&1)
+	echo pthreads: $($TIME ./gen/test-pthread-O3-g-$ARCH $STEPS 2>&1)
 	C=$[ C + 1 ]
 done

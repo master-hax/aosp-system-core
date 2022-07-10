@@ -529,6 +529,9 @@ noreturn void		 __lwt_ctx_load_on_cpu(thr_t *thr, ctx_t *ctx,
 noreturn void		 __lwt_ctx_load_idle_cpu(bool *curr_running,
 						 ctx_t *ctx);
 
+ureg_t			 __lwt_get_fpcr(void);
+void			 __lwt_set_fpcr(ureg_t fpcr);
+
 //  ctx_save_returns_thr() is used by cpu_main() to save its CPU context, the
 //  first return returns CTX_SAVED at context saving time, the second return
 //  is either a thread pointer or CTX_LOADED.  It is usually CTX_LOADED, but
@@ -1869,7 +1872,9 @@ inline_only void ctx_init(ctx_t *ctx, uptr_t sp, lwt_function_t function,
 	ctx->ctx_thr_start_arg0 = (ureg_t) arg;
 	ctx->ctx_thr_start_pc = (ureg_t) thr_start;
 	ctx->ctx_sp = sp;
+#ifdef LWT_X64
 	ctx->ctx_fpctx = 0;
+#endif
 }
 
 static int thr_create(lwt_t *thread, const thrattr_t *thrattr,
@@ -3788,6 +3793,10 @@ inline_only error_t init_data(size_t sched_attempt_steps)
 
 inline_only error_t init(size_t sched_attempt_steps)
 {
+#if 0 // XXX
+	ureg_t fpcr = __lwt_get_fpcr();
+	__lwt_set_fpcr(fpcr);
+#endif
 	error_t error = init_data(sched_attempt_steps);
 	if (error)
 		return error;
