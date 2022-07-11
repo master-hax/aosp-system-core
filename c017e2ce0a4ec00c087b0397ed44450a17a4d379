@@ -34,6 +34,23 @@
       "parentUuid": "0323badf_c1765949",
       "revId": "c017e2ce0a4ec00c087b0397ed44450a17a4d379",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3214ec1f_42079667",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-07-11T21:27:06Z",
+      "side": 1,
+      "message": "rubber-stamp OWNERS since you\u0027re the boringssl maintainer...",
+      "revId": "c017e2ce0a4ec00c087b0397ed44450a17a4d379",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
