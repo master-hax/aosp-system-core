@@ -532,6 +532,12 @@ noreturn void		 __lwt_ctx_load_idle_cpu(bool *curr_running,
 ureg_t			 __lwt_get_fpcr(void);
 void			 __lwt_set_fpcr(ureg_t fpcr);
 
+ureg_t			 __lwt_get_fpsr(void);
+void			 __lwt_set_fpsr(ureg_t fpsr);
+
+ureg_t			 __lwt_get_nzcv(void);
+void			 __lwt_set_nzcv(ureg_t nzcv);
+
 //  ctx_save_returns_thr() is used by cpu_main() to save its CPU context, the
 //  first return returns CTX_SAVED at context saving time, the second return
 //  is either a thread pointer or CTX_LOADED.  It is usually CTX_LOADED, but
@@ -3796,7 +3802,11 @@ inline_only error_t init(size_t sched_attempt_steps)
 #if 0 // XXX
 	ureg_t fpcr = __lwt_get_fpcr();
 	__lwt_set_fpcr(fpcr);
+	__lwt_set_nzcv(0xF0000000uL);
+	ureg_t nzcv = __lwt_get_nzcv();
+	__lwt_set_nzcv(nzcv);
 #endif
+
 	error_t error = init_data(sched_attempt_steps);
 	if (error)
 		return error;

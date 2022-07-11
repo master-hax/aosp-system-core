@@ -54,20 +54,29 @@ typedef struct {
 #ifndef LWT_CTX_ARRAY //{
 
 //  The ctx_t register context is a subset prefix of the sigcontext structure,
-//  it excludes the fault_address at the start of it, and __reserved array at
-//  the end of it.  The fault address is excluded because it is not needed and
-//  would prevent the register pairs from being 16-byte aligned.
+//  it excludes the fault_address at the start of it, and uses that space to
+//  store the low 32 bits of fpsr and fpcr (both are 64 bits, their upper 32
+//  bits are reserved, they both have plenty of reserved bit in their lower
+//  32 bits too).  The Linux kernel sigreturn contains a fpsimd_context, that
+//  structure stores both fpcr and fpsr as 32 bit quantities.
+
+//  The sigreturn optional data area (where fpsimd_context would be stored),
+//  __reserved array at the end of sigreturn is not part of ctx_t.  The data
+//  within it, is represented in other ways.  The __reserved area is already
+//  too small for large SVE vectors, hardwiring a fixed sized reserved area
+//  is a mistake for the LWT implementation.
 
 //  The context is split into two areas, the "half" context and the "rest" of
 //  the context, together they make a "full" context. To keep ctx_t a prefix of
 //  sigcontext, the "rest" area is first.  The address of the ctx_t is chosen
-//  so that their first two ureg_t are at the last two ureg_t of a cache line.
+//  so that its first three ureg_t are the last three ureg_t of a cache line.
 //  This makes the subsequent 32 ureg_t into 4 groups, each cache aligned.
 
 typedef struct {
 
 	//  This is the "rest" of the context.
 
+	ureg_t		 ctx_fpcr_fpsr;	// low 32 bits of fpcr and fpsr
 	ureg_t		 ctx_x0;	// [x0, x1]
 	ureg_t		 ctx_x1;
 
@@ -132,11 +141,12 @@ typedef struct {
 //  when compiling a program, generating a header file, and using it in
 //  the Android build to build other files is understood.
 
-#define	CTX_NREGS	 34
+#define	CTX_NREGS	 35
 typedef struct {
 	ureg_t		 ctx_regs[CTX_NREGS];
 } ctx_t;
 
+#define	ctx_fpcr_fpsr		ctx_regs[CTX_FPCR_FPSR_IX]
 #define	ctx_x0			ctx_regs[CTX_X0_IX]
 #define	ctx_x1			ctx_regs[CTX_X1_IX]
 
@@ -179,44 +189,45 @@ typedef struct {
 #endif //} LWT_CTX_ARRAY
 #endif //} LWT_C
 
-#define CTX_X0_IX		0
-#define CTX_X1_IX		1
+#define CTX_FPCR_FPSR_IX	0
+#define CTX_X0_IX		1
+#define CTX_X1_IX		2
 
-#define CTX_X2_IX		2
-#define CTX_X3_IX		3
-#define CTX_X4_IX		4
-#define CTX_X5_IX		5
-#define CTX_X6_IX		6
-#define CTX_X7_IX		7
-#define CTX_X8_IX		8
-#define CTX_X9_IX		9
+#define CTX_X2_IX		3
+#define CTX_X3_IX		4
+#define CTX_X4_IX		5
+#define CTX_X5_IX		6
+#define CTX_X6_IX		7
+#define CTX_X7_IX		8
+#define CTX_X8_IX		9
+#define CTX_X9_IX		10
 
-#define CTX_X10_IX		10
-#define CTX_X11_IX		11
-#define CTX_X12_IX		12
-#define CTX_X13_IX		13
-#define CTX_X14_IX		14
-#define CTX_X15_IX		15
-#define CTX_X16_IX		16
-#define CTX_X17_IX		17
+#define CTX_X10_IX		11
+#define CTX_X11_IX		12
+#define CTX_X12_IX		13
+#define CTX_X13_IX		14
+#define CTX_X14_IX		15
+#define CTX_X15_IX		16
+#define CTX_X16_IX		17
+#define CTX_X17_IX		18
 
-#define CTX_X18_IX		18
-#define CTX_X19_IX		19
-#define CTX_X20_IX		20
-#define CTX_X21_IX		21
-#define CTX_X22_IX		22
-#define CTX_X23_IX		23
-#define CTX_X24_IX		24
-#define CTX_X25_IX		25
+#define CTX_X18_IX		19
+#define CTX_X19_IX		20
+#define CTX_X20_IX		21
+#define CTX_X21_IX		22
+#define CTX_X22_IX		23
+#define CTX_X23_IX		24
+#define CTX_X24_IX		25
+#define CTX_X25_IX		26
 
-#define CTX_X26_IX		26
-#define CTX_X27_IX		27
-#define CTX_X28_IX		28
-#define CTX_X29_IX		29
-#define CTX_X30_IX		30
-#define CTX_SP_IX		31
-#define CTX_PC_IX		32
-#define CTX_PSTATE_IX		33
+#define CTX_X26_IX		27
+#define CTX_X27_IX		28
+#define CTX_X28_IX		29
+#define CTX_X29_IX		30
+#define CTX_X30_IX		31
+#define CTX_SP_IX		32
+#define CTX_PC_IX		33
+#define CTX_PSTATE_IX		34
 
 #ifdef LWT_C //{
 
@@ -241,6 +252,7 @@ typedef struct {
 
 #ifdef LWT_CTX_ARRAY //{
 
+#define	ctx_fpcr_fpsr		(SIZEOF_UREG_T * CTX_FPCR_FPSR_IX)
 #define	ctx_x0			(SIZEOF_UREG_T * CTX_X0_IX)
 #define	ctx_x1			(SIZEOF_UREG_T * CTX_X1_IX)
 
@@ -287,13 +299,15 @@ typedef struct {
 #ifdef LWT_X64 //{
 #ifdef LWT_C //{
 
+//  X64 floating point is too barroque, best is to exactly follow libc
+
+#include <sys/ucontext.h>
+
 #define CACHE_LINE_SIZE_L2      6
 #define CACHE_LINE_SIZE         64
 
-//  TODO: fix FP context
-#define	FPCTX_NREG	16
 typedef struct {
-	ureg_t		 fpctx_regs[FPCTX_NREG];
+	struct _libc_fpstate fpstate;
 } fpctx_t;
 
 #ifndef LWT_CTX_ARRAY //{

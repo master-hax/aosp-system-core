@@ -197,11 +197,28 @@ FUNCTION_START(__lwt_get_fpcr)
 	mrs	x0, fpcr
 	ret
 FUNCTION_END(__lwt_get_fpcr)
- 
 FUNCTION_START(__lwt_set_fpcr)
 	msr	fpcr, x0
 	ret
 FUNCTION_END(__lwt_set_fpcr)
+ 
+FUNCTION_START(__lwt_get_fpsr)
+	mrs	x0, fpsr
+	ret
+FUNCTION_END(__lwt_get_fpsr)
+FUNCTION_START(__lwt_set_fpsr)
+	msr	fpsr, x0
+	ret
+FUNCTION_END(__lwt_set_fpsr)
+ 
+FUNCTION_START(__lwt_get_nzcv)
+	mrs	x0, nzcv
+	ret
+FUNCTION_END(__lwt_get_nzcv)
+FUNCTION_START(__lwt_set_nzcv)
+	msr	nzcv, x0
+	ret
+FUNCTION_END(__lwt_set_nzcv)
 
 #endif //}
 
