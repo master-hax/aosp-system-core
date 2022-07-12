@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3c0a8eb8_8471b895",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 11
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-07-12T17:46:31Z",
+      "side": 1,
+      "message": "(rubber-stamp OWNERS while dvander is ooo...)",
+      "revId": "6befe78c3ca849679ff30fb1252ccb10d4586d58",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
