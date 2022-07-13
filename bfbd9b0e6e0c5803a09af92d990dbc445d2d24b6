@@ -16,6 +16,24 @@
       "message": "What if compression is disabled but userspace snapshots are enabled?",
       "revId": "bfbd9b0e6e0c5803a09af92d990dbc445d2d24b6",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5104f13b_ceb1868d",
+        "filename": "fs_mgr/libsnapshot/snapshot_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2758,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-07-13T18:40:03Z",
+      "side": 1,
+      "message": "That is not possible. I think the confusion is the word \"compression\". \n\nFor userspace snapshots to be enabled, we should have this property set:\n\nro.virtual_ab.compression.enabled\n\nhttps://source.corp.google.com/android-internal/system/core/fs_mgr/libsnapshot/snapshot.cpp;l\u003d3269\n\nSetting that property doesn\u0027t mean blocks are compressed. It means we will be using Android COW format.",
+      "parentUuid": "f9d06ffa_f146b67a",
+      "revId": "bfbd9b0e6e0c5803a09af92d990dbc445d2d24b6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
