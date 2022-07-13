@@ -32,7 +32,7 @@ constexpr int kMaxPacketSizeFs = 64;
 constexpr int kMaxPacketSizeHs = 512;
 constexpr int kMaxPacketsizeSs = 1024;
 
-constexpr size_t kFbFfsNumBufs = 16;
+constexpr size_t kFbFfsNumBufs = 128;
 constexpr size_t kFbFfsBufSize = 16384;
 
 constexpr const char* kUsbFfsFastbootEp0 = "/dev/usb-ffs/fastboot/ep0";
@@ -241,7 +241,7 @@ err:
 }
 
 ClientUsbTransport::ClientUsbTransport()
-    : handle_(std::unique_ptr<usb_handle>(create_usb_handle(kFbFfsNumBufs, kFbFfsBufSize))) {
+    : handle_(std::unique_ptr<usb_handle>(create_usb_handle(kFbFfsBufSize))) {
     if (!InitFunctionFs(handle_.get())) {
         handle_.reset(nullptr);
     }
@@ -282,8 +282,8 @@ ssize_t ClientUsbTransport::Write(const void* data, size_t len) {
     const char* char_data = reinterpret_cast<const char*>(data);
     size_t bytes_written_total = 0;
     while (bytes_written_total < len) {
-        auto bytes_to_write = std::min(len - bytes_written_total, kFbFfsNumBufs * kFbFfsBufSize);
-        auto bytes_written_now = handle_->write(handle_.get(), char_data, bytes_to_write);
+        const auto bytes_to_write = len - bytes_written_total;
+        const auto bytes_written_now = handle_->write(handle_.get(), char_data, bytes_to_write);
         if (bytes_written_now < 0) {
             return bytes_written_total == 0 ? -1 : bytes_written_total;
         }
