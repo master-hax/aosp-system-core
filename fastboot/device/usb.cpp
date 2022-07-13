@@ -15,6 +15,7 @@
  */
 
 #include "usb.h"
+#include "usb_iouring.h"
 
 #include <dirent.h>
 #include <errno.h>
@@ -28,6 +29,7 @@
 
 #include <linux/usb/ch9.h>
 #include <linux/usb/functionfs.h>
+#include <sys/utsname.h>
 
 #include <algorithm>
 #include <atomic>
@@ -38,6 +40,7 @@
 
 #include <android-base/logging.h>
 #include <android-base/properties.h>
+#include <liburing.h>
 
 using namespace std::chrono_literals;
 
@@ -65,8 +68,8 @@ static void aio_block_init(aio_block* aiob, unsigned num_bufs) {
     }
 }
 
-static int getMaxPacketSize(int ffs_fd) {
-    usb_endpoint_descriptor desc;
+int getMaxPacketSize(int ffs_fd) {
+    usb_endpoint_descriptor desc{};
     if (ioctl(ffs_fd, FUNCTIONFS_ENDPOINT_DESC, reinterpret_cast<unsigned long>(&desc))) {
         D("[ could not get endpoint descriptor! (%d) ]", errno);
         return MAX_PACKET_SIZE_HS;
@@ -204,21 +207,41 @@ static void usb_ffs_close(usb_handle* h) {
     h->open_new_connection = true;
     h->lock.unlock();
     h->notify.notify_one();
+    if (h->aio_type == AIOType::IO_URING) {
+        exit_io_uring_ffs(h);
+    }
 }
 
-usb_handle* create_usb_handle(unsigned num_bufs, unsigned io_size) {
-    usb_handle* h = new usb_handle();
+bool DoesKernelSupportIouring() {
+    struct utsname uts {};
+    unsigned int major = 0, minor = 0;
+    if ((uname(&uts) != 0) || (sscanf(uts.release, "%u.%u", &major, &minor) != 2)) {
+        return false;
+    }
+    if (major > 5) {
+        return true;
+    }
+    // We will only support kernels from 5.6 onwards as IOSQE_ASYNC flag and
+    // IO_URING_OP_READ/WRITE opcodes were introduced only on 5.6 kernel
+    return minor >= 6;
+}
 
-    if (android::base::GetBoolProperty("sys.usb.ffs.aio_compat", false)) {
+std::unique_ptr<usb_handle> create_usb_handle(unsigned num_bufs, unsigned io_size) {
+    auto h = std::make_unique<usb_handle>();
+    if (DoesKernelSupportIouring() && init_io_uring_ffs(h.get(), num_bufs)) {
+        h->aio_type = AIOType::IO_URING;
+    } else if (android::base::GetBoolProperty("sys.usb.ffs.aio_compat", false)) {
         // Devices on older kernels (< 3.18) will not have aio support for ffs
         // unless backported. Fall back on the non-aio functions instead.
         h->write = usb_ffs_write;
         h->read = usb_ffs_read;
+        h->aio_type = AIOType::SYNC_IO;
     } else {
         h->write = usb_ffs_aio_write;
         h->read = usb_ffs_aio_read;
         aio_block_init(&h->read_aiob, num_bufs);
         aio_block_init(&h->write_aiob, num_bufs);
+        h->aio_type = AIOType::AIO;
     }
     h->io_size = io_size;
     h->close = usb_ffs_close;
