@@ -32,7 +32,7 @@ constexpr int kMaxPacketSizeFs = 64;
 constexpr int kMaxPacketSizeHs = 512;
 constexpr int kMaxPacketsizeSs = 1024;
 
-constexpr size_t kFbFfsNumBufs = 16;
+constexpr size_t kFbFfsNumBufs = 32;
 constexpr size_t kFbFfsBufSize = 16384;
 
 constexpr const char* kUsbFfsFastbootEp0 = "/dev/usb-ffs/fastboot/ep0";
@@ -241,7 +241,7 @@ err:
 }
 
 ClientUsbTransport::ClientUsbTransport()
-    : handle_(std::unique_ptr<usb_handle>(create_usb_handle(kFbFfsNumBufs, kFbFfsBufSize))) {
+    : handle_(std::unique_ptr<usb_handle>(create_usb_handle(kFbFfsBufSize))) {
     if (!InitFunctionFs(handle_.get())) {
         handle_.reset(nullptr);
     }
