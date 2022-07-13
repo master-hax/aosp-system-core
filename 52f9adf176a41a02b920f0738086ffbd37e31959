@@ -16,6 +16,24 @@
       "message": "@Elliott Hughes\n\nPlease help review this CL too, many thanks!",
       "revId": "52f9adf176a41a02b920f0738086ffbd37e31959",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "eefd6b7d_2827eac5",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-07-13T00:49:32Z",
+      "side": 1,
+      "message": "don\u0027t worry, dvander will be back tomorrow, and he\u0027s the right person.\n\n(i\u0027m guessing gerrit doesn\u0027t show you the little calendar icon next to his name? if it does, you can hover over the name [but not the icon; did i mention already that gerrit hates its users?] and it\u0027ll pop up a big box which will tell you when the person returns. i\u0027d be genuinely interested to know whether non-googlers get to see that. i\u0027d always _assumed_ they do, but i actually have no idea.)",
+      "parentUuid": "e3696f24_52fa84bd",
+      "revId": "52f9adf176a41a02b920f0738086ffbd37e31959",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
