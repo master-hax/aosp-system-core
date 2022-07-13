@@ -16,6 +16,23 @@
       "message": "@Elliott Hughes\n\nNeed any updates?",
       "revId": "f083957850a7ddbf81084a40a34b755aa4fcd45c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "94c2987c_33e6607d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-07-13T00:38:16Z",
+      "side": 1,
+      "message": "by rebasing you cancelled out my previous +2 (but i didn\u0027t get any notification of the fact because they\u0027re deliberately making gerrit worse in that regard :-( ).\n\nlet me know if this time doesn\u0027t go through...",
+      "revId": "f083957850a7ddbf81084a40a34b755aa4fcd45c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
