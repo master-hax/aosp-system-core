@@ -35,6 +35,7 @@
 #include <condition_variable>
 #include <mutex>
 #include <thread>
+#include "liburing.h"
 
 #include <android-base/logging.h>
 #include <android-base/properties.h>
@@ -48,20 +49,17 @@ using namespace std::chrono_literals;
 
 #define USB_FFS_BULK_SIZE 16384
 
-// Number of buffers needed to fit MAX_PAYLOAD, with an extra for ZLPs.
-#define USB_FFS_NUM_BUFS ((4 * MAX_PAYLOAD / USB_FFS_BULK_SIZE) + 1)
+static constexpr size_t IO_URING_QUEUE_DEPTH = 256;
 
-static void aio_block_init(aio_block* aiob, unsigned num_bufs) {
-    aiob->iocb.resize(num_bufs);
-    aiob->iocbs.resize(num_bufs);
-    aiob->events.resize(num_bufs);
+static void aio_block_exit(aio_block* aiob) {
+    io_uring_queue_exit(&aiob->ring);
+}
+
+static void aio_block_init(aio_block* aiob, unsigned /*num_bufs*/) {
     aiob->num_submitted = 0;
-    for (unsigned i = 0; i < num_bufs; i++) {
-        aiob->iocbs[i] = &aiob->iocb[i];
-    }
-    memset(&aiob->ctx, 0, sizeof(aiob->ctx));
-    if (io_setup(num_bufs, &aiob->ctx)) {
-        D("[ aio: got error on io_setup (%d) ]", errno);
+    const auto ret = io_uring_queue_init(IO_URING_QUEUE_DEPTH, &aiob->ring, 0);
+    if (ret < 0) {
+        D("Failed to initialize io_uring %d %s", ret, strerror(ret));
     }
 }
 
@@ -126,25 +124,44 @@ static int usb_ffs_read(usb_handle* h, void* data, int len, bool allow_partial) 
     return orig_len;
 }
 
-static int usb_ffs_do_aio(usb_handle* h, const void* data, int len, bool read) {
+static void prep_async_read(struct io_uring* ring, int fd, void* data, size_t len, int64_t offset) {
+    auto sqe = io_uring_get_sqe(ring);
+    io_uring_prep_read(sqe, fd, data, len, offset);
+}
+
+static void prep_async_write(struct io_uring* ring, int fd, const void* data, size_t len,
+                             int64_t offset) {
+    auto sqe = io_uring_get_sqe(ring);
+    io_uring_prep_write(sqe, fd, data, len, offset);
+}
+
+template <bool read, typename T>
+void prep_async_io(struct io_uring* ring, int fd, T* data, size_t len, int64_t offset) {
+    if constexpr (read) {
+        prep_async_read(ring, fd, data, len, offset);
+    } else {
+        prep_async_write(ring, fd, data, len, offset);
+    }
+}
+
+template <bool read, typename T>
+static int usb_ffs_do_aio(usb_handle* h, T* const data, int len) {
+    if (h == nullptr) {
+        return -1;
+    }
     aio_block* aiob = read ? &h->read_aiob : &h->write_aiob;
     bool zero_packet = false;
 
     int num_bufs = len / h->io_size + (len % h->io_size == 0 ? 0 : 1);
-    const char* cur_data = reinterpret_cast<const char*>(data);
-    int packet_size = getMaxPacketSize(aiob->fd);
-
-    if (posix_madvise(const_cast<void*>(data), len, POSIX_MADV_SEQUENTIAL | POSIX_MADV_WILLNEED) <
-        0) {
-        D("[ Failed to madvise: %d ]", errno);
-    }
+    const auto packet_size = getMaxPacketSize(aiob->fd);
+    auto cur_data = data;
 
     for (int i = 0; i < num_bufs; i++) {
-        int buf_len = std::min(len, static_cast<int>(h->io_size));
-        io_prep(&aiob->iocb[i], aiob->fd, cur_data, buf_len, 0, read);
+        const int buf_len = std::min(len, static_cast<int>(h->io_size));
+        prep_async_io<read>(&aiob->ring, aiob->fd, cur_data, buf_len, 0);
 
         len -= buf_len;
-        cur_data += buf_len;
+        cur_data = reinterpret_cast<T*>(reinterpret_cast<size_t>(cur_data) + buf_len);
 
         if (len == 0 && buf_len % packet_size == 0 && read) {
             // adb does not expect the device to send a zero packet after data transfer,
@@ -153,44 +170,34 @@ static int usb_ffs_do_aio(usb_handle* h, const void* data, int len, bool read) {
         }
     }
     if (zero_packet) {
-        io_prep(&aiob->iocb[num_bufs], aiob->fd, reinterpret_cast<const void*>(cur_data),
-                packet_size, 0, read);
+        prep_async_io<read>(&aiob->ring, aiob->fd, cur_data, packet_size, 0);
+
         num_bufs += 1;
     }
-
-    while (true) {
-        if (TEMP_FAILURE_RETRY(io_submit(aiob->ctx, num_bufs, aiob->iocbs.data())) < num_bufs) {
-            PLOG(ERROR) << "aio: got error submitting " << (read ? "read" : "write");
-            return -1;
-        }
-        if (TEMP_FAILURE_RETRY(io_getevents(aiob->ctx, num_bufs, num_bufs, aiob->events.data(),
-                                            nullptr)) < num_bufs) {
-            PLOG(ERROR) << "aio: got error waiting " << (read ? "read" : "write");
-            return -1;
-        }
-        if (num_bufs == 1 && aiob->events[0].res == -EINTR) {
-            continue;
-        }
-        int ret = 0;
-        for (int i = 0; i < num_bufs; i++) {
-            if (aiob->events[i].res < 0) {
-                errno = -aiob->events[i].res;
-                PLOG(ERROR) << "aio: got error event on " << (read ? "read" : "write")
-                            << " total bufs " << num_bufs;
-                return -1;
-            }
-            ret += aiob->events[i].res;
-        }
-        return ret;
+    int ret = io_uring_submit(&aiob->ring);
+    if (ret <= 0) {
+        PLOG(ERROR) << "io_uring: failed to submit SQE entries to kernel";
     }
+    int res = 0;
+    for (int i = 0; i < num_bufs; ++i) {
+        struct io_uring_cqe* cqe{};
+        const auto ret = TEMP_FAILURE_RETRY(io_uring_wait_cqe(&aiob->ring, &cqe));
+        if (ret < 0 || cqe == nullptr) {
+            PLOG(ERROR) << "Failed to get CQE from kernel";
+            return -1;
+        }
+        res += cqe->res;
+        io_uring_cqe_seen(&aiob->ring, cqe);
+    }
+    return res;
 }
 
 static int usb_ffs_aio_read(usb_handle* h, void* data, int len, bool /* allow_partial */) {
-    return usb_ffs_do_aio(h, data, len, true);
+    return usb_ffs_do_aio<true>(h, data, len);
 }
 
 static int usb_ffs_aio_write(usb_handle* h, const void* data, int len) {
-    return usb_ffs_do_aio(h, data, len, false);
+    return usb_ffs_do_aio<false>(h, data, len);
 }
 
 static void usb_ffs_close(usb_handle* h) {
@@ -198,6 +205,11 @@ static void usb_ffs_close(usb_handle* h) {
 
     h->bulk_out.reset();
     h->bulk_in.reset();
+
+    if (h->write == usb_ffs_aio_write) {
+        aio_block_exit(&h->read_aiob);
+        aio_block_exit(&h->write_aiob);
+    }
 
     // Notify usb_adb_open_thread to open a new connection.
     h->lock.lock();
