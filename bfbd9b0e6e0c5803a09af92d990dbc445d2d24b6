@@ -34,6 +34,24 @@
       "parentUuid": "f9d06ffa_f146b67a",
       "revId": "bfbd9b0e6e0c5803a09af92d990dbc445d2d24b6",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c4d4e3dc_11fdacff",
+        "filename": "fs_mgr/libsnapshot/snapshot_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2758,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-07-13T19:04:28Z",
+      "side": 1,
+      "message": "Ack, thanks for explaining!",
+      "parentUuid": "5104f13b_ceb1868d",
+      "revId": "bfbd9b0e6e0c5803a09af92d990dbc445d2d24b6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
