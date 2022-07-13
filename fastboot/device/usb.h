@@ -24,20 +24,15 @@
 #include <vector>
 
 #include <android-base/unique_fd.h>
-#include <asyncio/AsyncIO.h>
+#include <liburing.h>
 
 struct aio_block {
-    std::vector<struct iocb> iocb;
-    std::vector<struct iocb*> iocbs;
-    std::vector<struct io_event> events;
-    aio_context_t ctx;
+    io_uring ring;
     int num_submitted;
     int fd;
 };
 
 struct usb_handle {
-    usb_handle() {}
-
     std::condition_variable notify;
     std::mutex lock;
     bool open_new_connection = true;
@@ -60,4 +55,4 @@ struct usb_handle {
     size_t io_size;
 };
 
-usb_handle* create_usb_handle(unsigned num_bufs, unsigned io_size);
+usb_handle* create_usb_handle(unsigned io_size);
