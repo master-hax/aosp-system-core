@@ -1,5 +1,23 @@
 {
-  "comments": [],
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f9d06ffa_f146b67a",
+        "filename": "fs_mgr/libsnapshot/snapshot_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2758,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-07-13T18:33:37Z",
+      "side": 1,
+      "message": "What if compression is disabled but userspace snapshots are enabled?",
+      "revId": "bfbd9b0e6e0c5803a09af92d990dbc445d2d24b6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ],
   "submitRequirementResults": [
     {
       "submitRequirement": {
