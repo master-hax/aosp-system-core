@@ -46,6 +46,7 @@ class Subcontext {
     Result<void> Execute(const std::vector<std::string>& args);
     Result<std::vector<std::string>> ExpandArgs(const std::vector<std::string>& args);
     void Restart();
+    const std::string GetApexName(const std::string& path) const;
     bool PathMatchesSubcontext(const std::string& path) const;
     void SetApexList(std::vector<std::string>&& apex_list);
 
