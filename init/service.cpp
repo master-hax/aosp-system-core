@@ -593,11 +593,19 @@ Result<void> Service::Start() {
         use_bootstrap_ns_ = true;
     }
 
-    // For pre-apexd services, override mount namespace as "bootstrap" one before starting.
-    // Note: "ueventd" is supposed to be run in "default" mount namespace even if it's pre-apexd
-    // to support loading firmwares from APEXes.
+    // Mount namespace overrides:
+    // - Services in the hard-coded list will start in the "default" mount namespace
+    // - Pre-apexd services (use_bootstrap_ns_: true) will start in the "bootstrap" mount namespace
     std::optional<MountNamespace> override_mount_namespace;
-    if (name_ == "ueventd") {
+
+    // Services in the following list will start in the "default" mount namespace.
+    // Note that they should use bootstrap bionic if they need to start before APEXes are ready.
+    static const std::set<std::string> kUseDefaultMountNamespace = {
+            "ueventd",           // load firmwares from APEXes
+            "hwservicemanager",  // load VINTF fragments from APEXes
+            "servicemanager",    // load VINTF fragments from APEXes
+    };
+    if (kUseDefaultMountNamespace.find(name_) != kUseDefaultMountNamespace.end()) {
         override_mount_namespace = NS_DEFAULT;
     } else if (use_bootstrap_ns_) {
         override_mount_namespace = NS_BOOTSTRAP;
