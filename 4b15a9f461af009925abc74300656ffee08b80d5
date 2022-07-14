@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1fdf6e3a_5c2c3274",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-07-14T06:52:51Z",
+      "side": 1,
+      "message": "less number of processes running in the bootstrap namespace is always good.",
+      "revId": "4b15a9f461af009925abc74300656ffee08b80d5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bfd6a858_0735c35f",
+        "filename": "init/service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 612,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-07-14T06:52:51Z",
+      "side": 1,
+      "message": "I find the entire process of choosing the mount namespace a bit confusing and thinks it needs a refactoring as it became complicated by this CL. Could you make this as a function that returns std::optional\u003cMountNamespace\u003e and simplify it?\n\nex)\n\n```\nif ueventd, servicemanager, hwservicemanager, or apexd {\n    use current ns\n} else if default_ns not ready {\n    use bootstrap ns\n} else {\n    use current ns\n}\n```",
+      "range": {
+        "startLine": 584,
+        "startChar": 0,
+        "endLine": 612,
+        "endChar": 5
+      },
+      "revId": "4b15a9f461af009925abc74300656ffee08b80d5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
