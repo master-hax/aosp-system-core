@@ -65,12 +65,12 @@ class Service {
 
   public:
     Service(const std::string& name, Subcontext* subcontext_for_restart_commands,
-            const std::vector<std::string>& args, bool from_apex = false);
+            const std::vector<std::string>& args, bool from_apex = false, std::string apex_name = "");
 
     Service(const std::string& name, unsigned flags, uid_t uid, gid_t gid,
             const std::vector<gid_t>& supp_gids, int namespace_flags, const std::string& seclabel,
             Subcontext* subcontext_for_restart_commands, const std::vector<std::string>& args,
-            bool from_apex = false);
+            bool from_apex = false, std::string apex_name = "");
 
     static Result<std::unique_ptr<Service>> MakeTemporaryOneshotService(
             const std::vector<std::string>& args);
@@ -226,6 +226,8 @@ class Service {
     std::optional<std::string> on_failure_reboot_target_;
 
     bool from_apex_ = false;
+
+    std::string apex_name_;
 };
 
 }  // namespace init
