@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1c10c708_c2ea755c",
+        "filename": "init/service.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 594,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-07-14T07:54:40Z",
+      "side": 1,
+      "message": "Shouldn\u0027t we move this to the function as well?",
+      "range": {
+        "startLine": 583,
+        "startChar": 0,
+        "endLine": 594,
+        "endChar": 0
+      },
+      "revId": "68dbdffae6ba8152919b9974628d944ad0183b7e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
