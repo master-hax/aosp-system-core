@@ -130,13 +130,14 @@ bool Service::is_exec_service_running_ = false;
 std::chrono::time_point<std::chrono::steady_clock> Service::exec_service_started_;
 
 Service::Service(const std::string& name, Subcontext* subcontext_for_restart_commands,
-                 const std::vector<std::string>& args, bool from_apex)
-    : Service(name, 0, 0, 0, {}, 0, "", subcontext_for_restart_commands, args, from_apex) {}
+                 const std::vector<std::string>& args, bool from_apex, std::string apex_name)
+    : Service(name, 0, 0, 0, {}, 0, "", subcontext_for_restart_commands, args, from_apex,
+                apex_name) {}
 
 Service::Service(const std::string& name, unsigned flags, uid_t uid, gid_t gid,
                  const std::vector<gid_t>& supp_gids, int namespace_flags,
                  const std::string& seclabel, Subcontext* subcontext_for_restart_commands,
-                 const std::vector<std::string>& args, bool from_apex)
+                 const std::vector<std::string>& args, bool from_apex, std::string apex_name)
     : name_(name),
       classnames_({"default"}),
       flags_(flags),
@@ -156,7 +157,8 @@ Service::Service(const std::string& name, unsigned flags, uid_t uid, gid_t gid,
       oom_score_adjust_(DEFAULT_OOM_SCORE_ADJUST),
       start_order_(0),
       args_(args),
-      from_apex_(from_apex) {}
+      from_apex_(from_apex),
+      apex_name_(apex_name) {}
 
 void Service::NotifyStateChange(const std::string& new_state) const {
     if ((flags_ & SVC_TEMPORARY) != 0) {
