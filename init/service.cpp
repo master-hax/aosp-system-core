@@ -474,10 +474,9 @@ void Service::ConfigureMemcg() {
 }
 
 // Enters namespaces, sets environment variables, writes PID files and runs the service executable.
-void Service::RunService(const std::optional<MountNamespace>& override_mount_namespace,
-                         const std::vector<Descriptor>& descriptors,
+void Service::RunService(const std::vector<Descriptor>& descriptors,
                          std::unique_ptr<std::array<int, 2>, decltype(&ClosePipe)> pipefd) {
-    if (auto result = EnterNamespaces(namespaces_, name_, override_mount_namespace); !result.ok()) {
+    if (auto result = EnterNamespaces(namespaces_, name_, GetMountNamespace()); !result.ok()) {
         LOG(FATAL) << "Service '" << name_ << "' failed to set up namespaces: " << result.error();
     }
 
@@ -593,16 +592,6 @@ Result<void> Service::Start() {
         use_bootstrap_ns_ = true;
     }
 
-    // For pre-apexd services, override mount namespace as "bootstrap" one before starting.
-    // Note: "ueventd" is supposed to be run in "default" mount namespace even if it's pre-apexd
-    // to support loading firmwares from APEXes.
-    std::optional<MountNamespace> override_mount_namespace;
-    if (name_ == "ueventd") {
-        override_mount_namespace = NS_DEFAULT;
-    } else if (use_bootstrap_ns_) {
-        override_mount_namespace = NS_BOOTSTRAP;
-    }
-
     post_data_ = ServiceList::GetInstance().IsPostData();
 
     LOG(INFO) << "starting service '" << name_ << "'...";
@@ -633,7 +622,7 @@ Result<void> Service::Start() {
 
     if (pid == 0) {
         umask(077);
-        RunService(override_mount_namespace, descriptors, std::move(pipefd));
+        RunService(descriptors, std::move(pipefd));
         _exit(127);
     }
 
@@ -682,6 +671,28 @@ Result<void> Service::Start() {
     NotifyStateChange("running");
     reboot_on_failure.Disable();
     return {};
+}
+
+// Returns target mount namespace for the service.
+std::optional<MountNamespace> Service::GetMountNamespace() const {
+    // Services in the following list start in the "default" mount namespace.
+    // Note that they should use bootstrap bionic if they start before APEXes are ready.
+    static const std::set<std::string> kUseDefaultMountNamespace = {
+            "ueventd",           // load firmwares from APEXes
+            "hwservicemanager",  // load VINTF fragments from APEXes
+            "servicemanager",    // load VINTF fragments from APEXes
+    };
+    if (kUseDefaultMountNamespace.find(name_) != kUseDefaultMountNamespace.end()) {
+        return NS_DEFAULT;
+    }
+
+    // Pre-apexd services (use_bootstrap_ns_: true) start in the "bootstrap" mount namespace.
+    if (use_bootstrap_ns_) {
+        return NS_BOOTSTRAP;
+    }
+
+    // Otherwise, returns std::nullopt to start the service in the current mount namespace.
+    return std::nullopt;
 }
 
 void Service::SetStartedInFirstStage(pid_t pid) {
