@@ -1,6 +1,23 @@
 {
   "comments": [
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "4343f790_98a9ba97",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-07-14T17:33:01Z",
+      "side": 1,
+      "message": "\u0027t an",
+      "revId": "c2f95c4b793a6b6eaccf7840b05327eec33475a7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "daece385_8207feda",
@@ -38,6 +55,30 @@
       "side": 1,
       "message": "keep the check of line 32 as bewfore",
       "parentUuid": "daece385_8207feda",
+      "range": {
+        "startLine": 32,
+        "startChar": 24,
+        "endLine": 32,
+        "endChar": 41
+      },
+      "revId": "c2f95c4b793a6b6eaccf7840b05327eec33475a7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c1d9ad2d_7c88f795",
+        "filename": "fs_mgr/tests/vts_fs_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-07-14T17:33:01Z",
+      "side": 1,
+      "message": "Thanks for the suggestion - that\u0027d work, though I think the safest thing is to disable the test completely on Android S and lower, so there is minimal impact on older VSR levels.",
+      "parentUuid": "f329da43_96f9c3f2",
       "range": {
         "startLine": 32,
         "startChar": 24,
