@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d66fc553_d43d3145",
+        "filename": "fs_mgr/fs_mgr_fstab.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 807,
+      "author": {
+        "id": 1888886
+      },
+      "writtenOn": "2022-07-14T10:32:30Z",
+      "side": 1,
+      "message": "could we use \"/sbin/recovery\" to avoid relying on the current path being \"/\"?",
+      "revId": "d492cf8eae14878b9424694214f46a0dab9f14ca",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
