@@ -22,6 +22,30 @@
       },
       "revId": "c2f95c4b793a6b6eaccf7840b05327eec33475a7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f329da43_96f9c3f2",
+        "filename": "fs_mgr/tests/vts_fs_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1707593
+      },
+      "writtenOn": "2022-07-14T05:57:47Z",
+      "side": 1,
+      "message": "keep the check of line 32 as bewfore",
+      "parentUuid": "daece385_8207feda",
+      "range": {
+        "startLine": 32,
+        "startChar": 24,
+        "endLine": 32,
+        "endChar": 41
+      },
+      "revId": "c2f95c4b793a6b6eaccf7840b05327eec33475a7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
