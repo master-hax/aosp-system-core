@@ -48,6 +48,9 @@ TEST(fs, ErofsSupported) {
     ASSERT_TRUE(android::base::ReadFileToString("/proc/filesystems", &fs));
     EXPECT_THAT(fs, ::testing::HasSubstr("\terofs\n"));
 
+    if (GetVsrLevel() < __ANDROID_API_T__) {
+        GTEST_SKIP();
+    }
     ASSERT_EQ(access("/sys/fs/erofs", F_OK), 0);
 }
 
