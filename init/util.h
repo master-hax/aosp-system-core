@@ -106,5 +106,7 @@ bool IsDefaultMountNamespaceReady();
 void SetDefaultMountNamespaceReady();
 
 bool IsMicrodroid();
+
+std::string GetApexNameFromFileName(const std::string& path);
 }  // namespace init
 }  // namespace android
