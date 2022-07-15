@@ -35,6 +35,7 @@ typedef unsigned long		u64_t;
 typedef u64_t			uptr_t;
 typedef u64_t			ureg_t;
 #define	UREG_BITS		64
+typedef s64_t			sreg_t;
 #endif
 
 #if (LWT_PTR_BITS == 32)
@@ -43,6 +44,7 @@ typedef unsigned long long	u64_t;
 typedef u32_t			uptr_t;
 typedef u32_t			ureg_t;
 typedef UREG_BITS		32
+typedef s32_t			sreg_t;
 #endif
 
 static_assert(sizeof(s8_t)  == 1,  "s8_t wrong size");

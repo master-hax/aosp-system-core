@@ -529,6 +529,8 @@ noreturn void		 __lwt_ctx_load_on_cpu(thr_t *thr, ctx_t *ctx,
 noreturn void		 __lwt_ctx_load_idle_cpu(bool *curr_running,
 						 ctx_t *ctx);
 
+void			 __lwt_ctx_load_trampoline(void);
+
 ureg_t			 __lwt_get_fpcr(void);
 void			 __lwt_set_fpcr(ureg_t fpcr);
 
@@ -3070,6 +3072,13 @@ noreturn inline_only void thr_run(thr_t *thr, thr_t *currthr)
 	cpu_t *cpu = cpu_current();
 	cpu->cpu_running_thr = thr;
 	ctx_t *ctx = ctx_from_thr(thr);
+	if (ctx_is_full(ctx)) {
+		ureg_t instaddr = (ureg_t) cpu->cpu_trampoline;
+		instaddr += OFFSET_OF_BRANCH_IN_TRAMPOLINE;
+		error_t error = generate_branch(ctx->ctx_pc, instaddr);
+		if (error)
+			TODO();
+	}
 	ctx_load(ctx, thr, &cpu->cpu_ctx,
 		 &thr->thr_running, &currthr->thr_running);
 }
@@ -3078,6 +3087,13 @@ noreturn inline_only void thr_run_on_cpu(thr_t *thr, cpu_t *cpu)
 {
 	cpu->cpu_running_thr = thr;
 	ctx_t *ctx = ctx_from_thr(thr);
+	if (ctx_is_full(ctx)) {
+		ureg_t instaddr = (ureg_t) cpu->cpu_trampoline;
+		instaddr += OFFSET_OF_BRANCH_IN_TRAMPOLINE;
+		error_t error = generate_branch(ctx->ctx_pc, instaddr);
+		if (error)
+			TODO();
+	}
 	ctx_load_on_cpu(ctx, thr, &cpu->cpu_ctx, &thr->thr_running);
 }
 
@@ -3638,10 +3654,32 @@ static void hws_init(hw_t *hw, size_t n)
 
 #endif
 
-inline_only void cpu_init(cpu_t *cpu)
+cacheline_t *trampolines;
+
+error_t trampolines_init(void)
+{
+	int i;
+	size_t size = NCPUS * CACHE_LINE_SIZE;
+	void *start = mmap(NULL, PAGE_SIZE_ROUND_UP(size),
+			   PROT_READ | PROT_WRITE | PROT_EXEC,
+			   MAP_PRIVATE | MAP_ANONYMOUS, -1, (off_t) 0);
+	if (start == (void *) -1)
+		return errno;
+
+	//  Copy the per-CPU trampoline instructions to each trampoline.
+
+	trampolines = (cacheline_t *) start;
+	for (i = 0; i < NCPUS; ++i)
+		trampolines[i] = *(cacheline_t *) __lwt_ctx_load_trampoline;
+
+	return 0;
+}
+
+inline_only void cpu_init(cpu_t *cpu, cacheline_t *trampoline)
 {
 	cpu->cpu_idled_elem.lll_next = CPU_NOT_IDLED;
 	cpu->cpu_running_thr = NULL;
+	cpu->cpu_trampoline = trampoline;
 }
 
 inline_only void core_init(core_t *core)
@@ -3687,7 +3725,7 @@ inline_only void cpus_init(void)
 {
 	int i;
 	for (i = 0; i < NCPUS; ++i)
-		cpu_init(&cpus[i]);
+		cpu_init(&cpus[i], &trampolines[i]);
 }
 
 #ifdef LWT_CPU_PTHREAD_KEY
@@ -3751,6 +3789,10 @@ inline_only error_t init_data(size_t sched_attempt_steps)
 	if (sched_attempt_steps > 0 && sched_attempt_steps <= 1000)
 		sched_attempts = (int) sched_attempt_steps;
 
+	error_t error = trampolines_init();
+	if (error)
+		return error;
+
 	hwsys_init();
 	hwunits_init();
 	mcms_init();
@@ -3759,7 +3801,7 @@ inline_only error_t init_data(size_t sched_attempt_steps)
 	cores_init();
 	cpus_init();
 
-	error_t error = kcores_init();
+	error = kcores_init();
 	if (error)
 		return error;
 

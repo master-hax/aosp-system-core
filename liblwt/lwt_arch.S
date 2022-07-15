@@ -123,21 +123,21 @@ FUNCTION_START(__lwt_ctx_load_on_cpu)
 	stlrb	w6, [x3]		// new thr is now running on this cpu
 	mov	x0, xzr			// return value, zero is 2nd return
 
-2:	//  8 registers loaded from a cache line
+2:	//  load 8 registers from a cache line
 
-	ldp	x14, x15, [x1, ctx_pc]	// get [pc, pstate] as early as possible
+	ldp	x4,  x5,  [x1, ctx_pc]	// get [pc, pstate] as early as possible
 	ldp	x26, x27, [x1, ctx_x26]
 	ldp	x28, x29, [x1, ctx_x28]
 	ldp	x30, x17, [x1, ctx_x30]	// [x30, sp] can not use sp here
 
-	//  8 registers loaded from a cache line
+	//  load 8 registers from a cache line
 
 	ldp	x18, x19, [x1, ctx_x18]
 	ldp	x20, x21, [x1, ctx_x20]
 	ldp	x22, x23, [x1, ctx_x22]
 	ldp	x24, x25, [x1, ctx_x24]
-	mov	sp, x17
-	cbnz	x15, ctx_load_rest	// pstate == zero, means "half" context
+	mov	sp,  x17
+	cbnz	x5,  ctx_load_rest	// pstate == zero, means "half" context
 
 	//  8 floating point registers loaded from a cache line
 
@@ -145,17 +145,123 @@ FUNCTION_START(__lwt_ctx_load_on_cpu)
 	ldp	d10, d11, [x1, ctx_d10]
 	ldp	d12, d13, [x1, ctx_d12]
 	ldp	d14, d15, [x1, ctx_d14]
-	br	x14
+	br	x4
 
 3:	// x0 is thr, its the 2nd return value, returned to cpu_main()
 	mov	x1, x2			// switch to cpu_main() to handle thr
 	b	2b			// thr->thr_running was set too long
 
 ctx_load_rest:
-	//  Restore rest of full context
-	mov	x7, xzr
-	str	xzr, [x7]			// TODO cause an exception
+	ldr	x0,  [x2, -SIZEOF_UREG_T] // cpu_trampoline is before cpu_ctx
+	add	x3,  x1,  SIZEOF_CTX_T	  // x3 = &thrx->thrx_fpctx
+	add	x6,  x0,  OFFSET_OF_BRANCH_IN_TRAMPOLINE
+
+	//  Restore rest of full context, registers restored at this point:
+	//	x18-x30, sp
+	//  Other register values:
+	//	x0: fpctx
+	//	x1: ctx
+	//	x2: cpuctx
+	//	x3: trampoline
+	//	x4: pc
+	//	x5: pstate
+	//	x6: address of branch in trampoline
+	//  Registers that need to be restored:
+	//	pc, x0-x17, nzcv, fpcr, fpsr, q0-q31
+
+	//  The following 4 instructions are from the example code in:
+	//      "Arm Architecture Reference Manual for A-profile architecture"
+	//  (the comments are based on the comments there).
+	//
+	//  DDI0487H_a_a-profile_architecture_reference_manual.pdf
+	//  Document: ARM DDI 0487H.a ID020222
+	//  B2.2.5 Concurrent modification and execution of instructions
+	//  (page: B2-154)
+	//
+	//      "Coherency example for data and instruction accesses within
+	//	 the same Inner Shareable domain."
+	//
+	//  The branch instruction occurs earlier in C code. Might be moved
+	//  here (in that case the reachability error checking and code
+	//  generation would have to be separated).
+
+	dc	cvau, x6	// Clean D-cache by VA to Point or Unitication
+	dsb	ish		// Ensure visibility of the cleaned data
+	ic	ivau, x6	// Invalidate I-cache cache by VA to PoU
+	dsb	ish
+
+	ldp	w6,  w7,  [x1, ctx_fpcr_fpsr]
+
+	msr	nzcv, x5
+	msr	fpsr, x6
+	msr	fpcr, x7
+
+	//  load 8 simd registers from 2 cache lines
+
+	ldp	q0,  q1,  [x3, fpctx_q0]
+	ldp	q2,  q3,  [x3, fpctx_q2]
+	ldp	q4,  q5,  [x3, fpctx_q4]
+	ldp	q6,  q7,  [x3, fpctx_q6]
+
+	//  load 8 registers from a cache line
+
+	ldp	x10, x11, [x1, ctx_x10]
+	ldp	x12, x13, [x1, ctx_x12]
+	ldp	x14, x15, [x1, ctx_x14]
+	ldp	x16, x17, [x1, ctx_x16]
+
+	//  load 4 simd registers from 1 cache line
+
+	ldp	q8,  q9,  [x3, fpctx_q8]
+	ldp	q10, q11, [x3, fpctx_q10]
+
+	br	x0			// Branch to trampoline
 FUNCTION_END(__lwt_ctx_load_on_cpu)
+
+FUNCTION_START(__lwt_ctx_load_trampoline)
+	//  The generated trampoline code is based on this sample code,
+	//  the "b loop" below is patched to branch to the correct location.
+
+	//  The trampoline could just be the last 2 instructions at the end.
+	//  Having it be 16 instructions allows the branch to the trampoline
+	//  to be far enough away from the patch branch below to allow the
+	//  patched branch to be fetched and decoded while the instructions
+	//  in between are issued.  The trampolines are cache line sized and
+	//  cache line aligned (they are per-CPU), 
+
+	//  load 4 simd registers from a cache line
+
+	ldp	q12, q13, [x3, fpctx_q12]
+	ldp	q14, q15, [x3, fpctx_q14]
+
+	//  load 8 simd registers from 2 cache lines
+
+	ldp	q16, q17, [x3, fpctx_q16]
+	ldp	q18, q19, [x3, fpctx_q18]
+	ldp	q20, q21, [x3, fpctx_q20]
+	ldp	q22, q23, [x3, fpctx_q22]
+
+	//  load 8 simd registers from 2 cache lines
+
+	ldp	q24, q25, [x3, fpctx_q24]
+	ldp	q26, q27, [x3, fpctx_q26]
+	ldp	q28, q29, [x3, fpctx_q28]
+	ldp	q30, q31, [x3, fpctx_q30]
+
+	//  load 8 registers from a cache line
+
+	ldp	x2,  x3,  [x1, ctx_x2]
+	ldp	x4,  x5,  [x1, ctx_x4]
+	ldp	x6,  x7,  [x1, ctx_x6]
+	ldp	x8,  x9,  [x1, ctx_x8]
+
+	ldp	x0,  x1,  [x1, ctx_x0]
+patch:	b	patch
+FUNCTION_END(__lwt_ctx_load_trampoline)
+
+#	if OFFSET_OF_BRANCH_IN_TRAMPOLINE != 60
+#	error "OFFSET_OF_BRANCH_IN_TRAMPOLINE is incorrect"
+#	endif
 
 //  bool __lwt_bool_load_acq(bool *m);
 
@@ -297,6 +403,16 @@ ctx_load_rest:
 	movq	$0, %rcx
 	movq	$0, (%rcx)			// TODO cause an exception
 FUNCTION_END(__lwt_ctx_load_on_cpu)
+FUNCTION_START(__lwt_ctx_load_trampoline)	// TODO write this
+	nop ; nop ; nop ; nop ; nop ; nop ; nop ; nop ; 
+	nop ; nop ; nop ; nop ; nop ; nop ; nop ; nop ; 
+	nop ; nop ; nop ; nop ; nop ; nop ; nop ; nop ; 
+	nop ; nop ; nop ; nop ; nop ; nop ; nop ; nop ; 
+	nop ; nop ; nop ; nop ; nop ; nop ; nop ; nop ; 
+	nop ; nop ; nop ; nop ; nop ; nop ; nop ; nop ; 
+	nop ; nop ; nop ; nop ; nop ; nop ; nop ; nop ; 
+	nop ; nop ; nop ; nop ; nop ; nop ; nop ; nop
+FUNCTION_END(__lwt_ctx_load_trampoline)
 
 //  bool __lwt_bool_load_acq(bool *m);
 

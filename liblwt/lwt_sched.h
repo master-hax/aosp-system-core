@@ -68,6 +68,13 @@ typedef union lllist_s {
 	BITS_GET(LLLIST_COUNT, (lllist).lll_count_gen)
 
 
+//  Raw cache line.
+
+typedef struct {
+	ureg_t	cl_uregs[CACHE_LINE_SIZE / sizeof(ureg_t)];
+} aligned_cache_line cacheline_t;
+
+
 //  A contiguous arena of memory which is permanently locked to ensure that
 //  accesses to it do not cause page faults.
 
@@ -693,10 +700,18 @@ struct cpu_s {
 	char		*cpu_name;
 	kcpu_t		*cpu_kcpu;
 	ureg_t		 cpu_hwix;
-	ctx_t		 cpu_ctx;
+	cacheline_t	*cpu_trampoline; // Must be immediately before cpu_ctx
+	ctx_t		 cpu_ctx;	 // Must be immediately after trampoline
 } aligned_cache_line;
 
 static_assert((sizeof(cpu_t) & (CACHE_LINE_SIZE - 1)) == 0, "cpu_t wrong size");
+
+//  To avoid more use of lwt_genassym.c (because of Android build integration)
+//  ctx_load_rest: in lwt_arch.S assumes that cpu_trampoline is immediately
+//  before cpu_ctx.
+
+static_assert(offsetof(cpu_t, cpu_trampoline) + sizeof(opcode_t *) ==
+	      offsetof(cpu_t, cpu_ctx), "cpu_trampoline is not before cpu_ctx");
 
 
 //  Thread attribute, the user of this library allocates a lwt_attr_t, which
@@ -1048,13 +1063,6 @@ struct __lwt_cnd_s {
 	thr_t		*cnd_waitpriq;
 	mtx_t		*cnd_mtx;
 };
-
-
-//  Raw cache line.
-
-typedef struct {
-	ureg_t	cl_uregs[CACHE_LINE_SIZE / sizeof(ureg_t)];
-} aligned_cache_line cacheline_t;
 
 
 // XXX priority ceiling with autodiscovery and boosting?

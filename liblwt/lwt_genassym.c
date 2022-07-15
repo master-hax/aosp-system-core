@@ -17,6 +17,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <errno.h>
 #include "lwt.h"
 
 #define	LWT_C
@@ -193,6 +194,7 @@ int main()
 	puts("\n// ctx_t");
 
 #ifdef LWT_ARM64 //{
+	GEN_FIELD(ctx_t, ctx_fpcr_fpsr);
 	GEN_FIELD(ctx_t, ctx_x0);
 	GEN_FIELD(ctx_t, ctx_x1);
 	GEN_FIELD(ctx_t, ctx_x2);

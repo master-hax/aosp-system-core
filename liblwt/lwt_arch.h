@@ -23,16 +23,22 @@
 //  interrupted (and preempted) in an arbitrary instruction location.  When a
 //  thread is preempted voluntarily, for example when waiting to acquire a
 //  mutex, or waiting for a condition to occur.
-//
-//  A zero least significant bit of ctx_fpctx indicates that only the half
-//  context needs to be loaded when switching into the thread. The simplest
-//  case is when a half context when no floating point is to be loaded, both
-//  conditions are tested with a single compare against zero of ctx_fpctx.
 
 #define	SIZEOF_UREG_T	8
 
 #ifdef LWT_ARM64 //{
+
+#define	OFFSET_OF_BRANCH_IN_TRAMPOLINE	60
+
+#define	FPCTX_NREG	 32
+#define	SIZEOF_QREG_T	 16
+
+#define	CTX_NREGS	 35
+#define	SIZEOF_CTX_T	 (CTX_NREGS * SIZEOF_UREG_T)
+
 #ifdef LWT_C //{
+
+//  Cache line size constants.
 
 #define CACHE_LINE_SIZE_L2      6
 #define CACHE_LINE_SIZE         64
@@ -44,8 +50,6 @@
 //  and if it is practical to do so.  TODO review SIMD / FP separation.
 //
 //  TODO: add support for SVE context.
-
-#define	FPCTX_NREG	 32
 
 typedef struct {
 	uregx2_t	 fpctx_regs[FPCTX_NREG];
@@ -141,7 +145,6 @@ typedef struct {
 //  when compiling a program, generating a header file, and using it in
 //  the Android build to build other files is understood.
 
-#define	CTX_NREGS	 35
 typedef struct {
 	ureg_t		 ctx_regs[CTX_NREGS];
 } ctx_t;
@@ -187,6 +190,9 @@ typedef struct {
 #define	ctx_pstate		ctx_regs[CTX_PSTATE_IX]
 
 #endif //} LWT_CTX_ARRAY
+
+static_assert(sizeof(ctx_t) == SIZEOF_CTX_T, "SIZEOF_CTX_T is wrong");
+
 #endif //} LWT_C
 
 #define CTX_FPCR_FPSR_IX	0
@@ -293,10 +299,50 @@ typedef struct {
 #define	ctx_pstate		(SIZEOF_UREG_T * CTX_PSTATE_IX)
 
 #endif //} LWT_CTX_ARRAY
+
+#define	fpctx_q0		(SIZEOF_QREG_T * 0)
+#define	fpctx_q1		(SIZEOF_QREG_T * 1)
+#define	fpctx_q2		(SIZEOF_QREG_T * 2)
+#define	fpctx_q3		(SIZEOF_QREG_T * 3)
+#define	fpctx_q4		(SIZEOF_QREG_T * 4)
+#define	fpctx_q5		(SIZEOF_QREG_T * 5)
+#define	fpctx_q6		(SIZEOF_QREG_T * 6)
+#define	fpctx_q7		(SIZEOF_QREG_T * 7)
+
+#define	fpctx_q8		(SIZEOF_QREG_T * 8)
+#define	fpctx_q9		(SIZEOF_QREG_T * 9)
+#define	fpctx_q10		(SIZEOF_QREG_T * 10)
+#define	fpctx_q11		(SIZEOF_QREG_T * 11)
+#define	fpctx_q12		(SIZEOF_QREG_T * 12)
+#define	fpctx_q13		(SIZEOF_QREG_T * 13)
+#define	fpctx_q14		(SIZEOF_QREG_T * 14)
+#define	fpctx_q15		(SIZEOF_QREG_T * 15)
+
+#define	fpctx_q16		(SIZEOF_QREG_T * 16)
+#define	fpctx_q17		(SIZEOF_QREG_T * 17)
+#define	fpctx_q18		(SIZEOF_QREG_T * 18)
+#define	fpctx_q19		(SIZEOF_QREG_T * 19)
+#define	fpctx_q20		(SIZEOF_QREG_T * 20)
+#define	fpctx_q21		(SIZEOF_QREG_T * 21)
+#define	fpctx_q22		(SIZEOF_QREG_T * 22)
+#define	fpctx_q23		(SIZEOF_QREG_T * 23)
+
+#define	fpctx_q24		(SIZEOF_QREG_T * 24)
+#define	fpctx_q25		(SIZEOF_QREG_T * 25)
+#define	fpctx_q26		(SIZEOF_QREG_T * 26)
+#define	fpctx_q27		(SIZEOF_QREG_T * 27)
+#define	fpctx_q28		(SIZEOF_QREG_T * 28)
+#define	fpctx_q29		(SIZEOF_QREG_T * 29)
+#define	fpctx_q30		(SIZEOF_QREG_T * 30)
+#define	fpctx_q31		(SIZEOF_QREG_T * 31)
+
 #endif //} !LWT_C
 #endif //} LWT_ARM64
 
 #ifdef LWT_X64 //{
+
+#define	OFFSET_OF_BRANCH_IN_TRAMPOLINE	56	// TODO
+
 #ifdef LWT_C //{
 
 //  X64 floating point is too barroque, best is to exactly follow libc
@@ -320,11 +366,10 @@ typedef struct {
 	//  context, if any can be restored without touching the rest of this
 	//  structure.
 	//
-	//  Unlike ARM64, there is no extra space for ctx_rdi (first argument)
-	//  in this cache line, newly created threads use a trampoline function
-	//  (__lwt_thr_start) to adjust their context, the argument is found in
-	//  ctx_rbp and the actual function address in ctx_rbx also known as
-	//  ctx_thr_start_pc and ctx_thr_start_arg0 in portable code.
+	//  Newly created threads use a trampoline function (__lwt_thr_start)
+	//  to adjust their context, the argument is found in ctx_rbp and the
+	//  actual function address in ctx_rbx also known as ctx_thr_start_pc
+	//  and ctx_thr_start_arg0 in portable code.
 
 	fpctx_t		*ctx_fpctx;
 	ureg_t		 ctx_pc;
@@ -495,6 +540,90 @@ inline_only uptr_t uptr_comp_and_swap_acq_rel(uptr_t old, uptr_t new,
 }
 #endif
 
+#ifdef LWT_ARM64 //{
+
+//  ARM64 opcodes are 32 bit wide.  The unconditional branch instruction is
+//  PC relative, it reaches instructions in the range: [-128MB, 128MB - 4].
+//  The 26 bit offset field stores a signed two's complement value.  Because
+//  instructions are 32 bit wide, the value doesn't need to store the 2 least
+//  significant bits.
+//
+//   3 3 2 2 2 2 2 2 2 2 2 2 1 1 1 1 1 1 1 1 1 1 0 0 0 0 0 0 0 0 0 0 
+//   1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0
+//  +-----------+---+-------+-------+-------+-------+-------+-------+
+//  |0 0 0 1 0 1|x x X X X X x x x x X X X X x x x x X X X X x x x x|
+//  +-----------+---+-------+-------+-------+-------+-------+-------+
+
+typedef u32_t			opcode_t;
+
+#define	BRANCH_ADDR_SHIFT	26
+#define	BRANCH_ADDR_MASK	((1u << BRANCH_ADDR_SHIFT) - 1u)
+#define	BRANCH_OPCODE		(0b000101u << BRANCH_ADDR_SHIFT)
+
+#define	OPCODE_SIZE_SHIFT	2
+
+//  Generate a branch instruction at location instaddr, the branch target's
+//  address is targetaddr.  When a full context is restored, a small trampoline
+//  that is context specific is generated, the last instruction in it is the
+//  generated branch.  If the targetaddr is too far from the address of the
+//  instruction to be generated an error is returned and the branch is not
+//  generated.
+
+//  All the address computation is done with signed arithmetic in register
+//  sized values.
+
+inline_only error_t generate_branch(ureg_t targetaddr, ureg_t instaddr)
+{
+	sreg_t pc = (sreg_t) targetaddr;
+	register sreg_t ia __asm__("x1") = (sreg_t) instaddr;
+
+	//  Set delta to the distance, in instructions instead of bytes,
+	//  between the target program counter and the instruction address.
+	//  If the target program counter is after the instruction address
+	//  delta will be a positive value.  If it is before, it will be a
+	//  negative value.
+
+	sreg_t delta = (pc - ia) >> OPCODE_SIZE_SHIFT;
+
+	//  A signed shift by the number of bits in the branch offset field
+	//  minus one (to preserve the sign bit of offset field) results in
+	//  high being:
+	//
+	//    - 64 zeroes, when pc >= ia, and the distance between them
+	//      fits in the 26 bits of the branch offset.  The values of:
+	//		(pc >= ia) == 1
+	//		high + 1 == 1
+	//
+	//    - 64 ones, when pc < ia, and the distance between them fits
+	//      the 26 bits of the branch offset.
+	//		(pc >= ia) == 0
+	//		high + 1 == 0
+	//
+	//  Thus the single "if" tests for both cases.  The generated code
+	//  results in a single branch, (the computation of pc >= ia into 1
+	//  or 0 is done by a compare and a cset (conditional set) instruction,
+	//  i.e. without branching to compute the 1 or 0 value.
+
+	sreg_t high = delta >> (BRANCH_ADDR_SHIFT - 1);
+	if (((sreg_t) (pc >= ia)) != high + 1)
+		return EINVAL;
+
+	opcode_t offset = BRANCH_ADDR_MASK & (opcode_t) delta;
+	opcode_t opcode = BRANCH_OPCODE | offset;
+	*(opcode_t *) ia = opcode;
+	return 0;
+}
+
+#endif //}
+
+#ifdef LWT_X64 //{
+inline_only error_t generate_branch(ureg_t targetaddr, ureg_t instaddr)
+{
+	*(volatile ureg_t *) 0x10 = 0xDEADBEEFu;
+	return 0;
+}
+#endif //}
+
 inline_only bool uregx2_equal(uregx2_t a, uregx2_t b)
 {
 	return ((a.low ^ b.low) | (a.high ^ b.high)) == 0;
@@ -504,10 +633,10 @@ inline_only uregx2_t uregx2_load(uregx2_t *m) {
 	return *m;
 }
 
-
 //  uregx2_t atomic operations
 
 #ifdef LWT_ARM64 //{
+
 inline_only uregx2_t uregx2_comp_and_swap_acq_rel(uregx2_t old, uregx2_t new,
 						  uregx2_t *m)
 {
@@ -552,9 +681,18 @@ inline_only cpu_t *cpu_current(void)
 	return (cpu_t *) cpureg;
 }
 #endif //}
+
+inline_only bool ctx_is_full(ctx_t *ctx)
+{
+	return ctx->ctx_pstate != 0;
+}
+
 #endif //}
 
 #ifdef LWT_X64 //{
+
+typedef u8_t			opcode_t;
+
 inline_only uregx2_t uregx2_comp_and_swap_acq_rel(uregx2_t old, uregx2_t new,
 						  uregx2_t *m)
 {
@@ -582,7 +720,11 @@ inline_only cpu_t *cpu_current()
 	return (cpu_t *) reg;
 }
 
-// cpu_t *cpu_current(void);
+inline_only bool ctx_is_full(ctx_t *ctx)
+{
+	return ctx->ctx_fpctx != NULL;
+}
+
 #endif //}
 
 #endif //}
