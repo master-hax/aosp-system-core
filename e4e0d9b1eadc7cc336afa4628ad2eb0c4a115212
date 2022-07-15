@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0c17f97c_f5337652",
+        "filename": "init/service_parser.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 653,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2022-07-15T01:53:05Z",
+      "side": 1,
+      "message": "Can we just put filename to Service? It can serve both from_apex/apex_name.",
+      "range": {
+        "startLine": 649,
+        "startChar": 0,
+        "endLine": 653,
+        "endChar": 64
+      },
+      "revId": "e4e0d9b1eadc7cc336afa4628ad2eb0c4a115212",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9145ed6c_5e493d0e",
+        "filename": "init/subcontext.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 253,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2022-07-15T01:53:05Z",
+      "side": 1,
+      "message": "nit: We don\u0027t need \u0027const\u0027 here. please remove.",
+      "range": {
+        "startLine": 253,
+        "startChar": 0,
+        "endLine": 253,
+        "endChar": 5
+      },
+      "revId": "e4e0d9b1eadc7cc336afa4628ad2eb0c4a115212",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f1c07947_e909b5e8",
+        "filename": "init/subcontext.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2022-07-15T01:53:05Z",
+      "side": 1,
+      "message": "This doesn\u0027t need to be a member function of Subcontext. Let\u0027s make a global utility function.",
+      "range": {
+        "startLine": 49,
+        "startChar": 0,
+        "endLine": 49,
+        "endChar": 65
+      },
+      "revId": "e4e0d9b1eadc7cc336afa4628ad2eb0c4a115212",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
