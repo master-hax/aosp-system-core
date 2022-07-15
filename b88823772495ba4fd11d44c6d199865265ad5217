@@ -16,6 +16,23 @@
       "message": "james",
       "revId": "b88823772495ba4fd11d44c6d199865265ad5217",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0548d60b_aea4207a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-07-15T00:09:25Z",
+      "side": 1,
+      "message": "can you explain why a lock that\u0027s only in that one function is actually useful? my default assumption is that something like this usually involves _multiple_ functions.\n\nin particular, the commit messages is quite unnerving --- \"avoid use after free\" _strongly_ implies that you need a lock in the freer as well as the user, but it looks like the code is really just \"make the race window smaller\", but it\u0027s still wrong?",
+      "revId": "b88823772495ba4fd11d44c6d199865265ad5217",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
