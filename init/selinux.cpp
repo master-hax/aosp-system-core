@@ -983,6 +983,7 @@ int SetupSelinux(char** argv) {
 
     SelinuxSetEnforcement();
 
+#if defined __ANDROID_RECOVERY__
     // We're in the kernel domain and want to transition to the init domain.  File systems that
     // store SELabels in their xattrs, such as ext4 do not need an explicit restorecon here,
     // but other file systems do.  In particular, this is needed for ramdisks such as the
@@ -990,6 +991,7 @@ int SetupSelinux(char** argv) {
     if (selinux_android_restorecon("/system/bin/init", 0) == -1) {
         PLOG(FATAL) << "restorecon failed of /system/bin/init failed";
     }
+#endif
 
     setenv(kEnvSelinuxStartedAt, std::to_string(start_time.time_since_epoch().count()).c_str(), 1);
 
