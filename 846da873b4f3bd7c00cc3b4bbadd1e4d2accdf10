@@ -33,6 +33,24 @@
       "message": "This increases the privileges available to storageproxy after booting up though, right? We were already running as system, but we don\u0027t need full system caps, afaiu.",
       "revId": "846da873b4f3bd7c00cc3b4bbadd1e4d2accdf10",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "236e8480_e1e1360a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1124693
+      },
+      "writtenOn": "2022-07-15T20:23:29Z",
+      "side": 1,
+      "message": "Currently, storageproxyd starts as root user, then deprivileges. It also requires setuid and setgid SELinux permission. \n\naosp/2154894 is the other half of this. It changes it so that storageproxyd starts as system user. storageproxyd is unable to do capset with this though. \n\nSame change will be needed for other devices too.",
+      "parentUuid": "0a6f650a_0879e202",
+      "revId": "846da873b4f3bd7c00cc3b4bbadd1e4d2accdf10",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
