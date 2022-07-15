@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2ff8c9e3_9502c63b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-07-15T17:09:28Z",
+      "side": 1,
+      "message": "This is fine, but I don\u0027t think this eliminates the need to ensure that ",
+      "revId": "99d770e0aab05870a0b521d16afbfcb21dd21676",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b04a2113_3063614f",
+        "filename": "init/init.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 473,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-07-15T17:09:28Z",
+      "side": 1,
+      "message": "Does this prevent this APEX from being installed?",
+      "range": {
+        "startLine": 473,
+        "startChar": 8,
+        "endLine": 473,
+        "endChar": 30
+      },
+      "revId": "99d770e0aab05870a0b521d16afbfcb21dd21676",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
