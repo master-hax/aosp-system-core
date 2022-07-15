@@ -87,6 +87,24 @@
       "parentUuid": "1fd4d4c3_c8d22acb",
       "revId": "846da873b4f3bd7c00cc3b4bbadd1e4d2accdf10",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fd1fa235_90e4d3c3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2022-07-15T21:31:52Z",
+      "side": 1,
+      "message": "I thought we need it for SCSI commands for RPMB, it\u0027s possible we don\u0027t need it for the UFS commands now, but we still have a legacy path with MMC commands.",
+      "parentUuid": "c9340366_04631bb2",
+      "revId": "846da873b4f3bd7c00cc3b4bbadd1e4d2accdf10",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
