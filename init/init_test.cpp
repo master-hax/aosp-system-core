@@ -15,11 +15,13 @@
  */
 
 #include <functional>
+#include <string_view>
 
 #include <android-base/file.h>
 #include <android-base/logging.h>
 #include <android-base/properties.h>
 #include <gtest/gtest.h>
+#include <selinux/selinux.h>
 
 #include "action.h"
 #include "action_manager.h"
@@ -27,6 +29,7 @@
 #include "builtin_arguments.h"
 #include "builtins.h"
 #include "import_parser.h"
+#include "init.h"
 #include "keyword_map.h"
 #include "parser.h"
 #include "service.h"
@@ -35,9 +38,7 @@
 #include "util.h"
 
 using android::base::GetIntProperty;
-using android::base::GetProperty;
-using android::base::SetProperty;
-using android::base::WaitForProperty;
+using android::base::StringReplace;
 using namespace std::literals;
 
 namespace android {
@@ -188,6 +189,45 @@ service A something
     EXPECT_TRUE(service->is_override());
 }
 
+static std::string GetSecurityContext() {
+    char* ctx;
+    if (getcon(&ctx) == -1) {
+        ADD_FAILURE() << "Failed to call getcon : " << strerror(errno);
+    }
+    std::string result = std::string(ctx);
+    freecon(ctx);
+    return result;
+}
+
+TEST(init, StopServiceByApexName) {
+    std::string_view script_template = R"init(
+service apex_test_service /system/bin/yes
+    user shell
+    group shell
+    seclabel $selabel
+)init";
+
+    std::string init_script = StringReplace(script_template, "$selabel", GetSecurityContext(), false);
+
+    ActionManager action_manager;
+    TestInitText(init_script, BuiltinFunctionMap(), {}, &action_manager, &ServiceList::GetInstance());
+    ASSERT_EQ(1, std::distance(ServiceList::GetInstance().begin(), ServiceList::GetInstance().end()));
+
+    auto service = ServiceList::GetInstance().begin()->get();
+    ASSERT_NE(nullptr, service);
+    EXPECT_EQ("apex_test_service", service->name());
+    ASSERT_RESULT_OK(service->Start());
+    ASSERT_TRUE(service->IsRunning());
+
+    std::string apex_name = "com.android.apex.test_service";
+    service->set_filename("/apex/" + apex_name+ "/init_test.rc");
+    auto apex_service = ServiceList::GetInstance().FindServicesByApexName(apex_name);
+    EXPECT_FALSE(apex_service.empty());
+    EXPECT_EQ("apex_test_service", apex_service[0]->name());
+    EXPECT_EQ(0, StopServicesFromApex(apex_name));
+    ASSERT_FALSE(apex_service[0]->IsRunning());
+}
+
 TEST(init, EventTriggerOrderMultipleFiles) {
     // 6 total files, which should have their triggers executed in the following order:
     // 1: start - original script parsed
@@ -336,20 +376,6 @@ TEST(init, LazilyLoadedActionsCanBeTriggeredByTheNextTrigger) {
     TestInit(start.path, test_function_map, commands, &action_manager, &service_list);
 
     EXPECT_EQ(2, num_executed);
-}
-
-TEST(init, RespondToCtlApexMessages) {
-    if (getuid() != 0) {
-        GTEST_SKIP() << "Skipping test, must be run as root.";
-        return;
-    }
-
-    std::string apex_name = "com.android.apex.cts.shim";
-    SetProperty("ctl.apex_unload", apex_name);
-    EXPECT_TRUE(WaitForProperty("init.apex." + apex_name, "unloaded", 10s));
-
-    SetProperty("ctl.apex_load", apex_name);
-    EXPECT_TRUE(WaitForProperty("init.apex." + apex_name, "loaded", 10s));
 }
 
 TEST(init, RejectsCriticalAndOneshotService) {
