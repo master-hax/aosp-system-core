@@ -142,6 +142,11 @@ class Service {
         }
     }
     Subcontext* subcontext() const { return subcontext_; }
+    const std::string& filename() { return filename_; }
+    void pause_restart() { restart_paused_ = true; }
+    void resume_restart() { restart_paused_ = false; }
+    bool has_restart_paused() { return restart_paused_; }
+    void set_filename(const std::string& name) { filename_ = name; }
 
   private:
     void NotifyStateChange(const std::string& new_state) const;
@@ -226,6 +231,8 @@ class Service {
     std::optional<std::string> on_failure_reboot_target_;
 
     std::string filename_;
+
+    bool restart_paused_ = false;
 };
 
 }  // namespace init
