@@ -593,14 +593,7 @@ static void DoReboot(unsigned int cmd, const std::string& reason, const std::str
 
     auto shutdown_timeout = 0ms;
     if (!SHUTDOWN_ZERO_TIMEOUT) {
-        constexpr unsigned int shutdown_timeout_default = 6;
-        constexpr unsigned int max_thermal_shutdown_timeout = 3;
-        auto shutdown_timeout_final = android::base::GetUintProperty("ro.build.shutdown_timeout",
-                                                                     shutdown_timeout_default);
-        if (is_thermal_shutdown && shutdown_timeout_final > max_thermal_shutdown_timeout) {
-            shutdown_timeout_final = max_thermal_shutdown_timeout;
-        }
-        shutdown_timeout = std::chrono::seconds(shutdown_timeout_final);
+        shutdown_timeout = ShutDownTimeout(is_thermal_shutdown);
     }
     LOG(INFO) << "Shutdown timeout: " << shutdown_timeout.count() << " ms";
 

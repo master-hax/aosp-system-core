@@ -29,6 +29,7 @@
 #include <sys/types.h>
 #include <sys/utsname.h>
 #include <unistd.h>
+#include "service_list.h"
 
 #define _REALLY_INCLUDE_SYS__SYSTEM_PROPERTIES_H_
 #include <sys/_system_properties.h>
@@ -442,17 +443,29 @@ static Result<void> DoControlRestart(Service* service) {
     return {};
 }
 
+static void StopApexServices(const std::string& apex_name) {
+    auto services = ServiceList::GetInstance().FindServicesByApexName(apex_name);
+    std::set<std::string> service_names;
+    for (const auto& service : services) {
+        SetProperty("apexd.pause_restarts." + service->name(), "true");
+        service_names.emplace(service->name());
+    }
+    StopServicesAndLogViolations(service_names, ShutDownTimeout(false), true);
+}
+
 static void DoUnloadApex(const std::string& apex_name) {
-    std::string prop_name = "init.apex." + apex_name;
+    StopApexServices(apex_name);
     // TODO(b/232114573) remove services and actions read from the apex
-    // TODO(b/232799709) kill services from the apex
-    SetProperty(prop_name, "unloaded");
+    SetProperty("init.apex." + apex_name, "unloaded");
 }
 
 static void DoLoadApex(const std::string& apex_name) {
-    std::string prop_name = "init.apex." + apex_name;
     // TODO(b/232799709) read .rc files from the apex
-    SetProperty(prop_name, "loaded");
+    auto services = ServiceList::GetInstance().FindServicesByApexName(apex_name);
+    for (const auto& service : services) {
+        SetProperty("apexd.pause_restarts." + service->name(), "false");
+    }
+    SetProperty("init.apex." + apex_name, "loaded");
 }
 
 enum class ControlTarget {
@@ -528,6 +541,15 @@ static bool HandleControlMessage(std::string_view message, const std::string& na
         return false;
     }
     const auto& function = it->second;
+
+    // When a non-staged apex is being installed, restart of the service(s) for the apex
+    // will be paused. start action will be ignored.
+    if (GetProperty("apexd.pause_restarts." + service->name(), "") == "true"
+            && action == "start") {
+        LOG(ERROR) << "rebootless not starting " << service->name()
+                   << "; apexd asked us to pause restarts";
+        return false;
+    }
 
     if (auto result = function(service); !result.ok()) {
         LOG(ERROR) << "Control message: Could not ctl." << message << " for '" << name

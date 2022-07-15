@@ -16,6 +16,7 @@
 
 #pragma once
 
+#include <chrono>
 #include <optional>
 #include <string>
 
@@ -32,6 +33,7 @@ bool IsRebootCapable();
 void __attribute__((noreturn)) RebootSystem(unsigned int cmd, const std::string& reboot_target);
 void __attribute__((noreturn)) InitFatalReboot(int signal_number);
 void InstallRebootSignalHandlers();
+std::chrono::milliseconds ShutDownTimeout(bool is_thermal_shutdown);
 
 }  // namespace init
 }  // namespace android
