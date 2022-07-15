@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "5df79f6d_850f03ba",
+        "filename": "init/service_parser.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 653,
+      "author": {
+        "id": 1895890
+      },
+      "writtenOn": "2022-07-15T17:42:26Z",
+      "side": 1,
+      "message": "We can certainly add file to Service. I think it would be beneficial to explicitly has apex_name_ and from_apex_ in Service for readability and ease of use so that we don\u0027t have to parse the file name every time when we need apex name.",
+      "parentUuid": "0c17f97c_f5337652",
+      "range": {
+        "startLine": 649,
+        "startChar": 0,
+        "endLine": 653,
+        "endChar": 64
+      },
+      "revId": "e4e0d9b1eadc7cc336afa4628ad2eb0c4a115212",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "9145ed6c_5e493d0e",
         "filename": "init/subcontext.cpp",
         "patchSetId": 3
@@ -37,6 +61,30 @@
       "writtenOn": "2022-07-15T01:53:05Z",
       "side": 1,
       "message": "nit: We don\u0027t need \u0027const\u0027 here. please remove.",
+      "range": {
+        "startLine": 253,
+        "startChar": 0,
+        "endLine": 253,
+        "endChar": 5
+      },
+      "revId": "e4e0d9b1eadc7cc336afa4628ad2eb0c4a115212",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ae531328_1448f10a",
+        "filename": "init/subcontext.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 253,
+      "author": {
+        "id": 1895890
+      },
+      "writtenOn": "2022-07-15T17:42:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9145ed6c_5e493d0e",
       "range": {
         "startLine": 253,
         "startChar": 0,
@@ -60,6 +108,30 @@
       "writtenOn": "2022-07-15T01:53:05Z",
       "side": 1,
       "message": "This doesn\u0027t need to be a member function of Subcontext. Let\u0027s make a global utility function.",
+      "range": {
+        "startLine": 49,
+        "startChar": 0,
+        "endLine": 49,
+        "endChar": 65
+      },
+      "revId": "e4e0d9b1eadc7cc336afa4628ad2eb0c4a115212",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7a06354a_879f3f67",
+        "filename": "init/subcontext.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1895890
+      },
+      "writtenOn": "2022-07-15T17:42:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f1c07947_e909b5e8",
       "range": {
         "startLine": 49,
         "startChar": 0,
