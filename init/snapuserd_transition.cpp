@@ -229,9 +229,6 @@ void SnapuserdSelinuxHelper::StartTransition() {
     if (!sm_->DetachSnapuserdForSelinux(&argv_)) {
         LOG(FATAL) << "Could not perform selinux transition";
     }
-
-    // Make sure the process is gone so we don't have any selinux audits.
-    KillFirstStageSnapuserd(old_pid_);
 }
 
 void SnapuserdSelinuxHelper::FinishTransition() {
@@ -301,6 +298,12 @@ bool SnapuserdSelinuxHelper::TestSnapuserdIsReady() {
 }
 
 void SnapuserdSelinuxHelper::RelaunchFirstStageSnapuserd() {
+    if (!sm_->DetachFirstStageSnapuserdForSelinux()) {
+        LOG(FATAL) << "Could not perform selinux transition";
+    }
+
+    KillFirstStageSnapuserd(old_pid_);
+
     auto fd = GetRamdiskSnapuserdFd();
     if (!fd) {
         LOG(FATAL) << "Environment variable " << kSnapuserdFirstStageFdVar << " was not set!";

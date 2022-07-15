@@ -340,6 +340,8 @@ class SnapshotManager final : public ISnapshotManager {
     // and reattach them.
     bool DetachSnapuserdForSelinux(std::vector<std::string>* snapuserd_argv);
 
+    bool DetachFirstStageSnapuserdForSelinux();
+
     // Perform the transition from the selinux stage of snapuserd into the
     // second-stage of snapuserd. This process involves re-creating the dm-user
     // table entries for each device, so that they connect to the new daemon.

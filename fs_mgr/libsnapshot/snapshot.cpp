@@ -1723,13 +1723,6 @@ bool SnapshotManager::PerformInitTransition(InitTransition transition,
 
         auto misc_name = user_cow_name;
 
-        DmTable table;
-        table.Emplace<DmTargetUser>(0, target.spec.length, misc_name);
-        if (!dm_.LoadTableAndActivate(user_cow_name, table)) {
-            LOG(ERROR) << "Unable to swap tables for " << misc_name;
-            continue;
-        }
-
         std::string source_device_name;
         if (snapshot_status.old_partition_size() > 0) {
             source_device_name = GetSourceDeviceName(snapshot);
@@ -1754,13 +1747,6 @@ bool SnapshotManager::PerformInitTransition(InitTransition transition,
         std::string cow_image_device;
         if (!dm_.GetDmDevicePathByName(cow_image_name, &cow_image_device)) {
             LOG(ERROR) << "Could not get device path for " << cow_image_name;
-            continue;
-        }
-
-        // Wait for ueventd to acknowledge and create the control device node.
-        std::string control_device = "/dev/dm-user/" + misc_name;
-        if (!WaitForDevice(control_device, 10s)) {
-            LOG(ERROR) << "dm-user control device no found:  " << misc_name;
             continue;
         }
 
@@ -4121,6 +4107,60 @@ bool SnapshotManager::IsSnapuserdRequired() {
 
 bool SnapshotManager::DetachSnapuserdForSelinux(std::vector<std::string>* snapuserd_argv) {
     return PerformInitTransition(InitTransition::SELINUX_DETACH, snapuserd_argv);
+}
+
+bool SnapshotManager::DetachFirstStageSnapuserdForSelinux() {
+    LOG(INFO) << "Detaching first stage snapuserd";
+
+    auto lock = LockExclusive();
+    if (!lock) return false;
+
+    std::vector<std::string> snapshots;
+    if (!ListSnapshots(lock.get(), &snapshots)) {
+        LOG(ERROR) << "Failed to list snapshots.";
+        return false;
+    }
+
+    for (const auto& snapshot : snapshots) {
+        std::string user_cow_name = GetDmUserCowName(snapshot, GetSnapshotDriver(lock.get()));
+
+        if (dm_.GetState(user_cow_name) == DmDeviceState::INVALID) {
+            continue;
+        }
+
+        DeviceMapper::TargetInfo target;
+        if (!GetSingleTarget(user_cow_name, TableQuery::Table, &target)) {
+            continue;
+        }
+
+        auto target_type = DeviceMapper::GetTargetType(target.spec);
+        if (target_type != "user") {
+            LOG(ERROR) << "Unexpected target type for " << user_cow_name << ": " << target_type;
+            continue;
+        }
+
+        auto misc_name = user_cow_name;
+
+        DmTable table;
+        table.Emplace<DmTargetUser>(0, target.spec.length, misc_name);
+        if (!dm_.LoadTableAndActivate(user_cow_name, table)) {
+            LOG(ERROR) << "Unable to swap tables for " << misc_name;
+            continue;
+        }
+
+        LOG(INFO) << "LoadTableAndActivate success for: " << misc_name;
+
+        // Wait for ueventd to acknowledge and create the control device node.
+        std::string control_device = "/dev/dm-user/" + misc_name;
+        if (!WaitForDevice(control_device, 10s)) {
+            LOG(ERROR) << "dm-user control device no found:  " << misc_name;
+            continue;
+        }
+
+        LOG(INFO) << "control device is ready: " << control_device;
+    }
+
+    return true;
 }
 
 bool SnapshotManager::PerformSecondStageInitTransition() {
