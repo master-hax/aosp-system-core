@@ -51,6 +51,24 @@
       "parentUuid": "0a6f650a_0879e202",
       "revId": "846da873b4f3bd7c00cc3b4bbadd1e4d2accdf10",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1fd4d4c3_c8d22acb",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2022-07-15T20:26:13Z",
+      "side": 1,
+      "message": "Does system have more capabilities than `CAP_SYS_RAW_IO`?",
+      "parentUuid": "236e8480_e1e1360a",
+      "revId": "846da873b4f3bd7c00cc3b4bbadd1e4d2accdf10",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
