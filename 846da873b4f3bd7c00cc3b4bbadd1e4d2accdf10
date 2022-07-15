@@ -69,6 +69,24 @@
       "parentUuid": "236e8480_e1e1360a",
       "revId": "846da873b4f3bd7c00cc3b4bbadd1e4d2accdf10",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c9340366_04631bb2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1124693
+      },
+      "writtenOn": "2022-07-15T20:42:40Z",
+      "side": 1,
+      "message": "https://android.googlesource.com/platform/system/core/+/master/init/README.md#options says, \"If no capabilities are provided, then all capabilities are removed from this service, even if it runs as root.\" \n\nSo, with this change storageproxyd wouldn\u0027t even have `CAP_SYS_RAW_IO`. I looked at /proc/\u003cpid\u003e/status. And `CAP_SYS_RAW_IO` indeed went away.\n\nI played around with fingeprint on a real device, and that works. \n\nDo you know if `CAP_SYS_RAW_IO` is required?",
+      "parentUuid": "1fd4d4c3_c8d22acb",
+      "revId": "846da873b4f3bd7c00cc3b4bbadd1e4d2accdf10",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
