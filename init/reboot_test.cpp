@@ -152,6 +152,26 @@ TEST_F(RebootTest, StopServicesSIGTERM) {
     EXPECT_EQ(nullptr, oneshot_service_after_stop);
 }
 
+TEST_F(RebootTest, StopServiceByApexName) {
+    if (getuid() != 0) {
+        GTEST_SKIP() << "Skipping test, must be run as root.";
+        return;
+    }
+    AddTestService("apex_init_service");
+
+    auto service = ServiceList::GetInstance().FindService("apex_init_service");
+    ASSERT_NE(nullptr, service);
+    ASSERT_RESULT_OK(service->Start());
+    ASSERT_TRUE(service->IsRunning());
+
+    std::string apex_name = "com.android.apex.init_test";
+    service->set_filename("/apex/" + apex_name+ "/init_test.rc");
+    auto apex_service = ServiceList::GetInstance().FindServicesByApexName(apex_name);
+    EXPECT_FALSE(apex_service.empty());
+    StopServicesAndLogViolations({apex_service[0]->name()}, 10s, /* terminate= */ true);
+    EXPECT_FALSE(apex_service[0]->IsRunning());
+}
+
 TEST_F(RebootTest, StopServicesSIGKILL) {
     if (getuid() != 0) {
         GTEST_SKIP() << "Skipping test, must be run as root.";
