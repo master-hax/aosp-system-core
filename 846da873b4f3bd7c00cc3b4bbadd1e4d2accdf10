@@ -123,6 +123,24 @@
       "parentUuid": "fd1fa235_90e4d3c3",
       "revId": "846da873b4f3bd7c00cc3b4bbadd1e4d2accdf10",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "106ed909_7f98b079",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2022-07-15T22:03:20Z",
+      "side": 1,
+      "message": "We don\u0027t currently use MMC on any device that I know of for the RPMB operations so that might be it. Maybe we can remove it?",
+      "parentUuid": "a508223f_e2bbd889",
+      "revId": "846da873b4f3bd7c00cc3b4bbadd1e4d2accdf10",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
