@@ -208,5 +208,16 @@ void InstallRebootSignalHandlers() {
     sigaction(SIGTRAP, &action, nullptr);
 }
 
+std::chrono::milliseconds ShutDownTimeout(bool is_thermal_shutdown) {
+    constexpr unsigned int shutdown_timeout_default = 6;
+    constexpr unsigned int max_thermal_shutdown_timeout = 3;
+    auto shutdown_timeout_final = android::base::GetUintProperty("ro.build.shutdown_timeout",
+                                                                    shutdown_timeout_default);
+    if (is_thermal_shutdown && shutdown_timeout_final > max_thermal_shutdown_timeout) {
+        shutdown_timeout_final = max_thermal_shutdown_timeout;
+    }
+    return std::chrono::seconds(shutdown_timeout_final);
+}
+
 }  // namespace init
 }  // namespace android
