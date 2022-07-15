@@ -16,6 +16,7 @@
 
 #pragma once
 
+#include <iterator>
 #include <memory>
 #include <vector>
 
@@ -50,6 +51,16 @@ class ServiceList {
             return svc->get();
         }
         return nullptr;
+    }
+
+    std::vector<Service*> FindServicesByApexName(const std::string& apex_name) const {
+        std::vector<Service*> matches;
+        for (const auto& svc : services_) {
+            if (svc->is_from_apex() && svc->apex_name().compare(apex_name)==0) {
+                matches.emplace_back(svc.get());
+            }
+        }
+        return matches;
     }
 
     Service* FindInterface(const std::string& interface_name) {

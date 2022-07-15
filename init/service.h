@@ -142,6 +142,7 @@ class Service {
         }
     }
     Subcontext* subcontext() const { return subcontext_; }
+    const std::string& apex_name() { return apex_name_; }
 
   private:
     void NotifyStateChange(const std::string& new_state) const;

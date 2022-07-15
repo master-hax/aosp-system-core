@@ -29,6 +29,7 @@
 #include <sys/types.h>
 #include <sys/utsname.h>
 #include <unistd.h>
+#include "service_list.h"
 
 #define _REALLY_INCLUDE_SYS__SYSTEM_PROPERTIES_H_
 #include <sys/_system_properties.h>
@@ -442,11 +443,27 @@ static Result<void> DoControlRestart(Service* service) {
     return {};
 }
 
+static void StopApexServices(const std::string& apex_name) {
+    auto services = ServiceList::GetInstance().FindServicesByApexName(apex_name);
+    static constexpr int kServiceTerminateTimeoutSeconds = 5;
+    std::vector<std::thread> threads;
+    threads.reserve(services.size());
+    for (const auto& service : services) {
+        threads.emplace_back([&service]() {
+            service->Terminate();
+            if (!base::WaitForProperty("init.svc." + service->name(), "stopped",
+                    std::chrono::seconds(kServiceTerminateTimeoutSeconds))) {
+                LOG(INFO) << "rebootless Service " << service->name()
+                          << " did not stop automatically. Using ctl.stop.";
+                service->Stop();
+            }
+        });
+    }
+}
+
 static void DoUnloadApex(const std::string& apex_name) {
-    std::string prop_name = "init.apex." + apex_name;
-    // TODO(b/232114573) remove services and actions read from the apex
-    // TODO(b/232799709) kill services from the apex
-    SetProperty(prop_name, "unloaded");
+    StopApexServices(apex_name);
+    SetProperty("init.apex." + apex_name, "unloaded");
 }
 
 static void DoLoadApex(const std::string& apex_name) {
