@@ -105,6 +105,24 @@
       "parentUuid": "c9340366_04631bb2",
       "revId": "846da873b4f3bd7c00cc3b4bbadd1e4d2accdf10",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a508223f_e2bbd889",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1124693
+      },
+      "writtenOn": "2022-07-15T21:52:49Z",
+      "side": 1,
+      "message": "I see. If that\u0027s the case, I feel like we should also rely on init.rc to set up capabilities for storageproxyd. I wonder now why fingerprint works on my device.",
+      "parentUuid": "fd1fa235_90e4d3c3",
+      "revId": "846da873b4f3bd7c00cc3b4bbadd1e4d2accdf10",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
