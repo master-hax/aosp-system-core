@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "03ac4db8_33f69fbd",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2022-07-16T00:31:23Z",
+      "side": 1,
+      "message": "Please add a test.\n\n- setup\n  - v1 preinstalled apex has a service.\n  - check if the service is running.\n- install v2 succeeds. (For now we don\u0027t need to check if the service is running after the install)",
+      "revId": "ee0db87ea9394e382892a9d266ab94dc010c7266",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "769222cd_ce0d6ca7",
+        "filename": "init/init.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 461,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2022-07-16T00:31:23Z",
+      "side": 1,
+      "message": "We\u0027d better reuse \"StopServices/StopServicesAndLogViolations\" instead of custom implementation. It does something more than just stopping the service. (reaping pids?) It looks like it stops services based on \"ServiceList::services_in_shutdown_order\".(basically, reverse in start_order()).",
+      "range": {
+        "startLine": 449,
+        "startChar": 0,
+        "endLine": 461,
+        "endChar": 5
+      },
+      "revId": "ee0db87ea9394e382892a9d266ab94dc010c7266",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}

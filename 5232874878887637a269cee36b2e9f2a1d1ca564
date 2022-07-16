@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6fc0eb17_972ee913",
+        "filename": "init/init.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 447,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2022-07-16T00:31:23Z",
+      "side": 0,
+      "message": "This is not handled in this change.\n\n`ServiceList::RemoveServiceIf(UnaryPredicate predicate)` can be used.",
+      "range": {
+        "startLine": 447,
+        "startChar": 0,
+        "endLine": 447,
+        "endChar": 71
+      },
+      "revId": "5232874878887637a269cee36b2e9f2a1d1ca564",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b56dce18_c6cf6456",
+        "filename": "init/reboot.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 911,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2022-07-16T00:31:23Z",
+      "side": 0,
+      "message": "You may re-use this to clean up for the apex on ctl.apex_unload",
+      "range": {
+        "startLine": 895,
+        "startChar": 0,
+        "endLine": 911,
+        "endChar": 7
+      },
+      "revId": "5232874878887637a269cee36b2e9f2a1d1ca564",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
