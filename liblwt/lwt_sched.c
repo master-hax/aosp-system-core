@@ -3982,7 +3982,7 @@ int __lwt_mtx_destroy(struct __lwt_mtx_s **mtxpp)
 	return mtx_destroy(mtxpp);
 }
 
-#if 0
+#ifdef LWT_NOT_DEFINED_CANT_INLINE_INTO_THIS_FUNCTION
 //  mtx_lock() can't be inline here by gcc because of its call to a setjmp()
 //  like function, inline_only for mtx_lock() doesn't work, so __lwt_mtx_lock()
 //  is above where mtx_lock() would have been if gcc didn't have trouble with
@@ -4018,7 +4018,7 @@ int __lwt_cnd_destroy(struct __lwt_cnd_s **cndpp)
 	return cnd_destroy(cndpp);
 }
 
-#if 0
+#ifdef LWT_NOT_DEFINED_CANT_INLINE_INTO_THIS_FUNCTION
 //  cnd_wait() can't be inline here by gcc because of its call to a setjmp()
 //  like function, inline_only for cnd_wait() doesn't work, so __lwt_cnd_wait()
 //  is above where cnd_wait() would have been if gcc didn't have trouble with
