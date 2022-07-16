@@ -120,7 +120,6 @@ struct stk_s {
 	size_t		 stk_guardsize;
 };
 
-
 typedef union stkbkt_atom_u {
 	struct {
 		size_t	 stkbkt_stacksize;
@@ -700,6 +699,7 @@ struct cpu_s {
 	char		*cpu_name;
 	kcpu_t		*cpu_kcpu;
 	ureg_t		 cpu_hwix;
+	void		*cpu_sigstk;
 	cacheline_t	*cpu_trampoline; // Must be immediately before cpu_ctx
 	ctx_t		 cpu_ctx;	 // Must be immediately after trampoline
 } aligned_cache_line;

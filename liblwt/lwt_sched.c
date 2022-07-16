@@ -711,14 +711,11 @@ inline_only llelem_t *lllist_remove(lllist_t *list)
 }
 
 
-//}{  Stack allocation and a their caching.
+//}{  Stack allocation and caching.
 
-static alloc_value_t stk_alloc(size_t stacksize, size_t guardsize)
+static alloc_value_t rawstk_alloc(size_t stacksize, size_t guardsize)
 {
-	stacksize = PAGE_SIZE_ROUND_UP(stacksize);
-	guardsize = PAGE_SIZE_ROUND_UP(guardsize);
 	size_t size = stacksize + guardsize;
-
 	void *mem = mmap(NULL, size, PROT_READ | PROT_WRITE,
 			 MAP_PRIVATE | MAP_ANONYMOUS, -1, (off_t) 0);
 	if ((void *)-1 == mem)
@@ -728,7 +725,33 @@ static alloc_value_t stk_alloc(size_t stacksize, size_t guardsize)
 		(void) munmap(mem, size);
 		return (alloc_value_t) {.mem = NULL, .error = error};
 	}
+	return (alloc_value_t) {.mem = mem, .error = 0};
+}
 
+#define	SIGSTK_GUARDSIZE	(4 * PAGE_SIZE)
+#define	SIGSTK_STACKSIZE	(4 * PAGE_SIZE)
+
+static alloc_value_t sigstk_alloc(void)
+{
+	alloc_value_t av = rawstk_alloc(SIGSTK_STACKSIZE, SIGSTK_GUARDSIZE);
+	if (av.error)
+		return av;
+
+	void *top = av.mem;
+	top = (void *) ((uptr_t) top + SIGSTK_GUARDSIZE);
+	return (alloc_value_t) {.mem = top, .error = 0};
+}
+
+static alloc_value_t stk_alloc(size_t stacksize, size_t guardsize)
+{
+	stacksize = PAGE_SIZE_ROUND_UP(stacksize);
+	guardsize = PAGE_SIZE_ROUND_UP(guardsize);
+	size_t size = stacksize + guardsize;
+	alloc_value_t av = rawstk_alloc(stacksize, guardsize);
+	if (av.error)
+		return av;
+
+	void *mem = av.mem;
 	stk_t *stk = (stk_t *) ((uptr_t) mem + size - sizeof(stk_t));
 	stk->stk_stacksize = stacksize;
 	stk->stk_guardsize = guardsize;
@@ -3450,6 +3473,20 @@ inline_only int cpu_setaffinity(size_t size, cpu_set_t *cpu_set)
 }
 #endif
 
+error_t cpu_bind(cpu_t *cpu)
+{
+	int hwix = cpu->cpu_hwix;
+	cpu_set_t *cpuset = CPU_ALLOC(MAX_CPU);
+	if (!cpuset)
+		return ENOMEM;
+	size_t cpuset_size = CPU_ALLOC_SIZE(MAX_CPU);
+	CPU_ZERO_S(cpuset_size, cpuset);
+	CPU_SET_S(hwix, cpuset_size, cpuset);
+	error_t error = cpu_setaffinity(cpuset_size, cpuset);
+	CPU_FREE(cpuset);
+	return error;
+}
+
 static int sched_attempts = 1;
 
 static noreturn void *cpu_main(cpu_t *cpu)
@@ -3460,14 +3497,8 @@ static noreturn void *cpu_main(cpu_t *cpu)
 	schdom_t *schdom = &core->core_hw->hw_schdom;
 
 	if (cpu != &cpus[0]) {		// cpu0 handled in cpus_start()
-		cpu_set_t *cpuset = CPU_ALLOC(MAX_CPU);
-		size_t cpuset_size = CPU_ALLOC_SIZE(MAX_CPU);
-		int hwix = cpu->cpu_hwix;
-		CPU_ZERO_S(cpuset_size, cpuset);
-		CPU_SET_S(hwix, cpuset_size, cpuset);
-		error_t error = cpu_setaffinity(cpuset_size, cpuset);
+		error_t error = cpu_bind(cpu);
 		assert(!error);
-		CPU_FREE(cpuset);
 	}
 
 	thr_t *thr_switching_out = NULL;
@@ -3625,16 +3656,9 @@ static error_t cpus_start(void)
 			}
 		}
 	}
-
-
-	hwix = cpus[0].cpu_hwix;
-	CPU_ZERO_S(cpuset_size, cpuset);
-	CPU_SET_S(hwix, cpuset_size, cpuset);
-	error = cpu_setaffinity(cpuset_size, cpuset);
 	CPU_FREE(cpuset);
-	if (error)
-		return error;
-	return 0;
+
+	return cpu_bind(&cpus[0]);
 }
 
 inline_only void hw_init(hw_t *hw)
@@ -3675,11 +3699,28 @@ error_t trampolines_init(void)
 	return 0;
 }
 
-inline_only void cpu_init(cpu_t *cpu, cacheline_t *trampoline)
+void trampolines_deinit(void)
+{
+	TODO();
+}
+
+inline_only error_t cpu_init(cpu_t *cpu, cacheline_t *trampoline)
 {
 	cpu->cpu_idled_elem.lll_next = CPU_NOT_IDLED;
 	cpu->cpu_running_thr = NULL;
 	cpu->cpu_trampoline = trampoline;
+
+	alloc_value_t av = sigstk_alloc();
+	if (av.error)
+		return av.error;
+
+	cpu->cpu_sigstk = av.mem;
+	return 0;
+}
+
+static void cpu_deinit(cpu_t *cpu)
+{
+	TODO();
 }
 
 inline_only void core_init(core_t *core)
@@ -3721,11 +3762,25 @@ inline_only void cores_init(void)
 		core_init(&cores[i]);
 }
 
-inline_only void cpus_init(void)
+inline_only error_t cpus_init(void)
+{
+	int i;
+	for (i = 0; i < NCPUS; ++i) {
+		error_t error = cpu_init(&cpus[i], &trampolines[i]);
+		if (error) {
+			for (; i > 0; --i)
+				cpu_deinit(&cpus[i]);
+			return error;
+		}
+	}
+	return 0;
+}
+
+static void cpus_deinit(void)
 {
 	int i;
 	for (i = 0; i < NCPUS; ++i)
-		cpu_init(&cpus[i], &trampolines[i]);
+		cpu_deinit(&cpus[i]);
 }
 
 #ifdef LWT_CPU_PTHREAD_KEY
@@ -3769,6 +3824,13 @@ static error_t kcores_init(void)
 	return 0;
 }
 
+static void kcores_deinit(void)
+{
+	int i;
+	for (i = 0; i < NCORES; ++i)
+		kcore_deinit(&kcores[i]);
+}
+
 #ifdef LWT_CPU_PTHREAD_KEY //{
 static void cpu_current_set(cpu_t *cpu)
 {
@@ -3784,7 +3846,7 @@ static cpu_t *cpu_current(void)
 static thr_t *thr_dummy;
 static lwt_t lwt_main;
 
-inline_only error_t init_data(size_t sched_attempt_steps)
+inline_only error_t data_init(size_t sched_attempt_steps)
 {
 	if (sched_attempt_steps > 0 && sched_attempt_steps <= 1000)
 		sched_attempts = (int) sched_attempt_steps;
@@ -3799,61 +3861,73 @@ inline_only error_t init_data(size_t sched_attempt_steps)
 	chips_init();
 	mcores_init();
 	cores_init();
-	cpus_init();
+	error = cpus_init();
+	if (error) {
+		trampolines_deinit();
+		return error;
+	}
 
 	error = kcores_init();
-	if (error)
+	if (error) {
+		cpus_deinit();
+		trampolines_deinit();
 		return error;
+	}
 
 	cpu_current_set(&cpus[0]);
 
 	lllist_init(&thr_exited_lllist);
 	error = arenas_init();
-	if (!error) {
-		error = mtx_create_outline(&thr_block_forever_mtx, NULL);
-		if (!error) {
-			alloc_value_t av = thr_alloc();
-			if (!av.error) {
-				thr_dummy = av.mem;
-				MTXA_OWNER_SET_WHEN_UNLOCKED(
-					thr_block_forever_mtx->mtxa,
-					MTXID_DUMMY);
-				THRA_INDEX_SET(thr_dummy->thra, 
-					       thr_dummy - THR_INDEX_BASE);
-				thr_dummy->thr_mtxcnt = 1;
-				lwt_main = (lwt_t) thr_create_main()->
-						   thra.thra_thrid.thrid_all;
-
-				//  Prevent removal of these debug variables
-
-				ureg_load_acq((ureg_t *) (thr_by_index + 1));
-				ureg_load_acq((ureg_t *) (thrx_by_index + 1));
-				ureg_load_acq((ureg_t *) (mtx_by_index + 1));
-
-				return 0;
-			}
-			error = av.error;
-		}
-		arenas_deinit();
+	if (error) {
+		kcores_deinit();
+		cpus_deinit();
+		trampolines_deinit();
+		return error;
 	}
-	return error;
+
+	//  The areas were just created, the following two can't fail.
+
+	error = mtx_create_outline(&thr_block_forever_mtx, NULL);
+	assert(!error);
+	alloc_value_t av = thr_alloc();
+	assert(!av.error);
+
+	thr_dummy = av.mem;
+	MTXA_OWNER_SET_WHEN_UNLOCKED(
+		thr_block_forever_mtx->mtxa,
+		MTXID_DUMMY);
+	THRA_INDEX_SET(thr_dummy->thra, 
+		       thr_dummy - THR_INDEX_BASE);
+	thr_dummy->thr_mtxcnt = 1;
+	lwt_main = (lwt_t) thr_create_main()->thra.thra_thrid.thrid_all;
+
+	//  Prevent removal of these debug variables
+
+	ureg_load_acq((ureg_t *) (thr_by_index + 1));
+	ureg_load_acq((ureg_t *) (thrx_by_index + 1));
+	ureg_load_acq((ureg_t *) (mtx_by_index + 1));
+
+	return 0;
+}
+
+static void data_deinit(void)
+{
+	arenas_deinit();
+	kcores_deinit();
+	cpus_deinit();
+	trampolines_deinit();
 }
 
 inline_only error_t init(size_t sched_attempt_steps)
 {
-#if 0 // XXX
-	ureg_t fpcr = __lwt_get_fpcr();
-	__lwt_set_fpcr(fpcr);
-	__lwt_set_nzcv(0xF0000000uL);
-	ureg_t nzcv = __lwt_get_nzcv();
-	__lwt_set_nzcv(nzcv);
-#endif
-
-	error_t error = init_data(sched_attempt_steps);
+	error_t error = data_init(sched_attempt_steps);
 	if (error)
 		return error;
 
 	error = cpus_start();
+	if (error)
+		data_deinit();
+
 	return error;
 }
 
