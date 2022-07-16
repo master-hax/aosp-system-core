@@ -19,6 +19,23 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "5607fe0b_09aafcfc",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-07-16T00:23:55Z",
+      "side": 1,
+      "message": "David, and others. Can any of you +2 this?",
+      "revId": "497f00232940e3a5592359aa072ff14b967c1d03",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "82066889_ad0ab24c",
@@ -68,6 +85,24 @@
       "side": 1,
       "message": "aosp/313631 is the commit where this code/comment were introduced. I only moved the contents to security.cpp in aosp/456322.\n\nI never had much knowledge of this function. I relied on the security team to maintain it. Unfortunately the author of this function has left.",
       "parentUuid": "e8e3ee3e_04507940",
+      "revId": "497f00232940e3a5592359aa072ff14b967c1d03",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ee6f5614_c220c834",
+        "filename": "init/security.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-07-16T00:23:55Z",
+      "side": 1,
+      "message": "Thanks. I did some archaeology. aosp/889380 was the original change.\n\nHere https://googleplex-android-review.git.corp.google.com/c/platform/system/core/+/889380/1/init/init.cpp#356, \u002724\u0027 seems to be from the setting of our devices then.\n\n\u003e 24 is the minimum on our devices per gTest (below), but I think we need a CDD addition and this might be too high:\n\nHowever, in PS2, \u002724\u0027 is changed to \u002718\u0027. https://googleplex-android-review.git.corp.google.com/c/platform/system/core/+/889380/2/init/init.cpp#351\n\n\u003e changed down to 18 which is the theoretical minimum MMAP_RND_BITS_MAX value for arm64.\n\nLater in PS5, it goes back to \u002724\u0027 with no good reason. https://googleplex-android-review.git.corp.google.com/c/platform/system/core/+/889380/2..5/init/init.cpp#351\n\n\n--------\nFYI. Below is what I get from arm64 kernel that we are using.\n\n```\n# cat /proc/config.gz | gunzip | grep ARCH_MMAP\nCONFIG_ARCH_MMAP_RND_BITS_MIN\u003d18\nCONFIG_ARCH_MMAP_RND_BITS_MAX\u003d24\nCONFIG_ARCH_MMAP_RND_COMPAT_BITS_MIN\u003d11\nCONFIG_ARCH_MMAP_RND_COMPAT_BITS_MAX\u003d16\nCONFIG_HAVE_ARCH_MMAP_RND_BITS\u003dy\nCONFIG_ARCH_MMAP_RND_BITS\u003d18\nCONFIG_HAVE_ARCH_MMAP_RND_COMPAT_BITS\u003dy\nCONFIG_ARCH_MMAP_RND_COMPAT_BITS\u003d11\n```\n\nSo, \"my\" interpretation of all these is that\n\n* \"33\" in the function arguments is from the theoretical maximum for the architecture.\n\n* \"24\" in the function arguments is from the RND_BITS_MAX value of our (\u003dknown) kernel. Note that the original change was uploaded at the nyc time when we had very little idea about OEM kernels. I think we just used our kernel (not the architectural minimum) as the baseline and wanted to ensure that OEM kernels are equal to or above ours.",
+      "parentUuid": "6bf618c9_3203fe5e",
       "revId": "497f00232940e3a5592359aa072ff14b967c1d03",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
