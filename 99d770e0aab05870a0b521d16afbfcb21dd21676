@@ -39,6 +39,30 @@
       },
       "revId": "99d770e0aab05870a0b521d16afbfcb21dd21676",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f83c4951_c1c65ada",
+        "filename": "init/init.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 473,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2022-07-16T00:32:51Z",
+      "side": 1,
+      "message": "Good catch!\nupdated the parent change so that the caller of setProp() can be notified no error.\n\nbtw, I\u0027m still working on how we stop the install at this point (b/238820991). Let me update apexd to handle the error in a separate change.",
+      "parentUuid": "b04a2113_3063614f",
+      "range": {
+        "startLine": 473,
+        "startChar": 8,
+        "endLine": 473,
+        "endChar": 30
+      },
+      "revId": "99d770e0aab05870a0b521d16afbfcb21dd21676",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
