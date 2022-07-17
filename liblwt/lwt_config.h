@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 
+/* clang-format off */
+/* see the comment in lwt_sched.h about issues and the many clang-format bugs */
+
 //  This header file facilitates building LWT with the Android build while
 //  allowing it to be built externally with scripts on gLinux and adeb
 

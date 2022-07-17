@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 
+/* clang-format off */
+/* see the comment in lwt_sched.h about issues and the many clang-format bugs */
+
 //  To test internal interfaces, its easiest to include the implementation
 //  file and call the functions directly instead of exposing static functions
 //  just for testing.

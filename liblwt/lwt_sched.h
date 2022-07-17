@@ -14,6 +14,23 @@
  * limitations under the License.
  */
 
+/* clang-format off */
+
+//  There are bugs in clang-format where it can not align bit fields when the
+//  number of bits is an identifier instead of an integer constant.  There are
+//  additional bugs in the AlignConsecutiveDeclarations mode where it sometimes
+//  misaligns them.  Additionally, clang-format wants to reflow #defines when
+//  a continuation line is used that it decides should not be used and there
+//  is not way to override that, specific #defines are more readable when in
+//  their own line, specifically many of the ones that use BITS_GET() which
+//  are in blocks and immediately before the matching BITS_SET() macro use.
+//  For these and other reasons, using clang-format significantly reduces
+//  readability of the code, and too much time is was spent working around its
+//  flaws  with too many sprinklings of clang-format directives to turn it off
+//  and back on all over the code.  The result of using clang-format ends up
+//  being reduced readability, when it should be the opposite. Thus if is
+//  turned off for the whole file.
+
 //  Many of the structures in this file use bitfields within 2 word structures
 //  that are updates with double word compare and swap.  The bit fields are
 //  implemented as bit masks that use BITS_SET() and BITS_GET(), the equivalent

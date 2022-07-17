@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 
+/* clang-format off */
+/* see the comment in lwt_sched.h about issues and the many clang-format bugs */
+
 #ifndef __LWT_H_INCLUDED__ //{
 #define __LWT_H_INCLUDED__
 

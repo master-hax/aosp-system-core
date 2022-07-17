@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 
+/* clang-format off */
+/* see the comment in lwt_sched.h about issues and the many clang-format bugs */
+
 #ifndef __cplusplus
 #define static_assert(expr, msg)	_Static_assert(expr, msg)
 #endif
@@ -34,8 +37,8 @@ typedef long			s64_t;
 typedef unsigned long		u64_t;
 typedef u64_t			uptr_t;
 typedef u64_t			ureg_t;
-#define	UREG_BITS		64
 typedef s64_t			sreg_t;
+#define	UREG_BITS		64
 #endif
 
 #if (LWT_PTR_BITS == 32)
@@ -43,8 +46,8 @@ typedef long long		s64_t;
 typedef unsigned long long	u64_t;
 typedef u32_t			uptr_t;
 typedef u32_t			ureg_t;
-typedef UREG_BITS		32
 typedef s32_t			sreg_t;
+typedef UREG_BITS		32
 #endif
 
 static_assert(sizeof(s8_t)  == 1,  "s8_t wrong size");

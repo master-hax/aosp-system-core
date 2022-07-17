@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 
+/* clang-format off */
+/* see the comment in lwt_sched.h about issues and the many clang-format bugs */
+
 #include "lwt_config.h"
 
 #include <sys/mman.h>
