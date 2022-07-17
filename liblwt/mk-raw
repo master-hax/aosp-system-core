@@ -1,0 +1,68 @@
+#!/usr/bin/bash
+
+# Copyright (C) 2022 The Android Open Source Project
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+STEPS=1000000
+COUNT=10
+
+# STEPS=123456
+# COUNT=2
+
+TIME=/usr/bin/time
+if [ -f /usr/bin/time-1.9 ] ; then
+	TIME=/usr/bin/time-1.9
+fi
+
+CMD=$(basename $0)
+
+usage()
+{
+	echo "usage: $CMD [x64 | arm64]" 1>&2
+	exit 1
+}
+
+if [ $# -ne 1 ] ; then
+	usage
+fi
+
+ARCH="$1"
+
+if [ "$ARCH" != x64 -a "$ARCH" != arm64 ] ; then
+	usage
+fi
+
+PROG=./gen/test-lwt-mp-BITS-O3-g-$ARCH
+# PROG=./gen/test-lwt-mp-smt-BITS-O3-g-$ARCH
+
+
+while read START END ; do
+	ATTEMPTS=$START
+	while [ $ATTEMPTS -le $END ] ; do
+		C=0
+		while [ $C -lt $COUNT ] ; do
+			echo $ATTEMPTS: $($TIME $PROG $STEPS $ATTEMPTS 2>&1)
+			C=$[ C + 1 ]
+		done
+		ATTEMPTS=$[ ATTEMPTS + 10 ]
+	done
+done <<LIST
+0 1000
+LIST
+
+C=0
+while [ $C -lt $COUNT ] ; do
+	echo pthreads: $($TIME ./gen/test-pthread-O3-g-$ARCH $STEPS 2>&1)
+	C=$[ C + 1 ]
+done

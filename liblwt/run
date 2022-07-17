@@ -1,0 +1,88 @@
+#!/usr/bin/bash
+
+# Copyright (C) 2022 The Android Open Source Project
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+rm -f core
+ulimit -c unlimited
+
+CMD=$(basename $0)
+
+usage()
+{
+	echo "usage: $CMD [x64 | arm64]" 1>&2
+	exit 1
+}
+
+if [ $# -ne 1 ] ; then
+	usage
+fi
+
+ARCH="$1"
+
+if [ "$ARCH" != x64 -a "$ARCH" != arm64 ] ; then
+	usage
+fi
+
+if [ ! -f gen/binaries-$ARCH ] ; then
+	echo "$CMD: file produced by mk is missing: gen/binaries-$ARCH" 1>&2
+	exit 1
+fi
+
+STEP_COUNT=100
+
+TEST_LIST=''
+
+TEST_LIST="$TEST_LIST ./gen/test_schedq-g-$ARCH"
+TEST_LIST="$TEST_LIST ./gen/test_schedq-O3-g-$ARCH"
+TEST_LIST="$TEST_LIST ./gen/test_schedq-O3-$ARCH"
+TEST_LIST="$TEST_LIST ./gen/test-pthread-O3-g-$ARCH"
+
+# TEST_LIST="$TEST_LIST ./gen/test_schedq-clang-g-$ARCH"
+
+go()
+{
+	for TEST in $(cat gen/binaries-$ARCH) $TEST_LIST ; do
+		echo -n "$TEST: "
+		$TEST
+		STATUS="$?"
+
+		if [ "$STATUS" -eq 0 ] ; then
+			echo 'ok'
+			continue
+		fi
+
+		if [ -f core ] ; then
+			mv core "$TEST.core"
+			echo "FAILED: status = $STATUS: core dumped"
+			echo
+			echo "gdb $TEST $TEST.core"
+		else
+			echo "FAILED: status = $STATUS"
+		fi 1>&2
+		return 1
+	done
+	return 0
+}
+
+STEP=0
+while [ $STEP -lt $STEP_COUNT ] ; do
+	if go ; then
+		:
+	else
+		exit 1
+	fi
+
+	STEP=$[ STEP + 1 ]
+done
