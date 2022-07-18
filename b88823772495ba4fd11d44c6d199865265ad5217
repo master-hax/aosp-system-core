@@ -50,6 +50,42 @@
       "message": "actually, after looking at the bug (where the stack shows the caller is the Java UsbRequest stuff) --- i think that\u0027s where the bug is, no? i think this class is[1] WAI, but the calling Java is unsafe in that _it_ doesn\u0027t have locks around _its_ access to the underlying native object. for example, you can happily close() while other work is going on. i suspect if you fix that to be more like other Java classes with native peers that you won\u0027t need to touch libusbhost at all...\n\n1. as far as i could tell from a quick skim through, so let me know if you have context i don\u0027t!",
       "revId": "b88823772495ba4fd11d44c6d199865265ad5217",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "065dc9ab_dddd25cc",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1373349
+      },
+      "writtenOn": "2022-07-18T14:07:22Z",
+      "side": 1,
+      "message": "No, I don\u0027t have further context. \nThanks for the comments. I will try the lock on the caller.",
+      "parentUuid": "f80a9f94_64bf705e",
+      "revId": "b88823772495ba4fd11d44c6d199865265ad5217",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3b18bfe1_82754893",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1373349
+      },
+      "writtenOn": "2022-07-18T14:07:22Z",
+      "side": 1,
+      "message": "Thanks for the comments. I will try to put lock in the freer and the user.",
+      "parentUuid": "0548d60b_aea4207a",
+      "revId": "b88823772495ba4fd11d44c6d199865265ad5217",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
