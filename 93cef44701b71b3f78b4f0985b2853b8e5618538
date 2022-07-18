@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5fceb914_fc4a8edd",
+        "filename": "fs_mgr/tests/vts_fs_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 141,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-07-18T11:18:59Z",
+      "side": 1,
+      "message": "ASSERT_GE(fields.size, 5)\n\n_GE assertion provides better error message.\n\nShould be ASSERT_ else the next line\u0027s \"fields[4]\" could overflow.",
+      "revId": "93cef44701b71b3f78b4f0985b2853b8e5618538",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a4bc6606_c48106b8",
+        "filename": "fs_mgr/tests/vts_fs_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 142,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-07-18T11:18:59Z",
+      "side": 1,
+      "message": "https://google.github.io/googletest/reference/matchers.html#container-matchers\n\nEXPECT_THAT(android::base::Split(fields[4], \",\"), Not(Contains(\"verify\")))",
+      "revId": "93cef44701b71b3f78b4f0985b2853b8e5618538",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
