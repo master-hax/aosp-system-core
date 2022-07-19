@@ -140,6 +140,24 @@
       "parentUuid": "4bf33724_72310b60",
       "revId": "ef233ef6df0bc8901f21c188eb863ae7a03b30e1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6d58f01b_df18e626",
+        "filename": "fs_mgr/libfiemap/image_manager.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 204,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-07-19T00:31:40Z",
+      "side": 1,
+      "message": "Filesystem block size only matters for the backing image size. UFS block size matters for device-mapper. And the device mapper size must be equal to the requested size. The requested size must be UFS aligned.\n\nEg, this patch will break this test case: https://android-review.googlesource.com/c/platform/system/core/+/2157716\n\nFiemapWriter should be fallocating using *both* alignments, but the size of the mapped image in device-mapper should be only the low-level alignment.",
+      "parentUuid": "9bec61ba_defba16a",
+      "revId": "ef233ef6df0bc8901f21c188eb863ae7a03b30e1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
