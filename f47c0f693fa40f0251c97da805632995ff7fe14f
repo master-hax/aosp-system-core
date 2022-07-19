@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "4afd9f34_892636db",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 9
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1888377
+      },
+      "writtenOn": "2022-07-19T01:30:17Z",
+      "side": 1,
+      "message": "Check the soft dependencies are in `module.load` list. \nIf yes, regard soft dependencies as hard dependencies and load the modules only when their dependencies are loaded.\nIf not, abandon these soft dependencies.",
+      "parentUuid": "47ad2b63_0bd14e02",
+      "range": {
+        "startLine": 9,
+        "startChar": 3,
+        "endLine": 9,
+        "endChar": 77
+      },
+      "revId": "f47c0f693fa40f0251c97da805632995ff7fe14f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "affbd884_c8c39fc2",
         "filename": "/COMMIT_MSG",
         "patchSetId": 9
@@ -37,6 +61,30 @@
       "writtenOn": "2022-07-18T23:44:11Z",
       "side": 1,
       "message": "can you include the performance improvement? It\u0027s hard to understand the improvement without knowing the original loading time.",
+      "range": {
+        "startLine": 12,
+        "startChar": 6,
+        "endLine": 12,
+        "endChar": 44
+      },
+      "revId": "f47c0f693fa40f0251c97da805632995ff7fe14f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "32d47c15_2575fa2d",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 9
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1888377
+      },
+      "writtenOn": "2022-07-19T01:30:17Z",
+      "side": 1,
+      "message": "okay, modify commit message\n\nTest: R4 saves 350ms+ (48%) to load all modules",
+      "parentUuid": "affbd884_c8c39fc2",
       "range": {
         "startLine": 12,
         "startChar": 6,
