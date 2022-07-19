@@ -158,6 +158,24 @@
       "parentUuid": "9bec61ba_defba16a",
       "revId": "ef233ef6df0bc8901f21c188eb863ae7a03b30e1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "da62fa4d_3d502383",
+        "filename": "fs_mgr/libfiemap/image_manager.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 204,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-07-19T06:27:11Z",
+      "side": 1,
+      "message": "(quote) When doing remount, the demanding backing image size is caculated\naccording to the userdata partition free size. (end quote)\n\nCan we just fix this directly? Make the calculate remount scratch size align to the device-mapper granularity (filesystem blocksize? LP_SECTOR_SIZE?) https://cs.android.com/android/platform/superproject/+/master:system/core/fs_mgr/fs_mgr_overlayfs.cpp;l\u003d1129\n\nAlso make `CreateBackingImage(name, size)` to only accept LP_SECTOR_SIZE-aligned |size| so we don\u0027t need to worry about alignment in the rest of the code.",
+      "parentUuid": "6d58f01b_df18e626",
+      "revId": "ef233ef6df0bc8901f21c188eb863ae7a03b30e1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
