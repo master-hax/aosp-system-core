@@ -176,6 +176,24 @@
       "parentUuid": "6d58f01b_df18e626",
       "revId": "ef233ef6df0bc8901f21c188eb863ae7a03b30e1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4e2a98de_92ab4012",
+        "filename": "fs_mgr/libfiemap/image_manager.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 204,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-07-19T06:41:54Z",
+      "side": 1,
+      "message": "Yeah, aligning in fs_mgr_overlayfs would fix the issue - ideally to fs block size.\n\nMaybe CreateBackingImage should fail if callers fail to align to the logical block size that device-mapper uses.",
+      "parentUuid": "da62fa4d_3d502383",
+      "revId": "ef233ef6df0bc8901f21c188eb863ae7a03b30e1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
