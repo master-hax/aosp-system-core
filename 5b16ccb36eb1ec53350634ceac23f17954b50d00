@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "99c51671_8c617c8d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-07-19T04:41:24Z",
+      "side": 1,
+      "message": "Bypassing presubmit. This is a doc-only change and the test failure in the internal branch is unrelated.",
+      "revId": "5b16ccb36eb1ec53350634ceac23f17954b50d00",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
