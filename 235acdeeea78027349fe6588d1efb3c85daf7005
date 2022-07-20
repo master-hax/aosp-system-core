@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9d9f6466_cb720e9a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1738285
+      },
+      "writtenOn": "2022-07-20T01:14:12Z",
+      "side": 1,
+      "message": "Verified on my exynosautov9-sadk board.",
+      "revId": "235acdeeea78027349fe6588d1efb3c85daf7005",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
