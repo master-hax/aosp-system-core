@@ -17,35 +17,13 @@
 #pragma once
 
 #include "types.h"
-#include "utility.h"
-
-#include <memory.h>
-
-#include "scudo/interface.h"
 
 // Forward delcarations
-class Cause;
 class Tombstone;
 
 namespace unwindstack {
 class AndroidUnwinder;
-class Memory;
 }  // namespace unwindstack
 
-class ScudoCrashData {
- public:
-  ScudoCrashData() = delete;
-  ~ScudoCrashData() = default;
-  ScudoCrashData(unwindstack::Memory* process_memory, const ProcessInfo& process_info);
-
-  bool CrashIsMine() const;
-
-  void AddCauseProtos(Tombstone* tombstone, unwindstack::AndroidUnwinder* unwinder) const;
-
- private:
-  scudo_error_info error_info_ = {};
-  uintptr_t untagged_fault_addr_;
-
-  void FillInCause(Cause* cause, const scudo_error_report* report,
-                   unwindstack::AndroidUnwinder* unwinder) const;
-};
+bool ScudoAddCauseProtosIfNeeded(Tombstone* tombstone, unwindstack::AndroidUnwinder* unwinder,
+                                 const ProcessInfo& process_info);

@@ -14,19 +14,24 @@
  * limitations under the License.
  */
 
+#include <stdint.h>
+#include <unistd.h>
+
+#include <memory>
+#include <vector>
+
+#include <unwindstack/AndroidUnwinder.h>
+#include <unwindstack/Memory.h>
+
 #include "libdebuggerd/scudo.h"
 #include "libdebuggerd/tombstone.h"
 
-#include "unwindstack/AndroidUnwinder.h"
-#include "unwindstack/Memory.h"
-
-#include <android-base/macros.h>
-#include <bionic/macros.h>
+#include "scudo/interface.h"
 
 #include "tombstone.pb.h"
 
-std::unique_ptr<char[]> AllocAndReadFully(unwindstack::Memory* process_memory, uint64_t addr,
-                                          size_t size) {
+static std::unique_ptr<char[]> AllocAndReadFully(unwindstack::Memory* process_memory, uint64_t addr,
+                                                 size_t size) {
   auto buf = std::make_unique<char[]>(size);
   if (!process_memory->ReadFully(addr, buf.get(), size)) {
     return std::unique_ptr<char[]>();
@@ -34,12 +39,32 @@ std::unique_ptr<char[]> AllocAndReadFully(unwindstack::Memory* process_memory, u
   return buf;
 }
 
-ScudoCrashData::ScudoCrashData(unwindstack::Memory* process_memory,
-                               const ProcessInfo& process_info) {
+static bool GetErrorInfo(unwindstack::Memory* process_memory, const ProcessInfo& process_info,
+                         scudo_error_info& error_info) {
   if (!process_info.has_fault_address) {
-    return;
+    return false;
   }
 
+  uintptr_t page_size = getpagesize();
+
+  uintptr_t untagged_fault_addr = process_info.untagged_fault_address;
+  uintptr_t fault_page = untagged_fault_addr & ~(page_size - 1);
+
+  // Attempt to get 16 pages before the fault page and 16 pages after.
+  uintptr_t extra_bytes_to_read = page_size * 16;
+  if (fault_page <= extra_bytes_to_read) {
+    // The fault page is too low in the address space, this is not valid.
+    return false;
+  }
+  uintptr_t memory_begin = fault_page - extra_bytes_to_read;
+
+  uintptr_t memory_end = fault_page;
+  if (__builtin_add_overflow(memory_end, extra_bytes_to_read, &memory_end)) {
+    // Assume an address too close to the top of memory is not valid.
+    return false;
+  }
+
+  // Don't try and read until we've verified the fault address.
   auto stack_depot = AllocAndReadFully(process_memory, process_info.scudo_stack_depot,
                                        __scudo_get_stack_depot_size());
   auto region_info = AllocAndReadFully(process_memory, process_info.scudo_region_info,
@@ -47,43 +72,35 @@ ScudoCrashData::ScudoCrashData(unwindstack::Memory* process_memory,
   auto ring_buffer = AllocAndReadFully(process_memory, process_info.scudo_ring_buffer,
                                        __scudo_get_ring_buffer_size());
   if (!stack_depot || !region_info || !ring_buffer) {
-    return;
+    return false;
   }
 
-  untagged_fault_addr_ = process_info.untagged_fault_address;
-  uintptr_t fault_page = untagged_fault_addr_ & ~(PAGE_SIZE - 1);
-
-  uintptr_t memory_begin = fault_page - PAGE_SIZE * 16;
-  if (memory_begin > fault_page) {
-    return;
-  }
-
-  uintptr_t memory_end = fault_page + PAGE_SIZE * 16;
-  if (memory_end < fault_page) {
-    return;
-  }
-
-  auto memory = std::make_unique<char[]>(memory_end - memory_begin);
-  for (auto i = memory_begin; i != memory_end; i += PAGE_SIZE) {
-    process_memory->ReadFully(i, memory.get() + i - memory_begin, PAGE_SIZE);
+  std::vector<char> memory(memory_end - memory_begin, 0);
+  for (auto address = memory_begin; address < memory_end;) {
+    uint64_t bytes_read =
+        process_memory->Read(address, &memory[address - memory_begin], memory_end - address);
+    if (bytes_read == 0) {
+      address += page_size;
+    } else {
+      // Round up to the next page size
+      address += (bytes_read + page_size - 1) & ~(page_size - 1);
+    }
   }
 
   auto memory_tags = std::make_unique<char[]>((memory_end - memory_begin) / kTagGranuleSize);
-  for (auto i = memory_begin; i != memory_end; i += kTagGranuleSize) {
+  for (auto i = memory_begin; i < memory_end; i += kTagGranuleSize) {
     memory_tags[(i - memory_begin) / kTagGranuleSize] = process_memory->ReadTag(i);
   }
 
-  __scudo_get_error_info(&error_info_, process_info.maybe_tagged_fault_address, stack_depot.get(),
-                         region_info.get(), ring_buffer.get(), memory.get(), memory_tags.get(),
+  __scudo_get_error_info(&error_info, process_info.maybe_tagged_fault_address, stack_depot.get(),
+                         region_info.get(), ring_buffer.get(), memory.data(), memory_tags.get(),
                          memory_begin, memory_end - memory_begin);
+
+  return error_info.reports[0].error_type != UNKNOWN;
 }
 
-bool ScudoCrashData::CrashIsMine() const {
-  return error_info_.reports[0].error_type != UNKNOWN;
-}
-
-void ScudoCrashData::FillInCause(Cause* cause, const scudo_error_report* report,
-                                 unwindstack::AndroidUnwinder* unwinder) const {
+static void FillInCause(Cause* cause, const scudo_error_report* report,
+                        unwindstack::AndroidUnwinder* unwinder, uintptr_t untagged_fault_address) {
   MemoryError* memory_error = cause->mutable_memory_error();
   HeapObject* heap_object = memory_error->mutable_heap();
 
@@ -122,14 +139,22 @@ void ScudoCrashData::FillInCause(Cause* cause, const scudo_error_report* report,
     fill_in_backtrace_frame(f, frame_data);
   }
 
-  set_human_readable_cause(cause, untagged_fault_addr_);
+  set_human_readable_cause(cause, untagged_fault_address);
 }
 
-void ScudoCrashData::AddCauseProtos(Tombstone* tombstone,
-                                    unwindstack::AndroidUnwinder* unwinder) const {
-  size_t report_num = 0;
-  while (report_num < sizeof(error_info_.reports) / sizeof(error_info_.reports[0]) &&
-         error_info_.reports[report_num].error_type != UNKNOWN) {
-    FillInCause(tombstone->add_causes(), &error_info_.reports[report_num++], unwinder);
+bool ScudoAddCauseProtosIfNeeded(Tombstone* tombstone, unwindstack::AndroidUnwinder* unwinder,
+                                 const ProcessInfo& process_info) {
+  scudo_error_info error_info = {};
+  if (!GetErrorInfo(unwinder->GetProcessMemory().get(), process_info, error_info)) {
+    return false;
   }
+
+  for (size_t i = 0; i < arraysize(error_info.reports); i++) {
+    const auto& report = error_info.reports[i];
+    if (report.error_type == UNKNOWN) {
+      continue;
+    }
+    FillInCause(tombstone->add_causes(), &report, unwinder, process_info.untagged_fault_address);
+  }
+  return true;
 }
