@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a2bc7be2_e633d1a8",
+        "filename": "trusty/test/binder/aidl/ITestService.aidl",
+        "patchSetId": 1
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2022-07-21T19:10:16Z",
+      "side": 1,
+      "message": "`...binder.test.service`? It should read as \"service for the Binder test\", not \"test for the Binder service\".",
+      "revId": "49922c649fc4c91c50477f30514768da13f22460",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
