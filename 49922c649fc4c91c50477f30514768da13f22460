@@ -16,6 +16,24 @@
       "message": "`...binder.test.service`? It should read as \"service for the Binder test\", not \"test for the Binder service\".",
       "revId": "49922c649fc4c91c50477f30514768da13f22460",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a1033c61_680dae14",
+        "filename": "trusty/test/binder/aidl/ITestService.aidl",
+        "patchSetId": 1
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1948820
+      },
+      "writtenOn": "2022-07-21T19:34:55Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a2bc7be2_e633d1a8",
+      "revId": "49922c649fc4c91c50477f30514768da13f22460",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
