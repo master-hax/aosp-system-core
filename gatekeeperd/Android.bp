@@ -43,6 +43,7 @@ cc_binary {
         "libutils",
         "libcrypto",
         "libhidlbase",
+        "android.hardware.gatekeeper-V1-ndk",
         "android.hardware.gatekeeper@1.0",
         "libgatekeeper_aidl",
         "android.security.authorization-ndk",
