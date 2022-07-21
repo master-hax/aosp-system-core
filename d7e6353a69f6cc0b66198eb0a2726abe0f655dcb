@@ -1,5 +1,23 @@
 {
-  "comments": [],
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "461fadaa_64d3bfa1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-07-21T09:26:22Z",
+      "side": 1,
+      "message": "I\u0027ve analyzed and updated the reason why this change need reverting here b/239574953#comment26\n\nIn short, this change breaks *legacy* remount scheme.\n\nIf system partition has free space and doesn\u0027t have share_dup_block, adb remount would fallback to use *legacy remount* instead of overlayfs, so this would happen:\n\n1. first_stage_mount bind mounts \"mount -o ro,bind /system /system\"\n2. \"adb remount\" does \"mount -o rw,remount /\"\n3. / is RW, but /system is still RO because /system is it\u0027s own mount tree.",
+      "revId": "d7e6353a69f6cc0b66198eb0a2726abe0f655dcb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ],
   "submitRequirementResults": [
     {
       "submitRequirement": {
