@@ -41,5 +41,7 @@ const BuiltinFunctionMap& GetBuiltinFunctionMap();
 
 extern std::vector<std::string> late_import_paths;
 
+Result<void> parse_apex_configs(std::string apex_name="");
+
 }  // namespace init
 }  // namespace android
