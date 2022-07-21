@@ -38,16 +38,16 @@
 #include <log/log.h>
 #include <utils/String16.h>
 
+#include <aidl/android/hardware/gatekeeper/IGatekeeper.h>
 #include <aidl/android/hardware/security/keymint/HardwareAuthToken.h>
 #include <aidl/android/security/authorization/IKeystoreAuthorization.h>
-#include <android/hardware/gatekeeper/1.0/IGatekeeper.h>
 #include <hidl/HidlSupport.h>
 
+using aidl::android::hardware::gatekeeper::GatekeeperResponse;
+using aidl::android::hardware::gatekeeper::GatekeeperStatusCode;
+using aidl::android::hardware::gatekeeper::IGatekeeper;
 using android::sp;
 using android::hardware::Return;
-using android::hardware::gatekeeper::V1_0::GatekeeperResponse;
-using android::hardware::gatekeeper::V1_0::GatekeeperStatusCode;
-using android::hardware::gatekeeper::V1_0::IGatekeeper;
 
 using ::android::binder::Status;
 using ::android::service::gatekeeper::BnGateKeeperService;
@@ -61,12 +61,14 @@ namespace android {
 
 static const String16 KEYGUARD_PERMISSION("android.permission.ACCESS_KEYGUARD_SECURE_STORAGE");
 static const String16 DUMP_PERMISSION("android.permission.DUMP");
+constexpr const char gatekeeperServiceName[] = "android.hardware.gatekeeper.IGatekeeper/default";
 
 class GateKeeperProxy : public BnGateKeeperService {
   public:
     GateKeeperProxy() {
         clear_state_if_needed_done = false;
-        hw_device = IGatekeeper::getService();
+        ::ndk::SpAIBinder ks2Binder(AServiceManager_getService(gatekeeperServiceName));
+        hw_device = aidl::android::hardware::gatekeeper::IGatekeeper::fromBinder(ks2Binder);
         is_running_gsi = android::base::GetBoolProperty(android::gsi::kGsiBootedProp, false);
 
         if (!hw_device) {
@@ -96,7 +98,8 @@ class GateKeeperProxy : public BnGateKeeperService {
         if (mark_cold_boot() && !is_running_gsi) {
             ALOGI("cold boot: clearing state");
             if (hw_device) {
-                hw_device->deleteAllUsers([](const GatekeeperResponse&) {});
+                GatekeeperResponse rsp;
+                hw_device->deleteAllUsers(&rsp);
             }
         }
 
@@ -199,21 +202,18 @@ class GateKeeperProxy : public BnGateKeeperService {
         newPwd.setToExternal(const_cast<uint8_t*>(desiredPassword.data()), desiredPassword.size());
 
         uint32_t hw_userId = adjust_userId(userId);
-        Return<void> hwRes = hw_device->enroll(
-                hw_userId, curPwdHandle, curPwd, newPwd,
-                [&gkResponse](const GatekeeperResponse& rsp) {
-                    if (rsp.code >= GatekeeperStatusCode::STATUS_OK) {
-                        *gkResponse = GKResponse::ok({rsp.data.begin(), rsp.data.end()});
-                    } else if (rsp.code == GatekeeperStatusCode::ERROR_RETRY_TIMEOUT &&
-                               rsp.timeout > 0) {
-                        *gkResponse = GKResponse::retry(rsp.timeout);
-                    } else {
-                        *gkResponse = GKResponse::error();
-                    }
-                });
-        if (!hwRes.isOk()) {
+        GatekeeperResponse rsp;
+        auto result = hw_device->enroll(hw_userId, curPwdHandle, curPwd, newPwd, &rsp);
+        if (!result.isOk()) {
             LOG(ERROR) << "enroll transaction failed";
             return GK_ERROR;
+        }
+        if (rsp.code >= GatekeeperStatusCode::STATUS_OK) {
+            *gkResponse = GKResponse::ok({rsp.data.begin(), rsp.data.end()});
+        } else if (rsp.code == GatekeeperStatusCode::ERROR_RETRY_TIMEOUT && rsp.timeout > 0) {
+            *gkResponse = GKResponse::retry(rsp.timeout);
+        } else {
+            *gkResponse = GKResponse::error();
         }
 
         if (gkResponse->response_code() == GKResponseCode::OK && !gkResponse->should_reenroll()) {
@@ -278,23 +278,20 @@ class GateKeeperProxy : public BnGateKeeperService {
         enteredPwd.setToExternal(const_cast<uint8_t*>(providedPassword.data()),
                                  providedPassword.size());
 
-        Return<void> hwRes = hw_device->verify(
-                hw_userId, challenge, curPwdHandle, enteredPwd,
-                [&gkResponse](const GatekeeperResponse& rsp) {
-                    if (rsp.code >= GatekeeperStatusCode::STATUS_OK) {
-                        *gkResponse = GKResponse::ok(
-                                {rsp.data.begin(), rsp.data.end()},
-                                rsp.code == GatekeeperStatusCode::STATUS_REENROLL /* reenroll */);
-                    } else if (rsp.code == GatekeeperStatusCode::ERROR_RETRY_TIMEOUT) {
-                        *gkResponse = GKResponse::retry(rsp.timeout);
-                    } else {
-                        *gkResponse = GKResponse::error();
-                    }
-                });
-
-        if (!hwRes.isOk()) {
+        GatekeeperResponse rsp;
+        auto result = hw_device->verify(hw_userId, challenge, curPwdHandle, enteredPwd, &rsp);
+        if (!result.isOk()) {
             LOG(ERROR) << "verify transaction failed";
             return GK_ERROR;
+        }
+        if (rsp.code >= GatekeeperStatusCode::STATUS_OK) {
+            *gkResponse = GKResponse::ok(
+                    {rsp.data.begin(), rsp.data.end()},
+                    rsp.code == GatekeeperStatusCode::STATUS_REENROLL /* reenroll */);
+        } else if (rsp.code == GatekeeperStatusCode::ERROR_RETRY_TIMEOUT) {
+            *gkResponse = GKResponse::retry(rsp.timeout);
+        } else {
+            *gkResponse = GKResponse::error();
         }
 
         if (gkResponse->response_code() == GKResponseCode::OK) {
@@ -356,7 +353,8 @@ class GateKeeperProxy : public BnGateKeeperService {
 
         if (hw_device) {
             uint32_t hw_userId = adjust_userId(userId);
-            hw_device->deleteUser(hw_userId, [](const GatekeeperResponse&) {});
+            GatekeeperResponse rsp;
+            hw_device->deleteUser(hw_userId, &rsp);
         }
         return Status::ok();
     }
@@ -394,7 +392,7 @@ class GateKeeperProxy : public BnGateKeeperService {
     }
 
   private:
-    sp<IGatekeeper> hw_device;
+    std::shared_ptr<IGatekeeper> hw_device;
 
     bool clear_state_if_needed_done;
     bool is_running_gsi;
