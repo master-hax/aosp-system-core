@@ -141,6 +141,24 @@
       "parentUuid": "a508223f_e2bbd889",
       "revId": "846da873b4f3bd7c00cc3b4bbadd1e4d2accdf10",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cfd37dae_3e440fbe",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1124693
+      },
+      "writtenOn": "2022-07-21T18:32:24Z",
+      "side": 1,
+      "message": "On device that need storageproxyd to have `CAP_SYS_RAW_IO` we can still add that capability in the per-device init.rc.\n\nMain pixel devices work OK with this change. How about we merge this to master and if there is some device that I missed I\u0027ll fix it in the device-specific init.rc ?",
+      "parentUuid": "106ed909_7f98b079",
+      "revId": "846da873b4f3bd7c00cc3b4bbadd1e4d2accdf10",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
