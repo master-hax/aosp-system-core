@@ -72,6 +72,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "273b2947_0df5cff8",
+        "filename": "init/service_parser.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 653,
+      "author": {
+        "id": 1895890
+      },
+      "writtenOn": "2022-07-21T23:08:08Z",
+      "side": 1,
+      "message": "As long as parsing file name for apex name every time, file name seems to be a more consistent approach. Will change it.",
+      "parentUuid": "4986369e_42a161d2",
+      "range": {
+        "startLine": 649,
+        "startChar": 0,
+        "endLine": 653,
+        "endChar": 64
+      },
+      "revId": "e4e0d9b1eadc7cc336afa4628ad2eb0c4a115212",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "9145ed6c_5e493d0e",
