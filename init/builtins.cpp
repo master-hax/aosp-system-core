@@ -1279,17 +1279,17 @@ static Result<void> do_update_linker_config(const BuiltinArguments&) {
     return GenerateLinkerConfiguration();
 }
 
-static Result<void> parse_apex_configs() {
+Result<void> parse_apex_configs(std::string apex_name) {
     glob_t glob_result;
-    static constexpr char glob_pattern[] = "/apex/*/etc/*rc";
-    const int ret = glob(glob_pattern, GLOB_MARK, nullptr, &glob_result);
+    std::string glob_pattern = apex_name.empty() ?
+            "/apex/*/etc/*rc" : "/apex/" + apex_name + "/etc/*rc";
+
+    const int ret = glob(glob_pattern.c_str(), GLOB_MARK, nullptr, &glob_result);
     if (ret != 0 && ret != GLOB_NOMATCH) {
         globfree(&glob_result);
         return Error() << "glob pattern '" << glob_pattern << "' failed";
     }
     std::vector<std::string> configs;
-    Parser parser =
-            CreateApexConfigParser(ActionManager::GetInstance(), ServiceList::GetInstance());
     for (size_t i = 0; i < glob_result.gl_pathc; i++) {
         std::string path = glob_result.gl_pathv[i];
         // Filter-out /apex/<name>@<ver> paths. The paths are bind-mounted to
@@ -1306,6 +1306,9 @@ static Result<void> parse_apex_configs() {
         configs.push_back(path);
     }
     globfree(&glob_result);
+
+    Parser parser = CreateApexConfigParser(ActionManager::GetInstance(),
+                     ServiceList::GetInstance());
 
     int active_sdk = android::base::GetIntProperty("ro.build.version.sdk", INT_MAX);
 
