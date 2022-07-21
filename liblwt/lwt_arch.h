@@ -63,7 +63,7 @@ typedef struct {
 //  The ctx_t register context is a subset prefix of the sigcontext structure,
 //  it excludes the fault_address at the start of it, and uses that space to
 //  store the low 32 bits of fpsr and fpcr (both are 64 bits, their upper 32
-//  bits are reserved, they both have plenty of reserved bit in their lower
+//  bits are reserved, they both have plenty of reserved bits in their lower
 //  32 bits too).  The Linux kernel sigreturn contains a fpsimd_context, that
 //  structure stores both fpcr and fpsr as 32 bit quantities.
 

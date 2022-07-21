@@ -74,6 +74,7 @@ typedef struct stk_s	stk_t;
 typedef struct cpu_s	cpu_t;
 typedef struct kcpu_s	kcpu_t;
 typedef struct kcore_s	kcore_t;
+typedef struct ktimer_s	ktimer_t;
 
 //  Very unlikely code should use unlikely() and if it is an aborting error
 //  path should call a noreturn function, this allows for better optimization

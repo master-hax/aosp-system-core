@@ -734,6 +734,7 @@ static alloc_value_t rawstk_alloc(size_t stacksize, size_t guardsize)
 #define	SIGSTK_GUARDSIZE	(4 * PAGE_SIZE)
 #define	SIGSTK_STACKSIZE	(4 * PAGE_SIZE)
 
+#if 0 // TODO
 static alloc_value_t sigstk_alloc(void)
 {
 	alloc_value_t av = rawstk_alloc(SIGSTK_STACKSIZE, SIGSTK_GUARDSIZE);
@@ -744,6 +745,7 @@ static alloc_value_t sigstk_alloc(void)
 	top = (void *) ((uptr_t) top + SIGSTK_GUARDSIZE);
 	return (alloc_value_t) {.mem = top, .error = 0};
 }
+#endif
 
 static alloc_value_t stk_alloc(size_t stacksize, size_t guardsize)
 {
@@ -3416,6 +3418,8 @@ inline_only void arena_free(arena_t *arena, void *mem)
 
 #include <pthread.h>
 #include <sched.h>
+#include <signal.h>
+#include <time.h>
 #include <unistd.h>
 
 #define	CPU_STACKSIZE	(16 * 1024)
@@ -3476,7 +3480,7 @@ inline_only int cpu_setaffinity(size_t size, cpu_set_t *cpu_set)
 }
 #endif
 
-error_t cpu_bind(cpu_t *cpu)
+static error_t cpu_bind(cpu_t *cpu)
 {
 	int hwix = cpu->cpu_hwix;
 	cpu_set_t *cpuset = CPU_ALLOC(MAX_CPU);
@@ -3488,6 +3492,88 @@ error_t cpu_bind(cpu_t *cpu)
 	error_t error = cpu_setaffinity(cpuset_size, cpuset);
 	CPU_FREE(cpuset);
 	return error;
+}
+
+
+static void ktimer_signal(int signo, siginfo_t *siginfo, void *ucontextp)
+{      
+        // ucontext_t *ucontext = ucontextp;
+	cpu_t *cpu = (cpu_t *) siginfo->si_value.sival_ptr;
+	debug(cpu == cpu_current());
+	++cpu->cpu_ktimer_calls;
+}
+
+static_assert(sizeof(timer_t) <= sizeof(ktimer_t *),
+	      "unexpected sizeof(timer_t) value");
+
+static int	 lwt_rtsigno;
+static sigset_t	 lwt_rtsigno_sigset;
+
+#define	TIME_SLICE_NSECS	(100000000L)
+
+inline_only void ktimer_start(ktimer_t *ktimer)
+{
+	timer_t timer = (timer_t) ktimer;
+	struct itimerspec it = {
+		.it_interval = {.tv_sec = 0, .tv_nsec = TIME_SLICE_NSECS},
+		.it_value    = {.tv_sec = 0, .tv_nsec = TIME_SLICE_NSECS}
+	};
+	if (timer_settime(timer, 0, &it, NULL) < 0) {
+		error_t error = errno;
+		assert(error);
+	}
+}
+
+unused inline_only void ktimer_block(void)
+{
+        error_t error = pthread_sigmask(SIG_BLOCK, &lwt_rtsigno_sigset, NULL);
+	assert(!error);
+}
+
+inline_only void ktimer_unblock(void)
+{
+        error_t error = pthread_sigmask(SIG_UNBLOCK, &lwt_rtsigno_sigset, NULL);
+	assert(!error);
+}
+
+#ifndef sigev_notify_thread_id 
+#define sigev_notify_thread_id	_sigev_un._tid
+#endif
+
+static error_t ktimer_create(ktimer_t **ktimerpp, cpu_t *cpu)
+{
+	*ktimerpp = NULL;
+	struct sigevent sigev;
+	sigev.sigev_notify = SIGEV_THREAD_ID;
+	sigev.sigev_signo = lwt_rtsigno;
+	sigev.sigev_notify_thread_id = gettid();
+	sigev.sigev_value.sival_ptr = cpu;
+	timer_t timer;
+
+	if (timer_create(CLOCK_PROCESS_CPUTIME_ID, &sigev, &timer) < 0)
+		return errno;
+
+	int rtsigno = lwt_rtsigno;
+	struct sigaction sa;
+	sa.sa_sigaction = ktimer_signal;
+        sa.sa_flags = SA_SIGINFO;
+        sa.sa_mask = lwt_rtsigno_sigset;
+
+	sigset_t prev_sigset;
+        error_t error = pthread_sigmask(SIG_BLOCK, &sa.sa_mask, &prev_sigset);
+	if (error) {
+		timer_delete(timer);
+		return error;
+	}
+
+        if (sigaction(rtsigno, &sa, NULL) < 0) {
+        	(void) pthread_sigmask(SIG_SETMASK, &prev_sigset, NULL);
+		timer_delete(timer);
+		return errno;
+	}
+
+	*ktimerpp = (ktimer_t *) timer;
+	return 0;
 }
 
 static int sched_attempts = 1;
@@ -3502,6 +3588,10 @@ static noreturn void *cpu_main(cpu_t *cpu)
 	if (cpu != &cpus[0]) {		// cpu0 handled in cpus_start()
 		error_t error = cpu_bind(cpu);
 		assert(!error);
+		error = ktimer_create(&cpu->cpu_ktimer, cpu);
+		assert(!error);
+		ktimer_unblock();
+		ktimer_start(cpu->cpu_ktimer);
 	}
 
 	thr_t *thr_switching_out = NULL;
@@ -3598,7 +3688,8 @@ inline_only error_t cpu_init_cpu0(cpu_t *cpu)
 	cpu->cpu_kcpu = (kcpu_t *) pthread_self();
 	ctx_init(&cpu->cpu_ctx, (uptr_t) (stk - 1),
 		 (lwt_function_t) cpu_main, cpu);
-	return 0;
+
+	return ktimer_create(&cpu->cpu_ktimer, cpu);
 }
 
 static pthread_attr_t cpu_pthread_attr;
@@ -3620,7 +3711,9 @@ static error_t cpus_start(void)
 {
 	//  TODO: more work wrt priorities
 
-	cpu_init_cpu0(&cpus[0]);
+	error_t error = cpu_init_cpu0(&cpus[0]);
+	if (error)
+		return error;
 
 	cpu_set_t *cpuset = CPU_ALLOC(MAX_CPU);
 	size_t cpuset_size = CPU_ALLOC_SIZE(MAX_CPU);
@@ -3634,7 +3727,6 @@ static error_t cpus_start(void)
 	int hwix = 0;
 	int cpuix;
 	int coreix;
-	error_t error;
 
 	//  Handling all the per-CPU cpu_set_t in this function causes
 	//  CPU_ALLOC() to crash. Each cpu should set its own affinitiy
@@ -3713,11 +3805,13 @@ inline_only error_t cpu_init(cpu_t *cpu, cacheline_t *trampoline)
 	cpu->cpu_running_thr = NULL;
 	cpu->cpu_trampoline = trampoline;
 
+#if 0 // TODO
 	alloc_value_t av = sigstk_alloc();
 	if (av.error)
 		return av.error;
 
 	cpu->cpu_sigstk = av.mem;
+#endif
 	return 0;
 }
 
@@ -3846,11 +3940,18 @@ static cpu_t *cpu_current(void)
 }
 #endif //}
 
-static thr_t *thr_dummy;
-static lwt_t lwt_main;
+static thr_t	*thr_dummy;
+static lwt_t	 lwt_main;
 
-inline_only error_t data_init(size_t sched_attempt_steps)
+inline_only error_t data_init(size_t sched_attempt_steps, int rtsigno)
 {
+	if (rtsigno < SIGRTMIN || rtsigno > SIGRTMAX)
+		return EINVAL;
+
+	lwt_rtsigno = rtsigno;
+        sigemptyset(&lwt_rtsigno_sigset);
+	sigaddset(&lwt_rtsigno_sigset, rtsigno);
+
 	if (sched_attempt_steps > 0 && sched_attempt_steps <= 1000)
 		sched_attempts = (int) sched_attempt_steps;
 
@@ -3921,17 +4022,21 @@ static void data_deinit(void)
 	trampolines_deinit();
 }
 
-inline_only error_t init(size_t sched_attempt_steps)
+inline_only error_t init(size_t sched_attempt_steps, int rtsigno)
 {
-	error_t error = data_init(sched_attempt_steps);
+	error_t error = data_init(sched_attempt_steps, rtsigno);
 	if (error)
 		return error;
 
 	error = cpus_start();
-	if (error)
+	if (error) {
 		data_deinit();
+		return error;
+	}
 
-	return error;
+	ktimer_unblock();
+	ktimer_start(cpus[0].cpu_ktimer);
+	return 0;
 }
 
 
@@ -3944,9 +4049,9 @@ inline_only error_t init(size_t sched_attempt_steps)
 ///  This level of indirection costs nothing and removes the eye-sore of
 //{  all the __lwt_ prefixes.
 
-error_t __lwt_init(size_t sched_attempt_steps)
+error_t __lwt_init(size_t sched_attempt_steps, int rtsigno)
 {
-	return init(sched_attempt_steps);
+	return init(sched_attempt_steps, rtsigno);
 }
 
 //  __lwt_mtxattr_*() ABI entry points

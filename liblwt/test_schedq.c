@@ -28,6 +28,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <signal.h>
 
 void errexit(const char *s)
 {
@@ -37,7 +38,7 @@ void errexit(const char *s)
 
 int main()
 {
-	int error = lwt_init(0);
+	int error = lwt_init(0, SIGRTMIN);
 	if (error)
 		errexit("lwt_init() failed");
 

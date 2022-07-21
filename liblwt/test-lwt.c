@@ -21,6 +21,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <signal.h>
 #include "lwt.h"
 
 const char *volatile __assert_file;
@@ -177,7 +178,7 @@ int test_main(int argc, char *argv[])
 	if (argc == 3)
 		sched_attempt_steps = atol(argv[2]);
 
-	int error = lwt_init(sched_attempt_steps);
+	int error = lwt_init(sched_attempt_steps, SIGRTMIN);
 	if (error)
 		errexit("lwt_init() failed", error);
 

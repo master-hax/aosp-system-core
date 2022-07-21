@@ -715,8 +715,9 @@ struct cpu_s {
 	core_t		*cpu_core;
 	char		*cpu_name;
 	kcpu_t		*cpu_kcpu;
+	ktimer_t	*cpu_ktimer;
+	ureg_t		 cpu_ktimer_calls;
 	ureg_t		 cpu_hwix;
-	void		*cpu_sigstk;
 	cacheline_t	*cpu_trampoline; // Must be immediately before cpu_ctx
 	ctx_t		 cpu_ctx;	 // Must be immediately after trampoline
 } aligned_cache_line;

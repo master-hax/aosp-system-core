@@ -104,7 +104,7 @@ if [ $UNAME_M != aarch64 ] ; then
 	} | tee gen/lwt-syms-$ARCH
 fi
 
-run $CC $DEFS $CFLAGS -c -O3 test-lwt.c -o gen/test-lwt.o
+run $CC $DEFS $CFLAGS -c -O3 test-lwt.c -o gen/test-lwt.o -lrt
 
 BINARIES=''
 
@@ -129,7 +129,8 @@ for PROG in test-lwt ; do
 					-o gen/$BIN \
 					$PROG.c \
 					lwt_sched.c \
-					gen/lwt_arch_gen.s
+					gen/lwt_arch_gen.s \
+					-lrt
 			done
 		done
 	done
@@ -137,12 +138,12 @@ done
 
 echo $BINARIES | tr ' ' '\012' > gen/binaries-$ARCH
 
-run $CC $DEFS $CFLAGS -DLWT_DEBUG -g -o gen/test_schedq-g-$ARCH test_schedq.c gen/lwt_arch_gen.s
-run $CC $DEFS $CFLAGS -DLWT_DEBUG -O3 -o gen/test_schedq-O3-$ARCH test_schedq.c gen/lwt_arch_gen.s
-run $CC $DEFS $CFLAGS -DLWT_DEBUG -O3 -g -o gen/test_schedq-O3-g-$ARCH test_schedq.c gen/lwt_arch_gen.s
+run $CC $DEFS $CFLAGS -DLWT_DEBUG -g -o gen/test_schedq-g-$ARCH test_schedq.c gen/lwt_arch_gen.s -lrt
+run $CC $DEFS $CFLAGS -DLWT_DEBUG -O3 -o gen/test_schedq-O3-$ARCH test_schedq.c gen/lwt_arch_gen.s -lrt
+run $CC $DEFS $CFLAGS -DLWT_DEBUG -O3 -g -o gen/test_schedq-O3-g-$ARCH test_schedq.c gen/lwt_arch_gen.s -lrt
 
 if [ "$ARCH" = x64 ] ; then
-	run clang -std=c17 $DEFS $CFLAGS -DLWT_DEBUG -g -o gen/test_schedq-clang-g-$ARCH test_schedq.c gen/lwt_arch_gen.s
+	run clang -std=c17 $DEFS $CFLAGS -DLWT_DEBUG -g -o gen/test_schedq-clang-g-$ARCH test_schedq.c gen/lwt_arch_gen.s -lrt
 fi
 
 # $CXX -std=c++17 $DEFS $CFLAGS -DLWT_DEBUG -g -o gen/test_schedq-c++-g-$ARCH test_schedq.c gen/lwt_arch_gen.s

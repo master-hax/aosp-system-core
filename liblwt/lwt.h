@@ -36,11 +36,11 @@ struct timespec;
 //  holding the associated mutex are not allowed), which leads to simpler
 //  and faster code, while reducing programming errors.
 
-int __lwt_init(size_t sched_attempt_steps);
+int __lwt_init(size_t sched_attempt_steps, int rtsigno);
 
-static inline int lwt_init(size_t sched_attempt_steps)
+static inline int lwt_init(size_t sched_attempt_steps, int rtsigno)
 {
-	return __lwt_init(sched_attempt_steps);
+	return __lwt_init(sched_attempt_steps, rtsigno);
 }
 
 
