@@ -94,6 +94,9 @@ class ServiceList {
         services_update_finished_ = false;
     }
 
+    auto size() { return services_.size(); }
+    void clear() { services_.clear(); }
+
   private:
     std::vector<std::unique_ptr<Service>> services_;
 
