@@ -723,7 +723,7 @@ bool ParseRequirementLine(const std::string& line, std::string* name, std::strin
     std::smatch match_results;
 
     if (std::regex_match(line, match_results, require_reject_regex)) {
-        *invert = Trim(match_results[1]) == "reject";
+        *invert = Trim(match_results[1].str()) == "reject";
     } else if (std::regex_match(line, match_results, require_product_regex)) {
         *product = match_results[1];
     } else {
