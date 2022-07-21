@@ -229,13 +229,13 @@ void TestStopApexServices(const std::vector<std::string>& service_names, bool ex
         ASSERT_NE(nullptr, service);
         EXPECT_EQ(expect_to_run, service->IsRunning());
     }
-    ServiceList::GetInstance().RemoveServiceIf([&](const std::unique_ptr<Service>& s) -> bool {
-        if (std::find(service_names.begin(), service_names.end(), s->name())
-                != service_names.end()) {
-            return true;
-        }
-        return false;
-    });
+}
+
+void TestRemoveApexService(const std::vector<std::string>& service_names, bool exist) {
+    for (auto const& svc : service_names) {
+        auto service = ServiceList::GetInstance().FindService(svc);
+        ASSERT_EQ(exist, service != nullptr);
+    }
 }
 
 void InitApexService(const std::string_view& init_template) {
@@ -263,8 +263,21 @@ void TestApexServicesInit(const std::vector<std::string>& apex_services,
     TestStopApexServices(other_apex_services, /*expect_to_run=*/ true);
     TestStopApexServices(non_apex_services, /*expect_to_run=*/ true);
 
-    ASSERT_EQ(0, std::distance(ServiceList::GetInstance().begin(),
-       ServiceList::GetInstance().end()));
+    RemoveServiceAndActionFromApex("com.android.apex.test_service");
+    ASSERT_EQ(static_cast<int>(other_apex_services.size() + non_apex_services.size()),
+        std::distance(ServiceList::GetInstance().begin(), ServiceList::GetInstance().end()));
+
+    TestRemoveApexService(apex_services, /*exist*/ false);
+    TestRemoveApexService(other_apex_services, /*exist*/ true);
+    TestRemoveApexService(non_apex_services, /*exist*/ true);
+
+    ServiceList::GetInstance().RemoveServiceIf([&](const std::unique_ptr<Service>& s) -> bool {
+        return true;
+    });
+
+    ActionManager::GetInstance().RemoveActionIf([&](const std::unique_ptr<Action>& s) -> bool {
+        return true;
+    });
 }
 
 TEST(init, StopServiceByApexName) {
