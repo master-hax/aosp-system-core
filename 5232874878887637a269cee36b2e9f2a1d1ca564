@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "c25cb6fe_729c7b68",
+        "filename": "init/init.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 447,
+      "author": {
+        "id": 1895890
+      },
+      "writtenOn": "2022-07-21T22:21:55Z",
+      "side": 0,
+      "message": "Done",
+      "parentUuid": "6fc0eb17_972ee913",
+      "range": {
+        "startLine": 447,
+        "startChar": 0,
+        "endLine": 447,
+        "endChar": 71
+      },
+      "revId": "5232874878887637a269cee36b2e9f2a1d1ca564",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "b56dce18_c6cf6456",
@@ -37,6 +61,30 @@
       "writtenOn": "2022-07-16T00:31:23Z",
       "side": 0,
       "message": "You may re-use this to clean up for the apex on ctl.apex_unload",
+      "range": {
+        "startLine": 895,
+        "startChar": 0,
+        "endLine": 911,
+        "endChar": 7
+      },
+      "revId": "5232874878887637a269cee36b2e9f2a1d1ca564",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cc1bb1b3_e10197e2",
+        "filename": "init/reboot.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 911,
+      "author": {
+        "id": 1895890
+      },
+      "writtenOn": "2022-07-21T22:21:55Z",
+      "side": 0,
+      "message": "Ack",
+      "parentUuid": "b56dce18_c6cf6456",
       "range": {
         "startLine": 895,
         "startChar": 0,
