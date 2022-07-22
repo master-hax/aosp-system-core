@@ -22,6 +22,30 @@
       },
       "revId": "9f9557e651ff31035f7bf972efc365c9d581c295",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0a27dc0f_147a9d26",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 1319,
+      "author": {
+        "id": 1895890
+      },
+      "writtenOn": "2022-07-22T05:19:28Z",
+      "side": 1,
+      "message": "I had the implement as you described (a different function to parse a single apex). To reuse the code collection .rc file for an apex, I changed to the current implementation. Will it address your concern if I add a check like this:\nif (!apex_name.empty()) {\n   MarkServicesUpdate();\n}",
+      "parentUuid": "5163b439_30256a4f",
+      "range": {
+        "startLine": 1319,
+        "startChar": 0,
+        "endLine": 1319,
+        "endChar": 52
+      },
+      "revId": "9f9557e651ff31035f7bf972efc365c9d581c295",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
