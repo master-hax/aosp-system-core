@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "104a4d3a_c46d6067",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1044551
+      },
+      "writtenOn": "2022-07-22T20:29:51Z",
+      "side": 1,
+      "message": "It might be nice to put the CL comment into image_test.cpp - it\u0027s not that easy to work out from the code what\u0027s being tested, and that comment helps a lot",
+      "revId": "8b1c6a1476c0e50aca08fa6f8d6990071431abaa",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
