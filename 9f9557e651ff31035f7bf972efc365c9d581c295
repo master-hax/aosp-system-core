@@ -1,6 +1,23 @@
 {
   "comments": [
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "6ed0865f_61c7e326",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1895890
+      },
+      "writtenOn": "2022-07-22T17:58:01Z",
+      "side": 1,
+      "message": "a",
+      "revId": "9f9557e651ff31035f7bf972efc365c9d581c295",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "5163b439_30256a4f",
@@ -62,6 +79,30 @@
       "side": 1,
       "message": "Yeah that would work. But I prefer having two separate functions instead of using a default-valued parameter(apex_name \u003d \"\") given that we\u0027ll have at least two places using it to branch.\n\nWhat I thought was something like following.\n```\nparse_apex_configs() {\n  parse_apex_configs_in();\n  MarkServicesUpdate()\n}\n\nparse_apex_configs_in(...) {\n  ...\n}\n```\nWe can call the latter one with (/apex/ + apex_name). Yeah this is almost the same as yours. But only with fewer branches. ;-)\n\nOh, how about having a new function to collect and filter the list of apex configs? (FilterVersionedConfigs() doesn\u0027t look like belong to Parser class, can be converted to a standalone function, which may increase testability)",
       "parentUuid": "0a27dc0f_147a9d26",
+      "range": {
+        "startLine": 1319,
+        "startChar": 0,
+        "endLine": 1319,
+        "endChar": 52
+      },
+      "revId": "9f9557e651ff31035f7bf972efc365c9d581c295",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "89b08a80_3ee82324",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 1319,
+      "author": {
+        "id": 1895890
+      },
+      "writtenOn": "2022-07-22T17:58:01Z",
+      "side": 1,
+      "message": "It looks like MarkServicesUpdate actually does us a favor. Updatable services are marked as delayed services https://cs.android.com/android/platform/superproject/+/master:system/core/init/service.cpp;l\u003d531;drc\u003d904680f4ec09c6c380b05b08134ce5b74139b963;bpv\u003d1;bpt\u003d1\nDelayed services only start after MarkServicesUpdate (means all apexes are loaded): https://cs.android.com/android/platform/superproject/+/master:system/core/init/service_list.cpp;l\u003d79;drc\u003d904680f4ec09c6c380b05b08134ce5b74139b963;bpv\u003d1;bpt\u003d1\n\nIt is a good idea to split functions for reuse.",
+      "parentUuid": "77d95376_f248c893",
       "range": {
         "startLine": 1319,
         "startChar": 0,
