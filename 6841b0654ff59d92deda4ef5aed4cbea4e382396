@@ -41,6 +41,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "9ed85e72_f8d5d7f5",
+        "filename": "init/init.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1895890
+      },
+      "writtenOn": "2022-07-22T05:34:01Z",
+      "side": 1,
+      "message": "This one is strange. I didn\u0027t add this include. Maybe vscode automatically added it. Will change it.",
+      "parentUuid": "5a323089_b7579b44",
+      "range": {
+        "startLine": 32,
+        "startChar": 10,
+        "endLine": 32,
+        "endChar": 22
+      },
+      "revId": "6841b0654ff59d92deda4ef5aed4cbea4e382396",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "c7338f32_fbbe9287",
@@ -87,6 +111,54 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f1fcfce1_d163e5e4",
+        "filename": "init/init.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 454,
+      "author": {
+        "id": 1895890
+      },
+      "writtenOn": "2022-07-22T05:34:01Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "c7338f32_fbbe9287",
+      "range": {
+        "startLine": 454,
+        "startChar": 48,
+        "endLine": 454,
+        "endChar": 70
+      },
+      "revId": "6841b0654ff59d92deda4ef5aed4cbea4e382396",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5cc9f825_383be51f",
+        "filename": "init/init.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 454,
+      "author": {
+        "id": 1895890
+      },
+      "writtenOn": "2022-07-22T05:34:01Z",
+      "side": 1,
+      "message": "It looks StopService is kind of unreliable. Not sure what the better way to do it. I guess call it twice to be safer.",
+      "parentUuid": "d3ed1ed5_6b4977f9",
+      "range": {
+        "startLine": 454,
+        "startChar": 72,
+        "endLine": 454,
+        "endChar": 76
+      },
+      "revId": "6841b0654ff59d92deda4ef5aed4cbea4e382396",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "4c1be440_00136c7e",
@@ -100,6 +172,30 @@
       "writtenOn": "2022-07-22T04:25:19Z",
       "side": 1,
       "message": "StopApexServices may fail, which should abort the installation process. Please use `Result\u003cT\u003e` as return type of StopApexServices() and return the error here if it fails.",
+      "range": {
+        "startLine": 458,
+        "startChar": 4,
+        "endLine": 458,
+        "endChar": 32
+      },
+      "revId": "6841b0654ff59d92deda4ef5aed4cbea4e382396",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cfcd46fe_3f738a41",
+        "filename": "init/init.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 458,
+      "author": {
+        "id": 1895890
+      },
+      "writtenOn": "2022-07-22T05:34:01Z",
+      "side": 1,
+      "message": "will do.",
+      "parentUuid": "4c1be440_00136c7e",
       "range": {
         "startLine": 458,
         "startChar": 4,
@@ -133,6 +229,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "0336bf99_1a32caf6",
+        "filename": "init/init.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 492,
+      "author": {
+        "id": 1895890
+      },
+      "writtenOn": "2022-07-22T05:34:01Z",
+      "side": 1,
+      "message": "I added remove service CL to the same topic. Removing occurs right after stopping service. If restart happens between stopping and removing, I can try to move (std::move) services from service_list to a set, then stop services in the set. We could already bring back restart_pause property back, which could be the safes choice.\napex clients implement linktodeath(?). So when service is killed, it tries to restart it.",
+      "parentUuid": "c16b9fbf_5e882847",
+      "range": {
+        "startLine": 489,
+        "startChar": 0,
+        "endLine": 492,
+        "endChar": 5
+      },
+      "revId": "6841b0654ff59d92deda4ef5aed4cbea4e382396",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "fed16134_2917f39e",
@@ -156,6 +276,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "046159b8_d936f203",
+        "filename": "init/init.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 584,
+      "author": {
+        "id": 1895890
+      },
+      "writtenOn": "2022-07-22T05:34:01Z",
+      "side": 1,
+      "message": "Good point. I don\u0027t think we need it any more.",
+      "parentUuid": "fed16134_2917f39e",
+      "range": {
+        "startLine": 579,
+        "startChar": 0,
+        "endLine": 584,
+        "endChar": 5
+      },
+      "revId": "6841b0654ff59d92deda4ef5aed4cbea4e382396",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "62c22e5e_4a8e7d1c",
@@ -169,6 +313,30 @@
       "writtenOn": "2022-07-22T04:25:19Z",
       "side": 1,
       "message": "Let\u0027s assume `apex_name` as non-empty string. How about `CHECK(!apex_name.empty()) \u003c\u003c ... msg follows`",
+      "range": {
+        "startLine": 59,
+        "startChar": 0,
+        "endLine": 61,
+        "endChar": 9
+      },
+      "revId": "6841b0654ff59d92deda4ef5aed4cbea4e382396",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4cb6f193_73d51ff7",
+        "filename": "init/service_list.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1895890
+      },
+      "writtenOn": "2022-07-22T05:34:01Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "62c22e5e_4a8e7d1c",
       "range": {
         "startLine": 59,
         "startChar": 0,
