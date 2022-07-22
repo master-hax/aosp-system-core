@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7ceffe70_a93eeb4d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 15
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2022-07-22T02:29:36Z",
+      "side": 1,
+      "message": "You mised \"Test:\" line in the commit msg. ",
+      "revId": "b9c0939ac93a0ed240ed087e7027958892e60a14",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f968fe07_08fe4ff3",
+        "filename": "init/service.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 133,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2022-07-22T02:29:36Z",
+      "side": 1,
+      "message": "nit: how about moving this to the end to match with the order of declarations in the header?",
+      "range": {
+        "startLine": 133,
+        "startChar": 17,
+        "endLine": 133,
+        "endChar": 45
+      },
+      "revId": "b9c0939ac93a0ed240ed087e7027958892e60a14",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f7f00d63_37213dd5",
+        "filename": "init/service.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 863,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2022-07-22T02:29:36Z",
+      "side": 1,
+      "message": "nit: /* filename\u003d */",
+      "range": {
+        "startLine": 863,
+        "startChar": 46,
+        "endLine": 863,
+        "endChar": 49
+      },
+      "revId": "b9c0939ac93a0ed240ed087e7027958892e60a14",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
