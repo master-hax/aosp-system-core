@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5163b439_30256a4f",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 1319,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2022-07-22T04:38:30Z",
+      "side": 1,
+      "message": "The change looks good to me except this one. Can this cause unwanted side-effect when the function is called for a specific apex?\nto be safe, we might need to have a different function to parse a single apex config which calls a shared bit of code.",
+      "range": {
+        "startLine": 1319,
+        "startChar": 0,
+        "endLine": 1319,
+        "endChar": 52
+      },
+      "revId": "9f9557e651ff31035f7bf972efc365c9d581c295",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
