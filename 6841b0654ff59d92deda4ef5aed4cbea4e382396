@@ -1,0 +1,182 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4d443f14_2b450e6f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2022-07-22T04:25:19Z",
+      "side": 1,
+      "message": "Please add tests: the test involves apexd tries to install an apex which has a running service. If services are running, apexd fails to unmount the old apex.\n\nNot sure if possible, but it would be nice if we have an additional smaller test for this change alone. (e.g. init_test?) ",
+      "revId": "6841b0654ff59d92deda4ef5aed4cbea4e382396",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5a323089_b7579b44",
+        "filename": "init/init.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2022-07-22T04:25:19Z",
+      "side": 1,
+      "message": "Move this line down to the group of headers of this project. (ref: https://google.github.io/styleguide/cppguide.html#Names_and_Order_of_Includes)",
+      "range": {
+        "startLine": 32,
+        "startChar": 10,
+        "endLine": 32,
+        "endChar": 22
+      },
+      "revId": "6841b0654ff59d92deda4ef5aed4cbea4e382396",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c7338f32_fbbe9287",
+        "filename": "init/init.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 454,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2022-07-22T04:25:19Z",
+      "side": 1,
+      "message": "Let\u0027s have a separate timeout for unloading apexes instead of using `ro.build.shutdown_timeout` to avoid unnecessary coupling between \u0027shutting down\u0027 and \u0027unloading apex\u0027.",
+      "range": {
+        "startLine": 454,
+        "startChar": 48,
+        "endLine": 454,
+        "endChar": 70
+      },
+      "revId": "6841b0654ff59d92deda4ef5aed4cbea4e382396",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d3ed1ed5_6b4977f9",
+        "filename": "init/init.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 454,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2022-07-22T04:25:19Z",
+      "side": 1,
+      "message": "I\u0027m fine with using StopServicesAndLogViolations(), but I see that it\u0027s called twice to be sure: https://cs.android.com/android/platform/system/core/+/master:init/reboot.cpp;l\u003d706-712\n\nShould we do the same here?\n\nAnd, after stopping services, they should be removed from the list. I think removing services/actions be better removed in DoUnloadApex() when StopApexServices() succeeds.",
+      "range": {
+        "startLine": 454,
+        "startChar": 72,
+        "endLine": 454,
+        "endChar": 76
+      },
+      "revId": "6841b0654ff59d92deda4ef5aed4cbea4e382396",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4c1be440_00136c7e",
+        "filename": "init/init.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 458,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2022-07-22T04:25:19Z",
+      "side": 1,
+      "message": "StopApexServices may fail, which should abort the installation process. Please use `Result\u003cT\u003e` as return type of StopApexServices() and return the error here if it fails.",
+      "range": {
+        "startLine": 458,
+        "startChar": 4,
+        "endLine": 458,
+        "endChar": 32
+      },
+      "revId": "6841b0654ff59d92deda4ef5aed4cbea4e382396",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c16b9fbf_5e882847",
+        "filename": "init/init.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 492,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2022-07-22T04:25:19Z",
+      "side": 1,
+      "message": "As described below, we might not need `apexd.pause_restarts` now.\nInstead, init should *unload* the old apex and *load* the new apex (in case somethings goes wrong, the new apex would be the same to the old apex).\n\nOne thing I\u0027m not sure about is that how a service is restarted after `Service::Stop()` is called and whether it causes any problem in our \"unloading process\" or not.\n\nHowever, I\u0027m fine if you do \"loading\" part (`init` should scan .rc files in the new apex) in a separate change.",
+      "range": {
+        "startLine": 489,
+        "startChar": 0,
+        "endLine": 492,
+        "endChar": 5
+      },
+      "revId": "6841b0654ff59d92deda4ef5aed4cbea4e382396",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fed16134_2917f39e",
+        "filename": "init/init.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 584,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2022-07-22T04:25:19Z",
+      "side": 1,
+      "message": "Do we still need this? IIUC, as part of unloading, `Service` and `Action` from the apex are removed from `ServiceList` and `ActionList`. Then, `ctl.start` would fail because init can\u0027t find the service at all.",
+      "range": {
+        "startLine": 579,
+        "startChar": 0,
+        "endLine": 584,
+        "endChar": 5
+      },
+      "revId": "6841b0654ff59d92deda4ef5aed4cbea4e382396",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "62c22e5e_4a8e7d1c",
+        "filename": "init/service_list.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2022-07-22T04:25:19Z",
+      "side": 1,
+      "message": "Let\u0027s assume `apex_name` as non-empty string. How about `CHECK(!apex_name.empty()) \u003c\u003c ... msg follows`",
+      "range": {
+        "startLine": 59,
+        "startChar": 0,
+        "endLine": 61,
+        "endChar": 9
+      },
+      "revId": "6841b0654ff59d92deda4ef5aed4cbea4e382396",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
