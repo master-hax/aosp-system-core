@@ -704,20 +704,22 @@ struct hw_s {
 } aligned_cache_line;
 
 struct core_s {
-	lllist_t	 core_idled_cpu_lllist;
+	ureg_t		 core_ncpus_idled;
 	hw_t		*core_hw;
 	kcore_t		*core_kcore;
 };
 
 struct cpu_s {
-	llelem_t	 cpu_idled_elem;
 	thr_t		*cpu_running_thr;
 	core_t		*cpu_core;
 	char		*cpu_name;
 	kcpu_t		*cpu_kcpu;
 	ktimer_t	*cpu_ktimer;
 	ureg_t		 cpu_ktimer_calls;
-	ureg_t		 cpu_hwix;
+	int		 cpu_hwix;
+	volatile bool	 cpu_enabled;
+	volatile bool	 cpu_timerticked;
+	bool		 cpu_pad[2];
 	cacheline_t	*cpu_trampoline; // Must be immediately before cpu_ctx
 	ctx_t		 cpu_ctx;	 // Must be immediately after trampoline
 } aligned_cache_line;
@@ -926,6 +928,11 @@ static_assert(POWER_OF_TWO(sizeof(thr_t)), "thr_t size is wrong");
 //  TODO: review this with respect to the X64 context.
 
 typedef struct {
+	ctx_t	 c_ctx;
+	fpctx_t	 c_fpctx;
+} context_t;
+
+typedef struct {
 	stk_t		*thrx_stk;
 	void		*thrx_retval;
 	mtx_t		*thrx_join_mtx;
@@ -934,8 +941,13 @@ typedef struct {
 	bool		 thrx_exited;
 	bool		 thrx_joining;
 	bool		 thrx_pad[sizeof(ureg_t) - 3];
-	ctx_t		 thrx_ctx;
-	fpctx_t		 thrx_fpctx;
+	union {
+	    struct {
+		ctx_t	 thrx_ctx;
+		fpctx_t	 thrx_fpctx;
+	    };
+	    context_t	 thrx_context;;
+	};
 } aligned_cache_line thrx_t;
 
 

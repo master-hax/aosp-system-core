@@ -55,7 +55,7 @@
 //  TODO: add support for SVE context.
 
 typedef struct {
-	uregx2_t	 fpctx_regs[FPCTX_NREG];
+	__uint128_t	 fpctx_regs[FPCTX_NREG];
 } aligned_cache_line fpctx_t;
 
 #ifndef LWT_CTX_ARRAY //{
@@ -240,15 +240,15 @@ static_assert(sizeof(ctx_t) == SIZEOF_CTX_T, "SIZEOF_CTX_T is wrong");
 
 #ifdef LWT_C //{
 
-#define	ctx_thr_start_arg0	ctx_x19
-#define	ctx_thr_start_func	ctx_x20
-#define	ctx_thr_start_pc	ctx_x21
+#define	ctx_start_arg	ctx_x19
+#define	ctx_start_func	ctx_x20
+#define	ctx_start_pc	ctx_x21
 
 #else //}{ !LWT_C
 
-#define	reg_thr_start_arg0	x19
-#define	reg_thr_start_func	x20
-#define	reg_thr_start_pc	x21
+#define	reg_start_arg	x19
+#define	reg_start_func	x20
+#define	reg_start_pc	x21
 
 #define	ctx_d8		ctx_x10
 #define	ctx_d9		ctx_x11
@@ -371,8 +371,8 @@ typedef struct {
 	//
 	//  Newly created threads use a trampoline function (__lwt_thr_start)
 	//  to adjust their context, the argument is found in ctx_rbp and the
-	//  actual function address in ctx_rbx also known as ctx_thr_start_pc
-	//  and ctx_thr_start_arg0 in portable code.
+	//  actual function address in ctx_rbx also known as ctx_start_pc
+	//  and ctx_start_arg in portable code.
 
 	fpctx_t		*ctx_fpctx;
 	ureg_t		 ctx_pc;
@@ -462,15 +462,15 @@ typedef struct {
 
 #ifdef LWT_C //{
 
-#define	ctx_thr_start_arg0	ctx_rbp
-#define	ctx_thr_start_func	ctx_rbx
-#define	ctx_thr_start_pc	ctx_r12
+#define	ctx_start_arg	ctx_rbp
+#define	ctx_start_func	ctx_rbx
+#define	ctx_start_pc	ctx_r12
 
 #else //}{ !LWT_C
 
-#define	reg_thr_start_arg0	rbp
-#define	reg_thr_start_func	rbx
-#define	reg_thr_start_pc	r12
+#define	reg_start_arg	rbp
+#define	reg_start_func	rbx
+#define	reg_start_pc	r12
 
 #ifdef LWT_CTX_ARRAY //{
 

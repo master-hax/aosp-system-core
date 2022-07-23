@@ -79,6 +79,8 @@ static noreturn void lwt_assert_fail(const char *file, int line,
 			lwt_assert_fail(__FILE__, __LINE__, #expr);	\
 	} while (0)
 
+#define	dbgchk(expr)	assert(expr)
+
 #ifdef LWT_DEBUG
 #define	debug(expr)	assert(expr)
 #else
@@ -457,41 +459,24 @@ static cpu_t *cpuptrs[8] = {
 //  Outline versions for use within this file map to the __lwt_*() functions
 //  to avoid having two versions of them expanded in this file.
 
-#define	mtx_lock_outline(mtx)			__lwt_mtx_lock(mtx)
-#define	mtx_unlock_outline(mtx)			__lwt_mtx_unlock(mtx)
 #define mtx_create_outline(mtxpp, mtxattr)	__lwt_mtx_init(mtxpp, mtxattr)
 #define mtx_destroy_outline(mtxpp)		__lwt_mtx_destroy(mtxpp)
 
-#define	cnd_signal_outline(cnd)			__lwt_cnd_signal(cnd)
-#define	cnd_broadcast_outline(cnd)		__lwt_cnd_broadcast(cnd)
 #define	cnd_create_outline(cndpp, cndattr)	__lwt_cnd_init(cndpp, cndattr)
 #define	cnd_destroy_outline(cndpp)		__lwt_cnd_destroy(cndpp)
-
-//  mtx_lock() calls ctx_save() which returns twice which makes mtx_lock()
-//  not elegible for inline expansion, to hide that from internal callers
-//  of mtx_lock() we have the macro below.
-
-#define	mtx_lock(mtx)				__lwt_mtx_lock(mtx)
-
-//  cnd_wait() calls ctx_save() which returns twice which makes cnd_wait()
-//  not elegible for inline expansion, to hide that from internal callers
-//  of cnd_wait() we have the macro below.
-
-#define	cnd_wait(cnd, mtx)		__lwt_cnd_wait(cnd, mtx)
 
 
 //}  Prototypes.
 //{  Only when required because their order in this file.
 
-int			 __lwt_mtx_lock(struct __lwt_mtx_s *mtx);
-int			 __lwt_mtx_unlock(struct __lwt_mtx_s *mtx);
 int			 __lwt_mtx_init(struct __lwt_mtx_s **mtxpp,
 					const struct __lwt_mtxattr_s *mtxattr);
 int			 __lwt_mtx_destroy(struct __lwt_mtx_s **mtxpp);
 int			 __lwt_cnd_init(struct __lwt_cnd_s **cndpp,
 					const struct __lwt_cndattr_s *cndattr);
 int			 __lwt_cnd_destroy(struct __lwt_cnd_s **cndpp);
-noreturn void		 __lwt_thr_start_glue(void);
+noreturn void		 __lwt_start_glue(void);
+noreturn void		 __lwt_thr_exit(void *retval);
 
 static noreturn void	 sched_out(thr_t *thr);
 static int		 sched_in(thr_t *in);
@@ -561,11 +546,13 @@ void			 __lwt_set_nzcv(ureg_t nzcv);
 	((thr_t *) __lwt_ctx_save(ctx))
 
 bool 			 __lwt_bool_load_acq(bool *m);
+void 			 __lwt_bool_store_rel(bool *m, bool b);
 ureg_t			 __lwt_ureg_load_acq(ureg_t *m);
 ureg_t			 __lwt_ureg_atomic_add_unseq(ureg_t *m, ureg_t v);
 ureg_t			 __lwt_ureg_atomic_or_acq_rel(ureg_t *m, ureg_t v);
 
 #define	bool_load_acq(m)		__lwt_bool_load_acq(m)
+#define	bool_store_rel(m, b)		__lwt_bool_store_rel(m, b)
 #define	ureg_load_acq(m)		__lwt_ureg_load_acq(m)
 #define	ureg_atomic_add_unseq(m, v)	__lwt_ureg_atomic_add_unseq(m, v)
 #define	ureg_atomic_or_acq_rel(m, v)	__lwt_ureg_atomic_or_acq_rel(m, v)
@@ -583,6 +570,8 @@ static void		 core_run(core_t *core);
 static void		 cpu_current_set(cpu_t *cpu);
 static cpu_t		*cpu_current(void);
 #endif //}
+
+static void		 ktimer_tick(cpu_t *cpu);
 
 inline_only thr_t *thr_current(void)
 {
@@ -628,11 +617,6 @@ inline_only void lllist_init(lllist_t *list)
 {
 	list->lll_first = NULL;
 	list->lll_count_gen = 0;
-}
-
-inline_only void *lllist_head(lllist_t *list)
-{
-	return (void *) ureg_load_acq((ureg_t *) &list->lll_first);
 }
 
 inline_only lllist_t lllist_load(lllist_t *list)
@@ -1095,13 +1079,7 @@ retry:;
 	goto retry;
 }
 
-//  This function should have been named:
-//      inline_only int mtx_lock(mtx_t *mtx)
-//  See comment for __lwt_mtx_lock() towards the end of the file.  There is
-//  also a #define for mtx_lock() to this function to avoid this compiler
-//  workaround from spreading to internal callers of lwt_lock() in this file.
-
-int __lwt_mtx_lock(mtx_t *mtx)
+static error_t mtx_lock(mtx_t *mtx)
 {
 	thr_t *thr = thr_current();
 	mtx_atom_t old = mtx_load(mtx);
@@ -1268,6 +1246,11 @@ inline_only int mtx_unlock(mtx_t *mtx)
 	return mtx_unlock_common(mtx, false);
 }
 
+static int mtx_unlock_outline(mtx_t *mtx)
+{
+	return mtx_unlock(mtx);
+}
+
 static int mtx_unlock_from_cond_wait(mtx_t *mtx)
 {
 	return mtx_unlock_common(mtx, true);
@@ -1276,16 +1259,10 @@ static int mtx_unlock_from_cond_wait(mtx_t *mtx)
 
 //}{  cnd_*() functions
 
-//  This function should have been named:
-//      inline_only int cnd_wait(cnd_t *cnd, mtx_t *mtx)
-//  See comment for __lwt_cnd_wait() towards the end of the file.  There is
-//  also a #define for cnd_wait() to this function to avoid this compiler
-//  workaround from spreading to internal callers of cnd_wait() in this file.
-//
 //  The data structure manipulation here is all done under the protection of
 //  mtx which is owned by the current thread .
 
-int __lwt_cnd_wait(cnd_t *cnd, mtx_t *mtx)	//  aka cnd_wait()
+static int cnd_wait(cnd_t *cnd, mtx_t *mtx)
 {
 	thr_t *thr = thr_current();
 	assert(THRID_INDEX(thr->thra.thra_thrid) == MTXA_OWNER(mtx->mtxa));
@@ -1498,7 +1475,7 @@ inline_only int spin_lock(spin_t *spin)
 {
 	thr_t *thr = thr_current();
 
-retry:
+retry:;
 	uptr_t pre = uptr_comp_and_swap_acq(SPIN_UNLOCKED, (uptr_t) thr,
 					    &spin->spin_mem);
 	if (unlikely(pre != SPIN_UNLOCKED))
@@ -1761,7 +1738,7 @@ static mtx_t *thr_block_forever_mtx;
 
 static noreturn void thr_block_forever(unused const char *msg, unused void *arg)
 {
-	(void) mtx_lock_outline(thr_block_forever_mtx);
+	(void) mtx_lock(thr_block_forever_mtx);
 	assert(0);
 }
 
@@ -1840,7 +1817,7 @@ static noreturn void thr_exit(void *retval)
 	assert(thr->thr_mtxcnt == 0);
 
 	if (!thrx->thrx_detached) {
-		mtx_lock_outline(thrx->thrx_join_mtx);
+		mtx_lock(thrx->thrx_join_mtx);
 		thrx->thrx_retval = retval;
 		thrx->thrx_exited = true;
 		cnd_broadcast(thrx->thrx_join_cnd, thrx->thrx_join_mtx);
@@ -1879,7 +1856,7 @@ static int thr_join(lwt_t thread, void **retvalpp)
 	if (thrx->thrx_detached)
 		return EINVAL;
 
-	mtx_lock_outline(thrx->thrx_join_mtx);
+	mtx_lock(thrx->thrx_join_mtx);
 	if (thrx->thrx_joining) {
 		mtx_unlock_outline(thrx->thrx_join_mtx);
 		return EINVAL;
@@ -1895,22 +1872,59 @@ static int thr_join(lwt_t thread, void **retvalpp)
 	return 0;
 }
 
-static noreturn void thr_start(void *arg, void *(*function)(void *))
+inline_only void cpu_disable(cpu_t *cpu)
 {
-	thr_exit(function(arg));
+	assert(cpu->cpu_enabled);
+	cpu->cpu_enabled = false;
+}
+
+inline_only void cpu_enable(cpu_t *cpu)
+{
+	assert(!cpu->cpu_enabled);
+	if (cpu->cpu_timerticked) {
+		cpu->cpu_timerticked = false;
+		ktimer_tick(cpu);
+	}
+	cpu->cpu_enabled = true;
+}
+
+typedef void (*glue_t)(void *arg, lwt_function_t function);
+
+static noreturn void thr_start_glue(void *arg, lwt_function_t function)
+{
+	cpu_t *cpu = cpu_current();
+	cpu_enable(cpu);
+	__lwt_thr_exit(function(arg));
+}
+
+static void cpu_start_glue(void *arg, lwt_function_t function)
+{
+	function(arg);
+}
+
+inline_only void ctx_init_common(ctx_t *ctx, uptr_t sp, lwt_function_t function,
+				 void *arg, glue_t glue)
+{
+	ctx->ctx_pc = (ureg_t) __lwt_start_glue;
+	ctx->ctx_start_func = (ureg_t) function;
+	ctx->ctx_start_arg = (ureg_t) arg;
+	ctx->ctx_start_pc = (ureg_t) glue;
+	ctx->ctx_sp = sp;
+#ifdef LWT_X64
+	ctx->ctx_fpctx = 0;
+#endif
 }
 
 inline_only void ctx_init(ctx_t *ctx, uptr_t sp, lwt_function_t function,
 			  void *arg)
 {
-	ctx->ctx_pc = (ureg_t) __lwt_thr_start_glue;
-	ctx->ctx_thr_start_func = (ureg_t) function;
-	ctx->ctx_thr_start_arg0 = (ureg_t) arg;
-	ctx->ctx_thr_start_pc = (ureg_t) thr_start;
-	ctx->ctx_sp = sp;
-#ifdef LWT_X64
-	ctx->ctx_fpctx = 0;
-#endif
+	ctx_init_common(ctx, sp, function, arg, thr_start_glue);
+}
+
+inline_only void ctx_init_for_cpu(ctx_t *ctx, uptr_t sp,
+				  lwt_function_t function, void *arg)
+{
+	ctx_init_common(ctx, sp, function, arg, cpu_start_glue);
 }
 
 static int thr_create(lwt_t *thread, const thrattr_t *thrattr,
@@ -3296,7 +3310,7 @@ static error_t arena_init(arena_t *arena, void *base, size_t elemsize,
 
 static error_t arena_grow(arena_t *arena)
 {
-	mtx_lock_outline(arena->arena_mtx);
+	mtx_lock(arena->arena_mtx);
 	error_t error = arena_grow_common(arena);
 	mtx_unlock_outline(arena->arena_mtx);
 	return error;
@@ -3419,6 +3433,7 @@ inline_only void arena_free(arena_t *arena, void *mem)
 #include <pthread.h>
 #include <sched.h>
 #include <signal.h>
+#include <sys/syscall.h>
 #include <time.h>
 #include <unistd.h>
 
@@ -3444,17 +3459,16 @@ static void cpu_current_set(cpu_t *cpu)
 
 inline_only void core_run_locked(core_t *core, kcore_t *kcore)
 {
-	cpu_t *cpu = (cpu_t *) lllist_remove(&core->core_idled_cpu_lllist);
-	if (cpu) {
-		cpu->cpu_idled_elem.lll_next = CPU_NOT_IDLED;
+	if (core->core_ncpus_idled > 0)
 		pthread_cond_signal(&kcore->kcore_cond);
-	}
 }
 
 static void core_run(core_t *core)
 {
-	if (!lllist_head(&core->core_idled_cpu_lllist))
+#if 0 // TODO
+	if (core->core_ncpus_idled == 0)
 		return;
+#endif
 
 	kcore_t *kcore = core->core_kcore;
 	error_t error = pthread_mutex_trylock(&kcore->kcore_mutex);
@@ -3464,6 +3478,11 @@ static void core_run(core_t *core)
 	}
 	core_run_locked(core, kcore);
 	pthread_mutex_unlock(&kcore->kcore_mutex);
+}
+
+inline_only int cpu_gettid(void)
+{
+	return syscall(SYS_gettid);
 }
 
 #define	MAX_CPU	1024
@@ -3494,13 +3513,62 @@ static error_t cpu_bind(cpu_t *cpu)
 	return error;
 }
 
+#ifdef LWT_ARM64 //{
+
+typedef struct _aarch64_ctx	aarch64_ctx_t;
+typedef struct fpsimd_context	fpsimd_context_t;
+
+static_assert(offsetof(fpsimd_context_t, fpsr) + sizeof(__u32) ==
+	      offsetof(fpsimd_context_t, fpcr),
+	      "fpsr expected to be before fpcr");
+
+inline_only void context_init_from_mcontext(context_t *context,
+					    mcontext_t *mcontext)
+{
+	context->c_ctx = *(ctx_t *) mcontext;
+	aarch64_ctx_t *ctxhdr = (aarch64_ctx_t *) &mcontext->__reserved[0];
+        assert(ctxhdr->magic == FPSIMD_MAGIC &&
+	       ctxhdr->size == sizeof(fpsimd_context_t));
+	fpsimd_context_t *fpsimd_context = (fpsimd_context_t *) ctxhdr;
+	context->c_ctx.ctx_fpcr_fpsr = (ureg_t) fpsimd_context->fpsr |
+				     (((ureg_t) fpsimd_context->fpcr) << 32);
+	context->c_fpctx = *(fpctx_t *)(char *) &fpsimd_context->vregs[0];
+}
+
+#endif //}
+
+#ifdef LWT_X64 //{
+
+inline_only void context_init_from_mcontext(context_t *context,
+					    mcontext_t *mcontext)
+{
+	// TODO();
+}
+
+#endif //}
+
+static void ktimer_tick(cpu_t *cpu)
+{
+	// TODO();
+}
 
 static void ktimer_signal(int signo, siginfo_t *siginfo, void *ucontextp)
 {      
-        // ucontext_t *ucontext = ucontextp;
+        ucontext_t *ucontext = ucontextp;
 	cpu_t *cpu = (cpu_t *) siginfo->si_value.sival_ptr;
 	debug(cpu == cpu_current());
 	++cpu->cpu_ktimer_calls;
+	thr_t *thr = cpu->cpu_running_thr;
+	if (unlikely(!thr))
+		return;
+	if (unlikely(!cpu->cpu_enabled)) {
+		cpu->cpu_timerticked = true;
+		return;
+	}
+
+	thrx_t *thrx = thrx_from_thr(thr);
+	context_t *context = &thrx->thrx_context;
+	context_init_from_mcontext(context, &ucontext->uc_mcontext);
 }
 
 static_assert(sizeof(timer_t) <= sizeof(ktimer_t *),
@@ -3546,7 +3614,7 @@ static error_t ktimer_create(ktimer_t **ktimerpp, cpu_t *cpu)
 	struct sigevent sigev;
 	sigev.sigev_notify = SIGEV_THREAD_ID;
 	sigev.sigev_signo = lwt_rtsigno;
-	sigev.sigev_notify_thread_id = gettid();
+	sigev.sigev_notify_thread_id = cpu_gettid();
 	sigev.sigev_value.sival_ptr = cpu;
 	timer_t timer;
 
@@ -3580,6 +3648,7 @@ static int sched_attempts = 1;
 
 static noreturn void *cpu_main(cpu_t *cpu)
 {
+	assert(cpu >= &cpus[0] && cpu < &cpus[NCPUS]);
 	cpu_current_set(cpu);
 	core_t *core = cpu->cpu_core;
 	kcore_t *kcore = core->core_kcore;
@@ -3627,15 +3696,14 @@ retry:;		thr_t *thr = schdom_get_thr(schdom);
 						break;
 				goto retry;
 			}
-			if (cpu->cpu_idled_elem.lll_next == CPU_NOT_IDLED)
-				lllist_insert(&core->core_idled_cpu_lllist,
-					      &cpu->cpu_idled_elem);
+			++core->core_ncpus_idled;
 			pthread_cond_wait(&kcore->kcore_cond,
 					  &kcore->kcore_mutex);
+			--core->core_ncpus_idled;
 			goto restart;
 		}
 		if (CPUS_PER_CORE > 1 &&
-		    lllist_head(&core->core_idled_cpu_lllist) &&
+		    core->core_ncpus_idled > 0 &&
 		    !schdom_is_empty(schdom))
 			core_run_locked(core, kcore);
 		pthread_mutex_unlock(&kcore->kcore_mutex);
@@ -3686,8 +3754,8 @@ inline_only error_t cpu_init_cpu0(cpu_t *cpu)
 	stk_cpu0 = stk;
 
 	cpu->cpu_kcpu = (kcpu_t *) pthread_self();
-	ctx_init(&cpu->cpu_ctx, (uptr_t) (stk - 1),
-		 (lwt_function_t) cpu_main, cpu);
+	ctx_init_for_cpu(&cpu->cpu_ctx, (uptr_t) (stk - 1),
+			 (lwt_function_t) cpu_main, cpu);
 
 	return ktimer_create(&cpu->cpu_ktimer, cpu);
 }
@@ -3801,9 +3869,10 @@ void trampolines_deinit(void)
 
 inline_only error_t cpu_init(cpu_t *cpu, cacheline_t *trampoline)
 {
-	cpu->cpu_idled_elem.lll_next = CPU_NOT_IDLED;
 	cpu->cpu_running_thr = NULL;
 	cpu->cpu_trampoline = trampoline;
+	cpu->cpu_enabled = false;
+	cpu->cpu_timerticked = false;
 
 #if 0 // TODO
 	alloc_value_t av = sigstk_alloc();
@@ -3823,7 +3892,7 @@ static void cpu_deinit(cpu_t *cpu)
 inline_only void core_init(core_t *core)
 {
 	hw_init(core->core_hw);
-	lllist_init(&core->core_idled_cpu_lllist);
+	core->core_ncpus_idled = 0;
 }
 
 #ifdef LWT_HWSYS
@@ -3865,7 +3934,7 @@ inline_only error_t cpus_init(void)
 	for (i = 0; i < NCPUS; ++i) {
 		error_t error = cpu_init(&cpus[i], &trampolines[i]);
 		if (error) {
-			for (; i > 0; --i)
+			while (--i >= 0)
 				cpu_deinit(&cpus[i]);
 			return error;
 		}
@@ -4036,6 +4105,7 @@ inline_only error_t init(size_t sched_attempt_steps, int rtsigno)
 
 	ktimer_unblock();
 	ktimer_start(cpus[0].cpu_ktimer);
+	cpus[0].cpu_enabled = true;
 	return 0;
 }
 
@@ -4090,26 +4160,34 @@ int __lwt_mtx_destroy(struct __lwt_mtx_s **mtxpp)
 	return mtx_destroy(mtxpp);
 }
 
-#ifdef LWT_NOT_DEFINED_CANT_INLINE_INTO_THIS_FUNCTION
-//  mtx_lock() can't be inline here by gcc because of its call to a setjmp()
-//  like function, inline_only for mtx_lock() doesn't work, so __lwt_mtx_lock()
-//  is above where mtx_lock() would have been if gcc didn't have trouble with
-//  such a trivial inline (into this one line function)!
-
 int __lwt_mtx_lock(struct __lwt_mtx_s *mtx)
 {
-	return mtx_lock(mtx);
+	cpu_t *cpu = cpu_current();
+	cpu_disable(cpu);
+	error_t error = mtx_lock(mtx);
+	cpu = cpu_current();
+	cpu_enable(cpu);
+	return error;
 }
-#endif
 
 int __lwt_mtx_trylock(struct __lwt_mtx_s *mtx)
 {
-	return mtx_trylock(mtx);
+	cpu_t *cpu = cpu_current();
+	cpu_disable(cpu);
+	error_t error = mtx_trylock(mtx);
+	cpu = cpu_current();
+	cpu_enable(cpu);
+	return error;
 }
 
 int __lwt_mtx_unlock(struct __lwt_mtx_s *mtx)
 {
-	return mtx_unlock(mtx);
+	cpu_t *cpu = cpu_current();
+	cpu_disable(cpu);
+	error_t error = mtx_unlock(mtx);
+	cpu = cpu_current();
+	cpu_enable(cpu);
+	return error;
 }
 
 
@@ -4126,34 +4204,47 @@ int __lwt_cnd_destroy(struct __lwt_cnd_s **cndpp)
 	return cnd_destroy(cndpp);
 }
 
-#ifdef LWT_NOT_DEFINED_CANT_INLINE_INTO_THIS_FUNCTION
-//  cnd_wait() can't be inline here by gcc because of its call to a setjmp()
-//  like function, inline_only for cnd_wait() doesn't work, so __lwt_cnd_wait()
-//  is above where cnd_wait() would have been if gcc didn't have trouble with
-//  such a trivial inline (into this one line function)!
-
 int __lwt_cnd_wait(struct __lwt_cnd_s *cnd,
 		   struct __lwt_mtx_s *mtx)
 {
-	return cnd_wait(cnd, mtx);
+	cpu_t *cpu = cpu_current();
+	cpu_disable(cpu);
+	error_t error = cnd_wait(cnd, mtx);
+	cpu = cpu_current();
+	cpu_enable(cpu);
+	return error;
 }
-#endif
 
 int __lwt_cnd_timedwait(struct __lwt_cnd_s *cnd,
 			struct __lwt_mtx_s *mtx,
 			const struct timespec *abstime)
 {
-	return cnd_timedwait(cnd, mtx, abstime);
+	cpu_t *cpu = cpu_current();
+	cpu_disable(cpu);
+	error_t error = cnd_timedwait(cnd, mtx, abstime);
+	cpu = cpu_current();
+	cpu_enable(cpu);
+	return error;
 }
 
 int __lwt_cnd_signal(struct __lwt_cnd_s *cnd, struct __lwt_mtx_s *mtx)
 {
-	return cnd_signal(cnd, mtx);
+	cpu_t *cpu = cpu_current();
+	cpu_disable(cpu);
+	error_t error = cnd_signal(cnd, mtx);
+	cpu = cpu_current();
+	cpu_enable(cpu);
+	return error;
 }
 
 int __lwt_cnd_broadcast(struct __lwt_cnd_s *cnd, struct __lwt_mtx_s *mtx)
 {
-	return cnd_broadcast(cnd, mtx);
+	cpu_t *cpu = cpu_current();
+	cpu_disable(cpu);
+	error_t error = cnd_broadcast(cnd, mtx);
+	cpu = cpu_current();
+	cpu_enable(cpu);
+	return error;
 }
 
 
@@ -4325,37 +4416,68 @@ int __lwt_thrattr_getguardsize(const lwt_attr_t *attr, size_t *guardsize)
 int __lwt_thr_create(lwt_t *thread, const lwt_attr_t *attr,
 		     lwt_function_t function, void *arg)
 {
-	return thr_create(thread, (thrattr_t *) attr, function, arg);
+	cpu_t *cpu = cpu_current();
+	cpu_disable(cpu);
+	error_t error = thr_create(thread, (thrattr_t *) attr, function, arg);
+	cpu = cpu_current();
+	cpu_enable(cpu);
+	return error;
 }
 
-void noreturn __lwt_thr_exit(void *retval)
+noreturn void __lwt_thr_exit(void *retval)
 {
+	cpu_t *cpu = cpu_current();
+	cpu_disable(cpu);
 	thr_exit(retval);
 }
 
 int __lwt_thr_join(lwt_t thread, void **retval)
 {
-	return thr_join(thread, retval);
+	cpu_t *cpu = cpu_current();
+	cpu_disable(cpu);
+	error_t error = thr_join(thread, retval);
+	cpu = cpu_current();
+	cpu_enable(cpu);
+	return error;
 }
 
 int __lwt_thr_cancel(lwt_t thread)
 {
-	return thr_cancel(thread);
+	cpu_t *cpu = cpu_current();
+	cpu_disable(cpu);
+	error_t error = thr_cancel(thread);
+	cpu = cpu_current();
+	cpu_enable(cpu);
+	return error;
 }
 
 int __lwt_thr_setcancelstate(int state, int *oldstate)
 {
-	return thr_setcancelstate(state, oldstate);
+	cpu_t *cpu = cpu_current();
+	cpu_disable(cpu);
+	error_t error = thr_setcancelstate(state, oldstate);
+	cpu = cpu_current();
+	cpu_enable(cpu);
+	return error;
 }
 
 int __lwt_thr_setcanceltype(int type, int *oldtype)
 {
-	return thr_setcanceltype(type, oldtype);
+	cpu_t *cpu = cpu_current();
+	cpu_disable(cpu);
+	error_t error = thr_setcanceltype(type, oldtype);
+	cpu = cpu_current();
+	cpu_enable(cpu);
+	return error;
 }
 
 void __lwt_thr_testcancel(void)
 {
+	cpu_t *cpu = cpu_current();
+	cpu_disable(cpu);
 	thr_testcancel();
+	cpu = cpu_current();
+	cpu_enable(cpu);
 }
 
 //}

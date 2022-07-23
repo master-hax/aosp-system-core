@@ -258,6 +258,13 @@ FUNCTION_START(__lwt_bool_load_acq)
 	ret
 FUNCTION_END(__lwt_bool_load_acq)
 
+//  void __lwt_bool_store_rel(bool *m, bool b);
+
+FUNCTION_START(__lwt_bool_store_rel)
+	stlrb	w1, [x0]
+	ret
+FUNCTION_END(__lwt_bool_store_rel)
+
 //  ureg_t __lwt_ureg_load_acq(ureg_t *m);
 
 FUNCTION_START(__lwt_ureg_load_acq)
@@ -281,11 +288,11 @@ FUNCTION_END(__lwt_ureg_atomic_add_unseq)
 
 //  See ctx_init() to understand the register inputs to this function.
 
-FUNCTION_START(__lwt_thr_start_glue)
-	mov	x0, reg_thr_start_arg0		// arg0
-	mov	x1, reg_thr_start_func		// arg1
-	br	reg_thr_start_pc
-FUNCTION_END(__lwt_thr_start_glue)
+FUNCTION_START(__lwt_start_glue)
+	mov	x0, reg_start_arg		// arg0
+	mov	x1, reg_start_func		// arg1
+	br	reg_start_pc
+FUNCTION_END(__lwt_start_glue)
  
 FUNCTION_START(__lwt_get_fpcr)
 	mrs	x0, fpcr
@@ -409,6 +416,13 @@ FUNCTION_START(__lwt_bool_load_acq)
 	ret
 FUNCTION_END(__lwt_bool_load_acq)
 
+//  void __lwt_bool_store_rel(bool *m, bool b);
+
+FUNCTION_START(__lwt_bool_store_rel)
+	movb	%sil, (%rdi)
+	ret
+FUNCTION_END(__lwt_bool_store_rel)
+
 //  ureg_t __lwt_ureg_load_acq(ureg_t *m);
 
 FUNCTION_START(__lwt_ureg_load_acq)
@@ -439,12 +453,12 @@ FUNCTION_END(__lwt_ureg_atomic_or_acq_rel)
 //  by 8, generated C code knows about this and adjusts stack space if it
 //  needs to.  Don't replace the call below with a jmp.
 
-FUNCTION_START(__lwt_thr_start_glue)
-	movq	%reg_thr_start_arg0, %rdi	// arg0
-	movq	%reg_thr_start_func, %rsi	// arg1
-	call	*%reg_thr_start_pc
+FUNCTION_START(__lwt_start_glue)
+	movq	%reg_start_arg, %rdi		// arg0
+	movq	%reg_start_func, %rsi		// arg1
+	call	*%reg_start_pc
 	movq	$0, %rcx
 	movq	$0, (%rcx)			// TODO cause an exception
-FUNCTION_END(__lwt_thr_start_glue)
+FUNCTION_END(__lwt_start_glue)
 
 #endif //}
