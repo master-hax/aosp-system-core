@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3d71151c_8169551d",
+        "filename": "fs_mgr/libsnapshot/snapshot_test.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 1100,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2022-07-25T23:30:04Z",
+      "side": 1,
+      "message": "const auto",
+      "range": {
+        "startLine": 1100,
+        "startChar": 8,
+        "endLine": 1100,
+        "endChar": 16
+      },
+      "revId": "d88bd654571e2ec7f37a39a0d7fd47024a2a0e02",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "859d7d64_03c0d4f5",
+        "filename": "fs_mgr/libsnapshot/snapshot_test.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 1102,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2022-07-25T23:30:04Z",
+      "side": 1,
+      "message": "const auto",
+      "range": {
+        "startLine": 1102,
+        "startChar": 8,
+        "endLine": 1102,
+        "endChar": 14
+      },
+      "revId": "d88bd654571e2ec7f37a39a0d7fd47024a2a0e02",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
