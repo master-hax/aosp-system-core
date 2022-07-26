@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ed25d6cc_83aeafaa",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 564,
+      "author": {
+        "id": 1741425
+      },
+      "writtenOn": "2022-07-26T19:37:29Z",
+      "side": 1,
+      "message": "These operations are defined in Cgroup Abstraction Layer https://source.android.com/devices/tech/perf/cgroups#:~:text\u003dTask%20profiles%20%2D%20these%20provide%20an,the%20SetTaskProfiles%20and%20SetProcessProfiles%20APIs.\n\nIt seems not a good idea to hard code the ops here.",
+      "range": {
+        "startLine": 564,
+        "startChar": 4,
+        "endLine": 564,
+        "endChar": 72
+      },
+      "revId": "689561eee07c92cdcf513926dccdd4e3fd9321a0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
