@@ -253,6 +253,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "32d55723_de21296f",
+        "filename": "init/init.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 492,
+      "author": {
+        "id": 1895890
+      },
+      "writtenOn": "2022-07-26T20:04:49Z",
+      "side": 1,
+      "message": "I will keep this for now as the safety net in case services try to start between being stop and being remove or there is any mechanism that services restart by client.",
+      "parentUuid": "0336bf99_1a32caf6",
+      "range": {
+        "startLine": 489,
+        "startChar": 0,
+        "endLine": 492,
+        "endChar": 5
+      },
+      "revId": "6841b0654ff59d92deda4ef5aed4cbea4e382396",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "fed16134_2917f39e",
