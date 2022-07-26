@@ -22,6 +22,30 @@
       },
       "revId": "f8bf018b9d4e19e8be990f16354c4eecc44977eb",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d3933325_dd78c891",
+        "filename": "libutils/RefBase.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 795,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2022-07-26T22:16:53Z",
+      "side": 1,
+      "message": "-\u003e http://aosp/2166445\n\n(going to submit separately since there are 3 of these RefBase improvements - will submit one at a time for a bit in case one needs to be reverted, it\u0027s more clear which)",
+      "parentUuid": "b7070977_8d87e738",
+      "range": {
+        "startLine": 795,
+        "startChar": 4,
+        "endLine": 795,
+        "endChar": 47
+      },
+      "revId": "f8bf018b9d4e19e8be990f16354c4eecc44977eb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
