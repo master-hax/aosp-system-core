@@ -147,10 +147,10 @@ ctx_load_rest:
 	//  Restore rest of full context, registers restored at this point:
 	//	x18-x30, sp
 	//  Other register values:
-	//	x0: fpctx
+	//	x0: trampoline
 	//	x1: ctx
 	//	x2: cpuctx
-	//	x3: trampoline
+	//	x3: fpctx
 	//	x4: pc
 	//	x5: pstate
 	//	x6: address of branch in trampoline
@@ -158,7 +158,7 @@ ctx_load_rest:
 	//	pc, x0-x17, nzcv, fpcr, fpsr, q0-q31
 
 	//  The following 4 instructions are from the example code in:
-	//      "Arm Architecture Reference Manual for A-profile architecture"
+	//	"Arm Architecture Reference Manual for A-profile architecture"
 	//  (the comments are based on the comments there).
 	//
 	//  DDI0487H_a_a-profile_architecture_reference_manual.pdf
@@ -166,7 +166,7 @@ ctx_load_rest:
 	//  B2.2.5 Concurrent modification and execution of instructions
 	//  (page: B2-154)
 	//
-	//      "Coherency example for data and instruction accesses within
+	//	"Coherency example for data and instruction accesses within
 	//	 the same Inner Shareable domain."
 	//
 	//  The branch instruction occurs earlier in C code. Might be moved

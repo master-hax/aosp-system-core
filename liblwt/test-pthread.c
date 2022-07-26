@@ -163,7 +163,7 @@ void *psx_reader(psx_arg_t *a)
 
 psx_arg_t	psx_args[PSX_NREADERS + PSX_NWRITERS];
 
-#ifndef LWT_NOT_ON_ANDROID
+#if defined(LWT_ARM64) || defined(LWT_X64)
 #define	psx_test_main(argc, argv)	main(argc, argv)
 #endif
 

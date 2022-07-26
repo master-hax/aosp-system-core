@@ -1932,7 +1932,7 @@ inline_only void ctx_init_for_cpu(ctx_t *ctx, uptr_t sp,
 	ctx_init_common(ctx, sp, function, arg, cpu_start_glue);
 }
 
-static int thr_create(thr_t *thr, lwt_t *thread, const thrattr_t *thrattr,
+static int thr_create(lwt_t *thread, const thrattr_t *thrattr,
 		      lwt_function_t function, void *arg)
 {
 	if (thrattr == NULL) thrattr = &thrattr_default;
@@ -3555,12 +3555,12 @@ inline_only void context_init_from_mcontext(context_t *context,
 
 #endif //}
 
-static void ktimer_tick(cpu_t *cpu)
+static void ktimer_tick(unused cpu_t *cpu)
 {
 	// TODO();
 }
 
-static void ktimer_signal(int signo, siginfo_t *siginfo, void *ucontextp)
+static void ktimer_signal(unused int signo, siginfo_t *siginfo, void *ucontextp)
 {      
         ucontext_t *ucontext = ucontextp;
 	cpu_t *cpu = (cpu_t *) siginfo->si_value.sival_ptr;
@@ -3892,7 +3892,7 @@ inline_only error_t cpu_init(cpu_t *cpu, cacheline_t *trampoline)
 	return 0;
 }
 
-static void cpu_deinit(cpu_t *cpu)
+static void cpu_deinit(unused cpu_t *cpu)
 {
 	TODO();
 }
@@ -4410,9 +4410,8 @@ int __lwt_thrattr_getguardsize(const lwt_attr_t *attr, size_t *guardsize)
 int __lwt_thr_create(lwt_t *thread, const lwt_attr_t *attr,
 		     lwt_function_t function, void *arg)
 {
-	thr_t *thr = cpu_disable();
-	error_t error = thr_create(thr, thread, (thrattr_t *) attr,
-				   function, arg);
+	cpu_disable();
+	error_t error = thr_create(thread, (thrattr_t *) attr, function, arg);
 	cpu_enable();
 	return error;
 }

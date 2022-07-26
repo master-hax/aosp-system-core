@@ -164,7 +164,7 @@ void *reader(arg_t *a)
 
 arg_t	args[NREADERS + NWRITERS];
 
-#ifndef LWT_NOT_ON_ANDROID
+#if defined(LWT_ARM64) || defined(LWT_X64)
 #define	test_main(argc, argv)	main(argc, argv)
 #endif
 

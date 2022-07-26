@@ -24,7 +24,7 @@
 #define _GNU_SOURCE
 #endif
 
-#if defined(LWT_ARM64) || !defined(LWT_X64)
+#if defined(LWT_ARM64) || defined(LWT_X64)
 #define	LWT_NOT_ON_ANDROID
 #define LWT_PTHREAD_SETAFFINITY
 #endif
