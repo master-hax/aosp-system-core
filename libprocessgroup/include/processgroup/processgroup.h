@@ -60,6 +60,8 @@ int killProcessGroupOnce(uid_t uid, int initialPid, int signal, int* max_process
 
 int createProcessGroup(uid_t uid, int initialPid, bool memControl = false);
 
+int freezeCgroup(uid_t uid, bool freeze);
+
 // Set various properties of a process group. For these functions to work, the process group must
 // have been created by passing memControl=true to createProcessGroup.
 bool setProcessGroupSwappiness(uid_t uid, int initialPid, int swappiness);

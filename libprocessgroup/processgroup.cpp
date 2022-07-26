@@ -559,6 +559,22 @@ int createProcessGroup(uid_t uid, int initialPid, bool memControl) {
     return createProcessGroupInternal(uid, initialPid, cgroup, true);
 }
 
+int freezeCgroup(uid_t uid, bool freeze)
+{
+    const std::string PROCESSGROUP_CGROUP_FREEZE_FILE{"/cgroup.freeze"};
+
+    std::string cgroot;
+    CgroupGetControllerPath(CGROUPV2_CONTROLLER_NAME, &cgroot);
+    auto uid_freeze_path = ConvertUidToPath(cgroot.c_str(), uid) + PROCESSGROUP_CGROUP_FREEZE_FILE;
+
+    int ret = 0;
+    if (!WriteStringToFile(freeze ? "1" : "0", uid_freeze_path)) {
+        ret = -errno;
+        PLOG(ERROR) << "Failed to write to " << uid_freeze_path;
+    }
+    return ret;
+}
+
 static bool SetProcessGroupValue(int tid, const std::string& attr_name, int64_t value) {
     if (!isMemoryCgroupSupported()) {
         PLOG(ERROR) << "Memcg is not mounted.";
