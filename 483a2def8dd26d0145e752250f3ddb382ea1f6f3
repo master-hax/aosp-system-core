@@ -16,6 +16,24 @@
       "message": "The only downside I see here is that we can no longer perform the \"optimization\" in decStrong of not bothering to decrement the count if it was initially 1. I\u0027ve seen code that does that, but I\u0027m not sure it would be beneficial for Android. It depends on how frequently our reference counts go higher than 1.",
       "revId": "483a2def8dd26d0145e752250f3ddb382ea1f6f3",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f7b29992_29c3a253",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2022-07-26T22:22:43Z",
+      "side": 1,
+      "message": "sure - though we could add that back by removing this check at a minimum, if it became important",
+      "parentUuid": "6f4d685f_190e77c5",
+      "revId": "483a2def8dd26d0145e752250f3ddb382ea1f6f3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
