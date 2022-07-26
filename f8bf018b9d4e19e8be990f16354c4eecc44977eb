@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b7070977_8d87e738",
+        "filename": "libutils/RefBase.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 795,
+      "author": {
+        "id": 1042828
+      },
+      "writtenOn": "2022-07-26T22:06:19Z",
+      "side": 1,
+      "message": "For connsistency, it probably makes sense to do the stack check here, too, though it hopefully will never catch anything",
+      "range": {
+        "startLine": 795,
+        "startChar": 4,
+        "endLine": 795,
+        "endChar": 47
+      },
+      "revId": "f8bf018b9d4e19e8be990f16354c4eecc44977eb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
