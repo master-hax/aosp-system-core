@@ -1,0 +1,234 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "06601458_8e10a64a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 13
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2022-07-27T08:18:43Z",
+      "side": 1,
+      "message": "Please add \"Test:\" line\n\nEnd-to-end test might be:\n- Apex v1 may have a service \"foo-v1\" and Apex v2 with \"foo-v2\". (service names are different). After update, \"ctl.start foo-v1\" should fail because there\u0027s no foo-v1.",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 9,
+        "endChar": 3
+      },
+      "revId": "df67d070008ccf5e388bc126feaf18837c12820b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bf033396_7776adc8",
+        "filename": "init/apex_init_util.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2022-07-27T08:18:43Z",
+      "side": 1,
+      "message": "2022",
+      "range": {
+        "startLine": 2,
+        "startChar": 17,
+        "endLine": 2,
+        "endChar": 21
+      },
+      "revId": "df67d070008ccf5e388bc126feaf18837c12820b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4f2c3699_a7b99055",
+        "filename": "init/apex_init_util.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2022-07-27T08:18:43Z",
+      "side": 1,
+      "message": "nit: This can be \"static\" or in an anonymous namespace?",
+      "range": {
+        "startLine": 37,
+        "startChar": 0,
+        "endLine": 37,
+        "endChar": 70
+      },
+      "revId": "df67d070008ccf5e388bc126feaf18837c12820b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ef2f49be_b03635e7",
+        "filename": "init/apex_init_util.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2022-07-27T08:18:43Z",
+      "side": 1,
+      "message": "make it \"static\" or move it to \"anonymous namespace\"",
+      "range": {
+        "startLine": 68,
+        "startChar": 0,
+        "endLine": 68,
+        "endChar": 69
+      },
+      "revId": "df67d070008ccf5e388bc126feaf18837c12820b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7e99f304_479fe3d9",
+        "filename": "init/apex_init_util.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2022-07-27T08:18:43Z",
+      "side": 1,
+      "message": "This is not supposed to be part of this function. Let\u0027s move this to parse_all_apex_configs(). (right after \"parse_apex_configs()\" regardless of success to keep the original behavior)\n\nIn our rebootless update design, this doesn\u0027t play any role. There\u0027s a global variable which tells if \"perform_apex_config\" is done or not. Before that, starting updatable services are postponed until \"perform_apex_config\" (now, starting postponed services..). This is only available for services which are defined in .rc files in read-only partition and marked as \"updatable\". \"updatable\" services are **updated** during \"perform_apex_config\". And then services are started according to \"updated\" definition.\n\nIn our case, we don\u0027t support \"updating service definitions\" or \"delayed start\". Instead, we drop definitions and re-read services from updated apex. Services should be started according to new sysprops.",
+      "range": {
+        "startLine": 76,
+        "startChar": 0,
+        "endLine": 76,
+        "endChar": 52
+      },
+      "revId": "df67d070008ccf5e388bc126feaf18837c12820b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b2a5f3d5_6d07e17a",
+        "filename": "init/apex_init_util.h",
+        "patchSetId": 13
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2022-07-27T08:18:43Z",
+      "side": 1,
+      "message": "2022",
+      "range": {
+        "startLine": 2,
+        "startChar": 17,
+        "endLine": 2,
+        "endChar": 21
+      },
+      "revId": "df67d070008ccf5e388bc126feaf18837c12820b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "989bebd2_3ebae7d4",
+        "filename": "init/apex_init_util.h",
+        "patchSetId": 13
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2022-07-27T08:18:43Z",
+      "side": 1,
+      "message": "I don\u0027t think the default value here helps. Can we just make it explicit as \"const string\u0026 apex_name\". And this deserves a comment explaining what \"\" means.",
+      "range": {
+        "startLine": 29,
+        "startChar": 53,
+        "endLine": 29,
+        "endChar": 56
+      },
+      "revId": "df67d070008ccf5e388bc126feaf18837c12820b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f907616f_232a4ac5",
+        "filename": "init/apex_init_util.h",
+        "patchSetId": 13
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2022-07-27T08:18:43Z",
+      "side": 1,
+      "message": "rename it ParseApexConfigs(). In init codebase, we use \"CamelCase\" for function names. I guess you followed \"perform_apex_config\", which is deliberately used that way because they are the implementation of init commands (e.g. perform_apex_config).",
+      "range": {
+        "startLine": 29,
+        "startChar": 13,
+        "endLine": 29,
+        "endChar": 31
+      },
+      "revId": "df67d070008ccf5e388bc126feaf18837c12820b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "342145b4_44acec30",
+        "filename": "init/init.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 516,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2022-07-27T08:18:43Z",
+      "side": 1,
+      "message": "nit: format. (spacing looks odd)",
+      "range": {
+        "startLine": 516,
+        "startChar": 4,
+        "endLine": 516,
+        "endChar": 9
+      },
+      "revId": "df67d070008ccf5e388bc126feaf18837c12820b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "85eae564_21cdf71e",
+        "filename": "init/util.h",
+        "patchSetId": 13
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2022-07-27T08:18:43Z",
+      "side": 1,
+      "message": "Can we move these two to new apex util?",
+      "range": {
+        "startLine": 111,
+        "startChar": 0,
+        "endLine": 117,
+        "endChar": 66
+      },
+      "revId": "df67d070008ccf5e388bc126feaf18837c12820b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
