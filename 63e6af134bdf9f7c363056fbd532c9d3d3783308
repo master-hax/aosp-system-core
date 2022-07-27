@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "78cdf9ef_27c72954",
+        "filename": "trusty/test/binder/aidl/rules.mk",
+        "patchSetId": 1
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2022-07-27T21:01:35Z",
+      "side": 1,
+      "message": "Make the package `com/android/trusty/binder/test`? These interfaces are only used by the tests, shouldn\u0027t be useful for anything else.",
+      "revId": "63e6af134bdf9f7c363056fbd532c9d3d3783308",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
