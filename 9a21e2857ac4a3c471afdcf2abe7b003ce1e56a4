@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "8d375f60_83c3cfc7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-07-27T22:34:51Z",
+      "side": 1,
+      "message": "Ack, will do this in a separate CL.",
+      "parentUuid": "b11e9034_d4f89363",
+      "revId": "9a21e2857ac4a3c471afdcf2abe7b003ce1e56a4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "bf9600a1_c325098d",
@@ -31,6 +49,30 @@
       "writtenOn": "2022-07-27T16:33:52Z",
       "side": 1,
       "message": "const bool or const auto",
+      "range": {
+        "startLine": 3227,
+        "startChar": 4,
+        "endLine": 3227,
+        "endChar": 8
+      },
+      "revId": "9a21e2857ac4a3c471afdcf2abe7b003ce1e56a4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b050b129_cdb659eb",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 3227,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-07-27T22:34:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "bf9600a1_c325098d",
       "range": {
         "startLine": 3227,
         "startChar": 4,
@@ -60,6 +102,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "43012661_c82cab7a",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 3237,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-07-27T22:34:51Z",
+      "side": 1,
+      "message": "Wouldn\u0027t that disable compression? This matches the old code\u0027s behavior, with the exception that, we don\u0027t set it to \"none\" if using traditional VAB. Instead it\u0027s left empty.",
+      "parentUuid": "028b7dbc_13a35f6d",
+      "revId": "9a21e2857ac4a3c471afdcf2abe7b003ce1e56a4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "5650cc7e_1db33521",
         "filename": "fs_mgr/libsnapshot/snapshot.cpp",
         "patchSetId": 3
@@ -71,6 +131,24 @@
       "writtenOn": "2022-07-27T17:06:33Z",
       "side": 1,
       "message": "We should probably clear snapuserd_client_ ?",
+      "revId": "9a21e2857ac4a3c471afdcf2abe7b003ce1e56a4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4d755d78_e47f72eb",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 3319,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-07-27T22:34:51Z",
+      "side": 1,
+      "message": "Whoops, I missed that it was closing both before. Done.",
+      "parentUuid": "5650cc7e_1db33521",
       "revId": "9a21e2857ac4a3c471afdcf2abe7b003ce1e56a4",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
