@@ -120,6 +120,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "eeb89d18_082ab1ee",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 3237,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-07-27T23:31:22Z",
+      "side": 1,
+      "message": "It looks like if it is empty, the COW writer initialization fails:\n\nhttps://source.corp.google.com/android-internal/system/core/fs_mgr/libsnapshot/cow_writer.cpp;l\u003d138",
+      "parentUuid": "43012661_c82cab7a",
+      "revId": "9a21e2857ac4a3c471afdcf2abe7b003ce1e56a4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "5650cc7e_1db33521",
         "filename": "fs_mgr/libsnapshot/snapshot.cpp",
         "patchSetId": 3
