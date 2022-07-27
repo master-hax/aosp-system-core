@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-/*
- * Hello, world!
- */
-@Backing(type="byte")
-enum ByteEnum {
-    // Comment about FOO.
-    FOO = 1,
-    BAR = 2,
+package com.android.trusty.binder;
+
+@Backing(type="long")
+enum LongEnum {
+    FOO = 100000000000,
+    BAR = 200000000000,
     BAZ,
 }
