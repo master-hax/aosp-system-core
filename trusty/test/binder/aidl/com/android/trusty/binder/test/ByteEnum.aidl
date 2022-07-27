@@ -14,12 +14,15 @@
  * limitations under the License.
  */
 
-@JavaDerive(toString=true)
-@Backing(type="int")
-enum IntEnum {
-    FOO = 1000,
-    BAR = 2000,
+package com.android.trusty.binder;
+
+/*
+ * Hello, world!
+ */
+@Backing(type="byte")
+enum ByteEnum {
+    // Comment about FOO.
+    FOO = 1,
+    BAR = 2,
     BAZ,
-    /** @deprecated do not use this */
-    QUX,
 }
