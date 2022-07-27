@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5a267589_7eb1bb11",
+        "filename": "gatekeeperd/gatekeeperd.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2022-07-27T00:24:44Z",
+      "side": 0,
+      "message": "we still need to support talking to the HIDL service (talk to whichever one is working)",
+      "range": {
+        "startLine": 69,
+        "startChar": 0,
+        "endLine": 69,
+        "endChar": 46
+      },
+      "revId": "155bba8b0cf5371ff7b11f77fcb67b82afb6c031",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
