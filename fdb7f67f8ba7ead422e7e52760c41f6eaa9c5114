@@ -36,6 +36,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "d5d9741e_5d16abee",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 524,
+      "author": {
+        "id": 1005967
+      },
+      "writtenOn": "2022-07-27T22:21:29Z",
+      "side": 1,
+      "message": "I totally missed the process id there in the sysprop name.",
+      "parentUuid": "e3b716a4_0c105243",
+      "revId": "fdb7f67f8ba7ead422e7e52760c41f6eaa9c5114",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "57f4f52b_15681e68",
@@ -120,6 +138,24 @@
       "side": 1,
       "message": "Ping",
       "parentUuid": "bddcc205_6318d44d",
+      "revId": "fdb7f67f8ba7ead422e7e52760c41f6eaa9c5114",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fbda0746_e7a03118",
+        "filename": "init/test_upgrade_mte/src/com/android/tests/init/MteUpgradeTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1005967
+      },
+      "writtenOn": "2022-07-27T22:21:29Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "8411faf1_daaf0174",
       "revId": "fdb7f67f8ba7ead422e7e52760c41f6eaa9c5114",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
