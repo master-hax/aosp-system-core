@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "552fa761_d1766753",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 13
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1325114
+      },
+      "writtenOn": "2022-07-27T04:54:05Z",
+      "side": 1,
+      "message": "how about: allow module with soft dependencies to load in parallel",
+      "range": {
+        "startLine": 7,
+        "startChar": 13,
+        "endLine": 7,
+        "endChar": 65
+      },
+      "revId": "4dd751eca390f1f50e82b4fdbd7adb000a961f31",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
