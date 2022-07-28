@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "25c7fffa_6afd6d1b",
+        "filename": "trusty/test/binder/binder_test.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 275,
+      "author": {
+        "id": 1948820
+      },
+      "writtenOn": "2022-07-28T22:04:57Z",
+      "side": 1,
+      "message": "I will look to lift this and the trusty `TestService` into a class and location that\u0027s common for both.",
+      "range": {
+        "startLine": 272,
+        "startChar": 1,
+        "endLine": 275,
+        "endChar": 5
+      },
+      "revId": "242646d8f2b505c49924ebe7e0642b7d269d24c7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
