@@ -76,6 +76,11 @@ class BinderTest : public testing::Test {
         EXPECT_EQ(reversed, reversed_input);
     }
 
+    binder::Status nestMe(const sp<ITestService>& binder, int count) {
+        if (count <= 0) return binder::Status::ok();
+        return binder->nestMe(mSrv, count - 1);
+    }
+
     sp<RpcSession> mSess;
     sp<ITestService> mSrv;
 };
@@ -253,6 +258,24 @@ TEST_F(BinderTest, threads) {
         ASSERT_TRUE(threadResults[i].status.isOk()) << threadResults[i].status;
         ASSERT_EQ(threadResults[i].reversed, reversed);
     }
+}
+
+TEST_F(BinderTest, nested_call) {
+    auto sess = RpcSession::make(RpcTransportCtxFactoryTipcAndroid::make());
+    auto status = sess->setupPreconnectedClient({}, []() {
+        // TODO: make device name configurable
+        return base::unique_fd(
+                tipc_connect(kTrustyDefaultDeviceName, ITestService::PORT().c_str()));
+    });
+    ASSERT_EQ(status, OK);
+
+    auto root = sess->getRootObject();
+    ASSERT_NE(root.get(), nullptr);
+
+    auto serv = ITestService::asInterface(root);
+    ASSERT_NE(serv.get(), nullptr);
+
+    ASSERT_EQ(serv->nestMe(mSrv, 10).exceptionCode(), binder::Status::Exception::EX_NONE);
 }
 
 }  // namespace android
