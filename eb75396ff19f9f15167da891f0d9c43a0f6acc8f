@@ -126,6 +126,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "26111a38_d11eb422",
+        "filename": "init/service.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 259,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2022-07-28T22:05:29Z",
+      "side": 1,
+      "message": "for performance reasons we don\u0027t want to turn this on often, so right now we limit to once-per-service-per-boot. it would be a shame to burn this on an unrelated crash. the premise is that hopefully the user will reattempt whatever they did to cause the crash, and cause it again.",
+      "parentUuid": "b41fd1ea_62e3609c",
+      "range": {
+        "startLine": 259,
+        "startChar": 25,
+        "endLine": 259,
+        "endChar": 34
+      },
+      "revId": "eb75396ff19f9f15167da891f0d9c43a0f6acc8f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "b52c1527_609ef8f1",
         "filename": "rootdir/init.zygote32.rc",
         "patchSetId": 14
