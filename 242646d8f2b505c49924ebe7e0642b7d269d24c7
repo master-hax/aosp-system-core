@@ -3,6 +3,23 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "09a21042_0af76e66",
+        "filename": "trusty/test/binder/binder_test.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2022-07-28T22:18:36Z",
+      "side": 1,
+      "message": "Shouldn\u0027t be needed (see below).",
+      "revId": "242646d8f2b505c49924ebe7e0642b7d269d24c7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "25c7fffa_6afd6d1b",
         "filename": "trusty/test/binder/binder_test.cpp",
         "patchSetId": 5
@@ -20,6 +37,47 @@
         "endLine": 275,
         "endChar": 5
       },
+      "revId": "242646d8f2b505c49924ebe7e0642b7d269d24c7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "48ec36e6_556cbf64",
+        "filename": "trusty/test/binder/binder_test.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 275,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2022-07-28T22:18:36Z",
+      "side": 1,
+      "message": "That might be too complicated, sharing code between Android and Trusty is tricky.\n\nIf you omit all the `Repeat*` and `Reverse*` methods, will this class refuse to compile? If it does, maybe just add placeholders that return `INVALID_OPERATION` instead of doing anything. The Trusty service should never call them.",
+      "parentUuid": "25c7fffa_6afd6d1b",
+      "range": {
+        "startLine": 272,
+        "startChar": 1,
+        "endLine": 275,
+        "endChar": 5
+      },
+      "revId": "242646d8f2b505c49924ebe7e0642b7d269d24c7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b5735d98_0b7bd187",
+        "filename": "trusty/test/binder/binder_test.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 359,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2022-07-28T22:18:36Z",
+      "side": 1,
+      "message": "You shouldn\u0027t need this here, since the service will never call the `Repeat*` methods back.",
       "revId": "242646d8f2b505c49924ebe7e0642b7d269d24c7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
