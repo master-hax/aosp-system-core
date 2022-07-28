@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "27109894_fc1fb95a",
+        "filename": "trusty/test/binder/binder_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1948820
+      },
+      "writtenOn": "2022-07-28T22:08:19Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "1c0e3cc8_bfb27ce6",
+      "revId": "081d6f178efa6fdaf7ee0177edda2f89f83acca1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "c87f18b6_5418277a",
