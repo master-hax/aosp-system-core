@@ -690,24 +690,6 @@ inline_only bool ctx_is_full(ctx_t *ctx)
 	return ctx->ctx_pstate != 0;
 }
 
-inline_only ureg_t counter_get_before(void)
-{
-	register ureg_t counter;
-	//  Getting cntpct_el0 (Counter-timer Physical Count) causes SIGILL,
-	//  get cntvct_el0 (Counter-timer Virtual Count) instead.
-	__asm__("mrs	%0, cntvct_el0" : "=r"(counter));
-	return counter;
-}
-
-inline_only ureg_t counter_get_after(void)
-{
-	register ureg_t counter;
-	//  Getting cntpct_el0 (Counter-timer Physical Count) causes SIGILL,
-	//  get cntvct_el0 (Counter-timer Virtual Count) instead.
-	__asm__("mrs	%0, cntvct_el0" : "=r"(counter));
-	return counter;
-}
-
 #endif //}
 
 #ifdef LWT_X64 //{
@@ -744,55 +726,6 @@ inline_only cpu_t *cpu_current()
 inline_only bool ctx_is_full(ctx_t *ctx)
 {
 	return ctx->ctx_fpctx != NULL;
-}
-
-//  The functions:
-//	counter_get_before()
-//	counter_get_after()
-//
-//  are based on sample code from:
-//	How to Benchmark Code Execution Times on Intel
-//	IA-32 and IA-64 Instruction Set Architectures
-//	September 2010
-//
-//	White Paper
-//	Gabriele Paoloni
-//	Linux Kernel/Embedded Software Engineer
-//	Intel Corporation
-//
-//	ia-32-ia-64-benchmark-code-execution-paper.pdf
-//
-//	(section: 3.2.1 The Improved Benchmarking Method)
-//
-//  Note that two functions are required, one to be used before the code to
-//  be measured executes and one to be used after it.  The order of the cpuid
-//  instructions and the rdtsc vs rdtscp (two different instructions) are all
-//  important as described in that document.
-
-inline_only ureg_t counter_get_before(void)
-{
-	u32_t counter_high;
-	u32_t counter_low;
-	__asm__ volatile ("cpuid;"
-			  "rdtsc;"
-			  "mov	%%edx, %0;"
-			  "mov	%%eax, %1" :
-				"=r" (counter_high), "=r" (counter_low) ::
-				"%rax", "%rbx", "%rcx", "%rdx");
-	return (((ureg_t) counter_high) << 32) | counter_low;
-}
-
-inline_only ureg_t counter_get_after(void)
-{
-	u32_t counter_high;
-	u32_t counter_low;
-	__asm__ volatile ("rdtscp;"
-			  "mov	%%edx, %0;"
-			  "mov	%%eax, %1;"
-			  "cpuid" :
-				"=r" (counter_high), "=r" (counter_low) ::
-				"%rax", "%rbx", "%rcx", "%rdx");
-	return (((ureg_t) counter_high) << 32) | counter_low;
 }
 
 #endif //}

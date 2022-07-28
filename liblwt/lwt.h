@@ -27,6 +27,8 @@
 // #include <bits/types/struct_timespec.h>
 struct timespec;
 
+#define	lwt_inline	static inline __attribute__((always_inline))
+
 //  lwt - light weight threads
 //
 //  This is an implementation similar to POSIX threads (pthread henceforth)
@@ -38,7 +40,7 @@ struct timespec;
 
 int __lwt_init(size_t sched_attempt_steps, int rtsigno);
 
-static inline int lwt_init(size_t sched_attempt_steps, int rtsigno)
+lwt_inline int lwt_init(size_t sched_attempt_steps, int rtsigno)
 {
 	return __lwt_init(sched_attempt_steps, rtsigno);
 }
@@ -96,12 +98,12 @@ int __lwt_mtxattr_settype(	struct __lwt_mtxattr_s **mtxattrpp, int kind);
 int __lwt_mtxattr_gettype(	const struct __lwt_mtxattr_s *mtxattr,
 				int *kind);
 
-static inline int lwt_mutexttr_init(lwt_mutexattr_t *mutexattr)
+lwt_inline int lwt_mutexttr_init(lwt_mutexattr_t *mutexattr)
 {
 	return __lwt_mtxattr_init(&mutexattr->mtxattr);
 }
 
-static inline int lwt_mutexttr_destroy(lwt_mutexattr_t *mutexattr)
+lwt_inline int lwt_mutexttr_destroy(lwt_mutexattr_t *mutexattr)
 {
 	return __lwt_mtxattr_destroy(&mutexattr->mtxattr);
 }
@@ -116,13 +118,13 @@ typedef enum {
 	LWT_MTX_LAST = LWT_MTX_RECURSIVE 
 } lwt_mtx_type_t;
 
-static inline int lwt_mutexattr_settype(lwt_mutexattr_t *mutexattr, int kind)
+lwt_inline int lwt_mutexattr_settype(lwt_mutexattr_t *mutexattr, int kind)
 {
 	return __lwt_mtxattr_settype(&mutexattr->mtxattr, kind);
 }
 
-static inline int lwt_mutexattr_gettype(const lwt_mutexattr_t *mutexattr,
-					int *kind)
+lwt_inline int lwt_mutexattr_gettype(const lwt_mutexattr_t *mutexattr,
+				     int *kind)
 {
 	return __lwt_mtxattr_gettype(mutexattr->mtxattr, kind);
 }
@@ -143,29 +145,29 @@ typedef struct {
 	struct __lwt_mtx_s	*mtx;
 } lwt_mutex_t;
 
-static inline int lwt_mutex_init(lwt_mutex_t *mutex,
-				 const lwt_mutexattr_t *mutexattr)
+lwt_inline int lwt_mutex_init(lwt_mutex_t *mutex,
+			      const lwt_mutexattr_t *mutexattr)
 {
 	return __lwt_mtx_init(&mutex->mtx,
 			      mutexattr ? mutexattr->mtxattr : NULL);
 }
 
-static inline int lwt_mutex_destroy(lwt_mutex_t *mutex)
+lwt_inline int lwt_mutex_destroy(lwt_mutex_t *mutex)
 {
 	return __lwt_mtx_destroy(&mutex->mtx);
 };
 
-static inline int lwt_mutex_lock(lwt_mutex_t *mutex)
+lwt_inline int lwt_mutex_lock(lwt_mutex_t *mutex)
 {
 	return __lwt_mtx_lock(mutex->mtx);
 }
 
-static inline int lwt_mutex_trylock(lwt_mutex_t *mutex)
+lwt_inline int lwt_mutex_trylock(lwt_mutex_t *mutex)
 {
 	return __lwt_mtx_trylock(mutex->mtx);
 }
 
-static inline int lwt_mutex_unlock(lwt_mutex_t *mutex)
+lwt_inline int lwt_mutex_unlock(lwt_mutex_t *mutex)
 {
 	return __lwt_mtx_unlock(mutex->mtx);
 }
@@ -197,34 +199,34 @@ typedef struct {
 	struct __lwt_cndattr_s	*cndattr;
 } lwt_condattr_t;
 
-static inline int lwt_cond_init(lwt_cond_t *cond, lwt_condattr_t *condattr)
+lwt_inline int lwt_cond_init(lwt_cond_t *cond, lwt_condattr_t *condattr)
 {
 	return __lwt_cnd_init(&cond->cnd,
 			      condattr ? condattr->cndattr : NULL);
 }
 
-static inline int lwt_cond_destroy(lwt_cond_t *cond)
+lwt_inline int lwt_cond_destroy(lwt_cond_t *cond)
 {
 	return __lwt_cnd_destroy(&cond->cnd);
 }
 
-static inline int lwt_cond_wait(lwt_cond_t *cond, lwt_mutex_t *mutex)
+lwt_inline int lwt_cond_wait(lwt_cond_t *cond, lwt_mutex_t *mutex)
 {
 	return __lwt_cnd_wait(cond->cnd, mutex->mtx);
 }
 
-static inline int lwt_cond_timedwait(lwt_cond_t *cond, lwt_mutex_t *mutex,
-		       const struct timespec *abstime)
+lwt_inline int lwt_cond_timedwait(lwt_cond_t *cond, lwt_mutex_t *mutex,
+				  const struct timespec *abstime)
 {
 	return __lwt_cnd_timedwait(cond->cnd, mutex->mtx, abstime);
 }
 
-static inline int lwt_cond_signal(lwt_cond_t *cond, lwt_mutex_t *mutex)
+lwt_inline int lwt_cond_signal(lwt_cond_t *cond, lwt_mutex_t *mutex)
 {
 	return __lwt_cnd_signal(cond->cnd, mutex->mtx);
 }
 
-static inline int lwt_cond_broadcast(lwt_cond_t *cond, lwt_mutex_t *mutex)
+lwt_inline int lwt_cond_broadcast(lwt_cond_t *cond, lwt_mutex_t *mutex)
 {
 	return __lwt_cnd_broadcast(cond->cnd, mutex->mtx);
 }
@@ -253,27 +255,27 @@ int __lwt_spin_lock(	struct __lwt_spin_s	*spin);
 int __lwt_spin_trylock(	struct __lwt_spin_s	*spin);
 int __lwt_spin_unlock(	struct __lwt_spin_s	*spin);
 
-static inline int lwt_spin_init(lwt_spinlock_t	*spinlock)
+lwt_inline int lwt_spin_init(lwt_spinlock_t *spinlock)
 {
 	return __lwt_spin_init(&spinlock->spin);
 }
 
-static inline int lwt_spin_destroy(lwt_spinlock_t *spinlock)
+lwt_inline int lwt_spin_destroy(lwt_spinlock_t *spinlock)
 {
 	return __lwt_spin_destroy(&spinlock->spin);
 }
 
-static inline int lwt_spin_lock(lwt_spinlock_t *spinlock)
+lwt_inline int lwt_spin_lock(lwt_spinlock_t *spinlock)
 {
 	return __lwt_spin_lock(&spinlock->spin);
 }
 
-static inline int lwt_spin_trylock(lwt_spinlock_t *spinlock)
+lwt_inline int lwt_spin_trylock(lwt_spinlock_t *spinlock)
 {
 	return __lwt_spin_trylock(&spinlock->spin);
 }
 
-static inline int lwt_spin_unlock(lwt_spinlock_t *spinlock)
+lwt_inline int lwt_spin_unlock(lwt_spinlock_t *spinlock)
 {
 	return __lwt_spin_unlock(&spinlock->spin);
 }
@@ -379,139 +381,133 @@ int __lwt_thrattr_setguardsize(	  lwt_attr_t 		  *attr,
 int __lwt_thrattr_getguardsize(	  const lwt_attr_t	  *attr,
 				  size_t		  *guardsize);
 
-static inline int lwt_attr_init(lwt_attr_t *attr)
+lwt_inline int lwt_attr_init(lwt_attr_t *attr)
 {
 	return __lwt_thrattr_init(attr);
 }
 
-static inline int lwt_attr_destroy(lwt_attr_t *attr)
+lwt_inline int lwt_attr_destroy(lwt_attr_t *attr)
 {
 	return __lwt_thrattr_destroy(attr);
 }
 
 #if 0
-static inline int lwt_attr_setsigmask_np(lwt_attr_t *attr,
-					 const sigset_t *sigmask)
+lwt_inline int lwt_attr_setsigmask_np(lwt_attr_t *attr, const sigset_t *sigmask)
 {
 	return __lwt_thrattr_setsigmask_np(attr, sigmask);
 }
 
-static inline int lwt_attr_getsigmask_np(const lwt_attr_t *attr,
-					 sigset_t *sigmask)
+lwt_inline int lwt_attr_getsigmask_np(const lwt_attr_t *attr, sigset_t *sigmask)
 {
 	return __lwt_thrattr_getsigmask_np(attr, sigmask);
 }
 #endif
 
-static inline int lwt_attr_setdetachstate(lwt_attr_t *attr, int detachstate)
+lwt_inline int lwt_attr_setdetachstate(lwt_attr_t *attr, int detachstate)
 {
 	return __lwt_thrattr_setdetachstate(attr, detachstate);
 }
 
-static inline int lwt_attr_getdetachstate(const lwt_attr_t *attr,
-					  int *detachstate)
+lwt_inline int lwt_attr_getdetachstate(const lwt_attr_t *attr, int *detachstate)
 {
 	return __lwt_thrattr_getdetachstate(attr, detachstate);
 }
 
 #if 0
-static inline int lwt_attr_setaffinity_np(lwt_attr_t *attr,
-				   size_t cpusetsize, const cpu_set_t *cpuset)
+lwt_inline int lwt_attr_setaffinity_np(lwt_attr_t *attr, size_t cpusetsize,
+				       const cpu_set_t *cpuset)
 {
 	return __lwt_thrattr_setaffinity_np(attr, cpusetsize, cpuset);
 }
 
-static inline int lwt_attr_getaffinity_np(const lwt_attr_t *attr,
-				   size_t cpusetsize, cpu_set_t *cpuset)
+lwt_inline int lwt_attr_getaffinity_np(const lwt_attr_t *attr,
+				       size_t cpusetsize, cpu_set_t *cpuset)
 {
 	return __lwt_thrattr_getaffinity_np(attr, cpusetsize, cpuset);
 }
 #endif
 
-static inline int lwt_attr_setscope(lwt_attr_t *attr, int scope)
+lwt_inline int lwt_attr_setscope(lwt_attr_t *attr, int scope)
 {
 	return __lwt_thrattr_setscope(attr, scope);
 }
 
-static inline int lwt_attr_getscope(const lwt_attr_t *attr, int *scope)
+lwt_inline int lwt_attr_getscope(const lwt_attr_t *attr, int *scope)
 {
 	return __lwt_thrattr_getscope(attr, scope);
 }
 
-static inline int lwt_attr_setschedpolicy(lwt_attr_t *attr, int policy)
+lwt_inline int lwt_attr_setschedpolicy(lwt_attr_t *attr, int policy)
 {
 	return __lwt_thrattr_setschedpolicy(attr, policy);
 }
 
-static inline int lwt_attr_getschedpolicy(const lwt_attr_t *attr, int *policy)
+lwt_inline int lwt_attr_getschedpolicy(const lwt_attr_t *attr, int *policy)
 {
 	return __lwt_thrattr_getschedpolicy(attr, policy);
 }
 
-static inline int lwt_attr_setinheritsched(lwt_attr_t *attr, int inheritsched)
+lwt_inline int lwt_attr_setinheritsched(lwt_attr_t *attr, int inheritsched)
 {
 	return __lwt_thrattr_setinheritsched(attr, inheritsched);
 }
 
-static inline int lwt_attr_getinheritsched(const lwt_attr_t *attr,
-					   int *inheritsched)
+lwt_inline int lwt_attr_getinheritsched(const lwt_attr_t *attr,
+					int *inheritsched)
 {
 	return __lwt_thrattr_getinheritsched(attr, inheritsched);
 }
 
-static inline int lwt_attr_setschedparam(lwt_attr_t *attr,
-				  const lwt_sched_param_t *param)
+lwt_inline int lwt_attr_setschedparam(lwt_attr_t *attr,
+				      const lwt_sched_param_t *param)
 {
 	return __lwt_thrattr_setschedparam(attr, param);
 }
 
-static inline int lwt_attr_getschedparam(const lwt_attr_t *attr,
-				  lwt_sched_param_t *param)
+lwt_inline int lwt_attr_getschedparam(const lwt_attr_t *attr,
+				      lwt_sched_param_t *param)
 {
 	return __lwt_thrattr_getschedparam(attr, param);
 }
 
-static inline int lwt_attr_setstack(lwt_attr_t *attr,
-			     void *stackaddr, size_t stacksize)
+lwt_inline int lwt_attr_setstack(lwt_attr_t *attr,
+				 void *stackaddr, size_t stacksize)
 {
 	return __lwt_thrattr_setstack(attr, stackaddr, stacksize);
 }
 
-static inline int lwt_attr_getstack(const lwt_attr_t *attr,
-		      void **stackaddr, size_t *stacksize)
+lwt_inline int lwt_attr_getstack(const lwt_attr_t *attr,
+				 void **stackaddr, size_t *stacksize)
 {
 	return __lwt_thrattr_getstack(attr, stackaddr, stacksize);
 }
 
-static inline int lwt_attr_setstacksize(lwt_attr_t *attr, size_t stacksize)
+lwt_inline int lwt_attr_setstacksize(lwt_attr_t *attr, size_t stacksize)
 {
 	return __lwt_thrattr_setstacksize(attr, stacksize);
 }
 
-static inline int lwt_attr_getstacksize(const lwt_attr_t *attr,
-					size_t *stacksize)
+lwt_inline int lwt_attr_getstacksize(const lwt_attr_t *attr, size_t *stacksize)
 {
 	return __lwt_thrattr_getstacksize(attr, stacksize);
 }
 
-static inline int lwt_attr_setstackaddr(lwt_attr_t *attr, void *stackaddr)
+lwt_inline int lwt_attr_setstackaddr(lwt_attr_t *attr, void *stackaddr)
 {
 	return __lwt_thrattr_setstackaddr(attr, stackaddr);
 }
 
-static inline int lwt_attr_getstackaddr(const lwt_attr_t *attr,
-					void **stackaddr)
+lwt_inline int lwt_attr_getstackaddr(const lwt_attr_t *attr, void **stackaddr)
 {
 	return __lwt_thrattr_getstackaddr(attr, stackaddr);
 }
 
-static inline int lwt_attr_setguardsize(lwt_attr_t *attr, size_t guardsize)
+lwt_inline int lwt_attr_setguardsize(lwt_attr_t *attr, size_t guardsize)
 {
 	return __lwt_thrattr_setguardsize(attr, guardsize);
 }
 
-static inline int lwt_attr_getguardsize(const lwt_attr_t *attr,
-					size_t *guardsize)
+lwt_inline int lwt_attr_getguardsize(const lwt_attr_t *attr, size_t *guardsize)
 {
 	return __lwt_thrattr_getguardsize(attr, guardsize);
 }
@@ -545,8 +541,8 @@ int  __lwt_thr_setcanceltype(	int		  type,
 				int		 *oldtype);
 void __lwt_thr_testcancel(void);
 
-static inline int lwt_create(lwt_t *thread, const lwt_attr_t *attr,
-		      lwt_function_t function, void *arg)
+lwt_inline int lwt_create(lwt_t *thread, const lwt_attr_t *attr,
+			  lwt_function_t function, void *arg)
 {
 	return __lwt_thr_create(thread, attr, function, arg);
 }
@@ -556,27 +552,27 @@ static _Noreturn inline void lwt_exit(void *retval)
 	__lwt_thr_exit(retval);
 }
 
-static inline int lwt_join(lwt_t thread, void **retval)
+lwt_inline int lwt_join(lwt_t thread, void **retval)
 {
 	return __lwt_thr_join(thread, retval);
 }
 
-static inline int lwt_cancel(lwt_t thread)
+lwt_inline int lwt_cancel(lwt_t thread)
 {
 	return __lwt_thr_cancel(thread);
 }
 
-static inline int lwt_setcancelstate(int state, int *oldstate)
+lwt_inline int lwt_setcancelstate(int state, int *oldstate)
 {
 	return __lwt_thr_setcancelstate(state, oldstate);
 }
 
-static inline int lwt_setcanceltype(int type, int *oldtype)
+lwt_inline int lwt_setcanceltype(int type, int *oldtype)
 {
 	return __lwt_thr_setcanceltype(type, oldtype);
 }
 
-static inline void lwt_testcancel(void)
+lwt_inline void lwt_testcancel(void)
 {
 	__lwt_thr_testcancel();
 }
@@ -608,25 +604,98 @@ int   __lwt_setspecific(lwt_key_t	  key,
 			const void	 *pointer);
 void *__lwt_getspecific(lwt_key_t	  key);
 
-static inline int lwt_key_create(lwt_key_t *key,
-				 void (*destr_function) (void *))
+lwt_inline int lwt_key_create(lwt_key_t *key, void (*destr_function) (void *))
 {
 	return __lwt_key_create(key, destr_function);
 }
 
-static inline int lwt_key_delete(lwt_key_t key)
+lwt_inline int lwt_key_delete(lwt_key_t key)
 {
 	return __lwt_key_delete(key);
 }
 
-static inline int lwt_setspecific(lwt_key_t key, const void *pointer)
+lwt_inline int lwt_setspecific(lwt_key_t key, const void *pointer)
 {
 	return __lwt_setspecific(key, pointer);
 }
 
-static inline void *lwt_getspecific(lwt_key_t key)
+lwt_inline void *lwt_getspecific(lwt_key_t key)
 {
 	return __lwt_getspecific(key);
 }
+
+#ifdef __aarch64__ //{
+
+lwt_inline unsigned long lwt_counter_get_before(void)
+{
+	register unsigned long counter;
+	//  Getting cntpct_el0 (Counter-timer Physical Count) causes SIGILL,
+	//  get cntvct_el0 (Counter-timer Virtual Count) instead.
+	__asm__("mrs	%0, cntvct_el0" : "=r"(counter));
+	return counter;
+}
+
+lwt_inline unsigned long lwt_counter_get_after(void)
+{
+	register unsigned long counter;
+	//  Getting cntpct_el0 (Counter-timer Physical Count) causes SIGILL,
+	//  get cntvct_el0 (Counter-timer Virtual Count) instead.
+	__asm__("mrs	%0, cntvct_el0" : "=r"(counter));
+	return counter;
+}
+
+#endif //}
+
+#ifdef __x86_64__ //{
+
+//  The functions:
+//	counter_get_before()
+//	counter_get_after()
+//
+//  are based on sample code from:
+//	How to Benchmark Code Execution Times on Intel
+//	IA-32 and IA-64 Instruction Set Architectures
+//	September 2010
+//
+//	White Paper
+//	Gabriele Paoloni
+//	Linux Kernel/Embedded Software Engineer
+//	Intel Corporation
+//
+//	ia-32-ia-64-benchmark-code-execution-paper.pdf
+//
+//	(section: 3.2.1 The Improved Benchmarking Method)
+//
+//  Note that two functions are required, one to be used before the code to
+//  be measured executes and one to be used after it.  The order of the cpuid
+//  instructions and the rdtsc vs rdtscp (two different instructions) are all
+//  important as described in that document.
+
+lwt_inline unsigned long lwt_counter_get_before(void)
+{
+	unsigned counter_high;
+	unsigned counter_low;
+	__asm__ volatile ("cpuid;"
+			  "rdtsc;"
+			  "mov	%%edx, %0;"
+			  "mov	%%eax, %1" :
+				"=r" (counter_high), "=r" (counter_low) ::
+				"%rax", "%rbx", "%rcx", "%rdx");
+	return (((unsigned long) counter_high) << 32) | counter_low;
+}
+
+lwt_inline unsigned long lwt_counter_get_after(void)
+{
+	unsigned counter_high;
+	unsigned counter_low;
+	__asm__ volatile ("rdtscp;"
+			  "mov	%%edx, %0;"
+			  "mov	%%eax, %1;"
+			  "cpuid" :
+				"=r" (counter_high), "=r" (counter_low) ::
+				"%rax", "%rbx", "%rcx", "%rdx");
+	return (((unsigned long) counter_high) << 32) | counter_low;
+}
+#endif //}
 
 #endif //} __LWT_H_INCLUDED__

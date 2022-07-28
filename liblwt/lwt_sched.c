@@ -574,7 +574,19 @@ static void		 ktimer_tick(cpu_t *cpu);
 ///  invoke one or more non-inline noreturn related functions to ensure the
 //{  compiler puts out-of-line the code that leads to aborting the program.
 
-//{  Implementation and operations on: lllist_t
+//{  Miscellaneous inline functions:
+
+inline_only ureg_t counter_get_before(void)
+{
+	return lwt_counter_get_before();
+}
+
+inline_only ureg_t counter_get_after(void)
+{
+	return lwt_counter_get_after();
+}
+
+//}{  Implementation and operations on: lllist_t
 
 #define LLLIST_GEN_NEXT		1
 #define LLLIST_COUNT_INC_SHIFT	32
