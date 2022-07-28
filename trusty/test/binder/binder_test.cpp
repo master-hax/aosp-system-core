@@ -15,6 +15,7 @@
  */
 
 #include <ITestService.h>
+#include <BnTestService.h>
 #include <android-base/unique_fd.h>
 #include <assert.h>
 #include <binder/RpcSession.h>
@@ -283,6 +284,12 @@ TEST(TrustyBinderThreadsTest, ManySessions) {
         ASSERT_TRUE(threadState[i].status.isOk()) << threadState[i].status;
         ASSERT_EQ(threadState[i].reversed, reversed);
     }
+}
+
+TEST_F(TrustyBinderTest, NestedCall) {
+    auto nastyNester = sp<ITestServiceDelegator>::make(mSrv);
+    auto status = mSrv->nestMe(nastyNester, 10);
+    ASSERT_TRUE(status.isOk()) << status;
 }
 
 }  // namespace android
