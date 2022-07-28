@@ -37,6 +37,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "e3d39498_1eba3745",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 523,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2022-07-28T21:58:09Z",
+      "side": 1,
+      "message": "I don\u0027t have a less-bad idea, do you?",
+      "parentUuid": "ba991be5_4f03e5d8",
+      "revId": "eb75396ff19f9f15167da891f0d9c43a0f6acc8f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "72d1b76d_f4632a1b",
         "filename": "init/service.cpp",
         "patchSetId": 14
@@ -60,6 +78,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "d3251a4e_895310ef",
+        "filename": "init/service.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 259,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2022-07-28T21:58:09Z",
+      "side": 1,
+      "message": "You cannot. This is the siginfo_t for the SIGCHLD, not the signal that caused the child to exit.\n\nman waitpid\n\n\n       si_code\n              Set to one of: CLD_EXITED (child called _exit(2));\n              CLD_KILLED (child killed by signal); CLD_DUMPED (child\n              killed by signal, and dumped core); CLD_STOPPED (child\n              stopped by signal); CLD_TRAPPED (traced child has\n              trapped); or CLD_CONTINUED (child continued by SIGCONT).",
+      "parentUuid": "72d1b76d_f4632a1b",
+      "range": {
+        "startLine": 259,
+        "startChar": 25,
+        "endLine": 259,
+        "endChar": 34
+      },
+      "revId": "eb75396ff19f9f15167da891f0d9c43a0f6acc8f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "b52c1527_609ef8f1",
         "filename": "rootdir/init.zygote32.rc",
         "patchSetId": 14
@@ -71,6 +113,24 @@
       "writtenOn": "2022-07-28T21:51:36Z",
       "side": 1,
       "message": "this seems messy?",
+      "revId": "eb75396ff19f9f15167da891f0d9c43a0f6acc8f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c5687929_78367c5f",
+        "filename": "rootdir/init.zygote32.rc",
+        "patchSetId": 14
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2022-07-28T21:58:09Z",
+      "side": 1,
+      "message": "We need to turn this feature off for Zygote, or have it stuck waiting for all threads to go away before starting an app. That wouldn\u0027t be great.\n\nI originally added a new variable to turn this off, but eugenis@ preferred this approach (in the bionic/  review).",
+      "parentUuid": "b52c1527_609ef8f1",
       "revId": "eb75396ff19f9f15167da891f0d9c43a0f6acc8f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
