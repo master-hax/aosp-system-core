@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "7d6b458c_1e455433",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 11
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1895890
+      },
+      "writtenOn": "2022-07-28T06:06:34Z",
+      "side": 1,
+      "message": "Yes. I am writing tests for this topic.I won\u0027t merge the topic without tests",
+      "parentUuid": "dd24cefc_45cd41b5",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 9,
+        "endChar": 3
+      },
+      "revId": "ce63f86bd0ae1954e84237f7dd1f2b607f8da9cf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "42131824_88ddbe30",
         "filename": "init/init.cpp",
         "patchSetId": 11
@@ -37,6 +61,30 @@
       "writtenOn": "2022-07-27T08:18:51Z",
       "side": 1,
       "message": "ApexService might be misread as \"apexservice\" (which is the service exposed by apexd). How about renaming it to \"StopServicesFromApex(..)\"",
+      "range": {
+        "startLine": 447,
+        "startChar": 11,
+        "endLine": 447,
+        "endChar": 27
+      },
+      "revId": "ce63f86bd0ae1954e84237f7dd1f2b607f8da9cf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "dc146098_141c6165",
+        "filename": "init/init.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 447,
+      "author": {
+        "id": 1895890
+      },
+      "writtenOn": "2022-07-28T06:06:34Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "42131824_88ddbe30",
       "range": {
         "startLine": 447,
         "startChar": 11,
@@ -72,6 +120,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "71bcb812_1538900a",
+        "filename": "init/init.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 451,
+      "author": {
+        "id": 1895890
+      },
+      "writtenOn": "2022-07-28T06:06:34Z",
+      "side": 1,
+      "message": "Ack. Let me think about it.",
+      "parentUuid": "9350ceb0_e7de5b4f",
+      "range": {
+        "startLine": 451,
+        "startChar": 0,
+        "endLine": 451,
+        "endChar": 71
+      },
+      "revId": "ce63f86bd0ae1954e84237f7dd1f2b607f8da9cf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "ef9c8735_55960d29",
         "filename": "init/init.cpp",
         "patchSetId": 11
@@ -83,6 +155,30 @@
       "writtenOn": "2022-07-27T08:18:51Z",
       "side": 1,
       "message": "0ms?",
+      "range": {
+        "startLine": 459,
+        "startChar": 68,
+        "endLine": 459,
+        "endChar": 87
+      },
+      "revId": "ce63f86bd0ae1954e84237f7dd1f2b607f8da9cf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bd5943c1_68b25922",
+        "filename": "init/init.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 459,
+      "author": {
+        "id": 1895890
+      },
+      "writtenOn": "2022-07-28T06:06:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ef9c8735_55960d29",
       "range": {
         "startLine": 459,
         "startChar": 68,
@@ -116,6 +212,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "af2071a2_2a6484bb",
+        "filename": "init/service.h",
+        "patchSetId": 11
+      },
+      "lineNbr": 145,
+      "author": {
+        "id": 1895890
+      },
+      "writtenOn": "2022-07-28T06:06:34Z",
+      "side": 1,
+      "message": "The style is not very consistent in system/core. Look like we try to use filename() for public function and GetFileName() for private. I will change to filename one word",
+      "parentUuid": "9dee89d5_71ae06b9",
+      "range": {
+        "startLine": 145,
+        "startChar": 23,
+        "endLine": 145,
+        "endChar": 32
+      },
+      "revId": "ce63f86bd0ae1954e84237f7dd1f2b607f8da9cf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "0db2f9bd_2f0ff4b6",
@@ -129,6 +249,30 @@
       "writtenOn": "2022-07-27T08:18:51Z",
       "side": 1,
       "message": "nit: probably not a big deal, but is_from_apex() here looks redundant.\n\n`GetApexNameFromFileName(svc-\u003efilename()) \u003d\u003d apex_name` should be enough.\n\nOh, if you want to avoid extra \"string\" instances, GetApexNameFromFileName() can be modified to accept/return std::string_view?",
+      "range": {
+        "startLine": 63,
+        "startChar": 16,
+        "endLine": 64,
+        "endChar": 79
+      },
+      "revId": "ce63f86bd0ae1954e84237f7dd1f2b607f8da9cf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1472c1c5_3339527c",
+        "filename": "init/service_list.h",
+        "patchSetId": 11
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1895890
+      },
+      "writtenOn": "2022-07-28T06:06:34Z",
+      "side": 1,
+      "message": "Yes. GetApexNameFromFileName check if the file name start with \"/apex\"",
+      "parentUuid": "0db2f9bd_2f0ff4b6",
       "range": {
         "startLine": 63,
         "startChar": 16,
