@@ -66,4 +66,9 @@ interface ITestService {
     ByteEnum[] ReverseByteEnum(in ByteEnum[] input, out ByteEnum[] repeated);
     IntEnum[] ReverseIntEnum(in IntEnum[] input, out IntEnum[] repeated);
     LongEnum[] ReverseLongEnum(in LongEnum[] input, out LongEnum[] repeated);
+
+    // Idea is client creates its own instance of ITestService and calls this,
+    // and the server calls 'binder' with (calls - 1) passing itself as 'binder',
+    // going back and forth until calls = 0
+    void nestMe(ITestService binder, int calls);
 }

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include <BnTestService.h>
 #include <ITestService.h>
 #include <android-base/unique_fd.h>
 #include <assert.h>
@@ -27,6 +28,19 @@ namespace android {
 
 constexpr const char kTrustyDefaultDeviceName[] = "/dev/trusty-ipc-dev0";
 
+
+using android::String16;
+using android::binder::Status;
+
+template <typename T>
+Status ReverseArray(const std::vector<T>& input,
+                    std::vector<T>* repeated,
+                    std::vector<T>* _aidl_return) {
+    *repeated = input;
+    *_aidl_return = input;
+    std::reverse(_aidl_return->begin(), _aidl_return->end());
+    return Status::ok();
+}
 class BinderTest : public testing::Test {
   protected:
     void SetUp() override {
@@ -46,7 +60,7 @@ class BinderTest : public testing::Test {
     }
 
     template <typename T, typename U, typename V>
-    void CheckRepeat(binder::Status (ITestService::*func)(T, U*), V in) {
+    void CheckRepeat(Status (ITestService::*func)(T, U*), V in) {
         U out;
         auto status = (mSrv.get()->*func)(in, &out);
         EXPECT_TRUE(status.isOk());
@@ -61,8 +75,8 @@ class BinderTest : public testing::Test {
     }
 
     template <typename T>
-    void CheckReverse(binder::Status (ITestService::*func)(const std::vector<T>&, std::vector<T>*,
-                                                           std::vector<T>*),
+    void CheckReverse(Status (ITestService::*func)(const std::vector<T>&, std::vector<T>*,
+                                                   std::vector<T>*),
                       const std::vector<T>& input) {
         // must be preallocated for Java servers
         std::vector<T> repeated(input.size());
@@ -230,7 +244,7 @@ TEST_F(BinderTest, threads) {
     std::vector<int> ints{42, 1000, 1337};
 
     struct ThreadResult {
-        binder::Status status;
+        Status status;
         std::vector<int> reversed;
     };
 
@@ -253,6 +267,105 @@ TEST_F(BinderTest, threads) {
         ASSERT_TRUE(threadResults[i].status.isOk()) << threadResults[i].status;
         ASSERT_EQ(threadResults[i].reversed, reversed);
     }
+}
+
+class MyBinderCallbackTest : public BnTestService {
+    Status RepeatBoolean(bool token, bool* _aidl_return) override {
+        return Repeat(token, _aidl_return);
+    }
+    Status RepeatByte(int8_t token, int8_t* _aidl_return) override {
+        return Repeat(token, _aidl_return);
+    }
+    Status RepeatChar(char16_t token, char16_t* _aidl_return) override {
+        return Repeat(token, _aidl_return);
+    }
+    Status RepeatInt(int32_t token, int32_t* _aidl_return) override {
+        return Repeat(token, _aidl_return);
+    }
+    Status RepeatLong(int64_t token, int64_t* _aidl_return) override {
+        return Repeat(token, _aidl_return);
+    }
+    Status RepeatFloat(float token, float* _aidl_return) override {
+        return Repeat(token, _aidl_return);
+    }
+    Status RepeatDouble(double token, double* _aidl_return) override {
+        return Repeat(token, _aidl_return);
+    }
+    Status RepeatString(const String16& token, String16* _aidl_return) override {
+        return Repeat(token, _aidl_return);
+    }
+    Status RepeatByteEnum(ByteEnum token, ByteEnum* _aidl_return) override {
+        return Repeat(token, _aidl_return);
+    }
+    Status RepeatIntEnum(IntEnum token, IntEnum* _aidl_return) override {
+        return Repeat(token, _aidl_return);
+    }
+    Status RepeatLongEnum(LongEnum token, LongEnum* _aidl_return) override {
+        return Repeat(token, _aidl_return);
+    }
+
+    Status ReverseBoolean(const std::vector<bool>& input, std::vector<bool>* repeated,
+                          std::vector<bool>* _aidl_return) override {
+        return ReverseArray(input, repeated, _aidl_return);
+    }
+    Status ReverseByte(const std::vector<uint8_t>& input, std::vector<uint8_t>* repeated,
+                       std::vector<uint8_t>* _aidl_return) override {
+        return ReverseArray(input, repeated, _aidl_return);
+    }
+    Status ReverseChar(const std::vector<char16_t>& input, std::vector<char16_t>* repeated,
+                       std::vector<char16_t>* _aidl_return) override {
+        return ReverseArray(input, repeated, _aidl_return);
+    }
+    Status ReverseInt(const std::vector<int32_t>& input, std::vector<int32_t>* repeated,
+                      std::vector<int32_t>* _aidl_return) override {
+        return ReverseArray(input, repeated, _aidl_return);
+    }
+    Status ReverseLong(const std::vector<int64_t>& input, std::vector<int64_t>* repeated,
+                       std::vector<int64_t>* _aidl_return) override {
+        return ReverseArray(input, repeated, _aidl_return);
+    }
+    Status ReverseFloat(const std::vector<float>& input, std::vector<float>* repeated,
+                        std::vector<float>* _aidl_return) override {
+        return ReverseArray(input, repeated, _aidl_return);
+    }
+    Status ReverseDouble(const std::vector<double>& input, std::vector<double>* repeated,
+                         std::vector<double>* _aidl_return) override {
+        return ReverseArray(input, repeated, _aidl_return);
+    }
+    Status ReverseString(const std::vector<String16>& input, std::vector<String16>* repeated,
+                         std::vector<String16>* _aidl_return) override {
+        return ReverseArray(input, repeated, _aidl_return);
+    }
+    Status ReverseByteEnum(const std::vector<ByteEnum>& input, std::vector<ByteEnum>* repeated,
+                           std::vector<ByteEnum>* _aidl_return) override {
+        return ReverseArray(input, repeated, _aidl_return);
+    }
+    Status ReverseIntEnum(const std::vector<IntEnum>& input, std::vector<IntEnum>* repeated,
+                          std::vector<IntEnum>* _aidl_return) override {
+        return ReverseArray(input, repeated, _aidl_return);
+    }
+    Status ReverseLongEnum(const std::vector<LongEnum>& input, std::vector<LongEnum>* repeated,
+                           std::vector<LongEnum>* _aidl_return) override {
+        return ReverseArray(input, repeated, _aidl_return);
+    }
+
+    Status nestMe(const sp<ITestService>& binder, int count) override {
+        if (count <= 0) return Status::ok();
+        return binder->nestMe(this, count - 1);
+    }
+
+  private:
+    template <typename T>
+    Status Repeat(const T& in, T* out) {
+        *out = in;
+        return Status::ok();
+    }
+};
+
+TEST_F(BinderTest, nestedCall) {
+    auto nastyNester = sp<MyBinderCallbackTest>::make();
+    auto status = mSrv->nestMe(nastyNester, 10);
+    ASSERT_TRUE(status.isOk()) << status;
 }
 
 }  // namespace android
