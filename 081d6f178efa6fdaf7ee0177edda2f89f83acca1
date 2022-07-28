@@ -52,6 +52,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "02b29766_cdf84471",
+        "filename": "trusty/test/binder/binder_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 264,
+      "author": {
+        "id": 1948820
+      },
+      "writtenOn": "2022-07-28T21:18:47Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "eea91c20_49c2e3f1",
+      "revId": "081d6f178efa6fdaf7ee0177edda2f89f83acca1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "397b9295_3c037438",
@@ -100,6 +118,24 @@
       "writtenOn": "2022-07-28T20:32:44Z",
       "side": 1,
       "message": "You should check `serv-\u003enestMe(...).isOk()`. It\u0027s also useful to print the status, so one good way to do this is:\n```\nASSERT_TRUE(status.isOk()) \u003c\u003c status;\n```",
+      "revId": "081d6f178efa6fdaf7ee0177edda2f89f83acca1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d7bdd654_23aa1324",
+        "filename": "trusty/test/binder/binder_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 278,
+      "author": {
+        "id": 1948820
+      },
+      "writtenOn": "2022-07-28T21:18:47Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b3119794_0af5bb96",
       "revId": "081d6f178efa6fdaf7ee0177edda2f89f83acca1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
