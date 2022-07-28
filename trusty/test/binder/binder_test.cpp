@@ -15,6 +15,7 @@
  */
 
 #include <ITestService.h>
+#include <BnTestService.h>
 #include <android-base/unique_fd.h>
 #include <assert.h>
 #include <binder/RpcSession.h>
@@ -24,6 +25,7 @@
 #include <trusty/tipc.h>
 
 namespace android {
+
 
 constexpr const char kTrustyDefaultDeviceName[] = "/dev/trusty-ipc-dev0";
 
@@ -253,6 +255,19 @@ TEST_F(BinderTest, threads) {
         ASSERT_TRUE(threadResults[i].status.isOk()) << threadResults[i].status;
         ASSERT_EQ(threadResults[i].reversed, reversed);
     }
+}
+
+class MyBinderCallbackTest : public BnTestService {
+    binder::Status nestMe(const sp<ITestService>& binder, int count) override {
+        if (count <= 0) return binder::Status::ok();
+        return binder->nestMe(this, count - 1);
+    }
+};
+
+TEST_F(BinderTest, nestedCall) {
+    auto nastyNester = sp<MyBinderCallbackTest>::make();
+    auto status = mSrv->nestMe(nastyNester, 10);
+    ASSERT_TRUE(status.isOk()) << status;
 }
 
 }  // namespace android
