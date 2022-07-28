@@ -22,6 +22,30 @@
       },
       "revId": "155bba8b0cf5371ff7b11f77fcb67b82afb6c031",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6a4d010d_5a710b87",
+        "filename": "gatekeeperd/gatekeeperd.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 1887766
+      },
+      "writtenOn": "2022-07-28T21:56:31Z",
+      "side": 0,
+      "message": "Added logic to support HIDL service. if Aidl service is not present then gatekeeperd uses HIDL service.",
+      "parentUuid": "5a267589_7eb1bb11",
+      "range": {
+        "startLine": 69,
+        "startChar": 0,
+        "endLine": 69,
+        "endChar": 46
+      },
+      "revId": "155bba8b0cf5371ff7b11f77fcb67b82afb6c031",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }

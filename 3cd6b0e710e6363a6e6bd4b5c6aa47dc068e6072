@@ -22,6 +22,30 @@
       },
       "revId": "3cd6b0e710e6363a6e6bd4b5c6aa47dc068e6072",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f9c65e6f_f97547f9",
+        "filename": "gatekeeperd/Android.bp",
+        "patchSetId": 3
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 1887766
+      },
+      "writtenOn": "2022-07-28T21:56:31Z",
+      "side": 1,
+      "message": "Fixed.",
+      "parentUuid": "94d349c6_bd58a1e8",
+      "range": {
+        "startLine": 46,
+        "startChar": 0,
+        "endLine": 46,
+        "endChar": 1
+      },
+      "revId": "3cd6b0e710e6363a6e6bd4b5c6aa47dc068e6072",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
