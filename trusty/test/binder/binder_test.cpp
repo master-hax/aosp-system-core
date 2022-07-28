@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include <BnTestService.h>
 #include <ITestService.h>
 #include <android-base/unique_fd.h>
 #include <assert.h>
@@ -26,6 +27,10 @@
 namespace android {
 
 constexpr const char kTrustyDefaultDeviceName[] = "/dev/trusty-ipc-dev0";
+
+
+using android::String16;
+using android::binder::Status;
 
 class BinderTest : public testing::Test {
   protected:
@@ -46,7 +51,7 @@ class BinderTest : public testing::Test {
     }
 
     template <typename T, typename U, typename V>
-    void CheckRepeat(binder::Status (ITestService::*func)(T, U*), V in) {
+    void CheckRepeat(Status (ITestService::*func)(T, U*), V in) {
         U out;
         auto status = (mSrv.get()->*func)(in, &out);
         EXPECT_TRUE(status.isOk());
@@ -61,8 +66,8 @@ class BinderTest : public testing::Test {
     }
 
     template <typename T>
-    void CheckReverse(binder::Status (ITestService::*func)(const std::vector<T>&, std::vector<T>*,
-                                                           std::vector<T>*),
+    void CheckReverse(Status (ITestService::*func)(const std::vector<T>&, std::vector<T>*,
+                                                   std::vector<T>*),
                       const std::vector<T>& input) {
         // must be preallocated for Java servers
         std::vector<T> repeated(input.size());
@@ -230,7 +235,7 @@ TEST_F(BinderTest, threads) {
     std::vector<int> ints{42, 1000, 1337};
 
     struct ThreadResult {
-        binder::Status status;
+        Status status;
         std::vector<int> reversed;
     };
 
@@ -253,6 +258,12 @@ TEST_F(BinderTest, threads) {
         ASSERT_TRUE(threadResults[i].status.isOk()) << threadResults[i].status;
         ASSERT_EQ(threadResults[i].reversed, reversed);
     }
+}
+
+TEST_F(BinderTest, nestedCall) {
+    auto nastyNester = sp<ITestServiceDelegator>::make(mSrv);
+    auto status = mSrv->nestMe(nastyNester, 10);
+    ASSERT_TRUE(status.isOk()) << status;
 }
 
 }  // namespace android
