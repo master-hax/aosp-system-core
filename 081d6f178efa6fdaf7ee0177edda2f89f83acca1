@@ -16,6 +16,40 @@
       "message": "nit: `camelCase` for the test name (for consistency).",
       "revId": "081d6f178efa6fdaf7ee0177edda2f89f83acca1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "397b9295_3c037438",
+        "filename": "trusty/test/binder/binder_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 265,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2022-07-28T20:32:44Z",
+      "side": 1,
+      "message": "This isn\u0027t calling back into the client at all. What we need here is a binder that the client implements (as a callback) and passes to the service. See https://cs.android.com/android/platform/superproject/+/master:frameworks/native/libs/binder/tests/binderRpcTest.cpp;l\u003d996 and https://cs.android.com/android/platform/superproject/+/master:frameworks/native/libs/binder/tests/binderRpcTestCommon.h;l\u003d187 for an example.\n\nBasically, the client would create its own binder here with one method, pass the binder to the service who would then call that method. In the links above, the client calls the server\u0027s `doCallback` which starts a client-\u003eservice transaction, then `doCallback` in turn calls the client\u0027s `IBinderRpcCallback::sendCallback` which starts a reverse (nested) service-\u003eclient transaction.",
+      "revId": "081d6f178efa6fdaf7ee0177edda2f89f83acca1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b3119794_0af5bb96",
+        "filename": "trusty/test/binder/binder_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 278,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2022-07-28T20:32:44Z",
+      "side": 1,
+      "message": "You should check `serv-\u003enestMe(...).isOk()`. It\u0027s also useful to print the status, so one good way to do this is:\n```\nASSERT_TRUE(status.isOk()) \u003c\u003c status;\n```",
+      "revId": "081d6f178efa6fdaf7ee0177edda2f89f83acca1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
