@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "c0bccf87_395871fb",
+        "filename": "fastboot/device/usb.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2022-07-28T20:48:35Z",
+      "side": 1,
+      "message": "There\u0027s no visible performance impact when comparing queue depth of 16 vs 64.",
+      "parentUuid": "1a47f6ec_b2d6f0e2",
+      "revId": "057e0893fae2a83a2359ae31bc79985c48d86747",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "ae7ef2d5_5c887ebb",
@@ -53,6 +71,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "63957f33_d39e3694",
+        "filename": "fastboot/device/usb.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 256,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2022-07-28T20:48:35Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "57d37c68_121e4bb6",
+      "revId": "057e0893fae2a83a2359ae31bc79985c48d86747",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "963ee8c3_47848804",
@@ -84,6 +120,24 @@
       "side": 1,
       "message": "iirc we also had trouble with Macs in particular over-estimating their own abilities in that regard (in the adb context)?",
       "parentUuid": "963ee8c3_47848804",
+      "revId": "057e0893fae2a83a2359ae31bc79985c48d86747",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "954af308_8205a74b",
+        "filename": "fastboot/device/usb_client.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2022-07-28T20:48:35Z",
+      "side": 1,
+      "message": "Reverted to original value, 16.",
+      "parentUuid": "4a1940b6_77359f6d",
       "revId": "057e0893fae2a83a2359ae31bc79985c48d86747",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
