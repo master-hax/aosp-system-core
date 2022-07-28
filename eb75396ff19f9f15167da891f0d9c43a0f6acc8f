@@ -16,6 +16,63 @@
       "message": "PTAL",
       "revId": "eb75396ff19f9f15167da891f0d9c43a0f6acc8f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ba991be5_4f03e5d8",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 523,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-07-28T21:51:36Z",
+      "side": 1,
+      "message": "system properties seems like a bad idea?",
+      "revId": "eb75396ff19f9f15167da891f0d9c43a0f6acc8f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "72d1b76d_f4632a1b",
+        "filename": "init/service.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 259,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-07-28T21:51:36Z",
+      "side": 1,
+      "message": "if you have this, why can\u0027t you get the sicode from it?",
+      "range": {
+        "startLine": 259,
+        "startChar": 25,
+        "endLine": 259,
+        "endChar": 34
+      },
+      "revId": "eb75396ff19f9f15167da891f0d9c43a0f6acc8f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b52c1527_609ef8f1",
+        "filename": "rootdir/init.zygote32.rc",
+        "patchSetId": 14
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-07-28T21:51:36Z",
+      "side": 1,
+      "message": "this seems messy?",
+      "revId": "eb75396ff19f9f15167da891f0d9c43a0f6acc8f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
