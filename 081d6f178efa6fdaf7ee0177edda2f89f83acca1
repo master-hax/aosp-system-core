@@ -3,6 +3,40 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "1c0e3cc8_bfb27ce6",
+        "filename": "trusty/test/binder/binder_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2022-07-28T20:41:08Z",
+      "side": 1,
+      "message": "This is the super-class for all the tests below that start with `TEST_F(BinderTest` and does common set-up and tear-down, but it doesn\u0027t implement the actual `ITestService` interface. It could, but there are easier ways to do what we need without adding another parent.",
+      "revId": "081d6f178efa6fdaf7ee0177edda2f89f83acca1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c87f18b6_5418277a",
+        "filename": "trusty/test/binder/binder_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2022-07-28T20:41:08Z",
+      "side": 1,
+      "message": "This object doesn\u0027t implement `ITestService`, so this method wouldn\u0027t get called by the server. I think you need to make a separate `MyCallbackTestService` class.\n\nAlso wherever you move `nestMe`, `mSrv` here needs to be `this` (like the original code at https://cs.android.com/android/platform/superproject/+/master:frameworks/native/libs/binder/tests/binderRpcTestCommon.h;l\u003d259).",
+      "revId": "081d6f178efa6fdaf7ee0177edda2f89f83acca1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "eea91c20_49c2e3f1",
         "filename": "trusty/test/binder/binder_test.cpp",
         "patchSetId": 2
@@ -31,6 +65,24 @@
       "writtenOn": "2022-07-28T20:32:44Z",
       "side": 1,
       "message": "This isn\u0027t calling back into the client at all. What we need here is a binder that the client implements (as a callback) and passes to the service. See https://cs.android.com/android/platform/superproject/+/master:frameworks/native/libs/binder/tests/binderRpcTest.cpp;l\u003d996 and https://cs.android.com/android/platform/superproject/+/master:frameworks/native/libs/binder/tests/binderRpcTestCommon.h;l\u003d187 for an example.\n\nBasically, the client would create its own binder here with one method, pass the binder to the service who would then call that method. In the links above, the client calls the server\u0027s `doCallback` which starts a client-\u003eservice transaction, then `doCallback` in turn calls the client\u0027s `IBinderRpcCallback::sendCallback` which starts a reverse (nested) service-\u003eclient transaction.",
+      "revId": "081d6f178efa6fdaf7ee0177edda2f89f83acca1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "da343511_2e5b8915",
+        "filename": "trusty/test/binder/binder_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 265,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2022-07-28T20:41:08Z",
+      "side": 1,
+      "message": "I realized alternatively you could use the current classes, and just create a `MyCallbackTestService` class here that implements `nestMe` and use that (maybe its other methods just return `INVALID_OPERATION`).",
+      "parentUuid": "397b9295_3c037438",
       "revId": "081d6f178efa6fdaf7ee0177edda2f89f83acca1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
