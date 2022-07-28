@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "39f5b0f0_80d8918a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 13
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1895890
+      },
+      "writtenOn": "2022-07-28T06:59:13Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "06601458_8e10a64a",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 9,
+        "endChar": 3
+      },
+      "revId": "df67d070008ccf5e388bc126feaf18837c12820b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "bf033396_7776adc8",
@@ -37,6 +61,30 @@
       "writtenOn": "2022-07-27T08:18:43Z",
       "side": 1,
       "message": "2022",
+      "range": {
+        "startLine": 2,
+        "startChar": 17,
+        "endLine": 2,
+        "endChar": 21
+      },
+      "revId": "df67d070008ccf5e388bc126feaf18837c12820b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ef598b8e_1eceb03c",
+        "filename": "init/apex_init_util.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1895890
+      },
+      "writtenOn": "2022-07-28T06:59:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "bf033396_7776adc8",
       "range": {
         "startLine": 2,
         "startChar": 17,
@@ -93,6 +141,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "fbd7b546_9bdafb5f",
+        "filename": "init/apex_init_util.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 1895890
+      },
+      "writtenOn": "2022-07-28T06:59:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ef2f49be_b03635e7",
+      "range": {
+        "startLine": 68,
+        "startChar": 0,
+        "endLine": 68,
+        "endChar": 69
+      },
+      "revId": "df67d070008ccf5e388bc126feaf18837c12820b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "7e99f304_479fe3d9",
@@ -116,6 +188,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "78019303_ef3cc3ce",
+        "filename": "init/apex_init_util.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1895890
+      },
+      "writtenOn": "2022-07-28T06:59:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7e99f304_479fe3d9",
+      "range": {
+        "startLine": 76,
+        "startChar": 0,
+        "endLine": 76,
+        "endChar": 52
+      },
+      "revId": "df67d070008ccf5e388bc126feaf18837c12820b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "b2a5f3d5_6d07e17a",
@@ -129,6 +225,30 @@
       "writtenOn": "2022-07-27T08:18:43Z",
       "side": 1,
       "message": "2022",
+      "range": {
+        "startLine": 2,
+        "startChar": 17,
+        "endLine": 2,
+        "endChar": 21
+      },
+      "revId": "df67d070008ccf5e388bc126feaf18837c12820b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "411b23ef_0c7fa5a8",
+        "filename": "init/apex_init_util.h",
+        "patchSetId": 13
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1895890
+      },
+      "writtenOn": "2022-07-28T06:59:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b2a5f3d5_6d07e17a",
       "range": {
         "startLine": 2,
         "startChar": 17,
@@ -185,6 +305,54 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "53bb89aa_f4459be0",
+        "filename": "init/apex_init_util.h",
+        "patchSetId": 13
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1895890
+      },
+      "writtenOn": "2022-07-28T06:59:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f907616f_232a4ac5",
+      "range": {
+        "startLine": 29,
+        "startChar": 13,
+        "endLine": 29,
+        "endChar": 31
+      },
+      "revId": "df67d070008ccf5e388bc126feaf18837c12820b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ab4bc7ba_d7fd6984",
+        "filename": "init/apex_init_util.h",
+        "patchSetId": 13
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1895890
+      },
+      "writtenOn": "2022-07-28T06:59:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "989bebd2_3ebae7d4",
+      "range": {
+        "startLine": 29,
+        "startChar": 53,
+        "endLine": 29,
+        "endChar": 56
+      },
+      "revId": "df67d070008ccf5e388bc126feaf18837c12820b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "342145b4_44acec30",
@@ -208,6 +376,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "617945be_66081b5f",
+        "filename": "init/init.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 516,
+      "author": {
+        "id": 1895890
+      },
+      "writtenOn": "2022-07-28T06:59:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "342145b4_44acec30",
+      "range": {
+        "startLine": 516,
+        "startChar": 4,
+        "endLine": 516,
+        "endChar": 9
+      },
+      "revId": "df67d070008ccf5e388bc126feaf18837c12820b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "85eae564_21cdf71e",
@@ -221,6 +413,30 @@
       "writtenOn": "2022-07-27T08:18:43Z",
       "side": 1,
       "message": "Can we move these two to new apex util?",
+      "range": {
+        "startLine": 111,
+        "startChar": 0,
+        "endLine": 117,
+        "endChar": 66
+      },
+      "revId": "df67d070008ccf5e388bc126feaf18837c12820b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "36b2e69c_c7df4e7c",
+        "filename": "init/util.h",
+        "patchSetId": 13
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 1895890
+      },
+      "writtenOn": "2022-07-28T06:59:13Z",
+      "side": 1,
+      "message": "Originally, I put these in apex util. Then I realized util is defined in init_common_sources, which is used in more use cases. While apex_init_util is in init_device_sources (same as init.cpp). To put them into one files, I have to introduce more dependencies either between init_device_sources and other module, or between init_device_sources and init_common_source. I don\u0027t know if that worth it.",
+      "parentUuid": "85eae564_21cdf71e",
       "range": {
         "startLine": 111,
         "startChar": 0,
