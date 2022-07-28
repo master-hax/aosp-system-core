@@ -50,6 +50,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "63d6313f_85a8e5cc",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 11
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2022-07-28T06:32:54Z",
+      "side": 1,
+      "message": "Cool!",
+      "parentUuid": "7d6b458c_1e455433",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 9,
+        "endChar": 3
+      },
+      "revId": "ce63f86bd0ae1954e84237f7dd1f2b607f8da9cf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "42131824_88ddbe30",
         "filename": "init/init.cpp",
         "patchSetId": 11
@@ -226,6 +250,30 @@
       "side": 1,
       "message": "The style is not very consistent in system/core. Look like we try to use filename() for public function and GetFileName() for private. I will change to filename one word",
       "parentUuid": "9dee89d5_71ae06b9",
+      "range": {
+        "startLine": 145,
+        "startChar": 23,
+        "endLine": 145,
+        "endChar": 32
+      },
+      "revId": "ce63f86bd0ae1954e84237f7dd1f2b607f8da9cf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2c955793_f57eb158",
+        "filename": "init/service.h",
+        "patchSetId": 11
+      },
+      "lineNbr": 145,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2022-07-28T06:32:54Z",
+      "side": 1,
+      "message": "Agreed. Looking in system/core, I can sense the long journey ;-)",
+      "parentUuid": "af2071a2_2a6484bb",
       "range": {
         "startLine": 145,
         "startChar": 23,
