@@ -48,6 +48,28 @@ typedef struct __lwt_mtx_s	mtx_t;
 typedef struct __lwt_cnd_s	cnd_t;
 typedef struct __lwt_spin_s	spin_t;
 
+//  API numbers used for optional statistics and tracing
+
+typedef enum {
+	API_MTX_INIT		= 0,
+	API_MTX_LOCK		= 1,
+	API_MTX_TRYLOCK		= 2,
+	API_MTX_UNLOCK		= 3,
+	API_CND_INIT		= 4,
+	API_CND_WAIT		= 5,
+	API_CND_TIMEDWAIT	= 6,
+	API_CND_SIGNAL		= 7,
+	API_CND_BROADCAST	= 8,
+	API_THR_CREATE		= 9,
+	API_THR_EXIT		= 10,
+	API_THR_JOIN		= 11,
+	API_THR_CANCEL		= 12,
+	API_THR_SETCANCELSTATE	= 13,
+	API_THR_SETCANCELTYPE	= 14,
+	API_THR_TESTCANCEL	= 15,
+} api_t;
+
+
 //  Generic lockless list with support for insertion and removal from
 //  the head, the element in the list must have space for a uptr_t and
 //  be uptr_t aligned.

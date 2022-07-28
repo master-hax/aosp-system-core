@@ -26,7 +26,8 @@ DEFS="$DEFS -DLWT_PTR_BITS=64"
 # DEFS="$DEFS -DLWT_FIXED_ADDRESSES"
 # DEFS="$DEFS -DLWT_CTX_ARRAY"
 
-CFLAGS='-fomit-frame-pointer -pthread -Werror -Wall'
+WFLAGS='-Werror -Wall'
+CFLAGS='-fomit-frame-pointer -pthread'
 CFLAGS="$CFLAGS -fdiagnostics-color=never"
 CFLAGS="$CFLAGS -static"
 
@@ -82,17 +83,17 @@ run()
 	"$@"
 }
 
-run $CC $DEFS $CFLAGS lwt_genassym.c -o gen/lwt_genassym
+run $CC $DEFS $WFLAGS $CFLAGS lwt_genassym.c -o gen/lwt_genassym
 run gen/lwt_genassym | pr -t -e32 > lwt_asm_gen.h
 
-run $CC $DEFS $CFLAGS -S -O3 lwt_sched.c -o gen/lwt_sched.s
+run $CC $DEFS $WFLAGS $CFLAGS -S -O3 lwt_sched.c -o gen/lwt_sched.s
 
-run $CC $DEFS $CFLAGS -c -O3 lwt_sched.c -o gen/lwt_sched.o
+run $CC $DEFS $WFLAGS $CFLAGS -c -O3 lwt_sched.c -o gen/lwt_sched.o
 
 run $DUMP gen/lwt_sched.o -d > gen/lwt_sched.dump-$ARCH
 
 run $CPP $DEFS lwt_arch.S > gen/lwt_arch_gen.s
-run $CC $DEFS $CFLAGS -c gen/lwt_arch_gen.s -o gen/lwt_arch_gen.o
+run $CC $DEFS $WFLAGS $CFLAGS -c gen/lwt_arch_gen.s -o gen/lwt_arch_gen.o
 run $DUMP -d gen/lwt_arch_gen.o > gen/lwt_arch_gen.dump-$ARCH
 
 if [ $UNAME_M != aarch64 ] ; then
@@ -104,7 +105,14 @@ if [ $UNAME_M != aarch64 ] ; then
 	} | tee gen/lwt-syms-$ARCH
 fi
 
-run $CC $DEFS $CFLAGS -c -O3 test-lwt.c -o gen/test-lwt.o -lrt
+run $CC $DEFS $WFLAGS $CFLAGS -c -O3 test-lwt.c -o gen/test-lwt.o -lrt
+
+if [ "$ARCH" = arm64 ] ; then
+	#  Not using $WFLAGS here because unused variables are declared and
+	#  initialized but not used from the compiler's perspective
+
+	run $CC $DEFS $CFLAGS -DLWT_DEBUG -g -o gen/test-ctx-g-$ARCH test-ctx.c lwt_sched.c gen/lwt_arch_gen.s -lrt
+fi
 
 BINARIES=''
 
@@ -122,7 +130,7 @@ for PROG in test-lwt ; do
 				comp_opt="${COMP_OPT/ /}"
 				BIN="${PROG}${hw}${build}${comp_opt}-${ARCH}"
 				BINARIES="$BINARIES ./gen/$BIN"
-				run $CC $DEFS $CFLAGS \
+				run $CC $DEFS $WFLAGS $CFLAGS \
 					$HW \
 					$BUILD \
 					$COMP_OPT \
@@ -138,14 +146,14 @@ done
 
 echo $BINARIES | tr ' ' '\012' > gen/binaries-$ARCH
 
-run $CC $DEFS $CFLAGS -DLWT_DEBUG -g -o gen/test_schedq-g-$ARCH test_schedq.c gen/lwt_arch_gen.s -lrt
-run $CC $DEFS $CFLAGS -DLWT_DEBUG -O3 -o gen/test_schedq-O3-$ARCH test_schedq.c gen/lwt_arch_gen.s -lrt
-run $CC $DEFS $CFLAGS -DLWT_DEBUG -O3 -g -o gen/test_schedq-O3-g-$ARCH test_schedq.c gen/lwt_arch_gen.s -lrt
+run $CC $DEFS $WFLAGS $CFLAGS -DLWT_DEBUG -g -o gen/test_schedq-g-$ARCH test_schedq.c gen/lwt_arch_gen.s -lrt
+run $CC $DEFS $WFLAGS $CFLAGS -DLWT_DEBUG -O3 -o gen/test_schedq-O3-$ARCH test_schedq.c gen/lwt_arch_gen.s -lrt
+run $CC $DEFS $WFLAGS $CFLAGS -DLWT_DEBUG -O3 -g -o gen/test_schedq-O3-g-$ARCH test_schedq.c gen/lwt_arch_gen.s -lrt
 
 if [ "$ARCH" = x64 ] ; then
-	run clang -std=c17 $DEFS $CFLAGS -DLWT_DEBUG -g -o gen/test_schedq-clang-g-$ARCH test_schedq.c gen/lwt_arch_gen.s -lrt
+	run clang -std=c17 $DEFS $WFLAGS $CFLAGS -DLWT_DEBUG -g -o gen/test_schedq-clang-g-$ARCH test_schedq.c gen/lwt_arch_gen.s -lrt
 fi
 
-# $CXX -std=c++17 $DEFS $CFLAGS -DLWT_DEBUG -g -o gen/test_schedq-c++-g-$ARCH test_schedq.c gen/lwt_arch_gen.s
+# $CXX -std=c++17 $DEFS $WFLAGS $CFLAGS -DLWT_DEBUG -g -o gen/test_schedq-c++-g-$ARCH test_schedq.c gen/lwt_arch_gen.s
 
-run $CC $DEFS $CFLAGS -O3 -g -o gen/test-pthread-O3-g-$ARCH test-pthread.c
+run $CC $DEFS $WFLAGS $CFLAGS -O3 -g -o gen/test-pthread-O3-g-$ARCH test-pthread.c

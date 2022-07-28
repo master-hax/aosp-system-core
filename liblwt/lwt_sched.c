@@ -17,6 +17,14 @@
 /* clang-format off */
 /* see the comment in lwt_sched.h about issues and the many clang-format bugs */
 
+#if 0 // TODO
+......
+- ctx_save and load should assert if not running an api
+- ctx_t should be on the stack
+- context_t should point to sigcontext (on the stack)
+......
+#endif
+
 #include "lwt_config.h"
 
 #include <sys/mman.h>
@@ -59,9 +67,9 @@
 //	debug(expr) are only compiled in if LWT_DEBUG is defined
 //	TODO() is for code that has not been written yet
 
-const char *volatile __lwt_assert_file;
-const char *volatile __lwt_assert_msg;
-int volatile __lwt_assert_line;
+static const char *volatile __lwt_assert_file;
+static const char *volatile __lwt_assert_msg;
+static int volatile __lwt_assert_line;
 
 static noreturn void lwt_assert_fail(const char *file, int line,
 				     const char *msg)
@@ -457,27 +465,10 @@ static cpu_t *cpuptrs[8] = {
 #define	LWT_HIERARCHICAL_HW
 #endif
 
-//}{  Various function like macros.
-
-//  Outline versions for use within this file map to the __lwt_*() functions
-//  to avoid having two versions of them expanded in this file.
-
-#define mtx_create_outline(mtxpp, mtxattr)	__lwt_mtx_init(mtxpp, mtxattr)
-#define mtx_destroy_outline(mtxpp)		__lwt_mtx_destroy(mtxpp)
-
-#define	cnd_create_outline(cndpp, cndattr)	__lwt_cnd_init(cndpp, cndattr)
-#define	cnd_destroy_outline(cndpp)		__lwt_cnd_destroy(cndpp)
-
 
 //}  Prototypes.
 //{  Only when required because their order in this file.
 
-int			 __lwt_mtx_init(struct __lwt_mtx_s **mtxpp,
-					const struct __lwt_mtxattr_s *mtxattr);
-int			 __lwt_mtx_destroy(struct __lwt_mtx_s **mtxpp);
-int			 __lwt_cnd_init(struct __lwt_cnd_s **cndpp,
-					const struct __lwt_cndattr_s *cndattr);
-int			 __lwt_cnd_destroy(struct __lwt_cnd_s **cndpp);
 noreturn void		 __lwt_start_glue(void);
 noreturn void		 __lwt_thr_exit(void *retval);
 
@@ -565,7 +556,7 @@ static core_t		*core_from_thrattr(const thrattr_t *thrattr);
 
 static thr_t		*schedq_get(schedq_t *schedq, ureg_t sqix);
 
-static alloc_value_t	 arena_alloc(arena_t *arena);
+static alloc_value_t	 arena_alloc(arena_t *arena, thr_t *thr);
 static void		 arena_free(arena_t *arena, void *mem);
 
 static void		 core_run(core_t *core);
@@ -576,12 +567,6 @@ static cpu_t		*cpu_current(void);
 #endif //}
 
 static void		 ktimer_tick(cpu_t *cpu);
-
-inline_only thr_t *thr_current(void)
-{
-	cpu_t *cpu = cpu_current();
-	return cpu->cpu_running_thr;
-}
 
 //}  This section contains entry points into this module and their supporting
 ///  functions inlined into the corresponding __lwt_() functions at the end of
@@ -699,6 +684,11 @@ inline_only llelem_t *lllist_remove(lllist_t *list)
 			return elem;
 		old = pre;
 	}
+}
+
+inline_only void *arena_tryalloc(arena_t *arena)
+{
+	return lllist_remove(&arena->arena_lllist);
 }
 
 
@@ -943,9 +933,14 @@ inline_only int mtxattr_gettype(const mtxattr_t *mtxattr, int *kind)
 
 //}{  mtx_*() functions
 
-inline_only alloc_value_t mtx_alloc(void)
+inline_only alloc_value_t mtx_alloc(thr_t *thr)
 {
-	return arena_alloc(&mtx_arena);
+	return arena_alloc(&mtx_arena, thr);
+}
+
+inline_only mtx_t *mtx_tryalloc(void)
+{
+	return arena_tryalloc(&mtx_arena);
 }
 
 inline_only void mtx_free(mtx_t *mtx)
@@ -988,25 +983,12 @@ inline_only thr_t *mtx_lllist_to_thr(ureg_t mtxlllist)
 	return thr_from_index(mtxlllist);
 }
 
-inline_only int mtx_create(mtx_t **mtxpp, const mtxattr_t *mtxattr)
+inline_only void mtx_init(mtx_t *mtx, lwt_mtx_type_t type)
 {
-	lwt_mtx_type_t type = (int)(uptr_t) mtxattr;
-	if (type > LWT_MTX_LAST) {
-		*mtxpp = NULL;
-		return EINVAL;
-	}
-
-	alloc_value_t av = mtx_alloc();
-	if (av.error) {
-		*mtxpp = NULL;
-		return av.error;
-	}
-
 	//  DO NOT CHANGE VALUE OF:
 	//	mtxa.mtxa_reuse
-	//  It is part of the mtxid_t, its incremented by mtx_destroy()
+	//  It is part of the mtxid_t, it is incremented by mtx_destroy()
 
-	mtx_t *mtx = av.mem;
 	mtx_atom_t mtxa = mtx_load(mtx);
 
 	mtxa.mtxa_reccnt_llasync_llwant = 
@@ -1017,8 +999,38 @@ inline_only int mtx_create(mtx_t **mtxpp, const mtxattr_t *mtxattr)
 	MTXA_OWNER_SET(mtxa, MTX_UNLOCKED);
 	mtx->mtxa = mtxa;
 	mtx->mtx_wantpriq = NULL;
+}
+
+inline_only int mtx_create(mtx_t **mtxpp, lwt_mtx_type_t type, thr_t *thr)
+{
+	alloc_value_t av = mtx_alloc(thr);
+	if (av.error) {
+		*mtxpp = NULL;
+		return av.error;
+	}
+
+	mtx_t *mtx = av.mem;
+	mtx_init(mtx, type);
 	*mtxpp = mtx;
 	return 0;
+}
+
+static int mtx_trycreate_outline(mtx_t **mtxpp, lwt_mtx_type_t type)
+{
+	mtx_t *mtx = mtx_tryalloc();
+	if (!mtx) {
+		*mtxpp = NULL;
+		return EAGAIN;
+	}
+
+	mtx_init(mtx, type);
+	*mtxpp = mtx;
+	return 0;
+}
+
+static int mtx_create_outline(mtx_t **mtxpp, lwt_mtx_type_t type, thr_t *thr)
+{
+	return mtx_create(mtxpp, type, thr);
 }
 
 inline_only int mtx_destroy(mtx_t **mtxpp)
@@ -1051,6 +1063,11 @@ inline_only int mtx_destroy(mtx_t **mtxpp)
 
 	mtx_free(mtx);
 	return 0;
+}
+
+static int mtx_destroy_outline(mtx_t **mtxpp)
+{
+	return mtx_destroy(mtxpp);
 }
 
 inline_only int mtx_trylock(mtx_t *mtx, thr_t *thr)
@@ -1399,9 +1416,9 @@ inline_only int cnd_broadcast(cnd_t *cnd, mtx_t *mtx, thr_t *thr)
 	return cnd_wakeup(cnd, mtx, thr, true);
 }
 
-inline_only alloc_value_t cnd_alloc(void)
+inline_only alloc_value_t cnd_alloc(thr_t *thr)
 {
-	return arena_alloc(&cnd_arena);
+	return arena_alloc(&cnd_arena, thr);
 }
 
 inline_only void cnd_free(cnd_t *cnd)
@@ -1409,9 +1426,10 @@ inline_only void cnd_free(cnd_t *cnd)
 	arena_free(&cnd_arena, cnd);
 }
 
-inline_only int cnd_create(cnd_t **cndpp, unused const cndattr_t *cndattr)
+inline_only int cnd_create(cnd_t **cndpp, unused const cndattr_t *cndattr,
+			   thr_t *thr)
 {
-	alloc_value_t av = cnd_alloc();
+	alloc_value_t av = cnd_alloc(thr);
 	if (av.error) {
 		*cndpp = NULL;
 		return av.error;
@@ -1424,6 +1442,12 @@ inline_only int cnd_create(cnd_t **cndpp, unused const cndattr_t *cndattr)
 	return 0;
 }
 
+static int cnd_create_outline(cnd_t **cndpp, unused const cndattr_t *cndattr,
+			      thr_t *thr)
+{
+	return cnd_create(cndpp, cndattr, thr);
+}
+
 inline_only int cnd_destroy(cnd_t **cndpp)
 {
 	cnd_t *cnd = *cndpp;
@@ -1431,6 +1455,11 @@ inline_only int cnd_destroy(cnd_t **cndpp)
 	cnd_free(cnd);
 	*cndpp = NULL;
 	return 0;
+}
+
+static int cnd_destroy_outline(cnd_t **cndpp)
+{
+	return cnd_destroy(cndpp);
 }
 
 
@@ -1704,9 +1733,14 @@ inline_only int thrattr_getguardsize(const thrattr_t *thrattr,
 
 //}{ thr_*() functions
 
-inline_only alloc_value_t thr_alloc(void)
+inline_only alloc_value_t thr_alloc(thr_t *thr)
 {
-	return arena_alloc(&thr_arena);
+	return arena_alloc(&thr_arena, thr);
+}
+
+inline_only thr_t *thr_tryalloc(void)
+{
+	return arena_tryalloc(&thr_arena);
 }
 
 inline_only void thr_free(thr_t *thr)
@@ -1743,42 +1777,42 @@ static noreturn void thr_block_forever(thr_t *thr, unused const char *msg,
 	assert(0);
 }
 
-inline_only int thr_init(thr_t *thr, thrx_t *thrx,
-			 const thrattr_t *thrattr, stk_t *stk)
+inline_only int thr_init(thr_t *t, thrx_t *tx,
+			 const thrattr_t *thrattr, stk_t *stk, thr_t *thr)
 {
 	bool detached = (thrattr->thrattr_detach == LWT_CREATE_DETACHED);
 
-        thr->thr_running = false;
-        thr->thr_prio = thrattr->thrattr_priority;
-        thr->thr_core = core_from_thrattr(thrattr);
-	thr->thr_cnd = NULL;
-	thr->thr_mtxid = (mtxid_t) {.mtxid_all = MTXID_NULL};
-	thr->thr_mtxcnt = 0;
-	thr->thr_reccnt = 0;
-	thr->thr_ln.ln_next = NULL;
-	thr->thr_ln.ln_prev = NULL;
+        t->thr_running = false;
+        t->thr_prio = thrattr->thrattr_priority;
+        t->thr_core = core_from_thrattr(thrattr);
+	t->thr_cnd = NULL;
+	t->thr_mtxid = (mtxid_t) {.mtxid_all = MTXID_NULL};
+	t->thr_mtxcnt = 0;
+	t->thr_reccnt = 0;
+	t->thr_ln.ln_next = NULL;
+	t->thr_ln.ln_prev = NULL;
 
 	mtx_t *mtx = NULL;
 	cnd_t *cnd = NULL;
 	if (!detached) {
-		error_t error = mtx_create_outline(&mtx, NULL);
+		error_t error = mtx_create_outline(&mtx, LWT_MTX_FAST, thr);
 		if (error)
 			return error;
 
-		error = cnd_create_outline(&cnd, NULL);
+		error = cnd_create_outline(&cnd, NULL, thr);
 		if (error) {
 			mtx_destroy_outline(&mtx);
 			return error;
 		}
 	}
 
-	thrx->thrx_join_mtx = mtx;
-	thrx->thrx_join_cnd = cnd;
-	thrx->thrx_exited = false;
-	thrx->thrx_joining = false;
-	thrx->thrx_detached = detached;
-	thrx->thrx_retval = NULL;
-	thrx->thrx_stk = stk;
+	tx->thrx_join_mtx = mtx;
+	tx->thrx_join_cnd = cnd;
+	tx->thrx_exited = false;
+	tx->thrx_joining = false;
+	tx->thrx_detached = detached;
+	tx->thrx_retval = NULL;
+	tx->thrx_stk = stk;
 	return 0;
 }
 
@@ -1786,8 +1820,8 @@ inline_only void thr_destroy(thr_t *thr)
 {
 	thrx_t *thrx = thrx_from_thr(thr);
 	if (thrx->thrx_detached) {
-		mtx_destroy(&thrx->thrx_join_mtx);
-		cnd_destroy(&thrx->thrx_join_cnd);
+		mtx_destroy_outline(&thrx->thrx_join_mtx);
+		cnd_destroy_outline(&thrx->thrx_join_cnd);
 	}
 	thr_free_stk(thrx->thrx_stk);
 	thr_free(thr);
@@ -1872,20 +1906,15 @@ static int thr_join(thr_t *thr, lwt_t thread, void **retvalpp)
 	return 0;
 }
 
-//  A cpu_enable() that follows a cpu_disable() might occur on a different
-//  cpu, thus having the caller do cpu_current() once, and pass a cpu argument
-//  to both cpu_disable() and cpu_enable(), is incorrent.
-
-inline_only thr_t *cpu_disable()
+inline_only thr_t *cpu_disable(cpu_t *cpu)
 {
-	cpu_t *cpu = cpu_current();
+	debug(cpu->cpu_enabled);
 	cpu->cpu_enabled = false;
 	return cpu->cpu_running_thr;
 }
 
-inline_only void cpu_enable(void)
+inline_only void cpu_enable(cpu_t *cpu)
 {
-	cpu_t *cpu = cpu_current();
 	debug(!cpu->cpu_enabled);
 	if (cpu->cpu_timerticked) {
 		cpu->cpu_timerticked = false;
@@ -1894,11 +1923,29 @@ inline_only void cpu_enable(void)
 	cpu->cpu_enabled = true;
 }
 
+//  An api_exit() that follows an api_enter() might occur on a different
+//  cpu, thus having the caller do cpu_current() once, and pass a cpu argument
+//  to both api_enter() and api_exit(), would be incorrent.
+
+inline_only thr_t *api_enter(unused int api)
+{
+	cpu_t *cpu = cpu_current();
+	cpu_disable(cpu);
+	return cpu->cpu_running_thr;
+}
+
+inline_only void api_exit(unused int api)
+{
+	cpu_t *cpu = cpu_current();
+	cpu_enable(cpu);
+}
+
 typedef void (*glue_t)(void *arg, lwt_function_t function);
 
 static noreturn void thr_start_glue(void *arg, lwt_function_t function)
 {
-	cpu_enable();
+	cpu_t *cpu = cpu_current();
+	cpu_enable(cpu);
 	__lwt_thr_exit(function(arg));
 }
 
@@ -1933,7 +1980,7 @@ inline_only void ctx_init_for_cpu(ctx_t *ctx, uptr_t sp,
 }
 
 static int thr_create(lwt_t *thread, const thrattr_t *thrattr,
-		      lwt_function_t function, void *arg)
+		      lwt_function_t function, void *arg, thr_t *thr)
 {
 	if (thrattr == NULL) thrattr = &thrattr_default;
 	else if (!thrattr->thrattr_initialized) return EINVAL;
@@ -1949,7 +1996,7 @@ static int thr_create(lwt_t *thread, const thrattr_t *thrattr,
 	//  the entries to be mismatched because the allocation from both
 	//  lockless lists would not be serialized without adding a lock.
 
-	av = thr_alloc();
+	av = thr_alloc(thr);
 	if (av.error) {
 		thr_free_stk(stk);
 		return av.error;
@@ -1968,7 +2015,7 @@ retry:;
 	}
 
 	thrx_t *tx = thrx_from_thr(t);
-	error_t error = thr_init(t, tx, thrattr, stk);
+	error_t error = thr_init(t, tx, thrattr, stk, thr);
 	if (error) {
 		TODO();
 		return error;
@@ -1981,17 +2028,16 @@ retry:;
 
 static thr_t *thr_create_main(void)
 {
-	alloc_value_t av = thr_alloc();
-	assert(!av.error);			// thr_arena already grown
-	thr_t *thr = av.mem;
-	THRA_INDEX_SET(thr->thra, thr - THR_INDEX_BASE);
-	thrx_t *thrx = thrx_from_thr(thr);
-	error_t error = thr_init(thr, thrx, &thrattr_default, NULL);
+	thr_t *t = thr_tryalloc();
+	assert(t);				// thr_arena already grown
+	THRA_INDEX_SET(t->thra, t - THR_INDEX_BASE);
+	thrx_t *tx = thrx_from_thr(t);
+	error_t error = thr_init(t, tx, &thrattr_default, NULL, NULL);
 	assert(!error);
 	cpu_t *cpu = cpu_current();
-	thr->thr_running = true;
-	cpu->cpu_running_thr = thr;
-	return thr;
+	t->thr_running = true;
+	cpu->cpu_running_thr = t;
+	return t;
 }
 
 static int thr_cancel(unused thr_t *thr, unused lwt_t thread)
@@ -3307,17 +3353,13 @@ static error_t arena_init(arena_t *arena, void *base, size_t elemsize,
 	if (error)
 		return error;
 
-	error = mtx_create_outline(&arena->arena_mtx, NULL);
-	if (!error)
-		return 0;
-
-	arena_deinit(arena);
+	error = mtx_trycreate_outline(&arena->arena_mtx, LWT_MTX_FAST);
+	assert(!error);
 	return error;
 }
 
-static error_t arena_grow(arena_t *arena)
+static error_t arena_grow(arena_t *arena, thr_t *thr)
 {
-	thr_t *thr = thr_current();
 	mtx_lock(arena->arena_mtx, thr);
 	error_t error = arena_grow_common(arena);
 	mtx_unlock_outline(arena->arena_mtx, thr);
@@ -3409,18 +3451,18 @@ static void arenas_deinit(void)
 	TODO();
 }
 
-static alloc_value_t arena_alloc(arena_t *arena)
+static alloc_value_t arena_alloc(arena_t *arena, thr_t *thr)
 {
-	llelem_t *elem;
+	void *mem;
 	for (;;) {
-		elem = lllist_remove(&arena->arena_lllist);
-		if (elem)
+		mem = arena_tryalloc(arena);
+		if (mem)
 			break;
-		error_t error = arena_grow(arena);
+		error_t error = arena_grow(arena, thr);
 		if (error)
 			return (alloc_value_t) {.mem = NULL, .error = error};
 	}
-	return (alloc_value_t) {.mem = elem, .error = 0};
+	return (alloc_value_t) {.mem = mem, .error = 0};
 }
 
 inline_only void arena_free(arena_t *arena, void *mem)
@@ -3637,19 +3679,27 @@ static error_t ktimer_create(ktimer_t **ktimerpp, cpu_t *cpu)
 
 	sigset_t prev_sigset;
         error_t error = pthread_sigmask(SIG_BLOCK, &sa.sa_mask, &prev_sigset);
-	if (error) {
-		timer_delete(timer);
-		return error;
-	}
+	if (!error) {
+		struct sigaction prev_sa;
+		if (sigaction(rtsigno, &sa, &prev_sa) < 0)
+			error = errno;
+		else {
+			//  Signal handlers are process-wide, the first call
+			//  to this function should find it to be SIG_DFL, the
+			//  others should find it already set to ktimer_signal.
 
-        if (sigaction(rtsigno, &sa, NULL) < 0) {
-        	(void) pthread_sigmask(SIG_SETMASK, &prev_sigset, NULL);
-		timer_delete(timer);
-		return errno;
+			if (prev_sa.sa_sigaction ==
+			    (void (*)(int, siginfo_t *, void *)) SIG_DFL ||
+			    prev_sa.sa_sigaction == ktimer_signal) {
+				*ktimerpp = (ktimer_t *) timer;
+				return 0;
+			}
+			error = EINVAL;
+		}
+		(void) pthread_sigmask(SIG_SETMASK, &prev_sigset, NULL);
 	}
-
-	*ktimerpp = (ktimer_t *) timer;
-	return 0;
+	timer_delete(timer);
+	return error;
 }
 
 static int sched_attempts = 1;
@@ -4066,14 +4116,14 @@ inline_only error_t data_init(size_t sched_attempt_steps, int rtsigno)
 		return error;
 	}
 
-	//  The areas were just created, the following two can't fail.
+	//  The arenas were just created, the following two can't fail.
 
-	error = mtx_create_outline(&thr_block_forever_mtx, NULL);
+	error = mtx_trycreate_outline(&thr_block_forever_mtx, LWT_MTX_FAST);
 	assert(!error);
-	alloc_value_t av = thr_alloc();
-	assert(!av.error);
 
-	thr_dummy = av.mem;
+	thr_dummy = thr_tryalloc();
+	assert(thr_dummy);
+
 	MTXA_OWNER_SET_WHEN_UNLOCKED(
 		thr_block_forever_mtx->mtxa,
 		MTXID_DUMMY);
@@ -4129,6 +4179,10 @@ inline_only error_t init(size_t sched_attempt_steps, int rtsigno)
 
 error_t __lwt_init(size_t sched_attempt_steps, int rtsigno)
 {
+	//  The rtsigno signal handler should be SIG_DFL, if it is currently
+	//  in use, EINVAL is returned to avoid conflicts if other code using
+	//  that signal number.
+
 	return init(sched_attempt_steps, rtsigno);
 }
 
@@ -4160,7 +4214,16 @@ int __lwt_mutexattr_gettype(struct __lwt_mtxattr_s *mtxattr, int *kind)
 int __lwt_mtx_init(struct __lwt_mtx_s **mtxpp,
 		   const struct __lwt_mtxattr_s *mtxattr)
 {
-	return mtx_create(mtxpp, mtxattr);
+	lwt_mtx_type_t type = (int)(uptr_t) mtxattr;
+	if (type > LWT_MTX_LAST) {
+		*mtxpp = NULL;
+		return EINVAL;
+	}
+
+	thr_t *thr = api_enter(API_MTX_INIT);
+	error_t error = mtx_create(mtxpp, type, thr);
+	api_exit(API_MTX_INIT);
+	return error;
 }
 
 int __lwt_mtx_destroy(struct __lwt_mtx_s **mtxpp)
@@ -4170,35 +4233,39 @@ int __lwt_mtx_destroy(struct __lwt_mtx_s **mtxpp)
 
 int __lwt_mtx_lock(struct __lwt_mtx_s *mtx)
 {
-	thr_t *thr = cpu_disable();
+	thr_t *thr = api_enter(API_MTX_LOCK);
 	error_t error = mtx_lock(mtx, thr);
-	cpu_enable();
+	api_exit(API_MTX_LOCK);
 	return error;
 }
 
 int __lwt_mtx_trylock(struct __lwt_mtx_s *mtx)
 {
-	thr_t *thr = cpu_disable();
+	thr_t *thr = api_enter(API_MTX_TRYLOCK);
 	error_t error = mtx_trylock(mtx, thr);
-	cpu_enable();
+	api_exit(API_MTX_TRYLOCK);
 	return error;
 }
 
 int __lwt_mtx_unlock(struct __lwt_mtx_s *mtx)
 {
-	thr_t *thr = cpu_disable();
+	thr_t *thr = api_enter(API_MTX_UNLOCK);
 	error_t error = mtx_unlock(mtx, thr);
-	cpu_enable();
+	api_exit(API_MTX_UNLOCK);
 	return error;
 }
 
 
 //  __lwt_cnd_*() ABI entry points
 
+
 int __lwt_cnd_init(struct __lwt_cnd_s **cndpp,
 		   const struct __lwt_cndattr_s *cndattr)
 {
-	return cnd_create(cndpp, cndattr);
+	thr_t *thr = api_enter(API_CND_INIT);
+	error_t error = cnd_create(cndpp, cndattr, thr);
+	api_exit(API_CND_INIT);
+	return error;
 }
 
 int __lwt_cnd_destroy(struct __lwt_cnd_s **cndpp)
@@ -4209,9 +4276,9 @@ int __lwt_cnd_destroy(struct __lwt_cnd_s **cndpp)
 int __lwt_cnd_wait(struct __lwt_cnd_s *cnd,
 		   struct __lwt_mtx_s *mtx)
 {
-	thr_t *thr = cpu_disable();
+	thr_t *thr = api_enter(API_CND_WAIT);
 	error_t error = cnd_wait(cnd, mtx, thr);
-	cpu_enable();
+	api_exit(API_CND_WAIT);
 	return error;
 }
 
@@ -4219,25 +4286,25 @@ int __lwt_cnd_timedwait(struct __lwt_cnd_s *cnd,
 			struct __lwt_mtx_s *mtx,
 			const struct timespec *abstime)
 {
-	thr_t *thr = cpu_disable();
+	thr_t *thr = api_enter(API_CND_TIMEDWAIT);
 	error_t error = cnd_timedwait(cnd, mtx, thr, abstime);
-	cpu_enable();
+	api_exit(API_CND_TIMEDWAIT);
 	return error;
 }
 
 int __lwt_cnd_signal(struct __lwt_cnd_s *cnd, struct __lwt_mtx_s *mtx)
 {
-	thr_t *thr = cpu_disable();
+	thr_t *thr = api_enter(API_CND_SIGNAL);
 	error_t error = cnd_signal(cnd, mtx, thr);
-	cpu_enable();
+	api_exit(API_CND_SIGNAL);
 	return error;
 }
 
 int __lwt_cnd_broadcast(struct __lwt_cnd_s *cnd, struct __lwt_mtx_s *mtx)
 {
-	thr_t *thr = cpu_disable();
+	thr_t *thr = api_enter(API_CND_BROADCAST);
 	error_t error = cnd_broadcast(cnd, mtx, thr);
-	cpu_enable();
+	api_exit(API_CND_BROADCAST);
 	return error;
 }
 
@@ -4410,55 +4477,58 @@ int __lwt_thrattr_getguardsize(const lwt_attr_t *attr, size_t *guardsize)
 int __lwt_thr_create(lwt_t *thread, const lwt_attr_t *attr,
 		     lwt_function_t function, void *arg)
 {
-	cpu_disable();
-	error_t error = thr_create(thread, (thrattr_t *) attr, function, arg);
-	cpu_enable();
+	thr_t *thr = api_enter(API_THR_CREATE);
+	unused ureg_t before = counter_get_before();
+	error_t error = thr_create(thread, (thrattr_t *) attr,
+				   function, arg, thr);
+	unused ureg_t after = counter_get_after();
+	api_exit(API_THR_CREATE);
 	return error;
 }
 
 noreturn void __lwt_thr_exit(void *retval)
 {
-	thr_t *thr = cpu_disable();
+	thr_t *thr = api_enter(API_THR_EXIT);
 	thr_exit(thr, retval);
 }
 
 int __lwt_thr_join(lwt_t thread, void **retval)
 {
-	thr_t *thr = cpu_disable();
+	thr_t *thr = api_enter(API_THR_JOIN);
 	error_t error = thr_join(thr, thread, retval);
-	cpu_enable();
+	api_exit(API_THR_JOIN);
 	return error;
 }
 
 int __lwt_thr_cancel(lwt_t thread)
 {
-	thr_t *thr = cpu_disable();
+	thr_t *thr = api_enter(API_THR_CANCEL);
 	error_t error = thr_cancel(thr, thread);
-	cpu_enable();
+	api_exit(API_THR_CANCEL);
 	return error;
 }
 
 int __lwt_thr_setcancelstate(int state, int *oldstate)
 {
-	thr_t *thr = cpu_disable();
+	thr_t *thr = api_enter(API_THR_SETCANCELSTATE);
 	error_t error = thr_setcancelstate(thr, state, oldstate);
-	cpu_enable();
+	api_exit(API_THR_SETCANCELSTATE);
 	return error;
 }
 
 int __lwt_thr_setcanceltype(int type, int *oldtype)
 {
-	thr_t *thr = cpu_disable();
+	thr_t *thr = api_enter(API_THR_SETCANCELTYPE);
 	error_t error = thr_setcanceltype(thr, type, oldtype);
-	cpu_enable();
+	api_exit(API_THR_SETCANCELTYPE);
 	return error;
 }
 
 void __lwt_thr_testcancel(void)
 {
-	thr_t *thr = cpu_disable();
+	thr_t *thr = api_enter(API_THR_TESTCANCEL);
 	thr_testcancel(thr);
-	cpu_enable();
+	api_exit(API_THR_TESTCANCEL);
 }
 
 //}
