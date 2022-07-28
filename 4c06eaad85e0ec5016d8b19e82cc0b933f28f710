@@ -16,6 +16,29 @@
       "message": "This change needs to go in first and Trusty prebuilts updated before the corresponding Trusty change will pass presubmit.",
       "revId": "4c06eaad85e0ec5016d8b19e82cc0b933f28f710",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9078af2d_578a4dd8",
+        "filename": "trusty/storage/proxy/proxy.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 122,
+      "author": {
+        "id": 1888075
+      },
+      "writtenOn": "2022-07-28T00:38:46Z",
+      "side": 1,
+      "message": "Typo",
+      "range": {
+        "startLine": 122,
+        "startChar": 64,
+        "endLine": 122,
+        "endChar": 68
+      },
+      "revId": "4c06eaad85e0ec5016d8b19e82cc0b933f28f710",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
