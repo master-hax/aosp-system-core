@@ -102,6 +102,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "b41fd1ea_62e3609c",
+        "filename": "init/service.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 259,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-07-28T22:01:52Z",
+      "side": 1,
+      "message": "`si.si_code \u003d\u003d CLD_KILLED \u0026\u0026 si.si_status \u003d\u003d SIGSEGV`?\n\ni know that\u0027s slightly broader than it needs to be, but is there a reason we wouldn\u0027t just turn it on for all processes crashing with SIGSEGVs?",
+      "parentUuid": "d3251a4e_895310ef",
+      "range": {
+        "startLine": 259,
+        "startChar": 25,
+        "endLine": 259,
+        "endChar": 34
+      },
+      "revId": "eb75396ff19f9f15167da891f0d9c43a0f6acc8f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "b52c1527_609ef8f1",
         "filename": "rootdir/init.zygote32.rc",
         "patchSetId": 14
@@ -131,6 +155,24 @@
       "side": 1,
       "message": "We need to turn this feature off for Zygote, or have it stuck waiting for all threads to go away before starting an app. That wouldn\u0027t be great.\n\nI originally added a new variable to turn this off, but eugenis@ preferred this approach (in the bionic/  review).",
       "parentUuid": "b52c1527_609ef8f1",
+      "revId": "eb75396ff19f9f15167da891f0d9c43a0f6acc8f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5de565dc_ccb7c237",
+        "filename": "rootdir/init.zygote32.rc",
+        "patchSetId": 14
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-07-28T22:01:52Z",
+      "side": 1,
+      "message": "why isn\u0027t that in the zygote code itself, rather than needing to be duplicated in any caller?",
+      "parentUuid": "c5687929_78367c5f",
       "revId": "eb75396ff19f9f15167da891f0d9c43a0f6acc8f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
