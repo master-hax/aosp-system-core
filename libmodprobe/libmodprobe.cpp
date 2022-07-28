@@ -480,9 +480,11 @@ bool Modprobe::LoadModulesParallel(int num_threads) {
         for (const auto& [it_mod, it_dep] : mod_with_deps) {
             if (it_dep.size() == 1) {
                 if (module_options_[it_mod].find("load_sequential=1") != std::string::npos) {
-                    LoadWithAliases(it_mod, true);
+                    if (!LoadWithAliases(it_mod, true) && !IsBlocklisted(it_mod)) {
+                      return false;
+                    }
                 } else {
-                    mods_path_to_load.emplace_back(*(it_dep.begin()));
+                    mods_path_to_load.emplace_back(it_mod);
                 }
             }
         }
@@ -491,14 +493,20 @@ bool Modprobe::LoadModulesParallel(int num_threads) {
         auto thread_function = [&] {
             std::unique_lock lk(vector_lock);
             while (!mods_path_to_load.empty()) {
-                auto mod_path_to_load = std::move(mods_path_to_load.back());
+                auto ret_load = true;
+                auto mod_to_load = std::move(mods_path_to_load.back());
                 mods_path_to_load.pop_back();
 
                 lk.unlock();
-                ret &= Insmod(mod_path_to_load, "");
+                ret_load &= LoadWithAliases(mod_to_load, true);
                 lk.lock();
+                if (!ret_load && !IsBlocklisted(mod_to_load)) {
+                    ret &= ret_load;
+                }
             }
         };
+
+        if (!ret) return ret;
 
         std::generate_n(std::back_inserter(threads), num_threads,
                         [&] { return std::thread(thread_function); });
