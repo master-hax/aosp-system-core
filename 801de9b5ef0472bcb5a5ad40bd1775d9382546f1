@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "43c0fbe1_5d55ef10",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1042828
+      },
+      "writtenOn": "2022-07-29T20:40:37Z",
+      "side": 1,
+      "message": "LGTM, but as you say, it shouldn\u0027t go in.\n",
+      "revId": "801de9b5ef0472bcb5a5ad40bd1775d9382546f1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ca074fda_12425100",
+        "filename": "libutils/RefBase.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 172,
+      "author": {
+        "id": 1042828
+      },
+      "writtenOn": "2022-07-29T20:40:37Z",
+      "side": 1,
+      "message": "uintptr_t is probably a better choice for unrelated pointer comparisons like this than uint8_t*. Officially, the comparisons are probably implementation defined with uintptr_t (or std::less), but undefined with uint8_t*. In practice, I expect they all work.",
+      "range": {
+        "startLine": 172,
+        "startChar": 10,
+        "endLine": 172,
+        "endChar": 18
+      },
+      "revId": "801de9b5ef0472bcb5a5ad40bd1775d9382546f1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
