@@ -3,6 +3,40 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "d4e1e2d2_3c40e27d",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 5
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2022-07-29T04:12:29Z",
+      "side": 1,
+      "message": "`trusty: ` prefix is more generic, use that?\n\n2nd nit: \"Android-Trusty\" for consistency with previous CL.",
+      "revId": "242646d8f2b505c49924ebe7e0642b7d269d24c7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "87904aea_28b568ba",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2022-07-29T04:12:29Z",
+      "side": 1,
+      "message": "I made a bunch of changes to the previous CL, including renaming the test to `TrustyBinderTest` and upper-casing all the test names, could you rebase and update?",
+      "revId": "242646d8f2b505c49924ebe7e0642b7d269d24c7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "09a21042_0af76e66",
         "filename": "trusty/test/binder/binder_test.cpp",
         "patchSetId": 5
