@@ -17,6 +17,10 @@
 /* clang-format off */
 /* see the comment in lwt_sched.h about issues and the many clang-format bugs */
 
+#ifdef LWT_C //{
+#include <sys/ucontext.h>
+#endif //}
+
 //  The ctx_t is the integral context of a thread, these comments apply to
 //  all architextures.
 //
@@ -40,6 +44,9 @@
 #define	SIZEOF_CTX_T	 (CTX_NREGS * SIZEOF_UREG_T)
 
 #ifdef LWT_C //{
+
+typedef mcontext_t		fullctx_t;
+#define	fullctx_pc		pc
 
 //  Cache line size constants.
 
@@ -348,9 +355,10 @@ static_assert(sizeof(ctx_t) == SIZEOF_CTX_T, "SIZEOF_CTX_T is wrong");
 
 #ifdef LWT_C //{
 
-//  X64 floating point is too barroque, best is to exactly follow libc
+typedef struct sigcontext	fullctx_t;
+#define	fullctx_pc		rip
 
-#include <sys/ucontext.h>
+//  X64 floating point is too barroque, best is to exactly follow libc
 
 #define CACHE_LINE_SIZE_L2      6
 #define CACHE_LINE_SIZE         64
@@ -685,11 +693,6 @@ inline_only cpu_t *cpu_current(void)
 }
 #endif //}
 
-inline_only bool ctx_is_full(ctx_t *ctx)
-{
-	return ctx->ctx_pstate != 0;
-}
-
 #endif //}
 
 #ifdef LWT_X64 //{
@@ -721,11 +724,6 @@ inline_only cpu_t *cpu_current()
 	register ureg_t reg  __asm__("rax");
 	__asm__ volatile("mov %%gs:0, %0" : "=r"(reg));
 	return (cpu_t *) reg;
-}
-
-inline_only bool ctx_is_full(ctx_t *ctx)
-{
-	return ctx->ctx_fpctx != NULL;
 }
 
 #endif //}

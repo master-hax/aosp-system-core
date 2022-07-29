@@ -836,19 +836,15 @@ typedef union {
 	uregx2_t	 uregx2;
 } aligned_uregx2 thr_atom_t;
 
-//  The thr_t is sized as a power of two.  Additional per thread fields are in
-//  thrx_t (thread extension), making easy to the size a power of two.  The
-//  integer context is kept in ctx_t which is inside the thrx_t, the floating
-//  point context is in an optional  fpctx_t.  Conversion of a thr_t pointer to
-//  a thread index is done frequently, because thr_t is a power of two, what
-//  would otherwise be a substraction and a division, is just a substraction
-//  and a shift. To go from a thread index to a thr_t pointer it is a shift and
-//  an addition. From a thread index, its corresponding thrx_t and fpctx_t are
-//  allocated from their own arenas.  Every thr_t has a corresponding thrx_t
-//  the address of which is computed by using the thread index to index into
-//  the thrx_t arena.  Because threads that do not use floating are common,
-//  their floating point context is optional, thus a pointer to it the fpctx_t
-//  is in the ctx_t (NULL if not allocated).
+//  The thr_t is sized as a power of two.  Additional per thread fields are
+//  in thrx_t (thread extension), making it easy to keep the size of thr_t a
+//  size a power of two.  Conversion of a thr_t pointer to a thread index is
+//  done frequently, because thr_t is a power of two, what would otherwise be
+//  a substraction and a division, is just a substraction and a shift. To go
+//  from a thread index to a thr_t pointer it is a shift and an addition. The
+//  corresponding thrx_t is  allocated from their its arena.  Every thr_t has
+//  a corresponding thrx_t the address of which is computed by using the thread
+//  index to index into the thrx_t arena.
 
 //  A thread while still running, enqueues itself onto queues or lists as
 //  part of voluntarily releasing the CPU (for example blocking on a mutex
@@ -950,11 +946,6 @@ static_assert(POWER_OF_TWO(sizeof(thr_t)), "thr_t size is wrong");
 //  TODO: review this with respect to the X64 context.
 
 typedef struct {
-	ctx_t	 c_ctx;
-	fpctx_t	 c_fpctx;
-} context_t;
-
-typedef struct {
 	stk_t		*thrx_stk;
 	void		*thrx_retval;
 	mtx_t		*thrx_join_mtx;
@@ -962,13 +953,11 @@ typedef struct {
 	bool		 thrx_detached;
 	bool		 thrx_exited;
 	bool		 thrx_joining;
-	bool		 thrx_pad[sizeof(ureg_t) - 3];
+	bool		 thrx_is_fullctx;
+	bool		 thrx_pad[sizeof(ureg_t) - 4];
 	union {
-	    struct {
-		ctx_t	 thrx_ctx;
-		fpctx_t	 thrx_fpctx;
-	    };
-	    context_t	 thrx_context;;
+	    ctx_t	*thrx_ctx;
+	    fullctx_t	*thrx_fullctx;
 	};
 } aligned_cache_line thrx_t;
 
