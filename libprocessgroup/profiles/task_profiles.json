@@ -454,14 +454,6 @@
       "Name": "LowIoPriority",
       "Actions": [
         {
-          "Name": "JoinCgroup",
-          "Params":
-          {
-            "Controller": "blkio",
-            "Path": "background"
-	  }
-        },
-        {
           "Name": "SetAttribute",
           "Params":
           {
@@ -497,7 +489,7 @@
           "Name": "JoinCgroup",
           "Params":
           {
-            "Controller": "blkio",
+            "Controller": "io",
             "Path": ""
 	  }
         },
@@ -537,7 +529,7 @@
           "Name": "JoinCgroup",
           "Params":
           {
-            "Controller": "blkio",
+            "Controller": "io",
             "Path": ""
 	  }
         },
@@ -577,7 +569,7 @@
           "Name": "JoinCgroup",
           "Params":
           {
-            "Controller": "blkio",
+            "Controller": "io",
             "Path": ""
 	  }
         },
