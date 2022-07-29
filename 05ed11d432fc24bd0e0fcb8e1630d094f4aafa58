@@ -72,6 +72,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "4e09b739_785616da",
+        "filename": "libutils/RefBase.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 152,
+      "author": {
+        "id": 1042828
+      },
+      "writtenOn": "2022-07-29T17:03:42Z",
+      "side": 1,
+      "message": "I\u0027m OK with it. It\u0027s just not the way I would have written it.",
+      "parentUuid": "e95dd7a7_2b09b988",
+      "range": {
+        "startLine": 152,
+        "startChar": 51,
+        "endLine": 152,
+        "endChar": 59
+      },
+      "revId": "05ed11d432fc24bd0e0fcb8e1630d094f4aafa58",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "4db18d51_df9f2bf3",
