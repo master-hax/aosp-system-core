@@ -124,7 +124,6 @@ FUNCTION_START(__lwt_ctx_load_on_cpu)
 	ldp	x20, x21, [x1, ctx_x20]
 	ldp	x22, x23, [x1, ctx_x22]
 	ldp	x24, x25, [x1, ctx_x24]
-	mov	sp,  x17
 	cbnz	x5,  ctx_load_rest	// pstate == zero, means "half" context
 
 	//  8 floating point registers loaded from a cache line
@@ -133,7 +132,9 @@ FUNCTION_START(__lwt_ctx_load_on_cpu)
 	ldp	d10, d11, [x1, ctx_d10]
 	ldp	d12, d13, [x1, ctx_d12]
 	ldp	d14, d15, [x1, ctx_d14]
-	br	x4
+	mov	sp,  x17		// MUST change sp last, ctx_t for thread
+	br	x4			// start might be clobbered otherwise by
+					// signal handlers (e.g. ktimer_signal)
 
 3:	// x0 is thr, its the 2nd return value, returned to cpu_main()
 	mov	x1, x2			// switch to cpu_main() to handle thr

@@ -17,14 +17,6 @@
 /* clang-format off */
 /* see the comment in lwt_sched.h about issues and the many clang-format bugs */
 
-#if 0 // TODO
-......
-- ctx_save and load should assert if not running an api
-- ctx_t should be on the stack
-- context_t should point to sigcontext (on the stack)
-......
-#endif
-
 #include "lwt_config.h"
 
 #include <sys/mman.h>
@@ -492,7 +484,12 @@ static noreturn void	 thr_block_forever(thr_t *thr, const char *msg,
 //  second argument, and the thr argument (for the first two) as their first
 //  argument.
 
-#define	ctx_save(ctx)	 __lwt_ctx_save(ctx)
+#define	ctx_save(ctx, thrx) ({						\
+	debug(!cpu_current()->cpu_enabled);				\
+	(thrx)->thrx_ctx = (ctx);					\
+	(thrx)->thrx_is_fullctx = false;				\
+	__lwt_ctx_save(ctx);						\
+})
 
 #define	ctx_load(ctx, thr, cpuctx, new_running, curr_running)		\
 	__lwt_ctx_load(thr, ctx, cpuctx, new_running, curr_running)
@@ -891,11 +888,6 @@ inline_only thrx_t *thrx_from_thr(thr_t *thr)
 	return THRX_INDEX_BASE + THRID_INDEX(thr->thra.thra_thrid);
 }
 
-inline_only ctx_t *ctx_from_thr(thr_t *thr)
-{
-	return &thrx_from_thr(thr)->thrx_ctx;
-}
-
 inline_only thr_t *thr_from_index(ureg_t index)
 {
 	return THR_INDEX_BASE + index;
@@ -1113,9 +1105,10 @@ retry:;
 
 static error_t mtx_lock(mtx_t *mtx, thr_t *thr)
 {
+	ctx_t ctx;
 	mtx_atom_t old = mtx_load(mtx);
 	ureg_t thridix = THRID_INDEX(thr->thra.thra_thrid);
-	ctx_t *ctx = NULL;
+	thrx_t *thrx = NULL;
 
 retry:;
 	mtx_atom_t new = old;
@@ -1125,9 +1118,9 @@ retry:;
 	} else if (likely(MTXA_OWNER(new) != thridix)) {
 		thr->thr_ln.ln_prev = mtx_lllist_to_thr(MTXA_LLWANT(new));
 		MTXA_LLWANT_SET(new, thridix);
-		if (!ctx) {
-			ctx = ctx_from_thr(thr);
-			if (!ctx_save(ctx)) {			// returns twice
+		if (!thrx) {
+			thrx = thrx_from_thr(thr);
+			if (!ctx_save(&ctx, thrx)) {		// returns twice
 				//  Second return, when thr resumes
 				//  the mtx has been handed off to it.
 
@@ -1321,8 +1314,9 @@ static int cnd_wait(cnd_t *cnd, mtx_t *mtx, thr_t *thr)
 
 	thr->thr_mtxid = mtx_get_mtxid(mtx);
 	thr->thr_cnd = cnd;
-	ctx_t *ctx = ctx_from_thr(thr);
-	if (ctx_save(ctx)) {				// returns twice
+	thrx_t *thrx = thrx_from_thr(thr);
+	ctx_t ctx;
+	if (ctx_save(&ctx, thrx)) {			// returns twice
 		mtx_unlock_from_cond_wait(mtx, thr);	// first return
 		sched_out(thr);
 	}
@@ -1974,8 +1968,13 @@ inline_only void ctx_init_common(ctx_t *ctx, uptr_t sp, lwt_function_t function,
 	ctx->ctx_start_arg = (ureg_t) arg;
 	ctx->ctx_start_pc = (ureg_t) glue;
 	ctx->ctx_sp = sp;
+
+	//  TODO: This way of describing half contexts is going away shortly
 #ifdef LWT_X64
-	ctx->ctx_fpctx = 0;
+	ctx->ctx_fpctx = 0;	// half context
+#endif
+#ifdef LWT_ARM64
+	ctx->ctx_pstate = 0;	// half context
 #endif
 }
 
@@ -2032,7 +2031,16 @@ retry:;
 		TODO();
 		return error;
 	}
-	ctx_init(&tx->thrx_ctx, (uptr_t) (stk - 1), function, arg);
+
+	//  Memory for the ctx_t is ephemeral, its on the stack and will
+	//  immediately become the stack frame for the thread function,
+	//  ctx_load() carefully loads the stack pointer last to prevent
+	//  it from being clobbered by signal handlers.
+
+	ctx_t *ctx = ((ctx_t *) (stk - 1)) - 1;
+	tx->thrx_ctx = ctx;
+	tx->thrx_is_fullctx = false;
+	ctx_init(ctx, (uptr_t) (stk - 1), function, arg);
 	*(lwt_t *) thread = (lwt_t) t->thra.thra_thrid.thrid_all;
 	sched_in(t);
 	return 0;
@@ -3174,18 +3182,39 @@ static void sched_in_at_head(thr_t *thr)
 	schedq_insert_at_head(schedq, sqix, thr, thridix);
 }
 
+#ifdef LWT_X64 //{
+
+//  The GNU libc sigcontext definition mimics but is different than the Linux
+//  definition, this file is included by <signal.h> which is included much
+//  further below:
+//	<x86_64-linux-gnu/bits/sigcontext.h>
+//
+//  The correct Linux file is included here.  Including both causes type
+//  redefinition errors:
+
+#include <x86_64-linux-gnu/asm/sigcontext.h>
+
+//  Prevent the wrong one from being included by <signal.h> by pretending
+//  that it was already included:
+
+#define _BITS_SIGCONTEXT_H  1
+
+#endif //}
+
 noreturn inline_only void thr_run(thr_t *thr, thr_t *currthr)
 {
 	cpu_t *cpu = cpu_current();
 	cpu->cpu_running_thr = thr;
-	ctx_t *ctx = ctx_from_thr(thr);
-	if (ctx_is_full(ctx)) {
+	thrx_t *thrx = thrx_from_thr(thr);
+	if (thrx->thrx_is_fullctx) {
 		ureg_t instaddr = (ureg_t) cpu->cpu_trampoline;
 		instaddr += OFFSET_OF_BRANCH_IN_TRAMPOLINE;
-		error_t error = generate_branch(ctx->ctx_pc, instaddr);
+		ureg_t pc = thrx->thrx_fullctx->fullctx_pc;
+		error_t error = generate_branch(pc, instaddr);
 		if (error)
 			TODO();
 	}
+	ctx_t *ctx = thrx->thrx_ctx;
 	ctx_load(ctx, thr, &cpu->cpu_ctx,
 		 &thr->thr_running, &currthr->thr_running);
 }
@@ -3193,14 +3222,16 @@ noreturn inline_only void thr_run(thr_t *thr, thr_t *currthr)
 noreturn inline_only void thr_run_on_cpu(thr_t *thr, cpu_t *cpu)
 {
 	cpu->cpu_running_thr = thr;
-	ctx_t *ctx = ctx_from_thr(thr);
-	if (ctx_is_full(ctx)) {
+	thrx_t *thrx = thrx_from_thr(thr);
+	if (thrx->thrx_is_fullctx) {
 		ureg_t instaddr = (ureg_t) cpu->cpu_trampoline;
 		instaddr += OFFSET_OF_BRANCH_IN_TRAMPOLINE;
-		error_t error = generate_branch(ctx->ctx_pc, instaddr);
+		ureg_t pc = thrx->thrx_fullctx->fullctx_pc;
+		error_t error = generate_branch(pc, instaddr);
 		if (error)
 			TODO();
 	}
+	ctx_t *ctx = thrx->thrx_ctx;
 	ctx_load_on_cpu(ctx, thr, &cpu->cpu_ctx, &thr->thr_running);
 }
 
@@ -3236,8 +3267,9 @@ static int thr_context_save__thr_run(thr_t *currthr, thr_t *thr)
 	//  can not be inlined because ctx_save() returns twice and GCC can
 	//  not inline those functions.
 
-	ctx_t *ctx = ctx_from_thr(currthr);
-	if (ctx_save(ctx)) 				// returns twice
+	thrx_t *thrx = thrx_from_thr(currthr);
+	ctx_t ctx;
+	if (ctx_save(&ctx, thrx)) 			// returns twice
 		thr_run(thr, currthr);			// first return
 	return 0;			// second return, must return zero
 }
@@ -3575,6 +3607,14 @@ static error_t cpu_bind(cpu_t *cpu)
 	return error;
 }
 
+#ifdef LWT_X64 //{
+
+inline_only void fullctx_check(unused fullctx_t *fullctx)
+{
+}
+
+#endif //}
+
 #ifdef LWT_ARM64 //{
 
 typedef struct _aarch64_ctx	aarch64_ctx_t;
@@ -3584,6 +3624,17 @@ static_assert(offsetof(fpsimd_context_t, fpsr) + sizeof(__u32) ==
 	      offsetof(fpsimd_context_t, fpcr),
 	      "fpsr expected to be before fpcr");
 
+inline_only void fullctx_check(fullctx_t *fullctx)
+{
+	aarch64_ctx_t *ctxhdr = (aarch64_ctx_t *) &fullctx->__reserved[0];
+        assert(ctxhdr->magic == FPSIMD_MAGIC &&
+	       ctxhdr->size == sizeof(fpsimd_context_t));
+	fpsimd_context_t *fpsimd_context = (fpsimd_context_t *) ctxhdr;
+	ctxhdr = (aarch64_ctx_t *)(fpsimd_context + 1);
+        assert(ctxhdr->magic == 0 && ctxhdr->size == 0);
+}
+
+#if 0 // TODO XXX
 inline_only void context_init_from_mcontext(context_t *context,
 					    mcontext_t *mcontext)
 {
@@ -3596,16 +3647,7 @@ inline_only void context_init_from_mcontext(context_t *context,
 				     (((ureg_t) fpsimd_context->fpcr) << 32);
 	context->c_fpctx = *(fpctx_t *)(char *) &fpsimd_context->vregs[0];
 }
-
-#endif //}
-
-#ifdef LWT_X64 //{
-
-inline_only void context_init_from_mcontext(context_t *context,
-					    mcontext_t *mcontext)
-{
-	// TODO();
-}
+#endif
 
 #endif //}
 
@@ -3616,7 +3658,6 @@ static void ktimer_tick(unused cpu_t *cpu)
 
 static void ktimer_signal(unused int signo, siginfo_t *siginfo, void *ucontextp)
 {      
-        ucontext_t *ucontext = ucontextp;
 	cpu_t *cpu = (cpu_t *) siginfo->si_value.sival_ptr;
 	debug(cpu == cpu_current());
 	++cpu->cpu_ktimer_calls;
@@ -3628,10 +3669,15 @@ static void ktimer_signal(unused int signo, siginfo_t *siginfo, void *ucontextp)
 		return;
 	}
 
+        ucontext_t *ucontext = ucontextp;
 	thrx_t *thrx = thrx_from_thr(thr);
-	context_t *context = &thrx->thrx_context;
-	context_init_from_mcontext(context, &ucontext->uc_mcontext);
+	fullctx_t *fullctx = (fullctx_t *) &ucontext->uc_mcontext;
+	thrx->thrx_is_fullctx = true;
+	thrx->thrx_fullctx = fullctx;
+	fullctx_check(fullctx);
 }
+
+static_assert(sizeof(mcontext_t) == sizeof(fullctx_t), "fullctx_t is wrong");
 
 static_assert(sizeof(timer_t) <= sizeof(ktimer_t *),
 	      "unexpected sizeof(timer_t) value");
