@@ -172,15 +172,6 @@ bool fs_mgr_is_dir(const std::string& path) {
     return !stat(path.c_str(), &st) && S_ISDIR(st.st_mode);
 }
 
-// Similar test as overlayfs workdir= validation in the kernel for read-write
-// validation, except we use fs_mgr_work.  Covers space and storage issues.
-bool fs_mgr_dir_is_writable(const std::string& path) {
-    auto test_directory = path + "/fs_mgr_work";
-    rmdir(test_directory.c_str());
-    auto ret = !mkdir(test_directory.c_str(), 0700);
-    return ret | !rmdir(test_directory.c_str());
-}
-
 // At less than 1% or 8MB of free space return value of false,
 // means we will try to wrap with overlayfs.
 bool fs_mgr_filesystem_has_space(const std::string& mount_point) {
@@ -318,7 +309,7 @@ std::string fs_mgr_get_overlayfs_candidate(const std::string& mount_point) {
         if (!fs_mgr_is_dir(upper)) continue;
         auto work = dir + kWorkName;
         if (!fs_mgr_is_dir(work)) continue;
-        if (!fs_mgr_dir_is_writable(work)) continue;
+	if (!fs_mgr_rw_access(work)) continue;
         return dir;
     }
     return "";
