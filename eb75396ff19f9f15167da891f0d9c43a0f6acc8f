@@ -217,6 +217,24 @@
       "parentUuid": "5de565dc_ccb7c237",
       "revId": "eb75396ff19f9f15167da891f0d9c43a0f6acc8f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d79071fa_cb1cc2b1",
+        "filename": "rootdir/init.zygote32.rc",
+        "patchSetId": 14
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1005967
+      },
+      "writtenOn": "2022-07-29T20:48:37Z",
+      "side": 1,
+      "message": "we could add a platform mallopt or something to kill the timer and the extra thread before forking. But it does not look much messier that gwp-asan in bionic matching the zygote process by name.",
+      "parentUuid": "c5e13462_e1001400",
+      "revId": "eb75396ff19f9f15167da891f0d9c43a0f6acc8f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
