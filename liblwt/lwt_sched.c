@@ -1470,63 +1470,38 @@ static int cnd_destroy_outline(cnd_t **cndpp)
 
 //}{  spin_*() functions
 
-#if 0
-#define	SPIN_UNLOCKED	((uptr_t) 0)
+//  Spin locks are implemented as mtx_t, 100% spinning locks in user mode lead
+//  to performance anomalies when the owning thread is preempted by the kernel.
+//  They are provided for Pthread compatibility, they are implemented as mtx_t
+//  with a bit of spinning on acquisitioin.
+//
+//  TODO: to prevent programmers from misusing spin locks could count number
+//  of spin locks owned by a thread and assert() that threads don't block
+//  on regular mutexes or condition variables while holding spin locks.  I am
+//  not sure if the added overhead is worth the "protection."
 
-inline_only int spin_unlock(spin_t *spin)
+static int lwt_spin_attempts = 32;		//  TODO make this tunable
+
+inline_only int spin_lock(mtx_t *spin, thr_t *thr)
 {
-	// TODO: providing spin locks to user mode is a mistake, these
-	// ought to be mapped to mutexes, holding a spin lock and taking
-	// a page fault while holding it is a horrible thing for the other
-	// CPUs wanting the spin locks.  Alternatively these could be adaptive
-	// locks that only spin if the lock owner is currently running.
-
-	// Try this for curiosity...
-	//	uptr_store_rel(&spin->spin_mem, SPIN_UNLOCKED);
-	// we know that SPIN_UNLOCKED is zero ...
-
-	uptr_store_zero_rel(&spin->spin_mem);
-	return 0;
+	int attempts = lwt_spin_attempts;
+	do {
+		error_t error = mtx_trylock(spin, thr);
+		if (!error)
+			return 0;
+	} while (--attempts > 0);
+	return mtx_lock(spin, thr);
 }
 
-inline_only bool spin_locked(spin_t *spin)
+inline_only int spin_trylock(mtx_t *spin, thr_t *thr)
 {
-	return spin->spin_mem != SPIN_UNLOCKED;
+	return mtx_trylock(spin, thr);
 }
 
-inline_only int spin_init(spin_t *spin)
+inline_only int spin_unlock(mtx_t *mtx, thr_t *thr)
 {
-	spin->spin_mem = SPIN_UNLOCKED;
-	return 0;
+	return mtx_unlock(mtx, thr);
 }
-
-inline_only int spin_destroy(spin_t *spin)
-{
-	return 0;
-}
-
-inline_only int spin_lock(spin_t *spin)
-{
-	thr_t *thr = thr_current();
-
-retry:;
-	uptr_t pre = uptr_comp_and_swap_acq(SPIN_UNLOCKED, (uptr_t) thr,
-					    &spin->spin_mem);
-	if (unlikely(pre != SPIN_UNLOCKED))
-		goto retry;
-
-	return 0;
-}
-
-inline_only int spin_trylock(spin_t *spin)
-{
-	thr_t *thr = thr_current();
-	if (!uptr_comp_and_swap_acq(SPIN_UNLOCKED, (uptr_t) thr,
-				    &spin->spin_mem))
-		return EBUSY;
-	return 0;
-}
-#endif
 
 //}{  thrattr_*() functions
 
@@ -4247,6 +4222,11 @@ inline_only error_t init(size_t sched_attempt_steps, int rtsigno)
 
 error_t __lwt_init(size_t sched_attempt_steps, int rtsigno)
 {
+	//  TODO: add flags value to choose:
+	//	- sane "spin locks" that assert if mutex acquired inside
+	//	  spin owning code
+	//	- time slicing on/off
+	//	- time slice period
 	//  The rtsigno signal handler should be SIG_DFL, if it is currently
 	//  in use, EINVAL is returned to avoid conflicts if other code using
 	//  that signal number.
@@ -4379,32 +4359,47 @@ int __lwt_cnd_broadcast(struct __lwt_cnd_s *cnd, struct __lwt_mtx_s *mtx)
 
 //  __lwt_spin_*() ABI entry points
 
-#if 0
-int __lwt_spin_init(struct __lwt_spin_s *spin)
+int __lwt_spin_init(struct __lwt_spin_s **spinpp)
 {
-	return spin_init(spin);
+	mtx_t **mtxpp = (mtx_t **) spinpp;
+	thr_t *thr = api_enter(API_SPIN_INIT);
+	error_t error = mtx_create(mtxpp, LWT_MTX_FAST, thr);
+	api_exit(API_SPIN_INIT);
+	return error;
 }
 
-int __lwt_spin_destroy(struct __lwt_spin_s *spin)
+int __lwt_spin_destroy(struct __lwt_spin_s **spinpp)
 {
-	return spin_destroy(spin);
+	mtx_t **mtxpp = (mtx_t **) spinpp;
+	return mtx_destroy(mtxpp);
 }
 
 int __lwt_spin_lock(struct __lwt_spin_s *spin)
 {
-	return spin_lock(spin);
+	mtx_t *mtx = (mtx_t *) spin;
+	thr_t *thr = api_enter(API_SPIN_LOCK);
+	error_t error = spin_lock(mtx, thr);
+	api_exit(API_SPIN_LOCK);
+	return error;
 }
 
 int __lwt_spin_trylock(struct __lwt_spin_s *spin)
 {
-	return spin_trylock(spin);
+	mtx_t *mtx = (mtx_t *) spin;
+	thr_t *thr = api_enter(API_SPIN_TRYLOCK);
+	error_t error = spin_trylock(mtx, thr);
+	api_exit(API_SPIN_TRYLOCK);
+	return error;
 }
 
 int __lwt_spin_unlock(struct __lwt_spin_s *spin)
 {
-	return spin_unlock(spin);
+	mtx_t *mtx = (mtx_t *) spin;
+	thr_t *thr = api_enter(API_SPIN_UNLOCK);
+	error_t error = spin_unlock(mtx, thr);
+	api_exit(API_SPIN_UNLOCK);
+	return error;
 }
-#endif
 
 
 //  __lwt_thrattr_*() ABI entry points

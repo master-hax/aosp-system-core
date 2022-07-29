@@ -46,7 +46,6 @@ typedef union thrln_s		thrln_t;
 
 typedef struct __lwt_mtx_s	mtx_t;
 typedef struct __lwt_cnd_s	cnd_t;
-typedef struct __lwt_spin_s	spin_t;
 
 //  API numbers used for optional statistics and tracing
 
@@ -67,6 +66,10 @@ typedef enum {
 	API_THR_SETCANCELSTATE	= 13,
 	API_THR_SETCANCELTYPE	= 14,
 	API_THR_TESTCANCEL	= 15,
+	API_SPIN_INIT		= 16,
+	API_SPIN_LOCK		= 17,
+	API_SPIN_TRYLOCK	= 18,
+	API_SPIN_UNLOCK		= 19,
 } api_t;
 
 
@@ -1104,7 +1107,6 @@ struct __lwt_cnd_s {
 	thr_t		*cnd_waitpriq;
 	mtx_t		*cnd_mtx;
 };
-
 
 // XXX priority ceiling with autodiscovery and boosting?
 

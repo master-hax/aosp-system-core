@@ -232,28 +232,24 @@ lwt_inline int lwt_cond_broadcast(lwt_cond_t *cond, lwt_mutex_t *mutex)
 }
 
 
-//  The memory for the implementation of spinlocks (lwt_spinlock_t) is
-//  under control of the application, the spinlock is not kept out-of-line
-//  in other memory (as is done for lwt_mutex_t and lwt_cond_t, see below)
-//  because lwt_spinlock_t are strictly spinning and don't compound in any
-//  way with other synchronizers, there are no complex interactions between
-//  them and scheduling or waiting for conditions to occur.
+//  Spin locks in user mode are in general a bad idea because kernel preemption
+//  leads to unexpected performance anomalies.  The spin locks provided by LWT
+//  are adaptive and blocking, they only spin a small amount of time prior to
+//  degenerating to blocking locks.
 
 //  lwt_spinlock_t
 
-struct __lwt_spin_s {
-	uintptr_t	spin_mem;
-};
+struct __lwt_spin_s;
 
 typedef struct {
-	struct __lwt_spin_s	spin;
+	struct __lwt_spin_s	*spin;
 } lwt_spinlock_t;
 
-int __lwt_spin_init(	struct __lwt_spin_s	*spin);
-int __lwt_spin_destroy(	struct __lwt_spin_s	*spin);
-int __lwt_spin_lock(	struct __lwt_spin_s	*spin);
-int __lwt_spin_trylock(	struct __lwt_spin_s	*spin);
-int __lwt_spin_unlock(	struct __lwt_spin_s	*spin);
+int __lwt_spin_init(	struct __lwt_spin_s	**spinpp);
+int __lwt_spin_destroy(	struct __lwt_spin_s	**spinpp);
+int __lwt_spin_lock(	struct __lwt_spin_s	 *spin);
+int __lwt_spin_trylock(	struct __lwt_spin_s	 *spin);
+int __lwt_spin_unlock(	struct __lwt_spin_s	 *spin);
 
 lwt_inline int lwt_spin_init(lwt_spinlock_t *spinlock)
 {
@@ -267,17 +263,17 @@ lwt_inline int lwt_spin_destroy(lwt_spinlock_t *spinlock)
 
 lwt_inline int lwt_spin_lock(lwt_spinlock_t *spinlock)
 {
-	return __lwt_spin_lock(&spinlock->spin);
+	return __lwt_spin_lock(spinlock->spin);
 }
 
 lwt_inline int lwt_spin_trylock(lwt_spinlock_t *spinlock)
 {
-	return __lwt_spin_trylock(&spinlock->spin);
+	return __lwt_spin_trylock(spinlock->spin);
 }
 
 lwt_inline int lwt_spin_unlock(lwt_spinlock_t *spinlock)
 {
-	return __lwt_spin_unlock(&spinlock->spin);
+	return __lwt_spin_unlock(spinlock->spin);
 }
 
 
