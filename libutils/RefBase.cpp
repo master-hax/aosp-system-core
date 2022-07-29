@@ -163,11 +163,16 @@ void sp_report_stack_pointer() { LOG_ALWAYS_FATAL("RefBase used with stack point
 // is used in environments where there may not be a guard page below (at higher addresses than)
 // the bottom of the stack.
 static void check_not_on_stack(const void* ptr) {
-    static constexpr int MIN_PAGE_SIZE = 0x1000;  // 4K. Safer than including sys/user.h.
-    static constexpr uintptr_t MIN_PAGE_MASK = ~static_cast<uintptr_t>(MIN_PAGE_SIZE - 1);
-    uintptr_t my_frame_address =
-            reinterpret_cast<uintptr_t>(__builtin_frame_address(0 /* this frame */));
-    if (((reinterpret_cast<uintptr_t>(ptr) ^ my_frame_address) & MIN_PAGE_MASK) == 0) {
+    pthread_attr_t attr;
+    LOG_ALWAYS_FATAL_IF(0 != pthread_getattr_np(pthread_self(), &attr), "could not get thread");
+    void* stack_base;
+    size_t stack_size;
+    LOG_ALWAYS_FATAL_IF(0 != pthread_attr_getstack(&attr, &stack_base, &stack_size));
+
+    const uint8_t* base = static_cast<const uint8_t*>(stack_base);
+    const uint8_t* bptr = static_cast<const uint8_t*>(ptr);
+
+    if (bptr >= base && bptr < base + stack_size) {
         sp_report_stack_pointer();
     }
 }
