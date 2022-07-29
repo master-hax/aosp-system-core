@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "cc14fec0_41436e50",
+        "filename": "libutils/RefBase.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 152,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2022-07-29T00:55:09Z",
+      "side": 1,
+      "message": "You don\u0027t like anthropomorphizing client code? is that it? :)",
+      "parentUuid": "d959746e_9518ee12",
+      "range": {
+        "startLine": 152,
+        "startChar": 51,
+        "endLine": 152,
+        "endChar": 59
+      },
+      "revId": "05ed11d432fc24bd0e0fcb8e1630d094f4aafa58",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "4db18d51_df9f2bf3",
         "filename": "libutils/RefBase_test.cpp",
         "patchSetId": 1
@@ -37,6 +61,30 @@
       "writtenOn": "2022-07-29T00:52:33Z",
       "side": 1,
       "message": "Is there a reason for the assignment syntax? Delete those 5 characters?",
+      "range": {
+        "startLine": 280,
+        "startChar": 26,
+        "endLine": 280,
+        "endChar": 32
+      },
+      "revId": "05ed11d432fc24bd0e0fcb8e1630d094f4aafa58",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "93ff6e88_7ba415b3",
+        "filename": "libutils/RefBase_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 280,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2022-07-29T00:55:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4db18d51_df9f2bf3",
       "range": {
         "startLine": 280,
         "startChar": 26,
