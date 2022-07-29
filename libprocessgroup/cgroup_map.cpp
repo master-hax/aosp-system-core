@@ -86,6 +86,8 @@ bool CgroupController::IsUsable() {
 }
 
 std::string CgroupController::GetTasksFilePath(const std::string& rel_path) const {
+    DCHECK_NE(rel_path, "background");
+
     std::string tasks_path = path();
 
     if (!rel_path.empty()) {
