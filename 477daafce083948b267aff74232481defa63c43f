@@ -1,0 +1,89 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d87fa882_7e44a17b",
+        "filename": "fastboot/device/usb_iouring.cpp",
+        "patchSetId": 16
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-07-29T18:54:00Z",
+      "side": 1,
+      "message": "h-\u003ereads_zero_packets is always false.. This looks like it is never set even in current code path..",
+      "revId": "477daafce083948b267aff74232481defa63c43f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "00cfdf38_86df3fda",
+        "filename": "fastboot/device/usb_iouring.cpp",
+        "patchSetId": 16
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-07-29T18:54:00Z",
+      "side": 1,
+      "message": "Does these requests need any serialization ? When you are queuing this up and submit them, I/O\u0027s are not guaranteed to complete in order. \n\nWrites which are not ordered can be a problem ? You should probably use IOSQE_IO_LINK flag ?",
+      "revId": "477daafce083948b267aff74232481defa63c43f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4b5d773b_53402318",
+        "filename": "fastboot/device/usb_iouring.cpp",
+        "patchSetId": 16
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-07-29T18:54:00Z",
+      "side": 1,
+      "message": "ret \u003c\u003d0 || ret !\u003d num_requests\n\nMake sure all I/O are queued..",
+      "revId": "477daafce083948b267aff74232481defa63c43f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0df92da8_e56393bd",
+        "filename": "fastboot/device/usb_iouring.cpp",
+        "patchSetId": 16
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-07-29T18:54:00Z",
+      "side": 1,
+      "message": "There are two error codes which might need a little more careful handling.\n\nI do see -EAGAIN from wait_cqe() - Theoretically, we should retry those CQE requests. We don\u0027t do that today in OTA code path wherein we bail out and fallback to synchronous I/O; however, we should fix that.\n\nWe might also get -EINTR as well here - I do see AIO code path has that:\n\n        if (num_bufs \u003d\u003d 1 \u0026\u0026 aiob-\u003eevents[0].res \u003d\u003d -EINTR) {\n            continue;\n        }\nIt looks like some corner case.. but something to think about.",
+      "revId": "477daafce083948b267aff74232481defa63c43f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d86271f5_e71a49cd",
+        "filename": "fastboot/device/usb_iouring.cpp",
+        "patchSetId": 16
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-07-29T18:54:00Z",
+      "side": 1,
+      "message": "What happens where the I/O fails ? does it tear down the entire io_uring instance or just fails the I/O ?\n\nIf it just fails the I/O, then note that there are still CQE instances which are not polled. Subsequent request can go wrong.",
+      "revId": "477daafce083948b267aff74232481defa63c43f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
