@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6282610d_a4cd9549",
+        "filename": "trusty/metrics/metrics_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2022-07-29T01:03:12Z",
+      "side": 1,
+      "message": "If an event is dropped, this will still fail the test. Isn\u0027t it going to keep being flaky (unless `DrainEvents` fixes it)?",
+      "revId": "4b38ffab15a7a414a88fbd106b818f614cb1a5f9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
