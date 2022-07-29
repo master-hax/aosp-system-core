@@ -16,6 +16,24 @@
       "message": "If an event is dropped, this will still fail the test. Isn\u0027t it going to keep being flaky (unless `DrainEvents` fixes it)?",
       "revId": "4b38ffab15a7a414a88fbd106b818f614cb1a5f9",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4ed16233_c329df4a",
+        "filename": "trusty/metrics/metrics_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 1124693
+      },
+      "writtenOn": "2022-07-29T17:25:49Z",
+      "side": 1,
+      "message": "This line here is supposed to make it easier to identify if an `event dropped` event came in instead of the expected `crash` event. \n\n`SetUp()` drains the events and resets `event_drop_count_` to zero prior to this test case. \n\nThe test doesn\u0027t control the environment entirely though since there is a possibility that some other TA crashes while the test is running. That isn\u0027t normal for Trusty apps though, so I\u0027ll assume that no spurious crash will happen.",
+      "parentUuid": "6282610d_a4cd9549",
+      "revId": "4b38ffab15a7a414a88fbd106b818f614cb1a5f9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
