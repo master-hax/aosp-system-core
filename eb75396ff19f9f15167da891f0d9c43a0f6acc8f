@@ -199,6 +199,24 @@
       "parentUuid": "c5687929_78367c5f",
       "revId": "eb75396ff19f9f15167da891f0d9c43a0f6acc8f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c5e13462_e1001400",
+        "filename": "rootdir/init.zygote32.rc",
+        "patchSetId": 14
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2022-07-29T16:51:32Z",
+      "side": 1,
+      "message": "This gets handled (via  the linker) even before constructors are called, so I am not sure what a good place would be in the Zygote code",
+      "parentUuid": "5de565dc_ccb7c237",
+      "revId": "eb75396ff19f9f15167da891f0d9c43a0f6acc8f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
