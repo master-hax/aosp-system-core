@@ -91,6 +91,7 @@ std::string CgroupController::GetTasksFilePath(const std::string& rel_path) cons
     if (!rel_path.empty()) {
         tasks_path += "/" + rel_path;
     }
+    DCHECK_NE(tasks_path, "/sys/fs/cgroup/background");
     return (version() == 1) ? tasks_path + CGROUP_TASKS_FILE : tasks_path + CGROUP_TASKS_FILE_V2;
 }
 
