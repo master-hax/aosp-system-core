@@ -114,6 +114,23 @@
       "message": "You shouldn\u0027t need this here, since the service will never call the `Repeat*` methods back.",
       "revId": "242646d8f2b505c49924ebe7e0642b7d269d24c7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ba5abdd8_4c53120f",
+        "filename": "trusty/test/binder/binder_test.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 366,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2022-07-30T00:09:14Z",
+      "side": 1,
+      "message": "Simpler hacky alternative: there\u0027s a `ITestServiceDelegator` that implements `BnTestService` by delegating to another `ITestService` implementation. You might be able to just do\n```\nauto nastyNester \u003d sp\u003cITestServiceDelegator\u003e::make(mSrv);\n```\nwhich creates a local `BnTestService` delegator that forwards all methods back to the service. That should effectively work the same as what you already have, but wouldn\u0027t need `MyBinderCallbackTest` at all.",
+      "revId": "242646d8f2b505c49924ebe7e0642b7d269d24c7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
