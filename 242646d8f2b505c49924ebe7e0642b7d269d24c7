@@ -101,6 +101,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "c8f3994e_d3b681e8",
+        "filename": "trusty/test/binder/binder_test.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 275,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2022-07-30T00:25:04Z",
+      "side": 1,
+      "message": "Update: you shouldn\u0027t need this if you use `ITestServiceDelegator` from `BnTestService`.",
+      "parentUuid": "48ec36e6_556cbf64",
+      "range": {
+        "startLine": 272,
+        "startChar": 1,
+        "endLine": 275,
+        "endChar": 5
+      },
+      "revId": "242646d8f2b505c49924ebe7e0642b7d269d24c7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "b5735d98_0b7bd187",
         "filename": "trusty/test/binder/binder_test.cpp",
         "patchSetId": 5
