@@ -329,31 +329,45 @@ typedef union {
 //  calling convention, alignning the schedq_t type to a cache line would make
 //  that type larger and values of that type could not be passed in registers.
 //  Thus this separate type is used when isolating the schedq_t entries in
-//  arrays where each element is in its own cache line..
+//  arrays where each element is in its own cache line.  To take advantage of
+//  the extra space in the cache line, and allow for each scheduling priority
+//  to have two scheduling queues, one for voluntary preemption, and another
+//  for time slicing, these two  related schedq_t are placed in the sqcl_t.
+//  There is additional pad space at least for two additional queues, assuming
+//  the smallest common cache line size of 64 bytes, this would allow for a
+//  hierarchy of time sliced queues where the more frequently sliced threads
+//  could have an inherent internal lower priority than ones not time slices
+//  as often.
 
 typedef struct {
-	schedq_t	 sqcl_schedq;
+	schedq_t	 sqcl_schedq;		// voluntarily preempted threads
+	schedq_t	 sqcl_schedqts;		// time sliced threads
 } aligned_cache_line sqcl_t;
 
 #define	SQ_PRIO_MAX	 (LWT_PRIO_HIGH + 1)
 
 //  All SMP hardware is organized hierarchically, because of how it is built
 //  from building blocks at various levels.  See the much larger comment about
-//  hardware organization below.  Scheduling domains their queues exist at all
-//  levels of the hardware to dynamic ensure schduling affinity as much as
-//  possible while also ensuring good hardware utilization.
+//  hardware organization below.  Scheduling domain queues exist at all levels
+//  of the hardware to ensure dynamic schduling affinity as much as possible
+//  while also ensuring good hardware utilization.
 
 //  A schdom_t is a scheduling domain, at the lowest level of the hardware
 //  representation, at the core_t level, the schdom_t refers to the underlying
 //  core_t which has one or more cpu_t associated with it (e.g. a hardware
-//  multi-threaded core).
+//  multi-threaded core).  At a higher level, a schdom_t covers scheduling to
+//  hardware entities that share hardware resources, for example caches, memory
+//  ports, etc.
 
-//  At higher levels, the schdom_t knows the underlying schduling domains which
-//  it points to with:
-//	[schdom_first_lower_schedom, schdom_last_lower_schedom]
+//  The schdom_sqcls field points to an array of SQ_PRIO_MAX scheduling queues,
+//  one per priority.  When a sqcl in a schdom becomes non-empty, its index
+//  in the array is used to set its corresponding bit in schdom_mask to one
+//  to indicate that the sqcl might have threads queued in it (this is used to
+//  reduce the scanning of the sqcl queues within the array to the ones that
+//  have ever been non-empty.
 
 struct schdom_s {
-	sqcl_t		*schdom_sqcls;	  // points to entry in array
+	sqcl_t		*schdom_sqcls;	  // points to array of SQ_PRIO_MAX
 	ureg_t		 schdom_mask;
 };
 

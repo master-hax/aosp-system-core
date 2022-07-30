@@ -464,7 +464,7 @@ noreturn void		 __lwt_start_glue(void);
 noreturn void		 __lwt_thr_exit(void *retval);
 
 static noreturn void	 sched_out(thr_t *thr);
-static int		 sched_in(thr_t *in);
+static int		 sched_in(thr_t *thr);
 
 static int		 thr_context_save__thr_run(thr_t *currthr, thr_t *thr);
 
@@ -2075,11 +2075,25 @@ inline_only bool schedq_is_empty(schedq_t *schedq)
 inline_only ureg_t schedq_index(schedq_t *schedq)
 {
 	//  sqcl_t has pad space, as long as a uniform set of indexes is
-	//  generated that is all that is needed by the caller
-	//  TODO: fix qhen sqcls[] and related are generated from /proc
+	//  generated that is all that is needed by the caller.  Note that
+	//  this also gives a unique index for the sqcl_schedqts queues.
+	//  TODO: revisit when sqcls[] and related are generated from /proc
 
 	return schedq - &sqcls[0].sqcl_schedq;
 }
+
+inline_only ureg_t sqix_to_ts_sqix(ureg_t sqix)
+{
+	//  This function knows that sqcl_schedqts index is immediately after
+	//  the index of its peer sqcl_schedq, this function is used to track
+	//  this in case that relationship changes.
+
+	return sqix + 1;
+}
+
+static_assert(offsetof(sqcl_t, sqcl_schedq) + sizeof(schedq_t) ==
+	      offsetof(sqcl_t, sqcl_schedqts),
+	     "sqix_to_ts_sqix() assumption broken");
 
 inline_only schedq_t schedq_comp_and_swap_acq_rel(schedq_t old, schedq_t new,
 						  schedq_t *schedq)
@@ -2146,8 +2160,10 @@ static void schdom_init(schdom_t *schdom)
 	schdom->schdom_mask = 0uL;
 	sqcl_t *sqcl = schdom->schdom_sqcls;
 	sqcl_t *sqclend = sqcl + SQ_PRIO_MAX;
-	for (; sqcl < sqclend; ++sqcl)
+	for (; sqcl < sqclend; ++sqcl) {
 		schedq_init(&sqcl->sqcl_schedq);
+		schedq_init(&sqcl->sqcl_schedqts);
+	}
 }
 
 #define	SCHDOM_UNINITIALIZED_LOWER	((schdom_t *) 1)
@@ -2177,11 +2193,19 @@ static thr_t *schdom_get_thr(schdom_t *schdom)
 		int index = ffsl(mask);
 		--index;
 		ureg_t prio = LWT_PRIO_HIGH - index;
-		schedq_t *schedq = &schdom->schdom_sqcls[prio].sqcl_schedq;
+		sqcl_t *sqcl = &schdom->schdom_sqcls[prio];
+
+		schedq_t *schedq = &sqcl->sqcl_schedq;
 		ureg_t sqix = schedq_index(schedq);
 		thr_t *thr = schedq_get(schedq, sqix);
 		if (thr)
 			return thr;
+
+		schedq = &sqcl->sqcl_schedqts;
+		thr = schedq_get(schedq, sqix_to_ts_sqix(sqix));
+		if (thr)
+			return thr;
+
 		mask &= ~(1uL << index);
 	}
 	return NULL;
@@ -2196,9 +2220,16 @@ static bool schdom_is_empty(schdom_t *schdom)
 		int index = ffsl(mask);
 		--index;
 		ureg_t prio = LWT_PRIO_HIGH - index;
-		schedq_t *schedq = &schdom->schdom_sqcls[prio].sqcl_schedq;
+		sqcl_t *sqcl = &schdom->schdom_sqcls[prio];
+
+		schedq_t *schedq = &sqcl->sqcl_schedq;
 		if (!schedq_is_empty(schedq))
 			return false;
+
+		schedq = &sqcl->sqcl_schedqts;
+		if (!schedq_is_empty(schedq))
+			return false;
+
 		mask &= ~(1uL << index);
 	}
 	return true;
@@ -3159,10 +3190,6 @@ static void sched_in_at_head(thr_t *thr)
 	schedq_insert_at_head(schedq, sqix, thr, thridix);
 }
 
-static void sched_timeslice(thr_t *thr)
-{
-}
-
 #ifdef LWT_X64 //{
 
 //  The GNU libc sigcontext definition mimics but is different than the Linux
@@ -3170,8 +3197,8 @@ static void sched_timeslice(thr_t *thr)
 //  further below:
 //	<x86_64-linux-gnu/bits/sigcontext.h>
 //
-//  The correct Linux file is included here.  Including both causes type
-//  redefinition errors:
+//  The correct Linux file is included here, including both causes type
+//  redefinition errors.
 
 #include <x86_64-linux-gnu/asm/sigcontext.h>
 
@@ -3240,6 +3267,12 @@ static noreturn void sched_out(thr_t *currthr)
 		cpu_idle(cpu, currthr);
 	}
 	thr_run(thr, currthr);
+}
+
+// static noreturn void sched_timeslice(thr_t *currthr)
+static void sched_timeslice(thr_t *currthr)
+{
+	// TODO();
 }
 
 static int thr_context_save__thr_run(thr_t *currthr, thr_t *thr)
