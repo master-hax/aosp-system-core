@@ -68,6 +68,24 @@
       "parentUuid": "a079913d_0c26b447",
       "revId": "647cce1fbc74bb0974cc32be3a9b597d164fd0b3",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c0ce0657_33dcb08e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1042828
+      },
+      "writtenOn": "2022-08-01T21:27:34Z",
+      "side": 1,
+      "message": "I understand. I don\u0027t think you can cache in bionic. But you could cache here, since it\u0027s probably fine to assume here that the main thread has a fixed megabyte stack. You would have to recognize you\u0027re on the main stack, but that could probably be arranged.",
+      "parentUuid": "9c2318cc_584e2c7c",
+      "revId": "647cce1fbc74bb0974cc32be3a9b597d164fd0b3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
