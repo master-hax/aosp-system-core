@@ -20,6 +20,24 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "a7a10baa_6f422471",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 5
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1948820
+      },
+      "writtenOn": "2022-08-01T15:05:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d4e1e2d2_3c40e27d",
+      "revId": "242646d8f2b505c49924ebe7e0642b7d269d24c7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "87904aea_28b568ba",
         "filename": "/PATCHSET_LEVEL",
         "patchSetId": 5
@@ -48,6 +66,24 @@
       "writtenOn": "2022-07-28T22:18:36Z",
       "side": 1,
       "message": "Shouldn\u0027t be needed (see below).",
+      "revId": "242646d8f2b505c49924ebe7e0642b7d269d24c7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d5eac74d_9552a689",
+        "filename": "trusty/test/binder/binder_test.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1948820
+      },
+      "writtenOn": "2022-08-01T15:05:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "09a21042_0af76e66",
       "revId": "242646d8f2b505c49924ebe7e0642b7d269d24c7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -123,6 +159,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "9e269eb9_2fda4c89",
+        "filename": "trusty/test/binder/binder_test.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 275,
+      "author": {
+        "id": 1948820
+      },
+      "writtenOn": "2022-08-01T15:05:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c8f3994e_d3b681e8",
+      "range": {
+        "startLine": 272,
+        "startChar": 1,
+        "endLine": 275,
+        "endChar": 5
+      },
+      "revId": "242646d8f2b505c49924ebe7e0642b7d269d24c7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "b5735d98_0b7bd187",
@@ -140,6 +200,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "65851f5f_0d41191a",
+        "filename": "trusty/test/binder/binder_test.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 359,
+      "author": {
+        "id": 1948820
+      },
+      "writtenOn": "2022-08-01T15:05:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b5735d98_0b7bd187",
+      "revId": "242646d8f2b505c49924ebe7e0642b7d269d24c7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "ba5abdd8_4c53120f",
@@ -153,6 +231,24 @@
       "writtenOn": "2022-07-30T00:09:14Z",
       "side": 1,
       "message": "Simpler hacky alternative: there\u0027s a `ITestServiceDelegator` that implements `BnTestService` by delegating to another `ITestService` implementation. You might be able to just do\n```\nauto nastyNester \u003d sp\u003cITestServiceDelegator\u003e::make(mSrv);\n```\nwhich creates a local `BnTestService` delegator that forwards all methods back to the service. That should effectively work the same as what you already have, but wouldn\u0027t need `MyBinderCallbackTest` at all.",
+      "revId": "242646d8f2b505c49924ebe7e0642b7d269d24c7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "aacd166f_bb16bbc7",
+        "filename": "trusty/test/binder/binder_test.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 366,
+      "author": {
+        "id": 1948820
+      },
+      "writtenOn": "2022-08-01T15:05:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba5abdd8_4c53120f",
       "revId": "242646d8f2b505c49924ebe7e0642b7d269d24c7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
