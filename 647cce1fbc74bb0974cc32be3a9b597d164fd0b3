@@ -104,6 +104,24 @@
       "parentUuid": "c0ce0657_33dcb08e",
       "revId": "647cce1fbc74bb0974cc32be3a9b597d164fd0b3",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "526af5d6_db586e10",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-08-01T22:07:18Z",
+      "side": 1,
+      "message": "bionic *does* [effectively] cache all threads except the main thread. and you _can\u0027t_ cache the main thread because it _changes_, as explained above.\n\n(and, yes, \"there should be a syscall for this\" :-( )",
+      "parentUuid": "9fcb7188_5908cd6e",
+      "revId": "647cce1fbc74bb0974cc32be3a9b597d164fd0b3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
