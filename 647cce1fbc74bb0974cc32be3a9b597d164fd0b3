@@ -50,6 +50,24 @@
       "message": "Looking at the bionic code, it reads and parses /proc/self/maps, though only for the main thread. Oops.\n\nOne could possibly cache (overestimated) main thread bounds and have things work here.",
       "revId": "647cce1fbc74bb0974cc32be3a9b597d164fd0b3",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9c2318cc_584e2c7c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-08-01T20:41:03Z",
+      "side": 1,
+      "message": "\u003e One could possibly cache (overestimated) main thread bounds and have things work here.\n\nexcept the main thread is magic and will actually _expand_ when you hit that guard region...",
+      "parentUuid": "a079913d_0c26b447",
+      "revId": "647cce1fbc74bb0974cc32be3a9b597d164fd0b3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
