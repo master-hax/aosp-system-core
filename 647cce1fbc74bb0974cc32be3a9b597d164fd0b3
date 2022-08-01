@@ -86,6 +86,24 @@
       "parentUuid": "9c2318cc_584e2c7c",
       "revId": "647cce1fbc74bb0974cc32be3a9b597d164fd0b3",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9fcb7188_5908cd6e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2022-08-01T21:59:08Z",
+      "side": 1,
+      "message": "I propose caching in bionic because this seems generally useful, and if we are going to use thread global memory in virtually every process, I wanted to get general use from it. Given that this discovered no issues in presubmit, it also seemed like a bit much to cache it for RefBase specifically - though given what Hans said, maybe it would. I also figured there should be a faster way to get ahold of it. Presumably it\u0027s already loaded into memory?\n\n(btw- there _are_ a few other classes, given this information, where this would be useful. The opposite direction, asserting something is on the stack, could also be interesting... for instance, if \u0027this\u0027 Parcel is on the stack, it is from the Java or NDK world. printf\u0027s first argument should never be on the stack, and so on and so forth).",
+      "parentUuid": "c0ce0657_33dcb08e",
+      "revId": "647cce1fbc74bb0974cc32be3a9b597d164fd0b3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
