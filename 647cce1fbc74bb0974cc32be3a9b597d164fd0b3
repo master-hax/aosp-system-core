@@ -122,6 +122,24 @@
       "parentUuid": "9fcb7188_5908cd6e",
       "revId": "647cce1fbc74bb0974cc32be3a9b597d164fd0b3",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "95279e0d_57d393ee",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1042828
+      },
+      "writtenOn": "2022-08-01T22:11:13Z",
+      "side": 1,
+      "message": "As Elliott suggested, I don\u0027t see a way to invalidate the cache when the main thread\u0027s stack grows. And since there is a single call that returns both ends of the stack, I don\u0027t see any useful caching opportunity in bionic. Arguably this is an API design issue, but not one we have control over.",
+      "parentUuid": "9fcb7188_5908cd6e",
+      "revId": "647cce1fbc74bb0974cc32be3a9b597d164fd0b3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
