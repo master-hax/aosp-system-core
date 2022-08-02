@@ -18,7 +18,9 @@
 
 #include <sys/cdefs.h>
 #include <sys/types.h>
+#include <initializer_list>
 #include <string>
+#include <string_view>
 #include <vector>
 
 __BEGIN_DECLS
@@ -32,6 +34,14 @@ bool CgroupGetAttributePathForTask(const std::string& attr_name, int tid, std::s
 
 bool SetTaskProfiles(int tid, const std::vector<std::string>& profiles, bool use_fd_cache = false);
 bool SetProcessProfiles(uid_t uid, pid_t pid, const std::vector<std::string>& profiles);
+
+__END_DECLS
+
+bool SetTaskProfiles(int tid, std::initializer_list<std::string_view> profiles,
+                     bool use_fd_cache = false);
+bool SetProcessProfiles(uid_t uid, pid_t pid, std::initializer_list<std::string_view> profiles);
+
+__BEGIN_DECLS
 
 #ifndef __ANDROID_VNDK__
 
