@@ -82,6 +82,27 @@ cc_library {
 }
 
 cc_test {
+    name: "processgroup_test",
+    host_supported: true,
+    defaults: ["libprocessgroup_defaults"],
+    srcs: [
+        "processgroup_test.cpp",
+    ],
+    header_libs: [
+        "libcutils_headers",
+        "libprocessgroup_headers",
+    ],
+    shared_libs: [
+        "libbase",
+        "libcgrouprc",
+        "libprocessgroup",
+    ],
+    static_libs: [
+        "libgmock",
+    ],
+}
+
+cc_test {
     name: "task_profiles_test",
     host_supported: true,
     defaults: ["libprocessgroup_defaults"],
