@@ -804,8 +804,11 @@ const IProfileAttribute* TaskProfiles::GetAttribute(std::string_view name) const
     return nullptr;
 }
 
-bool TaskProfiles::SetProcessProfiles(uid_t uid, pid_t pid,
-                                      const std::vector<std::string>& profiles, bool use_fd_cache) {
+template <typename T>
+bool TaskProfiles::SetProcessProfiles(
+        uid_t uid, pid_t pid, std::span<const T> profiles,
+        const std::function<bool(TaskProfile*, uid_t, pid_t)>& execute_for_process,
+        bool use_fd_cache) {
     bool success = true;
     for (const auto& name : profiles) {
         TaskProfile* profile = GetProfile(name);
@@ -813,7 +816,7 @@ bool TaskProfiles::SetProcessProfiles(uid_t uid, pid_t pid,
             if (use_fd_cache) {
                 profile->EnableResourceCaching(ProfileAction::RCT_PROCESS);
             }
-            if (!profile->ExecuteForProcess(uid, pid)) {
+            if (!execute_for_process(profile, uid, pid)) {
                 PLOG(WARNING) << "Failed to apply " << name << " process profile";
                 success = false;
             }
@@ -825,7 +828,9 @@ bool TaskProfiles::SetProcessProfiles(uid_t uid, pid_t pid,
     return success;
 }
 
-bool TaskProfiles::SetTaskProfiles(int tid, const std::vector<std::string>& profiles,
+template <typename T>
+bool TaskProfiles::SetTaskProfiles(int tid, std::span<const T> profiles,
+                                   const std::function<bool(TaskProfile*, int)>& execute_for_task,
                                    bool use_fd_cache) {
     bool success = true;
     for (const auto& name : profiles) {
@@ -834,7 +839,7 @@ bool TaskProfiles::SetTaskProfiles(int tid, const std::vector<std::string>& prof
             if (use_fd_cache) {
                 profile->EnableResourceCaching(ProfileAction::RCT_TASK);
             }
-            if (!profile->ExecuteForTask(tid)) {
+            if (!execute_for_task(profile, tid)) {
                 PLOG(WARNING) << "Failed to apply " << name << " task profile";
                 success = false;
             }
@@ -845,3 +850,18 @@ bool TaskProfiles::SetTaskProfiles(int tid, const std::vector<std::string>& prof
     }
     return success;
 }
+
+template bool TaskProfiles::SetProcessProfiles(
+        uid_t uid, pid_t pid, std::span<const std::string> profiles,
+        const std::function<bool(TaskProfile*, uid_t, pid_t)>& execute_for_process,
+        bool use_fd_cache);
+template bool TaskProfiles::SetProcessProfiles(
+        uid_t uid, pid_t pid, std::span<const std::string_view> profiles,
+        const std::function<bool(TaskProfile*, uid_t, pid_t)>& execute_for_process,
+        bool use_fd_cache);
+template bool TaskProfiles::SetTaskProfiles(
+        int tid, std::span<const std::string> profiles,
+        const std::function<bool(TaskProfile*, int)>& execute_for_task, bool use_fd_cache);
+template bool TaskProfiles::SetTaskProfiles(
+        int tid, std::span<const std::string_view> profiles,
+        const std::function<bool(TaskProfile*, int)>& execute_for_task, bool use_fd_cache);
