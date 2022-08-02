@@ -623,6 +623,10 @@ bool TaskProfiles::Load(const CgroupMap& cg_map, const std::string& file_name) {
         return false;
     }
 
+    return LoadFromString(cg_map, json_doc);
+}
+
+bool TaskProfiles::LoadFromString(const CgroupMap& cg_map, const std::string& json_doc) {
     Json::CharReaderBuilder builder;
     std::unique_ptr<Json::CharReader> reader(builder.newCharReader());
     Json::Value root;
