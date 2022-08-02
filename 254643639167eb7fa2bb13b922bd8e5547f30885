@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "773413ed_cc77f52a",
+        "filename": "trusty/storage/proxy/proxy.c",
+        "patchSetId": 3
+      },
+      "lineNbr": 120,
+      "author": {
+        "id": 1888075
+      },
+      "writtenOn": "2022-08-02T17:45:56Z",
+      "side": 1,
+      "message": "This should be \u0027\u0026\u0026\u0027",
+      "range": {
+        "startLine": 120,
+        "startChar": 39,
+        "endLine": 120,
+        "endChar": 41
+      },
+      "revId": "254643639167eb7fa2bb13b922bd8e5547f30885",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
