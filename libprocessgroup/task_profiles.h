@@ -18,8 +18,10 @@
 
 #include <sys/cdefs.h>
 #include <sys/types.h>
+#include <functional>
 #include <map>
 #include <mutex>
+#include <span>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -210,12 +212,53 @@ class TaskProfiles {
     TaskProfile* GetProfile(std::string_view name) const;
     const IProfileAttribute* GetAttribute(std::string_view name) const;
     void DropResourceCaching(ProfileAction::ResourceCacheType cache_type) const;
-    bool SetProcessProfiles(uid_t uid, pid_t pid, const std::vector<std::string>& profiles,
-                            bool use_fd_cache);
-    bool SetTaskProfiles(int tid, const std::vector<std::string>& profiles, bool use_fd_cache);
+    bool SetProcessProfiles(
+            uid_t uid, pid_t pid, const std::vector<std::string>& profiles,
+            const std::function<bool(TaskProfile*, uid_t, pid_t)>& execute_for_process,
+            bool use_fd_cache) {
+        return SetProcessProfilesT<const std::vector<std::string>&>(
+                uid, pid, profiles, execute_for_process, use_fd_cache);
+    }
+    bool SetProcessProfiles(
+            uid_t uid, pid_t pid, std::span<std::string_view> profiles,
+            const std::function<bool(TaskProfile*, uid_t, pid_t)>& execute_for_process,
+            bool use_fd_cache) {
+        return SetProcessProfilesT(uid, pid, profiles, execute_for_process, use_fd_cache);
+    }
+    bool SetProcessProfiles(
+            uid_t uid, pid_t pid, std::span<const char*> profiles,
+            const std::function<bool(TaskProfile*, uid_t, pid_t)>& execute_for_process,
+            bool use_fd_cache) {
+        return SetProcessProfilesT(uid, pid, profiles, execute_for_process, use_fd_cache);
+    }
+    bool SetTaskProfiles(int tid, const std::vector<std::string>& profiles,
+                         const std::function<bool(TaskProfile*, int)>& execute_for_task,
+                         bool use_fd_cache) {
+        return SetTaskProfilesT<const std::vector<std::string>&>(tid, profiles, execute_for_task,
+                                                                 use_fd_cache);
+    }
+    bool SetTaskProfiles(int tid, std::span<std::string_view> profiles,
+                         const std::function<bool(TaskProfile*, int)>& execute_for_task,
+                         bool use_fd_cache) {
+        return SetTaskProfilesT(tid, profiles, execute_for_task, use_fd_cache);
+    }
+    bool SetTaskProfiles(int tid, std::span<const char*> profiles,
+                         const std::function<bool(TaskProfile*, int)>& execute_for_task,
+                         bool use_fd_cache) {
+        return SetTaskProfilesT(tid, profiles, execute_for_task, use_fd_cache);
+    }
 
   private:
     TaskProfiles();
+    template <typename T>
+    bool SetProcessProfilesT(
+            uid_t uid, pid_t pid, T profiles,
+            const std::function<bool(TaskProfile*, uid_t, pid_t)>& execute_for_process,
+            bool use_fd_cache);
+    template <typename T>
+    bool SetTaskProfilesT(int tid, T profiles,
+                          const std::function<bool(TaskProfile*, int)>& execute_for_task,
+                          bool use_fd_cache);
 
     bool Load(const CgroupMap& cg_map, const std::string& file_name);
 
