@@ -511,7 +511,7 @@ typedef struct {
 
 //  uptr atomic operations
 
-#if 0
+#if 0 //{
 uptr_t uptr_load_acq(uptr_atom_t *m);
 
 inline_only void uptr_store_rel(uptr_atom_t *m, uptr_t v)
@@ -549,7 +549,7 @@ inline_only uptr_t uptr_comp_and_swap_acq_rel(uptr_t old, uptr_t new,
 		: "r"(new), "r"(m));
 	return old;
 }
-#endif
+#endif //}
 
 #ifdef LWT_ARM64 //{
 
@@ -583,10 +583,16 @@ typedef u32_t			opcode_t;
 //  All the address computation is done with signed arithmetic in register
 //  sized values.
 
-inline_only error_t generate_branch(ureg_t targetaddr, ureg_t instaddr)
+inline_only bool inst_reachable(ureg_t targetaddr, ureg_t instaddr)
 {
 	sreg_t pc = (sreg_t) targetaddr;
-	register sreg_t ia __asm__("x1") = (sreg_t) instaddr;
+	sreg_t ia = (sreg_t) instaddr;
+
+	//  TODO: the targetaddr is not exact yet, the cpu has not been chosen
+	//  so reachability should be to both ends of the trampoline area not
+	//  a specific branch location for a specific CPU, this only matters
+	//  when the thread might run on a CPU other than the one from where
+	//  it was preempted.
 
 	//  Set delta to the distance, in instructions instead of bytes,
 	//  between the target program counter and the instruction address.
@@ -616,23 +622,42 @@ inline_only error_t generate_branch(ureg_t targetaddr, ureg_t instaddr)
 	//  i.e. without branching to compute the 1 or 0 value.
 
 	sreg_t high = delta >> (BRANCH_ADDR_SHIFT - 1);
-	if (((sreg_t) (pc >= ia)) != high + 1)
-		return EINVAL;
+	return ((sreg_t) (pc >= ia)) == high + 1;
+}
 
+inline_only void generate_branch(ureg_t targetaddr, ureg_t instaddr)
+{
+	sreg_t pc = (sreg_t) targetaddr;
+	sreg_t ia = (sreg_t) instaddr;
+	sreg_t delta = (pc - ia) >> OPCODE_SIZE_SHIFT;
 	opcode_t offset = BRANCH_ADDR_MASK & (opcode_t) delta;
 	opcode_t opcode = BRANCH_OPCODE | offset;
+
+	//  I/D cache coherency with respect to this code modification is
+	//  done at ctx_load() time.  TODO: this istruction generation should
+	//  be moved there, or the cache coherency should be moved here.
+
 	*(opcode_t *) ia = opcode;
-	return 0;
 }
 
 #endif //}
 
 #ifdef LWT_X64 //{
-inline_only error_t generate_branch(ureg_t targetaddr, ureg_t instaddr)
+
+inline_only bool inst_reachable(ureg_t targetaddr, ureg_t instaddr)
+{
+	//  X64 signal context is complex and non-trivially encoded, for now,
+	//  don't implement reloading full context in user mode, this will
+	//  cause its reloaded through the sigreturn context reloading path.
+
+	return false;
+}
+
+inline_only void generate_branch(ureg_t targetaddr, ureg_t instaddr)
 {
 	*(volatile ureg_t *) 0x10 = 0xDEADBEEFu;
-	return 0;
 }
+
 #endif //}
 
 inline_only bool uregx2_equal(uregx2_t a, uregx2_t b)

@@ -26,6 +26,8 @@
 #define FUNCTION_END(name)						\
         .size name, .-name
 
+#define	ENABLED_OFFSET_FROM_CPUCTX	-9
+
 #ifdef LWT_ARM64 //{
 
 //  This function returns twice, once when called, in which case it returns
@@ -69,11 +71,13 @@ FUNCTION_END(__lwt_ctx_save)
 //				 ctx_t *ctx,			x1
 //				 ctx_t *cpuctx,			x2
 //				 bool *new_running,		x3
-//				 bool *curr_running);		x4
+//				 bool enabled,			x4
+//				 bool *curr_running);		x5
 //  noreturn void __lwt_ctx_load_on_cpu(thr_t *thr,		x0
 //					ctx_t *ctx,		x1
 //					ctx_t *cpuctx,		x2
-//					bool *new_running);	x3
+//					bool *new_running,	x3
+//					bool enabled);		x4
 //  noreturn void __lwt_ctx_load_idle_cpu(bool *curr_running,	x0
 //					  ctx_t *ctx);		x1
 //
@@ -92,12 +96,14 @@ FUNCTION_END(__lwt_ctx_save)
 
 FUNCTION_START(__lwt_ctx_load_idle_cpu)
 	stlrb	wzr, [x0]		// current thread is no longer running
-	mov	x0, xzr			// return value, zero is 2nd return
+	mov	x0,  xzr		// return value, zero is 2nd return
+	mov	x2,  x1			// x2 = cpuctx
+	mov	x4,  xzr		// x4 = enabled = false
 	b	2f
 FUNCTION_END(__lwt_ctx_load_idle_cpu)
 
 FUNCTION_START(__lwt_ctx_load)
-	stlrb	wzr, [x4]		// current thread is no longer running
+	stlrb	wzr, [x5]		// current thread is no longer running
 FUNCTION_END(__lwt_ctx_load)
 
 FUNCTION_START(__lwt_ctx_load_on_cpu)
@@ -113,10 +119,10 @@ FUNCTION_START(__lwt_ctx_load_on_cpu)
 
 2:	//  load 8 registers from a cache line
 
-	ldp	x4,  x5,  [x1, ctx_pc]	// get [pc, pstate] as early as possible
+	ldp	x6,  x7,  [x1, ctx_pc]	// get [pc, pstate] as early as possible
 	ldp	x26, x27, [x1, ctx_x26]
 	ldp	x28, x29, [x1, ctx_x28]
-	ldp	x30, x17, [x1, ctx_x30]	// [x30, sp] can not use sp here
+	ldp	x30, x8,  [x1, ctx_x30]	// [x30, sp] can not use sp here
 
 	//  load 8 registers from a cache line
 
@@ -124,7 +130,7 @@ FUNCTION_START(__lwt_ctx_load_on_cpu)
 	ldp	x20, x21, [x1, ctx_x20]
 	ldp	x22, x23, [x1, ctx_x22]
 	ldp	x24, x25, [x1, ctx_x24]
-	cbnz	x5,  ctx_load_rest	// pstate == zero, means "half" context
+	cbnz	x7,  ctx_load_rest	// pstate == zero, means "half" context
 
 	//  8 floating point registers loaded from a cache line
 
@@ -132,18 +138,21 @@ FUNCTION_START(__lwt_ctx_load_on_cpu)
 	ldp	d10, d11, [x1, ctx_d10]
 	ldp	d12, d13, [x1, ctx_d12]
 	ldp	d14, d15, [x1, ctx_d14]
-	mov	sp,  x17		// MUST change sp last, ctx_t for thread
-	br	x4			// start might be clobbered otherwise by
+	mov	sp,  x8			// MUST change sp last, ctx_t for thread
+					// start might be clobbered otherwise by
 					// signal handlers (e.g. ktimer_signal)
+	strb	w4,  [x2, ENABLED_OFFSET_FROM_CPUCTX]	// cpu->cpu_enabled = w4
+	br	x6
 
 3:	// x0 is thr, its the 2nd return value, returned to cpu_main()
-	mov	x1, x2			// switch to cpu_main() to handle thr
+	mov	x1,  x2			// switch to cpu_main() to handle thr
+	mov	xzr, x4			// ensure cpu->cpu_enabled remains false
 	b	2b			// thr->thr_running was set too long
 
 ctx_load_rest:
 	ldr	x0,  [x2, -SIZEOF_UREG_T] // cpu_trampoline is before cpu_ctx
 	add	x3,  x1,  SIZEOF_CTX_T	  // x3 = &thrx->thrx_fpctx
-	add	x6,  x0,  OFFSET_OF_BRANCH_IN_TRAMPOLINE
+	add	x5,  x0,  OFFSET_OF_BRANCH_IN_TRAMPOLINE
 
 	//  Restore rest of full context, registers restored at this point:
 	//	x18-x30, sp
@@ -152,9 +161,11 @@ ctx_load_rest:
 	//	x1: ctx
 	//	x2: cpuctx
 	//	x3: fpctx
-	//	x4: pc
-	//	x5: pstate
-	//	x6: address of branch in trampoline
+	//	x4: enabled
+	//	x5: address of branch in trampoline
+	//	x6: pc
+	//	x7: pstate
+	//	x8: sp
 	//  Registers that need to be restored:
 	//	pc, x0-x17, nzcv, fpcr, fpsr, q0-q31
 
@@ -174,16 +185,16 @@ ctx_load_rest:
 	//  here (in that case the reachability error checking and code
 	//  generation would have to be separated).
 
-	dc	cvau, x6	// Clean D-cache by VA to Point or Unitication
+	dc	cvau, x5	// Clean D-cache by VA to Point or Unitication
 	dsb	ish		// Ensure visibility of the cleaned data
-	ic	ivau, x6	// Invalidate I-cache cache by VA to PoU
+	ic	ivau, x5	// Invalidate I-cache cache by VA to PoU
 	dsb	ish
 
-	ldp	w6,  w7,  [x1, ctx_fpcr_fpsr]
+	ldp	w9,  w10,  [x1, ctx_fpcr_fpsr]
 
-	msr	nzcv, x5
-	msr	fpsr, x6
-	msr	fpcr, x7
+	msr	nzcv, x7
+	msr	fpsr, x9
+	msr	fpcr, x10
 
 	//  load 8 simd registers from 2 cache lines
 
@@ -199,10 +210,12 @@ ctx_load_rest:
 	ldp	x14, x15, [x1, ctx_x14]
 	ldp	x16, x17, [x1, ctx_x16]
 
-	//  load 4 simd registers from 1 cache line
+	//  load 8 simd registers from 1 cache line
 
 	ldp	q8,  q9,  [x3, fpctx_q8]
 	ldp	q10, q11, [x3, fpctx_q10]
+	ldp	q12, q13, [x3, fpctx_q12]
+	ldp	q14, q15, [x3, fpctx_q14]
 
 	br	x0			// Branch to trampoline
 FUNCTION_END(__lwt_ctx_load_on_cpu)
@@ -218,11 +231,6 @@ FUNCTION_START(__lwt_ctx_load_trampoline)
 	//  in between are issued.  The trampolines are cache line sized and
 	//  cache line aligned (they are per-CPU), 
 
-	//  load 4 simd registers from a cache line
-
-	ldp	q12, q13, [x3, fpctx_q12]
-	ldp	q14, q15, [x3, fpctx_q14]
-
 	//  load 8 simd registers from 2 cache lines
 
 	ldp	q16, q17, [x3, fpctx_q16]
@@ -237,11 +245,14 @@ FUNCTION_START(__lwt_ctx_load_trampoline)
 	ldp	q28, q29, [x3, fpctx_q28]
 	ldp	q30, q31, [x3, fpctx_q30]
 
+
 	//  load 8 registers from a cache line
 
+	strb	w4,  [x2, ENABLED_OFFSET_FROM_CPUCTX]	// cpu->cpu_enabled = w4
 	ldp	x2,  x3,  [x1, ctx_x2]
 	ldp	x4,  x5,  [x1, ctx_x4]
 	ldp	x6,  x7,  [x1, ctx_x6]
+	mov	sp,  x8
 	ldp	x8,  x9,  [x1, ctx_x8]
 
 	ldp	x0,  x1,  [x1, ctx_x0]
@@ -352,11 +363,13 @@ FUNCTION_END(__lwt_ctx_save)
 //				 ctx_t *ctx,			rsi
 //				 ctx_t *cpuctx,			rdx
 //				 bool *new_running,		rcx
-//				 bool *curr_running);		r8
+//				 bool enabled,			r8
+//				 bool *curr_running);		r9
 //  noreturn void __lwt_ctx_load_on_cpu(thr_t *thr,		rdi
 //					ctx_t *ctx,		rsi
 //					ctx_t *cpuctx,		rdx
-//					bool *new_running);	rcx
+//					bool *new_running,	rcx
+//					bool enabled);		r8
 //  noreturn void __lwt_ctx_load_idle_cpu(bool *curr_running,	rdi
 //					  ctx_t *ctx);		rsi
 
@@ -364,22 +377,24 @@ FUNCTION_END(__lwt_ctx_save)
 
 FUNCTION_START(__lwt_ctx_load_idle_cpu)
 	movb	$0, (%rdi)		// current thread is no longer running
+	movq	%rsi, %rdx		// rdx = cpuctx
+	xor	%r8,  %r8		// r8 = enabled = false
 	jmp	2f
 FUNCTION_END(__lwt_ctx_load_idle_cpu)
 FUNCTION_START(__lwt_ctx_load)
-	movb	$0, (%r8)		// current thread is no longer running
+	movb	$0, (%r9)		// current thread is no longer running
 FUNCTION_END(__lwt_ctx_load)
 FUNCTION_START(__lwt_ctx_load_on_cpu)
-	movq	$RETRY_COUNT, %r9
+	movq	$RETRY_COUNT, %r10
 1:	movzbl	(%rcx), %eax
-	subq	$1, %r9
+	subq	$1, %r10
 	je	4f
 	testb	%al, %al		// loop while new thr is running ...
 	jne	1b			// ... in another cpu
 	movb	$1, (%rcx)		// new thr is now running on this cpu
 2:	xor	%rax, %rax		// return value, zero is 2nd return
 3:	movq	ctx_fpctx(%rsi), %rcx
-	movq	ctx_pc(%rsi), %rdi
+	movq	ctx_pc(%rsi),  %rdi
 	movq	ctx_rbp(%rsi), %rbp
 	movq	ctx_rbx(%rsi), %rbx
 	movq	ctx_r12(%rsi), %r12
@@ -391,11 +406,13 @@ FUNCTION_START(__lwt_ctx_load_on_cpu)
 	movq	ctx_sp(%rsi), %rsp	// MUST change sp last, ctx_t for thread
 					// start might be clobbered otherwise by
 					// signal handlers (e.g. ktimer_signal)
+	movb	%r8b, ENABLED_OFFSET_FROM_CPUCTX(%rdx)	// cpu->cpu_enabled = r8
 	jmp	*%rdi			// rax == 0, 2nd __lwt_ctx_save return
 
 4:	// rax is thr, its the 2nd return value, returned to cpu_main()
 	mov	%rdi, %rax
 	mov	%rdx, %rsi		// switch to cpu_main() to handle thr
+	xor	%r8,  %r8		// ensure cpu->cpu_enabled remains false
 	jmp	3b			// thr->thr_running was set too long
 ctx_load_rest:
 	//  Restore rest of full context

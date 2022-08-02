@@ -339,12 +339,18 @@ typedef union {
 //  could have an inherent internal lower priority than ones not time slices
 //  as often.
 
-typedef struct {
-	schedq_t	 sqcl_schedq;		// voluntarily preempted threads
-	schedq_t	 sqcl_schedqts;		// time sliced threads
+typedef union {
+	struct {
+		schedq_t	sqcl_schedq;	// voluntarily preempted threads
+		schedq_t	sqcl_schedqts;	// time sliced threads
+	};
+	schedq_t	 	sqcl_schedqs[2];// all the schedqs
 } aligned_cache_line sqcl_t;
 
-#define	SQ_PRIO_MAX	 (LWT_PRIO_HIGH + 1)
+#define	SQCL_SCHEDQ_IX	 	0
+#define	SQCL_SCHEDQTS_IX	1
+
+#define	SQ_PRIO_MAX	 	(LWT_PRIO_HIGH + 1)
 
 //  All SMP hardware is organized hierarchically, because of how it is built
 //  from building blocks at various levels.  See the much larger comment about
@@ -756,9 +762,9 @@ struct cpu_s {
 	ktimer_t	*cpu_ktimer;
 	ureg_t		 cpu_ktimer_calls;
 	int		 cpu_hwix;
-	volatile bool	 cpu_enabled;
 	volatile bool	 cpu_timerticked;
 	bool		 cpu_pad[2];
+	volatile bool	 cpu_enabled;
 	cacheline_t	*cpu_trampoline; // Must be immediately before cpu_ctx
 	ctx_t		 cpu_ctx;	 // Must be immediately after trampoline
 } aligned_cache_line;
@@ -767,10 +773,14 @@ static_assert((sizeof(cpu_t) & (CACHE_LINE_SIZE - 1)) == 0, "cpu_t wrong size");
 
 //  To avoid more use of lwt_genassym.c (because of Android build integration)
 //  ctx_load_rest: in lwt_arch.S assumes that cpu_trampoline is immediately
-//  before cpu_ctx.
+//  before cpu_ctx and cpu_enabled immediately before cpu_trampoline.
 
 static_assert(offsetof(cpu_t, cpu_trampoline) + sizeof(opcode_t *) ==
 	      offsetof(cpu_t, cpu_ctx), "cpu_trampoline is not before cpu_ctx");
+
+static_assert(offsetof(cpu_t, cpu_enabled) + sizeof(bool) ==
+	      offsetof(cpu_t, cpu_trampoline),
+	      "cpu_enabled is not before cpu_trampoline");
 
 
 //  Thread attribute, the user of this library allocates a lwt_attr_t, which
@@ -970,8 +980,9 @@ typedef struct {
 	bool		 thrx_detached;
 	bool		 thrx_exited;
 	bool		 thrx_joining;
+	bool		 thrx_enabled;
 	bool		 thrx_is_fullctx;
-	bool		 thrx_pad[sizeof(ureg_t) - 4];
+	bool		 thrx_pad[sizeof(ureg_t) - 3];
 	union {
 	    ctx_t	*thrx_ctx;
 	    fullctx_t	*thrx_fullctx;

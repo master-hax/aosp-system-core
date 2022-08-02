@@ -463,8 +463,8 @@ static cpu_t *cpuptrs[8] = {
 noreturn void		 __lwt_start_glue(void);
 noreturn void		 __lwt_thr_exit(void *retval);
 
-static noreturn void	 sched_out(thr_t *thr);
-static int		 sched_in(thr_t *thr);
+static noreturn void	 sched_out(thr_t *thr, bool enabled);
+static int		 sched_in_with_qix(thr_t *thr, ureg_t qix);
 
 static int		 thr_context_save__thr_run(thr_t *currthr, thr_t *thr);
 
@@ -490,21 +490,22 @@ static noreturn void	 thr_block_forever(thr_t *thr, const char *msg,
 	__lwt_ctx_save(ctx);						\
 })
 
-#define	ctx_load(ctx, thr, cpuctx, new_running, curr_running)		\
-	__lwt_ctx_load(thr, ctx, cpuctx, new_running, curr_running)
+#define	ctx_load(ctx, thr, cpuctx, new_running, enabled, curr_running)	\
+	__lwt_ctx_load(thr, ctx, cpuctx, new_running, enabled, curr_running)
 
-#define	ctx_load_on_cpu(ctx, thr, cpuctx, new_running)			\
-	__lwt_ctx_load_on_cpu(thr, ctx, cpuctx, new_running)
+#define	ctx_load_on_cpu(ctx, thr, cpuctx, new_running, enabled)		\
+	__lwt_ctx_load_on_cpu(thr, ctx, cpuctx, new_running, enabled)
 
 #define	ctx_load_idle_cpu(ctx, curr_running)				\
 	__lwt_ctx_load_idle_cpu(curr_running, ctx)
 
 two_returns ureg_t	 __lwt_ctx_save(ctx_t *ctx);
 noreturn void		 __lwt_ctx_load(thr_t *thr, ctx_t *ctx, ctx_t *cpuctx,
-					bool *new_running, bool *curr_running);
+					bool *new_running, bool enabled,
+					bool *curr_running);
 noreturn void		 __lwt_ctx_load_on_cpu(thr_t *thr, ctx_t *ctx,
-					       ctx_t *cpuctx,
-					       bool *new_running);
+					       ctx_t *cpuctx, bool *new_running,
+					       bool enabled);
 noreturn void		 __lwt_ctx_load_idle_cpu(bool *curr_running,
 						 ctx_t *ctx);
 
@@ -580,6 +581,16 @@ inline_only ureg_t counter_get_before(void)
 inline_only ureg_t counter_get_after(void)
 {
 	return lwt_counter_get_after();
+}
+
+inline_only int sched_in(thr_t *thr)
+{
+	return sched_in_with_qix(thr, SQCL_SCHEDQ_IX);
+}
+
+inline_only int sched_in_ts(thr_t *thr)
+{
+	return sched_in_with_qix(thr, SQCL_SCHEDQTS_IX);
 }
 
 //}{  Implementation and operations on: lllist_t
@@ -1146,7 +1157,7 @@ retry:;
 		goto retry;
 	}
 	if (MTXA_LLWANT(new) == thridix)
-		sched_out(thr);
+		sched_out(thr, false);
 
 	++thr->thr_mtxcnt;
 	return 0;
@@ -1317,7 +1328,7 @@ static int cnd_wait(cnd_t *cnd, mtx_t *mtx, thr_t *thr)
 	ctx_t ctx;
 	if (ctx_save(&ctx, thrx)) {			// returns twice
 		mtx_unlock_from_cond_wait(mtx, thr);	// first return
-		sched_out(thr);
+		sched_out(thr, false);
 	}
 
 	//  Second return, when cnd is awakened the thread is moved to the
@@ -1851,7 +1862,7 @@ retry:;
 	}
 
 	lllist_insert(&thr_exited_lllist, (llelem_t *) thr);
-	sched_out(thr);
+	sched_out(thr, false);
 }
 
 static int thr_join(thr_t *thr, lwt_t thread, void **retvalpp)
@@ -3151,13 +3162,13 @@ inline_only ureg_t thr_get_prio_with_ceiling(thr_t *thr)
 //  This function must always return zero, its callers depend on it.
 //  Thr is ready to run, add it to the appropriate scheduling queue.
 
-static int sched_in(thr_t *thr)
+static int sched_in_with_qix(thr_t *thr, ureg_t qix)
 {
 	core_t *core = thr->thr_core;
 	schdom_t *schdom = &core->core_hw->hw_schdom;
 	ureg_t prio = thr_get_prio_with_ceiling(thr);
 	schdom_summary_update(schdom, prio);
-	schedq_t *schedq = &schdom->schdom_sqcls[prio].sqcl_schedq;
+	schedq_t *schedq = &schdom->schdom_sqcls[prio].sqcl_schedqs[qix];
 	ureg_t thridix = THRID_INDEX(thr->thra.thra_thrid);
 	ureg_t sqix = schedq_index(schedq);
 	schedq_insert(schedq, sqix, thr, thridix);
@@ -3209,44 +3220,42 @@ static void sched_in_at_head(thr_t *thr)
 
 #endif //}
 
+inline_only void cpu_generate_branch(cpu_t *cpu, thrx_t *thrx)
+{
+	ureg_t instaddr = (ureg_t) cpu->cpu_trampoline;
+	instaddr += OFFSET_OF_BRANCH_IN_TRAMPOLINE;
+	ureg_t pc = thrx->thrx_fullctx->fullctx_pc;
+	debug(inst_reachable(pc, instaddr));
+	generate_branch(pc, instaddr);
+}
+
 noreturn inline_only void thr_run(thr_t *thr, thr_t *currthr)
 {
 	cpu_t *cpu = cpu_current();
 	cpu->cpu_running_thr = thr;
 	thrx_t *thrx = thrx_from_thr(thr);
-	if (thrx->thrx_is_fullctx) {
-		ureg_t instaddr = (ureg_t) cpu->cpu_trampoline;
-		instaddr += OFFSET_OF_BRANCH_IN_TRAMPOLINE;
-		ureg_t pc = thrx->thrx_fullctx->fullctx_pc;
-		error_t error = generate_branch(pc, instaddr);
-		if (error)
-			TODO();
-	}
+	if (thrx->thrx_is_fullctx)
+		cpu_generate_branch(cpu, thrx);
 	ctx_t *ctx = thrx->thrx_ctx;
-	ctx_load(ctx, thr, &cpu->cpu_ctx,
-		 &thr->thr_running, &currthr->thr_running);
+	ctx_load(ctx, thr, &cpu->cpu_ctx, &thr->thr_running, thrx->thrx_enabled,
+		 &currthr->thr_running);
 }
 
 noreturn inline_only void thr_run_on_cpu(thr_t *thr, cpu_t *cpu)
 {
 	cpu->cpu_running_thr = thr;
 	thrx_t *thrx = thrx_from_thr(thr);
-	if (thrx->thrx_is_fullctx) {
-		ureg_t instaddr = (ureg_t) cpu->cpu_trampoline;
-		instaddr += OFFSET_OF_BRANCH_IN_TRAMPOLINE;
-		ureg_t pc = thrx->thrx_fullctx->fullctx_pc;
-		error_t error = generate_branch(pc, instaddr);
-		if (error)
-			TODO();
-	}
+	if (thrx->thrx_is_fullctx)
+		cpu_generate_branch(cpu, thrx);
 	ctx_t *ctx = thrx->thrx_ctx;
-	ctx_load_on_cpu(ctx, thr, &cpu->cpu_ctx, &thr->thr_running);
+	ctx_load_on_cpu(ctx, thr, &cpu->cpu_ctx, &thr->thr_running,
+			thrx->thrx_enabled);
 }
 
-noreturn inline_only void cpu_idle(cpu_t *cpu, thr_t *currthr)
+noreturn inline_only void cpu_idle(cpu_t *cpu, thr_t *thr)
 {
 	cpu->cpu_running_thr = NULL;
-	ctx_load_idle_cpu(&cpu->cpu_ctx, &currthr->thr_running);
+	ctx_load_idle_cpu(&cpu->cpu_ctx, &thr->thr_running);
 }
 
 static thr_t *schedq_get(schedq_t *schedq, ureg_t sqix)
@@ -3255,24 +3264,23 @@ static thr_t *schedq_get(schedq_t *schedq, ureg_t sqix)
 	return thr;
 }
 
-static noreturn void sched_out(thr_t *currthr)
+static noreturn void sched_out(thr_t *thr, bool enabled)
 {
-	schdom_t *schdom = &currthr->thr_core->core_hw->hw_schdom;
-	ureg_t prio = thr_get_prio_with_ceiling(currthr);
-	schedq_t *schedq = &schdom->schdom_sqcls[prio].sqcl_schedq;
-	ureg_t sqix = schedq_index(schedq);
-	thr_t *thr = schedq_get(schedq, sqix);
-	if (!thr) {
+	thrx_t *thrx = thrx_from_thr(thr);
+	thrx->thrx_enabled = enabled;
+	schdom_t *schdom = &thr->thr_core->core_hw->hw_schdom;
+	thr_t *t = schdom_get_thr(schdom);
+	if (!t) {
 		cpu_t *cpu = cpu_current();
-		cpu_idle(cpu, currthr);
+		cpu_idle(cpu, thr);
 	}
-	thr_run(thr, currthr);
+	thr_run(t, thr);
 }
 
-// static noreturn void sched_timeslice(thr_t *currthr)
-static void sched_timeslice(thr_t *currthr)
+static noreturn void sched_timeslice(thr_t *thr, bool enabled)
 {
-	// TODO();
+	sched_in_ts(thr);
+	sched_out(thr, enabled);
 }
 
 static int thr_context_save__thr_run(thr_t *currthr, thr_t *thr)
@@ -3671,7 +3679,7 @@ static void ktimer_tick(unused cpu_t *cpu)
 	thr_t *thr = cpu->cpu_running_thr;
 	thrx_t *thrx = thrx_from_thr(thr);
 	if (ctx_save(&ctx, thrx))			// returns twice
-		sched_timeslice(thr);			// first return.
+		sched_timeslice(thr, false);		// first return.
 }
 
 static void ktimer_signal(unused int signo, siginfo_t *siginfo, void *ucontextp)
@@ -3690,9 +3698,25 @@ static void ktimer_signal(unused int signo, siginfo_t *siginfo, void *ucontextp)
         ucontext_t *ucontext = ucontextp;
 	thrx_t *thrx = thrx_from_thr(thr);
 	fullctx_t *fullctx = (fullctx_t *) &ucontext->uc_mcontext;
+	ureg_t instaddr = (ureg_t) cpu->cpu_trampoline;
+	instaddr += OFFSET_OF_BRANCH_IN_TRAMPOLINE;
+	ureg_t pc = fullctx->fullctx_pc;
+
+	//  instaddr is not exact here if resumed in another cpu
+
+	if (!inst_reachable(pc, instaddr)) {
+		ctx_t ctx;
+		cpu->cpu_enabled = false;
+		if (ctx_save(&ctx, thrx))
+			sched_timeslice(thr, true);
+		cpu->cpu_enabled = true;
+		return;
+	}
+
 	thrx->thrx_is_fullctx = true;
 	thrx->thrx_fullctx = fullctx;
 	fullctx_check(fullctx);
+	sched_timeslice(thr, true);
 }
 
 static_assert(sizeof(mcontext_t) == sizeof(fullctx_t), "fullctx_t is wrong");
@@ -3977,11 +4001,21 @@ static void hws_init(hw_t *hw, size_t n)
 
 static cacheline_t *trampolines;
 
+#ifdef LWT_ARM64 //{
+//  TODO: well known address on adeb on Pixel6, needs to be determined
+//  at run-time, the dynamic linker might export a symbol for this
+#define	TRAMPOLINE_ADDR	((void *) (0x400000 - PAGE_SIZE))
+#endif //}
+
+#ifdef LWT_X64 //{
+#define	TRAMPOLINE_ADDR	NULL
+#endif //}
+
 static error_t trampolines_init(void)
 {
 	int i;
 	size_t size = NCPUS * CACHE_LINE_SIZE;
-	void *start = mmap(NULL, PAGE_SIZE_ROUND_UP(size),
+	void *start = mmap(TRAMPOLINE_ADDR, PAGE_SIZE_ROUND_UP(size),
 			   PROT_READ | PROT_WRITE | PROT_EXEC,
 			   MAP_PRIVATE | MAP_ANONYMOUS, -1, (off_t) 0);
 	if (start == (void *) -1)
