@@ -148,15 +148,29 @@ void DropTaskProfilesResourceCaching() {
 }
 
 bool SetProcessProfiles(uid_t uid, pid_t pid, const std::vector<std::string>& profiles) {
-    return TaskProfiles::GetInstance().SetProcessProfiles(uid, pid, profiles, false);
+    return TaskProfiles::GetInstance().SetProcessProfiles(uid, pid, std::span(profiles),
+                                                          &TaskProfile::ExecuteForProcess, false);
+}
+
+bool SetProcessProfiles(uid_t uid, pid_t pid, std::initializer_list<const char*> profiles) {
+    return TaskProfiles::GetInstance().SetProcessProfiles(uid, pid,
+                                                          std::span<const char* const>(profiles),
+                                                          &TaskProfile::ExecuteForProcess, false);
 }
 
 bool SetProcessProfilesCached(uid_t uid, pid_t pid, const std::vector<std::string>& profiles) {
-    return TaskProfiles::GetInstance().SetProcessProfiles(uid, pid, profiles, true);
+    return TaskProfiles::GetInstance().SetProcessProfiles(uid, pid, std::span(profiles),
+                                                          &TaskProfile::ExecuteForProcess, true);
 }
 
 bool SetTaskProfiles(int tid, const std::vector<std::string>& profiles, bool use_fd_cache) {
-    return TaskProfiles::GetInstance().SetTaskProfiles(tid, profiles, use_fd_cache);
+    return TaskProfiles::GetInstance().SetTaskProfiles(tid, std::span(profiles),
+                                                       &TaskProfile::ExecuteForTask, use_fd_cache);
+}
+
+bool SetTaskProfiles(int tid, std::initializer_list<const char*> profiles, bool use_fd_cache) {
+    return TaskProfiles::GetInstance().SetTaskProfiles(tid, std::span<const char* const>(profiles),
+                                                       &TaskProfile::ExecuteForTask, use_fd_cache);
 }
 
 // C wrapper for SetProcessProfiles.
