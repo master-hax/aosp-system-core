@@ -20,6 +20,7 @@
 #include <fcntl.h>
 #include <task_profiles.h>
 #include <string>
+#include <string_view>
 
 #include <android-base/file.h>
 #include <android-base/logging.h>
@@ -786,7 +787,7 @@ bool TaskProfiles::Load(const CgroupMap& cg_map, const std::string& file_name) {
     return true;
 }
 
-TaskProfile* TaskProfiles::GetProfile(const std::string& name) const {
+TaskProfile* TaskProfiles::GetProfile(std::string_view name) const {
     auto iter = profiles_.find(name);
 
     if (iter != profiles_.end()) {
@@ -795,7 +796,7 @@ TaskProfile* TaskProfiles::GetProfile(const std::string& name) const {
     return nullptr;
 }
 
-const IProfileAttribute* TaskProfiles::GetAttribute(const std::string& name) const {
+const IProfileAttribute* TaskProfiles::GetAttribute(std::string_view name) const {
     auto iter = attributes_.find(name);
 
     if (iter != attributes_.end()) {
