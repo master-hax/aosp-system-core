@@ -805,8 +805,8 @@ const IProfileAttribute* TaskProfiles::GetAttribute(std::string_view name) const
     return nullptr;
 }
 
-bool TaskProfiles::SetProcessProfiles(uid_t uid, pid_t pid,
-                                      const std::vector<std::string>& profiles, bool use_fd_cache) {
+template <typename T>
+bool TaskProfiles::SetProcessProfilesT(uid_t uid, pid_t pid, T profiles, bool use_fd_cache) {
     bool success = true;
     for (const auto& name : profiles) {
         TaskProfile* profile = GetProfile(name);
@@ -826,8 +826,8 @@ bool TaskProfiles::SetProcessProfiles(uid_t uid, pid_t pid,
     return success;
 }
 
-bool TaskProfiles::SetTaskProfiles(int tid, const std::vector<std::string>& profiles,
-                                   bool use_fd_cache) {
+template <typename T>
+bool TaskProfiles::SetTaskProfilesT(int tid, T profiles, bool use_fd_cache) {
     bool success = true;
     for (const auto& name : profiles) {
         TaskProfile* profile = GetProfile(name);
@@ -846,3 +846,10 @@ bool TaskProfiles::SetTaskProfiles(int tid, const std::vector<std::string>& prof
     }
     return success;
 }
+
+template bool TaskProfiles::SetProcessProfilesT(uid_t uid, pid_t pid, const std::vector<std::string>& profiles, bool use_fd_cache);
+template bool TaskProfiles::SetProcessProfilesT(uid_t uid, pid_t pid, std::span<std::string_view> profiles, bool use_fd_cache);
+template bool TaskProfiles::SetProcessProfilesT(uid_t uid, pid_t pid, std::span<const char *> profiles, bool use_fd_cache);
+template bool TaskProfiles::SetTaskProfilesT(int tid, const std::vector<std::string>& profiles, bool use_fd_cache);
+template bool TaskProfiles::SetTaskProfilesT(int tid, std::span<std::string_view> profiles, bool use_fd_cache);
+template bool TaskProfiles::SetTaskProfilesT(int tid, std::span<const char *> profiles, bool use_fd_cache);

@@ -20,10 +20,12 @@
 #include <sys/types.h>
 #include <map>
 #include <mutex>
+#include <span>
 #include <string>
 #include <string_view>
 #include <vector>
 
+#include <android-base/logging.h>
 #include <android-base/unique_fd.h>
 #include <cgroup_map.h>
 
@@ -211,11 +213,34 @@ class TaskProfiles {
     const IProfileAttribute* GetAttribute(std::string_view name) const;
     void DropResourceCaching(ProfileAction::ResourceCacheType cache_type) const;
     bool SetProcessProfiles(uid_t uid, pid_t pid, const std::vector<std::string>& profiles,
-                            bool use_fd_cache);
-    bool SetTaskProfiles(int tid, const std::vector<std::string>& profiles, bool use_fd_cache);
+                            bool use_fd_cache) {
+        return SetProcessProfilesT<const std::vector<std::string>&>(uid, pid, profiles,
+                                                                    use_fd_cache);
+    }
+    bool SetProcessProfiles(uid_t uid, pid_t pid, std::span<std::string_view> profiles,
+                            bool use_fd_cache) {
+        return SetProcessProfilesT(uid, pid, profiles, use_fd_cache);
+    }
+    bool SetProcessProfiles(uid_t uid, pid_t pid, std::span<const char *> profiles,
+                            bool use_fd_cache) {
+        return SetProcessProfilesT(uid, pid, profiles, use_fd_cache);
+    }
+    bool SetTaskProfiles(int tid, const std::vector<std::string>& profiles, bool use_fd_cache) {
+        return SetTaskProfilesT<const std::vector<std::string>&>(tid, profiles, use_fd_cache);
+    }
+    bool SetTaskProfiles(int tid, std::span<std::string_view> profiles, bool use_fd_cache) {
+        return SetTaskProfilesT(tid, profiles, use_fd_cache);
+    }
+    bool SetTaskProfiles(int tid, std::span<const char *> profiles, bool use_fd_cache) {
+        return SetTaskProfilesT(tid, profiles, use_fd_cache);
+    }
 
   private:
     TaskProfiles();
+    template <typename T>
+    bool SetProcessProfilesT(uid_t uid, pid_t pid, T profiles, bool use_fd_cache);
+    template <typename T>
+    bool SetTaskProfilesT(int tid, T profiles, bool use_fd_cache);
 
     bool Load(const CgroupMap& cg_map, const std::string& file_name);
 

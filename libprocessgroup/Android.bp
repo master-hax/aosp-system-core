@@ -78,6 +78,7 @@ cc_library {
 cc_test {
     name: "task_profiles_test",
     host_supported: true,
+    cpp_std: "c++2a",
     cflags: [
         "-Wall",
         "-Werror",
