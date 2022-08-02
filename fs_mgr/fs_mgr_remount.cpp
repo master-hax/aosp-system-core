@@ -261,6 +261,72 @@ static RemountStatus GetRemountList(Fstab& fstab, const std::vector<std::string>
     return REMOUNT_SUCCESS;
 }
 
+static const uint32_t kCheckFlagRebootLater = 0x1;
+static const uint32_t kCheckFlagSetupOverlayfs = 0x2;
+static const uint32_t kCheckFlagDisabledVerity = 0x4;
+static const uint32_t kCheckFlagVerityError = 0x8;
+
+static uint32_t CheckVerity(const FstabEntry& entry) {
+    if (!fs_mgr_is_verity_enabled(entry)) {
+        return 0;
+    }
+    if (android::base::GetProperty("ro.boot.vbmeta.device_state", "") == "locked") {
+        return kCheckFlagVerityError;
+    }
+
+    bool ok = false;
+
+    std::unique_ptr<AvbOps, decltype(&::avb_ops_user_free)> ops(avb_ops_user_new(),
+                                                                &::avb_ops_user_free);
+    if (ops) {
+        auto suffix = android::base::GetProperty("ro.boot.slot_suffix", "");
+        ok |= avb_user_verity_set(ops.get(), suffix.c_str(), false);
+    }
+    if (!ok && fs_mgr_set_blk_ro(entry.blk_device, false)) {
+        fec::io fh(entry.blk_device.c_str(), O_RDWR);
+        ok = fh && fh.set_verity_status(false);
+    }
+    if (!ok) {
+        return kCheckFlagVerityError;
+    }
+    return kCheckFlagDisabledVerity;
+}
+
+static std::pair<uint32_t, RemountStatus> CheckVerityAndOverlayfs(Fstab* partitions) {
+    uint32_t flags = 0;
+    RemountStatus status = REMOUNT_SUCCESS;
+    for (auto it = partitions->begin(); it != partitions->end();) {
+        auto& entry = *it;
+        const auto& mount_point = entry.mount_point;
+
+        auto verity = CheckVerity(entry);
+        if (verity == kCheckFlagVerityError) {
+            LOG(ERROR) << "Skipping verified partition " << mount_point << " for remount";
+            status = VERITY_PARTITION;
+            it = partitions->erase(it);
+            continue;
+        }
+        if (verity == kCheckFlagDisabledVerity) {
+            flags |= kCheckFlagDisabledVerity | kCheckFlagRebootLater;
+        }
+
+        bool change = false;
+        bool force = !!(flags & kCheckFlagDisabledVerity);
+        if (!fs_mgr_overlayfs_setup(nullptr, mount_point.c_str(), &change, force)) {
+            LOG(ERROR) << "Overlayfs setup for " << mount_point << " failed, skipping";
+            status = BAD_OVERLAY;
+            it = partitions->erase(it);
+            continue;
+        }
+        if (change) {
+            LOG(INFO) << "Using overlayfs for " << mount_point;
+            flags |= kCheckFlagRebootLater | kCheckFlagSetupOverlayfs;
+        }
+        it++;
+    }
+    return {flags, status};
+}
+
 static int do_remount(int argc, char* argv[]) {
     RemountStatus retval = REMOUNT_SUCCESS;
 
@@ -342,64 +408,20 @@ static int do_remount(int argc, char* argv[]) {
     }
 
     // Check verity and optionally setup overlayfs backing.
-    auto reboot_later = false;
-    auto user_please_reboot_later = false;
-    auto setup_overlayfs = false;
-    auto just_disabled_verity = false;
-    for (auto it = partitions.begin(); it != partitions.end();) {
-        auto& entry = *it;
-        auto& mount_point = entry.mount_point;
-        if (fs_mgr_is_verity_enabled(entry)) {
-            retval = VERITY_PARTITION;
-            auto ret = false;
-            if (android::base::GetProperty("ro.boot.vbmeta.device_state", "") != "locked") {
-                if (AvbOps* ops = avb_ops_user_new()) {
-                    ret = avb_user_verity_set(
-                            ops, android::base::GetProperty("ro.boot.slot_suffix", "").c_str(),
-                            false);
-                    avb_ops_user_free(ops);
-                }
-                if (!ret && fs_mgr_set_blk_ro(entry.blk_device, false)) {
-                    fec::io fh(entry.blk_device.c_str(), O_RDWR);
-                    ret = fh && fh.set_verity_status(false);
-                }
-                if (ret) {
-                    LOG(WARNING) << "Disabling verity for " << mount_point;
-                    just_disabled_verity = true;
-                    reboot_later = can_reboot;
-                    user_please_reboot_later = true;
-                }
-            }
-            if (!ret) {
-                LOG(ERROR) << "Skipping " << mount_point << " for remount";
-                it = partitions.erase(it);
-                continue;
-            }
-        }
+    auto check_result = CheckVerityAndOverlayfs(&partitions);
+    retval = check_result.second;
 
-        auto change = false;
-        errno = 0;
-        if (fs_mgr_overlayfs_setup(nullptr, mount_point.c_str(), &change, just_disabled_verity)) {
-            if (change) {
-                LOG(INFO) << "Using overlayfs for " << mount_point;
-                reboot_later = can_reboot;
-                user_please_reboot_later = true;
-                setup_overlayfs = true;
-            }
-        } else if (errno) {
-            PLOG(ERROR) << "Overlayfs setup for " << mount_point << " failed, skipping";
-            retval = BAD_OVERLAY;
-            it = partitions.erase(it);
-            continue;
-        }
-        ++it;
-    }
+    uint32_t flags = check_result.first;
+    bool user_please_reboot_later = !!(flags & kCheckFlagRebootLater);
+    bool auto_reboot = user_please_reboot_later && can_reboot;
+    bool setup_overlayfs = !!(flags & kCheckFlagSetupOverlayfs);
+    bool just_disabled_verity = !!(flags & kCheckFlagDisabledVerity);
 
     // If (1) remount requires a reboot to take effect, (2) system is currently
     // running a DSU guest and (3) DSU is disabled, then enable DSU so that the
     // next reboot would not take us back to the host system but stay within
     // the guest system.
-    if (reboot_later) {
+    if (auto_reboot) {
         if (auto gsid = android::gsi::GetGsiService()) {
             auto dsu_running = false;
             if (auto status = gsid->isGsiRunning(&dsu_running); !status.isOk()) {
@@ -431,7 +453,7 @@ static int do_remount(int argc, char* argv[]) {
     }
 
     if (partitions.empty() || just_disabled_verity) {
-        if (reboot_later) reboot(setup_overlayfs);
+        if (auto_reboot) reboot(setup_overlayfs);
         if (user_please_reboot_later) {
             return MUST_REBOOT;
         }
@@ -518,7 +540,7 @@ static int do_remount(int argc, char* argv[]) {
         retval = REMOUNT_FAILED;
     }
 
-    if (reboot_later) reboot(setup_overlayfs);
+    if (auto_reboot) reboot(setup_overlayfs);
     if (user_please_reboot_later) {
         LOG(INFO) << "Now reboot your device for settings to take effect";
         return 0;
