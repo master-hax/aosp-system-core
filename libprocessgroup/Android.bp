@@ -62,6 +62,7 @@ cc_library {
     export_header_lib_headers: [
         "libprocessgroup_headers",
     ],
+    cpp_std: "c++2a",
     cflags: [
         "-Wall",
         "-Werror",
