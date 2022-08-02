@@ -18,6 +18,23 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "7c9e9950_c6467d75",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 15
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2022-08-02T01:54:13Z",
+      "side": 1,
+      "message": "I\u0027d suggest adding an end-to-end test in system/apex instead of adding a unit test in system/core/init. Even though I love \"unit\" tests, I\u0027m not sure system/core/init is friendly to unit-tests. If you really want to add unit tests here, you might need to refactor a bit so that test code only exercises only the small bit of code you added.",
+      "revId": "8fc4871de80bb8c7da08b585664d46eae391ee52",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "412b0bf1_7c1d8a73",
@@ -48,6 +65,24 @@
       "writtenOn": "2022-08-01T23:49:09Z",
       "side": 1,
       "message": "I have some issue with this and two commented lines above. Then ServiceList::GetInstance().FindServicesByApexName is called within reboot_test.cpp, the service list only has 1 service, which was added in this test.\nWhen I tried to ctl.apex_unload, ServiceList::GetInstance().FindServicesByApexName is called from init. The service list has over 140 services and the test service is not on the list. \nServieList::GetInstance() return the singleton service list. I am not sure where the difference came from.\nBelow are logcat from two test runs: one called ServiceList::GetInstance().FindServicesByApexName within reboot_test.cpp and one called ServiceList::GetInstance().FindServicesByApexName from init.\nhttps://paste.googleplex.com/5739972532371456\nhttps://paste.googleplex.com/5021881649332224",
+      "revId": "8fc4871de80bb8c7da08b585664d46eae391ee52",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "059f9766_fe30f9e8",
+        "filename": "init/reboot_test.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 176,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2022-08-02T01:54:13Z",
+      "side": 1,
+      "message": "I guess you ran the test on device. SetProp(ctl.apex_unload) will invoke the init process on the device while ServiceList::GetInstance() returns the ServiceList instance the test process. The init process has its own \"ServiceList\" which contains all services on the device, The test process has its own copy of ServiceList which contains services added on the test code.",
+      "parentUuid": "0360f2a4_67ca9690",
       "revId": "8fc4871de80bb8c7da08b585664d46eae391ee52",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
