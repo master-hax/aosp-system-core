@@ -209,6 +209,8 @@ class TaskProfiles {
     // Should be used by all users
     static TaskProfiles& GetInstance();
 
+    bool LoadFromString(const CgroupMap& cg_map, const std::string& json_doc);
+
     TaskProfile* GetProfile(std::string_view name) const;
     const IProfileAttribute* GetAttribute(std::string_view name) const;
     void DropResourceCaching(ProfileAction::ResourceCacheType cache_type) const;
