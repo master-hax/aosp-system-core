@@ -16,6 +16,24 @@
       "message": "is this change intended?\n\nOriginal expression is \n  `android::base::GetBoolProperty(\"ro.virtual_ab.enabled\", false) \u0026\u0026 !android::base::GetBoolProperty(\"ro.virtual_ab.retrofit\", false)`\n, and it\u0027s inverse expression should be\n  `!android::base::GetBoolProperty(\"ro.virtual_ab.enabled\", false) || android::base::GetBoolProperty(\"ro.virtual_ab.retrofit\", false)`",
       "revId": "f64a0c054ca8a51f90efffa180b526832a4590ac",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2de24a1e_803bef52",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 173,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-08-03T18:00:42Z",
+      "side": 1,
+      "message": "The original check looks wrong to me... the presence of any VAB version means we need to disable checkpoints, since it could allocate on /data.",
+      "parentUuid": "8d7771be_d30dfac0",
+      "revId": "f64a0c054ca8a51f90efffa180b526832a4590ac",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
