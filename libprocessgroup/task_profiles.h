@@ -18,6 +18,7 @@
 
 #include <sys/cdefs.h>
 #include <sys/types.h>
+#include <functional>
 #include <map>
 #include <mutex>
 #include <span>
@@ -210,6 +211,9 @@ class TaskProfiles {
     static TaskProfiles& GetInstance();
 
     bool LoadFromString(const CgroupMap& cg_map, const std::string& json_doc);
+    void SetApplyProfileCallback(std::function<void(std::string_view)>* cb) {
+        apply_profile_callback_ = cb;
+    }
 
     TaskProfile* GetProfile(std::string_view name) const;
     const IProfileAttribute* GetAttribute(std::string_view name) const;
@@ -248,4 +252,5 @@ class TaskProfiles {
 
     std::map<std::string, std::shared_ptr<TaskProfile>, std::less<>> profiles_;
     std::map<std::string, std::unique_ptr<IProfileAttribute>, std::less<>> attributes_;
+    std::function<void(std::string_view)>* apply_profile_callback_;
 };
