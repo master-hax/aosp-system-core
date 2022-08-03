@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cf123f93_a24b0e41",
+        "filename": "fastboot/device/usb_iouring.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-08-03T05:11:04Z",
+      "side": 1,
+      "message": "this should be: bytes_remain -\u003d buf_len; the last iteration might underflow since h-\u003eio_size is constant; better to do this inside a while loop for readability..",
+      "revId": "b1326ddfc05ea105d383ea0b0cb1a0f0accb95a0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e8612675_a247144b",
+        "filename": "fastboot/device/usb_iouring.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-08-03T05:11:04Z",
+      "side": 1,
+      "message": "this should be after error check at L99; else you might be adding the error code -EAGAIN which you don\u0027t want to do that since you are retrying..\n\nI see you are using this to track the error.. perhaps just using boolean to check if there an error which isn\u0027t -EAGAIN or -EINTR ?",
+      "revId": "b1326ddfc05ea105d383ea0b0cb1a0f0accb95a0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2f5243e6_da019235",
+        "filename": "fastboot/device/usb_iouring.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-08-03T05:11:04Z",
+      "side": 1,
+      "message": "this isn\u0027t right.. if the intention is to poll all CQE\u0027s, then you really have to update the CQE index using io_uring_cqe_seen(); else you will keep polling the same index in the ring.\n\nMy earlier comment was related to the tear down path. If there is an I/O error - even after polling all the CQE instances; what will happen to the io_uring instance itself ? If there is an I/O error in \"usb_ffs_do_aio\", does it invoke exit_io_uring_ffs ?\n\nSorry, I am stressing on this because if things go wrong because of some unknown reasons in the I/O path, we shouldn\u0027t enter into a unknown state.",
+      "revId": "b1326ddfc05ea105d383ea0b0cb1a0f0accb95a0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
