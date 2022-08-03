@@ -117,6 +117,29 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "fc865805_dfffcd58",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 222,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-08-03T12:04:06Z",
+      "side": 1,
+      "message": "I think we should be traversing |fstab| instead. Else legacy remount (direct remount) would fail.",
+      "range": {
+        "startLine": 222,
+        "startChar": 29,
+        "endLine": 222,
+        "endChar": 39
+      },
+      "revId": "6e2e3d7f43dbc9873b1ec937e11c9637b4f42d00",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "5fe6f822_ddacf453",
         "filename": "fs_mgr/fs_mgr_remount.cpp",
         "patchSetId": 1
