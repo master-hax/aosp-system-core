@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8d7771be_d30dfac0",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 173,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-08-03T07:56:37Z",
+      "side": 1,
+      "message": "is this change intended?\n\nOriginal expression is \n  `android::base::GetBoolProperty(\"ro.virtual_ab.enabled\", false) \u0026\u0026 !android::base::GetBoolProperty(\"ro.virtual_ab.retrofit\", false)`\n, and it\u0027s inverse expression should be\n  `!android::base::GetBoolProperty(\"ro.virtual_ab.enabled\", false) || android::base::GetBoolProperty(\"ro.virtual_ab.retrofit\", false)`",
+      "revId": "f64a0c054ca8a51f90efffa180b526832a4590ac",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
