@@ -1,0 +1,141 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d70d5c5c_d570792a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-08-03T10:35:40Z",
+      "side": 1,
+      "message": "Indeed it\u0027s becoming more and more readable!",
+      "revId": "6e2e3d7f43dbc9873b1ec937e11c9637b4f42d00",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c244a917_76809e68",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-08-03T10:35:40Z",
+      "side": 1,
+      "message": "thoughts... maybe these logic should be a part of fs_mgr_overlayfs_candidate_list()? As fstab entry filtered out by these conditions are obviously *not* a remountable partition.",
+      "revId": "6e2e3d7f43dbc9873b1ec937e11c9637b4f42d00",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "14a64e50_abc8667c",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-08-03T10:35:40Z",
+      "side": 1,
+      "message": "I wonder when we can remove all these ugly system_mount_point() calls?\nI think we already can drop system-root-image support?\nSo the only valid use case of system_mount_point() now is when we read fstab from /proc ? Perhaps we can do a \"/\" -\u003e \"/system\" fixup once right after we read /proc, and then not worry about this in the rest of the code?",
+      "revId": "6e2e3d7f43dbc9873b1ec937e11c9637b4f42d00",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "07a9091d_7153b9fd",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 128,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-08-03T10:35:40Z",
+      "side": 1,
+      "message": "I think we can just move this line near the end of file, right before main(), so all functions sans main() is static, and we can drop the static keyword everywhere",
+      "revId": "6e2e3d7f43dbc9873b1ec937e11c9637b4f42d00",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "36f846d6_6d12ea5f",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 201,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-08-03T10:35:40Z",
+      "side": 1,
+      "message": "I think this is redundant, because\n\n(assuming |candidates| list only has top-level mountpoints)\n  |GetEntryForMountPoint(\u0026candidates, entry.mount_point)| is true,\n  \u003d\u003e |entry| is in the |candidates| list,\n  \u003d\u003e |GetWrappedEntry(candidates, entry)| must be false.",
+      "range": {
+        "startLine": 199,
+        "startChar": 0,
+        "endLine": 201,
+        "endChar": 5
+      },
+      "revId": "6e2e3d7f43dbc9873b1ec937e11c9637b4f42d00",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ea1497da_45e0c88f",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 205,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-08-03T10:35:40Z",
+      "side": 1,
+      "message": "`const_iterator`, if possible",
+      "range": {
+        "startLine": 205,
+        "startChar": 14,
+        "endLine": 205,
+        "endChar": 22
+      },
+      "revId": "6e2e3d7f43dbc9873b1ec937e11c9637b4f42d00",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5fe6f822_ddacf453",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 230,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-08-03T10:35:40Z",
+      "side": 1,
+      "message": "can all these \"Fstab\u0026\" be \"const Fstab\u0026\" ?",
+      "range": {
+        "startLine": 230,
+        "startChar": 36,
+        "endLine": 230,
+        "endChar": 42
+      },
+      "revId": "6e2e3d7f43dbc9873b1ec937e11c9637b4f42d00",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
