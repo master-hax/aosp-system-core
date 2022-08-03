@@ -54,6 +54,24 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "ac7c62c9_c0e02e7d",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-08-03T20:39:10Z",
+      "side": 1,
+      "message": "Very likely, that\u0027s a good idea. It\u0027d need some testing, probably on hikey and the emulator. I\u0027d prefer to do it as a follow-up though since this series is mostly code motion.",
+      "parentUuid": "14a64e50_abc8667c",
+      "revId": "6e2e3d7f43dbc9873b1ec937e11c9637b4f42d00",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "07a9091d_7153b9fd",
         "filename": "fs_mgr/fs_mgr_remount.cpp",
         "patchSetId": 1
@@ -92,6 +110,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "ee3e3049_bb1d40f7",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 201,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-08-03T20:39:10Z",
+      "side": 1,
+      "message": "I\u0027ll look into this with the system_mount_point() issue above, in case it\u0027s behavior changing.",
+      "parentUuid": "36f846d6_6d12ea5f",
+      "range": {
+        "startLine": 199,
+        "startChar": 0,
+        "endLine": 201,
+        "endChar": 5
+      },
+      "revId": "6e2e3d7f43dbc9873b1ec937e11c9637b4f42d00",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "ea1497da_45e0c88f",
@@ -105,6 +147,30 @@
       "writtenOn": "2022-08-03T10:35:40Z",
       "side": 1,
       "message": "`const_iterator`, if possible",
+      "range": {
+        "startLine": 205,
+        "startChar": 14,
+        "endLine": 205,
+        "endChar": 22
+      },
+      "revId": "6e2e3d7f43dbc9873b1ec937e11c9637b4f42d00",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e7d3ecec_51005d3b",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 205,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-08-03T20:39:10Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ea1497da_45e0c88f",
       "range": {
         "startLine": 205,
         "startChar": 14,
@@ -138,6 +204,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "a0a6ec80_850266c6",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 222,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-08-03T20:39:10Z",
+      "side": 1,
+      "message": "Good catch, thanks.",
+      "parentUuid": "fc865805_dfffcd58",
+      "range": {
+        "startLine": 222,
+        "startChar": 29,
+        "endLine": 222,
+        "endChar": 39
+      },
+      "revId": "6e2e3d7f43dbc9873b1ec937e11c9637b4f42d00",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "5fe6f822_ddacf453",
@@ -151,6 +241,30 @@
       "writtenOn": "2022-08-03T10:35:40Z",
       "side": 1,
       "message": "can all these \"Fstab\u0026\" be \"const Fstab\u0026\" ?",
+      "range": {
+        "startLine": 230,
+        "startChar": 36,
+        "endLine": 230,
+        "endChar": 42
+      },
+      "revId": "6e2e3d7f43dbc9873b1ec937e11c9637b4f42d00",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c64bb50f_f6d0116f",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 230,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-08-03T20:39:10Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5fe6f822_ddacf453",
       "range": {
         "startLine": 230,
         "startChar": 36,
