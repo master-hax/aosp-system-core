@@ -813,6 +813,9 @@ template <typename T>
 bool TaskProfiles::SetProcessProfilesT(uid_t uid, pid_t pid, T profiles, bool use_fd_cache) {
     bool success = true;
     for (const auto& name : profiles) {
+        if (apply_profile_callback_) {
+            (*apply_profile_callback_)(name);
+        }
         TaskProfile* profile = GetProfile(name);
         if (profile != nullptr) {
             if (use_fd_cache) {
@@ -834,6 +837,9 @@ template <typename T>
 bool TaskProfiles::SetTaskProfilesT(int tid, T profiles, bool use_fd_cache) {
     bool success = true;
     for (const auto& name : profiles) {
+        if (apply_profile_callback_) {
+            (*apply_profile_callback_)(name);
+        }
         TaskProfile* profile = GetProfile(name);
         if (profile != nullptr) {
             if (use_fd_cache) {
