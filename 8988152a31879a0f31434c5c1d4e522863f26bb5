@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "05856c76_52b6a19d",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 555,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-08-03T12:07:08Z",
+      "side": 1,
+      "message": "we should run these code if at least one path remount succeeded.",
+      "range": {
+        "startLine": 552,
+        "startChar": 4,
+        "endLine": 555,
+        "endChar": 5
+      },
+      "revId": "8988152a31879a0f31434c5c1d4e522863f26bb5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
