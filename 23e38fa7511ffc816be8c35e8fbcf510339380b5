@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "2c96c652_e12d9f51",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-08-04T17:12:18Z",
+      "side": 1,
+      "message": "Done. There\u0027s also a lot of overlap with fs_mgr_wants_overlayfs but it doesn\u0027t seem worth factoring out something common.",
+      "parentUuid": "c7226ca6_8fef6ed7",
+      "range": {
+        "startLine": 67,
+        "startChar": 5,
+        "endLine": 67,
+        "endChar": 30
+      },
+      "revId": "23e38fa7511ffc816be8c35e8fbcf510339380b5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "fe54bf34_a1dca7d6",
@@ -41,6 +65,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "06faebdf_3bf649fe",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 196,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-08-04T17:12:18Z",
+      "side": 1,
+      "message": "Indeed you\u0027re right, fixed.",
+      "parentUuid": "fe54bf34_a1dca7d6",
+      "revId": "23e38fa7511ffc816be8c35e8fbcf510339380b5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "9a1bd181_45c71955",
@@ -54,6 +96,24 @@
       "writtenOn": "2022-08-04T12:24:26Z",
       "side": 1,
       "message": "If I\u0027m reading it right, in order to match the original logic, we need to transform this line to:\n\n```\n// Change GetWrappedEntry() to return ::const_iterator to make life easier?\nit \u003d wrap;\n```\n\notherwise this line updating |partition| isn\u0027t doing anything useful...",
+      "revId": "23e38fa7511ffc816be8c35e8fbcf510339380b5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b71bbdb5_4b33535e",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 248,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-08-04T17:12:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a1bd181_45c71955",
       "revId": "23e38fa7511ffc816be8c35e8fbcf510339380b5",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
