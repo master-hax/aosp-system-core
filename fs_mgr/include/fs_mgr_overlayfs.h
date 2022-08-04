@@ -56,5 +56,7 @@ void CleanupOldScratchFiles();
 // overlays if any partition is flashed or updated.
 void TeardownAllOverlayForMountPoint(const std::string& mount_point = {});
 
+bool IsPartitionRemounted(const std::string& mount_point);
+
 }  // namespace fs_mgr
 }  // namespace android
