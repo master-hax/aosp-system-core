@@ -62,7 +62,8 @@ FUNCTION_START(__lwt_ctx_save)
 	stp	x30, x17, [x0, ctx_x30]		// [return address, sp]
 	stp	x30, xzr, [x0, ctx_pc]		// [pc, pstate]
 
-	ret					// x0 is non-zero return value
+	mov	x0,  1				// CTX_SAVED
+	ret
 FUNCTION_END(__lwt_ctx_save)
 
 //  These functions must not use the run-time (thread or cpu) stack.
@@ -98,7 +99,7 @@ FUNCTION_START(__lwt_ctx_load_idle_cpu)
 	stlrb	wzr, [x0]		// current thread is no longer running
 	mov	x0,  xzr		// return value, zero is 2nd return
 	mov	x2,  x1			// x2 = cpuctx
-	mov	x4,  xzr		// x4 = enabled = false
+	mov	x4,  1			// x4 = enabled = true
 	b	2f
 FUNCTION_END(__lwt_ctx_load_idle_cpu)
 
@@ -146,7 +147,7 @@ FUNCTION_START(__lwt_ctx_load_on_cpu)
 
 3:	// x0 is thr, its the 2nd return value, returned to cpu_main()
 	mov	x1,  x2			// switch to cpu_main() to handle thr
-	mov	xzr, x4			// ensure cpu->cpu_enabled remains false
+	mov	x4,  1			// ensure cpu->cpu_enabled becomes true
 	b	2b			// thr->thr_running was set too long
 
 ctx_load_rest:
@@ -347,7 +348,7 @@ FUNCTION_END(__lwt_set_nzcv)
 FUNCTION_START(__lwt_ctx_save)
 	movq	$0, ctx_fpctx(%rdi)
 	popq	%rsi				// return address
-	movq	$1, %rax
+	movq	$1, %rax			// CTX_SAVED
 	movq	%rsp, ctx_sp(%rdi)
 	movq	%rbp, ctx_rbp(%rdi)
 	movq	%rbx, ctx_rbx(%rdi)
@@ -378,7 +379,7 @@ FUNCTION_END(__lwt_ctx_save)
 FUNCTION_START(__lwt_ctx_load_idle_cpu)
 	movb	$0, (%rdi)		// current thread is no longer running
 	movq	%rsi, %rdx		// rdx = cpuctx
-	xor	%r8,  %r8		// r8 = enabled = false
+	movl	$1, %r8d		// r8 = enabled = false
 	jmp	2f
 FUNCTION_END(__lwt_ctx_load_idle_cpu)
 FUNCTION_START(__lwt_ctx_load)
@@ -412,7 +413,7 @@ FUNCTION_START(__lwt_ctx_load_on_cpu)
 4:	// rax is thr, its the 2nd return value, returned to cpu_main()
 	mov	%rdi, %rax
 	mov	%rdx, %rsi		// switch to cpu_main() to handle thr
-	xor	%r8,  %r8		// ensure cpu->cpu_enabled remains false
+	movl	$1, %r8d		// ensure cpu->cpu_enabled becomes true
 	jmp	3b			// thr->thr_running was set too long
 ctx_load_rest:
 	//  Restore rest of full context

@@ -760,7 +760,11 @@ struct cpu_s {
 	char		*cpu_name;
 	kcpu_t		*cpu_kcpu;
 	ktimer_t	*cpu_ktimer;
-	ureg_t		 cpu_ktimer_calls;
+	struct {
+		ureg_t	 count_disabled;
+		ureg_t	 count_unreachable;
+		ureg_t	 count_reachable;
+	} cpu_counts;
 	int		 cpu_hwix;
 	volatile bool	 cpu_timerticked;
 	bool		 cpu_pad[2];

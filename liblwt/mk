@@ -47,6 +47,9 @@ UNAME_M="$(uname -m)"
 
 ARCH="$1"
 
+DEFS="$DEFS -DLWT_CPU_THREAD_KEYWORD"
+# DEFS="$DEFS -DLWT_X64_USE_GS"
+
 if [ "$ARCH" = x64 ] ; then
 	DEFS="$DEFS -DLWT_X64"
 	CFLAGS="$CFLAGS -m64"
@@ -64,7 +67,7 @@ elif [ "$ARCH" = arm64 ] ; then
 		CPP=cpp
 		DUMP=objdump
 		NM=nm
-		DEFS="$DEFS -DLWT_CPU_PTHREAD_KEY"
+		# DEFS="$DEFS -DLWT_CPU_PTHREAD_KEY"
 	else
 		CC="aarch64-linux-gnu-gcc-11 -std=c17"
 		CXX=aarch64-linux-gnu-g++-11 

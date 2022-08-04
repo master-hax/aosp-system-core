@@ -696,28 +696,6 @@ inline_only uregx2_t uregx2_comp_and_swap_acq_rel(uregx2_t old, uregx2_t new,
 	return (uregx2_t) {.low = old_low, .high = old_high};
 }
 
-#ifndef LWT_CPU_PTHREAD_KEY //{
-inline_only void cpu_current_set(cpu_t *cpu)
-{
-#if 0
-	// TODO: use x18 until tpidrro_el0 can be set from the kernel :-(
-	*((volatile int *)11) = 0xDEADBEEF;
-#else
-	__asm__("mov	x18, %0" : "=r"(cpu));
-#endif
-}
-inline_only cpu_t *cpu_current(void)
-{
-	register ureg_t cpureg;
-#if 0
-	__asm__("mrs	%0, tpidrro_el0" : "=r"(cpureg));
-#else
-	__asm__("mov	%0, x18" : "=r"(cpureg));
-#endif
-	return (cpu_t *) cpureg;
-}
-#endif //}
-
 #endif //}
 
 #ifdef LWT_X64 //{
@@ -737,6 +715,8 @@ inline_only uregx2_t uregx2_comp_and_swap_acq_rel(uregx2_t old, uregx2_t new,
 	return (uregx2_t) {.low = old_low, .high = old_high};
 }
 
+#ifdef LWT_X64_USE_GS //{
+
 inline_only void cpu_current_set_x64(cpu_t **cpu)
 {
 	register ureg_t gsb  __asm__("rdi") = (ureg_t) cpu;
@@ -750,6 +730,8 @@ inline_only cpu_t *cpu_current()
 	__asm__ volatile("mov %%gs:0, %0" : "=r"(reg));
 	return (cpu_t *) reg;
 }
+
+#endif //}
 
 #endif //}
 

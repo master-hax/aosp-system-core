@@ -201,11 +201,11 @@ static cpu_t cpus[1] = {
 	[0] = {.cpu_name = "cpu0(test)", .cpu_core = &cores[0]},
 };
 
-#ifdef LWT_X64
+#ifdef LWT_X64_USE_GS //{
 static cpu_t *cpuptrs[1] = {
 	[0] = &cpus[0],
 };
-#endif
+#endif //}
 
 #else //}{
 
@@ -334,14 +334,14 @@ static core_t cores[4] = {
 	[3] = {.core_hw = &cores_[3]},
 };
 static cpu_t cpus[8] = {
-	[0] = {.cpu_name = "cpu1", .cpu_core = &cores[0]},
-	[1] = {.cpu_name = "cpu2", .cpu_core = &cores[0]},
-	[2] = {.cpu_name = "cpu3", .cpu_core = &cores[1]},
-	[3] = {.cpu_name = "cpu4", .cpu_core = &cores[1]},
-	[4] = {.cpu_name = "cpu5", .cpu_core = &cores[2]},
-	[5] = {.cpu_name = "cpu6", .cpu_core = &cores[2]},
-	[6] = {.cpu_name = "cpu7", .cpu_core = &cores[3]},
-	[7] = {.cpu_name = "cpu8", .cpu_core = &cores[3]},
+	[0] = {.cpu_name = "cpu0", .cpu_core = &cores[0]},
+	[1] = {.cpu_name = "cpu1", .cpu_core = &cores[0]},
+	[2] = {.cpu_name = "cpu2", .cpu_core = &cores[1]},
+	[3] = {.cpu_name = "cpu3", .cpu_core = &cores[1]},
+	[4] = {.cpu_name = "cpu4", .cpu_core = &cores[2]},
+	[5] = {.cpu_name = "cpu5", .cpu_core = &cores[2]},
+	[6] = {.cpu_name = "cpu6", .cpu_core = &cores[3]},
+	[7] = {.cpu_name = "cpu7", .cpu_core = &cores[3]},
 };
 
 #else //}{
@@ -397,18 +397,19 @@ static core_t cores[8] = {
 	[7] = {.core_hw = &cores_[7]},
 };
 static cpu_t cpus[8] = {
-	[0] = {.cpu_name = "cpu1", .cpu_core = &cores[0]},
-	[1] = {.cpu_name = "cpu2", .cpu_core = &cores[1]},
-	[2] = {.cpu_name = "cpu3", .cpu_core = &cores[2]},
-	[3] = {.cpu_name = "cpu4", .cpu_core = &cores[3]},
-	[4] = {.cpu_name = "cpu5", .cpu_core = &cores[4]},
-	[5] = {.cpu_name = "cpu6", .cpu_core = &cores[5]},
-	[6] = {.cpu_name = "cpu7", .cpu_core = &cores[6]},
-	[7] = {.cpu_name = "cpu8", .cpu_core = &cores[7]},
+	[0] = {.cpu_name = "cpu0", .cpu_core = &cores[0]},
+	[1] = {.cpu_name = "cpu1", .cpu_core = &cores[1]},
+	[2] = {.cpu_name = "cpu2", .cpu_core = &cores[2]},
+	[3] = {.cpu_name = "cpu3", .cpu_core = &cores[3]},
+	[4] = {.cpu_name = "cpu4", .cpu_core = &cores[4]},
+	[5] = {.cpu_name = "cpu5", .cpu_core = &cores[5]},
+	[6] = {.cpu_name = "cpu6", .cpu_core = &cores[6]},
+	[7] = {.cpu_name = "cpu7", .cpu_core = &cores[7]},
 };
 
 #endif //}
 
+#ifdef LWT_X64_USE_GS //{
 static cpu_t *cpuptrs[8] = {
 	[0] = &cpus[0],
 	[1] = &cpus[1],
@@ -419,6 +420,7 @@ static cpu_t *cpuptrs[8] = {
 	[6] = &cpus[6],
 	[7] = &cpus[7],
 };
+#endif //}
 
 #endif //}
 #endif //}
@@ -484,7 +486,6 @@ static noreturn void	 thr_block_forever(thr_t *thr, const char *msg,
 //  argument.
 
 #define	ctx_save(ctx, thrx) ({						\
-	debug(!cpu_current()->cpu_enabled);				\
 	(thrx)->thrx_ctx = (ctx);					\
 	(thrx)->thrx_is_fullctx = false;				\
 	__lwt_ctx_save(ctx);						\
@@ -558,12 +559,12 @@ static void		 arena_free(arena_t *arena, void *mem);
 
 static void		 core_run(core_t *core);
 
+static void		 ktimer_tick(cpu_t *cpu);
+
 #ifdef LWT_CPU_PTHREAD_KEY //{
 static void		 cpu_current_set(cpu_t *cpu);
 static cpu_t		*cpu_current(void);
 #endif //}
-
-static void		 ktimer_tick(cpu_t *cpu);
 
 //}  This section contains entry points into this module and their supporting
 ///  functions inlined into the corresponding __lwt_() functions at the end of
@@ -572,6 +573,30 @@ static void		 ktimer_tick(cpu_t *cpu);
 //{  compiler puts out-of-line the code that leads to aborting the program.
 
 //{  Miscellaneous inline functions:
+
+#ifdef LWT_X64_USE_GS //{
+static void cpu_current_set(cpu_t *cpu)
+{
+	//  X64 needs an extra level of indirection to use gs:
+	//  this is not used often enough to optimize further.
+
+	cpu_current_set_x64(&cpuptrs[cpu - cpus]);
+}
+#endif //}
+
+#ifdef LWT_CPU_THREAD_KEYWORD //{
+static __thread cpu_t *cpu_this;
+
+inline_only void cpu_current_set(cpu_t *cpu)
+{
+	cpu_this = cpu;
+}
+
+inline_only cpu_t *cpu_current(void)
+{
+	return cpu_this;
+}
+#endif //}
 
 inline_only ureg_t counter_get_before(void)
 {
@@ -1130,6 +1155,7 @@ retry:;
 		MTXA_LLWANT_SET(new, thridix);
 		if (!thrx) {
 			thrx = thrx_from_thr(thr);
+			debug(!cpu_current()->cpu_enabled);
 			if (!ctx_save(&ctx, thrx)) {		// returns twice
 				//  Second return, when thr resumes
 				//  the mtx has been handed off to it.
@@ -1137,6 +1163,7 @@ retry:;
 				debug(thr->thr_mtxcnt &&
 				      MTXA_OWNER(mtx->mtxa) ==
 				      THRID_INDEX(thr->thra.thra_thrid));
+				debug(!cpu_current()->cpu_enabled);
 				return 0;
 			}
 			// first return
@@ -1326,10 +1353,12 @@ static int cnd_wait(cnd_t *cnd, mtx_t *mtx, thr_t *thr)
 	thr->thr_cnd = cnd;
 	thrx_t *thrx = thrx_from_thr(thr);
 	ctx_t ctx;
+	debug(!cpu_current()->cpu_enabled);
 	if (ctx_save(&ctx, thrx)) {			// returns twice
 		mtx_unlock_from_cond_wait(mtx, thr);	// first return
 		sched_out(thr, false);
 	}
+	debug(!cpu_current()->cpu_enabled);
 
 	//  Second return, when cnd is awakened the thread is moved to the
 	//  mtx->mtx_wantpriq, eventually when the mtx is unlocked the thread
@@ -1904,13 +1933,19 @@ inline_only thr_t *cpu_disable(cpu_t *cpu)
 	return cpu->cpu_running_thr;
 }
 
-inline_only void cpu_enable(cpu_t *cpu)
+inline_only void cpu_enable_with_ktimer_tick(cpu_t *cpu)
 {
 	debug(!cpu->cpu_enabled);
 	if (cpu->cpu_timerticked) {
 		cpu->cpu_timerticked = false;
 		ktimer_tick(cpu);
 	}
+	cpu->cpu_enabled = true;
+}
+
+inline_only void cpu_enable(cpu_t *cpu)
+{
+	debug(!cpu->cpu_enabled);
 	cpu->cpu_enabled = true;
 }
 
@@ -1928,7 +1963,7 @@ inline_only thr_t *api_enter(unused int api)
 inline_only void api_exit(unused int api)
 {
 	cpu_t *cpu = cpu_current();
-	cpu_enable(cpu);
+	cpu_enable_with_ktimer_tick(cpu);
 }
 
 typedef void (*glue_t)(void *arg, lwt_function_t function);
@@ -3291,8 +3326,10 @@ static int thr_context_save__thr_run(thr_t *currthr, thr_t *thr)
 
 	thrx_t *thrx = thrx_from_thr(currthr);
 	ctx_t ctx;
+	debug(!cpu_current()->cpu_enabled);
 	if (ctx_save(&ctx, thrx)) 			// returns twice
 		thr_run(thr, currthr);			// first return
+	debug(!cpu_current()->cpu_enabled);
 	return 0;			// second return, must return zero
 }
 
@@ -3563,16 +3600,6 @@ struct kcore_s {
 
 static kcore_t		kcores[NCORES];
 
-#ifdef LWT_X64
-static void cpu_current_set(cpu_t *cpu)
-{
-	//  X64 needs an extra level of indirection to use gs:
-	//  this is not used often enough to optimize further.
-
-	cpu_current_set_x64(&cpuptrs[cpu - cpus]);
-}
-#endif
-
 inline_only void core_run_locked(core_t *core, kcore_t *kcore)
 {
 	if (core->core_ncpus_idled > 0)
@@ -3678,19 +3705,21 @@ static void ktimer_tick(unused cpu_t *cpu)
 	ctx_t ctx;
 	thr_t *thr = cpu->cpu_running_thr;
 	thrx_t *thrx = thrx_from_thr(thr);
+	debug(!cpu_current()->cpu_enabled);
 	if (ctx_save(&ctx, thrx))			// returns twice
 		sched_timeslice(thr, false);		// first return.
+	debug(!cpu_current()->cpu_enabled);
 }
 
 static void ktimer_signal(unused int signo, siginfo_t *siginfo, void *ucontextp)
 {      
 	cpu_t *cpu = (cpu_t *) siginfo->si_value.sival_ptr;
 	debug(cpu == cpu_current());
-	++cpu->cpu_ktimer_calls;
 	thr_t *thr = cpu->cpu_running_thr;
 	if (unlikely(!thr))
 		return;
 	if (unlikely(!cpu->cpu_enabled)) {
+		++cpu->cpu_counts.count_disabled;
 		cpu->cpu_timerticked = true;
 		return;
 	}
@@ -3705,14 +3734,15 @@ static void ktimer_signal(unused int signo, siginfo_t *siginfo, void *ucontextp)
 	//  instaddr is not exact here if resumed in another cpu
 
 	if (!inst_reachable(pc, instaddr)) {
+		++cpu->cpu_counts.count_unreachable;
 		ctx_t ctx;
-		cpu->cpu_enabled = false;
 		if (ctx_save(&ctx, thrx))
 			sched_timeslice(thr, true);
-		cpu->cpu_enabled = true;
+		debug(cpu_current()->cpu_enabled);
 		return;
 	}
 
+	++cpu->cpu_counts.count_reachable;
 	thrx->thrx_is_fullctx = true;
 	thrx->thrx_fullctx = fullctx;
 	fullctx_check(fullctx);
@@ -3729,6 +3759,7 @@ static sigset_t	 lwt_rtsigno_sigset;
 
 #define	TIME_SLICE_NSECS	(100000000L)
 
+unused // TODO
 inline_only void ktimer_start(ktimer_t *ktimer)
 {
 	timer_t timer = (timer_t) ktimer;
@@ -3740,12 +3771,6 @@ inline_only void ktimer_start(ktimer_t *ktimer)
 		error_t error = errno;
 		assert(error);
 	}
-}
-
-unused inline_only void ktimer_block(void)
-{
-        error_t error = pthread_sigmask(SIG_BLOCK, &lwt_rtsigno_sigset, NULL);
-	assert(!error);
 }
 
 inline_only void ktimer_unblock(void)
@@ -3761,6 +3786,13 @@ inline_only void ktimer_unblock(void)
 static error_t ktimer_create(ktimer_t **ktimerpp, cpu_t *cpu)
 {
 	*ktimerpp = NULL;
+
+	sigset_t prev_sigset;
+        error_t error = pthread_sigmask(SIG_BLOCK, &lwt_rtsigno_sigset,
+					&prev_sigset);
+	if (error)
+		return error;
+
 	struct sigevent sigev;
 	sigev.sigev_notify = SIGEV_THREAD_ID;
 	sigev.sigev_signo = lwt_rtsigno;
@@ -3768,41 +3800,29 @@ static error_t ktimer_create(ktimer_t **ktimerpp, cpu_t *cpu)
 	sigev.sigev_value.sival_ptr = cpu;
 	timer_t timer;
 
-	if (timer_create(CLOCK_PROCESS_CPUTIME_ID, &sigev, &timer) < 0)
-		return errno;
-
-	int rtsigno = lwt_rtsigno;
-	struct sigaction sa;
-	sa.sa_sigaction = ktimer_signal;
-        sa.sa_flags = SA_SIGINFO;
-        sa.sa_mask = lwt_rtsigno_sigset;
-
-	sigset_t prev_sigset;
-        error_t error = pthread_sigmask(SIG_BLOCK, &sa.sa_mask, &prev_sigset);
-	if (!error) {
-		struct sigaction prev_sa;
-		if (sigaction(rtsigno, &sa, &prev_sa) < 0)
-			error = errno;
-		else {
-			//  Signal handlers are process-wide, the first call
-			//  to this function should find it to be SIG_DFL, the
-			//  others should find it already set to ktimer_signal.
-
-			if (prev_sa.sa_sigaction ==
-			    (void (*)(int, siginfo_t *, void *)) SIG_DFL ||
-			    prev_sa.sa_sigaction == ktimer_signal) {
-				*ktimerpp = (ktimer_t *) timer;
-				return 0;
-			}
-			error = EINVAL;
-		}
+	if (timer_create(CLOCK_PROCESS_CPUTIME_ID, &sigev, &timer) < 0) {
 		(void) pthread_sigmask(SIG_SETMASK, &prev_sigset, NULL);
+		return errno;
 	}
-	timer_delete(timer);
-	return error;
+	*ktimerpp = (ktimer_t *) timer;
+	return 0;
 }
 
 static int sched_attempts = 1;
+
+static error_t cpu_ktimer_init_and_start(cpu_t *cpu)
+{
+	error_t error = ktimer_create(&cpu->cpu_ktimer, cpu);
+	if (error)
+		return error;
+
+	ktimer_unblock();
+	cpu_enable(cpu);
+#if 0 // TODO
+	ktimer_start(cpu->cpu_ktimer);
+#endif
+	return 0;
+}
 
 static noreturn void *cpu_main(cpu_t *cpu)
 {
@@ -3814,11 +3834,11 @@ static noreturn void *cpu_main(cpu_t *cpu)
 
 	if (cpu != &cpus[0]) {		// cpu0 handled in cpus_start()
 		error_t error = cpu_bind(cpu);
-		assert(!error);
-		error = ktimer_create(&cpu->cpu_ktimer, cpu);
-		assert(!error);
-		ktimer_unblock();
-		ktimer_start(cpu->cpu_ktimer);
+		if (error)
+			TODO();
+		error = cpu_ktimer_init_and_start(cpu);
+		if (error)
+			TODO();
 	}
 
 	thr_t *thr_switching_out = NULL;
@@ -3914,8 +3934,7 @@ inline_only error_t cpu_init_cpu0(cpu_t *cpu)
 	cpu->cpu_kcpu = (kcpu_t *) pthread_self();
 	ctx_init_for_cpu(&cpu->cpu_ctx, (uptr_t) (stk - 1),
 			 (lwt_function_t) cpu_main, cpu);
-
-	return ktimer_create(&cpu->cpu_ktimer, cpu);
+	return 0;
 }
 
 static pthread_attr_t cpu_pthread_attr;
@@ -3933,19 +3952,60 @@ static error_t cpu_start(cpu_t *cpu)
 
 //}{ Initialization functions.
 
+struct sigaction ktimer_prevsa;
+
+static error_t ktimer_signal_init(void)
+{
+	int rtsigno = lwt_rtsigno;
+	struct sigaction sa;
+	sa.sa_sigaction = ktimer_signal;
+#if 1
+        sa.sa_flags = SA_SIGINFO;
+        sa.sa_mask = lwt_rtsigno_sigset;
+#else
+        sa.sa_flags = SA_SIGINFO | SA_NODEFER;
+        sigemptyset(&sa.sa_mask);
+#endif
+
+	if (sigaction(rtsigno, &sa, &ktimer_prevsa) < 0)
+		return errno;
+
+	//  Signal handlers are process-wide, this function should find it
+	//  to be SIG_DFL, otherwise it is in use already for another purpose.
+
+	if (ktimer_prevsa.sa_sigaction ==
+	    (void (*)(int, siginfo_t *, void *)) SIG_DFL)
+		return 0;
+
+	return EINVAL;
+}
+
+static void ktimer_signal_deinit(void)
+{
+	sigaction(lwt_rtsigno, &ktimer_prevsa, NULL);
+}
+
 static error_t cpus_start(void)
 {
 	//  TODO: more work wrt priorities
 
-	error_t error = cpu_init_cpu0(&cpus[0]);
+	error_t error = ktimer_signal_init();
 	if (error)
 		return error;
+
+	error = cpu_init_cpu0(&cpus[0]);
+	if (error) {
+		ktimer_signal_deinit();
+		return error;
+	}
 
 	cpu_set_t *cpuset = CPU_ALLOC(MAX_CPU);
 	size_t cpuset_size = CPU_ALLOC_SIZE(MAX_CPU);
 	CPU_ZERO_S(cpuset_size, cpuset);
-	if (sched_getaffinity(getpid(), cpuset_size, cpuset) < 0)
+	if (sched_getaffinity(getpid(), cpuset_size, cpuset) < 0) {
+		ktimer_signal_deinit();
 		return errno;
+	}
 
 	int cpu_count = CPU_COUNT_S(cpuset_size, cpuset);
 	assert(cpu_count >= NCPUS);
@@ -3979,7 +4039,13 @@ static error_t cpus_start(void)
 	}
 	CPU_FREE(cpuset);
 
-	return cpu_bind(&cpus[0]);
+	error = cpu_bind(&cpus[0]);
+	if (error) {
+		TODO();
+		return error;
+	}
+
+	return 0;
 }
 
 inline_only void hw_init(hw_t *hw)
@@ -4039,6 +4105,9 @@ inline_only error_t cpu_init(cpu_t *cpu, cacheline_t *trampoline)
 {
 	cpu->cpu_running_thr = NULL;
 	cpu->cpu_trampoline = trampoline;
+	cpu->cpu_counts.count_disabled = 0;
+	cpu->cpu_counts.count_unreachable = 0;
+	cpu->cpu_counts.count_reachable = 0;
 	cpu->cpu_enabled = false;
 	cpu->cpu_timerticked = false;
 
@@ -4271,10 +4340,7 @@ inline_only error_t init(size_t sched_attempt_steps, int rtsigno)
 		return error;
 	}
 
-	ktimer_unblock();
-	ktimer_start(cpus[0].cpu_ktimer);
-	cpus[0].cpu_enabled = true;
-	return 0;
+	return cpu_ktimer_init_and_start(&cpus[0]);
 }
 
 
