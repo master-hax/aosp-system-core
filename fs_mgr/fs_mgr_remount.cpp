@@ -292,10 +292,26 @@ static RemountStatus CheckVerity(const FstabEntry& entry, RemountCheckResult* re
 }
 
 static RemountStatus CheckVerityAndOverlayfs(Fstab* partitions, RemountCheckResult* result) {
+    android::fs_mgr::Fstab mounts;
+    if (!android::fs_mgr::ReadFstabFromFile("/proc/mounts", &mounts) || mounts.empty()) {
+        PLOG(ERROR) << "Failed to read /proc/mounts";
+        return NO_MOUNTS;
+    }
+
     RemountStatus status = REMOUNT_SUCCESS;
     for (auto it = partitions->begin(); it != partitions->end();) {
         auto& entry = *it;
         const auto& mount_point = entry.mount_point;
+
+        if (auto mount = GetEntryForMountPoint(&mounts, system_mount_point(entry))) {
+            // Filter out partitions whose type doesn't match what's mounted.
+            // This avoids spammy behavior on devices which can mount different
+            // filesystems for each partition.
+            if (mount->fs_type != entry.fs_type) {
+                it = partitions->erase(it);
+                continue;
+            }
+        }
 
         if (auto rv = CheckVerity(entry, result); rv != REMOUNT_SUCCESS) {
             LOG(ERROR) << "Skipping verified partition " << mount_point << " for remount";
