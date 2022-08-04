@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "80cddda3_f049aadb",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 306,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-08-04T12:52:02Z",
+      "side": 1,
+      "message": "We should apply system_mount_point() transformation to |mounts| instead, I think?\n\nfstab entry would be \"/system\", but /proc/mounts would show \"/\" after switch root.",
+      "range": {
+        "startLine": 306,
+        "startChar": 56,
+        "endLine": 306,
+        "endChar": 74
+      },
+      "revId": "85bd416b12e2d1f74b6890fc64d7c0e3486a1885",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
