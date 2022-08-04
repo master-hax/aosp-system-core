@@ -1,5 +1,23 @@
 {
-  "comments": [],
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d29b7ef1_f629a8a3",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1000205
+      },
+      "writtenOn": "2022-08-04T21:19:06Z",
+      "side": 1,
+      "message": "this does not match the implementation which only adds support for STORAGE_FILE_WRITE (in addition to the previously supported STORAGE_RPMB_SEND)",
+      "revId": "57770a531885cea930f8c56a311c0a0c530abdad",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ],
   "submitRequirementResults": [
     {
       "submitRequirement": {
