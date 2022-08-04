@@ -100,12 +100,7 @@ void MyLogger(android::base::LogId id, android::base::LogSeverity severity, cons
     logd(id, severity, tag, file, line, message);
 }
 
-[[noreturn]] void reboot(bool overlayfs = false) {
-    if (overlayfs) {
-        LOG(INFO) << "Successfully setup overlayfs\nrebooting device";
-    } else {
-        LOG(INFO) << "Successfully disabled verity\nrebooting device";
-    }
+[[noreturn]] void reboot() {
     ::sync();
     android::base::SetProperty(ANDROID_RB_PROPERTY, "reboot,remount");
     ::sleep(60);
@@ -145,7 +140,6 @@ enum RemountStatus {
     BINDER_ERROR,
     CHECKPOINTING,
     GSID_ERROR,
-    CLEAN_SCRATCH_FILES,
 };
 
 static bool ReadFstab(const char* fstab_file, android::fs_mgr::Fstab* fstab) {
@@ -266,6 +260,7 @@ struct RemountCheckResult {
     bool setup_overlayfs = false;
     bool disabled_verity = false;
     bool verity_error = false;
+    bool remounted_anything = false;
 };
 
 static RemountStatus CheckVerity(const FstabEntry& entry, RemountCheckResult* result) {
@@ -420,75 +415,8 @@ static RemountStatus RemountPartition(Fstab& fstab, Fstab& mounts, FstabEntry& e
     return REMOUNT_FAILED;
 }
 
-static int do_remount(int argc, char* argv[]) {
-    // If somehow this executable is delivered on a "user" build, it can
-    // not function, so providing a clear message to the caller rather than
-    // letting if fall through and provide a lot of confusing failure messages.
-    if (!ALLOW_ADBD_DISABLE_VERITY || (android::base::GetProperty("ro.debuggable", "0") != "1")) {
-        LOG(ERROR) << "only functions on userdebug or eng builds";
-        return NOT_USERDEBUG;
-    }
-
-    const char* fstab_file = nullptr;
-    auto can_reboot = false;
-    std::vector<std::string> partition_args;
-
-    struct option longopts[] = {
-            {"fstab", required_argument, nullptr, 'T'},
-            {"help", no_argument, nullptr, 'h'},
-            {"reboot", no_argument, nullptr, 'R'},
-            {"verbose", no_argument, nullptr, 'v'},
-            {"clean_scratch_files", no_argument, nullptr, 'C'},
-            {0, 0, nullptr, 0},
-    };
-    for (int opt; (opt = ::getopt_long(argc, argv, "hRT:v", longopts, nullptr)) != -1;) {
-        switch (opt) {
-            case 'h':
-                usage(SUCCESS);
-                break;
-            case 'R':
-                can_reboot = true;
-                break;
-            case 'T':
-                if (fstab_file) {
-                    LOG(ERROR) << "Cannot supply two fstabs: -T " << fstab_file << " -T" << optarg;
-                    usage(BADARG);
-                }
-                fstab_file = optarg;
-                break;
-            case 'v':
-                verbose = true;
-                break;
-            case 'C':
-                return CLEAN_SCRATCH_FILES;
-            default:
-                LOG(ERROR) << "Bad Argument -" << char(opt);
-                usage(BADARG);
-                break;
-        }
-    }
-
-    for (; argc > optind; ++optind) {
-        partition_args.emplace_back(argv[optind]);
-    }
-
-    // Make sure we are root.
-    if (::getuid() != 0) {
-        LOG(ERROR) << "Not running as root. Try \"adb root\" first.";
-        return NOT_ROOT;
-    }
-
-    // Read the selected fstab.
-    Fstab fstab;
-    if (!ReadFstab(fstab_file, &fstab) || fstab.empty()) {
-        PLOG(ERROR) << "Failed to read fstab";
-        return NO_FSTAB;
-    }
-
-    if (auto rv = VerifyCheckpointing(); rv != REMOUNT_SUCCESS) {
-        return rv;
-    }
-
+static int do_remount(Fstab& fstab, const std::vector<std::string>& partition_args,
+                      bool auto_reboot, RemountCheckResult* check_result) {
     Fstab partitions;
     if (partition_args.empty()) {
         partitions = GetAllRemountablePartitions(fstab);
@@ -499,10 +427,7 @@ static int do_remount(int argc, char* argv[]) {
     }
 
     // Check verity and optionally setup overlayfs backing.
-    RemountCheckResult check_result;
-    auto retval = CheckVerityAndOverlayfs(&partitions, &check_result);
-
-    bool auto_reboot = check_result.reboot_later && can_reboot;
+    auto retval = CheckVerityAndOverlayfs(&partitions, check_result);
 
     // If (1) remount requires a reboot to take effect, (2) system is currently
     // running a DSU guest and (3) DSU is disabled, then enable DSU so that the
@@ -514,14 +439,10 @@ static int do_remount(int argc, char* argv[]) {
         }
     }
 
-    if (partitions.empty() || check_result.disabled_verity) {
-        if (auto_reboot) {
-            reboot(check_result.setup_overlayfs);
+    if (partitions.empty() || check_result->disabled_verity) {
+        if (partitions.empty()) {
+            LOG(WARNING) << "No remountable partitions were found.";
         }
-        if (check_result.reboot_later) {
-            return MUST_REBOOT;
-        }
-        LOG(WARNING) << "No partitions to remount";
         return retval;
     }
 
@@ -543,12 +464,9 @@ static int do_remount(int argc, char* argv[]) {
     for (auto& entry : partitions) {
         if (auto rv = RemountPartition(fstab, mounts, entry); rv != REMOUNT_SUCCESS) {
             retval = rv;
+        } else {
+            check_result->remounted_anything = true;
         }
-    }
-
-    if (auto_reboot) reboot(check_result.setup_overlayfs);
-    if (check_result.reboot_later) {
-        LOG(INFO) << "Now reboot your device for settings to take effect";
     }
     return retval;
 }
@@ -563,14 +481,96 @@ int main(int argc, char* argv[]) {
     if (argc > 0 && android::base::Basename(argv[0]) == "clean_scratch_files"s) {
         return do_clean_scratch_files();
     }
-    int result = do_remount(argc, argv);
-    if (result == MUST_REBOOT) {
+
+    // If somehow this executable is delivered on a "user" build, it can
+    // not function, so providing a clear message to the caller rather than
+    // letting if fall through and provide a lot of confusing failure messages.
+    if (!ALLOW_ADBD_DISABLE_VERITY || (android::base::GetProperty("ro.debuggable", "0") != "1")) {
+        LOG(ERROR) << "only functions on userdebug or eng builds";
+        return NOT_USERDEBUG;
+    }
+
+    const char* fstab_file = nullptr;
+    auto auto_reboot = false;
+    std::vector<std::string> partition_args;
+
+    struct option longopts[] = {
+            {"fstab", required_argument, nullptr, 'T'},
+            {"help", no_argument, nullptr, 'h'},
+            {"reboot", no_argument, nullptr, 'R'},
+            {"verbose", no_argument, nullptr, 'v'},
+            {"clean_scratch_files", no_argument, nullptr, 'C'},
+            {0, 0, nullptr, 0},
+    };
+    for (int opt; (opt = ::getopt_long(argc, argv, "hRT:v", longopts, nullptr)) != -1;) {
+        switch (opt) {
+            case 'h':
+                usage(SUCCESS);
+                break;
+            case 'R':
+                auto_reboot = true;
+                break;
+            case 'T':
+                if (fstab_file) {
+                    LOG(ERROR) << "Cannot supply two fstabs: -T " << fstab_file << " -T" << optarg;
+                    usage(BADARG);
+                }
+                fstab_file = optarg;
+                break;
+            case 'v':
+                verbose = true;
+                break;
+            case 'C':
+                return do_clean_scratch_files();
+            default:
+                LOG(ERROR) << "Bad Argument -" << char(opt);
+                usage(BADARG);
+                break;
+        }
+    }
+
+    for (; argc > optind; ++optind) {
+        partition_args.emplace_back(argv[optind]);
+    }
+
+    // Make sure we are root.
+    if (::getuid() != 0) {
+        LOG(ERROR) << "Not running as root. Try \"adb root\" first.";
+        return NOT_ROOT;
+    }
+
+    // Make sure checkpointing is disabled if necessary.
+    if (auto rv = VerifyCheckpointing(); rv != REMOUNT_SUCCESS) {
+        return rv;
+    }
+
+    // Read the selected fstab.
+    Fstab fstab;
+    if (!ReadFstab(fstab_file, &fstab) || fstab.empty()) {
+        PLOG(ERROR) << "Failed to read fstab";
+        return NO_FSTAB;
+    }
+
+    RemountCheckResult check_result;
+    int result = do_remount(fstab, partition_args, auto_reboot, &check_result);
+
+    if (check_result.disabled_verity && check_result.setup_overlayfs) {
+        LOG(INFO) << "Verity disabled; overlayfs enabled.";
+    } else if (check_result.disabled_verity) {
+        LOG(INFO) << "Verity disabled.";
+    } else if (check_result.setup_overlayfs) {
+        LOG(INFO) << "Overlayfs enabled.";
+    }
+
+    if (check_result.reboot_later) {
+        if (auto_reboot) {
+            reboot();
+        }
         LOG(INFO) << "Now reboot your device for settings to take effect";
-        result = 0;
-    } else if (result == REMOUNT_SUCCESS) {
+        return MUST_REBOOT;
+    }
+    if (result == REMOUNT_SUCCESS) {
         printf("remount succeeded\n");
-    } else if (result == CLEAN_SCRATCH_FILES) {
-        return do_clean_scratch_files();
     } else {
         printf("remount failed\n");
     }
