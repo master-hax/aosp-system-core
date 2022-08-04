@@ -121,6 +121,10 @@ void CleanupOldScratchFiles() {}
 
 void TeardownAllOverlayForMountPoint(const std::string&) {}
 
+bool IsPartitionRemounted(const std::string& mount_point) {
+    return false;
+}
+
 }  // namespace fs_mgr
 }  // namespace android
 
@@ -1290,8 +1294,23 @@ bool fs_mgr_wants_overlayfs(FstabEntry* entry) {
 }
 
 Fstab fs_mgr_overlayfs_candidate_list(const Fstab& fstab) {
+    android::fs_mgr::Fstab mounts;
+    if (!android::fs_mgr::ReadFstabFromFile("/proc/mounts", &mounts)) {
+        PLOG(ERROR) << "Failed to read /proc/mounts";
+        return {};
+    }
+
     Fstab candidates;
     for (const auto& entry : fstab) {
+        // Filter out partitions whose type doesn't match what's mounted.
+        // This avoids spammy behavior on devices which can mount different
+        // filesystems for each partition.
+        auto proc_mount_point = (entry.mount_point == "/system") ? "/" : entry.mount_point;
+        auto mounted = GetEntryForMountPoint(&mounts, proc_mount_point);
+        if (!mounted || mounted->fs_type != entry.fs_type) {
+            continue;
+        }
+
         FstabEntry new_entry = entry;
         if (!fs_mgr_overlayfs_already_mounted(entry.mount_point) &&
             !fs_mgr_wants_overlayfs(&new_entry)) {
@@ -1691,6 +1710,20 @@ void TeardownAllOverlayForMountPoint(const std::string& mount_point) {
         }
         DestroyLogicalPartition(android::gsi::kDsuScratch);
     }
+}
+
+bool IsPartitionRemounted(const std::string& mount_point) {
+    auto proc_mount_point = (mount_point == "/system") ? "/" : mount_point;
+    if (fs_mgr_overlayfs_already_mounted(proc_mount_point, true)) {
+        return true;
+    }
+
+    Fstab fstab;
+    if (!ReadFstabFromFile("/proc/mounts", &fstab)) {
+        return false;
+    }
+    auto entry = GetEntryForMountPoint(&fstab, proc_mount_point);
+    return entry && !!(entry->flags & MS_RDONLY);
 }
 
 }  // namespace fs_mgr
