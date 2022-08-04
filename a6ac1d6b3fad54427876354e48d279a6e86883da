@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a8938eaf_0271096e",
+        "filename": "set-verity-state/set-verity-state.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2022-08-04T04:05:32Z",
+      "side": 0,
+      "message": "Looks like there is no code using set_verity_enabled_state(), thanks for the removal!",
+      "range": {
+        "startLine": 63,
+        "startChar": 12,
+        "endLine": 63,
+        "endChar": 36
+      },
+      "revId": "a6ac1d6b3fad54427876354e48d279a6e86883da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
