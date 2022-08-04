@@ -185,8 +185,8 @@ static bool IsRemountable(Fstab& candidates, const FstabEntry& entry) {
     if (entry.fs_type == "vfat") {
         return false;
     }
-    if (GetEntryForMountPoint(&candidates, entry.mount_point)) {
-        return true;
+    if (auto candidate_entry = GetEntryForMountPoint(&candidates, entry.mount_point)) {
+        return candidate_entry->fs_type == entry.fs_type;
     }
     if (GetWrappedEntry(candidates, entry)) {
         return false;
@@ -229,8 +229,8 @@ static RemountStatus GetRemountList(const Fstab& fstab, const std::vector<std::s
             partition = "/system";
         }
 
-        auto it = FindPartition(fstab, partition);
-        if (it == fstab.end()) {
+        auto it = FindPartition(candidates, partition);
+        if (it == candidates.end()) {
             LOG(ERROR) << "Unknown partition " << arg;
             return UNKNOWN_PARTITION;
         }
@@ -242,7 +242,10 @@ static RemountStatus GetRemountList(const Fstab& fstab, const std::vector<std::s
             entry = wrap;
         }
 
-        if (!IsRemountable(candidates, *entry)) {
+        // If it's already remounted, include it so it gets gracefully skipped
+        // later on.
+        if (!android::fs_mgr::IsPartitionRemounted(partition) &&
+            !IsRemountable(candidates, *entry)) {
             LOG(ERROR) << "Invalid partition " << arg;
             return INVALID_PARTITION;
         }
