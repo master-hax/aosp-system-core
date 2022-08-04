@@ -1,0 +1,61 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c7226ca6_8fef6ed7",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-08-04T12:24:26Z",
+      "side": 1,
+      "message": "how about merge this into IsRemountable()?\n\nI found myself going back and forth these two functions often, and splitting them apart doesn\u0027t have benefit as it is called only by IsRemountable() now.",
+      "range": {
+        "startLine": 67,
+        "startChar": 5,
+        "endLine": 67,
+        "endChar": 30
+      },
+      "revId": "23e38fa7511ffc816be8c35e8fbcf510339380b5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fe54bf34_a1dca7d6",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 196,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-08-04T12:24:26Z",
+      "side": 1,
+      "message": "hmm I think legacy remount is still blocked by this.\n\nIf device uses legacy remount than fs_mgr_overlayfs_candidate_list would be empty, then IsRemountable() would always return false due to this line...\n\nI think this should be something like:\n\n```\nif (GetEntryForMountPoint(\u0026candidates, entry.mount_point)) {\n  return true;\n}\nif (GetWrappedEntry(candidates, entry)) {\n  return false;\n}\nreturn true;\n```",
+      "revId": "23e38fa7511ffc816be8c35e8fbcf510339380b5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9a1bd181_45c71955",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 248,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-08-04T12:24:26Z",
+      "side": 1,
+      "message": "If I\u0027m reading it right, in order to match the original logic, we need to transform this line to:\n\n```\n// Change GetWrappedEntry() to return ::const_iterator to make life easier?\nit \u003d wrap;\n```\n\notherwise this line updating |partition| isn\u0027t doing anything useful...",
+      "revId": "23e38fa7511ffc816be8c35e8fbcf510339380b5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
