@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "b9474e45_aa2e23e1",
+        "filename": "fastboot/device/usb_iouring.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2022-08-04T22:04:53Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "cf123f93_a24b0e41",
+      "revId": "b1326ddfc05ea105d383ea0b0cb1a0f0accb95a0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "e8612675_a247144b",
@@ -35,6 +53,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "ed9cb5ec_1568ed3e",
+        "filename": "fastboot/device/usb_iouring.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2022-08-04T22:04:53Z",
+      "side": 1,
+      "message": "Retrying would be hard... We need to selectively retry requests which fail. The old AIO code is only re-trying the submit and wait part, not the actual request.",
+      "parentUuid": "e8612675_a247144b",
+      "revId": "b1326ddfc05ea105d383ea0b0cb1a0f0accb95a0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "2f5243e6_da019235",
@@ -48,6 +84,24 @@
       "writtenOn": "2022-08-03T05:11:04Z",
       "side": 1,
       "message": "this isn\u0027t right.. if the intention is to poll all CQE\u0027s, then you really have to update the CQE index using io_uring_cqe_seen(); else you will keep polling the same index in the ring.\n\nMy earlier comment was related to the tear down path. If there is an I/O error - even after polling all the CQE instances; what will happen to the io_uring instance itself ? If there is an I/O error in \"usb_ffs_do_aio\", does it invoke exit_io_uring_ffs ?\n\nSorry, I am stressing on this because if things go wrong because of some unknown reasons in the I/O path, we shouldn\u0027t enter into a unknown state.",
+      "revId": "b1326ddfc05ea105d383ea0b0cb1a0f0accb95a0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b3eb9e72_f56f2ac1",
+        "filename": "fastboot/device/usb_iouring.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2022-08-04T22:04:53Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2f5243e6_da019235",
       "revId": "b1326ddfc05ea105d383ea0b0cb1a0f0accb95a0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
