@@ -185,8 +185,8 @@ static bool IsRemountable(Fstab& candidates, const FstabEntry& entry) {
     if (entry.fs_type == "vfat") {
         return false;
     }
-    if (GetEntryForMountPoint(&candidates, entry.mount_point)) {
-        return true;
+    if (auto candidate_entry = GetEntryForMountPoint(&candidates, entry.mount_point)) {
+        return candidate_entry->fs_type == entry.fs_type;
     }
     if (GetWrappedEntry(candidates, entry)) {
         return false;
@@ -243,7 +243,10 @@ static RemountStatus GetRemountList(const Fstab& fstab, const std::vector<std::s
             partition = system_mount_point(*entry);
         }
 
-        if (!IsRemountable(candidates, *entry)) {
+        // If it's already remounted, include it so it gets gracefully skipped
+        // later on.
+        if (!android::fs_mgr::IsPartitionRemounted(partition) &&
+            !IsRemountable(candidates, *entry)) {
             LOG(ERROR) << "Invalid partition " << arg;
             return INVALID_PARTITION;
         }
@@ -297,6 +300,11 @@ static RemountStatus CheckVerityAndOverlayfs(Fstab* partitions, RemountCheckResu
     for (auto it = partitions->begin(); it != partitions->end();) {
         auto& entry = *it;
         const auto& mount_point = entry.mount_point;
+
+        auto proc_mount_point = mount_point;
+        if (mount_point == "/system") {
+            proc_mount_point = "/";
+        }
 
         if (auto rv = CheckVerity(entry, result); rv != REMOUNT_SUCCESS) {
             LOG(ERROR) << "Skipping verified partition " << mount_point << " for remount";
