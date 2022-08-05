@@ -122,6 +122,24 @@
       "parentUuid": "64daf38d_df4cd31a",
       "revId": "5dbef0df804d4c058ef16a1e7eb7c91057d834db",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "004c0fb3_2e83e811",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 248,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-08-05T18:49:05Z",
+      "side": 1,
+      "message": "(missed a few words)\nI mean FindPartition() return actual mounted mount entry would make IsRemountable() unambiguous",
+      "parentUuid": "9140cb4b_7d04b8e7",
+      "revId": "5dbef0df804d4c058ef16a1e7eb7c91057d834db",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
