@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8cc933f4_113c293e",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 411,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-08-05T12:54:11Z",
+      "side": 1,
+      "message": "we should definitely come back and clean this up later\n\nwhen MS_REMOUNT is given, |source| and |filesystemtype| are ignored (1st and 3rd arg), and |mountflags| \u0026 |data| (4th and 5th arg) are set to the new value.\n\nWe should read the original |mountflags| and |data| from /proc/mounts, and remove MS_RDONLY from |mountflags|, forward |data| to the remount action.",
+      "revId": "89871bf284d8c43cda7f6dadd97c63110344ca0f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
