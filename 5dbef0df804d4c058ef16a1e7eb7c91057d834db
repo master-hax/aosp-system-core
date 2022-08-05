@@ -158,6 +158,24 @@
       "parentUuid": "9140cb4b_7d04b8e7",
       "revId": "5dbef0df804d4c058ef16a1e7eb7c91057d834db",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7f24004e_89cd5d7c",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 248,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-08-05T19:03:39Z",
+      "side": 1,
+      "message": "It\u0027d still return false, right? Since it has that MS_RDONLY check. Or do you mean that we could replace is the IsPartitionRemounted call with a simple MS_RDONLY check? That seems reasonable.",
+      "parentUuid": "004c0fb3_2e83e811",
+      "revId": "5dbef0df804d4c058ef16a1e7eb7c91057d834db",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
