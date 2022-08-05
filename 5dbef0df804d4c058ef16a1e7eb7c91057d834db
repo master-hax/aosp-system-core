@@ -176,6 +176,24 @@
       "parentUuid": "004c0fb3_2e83e811",
       "revId": "5dbef0df804d4c058ef16a1e7eb7c91057d834db",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1cab8ed6_41a83d18",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 248,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-08-05T19:25:14Z",
+      "side": 1,
+      "message": "yeah you\u0027re right.\n\nIf partition is covered by overlayFS already, fs_mgr_overlayfs_already_mounted would detect that.\nIf partition wants legacy remount, then doesn\u0027t IsRemountable() return true in this case. \n\nwhen would IsRemountable() return false for legacy remount partition?",
+      "parentUuid": "7f24004e_89cd5d7c",
+      "revId": "5dbef0df804d4c058ef16a1e7eb7c91057d834db",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
