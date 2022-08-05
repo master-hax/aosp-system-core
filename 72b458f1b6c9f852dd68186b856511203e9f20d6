@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e408c89c_b59df95b",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 538,
+      "author": {
+        "id": 1557540
+      },
+      "writtenOn": "2022-08-05T16:34:39Z",
+      "side": 1,
+      "message": "Can you simplify this by moving it to the while check instead? Like this:\n\n```\nint count \u003d -1;\nwhile (!mod_with_deps.empty() \u0026\u0026 count !\u003d module_loaded_.size()) {\n  count \u003d module_loaded_.size();\n  ...\n}\n```",
+      "range": {
+        "startLine": 533,
+        "startChar": 0,
+        "endLine": 538,
+        "endChar": 0
+      },
+      "revId": "72b458f1b6c9f852dd68186b856511203e9f20d6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
