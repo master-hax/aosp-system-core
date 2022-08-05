@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-#include <errno.h>
 #include <libavb_user/libavb_user.h>
 #include <stdio.h>
 
@@ -22,17 +21,12 @@
 #include <android-base/logging.h>
 #include <android-base/properties.h>
 #include <fs_mgr_overlayfs.h>
-#include <log/log_properties.h>
 
 #ifdef ALLOW_DISABLE_VERITY
 static const bool kAllowDisableVerity = true;
 #else
 static const bool kAllowDisableVerity = false;
 #endif
-
-static void suggest_run_adb_root() {
-  if (getuid() != 0) printf("Maybe run adb root?\n");
-}
 
 /* Helper function to get A/B suffix, if any. If the device isn't
  * using A/B the empty string is returned. Otherwise either "_a",
@@ -46,6 +40,13 @@ static bool is_avb_device_locked() {
   return android::base::GetProperty("ro.boot.vbmeta.device_state", "") == "locked";
 }
 
+static bool is_using_avb() {
+  // Figure out if we're using VB1.0 or VB2.0 (aka AVB) - by
+  // contract, androidboot.vbmeta.digest is set by the bootloader
+  // when using AVB).
+  return !android::base::GetProperty("ro.boot.vbmeta.digest", "").empty();
+}
+
 static bool overlayfs_setup(bool enable) {
   auto change = false;
   errno = 0;
@@ -55,8 +56,7 @@ static bool overlayfs_setup(bool enable) {
       printf("%s overlayfs\n", enable ? "disabling" : "using");
     }
   } else if (errno) {
-    printf("Overlayfs %s failed with error %s\n", enable ? "teardown" : "setup", strerror(errno));
-    suggest_run_adb_root();
+    PLOG(ERROR) << "Failed to " << (enable ? "teardown" : "setup") << " overlayfs";
   }
   return change;
 }
@@ -67,12 +67,12 @@ static bool set_avb_verity_enabled_state(AvbOps* ops, bool enable_verity) {
   bool verity_enabled;
 
   if (is_avb_device_locked()) {
-    printf("Device is locked. Please unlock the device first\n");
+    LOG(ERROR) << "Device is locked. Please unlock the device first";
     return false;
   }
 
   if (!avb_user_verity_get(ops, ab_suffix.c_str(), &verity_enabled)) {
-    printf("Error getting verity state. Try adb root first?\n");
+    LOG(ERROR) << "Error getting verity state";
     return false;
   }
 
@@ -82,7 +82,7 @@ static bool set_avb_verity_enabled_state(AvbOps* ops, bool enable_verity) {
   }
 
   if (!avb_user_verity_set(ops, ab_suffix.c_str(), enable_verity)) {
-    printf("Error setting verity\n");
+    LOG(ERROR) << "Error setting verity state";
     return false;
   }
 
@@ -91,6 +91,25 @@ static bool set_avb_verity_enabled_state(AvbOps* ops, bool enable_verity) {
 }
 
 int main(int argc, char* argv[]) {
+  android::base::InitLogging(argv, android::base::StderrLogger);
+
+  if (!kAllowDisableVerity || !android::base::GetBoolProperty("ro.debuggable", false)) {
+    errno = EPERM;
+    PLOG(ERROR) << "Cannot disable/enable verity on user build";
+    return 1;
+  }
+
+  if (getuid() != 0) {
+    errno = EACCES;
+    PLOG(ERROR) << "Must be running as root";
+    return 1;
+  }
+
+  if (!is_using_avb()) {
+    LOG(ERROR) << "VB1.0 is no longer supported";
+    return 1;
+  }
+
   if (argc == 0) {
     LOG(FATAL) << "set-verity-state called with empty argv";
   }
@@ -121,44 +140,14 @@ int main(int argc, char* argv[]) {
 
   bool enable = enable_opt.value();
 
-  // Figure out if we're using VB1.0 or VB2.0 (aka AVB) - by
-  // contract, androidboot.vbmeta.digest is set by the bootloader
-  // when using AVB).
-  bool using_avb = !android::base::GetProperty("ro.boot.vbmeta.digest", "").empty();
-
-  // If using AVB, dm-verity is used on any build so we want it to
-  // be possible to disable/enable on any build (except USER). For
-  // VB1.0 dm-verity is only enabled on certain builds.
-  if (!using_avb) {
-    if (!kAllowDisableVerity) {
-      printf("%s only works for userdebug builds\n", argv[0]);
-    }
-
-    if (!android::base::GetBoolProperty("ro.secure", false)) {
-      overlayfs_setup(enable);
-      printf("verity not enabled - ENG build\n");
-      return 0;
-    }
-  }
-
-  // Should never be possible to disable dm-verity on a USER build
-  // regardless of using AVB or VB1.0.
-  if (!__android_log_is_debuggable()) {
-    printf("verity cannot be disabled/enabled - USER build\n");
-    return 0;
+  std::unique_ptr<AvbOps, decltype(&avb_ops_user_free)> ops(avb_ops_user_new(), &avb_ops_user_free);
+  if (!ops) {
+    LOG(ERROR) << "Error getting AVB ops";
+    return 1;
   }
 
   bool any_changed = false;
-  if (using_avb) {
-    // Yep, the system is using AVB.
-    AvbOps* ops = avb_ops_user_new();
-    if (ops == nullptr) {
-      printf("Error getting AVB ops\n");
-      return 1;
-    }
-    any_changed |= set_avb_verity_enabled_state(ops, enable);
-    avb_ops_user_free(ops);
-  }
+  any_changed |= set_avb_verity_enabled_state(ops.get(), enable);
   any_changed |= overlayfs_setup(enable);
 
   if (any_changed) {
