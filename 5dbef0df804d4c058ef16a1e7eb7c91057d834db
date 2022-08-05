@@ -37,6 +37,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "002d2b3b_3c50a47f",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 1726,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-08-05T18:02:25Z",
+      "side": 1,
+      "message": "This is to handle the legacy case where we\u0027re not using overlayfs. Arguably it could be in fs_mgr_remount.cpp instead, I don\u0027t have a strong opinion.",
+      "parentUuid": "486e2182_8e498a7a",
+      "revId": "5dbef0df804d4c058ef16a1e7eb7c91057d834db",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "5ff4b070_65a4580e",
         "filename": "fs_mgr/fs_mgr_remount.cpp",
         "patchSetId": 5
@@ -48,6 +66,24 @@
       "writtenOn": "2022-08-05T12:46:27Z",
       "side": 1,
       "message": "I don\u0027t follow...? what is this trying to do?",
+      "revId": "5dbef0df804d4c058ef16a1e7eb7c91057d834db",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "64daf38d_df4cd31a",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 248,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-08-05T18:02:25Z",
+      "side": 1,
+      "message": "If you \"adb remount /vendor\" and vendor is already remounted, it would error, because it\u0027s not remountable. If we exclude the partition from the candidate list, you\u0027d get a different error \"No remountable partitions found\".\n\nThe simplest thing seemed to include remounted partitions in the list, if given explicitly, and then skip over them when actually doing the remount.",
+      "parentUuid": "5ff4b070_65a4580e",
       "revId": "5dbef0df804d4c058ef16a1e7eb7c91057d834db",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
