@@ -4369,22 +4369,22 @@ error_t __lwt_init(size_t sched_attempt_steps, int rtsigno)
 
 //  __lwt_mtxattr_*() ABI entry points
 
-int __lwt_mtxattr_init(struct __lwt_mtxattr_s **mtxattrpp)
+int __lwt_mtxattr_init(mtxattr_t **mtxattrpp)
 {
 	return mtxattr_init(mtxattrpp);
 }
 
-int __lwt_mtxattr_destroy(struct __lwt_mtxattr_s **mtxattrpp)
+int __lwt_mtxattr_destroy(mtxattr_t **mtxattrpp)
 {
 	return mtxattr_destroy(mtxattrpp);
 }
 
-int __lwt_mutexattr_settype(struct __lwt_mtxattr_s **mtxattrpp, int kind)
+int __lwt_mutexattr_settype(mtxattr_t **mtxattrpp, int kind)
 {
 	return mtxattr_settype(mtxattrpp, kind);
 }
 
-int __lwt_mutexattr_gettype(struct __lwt_mtxattr_s *mtxattr, int *kind)
+int __lwt_mutexattr_gettype(mtxattr_t *mtxattr, int *kind)
 {
 	return mtxattr_gettype(mtxattr, kind);
 }
@@ -4392,8 +4392,7 @@ int __lwt_mutexattr_gettype(struct __lwt_mtxattr_s *mtxattr, int *kind)
 
 //  __lwt_mtx_*() ABI entry points
 
-int __lwt_mtx_init(struct __lwt_mtx_s **mtxpp,
-		   const struct __lwt_mtxattr_s *mtxattr)
+int __lwt_mtx_init(mtx_t **mtxpp, const mtxattr_t *mtxattr)
 {
 	lwt_mtx_type_t type = (int)(uptr_t) mtxattr;
 	if (type > LWT_MTX_LAST) {
@@ -4407,12 +4406,12 @@ int __lwt_mtx_init(struct __lwt_mtx_s **mtxpp,
 	return error;
 }
 
-int __lwt_mtx_destroy(struct __lwt_mtx_s **mtxpp)
+int __lwt_mtx_destroy(mtx_t **mtxpp)
 {
 	return mtx_destroy(mtxpp);
 }
 
-int __lwt_mtx_lock(struct __lwt_mtx_s *mtx)
+int __lwt_mtx_lock(mtx_t *mtx)
 {
 	thr_t *thr = api_enter(API_MTX_LOCK);
 	error_t error = mtx_lock(mtx, thr);
@@ -4420,7 +4419,7 @@ int __lwt_mtx_lock(struct __lwt_mtx_s *mtx)
 	return error;
 }
 
-int __lwt_mtx_trylock(struct __lwt_mtx_s *mtx)
+int __lwt_mtx_trylock(mtx_t *mtx)
 {
 	thr_t *thr = api_enter(API_MTX_TRYLOCK);
 	error_t error = mtx_trylock(mtx, thr);
@@ -4428,7 +4427,7 @@ int __lwt_mtx_trylock(struct __lwt_mtx_s *mtx)
 	return error;
 }
 
-int __lwt_mtx_unlock(struct __lwt_mtx_s *mtx)
+int __lwt_mtx_unlock(mtx_t *mtx)
 {
 	thr_t *thr = api_enter(API_MTX_UNLOCK);
 	error_t error = mtx_unlock(mtx, thr);
@@ -4439,9 +4438,7 @@ int __lwt_mtx_unlock(struct __lwt_mtx_s *mtx)
 
 //  __lwt_cnd_*() ABI entry points
 
-
-int __lwt_cnd_init(struct __lwt_cnd_s **cndpp,
-		   const struct __lwt_cndattr_s *cndattr)
+int __lwt_cnd_init(cnd_t **cndpp, const cndattr_t *cndattr)
 {
 	thr_t *thr = api_enter(API_CND_INIT);
 	error_t error = cnd_create(cndpp, cndattr, thr);
@@ -4449,13 +4446,12 @@ int __lwt_cnd_init(struct __lwt_cnd_s **cndpp,
 	return error;
 }
 
-int __lwt_cnd_destroy(struct __lwt_cnd_s **cndpp)
+int __lwt_cnd_destroy(cnd_t **cndpp)
 {
 	return cnd_destroy(cndpp);
 }
 
-int __lwt_cnd_wait(struct __lwt_cnd_s *cnd,
-		   struct __lwt_mtx_s *mtx)
+int __lwt_cnd_wait(cnd_t *cnd, mtx_t *mtx)
 {
 	thr_t *thr = api_enter(API_CND_WAIT);
 	error_t error = cnd_wait(cnd, mtx, thr);
@@ -4463,9 +4459,7 @@ int __lwt_cnd_wait(struct __lwt_cnd_s *cnd,
 	return error;
 }
 
-int __lwt_cnd_timedwait(struct __lwt_cnd_s *cnd,
-			struct __lwt_mtx_s *mtx,
-			const struct timespec *abstime)
+int __lwt_cnd_timedwait(cnd_t *cnd, mtx_t *mtx, const struct timespec *abstime)
 {
 	thr_t *thr = api_enter(API_CND_TIMEDWAIT);
 	error_t error = cnd_timedwait(cnd, mtx, thr, abstime);
@@ -4473,7 +4467,7 @@ int __lwt_cnd_timedwait(struct __lwt_cnd_s *cnd,
 	return error;
 }
 
-int __lwt_cnd_signal(struct __lwt_cnd_s *cnd, struct __lwt_mtx_s *mtx)
+int __lwt_cnd_signal(cnd_t *cnd, mtx_t *mtx)
 {
 	thr_t *thr = api_enter(API_CND_SIGNAL);
 	error_t error = cnd_signal(cnd, mtx, thr);
@@ -4481,7 +4475,7 @@ int __lwt_cnd_signal(struct __lwt_cnd_s *cnd, struct __lwt_mtx_s *mtx)
 	return error;
 }
 
-int __lwt_cnd_broadcast(struct __lwt_cnd_s *cnd, struct __lwt_mtx_s *mtx)
+int __lwt_cnd_broadcast(cnd_t *cnd, mtx_t *mtx)
 {
 	thr_t *thr = api_enter(API_CND_BROADCAST);
 	error_t error = cnd_broadcast(cnd, mtx, thr);
@@ -4492,7 +4486,7 @@ int __lwt_cnd_broadcast(struct __lwt_cnd_s *cnd, struct __lwt_mtx_s *mtx)
 
 //  __lwt_spin_*() ABI entry points
 
-int __lwt_spin_init(struct __lwt_spin_s **spinpp)
+int __lwt_spin_init(spin_t **spinpp)
 {
 	mtx_t **mtxpp = (mtx_t **) spinpp;
 	thr_t *thr = api_enter(API_SPIN_INIT);
@@ -4501,13 +4495,13 @@ int __lwt_spin_init(struct __lwt_spin_s **spinpp)
 	return error;
 }
 
-int __lwt_spin_destroy(struct __lwt_spin_s **spinpp)
+int __lwt_spin_destroy(spin_t **spinpp)
 {
 	mtx_t **mtxpp = (mtx_t **) spinpp;
 	return mtx_destroy(mtxpp);
 }
 
-int __lwt_spin_lock(struct __lwt_spin_s *spin)
+int __lwt_spin_lock(spin_t *spin)
 {
 	mtx_t *mtx = (mtx_t *) spin;
 	thr_t *thr = api_enter(API_SPIN_LOCK);
@@ -4516,7 +4510,7 @@ int __lwt_spin_lock(struct __lwt_spin_s *spin)
 	return error;
 }
 
-int __lwt_spin_trylock(struct __lwt_spin_s *spin)
+int __lwt_spin_trylock(spin_t *spin)
 {
 	mtx_t *mtx = (mtx_t *) spin;
 	thr_t *thr = api_enter(API_SPIN_TRYLOCK);
@@ -4525,7 +4519,7 @@ int __lwt_spin_trylock(struct __lwt_spin_s *spin)
 	return error;
 }
 
-int __lwt_spin_unlock(struct __lwt_spin_s *spin)
+int __lwt_spin_unlock(spin_t *spin)
 {
 	mtx_t *mtx = (mtx_t *) spin;
 	thr_t *thr = api_enter(API_SPIN_UNLOCK);
@@ -4571,14 +4565,12 @@ int __lwt_thrattr_getaffinity_np(const lwt_attr_t *attr,
 }
 #endif
 
-int __lwt_thrattr_setdetachstate(lwt_attr_t *attr,
-				 int detachstate)
+int __lwt_thrattr_setdetachstate(lwt_attr_t *attr, int detachstate)
 {
 	return thrattr_setdetachstate((thrattr_t *) attr, detachstate);
 }
 
-int __lwt_thrattr_getdetachstate(const lwt_attr_t *attr,
-				 int *detachstate)
+int __lwt_thrattr_getdetachstate(const lwt_attr_t *attr, int *detachstate)
 {
 	return thrattr_getdetachstate((thrattr_t *) attr, detachstate);
 }
@@ -4598,8 +4590,7 @@ int __lwt_thrattr_setschedpolicy(lwt_attr_t *attr, int policy)
 	return thrattr_setschedpolicy((thrattr_t *) attr, policy);
 }
 
-int __lwt_thrattr_getschedpolicy(const lwt_attr_t *attr,
-				 int *policy)
+int __lwt_thrattr_getschedpolicy(const lwt_attr_t *attr, int *policy)
 {
 	return thrattr_getschedpolicy((thrattr_t *) attr, policy);
 }

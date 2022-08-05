@@ -46,6 +46,7 @@ typedef union thrln_s		thrln_t;
 
 typedef struct __lwt_mtx_s	mtx_t;
 typedef struct __lwt_cnd_s	cnd_t;
+typedef struct __lwt_spin_s	spin_t;
 
 //  API numbers used for optional statistics and tracing
 
