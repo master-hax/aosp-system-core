@@ -22,6 +22,30 @@
       },
       "revId": "d28c188bf01db878d9184f5c3016361d1d899fbd",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d64badc4_878935b9",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 549,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-08-05T17:57:43Z",
+      "side": 0,
+      "message": "Overlayfs is guaranteed to be in GKI kernels. On older kernels, if they\u0027re misconfigured, you\u0027d get an \"overlayfs not supported\" error in CheckVerityAndOverlayfs.",
+      "parentUuid": "51cbbfd3_f8eebdb5",
+      "range": {
+        "startLine": 544,
+        "startChar": 9,
+        "endLine": 549,
+        "endChar": 88
+      },
+      "revId": "d28c188bf01db878d9184f5c3016361d1d899fbd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
