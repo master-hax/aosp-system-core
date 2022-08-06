@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f0cfd24a_59d1766b",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 877,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-08-06T05:46:03Z",
+      "side": 0,
+      "message": "This was dead code. scratch will never be deduplicated.",
+      "revId": "1b40eb8e386ed338723e3701eeedede47dc455f6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
