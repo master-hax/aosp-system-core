@@ -1,0 +1,61 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "819d2d6c_941679ef",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 9
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-08-06T07:36:42Z",
+      "side": 1,
+      "message": "I\u0027m thinking maybe we should separate overlay remount and legacy remount code, and process them in two separate pass...\n\nThe newly refactored code is much better to read than before, and it revealed the very intertwined logic of the two types of \"remount\". Making the code logic still hard to reason with.\n",
+      "revId": "e7a1fd9eeb72ff18546cacb1bb3a1dd78ccae322",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "45c57dc8_e3a04dc9",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 242,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-08-06T07:36:42Z",
+      "side": 1,
+      "message": "fstab.end()",
+      "range": {
+        "startLine": 242,
+        "startChar": 18,
+        "endLine": 242,
+        "endChar": 28
+      },
+      "revId": "e7a1fd9eeb72ff18546cacb1bb3a1dd78ccae322",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4d9b928c_416b9fea",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 257,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-08-06T07:36:42Z",
+      "side": 1,
+      "message": "ok went through the latest iteration, I think RN the code works, but couldn\u0027t this be simplified to:\n\n!fs_mgr_overlayfs_already_mounted(entry.mount_point) \u0026\u0026 !IsRemountable(candidates, entry)\n\n?\n\nfor overlayfs remount partitions,\n  if is remounted already, fs_mgr_overlayfs_already_mounted() \u003d\u003e true\n  if not remounted, IsRemountable() \u003d\u003e true\nfor legacy remount partitions,\n  no matter it\u0027s remounted or not, IsRemountable(candidates, entry) \u003d\u003e true\n  since the fstab mount *entry* is always MS_RDONLY\n  \n--\n\nwe also shouldn\u0027t be calling fs_mgr_overlayfs_already_mounted() with proc_mount_point\n  \n  auto proc_mount_point \u003d (mount_point \u003d\u003d \"/system\") ? \"/\" : mount_point;\n  \nbecause /system overlay is mounted after SwitchRoot, so it\u0027s mountpoint is still /system...\n\n1. mount /system (system device now mounted at /system)\n2. SwitchRoot(/system) (system device now mounted at /)\n3. mount system-overlay (system-overlay mounted at /system)",
+      "revId": "e7a1fd9eeb72ff18546cacb1bb3a1dd78ccae322",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
