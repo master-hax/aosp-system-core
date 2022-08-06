@@ -16,6 +16,8 @@
 
 #include <stdio.h>
 
+#include <iostream>
+
 #include <android-base/file.h>
 #include <android-base/logging.h>
 #include <android-base/properties.h>
@@ -32,6 +34,42 @@ const bool kAllowDisableVerity = true;
 #else
 const bool kAllowDisableVerity = false;
 #endif
+
+// Enable here refers to verity state, not overlayfs.
+static bool SetupOrTeardownOverlayfs(bool enable, const char* mount_point, bool* want_reboot) {
+  if (!enable) {
+    if (!fs_mgr_overlayfs_setup(mount_point, want_reboot)) {
+      std::cout << "Overlayfs setup";
+      if (mount_point) {
+        std::cout << " for " << mount_point;
+      }
+      std::cout << " failed\n";
+      return false;
+    }
+  } else {
+    auto rv = fs_mgr_overlayfs_teardown(mount_point, want_reboot);
+    if (rv == OverlayfsTeardownResult::Error) {
+      std::cout << "Overlayfs teardown";
+      if (mount_point) {
+        std::cout << " for " << mount_point;
+      }
+      std::cout << " failed\n";
+      return false;
+    }
+    if (rv == OverlayfsTeardownResult::Busy) {
+      std::cout << "Overlayfs is still active; please reboot to disable.\n";
+      return true;
+    }
+  }
+  if (*want_reboot) {
+    std::cout << (enable ? "disabling" : "enabling") << " overlayfs";
+    if (mount_point) {
+      std::cout << " for " << mount_point;
+    }
+    std::cout << "\n";
+  }
+  return true;
+}
 
 /* Helper function to get A/B suffix, if any. If the device isn't
  * using A/B the empty string is returned. Otherwise either "_a",
@@ -54,20 +92,6 @@ bool is_using_avb() {
   // contract, androidboot.vbmeta.digest is set by the bootloader
   // when using AVB).
   return !android::base::GetProperty("ro.boot.vbmeta.digest", "").empty();
-}
-
-bool overlayfs_setup(bool enable) {
-  auto want_reboot = false;
-  errno = 0;
-  if (enable ? fs_mgr_overlayfs_setup(nullptr, &want_reboot)
-             : fs_mgr_overlayfs_teardown(nullptr, &want_reboot)) {
-    if (want_reboot) {
-      LOG(INFO) << (enable ? "Enabled" : "Disabled") << " overlayfs";
-    }
-  } else {
-    LOG(ERROR) << "Failed to " << (enable ? "enable" : "disable") << " overlayfs";
-  }
-  return want_reboot;
 }
 
 struct SetVerityStateResult {
@@ -175,7 +199,7 @@ int main(int argc, char* argv[]) {
     // Start a threadpool to service waitForService() callbacks as
     // fs_mgr_overlayfs_* might call waitForService() to get the image service.
     android::ProcessState::self()->startThreadPool();
-    want_reboot |= overlayfs_setup(!enable_verity);
+    want_reboot |= SetupOrTeardownOverlayfs(!enable_verity);
   }
 
   if (want_reboot) {
