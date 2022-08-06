@@ -24,6 +24,8 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
+#include <iostream>
+
 #include <android-base/file.h>
 #include <android-base/logging.h>
 #include <android-base/properties.h>
@@ -43,6 +45,7 @@ static const bool kAllowDisableVerity = false;
 #endif
 
 using android::base::unique_fd;
+using namespace std::string_literals;
 
 static void suggest_run_adb_root() {
   if (getuid() != 0) printf("Maybe run adb root?\n");
@@ -57,6 +60,42 @@ static bool make_block_device_writable(const std::string& dev) {
   int OFF = 0;
   bool result = (ioctl(fd.get(), BLKROSET, &OFF) != -1);
   return result;
+}
+
+// Enable here refers to verity state, not overlayfs.
+static bool SetupOrTeardownOverlayfs(bool enable, const char* mount_point, bool* change) {
+  if (!enable) {
+    if (!fs_mgr_overlayfs_setup(mount_point, change)) {
+      std::cout << "Overlayfs setup";
+      if (mount_point) {
+        std::cout << " for " << mount_point;
+      }
+      std::cout << " failed\n";
+      return false;
+    }
+  } else {
+    auto rv = fs_mgr_overlayfs_teardown(mount_point, change);
+    if (rv == OverlayfsTeardownResult::Error) {
+      std::cout << "Overlayfs teardown";
+      if (mount_point) {
+        std::cout << " for " << mount_point;
+      }
+      std::cout << " failed\n";
+      return false;
+    }
+    if (rv == OverlayfsTeardownResult::Busy) {
+      std::cout << "Overlayfs is still active; please reboot to disable.\n";
+      return true;
+    }
+  }
+  if (*change) {
+    std::cout << (enable ? "disabling" : "enabling") << " overlayfs";
+    if (mount_point) {
+      std::cout << " for " << mount_point;
+    }
+    std::cout << "\n";
+  }
+  return true;
 }
 
 /* Turn verity on/off */
@@ -98,19 +137,9 @@ static bool set_verity_enabled_state(const char* block_device, const char* mount
     return false;
   }
 
-  auto change = false;
-  errno = 0;
-  if (enable ? fs_mgr_overlayfs_teardown(mount_point, &change)
-             : fs_mgr_overlayfs_setup(mount_point, &change)) {
-    if (change) {
-      printf("%s overlayfs for %s\n", enable ? "disabling" : "using", mount_point);
-    }
-  } else if (errno) {
-    int expected_errno = enable ? EBUSY : ENOENT;
-    if (errno != expected_errno) {
-      printf("Overlayfs %s for %s failed with error %s\n", enable ? "teardown" : "setup",
-             mount_point, strerror(errno));
-    }
+  bool changed;
+  if (!SetupOrTeardownOverlayfs(enable, mount_point, &changed)) {
+    suggest_run_adb_root();
   }
   printf("Verity %s on %s\n", enable ? "enabled" : "disabled", mount_point);
   return true;
@@ -126,21 +155,6 @@ static std::string get_ab_suffix() {
 
 static bool is_avb_device_locked() {
   return android::base::GetProperty("ro.boot.vbmeta.device_state", "") == "locked";
-}
-
-static bool overlayfs_setup(bool enable) {
-  auto change = false;
-  errno = 0;
-  if (enable ? fs_mgr_overlayfs_teardown(nullptr, &change)
-             : fs_mgr_overlayfs_setup(nullptr, &change)) {
-    if (change) {
-      printf("%s overlayfs\n", enable ? "disabling" : "using");
-    }
-  } else if (errno) {
-    printf("Overlayfs %s failed with error %s\n", enable ? "teardown" : "setup", strerror(errno));
-    suggest_run_adb_root();
-  }
-  return change;
 }
 
 /* Use AVB to turn verity on/off */
@@ -168,7 +182,6 @@ static bool set_avb_verity_enabled_state(AvbOps* ops, bool enable_verity) {
     return false;
   }
 
-  overlayfs_setup(enable_verity);
   printf("Successfully %s verity\n", enable_verity ? "enabled" : "disabled");
   return true;
 }
@@ -204,7 +217,7 @@ int main(int argc, char* argv[]) {
 
   bool enable = enable_opt.value();
 
-  bool any_changed = false;
+  bool verity_changed = false;
 
   // Figure out if we're using VB1.0 or VB2.0 (aka AVB) - by
   // contract, androidboot.vbmeta.digest is set by the bootloader
@@ -220,7 +233,8 @@ int main(int argc, char* argv[]) {
     }
 
     if (!android::base::GetBoolProperty("ro.secure", false)) {
-      overlayfs_setup(enable);
+      bool change;
+      SetupOrTeardownOverlayfs(enable, nullptr, &change);
       printf("verity not enabled - ENG build\n");
       return 0;
     }
@@ -241,13 +255,17 @@ int main(int argc, char* argv[]) {
       return 1;
     }
     if (set_avb_verity_enabled_state(ops, enable)) {
-      any_changed = true;
+      verity_changed = true;
     }
     avb_ops_user_free(ops);
   }
-  if (!any_changed) any_changed = overlayfs_setup(enable);
 
-  if (any_changed) {
+  bool overlayfs_changed = false;
+  if (!SetupOrTeardownOverlayfs(enable, nullptr, &overlayfs_changed)) {
+    suggest_run_adb_root();
+  }
+
+  if (verity_changed || overlayfs_changed) {
     printf("Now reboot your device for settings to take effect\n");
   }
 
