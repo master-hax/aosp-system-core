@@ -20,8 +20,11 @@
 #endif
 #include "lwt_arch.h"
 
-#define FUNCTION_START(name) \
-        .text; .align  2; .global name; .type name, %function; name:    
+#define FUNCTION_START_WITH_ALIGN(name, align)				\
+        .text; .p2align align; .global name; .type name, %function; name:    
+
+#define FUNCTION_START(name)						\
+	FUNCTION_START_WITH_ALIGN(name, 2)
 
 #define FUNCTION_END(name)						\
         .size name, .-name
@@ -97,9 +100,8 @@ FUNCTION_END(__lwt_ctx_save)
 
 FUNCTION_START(__lwt_ctx_load_idle_cpu)
 	stlrb	wzr, [x0]		// current thread is no longer running
-	mov	x0,  xzr		// return value, zero is 2nd return
 	mov	x2,  x1			// x2 = cpuctx
-	mov	x4,  1			// x4 = enabled = true
+	mov	x4,  0			// x4 = enabled = false
 	b	2f
 FUNCTION_END(__lwt_ctx_load_idle_cpu)
 
@@ -112,15 +114,16 @@ FUNCTION_START(__lwt_ctx_load_on_cpu)
 
 1:	ldarb	w6, [x3]		// loop while new thr is running ...
 	sub	w5, w5, 1
-	cbz	w5, 3f
+	cbz	w5, 4f
 	cbnz	w6, 1b			// ... in another cpu
 	mov	w6, 1
 	stlrb	w6, [x3]		// new thr is now running on this cpu
-	mov	x0, xzr			// return value, zero is 2nd return
 
-2:	//  load 8 registers from a cache line
+2:	mov	x0, 0			// return value, zero is 2nd return
 
-	ldp	x6,  x7,  [x1, ctx_pc]	// get [pc, pstate] as early as possible
+	//  load 8 registers from a cache line
+
+3:	ldp	x6,  x7,  [x1, ctx_pc]	// get [pc, pstate] as early as possible
 	ldp	x26, x27, [x1, ctx_x26]
 	ldp	x28, x29, [x1, ctx_x28]
 	ldp	x30, x8,  [x1, ctx_x30]	// [x30, sp] can not use sp here
@@ -145,10 +148,10 @@ FUNCTION_START(__lwt_ctx_load_on_cpu)
 	strb	w4,  [x2, ENABLED_OFFSET_FROM_CPUCTX]	// cpu->cpu_enabled = w4
 	br	x6
 
-3:	// x0 is thr, its the 2nd return value, returned to cpu_main()
+4:	// x0 is thr, its the 2nd return value, returned to cpu_main()
 	mov	x1,  x2			// switch to cpu_main() to handle thr
-	mov	x4,  1			// ensure cpu->cpu_enabled becomes true
-	b	2b			// thr->thr_running was set too long
+	mov	x4,  0			// ensure cpu->cpu_enabled becomes false
+	b	3b			// thr->thr_running was set too long
 
 ctx_load_rest:
 	ldr	x0,  [x2, -SIZEOF_UREG_T] // cpu_trampoline is before cpu_ctx
@@ -379,7 +382,7 @@ FUNCTION_END(__lwt_ctx_save)
 FUNCTION_START(__lwt_ctx_load_idle_cpu)
 	movb	$0, (%rdi)		// current thread is no longer running
 	movq	%rsi, %rdx		// rdx = cpuctx
-	movl	$1, %r8d		// r8 = enabled = false
+	movl	$0, %r8d		// r8 = enabled = false
 	jmp	2f
 FUNCTION_END(__lwt_ctx_load_idle_cpu)
 FUNCTION_START(__lwt_ctx_load)
@@ -413,7 +416,7 @@ FUNCTION_START(__lwt_ctx_load_on_cpu)
 4:	// rax is thr, its the 2nd return value, returned to cpu_main()
 	mov	%rdi, %rax
 	mov	%rdx, %rsi		// switch to cpu_main() to handle thr
-	movl	$1, %r8d		// ensure cpu->cpu_enabled becomes true
+	movl	$0, %r8d		// ensure cpu->cpu_enabled becomes false
 	jmp	3b			// thr->thr_running was set too long
 ctx_load_rest:
 	//  Restore rest of full context
@@ -485,3 +488,215 @@ FUNCTION_START(__lwt_start_glue)
 FUNCTION_END(__lwt_start_glue)
 
 #endif //}
+
+#define	ENTRY_START(name)						\
+	FUNCTION_START_WITH_ALIGN(name, ENTRY_ALIGN_L2)
+
+#define	ENTRY_END(name)							\
+	FUNCTION_END(name)
+
+#ifdef LWT_ARM64 //{
+#define	ARG1	x0
+#define	ARG2	x1
+#define	ARG3	x2
+#define	ARG4	x3
+#define	ARG5	x4
+
+#define	BARG2	w1
+#define	BARG3	w2
+#define	BARG4	w3
+#define	BARG5	w4
+#define	BARG6	w5
+
+#define	ENTRY_BODY_REG(target, r1, r2)					\
+	adrp	r1, :gottprel:__lwt_cpu_this ;				\
+	ldr	r1, [r1, #:gottprel_lo12:__lwt_cpu_this] ;		\
+	mrs	x15, tpidr_el0 ;					\
+	ldr	r1, [x15, r1] ;						\
+	ldrb	r2, [r1, cpu_enabled] ;					\
+	strb	wzr, [r1, cpu_enabled] ;				\
+	ldr	r1, [r1, cpu_running_thr] ;				\
+	b	target
+#endif //}
+
+#ifdef LWT_X64 //{
+#define	ARG1	%rdi
+#define	ARG2	%rsi
+#define	ARG3	%rdx
+#define	ARG4	%rcx
+#define	ARG5	%r8
+
+#define	BARG2	%esi
+#define	BARG3	%edx
+#define	BARG4	%ecx
+#define	BARG5	%r8d
+#define	BARG6	%r9d
+
+#define	ENTRY_BODY_REG(target, r1, r2)					\
+	movq	__lwt_cpu_this@gottpoff(%rip), r1 ;			\
+	movq	%fs:(r1), r1 ;						\
+	movsbl	cpu_enabled(r1), r2 ;					\
+	movb	$0, cpu_enabled(r1) ;					\
+	movq	cpu_running_thr(r1), r1 ;				\
+	jmp	target@PLT
+#endif //}
+
+#define	ENTRY_BODY_1(target)	ENTRY_BODY_REG(target, ARG1, BARG2)
+#define	ENTRY_BODY_2(target)	ENTRY_BODY_REG(target, ARG2, BARG3)
+#define	ENTRY_BODY_3(target)	ENTRY_BODY_REG(target, ARG3, BARG4)
+#define	ENTRY_BODY_4(target)	ENTRY_BODY_REG(target, ARG4, BARG5)
+#define	ENTRY_BODY_5(target)	ENTRY_BODY_REG(target, ARG5, BARG6)
+
+//{ Dummy function to demarcate the end of the entry points for the purpose
+//  of making them restartable so that their execution is atomic.
+
+ENTRY_START(__lwt_entry_start)
+ENTRY_END(__lwt_entry_start)
+
+//  Each one of the following functions is an entry point to the LWT library,
+//  Their signature is part of the API, each one starts by getting the per-cpu
+//  pointer, disabling interrupts, and getting the current thread pointer to
+//  become an additional argument (the last argument) to the internal function
+//  that implements the API.  Each __lwt_xxx() API maps to a corresponding
+//  __LWT_xxx() API implemented in C.  The entry points each use 32 bytes of
+//  code, if an interrupt (ktimer_signal) occurs in the middle of them, the
+//  program counter is rewound to the start of the entry point (by clearing the
+//  low 5 bits), thus there is not a race between obtaining the per-cpu pointer
+//  and setting cpu_enabled to false.  Note that once it is set to false, the
+//  thread can not longer be preempted.
+
+//  int __LWT_mtx_init(mtx_t **mtxpp, const mtxattr_t *mtxattr,
+//		       thr_t *thr, bool enabled);
+
+ENTRY_START(__lwt_mtx_init)
+ENTRY_BODY_3(__LWT_mtx_init)
+ENTRY_END(__lwt_mtx_init)
+
+//  int __LWT_mtx_lock(mtx_t *mtx, thr_t *thr, bool enabled);
+
+ENTRY_START(__lwt_mtx_lock)
+ENTRY_BODY_2(__LWT_mtx_lock)
+ENTRY_END(__lwt_mtx_lock)
+
+//  int __LWT_mtx_trylock(mtx_t *mtx, thr_t *thr, bool enabled);
+
+ENTRY_START(__lwt_mtx_trylock)
+ENTRY_BODY_2(__LWT_mtx_trylock)
+ENTRY_END(__lwt_mtx_trylock)
+
+//  int __LWT_mtx_unlock(mtx_t *mtx, thr_t *thr, bool enabled);
+
+ENTRY_START(__lwt_mtx_unlock)
+ENTRY_BODY_2(__LWT_mtx_unlock)
+ENTRY_END(__lwt_mtx_unlock)
+
+//  int __LWT_cnd_init(cnd_t **cndpp, const cndattr_t *cndattr,
+//		       thr_t *thr, bool enabled);
+
+ENTRY_START(__lwt_cnd_init)
+ENTRY_BODY_3(__LWT_cnd_init)
+ENTRY_END(__lwt_cnd_init)
+
+//  int __LWT_cnd_wait(cnd_t *cnd, mtx_t *mtx, thr_t *thr, bool enabled);
+
+ENTRY_START(__lwt_cnd_wait)
+ENTRY_BODY_3(__LWT_cnd_wait)
+ENTRY_END(__lwt_cnd_wait)
+
+//  int __LWT_cnd_timedwait(cnd_t *cnd, mtx_t *mtx,
+//			    const struct timespec *abstime,
+//			    thr_t *thr, bool enabled);
+
+ENTRY_START(__lwt_cnd_timedwait)
+ENTRY_BODY_4(__LWT_cnd_timedwait)
+ENTRY_END(__lwt_cnd_timedwait)
+
+//  int __LWT_cnd_signal(cnd_t *cnd, mtx_t *mtx, thr_t *thr, bool enabled);
+
+ENTRY_START(__lwt_cnd_signal)
+ENTRY_BODY_3(__LWT_cnd_signal)
+ENTRY_END(__lwt_cnd_signal)
+
+//  int __LWT_cnd_broadcast(cnd_t *cnd, mtx_t *mtx, thr_t *thr, bool enabled);
+
+ENTRY_START(__lwt_cnd_broadcast)
+ENTRY_BODY_3(__LWT_cnd_broadcast)
+ENTRY_END(__lwt_cnd_broadcast)
+
+//  int __LWT_spin_init(mtx_t **mtxpp, thr_t *thr, bool enabled);
+
+ENTRY_START(__lwt_spin_init)
+ENTRY_BODY_2(__LWT_spin_init)
+ENTRY_END(__lwt_spin_init)
+
+//  int __LWT_spin_lock(mtx_t *mtx, thr_t *thr, bool enabled);
+
+ENTRY_START(__lwt_spin_lock)
+ENTRY_BODY_2(__LWT_spin_lock)
+ENTRY_END(__lwt_spin_lock)
+
+//  int __LWT_spin_trylock(mtx_t *mtx, thr_t *thr, bool enabled);
+
+ENTRY_START(__lwt_spin_trylock)
+ENTRY_BODY_2(__LWT_spin_trylock)
+ENTRY_END(__lwt_spin_trylock)
+
+//  int __LWT_spin_unlock(mtx_t *mtx, thr_t *thr, bool enabled);
+
+ENTRY_START(__lwt_spin_unlock)
+ENTRY_BODY_2(__LWT_spin_unlock)
+ENTRY_END(__lwt_spin_unlock)
+
+//  int __LWT_thr_create(lwt_t *thread, const lwt_attr_t *attr,
+//			 lwt_function_t function, void *arg,
+//			 thr_t *thr, bool enabled);
+
+ENTRY_START(__lwt_thr_create)
+ENTRY_BODY_5(__LWT_thr_create)
+ENTRY_END(__lwt_thr_create)
+
+//  noreturn void __LWT_thr_exit(void *retval, thr_t *thr, bool enabled);
+
+ENTRY_START(__lwt_thr_exit)
+ENTRY_BODY_2(__LWT_thr_exit)
+ENTRY_END(__lwt_thr_exit)
+
+//  int __LWT_thr_join(lwt_t thread, void **retval, thr_t *thr, bool enabled);
+
+ENTRY_START(__lwt_thr_join)
+ENTRY_BODY_3(__LWT_thr_join)
+ENTRY_END(__lwt_thr_join)
+
+//  int __LWT_thr_cancel(lwt_t thread, thr_t *thr, bool enabled);
+
+ENTRY_START(__lwt_thr_cancel)
+ENTRY_BODY_2(__LWT_thr_cancel)
+ENTRY_END(__lwt_thr_cancel)
+
+//  int __LWT_thr_setcancelstate(int state, int *oldstate,
+//				 thr_t *thr, bool enabled);
+
+ENTRY_START(__lwt_thr_setcancelstate)
+ENTRY_BODY_3(__LWT_thr_setcancelstate)
+ENTRY_END(__lwt_thr_setcancelstate)
+
+//  int __LWT_thr_setcanceltype(int type, int *oldtype,
+//				thr_t *thr, bool enabled);
+
+ENTRY_START(__lwt_thr_setcanceltype)
+ENTRY_BODY_3(__LWT_thr_setcanceltype)
+ENTRY_END(__lwt_thr_setcanceltype)
+
+//  void __LWT_thr_testcancel(thr_t *thr, bool enabled);
+
+ENTRY_START(__lwt_thr_testcancel)
+ENTRY_BODY_1(__LWT_thr_testcancel)
+ENTRY_END(__lwt_thr_testcancel)
+
+//  Dummy function to demarcate the end of the entry points for the purpose
+//  of making them restartable so that their execution is atomic.
+
+ENTRY_START(__lwt_entry_end)
+ENTRY_END(__lwt_entry_end)
+
+//}

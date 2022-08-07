@@ -32,6 +32,7 @@
 //  mutex, or waiting for a condition to occur.
 
 #define	SIZEOF_UREG_T	8
+#define	ENTRY_ALIGN_L2	5			// log2 of entry point size
 
 #ifdef LWT_ARM64 //{
 

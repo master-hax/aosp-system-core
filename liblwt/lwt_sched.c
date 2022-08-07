@@ -30,7 +30,68 @@
 #include "lwt_arch.h"
 #include "lwt_sched.h"
 
-//  TODO:
+//{  S_INTRO - Introduction
+
+//  This source file is organized into multiple sections, each documented and
+//  easily navigated by using the curly-brace matching and navigation functions
+//  in most editors.  For example in "vi" the "%" scans forwards in the line
+//  for a brace and jumps to the matching brace by moving to it in the file.
+
+//  The curly-braces that demarcate each section are found next to the comment
+//  at the start of the comment that describes the section (as shown in the
+//  paragraph above).  This file could be broken into many small files, one per
+//  section, but that would introuce a lot of prototypes in header files and
+//  would make a lot of the functions not easily inlined (unless those are
+//  further split out into header files) and jumping around between many such
+//  files when examining the code.  Any editor worth being used properly
+//  supports multiple editing windows operating concurrently into the same file.
+//  Thus keepig this file as is, without being split, is much easier to examine
+//  and maintain.
+
+//  A different way to naviate this file is by searching for the keywords in
+//  this table, they are the headings of the sections that can be reached by
+//  curly brace matching.  If your editor supports a command to grab a word
+//  and search for it (as in BSD nvi with control-A), then that can be used
+//  to go directly to a section, repeating the search brings you back here.
+//  All section names start with S_ (and no other identifiers are named that
+//  way, so searching for "<beginning_of_word>S_" (e.g. \<S_ in nvi) is another
+//  way to navigate through all the sections.
+/*
+
+S_INTRO		- Introduction
+  S_DEBUG	- Debugging support
+  S_DEFS	- Various #defines
+  S_GLOBALS	- Global variables
+  S_PROTOS	- Prototypes
+S_INTERNAL	- Internal function
+  S_MACROS	- functions that must be implemented as #define macros
+  S_MISC_INLINE	- Miscellaneous inline functions:
+  S_LLLIST	- Implementation and operations on lllist_t
+  S_STACK	- Stack allocation and their caching
+  S_THRID	- Operations on thrid_t values and their indexing into thr_arena
+  S_MTXATTR	- mtxattr_*() functions
+  S_MTX		- mtx_*() functions
+  S_CND		- cnd_*() functions
+  S_SPIN	- spin_*() functions
+  S_THRATTR	- thrattr_*() functions
+  S_THR		- thr_*() functions
+  S_SCHED_FUNCS	- Scheduler functions
+  S_SCHEDQ_ALGO	- Insert and remove algorithm for schedq_t
+  S_SCHEDQ_INS  - Functions that implement parts of schedq_insert()
+  S_SCHEDQ_REM  - Functions that implement parts of schedq_remove()
+  S_SCHED_MORE	- More scheduler functions
+  S_ARENA	- Implementation of operations on arena_t
+  S_KCORE	- A kcore_t is a kernel supported core, implemented on pthreads
+  S_API		- support for LWT API entry and exit, common code for __LWT_*()
+  S_INIT	- Initialization functions
+S_LWT		- LWT entry points
+
+*/
+//  To avoid having to have an excessive number of prototypes, the code in this
+//  file is organized bottom-up, with the lowest level sections of code at the
+//  start and the code that depends on them after those.
+
+//  Note:
 //	The clang C compiler does not implement standard C properly, this
 //	produces a compilation error because clang does not allow declarations
 //	to have a label prior to them.  This code compiles properly with gcc.
@@ -53,10 +114,11 @@
 //	}
 
 
-//{  Debugging support.
-//	assert(expr) are always compiled in, always run correct code
-//	debug(expr) are only compiled in if LWT_DEBUG is defined
-//	TODO() is for code that has not been written yet
+//}{  S_DEBUG - Debugging support
+
+//	assert(expr)	are always compiled in, always run correct code
+//	debug(expr)	are only compiled in if LWT_DEBUG is defined
+// 	TODO()		is for code that has not been written yet
 
 static const char *volatile __lwt_assert_file;
 static const char *volatile __lwt_assert_msg;
@@ -88,7 +150,8 @@ static noreturn void lwt_assert_fail(const char *file, int line,
 
 #define	TODO()		assert(0)
 
-//}{  Various #defines.
+
+//}{  S_DEFS - Various #defines
 
 #define	NOOP()			do {} while (0)
 
@@ -166,7 +229,8 @@ static thrx_t	*thrx_by_index;
 
 #endif //}
 
-//}{  Global variables.
+
+//}{  S_GLOBALS - Global variables
 
 static lllist_t	 thr_exited_lllist;
 static arena_t	 thr_arena;
@@ -459,8 +523,10 @@ static cpu_t *cpuptrs[8] = {
 #endif
 
 
-//}  Prototypes.
-//{  Only when required because their order in this file.
+//}{  S_PROTOS - Prototypes
+
+//  Only prototypes required because of their order in this file or becahse
+//  they are implemented in lwt_sched.S
 
 noreturn void		 __lwt_start_glue(void);
 noreturn void		 __lwt_thr_exit(void *retval);
@@ -472,24 +538,6 @@ static int		 thr_context_save__thr_run(thr_t *currthr, thr_t *thr);
 
 static noreturn void	 thr_block_forever(thr_t *thr, const char *msg,
 					   void *arg);
-
-//  ctx_save() returns twice, one from its caller and another from where the
-//  context was saved, e.g. ctx_load() which never returns to its caller. The
-//  first return from ctx_save() returns a non-zero value, the second return
-//  returs the value zero.
-
-//  The signatures of ctx_load(), ctx_load_on_cpu() and ctx_load_idle_cpu()
-//  have ctx as their first argument, that is per the naming conventions of
-//  how LWT is implemented.  The functions that implement them (with the
-//  __lwt_ prefix below) are best implemented with the ctx argument as the
-//  second argument, and the thr argument (for the first two) as their first
-//  argument.
-
-#define	ctx_save(ctx, thrx) ({						\
-	(thrx)->thrx_ctx = (ctx);					\
-	(thrx)->thrx_is_fullctx = false;				\
-	__lwt_ctx_save(ctx);						\
-})
 
 #define	ctx_load(ctx, thr, cpuctx, new_running, enabled, curr_running)	\
 	__lwt_ctx_load(thr, ctx, cpuctx, new_running, enabled, curr_running)
@@ -521,22 +569,8 @@ void			 __lwt_set_fpsr(ureg_t fpsr);
 ureg_t			 __lwt_get_nzcv(void);
 void			 __lwt_set_nzcv(ureg_t nzcv);
 
-//  ctx_save_returns_thr() is used by cpu_main() to save its CPU context, the
-//  first return returns CTX_SAVED at context saving time, the second return
-//  is either a thread pointer or CTX_LOADED.  It is usually CTX_LOADED, but
-//  infrequently it is a thread pointer which corresponds to a thread whose
-//  context was being attempted to be loaded but the thread for that context
-//  kept its cpu_running set to true for too long, so instead the context of
-//  the CPU was loaded itself to have it handle the thread whose thr_running
-//  field remained true too long.  CTX_SAVED and CTX_LOADED have to be the
-//  values for true and false, ctx_save_returs_thr() behaves as a threelean 
-//  (isntead of as a boolean): CTX_SAVED, CTX_LOADED or a thread pointer.
-
-#define	CTX_SAVED	((thr_t *) 1)
-#define	CTX_LOADED	((thr_t *) 0)
-
-#define	ctx_save_returns_thr(ctx)					\
-	((thr_t *) __lwt_ctx_save(ctx))
+void			 __lwt_entry_start(void);
+void			 __lwt_entry_end(void);
 
 bool 			 __lwt_bool_load_acq(bool *m);
 void 			 __lwt_bool_store_rel(bool *m, bool b);
@@ -566,13 +600,59 @@ static void		 cpu_current_set(cpu_t *cpu);
 static cpu_t		*cpu_current(void);
 #endif //}
 
-//}  This section contains entry points into this module and their supporting
-///  functions inlined into the corresponding __lwt_() functions at the end of
-///  the file.  The entry points are the static inline functions, they might
-///  invoke one or more non-inline noreturn related functions to ensure the
-//{  compiler puts out-of-line the code that leads to aborting the program.
 
-//{  Miscellaneous inline functions:
+//}  S_INTERNAL - Internal functions
+///
+///  This section contains internal functions and their supporting functions,
+///  they are inlined into the corresponding __lwt_*() and __LWT_*() functions
+///  at the end of this file which are the actual entry points into this module
+//{  that implement the LWT API.
+
+
+//{  S_MACROS - functions that must be implemented as #define macros
+
+//  ctx_save() returns twice, one from its caller and another from where the
+//  context was saved, e.g. ctx_load() which never returns to its caller. The
+//  first return from ctx_save() returns a non-zero value, the second return
+//  returs the value zero.
+
+//  The signatures of ctx_load(), ctx_load_on_cpu() and ctx_load_idle_cpu()
+//  have ctx as their first argument, that is per the naming conventions of
+//  how LWT is implemented.  The functions that implement them (with the
+//  __lwt_ prefix below) are best implemented with the ctx argument as the
+//  second argument, and the thr argument (for the first two) as their first
+//  argument.
+
+//  ctx_save() is implemented as a macro, it can not be an inline_only function,
+//  beacuse __lwt_ctx_save() is a two_returns function, which would required
+//  that ctx_save() also be a two_returns functions, which can not be inline.
+
+#define	ctx_save(ctx, thrx) ({						\
+	debug(!cpu_current()->cpu_enabled);				\
+	(thrx)->thrx_ctx = (ctx);					\
+	(thrx)->thrx_is_fullctx = false;				\
+	__lwt_ctx_save(ctx);						\
+})
+
+//  ctx_save_returns_thr() is used by cpu_main() to save its CPU context, the
+//  first return returns CTX_SAVED at context saving time, the second return
+//  is either a thread pointer or CTX_LOADED.  It is usually CTX_LOADED, but
+//  infrequently it is a thread pointer which corresponds to a thread whose
+//  context was being attempted to be loaded but the thread for that context
+//  kept its cpu_running set to true for too long, so instead the context of
+//  the CPU was loaded itself to have it handle the thread whose thr_running
+//  field remained true too long.  CTX_SAVED and CTX_LOADED have to be the
+//  values for true and false, ctx_save_returs_thr() behaves as a threelean 
+//  (isntead of as a boolean): CTX_SAVED, CTX_LOADED or a thread pointer.
+
+#define	CTX_SAVED	((thr_t *) 1)
+#define	CTX_LOADED	((thr_t *) 0)
+
+#define	ctx_save_returns_thr(ctx)					\
+	((thr_t *) __lwt_ctx_save(ctx))
+
+
+//}{  S_MISC_INLINE - Miscellaneous inline functions
 
 #ifdef LWT_X64_USE_GS //{
 static void cpu_current_set(cpu_t *cpu)
@@ -585,16 +665,16 @@ static void cpu_current_set(cpu_t *cpu)
 #endif //}
 
 #ifdef LWT_CPU_THREAD_KEYWORD //{
-static __thread cpu_t *cpu_this;
+__thread cpu_t *__lwt_cpu_this;
 
 inline_only void cpu_current_set(cpu_t *cpu)
 {
-	cpu_this = cpu;
+	__lwt_cpu_this = cpu;
 }
 
 inline_only cpu_t *cpu_current(void)
 {
-	return cpu_this;
+	return __lwt_cpu_this;
 }
 #endif //}
 
@@ -618,7 +698,31 @@ inline_only int sched_in_ts(thr_t *thr)
 	return sched_in_with_qix(thr, SQCL_SCHEDQTS_IX);
 }
 
-//}{  Implementation and operations on: lllist_t
+inline_only bool thr_can_use_current_cpu(unused thr_t *in)
+{
+	//  TODO: revisit with respect to cpu/core affinity.
+	return true;
+}
+
+inline_only void cpu_enable_with_ktimer_tick(cpu_t *cpu)
+{
+	debug(!cpu->cpu_enabled);
+	if (cpu->cpu_timerticked) {
+		cpu->cpu_timerticked = false;
+		ktimer_tick(cpu);
+		cpu = cpu_current();		// might be on a different cpu
+	}
+	cpu->cpu_enabled = true;
+}
+
+inline_only void cpu_enable(cpu_t *cpu)
+{
+	debug(!cpu->cpu_enabled);
+	cpu->cpu_enabled = true;
+}
+
+
+//}{  S_LLLIST - Implementation and operations on lllist_t
 
 #define LLLIST_GEN_NEXT		1
 #define LLLIST_COUNT_INC_SHIFT	32
@@ -736,7 +840,7 @@ inline_only void *arena_tryalloc(arena_t *arena)
 }
 
 
-//}{  Stack allocation and caching.
+//}{  S_STACK - Stack allocation and their caching
 
 static alloc_value_t rawstk_alloc(size_t stacksize, size_t guardsize)
 {
@@ -914,8 +1018,7 @@ inline_only void thr_free_stk(stk_t *stk)
 }
 
 
-//}  Operations on thrid_t values and their index into the thr_arena.
-///  Also miscellaneous thr_t functions that don't fit elsewhere.
+//}  S_THRID - Operations on thrid_t values and their indexing into thr_arena
 //{  These values live in the lwt_t variables that the API user uses.
 
 inline_only thrx_t *thrx_from_thr(thr_t *thr)
@@ -928,14 +1031,8 @@ inline_only thr_t *thr_from_index(ureg_t index)
 	return THR_INDEX_BASE + index;
 }
 
-static bool thr_can_use_current_cpu(unused thr_t *in)
-{
-	//  TODO: revisit with respect to cpu/core affinity.
-	return true;
-}
 
-
-//}{  mtxattr_*() functions, mtxattr_t 
+//}{  S_MTXATTR - mtxattr_*() functions
 
 inline_only int mtxattr_init(mtxattr_t **mtxattrpp)
 {
@@ -970,7 +1067,7 @@ inline_only int mtxattr_gettype(const mtxattr_t *mtxattr, int *kind)
 }
 
 
-//}{  mtx_*() functions
+//}{  S_MTX - mtx_*() functions
 
 inline_only alloc_value_t mtx_alloc(thr_t *thr)
 {
@@ -1052,6 +1149,17 @@ inline_only int mtx_create(mtx_t **mtxpp, lwt_mtx_type_t type, thr_t *thr)
 	mtx_init(mtx, type);
 	*mtxpp = mtx;
 	return 0;
+}
+
+inline_only int mtx_create_with_mtxattr(mtx_t **mtxpp, const mtxattr_t *mtxattr,
+					thr_t *thr)
+{
+	lwt_mtx_type_t type = (int)(uptr_t) mtxattr;
+	if (type > LWT_MTX_LAST) {
+		*mtxpp = NULL;
+		return EINVAL;
+	}
+	return mtx_create(mtxpp, type, thr);
 }
 
 static int mtx_trycreate_outline(mtx_t **mtxpp, lwt_mtx_type_t type)
@@ -1317,7 +1425,7 @@ static int mtx_unlock_from_cond_wait(mtx_t *mtx, thr_t *thr)
 }
  
 
-//}{  cnd_*() functions
+//}{  S_CND - cnd_*() functions
 
 //  The data structure manipulation here is all done under the protection of
 //  mtx which is owned by the current thread .
@@ -1508,7 +1616,7 @@ static int cnd_destroy_outline(cnd_t **cndpp)
 }
 
 
-//}{  spin_*() functions
+//}{  S_SPIN - spin_*() functions
 
 //  Spin locks are implemented as mtx_t, 100% spinning locks in user mode lead
 //  to performance anomalies when the owning thread is preempted by the kernel.
@@ -1543,7 +1651,8 @@ inline_only int spin_unlock(mtx_t *mtx, thr_t *thr)
 	return mtx_unlock(mtx, thr);
 }
 
-//}{  thrattr_*() functions
+
+//}{  S_THRATTR - thrattr_*() functions
 
 //  Based on Android Bionic values
 
@@ -1751,7 +1860,7 @@ inline_only int thrattr_getguardsize(const thrattr_t *thrattr,
 }
 
 
-//}{ thr_*() functions
+//}{  S_THR - thr_*() functions
 
 inline_only alloc_value_t thr_alloc(thr_t *thr)
 {
@@ -1926,46 +2035,6 @@ static int thr_join(thr_t *thr, lwt_t thread, void **retvalpp)
 	return 0;
 }
 
-inline_only thr_t *cpu_disable(cpu_t *cpu)
-{
-	debug(cpu->cpu_enabled);
-	cpu->cpu_enabled = false;
-	return cpu->cpu_running_thr;
-}
-
-inline_only void cpu_enable_with_ktimer_tick(cpu_t *cpu)
-{
-	debug(!cpu->cpu_enabled);
-	if (cpu->cpu_timerticked) {
-		cpu->cpu_timerticked = false;
-		ktimer_tick(cpu);
-	}
-	cpu->cpu_enabled = true;
-}
-
-inline_only void cpu_enable(cpu_t *cpu)
-{
-	debug(!cpu->cpu_enabled);
-	cpu->cpu_enabled = true;
-}
-
-//  An api_exit() that follows an api_enter() might occur on a different
-//  cpu, thus having the caller do cpu_current() once, and pass a cpu argument
-//  to both api_enter() and api_exit(), would be incorrent.
-
-inline_only thr_t *api_enter(unused int api)
-{
-	cpu_t *cpu = cpu_current();
-	cpu_disable(cpu);
-	return cpu->cpu_running_thr;
-}
-
-inline_only void api_exit(unused int api)
-{
-	cpu_t *cpu = cpu_current();
-	cpu_enable_with_ktimer_tick(cpu);
-}
-
 typedef void (*glue_t)(void *arg, lwt_function_t function);
 
 static noreturn void thr_start_glue(void *arg, lwt_function_t function)
@@ -2060,6 +2129,7 @@ retry:;
 	ctx_t *ctx = ((ctx_t *) (stk - 1)) - 1;
 	tx->thrx_ctx = ctx;
 	tx->thrx_is_fullctx = false;
+	tx->thrx_enabled = false;
 	ctx_init(ctx, (uptr_t) (stk - 1), function, arg);
 	*(lwt_t *) thread = (lwt_t) t->thra.thra_thrid.thrid_all;
 
@@ -2106,7 +2176,7 @@ static int thr_setcanceltype(unused thr_t *thr, unused int type,
 }
 
 
-//}{ Scheduler functions.
+//}{  S_SCHED_FUNCS - Scheduler functions
 
 //  This is a light touch examination of schedq to see if it is empty,
 //  it does not touch the memory with a compare-and-swap, which most
@@ -2281,7 +2351,7 @@ static bool schdom_is_empty(schdom_t *schdom)
 	return true;
 }
 
-//}{ Insert and remove algorithm for schedq_t.
+//}{  S_SCHEDQ_ALGO - Insert and remove algorithm for schedq_t.
 
 //  An schedq_t is a scheduler queue that is manipulated atomically.
 //  This is a lock-less and wait-free data structure.  Its implementation
@@ -2799,7 +2869,8 @@ static bool schdom_is_empty(schdom_t *schdom)
 //  Note that the order of the stacks implies this movement between the entries:
 //      INS -> INSPRV -> REMNXT -> REM
 
-//}{ Functions that implement parts of schedq_insert().
+
+//}{  S_SCHEDQ_INS - Functions that implement parts of schedq_insert().
 
 //  The following functions up to schedq_insert() are inlined into
 //  schedq_insert() which is then inlined into sched_in(), some of these
@@ -3031,7 +3102,7 @@ retry:;
 }
 
 
-//}{ Functions that implement parts of schedq_remove().
+//}{  S_SCHEDQ_REM - Functions that implement parts of schedq_remove().
 
 //  The following functions up to schedq_remove() are inlined into 
 //  schedq_remove() which is then inlined into sched_out().
@@ -3179,7 +3250,7 @@ retry:;
 }
 
 
-//}{ More scheduler functions
+//}{  S_SCHED_MORE - More scheduler functions
 
 inline_only ureg_t thr_get_prio_with_ceiling(thr_t *thr)
 {
@@ -3272,8 +3343,8 @@ noreturn inline_only void thr_run(thr_t *thr, thr_t *currthr)
 	if (thrx->thrx_is_fullctx)
 		cpu_generate_branch(cpu, thrx);
 	ctx_t *ctx = thrx->thrx_ctx;
-	ctx_load(ctx, thr, &cpu->cpu_ctx, &thr->thr_running, thrx->thrx_enabled,
-		 &currthr->thr_running);
+	ctx_load(ctx, thr, &cpu->cpu_ctx, &thr->thr_running,
+		 thrx->thrx_enabled, &currthr->thr_running);
 }
 
 noreturn inline_only void thr_run_on_cpu(thr_t *thr, cpu_t *cpu)
@@ -3334,7 +3405,7 @@ static int thr_context_save__thr_run(thr_t *currthr, thr_t *thr)
 }
 
 
-//}{  Implementation of operations on: arena_t
+//}{  S_ARENA - Implementation of operations on arena_t
 
 inline_only error_t arena_init_without_mtx(arena_t *arena, void *base,
 					   size_t elemsize, size_t length,
@@ -3574,11 +3645,11 @@ inline_only void arena_free(arena_t *arena, void *mem)
 }
 
 
-//} A kcore_t is a kernel supported core, for now implemented on top of
-//  pthreads but might later be implemented on top of clone(2) and futex(2).
-//  A kcore_t has the kernel synchronizers required to run and idle cpus
-//  associated with the core (e.g. a multi-threaded core might have more
-//{ than on cpu).
+//}{  S_KCORE - A kcore_t is a kernel supported core, implemented on pthreads
+
+//  Might later be implemented on top of clone(2) and futex(2).  A kcore_t has
+//  the kernel synchronizers required to run and idle cpus associated with the
+//  core (e.g. a multi-threaded core might have more than on cpu).
 
 //  Included late in this file to prevent misuse in code above that should
 //  not depend on these.
@@ -3724,6 +3795,7 @@ static void ktimer_signal(unused int signo, siginfo_t *siginfo, void *ucontextp)
 		return;
 	}
 
+	cpu->cpu_enabled = false;
         ucontext_t *ucontext = ucontextp;
 	thrx_t *thrx = thrx_from_thr(thr);
 	fullctx_t *fullctx = (fullctx_t *) &ucontext->uc_mcontext;
@@ -3731,14 +3803,26 @@ static void ktimer_signal(unused int signo, siginfo_t *siginfo, void *ucontextp)
 	instaddr += OFFSET_OF_BRANCH_IN_TRAMPOLINE;
 	ureg_t pc = fullctx->fullctx_pc;
 
+	//  If the interrupted program counter is within the __lwt_*() stubs
+	//  stubs in lwt_arch.S, then rewind the program counter back to the
+	//  start of the stub, thus ensuring that its work is not preempted in
+	//  the middle of it, i.e. in the middle of fetching the cpu pointer
+	//  and disabling preemption by setting cpu->cpu_enabled to false.
+
+	if (pc >= (ureg_t) __lwt_entry_start && pc < (ureg_t) __lwt_entry_end) {
+		pc &= ~((1uL << ENTRY_ALIGN_L2) - 1);
+		fullctx->fullctx_pc = pc;
+	}
+
 	//  instaddr is not exact here if resumed in another cpu
 
 	if (!inst_reachable(pc, instaddr)) {
 		++cpu->cpu_counts.count_unreachable;
 		ctx_t ctx;
 		if (ctx_save(&ctx, thrx))
-			sched_timeslice(thr, true);
-		debug(cpu_current()->cpu_enabled);
+			sched_timeslice(thr, false);
+		cpu = cpu_current();		// might be on a different cpu
+		cpu->cpu_enabled = true;
 		return;
 	}
 
@@ -3759,7 +3843,6 @@ static sigset_t	 lwt_rtsigno_sigset;
 
 #define	TIME_SLICE_NSECS	(100000000L)
 
-unused // TODO
 inline_only void ktimer_start(ktimer_t *ktimer)
 {
 	timer_t timer = (timer_t) ktimer;
@@ -3817,10 +3900,7 @@ static error_t cpu_ktimer_init_and_start(cpu_t *cpu)
 		return error;
 
 	ktimer_unblock();
-	cpu_enable(cpu);
-#if 0 // TODO
 	ktimer_start(cpu->cpu_ktimer);
-#endif
 	return 0;
 }
 
@@ -3844,6 +3924,7 @@ static noreturn void *cpu_main(cpu_t *cpu)
 	thr_t *thr_switching_out = NULL;
 	for (;;) {
 		pthread_mutex_lock(&kcore->kcore_mutex);
+		debug(!cpu->cpu_enabled);
 restart:;	int attempts = sched_attempts;
 retry:;		thr_t *thr = schdom_get_thr(schdom);
 
@@ -3877,6 +3958,7 @@ retry:;		thr_t *thr = schdom_get_thr(schdom);
 			++core->core_ncpus_idled;
 			pthread_cond_wait(&kcore->kcore_cond,
 					  &kcore->kcore_mutex);
+			debug(!cpu->cpu_enabled);
 			--core->core_ncpus_idled;
 			goto restart;
 		}
@@ -3887,6 +3969,7 @@ retry:;		thr_t *thr = schdom_get_thr(schdom);
 		pthread_mutex_unlock(&kcore->kcore_mutex);
 
 		thr_switching_out = ctx_save_returns_thr(&cpu->cpu_ctx);
+		debug(!cpu->cpu_enabled);
 		if (thr_switching_out == CTX_SAVED)
 			thr_run_on_cpu(thr, cpu);	// first return
 
@@ -3950,7 +4033,25 @@ static error_t cpu_start(cpu_t *cpu)
 }
 
 
-//}{ Initialization functions.
+//}{  S_API - support for LWT API entry and exit, common code for __LWT_*()
+
+inline_only void api_enter(unused int api, bool enabled)
+{
+	debug(enabled);
+}
+
+inline_only void api_exit(unused int api)
+{
+	//  An api_exit() that follows an api_enter() might occur on a different
+	//  cpu, thus having the caller do cpu_current() once, and pass a cpu
+	//  argument to both api_enter() and api_exit(), would be incorrent.
+
+	cpu_t *cpu = cpu_current();
+	cpu_enable_with_ktimer_tick(cpu);
+}
+
+
+//}{  S_INIT - Initialization functions
 
 struct sigaction ktimer_prevsa;
 
@@ -4340,18 +4441,65 @@ inline_only error_t init(size_t sched_attempt_steps, int rtsigno)
 		return error;
 	}
 
-	return cpu_ktimer_init_and_start(&cpus[0]);
+	error = cpu_ktimer_init_and_start(&cpus[0]);
+	if (error)
+		return error;
+
+	cpu_enable(&cpus[0]);
+	return error;
 }
 
+//}
 
-//}  End of section with entry points into this module inlined into the
-///  corresponding __lwt_() functions that follow.
-///
-///  The rest of this source file are the ABI entry points, they call the
+///  End of section with internal functions, those functions are used to
+///  implement the LWT API entry points, they are usually inlined into their
+///  corresponding __lwt_*() and __LWT_*() functions, which follow.
+
+//}{  S_LWT - LWT entry points.
+
+///  The rest of this source file are the API/ABI entry points, they call the
 ///  internal implementation functions which are inlined into these functions.
 ///
-///  This level of indirection costs nothing and removes the eye-sore of
-//{  all the __lwt_ prefixes.
+///  This level of indirection costs nothing and removes the eye-sore of the
+///  __lwt_ and prefixes, additionally makes very clear what are the entry
+///  points.
+///
+///  The entry points of 3 types:
+///	__lwt_init() initialization function for the LWT API.
+///
+///	__lwt_*() functions, other than __lwt_init():
+///		They are not allowed to block, they usually free memory
+///		lock-lessly into arenas (for mtx_t, cnd_t, etc) are are trivial
+///		functions that set and get attribute values.  Involuntary
+///		preemptiom of these functions is allowed.
+///
+///	__LWT_*() functions:
+///		They might block internally, and perform non trivial data
+///		structure manipulations (some lock-lessly some under the
+///		protection of a mtx_t owned by the calling thread).  These
+///		functions can not be preempted, to prevent their preemptiom
+///		the __LWT_*() functions are calling by a corresponding
+///		__lwt_*() function stub implemented in assembly in lwt_arch.S.
+///		Those stubs are restartable, see ktimer_signal(), their work is
+///		to get the per-CPU ponter, disable time slicing by seeting
+///		cpu->cpu_enabled to false.  As an optimization the stubs also
+///		obtain the current thread and pass it as an extra argument to
+///		the __LWT_*() functions, thus their signatures is the signature
+///		of the LWT API/ABI extended with an extra thr_t pointer argument
+///		(doing this last step in the assembly stub is easy a cheap).
+///		 The __LWT_*() functions return directly to the API caller, not
+///		to the __lwt_*() assembly stub, which just directly jumps into
+///		the __LWT_*() functions without a call and return path back to
+///		them.  The __LWT_*() functions have a 2nd additional argument,
+///		enabled, which is the value of cpu->cpu_enabled prior to setting
+///		it to false (this value is passed for debugging purposes).
+///
+///  When API functions change, they might need to be changed from __lwt_*()
+///  functions an into __LWT_*() functions, all functions could be proactively
+///  made __lwt_*() functions but that would just add unneeded overhead.
+///
+///  The __LWT_*() functions must all use api_enter() and api_exit() to
+///  enable time slicing by setting cpu->cpu_enabled to true.
 
 error_t __lwt_init(size_t sched_attempt_steps, int rtsigno)
 {
@@ -4392,16 +4540,11 @@ int __lwt_mutexattr_gettype(mtxattr_t *mtxattr, int *kind)
 
 //  __lwt_mtx_*() ABI entry points
 
-int __lwt_mtx_init(mtx_t **mtxpp, const mtxattr_t *mtxattr)
+int __LWT_mtx_init(mtx_t **mtxpp, const mtxattr_t *mtxattr,
+		   thr_t *thr, bool enabled)
 {
-	lwt_mtx_type_t type = (int)(uptr_t) mtxattr;
-	if (type > LWT_MTX_LAST) {
-		*mtxpp = NULL;
-		return EINVAL;
-	}
-
-	thr_t *thr = api_enter(API_MTX_INIT);
-	error_t error = mtx_create(mtxpp, type, thr);
+	api_enter(API_MTX_INIT, enabled);
+	error_t error = mtx_create_with_mtxattr(mtxpp, mtxattr, thr);
 	api_exit(API_MTX_INIT);
 	return error;
 }
@@ -4411,25 +4554,25 @@ int __lwt_mtx_destroy(mtx_t **mtxpp)
 	return mtx_destroy(mtxpp);
 }
 
-int __lwt_mtx_lock(mtx_t *mtx)
+int __LWT_mtx_lock(mtx_t *mtx, thr_t *thr, bool enabled)
 {
-	thr_t *thr = api_enter(API_MTX_LOCK);
+	api_enter(API_MTX_LOCK, enabled);
 	error_t error = mtx_lock(mtx, thr);
 	api_exit(API_MTX_LOCK);
 	return error;
 }
 
-int __lwt_mtx_trylock(mtx_t *mtx)
+int __LWT_mtx_trylock(mtx_t *mtx, thr_t *thr, bool enabled)
 {
-	thr_t *thr = api_enter(API_MTX_TRYLOCK);
+	api_enter(API_MTX_TRYLOCK, enabled);
 	error_t error = mtx_trylock(mtx, thr);
 	api_exit(API_MTX_TRYLOCK);
 	return error;
 }
 
-int __lwt_mtx_unlock(mtx_t *mtx)
+int __LWT_mtx_unlock(mtx_t *mtx, thr_t *thr, bool enabled)
 {
-	thr_t *thr = api_enter(API_MTX_UNLOCK);
+	api_enter(API_MTX_UNLOCK, enabled);
 	error_t error = mtx_unlock(mtx, thr);
 	api_exit(API_MTX_UNLOCK);
 	return error;
@@ -4438,9 +4581,10 @@ int __lwt_mtx_unlock(mtx_t *mtx)
 
 //  __lwt_cnd_*() ABI entry points
 
-int __lwt_cnd_init(cnd_t **cndpp, const cndattr_t *cndattr)
+int __LWT_cnd_init(cnd_t **cndpp, const cndattr_t *cndattr,
+		   thr_t *thr, bool enabled)
 {
-	thr_t *thr = api_enter(API_CND_INIT);
+	api_enter(API_CND_INIT, enabled);
 	error_t error = cnd_create(cndpp, cndattr, thr);
 	api_exit(API_CND_INIT);
 	return error;
@@ -4451,33 +4595,35 @@ int __lwt_cnd_destroy(cnd_t **cndpp)
 	return cnd_destroy(cndpp);
 }
 
-int __lwt_cnd_wait(cnd_t *cnd, mtx_t *mtx)
+int __LWT_cnd_wait(cnd_t *cnd, mtx_t *mtx, thr_t *thr, bool enabled)
 {
-	thr_t *thr = api_enter(API_CND_WAIT);
+	api_enter(API_CND_WAIT, enabled);
 	error_t error = cnd_wait(cnd, mtx, thr);
 	api_exit(API_CND_WAIT);
 	return error;
 }
 
-int __lwt_cnd_timedwait(cnd_t *cnd, mtx_t *mtx, const struct timespec *abstime)
+int __LWT_cnd_timedwait(cnd_t *cnd, mtx_t *mtx,
+			const struct timespec *abstime,
+			thr_t *thr, bool enabled)
 {
-	thr_t *thr = api_enter(API_CND_TIMEDWAIT);
+	api_enter(API_CND_TIMEDWAIT, enabled);
 	error_t error = cnd_timedwait(cnd, mtx, thr, abstime);
 	api_exit(API_CND_TIMEDWAIT);
 	return error;
 }
 
-int __lwt_cnd_signal(cnd_t *cnd, mtx_t *mtx)
+int __LWT_cnd_signal(cnd_t *cnd, mtx_t *mtx, thr_t *thr, bool enabled)
 {
-	thr_t *thr = api_enter(API_CND_SIGNAL);
+	api_enter(API_CND_SIGNAL, enabled);
 	error_t error = cnd_signal(cnd, mtx, thr);
 	api_exit(API_CND_SIGNAL);
 	return error;
 }
 
-int __lwt_cnd_broadcast(cnd_t *cnd, mtx_t *mtx)
+int __LWT_cnd_broadcast(cnd_t *cnd, mtx_t *mtx, thr_t *thr, bool enabled)
 {
-	thr_t *thr = api_enter(API_CND_BROADCAST);
+	api_enter(API_CND_BROADCAST, enabled);
 	error_t error = cnd_broadcast(cnd, mtx, thr);
 	api_exit(API_CND_BROADCAST);
 	return error;
@@ -4486,10 +4632,9 @@ int __lwt_cnd_broadcast(cnd_t *cnd, mtx_t *mtx)
 
 //  __lwt_spin_*() ABI entry points
 
-int __lwt_spin_init(spin_t **spinpp)
+int __LWT_spin_init(mtx_t **mtxpp, thr_t *thr, bool enabled)
 {
-	mtx_t **mtxpp = (mtx_t **) spinpp;
-	thr_t *thr = api_enter(API_SPIN_INIT);
+	api_enter(API_SPIN_INIT, enabled);
 	error_t error = mtx_create(mtxpp, LWT_MTX_FAST, thr);
 	api_exit(API_SPIN_INIT);
 	return error;
@@ -4501,28 +4646,25 @@ int __lwt_spin_destroy(spin_t **spinpp)
 	return mtx_destroy(mtxpp);
 }
 
-int __lwt_spin_lock(spin_t *spin)
+int __LWT_spin_lock(mtx_t *mtx, thr_t *thr, bool enabled)
 {
-	mtx_t *mtx = (mtx_t *) spin;
-	thr_t *thr = api_enter(API_SPIN_LOCK);
+	api_enter(API_SPIN_LOCK, enabled);
 	error_t error = spin_lock(mtx, thr);
 	api_exit(API_SPIN_LOCK);
 	return error;
 }
 
-int __lwt_spin_trylock(spin_t *spin)
+int __LWT_spin_trylock(mtx_t *mtx, thr_t *thr, bool enabled)
 {
-	mtx_t *mtx = (mtx_t *) spin;
-	thr_t *thr = api_enter(API_SPIN_TRYLOCK);
+	api_enter(API_SPIN_TRYLOCK, enabled);
 	error_t error = spin_trylock(mtx, thr);
 	api_exit(API_SPIN_TRYLOCK);
 	return error;
 }
 
-int __lwt_spin_unlock(spin_t *spin)
+int __LWT_spin_unlock(mtx_t *mtx, thr_t *thr, bool enabled)
 {
-	mtx_t *mtx = (mtx_t *) spin;
-	thr_t *thr = api_enter(API_SPIN_UNLOCK);
+	api_enter(API_SPIN_UNLOCK, enabled);
 	error_t error = spin_unlock(mtx, thr);
 	api_exit(API_SPIN_UNLOCK);
 	return error;
@@ -4661,10 +4803,11 @@ int __lwt_thrattr_getguardsize(const lwt_attr_t *attr, size_t *guardsize)
 
 //  __lwt_thr_*() ABI entry points
 
-int __lwt_thr_create(lwt_t *thread, const lwt_attr_t *attr,
-		     lwt_function_t function, void *arg)
+int __LWT_thr_create(lwt_t *thread, const lwt_attr_t *attr,
+		     lwt_function_t function, void *arg,
+		     thr_t *thr, bool enabled)
 {
-	thr_t *thr = api_enter(API_THR_CREATE);
+	api_enter(API_THR_CREATE, enabled);
 	unused ureg_t before = counter_get_before();
 	error_t error = thr_create(thread, (thrattr_t *) attr,
 				   function, arg, thr);
@@ -4673,47 +4816,47 @@ int __lwt_thr_create(lwt_t *thread, const lwt_attr_t *attr,
 	return error;
 }
 
-noreturn void __lwt_thr_exit(void *retval)
+noreturn void __LWT_thr_exit(void *retval, thr_t *thr, bool enabled)
 {
-	thr_t *thr = api_enter(API_THR_EXIT);
+	api_enter(API_THR_EXIT, enabled);
 	thr_exit(thr, retval);
 }
 
-int __lwt_thr_join(lwt_t thread, void **retval)
+int __LWT_thr_join(lwt_t thread, void **retval, thr_t *thr, bool enabled)
 {
-	thr_t *thr = api_enter(API_THR_JOIN);
+	api_enter(API_THR_JOIN, enabled);
 	error_t error = thr_join(thr, thread, retval);
 	api_exit(API_THR_JOIN);
 	return error;
 }
 
-int __lwt_thr_cancel(lwt_t thread)
+int __LWT_thr_cancel(lwt_t thread, thr_t *thr, bool enabled)
 {
-	thr_t *thr = api_enter(API_THR_CANCEL);
+	api_enter(API_THR_CANCEL, enabled);
 	error_t error = thr_cancel(thr, thread);
 	api_exit(API_THR_CANCEL);
 	return error;
 }
 
-int __lwt_thr_setcancelstate(int state, int *oldstate)
+int __LWT_thr_setcancelstate(int state, int *oldstate, thr_t *thr, bool enabled)
 {
-	thr_t *thr = api_enter(API_THR_SETCANCELSTATE);
+	api_enter(API_THR_SETCANCELSTATE, enabled);
 	error_t error = thr_setcancelstate(thr, state, oldstate);
 	api_exit(API_THR_SETCANCELSTATE);
 	return error;
 }
 
-int __lwt_thr_setcanceltype(int type, int *oldtype)
+int __LWT_thr_setcanceltype(int type, int *oldtype, thr_t *thr, bool enabled)
 {
-	thr_t *thr = api_enter(API_THR_SETCANCELTYPE);
+	api_enter(API_THR_SETCANCELTYPE, enabled);
 	error_t error = thr_setcanceltype(thr, type, oldtype);
 	api_exit(API_THR_SETCANCELTYPE);
 	return error;
 }
 
-void __lwt_thr_testcancel(void)
+void __LWT_thr_testcancel(thr_t *thr, bool enabled)
 {
-	thr_t *thr = api_enter(API_THR_TESTCANCEL);
+	api_enter(API_THR_TESTCANCEL, enabled);
 	thr_testcancel(thr);
 	api_exit(API_THR_TESTCANCEL);
 }

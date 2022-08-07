@@ -192,6 +192,7 @@ int main()
 	puts("\n// cpu_t");
 	GEN_SIZEOF(cpu_t);
         GEN_FIELD(cpu_t, cpu_running_thr);
+        GEN_FIELD(cpu_t, cpu_enabled);
 
 #ifndef LWT_CTX_ARRAY //{
 	puts("\n// ctx_t");
