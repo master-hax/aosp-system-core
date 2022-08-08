@@ -22,6 +22,8 @@
 #include <fs_mgr_overlayfs.h>
 #include <libavb_user/libavb_user.h>
 
+using namespace std::string_literals;
+
 namespace {
 
 #ifdef ALLOW_DISABLE_VERITY
@@ -132,31 +134,18 @@ int main(int argc, char* argv[]) {
     LOG(FATAL) << "set-verity-state called with empty argv";
   }
 
-  std::optional<bool> enable_opt;
+  bool enable = false;
   std::string procname = android::base::Basename(argv[0]);
   if (procname == "enable-verity") {
-    enable_opt = true;
+    enable = true;
   } else if (procname == "disable-verity") {
-    enable_opt = false;
+    enable = false;
+  } else if (argc == 2 && (argv[1] == "1"s || argv[1] == "0"s)) {
+    enable = (argv[1] == "1"s);
+  } else {
+    printf("usage: %s [1|0]\n", argv[0]);
+    return 1;
   }
-
-  if (!enable_opt.has_value()) {
-    if (argc != 2) {
-      printf("usage: %s [1|0]\n", argv[0]);
-      return 1;
-    }
-
-    if (strcmp(argv[1], "1") == 0) {
-      enable_opt = true;
-    } else if (strcmp(argv[1], "0") == 0) {
-      enable_opt = false;
-    } else {
-      printf("usage: %s [1|0]\n", argv[0]);
-      return 1;
-    }
-  }
-
-  bool enable = enable_opt.value();
 
   std::unique_ptr<AvbOps, decltype(&avb_ops_user_free)> ops(avb_ops_user_new(), &avb_ops_user_free);
   if (!ops) {
