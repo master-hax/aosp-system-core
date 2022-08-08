@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5f99aa19_0410b447",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-08-08T19:10:23Z",
+      "side": 1,
+      "message": "This is already getting fixed as part of the cleanup in aosp/2176922",
+      "revId": "8bb8063ed147a20abebc678d5f92335e67ad44ef",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
