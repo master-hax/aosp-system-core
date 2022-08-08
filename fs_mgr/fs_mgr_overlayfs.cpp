@@ -519,10 +519,15 @@ bool fs_mgr_overlayfs_teardown_scratch(const std::string& overlay, bool* change)
         if (!images->DisableImage(partition_name)) {
             return false;
         }
+        LOG(INFO) << "Disabled scratch partition for: " << kScratchMountPoint;
 #else
         if (!images->UnmapImageIfExists(partition_name) ||
             !images->DeleteBackingImage(partition_name)) {
-            return false;
+            LOG(INFO) << "Cannot delete scratch partition, fallback to disabling it instead";
+            if (!images->DisableImage(partition_name)) {
+                return false;
+            }
+            LOG(INFO) << "Disabled scratch partition for: " << kScratchMountPoint;
         }
 #endif
     }
