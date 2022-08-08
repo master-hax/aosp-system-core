@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "e55ed343_9b2f2673",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 7
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1282799
+      },
+      "writtenOn": "2022-08-08T11:04:47Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5cd72a15_2b760733",
+      "range": {
+        "startLine": 23,
+        "startChar": 12,
+        "endLine": 23,
+        "endChar": 15
+      },
+      "revId": "297ef0324da52370211db9d946606bfecccd5499",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "71ddf37f_3cc15213",
@@ -37,6 +61,30 @@
       "writtenOn": "2022-08-08T09:24:08Z",
       "side": 1,
       "message": "nit: no need to have blank lines between them. i.e., can just group them together.\n\nBug: b/241716684\nTest: After FDR, ensure system_b is mounted as EROFS\nChange-Id: I02f20f3dfd8c42be9981915eaff88a5948482724",
+      "range": {
+        "startLine": 21,
+        "startChar": 0,
+        "endLine": 25,
+        "endChar": 52
+      },
+      "revId": "297ef0324da52370211db9d946606bfecccd5499",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0641980f_7d3027c1",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 7
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1282799
+      },
+      "writtenOn": "2022-08-08T11:04:47Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "71ddf37f_3cc15213",
       "range": {
         "startLine": 21,
         "startChar": 0,
