@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2a01993d_d91404df",
+        "filename": "set-verity-state/set-verity-state.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 122,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2022-08-08T10:21:42Z",
+      "side": 1,
+      "message": "How about: PLOG(ERROR) \u003c\u003c \"Must be running as root (adb root)\";\n\nJust wanted to ensure the message provides enough info for the user.",
+      "revId": "5f13646315c12e58dc7ef5620220218869abdf2d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
