@@ -16,6 +16,24 @@
       "message": "How about: PLOG(ERROR) \u003c\u003c \"Must be running as root (adb root)\";\n\nJust wanted to ensure the message provides enough info for the user.",
       "revId": "5f13646315c12e58dc7ef5620220218869abdf2d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c62b8e17_97fd0876",
+        "filename": "set-verity-state/set-verity-state.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 122,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-08-08T11:29:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2a01993d_d91404df",
+      "revId": "5f13646315c12e58dc7ef5620220218869abdf2d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
