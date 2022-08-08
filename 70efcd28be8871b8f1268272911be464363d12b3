@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5f7d51e9_0e0e80fb",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 5
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2022-08-08T08:35:56Z",
+      "side": 1,
+      "message": "nit: consider adding some error log here.",
+      "revId": "70efcd28be8871b8f1268272911be464363d12b3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "359e1687_242b38b8",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 5
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2022-08-08T08:35:56Z",
+      "side": 1,
+      "message": "please add how did you test/verify the change\n\ne.g., \n\nTest: boot the device, ensure there is no error log",
+      "revId": "70efcd28be8871b8f1268272911be464363d12b3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c1f3b569_1cf8d551",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 911,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2022-08-08T08:35:56Z",
+      "side": 1,
+      "message": "How about adding a comment above?\n\ne.g.,\n\n// fstab[start_idx].blk_device is already updated to /dev/dm-\u003cN\u003e by\n// AVB related functions. Copy it from start_idx to the current index i.\n\nsimilar to:\nhttps://cs.android.com/android/platform/superproject/+/master:system/core/init/first_stage_mount.cpp;l\u003d433;drc\u003de321b113d6fb0e618edfbc27b5530806ae274ac8",
+      "revId": "70efcd28be8871b8f1268272911be464363d12b3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
