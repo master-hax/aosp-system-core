@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a30f1d46_6096e1d7",
+        "filename": "fs_mgr/include/fs_mgr_overlayfs.h",
+        "patchSetId": 9
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-08-08T12:23:47Z",
+      "side": 1,
+      "message": "Can we make it that \"change\" is set to true *only if* overlayfs is enabled?\n\nThis makes it simpler for the caller to do or-chaining with this out-parameter.\n\n```\nbool changed \u003d false;\nfs_mgr_overlayfs_setup(\"/system\", \u0026changed);\nfs_mgr_overlayfs_setup(\"/vendor\", \u0026changed);\nif (*changed) {\n  LOG(INFO) \u003c\u003c \"enabled overlayfs on at least one directory!\";\n}\n```",
+      "range": {
+        "startLine": 39,
+        "startChar": 2,
+        "endLine": 39,
+        "endChar": 83
+      },
+      "revId": "1b40eb8e386ed338723e3701eeedede47dc455f6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
