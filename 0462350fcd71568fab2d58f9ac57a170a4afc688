@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "54d73ad8_31fc2e46",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 421,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-08-08T19:33:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ca5eaecc_c7cf70a2",
+      "range": {
+        "startLine": 421,
+        "startChar": 22,
+        "endLine": 421,
+        "endChar": 38
+      },
+      "revId": "0462350fcd71568fab2d58f9ac57a170a4afc688",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "4b20a4b2_893a72b1",
@@ -41,6 +65,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f09defb9_8306cdaf",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 438,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-08-08T19:33:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4b20a4b2_893a72b1",
+      "revId": "0462350fcd71568fab2d58f9ac57a170a4afc688",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "4594a693_497a5f2a",
@@ -54,6 +96,30 @@
       "writtenOn": "2022-08-08T12:16:15Z",
       "side": 1,
       "message": "should we move this and ro.debuggable check to the beginning of main(), before we call do_clean_scratch_files() ?",
+      "range": {
+        "startLine": 538,
+        "startChar": 4,
+        "endLine": 542,
+        "endChar": 5
+      },
+      "revId": "0462350fcd71568fab2d58f9ac57a170a4afc688",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "35d33840_6f417345",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 542,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-08-08T19:33:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4594a693_497a5f2a",
       "range": {
         "startLine": 538,
         "startChar": 4,
