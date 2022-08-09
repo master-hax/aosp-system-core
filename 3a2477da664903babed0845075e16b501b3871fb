@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "fde7b9cc_4a7df8ec",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 12
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-08-09T19:15:37Z",
+      "side": 1,
+      "message": "I tested with a kernel that doesn\u0027t have override_creds. You can simulate this failure by putting an early return where override_creds is checked. It\u0027s not likely to happen, but if any kind of failure (transient or not) occurs, we\u0027ll try to remount twice on Cuttlefish, and wind up with lots of errors.",
+      "parentUuid": "c760106a_2bd83273",
+      "range": {
+        "startLine": 10,
+        "startChar": 16,
+        "endLine": 10,
+        "endChar": 26
+      },
+      "revId": "3a2477da664903babed0845075e16b501b3871fb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "0cefdf30_c5993672",
@@ -37,6 +61,30 @@
       "writtenOn": "2022-08-09T14:40:10Z",
       "side": 1,
       "message": "|entry-\u003emount_point| as L251 could modify |entry|",
+      "range": {
+        "startLine": 256,
+        "startChar": 46,
+        "endLine": 256,
+        "endChar": 55
+      },
+      "revId": "3a2477da664903babed0845075e16b501b3871fb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cda740a0_a057cd63",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 256,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-08-09T19:15:37Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0cefdf30_c5993672",
       "range": {
         "startLine": 256,
         "startChar": 46,
