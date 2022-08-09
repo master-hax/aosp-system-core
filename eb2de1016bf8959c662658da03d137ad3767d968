@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "97db7c62_b669c723",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 474,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-08-09T09:17:19Z",
+      "side": 1,
+      "message": "we should call InitLogging() before checking root uid, otherwise this message won\u0027t be print to the user",
+      "revId": "eb2de1016bf8959c662658da03d137ad3767d968",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d86f0804_2db6d7df",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 564,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-08-09T09:17:19Z",
+      "side": 1,
+      "message": "return rv in this case?\n\nI think don\u0027t reboot if failed to enable DSU is better UX, so they don\u0027t unexpectedly get reboot out of DSU/GSI",
+      "revId": "eb2de1016bf8959c662658da03d137ad3767d968",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
