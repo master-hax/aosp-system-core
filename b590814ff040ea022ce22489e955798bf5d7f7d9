@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "305ac495_a7b88503",
+        "filename": "set-verity-state/set-verity-state.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2022-08-09T12:20:26Z",
+      "side": 1,
+      "message": "Just for discussion, I was think about using Result\u003cbool\u003e here.\n\nhttp://cs/android/system/libbase/include/android-base/result.h;l\u003d34;rcl\u003d418dcd78aef7c5c1e6a15994dfb424036e0413cf\n\nHowever, using a simple struct SetVerityStateResult{} here is also easy to understand. So I\u0027m fine with it as well.",
+      "range": {
+        "startLine": 72,
+        "startChar": 0,
+        "endLine": 76,
+        "endChar": 0
+      },
+      "revId": "b590814ff040ea022ce22489e955798bf5d7f7d9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
