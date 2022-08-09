@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c760106a_2bd83273",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 12
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-08-09T14:40:10Z",
+      "side": 1,
+      "message": "what are these error spam? which line, how to trigger?\n\nI cannot reproduce this locally. I tried `adb remount vendor` two times and I just success?\n\n```\n$ adb root\n$ adb remount vendor\nVerity disabled; overlayfs enabled.\n$ adb reboot\n$ adb root\n$ adb remount vendor\nremount succeeded\n$ adb remount vendor\nremount succeeded\n```",
+      "range": {
+        "startLine": 10,
+        "startChar": 16,
+        "endLine": 10,
+        "endChar": 26
+      },
+      "revId": "3a2477da664903babed0845075e16b501b3871fb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0cefdf30_c5993672",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 256,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-08-09T14:40:10Z",
+      "side": 1,
+      "message": "|entry-\u003emount_point| as L251 could modify |entry|",
+      "range": {
+        "startLine": 256,
+        "startChar": 46,
+        "endLine": 256,
+        "endChar": 55
+      },
+      "revId": "3a2477da664903babed0845075e16b501b3871fb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
