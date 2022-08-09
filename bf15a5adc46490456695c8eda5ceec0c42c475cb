@@ -22,6 +22,30 @@
       },
       "revId": "bf15a5adc46490456695c8eda5ceec0c42c475cb",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3858e356_1abdd7a0",
+        "filename": "set-verity-state/set-verity-state.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 173,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-08-09T12:16:30Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ebce9715_96916849",
+      "range": {
+        "startLine": 173,
+        "startChar": 36,
+        "endLine": 173,
+        "endChar": 42
+      },
+      "revId": "bf15a5adc46490456695c8eda5ceec0c42c475cb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
