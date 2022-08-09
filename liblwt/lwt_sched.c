@@ -82,6 +82,7 @@ S_INTERNAL	- Internal function
   S_SCHED_MORE	- More scheduler functions
   S_ARENA	- Implementation of operations on arena_t
   S_KCORE	- A kcore_t is a kernel supported core, implemented on pthreads
+  S_CTXCK	- ctx_t related checks
   S_API		- support for LWT API entry and exit, common code for __LWT_*()
   S_INIT	- Initialization functions
 S_LWT		- LWT entry points
@@ -4031,6 +4032,44 @@ static error_t cpu_start(cpu_t *cpu)
 		cpu->cpu_kcpu = (kcpu_t *) pthread;
 	return error;
 }
+
+
+//}{  S_CTXCK - ctx_t related checks
+
+//  The aligned attribute of sigcontext would seem to add 8 bytes of padding
+//  prior to __reserved[], that is for the benefit of struct fpsimd_context
+//  which requires 16 byte alignment:
+//
+//	struct sigcontext {
+//		...
+//		__u64 pstate;
+//		/* 4K reserved for FP/SIMD state and future expansion */
+//		__u8 __reserved[4096] __attribute__((__aligned__(16)));
+//	}
+//
+//  These assertions ensure ctx_t's fields indeed track sigcontext's fields.
+
+#ifdef LWT_ARM64 //{
+static_assert(offsetof(struct sigcontext, fault_address) ==
+	      offsetof(ctx_t, ctx_faultaddr), "ctx_faultaddr is wrong");
+static_assert(offsetof(struct sigcontext, regs[0]) ==
+	      offsetof(ctx_t, ctx_x0), "ctx_x0 is wrong");
+static_assert(offsetof(struct sigcontext, sp) ==
+	      offsetof(ctx_t, ctx_sp), "ctx_sp is wrong");
+static_assert(offsetof(struct sigcontext, pc) ==
+	      offsetof(ctx_t, ctx_pc), "ctx_pc is wrong");
+static_assert(offsetof(struct sigcontext, pstate) ==
+	      offsetof(ctx_t, ctx_pstate), "ctx_pstate is wrong");
+static_assert(offsetof(struct sigcontext, __reserved[0]) ==
+	      offsetof(struct sigcontext, pstate) + 2 * sizeof(__u64),
+	      "__reserved[] offset not as expected");
+static_assert(offsetof(struct sigcontext, __reserved[0]) == sizeof(ctx_t),
+	      "sizeof(ctx__t) is wrong");
+#endif //}
+
+//  TODO: x64 ctx_t should also track struct sigcontext, that is only important
+//  once the full context reload is done in user mode, add relevant assertions
+//  here.
 
 
 //}{  S_API - support for LWT API entry and exit, common code for __LWT_*()

@@ -87,7 +87,7 @@ run()
 }
 
 run $CC $DEFS $WFLAGS $CFLAGS lwt_genassym.c -o gen/lwt_genassym
-run gen/lwt_genassym | pr -t -e32 > lwt_asm_gen.h
+run gen/lwt_genassym | pr -t -e32 > lwt_asm_gen_$ARCH.h
 
 run $CC $DEFS $WFLAGS $CFLAGS -S -O3 lwt_sched.c -o gen/lwt_sched.s
 

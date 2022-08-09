@@ -32,8 +32,7 @@
 #if !defined(LWT_ARM64) && !defined(LWT_X64)
 #define LWT_PTR_BITS	64
 #define LWT_ARM64
-#define LWT_CTX_ARRAY
-#define LWT_CPU_PTHREAD_KEY
+// #define LWT_CPU_PTHREAD_KEY
 #define LWT_MP
 // #define LWT_SMT
 // #define LWT_FIXED_ADDRESSES

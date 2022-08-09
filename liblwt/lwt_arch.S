@@ -15,9 +15,12 @@
  */
 
 #include "lwt_config.h"
-#ifndef LWT_CTX_ARRAY
-#include "lwt_asm_gen.h"
-#endif
+#ifdef LWT_ARM64 //{
+#include "lwt_asm_gen_arm64.h"
+#endif //}
+#ifdef LWT_X64 //{
+#include "lwt_asm_gen_x64.h"
+#endif //}
 #include "lwt_arch.h"
 
 #define FUNCTION_START_WITH_ALIGN(name, align)				\
@@ -28,8 +31,6 @@
 
 #define FUNCTION_END(name)						\
         .size name, .-name
-
-#define	ENABLED_OFFSET_FROM_CPUCTX	-9
 
 #ifdef LWT_ARM64 //{
 
@@ -145,7 +146,7 @@ FUNCTION_START(__lwt_ctx_load_on_cpu)
 	mov	sp,  x8			// MUST change sp last, ctx_t for thread
 					// start might be clobbered otherwise by
 					// signal handlers (e.g. ktimer_signal)
-	strb	w4,  [x2, ENABLED_OFFSET_FROM_CPUCTX]	// cpu->cpu_enabled = w4
+	strb	w4,  [x2, ENABLED_FROM_CPUCTX]	// cpu->cpu_enabled = w4
 	br	x6
 
 4:	// x0 is thr, its the 2nd return value, returned to cpu_main()
@@ -154,9 +155,12 @@ FUNCTION_START(__lwt_ctx_load_on_cpu)
 	b	3b			// thr->thr_running was set too long
 
 ctx_load_rest:
-	ldr	x0,  [x2, -SIZEOF_UREG_T] // cpu_trampoline is before cpu_ctx
-	add	x3,  x1,  SIZEOF_CTX_T	  // x3 = &thrx->thrx_fpctx
-	add	x5,  x0,  OFFSET_OF_BRANCH_IN_TRAMPOLINE
+	ldr	x0, [x2, TRAMPOLINE_FROM_CPUCTX]
+					// x0 = cpu->cpu_trampoline
+	add	x3, x1, SIZEOF_ctx_t	// x3 = (fpctx_t *)
+					//      &(((struct sigcontext *)
+					//	   ctx)->__reserved[0])
+	add	x5, x0, OFFSET_OF_BRANCH_IN_TRAMPOLINE
 
 	//  Restore rest of full context, registers restored at this point:
 	//	x18-x30, sp
@@ -194,7 +198,7 @@ ctx_load_rest:
 	ic	ivau, x5	// Invalidate I-cache cache by VA to PoU
 	dsb	ish
 
-	ldp	w9,  w10,  [x1, ctx_fpcr_fpsr]
+	ldp	w9,  w10,  [x3, fpctx_fpsr_fpcr]
 
 	msr	nzcv, x7
 	msr	fpsr, x9
@@ -252,7 +256,7 @@ FUNCTION_START(__lwt_ctx_load_trampoline)
 
 	//  load 8 registers from a cache line
 
-	strb	w4,  [x2, ENABLED_OFFSET_FROM_CPUCTX]	// cpu->cpu_enabled = w4
+	strb	w4,  [x2, ENABLED_FROM_CPUCTX]	// cpu->cpu_enabled = w4
 	ldp	x2,  x3,  [x1, ctx_x2]
 	ldp	x4,  x5,  [x1, ctx_x4]
 	ldp	x6,  x7,  [x1, ctx_x6]
@@ -410,7 +414,7 @@ FUNCTION_START(__lwt_ctx_load_on_cpu)
 	movq	ctx_sp(%rsi), %rsp	// MUST change sp last, ctx_t for thread
 					// start might be clobbered otherwise by
 					// signal handlers (e.g. ktimer_signal)
-	movb	%r8b, ENABLED_OFFSET_FROM_CPUCTX(%rdx)	// cpu->cpu_enabled = r8
+	movb	%r8b, ENABLED_FROM_CPUCTX(%rdx)	// cpu->cpu_enabled = r8
 	jmp	*%rdi			// rax == 0, 2nd __lwt_ctx_save return
 
 4:	// rax is thr, its the 2nd return value, returned to cpu_main()

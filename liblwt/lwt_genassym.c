@@ -193,12 +193,17 @@ int main()
 	GEN_SIZEOF(cpu_t);
         GEN_FIELD(cpu_t, cpu_running_thr);
         GEN_FIELD(cpu_t, cpu_enabled);
-
-#ifndef LWT_CTX_ARRAY //{
-	puts("\n// ctx_t");
+	printf("#define ENABLED_FROM_CPUCTX\t%d\n",
+		(int) offsetof(cpu_t, cpu_enabled) -
+		(int) offsetof(cpu_t, cpu_ctx));
+	printf("#define TRAMPOLINE_FROM_CPUCTX\t%d\n",
+		(int) offsetof(cpu_t, cpu_trampoline) -
+		(int) offsetof(cpu_t, cpu_ctx));
 
 #ifdef LWT_ARM64 //{
-	GEN_FIELD(ctx_t, ctx_fpcr_fpsr);
+	GEN_SIZEOF(ctx_t);
+	puts("\n// ctx_t");
+	GEN_FIELD(ctx_t, ctx_faultaddr);
 	GEN_FIELD(ctx_t, ctx_x0);
 	GEN_FIELD(ctx_t, ctx_x1);
 	GEN_FIELD(ctx_t, ctx_x2);
@@ -233,9 +238,45 @@ int main()
 	GEN_FIELD(ctx_t, ctx_sp);
 	GEN_FIELD(ctx_t, ctx_pc);
 	GEN_FIELD(ctx_t, ctx_pstate);
+
+	puts("\n// fpctx_t");
+	GEN_FIELD(fpctx_t, fpctx_fpsr_fpcr);
+	GEN_FIELD(fpctx_t, fpctx_q0);
+	GEN_FIELD(fpctx_t, fpctx_q1);
+	GEN_FIELD(fpctx_t, fpctx_q2);
+	GEN_FIELD(fpctx_t, fpctx_q3);
+	GEN_FIELD(fpctx_t, fpctx_q4);
+	GEN_FIELD(fpctx_t, fpctx_q5);
+	GEN_FIELD(fpctx_t, fpctx_q6);
+	GEN_FIELD(fpctx_t, fpctx_q7);
+	GEN_FIELD(fpctx_t, fpctx_q8);
+	GEN_FIELD(fpctx_t, fpctx_q9);
+	GEN_FIELD(fpctx_t, fpctx_q10);
+	GEN_FIELD(fpctx_t, fpctx_q11);
+	GEN_FIELD(fpctx_t, fpctx_q12);
+	GEN_FIELD(fpctx_t, fpctx_q13);
+	GEN_FIELD(fpctx_t, fpctx_q14);
+	GEN_FIELD(fpctx_t, fpctx_q15);
+	GEN_FIELD(fpctx_t, fpctx_q16);
+	GEN_FIELD(fpctx_t, fpctx_q17);
+	GEN_FIELD(fpctx_t, fpctx_q18);
+	GEN_FIELD(fpctx_t, fpctx_q19);
+	GEN_FIELD(fpctx_t, fpctx_q20);
+	GEN_FIELD(fpctx_t, fpctx_q21);
+	GEN_FIELD(fpctx_t, fpctx_q22);
+	GEN_FIELD(fpctx_t, fpctx_q23);
+	GEN_FIELD(fpctx_t, fpctx_q24);
+	GEN_FIELD(fpctx_t, fpctx_q25);
+	GEN_FIELD(fpctx_t, fpctx_q26);
+	GEN_FIELD(fpctx_t, fpctx_q27);
+	GEN_FIELD(fpctx_t, fpctx_q28);
+	GEN_FIELD(fpctx_t, fpctx_q29);
+	GEN_FIELD(fpctx_t, fpctx_q30);
+	GEN_FIELD(fpctx_t, fpctx_q31);
 #endif //}
 
 #ifdef LWT_X64 //{
+	puts("\n// ctx_t");
 	GEN_FIELD(ctx_t, ctx_fpctx);
 	GEN_FIELD(ctx_t, ctx_pc);
 	GEN_FIELD(ctx_t, ctx_sp);
@@ -255,6 +296,5 @@ int main()
 	GEN_FIELD(ctx_t, ctx_r10);
 	GEN_FIELD(ctx_t, ctx_r11);
 	GEN_FIELD(ctx_t, ctx_flags);
-#endif //}
 #endif //}
 }
