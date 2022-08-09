@@ -44,27 +44,23 @@
 FUNCTION_START(__lwt_ctx_save)
 	mov	x17, sp				// sp can not be used with stp
 
-	//  8 floating point registers stored into a cache line
+	//  only low 64 bits of simd registers need to be saved
 
 	stp	d8,  d9,  [x0, ctx_d8]
 	stp	d10, d11, [x0, ctx_d10]
 	stp	d12, d13, [x0, ctx_d12]
 	stp	d14, d15, [x0, ctx_d14]
 
-	//  8 registers stored into a cache line
-
 	stp	x18, x19, [x0, ctx_x18]
 	stp	x20, x21, [x0, ctx_x20]
 	stp	x22, x23, [x0, ctx_x22]
 	stp	x24, x25, [x0, ctx_x24]
 
-	//  8 registers stored into a cache line
-	//  pstate == 0 implies "half" context
-
 	stp	x26, x27, [x0, ctx_x26]
 	stp	x28, x29, [x0, ctx_x28]
 	stp	x30, x17, [x0, ctx_x30]		// [return address, sp]
 	stp	x30, xzr, [x0, ctx_pc]		// [pc, pstate]
+						// zero pstate means half ctx
 
 	mov	x0,  1				// CTX_SAVED
 	ret
@@ -122,14 +118,10 @@ FUNCTION_START(__lwt_ctx_load_on_cpu)
 
 2:	mov	x0, 0			// return value, zero is 2nd return
 
-	//  load 8 registers from a cache line
-
 3:	ldp	x6,  x7,  [x1, ctx_pc]	// get [pc, pstate] as early as possible
 	ldp	x26, x27, [x1, ctx_x26]
 	ldp	x28, x29, [x1, ctx_x28]
 	ldp	x30, x8,  [x1, ctx_x30]	// [x30, sp] can not use sp here
-
-	//  load 8 registers from a cache line
 
 	ldp	x18, x19, [x1, ctx_x18]
 	ldp	x20, x21, [x1, ctx_x20]
@@ -137,7 +129,7 @@ FUNCTION_START(__lwt_ctx_load_on_cpu)
 	ldp	x24, x25, [x1, ctx_x24]
 	cbnz	x7,  ctx_load_rest	// pstate == zero, means "half" context
 
-	//  8 floating point registers loaded from a cache line
+	//  restore low 64 bits of simd registers for half context load
 
 	ldp	d8,  d9,  [x1, ctx_d8]
 	ldp	d10, d11, [x1, ctx_d10]
@@ -155,6 +147,8 @@ FUNCTION_START(__lwt_ctx_load_on_cpu)
 	b	3b			// thr->thr_running was set too long
 
 ctx_load_rest:
+	//  Restore rest of full context
+
 	ldr	x0, [x2, TRAMPOLINE_FROM_CPUCTX]
 					// x0 = cpu->cpu_trampoline
 	add	x3, x1, SIZEOF_ctx_t	// x3 = (fpctx_t *)
@@ -204,21 +198,15 @@ ctx_load_rest:
 	msr	fpsr, x9
 	msr	fpcr, x10
 
-	//  load 8 simd registers from 2 cache lines
-
 	ldp	q0,  q1,  [x3, fpctx_q0]
 	ldp	q2,  q3,  [x3, fpctx_q2]
 	ldp	q4,  q5,  [x3, fpctx_q4]
 	ldp	q6,  q7,  [x3, fpctx_q6]
 
-	//  load 8 registers from a cache line
-
 	ldp	x10, x11, [x1, ctx_x10]
 	ldp	x12, x13, [x1, ctx_x12]
 	ldp	x14, x15, [x1, ctx_x14]
 	ldp	x16, x17, [x1, ctx_x16]
-
-	//  load 8 simd registers from 1 cache line
 
 	ldp	q8,  q9,  [x3, fpctx_q8]
 	ldp	q10, q11, [x3, fpctx_q10]
@@ -239,22 +227,15 @@ FUNCTION_START(__lwt_ctx_load_trampoline)
 	//  in between are issued.  The trampolines are cache line sized and
 	//  cache line aligned (they are per-CPU), 
 
-	//  load 8 simd registers from 2 cache lines
-
 	ldp	q16, q17, [x3, fpctx_q16]
 	ldp	q18, q19, [x3, fpctx_q18]
 	ldp	q20, q21, [x3, fpctx_q20]
 	ldp	q22, q23, [x3, fpctx_q22]
 
-	//  load 8 simd registers from 2 cache lines
-
 	ldp	q24, q25, [x3, fpctx_q24]
 	ldp	q26, q27, [x3, fpctx_q26]
 	ldp	q28, q29, [x3, fpctx_q28]
 	ldp	q30, q31, [x3, fpctx_q30]
-
-
-	//  load 8 registers from a cache line
 
 	strb	w4,  [x2, ENABLED_FROM_CPUCTX]	// cpu->cpu_enabled = w4
 	ldp	x2,  x3,  [x1, ctx_x2]

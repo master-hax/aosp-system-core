@@ -1,7 +1,9 @@
 -q
 lwt_arch.h
 lwt_arch.S
-lwt_asm_gen.h
+lwt_asm_gen_arm64.h
+lwt_asm_gen_x64.h
+lwt_config.h
 lwt_genassym.c
 lwt.h
 lwt_sched.c
