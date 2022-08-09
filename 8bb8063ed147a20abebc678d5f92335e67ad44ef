@@ -16,6 +16,24 @@
       "message": "This is already getting fixed as part of the cleanup in aosp/2176922",
       "revId": "8bb8063ed147a20abebc678d5f92335e67ad44ef",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a4e57669_d54d6242",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-08-09T06:38:42Z",
+      "side": 1,
+      "message": "Awesome, I\u0027ll abandon this one. BTW you\u0027ll still need the gsid change to plumb this through binder r.android.com/2176548",
+      "parentUuid": "5f99aa19_0410b447",
+      "revId": "8bb8063ed147a20abebc678d5f92335e67ad44ef",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
