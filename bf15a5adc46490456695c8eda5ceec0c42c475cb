@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ebce9715_96916849",
+        "filename": "set-verity-state/set-verity-state.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 173,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2022-08-09T11:47:58Z",
+      "side": 1,
+      "message": "nit: how about s/enable/enable_verity?\ni.e.,\n  any_changed |\u003d overlayfs_setup(!enable_verity);",
+      "range": {
+        "startLine": 173,
+        "startChar": 36,
+        "endLine": 173,
+        "endChar": 42
+      },
+      "revId": "bf15a5adc46490456695c8eda5ceec0c42c475cb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}

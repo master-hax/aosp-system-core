@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "83503ddc_df929fd0",
+        "filename": "set-verity-state/set-verity-state.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2022-08-09T11:47:58Z",
+      "side": 0,
+      "message": "Wow, the original source is really confusing.\n\nenable means \"disabling\" and fs_mgr_overlayfs_teardown().",
+      "range": {
+        "startLine": 64,
+        "startChar": 20,
+        "endLine": 64,
+        "endChar": 40
+      },
+      "revId": "6bb1acb2a466922404b450b1eb4afd15848bd7f7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
