@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "76827ca7_d56074de",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 19
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-08-09T18:57:20Z",
+      "side": 1,
+      "message": "Nit: Probably adding what manual tests were done would be good. This is a important change touching the core I/O path. Having a little more explanation might help if someone 2-3 years down the line digs this CL to understand why this was done..",
+      "revId": "5d81d58f6f315b897dffa8b74bb078779587987d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b4c1ded6_a84e9a0a",
+        "filename": "fastboot/device/usb.cpp",
+        "patchSetId": 19
+      },
+      "lineNbr": 218,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-08-09T18:57:20Z",
+      "side": 1,
+      "message": "I would suggest to have a property to turn on-off until this is stable just like \"sys.usb.ffs.aio_compat\".",
+      "revId": "5d81d58f6f315b897dffa8b74bb078779587987d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ac6d2abf_db36ae79",
+        "filename": "fastboot/device/usb_iouring.cpp",
+        "patchSetId": 19
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-08-09T18:57:20Z",
+      "side": 1,
+      "message": "I think we need IOSQE_ASYNC. That will ensure that the I/O requests are offloaded to the kernel and user-space can come back and poll for I/O completion. Without that, there is no guarantee that I/O will be queued. It might happen inline.\n\nTo step back, there is some history why asynchornous calls are need to usb_ffs - http://b/37916658 - and the discussion goes back here: https://www.mail-archive.com/linux-usb@vger.kernel.org/msg90170.html\n\nI have a similar issue with adbd - https://r.android.com/c/2180697/1 - It works most of the time on Pixel devices; but I see occasional failures wherein I/O fails EIO - I haven\u0027t spent time digging into the failure path; but I suspect it has to do with queueing. Since fastboot is also using the same usb_ffs layer, i suspect fastboot might have similar issues.\n\nThe primary reason doing asynchronous calls for usb_ffs layer was memory allocation issues. Instead of using a single large buffer, with async calls, we can queue up small sized buffers to usb layers which is efficient and can subsquently poll for completion.\n\nEnh - Please correct me if I am wrong here - I understand the original change was done quite a while back. Any inputs here would be much appreciated.",
+      "revId": "5d81d58f6f315b897dffa8b74bb078779587987d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ee5c5323_17ffc7bc",
+        "filename": "fastboot/device/usb_iouring.cpp",
+        "patchSetId": 19
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-08-09T18:57:20Z",
+      "side": 1,
+      "message": "success \u003d false here; since IOSQE_IO_LINK flag is set, there is a high chance that if one request in the link fails, all the subsequent requests are abandoned and CQE will be null.",
+      "revId": "5d81d58f6f315b897dffa8b74bb078779587987d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
