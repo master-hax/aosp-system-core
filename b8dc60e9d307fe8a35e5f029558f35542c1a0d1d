@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "22c4710c_a73e04f5",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 12
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-08-09T19:58:29Z",
+      "side": 1,
+      "message": "The intent is that:\n\n - On failure, it\u0027s undefined.\n - On success, it\u0027s set to false if nothing changed, and true if overlayfs went from disabled to enabled on at least one partition.\n\nSetting false at the top of setup/teardown just ensures that callers don\u0027t have to pick an initialization value.\n\nSetting to true only if something changed allows remount to decide if a reboot is needed.",
+      "parentUuid": "c07679ed_ff7ab114",
+      "range": {
+        "startLine": 19,
+        "startChar": 26,
+        "endLine": 19,
+        "endChar": 50
+      },
+      "revId": "b8dc60e9d307fe8a35e5f029558f35542c1a0d1d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "2473d07f_289130c5",
         "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
         "patchSetId": 12
@@ -37,6 +61,24 @@
       "writtenOn": "2022-08-09T12:40:24Z",
       "side": 1,
       "message": "ditto",
+      "revId": "b8dc60e9d307fe8a35e5f029558f35542c1a0d1d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "db322c16_fed14d40",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-08-09T19:58:29Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2473d07f_289130c5",
       "revId": "b8dc60e9d307fe8a35e5f029558f35542c1a0d1d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -58,6 +100,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "6b990425_3ccf3ccc",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-08-09T19:58:29Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "92a4d978_e6c9dd81",
+      "revId": "b8dc60e9d307fe8a35e5f029558f35542c1a0d1d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "83019e0c_9614c67b",
@@ -75,6 +135,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "067c7615_3c739a49",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 380,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-08-09T19:58:29Z",
+      "side": 1,
+      "message": "It\u0027s probably not needed, as the global state here should be per-process and the processes will terminate right after this failure. But RAII is rarely a bad idea so let\u0027s do it. The new patch adds RAII but also preserves error propagation.",
+      "parentUuid": "83019e0c_9614c67b",
+      "revId": "b8dc60e9d307fe8a35e5f029558f35542c1a0d1d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "0fc4d03b_123e881a",
@@ -88,6 +166,30 @@
       "writtenOn": "2022-08-09T12:40:24Z",
       "side": 1,
       "message": "ditto",
+      "range": {
+        "startLine": 1351,
+        "startChar": 4,
+        "endLine": 1351,
+        "endChar": 32
+      },
+      "revId": "b8dc60e9d307fe8a35e5f029558f35542c1a0d1d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b8933124_6f6e44fb",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 1351,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-08-09T19:58:29Z",
+      "side": 1,
+      "message": "See earlier comment",
+      "parentUuid": "0fc4d03b_123e881a",
       "range": {
         "startLine": 1351,
         "startChar": 4,
