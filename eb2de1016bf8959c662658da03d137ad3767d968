@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "90dde9b5_89a2b088",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 474,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-08-09T19:14:41Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "97db7c62_b669c723",
+      "revId": "eb2de1016bf8959c662658da03d137ad3767d968",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d86f0804_2db6d7df",
@@ -31,6 +49,24 @@
       "writtenOn": "2022-08-09T09:17:19Z",
       "side": 1,
       "message": "return rv in this case?\n\nI think don\u0027t reboot if failed to enable DSU is better UX, so they don\u0027t unexpectedly get reboot out of DSU/GSI",
+      "revId": "eb2de1016bf8959c662658da03d137ad3767d968",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2feb930d_a7e39308",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 564,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-08-09T19:14:41Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d86f0804_2db6d7df",
       "revId": "eb2de1016bf8959c662658da03d137ad3767d968",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }

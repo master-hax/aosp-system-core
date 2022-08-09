@@ -16,6 +16,24 @@
       "message": "Let\u0027s still print something here to tell the user that we are going to reboot,\n```\nLOG(INFO) \u003c\u003c \"Rebooting device for new settings to take effect\";\n```\n\nOnce I type `adb remount -R`, normally I just look at device screen to see if it reboots, but I find that to be inconvenient when I\u0027m working with virtual device or remote device.",
       "revId": "b3e303caadc63e004c2a1282eef5b68329d77d41",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c57f9d83_0523e46d",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-08-09T19:14:41Z",
+      "side": 0,
+      "message": "Ack. In case this somehow races with the other reboot message, it\u0027s now either-or.",
+      "parentUuid": "15a4fc43_9dfaa2b2",
+      "revId": "b3e303caadc63e004c2a1282eef5b68329d77d41",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
