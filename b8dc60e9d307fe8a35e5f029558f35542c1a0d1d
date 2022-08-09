@@ -60,6 +60,23 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "83019e0c_9614c67b",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 380,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-08-09T14:33:24Z",
+      "side": 1,
+      "message": "I\u0027m pretty sure these setfscreatecon() calls MUST come in pairs as they modifies global state.\n\nHow about creating some kind of RAII wrapper to service these cleanup-on-return idioms. (example https://cs.android.com/android/platform/superproject/+/master:frameworks/native/libs/binder/IServiceManager.cpp;l\u003d369)\n\nexample:\n```\nclass SetFsCreateCon {\npublic:\n  bool ok \u003d false;\n  SetFsCreateCon(const char *s) {\n    ok \u003d (setfscreatecon(SetFsCreateCon) \u003d\u003d 0);\n  }\n  ~SetFsCreateCon() {\n    setfscreatecon(nullptr);\n  }\n};\n```",
+      "revId": "b8dc60e9d307fe8a35e5f029558f35542c1a0d1d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "0fc4d03b_123e881a",
         "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
         "patchSetId": 12
