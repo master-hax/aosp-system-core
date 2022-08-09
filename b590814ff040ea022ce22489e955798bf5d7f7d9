@@ -22,6 +22,30 @@
       },
       "revId": "b590814ff040ea022ce22489e955798bf5d7f7d9",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f4fb8087_ae0fbe24",
+        "filename": "set-verity-state/set-verity-state.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-08-09T12:24:07Z",
+      "side": 1,
+      "message": "yeah I did thought about something similar. You can see my previous approach at patchset 3, I used \"std::optional\u003cbool\u003e\". The resulting code just seems not very readable, because I need to use \".has_value()\" to do error checking and stuff.\n\nOTOH I think an explicit \".success\" conveys the idea clear and loud.",
+      "parentUuid": "305ac495_a7b88503",
+      "range": {
+        "startLine": 72,
+        "startChar": 0,
+        "endLine": 76,
+        "endChar": 0
+      },
+      "revId": "b590814ff040ea022ce22489e955798bf5d7f7d9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
