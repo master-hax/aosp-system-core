@@ -35,6 +35,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "92502c92_8f6209ce",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 175,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-08-10T20:39:25Z",
+      "side": 1,
+      "message": "All SetTaskProfiles() and SetProcessProfiles() calls that I found and that pass an initializer list as the \u0027profiles\u0027 argument pass an initializer list with length one. So any value \u003e\u003d 1 prevents that any memory allocation happens for such calls. The command I used to look up these calls is as follows:\n\nrepo-grep -nH \u0027SetProcessProfiles(.*{\\|SetTaskProfiles(.*{\u0027 \u0027**.cpp\u0027",
+      "parentUuid": "de69d756_bd2fd063",
+      "revId": "9f79ad81fc103e2e85461409d8d101d454e2cdf9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "968a0ed9_66fb111f",
@@ -52,6 +70,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "9db33532_aaa1f2f3",
+        "filename": "libprocessgroup/task_profiles.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-08-10T20:39:25Z",
+      "side": 1,
+      "message": "Indeed. I have removed this include directive.",
+      "parentUuid": "968a0ed9_66fb111f",
+      "revId": "9f79ad81fc103e2e85461409d8d101d454e2cdf9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "5d1ab1fb_7a090fbf",
@@ -65,6 +101,24 @@
       "writtenOn": "2022-08-10T20:10:00Z",
       "side": 1,
       "message": "Why not just make these all a function template?",
+      "revId": "9f79ad81fc103e2e85461409d8d101d454e2cdf9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c5201374_388c6358",
+        "filename": "libprocessgroup/task_profiles.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 216,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-08-10T20:39:25Z",
+      "side": 1,
+      "message": "Because that would cause std::vector\u003cstd::string\u003e objects to be passed by value instead of by reference. I want to avoid this.",
+      "parentUuid": "5d1ab1fb_7a090fbf",
       "revId": "9f79ad81fc103e2e85461409d8d101d454e2cdf9",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
