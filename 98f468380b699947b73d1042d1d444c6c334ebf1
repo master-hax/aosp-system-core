@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "26a86905_4e938ebf",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-08-10T20:31:40Z",
+      "side": 1,
+      "message": "I have removed this include directive.",
+      "parentUuid": "c8f0e997_9c05e744",
+      "revId": "98f468380b699947b73d1042d1d444c6c334ebf1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f3556863_6d037ee7",
@@ -35,6 +53,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "77e47f66_1ed55460",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 790,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-08-10T20:31:40Z",
+      "side": 1,
+      "message": "Thank you for having taken the time to collect these numbers. However, it is not clear to me how realistic these numbers are? The CPU times tell me that the allocator caches the most recently freed memory.\n\nAdditionally, no matter how the memory allocator has been implemented, the store instructions it executes may cause additional cache misses. I think we should keep the cache footprint as small as reasonably possible.\n\nIn Google3 code it is expected that std::string_view is used as the type for string arguments. I\u0027m surprised I have to motivate a conversion from std::string to std::string_view for Android code.",
+      "parentUuid": "f3556863_6d037ee7",
+      "revId": "98f468380b699947b73d1042d1d444c6c334ebf1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "4293c0ce_3189dc50",
@@ -48,6 +84,24 @@
       "writtenOn": "2022-08-10T18:57:22Z",
       "side": 1,
       "message": "Would you mind being explicit with `std::less\u003cvoid\u003e` here? This looks a little strange to me without any context (like you\u0027re trying to deduce the type for std::less from the Key for std::map - which is not the case).",
+      "revId": "98f468380b699947b73d1042d1d444c6c334ebf1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2498a841_9ac3793e",
+        "filename": "libprocessgroup/task_profiles.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 222,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-08-10T20:31:40Z",
+      "side": 1,
+      "message": "There are already two uses of \u0027std::less\u003c\u003e\u0027 in libprocessgroup but none of \u0027std::less\u003cvoid\u003e\u0027. Hence my preference for \u0027std::less\u003c\u003e\u0027 instead of \u0027std::less\u003cvoid\u003e\u0027.",
+      "parentUuid": "4293c0ce_3189dc50",
       "revId": "98f468380b699947b73d1042d1d444c6c334ebf1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
