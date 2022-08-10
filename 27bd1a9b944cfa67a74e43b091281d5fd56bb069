@@ -63,6 +63,30 @@
       },
       "revId": "27bd1a9b944cfa67a74e43b091281d5fd56bb069",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8ff440eb_a006aa1c",
+        "filename": "libprocessgroup/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-08-10T20:17:11Z",
+      "side": 1,
+      "message": "Thanks for the interesting feedback. I have changed c++2a into gnu++20.",
+      "parentUuid": "bf53d9d3_6109d3c5",
+      "range": {
+        "startLine": 7,
+        "startChar": 17,
+        "endLine": 7,
+        "endChar": 19
+      },
+      "revId": "27bd1a9b944cfa67a74e43b091281d5fd56bb069",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
