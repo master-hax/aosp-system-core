@@ -72,6 +72,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "14520c76_471a0f12",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 12
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-08-10T19:04:06Z",
+      "side": 1,
+      "message": "I like this idea, but it probably depends on us figuring out whether we can solve submounts. Right now those can be remounted through the legacy path but not through overlayfs.",
+      "parentUuid": "2f20240c_62ad1a0c",
+      "range": {
+        "startLine": 10,
+        "startChar": 16,
+        "endLine": 10,
+        "endChar": 26
+      },
+      "revId": "3a2477da664903babed0845075e16b501b3871fb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "0cefdf30_c5993672",
