@@ -139,6 +139,24 @@
       "parentUuid": "c5201374_388c6358",
       "revId": "9f79ad81fc103e2e85461409d8d101d454e2cdf9",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6648bd1a_ad96ca32",
+        "filename": "libprocessgroup/task_profiles.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 216,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-08-10T22:03:49Z",
+      "side": 1,
+      "message": "How about changing the argument type into std::span\u003cT\u003e instead, as done in the latest version of this patch?",
+      "parentUuid": "c5cd4ebc_5b3bde11",
+      "revId": "9f79ad81fc103e2e85461409d8d101d454e2cdf9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
