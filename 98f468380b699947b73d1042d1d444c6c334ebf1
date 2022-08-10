@@ -73,6 +73,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "a78c7159_1886b66c",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 790,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2022-08-10T22:19:21Z",
+      "side": 1,
+      "message": "\u003e The CPU times tell me that the allocator caches the most recently freed memory.\nI\u0027m curious how you would explain the jump between a length of 22 and 23 chars. Or the lack of a noticable one when exceeding the L1 cache size.\n\nI\u0027ll contend the difference here is not primarily due to caching effects. It\u0027s the cost of an additional allocation. Anything under 23 chars does not require an (additional) allocation as it\u0027s stored inside the allocation for std::string object. This is known as the short/small string optimization. Constructing these strings cost a memcpy from an arbitrary location (that you\u0027re going to read anyways) to somewhere in the cache. The cost of a 22 byte memcpy is not significantly more expensive than a 23 byte one. At 23 chars and above the (heap) allocator does get involved.\n\n\u003e Additionally, no matter how the memory allocator has been implemented, the store instructions it executes may cause additional cache misses. I think we should keep the cache footprint as small as reasonably possible.\nThe store is to a location that\u0027s already in the cache. It\u0027s a 22 byte chunk of memory on the stack that was allocated for std::string. You can think of std::string as something like:\n```\nclass string {\n   char *long_strings_stored_here;\n   char short_strings_stored_here[22];\n} // This is clearly a simplification\n```   \n\n\u003e I\u0027m surprised I have to motivate a conversion from std::string to std::string_view for Android code.\nI have no objection to std::string_view in principle. I just did [something similar for libbase](https://android-review.googlesource.com/c/platform/system/libbase/+/2169783). But in that case, the strings passed in are not almost always short ones like the ones used here for libprocessgroup, and there is a measurable difference there even in microbenchmarks, and the code was simplified by making the change (ok maybe this is arguable :)). The main thing I\u0027m wary of is the exra code/overloads for SetProcessProfiles/SetTaskProfiles for no gain 99% of the time (except for ServiceCapacityRestricted and CameraServicePerformance). If we can simplify that part I\u0027m all for this.",
+      "parentUuid": "77e47f66_1ed55460",
+      "revId": "98f468380b699947b73d1042d1d444c6c334ebf1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "4293c0ce_3189dc50",
         "filename": "libprocessgroup/task_profiles.h",
         "patchSetId": 4
@@ -102,6 +120,24 @@
       "side": 1,
       "message": "There are already two uses of \u0027std::less\u003c\u003e\u0027 in libprocessgroup but none of \u0027std::less\u003cvoid\u003e\u0027. Hence my preference for \u0027std::less\u003c\u003e\u0027 instead of \u0027std::less\u003cvoid\u003e\u0027.",
       "parentUuid": "4293c0ce_3189dc50",
+      "revId": "98f468380b699947b73d1042d1d444c6c334ebf1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2e9086b3_ef0369a6",
+        "filename": "libprocessgroup/task_profiles.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 222,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2022-08-10T22:19:21Z",
+      "side": 1,
+      "message": "If that\u0027s so then let\u0027s stay consistent, but I can\u0027t find them??\nhttps://cs.android.com/search?q\u003d%22std::less%22\u0026ss\u003dandroid%2Fplatform%2Fsuperproject:system%2Fcore%2Flibprocessgroup%2F",
+      "parentUuid": "2498a841_9ac3793e",
       "revId": "98f468380b699947b73d1042d1d444c6c334ebf1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
