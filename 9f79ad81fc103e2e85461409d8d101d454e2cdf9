@@ -121,6 +121,24 @@
       "parentUuid": "5d1ab1fb_7a090fbf",
       "revId": "9f79ad81fc103e2e85461409d8d101d454e2cdf9",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c5cd4ebc_5b3bde11",
+        "filename": "libprocessgroup/task_profiles.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 216,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2022-08-10T20:51:36Z",
+      "side": 1,
+      "message": "Huh? This is what I mean:\n\n```\ntemplate \u003ctypename T\u003e\nbool SetProcessProfiles(uid_t uid, pid_t pid, T\u0026\u0026 profiles, bool use_fd_cache) {\n    SetTaskProfilesT(uid, pid, std::forward\u003cT\u003e(profiles), use_fd_cache);  // But actually put the impl here since clang isn\u0027t always as smart as it could be about inlining these\n}\n```\nThere should be no copies of profiles (the std::vector\u003cstd::string\u003e) with that.",
+      "parentUuid": "c5201374_388c6358",
+      "revId": "9f79ad81fc103e2e85461409d8d101d454e2cdf9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
