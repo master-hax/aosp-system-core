@@ -39,6 +39,30 @@
       },
       "revId": "27bd1a9b944cfa67a74e43b091281d5fd56bb069",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bf53d9d3_6109d3c5",
+        "filename": "libprocessgroup/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2022-08-10T18:57:29Z",
+      "side": 1,
+      "message": "Yeah c++2a is [deprecated for GCC](https://gcc.gnu.org/onlinedocs/gcc/C-Dialect-Options.html) and I don\u0027t actually see c++2a (any longer) for [clang](https://clang.llvm.org/docs/CommandGuide/clang.html).",
+      "parentUuid": "07cc0bea_08cc6133",
+      "range": {
+        "startLine": 7,
+        "startChar": 17,
+        "endLine": 7,
+        "endChar": 19
+      },
+      "revId": "27bd1a9b944cfa67a74e43b091281d5fd56bb069",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
