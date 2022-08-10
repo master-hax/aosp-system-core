@@ -48,6 +48,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "2f20240c_62ad1a0c",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 12
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-08-10T17:09:09Z",
+      "side": 1,
+      "message": "I see. All this just leads me to think, why didn\u0027t we just call fs_mgr_overlayfs_valid() before trying to setup overlayfs at all? It surely could\u0027ve saved us a lot of error handling code?\n\nI also wonder could we just always try to setup overlayfs?\n\nRight now we have all these complex logic in fs_mgr_remount and fs_mgr_overlayfs trying to deduce which mountpoint uses overlayfs and which uses legacy remount, by looking at shared_block_dedup property of the mounted filesystem.\n\nWhy don\u0027t we just\n1. Look at kernel version \u0026 driver\n2. If kernel support overlayfs, just always use overlayfs for remount\n3. otherwise use legacy direct remount (basically does `mount -o remount,rw`)\n\nYes this wastes storage space on device that doesn\u0027t have shared_block_dedup, but\n1. It\u0027s simpler maintain. Code might still be complex, but at least the error states are simpler to reason with. Less mental burden for us.\n2. People get the \"adb enable-verity\" to discard overlay and return to fresh state ability everywhere\n3. We expect people to switch to erofs eventually anyway, so the \"waste space\" concern dwindles over time.",
+      "parentUuid": "fde7b9cc_4a7df8ec",
+      "range": {
+        "startLine": 10,
+        "startChar": 16,
+        "endLine": 10,
+        "endChar": 26
+      },
+      "revId": "3a2477da664903babed0845075e16b501b3871fb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "0cefdf30_c5993672",
