@@ -137,7 +137,7 @@
 #define SIZEOF_thrattr_t        0x00000020                      // 32
 
 // thr_t
-#define SIZEOF_thr_t            0x00000040                      // 64
+#define SIZEOF_thr_t            0x00000080                      // 128
 #define thr_ln                  0x00000030
 #define thr_core                0x00000018
 #define thr_running             0x00000017

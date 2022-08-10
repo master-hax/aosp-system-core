@@ -40,19 +40,19 @@
 //  The curly-braces that demarcate each section are found next to the comment
 //  at the start of the comment that describes the section (as shown in the
 //  paragraph above).  This file could be broken into many small files, one per
-//  section, but that would introuce a lot of prototypes in header files and
-//  would make a lot of the functions not easily inlined (unless those are
-//  further split out into header files) and jumping around between many such
-//  files when examining the code.  Any editor worth being used properly
+//  section, but that would require many of prototypes in header files and make
+//  a lot of the functions not easily inlined (unless those are further split
+//  out into header files) thus needing a lot of jumping around between files
+//  when reading or changing the code.  Any editor worth being used properly
 //  supports multiple editing windows operating concurrently into the same file.
 //  Thus keepig this file as is, without being split, is much easier to examine
 //  and maintain.
 
-//  A different way to naviate this file is by searching for the keywords in
-//  this table, they are the headings of the sections that can be reached by
-//  curly brace matching.  If your editor supports a command to grab a word
-//  and search for it (as in BSD nvi with control-A), then that can be used
-//  to go directly to a section, repeating the search brings you back here.
+//  A different way to navigate this file is by searching for the keywords in
+//  the table below, they are the headings of the sections that can be reached
+//  by curly brace matching.  If your editor supports a command to grab a word
+//  and search for it (as in BSD nvi with control-A), then that can be used to
+//  go directly to a section, repeating the search brings you back to the table.
 //  All section names start with S_ (and no other identifiers are named that
 //  way, so searching for "<beginning_of_word>S_" (e.g. \<S_ in nvi) is another
 //  way to navigate through all the sections.
@@ -68,7 +68,6 @@ S_INTERNAL	- Internal function
   S_MISC_INLINE	- Miscellaneous inline functions:
   S_LLLIST	- Implementation and operations on lllist_t
   S_STACK	- Stack allocation and their caching
-  S_THRID	- Operations on thrid_t values and their indexing into thr_arena
   S_MTXATTR	- mtxattr_*() functions
   S_MTX		- mtx_*() functions
   S_CND		- cnd_*() functions
@@ -184,16 +183,12 @@ static noreturn void lwt_assert_fail(const char *file, int line,
 #endif //}
 
 static ureg_t	thr_arena_start;
-static ureg_t	thrx_arena_start;
 static ureg_t	fpctx_arena_start;
 static ureg_t	cnd_arena_start;
 static ureg_t	mtx_arena_start;
 
 #define	THR_ARENA_LENGTH	(sizeof(thr_t) * THRIX_MAX)
 #define	THR_ARENA_RESERVED	PAGE_SIZE
-
-#define	THRX_ARENA_LENGTH	(sizeof(thrx_t) * THRIX_MAX)
-#define	THRX_ARENA_RESERVED	PAGE_SIZE
 
 #define	FPCTX_ARENA_LENGTH	(sizeof(fpctx_t) * THRIX_MAX)
 #define	FPCTX_ARENA_RESERVED	PAGE_SIZE
@@ -206,7 +201,6 @@ static ureg_t	mtx_arena_start;
 
 #ifdef LWT_FIXED_ADDRESSES //{
 
-#define	THRX_INDEX_BASE		((thrx_t *) THRX_ARENA_START)
 #define	THR_INDEX_BASE		((thr_t *) (THR_ARENA_START - sizeof(thr_t)))
 #define	MTX_INDEX_BASE		((mtx_t *) (MTX_ARENA_START - sizeof(mtx_t)))
 
@@ -214,11 +208,9 @@ static ureg_t	mtx_arena_start;
 
 static mtx_t	*mtx_by_index = MTX_INDEX_BASE;
 static thr_t	*thr_by_index = THR_INDEX_BASE;
-static thrx_t	*thrx_by_index = THRX_INDEX_BASE;
 
 #else //}{
 
-#define	THRX_INDEX_BASE		((thrx_t *) thrx_arena_start)
 #define	THR_INDEX_BASE		((thr_t *) (thr_arena_start - sizeof(thr_t)))
 #define	MTX_INDEX_BASE		((mtx_t *) (mtx_arena_start - sizeof(mtx_t)))
 
@@ -226,7 +218,6 @@ static thrx_t	*thrx_by_index = THRX_INDEX_BASE;
 
 static mtx_t	*mtx_by_index;
 static thr_t	*thr_by_index;
-static thrx_t	*thrx_by_index;
 
 #endif //}
 
@@ -235,7 +226,6 @@ static thrx_t	*thrx_by_index;
 
 static lllist_t	 thr_exited_lllist;
 static arena_t	 thr_arena;
-static arena_t	 thrx_arena;
 static arena_t	 fpctx_arena;
 static arena_t	 mtx_arena;
 static arena_t	 cnd_arena;
@@ -540,16 +530,9 @@ static int		 thr_context_save__thr_run(thr_t *currthr, thr_t *thr);
 static noreturn void	 thr_block_forever(thr_t *thr, const char *msg,
 					   void *arg);
 
-#define	ctx_load(ctx, thr, cpuctx, new_running, enabled, curr_running)	\
-	__lwt_ctx_load(thr, ctx, cpuctx, new_running, enabled, curr_running)
-
-#define	ctx_load_on_cpu(ctx, thr, cpuctx, new_running, enabled)		\
-	__lwt_ctx_load_on_cpu(thr, ctx, cpuctx, new_running, enabled)
-
-#define	ctx_load_idle_cpu(ctx, curr_running)				\
-	__lwt_ctx_load_idle_cpu(curr_running, ctx)
-
 two_returns ureg_t	 __lwt_ctx_save(ctx_t *ctx);
+two_returns thr_t	*__lwt_ctx_save_for_cpu_main(ctx_t *ctx);
+
 noreturn void		 __lwt_ctx_load(thr_t *thr, ctx_t *ctx, ctx_t *cpuctx,
 					bool *new_running, bool enabled,
 					bool *curr_running);
@@ -617,40 +600,50 @@ static cpu_t		*cpu_current(void);
 //  first return from ctx_save() returns a non-zero value, the second return
 //  returs the value zero.
 
-//  The signatures of ctx_load(), ctx_load_on_cpu() and ctx_load_idle_cpu()
-//  have ctx as their first argument, that is per the naming conventions of
-//  how LWT is implemented.  The functions that implement them (with the
-//  __lwt_ prefix below) are best implemented with the ctx argument as the
-//  second argument, and the thr argument (for the first two) as their first
-//  argument.
-
 //  ctx_save() is implemented as a macro, it can not be an inline_only function,
 //  beacuse __lwt_ctx_save() is a two_returns function, which would required
 //  that ctx_save() also be a two_returns functions, which can not be inline.
 
-#define	ctx_save(ctx, thrx) ({						\
+#define	ctx_save(ctx, thr) ({						\
 	debug(!cpu_current()->cpu_enabled);				\
-	(thrx)->thrx_ctx = (ctx);					\
-	(thrx)->thrx_is_fullctx = false;				\
+	(thr)->thr_ctx = (ctx);					\
+	(thr)->thr_is_fullctx = false;				\
 	__lwt_ctx_save(ctx);						\
 })
 
-//  ctx_save_returns_thr() is used by cpu_main() to save its CPU context, the
+//  ctx_save_for_cpu_main() is used by cpu_main() to save its CPU context, the
 //  first return returns CTX_SAVED at context saving time, the second return
 //  is either a thread pointer or CTX_LOADED.  It is usually CTX_LOADED, but
 //  infrequently it is a thread pointer which corresponds to a thread whose
 //  context was being attempted to be loaded but the thread for that context
-//  kept its cpu_running set to true for too long, so instead the context of
+//  kept its thr_running set to true for too long, so instead the context of
 //  the CPU was loaded itself to have it handle the thread whose thr_running
 //  field remained true too long.  CTX_SAVED and CTX_LOADED have to be the
 //  values for true and false, ctx_save_returs_thr() behaves as a threelean 
-//  (isntead of as a boolean): CTX_SAVED, CTX_LOADED or a thread pointer.
+//  (instead of as a boolean), it returns on of these 3 values: CTX_SAVED,
+//  CTX_LOADED, or a thread pointer (which also implies that the cpu context
+//  has just been loaded but a thread pointer is being retured also)..
 
 #define	CTX_SAVED	((thr_t *) 1)
 #define	CTX_LOADED	((thr_t *) 0)
 
-#define	ctx_save_returns_thr(ctx)					\
-	((thr_t *) __lwt_ctx_save(ctx))
+#define	ctx_save_for_cpu_main(ctx)					\
+	__lwt_ctx_save_for_cpu_main(ctx)
+
+//  The signatures of ctx_load(), ctx_load_on_cpu() and ctx_load_idle_cpu()
+//  have ctx as their first argument, that is per the naming conventions used
+//  by the LWT implementation.  The functions that implement them (with the
+//  __lwt_ prefix) are best implemented with the ctx argument as the second
+//  argument, and the thr argument (for the first two) as their first argument.
+
+#define	ctx_load(ctx, thr, cpuctx, new_running, enabled, curr_running)	\
+	__lwt_ctx_load(thr, ctx, cpuctx, new_running, enabled, curr_running)
+
+#define	ctx_load_on_cpu(ctx, thr, cpuctx, new_running, enabled)		\
+	__lwt_ctx_load_on_cpu(thr, ctx, cpuctx, new_running, enabled)
+
+#define	ctx_load_idle_cpu(ctx, curr_running)				\
+	__lwt_ctx_load_idle_cpu(curr_running, ctx)
 
 
 //}{  S_MISC_INLINE - Miscellaneous inline functions
@@ -720,6 +713,11 @@ inline_only void cpu_enable(cpu_t *cpu)
 {
 	debug(!cpu->cpu_enabled);
 	cpu->cpu_enabled = true;
+}
+
+inline_only thr_t *thr_from_index(ureg_t index)
+{
+	return THR_INDEX_BASE + index;
 }
 
 
@@ -1019,20 +1017,6 @@ inline_only void thr_free_stk(stk_t *stk)
 }
 
 
-//}  S_THRID - Operations on thrid_t values and their indexing into thr_arena
-//{  These values live in the lwt_t variables that the API user uses.
-
-inline_only thrx_t *thrx_from_thr(thr_t *thr)
-{
-	return THRX_INDEX_BASE + THRID_INDEX(thr->thra.thra_thrid);
-}
-
-inline_only thr_t *thr_from_index(ureg_t index)
-{
-	return THR_INDEX_BASE + index;
-}
-
-
 //}{  S_MTXATTR - mtxattr_*() functions
 
 inline_only int mtxattr_init(mtxattr_t **mtxattrpp)
@@ -1252,7 +1236,6 @@ static error_t mtx_lock(mtx_t *mtx, thr_t *thr)
 	ctx_t ctx;
 	mtx_atom_t old = mtx_load(mtx);
 	ureg_t thridix = THRID_INDEX(thr->thra.thra_thrid);
-	thrx_t *thrx = NULL;
 
 retry:;
 	mtx_atom_t new = old;
@@ -1262,21 +1245,19 @@ retry:;
 	} else if (likely(MTXA_OWNER(new) != thridix)) {
 		thr->thr_ln.ln_prev = mtx_lllist_to_thr(MTXA_LLWANT(new));
 		MTXA_LLWANT_SET(new, thridix);
-		if (!thrx) {
-			thrx = thrx_from_thr(thr);
-			debug(!cpu_current()->cpu_enabled);
-			if (!ctx_save(&ctx, thrx)) {		// returns twice
-				//  Second return, when thr resumes
-				//  the mtx has been handed off to it.
 
-				debug(thr->thr_mtxcnt &&
-				      MTXA_OWNER(mtx->mtxa) ==
-				      THRID_INDEX(thr->thra.thra_thrid));
-				debug(!cpu_current()->cpu_enabled);
-				return 0;
-			}
-			// first return
+		debug(!cpu_current()->cpu_enabled);
+		if (!ctx_save(&ctx, thr)) {		// returns twice
+			//  Second return, when thr resumes
+			//  the mtx has been handed off to it.
+
+			debug(thr->thr_mtxcnt &&
+			      MTXA_OWNER(mtx->mtxa) ==
+			      THRID_INDEX(thr->thra.thra_thrid));
+			debug(!cpu_current()->cpu_enabled);
+			return 0;
 		}
+		// first return
 	} else {
 		lwt_mtx_type_t type = (lwt_mtx_type_t) MTXA_TYPE(old);
 		if (type == LWT_MTX_FAST)
@@ -1460,10 +1441,9 @@ static int cnd_wait(cnd_t *cnd, mtx_t *mtx, thr_t *thr)
 
 	thr->thr_mtxid = mtx_get_mtxid(mtx);
 	thr->thr_cnd = cnd;
-	thrx_t *thrx = thrx_from_thr(thr);
 	ctx_t ctx;
 	debug(!cpu_current()->cpu_enabled);
-	if (ctx_save(&ctx, thrx)) {			// returns twice
+	if (ctx_save(&ctx, thr)) {			// returns twice
 		mtx_unlock_from_cond_wait(mtx, thr);	// first return
 		sched_out(thr, false);
 	}
@@ -1907,8 +1887,8 @@ static noreturn void thr_block_forever(thr_t *thr, unused const char *msg,
 	assert(0);
 }
 
-inline_only int thr_init(thr_t *t, thrx_t *tx,
-			 const thrattr_t *thrattr, stk_t *stk, thr_t *thr)
+inline_only int thr_init(thr_t *t, const thrattr_t *thrattr,
+			 stk_t *stk, thr_t *thr)
 {
 	bool detached = (thrattr->thrattr_detach == LWT_CREATE_DETACHED);
 
@@ -1936,24 +1916,23 @@ inline_only int thr_init(thr_t *t, thrx_t *tx,
 		}
 	}
 
-	tx->thrx_join_mtx = mtx;
-	tx->thrx_join_cnd = cnd;
-	tx->thrx_exited = false;
-	tx->thrx_joining = false;
-	tx->thrx_detached = detached;
-	tx->thrx_retval = NULL;
-	tx->thrx_stk = stk;
+	t->thr_join_mtx = mtx;
+	t->thr_join_cnd = cnd;
+	t->thr_exited = false;
+	t->thr_joining = false;
+	t->thr_detached = detached;
+	t->thr_retval = NULL;
+	t->thr_stk = stk;
 	return 0;
 }
 
 inline_only void thr_destroy(thr_t *thr)
 {
-	thrx_t *thrx = thrx_from_thr(thr);
-	if (thrx->thrx_detached) {
-		mtx_destroy_outline(&thrx->thrx_join_mtx);
-		cnd_destroy_outline(&thrx->thrx_join_cnd);
+	if (thr->thr_detached) {
+		mtx_destroy_outline(&thr->thr_join_mtx);
+		cnd_destroy_outline(&thr->thr_join_cnd);
 	}
-	thr_free_stk(thrx->thrx_stk);
+	thr_free_stk(thr->thr_stk);
 	thr_free(thr);
 }
 
@@ -1973,21 +1952,19 @@ static noreturn void thr_exit(thr_t *thr, void *retval)
 {
 	thr_exited_cleanup();
 
-	//  If thrx->thrx_stk is NULL its the main() thread.
-
-	thrx_t *thrx = thrx_from_thr(thr);
+	//  If thr->thr_stk is NULL its the main() thread.
 
 	assert(thr->thr_cnd == NULL);
 	assert(thr->thr_mtxcnt == 0);
 
-	if (!thrx->thrx_detached) {
-		mtx_lock(thrx->thrx_join_mtx, thr);
-		thrx->thrx_retval = retval;
-		thrx->thrx_exited = true;
-		cnd_broadcast(thrx->thrx_join_cnd, thrx->thrx_join_mtx, thr);
-		while (!thrx->thrx_joining)
-			cnd_wait(thrx->thrx_join_cnd, thrx->thrx_join_mtx, thr);
-		mtx_unlock_outline(thrx->thrx_join_mtx, thr);
+	if (!thr->thr_detached) {
+		mtx_lock(thr->thr_join_mtx, thr);
+		thr->thr_retval = retval;
+		thr->thr_exited = true;
+		cnd_broadcast(thr->thr_join_cnd, thr->thr_join_mtx, thr);
+		while (!thr->thr_joining)
+			cnd_wait(thr->thr_join_cnd, thr->thr_join_mtx, thr);
+		mtx_unlock_outline(thr->thr_join_mtx, thr);
 	}
 
 	thr_atom_t old = thr_load(thr);
@@ -2016,21 +1993,20 @@ static int thr_join(thr_t *thr, lwt_t thread, void **retvalpp)
 	if (t == thr)
 		return EDEADLK;
 
-	thrx_t *tx = thrx_from_thr(t);
-	if (tx->thrx_detached)
+	if (t->thr_detached)
 		return EINVAL;
 
-	mtx_lock(tx->thrx_join_mtx, thr);
-	if (tx->thrx_joining) {
-		mtx_unlock_outline(tx->thrx_join_mtx, thr);
+	mtx_lock(t->thr_join_mtx, thr);
+	if (t->thr_joining) {
+		mtx_unlock_outline(t->thr_join_mtx, thr);
 		return EINVAL;
 	}
-	tx->thrx_joining = true;
-	cnd_broadcast(tx->thrx_join_cnd, tx->thrx_join_mtx, thr);
-	while (!tx->thrx_exited)
-		cnd_wait(tx->thrx_join_cnd, tx->thrx_join_mtx, thr);
-	void *retval = tx->thrx_retval;
-	mtx_unlock_outline(tx->thrx_join_mtx, thr);
+	t->thr_joining = true;
+	cnd_broadcast(t->thr_join_cnd, t->thr_join_mtx, thr);
+	while (!t->thr_exited)
+		cnd_wait(t->thr_join_cnd, t->thr_join_mtx, thr);
+	void *retval = t->thr_retval;
+	mtx_unlock_outline(t->thr_join_mtx, thr);
 
 	*retvalpp = retval;
 	return 0;
@@ -2090,13 +2066,6 @@ static int thr_create(lwt_t *thread, const thrattr_t *thrattr,
 	if (av.error) return av.error;
 	stk_t *stk = av.mem;
 
-	//  The entries of the thr_arena and the thrx_arena are parallel to
-	//  each other, the thread's thread index for its thr_t is also its
-	//  index for its thrx_t.  Thus thrx_t are not allocated explicitly
-	//  from the thrx_arena, doing so, because of concurrency would cause
-	//  the entries to be mismatched because the allocation from both
-	//  lockless lists would not be serialized without adding a lock.
-
 	av = thr_alloc(thr);
 	if (av.error) {
 		thr_free_stk(stk);
@@ -2115,8 +2084,7 @@ retry:;
 		goto retry;
 	}
 
-	thrx_t *tx = thrx_from_thr(t);
-	error_t error = thr_init(t, tx, thrattr, stk, thr);
+	error_t error = thr_init(t, thrattr, stk, thr);
 	if (error) {
 		TODO();
 		return error;
@@ -2128,9 +2096,9 @@ retry:;
 	//  it from being clobbered by signal handlers.
 
 	ctx_t *ctx = ((ctx_t *) (stk - 1)) - 1;
-	tx->thrx_ctx = ctx;
-	tx->thrx_is_fullctx = false;
-	tx->thrx_enabled = false;
+	t->thr_ctx = ctx;
+	t->thr_is_fullctx = false;
+	t->thr_enabled = false;
 	ctx_init(ctx, (uptr_t) (stk - 1), function, arg);
 	*(lwt_t *) thread = (lwt_t) t->thra.thra_thrid.thrid_all;
 
@@ -2145,8 +2113,7 @@ static thr_t *thr_create_main(void)
 	thr_t *t = thr_tryalloc();
 	assert(t);				// thr_arena already grown
 	THRA_INDEX_SET(t->thra, t - THR_INDEX_BASE);
-	thrx_t *tx = thrx_from_thr(t);
-	error_t error = thr_init(t, tx, &thrattr_default, NULL, NULL);
+	error_t error = thr_init(t, &thrattr_default, NULL, NULL);
 	assert(!error);
 	cpu_t *cpu = cpu_current();
 	t->thr_running = true;
@@ -2351,6 +2318,7 @@ static bool schdom_is_empty(schdom_t *schdom)
 	}
 	return true;
 }
+
 
 //}{  S_SCHEDQ_ALGO - Insert and remove algorithm for schedq_t.
 
@@ -3327,11 +3295,11 @@ static void sched_in_at_head(thr_t *thr)
 
 #endif //}
 
-inline_only void cpu_generate_branch(cpu_t *cpu, thrx_t *thrx)
+inline_only void cpu_generate_branch(cpu_t *cpu, thr_t *thr)
 {
 	ureg_t instaddr = (ureg_t) cpu->cpu_trampoline;
 	instaddr += OFFSET_OF_BRANCH_IN_TRAMPOLINE;
-	ureg_t pc = thrx->thrx_fullctx->fullctx_pc;
+	ureg_t pc = thr->thr_fullctx->fullctx_pc;
 	debug(inst_reachable(pc, instaddr));
 	generate_branch(pc, instaddr);
 }
@@ -3340,23 +3308,21 @@ noreturn inline_only void thr_run(thr_t *thr, thr_t *currthr)
 {
 	cpu_t *cpu = cpu_current();
 	cpu->cpu_running_thr = thr;
-	thrx_t *thrx = thrx_from_thr(thr);
-	if (thrx->thrx_is_fullctx)
-		cpu_generate_branch(cpu, thrx);
-	ctx_t *ctx = thrx->thrx_ctx;
+	if (thr->thr_is_fullctx)
+		cpu_generate_branch(cpu, thr);
+	ctx_t *ctx = thr->thr_ctx;
 	ctx_load(ctx, thr, &cpu->cpu_ctx, &thr->thr_running,
-		 thrx->thrx_enabled, &currthr->thr_running);
+		 thr->thr_enabled, &currthr->thr_running);
 }
 
 noreturn inline_only void thr_run_on_cpu(thr_t *thr, cpu_t *cpu)
 {
 	cpu->cpu_running_thr = thr;
-	thrx_t *thrx = thrx_from_thr(thr);
-	if (thrx->thrx_is_fullctx)
-		cpu_generate_branch(cpu, thrx);
-	ctx_t *ctx = thrx->thrx_ctx;
+	if (thr->thr_is_fullctx)
+		cpu_generate_branch(cpu, thr);
+	ctx_t *ctx = thr->thr_ctx;
 	ctx_load_on_cpu(ctx, thr, &cpu->cpu_ctx, &thr->thr_running,
-			thrx->thrx_enabled);
+			thr->thr_enabled);
 }
 
 noreturn inline_only void cpu_idle(cpu_t *cpu, thr_t *thr)
@@ -3373,8 +3339,7 @@ static thr_t *schedq_get(schedq_t *schedq, ureg_t sqix)
 
 static noreturn void sched_out(thr_t *thr, bool enabled)
 {
-	thrx_t *thrx = thrx_from_thr(thr);
-	thrx->thrx_enabled = enabled;
+	thr->thr_enabled = enabled;
 	schdom_t *schdom = &thr->thr_core->core_hw->hw_schdom;
 	thr_t *t = schdom_get_thr(schdom);
 	if (!t) {
@@ -3396,10 +3361,9 @@ static int thr_context_save__thr_run(thr_t *currthr, thr_t *thr)
 	//  can not be inlined because ctx_save() returns twice and GCC can
 	//  not inline those functions.
 
-	thrx_t *thrx = thrx_from_thr(currthr);
 	ctx_t ctx;
 	debug(!cpu_current()->cpu_enabled);
-	if (ctx_save(&ctx, thrx)) 			// returns twice
+	if (ctx_save(&ctx, thr)) 			// returns twice
 		thr_run(thr, currthr);			// first return
 	debug(!cpu_current()->cpu_enabled);
 	return 0;			// second return, must return zero
@@ -3577,13 +3541,6 @@ static arena_init_t arena_init_table[] = {
 	 .ai_reserved = THR_ARENA_RESERVED,
 	 .ai_saveaddr = &thr_arena_start},
 
-	{.ai_arena    = &thrx_arena,
-	 .ai_start    = (void *) THRX_ARENA_START,
-	 .ai_elemsize = sizeof(thrx_t),
-	 .ai_length   = THRX_ARENA_LENGTH,
-	 .ai_reserved = THRX_ARENA_RESERVED,
-	 .ai_saveaddr = &thrx_arena_start},
-
 	{.ai_arena    = &fpctx_arena,
 	 .ai_start    = (void *) FPCTX_ARENA_START,
 	 .ai_elemsize = sizeof(fpctx_t),
@@ -3612,7 +3569,6 @@ static error_t arenas_init(void)
 #	ifndef LWT_FIXED_ADDRESSES
 		mtx_by_index = MTX_INDEX_BASE;
 		thr_by_index = THR_INDEX_BASE;
-		thrx_by_index = THRX_INDEX_BASE;
 #	endif
 
 	//  Arena growth is protected by its mutex, which when acquired
@@ -3776,9 +3732,8 @@ static void ktimer_tick(unused cpu_t *cpu)
 {
 	ctx_t ctx;
 	thr_t *thr = cpu->cpu_running_thr;
-	thrx_t *thrx = thrx_from_thr(thr);
 	debug(!cpu_current()->cpu_enabled);
-	if (ctx_save(&ctx, thrx))			// returns twice
+	if (ctx_save(&ctx, thr))			// returns twice
 		sched_timeslice(thr, false);		// first return.
 	debug(!cpu_current()->cpu_enabled);
 }
@@ -3798,7 +3753,6 @@ static void ktimer_signal(unused int signo, siginfo_t *siginfo, void *ucontextp)
 
 	cpu->cpu_enabled = false;
         ucontext_t *ucontext = ucontextp;
-	thrx_t *thrx = thrx_from_thr(thr);
 	fullctx_t *fullctx = (fullctx_t *) &ucontext->uc_mcontext;
 	ureg_t instaddr = (ureg_t) cpu->cpu_trampoline;
 	instaddr += OFFSET_OF_BRANCH_IN_TRAMPOLINE;
@@ -3820,16 +3774,32 @@ static void ktimer_signal(unused int signo, siginfo_t *siginfo, void *ucontextp)
 	if (!inst_reachable(pc, instaddr)) {
 		++cpu->cpu_counts.count_unreachable;
 		ctx_t ctx;
-		if (ctx_save(&ctx, thrx))
+		if (ctx_save(&ctx, thr))
 			sched_timeslice(thr, false);
 		cpu = cpu_current();		// might be on a different cpu
 		cpu->cpu_enabled = true;
 		return;
 	}
 
+	//  TODO: this path doesn't return to kernel mode to restore the
+	//  full context, an issue (for now) about this path (which has been
+	//  tested and implemented only on arm64), is that the signal that
+	//  triggered this function invocation remains blocked, thus the way
+	//  this is currently implemented (this "reachable") path needs more
+	//  work.  An approach to deal with this is to provide user mode only
+	//  signal masking and unmasking through per pthread memory, where the
+	//  kernel examines it to see if a signal is masked or not, and sets
+	//  the pending flags in user mode, and user mode, when enabling tests
+	//  the pending flags and causes the signal delivery to occur.  This
+	//  of course only makes sense for asynchronous signals (timers, etc)
+	//  and not for instruction synchronous signals (SIGILL, SIGSEGV, etc).
+	//  This requires a kernel change.  The overhead of the kernel normal
+	//  signal return path is proportional to the fequency of the time
+	//  slice timer, after measurement how to proceed will be determined.
+
 	++cpu->cpu_counts.count_reachable;
-	thrx->thrx_is_fullctx = true;
-	thrx->thrx_fullctx = fullctx;
+	thr->thr_is_fullctx = true;
+	thr->thr_fullctx = fullctx;
 	fullctx_check(fullctx);
 	sched_timeslice(thr, true);
 }
@@ -3842,7 +3812,7 @@ static_assert(sizeof(timer_t) <= sizeof(ktimer_t *),
 static int	 lwt_rtsigno;
 static sigset_t	 lwt_rtsigno_sigset;
 
-#define	TIME_SLICE_NSECS	(100000000L)
+#define	TIME_SLICE_NSECS	(10000000L)
 
 inline_only void ktimer_start(ktimer_t *ktimer)
 {
@@ -3905,6 +3875,23 @@ static error_t cpu_ktimer_init_and_start(cpu_t *cpu)
 	return 0;
 }
 
+//  This function is run on each cpu when a cpu is started, it either blocks
+//  (i.e. the cpu idles) awaiting for a thread to be ready to run on the cpu
+//  or it switches to the thread so it runs on the cpu.
+
+//  A thread might be made runable while its the process of descheduling itself
+//  via sched_out(), in those cases the ctx_load() or ctx_load_on_cpu() that
+//  would switch to the thread causes instead a return to cpu_main() with the
+//  thread pointer value as the value of ctx_save_for_cpu_main() so that rare
+//  case be handled by cpu_main().
+
+//  This function does not use floating point registers, nor do any inline
+//  function it might call, this function also does not return, so callee saved
+//  floating point registers don't have to be saved by ctx_save_for_cpu_main()
+//  nor do they have to be restored when switching back to cpu_main(), thus
+//  ctx_load_idle_cpu() doesn't restore them.  This is only applicable to arm64,
+//  x64 doesn't have callee preserved floating point registers.
+
 static noreturn void *cpu_main(cpu_t *cpu)
 {
 	assert(cpu >= &cpus[0] && cpu < &cpus[NCPUS]);
@@ -3932,7 +3919,7 @@ retry:;		thr_t *thr = schdom_get_thr(schdom);
 		//  A thread whose context could not be loaded because it's
 		//  cpu_running remained true too long (most likely because
 		//  the kernel preempted that CPU) has been returned by the
-		//  call to ctx_save_returns_thr(), schedule it out again by
+		//  call to ctx_save_for_cpu_main(), schedule it out again by
 		//  putting it at the head of the right schedq within its
 		//  schdom above, after trying to remove some other thread to
 		//  run on this cpu.
@@ -3969,7 +3956,7 @@ retry:;		thr_t *thr = schdom_get_thr(schdom);
 			core_run_locked(core, kcore);
 		pthread_mutex_unlock(&kcore->kcore_mutex);
 
-		thr_switching_out = ctx_save_returns_thr(&cpu->cpu_ctx);
+		thr_switching_out = ctx_save_for_cpu_main(&cpu->cpu_ctx);
 		debug(!cpu->cpu_enabled);
 		if (thr_switching_out == CTX_SAVED)
 			thr_run_on_cpu(thr, cpu);	// first return
@@ -4454,7 +4441,6 @@ inline_only error_t data_init(size_t sched_attempt_steps, int rtsigno)
 	//  Prevent removal of these debug variables
 
 	ureg_load_acq((ureg_t *) (thr_by_index + 1));
-	ureg_load_acq((ureg_t *) (thrx_by_index + 1));
 	ureg_load_acq((ureg_t *) (mtx_by_index + 1));
 
 	return 0;

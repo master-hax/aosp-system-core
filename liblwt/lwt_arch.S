@@ -34,23 +34,31 @@
 
 #ifdef LWT_ARM64 //{
 
-//  This function returns twice, once when called, in which case it returns
+//  These function returns twice, once when called, in which case it returns
 //  a non-zero value, x0 which can not be zero.  The second time it returns
 //  to its caller is when the context is restored, in which case it returns
-//  zero.  The context is restored by __lwt_ctx_load() which does not return.
+//  zero.  The functions __lwt_ctx_load() and __lwt_ctx_load_on_cpu restore
+//  the context, they don't return to their callers.
 //
-//  two_returns ureg_t __lwt_ctx_save(ctx_t *ctx);
+//  two_returns ureg_t __lwt_ctx_save(ctx_t *ctx);		x0
+//  two_returns thr_t *__lwt_ctx_save_for_cpu_main(ctx_t *ctx);	x0
+//
+//  cpu_main() uses ctx_save_for_cpu_main(), because cpu_main() nor any of
+//  the functions it calls, use floating point, furthermore cpu_main() never
+//  returns to its caller, thus saving and restoring the callee saved floating
+//  point registers is not required for cpu_main()
 
 FUNCTION_START(__lwt_ctx_save)
-	mov	x17, sp				// sp can not be used with stp
-
 	//  only low 64 bits of simd registers need to be saved
 
 	stp	d8,  d9,  [x0, ctx_d8]
 	stp	d10, d11, [x0, ctx_d10]
 	stp	d12, d13, [x0, ctx_d12]
 	stp	d14, d15, [x0, ctx_d14]
+FUNCTION_END(__lwt_ctx_save)
 
+FUNCTION_START(__lwt_ctx_save_for_cpu_main)
+	mov	x17, sp				// sp can not be used with stp
 	stp	x18, x19, [x0, ctx_x18]
 	stp	x20, x21, [x0, ctx_x20]
 	stp	x22, x23, [x0, ctx_x22]
@@ -64,7 +72,7 @@ FUNCTION_START(__lwt_ctx_save)
 
 	mov	x0,  1				// CTX_SAVED
 	ret
-FUNCTION_END(__lwt_ctx_save)
+FUNCTION_END(__lwt_ctx_save_for_cpu_main)
 
 //  These functions must not use the run-time (thread or cpu) stack.
 
@@ -97,9 +105,23 @@ FUNCTION_END(__lwt_ctx_save)
 
 FUNCTION_START(__lwt_ctx_load_idle_cpu)
 	stlrb	wzr, [x0]		// current thread is no longer running
-	mov	x2,  x1			// x2 = cpuctx
-	mov	x4,  0			// x4 = enabled = false
-	b	2f
+	mov	x0, 0			// return value, zero is 2nd return
+
+0:	ldr	x6,  [x2, ctx_pc]	// get pc as early as possible
+	ldp	x26, x27, [x2, ctx_x26]
+	ldp	x28, x29, [x2, ctx_x28]
+	ldp	x30, x8,  [x2, ctx_x30]	// [x30, sp] can not use sp here
+
+	ldp	x18, x19, [x2, ctx_x18]
+	ldp	x20, x21, [x2, ctx_x20]
+	ldp	x22, x23, [x2, ctx_x22]
+	ldp	x24, x25, [x2, ctx_x24]
+
+	mov	sp,  x8			// MUST change sp last, ctx_t for thread
+					// start might be clobbered otherwise by
+					// signal handlers (e.g. ktimer_signal)
+	strb	wzr,  [x2, ENABLED_FROM_CPUCTX]	// cpu->cpu_enabled = false
+	br	x6
 FUNCTION_END(__lwt_ctx_load_idle_cpu)
 
 FUNCTION_START(__lwt_ctx_load)
@@ -110,9 +132,11 @@ FUNCTION_START(__lwt_ctx_load_on_cpu)
 	mov	w5, RETRY_COUNT
 
 1:	ldarb	w6, [x3]		// loop while new thr is running ...
-	sub	w5, w5, 1
-	cbz	w5, 4f
-	cbnz	w6, 1b			// ... in another cpu
+	sub	w5, w5, 1		// ... in another cpu
+	cbz	w5, 0b			// if w5 is zero, x0 being thr, its the
+					// 2nd value returned to cpu_main()
+	cbnz	w6, 1b
+
 	mov	w6, 1
 	stlrb	w6, [x3]		// new thr is now running on this cpu
 
@@ -140,11 +164,6 @@ FUNCTION_START(__lwt_ctx_load_on_cpu)
 					// signal handlers (e.g. ktimer_signal)
 	strb	w4,  [x2, ENABLED_FROM_CPUCTX]	// cpu->cpu_enabled = w4
 	br	x6
-
-4:	// x0 is thr, its the 2nd return value, returned to cpu_main()
-	mov	x1,  x2			// switch to cpu_main() to handle thr
-	mov	x4,  0			// ensure cpu->cpu_enabled becomes false
-	b	3b			// thr->thr_running was set too long
 
 ctx_load_rest:
 	//  Restore rest of full context
@@ -331,8 +350,14 @@ FUNCTION_END(__lwt_set_nzcv)
 //  when the context is restored, in which case it returns zero.  The context
 //  is restored by __lwt_ctx_load() which does not return.
 //
-//  two_returns ureg_t __lwt_ctx_save(ctx_t *ctx);
+//  two_returns ureg_t __lwt_ctx_save(ctx_t *ctx);		rdi
+//  two_returns thr_t *__lwt_ctx_save_for_cpu_main(ctx_t *ctx);	rdi
+//
+//  x64 doesn't have callee saved floating point registers so these two
+//  functions are the same for x64
 
+FUNCTION_START(__lwt_ctx_save_for_cpu_main)
+FUNCTION_END(__lwt_ctx_save_for_cpu_main)
 FUNCTION_START(__lwt_ctx_save)
 	movq	$0, ctx_fpctx(%rdi)
 	popq	%rsi				// return address

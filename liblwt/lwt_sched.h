@@ -868,16 +868,6 @@ typedef union {
 	uregx2_t	 uregx2;
 } aligned_uregx2 thr_atom_t;
 
-//  The thr_t is sized as a power of two.  Additional per thread fields are
-//  in thrx_t (thread extension), making it easy to keep the size of thr_t a
-//  size a power of two.  Conversion of a thr_t pointer to a thread index is
-//  done frequently, because thr_t is a power of two, what would otherwise be
-//  a substraction and a division, is just a substraction and a shift. To go
-//  from a thread index to a thr_t pointer it is a shift and an addition. The
-//  corresponding thrx_t is  allocated from their its arena.  Every thr_t has
-//  a corresponding thrx_t the address of which is computed by using the thread
-//  index to index into the thrx_t arena.
-
 //  A thread while still running, enqueues itself onto queues or lists as
 //  part of voluntarily releasing the CPU (for example blocking on a mutex
 //  or waiting for a condition to occur), thr_running is used, and behaves as
@@ -915,8 +905,26 @@ struct thr_s {
 	u8_t		 thr_prio;
 	bool		 thr_running;		//
 	core_t		*thr_core;		//	...-31
+
 	thr_atom_t	 thra;			//	32-47
 	thrln_t		 thr_ln;		//	48-63
+
+	stk_t		*thr_stk;
+	void		*thr_retval;
+	mtx_t		*thr_join_mtx;
+	cnd_t		*thr_join_cnd;
+
+	bool		 thr_detached;
+	bool		 thr_exited;
+	bool		 thr_joining;
+	bool		 thr_enabled;
+	bool		 thr_is_fullctx;
+	bool		 thr_pad[sizeof(ureg_t) - 3];
+	union {
+	    ctx_t	*thr_ctx;
+	    fullctx_t	*thr_fullctx;
+	};
+	ureg_t		 thr_cycles;
 };
 
 //  thr_cnd is overlaid while thread has exited an is in thr_exited_lllist
@@ -960,39 +968,6 @@ static_assert(POWER_OF_TWO(sizeof(thr_t)), "thr_t size is wrong");
 	BITS_GET(THRA_REUSE, (thra).thra_reuse_index, (reuse))
 #define	THRA_REUSE_INC(thra)						\
 	((thra).thra_reuse_index += 1uL << THRA_REUSE_SHIFT)
-
-
-//  The layout of thrx_t is chosen carefully to ensure cache alignedment and
-//  a size that is a multiple of the cache line size.
-
-//  The fields prior to thrx_ctx use 5 ureg_t, this ensures both on ARM64 and
-//  X64 that thrx_ctx uses the cache lines's last 3 ureg_t, and the remaining
-//  ureg_t (32 in ARM64 and 16 in X64) of ctx_t fit exactly in 4 cache lines
-//  in ARM64 and 2 cache lines in X64.  This reduces cache lines touched for
-//  a "half" context register save and restore to 3 cache lines in ARM64 and
-//  2 cache lines in X64.
-
-//  The fpctx_t is known to be an exact multiple of the cache line size (the
-//  fpcr and fpsr are in ctx_t).
-
-//  TODO: review this with respect to the X64 context.
-
-typedef struct {
-	stk_t		*thrx_stk;
-	void		*thrx_retval;
-	mtx_t		*thrx_join_mtx;
-	cnd_t		*thrx_join_cnd;
-	bool		 thrx_detached;
-	bool		 thrx_exited;
-	bool		 thrx_joining;
-	bool		 thrx_enabled;
-	bool		 thrx_is_fullctx;
-	bool		 thrx_pad[sizeof(ureg_t) - 3];
-	union {
-	    ctx_t	*thrx_ctx;
-	    fullctx_t	*thrx_fullctx;
-	};
-} aligned_cache_line thrx_t;
 
 
 //  A mtx_t is a mutual exclusion lock, optionally recursive.
