@@ -109,6 +109,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "88465a21_ccb71c48",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 790,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-08-10T22:51:55Z",
+      "side": 1,
+      "message": "Something else that I should mention is that the next patch in this series eliminates the creation of an std::vector\u003cstd::string\u003e object for the callers that pass the \u0027profiles\u0027 argument as an initializer list.",
+      "parentUuid": "c55830c6_41037b1c",
+      "revId": "98f468380b699947b73d1042d1d444c6c334ebf1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "4293c0ce_3189dc50",
         "filename": "libprocessgroup/task_profiles.h",
         "patchSetId": 4
