@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d278421d_b79838da",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-08-10T06:28:18Z",
+      "side": 1,
+      "message": "Are these warnings appear only once or every time a profile that uses io controller is applied?",
+      "range": {
+        "startLine": 31,
+        "startChar": 0,
+        "endLine": 36,
+        "endChar": 62
+      },
+      "revId": "147983e4c29333df37bd901b529a6df63ca508e3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
