@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c8f0e997_9c05e744",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2022-08-10T18:57:22Z",
+      "side": 1,
+      "message": "There are no uses of std::string_view here which are independent of the task_profiles.h header (function prototypes), so not strictly needed.",
+      "revId": "98f468380b699947b73d1042d1d444c6c334ebf1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f3556863_6d037ee7",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 790,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2022-08-10T18:57:22Z",
+      "side": 1,
+      "message": "Do you have any measurements that show a perf benefit for the additional code/complexity in the subsequent patches? The profiles names are almost universally less than 23 characters long and the attribute names are universally less than that, which is the limit of the short string optimization for our configuration. The cost of constructing these *short* strings is negligible (as they do not require any extra allocations beyond sizeof(std::string)).\n\n```\naosp-master-with-phones$ jq .Profiles[].Name system/core/libprocessgroup/profiles/task_profiles.json | tr -d \u0027\"\u0027 | awk \u0027{print length}\u0027 | sort -rn | head -n 5\n25\n24\n23\n23\n21\n```\n\n```\naosp-master-with-phones$ jq .Attributes[].Name system/core/libprocessgroup/profiles/task_profiles.json | tr -d \u0027\"\u0027 | awk \u0027{print length}\u0027 | sort -rn | head -n 5\n22\n21\n16\n16\n15\n\n```\n\n```\nstatic void BM_sso(benchmark::State\u0026 state) {\n    std::string s(99, \u0027z\u0027);\n    for(auto _ : state)\n        benchmark::DoNotOptimize(std::string(s.data(), state.range(0)));\n} BENCHMARK(BM_sso)-\u003eDenseRange(1, 65, 1);\n\n\n-----------------------------------------------------\nBenchmark           Time             CPU   Iterations\n-----------------------------------------------------\nBM_sso/1         6.50 ns         6.42 ns    108941791\nBM_sso/2         6.58 ns         6.41 ns    109196016\nBM_sso/3         6.45 ns         6.41 ns    108764446\nBM_sso/4         6.01 ns         5.96 ns    116802627\nBM_sso/5         6.00 ns         5.96 ns    117464168\nBM_sso/6         6.01 ns         5.97 ns    117383709\nBM_sso/7         5.99 ns         5.95 ns    117557950\nBM_sso/8         6.83 ns         6.79 ns    102877984\nBM_sso/9         7.89 ns         7.83 ns     89020149\nBM_sso/10        7.93 ns         7.88 ns     88901981\nBM_sso/11        7.89 ns         7.84 ns     88771445\nBM_sso/12        7.13 ns         7.08 ns     97987207\nBM_sso/13        7.05 ns         7.01 ns     98477935\nBM_sso/14        7.14 ns         7.09 ns     98489741\nBM_sso/15        7.15 ns         7.10 ns     98027861\nBM_sso/16        8.76 ns         8.70 ns     80416474\nBM_sso/17        5.69 ns         5.66 ns    123718758\nBM_sso/18        5.69 ns         5.65 ns    123474549\nBM_sso/19        5.69 ns         5.65 ns    123644420\nBM_sso/20        5.69 ns         5.66 ns    123743963\nBM_sso/21        5.71 ns         5.67 ns    123378439\nBM_sso/22        5.69 ns         5.65 ns    123732804\nBM_sso/23        79.2 ns         78.6 ns      8905083\nBM_sso/24        79.1 ns         78.6 ns      8912357\nBM_sso/25        79.0 ns         78.5 ns      8862194\nBM_sso/26        78.9 ns         78.4 ns      8922751\nBM_sso/27        78.9 ns         78.4 ns      8876713\nBM_sso/28        79.1 ns         78.6 ns      8908025\nBM_sso/29        79.0 ns         78.5 ns      8914230\nBM_sso/30        79.0 ns         78.5 ns      8912792\n```",
+      "revId": "98f468380b699947b73d1042d1d444c6c334ebf1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4293c0ce_3189dc50",
+        "filename": "libprocessgroup/task_profiles.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 222,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2022-08-10T18:57:22Z",
+      "side": 1,
+      "message": "Would you mind being explicit with `std::less\u003cvoid\u003e` here? This looks a little strange to me without any context (like you\u0027re trying to deduce the type for std::less from the Key for std::map - which is not the case).",
+      "revId": "98f468380b699947b73d1042d1d444c6c334ebf1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
