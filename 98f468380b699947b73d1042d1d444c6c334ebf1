@@ -91,6 +91,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "c55830c6_41037b1c",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 790,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-08-10T22:37:12Z",
+      "side": 1,
+      "message": "Thanks for the additional clarification. I agree that the performance benefit for strings that are 22 characters or less long is probably negligible.\n\nRegarding the extra code / extra overloads: have you noticed that in the latest version there is only a single template definition and no additional overloads?",
+      "parentUuid": "a78c7159_1886b66c",
+      "revId": "98f468380b699947b73d1042d1d444c6c334ebf1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "4293c0ce_3189dc50",
         "filename": "libprocessgroup/task_profiles.h",
         "patchSetId": 4
@@ -138,6 +156,24 @@
       "side": 1,
       "message": "If that\u0027s so then let\u0027s stay consistent, but I can\u0027t find them??\nhttps://cs.android.com/search?q\u003d%22std::less%22\u0026ss\u003dandroid%2Fplatform%2Fsuperproject:system%2Fcore%2Flibprocessgroup%2F",
       "parentUuid": "2498a841_9ac3793e",
+      "revId": "98f468380b699947b73d1042d1d444c6c334ebf1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2e414970_31464a9a",
+        "filename": "libprocessgroup/task_profiles.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 222,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-08-10T22:37:12Z",
+      "side": 1,
+      "message": "Oops, my bad, I should have written \"system/core\" instead of libprocessgroup:\n\nsystem/core$ git grep -nH \u0027std::less\u003c\u003e\u0027\ninit/init.cpp:495:static const std::map\u003cstd::string, ControlMessageFunction, std::less\u003c\u003e\u003e\u0026 GetControlMessageMap() {\ninit/init.cpp:497:    static const std::map\u003cstd::string, ControlMessageFunction, std::less\u003c\u003e\u003e control_message_functions \u003d {",
+      "parentUuid": "2e9086b3_ef0369a6",
       "revId": "98f468380b699947b73d1042d1d444c6c334ebf1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
