@@ -16,6 +16,29 @@
       "message": "I\u0027m not a C++ expert, only pretending to be one. Adding the real ones.",
       "revId": "27bd1a9b944cfa67a74e43b091281d5fd56bb069",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "07cc0bea_08cc6133",
+        "filename": "libprocessgroup/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-08-10T15:12:04Z",
+      "side": 1,
+      "message": "2a or 20?\n\ni wanted to bump the platform default to 20 (https://android-review.googlesource.com/c/platform/build/soong/+/1949162) but got stuck because there\u0027s code that hits subtle (to me) changes in overloading resolution that i fear no-one is ever going to have the time to look at :-(\n\nbut it\u0027s certainly fine for local use, and even recommended.\n\n(note, btw, that \u003cstring_view\u003e is already in C++17, so you have that by default. it\u0027s only \u003cspan\u003e that you need C++20 for.)\n\n((oh, also think carefully about whether you want c++20 or gnu++20. if you don\u0027t have a specific reason for c++20, you should use gnu++20 :-) ))",
+      "range": {
+        "startLine": 7,
+        "startChar": 17,
+        "endLine": 7,
+        "endChar": 19
+      },
+      "revId": "27bd1a9b944cfa67a74e43b091281d5fd56bb069",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
