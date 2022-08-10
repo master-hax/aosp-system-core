@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "21ea0ecc_e4678820",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-08-10T06:21:39Z",
+      "side": 1,
+      "message": "what is applied by default in v2?",
+      "range": {
+        "startLine": 12,
+        "startChar": 29,
+        "endLine": 12,
+        "endChar": 70
+      },
+      "revId": "d1d2420caa9020cd97ae936871265dbd5e0e9f27",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "16129780_6baada8b",
+        "filename": "init/service.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 657,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-08-10T06:21:39Z",
+      "side": 1,
+      "message": "I assume this happens only once in the lifetime of a service, so performance impact is negligible.",
+      "range": {
+        "startLine": 657,
+        "startChar": 4,
+        "endLine": 657,
+        "endChar": 22
+      },
+      "revId": "d1d2420caa9020cd97ae936871265dbd5e0e9f27",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
