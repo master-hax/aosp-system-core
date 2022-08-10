@@ -184,16 +184,12 @@ static noreturn void lwt_assert_fail(const char *file, int line,
 #endif //}
 
 static ureg_t	thr_arena_start;
-static ureg_t	thrx_arena_start;
 static ureg_t	fpctx_arena_start;
 static ureg_t	cnd_arena_start;
 static ureg_t	mtx_arena_start;
 
 #define	THR_ARENA_LENGTH	(sizeof(thr_t) * THRIX_MAX)
 #define	THR_ARENA_RESERVED	PAGE_SIZE
-
-#define	THRX_ARENA_LENGTH	(sizeof(thrx_t) * THRIX_MAX)
-#define	THRX_ARENA_RESERVED	PAGE_SIZE
 
 #define	FPCTX_ARENA_LENGTH	(sizeof(fpctx_t) * THRIX_MAX)
 #define	FPCTX_ARENA_RESERVED	PAGE_SIZE
@@ -206,7 +202,6 @@ static ureg_t	mtx_arena_start;
 
 #ifdef LWT_FIXED_ADDRESSES //{
 
-#define	THRX_INDEX_BASE		((thrx_t *) THRX_ARENA_START)
 #define	THR_INDEX_BASE		((thr_t *) (THR_ARENA_START - sizeof(thr_t)))
 #define	MTX_INDEX_BASE		((mtx_t *) (MTX_ARENA_START - sizeof(mtx_t)))
 
@@ -214,11 +209,9 @@ static ureg_t	mtx_arena_start;
 
 static mtx_t	*mtx_by_index = MTX_INDEX_BASE;
 static thr_t	*thr_by_index = THR_INDEX_BASE;
-static thrx_t	*thrx_by_index = THRX_INDEX_BASE;
 
 #else //}{
 
-#define	THRX_INDEX_BASE		((thrx_t *) thrx_arena_start)
 #define	THR_INDEX_BASE		((thr_t *) (thr_arena_start - sizeof(thr_t)))
 #define	MTX_INDEX_BASE		((mtx_t *) (mtx_arena_start - sizeof(mtx_t)))
 
@@ -226,7 +219,6 @@ static thrx_t	*thrx_by_index = THRX_INDEX_BASE;
 
 static mtx_t	*mtx_by_index;
 static thr_t	*thr_by_index;
-static thrx_t	*thrx_by_index;
 
 #endif //}
 
@@ -235,7 +227,6 @@ static thrx_t	*thrx_by_index;
 
 static lllist_t	 thr_exited_lllist;
 static arena_t	 thr_arena;
-static arena_t	 thrx_arena;
 static arena_t	 fpctx_arena;
 static arena_t	 mtx_arena;
 static arena_t	 cnd_arena;
@@ -628,10 +619,10 @@ static cpu_t		*cpu_current(void);
 //  beacuse __lwt_ctx_save() is a two_returns function, which would required
 //  that ctx_save() also be a two_returns functions, which can not be inline.
 
-#define	ctx_save(ctx, thrx) ({						\
+#define	ctx_save(ctx, thr) ({						\
 	debug(!cpu_current()->cpu_enabled);				\
-	(thrx)->thrx_ctx = (ctx);					\
-	(thrx)->thrx_is_fullctx = false;				\
+	(thr)->thr_ctx = (ctx);					\
+	(thr)->thr_is_fullctx = false;				\
 	__lwt_ctx_save(ctx);						\
 })
 
@@ -1022,11 +1013,6 @@ inline_only void thr_free_stk(stk_t *stk)
 //}  S_THRID - Operations on thrid_t values and their indexing into thr_arena
 //{  These values live in the lwt_t variables that the API user uses.
 
-inline_only thrx_t *thrx_from_thr(thr_t *thr)
-{
-	return THRX_INDEX_BASE + THRID_INDEX(thr->thra.thra_thrid);
-}
-
 inline_only thr_t *thr_from_index(ureg_t index)
 {
 	return THR_INDEX_BASE + index;
@@ -1252,7 +1238,6 @@ static error_t mtx_lock(mtx_t *mtx, thr_t *thr)
 	ctx_t ctx;
 	mtx_atom_t old = mtx_load(mtx);
 	ureg_t thridix = THRID_INDEX(thr->thra.thra_thrid);
-	thrx_t *thrx = NULL;
 
 retry:;
 	mtx_atom_t new = old;
@@ -1262,21 +1247,19 @@ retry:;
 	} else if (likely(MTXA_OWNER(new) != thridix)) {
 		thr->thr_ln.ln_prev = mtx_lllist_to_thr(MTXA_LLWANT(new));
 		MTXA_LLWANT_SET(new, thridix);
-		if (!thrx) {
-			thrx = thrx_from_thr(thr);
-			debug(!cpu_current()->cpu_enabled);
-			if (!ctx_save(&ctx, thrx)) {		// returns twice
-				//  Second return, when thr resumes
-				//  the mtx has been handed off to it.
 
-				debug(thr->thr_mtxcnt &&
-				      MTXA_OWNER(mtx->mtxa) ==
-				      THRID_INDEX(thr->thra.thra_thrid));
-				debug(!cpu_current()->cpu_enabled);
-				return 0;
-			}
-			// first return
+		debug(!cpu_current()->cpu_enabled);
+		if (!ctx_save(&ctx, thr)) {		// returns twice
+			//  Second return, when thr resumes
+			//  the mtx has been handed off to it.
+
+			debug(thr->thr_mtxcnt &&
+			      MTXA_OWNER(mtx->mtxa) ==
+			      THRID_INDEX(thr->thra.thra_thrid));
+			debug(!cpu_current()->cpu_enabled);
+			return 0;
 		}
+		// first return
 	} else {
 		lwt_mtx_type_t type = (lwt_mtx_type_t) MTXA_TYPE(old);
 		if (type == LWT_MTX_FAST)
@@ -1460,10 +1443,9 @@ static int cnd_wait(cnd_t *cnd, mtx_t *mtx, thr_t *thr)
 
 	thr->thr_mtxid = mtx_get_mtxid(mtx);
 	thr->thr_cnd = cnd;
-	thrx_t *thrx = thrx_from_thr(thr);
 	ctx_t ctx;
 	debug(!cpu_current()->cpu_enabled);
-	if (ctx_save(&ctx, thrx)) {			// returns twice
+	if (ctx_save(&ctx, thr)) {			// returns twice
 		mtx_unlock_from_cond_wait(mtx, thr);	// first return
 		sched_out(thr, false);
 	}
@@ -1907,8 +1889,8 @@ static noreturn void thr_block_forever(thr_t *thr, unused const char *msg,
 	assert(0);
 }
 
-inline_only int thr_init(thr_t *t, thrx_t *tx,
-			 const thrattr_t *thrattr, stk_t *stk, thr_t *thr)
+inline_only int thr_init(thr_t *t, const thrattr_t *thrattr,
+			 stk_t *stk, thr_t *thr)
 {
 	bool detached = (thrattr->thrattr_detach == LWT_CREATE_DETACHED);
 
@@ -1936,24 +1918,23 @@ inline_only int thr_init(thr_t *t, thrx_t *tx,
 		}
 	}
 
-	tx->thrx_join_mtx = mtx;
-	tx->thrx_join_cnd = cnd;
-	tx->thrx_exited = false;
-	tx->thrx_joining = false;
-	tx->thrx_detached = detached;
-	tx->thrx_retval = NULL;
-	tx->thrx_stk = stk;
+	t->thr_join_mtx = mtx;
+	t->thr_join_cnd = cnd;
+	t->thr_exited = false;
+	t->thr_joining = false;
+	t->thr_detached = detached;
+	t->thr_retval = NULL;
+	t->thr_stk = stk;
 	return 0;
 }
 
 inline_only void thr_destroy(thr_t *thr)
 {
-	thrx_t *thrx = thrx_from_thr(thr);
-	if (thrx->thrx_detached) {
-		mtx_destroy_outline(&thrx->thrx_join_mtx);
-		cnd_destroy_outline(&thrx->thrx_join_cnd);
+	if (thr->thr_detached) {
+		mtx_destroy_outline(&thr->thr_join_mtx);
+		cnd_destroy_outline(&thr->thr_join_cnd);
 	}
-	thr_free_stk(thrx->thrx_stk);
+	thr_free_stk(thr->thr_stk);
 	thr_free(thr);
 }
 
@@ -1973,21 +1954,19 @@ static noreturn void thr_exit(thr_t *thr, void *retval)
 {
 	thr_exited_cleanup();
 
-	//  If thrx->thrx_stk is NULL its the main() thread.
-
-	thrx_t *thrx = thrx_from_thr(thr);
+	//  If thr->thr_stk is NULL its the main() thread.
 
 	assert(thr->thr_cnd == NULL);
 	assert(thr->thr_mtxcnt == 0);
 
-	if (!thrx->thrx_detached) {
-		mtx_lock(thrx->thrx_join_mtx, thr);
-		thrx->thrx_retval = retval;
-		thrx->thrx_exited = true;
-		cnd_broadcast(thrx->thrx_join_cnd, thrx->thrx_join_mtx, thr);
-		while (!thrx->thrx_joining)
-			cnd_wait(thrx->thrx_join_cnd, thrx->thrx_join_mtx, thr);
-		mtx_unlock_outline(thrx->thrx_join_mtx, thr);
+	if (!thr->thr_detached) {
+		mtx_lock(thr->thr_join_mtx, thr);
+		thr->thr_retval = retval;
+		thr->thr_exited = true;
+		cnd_broadcast(thr->thr_join_cnd, thr->thr_join_mtx, thr);
+		while (!thr->thr_joining)
+			cnd_wait(thr->thr_join_cnd, thr->thr_join_mtx, thr);
+		mtx_unlock_outline(thr->thr_join_mtx, thr);
 	}
 
 	thr_atom_t old = thr_load(thr);
@@ -2016,21 +1995,20 @@ static int thr_join(thr_t *thr, lwt_t thread, void **retvalpp)
 	if (t == thr)
 		return EDEADLK;
 
-	thrx_t *tx = thrx_from_thr(t);
-	if (tx->thrx_detached)
+	if (t->thr_detached)
 		return EINVAL;
 
-	mtx_lock(tx->thrx_join_mtx, thr);
-	if (tx->thrx_joining) {
-		mtx_unlock_outline(tx->thrx_join_mtx, thr);
+	mtx_lock(t->thr_join_mtx, thr);
+	if (t->thr_joining) {
+		mtx_unlock_outline(t->thr_join_mtx, thr);
 		return EINVAL;
 	}
-	tx->thrx_joining = true;
-	cnd_broadcast(tx->thrx_join_cnd, tx->thrx_join_mtx, thr);
-	while (!tx->thrx_exited)
-		cnd_wait(tx->thrx_join_cnd, tx->thrx_join_mtx, thr);
-	void *retval = tx->thrx_retval;
-	mtx_unlock_outline(tx->thrx_join_mtx, thr);
+	t->thr_joining = true;
+	cnd_broadcast(t->thr_join_cnd, t->thr_join_mtx, thr);
+	while (!t->thr_exited)
+		cnd_wait(t->thr_join_cnd, t->thr_join_mtx, thr);
+	void *retval = t->thr_retval;
+	mtx_unlock_outline(t->thr_join_mtx, thr);
 
 	*retvalpp = retval;
 	return 0;
@@ -2090,13 +2068,6 @@ static int thr_create(lwt_t *thread, const thrattr_t *thrattr,
 	if (av.error) return av.error;
 	stk_t *stk = av.mem;
 
-	//  The entries of the thr_arena and the thrx_arena are parallel to
-	//  each other, the thread's thread index for its thr_t is also its
-	//  index for its thrx_t.  Thus thrx_t are not allocated explicitly
-	//  from the thrx_arena, doing so, because of concurrency would cause
-	//  the entries to be mismatched because the allocation from both
-	//  lockless lists would not be serialized without adding a lock.
-
 	av = thr_alloc(thr);
 	if (av.error) {
 		thr_free_stk(stk);
@@ -2115,8 +2086,7 @@ retry:;
 		goto retry;
 	}
 
-	thrx_t *tx = thrx_from_thr(t);
-	error_t error = thr_init(t, tx, thrattr, stk, thr);
+	error_t error = thr_init(t, thrattr, stk, thr);
 	if (error) {
 		TODO();
 		return error;
@@ -2128,9 +2098,9 @@ retry:;
 	//  it from being clobbered by signal handlers.
 
 	ctx_t *ctx = ((ctx_t *) (stk - 1)) - 1;
-	tx->thrx_ctx = ctx;
-	tx->thrx_is_fullctx = false;
-	tx->thrx_enabled = false;
+	t->thr_ctx = ctx;
+	t->thr_is_fullctx = false;
+	t->thr_enabled = false;
 	ctx_init(ctx, (uptr_t) (stk - 1), function, arg);
 	*(lwt_t *) thread = (lwt_t) t->thra.thra_thrid.thrid_all;
 
@@ -2145,8 +2115,7 @@ static thr_t *thr_create_main(void)
 	thr_t *t = thr_tryalloc();
 	assert(t);				// thr_arena already grown
 	THRA_INDEX_SET(t->thra, t - THR_INDEX_BASE);
-	thrx_t *tx = thrx_from_thr(t);
-	error_t error = thr_init(t, tx, &thrattr_default, NULL, NULL);
+	error_t error = thr_init(t, &thrattr_default, NULL, NULL);
 	assert(!error);
 	cpu_t *cpu = cpu_current();
 	t->thr_running = true;
@@ -3327,11 +3296,11 @@ static void sched_in_at_head(thr_t *thr)
 
 #endif //}
 
-inline_only void cpu_generate_branch(cpu_t *cpu, thrx_t *thrx)
+inline_only void cpu_generate_branch(cpu_t *cpu, thr_t *thr)
 {
 	ureg_t instaddr = (ureg_t) cpu->cpu_trampoline;
 	instaddr += OFFSET_OF_BRANCH_IN_TRAMPOLINE;
-	ureg_t pc = thrx->thrx_fullctx->fullctx_pc;
+	ureg_t pc = thr->thr_fullctx->fullctx_pc;
 	debug(inst_reachable(pc, instaddr));
 	generate_branch(pc, instaddr);
 }
@@ -3340,23 +3309,21 @@ noreturn inline_only void thr_run(thr_t *thr, thr_t *currthr)
 {
 	cpu_t *cpu = cpu_current();
 	cpu->cpu_running_thr = thr;
-	thrx_t *thrx = thrx_from_thr(thr);
-	if (thrx->thrx_is_fullctx)
-		cpu_generate_branch(cpu, thrx);
-	ctx_t *ctx = thrx->thrx_ctx;
+	if (thr->thr_is_fullctx)
+		cpu_generate_branch(cpu, thr);
+	ctx_t *ctx = thr->thr_ctx;
 	ctx_load(ctx, thr, &cpu->cpu_ctx, &thr->thr_running,
-		 thrx->thrx_enabled, &currthr->thr_running);
+		 thr->thr_enabled, &currthr->thr_running);
 }
 
 noreturn inline_only void thr_run_on_cpu(thr_t *thr, cpu_t *cpu)
 {
 	cpu->cpu_running_thr = thr;
-	thrx_t *thrx = thrx_from_thr(thr);
-	if (thrx->thrx_is_fullctx)
-		cpu_generate_branch(cpu, thrx);
-	ctx_t *ctx = thrx->thrx_ctx;
+	if (thr->thr_is_fullctx)
+		cpu_generate_branch(cpu, thr);
+	ctx_t *ctx = thr->thr_ctx;
 	ctx_load_on_cpu(ctx, thr, &cpu->cpu_ctx, &thr->thr_running,
-			thrx->thrx_enabled);
+			thr->thr_enabled);
 }
 
 noreturn inline_only void cpu_idle(cpu_t *cpu, thr_t *thr)
@@ -3373,8 +3340,7 @@ static thr_t *schedq_get(schedq_t *schedq, ureg_t sqix)
 
 static noreturn void sched_out(thr_t *thr, bool enabled)
 {
-	thrx_t *thrx = thrx_from_thr(thr);
-	thrx->thrx_enabled = enabled;
+	thr->thr_enabled = enabled;
 	schdom_t *schdom = &thr->thr_core->core_hw->hw_schdom;
 	thr_t *t = schdom_get_thr(schdom);
 	if (!t) {
@@ -3396,10 +3362,9 @@ static int thr_context_save__thr_run(thr_t *currthr, thr_t *thr)
 	//  can not be inlined because ctx_save() returns twice and GCC can
 	//  not inline those functions.
 
-	thrx_t *thrx = thrx_from_thr(currthr);
 	ctx_t ctx;
 	debug(!cpu_current()->cpu_enabled);
-	if (ctx_save(&ctx, thrx)) 			// returns twice
+	if (ctx_save(&ctx, thr)) 			// returns twice
 		thr_run(thr, currthr);			// first return
 	debug(!cpu_current()->cpu_enabled);
 	return 0;			// second return, must return zero
@@ -3577,13 +3542,6 @@ static arena_init_t arena_init_table[] = {
 	 .ai_reserved = THR_ARENA_RESERVED,
 	 .ai_saveaddr = &thr_arena_start},
 
-	{.ai_arena    = &thrx_arena,
-	 .ai_start    = (void *) THRX_ARENA_START,
-	 .ai_elemsize = sizeof(thrx_t),
-	 .ai_length   = THRX_ARENA_LENGTH,
-	 .ai_reserved = THRX_ARENA_RESERVED,
-	 .ai_saveaddr = &thrx_arena_start},
-
 	{.ai_arena    = &fpctx_arena,
 	 .ai_start    = (void *) FPCTX_ARENA_START,
 	 .ai_elemsize = sizeof(fpctx_t),
@@ -3612,7 +3570,6 @@ static error_t arenas_init(void)
 #	ifndef LWT_FIXED_ADDRESSES
 		mtx_by_index = MTX_INDEX_BASE;
 		thr_by_index = THR_INDEX_BASE;
-		thrx_by_index = THRX_INDEX_BASE;
 #	endif
 
 	//  Arena growth is protected by its mutex, which when acquired
@@ -3776,9 +3733,8 @@ static void ktimer_tick(unused cpu_t *cpu)
 {
 	ctx_t ctx;
 	thr_t *thr = cpu->cpu_running_thr;
-	thrx_t *thrx = thrx_from_thr(thr);
 	debug(!cpu_current()->cpu_enabled);
-	if (ctx_save(&ctx, thrx))			// returns twice
+	if (ctx_save(&ctx, thr))			// returns twice
 		sched_timeslice(thr, false);		// first return.
 	debug(!cpu_current()->cpu_enabled);
 }
@@ -3798,7 +3754,6 @@ static void ktimer_signal(unused int signo, siginfo_t *siginfo, void *ucontextp)
 
 	cpu->cpu_enabled = false;
         ucontext_t *ucontext = ucontextp;
-	thrx_t *thrx = thrx_from_thr(thr);
 	fullctx_t *fullctx = (fullctx_t *) &ucontext->uc_mcontext;
 	ureg_t instaddr = (ureg_t) cpu->cpu_trampoline;
 	instaddr += OFFSET_OF_BRANCH_IN_TRAMPOLINE;
@@ -3820,7 +3775,7 @@ static void ktimer_signal(unused int signo, siginfo_t *siginfo, void *ucontextp)
 	if (!inst_reachable(pc, instaddr)) {
 		++cpu->cpu_counts.count_unreachable;
 		ctx_t ctx;
-		if (ctx_save(&ctx, thrx))
+		if (ctx_save(&ctx, thr))
 			sched_timeslice(thr, false);
 		cpu = cpu_current();		// might be on a different cpu
 		cpu->cpu_enabled = true;
@@ -3828,8 +3783,8 @@ static void ktimer_signal(unused int signo, siginfo_t *siginfo, void *ucontextp)
 	}
 
 	++cpu->cpu_counts.count_reachable;
-	thrx->thrx_is_fullctx = true;
-	thrx->thrx_fullctx = fullctx;
+	thr->thr_is_fullctx = true;
+	thr->thr_fullctx = fullctx;
 	fullctx_check(fullctx);
 	sched_timeslice(thr, true);
 }
@@ -4454,7 +4409,6 @@ inline_only error_t data_init(size_t sched_attempt_steps, int rtsigno)
 	//  Prevent removal of these debug variables
 
 	ureg_load_acq((ureg_t *) (thr_by_index + 1));
-	ureg_load_acq((ureg_t *) (thrx_by_index + 1));
 	ureg_load_acq((ureg_t *) (mtx_by_index + 1));
 
 	return 0;
