@@ -96,6 +96,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "124a60c6_8b572e7b",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 12
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-08-11T12:30:46Z",
+      "side": 1,
+      "message": "\u003e submounts\n\nI think these are orthogonal problems?\noverlayfs or legacy remount decides \"how\" we make a partition RW.\nSolving submounts decides \"what\" partitions are remounted.\n\nRight now we don\u0027t support submount for both overlayfs AND legacy remount.\nOTOH, legacy remount works on submounts *only if*\n1. The submount doesn\u0027t have shared_dup_blocks\n2. The user use the `mount` command directly `adb shell mount -o remount,rw /sub/mount/point`\n\nNo matter we choose to use overlayfs everywhere or not, legacy remount is not affected. Legacy remount is only affected by whether the underlying filesystem has share_dup_block or not.",
+      "parentUuid": "14520c76_471a0f12",
+      "range": {
+        "startLine": 10,
+        "startChar": 16,
+        "endLine": 10,
+        "endChar": 26
+      },
+      "revId": "3a2477da664903babed0845075e16b501b3871fb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "0cefdf30_c5993672",
