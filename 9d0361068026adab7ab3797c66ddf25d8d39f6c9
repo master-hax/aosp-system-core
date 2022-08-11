@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "daf8720b_8d26d5dc",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-08-11T10:54:06Z",
+      "side": 1,
+      "message": "Verified this fixes the test failure with abtd run\n\nhttps://android-build.googleplex.com/builds/tests/view?invocationId\u003dI69900010079720890\u0026testResultId\u003dTR33828195329758572\u0026tab\u003dresults",
+      "revId": "9d0361068026adab7ab3797c66ddf25d8d39f6c9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
