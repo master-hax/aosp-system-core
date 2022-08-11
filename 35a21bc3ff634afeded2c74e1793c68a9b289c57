@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "7a1d22d4_dc96d189",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 381,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-08-11T18:57:38Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5be3ef6b_3fbb265b",
+      "range": {
+        "startLine": 381,
+        "startChar": 18,
+        "endLine": 381,
+        "endChar": 37
+      },
+      "revId": "35a21bc3ff634afeded2c74e1793c68a9b289c57",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "4881cb7d_14d902a6",
@@ -41,6 +65,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f3af87db_f46de06c",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 418,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-08-11T18:57:38Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "4881cb7d_14d902a6",
+      "revId": "35a21bc3ff634afeded2c74e1793c68a9b289c57",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "640140f4_c16843b8",
@@ -54,6 +96,30 @@
       "writtenOn": "2022-08-11T14:45:12Z",
       "side": 1,
       "message": "even if the pathname exists, it might not be a directory...\n\nthis pattern also shows up quite a lot. We could wrap this in a utility like `bool android::fs_mgr::Mkdir(path, perm, context)`, which returns true if mkdir success or existing path *is directory*; return false if failed to mkdir() or setfscreatecon().",
+      "range": {
+        "startLine": 434,
+        "startChar": 8,
+        "endLine": 434,
+        "endChar": 70
+      },
+      "revId": "35a21bc3ff634afeded2c74e1793c68a9b289c57",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5d5609a1_ffb54e90",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 434,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-08-11T18:57:38Z",
+      "side": 1,
+      "message": "This is pretty edge casey. It\u0027s not clear why there\u0027d be a file there instead of a directory, but if there was, we\u0027d very quickly fail later with ENOTDIR.\n\nIf we wanted to track down all the instances of this pattern, and there were enough outside of fs_mgr as well, we could propose an addition to libbase.",
+      "parentUuid": "640140f4_c16843b8",
       "range": {
         "startLine": 434,
         "startChar": 8,
@@ -111,6 +177,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "74e0cdd1_c53c56ef",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 449,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-08-11T18:57:38Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f0354610_f3cf214f",
+      "range": {
+        "startLine": 449,
+        "startChar": 8,
+        "endLine": 449,
+        "endChar": 29
+      },
+      "revId": "35a21bc3ff634afeded2c74e1793c68a9b289c57",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "9b903909_aedd3e13",
@@ -124,6 +214,30 @@
       "writtenOn": "2022-08-11T14:45:12Z",
       "side": 1,
       "message": "return early in this case like L760?\n\nI think it\u0027s safe to assume, if we fail this setfscreatecon(), then subsequent retries will all fail anyway.",
+      "range": {
+        "startLine": 754,
+        "startChar": 12,
+        "endLine": 754,
+        "endChar": 21
+      },
+      "revId": "35a21bc3ff634afeded2c74e1793c68a9b289c57",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "80bc5af8_d4653714",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 754,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-08-11T18:57:38Z",
+      "side": 1,
+      "message": "Maybe not, if just one is unlabeled. The only case that is true catastrophic is if createcon.Restore() fails.",
+      "parentUuid": "9b903909_aedd3e13",
       "range": {
         "startLine": 754,
         "startChar": 12,
@@ -151,6 +265,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f858a636_7f48fb8f",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 1380,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-08-11T18:57:38Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f0733ffc_e2afcff3",
+      "revId": "35a21bc3ff634afeded2c74e1793c68a9b289c57",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "81fc14c8_5b657229",
@@ -164,6 +296,30 @@
       "writtenOn": "2022-08-11T14:45:12Z",
       "side": 1,
       "message": "so if setting up all mountpoints (mount_point \u003d\u003d nullptr), failure to setup any directory would result in failure, but |changed| would still be updated if any directory is successfully setup?\n\nthis means set-verity-state would need updating too.",
+      "range": {
+        "startLine": 1447,
+        "startChar": 8,
+        "endLine": 1447,
+        "endChar": 10
+      },
+      "revId": "35a21bc3ff634afeded2c74e1793c68a9b289c57",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9d4e5051_0a7c4752",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 1447,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-08-11T18:57:38Z",
+      "side": 1,
+      "message": "It\u0027s a messaging thing. That said it\u0027s not clear to me if any messages in set-verity-state need to change. I don\u0027t have a strong opinion on this either way. Both methods have pros/cons here, between \"one failure means everything fails\" vs \"one success means everything succeeds\".",
+      "parentUuid": "81fc14c8_5b657229",
       "range": {
         "startLine": 1447,
         "startChar": 8,
