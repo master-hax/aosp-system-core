@@ -69,6 +69,24 @@
       "parentUuid": "fb879a7e_eb99d988",
       "revId": "04bff78a0e51fcc65ad095bb6038535453ceb38e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6e748ba9_7cd671ba",
+        "filename": "libprocessgroup/task_profiles.h",
+        "patchSetId": 9
+      },
+      "lineNbr": 217,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-08-11T19:47:09Z",
+      "side": 1,
+      "message": "I changed my mind and removed the StringVectorToSpan() function again because it has a runtime overhead.",
+      "parentUuid": "f34d9ed7_64fc2e72",
+      "revId": "04bff78a0e51fcc65ad095bb6038535453ceb38e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
