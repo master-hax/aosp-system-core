@@ -190,6 +190,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "154041af_e9307c8f",
+        "filename": "init/service.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 259,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2022-08-11T19:18:14Z",
+      "side": 1,
+      "message": "See https://lkml.org/lkml/2022/8/11/1041 for the proposed kernel change.",
+      "parentUuid": "3c076ea7_39d26c6f",
+      "range": {
+        "startLine": 259,
+        "startChar": 25,
+        "endLine": 259,
+        "endChar": 34
+      },
+      "revId": "eb75396ff19f9f15167da891f0d9c43a0f6acc8f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "b52c1527_609ef8f1",
