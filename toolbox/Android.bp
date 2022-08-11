@@ -77,3 +77,13 @@ cc_binary {
     vendor: true,
     defaults: ["toolbox_binary_defaults"],
 }
+
+cc_fuzz {
+    name: "modprobe_fuzzer",
+    srcs: [
+        "modprobe_fuzzer.cpp"
+    ],
+    shared_libs: [
+        "toolbox",
+    ],
+}
