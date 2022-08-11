@@ -3636,11 +3636,6 @@ inline_only void core_run_locked(core_t *core, kcore_t *kcore)
 
 static void core_run(core_t *core)
 {
-#if 0 // TODO
-	if (core->core_ncpus_idled == 0)
-		return;
-#endif
-
 	kcore_t *kcore = core->core_kcore;
 	error_t error = pthread_mutex_trylock(&kcore->kcore_mutex);
 	if (error) {
@@ -3710,21 +3705,6 @@ inline_only void fullctx_check(fullctx_t *fullctx)
 	ctxhdr = (aarch64_ctx_t *)(fpsimd_context + 1);
         assert(ctxhdr->magic == 0 && ctxhdr->size == 0);
 }
-
-#if 0 // TODO XXX
-inline_only void context_init_from_mcontext(context_t *context,
-					    mcontext_t *mcontext)
-{
-	context->c_ctx = *(ctx_t *) mcontext;
-	aarch64_ctx_t *ctxhdr = (aarch64_ctx_t *) &mcontext->__reserved[0];
-        assert(ctxhdr->magic == FPSIMD_MAGIC &&
-	       ctxhdr->size == sizeof(fpsimd_context_t));
-	fpsimd_context_t *fpsimd_context = (fpsimd_context_t *) ctxhdr;
-	context->c_ctx.ctx_fpcr_fpsr = (ureg_t) fpsimd_context->fpsr |
-				     (((ureg_t) fpsimd_context->fpcr) << 32);
-	context->c_fpctx = *(fpctx_t *)(char *) &fpsimd_context->vregs[0];
-}
-#endif
 
 #endif //}
 
@@ -3899,9 +3879,10 @@ static noreturn void *cpu_main(cpu_t *cpu)
 	core_t *core = cpu->cpu_core;
 	kcore_t *kcore = core->core_kcore;
 	schdom_t *schdom = &core->core_hw->hw_schdom;
+	error_t error;
 
 	if (cpu != &cpus[0]) {		// cpu0 handled in cpus_start()
-		error_t error = cpu_bind(cpu);
+		error = cpu_bind(cpu);
 		if (error)
 			TODO();
 		error = cpu_ktimer_init_and_start(cpu);
@@ -3911,8 +3892,25 @@ static noreturn void *cpu_main(cpu_t *cpu)
 
 	thr_t *thr_switching_out = NULL;
 	for (;;) {
-		pthread_mutex_lock(&kcore->kcore_mutex);
 		debug(!cpu->cpu_enabled);
+		if (unlikely(thr_switching_out != NULL)) {
+			//  Should not block on kcore->kcore_mutex if there
+			//  is a thread in our control in thr_switching_out,
+			//  try locking kcore_mutex, if it succeeds then its
+			//  ok, otherwise put the thread back at the head of
+			//  its schedulig queue and then lock the kcore_mutex
+			//  in a blocking way.
+
+			error = pthread_mutex_trylock(&kcore->kcore_mutex);
+			if (likely(!error))
+				goto restart;
+
+			assert(error == EBUSY);
+			sched_in_at_head(thr_switching_out);
+			thr_switching_out = NULL;
+		}
+		pthread_mutex_lock(&kcore->kcore_mutex);
+
 restart:;	int attempts = sched_attempts;
 retry:;		thr_t *thr = schdom_get_thr(schdom);
 
@@ -4533,6 +4531,10 @@ error_t __lwt_init(size_t sched_attempt_steps, int rtsigno)
 	//	  spin owning code
 	//	- time slicing on/off
 	//	- time slice period
+	//	- cpu mask to use
+	//  make this extensible by passing a structure with specified size
+	//  to allow room for growth
+	//
 	//  The rtsigno signal handler should be SIG_DFL, if it is currently
 	//  in use, EINVAL is returned to avoid conflicts if other code using
 	//  that signal number.
