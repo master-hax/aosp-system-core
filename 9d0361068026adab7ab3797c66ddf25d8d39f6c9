@@ -16,6 +16,29 @@
       "message": "Verified this fixes the test failure with abtd run\n\nhttps://android-build.googleplex.com/builds/tests/view?invocationId\u003dI69900010079720890\u0026testResultId\u003dTR33828195329758572\u0026tab\u003dresults",
       "revId": "9d0361068026adab7ab3797c66ddf25d8d39f6c9",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c815fb69_3b537621",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 590,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-08-11T14:56:23Z",
+      "side": 1,
+      "message": "returning 1,2,3,4,5,... here is not very useful to the user, as they don\u0027t know what the numbers mean. We should probably just log the error to logd\u0026stderr and exit with 0 or 1 exclusively.",
+      "range": {
+        "startLine": 590,
+        "startChar": 11,
+        "endLine": 590,
+        "endChar": 17
+      },
+      "revId": "9d0361068026adab7ab3797c66ddf25d8d39f6c9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
