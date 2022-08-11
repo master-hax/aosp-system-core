@@ -28,6 +28,7 @@
 
 #include <android-base/file.h>
 #include <android-base/logging.h>
+#include <android-base/parseint.h>
 #include <android-base/properties.h>
 #include <android-base/scopeguard.h>
 #include <android-base/stringprintf.h>
@@ -257,6 +258,12 @@ void Service::SetProcessAttributesAndCaps() {
 }
 
 void Service::Reap(const siginfo_t& siginfo) {
+    std::string proc_stat_filename = std::string("/proc/") + std::to_string(pid_) + "/stat";
+    std::string proc_stat;
+    if (!base::ReadFileToString(proc_stat_filename, &proc_stat, false)) {
+        LOG(ERROR) << "Failed to read " << proc_stat_filename;
+        proc_stat.clear();
+    }
     if (!(flags_ & SVC_ONESHOT) || (flags_ & SVC_RESTART)) {
         KillProcessGroup(SIGKILL, false);
     } else {
@@ -320,11 +327,27 @@ void Service::Reap(const siginfo_t& siginfo) {
     const bool is_process_updatable = !use_bootstrap_ns_ && is_apex_updatable;
 
 #ifdef SEGV_MTEAERR
+    int sicode = 0;
+    auto comm_end = proc_stat.rfind(')');
+    if (comm_end != std::string::npos) {
+        // +2 to skip the ) and the following space.
+        std::string rest = proc_stat.substr(comm_end + 2);
+        // comm is the 2nd entry (so tokens[0] is 3rd), exit_sicode is 53 (tokens[50]).
+        std::vector<std::string> tokens = base::Tokenize(rest, " \n");
+        if (tokens.size() < 51) {
+            LOG(ERROR) << "too few tokens in " << proc_stat_filename << ": " << rest;
+        } else if (!base::ParseInt(tokens[50], &sicode)) {
+            LOG(ERROR) << "invalid int in " << proc_stat_filename << ": "
+                       << "\"" << tokens[50] << "\"";
+            sicode = 0;
+        }
+    } else {
+        LOG(ERROR) << "malformed " << proc_stat_filename << ": " << proc_stat;
+    }
     // As a precaution, we only upgrade a service once per reboot, to limit
     // the potential impact.
-    // TODO(fmayer): Once we have a kernel API to get sicode, compare it to MTEAERR here.
     bool should_upgrade_mte = siginfo.si_code != CLD_EXITED && siginfo.si_status == SIGSEGV &&
-                              !upgraded_mte_;
+                              sicode == SEGV_MTEAERR && !upgraded_mte_;
 
     if (should_upgrade_mte) {
         LOG(INFO) << "Upgrading service " << name_ << " to sync MTE";
