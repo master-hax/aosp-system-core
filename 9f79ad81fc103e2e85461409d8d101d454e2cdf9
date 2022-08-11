@@ -71,6 +71,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "df84ba2b_d2c3555e",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 175,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-08-11T17:09:45Z",
+      "side": 1,
+      "message": "std::initializer_list\u003cconst char*\u003e has been changed into std::initializer_list\u003cstd::string_view\u003e. Additionally, I finally figured out how to convert std::initializer_list\u003c...\u003e into std::span\u003c...\u003e. Please take another look.",
+      "parentUuid": "037cfe9a_7f7f39fb",
+      "revId": "9f79ad81fc103e2e85461409d8d101d454e2cdf9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "968a0ed9_66fb111f",
