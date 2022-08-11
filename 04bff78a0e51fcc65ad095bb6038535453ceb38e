@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "254db5f9_39e88105",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 150,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-08-11T18:38:17Z",
+      "side": 1,
+      "message": "No, we can\u0027t. These overloads have multiple callers.",
+      "parentUuid": "c3be8c28_855a6240",
+      "revId": "04bff78a0e51fcc65ad095bb6038535453ceb38e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "fb879a7e_eb99d988",
@@ -31,6 +49,24 @@
       "writtenOn": "2022-08-11T17:34:53Z",
       "side": 1,
       "message": "And now I think this will always be std::span\u003cstd::string_view\u003e so we don\u0027t need a template?",
+      "revId": "04bff78a0e51fcc65ad095bb6038535453ceb38e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f34d9ed7_64fc2e72",
+        "filename": "libprocessgroup/task_profiles.h",
+        "patchSetId": 9
+      },
+      "lineNbr": 217,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-08-11T18:38:17Z",
+      "side": 1,
+      "message": "Please take a look at the code I uploaded and reopen this comment thread if you want me to reintroduce the template.",
+      "parentUuid": "fb879a7e_eb99d988",
       "revId": "04bff78a0e51fcc65ad095bb6038535453ceb38e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
