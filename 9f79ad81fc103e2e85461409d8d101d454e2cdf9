@@ -55,6 +55,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "037cfe9a_7f7f39fb",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 175,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2022-08-11T03:57:06Z",
+      "side": 1,
+      "message": "Sorry I still don\u0027t follow this. There are allocations all over the place here. Now I think it\u0027s possible to do just:\n```\nbool SetTaskProfiles(int tid, std::initializer_list\u003cstd::string_view\u003e profiles, bool use_fd_cache) {\n    return TaskProfiles::GetInstance().SetTaskProfiles(tid, std::span(profiles), ...);\n\n```\nBut we\u0027d need a successful build to make sure there are no odd callers whose arguments can\u0027t be converted to std::string_view.\n\nThis should also address the fact that you are throwing away the length information and recomputing it by decaying `const char[N]` to `const char *` for string literals, since the compiler can see the string literal from the same place the conversion to `std::string_view` happens (and thus more than likely optimize out the runtime `Traits::length`).",
+      "parentUuid": "92502c92_8f6209ce",
+      "revId": "9f79ad81fc103e2e85461409d8d101d454e2cdf9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "968a0ed9_66fb111f",
         "filename": "libprocessgroup/task_profiles.h",
         "patchSetId": 4
