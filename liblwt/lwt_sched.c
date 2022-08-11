@@ -3899,9 +3899,10 @@ static noreturn void *cpu_main(cpu_t *cpu)
 	core_t *core = cpu->cpu_core;
 	kcore_t *kcore = core->core_kcore;
 	schdom_t *schdom = &core->core_hw->hw_schdom;
+	error_t error;
 
 	if (cpu != &cpus[0]) {		// cpu0 handled in cpus_start()
-		error_t error = cpu_bind(cpu);
+		error = cpu_bind(cpu);
 		if (error)
 			TODO();
 		error = cpu_ktimer_init_and_start(cpu);
@@ -3911,8 +3912,25 @@ static noreturn void *cpu_main(cpu_t *cpu)
 
 	thr_t *thr_switching_out = NULL;
 	for (;;) {
-		pthread_mutex_lock(&kcore->kcore_mutex);
 		debug(!cpu->cpu_enabled);
+		if (unlikely(thr_switching_out != NULL)) {
+			//  Should not block on kcore->kcore_mutex if there
+			//  is a thread in our control in thr_switching_out,
+			//  try locking kcore_mutex, if it succeeds then its
+			//  ok, otherwise put the thread back at the head of
+			//  its schedulig queue and then lock the kcore_mutex
+			//  in a blocking way.
+
+			error = pthread_mutex_trylock(&kcore->kcore_mutex);
+			if (likely(!error))
+				goto restart;
+
+			assert(error == EBUSY);
+			sched_in_at_head(thr_switching_out);
+			thr_switching_out = NULL;
+		}
+		pthread_mutex_lock(&kcore->kcore_mutex);
+
 restart:;	int attempts = sched_attempts;
 retry:;		thr_t *thr = schdom_get_thr(schdom);
 
