@@ -50,6 +50,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "4ddd6be3_13b7ce0b",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 12
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-08-11T14:45:12Z",
+      "side": 1,
+      "message": "\u003e Setting to true only if something changed allows remount to decide if a reboot is needed.\n\nAgreed. Since you are changing the function prototypes, why not go even further and just rename the out param from |change| to |want_reboot|. This would describe your intention better.",
+      "parentUuid": "22c4710c_a73e04f5",
+      "range": {
+        "startLine": 19,
+        "startChar": 26,
+        "endLine": 19,
+        "endChar": 50
+      },
+      "revId": "b8dc60e9d307fe8a35e5f029558f35542c1a0d1d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "2473d07f_289130c5",
         "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
         "patchSetId": 12

@@ -1,0 +1,153 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5be3ef6b_3fbb265b",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 381,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-08-11T14:45:12Z",
+      "side": 1,
+      "message": "this should be `std::string` or just `const char*`, because string_view::data() doesn\u0027t guarantee to end with a \u0027\\0\u0027. OTOH std::string::data() \u0026 std::string::c_str() does guarantee ending \u0027\\0\u0027.\n\nThis code works as long as we\u0027re passing in c-string or std::string. Should we passed in other string_view (which we are *not* doing right now), there could be an buffer over flow.",
+      "range": {
+        "startLine": 381,
+        "startChar": 18,
+        "endLine": 381,
+        "endChar": 37
+      },
+      "revId": "35a21bc3ff634afeded2c74e1793c68a9b289c57",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4881cb7d_14d902a6",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 418,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-08-11T14:45:12Z",
+      "side": 1,
+      "message": "nit: not a big issue, but should this Restore() fail, then upon return the destructor would call Restore() again, and we could see the same setfscreatecon failure message twice.",
+      "revId": "35a21bc3ff634afeded2c74e1793c68a9b289c57",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "640140f4_c16843b8",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 434,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-08-11T14:45:12Z",
+      "side": 1,
+      "message": "even if the pathname exists, it might not be a directory...\n\nthis pattern also shows up quite a lot. We could wrap this in a utility like `bool android::fs_mgr::Mkdir(path, perm, context)`, which returns true if mkdir success or existing path *is directory*; return false if failed to mkdir() or setfscreatecon().",
+      "range": {
+        "startLine": 434,
+        "startChar": 8,
+        "endLine": 434,
+        "endChar": 70
+      },
+      "revId": "35a21bc3ff634afeded2c74e1793c68a9b289c57",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f0354610_f3cf214f",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 449,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-08-11T14:45:12Z",
+      "side": 1,
+      "message": "the definition of fs_mgr_get_context() says it returns empty string when there is error. Maybe we should just return immediately in this case? I don\u0027t see why we would want to continue doing the rest if we failed to get the expected context",
+      "range": {
+        "startLine": 449,
+        "startChar": 8,
+        "endLine": 449,
+        "endChar": 29
+      },
+      "revId": "35a21bc3ff634afeded2c74e1793c68a9b289c57",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9b903909_aedd3e13",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 754,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-08-11T14:45:12Z",
+      "side": 1,
+      "message": "return early in this case like L760?\n\nI think it\u0027s safe to assume, if we fail this setfscreatecon(), then subsequent retries will all fail anyway.",
+      "range": {
+        "startLine": 754,
+        "startChar": 12,
+        "endLine": 754,
+        "endChar": 21
+      },
+      "revId": "35a21bc3ff634afeded2c74e1793c68a9b289c57",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f0733ffc_e2afcff3",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 1380,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-08-11T14:45:12Z",
+      "side": 1,
+      "message": "\u003e Setting false at the top of setup/teardown just ensures that callers don\u0027t have to pick an initialization value.\n\nBut there are cases where caller do want to set the initialization value. If we respect the caller and don\u0027t preemptively clear it, the caller can chain multiple of these calls together like:\n\n```\nbool changed \u003d false;\nsetup_dir1(\u0026changed);\nsetup_dir2(\u0026changed);\nsetup_dir3(\u0026changed);\n// At least one changed...?\nif (changed) { reboot(); }\n```\n\nOtherwise the caller would need to do:\n\n```\nbool any_changed \u003d false;\nbool changed \u003d false;\nsetup_dir1(\u0026changed);\nany_changed |\u003d changed;\nsetup_dir2(\u0026changed);\nany_changed |\u003d changed;\nsetup_dir2(\u0026changed);\nany_changed |\u003d changed;\n// At least one changed...?\nif (changed) { reboot(); }\n```\n\n(This is just my preference, it\u0027s not like the latter is unusable or anything. You don\u0027t have to take this suggestion if you don\u0027t want.)",
+      "revId": "35a21bc3ff634afeded2c74e1793c68a9b289c57",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "81fc14c8_5b657229",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 1447,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-08-11T14:45:12Z",
+      "side": 1,
+      "message": "so if setting up all mountpoints (mount_point \u003d\u003d nullptr), failure to setup any directory would result in failure, but |changed| would still be updated if any directory is successfully setup?\n\nthis means set-verity-state would need updating too.",
+      "range": {
+        "startLine": 1447,
+        "startChar": 8,
+        "endLine": 1447,
+        "endChar": 10
+      },
+      "revId": "35a21bc3ff634afeded2c74e1793c68a9b289c57",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
