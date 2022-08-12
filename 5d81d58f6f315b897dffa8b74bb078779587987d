@@ -35,6 +35,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "84d71bb1_f17bdf5e",
+        "filename": "fastboot/device/usb.cpp",
+        "patchSetId": 19
+      },
+      "lineNbr": 218,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2022-08-12T02:33:40Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b4c1ded6_a84e9a0a",
+      "revId": "5d81d58f6f315b897dffa8b74bb078779587987d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "ac6d2abf_db36ae79",
@@ -52,6 +70,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "51a9fd57_6ea231c2",
+        "filename": "fastboot/device/usb_iouring.cpp",
+        "patchSetId": 19
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2022-08-12T02:33:40Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ac6d2abf_db36ae79",
+      "revId": "5d81d58f6f315b897dffa8b74bb078779587987d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "ee5c5323_17ffc7bc",
@@ -65,6 +101,24 @@
       "writtenOn": "2022-08-09T18:57:20Z",
       "side": 1,
       "message": "success \u003d false here; since IOSQE_IO_LINK flag is set, there is a high chance that if one request in the link fails, all the subsequent requests are abandoned and CQE will be null.",
+      "revId": "5d81d58f6f315b897dffa8b74bb078779587987d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "15f2a830_632e3ee0",
+        "filename": "fastboot/device/usb_iouring.cpp",
+        "patchSetId": 19
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2022-08-12T02:33:40Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ee5c5323_17ffc7bc",
       "revId": "5d81d58f6f315b897dffa8b74bb078779587987d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
