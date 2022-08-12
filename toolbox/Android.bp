@@ -78,6 +78,7 @@ cc_binary {
     defaults: ["toolbox_binary_defaults"],
 }
 
+/*
 cc_fuzz {
     name: "modprobe_fuzzer",
     srcs: [
@@ -87,3 +88,4 @@ cc_fuzz {
         "toolbox",
     ],
 }
+*/
