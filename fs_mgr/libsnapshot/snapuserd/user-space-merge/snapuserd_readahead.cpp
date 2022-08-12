@@ -772,7 +772,7 @@ bool ReadAhead::InitReader() {
 }
 
 void ReadAhead::InitializeRAIter() {
-    cowop_iter_ = reader_->GetMergeOpIter();
+    cowop_iter_ = reader_->GetOpIter();
 }
 
 bool ReadAhead::RAIterDone() {
