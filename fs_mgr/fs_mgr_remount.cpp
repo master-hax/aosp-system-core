@@ -128,6 +128,7 @@ enum RemountStatus {
     BAD_OVERLAY,
     NO_MOUNTS,
     REMOUNT_FAILED,
+    MUST_REBOOT,
     BINDER_ERROR,
     CHECKPOINTING,
     GSID_ERROR,
@@ -580,7 +581,7 @@ int main(int argc, char* argv[]) {
         } else {
             LOG(INFO) << "Now reboot your device for settings to take effect";
         }
-        return REMOUNT_SUCCESS;
+        return MUST_REBOOT;
     }
     if (result == REMOUNT_SUCCESS) {
         printf("remount succeeded\n");
