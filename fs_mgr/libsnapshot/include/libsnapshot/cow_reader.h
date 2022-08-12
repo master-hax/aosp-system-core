@@ -115,7 +115,7 @@ class CowReader final : public ICowReader {
         USERSPACE_MERGE = 1,
     };
 
-    CowReader(ReaderFlags reader_flag = ReaderFlags::DEFAULT);
+    CowReader(ReaderFlags reader_flag = ReaderFlags::DEFAULT, bool is_merge = false);
     ~CowReader() { owned_fd_ = {}; }
 
     // Parse the COW, optionally, up to the given label. If no label is
@@ -177,6 +177,7 @@ class CowReader final : public ICowReader {
     bool has_seq_ops_{};
     std::shared_ptr<std::unordered_map<uint64_t, uint64_t>> data_loc_;
     ReaderFlags reader_flag_;
+    bool is_merge_{};
 };
 
 }  // namespace snapshot

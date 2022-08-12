@@ -162,7 +162,7 @@ bool SnapshotHandler::CheckMergeCompletionStatus() {
 }
 
 bool SnapshotHandler::ReadMetadata() {
-    reader_ = std::make_unique<CowReader>(CowReader::ReaderFlags::USERSPACE_MERGE);
+    reader_ = std::make_unique<CowReader>(CowReader::ReaderFlags::USERSPACE_MERGE, true);
     CowHeader header;
     CowOptions options;
 
