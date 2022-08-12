@@ -35,11 +35,7 @@ namespace android {
 namespace snapshot {
 
 CowReader::CowReader(ReaderFlags reader_flag)
-    : fd_(-1),
-      header_(),
-      fd_size_(0),
-      block_pos_index_(std::make_shared<std::vector<int>>()),
-      reader_flag_(reader_flag) {}
+    : fd_(-1), header_(), fd_size_(0), reader_flag_(reader_flag) {}
 
 static void SHA256(const void*, size_t, uint8_t[]) {
 #if 0
@@ -63,7 +59,6 @@ std::unique_ptr<CowReader> CowReader::CloneCowReader() {
     cow->num_ordered_ops_to_merge_ = num_ordered_ops_to_merge_;
     cow->has_seq_ops_ = has_seq_ops_;
     cow->data_loc_ = data_loc_;
-    cow->block_pos_index_ = block_pos_index_;
     return cow;
 }
 
@@ -476,18 +471,21 @@ bool CowReader::PrepMergeOps() {
 
     merge_op_blocks->insert(merge_op_blocks->end(), other_ops.begin(), other_ops.end());
 
-    for (auto block : *merge_op_blocks) {
-        block_pos_index_->push_back(block_map->at(block));
-    }
-
     num_total_data_ops_ = merge_op_blocks->size();
     if (header_.num_merge_ops > 0) {
         merge_op_start_ = header_.num_merge_ops;
     }
 
+    auto merge_ops_buffer = std::make_shared<std::vector<CowOperation>>();
+    for (auto block : *merge_op_blocks) {
+        merge_ops_buffer->emplace_back(ops_->data()[block_map->at(block)]);
+    }
+
+    ops_->clear();
     block_map->clear();
     merge_op_blocks->clear();
 
+    ops_ = merge_ops_buffer;
     return true;
 }
 
@@ -592,8 +590,7 @@ const CowOperation& CowOpIter::Get() {
 
 class CowRevMergeOpIter final : public ICowOpIter {
   public:
-    explicit CowRevMergeOpIter(std::shared_ptr<std::vector<CowOperation>> ops,
-                               std::shared_ptr<std::vector<int>> block_pos_index, uint64_t start);
+    explicit CowRevMergeOpIter(std::shared_ptr<std::vector<CowOperation>> ops, uint64_t start);
 
     bool Done() override;
     const CowOperation& Get() override;
@@ -604,15 +601,13 @@ class CowRevMergeOpIter final : public ICowOpIter {
 
   private:
     std::shared_ptr<std::vector<CowOperation>> ops_;
-    std::vector<int>::reverse_iterator block_riter_;
-    std::shared_ptr<std::vector<int>> cow_op_index_vec_;
+    std::vector<CowOperation>::reverse_iterator op_riter_;
     uint64_t start_;
 };
 
 class CowMergeOpIter final : public ICowOpIter {
   public:
-    explicit CowMergeOpIter(std::shared_ptr<std::vector<CowOperation>> ops,
-                            std::shared_ptr<std::vector<int>> block_pos_index, uint64_t start);
+    explicit CowMergeOpIter(std::shared_ptr<std::vector<CowOperation>> ops, uint64_t start);
 
     bool Done() override;
     const CowOperation& Get() override;
@@ -623,72 +618,67 @@ class CowMergeOpIter final : public ICowOpIter {
 
   private:
     std::shared_ptr<std::vector<CowOperation>> ops_;
-    std::vector<int>::iterator block_iter_;
-    std::shared_ptr<std::vector<int>> cow_op_index_vec_;
+    std::vector<CowOperation>::iterator op_iter_;
     uint64_t start_;
 };
 
-CowMergeOpIter::CowMergeOpIter(std::shared_ptr<std::vector<CowOperation>> ops,
-                               std::shared_ptr<std::vector<int>> block_pos_index, uint64_t start) {
+CowMergeOpIter::CowMergeOpIter(std::shared_ptr<std::vector<CowOperation>> ops, uint64_t start) {
     ops_ = ops;
     start_ = start;
-    cow_op_index_vec_ = block_pos_index;
-    block_iter_ = cow_op_index_vec_->begin() + start;
+    op_iter_ = ops_->begin() + start;
 }
 
 bool CowMergeOpIter::RDone() {
-    return block_iter_ == cow_op_index_vec_->begin();
+    return op_iter_ == ops_->begin();
 }
 
 void CowMergeOpIter::Prev() {
     CHECK(!RDone());
-    block_iter_--;
+    op_iter_--;
 }
 
 bool CowMergeOpIter::Done() {
-    return block_iter_ == cow_op_index_vec_->end();
+    return op_iter_ == ops_->end();
 }
 
 void CowMergeOpIter::Next() {
     CHECK(!Done());
-    block_iter_++;
+    op_iter_++;
 }
 
 const CowOperation& CowMergeOpIter::Get() {
     CHECK(!Done());
-    return ops_->data()[*block_iter_];
+    return *op_iter_;
 }
 
 CowRevMergeOpIter::CowRevMergeOpIter(std::shared_ptr<std::vector<CowOperation>> ops,
-                                     std::shared_ptr<std::vector<int>> block_pos_index,
                                      uint64_t start) {
     ops_ = ops;
     start_ = start;
-    cow_op_index_vec_ = block_pos_index;
-    block_riter_ = cow_op_index_vec_->rbegin();
+    op_riter_ = ops_->rbegin();
 }
 
 bool CowRevMergeOpIter::RDone() {
-    return block_riter_ == cow_op_index_vec_->rbegin();
+    return op_riter_ == ops_->rbegin();
 }
 
 void CowRevMergeOpIter::Prev() {
     CHECK(!RDone());
-    block_riter_--;
+    op_riter_--;
 }
 
 bool CowRevMergeOpIter::Done() {
-    return block_riter_ == cow_op_index_vec_->rend() - start_;
+    return op_riter_ == ops_->rend() - start_;
 }
 
 void CowRevMergeOpIter::Next() {
     CHECK(!Done());
-    block_riter_++;
+    op_riter_++;
 }
 
 const CowOperation& CowRevMergeOpIter::Get() {
     CHECK(!Done());
-    return ops_->data()[*block_riter_];
+    return *op_riter_;
 }
 
 std::unique_ptr<ICowOpIter> CowReader::GetOpIter() {
@@ -696,13 +686,11 @@ std::unique_ptr<ICowOpIter> CowReader::GetOpIter() {
 }
 
 std::unique_ptr<ICowOpIter> CowReader::GetRevMergeOpIter(bool ignore_progress) {
-    return std::make_unique<CowRevMergeOpIter>(ops_, block_pos_index_,
-                                               ignore_progress ? 0 : merge_op_start_);
+    return std::make_unique<CowRevMergeOpIter>(ops_, ignore_progress ? 0 : merge_op_start_);
 }
 
 std::unique_ptr<ICowOpIter> CowReader::GetMergeOpIter(bool ignore_progress) {
-    return std::make_unique<CowMergeOpIter>(ops_, block_pos_index_,
-                                            ignore_progress ? 0 : merge_op_start_);
+    return std::make_unique<CowMergeOpIter>(ops_, ignore_progress ? 0 : merge_op_start_);
 }
 
 bool CowReader::GetRawBytes(uint64_t offset, void* buffer, size_t len, size_t* read) {
