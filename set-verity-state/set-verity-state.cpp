@@ -59,55 +59,44 @@ bool is_using_avb() {
 bool overlayfs_setup(bool enable) {
   auto change = false;
   errno = 0;
-  if (enable ? fs_mgr_overlayfs_setup(nullptr, &change)
-             : fs_mgr_overlayfs_teardown(nullptr, &change)) {
+  if (enable ? fs_mgr_overlayfs_teardown(nullptr, &change)
+             : fs_mgr_overlayfs_setup(nullptr, &change)) {
     if (change) {
-      LOG(INFO) << (enable ? "Enabled" : "Disabled") << " overlayfs";
+      LOG(INFO) << (enable ? "disabling" : "using") << " overlayfs";
     }
-  } else {
-    LOG(ERROR) << "Failed to " << (enable ? "enable" : "disable") << " overlayfs";
+  } else if (errno) {
+    PLOG(ERROR) << "Failed to " << (enable ? "teardown" : "setup") << " overlayfs";
   }
   return change;
 }
 
-struct SetVerityStateResult {
-  bool success = false;
-  bool want_reboot = false;
-};
-
 /* Use AVB to turn verity on/off */
-SetVerityStateResult SetVerityState(bool enable_verity) {
+bool set_avb_verity_enabled_state(AvbOps* ops, bool enable_verity) {
   std::string ab_suffix = get_ab_suffix();
-  bool verity_enabled = false;
+  bool verity_enabled;
 
   if (is_avb_device_locked()) {
-    LOG(ERROR) << "Device must be bootloader unlocked to change verity state";
-    return {};
+    LOG(ERROR) << "Device is locked. Please unlock the device first";
+    return false;
   }
 
-  std::unique_ptr<AvbOps, decltype(&avb_ops_user_free)> ops(avb_ops_user_new(), &avb_ops_user_free);
-  if (!ops) {
-    LOG(ERROR) << "Error getting AVB ops";
-    return {};
-  }
-
-  if (!avb_user_verity_get(ops.get(), ab_suffix.c_str(), &verity_enabled)) {
+  if (!avb_user_verity_get(ops, ab_suffix.c_str(), &verity_enabled)) {
     LOG(ERROR) << "Error getting verity state";
-    return {};
+    return false;
   }
 
   if ((verity_enabled && enable_verity) || (!verity_enabled && !enable_verity)) {
-    LOG(INFO) << "Verity is already " << (verity_enabled ? "enabled" : "disabled");
-    return {.success = true, .want_reboot = false};
+    LOG(INFO) << "verity is already " << (verity_enabled ? "enabled" : "disabled");
+    return false;
   }
 
-  if (!avb_user_verity_set(ops.get(), ab_suffix.c_str(), enable_verity)) {
+  if (!avb_user_verity_set(ops, ab_suffix.c_str(), enable_verity)) {
     LOG(ERROR) << "Error setting verity state";
-    return {};
+    return false;
   }
 
   LOG(INFO) << "Successfully " << (enable_verity ? "enabled" : "disabled") << " verity";
-  return {.success = true, .want_reboot = true};
+  return true;
 }
 
 void MyLogger(android::base::LogId id, android::base::LogSeverity severity, const char* tag,
@@ -129,14 +118,14 @@ int main(int argc, char* argv[]) {
     LOG(FATAL) << "set-verity-state called with empty argv";
   }
 
-  bool enable_verity = false;
+  bool enable = false;
   std::string procname = android::base::Basename(argv[0]);
   if (procname == "enable-verity") {
-    enable_verity = true;
+    enable = true;
   } else if (procname == "disable-verity") {
-    enable_verity = false;
+    enable = false;
   } else if (argc == 2 && (argv[1] == "1"s || argv[1] == "0"s)) {
-    enable_verity = (argv[1] == "1"s);
+    enable = (argv[1] == "1"s);
   } else {
     printf("usage: %s [1|0]\n", argv[0]);
     return 1;
@@ -159,28 +148,21 @@ int main(int argc, char* argv[]) {
     return 1;
   }
 
-  int exit_code = 0;
-  bool want_reboot = false;
-
-  auto ret = SetVerityState(enable_verity);
-  if (ret.success) {
-    want_reboot |= ret.want_reboot;
-  } else {
-    exit_code = 1;
+  std::unique_ptr<AvbOps, decltype(&avb_ops_user_free)> ops(avb_ops_user_new(), &avb_ops_user_free);
+  if (!ops) {
+    LOG(ERROR) << "Error getting AVB ops";
+    return 1;
   }
 
-  // Disable any overlayfs unconditionally if we want verity enabled.
-  // Enable overlayfs only if verity is successfully disabled or is already disabled.
-  if (enable_verity || ret.success) {
-    // Start a threadpool to service waitForService() callbacks as
-    // fs_mgr_overlayfs_* might call waitForService() to get the image service.
-    android::ProcessState::self()->startThreadPool();
-    want_reboot |= overlayfs_setup(!enable_verity);
+  // Start a threadpool to service waitForService() callbacks as
+  // fs_mgr_overlayfs_* might call waitForService() to get the image service.
+  android::ProcessState::self()->startThreadPool();
+  bool any_changed = set_avb_verity_enabled_state(ops.get(), enable);
+  any_changed |= overlayfs_setup(enable);
+
+  if (any_changed) {
+    printf("Now reboot your device for settings to take effect\n");
   }
 
-  if (want_reboot) {
-    printf("Reboot the device for new settings to take effect\n");
-  }
-
-  return exit_code;
+  return 0;
 }
