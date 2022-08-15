@@ -609,35 +609,81 @@ static void tune_metadata_csum(const std::string& blk_device, const FstabEntry& 
     }
 }
 
-// Read the primary superblock from an f2fs filesystem.  On failure return
-// false.  If it's not an f2fs filesystem, also set FS_STAT_INVALID_MAGIC.
 #define F2FS_BLKSIZE 4096
 #define F2FS_SUPER_OFFSET 1024
+// Define struct according to external/f2fs-tools/include/f2fs_fs.h
+#define CP_UMOUNT_FLAG          0x00000001
+struct f2fs_super_block {
+    __le32 magic;
+    __le32 padding1[4];
+    __le32 log_blocks_per_seg;
+    __le32 padding2[13];
+    __le32 cp_blkaddr;
+};
+
+struct f2fs_checkpoint {
+    __le32 padding[33];
+    __le32 ckpt_flags;
+};
+
+// Read f2fs checkpoint to check if there is sudden-power-off occured.
+static bool read_f2fs_checkpoint(const std::string& blk_device, int fd,
+                                 struct f2fs_super_block *sb, int *fs_stat) {
+    struct f2fs_checkpoint cp;
+    unsigned long long cp1_block_addr;
+    unsigned long long cp2_block_addr;
+
+    cp1_block_addr = le32_to_cpu(sb->cp_blkaddr);
+
+    if (TEMP_FAILURE_RETRY(pread(fd, &cp, sizeof(cp), cp1_block_addr * F2FS_BLKSIZE)) !=
+        sizeof(cp)) {
+        PERROR << "Can't read '" << blk_device << "' checkpoint1";
+        return false;
+    }
+    if (!(le32_to_cpu(cp.ckpt_flags) & CP_UMOUNT_FLAG))
+        *fs_stat |= FS_STAT_UNCLEAN_SHUTDOWN;
+
+    cp2_block_addr = cp1_block_addr + (1 << le32_to_cpu(sb->log_blocks_per_seg));
+
+    if (TEMP_FAILURE_RETRY(pread(fd, &cp, sizeof(cp), cp2_block_addr * F2FS_BLKSIZE)) !=
+        sizeof(cp)) {
+        PERROR << "Can't read '" << blk_device << "' checkpoint2";
+        return false;
+    }
+    if (!(le32_to_cpu(cp.ckpt_flags) & CP_UMOUNT_FLAG))
+        *fs_stat |= FS_STAT_UNCLEAN_SHUTDOWN;
+
+    return true;
+}
+
+// Read the primary superblock from an f2fs filesystem.  On failure return
+// false.  If it's not an f2fs filesystem, also set FS_STAT_INVALID_MAGIC.
 static bool read_f2fs_superblock(const std::string& blk_device, int* fs_stat) {
     android::base::unique_fd fd(TEMP_FAILURE_RETRY(open(blk_device.c_str(), O_RDONLY | O_CLOEXEC)));
-    __le32 sb1, sb2;
+    struct f2fs_super_block sb;
 
     if (fd < 0) {
         PERROR << "Failed to open '" << blk_device << "'";
         return false;
     }
 
-    if (TEMP_FAILURE_RETRY(pread(fd, &sb1, sizeof(sb1), F2FS_SUPER_OFFSET)) != sizeof(sb1)) {
+    if (TEMP_FAILURE_RETRY(pread(fd, &sb, sizeof(sb), F2FS_SUPER_OFFSET)) != sizeof(sb)) {
         PERROR << "Can't read '" << blk_device << "' superblock1";
         return false;
     }
-    if (TEMP_FAILURE_RETRY(pread(fd, &sb2, sizeof(sb2), F2FS_BLKSIZE + F2FS_SUPER_OFFSET)) !=
-        sizeof(sb2)) {
+    if (sb.magic == cpu_to_le32(F2FS_SUPER_MAGIC))
+        return read_f2fs_checkpoint(blk_device, fd.get(), &sb, fs_stat);
+
+    if (TEMP_FAILURE_RETRY(pread(fd, &sb, sizeof(sb), F2FS_BLKSIZE + F2FS_SUPER_OFFSET)) !=
+        sizeof(sb)) {
         PERROR << "Can't read '" << blk_device << "' superblock2";
         return false;
     }
+    if (sb.magic == cpu_to_le32(F2FS_SUPER_MAGIC))
+        return read_f2fs_checkpoint(blk_device, fd.get(), &sb, fs_stat);
 
-    if (sb1 != cpu_to_le32(F2FS_SUPER_MAGIC) && sb2 != cpu_to_le32(F2FS_SUPER_MAGIC)) {
-        LINFO << "Invalid f2fs superblock on '" << blk_device << "'";
-        *fs_stat |= FS_STAT_INVALID_MAGIC;
-        return false;
-    }
-    return true;
+    *fs_stat |= FS_STAT_INVALID_MAGIC;
+    return false;
 }
 
 // exported silent version of the above that just answer the question is_f2fs
