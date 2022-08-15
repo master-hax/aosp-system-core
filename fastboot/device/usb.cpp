@@ -157,7 +157,7 @@ static int usb_ffs_do_aio(usb_handle* h, const void* data, int len, bool read) {
                 packet_size, 0, read);
         num_bufs += 1;
     }
-
+    bool connection_started = false, resubmit_read = false;
     while (true) {
         if (TEMP_FAILURE_RETRY(io_submit(aiob->ctx, num_bufs, aiob->iocbs.data())) < num_bufs) {
             PLOG(ERROR) << "aio: got error submitting " << (read ? "read" : "write");
@@ -174,14 +174,33 @@ static int usb_ffs_do_aio(usb_handle* h, const void* data, int len, bool read) {
         int ret = 0;
         for (int i = 0; i < num_bufs; i++) {
             if (aiob->events[i].res < 0) {
-                errno = -aiob->events[i].res;
-                PLOG(ERROR) << "aio: got error event on " << (read ? "read" : "write")
-                            << " total bufs " << num_bufs;
-                return -1;
+                // On initial connection, some clients will send a ClearFeature(HALT) to
+                // attempt to resynchronize host and device after the adb server is killed.
+                // On newer device kernels, the reads we've already dispatched will be cancelled.
+                // Instead of treating this as a failure, which will tear down the interface and
+                // lead to the client doing the same thing again, just resubmit if this happens
+                // before we've actually read anything.
+                if (!connection_started && aiob->events[i].res == -EPIPE && read) {
+                    connection_started = true;
+                    resubmit_read = true;
+                    break;
+                } else {
+                    errno = -aiob->events[i].res;
+                    PLOG(ERROR) << "aio: got error event on " << (read ? "read" : "write")
+                                << " total bufs " << num_bufs;
+                    return -1;
+                }
             }
+
             ret += aiob->events[i].res;
         }
-        return ret;
+
+        if (resubmit_read) {
+            resubmit_read = false;
+            continue;
+        } else {
+            return ret;
+        }
     }
 }
 
