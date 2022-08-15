@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6fdf86e6_0481be5b",
+        "filename": "fastboot/device/usb.cpp",
+        "patchSetId": 21
+      },
+      "lineNbr": 219,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-08-15T20:07:33Z",
+      "side": 1,
+      "message": "Shouldn\u0027t this be added to selinux/property_contexts ? I believe it will be done in follow up CL and enable this flag ?",
+      "revId": "682e5b530a4af80908be7e1a8347ddd531207837",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
