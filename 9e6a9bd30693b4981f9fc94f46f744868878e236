@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b47fc66e_0e16d2d7",
+        "filename": "fastboot/device/usb.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 184,
+      "author": {
+        "id": 1590325
+      },
+      "writtenOn": "2022-08-16T06:37:45Z",
+      "side": 1,
+      "message": "This flag might not need.",
+      "revId": "9e6a9bd30693b4981f9fc94f46f744868878e236",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6c6531a9_a47eabe8",
+        "filename": "fastboot/device/usb.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 185,
+      "author": {
+        "id": 1590325
+      },
+      "writtenOn": "2022-08-16T06:37:45Z",
+      "side": 1,
+      "message": "We need to finish all events and resubmit the data if \u0027res\u003d-EPIEP\u0027.",
+      "revId": "9e6a9bd30693b4981f9fc94f46f744868878e236",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "21d93f5d_ca572de0",
+        "filename": "fastboot/device/usb.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 199,
+      "author": {
+        "id": 1590325
+      },
+      "writtenOn": "2022-08-16T06:37:45Z",
+      "side": 1,
+      "message": "When the driver do resubmit, the num_bufs and aiob-\u003eiocbs.data() are needed to modify. Using the same data is not correct.",
+      "revId": "9e6a9bd30693b4981f9fc94f46f744868878e236",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
