@@ -52,6 +52,24 @@
       "parentUuid": "1da58934_277a324e",
       "revId": "1dd6d265944045bac6e745f693b33cd0de91703d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "33ffcdae_11baf0b0",
+        "filename": "libcutils/ashmem-host.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-08-16T19:12:47Z",
+      "side": 1,
+      "message": "yeah, to be clear: i\u0027m really not sure _any_ of this is a good idea. (especially because i don\u0027t think anyone has the time to really follow through on it.)\n\nmaybe the least worst option is just to have the `if (size \u003e INT_MAX)` check in the _public_ API and leave this to fester?",
+      "parentUuid": "010f44a4_ded4cfa0",
+      "revId": "1dd6d265944045bac6e745f693b33cd0de91703d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
