@@ -352,6 +352,30 @@
       },
       "revId": "35a21bc3ff634afeded2c74e1793c68a9b289c57",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "74f898b5_c17301d8",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 1447,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-08-16T14:45:19Z",
+      "side": 1,
+      "message": "well actually, we already forward ERROR logs to stderr of set-verity-state. We just need to merge this change, and set-verity-state would get new rich error message from this change naturally.",
+      "parentUuid": "2608965b_fc1155fa",
+      "range": {
+        "startLine": 1447,
+        "startChar": 8,
+        "endLine": 1447,
+        "endChar": 10
+      },
+      "revId": "35a21bc3ff634afeded2c74e1793c68a9b289c57",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
