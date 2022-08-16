@@ -90,6 +90,30 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "a432fc0f_d4d79236",
+        "filename": "init/init.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 472,
+      "author": {
+        "id": 1895890
+      },
+      "writtenOn": "2022-08-16T20:44:20Z",
+      "side": 1,
+      "message": "Missed this earlier.",
+      "parentUuid": "d4b59779_caa634ff",
+      "range": {
+        "startLine": 472,
+        "startChar": 53,
+        "endLine": 472,
+        "endChar": 55
+      },
+      "revId": "13c657970d0230d5c2ec6efc94335872c90e1e9d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "d6d1dcc3_638e7898",
         "filename": "init/init.cpp",
         "patchSetId": 14
@@ -148,6 +172,30 @@
       "side": 1,
       "message": "Please fix this.",
       "parentUuid": "ee545adb_47bc7787",
+      "range": {
+        "startLine": 480,
+        "startChar": 43,
+        "endLine": 480,
+        "endChar": 44
+      },
+      "revId": "13c657970d0230d5c2ec6efc94335872c90e1e9d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "57a16389_cbd36430",
+        "filename": "init/init.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 480,
+      "author": {
+        "id": 1895890
+      },
+      "writtenOn": "2022-08-16T20:44:20Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8ee2adc2_fa4dbc35",
       "range": {
         "startLine": 480,
         "startChar": 43,
