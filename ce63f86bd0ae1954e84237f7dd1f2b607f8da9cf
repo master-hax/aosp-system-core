@@ -216,6 +216,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "f1b7359d_728b09ae",
+        "filename": "init/init.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 451,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2022-08-16T17:29:17Z",
+      "side": 1,
+      "message": "Thanks Deyao. But I\u0027m not still convinced to the idea of \"pause_restart\". I can think of two cases: a) automatic restart on exit and b) explicit start from other process via sysprop like `ctl.[interface_]start`.\n\nFor a), from reading code (`Service::Terminate/Stop`), it sets `flags_ |\u003d SVC_DISABLED;` and disabled services are not restarted automatically. https://cs.android.com/android/platform/superproject/+/master:system/core/init/service.cpp;l\u003d308;drc\u003d2d579af880afae96239c80765b11c7dbc2c1b264\n\nFor b), since services are about to be removed from the `ServiceList` (aosp/2162760), `ctl.start` will fail. (https://cs.android.com/android/platform/superproject/+/master:system/core/init/init.cpp;l\u003d550;drc\u003d2d579af880afae96239c80765b11c7dbc2c1b264)\n\nDeyao, can you find another case which needs \"pause_restart\"?",
+      "parentUuid": "fe7200ce_90e6167c",
+      "range": {
+        "startLine": 451,
+        "startChar": 0,
+        "endLine": 451,
+        "endChar": 71
+      },
+      "revId": "ce63f86bd0ae1954e84237f7dd1f2b607f8da9cf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "ef9c8735_55960d29",
         "filename": "init/init.cpp",
         "patchSetId": 11

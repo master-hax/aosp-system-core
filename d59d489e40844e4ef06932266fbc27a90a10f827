@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bbf38a2a_73f34b32",
+        "filename": "init/reboot_test.cpp",
+        "patchSetId": 20
+      },
+      "lineNbr": 155,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2022-08-16T17:29:17Z",
+      "side": 1,
+      "message": "I don\u0027t think this test belongs to this file(\"reboot_test.cpp\"). Can we move it to the more appropriate place?\n\nSince we are stopping(or terminating) services from an apex, shouldn\u0027t we call the function (e.g. StopServicesFromApex() or DoUnloadApex()) instead of repeating the logic in the test code?",
+      "range": {
+        "startLine": 155,
+        "startChar": 0,
+        "endLine": 155,
+        "endChar": 43
+      },
+      "revId": "d59d489e40844e4ef06932266fbc27a90a10f827",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
