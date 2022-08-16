@@ -287,6 +287,29 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "0b934dca_06583e22",
+        "filename": "init/init.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 504,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2022-08-16T17:32:17Z",
+      "side": 1,
+      "message": "nit: Removing these props can be a separate change. (I\u0027m fine with doing it in this change though)\n\nhowever, this will break the test at https://cs.android.com/android/_/android/platform/system/core/+/678f0b48286bccd3eeac9245b6ef0dabecc6df3b:init/init_test.cpp;l\u003d341 Please fix the test together.",
+      "range": {
+        "startLine": 504,
+        "startChar": 0,
+        "endLine": 504,
+        "endChar": 52
+      },
+      "revId": "ce63f86bd0ae1954e84237f7dd1f2b607f8da9cf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "9dee89d5_71ae06b9",
         "filename": "init/service.h",
         "patchSetId": 11
