@@ -34,6 +34,24 @@
       "parentUuid": "353b9e6c_4f5b868c",
       "revId": "1dd6d265944045bac6e745f693b33cd0de91703d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "010f44a4_ded4cfa0",
+        "filename": "libcutils/ashmem-host.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2022-08-16T17:03:34Z",
+      "side": 1,
+      "message": "Ya sorry should have been more specific. I meant returning -1 here in the case of an error, which turns into SIZE_MAX. Returning zero seems more intuitive to me, but not all callers currently check for `\u003c\u003d 0`, so those that just check for `\u003c 0` would need fixups.\n\nFor example this file, which does the check both ways: https://cs.android.com/android/platform/superproject/+/master:frameworks/base/core/jni/android_util_MemoryIntArray.cpp;l\u003d205",
+      "parentUuid": "1da58934_277a324e",
+      "revId": "1dd6d265944045bac6e745f693b33cd0de91703d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
