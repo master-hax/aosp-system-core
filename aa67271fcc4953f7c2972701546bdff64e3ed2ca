@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e39175cb_11b81012",
+        "filename": "fs_mgr/libsnapshot/cow_reader.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 489,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2022-08-16T17:31:03Z",
+      "side": 1,
+      "message": "```\nmerge_ops_buffer-\u003ereserve(num_total_data_ops_)\n\n```",
+      "revId": "aa67271fcc4953f7c2972701546bdff64e3ed2ca",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
