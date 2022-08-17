@@ -217,6 +217,29 @@
       },
       "revId": "760e111984a59216b5a8b760141e415c2cf24582",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "47934e16_255c8c53",
+        "filename": "set-verity-state/set-verity-state.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-08-17T10:17:15Z",
+      "side": 1,
+      "message": "capitalize first letter",
+      "range": {
+        "startLine": 65,
+        "startChar": 28,
+        "endLine": 65,
+        "endChar": 43
+      },
+      "revId": "760e111984a59216b5a8b760141e415c2cf24582",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
