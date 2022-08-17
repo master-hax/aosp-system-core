@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "48430278_157e02dc",
+        "filename": "init/fuzzer/init_parser_fuzzer.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-08-17T06:25:48Z",
+      "side": 1,
+      "message": "Local style capitalizes the first letter, eg \"GenerateInterfaceMetadata\" (here and elsewhere).",
+      "revId": "1a2b0dfb715d7e463eb397f2505749071a7e724a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "dd439ed0_ad849b40",
+        "filename": "init/fuzzer/init_parser_fuzzer.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-08-17T06:25:48Z",
+      "side": 1,
+      "message": "Local style uses \"fdp_\". Add trailing _, and no leading \"m\".",
+      "revId": "1a2b0dfb715d7e463eb397f2505749071a7e724a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
