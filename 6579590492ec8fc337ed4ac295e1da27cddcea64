@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6f19d487_9744894d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-08-17T21:20:20Z",
+      "side": 1,
+      "message": "Actually, it looks like this test doesn\u0027t live anywhere in system/core. Can the TEST_MAPPING be in system/sepolicy instead?",
+      "revId": "6579590492ec8fc337ed4ac295e1da27cddcea64",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
