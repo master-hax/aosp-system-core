@@ -70,6 +70,24 @@
       "parentUuid": "010f44a4_ded4cfa0",
       "revId": "1dd6d265944045bac6e745f693b33cd0de91703d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c820af78_584317aa",
+        "filename": "libcutils/ashmem-host.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2022-08-17T00:19:25Z",
+      "side": 1,
+      "message": "We have callers that check for:\n    returned_size \u003c requested_size (return -1 works, SIZE_MAX doesn\u0027t)\n    \u003c0 (but not \u003c\u003d 0, so 0 doesn\u0027t work)\n\nSo not sure there is a great way to fix this without forcing callers to update. Since libcutils isn\u0027t part of the NDK I guess we\u0027re ok to change this and update everyone? But then I\u0027m confused about why I also see callers under [external](https://cs.android.com/android/platform/superproject/+/master:external/libchrome/base/memory/shared_memory_posix.cc;drc\u003d12bbb97a6ff883a2064e51b4499f8e2ed3fd2416;l\u003d273).\n\nPublic API meaning ASharedMemory? CodeSearch returns other direct callers (but only 15 in total).\n\nAshmem has been removed from the upstream kernel, and IIRC we only keep it around in Android because we haven\u0027t figured out how to deprecate it yet. I know that direct access to /dev/ashmem has been disabled since Android 9, and I think that also applies to access through libcutils. So the problem shouldn\u0027t be getting any worse by adding more users. I\u0027m tempted to suggest not trying to tweak this now, given we\u0027d like to get rid of the whole thing.",
+      "parentUuid": "33ffcdae_11baf0b0",
+      "revId": "1dd6d265944045bac6e745f693b33cd0de91703d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
