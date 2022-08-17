@@ -112,6 +112,69 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "c58d4dd6_5d0c2811",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 1580,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-08-17T09:16:09Z",
+      "side": 1,
+      "message": "I think we should retain the original behavior and don\u0027t return early on error.\nInstead accumulate the error and do as much clean up as we can. \nReason being if fs_mgr_overlayfs_teardown_one() failed but fs_mgr_overlayfs_teardown_scratch() succeeded, then after reboot the scratch would be cleaned up (by clean_scratch_files.rc)",
+      "revId": "760e111984a59216b5a8b760141e415c2cf24582",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "512d96e1_7738f506",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 1597,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-08-17T09:16:09Z",
+      "side": 1,
+      "message": "I think we can remove this whole block,\n\nIf we don\u0027t want overlayfs in the first place, previous actions shouldn\u0027t set *change anyway.\nIf we don\u0027t want overlayfs and *change is set to true by previous actions, that means we DO clean up some stale overlay files (maybe device is flashed with a kernel that don\u0027t support overlay?), so it\u0027s not unreasonable to ask for a reboot to consistent state in this case?",
+      "range": {
+        "startLine": 1592,
+        "startChar": 4,
+        "endLine": 1597,
+        "endChar": 5
+      },
+      "revId": "760e111984a59216b5a8b760141e415c2cf24582",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9826d083_ef5ab025",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 1608,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-08-17T09:16:09Z",
+      "side": 1,
+      "message": "use scopeguard to ensure we umount scratch if we mounted it?\n\nhttps://source.corp.google.com/android/system/libbase/include/android-base/scopeguard.h;l\u003d27",
+      "range": {
+        "startLine": 1604,
+        "startChar": 4,
+        "endLine": 1608,
+        "endChar": 5
+      },
+      "revId": "760e111984a59216b5a8b760141e415c2cf24582",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "30f62b8a_9df390ff",
         "filename": "fs_mgr/include/fs_mgr_overlayfs.h",
         "patchSetId": 7
