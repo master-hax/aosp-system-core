@@ -16,6 +16,24 @@
       "message": "I also want to replace this part, but this warning message is confusing me. I thought it\u0027s expected and desirable that overlay is discarded after a partition flash, so why are we warning this here?\n\nIt\u0027s possible that this line is just stale, in that case let\u0027s just remove this and L1501\n\n(actually I\u0027d like to revise many parts of the test, but I need to understand the current test intention first.)",
       "revId": "28495a6a22ea7eadb2398ea597ce44c130745f08",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "69d54ffc_1e3cca62",
+        "filename": "fs_mgr/tests/adb-remount-test.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 1559,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-08-17T21:10:18Z",
+      "side": 1,
+      "message": "Indeed that is the desired behavior. It\u0027s probably intended as an informative message?",
+      "parentUuid": "de6ff2db_98e9382b",
+      "revId": "28495a6a22ea7eadb2398ea597ce44c130745f08",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
