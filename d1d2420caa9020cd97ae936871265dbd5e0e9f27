@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "7c9803e5_02bf8fb0",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-08-17T19:51:49Z",
+      "side": 1,
+      "message": "The default settings of the I/O scheduler. These may differ from the settings configured for the /dev/blkio and /dev/blkio/background cgroups. I think this is what I missed last time I tried to migrate the blkio controller to the v2 cgroup hierarchy.",
+      "parentUuid": "21ea0ecc_e4678820",
+      "range": {
+        "startLine": 12,
+        "startChar": 29,
+        "endLine": 12,
+        "endChar": 70
+      },
+      "revId": "d1d2420caa9020cd97ae936871265dbd5e0e9f27",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "16129780_6baada8b",
@@ -37,6 +61,30 @@
       "writtenOn": "2022-08-10T06:21:39Z",
       "side": 1,
       "message": "I assume this happens only once in the lifetime of a service, so performance impact is negligible.",
+      "range": {
+        "startLine": 657,
+        "startChar": 4,
+        "endLine": 657,
+        "endChar": 22
+      },
+      "revId": "d1d2420caa9020cd97ae936871265dbd5e0e9f27",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0f172ec9_f6a5ed46",
+        "filename": "init/service.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 657,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-08-17T19:51:49Z",
+      "side": 1,
+      "message": "That\u0027s correct, this call happens once in the lifetime of a process. The performance impact of this call depends on the number of sysfs attributes in the NormalIoPriority task profile. I assume that the number of sysfs attributes in that profile will remain small.",
+      "parentUuid": "16129780_6baada8b",
       "range": {
         "startLine": 657,
         "startChar": 4,
