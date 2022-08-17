@@ -88,6 +88,24 @@
       "parentUuid": "33ffcdae_11baf0b0",
       "revId": "1dd6d265944045bac6e745f693b33cd0de91703d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bd6797d4_9f68d127",
+        "filename": "libcutils/ashmem-host.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-08-17T23:46:48Z",
+      "side": 1,
+      "message": "\u003e So not sure there is a great way to fix this without forcing callers to update. Since libcutils isn\u0027t part of the NDK I guess we\u0027re ok to change this and update everyone?\n\nwe could, yes.\n\n\u003e But then I\u0027m confused about why I also see callers under  external .\n\nbecause until relatively recently there was no such protection: https://android.googlesource.com/platform/bionic/+/master/android-changes-for-ndk-developers.md#private-api-enforced-for-api-level-24\n\n(that whole document is a good read if you\u0027re interested in android\u0027s dynamic linker :-) )\n\n\u003e Public API meaning ASharedMemory? CodeSearch returns other direct callers (but only 15 in total).\n\nyeah, ASharedMemory is the NDK API.\n\n\u003e Ashmem has been removed from the upstream kernel, and IIRC we only keep it around in Android because we haven\u0027t figured out how to deprecate it yet. I know that direct access to /dev/ashmem has been disabled since Android 9, and I think that also applies to access through libcutils.\n\nstrictly true, though it\u0027s pretty significant that _no-one_ has yet turned on the memfd path on any device, as far as i know.\n\nthis guy keeps trying, but not yet with any success: https://android-review.googlesource.com/q/owner:amit.pundir%2540linaro.org+memfd\n\n\u003e I\u0027m tempted to suggest not trying to tweak this now, given we\u0027d like to get rid of the whole thing.\n\nyeah, sgtm. i\u0027ll abandon this and just close the bug. (i might try the macos experiment anyway, since we might at least be able to switch the _host_ side to memfd?)",
+      "parentUuid": "c820af78_584317aa",
+      "revId": "1dd6d265944045bac6e745f693b33cd0de91703d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
