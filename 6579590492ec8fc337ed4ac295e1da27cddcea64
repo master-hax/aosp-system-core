@@ -16,6 +16,24 @@
       "message": "Actually, it looks like this test doesn\u0027t live anywhere in system/core. Can the TEST_MAPPING be in system/sepolicy instead?",
       "revId": "6579590492ec8fc337ed4ac295e1da27cddcea64",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4e4c6c6b_1861dcff",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-08-17T21:28:14Z",
+      "side": 1,
+      "message": "i think that\u0027s the point, no? they want to run _those_ tests when system/core changes.\n\ni think they need to clarify in the commit message _why_ though... _what_ in system/core needs to run their tests?\n\n(also, please undo the reformatting of every line.)",
+      "parentUuid": "6f19d487_9744894d",
+      "revId": "6579590492ec8fc337ed4ac295e1da27cddcea64",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
