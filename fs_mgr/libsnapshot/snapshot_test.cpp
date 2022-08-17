@@ -2792,9 +2792,26 @@ void KillSnapuserd() {
     if (status == "stopped") {
         return;
     }
+<<<<<<< HEAD   (b3ff0c Merge "set-verity-state: Add -h -v -R (automatic reboot) opt)
     auto snapuserd_client = SnapuserdClient::Connect(kSnapuserdSocket, 5s);
     if (!snapuserd_client) {
         return;
+=======
+
+    if (!IsCompressionEnabled()) {
+        return false;
+    }
+
+    const std::string UNKNOWN = "unknown";
+    const std::string vendor_release =
+            android::base::GetProperty("ro.vendor.build.version.release_or_codename", UNKNOWN);
+
+    // No userspace snapshots if vendor partition is on Android 12
+    // However, for GRF devices, snapuserd daemon will be on
+    // vendor ramdisk in Android 12.
+    if (vendor_release.find("12") != std::string::npos) {
+        return true;
+>>>>>>> BRANCH (aee8dd vts_fs_test: Only require EROFS in T+ kernels.)
     }
     snapuserd_client->DetachSnapuserd();
     snapuserd_client->CloseConnection();
