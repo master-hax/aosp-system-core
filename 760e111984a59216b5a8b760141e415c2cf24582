@@ -1,0 +1,159 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8c3cddc0_e632cc0d",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 7
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-08-17T08:07:03Z",
+      "side": 1,
+      "message": "I just tried (with my suggestions applied)\n```\nadb disable-verity\nadb reboot\nadb shell umount /mnt/scratch  # -\u003e umount scratch success, and overlay is still mounted??\nadb enable-verity -v  # -\u003e still fails to Unmap scratch\n```\nseems like overlayfs offers no protection on its lowerdir/upperdir. I just tried this on my workstation:\n```\nmkdir aaa bbb ccc\nsudo mount -t tmpfs tmpfs aaa\nsudo mount -t tmpfs tmpfs bbb\nmkdir bbb/upper bbb/work\nsudo mount -t overlay -o lowerdir\u003d$PWD/aaa,upperdir\u003d$PWD/bbb/upper,workdir\u003d$PWD/bbb/work overlay ccc\nsudo umount aaa\n# success\nsudo umount bbb\n# success\n# what\u0027s more odd is \u0027ccc\u0027 is still accessible\ntouch ccc/newfile\n# success\n```\n\nI think we should just always mark scratch as disabled in teardown. we can still try to unmap the scratch device, but we shouldn\u0027t rely on that.",
+      "range": {
+        "startLine": 22,
+        "startChar": 0,
+        "endLine": 23,
+        "endChar": 25
+      },
+      "revId": "760e111984a59216b5a8b760141e415c2cf24582",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bf137c96_8538ec6b",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 487,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-08-17T08:07:03Z",
+      "side": 1,
+      "message": "except that we didn\u0027t retry with lazy (MNT_DETACH)?",
+      "range": {
+        "startLine": 487,
+        "startChar": 54,
+        "endLine": 487,
+        "endChar": 73
+      },
+      "revId": "760e111984a59216b5a8b760141e415c2cf24582",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b97b95ec_99af8568",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 488,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-08-17T08:07:03Z",
+      "side": 1,
+      "message": "should this be\n\numount() !\u003d 0 \u0026\u0026 errno !\u003d EBUSY\n\n?",
+      "revId": "760e111984a59216b5a8b760141e415c2cf24582",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f9667533_747720ff",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 491,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-08-17T08:07:03Z",
+      "side": 1,
+      "message": "this is guaranteed to fail with EBUSY if umount failed, thus could cause log spur.\n\nTry rmdir only if umount success, or just don\u0027t log anything as this is just cleaning up an empty mountpoint, so failing to do so isn\u0027t fatal.",
+      "range": {
+        "startLine": 491,
+        "startChar": 8,
+        "endLine": 491,
+        "endChar": 65
+      },
+      "revId": "760e111984a59216b5a8b760141e415c2cf24582",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "75b071a9_54bcf4d8",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 1561,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-08-17T08:07:03Z",
+      "side": 1,
+      "message": "remove this line so we don\u0027t prematurely set *change/*want_reboot",
+      "range": {
+        "startLine": 1561,
+        "startChar": 4,
+        "endLine": 1561,
+        "endChar": 32
+      },
+      "revId": "760e111984a59216b5a8b760141e415c2cf24582",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "30f62b8a_9df390ff",
+        "filename": "fs_mgr/include/fs_mgr_overlayfs.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-08-17T08:07:03Z",
+      "side": 1,
+      "message": "s/change/want_reboot/",
+      "range": {
+        "startLine": 50,
+        "startChar": 56,
+        "endLine": 50,
+        "endChar": 62
+      },
+      "revId": "760e111984a59216b5a8b760141e415c2cf24582",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "11c4531f_202004b2",
+        "filename": "set-verity-state/set-verity-state.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-08-17T08:07:03Z",
+      "side": 1,
+      "message": "this is no longer true because we now call it like SetupOrTeardownOverlayfs(!enable_verity), so we need to flip all |enable| in this method.",
+      "range": {
+        "startLine": 38,
+        "startChar": 3,
+        "endLine": 38,
+        "endChar": 9
+      },
+      "revId": "760e111984a59216b5a8b760141e415c2cf24582",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}

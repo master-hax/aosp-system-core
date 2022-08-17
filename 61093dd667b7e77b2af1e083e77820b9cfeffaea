@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "361f2039_6eedd43f",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 872,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-08-17T08:07:03Z",
+      "side": 0,
+      "message": "why can we remove this now? We need to check this if using system_other as scratch, right? Or are we deprecating the system_other path?",
+      "revId": "61093dd667b7e77b2af1e083e77820b9cfeffaea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
