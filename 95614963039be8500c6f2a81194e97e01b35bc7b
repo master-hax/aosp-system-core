@@ -22,6 +22,30 @@
       },
       "revId": "95614963039be8500c6f2a81194e97e01b35bc7b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1d23b0d9_f1aa2ff6",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2022-08-18T03:56:11Z",
+      "side": 1,
+      "message": "In Android S, after `load_persist_props`, there\u0027s `/data/property/persistent_properties`. But in Android T, for the first boot, there isn\u0027t `/data/property/persistent_properties` even after `load_persist_props` because `/data/property` directory doesn\u0027t exist.\n\nIn Android t, after `load_persist_props` during the first boot, when a process sets a persistent property (e.g. `persist.foo`) and hence `WritePersistentProperty` is called, it tries to load/update/write `/data/property/persistent_properties` file. Since there isn\u0027t `/data/property/persistent_properties` yet (note that, we have `/data/property` now), loading the persistent props from the file fails and in-memory persistent props are used as fallback(https://cs.android.com/android/platform/superproject/+/master:system/core/init/persistent_properties.cpp;l\u003d213;drc\u003db75fb80081c3d39ba2cf8ecac44a8aea5f42e4d5) and then they are dumped to the `persistent_properties` file.",
+      "parentUuid": "019611c7_1bfd9f68",
+      "range": {
+        "startLine": 11,
+        "startChar": 55,
+        "endLine": 13,
+        "endChar": 16
+      },
+      "revId": "95614963039be8500c6f2a81194e97e01b35bc7b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
