@@ -37,6 +37,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "a07603ef_646a2670",
+        "filename": "init/test_upgrade_mte/mte_crash.cpp",
+        "patchSetId": 19
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2022-08-18T21:41:17Z",
+      "side": 1,
+      "message": "This stuff is kind of specific. The check-downgrade mostly makes sense with the test, and even the crasher makes sure we don\u0027t accidentally crash in SYNC mode due to the CPU choosing the upgrade us, which is also quite specific to this test. The only thing that is kind of generic (as mentioned below) is the --get-mode, but I put it in here to have all the things related to the test compact.",
+      "parentUuid": "d23ae49d_69ab3aa3",
+      "revId": "c55b80bed4a6c7408bafb35b43ef0ececb56122a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "e380aa21_dd1a7906",
         "filename": "init/test_upgrade_mte/mte_crash.cpp",
         "patchSetId": 19
@@ -48,6 +66,24 @@
       "writtenOn": "2022-08-18T20:44:17Z",
       "side": 1,
       "message": "and then system/core/debuggerd/crasher/crasher.cpp?\n\nshould we be adding an mte crash to crasher?\n\nshould we be adding a separate mte query tool? or is it only useful for this test?",
+      "revId": "c55b80bed4a6c7408bafb35b43ef0ececb56122a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "60ff85f2_938f46cb",
+        "filename": "init/test_upgrade_mte/mte_crash.cpp",
+        "patchSetId": 19
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2022-08-18T21:41:17Z",
+      "side": 1,
+      "message": "There is `sanitizer-status` for querying MTE (and other) state.",
+      "parentUuid": "e380aa21_dd1a7906",
       "revId": "c55b80bed4a6c7408bafb35b43ef0ececb56122a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
