@@ -619,9 +619,6 @@ die() {
     shift 2
   fi >&2
   echo "${RED}[  FAILED  ]${NORMAL} ${@}" >&2
-  cleanup
-  restore
-  test_duration
   exit 1
 }
 
@@ -874,8 +871,14 @@ if ! ${color}; then
   NORMAL=""
 fi
 
-# Set an ERR trap handler to report any unhandled error
-trap 'die "line ${LINENO}: unhandled error"' ERR
+exit_handler() {
+  cleanup
+  restore
+  test_duration
+}
+trap 'exit_handler' EXIT
+trap 'die "line ${LINENO}, ${FUNCNAME:-main}(): unhandled error \"${BASH_COMMAND}\" returned \"$?\"" ' ERR
+set -o errtrace
 
 if ${print_time}; then
   echo "${BLUE}[     INFO ]${NORMAL}" start `date` >&2
@@ -1412,7 +1415,7 @@ else
     die "fastboot flash vendor"
   fastboot_getvar is-userspace yes &&
     is_userspace_fastboot=true
-  if [ -n "${scratch_paritition}" ]; then
+  if [ -n "${scratch_partition}" ]; then
     fastboot_getvar partition-type:${scratch_partition} raw ||
       ( fastboot reboot && false) ||
       die "fastboot can not see ${scratch_partition} parameters"
