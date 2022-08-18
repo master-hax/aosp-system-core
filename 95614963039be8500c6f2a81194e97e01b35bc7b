@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "019611c7_1bfd9f68",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-08-18T03:41:39Z",
+      "side": 1,
+      "message": "Could you elaborate more on this? Any pointer to the relevant code?",
+      "range": {
+        "startLine": 11,
+        "startChar": 55,
+        "endLine": 13,
+        "endChar": 16
+      },
+      "revId": "95614963039be8500c6f2a81194e97e01b35bc7b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
