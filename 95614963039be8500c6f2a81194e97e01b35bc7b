@@ -70,6 +70,30 @@
       },
       "revId": "95614963039be8500c6f2a81194e97e01b35bc7b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ab2ccf23_7cb1719b",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-08-18T06:08:08Z",
+      "side": 1,
+      "message": "So, instead of the small (or zero) number of props in persistent_properties, the entire in-memory persistent props are loaded and then written to the file. Gotcha.",
+      "parentUuid": "42ecd7f9_fda9093f",
+      "range": {
+        "startLine": 11,
+        "startChar": 55,
+        "endLine": 13,
+        "endChar": 16
+      },
+      "revId": "95614963039be8500c6f2a81194e97e01b35bc7b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
