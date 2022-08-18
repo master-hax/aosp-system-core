@@ -46,6 +46,30 @@
       },
       "revId": "95614963039be8500c6f2a81194e97e01b35bc7b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "42ecd7f9_fda9093f",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2022-08-18T04:03:26Z",
+      "side": 1,
+      "message": "During load_persist_props, the very first /data/property/persistent_properties are created with persistent props which are populated by scanning \"legacy\" sys prop files in /data/property directory. In Android S, or with this fix, /data/property/persistent_properties is created as empty. After that, when a process tries to set a persistent prop, the prop will be persisted in the file.",
+      "parentUuid": "1d23b0d9_f1aa2ff6",
+      "range": {
+        "startLine": 11,
+        "startChar": 55,
+        "endLine": 13,
+        "endChar": 16
+      },
+      "revId": "95614963039be8500c6f2a81194e97e01b35bc7b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
