@@ -16,6 +16,23 @@
       "message": "Let confirm if this fix the reported issue",
       "revId": "8b451523a428ccbcd220e038f7e5a564dada756d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "86485a2b_da76097d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 13
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1006514
+      },
+      "writtenOn": "2022-08-18T00:06:18Z",
+      "side": 1,
+      "message": "Verified the change and helps fixes the issue reported",
+      "revId": "8b451523a428ccbcd220e038f7e5a564dada756d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
