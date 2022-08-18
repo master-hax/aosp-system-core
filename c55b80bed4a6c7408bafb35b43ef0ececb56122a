@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c829aa48_92d6f6ac",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 19
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2022-08-18T20:39:42Z",
+      "side": 1,
+      "message": "Ping, I changed this to remove the debuggerd sysprop plumbing, and for now doing this for all SEGV. Prepared https://r.android.com/2184739 for the changes needed for my proposed kernel API (https://lore.kernel.org/all/20220811174334.292259-1-fmayer@google.com/).",
+      "revId": "c55b80bed4a6c7408bafb35b43ef0ececb56122a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
