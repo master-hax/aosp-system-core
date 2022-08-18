@@ -16,6 +16,40 @@
       "message": "Ping, I changed this to remove the debuggerd sysprop plumbing, and for now doing this for all SEGV. Prepared https://r.android.com/2184739 for the changes needed for my proposed kernel API (https://lore.kernel.org/all/20220811174334.292259-1-fmayer@google.com/).",
       "revId": "c55b80bed4a6c7408bafb35b43ef0ececb56122a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d23ae49d_69ab3aa3",
+        "filename": "init/test_upgrade_mte/mte_crash.cpp",
+        "patchSetId": 19
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-08-18T20:44:17Z",
+      "side": 1,
+      "message": "seems like this is a combination of an mte query tool...",
+      "revId": "c55b80bed4a6c7408bafb35b43ef0ececb56122a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e380aa21_dd1a7906",
+        "filename": "init/test_upgrade_mte/mte_crash.cpp",
+        "patchSetId": 19
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-08-18T20:44:17Z",
+      "side": 1,
+      "message": "and then system/core/debuggerd/crasher/crasher.cpp?\n\nshould we be adding an mte crash to crasher?\n\nshould we be adding a separate mte query tool? or is it only useful for this test?",
+      "revId": "c55b80bed4a6c7408bafb35b43ef0ececb56122a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
