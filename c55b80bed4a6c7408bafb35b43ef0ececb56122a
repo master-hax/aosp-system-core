@@ -89,6 +89,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "3797a28b_109d07b3",
+        "filename": "init/test_upgrade_mte/mte_crash.cpp",
+        "patchSetId": 19
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2022-08-19T17:18:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "91f9ef42_054d0884",
+      "revId": "c55b80bed4a6c7408bafb35b43ef0ececb56122a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "e380aa21_dd1a7906",
@@ -120,6 +138,24 @@
       "side": 1,
       "message": "There is `sanitizer-status` for querying MTE (and other) state.",
       "parentUuid": "e380aa21_dd1a7906",
+      "revId": "c55b80bed4a6c7408bafb35b43ef0ececb56122a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c6feabef_7a3d3064",
+        "filename": "init/test_upgrade_mte/mte_crash.cpp",
+        "patchSetId": 19
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2022-08-19T17:18:05Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "60ff85f2_938f46cb",
       "revId": "c55b80bed4a6c7408bafb35b43ef0ececb56122a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
