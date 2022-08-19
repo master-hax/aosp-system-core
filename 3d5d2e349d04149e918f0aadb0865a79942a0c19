@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e77d059d_3f4f577e",
+        "filename": "init/init_test.cpp",
+        "patchSetId": 23
+      },
+      "lineNbr": 226,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2022-08-19T09:13:05Z",
+      "side": 1,
+      "message": "IMO this doesn\u0027t contribute much regarding the new behavior. And, because there is only one test in the list, we can\u0027t verify `StopServicesFromApex` stops only services from target apex.\n\nI think we need at least four services:\n- a normal service (not from any apex)\n- two services from the target apex\n- a service from other apex\n\nAnd starting them all here. And verifying that only services from the target apex are stopped.\n\nThen we can verify that\n- StopServicesFromApex doesn\u0027t accidentally stop other services (normal service or services from other apexes)\n- StopServicesFromApex supports multiple services from the target apex.\n\nYou can have smaller/focused/parameterized tests instead of a big test.",
+      "range": {
+        "startLine": 221,
+        "startChar": 0,
+        "endLine": 226,
+        "endChar": 38
+      },
+      "revId": "3d5d2e349d04149e918f0aadb0865a79942a0c19",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "35d842b2_00b2357c",
+        "filename": "init/service_list.h",
+        "patchSetId": 23
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2022-08-19T09:13:05Z",
+      "side": 1,
+      "message": "nit: ` \u003d\u003d apex_name` would be simpler?",
+      "range": {
+        "startLine": 63,
+        "startChar": 56,
+        "endLine": 63,
+        "endChar": 78
+      },
+      "revId": "3d5d2e349d04149e918f0aadb0865a79942a0c19",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}

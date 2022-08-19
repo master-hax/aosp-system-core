@@ -264,6 +264,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "50cf37b5_6c4316c1",
+        "filename": "init/init.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 451,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2022-08-19T09:13:05Z",
+      "side": 1,
+      "message": "\u003e  the service will be restarted immediately (b/235520307)\n\nYes, when we manually kill a service (kill \u003cpid\u003e), it will be auto-restarted. But if you kill it via Service::Stop() or Service::Terminate(), it doesn\u0027t. \n\nYou can test: `adb shell setprop ctl.stop vendor.vibrator.cs40l26`.",
+      "parentUuid": "8fb08c83_da73b09f",
+      "range": {
+        "startLine": 451,
+        "startChar": 0,
+        "endLine": 451,
+        "endChar": 71
+      },
+      "revId": "ce63f86bd0ae1954e84237f7dd1f2b607f8da9cf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "ef9c8735_55960d29",
         "filename": "init/init.cpp",
         "patchSetId": 11
