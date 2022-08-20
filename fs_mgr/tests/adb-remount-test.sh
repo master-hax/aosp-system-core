@@ -977,41 +977,44 @@ fi
 # Can we test remount -R command?
 OVERLAYFS_BACKING="cache mnt/scratch"
 overlayfs_supported=true
-if [ "orange" != "`get_property ro.boot.verifiedbootstate`" -o \
-     "2" != "`get_property partition.system.verified`" ]; then
-  restore() {
-    ${overlayfs_supported} || return 0
-    inFastboot &&
-      fastboot reboot &&
-      adb_wait ${ADB_WAIT} ||
-      true
-    if inAdb; then
-      reboot=false
-      for d in ${OVERLAYFS_BACKING}; do
-        if adb_test -d /${d}/overlay; then
-          adb_su rm -rf /${d}/overlay </dev/null
-          reboot=true
-        fi
-      done
-      if ${reboot}; then
-        adb_reboot &&
-        adb_wait ${ADB_WAIT}
-      fi
+can_restore_verity=false
+
+restore() {
+  echo "${BLUE}[     INFO ]${NORMAL} restoring device" >&2
+  ${overlayfs_supported} || return 0
+  inFastboot &&
+    fastboot reboot &&
+    adb_wait "${ADB_WAIT}" ||
+    true
+  if ! inAdb; then
+    echo "${RED}[    ERROR ]${NORMAL} expect adb device" >&2
+    return 1
+  fi
+  adb_root || true
+  reboot=false
+  for d in ${OVERLAYFS_BACKING}; do
+    if adb_test -d "/${d}/overlay"; then
+      adb_su rm -rf "/${d}/overlay" </dev/null
+      reboot=true
     fi
-  }
-else
-  restore() {
-    ${overlayfs_supported} || return 0
-    inFastboot &&
-      fastboot reboot &&
-      adb_wait ${ADB_WAIT} ||
-      true
-    inAdb &&
-      adb_root &&
-      adb enable-verity >/dev/null 2>/dev/null &&
-      adb_reboot &&
-      adb_wait ${ADB_WAIT}
-  }
+  done
+  if ${can_restore_verity}; then
+    if ! adb enable-verity; then
+      echo "${RED}[    ERROR ]${NORMAL} adb enable-verity" >&2
+      return 1
+    fi
+    echo "${BLUE}[     INFO ]${NORMAL} restored verity" >&2
+    reboot=true
+  fi
+  if ${reboot}; then
+    adb_reboot &&
+      adb_wait "${ADB_WAIT}"
+  fi
+}
+
+if [ "orange" = "$(get_property ro.boot.verifiedbootstate)" ] &&
+   [ "2" = "$(get_property partition.system.verified)" ]; then
+  can_restore_verity=true
 
   echo "${GREEN}[ RUN      ]${NORMAL} Testing adb shell su root remount -R command" >&2
 
@@ -1119,14 +1122,7 @@ echo "${D}" >&2
 if [ X"${D}" = X"${D##* 100[%] }" ] && ${no_dedupe} ; then
   overlayfs_needed=false
   # if device does not need overlays, then adb enable-verity will brick device
-  restore() {
-    ${overlayfs_supported} || return 0
-    inFastboot &&
-      fastboot reboot &&
-      adb_wait ${ADB_WAIT}
-    inAdb &&
-      adb_wait ${ADB_WAIT}
-  }
+  can_restore_verity=false
 elif ! ${overlayfs_supported}; then
   die "need overlayfs, but do not have it"
 fi
