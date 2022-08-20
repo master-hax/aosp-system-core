@@ -977,6 +977,7 @@ fi
 # Can we test remount -R command?
 OVERLAYFS_BACKING="cache mnt/scratch"
 overlayfs_supported=true
+overlayfs_needed=true
 if [ "orange" != "`get_property ro.boot.verifiedbootstate`" -o \
      "2" != "`get_property partition.system.verified`" ]; then
   restore() {
@@ -1006,11 +1007,14 @@ else
       fastboot reboot &&
       adb_wait ${ADB_WAIT} ||
       true
-    inAdb &&
+    isAdb || return 1
+    # if device does not need overlays, then adb enable-verity will brick device
+    if ${overlayfs_needed}; then
       adb_root &&
-      adb enable-verity >/dev/null 2>/dev/null &&
-      adb_reboot &&
-      adb_wait ${ADB_WAIT}
+        adb enable-verity &&
+        adb_reboot &&
+        adb_wait "${ADB_WAIT}"
+    fi
   }
 
   echo "${GREEN}[ RUN      ]${NORMAL} Testing adb shell su root remount -R command" >&2
@@ -1098,7 +1102,6 @@ D=`adb_sh df -k </dev/null` &&
   echo "${D}" &&
   die "overlay takeover unexpected at this phase"
 echo "${GREEN}[       OK ]${NORMAL} no overlay present before setup" >&2
-overlayfs_needed=true
 D=`adb_sh cat /proc/mounts </dev/null |
    skip_administrative_mounts data`
 if echo "${D}" | grep /dev/root >/dev/null; then
@@ -1117,15 +1120,6 @@ D=`adb_sh df -k ${D} </dev/null |
 echo "${D}"
 if [ X"${D}" = X"${D##* 100[%] }" ] && ${no_dedupe} ; then
   overlayfs_needed=false
-  # if device does not need overlays, then adb enable-verity will brick device
-  restore() {
-    ${overlayfs_supported} || return 0
-    inFastboot &&
-      fastboot reboot &&
-      adb_wait ${ADB_WAIT}
-    inAdb &&
-      adb_wait ${ADB_WAIT}
-  }
 elif ! ${overlayfs_supported}; then
   die "need overlayfs, but do not have it"
 fi
