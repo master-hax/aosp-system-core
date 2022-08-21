@@ -59,6 +59,7 @@ TMPDIR=${TMPDIR:-/tmp}
 print_time=false
 start_time=`date +%s`
 ACTIVE_SLOT=
+OVERLAYFS_BACKING="cache mnt/scratch"
 
 ADB_WAIT=4m
 FASTBOOT_WAIT=2m
@@ -788,6 +789,40 @@ skip_unrelated_mounts() {
       grep -v "[%] /\(data_mirror\|apex\|bionic\|system\|vendor\)/[^ ][^ ]*$"
 }
 
+[ "USAGE: wipe_overlayfs
+
+Surgically wipe mounted overlayfs scratch files.
+
+Returns: true if wiped anything" ]
+wipe_overlayfs() {
+  local wiped_anything=false
+  for d in ${OVERLAYFS_BACKING}; do
+    if adb_su test -d "/${d}/overlay" </dev/null; then
+      echo "${BLUE}[     INFO ]${NORMAL} /${d}/overlay is setup, surgically wiping" >&2
+      adb_su rm -rf "/${d}/overlay" </dev/null
+      wiped_anything=true
+    fi
+  done
+  ${wiped_anything}
+}
+
+[ "USAGE: is_overlayfs_mounted [-v]
+
+If -v is specified, print overlayfs df lines to stderr.
+
+Returns: true if overlayfs is mounted" ]
+is_overlayfs_mounted() {
+  D=$(adb_su df -k </dev/null)
+  H=$(echo "${D}" | head -1)
+  D=$(echo "${D}" | skip_unrelated_mounts | grep "^overlay ") ||
+    return 1
+  if [ "${1}" = "-v" ]; then
+    echo "${H}"
+    echo "${D}"
+  fi >&2
+  return 0
+}
+
 ##
 ##  MAINLINE
 ##
@@ -975,7 +1010,6 @@ if ! wait_for_screen && ${screen_wait}; then
 fi
 
 # Can we test remount -R command?
-OVERLAYFS_BACKING="cache mnt/scratch"
 overlayfs_supported=true
 if [ "orange" != "`get_property ro.boot.verifiedbootstate`" -o \
      "2" != "`get_property partition.system.verified`" ]; then
@@ -986,14 +1020,7 @@ if [ "orange" != "`get_property ro.boot.verifiedbootstate`" -o \
       adb_wait ${ADB_WAIT} ||
       true
     if inAdb; then
-      reboot=false
-      for d in ${OVERLAYFS_BACKING}; do
-        if adb_test -d /${d}/overlay; then
-          adb_su rm -rf /${d}/overlay </dev/null
-          reboot=true
-        fi
-      done
-      if ${reboot}; then
+      if wipe_overlayfs; then
         adb_reboot &&
         adb_wait ${ADB_WAIT}
       fi
@@ -1074,16 +1101,7 @@ echo "${GREEN}[ RUN      ]${NORMAL} Checking current overlayfs status" >&2
 # devices that remount the physical content rather than overlayfs.
 # So lets do our best to surgically wipe the overlayfs state without
 # having to go through enable-verity transition.
-reboot=false
-for d in ${OVERLAYFS_BACKING}; do
-  if adb_test -d /${d}/overlay; then
-    echo "${YELLOW}[  WARNING ]${NORMAL} /${d}/overlay is setup, surgically wiping" >&2
-    adb_sh rm -rf /${d}/overlay </dev/null ||
-      die "/${d}/overlay wipe"
-    reboot=true
-  fi
-done
-if ${reboot}; then
+if wipe_overlayfs; then
   echo "${YELLOW}[  WARNING ]${NORMAL} rebooting before test" >&2
   adb_reboot &&
     adb_wait ${ADB_WAIT} ||
@@ -1091,14 +1109,10 @@ if ${reboot}; then
   adb_root ||
     die "lost device after elevation to root after wipe `usb_status`"
 fi
-D=`adb_sh df -k </dev/null` &&
-  H=`echo "${D}" | head -1` &&
-  D=`echo "${D}" | grep -v " /vendor/..*$" | grep "^overlay "` &&
-  ( echo "${H}" &&
-    echo "${D}"
-  ) >&2 &&
+is_overlayfs_mounted -v &&
   die "overlay takeover unexpected at this phase"
 echo "${GREEN}[       OK ]${NORMAL} no overlay present before setup" >&2
+
 overlayfs_needed=true
 D=`adb_sh cat /proc/mounts </dev/null |
    skip_administrative_mounts data`
@@ -1153,14 +1167,7 @@ adb_wait "${ADB_WAIT}" &&
   die "lost device after adb shell su root disable-verity -R $(usb_status)"
 
 if ${overlayfs_needed}; then
-  has_overlayfs_setup=false
-  for d in ${OVERLAYFS_BACKING}; do
-    if adb_test -d "/${d}/overlay"; then
-      has_overlayfs_setup=true
-      echo "${GREEN}[       OK ]${NORMAL} /${d}/overlay is setup" >&2
-    fi
-  done
-  if ! ${has_overlayfs_setup}; then
+  if ! is_overlayfs_mounted -v; then
     die "no overlay being setup after disable-verity -R"
   fi
 fi
@@ -1630,12 +1637,7 @@ echo "${GREEN}[       OK ]${NORMAL} remount command works from setup" >&2
 # Prerequisite is an overlayfs deconstructed device but with verity disabled.
 # This also saves a lot of 'noise' from the command doing a mkfs on backing
 # storage and all the related tuning and adjustment.
-for d in ${OVERLAYFS_BACKING}; do
-  if adb_test -d /${d}/overlay; then
-    adb_su rm -rf /${d}/overlay </dev/null ||
-      die "/${d}/overlay wipe"
-  fi
-done
+wipe_overlayfs || true
 adb_reboot &&
   adb_wait ${ADB_WAIT} ||
   fixup_from_fastboot ||
