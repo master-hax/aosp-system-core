@@ -610,9 +610,6 @@ die() {
     shift 2
   fi >&2
   echo "${RED}[  FAILED  ]${NORMAL} ${@}" >&2
-  cleanup
-  restore
-  test_duration
   exit 1
 }
 
@@ -864,6 +861,20 @@ if ! ${color}; then
   BLUE=""
   NORMAL=""
 fi
+
+exit_handler() {
+  cleanup || true
+  local err=0
+  if ! restore; then
+    echo "${RED}[    ERROR ]${NORMAL} restore failed"
+    err=1
+  fi >&2
+  test_duration || true
+  if [ "${err}" != 0 ]; then
+    exit "${err}"
+  fi
+}
+trap 'exit_handler' EXIT
 
 if ${print_time}; then
   echo "${BLUE}[     INFO ]${NORMAL}" start `date` >&2
@@ -1632,13 +1643,4 @@ adb_sh grep " \(/system\|/\) .* rw," /proc/mounts >/dev/null </dev/null &&
   die "/system is not read-only"
 echo "${GREEN}[       OK ]${NORMAL} remount command works from scratch" >&2
 
-if ! restore; then
-  restore() {
-    true
-  }
-  die "failed to restore verity after remount from scratch test"
-fi
-
 echo "${GREEN}[  PASSED  ]${NORMAL} adb remount" >&2
-
-test_duration
