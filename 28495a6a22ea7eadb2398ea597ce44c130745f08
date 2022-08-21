@@ -34,6 +34,24 @@
       "parentUuid": "de6ff2db_98e9382b",
       "revId": "28495a6a22ea7eadb2398ea597ce44c130745f08",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2a007504_917e50ca",
+        "filename": "fs_mgr/tests/adb-remount-test.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 1559,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-08-21T16:32:19Z",
+      "side": 1,
+      "message": "ACK, this probably should be a [OK] or [INFO] message then.\n\nI\u0027ll leave it as-is, and clean it up when I eventually start working on this part of the test. (I have some ideas of enabling this test on CI)",
+      "parentUuid": "69d54ffc_1e3cca62",
+      "revId": "28495a6a22ea7eadb2398ea597ce44c130745f08",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
