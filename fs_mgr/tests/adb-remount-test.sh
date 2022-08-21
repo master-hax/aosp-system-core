@@ -611,9 +611,6 @@ die() {
     shift 2
   fi >&2
   echo "${RED}[  FAILED  ]${NORMAL} ${@}" >&2
-  cleanup
-  restore
-  test_duration
   exit 1
 }
 
@@ -898,9 +895,31 @@ if ! ${color}; then
   NORMAL=""
 fi
 
+exit_handler() {
+  cleanup || true
+  local err=0
+  if ! restore; then
+    echo "${RED}[    ERROR ]${NORMAL} restore failed"
+    err=1
+  fi >&2
+  test_duration || true
+  if [ "${err}" != 0 ]; then
+    exit "${err}"
+  fi
+}
+trap 'exit_handler' EXIT
+
 if ${print_time}; then
   echo "${BLUE}[     INFO ]${NORMAL}" start `date` >&2
 fi
+
+if [ -z "${ANDROID_SERIAL}" ]; then
+  inAdb || die "no device or more than one device in adb mode"
+  D=$(adb devices | awk '$2 == "device" { print $1; exit }')
+  [ -n "${D}" ] || die "cannot get device serial"
+  ANDROID_SERIAL="${D}"
+fi
+export ANDROID_SERIAL
 
 inFastboot && die "device in fastboot mode"
 inRecovery && die "device in recovery mode"
@@ -926,9 +945,6 @@ fi
 
 # Collect characteristics of the device and report.
 
-D=`get_property ro.serialno`
-[ -n "${D}" ] || D=`get_property ro.boot.serialno`
-[ -z "${D}" -o -n "${ANDROID_SERIAL}" ] || ANDROID_SERIAL=${D}
 USB_SERIAL=
 if [ -n "${ANDROID_SERIAL}" -a "Darwin" != "${HOSTOS}" ]; then
   USB_SERIAL="`find /sys/devices -name serial | grep usb || true`"
@@ -942,8 +958,8 @@ if [ -n "${USB_SERIAL}" ]; then
   USB_ADDRESS=${USB_SERIAL%/serial}
   USB_ADDRESS=usb${USB_ADDRESS##*/}
 fi
-[ -z "${ANDROID_SERIAL}${USB_ADDRESS}" ] ||
-  USB_DEVICE=`usb_devnum`
+USB_DEVICE=$(usb_devnum)
+[ -z "${ANDROID_SERIAL}${USB_ADDRESS}${USB_DEVICE}" ] ||
   echo "${BLUE}[     INFO ]${NORMAL}" ${ANDROID_SERIAL} ${USB_ADDRESS} ${USB_DEVICE} >&2
 BUILD_DESCRIPTION=`get_property ro.build.description`
 [ -z "${BUILD_DESCRIPTION}" ] ||
@@ -1055,7 +1071,7 @@ restore() {
 
 # If reboot too soon after fresh flash, could trip device update failure logic
 if ${screen_wait}; then
-  echo "${YELLOW}[  WARNING ]${NORMAL} waiting for screen to come up. Consider --no-wait-screen option" >&2
+  echo "${BLUE}[     INFO ]${NORMAL} waiting for screen to come up. Consider --no-wait-screen option" >&2
 fi
 if ! wait_for_screen && ${screen_wait}; then
   screen_wait=false
@@ -1154,7 +1170,6 @@ is_overlayfs_mounted &&
   die "overlay takeover unexpected at this phase"
 
 avc_check
-L=
 T=$(adb_date)
 adb_su disable-verity -R >&2 ||
   die -t "${T}" "disable-verity -R failed"
@@ -1183,17 +1198,11 @@ adb_unroot
 adb_sh find ${MOUNTS} </dev/null >/dev/null 2>/dev/null || true
 adb_root
 
-D=`adb remount 2>&1`
-ret=${?}
-echo "${D}" >&2
-[ ${ret} != 0 ] ||
-  [ X"${D}" = X"${D##*remount failed}" ] ||
-  ( [ -n "${L}" ] && echo "${L}" && false ) >&2 ||
+adb remount >&2 ||
   die -t "${T}" "adb remount failed"
 D=`adb_sh df -k </dev/null` &&
   H=`echo "${D}" | head -1` &&
-  D=`echo "${D}" | skip_unrelated_mounts | grep "^overlay "` ||
-  ( [ -n "${L}" ] && echo "${L}" && false ) >&2
+  D=`echo "${D}" | skip_unrelated_mounts | grep "^overlay "`
 ret=${?}
 uses_dynamic_scratch=false
 scratch_partition=
@@ -1333,7 +1342,6 @@ if ${overlayfs_needed}; then
   D=`adb_su df -k </dev/null` &&
     H=`echo "${D}" | head -1` &&
     D=`echo "${D}" | grep -v " /vendor/..*$" | grep "^overlay "` ||
-    ( echo "${L}" && false ) >&2 ||
     die -d "overlay takeover failed after reboot"
 
   adb_su sed -n '1,/overlay \/system/p' /proc/mounts </dev/null |
@@ -1584,12 +1592,7 @@ if ${is_bootloader_fastboot} && [ -n "${scratch_partition}" ]; then
     [ X"${D}" != X"${D##*[Uu]sing overlayfs}" ] &&
     echo "${GREEN}[       OK ]${NORMAL} ${scratch_partition} recreated" >&2 ||
     die -t ${T} "setup for overlayfs"
-  D=`adb remount 2>&1`
-  err=${?}
-  echo "${D}" >&2
-  [ ${err} != 0 ] ||
-    [ X"${D}" = X"${D##*remount failed}" ] ||
-    ( echo "${D}" && false ) >&2 ||
+  adb remount >&2 ||
     die -t ${T} "remount failed"
 fi
 
@@ -1657,13 +1660,5 @@ adb_sh grep " \(/system\|/\) .* rw," /proc/mounts >/dev/null </dev/null &&
   die "/system is not read-only"
 echo "${GREEN}[       OK ]${NORMAL} remount command works from scratch" >&2
 
-if ! restore; then
-  restore() {
-    true
-  }
-  die "failed to restore verity after remount from scratch test"
-fi
 
 echo "${GREEN}[  PASSED  ]${NORMAL} adb remount" >&2
-
-test_duration
