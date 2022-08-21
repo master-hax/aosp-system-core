@@ -1165,7 +1165,6 @@ is_overlayfs_mounted &&
   die "overlay takeover unexpected at this phase"
 
 avc_check
-L=
 T=$(adb_date)
 adb_su disable-verity -R >&2 ||
   die -t "${T}" "disable-verity -R failed"
@@ -1199,12 +1198,10 @@ ret=${?}
 echo "${D}" >&2
 [ ${ret} != 0 ] ||
   [ X"${D}" = X"${D##*remount failed}" ] ||
-  ( [ -n "${L}" ] && echo "${L}" && false ) >&2 ||
   die -t "${T}" "adb remount failed"
 D=`adb_sh df -k </dev/null` &&
   H=`echo "${D}" | head -1` &&
-  D=`echo "${D}" | skip_unrelated_mounts | grep "^overlay "` ||
-  ( [ -n "${L}" ] && echo "${L}" && false ) >&2
+  D=`echo "${D}" | skip_unrelated_mounts | grep "^overlay "`
 ret=${?}
 uses_dynamic_scratch=false
 scratch_partition=
@@ -1344,7 +1341,6 @@ if ${overlayfs_needed}; then
   D=`adb_su df -k </dev/null` &&
     H=`echo "${D}" | head -1` &&
     D=`echo "${D}" | grep -v " /vendor/..*$" | grep "^overlay "` ||
-    ( echo "${L}" && false ) >&2 ||
     die -d "overlay takeover failed after reboot"
 
   adb_su sed -n '1,/overlay \/system/p' /proc/mounts </dev/null |
