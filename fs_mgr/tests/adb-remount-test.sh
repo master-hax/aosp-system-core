@@ -176,15 +176,6 @@ get_property() {
   adb_sh getprop ${1} </dev/null
 }
 
-[ "USAGE: isDebuggable
-
-Returns: true if device is (likely) a debug build" ]
-isDebuggable() {
-  if inAdb && [ 1 != "`get_property ro.debuggable`" ]; then
-    false
-  fi
-}
-
 [ "USAGE: adb_su <commands> </dev/stdin >/dev/stdout 2>/dev/stderr
 
 Returns: true if the command running as root succeeded" ]
@@ -917,7 +908,13 @@ if ! inAdb; then
   adb_wait ${ADB_WAIT}
 fi
 inAdb || die "specified device not in adb mode"
-isDebuggable || die "device not a debug build"
+[ "1" = "$(get_property ro.debuggable)" ] || die "device not a debug build"
+[ "orange" = "$(get_property ro.boot.verifiedbootstate)" ] || die "device not bootloader unlocked"
+can_restore_verity=true
+if [ "2" != "$(get_property partition.system.verified)" ]; then
+  echo "${YELLOW}[  WARNING ]${NORMAL} device might not support verity" >&2
+  can_restore_verity=false
+fi
 enforcing=true
 if ! adb_su getenforce </dev/null | grep 'Enforcing' >/dev/null; then
   echo "${YELLOW}[  WARNING ]${NORMAL} device does not have sepolicy in enforcing mode" >&2
@@ -997,8 +994,33 @@ adb_sh ls -l /dev/block/by-name/ /dev/block/mapper/ </dev/null 2>/dev/null |
       echo "${BLUE}[     INFO ]${NORMAL} partition ${name} device ${device} size ${size}K" >&2
   done
 
+echo "${BLUE}[     INFO ]${NORMAL} Checking kernel support for overlayfs" >&2
+
 overlayfs_supported=true
-can_restore_verity=false
+adb_root || die "becoming root to mine kernel information"
+if ! adb_test -d /sys/module/overlay; then
+  if adb_sh grep "nodev${TAB}overlay" /proc/filesystems </dev/null >/dev/null 2>/dev/null; then
+    echo "${GREEN}[       OK ]${NORMAL} overlay module present"
+  else
+    echo "${YELLOW}[  WARNING ]${NORMAL} overlay module not present"
+    overlayfs_supported=false
+  fi
+fi >&2
+if ${overlayfs_supported}; then
+  if adb_test -f /sys/module/overlay/parameters/override_creds; then
+    echo "${GREEN}[       OK ]${NORMAL} overlay module supports override_creds"
+  else
+    case "$(adb_sh uname -r </dev/null)" in
+      4.[456789].* | 4.[1-9][0-9]* | [56789].*)
+        echo "${YELLOW}[  WARNING ]${NORMAL} overlay module does not support override_creds"
+        overlayfs_supported=false
+        ;;
+      *)
+        echo "${GREEN}[       OK ]${NORMAL} overlay module uses caller's creds"
+        ;;
+    esac
+  fi
+fi >&2
 
 restore() {
   echo "${BLUE}[     INFO ]${NORMAL} restoring device" >&2
@@ -1042,7 +1064,6 @@ fi
 # Can we test remount -R command?
 if [ "orange" = "$(get_property ro.boot.verifiedbootstate)" ] &&
    [ "2" = "$(get_property partition.system.verified)" ]; then
-  can_restore_verity=true
 
   echo "${GREEN}[ RUN      ]${NORMAL} Testing adb shell su root remount -R command" >&2
 
@@ -1070,35 +1091,10 @@ ${INDENT}partition.system.verified=\"`get_property partition.system.verified`\""
   echo "${GREEN}[       OK ]${NORMAL} adb shell su root remount -R command" >&2
 fi
 
-echo "${GREEN}[ RUN      ]${NORMAL} Testing kernel support for overlayfs" >&2
+echo "${GREEN}[ RUN      ]${NORMAL} Checking current overlayfs status" >&2
 
 adb_wait || die "wait for device failed"
-adb_root ||
-  die "initial setup"
-
-adb_test -d /sys/module/overlay ||
-  adb_sh grep "nodev${TAB}overlay" /proc/filesystems </dev/null >/dev/null 2>/dev/null &&
-  echo "${GREEN}[       OK ]${NORMAL} overlay module present" >&2 ||
-  (
-    echo "${YELLOW}[  WARNING ]${NORMAL} overlay module not present" >&2 &&
-      false
-  ) ||
-  overlayfs_supported=false
-if ${overlayfs_supported}; then
-  adb_test -f /sys/module/overlay/parameters/override_creds &&
-    echo "${GREEN}[       OK ]${NORMAL} overlay module supports override_creds" >&2 ||
-    case `adb_sh uname -r </dev/null` in
-      4.[456789].* | 4.[1-9][0-9]* | [56789].*)
-        echo "${YELLOW}[  WARNING ]${NORMAL} overlay module does not support override_creds" >&2 &&
-        overlayfs_supported=false
-        ;;
-      *)
-        echo "${GREEN}[       OK ]${NORMAL} overlay module uses caller's creds" >&2
-        ;;
-    esac
-fi
-
-echo "${GREEN}[ RUN      ]${NORMAL} Checking current overlayfs status" >&2
+adb_root || die "adb root failed"
 
 # We can not universally use adb enable-verity to ensure device is
 # in a overlayfs disabled state since it can prevent reboot on
