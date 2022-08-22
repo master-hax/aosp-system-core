@@ -16,6 +16,24 @@
       "message": "this whole pipeline does,\n\n1. filter in \"ro\" mounts\n2. filter out administrative/uninteresting mounts\n3. filter out /dev/root device\n4. awk: extract mountpoint (field number 1), always report \"/\" mountpoint\n5. sort and unique",
       "revId": "0312a3892c90ebc24bf09cea9a3b3202acdc3bfd",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ca6a07d1_0dc62243",
+        "filename": "fs_mgr/tests/adb-remount-test.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 1111,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-08-22T17:02:46Z",
+      "side": 1,
+      "message": "*4. awk: extract device (field #1) and always report \"/\" mountpoint",
+      "parentUuid": "c3ffb0a6_78d23a3a",
+      "revId": "0312a3892c90ebc24bf09cea9a3b3202acdc3bfd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
