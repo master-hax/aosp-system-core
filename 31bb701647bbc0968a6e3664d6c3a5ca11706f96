@@ -22,6 +22,23 @@
       },
       "revId": "31bb701647bbc0968a6e3664d6c3a5ca11706f96",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c505903e_0bde8734",
+        "filename": "fs_mgr/tests/adb-remount-test.sh",
+        "patchSetId": 13
+      },
+      "lineNbr": 246,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-08-22T17:07:25Z",
+      "side": 0,
+      "message": "i think this was right already? \"0 seconds\", \"1 second\", \"2 seconds\" ... only \"1 second\" is the odd one out. all the others should be \"seconds\".",
+      "revId": "31bb701647bbc0968a6e3664d6c3a5ca11706f96",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
