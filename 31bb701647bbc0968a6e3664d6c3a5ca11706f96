@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f925e931_86c79e09",
+        "filename": "fs_mgr/tests/adb-remount-test.sh",
+        "patchSetId": 12
+      },
+      "lineNbr": 1190,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-08-22T15:10:24Z",
+      "side": 0,
+      "message": "this whole mess just seems plain wrong to me...\n\nIt\u0027s doing \"if ret\u003d0 (success), and \"remount failed\" was detected, then die\"\nThis check makes no sense. It\u0027s check \"success but not success\"???\n\nOTOH the obvious failure case, \"ret!\u003d0\", is not detected.",
+      "range": {
+        "startLine": 1189,
+        "startChar": 0,
+        "endLine": 1190,
+        "endChar": 43
+      },
+      "revId": "31bb701647bbc0968a6e3664d6c3a5ca11706f96",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
