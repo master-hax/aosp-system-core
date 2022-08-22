@@ -30,8 +30,7 @@
 #define LISTEN_BACKLOG 4
 
 /* open listen() port on any interface */
-int socket_inaddr_any_server(int port, int type)
-{
+int socket_inaddr_any_server(int port, int type) {
     struct sockaddr_in6 addr;
     int s, n;
 
@@ -41,7 +40,9 @@ int socket_inaddr_any_server(int port, int type)
     addr.sin6_addr = in6addr_any;
 
     s = socket(AF_INET6, type, 0);
-    if (s < 0) return -1;
+    if (s < 0) {
+        return -1;
+    }
 
     n = 1;
     setsockopt(s, SOL_SOCKET, SO_REUSEADDR, (const char *) &n, sizeof(n));
@@ -52,9 +53,7 @@ int socket_inaddr_any_server(int port, int type)
     }
 
     if (type == SOCK_STREAM) {
-        int ret;
-
-        ret = listen(s, LISTEN_BACKLOG);
+        const int ret = listen(s, LISTEN_BACKLOG);
 
         if (ret < 0) {
             close(s);
