@@ -92,7 +92,7 @@ int socket_local_server_bind(int s, const char* name, int namespaceId);
 int socket_local_client_connect(int fd, const char *name, int namespaceId,
                                 int type);
 int socket_local_client(const char* name, int namespaceId, int type);
-cutils_socket_t socket_inaddr_any_server(int port, int type);
+cutils_socket_t socket_inaddr_any_server(int port, int type, int* assigned_port);
 
 /*
  * Closes a cutils_socket_t. Windows doesn't allow calling close() on a socket

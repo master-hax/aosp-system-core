@@ -34,7 +34,7 @@
 
 extern bool initialize_windows_sockets();
 
-SOCKET socket_inaddr_any_server(int port, int type) {
+SOCKET socket_inaddr_any_server(int port, int type, int* assigned_port) {
     if (!initialize_windows_sockets()) {
       return INVALID_SOCKET;
     }
@@ -68,6 +68,14 @@ SOCKET socket_inaddr_any_server(int port, int type) {
         closesocket(sock);
         return INVALID_SOCKET;
     }
+
+    socklen_t len = sizeof(addr);
+    const int ret = getsockname(sock, reinterpret_cast<struct sockaddr*>(&addr), &len);
+    if (ret < 0) {
+        closesocket(sock);
+        return INVALID_SOCKET;
+    }
+    *assigned_port = ntohs(addr.sin6_port);
 
     // Start listening for connections if this is a TCP socket.
     if (type == SOCK_STREAM && listen(sock, LISTEN_BACKLOG) == SOCKET_ERROR) {

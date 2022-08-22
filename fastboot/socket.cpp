@@ -271,13 +271,14 @@ std::unique_ptr<Socket> Socket::NewClient(Protocol protocol, const std::string& 
 
 // This functionality is currently only used by tests so we don't need any error messages.
 std::unique_ptr<Socket> Socket::NewServer(Protocol protocol, int port) {
+    int assigned_port_dontcare;
     if (protocol == Protocol::kUdp) {
-        cutils_socket_t sock = socket_inaddr_any_server(port, SOCK_DGRAM);
+        cutils_socket_t sock = socket_inaddr_any_server(port, SOCK_DGRAM, &assigned_port_dontcare);
         if (sock != INVALID_SOCKET) {
             return std::unique_ptr<UdpSocket>(new UdpSocket(UdpSocket::Type::kServer, sock));
         }
     } else {
-        cutils_socket_t sock = socket_inaddr_any_server(port, SOCK_STREAM);
+        cutils_socket_t sock = socket_inaddr_any_server(port, SOCK_STREAM, &assigned_port_dontcare);
         if (sock != INVALID_SOCKET) {
             return std::unique_ptr<TcpSocket>(new TcpSocket(sock));
         }
