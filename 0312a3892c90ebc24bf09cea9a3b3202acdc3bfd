@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c3ffb0a6_78d23a3a",
+        "filename": "fs_mgr/tests/adb-remount-test.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 1111,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-08-22T16:53:44Z",
+      "side": 1,
+      "message": "this whole pipeline does,\n\n1. filter in \"ro\" mounts\n2. filter out administrative/uninteresting mounts\n3. filter out /dev/root device\n4. awk: extract mountpoint (field number 1), always report \"/\" mountpoint\n5. sort and unique",
+      "revId": "0312a3892c90ebc24bf09cea9a3b3202acdc3bfd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
