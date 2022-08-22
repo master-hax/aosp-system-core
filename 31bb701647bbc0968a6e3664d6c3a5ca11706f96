@@ -57,6 +57,24 @@
       "parentUuid": "c505903e_0bde8734",
       "revId": "31bb701647bbc0968a6e3664d6c3a5ca11706f96",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "83d43ab4_6144b2d0",
+        "filename": "fs_mgr/tests/adb-remount-test.sh",
+        "patchSetId": 13
+      },
+      "lineNbr": 246,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-08-22T18:00:35Z",
+      "side": 0,
+      "message": "TL;DR: yes.\n\nwhat might have confused you is that if you use a duration as an adjective (as in \"a 4 second delay\" or \"a 12 second timeout\", say), then it\u0027s all just singular. it gets weirder if you spell the fractions out rather than use a decimal point; so \"0.25 seconds\" but \"quarter _of a_ second\" or \"0.5 seconds\" but \"half _a_ second\"!\n\nnot that it will be much consolation to you coming (i assume, given your name) from a language that doesn\u0027t really bother marking plurals at all most of the time, but there are plenty of languages with _more_ complex rules than english for this stuff... see external/icu/icu4c/source/data/misc/plurals.txt for the full nightmare :-)\n\ntbh, there\u0027s a lot to be said for a format like \"0m3s\" or whatever; ugly but unambiguous and easy to code. (whereas i\u0027d argue that things like uptime fail the \"unambiguous\" test when they say something like \"00:30\" --- is the smallest unit seconds or minutes?)",
+      "parentUuid": "22b3f1f2_5cbec5de",
+      "revId": "31bb701647bbc0968a6e3664d6c3a5ca11706f96",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
