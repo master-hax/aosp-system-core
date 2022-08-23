@@ -924,6 +924,8 @@ static bool mount_with_alternatives(Fstab& fstab, int start_idx, int* end_idx,
                    << " blk_dev=" << realpath(fstab[i].blk_device) << " rec[" << i
                    << "].fs_type=" << fstab[i].fs_type;
             mount_errno = EINVAL;  // continue bootup for metadata encryption
+            fs_stat |= FS_STAT_FULL_MOUNT_FAILED;
+            log_fs_stat(fstab[i].blk_device, fs_stat);
             continue;
         }
 
