@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b54e94f0_ba34d952",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1244622
+      },
+      "writtenOn": "2022-08-23T18:11:19Z",
+      "side": 1,
+      "message": "In sync with aosp/master.",
+      "revId": "d1d054910b1af79849eebfc8a3a476d36d920605",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
