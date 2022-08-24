@@ -77,7 +77,8 @@ then
     exit
 fi
 
-watermark_scale=`cat /proc/sys/vm/watermark_scale_factor`
+# default value of /proc/sys/vm/watermark_scale_factor is 10
+watermark_scale=10
 
 # convert extra_free_kbytes to pages
 page_size=$(getconf PAGESIZE)
