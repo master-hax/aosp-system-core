@@ -81,6 +81,7 @@ int native_handle_delete(native_handle_t* h) {
 }
 
 int native_handle_close(const native_handle_t* h) {
+    // Keep implementation in sync with native_handle_close_with_tag()
     if (!h) return 0;
 
     if (h->version != sizeof(native_handle_t)) return -EINVAL;

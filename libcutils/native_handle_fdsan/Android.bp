@@ -1,0 +1,20 @@
+package {
+    default_applicable_licenses: ["system_core_libcutils_license"],
+}
+
+// fdsan extensions for native_handle_t
+// not bundled with native_handle.cpp/libcutils due to the complexity of
+// depending on fdsan (which is bionic-only) from within the widely-used
+// libcutils library
+cc_library {
+    name: "native_handle_fdsan",
+    static_libs: [
+        "libasync_safe",
+    ],
+    export_include_dirs: [
+        "include"
+    ],
+    srcs: [
+        "native_handle_fdsan.cpp",
+    ],
+}
