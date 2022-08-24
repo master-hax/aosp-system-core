@@ -16,6 +16,24 @@
       "message": "yeah, i think changing the libcutils API is a bad idea for the reason that all the build failures are confirming --- you\u0027d have to update a lot of code.\n\naiui you only need this in exactly one test, right? so much easier to just have the getsockname() call in that one place?",
       "revId": "796937ec66103ae4b11761a3e078631f1a078469",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f115dab0_f0443176",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1579231
+      },
+      "writtenOn": "2022-08-24T18:13:58Z",
+      "side": 1,
+      "message": "done - thanks for pointing me to adb_*",
+      "parentUuid": "091f049d_1c879079",
+      "revId": "796937ec66103ae4b11761a3e078631f1a078469",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
