@@ -974,14 +974,23 @@ ACTIVE_SLOT=`get_active_slot`
   echo "${BLUE}[     INFO ]${NORMAL} active slot is ${ACTIVE_SLOT}" >&2
 
 # Acquire list of system partitions
+FSTAB_SUFFIXES=(
+  "$(get_property ro.boot.fstab_suffix)"
+  "$(get_property ro.boot.hardware)"
+  "$(get_property ro.boot.hardware.platform)"
+)
+FSTAB_PATTERN='\.('"$(join_with "|" "${FSTAB_SUFFIXES[@]}")"')$'
+FSTAB_FILE=$(adb_su ls -1 '/vendor/etc/fstab*' </dev/null |
+             grep -E "${FSTAB_PATTERN}" |
+             head -1)
 
 # KISS (assume system partition mount point is "/<partition name>")
-PARTITIONS=`adb_su cat /vendor/etc/fstab* </dev/null |
+PARTITIONS=$(adb_su cat ${FSTAB_FILE} </dev/null |
               grep -v "^[#${SPACE}${TAB}]" |
               skip_administrative_mounts |
               awk '$1 ~ /^[^\/]+$/ && "/"$1 == $2 && $4 ~ /(^|,)ro(,|$)/ { print $1 }' |
               sort -u |
-              tr '\n' ' '`
+              tr '\n' ' ')
 PARTITIONS="${PARTITIONS:-system vendor}"
 # KISS (we do not support sub-mounts for system partitions currently)
 MOUNTS="`for i in ${PARTITIONS}; do
