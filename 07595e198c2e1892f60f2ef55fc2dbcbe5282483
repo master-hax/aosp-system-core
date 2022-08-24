@@ -16,6 +16,24 @@
       "message": "Deyao, I think this is independent to other changes in the same topic and can be merged separately. What do you think?\n\nJiyong, this lost your vote. Can you give it again?\n\n",
       "revId": "07595e198c2e1892f60f2ef55fc2dbcbe5282483",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "54578391_a52516e9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 27
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2022-08-24T23:50:53Z",
+      "side": 1,
+      "message": "Oh, I missed that this should be merged with the next change (remove services from servicelist).",
+      "parentUuid": "317d804a_80528413",
+      "revId": "07595e198c2e1892f60f2ef55fc2dbcbe5282483",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
