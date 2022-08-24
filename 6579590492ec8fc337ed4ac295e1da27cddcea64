@@ -34,6 +34,24 @@
       "parentUuid": "6f19d487_9744894d",
       "revId": "6579590492ec8fc337ed4ac295e1da27cddcea64",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0ec1d267_74de5b23",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1929300
+      },
+      "writtenOn": "2022-08-24T10:48:59Z",
+      "side": 1,
+      "message": "Indeed, we want to run the test when the selinux.cpp logic that compiles the SELinux policy changes. I expanded the commit description, hopefully it is more clear now. We *also* want to run the test when changes in system/sepolicy happen, that is what aosp/2183397 is about.\n\nAlso, I undid the reformatting.",
+      "parentUuid": "4e4c6c6b_1861dcff",
+      "revId": "6579590492ec8fc337ed4ac295e1da27cddcea64",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
