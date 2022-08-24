@@ -50,11 +50,13 @@ typedef const native_handle_t* buffer_handle_t;
 
 /*
  * native_handle_close
- * 
- * closes the file descriptors contained in this native_handle_t
- * 
+ *
+ * closes the file descriptors contained in this native_handle_t.
+ * consider updating code to use native_handle_close_with_tag() to gain fdsan
+ * protection.
+ *
  * return 0 on success, or a negative error code on failure
- * 
+ *
  */
 int native_handle_close(const native_handle_t* h);
 
