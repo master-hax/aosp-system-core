@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "291f6386_b4eb5b8f",
+        "filename": "fs_mgr/tests/adb-remount-test.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 1254,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-08-24T18:41:10Z",
+      "side": 1,
+      "message": "AFAICT, this is the first time this script uses BASH construct, making this script officially sh-incompatible.\n\nI don\u0027t see any strong reasons to stick with sh, but I do try my best to write sh-compatible script whenever possible. Since it\u0027s a pain to pattern match / regex match with sh, I\u0027ll give up sh, and embrace bash \u0027[[\u0027.",
+      "range": {
+        "startLine": 1254,
+        "startChar": 7,
+        "endLine": 1254,
+        "endChar": 9
+      },
+      "revId": "0c9f57fecfe1b3aa481dea2bb0a657a7190f5ebe",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
