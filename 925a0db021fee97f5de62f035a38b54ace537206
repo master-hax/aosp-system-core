@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "51d5cd1b_70e231b8",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-08-24T18:22:14Z",
+      "side": 1,
+      "message": "i\u0027d abandon this, personally... there\u0027s no non-whitespace change here, so you\u0027re just making the git history harder to read (and making it likely that people will hassle you about this code since you touched it last!).\n\nif we _did_ want to clean this up, we could switch to unique_fd and lose the memset by doing `struct_t var \u003d { .field1 \u003d 0, .field2 \u003d 2 }` instead, but since there\u0027s no actual known problem with the code beyond ugliness, i\u0027m not sure it\u0027s worth the trouble.",
+      "revId": "925a0db021fee97f5de62f035a38b54ace537206",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
