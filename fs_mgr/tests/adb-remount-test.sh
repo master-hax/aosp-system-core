@@ -69,6 +69,43 @@ screen_wait=true
 ##  Helper Functions
 ##
 
+[ "USAGE: LOG [RUN|OK|PASSED|WARNING|ERROR|FAILED|INFO] [message]..." ]
+LOG() {
+  case "${1}" in
+    R*)
+      shift
+      echo "${GREEN}[ RUN      ]${NORMAL}" "${@}"
+      ;;
+    OK)
+      shift
+      echo "${GREEN}[       OK ]${NORMAL}" "${@}"
+      ;;
+    P*)
+      shift
+      echo "${GREEN}[  PASSED  ]${NORMAL}" "${@}"
+      ;;
+    W*)
+      shift
+      echo "${YELLOW}[  WARNING ]${NORMAL}" "${@}"
+      ;;
+    E*)
+      shift
+      echo "${RED}[    ERROR ]${NORMAL}" "${@}"
+      ;;
+    F*)
+      shift
+      echo "${RED}[  FAILED  ]${NORMAL}" "${@}"
+      ;;
+    I*)
+      shift
+      echo "${BLUE}[     INFO ]${NORMAL}" "${@}"
+      ;;
+    *)
+      echo "${BLUE}[     INFO ]${NORMAL}" "${@}"
+      ;;
+  esac >&2
+}
+
 [ "USAGE: inFastboot
 
 Returns: true if device is in fastboot mode" ]
@@ -144,7 +181,7 @@ adb_date() {
 
 Returns: the logcat output" ]
 adb_logcat() {
-  echo "${RED}[     INFO ]${NORMAL} logcat ${@}" >&2 &&
+  LOG INFO "logcat ${*}"
   adb logcat "${@}" </dev/null |
     tr -d '\r' |
     grep -v 'logd    : logdr: UID=' |
@@ -165,7 +202,7 @@ avc_check() {
   if [ -z "${L}" ]; then
     return
   fi
-  echo "${YELLOW}[  WARNING ]${NORMAL} unlabeled sepolicy violations:" >&2
+  LOG WARNING "unlabeled sepolicy violations:"
   echo "${L}" | sed "s/^/${INDENT}/" >&2
 }
 
@@ -302,7 +339,7 @@ adb_wait() {
   if [ 0 = ${ret} -a -n "${ACTIVE_SLOT}" ]; then
     local active_slot=`get_active_slot`
     if [ X"${ACTIVE_SLOT}" != X"${active_slot}" ]; then
-      echo "${YELLOW}[  WARNING ]${NORMAL} Active slot changed from ${ACTIVE_SLOT} to ${active_slot}" >&2
+      LOG WARNING "Active slot changed from ${ACTIVE_SLOT} to ${active_slot}"
     fi
   fi
   local end=`date +%s`
@@ -331,8 +368,8 @@ adb_wait() {
       ;;
   esac
   if ${_print_time} || [ -n "${reason}" ]; then
-    echo "${BLUE}[     INFO ]${NORMAL} adb wait duration ${diff_time}${reason}"
-  fi >&2
+    LOG INFO "adb wait duration ${diff_time}${reason}"
+  fi
 
   return ${ret}
 }
@@ -405,8 +442,8 @@ fastboot_wait() {
   if [ 0 = ${ret} -a -n "${ACTIVE_SLOT}" ]; then
     local active_slot=`get_active_slot`
     if [ X"${ACTIVE_SLOT}" != X"${active_slot}" ]; then
-      echo "${YELLOW}[  WARNING ]${NORMAL} Active slot changed from ${ACTIVE_SLOT} to ${active_slot}"
-    fi >&2
+      LOG WARNING "Active slot changed from ${ACTIVE_SLOT} to ${active_slot}"
+    fi
   fi
   return ${ret}
 }
@@ -430,8 +467,8 @@ recovery_wait() {
   if [ 0 = ${ret} -a -n "${ACTIVE_SLOT}" ]; then
     local active_slot=`get_active_slot`
     if [ X"${ACTIVE_SLOT}" != X"${active_slot}" ]; then
-      echo "${YELLOW}[  WARNING ]${NORMAL} Active slot changed from ${ACTIVE_SLOT} to ${active_slot}"
-    fi >&2
+      LOG WARNING "Active slot changed from ${ACTIVE_SLOT} to ${active_slot}"
+    fi
   fi
   return ${ret}
 }
@@ -489,7 +526,7 @@ wait_for_screen() {
     counter=$(( ${counter} + 1 ))
     if [ ${counter} -gt ${timeout} ]; then
       ${exit_function}
-      echo "ERROR: wait_for_screen() timed out (`format_duration ${timeout}`)" >&2
+      LOG ERROR "wait_for_screen() timed out ($(format_duration ${timeout}))"
       return 1
     fi
     sleep 1
@@ -585,12 +622,12 @@ Prints the duration of the test
 Returns: reports duration" ]
 test_duration() {
   if ${print_time}; then
-    echo "${BLUE}[     INFO ]${NORMAL} end `date`"
+    LOG INFO "end $(date)"
     [ -n "${start_time}" ] || return
     end_time=`date +%s`
     local diff_time=$(( ${end_time} - ${start_time} ))
-    echo "${BLUE}[     INFO ]${NORMAL} duration `format_duration ${diff_time}`"
-  fi >&2
+    LOG INFO "duration $(format_duration ${diff_time})"
+  fi
 }
 
 [ "USAGE: die [-d|-t <epoch>] [message] >/dev/stderr
@@ -610,7 +647,7 @@ die() {
     fi
     shift 2
   fi >&2
-  echo "${RED}[  FAILED  ]${NORMAL} ${@}" >&2
+  LOG FAILED "${@}"
   exit 1
 }
 
@@ -789,7 +826,7 @@ surgically_wipe_overlayfs() {
   local wiped_anything=false
   for d in ${OVERLAYFS_BACKING}; do
     if adb_su test -d "/${d}/overlay" </dev/null; then
-      echo "${BLUE}[     INFO ]${NORMAL} /${d}/overlay is setup, surgically wiping" >&2
+      LOG INFO "/${d}/overlay is setup, surgically wiping"
       adb_su rm -rf "/${d}/overlay" </dev/null
       wiped_anything=true
     fi
@@ -902,7 +939,7 @@ exit_handler() {
   cleanup || true
   local err=0
   if ! restore; then
-    echo "${RED}[    ERROR ]${NORMAL} restore failed"
+    LOG ERROR "restore failed"
     err=1
   fi >&2
   test_duration || true
@@ -913,7 +950,7 @@ exit_handler() {
 trap 'exit_handler' EXIT
 
 if ${print_time}; then
-  echo "${BLUE}[     INFO ]${NORMAL}" start `date` >&2
+  LOG INFO "start $(date)"
 fi
 
 if [ -z "${ANDROID_SERIAL}" ]; then
@@ -927,7 +964,7 @@ export ANDROID_SERIAL
 inFastboot && die "device in fastboot mode"
 inRecovery && die "device in recovery mode"
 if ! inAdb; then
-  echo "${YELLOW}[  WARNING ]${NORMAL} device not in adb mode" >&2
+  LOG WARNING "device not in adb mode"
   adb_wait ${ADB_WAIT}
 fi
 inAdb || die "specified device not in adb mode"
@@ -935,12 +972,12 @@ inAdb || die "specified device not in adb mode"
 [ "orange" = "$(get_property ro.boot.verifiedbootstate)" ] || die "device not bootloader unlocked"
 can_restore_verity=true
 if [ "2" != "$(get_property partition.system.verified)" ]; then
-  echo "${YELLOW}[  WARNING ]${NORMAL} device might not support verity" >&2
+  LOG WARNING "device might not support verity"
   can_restore_verity=false
 fi
 enforcing=true
 if ! adb_su getenforce </dev/null | grep 'Enforcing' >/dev/null; then
-  echo "${YELLOW}[  WARNING ]${NORMAL} device does not have sepolicy in enforcing mode" >&2
+  LOG WARNING "device does not have sepolicy in enforcing mode"
   enforcing=false
 fi
 
@@ -963,16 +1000,16 @@ if [ -n "${USB_SERIAL}" ]; then
 fi
 USB_DEVICE=$(usb_devnum)
 [ -z "${ANDROID_SERIAL}${USB_ADDRESS}${USB_DEVICE}" ] ||
-  echo "${BLUE}[     INFO ]${NORMAL}" ${ANDROID_SERIAL} ${USB_ADDRESS} ${USB_DEVICE} >&2
+  LOG INFO "${ANDROID_SERIAL} ${USB_ADDRESS} ${USB_DEVICE}"
 BUILD_DESCRIPTION=`get_property ro.build.description`
 [ -z "${BUILD_DESCRIPTION}" ] ||
-  echo "${BLUE}[     INFO ]${NORMAL} ${BUILD_DESCRIPTION}" >&2
+  LOG INFO "${BUILD_DESCRIPTION}"
 KERNEL_VERSION="`adb_su cat /proc/version </dev/null 2>/dev/null`"
 [ -z "${KERNEL_VERSION}" ] ||
-  echo "${BLUE}[     INFO ]${NORMAL} ${KERNEL_VERSION}" >&2
+  LOG INFO "${KERNEL_VERSION}"
 ACTIVE_SLOT=`get_active_slot`
 [ -z "${ACTIVE_SLOT}" ] ||
-  echo "${BLUE}[     INFO ]${NORMAL} active slot is ${ACTIVE_SLOT}" >&2
+  LOG INFO "active slot is ${ACTIVE_SLOT}"
 
 # Acquire list of system partitions
 FSTAB_SUFFIXES=(
@@ -998,7 +1035,7 @@ MOUNTS="`for i in ${PARTITIONS}; do
            echo /${i}
          done |
          tr '\n' ' '`"
-echo "${BLUE}[     INFO ]${NORMAL} System Partitions list: ${PARTITIONS}" >&2
+LOG INFO "System Partitions list: ${PARTITIONS}"
 
 # Report existing partition sizes
 adb_sh ls -l /dev/block/by-name/ /dev/block/mapper/ </dev/null 2>/dev/null |
@@ -1020,46 +1057,46 @@ adb_sh ls -l /dev/block/by-name/ /dev/block/mapper/ </dev/null 2>/dev/null |
     esac
     size=`adb_su cat /sys/block/${device}/size 2>/dev/null </dev/null` &&
       size=$(( ${size} / 2 )) &&
-      echo "${BLUE}[     INFO ]${NORMAL} partition ${name} device ${device} size ${size}K" >&2
+      LOG INFO "partition ${name} device ${device} size ${size}K"
   done
 
-echo "${BLUE}[     INFO ]${NORMAL} Checking kernel support for overlayfs" >&2
+LOG INFO "Checking kernel support for overlayfs"
 
 overlayfs_supported=true
 adb_root || die "becoming root to mine kernel information"
 if ! adb_test -d /sys/module/overlay; then
-  if adb_sh grep "nodev${TAB}overlay" /proc/filesystems </dev/null >/dev/null 2>/dev/null; then
-    echo "${GREEN}[       OK ]${NORMAL} overlay module present"
+  if adb_sh grep -q "nodev${TAB}overlay" /proc/filesystems </dev/null; then
+    LOG OK "overlay module present"
   else
-    echo "${YELLOW}[  WARNING ]${NORMAL} overlay module not present"
+    LOG WARNING "overlay module not present"
     overlayfs_supported=false
   fi
-fi >&2
+fi
 if ${overlayfs_supported}; then
   if adb_test -f /sys/module/overlay/parameters/override_creds; then
-    echo "${GREEN}[       OK ]${NORMAL} overlay module supports override_creds"
+    LOG OK "overlay module supports override_creds"
   else
     case "$(adb_sh uname -r </dev/null)" in
       4.[456789].* | 4.[1-9][0-9]* | [56789].*)
-        echo "${YELLOW}[  WARNING ]${NORMAL} overlay module does not support override_creds"
+        LOG WARNING "overlay module does not support override_creds"
         overlayfs_supported=false
         ;;
       *)
-        echo "${GREEN}[       OK ]${NORMAL} overlay module uses caller's creds"
+        LOG OK "overlay module uses caller's creds"
         ;;
     esac
   fi
-fi >&2
+fi
 
 restore() {
-  echo "${BLUE}[     INFO ]${NORMAL} restoring device" >&2
+  LOG INFO "restoring device"
   ${overlayfs_supported} || return 0
   inFastboot &&
     fastboot reboot &&
     adb_wait "${ADB_WAIT}" ||
     true
   if ! inAdb; then
-    echo "${RED}[    ERROR ]${NORMAL} expect adb device" >&2
+    LOG ERROR "expect adb device"
     return 1
   fi
   adb_root || true
@@ -1069,10 +1106,10 @@ restore() {
   fi
   if ${can_restore_verity}; then
     if ! adb enable-verity; then
-      echo "${RED}[    ERROR ]${NORMAL} adb enable-verity"
+      LOG ERROR "adb enable-verity"
       return 1
     fi
-    echo "${BLUE}[     INFO ]${NORMAL} restored verity"
+    LOG INFO "restored verity"
     reboot=true
   fi >&2
   if ${reboot}; then
@@ -1083,15 +1120,15 @@ restore() {
 
 # If reboot too soon after fresh flash, could trip device update failure logic
 if ${screen_wait}; then
-  echo "${BLUE}[     INFO ]${NORMAL} waiting for screen to come up. Consider --no-wait-screen option" >&2
+  LOG INFO "waiting for screen to come up. Consider --no-wait-screen option"
 fi
 if ! wait_for_screen && ${screen_wait}; then
   screen_wait=false
-  echo "${YELLOW}[  WARNING ]${NORMAL} not healthy, no launcher, skipping wait for screen" >&2
+  LOG WARNING "not healthy, no launcher, skipping wait for screen"
 fi
 
 
-echo "${GREEN}[ RUN      ]${NORMAL} Checking current overlayfs status" >&2
+LOG RUN "Checking current overlayfs status"
 
 adb_wait || die "wait for device failed"
 adb_root || die "adb root failed"
@@ -1102,7 +1139,7 @@ adb_root || die "adb root failed"
 # So lets do our best to surgically wipe the overlayfs state without
 # having to go through enable-verity transition.
 if surgically_wipe_overlayfs; then
-  echo "${YELLOW}[  WARNING ]${NORMAL} rebooting before test" >&2
+  LOG WARNING "rebooting before test"
   adb_reboot &&
     adb_wait ${ADB_WAIT} ||
     die "lost device after reboot after wipe `usb_status`"
@@ -1111,7 +1148,7 @@ if surgically_wipe_overlayfs; then
 fi
 is_overlayfs_mounted &&
   die "overlay takeover unexpected at this phase"
-echo "${GREEN}[       OK ]${NORMAL} no overlay present before setup" >&2
+LOG OK "no overlay present before setup"
 
 overlayfs_needed=true
 D=$(adb_sh grep " ro," /proc/mounts </dev/null |
@@ -1137,7 +1174,7 @@ elif ! ${overlayfs_supported}; then
 fi
 
 
-echo "${GREEN}[ RUN      ]${NORMAL} Testing adb disable-verity -R" >&2
+LOG RUN "Testing adb disable-verity -R"
 
 if surgically_wipe_overlayfs; then
   adb_reboot &&
@@ -1155,20 +1192,20 @@ adb_wait "${ADB_WAIT}" ||
   die "lost device after adb shell su root disable-verity -R $(usb_status)"
 
 if [ "2" = "$(get_property partition.system.verified)" ]; then
-  echo "${YELLOW}[  WARNING ]${NORMAL} partition.system.verified=$(get_property partition.system.verified)" >&2
+  LOG WARNING "partition.system.verified=$(get_property partition.system.verified)"
   die "verity not disabled after adb disable-verity -R"
 fi
 if ${overlayfs_needed}; then
   if ! is_overlayfs_mounted; then
     die "no overlay takeover after adb disable-verity -R"
   fi
-  echo "${GREEN}[       OK ]${NORMAL} overlay takeover after adb disable-verity -R" >&2
+  LOG OK "overlay takeover after adb disable-verity -R"
 else
-  echo "${GREEN}[       OK ]${NORMAL} adb disable-verity -R" >&2
+  LOG OK "adb disable-verity -R"
 fi
 
 
-echo "${GREEN}[ RUN      ]${NORMAL} Testing adb remount -R" >&2
+LOG RUN "Testing adb remount -R"
 
 if surgically_wipe_overlayfs; then
   adb_reboot &&
@@ -1186,24 +1223,24 @@ adb_wait "${ADB_WAIT}" ||
   die "lost device after adb shell su root remount -R $(usb_status)"
 
 if [ "2" = "$(get_property partition.system.verified)" ]; then
-  echo "${YELLOW}[  WARNING ]${NORMAL} partition.system.verified=$(get_property partition.system.verified)" >&2
+  LOG WARNING "partition.system.verified=$(get_property partition.system.verified)"
   die "verity not disabled after adb remount -R"
 fi
 if ${overlayfs_needed}; then
   if ! is_overlayfs_mounted; then
     die "no overlay takeover after adb remount -R"
   fi
-  echo "${GREEN}[       OK ]${NORMAL} overlay takeover after adb remount -R" >&2
+  LOG OK "overlay takeover after adb remount -R"
 else
-  echo "${GREEN}[       OK ]${NORMAL} adb remount -R" >&2
+  LOG OK "adb remount -R"
 fi
 
 
 # Precondition is a verity-disabled device with overlayfs already setup.
-echo "${GREEN}[ RUN      ]${NORMAL} Testing adb remount RW" >&2
+LOG RUN "Testing adb remount RW"
 
 if ! ${overlayfs_needed}; then
-  echo "${YELLOW}[  WARNING ]${NORMAL} Reboot to RO (device doesn't use overlayfs)" >&2
+  LOG WARNING "Reboot to RO (device doesn't use overlayfs)"
   adb_reboot &&
     adb_wait "${ADB_WAIT}" ||
     die "lost device after reboot to RO $(usb_status)"
@@ -1258,20 +1295,20 @@ if ${overlayfs_needed}; then
   [ -z "${scratch_size}" ] && die "cannot get size of scratch device (${scratch_device})"
 
   if [ -n "${virtual_ab}" ]; then
-    echo "${BLUE}[     INFO ]${NORMAL} using dynamic scratch partition on /data (VAB device)" >&2
+    LOG INFO "using dynamic scratch partition on /data (VAB device)"
   elif [[ "${scratch_device}" == /dev/block/by-name/* ]]; then
     scratch_partition="${scratch_device##/dev/block/by-name/}"
-    echo "${BLUE}[     INFO ]${NORMAL} using physical scratch partition ${scratch_partition}" >&2
+    LOG INFO "using physical scratch partition ${scratch_partition}"
   else
     uses_dynamic_scratch=true
     scratch_partition=scratch
-    echo "${BLUE}[     INFO ]${NORMAL} using dynamic scratch partition on super" >&2
+    LOG INFO "using dynamic scratch partition on super"
   fi
-  echo "${BLUE}[     INFO ]${NORMAL} scratch device ${scratch_device} filesystem ${scratch_filesystem} size ${scratch_size}KiB" >&2
+  LOG INFO "scratch device ${scratch_device} filesystem ${scratch_filesystem} size ${scratch_size}KiB"
 
   for d in ${OVERLAYFS_BACKING}; do
     if adb_test -d /${d}/overlay/system/upper; then
-      echo "${BLUE}[     INFO ]${NORMAL} /${d}/overlay is setup" >&2
+      LOG INFO "/${d}/overlay is setup"
     fi
   done
 
@@ -1317,11 +1354,11 @@ if ${overlayfs_needed}; then
   ${bad_rw} && die "remount overlayfs missed a spot (rw)"
 fi
 
-echo "${GREEN}[       OK ]${NORMAL} adb remount RW" >&2
+LOG OK "adb remount RW"
 
 # Check something.
 
-echo "${GREEN}[ RUN      ]${NORMAL} push content to ${MOUNTS}" >&2
+LOG RUN "push content to ${MOUNTS}"
 
 A="Hello World! $(date)"
 for i in ${MOUNTS}; do
@@ -1355,11 +1392,11 @@ adb pull /system/lib/bootstrap/libc.so ${tempdir}/libc.so.fromdevice >/dev/null 
 diff ${tempdir}/libc.so ${tempdir}/libc.so.fromdevice > /dev/null ||
   die "libc.so differ"
 
-echo "${GREEN}[ RUN      ]${NORMAL} reboot to confirm content persistent" >&2
+LOG RUN "reboot to confirm content persistent"
 
 fixup_from_recovery() {
   inRecovery || return 1
-  echo "${YELLOW}[    ERROR ]${NORMAL} Device in recovery" >&2
+  LOG ERROR "Device in recovery"
   adb reboot </dev/null
   adb_wait ${ADB_WAIT}
 }
@@ -1378,8 +1415,8 @@ if ${overlayfs_needed}; then
   adb_su sed -n '1,/overlay \/system/p' /proc/mounts </dev/null |
     skip_administrative_mounts |
     grep -v ' \(erofs\|squashfs\|ext4\|f2fs\|vfat\) ' &&
-    echo "${YELLOW}[  WARNING ]${NORMAL} overlay takeover after first stage init" >&2 ||
-    echo "${GREEN}[       OK ]${NORMAL} overlay takeover in first stage init" >&2
+    LOG WARNING "overlay takeover after first stage init" ||
+    LOG OK "overlay takeover in first stage init"
 fi
 
 if ${enforcing}; then
@@ -1387,7 +1424,7 @@ if ${enforcing}; then
     die "device not in unroot'd state"
   B="`adb_cat /vendor/hello 2>&1`"
   check_eq "cat: /vendor/hello: Permission denied" "${B}" vendor after reboot w/o root
-  echo "${GREEN}[       OK ]${NORMAL} /vendor content correct MAC after reboot" >&2
+  LOG OK "/vendor content correct MAC after reboot"
   # Feed unprivileged log with selinux denials as a result of overlays
   wait_for_screen
   adb_sh find ${MOUNTS} </dev/null >/dev/null 2>/dev/null || true
@@ -1405,7 +1442,7 @@ adb_root ||
 for i in ${MOUNTS}; do
   B="`adb_cat ${i}/hello`"
   check_eq "${A}" "${B}" ${i#/} after reboot
-  echo "${GREEN}[       OK ]${NORMAL} ${i} content remains after reboot" >&2
+  LOG OK "${i} content remains after reboot"
 done
 
 check_eq "${SYSTEM_INO}" "`adb_sh stat --format=%i /system/hello </dev/null`" system inode after reboot
@@ -1423,9 +1460,9 @@ rm -rf ${tempdir}
 cleanup() {
   true
 }
-echo "${GREEN}[       OK ]${NORMAL} /system/lib/bootstrap/libc.so content remains after reboot" >&2
+LOG OK "/system/lib/bootstrap/libc.so content remains after reboot"
 
-echo "${GREEN}[ RUN      ]${NORMAL} flash vendor, confirm its content disappears" >&2
+LOG RUN "flash vendor, confirm its content disappears"
 
 H=`adb_sh echo '${HOSTNAME}' </dev/null 2>/dev/null`
 is_bootloader_fastboot=false
@@ -1434,20 +1471,20 @@ is_bootloader_fastboot=false
 is_userspace_fastboot=false
 
 if ! ${is_bootloader_fastboot}; then
-  echo "${YELLOW}[  WARNING ]${NORMAL} does not support fastboot, skipping" >&2
+  LOG WARNING "does not support fastboot, skipping"
 elif [ -z "${ANDROID_PRODUCT_OUT}" ]; then
-  echo "${YELLOW}[  WARNING ]${NORMAL} build tree not setup, skipping" >&2
+  LOG WARNING "build tree not setup, skipping"
 elif [ ! -s "${ANDROID_PRODUCT_OUT}/vendor.img" ]; then
-  echo "${YELLOW}[  WARNING ]${NORMAL} vendor image missing, skipping" >&2
+  LOG WARNING "vendor image missing, skipping"
 elif [ "${ANDROID_PRODUCT_OUT}" = "${ANDROID_PRODUCT_OUT%*/${H}}" ]; then
-  echo "${YELLOW}[  WARNING ]${NORMAL} wrong vendor image, skipping" >&2
+  LOG WARNING "wrong vendor image, skipping"
 elif [ -z "${ANDROID_HOST_OUT}" ]; then
-  echo "${YELLOW}[  WARNING ]${NORMAL} please run lunch, skipping" >&2
+  LOG WARNING "please run lunch, skipping"
 elif ! (
           adb_cat /vendor/build.prop |
           cmp -s ${ANDROID_PRODUCT_OUT}/vendor/build.prop
        ) >/dev/null 2>/dev/null; then
-  echo "${YELLOW}[  WARNING ]${NORMAL} vendor image signature mismatch, skipping" >&2
+  LOG WARNING "vendor image signature mismatch, skipping"
 else
   wait_for_screen
   avc_check
@@ -1481,19 +1518,19 @@ else
         die "Reboot into fastboot"
     fi
     if ${uses_dynamic_scratch}; then
-      echo "${BLUE}[     INFO ]${NORMAL} expect fastboot erase ${scratch_partition} to fail" >&2
+      LOG INFO "expect fastboot erase ${scratch_partition} to fail"
       fastboot erase ${scratch_partition} &&
         ( fastboot reboot || true) &&
         die "fastboot can erase ${scratch_partition}"
     fi
-    echo "${BLUE}[     INFO ]${NORMAL} expect fastboot format ${scratch_partition} to fail" >&2
+    LOG INFO "expect fastboot format ${scratch_partition} to fail"
     fastboot format ${scratch_partition} &&
       ( fastboot reboot || true) &&
       die "fastboot can format ${scratch_partition}"
   fi
   fastboot reboot ||
     die "can not reboot out of fastboot"
-  echo "${YELLOW}[  WARNING ]${NORMAL} adb after fastboot" >&2
+  LOG WARNING "adb after fastboot"
   adb_wait ${ADB_WAIT} ||
     fixup_from_recovery ||
     die "did not reboot after formatting ${scratch_partition} `usb_status`"
@@ -1511,8 +1548,8 @@ else
       if ${is_userspace_fastboot}; then
         die  "overlay supposed to be minus /vendor takeover after flash vendor"
       else
-        echo "${YELLOW}[  WARNING ]${NORMAL} user fastboot missing required to invalidate, ignoring a failure" >&2
-        echo "${YELLOW}[  WARNING ]${NORMAL} overlay supposed to be minus /vendor takeover after flash vendor" >&2
+        LOG WARNING "user fastboot missing required to invalidate, ignoring a failure"
+        LOG WARNING "overlay supposed to be minus /vendor takeover after flash vendor"
       fi
   fi
   B="`adb_cat /system/hello`"
@@ -1530,7 +1567,7 @@ else
     check_eq "cat: /vendor/hello: No such file or directory" "${B}" \
              vendor content after flash vendor
   else
-    echo "${YELLOW}[  WARNING ]${NORMAL} user fastboot missing required to invalidate, ignoring a failure" >&2
+    LOG WARNING "user fastboot missing required to invalidate, ignoring a failure"
     check_eq "cat: /vendor/hello: No such file or directory" "${B}" \
              --warning vendor content after flash vendor
   fi
@@ -1540,7 +1577,7 @@ else
 fi
 
 wait_for_screen
-echo "${GREEN}[ RUN      ]${NORMAL} remove test content (cleanup)" >&2
+LOG RUN "remove test content (cleanup)"
 
 T=`adb_date`
 H=`adb remount 2>&1`
@@ -1548,7 +1585,7 @@ err=${?}
 L=
 D="${H%?Now reboot your device for settings to take effect*}"
 if [ X"${H}" != X"${D}" ]; then
-  echo "${YELLOW}[  WARNING ]${NORMAL} adb remount requires a reboot after partial flash (legacy avb)" >&2
+  LOG WARNING "adb remount requires a reboot after partial flash (legacy avb)"
   L=`adb_logcat -b all -v nsec -t ${T} 2>&1`
   adb_reboot &&
     adb_wait ${ADB_WAIT} &&
@@ -1576,7 +1613,7 @@ done
 
 if ${is_bootloader_fastboot} && [ -n "${scratch_partition}" ]; then
 
-  echo "${GREEN}[ RUN      ]${NORMAL} test fastboot flash to ${scratch_partition} recovery" >&2
+  LOG RUN "test fastboot flash to ${scratch_partition} recovery"
 
   avc_check
   adb reboot fastboot </dev/null ||
@@ -1606,7 +1643,7 @@ if ${is_bootloader_fastboot} && [ -n "${scratch_partition}" ]; then
   err=${?}
   if [ X"${D}" != "${D%?Now reboot your device for settings to take effect*}" ]
   then
-    echo "${YELLOW}[  WARNING ]${NORMAL} adb disable-verity requires a reboot after partial flash" >&2
+    LOG WARNING "adb disable-verity requires a reboot after partial flash"
     adb_reboot &&
       adb_wait ${ADB_WAIT} &&
       adb_root ||
@@ -1621,23 +1658,23 @@ if ${is_bootloader_fastboot} && [ -n "${scratch_partition}" ]; then
   [ ${err} = 0 ] &&
     [ X"${D}" = X"${D##*setup failed}" ] &&
     [ X"${D}" != X"${D##*[Uu]sing overlayfs}" ] &&
-    echo "${GREEN}[       OK ]${NORMAL} ${scratch_partition} recreated" >&2 ||
+    LOG OK "${scratch_partition} recreated" ||
     die -t ${T} "setup for overlayfs"
   adb remount >&2 ||
     die -t ${T} "remount failed"
 fi
 
-echo "${GREEN}[ RUN      ]${NORMAL} test raw remount commands" >&2
+LOG RUN "test raw remount commands"
 
 fixup_from_fastboot() {
   inFastboot || return 1
   if [ -n "${ACTIVE_SLOT}" ]; then
     local active_slot=`get_active_slot`
     if [ X"${ACTIVE_SLOT}" != X"${active_slot}" ]; then
-      echo "${YELLOW}[    ERROR ]${NORMAL} Active slot changed from ${ACTIVE_SLOT} to ${active_slot}"
+      LOG WARNING "Active slot changed from ${ACTIVE_SLOT} to ${active_slot}"
     else
-      echo "${YELLOW}[    ERROR ]${NORMAL} Active slot to be set to ${ACTIVE_SLOT}"
-    fi >&2
+      LOG WARNING "Active slot to be set to ${ACTIVE_SLOT}"
+    fi
     fastboot --set-active=${ACTIVE_SLOT}
   fi
   fastboot reboot
@@ -1655,7 +1692,7 @@ adb_su mount -o rw,remount /vendor </dev/null ||
   die "remount command"
 adb_sh grep " /vendor .* rw," /proc/mounts >/dev/null </dev/null ||
   die "/vendor is not read-write"
-echo "${GREEN}[       OK ]${NORMAL} mount -o rw,remount command works" >&2
+LOG OK "mount -o rw,remount command works"
 
 # Prerequisite is an overlayfs deconstructed device but with verity disabled.
 # This also saves a lot of 'noise' from the command doing a mkfs on backing
@@ -1674,7 +1711,7 @@ adb_sh grep " /vendor .* rw," /proc/mounts >/dev/null </dev/null ||
   die "/vendor is not read-write"
 adb_sh grep " \(/system\|/\) .* rw," /proc/mounts >/dev/null </dev/null &&
   die "/system is not read-only"
-echo "${GREEN}[       OK ]${NORMAL} remount command works from scratch" >&2
+LOG OK "remount command works from scratch"
 
 
-echo "${GREEN}[  PASSED  ]${NORMAL} adb remount" >&2
+LOG PASSED "adb remount test"
