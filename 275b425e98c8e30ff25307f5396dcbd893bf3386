@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bee23f4f_eb7e82ad",
+        "filename": "init/persistent_properties.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 168,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-08-25T09:27:17Z",
+      "side": 1,
+      "message": "should we just ignore properties not starting with \"persist.\", or unlink() the file on error like L177?",
+      "revId": "275b425e98c8e30ff25307f5396dcbd893bf3386",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
