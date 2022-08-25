@@ -16,6 +16,23 @@
       "message": "rubber-stamping OWNERS on the assumption surenb knows what he\u0027s doing, since the people who know better than me are ooo :-)",
       "revId": "fcf047113f2bd8f2c37b0351006927da7a5eec99",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e17e71e2_02bcaa3a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 16
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-08-25T23:07:50Z",
+      "side": 1,
+      "message": "actually, reversing that because i see a \"bypass presubmit\" ... that\u0027s not normal. what\u0027s the reason for that?",
+      "revId": "fcf047113f2bd8f2c37b0351006927da7a5eec99",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
