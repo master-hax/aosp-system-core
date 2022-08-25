@@ -41,6 +41,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "205e9d12_a9f5a4b0",
+        "filename": "init/init.cpp",
+        "patchSetId": 28
+      },
+      "lineNbr": 472,
+      "author": {
+        "id": 1895890
+      },
+      "writtenOn": "2022-08-25T04:38:11Z",
+      "side": 1,
+      "message": "Yes. I\u0027ve deleted in other places. We don\u0027t need it any more",
+      "parentUuid": "cbe61841_f8692160",
+      "range": {
+        "startLine": 472,
+        "startChar": 12,
+        "endLine": 472,
+        "endChar": 35
+      },
+      "revId": "f3ae86f0d4f3c9517bac7f3496d026a44869bd47",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "92a4f4b2_d18bce9a",
