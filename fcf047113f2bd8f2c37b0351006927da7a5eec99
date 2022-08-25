@@ -33,6 +33,29 @@
       "message": "actually, reversing that because i see a \"bypass presubmit\" ... that\u0027s not normal. what\u0027s the reason for that?",
       "revId": "fcf047113f2bd8f2c37b0351006927da7a5eec99",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5244aa2d_e57e734f",
+        "filename": "init/service.cpp",
+        "patchSetId": 16
+      },
+      "lineNbr": 658,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-08-25T23:21:38Z",
+      "side": 1,
+      "message": "I see that Suren +2\u0027ed this and he owns this area, so I don\u0027t intend to raise an issue. This is rather for my own understanding:\n\nIs this an inherited property? What if this service fork/execs other processes by itself? Do they have the NormalIoPriority? If so, why can\u0027t we do this for the init process and forget about it?",
+      "range": {
+        "startLine": 658,
+        "startChar": 7,
+        "endLine": 658,
+        "endChar": 61
+      },
+      "revId": "fcf047113f2bd8f2c37b0351006927da7a5eec99",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
