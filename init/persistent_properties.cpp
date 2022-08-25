@@ -162,7 +162,15 @@ Result<PersistentProperties> LoadPersistentPropertyFile() {
     if (!file_contents.ok()) return file_contents.error();
 
     PersistentProperties persistent_properties;
-    if (persistent_properties.ParseFromString(*file_contents)) return persistent_properties;
+    if (persistent_properties.ParseFromString(*file_contents)) {
+        for (auto& prop : persistent_properties.properties()) {
+            if (!StartsWith(prop.name(), "persist.")) {
+                return Error() << "Unable to load persistent property file: property '"
+                               << prop.name() << "' doesn't start with 'persist.'";
+            }
+        }
+        return persistent_properties;
+    }
 
     // If the file cannot be parsed in either format, then we don't have any recovery
     // mechanisms, so we delete it to allow for future writes to take place successfully.
