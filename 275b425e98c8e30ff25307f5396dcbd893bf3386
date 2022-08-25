@@ -52,6 +52,24 @@
       "parentUuid": "d26f9ab0_9e754246",
       "revId": "275b425e98c8e30ff25307f5396dcbd893bf3386",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "12275996_9c0327bf",
+        "filename": "init/persistent_properties.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 168,
+      "author": {
+        "id": 1060907
+      },
+      "writtenOn": "2022-08-25T16:15:54Z",
+      "side": 1,
+      "message": "I think we should unlink - we filter when writing to this file, so if a non-persist property is in there something has gone badly wrong, we should treat this the same way we treat a parse error.",
+      "parentUuid": "faf189f5_211e8c2a",
+      "revId": "275b425e98c8e30ff25307f5396dcbd893bf3386",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
