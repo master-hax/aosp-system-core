@@ -70,6 +70,24 @@
       "parentUuid": "faf189f5_211e8c2a",
       "revId": "275b425e98c8e30ff25307f5396dcbd893bf3386",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fc6ad5e5_7f9f11ec",
+        "filename": "init/persistent_properties.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 168,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-08-25T23:27:39Z",
+      "side": 1,
+      "message": "\u003e  if a non-persist property is in there something has gone badly wrong\n\nYeah, that implies someone manually edited it on purpose. But isn\u0027t it too harsh? This means that one can prevent all persistent props being loaded by adding a single non-persistent prop to the file.",
+      "parentUuid": "12275996_9c0327bf",
+      "revId": "275b425e98c8e30ff25307f5396dcbd893bf3386",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
