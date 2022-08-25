@@ -20,6 +20,7 @@
 #include <string>
 
 #define PROC_SYSRQ "/proc/sysrq-trigger"
+#define USER_SHUTDOWN "/sys/devices/platform/google,battery/power_supply/battery/user_shutdown"
 
 namespace android {
 namespace init {

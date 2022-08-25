@@ -1013,6 +1013,7 @@ void HandlePowerctlMessage(const std::string& command) {
                 // The shutdown reason is PowerManager.SHUTDOWN_USER_REQUESTED.
                 // Run fsck once the file system is remounted in read-only mode.
                 run_fsck = true;
+                WriteStringToFile("1", USER_SHUTDOWN);
             } else if (cmd_params[1] == "thermal") {
                 // Turn off sources of heat immediately.
                 TurnOffBacklight();
