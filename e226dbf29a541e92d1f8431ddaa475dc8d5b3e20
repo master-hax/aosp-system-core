@@ -1,0 +1,136 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "52704ddb_00dd1d01",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 27
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2022-08-25T00:04:16Z",
+      "side": 1,
+      "message": "This change involves both refactoring and adding a feature. Having a separate change for refactoring would make review easier. Probably for the next time?\n\nAnd please add tests for the new behavior.",
+      "revId": "e226dbf29a541e92d1f8431ddaa475dc8d5b3e20",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "23eed1f1_0465ee64",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 27
+      },
+      "lineNbr": 1283,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2022-08-25T00:04:16Z",
+      "side": 1,
+      "message": "I think we can inline this function for simplicity.",
+      "range": {
+        "startLine": 1283,
+        "startChar": 13,
+        "endLine": 1283,
+        "endChar": 35
+      },
+      "revId": "e226dbf29a541e92d1f8431ddaa475dc8d5b3e20",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1b392cf7_28084e74",
+        "filename": "init/init.cpp",
+        "patchSetId": 27
+      },
+      "lineNbr": 469,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2022-08-25T00:04:16Z",
+      "side": 1,
+      "message": "nit: adding suffix like (-FromApex) for consistency?",
+      "range": {
+        "startLine": 469,
+        "startChar": 12,
+        "endLine": 469,
+        "endChar": 34
+      },
+      "revId": "e226dbf29a541e92d1f8431ddaa475dc8d5b3e20",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "17da91a9_e1b09b5d",
+        "filename": "init/init.cpp",
+        "patchSetId": 27
+      },
+      "lineNbr": 473,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2022-08-25T00:04:16Z",
+      "side": 1,
+      "message": "`GetApexNameFromFileName(action-\u003efilename()) \u003d\u003d apex_name`",
+      "range": {
+        "startLine": 472,
+        "startChar": 12,
+        "endLine": 473,
+        "endChar": 77
+      },
+      "revId": "e226dbf29a541e92d1f8431ddaa475dc8d5b3e20",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1f935d66_66301793",
+        "filename": "init/init.cpp",
+        "patchSetId": 27
+      },
+      "lineNbr": 474,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2022-08-25T00:04:16Z",
+      "side": 1,
+      "message": "If the file defines three actions we\u0027ll see:\n```\nRemoving action defined in foo.rc\nRemoving action defined in foo.rc\nRemoving action defined in foo.rc\n```\n\nI don\u0027t think we want to see this log for every action (and service below). If you want to see something, how about adding a line like \"Removed 0 action(s) and 1 service(s) from com.android.foo\" ?",
+      "range": {
+        "startLine": 474,
+        "startChar": 0,
+        "endLine": 474,
+        "endChar": 77
+      },
+      "revId": "e226dbf29a541e92d1f8431ddaa475dc8d5b3e20",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8dad956f_fa9d0c75",
+        "filename": "init/init.cpp",
+        "patchSetId": 27
+      },
+      "lineNbr": 481,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2022-08-25T00:04:16Z",
+      "side": 1,
+      "message": "ditto.",
+      "range": {
+        "startLine": 480,
+        "startChar": 12,
+        "endLine": 481,
+        "endChar": 72
+      },
+      "revId": "e226dbf29a541e92d1f8431ddaa475dc8d5b3e20",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
