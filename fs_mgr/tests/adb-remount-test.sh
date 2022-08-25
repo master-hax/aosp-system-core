@@ -231,17 +231,6 @@ adb_cat() {
     return ${ret}
 }
 
-[ "USAGE: adb_ls <dirfile> >stdout
-
-Returns: filename or directoru content to stdout with carriage returns skipped,
-         true if the ls had no errors" ]
-adb_ls() {
-    local OUTPUT="`adb_sh ls ${1} </dev/null 2>/dev/null`"
-    local ret=${?}
-    echo "${OUTPUT}" | tr -d '\r'
-    return ${ret}
-}
-
 [ "USAGE: adb_test <expression>
 
 Returns: exit status of the test expression" ]
@@ -1369,10 +1358,8 @@ if ${enforcing}; then
   adb_sh find ${MOUNTS} </dev/null >/dev/null 2>/dev/null || true
 fi
 # If overlayfs has a nested security problem, this will fail.
-B="`adb_ls /system/`" ||
-  die "adb ls /system"
-[ X"${B}" != X"${B#*priv-app}" ] ||
-  die "adb ls /system/priv-app"
+adb_sh ls /system >/dev/null || die "ls /system"
+adb_test -d /system/priv-app || die "[ -d /system/priv-app ]"
 B="`adb_cat /system/priv-app/hello`"
 check_eq "${A}" "${B}" /system/priv-app after reboot
 # Only root can read vendor if sepolicy permissions are as expected.
@@ -1493,22 +1480,19 @@ else
   fi
   B="`adb_cat /system/hello`"
   check_eq "${A}" "${B}" system after flash vendor
-  B="`adb_ls /system/`" ||
-    die "adb ls /system"
-  [ X"${B}" != X"${B#*priv-app}" ] ||
-    die "adb ls /system/priv-app"
+  adb_sh ls /system >/dev/null || die "ls /system"
+  adb_test -d /system/priv-app || die "[ -d /system/priv-app ]"
   B="`adb_cat /system/priv-app/hello`"
   check_eq "${A}" "${B}" system/priv-app after flash vendor
   adb_root ||
     die "adb root"
-  B="`adb_cat /vendor/hello`"
   if ${is_userspace_fastboot} || ! ${overlayfs_needed}; then
-    check_eq "cat: /vendor/hello: No such file or directory" "${B}" \
-             vendor content after flash vendor
+    adb_test -e /vendor/hello &&
+      die "vendor content after flash vendor"
   else
     LOG WARNING "user fastboot missing required to invalidate, ignoring a failure"
-    check_eq "cat: /vendor/hello: No such file or directory" "${B}" \
-             --warning vendor content after flash vendor
+    adb_test -e /vendor/hello &&
+      LOG WARNING "vendor content after flash vendor"
   fi
 
   check_eq "${SYSTEM_INO}" "`adb_sh stat --format=%i /system/hello </dev/null`" system inode after reboot
@@ -1540,12 +1524,12 @@ echo "${H}" >&2
   adb_sh rm /system/hello /system/priv-app/hello </dev/null ||
   ( [ -n "${L}" ] && echo "${L}" && false ) >&2 ||
   die -t ${T} "cleanup hello"
-B="`adb_cat /system/hello`"
-check_eq "cat: /system/hello: No such file or directory" "${B}" after rm
-B="`adb_cat /system/priv-app/hello`"
-check_eq "cat: /system/priv-app/hello: No such file or directory" "${B}" after rm
-B="`adb_cat /vendor/hello`"
-check_eq "cat: /vendor/hello: No such file or directory" "${B}" after rm
+adb_test -e /system/hello &&
+  die "/system/hello lingers after rm"
+adb_test -e /system/priv-app/hello &&
+  die "/system/priv-app/hello lingers after rm"
+adb_test -e /vendor/hello &&
+  die "/vendor/hello lingers after rm"
 for i in ${MOUNTS}; do
   adb_sh rm ${i}/hello </dev/null 2>/dev/null || true
 done
