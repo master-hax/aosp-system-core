@@ -34,6 +34,24 @@
       "parentUuid": "bee23f4f_eb7e82ad",
       "revId": "275b425e98c8e30ff25307f5396dcbd893bf3386",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "faf189f5_211e8c2a",
+        "filename": "init/persistent_properties.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 168,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-08-25T13:45:56Z",
+      "side": 1,
+      "message": "SG. If we log any error and continue, but not error out, then after the properties got write back, the illegal properties would be dropped.",
+      "parentUuid": "d26f9ab0_9e754246",
+      "revId": "275b425e98c8e30ff25307f5396dcbd893bf3386",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
