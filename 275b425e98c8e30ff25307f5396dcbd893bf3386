@@ -106,6 +106,24 @@
       "parentUuid": "fc6ad5e5_7f9f11ec",
       "revId": "275b425e98c8e30ff25307f5396dcbd893bf3386",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "663ffafb_07df18c7",
+        "filename": "init/persistent_properties.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 168,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-08-26T01:49:37Z",
+      "side": 1,
+      "message": "No. If one could add a non persist prop to the file, they are mostly likely to have the ability to delete persist props in the file. In that sense, my suggestion doesn\u0027t many anything safer. I admit that.\n\nHowever, I think that a parser in general should be flexible so that a single error in the input shouldn\u0027t invalidate the entire input. If the parser could successfully parse the \"other\" part of the input, I think we would want to accept that.\n\nNevertheless, I think I don\u0027t have a strong opinion here. I feel fine as long as we do NOT accept non-persist props from this file, which is what this CL does.",
+      "parentUuid": "59e0efdc_bf07515d",
+      "revId": "275b425e98c8e30ff25307f5396dcbd893bf3386",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
