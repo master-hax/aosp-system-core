@@ -990,9 +990,9 @@ bool fs_mgr_overlayfs_make_scratch(const std::string& scratch_device, const std:
     // thus do not rely on fsck to correct problems that could creep in.
     auto command = ""s;
     if (mnt_type == "f2fs") {
-        command = kMkF2fs + " -w 4096 -f -d1 -l" + android::base::Basename(kScratchMountPoint);
+        command = kMkF2fs + " -w 16384 -f -d1 -l" + android::base::Basename(kScratchMountPoint);
     } else if (mnt_type == "ext4") {
-        command = kMkExt4 + " -F -b 4096 -t ext4 -m 0 -O has_journal -M " + kScratchMountPoint;
+        command = kMkExt4 + " -F -b 16384 -t ext4 -m 0 -O has_journal -M " + kScratchMountPoint;
     } else {
         LERROR << mnt_type << " has no mkfs cookbook";
         return false;
