@@ -88,6 +88,24 @@
       "parentUuid": "12275996_9c0327bf",
       "revId": "275b425e98c8e30ff25307f5396dcbd893bf3386",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "59e0efdc_bf07515d",
+        "filename": "init/persistent_properties.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 168,
+      "author": {
+        "id": 1060907
+      },
+      "writtenOn": "2022-08-26T00:22:44Z",
+      "side": 1,
+      "message": "Is there a process that has the power to do that, but doesn\u0027t have the power to delete the properties file or delete or empty all of its contents?",
+      "parentUuid": "fc6ad5e5_7f9f11ec",
+      "revId": "275b425e98c8e30ff25307f5396dcbd893bf3386",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
