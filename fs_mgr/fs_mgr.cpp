@@ -522,7 +522,7 @@ static void tune_verity(const std::string& blk_device, const FstabEntry& entry,
 
     LINFO << "Enabling ext4 verity on " << blk_device;
 
-    const char* argv[] = {TUNE2FS_BIN, "-O", "verity", blk_device.c_str()};
+    const char* argv[] = {TUNE2FS_BIN, blk_device.c_str()};
     if (!run_command(argv, ARRAY_SIZE(argv))) {
         LERROR << "Failed to run " TUNE2FS_BIN " to enable "
                << "ext4 verity on " << blk_device;
