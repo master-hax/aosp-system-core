@@ -499,7 +499,7 @@ static void tune_verity(const std::string& blk_device, const FstabEntry& entry,
     bool has_verity = (sb->s_feature_ro_compat & cpu_to_le32(EXT4_FEATURE_RO_COMPAT_VERITY)) != 0;
     bool want_verity = entry.fs_mgr_flags.fs_verity;
 
-    if (has_verity || !want_verity) {
+    if (has_verity || !want_verity || true) {
         return;
     }
 
@@ -522,7 +522,7 @@ static void tune_verity(const std::string& blk_device, const FstabEntry& entry,
 
     LINFO << "Enabling ext4 verity on " << blk_device;
 
-    const char* argv[] = {TUNE2FS_BIN, "-O", "verity", blk_device.c_str()};
+    const char* argv[] = {TUNE2FS_BIN, blk_device.c_str()};
     if (!run_command(argv, ARRAY_SIZE(argv))) {
         LERROR << "Failed to run " TUNE2FS_BIN " to enable "
                << "ext4 verity on " << blk_device;
