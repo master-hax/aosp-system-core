@@ -71,6 +71,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "5df57a37_c59ef7b6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 16
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-08-26T20:13:28Z",
+      "side": 1,
+      "message": "Thanks for the feedback. Let\u0027s mark this comment thread as resolved.",
+      "parentUuid": "a28f137b_6074935c",
+      "revId": "fcf047113f2bd8f2c37b0351006927da7a5eec99",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "5244aa2d_e57e734f",
