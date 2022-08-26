@@ -37,6 +37,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "18934f96_87e842ee",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 16
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-08-26T17:48:19Z",
+      "side": 1,
+      "message": "I ran presubmit twice and each time the following test failed: \"v2/android-ota/cf_incremental_s_to_but on aosp_cf_x86_64_phone-userdebug on aosp-master\". The following bug shows that this test is broken: https://b.corp.google.com/issues/237581453#comment20. Do you perhaps want me to wait until that test has been fixed?",
+      "parentUuid": "e17e71e2_02bcaa3a",
+      "revId": "fcf047113f2bd8f2c37b0351006927da7a5eec99",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "5244aa2d_e57e734f",
         "filename": "init/service.cpp",
         "patchSetId": 16
@@ -48,6 +66,30 @@
       "writtenOn": "2022-08-25T23:21:38Z",
       "side": 1,
       "message": "I see that Suren +2\u0027ed this and he owns this area, so I don\u0027t intend to raise an issue. This is rather for my own understanding:\n\nIs this an inherited property? What if this service fork/execs other processes by itself? Do they have the NormalIoPriority? If so, why can\u0027t we do this for the init process and forget about it?",
+      "range": {
+        "startLine": 658,
+        "startChar": 7,
+        "endLine": 658,
+        "endChar": 61
+      },
+      "revId": "fcf047113f2bd8f2c37b0351006927da7a5eec99",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "76123198_78d3a8a5",
+        "filename": "init/service.cpp",
+        "patchSetId": 16
+      },
+      "lineNbr": 658,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-08-26T17:48:19Z",
+      "side": 1,
+      "message": "That\u0027s a great question. A child process created by fork() inherits its parent\u0027s cgroup memberships. When creating a new cgroup, the default values for cgroup parameters are unrelated to the process that creates the cgroup.",
+      "parentUuid": "5244aa2d_e57e734f",
       "range": {
         "startLine": 658,
         "startChar": 7,
