@@ -93,6 +93,8 @@ char* locale;
 
 #define LAST_KMSG_MAX_SZ (32 * 1024)
 
+#define USER_SHUTDOWN "/sys/devices/platform/google,battery/power_supply/battery/user_shutdown"
+
 #define LOGE(x...) KLOG_ERROR("charger", x);
 #define LOGW(x...) KLOG_WARNING("charger", x);
 #define LOGV(x...) KLOG_DEBUG("charger", x);
@@ -562,6 +564,7 @@ void Charger::HandlePowerSupplyState(int64_t now) {
                  now, (int64_t)timer_shutdown, next_pwr_check_);
         } else if (now >= next_pwr_check_) {
             LOGW("[%" PRId64 "] shutting down\n", now);
+            base::WriteStringToFile("1", USER_SHUTDOWN);
             reboot(RB_POWER_OFF);
         } else {
             /* otherwise we already have a shutdown timer scheduled */
