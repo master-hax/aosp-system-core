@@ -1,5 +1,23 @@
 {
-  "comments": [],
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "993477d7_cbf6b6b4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1229339
+      },
+      "writtenOn": "2022-08-29T20:56:55Z",
+      "side": 1,
+      "message": "FWIW: The `const KeyedEntry*` vs `KeyedEntry*` also seemed suspicious to me.\n\nIt looks like the only purpose of `std::unary_function` and `std::binary_function` is to declare typedefs in the class (`result_type`, `argument_type`, `first_argument_type`, `second_argument_type`). The default hash and equality types for std::unordered_set are `std::hash\u003cKey\u003e` and `std::equal_to\u003cKey\u003e`, which also used to provide those member typedefs, but it looks like they\u0027ve been deprecated in C++17 and removed in C++20.\n\nhttps://en.cppreference.com/w/cpp/container/unordered_set\nhttps://en.cppreference.com/w/cpp/utility/hash\nhttps://en.cppreference.com/w/cpp/utility/functional/equal_to\n",
+      "revId": "4913ca88e5929a59aecd1b5249abfc8542537faf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ],
   "submitRequirementResults": [
     {
       "submitRequirement": {
