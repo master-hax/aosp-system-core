@@ -16,6 +16,29 @@
       "message": "Added a TODO action item for testing actions in vendor Apexes",
       "revId": "31f21739110eb641f233d1385396969fd6bef7da",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0d99ef16_7fba4a59",
+        "filename": "init/init_test.cpp",
+        "patchSetId": 33
+      },
+      "lineNbr": 274,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2022-08-29T23:43:49Z",
+      "side": 1,
+      "message": "nit: two alternatives to these new methods to ServiceList/ActionManager from testing perspective\n- using existing methods: e.g `RemoveIf(always_true)`\n- using dependency injection: for now, new functions (-FromApex) rely on global variable (e.g. ServiceList::GetInstance()). We could pass them as parameters so that test code passes local instances to them.",
+      "range": {
+        "startLine": 273,
+        "startChar": 0,
+        "endLine": 274,
+        "endChar": 41
+      },
+      "revId": "31f21739110eb641f233d1385396969fd6bef7da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
