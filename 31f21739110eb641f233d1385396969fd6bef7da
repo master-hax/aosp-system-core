@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "395780fb_1ddf6906",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 33
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1895890
+      },
+      "writtenOn": "2022-08-29T23:26:26Z",
+      "side": 1,
+      "message": "Added a TODO action item for testing actions in vendor Apexes",
+      "revId": "31f21739110eb641f233d1385396969fd6bef7da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
