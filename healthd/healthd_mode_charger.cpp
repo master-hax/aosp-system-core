@@ -326,7 +326,7 @@ void Charger::UpdateScreenState(int64_t now) {
     disp_time = batt_anim_.frames[batt_anim_.cur_frame].disp_time;
 
     /* turn off all screen */
-    if (screen_switch_ == SCREEN_SWITCH_ENABLE) {
+    if (screen_switch_ != SCREEN_SWITCH_DISABLE) {
         healthd_draw_->blank_screen(true, 0 /* drm */);
         healthd_draw_->blank_screen(true, 1 /* drm */);
         healthd_draw_->rotate_screen(static_cast<int>(drm_));
