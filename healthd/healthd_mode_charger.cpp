@@ -325,6 +325,19 @@ void Charger::UpdateScreenState(int64_t now) {
 
     disp_time = batt_anim_.frames[batt_anim_.cur_frame].disp_time;
 
+    /* turn off charging icon in OUTER */
+    if (healthd_draw_->has_multiple_connectors()) {
+        if (screen_switch_ == SCREEN_SWITCH_DEFAULT) {
+            if (drm_ == DRM_INNER) {
+                healthd_draw_->blank_screen(false, 1 /* drm */);
+                healthd_draw_->blank_screen(true, 1 /* drm */);
+            } else {
+                healthd_draw_->blank_screen(false, 0 /* drm */);
+                healthd_draw_->blank_screen(true, 0 /* drm */);
+            }
+        }
+    }
+
     /* turn off all screen */
     if (screen_switch_ == SCREEN_SWITCH_ENABLE) {
         healthd_draw_->blank_screen(true, 0 /* drm */);
@@ -440,13 +453,15 @@ int Charger::SetKeyCallback(int code, int value) {
 
 int Charger::SetSwCallback(int code, int value) {
     if (code > SW_MAX) return -1;
-    if (code == SW_LID) {
-        if ((screen_switch_ == SCREEN_SWITCH_DEFAULT) || ((value != 0) && (drm_ == DRM_INNER)) ||
-            ((value == 0) && (drm_ == DRM_OUTER))) {
-            screen_switch_ = SCREEN_SWITCH_ENABLE;
-            drm_ = (value != 0) ? DRM_OUTER : DRM_INNER;
-            keys_[code].pending = true;
-        }
+    if (code != SW_LID) return 0;
+    /* detect dual display */
+    if (!gr_has_multiple_connectors()) return -1;
+
+    if ((screen_switch_ == SCREEN_SWITCH_DEFAULT) || ((value != 0) && (drm_ == DRM_INNER)) ||
+        ((value == 0) && (drm_ == DRM_OUTER))) {
+        screen_switch_ = SCREEN_SWITCH_ENABLE;
+        drm_ = (value != 0) ? DRM_OUTER : DRM_INNER;
+        keys_[code].pending = true;
     }
 
     return 0;
