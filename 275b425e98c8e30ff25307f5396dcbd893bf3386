@@ -124,6 +124,24 @@
       "parentUuid": "59e0efdc_bf07515d",
       "revId": "275b425e98c8e30ff25307f5396dcbd893bf3386",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "58133cd3_08260627",
+        "filename": "init/persistent_properties.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 168,
+      "author": {
+        "id": 1291338
+      },
+      "writtenOn": "2022-08-29T01:33:53Z",
+      "side": 1,
+      "message": "It\u0027s quite likely that containing properties other than \"persist.\" means the file is invalid. I don\u0027t think we can get something from partially accepting the file.",
+      "parentUuid": "663ffafb_07df18c7",
+      "revId": "275b425e98c8e30ff25307f5396dcbd893bf3386",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
