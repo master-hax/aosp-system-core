@@ -288,6 +288,21 @@ static void reset_animation(animation* anim) {
     anim->cur_frame = 0;
     anim->run = false;
 }
+void Charger::BlankMultipleScreen() {
+    if (healthd_draw_->has_multiple_connectors() && !init_screen_) {
+        /* blank the second screen */
+        if (drm_ == DRM_INNER) {
+            healthd_draw_->blank_screen(false, 1 /* drm */);
+            healthd_draw_->redraw_screen(&batt_anim_, surf_unknown_);
+            healthd_draw_->blank_screen(true, 1 /* drm */);
+        } else {
+            healthd_draw_->blank_screen(false, 0 /* drm */);
+            healthd_draw_->redraw_screen(&batt_anim_, surf_unknown_);
+            healthd_draw_->blank_screen(true, 0 /* drm */);
+        }
+    }
+    init_screen_ = true;
+}
 
 void Charger::UpdateScreenState(int64_t now) {
     int disp_time;
@@ -315,6 +330,7 @@ void Charger::UpdateScreenState(int64_t now) {
         reset_animation(&batt_anim_);
         next_screen_transition_ = -1;
         healthd_draw_->blank_screen(true, static_cast<int>(drm_));
+        BlankMultipleScreen();
         screen_blanked_ = true;
         LOGV("[%" PRId64 "] animation done\n", now);
         if (configuration_->ChargerIsOnline()) {
@@ -440,13 +456,15 @@ int Charger::SetKeyCallback(int code, int value) {
 
 int Charger::SetSwCallback(int code, int value) {
     if (code > SW_MAX) return -1;
-    if (code == SW_LID) {
-        if ((screen_switch_ == SCREEN_SWITCH_DEFAULT) || ((value != 0) && (drm_ == DRM_INNER)) ||
-            ((value == 0) && (drm_ == DRM_OUTER))) {
-            screen_switch_ = SCREEN_SWITCH_ENABLE;
-            drm_ = (value != 0) ? DRM_OUTER : DRM_INNER;
-            keys_[code].pending = true;
-        }
+    if (code != SW_LID) return 0;
+    /* detect dual display */
+    if (!healthd_draw_->has_multiple_connectors()) return -1;
+
+    if ((screen_switch_ == SCREEN_SWITCH_DEFAULT) || ((value != 0) && (drm_ == DRM_INNER)) ||
+        ((value == 0) && (drm_ == DRM_OUTER))) {
+        screen_switch_ = SCREEN_SWITCH_ENABLE;
+        drm_ = (value != 0) ? DRM_OUTER : DRM_INNER;
+        keys_[code].pending = true;
     }
 
     return 0;
