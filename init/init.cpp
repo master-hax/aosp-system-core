@@ -1091,7 +1091,7 @@ int SecondStageMain(int argc, char** argv) {
 
     // Don't mount filesystems or start core system services in charger mode.
     std::string bootmode = GetProperty("ro.bootmode", "");
-    if (bootmode == "charger") {
+    if (!IsRecoveryMode() && bootmode == "charger") {
         am.QueueEventTrigger("charger");
     } else {
         am.QueueEventTrigger("late-init");
