@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "3e982f12_708053dc",
+        "filename": "fastboot/device/usb.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 184,
+      "author": {
+        "id": 1963052
+      },
+      "writtenOn": "2022-08-30T19:57:41Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b47fc66e_0e16d2d7",
+      "revId": "9e6a9bd30693b4981f9fc94f46f744868878e236",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "6c6531a9_a47eabe8",
