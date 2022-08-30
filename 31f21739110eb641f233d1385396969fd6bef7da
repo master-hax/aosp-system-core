@@ -53,6 +53,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "3cd7362f_5c9b393b",
+        "filename": "init/apex_init_util.cpp",
+        "patchSetId": 33
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1895890
+      },
+      "writtenOn": "2022-08-30T17:33:01Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0884677c_6f7101af",
+      "revId": "31f21739110eb641f233d1385396969fd6bef7da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "e8e6c7de_7845b68d",
@@ -100,6 +118,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "d1b6b0b3_13a70fb6",
+        "filename": "init/apex_init_util.cpp",
+        "patchSetId": 33
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 1895890
+      },
+      "writtenOn": "2022-08-30T17:33:01Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "49219504_a4a2611f",
+      "range": {
+        "startLine": 45,
+        "startChar": 0,
+        "endLine": 46,
+        "endChar": 18
+      },
+      "revId": "31f21739110eb641f233d1385396969fd6bef7da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a513b1f8_ea15773c",
@@ -113,6 +155,30 @@
       "writtenOn": "2022-08-30T01:25:04Z",
       "side": 1,
       "message": "empty() doesn\u0027t mean failure. Instead, please make CollectApexConfigs return `Result\u003cT\u003e` and check if it\u0027s an error.",
+      "range": {
+        "startLine": 85,
+        "startChar": 0,
+        "endLine": 88,
+        "endChar": 5
+      },
+      "revId": "31f21739110eb641f233d1385396969fd6bef7da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3777990d_354d9a60",
+        "filename": "init/apex_init_util.cpp",
+        "patchSetId": 33
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 1895890
+      },
+      "writtenOn": "2022-08-30T17:33:01Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a513b1f8_ea15773c",
       "range": {
         "startLine": 85,
         "startChar": 0,
@@ -148,6 +214,30 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "951c960c_9e77d3dd",
+        "filename": "init/apex_init_util.h",
+        "patchSetId": 33
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1895890
+      },
+      "writtenOn": "2022-08-30T17:33:01Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d06f3248_04726793",
+      "range": {
+        "startLine": 27,
+        "startChar": 0,
+        "endLine": 27,
+        "endChar": 74
+      },
+      "revId": "31f21739110eb641f233d1385396969fd6bef7da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "0d99ef16_7fba4a59",
         "filename": "init/init_test.cpp",
         "patchSetId": 33
@@ -159,6 +249,30 @@
       "writtenOn": "2022-08-29T23:43:49Z",
       "side": 1,
       "message": "nit: two alternatives to these new methods to ServiceList/ActionManager from testing perspective\n- using existing methods: e.g `RemoveIf(always_true)`\n- using dependency injection: for now, new functions (-FromApex) rely on global variable (e.g. ServiceList::GetInstance()). We could pass them as parameters so that test code passes local instances to them.",
+      "range": {
+        "startLine": 273,
+        "startChar": 0,
+        "endLine": 274,
+        "endChar": 41
+      },
+      "revId": "31f21739110eb641f233d1385396969fd6bef7da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a8a15161_f9246ddf",
+        "filename": "init/init_test.cpp",
+        "patchSetId": 33
+      },
+      "lineNbr": 274,
+      "author": {
+        "id": 1895890
+      },
+      "writtenOn": "2022-08-30T17:33:01Z",
+      "side": 1,
+      "message": "The first one was in my previous patches. I can get it back.\nFor the second point, StopServicesAndLogViolations use the global variable. And other functions in the same file StopServicesAndLogViolations is in also uses global functions. I thought I\u0027d keep the consistence there.",
+      "parentUuid": "0d99ef16_7fba4a59",
       "range": {
         "startLine": 273,
         "startChar": 0,
