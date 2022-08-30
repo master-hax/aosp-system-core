@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8f2e1c9c_a4056df0",
+        "filename": "fs_mgr/tests/adb-remount-test.sh",
+        "patchSetId": 7
+      },
+      "lineNbr": 813,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-08-30T00:15:25Z",
+      "side": 1,
+      "message": "As we refactor this, better variable names would be a huge bonus.",
+      "revId": "18cf966348c90a5c95ccd62b813e2c46612f7825",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
