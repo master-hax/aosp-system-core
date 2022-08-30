@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "a463d571_b0f1b529",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1094493
+      },
+      "writtenOn": "2022-08-30T01:18:00Z",
+      "side": 1,
+      "message": "Agreed, see my earlier comment. In short, it seems rather difficult to depend on bionic headers from libcutils, because libcutils is so widely used. I tried a few different ways, the most promising of which was to wrap code with `#ifdef __BIONIC__` and put the libasync_safe dependency within only bionic targets in the .bp (i.e. linux_bionic \u0026 android), but I ran into a bunch of build errors around APEX visibility of libasync_safe (which seemed to be the most minimal way to mark a dependency on fdsan, but maybe there\u0027s another way). Open to suggestions, as ideally this would just live in the existing native_handle.h/.cpp files...",
+      "parentUuid": "afb3e2ec_ecf98d98",
+      "range": {
+        "startLine": 9,
+        "startChar": 11,
+        "endLine": 9,
+        "endChar": 19
+      },
+      "revId": "43a144d792581cd223c05b4fdd222dbcb1c77bb4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "17ed0ea0_1c5fbc19",
