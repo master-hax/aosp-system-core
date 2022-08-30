@@ -37,6 +37,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "0884677c_6f7101af",
+        "filename": "init/apex_init_util.cpp",
+        "patchSetId": 33
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2022-08-30T01:25:04Z",
+      "side": 1,
+      "message": "+1",
+      "parentUuid": "9db1dda6_beaaad08",
+      "revId": "31f21739110eb641f233d1385396969fd6bef7da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "e8e6c7de_7845b68d",
         "filename": "init/apex_init_util.cpp",
         "patchSetId": 33
@@ -53,6 +71,53 @@
         "startChar": 0,
         "endLine": 46,
         "endChar": 18
+      },
+      "revId": "31f21739110eb641f233d1385396969fd6bef7da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "49219504_a4a2611f",
+        "filename": "init/apex_init_util.cpp",
+        "patchSetId": 33
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2022-08-30T01:25:04Z",
+      "side": 1,
+      "message": "+1",
+      "parentUuid": "e8e6c7de_7845b68d",
+      "range": {
+        "startLine": 45,
+        "startChar": 0,
+        "endLine": 46,
+        "endChar": 18
+      },
+      "revId": "31f21739110eb641f233d1385396969fd6bef7da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a513b1f8_ea15773c",
+        "filename": "init/apex_init_util.cpp",
+        "patchSetId": 33
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2022-08-30T01:25:04Z",
+      "side": 1,
+      "message": "empty() doesn\u0027t mean failure. Instead, please make CollectApexConfigs return `Result\u003cT\u003e` and check if it\u0027s an error.",
+      "range": {
+        "startLine": 85,
+        "startChar": 0,
+        "endLine": 88,
+        "endChar": 5
       },
       "revId": "31f21739110eb641f233d1385396969fd6bef7da",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
