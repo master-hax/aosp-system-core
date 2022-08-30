@@ -23,7 +23,7 @@ phony {
         "logwrapper",
         "mini-keyctl",
         "mkfs.exfat",
-        "mkshrc",
+        "mkshrc_prebuilt",
         "newfs_msdos",
         "reboot",
         "settaskprofile",
@@ -52,7 +52,7 @@ phony {
     required: [
         "awk_vendor",
         "logwrapper_vendor",
-        "mkshrc_vendor",
+        "mkshrc_vendor_prebuilt",
         "sh_vendor",
         "toolbox_vendor",
         "toybox_vendor",
