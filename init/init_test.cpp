@@ -543,10 +543,10 @@ TEST(init, RespondToCtlApexMessages) {
 
     std::string apex_name = "com.android.apex.cts.shim";
     SetProperty("ctl.apex_unload", apex_name);
-    EXPECT_TRUE(WaitForProperty("init.apex." + apex_name, "unloaded", 10s));
+    EXPECT_TRUE(WaitForProperty("apex." + apex_name + ".ready", "false", 10s));
 
     SetProperty("ctl.apex_load", apex_name);
-    EXPECT_TRUE(WaitForProperty("init.apex." + apex_name, "loaded", 10s));
+    EXPECT_TRUE(WaitForProperty("apex." + apex_name + ".ready", "true", 10s));
 }
 
 TEST(init, RejectsCriticalAndOneshotService) {
