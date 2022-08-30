@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "74ce73c5_65db108d",
+        "filename": "fs_mgr/tests/adb-remount-test.sh",
+        "patchSetId": 14
+      },
+      "lineNbr": 995,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-08-30T00:20:08Z",
+      "side": 1,
+      "message": "I think we should let \"adb remount\" internals decide whether this is needed or not, and not have the test poke at it specifically. Since it\u0027s pre-existing it doesn\u0027t have to be changed here though.",
+      "revId": "6ddf00772cdbce24d3aac46c91901b19e5b6da52",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
