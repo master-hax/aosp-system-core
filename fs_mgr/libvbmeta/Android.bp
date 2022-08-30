@@ -51,7 +51,7 @@ cc_test_host {
         "super_vbmeta_test.cpp",
     ],
     required: [
-        "avbtool",
+        "avbtool_lib",
         "vbmake",
     ],
     data: [

@@ -27,7 +27,7 @@ prebuilt_etc {
 }
 
 prebuilt_etc {
-    name: "cgroups.recovery.json",
+    name: "cgroups.recovery.json_lib",
     filename: "cgroups.json",
     recovery: true,
     src: "cgroups.recovery.json",
@@ -56,7 +56,7 @@ prebuilt_etc {
     src: "task_profiles.json",
     required: [
         "task_profiles_28.json",
-        "task_profiles_29.json",
+        "task_profiles_29.json_lib",
         "task_profiles_30.json",
     ],
 }
@@ -68,7 +68,7 @@ prebuilt_etc {
 }
 
 prebuilt_etc {
-    name: "task_profiles_29.json",
+    name: "task_profiles_29.json_lib",
     src: "task_profiles_29.json",
     sub_dir: "task_profiles",
 }
