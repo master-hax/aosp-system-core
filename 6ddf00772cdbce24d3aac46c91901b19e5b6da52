@@ -16,6 +16,24 @@
       "message": "I think we should let \"adb remount\" internals decide whether this is needed or not, and not have the test poke at it specifically. Since it\u0027s pre-existing it doesn\u0027t have to be changed here though.",
       "revId": "6ddf00772cdbce24d3aac46c91901b19e5b6da52",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6c04b778_c943ca1d",
+        "filename": "fs_mgr/tests/adb-remount-test.sh",
+        "patchSetId": 14
+      },
+      "lineNbr": 995,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-08-30T19:06:10Z",
+      "side": 1,
+      "message": "we could just check if there is anything under /mnt/scratch/overlay/... after disable-verity to decide if device uses overlayfs?",
+      "parentUuid": "74ce73c5_65db108d",
+      "revId": "6ddf00772cdbce24d3aac46c91901b19e5b6da52",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
