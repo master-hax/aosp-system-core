@@ -22,6 +22,30 @@
       },
       "revId": "0c9f57fecfe1b3aa481dea2bb0a657a7190f5ebe",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8d0febee_fd67656d",
+        "filename": "fs_mgr/tests/adb-remount-test.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 1254,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-08-30T00:31:31Z",
+      "side": 1,
+      "message": "I can\u0027t think of a reason to force ourselves to use sh here. This test doesn\u0027t run on device, and neither bash nor sh are hermetic in the build. So as long as it runs on TreeHugger I think we\u0027re good?",
+      "parentUuid": "291f6386_b4eb5b8f",
+      "range": {
+        "startLine": 1254,
+        "startChar": 7,
+        "endLine": 1254,
+        "endChar": 9
+      },
+      "revId": "0c9f57fecfe1b3aa481dea2bb0a657a7190f5ebe",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
