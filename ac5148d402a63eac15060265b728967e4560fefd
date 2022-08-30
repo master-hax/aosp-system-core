@@ -16,6 +16,24 @@
       "message": "What on earth... and why does it need to modify such a critical library to test this? 😄",
       "revId": "ac5148d402a63eac15060265b728967e4560fefd",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "221e3e9a_3e77b75d",
+        "filename": "fs_mgr/tests/adb-remount-test.sh",
+        "patchSetId": 11
+      },
+      "lineNbr": 1302,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-08-30T19:01:46Z",
+      "side": 1,
+      "message": "apparently adding junk to the end of ELF file is safe...\n\nI\u0027ve dug through the change history. Looks like during Android P/Q there are special mount settings for bootstrap/libc.so (which bind mounts to /bionic or whatever crazy stuff), so this test was actually also testing /bionic mountpoints.\n(@jiyong this test case) \nI think the /bionic mount stuff is no longer relevant, even for upgrading devices? \nBut this test still tests overlay file modification, so it\u0027s still doing something, it\u0027s just that we no longer _have_ to modify libc.so.\n\nMaybe we could modify this test to modify something more harmless, like appending comments to build.prop and whatnot",
+      "parentUuid": "180dfd4c_6880bdcd",
+      "revId": "ac5148d402a63eac15060265b728967e4560fefd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
