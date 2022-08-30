@@ -81,10 +81,7 @@ static Result<void> ParseConfigs(const std::vector<std::string>& configs) {
 }
 
 Result<void> ParseApexConfigs(const std::string& apex_name) {
-    Result<std::vector<std::string>> configs = CollectApexConfigs(apex_name);
-    if (!configs.ok()) {
-        return configs.error();
-    }
+    Result<std::vector<std::string>> configs = OR_RETURN(CollectApexConfigs(apex_name));
 
     if (configs.value().empty()) {
         return {};
