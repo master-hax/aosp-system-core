@@ -18,6 +18,69 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "9db1dda6_beaaad08",
+        "filename": "init/apex_init_util.cpp",
+        "patchSetId": 33
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-08-30T01:08:36Z",
+      "side": 1,
+      "message": "make static?",
+      "revId": "31f21739110eb641f233d1385396969fd6bef7da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e8e6c7de_7845b68d",
+        "filename": "init/apex_init_util.cpp",
+        "patchSetId": 33
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-08-30T01:08:36Z",
+      "side": 1,
+      "message": "This looks odd. The error message says this is an error, but a success value is returned.",
+      "range": {
+        "startLine": 45,
+        "startChar": 0,
+        "endLine": 46,
+        "endChar": 18
+      },
+      "revId": "31f21739110eb641f233d1385396969fd6bef7da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d06f3248_04726793",
+        "filename": "init/apex_init_util.h",
+        "patchSetId": 33
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-08-30T01:08:36Z",
+      "side": 1,
+      "message": "Remove this declaration? I see that this function is used only inside apex_init_util.cpp.",
+      "range": {
+        "startLine": 27,
+        "startChar": 0,
+        "endLine": 27,
+        "endChar": 74
+      },
+      "revId": "31f21739110eb641f233d1385396969fd6bef7da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "0d99ef16_7fba4a59",
