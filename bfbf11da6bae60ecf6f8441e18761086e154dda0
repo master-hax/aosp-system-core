@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cd8a5a7e_0a030d95",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 16
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-08-30T00:21:11Z",
+      "side": 1,
+      "message": "nit: \"adb\"",
+      "revId": "bfbf11da6bae60ecf6f8441e18761086e154dda0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
