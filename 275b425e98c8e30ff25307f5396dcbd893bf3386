@@ -160,6 +160,24 @@
       "parentUuid": "58133cd3_08260627",
       "revId": "275b425e98c8e30ff25307f5396dcbd893bf3386",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "28897c65_8172bd23",
+        "filename": "init/persistent_properties.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 168,
+      "author": {
+        "id": 1291338
+      },
+      "writtenOn": "2022-08-30T07:42:34Z",
+      "side": 1,
+      "message": "marking as resolved.",
+      "parentUuid": "7b51925c_a92fe3e8",
+      "revId": "275b425e98c8e30ff25307f5396dcbd893bf3386",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
