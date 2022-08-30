@@ -74,14 +74,14 @@ genrule {
 
 // Genrules for test vendor boot images.
 
-fastboot_sign_test_image = "$(location avbtool) add_hash_footer --salt 00 --image $(out) " +
+fastboot_sign_test_image = "$(location avbtool_lib) add_hash_footer --salt 00 --image $(out) " +
     "--partition_name vendor_boot --partition_size $$(( 1 * 1024 * 1024 ))"
 
 genrule_defaults {
     name: "fastboot_test_vendor_boot_gen_defaults",
     defaults: ["fastboot_test_data_gen_defaults"],
     tools: [
-        "avbtool",
+        "avbtool_lib",
         "mkbootimg",
     ],
 }

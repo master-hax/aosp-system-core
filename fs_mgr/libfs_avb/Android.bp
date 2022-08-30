@@ -63,7 +63,7 @@ cc_library_static {
 cc_defaults {
     name: "libfs_avb_host_test_defaults",
     required: [
-        "avbtool",
+        "avbtool_lib",
     ],
     data: [
         "tests/data/*",
@@ -112,7 +112,7 @@ cc_test_host {
     ],
     compile_multilib: "first",
     data: [
-        ":avbtool",
+        ":avbtool_lib",
         ":fec",
     ],
     srcs: [
@@ -134,7 +134,7 @@ cc_test_host {
     ],
     compile_multilib: "first",
     data: [
-        ":avbtool",
+        ":avbtool_lib",
         ":fec",
     ],
     srcs: [
