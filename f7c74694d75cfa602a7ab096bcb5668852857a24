@@ -16,6 +16,23 @@
       "message": "inseob@ is away today so I thought I\u0027d have a go at making the change discussed here, and adding a test - hope that\u0027s OK!",
       "revId": "f7c74694d75cfa602a7ab096bcb5668852857a24",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1bd22c53_1549dbb9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1291338
+      },
+      "writtenOn": "2022-08-30T05:57:08Z",
+      "side": 1,
+      "message": "Ping for review",
+      "revId": "f7c74694d75cfa602a7ab096bcb5668852857a24",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
