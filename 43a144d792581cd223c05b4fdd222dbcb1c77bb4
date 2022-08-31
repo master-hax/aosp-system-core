@@ -48,6 +48,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "2e5181ce_fd3eff23",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-08-31T21:57:43Z",
+      "side": 1,
+      "message": "libasync_safe is already available to _some_ apexes [citation needed? https://source.corp.google.com/android/bionic/libc/async_safe/Android.bp;l\u003d32?q\u003dlibasync_safe\u0026sq\u003dpackage:%5Eandroid$], so i don\u0027t think we\u0027d have any issues opening that up to all apexes? (other than that, \"what you did sounds about right to me\" :-) )",
+      "parentUuid": "a463d571_b0f1b529",
+      "range": {
+        "startLine": 9,
+        "startChar": 11,
+        "endLine": 9,
+        "endChar": 19
+      },
+      "revId": "43a144d792581cd223c05b4fdd222dbcb1c77bb4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "17ed0ea0_1c5fbc19",
