@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "de7209ab_798798a2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2022-08-31T16:36:16Z",
+      "side": 1,
+      "message": "This seems to belong to a different topic: adding a new property for apex readiness. The other two in this topic is about removing unnecessary props (loaded/unloaded).\n\nAdding a new readiness property needs a test case as well.",
+      "revId": "9c9c237d9c1498b74b781448a304717d16809cfe",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0652956f_01619af2",
+        "filename": "init/init.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 490,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2022-08-31T16:36:16Z",
+      "side": 1,
+      "message": "apex.* props are supposed to be set by apexd?\nNote that apexd controls the installation/update process.",
+      "range": {
+        "startLine": 490,
+        "startChar": 0,
+        "endLine": 490,
+        "endChar": 57
+      },
+      "revId": "9c9c237d9c1498b74b781448a304717d16809cfe",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c5547bb8_42536f2f",
+        "filename": "init/init.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 522,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2022-08-31T16:36:16Z",
+      "side": 1,
+      "message": "ditto.",
+      "range": {
+        "startLine": 522,
+        "startChar": 0,
+        "endLine": 522,
+        "endChar": 56
+      },
+      "revId": "9c9c237d9c1498b74b781448a304717d16809cfe",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
