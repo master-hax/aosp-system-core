@@ -33,6 +33,24 @@
       "message": "Ping",
       "revId": "10524f5665f8434aeb380a8458f0666cbf92fb0a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1dc9c8db_1f3adf45",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 20
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-08-31T18:39:13Z",
+      "side": 1,
+      "message": "i suspect there\u0027s a bit of a stand-off at the moment? i\u0027m waiting for dvander for the init side, but dvander\u0027s probably waiting for eugenis for the mte side?",
+      "parentUuid": "c97a588a_9fa49bdb",
+      "revId": "10524f5665f8434aeb380a8458f0666cbf92fb0a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
