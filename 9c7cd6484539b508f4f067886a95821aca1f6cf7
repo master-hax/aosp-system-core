@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d14fcd8b_61ebeb50",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-08-31T13:28:21Z",
+      "side": 1,
+      "message": "unrelated, but looking at 1600+ lines of test written in shell script doesn\u0027t feel like I am living in 21st century. 😞\n\nI wish we had written this in a modern language and using a test framework. ",
+      "revId": "9c7cd6484539b508f4f067886a95821aca1f6cf7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
