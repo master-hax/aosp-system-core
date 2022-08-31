@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fa781e60_4824d063",
+        "filename": "init/apex_init_util.cpp",
+        "patchSetId": 34
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-08-31T03:45:54Z",
+      "side": 1,
+      "message": "nit: this could be shortened.\n\nauto configs \u003d OR_RETURN(CollectApexConfigs(apex_name));\nif (configs.empty()) {\n    return {};\n}",
+      "range": {
+        "startLine": 83,
+        "startChar": 0,
+        "endLine": 91,
+        "endChar": 5
+      },
+      "revId": "238e909349812382f26e0ccae2af1f77e049e1a9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
