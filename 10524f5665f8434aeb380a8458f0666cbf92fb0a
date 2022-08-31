@@ -69,6 +69,23 @@
       "parentUuid": "1dc9c8db_1f3adf45",
       "revId": "10524f5665f8434aeb380a8458f0666cbf92fb0a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8442a81e_55767478",
+        "filename": "init/service.cpp",
+        "patchSetId": 20
+      },
+      "lineNbr": 331,
+      "author": {
+        "id": 1005967
+      },
+      "writtenOn": "2022-08-31T20:47:37Z",
+      "side": 1,
+      "message": "Is it intentional to set the upgrade timer to 1 second?",
+      "revId": "10524f5665f8434aeb380a8458f0666cbf92fb0a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
