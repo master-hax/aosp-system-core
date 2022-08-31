@@ -2803,7 +2803,21 @@ void KillSnapuserd() {
 }  // namespace snapshot
 }  // namespace android
 
-int main(int argc, char** argv) {
+int main(int orig_argc, char** orig_argv) {
+    std::vector<std::string> argv_strings;
+    for (int i = 0; i < orig_argc; i++) {
+        argv_strings.emplace_back(orig_argv[i]);
+    }
+    argv_strings.emplace_back("--gtest_throw_on_failure");
+
+    std::vector<char*> argv_pointers;
+    for (auto& arg : argv_strings) {
+        argv_pointers.emplace_back(arg.data());
+    }
+
+    char** argv = argv_pointers.data();
+    int argc = (int)argv_pointers.size();
+
     ::testing::InitGoogleTest(&argc, argv);
     ::testing::AddGlobalTestEnvironment(new ::android::snapshot::SnapshotTestEnvironment());
     gflags::ParseCommandLineFlags(&argc, &argv, false);
