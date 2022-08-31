@@ -16,6 +16,23 @@
       "message": "+dvander for init...",
       "revId": "10524f5665f8434aeb380a8458f0666cbf92fb0a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c97a588a_9fa49bdb",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 20
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2022-08-31T18:07:54Z",
+      "side": 1,
+      "message": "Ping",
+      "revId": "10524f5665f8434aeb380a8458f0666cbf92fb0a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
