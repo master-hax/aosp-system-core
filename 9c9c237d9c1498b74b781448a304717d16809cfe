@@ -67,6 +67,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "18ea67f3_41c27f30",
+        "filename": "init/init.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 490,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2022-09-01T02:14:16Z",
+      "side": 1,
+      "message": "For now, it\u0027s basically the same. But please be sure that apexd manages the whole process of installation. In case apexd adds additional steps around ctl.apex_(un)load as part of installation, then setting `apex.foo.ready` by init won\u0027t be correct any longer.",
+      "parentUuid": "626f47c1_0c961f2b",
+      "range": {
+        "startLine": 490,
+        "startChar": 0,
+        "endLine": 490,
+        "endChar": 57
+      },
+      "revId": "9c9c237d9c1498b74b781448a304717d16809cfe",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "c5547bb8_42536f2f",
         "filename": "init/init.cpp",
         "patchSetId": 1
