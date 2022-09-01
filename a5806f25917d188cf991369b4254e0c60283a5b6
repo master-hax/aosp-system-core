@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6349c91f_917d0abc",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1137063
+      },
+      "writtenOn": "2022-09-01T18:50:35Z",
+      "side": 1,
+      "message": "If this is a work-in-progress change, can you please explicitly mark it with the WIP attribute on Gerrit so that it doesn\u0027t show up as needing review?  Thanks!",
+      "revId": "a5806f25917d188cf991369b4254e0c60283a5b6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
