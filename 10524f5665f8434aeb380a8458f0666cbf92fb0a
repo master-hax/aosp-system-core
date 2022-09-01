@@ -71,6 +71,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "19648b32_09800019",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 20
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2022-09-01T00:24:38Z",
+      "side": 1,
+      "message": "Done on both counts.",
+      "parentUuid": "36e7e9d4_bca62d2e",
+      "revId": "10524f5665f8434aeb380a8458f0666cbf92fb0a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "8442a81e_55767478",
