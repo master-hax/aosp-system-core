@@ -105,6 +105,30 @@
       "parentUuid": "d68ebb8e_6ff29838",
       "revId": "7bb2d185d6e701f683d18afa4c7e22e5279324eb",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4e2241ab_e5a4a1d6",
+        "filename": "init/apex_init_util.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-09-01T03:54:50Z",
+      "side": 1,
+      "message": "T should work. Please see the intended usage at [1]. You will also need to drop `.value()` at line#86 and #90 to satisfy the compiler.\n\n[1] https://cs.android.com/android/platform/superproject/+/master:system/libbase/include/android-base/errors.h;drc\u003d6a6a7e5d862a0b8a2258bd0d2d1f182ca830946c;l\u003d55",
+      "parentUuid": "7846a0bf_f1269f9d",
+      "range": {
+        "startLine": 84,
+        "startChar": 11,
+        "endLine": 84,
+        "endChar": 35
+      },
+      "revId": "7bb2d185d6e701f683d18afa4c7e22e5279324eb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
