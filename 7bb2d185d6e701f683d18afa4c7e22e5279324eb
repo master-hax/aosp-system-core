@@ -16,6 +16,29 @@
       "message": "Address jiyong\u0027s commit from previous CL",
       "revId": "7bb2d185d6e701f683d18afa4c7e22e5279324eb",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "46b58c1b_8a7da78c",
+        "filename": "init/apex_init_util.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2022-09-01T02:08:17Z",
+      "side": 1,
+      "message": "Is this supposed to be the inner type `vector\u003cstring\u003e`?",
+      "range": {
+        "startLine": 84,
+        "startChar": 11,
+        "endLine": 84,
+        "endChar": 35
+      },
+      "revId": "7bb2d185d6e701f683d18afa4c7e22e5279324eb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
