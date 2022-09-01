@@ -39,6 +39,30 @@
       },
       "revId": "7bb2d185d6e701f683d18afa4c7e22e5279324eb",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d1f27fea_11b71f14",
+        "filename": "init/apex_init_util.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-09-01T02:09:36Z",
+      "side": 1,
+      "message": "Yes, it should be T, not Result\u003cT\u003e.",
+      "parentUuid": "46b58c1b_8a7da78c",
+      "range": {
+        "startLine": 84,
+        "startChar": 11,
+        "endLine": 84,
+        "endChar": 35
+      },
+      "revId": "7bb2d185d6e701f683d18afa4c7e22e5279324eb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
