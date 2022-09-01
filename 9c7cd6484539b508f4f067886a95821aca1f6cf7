@@ -52,6 +52,24 @@
       "parentUuid": "7e5ca49c_e5fec31c",
       "revId": "9c7cd6484539b508f4f067886a95821aca1f6cf7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "db0dc520_653eb37e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-09-01T13:48:31Z",
+      "side": 1,
+      "message": "My experience with writing Java hostside tests are pretty bad TBH... the abstraction is weird and inconsistent, sometimes errors are thrown, sometimes errors are returned as exit code. IO related try-catch blocks are a nightmare to write, and adb-related abstractions are almost always related to IO.\n\nI\u0027m also traumatized by the constant 30s~2min *warm up* cost of `atest`. That\u0027s why I prefer python/bash/gtest. I\u0027d rather just do `subprocess.run([\u0027adb\u0027, ...])` than deal with Java *host* side test 😂",
+      "parentUuid": "edf8c1b0_4d0dab11",
+      "revId": "9c7cd6484539b508f4f067886a95821aca1f6cf7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
