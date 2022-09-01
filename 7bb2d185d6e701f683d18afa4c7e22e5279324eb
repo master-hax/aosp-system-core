@@ -129,6 +129,30 @@
       },
       "revId": "7bb2d185d6e701f683d18afa4c7e22e5279324eb",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "82a4268b_7944dd59",
+        "filename": "init/apex_init_util.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 1895890
+      },
+      "writtenOn": "2022-09-01T16:00:38Z",
+      "side": 1,
+      "message": "I got what you said last night. Will make changes. Thanks!",
+      "parentUuid": "4e2241ab_e5a4a1d6",
+      "range": {
+        "startLine": 84,
+        "startChar": 11,
+        "endLine": 84,
+        "endChar": 35
+      },
+      "revId": "7bb2d185d6e701f683d18afa4c7e22e5279324eb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
