@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d68ebb8e_6ff29838",
+        "filename": "init/apex_init_util.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 1895890
+      },
+      "writtenOn": "2022-09-01T02:07:37Z",
+      "side": 1,
+      "message": "Address jiyong\u0027s commit from previous CL",
+      "revId": "7bb2d185d6e701f683d18afa4c7e22e5279324eb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
