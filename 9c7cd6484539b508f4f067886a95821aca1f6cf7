@@ -70,6 +70,24 @@
       "parentUuid": "edf8c1b0_4d0dab11",
       "revId": "9c7cd6484539b508f4f067886a95821aca1f6cf7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "51368613_ba92568d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-09-01T16:45:40Z",
+      "side": 1,
+      "message": "(yeah, much as i hate shell scripts, this is exactly why i own a handful of scripts like this [albeit none nearly as large as this] --- junit buys me nothing and slows me down. the ndk folks prefer python for this kind of thing, but they have more python experts -- and have invested in things like custom parallel python runner infrastructure -- which tips the scales in favor of python there.)",
+      "parentUuid": "db0dc520_653eb37e",
+      "revId": "9c7cd6484539b508f4f067886a95821aca1f6cf7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
