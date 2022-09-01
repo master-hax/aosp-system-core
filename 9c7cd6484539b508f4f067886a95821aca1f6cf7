@@ -16,6 +16,24 @@
       "message": "unrelated, but looking at 1600+ lines of test written in shell script doesn\u0027t feel like I am living in 21st century. 😞\n\nI wish we had written this in a modern language and using a test framework. ",
       "revId": "9c7cd6484539b508f4f067886a95821aca1f6cf7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7e5ca49c_e5fec31c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-09-01T08:48:59Z",
+      "side": 1,
+      "message": "yeah writing this in python might be a tad more simple (friendlier string, int, list type) I was thinking about rewriting this all from scratch previously, but this test is basically a bunch of adb commands glued together, rewriting in python would pretty much end up with similar code.",
+      "parentUuid": "d14fcd8b_61ebeb50",
+      "revId": "9c7cd6484539b508f4f067886a95821aca1f6cf7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
