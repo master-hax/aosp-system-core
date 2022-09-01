@@ -1,0 +1,182 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b844a81b_d494a263",
+        "filename": "libcutils/include/cutils/native_handle.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-09-01T23:55:58Z",
+      "side": 1,
+      "message": "(remove these bits while you\u0027re here?)",
+      "revId": "6ad09ba0d78388685f0fa6e1fe4b3d7030c68c25",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6134cc49_f59b6e2c",
+        "filename": "libcutils/include/cutils/native_handle.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-09-01T23:55:58Z",
+      "side": 1,
+      "message": "fds (here and elsewhere)",
+      "range": {
+        "startLine": 57,
+        "startChar": 56,
+        "endLine": 57,
+        "endChar": 60
+      },
+      "revId": "6ad09ba0d78388685f0fa6e1fe4b3d7030c68c25",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "71a2c352_28b2e7ac",
+        "filename": "libcutils/include/cutils/native_handle.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-09-01T23:55:58Z",
+      "side": 1,
+      "message": "(say what happens?)",
+      "range": {
+        "startLine": 58,
+        "startChar": 19,
+        "endLine": 58,
+        "endChar": 35
+      },
+      "revId": "6ad09ba0d78388685f0fa6e1fe4b3d7030c68c25",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f10f0bf4_01c48254",
+        "filename": "libcutils/include/cutils/native_handle.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-09-01T23:55:58Z",
+      "side": 1,
+      "message": "E",
+      "range": {
+        "startLine": 67,
+        "startChar": 3,
+        "endLine": 67,
+        "endChar": 4
+      },
+      "revId": "6ad09ba0d78388685f0fa6e1fe4b3d7030c68c25",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "da645dbf_e5043734",
+        "filename": "libcutils/include/cutils/native_handle.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-09-01T23:55:58Z",
+      "side": 1,
+      "message": "(say what happens instead?)\n\n(say [here and in native_handle_close] whether callers should prefer this if their fds _are_ tagged.)",
+      "range": {
+        "startLine": 67,
+        "startChar": 44,
+        "endLine": 68,
+        "endChar": 17
+      },
+      "revId": "6ad09ba0d78388685f0fa6e1fe4b3d7030c68c25",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e977e3b0_e2af3924",
+        "filename": "libcutils/include/cutils/native_handle.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-09-01T23:55:58Z",
+      "side": 1,
+      "message": "(nit: just write foo()/bar() in full instead, to aid grep/codesearch.)",
+      "range": {
+        "startLine": 96,
+        "startChar": 22,
+        "endLine": 96,
+        "endChar": 33
+      },
+      "revId": "6ad09ba0d78388685f0fa6e1fe4b3d7030c68c25",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fbc00f3f_e8e40488",
+        "filename": "libcutils/include/cutils/native_handle.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-09-01T23:55:58Z",
+      "side": 1,
+      "message": "C",
+      "range": {
+        "startLine": 104,
+        "startChar": 3,
+        "endLine": 104,
+        "endChar": 4
+      },
+      "revId": "6ad09ba0d78388685f0fa6e1fe4b3d7030c68c25",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a9c07143_bc566e13",
+        "filename": "libcutils/include/cutils/native_handle.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-09-01T23:55:58Z",
+      "side": 1,
+      "message": "more realistically i assume this is \"is giving up ownership of\"? that\u0027s when you\u0027d use this, right?",
+      "range": {
+        "startLine": 105,
+        "startChar": 59,
+        "endLine": 105,
+        "endChar": 71
+      },
+      "revId": "6ad09ba0d78388685f0fa6e1fe4b3d7030c68c25",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
