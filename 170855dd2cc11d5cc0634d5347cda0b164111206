@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f7f6cc7d_e7cf6b4d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1863406
+      },
+      "writtenOn": "2022-09-02T08:48:12Z",
+      "side": 1,
+      "message": "Hello, Dear. maintainers\nThis patch nitpick. Could you please review it?",
+      "revId": "170855dd2cc11d5cc0634d5347cda0b164111206",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
