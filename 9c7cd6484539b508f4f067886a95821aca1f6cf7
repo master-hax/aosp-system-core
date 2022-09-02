@@ -195,6 +195,42 @@
       "parentUuid": "2e999b87_e1f08610",
       "revId": "9c7cd6484539b508f4f067886a95821aca1f6cf7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8bbafd87_af4a6a46",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-09-02T10:50:38Z",
+      "side": 1,
+      "message": "yeah for (2) I used to edit the test script locally if I need to test some specific scenario, but the situation has improved quite a lot recently.\nThis test used to run for \u003e20m on physical device (\u003e5m on virtual). I\u0027ve optimized it to the point that physical device now takes 5~10m and virtual device \u003c2m to run end-to-end, so I\u0027m pretty comfortable to just run the full test each time.\n\n(3) Not having non-fatal error used to bother me, but not as much anymore, because I\u0027ve optimized this _integration_ test to the point that, for better or worse, each stage of the test relies on side effects from previous stage. so if any test error happened, then it\u0027s probably a better idea to just bail out (hence the first change in this chain is to refactor the cleanup hook) than continue testing other aspects of the system, because each test assumes previous test completed successfully. This makes the test highly dependent on each other, but saves quite a lot of test runtime...",
+      "parentUuid": "68509e16_cf7474fe",
+      "revId": "9c7cd6484539b508f4f067886a95821aca1f6cf7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "72b3d518_f0bdf3c7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-09-02T10:50:38Z",
+      "side": 1,
+      "message": "no worries I\u0027m not blocked by this thread. The reason i haven\u0027t submit this yet is because I\u0027m slowly submitting this huge stack in multiple stages, and flaky presubmit tests are making this harder.",
+      "parentUuid": "0105c37d_89616985",
+      "revId": "9c7cd6484539b508f4f067886a95821aca1f6cf7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
