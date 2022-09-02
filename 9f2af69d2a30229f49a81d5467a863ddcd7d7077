@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7ca701b4_80ad6831",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-09-02T17:17:29Z",
+      "side": 1,
+      "message": "thanks!\n\n+smoreland fyi as a likely customer of this stuff..",
+      "revId": "9f2af69d2a30229f49a81d5467a863ddcd7d7077",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}

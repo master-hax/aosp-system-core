@@ -177,6 +177,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "121c5d76_dec4aa25",
+        "filename": "libcutils/include/cutils/native_handle.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-09-02T17:17:29Z",
+      "side": 1,
+      "message": "yeah, i know the usual google thing is \"follow the existing style\", but i think there\u0027s a widely-accepted One True Way to write these, and the existing style was not it :-)",
+      "parentUuid": "23d39273_d4bb7fb5",
+      "range": {
+        "startLine": 67,
+        "startChar": 3,
+        "endLine": 67,
+        "endChar": 4
+      },
+      "revId": "6ad09ba0d78388685f0fa6e1fe4b3d7030c68c25",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "da645dbf_e5043734",
