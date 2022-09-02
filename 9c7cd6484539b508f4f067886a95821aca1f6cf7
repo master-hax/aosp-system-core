@@ -231,6 +231,24 @@
       "parentUuid": "0105c37d_89616985",
       "revId": "9c7cd6484539b508f4f067886a95821aca1f6cf7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b44b5458_425d8190",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-09-02T11:05:15Z",
+      "side": 1,
+      "message": "\u003e .par ... pain ...\n\nI actually liked the .par file format. It doesn\u0027t force me to do crazy stuff like compiling the entire tradefed just to execute a tiny script. For local dev I can still execute the .py file directly for fast turn around time. For CI test/build, I can just assume python3 is always supported. yeah I think the real value of distributing programs with .par file is to stop people from asking me to write py2 compatible code",
+      "parentUuid": "8bbafd87_af4a6a46",
+      "revId": "9c7cd6484539b508f4f067886a95821aca1f6cf7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
