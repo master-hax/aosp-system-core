@@ -124,6 +124,24 @@
       "parentUuid": "8973687a_0e1690d2",
       "revId": "9c7cd6484539b508f4f067886a95821aca1f6cf7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "94ce9ea5_f98afffc",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-09-02T00:04:20Z",
+      "side": 1,
+      "message": "(of course, thanks to our .par file stuff, we\u0027ve managed to bring all the pain of java builds to python! another reason to prefer sh for tools in our tree... /facepalm)",
+      "parentUuid": "fd7c232f_c2277fbf",
+      "revId": "9c7cd6484539b508f4f067886a95821aca1f6cf7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
