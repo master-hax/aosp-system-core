@@ -142,6 +142,41 @@
       "parentUuid": "fd7c232f_c2277fbf",
       "revId": "9c7cd6484539b508f4f067886a95821aca1f6cf7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2e999b87_e1f08610",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-09-02T00:46:23Z",
+      "side": 1,
+      "message": "hehe, that was a joke, and I didn\u0027t mean to be serious 😊\n\nYeah, I understand that it\u0027s atest and android build system that contribute the most to the delay (but I didn\u0027t know that junit has such an overhead!).\n\nThere are some tricks to eliminate or significantly reduce the delay (e.g. executing the test from where it is built under the out directory, etc.), but it would be nice if we don\u0027t need to invent such a workaround.\n\nsh the language is not bad, tbh. it sometimes is fun writing a sh script. but what I don\u0027t like with this very test is that (1) it\u0027s a mixture of tests and test framework.",
+      "parentUuid": "94ce9ea5_f98afffc",
+      "revId": "9c7cd6484539b508f4f067886a95821aca1f6cf7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0105c37d_89616985",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-09-02T00:46:23Z",
+      "side": 1,
+      "message": "Yi-yo, feel free to submit this. The thread shouldn\u0027t block the submission.",
+      "revId": "9c7cd6484539b508f4f067886a95821aca1f6cf7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
