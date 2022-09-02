@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "037d33cd_0e0cfabd",
+        "filename": "libcutils/include/cutils/native_handle.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 1094493
+      },
+      "writtenOn": "2022-09-02T00:18:33Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b844a81b_d494a263",
+      "revId": "6ad09ba0d78388685f0fa6e1fe4b3d7030c68c25",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "6134cc49_f59b6e2c",
@@ -31,6 +49,30 @@
       "writtenOn": "2022-09-01T23:55:58Z",
       "side": 1,
       "message": "fds (here and elsewhere)",
+      "range": {
+        "startLine": 57,
+        "startChar": 56,
+        "endLine": 57,
+        "endChar": 60
+      },
+      "revId": "6ad09ba0d78388685f0fa6e1fe4b3d7030c68c25",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "843226c6_40917dc0",
+        "filename": "libcutils/include/cutils/native_handle.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1094493
+      },
+      "writtenOn": "2022-09-02T00:18:33Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6134cc49_f59b6e2c",
       "range": {
         "startLine": 57,
         "startChar": 56,
@@ -64,6 +106,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "26e81605_0ea30f60",
+        "filename": "libcutils/include/cutils/native_handle.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1094493
+      },
+      "writtenOn": "2022-09-02T00:18:33Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "71a2c352_28b2e7ac",
+      "range": {
+        "startLine": 58,
+        "startChar": 19,
+        "endLine": 58,
+        "endChar": 35
+      },
+      "revId": "6ad09ba0d78388685f0fa6e1fe4b3d7030c68c25",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f10f0bf4_01c48254",
@@ -77,6 +143,30 @@
       "writtenOn": "2022-09-01T23:55:58Z",
       "side": 1,
       "message": "E",
+      "range": {
+        "startLine": 67,
+        "startChar": 3,
+        "endLine": 67,
+        "endChar": 4
+      },
+      "revId": "6ad09ba0d78388685f0fa6e1fe4b3d7030c68c25",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "23d39273_d4bb7fb5",
+        "filename": "libcutils/include/cutils/native_handle.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 1094493
+      },
+      "writtenOn": "2022-09-02T00:18:33Z",
+      "side": 1,
+      "message": "Done, was going back and forth about following the existing conventions in the file or just updating it all, sounds like we\u0027re going for the latter 😎",
+      "parentUuid": "f10f0bf4_01c48254",
       "range": {
         "startLine": 67,
         "startChar": 3,
@@ -110,6 +200,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "c0e5b75c_6c016a40",
+        "filename": "libcutils/include/cutils/native_handle.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 1094493
+      },
+      "writtenOn": "2022-09-02T00:18:33Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "da645dbf_e5043734",
+      "range": {
+        "startLine": 67,
+        "startChar": 44,
+        "endLine": 68,
+        "endChar": 17
+      },
+      "revId": "6ad09ba0d78388685f0fa6e1fe4b3d7030c68c25",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "e977e3b0_e2af3924",
@@ -123,6 +237,30 @@
       "writtenOn": "2022-09-01T23:55:58Z",
       "side": 1,
       "message": "(nit: just write foo()/bar() in full instead, to aid grep/codesearch.)",
+      "range": {
+        "startLine": 96,
+        "startChar": 22,
+        "endLine": 96,
+        "endChar": 33
+      },
+      "revId": "6ad09ba0d78388685f0fa6e1fe4b3d7030c68c25",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5d98dc15_1c3ca545",
+        "filename": "libcutils/include/cutils/native_handle.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 1094493
+      },
+      "writtenOn": "2022-09-02T00:18:33Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e977e3b0_e2af3924",
       "range": {
         "startLine": 96,
         "startChar": 22,
@@ -156,6 +294,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "2162492b_1910117a",
+        "filename": "libcutils/include/cutils/native_handle.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 1094493
+      },
+      "writtenOn": "2022-09-02T00:18:33Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fbc00f3f_e8e40488",
+      "range": {
+        "startLine": 104,
+        "startChar": 3,
+        "endLine": 104,
+        "endChar": 4
+      },
+      "revId": "6ad09ba0d78388685f0fa6e1fe4b3d7030c68c25",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a9c07143_bc566e13",
@@ -169,6 +331,30 @@
       "writtenOn": "2022-09-01T23:55:58Z",
       "side": 1,
       "message": "more realistically i assume this is \"is giving up ownership of\"? that\u0027s when you\u0027d use this, right?",
+      "range": {
+        "startLine": 105,
+        "startChar": 59,
+        "endLine": 105,
+        "endChar": 71
+      },
+      "revId": "6ad09ba0d78388685f0fa6e1fe4b3d7030c68c25",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8dd4b940_97e5ea18",
+        "filename": "libcutils/include/cutils/native_handle.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 1094493
+      },
+      "writtenOn": "2022-09-02T00:18:33Z",
+      "side": 1,
+      "message": "That\u0027s right, done. I was originally hoping to automatically apply tags inside native_handle_clone(), so this API could be used to undo that if there\u0027s a good use for it, but found out pretty quickly that we\u0027re not ready for that (doesn\u0027t boot, see the gralloc4 gralloc_shared_memory_free()).",
+      "parentUuid": "a9c07143_bc566e13",
       "range": {
         "startLine": 105,
         "startChar": 59,
