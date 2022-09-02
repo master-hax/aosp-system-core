@@ -106,6 +106,24 @@
       "parentUuid": "51368613_ba92568d",
       "revId": "9c7cd6484539b508f4f067886a95821aca1f6cf7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fd7c232f_c2277fbf",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-09-02T00:01:12Z",
+      "side": 1,
+      "message": "heh, don\u0027t get me wrong ... i love the java language. but i hate the startup time, and i hate the build time, and i hate our build system\u0027s overhead, and i hate junit\u0027s overhead (one of the first things i did when i was on the libcore team was write a replacement test runner so i did have to sit and wait for junit to serially enumerate all the tests before it started running any!). whereas i loathe python the language, and don\u0027t usually have anything nice to say about shell scripts more than a few lines long, but i really can\u0027t argue with their startup time :-(\n\nwhat i really want is something that\u0027s roughly java, but with python-like startup. sadly, i fear i\u0027ll have to write that myself after i retire. until then, i\u0027ll grudgingly admit that sometimes even sh isn\u0027t always the worst tool for the job!",
+      "parentUuid": "8973687a_0e1690d2",
+      "revId": "9c7cd6484539b508f4f067886a95821aca1f6cf7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
