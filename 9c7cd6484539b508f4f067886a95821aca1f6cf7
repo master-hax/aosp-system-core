@@ -249,6 +249,24 @@
       "parentUuid": "8bbafd87_af4a6a46",
       "revId": "9c7cd6484539b508f4f067886a95821aca1f6cf7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "42a1478a_dfac025f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-09-02T15:31:10Z",
+      "side": 1,
+      "message": "\u003e but I didn\u0027t know that junit has such an overhead!\n\ni don\u0027t know whether they\u0027ve fixed it since, but 10+ years ago when i worked on libcore, it would serially load every class you mentioned, running all the static initializers, and using reflection to find the individual tests. i don\u0027t think most people noticed, but because libcore had *thousands* of test classes (suites), it took a minute or two before it was doing any useful work. (and, as you\u0027ll remember, devices were single core and much slower back then!)\n\n\u003e sh the language is not bad, tbh. it sometimes is fun writing a sh script. but what I don\u0027t like with this very test is that (1) it\u0027s a mixture of tests and test framework.\n\nwell, the obvious answer to that is to write more sh tests and factor out the framework :-)\n\nbtw, if you want an easy way to write tests for command-line tools, see https://android.googlesource.com/platform/system/libziparchive/+/refs/heads/master/cli-tests/unzip.test based on https://android.googlesource.com/platform/system/core/+/refs/heads/master/cli-test/. it\u0027s inspired by the way mksh and toybox tests work but (i hope) a lot more readable. but since almost all our command-line tools end up in toybox anyway, i haven\u0027t had many opportunities to use it.\n\n\u003e This test used to run for \u003e20m on physical device (\u003e5m on virtual). I\u0027ve optimized it to the point that physical device now takes 5~10m and virtual device \u003c2m to run end-to-end, so I\u0027m pretty comfortable to just run the full test each time.\n\nnice! (that makes me wish we could say \"virtual devices only\" in TEST_MAPPING and add this to TEST_MAPPING!)\n\n\u003e I actually liked the .par file format\n\noh, yeah, the _idea_ is useful. but the cost of our build system makes it unpleasant. i\u0027m grumpy every time i run external_updater, for example.\n\n\u003e For local dev I can still execute the .py file directly for fast turn around time\n\nyeah, similar to how i have an `sh_test` in my .bp file for some of my shell scripts, but i run them directly myself. what i don\u0027t like about that is that it means we expert test owners get a significantly better experience by deliberately avoiding the infrastructure... that seems like a perverse incentive to me, and i\u0027d like to see us improve the infrastructure to the point where even those of us who value our time and know enough to come up with our own tricks use it anyway...",
+      "parentUuid": "b44b5458_425d8190",
+      "revId": "9c7cd6484539b508f4f067886a95821aca1f6cf7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
