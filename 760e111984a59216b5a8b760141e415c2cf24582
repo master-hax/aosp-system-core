@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "074bb76f_51ba1eb1",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 7
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-09-03T01:12:13Z",
+      "side": 1,
+      "message": "I think the unmap will never succeed. I\u0027ll rework this function to be more pessimistic. Especially since we\u0027re getting error spam with the recent logging changes to set-verity-state.",
+      "parentUuid": "8c3cddc0_e632cc0d",
+      "range": {
+        "startLine": 22,
+        "startChar": 0,
+        "endLine": 23,
+        "endChar": 25
+      },
+      "revId": "760e111984a59216b5a8b760141e415c2cf24582",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "bf137c96_8538ec6b",
         "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
         "patchSetId": 7
@@ -37,6 +61,30 @@
       "writtenOn": "2022-08-17T08:07:03Z",
       "side": 1,
       "message": "except that we didn\u0027t retry with lazy (MNT_DETACH)?",
+      "range": {
+        "startLine": 487,
+        "startChar": 54,
+        "endLine": 487,
+        "endChar": 73
+      },
+      "revId": "760e111984a59216b5a8b760141e415c2cf24582",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e3c39713_cdb115c5",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 487,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-09-03T01:12:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "bf137c96_8538ec6b",
       "range": {
         "startLine": 487,
         "startChar": 54,
@@ -64,6 +112,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "22157a81_fdb4ae82",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 488,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-09-03T01:12:13Z",
+      "side": 1,
+      "message": "I removed the EBUSY check, since MNT_DETACH is kind of pointless here.",
+      "parentUuid": "b97b95ec_99af8568",
+      "revId": "760e111984a59216b5a8b760141e415c2cf24582",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f9667533_747720ff",
@@ -77,6 +143,30 @@
       "writtenOn": "2022-08-17T08:07:03Z",
       "side": 1,
       "message": "this is guaranteed to fail with EBUSY if umount failed, thus could cause log spur.\n\nTry rmdir only if umount success, or just don\u0027t log anything as this is just cleaning up an empty mountpoint, so failing to do so isn\u0027t fatal.",
+      "range": {
+        "startLine": 491,
+        "startChar": 8,
+        "endLine": 491,
+        "endChar": 65
+      },
+      "revId": "760e111984a59216b5a8b760141e415c2cf24582",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "28f78ee1_cd4ba1d5",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 491,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-09-03T01:12:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f9667533_747720ff",
       "range": {
         "startLine": 491,
         "startChar": 8,
@@ -110,6 +200,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "022c94f8_ffe38785",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 1561,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-09-03T01:12:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "75b071a9_54bcf4d8",
+      "range": {
+        "startLine": 1561,
+        "startChar": 4,
+        "endLine": 1561,
+        "endChar": 32
+      },
+      "revId": "760e111984a59216b5a8b760141e415c2cf24582",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "c58d4dd6_5d0c2811",
@@ -127,6 +241,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "db6b2fcf_14a4f87a",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 1580,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-09-03T01:12:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c58d4dd6_5d0c2811",
+      "revId": "760e111984a59216b5a8b760141e415c2cf24582",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "512d96e1_7738f506",
@@ -140,6 +272,30 @@
       "writtenOn": "2022-08-17T09:16:09Z",
       "side": 1,
       "message": "I think we can remove this whole block,\n\nIf we don\u0027t want overlayfs in the first place, previous actions shouldn\u0027t set *change anyway.\nIf we don\u0027t want overlayfs and *change is set to true by previous actions, that means we DO clean up some stale overlay files (maybe device is flashed with a kernel that don\u0027t support overlay?), so it\u0027s not unreasonable to ask for a reboot to consistent state in this case?",
+      "range": {
+        "startLine": 1592,
+        "startChar": 4,
+        "endLine": 1597,
+        "endChar": 5
+      },
+      "revId": "760e111984a59216b5a8b760141e415c2cf24582",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "75447bc9_c6f581ab",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 1597,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-09-03T01:12:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "512d96e1_7738f506",
       "range": {
         "startLine": 1592,
         "startChar": 4,
@@ -173,6 +329,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "568a0756_2a60351c",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 1608,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-09-03T01:12:13Z",
+      "side": 1,
+      "message": "This is tricky to do without losing the Busy return value. It\u0027d be better to move the guts of this function out.",
+      "parentUuid": "9826d083_ef5ab025",
+      "range": {
+        "startLine": 1604,
+        "startChar": 4,
+        "endLine": 1608,
+        "endChar": 5
+      },
+      "revId": "760e111984a59216b5a8b760141e415c2cf24582",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "30f62b8a_9df390ff",
@@ -186,6 +366,30 @@
       "writtenOn": "2022-08-17T08:07:03Z",
       "side": 1,
       "message": "s/change/want_reboot/",
+      "range": {
+        "startLine": 50,
+        "startChar": 56,
+        "endLine": 50,
+        "endChar": 62
+      },
+      "revId": "760e111984a59216b5a8b760141e415c2cf24582",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "03e4f097_eb38e155",
+        "filename": "fs_mgr/include/fs_mgr_overlayfs.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-09-03T01:12:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "30f62b8a_9df390ff",
       "range": {
         "startLine": 50,
         "startChar": 56,
@@ -219,6 +423,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "e13bef81_3bdee102",
+        "filename": "set-verity-state/set-verity-state.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-09-03T01:12:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "11c4531f_202004b2",
+      "range": {
+        "startLine": 38,
+        "startChar": 3,
+        "endLine": 38,
+        "endChar": 9
+      },
+      "revId": "760e111984a59216b5a8b760141e415c2cf24582",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "47934e16_255c8c53",
@@ -232,6 +460,30 @@
       "writtenOn": "2022-08-17T10:17:15Z",
       "side": 1,
       "message": "capitalize first letter",
+      "range": {
+        "startLine": 65,
+        "startChar": 28,
+        "endLine": 65,
+        "endChar": 43
+      },
+      "revId": "760e111984a59216b5a8b760141e415c2cf24582",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "43497241_1edadd06",
+        "filename": "set-verity-state/set-verity-state.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-09-03T01:12:13Z",
+      "side": 1,
+      "message": "Will this break any tooling that compares the exact output?",
+      "parentUuid": "47934e16_255c8c53",
       "range": {
         "startLine": 65,
         "startChar": 28,

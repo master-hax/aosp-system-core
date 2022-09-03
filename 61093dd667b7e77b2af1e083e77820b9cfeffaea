@@ -16,6 +16,24 @@
       "message": "why can we remove this now? We need to check this if using system_other as scratch, right? Or are we deprecating the system_other path?",
       "revId": "61093dd667b7e77b2af1e083e77820b9cfeffaea",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a08c8c9e_d5c4bf03",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 872,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-09-03T01:12:13Z",
+      "side": 0,
+      "message": "I can\u0027t really see any reason to keep this code. If we want to keep the system_other path (dubious, it\u0027s only for Pixel 3 which is not getting dessert updates), then the partition should just be formatted unconditionally on scratch setup, rather than using a shared blocks test.",
+      "parentUuid": "361f2039_6eedd43f",
+      "revId": "61093dd667b7e77b2af1e083e77820b9cfeffaea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
