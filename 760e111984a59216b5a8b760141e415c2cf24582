@@ -492,6 +492,30 @@
       },
       "revId": "760e111984a59216b5a8b760141e415c2cf24582",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "35718fc5_acdc47ae",
+        "filename": "set-verity-state/set-verity-state.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-09-05T06:22:50Z",
+      "side": 1,
+      "message": "I think not, as I changed those commands to check exit_code instead of parsing the output text already. But if there is any other tool that checks the output text, and not in presubmit, then I wouldn\u0027t know.\n\nI\u0027d like this capitalized purely for consistent wording.",
+      "parentUuid": "43497241_1edadd06",
+      "range": {
+        "startLine": 65,
+        "startChar": 28,
+        "endLine": 65,
+        "endChar": 43
+      },
+      "revId": "760e111984a59216b5a8b760141e415c2cf24582",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
