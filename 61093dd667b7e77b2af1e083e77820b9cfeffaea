@@ -34,6 +34,24 @@
       "parentUuid": "361f2039_6eedd43f",
       "revId": "61093dd667b7e77b2af1e083e77820b9cfeffaea",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ebcd9298_2b6a42d4",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 872,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-09-05T09:34:10Z",
+      "side": 0,
+      "message": "yeah I think deprecating those setup would greatly simplify this file, and allow removing dead code in the test.sh (a lot of the code in this file and in test.sh are dead wrt. Pixel 4, 5, 6)\n\nLet me put together a doc as a discussion ground,",
+      "parentUuid": "a08c8c9e_d5c4bf03",
+      "revId": "61093dd667b7e77b2af1e083e77820b9cfeffaea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
