@@ -282,8 +282,6 @@ void TestApexServicesInit(const std::vector<std::string>& apex_services,
 TEST(init, StopServiceByApexName) {
     std::string_view script_template = R"init(
 service apex_test_service /system/bin/yes
-    user shell
-    group shell
     seclabel $selabel
 )init";
     InitApexService(script_template);
