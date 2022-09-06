@@ -68,6 +68,24 @@
       "parentUuid": "9016bef2_38153a49",
       "revId": "c8017ddcd0536a1bec9be35ed5645cbc5f1319d5",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4ddb9400_ffb3def0",
+        "filename": "fastboot/device/usb.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 164,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-09-06T20:17:31Z",
+      "side": 1,
+      "message": "That would be here:\n\nhttps://source.corp.google.com/aosp-master/system/core/fastboot/device/usb_iouring.cpp;l\u003d94\n\nI had this question of retrying in the original CL:\n\nhttps://android-review.googlesource.com/c/platform/system/core/+/2151839/17..21/fastboot/device/usb_iouring.cpp#b98\n\nIt looks like on EPIPE, we do retry today; but it would be good to re-validate.",
+      "parentUuid": "948fef3b_550c746e",
+      "revId": "c8017ddcd0536a1bec9be35ed5645cbc5f1319d5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
