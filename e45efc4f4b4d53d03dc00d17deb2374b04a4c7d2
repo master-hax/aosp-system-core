@@ -74,6 +74,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "148c5be4_d8408092",
+        "filename": "fs_mgr/tests/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-09-06T17:09:43Z",
+      "side": 1,
+      "message": "i think _especially_ for shell scripts, i\u0027d -2 any attempt to grow them --- at that point it\u0027s really time to be thinking about alternatives!\n\n(the python one is a bit weird --- i don\u0027t really use python myself, but i thought folks only tended to use .py when they weren\u0027t doing the whole \"embedded_launcher\" thing?)",
+      "parentUuid": "ed2ad214_1cf363ec",
+      "revId": "e45efc4f4b4d53d03dc00d17deb2374b04a4c7d2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "22180eaa_a7501e44",
         "filename": "rootdir/init.rc",
         "patchSetId": 1
