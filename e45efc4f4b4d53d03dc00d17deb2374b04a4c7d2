@@ -92,6 +92,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "55c56083_da29a4cd",
+        "filename": "fs_mgr/tests/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1535516
+      },
+      "writtenOn": "2022-09-06T17:15:38Z",
+      "side": 1,
+      "message": "For python, there are 5 files (11 modules) where the filename ends in .py, and we\u0027ll have to change them to fix this bazel issue:\n\nhttps://source.corp.google.com/search?q\u003dp:%5Eandroid-internal$%20f:Android.bp%20name:%5C%20%5C%22.*%5C.py%5C%22\n\nThere are 178 files where the module name _doesn\u0027t_ end in .py. So not including the filename is already the vastly favored opinion. Which makes sense because many modules contain more than 1 python file, or include python libraries.\n\nhttps://source.corp.google.com/search?q\u003dp:%5Eandroid-internal$%20pcre:yes%20f:Android.bp%20(%3Fm:%5Epython.*%7B%5Cn.*name:%5C%20%5C%22.*%5B%5E.%5D%5B%5Ep%5D%5B%5Ey%5D%5C%22)",
+      "parentUuid": "148c5be4_d8408092",
+      "revId": "e45efc4f4b4d53d03dc00d17deb2374b04a4c7d2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "22180eaa_a7501e44",
         "filename": "rootdir/init.rc",
         "patchSetId": 1
