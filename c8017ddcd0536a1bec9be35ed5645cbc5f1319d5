@@ -104,6 +104,58 @@
       "parentUuid": "4ddb9400_ffb3def0",
       "revId": "c8017ddcd0536a1bec9be35ed5645cbc5f1319d5",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "52c4e76b_c3257800",
+        "filename": "fastboot/device/usb.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 164,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-09-06T20:36:47Z",
+      "side": 1,
+      "message": "I looked at the original adb code; over there we track the first request by \"connection_started_\" variable. How do we do this here ? This sounds like we are retrying for every EPIPE event which is not what we intend to do ?",
+      "revId": "c8017ddcd0536a1bec9be35ed5645cbc5f1319d5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f23e8bc7_96994c3b",
+        "filename": "fastboot/device/usb.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 164,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-09-06T20:36:47Z",
+      "side": 1,
+      "message": "It has been enabled only on Pixel 6 devices to start-off; but eventually it will be enabled on other devices which has 5.10+ kernels.\n\nEnabling is controlled by the property: sys.usb.ffs.io_uring_enabled\n\nhttps://googleplex-android-review.git.corp.google.com/c/device/google/gs101/+/19774913",
+      "parentUuid": "362d0492_6d5a6a0d",
+      "revId": "c8017ddcd0536a1bec9be35ed5645cbc5f1319d5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6b6c0c37_8aa40c4e",
+        "filename": "fastboot/device/usb.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 166,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-09-06T20:36:47Z",
+      "side": 1,
+      "message": "s/adb/fastboot",
+      "revId": "c8017ddcd0536a1bec9be35ed5645cbc5f1319d5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
