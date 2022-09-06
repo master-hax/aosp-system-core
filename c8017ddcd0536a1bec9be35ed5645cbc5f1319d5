@@ -86,6 +86,24 @@
       "parentUuid": "948fef3b_550c746e",
       "revId": "c8017ddcd0536a1bec9be35ed5645cbc5f1319d5",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "362d0492_6d5a6a0d",
+        "filename": "fastboot/device/usb.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 164,
+      "author": {
+        "id": 1963052
+      },
+      "writtenOn": "2022-09-06T20:24:44Z",
+      "side": 1,
+      "message": "Hmm looks like it\u0027s more involving than I thought...\nIf I understand correctly, today\u0027s code uses the iouring path?",
+      "parentUuid": "4ddb9400_ffb3def0",
+      "revId": "c8017ddcd0536a1bec9be35ed5645cbc5f1319d5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
