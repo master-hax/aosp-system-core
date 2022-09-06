@@ -16,6 +16,23 @@
       "message": "Hi Ray Chi,\n\nCan you re-review the latest patch?\n\nThanks!",
       "revId": "c8017ddcd0536a1bec9be35ed5645cbc5f1319d5",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f5c7f362_4363a6ec",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-09-06T18:37:48Z",
+      "side": 1,
+      "message": "Recently we started moving to fastbootd to io_uring. Adding zhangkelvin@ and akailash@ to see if we need to adjust usb_ffs_do_aio() in usb_iouring.cpp as well.",
+      "revId": "c8017ddcd0536a1bec9be35ed5645cbc5f1319d5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
