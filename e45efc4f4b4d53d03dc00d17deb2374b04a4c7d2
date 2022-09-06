@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "81f9eeaa_b9d6399d",
+        "filename": "fs_mgr/tests/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-09-06T15:34:51Z",
+      "side": 1,
+      "message": "this is terrible...",
+      "revId": "e45efc4f4b4d53d03dc00d17deb2374b04a4c7d2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "22180eaa_a7501e44",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 1205,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-09-06T15:34:51Z",
+      "side": 1,
+      "message": "...and causes these kinds of problems.\n\ni think the \"less awful\" way to do this is to ensure we keep the same on-disk names and just have some kind of common suffix for the module names (like \"-module-name\")?\n\n(at least for the prebuilts, \"-prebuilt\" makes some sense. these ones are harder though. i really wish bazel wasn\u0027t broken like this.)",
+      "revId": "e45efc4f4b4d53d03dc00d17deb2374b04a4c7d2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
