@@ -610,5 +610,5 @@ cc_library_host_static {
 
 sh_binary {
     name: "extra_free_kbytes.sh",
-    src: "extra_free_kbytes.sh",
+    src: "extra_free_kbytes_main.sh",
 }

@@ -81,8 +81,8 @@ cc_binary_host {
 
 python_binary_host {
     name: "simg_dump.py",
-    main: "simg_dump.py",
-    srcs: ["simg_dump.py"],
+    main: "simg_dump_main.py",
+    srcs: ["simg_dump_main.py"],
     version: {
         py3: {
             embedded_launcher: true,
