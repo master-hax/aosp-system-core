@@ -50,6 +50,24 @@
       "message": "This code path was changed recently to use io_uring. We should probably fix that as well.",
       "revId": "c8017ddcd0536a1bec9be35ed5645cbc5f1319d5",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "948fef3b_550c746e",
+        "filename": "fastboot/device/usb.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 164,
+      "author": {
+        "id": 1963052
+      },
+      "writtenOn": "2022-09-06T20:12:13Z",
+      "side": 1,
+      "message": "Hi Akilesh,\nIf you point me where the new code is, I can probably append the changes to this patch.\nThanks!",
+      "parentUuid": "9016bef2_38153a49",
+      "revId": "c8017ddcd0536a1bec9be35ed5645cbc5f1319d5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
