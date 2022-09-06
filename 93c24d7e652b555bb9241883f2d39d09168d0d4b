@@ -16,6 +16,24 @@
       "message": "Ok, but in which cases we run these as non-root? ",
       "revId": "93c24d7e652b555bb9241883f2d39d09168d0d4b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9aefd5d8_bbad1c0e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2022-09-06T13:52:23Z",
+      "side": 1,
+      "message": "The linked bug says, it fails in the release branch where CtsInitTestCases runs on a user build device. \nAndroid.bp says CtsInitTestCases requires \"root\". Hmm, probably we need to split these tests (requiring \u0027root\u0027) from the rest (not requiring \u0027root\u0027)",
+      "parentUuid": "3c4c34c5_0e368eaa",
+      "revId": "93c24d7e652b555bb9241883f2d39d09168d0d4b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
