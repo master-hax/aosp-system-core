@@ -53,7 +53,7 @@ cc_test {
 }
 
 sh_binary_host {
-    name: "adb-remount-test.sh",
+    name: "adb-remount-test",
     src: "adb-remount-test.sh",
     target: {
         darwin: {
