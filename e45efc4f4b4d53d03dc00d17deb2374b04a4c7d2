@@ -20,6 +20,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "5585dfec_e4d00592",
+        "filename": "fs_mgr/tests/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1535516
+      },
+      "writtenOn": "2022-09-06T16:39:37Z",
+      "side": 1,
+      "message": "Why is this terrible? I get that it requires a rename everywhere, but IMO it\u0027s preferable to just do the rename than intrude more complexity by making the on-disk name different from the module name. If it was actually difficult to rename everything I see the point, but for most cases it\u0027s been rather straightforward.\n\nThis is also the way it should\u0027ve been done by default. Naming binaries by the name of the script doesn\u0027t really make sense, because you could easily add another source file to the binary later.\n\nWe\u0027ve already done this successfully in cls like aosp/2203416, aosp/2202568, and aosp/2202605.",
+      "parentUuid": "81f9eeaa_b9d6399d",
+      "revId": "e45efc4f4b4d53d03dc00d17deb2374b04a4c7d2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "22180eaa_a7501e44",
         "filename": "rootdir/init.rc",
         "patchSetId": 1
