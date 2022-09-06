@@ -38,6 +38,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "14c95655_03777d06",
+        "filename": "fs_mgr/tests/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-09-06T16:58:43Z",
+      "side": 1,
+      "message": "no, i mean \"as a user, having to make up two names for every \u0027prebuilt\u0027 is a PITA\".\n\nlike i said, though, i don\u0027t expect bazel to fix this, so i\u0027ll +2 \"-prebuilt\" or whatever. but not the \"-lib\" i\u0027ve seen people try to use which is just plain wrong, nor _removing_ suffixes which is confusing and error prone.\n\n(i don\u0027t _like_ prebuilt but at least it\u0027s always technically correct :-( )",
+      "parentUuid": "5585dfec_e4d00592",
+      "revId": "e45efc4f4b4d53d03dc00d17deb2374b04a4c7d2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "22180eaa_a7501e44",
         "filename": "rootdir/init.rc",
         "patchSetId": 1
