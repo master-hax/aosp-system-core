@@ -56,6 +56,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "ed2ad214_1cf363ec",
+        "filename": "fs_mgr/tests/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1535516
+      },
+      "writtenOn": "2022-09-06T17:04:05Z",
+      "side": 1,
+      "message": "I can agree with adding _prebuilt to native code prebuilts. But this one isn\u0027t a prebuilt, it\u0027s a built-from-source module. Yes, the \"building\" process is currently just copying, but if you were to add another source file, or even rewrite this binary in another language like python, then you\u0027d want a filename-agnostic module name.\n\nYou may argue that it doesn\u0027t have multiple source files right now, so there\u0027s no reason for that. But I think it\u0027s best to be consistent across the build system, and not have any file extensions in module names, except maybe with true prebuilts.",
+      "parentUuid": "14c95655_03777d06",
+      "revId": "e45efc4f4b4d53d03dc00d17deb2374b04a4c7d2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "22180eaa_a7501e44",
         "filename": "rootdir/init.rc",
         "patchSetId": 1
