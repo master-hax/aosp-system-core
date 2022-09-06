@@ -33,6 +33,23 @@
       "message": "Recently we started moving to fastbootd to io_uring. Adding zhangkelvin@ and akailash@ to see if we need to adjust usb_ffs_do_aio() in usb_iouring.cpp as well.",
       "revId": "c8017ddcd0536a1bec9be35ed5645cbc5f1319d5",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9016bef2_38153a49",
+        "filename": "fastboot/device/usb.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 164,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-09-06T20:02:50Z",
+      "side": 1,
+      "message": "This code path was changed recently to use io_uring. We should probably fix that as well.",
+      "revId": "c8017ddcd0536a1bec9be35ed5645cbc5f1319d5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
