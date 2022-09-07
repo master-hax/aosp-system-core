@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0a2f7479_ddb36edc",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-09-07T10:53:42Z",
+      "side": 1,
+      "message": "I get this, but doesn\u0027t the absence of /dev/selinux after the first-stage-init mean we are already in a bad state? If the directory is okay to be created later, why do we even do it in the first-stage-init? \n\nCan we instead ensure that first-stage-init always successfully creates /dev/selinux?",
+      "range": {
+        "startLine": 17,
+        "startChar": 24,
+        "endLine": 17,
+        "endChar": 44
+      },
+      "revId": "d70f9006825d2b6567aba07254b53178c5ab2bb4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9b717882_0857419d",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 538,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-09-07T10:53:42Z",
+      "side": 1,
+      "message": "nit: I personally like bailing out early to do less indentation. ex:\n\n```\nif (errno !\u003d ENOENT) return ErrnoError() ...\nif (mkdir(...) !\u003d 0) return ErrnoError() ...\n```",
+      "range": {
+        "startLine": 532,
+        "startChar": 0,
+        "endLine": 538,
+        "endChar": 9
+      },
+      "revId": "d70f9006825d2b6567aba07254b53178c5ab2bb4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "efcc4a8f_f53dd057",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 600,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-09-07T10:53:42Z",
+      "side": 1,
+      "message": "I think this is consistent in this file, but wanted to let you know that we have OR_RETURN macro. This is equialent to\n\nOR_RETURN(CreateTmpfsDirIfNeeded());",
+      "range": {
+        "startLine": 597,
+        "startChar": 0,
+        "endLine": 600,
+        "endChar": 5
+      },
+      "revId": "d70f9006825d2b6567aba07254b53178c5ab2bb4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
