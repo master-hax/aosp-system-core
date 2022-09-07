@@ -438,13 +438,12 @@ void UserSnapshotServer::AcceptClient() {
 }
 
 bool UserSnapshotServer::HandleClient(android::base::borrowed_fd fd, int revents) {
-    if (revents & POLLHUP) {
-        LOG(DEBUG) << "Snapuserd client disconnected";
-        return false;
-    }
-
     std::string str;
     if (!Recv(fd, &str)) {
+        return false;
+    }
+    if (str.empty() && (revents & POLLHUP)) {
+        LOG(DEBUG) << "Snapuserd client disconnected";
         return false;
     }
     if (!Receivemsg(fd, str)) {
@@ -590,6 +589,51 @@ bool UserSnapshotServer::RemoveAndJoinHandler(const std::string& misc_name) {
     return true;
 }
 
+<<<<<<< HEAD   (91a5c3 Merge "Increase the number of service supplementary group" i)
+=======
+void UserSnapshotServer::WakeupMonitorMergeThread() {
+    uint64_t notify = 1;
+    ssize_t rc = TEMP_FAILURE_RETRY(write(monitor_merge_event_fd_.get(), &notify, sizeof(notify)));
+    if (rc < 0) {
+        PLOG(FATAL) << "failed to notify monitor merge thread";
+    }
+}
+
+void UserSnapshotServer::MonitorMerge() {
+    while (!stop_monitor_merge_thread_) {
+        uint64_t testVal;
+        ssize_t ret =
+                TEMP_FAILURE_RETRY(read(monitor_merge_event_fd_.get(), &testVal, sizeof(testVal)));
+        if (ret == -1) {
+            PLOG(FATAL) << "Failed to read from eventfd";
+        } else if (ret == 0) {
+            LOG(FATAL) << "Hit EOF on eventfd";
+        }
+
+        LOG(INFO) << "MonitorMerge: active-merge-threads: " << active_merge_threads_;
+        {
+            std::lock_guard<std::mutex> lock(lock_);
+            while (active_merge_threads_ < kMaxMergeThreads && merge_handlers_.size() > 0) {
+                auto handler = merge_handlers_.front();
+                merge_handlers_.pop();
+
+                if (!handler->snapuserd()) {
+                    LOG(INFO) << "MonitorMerge: skipping deleted handler: " << handler->misc_name();
+                    continue;
+                }
+
+                LOG(INFO) << "Starting merge for partition: "
+                          << handler->snapuserd()->GetMiscName();
+                handler->snapuserd()->InitiateMerge();
+                active_merge_threads_ += 1;
+            }
+        }
+    }
+
+    LOG(INFO) << "Exiting MonitorMerge: size: " << merge_handlers_.size();
+}
+
+>>>>>>> CHANGE (783480 vts_libsnapshot_test: Fix test flakiness.)
 bool UserSnapshotServer::WaitForSocket() {
     auto scope_guard = android::base::make_scope_guard([this]() -> void { JoinAllThreads(); });
 

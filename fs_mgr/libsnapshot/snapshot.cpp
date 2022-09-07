@@ -1474,7 +1474,6 @@ void SnapshotManager::AcknowledgeMergeSuccess(LockedFile* lock) {
     if (UpdateUsesUserSnapshots(lock) && !device()->IsTestDevice()) {
         if (snapuserd_client_) {
             snapuserd_client_->DetachSnapuserd();
-            snapuserd_client_->CloseConnection();
             snapuserd_client_ = nullptr;
         }
     }
@@ -2759,7 +2758,6 @@ bool SnapshotManager::UnmapAllSnapshots(LockedFile* lock) {
     if (snapuserd_client_) {
         LOG(INFO) << "Shutdown snapuserd daemon";
         snapuserd_client_->DetachSnapuserd();
-        snapuserd_client_->CloseConnection();
         snapuserd_client_ = nullptr;
     }
 
@@ -3267,6 +3265,7 @@ Return SnapshotManager::CreateUpdateSnapshots(const DeltaArchiveManifest& manife
                 snapuserd_client = nullptr;
             }
 
+<<<<<<< HEAD   (91a5c3 Merge "Increase the number of service supplementary group" i)
             // Clear the cached client if any
             if (snapuserd_client_) {
                 snapuserd_client_->CloseConnection();
@@ -3294,6 +3293,17 @@ Return SnapshotManager::CreateUpdateSnapshots(const DeltaArchiveManifest& manife
                 is_snapshot_userspace_ = true;
                 LOG(INFO) << "User-space snapshots enabled for testing";
             }
+=======
+    if (!device()->IsTestDevice() && using_snapuserd) {
+        // Terminate stale daemon if any
+        std::unique_ptr<SnapuserdClient> snapuserd_client = std::move(snapuserd_client_);
+        if (!snapuserd_client) {
+            snapuserd_client = SnapuserdClient::Connect(kSnapuserdSocket, 5s);
+        }
+        if (snapuserd_client) {
+            snapuserd_client->DetachSnapuserd();
+            snapuserd_client = nullptr;
+>>>>>>> CHANGE (783480 vts_libsnapshot_test: Fix test flakiness.)
         }
     }
     if (!WriteSnapshotUpdateStatus(lock.get(), status)) {
