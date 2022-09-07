@@ -50,6 +50,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "405b4933_583795b9",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-09-07T13:15:13Z",
+      "side": 1,
+      "message": "Jeff, could you explain why /dev/selinux has to created by the first-stage-init, or can it be moved to a later stage?",
+      "parentUuid": "508707fc_a380f451",
+      "range": {
+        "startLine": 17,
+        "startChar": 24,
+        "endLine": 17,
+        "endChar": 44
+      },
+      "revId": "d70f9006825d2b6567aba07254b53178c5ab2bb4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "9b717882_0857419d",
         "filename": "init/selinux.cpp",
         "patchSetId": 3
