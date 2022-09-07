@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "508707fc_a380f451",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1929300
+      },
+      "writtenOn": "2022-09-07T11:32:59Z",
+      "side": 1,
+      "message": "I don\u0027t know the rationale behind the decision of using GKI boot images for some builds but not for others, so I cannot judge whether we can enforce that first-stage-init always succeed to create /dev/selinux.\n\nThe reason why we put /dev/selinux creation in first-stage-init is because it seemed a good place to do so. There is already a number of folders created there, and it generates a contiguous section of logs to indicate if something went wrong with folder creation.\nhttps://cs.android.com/android/platform/superproject/+/master:system/core/init/first_stage_init.cpp;l\u003d232-301;drc\u003d07c86bace1e7a7cc4dd975f10b077d21c3743749\n\nI think the better solution would be to move the /dev/selinux folder creation outside of first-stage-init, right before its first use in selinux.cpp.\n\nHowever, as I am not familiar with the first-stage-init code, I would prefer to make the modifications to first-stage-init.cpp in a follow-up CL, if you agree. This way I can make the changes in isolation, and it would be easier to rollback or fix if something goes wrong.",
+      "parentUuid": "0a2f7479_ddb36edc",
+      "range": {
+        "startLine": 17,
+        "startChar": 24,
+        "endLine": 17,
+        "endChar": 44
+      },
+      "revId": "d70f9006825d2b6567aba07254b53178c5ab2bb4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "9b717882_0857419d",
         "filename": "init/selinux.cpp",
         "patchSetId": 3
@@ -37,6 +61,30 @@
       "writtenOn": "2022-09-07T10:53:42Z",
       "side": 1,
       "message": "nit: I personally like bailing out early to do less indentation. ex:\n\n```\nif (errno !\u003d ENOENT) return ErrnoError() ...\nif (mkdir(...) !\u003d 0) return ErrnoError() ...\n```",
+      "range": {
+        "startLine": 532,
+        "startChar": 0,
+        "endLine": 538,
+        "endChar": 9
+      },
+      "revId": "d70f9006825d2b6567aba07254b53178c5ab2bb4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ffa51367_e8f60d08",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 538,
+      "author": {
+        "id": 1929300
+      },
+      "writtenOn": "2022-09-07T11:32:59Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9b717882_0857419d",
       "range": {
         "startLine": 532,
         "startChar": 0,
@@ -60,6 +108,30 @@
       "writtenOn": "2022-09-07T10:53:42Z",
       "side": 1,
       "message": "I think this is consistent in this file, but wanted to let you know that we have OR_RETURN macro. This is equialent to\n\nOR_RETURN(CreateTmpfsDirIfNeeded());",
+      "range": {
+        "startLine": 597,
+        "startChar": 0,
+        "endLine": 600,
+        "endChar": 5
+      },
+      "revId": "d70f9006825d2b6567aba07254b53178c5ab2bb4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9c019f98_bb4c2b97",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 600,
+      "author": {
+        "id": 1929300
+      },
+      "writtenOn": "2022-09-07T11:32:59Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "efcc4a8f_f53dd057",
       "range": {
         "startLine": 597,
         "startChar": 0,
