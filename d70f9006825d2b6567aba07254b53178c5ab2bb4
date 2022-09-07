@@ -120,6 +120,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "d6c07e00_986eba83",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1929300
+      },
+      "writtenOn": "2022-09-07T15:22:52Z",
+      "side": 1,
+      "message": "Done aosp/2208840.",
+      "parentUuid": "25d20b06_1c11834e",
+      "range": {
+        "startLine": 17,
+        "startChar": 24,
+        "endLine": 17,
+        "endChar": 44
+      },
+      "revId": "d70f9006825d2b6567aba07254b53178c5ab2bb4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "9b717882_0857419d",
