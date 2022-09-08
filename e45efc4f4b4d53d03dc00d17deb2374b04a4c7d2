@@ -128,6 +128,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "3e6be0ab_395af318",
+        "filename": "fs_mgr/tests/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-09-08T21:23:21Z",
+      "side": 1,
+      "message": "\u003e See the other thread, but I am not sure that renaming this file is a horrible idea. Is there a particular user-journey that you\u0027re worried about disrupting?\n\nthat\u0027s the whole point --- i don\u0027t know who/what has assumptions about this file name. i\u0027m fundamentally against changing any filenames for that reason (because i\u0027ve been burned so many times before), and -- if you value the time you\u0027ll spend be blamed for random stuff you know nothing about -- you should be too :-)\n\n(and even if you don\u0027t value your own time, think about all the poor devils who\u0027ll be trying to work out why their scripts/docs/copy \u0026 paste notes no longer work.)",
+      "parentUuid": "ab14d58f_db3c6f2c",
+      "revId": "e45efc4f4b4d53d03dc00d17deb2374b04a4c7d2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "22180eaa_a7501e44",
         "filename": "rootdir/init.rc",
         "patchSetId": 1
@@ -157,6 +175,24 @@
       "side": 1,
       "message": "We held a meeting last week where we determined that renaming files is the path of least resistance here. Partners might be referencing modules in areas that we couldn\u0027t detect, whereas they shouldn\u0027t (usually) be referencing the files in question.",
       "parentUuid": "22180eaa_a7501e44",
+      "revId": "e45efc4f4b4d53d03dc00d17deb2374b04a4c7d2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "25ae5aac_571e49d4",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 1205,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-09-08T21:23:21Z",
+      "side": 1,
+      "message": "i claim the opposite is true, and my anecdata is at least as valuable as yours...",
+      "parentUuid": "36d0170a_00ec6605",
       "revId": "e45efc4f4b4d53d03dc00d17deb2374b04a4c7d2",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
