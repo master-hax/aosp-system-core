@@ -213,6 +213,24 @@
       "parentUuid": "25ae5aac_571e49d4",
       "revId": "e45efc4f4b4d53d03dc00d17deb2374b04a4c7d2",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "530dd367_fd46286d",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 1205,
+      "author": {
+        "id": 1948227
+      },
+      "writtenOn": "2022-09-08T21:51:18Z",
+      "side": 1,
+      "message": ":) aosp/2212275 has a better way of handling your bootable/recovery apophasis by editing the relevant filegroup. Does that make it 1 - 0.25 or something? \n\nDo you think it\u0027s totally unlikely that the module would be referenced somewhere we can\u0027t see?",
+      "parentUuid": "04590c55_2910614c",
+      "revId": "e45efc4f4b4d53d03dc00d17deb2374b04a4c7d2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
