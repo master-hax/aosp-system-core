@@ -41,6 +41,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "4b3e5dfa_a9bb1fd6",
+        "filename": "fs_mgr/include/fs_mgr_overlayfs.h",
+        "patchSetId": 9
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-09-08T19:47:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2000acae_11734049",
+      "range": {
+        "startLine": 50,
+        "startChar": 56,
+        "endLine": 50,
+        "endChar": 62
+      },
+      "revId": "9547837e6f440139aed173780965563808e0ef3e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "8da2aaad_2fba92df",
@@ -58,6 +82,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "07b1c835_b2aab4a1",
+        "filename": "set-verity-state/set-verity-state.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-09-08T19:47:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8da2aaad_2fba92df",
+      "revId": "9547837e6f440139aed173780965563808e0ef3e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "650146df_94708d38",
@@ -71,6 +113,24 @@
       "writtenOn": "2022-09-07T16:51:48Z",
       "side": 1,
       "message": "```\nreturn want_reboot;  // or just fall through\n```\n\nAs it\u0027s possible that `fs_mgr_overlayfs_teardown` returned with error but |want_reboot| is also set. (some error happened, but some overlay were tore down, so we want to advise the user to reboot nonetheless.)",
+      "revId": "9547837e6f440139aed173780965563808e0ef3e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c8a6fd89_4c9fd7e8",
+        "filename": "set-verity-state/set-verity-state.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-09-08T19:47:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "650146df_94708d38",
       "revId": "9547837e6f440139aed173780965563808e0ef3e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
