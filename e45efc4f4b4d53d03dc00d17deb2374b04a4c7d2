@@ -249,6 +249,24 @@
       "parentUuid": "530dd367_fd46286d",
       "revId": "e45efc4f4b4d53d03dc00d17deb2374b04a4c7d2",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cab24bc0_a392cc03",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 1205,
+      "author": {
+        "id": 1948227
+      },
+      "writtenOn": "2022-09-09T21:22:37Z",
+      "side": 1,
+      "message": "For this case, do you think the best approach is to rename the module but utilize \"filename_from_src\" or whichever equivalent?",
+      "parentUuid": "b45fced2_1133a500",
+      "revId": "e45efc4f4b4d53d03dc00d17deb2374b04a4c7d2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
