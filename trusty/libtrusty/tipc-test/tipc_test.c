@@ -14,16 +14,18 @@
  * limitations under the License.
  */
 
-#include <stdio.h>
+#define __GNU_SOURCE
 #include <errno.h>
-#include <stdbool.h>
-#include <string.h>
-#include <stdlib.h>
-#include <unistd.h>
+#include <fcntl.h>
 #include <getopt.h>
-#define __USE_GNU
+#include <pthread.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <sys/mman.h>
 #include <sys/uio.h>
+#include <unistd.h>
 
 #include <BufferAllocator/BufferAllocatorWrapper.h>
 
@@ -56,6 +58,7 @@ static const struct option _lopts[] =  {
     {"repeat",  required_argument, 0, 'r'},
     {"burst",   required_argument, 0, 'b'},
     {"msgsize", required_argument, 0, 'm'},
+    {"thread_cnt", required_argument, 0, 'T'},
     {0, 0, 0, 0}
 };
 /* clang-format on */
@@ -73,6 +76,7 @@ static const char* usage =
         "  -m, --msgsize size    max message size\n"
         "  -v, --variable        variable message size\n"
         "  -s, --silent          silent\n"
+        "  -T, --thread_cnt      number of threads for echo and writev tests\n"
         "\n";
 
 static const char* usage_long =
@@ -82,6 +86,7 @@ static const char* usage_long =
         "   connect_foo  - connect to non existing service\n"
         "   burst_write  - send messages to datasink service\n"
         "   echo         - send/receive messages to echo service\n"
+        "   echo_async   - submit/retrieve several messages at a time to echo service\n"
         "   select       - test select call\n"
         "   blocked_read - test blocked read\n"
         "   closer1      - connection closed by remote (test1)\n"
@@ -90,9 +95,11 @@ static const char* usage_long =
         "   ta2ta-ipc    - execute TA to TA unittest\n"
         "   dev-uuid     - print device uuid\n"
         "   ta-access    - test ta-access flags\n"
-        "   writev       - writev test\n"
+        "   writev       - writev test (write-then-read pair)\n"
+        "   writev_async - writev test (large transfer)\n"
         "   readv        - readv test\n"
         "   send-fd      - transmit dma_buf to trusty, use as shm\n"
+        "   chan_interference   - ensure that filling one channel doesn't prevent use of another\n"
         "\n";
 
 static uint opt_repeat  = 1;
@@ -100,6 +107,7 @@ static uint opt_msgsize = 32;
 static uint opt_msgburst = 32;
 static bool opt_variable = false;
 static bool opt_silent = false;
+static uint opt_thread_cnt = 1;
 static char* srv_name = NULL;
 
 static void print_usage_and_exit(const char *prog, int code, bool verbose)
@@ -149,6 +157,10 @@ static void parse_options(int argc, char **argv)
 
             case 's':
                 opt_silent = true;
+                break;
+
+            case 'T':
+                opt_thread_cnt = atoi(optarg);
                 break;
 
             case 'h':
@@ -351,30 +363,255 @@ static int closer3_test(uint repeat)
     return 0;
 }
 
+static int channel_interference_test(uint repeat, uint msgsz, bool var) {
+    ssize_t rc;
+    size_t msg_len;
+    int echo_fd = -1;
+    int datasink_fd = -1;
 
-static int echo_test(uint repeat, uint msgsz, bool var)
-{
+    char tx_buf[msgsz];
+
+    echo_fd = tipc_connect(dev_name, echo_name);
+    if (echo_fd < 0) {
+        fprintf(stderr, "%s: Failed to connect to '%s' service\n", __func__, echo_name);
+        return echo_fd;
+    }
+
+    datasink_fd = tipc_connect(dev_name, datasink_name);
+    if (datasink_fd < 0) {
+        fprintf(stderr, "%s: Failed to connect to '%s' service\n", __func__, echo_name);
+        return datasink_fd;
+    }
+
+    /* make read/write not block */
+    rc = fcntl(echo_fd, F_SETFL, O_NONBLOCK);
+    if (rc < 0) {
+        fprintf(stderr, "fcntl non-blocking mode failed on 'echo' (%d)\n", rc == -1 ? -errno : rc);
+    }
+    rc = fcntl(datasink_fd, F_SETFL, O_NONBLOCK);
+    if (rc < 0) {
+        fprintf(stderr, "fcntl non-blocking mode failed on 'datasink' (%d)\n",
+                rc == -1 ? -errno : rc);
+    }
+
+    int i;
+    uint no_tx_cnt = 0;
+    for (i = 0; i < repeat; i++) {
+        msg_len = msgsz;
+        if (var && msgsz) {
+            msg_len = rand() % msgsz;
+        }
+
+        /* 1) burst write until EAGAIN indicates channel is full */
+        unsigned int tx_cnt = 0;
+        for (; tx_cnt < 1000; tx_cnt++) {
+            /* embed counter into message */
+            *((unsigned int*)tx_buf) = tx_cnt;
+
+            /* send */
+            rc = write(echo_fd, tx_buf, msg_len);
+            if (rc == -1 && errno == EAGAIN) {
+                break;  // finished
+            } else if ((size_t)rc != msg_len) {
+                fprintf(stderr, "write error (%d) msg_len (%zu)\n", rc == -1 ? -errno : rc,
+                        msg_len);
+                return 1;
+            }
+        }
+
+        /* 2) immediately send on another channel to ensure it is not blocked */
+        if (tx_cnt > 0) {
+            rc = write(datasink_fd, tx_buf, msg_len);
+            fprintf(stderr, "%s: %d messages sent to 'echo' before EAGAIN\n", __func__, tx_cnt);
+            if ((size_t)rc != msg_len) {
+                fprintf(stderr, "%s: after %d/%d write to 'echo' (%d)\n", __func__, i, repeat,
+                        rc == -1 ? -errno : rc);
+                break;
+            }
+        } else {
+            no_tx_cnt++;
+        }
+    }
+
+    fprintf(stderr, "%s: closing echo channel\n", __func__);
+    tipc_close(echo_fd);
+    fprintf(stderr, "%s: closing datasink channel\n", __func__);
+    tipc_close(datasink_fd);
+
+    if (rc == msg_len || i >= repeat) {
+        printf("%s: done\n", __func__);
+    } else {
+        printf("%s: failed (%d)\n", __func__, errno);
+        return -errno;  // test failed
+    }
+
+    return 0;
+}
+
+static int _echo_test_async(uint repeat, uint msgsz, bool var, int seed) {
+    ssize_t rc;
+    size_t msg_len;
+    int echo_fd = -1;
+
+    /* enforce lower bound for msg size to allow for order verification */
+    if (msgsz < sizeof(unsigned int)) {
+        msgsz = sizeof(unsigned int);
+    }
+
+    char tx_buf[msgsz];
+    char rx_buf[msgsz];
+
+    if (!opt_silent) {
+        fprintf(stderr, "%s: repeat %u: msgsz %u: variable %s\n", __func__, repeat, msgsz,
+                var ? "true" : "false");
+    }
+
+    const char* service_name = echo_name;
+    if (srv_name) {
+        service_name = srv_name;
+    }
+
+    echo_fd = tipc_connect(dev_name, service_name);
+    if (echo_fd < 0) {
+        fprintf(stderr, "%s: Failed to connect to '%s' service\n", __func__, service_name);
+        return echo_fd;
+    }
+
+    /* make read/write not block */
+    rc = fcntl(echo_fd, F_SETFL, O_NONBLOCK);
+    if (rc < 0) {
+        fprintf(stderr, "fcntl non-blocking mode failed (%d)\n", rc == -1 ? -errno : rc);
+    }
+
+    /* set up and run a loop that reads and/or writes based on poll results */
+    int tx_cnt = repeat;
+    int rx_cnt = tx_cnt;
+    bool abort_test = false;
+    unsigned int rx_this_loop, tx_this_loop;
+    unsigned int ceiling_rx_this_loop = 0, ceiling_tx_this_loop = 0;
+    float acc_rx_per_loop = 0.0f, acc_tx_per_loop = 0.0f;
+    int rx_loop_cnt = 0, tx_loop_cnt = 0;
+    while (!abort_test && (tx_cnt >= 0 || rx_cnt >= 0)) {
+        rx_this_loop = tx_this_loop = 0;
+
+        /* send messages until all buffers are full */
+        while (tx_cnt >= 0) {
+            /* calculate variable length if applicable */
+            msg_len = msgsz;
+            if (var && msgsz) {
+                msg_len = rand() % msgsz;
+            }
+
+            /* embed counter into message */
+            *((unsigned int*)tx_buf) = tx_cnt + seed;
+
+            /* embed length into message for verification of variable len */
+            *((unsigned int*)tx_buf + sizeof(unsigned int)) = msg_len;
+
+            /* send */
+            rc = write(echo_fd, tx_buf, msg_len);
+            if (rc == -1 && errno == EAGAIN) {
+                break;  // try again later
+            } else if ((size_t)rc != msg_len) {
+                fprintf(stderr, "write error (%d) msg_len (%zu)\n", rc == -1 ? -errno : rc,
+                        msg_len);
+                abort_test = true;
+                break;
+            }
+            tx_cnt--;
+            tx_this_loop++;
+        }
+
+        /* drain all messages */
+        while (rx_cnt >= 0) {
+            rc = read(echo_fd, rx_buf, sizeof(rx_buf));
+            if (rc == -1 && errno == EAGAIN) {
+                break;  // try again later
+            }
+            if (rc < 0) {
+                fprintf(stderr, "read error (%d)\n", rc == -1 ? -errno : rc);
+                abort_test = true;
+                break;
+            }
+
+            msg_len = *((unsigned int*)rx_buf + sizeof(unsigned int));
+            if ((size_t)rc != msg_len) {
+                fprintf(stderr, "%d: data truncated (%zu vs. %zu)\n", seed, rc, msg_len);
+                abort_test = true;
+                break;
+            }
+
+            /* verify order */
+            unsigned int test_cnt = *(unsigned int*)rx_buf;
+            if ((rx_cnt + seed) != test_cnt) {
+                fprintf(stderr, "%d: data mismatch rx_cnt= %d, test_cnt= %d\n", seed, rx_cnt,
+                        test_cnt);
+                abort_test = true;
+                break;
+            }
+
+            rx_cnt--;
+            rx_this_loop++;
+        }
+
+        if (tx_this_loop > ceiling_tx_this_loop) {
+            ceiling_tx_this_loop = tx_this_loop;
+        }
+        if (rx_this_loop > ceiling_rx_this_loop) {
+            ceiling_rx_this_loop = rx_this_loop;
+        }
+        if (tx_this_loop > 0) {
+            acc_tx_per_loop += tx_this_loop;
+            ++tx_loop_cnt;
+        }
+        if (rx_this_loop > 0) {
+            acc_rx_per_loop += rx_this_loop;
+            ++rx_loop_cnt;
+        }
+    }
+
+    tipc_close(echo_fd);
+
+    printf("%d: ceiling tx= %d, rx= %d\n", seed, ceiling_tx_this_loop, ceiling_rx_this_loop);
+
+    if (!opt_silent) {
+        printf("%s: seed= %d done; avg per loop: tx= %.3f (%d), rx= %.3f (%d)\n", __func__, seed,
+               acc_tx_per_loop / tx_loop_cnt, tx_loop_cnt, acc_rx_per_loop / rx_loop_cnt,
+               rx_loop_cnt);
+    }
+
+    return (rx_cnt <= 0 && tx_cnt <= 0) ? 0 : (rc == -1 ? -errno : -1);
+}
+
+static int _echo_test(uint repeat, uint msgsz, bool var, uint seed) {
     uint i;
     ssize_t rc;
     size_t msg_len;
     int echo_fd = -1;
     char tx_buf[msgsz];
     char rx_buf[msgsz];
+    int ret = 0;
+    (void)seed;
 
     if (!opt_silent) {
         printf("%s: repeat %u: msgsz %u: variable %s\n", __func__, repeat, msgsz,
                var ? "true" : "false");
     }
 
-    echo_fd = tipc_connect(dev_name, echo_name);
+    const char* service_name = echo_name;
+    if (srv_name) {
+        service_name = srv_name;
+    }
+
+    echo_fd = tipc_connect(dev_name, service_name);
     if (echo_fd < 0) {
-        fprintf(stderr, "Failed to connect to service\n");
+        fprintf(stderr, "%s: Failed to connect to '%s' service\n", __func__, echo_name);
         return echo_fd;
     }
 
     for (i = 0; i < repeat; i++) {
         msg_len = msgsz;
-        if (opt_variable && msgsz) {
+        if (var && msgsz) {
             msg_len = rand() % msgsz;
         }
 
@@ -383,12 +620,14 @@ static int echo_test(uint repeat, uint msgsz, bool var)
         rc = write(echo_fd, tx_buf, msg_len);
         if ((size_t)rc != msg_len) {
             perror("echo_test: write");
+            ret = -1;
             break;
         }
 
         rc = read(echo_fd, rx_buf, msg_len);
         if (rc < 0) {
             perror("echo_test: read");
+            ret = -1;
             break;
         }
 
@@ -409,7 +648,64 @@ static int echo_test(uint repeat, uint msgsz, bool var)
         printf("%s: done\n", __func__);
     }
 
-    return 0;
+    return ret;
+}
+
+typedef struct {
+    uint repeat;
+    uint msgsz;
+    uint seed;  // for variation between concurrent threads
+    int result;
+    bool var;
+    bool async;
+} threaded_test_args_t;
+
+void* echo_test_thread(void* arg) {
+    threaded_test_args_t* et = (threaded_test_args_t*)arg;
+
+    if (et->async) {
+        et->result = _echo_test_async(et->repeat, et->msgsz, et->var, et->seed);
+    } else {
+        et->result = _echo_test(et->repeat, et->msgsz, et->var, et->seed);
+    }
+
+    return NULL;
+}
+
+typedef struct {
+    threaded_test_args_t args;
+    pthread_t t;
+} threaded_test_info_t;
+
+static int threaded_test(void* (*thread_func)(void*), uint thread_cnt, const uint repeat,
+                         const uint msgsz, const bool var, const bool async) {
+    threaded_test_info_t tinfo[thread_cnt];
+    int ret = 0;
+
+    for (int i = 0; i < thread_cnt; i++) {
+        tinfo[i].args.repeat = repeat;
+        tinfo[i].args.msgsz = msgsz;
+        tinfo[i].args.var = var;
+        tinfo[i].args.async = async;
+        tinfo[i].args.seed = 100000 * i;
+
+        ret = pthread_create(&tinfo[i].t, NULL, thread_func, &tinfo[i].args);
+        if (ret != 0) {
+            printf("%s: %s\n", __func__, strerror(ret));
+            return 1;
+        }
+    }
+
+    ret = 0;
+    for (int i = 0; i < thread_cnt; i++) {
+        pthread_join(tinfo[i].t, NULL);
+        if (tinfo[i].args.result != 0) {
+            fprintf(stderr, "thread #%d failed (%d)\n", i, tinfo[i].args.result);
+            ret = 1;
+        }
+    }
+
+    return ret;
 }
 
 static int burst_write_test(uint repeat, uint msgburst, uint msgsz, bool var)
@@ -711,9 +1007,175 @@ static int ta_access_test(void)
     return 0;
 }
 
+static int _writev_test_async(uint repeat, uint msgsz, bool var, int seed) {
+    ssize_t rc;
+    size_t msg_len;
+    int echo_fd = -1;
+    const unsigned int min_msg_len = (sizeof(unsigned int) + sizeof(size_t));
 
-static int writev_test(uint repeat, uint msgsz, bool var)
-{
+    /* enforce lower bound for msg size to allow for order verification */
+    if (msgsz < sizeof(unsigned int)) {
+        msgsz = sizeof(unsigned int);
+    }
+
+    char tx0_buf[msgsz];
+    char tx1_buf[msgsz];
+    char rx_buf[msgsz];
+    struct iovec tx_iovs[2] = {{tx0_buf, 0}, {tx1_buf, 0}};
+    unsigned int* p0 = tx_iovs[0].iov_base;
+    unsigned int* p1 = tx_iovs[1].iov_base;
+
+    if (!opt_silent) {
+        fprintf(stderr, "%s: repeat %u: msgsz %u: variable %s\n", __func__, repeat, msgsz,
+                var ? "true" : "false");
+    }
+
+    const char* service_name = echo_name;
+    if (srv_name) {
+        service_name = srv_name;
+    }
+
+    echo_fd = tipc_connect(dev_name, service_name);
+    if (echo_fd < 0) {
+        fprintf(stderr, "%s: Failed to connect to '%s' service\n", __func__, service_name);
+        return echo_fd;
+    }
+
+    fprintf(stderr, "seed= %d connected to '%s', fd= %d\n", seed, service_name, echo_fd);
+
+    /* make read/write not block */
+    rc = fcntl(echo_fd, F_SETFL, O_NONBLOCK);
+    if (rc < 0) {
+        fprintf(stderr, "fcntl non-blocking mode failed (%d)\n", rc == -1 ? -errno : rc);
+    }
+
+    /* set up and run a loop that reads and/or writes based on poll results */
+    int tx_cnt = repeat;
+    int rx_cnt = tx_cnt;
+    bool abort_test = false;
+    unsigned int rx_this_loop, tx_this_loop;
+    unsigned int ceiling_rx_this_loop, ceiling_tx_this_loop;
+    float acc_rx_per_loop = 0.0f, acc_tx_per_loop = 0.0f;
+    int rx_loop_cnt = 0, tx_loop_cnt = 0;
+    while (!abort_test && (tx_cnt >= 0 || rx_cnt >= 0)) {
+        rx_this_loop = tx_this_loop = 0;
+
+        /* send messages until all buffers are full */
+        while (tx_cnt >= 0) {
+            /* calculate variable length if applicable */
+            msg_len = msgsz;
+            if (var && msgsz) {
+                msg_len = rand() % msgsz;
+            }
+            tx_iovs[0].iov_len = msg_len / 3;
+            tx_iovs[0].iov_len -=
+                    tx_iovs[0].iov_len % sizeof(unsigned int);  // alignment for embedding counters
+            if (tx_iovs[0].iov_len < min_msg_len) {
+                tx_iovs[0].iov_len = min_msg_len;
+            }
+            tx_iovs[1].iov_len = msg_len - tx_iovs[0].iov_len;
+
+            /* embed counter into message */
+            p0[0] = tx_cnt + seed;
+            p1[0] = tx_cnt + seed + repeat;
+
+            /* embed lengths into message so that rx can verify */
+            p0[1] = tx_iovs[0].iov_len;
+            p1[1] = tx_iovs[1].iov_len;
+
+            /* send */
+            rc = writev(echo_fd, tx_iovs, 2);
+            if (rc == -1 && errno == EAGAIN) {
+                break;  // try again later
+            } else if ((size_t)rc != msg_len) {
+                fprintf(stderr, "write error (%d) msg_len (%zu)\n", rc == -1 ? -errno : rc,
+                        msg_len);
+                abort_test = true;
+                break;
+            }
+            tx_cnt--;
+            tx_this_loop++;
+        }
+
+        /* drain all messages */
+        while (rx_cnt >= 0) {
+            rc = read(echo_fd, rx_buf, sizeof(rx_buf));
+            if (rc == -1 && errno == EAGAIN) {
+                break;  // try again later
+            }
+            if (rc < 0) {
+                fprintf(stderr, "read error (%d)\n", rc == -1 ? -errno : rc);
+                abort_test = true;
+                break;
+            }
+
+            /* verify minimum size to do verification steps below */
+            if ((size_t)rc < min_msg_len) {
+                fprintf(stderr, "data truncated (%zu vs. %zu)\n", rc, msg_len);
+                abort_test = true;
+                break;
+            }
+
+            unsigned int* p = (void*)rx_buf;
+
+            /* verify first iov */
+            unsigned int test_cnt = p[0];
+            if ((rx_cnt + seed) != test_cnt) {
+                fprintf(stderr, "data[0] mismatch expect= %d, have= %d\n", rx_cnt + seed, test_cnt);
+                abort_test = true;
+                break;
+            }
+
+            /* find length of first iov */
+            size_t test_iov_len = p[1];  // FIXME: this only works for sizeof(size_t) == 4
+            if (test_iov_len >= rc) {
+                fprintf(stderr, "test_iov_len= %d out of range\n", test_iov_len);
+                abort_test = true;
+                break;
+            }
+
+            /* verify second iov */
+            test_cnt = p[test_iov_len / sizeof(unsigned int)];
+            if ((rx_cnt + seed + repeat) != test_cnt) {
+                fprintf(stderr, "data[1] mismatch expect= %d, have= %d\n", rx_cnt + seed + repeat,
+                        test_cnt);
+                abort_test = true;
+                break;
+            }
+
+            rx_cnt--;
+            rx_this_loop++;
+        }
+
+        if (tx_this_loop > ceiling_tx_this_loop) {
+            ceiling_tx_this_loop = tx_this_loop;
+        }
+        if (rx_this_loop > ceiling_rx_this_loop) {
+            ceiling_rx_this_loop = rx_this_loop;
+        }
+        if (tx_this_loop > 0) {
+            acc_tx_per_loop += tx_this_loop;
+            ++tx_loop_cnt;
+        }
+        if (rx_this_loop > 0) {
+            acc_rx_per_loop += rx_this_loop;
+            ++rx_loop_cnt;
+        }
+    }
+
+    tipc_close(echo_fd);
+
+    printf("%d: ceiling tx= %d, rx= %d\n", seed, ceiling_tx_this_loop, ceiling_rx_this_loop);
+
+    if (!opt_silent) {
+        printf("%s: seed= %d done; avg per loop: tx= %.3f, rx= %.3f\n", __func__, seed,
+               acc_tx_per_loop / tx_loop_cnt, acc_rx_per_loop / rx_loop_cnt);
+    }
+
+    return (rx_cnt <= 0 && tx_cnt <= 0) ? 0 : (rc == -1 ? -errno : -1);
+}
+
+static int _writev_test(uint repeat, uint msgsz, bool var, int seed) {
     uint i;
     ssize_t rc;
     size_t msg_len;
@@ -722,6 +1184,7 @@ static int writev_test(uint repeat, uint msgsz, bool var)
     char tx1_buf[msgsz];
     char rx_buf[msgsz];
     struct iovec iovs[2] = {{tx0_buf, 0}, {tx1_buf, 0}};
+    (void)seed;
 
     if (!opt_silent) {
         printf("%s: repeat %u: msgsz %u: variable %s\n", __func__, repeat, msgsz,
@@ -730,7 +1193,7 @@ static int writev_test(uint repeat, uint msgsz, bool var)
 
     echo_fd = tipc_connect(dev_name, echo_name);
     if (echo_fd < 0) {
-        fprintf(stderr, "Failed to connect to service\n");
+        fprintf(stderr, "%s: Failed to connect to '%s' service\n", __func__, echo_name);
         return echo_fd;
     }
 
@@ -791,6 +1254,18 @@ static int writev_test(uint repeat, uint msgsz, bool var)
     return 0;
 }
 
+void* writev_test_thread(void* arg) {
+    threaded_test_args_t* et = (threaded_test_args_t*)arg;
+
+    if (et->async) {
+        et->result = _writev_test_async(et->repeat, et->msgsz, et->var, et->seed);
+    } else {
+        et->result = _writev_test(et->repeat, et->msgsz, et->var, et->seed);
+    }
+
+    return NULL;
+}
+
 static int readv_test(uint repeat, uint msgsz, bool var)
 {
     uint i;
@@ -809,7 +1284,7 @@ static int readv_test(uint repeat, uint msgsz, bool var)
 
     echo_fd = tipc_connect(dev_name, echo_name);
     if (echo_fd < 0) {
-        fprintf(stderr, "Failed to connect to service\n");
+        fprintf(stderr, "%s: Failed to connect to '%s' service\n", __func__, echo_name);
         return echo_fd;
     }
 
@@ -977,20 +1452,30 @@ int main(int argc, char **argv)
         rc = closer2_test(opt_repeat);
     } else if (strcmp(test_name, "closer3") == 0) {
         rc = closer3_test(opt_repeat);
+    } else if (strcmp(test_name, "echo_async") == 0) {
+        rc = threaded_test(echo_test_thread, opt_thread_cnt, opt_repeat, opt_msgsize, opt_variable,
+                           true);
     } else if (strcmp(test_name, "echo") == 0) {
-        rc = echo_test(opt_repeat, opt_msgsize, opt_variable);
+        rc = threaded_test(echo_test_thread, opt_thread_cnt, opt_repeat, opt_msgsize, opt_variable,
+                           false);
     } else if (strcmp(test_name, "ta2ta-ipc") == 0) {
         rc = ta2ta_ipc_test();
     } else if (strcmp(test_name, "dev-uuid") == 0) {
         rc = dev_uuid_test();
     } else if (strcmp(test_name, "ta-access") == 0) {
         rc = ta_access_test();
+    } else if (strcmp(test_name, "writev_async") == 0) {
+        rc = threaded_test(writev_test_thread, opt_thread_cnt, opt_repeat, opt_msgsize,
+                           opt_variable, true);
     } else if (strcmp(test_name, "writev") == 0) {
-        rc = writev_test(opt_repeat, opt_msgsize, opt_variable);
+        rc = threaded_test(writev_test_thread, opt_thread_cnt, opt_repeat, opt_msgsize,
+                           opt_variable, false);
     } else if (strcmp(test_name, "readv") == 0) {
         rc = readv_test(opt_repeat, opt_msgsize, opt_variable);
     } else if (strcmp(test_name, "send-fd") == 0) {
         rc = send_fd_test();
+    } else if (strcmp(test_name, "chan_interference") == 0) {
+        rc = channel_interference_test(opt_repeat, opt_msgsize, opt_variable);
     } else {
         fprintf(stderr, "Unrecognized test name '%s'\n", test_name);
         print_usage_and_exit(argv[0], EXIT_FAILURE, true);
