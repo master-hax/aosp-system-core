@@ -72,15 +72,16 @@ TEST(persistent_properties, EndToEnd) {
     persistent_property_filename = tf.path;
 
     std::vector<std::pair<std::string, std::string>> persistent_properties = {
-        {"persist.sys.locale", "en-US"},
-        {"persist.sys.timezone", "America/Los_Angeles"},
-        {"persist.test.empty.value", ""},
-        {"persist.test.new.line", "abc\n\n\nabc"},
-        {"persist.test.numbers", "1234567890"},
-        {"persist.test.non.ascii", "\x00\x01\x02\xFF\xFE\xFD\x7F\x8F\x9F"},
-        // We don't currently allow for non-ascii names for system properties, but this is a policy
-        // decision, not a technical limitation.
-        {"persist.\x00\x01\x02\xFF\xFE\xFD\x7F\x8F\x9F", "non-ascii-name"},
+            {"persist.sys.locale", "en-US"},
+            {"persist.sys.timezone", "America/Los_Angeles"},
+            {"persist.sys.timezone_confidence", "0"},
+            {"persist.test.empty.value", ""},
+            {"persist.test.new.line", "abc\n\n\nabc"},
+            {"persist.test.numbers", "1234567890"},
+            {"persist.test.non.ascii", "\x00\x01\x02\xFF\xFE\xFD\x7F\x8F\x9F"},
+            // We don't currently allow for non-ascii names for system properties, but this is a
+            // policy decision, not a technical limitation.
+            {"persist.\x00\x01\x02\xFF\xFE\xFD\x7F\x8F\x9F", "non-ascii-name"},
     };
 
     ASSERT_RESULT_OK(
