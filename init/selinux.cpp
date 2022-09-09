@@ -432,11 +432,6 @@ bool OpenSplitPolicy(PolicyFile* policy_file) {
         odm_policy_cil_file.clear();
     }
 
-    // apex_sepolicy.cil is default but optional.
-    std::string apex_policy_cil_file("/dev/selinux/apex_sepolicy.cil");
-    if (access(apex_policy_cil_file.c_str(), F_OK) == -1) {
-        apex_policy_cil_file.clear();
-    }
     const std::string version_as_string = std::to_string(SEPOLICY_VERSION);
 
     // clang-format off
@@ -479,9 +474,6 @@ bool OpenSplitPolicy(PolicyFile* policy_file) {
     if (!odm_policy_cil_file.empty()) {
         compile_args.push_back(odm_policy_cil_file.c_str());
     }
-    if (!apex_policy_cil_file.empty()) {
-        compile_args.push_back(apex_policy_cil_file.c_str());
-    }
     compile_args.push_back(nullptr);
 
     if (!ForkExecveAndWaitForCompletion(compile_args[0], (char**)compile_args.data())) {
@@ -519,7 +511,8 @@ const std::string kSepolicySignature = "SEPolicy.zip.sig";
 const std::string kTmpfsDir = "/dev/selinux/";
 
 // Files that are deleted after policy is compiled/loaded.
-const std::vector<std::string> kApexSepolicyTmp{"apex_sepolicy.cil", "apex_sepolicy.sha256"};
+const std::vector<std::string> kApexSepolicyTmp{"apex_sepolicy.decompiled.cil",
+                                                "apex_sepolicy.sha256"};
 // Files that need to persist because they are used by userspace processes.
 const std::vector<std::string> kApexSepolicy{"apex_file_contexts", "apex_property_contexts",
                                              "apex_service_contexts", "apex_seapp_contexts",
@@ -725,18 +718,53 @@ void PrepareApexSepolicy() {
 
     auto apex = GetPolicyFromApex(dir);
     if (!apex.ok()) {
-        // TODO(b/199914227) Make failure fatal. For now continue booting with non-apex sepolicy.
-        LOG(ERROR) << apex.error();
+        LOG(FATAL) << apex.error();
     }
+}
+
+static Result<void> AmendSelinuxPolicy(PolicyFile* policy_file) {
+    LOG(INFO) << "Amending SELinux policy: " << policy_file->path;
+
+    char amended_sepolicy[] = "/dev/sepolicy.amended.XXXXXX";
+    unique_fd amended_sepolicy_fd(mkostemp(amended_sepolicy, O_CLOEXEC));
+    if (amended_sepolicy_fd < 0) {
+        return ErrnoError() << "Failed to create temporary file " << amended_sepolicy;
+    }
+
+    // clang-format off
+    std::vector<const char*> compile_args{
+            "/system/bin/seamendc",
+            "-b", policy_file->path.c_str(),
+            "-o", amended_sepolicy,
+            "/dev/selinux/apex_sepolicy.decompiled.cil"
+    };
+    compile_args.push_back(nullptr);
+    // clang-format on
+
+    if (!ForkExecveAndWaitForCompletion(compile_args[0], (char**)compile_args.data())) {
+        unlink(amended_sepolicy);
+        return Error() << "seamendc failed";
+    }
+    unlink(amended_sepolicy);
+
+    policy_file->fd = std::move(amended_sepolicy_fd);
+    policy_file->path = amended_sepolicy;
+    return {};
 }
 
 void ReadPolicy(std::string* policy) {
     PolicyFile policy_file;
 
-    bool ok = IsSplitPolicyDevice() ? OpenSplitPolicy(&policy_file)
-                                    : OpenMonolithicPolicy(&policy_file);
-    if (!ok) {
-        LOG(FATAL) << "Unable to open SELinux policy";
+    if (IsSplitPolicyDevice()) {
+        if (!OpenSplitPolicy(&policy_file)) {
+            LOG(FATAL) << "Unable to open SELinux split policy";
+        }
+        auto amend = AmendSelinuxPolicy(&policy_file);
+        if (!amend.ok()) {
+            LOG(FATAL) << "Policy amend failed: " << amend.error();
+        }
+    } else if (!OpenMonolithicPolicy(&policy_file)) {
+        LOG(FATAL) << "Unable to open SELinux monolithic policy";
     }
 
     if (!android::base::ReadFdToString(policy_file.fd, policy)) {
