@@ -447,6 +447,8 @@ TEST_F(CrasherTest, heap_addr_in_register) {
   ASSERT_MATCH(result, "memory near r0 \\(\\[anon:");
 #elif defined(__x86_64__)
   ASSERT_MATCH(result, "memory near rdi \\(\\[anon:");
+#elif defined(__riscv)
+  ASSERT_MATCH(result, "memory near a0 \\(\\[anon:");
 #else
   ASSERT_TRUE(false) << "unsupported architecture";
 #endif
