@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "164c3ee9_d7e91958",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1071150
+      },
+      "writtenOn": "2022-09-12T17:24:49Z",
+      "side": 1,
+      "message": "lgtm, but a tourist in the part of the tree.",
+      "revId": "ecc14a595809846cd09760d2c59b1fdfa9660ce8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
