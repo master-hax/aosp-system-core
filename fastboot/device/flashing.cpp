@@ -37,6 +37,7 @@
 #include <liblp/builder.h>
 #include <liblp/liblp.h>
 #include <libsnapshot/snapshot.h>
+#include <bootloader_message/bootloader_message.h>
 #include <sparse/sparse.h>
 
 #include "fastboot_device.h"
