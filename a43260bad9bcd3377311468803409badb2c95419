@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8e537b69_2e19e7c0",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 632,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-09-13T21:29:14Z",
+      "side": 1,
+      "message": "link to the lkml thread about the lack of a better way to recognize this?",
+      "revId": "a43260bad9bcd3377311468803409badb2c95419",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
