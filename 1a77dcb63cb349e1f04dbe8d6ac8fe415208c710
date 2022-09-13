@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "75b30e9c_a1a5ceb8",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1005967
+      },
+      "writtenOn": "2022-09-13T19:55:49Z",
+      "side": 1,
+      "message": "This is great hack!",
+      "revId": "1a77dcb63cb349e1f04dbe8d6ac8fe415208c710",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a6fff185_82f60375",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 634,
+      "author": {
+        "id": 1005967
+      },
+      "writtenOn": "2022-09-13T19:55:49Z",
+      "side": 1,
+      "message": "Could you pull the definition from reserved_signals.h?",
+      "revId": "1a77dcb63cb349e1f04dbe8d6ac8fe415208c710",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
