@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "56e61d93_2f83fcfa",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-09-13T14:21:48Z",
+      "side": 1,
+      "message": "nit: could just replace all fs_mgr_access() with plain access()",
+      "revId": "b99cc57d8a528700d202124713f87fa2e9d3987c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
