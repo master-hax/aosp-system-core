@@ -200,6 +200,7 @@ libinit_cc_defaults {
         "libutils",
         "libziparchive",
     ],
+    header_libs: ["bionic_libc_platform_headers"],
     bootstrap: true,
     visibility: [":__subpackages__"],
 }
