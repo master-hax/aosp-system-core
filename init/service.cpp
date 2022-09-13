@@ -326,8 +326,14 @@ void Service::Reap(const siginfo_t& siginfo) {
 #ifdef SEGV_MTEAERR
     // As a precaution, we only upgrade a service once per reboot, to limit
     // the potential impact.
-    // TODO(b/244471804): Once we have a kernel API to get sicode, compare it to MTEAERR here.
-    bool should_upgrade_mte = siginfo.si_code != CLD_EXITED && siginfo.si_status == SIGSEGV &&
+    //
+    // __SIGRTMIN + 6 is a magic value used by deuggerd to signal that the
+    // process crashed with SIGSEGV and SEGV_MTEAERR. This signal will never
+    // be seen otherwise in a crash, because it always gets handled by the
+    // profiling signal handlers in bionic. See also
+    // debuggerd/handler/debuggerd_handler.cpp.
+    bool should_upgrade_mte = siginfo.si_code != CLD_EXITED &&
+                              siginfo.si_status == __SIGRTMIN + 6 &&
                               !upgraded_mte_;
 
     if (should_upgrade_mte) {
