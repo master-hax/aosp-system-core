@@ -327,7 +327,7 @@ void Service::Reap(const siginfo_t& siginfo) {
     // As a precaution, we only upgrade a service once per reboot, to limit
     // the potential impact.
     // TODO(b/244471804): Once we have a kernel API to get sicode, compare it to MTEAERR here.
-    bool should_upgrade_mte = siginfo.si_code != CLD_EXITED && siginfo.si_status == SIGSEGV &&
+    bool should_upgrade_mte = siginfo.si_code != CLD_EXITED && siginfo.si_status == __SIGRTMIN + 6 &&
                               !upgraded_mte_;
 
     if (should_upgrade_mte) {
