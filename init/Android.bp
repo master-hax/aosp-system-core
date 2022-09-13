@@ -200,6 +200,7 @@ libinit_cc_defaults {
         "libutils",
         "libziparchive",
     ],
+    header_libs: ["bionic_libc_platform_headers"],
     bootstrap: true,
     visibility: [":__subpackages__"],
 }
@@ -511,6 +512,7 @@ cc_defaults {
         "libprocessgroup",
         "libprotobuf-cpp-lite",
     ],
+    header_libs: ["bionic_libc_platform_headers"],
 }
 
 cc_library_static {
