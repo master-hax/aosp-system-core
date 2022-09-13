@@ -1,0 +1,118 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "35f8b163_13bd41db",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 485,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-09-13T14:16:00Z",
+      "side": 1,
+      "message": "Don\u0027t mention EBUSY here",
+      "revId": "e0a942fe6aa223226db354c5b49b144754ae64cc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "02a46f62_cd5e889b",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 532,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-09-13T14:16:00Z",
+      "side": 1,
+      "message": "should this be Busy instead? As we already disabled the partition, an immediate reboot should fixup any errors encountered here",
+      "revId": "e0a942fe6aa223226db354c5b49b144754ae64cc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c91e7665_289a545a",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 559,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-09-13T14:16:00Z",
+      "side": 1,
+      "message": "QQ: What would happen if |was_mounted| is true and DestroyLogicalPartition() is called? Can DestroyLogicalPartition() succeed in this case? Should we try DestroyLogicalPartition() only if |was_mounted| is false?",
+      "revId": "e0a942fe6aa223226db354c5b49b144754ae64cc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "dae6902f_3deafc50",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 1594,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-09-13T14:16:00Z",
+      "side": 1,
+      "message": "delete this, as we don\u0027t report error through errno anymore!",
+      "range": {
+        "startLine": 1594,
+        "startChar": 42,
+        "endLine": 1594,
+        "endChar": 67
+      },
+      "revId": "e0a942fe6aa223226db354c5b49b144754ae64cc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "49a7704b_44f25b9e",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 1713,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-09-13T14:16:00Z",
+      "side": 1,
+      "message": "IIRC, \"Map\" will fail first, and \"mount\" wouldn\u0027t be attempted?",
+      "range": {
+        "startLine": 1713,
+        "startChar": 46,
+        "endLine": 1713,
+        "endChar": 51
+      },
+      "revId": "e0a942fe6aa223226db354c5b49b144754ae64cc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "dbced15a_de2267ad",
+        "filename": "set-verity-state/set-verity-state.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-09-13T14:16:00Z",
+      "side": 1,
+      "message": "this is unused",
+      "revId": "e0a942fe6aa223226db354c5b49b144754ae64cc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
