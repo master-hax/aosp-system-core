@@ -113,6 +113,7 @@ bool FdCacheHelper::IsAppDependentPath(const std::string& path) {
 }
 
 IProfileAttribute::~IProfileAttribute() = default;
+IProfileVariable::~IProfileVariable() = default;
 
 void ProfileAttribute::Reset(const CgroupController& controller, const std::string& file_name) {
     controller_ = controller;
@@ -632,6 +633,18 @@ bool TaskProfiles::Load(const CgroupMap& cg_map, const std::string& file_name) {
         return false;
     }
 
+    const Json::Value& profile_variables = root["Variables"];
+    for (Json::Value::ArrayIndex i = 0; i < profile_variables.size(); ++i) {
+        std::string name = profile_variables[i]["Name"].asString();
+        std::string value = profile_variables[i]["Value"].asString();
+        auto [it, inserted] =
+                variables_.try_emplace(name, std::make_unique<ProfileVariable>(name, value));
+        if (inserted) {
+            LOG(WARNING) << "Variable " << name
+                         << " override value was not provided. Defaulting to value " << value;
+        }
+    }
+
     const Json::Value& attr = root["Attributes"];
     for (Json::Value::ArrayIndex i = 0; i < attr.size(); ++i) {
         std::string name = attr[i]["Name"].asString();
@@ -694,8 +707,17 @@ bool TaskProfiles::Load(const CgroupMap& cg_map, const std::string& file_name) {
             } else if (action_name == "SetAttribute") {
                 std::string attr_name = params_val["Name"].asString();
                 std::string attr_value = params_val["Value"].asString();
+                std::string attr_variable = params_val["Variable"].asString();
                 bool optional = strcmp(params_val["Optional"].asString().c_str(), "true") == 0;
 
+                if (!attr_variable.empty()) {
+                    auto iter = variables_.find(attr_variable);
+                    if (iter != variables_.end()) {
+                        attr_value = iter->second.get()->value();
+                    } else {
+                        LOG(WARNING) << "SetAttribute: unknown variable: " << attr_variable;
+                    }
+                }
                 auto iter = attributes_.find(attr_name);
                 if (iter != attributes_.end()) {
                     profile->Add(std::make_unique<SetAttributeAction>(iter->second.get(),
@@ -843,6 +865,17 @@ bool TaskProfiles::SetTaskProfiles(int tid, std::span<const T> profiles, bool us
             PLOG(WARNING) << "Failed to find " << name << " task profile";
             success = false;
         }
+    }
+    return success;
+}
+
+bool TaskProfiles::SetProfileVariable(const std::string& name, const std::string& value) {
+    bool success = true;
+    auto [it, inserted] =
+            variables_.try_emplace(name, std::make_unique<ProfileVariable>(name, value));
+    if (!inserted) {
+        PLOG(WARNING) << "Failed to save variable \"" << name << "\"";
+        success = false;
     }
     return success;
 }
