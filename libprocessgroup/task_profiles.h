@@ -21,6 +21,7 @@
 #include <functional>
 #include <map>
 #include <mutex>
+#include <optional>
 #include <span>
 #include <string>
 #include <string_view>
@@ -110,8 +111,11 @@ class SetTimerSlackAction : public ProfileAction {
 // Set attribute profile element
 class SetAttributeAction : public ProfileAction {
   public:
-    SetAttributeAction(const IProfileAttribute* attribute, const std::string& value, bool optional)
-        : attribute_(attribute), value_(value), optional_(optional) {}
+    SetAttributeAction(
+            const IProfileAttribute* attribute, const std::string& value,
+            std::optional<std::map<std::string, std::string, std::less<>>::iterator> var_iter,
+            bool optional)
+        : attribute_(attribute), value_(value), var_iter_(var_iter), optional_(optional) {}
 
     const char* Name() const override { return "SetAttribute"; }
     bool ExecuteForProcess(uid_t uid, pid_t pid) const override;
@@ -120,6 +124,7 @@ class SetAttributeAction : public ProfileAction {
   private:
     const IProfileAttribute* attribute_;
     std::string value_;
+    std::optional<std::map<std::string, std::string, std::less<>>::iterator> var_iter_;
     bool optional_;
 };
 
@@ -224,4 +229,5 @@ class TaskProfiles {
 
     std::map<std::string, std::shared_ptr<TaskProfile>, std::less<>> profiles_;
     std::map<std::string, std::unique_ptr<IProfileAttribute>, std::less<>> attributes_;
+    std::map<std::string, std::string, std::less<>> variables_;
 };
