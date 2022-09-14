@@ -180,6 +180,10 @@ bool SetTaskProfiles(int tid, std::span<const std::string_view> profiles, bool u
     return TaskProfiles::GetInstance().SetTaskProfiles(tid, profiles, use_fd_cache);
 }
 
+bool SetProfileVariable(const std::pair<std::string, std::string>& profile_variable) {
+    return TaskProfiles::GetInstance().SetProfileVariable(profile_variable);
+}
+
 // C wrapper for SetProcessProfiles.
 // No need to have this in the header file because this function is specifically for crosvm. Crosvm
 // which is written in Rust has its own declaration of this foreign function and doesn't rely on the
