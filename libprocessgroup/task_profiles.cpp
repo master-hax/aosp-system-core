@@ -113,10 +113,16 @@ bool FdCacheHelper::IsAppDependentPath(const std::string& path) {
 }
 
 IProfileAttribute::~IProfileAttribute() = default;
+IProfileVariable::~IProfileVariable() = default;
 
 void ProfileAttribute::Reset(const CgroupController& controller, const std::string& file_name) {
     controller_ = controller;
     file_name_ = file_name;
+}
+
+void ProfileVariable::Reset(const std::string& variable_name, const std::string& variable_value) {
+    variable_name_ = variable_name;
+    variable_value_ = variable_value;
 }
 
 bool ProfileAttribute::GetPathForTask(int tid, std::string* path) const {
@@ -632,6 +638,13 @@ bool TaskProfiles::Load(const CgroupMap& cg_map, const std::string& file_name) {
         return false;
     }
 
+    const Json::Value& profile_variables = root["Variables"];
+    for (Json::Value::ArrayIndex i = 0; i < profile_variables.size(); ++i) {
+        std::string name = profile_variables[i]["Name"].asString();
+        std::string value = profile_variables[i]["Value"].asString();
+        variables_.try_emplace(name, std::make_unique<ProfileVariable>(name, value));
+    }
+
     const Json::Value& attr = root["Attributes"];
     for (Json::Value::ArrayIndex i = 0; i < attr.size(); ++i) {
         std::string name = attr[i]["Name"].asString();
@@ -694,8 +707,17 @@ bool TaskProfiles::Load(const CgroupMap& cg_map, const std::string& file_name) {
             } else if (action_name == "SetAttribute") {
                 std::string attr_name = params_val["Name"].asString();
                 std::string attr_value = params_val["Value"].asString();
+                std::string attr_variable = params_val["Variable"].asString();
                 bool optional = strcmp(params_val["Optional"].asString().c_str(), "true") == 0;
 
+                if (!attr_variable.empty()) {
+                    auto iter = variables_.find(attr_variable);
+                    if (iter != variables_.end()) {
+                        attr_value = iter->second.get()->variable_value();
+                    } else {
+                        LOG(WARNING) << "SetAttribute: unknown variable: " << attr_variable;
+                    }
+                }
                 auto iter = attributes_.find(attr_name);
                 if (iter != attributes_.end()) {
                     profile->Add(std::make_unique<SetAttributeAction>(iter->second.get(),
@@ -804,6 +826,15 @@ const IProfileAttribute* TaskProfiles::GetAttribute(std::string_view name) const
     return nullptr;
 }
 
+const IProfileVariable* TaskProfiles::GetProfileVariable(std::string_view name) const {
+    auto iter = variables_.find(name);
+
+    if (iter != variables_.end()) {
+        return iter->second.get();
+    }
+    return nullptr;
+}
+
 template <typename T>
 bool TaskProfiles::SetProcessProfiles(uid_t uid, pid_t pid, std::span<const T> profiles,
                                       bool use_fd_cache) {
@@ -841,6 +872,23 @@ bool TaskProfiles::SetTaskProfiles(int tid, std::span<const T> profiles, bool us
             }
         } else {
             PLOG(WARNING) << "Failed to find " << name << " task profile";
+            success = false;
+        }
+    }
+    return success;
+}
+
+bool TaskProfiles::SetVariableProfiles(
+        std::vector<std::pair<std::string, std::string>> profile_variables) {
+    bool success = true;
+    for (const auto& profile_variable : profile_variables) {
+        std::string variable_name = profile_variable.first;
+        std::string variable_value = profile_variable.second;
+        // Now we need to find if this variable_name exists in the map already
+        auto [it, inserted] = variables_.try_emplace(
+                variable_name, std::make_unique<ProfileVariable>(variable_name, variable_value));
+        if (!inserted) {
+            PLOG(WARNING) << "Failed to save variable \"" << variable_name << "\"";
             success = false;
         }
     }

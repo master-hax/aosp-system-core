@@ -116,7 +116,7 @@
           "Params":
           {
             "Name": "FreezerState",
-            "Value": "1"
+            "Variable": "testing_variable"
           }
         }
       ]
