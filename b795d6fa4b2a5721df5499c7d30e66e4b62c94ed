@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ce03592b_1dafcc4c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1058860
+      },
+      "writtenOn": "2022-09-14T20:21:11Z",
+      "side": 1,
+      "message": "IIUC the fussiness is because `[[ ]]` is a C++ thing :shrug: (... but also added to C23, per https://en.cppreference.com/w/c/language/attributes).",
+      "revId": "b795d6fa4b2a5721df5499c7d30e66e4b62c94ed",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
