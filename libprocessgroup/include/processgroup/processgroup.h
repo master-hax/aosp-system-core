@@ -35,6 +35,7 @@ bool CgroupGetAttributePathForTask(const std::string& attr_name, int tid, std::s
 
 bool SetTaskProfiles(int tid, const std::vector<std::string>& profiles, bool use_fd_cache = false);
 bool SetProcessProfiles(uid_t uid, pid_t pid, const std::vector<std::string>& profiles);
+bool SetProfileVariables(std::vector<std::pair<std::string, std::string>> profile_variables);
 
 __END_DECLS
 
