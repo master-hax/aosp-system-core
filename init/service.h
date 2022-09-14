@@ -194,6 +194,8 @@ class Service {
 
     std::vector<std::string> task_profiles_;
 
+    std::vector<std::pair<std::string, std::string>> profiles_variables_;
+
     std::set<std::string> interfaces_;  // e.g. some.package.foo@1.0::IBaz/instance-name
 
     // keycodes for triggering this service via /dev/input/input*
