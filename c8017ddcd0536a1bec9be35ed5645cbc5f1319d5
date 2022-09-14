@@ -159,6 +159,42 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "2a97d56b_c6b68e3d",
+        "filename": "fastboot/device/usb.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 164,
+      "author": {
+        "id": 1963052
+      },
+      "writtenOn": "2022-09-14T17:49:11Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "f23e8bc7_96994c3b",
+      "revId": "c8017ddcd0536a1bec9be35ed5645cbc5f1319d5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d01fce05_82d0627a",
+        "filename": "fastboot/device/usb.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 164,
+      "author": {
+        "id": 1963052
+      },
+      "writtenOn": "2022-09-14T17:49:11Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "e5296f7d_188e6dfe",
+      "revId": "c8017ddcd0536a1bec9be35ed5645cbc5f1319d5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "6b6c0c37_8aa40c4e",
@@ -172,6 +208,24 @@
       "writtenOn": "2022-09-06T20:36:47Z",
       "side": 1,
       "message": "s/adb/fastboot",
+      "revId": "c8017ddcd0536a1bec9be35ed5645cbc5f1319d5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ca699787_f3724a56",
+        "filename": "fastboot/device/usb.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 166,
+      "author": {
+        "id": 1963052
+      },
+      "writtenOn": "2022-09-14T17:49:11Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6b6c0c37_8aa40c4e",
       "revId": "c8017ddcd0536a1bec9be35ed5645cbc5f1319d5",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
