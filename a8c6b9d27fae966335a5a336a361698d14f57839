@@ -37,6 +37,24 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "1977a68a_90834347",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-09-14T16:40:48Z",
+      "side": 1,
+      "message": "\"so we can write tests\". see FakeAvbOps in external/avb/test/fake_avb_ops.h :-)",
+      "parentUuid": "9ec2d7f9_12b169b3",
+      "revId": "a8c6b9d27fae966335a5a336a361698d14f57839",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "71976b04_d90afec7",
         "filename": "fs_mgr/NOTICE",
         "patchSetId": 3
