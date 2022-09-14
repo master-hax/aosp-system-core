@@ -22,6 +22,30 @@
       },
       "revId": "449935a231286308185b2b09edd9bd2299cf94ba",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fb995ce1_d2252c34",
+        "filename": "fastboot/device/usb.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 164,
+      "author": {
+        "id": 1963052
+      },
+      "writtenOn": "2022-09-14T18:12:05Z",
+      "side": 1,
+      "message": "When this issue happens the only event that we read is -EPIPE and nothing else.\nThis is to exclude other cases where we read -EPIPE. I figured making the condition as specific as possible would make sure we don\u0027t ignore real errors.\nI took line 161 as example...",
+      "parentUuid": "3d98534c_6a4cff3b",
+      "range": {
+        "startLine": 164,
+        "startChar": 12,
+        "endLine": 164,
+        "endChar": 25
+      },
+      "revId": "449935a231286308185b2b09edd9bd2299cf94ba",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
