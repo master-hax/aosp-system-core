@@ -532,6 +532,10 @@ void Service::RunService(const std::vector<Descriptor>& descriptors,
         LOG(ERROR) << "failed to set task profiles";
     }
 
+    if (profiles_variables_.size() > 0) {
+        LOG(ERROR) << "failed to set profiles variables";
+    }
+
     // As requested, set our gid, supplemental gids, uid, context, and
     // priority. Aborts on failure.
     SetProcessAttributesAndCaps();

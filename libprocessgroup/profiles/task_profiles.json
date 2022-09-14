@@ -1,4 +1,10 @@
 {
+  "Variables": [
+    {
+      "Name": "testing_variable",
+      "Value": "0-1"
+    }
+  ],
   "Attributes": [
     {
       "Name": "LowCapacityCPUs",
@@ -116,7 +122,7 @@
           "Params":
           {
             "Name": "FreezerState",
-            "Value": "1"
+            "Variable": "testing_variable"
           }
         }
       ]
