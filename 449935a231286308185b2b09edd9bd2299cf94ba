@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3d98534c_6a4cff3b",
+        "filename": "fastboot/device/usb.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 164,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2022-09-14T17:59:26Z",
+      "side": 1,
+      "message": "`num_bufs` only indicates size of this read, why do we need to guard the retry logic with `num_bufs \u003d\u003d 1` ?",
+      "range": {
+        "startLine": 164,
+        "startChar": 12,
+        "endLine": 164,
+        "endChar": 25
+      },
+      "revId": "449935a231286308185b2b09edd9bd2299cf94ba",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
