@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f63a74e7_9a10c368",
+        "filename": "gatekeeperd/gatekeeperd.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 493,
+      "author": {
+        "id": 1043663
+      },
+      "writtenOn": "2022-09-14T19:21:00Z",
+      "side": 1,
+      "message": "This is already implemented in a few other places, including in some utility libraries.  Can you not reuse one of those rather than implementing yet again?",
+      "range": {
+        "startLine": 485,
+        "startChar": 0,
+        "endLine": 493,
+        "endChar": 84
+      },
+      "revId": "ce22d728e2a93365c954c396e324990e36f62193",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
