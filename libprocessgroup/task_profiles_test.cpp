@@ -149,7 +149,9 @@ TEST_P(SetAttributeFixture, SetAttribute) {
     const TestParam params = GetParam();
     ScopedLogCapturer captured_log;
     ProfileAttributeMock pa(params.attr_name);
-    SetAttributeAction a(&pa, params.attr_value, params.optional_attr);
+    SetAttributeAction a(&pa, params.attr_value,
+                         std::optional<std::map<std::string, std::string, std::less<>>::iterator>(),
+                         params.optional_attr);
     EXPECT_EQ(a.ExecuteForProcess(getuid(), getpid()), params.result);
     auto log = captured_log.Log();
     if (params.log_prefix || params.log_suffix) {
