@@ -114,6 +114,10 @@ bool FdCacheHelper::IsAppDependentPath(const std::string& path) {
 
 IProfileAttribute::~IProfileAttribute() = default;
 
+void ProfileVariable::Reset(const std::string& value) {
+    value_ = value;
+}
+
 void ProfileAttribute::Reset(const CgroupController& controller, const std::string& file_name) {
     controller_ = controller;
     file_name_ = file_name;
@@ -206,7 +210,8 @@ bool SetAttributeAction::ExecuteForTask(int tid) const {
         return false;
     }
 
-    if (!WriteStringToFile(value_, path)) {
+    std::string value = (variable_ == nullptr) ? value_ : variable_->value();
+    if (!WriteStringToFile(value, path)) {
         if (access(path.c_str(), F_OK) < 0) {
             if (optional_) {
                 return true;
@@ -218,7 +223,7 @@ bool SetAttributeAction::ExecuteForTask(int tid) const {
         // The PLOG() statement below uses the error code stored in `errno` by
         // WriteStringToFile() because access() only overwrites `errno` if it fails
         // and because this code is only reached if the access() function returns 0.
-        PLOG(ERROR) << "Failed to write '" << value_ << "' to " << path;
+        PLOG(ERROR) << "Failed to write '" << value << "' to " << path;
         return false;
     }
 
@@ -632,6 +637,24 @@ bool TaskProfiles::Load(const CgroupMap& cg_map, const std::string& file_name) {
         return false;
     }
 
+    const Json::Value& profile_variables = root["Variables"];
+    for (Json::Value::ArrayIndex i = 0; i < profile_variables.size(); ++i) {
+        std::string name = profile_variables[i]["Name"].asString();
+        std::string value = profile_variables[i]["Value"].asString();
+
+        if (value.empty()) {
+            LOG(ERROR) << "Profile Variable " << name << " has no value";
+            return false;
+        }
+
+        auto iter = variables_.find(name);
+        if (iter == variables_.end()) {
+            variables_[name] = std::make_unique<ProfileVariable>(name, value);
+        } else {
+            iter->second->Reset(value);
+        }
+    }
+
     const Json::Value& attr = root["Attributes"];
     for (Json::Value::ArrayIndex i = 0; i < attr.size(); ++i) {
         std::string name = attr[i]["Name"].asString();
@@ -694,12 +717,22 @@ bool TaskProfiles::Load(const CgroupMap& cg_map, const std::string& file_name) {
             } else if (action_name == "SetAttribute") {
                 std::string attr_name = params_val["Name"].asString();
                 std::string attr_value = params_val["Value"].asString();
+                std::string attr_variable = params_val["Variable"].asString();
                 bool optional = strcmp(params_val["Optional"].asString().c_str(), "true") == 0;
+                ProfileVariable* profile_variable = nullptr;
 
+                if (!attr_variable.empty()) {
+                    auto iter = variables_.find(attr_variable);
+                    if (iter != variables_.end()) {
+                        profile_variable = iter->second.get();
+                    } else {
+                        LOG(WARNING) << "SetAttribute: unknown variable: " << attr_variable;
+                    }
+                }
                 auto iter = attributes_.find(attr_name);
                 if (iter != attributes_.end()) {
-                    profile->Add(std::make_unique<SetAttributeAction>(iter->second.get(),
-                                                                      attr_value, optional));
+                    profile->Add(std::make_unique<SetAttributeAction>(
+                            iter->second.get(), attr_value, optional, profile_variable));
                 } else {
                     LOG(WARNING) << "SetAttribute: unknown attribute: " << attr_name;
                 }
