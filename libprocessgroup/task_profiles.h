@@ -38,6 +38,14 @@ class IProfileAttribute {
     virtual bool GetPathForTask(int tid, std::string* path) const = 0;
 };
 
+class IProfileVariable {
+  public:
+    virtual ~IProfileVariable() = 0;
+    virtual void Reset(const std::string& value) = 0;
+    virtual const std::string& name() const = 0;
+    virtual const std::string& value() const = 0;
+};
+
 class ProfileAttribute : public IProfileAttribute {
   public:
     // Cgroup attributes may have different names in the v1 and v2 hierarchies. If `file_v2_name` is
@@ -58,6 +66,21 @@ class ProfileAttribute : public IProfileAttribute {
     CgroupController controller_;
     std::string file_name_;
     std::string file_v2_name_;
+};
+
+class ProfileVariable : public IProfileVariable {
+  public:
+    ProfileVariable(const std::string& name, const std::string& value)
+        : name_(name), value_(value) {}
+    ~ProfileVariable() = default;
+
+    const std::string& name() const override { return name_; }
+    const std::string& value() const override { return value_; }
+    void Reset(const std::string& value) override;
+
+  private:
+    std::string name_;
+    std::string value_;
 };
 
 // Abstract profile element
@@ -110,8 +133,12 @@ class SetTimerSlackAction : public ProfileAction {
 // Set attribute profile element
 class SetAttributeAction : public ProfileAction {
   public:
-    SetAttributeAction(const IProfileAttribute* attribute, const std::string& value, bool optional)
-        : attribute_(attribute), value_(value), optional_(optional) {}
+    SetAttributeAction(const IProfileAttribute* attribute, const std::string& value, bool optional,
+                       const IProfileVariable* profile_variable)
+        : attribute_(attribute),
+          value_(value),
+          profile_variable_(profile_variable),
+          optional_(optional) {}
 
     const char* Name() const override { return "SetAttribute"; }
     bool ExecuteForProcess(uid_t uid, pid_t pid) const override;
@@ -120,6 +147,7 @@ class SetAttributeAction : public ProfileAction {
   private:
     const IProfileAttribute* attribute_;
     std::string value_;
+    const IProfileVariable* profile_variable_;
     bool optional_;
 };
 
@@ -224,4 +252,5 @@ class TaskProfiles {
 
     std::map<std::string, std::shared_ptr<TaskProfile>, std::less<>> profiles_;
     std::map<std::string, std::unique_ptr<IProfileAttribute>, std::less<>> attributes_;
+    std::map<std::string, std::shared_ptr<IProfileVariable>, std::less<>> variables_;
 };
