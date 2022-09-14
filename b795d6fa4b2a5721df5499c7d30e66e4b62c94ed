@@ -16,6 +16,24 @@
       "message": "IIUC the fussiness is because `[[ ]]` is a C++ thing :shrug: (... but also added to C23, per https://en.cppreference.com/w/c/language/attributes).",
       "revId": "b795d6fa4b2a5721df5499c7d30e66e4b62c94ed",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "49074acc_01159c97",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-09-14T20:26:52Z",
+      "side": 1,
+      "message": "yeah, for once i\u0027m annoyed at the standard rather than the compiler :-(\n\ni might be more inclined to use the _standard_ attributes than the ones they leave to the individual compilers, but so far this seems slightly worse than what we had.\n\ni\u0027m assuming we won\u0027t even really be able to switch to, say, [[deprecated]] because that\u0027ll mean everyone needs to be building with -std\u003dc23 or later, which isn\u0027t something we\u0027ll ever really be able to assume (not in libc at least)? or will clang quietly accept these even in older stds?",
+      "parentUuid": "ce03592b_1dafcc4c",
+      "revId": "b795d6fa4b2a5721df5499c7d30e66e4b62c94ed",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
