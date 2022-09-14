@@ -60,6 +60,21 @@ class ProfileAttribute : public IProfileAttribute {
     std::string file_v2_name_;
 };
 
+class ProfileVariable {
+  public:
+    ProfileVariable(const std::string& name, const std::string& value)
+        : name_(name), value_(value) {}
+    ~ProfileVariable() = default;
+
+    const std::string& name() const { return name_; }
+    const std::string& value() const { return value_; }
+    void Reset(const std::string& value);
+
+  private:
+    std::string name_;
+    std::string value_;
+};
+
 // Abstract profile element
 class ProfileAction {
   public:
@@ -110,8 +125,9 @@ class SetTimerSlackAction : public ProfileAction {
 // Set attribute profile element
 class SetAttributeAction : public ProfileAction {
   public:
-    SetAttributeAction(const IProfileAttribute* attribute, const std::string& value, bool optional)
-        : attribute_(attribute), value_(value), optional_(optional) {}
+    SetAttributeAction(const IProfileAttribute* attribute, const std::string& value,
+                       const ProfileVariable* variable, bool optional)
+        : attribute_(attribute), value_(value), variable_(variable), optional_(optional) {}
 
     const char* Name() const override { return "SetAttribute"; }
     bool ExecuteForProcess(uid_t uid, pid_t pid) const override;
@@ -120,6 +136,7 @@ class SetAttributeAction : public ProfileAction {
   private:
     const IProfileAttribute* attribute_;
     std::string value_;
+    const ProfileVariable* variable_;
     bool optional_;
 };
 
@@ -224,4 +241,5 @@ class TaskProfiles {
 
     std::map<std::string, std::shared_ptr<TaskProfile>, std::less<>> profiles_;
     std::map<std::string, std::unique_ptr<IProfileAttribute>, std::less<>> attributes_;
+    std::map<std::string, std::unique_ptr<ProfileVariable>, std::less<>> variables_;
 };
