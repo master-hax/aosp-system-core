@@ -386,6 +386,11 @@ Result<void> ServiceParser::ParseSetenv(std::vector<std::string>&& args) {
     return {};
 }
 
+Result<void> ServiceParser::ParseSetProfilesVariables(std::vector<std::string>&& args) {
+    service_->profiles_variables_.emplace_back(std::move(args[1]), std::move(args[2]));
+    return {};
+}
+
 Result<void> ServiceParser::ParseShutdown(std::vector<std::string>&& args) {
     if (args[1] == "critical") {
         service_->flags_ |= SVC_SHUTDOWN_CRITICAL;
@@ -605,6 +610,7 @@ const KeywordMap<ServiceParser::OptionParser>& ServiceParser::GetParserMap() con
         {"rlimit",                  {3,     3,    &ServiceParser::ParseProcessRlimit}},
         {"seclabel",                {1,     1,    &ServiceParser::ParseSeclabel}},
         {"setenv",                  {2,     2,    &ServiceParser::ParseSetenv}},
+        {"set_profiles_variables",  {2,     2,    &ServiceParser::ParseSetProfilesVariables}},
         {"shutdown",                {1,     1,    &ServiceParser::ParseShutdown}},
         {"sigstop",                 {0,     0,    &ServiceParser::ParseSigstop}},
         {"socket",                  {3,     6,    &ServiceParser::ParseSocket}},
