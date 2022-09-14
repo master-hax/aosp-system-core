@@ -38,6 +38,13 @@ class IProfileAttribute {
     virtual bool GetPathForTask(int tid, std::string* path) const = 0;
 };
 
+class IProfileVariable {
+  public:
+    virtual ~IProfileVariable() = 0;
+    virtual const std::string& name() const = 0;
+    virtual const std::string& value() const = 0;
+};
+
 class ProfileAttribute : public IProfileAttribute {
   public:
     // Cgroup attributes may have different names in the v1 and v2 hierarchies. If `file_v2_name` is
@@ -58,6 +65,20 @@ class ProfileAttribute : public IProfileAttribute {
     CgroupController controller_;
     std::string file_name_;
     std::string file_v2_name_;
+};
+
+class ProfileVariable : public IProfileVariable {
+  public:
+    ProfileVariable(const std::string& name, const std::string& value)
+        : name_(name), value_(value) {}
+    ~ProfileVariable() = default;
+
+    const std::string& name() const override { return name_; }
+    const std::string& value() const override { return value_; }
+
+  private:
+    std::string name_;
+    std::string value_;
 };
 
 // Abstract profile element
@@ -211,11 +232,14 @@ class TaskProfiles {
 
     TaskProfile* GetProfile(std::string_view name) const;
     const IProfileAttribute* GetAttribute(std::string_view name) const;
+    const IProfileVariable* GetProfileVariable(std::string_view name) const;
     void DropResourceCaching(ProfileAction::ResourceCacheType cache_type) const;
     template <typename T>
     bool SetProcessProfiles(uid_t uid, pid_t pid, std::span<const T> profiles, bool use_fd_cache);
     template <typename T>
     bool SetTaskProfiles(int tid, std::span<const T> profiles, bool use_fd_cache);
+    bool SetProfileVariables(std::vector<std::pair<std::string, std::string>> profile_variables);
+    bool SetProfileVariable(const std::pair<std::string, std::string>& profile_variable);
 
   private:
     TaskProfiles();
@@ -224,4 +248,5 @@ class TaskProfiles {
 
     std::map<std::string, std::shared_ptr<TaskProfile>, std::less<>> profiles_;
     std::map<std::string, std::unique_ptr<IProfileAttribute>, std::less<>> attributes_;
+    std::map<std::string, std::unique_ptr<IProfileVariable>, std::less<>> variables_;
 };
