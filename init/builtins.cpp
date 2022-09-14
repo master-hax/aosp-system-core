@@ -63,6 +63,7 @@
 #include <libgsi/libgsi.h>
 #include <logwrap/logwrap.h>
 #include <private/android_filesystem_config.h>
+#include <processgroup/processgroup.h>
 #include <selinux/android.h>
 #include <selinux/label.h>
 #include <selinux/selinux.h>
@@ -759,6 +760,15 @@ static Result<void> do_setrlimit(const BuiltinArguments& args) {
     return {};
 }
 
+static Result<void> do_set_profile_variable(const BuiltinArguments& args) {
+    bool success = SetProfileVariable(args[1], args[2]);
+    if (!success) {
+        return Error() << "Error saving profile variable " << args[1];
+    }
+
+    return {};
+}
+
 static Result<void> do_start(const BuiltinArguments& args) {
     Service* svc = ServiceList::GetInstance().FindService(args[1]);
     if (!svc) return Error() << "service " << args[1] << " not found";
@@ -1388,6 +1398,7 @@ const BuiltinFunctionMap& GetBuiltinFunctionMap() {
         {"rmdir",                   {1,     1,    {true,   do_rmdir}}},
         {"setprop",                 {2,     2,    {true,   do_setprop}}},
         {"setrlimit",               {3,     3,    {false,  do_setrlimit}}},
+        {"set_profile_variable",    {2,     2,    {false,  do_set_profile_variable}}},
         {"start",                   {1,     1,    {false,  do_start}}},
         {"stop",                    {1,     1,    {false,  do_stop}}},
         {"swapon_all",              {0,     1,    {false,  do_swapon_all}}},
