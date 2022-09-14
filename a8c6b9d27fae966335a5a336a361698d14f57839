@@ -20,6 +20,23 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "9ec2d7f9_12b169b3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1967060
+      },
+      "writtenOn": "2022-09-14T04:18:06Z",
+      "side": 1,
+      "message": "Hey Guys, can someone help me understand why do we have function pointers in avb_ops.h as a part of struct avbops ? Why not just call the function where needed? I do not see we are deciding anything at the run time. SO just wanted to know why it is there.",
+      "revId": "a8c6b9d27fae966335a5a336a361698d14f57839",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "71976b04_d90afec7",
         "filename": "fs_mgr/NOTICE",
         "patchSetId": 3
