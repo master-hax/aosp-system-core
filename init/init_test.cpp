@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include <filesystem>
 #include <functional>
 #include <string_view>
 #include <type_traits>
@@ -36,6 +37,7 @@
 #include "service.h"
 #include "service_list.h"
 #include "service_parser.h"
+#include "subcontext.h"
 #include "util.h"
 
 using android::base::GetIntProperty;
@@ -58,7 +60,7 @@ void TestInit(const std::string& init_script_file, const BuiltinFunctionMap& tes
     Parser parser;
     parser.AddSectionParser("service",
                             std::make_unique<ServiceParser>(service_list, nullptr, std::nullopt));
-    parser.AddSectionParser("on", std::make_unique<ActionParser>(action_manager, nullptr));
+    parser.AddSectionParser("on", std::make_unique<ActionParser>(action_manager, GetSubcontext()));
     parser.AddSectionParser("import", std::make_unique<ImportParser>(&parser));
 
     ASSERT_TRUE(parser.ParseConfig(init_script_file));
@@ -76,6 +78,16 @@ void TestInitText(const std::string& init_script, const BuiltinFunctionMap& test
                   const std::vector<ActionManagerCommand>& commands, ActionManager* action_manager,
                   ServiceList* service_list) {
     TemporaryFile tf;
+    ASSERT_TRUE(tf.fd != -1);
+    ASSERT_TRUE(android::base::WriteStringToFd(init_script, tf.fd));
+    TestInit(tf.path, test_function_map, commands, action_manager, service_list);
+}
+
+void TestInitText(const std::string& file_path, const std::string& init_script,
+                  const BuiltinFunctionMap& test_function_map,
+                  const std::vector<ActionManagerCommand>& commands, ActionManager* action_manager,
+                  ServiceList* service_list) {
+    TemporaryFile tf(file_path);
     ASSERT_TRUE(tf.fd != -1);
     ASSERT_TRUE(android::base::WriteStringToFd(init_script, tf.fd));
     TestInit(tf.path, test_function_map, commands, action_manager, service_list);
@@ -210,12 +222,6 @@ void TestStartApexServices(const std::vector<std::string>& service_names,
         ASSERT_NE(nullptr, service);
         ASSERT_RESULT_OK(service->Start());
         ASSERT_TRUE(service->IsRunning());
-        LOG(INFO) << "Service " << svc << " is running";
-        if (!apex_name.empty()) {
-            service->set_filename("/apex/" + apex_name + "/init_test.rc");
-        } else {
-            service->set_filename("");
-        }
     }
     if (!apex_name.empty()) {
         auto apex_services = ServiceList::GetInstance().FindServicesByApexName(apex_name);
@@ -238,12 +244,33 @@ void TestRemoveApexService(const std::vector<std::string>& service_names, bool e
     }
 }
 
-void InitApexService(const std::string_view& init_template) {
+void InitApexService(const std::string_view& init_template, const std::string& apex_name) {
     std::string init_script = StringReplace(init_template, "$selabel",
                                     GetSecurityContext(), true);
 
-    TestInitText(init_script, BuiltinFunctionMap(), {}, &ActionManager::GetInstance(),
+    auto do_test_action= [](const BuiltinArguments&) {
+        return Result<void>{};
+    };
+    BuiltinFunctionMap test_function_map = {
+            {"test_action", {0, 0, {false, do_test_action}}},
+    };
+    ActionManagerCommand trigger_boot = [](ActionManager& am) { am.QueueEventTrigger("boot"); };
+    std::vector<ActionManagerCommand> commands{trigger_boot};
+
+    if (apex_name.empty()) {
+       TestInitText(init_script, test_function_map, commands, &ActionManager::GetInstance(),
             &ServiceList::GetInstance());
+    }
+    else {
+        // Create temp .rc in apex/$apex_name directory so services and action can
+        // be found by apex name
+        std::string apex_dir = "/apex/" + apex_name;
+        std::error_code ec;
+        std::filesystem::create_directory(apex_dir, ec);
+        ASSERT_TRUE(!ec);
+        TestInitText(apex_dir, init_script, test_function_map, commands,
+            &ActionManager::GetInstance(), &ServiceList::GetInstance());
+    }
 }
 
 void CleanupApexServices() {
@@ -269,13 +296,16 @@ void CleanupApexServices() {
 
 void TestApexServicesInit(const std::vector<std::string>& apex_services,
             const std::vector<std::string>& other_apex_services,
-            const std::vector<std::string> non_apex_services) {
+            const std::vector<std::string> non_apex_services,
+            int num_action = 0, int num_action_apex = 0) {
     auto num_svc = apex_services.size() + other_apex_services.size() + non_apex_services.size();
     ASSERT_EQ(num_svc, ServiceList::GetInstance().size());
 
     TestStartApexServices(apex_services, "com.android.apex.test_service");
     TestStartApexServices(other_apex_services, "com.android.other_apex.test_service");
     TestStartApexServices(non_apex_services, /*apex_anme=*/ "");
+
+    ASSERT_EQ(num_action, static_cast<int>(ActionManager::GetInstance().size()));
 
     StopServicesFromApex("com.android.apex.test_service");
     TestStopApexServices(apex_services, /*expect_to_run=*/ false);
@@ -291,6 +321,8 @@ void TestApexServicesInit(const std::vector<std::string>& apex_services,
     TestRemoveApexService(other_apex_services, /*exist*/ true);
     TestRemoveApexService(non_apex_services, /*exist*/ true);
 
+    ASSERT_EQ(num_action - num_action_apex, static_cast<int>(ActionManager::GetInstance().size()));
+
     CleanupApexServices();
 }
 
@@ -305,7 +337,7 @@ service apex_test_service /system/bin/yes
     group shell
     seclabel $selabel
 )init";
-    InitApexService(script_template);
+    InitApexService(script_template, "com.android.apex.test_service");
     TestApexServicesInit({"apex_test_service"}, {}, {});
 }
 
@@ -324,7 +356,7 @@ service apex_test_service_multiple_b /system/bin/id
     group shell
     seclabel $selabel
 )init";
-    InitApexService(script_template);
+    InitApexService(script_template, "com.android.apex.test_service");
     TestApexServicesInit({"apex_test_service_multiple_a",
             "apex_test_service_multiple_b"}, {}, {});
 }
@@ -344,7 +376,7 @@ service apex_test_service_multi_apex_b /system/bin/id
     group shell
     seclabel $selabel
 )init";
-    InitApexService(apex_script_template);
+    InitApexService(apex_script_template, "com.android.apex.test_service");
 
     std::string_view other_apex_script_template = R"init(
 service apex_test_service_multi_apex_c /system/bin/yes
@@ -352,7 +384,7 @@ service apex_test_service_multi_apex_c /system/bin/yes
     group shell
     seclabel $selabel
 )init";
-    InitApexService(other_apex_script_template);
+    InitApexService(other_apex_script_template, "com.android.other_apex.test_service");
 
     TestApexServicesInit({"apex_test_service_multi_apex_a",
             "apex_test_service_multi_apex_b"}, {"apex_test_service_multi_apex_c"}, {});
@@ -373,7 +405,7 @@ service apex_test_service_apex_b /system/bin/id
     group shell
     seclabel $selabel
 )init";
-    InitApexService(apex_script_template);
+    InitApexService(apex_script_template, "com.android.apex.test_service");
 
     std::string_view non_apex_script_template = R"init(
 service apex_test_service_non_apex /system/bin/yes
@@ -381,7 +413,7 @@ service apex_test_service_non_apex /system/bin/yes
     group shell
     seclabel $selabel
 )init";
-    InitApexService(non_apex_script_template);
+    InitApexService(non_apex_script_template, "");
 
     TestApexServicesInit({"apex_test_service_apex_a",
             "apex_test_service_apex_b"}, {}, {"apex_test_service_non_apex"});
@@ -398,7 +430,7 @@ service apex_test_service_mixed_a /system/bin/yes
     group shell
     seclabel $selabel
 )init";
-    InitApexService(script_template);
+    InitApexService(script_template, "com.android.apex.test_service");
 
     std::string_view other_apex_script_template = R"init(
 service apex_test_service_mixed_b /system/bin/yes
@@ -406,7 +438,7 @@ service apex_test_service_mixed_b /system/bin/yes
     group shell
     seclabel $selabel
 )init";
-    InitApexService(other_apex_script_template);
+    InitApexService(other_apex_script_template, "com.android.other_apex.test_service");
 
     std::string_view non_apex_script_template = R"init(
 service apex_test_service_mixed_c /system/bin/yes
@@ -414,10 +446,57 @@ service apex_test_service_mixed_c /system/bin/yes
     group shell
     seclabel $selabel
 )init";
-    InitApexService(non_apex_script_template);
+    InitApexService(non_apex_script_template, "");
 
     TestApexServicesInit({"apex_test_service_mixed_a"},
             {"apex_test_service_mixed_b"}, {"apex_test_service_mixed_c"});
+}
+
+TEST(init, RemoveActionFromApex) {
+    if (getuid() != 0) {
+        GTEST_SKIP() << "Must be run as root.";
+        return;
+    }
+    // Prepare for parsing actions: for triggers in vendor apexes, action parser
+    // checks apex name against apex list in subcontext
+    InitializeSubcontext();
+    std::vector<std::string> apex_list = {"com.android.apex.test_service",
+                "com.android.other_apex.test_service"};
+    GetSubcontext()->SetApexList(std::move(apex_list));
+
+    std::string_view script_template = R"init(
+service apex_test_action_a /system/bin/yes
+    user shell
+    group shell
+    seclabel $selabel
+on boot
+    test_action
+)init";
+    InitApexService(script_template, "com.android.apex.test_service");
+
+    std::string_view other_apex_script_template = R"init(
+service apex_test_action_b /system/bin/yes
+    user shell
+    group shell
+    seclabel $selabel
+on boot
+    test_action
+)init";
+    InitApexService(other_apex_script_template, "com.android.other_apex.test_service");
+
+    std::string_view non_apex_script_template = R"init(
+service apex_test_action_c /system/bin/yes
+    user shell
+    group shell
+    seclabel $selabel
+on boot
+    test_action
+)init";
+    InitApexService(non_apex_script_template, "");
+
+    TestApexServicesInit({"apex_test_action_a"},
+            {"apex_test_action_b"}, {"apex_test_action_c"}, 3, 1);
+    SubcontextTerminate();
 }
 
 TEST(init, EventTriggerOrderMultipleFiles) {
