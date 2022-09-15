@@ -34,6 +34,24 @@
       "parentUuid": "ce03592b_1dafcc4c",
       "revId": "b795d6fa4b2a5721df5499c7d30e66e4b62c94ed",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5684dff4_52e52b8b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1010056
+      },
+      "writtenOn": "2022-09-15T00:44:25Z",
+      "side": 1,
+      "message": "https://godbolt.org/z/3f5o6MEc1 shows that Clang already doesn\u0027t accept the `[[deprecated]]`` version when targeting older standards.",
+      "parentUuid": "49074acc_01159c97",
+      "revId": "b795d6fa4b2a5721df5499c7d30e66e4b62c94ed",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
