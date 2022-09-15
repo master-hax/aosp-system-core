@@ -22,9 +22,9 @@ static int GetVsrLevel() {
 }
 
 TEST(VAB, Enabled) {
-    ASSERT_TRUE(android::base::GetBoolProperty("ro.virtual_ab.enabled", false));
     if (GetVsrLevel() < __ANDROID_API_T__) {
         GTEST_SKIP();
     }
+    ASSERT_TRUE(android::base::GetBoolProperty("ro.virtual_ab.enabled", false));
     ASSERT_TRUE(android::base::GetBoolProperty("ro.virtual_ab.userspace.snapshots.enabled", false));
 }
