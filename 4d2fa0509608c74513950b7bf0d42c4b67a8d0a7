@@ -16,6 +16,24 @@
       "message": "Is this necessary? When does flash of userdata partition happen? Your test steps seem to only cover one fastboot command, presumably erase.",
       "revId": "4d2fa0509608c74513950b7bf0d42c4b67a8d0a7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fd8ab8d4_ebb01bf8",
+        "filename": "fastboot/device/commands.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 620,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2022-09-15T22:18:16Z",
+      "side": 1,
+      "message": "For flashstation, it depends on the file-system whether it gets `erase` prior to being flashed. `fastboot -w` tries to *format* the partition, which means flashing over an empty filesystem.",
+      "parentUuid": "00af125a_4480168c",
+      "revId": "4d2fa0509608c74513950b7bf0d42c4b67a8d0a7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
