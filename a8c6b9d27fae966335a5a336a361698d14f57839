@@ -55,6 +55,24 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "096ebe11_a63e0553",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2022-09-15T08:16:03Z",
+      "side": 1,
+      "message": "In addition to tests, the clients that implements avb_ops can put platform-specific resources there (which will not be used by libavb directly) 😎\n \nhttps://cs.android.com/android/platform/superproject/+/master:external/avb/libavb/avb_ops.h;l\u003d96;drc\u003d36d41d922380ce2423b32c69e1ff6c00c3134e6e \n\nhttps://cs.android.com/android/platform/superproject/+/master:external/avb/examples/uefi/uefi_avb_ops.h;l\u003d31;drc\u003dd9c76c765496aab9b4495083b9c5c8a254eeb754\n\nhttps://cs.android.com/android/platform/superproject/+/master:external/avb/examples/uefi/uefi_avb_ops.c;l\u003d185;drc\u003d27a291fcc1948ca8309b307c34d3eb229c5d208d",
+      "parentUuid": "1977a68a_90834347",
+      "revId": "a8c6b9d27fae966335a5a336a361698d14f57839",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "71976b04_d90afec7",
         "filename": "fs_mgr/NOTICE",
         "patchSetId": 3
