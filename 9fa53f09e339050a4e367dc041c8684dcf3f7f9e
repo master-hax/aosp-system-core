@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0dcbf82a_c7ffda6a",
+        "filename": "fs_mgr/libsnapshot/vts_ota_config_test.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-09-15T16:49:28Z",
+      "side": 1,
+      "message": "This will break other devices where virtual A/B should be supported for S.",
+      "revId": "9fa53f09e339050a4e367dc041c8684dcf3f7f9e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
