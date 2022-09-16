@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7de786bd_0c30b61b",
+        "filename": "init/init_test.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 269,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2022-09-16T05:11:24Z",
+      "side": 1,
+      "message": "Not sure if it\u0027s okay to create a directory in /apex for testing. Can we make the test without interfering the actual /apex? Or, I prefer more focused \"unit\" test which doesn\u0027t touch the filesystem at all.",
+      "range": {
+        "startLine": 265,
+        "startChar": 0,
+        "endLine": 269,
+        "endChar": 56
+      },
+      "revId": "410370be307e723d1d143c06b49f0555f5f85c2d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
