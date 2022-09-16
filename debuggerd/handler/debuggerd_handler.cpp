@@ -43,6 +43,7 @@
 #include <android-base/unique_fd.h>
 #include <async_safe/log.h>
 #include <bionic/reserved_signals.h>
+#include <cutils/properties.h>
 
 #include <libdebuggerd/utility.h>
 
@@ -51,7 +52,6 @@
 
 #include "handler/fallback.h"
 
-using ::android::base::GetBoolProperty;
 using ::android::base::ParseBool;
 using ::android::base::ParseBoolResult;
 using ::android::base::Pipe;
@@ -90,7 +90,7 @@ static pid_t __gettid() {
 static bool is_permissive_mte() {
   // Environment variable for testing or local use from shell.
   char* permissive_env = getenv("MTE_PERMISSIVE");
-  return GetBoolProperty("persist.sys.mte.permissive", false) ||
+  return property_get_bool("persist.sys.mte.permissive", false) ||
          (permissive_env && ParseBool(permissive_env) == ParseBoolResult::kTrue);
 }
 
