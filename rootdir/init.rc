@@ -917,6 +917,7 @@ on post-fs-data
     mkdir /data/system/dropbox 0700 system system
     mkdir /data/system/heapdump 0700 system system
     mkdir /data/system/users 0775 system system
+    mkdir /data/system/sdk 0700 system system
 
     # Create the parent directories of the user CE and DE storage directories.
     # These parent directories must use encryption=None, since each of their
