@@ -510,10 +510,6 @@ static Result<void> KillZramBackingDevice() {
                             << " failed";
     }
 
-    if (ioctl(loop.get(), LOOP_CLR_FD, 0) < 0) {
-        return ErrnoError() << "zram_backing_dev: loop_clear (" << backing_dev << ")"
-                            << " failed";
-    }
     LOG(INFO) << "zram_backing_dev: `" << backing_dev << "` is cleared successfully.";
     return {};
 }
