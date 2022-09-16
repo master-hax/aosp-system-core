@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "0b836568_70a3b405",
+        "filename": "init/service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 335,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2022-09-16T16:52:37Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9904454e_b992d432",
+      "revId": "b7e3cb54697cc97f9d375cbe80936ad040be07b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "e26035c9_785b2adb",
@@ -31,6 +49,24 @@
       "writtenOn": "2022-09-16T16:45:07Z",
       "side": 1,
       "message": "Now that the duration is configurable, it makes sense to add it to the log message.",
+      "revId": "b7e3cb54697cc97f9d375cbe80936ad040be07b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2da093e0_e0a93335",
+        "filename": "init/service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 339,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2022-09-16T16:52:37Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e26035c9_785b2adb",
       "revId": "b7e3cb54697cc97f9d375cbe80936ad040be07b0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
