@@ -22,6 +22,30 @@
       },
       "revId": "094917deb747d957a645b0d20ccb00b18006033d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0391575a_2795640a",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2022-09-16T19:28:28Z",
+      "side": 1,
+      "message": "it\u0027s not that much shorter, and this is the neater API :)",
+      "parentUuid": "1df77bd4_5ad1ee3e",
+      "range": {
+        "startLine": 94,
+        "startChar": 2,
+        "endLine": 94,
+        "endChar": 33
+      },
+      "revId": "094917deb747d957a645b0d20ccb00b18006033d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
