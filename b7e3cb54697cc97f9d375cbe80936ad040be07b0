@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9904454e_b992d432",
+        "filename": "init/service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 335,
+      "author": {
+        "id": 1005967
+      },
+      "writtenOn": "2022-09-16T16:45:07Z",
+      "side": 1,
+      "message": "I think we use \".default\" suffix in similar gwp-asan sysprops instead of \".all\". Please turn 60 into a named constant, too.",
+      "revId": "b7e3cb54697cc97f9d375cbe80936ad040be07b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e26035c9_785b2adb",
+        "filename": "init/service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 339,
+      "author": {
+        "id": 1005967
+      },
+      "writtenOn": "2022-09-16T16:45:07Z",
+      "side": 1,
+      "message": "Now that the duration is configurable, it makes sense to add it to the log message.",
+      "revId": "b7e3cb54697cc97f9d375cbe80936ad040be07b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
