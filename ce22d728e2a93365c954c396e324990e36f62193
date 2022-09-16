@@ -22,6 +22,30 @@
       },
       "revId": "ce22d728e2a93365c954c396e324990e36f62193",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bc084081_5c146ab7",
+        "filename": "gatekeeperd/gatekeeperd.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 493,
+      "author": {
+        "id": 1887766
+      },
+      "writtenOn": "2022-09-16T00:50:40Z",
+      "side": 1,
+      "message": "Re-used the function from KeyMintUtils.h",
+      "parentUuid": "f63a74e7_9a10c368",
+      "range": {
+        "startLine": 485,
+        "startChar": 0,
+        "endLine": 493,
+        "endChar": 84
+      },
+      "revId": "ce22d728e2a93365c954c396e324990e36f62193",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
