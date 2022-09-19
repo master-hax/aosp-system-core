@@ -325,6 +325,9 @@ cc_test {
     host_supported: true,
     shared_libs: test_libraries,
     require_root: true,
+    test_options: {
+        tags: ["no-remote"],
+    },
 }
 
 cc_defaults {
