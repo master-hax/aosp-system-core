@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fac8590a_dd82c227",
+        "filename": "healthd/healthd_draw.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2022-09-19T21:30:55Z",
+      "side": 1,
+      "message": "graphics_available \u0026\u0026 gr_has_multiple_connectors()",
+      "range": {
+        "startLine": 113,
+        "startChar": 11,
+        "endLine": 113,
+        "endChar": 72
+      },
+      "revId": "8aa4b58f9e3dcebf44802e9a60b5f5ef4c3ad66a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6f6a9cdd_a6440f53",
+        "filename": "healthd/healthd_mode_charger.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 303,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2022-09-19T21:30:55Z",
+      "side": 1,
+      "message": "```\nint drm \u003d drm_ \u003d\u003d DRM_INNER ? 1 : 0;\n\n            healthd_draw_-\u003eblank_screen(false, drm);\n            healthd_draw_-\u003eredraw_screen(\u0026batt_anim_, surf_unknown_);\n            healthd_draw_-\u003eblank_screen(true, drm);\n```",
+      "range": {
+        "startLine": 295,
+        "startChar": 0,
+        "endLine": 303,
+        "endChar": 9
+      },
+      "revId": "8aa4b58f9e3dcebf44802e9a60b5f5ef4c3ad66a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
