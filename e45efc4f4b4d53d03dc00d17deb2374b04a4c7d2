@@ -216,6 +216,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "33777511_12bf9a4f",
+        "filename": "fs_mgr/tests/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1535516
+      },
+      "writtenOn": "2022-09-20T19:36:31Z",
+      "side": 1,
+      "message": "Done.\n\nI would argue the grand majority of people running tests _right now_ would say `atest adb-remount-test.sh`, which a module rename would break. But whatever.\n\nThe python modules don\u0027t have the ability to name the installed files differently from the module name, so I hope you will accept that for `simg_dump`. I\u0027d like to not add that functionality/complexity to soong.",
+      "parentUuid": "ecf439a8_6a0e2880",
+      "revId": "e45efc4f4b4d53d03dc00d17deb2374b04a4c7d2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "22180eaa_a7501e44",
