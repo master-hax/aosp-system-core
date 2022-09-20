@@ -200,6 +200,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "ecf439a8_6a0e2880",
+        "filename": "fs_mgr/tests/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-09-20T19:22:36Z",
+      "side": 1,
+      "message": "\u003e However, I assume you value the source filenames the least, so that\u0027s what I ended up renaming.\n\nno, just rename the modules. as i\u0027ve said several times: _that\u0027s_ what i value the least and consider to be an implementation detail. _both_ filenames trump module names.\n\n(i take your point about build commands _eventually_, but i think that\u0027s a lot less relevant until the bazel transition actually happens --- anyone running this stuff _right now_ isn\u0027t doing so via `bazel test` or `bazel run` or whatever, they\u0027re using the filename. and the build system\u0027s slow enough that anyone who values their time even a little bit is using the source filenames directly.)",
+      "parentUuid": "5ae43e9a_6389f24a",
+      "revId": "e45efc4f4b4d53d03dc00d17deb2374b04a4c7d2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "22180eaa_a7501e44",
         "filename": "rootdir/init.rc",
         "patchSetId": 1
