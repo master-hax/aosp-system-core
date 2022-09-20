@@ -252,6 +252,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "e21f7a61_79f5511f",
+        "filename": "fs_mgr/tests/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1535516
+      },
+      "writtenOn": "2022-09-20T20:43:13Z",
+      "side": 1,
+      "message": "Sorry, you\u0027re right, I got it confused with `adb-remount-sh`. Though still in general it applies. Running from the source file is generally not what you should do, in case you need to actually build something.",
+      "parentUuid": "eaf1b5de_0db77ae9",
+      "revId": "e45efc4f4b4d53d03dc00d17deb2374b04a4c7d2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "22180eaa_a7501e44",
