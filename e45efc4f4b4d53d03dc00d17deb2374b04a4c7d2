@@ -164,6 +164,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "b84ccfc0_4bfb5f11",
+        "filename": "fs_mgr/tests/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-09-20T18:46:54Z",
+      "side": 1,
+      "message": "\u003e Done. I kept adb-remount-test and simg_dump renamed though because they\u0027re both host-only and unreferenced in both the android tree and google3. Let me know if you still feel strongly about changing those though.\n\nyeah, we can\u0027t see what we can\u0027t see, and even if they\u0027re not referenced in partners\u0027 trees, they\u0027re definitely in people\u0027s command-line history, and -- if past experience with \"unused\" stuff in adb is any guide -- they\u0027re in some TVC\u0027s doc of the exact steps they\u0027re supposed to follow.\n\nas far as i\u0027m concerned, filenames of anything executable are API, so subject to the same \"we can\u0027t change that\" rules as other API. in cases where we have changed filenames like this in the past, we\u0027ve added the symlink, but that would defeat the purpose of what you\u0027re trying to do here, so that doesn\u0027t seem like a good idea :-)",
+      "parentUuid": "2d2f05b5_8d54fe51",
+      "revId": "e45efc4f4b4d53d03dc00d17deb2374b04a4c7d2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "22180eaa_a7501e44",
         "filename": "rootdir/init.rc",
         "patchSetId": 1
