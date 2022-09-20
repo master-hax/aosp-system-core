@@ -144,6 +144,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "2d2f05b5_8d54fe51",
+        "filename": "fs_mgr/tests/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1535516
+      },
+      "writtenOn": "2022-09-20T17:03:44Z",
+      "side": 1,
+      "message": "Done. I kept adb-remount-test and simg_dump renamed though because they\u0027re both host-only and unreferenced in both the android tree and google3. Let me know if you still feel strongly about changing those though.",
+      "parentUuid": "3e6be0ab_395af318",
+      "revId": "e45efc4f4b4d53d03dc00d17deb2374b04a4c7d2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "22180eaa_a7501e44",
@@ -265,6 +283,24 @@
       "side": 1,
       "message": "For this case, do you think the best approach is to rename the module but utilize \"filename_from_src\" or whichever equivalent?",
       "parentUuid": "b45fced2_1133a500",
+      "revId": "e45efc4f4b4d53d03dc00d17deb2374b04a4c7d2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "65248c97_41fc3acd",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 1205,
+      "author": {
+        "id": 1535516
+      },
+      "writtenOn": "2022-09-20T17:03:44Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "cab24bc0_a392cc03",
       "revId": "e45efc4f4b4d53d03dc00d17deb2374b04a4c7d2",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
