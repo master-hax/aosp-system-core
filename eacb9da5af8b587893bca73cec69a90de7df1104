@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "529a0f75_5868f7be",
+        "filename": "fs_mgr/fs_mgr_fstab.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 314,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-09-20T05:15:10Z",
+      "side": 1,
+      "message": "auto options \u003d Split(entry-\u003efs_options, \",\");\n    std::remove(options.begin(), options.end(), \"atgc\");\n    entry-\u003efs_options \u003d Join(options, \",\");\n\nThough I\u0027m a little curious why we need this change... the drawback of silently failing options is they\u0027ll wind up getting copied and pasted forever, since there\u0027s no observable effect.\n\nare we anticipating fstabs in a common build where some hardware is zoned and some is not?",
+      "revId": "eacb9da5af8b587893bca73cec69a90de7df1104",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
