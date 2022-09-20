@@ -270,6 +270,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "65abfa70_6ce749c6",
+        "filename": "fs_mgr/tests/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-09-20T20:53:53Z",
+      "side": 1,
+      "message": "\u003e Running from the source file is generally not what you should do, in case you need to actually build something.\n\nhopefully that\u0027s something bazel helps solve, but right now i don\u0027t know anyone[1] who uses atest for their own tests... it\u0027s literally 10x slower than just running the binary directly. i value _other people\u0027s time_ more than that, let alone my own :-)\n\n(don\u0027t get me wrong: atest is great for running _other people\u0027s_ tests where you don\u0027t know any tricks, and it\u0027s not worth learning any because you\u0027ll never be back again anyway. but i think there are relatively few android engineers outside engprod who can say \"i run other people\u0027s tests more than my own\"!)\n\n____\n1. at least for any of the low-level stuff, which is what i know. the economics are probably different at the top levels of the stack, where you need to pay for runtime restarts and the like anyway?",
+      "parentUuid": "e21f7a61_79f5511f",
+      "revId": "e45efc4f4b4d53d03dc00d17deb2374b04a4c7d2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "22180eaa_a7501e44",
