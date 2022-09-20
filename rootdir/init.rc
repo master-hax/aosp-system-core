@@ -90,6 +90,12 @@ on early-init
     # checker programs.
     mkdir /dev/fscklogs 0770 root system
 
+    start prng_seeder
+
+    service prng_seeder /system/bin/prng_seeder
+        stdio_to_kmsg
+        socket prng_seeder stream+listen 0666 0 0 u:object_r:prng_seeder:s0
+
 on init
     sysclktz 0
 
