@@ -309,6 +309,18 @@ bool ParseFsMgrFlags(const std::string& flags, FstabEntry* entry) {
             if (ReadFileToString("/sys/class/block/" + arg + "/queue/zoned", &zoned) &&
                 android::base::StartsWith(zoned, "host-managed")) {
                 entry->zoned_device = "/dev/block/" + arg;
+
+                std::string fs_options;
+                for (const auto& flag : Split(entry->fs_options, ",")) {
+                    // atgc is not supported on zoned device
+                    if (flag == "atgc") continue;
+
+                    if (!fs_options.empty()) {
+                        fs_options.append(",");  // appends a comma if not the first
+                    }
+                    fs_options.append(flag);
+                }
+                entry->fs_options = std::move(fs_options);
             } else {
                 LWARNING << "Warning: cannot find the zoned device: " << arg;
             }
