@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c9002627_a1ef10c7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1334152
+      },
+      "writtenOn": "2022-09-20T15:05:56Z",
+      "side": 1,
+      "message": "NB not to be submitted before r.android.com/q/topic:create-prng-seeder",
+      "revId": "8a3c2d0d9ff5678014e46d89d9f58a1b88e8e604",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
