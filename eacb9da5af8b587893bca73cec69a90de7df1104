@@ -34,6 +34,24 @@
       "parentUuid": "529a0f75_5868f7be",
       "revId": "eacb9da5af8b587893bca73cec69a90de7df1104",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0278f2f9_7340d03e",
+        "filename": "fs_mgr/fs_mgr_fstab.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 314,
+      "author": {
+        "id": 1176763
+      },
+      "writtenOn": "2022-09-20T17:11:02Z",
+      "side": 1,
+      "message": "Thank you for the comment.\n\nThe reason for this is to keep a single fstab to support legacy and zoned devices at the same time.",
+      "parentUuid": "10fc0938_9104f2fe",
+      "revId": "eacb9da5af8b587893bca73cec69a90de7df1104",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
