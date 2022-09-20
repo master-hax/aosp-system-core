@@ -16,6 +16,24 @@
       "message": "auto options \u003d Split(entry-\u003efs_options, \",\");\n    std::remove(options.begin(), options.end(), \"atgc\");\n    entry-\u003efs_options \u003d Join(options, \",\");\n\nThough I\u0027m a little curious why we need this change... the drawback of silently failing options is they\u0027ll wind up getting copied and pasted forever, since there\u0027s no observable effect.\n\nare we anticipating fstabs in a common build where some hardware is zoned and some is not?",
       "revId": "eacb9da5af8b587893bca73cec69a90de7df1104",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "10fc0938_9104f2fe",
+        "filename": "fs_mgr/fs_mgr_fstab.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 314,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-09-20T06:07:00Z",
+      "side": 1,
+      "message": "(came here to suggest the \"Split -\u003e std::remove -\u003e Join\" pattern, saw it is already mentioned.)\nBTW std::remove would only swap \"argc\" to the end of the vector, you\u0027d need to call vector::erase() after std::remove() to actually shrink the vector.",
+      "parentUuid": "529a0f75_5868f7be",
+      "revId": "eacb9da5af8b587893bca73cec69a90de7df1104",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
