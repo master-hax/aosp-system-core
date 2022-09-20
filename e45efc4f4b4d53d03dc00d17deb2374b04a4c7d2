@@ -180,6 +180,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "5ae43e9a_6389f24a",
+        "filename": "fs_mgr/tests/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1535516
+      },
+      "writtenOn": "2022-09-20T19:08:40Z",
+      "side": 1,
+      "message": "You can\u0027t not break API here if you count people\u0027s command-line histories as API, because there will be `m module-name` in the history, and running python source files directly without building them. So you can\u0027t rename the installed file, the module, nor the source file by your definition.\n\nHowever, I assume you value the source filenames the least, so that\u0027s what I ended up renaming.\n\nDone.",
+      "parentUuid": "b84ccfc0_4bfb5f11",
+      "revId": "e45efc4f4b4d53d03dc00d17deb2374b04a4c7d2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "22180eaa_a7501e44",
