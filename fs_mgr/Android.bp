@@ -70,7 +70,7 @@ cc_defaults {
         "fs_mgr.cpp",
         "fs_mgr_format.cpp",
         "fs_mgr_dm_linear.cpp",
-        "fs_mgr_overlayfs.cpp",
+        "fs_mgr_overlayfs_stubs.cpp",
         "fs_mgr_roots.cpp",
         "fs_mgr_vendor_overlay.cpp",
         ":libfiemap_srcs",
@@ -113,6 +113,12 @@ cc_defaults {
     ],
     product_variables: {
         debuggable: {
+            exclude_srcs: [
+                "fs_mgr_overlayfs_stubs.cpp",
+            ],
+            srcs: [
+                "fs_mgr_overlayfs.cpp",
+            ],
             cppflags: [
                 "-UALLOW_ADBD_DISABLE_VERITY",
                 "-DALLOW_ADBD_DISABLE_VERITY=1",
@@ -252,5 +258,41 @@ cc_binary {
     },
     symlinks: [
         "clean_scratch_files",
+    ],
+}
+
+cc_binary {
+    name: "set-verity-state",
+    srcs: ["set-verity-state.cpp"],
+    shared_libs: [
+        "libbase",
+        "libbinder",
+        "libcrypto",
+        "libcrypto_utils",
+        "libfs_mgr_binder",
+        "libutils",
+    ],
+    static_libs: [
+        "libavb_user",
+    ],
+    header_libs: [
+        "libcutils_headers",
+    ],
+
+    cflags: ["-Werror"],
+    cppflags: [
+        "-DALLOW_DISABLE_VERITY=0",
+    ],
+    product_variables: {
+        debuggable: {
+            cppflags: [
+                "-UALLOW_DISABLE_VERITY",
+                "-DALLOW_DISABLE_VERITY=1",
+            ],
+        },
+    },
+    symlinks: [
+        "enable-verity",
+        "disable-verity",
     ],
 }
