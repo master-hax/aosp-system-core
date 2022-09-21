@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "eb688c8e_3855c02e",
+        "filename": "fs_mgr/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-09-21T14:45:28Z",
+      "side": 1,
+      "message": "non-debuggable build gets the stub impl.",
+      "revId": "c3833c88d34f4d0a7311ad3d0a1c854cd2b02d91",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4a1e6d20_c2eb40b0",
+        "filename": "fs_mgr/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 121,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-09-21T14:45:28Z",
+      "side": 1,
+      "message": "debuggable build swaps in the real impl.",
+      "revId": "c3833c88d34f4d0a7311ad3d0a1c854cd2b02d91",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
