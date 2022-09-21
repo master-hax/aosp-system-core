@@ -33,6 +33,23 @@
       "message": "debuggable build swaps in the real impl.",
       "revId": "c3833c88d34f4d0a7311ad3d0a1c854cd2b02d91",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d3e5a017_d6f84d38",
+        "filename": "fs_mgr/fs_mgr_overlayfs_stubs.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-09-21T15:46:20Z",
+      "side": 1,
+      "message": "This doesn\u0027t solve the user/userdebug build issues does it? Can we get rid of stubs entirely by using a check + #define-gated boolean like set-verity-state does?",
+      "revId": "c3833c88d34f4d0a7311ad3d0a1c854cd2b02d91",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
