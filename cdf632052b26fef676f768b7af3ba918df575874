@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a0b860d5_3304dcd6",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 2
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 1054468
+      },
+      "writtenOn": "2022-09-22T13:48:26Z",
+      "side": 1,
+      "message": "Why do this here instead of in its own init.rc file? Typically services have their own init.rc file.\n\nSee for example the atrace service in atrace.rc.",
+      "range": {
+        "startLine": 93,
+        "startChar": 0,
+        "endLine": 97,
+        "endChar": 75
+      },
+      "revId": "cdf632052b26fef676f768b7af3ba918df575874",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
