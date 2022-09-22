@@ -50,6 +50,24 @@
       "message": "This doesn\u0027t solve the user/userdebug build issues does it? Can we get rid of stubs entirely by using a check + #define-gated boolean like set-verity-state does?",
       "revId": "c3833c88d34f4d0a7311ad3d0a1c854cd2b02d91",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5d78b249_d39deef9",
+        "filename": "fs_mgr/fs_mgr_overlayfs_stubs.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-09-22T05:08:23Z",
+      "side": 1,
+      "message": "\u003e This doesn\u0027t solve the user/userdebug build issues does it?\n\nnope. This only reduce the surface of stubs to only 4 methods.\n\n\u003e #define-gated boolean\n\nDoable but that could mean fs_mgr_overlayfs code for debuggable build _might_ get built into libfs_mgr even on -user build. For example on user build, libfs_mgr could contain symbols like `fs_mgr_overlayfs_already_mounted` even though `fs_mgr_overlayfs_mount_all` effectively never calls it. I thought we really want to avoid this, thus the original stub implementation on -user?",
+      "parentUuid": "d3e5a017_d6f84d38",
+      "revId": "c3833c88d34f4d0a7311ad3d0a1c854cd2b02d91",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
