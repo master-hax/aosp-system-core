@@ -46,6 +46,30 @@
       },
       "revId": "cdf632052b26fef676f768b7af3ba918df575874",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f2f804ac_520ba889",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 2
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 1054468
+      },
+      "writtenOn": "2022-09-22T14:02:51Z",
+      "side": 1,
+      "message": "You can define that within the .rc file. You should be able to create an \"on early-init\" section with the \"start prng_seeder\" section.",
+      "parentUuid": "d460fc36_a591d17c",
+      "range": {
+        "startLine": 93,
+        "startChar": 0,
+        "endLine": 97,
+        "endChar": 75
+      },
+      "revId": "cdf632052b26fef676f768b7af3ba918df575874",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
