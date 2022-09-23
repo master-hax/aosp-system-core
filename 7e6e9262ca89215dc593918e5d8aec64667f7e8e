@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "36171b6d_f07ed66d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1038039
+      },
+      "writtenOn": "2022-09-23T15:09:36Z",
+      "side": 1,
+      "message": "Having played with sepolicy, I\u0027m not sure this change is needed. Removing from the topic for now.",
+      "revId": "7e6e9262ca89215dc593918e5d8aec64667f7e8e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
