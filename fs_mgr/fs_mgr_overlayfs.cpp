@@ -1334,8 +1334,12 @@ bool fs_mgr_overlayfs_mount_all(Fstab* fstab) {
     auto ret = false;
     if (fs_mgr_overlayfs_invalid()) return ret;
 
+    auto overlayfs_candidates = fs_mgr_overlayfs_candidate_list(*fstab);
+    if (overlayfs_candidates.empty()) {
+        return true;
+    }
     auto scratch_can_be_mounted = true;
-    for (const auto& entry : fs_mgr_overlayfs_candidate_list(*fstab)) {
+    for (const auto& entry : overlayfs_candidates) {
         if (fs_mgr_is_verity_enabled(entry)) continue;
         auto mount_point = fs_mgr_mount_point(entry.mount_point);
         if (fs_mgr_overlayfs_already_mounted(mount_point)) {
