@@ -22,6 +22,30 @@
       },
       "revId": "a7c49ae26e92901375c23442b4c84aa4a6d2f167",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "592ef3a2_57541c70",
+        "filename": "rootdir/ueventd.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1334152
+      },
+      "writtenOn": "2022-09-23T16:01:15Z",
+      "side": 1,
+      "message": "Happy to do whatever makes the most sense!\n\nLooking at the other remaining use case (CTS), it looks like they have SELinux permission, but only in order to confirm that they have no POSIX permission.  In which case yes, makes sense to change the owner and make the perms 600.\n\nAlthough somehow if we do that it feels like maybe prng_seeder is the wrong name.  But I guess if we get other use cases down the road we can introduce a new group ownership.",
+      "parentUuid": "d535aa3b_d16a8dac",
+      "range": {
+        "startLine": 40,
+        "startChar": 33,
+        "endLine": 40,
+        "endChar": 37
+      },
+      "revId": "a7c49ae26e92901375c23442b4c84aa4a6d2f167",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
