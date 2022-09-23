@@ -1,0 +1,13 @@
+package {
+    default_applicable_licenses: ["Android-Apache-2.0"],
+}
+aidl_interface {
+    name: "libistats_aidl",
+    owner: "google",
+    srcs: [
+        "*.aidl",
+    ],
+    vendor: true,
+    unstable: true,
+}
+
