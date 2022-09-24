@@ -74,6 +74,7 @@ class DmTarget {
     // Returns size in number of sectors when this target is part of
     // a DmTable, return 0 otherwise.
     uint64_t size() const { return length_; }
+    void SetSize(uint64_t size) { length_ = size; }
 
     // Function that converts this object to a string of arguments that can
     // be passed to the kernel for adding this target in a table. Each target (e.g. verity, linear)
