@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "0f3c6c0a_6dc9c111",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1334152
+      },
+      "writtenOn": "2022-09-26T16:55:13Z",
+      "side": 1,
+      "message": "Sorry, cut \u0026 pasted text in chat loses context :)",
+      "parentUuid": "a9479c3a_0da0f4e2",
+      "revId": "a7c49ae26e92901375c23442b4c84aa4a6d2f167",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d535aa3b_d16a8dac",
@@ -79,6 +97,30 @@
       "side": 1,
       "message": "\u003e Although somehow if we do that it feels like maybe prng_seeder is the wrong name. But I guess if we get other use cases down the road we can introduce a new group ownership.\n\nyeah, \"you tell me\" :-)\n\nif you think it\u0027s _likely_ that other stuff needs to use this, then maybe we just end up with system:system in the end anyway? but (from what little i understand of this stuff) the whole point here is basically to _not_ have anything else looking at this, right? prng_seeder does, gives that to the kernel, and everyone else should be going via the kernel, not stealing precious entropy from here?\n\nbut if we can be more restrictive here than we\u0027ve been in the past, that sgtm? (though i\u0027m really not sure how much it matters at all, given the selinux label? +jeffv in case his view is just \"meh, root:root everything is fine\".)",
       "parentUuid": "592ef3a2_57541c70",
+      "range": {
+        "startLine": 40,
+        "startChar": 33,
+        "endLine": 40,
+        "endChar": 37
+      },
+      "revId": "a7c49ae26e92901375c23442b4c84aa4a6d2f167",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "80d7199c_136b2ea3",
+        "filename": "rootdir/ueventd.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1334152
+      },
+      "writtenOn": "2022-09-26T16:55:13Z",
+      "side": 1,
+      "message": "Summarising my understanding from this review and offline chats:\n* The PRNG seeder should run under its own UID rather than root to minimise its privileges\n* The only user space process accessing hw_random is prng_seeder so it should own it and have minimal permissions on it\n* No point making hw_random system:system (the \"you\u0027re not going to need it\" principle)\n\nSo, I\u0027ve updated this file and the corresponding permissions test accordingly.",
+      "parentUuid": "82edf6f6_511012b3",
       "range": {
         "startLine": 40,
         "startChar": 33,
