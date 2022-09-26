@@ -34,6 +34,24 @@
       "parentUuid": "e4c4d8d3_c2f0af4c",
       "revId": "40e1666fb927717a8f6b60cfbff3c24f4dc65657",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ea239a43_e49735bd",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-09-26T03:42:52Z",
+      "side": 1,
+      "message": "Thanks, but that daemon doesn\u0027t seem to have a reference to /data/misc/threadnetwork in its source code. Perhaps some additional changes haven\u0027t landed yet.",
+      "parentUuid": "c3967009_75abdba4",
+      "revId": "40e1666fb927717a8f6b60cfbff3c24f4dc65657",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
