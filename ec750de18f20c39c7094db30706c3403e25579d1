@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d5cb312e_7627b6b4",
+        "filename": "fs_mgr/libdm/include/libdm/dm_target.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 1137063
+      },
+      "writtenOn": "2022-09-26T16:12:31Z",
+      "side": 1,
+      "message": "The size is already a required parameter of the DmTarget constructor.  As I mentioned on https://android-review.googlesource.com/c/platform/system/vold/+/2230826, I think it would be better to adjust the code in vold to provide the correct size up-front.",
+      "revId": "ec750de18f20c39c7094db30706c3403e25579d1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
