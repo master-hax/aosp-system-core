@@ -87,6 +87,24 @@
       "parentUuid": "ea239a43_e49735bd",
       "revId": "40e1666fb927717a8f6b60cfbff3c24f4dc65657",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "13a46709_9b2dedf5",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1837411
+      },
+      "writtenOn": "2022-09-26T04:20:44Z",
+      "side": 1,
+      "message": "I have submitted a CL https://googleplex-android-review.git.corp.google.com/c/platform/external/openthread/+/20027274 to update the folder in the config header file.",
+      "parentUuid": "58145a9b_25f9b6a9",
+      "revId": "40e1666fb927717a8f6b60cfbff3c24f4dc65657",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
