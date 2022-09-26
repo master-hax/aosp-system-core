@@ -16,6 +16,24 @@
       "message": "It would be nice if which processes are run as thread_network is shown. I also wonder if there\u0027s any sepolicy around it (I failed to find it).",
       "revId": "40e1666fb927717a8f6b60cfbff3c24f4dc65657",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c3967009_75abdba4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1837411
+      },
+      "writtenOn": "2022-09-26T02:40:21Z",
+      "side": 1,
+      "message": "The Thread network stack daemon `otbr-agent` (https://googleplex-android.git.corp.google.com/platform/external/ot-br-posix/) will use the folder `/data/misc/threadnetwork`. The sepolicy is not ready yet, I will submit the sepolicy later.",
+      "parentUuid": "e4c4d8d3_c2f0af4c",
+      "revId": "40e1666fb927717a8f6b60cfbff3c24f4dc65657",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
