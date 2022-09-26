@@ -69,6 +69,24 @@
       "message": "Anyway, please don\u0027t consider my comment as blocking.",
       "revId": "40e1666fb927717a8f6b60cfbff3c24f4dc65657",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "58145a9b_25f9b6a9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1837411
+      },
+      "writtenOn": "2022-09-26T03:50:25Z",
+      "side": 1,
+      "message": "The folder is specified by a config header file, we are using the `/data/misc/thread` now (https://googleplex-android.git.corp.google.com/platform/external/openthread/+/refs/heads/master/src/android/openthread-core-android-config.h#46). We will change it to `/data/misc/threadnetwork` later.",
+      "parentUuid": "ea239a43_e49735bd",
+      "revId": "40e1666fb927717a8f6b60cfbff3c24f4dc65657",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
