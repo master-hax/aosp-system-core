@@ -52,6 +52,23 @@
       "parentUuid": "c3967009_75abdba4",
       "revId": "40e1666fb927717a8f6b60cfbff3c24f4dc65657",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7d56be83_bcf893cd",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-09-26T03:43:17Z",
+      "side": 1,
+      "message": "Anyway, please don\u0027t consider my comment as blocking.",
+      "revId": "40e1666fb927717a8f6b60cfbff3c24f4dc65657",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
