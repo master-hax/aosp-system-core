@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5d5b3a02_98416da2",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2022-09-27T17:13:57Z",
+      "side": 1,
+      "message": "snapuserd is critical for serving I/Os, if it has low priority and doesn\u0027t get enough CPU cycles, the entire system\u0027s I/O will slow down. I don\u0027t think we should re-use OtaProfile here.",
+      "range": {
+        "startLine": 11,
+        "startChar": 0,
+        "endLine": 11,
+        "endChar": 43
+      },
+      "revId": "c2143763fff35b171b624598475d2193e24735ff",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
