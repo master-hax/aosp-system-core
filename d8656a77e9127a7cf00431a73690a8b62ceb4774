@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a299bdf6_6d24ab63",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1334152
+      },
+      "writtenOn": "2022-09-27T18:35:14Z",
+      "side": 1,
+      "message": "No need to revert the whole topic to disable the daemon.",
+      "revId": "d8656a77e9127a7cf00431a73690a8b62ceb4774",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
