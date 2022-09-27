@@ -16,6 +16,24 @@
       "message": "No need to revert the whole topic to disable the daemon.",
       "revId": "d8656a77e9127a7cf00431a73690a8b62ceb4774",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "beecb428_9bcf53a5",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1088076
+      },
+      "writtenOn": "2022-09-27T20:00:45Z",
+      "side": 1,
+      "message": "understand. I\u0027m just using the revert to confirm if the CL is the cause. Feel free to land any fix in a separate CL. Thanks!",
+      "parentUuid": "a299bdf6_6d24ab63",
+      "revId": "d8656a77e9127a7cf00431a73690a8b62ceb4774",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
