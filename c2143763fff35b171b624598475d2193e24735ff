@@ -46,6 +46,30 @@
       },
       "revId": "c2143763fff35b171b624598475d2193e24735ff",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ce988ff7_77771624",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2022-09-27T17:43:26Z",
+      "side": 1,
+      "message": "OK. Did you test the ota install time to make sure there are no regressions?",
+      "parentUuid": "3a0c6e29_a4a1fcb4",
+      "range": {
+        "startLine": 11,
+        "startChar": 0,
+        "endLine": 11,
+        "endChar": 43
+      },
+      "revId": "c2143763fff35b171b624598475d2193e24735ff",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
