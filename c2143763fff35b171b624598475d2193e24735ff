@@ -70,6 +70,30 @@
       },
       "revId": "c2143763fff35b171b624598475d2193e24735ff",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5c65f30f_0c7dd009",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-09-27T17:54:43Z",
+      "side": 1,
+      "message": "Yes. I tested this on Pixel 6 with full OTA takes roughly about ~45 minutes.\n\nAdditionally, there aren\u0027t much I/O traffic during postinstall. It is only during Verifying phase we need the daemon to serve the I/O\u0027s during OTA install. Hence, we have the worker threads NICE value slightly at a higher priority but also making sure that those threads don\u0027t take up big cores.\n\nI want to stage this for U and get some soak time in weekly builds. Hope this is clear.",
+      "parentUuid": "ce988ff7_77771624",
+      "range": {
+        "startLine": 11,
+        "startChar": 0,
+        "endLine": 11,
+        "endChar": 43
+      },
+      "revId": "c2143763fff35b171b624598475d2193e24735ff",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
