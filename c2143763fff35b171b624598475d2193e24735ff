@@ -22,6 +22,30 @@
       },
       "revId": "c2143763fff35b171b624598475d2193e24735ff",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3a0c6e29_a4a1fcb4",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-09-27T17:37:58Z",
+      "side": 1,
+      "message": "This won\u0027t apply during boot; during boot, we don\u0027t use .rc scripts to spin up daemon. Init fork and execs the daemon and hence this profile will not be applicable post OTA reboot.\n\nDuring OTA install, daemon gets spin up using init rc scripts. Since post-install phase can run for minutes, we don\u0027t want daemon to have threads running at higher priority.",
+      "parentUuid": "5d5b3a02_98416da2",
+      "range": {
+        "startLine": 11,
+        "startChar": 0,
+        "endLine": 11,
+        "endChar": 43
+      },
+      "revId": "c2143763fff35b171b624598475d2193e24735ff",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
