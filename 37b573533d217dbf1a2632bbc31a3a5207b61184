@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6f394f09_9b2960f9",
+        "filename": "libprocessgroup/profiles/task_profiles.json",
+        "patchSetId": 8
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-09-28T20:32:05Z",
+      "side": 1,
+      "message": "should be removed in the final version.",
+      "range": {
+        "startLine": 2,
+        "startChar": 2,
+        "endLine": 7,
+        "endChar": 4
+      },
+      "revId": "37b573533d217dbf1a2632bbc31a3a5207b61184",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3807cdda_a90dacee",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 645,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-09-28T20:32:05Z",
+      "side": 1,
+      "message": "Should we replace existing ones? If not maybe issue a warning?",
+      "range": {
+        "startLine": 645,
+        "startChar": 19,
+        "endLine": 645,
+        "endChar": 30
+      },
+      "revId": "37b573533d217dbf1a2632bbc31a3a5207b61184",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d484f9f3_35e2a039",
+        "filename": "libprocessgroup/task_profiles.h",
+        "patchSetId": 8
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-09-28T20:32:05Z",
+      "side": 1,
+      "message": "Just name() and value() would do",
+      "range": {
+        "startLine": 45,
+        "startChar": 31,
+        "endLine": 45,
+        "endChar": 44
+      },
+      "revId": "37b573533d217dbf1a2632bbc31a3a5207b61184",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b5740b31_07676be9",
+        "filename": "libprocessgroup/task_profiles.h",
+        "patchSetId": 8
+      },
+      "lineNbr": 243,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-09-28T20:32:05Z",
+      "side": 1,
+      "message": "SetProfileVariables ?",
+      "range": {
+        "startLine": 243,
+        "startChar": 9,
+        "endLine": 243,
+        "endChar": 28
+      },
+      "revId": "37b573533d217dbf1a2632bbc31a3a5207b61184",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
