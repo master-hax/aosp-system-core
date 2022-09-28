@@ -1,4 +1,14 @@
 {
+  "Variables": [
+    {
+      "Name": "MaxCapacityCpus",
+      "Value": "0-1"
+    },
+    {
+      "Name": "ServiceCapacityCpus",
+      "Value": "0-1"
+    }
+  ],
   "Attributes": [
     {
       "Name": "LowCapacityCPUs",
@@ -91,6 +101,12 @@
       "Name": "CfqWeight",
       "Controller": "io",
       "File": "io.weight"
+    },
+    {
+      "Name": "CpusetCpus",
+      "Controller": "cpuset",
+      "File": "cpus",
+      "FileV2": "cpuset.cpus"
     }
   ],
 
@@ -400,25 +416,25 @@
       "Name": "ProcessCapacityMax",
       "Actions": [
         {
-          "Name": "JoinCgroup",
+          "Name": "SetAttribute",
           "Params":
           {
-            "Controller": "cpuset",
-            "Path": "top-app"
+            "Name": "CpusetCpus",
+            "Variable": "MaxCapacityCpus"
           }
         }
       ]
     },
 
     {
-      "Name": "ServiceCapacityLow",
+      "Name": "SetAttribute",
       "Actions": [
         {
           "Name": "JoinCgroup",
           "Params":
           {
-            "Controller": "cpuset",
-            "Path": "system-background"
+            "Name": "CpusetCpus",
+            "Variable": "ServiceCapacityCpus"
           }
         }
       ]
