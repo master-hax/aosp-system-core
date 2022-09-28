@@ -15,13 +15,6 @@
       "GID": "system"
     },
     {
-      "Controller": "cpuset",
-      "Path": "/dev/cpuset",
-      "Mode": "0755",
-      "UID": "system",
-      "GID": "system"
-    },
-    {
       "Controller": "memory",
       "Path": "/dev/memcg",
       "Mode": "0700",
@@ -39,6 +32,11 @@
       {
         "Controller": "freezer",
         "Path": "."
+      },
+      {
+        "Controller": "cpuset",
+        "Path": ".",
+        "NeedsActivation": true
       }
     ]
   }
