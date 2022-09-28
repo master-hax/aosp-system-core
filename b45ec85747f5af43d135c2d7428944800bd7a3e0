@@ -34,6 +34,24 @@
       "parentUuid": "68d4696f_836f3288",
       "revId": "b45ec85747f5af43d135c2d7428944800bd7a3e0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "20a4d826_2480a444",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-09-28T22:59:42Z",
+      "side": 1,
+      "message": "So far I have not yet been able to reproduce these results on a Pixel 5 (Redfin) device. If I run the following command:\n\npython3 bootanalyze.py -r -c config.yaml -n 10 -g\n\nthen the results are as follows for LauncherStart+Bootloader:\n\nWith blkio in the v1 cgroup hierarchy: 55.579 +/- 0.47563 seconds.\nWith blkio in the v2 cgroup hierarchy: 55.535 +/- 0.56951 seconds.\n\nIn other words, this CL reduces the startup time slightly but the difference is smaller than the standard deviation of the measurements.\n\nAm I perhaps missing something about the boot time test results reported on the CrystalBall website?",
+      "parentUuid": "005d9537_90866ca7",
+      "revId": "b45ec85747f5af43d135c2d7428944800bd7a3e0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
