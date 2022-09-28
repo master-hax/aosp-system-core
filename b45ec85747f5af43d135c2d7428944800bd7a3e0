@@ -16,6 +16,24 @@
       "message": "Hi folks, this is Harry from the Android CrystalBall team. Our boot time test found that this change topic might introduce a ~2.5s (10%+) regression in boot time on the Pixel 5. We\u0027ve confirmed this by running the test twice (https://crystalball-presubmit.corp.google.com/dashboard/I72800010094013358, https://crystalball-presubmit.corp.google.com/dashboard/I37600010093959327). Could you please take another look at this change? Thank you!",
       "revId": "b45ec85747f5af43d135c2d7428944800bd7a3e0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "005d9537_90866ca7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-09-28T18:05:57Z",
+      "side": 1,
+      "message": "This issue has our full attention. The boot time regression is a surprise to me. I will try to find the root cause. Addressing this regression may require changes in libprocessgroup, in the Linux kernel or elsewhere.",
+      "parentUuid": "68d4696f_836f3288",
+      "revId": "b45ec85747f5af43d135c2d7428944800bd7a3e0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
