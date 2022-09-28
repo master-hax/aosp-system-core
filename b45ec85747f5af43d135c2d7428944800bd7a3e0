@@ -52,6 +52,24 @@
       "parentUuid": "005d9537_90866ca7",
       "revId": "b45ec85747f5af43d135c2d7428944800bd7a3e0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "78840587_70186541",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1358301
+      },
+      "writtenOn": "2022-09-28T23:08:35Z",
+      "side": 1,
+      "message": "Thank you for looking into this, Bart! The first thing I noticed is that your tooling reports very different boot time numbers than our test (55 seconds vs. ~20 seconds), so maybe what we measure is different.\n\nOur boot time test ultimately relies on the code here: https://source.corp.google.com/android/vendor/google_tradefederation/core/prod_tests/src/com/google/android/asit/BootTimeTest.java, but I\u0027m not an expert on what this test considers to be a \"fully booted up\" state (my main focus is to get regression detection in presubmit working). I\u0027ll ask Gopi, who\u0027s more experienced with this on our team, on what this test actually does.",
+      "parentUuid": "20a4d826_2480a444",
+      "revId": "b45ec85747f5af43d135c2d7428944800bd7a3e0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
