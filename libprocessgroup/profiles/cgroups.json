@@ -39,6 +39,11 @@
       {
         "Controller": "freezer",
         "Path": "."
+      },
+      {
+        "Controller": "cpuset",
+        "Path": ".",
+        "NeedsActivation": true
       }
     ]
   }
