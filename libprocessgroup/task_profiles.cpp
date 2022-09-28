@@ -212,6 +212,11 @@ bool SetAttributeAction::ExecuteForTask(int tid) const {
     }
 
     std::string value = (profile_variable_ == nullptr) ? value_ : profile_variable_->value();
+    if (profile_variable_ != nullptr) {
+        LOG(ERROR) << "ExecuteForTask for variable " << profile_variable_->name() << " with value "
+                   << profile_variable_->value() << ", and address " << &profile_variable_
+                   << " with path " << path.c_str();
+    }
     if (!WriteStringToFile(value, path)) {
         if (access(path.c_str(), F_OK) < 0) {
             if (optional_) {
