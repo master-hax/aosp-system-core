@@ -1,20 +1,35 @@
 {
+  "Variables": [
+    {
+      "Name": "MaxCapacityCpus",
+      "Value": "0-1"
+    },
+    {
+      "Name": "HighCapacityCpus",
+      "Value": "0-1"
+    },
+    {
+      "Name": "NormalCapacityCpus",
+      "Value": "0-1"
+    },
+    {
+      "Name": "LowCapacityCpus",
+      "Value": "0-1"
+    },
+    {
+      "Name": "RestrictedCpus",
+      "Value": "0"
+    },
+    {
+      "Name": "CameraCpus",
+      "Value": "0-1"
+    },
+    {
+      "Name": "SystemBackgroundCpus",
+      "Value": "0-1"
+    }
+  ],
   "Attributes": [
-    {
-      "Name": "LowCapacityCPUs",
-      "Controller": "cpuset",
-      "File": "background/cpus"
-    },
-    {
-      "Name": "HighCapacityCPUs",
-      "Controller": "cpuset",
-      "File": "foreground/cpus"
-    },
-    {
-      "Name": "MaxCapacityCPUs",
-      "Controller": "cpuset",
-      "File": "top-app/cpus"
-    },
     {
       "Name": "MemStats",
       "Controller": "memory",
@@ -91,6 +106,12 @@
       "Name": "CfqWeight",
       "Controller": "io",
       "File": "io.weight"
+    },
+    {
+      "Name": "CpusetCpus",
+      "Controller": "cpuset",
+      "File": "cpus",
+      "FileV2": "cpuset.cpus"
     }
   ],
 
@@ -269,11 +290,11 @@
       "Name": "VrKernelCapacity",
       "Actions": [
         {
-          "Name": "JoinCgroup",
+          "Name": "SetAttribute",
           "Params":
           {
-            "Controller": "cpuset",
-            "Path": ""
+            "Name": "CpusetCpus",
+            "Variable": "HighCapacityCpus"
           }
         }
       ]
@@ -282,11 +303,11 @@
       "Name": "VrServiceCapacityLow",
       "Actions": [
         {
-          "Name": "JoinCgroup",
+          "Name": "SetAttribute",
           "Params":
           {
-            "Controller": "cpuset",
-            "Path": "system/background"
+            "Name": "CpusetCpus",
+            "Variable": "LowCapacityCpus"
           }
         }
       ]
@@ -295,11 +316,11 @@
       "Name": "VrServiceCapacityNormal",
       "Actions": [
         {
-          "Name": "JoinCgroup",
+          "Name": "SetAttribute",
           "Params":
           {
-            "Controller": "cpuset",
-            "Path": "system"
+            "Name": "CpusetCpus",
+            "Variable": "NormalCapacityCpus"
           }
         }
       ]
@@ -308,11 +329,11 @@
       "Name": "VrServiceCapacityHigh",
       "Actions": [
         {
-          "Name": "JoinCgroup",
+          "Name": "SetAttribute",
           "Params":
           {
-            "Controller": "cpuset",
-            "Path": "system/performance"
+            "Name": "CpusetCpus",
+            "Variable": "HighCapacityCpus"
           }
         }
       ]
@@ -321,11 +342,11 @@
       "Name": "VrProcessCapacityLow",
       "Actions": [
         {
-          "Name": "JoinCgroup",
+          "Name": "SetAttribute",
           "Params":
           {
-            "Controller": "cpuset",
-            "Path": "application/background"
+            "Name": "CpusetCpus",
+            "Variable": "LowCapacityCpus"
           }
         }
       ]
@@ -334,11 +355,11 @@
       "Name": "VrProcessCapacityNormal",
       "Actions": [
         {
-          "Name": "JoinCgroup",
+          "Name": "SetAttribute",
           "Params":
           {
-            "Controller": "cpuset",
-            "Path": "application"
+            "Name": "CpusetCpus",
+            "Variable": "NormalCapacityCpus"
           }
         }
       ]
@@ -347,11 +368,11 @@
       "Name": "VrProcessCapacityHigh",
       "Actions": [
         {
-          "Name": "JoinCgroup",
+          "Name": "SetAttribute",
           "Params":
           {
-            "Controller": "cpuset",
-            "Path": "application/performance"
+            "Name": "CpusetCpus",
+            "Variable": "HighCapacityCpus"
           }
         }
       ]
@@ -361,11 +382,11 @@
       "Name": "ProcessCapacityLow",
       "Actions": [
         {
-          "Name": "JoinCgroup",
+          "Name": "SetAttribute",
           "Params":
           {
-            "Controller": "cpuset",
-            "Path": "background"
+            "Name": "CpusetCpus",
+            "Variable": "LowCapacityCpus"
           }
         }
       ]
@@ -374,11 +395,11 @@
       "Name": "ProcessCapacityNormal",
       "Actions": [
         {
-          "Name": "JoinCgroup",
+          "Name": "SetAttribute",
           "Params":
           {
-            "Controller": "cpuset",
-            "Path": ""
+            "Name": "CpusetCpus",
+            "Variable": "NormalCapacityCpus"
           }
         }
       ]
@@ -387,11 +408,11 @@
       "Name": "ProcessCapacityHigh",
       "Actions": [
         {
-          "Name": "JoinCgroup",
+          "Name": "SetAttribute",
           "Params":
           {
-            "Controller": "cpuset",
-            "Path": "foreground"
+            "Name": "CpusetCpus",
+            "Variable": "HighCapacityCpus"
           }
         }
       ]
@@ -400,11 +421,11 @@
       "Name": "ProcessCapacityMax",
       "Actions": [
         {
-          "Name": "JoinCgroup",
+          "Name": "SetAttribute",
           "Params":
           {
-            "Controller": "cpuset",
-            "Path": "top-app"
+            "Name": "CpusetCpus",
+            "Variable": "MaxCapacityCpus"
           }
         }
       ]
@@ -414,11 +435,11 @@
       "Name": "ServiceCapacityLow",
       "Actions": [
         {
-          "Name": "JoinCgroup",
+          "Name": "SetAttribute",
           "Params":
           {
-            "Controller": "cpuset",
-            "Path": "system-background"
+            "Name": "CpusetCpus",
+            "Variable": "SystemBackgroundCpus"
           }
         }
       ]
@@ -427,11 +448,11 @@
       "Name": "ServiceCapacityRestricted",
       "Actions": [
         {
-          "Name": "JoinCgroup",
+          "Name": "SetAttribute",
           "Params":
           {
-            "Controller": "cpuset",
-            "Path": "restricted"
+            "Name": "CpusetCpus",
+            "Variable": "RestrictedCpus"
           }
         }
       ]
@@ -441,11 +462,11 @@
       "Name": "CameraServiceCapacity",
       "Actions": [
         {
-          "Name": "JoinCgroup",
+          "Name": "SetAttribute",
           "Params":
           {
-            "Controller": "cpuset",
-            "Path": "camera-daemon"
+            "Name": "CpusetCpus",
+            "Variable": "CameraCpus"
           }
         }
       ]
@@ -640,11 +661,11 @@
       "Name": "SFMainPolicy",
       "Actions": [
         {
-          "Name": "JoinCgroup",
+          "Name": "SetAttribute",
           "Params":
           {
-            "Controller": "cpuset",
-            "Path": "system-background"
+            "Name": "CpusetCpus",
+            "Variable": "SystemBackgroundCpus"
           }
         }
       ]
@@ -653,11 +674,11 @@
       "Name": "SFRenderEnginePolicy",
       "Actions": [
         {
-          "Name": "JoinCgroup",
+          "Name": "SetAttribute",
           "Params":
           {
-            "Controller": "cpuset",
-            "Path": "system-background"
+            "Name": "CpusetCpus",
+            "Variable": "SystemBackgroundCpus"
           }
         }
       ]

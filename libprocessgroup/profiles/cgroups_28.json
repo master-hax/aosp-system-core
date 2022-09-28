@@ -6,6 +6,13 @@
       "Mode": "0755",
       "UID": "system",
       "GID": "system"
+    },
+    {
+      "Controller": "cpuset",
+      "Path": "/dev/cpuset",
+      "Mode": "0755",
+      "UID": "system",
+      "GID": "system"
     }
   ]
 }
