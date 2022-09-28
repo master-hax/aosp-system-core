@@ -66,4 +66,7 @@ interface ITestService {
     ByteEnum[] ReverseByteEnum(in ByteEnum[] input, out ByteEnum[] repeated);
     IntEnum[] ReverseIntEnum(in IntEnum[] input, out IntEnum[] repeated);
     LongEnum[] ReverseLongEnum(in LongEnum[] input, out LongEnum[] repeated);
+
+    // Hashes the first page in a given file descriptor.
+    int HashFileDescriptor(in ParcelFileDescriptor pfd);
 }
