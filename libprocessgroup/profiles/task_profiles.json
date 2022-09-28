@@ -1,7 +1,7 @@
 {
   "Variables": [
     {
-      "Name": "testing_variable",
+      "Name": "MaxCapacityCpus",
       "Value": "0-1"
     }
   ],
@@ -97,6 +97,12 @@
       "Name": "CfqWeight",
       "Controller": "io",
       "File": "io.weight"
+    },
+    {
+      "Name": "CpusetCpus",
+      "Controller": "cpuset",
+      "File": "cpus",
+      "FileV2": "cpuset.cpus"
     }
   ],
 
@@ -406,11 +412,11 @@
       "Name": "ProcessCapacityMax",
       "Actions": [
         {
-          "Name": "JoinCgroup",
+          "Name": "SetAttribute",
           "Params":
           {
-            "Controller": "cpuset",
-            "Path": "top-app"
+            "Name": "CpusetCpus",
+            "Variable": "MaxCapacityCpus"
           }
         }
       ]
