@@ -70,6 +70,24 @@
       "parentUuid": "20a4d826_2480a444",
       "revId": "b45ec85747f5af43d135c2d7428944800bd7a3e0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a6cf30db_87251a87",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1073883
+      },
+      "writtenOn": "2022-09-30T04:06:01Z",
+      "side": 1,
+      "message": "The continuous test measure the TOTAL_BOOT_TIME bootloader time + time untill boot completed property is set which indicates the boot is completed.\n\nMetric SystemServerTiming_StartServices-mean has regressed with 100.00% confidence; its value is 8639.20 here, and increased from historical average 6689.42 by 29.83 standard deviations.\n\nYou can manually verify this from logcat as well\n\nhttps://screenshot.googleplex.com/64hd3f7u4TYX7ug",
+      "parentUuid": "78840587_70186541",
+      "revId": "b45ec85747f5af43d135c2d7428944800bd7a3e0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
