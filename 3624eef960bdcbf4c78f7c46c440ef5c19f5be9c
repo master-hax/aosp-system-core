@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "675e6adb_2ac88647",
+        "filename": "rootdir/ueventd.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-09-30T15:12:10Z",
+      "side": 1,
+      "message": "this seems too specific to be in the global rc file? should this be in a soc/device-specific file, or did the kernel just choose to standardize some really weirdly-specific name?",
+      "range": {
+        "startLine": 84,
+        "startChar": 58,
+        "endLine": 84,
+        "endChar": 64
+      },
+      "revId": "3624eef960bdcbf4c78f7c46c440ef5c19f5be9c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
