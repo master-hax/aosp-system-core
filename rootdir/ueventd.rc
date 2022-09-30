@@ -77,5 +77,13 @@ subsystem dma_heap
 /sys/devices/virtual/usb_composite/*   enable      0664  root   system
 /sys/devices/system/cpu/cpu*   cpufreq/scaling_max_freq   0664  system system
 /sys/devices/system/cpu/cpu*   cpufreq/scaling_min_freq   0664  system system
+
+# sysfs based LED nodes for external input devices
 /sys/devices/virtual/misc/uhid/*/leds/* brightness   0664  system system
 /sys/devices/virtual/misc/uhid/*/leds/* multi_intensity   0664  system system
+/sys/devices/platform/11110000.usb/11110000.dwc3/xhci-hcd-exynos.5.auto/usb2/2-1/*/*/leds/* brightness 0664 system system
+/sys/devices/platform/11110000.usb/11110000.dwc3/xhci-hcd-exynos.5.auto/usb2/2-1/*/*/leds/* multi_intensity 0664 system system
+/sys/devices/platform/11110000.usb/11110000.dwc3/xhci-hcd-exynos.4.auto/usb2/2-1/*/*/leds/* brightness 0664 system system
+/sys/devices/platform/11110000.usb/11110000.dwc3/xhci-hcd-exynos.4.auto/usb2/2-1/*/*/leds/* multi_intensity 0664 system system
+/sys/devices/platform/soc/a600000.ssusb/a600000.dwc3/xhci-hcd.2.auto/usb1/1-1/*/*/leds/* brightness 0664 system system
+/sys/devices/platform/soc/a600000.ssusb/a600000.dwc3/xhci-hcd.2.auto/usb1/1-1/*/*/leds/* multi_intensity 0664 system system
