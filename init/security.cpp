@@ -113,7 +113,10 @@ Result<void> SetMmapRndBitsAction(const BuiltinArguments&) {
     // bits and try smaller values until we reach 24 bits which is the
     // Android-specific minimum. Don't go lower even if the configured maximum
     // is smaller than 24.
-    if (SetMmapRndBitsMin(33, 24, false) && (!Has32BitAbi() || SetMmapRndBitsMin(16, 16, true))) {
+    //
+    // With PAGE_SIZE=16K and VA_BITS=36, the max bits are 19 and min bits are 16
+    // We must try 19 or lower for this to succeed
+    if (SetMmapRndBitsMin(33, 19, false) && (!Has32BitAbi() || SetMmapRndBitsMin(16, 16, true))) {
         return {};
     }
 #elif defined(__x86_64__)
