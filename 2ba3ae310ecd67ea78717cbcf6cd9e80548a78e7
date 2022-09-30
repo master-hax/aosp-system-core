@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fd734213_9a4c7a72",
+        "filename": "rootdir/init.zygote64.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-09-30T14:15:00Z",
+      "side": 0,
+      "message": "+timmurray fyi --- this was a difference between the zygote64 config in 64-only (this file) and 64/32 (the other file)",
+      "revId": "2ba3ae310ecd67ea78717cbcf6cd9e80548a78e7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
