@@ -16,6 +16,24 @@
       "message": "+elsk for a proper review, but i\u0027m happy to \"inflate\" his approval to OWNERS. (i\u0027ve also sent out a change to s/salyzyn/elsk/ in the OWNERS file!)",
       "revId": "832b63e6778fc7b0ce615f430c0c7df28f3f4627",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4ab336e4_403b6d98",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1307979
+      },
+      "writtenOn": "2022-09-30T00:31:15Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "cc130764_aeae345d",
+      "revId": "832b63e6778fc7b0ce615f430c0c7df28f3f4627",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
