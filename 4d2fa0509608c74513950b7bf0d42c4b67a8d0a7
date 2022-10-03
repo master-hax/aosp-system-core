@@ -69,6 +69,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "25e0bc85_76f7a981",
+        "filename": "fastboot/device/commands.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 239,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2022-10-03T18:04:21Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3eb906f1_d774379b",
+      "revId": "4d2fa0509608c74513950b7bf0d42c4b67a8d0a7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "00af125a_4480168c",
