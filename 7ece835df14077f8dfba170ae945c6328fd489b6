@@ -33,6 +33,24 @@
       "message": "dvander: elsk doesn\u0027t think he\u0027s the right replacement? is there anyone who\u0027s a better fit?",
       "revId": "7ece835df14077f8dfba170ae945c6328fd489b6",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d79d16c5_86320467",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-10-03T19:58:57Z",
+      "side": 1,
+      "message": "Not really unfortunately. This code is very rarely touched. I only own it because I happen to have fixed a bug four years ago. So I guess that\u0027s the only qualification :)",
+      "parentUuid": "bc797106_a91e33bf",
+      "revId": "7ece835df14077f8dfba170ae945c6328fd489b6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
