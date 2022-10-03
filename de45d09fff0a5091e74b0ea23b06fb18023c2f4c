@@ -50,6 +50,24 @@
       "message": "why isn\u0027t this just in the format string as a literal?",
       "revId": "de45d09fff0a5091e74b0ea23b06fb18023c2f4c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "83c34add_52a56195",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2022-10-03T17:22:10Z",
+      "side": 1,
+      "message": "No good reason, just because https://cs.android.com/android/platform/superproject/+/master:bionic/libc/bionic/libc_init_static.cpp;l\u003d236;drc\u003d14cbb7963aa309b5773ebbe60bdf70feeaae77a4 does this as well.",
+      "parentUuid": "f59da2c3_fac217e5",
+      "revId": "de45d09fff0a5091e74b0ea23b06fb18023c2f4c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
