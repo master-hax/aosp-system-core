@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3108a89f_39e15c0a",
+        "filename": "libprocessgroup/include/processgroup/processgroup.h",
+        "patchSetId": 22
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2022-10-03T23:34:34Z",
+      "side": 1,
+      "message": "`std::vector\u003cconst std::pair\u003cstd::string, std::string\u003e\u003e\u0026 profile_variables`",
+      "revId": "0878d1f1bfa4a2da5142b5a2cd51de3175e05f86",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a8bfeb5b_dd47a959",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 22
+      },
+      "lineNbr": 891,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2022-10-03T23:34:34Z",
+      "side": 1,
+      "message": "Even if you change profile_variables to be `const \u0026`, these are still copies.",
+      "range": {
+        "startLine": 890,
+        "startChar": 0,
+        "endLine": 891,
+        "endChar": 61
+      },
+      "revId": "0878d1f1bfa4a2da5142b5a2cd51de3175e05f86",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "364fe15a_ad41e502",
+        "filename": "libprocessgroup/task_profiles.h",
+        "patchSetId": 22
+      },
+      "lineNbr": 243,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2022-10-03T23:34:34Z",
+      "side": 1,
+      "message": "`const std::vector\u003cstd::pair\u003cstd::string, std::string\u003e\u003e\u0026 profile_variables`",
+      "range": {
+        "startLine": 243,
+        "startChar": 29,
+        "endLine": 243,
+        "endChar": 95
+      },
+      "revId": "0878d1f1bfa4a2da5142b5a2cd51de3175e05f86",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
