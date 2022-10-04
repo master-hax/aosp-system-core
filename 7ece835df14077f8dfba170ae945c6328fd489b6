@@ -249,6 +249,24 @@
       "parentUuid": "ec6bb165_2fcaed9b",
       "revId": "7ece835df14077f8dfba170ae945c6328fd489b6",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f988a69f_a1fcac33",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1286922
+      },
+      "writtenOn": "2022-10-04T23:25:51Z",
+      "side": 1,
+      "message": "We are not planning on adding more use cases to dumpsys, but the atoms I linked depend on storaged, and they look like they have some use cases. If we delete storaged, those atoms will not be logged properly.",
+      "parentUuid": "55e675d1_750791b3",
+      "revId": "7ece835df14077f8dfba170ae945c6328fd489b6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
