@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f643f1c0_d2dbc4e1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-10-04T22:40:12Z",
+      "side": 1,
+      "message": "aren\u0027t we trying to kill ashmem for memfd?\n\nit\u0027s not clear to me that this wrapper adds any value over just calling the ioctl directly?\n\n(and is there a reason you can\u0027t use `ino_t`?)",
+      "revId": "3c7b651fd9685e2e5c8fcb2ec1e64ac381957a5d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
