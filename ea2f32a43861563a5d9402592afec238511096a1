@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "847d6788_e546c690",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 850,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-10-04T18:07:25Z",
+      "side": 1,
+      "message": "pre-existing, but std::string_view is preferred for statics/globals",
+      "revId": "ea2f32a43861563a5d9402592afec238511096a1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
