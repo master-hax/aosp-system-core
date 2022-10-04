@@ -195,6 +195,24 @@
       "parentUuid": "02209480_29679a46",
       "revId": "7ece835df14077f8dfba170ae945c6328fd489b6",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9aab6106_1ced051e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1286922
+      },
+      "writtenOn": "2022-10-04T22:30:35Z",
+      "side": 1,
+      "message": "Telemetry collects some information via dumpsys storaged. However, I believe that is only enabled on p/q auto devices at this time. Here is the flagging code: https://source.corp.google.com/piper///depot/google3/googledata/experiments/mobile/gmscore/stats/features/storaged_dumpsys_collector.gcl;l\u003d26;bpv\u003d1;bpt\u003d0\n\nWestworld IIRC also has some atoms that depend (directly or indirectly) on storaged: DiskStats, DirectoryUsage, AppSize, CategorySize. http://google3/logs/proto/wireless/android/stats/platform/westworld/atoms.proto;l\u003d1488;rcl\u003d478843802. \n\nWe do have metrics defined \u0026 collected on 3 of the 4 atoms. Here is CategorySize as an example: https://runway.corp.google.com/metrics/view/-1550124979677748479",
+      "parentUuid": "e62cbbe0_cb287837",
+      "revId": "7ece835df14077f8dfba170ae945c6328fd489b6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
