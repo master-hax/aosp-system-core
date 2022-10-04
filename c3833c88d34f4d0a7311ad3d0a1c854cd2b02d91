@@ -86,6 +86,24 @@
       "parentUuid": "5d78b249_d39deef9",
       "revId": "c3833c88d34f4d0a7311ad3d0a1c854cd2b02d91",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a2485e7f_2519f76e",
+        "filename": "fs_mgr/fs_mgr_overlayfs_stubs.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-10-04T18:05:47Z",
+      "side": 1,
+      "message": "That was the reasoning 4-5 years ago, but looking at it again now, I think it\u0027s fine. We\u0027re not including userdebug sepolicy or anything.",
+      "parentUuid": "ea6d02da_93457f8e",
+      "revId": "c3833c88d34f4d0a7311ad3d0a1c854cd2b02d91",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
