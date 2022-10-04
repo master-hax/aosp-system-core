@@ -141,6 +141,24 @@
       "parentUuid": "54aac069_9ff54bf9",
       "revId": "7ece835df14077f8dfba170ae945c6328fd489b6",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "03326c4e_9c0d8a41",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-10-04T19:00:19Z",
+      "side": 1,
+      "message": "https://googleplex-android.git.corp.google.com/platform/system/core/+/62cb372279f0237f759d3fe8a7e03d8272ba327f says:\n```\nstoraged: add storaged native daemon\n\nStoraged periodically checks the devices\u0027 disk stats and eMMC lifetime.\nThis information is logged to both the kernel and event log. By event\nlogging, the data can be aggregated by the checkin service and then\nsent to Sawmill.\n\nIt also periodically traverses /proc/[pid], maintaining the I/O usage of\nall tasks (all sampled tasks). The task I/O data can be reported using\nthe --dump option.\n\nStoraged is booted when the device boots up and requires the permission\nfor reading /proc/diskstats, /proc/[pid]/io and debugfs(eMMC ext_csd).\nFor detailed description, please refer to go/storaged.\n```\n\nsadly that doc has been deleted /facepalm\n\nthe corresponding bug (http://b/28826771) isn\u0027t very helpful. the only new thing i learned was \"We enable it when we need it (kind of like ftrace). Basically setting a notify chain through a mount point when calling the fanotify sys call.\" which strengthens my suspicion that this might not actually be doing anything useful...",
+      "parentUuid": "e494f701_846155c8",
+      "revId": "7ece835df14077f8dfba170ae945c6328fd489b6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
