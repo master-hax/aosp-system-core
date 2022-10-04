@@ -177,6 +177,24 @@
       "parentUuid": "03326c4e_9c0d8a41",
       "revId": "7ece835df14077f8dfba170ae945c6328fd489b6",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e62cbbe0_cb287837",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-10-04T19:09:15Z",
+      "side": 1,
+      "message": "Maybe someone on the telemetry team would know? +singhtejinder who I think had some slight interaction with storaged\u0027s telemetry.",
+      "parentUuid": "02209480_29679a46",
+      "revId": "7ece835df14077f8dfba170ae945c6328fd489b6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
