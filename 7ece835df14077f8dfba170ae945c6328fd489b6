@@ -267,6 +267,24 @@
       "parentUuid": "55e675d1_750791b3",
       "revId": "7ece835df14077f8dfba170ae945c6328fd489b6",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5fd4fdf4_eba30272",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-10-04T23:35:00Z",
+      "side": 1,
+      "message": "but are they collected on all devices, or just Auto? is that useful or misleading?",
+      "parentUuid": "f988a69f_a1fcac33",
+      "revId": "7ece835df14077f8dfba170ae945c6328fd489b6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
