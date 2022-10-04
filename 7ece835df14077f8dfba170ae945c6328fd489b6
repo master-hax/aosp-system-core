@@ -231,6 +231,24 @@
       "parentUuid": "9aab6106_1ced051e",
       "revId": "7ece835df14077f8dfba170ae945c6328fd489b6",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "55e675d1_750791b3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1176763
+      },
+      "writtenOn": "2022-10-04T22:57:22Z",
+      "side": 1,
+      "message": "+Ocean\n\nI guess one of our dashboards is using this stat.\nhttps://data.corp.google.com/sites/dhdyp821yxqa/diskio_workload/\n\nImportant metric would be \"avg. amount of writes per day\" which we use when projecting the storage lifetime.\n\nOcean, please correct me, if it\u0027s wrong.",
+      "parentUuid": "ec6bb165_2fcaed9b",
+      "revId": "7ece835df14077f8dfba170ae945c6328fd489b6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
