@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a0c144de_3f3a7b7e",
+        "filename": "libstats/pull_rust/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 1208973
+      },
+      "writtenOn": "2022-10-04T14:39:45Z",
+      "side": 1,
+      "message": "Nit: Alphabetize",
+      "revId": "40784cd70a7901e326722bafb3e55f0fcd973e2a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
