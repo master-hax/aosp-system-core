@@ -20,6 +20,47 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "369d1dc2_eac067ea",
+        "filename": "libprocessgroup/include/processgroup/processgroup.h",
+        "patchSetId": 22
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-10-04T22:45:23Z",
+      "side": 1,
+      "message": "`const std::vector\u003cstd::pair\u003cstd::string, std::string\u003e\u003e\u0026`",
+      "parentUuid": "3108a89f_39e15c0a",
+      "revId": "0878d1f1bfa4a2da5142b5a2cd51de3175e05f86",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cfbc434d_84ecc80e",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 22
+      },
+      "lineNbr": 650,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-10-04T22:45:23Z",
+      "side": 1,
+      "message": "What is this warning for?",
+      "range": {
+        "startLine": 647,
+        "startChar": 0,
+        "endLine": 650,
+        "endChar": 9
+      },
+      "revId": "0878d1f1bfa4a2da5142b5a2cd51de3175e05f86",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "a8bfeb5b_dd47a959",
         "filename": "libprocessgroup/task_profiles.cpp",
         "patchSetId": 22
@@ -43,6 +84,52 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "bd545e70_4bf6b7d0",
+        "filename": "libprocessgroup/task_profiles.h",
+        "patchSetId": 22
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-10-04T22:45:23Z",
+      "side": 1,
+      "message": "This seems to be never used. If so please remove.",
+      "range": {
+        "startLine": 79,
+        "startChar": 4,
+        "endLine": 79,
+        "endChar": 78
+      },
+      "revId": "0878d1f1bfa4a2da5142b5a2cd51de3175e05f86",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4335531c_ba062f38",
+        "filename": "libprocessgroup/task_profiles.h",
+        "patchSetId": 22
+      },
+      "lineNbr": 237,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-10-04T22:45:23Z",
+      "side": 1,
+      "message": "Is it used? If not please remove until it\u0027s needed.",
+      "range": {
+        "startLine": 237,
+        "startChar": 4,
+        "endLine": 237,
+        "endChar": 76
+      },
+      "revId": "0878d1f1bfa4a2da5142b5a2cd51de3175e05f86",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "364fe15a_ad41e502",
         "filename": "libprocessgroup/task_profiles.h",
         "patchSetId": 22
@@ -59,6 +146,29 @@
         "startChar": 29,
         "endLine": 243,
         "endChar": 95
+      },
+      "revId": "0878d1f1bfa4a2da5142b5a2cd51de3175e05f86",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ed6e479a_3ed0b0c6",
+        "filename": "libprocessgroup/task_profiles.h",
+        "patchSetId": 22
+      },
+      "lineNbr": 243,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-10-04T22:45:23Z",
+      "side": 1,
+      "message": "Do we need such an API? I think the only way we can introduce a variable is via JSON file which is handled by Load(). If not used please remove.",
+      "range": {
+        "startLine": 243,
+        "startChar": 4,
+        "endLine": 243,
+        "endChar": 97
       },
       "revId": "0878d1f1bfa4a2da5142b5a2cd51de3175e05f86",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
