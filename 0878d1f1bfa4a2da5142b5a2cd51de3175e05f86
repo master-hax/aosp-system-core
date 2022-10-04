@@ -172,6 +172,30 @@
       },
       "revId": "0878d1f1bfa4a2da5142b5a2cd51de3175e05f86",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9a969e63_c6afa7e3",
+        "filename": "libprocessgroup/task_profiles.h",
+        "patchSetId": 22
+      },
+      "lineNbr": 243,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-10-04T23:01:30Z",
+      "side": 1,
+      "message": "I see it being used in the later patch but this should be changed to add only one variable: `SetProfileVariable(const std::string\u0026 name conststd::string\u0026 value)`",
+      "parentUuid": "ed6e479a_3ed0b0c6",
+      "range": {
+        "startLine": 243,
+        "startChar": 4,
+        "endLine": 243,
+        "endChar": 97
+      },
+      "revId": "0878d1f1bfa4a2da5142b5a2cd51de3175e05f86",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
