@@ -159,6 +159,24 @@
       "parentUuid": "e494f701_846155c8",
       "revId": "7ece835df14077f8dfba170ae945c6328fd489b6",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "02209480_29679a46",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-10-04T19:07:12Z",
+      "side": 1,
+      "message": "+jaegeuk might know whether storaged\u0027s stats are actually being collected/used at all. (i\u0027m hoping we can delete a bunch of dead code and save some system resources :-) )",
+      "parentUuid": "03326c4e_9c0d8a41",
+      "revId": "7ece835df14077f8dfba170ae945c6328fd489b6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
