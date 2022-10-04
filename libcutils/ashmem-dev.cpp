@@ -474,3 +474,15 @@ int ashmem_get_size_region(int fd)
 
     return __ashmem_check_failure(fd, TEMP_FAILURE_RETRY(ioctl(fd, ASHMEM_GET_SIZE, NULL)));
 }
+
+int ashmem_get_backing_ino(int fd, unsigned long* ino) {
+    if (ino) {
+        int ret = TEMP_FAILURE_RETRY(ioctl(fd, ASHMEM_GET_FILE_ID, ino));
+        if (ret < 0) {
+            ret = errno;
+            return ret;
+        }
+        return 0;
+    }
+    return -1;
+}
