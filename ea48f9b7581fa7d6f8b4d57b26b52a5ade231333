@@ -1,0 +1,90 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "81a693e4_0cad08c6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 15
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-10-04T22:59:50Z",
+      "side": 1,
+      "message": "This patch will need to be redone to change the new command to be a builtin (see the other comments).",
+      "revId": "ea48f9b7581fa7d6f8b4d57b26b52a5ade231333",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4c9d20b0_b4bc1807",
+        "filename": "init/service_parser.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 393,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-10-04T22:59:50Z",
+      "side": 1,
+      "message": "When this command it changed to be a builtin you won\u0027t need to store it in a list. You can directly call `SetProfileVariable(args[1], args[2])`",
+      "range": {
+        "startLine": 389,
+        "startChar": 0,
+        "endLine": 393,
+        "endChar": 0
+      },
+      "revId": "ea48f9b7581fa7d6f8b4d57b26b52a5ade231333",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "945c4246_b94161df",
+        "filename": "init/service_parser.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 613,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-10-04T22:59:50Z",
+      "side": 1,
+      "message": "This command should set only one variable like this: `set_profile_variable \u003cvariable_name\u003e \u003cvalue\u003e`, therefore should be called `set_profile_variable`",
+      "range": {
+        "startLine": 613,
+        "startChar": 10,
+        "endLine": 613,
+        "endChar": 32
+      },
+      "revId": "ea48f9b7581fa7d6f8b4d57b26b52a5ade231333",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f834f4d9_095561ae",
+        "filename": "init/service_parser.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 613,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-10-04T22:59:50Z",
+      "side": 1,
+      "message": "I realize now that this should not belong to the service but be a builtin, so this command should be added in https://cs.android.com/android/platform/superproject/+/master:system/core/init/builtins.cpp;l\u003d1342 instead.",
+      "range": {
+        "startLine": 613,
+        "startChar": 10,
+        "endLine": 613,
+        "endChar": 32
+      },
+      "revId": "ea48f9b7581fa7d6f8b4d57b26b52a5ade231333",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
