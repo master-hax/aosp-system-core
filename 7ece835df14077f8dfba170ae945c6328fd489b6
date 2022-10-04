@@ -213,6 +213,24 @@
       "parentUuid": "e62cbbe0_cb287837",
       "revId": "7ece835df14077f8dfba170ae945c6328fd489b6",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ec6bb165_2fcaed9b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-10-04T22:41:42Z",
+      "side": 1,
+      "message": "\u003e However, I believe that is only enabled on p/q auto devices at this time.\n\ndo you know if there\u0027s a plan to expand that? (because if not, i\u0027d prefer to wrap it up and kill this! timmurray too.)",
+      "parentUuid": "9aab6106_1ced051e",
+      "revId": "7ece835df14077f8dfba170ae945c6328fd489b6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
