@@ -105,6 +105,42 @@
       "parentUuid": "71b643b0_37f0eee2",
       "revId": "7ece835df14077f8dfba170ae945c6328fd489b6",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e494f701_846155c8",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-10-04T18:56:11Z",
+      "side": 1,
+      "message": "+sspatil --- do you have any idea what storaged is for? \"telemetry\" was all i could see too, but i\u0027m not sure if that\u0027s actually ending up anywhere useful, or this is all just dead code at this point that we\u0027re still paying to maintain?",
+      "parentUuid": "1eaa05e7_1f40a9f6",
+      "revId": "7ece835df14077f8dfba170ae945c6328fd489b6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "95619a6b_f37625fb",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-10-04T18:56:11Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "54aac069_9ff54bf9",
+      "revId": "7ece835df14077f8dfba170ae945c6328fd489b6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
