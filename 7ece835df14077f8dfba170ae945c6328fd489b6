@@ -87,6 +87,24 @@
       "parentUuid": "05f118c8_ca209500",
       "revId": "7ece835df14077f8dfba170ae945c6328fd489b6",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1eaa05e7_1f40a9f6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-10-04T18:12:18Z",
+      "side": 1,
+      "message": "Thanks, Yifan!\n\nIt does some kind of telemetry. There\u0027s even a sysfs module that exists solely for storaged. There are also some CTS tests around it. Beyond that, I\u0027m not completely sure.",
+      "parentUuid": "71b643b0_37f0eee2",
+      "revId": "7ece835df14077f8dfba170ae945c6328fd489b6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
