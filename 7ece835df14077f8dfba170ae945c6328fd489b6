@@ -303,6 +303,23 @@
       "parentUuid": "5fd4fdf4_eba30272",
       "revId": "7ece835df14077f8dfba170ae945c6328fd489b6",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "128d2711_42295f97",
+        "filename": "storaged/OWNERS",
+        "patchSetId": 2
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1328687
+      },
+      "writtenOn": "2022-10-05T03:10:43Z",
+      "side": 1,
+      "message": "Could you also add me in this file?\nI also handle the atom study file for Suez.",
+      "revId": "7ece835df14077f8dfba170ae945c6328fd489b6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
