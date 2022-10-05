@@ -16,6 +16,24 @@
       "message": "pre-existing, but std::string_view is preferred for statics/globals",
       "revId": "ea2f32a43861563a5d9402592afec238511096a1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ab83e36b_37ec8112",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 850,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-10-05T07:16:48Z",
+      "side": 1,
+      "message": "string_view doesn\u0027t guarantee a null-terminating buffer. so passing string_view.data() to access() could be unsafe.\nI find string_view seldom useful when working with libc functions, and `constexpr char[]` provides better interoperability between libc code.",
+      "parentUuid": "847d6788_e546c690",
+      "revId": "ea2f32a43861563a5d9402592afec238511096a1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
