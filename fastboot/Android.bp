@@ -335,6 +335,8 @@ cc_binary_host {
         targets: [
             "dist_files",
             "sdk",
+            "sdk-repo-platform-tools", // target for gmac build - https://source.corp.google.com/piper///depot/google3/configs/wireless/android/busytown/platform/aosp/aosp.gcl;l=4127-4134
+            "sdk_repo",
             "win_sdk",
         ],
     },
