@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "74aec595_506a76b2",
+        "filename": "fastboot/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 338,
+      "author": {
+        "id": 1002751
+      },
+      "writtenOn": "2022-10-06T22:22:52Z",
+      "side": 1,
+      "message": "We generally don\u0027t put google3 links into AOSP.  This link also won\u0027t remain accurate as soon as that GCL file is changed.\n\n\"sdk-repo-platform-tools\" isn\u0027t really mac specific, but it is used by the mac builds because we no longer support building the rest of the SDK there, just the platform tools and build tools.",
+      "range": {
+        "startLine": 338,
+        "startChar": 66,
+        "endLine": 338,
+        "endChar": 187
+      },
+      "revId": "5e9e6ded4527fe30e67a53f0b62218e9e55d0bf9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
