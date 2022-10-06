@@ -46,6 +46,30 @@
       },
       "revId": "5e9e6ded4527fe30e67a53f0b62218e9e55d0bf9",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "664c9239_b879ea91",
+        "filename": "fastboot/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 338,
+      "author": {
+        "id": 1579231
+      },
+      "writtenOn": "2022-10-06T22:41:00Z",
+      "side": 1,
+      "message": "I keep forgetting this is opensource :) thanks for the (nicely worded) reminder.",
+      "parentUuid": "ab7fac57_8cb2696d",
+      "range": {
+        "startLine": 338,
+        "startChar": 66,
+        "endLine": 338,
+        "endChar": 187
+      },
+      "revId": "5e9e6ded4527fe30e67a53f0b62218e9e55d0bf9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
