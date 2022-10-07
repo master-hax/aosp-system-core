@@ -18,7 +18,11 @@
 
 #include <sys/socket.h>
 
+#include <condition_variable>
+#include <deque>
+#include <mutex>
 #include <string>
+#include <thread>
 
 #include "epoll.h"
 
@@ -34,6 +38,21 @@ void StartPropertyService(int* epoll_socket);
 
 void StartSendingMessages();
 void StopSendingMessages();
+
+class PersistWriteThread {
+  public:
+    void Start();
+    void Write(std::string name, std::string value);
+
+  private:
+    void Work();
+
+  private:
+    std::thread thread_;
+    std::mutex mutex_;
+    std::condition_variable cv_;
+    std::deque<std::pair<std::string, std::string>> work_;
+};
 
 }  // namespace init
 }  // namespace android
