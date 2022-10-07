@@ -110,6 +110,7 @@ static int init_socket = -1;
 static bool accept_messages = false;
 static std::mutex accept_messages_lock;
 static std::thread property_service_thread;
+static std::unique_ptr<PersistWriteThread> persist_write_thread;
 
 static PropertyInfoAreaFile property_info_area;
 
@@ -173,6 +174,15 @@ static bool CheckMacPerms(const std::string& name, const char* target_context,
     return has_access;
 }
 
+void NotifyPropertyChange(const std::string& name, const std::string& value) {
+    // If init hasn't started its main loop, then it won't be handling property changed messages
+    // anyway, so there's no need to try to send them.
+    auto lock = std::lock_guard{accept_messages_lock};
+    if (accept_messages) {
+        PropertyChanged(name, value);
+    }
+}
+
 static uint32_t PropertySet(const std::string& name, const std::string& value, std::string* error) {
     size_t valuelen = value.size();
 
@@ -206,14 +216,14 @@ static uint32_t PropertySet(const std::string& name, const std::string& value, s
     // Don't write properties to disk until after we have read all default
     // properties to prevent them from being overwritten by default values.
     if (persistent_properties_loaded && StartsWith(name, "persist.")) {
+        if (persist_write_thread) {
+            persist_write_thread->Write(name, value);
+            return PROP_SUCCESS;
+        }
         WritePersistentProperty(name, value);
     }
-    // If init hasn't started its main loop, then it won't be handling property changed messages
-    // anyway, so there's no need to try to send them.
-    auto lock = std::lock_guard{accept_messages_lock};
-    if (accept_messages) {
-        PropertyChanged(name, value);
-    }
+
+    NotifyPropertyChange(name, value);
     return PROP_SUCCESS;
 }
 
@@ -1367,6 +1377,41 @@ static void PropertyServiceThread() {
     }
 }
 
+void PersistWriteThread::Start() {
+    auto new_thread = std::thread([this]() -> void { Work(); });
+    thread_.swap(new_thread);
+}
+
+void PersistWriteThread::Work() {
+    while (true) {
+        std::pair<std::string, std::string> item;
+
+        // Grab the next item within the lock.
+        {
+            std::unique_lock<std::mutex> lock(mutex_);
+
+            while (work_.empty()) {
+                cv_.wait(lock);
+            }
+
+            item = std::move(work_.front());
+            work_.pop_front();
+        }
+
+        // Perform write/fsync outside the lock.
+        WritePersistentProperty(item.first, item.second);
+        NotifyPropertyChange(item.first, item.second);
+    }
+}
+
+void PersistWriteThread::Write(std::string name, std::string value) {
+    {
+        std::unique_lock<std::mutex> lock(mutex_);
+        work_.emplace_back(std::move(name), std::move(value));
+    }
+    cv_.notify_all();
+}
+
 void StartPropertyService(int* epoll_socket) {
     InitPropertySet("ro.property_service.version", "2");
 
@@ -1390,6 +1435,14 @@ void StartPropertyService(int* epoll_socket) {
 
     auto new_thread = std::thread{PropertyServiceThread};
     property_service_thread.swap(new_thread);
+
+    auto async_persist_writes =
+            android::base::GetBoolProperty("ro.property_service.async_persist_writes", false);
+
+    if (async_persist_writes) {
+        persist_write_thread = std::make_unique<PersistWriteThread>();
+        persist_write_thread->Start();
+    }
 }
 
 }  // namespace init
