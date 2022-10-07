@@ -162,6 +162,15 @@ equals `true`, then the order of the commands executed will be:
     setprop e 1
     setprop f 2
 
+Note that when `ro.property_service.async_persist_writes` is `true`, there is no defined ordering
+between persistent setprops and non-persistent setprops. For example:
+
+    on boot
+        setprop a 1
+        setprop persist.b 2
+
+When `ro.property_service.async_persist_writes` is `true`, triggers for these
+two properties may execute in any order.
 
 Services
 --------
