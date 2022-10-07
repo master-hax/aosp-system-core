@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bf684d47_d1927639",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1950650
+      },
+      "writtenOn": "2022-10-07T20:12:08Z",
+      "side": 1,
+      "message": "For the record - this does not implement the functionality, but copies over the interface changes needed to implement it.",
+      "revId": "8ae1c1db422fb397bf472c271e16d09a7bd87543",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
