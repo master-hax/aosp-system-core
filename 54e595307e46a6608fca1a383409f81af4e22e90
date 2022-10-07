@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9187dd58_7dbd6fc7",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 325,
+      "author": {
+        "id": 1003247
+      },
+      "writtenOn": "2022-10-07T21:22:15Z",
+      "side": 1,
+      "message": "this struct seems to serve no real purpose...",
+      "range": {
+        "startLine": 325,
+        "startChar": 4,
+        "endLine": 325,
+        "endChar": 10
+      },
+      "revId": "54e595307e46a6608fca1a383409f81af4e22e90",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
