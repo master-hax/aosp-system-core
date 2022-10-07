@@ -22,6 +22,23 @@
       },
       "revId": "cd0d3d76b2da1c0cd533193b8aa94337d1335581",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a3bc617c_027e8157",
+        "filename": "init/reboot_utils.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-10-07T19:02:26Z",
+      "side": 1,
+      "message": "No need for std::optional here, you can use an empty string.",
+      "revId": "cd0d3d76b2da1c0cd533193b8aa94337d1335581",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
