@@ -323,8 +323,10 @@ static enum scsi_result check_sg_io_hdr(const sg_io_hdr_t* io_hdrp) {
 
 static int send_mmc_rpmb_req(int mmc_fd, const struct storage_rpmb_send_req* req) {
     struct {
-        struct mmc_ioc_multi_cmd multi;
-        struct mmc_ioc_cmd cmd_buf[3];
+        union {
+            struct mmc_ioc_multi_cmd multi;
+            uint8_t raw[sizeof(struct mmc_ioc_multi_cmd) + sizeof(struct mmc_ioc_cmd) * 3];
+        };
     } mmc = {};
     struct mmc_ioc_cmd* cmd = mmc.multi.cmds;
     int rc;
