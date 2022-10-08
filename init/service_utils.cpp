@@ -137,6 +137,7 @@ void SetupStdio(bool stdio_to_kmsg) {
 }
 
 void OpenConsole(const std::string& console) {
+    umask(0);
     auto fd = unique_fd{open(console.c_str(), O_RDWR | O_CLOEXEC)};
     if (fd == -1) fd.reset(open("/dev/null", O_RDWR | O_CLOEXEC));
     ioctl(fd, TIOCSCTTY, 0);
