@@ -16,6 +16,24 @@
       "message": "ccross: is this guaranteed to actually be built, even though there are no dependencies on it?",
       "revId": "377adea81ccd56bfbf684db2e70ab7d261870119",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4430e893_e33407c7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2022-10-10T16:58:32Z",
+      "side": 1,
+      "message": "via checkbuild",
+      "parentUuid": "0be127b2_82dc2a6e",
+      "revId": "377adea81ccd56bfbf684db2e70ab7d261870119",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
