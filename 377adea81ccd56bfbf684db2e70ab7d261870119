@@ -34,6 +34,24 @@
       "parentUuid": "0be127b2_82dc2a6e",
       "revId": "377adea81ccd56bfbf684db2e70ab7d261870119",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4b7abda2_69f56621",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-10-10T17:02:17Z",
+      "side": 1,
+      "message": "do we still have a checkbuild in presubmit? (i don\u0027t like adding postsubmit suprises.)",
+      "parentUuid": "4430e893_e33407c7",
+      "revId": "377adea81ccd56bfbf684db2e70ab7d261870119",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
