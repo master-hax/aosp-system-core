@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0b1531f0_deacd4c2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-10-10T18:05:24Z",
+      "side": 1,
+      "message": "I\u0027m not sure how I feel about this. \"remount\" is supposed to use a writable partition *or* use overlays, not both. Using both introduces a lot of complexity into something that is already quite complex. The fact that it can run out of space is by design: if the partition isn\u0027t big enough, it should be resized, or reflashed, since it wouldn\u0027t be able to hold the modified image in the first place. \n\nOr, the partition should be made readonly, so overlayfs is always chosen.\n\nI\u0027ll let Yi-yo comment though.",
+      "revId": "30bab052ef1b0d36db93777bad6b5c361c7fdb7f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
