@@ -70,6 +70,24 @@
       "parentUuid": "4b7abda2_69f56621",
       "revId": "377adea81ccd56bfbf684db2e70ab7d261870119",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cfb67fa4_ad3c4785",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-10-10T18:50:51Z",
+      "side": 1,
+      "message": "good. (+2ed on that basis.)\n\nshould we explicitly build a debug library and link the tests against it though?",
+      "parentUuid": "60da60ea_9d3c1e3d",
+      "revId": "377adea81ccd56bfbf684db2e70ab7d261870119",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
