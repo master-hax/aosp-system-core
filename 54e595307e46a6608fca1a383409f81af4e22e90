@@ -22,6 +22,30 @@
       },
       "revId": "54e595307e46a6608fca1a383409f81af4e22e90",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b0d8a0c8_7bec5736",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 325,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2022-10-10T22:28:37Z",
+      "side": 1,
+      "message": "Fixed.",
+      "parentUuid": "9187dd58_7dbd6fc7",
+      "range": {
+        "startLine": 325,
+        "startChar": 4,
+        "endLine": 325,
+        "endChar": 10
+      },
+      "revId": "54e595307e46a6608fca1a383409f81af4e22e90",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
