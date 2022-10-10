@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d398c81f_2358a885",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003247
+      },
+      "writtenOn": "2022-10-10T22:34:02Z",
+      "side": 1,
+      "message": "(these changes feel ugly... I really wonder if just disabling the warning wouldn\u0027t be better... it really feels like this compiler warning is now a compiler bug)",
+      "revId": "4fb371246219e7f2b068a073e0f28878c20c45f1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1abb0f22_85f5c2fb",
+        "filename": "trusty/storage/proxy/rpmb.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 327,
+      "author": {
+        "id": 1003247
+      },
+      "writtenOn": "2022-10-10T22:34:02Z",
+      "side": 1,
+      "message": "perhaps nicer would be\n\nstruct {\n  uint8_t raw[sizeof(struct mmc_ioc_multi_cmd)];\n  struct mmc_ioc_cmd cmd_buf[3];\n}\n\nthough since we apparently never use the cmd_buf, it doesn\u0027t matter",
+      "range": {
+        "startLine": 327,
+        "startChar": 0,
+        "endLine": 327,
+        "endChar": 87
+      },
+      "revId": "4fb371246219e7f2b068a073e0f28878c20c45f1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
