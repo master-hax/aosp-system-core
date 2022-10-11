@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2d524b4d_ab98260b",
+        "filename": "init/reboot_utils.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-10-11T04:04:23Z",
+      "side": 1,
+      "message": "I don\u0027t think we can have a Pixel-specific stuff in init source code. \n\nYou could instead leave a generic mark (be it a sysprop, a file, etc.) when the shutdown is requested by the user and let the device-specific *.rc file set the sysfs node according to the mark.",
+      "range": {
+        "startLine": 23,
+        "startChar": 24,
+        "endLine": 23,
+        "endChar": 94
+      },
+      "revId": "e95675b20ce25a46f374d1a14916fab6155d3f08",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
