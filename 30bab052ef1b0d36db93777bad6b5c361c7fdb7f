@@ -52,6 +52,24 @@
       "parentUuid": "e3703f13_aadc6677",
       "revId": "30bab052ef1b0d36db93777bad6b5c361c7fdb7f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2779c50c_8f1dc7eb",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1956343
+      },
+      "writtenOn": "2022-10-11T13:38:18Z",
+      "side": 1,
+      "message": "\"I think we should allow mount even if scratch is full, because this allows the user to delete previously pushed files to free up space, right?\"\n\nyes, that\u0027s right.",
+      "parentUuid": "a3aab869_71fb1375",
+      "revId": "30bab052ef1b0d36db93777bad6b5c361c7fdb7f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
