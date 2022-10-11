@@ -34,6 +34,24 @@
       "parentUuid": "0b1531f0_deacd4c2",
       "revId": "30bab052ef1b0d36db93777bad6b5c361c7fdb7f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a3aab869_71fb1375",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-10-11T12:23:09Z",
+      "side": 1,
+      "message": "I agree it\u0027s reasonable to replace fs_mgr_dir_is_writable(work) with fs_mgr_rw_access(work).\n\nThe example showed seems like a genuine bug, \"if overlayfs scratch is filled with content, overlayfs would fail to mount after reboot.\"\nI think we _should_ allow mount even if scratch is full, because this allows the user to delete previously pushed files to free up space, right?",
+      "parentUuid": "e3703f13_aadc6677",
+      "revId": "30bab052ef1b0d36db93777bad6b5c361c7fdb7f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
