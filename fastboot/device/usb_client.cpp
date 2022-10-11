@@ -34,6 +34,7 @@ constexpr int kMaxPacketsizeSs = 1024;
 
 constexpr size_t kFbFfsNumBufs = 16;
 constexpr size_t kFbFfsBufSize = 16384;
+constexpr size_t kUsbExtPropUnicode = 1;
 
 constexpr const char* kUsbFfsFastbootEp0 = "/dev/usb-ffs/fastboot/ep0";
 constexpr const char* kUsbFfsFastbootOut = "/dev/usb-ffs/fastboot/ep1";
@@ -53,14 +54,47 @@ struct SsFuncDesc {
     struct usb_ss_ep_comp_descriptor sink_comp;
 } __attribute__((packed));
 
+template <size_t PropertyNameLength, size_t PropertyDataLength>
+struct UsbOsDescExtProp {
+    uint32_t size = sizeof(*this);
+    uint32_t property_data_type = kUsbExtPropUnicode;
+
+    // Property name and value are transmitted as UTF-16, but the kernel only
+    // accepts ASCII values and performs the conversion for us.
+    uint16_t property_name_length = PropertyNameLength;
+    char property_name[PropertyNameLength];
+
+    uint32_t property_data_length = PropertyDataLength;
+    char property[PropertyDataLength];
+} __attribute__((packed));
+
+using UsbOsDescGuid = UsbOsDescExtProp<20, 39>;
+static UsbOsDescGuid WindowsDeviceGuid = {
+        .property_name = "DeviceInterfaceGUID",
+        .property = "{F72FE0D4-CBCB-407D-8814-9ED673D0DD6B}",
+};
+
+struct UsbExtPropValues {
+    UsbOsDescGuid guid;
+} __attribute__((packed));
+
+static UsbExtPropValues os_prop_values = {
+        .guid = WindowsDeviceGuid,
+};
+
 struct DescV2 {
     struct usb_functionfs_descs_head_v2 header;
     // The rest of the structure depends on the flags in the header.
     __le32 fs_count;
     __le32 hs_count;
     __le32 ss_count;
+    __le32 os_count;
     struct FuncDesc fs_descs, hs_descs;
     struct SsFuncDesc ss_descs;
+    struct usb_os_desc_header os_header;
+    struct usb_ext_compat_desc os_desc;
+    struct usb_os_desc_header os_prop_header;
+    struct UsbExtPropValues os_prop_values;
 } __attribute__((packed));
 
 struct usb_interface_descriptor fastboot_interface = {
@@ -146,6 +180,31 @@ static struct SsFuncDesc ss_descriptors = {
                 },
 };
 
+static struct usb_ext_compat_desc os_desc_compat = {
+        .bFirstInterfaceNumber = 0,
+        .Reserved1 = 1,
+        .CompatibleID = {'W', 'I', 'N', 'U', 'S', 'B', '\0', '\0'},
+        .SubCompatibleID = {0},
+        .Reserved2 = {0},
+};
+
+static struct usb_os_desc_header os_desc_header = {
+        .interface = 0,
+        .dwLength = sizeof(os_desc_header) + sizeof(os_desc_compat),
+        .bcdVersion = 1,
+        .wIndex = 4,
+        .bCount = 1,
+        .Reserved = 0,
+};
+
+static struct usb_os_desc_header os_prop_header = {
+        .interface = 0,
+        .dwLength = sizeof(os_desc_header) + sizeof(os_prop_values),
+        .bcdVersion = 1,
+        .wIndex = 5,
+        .wCount = 1,
+};
+
 #define STR_INTERFACE_ "fastbootd"
 
 static const struct {
@@ -175,14 +234,19 @@ static struct DescV2 v2_descriptor = {
                         .magic = htole32(FUNCTIONFS_DESCRIPTORS_MAGIC_V2),
                         .length = htole32(sizeof(v2_descriptor)),
                         .flags = FUNCTIONFS_HAS_FS_DESC | FUNCTIONFS_HAS_HS_DESC |
-                                 FUNCTIONFS_HAS_SS_DESC,
+                                 FUNCTIONFS_HAS_SS_DESC | FUNCTIONFS_HAS_MS_OS_DESC,
                 },
         .fs_count = 3,
         .hs_count = 3,
         .ss_count = 5,
+        .os_count = 2,
         .fs_descs = fs_descriptors,
         .hs_descs = hs_descriptors,
         .ss_descs = ss_descriptors,
+        .os_header = os_desc_header,
+        .os_desc = os_desc_compat,
+        .os_prop_header = os_prop_header,
+        .os_prop_values = os_prop_values,
 };
 
 // Reimplementing since usb_ffs_close() does not close the control FD.
