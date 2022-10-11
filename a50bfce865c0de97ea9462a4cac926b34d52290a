@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b55fd2ad_59e0f036",
+        "filename": "libsparse/backed_block.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 253,
+      "author": {
+        "id": 1002751
+      },
+      "writtenOn": "2022-10-11T17:54:38Z",
+      "side": 1,
+      "message": "I don\u0027t think this is valid, this would imply that there are two blocks with the same block number, which shouldn\u0027t happen.",
+      "revId": "a50bfce865c0de97ea9462a4cac926b34d52290a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
