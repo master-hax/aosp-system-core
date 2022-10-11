@@ -250,7 +250,7 @@ static int queue_bb(struct backed_block_list* bbl, struct backed_block* new_bb) 
     bb = bbl->data_blocks;
   bbl->last_used = new_bb;
 
-  for (; bb->next && bb->next->block < new_bb->block; bb = bb->next)
+  for (; bb->next && bb->next->block <= new_bb->block; bb = bb->next)
     ;
 
   if (bb->next == nullptr) {
