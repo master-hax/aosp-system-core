@@ -88,6 +88,24 @@
       "parentUuid": "2779c50c_8f1dc7eb",
       "revId": "30bab052ef1b0d36db93777bad6b5c361c7fdb7f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a2476a34_5ae7a92f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1956343
+      },
+      "writtenOn": "2022-10-12T02:53:08Z",
+      "side": 1,
+      "message": "Hi David and Yi-yo,\nI cannot open https://android-build.googleplex.com/presubmit-status?change_id\u003d2169605\u0026revision_id\u003d7\u0026host\u003dandroid\u0026id\u003d6367833718423552\nCould you help me to see why it failed?",
+      "parentUuid": "bd82a376_24808040",
+      "revId": "30bab052ef1b0d36db93777bad6b5c361c7fdb7f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
