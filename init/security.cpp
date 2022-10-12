@@ -116,6 +116,10 @@ Result<void> SetMmapRndBitsAction(const BuiltinArguments&) {
     if (SetMmapRndBitsMin(33, 24, false) && (!Has32BitAbi() || SetMmapRndBitsMin(16, 16, true))) {
         return {};
     }
+#elif defined(__riscv) && (__riscv_xlen == 64)
+    if (SetMmapRndBitsMin(24, 18, false)) {
+        return {};
+    }
 #elif defined(__x86_64__)
     // x86_64 supports 28 - 32 rnd bits, but Android wants to ensure that the
     // theoretical maximum of 32 bits is always supported and used.
