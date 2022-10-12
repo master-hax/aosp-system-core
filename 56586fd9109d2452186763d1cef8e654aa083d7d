@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d1c28e2b_ee980f1d",
+        "filename": "trusty/confirmationui/service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2022-10-12T21:13:41Z",
+      "side": 1,
+      "message": "hey, while you\u0027re setting this up or after, do you want to add a fuzzer for this as well? - talk to waghpawan@",
+      "range": {
+        "startLine": 29,
+        "startChar": 26,
+        "endLine": 29,
+        "endChar": 52
+      },
+      "revId": "56586fd9109d2452186763d1cef8e654aa083d7d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9a45070a_12ab7b23",
+        "filename": "trusty/confirmationui/service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2022-10-12T21:13:41Z",
+      "side": 1,
+      "message": "nit: prefer EXIT_FAILURE (negative values are somewhat of an anti-pattern here)",
+      "range": {
+        "startLine": 37,
+        "startChar": 15,
+        "endLine": 37,
+        "endChar": 17
+      },
+      "revId": "56586fd9109d2452186763d1cef8e654aa083d7d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "049b3b62_17261490",
+        "filename": "trusty/confirmationui/service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2022-10-12T21:13:41Z",
+      "side": 1,
+      "message": "nit: consider\n\nCHECK_EQ(status, STATUS_OK) \u003c\u003c \"Could not register \" \u003c\u003c instance;\n\n(\u0027c_str()\u0027 also not needed)",
+      "range": {
+        "startLine": 35,
+        "startChar": 4,
+        "endLine": 38,
+        "endChar": 5
+      },
+      "revId": "56586fd9109d2452186763d1cef8e654aa083d7d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
