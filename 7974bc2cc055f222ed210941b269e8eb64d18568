@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c4ca5206_a656693a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2022-10-12T22:04:57Z",
+      "side": 1,
+      "message": "There is still one unresolved, but it looks like it could be addressed in a follow-on cl if necessary.",
+      "revId": "7974bc2cc055f222ed210941b269e8eb64d18568",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
