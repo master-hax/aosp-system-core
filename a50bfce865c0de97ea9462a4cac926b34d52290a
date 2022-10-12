@@ -16,6 +16,24 @@
       "message": "I don\u0027t think this is valid, this would imply that there are two blocks with the same block number, which shouldn\u0027t happen.",
       "revId": "a50bfce865c0de97ea9462a4cac926b34d52290a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8d3eb9e6_41b15cc8",
+        "filename": "libsparse/backed_block.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 253,
+      "author": {
+        "id": 1953065
+      },
+      "writtenOn": "2022-10-12T05:34:40Z",
+      "side": 1,
+      "message": "We configure system_dlkm.img like below. And we didn\u0027t put anything in BOARD_SYSTEM_DLKM_SRC dir.\nThen we exec make -j  and generated system_dlkm.img.\nCan you give me some suggests to debug system_dlkm.img?\n\nBoardConfig.mk:\nBOARD_USES_SYSTEM_DLKMIMAGE :\u003d true\nBOARD_SYSTEM_DLKMIMAGE_FILE_SYSTEM_TYPE ?\u003d erofs\nBOARD_SYSTEM_DLKMIMAGE_PARTITION_SIZE :\u003d 67108864\nBOARD_SYSTEM_DLKM_SRC :\u003d kernel/prebuilts/5.10/arm64/system_dlkm_staging\nTARGET_COPY_OUT_SYSTEM_DLKM :\u003d system_dlkm\nBOARD_GOOGLE_SYSTEM_DYNAMIC_PARTITIONS_PARTITION_LIST :\u003d system_dlkm\nBOARD_AVB_SYSTEM_DLKM_ADD_HASHTREE_FOOTER_ARGS +\u003d --hash_algorithm sha256\nAB_OTA_PARTITIONS +\u003d system_dlkm\n\nfstab file:\n/dev/block/by-name/system_dlkm                         /system_dlkm erofs     ro                 wait,first_stage_mount,slotselect",
+      "parentUuid": "b55fd2ad_59e0f036",
+      "revId": "a50bfce865c0de97ea9462a4cac926b34d52290a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
