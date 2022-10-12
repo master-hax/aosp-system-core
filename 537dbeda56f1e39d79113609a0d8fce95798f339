@@ -22,6 +22,30 @@
       },
       "revId": "537dbeda56f1e39d79113609a0d8fce95798f339",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "013e3627_28b191c1",
+        "filename": "init/security.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 120,
+      "author": {
+        "id": 1950590
+      },
+      "writtenOn": "2022-10-12T17:18:16Z",
+      "side": 1,
+      "message": "It seems may change when the hw SVxx mode is changed.\nconfig ARCH_MMAP_RND_BITS_MIN\n        default 18 if 64BIT\n        default 8\n\nconfig ARCH_MMAP_RND_COMPAT_BITS_MIN\n        default 8\n\n max bits determined by the following formula:\n  VA_BITS - PAGE_SHIFT - 3\nconfig ARCH_MMAP_RND_BITS_MAX\n        default 24 if 64BIT # SV39 based\n        default 17\n\nconfig ARCH_MMAP_RND_COMPAT_BITS_MAX\n        default 17",
+      "parentUuid": "1098e232_d2e10286",
+      "range": {
+        "startLine": 120,
+        "startChar": 26,
+        "endLine": 120,
+        "endChar": 28
+      },
+      "revId": "537dbeda56f1e39d79113609a0d8fce95798f339",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
