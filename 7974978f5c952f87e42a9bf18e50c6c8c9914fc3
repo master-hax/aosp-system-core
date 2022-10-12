@@ -16,6 +16,24 @@
       "message": "does `unimp` work here? https://github.com/riscv-non-isa/riscv-asm-manual/blob/master/riscv-asm.md#instruction-aliases",
       "revId": "7974978f5c952f87e42a9bf18e50c6c8c9914fc3",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "73775d9f_4c271a5c",
+        "filename": "debuggerd/crasher/crasher.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 307,
+      "author": {
+        "id": 1950590
+      },
+      "writtenOn": "2022-10-12T17:12:15Z",
+      "side": 1,
+      "message": ".word 0 is a C.UNIMP, I think it will cause an invalid instructions trap here.",
+      "parentUuid": "d6ac75e9_147c6413",
+      "revId": "7974978f5c952f87e42a9bf18e50c6c8c9914fc3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
