@@ -37,6 +37,7 @@
 #include <android-base/stringprintf.h>
 #include <android-base/unique_fd.h>
 #include <cutils/sockets.h>
+#include <linux/vm_sockets.h>
 
 #include "debuggerd/handler.h"
 #include "dump_type.h"
@@ -302,11 +303,30 @@ static void perform_request(std::unique_ptr<Crash> crash) {
   TombstonedCrashPacket response = {.packet_type = CrashPacketType::kPerformDump};
 
   ssize_t rc = -1;
+  unique_fd vsockfd(TEMP_FAILURE_RETRY(socket(AF_VSOCK, SOCK_STREAM, 0)));
+  if (vsockfd < 0) {
+    PLOG(INFO) << "socket creation failed: " << strerror(errno);
+  }
+
+  struct sockaddr_vm sa = (struct sockaddr_vm){
+      .svm_family = AF_VSOCK,
+      .svm_port = 2000,
+      .svm_cid = 2,
+  };
+
+  TEMP_FAILURE_RETRY(connect(vsockfd, (struct sockaddr*)&sa, sizeof(sa)));
   if (crash->output.proto) {
-    rc = SendFileDescriptors(crash->crash_socket_fd, &response, sizeof(response), output_fd.get(),
-                             crash->output.proto->fd.get());
+    unique_fd vsockfd2(TEMP_FAILURE_RETRY(socket(AF_VSOCK, SOCK_STREAM, 0)));
+
+    if (vsockfd2 < 0) {
+      PLOG(WARNING) << "socket2 creation failed: " << strerror(errno);
+    }
+    TEMP_FAILURE_RETRY(connect(vsockfd2, (struct sockaddr*)&sa, sizeof(sa)));
+
+    rc = SendFileDescriptors(crash->crash_socket_fd, &response, sizeof(response), vsockfd.get(),
+                             vsockfd2.get());
   } else {
-    rc = SendFileDescriptors(crash->crash_socket_fd, &response, sizeof(response), output_fd.get());
+    rc = SendFileDescriptors(crash->crash_socket_fd, &response, sizeof(response), vsockfd.get());
   }
 
   output_fd.reset();
@@ -556,3 +576,24 @@ int main(int, char* []) {
   LOG(INFO) << "tombstoned successfully initialized";
   event_base_dispatch(base);
 }
+
+// unique_fd vsockfd(TEMP_FAILURE_RETRY(socket(AF_VSOCK, SOCK_STREAM, 0)));
+
+// if (vsockfd < 0) {
+//   async_safe_format_log(ANDROID_LOG_ERROR, "crash_dump:",
+//                         "fd < 0: %s", strerror(errno));
+//       return EXIT_FAILURE;
+//   }
+
+// struct sockaddr_vm sa = (struct sockaddr_vm){
+//         .svm_family = AF_VSOCK,
+//         .svm_port = 2000,
+//         .svm_cid = 2,
+// };
+
+// int ret = TEMP_FAILURE_RETRY(connect(vsockfd, (struct sockaddr *)&sa, sizeof(sa)));
+// async_safe_format_log(ANDROID_LOG_ERROR, "crash_dump:",
+//                         "connecting to crash_dump returned : %d", ret);
+//       return EXIT_FAILURE;
+// *tombstoned_socket = std::move(sockfd);
+// *text_output_fd = std::move(vsockfd);
