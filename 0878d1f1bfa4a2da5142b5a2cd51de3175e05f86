@@ -36,6 +36,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "9b7ad1b8_2d7df225",
+        "filename": "libprocessgroup/include/processgroup/processgroup.h",
+        "patchSetId": 22
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2022-10-12T20:13:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "369d1dc2_eac067ea",
+      "revId": "0878d1f1bfa4a2da5142b5a2cd51de3175e05f86",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "cfbc434d_84ecc80e",
@@ -49,6 +67,30 @@
       "writtenOn": "2022-10-04T22:45:23Z",
       "side": 1,
       "message": "What is this warning for?",
+      "range": {
+        "startLine": 647,
+        "startChar": 0,
+        "endLine": 650,
+        "endChar": 9
+      },
+      "revId": "0878d1f1bfa4a2da5142b5a2cd51de3175e05f86",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "db09e4ed_5e7dd3ba",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 22
+      },
+      "lineNbr": 650,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2022-10-12T20:13:31Z",
+      "side": 1,
+      "message": "This warning is for signaling that there is a variable, from the json file, that was not set in the init script.\n\nWe are expecting that the `variables_` to be preloaded by the init script, through the `set_profile_variable` command. Therefore, if the insertion occurs here then we are defaulting the new variable to the arbitrary value from the `task_profile.json`.\n\nShould I remove the warning, add a comment for additional context, or rephrase the warning message?",
+      "parentUuid": "cfbc434d_84ecc80e",
       "range": {
         "startLine": 647,
         "startChar": 0,
@@ -82,6 +124,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "8a180a13_304c1fc2",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 22
+      },
+      "lineNbr": 891,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2022-10-12T20:13:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a8bfeb5b_dd47a959",
+      "range": {
+        "startLine": 890,
+        "startChar": 0,
+        "endLine": 891,
+        "endChar": 61
+      },
+      "revId": "0878d1f1bfa4a2da5142b5a2cd51de3175e05f86",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "bd545e70_4bf6b7d0",
@@ -105,6 +171,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "8b63a699_e8e5220a",
+        "filename": "libprocessgroup/task_profiles.h",
+        "patchSetId": 22
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2022-10-12T20:13:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "bd545e70_4bf6b7d0",
+      "range": {
+        "startLine": 79,
+        "startChar": 4,
+        "endLine": 79,
+        "endChar": 78
+      },
+      "revId": "0878d1f1bfa4a2da5142b5a2cd51de3175e05f86",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "4335531c_ba062f38",
@@ -118,6 +208,30 @@
       "writtenOn": "2022-10-04T22:45:23Z",
       "side": 1,
       "message": "Is it used? If not please remove until it\u0027s needed.",
+      "range": {
+        "startLine": 237,
+        "startChar": 4,
+        "endLine": 237,
+        "endChar": 76
+      },
+      "revId": "0878d1f1bfa4a2da5142b5a2cd51de3175e05f86",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "24ab6c1a_da322715",
+        "filename": "libprocessgroup/task_profiles.h",
+        "patchSetId": 22
+      },
+      "lineNbr": 237,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2022-10-12T20:13:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4335531c_ba062f38",
       "range": {
         "startLine": 237,
         "startChar": 4,
@@ -193,6 +307,54 @@
         "startChar": 4,
         "endLine": 243,
         "endChar": 97
+      },
+      "revId": "0878d1f1bfa4a2da5142b5a2cd51de3175e05f86",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "05353b91_ab079980",
+        "filename": "libprocessgroup/task_profiles.h",
+        "patchSetId": 22
+      },
+      "lineNbr": 243,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2022-10-12T20:13:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a969e63_c6afa7e3",
+      "range": {
+        "startLine": 243,
+        "startChar": 4,
+        "endLine": 243,
+        "endChar": 97
+      },
+      "revId": "0878d1f1bfa4a2da5142b5a2cd51de3175e05f86",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "dcbc7d03_4d2a7308",
+        "filename": "libprocessgroup/task_profiles.h",
+        "patchSetId": 22
+      },
+      "lineNbr": 243,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2022-10-12T20:13:31Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "364fe15a_ad41e502",
+      "range": {
+        "startLine": 243,
+        "startChar": 29,
+        "endLine": 243,
+        "endChar": 95
       },
       "revId": "0878d1f1bfa4a2da5142b5a2cd51de3175e05f86",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
