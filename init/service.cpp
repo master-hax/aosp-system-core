@@ -546,7 +546,7 @@ void Service::RunService(const std::vector<Descriptor>& descriptors,
         _exit(EXIT_FAILURE);
     }
 
-    if (task_profiles_.size() > 0 && !SetTaskProfiles(getpid(), task_profiles_)) {
+    if (task_profiles_.size() > 0 && !SetProcessProfiles(getuid(), getpid(), task_profiles_)) {
         LOG(ERROR) << "failed to set task profiles";
     }
 
