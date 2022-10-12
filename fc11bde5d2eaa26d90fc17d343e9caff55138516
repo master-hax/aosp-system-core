@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "460ff22e_a345e703",
+        "filename": "trusty/keymaster/keymint/TrustyRemotelyProvisionedComponentDevice.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 1833664
+      },
+      "writtenOn": "2022-10-12T15:28:02Z",
+      "side": 1,
+      "message": "nit: please use `std::move` to avoid making unnecessary string copies (and on `uniqueId`).",
+      "range": {
+        "startLine": 82,
+        "startChar": 35,
+        "endLine": 82,
+        "endChar": 48
+      },
+      "revId": "fc11bde5d2eaa26d90fc17d343e9caff55138516",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
