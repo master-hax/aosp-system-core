@@ -103,6 +103,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "051dfad3_62bf8bef",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 22
+      },
+      "lineNbr": 650,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-10-12T20:33:31Z",
+      "side": 1,
+      "message": "I think `task_profile.json` should be loaded first with default values for the variables and then set_profile_variable can override those defaults. That order is something that you need to check and confirm.",
+      "parentUuid": "db09e4ed_5e7dd3ba",
+      "range": {
+        "startLine": 647,
+        "startChar": 0,
+        "endLine": 650,
+        "endChar": 9
+      },
+      "revId": "0878d1f1bfa4a2da5142b5a2cd51de3175e05f86",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "a8bfeb5b_dd47a959",
         "filename": "libprocessgroup/task_profiles.cpp",
         "patchSetId": 22
