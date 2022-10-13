@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "04a5c0f1_1ae3dcc2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1611900
+      },
+      "writtenOn": "2022-10-13T19:11:44Z",
+      "side": 1,
+      "message": "While running this on a device (oriole) I got an error.\n```\n$adb shell /data/fuzz/$(get_build_var \nTARGET_ARCH)/${FUZZER_NAME}/vendor/${FUZZER_NAME}\n\nCANNOT LINK EXECUTABLE \"/data/fuzz/arm64/android.hardware.confirmationui-service.trusty_fuzzer/vendor/android.hardware.confirmationui-service.trusty_fuzzer\": library \"libclang_rt.hwasan-aarch64-android.so\" not found: needed by main executable\n\n```\n\nAnything missing here?",
+      "revId": "3eb096434a6881e757ccc20d4bcae79c7238fb3c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
