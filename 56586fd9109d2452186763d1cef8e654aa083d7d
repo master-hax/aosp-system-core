@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "63dade58_a34986b9",
+        "filename": "trusty/confirmationui/service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1611900
+      },
+      "writtenOn": "2022-10-13T21:37:34Z",
+      "side": 1,
+      "message": "This will be addressed in https://r.android.com/2254177",
+      "parentUuid": "d1c28e2b_ee980f1d",
+      "range": {
+        "startLine": 29,
+        "startChar": 26,
+        "endLine": 29,
+        "endChar": 52
+      },
+      "revId": "56586fd9109d2452186763d1cef8e654aa083d7d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "9a45070a_12ab7b23",
@@ -47,6 +71,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "5e8b578f_f586970b",
+        "filename": "trusty/confirmationui/service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1611900
+      },
+      "writtenOn": "2022-10-13T21:37:34Z",
+      "side": 1,
+      "message": "This will be addressed in https://r.android.com/2254177",
+      "parentUuid": "9a45070a_12ab7b23",
+      "range": {
+        "startLine": 37,
+        "startChar": 15,
+        "endLine": 37,
+        "endChar": 17
+      },
+      "revId": "56586fd9109d2452186763d1cef8e654aa083d7d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "049b3b62_17261490",
@@ -60,6 +108,30 @@
       "writtenOn": "2022-10-12T21:13:41Z",
       "side": 1,
       "message": "nit: consider\n\nCHECK_EQ(status, STATUS_OK) \u003c\u003c \"Could not register \" \u003c\u003c instance;\n\n(\u0027c_str()\u0027 also not needed)",
+      "range": {
+        "startLine": 35,
+        "startChar": 4,
+        "endLine": 38,
+        "endChar": 5
+      },
+      "revId": "56586fd9109d2452186763d1cef8e654aa083d7d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e061bf17_aa07b17e",
+        "filename": "trusty/confirmationui/service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1611900
+      },
+      "writtenOn": "2022-10-13T21:37:34Z",
+      "side": 1,
+      "message": "This will be addressed in https://r.android.com/2254177",
+      "parentUuid": "049b3b62_17261490",
       "range": {
         "startLine": 35,
         "startChar": 4,
