@@ -38,6 +38,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "9f83d39e_53ede59e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1611900
+      },
+      "writtenOn": "2022-10-13T21:32:27Z",
+      "side": 1,
+      "message": "Library `libclang_rt.hwasan-aarch64-android.so` is not present on device but present in soong -\n```\n./soong/.intermediates/prebuilts/clang/host/linux-x86/libclang_rt.hwasan/android_vendor.UpsideDownCake_arm64_armv8-2a_cortex-a55_shared/libclang_rt.hwasan-aarch64-android.so\n./soong/.intermediates/prebuilts/clang/host/linux-x86/libclang_rt.hwasan/android_arm64_armv8-2a_cortex-a55_shared/libclang_rt.hwasan-aarch64-android.so\n```\n\nIf I try to any copy these libs to device and set LD_LIBRARY_PATH\u003d/data/fuzz/arm64/lib/, while running `segmentation fault` observed. I am not sure this is the correct library to be used.",
+      "parentUuid": "e700a130_ab700d7f",
+      "revId": "3eb096434a6881e757ccc20d4bcae79c7238fb3c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "a49da166_fdfed9fa",
         "filename": "trusty/confirmationui/Android.bp",
         "patchSetId": 2
@@ -49,6 +67,24 @@
       "writtenOn": "2022-10-13T20:20:16Z",
       "side": 1,
       "message": "remove the libraries which are present in service_fuzzer_defaults. You can see all the libraries which are being included with service_fuzzer_defaults here : https://source.corp.google.com/android/frameworks/native/libs/binder/tests/Android.bp;l\u003d694?q\u003dservice_fuzzer_defaults\u0026sq\u003dpackage:%5Eandroid$",
+      "revId": "3eb096434a6881e757ccc20d4bcae79c7238fb3c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d913b76a_f5803dce",
+        "filename": "trusty/confirmationui/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1611900
+      },
+      "writtenOn": "2022-10-13T21:32:27Z",
+      "side": 1,
+      "message": "Removed.",
+      "parentUuid": "a49da166_fdfed9fa",
       "revId": "3eb096434a6881e757ccc20d4bcae79c7238fb3c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -66,6 +102,24 @@
       "writtenOn": "2022-10-13T20:20:16Z",
       "side": 1,
       "message": "you should have your own email or alias for your team so that whenever bug is filed by clusterfuzz, you get notified.",
+      "revId": "3eb096434a6881e757ccc20d4bcae79c7238fb3c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f6100a9b_37b4dc4a",
+        "filename": "trusty/confirmationui/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1611900
+      },
+      "writtenOn": "2022-10-13T21:32:27Z",
+      "side": 1,
+      "message": "Updated - trong@",
+      "parentUuid": "563f9b84_466b224c",
       "revId": "3eb096434a6881e757ccc20d4bcae79c7238fb3c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
