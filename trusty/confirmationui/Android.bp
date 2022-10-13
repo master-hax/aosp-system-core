@@ -36,6 +36,7 @@ cc_binary {
         "libbase",
         "libhidlbase",
         "libutils",
+        "liblog",
     ],
 
     init_rc: ["android.hardware.confirmationui-service.trusty.rc"],
@@ -51,6 +52,24 @@ cc_binary {
         "-Werror",
         "-DTEEUI_USE_STD_VECTOR",
     ],
+}
+
+cc_fuzz {
+    name: "android.hardware.confirmationui-service.trusty_fuzzer",
+    defaults: ["service_fuzzer_defaults"],
+    vendor: true,
+    shared_libs: [
+        "android.hardware.confirmationui-V1-ndk",
+        "android.hardware.confirmationui.not-so-secure-input",
+        "android.hardware.confirmationui-lib.trusty",
+        "liblog",
+    ],
+    srcs: ["fuzzer.cpp"],
+    fuzz_config: {
+        cc: [
+            "trong@google.com",
+        ],
+    },
 }
 
 cc_library {
