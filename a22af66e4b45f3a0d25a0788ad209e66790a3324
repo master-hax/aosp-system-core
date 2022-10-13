@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "dde4aeed_9a726094",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1950590
+      },
+      "writtenOn": "2022-10-13T08:57:47Z",
+      "side": 1,
+      "message": "I got something wrong while creating this patch :(. \ncrash_dump.policy_other is used by \"the other\" architecture, but we don\u0027t have 32 bits support on riscv64. result to \"overriding commands for target\".\nIf I disable policy_other for android_riscv64, then it will complain:\nTARGET module com.android.media requires non-existent TARGET module: crash_dump.policy_other\nTARGET module com.android.media.flattened requires non-existent TARGET module: crash_dump.policy_other\n...",
+      "revId": "a22af66e4b45f3a0d25a0788ad209e66790a3324",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
