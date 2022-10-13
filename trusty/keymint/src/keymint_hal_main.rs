@@ -14,8 +14,10 @@
 // limitations under the License.
 
 //! This module implements the HAL service for Keymint (Rust) in Trusty.
-use kmr_hal::{keymint, rpc, secureclock, send_hal_info, sharedsecret, SerializedChannel};
-use log::{error, info};
+use kmr_hal::{
+    extract_rsp, keymint, rpc, secureclock, send_hal_info, sharedsecret, SerializedChannel,
+};
+use log::{debug, error, info};
 use std::{
     ffi::CString,
     ops::DerefMut,
@@ -41,6 +43,7 @@ struct HalServiceError(String);
 struct TipcChannel(trusty::TipcChannel);
 
 impl SerializedChannel for TipcChannel {
+    const MAX_SIZE: usize = 4000;
     fn execute(&mut self, serialized_req: &[u8]) -> binder::Result<Vec<u8>> {
         self.0.send(serialized_req).map_err(|e| {
             binder::Status::new_exception(
@@ -54,21 +57,41 @@ impl SerializedChannel for TipcChannel {
                 ),
             )
         })?;
+        let mut expect_more_msgs = true;
+        let mut full_rsp = Vec::new();
+        let mut num_of_messages = 0;
         let mut recv_buf = Vec::new();
-        // TODO(b/253501976): cope with fragmentation of responses
-        self.0.recv(&mut recv_buf).map_err(|e| {
-            binder::Status::new_exception(
-                binder::ExceptionCode::TRANSACTION_FAILED,
-                Some(
-                    &CString::new(format!(
-                        "Failed to receive the response via tipc channel because of {:?}",
-                        e
-                    ))
-                    .unwrap(),
-                ),
-            )
-        })?;
-        Ok(recv_buf)
+        while expect_more_msgs {
+            recv_buf = Vec::new();
+            self.0.recv(&mut recv_buf).map_err(|e| {
+                binder::Status::new_exception(
+                    binder::ExceptionCode::TRANSACTION_FAILED,
+                    Some(
+                        &CString::new(format!(
+                            "Failed to receive the response via tipc channel because of {:?}",
+                            e
+                        ))
+                        .unwrap(),
+                    ),
+                )
+            })?;
+            let current_rsp_content;
+            (expect_more_msgs, current_rsp_content) = extract_rsp(&recv_buf)?;
+            debug!(
+                "Expect more messages: {}, Processed current response size {}",
+                expect_more_msgs,
+                current_rsp_content.len()
+            );
+            full_rsp.extend_from_slice(current_rsp_content);
+            debug!("Processed full response size yet: {}", full_rsp.len());
+            num_of_messages += 1;
+        }
+        debug!("Full response size: {}", full_rsp.len());
+        if num_of_messages > 1 {
+            Ok(full_rsp)
+        } else {
+            Ok(recv_buf)
+        }
     }
 }
 
