@@ -22,6 +22,30 @@
       },
       "revId": "e95675b20ce25a46f374d1a14916fab6155d3f08",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4d691fbf_89d2fd05",
+        "filename": "init/reboot_utils.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1653796
+      },
+      "writtenOn": "2022-10-13T00:50:22Z",
+      "side": 1,
+      "message": "Thanks for reminding. move the solution to android code to use sysprop instead",
+      "parentUuid": "2d524b4d_ab98260b",
+      "range": {
+        "startLine": 23,
+        "startChar": 24,
+        "endLine": 23,
+        "endChar": 94
+      },
+      "revId": "e95675b20ce25a46f374d1a14916fab6155d3f08",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
