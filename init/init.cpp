@@ -737,39 +737,40 @@ static void HandleSigtermSignal(const signalfd_siginfo& siginfo) {
 
 static constexpr std::chrono::milliseconds kDiagnosticTimeout = 10s;
 
-static void HandleSignalFd(bool one_off) {
-    signalfd_siginfo siginfo;
-    auto started = std::chrono::steady_clock::now();
-    do {
+static void HandleSignalFd() {
+    for (;;) {
+        signalfd_siginfo siginfo;
         ssize_t bytes_read = TEMP_FAILURE_RETRY(read(signal_fd, &siginfo, sizeof(siginfo)));
         if (bytes_read < 0 && errno == EAGAIN) {
-            auto now = std::chrono::steady_clock::now();
-            std::chrono::duration<double> waited = now - started;
-            if (waited >= kDiagnosticTimeout) {
-                LOG(ERROR) << "epoll() woke us up, but we waited with no SIGCHLD!";
-                started = now;
-            }
-
-            std::this_thread::sleep_for(100ms);
-            continue;
+            return;
         }
-        if (bytes_read != sizeof(siginfo)) {
+        if (bytes_read < 0) {
             PLOG(ERROR) << "Failed to read siginfo from signal_fd";
             return;
         }
-        break;
-    } while (!one_off);
+        if (bytes_read != sizeof(siginfo)) {
+            LOG(ERROR) << __func__ << ": " << bytes_read << " <> " << sizeof(siginfo);
+            return;
+        }
 
-    switch (siginfo.ssi_signo) {
-        case SIGCHLD:
-            ReapAnyOutstandingChildren();
-            break;
-        case SIGTERM:
-            HandleSigtermSignal(siginfo);
-            break;
-        default:
-            PLOG(ERROR) << "signal_fd: received unexpected signal " << siginfo.ssi_signo;
-            break;
+        switch (siginfo.ssi_signo) {
+            case SIGCHLD: {
+                siginfo_t chldinfo = {
+                        .si_signo = static_cast<int>(siginfo.ssi_signo),
+                        .si_code = siginfo.ssi_code,
+                };
+                chldinfo.si_pid = siginfo.ssi_pid;
+                chldinfo.si_status = siginfo.ssi_status;
+                ReapProcess(chldinfo);
+                break;
+            }
+            case SIGTERM:
+                HandleSigtermSignal(siginfo);
+                break;
+            default:
+                PLOG(ERROR) << "signal_fd: received unexpected signal " << siginfo.ssi_signo;
+                break;
+        }
     }
 }
 
@@ -819,8 +820,7 @@ static void InstallSignalFdHandler(Epoll* epoll) {
     }
 
     constexpr int flags = EPOLLIN | EPOLLPRI;
-    auto handler = std::bind(HandleSignalFd, false);
-    if (auto result = epoll->RegisterHandler(signal_fd, handler, flags); !result.ok()) {
+    if (auto result = epoll->RegisterHandler(signal_fd, HandleSignalFd, flags); !result.ok()) {
         LOG(FATAL) << result.error();
     }
 }
@@ -1199,7 +1199,7 @@ int SecondStageMain(int argc, char** argv) {
                     dumped_diagnostics = true;
 
                     LOG(INFO) << "Attempting to handle any stuck SIGCHLDs...";
-                    HandleSignalFd(true);
+                    HandleSignalFd();
                 }
             }
         }
