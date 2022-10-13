@@ -34,6 +34,40 @@
       "parentUuid": "04a5c0f1_1ae3dcc2",
       "revId": "3eb096434a6881e757ccc20d4bcae79c7238fb3c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a49da166_fdfed9fa",
+        "filename": "trusty/confirmationui/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1956258
+      },
+      "writtenOn": "2022-10-13T20:20:16Z",
+      "side": 1,
+      "message": "remove the libraries which are present in service_fuzzer_defaults. You can see all the libraries which are being included with service_fuzzer_defaults here : https://source.corp.google.com/android/frameworks/native/libs/binder/tests/Android.bp;l\u003d694?q\u003dservice_fuzzer_defaults\u0026sq\u003dpackage:%5Eandroid$",
+      "revId": "3eb096434a6881e757ccc20d4bcae79c7238fb3c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "563f9b84_466b224c",
+        "filename": "trusty/confirmationui/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1956258
+      },
+      "writtenOn": "2022-10-13T20:20:16Z",
+      "side": 1,
+      "message": "you should have your own email or alias for your team so that whenever bug is filed by clusterfuzz, you get notified.",
+      "revId": "3eb096434a6881e757ccc20d4bcae79c7238fb3c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
