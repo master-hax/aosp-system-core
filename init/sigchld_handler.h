@@ -23,6 +23,7 @@
 namespace android {
 namespace init {
 
+pid_t ReapProcess(const siginfo_t& siginfo);
 void ReapAnyOutstandingChildren();
 
 void WaitToBeReaped(const std::vector<pid_t>& pids, std::chrono::milliseconds timeout);

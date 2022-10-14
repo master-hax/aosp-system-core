@@ -42,15 +42,8 @@ using android::base::Timer;
 namespace android {
 namespace init {
 
-static pid_t ReapOneProcess() {
-    siginfo_t siginfo = {};
-    // This returns a zombie pid or informs us that there are no zombies left to be reaped.
-    // It does NOT reap the pid; that is done below.
-    if (TEMP_FAILURE_RETRY(waitid(P_ALL, 0, &siginfo, WEXITED | WNOHANG | WNOWAIT)) != 0) {
-        PLOG(ERROR) << "waitid failed";
-        return 0;
-    }
-
+pid_t ReapProcess(const siginfo_t& siginfo) {
+    DCHECK_EQ(siginfo.si_signo, SIGCHLD);
     auto pid = siginfo.si_pid;
     if (pid == 0) return 0;
 
@@ -107,6 +100,18 @@ static pid_t ReapOneProcess() {
     }
 
     return pid;
+}
+
+static pid_t ReapOneProcess() {
+    siginfo_t siginfo = {};
+    // This returns a zombie pid or informs us that there are no zombies left to be reaped.
+    // It does NOT reap the pid; that is done below.
+    if (TEMP_FAILURE_RETRY(waitid(P_ALL, 0, &siginfo, WEXITED | WNOHANG | WNOWAIT)) != 0) {
+        PLOG(ERROR) << "waitid failed";
+        return 0;
+    }
+
+    return ReapProcess(siginfo);
 }
 
 void ReapAnyOutstandingChildren() {
