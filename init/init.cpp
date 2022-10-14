@@ -1172,14 +1172,15 @@ int SecondStageMain(int argc, char** argv) {
             if (am.HasMoreCommands()) epoll_timeout = 0ms;
         }
 
+        // We always reap children before responding to the other pending functions. This is to
+        // prevent a race where other daemons see that a service has exited and ask init to
+        // start it again via ctl.start before init has reaped it.
+        epoll.SetFirstCallback(ReapAnyOutstandingChildren);
+
         auto pending_functions = epoll.Wait(epoll_timeout);
         if (!pending_functions.ok()) {
             LOG(ERROR) << pending_functions.error();
         } else if (!pending_functions->empty()) {
-            // We always reap children before responding to the other pending functions. This is to
-            // prevent a race where other daemons see that a service has exited and ask init to
-            // start it again via ctl.start before init has reaped it.
-            ReapAnyOutstandingChildren();
             for (const auto& function : *pending_functions) {
                 (*function)();
             }
