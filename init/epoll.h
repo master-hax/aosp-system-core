@@ -43,8 +43,7 @@ class Epoll {
     Result<void> RegisterHandler(int fd, Handler handler, uint32_t events = EPOLLIN);
     Result<void> UnregisterHandler(int fd);
     void SetFirstCallback(std::function<void()> first_callback);
-    Result<std::vector<std::shared_ptr<Handler>>> Wait(
-            std::optional<std::chrono::milliseconds> timeout);
+    Result<int> Wait(std::optional<std::chrono::milliseconds> timeout);
 
   private:
     struct Info {
