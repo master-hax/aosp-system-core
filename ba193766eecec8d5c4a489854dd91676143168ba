@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f81f1f43_3cb4f9a9",
+        "filename": "trusty/confirmationui/Android.bp",
+        "patchSetId": 3
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2022-10-14T18:18:29Z",
+      "side": 1,
+      "message": "can you also add this in system/sepolicy/build/soong/service_fuzzer_bindings.go?",
+      "range": {
+        "startLine": 58,
+        "startChar": 11,
+        "endLine": 58,
+        "endChar": 64
+      },
+      "revId": "ba193766eecec8d5c4a489854dd91676143168ba",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d3c6556a_e5404b56",
+        "filename": "trusty/confirmationui/fuzzer.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2022-10-14T18:18:29Z",
+      "side": 1,
+      "message": "technical detail: 0 (libfuzzer defines that fuzzers must return 0 or -1 here). This is different than exit statuses, which are POSIX values and used to return from the main method",
+      "range": {
+        "startLine": 30,
+        "startChar": 11,
+        "endLine": 30,
+        "endChar": 23
+      },
+      "revId": "ba193766eecec8d5c4a489854dd91676143168ba",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
