@@ -248,6 +248,11 @@ bool fs_mgr_overlayfs_enabled(FstabEntry* entry) {
         return true;
     }
 
+    // f2fs read-only mode doesn't support remount,rw
+    if (fs_mgr_is_f2fs(entry->blk_device)) {
+        return true;
+    }
+
     // check if ext4 de-dupe
     auto has_shared_blocks = fs_mgr_has_shared_blocks(entry->mount_point, entry->blk_device);
     if (!has_shared_blocks && (entry->mount_point == "/system")) {
