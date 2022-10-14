@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "528763da_460fd47c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-10-14T17:58:29Z",
+      "side": 1,
+      "message": "The v2/android-test-harness-team/suite/host_unit_tests test failure is a known failure as one can see here: https://b.corp.google.com/issues/251840211.",
+      "revId": "fdb4d7688ace2e4eee2b34b4015000793adcd048",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
