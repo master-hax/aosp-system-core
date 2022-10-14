@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "7b5a19c1_3d9b770e",
+        "filename": "trusty/confirmationui/Android.bp",
+        "patchSetId": 3
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1611900
+      },
+      "writtenOn": "2022-10-14T20:39:13Z",
+      "side": 1,
+      "message": "I think already there is an entry for this service - https://cs.android.com/android/platform/superproject/+/master:system/sepolicy/build/soong/service_fuzzer_bindings.go;drc\u003de3245a40dfa227ae59128c265d2e356e51f3bf0b;l\u003d36",
+      "parentUuid": "f81f1f43_3cb4f9a9",
+      "range": {
+        "startLine": 58,
+        "startChar": 11,
+        "endLine": 58,
+        "endChar": 64
+      },
+      "revId": "ba193766eecec8d5c4a489854dd91676143168ba",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d3c6556a_e5404b56",
@@ -37,6 +61,30 @@
       "writtenOn": "2022-10-14T18:18:29Z",
       "side": 1,
       "message": "technical detail: 0 (libfuzzer defines that fuzzers must return 0 or -1 here). This is different than exit statuses, which are POSIX values and used to return from the main method",
+      "range": {
+        "startLine": 30,
+        "startChar": 11,
+        "endLine": 30,
+        "endChar": 23
+      },
+      "revId": "ba193766eecec8d5c4a489854dd91676143168ba",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "999e72a6_c6aefc1f",
+        "filename": "trusty/confirmationui/fuzzer.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1611900
+      },
+      "writtenOn": "2022-10-14T20:39:13Z",
+      "side": 1,
+      "message": "Updated it return 0.",
+      "parentUuid": "d3c6556a_e5404b56",
       "range": {
         "startLine": 30,
         "startChar": 11,
