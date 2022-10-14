@@ -30,6 +30,7 @@ bool fs_mgr_wants_overlayfs(android::fs_mgr::FstabEntry* entry);
 bool fs_mgr_overlayfs_mount_all(android::fs_mgr::Fstab* fstab);
 bool fs_mgr_overlayfs_is_setup();
 bool fs_mgr_has_shared_blocks(const std::string& mount_point, const std::string& dev);
+bool fs_mgr_is_read_only_f2fs(const std::string& dev);
 bool fs_mgr_overlayfs_already_mounted(const std::string& mount_point, bool overlay_only = true);
 std::string fs_mgr_get_context(const std::string& mount_point);
 
