@@ -45,18 +45,20 @@ Result<void> Epoll::RegisterHandler(int fd, Handler handler, uint32_t events) {
         return Error() << "Must specify events";
     }
 
-    Info info;
-    info.events = events;
-    info.handler = std::make_shared<decltype(handler)>(std::move(handler));
-    auto [it, inserted] = epoll_handlers_.emplace(fd, std::move(info));
+    auto [it, inserted] = epoll_handlers_.emplace(
+            fd, Info{
+                        .events = events,
+                        .handler = std::make_shared<Handler>(std::move(handler)),
+                });
     if (!inserted) {
         return Error() << "Cannot specify two epoll handlers for a given FD";
     }
-    epoll_event ev;
-    ev.events = events;
-    // std::map's iterators do not get invalidated until erased, so we use the
-    // pointer to the std::function in the map directly for epoll_ctl.
-    ev.data.ptr = reinterpret_cast<void*>(&it->second);
+    epoll_event ev = {
+            .events = events,
+            // std::map's iterators do not get invalidated until erased, so we use the
+            // pointer to the std::function in the map directly for epoll_ctl.
+            .data.ptr = reinterpret_cast<void*>(&it->second),
+    };
     if (epoll_ctl(epoll_fd_, EPOLL_CTL_ADD, fd, &ev) == -1) {
         Result<void> result = ErrnoError() << "epoll_ctl failed to add fd";
         epoll_handlers_.erase(fd);
