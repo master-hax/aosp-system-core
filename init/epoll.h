@@ -47,7 +47,7 @@ class Epoll {
 
   private:
     struct Info {
-        std::shared_ptr<Handler> handler;
+        Handler handler;
         uint32_t events;
     };
 
