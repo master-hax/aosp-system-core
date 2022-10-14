@@ -55,19 +55,14 @@ TEST(epoll, UnregisterHandler) {
         ASSERT_NE(sValidObjects.find((void*)&catch_dtor), sValidObjects.end());
     };
 
-    epoll.RegisterHandler(fds[0], std::move(handler));
+    epoll.RegisterHandler(fds[0], handler);
 
     uint8_t byte = 0xee;
     ASSERT_TRUE(android::base::WriteFully(fds[1], &byte, sizeof(byte)));
 
-    auto results = epoll.Wait({});
-    ASSERT_RESULT_OK(results);
-    ASSERT_EQ(results->size(), size_t(1));
-
-    for (const auto& function : *results) {
-        (*function)();
-        (*function)();
-    }
+    auto epoll_result = epoll.Wait({});
+    ASSERT_RESULT_OK(epoll_result);
+    ASSERT_EQ(*epoll_result, 1);
     ASSERT_TRUE(handler_invoked);
 }
 
