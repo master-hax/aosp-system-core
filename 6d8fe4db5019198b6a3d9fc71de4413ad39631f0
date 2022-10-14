@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "191de1b0_818a06f1",
+        "filename": "trusty/keymint/src/keymint_hal_main.rs",
+        "patchSetId": 2
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1836235
+      },
+      "writtenOn": "2022-10-14T13:56:04Z",
+      "side": 1,
+      "message": "I\u0027m still a bit worried that we might have request messages bigger than `MAX_SIZE`;  maybe assuage my fears by having a `req` length check before anything happens?",
+      "revId": "6d8fe4db5019198b6a3d9fc71de4413ad39631f0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "60f5b6b4_5201d977",
+        "filename": "trusty/keymint/src/keymint_hal_main.rs",
+        "patchSetId": 2
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1836235
+      },
+      "writtenOn": "2022-10-14T13:56:04Z",
+      "side": 1,
+      "message": "What happens if `recv_buf `is size 0?",
+      "revId": "6d8fe4db5019198b6a3d9fc71de4413ad39631f0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "60216612_8b5fddd2",
+        "filename": "trusty/keymint/src/keymint_hal_main.rs",
+        "patchSetId": 2
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1836235
+      },
+      "writtenOn": "2022-10-14T13:56:04Z",
+      "side": 1,
+      "message": "nit: we should fix the logging initialization to include location, and not bother with \"In \u003cfunction\u003e: ..\" prefixes.",
+      "revId": "6d8fe4db5019198b6a3d9fc71de4413ad39631f0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9f3c942f_5940927c",
+        "filename": "trusty/keymint/src/keymint_hal_main.rs",
+        "patchSetId": 2
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 1836235
+      },
+      "writtenOn": "2022-10-14T13:56:04Z",
+      "side": 1,
+      "message": "(For discussion and maybe a later CL) There\u0027s going to be an extra data copy on the most common path (single-message response), that we could maybe optimize out (at a cost of more complicated code).",
+      "revId": "6d8fe4db5019198b6a3d9fc71de4413ad39631f0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
