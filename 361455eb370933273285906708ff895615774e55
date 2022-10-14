@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "feca34a1_32966c52",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2022-10-14T19:55:39Z",
+      "side": 1,
+      "message": "I\u0027m a little nervous since this removes the only SIGTRAP test. However, the purpose of the tests that change is not to test SIGTRAP, so this seems fine to me.",
+      "revId": "361455eb370933273285906708ff895615774e55",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
