@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4682b87c_fd0e0bef",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 252,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2022-10-17T05:31:56Z",
+      "side": 1,
+      "message": "Just curious, will this function only return true when it\u0027s read-only?\n\nIf so, should it be named as fs_mgr_is_f2fs_read_only()?",
+      "range": {
+        "startLine": 252,
+        "startChar": 8,
+        "endLine": 252,
+        "endChar": 22
+      },
+      "revId": "ead14387e029d6b5ab6e284e3c0f970987b0240e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
