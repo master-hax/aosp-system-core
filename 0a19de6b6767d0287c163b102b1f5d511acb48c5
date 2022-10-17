@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "65e8aed4_7939ce62",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1176763
+      },
+      "writtenOn": "2022-10-17T18:01:51Z",
+      "side": 1,
+      "message": "minchan, please confirm ZRAM_RESET clears the loopback device.",
+      "revId": "0a19de6b6767d0287c163b102b1f5d511acb48c5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
