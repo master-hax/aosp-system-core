@@ -22,6 +22,30 @@
       },
       "revId": "ead14387e029d6b5ab6e284e3c0f970987b0240e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2ba4f476_648c5f09",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 252,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-10-17T11:14:52Z",
+      "side": 1,
+      "message": "this function only checks the filesystem type of blk_device. whether the filesystem is mounted RW or RO is decided by the mount flags (entry-\u003eflags), which is also checked elsewhere (see: fs_mgr_wants_overlayfs())\n\nJaegeuk, Is there a \"RO\" flag in F2FS super block that we can check here?",
+      "parentUuid": "4682b87c_fd0e0bef",
+      "range": {
+        "startLine": 252,
+        "startChar": 8,
+        "endLine": 252,
+        "endChar": 22
+      },
+      "revId": "ead14387e029d6b5ab6e284e3c0f970987b0240e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
