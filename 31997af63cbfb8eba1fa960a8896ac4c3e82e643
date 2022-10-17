@@ -16,6 +16,24 @@
       "message": "Can you clarify the bug here and how it relates to b/213617178? We spent a lot of time auditing this code last year. It\u0027s quite complex but we came to the conclusion it\u0027s safe. In particular signalfd claims to compress multiple SIGCHILDs so it\u0027s necessary to reap all outstanding children.\n\nWe did want to simplify this code and replace it with pidfd this year, but I think that\u0027s unlikely to happen right now.",
       "revId": "31997af63cbfb8eba1fa960a8896ac4c3e82e643",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0d2c081a_7e9875b3",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2022-10-17T20:10:30Z",
+      "side": 1,
+      "message": "+1. I saw this CL when looking at the epoll CLs. We\u0027ve experimented with this in the past and it always resulted in missing processes to reap. As David said, we couldn\u0027t reliable get either signalfd or the original signal handlers to consistently trigger per-process.",
+      "parentUuid": "a9ec1791_f8951493",
+      "revId": "31997af63cbfb8eba1fa960a8896ac4c3e82e643",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
