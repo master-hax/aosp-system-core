@@ -16,6 +16,24 @@
       "message": "It looks like functionality is changed here - the callback will fire when pending_functions-\u003eempty() \u003d\u003d true. Is that intended?",
       "revId": "4a171d8da2566985e016351f9e14f7c9017cbe5b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0958afae_aee8f648",
+        "filename": "init/init.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1178,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-10-17T20:22:32Z",
+      "side": 1,
+      "message": "Thanks for having reported this. I have modified this CL such that the callback is only called if !pending_functions-\u003eempty().",
+      "parentUuid": "119298fe_ab50bf45",
+      "revId": "4a171d8da2566985e016351f9e14f7c9017cbe5b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
