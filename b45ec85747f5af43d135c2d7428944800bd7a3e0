@@ -124,6 +124,24 @@
       "parentUuid": "d117700c_35c49650",
       "revId": "b45ec85747f5af43d135c2d7428944800bd7a3e0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "add66077_c914f016",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-10-17T17:39:30Z",
+      "side": 1,
+      "message": "I did not modify my patch but I fixed a race condition that was introduced several years ago. Maybe my patch makes it easier to trigger that race condition. See also https://android-review.googlesource.com/c/platform/system/core/+/2254119/2.",
+      "parentUuid": "81b40c98_c6e865dd",
+      "revId": "b45ec85747f5af43d135c2d7428944800bd7a3e0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
