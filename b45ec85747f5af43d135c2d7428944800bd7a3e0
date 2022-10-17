@@ -88,6 +88,24 @@
       "parentUuid": "78840587_70186541",
       "revId": "b45ec85747f5af43d135c2d7428944800bd7a3e0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d117700c_35c49650",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1358301
+      },
+      "writtenOn": "2022-10-17T17:27:37Z",
+      "side": 1,
+      "message": "Boot time looks good on the latest patchset : ) (Numbers from 3 runs: 20172.90, 20286.40, 20211.10)",
+      "parentUuid": "a6cf30db_87251a87",
+      "revId": "b45ec85747f5af43d135c2d7428944800bd7a3e0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
