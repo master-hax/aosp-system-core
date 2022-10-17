@@ -34,6 +34,24 @@
       "parentUuid": "dde4aeed_9a726094",
       "revId": "a22af66e4b45f3a0d25a0788ad209e66790a3324",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8d15161e_9c365b03",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-10-17T23:42:42Z",
+      "side": 1,
+      "message": "sorry, i\u0027d misunderstood what you were saying. i finally understood when i saw this build error myself, and then read the comment in the .bp file!\n\nhttps://android-review.googlesource.com/c/platform/system/core/+/2258762 fixes this :-)",
+      "parentUuid": "b4320b83_cce579f3",
+      "revId": "a22af66e4b45f3a0d25a0788ad209e66790a3324",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
