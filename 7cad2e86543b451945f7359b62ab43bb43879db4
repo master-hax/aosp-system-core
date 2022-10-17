@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bc485a8a_299c7e5b",
+        "filename": "init/reboot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 513,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-10-17T17:44:31Z",
+      "side": 0,
+      "message": "If we\u0027re removing the LOOP_CLR_FD, why do we need to still open the loop device?\n\nIs the message below about \"cleared successfully\" no longer applicable?",
+      "revId": "7cad2e86543b451945f7359b62ab43bb43879db4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
