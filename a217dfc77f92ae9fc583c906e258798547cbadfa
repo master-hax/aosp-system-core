@@ -16,6 +16,24 @@
       "message": "I\u0027m curious if you have any numbers to show the improvement with these changes.",
       "revId": "a217dfc77f92ae9fc583c906e258798547cbadfa",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2d97dbae_6b144769",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-10-18T23:38:56Z",
+      "side": 1,
+      "message": "I started working on this CL because I noticed a function returning std::vector\u003c\u003e. I do not yet have performance numbers for this change.",
+      "parentUuid": "8f903a29_9b62f749",
+      "revId": "a217dfc77f92ae9fc583c906e258798547cbadfa",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
