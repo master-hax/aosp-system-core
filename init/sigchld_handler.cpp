@@ -58,7 +58,11 @@ static pid_t ReapOneProcess() {
     // whenever the function returns from this point forward.
     // We do NOT want to reap the zombie earlier as in Service::Reap(), we kill(-pid, ...) and we
     // want the pid to remain valid throughout that (and potentially future) usages.
-    auto reaper = make_scope_guard([pid] { TEMP_FAILURE_RETRY(waitpid(pid, nullptr, WNOHANG)); });
+    auto reaper = make_scope_guard([pid] {
+        if (TEMP_FAILURE_RETRY(waitpid(pid, nullptr, WNOHANG)) < 0) {
+            PLOG(ERROR) << "waitpid() failed";
+        }
+    });
 
     std::string name;
     std::string wait_string;
