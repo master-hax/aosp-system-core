@@ -16,6 +16,24 @@
       "message": "minchan, please confirm ZRAM_RESET clears the loopback device.",
       "revId": "0a19de6b6767d0287c163b102b1f5d511acb48c5",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b1b3c77f_1a5e45dd",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2022-10-18T22:37:54Z",
+      "side": 1,
+      "message": "Zram doesn\u0027t know whether the backing device is loop or not. What zram did at reset is just filp_close\n\nhttps://elixir.bootlin.com/linux/latest/source/drivers/block/zram/zram_drv.c#L439",
+      "parentUuid": "65e8aed4_7939ce62",
+      "revId": "0a19de6b6767d0287c163b102b1f5d511acb48c5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
