@@ -33,6 +33,42 @@
       "message": "What\u0027s next here?",
       "revId": "9f22d4f8cf8ad45853d14b90222665775ef2bae1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0db18627_9f642622",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1611900
+      },
+      "writtenOn": "2022-10-18T23:37:28Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1c038a4c_d416bf84",
+      "revId": "9f22d4f8cf8ad45853d14b90222665775ef2bae1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5471b0c6_bcc841ce",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1611900
+      },
+      "writtenOn": "2022-10-18T23:37:28Z",
+      "side": 1,
+      "message": "These changes are submitted in the `tm-dev-plus-aosp` branch, I think once the vendor module changes are available on to AOSP branch, we are good to submit these changes onto AOSP.",
+      "parentUuid": "d7ed050c_89bbd95e",
+      "revId": "9f22d4f8cf8ad45853d14b90222665775ef2bae1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
