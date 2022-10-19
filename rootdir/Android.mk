@@ -94,7 +94,11 @@ endif
 
 EXPORT_GLOBAL_CLANG_COVERAGE_OPTIONS :=
 ifeq ($(CLANG_COVERAGE),true)
+<<<<<<< HEAD   (322170 Merge "Make ro.product.cpu.abilist* to be fetched dynamicall)
   EXPORT_GLOBAL_CLANG_COVERAGE_OPTIONS := export LLVM_PROFILE_FILE /data/misc/trace/clang-%p-%m.profraw
+=======
+  EXPORT_GLOBAL_CLANG_COVERAGE_OPTIONS := export LLVM_PROFILE_FILE /data/misc/trace/clang%c-%20m.profraw
+>>>>>>> CHANGE (ede411 [DO NOT SUBMIT] Set to continuous mode in LLVM_PROFILE_FILE)
 endif
 
 # Put it here instead of in init.rc module definition,
