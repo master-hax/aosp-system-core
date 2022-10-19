@@ -16,6 +16,24 @@
       "message": "Is it enough to only validate new_block and (if needed) new_block + num_blocks - 1?",
       "revId": "b23bf16efc0d73d00e1c55139e8454abcaa89f7b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "12b5188c_7cf0613d",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_writer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-10-19T23:49:30Z",
+      "side": 1,
+      "message": "Yes, I will address this in upcoming patch. Thanks.",
+      "parentUuid": "9e080553_7b91148b",
+      "revId": "b23bf16efc0d73d00e1c55139e8454abcaa89f7b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
