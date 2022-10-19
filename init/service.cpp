@@ -666,6 +666,11 @@ Result<void> Service::Start() {
         return ErrnoError() << "Failed to fork";
     }
 
+    if (proc_attr_.console.empty() && setpgid(pid, pid) == -1) {
+        kill(pid, SIGKILL);
+        return ErrnoError() << "setpgid failed";
+    }
+
     once_environment_vars_.clear();
 
     if (oom_score_adjust_ != DEFAULT_OOM_SCORE_ADJUST) {
