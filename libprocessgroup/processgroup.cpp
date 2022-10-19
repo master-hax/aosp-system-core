@@ -414,7 +414,10 @@ static int DoKillProcessGroupOnce(const char* cgroup, uid_t uid, int initialPid,
         LOG(VERBOSE) << "Killing process group " << -pgid << " in uid " << uid
                      << " as part of process cgroup " << initialPid;
 
-        if (kill(-pgid, signal) == -1 && errno != ESRCH) {
+        // Try both kill(-pgid, signal) and kill(pgid, signal) since this code
+        // may run before Service::RunService() called setpgid().
+        if (kill(-pgid, signal) == -1 &&
+            (errno != ESRCH || (kill(pgid, signal) == -1 && errno != ESRCH))) {
             PLOG(WARNING) << "kill(" << -pgid << ", " << signal << ") failed";
         }
     }
