@@ -1,5 +1,23 @@
 {
-  "comments": [],
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9e080553_7b91148b",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_writer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-10-19T22:57:28Z",
+      "side": 1,
+      "message": "Is it enough to only validate new_block and (if needed) new_block + num_blocks - 1?",
+      "revId": "b23bf16efc0d73d00e1c55139e8454abcaa89f7b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ],
   "submitRequirementResults": [
     {
       "submitRequirement": {
