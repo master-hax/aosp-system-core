@@ -67,7 +67,6 @@ class TrustyKeymaster {
     ConfigureVendorPatchlevelResponse ConfigureVendorPatchlevel(
             const ConfigureVendorPatchlevelRequest& request);
     GetRootOfTrustResponse GetRootOfTrust(const GetRootOfTrustRequest& request);
-    GetHwInfoResponse GetHwInfo();
 
     uint32_t message_version() const { return message_version_; }
 

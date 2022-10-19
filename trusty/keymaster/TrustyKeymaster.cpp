@@ -285,10 +285,4 @@ GetRootOfTrustResponse TrustyKeymaster::GetRootOfTrust(const GetRootOfTrustReque
     return response;
 }
 
-GetHwInfoResponse TrustyKeymaster::GetHwInfo() {
-    GetHwInfoResponse response(message_version());
-    ForwardCommand(KM_GET_HW_INFO, GetHwInfoRequest(message_version()), &response);
-    return response;
-}
-
 }  // namespace keymaster
