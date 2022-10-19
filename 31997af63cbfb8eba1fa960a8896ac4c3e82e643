@@ -34,6 +34,24 @@
       "parentUuid": "a9ec1791_f8951493",
       "revId": "31997af63cbfb8eba1fa960a8896ac4c3e82e643",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9ffdc4c3_44f047c7",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-10-19T14:17:02Z",
+      "side": 1,
+      "message": "Regarding the question of how this CL is related to b/213617178: the presubmit run for https://android-review.googlesource.com/c/platform/system/core/+/2218645 on September 27 reported a large boot time regression. This CL makes that boot time regression disappear.\n\nRegarding reaping all child processes that exited: isn\u0027t that already guaranteed by calling ReapAnyOutstandingChildren() after epoll_wait() returned?\n\nTom, no Unix kernel guarantees that one SIGCHLD handler call happens per child process that exited. Unix kernels use a single bit to track the \"pending\" state of signals like SIGCHLD (see also the POSIX specification - https://pubs.opengroup.org/onlinepubs/9699919799/functions/V2_chap02.html#tag_15_04). It can happen that multiple child processes exit after SIGCHLD became pending and before the SIGCHLD signal handler is activated.\n\nIs more information available about reliability issues that have been encountered in the past with signalfd?",
+      "parentUuid": "0d2c081a_7e9875b3",
+      "revId": "31997af63cbfb8eba1fa960a8896ac4c3e82e643",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
