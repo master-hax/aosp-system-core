@@ -672,6 +672,13 @@ Result<void> Service::Start() {
         return ErrnoError() << "Failed to fork";
     }
 
+    // Call setpgid() from the parent process to make sure that this call has
+    // finished before the parent process calls kill(-pgid, ...).
+    if (proc_attr_.console.empty() && setpgid(pid, pid) == -1) {
+        kill(pid, SIGKILL);
+        return ErrnoError() << "setpgid failed";
+    }
+
     once_environment_vars_.clear();
 
     if (oom_score_adjust_ != DEFAULT_OOM_SCORE_ADJUST) {
