@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "ee10b548_1ab8ad7c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-10-20T16:29:24Z",
+      "side": 1,
+      "message": "This issue happens 100% of the time if I run CtsInitTestCases.RebootTest#StopServicesSIGKILL in Cuttlefish with patch \"libprocessgroup: Migrate the blkio controller to the v2 cgroup hierarchy\" applied locally.",
+      "parentUuid": "4e138179_4c00e83e",
+      "revId": "d765d84e675e28f4305d338013a85a3760e29d08",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "94e7886f_801daa91",
@@ -35,6 +53,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "28ef56d4_3b2cb81d",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 380,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-10-20T16:29:24Z",
+      "side": 1,
+      "message": "I will fix this race by moving the setpgid() call from the child to the parent process.",
+      "parentUuid": "94e7886f_801daa91",
+      "revId": "d765d84e675e28f4305d338013a85a3760e29d08",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "40e3b7ff_281794ad",
@@ -48,6 +84,24 @@
       "writtenOn": "2022-10-20T04:13:28Z",
       "side": 1,
       "message": "Similar to the above comment, this should only be true for initialPid since everything else in this set has already been confirmed as a process group leader, right?",
+      "revId": "d765d84e675e28f4305d338013a85a3760e29d08",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e2b0d5c2_07c230f6",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 418,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-10-20T16:29:24Z",
+      "side": 1,
+      "message": "I will fix this race by moving the setpgid() call from the child to the parent process.",
+      "parentUuid": "40e3b7ff_281794ad",
       "revId": "d765d84e675e28f4305d338013a85a3760e29d08",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -83,6 +137,24 @@
       "side": 1,
       "message": "This code would kill the process group leader but not any of its child processes. It\u0027s technically racy too if the process somehow manages to call setpgid() and fork children though not likely.\n\nThe work to freeze cgroups before killing them would solve this problem too.",
       "parentUuid": "66b39b5a_9cdff901",
+      "revId": "d765d84e675e28f4305d338013a85a3760e29d08",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "08e92792_a91a0ff8",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 421,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-10-20T16:29:24Z",
+      "side": 1,
+      "message": "I will fix this race by moving the setpgid() call from the child to the parent process.",
+      "parentUuid": "c20b6227_aa141c8b",
       "revId": "d765d84e675e28f4305d338013a85a3760e29d08",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
