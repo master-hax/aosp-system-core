@@ -1,6 +1,57 @@
 {
   "comments": [
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "4e138179_4c00e83e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2022-10-20T04:13:28Z",
+      "side": 1,
+      "message": "Does this happen in practice? `killProcessGroup()` tries 40 times with a 5ms sleep between iterations before it stops in order to catch processes that fork in the middle of reading through the cgroup.\n\n`killProcessGroupOnce()` could potentially hit this, but that function is only meant to be a best-effort kill used with SIGTERM during shutdown. I could see how `StopServicesSIGTERM` may hit this but that\u0027s a fault of the test and/or that function not being clear that it\u0027s best-effort.\n\nThere\u0027s effort to freeze the cgroups before killing them. Maybe this change would be integrated with that work? In that case, we can be sure to know which pids are process group leaders or not since they\u0027ll be frozen.",
+      "revId": "d765d84e675e28f4305d338013a85a3760e29d08",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "94e7886f_801daa91",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 380,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2022-10-20T04:13:28Z",
+      "side": 1,
+      "message": "What happens if we remove this line? I don\u0027t remember off-hand why it was added. \n\nIn theory the cgroups proc file will contain the initialPid and therefore the `fscanf()` loop will pick it up and appropriately check whether or not it\u0027s a process group leader.",
+      "revId": "d765d84e675e28f4305d338013a85a3760e29d08",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "40e3b7ff_281794ad",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 418,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2022-10-20T04:13:28Z",
+      "side": 1,
+      "message": "Similar to the above comment, this should only be true for initialPid since everything else in this set has already been confirmed as a process group leader, right?",
+      "revId": "d765d84e675e28f4305d338013a85a3760e29d08",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "66b39b5a_9cdff901",
@@ -14,6 +65,24 @@
       "writtenOn": "2022-10-19T22:14:50Z",
       "side": 1,
       "message": "Out of curiosity, what happens if the setpgid() call succeeds in between the two kill() calls?",
+      "revId": "d765d84e675e28f4305d338013a85a3760e29d08",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c20b6227_aa141c8b",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 421,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2022-10-20T04:13:28Z",
+      "side": 1,
+      "message": "This code would kill the process group leader but not any of its child processes. It\u0027s technically racy too if the process somehow manages to call setpgid() and fork children though not likely.\n\nThe work to freeze cgroups before killing them would solve this problem too.",
+      "parentUuid": "66b39b5a_9cdff901",
       "revId": "d765d84e675e28f4305d338013a85a3760e29d08",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
