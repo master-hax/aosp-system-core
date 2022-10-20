@@ -54,6 +54,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "c4e808b6_c4d0915c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-10-20T17:20:50Z",
+      "side": 1,
+      "message": "Because of performance reasons the Linux kernel cgroup code relies heavily on the RCU mechanism. A fundamental design choice in the cgroup code is that the code for applying cgroup policies for e.g. block I/O code is fast at the expense of the time required to make configuration changes. Making configuration changes may involve waiting for an RCU grace period to expire. If I remember correctly the expedited RCU grace periods mechanism is enabled on Android so the RCU grace period delay should be relatively short (+/- 1 ms).",
+      "parentUuid": "44c1e8bd_06bb6718",
+      "revId": "d765d84e675e28f4305d338013a85a3760e29d08",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "94e7886f_801daa91",
