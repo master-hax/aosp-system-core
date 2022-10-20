@@ -41,6 +41,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "c100be1f_1a5f7907",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 221,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-10-20T23:20:54Z",
+      "side": 1,
+      "message": "Good point, I misread this. New patch delays the send to caller. This required a little refactoring.",
+      "parentUuid": "003dcead_dabfc7b2",
+      "range": {
+        "startLine": 221,
+        "startChar": 12,
+        "endLine": 221,
+        "endChar": 32
+      },
+      "revId": "339bab5326df9d10b3643a0b339ff74bb0ff87fc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f843b8d3_7f240407",
@@ -64,6 +88,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "549baaf8_f57e3534",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1382,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-10-20T23:20:54Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f843b8d3_7f240407",
+      "range": {
+        "startLine": 1380,
+        "startChar": 0,
+        "endLine": 1382,
+        "endChar": 29
+      },
+      "revId": "339bab5326df9d10b3643a0b339ff74bb0ff87fc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "c827a1a2_1e3eddfc",
@@ -77,6 +125,30 @@
       "writtenOn": "2022-10-20T04:34:22Z",
       "side": 1,
       "message": "how can this thread be stopped during the shutdown?",
+      "range": {
+        "startLine": 1386,
+        "startChar": 0,
+        "endLine": 1386,
+        "endChar": 18
+      },
+      "revId": "339bab5326df9d10b3643a0b339ff74bb0ff87fc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "da07cfa8_d97b2303",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1386,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-10-20T23:20:54Z",
+      "side": 1,
+      "message": "I\u0027m guessing it just gets killed like PropertyServiceThread() which has a similar infinite loop? init doesn\u0027t seem to bother cleanly shutting its threads down.",
+      "parentUuid": "c827a1a2_1e3eddfc",
       "range": {
         "startLine": 1386,
         "startChar": 0,
