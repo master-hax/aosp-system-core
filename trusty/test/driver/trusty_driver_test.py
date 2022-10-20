@@ -74,7 +74,12 @@ class TrustyDriverTest(unittest.TestCase):
     # 10 times.
     def testStdCall(self):
         test = "/sys/devices/platform/trusty/trusty:test/trusty_test_run"
-        args = "0x1000 0x800000,10,2,2 0x800000,2,100,0 0x1000,10,10,10"
+        args = "0 0x1000 0x800000,10,2,2 0x800000,2,100,0 0x1000,10,10,10"
+        WriteFile(test, args)
+
+    def testSveRegs(self):
+        test = "/sys/devices/platform/trusty/trusty:test/trusty_test_run"
+        args = "1"
         WriteFile(test, args)
 
 if __name__ == '__main__':
