@@ -124,6 +124,24 @@
       "parentUuid": "d0bb60a1_39b9e922",
       "revId": "31997af63cbfb8eba1fa960a8896ac4c3e82e643",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "051cd15a_d116e507",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2022-10-20T22:28:53Z",
+      "side": 1,
+      "message": "I meant to move setpgid() before waiting on the pipe, to avoid the latency of waiting on the pipe which seems to make the race condition easier to hit. Moving it before that read would alleviate the race and processes would work similarly to how they did before. Admittedly, it wouldn\u0027t completely solve the race.\n\nCalling setpgid() in the parent would be tricky in two cases. 1) For services that have a console setsid() is called instead of setpgid() [1] and setsid() fails if the process is already a process group leader. With pid namespaces, fork is called twice [2] and the grand-child process of init needs to be the process group leader.\n\n1: https://cs.android.com/android/platform/superproject/+/master:system/core/init/service_utils.cpp;l\u003d244?q\u003df:init%20f:service%20setpgid\n2: https://cs.android.com/android/platform/superproject/+/master:system/core/init/service_utils.cpp;l\u003d100;drc\u003db45a2ea782074944f79fc388df20b06e01f265f7?q\u003dclone\u0026ss\u003dandroid%2Fplatform%2Fsuperproject:system%2Fcore%2Finit%2F\n\nHaving the parent wait for the child is risky and time sensitive. It\u0027s risky since if the child never signals the parent then init may wait forever. It\u0027s time sensitive since a majority of services are started via the core and main classes. In those cases Service::Start() is called in a loop and it\u0027s ideal that we fork the child processes quickly. \n\nStepping back:\n1) If there is added delay in launching services due to the cgroup change, that should be addressed given the above time sensitivity. It may be best to have more fundamental changes to how these cgroups are set up. Maybe they\u0027re done by the child and init has a new state for services (\u0027initializing\u0027) that transitions to running only after they\u0027ve been set up?\n2) The cgroup issue with kill and process group leaders could be solved with the freezing cgroup work. I don\u0027t know the status of that, but it seems reasonable to reach out and understand that team\u0027s progress.",
+      "parentUuid": "044d8766_2f3ae953",
+      "revId": "31997af63cbfb8eba1fa960a8896ac4c3e82e643",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
