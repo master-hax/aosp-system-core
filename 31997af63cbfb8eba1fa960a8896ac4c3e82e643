@@ -88,6 +88,24 @@
       "parentUuid": "bd342071_64f3c2e8",
       "revId": "31997af63cbfb8eba1fa960a8896ac4c3e82e643",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d0bb60a1_39b9e922",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2022-10-20T16:54:48Z",
+      "side": 1,
+      "message": "In that case, it would be better to fix that CL instead of modifying very fundamental and very brittle process reaping code.\n\nCould the setpgid() be moved to before waiting on the pipe? A quick look makes me think that is possible.",
+      "parentUuid": "5152ea0e_7746b140",
+      "revId": "31997af63cbfb8eba1fa960a8896ac4c3e82e643",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
