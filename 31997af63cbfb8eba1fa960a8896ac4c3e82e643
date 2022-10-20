@@ -52,6 +52,24 @@
       "parentUuid": "0d2c081a_7e9875b3",
       "revId": "31997af63cbfb8eba1fa960a8896ac4c3e82e643",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bd342071_64f3c2e8",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2022-10-20T04:34:38Z",
+      "side": 1,
+      "message": "\u003e ...on September 27 reported a large boot time regression. This CL makes that boot time regression disappear.\n\nDoes that regression reproduce or do you have more details on why this CL fixes the regression? I don\u0027t see anything in those CLs that would cause a boot time regression that this CL would fix.\n\n\u003e Regarding reaping all child processes that exited: isn\u0027t that already guaranteed by calling ReapAnyOutstandingChildren() after epoll_wait() returned?\n\nThat sounds right though it\u0027s been a while since I\u0027ve looked at this code. What is the motivation behind this CL if we\u0027ll eventually call ReapAnyOutstandingChildren() to read other child processes? I don\u0027t understand why it\u0027s wrong to disregard the SIGCHLD information.\n\n\u003e Tom, no Unix kernel guarantees that one SIGCHLD handler call happens per child process that exited. Unix kernels use a single bit to track the \"pending\" state of signals like SIGCHLD (see also the POSIX specification -\n\nRight, maybe we only tried with the signalfd.\n\n\u003e Is more information available about reliability issues that have been encountered in the past with signalfd?\n\nI don\u0027t have any off-hand. Maybe in old CLs or bugs of mine there\u0027s more information, though the code has changed a lot since then so it likely isn\u0027t worth finding. The summary is we tried removing calls to `ReapAnyOutstandingChildren()` and strictly relying on the SIGCHLD information from the signal FD and then init failed to reap all children. We didn\u0027t see a reason to investigation significantly further since this isn\u0027t code that needs to be highly performance and is code that needs to be highly stable, so marginal extra overhead to call ReapAnyOutstandingChildren() was decided to be worth it.",
+      "parentUuid": "9ffdc4c3_44f047c7",
+      "revId": "31997af63cbfb8eba1fa960a8896ac4c3e82e643",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
