@@ -16,6 +16,75 @@
       "message": "This was requested by a partner encountering extremely bad fsync() performance. At face value it seems reasonable, though I\u0027m a little concerned about the compatibility issues it could potentially introduce. We could potentially work around that by encoding an ordering in the property thread, and then obeying it in the main thread. Let me know what you think...",
       "revId": "339bab5326df9d10b3643a0b339ff74bb0ff87fc",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "003dcead_dabfc7b2",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 221,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-10-20T04:34:22Z",
+      "side": 1,
+      "message": "Isn\u0027t this a semantic change? This function will return before the value is persisted, but in the bug you said \"set will only return once the property has been fully fsynced\".",
+      "range": {
+        "startLine": 221,
+        "startChar": 12,
+        "endLine": 221,
+        "endChar": 32
+      },
+      "revId": "339bab5326df9d10b3643a0b339ff74bb0ff87fc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f843b8d3_7f240407",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1382,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-10-20T04:34:22Z",
+      "side": 1,
+      "message": "Why isn\u0027t this done in the constructor of PersistWriteThread object? Is this function expected to be called multiple times at runtime?",
+      "range": {
+        "startLine": 1380,
+        "startChar": 0,
+        "endLine": 1382,
+        "endChar": 29
+      },
+      "revId": "339bab5326df9d10b3643a0b339ff74bb0ff87fc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c827a1a2_1e3eddfc",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1386,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-10-20T04:34:22Z",
+      "side": 1,
+      "message": "how can this thread be stopped during the shutdown?",
+      "range": {
+        "startLine": 1386,
+        "startChar": 0,
+        "endLine": 1386,
+        "endChar": 18
+      },
+      "revId": "339bab5326df9d10b3643a0b339ff74bb0ff87fc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
