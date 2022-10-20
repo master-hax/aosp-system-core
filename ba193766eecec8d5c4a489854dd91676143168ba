@@ -72,6 +72,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "9b0bb4c3_9d2b05d3",
+        "filename": "trusty/confirmationui/Android.bp",
+        "patchSetId": 3
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1611900
+      },
+      "writtenOn": "2022-10-20T18:09:55Z",
+      "side": 1,
+      "message": "Added this service binding name. (https://r.android.com/2260343)",
+      "parentUuid": "bff87488_faaef6da",
+      "range": {
+        "startLine": 58,
+        "startChar": 11,
+        "endLine": 58,
+        "endChar": 64
+      },
+      "revId": "ba193766eecec8d5c4a489854dd91676143168ba",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d3c6556a_e5404b56",
