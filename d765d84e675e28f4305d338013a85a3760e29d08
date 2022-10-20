@@ -38,6 +38,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "44c1e8bd_06bb6718",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2022-10-20T16:45:01Z",
+      "side": 1,
+      "message": "That\u0027s concerning since that killing processes in that test has 40 retries and 5ms wait per iteration.\n\nIt sounds like the patch \"libprocessgroup: Migrate the blkio controller to the v2 cgroup hierarchy\" applied locally is introducing a regression in service launch time and that should be investigated more thoroughly before attempting to fix it in either this code or init.",
+      "parentUuid": "ee10b548_1ab8ad7c",
+      "revId": "d765d84e675e28f4305d338013a85a3760e29d08",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "94e7886f_801daa91",
         "filename": "libprocessgroup/processgroup.cpp",
         "patchSetId": 3
