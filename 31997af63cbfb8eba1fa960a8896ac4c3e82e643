@@ -106,6 +106,24 @@
       "parentUuid": "5152ea0e_7746b140",
       "revId": "31997af63cbfb8eba1fa960a8896ac4c3e82e643",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "044d8766_2f3ae953",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-10-20T17:29:18Z",
+      "side": 1,
+      "message": "Do you want me to call setpgid() from the parent process or from the child process? There is a mechanism in the child process to wait for the parent process but there is not yet a mechanism in the parent process to wait for the child process. Do you perhaps want me to add a mechanism in the parent process to wait for the child process? If so, do you want me to measure how much this makes Service::Start() slower?",
+      "parentUuid": "d0bb60a1_39b9e922",
+      "revId": "31997af63cbfb8eba1fa960a8896ac4c3e82e643",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
