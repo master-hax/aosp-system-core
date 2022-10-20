@@ -70,6 +70,24 @@
       "parentUuid": "9ffdc4c3_44f047c7",
       "revId": "31997af63cbfb8eba1fa960a8896ac4c3e82e643",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5152ea0e_7746b140",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-10-20T16:42:26Z",
+      "side": 1,
+      "message": "Patch \"Migrate the blkio controller to the v2 cgroup hierarchy\" (https://android-review.googlesource.com/c/platform/system/core/+/2218645) introduces an additional step in cgroup configuration, namely activation of the blkio controller. This happens by the parent process and the child process waits for completion of that step. I\u0027m not sure of this but my guess is that this change makes it more likely for the read((*pipefd)[0], \u0026byte, 1) call in Service::RunService() to sleep. This in turn makes it more likely that kill() is called from the parent process before setpgid() has been called by the child process.",
+      "parentUuid": "bd342071_64f3c2e8",
+      "revId": "31997af63cbfb8eba1fa960a8896ac4c3e82e643",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
