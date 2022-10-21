@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "4424987b_aaed23c4",
+        "filename": "init/init.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 666,
+      "author": {
+        "id": 1432579
+      },
+      "writtenOn": "2022-10-21T12:15:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "abccfae0_42119f58",
+      "range": {
+        "startLine": 666,
+        "startChar": 22,
+        "endLine": 666,
+        "endChar": 47
+      },
+      "revId": "1ac885b29457d16432e1010eb0048bf8c6e060f3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "5326e88e_0b821661",
@@ -61,6 +85,30 @@
       "side": 1,
       "message": "Nikita, I think we can leave this as it is by removing \"task_profiles\" from *.rc files in Microdroid.",
       "parentUuid": "5326e88e_0b821661",
+      "range": {
+        "startLine": 550,
+        "startChar": 8,
+        "endLine": 550,
+        "endChar": 34
+      },
+      "revId": "1ac885b29457d16432e1010eb0048bf8c6e060f3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "32aff59a_d024b270",
+        "filename": "init/service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 550,
+      "author": {
+        "id": 1432579
+      },
+      "writtenOn": "2022-10-21T12:15:27Z",
+      "side": 1,
+      "message": "It was quite spammy, hence I tried hiding it behind the CgroupsAvailable check :)\n\nReverted to the previous behaviour. As Jiyong noted, we can add microdroid-specific variants of the services (e.g. servicemanager.microdroid) without the task_profiles.",
+      "parentUuid": "f7c8a85f_c82d6e1b",
       "range": {
         "startLine": 550,
         "startChar": 8,
@@ -179,6 +227,30 @@
       "side": 1,
       "message": "+1. Goot catch.",
       "parentUuid": "0f5cd77e_a89771c3",
+      "range": {
+        "startLine": 59,
+        "startChar": 4,
+        "endLine": 59,
+        "endChar": 46
+      },
+      "revId": "1ac885b29457d16432e1010eb0048bf8c6e060f3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "87e8e28d_4dff8814",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1432579
+      },
+      "writtenOn": "2022-10-21T12:15:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ea7a6358_1f008e30",
       "range": {
         "startLine": 59,
         "startChar": 4,
