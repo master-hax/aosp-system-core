@@ -72,6 +72,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "db1b1d6d_f80a6f7b",
+        "filename": "init/service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 693,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-10-21T01:06:10Z",
+      "side": 1,
+      "message": "This actually makes the whole idea of disabling CONFIG_CGROUP a non-starter. We need at least cgroup v2/cpuacct controllers to group processes together. I added a note in https://b.corp.google.com/issues/239367015#comment17 as well.",
+      "parentUuid": "55f03263_d8ea13a1",
+      "range": {
+        "startLine": 693,
+        "startChar": 17,
+        "endLine": 693,
+        "endChar": 35
+      },
+      "revId": "1ac885b29457d16432e1010eb0048bf8c6e060f3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "0f5cd77e_a89771c3",
         "filename": "libprocessgroup/processgroup.cpp",
         "patchSetId": 1
