@@ -71,6 +71,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "ca95c2fd_f0d33146",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 419,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-10-21T05:15:13Z",
+      "side": 1,
+      "message": "Ah, I missed that (#417).",
+      "parentUuid": "33bcda65_bcd5543b",
+      "range": {
+        "startLine": 419,
+        "startChar": 12,
+        "endLine": 419,
+        "endChar": 73
+      },
+      "revId": "b94a6a2fe128768161770ea3b106a21c12f4d366",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "03cffbf3_abed6b59",
@@ -202,6 +226,30 @@
       "side": 1,
       "message": "For all of these cases, it\u0027s guaranteed set because socket\u003d\u003dnullptr. It could be a CHECK or DCHECK though.",
       "parentUuid": "47caa839_ec403df9",
+      "range": {
+        "startLine": 668,
+        "startChar": 8,
+        "endLine": 668,
+        "endChar": 15
+      },
+      "revId": "b94a6a2fe128768161770ea3b106a21c12f4d366",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1e79bfb2_f9e22a7c",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 668,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-10-21T05:15:13Z",
+      "side": 1,
+      "message": "Ok, but don\u0027t you think that the assumption is easy to break? \n\nHow about this? This will also make the change a lot simpler.\n\n```\nuint32_t HandlePropertySet(.../* without socket */) {\n   auto ret \u003d HandlePropertySetWithSocket(... /*socket\u003d*/nullptr, );\n   CHECK(ret.has_value());\n   return *ret;\n}\n\nstd::optional\u003cuint32_t\u003e HandlePropertySetWithSocket( ...) {\n   // existing code\n}\n```",
+      "parentUuid": "3436887b_2575e993",
       "range": {
         "startLine": 668,
         "startChar": 8,
