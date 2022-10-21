@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "abccfae0_42119f58",
+        "filename": "init/init.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 666,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-10-21T01:00:36Z",
+      "side": 1,
+      "message": "nit: Maybe a more informative message would be `Cgroups support in the kernel is not enabled`?",
+      "range": {
+        "startLine": 666,
+        "startChar": 22,
+        "endLine": 666,
+        "endChar": 47
+      },
+      "revId": "1ac885b29457d16432e1010eb0048bf8c6e060f3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5326e88e_0b821661",
+        "filename": "init/service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 550,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-10-21T01:00:36Z",
+      "side": 1,
+      "message": "Hmm. Technically task_profiles might operate not only on cgroups, though it\u0027s unusual. What happens if we leave it as is? We would get errors instead of warnings I guess but I think having an error here is correct. User asked to apply the profile and it was not applied. No matter the reason it was not done...\n\nMaybe this:\n\n```\nif (task_profiles_.size() \u003e 0 \u0026\u0026 !SetTaskProfiles(getpid(), task_profiles_)) {\n    LOG(ERROR) \u003c\u003c \"failed to set task profiles\" \u003c\u003c\n        CgroupsAvailable() ? \" possibly due to cgroups being disabled\" : \"\";\n}\n\n```",
+      "range": {
+        "startLine": 550,
+        "startChar": 8,
+        "endLine": 550,
+        "endChar": 34
+      },
+      "revId": "1ac885b29457d16432e1010eb0048bf8c6e060f3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "55f03263_d8ea13a1",
+        "filename": "init/service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 693,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-10-21T01:00:36Z",
+      "side": 1,
+      "message": "Oh, that\u0027s a problem. We use cgroups to track process groups. Without this when we want to kill a process group we won\u0027t know which processes to kill.",
+      "range": {
+        "startLine": 693,
+        "startChar": 17,
+        "endLine": 693,
+        "endChar": 35
+      },
+      "revId": "1ac885b29457d16432e1010eb0048bf8c6e060f3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0f5cd77e_a89771c3",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-10-21T01:00:36Z",
+      "side": 1,
+      "message": "To avoid calling `access` syscall every time you check this it\u0027s better to remember the result once and reuse it:\n\n```\nbool CgroupsAvailable() {\n    static bool available \u003d access(\"/proc/cgroups\", F_OK) \u003d\u003d 0;\n    return available;\n}\n```",
+      "range": {
+        "startLine": 59,
+        "startChar": 4,
+        "endLine": 59,
+        "endChar": 46
+      },
+      "revId": "1ac885b29457d16432e1010eb0048bf8c6e060f3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
