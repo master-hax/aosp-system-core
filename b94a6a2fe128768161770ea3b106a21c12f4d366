@@ -49,6 +49,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "33bcda65_bcd5543b",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 419,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-10-21T01:59:48Z",
+      "side": 1,
+      "message": "These use cases will have no socket ptr, so they won\u0027t fall into this branch.",
+      "parentUuid": "c5e03f02_21133a76",
+      "range": {
+        "startLine": 419,
+        "startChar": 12,
+        "endLine": 419,
+        "endChar": 73
+      },
+      "revId": "b94a6a2fe128768161770ea3b106a21c12f4d366",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "03cffbf3_abed6b59",
         "filename": "init/property_service.cpp",
         "patchSetId": 3
@@ -60,6 +84,30 @@
       "writtenOn": "2022-10-21T01:12:07Z",
       "side": 1,
       "message": "result.has_value() \u0026\u0026 *result !\u003d ...\n\nThe behavior of * for std:optinal is undefined if the object doesn\u0027t have a value.",
+      "range": {
+        "startLine": 649,
+        "startChar": 12,
+        "endLine": 649,
+        "endChar": 19
+      },
+      "revId": "b94a6a2fe128768161770ea3b106a21c12f4d366",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a31f1035_77964ae5",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 649,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-10-21T01:59:48Z",
+      "side": 1,
+      "message": "The unset case is handled above.",
+      "parentUuid": "03cffbf3_abed6b59",
       "range": {
         "startLine": 649,
         "startChar": 12,
@@ -93,6 +141,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "b1bad49b_2b15884c",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 653,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-10-21T01:59:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f92d82bc_5c5f0d56",
+      "range": {
+        "startLine": 653,
+        "startChar": 26,
+        "endLine": 653,
+        "endChar": 33
+      },
+      "revId": "b94a6a2fe128768161770ea3b106a21c12f4d366",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "47caa839_ec403df9",
@@ -106,6 +178,30 @@
       "writtenOn": "2022-10-21T01:12:07Z",
       "side": 1,
       "message": "ditto",
+      "range": {
+        "startLine": 668,
+        "startChar": 8,
+        "endLine": 668,
+        "endChar": 15
+      },
+      "revId": "b94a6a2fe128768161770ea3b106a21c12f4d366",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3436887b_2575e993",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 668,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-10-21T01:59:48Z",
+      "side": 1,
+      "message": "For all of these cases, it\u0027s guaranteed set because socket\u003d\u003dnullptr. It could be a CHECK or DCHECK though.",
+      "parentUuid": "47caa839_ec403df9",
       "range": {
         "startLine": 668,
         "startChar": 8,
@@ -175,6 +271,30 @@
       "writtenOn": "2022-10-21T01:12:07Z",
       "side": 1,
       "message": "where is this from?",
+      "range": {
+        "startLine": 1455,
+        "startChar": 36,
+        "endLine": 1455,
+        "endChar": 38
+      },
+      "revId": "b94a6a2fe128768161770ea3b106a21c12f4d366",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bce17a2d_93760f36",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1455,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-10-21T01:59:48Z",
+      "side": 1,
+      "message": "Sorry, this was some test code to simulate slow fsync.. Removed.",
+      "parentUuid": "025e9659_e1d540a4",
       "range": {
         "startLine": 1455,
         "startChar": 36,
