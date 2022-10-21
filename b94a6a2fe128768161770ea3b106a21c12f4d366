@@ -1,0 +1,188 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d17deae1_b3bdd4e3",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-10-21T01:12:07Z",
+      "side": 1,
+      "message": "nit: we don\u0027t need this, right? There\u0027s no reference to SocketConnection before it is defined at #231.",
+      "range": {
+        "startLine": 103,
+        "startChar": 0,
+        "endLine": 103,
+        "endChar": 23
+      },
+      "revId": "b94a6a2fe128768161770ea3b106a21c12f4d366",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c5e03f02_21133a76",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 419,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-10-21T01:12:07Z",
+      "side": 1,
+      "message": "When this function returns, the property isn\u0027t persisted on the disk. I know that the PROP_SUCCESS message is sent only after the persisting is done (in the thread), but that would only affect the callers outside of the init process. Callers inside init will still experience a semantic change, because they don\u0027t wait for the message from socket.",
+      "range": {
+        "startLine": 419,
+        "startChar": 12,
+        "endLine": 419,
+        "endChar": 73
+      },
+      "revId": "b94a6a2fe128768161770ea3b106a21c12f4d366",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "03cffbf3_abed6b59",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 649,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-10-21T01:12:07Z",
+      "side": 1,
+      "message": "result.has_value() \u0026\u0026 *result !\u003d ...\n\nThe behavior of * for std:optinal is undefined if the object doesn\u0027t have a value.",
+      "range": {
+        "startLine": 649,
+        "startChar": 12,
+        "endLine": 649,
+        "endChar": 19
+      },
+      "revId": "b94a6a2fe128768161770ea3b106a21c12f4d366",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f92d82bc_5c5f0d56",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 653,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-10-21T01:12:07Z",
+      "side": 1,
+      "message": "ditto",
+      "range": {
+        "startLine": 653,
+        "startChar": 26,
+        "endLine": 653,
+        "endChar": 33
+      },
+      "revId": "b94a6a2fe128768161770ea3b106a21c12f4d366",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "47caa839_ec403df9",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 668,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-10-21T01:12:07Z",
+      "side": 1,
+      "message": "ditto",
+      "range": {
+        "startLine": 668,
+        "startChar": 8,
+        "endLine": 668,
+        "endChar": 15
+      },
+      "revId": "b94a6a2fe128768161770ea3b106a21c12f4d366",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f1550422_aaa5c03b",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 672,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-10-21T01:12:07Z",
+      "side": 1,
+      "message": "ditto",
+      "range": {
+        "startLine": 672,
+        "startChar": 11,
+        "endLine": 672,
+        "endChar": 18
+      },
+      "revId": "b94a6a2fe128768161770ea3b106a21c12f4d366",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "46a12bd9_13f577fd",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 904,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-10-21T01:12:07Z",
+      "side": 1,
+      "message": "ditto",
+      "range": {
+        "startLine": 904,
+        "startChar": 20,
+        "endLine": 904,
+        "endChar": 24
+      },
+      "revId": "b94a6a2fe128768161770ea3b106a21c12f4d366",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "025e9659_e1d540a4",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1455,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-10-21T01:12:07Z",
+      "side": 1,
+      "message": "where is this from?",
+      "range": {
+        "startLine": 1455,
+        "startChar": 36,
+        "endLine": 1455,
+        "endChar": 38
+      },
+      "revId": "b94a6a2fe128768161770ea3b106a21c12f4d366",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
