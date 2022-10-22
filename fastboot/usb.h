@@ -51,7 +51,7 @@ struct usb_ifc_info {
     char serial_number[256];
     char device_path[256];
 
-    char interface[256];
+    char ifc_interface[256];
 };
 
 class UsbTransport : public Transport {

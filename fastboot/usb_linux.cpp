@@ -265,11 +265,11 @@ static int filter_usb_device(char* sysfs_name,
         info.has_bulk_in = (in != -1);
         info.has_bulk_out = (out != -1);
 
-        std::string interface;
+        std::string ifc_interface;
         auto path = android::base::StringPrintf("/sys/bus/usb/devices/%s/%s:1.%d/interface",
                                                 sysfs_name, sysfs_name, ifc->bInterfaceNumber);
-        if (android::base::ReadFileToString(path, &interface)) {
-            snprintf(info.interface, sizeof(info.interface), "%s", interface.c_str());
+        if (android::base::ReadFileToString(path, &ifc_interface)) {
+            snprintf(info.ifc_interface, sizeof(info.ifc_interface), "%s", ifc_interface.c_str());
         }
 
         if(callback(&info) == 0) {

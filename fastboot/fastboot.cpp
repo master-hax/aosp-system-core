@@ -285,9 +285,9 @@ static int match_fastboot(usb_ifc_info* info) {
 static int list_devices_callback(usb_ifc_info* info) {
     if (match_fastboot_with_serial(info, nullptr) == 0) {
         std::string serial = info->serial_number;
-        std::string interface = info->interface;
-        if (interface.empty()) {
-            interface = "fastboot";
+        std::string ifc_interface = info->ifc_interface;
+        if (ifc_interface.empty()) {
+            ifc_interface = "fastboot";
         }
         if (!info->writable) {
             serial = UsbNoPermissionsShortHelpText();
@@ -297,9 +297,9 @@ static int list_devices_callback(usb_ifc_info* info) {
         }
         // output compatible with "adb devices"
         if (!g_long_listing) {
-            printf("%s\t%s", serial.c_str(), interface.c_str());
+            printf("%s\t%s", serial.c_str(), ifc_interface.c_str());
         } else {
-            printf("%-22s %s", serial.c_str(), interface.c_str());
+            printf("%-22s %s", serial.c_str(), ifc_interface.c_str());
             if (strlen(info->device_path) > 0) printf(" %s", info->device_path);
         }
         putchar('\n');
