@@ -34,3 +34,26 @@ cc_test {
     ],
     test_suites: ["device-tests"],
 }
+
+cc_fuzz {
+    name: "libmodprobe_fuzzer",
+    cflags: [
+        "-Werror",
+    ],
+    local_include_dirs: [
+        "include/",
+    ],
+    srcs: [
+        "libmodprobe_fuzzer.cpp",
+        "libmodprobe.cpp",
+        "libmodprobe_ext_test.cpp",
+    ],
+    shared_libs: [
+        "libbase",
+    ],
+    fuzz_config: {
+        cc: [
+            "yochiang@google.com",
+        ],
+    },
+}

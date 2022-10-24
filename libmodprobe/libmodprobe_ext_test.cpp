@@ -23,7 +23,6 @@
 #include <android-base/logging.h>
 #include <android-base/strings.h>
 #include <android-base/unique_fd.h>
-#include <gtest/gtest.h>
 
 #include <modprobe/modprobe.h>
 
