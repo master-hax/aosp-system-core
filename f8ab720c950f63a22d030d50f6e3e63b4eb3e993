@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "161673f0_035108bc",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 32
+      },
+      "lineNbr": 656,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2022-10-24T16:39:02Z",
+      "side": 1,
+      "message": "Why not just `variables_[name] \u003d std::make_shared\u003cProfileVariable\u003e(name, value);`?\n\nI guess this way could be faster, but it looks pretty unidiomatic.",
+      "range": {
+        "startLine": 651,
+        "startChar": 8,
+        "endLine": 656,
+        "endChar": 9
+      },
+      "revId": "f8ab720c950f63a22d030d50f6e3e63b4eb3e993",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
