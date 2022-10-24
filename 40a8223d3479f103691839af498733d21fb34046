@@ -22,6 +22,30 @@
       },
       "revId": "40a8223d3479f103691839af498733d21fb34046",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9e9f94b8_9acb6472",
+        "filename": "fs_mgr/fuzz/fs_mgr_fstab_fuzzer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-10-24T09:56:19Z",
+      "side": 1,
+      "message": "no, just a hint for the fuzzer mutator. I limit it to 30 because this string doesn\u0027t need to be too long, and limiting the length (probably) means less mutation would happen on this string.",
+      "parentUuid": "6d059106_baada1b6",
+      "range": {
+        "startLine": 27,
+        "startChar": 57,
+        "endLine": 27,
+        "endChar": 59
+      },
+      "revId": "40a8223d3479f103691839af498733d21fb34046",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
