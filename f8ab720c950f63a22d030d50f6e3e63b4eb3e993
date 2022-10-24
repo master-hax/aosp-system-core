@@ -3,6 +3,23 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "d7bb5460_84f4e294",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 32
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-10-24T21:06:41Z",
+      "side": 1,
+      "message": "Patch needs a description, not just the title.",
+      "revId": "f8ab720c950f63a22d030d50f6e3e63b4eb3e993",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "161673f0_035108bc",
         "filename": "libprocessgroup/task_profiles.cpp",
         "patchSetId": 32
