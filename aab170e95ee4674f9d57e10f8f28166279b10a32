@@ -33,6 +33,29 @@
       "message": "This is so cool! Looking forward to this migration. Please run TreeHugger presubmits as early as possible to see if anything blows up.\n\nAdding Wei as FYI to be in the loop for this change.",
       "revId": "aab170e95ee4674f9d57e10f8f28166279b10a32",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e2e99e70_6a487002",
+        "filename": "libprocessgroup/profiles/task_profiles.json",
+        "patchSetId": 20
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-10-24T21:17:40Z",
+      "side": 1,
+      "message": "This new functionality which can be overwritten from the vendor partition should be documented in https://source.android.com/docs/core/perf/cgroups. See b/195120116 and b/193027097 for bug examples to get an idea how to start working on that. hvm@ is the main person working on the Android documentation, so please reach out when you are ready to make the updates.",
+      "range": {
+        "startLine": 2,
+        "startChar": 3,
+        "endLine": 2,
+        "endChar": 12
+      },
+      "revId": "aab170e95ee4674f9d57e10f8f28166279b10a32",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
