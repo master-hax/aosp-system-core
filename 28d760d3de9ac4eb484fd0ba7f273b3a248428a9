@@ -16,6 +16,24 @@
       "message": "Please revert changes to android.hardware.confirmationui-service.trusty or move them to a separate change.",
       "revId": "28d760d3de9ac4eb484fd0ba7f273b3a248428a9",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0477fcaf_bccf7ba2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1611900
+      },
+      "writtenOn": "2022-10-24T19:34:09Z",
+      "side": 1,
+      "message": "Reverted changes made to `android.hardware.confirmationui-service.trusty` as it not required and Created separate CL (https://android-review.googlesource.com/c/platform/system/core/+/2266361) to add changes to`service.cpp`.",
+      "parentUuid": "bfee6cdb_4f3d3504",
+      "revId": "28d760d3de9ac4eb484fd0ba7f273b3a248428a9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
