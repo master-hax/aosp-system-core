@@ -22,6 +22,30 @@
       },
       "revId": "5bcf10f01c7798cc3217edb321de938818326639",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ec5e28d4_f09ab551",
+        "filename": "libprocessgroup/profiles/task_profiles.json",
+        "patchSetId": 18
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2022-10-24T19:24:40Z",
+      "side": 1,
+      "message": "Correct, these are arbitrary default values. We expect for these values to get overridden by the device\u0027s `task_profile.json`. Similar to what we do here: https://cs.android.com/android/platform/superproject/+/master:device/google/gs201/device.mk;l\u003d427?q\u003dtask_profiles.json\u0026ss\u003dandroid%2Fplatform%2Fsuperproject:device%2Fgoogle%2Fgs201%2F",
+      "parentUuid": "a6aded36_949f317b",
+      "range": {
+        "startLine": 2,
+        "startChar": 2,
+        "endLine": 27,
+        "endChar": 4
+      },
+      "revId": "5bcf10f01c7798cc3217edb321de938818326639",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
