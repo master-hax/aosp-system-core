@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7ca495ae_32afd7ea",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-10-24T16:52:28Z",
+      "side": 1,
+      "message": "Do these configs only live in signed, readonly partitions?",
+      "revId": "86b4a3bce366e2201bcc3ee30880ab83ee8a691b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
