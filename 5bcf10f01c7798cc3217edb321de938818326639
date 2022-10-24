@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a6aded36_949f317b",
+        "filename": "libprocessgroup/profiles/task_profiles.json",
+        "patchSetId": 18
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2022-10-24T16:55:13Z",
+      "side": 1,
+      "message": "So I assume these are defaults? Can devices override these?",
+      "range": {
+        "startLine": 2,
+        "startChar": 2,
+        "endLine": 27,
+        "endChar": 4
+      },
+      "revId": "5bcf10f01c7798cc3217edb321de938818326639",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
