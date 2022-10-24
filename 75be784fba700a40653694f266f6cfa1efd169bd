@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "28de8ac9_71b524e3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-10-24T16:06:10Z",
+      "side": 1,
+      "message": "thanks, makes sense now. (and even happier to hear that the plan is to delete all this eventually anyway :-) )",
+      "revId": "75be784fba700a40653694f266f6cfa1efd169bd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
