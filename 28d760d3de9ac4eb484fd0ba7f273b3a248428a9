@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bfee6cdb_4f3d3504",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1124693
+      },
+      "writtenOn": "2022-10-24T18:17:49Z",
+      "side": 1,
+      "message": "Please revert changes to android.hardware.confirmationui-service.trusty or move them to a separate change.",
+      "revId": "28d760d3de9ac4eb484fd0ba7f273b3a248428a9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
