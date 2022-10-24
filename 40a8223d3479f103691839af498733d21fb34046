@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6d059106_baada1b6",
+        "filename": "fs_mgr/fuzz/fs_mgr_fstab_fuzzer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2022-10-24T09:47:40Z",
+      "side": 1,
+      "message": "Just curious, any reason to choose 30 as the max length?",
+      "range": {
+        "startLine": 27,
+        "startChar": 57,
+        "endLine": 27,
+        "endChar": 59
+      },
+      "revId": "40a8223d3479f103691839af498733d21fb34046",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
