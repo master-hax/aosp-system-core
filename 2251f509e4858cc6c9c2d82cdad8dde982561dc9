@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "eaa86e7f_d8593a35",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2022-10-24T19:05:47Z",
+      "side": 1,
+      "message": "I\u0027m not opposed to this change, but I\u0027d like to point out:\n\nThere\u0027s still a race for services that have a console since `setsid()` is used to create the process group in that case.\n\nThe commit message doesn\u0027t mention pid namespaces. When they are used, a grandchild of init is created in SetUpPidNamespace() [1] and that grandchild is new process group leader. With this CL, the parent of init would be the new process group leader instead. \nIt\u0027s not clear to me if this is better or worse. On one hand, it makes services launched in pid namespaces more divergent than typical services since whether or not they are process group leaders depends on if they\u0027re in a pid namespace or not. On the other hand, that may not have any tangible differences. Unfortunately, pid namespaces are unmaintained so it\u0027ll be hard to evaluate the impact.\n\n1: https://cs.android.com/android/platform/superproject/+/master:system/core/init/service_utils.cpp;l\u003d95",
+      "revId": "2251f509e4858cc6c9c2d82cdad8dde982561dc9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
