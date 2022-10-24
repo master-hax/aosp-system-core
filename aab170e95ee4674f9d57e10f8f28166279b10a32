@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cb8862b9_4e1025ac",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 20
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-10-24T21:09:40Z",
+      "side": 1,
+      "message": "Needs a description.",
+      "revId": "aab170e95ee4674f9d57e10f8f28166279b10a32",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f4be2cfc_26bc7b6c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 20
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-10-24T21:09:40Z",
+      "side": 1,
+      "message": "This is so cool! Looking forward to this migration. Please run TreeHugger presubmits as early as possible to see if anything blows up.\n\nAdding Wei as FYI to be in the loop for this change.",
+      "revId": "aab170e95ee4674f9d57e10f8f28166279b10a32",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
