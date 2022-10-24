@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2160f163_20c67ed6",
+        "filename": "debuggerd/tombstoned/tombstoned.microdroid.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-10-24T15:06:42Z",
+      "side": 1,
+      "message": "we don\u0027t seem to need these as well, but they are not harmful anyway.",
+      "range": {
+        "startLine": 6,
+        "startChar": 1,
+        "endLine": 7,
+        "endChar": 61
+      },
+      "revId": "f3458f234989ff1d037be272106aec03ad1e67e0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
