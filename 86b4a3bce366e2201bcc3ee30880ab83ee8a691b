@@ -34,6 +34,24 @@
       "parentUuid": "7ca495ae_32afd7ea",
       "revId": "86b4a3bce366e2201bcc3ee30880ab83ee8a691b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fba55d97_13aa6865",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-10-25T17:57:34Z",
+      "side": 1,
+      "message": "should we add a visibility: clause to the .bp instead to prevent that then?",
+      "tag": "mailMessageId\u003d\u003cCAJgzZorZvPo8fRo_syZs6NshbAvCJQnDpZXa\u003dxD+B_S3rNyEAA@mail.gmail.com\u003e",
+      "revId": "86b4a3bce366e2201bcc3ee30880ab83ee8a691b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
