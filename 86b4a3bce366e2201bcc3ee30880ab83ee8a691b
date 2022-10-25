@@ -16,6 +16,24 @@
       "message": "Do these configs only live in signed, readonly partitions?",
       "revId": "86b4a3bce366e2201bcc3ee30880ab83ee8a691b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "674e5d16_dcb6b0be",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-10-25T17:55:56Z",
+      "side": 1,
+      "message": "In practice, yes, as that\u0027s the sensible thing to do, as we shouldn\u0027t execute unsigned \"code\" as root. but we didn\u0027t ban this from happening. Vendor program linking to this library _can_ read modules.load from any source, even RW partitions, though I can\u0027t think of any reason why they would _want_ to do this other than for development purposes. (not production)",
+      "parentUuid": "7ca495ae_32afd7ea",
+      "revId": "86b4a3bce366e2201bcc3ee30880ab83ee8a691b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
