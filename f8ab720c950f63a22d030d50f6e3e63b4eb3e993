@@ -91,6 +91,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "dd284c96_d6b0df6b",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 32
+      },
+      "lineNbr": 656,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-10-25T00:56:44Z",
+      "side": 1,
+      "message": "re: Also synchronization between TaskProfiles::Load and SetAttributeAction doesn\u0027t appear to be handled internally here; not sure if it should be.\n\nThe loading of the task_profiles.json from system and vendor partitions are happening inside of this constructor: https://cs.android.com/android/platform/superproject/+/master:system/core/libprocessgroup/task_profiles.cpp;l\u003d594 serially. I don\u0027t think we need to consider races here.\n\nAs for replacing ProfileVariable/IProfileVariable with an iterator, I think that\u0027s a good idea and would simplify the code.",
+      "parentUuid": "010b4edf_df2164a3",
+      "range": {
+        "startLine": 651,
+        "startChar": 8,
+        "endLine": 656,
+        "endChar": 9
+      },
+      "revId": "f8ab720c950f63a22d030d50f6e3e63b4eb3e993",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "84e31500_3c71e4cf",
         "filename": "libprocessgroup/task_profiles.h",
         "patchSetId": 32
