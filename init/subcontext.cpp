@@ -214,7 +214,7 @@ void Subcontext::Fork() {
 
         // We don't switch contexts if we're running the unit tests.  We don't use std::optional,
         // since we still need a real context string to pass to the builtin functions.
-        if (context_ != kTestContext) {
+        if (context_ != kTestContext1 && context_ != kTestContext2) {
             if (setexeccon(context_.c_str()) < 0) {
                 PLOG(FATAL) << "Could not set execcon for '" << context_ << "'";
             }
