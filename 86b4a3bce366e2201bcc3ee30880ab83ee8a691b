@@ -70,6 +70,24 @@
       "parentUuid": "674e5d16_dcb6b0be",
       "revId": "86b4a3bce366e2201bcc3ee30880ab83ee8a691b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "335d6383_3bb37f07",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-10-25T18:16:16Z",
+      "side": 1,
+      "message": "The reason I bring it up is because we\u0027ve gotten a lot of these fuzzers that target stuff that is not in any way user modifiable. If they find bugs, they tend to be rare, and low priority - not really exploitable unless you\u0027ve managed to write to /system in the face of ro mounts and dm-verity. Meanwhile, the fuzzer itself adds some tech debt because the API surface can change.\n\nSo I\u0027m not against these, but I\u0027d rather not see them added just for the sake of fuzzing. It\u0027d be nice to have a signal of whether there\u0027s good stuff to find.",
+      "parentUuid": "924ca6e2_21b1c15a",
+      "revId": "86b4a3bce366e2201bcc3ee30880ab83ee8a691b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
