@@ -39,8 +39,8 @@ using android::base::WaitForProperty;
 namespace android {
 namespace init {
 
-void RunTest(std::function<void(Subcontext&)>&& test_function) {
-    Subcontext subcontext = Subcontext({"dummy_path"}, kTestContext);
+void RunTest(std::function<void(Subcontext&)>&& test_function, std::string test_context) {
+    Subcontext subcontext = Subcontext({"dummy_path"}, test_context);
     ASSERT_NE(0, subcontext.pid());
 
     test_function(subcontext);
@@ -52,16 +52,19 @@ void RunTest(std::function<void(Subcontext&)>&& test_function) {
 }
 
 TEST(subcontext, CheckDifferentPid) {
-    RunTest([](Subcontext& subcontext) {
-        Result<void> result = subcontext.Execute(std::vector<std::string>{"return_pids_as_error"});
-        ASSERT_FALSE(result.ok());
+    RunTest(
+            [](Subcontext& subcontext) {
+                Result<void> result =
+                        subcontext.Execute(std::vector<std::string>{"return_pids_as_error"});
+                ASSERT_FALSE(result.ok());
 
-        std::vector<std::string> pids = Split(result.error().message(), " ");
-        ASSERT_EQ(2U, pids.size());
-        std::string our_pid = std::to_string(getpid());
-        EXPECT_NE(our_pid, pids[0]);
-        EXPECT_EQ(our_pid, pids[1]);
-    });
+                std::vector<std::string> pids = Split(result.error().message(), " ");
+                ASSERT_EQ(2U, pids.size());
+                std::string our_pid = std::to_string(getpid());
+                EXPECT_NE(our_pid, pids[0]);
+                EXPECT_EQ(our_pid, pids[1]);
+            },
+            kTestContext);
 }
 
 TEST(subcontext, SetProp) {
@@ -70,111 +73,128 @@ TEST(subcontext, SetProp) {
         return;
     }
 
-    RunTest([](Subcontext& subcontext) {
-        SetProperty("init.test.subcontext", "fail");
-        WaitForProperty("init.test.subcontext", "fail");
+    RunTest(
+            [](Subcontext& subcontext) {
+                SetProperty("init.test.subcontext", "fail");
+                WaitForProperty("init.test.subcontext", "fail");
 
-        std::vector<std::string> args{
-                "setprop",
-                "init.test.subcontext",
-                "success",
-        };
-        Result<void> result = subcontext.Execute(args);
-        ASSERT_RESULT_OK(result);
+                std::vector<std::string> args{
+                        "setprop",
+                        "init.test.subcontext",
+                        "success",
+                };
+                Result<void> result = subcontext.Execute(args);
+                ASSERT_RESULT_OK(result);
 
-        EXPECT_TRUE(WaitForProperty("init.test.subcontext", "success", 10s));
-    });
+                EXPECT_TRUE(WaitForProperty("init.test.subcontext", "success", 10s));
+            },
+            kTestContext);
 }
 
 TEST(subcontext, MultipleCommands) {
-    RunTest([](Subcontext& subcontext) {
-        pid_t first_pid = subcontext.pid();
+    RunTest(
+            [](Subcontext& subcontext) {
+                pid_t first_pid = subcontext.pid();
 
-        std::vector<std::string> expected_words{
-                "this",
-                "is",
-                "a",
-                "test",
-        };
+                std::vector<std::string> expected_words{
+                        "this",
+                        "is",
+                        "a",
+                        "test",
+                };
 
-        for (const std::string& word : expected_words) {
-            std::vector<std::string> args{
-                    "add_word",
-                    word,
-            };
-            Result<void> result = subcontext.Execute(args);
-            ASSERT_RESULT_OK(result);
-        }
+                for (const std::string& word : expected_words) {
+                    std::vector<std::string> args{
+                            "add_word",
+                            word,
+                    };
+                    Result<void> result = subcontext.Execute(args);
+                    ASSERT_RESULT_OK(result);
+                }
 
-        Result<void> result = subcontext.Execute(std::vector<std::string>{"return_words_as_error"});
-        ASSERT_FALSE(result.ok());
-        EXPECT_EQ(Join(expected_words, " "), result.error().message());
-        EXPECT_EQ(first_pid, subcontext.pid());
-    });
+                Result<void> result =
+                        subcontext.Execute(std::vector<std::string>{"return_words_as_error"});
+                ASSERT_FALSE(result.ok());
+                EXPECT_EQ(Join(expected_words, " "), result.error().message());
+                EXPECT_EQ(first_pid, subcontext.pid());
+            },
+            kTestContext);
 }
 
 TEST(subcontext, RecoverAfterAbort) {
-    RunTest([](Subcontext& subcontext) {
-        pid_t first_pid = subcontext.pid();
+    RunTest(
+            [](Subcontext& subcontext) {
+                pid_t first_pid = subcontext.pid();
 
-        Result<void> result = subcontext.Execute(std::vector<std::string>{"cause_log_fatal"});
-        ASSERT_FALSE(result.ok());
+                Result<void> result =
+                        subcontext.Execute(std::vector<std::string>{"cause_log_fatal"});
+                ASSERT_FALSE(result.ok());
 
-        Result<void> result2 = subcontext.Execute(std::vector<std::string>{"generate_sane_error"});
-        ASSERT_FALSE(result2.ok());
-        EXPECT_EQ("Sane error!", result2.error().message());
-        EXPECT_NE(subcontext.pid(), first_pid);
-    });
+                Result<void> result2 =
+                        subcontext.Execute(std::vector<std::string>{"generate_sane_error"});
+                ASSERT_FALSE(result2.ok());
+                EXPECT_EQ("Sane error!", result2.error().message());
+                EXPECT_NE(subcontext.pid(), first_pid);
+            },
+            kTestContext);
 }
 
 TEST(subcontext, ContextString) {
-    RunTest([](Subcontext& subcontext) {
-        Result<void> result =
-                subcontext.Execute(std::vector<std::string>{"return_context_as_error"});
-        ASSERT_FALSE(result.ok());
-        ASSERT_EQ(kTestContext, result.error().message());
-    });
+    RunTest(
+            [](Subcontext& subcontext) {
+                Result<void> result =
+                        subcontext.Execute(std::vector<std::string>{"return_context_as_error"});
+                ASSERT_FALSE(result.ok());
+                ASSERT_EQ(kTestContext, result.error().message());
+            },
+            kTestContext);
 }
 
 TEST(subcontext, TriggerShutdown) {
     static constexpr const char kTestShutdownCommand[] = "reboot,test-shutdown-command";
     static std::string trigger_shutdown_command;
     trigger_shutdown = [](const std::string& command) { trigger_shutdown_command = command; };
-    RunTest([](Subcontext& subcontext) {
-        Result<void> result = subcontext.Execute(
-                std::vector<std::string>{"trigger_shutdown", kTestShutdownCommand});
-        ASSERT_RESULT_OK(result);
-    });
+    RunTest(
+            [](Subcontext& subcontext) {
+                Result<void> result = subcontext.Execute(
+                        std::vector<std::string>{"trigger_shutdown", kTestShutdownCommand});
+                ASSERT_RESULT_OK(result);
+            },
+            kTestContext);
     EXPECT_EQ(kTestShutdownCommand, trigger_shutdown_command);
 }
 
 TEST(subcontext, ExpandArgs) {
-    RunTest([](Subcontext& subcontext) {
-        std::vector<std::string> args{
-                "first",
-                "${ro.hardware}",
-                "$$third",
-        };
-        Result<std::vector<std::string>> result = subcontext.ExpandArgs(args);
-        ASSERT_RESULT_OK(result);
-        ASSERT_EQ(3U, result->size());
-        EXPECT_EQ(args[0], result->at(0));
-        EXPECT_EQ(GetProperty("ro.hardware", ""), result->at(1));
-        EXPECT_EQ("$third", result->at(2));
-    });
+    RunTest(
+            [](Subcontext& subcontext) {
+                std::vector<std::string> args{
+                        "first",
+                        "${ro.hardware}",
+                        "$$third",
+                };
+                Result<std::vector<std::string>> result = subcontext.ExpandArgs(args);
+                ASSERT_RESULT_OK(result);
+                ASSERT_EQ(3U, result->size());
+                EXPECT_EQ(args[0], result->at(0));
+                EXPECT_EQ(GetProperty("ro.hardware", ""), result->at(1));
+                EXPECT_EQ("$third", result->at(2));
+            },
+            kTestContext);
 }
 
 TEST(subcontext, ExpandArgsFailure) {
-    RunTest([](Subcontext& subcontext) {
-        std::vector<std::string> args{
-                "first",
-                "${",
-        };
-        Result<std::vector<std::string>> result = subcontext.ExpandArgs(args);
-        ASSERT_FALSE(result.ok());
-        EXPECT_EQ("unexpected end of string in '" + args[1] + "', looking for }",
-                  result.error().message());
-    });
+    RunTest(
+            [](Subcontext& subcontext) {
+                std::vector<std::string> args{
+                        "first",
+                        "${",
+                };
+                Result<std::vector<std::string>> result = subcontext.ExpandArgs(args);
+                ASSERT_FALSE(result.ok());
+                EXPECT_EQ("unexpected end of string in '" + args[1] + "', looking for }",
+                          result.error().message());
+            },
+            kTestContext);
 }
 
 BuiltinFunctionMap BuildTestFunctionMap() {
