@@ -106,6 +106,24 @@
       "tag": "mailMessageId\u003d\u003cCAJgzZoq0dBPv1FXUncve5oeAzdeemr\u003dyiUdxbbKTU7W_f40ysA@mail.gmail.com\u003e",
       "revId": "86b4a3bce366e2201bcc3ee30880ab83ee8a691b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c74752d1_e29e48b2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-10-25T18:33:22Z",
+      "side": 1,
+      "message": "\u003e Has this fuzzer found any bugs in libmodprobe yet?\n\nNope. I ran it for more than a day and found nothing, so this is for preventing future modifications from introducing bugs.\n\n\u003e things that are easy to fuzz, not the things that would be valuable to fuzz...\n\nyeah this one definitely belongs to this. I just think that these \"parser\" type things are easy to get wrong accidentally, and it\u0027s also pretty easy to fuzz (just let it parse random input), so wrote one together with little effort.",
+      "parentUuid": "335d6383_3bb37f07",
+      "revId": "86b4a3bce366e2201bcc3ee30880ab83ee8a691b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
