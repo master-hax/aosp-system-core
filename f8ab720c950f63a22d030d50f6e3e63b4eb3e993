@@ -67,6 +67,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "010b4edf_df2164a3",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 32
+      },
+      "lineNbr": 656,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2022-10-25T00:06:10Z",
+      "side": 1,
+      "message": "Ok makes sense, but only because we\u0027re making things difficult here. That feels fragile.\nIn fact the whole IProfileVariable class feels like overkill. We need pretty straightforward key/value lookup, but here we have:\n* Double storage of the name key (in variables_ and ProfileVariable)\n* Inheritance for ProfileVariable for no particular reason?\n* ...which results in access to ProfileVariable.value() through a vtable\n* and storage of ProfileVariables as pointers to derived classes instead of just a container of structs (as one alternative example). (and not sure why shared instead of unique ptrs)\n\nAlso synchronization between TaskProfiles::Load and SetAttributeAction doesn\u0027t appear to be handled internally here; not sure if it should be.\n\nNothing TaskProfiles::Load does looks like it would cause iterator invalidation, so I\u0027d suggest we can probably just have:\n`std::map\u003cstd::string, std::string, std::less\u003c\u003e\u003e variables_;` in TaskProfiles. `decltype(variables_)::iterator in SetAttributeAction` or the key and a reference to `variables_` for lookup to not worry about invalidation,\nand completely remove `ProfileVariable` and `IProfileVariable`\n\nresulting in less code and complexity for the same risks or better.",
+      "parentUuid": "a255c410_62fd0347",
+      "range": {
+        "startLine": 651,
+        "startChar": 8,
+        "endLine": 656,
+        "endChar": 9
+      },
+      "revId": "f8ab720c950f63a22d030d50f6e3e63b4eb3e993",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "84e31500_3c71e4cf",
         "filename": "libprocessgroup/task_profiles.h",
         "patchSetId": 32
