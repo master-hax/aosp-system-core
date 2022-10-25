@@ -1184,7 +1184,7 @@ int SecondStageMain(int argc, char** argv) {
         auto epoll_result = epoll.Wait(epoll_timeout);
         if (!epoll_result.ok()) {
             LOG(ERROR) << epoll_result.error();
-        } else if (*epoll_result <= 0 && Service::is_exec_service_running()) {
+        } else if (Service::is_exec_service_running()) {
             static bool dumped_diagnostics = false;
             std::chrono::duration<double> waited =
                     std::chrono::steady_clock::now() - Service::exec_service_started();
