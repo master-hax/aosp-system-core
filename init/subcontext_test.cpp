@@ -19,7 +19,9 @@
 #include <unistd.h>
 
 #include <chrono>
+#include <thread>
 
+#include <android-base/logging.h>
 #include <android-base/properties.h>
 #include <android-base/strings.h>
 #include <gtest/gtest.h>
@@ -35,6 +37,20 @@ using android::base::Join;
 using android::base::SetProperty;
 using android::base::Split;
 using android::base::WaitForProperty;
+
+namespace {
+
+std::string GetSecurityContext() {
+    char* ctx;
+    if (getcon(&ctx) == -1) {
+        ADD_FAILURE() << "Failed to call getcon : " << strerror(errno);
+    }
+    std::string result = std::string(ctx);
+    freecon(ctx);
+    return result;
+}
+
+}  // namespace
 
 namespace android {
 namespace init {
@@ -64,7 +80,7 @@ TEST(subcontext, CheckDifferentPid) {
                 EXPECT_NE(our_pid, pids[0]);
                 EXPECT_EQ(our_pid, pids[1]);
             },
-            kTestContext);
+            kTestContext1);
 }
 
 TEST(subcontext, SetProp) {
@@ -88,7 +104,7 @@ TEST(subcontext, SetProp) {
 
                 EXPECT_TRUE(WaitForProperty("init.test.subcontext", "success", 10s));
             },
-            kTestContext);
+            kTestContext1);
 }
 
 TEST(subcontext, MultipleCommands) {
@@ -118,7 +134,7 @@ TEST(subcontext, MultipleCommands) {
                 EXPECT_EQ(Join(expected_words, " "), result.error().message());
                 EXPECT_EQ(first_pid, subcontext.pid());
             },
-            kTestContext);
+            kTestContext1);
 }
 
 TEST(subcontext, RecoverAfterAbort) {
@@ -136,7 +152,7 @@ TEST(subcontext, RecoverAfterAbort) {
                 EXPECT_EQ("Sane error!", result2.error().message());
                 EXPECT_NE(subcontext.pid(), first_pid);
             },
-            kTestContext);
+            kTestContext1);
 }
 
 TEST(subcontext, ContextString) {
@@ -145,9 +161,9 @@ TEST(subcontext, ContextString) {
                 Result<void> result =
                         subcontext.Execute(std::vector<std::string>{"return_context_as_error"});
                 ASSERT_FALSE(result.ok());
-                ASSERT_EQ(kTestContext, result.error().message());
+                ASSERT_EQ(kTestContext1, result.error().message());
             },
-            kTestContext);
+            kTestContext1);
 }
 
 TEST(subcontext, TriggerShutdown) {
@@ -160,7 +176,7 @@ TEST(subcontext, TriggerShutdown) {
                         std::vector<std::string>{"trigger_shutdown", kTestShutdownCommand});
                 ASSERT_RESULT_OK(result);
             },
-            kTestContext);
+            kTestContext1);
     EXPECT_EQ(kTestShutdownCommand, trigger_shutdown_command);
 }
 
@@ -179,7 +195,7 @@ TEST(subcontext, ExpandArgs) {
                 EXPECT_EQ(GetProperty("ro.hardware", ""), result->at(1));
                 EXPECT_EQ("$third", result->at(2));
             },
-            kTestContext);
+            kTestContext1);
 }
 
 TEST(subcontext, ExpandArgsFailure) {
@@ -194,7 +210,20 @@ TEST(subcontext, ExpandArgsFailure) {
                 EXPECT_EQ("unexpected end of string in '" + args[1] + "', looking for }",
                           result.error().message());
             },
-            kTestContext);
+            kTestContext1);
+}
+
+TEST(subcontext, Exec) {
+    RunTest(
+            [](Subcontext& subcontext) {
+                std::vector<std::string> args{"exec", GetSecurityContext(), "shell", "shell",
+                                              "--",   "/system/bin/sh",     "-c",    "sleep 9999"};
+                Result<void> result = subcontext.Execute(args);
+                ASSERT_RESULT_OK(result);
+                // Trigger the 'hung service' check.
+                std::this_thread::sleep_for(1s);
+            },
+            kTestContext2);
 }
 
 BuiltinFunctionMap BuildTestFunctionMap() {
@@ -262,6 +291,8 @@ BuiltinFunctionMap BuildTestFunctionMap() {
 int SubcontextTestChildMain(int argc, char** argv) {
     using namespace android::init;
 
-    const BuiltinFunctionMap& test_function_map = BuildTestFunctionMap();
+    DCHECK(argv[2] == kTestContext1 || argv[2] == kTestContext2);
+    const BuiltinFunctionMap& test_function_map =
+            strcmp(argv[2], kTestContext1) == 0 ? BuildTestFunctionMap() : GetBuiltinFunctionMap();
     return SubcontextMain(argc, argv, &test_function_map);
 }
