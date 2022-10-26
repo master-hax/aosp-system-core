@@ -94,6 +94,30 @@
       },
       "revId": "ef9275223c6192adf7433a9c705e4f4816663dd5",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "be92f2b2_7a4d6872",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 3
+      },
+      "lineNbr": 930,
+      "author": {
+        "id": 1137063
+      },
+      "writtenOn": "2022-10-26T18:18:46Z",
+      "side": 1,
+      "message": "You\u0027re right, thanks for noticing this.  I overlooked that Android applies the \"shared\" propagation type to all mounts, overriding the default Linux mount semantics.  https://android-review.googlesource.com/c/platform/system/core/+/2271532 will remove the unneeded flag here.",
+      "parentUuid": "9140baef_a403a3be",
+      "range": {
+        "startLine": 930,
+        "startChar": 38,
+        "endLine": 930,
+        "endChar": 51
+      },
+      "revId": "ef9275223c6192adf7433a9c705e4f4816663dd5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
