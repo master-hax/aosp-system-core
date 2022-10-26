@@ -92,6 +92,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "f414a505_7b6a4b52",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1956258
+      },
+      "writtenOn": "2022-10-26T23:09:18Z",
+      "side": 1,
+      "message": "There are similar issues reported on haiku (b/254295815, b/254781667) but there is no bug for local builds. we will probably need more info to reproduce this.",
+      "parentUuid": "a6aff588_9ecbcabe",
+      "revId": "3eb096434a6881e757ccc20d4bcae79c7238fb3c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "a49da166_fdfed9fa",
         "filename": "trusty/confirmationui/Android.bp",
         "patchSetId": 2
