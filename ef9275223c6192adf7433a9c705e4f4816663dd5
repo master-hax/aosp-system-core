@@ -70,6 +70,30 @@
       },
       "revId": "ef9275223c6192adf7433a9c705e4f4816663dd5",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9140baef_a403a3be",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 3
+      },
+      "lineNbr": 930,
+      "author": {
+        "id": 1463403
+      },
+      "writtenOn": "2022-10-26T02:08:56Z",
+      "side": 1,
+      "message": "Are you sure this actually does something? The man page for mount(2) says that when doing a bind mount \"the remaining bits (other than MS_REC, described below) in the mountflags argument are also ignored.\"",
+      "parentUuid": "447732f1_b2e4e226",
+      "range": {
+        "startLine": 930,
+        "startChar": 38,
+        "endLine": 930,
+        "endChar": 51
+      },
+      "revId": "ef9275223c6192adf7433a9c705e4f4816663dd5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
