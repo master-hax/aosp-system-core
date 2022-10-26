@@ -672,6 +672,8 @@ Result<void> Service::Start() {
         return ErrnoError() << "Failed to fork";
     }
 
+    auto kill_child_process = make_scope_guard([pid]() { kill(pid, SIGKILL); });
+
     once_environment_vars_.clear();
 
     if (oom_score_adjust_ != DEFAULT_OOM_SCORE_ADJUST) {
@@ -693,10 +695,6 @@ Result<void> Service::Start() {
                          limit_percent_ != -1 || !limit_property_.empty();
         errno = -createProcessGroup(proc_attr_.uid, pid_, use_memcg);
         if (errno != 0) {
-            Result<void> result = cgroups_activated.Write(0);
-            if (!result.ok()) {
-                return Error() << "Sending notification failed: " << result.error();
-            }
             return Error() << "createProcessGroup(" << proc_attr_.uid << ", " << pid_
                            << ") failed for service '" << name_ << "'";
         }
@@ -722,6 +720,7 @@ Result<void> Service::Start() {
     }
 
     NotifyStateChange("running");
+    kill_child_process.Disable();
     reboot_on_failure.Disable();
     return {};
 }
