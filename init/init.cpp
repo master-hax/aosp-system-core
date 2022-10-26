@@ -744,16 +744,18 @@ static constexpr std::chrono::milliseconds kDiagnosticTimeout = 10s;
 static void HandleSignalFd(bool one_off) {
     signalfd_siginfo siginfo;
     auto started = std::chrono::steady_clock::now();
-    do {
+    for (;;) {
         ssize_t bytes_read = TEMP_FAILURE_RETRY(read(signal_fd, &siginfo, sizeof(siginfo)));
         if (bytes_read < 0 && errno == EAGAIN) {
+            if (one_off) {
+                return;
+            }
             auto now = std::chrono::steady_clock::now();
             std::chrono::duration<double> waited = now - started;
             if (waited >= kDiagnosticTimeout) {
                 LOG(ERROR) << "epoll() woke us up, but we waited with no SIGCHLD!";
                 started = now;
             }
-
             std::this_thread::sleep_for(100ms);
             continue;
         }
@@ -762,7 +764,7 @@ static void HandleSignalFd(bool one_off) {
             return;
         }
         break;
-    } while (!one_off);
+    }
 
     switch (siginfo.ssi_signo) {
         case SIGCHLD:
@@ -772,7 +774,7 @@ static void HandleSignalFd(bool one_off) {
             HandleSigtermSignal(siginfo);
             break;
         default:
-            PLOG(ERROR) << "signal_fd: received unexpected signal " << siginfo.ssi_signo;
+            LOG(ERROR) << "signal_fd: received unexpected signal " << siginfo.ssi_signo;
             break;
     }
 }
