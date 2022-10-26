@@ -101,6 +101,10 @@ bool fs_mgr_is_dsu_running() {
 const auto kScratchMountPoint = "/mnt/scratch"s;
 const auto kCacheMountPoint = "/cache"s;
 
+bool IsABDevice() {
+    return android::base::GetProperty("ro.boot.slot_suffix", "").empty();
+}
+
 std::vector<const std::string> OverlayMountPoints() {
     // Never fallback to legacy cache mount point if within a DSU system,
     // because running a DSU system implies the device supports dynamic
@@ -108,6 +112,12 @@ std::vector<const std::string> OverlayMountPoints() {
     if (fs_mgr_is_dsu_running()) {
         return {kScratchMountPoint};
     }
+
+    // For non-A/B devices prefer cache backing storage
+    if (!IsABDevice()) {
+        return {kCacheMountPoint, kScratchMountPoint};
+    }
+
     return {kScratchMountPoint, kCacheMountPoint};
 }
 
