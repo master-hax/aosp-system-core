@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "43ab2140_4cdce477",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 32
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2022-10-26T07:37:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d7bb5460_84f4e294",
+      "revId": "f8ab720c950f63a22d030d50f6e3e63b4eb3e993",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "161673f0_035108bc",
@@ -113,6 +131,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "45ef01f4_d977e09e",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 32
+      },
+      "lineNbr": 656,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2022-10-26T07:37:49Z",
+      "side": 1,
+      "message": "Done. We decided to remove the `IProfileVariable` interface, and maintain the `ProfileVariable` raw pointer inside the `AttributeAction`.",
+      "parentUuid": "dd284c96_d6b0df6b",
+      "range": {
+        "startLine": 651,
+        "startChar": 8,
+        "endLine": 656,
+        "endChar": 9
+      },
+      "revId": "f8ab720c950f63a22d030d50f6e3e63b4eb3e993",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "84e31500_3c71e4cf",
@@ -136,6 +178,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "63c625cc_fd7eca3c",
+        "filename": "libprocessgroup/task_profiles.h",
+        "patchSetId": 32
+      },
+      "lineNbr": 137,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2022-10-26T07:37:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "84e31500_3c71e4cf",
+      "range": {
+        "startLine": 136,
+        "startChar": 23,
+        "endLine": 137,
+        "endChar": 63
+      },
+      "revId": "f8ab720c950f63a22d030d50f6e3e63b4eb3e993",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a3526577_f2075bce",
@@ -149,6 +215,30 @@
       "writtenOn": "2022-10-24T21:05:47Z",
       "side": 1,
       "message": "why not just `variable_`?",
+      "range": {
+        "startLine": 150,
+        "startChar": 28,
+        "endLine": 150,
+        "endChar": 45
+      },
+      "revId": "f8ab720c950f63a22d030d50f6e3e63b4eb3e993",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f9a17b40_ebfe4e8e",
+        "filename": "libprocessgroup/task_profiles.h",
+        "patchSetId": 32
+      },
+      "lineNbr": 150,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2022-10-26T07:37:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a3526577_f2075bce",
       "range": {
         "startLine": 150,
         "startChar": 28,
