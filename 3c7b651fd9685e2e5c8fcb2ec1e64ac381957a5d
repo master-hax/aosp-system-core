@@ -34,6 +34,24 @@
       "parentUuid": "f643f1c0_d2dbc4e1",
       "revId": "3c7b651fd9685e2e5c8fcb2ec1e64ac381957a5d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "74b3be53_badfba32",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1965080
+      },
+      "writtenOn": "2022-10-27T22:02:11Z",
+      "side": 1,
+      "message": "\u003e The wrapper is pretty useless, yeah. I can remove that.\n\nActually I take that back - looking at ashmem-dev.cpp there\u0027s a couple of other wrappers around ashmem functionality. Also, if we happen to finally move to memfd, ashmem_get_backing_ino() could easily be updated to fstat(2) the memfd file descriptor for an inode number. So maybe this isn\u0027t quite that useless anyway?",
+      "parentUuid": "537abe8f_fdfdfb9c",
+      "revId": "3c7b651fd9685e2e5c8fcb2ec1e64ac381957a5d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
