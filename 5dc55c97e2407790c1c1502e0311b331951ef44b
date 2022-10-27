@@ -3,6 +3,52 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "fb9c82e6_d058ef8a",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 38
+      },
+      "lineNbr": 714,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-10-27T20:46:17Z",
+      "side": 1,
+      "message": "ditto.",
+      "range": {
+        "startLine": 714,
+        "startChar": 24,
+        "endLine": 714,
+        "endChar": 42
+      },
+      "revId": "5dc55c97e2407790c1c1502e0311b331951ef44b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0de36454_07cd9176",
+        "filename": "libprocessgroup/task_profiles.h",
+        "patchSetId": 38
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-10-27T20:46:17Z",
+      "side": 1,
+      "message": "std::optional should be enough to indicate that this might be null. The name should reflect the intended use. So `var_iter` and `var_iter_` member I think would be better names.",
+      "range": {
+        "startLine": 116,
+        "startChar": 85,
+        "endLine": 116,
+        "endChar": 98
+      },
+      "revId": "5dc55c97e2407790c1c1502e0311b331951ef44b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "31ad77c9_f3503a8b",
         "filename": "libprocessgroup/task_profiles.h",
         "patchSetId": 38
@@ -14,6 +60,24 @@
       "writtenOn": "2022-10-27T20:17:33Z",
       "side": 1,
       "message": "This patchset looks good.\n\nA readability improvement might be to use an alias template like:\n```\ntemplate \u003ctypename T\u003e\nusing DeducedCompareMap \u003d std::map\u003cstd::string, T, std::less\u003c\u003e\u003e;\n\nstd::optional\u003cDeducedCompareMap\u003cstd::string\u003e::iterator\u003e maybeIterator_;\nDeducedCompareMap\u003cstd::string\u003e variables_;\n```\netc...",
+      "revId": "5dc55c97e2407790c1c1502e0311b331951ef44b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "979d5f9c_7b3e90ab",
+        "filename": "libprocessgroup/task_profiles.h",
+        "patchSetId": 38
+      },
+      "lineNbr": 235,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-10-27T20:46:17Z",
+      "side": 1,
+      "message": "I\u0027m having trouble understanding the lawyer-talk in go/cstyle#Aliases and could not deduce if aliasing maps like that is ok or not... I usually try not to alias them so that it\u0027s clear what they are but I might be wrong.",
+      "parentUuid": "31ad77c9_f3503a8b",
       "revId": "5dc55c97e2407790c1c1502e0311b331951ef44b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
