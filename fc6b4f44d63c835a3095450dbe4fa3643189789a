@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b7e7b88e_dd722530",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 13
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2022-10-27T20:58:02Z",
+      "side": 1,
+      "message": "This lgtm, though the `one_off` changes happened after I left so I don\u0027t have background on those.",
+      "revId": "fc6b4f44d63c835a3095450dbe4fa3643189789a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
