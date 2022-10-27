@@ -16,6 +16,24 @@
       "message": "aren\u0027t we trying to kill ashmem for memfd?\n\nit\u0027s not clear to me that this wrapper adds any value over just calling the ioctl directly?\n\n(and is there a reason you can\u0027t use `ino_t`?)",
       "revId": "3c7b651fd9685e2e5c8fcb2ec1e64ac381957a5d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "537abe8f_fdfdfb9c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1965080
+      },
+      "writtenOn": "2022-10-27T21:58:06Z",
+      "side": 1,
+      "message": "The wrapper is pretty useless, yeah. I can remove that. Good idea on `ino_t` - I think we can use it - from what I recall it resolves into an unsigned long.\n\nThere are plans to move to memfd but we haven\u0027t yet. There is a strong desire from the perf team to deduplicate native allocation registration however, hence this patch set. I realize that this means we might need to make similar changes for our memfd handling though I think it\u0027s just going to be a stat call in that case so no kernel changes would be required.\n\nThanks for the review!",
+      "parentUuid": "f643f1c0_d2dbc4e1",
+      "revId": "3c7b651fd9685e2e5c8fcb2ec1e64ac381957a5d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
