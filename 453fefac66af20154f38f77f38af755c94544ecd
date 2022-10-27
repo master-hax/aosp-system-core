@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "47318411_2d59f23f",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 32
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-10-27T22:40:08Z",
+      "side": 1,
+      "message": "These values can be overridden by the device\u0027s specific task_profile.json from the vendor partition.",
+      "range": {
+        "startLine": 9,
+        "startChar": 89,
+        "endLine": 9,
+        "endChar": 183
+      },
+      "revId": "453fefac66af20154f38f77f38af755c94544ecd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
