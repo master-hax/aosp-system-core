@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "31ad77c9_f3503a8b",
+        "filename": "libprocessgroup/task_profiles.h",
+        "patchSetId": 38
+      },
+      "lineNbr": 235,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2022-10-27T20:17:33Z",
+      "side": 1,
+      "message": "This patchset looks good.\n\nA readability improvement might be to use an alias template like:\n```\ntemplate \u003ctypename T\u003e\nusing DeducedCompareMap \u003d std::map\u003cstd::string, T, std::less\u003c\u003e\u003e;\n\nstd::optional\u003cDeducedCompareMap\u003cstd::string\u003e::iterator\u003e maybeIterator_;\nDeducedCompareMap\u003cstd::string\u003e variables_;\n```\netc...",
+      "revId": "5dc55c97e2407790c1c1502e0311b331951ef44b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
