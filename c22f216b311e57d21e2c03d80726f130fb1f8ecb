@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "11c67b2f_cd04d45d",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 480,
+      "author": {
+        "id": 1945845
+      },
+      "writtenOn": "2022-10-27T22:21:03Z",
+      "side": 1,
+      "message": "You should also handle the \"if (has_memfd_support() \u0026\u0026 !memfd_is_ashmem(fd))\" case so this works with memfd. Just getting the inode from fstat should work there.",
+      "revId": "c22f216b311e57d21e2c03d80726f130fb1f8ecb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
