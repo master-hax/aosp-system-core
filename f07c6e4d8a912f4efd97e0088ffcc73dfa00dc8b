@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9dded378_cf4f7e77",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-10-28T17:43:34Z",
+      "side": 1,
+      "message": "non-AB is no longer supported. In addition, remount should be going through the /data path rather than /cache. If this is an older device that doesn\u0027t have reliable pinning, please change the condition to:\n\n    if (!IsABDevice() \u0026\u0026 GetIntProperty(\"ro.vendor.api_level\") \u003c __ANDROID_API_T__)",
+      "revId": "f07c6e4d8a912f4efd97e0088ffcc73dfa00dc8b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
