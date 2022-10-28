@@ -39,6 +39,30 @@
       },
       "revId": "4b70e4671c231b59542d2e0bd3fa0f076eb68e8b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c2703e9f_b8a47ad1",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 42
+      },
+      "lineNbr": 713,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2022-10-28T21:48:15Z",
+      "side": 1,
+      "message": "No this is fine. The lifetime of this object ends at the end of this `else if` scope. The next iteration of the loop sees a new default constructed optional.",
+      "parentUuid": "93c0ff2d_67cd328c",
+      "range": {
+        "startLine": 713,
+        "startChar": 89,
+        "endLine": 713,
+        "endChar": 97
+      },
+      "revId": "4b70e4671c231b59542d2e0bd3fa0f076eb68e8b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
