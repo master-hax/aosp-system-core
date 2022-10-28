@@ -51,6 +51,24 @@
       "parentUuid": "2a6e0784_51789301",
       "revId": "fc6b4f44d63c835a3095450dbe4fa3643189789a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9cc9cc7b_cccf568f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 13
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-10-28T00:05:17Z",
+      "side": 1,
+      "message": "non-blocking was added to diagnose http://b/223076262 - The problem we observed was that init thread used to block/hang in read() during HandleSignalFd(); but that should never happen as HandleSignalFd() will be called only when epoll wakes up because of SIGCHLD; Hence, read() should return immediately with the signal number which woke up epoll.",
+      "parentUuid": "c8bd37a8_19f39565",
+      "revId": "fc6b4f44d63c835a3095450dbe4fa3643189789a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
