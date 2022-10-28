@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "93c0ff2d_67cd328c",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 42
+      },
+      "lineNbr": 713,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-10-28T19:26:26Z",
+      "side": 1,
+      "message": "Do we need `var_iter \u003d nullptr` here or will it be reset on every iteration?",
+      "range": {
+        "startLine": 713,
+        "startChar": 89,
+        "endLine": 713,
+        "endChar": 97
+      },
+      "revId": "4b70e4671c231b59542d2e0bd3fa0f076eb68e8b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
