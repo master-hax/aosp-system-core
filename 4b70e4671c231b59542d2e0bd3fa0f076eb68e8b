@@ -3,6 +3,23 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "c0b1a477_bb9263f6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 42
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-10-28T19:30:51Z",
+      "side": 1,
+      "message": "You need to update all callers of SetAttributeAction like this one:\nhttps://cs.android.com/android/platform/superproject/+/master:system/core/libprocessgroup/task_profiles_test.cpp;l\u003d152\n\nThat\u0027s why your presubmits are failing (see: https://android-build.googleplex.com/builds/pending/P43077574/aosp_arm64-userdebug_tidy/latest/view/logs/build_error.log for example)",
+      "revId": "4b70e4671c231b59542d2e0bd3fa0f076eb68e8b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "93c0ff2d_67cd328c",
         "filename": "libprocessgroup/task_profiles.cpp",
         "patchSetId": 42
