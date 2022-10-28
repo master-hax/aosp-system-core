@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "5ba5e85c_89b37713",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 38
+      },
+      "lineNbr": 714,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2022-10-28T17:47:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fb9c82e6_d058ef8a",
+      "range": {
+        "startLine": 714,
+        "startChar": 24,
+        "endLine": 714,
+        "endChar": 42
+      },
+      "revId": "5dc55c97e2407790c1c1502e0311b331951ef44b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "0de36454_07cd9176",
@@ -37,6 +61,30 @@
       "writtenOn": "2022-10-27T20:46:17Z",
       "side": 1,
       "message": "std::optional should be enough to indicate that this might be null. The name should reflect the intended use. So `var_iter` and `var_iter_` member I think would be better names.",
+      "range": {
+        "startLine": 116,
+        "startChar": 85,
+        "endLine": 116,
+        "endChar": 98
+      },
+      "revId": "5dc55c97e2407790c1c1502e0311b331951ef44b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c7135118_ba72ee5f",
+        "filename": "libprocessgroup/task_profiles.h",
+        "patchSetId": 38
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2022-10-28T17:47:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0de36454_07cd9176",
       "range": {
         "startLine": 116,
         "startChar": 85,
@@ -96,6 +144,24 @@
       "side": 1,
       "message": "The concerns at that link seem to be associated with complicating the public API, but this header isn\u0027t public for the library. If it were, none of the non-TaskProfile classes should really be in here either since they\u0027re only used internally by task_profiles.cpp. This would be mostly like the TimeSeries alias, to give a name for something that isn\u0027t immediately obvious. I\u0027m fine with either way.",
       "parentUuid": "979d5f9c_7b3e90ab",
+      "revId": "5dc55c97e2407790c1c1502e0311b331951ef44b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8eeb6b7a_ea6b2ba8",
+        "filename": "libprocessgroup/task_profiles.h",
+        "patchSetId": 38
+      },
+      "lineNbr": 235,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2022-10-28T17:47:26Z",
+      "side": 1,
+      "message": "We decided to maintain the current implementation, without the aliases.",
+      "parentUuid": "ccc8efde_d59b859a",
       "revId": "5dc55c97e2407790c1c1502e0311b331951ef44b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
