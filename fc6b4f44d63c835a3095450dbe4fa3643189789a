@@ -33,6 +33,24 @@
       "message": "The right way to do this is to revert this patch: https://android-review.googlesource.com/c/platform/system/core/+/2027088\n\nand that revert was created and merged as well:\n\nhttps://android-review.googlesource.com/c/platform/system/core/+/2059067\n\nbut unfortunately, it never got merged as it sounds like merge skipped because revert commit had \"DO NOT MERGE\" tag.. I don\u0027t know why that tag was added..",
       "revId": "fc6b4f44d63c835a3095450dbe4fa3643189789a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c8bd37a8_19f39565",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 13
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-10-28T00:00:42Z",
+      "side": 1,
+      "message": "Hmm ... shouldn\u0027t the signalfd socket remain non-blocking?",
+      "parentUuid": "2a6e0784_51789301",
+      "revId": "fc6b4f44d63c835a3095450dbe4fa3643189789a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
