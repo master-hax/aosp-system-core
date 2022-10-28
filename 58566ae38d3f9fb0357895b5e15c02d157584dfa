@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "09b6b97e_058bf1c2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 35
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2022-10-28T22:42:30Z",
+      "side": 1,
+      "message": "+Rick, FYI on camera for example.",
+      "revId": "58566ae38d3f9fb0357895b5e15c02d157584dfa",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
