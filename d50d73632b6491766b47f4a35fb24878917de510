@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d593f76a_c98bd404",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2022-10-29T00:51:51Z",
+      "side": 1,
+      "message": "Prefix here should be `trusty/test/binder:`.",
+      "revId": "d50d73632b6491766b47f4a35fb24878917de510",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
