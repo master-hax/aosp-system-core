@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a35bd4ad_72d77693",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2022-10-29T00:09:39Z",
+      "side": 1,
+      "message": "I also moved a comment because the autoformatter was getting confused and doing the wrong thing.",
+      "revId": "fac411d97c86b0533dd96cf5c6a88faec1e67760",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
