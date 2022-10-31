@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a781e518_90d52227",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-10-31T15:52:26Z",
+      "side": 1,
+      "message": "one of the fundamental ideas of the google3-style logging is that _libraries_ shouldn\u0027t be making decisions like this. the program they\u0027re running in the context of should make these decisions.\n\nso here i\u0027d expect that remount uses the standard stderr logger from libbase, and it sets the minimum log severity based on whether it\u0027s run with `-v` or not. there shouldn\u0027t be any need for a custom logger? (and if there is, that\u0027s well worth a comment explaining why!)",
+      "revId": "13d86ae596c9d876e0ca4dea5f802b002327c58a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
