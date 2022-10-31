@@ -183,7 +183,13 @@ bool CowWriter::Initialize(borrowed_fd fd) {
         return false;
     }
 
-    return OpenForWrite();
+    bool ret = OpenForWrite();
+
+    if (ret && is_block_device_) {
+        SetupAsyncWriter(android::base::borrowed_fd{fd_});
+    }
+
+    return ret;
 }
 
 bool CowWriter::InitializeAppend(android::base::unique_fd&& fd, uint64_t label) {
@@ -196,7 +202,13 @@ bool CowWriter::InitializeAppend(android::base::borrowed_fd fd, uint64_t label) 
         return false;
     }
 
-    return OpenForAppend(label);
+    bool ret = OpenForAppend(label);
+
+    if (ret && is_block_device_) {
+        SetupAsyncWriter(android::base::borrowed_fd{fd_});
+    }
+
+    return ret;
 }
 
 void CowWriter::InitPos() {
