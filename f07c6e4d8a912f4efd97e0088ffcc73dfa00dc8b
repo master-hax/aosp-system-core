@@ -20,6 +20,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "33a91ca7_90e1137a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1972780
+      },
+      "writtenOn": "2022-10-31T19:08:37Z",
+      "side": 1,
+      "message": "Thanks a lot for your review!\n\n1. Let\u0027s consider partition map with 2GB super, 1.5GB cache. If factory image, for example, 1.7GB there will be only 300MB physical space left for logical partition served as a backing storage, while cache has 1.5GB.\n\n2. Please check my answer for David\u0027s comment\n\nWhile answering your questions, I realize that non-A/B device may be configured to store OTA package in the /data dir, while having small /cache. @dvander@google.com @yochiang@google.com If you agree with the general idea I am talking about, what do you think if I do ```if (!IsABDevice() \u0026\u0026 GetBoolProperty(kPreferCacheBackingStorageProp, false))``` in this patchset?",
+      "parentUuid": "ca6ada9e_f7ec4a26",
+      "revId": "f07c6e4d8a912f4efd97e0088ffcc73dfa00dc8b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "9dded378_cf4f7e77",
         "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
         "patchSetId": 2
@@ -31,6 +49,24 @@
       "writtenOn": "2022-10-28T17:43:34Z",
       "side": 1,
       "message": "non-AB is no longer supported. In addition, remount should be going through the /data path rather than /cache. If this is an older device that doesn\u0027t have reliable pinning, please change the condition to:\n\n    if (!IsABDevice() \u0026\u0026 GetIntProperty(\"ro.vendor.api_level\") \u003c __ANDROID_API_T__)",
+      "revId": "f07c6e4d8a912f4efd97e0088ffcc73dfa00dc8b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2e3da76f_98f52c6f",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 1972780
+      },
+      "writtenOn": "2022-10-31T19:08:37Z",
+      "side": 1,
+      "message": "Thanks a lot for your review!\n\n\u003e non-AB is no longer supported\n\nDo you mean that non-A/B configuration is deprecated? I know that it is considered legacy, but still legal to use. As far as I can see, device/amlogic/yukawa reference target is non-A/B\n\n\u003e remount should be going through the /data path rather than /cache\n\nYou are right, but there are 2 concerns about data that I see:\n\n1. as you mentioned, it might have no reliable pinning in f2fs configuration, and api_level check might not help when the code runs on old enough kernel.\n\n2. /data may be actively used by applications leaving not much space for backing storage.\n\nMeanwhile, /cache is almost always free since it is used only to store OTA package. /cache partition size should be large enough to hold OTA package, that contains update up to the whole super size. So /cache is almost always large enough to be overlay for the most of super\u0027s data.",
+      "parentUuid": "9dded378_cf4f7e77",
       "revId": "f07c6e4d8a912f4efd97e0088ffcc73dfa00dc8b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
