@@ -175,6 +175,7 @@ cc_library_static {
     srcs: [
         "libsnapshot_cow/cow_decompress.cpp",
         "libsnapshot_cow/cow_reader.cpp",
+	"libsnapshot_cow/cow_writer_async.cpp",
         "libsnapshot_cow/cow_writer.cpp",
         "libsnapshot_cow/cow_format.cpp",
         "libsnapshot_cow/cow_compress.cpp",
