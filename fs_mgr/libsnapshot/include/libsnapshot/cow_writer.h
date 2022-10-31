@@ -16,13 +16,18 @@
 
 #include <stdint.h>
 
+#include <condition_variable>
 #include <memory>
+#include <mutex>
 #include <optional>
+#include <queue>
 #include <string>
+#include <thread>
 
 #include <android-base/unique_fd.h>
 #include <libsnapshot/cow_format.h>
 #include <libsnapshot/cow_reader.h>
+#include <libsnapshot/cow_writer_async.h>
 
 namespace android {
 namespace snapshot {
@@ -122,6 +127,8 @@ class CowWriter : public ICowWriter {
 
     uint32_t GetCowVersion() { return header_.major_version; }
 
+    bool RunThread();
+
   protected:
     virtual bool EmitCopy(uint64_t new_block, uint64_t old_block, uint64_t num_blocks = 1) override;
     virtual bool EmitRawBlocks(uint64_t new_block_start, const void* data, size_t size) override;
@@ -151,6 +158,13 @@ class CowWriter : public ICowWriter {
     bool Sync();
     bool Truncate(off_t length);
 
+    // Async functions
+    void SetupAsyncWriter(android::base::borrowed_fd fd);
+    bool EmitBlocksAsync(uint64_t new_block_start, const void* data, size_t num_ops,
+                         uint64_t old_block, uint16_t offset, uint8_t type);
+    bool DrainIORequests();
+    void TerminateIOThread();
+
   private:
     android::base::unique_fd owned_fd_;
     android::base::borrowed_fd fd_;
@@ -165,6 +179,26 @@ class CowWriter : public ICowWriter {
     bool is_dev_null_ = false;
     bool merge_in_progress_ = false;
     bool is_block_device_ = false;
+
+    bool write_async_ = false;
+    bool drain_io_in_progress_ = false;
+    std::atomic<bool> io_error_{false};
+    std::vector<std::unique_ptr<uint8_t[]>> scratch_buffer_;
+
+    bool stopped_ = false;
+    std::mutex processing_lock_;
+    std::condition_variable processing_cv_;
+    bool queue_processing_waiting_ = false;
+    std::queue<std::unique_ptr<WriteEntry>> queue_processing_;
+    void InitializeBuffers();
+
+    std::mutex scratch_buffers_lock_;
+    std::condition_variable scratch_buffers_cv_;
+    std::queue<std::unique_ptr<WriteEntry>> queue_scratch_buffers_;
+
+    std::unique_ptr<WriteEntry> GetWriteEntryFromScratchQueue();
+    bool PushWriteEntryToProcessQueue(std::unique_ptr<WriteEntry> we);
+    std::thread thread_;
 };
 
 }  // namespace snapshot
