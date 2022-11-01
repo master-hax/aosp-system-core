@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7bf39f9b_c0d7470f",
+        "filename": "libprocessgroup/profiles/task_profiles.json",
+        "patchSetId": 38
+      },
+      "lineNbr": 371,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-11-01T01:57:15Z",
+      "side": 1,
+      "message": "should this be MaxCapacityCpus?\nI would be good to explain in the description of this patch how this mapping was done. Did you look into how the existing devices setup their cpusets and derived this mapping from there?",
+      "range": {
+        "startLine": 371,
+        "startChar": 25,
+        "endLine": 371,
+        "endChar": 41
+      },
+      "revId": "cad411504b0e74017a86411c502aeba3957afed4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b60975ce_1d9e594d",
+        "filename": "libprocessgroup/profiles/task_profiles.json",
+        "patchSetId": 38
+      },
+      "lineNbr": 398,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-11-01T01:57:15Z",
+      "side": 1,
+      "message": "is this correct? I would not expect ProcessCapacityNormal to map to MaxCapacityCpus",
+      "range": {
+        "startLine": 398,
+        "startChar": 25,
+        "endLine": 398,
+        "endChar": 40
+      },
+      "revId": "cad411504b0e74017a86411c502aeba3957afed4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b8e530ef_c5244cb0",
+        "filename": "libprocessgroup/profiles/task_profiles.json",
+        "patchSetId": 38
+      },
+      "lineNbr": 439,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-11-01T01:57:15Z",
+      "side": 1,
+      "message": "should it be SystemBackgroundCpus?",
+      "range": {
+        "startLine": 439,
+        "startChar": 25,
+        "endLine": 439,
+        "endChar": 40
+      },
+      "revId": "cad411504b0e74017a86411c502aeba3957afed4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
