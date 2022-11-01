@@ -128,6 +128,8 @@ class CowWriter : public ICowWriter {
     uint32_t GetCowVersion() { return header_.major_version; }
 
     bool RunThread(android::base::borrowed_fd fd);
+    void PopWriteEntryFromIOQueue();
+    CowFooter* GetFooter() { return &footer_; }
 
   protected:
     virtual bool EmitCopy(uint64_t new_block, uint64_t old_block, uint64_t num_blocks = 1) override;

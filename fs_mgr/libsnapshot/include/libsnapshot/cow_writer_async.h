@@ -28,13 +28,29 @@ class CowWriter;
 
 class ICowBlockWriter {
   public:
-    explicit ICowBlockWriter();
+    explicit ICowBlockWriter(uint64_t num_ops, uint32_t cluster_size, uint32_t current_cluster_size,
+                             uint64_t current_data_size, uint64_t next_op_pos,
+                             uint64_t next_data_pos, uint32_t cluster_ops, CowWriter* writer);
+
     virtual ~ICowBlockWriter() {}
     virtual bool Initialize(android::base::borrowed_fd fd) = 0;
     virtual bool WriteOperation(CowOperation& op, const void* data = nullptr, size_t size = 0,
                                 uint64_t user_data = 0) = 0;
     virtual bool Sync() = 0;
     virtual bool DrainIORequests() = 0;
+
+  protected:
+    bool AddOperation(const CowOperation& op);
+    bool Finalize();
+    uint64_t num_ops_ = 0;
+    uint32_t cluster_size_ = 0;
+    uint32_t current_cluster_size_ = 0;
+    uint64_t current_data_size_ = 0;
+    uint64_t next_op_pos_ = 0;
+    uint64_t next_data_pos_ = 0;
+    uint32_t cluster_ops_ = 0;
+    android::base::borrowed_fd fd_;
+    CowWriter* writer_;
 };
 
 struct WriteEntry {

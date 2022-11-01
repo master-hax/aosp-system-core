@@ -7,6 +7,8 @@
 #include <queue>
 #include <string>
 
+#include <liburing.h>
+
 #include <android-base/chrono_utils.h>
 #include <android-base/file.h>
 #include <android-base/logging.h>
@@ -19,6 +21,7 @@
 #include <libsnapshot/cow_writer.h>
 #include <lz4.h>
 #include <zlib.h>
+#include <tuple>
 
 #include <sys/uio.h>
 
@@ -174,11 +177,163 @@
 namespace android {
 namespace snapshot {
 
-ICowBlockWriter::ICowBlockWriter() {}
+ICowBlockWriter::ICowBlockWriter(uint64_t num_ops, uint32_t cluster_size,
+                                 uint32_t current_cluster_size, uint64_t current_data_size,
+                                 uint64_t next_op_pos, uint64_t next_data_pos, uint32_t cluster_ops,
+                                 CowWriter* writer)
+    : fd_(-1), writer_(writer) {
+    num_ops_ = num_ops;
+    cluster_size_ = cluster_size;
+    current_cluster_size_ = current_cluster_size;
+    current_data_size_ = current_data_size;
+    next_op_pos_ = next_op_pos;
+    next_data_pos_ = next_data_pos;
+    cluster_ops_ = cluster_ops;
+}
 
+bool ICowBlockWriter::AddOperation(const CowOperation& op) {
+    num_ops_++;
+
+    if (op.type == kCowClusterOp) {
+        current_cluster_size_ = 0;
+        current_data_size_ = 0;
+    } else if (cluster_ops_) {
+        current_cluster_size_ += sizeof(op);
+        current_data_size_ += op.data_length;
+    }
+
+    next_data_pos_ += op.data_length + GetNextDataOffset(op, cluster_ops_);
+    next_op_pos_ += sizeof(CowOperation) + GetNextOpOffset(op, cluster_ops_);
+
+    if (cluster_size_ && cluster_size_ < current_cluster_size_ + 2 * sizeof(CowOperation)) {
+        CowOperation op = {};
+        op.type = kCowClusterOp;
+        op.source =
+                current_data_size_ + cluster_size_ - current_cluster_size_ - sizeof(CowOperation);
+        return WriteOperation(op);
+    }
+
+    return true;
+}
+
+bool ICowBlockWriter::Finalize() {
+    auto continue_cluster_size = current_cluster_size_;
+    auto continue_data_size = current_data_size_;
+    auto continue_data_pos = next_data_pos_;
+    auto continue_op_pos = next_op_pos_;
+    auto continue_num_ops = num_ops_;
+    bool extra_cluster = false;
+
+    // Blank out extra ops, in case we're in append mode and dropped ops.
+    if (cluster_size_) {
+        auto unused_cluster_space = cluster_size_ - current_cluster_size_;
+        std::string clr;
+        clr.resize(unused_cluster_space, '\0');
+        if (lseek(fd_.get(), next_op_pos_, SEEK_SET) < 0) {
+            PLOG(ERROR) << "Failed to seek to footer position.";
+            return false;
+        }
+        if (!android::base::WriteFully(fd_, clr.data(), clr.size())) {
+            PLOG(ERROR) << "clearing unused cluster area failed";
+            return false;
+        }
+    }
+
+    // Footer should be at the end of a file, so if there is data after the current block, end it
+    // and start a new cluster.
+    if (cluster_size_ && current_data_size_ > 0) {
+        CowOperation op = {};
+        op.type = kCowClusterOp;
+        op.source =
+                current_data_size_ + cluster_size_ - current_cluster_size_ - sizeof(CowOperation);
+        extra_cluster = true;
+        if (lseek(fd_.get(), next_op_pos_, SEEK_SET) < 0) {
+            PLOG(ERROR) << "lseek failed for writing operation.";
+            return false;
+        }
+        if (!android::base::WriteFully(fd_, reinterpret_cast<const uint8_t*>(&op), sizeof(op))) {
+            return false;
+        }
+        AddOperation(op);
+    }
+
+    CowFooter* footer = writer_->GetFooter();
+    footer->op.num_ops = num_ops_;
+    footer->op.ops_size = num_ops_ * sizeof(CowOperation);
+
+    if (lseek(fd_.get(), next_op_pos_, SEEK_SET) < 0) {
+        PLOG(ERROR) << "Failed to seek to footer position.";
+        return false;
+    }
+    memset(&footer->data.ops_checksum, 0, sizeof(uint8_t) * 32);
+    memset(&footer->data.footer_checksum, 0, sizeof(uint8_t) * 32);
+
+    // Write out footer at end of file
+    if (!android::base::WriteFully(fd_, reinterpret_cast<const uint8_t*>(footer),
+                                   sizeof(CowFooter))) {
+        PLOG(ERROR) << "write footer failed";
+        return false;
+    }
+
+    // Remove excess data, if we're in append mode and threw away more data
+    // than we wrote before.
+    off_t offs = lseek(fd_.get(), 0, SEEK_CUR);
+    if (offs < 0) {
+        PLOG(ERROR) << "Failed to lseek to find current position";
+        return false;
+    }
+
+    // Reposition for additional Writing
+    if (extra_cluster) {
+        current_cluster_size_ = continue_cluster_size;
+        current_data_size_ = continue_data_size;
+        next_data_pos_ = continue_data_pos;
+        next_op_pos_ = continue_op_pos;
+        footer->op.num_ops = continue_num_ops;
+        num_ops_ = continue_num_ops;
+    }
+
+    if (fsync(fd_.get()) < 0) {
+        PLOG(ERROR) << "fsync failed";
+        return false;
+    }
+
+    return true;
+}
+
+/*
+ * When submitting I/O requests, io_uring is used; This allows us
+ * to batch the I/O requests and allow the I/O to be async. The
+ * primary advantage here is that the userspace thread will
+ * submit the I/O request and can continue to work on other
+ * pending requests in the "Processing queue". Since, we know
+ * that Compression takes a big chunk of CPU cycles, this
+ * allows us to have both I/O requests and compression work
+ * in parallel.
+ *
+ * One of the primary operation during writes is a write
+ * of COW operation. Since this is a fixed structure,
+ * we will register the fixed set of buffer during initialization.
+ * Additionally, since we are aware of the COW block device file
+ * descriptor upfront, this file-descriptor would be registered.
+ * This helps in cutting down CPU cycles during I/O.
+ *
+ * Each I/O request is tracked based on:
+ * <buffer, offset, length> wherein:
+ *
+ * buffer: pointer to the buffer to write
+ * offset: offset within the block device
+ * length: length of write operation
+ *
+ * When the I/O is completed, the return-value of CQE
+ * is validated.
+ *
+ */
 class CowWriterAsync : public ICowBlockWriter {
   public:
-    explicit CowWriterAsync();
+    explicit CowWriterAsync(uint64_t num_ops, uint32_t cluster_size, uint32_t current_cluster_size,
+                            uint64_t current_data_size, uint64_t next_op_pos,
+                            uint64_t next_data_pos, uint32_t cluster_ops, CowWriter* writer);
 
     ~CowWriterAsync();
 
@@ -194,41 +349,310 @@ class CowWriterAsync : public ICowBlockWriter {
     bool SubmitSqeEntries();
     bool ReapCqeEntries();
     bool ReapAndSubmitIO(bool force_submit = false);
+
+    CowOperation* GetCowOpPtr();
+
+    std::unique_ptr<struct io_uring> ring_;
+    std::unique_ptr<struct iovec[]> iovec_;
+    std::vector<std::unique_ptr<CowOperation>> op_vec_;
+    int op_vec_index_ = -1;
+    int queue_depth_ = 96;
+    int num_ios_submitted_ = 0;
+    int num_ios_to_submit_ = 0;
+    bool io_uring_initialized_ = false;
+    bool op_buffers_registered_ = false;
+    bool registered_file_ = false;
+    std::queue<std::tuple<const void*, off_t, size_t>> inflight_ios_;
+
+    const uint8_t kDrainUserData = 0xff;
+    const uint8_t kFsyncUserData = 0xab;
 };
 
-CowWriterAsync::CowWriterAsync() {}
+CowWriterAsync::CowWriterAsync(uint64_t num_ops, uint32_t cluster_size,
+                               uint32_t current_cluster_size, uint64_t current_data_size,
+                               uint64_t next_op_pos, uint64_t next_data_pos, uint32_t cluster_ops,
+                               CowWriter* writer)
+    : ICowBlockWriter(num_ops, cluster_size, current_cluster_size, current_data_size, next_op_pos,
+                      next_data_pos, cluster_ops, writer) {}
 
-CowWriterAsync::~CowWriterAsync() {}
+CowWriterAsync::~CowWriterAsync() {
+    if (io_uring_initialized_) {
+        if (registered_file_) {
+            io_uring_unregister_files(ring_.get());
+        }
 
-bool CowWriterAsync::WriteOperation(CowOperation&, const void*, size_t, uint64_t) {
-    return true;
+        if (op_buffers_registered_) {
+            io_uring_unregister_buffers(ring_.get());
+        }
+
+        io_uring_queue_exit(ring_.get());
+    }
 }
 
-bool CowWriterAsync::WriteRawData(const void*, off_t, size_t, uint64_t, bool, unsigned int) {
-    return true;
+CowOperation* CowWriterAsync::GetCowOpPtr() {
+    op_vec_index_ += 1;
+    if (op_vec_index_ == (queue_depth_ * 2)) {
+        op_vec_index_ = 0;
+    }
+    CowOperation* op = reinterpret_cast<CowOperation*>(iovec_[op_vec_index_].iov_base);
+    return op;
+}
+
+bool CowWriterAsync::WriteOperation(CowOperation& op, const void* data, size_t size,
+                                    uint64_t user_data) {
+    if (op.type == kCowReplaceOp || op.type == kCowSequenceOp) {
+        op.source = next_data_pos_;
+    }
+
+    CowOperation* cow_op = GetCowOpPtr();
+    std::memcpy(cow_op, &op, sizeof(CowOperation));
+
+    if (op_buffers_registered_) {
+        if (!WriteRawData(cow_op, next_op_pos_, sizeof(CowOperation), 0, true, op_vec_index_)) {
+            return false;
+        }
+    } else {
+        if (!WriteRawData(cow_op, next_op_pos_, sizeof(CowOperation), 0)) {
+            return false;
+        }
+    }
+
+    if (data != nullptr && size > 0) {
+        if (!WriteRawData(data, next_data_pos_, size, user_data)) {
+            return false;
+        }
+    }
+
+    return AddOperation(op);
+}
+
+bool CowWriterAsync::WriteRawData(const void* buffer, off_t offset, size_t length,
+                                  uint64_t user_data, bool is_fixed, unsigned int index) {
+    struct io_uring_sqe* sqe = io_uring_get_sqe(ring_.get());
+    CHECK(sqe != nullptr) << "io_uring_get_sqe failed";
+
+    int fd = fd_.get();
+    if (registered_file_) {
+        fd = 0;
+    }
+
+    if (is_fixed) {
+        io_uring_prep_write_fixed(sqe, fd, buffer, length, offset, index);
+    } else {
+        io_uring_prep_write(sqe, fd, buffer, length, offset);
+    }
+
+    sqe->flags |= (IOSQE_ASYNC | IOSQE_IO_LINK);
+
+    if (registered_file_) {
+        sqe->flags |= IOSQE_FIXED_FILE;
+    }
+
+    sqe->user_data = user_data;
+    num_ios_to_submit_ += 1;
+    inflight_ios_.push(std::make_tuple(buffer, offset, length));
+    return ReapAndSubmitIO();
 }
 
 bool CowWriterAsync::ReapCqeEntries() {
+    while (num_ios_submitted_) {
+        struct io_uring_cqe* cqe;
+        int ret = io_uring_wait_cqe(ring_.get(), &cqe);
+
+        // TODO: We don't retry yet.
+        if (ret == -EAGAIN) {
+            LOG(INFO) << "Received EAGAIN: "
+                      << " cq_ready: " << io_uring_cq_ready(ring_.get())
+                      << " num_ios_submitted: " << num_ios_submitted_
+                      << " num_ios_to_submit: " << num_ios_to_submit_;
+            return false;
+        } else if (ret < 0) {
+            LOG(ERROR) << "wait_cqe failed with: " << ret
+                       << " cq_ready: " << io_uring_cq_ready(ring_.get());
+            return false;
+        }
+
+        if (cqe->res < 0) {
+            LOG(ERROR) << "write failed with res: " << cqe->res;
+            return false;
+        }
+
+        std::tuple<const void*, off_t, size_t> io_data = std::move(inflight_ios_.front());
+        inflight_ios_.pop();
+
+        if (cqe->res != std::get<size_t>(io_data)) {
+            LOG(ERROR) << "Invalid result. Expected:  " << std::get<size_t>(io_data)
+                       << " Got: " << cqe->res << " offset: " << std::get<off_t>(io_data)
+                       << " cqe->user_data: " << cqe->user_data;
+            return false;
+        }
+
+        if (cqe->user_data == kDrainUserData || cqe->user_data == kFsyncUserData) {
+            CHECK(std::get<0>(io_data) == nullptr);
+        } else if (cqe->user_data != 0) {
+            writer_->PopWriteEntryFromIOQueue();
+        }
+
+        io_uring_cqe_seen(ring_.get(), cqe);
+        num_ios_submitted_ -= 1;
+    }
+
     return true;
 }
 
 bool CowWriterAsync::SubmitSqeEntries() {
+    int ret = io_uring_submit(ring_.get());
+    if (ret != num_ios_to_submit_) {
+        LOG(ERROR) << "io_uring_submit failed - got: " << ret
+                   << " expected: " << num_ios_to_submit_;
+        return false;
+    }
+
+    num_ios_submitted_ += num_ios_to_submit_;
+    num_ios_to_submit_ = 0;
+
+    LOG(DEBUG) << "Submitsqe: " << ret;
     return true;
 }
 
-bool CowWriterAsync::ReapAndSubmitIO(bool) {
+bool CowWriterAsync::ReapAndSubmitIO(bool force_submit) {
+    const bool queue_threshold = (num_ios_to_submit_ == (queue_depth_ >> 1));
+
+    if (queue_threshold || force_submit) {
+        if (num_ios_submitted_ && !ReapCqeEntries()) {
+            return false;
+        }
+
+        if (num_ios_to_submit_ && !SubmitSqeEntries()) {
+            return false;
+        }
+    }
+
     return true;
 }
 
 bool CowWriterAsync::Sync() {
-    return true;
+    struct io_uring_sqe* sqe = io_uring_get_sqe(ring_.get());
+    CHECK(sqe != nullptr) << "io_uring_get_sqe failed during Sync()";
+    io_uring_prep_fsync(sqe, fd_.get(), 0);
+    sqe->flags |= (IOSQE_ASYNC | IOSQE_IO_LINK);
+    num_ios_to_submit_ += 1;
+    sqe->user_data = kFsyncUserData;
+    inflight_ios_.push(std::make_tuple(nullptr, 0, 0));
+    return ReapAndSubmitIO();
 }
 
 bool CowWriterAsync::DrainIORequests() {
-    return true;
+    LOG(DEBUG) << "DrainIORequests(): I/Os to submit: " << num_ios_to_submit_
+               << " Pending I/O's to reap: " << num_ios_submitted_
+               << " inflight-ios: " << inflight_ios_.size();
+
+    struct io_uring_sqe* sqe = io_uring_get_sqe(ring_.get());
+    CHECK(sqe != nullptr) << "io_uring_get_sqe failed during drain()";
+    io_uring_prep_nop(sqe);
+    // Drain the Submission queue
+    sqe->flags |= (IOSQE_IO_DRAIN | IOSQE_IO_LINK);
+    sqe->user_data = kDrainUserData;
+    num_ios_to_submit_ += 1;
+    inflight_ios_.push(std::make_tuple(nullptr, 0, 0));
+
+    // Flush the I/O requests forcefully as we need to drain the queue
+    if (!ReapAndSubmitIO(true)) {
+        return false;
+    }
+
+    // Wait for I/O completion
+    if (!ReapCqeEntries()) {
+        return false;
+    }
+
+    // Verify there are no in-flight or pending I/O requests
+    CHECK(num_ios_to_submit_ == 0 && num_ios_submitted_ == 0 && inflight_ios_.size() == 0)
+            << " I/Os to submit: " << num_ios_to_submit_
+            << " Pending I/O's to reap: " << num_ios_submitted_
+            << " inflight-ios: " << inflight_ios_.size();
+
+    return Finalize();
 }
 
-bool CowWriterAsync::Initialize(android::base::borrowed_fd) {
+bool CowWriterAsync::Initialize(android::base::borrowed_fd fd) {
+    struct utsname uts;
+    unsigned int major, minor;
+
+    if (android::base::GetBoolProperty("ro.virtual_ab.cow_write.io_uring.enabled", false)) {
+        LOG(INFO) << "ro.virtual_ab.cow_write.io_uring.enabled disabled - Not using io_uring";
+        return false;
+    }
+
+    if ((uname(&uts) != 0) || (sscanf(uts.release, "%u.%u", &major, &minor) != 2)) {
+        LOG(ERROR) << "Could not parse the kernel version from uname. "
+                   << " io_uring not supported";
+        return false;
+    }
+
+    // We will only support kernels from 5.6 onwards as IOSQE_ASYNC flag and
+    // IO_URING_OP_READ/WRITE opcodes were introduced only on 5.6 kernel
+    if (major >= 5) {
+        if (major == 5 && minor < 6) {
+            return false;
+        }
+    } else {
+        return false;
+    }
+
+    fd_ = fd;
+
+    if (fd_.get() < 0) {
+        return false;
+    }
+
+    struct stat stat;
+    if (fstat(fd_.get(), &stat) < 0) {
+        PLOG(ERROR) << "fstat failed";
+        return false;
+    }
+
+    if (!S_ISBLK(stat.st_mode)) {
+        LOG(ERROR) << "Not a block device";
+        return false;
+    }
+
+    ring_ = std::make_unique<struct io_uring>();
+
+    int ret = io_uring_queue_init(queue_depth_, ring_.get(), 0);
+    if (ret) {
+        LOG(ERROR) << "io_uring_queue_init failed with ret: " << ret;
+        return false;
+    }
+
+    iovec_ = std::make_unique<struct iovec[]>(queue_depth_ * 2);
+    struct iovec* vec = iovec_.get();
+    for (size_t i = 0; i < queue_depth_ * 2; i++) {
+        std::unique_ptr<CowOperation> op = std::make_unique<CowOperation>();
+        vec[i].iov_base = op.get();
+        vec[i].iov_len = sizeof(CowOperation);
+        op_vec_.push_back(std::move(op));
+    }
+
+    ret = io_uring_register_buffers(ring_.get(), vec, queue_depth_ * 2);
+    if (!ret) {
+        op_buffers_registered_ = true;
+        LOG(INFO) << "cow-op buffer registered successfully";
+    } else {
+        LOG(INFO) << "cow-op buffers could not be registered with error: " << ret;
+    }
+
+    int rfd = static_cast<int>(fd_.get());
+    ret = io_uring_register_files(ring_.get(), &rfd, 1);
+    if (!ret) {
+        registered_file_ = true;
+        LOG(INFO) << "cow fd registered successfully";
+    } else {
+        LOG(INFO) << "cow fd register failed";
+    }
+
+    io_uring_initialized_ = true;
+    LOG(INFO) << "CowWriterAsync initialized with queue_depth: " << queue_depth_;
     return true;
 }
 
@@ -384,6 +808,16 @@ bool CowWriter::ProcessWriteEntryFromScratchQueue(std::unique_ptr<WriteEntry> we
     return true;
 }
 
+void CowWriter::PopWriteEntryFromIOQueue() {
+    CHECK(queue_io_in_progress_.size() != 0);
+    auto we = std::move(queue_io_in_progress_.front());
+    queue_io_in_progress_.pop();
+
+    if (we->scratch_buffer != nullptr) {
+        PushWriteEntryToScratchQueue(std::move(we));
+    }
+}
+
 void CowWriter::PushWriteEntryToScratchQueue(std::unique_ptr<WriteEntry> we) {
     {
         std::lock_guard<std::mutex> lock(scratch_buffers_lock_);
@@ -438,7 +872,9 @@ std::unique_ptr<WriteEntry> CowWriter::GetWriteEntryFromProcessQueue() {
 void CowWriter::InitializeBuffers(android::base::borrowed_fd&& fd_in) {
     android::base::borrowed_fd fd = std::move(fd_in);
 
-    block_writer_ = std::make_unique<CowWriterAsync>();
+    block_writer_ = std::make_unique<CowWriterAsync>(
+            footer_.op.num_ops, cluster_size_, current_cluster_size_, current_data_size_,
+            next_op_pos_, next_data_pos_, header_.cluster_ops, this);
 
     CHECK(block_writer_->Initialize(fd));
 
@@ -464,8 +900,8 @@ void CowWriter::DrainComplete() {
 
 // Background thread to process I/O requests from update-engine asynchronously.
 bool CowWriter::RunThread(android::base::borrowed_fd fd) {
-    // Just initialize the buffers for now.
     InitializeBuffers(std::move(fd));
+
     bool succeeded = false;
     auto scope_guard = android::base::make_scope_guard([this, &succeeded]() -> void {
         if (!succeeded) {

@@ -46,7 +46,9 @@ cc_defaults {
         "libfstab",
         "libsnapshot_snapuserd",
         "libz",
+	"liburing",
     ],
+    include_dirs: ["bionic/libc/kernel"],
     header_libs: [
         "libfiemap_headers",
         "libstorage_literals_headers",
@@ -163,7 +165,9 @@ cc_defaults {
         "libbrotli",
         "libz",
         "liblz4",
+	"liburing",
     ],
+    include_dirs: ["bionic/libc/kernel"],
     export_include_dirs: ["include"],
 }
 
@@ -249,7 +253,9 @@ cc_defaults {
         "libsnapshot_cow",
         "libsnapshot_test_helpers",
         "libsparse",
+	"liburing",
     ],
+    include_dirs: ["bionic/libc/kernel"],
     header_libs: [
         "libstorage_literals_headers",
     ],
@@ -398,7 +404,9 @@ cc_defaults {
         "libsnapshot_test_helpers",
         "libprotobuf-mutator",
         "libz",
+	"liburing",
     ],
+    include_dirs: ["bionic/libc/kernel"],
     header_libs: [
         "libfiemap_headers",
         "libstorage_literals_headers",
@@ -459,7 +467,9 @@ cc_test {
         "libbrotli",
         "libgtest",
         "libsnapshot_cow",
+	"liburing",
     ],
+    include_dirs: ["bionic/libc/kernel"],
     test_suites: [
         "device-tests"
     ],
@@ -498,7 +508,9 @@ cc_binary {
         "liblz4",
         "libziparchive",
         "update_metadata-protos",
+	"liburing",
     ],
+    include_dirs: ["bionic/libc/kernel"],
     srcs: [
         "make_cow_from_ab_ota.cpp",
     ],
@@ -532,7 +544,9 @@ cc_binary {
         "libsparse",
         "libz",
         "libziparchive",
+	"liburing",
     ],
+    include_dirs: ["bionic/libc/kernel"],
     srcs: [
         "estimate_cow_from_nonab_ota.cpp",
     ],
