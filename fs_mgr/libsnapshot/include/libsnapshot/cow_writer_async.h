@@ -24,6 +24,19 @@ static constexpr int kScratchBufferSize = (1UL << 20);
 static constexpr int kMaxQueueProcessingSize = 512;
 static constexpr uint8_t kDrainQueue = 0xff;
 
+class CowWriter;
+
+class ICowBlockWriter {
+  public:
+    explicit ICowBlockWriter();
+    virtual ~ICowBlockWriter() {}
+    virtual bool Initialize(android::base::borrowed_fd fd) = 0;
+    virtual bool WriteOperation(CowOperation& op, const void* data = nullptr, size_t size = 0,
+                                uint64_t user_data = 0) = 0;
+    virtual bool Sync() = 0;
+    virtual bool DrainIORequests() = 0;
+};
+
 struct WriteEntry {
     uint8_t op_type;
     void* scratch_buffer;

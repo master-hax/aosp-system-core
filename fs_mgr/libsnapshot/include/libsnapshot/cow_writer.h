@@ -127,7 +127,7 @@ class CowWriter : public ICowWriter {
 
     uint32_t GetCowVersion() { return header_.major_version; }
 
-    bool RunThread();
+    bool RunThread(android::base::borrowed_fd fd);
 
   protected:
     virtual bool EmitCopy(uint64_t new_block, uint64_t old_block, uint64_t num_blocks = 1) override;
@@ -181,23 +181,35 @@ class CowWriter : public ICowWriter {
     bool is_block_device_ = false;
 
     bool write_async_ = false;
+    std::unique_ptr<ICowBlockWriter> block_writer_;
     bool drain_io_in_progress_ = false;
     std::atomic<bool> io_error_{false};
-    std::vector<std::unique_ptr<uint8_t[]>> scratch_buffer_;
+    void InitializeBuffers(android::base::borrowed_fd&& fd_in);
 
+    // Processing queue
     bool stopped_ = false;
     std::mutex processing_lock_;
     std::condition_variable processing_cv_;
     bool queue_processing_waiting_ = false;
     std::queue<std::unique_ptr<WriteEntry>> queue_processing_;
-    void InitializeBuffers();
 
+    // Scratch-buffer queue
     std::mutex scratch_buffers_lock_;
     std::condition_variable scratch_buffers_cv_;
+    std::vector<std::unique_ptr<uint8_t[]>> scratch_buffer_;
     std::queue<std::unique_ptr<WriteEntry>> queue_scratch_buffers_;
 
+    std::queue<std::unique_ptr<WriteEntry>> queue_io_in_progress_;
+
+    // Queue operations
+    void PushWriteEntryToScratchQueue(std::unique_ptr<WriteEntry> we);
+    bool ProcessWriteEntryFromScratchQueue(std::unique_ptr<WriteEntry> we);
+    bool ProcessWriteEntryNonScratchBuffer(std::unique_ptr<WriteEntry> we);
     std::unique_ptr<WriteEntry> GetWriteEntryFromScratchQueue();
+    std::unique_ptr<WriteEntry> GetWriteEntryFromProcessQueue();
     bool PushWriteEntryToProcessQueue(std::unique_ptr<WriteEntry> we);
+    void DrainComplete();
+
     std::thread thread_;
 };
 

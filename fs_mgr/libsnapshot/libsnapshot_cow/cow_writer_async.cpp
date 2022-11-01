@@ -11,10 +11,16 @@
 #include <android-base/file.h>
 #include <android-base/logging.h>
 #include <android-base/properties.h>
+#include <android-base/scopeguard.h>
 #include <android-base/unique_fd.h>
+#include <brotli/encode.h>
 #include <libsnapshot/cow_format.h>
 #include <libsnapshot/cow_reader.h>
 #include <libsnapshot/cow_writer.h>
+#include <lz4.h>
+#include <zlib.h>
+
+#include <sys/uio.h>
 
 #include <stdlib.h>
 #include <time.h>
@@ -168,7 +174,274 @@
 namespace android {
 namespace snapshot {
 
-void CowWriter::InitializeBuffers() {
+ICowBlockWriter::ICowBlockWriter() {}
+
+class CowWriterAsync : public ICowBlockWriter {
+  public:
+    explicit CowWriterAsync();
+
+    ~CowWriterAsync();
+
+    bool Initialize(android::base::borrowed_fd fd) override;
+    bool WriteOperation(CowOperation& op, const void* data = nullptr, size_t size = 0,
+                        uint64_t user_data = 0) override;
+    bool Sync() override;
+    bool DrainIORequests() override;
+
+  private:
+    bool WriteRawData(const void* buffer, off_t offset, size_t length, uint64_t user_data,
+                      bool is_fixed = false, unsigned int index = 0);
+    bool SubmitSqeEntries();
+    bool ReapCqeEntries();
+    bool ReapAndSubmitIO(bool force_submit = false);
+};
+
+CowWriterAsync::CowWriterAsync() {}
+
+CowWriterAsync::~CowWriterAsync() {}
+
+bool CowWriterAsync::WriteOperation(CowOperation&, const void*, size_t, uint64_t) {
+    return true;
+}
+
+bool CowWriterAsync::WriteRawData(const void*, off_t, size_t, uint64_t, bool, unsigned int) {
+    return true;
+}
+
+bool CowWriterAsync::ReapCqeEntries() {
+    return true;
+}
+
+bool CowWriterAsync::SubmitSqeEntries() {
+    return true;
+}
+
+bool CowWriterAsync::ReapAndSubmitIO(bool) {
+    return true;
+}
+
+bool CowWriterAsync::Sync() {
+    return true;
+}
+
+bool CowWriterAsync::DrainIORequests() {
+    return true;
+}
+
+bool CowWriterAsync::Initialize(android::base::borrowed_fd) {
+    return true;
+}
+
+//====================================================================================
+// The following functions are related to processing I/O requests from
+// background I/O thread
+
+bool CowWriter::ProcessWriteEntryNonScratchBuffer(std::unique_ptr<WriteEntry> we) {
+    CHECK(!we->scratch_buffer);
+
+    CowOperation op = {};
+    op.type = we->op_type;
+
+    if (we->op_type == kCowCopyOp) {
+        op.new_block = we->new_block;
+        op.source = we->source;
+        return block_writer_->WriteOperation(op);
+    } else if (we->op_type == kCowZeroOp) {
+        op.new_block = we->new_block;
+        op.source = 0;
+        return block_writer_->WriteOperation(op);
+    } else {
+        op.new_block = we->new_block;
+        CHECK(we->op_type == kCowReplaceOp || we->op_type == kCowXorOp);
+
+        void* buffer = we->buffer_vec_[0].get();
+        if (compression_) {
+            auto data = Compress(buffer, header_.block_size);
+            if (data.empty()) {
+                PLOG(ERROR) << "Async - compress failed";
+                return false;
+            }
+
+            if (data.size() > std::numeric_limits<uint16_t>::max()) {
+                LOG(ERROR) << "Compressed block is too large: " << data.size() << " bytes";
+                return false;
+            }
+
+            std::memcpy(buffer, data.data(), data.size());
+            op.compression = compression_;
+            op.data_length = static_cast<uint16_t>(data.size());
+        } else {
+            op.compression = kCowCompressNone;
+            op.data_length = static_cast<uint16_t>(header_.block_size);
+        }
+
+        if (we->op_type == kCowXorOp) {
+            op.source = we->source;
+        }
+
+        // Store the "WriteEntry" as we have to track the buffer until
+        // I/O is completed.
+        queue_io_in_progress_.push(std::move(we));
+        return block_writer_->WriteOperation(op, buffer, op.data_length, op.type);
+    }
+
+    return true;
+}
+
+bool CowWriter::ProcessWriteEntryFromScratchQueue(std::unique_ptr<WriteEntry> we) {
+    const int num_scratch_buffers = kScratchBufferSize / header_.block_size;
+    off_t offset = 0;
+    bool scratch_buffer_used = !(we->op_type == kCowCopyOp || we->op_type == kCowZeroOp);
+
+    for (size_t i = 0; i < num_scratch_buffers; i++) {
+        CowOperation op = {};
+        op.type = we->op_type;
+        op.new_block = we->new_block + i;
+
+        if (we->op_type == kCowCopyOp) {
+            op.source = we->source + i;
+            if (!block_writer_->WriteOperation(op)) {
+                LOG(ERROR) << "WriteOperation - COPY op failed. source: " << op.source
+                           << " Processing entry: " << i;
+                return false;
+            }
+        } else if (we->op_type == kCowZeroOp) {
+            op.source = 0;
+            if (!block_writer_->WriteOperation(op)) {
+                LOG(ERROR) << "WriteOperation - ZERO op failed. "
+                           << " Processing entry: " << i;
+                return false;
+            }
+        } else {
+            void* write_buffer;
+
+            if (compression_) {
+                auto data = Compress(reinterpret_cast<char*>(we->scratch_buffer) + offset,
+                                     header_.block_size);
+                if (data.empty()) {
+                    PLOG(ERROR) << "Async - compress failed";
+                    return false;
+                }
+
+                if (data.size() > std::numeric_limits<uint16_t>::max()) {
+                    LOG(ERROR) << "Compressed block is too large: " << data.size() << " bytes";
+                    return false;
+                }
+
+                if (data.size() > header_.block_size) {
+                    // This is little subtle; sometimes compressed data can be more
+                    // than block size i.e. 4k. In that case, we cannot store that
+                    // back in scratch buffer as we may end up corrupting other buffers.
+                    //
+                    // Hence, allocate the buffer on the fly and store them until I/O is
+                    // completed. Once I/O is done, we will clear this vector.
+                    auto buffer = std::make_unique<uint8_t[]>(data.size());
+                    write_buffer = buffer.get();
+                    std::memcpy(write_buffer, data.data(), data.size());
+                    we->buffer_vec_.push_back(std::move(buffer));
+                } else {
+                    // Copy the compressed data back to scratch queue buffer itself.
+                    std::memcpy(reinterpret_cast<char*>(we->scratch_buffer) + offset, data.data(),
+                                data.size());
+                    write_buffer = reinterpret_cast<char*>(we->scratch_buffer) + offset;
+                }
+                op.compression = compression_;
+                op.data_length = static_cast<uint16_t>(data.size());
+            } else {
+                op.compression = kCowCompressNone;
+                op.data_length = static_cast<uint16_t>(header_.block_size);
+                write_buffer = reinterpret_cast<char*>(we->scratch_buffer) + offset;
+            }
+
+            if (we->op_type == kCowXorOp) {
+                op.source = we->source + (i * header_.block_size);
+            }
+
+            uint64_t user_data = 0;
+            // Once we are done processing all the 4k buffers in scratch-buffer, we
+            // will push this "WriteEntry" to "I/O in progress queue". When all
+            // the buffers in this "WriteEntry" have the I/O completed, we can then
+            // safely push them back to "Scratch queue".
+            if (i == num_scratch_buffers - 1) {
+                queue_io_in_progress_.push(std::move(we));
+                user_data = op.type;
+            }
+            if (!block_writer_->WriteOperation(op, write_buffer, op.data_length, user_data)) {
+                LOG(ERROR) << "WriteOperation: op.type: " << op.type << " failed"
+                           << " Processing entry: " << i;
+                return false;
+            }
+            offset += header_.block_size;
+        }
+    }
+
+    // Since COPY and XOR blocks don't use scratch-buffers, we can safely push
+    // them back to "Scratch queue" immediately.
+    if (!scratch_buffer_used) {
+        PushWriteEntryToScratchQueue(std::move(we));
+    }
+
+    return true;
+}
+
+void CowWriter::PushWriteEntryToScratchQueue(std::unique_ptr<WriteEntry> we) {
+    {
+        std::lock_guard<std::mutex> lock(scratch_buffers_lock_);
+        we->buffer_vec_.clear();
+        queue_scratch_buffers_.push(std::move(we));
+    }
+    scratch_buffers_cv_.notify_all();
+}
+
+std::unique_ptr<WriteEntry> CowWriter::GetWriteEntryFromProcessQueue() {
+    std::unique_ptr<WriteEntry> we;
+    bool thread_waiting = false, queue_size;
+    {
+        std::unique_lock<std::mutex> lock(processing_lock_);
+        // Wait until we have some I/O requests or if we are
+        // in the process of termination most likely because
+        // of cancelling an OTA.
+        while (queue_processing_.size() == 0 && !stopped_) {
+            auto now = std::chrono::system_clock::now();
+            auto deadline = now + 10s;
+            auto status = processing_cv_.wait_until(lock, deadline);
+            if (status == std::cv_status::timeout) {
+                LOG(INFO) << "Waiting for write-entry from process queue"
+                          << " scratch queue-size: " << queue_scratch_buffers_.size()
+                          << " queue-io-in-progress: " << queue_io_in_progress_.size()
+                          << " queue-process-size: " << queue_processing_.size();
+                continue;
+            }
+        }
+
+        // If there are still pending I/O requests, we should continue
+        // to process those until queue is empty.
+        if (stopped_ && queue_processing_.size() == 0) {
+            return std::unique_ptr<WriteEntry>{};
+        }
+        we = std::move(queue_processing_.front());
+        queue_processing_.pop();
+        if (queue_processing_waiting_) {
+            queue_size = queue_processing_.size();
+            thread_waiting = queue_processing_waiting_;
+        }
+    }
+
+    // Notify if submission thread is waiting and queue is 50% empty
+    if (thread_waiting && (queue_size <= (kMaxQueueProcessingSize >> 1))) {
+        processing_cv_.notify_all();
+    }
+
+    return we;
+}
+
+void CowWriter::InitializeBuffers(android::base::borrowed_fd&& fd_in) {
+    android::base::borrowed_fd fd = std::move(fd_in);
+
+    block_writer_ = std::make_unique<CowWriterAsync>();
+
+    CHECK(block_writer_->Initialize(fd));
+
     for (size_t i = 0; i < kNumScratchBuffers; i++) {
         std::unique_ptr<uint8_t[]> buffer = std::make_unique<uint8_t[]>(kScratchBufferSize);
         std::unique_ptr<WriteEntry> writeEntry = std::make_unique<WriteEntry>();
@@ -178,12 +451,77 @@ void CowWriter::InitializeBuffers() {
     }
 }
 
-// Background thread to process I/O requests from update-engine asynchronously.
-bool CowWriter::RunThread() {
-    // Just initialize the buffers for now.
-    InitializeBuffers();
+void CowWriter::DrainComplete() {
+    {
+        std::unique_lock<std::mutex> lock(processing_lock_);
+        CHECK(drain_io_in_progress_);
+        drain_io_in_progress_ = false;
+        CHECK(queue_processing_.size() == 0);
+    }
+    processing_cv_.notify_all();
+    LOG(INFO) << "Drain-complete: scratch queue-size: " << queue_scratch_buffers_.size();
+}
 
-    // I/O requests from queues are not handled yet.
+// Background thread to process I/O requests from update-engine asynchronously.
+bool CowWriter::RunThread(android::base::borrowed_fd fd) {
+    // Just initialize the buffers for now.
+    InitializeBuffers(std::move(fd));
+    bool succeeded = false;
+    auto scope_guard = android::base::make_scope_guard([this, &succeeded]() -> void {
+        if (!succeeded) {
+            CHECK(!io_error_.exchange(true));
+            processing_cv_.notify_all();
+        }
+    });
+
+    while (true) {
+        std::unique_ptr<WriteEntry> we = GetWriteEntryFromProcessQueue();
+
+        if (!we) {
+            LOG(INFO) << "I/O Thread Terminating...";
+            break;
+        }
+
+        CowOperation op = {};
+        op.type = we->op_type;
+
+        if (we->op_type == kDrainQueue) {
+            if (block_writer_->Sync() && block_writer_->DrainIORequests()) {
+                DrainComplete();
+            } else {
+                LOG(ERROR) << "Failed to drain I/O requests";
+                return false;
+            }
+        } else if (we->op_type == kCowLabelOp) {
+            op.source = we->source;
+
+            if (!(block_writer_->WriteOperation(op) && block_writer_->Sync())) {
+                LOG(ERROR) << "Labelop failed";
+                return false;
+            }
+        } else if (we->op_type == kCowSequenceOp) {
+            op.data_length = we->source;
+            void* buffer = we->buffer_vec_[0].get();
+            queue_io_in_progress_.push(std::move(we));
+
+            if (!block_writer_->WriteOperation(op, buffer, op.data_length, op.type)) {
+                LOG(ERROR) << "kCowSequenceOp failed";
+                return false;
+            }
+        } else if (!we->scratch_buffer) {
+            if (!ProcessWriteEntryNonScratchBuffer(std::move(we))) {
+                LOG(ERROR) << "ProcessWriteEntryNonScratchBuffer failed";
+                return false;
+            }
+        } else {
+            if (!ProcessWriteEntryFromScratchQueue(std::move(we))) {
+                LOG(ERROR) << "ProcessWriteEntryFromScratchQueue failed";
+                return false;
+            }
+        }
+    }
+
+    succeeded = true;
     return true;
 }
 
@@ -394,7 +732,7 @@ void CowWriter::SetupAsyncWriter(android::base::borrowed_fd fd) {
     }
 
     // Spin up the background thread for processing I/O requests
-    thread_ = std::thread(std::bind(&CowWriter::RunThread, this));
+    thread_ = std::thread(std::bind(&CowWriter::RunThread, this, fd));
     write_async_ = true;
 }
 
