@@ -20,6 +20,29 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "56f19fa5_531bb308",
+        "filename": "fs_mgr/libsnapshot/Android.bp",
+        "patchSetId": 3
+      },
+      "lineNbr": 178,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2022-11-01T21:31:46Z",
+      "side": 1,
+      "message": "space instead of tabs",
+      "range": {
+        "startLine": 178,
+        "startChar": 0,
+        "endLine": 178,
+        "endChar": 1
+      },
+      "revId": "14964e1dfae23dd2504cf64048ad4afc4e08f538",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "ddac1c75_7326f1f4",
         "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_writer.h",
         "patchSetId": 3
