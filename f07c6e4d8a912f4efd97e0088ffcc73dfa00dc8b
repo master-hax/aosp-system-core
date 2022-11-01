@@ -38,6 +38,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "cf855db1_f8dbce7f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-11-01T05:41:20Z",
+      "side": 1,
+      "message": "It still needs to check VSR level \u003c `__ANDROID_API_T__`. The non-AB code will be removed once it leaves vendor freeze, and with it, code related to /cache.\n\nIf you want to avoid overlayfs entirely for remounts, you can do so in development by disabling `BOARD_EXT4_SHARE_DUP_BLOCKS`, and specifying hardcoded partition sizes to give some wiggle room.",
+      "parentUuid": "33a91ca7_90e1137a",
+      "revId": "f07c6e4d8a912f4efd97e0088ffcc73dfa00dc8b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "9dded378_cf4f7e77",
         "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
         "patchSetId": 2
@@ -67,6 +85,24 @@
       "side": 1,
       "message": "Thanks a lot for your review!\n\n\u003e non-AB is no longer supported\n\nDo you mean that non-A/B configuration is deprecated? I know that it is considered legacy, but still legal to use. As far as I can see, device/amlogic/yukawa reference target is non-A/B\n\n\u003e remount should be going through the /data path rather than /cache\n\nYou are right, but there are 2 concerns about data that I see:\n\n1. as you mentioned, it might have no reliable pinning in f2fs configuration, and api_level check might not help when the code runs on old enough kernel.\n\n2. /data may be actively used by applications leaving not much space for backing storage.\n\nMeanwhile, /cache is almost always free since it is used only to store OTA package. /cache partition size should be large enough to hold OTA package, that contains update up to the whole super size. So /cache is almost always large enough to be overlay for the most of super\u0027s data.",
       "parentUuid": "9dded378_cf4f7e77",
+      "revId": "f07c6e4d8a912f4efd97e0088ffcc73dfa00dc8b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4d9dc59e_f5061567",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-11-01T05:41:20Z",
+      "side": 1,
+      "message": "non-AB will fail VTS for Android 13+ launches (and soon, other xTS as well).\n\nDoes this device have a very small /data partition? Remount is only for development, and developers have control over how much space is free on /data, unless /data has been provisioned very small (say, \u003c4gb).",
+      "parentUuid": "2e3da76f_98f52c6f",
       "revId": "f07c6e4d8a912f4efd97e0088ffcc73dfa00dc8b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
