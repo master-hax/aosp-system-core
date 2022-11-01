@@ -301,6 +301,106 @@ bool ICowBlockWriter::Finalize() {
     return true;
 }
 
+class CowWriterSync : public ICowBlockWriter {
+  public:
+    explicit CowWriterSync(uint64_t num_ops, uint32_t cluster_size, uint32_t current_cluster_size,
+                           uint64_t current_data_size, uint64_t next_op_pos, uint64_t next_data_pos,
+                           uint32_t cluster_ops, CowWriter* writer);
+
+    ~CowWriterSync();
+
+    bool Initialize(android::base::borrowed_fd fd) override;
+    bool WriteOperation(CowOperation& op, const void* data = nullptr, size_t size = 0,
+                        uint64_t user_data = 0) override;
+    bool Sync() override;
+    bool DrainIORequests() override;
+
+  private:
+    bool WriteRawData(const void* buffer, off_t offset, size_t length, uint64_t user_data);
+};
+
+CowWriterSync::CowWriterSync(uint64_t num_ops, uint32_t cluster_size, uint32_t current_cluster_size,
+                             uint64_t current_data_size, uint64_t next_op_pos,
+                             uint64_t next_data_pos, uint32_t cluster_ops, CowWriter* writer)
+    : ICowBlockWriter(num_ops, cluster_size, current_cluster_size, current_data_size, next_op_pos,
+                      next_data_pos, cluster_ops, writer) {}
+
+CowWriterSync::~CowWriterSync() {}
+
+bool CowWriterSync::Initialize(android::base::borrowed_fd fd) {
+    fd_ = fd;
+
+    if (fd_.get() < 0) {
+        return false;
+    }
+
+    struct stat stat;
+    if (fstat(fd_.get(), &stat) < 0) {
+        PLOG(ERROR) << "fstat failed";
+        return false;
+    }
+
+    if (!S_ISBLK(stat.st_mode)) {
+        LOG(ERROR) << "Not a block device";
+        return false;
+    }
+
+    LOG(INFO) << "CowWriterSync - Initialize success";
+    return true;
+}
+
+bool CowWriterSync::WriteOperation(CowOperation& op, const void* data, size_t size,
+                                   uint64_t user_data) {
+    if (op.type == kCowReplaceOp || op.type == kCowSequenceOp) {
+        op.source = next_data_pos_;
+    }
+
+    if (lseek(fd_.get(), next_op_pos_, SEEK_SET) < 0) {
+        PLOG(ERROR) << "lseek failed for writing operation.";
+        return false;
+    }
+    if (!android::base::WriteFully(fd_, reinterpret_cast<const uint8_t*>(&op), sizeof(op))) {
+        return false;
+    }
+
+    if (data != nullptr && size > 0) {
+        if (!WriteRawData(data, next_data_pos_, size, user_data)) {
+            return false;
+        }
+    }
+
+    return AddOperation(op);
+}
+
+bool CowWriterSync::WriteRawData(const void* data, off_t offset, size_t size, uint64_t user_data) {
+    if (lseek(fd_.get(), offset, SEEK_SET) < 0) {
+        PLOG(ERROR) << "lseek failed for writing data.";
+        return false;
+    }
+
+    if (!android::base::WriteFully(fd_, data, size)) {
+        return false;
+    }
+
+    if (user_data != 0) {
+        writer_->PopWriteEntryFromIOQueue();
+    }
+
+    return true;
+}
+
+bool CowWriterSync::Sync() {
+    if (fsync(fd_.get()) < 0) {
+        PLOG(ERROR) << "fsync failed";
+        return false;
+    }
+    return true;
+}
+
+bool CowWriterSync::DrainIORequests() {
+    return Finalize();
+}
+
 /*
  * When submitting I/O requests, io_uring is used; This allows us
  * to batch the I/O requests and allow the I/O to be async. The
@@ -875,8 +975,12 @@ void CowWriter::InitializeBuffers(android::base::borrowed_fd&& fd_in) {
     block_writer_ = std::make_unique<CowWriterAsync>(
             footer_.op.num_ops, cluster_size_, current_cluster_size_, current_data_size_,
             next_op_pos_, next_data_pos_, header_.cluster_ops, this);
-
-    CHECK(block_writer_->Initialize(fd));
+    if (!block_writer_->Initialize(fd)) {
+        block_writer_ = std::make_unique<CowWriterSync>(
+                footer_.op.num_ops, cluster_size_, current_cluster_size_, current_data_size_,
+                next_op_pos_, next_data_pos_, header_.cluster_ops, this);
+        CHECK(block_writer_->Initialize(fd));
+    }
 
     for (size_t i = 0; i < kNumScratchBuffers; i++) {
         std::unique_ptr<uint8_t[]> buffer = std::make_unique<uint8_t[]>(kScratchBufferSize);
