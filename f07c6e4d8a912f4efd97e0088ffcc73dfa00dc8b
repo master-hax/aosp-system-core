@@ -105,6 +105,24 @@
       "parentUuid": "2e3da76f_98f52c6f",
       "revId": "f07c6e4d8a912f4efd97e0088ffcc73dfa00dc8b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "eb3abea2_753b0585",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 1972780
+      },
+      "writtenOn": "2022-11-01T11:49:40Z",
+      "side": 1,
+      "message": "\u003e Does this device have a very small /data partition\n\nSome of our devices have 8GB flash for now, but it may be even smaller in future.\n\nConsidering above partition map on 8GB flash with 2GB super and 1.5GB cache, along with our others vendor-specific partitions there may be over 2-2.5GB left for /data. Just after the factory image burned this space is enough, however after some time applications may fill much of the /data leaving very small space for overlay.\n\nAt the same time, /cache is always empty despite of applications usage of /data, so it is preferable to use it.\n\n\u003e Remount is only for development\n\nYou are right, but development process also includes troubleshooting and debugging different cases on userdebug builds from QA or beta channel. For example, there may be a scenario (at least for us it happens almost everyday :)) when QA gives problematic device to research a problem, you rebuild some component with increased verbosity or possible fix, and don\u0027t have enough space in /data or super backing storage to push the artifacts. The proposed solution with property makes it possible to define it in factory build and always use big and free /cache partition without worrying. :)\n\n\u003e non-AB will fail VTS for Android 13+ launches (and soon, other xTS as well).\n\nOh... but what about reference boards like \u0027yukawa\u0027? Or default emulator build? They are both non-A/B, so they fail VTS tests for now? Could you please share the test that would fail?\n\nBTW, does it mean that non-A/B update support would be removed from releasetools and recovery too?",
+      "parentUuid": "4d9dc59e_f5061567",
+      "revId": "f07c6e4d8a912f4efd97e0088ffcc73dfa00dc8b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
