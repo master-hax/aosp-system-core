@@ -123,6 +123,24 @@
       "parentUuid": "4d9dc59e_f5061567",
       "revId": "f07c6e4d8a912f4efd97e0088ffcc73dfa00dc8b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "df4c6564_af2e1202",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-11-02T01:27:35Z",
+      "side": 1,
+      "message": "Yes, that code will be removed from AOSP.\n\nI don\u0027t know anything about the VTS or OTA requirements for those devices unfortunately. It seems like from the example you gave, removal of /cache would free up a lot of space.\n\nAgain I\u0027m not opposed to falling back to /cache, but as a non-AB feature, it\u0027s not something we can test or support, so it needs the VSR level check.",
+      "parentUuid": "eb3abea2_753b0585",
+      "revId": "f07c6e4d8a912f4efd97e0088ffcc73dfa00dc8b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
