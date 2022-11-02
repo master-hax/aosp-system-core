@@ -95,6 +95,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f6649441_44ab6e98",
+        "filename": "libprocessgroup/profiles/task_profiles.json",
+        "patchSetId": 38
+      },
+      "lineNbr": 398,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2022-11-02T08:41:40Z",
+      "side": 1,
+      "message": "Went ahead and added the new variable `NormalCapacityCpus` and assigned it to: `ProcessCapacityNormal`, `VrProcessCapacityNormal`, and `VrServiceCapacityNormal`",
+      "parentUuid": "b50e7544_cbb7cb48",
+      "range": {
+        "startLine": 398,
+        "startChar": 25,
+        "endLine": 398,
+        "endChar": 40
+      },
+      "revId": "cad411504b0e74017a86411c502aeba3957afed4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "b8e530ef_c5244cb0",
