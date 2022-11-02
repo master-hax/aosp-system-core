@@ -52,6 +52,24 @@
       "parentUuid": "be4cf34f_4a53fcab",
       "revId": "e8f8ad5a70747faf26f555319302806853939c38",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e4b2da2c_6d7a5cd3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1972022
+      },
+      "writtenOn": "2022-11-02T13:16:04Z",
+      "side": 1,
+      "message": "I have added proper commit message. Please review the patch.",
+      "parentUuid": "7ac5adb0_4e67ea0f",
+      "revId": "e8f8ad5a70747faf26f555319302806853939c38",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
