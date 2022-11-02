@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "16bc7734_ac0cc924",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-11-02T21:13:24Z",
+      "side": 1,
+      "message": "There is no guarantee that this is atomic as writes are still in page-cache. COW can still be broken if there is a crash.",
+      "revId": "c903ef45178c894ff4ba098bfa0e69c3cd141566",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d5dd2f8b_e1839c17",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_writer.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 195,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-11-02T21:13:24Z",
+      "side": 1,
+      "message": "get_block_device_size() API can be used here..",
+      "revId": "c903ef45178c894ff4ba098bfa0e69c3cd141566",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
