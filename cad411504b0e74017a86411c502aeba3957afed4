@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "67bfcbde_16242556",
+        "filename": "libprocessgroup/profiles/task_profiles.json",
+        "patchSetId": 38
+      },
+      "lineNbr": 371,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2022-11-02T07:54:56Z",
+      "side": 1,
+      "message": "I\u0027ll update it to `MaxCapacityCpus`. In the C10 device I was testing with, I didn\u0027t see a `/dev/application/` directory, therefore I wasn\u0027t entirely sure what value would be best for this at the time. \n\nI\u0027ll go ahead and update the message of the CL with additional context regarding the mapping.",
+      "parentUuid": "7bf39f9b_c0d7470f",
+      "range": {
+        "startLine": 371,
+        "startChar": 25,
+        "endLine": 371,
+        "endChar": 41
+      },
+      "revId": "cad411504b0e74017a86411c502aeba3957afed4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "b60975ce_1d9e594d",
@@ -49,6 +73,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "b50e7544_cbb7cb48",
+        "filename": "libprocessgroup/profiles/task_profiles.json",
+        "patchSetId": 38
+      },
+      "lineNbr": 398,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2022-11-02T07:54:56Z",
+      "side": 1,
+      "message": "I went ahead and changed `ProcessCapacityNormal` to `HighCapacityCpus`, and `ProcessCapacityHigh` to `MaxCapacityCpus`.\n\nThis just leaves the issue of `ProcessCapacityHigh` and `ProcessCapacityMax` both sharing `MaxCapacityCpus` variable. Should we introduce a new variable, such as `NormalCapacityCpus` and map that to `ProcessCapacityNormal` instead?",
+      "parentUuid": "b60975ce_1d9e594d",
+      "range": {
+        "startLine": 398,
+        "startChar": 25,
+        "endLine": 398,
+        "endChar": 40
+      },
+      "revId": "cad411504b0e74017a86411c502aeba3957afed4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "b8e530ef_c5244cb0",
         "filename": "libprocessgroup/profiles/task_profiles.json",
         "patchSetId": 38
@@ -60,6 +108,30 @@
       "writtenOn": "2022-11-01T01:57:15Z",
       "side": 1,
       "message": "should it be SystemBackgroundCpus?",
+      "range": {
+        "startLine": 439,
+        "startChar": 25,
+        "endLine": 439,
+        "endChar": 40
+      },
+      "revId": "cad411504b0e74017a86411c502aeba3957afed4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3eadc166_517bcd07",
+        "filename": "libprocessgroup/profiles/task_profiles.json",
+        "patchSetId": 38
+      },
+      "lineNbr": 439,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2022-11-02T07:54:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b8e530ef_c5244cb0",
       "range": {
         "startLine": 439,
         "startChar": 25,
