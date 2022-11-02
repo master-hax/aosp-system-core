@@ -141,6 +141,24 @@
       "parentUuid": "eb3abea2_753b0585",
       "revId": "f07c6e4d8a912f4efd97e0088ffcc73dfa00dc8b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "53c7c0e9_b11ae7df",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 1972780
+      },
+      "writtenOn": "2022-11-02T12:49:23Z",
+      "side": 1,
+      "message": "\u003e Yes, that code will be removed from AOSP.\n\nBad news :(\n\nThanks a lot for explanation, I have added property and check for VSR in the new patchset.",
+      "parentUuid": "df4c6564_af2e1202",
+      "revId": "f07c6e4d8a912f4efd97e0088ffcc73dfa00dc8b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
