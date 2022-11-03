@@ -1,5 +1,29 @@
 {
-  "comments": [],
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "51884c3a_0663f457",
+        "filename": "init/service.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 607,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2022-11-03T23:38:51Z",
+      "side": 1,
+      "message": "I\u0027m not sure if a revert^2 is submitted, but we should only have one fifo here for everything? One per thing being done will be expensive (since it\u0027s a full FD)?",
+      "range": {
+        "startLine": 607,
+        "startChar": 20,
+        "endLine": 607,
+        "endChar": 56
+      },
+      "revId": "d8ef6f84d4df1b0cb9aab942ea221020bde61c6a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ],
   "submitRequirementResults": [
     {
       "submitRequirement": {
