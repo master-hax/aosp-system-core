@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "0b73a16f_3afa1367",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2022-11-03T21:55:24Z",
+      "side": 1,
+      "message": "That\u0027s why I only claim that \"This makes COW operations more atomic\"",
+      "parentUuid": "16bc7734_ac0cc924",
+      "revId": "c903ef45178c894ff4ba098bfa0e69c3cd141566",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d5dd2f8b_e1839c17",
