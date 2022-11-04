@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6b7894b6_125497f9",
+        "filename": "init/service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 608,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2022-11-04T21:34:09Z",
+      "side": 1,
+      "message": "So - there was the discussion on the other CL about one of these being parent-\u003echild and one being child-\u003eparent, and due to a possible deadlock, we need two separate pipes, but I still don\u0027t understand this. If one side reads one fifo, and the other side reads the other fifo, there is still a deadlock. The promise that there won\u0027t be a deadlock comes from the order these are read/written, and that can be fulfilled with one FD.\n\nI\u0027m not sure an extra FD matters here, but I would be interested in seeing the directionality commented here. In the future, we shouldn\u0027t be adding more for more usecases - and there only needs to be one here. It would be easy to miss.\n\nThanks (not sure about the other race issue here or other specifics, but lgtm)",
+      "range": {
+        "startLine": 608,
+        "startChar": 0,
+        "endLine": 608,
+        "endChar": 56
+      },
+      "revId": "8893d8c7a5a754a07f4101d99aea78add09f0938",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
