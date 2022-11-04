@@ -22,6 +22,30 @@
       },
       "revId": "d8ef6f84d4df1b0cb9aab942ea221020bde61c6a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "12fb5fbe_6e15bc45",
+        "filename": "init/service.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 607,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-11-04T00:15:46Z",
+      "side": 1,
+      "message": "A revert for the revert has not yet been submitted. I can Cc you on the revert of the revert if you want.\n\nThe \u0027cgroups_activated\u0027 pipe is used for communication from parent to child. The \u0027setsid_finished\u0027 pipe is used for communication from child to parent. Using a single pipe for communication in two directions seems risky to me since that would introduce a race condition if parent and child processes call read() at the same time.",
+      "parentUuid": "51884c3a_0663f457",
+      "range": {
+        "startLine": 607,
+        "startChar": 20,
+        "endLine": 607,
+        "endChar": 56
+      },
+      "revId": "d8ef6f84d4df1b0cb9aab942ea221020bde61c6a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
