@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b6a52dc0_815a57a8",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-11-04T19:42:14Z",
+      "side": 1,
+      "message": "no bug covering the rest of the work, or change that uses this somewhere?",
+      "revId": "88ae0bf4a6e0ae5f0396ece988a05e28c9627cec",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
