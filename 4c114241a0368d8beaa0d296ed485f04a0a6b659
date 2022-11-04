@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9eca10a7_285cc59b",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 463,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2022-11-04T09:55:01Z",
+      "side": 1,
+      "message": "Just to be clear, this is to check if AVB_VBMETA_IMAGE_FLAGS_VERIFICATION_DISABLED is set (which means entire AVB verification is disabled).\n\nhttp://cs/android/external/avb/libavb/avb_vbmeta_image.h;l\u003d61;rcl\u003d8fd59f0dfea60939125b57d3e5ffcbe77c46078d\n\n\nWhile [enable/disable]-verity toggles another bit:\n  AVB_VBMETA_IMAGE_FLAGS_HASHTREE_DISABLED \n\n\nAnd AVB_VBMETA_IMAGE_FLAGS_VERIFICATION_DISABLED has higher priority.",
+      "range": {
+        "startLine": 463,
+        "startChar": 9,
+        "endLine": 463,
+        "endChar": 29
+      },
+      "revId": "4c114241a0368d8beaa0d296ed485f04a0a6b659",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
