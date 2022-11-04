@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f3aef1ed_4be5cedb",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1947108
+      },
+      "writtenOn": "2022-11-04T11:10:06Z",
+      "side": 1,
+      "message": "This CL has been added with an active google account\nLink-https://android-review.googlesource.com/c/platform/system/core/+/2276569",
+      "revId": "48a004a1cb0fb7bcabb5834dd6e29a50de5d467c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
