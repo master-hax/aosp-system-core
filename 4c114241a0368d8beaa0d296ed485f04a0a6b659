@@ -22,6 +22,30 @@
       },
       "revId": "4c114241a0368d8beaa0d296ed485f04a0a6b659",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1e931a8b_218d0d1c",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 463,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-11-04T10:38:35Z",
+      "side": 1,
+      "message": "yes and yes.\n\nBecause VERIFICATION_DISABLED has higher priority than HASHTREE_DISABLED, I\u0027m showing a warning here that HASHTREE_DISABLED may have no effect, and no reboot is needed, because changing HASHTREE_DISABLED has no effect",
+      "parentUuid": "9eca10a7_285cc59b",
+      "range": {
+        "startLine": 463,
+        "startChar": 9,
+        "endLine": 463,
+        "endChar": 29
+      },
+      "revId": "4c114241a0368d8beaa0d296ed485f04a0a6b659",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
