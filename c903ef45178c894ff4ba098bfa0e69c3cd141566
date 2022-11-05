@@ -36,6 +36,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "34199b7e_ac0947ef",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-11-05T00:32:21Z",
+      "side": 1,
+      "message": "This has to be fixed in read path.. I understand the intent but making API changes and being more conservative just because read fails to map the broken COW doesn\u0027t feel right.\n\nCurious, what case lead into writing beyond EOF ? I believe update-engine has the COW size estimates upfront; so, we should never be getting such out of bound write requests in first place.\n\nAnyways, this is ok for now.. all this will be re-factored once async writes land..",
+      "parentUuid": "0b73a16f_3afa1367",
+      "revId": "c903ef45178c894ff4ba098bfa0e69c3cd141566",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d5dd2f8b_e1839c17",
