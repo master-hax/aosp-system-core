@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7a1ae854_38302db5",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 43
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1324603
+      },
+      "writtenOn": "2022-11-08T14:10:27Z",
+      "side": 1,
+      "message": "May we know if there is performance evaluations for this change, also is there some option to keep the v1 cpuset for in-market devices? Thanks.",
+      "revId": "a9ffb938adb26612574d76e108af80f071671a6b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
