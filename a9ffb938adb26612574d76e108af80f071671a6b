@@ -16,6 +16,24 @@
       "message": "May we know if there is performance evaluations for this change, also is there some option to keep the v1 cpuset for in-market devices? Thanks.",
       "revId": "a9ffb938adb26612574d76e108af80f071671a6b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ca1da3db_4efaf6dd",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 43
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-11-08T19:12:42Z",
+      "side": 1,
+      "message": "We haven\u0027t evaluated migration effects on recent kernels, so that needs to be done. One assumption is by reusing existing v2 cgroup hierarchy we should decrease the overhead by not creating another dedicated hierarchy for cpuset controller.\n\nFalling back to v1 option would be a great. I think it is doable by overriding cgroups.json and task_profiles.json from the vendor partition but needs to be verified that it works correctly. For example, when cgroups.json from vendor partition includes v1 controller and system partition includes v2 controller or visa versa then the vendor should always override the system one. This needs to be verified to be working and if not then such logic needs to be implemented.",
+      "parentUuid": "7a1ae854_38302db5",
+      "revId": "a9ffb938adb26612574d76e108af80f071671a6b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
