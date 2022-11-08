@@ -22,6 +22,30 @@
       },
       "revId": "d085b229ef36b03e5dc2363c7789d608e6f0aa44",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "33b89dfc_2783ae28",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 43
+      },
+      "lineNbr": 407,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-11-08T19:18:53Z",
+      "side": 0,
+      "message": "If a vendor wants to use v1, can it be done from the vendor partition? I would like to clean this up it possible, especially when it\u0027s not used.",
+      "parentUuid": "90f11d81_c6f8bbe9",
+      "range": {
+        "startLine": 335,
+        "startChar": 0,
+        "endLine": 407,
+        "endChar": 0
+      },
+      "revId": "d085b229ef36b03e5dc2363c7789d608e6f0aa44",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
