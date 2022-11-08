@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2df599b7_7ceb8ea9",
+        "filename": "fs_mgr/libsnapshot/utility.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 164,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-11-08T20:37:26Z",
+      "side": 1,
+      "message": "errno \u003d\u003d EROFS ? when does this gets set ?",
+      "revId": "149fa74db5dee6c13c97c55db3515941c0f43684",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
