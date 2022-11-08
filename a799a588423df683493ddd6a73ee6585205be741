@@ -16,6 +16,24 @@
       "message": "ping?",
       "revId": "a799a588423df683493ddd6a73ee6585205be741",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cb1bceda_d20b0cc2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-11-08T22:06:44Z",
+      "side": 1,
+      "message": "just to clarify, as a drive-by, i\u0027m assuming it\u0027s dvander who\u0027ll actually review :-)\n\n(and, yes, even though i personally think the logging here needs a deeper clean at some point, i totally accept your \"not a regression\" argument in the meantime :-) )",
+      "parentUuid": "6ae2c8c5_ffe26b7e",
+      "revId": "a799a588423df683493ddd6a73ee6585205be741",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
