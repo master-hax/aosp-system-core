@@ -70,6 +70,30 @@
       },
       "revId": "d085b229ef36b03e5dc2363c7789d608e6f0aa44",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "28f6abb6_6d6299f4",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 43
+      },
+      "lineNbr": 407,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-11-08T19:25:36Z",
+      "side": 0,
+      "message": "Could you please point out the patches that did that which we can use as a reference?",
+      "parentUuid": "9fac3e02_6873aa0d",
+      "range": {
+        "startLine": 335,
+        "startChar": 0,
+        "endLine": 407,
+        "endChar": 0
+      },
+      "revId": "d085b229ef36b03e5dc2363c7789d608e6f0aa44",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
