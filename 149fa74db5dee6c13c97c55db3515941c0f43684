@@ -16,6 +16,24 @@
       "message": "errno \u003d\u003d EROFS ? when does this gets set ?",
       "revId": "149fa74db5dee6c13c97c55db3515941c0f43684",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b9ca7a53_47a2c6d4",
+        "filename": "fs_mgr/libsnapshot/utility.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 164,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2022-11-08T20:39:29Z",
+      "side": 1,
+      "message": "per man page, this gets set if \n\n```\n              fd is bound to a special file (e.g., a pipe,  FIFO,  or  socket)\n              which does not support synchronization.\n```",
+      "parentUuid": "2df599b7_7ceb8ea9",
+      "revId": "149fa74db5dee6c13c97c55db3515941c0f43684",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
