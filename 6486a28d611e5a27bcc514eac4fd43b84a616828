@@ -36,6 +36,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "d4f7f9f3_4ab2bf9d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-11-09T19:22:43Z",
+      "side": 1,
+      "message": "I didn\u0027t mean that we needed rigorous, automated mocks of this - but we do need due diligence. Eg there\u0027s nothing in the \"Test:\" stanza to indicate that the setpgid regression was explicitly tested, manually or otherwise. If it was, that\u0027s great - let\u0027s record how it was verified. If not, it risks breaking the lab again.",
+      "parentUuid": "bde5306d_bb8662bd",
+      "revId": "6486a28d611e5a27bcc514eac4fd43b84a616828",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "e3145704_8fe5a31e",
