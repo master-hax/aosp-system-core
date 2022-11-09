@@ -51,6 +51,24 @@
       "message": "In case there is ever divergence here, I think this check should be a helper function (like ShouldCallSetSid) and the same helper check should get called in SetProcessAttributesAndCaps.",
       "revId": "6486a28d611e5a27bcc514eac4fd43b84a616828",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7214ae48_77a54c07",
+        "filename": "init/service.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 560,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-11-09T19:08:15Z",
+      "side": 1,
+      "message": "A new function \u0027RequiresConsole()\u0027 has been introduced.",
+      "parentUuid": "e3145704_8fe5a31e",
+      "revId": "6486a28d611e5a27bcc514eac4fd43b84a616828",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
