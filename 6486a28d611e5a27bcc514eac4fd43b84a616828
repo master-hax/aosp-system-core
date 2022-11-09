@@ -54,6 +54,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "a8d29b2a_b9737ef3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-11-09T19:34:05Z",
+      "side": 1,
+      "message": "The regression triggered by the previous version of this patch was the result of the following:\n* Parent process calls setpgid() after child called execve().\n* Parent process converts the setpgid() failure into a Service::Start() failure.\n\nThis can\u0027t happen anymore since failures of the setpgid() call by the parent process no longer cause Service::Start() to fail. The worst that could happen with the current CL related to calling setpgid() is that the setpgid() call by the parent process fails for an unknown reason, that Service::Start() returns before the child process has called setpgid() and hence that the race mentioned in the CL description has not been fixed.\n\nThe race between setpgid() and execve() has been simulated by inserting a sleep_for() call in the parent process. I have verified that this error injection approach causes setpgid() to set errno to EACCES.",
+      "parentUuid": "d4f7f9f3_4ab2bf9d",
+      "revId": "6486a28d611e5a27bcc514eac4fd43b84a616828",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "e3145704_8fe5a31e",
