@@ -53,6 +53,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "3987f584_150c193e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1349877
+      },
+      "writtenOn": "2022-11-09T12:58:10Z",
+      "side": 1,
+      "message": "Done.",
+      "parentUuid": "d7257676_af529b24",
+      "revId": "2fe7823a5979665f4430c74fb14cd4816a64f1b2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "cf126059_ff74d669",
@@ -90,6 +108,30 @@
       "side": 1,
       "message": "didn\u0027t that cause trouble last time we tried it? iirc that\u0027s _why_ we don\u0027t have ::1 claiming to be localhost at all.\n\nbut, yeah, now\u0027s the right time of year to try something like this... plenty of time to revert if it does break stuff/cause app compat issues.",
       "parentUuid": "cf126059_ff74d669",
+      "range": {
+        "startLine": 2,
+        "startChar": 16,
+        "endLine": 2,
+        "endChar": 39
+      },
+      "revId": "2fe7823a5979665f4430c74fb14cd4816a64f1b2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d0b104f4_0db0b8fc",
+        "filename": "rootdir/etc/hosts",
+        "patchSetId": 1
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1349877
+      },
+      "writtenOn": "2022-11-09T12:58:10Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "459228a1_d1935104",
       "range": {
         "startLine": 2,
         "startChar": 16,
