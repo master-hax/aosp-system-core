@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "eeac7f43_2866d691",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-11-09T21:03:54Z",
+      "side": 1,
+      "message": "The presubmit test failures are not related to this CL. See also https://b.corp.google.com/issues/258322017.",
+      "revId": "b85d1faa495c6493d9cd332f9736c7e99974a6b8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
