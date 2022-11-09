@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "eba963ed_574455a8",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-11-09T03:49:13Z",
+      "side": 1,
+      "message": "This looks to fix the race, though I think something important is missing in the retrospective, and leading up to this re-landing: how can we improve testing? If there\u0027s another regression in this code it\u0027ll lead to more lab issues and another revert, and it\u0027s pretty tricky code to get right.",
+      "revId": "6486a28d611e5a27bcc514eac4fd43b84a616828",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e3145704_8fe5a31e",
+        "filename": "init/service.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 560,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-11-09T03:49:13Z",
+      "side": 1,
+      "message": "In case there is ever divergence here, I think this check should be a helper function (like ShouldCallSetSid) and the same helper check should get called in SetProcessAttributesAndCaps.",
+      "revId": "6486a28d611e5a27bcc514eac4fd43b84a616828",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
