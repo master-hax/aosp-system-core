@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "299313e1_28fbcd9c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-11-09T15:23:01Z",
+      "side": 1,
+      "message": "yeah, if we\u0027re going to try this, we may as well try what we really want (the same configuration as on the desktop) first...",
+      "revId": "7e6f2a44db28cc958fd39f05817f2075fe1f5d30",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
