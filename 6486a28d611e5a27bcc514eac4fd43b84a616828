@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "bde5306d_bb8662bd",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-11-09T18:11:30Z",
+      "side": 1,
+      "message": "The best way to prevent lab issues is to modify the test setups in the lab. Test setups should not require manual intervention to recover from a software failure. Hardware that supports automatic recovery from boot failures already exist, namely the Pixel development boards. The physical buttons on these boards support rebooting the board at any time, booting into the bootloader and also ROM recovery. A connector could be added to these boards to make it easy to control these recovery facilities from another system.\n\nTesting of the platform code can be improved by adding support for mocking the interaction with the Linux kernel (system calls, ioctls, netlink, procfs, sysfs and cgroups). Once that infrastructure is in place it will become possible to write unit tests that simulate failures of any interaction with the operating system. Building that infrastructure is something that I consider as out of scope for this CL.",
+      "parentUuid": "eba963ed_574455a8",
+      "revId": "6486a28d611e5a27bcc514eac4fd43b84a616828",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "e3145704_8fe5a31e",
