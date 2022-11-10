@@ -16,6 +16,24 @@
       "message": "This and aosp/2295977 are identical. Am I missing something?",
       "revId": "8fbbf06f0c31e19dcc282ee4b084f8d801d6725e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6cdcd933_124859d7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1833664
+      },
+      "writtenOn": "2022-11-10T17:49:01Z",
+      "side": 1,
+      "message": "Whoa! I have no idea how that happened. Um... let me check for other dupes, cause this is strange.",
+      "parentUuid": "8622f306_95bacb49",
+      "revId": "8fbbf06f0c31e19dcc282ee4b084f8d801d6725e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
