@@ -52,6 +52,24 @@
       "parentUuid": "6cdcd933_124859d7",
       "revId": "8fbbf06f0c31e19dcc282ee4b084f8d801d6725e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5d014273_0ddd401a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1833664
+      },
+      "writtenOn": "2022-11-10T17:53:27Z",
+      "side": 1,
+      "message": "same!\n\nI\u0027ve squashed the dupe, this is the correct change, as it matches the change id in ag/20387984.",
+      "parentUuid": "ee43b840_7b5c06d6",
+      "revId": "8fbbf06f0c31e19dcc282ee4b084f8d801d6725e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
