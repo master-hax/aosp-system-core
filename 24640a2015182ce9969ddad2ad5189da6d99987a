@@ -52,6 +52,24 @@
       "parentUuid": "681f734d_b9f9c19b",
       "revId": "24640a2015182ce9969ddad2ad5189da6d99987a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3e44d7ca_9d515a3f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-11-10T16:58:23Z",
+      "side": 1,
+      "message": "sure, but either way it\u0027s something for your team to chase and fix, or revert the /etc/hosts change...\n\n(but, yes, i also think that you should probably be sending out a test fix here rather than making this /etc/hosts change.)",
+      "parentUuid": "90f7c9cf_3d857799",
+      "revId": "24640a2015182ce9969ddad2ad5189da6d99987a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
