@@ -20,6 +20,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "fea6446b_ca0f04f2",
+        "filename": "libsparse/simg2simg.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-11-11T16:24:14Z",
+      "side": 1,
+      "message": "i don\u0027t think so --- `git log` suggests that it was removed by this change; it looks like instead of \"copy, paste, edit the copy\" we just edited the original to build the new tool instead of the old one.\n```\ncommit de807f2ed8af63a75174933c13705a7529a82914\nAuthor: Geremy Condra \u003cgcondra@google.com\u003e\nDate:   Mon Jul 8 14:04:02 2013 -0700\n\n    Add append2simg.\n    \n    Append2simg is a small utility designed to glue data to the end\n    of a sparse image. Beware that it doesn\u0027t do anything clever with\n    that data.\n    \n    Change-Id: I33af330cb4f77e0842375797a35aebbb6af60163\n```\ngiven that this hasn\u0027t been used since 2013, i assume we should probably just delete it?\n\n+ccross?",
+      "parentUuid": "332cda12_84f38911",
+      "revId": "9cc8a29e3362a76fc52cc56c93d8ed1a39baa457",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "e857c15d_64d1899d",
         "filename": "libsparse/simg2simg.cpp",
         "patchSetId": 1
