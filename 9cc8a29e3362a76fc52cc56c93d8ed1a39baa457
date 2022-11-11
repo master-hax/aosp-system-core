@@ -74,6 +74,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "0aa05cc0_8c398013",
+        "filename": "libsparse/simg2simg.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1975846
+      },
+      "writtenOn": "2022-11-11T17:18:45Z",
+      "side": 1,
+      "message": "I can\u0027t even imagine how difficult it is to maintain a project as large as Android.\nTo be fair, sparse tools are almost always compiled outside the tree (there are countless forks online), so it\u0027s not so strange that no one noticed that it wasn\u0027t being built. On the other side, I also think that simg2simg is not often used, if at all.\nIn the end, you\u0027re the one in charge, and I think you know better what\u0027s best for the project.",
+      "parentUuid": "b41745de_e5c7b36b",
+      "revId": "9cc8a29e3362a76fc52cc56c93d8ed1a39baa457",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "e857c15d_64d1899d",
         "filename": "libsparse/simg2simg.cpp",
         "patchSetId": 1
