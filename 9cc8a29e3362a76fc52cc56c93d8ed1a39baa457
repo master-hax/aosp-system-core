@@ -38,6 +38,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "803d8a54_974f0b9a",
+        "filename": "libsparse/simg2simg.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1975846
+      },
+      "writtenOn": "2022-11-11T16:55:08Z",
+      "side": 1,
+      "message": "I think that if it\u0027s there, it\u0027s for a reason. Maybe it\u0027s for a niche use, but I don\u0027t think it\u0027s useless. After-all, modern distributions still include it.",
+      "parentUuid": "fea6446b_ca0f04f2",
+      "revId": "9cc8a29e3362a76fc52cc56c93d8ed1a39baa457",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "e857c15d_64d1899d",
         "filename": "libsparse/simg2simg.cpp",
         "patchSetId": 1
