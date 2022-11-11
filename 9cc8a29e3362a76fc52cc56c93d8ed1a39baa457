@@ -56,6 +56,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "b41745de_e5c7b36b",
+        "filename": "libsparse/simg2simg.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-11-11T17:02:34Z",
+      "side": 1,
+      "message": "no, that\u0027s generally a _bad_ assumption for a project as large as Android. ironically, the very reason it\u0027s a bad assumption is that people make that assumption --- literally no-one who works on Android has noticed in almost *10 years* that this tool isn\u0027t built (which means it\u0027s been not-built for *10 times longer* than it was ever built for). but new people come along, assume \"there must be a reason\", and are too afraid to ever remove anything. and then people like you (and my team, which is why we personally remove so much stuff) waste time maintaining things that no-one\u0027s using anyway :-(\n\nit\u0027s always far easier to _add_ things than to remove them, because who\u0027s brave enough to remove things? my personal favorite argument in favor of \"if in doubt, chuck it out\" is that if someone _does_ come with a current use case, you can easily `git revert` the removal but you now also have \"here\u0027s why we need this\", which you can write down (if only in the commit message on the revert). so you actually gain something by doing that, even in the \"bad\" case where you end up reverting.",
+      "parentUuid": "803d8a54_974f0b9a",
+      "revId": "9cc8a29e3362a76fc52cc56c93d8ed1a39baa457",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "e857c15d_64d1899d",
         "filename": "libsparse/simg2simg.cpp",
         "patchSetId": 1
