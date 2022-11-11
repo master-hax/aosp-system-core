@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a24d6cc2_d5e773ed",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1002751
+      },
+      "writtenOn": "2022-11-11T22:03:10Z",
+      "side": 1,
+      "message": "I see references to various external packaging of sparse tools containing this binary, but nothing that suggests it is actually used for anything, so SGTM.",
+      "revId": "8a9495aba66d8274d13a6d10bd5a5c8114c3c799",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
