@@ -90,6 +90,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "331a060d_e2edf2cc",
+        "filename": "libsparse/simg2simg.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-11-11T17:20:33Z",
+      "side": 1,
+      "message": "let\u0027s get this fix in anyway, since this is clearly a fix, and you or i can follow up with the `git rm`. (and if anyone comes back with an active use case, we\u0027ll (a) reset the clock on \"how long since this file was last touched\" and (b) have a useful commit message :-) )",
+      "parentUuid": "0aa05cc0_8c398013",
+      "revId": "9cc8a29e3362a76fc52cc56c93d8ed1a39baa457",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "e857c15d_64d1899d",
