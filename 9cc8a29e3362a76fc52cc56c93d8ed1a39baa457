@@ -3,6 +3,23 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "332cda12_84f38911",
+        "filename": "libsparse/simg2simg.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1975846
+      },
+      "writtenOn": "2022-11-11T09:33:38Z",
+      "side": 1,
+      "message": "I see that simg2img is not mentioned in Android.bp. Is it intentional?\n@enh@google.com",
+      "revId": "9cc8a29e3362a76fc52cc56c93d8ed1a39baa457",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "e857c15d_64d1899d",
         "filename": "libsparse/simg2simg.cpp",
         "patchSetId": 1
