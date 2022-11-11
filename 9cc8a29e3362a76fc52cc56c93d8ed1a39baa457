@@ -108,6 +108,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "e414182e_053ec7e1",
+        "filename": "libsparse/simg2simg.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-11-11T21:59:02Z",
+      "side": 1,
+      "message": "since it\u0027s friday afternoon here but (guessing from your email address) late friday night where you are, i\u0027ve uploaded https://android-review.googlesource.com/c/platform/system/core/+/2299260",
+      "parentUuid": "331a060d_e2edf2cc",
+      "revId": "9cc8a29e3362a76fc52cc56c93d8ed1a39baa457",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "e857c15d_64d1899d",
