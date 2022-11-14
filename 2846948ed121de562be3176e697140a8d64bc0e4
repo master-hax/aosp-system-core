@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "10f656d6_a568e4b5",
+        "filename": "debuggerd/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 500,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-11-14T20:04:27Z",
+      "side": 1,
+      "message": "ccross: ideas? (i\u0027d copy \u0026 paste as usual, but can\u0027t think of anywhere else doing this?)",
+      "revId": "2846948ed121de562be3176e697140a8d64bc0e4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
