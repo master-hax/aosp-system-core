@@ -1,5 +1,23 @@
 {
-  "comments": [],
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "85cb4297_d297aaf2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1031448
+      },
+      "writtenOn": "2022-11-14T09:08:39Z",
+      "side": 1,
+      "message": "Hi, This patch broke console service on Dragonboards (DB845c and RB5). I see:\n\nI init    : starting service \u0027console\u0027...\nI init    : Command \u0027start console\u0027 action\u003dro.debuggable\u003d1 \u0026\u0026 init (/system/etc/init/hw/init.rc:1285) took 37ms and failed: Could not start service: Waiting for setsid() failed:  \u003c\u003e 2",
+      "revId": "15e5ecdcd7ea69e63387346bd235fbeb3e3597df",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ],
   "submitRequirementResults": [
     {
       "submitRequirement": {
