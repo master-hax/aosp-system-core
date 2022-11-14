@@ -507,7 +507,7 @@ void Service::ConfigureMemcg() {
 }
 
 // Enters namespaces, sets environment variables, writes PID files and runs the service executable.
-void Service::RunService(const std::vector<Descriptor>& descriptors, InterprocessFifo fifo) {
+void Service::RunService(const std::vector<Descriptor>& descriptors, InterprocessFifo cgroups_activated, InterprocessFifo setsid_finished) {
     if (auto result = EnterNamespaces(namespaces_, name_, mount_namespace_); !result.ok()) {
         LOG(FATAL) << "Service '" << name_ << "' failed to set up namespaces: " << result.error();
     }
@@ -529,7 +529,7 @@ void Service::RunService(const std::vector<Descriptor>& descriptors, Interproces
 
     // Wait until the cgroups have been created and until the cgroup controllers have been
     // activated.
-    Result<uint8_t> byte = fifo.Read();
+    Result<uint8_t> byte = cgroups_activated.Read();
     if (!byte.ok()) {
         LOG(ERROR) << name_ << ": failed to read from notification channel: " << byte.error();
     }
@@ -558,9 +558,9 @@ void Service::RunService(const std::vector<Descriptor>& descriptors, Interproces
 
     // If SetProcessAttributes() called setsid(), report this to the parent.
     if (RequiresConsole(proc_attr_)) {
-        fifo.Write(2);
+        setsid_finished.Write(2);
     }
-    fifo.Close();
+    setsid_finished.Close();
 
     if (!ExpandArgsAndExecv(args_, sigstop_)) {
         PLOG(ERROR) << "cannot execv('" << args_[0]
@@ -603,8 +603,9 @@ Result<void> Service::Start() {
         return {};
     }
 
-    InterprocessFifo fifo;
-    OR_RETURN(fifo.Initialize());
+    InterprocessFifo cgroups_activated, setsid_finished;
+    OR_RETURN(cgroups_activated.Initialize());
+    OR_RETURN(setsid_finished.Initialize());
 
     if (Result<void> result = CheckConsole(); !result.ok()) {
         return result;
@@ -662,7 +663,9 @@ Result<void> Service::Start() {
 
     if (pid == 0) {
         umask(077);
-        RunService(descriptors, std::move(fifo));
+        cgroups_activated.CloseWriteFd();
+        setsid_finished.CloseReadFd();
+        RunService(descriptors, std::move(cgroups_activated), std::move(setsid_finished));
         _exit(127);
     }
 
@@ -670,6 +673,9 @@ Result<void> Service::Start() {
         pid_ = 0;
         return ErrnoError() << "Failed to fork";
     }
+
+    cgroups_activated.CloseReadFd();
+    setsid_finished.CloseWriteFd();
 
     once_environment_vars_.clear();
 
@@ -692,7 +698,7 @@ Result<void> Service::Start() {
                          limit_percent_ != -1 || !limit_property_.empty();
         errno = -createProcessGroup(proc_attr_.uid, pid_, use_memcg);
         if (errno != 0) {
-            Result<void> result = fifo.Write(0);
+            Result<void> result = cgroups_activated.Write(0);
             if (!result.ok()) {
                 return Error() << "Sending notification failed: " << result.error();
             }
@@ -716,9 +722,11 @@ Result<void> Service::Start() {
         LmkdRegister(name_, proc_attr_.uid, pid_, oom_score_adjust_);
     }
 
-    if (Result<void> result = fifo.Write(1); !result.ok()) {
+    if (Result<void> result = cgroups_activated.Write(1); !result.ok()) {
         return Error() << "Sending cgroups activated notification failed: " << result.error();
     }
+
+    cgroups_activated.Close();
 
     // Call setpgid() from the parent process to make sure that this call has
     // finished before the parent process calls kill(-pgid, ...).
@@ -734,16 +742,16 @@ Result<void> Service::Start() {
         }
     } else {
         // The Read() call below will return an error if the child is killed.
-        if (Result<uint8_t> result = fifo.Read(); !result.ok() || *result != 2) {
+        if (Result<uint8_t> result = setsid_finished.Read(); !result.ok() || *result != 2) {
             if (!result.ok()) {
                 return Error() << "Waiting for setsid() failed: " << result.error();
             } else {
-                return Error() << "Waiting for setsid() failed: " << *result << " <> 2";
+                return Error() << "Waiting for setsid() failed: " << static_cast<uint32_t>(*result) << " <> 2";
             }
         }
     }
 
-    fifo.Close();
+    setsid_finished.Close();
 
     NotifyStateChange("running");
     reboot_on_failure.Disable();
