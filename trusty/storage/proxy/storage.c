@@ -17,6 +17,7 @@
 #include <fcntl.h>
 #include <inttypes.h>
 #include <libgen.h>
+#include <linux/fs.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
@@ -517,6 +518,47 @@ int storage_file_set_size(struct storage_msg *msg,
     }
 
     msg->result = STORAGE_NO_ERROR;
+
+err_response:
+    return ipc_respond(msg, NULL, 0);
+}
+#define BLOCK_COUNT_MAIN (0x10000000000)
+int storage_file_get_max_size(struct storage_msg* msg, const void* r, size_t req_len) {
+    const struct storage_file_get_max_size_req* req = r;
+    struct storage_file_get_max_size_resp resp = {0};
+    uint64_t max_size = 0;
+
+    if (req_len != sizeof(*req)) {
+        ALOGE("%s: invalid request length (%zd != %zd)\n", __func__, req_len, sizeof(*req));
+        msg->result = STORAGE_ERR_NOT_VALID;
+        goto err_response;
+    }
+
+    struct stat stat;
+    int fd = lookup_fd(req->handle, false);
+    int rc = fstat(fd, &stat);
+    if (rc < 0) {
+        ALOGE("%s: error stat'ing file (fd=%d): %s\n", __func__, fd, strerror(errno));
+        max_size = BLOCK_COUNT_MAIN;
+        goto pass_response;
+    }
+
+    if ((stat.st_mode & S_IFMT) == S_IFBLK) {
+        rc = ioctl(fd, BLKGETSIZE64, &max_size);
+        if (rc < 0) {
+            rc = errno;
+            ALOGE("%s: error calling ioctl on file (fd=%d): %s\n", __func__, fd, strerror(errno));
+            msg->result = translate_errno(rc);
+            goto err_response;
+        }
+    } else {
+        max_size = BLOCK_COUNT_MAIN;
+    }
+
+pass_response:
+    resp.max_size = max_size;
+    msg->result = STORAGE_NO_ERROR;
+    return ipc_respond(msg, &resp, sizeof(resp));
 
 err_response:
     return ipc_respond(msg, NULL, 0);
