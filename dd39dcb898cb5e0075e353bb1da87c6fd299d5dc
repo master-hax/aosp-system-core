@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "66387c6e_86b1375e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 10
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1868610
+      },
+      "writtenOn": "2022-11-16T15:09:03Z",
+      "side": 1,
+      "message": "I don\u0027t see any changes to fuzzers in this CL. Is our team the right one for this review?",
+      "revId": "dd39dcb898cb5e0075e353bb1da87c6fd299d5dc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
