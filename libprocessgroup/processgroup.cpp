@@ -439,6 +439,30 @@ static int DoKillProcessGroupOnce(const char* cgroup, uid_t uid, int initialPid,
 
 static int KillProcessGroup(uid_t uid, int initialPid, int signal, int retries,
                             int* max_processes) {
+    if (!CgroupsAvailable()) {
+        std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
+        int retry = retries;
+        while (kill(-initialPid, signal) == -1) {
+            if (retry > 0) {
+                std::this_thread::sleep_for(5ms);
+                --retry;
+            } else {
+                PLOG(ERROR) << "Error encountered killing process group pid " << initialPid;
+                return -1;
+            }
+        }
+
+        std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+        auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+        LOG(INFO) << "Successfully killed process group pid " << initialPid << " in "
+                  << static_cast<int>(ms) << "ms";
+
+        if (max_processes != nullptr) {
+            *max_processes = 0;
+        }
+        return 0;
+    }
+
     std::string hierarchy_root_path;
     CgroupGetControllerPath(CGROUPV2_CONTROLLER_NAME, &hierarchy_root_path);
     const char* cgroup = hierarchy_root_path.c_str();
