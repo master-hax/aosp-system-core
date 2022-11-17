@@ -20,6 +20,40 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "c37544c5_03a6f1cd",
+        "filename": "trusty/storage/proxy/storage.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 524,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2022-11-17T07:55:34Z",
+      "side": 1,
+      "message": "Newline after `}`",
+      "revId": "47828f4a6c005ddf165f0f5e7b98f0ff8dd9e755",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5e69e3e5_42a183ef",
+        "filename": "trusty/storage/proxy/storage.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 525,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2022-11-17T07:55:34Z",
+      "side": 1,
+      "message": "I would prefer this define be near the top of the file (with the other defines). Also, although a similar define in the storage service is named `BLOCK_COUNT_MAIN`, that is this value divided by the block size. Here this is a byte count, not a block count. I think we should rename this to something like `MAX_FILE_SIZE` (with a comment that this is the size limit in bytes for backing files on top of a filesystem).",
+      "revId": "47828f4a6c005ddf165f0f5e7b98f0ff8dd9e755",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "b8da3d0d_56c44023",
         "filename": "trusty/storage/proxy/storage.c",
         "patchSetId": 1
@@ -31,6 +65,23 @@
       "writtenOn": "2022-11-17T00:16:40Z",
       "side": 1,
       "message": "This file is mostly using a 80col margin. Can you keep that for the code you are adding?",
+      "revId": "47828f4a6c005ddf165f0f5e7b98f0ff8dd9e755",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1b1ddc3e_4841f802",
+        "filename": "trusty/storage/proxy/storage.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 529,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2022-11-17T07:55:34Z",
+      "side": 1,
+      "message": "Any reason not to just initialize `max_size` to the maximum file size we want to support (`BLOCK_COUNT_MAIN`)? If we can\u0027t read the block device size, we\u0027re not going to send `max_size`.\n\nWe could even initialize and use `resp.size` directly, and not need an extra variable at all. I don\u0027t really have a strong preference about that though.",
       "revId": "47828f4a6c005ddf165f0f5e7b98f0ff8dd9e755",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -65,6 +116,41 @@
       "writtenOn": "2022-11-17T00:16:40Z",
       "side": 1,
       "message": "can you split this the same way as the other lines here",
+      "revId": "47828f4a6c005ddf165f0f5e7b98f0ff8dd9e755",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "454e5ea3_7d981d08",
+        "filename": "trusty/storage/proxy/storage.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2022-11-17T07:55:34Z",
+      "side": 1,
+      "message": "Incidentally we should really reformat all our code here with 100col lines so we won\u0027t have to bypass any pre-upload hooks. Maybe when we move Trusty things to the new repo?",
+      "parentUuid": "761f2312_e97dd11b",
+      "revId": "47828f4a6c005ddf165f0f5e7b98f0ff8dd9e755",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "58bb7e9a_9ef6abc7",
+        "filename": "trusty/utils/spiproxyd/proxy.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2022-11-17T07:55:34Z",
+      "side": 1,
+      "message": "This looks unrelated?",
       "revId": "47828f4a6c005ddf165f0f5e7b98f0ff8dd9e755",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
