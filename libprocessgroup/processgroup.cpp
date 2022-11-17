@@ -367,6 +367,14 @@ err:
 // Returns 0 if there are no processes in the process cgroup left to kill
 // Returns -1 on error
 static int DoKillProcessGroupOnce(const char* cgroup, uid_t uid, int initialPid, int signal) {
+    if (!CgroupsAvailable()) {
+        // there are no other processes to kill, if cgroups are missing. just kill initialPid
+        if (kill(-initialPid, signal) == -1 && errno != ESRCH) {
+            PLOG(WARNING) << "kill(" << -initialPid << ", " << signal << ") failed";
+        }
+        return 0;
+    }
+
     auto path = ConvertUidPidToPath(cgroup, uid, initialPid) + PROCESSGROUP_CGROUP_PROCS_FILE;
     std::unique_ptr<FILE, decltype(&fclose)> fd(fopen(path.c_str(), "re"), fclose);
     if (!fd) {
@@ -440,7 +448,9 @@ static int DoKillProcessGroupOnce(const char* cgroup, uid_t uid, int initialPid,
 static int KillProcessGroup(uid_t uid, int initialPid, int signal, int retries,
                             int* max_processes) {
     std::string hierarchy_root_path;
-    CgroupGetControllerPath(CGROUPV2_CONTROLLER_NAME, &hierarchy_root_path);
+    if (CgroupsAvailable()) {
+        CgroupGetControllerPath(CGROUPV2_CONTROLLER_NAME, &hierarchy_root_path);
+    }
     const char* cgroup = hierarchy_root_path.c_str();
 
     std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
@@ -483,6 +493,11 @@ static int KillProcessGroup(uid_t uid, int initialPid, int signal, int retries,
         if (retries > 0) {
             LOG(INFO) << "Successfully killed process cgroup uid " << uid << " pid " << initialPid
                       << " in " << static_cast<int>(ms) << "ms";
+        }
+
+        if (!CgroupsAvailable()) {
+            // nothing to do here, if cgroups isn't available
+            return 0;
         }
 
         // 400 retries correspond to 2 secs max timeout
