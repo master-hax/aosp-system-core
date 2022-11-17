@@ -158,6 +158,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "1af3450e_caea175d",
+        "filename": "trusty/storage/proxy/storage.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2022-11-17T22:14:33Z",
+      "side": 1,
+      "message": "Yes, although it only checks modified lines. It won\u0027t complain unless you make changes to existing code. I actually tested uploading this line broken at 80col and clang-format complains.",
+      "parentUuid": "5a841b7b_c8e41817",
+      "revId": "47828f4a6c005ddf165f0f5e7b98f0ff8dd9e755",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "58bb7e9a_9ef6abc7",
         "filename": "trusty/utils/spiproxyd/proxy.rc",
         "patchSetId": 1
