@@ -140,6 +140,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "5a841b7b_c8e41817",
+        "filename": "trusty/storage/proxy/storage.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1000205
+      },
+      "writtenOn": "2022-11-17T19:59:43Z",
+      "side": 1,
+      "message": "Is there a preupload hook in this repo now that complains about the existing code?",
+      "parentUuid": "454e5ea3_7d981d08",
+      "revId": "47828f4a6c005ddf165f0f5e7b98f0ff8dd9e755",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "58bb7e9a_9ef6abc7",
         "filename": "trusty/utils/spiproxyd/proxy.rc",
         "patchSetId": 1
@@ -151,6 +169,24 @@
       "writtenOn": "2022-11-17T07:55:34Z",
       "side": 1,
       "message": "This looks unrelated?",
+      "revId": "47828f4a6c005ddf165f0f5e7b98f0ff8dd9e755",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0d662cab_e4dcf941",
+        "filename": "trusty/utils/spiproxyd/proxy.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1000205
+      },
+      "writtenOn": "2022-11-17T19:59:43Z",
+      "side": 1,
+      "message": "This is related to adding the block device for the emulator. It should move to a separate CL to make that clear though.",
+      "parentUuid": "58bb7e9a_9ef6abc7",
       "revId": "47828f4a6c005ddf165f0f5e7b98f0ff8dd9e755",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
