@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4f829d72_ec269014",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 397,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2022-11-17T13:16:33Z",
+      "side": 1,
+      "message": "Just to confirm.\n\nThose are a separate refactor, right? (not related to the emulator issue).",
+      "range": {
+        "startLine": 389,
+        "startChar": 0,
+        "endLine": 397,
+        "endChar": 9
+      },
+      "revId": "85821baa07592554afc2827be1ddd26b091aeb09",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "eecf429f_a77a7b82",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 492,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2022-11-17T13:16:33Z",
+      "side": 1,
+      "message": "Maybe we can just break here? if any partition is verity_enabled?\n(seems no need to check all partitions ?)",
+      "revId": "85821baa07592554afc2827be1ddd26b091aeb09",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cf309137_d3fa2469",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 673,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2022-11-17T13:16:33Z",
+      "side": 1,
+      "message": "Same here, just to confirm, are the changes here related to the emulator issue?",
+      "range": {
+        "startLine": 669,
+        "startChar": 0,
+        "endLine": 673,
+        "endChar": 5
+      },
+      "revId": "85821baa07592554afc2827be1ddd26b091aeb09",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
