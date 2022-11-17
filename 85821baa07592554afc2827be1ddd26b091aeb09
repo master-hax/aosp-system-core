@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "8c8404aa_6e680a64",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 397,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-11-17T16:37:43Z",
+      "side": 1,
+      "message": "yeah this is just logging improvement, so this type of failure (successfully disabled verity but failed to remount) is more easily shown.",
+      "parentUuid": "4f829d72_ec269014",
+      "range": {
+        "startLine": 389,
+        "startChar": 0,
+        "endLine": 397,
+        "endChar": 9
+      },
+      "revId": "85821baa07592554afc2827be1ddd26b091aeb09",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "eecf429f_a77a7b82",
@@ -43,6 +67,24 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "7c18d2e5_acc6fe0f",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 492,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-11-17T16:37:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "eecf429f_a77a7b82",
+      "revId": "85821baa07592554afc2827be1ddd26b091aeb09",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "cf309137_d3fa2469",
         "filename": "fs_mgr/fs_mgr_remount.cpp",
         "patchSetId": 1
@@ -54,6 +96,30 @@
       "writtenOn": "2022-11-17T13:16:33Z",
       "side": 1,
       "message": "Same here, just to confirm, are the changes here related to the emulator issue?",
+      "range": {
+        "startLine": 669,
+        "startChar": 0,
+        "endLine": 673,
+        "endChar": 5
+      },
+      "revId": "85821baa07592554afc2827be1ddd26b091aeb09",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9ca0d11d_bc82d83b",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 673,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-11-17T16:37:43Z",
+      "side": 1,
+      "message": "yup",
+      "parentUuid": "cf309137_d3fa2469",
       "range": {
         "startLine": 669,
         "startChar": 0,
