@@ -199,15 +199,21 @@ void Service::KillProcessGroup(int signal, bool report_oneshot) {
     // the cgroup already and calling these functions a second time will simply result in an error.
     // This is true regardless of which signal was sent.
     // These functions handle their own logging, so no additional logging is needed.
-    if (!process_cgroup_empty_) {
+    if (!process_killed_) {
         LOG(INFO) << "Sending signal " << signal << " to service '" << name_ << "' (pid " << pid_
                   << ") process group...";
         int max_processes = 0;
-        int r;
-        if (signal == SIGTERM) {
-            r = killProcessGroupOnce(proc_attr_.uid, pid_, signal, &max_processes);
+        bool success = false;
+        if (!process_cgroup_empty_) {
+            int r;
+            if (signal == SIGTERM) {
+                r = killProcessGroupOnce(proc_attr_.uid, pid_, signal, &max_processes);
+            } else {
+                r = killProcessGroup(proc_attr_.uid, pid_, signal, &max_processes);
+            }
+            success = (r == 0);
         } else {
-            r = killProcessGroup(proc_attr_.uid, pid_, signal, &max_processes);
+            success = (kill(pid_, signal) == 0);
         }
 
         if (report_oneshot && max_processes > 0) {
@@ -218,7 +224,10 @@ void Service::KillProcessGroup(int signal, bool report_oneshot) {
                        "this case.";
         }
 
-        if (r == 0) process_cgroup_empty_ = true;
+        if (success) {
+            process_cgroup_empty_ = true;
+            process_killed_ = true;
+        }
     }
 
     if (oom_score_adjust_ != DEFAULT_OOM_SCORE_ADJUST) {
@@ -683,6 +692,7 @@ Result<void> Service::Start() {
     flags_ |= SVC_RUNNING;
     start_order_ = next_start_order_++;
     process_cgroup_empty_ = false;
+    process_killed_ = false;
 
     if (CgroupsAvailable()) {
         bool use_memcg = swappiness_ != -1 || soft_limit_in_bytes_ != -1 || limit_in_bytes_ != -1 ||

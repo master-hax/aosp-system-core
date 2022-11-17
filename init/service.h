@@ -208,6 +208,7 @@ class Service {
     std::string limit_property_;
 
     bool process_cgroup_empty_ = false;
+    bool process_killed_ = false;
 
     bool override_ = false;
 
