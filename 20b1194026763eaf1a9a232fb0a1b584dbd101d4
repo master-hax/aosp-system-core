@@ -1,0 +1,142 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "89577b45_65809a5e",
+        "filename": "init/service.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 561,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-11-18T01:47:50Z",
+      "side": 1,
+      "message": "Why can\u0027t this be done inside SetProcessAttributes? (i.e. can we pass the fifo to the function?)",
+      "range": {
+        "startLine": 561,
+        "startChar": 4,
+        "endLine": 561,
+        "endChar": 76
+      },
+      "revId": "20b1194026763eaf1a9a232fb0a1b584dbd101d4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "daf63592_027109fd",
+        "filename": "init/service.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 563,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-11-18T01:47:50Z",
+      "side": 1,
+      "message": "Consider symbolizing this.",
+      "range": {
+        "startLine": 563,
+        "startChar": 30,
+        "endLine": 563,
+        "endChar": 31
+      },
+      "revId": "20b1194026763eaf1a9a232fb0a1b584dbd101d4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e258f0b4_81da02dd",
+        "filename": "init/service.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 738,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-11-18T01:47:50Z",
+      "side": 1,
+      "message": "Could you please explain why this is safe to be ignored?",
+      "range": {
+        "startLine": 738,
+        "startChar": 0,
+        "endLine": 738,
+        "endChar": 70
+      },
+      "revId": "20b1194026763eaf1a9a232fb0a1b584dbd101d4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bc7489a5_3a04cec5",
+        "filename": "init/service.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 742,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-11-18T01:47:50Z",
+      "side": 1,
+      "message": "What is the recovery plan? Shouldn\u0027t we kill `pid`?",
+      "range": {
+        "startLine": 742,
+        "startChar": 0,
+        "endLine": 742,
+        "endChar": 66
+      },
+      "revId": "20b1194026763eaf1a9a232fb0a1b584dbd101d4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "183ddbf1_37521e8e",
+        "filename": "init/service.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 747,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-11-18T01:47:50Z",
+      "side": 1,
+      "message": "Consider symbolizing this",
+      "range": {
+        "startLine": 747,
+        "startChar": 88,
+        "endLine": 747,
+        "endChar": 89
+      },
+      "revId": "20b1194026763eaf1a9a232fb0a1b584dbd101d4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bed61b82_4bcc24e9",
+        "filename": "init/service_utils.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 248,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-11-18T01:47:50Z",
+      "side": 1,
+      "message": "We don\u0027t use PID namespaces in Android, right?",
+      "range": {
+        "startLine": 248,
+        "startChar": 31,
+        "endLine": 248,
+        "endChar": 51
+      },
+      "revId": "20b1194026763eaf1a9a232fb0a1b584dbd101d4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
