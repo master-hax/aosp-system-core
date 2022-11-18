@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "742decac_9102f266",
+        "filename": "init/service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 207,
+      "author": {
+        "id": 1291338
+      },
+      "writtenOn": "2022-11-18T02:05:44Z",
+      "side": 1,
+      "message": "killProcessGroup* doesn\u0027t seem to work without cgroups support.",
+      "parentUuid": "0f2f7c28_2ddbb5db",
+      "range": {
+        "startLine": 207,
+        "startChar": 8,
+        "endLine": 207,
+        "endChar": 37
+      },
+      "revId": "df0d45ce9bc492a9f020c992dfb214099316f8da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "2c299f10_48c9e703",
         "filename": "init/service.cpp",
         "patchSetId": 1
