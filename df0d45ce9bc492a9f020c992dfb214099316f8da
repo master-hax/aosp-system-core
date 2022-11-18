@@ -1,6 +1,23 @@
 {
   "comments": [
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "4e765db6_3f0cfa80",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-11-18T02:14:43Z",
+      "side": 1,
+      "message": "+surenb@ for cgroup thoughts.",
+      "revId": "df0d45ce9bc492a9f020c992dfb214099316f8da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "0f2f7c28_2ddbb5db",
@@ -38,6 +55,30 @@
       "side": 1,
       "message": "killProcessGroup* doesn\u0027t seem to work without cgroups support.",
       "parentUuid": "0f2f7c28_2ddbb5db",
+      "range": {
+        "startLine": 207,
+        "startChar": 8,
+        "endLine": 207,
+        "endChar": 37
+      },
+      "revId": "df0d45ce9bc492a9f020c992dfb214099316f8da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "aa6d9da4_b703743b",
+        "filename": "init/service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 207,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-11-18T02:14:43Z",
+      "side": 1,
+      "message": "Then shouldn\u0027t this be if (CgroupsAvailable() \u0026\u0026 !process_cgroup_empty_) ?",
+      "parentUuid": "742decac_9102f266",
       "range": {
         "startLine": 207,
         "startChar": 8,
