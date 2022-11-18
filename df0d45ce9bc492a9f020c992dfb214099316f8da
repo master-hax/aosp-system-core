@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0f2f7c28_2ddbb5db",
+        "filename": "init/service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 207,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-11-18T01:55:40Z",
+      "side": 1,
+      "message": "Why do we need this condition?",
+      "range": {
+        "startLine": 207,
+        "startChar": 8,
+        "endLine": 207,
+        "endChar": 37
+      },
+      "revId": "df0d45ce9bc492a9f020c992dfb214099316f8da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2c299f10_48c9e703",
+        "filename": "init/service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 216,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-11-18T01:55:40Z",
+      "side": 1,
+      "message": "Don\u0027t we log errors?",
+      "range": {
+        "startLine": 216,
+        "startChar": 42,
+        "endLine": 216,
+        "endChar": 46
+      },
+      "revId": "df0d45ce9bc492a9f020c992dfb214099316f8da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "04510060_abaa99ce",
+        "filename": "init/service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 216,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-11-18T01:55:40Z",
+      "side": 1,
+      "message": "This isn\u0027t killing the process group, but only the process.",
+      "range": {
+        "startLine": 216,
+        "startChar": 23,
+        "endLine": 216,
+        "endChar": 41
+      },
+      "revId": "df0d45ce9bc492a9f020c992dfb214099316f8da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
