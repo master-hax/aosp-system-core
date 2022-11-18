@@ -16,6 +16,24 @@
       "message": "I don\u0027t see any changes to fuzzers in this CL. Is our team the right one for this review?",
       "revId": "dd39dcb898cb5e0075e353bb1da87c6fd299d5dc",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2a038757_eb270028",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 10
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1890836
+      },
+      "writtenOn": "2022-11-18T05:15:34Z",
+      "side": 1,
+      "message": "We have changed the thread wait time from 10secs to 0secs in this CL. This was necessary as otherwise the fuzzer execution speed would be very slow (\u003c 0 exec/s)",
+      "parentUuid": "66387c6e_86b1375e",
+      "revId": "dd39dcb898cb5e0075e353bb1da87c6fd299d5dc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
