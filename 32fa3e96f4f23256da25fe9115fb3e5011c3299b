@@ -16,6 +16,23 @@
       "message": "tested with \n```\n$ ./android-vts/tools/vts-tradefed run commandAndExit vts-kernel -m vts_libsnapshot_test\n```\nthe result is something like this:\n```\n\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\n\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d Results \u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\n\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d Consumed Time \u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\n    arm64-v8a vts_libsnapshot_test: 1m 53s\n    armeabi-v7a vts_libsnapshot_test: 8s\nTotal aggregated tests run time: 2m 2s\n\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d TOP 2 Slow Modules \u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\n    armeabi-v7a vts_libsnapshot_test: 0.00 tests/sec [0 tests / 8603 msec]\n    arm64-v8a vts_libsnapshot_test: 0.94 tests/sec [107 tests / 113924 msec]\n\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d Modules Preparation Times \u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\n    arm64-v8a vts_libsnapshot_test \u003d\u003e prep \u003d 5408 ms || clean \u003d 7462 ms\n    armeabi-v7a vts_libsnapshot_test \u003d\u003e prep \u003d 4103 ms || clean \u003d 8378 ms\nTotal preparation time: 9s  ||  Total tear down time: 15s\n\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\n\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d Summary \u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\nTotal Run time: 2m 41s\n2/2 modules completed\nTotal Tests       : 107\nPASSED            : 102\nFAILED            : 0\nIGNORED           : 5\n\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d End of Results \u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\n```\n\nThe \"CANNOT LINK EXECUTABLE\" problem is not reproduced",
       "revId": "32fa3e96f4f23256da25fe9115fb3e5011c3299b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a540bdc0_07b0bcfe",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1041813
+      },
+      "writtenOn": "2022-11-18T03:12:03Z",
+      "side": 1,
+      "message": "Hi, David, Alistair\n\nCould you please help check if the failure could be resolved, and have this change merge?\n\nThanks,\nYongqin Liu",
+      "revId": "32fa3e96f4f23256da25fe9115fb3e5011c3299b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
