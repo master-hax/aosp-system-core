@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f2d9b236_e160f5c9",
+        "filename": "init/service.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 561,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-11-18T18:22:24Z",
+      "side": 1,
+      "message": "The setsid_finished.Write() call has been moved to just under the setsid() call.",
+      "parentUuid": "89577b45_65809a5e",
+      "range": {
+        "startLine": 561,
+        "startChar": 4,
+        "endLine": 561,
+        "endChar": 76
+      },
+      "revId": "20b1194026763eaf1a9a232fb0a1b584dbd101d4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "daf63592_027109fd",
@@ -37,6 +61,30 @@
       "writtenOn": "2022-11-18T01:47:50Z",
       "side": 1,
       "message": "Consider symbolizing this.",
+      "range": {
+        "startLine": 563,
+        "startChar": 30,
+        "endLine": 563,
+        "endChar": 31
+      },
+      "revId": "20b1194026763eaf1a9a232fb0a1b584dbd101d4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b5c0e287_2f7b2656",
+        "filename": "init/service.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 563,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-11-18T18:22:24Z",
+      "side": 1,
+      "message": "Done.",
+      "parentUuid": "daf63592_027109fd",
       "range": {
         "startLine": 563,
         "startChar": 30,
@@ -70,6 +118,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "2facae4b_d33a987f",
+        "filename": "init/service.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 738,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-11-18T18:22:24Z",
+      "side": 1,
+      "message": "The child process always calls setpgid() before it calls execve() if no console is associated with the child process. If the setpgid() call from the parent fails with the EACCESS error code that means that the setpgid() call in the child process has already completed. Hence, it is safe to ignore EACCESS here.",
+      "parentUuid": "e258f0b4_81da02dd",
+      "range": {
+        "startLine": 738,
+        "startChar": 0,
+        "endLine": 738,
+        "endChar": 70
+      },
+      "revId": "20b1194026763eaf1a9a232fb0a1b584dbd101d4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "bc7489a5_3a04cec5",
@@ -83,6 +155,30 @@
       "writtenOn": "2022-11-18T01:47:50Z",
       "side": 1,
       "message": "What is the recovery plan? Shouldn\u0027t we kill `pid`?",
+      "range": {
+        "startLine": 742,
+        "startChar": 0,
+        "endLine": 742,
+        "endChar": 66
+      },
+      "revId": "20b1194026763eaf1a9a232fb0a1b584dbd101d4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e530dc54_deb282f2",
+        "filename": "init/service.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 742,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-11-18T18:22:24Z",
+      "side": 1,
+      "message": "The \u0027default\u0027 case should not be reached. In case the \u0027default\u0027 case is reached, we need to analyze what is going on, root-cause the issue (e.g. analyze whether it is a user space or kernel bug) and fix it.",
+      "parentUuid": "bc7489a5_3a04cec5",
       "range": {
         "startLine": 742,
         "startChar": 0,
@@ -116,6 +212,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "57c2e94d_cddceac0",
+        "filename": "init/service.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 747,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-11-18T18:22:24Z",
+      "side": 1,
+      "message": "Done.",
+      "parentUuid": "183ddbf1_37521e8e",
+      "range": {
+        "startLine": 747,
+        "startChar": 88,
+        "endLine": 747,
+        "endChar": 89
+      },
+      "revId": "20b1194026763eaf1a9a232fb0a1b584dbd101d4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "bed61b82_4bcc24e9",
@@ -129,6 +249,30 @@
       "writtenOn": "2022-11-18T01:47:50Z",
       "side": 1,
       "message": "We don\u0027t use PID namespaces in Android, right?",
+      "range": {
+        "startLine": 248,
+        "startChar": 31,
+        "endLine": 248,
+        "endChar": 51
+      },
+      "revId": "20b1194026763eaf1a9a232fb0a1b584dbd101d4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8ad88ea4_dc8862f9",
+        "filename": "init/service_utils.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 248,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-11-18T18:22:24Z",
+      "side": 1,
+      "message": "We don\u0027t use PID namespaces. I mentioned these anyway in this comment because there is code in the init process to support PID namespaces.",
+      "parentUuid": "bed61b82_4bcc24e9",
       "range": {
         "startLine": 248,
         "startChar": 31,
