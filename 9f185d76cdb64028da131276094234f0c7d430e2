@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "dc0ed0fa_73df6fbd",
+        "filename": "init/service.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 663,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-11-21T01:50:07Z",
+      "side": 1,
+      "message": "nit: wouldn\u0027t it be nicer if the direction of these two are documented? I think future readers will find these confusing. cgroups_activated is from child to parent, while setsid_finished is the opposite.",
+      "range": {
+        "startLine": 662,
+        "startChar": 0,
+        "endLine": 663,
+        "endChar": 38
+      },
+      "revId": "9f185d76cdb64028da131276094234f0c7d430e2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2ab1bbcb_b823e265",
+        "filename": "init/service.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 732,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-11-21T01:50:07Z",
+      "side": 1,
+      "message": "nit: setpgid (followed by execve).",
+      "range": {
+        "startLine": 732,
+        "startChar": 61,
+        "endLine": 732,
+        "endChar": 69
+      },
+      "revId": "9f185d76cdb64028da131276094234f0c7d430e2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}

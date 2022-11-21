@@ -142,6 +142,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "6b3b3bfc_21d1538e",
+        "filename": "init/service.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 738,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-11-21T01:50:07Z",
+      "side": 1,
+      "message": "Aha, got it! Thanks.",
+      "parentUuid": "2facae4b_d33a987f",
+      "range": {
+        "startLine": 738,
+        "startChar": 0,
+        "endLine": 738,
+        "endChar": 70
+      },
+      "revId": "20b1194026763eaf1a9a232fb0a1b584dbd101d4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "bc7489a5_3a04cec5",
