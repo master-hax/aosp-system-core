@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "85c30cfa_243c1c43",
+        "filename": "init/service.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 663,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-11-21T19:48:00Z",
+      "side": 1,
+      "message": "A comment block has been added above the declaration of these two objects.",
+      "parentUuid": "dc0ed0fa_73df6fbd",
+      "range": {
+        "startLine": 662,
+        "startChar": 0,
+        "endLine": 663,
+        "endChar": 38
+      },
+      "revId": "9f185d76cdb64028da131276094234f0c7d430e2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "2ab1bbcb_b823e265",
@@ -37,6 +61,30 @@
       "writtenOn": "2022-11-21T01:50:07Z",
       "side": 1,
       "message": "nit: setpgid (followed by execve).",
+      "range": {
+        "startLine": 732,
+        "startChar": 61,
+        "endLine": 732,
+        "endChar": 69
+      },
+      "revId": "9f185d76cdb64028da131276094234f0c7d430e2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "da2a30b8_02ae23f1",
+        "filename": "init/service.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 732,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-11-21T19:48:00Z",
+      "side": 1,
+      "message": "The comment has been updated as suggested.",
+      "parentUuid": "2ab1bbcb_b823e265",
       "range": {
         "startLine": 732,
         "startChar": 61,
