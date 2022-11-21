@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include <cutils/properties.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <inttypes.h>
@@ -42,6 +43,9 @@ enum sync_state {
 };
 
 static const char *ssdir_name;
+
+/* property set to 1 after we have opened a file under ssdir_name */
+#define FS_READY_PROPERTY "ro.vendor.trusty.storage.fs_ready"
 
 static enum sync_state fs_state;
 static enum sync_state fd_state[FD_TBL_SIZE];
@@ -223,6 +227,9 @@ static void sync_parent(const char* path) {
     }
 }
 
+/* has FS_READY_PROPERTY been set? */
+static bool fs_ready_initialized = false;
+
 int storage_file_open(struct storage_msg* msg, const void* r, size_t req_len) {
     char* path = NULL;
     const struct storage_file_open_req *req = r;
@@ -335,6 +342,15 @@ int storage_file_open(struct storage_msg* msg, const void* r, size_t req_len) {
     resp.handle = insert_fd(open_flags, rc);
     ALOGV("%s: \"%s\": fd = %u: handle = %d\n",
           __func__, path, rc, resp.handle);
+
+    if (!fs_ready_initialized) {
+        rc = property_set(FS_READY_PROPERTY, "1");
+        if (rc == 0) {
+            fs_ready_initialized = true;
+        } else {
+            ALOGE("Could not set property %s, rc: %d\n", FS_READY_PROPERTY, rc);
+        }
+    }
 
     return ipc_respond(msg, &resp, sizeof(resp));
 
