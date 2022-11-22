@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b3d84365_a476cdc9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 16
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-11-22T13:09:15Z",
+      "side": 1,
+      "message": "Tom, not sure when you will be able to see this, but could you answer to this question when you are back? Thanks!",
+      "revId": "fa0c21c94ccb98bfa5cf3cc7a6b220be4a5fa378",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1aa2d0f6_39180b5c",
+        "filename": "init/action.cpp",
+        "patchSetId": 16
+      },
+      "lineNbr": 232,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-11-22T13:09:15Z",
+      "side": 1,
+      "message": "Could you explain why this condition exists? `on boot \u0026\u0026 name\u003dvalue` is triggered only when \"boot is triggered after name is set to value\", but NOT when \"name is set to value some time after boot is triggered\". That is quite counter intuitive to me.\n\nWhy don\u0027t we record the fact that a specific event was once triggered? Then we could check if this.event_trigger_ was in the list of already-triggered events.",
+      "range": {
+        "startLine": 232,
+        "startChar": 11,
+        "endLine": 232,
+        "endChar": 33
+      },
+      "revId": "fa0c21c94ccb98bfa5cf3cc7a6b220be4a5fa378",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
