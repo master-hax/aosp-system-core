@@ -26,6 +26,7 @@ PRODUCT_PACKAGES += \
 	android.hardware.security.keymint-service.trusty \
 	android.hardware.gatekeeper@1.0-service.trusty \
 	trusty_apploader \
+	trusty_shprio_test \
 	RemoteProvisioner
 
 PRODUCT_PROPERTY_OVERRIDES += \
