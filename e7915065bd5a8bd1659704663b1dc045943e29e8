@@ -20,6 +20,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "839669d5_0db95f6a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000205
+      },
+      "writtenOn": "2022-11-22T21:32:01Z",
+      "side": 1,
+      "message": "It does fail SELinuxUncheckedDenialBootTest",
+      "parentUuid": "c2c6cfe0_9f6e51d3",
+      "revId": "e7915065bd5a8bd1659704663b1dc045943e29e8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "4ef3498b_cbcf4a53",
         "filename": "trusty/storage/proxy/storage.c",
         "patchSetId": 1
