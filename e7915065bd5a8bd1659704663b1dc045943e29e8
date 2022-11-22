@@ -33,6 +33,24 @@
       "message": "So this property is set as soon as one file system is up, correct?\nThis so assumes that as soon as one FS is up, a common relying partition is up (/data).\nIs it going to be a good assumption once we migrate TDP to its own block device?\nWhat happens in the case of TP, could TP succeed while /data is not up yet and inadvertently set this flag to true?",
       "revId": "e7915065bd5a8bd1659704663b1dc045943e29e8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "357912fb_7817933e",
+        "filename": "trusty/storage/proxy/storage.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 351,
+      "author": {
+        "id": 1000205
+      },
+      "writtenOn": "2022-11-22T20:34:36Z",
+      "side": 1,
+      "message": "We currently only pass one path to storageproxyd so TDP is accessed through a symlink at /data/vendor/ss/persist. If we want to mount tdp before /data is ready we would likely need additional storageproxyd changes. TP does not open any files, it uses rpmb_send instead (which does not take a handle/fd arg).",
+      "parentUuid": "4ef3498b_cbcf4a53",
+      "revId": "e7915065bd5a8bd1659704663b1dc045943e29e8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
