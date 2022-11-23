@@ -16,6 +16,24 @@
       "message": "Hi Bart, this is Harry from the CB team again. I remember you fixed the boot time regression issue in one of the previous patchsets. Do you know why it popped up again?",
       "revId": "d0074662993319d6fe3a77d76c07f42db27dbb8a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "295084bc_a6ab18f1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 30
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-11-23T00:31:41Z",
+      "side": 1,
+      "message": "It is a surprise to me that the boot time regression reappeared. It is not yet clear why the boot time regression reappeared.",
+      "parentUuid": "3d7e246a_cda44adb",
+      "revId": "d0074662993319d6fe3a77d76c07f42db27dbb8a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
