@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "97a9a50f_19ea03c7",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2022-11-23T17:56:08Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b7e3eb85_62920408",
+      "revId": "10812c9a2e82506977ec2ba037b170b0c6e7cc44",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "83ad0c56_fcb7f755",
@@ -31,6 +49,24 @@
       "writtenOn": "2022-11-23T01:49:01Z",
       "side": 1,
       "message": "Nit: move this to the top of the file, with the other statics? It can help to have them all in one place.",
+      "revId": "10812c9a2e82506977ec2ba037b170b0c6e7cc44",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "069235d8_74464c99",
+        "filename": "trusty/storage/proxy/storage.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 241,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2022-11-23T17:56:08Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "83ad0c56_fcb7f755",
       "revId": "10812c9a2e82506977ec2ba037b170b0c6e7cc44",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
