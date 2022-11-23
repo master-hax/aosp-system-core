@@ -87,6 +87,24 @@
       "parentUuid": "160267d3_2e532fc3",
       "revId": "08d31164c58b0d05a3d0086c688d851475690ad7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "80885b5c_b282d474",
+        "filename": "libprocessgroup/profiles/task_profiles.json",
+        "patchSetId": 46
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-11-23T20:57:38Z",
+      "side": 1,
+      "message": "Nope. The correct values should be set from device-specific task_profile.json files, for example in `device/google/gs101/task_profiles.json`.\n\nCurrently that\u0027s done in the init.rc scripts, see here for example: https://cs.android.com/android/platform/superproject/+/master:device/google/gs101/conf/init.gs101.rc;l\u003d748, however looks like the value is controlled by a property... to support experimentation I guess.\n\nI think we will need to set correct default values in device-specific task_profiles.json files and also we need to support variable overrides from .rc scripts. I recall when we started we planned to support a `set_task_profile_var` command, which would replace these `write \u003chardcoded path\u003e` commands. Carlos, do you remember why we decided to drop that?",
+      "parentUuid": "0fa7bc91_9e2f1346",
+      "revId": "08d31164c58b0d05a3d0086c688d851475690ad7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
