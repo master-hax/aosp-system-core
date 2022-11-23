@@ -16,6 +16,23 @@
       "message": "Hi Carlos, \nObserved this change is causing regression in \"Performance Presubmit\" where calculator app launch time is regressed. \n\nhttps://screenshot.googleplex.com/6F9HgYJBtV922Vm\n\nCan you please take a look and fix before merging this change.",
       "revId": "8400107b7bc80dc0acb5618044aab473441b6191",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5f0304cd_f734c5ee",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 48
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1073883
+      },
+      "writtenOn": "2022-11-23T00:30:05Z",
+      "side": 1,
+      "message": "This seems like a big app launch time regression\n\nhttps://screenshot.googleplex.com/AB2MMghTRzrTpMF\n\nYou can access the regressed build perfetto trace file here\n\nhttps://android-build.googleplex.com/builds/tests/view?invocationId\u003dI58600010110820313\u0026testResultId\u003dTR57628386042917728",
+      "revId": "8400107b7bc80dc0acb5618044aab473441b6191",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
