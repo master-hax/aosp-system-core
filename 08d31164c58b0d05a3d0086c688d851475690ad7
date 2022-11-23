@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "de154f8f_0c7258ed",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 46
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1073883
+      },
+      "writtenOn": "2022-11-23T00:34:07Z",
+      "side": 1,
+      "message": "This CL is causing app launch time regression in presubmit. Please fix before merging the CL.",
+      "revId": "08d31164c58b0d05a3d0086c688d851475690ad7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
