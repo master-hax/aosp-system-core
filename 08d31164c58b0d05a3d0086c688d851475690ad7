@@ -123,6 +123,24 @@
       "parentUuid": "80885b5c_b282d474",
       "revId": "08d31164c58b0d05a3d0086c688d851475690ad7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "87555a84_d6b4dd97",
+        "filename": "libprocessgroup/profiles/task_profiles.json",
+        "patchSetId": 46
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1073883
+      },
+      "writtenOn": "2022-11-23T21:10:58Z",
+      "side": 1,
+      "message": "Currently we configured performance presubmit test to run only on Pixel 6 Pro where we see this regression.",
+      "parentUuid": "fe234522_db44fd64",
+      "revId": "08d31164c58b0d05a3d0086c688d851475690ad7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
