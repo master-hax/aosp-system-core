@@ -33,6 +33,23 @@
       "message": "This seems like a big app launch time regression\n\nhttps://screenshot.googleplex.com/AB2MMghTRzrTpMF\n\nYou can access the regressed build perfetto trace file here\n\nhttps://android-build.googleplex.com/builds/tests/view?invocationId\u003dI58600010110820313\u0026testResultId\u003dTR57628386042917728",
       "revId": "8400107b7bc80dc0acb5618044aab473441b6191",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c4f9fc05_ffe7dece",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 48
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1080238
+      },
+      "writtenOn": "2022-11-23T19:26:08Z",
+      "side": 1,
+      "message": "Please see Gopi\u0027s comment re startup regression.",
+      "revId": "8400107b7bc80dc0acb5618044aab473441b6191",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
