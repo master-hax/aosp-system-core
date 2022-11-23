@@ -141,6 +141,24 @@
       "parentUuid": "fe234522_db44fd64",
       "revId": "08d31164c58b0d05a3d0086c688d851475690ad7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1d942bce_b6af8008",
+        "filename": "libprocessgroup/profiles/task_profiles.json",
+        "patchSetId": 46
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-11-23T22:47:50Z",
+      "side": 1,
+      "message": "I recall why we did not go with `set_task_profile_var` approach. Because if there are processes already spawned they would already have their cgroups with old cpusets created. So `set_task_profile_var` would set the variable to new value and will affect new processes but will not change already existing ones. However I think if we do `set_task_profile_var` early enough in init process, we should be able to cover all processes which can change their roles.",
+      "parentUuid": "87555a84_d6b4dd97",
+      "revId": "08d31164c58b0d05a3d0086c688d851475690ad7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
