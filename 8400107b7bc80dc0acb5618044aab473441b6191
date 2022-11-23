@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "eaa272ca_905cfe78",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 48
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1261281
+      },
+      "writtenOn": "2022-11-23T00:21:51Z",
+      "side": 1,
+      "message": "Hi Carlos, \nObserved this change is causing regression in \"Performance Presubmit\" where calculator app launch time is regressed. \n\nhttps://screenshot.googleplex.com/6F9HgYJBtV922Vm\n\nCan you please take a look and fix before merging this change.",
+      "revId": "8400107b7bc80dc0acb5618044aab473441b6191",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
