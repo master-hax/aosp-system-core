@@ -104,6 +104,24 @@
       "parentUuid": "4ef3498b_cbcf4a53",
       "revId": "e7915065bd5a8bd1659704663b1dc045943e29e8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a0b29e9b_20418e4c",
+        "filename": "trusty/storage/proxy/storage.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 351,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2022-11-23T01:41:45Z",
+      "side": 1,
+      "message": "Added more comments to address these questions.",
+      "parentUuid": "357912fb_7817933e",
+      "revId": "e7915065bd5a8bd1659704663b1dc045943e29e8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
