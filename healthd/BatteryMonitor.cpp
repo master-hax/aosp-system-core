@@ -56,6 +56,7 @@ using HealthInfo_2_0 = android::hardware::health::V2_0::HealthInfo;
 using HealthInfo_2_1 = android::hardware::health::V2_1::HealthInfo;
 using aidl::android::hardware::health::BatteryCapacityLevel;
 using aidl::android::hardware::health::BatteryHealth;
+using aidl::android::hardware::health::BatteryHealthData;
 using aidl::android::hardware::health::BatteryStatus;
 using aidl::android::hardware::health::HealthInfo;
 
@@ -335,6 +336,17 @@ void BatteryMonitor::updateValues(void) {
     if (!mHealthdConfig->batteryFullChargeDesignCapacityUahPath.isEmpty())
         mHealthInfo->batteryFullChargeDesignCapacityUah =
                 getIntField(mHealthdConfig->batteryFullChargeDesignCapacityUahPath);
+
+    if (!mHealthdConfig->batteryManufacturingDatePath.isEmpty())
+        mHealthInfo->batteryHealthData.batteryManufacturingDate =
+                getIntField(mHealthdConfig->batteryManufacturingDatePath);
+
+    if (!mHealthdConfig->batteryFirstUsageDatePath.isEmpty())
+        mHealthInfo->batteryHealthData.batteryFirstUsage =
+                getIntField(mHealthdConfig->batteryFirstUsageDatePath);
+
+    if (!mHealthdConfig->batteryHealthIndexPath.isEmpty())
+        mHealthInfo->batteryHealthIndex = getIntField(mHealthdConfig->batteryHealthIndexPath);
 
     mHealthInfo->batteryTemperatureTenthsCelsius =
             mBatteryFixedTemperature ? mBatteryFixedTemperature
@@ -758,6 +770,25 @@ void BatteryMonitor::init(struct healthd_config *hc) {
                         mHealthdConfig->batteryTechnologyPath = path;
                 }
 
+                if (mHealthdConfig->batteryManufacturingDatePath.isEmpty()) {
+                    path.clear();
+                    path.appendFormat("%s/%s/health_algo", POWER_SUPPLY_SYSFS_PATH, name);
+                    if (access(path, R_OK) == 0)
+                        mHealthdConfig->batteryManufacturingDatePath = path;
+                }
+
+                if (mHealthdConfig->batteryFirstUsageDatePath.isEmpty()) {
+                    path.clear();
+                    path.appendFormat("%s/%s/health_algo", POWER_SUPPLY_SYSFS_PATH, name);
+                    if (access(path, R_OK) == 0) mHealthdConfig->batteryFirstUsageDatePath = path;
+                }
+
+                if (mHealthdConfig->batteryHealthIndexPath.isEmpty()) {
+                    path.clear();
+                    path.appendFormat("%s/%s/health_algo", POWER_SUPPLY_SYSFS_PATH, name);
+                    if (access(path, R_OK) == 0) mHealthdConfig->batteryHealthIndexPath = path;
+                }
+
                 break;
 
             case ANDROID_POWER_SUPPLY_TYPE_UNKNOWN:
@@ -810,6 +841,12 @@ void BatteryMonitor::init(struct healthd_config *hc) {
             KLOG_WARNING(LOG_TAG, "batteryChargeTimeToFullNowPath. not found\n");
         if (mHealthdConfig->batteryFullChargeDesignCapacityUahPath.isEmpty())
             KLOG_WARNING(LOG_TAG, "batteryFullChargeDesignCapacityUahPath. not found\n");
+        if (mHealthdConfig->batteryManufacturingDatePath.isEmpty())
+            KLOG_WARNING(LOG_TAG, "batteryManufacturingDatePath not found\n");
+        if (mHealthdConfig->batteryFirstUsageDatePath.isEmpty())
+            KLOG_WARNING(LOG_TAG, "batteryFirstUsageDatePath not found\n");
+        if (mHealthdConfig->batteryHealthIndexPath.isEmpty())
+            KLOG_WARNING(LOG_TAG, "batteryHealthIndexPath not found\n");
     }
 
     if (property_get("ro.boot.fake_battery", pval, NULL) > 0
