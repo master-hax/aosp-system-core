@@ -61,6 +61,7 @@ class BatteryMonitor {
     void init(struct healthd_config *hc);
     int getChargeStatus();
     status_t getProperty(int id, struct BatteryProperty *val);
+    status_t setProperty(int id, int value);
     void dumpState(int fd);
 
     android::hardware::health::V1_0::HealthInfo getHealthInfo_1_0() const;
@@ -71,6 +72,10 @@ class BatteryMonitor {
     void updateValues(void);
     void logValues(void);
     bool isChargerOnline();
+
+    void setChargingPolicy(int value);
+    int getChargingPolicy();
+    int getBatteryHealthData(int id);
 
     static void logValues(const android::hardware::health::V2_1::HealthInfo& health_info,
                           const struct healthd_config& healthd_config);
