@@ -56,6 +56,7 @@ using HealthInfo_2_0 = android::hardware::health::V2_0::HealthInfo;
 using HealthInfo_2_1 = android::hardware::health::V2_1::HealthInfo;
 using aidl::android::hardware::health::BatteryCapacityLevel;
 using aidl::android::hardware::health::BatteryHealth;
+using aidl::android::hardware::health::BatteryHealthData;
 using aidl::android::hardware::health::BatteryStatus;
 using aidl::android::hardware::health::HealthInfo;
 
@@ -335,6 +336,32 @@ void BatteryMonitor::updateValues(void) {
     if (!mHealthdConfig->batteryFullChargeDesignCapacityUahPath.isEmpty())
         mHealthInfo->batteryFullChargeDesignCapacityUah =
                 getIntField(mHealthdConfig->batteryFullChargeDesignCapacityUahPath);
+
+    if (!mHealthdConfig->batteryManufacturingDatePath.isEmpty())
+        mHealthInfo->batteryHealthData.batteryManufacturingDate =
+                getIntField(mHealthdConfig->batteryManufacturingDatePath);
+
+    if (!mHealthdConfig->batteryFirstUsageDatePath.isEmpty())
+        mHealthInfo->batteryHealthData.batteryFirstUsage =
+                getIntField(mHealthdConfig->batteryFirstUsageDatePath);
+
+    if (!mHealthdConfig->batteryHealthCapacityPath.isEmpty())
+        mHealthInfo->batteryHealthCapacity = getIntField(mHealthdConfig->batteryHealthCapacityPath);
+
+    if (!mHealthdConfig->batteryHealthImpedancePath.isEmpty())
+        mHealthInfo->batteryHealthImpedance =
+                getIntField(mHealthdConfig->batteryHealthImpedancePath);
+
+    if (!mHealthdConfig->batteryHealthActivationImpedancePath.isEmpty())
+        mHealthInfo->batteryHealthActivationImpedance =
+                getIntField(mHealthdConfig->batteryHealthActivationImpedancePath);
+
+    if (!mHealthdConfig->batteryHealthCycleCountPath.isEmpty())
+        mHealthInfo->batteryHealthCycleCount =
+                getIntField(mHealthdConfig->batteryHealthCycleCountPath);
+
+    if (!mHealthdConfig->batteryHealthAgePath.isEmpty())
+        mHealthInfo->batteryHealthAge = getIntField(mHealthdConfig->batteryHealthAgePath);
 
     mHealthInfo->batteryTemperatureTenthsCelsius =
             mBatteryFixedTemperature ? mBatteryFixedTemperature
@@ -758,6 +785,50 @@ void BatteryMonitor::init(struct healthd_config *hc) {
                         mHealthdConfig->batteryTechnologyPath = path;
                 }
 
+                if (mHealthdConfig->batteryManufacturingDatePath.isEmpty()) {
+                    path.clear();
+                    path.appendFormat("%s/%s/dev_date", POWER_SUPPLY_SYSFS_PATH, name);
+                    if (access(path, R_OK) == 0)
+                        mHealthdConfig->batteryManufacturingDatePath = path;
+                }
+
+                if (mHealthdConfig->batteryFirstUsageDatePath.isEmpty()) {
+                    path.clear();
+                    path.appendFormat("%s/%s/dev_act_date", POWER_SUPPLY_SYSFS_PATH, name);
+                    if (access(path, R_OK) == 0) mHealthdConfig->batteryFirstUsageDatePath = path;
+                }
+
+                if (mHealthdConfig->batteryHealthCapacityPath.isEmpty()) {
+                    path.clear();
+                    path.appendFormat("%s/%s/health_capacity", POWER_SUPPLY_SYSFS_PATH, name);
+                    if (access(path, R_OK) == 0) mHealthdConfig->batteryHealthCapacityPath = path;
+                }
+
+                if (mHealthdConfig->batteryHealthImpedancePath.isEmpty()) {
+                    path.clear();
+                    path.appendFormat("%s/%s/health_impedance", POWER_SUPPLY_SYSFS_PATH, name);
+                    if (access(path, R_OK) == 0) mHealthdConfig->batteryHealthImpedancePath = path;
+                }
+
+                if (mHealthdConfig->batteryHealthActivationImpedancePath.isEmpty()) {
+                    path.clear();
+                    path.appendFormat("%s/%s/health_act_impedance", POWER_SUPPLY_SYSFS_PATH, name);
+                    if (access(path, R_OK) == 0)
+                        mHealthdConfig->batteryHealthActivationImpedancePath = path;
+                }
+
+                if (mHealthdConfig->batteryHealthCycleCountPath.isEmpty()) {
+                    path.clear();
+                    path.appendFormat("%s/%s/health_cycle_count", POWER_SUPPLY_SYSFS_PATH, name);
+                    if (access(path, R_OK) == 0) mHealthdConfig->batteryHealthCycleCountPath = path;
+                }
+
+                if (mHealthdConfig->batteryHealthAgePath.isEmpty()) {
+                    path.clear();
+                    path.appendFormat("%s/%s/health_battery_age", POWER_SUPPLY_SYSFS_PATH, name);
+                    if (access(path, R_OK) == 0) mHealthdConfig->batteryHealthAgePath = path;
+                }
+
                 break;
 
             case ANDROID_POWER_SUPPLY_TYPE_UNKNOWN:
@@ -810,6 +881,20 @@ void BatteryMonitor::init(struct healthd_config *hc) {
             KLOG_WARNING(LOG_TAG, "batteryChargeTimeToFullNowPath. not found\n");
         if (mHealthdConfig->batteryFullChargeDesignCapacityUahPath.isEmpty())
             KLOG_WARNING(LOG_TAG, "batteryFullChargeDesignCapacityUahPath. not found\n");
+        if (mHealthdConfig->batteryManufacturingDatePath.isEmpty())
+            KLOG_WARNING(LOG_TAG, "batteryManufacturingDatePath not found\n");
+        if (mHealthdConfig->batteryFirstUsageDatePath.isEmpty())
+            KLOG_WARNING(LOG_TAG, "batteryFirstUsageDatePath not found\n");
+        if (mHealthdConfig->batteryHealthCapacityPath.isEmpty())
+            KLOG_WARNING(LOG_TAG, "batteryHealthCapacityPath not found\n");
+        if (mHealthdConfig->batteryHealthImpedancePath.isEmpty())
+            KLOG_WARNING(LOG_TAG, "batteryHealthImpedancePath not found\n");
+        if (mHealthdConfig->batteryHealthActivationImpedancePath.isEmpty())
+            KLOG_WARNING(LOG_TAG, "batteryHealthActivationImpedancePath not found\n");
+        if (mHealthdConfig->batteryHealthCycleCountPath.isEmpty())
+            KLOG_WARNING(LOG_TAG, "batteryHealthCycleCountPath not found\n");
+        if (mHealthdConfig->batteryHealthAgePath.isEmpty())
+            KLOG_WARNING(LOG_TAG, "batteryHealthAgePath not found\n");
     }
 
     if (property_get("ro.boot.fake_battery", pval, NULL) > 0
