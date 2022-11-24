@@ -25,7 +25,7 @@ cc_library_static {
         // Need HealthInfo definition from headers of these shared
         // libraries. Clients don't need to link to these.
         "android.hardware.health@2.1",
-        "android.hardware.health-V1-ndk",
+        "android.hardware.health-V2-ndk",
     ],
     whole_static_libs: [
         // Need to translate HIDL to AIDL to support legacy APIs in
@@ -143,7 +143,7 @@ cc_library_static {
     ],
 
     static_libs: [
-        "android.hardware.health-V1-ndk",
+        "android.hardware.health-V2-ndk",
         "android.hardware.health-translate-ndk",
         "libcharger_sysprop",
         "libhealthd_draw",
@@ -165,7 +165,7 @@ cc_library_static {
     ],
 
     export_static_lib_headers: [
-        "android.hardware.health-V1-ndk",
+        "android.hardware.health-V2-ndk",
     ],
 
     srcs: [
@@ -235,7 +235,7 @@ cc_defaults {
     static_libs: [
         // common
         "android.hardware.health@1.0-convert",
-        "android.hardware.health-V1-ndk",
+        "android.hardware.health-V2-ndk",
         "libbatterymonitor",
         "libcharger_sysprop",
         "libhealthd_charger_nops",
