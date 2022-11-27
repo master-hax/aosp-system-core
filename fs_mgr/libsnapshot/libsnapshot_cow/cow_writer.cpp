@@ -22,6 +22,7 @@
 
 #include <android-base/file.h>
 #include <android-base/logging.h>
+#include <android-base/properties.h>
 #include <android-base/unique_fd.h>
 #include <brotli/encode.h>
 #include <libsnapshot/cow_format.h>
@@ -132,6 +133,37 @@ bool ICowWriter::ValidateNewBlock(uint64_t new_block) {
 
 CowWriter::CowWriter(const CowOptions& options) : ICowWriter(options), fd_(-1) {
     SetupHeaders();
+    SetupWriteOptions();
+}
+
+CowWriter::~CowWriter() {
+    for (size_t i = 0; i < compress_threads_.size(); i++) {
+        CompressWorker* worker = compress_threads_[i].get();
+        if (worker) {
+            worker->Finalize();
+        }
+    }
+
+    bool ret = true;
+    for (auto& t : threads_) {
+        ret = t.get() && ret;
+    }
+
+    if (!ret) {
+        LOG(ERROR) << "Compression failed";
+    }
+    compress_threads_.clear();
+}
+
+void CowWriter::SetupWriteOptions() {
+    kNumCompressThreads = options_.num_compress_threads;
+    // TODO: Fetch this value from OTA manifest
+    //
+    // We prefer not to have more than two threads as the overhead of additional
+    // threads is far greater than cutting down compression time.
+    if (android::base::GetBoolProperty("ro.virtual_ab.compression.threaded", false)) {
+        kNumCompressThreads = 2;
+    }
 }
 
 void CowWriter::SetupHeaders() {
@@ -206,6 +238,15 @@ bool CowWriter::SetFd(android::base::borrowed_fd fd) {
     return true;
 }
 
+void CowWriter::InitWorkers() {
+    for (int i = 0; i < kNumCompressThreads; i++) {
+        std::unique_ptr<CompressWorker> wt =
+                std::make_unique<CompressWorker>(compression_, header_.block_size);
+        threads_.emplace_back(std::async(std::launch::async, &CompressWorker::RunThread, wt.get()));
+        compress_threads_.push_back(std::move(wt));
+    }
+}
+
 bool CowWriter::Initialize(unique_fd&& fd) {
     owned_fd_ = std::move(fd);
     return Initialize(borrowed_fd{owned_fd_});
@@ -216,7 +257,13 @@ bool CowWriter::Initialize(borrowed_fd fd) {
         return false;
     }
 
-    return OpenForWrite();
+    bool ret = OpenForWrite();
+
+    if (ret) {
+        InitWorkers();
+    }
+
+    return ret;
 }
 
 bool CowWriter::InitializeAppend(android::base::unique_fd&& fd, uint64_t label) {
@@ -229,7 +276,13 @@ bool CowWriter::InitializeAppend(android::base::borrowed_fd fd, uint64_t label) 
         return false;
     }
 
-    return OpenForAppend(label);
+    bool ret = OpenForAppend(label);
+
+    if (ret && !compress_threads_.size()) {
+        InitWorkers();
+    }
+
+    return ret;
 }
 
 void CowWriter::InitPos() {
@@ -350,8 +403,36 @@ bool CowWriter::EmitXorBlocks(uint32_t new_block_start, const void* data, size_t
 
 bool CowWriter::EmitBlocks(uint64_t new_block_start, const void* data, size_t size,
                            uint64_t old_block, uint16_t offset, uint8_t type) {
-    const uint8_t* iter = reinterpret_cast<const uint8_t*>(data);
     CHECK(!merge_in_progress_);
+    const uint8_t* iter = reinterpret_cast<const uint8_t*>(data);
+
+    std::vector<std::basic_string<uint8_t>> compressed_buf;
+    std::vector<std::basic_string<uint8_t>>::iterator bufIter;
+
+    if (compression_) {
+        size_t num_blocks = (size / header_.block_size);
+        size_t num_threads = (num_blocks == 1) ? 1 : kNumCompressThreads;
+        size_t num_blocks_per_thread = num_blocks / num_threads;
+
+        for (size_t i = 0; i < num_threads; i++) {
+            CompressWorker* worker = compress_threads_[i].get();
+            if (i == num_threads - 1) {
+                num_blocks_per_thread = num_blocks;
+            }
+            worker->BeginCompressBlocks(iter, num_blocks_per_thread);
+            iter += (num_blocks_per_thread * header_.block_size);
+            num_blocks -= num_blocks_per_thread;
+        }
+
+        for (size_t i = 0; i < num_threads; i++) {
+            CompressWorker* worker = compress_threads_[i].get();
+            if (!worker->GetCompressedBuffers(&compressed_buf)) {
+                return false;
+            }
+        }
+        bufIter = compressed_buf.begin();
+    }
+
     for (size_t i = 0; i < size / header_.block_size; i++) {
         CowOperation op = {};
         op.new_block = new_block_start + i;
@@ -363,32 +444,23 @@ bool CowWriter::EmitBlocks(uint64_t new_block_start, const void* data, size_t si
         }
 
         if (compression_) {
-            auto data = Compress(iter, header_.block_size);
-            if (data.empty()) {
-                PLOG(ERROR) << "AddRawBlocks: compression failed";
-                return false;
-            }
-            if (data.size() > std::numeric_limits<uint16_t>::max()) {
-                LOG(ERROR) << "Compressed block is too large: " << data.size() << " bytes";
-                return false;
-            }
+            auto data = std::move(*bufIter);
             op.compression = compression_;
             op.data_length = static_cast<uint16_t>(data.size());
 
             if (!WriteOperation(op, data.data(), data.size())) {
-                PLOG(ERROR) << "AddRawBlocks: write failed, bytes requested: " << size
-                            << ", bytes written: " << i * header_.block_size;
+                PLOG(ERROR) << "AddRawBlocks: write failed";
                 return false;
             }
+            bufIter++;
         } else {
             op.data_length = static_cast<uint16_t>(header_.block_size);
             if (!WriteOperation(op, iter, header_.block_size)) {
                 PLOG(ERROR) << "AddRawBlocks: write failed";
                 return false;
             }
+            iter += header_.block_size;
         }
-
-        iter += header_.block_size;
     }
     return true;
 }
