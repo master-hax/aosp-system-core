@@ -16,10 +16,15 @@
 
 #include <stdint.h>
 
+#include <condition_variable>
 #include <cstdint>
+#include <future>
 #include <memory>
+#include <mutex>
 #include <optional>
 #include <string>
+#include <thread>
+#include <vector>
 
 #include <android-base/unique_fd.h>
 #include <libsnapshot/cow_format.h>
@@ -100,9 +105,36 @@ class ICowWriter {
     CowOptions options_;
 };
 
+class CompressWorker {
+  public:
+    CompressWorker(CowCompressionAlgorithm compression, uint32_t block_size);
+    bool RunThread();
+    void BeginCompressBlocks(const void* buffer, size_t num_blocks);
+    bool GetCompressedBuffers(std::vector<std::basic_string<uint8_t>>* compressed_buf);
+    void Finalize();
+
+  private:
+    CowCompressionAlgorithm compression_;
+    uint32_t block_size_;
+
+    const void* buffer_;
+    size_t num_blocks_;
+    std::vector<std::basic_string<uint8_t>> compressed_data_;
+
+    bool stopped_ = false;
+    bool compression_in_progress_ = false;
+    bool compression_status_ = false;
+    std::mutex lock_;
+    std::condition_variable cv_;
+
+    std::basic_string<uint8_t> Compress(const void* data, size_t length);
+    bool CompressBlocks(const void* buffer, size_t num_blocks);
+};
+
 class CowWriter : public ICowWriter {
   public:
     explicit CowWriter(const CowOptions& options);
+    ~CowWriter();
 
     // Set up the writer.
     // The file starts from the beginning.
@@ -145,8 +177,8 @@ class CowWriter : public ICowWriter {
     bool WriteRawData(const void* data, size_t size);
     bool WriteOperation(const CowOperation& op, const void* data = nullptr, size_t size = 0);
     void AddOperation(const CowOperation& op);
-    std::basic_string<uint8_t> Compress(const void* data, size_t length);
     void InitPos();
+    void InitWorkers();
 
     bool SetFd(android::base::borrowed_fd fd);
     bool Sync();
@@ -168,6 +200,10 @@ class CowWriter : public ICowWriter {
     bool merge_in_progress_ = false;
     bool is_block_device_ = false;
     uint64_t cow_image_size_ = INT64_MAX;
+
+    const int kNumCompressThreads = 2;
+    std::vector<std::unique_ptr<CompressWorker>> compress_threads_;
+    std::vector<std::future<bool>> threads_;
 };
 
 }  // namespace snapshot
