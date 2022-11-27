@@ -33,7 +33,7 @@
 namespace android {
 namespace snapshot {
 
-std::basic_string<uint8_t> CowWriter::Compress(const void* data, size_t length) {
+std::basic_string<uint8_t> CompressWorker::Compress(const void* data, size_t length) {
     switch (compression_) {
         case kCowCompressGz: {
             const auto bound = compressBound(length);
@@ -99,6 +99,97 @@ std::basic_string<uint8_t> CowWriter::Compress(const void* data, size_t length) 
     }
     return {};
 }
+
+bool CompressWorker::CompressBlocks(const void* buffer, size_t num_blocks) {
+    const uint8_t* iter = reinterpret_cast<const uint8_t*>(buffer);
+    while (num_blocks) {
+        auto data = Compress(iter, block_size_);
+        if (data.empty()) {
+            PLOG(ERROR) << "CompressBlocks: Compression failed";
+            return false;
+        }
+        if (data.size() > std::numeric_limits<uint16_t>::max()) {
+            LOG(ERROR) << "Compressed block is too large: " << data.size();
+            return false;
+        }
+
+        compressed_data_.emplace_back(std::move(data));
+        num_blocks -= 1;
+        iter += block_size_;
+    }
+    return true;
+}
+
+bool CompressWorker::RunThread() {
+    while (true) {
+        // Wait for work
+        {
+            std::unique_lock<std::mutex> lock(lock_);
+            while (!compression_in_progress_ && !stopped_) {
+                cv_.wait(lock);
+            }
+        }
+
+        if (stopped_) {
+            break;
+        }
+
+        // Compress blocks
+        bool ret = CompressBlocks(buffer_, num_blocks_);
+        {
+            std::lock_guard<std::mutex> lock(lock_);
+            compression_status_ = ret;
+            compression_in_progress_ = false;
+        }
+
+        // Notify completion
+        cv_.notify_all();
+
+        if (!ret) {
+            LOG(ERROR) << "CompressBlocks failed";
+            return false;
+        }
+    }
+
+    return true;
+}
+
+void CompressWorker::BeginCompressBlocks(const void* buffer, size_t num_blocks) {
+    {
+        std::lock_guard<std::mutex> lock(lock_);
+        buffer_ = buffer;
+        num_blocks_ = num_blocks;
+        compression_in_progress_ = true;
+    }
+    cv_.notify_all();
+}
+
+bool CompressWorker::GetCompressedBuffers(std::vector<std::basic_string<uint8_t>>* compressed_buf) {
+    {
+        std::unique_lock<std::mutex> lock(lock_);
+        while (compression_in_progress_) {
+            cv_.wait(lock);
+        }
+    }
+    if (compression_status_) {
+        compressed_buf->insert(compressed_buf->end(),
+                               std::make_move_iterator(compressed_data_.begin()),
+                               std::make_move_iterator(compressed_data_.end()));
+        compressed_data_.clear();
+    }
+    return compression_status_;
+}
+
+void CompressWorker::Finalize() {
+    {
+        std::unique_lock<std::mutex> lock(lock_);
+        stopped_ = true;
+    }
+    cv_.notify_all();
+}
+
+CompressWorker::CompressWorker(CowCompressionAlgorithm compression, uint32_t block_size)
+    : compression_(compression), block_size_(block_size) {}
 
 }  // namespace snapshot
 }  // namespace android
