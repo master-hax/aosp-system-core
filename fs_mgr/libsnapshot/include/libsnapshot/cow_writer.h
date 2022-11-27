@@ -178,7 +178,9 @@ class CowWriter : public ICowWriter {
     bool WriteOperation(const CowOperation& op, const void* data = nullptr, size_t size = 0);
     void AddOperation(const CowOperation& op);
     void InitPos();
+    void InitBatchWrites();
     void InitWorkers();
+    bool FlushCluster();
 
     bool SetFd(android::base::borrowed_fd fd);
     bool Sync();
@@ -191,8 +193,11 @@ class CowWriter : public ICowWriter {
     CowHeader header_{};
     CowFooter footer_{};
     CowCompressionAlgorithm compression_ = kCowCompressNone;
+    uint64_t current_op_pos_ = 0;
     uint64_t next_op_pos_ = 0;
     uint64_t next_data_pos_ = 0;
+    uint64_t current_data_pos_ = 0;
+    ssize_t total_data_written_ = 0;
     uint32_t cluster_size_ = 0;
     uint32_t current_cluster_size_ = 0;
     uint64_t current_data_size_ = 0;
@@ -201,9 +206,18 @@ class CowWriter : public ICowWriter {
     bool is_block_device_ = false;
     uint64_t cow_image_size_ = INT64_MAX;
 
-    const int kNumCompressThreads = 2;
+    int kNumCompressThreads = 1;
     std::vector<std::unique_ptr<CompressWorker>> compress_threads_;
     std::vector<std::future<bool>> threads_;
+
+    std::vector<std::unique_ptr<CowOperation>> opbuffer_vec_;
+    std::vector<std::unique_ptr<uint8_t[]>> databuffer_vec_;
+    std::unique_ptr<struct iovec[]> cowop_vec_;
+    int op_vec_index_ = 0;
+
+    std::unique_ptr<struct iovec[]> data_vec_;
+    int data_vec_index_ = 0;
+    bool batch_write_ = false;
 };
 
 }  // namespace snapshot
