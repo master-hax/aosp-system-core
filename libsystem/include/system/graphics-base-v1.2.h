@@ -21,6 +21,10 @@ typedef enum {
 } android_dataspace_v1_2_t;
 
 typedef enum {
+    HAL_COLOR_MODE_DISPLAY_BT2020 = 13,
+} android_color_mode_v1_2_t;
+
+typedef enum {
     HAL_PIXEL_FORMAT_HSV_888 = 55 /* 0x37 */,
 } android_pixel_format_v1_2_t;
 
