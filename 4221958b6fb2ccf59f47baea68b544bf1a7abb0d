@@ -1,0 +1,95 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a23dad63_cb534634",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-11-29T22:55:54Z",
+      "side": 1,
+      "message": "(various nits, though i\u0027m still not entirely convinced that this warrants being an API...)",
+      "revId": "4221958b6fb2ccf59f47baea68b544bf1a7abb0d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "595132a9_f168bafd",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 478,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-11-29T22:55:54Z",
+      "side": 1,
+      "message": "inode\n\nshould we include a device too? given that there are multiple possibilities?",
+      "range": {
+        "startLine": 478,
+        "startChar": 4,
+        "endLine": 478,
+        "endChar": 26
+      },
+      "revId": "4221958b6fb2ccf59f47baea68b544bf1a7abb0d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e8f29a9a_5c434640",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 479,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-11-29T22:55:54Z",
+      "side": 1,
+      "message": "don\u0027t declare until you can initialize.",
+      "revId": "4221958b6fb2ccf59f47baea68b544bf1a7abb0d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b3808d0d_b8c5f340",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 480,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-11-29T22:55:54Z",
+      "side": 1,
+      "message": "return early and set errno to EINVAL.",
+      "revId": "4221958b6fb2ccf59f47baea68b544bf1a7abb0d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "64d1b0c0_8e686245",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 486,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-11-29T22:55:54Z",
+      "side": 1,
+      "message": "the other functions seem to return -1 and set errno?",
+      "revId": "4221958b6fb2ccf59f47baea68b544bf1a7abb0d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
