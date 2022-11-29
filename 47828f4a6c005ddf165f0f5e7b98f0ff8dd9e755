@@ -141,6 +141,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f252d3bd_4bf73946",
+        "filename": "trusty/storage/proxy/storage.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 527,
+      "author": {
+        "id": 1000205
+      },
+      "writtenOn": "2022-11-29T21:33:58Z",
+      "side": 1,
+      "message": "Leave it as is for now. We need to do a separate reformat CL as we don\u0027t want to have two code styles mixed in the same file.",
+      "parentUuid": "e3dc143f_5628c437",
+      "revId": "47828f4a6c005ddf165f0f5e7b98f0ff8dd9e755",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "1b1ddc3e_4841f802",
@@ -296,6 +314,24 @@
       "side": 1,
       "message": "What do you want me to do here? Leave it as is? Bypass the commit hook (is that even possible?)?",
       "parentUuid": "1af3450e_caea175d",
+      "revId": "47828f4a6c005ddf165f0f5e7b98f0ff8dd9e755",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4eb04ee1_0c6f700f",
+        "filename": "trusty/storage/proxy/storage.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1000205
+      },
+      "writtenOn": "2022-11-29T21:33:58Z",
+      "side": 1,
+      "message": "Leave it as is for now. We need to do a separate reformat CL as we don\u0027t want to have two code styles mixed in the same file.",
+      "parentUuid": "041e1311_f9609d01",
       "revId": "47828f4a6c005ddf165f0f5e7b98f0ff8dd9e755",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
