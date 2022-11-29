@@ -676,7 +676,7 @@ int main(int argc, char* argv[]) {
                 return EXIT_FAILURE;
             }
             reboot("remount");
-        } else {
+        } else if (!check_result.disabled_verity) {
             LOG(INFO) << "Now reboot your device for settings to take effect";
         }
         return EXIT_SUCCESS;
