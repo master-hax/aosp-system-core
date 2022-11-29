@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "64d3fc17_944b48fd",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-11-29T07:00:29Z",
+      "side": 1,
+      "message": "as explained in the bug, a \"suggest reboot\" message here is WAI and desirable.",
+      "revId": "a877958448b437b8dfec7e64b0156ea5861ac4fd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
