@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "107c4da8_f9e8375e",
+        "filename": "libsystem/include/system/graphics-base-v1.2.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1470474
+      },
+      "writtenOn": "2022-11-29T23:07:06Z",
+      "side": 1,
+      "message": "so this file isn\u0027t supposed to be edited manually.\n\nwe might want to add the @export annotation here instead: https://cs.android.com/android/platform/superproject/+/master:hardware/interfaces/graphics/common/1.2/types.hal;l\u003d80?q\u003dcolormode%20f:hal",
+      "range": {
+        "startLine": 1,
+        "startChar": 43,
+        "endLine": 1,
+        "endChar": 64
+      },
+      "revId": "639e4e7af02e4ffe86c8d73081629773c059d380",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
