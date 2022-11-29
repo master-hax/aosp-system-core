@@ -13,7 +13,7 @@
 # limitations under the License.
 
 service spiproxyd /vendor/bin/spiproxyd -t /dev/trusty-ipc-dev0 \
-        -s /dev/vport3p2 -p com.android.trusty.spi.proxy
+        -s /dev/vport4p2 -p com.android.trusty.spi.proxy
     class main
     user system
     group system
