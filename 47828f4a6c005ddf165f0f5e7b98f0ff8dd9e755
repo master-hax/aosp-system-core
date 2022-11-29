@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "0dfeb4b8_8ec303a2",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1956428
+      },
+      "writtenOn": "2022-11-29T20:59:25Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "225b204a_eb76b061",
+      "revId": "47828f4a6c005ddf165f0f5e7b98f0ff8dd9e755",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "c37544c5_03a6f1cd",
@@ -35,6 +53,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "728c8489_58e066bd",
+        "filename": "trusty/storage/proxy/storage.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 524,
+      "author": {
+        "id": 1956428
+      },
+      "writtenOn": "2022-11-29T20:59:25Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c37544c5_03a6f1cd",
+      "revId": "47828f4a6c005ddf165f0f5e7b98f0ff8dd9e755",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "5e69e3e5_42a183ef",
@@ -48,6 +84,24 @@
       "writtenOn": "2022-11-17T07:55:34Z",
       "side": 1,
       "message": "I would prefer this define be near the top of the file (with the other defines). Also, although a similar define in the storage service is named `BLOCK_COUNT_MAIN`, that is this value divided by the block size. Here this is a byte count, not a block count. I think we should rename this to something like `MAX_FILE_SIZE` (with a comment that this is the size limit in bytes for backing files on top of a filesystem).",
+      "revId": "47828f4a6c005ddf165f0f5e7b98f0ff8dd9e755",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "be71d7b7_088c3f71",
+        "filename": "trusty/storage/proxy/storage.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 525,
+      "author": {
+        "id": 1956428
+      },
+      "writtenOn": "2022-11-29T20:59:25Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5e69e3e5_42a183ef",
       "revId": "47828f4a6c005ddf165f0f5e7b98f0ff8dd9e755",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -71,6 +125,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "e3dc143f_5628c437",
+        "filename": "trusty/storage/proxy/storage.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 527,
+      "author": {
+        "id": 1956428
+      },
+      "writtenOn": "2022-11-29T20:59:25Z",
+      "side": 1,
+      "message": "What do you want me to do here? Leave it as is? Bypass the commit hook (is that even possible?)?",
+      "parentUuid": "b8da3d0d_56c44023",
+      "revId": "47828f4a6c005ddf165f0f5e7b98f0ff8dd9e755",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "1b1ddc3e_4841f802",
         "filename": "trusty/storage/proxy/storage.c",
         "patchSetId": 1
@@ -88,6 +160,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "468ef0de_54eaebae",
+        "filename": "trusty/storage/proxy/storage.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 529,
+      "author": {
+        "id": 1956428
+      },
+      "writtenOn": "2022-11-29T20:59:25Z",
+      "side": 1,
+      "message": "There was no technical reason to not set max_size to MAX_FILE_SIZE. If I\u0027m going to initialize a variable like this, I prefer to initialize it to a harmless value. The compile should generate the same object code either way.\n\nTo be clear, do you want me to make these changes? I have my own preferences, but it\u0027s not my project. My default when someone says \"I don\u0027t really have a strong preference\" is to do it my way.",
+      "parentUuid": "1b1ddc3e_4841f802",
+      "revId": "47828f4a6c005ddf165f0f5e7b98f0ff8dd9e755",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "a838207c_1681375c",
         "filename": "trusty/storage/proxy/storage.c",
         "patchSetId": 1
@@ -99,6 +189,24 @@
       "writtenOn": "2022-11-17T00:16:40Z",
       "side": 1,
       "message": "Should we return an error here? Is there any case where fstat fails and it is safe to proceed?",
+      "revId": "47828f4a6c005ddf165f0f5e7b98f0ff8dd9e755",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4d64c1b6_389ed629",
+        "filename": "trusty/storage/proxy/storage.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 543,
+      "author": {
+        "id": 1956428
+      },
+      "writtenOn": "2022-11-29T20:59:25Z",
+      "side": 1,
+      "message": "You\u0027re right. I\u0027ll fix that. Thanks.",
+      "parentUuid": "a838207c_1681375c",
       "revId": "47828f4a6c005ddf165f0f5e7b98f0ff8dd9e755",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -176,6 +284,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "041e1311_f9609d01",
+        "filename": "trusty/storage/proxy/storage.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1956428
+      },
+      "writtenOn": "2022-11-29T20:59:25Z",
+      "side": 1,
+      "message": "What do you want me to do here? Leave it as is? Bypass the commit hook (is that even possible?)?",
+      "parentUuid": "1af3450e_caea175d",
+      "revId": "47828f4a6c005ddf165f0f5e7b98f0ff8dd9e755",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "58bb7e9a_9ef6abc7",
         "filename": "trusty/utils/spiproxyd/proxy.rc",
         "patchSetId": 1
@@ -205,6 +331,24 @@
       "side": 1,
       "message": "This is related to adding the block device for the emulator. It should move to a separate CL to make that clear though.",
       "parentUuid": "58bb7e9a_9ef6abc7",
+      "revId": "47828f4a6c005ddf165f0f5e7b98f0ff8dd9e755",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "acb64aa8_138fc0cd",
+        "filename": "trusty/utils/spiproxyd/proxy.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1956428
+      },
+      "writtenOn": "2022-11-29T20:59:25Z",
+      "side": 1,
+      "message": "The new CL is Ib965a7bdbbfb8dd2ddaec8f899ba9c0f6da4b44e",
+      "parentUuid": "0d662cab_e4dcf941",
       "revId": "47828f4a6c005ddf165f0f5e7b98f0ff8dd9e755",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
