@@ -16,6 +16,41 @@
       "message": "as explained in the bug, a \"suggest reboot\" message here is WAI and desirable.",
       "revId": "a877958448b437b8dfec7e64b0156ea5861ac4fd",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "560f5f36_bc49e928",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1579231
+      },
+      "writtenOn": "2022-11-29T18:32:13Z",
+      "side": 1,
+      "message": "@yochiang@google.com: I hadn\u0027t seen the comment you mention at the time the CL was authored. I see that you *just* added that comment.",
+      "parentUuid": "64d3fc17_944b48fd",
+      "revId": "a877958448b437b8dfec7e64b0156ea5861ac4fd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2ae711ac_42a089fd",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1579231
+      },
+      "writtenOn": "2022-11-29T18:32:13Z",
+      "side": 1,
+      "message": "+smoreland@\nUnless there\u0027re objections from dvander@ and smoreland@, I shall close out this bug.",
+      "revId": "a877958448b437b8dfec7e64b0156ea5861ac4fd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
