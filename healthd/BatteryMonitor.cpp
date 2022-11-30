@@ -56,6 +56,7 @@ using HealthInfo_2_0 = android::hardware::health::V2_0::HealthInfo;
 using HealthInfo_2_1 = android::hardware::health::V2_1::HealthInfo;
 using aidl::android::hardware::health::BatteryCapacityLevel;
 using aidl::android::hardware::health::BatteryChargingPolicy;
+using aidl::android::hardware::health::BatteryChargingState;
 using aidl::android::hardware::health::BatteryHealth;
 using aidl::android::hardware::health::BatteryHealthData;
 using aidl::android::hardware::health::BatteryStatus;
@@ -231,15 +232,30 @@ BatteryHealth getBatteryHealth(const char* status) {
 
 BatteryChargingPolicy getBatteryChargingPolicy(const char* chargingPolicy) {
     static SysfsStringEnumMap<BatteryChargingPolicy> batteryChargingPolicyMap[] = {
-            {"0", BatteryChargingPolicy::DEFAULT},
-            {"1", BatteryChargingPolicy::LONG_LIFE},
-            {"2", BatteryChargingPolicy::ADAPTIVE},
+            {"0", BatteryChargingPolicy::INVALID},   {"1", BatteryChargingPolicy::DEFAULT},
+            {"2", BatteryChargingPolicy::LONG_LIFE}, {"3", BatteryChargingPolicy::ADAPTIVE},
             {NULL, BatteryChargingPolicy::DEFAULT},
     };
 
     auto ret = mapSysfsString(chargingPolicy, batteryChargingPolicyMap);
     if (!ret) {
         *ret = BatteryChargingPolicy::DEFAULT;
+    }
+
+    return *ret;
+}
+
+BatteryChargingState getBatteryChargingState(const char* chargingState) {
+    static SysfsStringEnumMap<BatteryChargingState> batteryChargingStateMap[] = {
+            {"0", BatteryChargingState::INVALID},  {"1", BatteryChargingState::NORMAL},
+            {"2", BatteryChargingState::TOO_COLD}, {"3", BatteryChargingState::TOO_HOT},
+            {"4", BatteryChargingState::LONGLIFE}, {"5", BatteryChargingState::ADAPTIVE},
+            {NULL, BatteryChargingState::NORMAL},
+    };
+
+    auto ret = mapSysfsString(chargingState, batteryChargingStateMap);
+    if (!ret) {
+        *ret = BatteryChargingState::NORMAL;
     }
 
     return *ret;
@@ -365,9 +381,6 @@ void BatteryMonitor::updateValues(void) {
         mHealthInfo->batteryHealthData->batteryFirstUsageSeconds =
                 getIntField(mHealthdConfig->batteryFirstUsageDatePath);
 
-    if (!mHealthdConfig->chargingStatePath.isEmpty())
-        mHealthInfo->chargingState = getIntField(mHealthdConfig->chargingStatePath);
-
     mHealthInfo->batteryTemperatureTenthsCelsius =
             mBatteryFixedTemperature ? mBatteryFixedTemperature
                                      : getIntField(mHealthdConfig->batteryTemperaturePath);
@@ -388,6 +401,9 @@ void BatteryMonitor::updateValues(void) {
 
     if (readFromFile(mHealthdConfig->chargingPolicyPath, &buf) > 0)
         mHealthInfo->chargingPolicy = getBatteryChargingPolicy(buf.c_str());
+
+    if (readFromFile(mHealthdConfig->chargingStatePath, &buf) > 0)
+        mHealthInfo->chargingState = getBatteryChargingState(buf.c_str());
 
     double MaxPower = 0;
 
@@ -568,6 +584,12 @@ status_t BatteryMonitor::getProperty(int id, struct BatteryProperty *val) {
 
     case BATTERY_PROP_BATTERY_STATUS:
         val->valueInt64 = getChargeStatus();
+        ret = OK;
+        break;
+
+    /* TODO: will finish the implementation later */
+    case BATTERY_PROP_CHARGING_POLICY:
+        val->valueInt64 = 0;
         ret = OK;
         break;
 
