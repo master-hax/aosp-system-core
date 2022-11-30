@@ -69,6 +69,30 @@
       },
       "revId": "381963ffdf5b17ccc319dff3ebb63215970f4fac",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3d7ab778_fbb8ed8c",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_writer.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 229,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2022-11-30T21:10:43Z",
+      "side": 1,
+      "message": "Maybe pass in the value of prop ro.virtual_ab.compression.threaded in ctor? Just for testability. It can be done in a separate CL.",
+      "parentUuid": "a85b20d4_6544fcb9",
+      "range": {
+        "startLine": 229,
+        "startChar": 8,
+        "endLine": 229,
+        "endChar": 83
+      },
+      "revId": "381963ffdf5b17ccc319dff3ebb63215970f4fac",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
