@@ -110,6 +110,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "acb63ba6_cd46bbbc",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-11-30T01:02:28Z",
+      "side": 1,
+      "message": "are we actually ever going to do the memfd thing? it\u0027s been enough years now that i\u0027m getting really skeptical. (and no-one\u0027s actually signed up for that work, right, so it\u0027s not _likely_ to happen either?)\n\ntbh, i don\u0027t think it would be much of a regression for you to merge the ashmem-only code and just throw this on the existing pile of \"stuff we\u0027d need to fix to be able to switch to memfd\" :-(\n\n(i\u0027d love to be wrong though, in which case, yes, let\u0027s expose those functions!)",
+      "parentUuid": "615707ed_8031e258",
+      "revId": "4221958b6fb2ccf59f47baea68b544bf1a7abb0d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "595132a9_f168bafd",
         "filename": "libcutils/ashmem-dev.cpp",
         "patchSetId": 5
