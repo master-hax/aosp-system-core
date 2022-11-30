@@ -22,6 +22,30 @@
       },
       "revId": "a20b019d0d6dad9c051d146fcf87165700a4540a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "87d0ad08_679aa04b",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 15
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-11-30T17:21:11Z",
+      "side": 1,
+      "message": "The CL description has been updated. The new CL description is as follows:\n\nRevert \"init: Add more diagnostics for signalfd hangs.\"\n\nRevert commit 14f9c15e0560 (\"init: Add more diagnostics for signalfd\nhangs\") because:\n* That commit was intented to help with root-causing b/223076262.\n* The root cause of b/223076262 has been fixed (not blocking SIGCHLD\n  in all threads in the init process).",
+      "parentUuid": "ddab34ab_067b4acc",
+      "range": {
+        "startLine": 10,
+        "startChar": 16,
+        "endLine": 10,
+        "endChar": 69
+      },
+      "revId": "a20b019d0d6dad9c051d146fcf87165700a4540a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
