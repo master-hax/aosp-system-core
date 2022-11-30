@@ -39,6 +39,30 @@
       },
       "revId": "fa0c21c94ccb98bfa5cf3cc7a6b220be4a5fa378",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a6457a4d_93b79c00",
+        "filename": "init/action.cpp",
+        "patchSetId": 16
+      },
+      "lineNbr": 232,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2022-11-30T20:36:12Z",
+      "side": 1,
+      "message": "We thought that `on boot` triggers should always happen during the `boot` phase and in a defined order. For example, this test [1] ensures that all `on boot` triggers happen in order within a given file regardless of if they have property conditions on them. It would be confusing to read/write .rc files and make init less deterministic if we stored the event phase and replayed them.\n\nThere\u0027s also the situation where, a property changes multiple times to its trigger value. We explicitly did not want this to trigger multiple times if an event trigger is also used. For example `on boot \u0026\u0026 property:foo\u003dbar` should not trigger twice if the property `foo` is set to `bar`, then `blah`, then back to `bar`.\n\nWhat is the use case that you\u0027re thinking of where you\u0027d want \"name is set to value some time after boot is triggered\" ?\n\n1: https://cs.android.com/android/platform/superproject/+/master:system/core/init/init_test.cpp;l\u003d130?q\u003df:init_test.cpp",
+      "parentUuid": "1aa2d0f6_39180b5c",
+      "range": {
+        "startLine": 232,
+        "startChar": 11,
+        "endLine": 232,
+        "endChar": 33
+      },
+      "revId": "fa0c21c94ccb98bfa5cf3cc7a6b220be4a5fa378",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
