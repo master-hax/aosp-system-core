@@ -73,6 +73,39 @@ using android::base::WriteStringToFile;
 namespace android {
 namespace init {
 
+// Pointer to memory area shared between processes.
+static SharedMemory* shared_memory;
+
+// Create a memfd and map it into the address space upon the first call of this
+// function. Returns shared memory pointer otherwise. Only supports sharing
+// between parent and child processes created with fork(). Callers are
+// responsible for serializing GetShmem() and CleanupShmem() calls.
+static Result<SharedMemory*> GetShmem(Result<void> initialize_shmem(void* addr), uint32_t size) {
+    if (shared_memory) {
+        return shared_memory;
+    }
+
+    std::unique_ptr<SharedMemory> shm(new SharedMemory(size));
+
+    OR_RETURN(shm->CreateMemfd());
+    OR_RETURN(shm->Map());
+    OR_RETURN(initialize_shmem(shm->MappedAt()));
+
+    shared_memory = shm.release();
+
+    return shared_memory;
+}
+
+// Unmap the shared memory from the address space and close the memfd.
+// Callers are responsible for serializing GetShmem() and CleanupShmem() calls.
+void CleanupShmem() {
+    if (!shared_memory) {
+        return;
+    }
+    delete shared_memory;
+    shared_memory = nullptr;
+}
+
 static Result<std::string> ComputeContextFromExecutable(const std::string& service_path) {
     std::string computed_context;
 
@@ -136,6 +169,39 @@ static bool ExpandArgsAndExecv(const std::vector<std::string>& args, bool sigsto
 
 unsigned long Service::next_start_order_ = 1;
 bool Service::is_exec_service_running_ = false;
+
+struct shared_memory_area {
+    // The number of elements of the array below is the largest prime number
+    // for which the array fits in a 4096 byte page.
+    std::array<pthread_mutex_t, 97> mutex;
+};
+
+static_assert(sizeof(shared_memory_area) <= 4096);
+
+// The caller is responsible for making sure that this function is only called
+// once across all processes that share the memory area that starts at @addr.
+Result<void> InitializeShmemMutex(void* addr) {
+    struct shared_memory_area* shmem_area = (typeof(shmem_area))addr;
+    pthread_mutexattr_t attr;
+    pthread_mutexattr_init(&attr);
+    pthread_mutexattr_setpshared(&attr, PTHREAD_PROCESS_SHARED);
+    int res = 0;
+    for (auto& m : shmem_area->mutex) {
+        int res2 = pthread_mutex_init(&m, &attr);
+        res = res ?: res2;
+    }
+    pthread_mutexattr_destroy(&attr);
+    if (res) {
+        return Error<base::Errno>(base::Errno{res});
+    }
+    return {};
+}
+
+pthread_mutex_t* SharedMemoryMutex(uid_t uid) {
+    DCHECK(shared_memory);
+    struct shared_memory_area* shmem_area = (typeof(shmem_area))shared_memory->MappedAt();
+    return &shmem_area->mutex[uid % shmem_area->mutex.size()];
+}
 
 Service::Service(const std::string& name, Subcontext* subcontext_for_restart_commands,
                  const std::string& filename, const std::vector<std::string>& args)
@@ -503,9 +569,27 @@ void Service::ConfigureMemcg() {
     }
 }
 
+void Service::SetupCgroup() {
+    bool use_memcg = swappiness_ != -1 || soft_limit_in_bytes_ != -1 || limit_in_bytes_ != -1 ||
+                     limit_percent_ != -1 || !limit_property_.empty();
+    pthread_mutex_t* mutex = SharedMemoryMutex(proc_attr_.uid);
+    if (createProcessGroup(proc_attr_.uid, pid_, use_memcg, mutex) != 0) {
+        _exit(EXIT_FAILURE);
+    }
+
+    // When the blkio controller is mounted in the v1 hierarchy, NormalIoPriority is
+    // the default (/dev/blkio). When the blkio controller is mounted in the v2 hierarchy, the
+    // NormalIoPriority profile has to be applied explicitly.
+    SetProcessProfiles(proc_attr_.uid, pid_, {"NormalIoPriority"});
+
+    if (use_memcg) {
+        ConfigureMemcg();
+    }
+}
+
 // Enters namespaces, sets environment variables, writes PID files and runs the service executable.
 void Service::RunService(const std::vector<Descriptor>& descriptors,
-                         InterprocessFifo cgroups_activated, InterprocessFifo setsid_finished) {
+                         InterprocessFifo setsid_finished) {
     if (auto result = EnterNamespaces(namespaces_, name_, mount_namespace_); !result.ok()) {
         LOG(FATAL) << "Service '" << name_ << "' failed to set up namespaces: " << result.error();
     }
@@ -525,17 +609,10 @@ void Service::RunService(const std::vector<Descriptor>& descriptors,
         LOG(ERROR) << "failed to write pid to files: " << result.error();
     }
 
-    // Wait until the cgroups have been created and until the cgroup controllers have been
-    // activated.
-    Result<uint8_t> byte = cgroups_activated.Read();
-    if (!byte.ok()) {
-        LOG(ERROR) << name_ << ": failed to read from notification channel: " << byte.error();
+    if (!process_cgroup_empty_) {
+        SetupCgroup();
     }
-    cgroups_activated.Close();
-    if (*byte != kCgroupsActivated) {
-        LOG(FATAL) << "Service '" << name_  << "' failed to start due to a fatal error";
-        _exit(EXIT_FAILURE);
-    }
+    CleanupShmem();
 
     if (task_profiles_.size() > 0) {
         bool succeeded = SelinuxGetVendorAndroidVersion() < __ANDROID_API_U__
@@ -568,6 +645,8 @@ Result<void> Service::Start() {
         }
     });
 
+    OR_RETURN(GetShmem(InitializeShmemMutex, sizeof(shared_memory_area)));
+
     if (is_updatable() && !ServiceList::GetInstance().IsServicesUpdated()) {
         ServiceList::GetInstance().DelayService(*this);
         return Error() << "Cannot start an updatable service '" << name_
@@ -596,13 +675,11 @@ Result<void> Service::Start() {
         return {};
     }
 
-    // cgroups_activated is used for communication from the parent to the child
-    // while setsid_finished is used for communication from the child process to
+    // setsid_finished is used for communication from the child process to
     // the parent process. These two communication channels are separate because
     // combining these into a single communication channel would introduce a
     // race between the Write() calls by the parent and by the child.
-    InterprocessFifo cgroups_activated, setsid_finished;
-    OR_RETURN(cgroups_activated.Initialize());
+    InterprocessFifo setsid_finished;
     OR_RETURN(setsid_finished.Initialize());
 
     if (Result<void> result = CheckConsole(); !result.ok()) {
@@ -652,6 +729,10 @@ Result<void> Service::Start() {
         }
     }
 
+    // Set this variable before forking such that the child process can use
+    // this variable.
+    process_cgroup_empty_ = !CgroupsAvailable();
+
     pid_t pid = -1;
     if (namespaces_.flags) {
         pid = clone(nullptr, nullptr, namespaces_.flags | SIGCHLD, nullptr);
@@ -661,12 +742,10 @@ Result<void> Service::Start() {
 
     if (pid == 0) {
         umask(077);
-        cgroups_activated.CloseWriteFd();
         setsid_finished.CloseReadFd();
-        RunService(descriptors, std::move(cgroups_activated), std::move(setsid_finished));
+        RunService(descriptors, std::move(setsid_finished));
         _exit(127);
     } else {
-        cgroups_activated.CloseReadFd();
         setsid_finished.CloseWriteFd();
     }
 
@@ -689,42 +768,10 @@ Result<void> Service::Start() {
     pid_ = pid;
     flags_ |= SVC_RUNNING;
     start_order_ = next_start_order_++;
-    process_cgroup_empty_ = false;
-
-    if (CgroupsAvailable()) {
-        bool use_memcg = swappiness_ != -1 || soft_limit_in_bytes_ != -1 || limit_in_bytes_ != -1 ||
-                         limit_percent_ != -1 || !limit_property_.empty();
-        errno = -createProcessGroup(proc_attr_.uid, pid_, use_memcg);
-        if (errno != 0) {
-            Result<void> result = cgroups_activated.Write(kActivatingCgroupsFailed);
-            if (!result.ok()) {
-                return Error() << "Sending notification failed: " << result.error();
-            }
-            return Error() << "createProcessGroup(" << proc_attr_.uid << ", " << pid_
-                           << ") failed for service '" << name_ << "'";
-        }
-
-        // When the blkio controller is mounted in the v1 hierarchy, NormalIoPriority is
-        // the default (/dev/blkio). When the blkio controller is mounted in the v2 hierarchy, the
-        // NormalIoPriority profile has to be applied explicitly.
-        SetProcessProfiles(proc_attr_.uid, pid_, {"NormalIoPriority"});
-
-        if (use_memcg) {
-            ConfigureMemcg();
-        }
-    } else {
-        process_cgroup_empty_ = true;
-    }
 
     if (oom_score_adjust_ != DEFAULT_OOM_SCORE_ADJUST) {
         LmkdRegister(name_, proc_attr_.uid, pid_, oom_score_adjust_);
     }
-
-    if (Result<void> result = cgroups_activated.Write(kCgroupsActivated); !result.ok()) {
-        return Error() << "Sending cgroups activated notification failed: " << result.error();
-    }
-
-    cgroups_activated.Close();
 
     // Call setpgid() from the parent process to make sure that this call has
     // finished before the parent process calls kill(-pgid, ...).

@@ -515,8 +515,27 @@ int killProcessGroupOnce(uid_t uid, int initialPid, int signal, int* max_process
     return KillProcessGroup(uid, initialPid, signal, 0 /*retries*/, max_processes);
 }
 
+class ScopedPosixMutexLock {
+  public:
+    explicit ScopedPosixMutexLock(pthread_mutex_t* mutex) : mutex_(mutex) {
+        if (mutex_) {
+            pthread_mutex_lock(mutex_);
+        }
+    }
+    ~ScopedPosixMutexLock() {
+        if (mutex_) {
+            pthread_mutex_unlock(mutex_);
+        }
+    }
+    ScopedPosixMutexLock(const ScopedPosixMutexLock&) = delete;
+    void operator=(const ScopedPosixMutexLock&) = delete;
+
+  private:
+    pthread_mutex_t* const mutex_;
+};
+
 static int createProcessGroupInternal(uid_t uid, int initialPid, std::string cgroup,
-                                      bool activate_controllers) {
+                                      bool activate_controllers, pthread_mutex_t* mutex) {
     auto uid_path = ConvertUidToPath(cgroup.c_str(), uid);
 
     struct stat cgroup_stat;
@@ -533,9 +552,12 @@ static int createProcessGroupInternal(uid_t uid, int initialPid, std::string cgr
         cgroup_gid = cgroup_stat.st_gid;
     }
 
-    if (!MkdirAndChown(uid_path, cgroup_mode, cgroup_uid, cgroup_gid)) {
-        PLOG(ERROR) << "Failed to make and chown " << uid_path;
-        return -errno;
+    {
+        ScopedPosixMutexLock lock(mutex);
+        if (!MkdirAndChown(uid_path, cgroup_mode, cgroup_uid, cgroup_gid)) {
+            PLOG(ERROR) << "Failed to make and chown " << uid_path;
+            return -errno;
+        }
     }
     if (activate_controllers) {
         ret = CgroupMap::GetInstance().ActivateControllers(uid_path);
@@ -562,7 +584,7 @@ static int createProcessGroupInternal(uid_t uid, int initialPid, std::string cgr
     return ret;
 }
 
-int createProcessGroup(uid_t uid, int initialPid, bool memControl) {
+int createProcessGroup(uid_t uid, int initialPid, bool memControl, pthread_mutex_t* mutex) {
     std::string cgroup;
 
     if (memControl && !UsePerAppMemcg()) {
@@ -575,14 +597,14 @@ int createProcessGroup(uid_t uid, int initialPid, bool memControl) {
         // Note by bvanassche: passing 'false' as fourth argument below implies that the v1
         // hierarchy is used. It is not clear to me whether the above conditions guarantee that the
         // v1 hierarchy is used.
-        int ret = createProcessGroupInternal(uid, initialPid, memcg_apps_path, false);
+        int ret = createProcessGroupInternal(uid, initialPid, memcg_apps_path, false, mutex);
         if (ret != 0) {
             return ret;
         }
     }
 
     CgroupGetControllerPath(CGROUPV2_CONTROLLER_NAME, &cgroup);
-    return createProcessGroupInternal(uid, initialPid, cgroup, true);
+    return createProcessGroupInternal(uid, initialPid, cgroup, true, mutex);
 }
 
 static bool SetProcessGroupValue(int tid, const std::string& attr_name, int64_t value) {
