@@ -36,6 +36,7 @@
 #include "mount_namespace.h"
 #include "parser.h"
 #include "service_utils.h"
+#include "shmem.h"
 #include "subcontext.h"
 
 #define SVC_DISABLED 0x001        // do not autostart with class
@@ -153,8 +154,8 @@ class Service {
     void ResetFlagsForStart();
     Result<void> CheckConsole();
     void ConfigureMemcg();
-    void RunService(const std::vector<Descriptor>& descriptors, InterprocessFifo cgroups_activated,
-                    InterprocessFifo setsid_finished);
+    void SetupCgroup();
+    void RunService(const std::vector<Descriptor>& descriptors, InterprocessFifo setsid_finished);
     void SetMountNamespace();
     static unsigned long next_start_order_;
     static bool is_exec_service_running_;

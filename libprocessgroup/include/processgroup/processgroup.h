@@ -75,7 +75,8 @@ int killProcessGroup(uid_t uid, int initialPid, int signal, int* max_processes =
 // that it only returns 0 in the case that the cgroup exists and it contains no processes.
 int killProcessGroupOnce(uid_t uid, int initialPid, int signal, int* max_processes = nullptr);
 
-int createProcessGroup(uid_t uid, int initialPid, bool memControl = false);
+int createProcessGroup(uid_t uid, int initialPid, bool memControl = false,
+                       pthread_mutex_t* mutex = nullptr);
 
 // Set various properties of a process group. For these functions to work, the process group must
 // have been created by passing memControl=true to createProcessGroup.
