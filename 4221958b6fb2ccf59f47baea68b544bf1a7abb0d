@@ -38,6 +38,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "90953094_7253b50c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1965080
+      },
+      "writtenOn": "2022-11-30T00:25:38Z",
+      "side": 1,
+      "message": "I\u0027m not tied to this being an API - conceptually, it made sense to me that this bit of code would live in ashmem-dev.cpp, so that\u0027s where I put it. That said, it also makes sense to me that making it an API may increase our maintenance burden (even if slightly). Let me know if you want it moved and I\u0027m happy to do so.\n\nTests-wise I\u0027m thinking to add a test to ashmem-test.cpp which verifies that two distinct fds to the same region return the same inode number. Does that sound reasonable? For the test, keeping this as an API would probably reduce code duplication.",
+      "parentUuid": "e9955a9e_5dfb817f",
+      "revId": "4221958b6fb2ccf59f47baea68b544bf1a7abb0d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "595132a9_f168bafd",
         "filename": "libcutils/ashmem-dev.cpp",
         "patchSetId": 5
