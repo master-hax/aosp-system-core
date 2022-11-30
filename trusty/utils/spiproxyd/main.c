@@ -108,6 +108,8 @@ static void parse_args(int argc, char* argv[], const char** trusty_dev_name,
     }
 }
 
+// Ignore memory leaks of trusty_dev_name, spi_dev_name, spi_proxy_port
+// NOLINTBEGIN(clang-analyzer-unix.Malloc)
 int main(int argc, char* argv[]) {
     int rc;
     const char* trusty_dev_name = NULL;
@@ -134,3 +136,4 @@ int main(int argc, char* argv[]) {
 
     return event_loop(trusty_dev_fd, spi_dev_fd);
 }
+// NOLINTEND(clang-analyzer-unix.Malloc)
