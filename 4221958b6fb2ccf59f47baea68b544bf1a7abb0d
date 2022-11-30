@@ -128,6 +128,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "9b7777fa_e882f18b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1945845
+      },
+      "writtenOn": "2022-11-30T02:39:33Z",
+      "side": 1,
+      "message": "I\u0027m still pushing to do the deprecation (which is important as ashmem was dropped from upstream staging), and its been PoC\u0027ed here: https://android-review.git.corp.google.com/c/device/linaro/dragonboard/+/2114881\n\nThe last missing bit is ashmem compat ioctl support on memfd fds so that if an old application is handed a memfd, any ashmem ioctls they call on it won\u0027t break.\n\nThen the sys.use_memfd flag could be safely set to true.",
+      "parentUuid": "acb63ba6_cd46bbbc",
+      "revId": "4221958b6fb2ccf59f47baea68b544bf1a7abb0d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "595132a9_f168bafd",
         "filename": "libcutils/ashmem-dev.cpp",
         "patchSetId": 5
