@@ -56,6 +56,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "433068dc_d2d04e05",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-11-30T00:36:49Z",
+      "side": 1,
+      "message": "yeah, i think as long as you only have one caller (and i\u0027m honestly really struggling to imagine another), just inline it into that one caller? (that also gives you the freedom to fix the API if/when you do move it out.)",
+      "parentUuid": "90953094_7253b50c",
+      "revId": "4221958b6fb2ccf59f47baea68b544bf1a7abb0d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "595132a9_f168bafd",
         "filename": "libcutils/ashmem-dev.cpp",
         "patchSetId": 5
