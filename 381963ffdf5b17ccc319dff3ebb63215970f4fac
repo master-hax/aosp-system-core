@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "49120af3_4c55b81e",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_compress.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2022-11-30T21:05:04Z",
+      "side": 1,
+      "message": "`emplace_back` to reduce 1 copy",
+      "range": {
+        "startLine": 116,
+        "startChar": 25,
+        "endLine": 116,
+        "endChar": 34
+      },
+      "revId": "381963ffdf5b17ccc319dff3ebb63215970f4fac",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a0dd9131_e5f501b0",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_writer.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 229,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2022-11-30T21:05:04Z",
+      "side": 1,
+      "message": "pass kNumCompressThreads in via CowWriterOptions for better testability",
+      "range": {
+        "startLine": 229,
+        "startChar": 8,
+        "endLine": 229,
+        "endChar": 83
+      },
+      "revId": "381963ffdf5b17ccc319dff3ebb63215970f4fac",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
