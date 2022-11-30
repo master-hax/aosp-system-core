@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "95f0f7f3_f4f5073a",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_writer.h",
+        "patchSetId": 9
+      },
+      "lineNbr": 213,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2022-11-30T21:05:54Z",
+      "side": 1,
+      "message": "Why doing two levels of indirection? Can we store it as std::vector\u003cCowOperation\u003e ?",
+      "range": {
+        "startLine": 213,
+        "startChar": 16,
+        "endLine": 213,
+        "endChar": 45
+      },
+      "revId": "63bc422d6ab2d5856a034fa24619463e8a569385",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "19a04e8d_bf7f72b7",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_writer.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 232,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2022-11-30T21:05:54Z",
+      "side": 1,
+      "message": "This is fine for now. In the future we would likely want a runtime flag to control this(maybe a bit in update manifest?) \n\nDirectly reading sysprop is also not good from a testability standpoint. Can we change this to a parameter in CowWriter\u0027s ctor?",
+      "range": {
+        "startLine": 232,
+        "startChar": 8,
+        "endLine": 232,
+        "endChar": 75
+      },
+      "revId": "63bc422d6ab2d5856a034fa24619463e8a569385",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
