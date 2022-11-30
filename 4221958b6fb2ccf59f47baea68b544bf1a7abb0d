@@ -92,6 +92,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "615707ed_8031e258",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1965080
+      },
+      "writtenOn": "2022-11-30T00:58:43Z",
+      "side": 1,
+      "message": "Hmm, if I want to keep the ability to seamlessly handled memfd vs ashmem while also inlining this function at it\u0027s call sites, I\u0027d need to export has_memfd_support() and memfd_is_ashmem(). Are we ok with that?",
+      "parentUuid": "5490b0ee_c87472cd",
+      "revId": "4221958b6fb2ccf59f47baea68b544bf1a7abb0d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "595132a9_f168bafd",
         "filename": "libcutils/ashmem-dev.cpp",
         "patchSetId": 5
