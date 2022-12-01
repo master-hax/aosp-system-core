@@ -46,6 +46,30 @@
       },
       "revId": "f9e6c5104d4d0be8661006e75ae2f5b8d227df12",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6691b9d2_1250b5b3",
+        "filename": "rootdir/etc/linker.config.json",
+        "patchSetId": 1
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2022-12-01T03:13:14Z",
+      "side": 0,
+      "message": "Yup, mentioning the variable is more than enough!",
+      "parentUuid": "3dc22245_0ebdcd2c",
+      "range": {
+        "startLine": 30,
+        "startChar": 17,
+        "endLine": 30,
+        "endChar": 22
+      },
+      "revId": "f9e6c5104d4d0be8661006e75ae2f5b8d227df12",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
