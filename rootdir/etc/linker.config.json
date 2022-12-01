@@ -22,13 +22,9 @@
     "libnetd_resolv.so",
     // netd
     "libnetd_updatable.so",
-    // nn
-    "libneuralnetworks.so",
     // statsd
     "libstatspull.so",
     "libstatssocket.so",
-    // tethering LLNDK
-    "libcom.android.tethering.connectivity_native.so",
     // adbd
     "libadb_pairing_auth.so",
     "libadb_pairing_connection.so",
