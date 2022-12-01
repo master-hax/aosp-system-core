@@ -93,6 +93,30 @@
       },
       "revId": "381963ffdf5b17ccc319dff3ebb63215970f4fac",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2a18453f_0cdea3b5",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_writer.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 229,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-12-01T16:31:38Z",
+      "side": 1,
+      "message": "Or use IPropertyFetcher, which is testable.",
+      "parentUuid": "3d7ab778_fbb8ed8c",
+      "range": {
+        "startLine": 229,
+        "startChar": 8,
+        "endLine": 229,
+        "endChar": 83
+      },
+      "revId": "381963ffdf5b17ccc319dff3ebb63215970f4fac",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
