@@ -46,6 +46,30 @@
       },
       "revId": "a20b019d0d6dad9c051d146fcf87165700a4540a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2f7347e1_2d0ba503",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 15
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-12-01T02:32:40Z",
+      "side": 1,
+      "message": "Thank you. I get that. But wouldn\u0027t it be better to keep the diagnostics in case we have a similar issue in the future? Up to you. I am +2\u0027ing this anyway.",
+      "parentUuid": "87d0ad08_679aa04b",
+      "range": {
+        "startLine": 10,
+        "startChar": 16,
+        "endLine": 10,
+        "endChar": 69
+      },
+      "revId": "a20b019d0d6dad9c051d146fcf87165700a4540a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
