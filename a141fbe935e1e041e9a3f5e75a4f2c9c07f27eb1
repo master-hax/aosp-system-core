@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cffec528_5978431f",
+        "filename": "libutils/Unicode.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 295,
+      "author": {
+        "id": 1080076
+      },
+      "writtenOn": "2022-12-01T02:41:57Z",
+      "side": 1,
+      "message": "nit: having any capture in a lambda turns it into a struct with a constructor, some runtime initialization etc. if you have no capture the lambda is pretty much a free function, with zero overhead. So if you want the most efficient code it\u0027s better to move the used variables from a capture into the call arguments",
+      "range": {
+        "startLine": 295,
+        "startChar": 20,
+        "endLine": 295,
+        "endChar": 22
+      },
+      "revId": "a141fbe935e1e041e9a3f5e75a4f2c9c07f27eb1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "909c8cdf_63cb6c48",
+        "filename": "libutils/Unicode.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 440,
+      "author": {
+        "id": 1080076
+      },
+      "writtenOn": "2022-12-01T02:41:57Z",
+      "side": 1,
+      "message": "ditto",
+      "range": {
+        "startLine": 440,
+        "startChar": 19,
+        "endLine": 440,
+        "endChar": 20
+      },
+      "revId": "a141fbe935e1e041e9a3f5e75a4f2c9c07f27eb1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
