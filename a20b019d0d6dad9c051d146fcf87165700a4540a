@@ -70,6 +70,30 @@
       },
       "revId": "a20b019d0d6dad9c051d146fcf87165700a4540a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "626fd0e2_85d66ac1",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 15
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-12-01T17:49:22Z",
+      "side": 1,
+      "message": "I prefer to keep the init code clean and free of unnecessary diagnostics. In the unlikely case that these diagnostics would be needed again in the future we can always revert this CL.",
+      "parentUuid": "2f7347e1_2d0ba503",
+      "range": {
+        "startLine": 10,
+        "startChar": 16,
+        "endLine": 10,
+        "endChar": 69
+      },
+      "revId": "a20b019d0d6dad9c051d146fcf87165700a4540a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
