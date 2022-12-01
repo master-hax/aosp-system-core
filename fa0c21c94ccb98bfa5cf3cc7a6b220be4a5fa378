@@ -63,6 +63,30 @@
       },
       "revId": "fa0c21c94ccb98bfa5cf3cc7a6b220be4a5fa378",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "25d78c71_7300f7e9",
+        "filename": "init/action.cpp",
+        "patchSetId": 16
+      },
+      "lineNbr": 232,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-12-01T01:26:29Z",
+      "side": 1,
+      "message": "Thanks for the answers. The intended usecase was b/260005615#comment2, which we didn\u0027t choose anyway.\n\nI think it\u0027s the syntax which is creating the confusion. `on boot \u0026\u0026 property:foo\u003dbar\\n...` is actually `on boot\\n if (foo\u003dbar) {...}`, not `on (boot \u0026\u0026 property:foo\u003dbar)\\n...` which could also mean `on (property:foo\u003dbar \u0026\u0026 boot)\\n...`. In addition, `boot` in `on boot` is an event (which can\u0027t be repeated), whereas `property:foo\u003dbar` in `on property:foo\u003dbar` is a condition.\n\nAnyway, I don\u0027t intend to change the syntax to make it less confusing. But I think that this behavior is clearly documented in the README.md file. I will do that and will ask you to review it.",
+      "parentUuid": "a6457a4d_93b79c00",
+      "range": {
+        "startLine": 232,
+        "startChar": 11,
+        "endLine": 232,
+        "endChar": 33
+      },
+      "revId": "fa0c21c94ccb98bfa5cf3cc7a6b220be4a5fa378",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
