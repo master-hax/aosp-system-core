@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "039f58a7_21639cc6",
+        "filename": "libutils/Unicode_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 166,
+      "author": {
+        "id": 1850729
+      },
+      "writtenOn": "2022-12-01T20:00:24Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "4a8f5395_128820a5",
+      "range": {
+        "startLine": 166,
+        "startChar": 57,
+        "endLine": 166,
+        "endChar": 61
+      },
+      "revId": "f3455fdfdef33892580c6b2980314e548575fd24",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "47545d13_23342a8c",
@@ -37,6 +61,24 @@
       "writtenOn": "2022-12-01T18:06:26Z",
       "side": 1,
       "message": "test an invalid second half too?",
+      "revId": "f3455fdfdef33892580c6b2980314e548575fd24",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "12b7eada_6cf9d8d6",
+        "filename": "libutils/Unicode_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 202,
+      "author": {
+        "id": 1850729
+      },
+      "writtenOn": "2022-12-01T20:00:24Z",
+      "side": 1,
+      "message": "I\u0027m basically thinking of two cases involving testing an invalid 2nd half, and let me know if you have more:\n\n1) a valid 2nd half of surrogate occurs invalidly without a preceding 1st half --\u003e we should expect this 2nd half being ignored/skipped here\n\n2) a valid 1st half with an invalid 2nd half --\u003e we should ignore the 1st half, and keep converting the rest, this is covered in both UTF16toUTF8UnpairedSurrogateLength() and UTF16toUTF8CorrectInvalidSurrogateLength()\n\nSo it seems the only case that we are missing is a valid 2nd half popped out nowhere, which I think should be tested as part of the \"UnpairedSurrogate\" case.\n\nThe test UTF16toUTF8CorrectInvalidSurrogateLength() is more specific to b/29250543, and is a special case of unpaired surrogate.\n\nWhat do we think?",
+      "parentUuid": "47545d13_23342a8c",
       "revId": "f3455fdfdef33892580c6b2980314e548575fd24",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -66,6 +108,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "7dfe5a91_0fc9a14d",
+        "filename": "libutils/Unicode_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 211,
+      "author": {
+        "id": 1850729
+      },
+      "writtenOn": "2022-12-01T20:00:24Z",
+      "side": 1,
+      "message": "Agree, and I am struggling here is really to find any real invalid UTF-16 characters that cannot be encoded by UTF8 in the context of conversion. So basically if we look at UTF-16 as a 1:1 mapping encoding for 16-bit characters in the BMP, with surrogate pairs for characters beyond, there are a few cases worth mentioning here:\n\n1. Unallocated UTF-16 characters --\u003e maybe we could whine about this but they should be encoded in UTF-8 anyway normally\n\n2. Private-use characters --\u003e should be encoded in normal UTF-8\n\n3. Non-characters in BMP such as 0xFFF0-0xFFFF --\u003e again, these should still be encoded in normal UTF-8, and the check for if they are valid characters should be up to the user of that UTF-8 string\n\n4. Surrogate pairs - these have dedicated tests.\n\nAnd for the real conversion, I actually agree we should not only check for length, we should do the conversion in every length test. Let me come up with another version.",
+      "parentUuid": "6b499dce_1566547e",
+      "range": {
+        "startLine": 211,
+        "startChar": 20,
+        "endLine": 211,
+        "endChar": 37
+      },
+      "revId": "f3455fdfdef33892580c6b2980314e548575fd24",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "ba6c7d7a_d753706e",
         "filename": "libutils/Unicode_test.cpp",
         "patchSetId": 1
@@ -77,6 +143,30 @@
       "writtenOn": "2022-12-01T18:06:26Z",
       "side": 1,
       "message": "especially when you say \"characters\" rather than \"char\" :-)",
+      "range": {
+        "startLine": 213,
+        "startChar": 58,
+        "endLine": 213,
+        "endChar": 67
+      },
+      "revId": "f3455fdfdef33892580c6b2980314e548575fd24",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7e40fa2c_dd26ec6b",
+        "filename": "libutils/Unicode_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 213,
+      "author": {
+        "id": 1850729
+      },
+      "writtenOn": "2022-12-01T20:00:24Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "ba6c7d7a_d753706e",
       "range": {
         "startLine": 213,
         "startChar": 58,
@@ -112,6 +202,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "1b5390d7_20c9b721",
+        "filename": "libutils/Unicode_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 217,
+      "author": {
+        "id": 1850729
+      },
+      "writtenOn": "2022-12-01T20:00:24Z",
+      "side": 1,
+      "message": "Basically I was thinking of slightly better coverage between U+0800 to U+FFFF by picking more than 1 code point. I\u0027ll try to revise my comment a bit.",
+      "parentUuid": "7379d6c1_eb48e3dc",
+      "range": {
+        "startLine": 215,
+        "startChar": 8,
+        "endLine": 217,
+        "endChar": 67
+      },
+      "revId": "f3455fdfdef33892580c6b2980314e548575fd24",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "63835c82_5771d3c0",
         "filename": "libutils/Unicode_test.cpp",
         "patchSetId": 1
@@ -123,6 +237,24 @@
       "writtenOn": "2022-12-01T18:06:26Z",
       "side": 1,
       "message": "(rather than be clever [and error prone in face of future changes], just use BUFSIZ or something?)",
+      "revId": "f3455fdfdef33892580c6b2980314e548575fd24",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "05b694ee_22b9e2db",
+        "filename": "libutils/Unicode_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 221,
+      "author": {
+        "id": 1850729
+      },
+      "writtenOn": "2022-12-01T20:00:24Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "63835c82_5771d3c0",
       "revId": "f3455fdfdef33892580c6b2980314e548575fd24",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -140,6 +272,24 @@
       "writtenOn": "2022-12-01T18:06:26Z",
       "side": 1,
       "message": "(do you actually need the \u003c\u003c here? won\u0027t the default gtest output include exactly that anyway?)",
+      "revId": "f3455fdfdef33892580c6b2980314e548575fd24",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7aa93e58_9c96d4b0",
+        "filename": "libutils/Unicode_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 225,
+      "author": {
+        "id": 1850729
+      },
+      "writtenOn": "2022-12-01T20:00:24Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "4640346d_78a77326",
       "revId": "f3455fdfdef33892580c6b2980314e548575fd24",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
