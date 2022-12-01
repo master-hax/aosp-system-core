@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cbaaa2c4_317cf2d8",
+        "filename": "rootdir/etc/linker.config.json",
+        "patchSetId": 1
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2022-12-01T01:45:18Z",
+      "side": 0,
+      "message": "nit: Please leave some comments explaining LLNDK libs are appended automatically at build time. It\u0027d be nice with some pointers/locations for codesearch-friendliness.",
+      "range": {
+        "startLine": 30,
+        "startChar": 17,
+        "endLine": 30,
+        "endChar": 22
+      },
+      "revId": "f9e6c5104d4d0be8661006e75ae2f5b8d227df12",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
