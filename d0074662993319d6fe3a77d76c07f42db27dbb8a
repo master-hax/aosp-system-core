@@ -106,6 +106,24 @@
       "parentUuid": "e8f624b7_620ee499",
       "revId": "d0074662993319d6fe3a77d76c07f42db27dbb8a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0b5af51a_2036ba88",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 30
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1358301
+      },
+      "writtenOn": "2022-12-01T18:31:15Z",
+      "side": 1,
+      "message": "I see. Sounds good! Could you link that CL? Once you submitted that, we can verify the result of this CL again.",
+      "parentUuid": "f6cfa678_4b1122bd",
+      "revId": "d0074662993319d6fe3a77d76c07f42db27dbb8a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
