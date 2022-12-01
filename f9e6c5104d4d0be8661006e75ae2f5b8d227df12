@@ -22,6 +22,30 @@
       },
       "revId": "f9e6c5104d4d0be8661006e75ae2f5b8d227df12",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3dc22245_0ebdcd2c",
+        "filename": "rootdir/etc/linker.config.json",
+        "patchSetId": 1
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1413436
+      },
+      "writtenOn": "2022-12-01T02:37:03Z",
+      "side": 0,
+      "message": "CS link is usually based on the line-of-code, so it can be changed. I added some comments for the information, but without cs link.",
+      "parentUuid": "cbaaa2c4_317cf2d8",
+      "range": {
+        "startLine": 30,
+        "startChar": 17,
+        "endLine": 30,
+        "endChar": 22
+      },
+      "revId": "f9e6c5104d4d0be8661006e75ae2f5b8d227df12",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
