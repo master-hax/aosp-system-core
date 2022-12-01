@@ -103,6 +103,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "479ee6cc_a3b827f5",
+        "filename": "libutils/Unicode_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 202,
+      "author": {
+        "id": 1850729
+      },
+      "writtenOn": "2022-12-01T20:10:52Z",
+      "side": 1,
+      "message": "Right, that\u0027s what I suggested, by having the lone low surrogate test in `UTF16toUTF8UnpairedSurrogateLength`",
+      "parentUuid": "70067278_c765be6c",
+      "revId": "f3455fdfdef33892580c6b2980314e548575fd24",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "6b499dce_1566547e",
         "filename": "libutils/Unicode_test.cpp",
         "patchSetId": 1
@@ -256,6 +274,30 @@
       "side": 1,
       "message": "meh, we don\u0027t usually bother with that until/unless we have a specific regression, at which point we have a clear motivation for the added test :-)",
       "parentUuid": "1b5390d7_20c9b721",
+      "range": {
+        "startLine": 215,
+        "startChar": 8,
+        "endLine": 217,
+        "endChar": 67
+      },
+      "revId": "f3455fdfdef33892580c6b2980314e548575fd24",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fe754dc3_0aaa478b",
+        "filename": "libutils/Unicode_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 217,
+      "author": {
+        "id": 1850729
+      },
+      "writtenOn": "2022-12-01T20:10:52Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "4f12c92f_39a5f788",
       "range": {
         "startLine": 215,
         "startChar": 8,
