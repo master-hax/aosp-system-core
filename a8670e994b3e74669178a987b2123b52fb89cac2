@@ -105,6 +105,24 @@
       "parentUuid": "a0bfefce_72f66693",
       "revId": "a8670e994b3e74669178a987b2123b52fb89cac2",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f70011b7_596808b4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-12-01T02:34:29Z",
+      "side": 1,
+      "message": "David is OOO, but will soon be back.",
+      "parentUuid": "c21d6e1b_de1e3809",
+      "revId": "a8670e994b3e74669178a987b2123b52fb89cac2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
