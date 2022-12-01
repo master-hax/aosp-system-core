@@ -3,6 +3,46 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "4a8f5395_128820a5",
+        "filename": "libutils/Unicode_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 166,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-12-01T18:06:26Z",
+      "side": 1,
+      "message": "while technically correct, i\u0027d prefer \"byte\"/\"bytes\" in all of these...",
+      "range": {
+        "startLine": 166,
+        "startChar": 57,
+        "endLine": 166,
+        "endChar": 61
+      },
+      "revId": "f3455fdfdef33892580c6b2980314e548575fd24",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "47545d13_23342a8c",
+        "filename": "libutils/Unicode_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 202,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-12-01T18:06:26Z",
+      "side": 1,
+      "message": "test an invalid second half too?",
+      "revId": "f3455fdfdef33892580c6b2980314e548575fd24",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "6b499dce_1566547e",
         "filename": "libutils/Unicode_test.cpp",
         "patchSetId": 1
@@ -20,6 +60,86 @@
         "endLine": 211,
         "endChar": 37
       },
+      "revId": "f3455fdfdef33892580c6b2980314e548575fd24",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ba6c7d7a_d753706e",
+        "filename": "libutils/Unicode_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 213,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-12-01T18:06:26Z",
+      "side": 1,
+      "message": "especially when you say \"characters\" rather than \"char\" :-)",
+      "range": {
+        "startLine": 213,
+        "startChar": 58,
+        "endLine": 213,
+        "endChar": 67
+      },
+      "revId": "f3455fdfdef33892580c6b2980314e548575fd24",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7379d6c1_eb48e3dc",
+        "filename": "libutils/Unicode_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 217,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-12-01T18:06:26Z",
+      "side": 1,
+      "message": "explain why you want three different codepoints that are all 3-byte sequences?",
+      "range": {
+        "startLine": 215,
+        "startChar": 8,
+        "endLine": 217,
+        "endChar": 67
+      },
+      "revId": "f3455fdfdef33892580c6b2980314e548575fd24",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "63835c82_5771d3c0",
+        "filename": "libutils/Unicode_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 221,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-12-01T18:06:26Z",
+      "side": 1,
+      "message": "(rather than be clever [and error prone in face of future changes], just use BUFSIZ or something?)",
+      "revId": "f3455fdfdef33892580c6b2980314e548575fd24",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4640346d_78a77326",
+        "filename": "libutils/Unicode_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 225,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-12-01T18:06:26Z",
+      "side": 1,
+      "message": "(do you actually need the \u003c\u003c here? won\u0027t the default gtest output include exactly that anyway?)",
       "revId": "f3455fdfdef33892580c6b2980314e548575fd24",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
