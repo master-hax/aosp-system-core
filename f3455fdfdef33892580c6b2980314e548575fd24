@@ -121,6 +121,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "b9171cfb_8fbb9da1",
+        "filename": "libutils/Unicode_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 202,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-12-01T20:14:56Z",
+      "side": 1,
+      "message": "oh, sorry, i thought you were saying it was already there. yeah, that was the case i was thinking of.\n\nin particular, i didn\u0027t spot anything clever in the equivalent bionic tests (https://source.corp.google.com/android/bionic/tests/iconv_test.cpp;l\u003d387?q\u003dfile:bionic%20file:test%20surrogate\u0026sq\u003dpackage:%5Eandroid$%20-file:prebuilts%2Fvndk%2F%20-file:prebuilts%2Fruntime%2F).",
+      "parentUuid": "479ee6cc_a3b827f5",
+      "revId": "f3455fdfdef33892580c6b2980314e548575fd24",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "6b499dce_1566547e",
         "filename": "libutils/Unicode_test.cpp",
         "patchSetId": 1
