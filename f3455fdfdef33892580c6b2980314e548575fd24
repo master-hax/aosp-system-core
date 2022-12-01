@@ -85,6 +85,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "70067278_c765be6c",
+        "filename": "libutils/Unicode_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 202,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-12-01T20:08:47Z",
+      "side": 1,
+      "message": "\u003e UnpairedSurrogate\n\ni don\u0027t see that test? if you meant UTF16toUTF8UnpairedSurrogateLength, maybe just clarify the comments about \"half\". but that test only has a lone high surrogate, not a lone low surrogate?",
+      "parentUuid": "12b7eada_6cf9d8d6",
+      "revId": "f3455fdfdef33892580c6b2980314e548575fd24",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "6b499dce_1566547e",
         "filename": "libutils/Unicode_test.cpp",
         "patchSetId": 1
@@ -214,6 +232,30 @@
       "side": 1,
       "message": "Basically I was thinking of slightly better coverage between U+0800 to U+FFFF by picking more than 1 code point. I\u0027ll try to revise my comment a bit.",
       "parentUuid": "7379d6c1_eb48e3dc",
+      "range": {
+        "startLine": 215,
+        "startChar": 8,
+        "endLine": 217,
+        "endChar": 67
+      },
+      "revId": "f3455fdfdef33892580c6b2980314e548575fd24",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4f12c92f_39a5f788",
+        "filename": "libutils/Unicode_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 217,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-12-01T20:08:47Z",
+      "side": 1,
+      "message": "meh, we don\u0027t usually bother with that until/unless we have a specific regression, at which point we have a clear motivation for the added test :-)",
+      "parentUuid": "1b5390d7_20c9b721",
       "range": {
         "startLine": 215,
         "startChar": 8,
