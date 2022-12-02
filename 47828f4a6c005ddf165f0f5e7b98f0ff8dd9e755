@@ -196,6 +196,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "8182baa4_4cffd406",
+        "filename": "trusty/storage/proxy/storage.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 529,
+      "author": {
+        "id": 1000205
+      },
+      "writtenOn": "2022-12-02T00:03:39Z",
+      "side": 1,
+      "message": "I don\u0027t have a strong preference either, but I would probably use resp.max_size directly and drop this variable",
+      "parentUuid": "468ef0de_54eaebae",
+      "revId": "47828f4a6c005ddf165f0f5e7b98f0ff8dd9e755",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "a838207c_1681375c",
         "filename": "trusty/storage/proxy/storage.c",
         "patchSetId": 1
