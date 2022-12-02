@@ -16,6 +16,23 @@
       "message": "Sorry I don\u0027t follow -- where is the memory released previously?",
       "revId": "cdaa7a1447e6b67c7c2e787df0c99d58a3bb00b1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "79d1a4b6_7a711bae",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2022-12-02T02:14:29Z",
+      "side": 1,
+      "message": "Why does fastboot need to intentionally trigger \"delete released memory\" ?",
+      "revId": "cdaa7a1447e6b67c7c2e787df0c99d58a3bb00b1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
