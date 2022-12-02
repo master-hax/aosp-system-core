@@ -87,6 +87,24 @@
       "parentUuid": "fcb614e4_62b73e7d",
       "revId": "cdaa7a1447e6b67c7c2e787df0c99d58a3bb00b1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "608def4f_eee77c94",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2022-12-02T03:05:40Z",
+      "side": 1,
+      "message": "We could also turn `SocketMock *mock` into a unique_ptr, and use unique_ptr.reset() for testing.",
+      "parentUuid": "9ba8ee57_f5ae6896",
+      "revId": "cdaa7a1447e6b67c7c2e787df0c99d58a3bb00b1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
