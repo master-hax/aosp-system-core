@@ -51,6 +51,24 @@
       "parentUuid": "afe67ab8_0d6f5108",
       "revId": "cdaa7a1447e6b67c7c2e787df0c99d58a3bb00b1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "63b5938a_d2095d1a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1052399
+      },
+      "writtenOn": "2022-12-02T02:37:22Z",
+      "side": 1,
+      "message": "My comment was wrong, and now updated.",
+      "parentUuid": "79d1a4b6_7a711bae",
+      "revId": "cdaa7a1447e6b67c7c2e787df0c99d58a3bb00b1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
