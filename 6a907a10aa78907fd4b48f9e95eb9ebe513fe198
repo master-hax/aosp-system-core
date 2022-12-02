@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7e749caa_eba55ea6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2022-12-02T20:52:32Z",
+      "side": 1,
+      "message": "I\u0027m not sure this is a good idea, but if it helps me with even one kernel header update then it\u0027s probably useful.",
+      "revId": "6a907a10aa78907fd4b48f9e95eb9ebe513fe198",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
