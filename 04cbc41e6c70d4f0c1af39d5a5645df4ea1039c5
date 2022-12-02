@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ab0e71a8_beed12d6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-12-02T06:33:09Z",
+      "side": 1,
+      "message": "LGTM, over to Suren",
+      "revId": "04cbc41e6c70d4f0c1af39d5a5645df4ea1039c5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "72ee8c4c_35f3203b",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 433,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-12-02T06:33:09Z",
+      "side": 1,
+      "message": "I originally thought we should fall into this case, but ...",
+      "range": {
+        "startLine": 426,
+        "startChar": 0,
+        "endLine": 433,
+        "endChar": 5
+      },
+      "revId": "04cbc41e6c70d4f0c1af39d5a5645df4ea1039c5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
