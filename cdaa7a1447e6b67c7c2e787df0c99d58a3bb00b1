@@ -105,6 +105,24 @@
       "parentUuid": "9ba8ee57_f5ae6896",
       "revId": "cdaa7a1447e6b67c7c2e787df0c99d58a3bb00b1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "975e8ffe_68b8cc13",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1052399
+      },
+      "writtenOn": "2022-12-02T20:42:05Z",
+      "side": 1,
+      "message": "That\u0027s better. Changed to use unique_ptr.",
+      "parentUuid": "608def4f_eee77c94",
+      "revId": "cdaa7a1447e6b67c7c2e787df0c99d58a3bb00b1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
