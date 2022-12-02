@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f8a7e880_2c42cf9d",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_compress.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-12-02T20:06:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "49120af3_4c55b81e",
+      "range": {
+        "startLine": 116,
+        "startChar": 25,
+        "endLine": 116,
+        "endChar": 34
+      },
+      "revId": "381963ffdf5b17ccc319dff3ebb63215970f4fac",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a0dd9131_e5f501b0",
@@ -109,6 +133,30 @@
       "side": 1,
       "message": "Or use IPropertyFetcher, which is testable.",
       "parentUuid": "3d7ab778_fbb8ed8c",
+      "range": {
+        "startLine": 229,
+        "startChar": 8,
+        "endLine": 229,
+        "endChar": 83
+      },
+      "revId": "381963ffdf5b17ccc319dff3ebb63215970f4fac",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "860f41b1_414563bb",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_writer.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 229,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-12-02T20:06:26Z",
+      "side": 1,
+      "message": "I have moved this to CowOptions for now; however, we will need to plumb this wherein one can enable through \"ota_from_target_files\" option. I will follow it up as a separate CL.\n\nThat said, we _really_ should not set more than 2 threads. Based on my experiments, with 3 and 4 threads, CPU overhead is high and compression time just reduces by few seconds. Having more threads may help if the number of contiguous blocks for REPLACE/XOR is \u003e4MB.",
+      "parentUuid": "2a18453f_0cdea3b5",
       "range": {
         "startLine": 229,
         "startChar": 8,
