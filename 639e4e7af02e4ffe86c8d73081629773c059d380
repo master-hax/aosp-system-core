@@ -22,6 +22,30 @@
       },
       "revId": "639e4e7af02e4ffe86c8d73081629773c059d380",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bdd1be13_40dcf969",
+        "filename": "libsystem/include/system/graphics-base-v1.2.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1884457
+      },
+      "writtenOn": "2022-12-02T06:47:01Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "107c4da8_f9e8375e",
+      "range": {
+        "startLine": 1,
+        "startChar": 43,
+        "endLine": 1,
+        "endChar": 64
+      },
+      "revId": "639e4e7af02e4ffe86c8d73081629773c059d380",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
