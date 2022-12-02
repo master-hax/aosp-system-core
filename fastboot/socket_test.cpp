@@ -309,6 +309,7 @@ TEST(SocketMockTest, TestSendFailure) {
     EXPECT_TRUE(ReceiveString(mock, "foo"));
 
     mock->ExpectSend("foo");
+    // NOLINTNEXTLINE(clang-analyzer-cplusplus.NewDelete)
     EXPECT_NONFATAL_FAILURE(delete mock, "1 event(s) were not handled");
 }
 
@@ -357,6 +358,7 @@ TEST(SocketMockTest, TestReceiveFailure) {
     EXPECT_TRUE(ReceiveString(mock, "foo"));
 
     mock->AddReceive("foo");
+    // NOLINTNEXTLINE(clang-analyzer-cplusplus.NewDelete)
     EXPECT_NONFATAL_FAILURE(delete mock, "1 event(s) were not handled");
 }
 
@@ -381,5 +383,6 @@ TEST(SocketMockTest, TestAcceptFailure) {
     EXPECT_TRUE(SendString(mock, "foo"));
 
     mock->AddAccept(nullptr);
+    // NOLINTNEXTLINE(clang-analyzer-cplusplus.NewDelete)
     EXPECT_NONFATAL_FAILURE(delete mock, "1 event(s) were not handled");
 }
