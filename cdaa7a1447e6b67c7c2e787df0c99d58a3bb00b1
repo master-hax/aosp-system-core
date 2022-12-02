@@ -69,6 +69,24 @@
       "parentUuid": "79d1a4b6_7a711bae",
       "revId": "cdaa7a1447e6b67c7c2e787df0c99d58a3bb00b1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9ba8ee57_f5ae6896",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2022-12-02T02:48:07Z",
+      "side": 1,
+      "message": "Maybe the macro should be in the macro instead? Looks like gtest does it to resolve some static analysis warnings too:\n\nhttps://cs.android.com/android/platform/superproject/+/master:external/llvm/utils/unittest/googletest/include/gtest/internal/gtest-internal.h;l\u003d756;drc\u003d0c7f116bb6950ef819323d855415b2f2b0aad987\n\n(If you do that you\u0027ll probably need to upstream the change to github though...",
+      "parentUuid": "fcb614e4_62b73e7d",
+      "revId": "cdaa7a1447e6b67c7c2e787df0c99d58a3bb00b1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
