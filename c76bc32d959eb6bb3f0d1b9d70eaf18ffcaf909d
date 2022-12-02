@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "18d20336_185c97c6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1052399
+      },
+      "writtenOn": "2022-12-02T22:36:29Z",
+      "side": 1,
+      "message": "failed presubmit test is unrelated to this change",
+      "revId": "c76bc32d959eb6bb3f0d1b9d70eaf18ffcaf909d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
