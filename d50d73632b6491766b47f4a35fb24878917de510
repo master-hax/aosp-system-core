@@ -16,6 +16,24 @@
       "message": "Prefix here should be `trusty/test/binder:`.",
       "revId": "d50d73632b6491766b47f4a35fb24878917de510",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "132f5111_d0d0a60b",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1891742
+      },
+      "writtenOn": "2022-12-02T20:27:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d593f76a_c98bd404",
+      "revId": "d50d73632b6491766b47f4a35fb24878917de510",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
