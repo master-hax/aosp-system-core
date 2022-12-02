@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6940aba5_f8cbdecd",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1000205
+      },
+      "writtenOn": "2022-12-02T00:06:33Z",
+      "side": 1,
+      "message": "this seems to be the virtio device for spi, not any block device",
+      "revId": "cdabefcc4ec37bb026dd14cdc43f8fcc628a3831",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
