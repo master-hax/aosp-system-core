@@ -16,6 +16,23 @@
       "message": "The updated description was helpful. I think this is fine. Let me approve this.",
       "revId": "2accf5bd7916ee943e97defce2a0113da43e6b80",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "57e5476a_334949dd",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2022-12-02T01:51:51Z",
+      "side": 1,
+      "message": "Thanks!",
+      "revId": "2accf5bd7916ee943e97defce2a0113da43e6b80",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
