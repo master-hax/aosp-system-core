@@ -137,6 +137,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "abc71b3f_d0766cbd",
+        "filename": "libutils/Unicode_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 202,
+      "author": {
+        "id": 1850729
+      },
+      "writtenOn": "2022-12-03T00:17:29Z",
+      "side": 1,
+      "message": "Ack. Added the lone low surrogate in UTF16toUTF8UnpairedSurrogate()",
+      "parentUuid": "b9171cfb_8fbb9da1",
+      "revId": "f3455fdfdef33892580c6b2980314e548575fd24",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "6b499dce_1566547e",
@@ -174,6 +192,30 @@
       "side": 1,
       "message": "Agree, and I am struggling here is really to find any real invalid UTF-16 characters that cannot be encoded by UTF8 in the context of conversion. So basically if we look at UTF-16 as a 1:1 mapping encoding for 16-bit characters in the BMP, with surrogate pairs for characters beyond, there are a few cases worth mentioning here:\n\n1. Unallocated UTF-16 characters --\u003e maybe we could whine about this but they should be encoded in UTF-8 anyway normally\n\n2. Private-use characters --\u003e should be encoded in normal UTF-8\n\n3. Non-characters in BMP such as 0xFFF0-0xFFFF --\u003e again, these should still be encoded in normal UTF-8, and the check for if they are valid characters should be up to the user of that UTF-8 string\n\n4. Surrogate pairs - these have dedicated tests.\n\nAnd for the real conversion, I actually agree we should not only check for length, we should do the conversion in every length test. Let me come up with another version.",
       "parentUuid": "6b499dce_1566547e",
+      "range": {
+        "startLine": 211,
+        "startChar": 20,
+        "endLine": 211,
+        "endChar": 37
+      },
+      "revId": "f3455fdfdef33892580c6b2980314e548575fd24",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2554b4eb_d80e5568",
+        "filename": "libutils/Unicode_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 211,
+      "author": {
+        "id": 1850729
+      },
+      "writtenOn": "2022-12-03T00:17:29Z",
+      "side": 1,
+      "message": "Let me know what you think @zyy@google.com",
+      "parentUuid": "7dfe5a91_0fc9a14d",
       "range": {
         "startLine": 211,
         "startChar": 20,

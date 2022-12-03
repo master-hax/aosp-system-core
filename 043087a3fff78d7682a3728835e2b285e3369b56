@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "22075d76_8ef88e22",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1850729
+      },
+      "writtenOn": "2022-12-03T00:17:29Z",
+      "side": 1,
+      "message": "Did a slightly aggressive code refactoring by having TestUTF8toUTF16() and TestUTF16toUTF8() to test both length calculation and conversion. Let me know if this works better.",
+      "revId": "043087a3fff78d7682a3728835e2b285e3369b56",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
