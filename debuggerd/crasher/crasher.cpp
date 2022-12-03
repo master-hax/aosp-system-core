@@ -86,6 +86,7 @@ noinline int smash_stack(volatile int* plen) {
     smash_stack_dummy_buf = buf;
     // This should corrupt stack guards and make process abort.
     smash_stack_dummy_function(plen);
+    // NOLINTNEXTLINE(clang-analyzer-core.StackAddressEscape)
     return 0;
 }
 
@@ -118,6 +119,7 @@ noinline int do_action_on_thread(const char* arg) {
 
 noinline int crash_null() {
   int (*null_func)() = nullptr;
+  // NOLINTNEXTLINE(clang-analyzer-core.CallAndMessage)
   return null_func();
 }
 
@@ -141,6 +143,7 @@ noinline int crash(int a) {
 
 noinline void abuse_heap() {
     char buf[16];
+    // NOLINTNEXTLINE(clang-analyzer-unix.Malloc)
     free(buf); // GCC is smart enough to warn about this, but we're doing it deliberately.
 }
 #pragma clang diagnostic pop
@@ -168,6 +171,7 @@ noinline void readdir_null() {
 
 noinline int strlen_null() {
     char* sneaky_null = nullptr;
+    // NOLINTNEXTLINE(clang-analyzer-unix.cstring.NullArg)
     return strlen(sneaky_null);
 }
 
