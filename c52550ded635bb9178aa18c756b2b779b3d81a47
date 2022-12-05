@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cbc4b925_f6592082",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-12-05T17:54:15Z",
+      "side": 1,
+      "message": "can we just not run the analyzer on this code? it\u0027s literally a file full of stuff you shouldn\u0027t do, aiming to _cause_ crashes...",
+      "revId": "c52550ded635bb9178aa18c756b2b779b3d81a47",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
