@@ -16,6 +16,23 @@
       "message": "Did a slightly aggressive code refactoring by having TestUTF8toUTF16() and TestUTF16toUTF8() to test both length calculation and conversion. Let me know if this works better.",
       "revId": "043087a3fff78d7682a3728835e2b285e3369b56",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fe2736d1_e586f848",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1850729
+      },
+      "writtenOn": "2022-12-05T21:53:44Z",
+      "side": 1,
+      "message": "BTW, @enh@google.com, there are two tests that are failing for pre-submit and is expected, which is actually a signal of 2 issues with current implementation:\n\n1) expect utf16_to_utf8_length() to return 0 if input is zero length string, current implementation returns -1\n\n2) expect utf8_to_utf16_length() to stuff in 0xFFFF (for invalid UTF-8 input, e.g. 0xf8 as a leading byte), this was suggested by @zyy@google.com, which I agreed, the current implementation ignores invalid UTF-8 leading byte\n\nI guess we have two choices:\n\n1. either change the test to align with existing behavior and get this CL merged first, and modify the other CL to keep the existing behavior\n\n2. or merge the performance improvement + fix CL first (https://android-review.git.corp.google.com/c/platform/system/core/+/2322175), and then merge this CL\n\nI\u0027m open to either way but I need some opinions here.",
+      "revId": "043087a3fff78d7682a3728835e2b285e3369b56",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
