@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6baf6bc8_a297cbd2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1130827
+      },
+      "writtenOn": "2022-12-06T10:13:36Z",
+      "side": 1,
+      "message": "Hi Steven,\n\nThe presubmit failed because of different source code in AOSP and internal. The diff is reported in abidiffs/libutils.so.opt0.abidiff, P45359536. Can you sync the external and the internal source code?",
+      "revId": "eafd18ff447aea301de2987da1c54dfb0d4910d2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
