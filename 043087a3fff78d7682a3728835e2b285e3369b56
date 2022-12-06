@@ -51,6 +51,24 @@
       "parentUuid": "fe2736d1_e586f848",
       "revId": "043087a3fff78d7682a3728835e2b285e3369b56",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "63fa937c_b2d92dfe",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1850729
+      },
+      "writtenOn": "2022-12-06T01:17:27Z",
+      "side": 1,
+      "message": "OK, I changed the tests to test the current behavior. But I\u0027m afraid the current behavior is deeply flawed and I\u0027d like to see if we could pass app compat tests to get the fix in, so there are multiple issues with the current behavior:\n\n1. empty input to utf16_to_utf8_length() returns -1 instead of 0, I guess this is fine, it\u0027s just inconsistent with utf8_to_utf16_length(). However, there is a slight chance the length could be passed to utf16_to_utf8() in some subsequent calls without checking by some careless code. Likely not fatal.\n\n2. invalid leading bytes in UTF8 sequence (those with 5 leading 1\u0027s, \u003e\u003d0xf8) are treated as valid for 4-byte UTF8 sequence, which could mess up with the rest conversion, as well as allowing some security manipulation, just saying\n\n3. invalid trailing bytes in UTF8 sequence, these are treated as valid trailing\nbytes and a normal conversion is done, I guess we should report and produce some invalid characters in place instead\n\nThere were some discussions here - https://en.wikipedia.org/wiki/UTF-8#Invalid_sequences_and_error_handling",
+      "parentUuid": "00a68967_2a34baee",
+      "revId": "043087a3fff78d7682a3728835e2b285e3369b56",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
