@@ -69,6 +69,24 @@
       "parentUuid": "00a68967_2a34baee",
       "revId": "043087a3fff78d7682a3728835e2b285e3369b56",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c765942f_531d535c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-12-06T17:23:44Z",
+      "side": 1,
+      "message": "\u003e But I\u0027m afraid the current behavior is deeply flawed and I\u0027d like to see if we could pass app compat tests to get the fix in\n\noh, yeah, i think we\u0027re all in agreement there. hence the suggestion to write the TODO comments (which i see you\u0027ve done) :-)",
+      "parentUuid": "63fa937c_b2d92dfe",
+      "revId": "043087a3fff78d7682a3728835e2b285e3369b56",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
