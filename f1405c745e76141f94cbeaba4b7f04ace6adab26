@@ -41,6 +41,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "abaf1e37_1a903f64",
+        "filename": "libutils/Unicode_test.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1850729
+      },
+      "writtenOn": "2022-12-06T23:41:00Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "f81bd18e_87d13ff8",
+      "range": {
+        "startLine": 59,
+        "startChar": 51,
+        "endLine": 59,
+        "endChar": 55
+      },
+      "revId": "f1405c745e76141f94cbeaba4b7f04ace6adab26",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f6199d28_7aaf7ef8",
@@ -54,6 +78,30 @@
       "writtenOn": "2022-12-06T19:32:39Z",
       "side": 1,
       "message": "s/glyphs/codepoints/ throughout (\"glyph\" is about how it renders; that\u0027s not our problem :-) )",
+      "range": {
+        "startLine": 93,
+        "startChar": 15,
+        "endLine": 93,
+        "endChar": 21
+      },
+      "revId": "f1405c745e76141f94cbeaba4b7f04ace6adab26",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "18fb0b46_cb40d7ba",
+        "filename": "libutils/Unicode_test.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 1850729
+      },
+      "writtenOn": "2022-12-06T23:41:00Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "f6199d28_7aaf7ef8",
       "range": {
         "startLine": 93,
         "startChar": 15,
@@ -87,6 +135,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "8757de27_bdf40a77",
+        "filename": "libutils/Unicode_test.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 138,
+      "author": {
+        "id": 1850729
+      },
+      "writtenOn": "2022-12-06T23:41:00Z",
+      "side": 1,
+      "message": "Agree. Based on https://en.wikipedia.org/wiki/Specials_(Unicode_block), we have:\n\n```\nU+FFFD � REPLACEMENT CHARACTER used to replace an unknown, unrecognized, or unrepresentable character\n```\n\nso I guess that\u0027s indeed a better choice. @zyy@google.com",
+      "parentUuid": "d44ef31c_a203af46",
+      "range": {
+        "startLine": 138,
+        "startChar": 62,
+        "endLine": 138,
+        "endChar": 68
+      },
+      "revId": "f1405c745e76141f94cbeaba4b7f04ace6adab26",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d2358497_ac7f23dd",
@@ -110,6 +182,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "d66ea33f_2b2a2794",
+        "filename": "libutils/Unicode_test.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 148,
+      "author": {
+        "id": 1850729
+      },
+      "writtenOn": "2022-12-06T23:41:00Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "d2358497_ac7f23dd",
+      "range": {
+        "startLine": 148,
+        "startChar": 15,
+        "endLine": 148,
+        "endChar": 16
+      },
+      "revId": "f1405c745e76141f94cbeaba4b7f04ace6adab26",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "fc937e4b_01c5bb1e",
@@ -123,6 +219,30 @@
       "writtenOn": "2022-12-06T19:32:39Z",
       "side": 1,
       "message": "s/character/byte/ in this function",
+      "range": {
+        "startLine": 225,
+        "startChar": 58,
+        "endLine": 225,
+        "endChar": 67
+      },
+      "revId": "f1405c745e76141f94cbeaba4b7f04ace6adab26",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9bc939ad_e2d6cf7f",
+        "filename": "libutils/Unicode_test.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 225,
+      "author": {
+        "id": 1850729
+      },
+      "writtenOn": "2022-12-06T23:41:00Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "fc937e4b_01c5bb1e",
       "range": {
         "startLine": 225,
         "startChar": 58,
