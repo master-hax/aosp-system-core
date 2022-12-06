@@ -18,6 +18,7 @@
 
 #include <limits.h>
 #include <sys/stat.h>
+#include <unistd.h>
 
 #include <android-base/file.h>
 
@@ -124,7 +125,11 @@ bool WriteToImageFile(borrowed_fd fd, const LpMetadata& input) {
 }
 
 bool WriteToImageFile(const std::string& file, const LpMetadata& input) {
-    unique_fd fd(open(file.c_str(), O_CREAT | O_RDWR | O_TRUNC | O_CLOEXEC | O_BINARY, 0644));
+    // Serialized geometry data might be used by the device to map partitions.
+    // Since corruption of LpMetadata can cause OTA failure or even boot
+    // failures, sync data using O_DSYNC to make sure writes go to disk.
+    unique_fd fd(
+            open(file.c_str(), O_CREAT | O_RDWR | O_TRUNC | O_CLOEXEC | O_BINARY | O_DSYNC, 0644));
     if (fd < 0) {
         PERROR << __PRETTY_FUNCTION__ << " open failed: " << file;
         return false;
