@@ -33,6 +33,29 @@
       "message": "ping for review",
       "revId": "30111a251de3850949f8392201e0eeb6f2b7e847",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2cb72f53_c60288ad",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 377,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-12-06T01:17:22Z",
+      "side": 1,
+      "message": "I think when cgroups are not available you need to add one for initialPid since you already did pgids.emplace(initialPid). With cgroups it works correctly because PROCESSGROUP_CGROUP_PROCS_FILE will have initialPid in there. Without cgroups support you should add 1 manually.\n\nBut I think a better way of counting how many processes were killed is by incrementing it every time `kill` succeeds. Then that value truly represents how many processes were killed and the above weird logic becomes unnecessary.",
+      "range": {
+        "startLine": 377,
+        "startChar": 8,
+        "endLine": 377,
+        "endChar": 17
+      },
+      "revId": "30111a251de3850949f8392201e0eeb6f2b7e847",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
