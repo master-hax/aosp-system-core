@@ -184,6 +184,10 @@ cc_library {
         enabled: true,
         support_system_process: true,
     },
+
+    header_abi_checker: {
+        ref_dump_dirs: ["abi-dumps"],
+    },
 }
 
 cc_library {
