@@ -18,6 +18,7 @@
 
 #include <limits.h>
 #include <sys/stat.h>
+#include <unistd.h>
 
 #include <android-base/file.h>
 
@@ -120,6 +121,10 @@ bool WriteToImageFile(borrowed_fd fd, const LpMetadata& input) {
         PERROR << __PRETTY_FUNCTION__ << " write " << everything.size() << " bytes failed";
         return false;
     }
+    // Serialized geometry data might be used by the device to map partitions.
+    // Since corruption of LpMetadata can cause OTA failure or even boot
+    // failures, fsync data to make sure writes go to disk.
+    fsync(fd.get());
     return true;
 }
 
