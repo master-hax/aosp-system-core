@@ -16,6 +16,121 @@
       "message": "(lgtm)",
       "revId": "f1405c745e76141f94cbeaba4b7f04ace6adab26",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f81bd18e_87d13ff8",
+        "filename": "libutils/Unicode_test.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-12-06T19:32:39Z",
+      "side": 1,
+      "message": "ueber nit (that funnily enough came up on the POSIX list this week!): \"null terminated\" or \"NUL terminated\", but not \"NULL terminated\" (unless you\u0027re talking about an argv array, say :-) ).",
+      "range": {
+        "startLine": 59,
+        "startChar": 51,
+        "endLine": 59,
+        "endChar": 55
+      },
+      "revId": "f1405c745e76141f94cbeaba4b7f04ace6adab26",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f6199d28_7aaf7ef8",
+        "filename": "libutils/Unicode_test.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-12-06T19:32:39Z",
+      "side": 1,
+      "message": "s/glyphs/codepoints/ throughout (\"glyph\" is about how it renders; that\u0027s not our problem :-) )",
+      "range": {
+        "startLine": 93,
+        "startChar": 15,
+        "endLine": 93,
+        "endChar": 21
+      },
+      "revId": "f1405c745e76141f94cbeaba4b7f04ace6adab26",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d44ef31c_a203af46",
+        "filename": "libutils/Unicode_test.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 138,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-12-06T19:32:39Z",
+      "side": 1,
+      "message": "(doesn\u0027t matter yet, but i suspect U+FFFD is a better choice?)",
+      "range": {
+        "startLine": 138,
+        "startChar": 62,
+        "endLine": 138,
+        "endChar": 68
+      },
+      "revId": "f1405c745e76141f94cbeaba4b7f04ace6adab26",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d2358497_ac7f23dd",
+        "filename": "libutils/Unicode_test.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 148,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-12-06T19:32:39Z",
+      "side": 1,
+      "message": "(a bunch of stray tabs on these next few lines)",
+      "range": {
+        "startLine": 148,
+        "startChar": 15,
+        "endLine": 148,
+        "endChar": 16
+      },
+      "revId": "f1405c745e76141f94cbeaba4b7f04ace6adab26",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fc937e4b_01c5bb1e",
+        "filename": "libutils/Unicode_test.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 225,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-12-06T19:32:39Z",
+      "side": 1,
+      "message": "s/character/byte/ in this function",
+      "range": {
+        "startLine": 225,
+        "startChar": 58,
+        "endLine": 225,
+        "endChar": 67
+      },
+      "revId": "f1405c745e76141f94cbeaba4b7f04ace6adab26",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
