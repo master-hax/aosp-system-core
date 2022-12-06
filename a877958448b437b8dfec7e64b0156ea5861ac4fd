@@ -51,6 +51,24 @@
       "message": "+smoreland@\nUnless there\u0027re objections from dvander@ and smoreland@, I shall close out this bug.",
       "revId": "a877958448b437b8dfec7e64b0156ea5861ac4fd",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "08ed9132_0b8d8d55",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2022-12-06T07:45:33Z",
+      "side": 1,
+      "message": "yup I wasn\u0027t CC-ed to the bug previously, I was aware of that bug only _after_ you uploaded this CL and I get a gerrit notification.",
+      "parentUuid": "560f5f36_bc49e928",
+      "revId": "a877958448b437b8dfec7e64b0156ea5861ac4fd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
