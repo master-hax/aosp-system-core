@@ -23,6 +23,7 @@
 #include <android-base/properties.h>
 #include <gtest/gtest.h>
 #include <selinux/selinux.h>
+#include <sys/resource.h>
 
 #include "action.h"
 #include "action_manager.h"
@@ -623,6 +624,15 @@ service A something
 
     ASSERT_TRUE(parser.ParseConfig(tf.path));
     ASSERT_EQ(1u, parser.parse_error_count());
+}
+
+TEST(init, MemLockLimit) {
+    // Verify we are running memlock at, or under, 64KB
+    const unsigned long max_limit = 67108864;
+    struct rlimit curr_limit;
+    ASSERT_EQ(getrlimit(RLIMIT_MEMLOCK, &curr_limit), 0);
+    ASSERT_LE(curr_limit.rlim_cur, limit);
+    ASSERT_LE(curr_limit.rlim_max, limit);
 }
 
 class TestCaseLogger : public ::testing::EmptyTestEventListener {
