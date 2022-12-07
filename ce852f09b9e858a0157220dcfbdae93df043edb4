@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "04587bb7_8d40654e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 13
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2022-12-07T18:59:11Z",
+      "side": 1,
+      "message": "If I understand correctly, the only benefit batching write is less syscalls. I remember in a previous conversation we mentioned that syscalls only make up a small percentage of total OTA install time. Can you share some performance numbers with just this CL(w/o multi-thread compression)?",
+      "revId": "ce852f09b9e858a0157220dcfbdae93df043edb4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6fa77bc3_3104c5c9",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_writer.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 666,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2022-12-07T18:59:11Z",
+      "side": 1,
+      "message": "check return value?",
+      "range": {
+        "startLine": 666,
+        "startChar": 4,
+        "endLine": 666,
+        "endChar": 16
+      },
+      "revId": "ce852f09b9e858a0157220dcfbdae93df043edb4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
