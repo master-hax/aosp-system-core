@@ -48,6 +48,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "1d4014ea_e2ae89ab",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_writer.h",
+        "patchSetId": 9
+      },
+      "lineNbr": 213,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2022-12-07T19:08:19Z",
+      "side": 1,
+      "message": "std::vector\u003cCowOperation\u003e still lives on the heap, right? If we store these operations in this model, we have less memory fragmentation, and also we can remove `cowop_vec_` entirely and just use pwrite() to write all CowOperation. Thoughts?",
+      "parentUuid": "2112ae2c_1b7ca1fc",
+      "range": {
+        "startLine": 213,
+        "startChar": 16,
+        "endLine": 213,
+        "endChar": 45
+      },
+      "revId": "63bc422d6ab2d5856a034fa24619463e8a569385",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "19a04e8d_bf7f72b7",
