@@ -16,6 +16,23 @@
       "message": "Hi Steven,\n\nThe presubmit failed because of different source code in AOSP and internal. The diff is reported in abidiffs/libutils.so.opt0.abidiff, P45359536. Can you sync the external and the internal source code?",
       "revId": "eafd18ff447aea301de2987da1c54dfb0d4910d2",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "367e2a16_3facf3c0",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2022-12-07T00:33:34Z",
+      "side": 1,
+      "message": "Hey - this looks awesome!\n\nI think we can move internal changes to AOSP.\n\nI\u0027m also curious - how long does this take to regenerate? Since it has to re-lunch, it adds 5 minutes to the workflow, right? I\u0027m wondering, is there any way we can avoid the extra lunch?",
+      "revId": "eafd18ff447aea301de2987da1c54dfb0d4910d2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
