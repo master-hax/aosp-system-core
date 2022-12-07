@@ -250,6 +250,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "6230696d_d8d0998d",
+        "filename": "libutils/Unicode_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 211,
+      "author": {
+        "id": 1850729
+      },
+      "writtenOn": "2022-12-07T18:50:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "697d1263_aa803b14",
+      "range": {
+        "startLine": 211,
+        "startChar": 20,
+        "endLine": 211,
+        "endChar": 37
+      },
+      "revId": "f3455fdfdef33892580c6b2980314e548575fd24",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "ba6c7d7a_d753706e",
