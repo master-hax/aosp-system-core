@@ -50,6 +50,24 @@
       "message": "Hey - this looks awesome!\n\nI think we can move internal changes to AOSP.\n\nI\u0027m also curious - how long does this take to regenerate? Since it has to re-lunch, it adds 5 minutes to the workflow, right? I\u0027m wondering, is there any way we can avoid the extra lunch?",
       "revId": "eafd18ff447aea301de2987da1c54dfb0d4910d2",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7c908702_9d345f1d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1130827
+      },
+      "writtenOn": "2022-12-07T12:55:28Z",
+      "side": 1,
+      "message": "Please inform me after you move the changes to AOSP.\n\nYou can build the dumps by yourself and use --no-make-lib. The workflow is\n```\nlunch aosp_arm64-userdebug\n\n# The first target is vndk; the second one is vndk-ext.\n# The -k flag continues building the dumps even if some of them do not match the existing reference dumps.\nm libutils.vendor libutils_vendor -k\n\n# Copy the dumps from out dir to the ref dump dir.\ndevelopment/vndk/tools/header-checker/utils/create_reference_dumps.py \\\n-libs libutils -products aosp_arm64 \\\n-ref-dump-dir system/core/libutils/abi-dumps \\\n--no-make-lib\n```",
+      "parentUuid": "367e2a16_3facf3c0",
+      "revId": "eafd18ff447aea301de2987da1c54dfb0d4910d2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
