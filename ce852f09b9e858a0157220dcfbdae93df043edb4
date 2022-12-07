@@ -38,6 +38,29 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "864ba02f_455cdef7",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_writer.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 551,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2022-12-07T19:14:52Z",
+      "side": 1,
+      "message": "I\u0027m worried about setting a 8K limit for sequence ops. This gives an upper bound of 2048 blocks in sequence op. If partners have a large partition it might overflow. Since sequence op is only written once per-partition, maybe we can disable batching for sequence op?",
+      "range": {
+        "startLine": 551,
+        "startChar": 21,
+        "endLine": 551,
+        "endChar": 65
+      },
+      "revId": "ce852f09b9e858a0157220dcfbdae93df043edb4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "6fa77bc3_3104c5c9",
         "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_writer.cpp",
         "patchSetId": 13
