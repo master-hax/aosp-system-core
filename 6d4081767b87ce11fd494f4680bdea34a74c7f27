@@ -16,6 +16,29 @@
       "message": "I updated the code so it doesn\u0027t regress anything. PTAL.",
       "revId": "6d4081767b87ce11fd494f4680bdea34a74c7f27",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "356f0809_e9492060",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 435,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-12-07T17:32:12Z",
+      "side": 1,
+      "message": "This logic will not count processes which were already dead (ESRCH condition), which is a deviation from previous behavior which counted such processes among the killed ones. How about simplifying to:\n```\nif (!kill(-pgid, signal) || errno \u003d\u003d ESRCH) {\n  process++;\n} else {\n  PLOG(WARNING) \u003c\u003c \"kill(\" \u003c\u003c -pgid \u003c\u003c \", \" \u003c\u003c signal \u003c\u003c \") failed\";\n}\n```\n\nThis will count a kill to be successful if the process is already dead.",
+      "range": {
+        "startLine": 431,
+        "startChar": 8,
+        "endLine": 435,
+        "endChar": 9
+      },
+      "revId": "6d4081767b87ce11fd494f4680bdea34a74c7f27",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
