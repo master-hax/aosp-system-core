@@ -68,6 +68,24 @@
       "parentUuid": "367e2a16_3facf3c0",
       "revId": "eafd18ff447aea301de2987da1c54dfb0d4910d2",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f4eddf1b_645504a0",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2022-12-07T18:48:03Z",
+      "side": 1,
+      "message": "Okay, I checked what it was:\n\n    ~/android/aosp :) diff -r ../master/system/core/libutils/ system/core/libutils/\n    diff \u0027--color\u003dauto\u0027 -r ../master/system/core/libutils/Android.bp system/core/libutils/Android.bp\n    172a173,176\n    \u003e \n    \u003e     header_abi_checker: {\n    \u003e         diff_flags: [\"-allow-adding-removing-weak-symbols\"],\n    \u003e     },\n\nI think you know better though. Do we want that on AOSP, or should we remove it internally?",
+      "parentUuid": "7c908702_9d345f1d",
+      "revId": "eafd18ff447aea301de2987da1c54dfb0d4910d2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
