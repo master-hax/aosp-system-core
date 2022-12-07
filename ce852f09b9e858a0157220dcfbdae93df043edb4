@@ -59,6 +59,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "af26b4ff_794a8df5",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_writer.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 551,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2022-12-07T19:27:27Z",
+      "side": 1,
+      "message": "NVM, EmitSequenceData splits larger requests into multiple sequence ops.",
+      "parentUuid": "864ba02f_455cdef7",
+      "range": {
+        "startLine": 551,
+        "startChar": 21,
+        "endLine": 551,
+        "endChar": 65
+      },
+      "revId": "ce852f09b9e858a0157220dcfbdae93df043edb4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "6fa77bc3_3104c5c9",
