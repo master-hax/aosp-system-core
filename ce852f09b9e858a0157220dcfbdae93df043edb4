@@ -57,6 +57,30 @@
       },
       "revId": "ce852f09b9e858a0157220dcfbdae93df043edb4",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1fd56cd9_f7c3bfa0",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_writer.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 666,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-12-07T19:03:44Z",
+      "side": 1,
+      "message": "The return value is irrelevant here as it just resets the `next_data_pos_` and `next_op_pos_` - There is now writes during this call.",
+      "parentUuid": "6fa77bc3_3104c5c9",
+      "range": {
+        "startLine": 666,
+        "startChar": 4,
+        "endLine": 666,
+        "endChar": 16
+      },
+      "revId": "ce852f09b9e858a0157220dcfbdae93df043edb4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
