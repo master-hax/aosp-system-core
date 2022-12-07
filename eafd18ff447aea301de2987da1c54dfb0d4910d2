@@ -3,6 +3,23 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "56b240ba_b04b6715",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2022-12-07T00:34:06Z",
+      "side": 1,
+      "message": "add here also:\n\n     \"as a way to add visibility for API changes in a commonly used library\"",
+      "revId": "eafd18ff447aea301de2987da1c54dfb0d4910d2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "6baf6bc8_a297cbd2",
         "filename": "/PATCHSET_LEVEL",
         "patchSetId": 1
