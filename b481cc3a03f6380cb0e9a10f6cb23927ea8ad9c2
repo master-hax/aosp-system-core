@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "547fc832_c9a53395",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 8
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2022-12-07T04:01:01Z",
+      "side": 1,
+      "message": "Currently implemented to read a hardcoded list of partition tables stored in fastboot-info.txt. Can potentially be updated to work with a list of commands",
+      "revId": "b481cc3a03f6380cb0e9a10f6cb23927ea8ad9c2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
