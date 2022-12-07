@@ -52,6 +52,24 @@
       "parentUuid": "6a89d703_64a6c83c",
       "revId": "784e63c9a24f731bccc86a72b08fd5f20eaf0eb6",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "68d19a56_5a4da31d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1052399
+      },
+      "writtenOn": "2022-12-07T00:04:28Z",
+      "side": 1,
+      "message": "Is the change to dmuserd acceptable? It still needs owner vote. thanks.",
+      "parentUuid": "a19fdab9_2ed84c50",
+      "revId": "784e63c9a24f731bccc86a72b08fd5f20eaf0eb6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
