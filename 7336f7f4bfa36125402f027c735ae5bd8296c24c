@@ -1,0 +1,123 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "91aacb9b_eea1f52c",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_writer.h",
+        "patchSetId": 9
+      },
+      "lineNbr": 214,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-12-08T16:50:23Z",
+      "side": 1,
+      "message": "nit: num_compress_threads_",
+      "revId": "7336f7f4bfa36125402f027c735ae5bd8296c24c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "30767712_8c333b90",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_compress.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 162,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-12-08T16:50:23Z",
+      "side": 1,
+      "message": "s/Begin/Enqueue?",
+      "revId": "7336f7f4bfa36125402f027c735ae5bd8296c24c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cd5bdc41_1edc9a94",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_compress.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 193,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-12-08T16:50:23Z",
+      "side": 1,
+      "message": "What guarantees the compressed output blocks will be in the right order?",
+      "revId": "7336f7f4bfa36125402f027c735ae5bd8296c24c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0d0e7ca8_23f3b808",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_compress.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 196,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-12-08T16:50:23Z",
+      "side": 1,
+      "message": "Is this clear necessary, given the destructor is about to run?",
+      "revId": "7336f7f4bfa36125402f027c735ae5bd8296c24c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5cf2187f_38509b0e",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_writer.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 160,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-12-08T16:50:23Z",
+      "side": 1,
+      "message": "TODO should have bug # attached. But... it\u0027s a bit awkward to have the value set from CowOptions, and then overridden by a boolean property. Ideally CowWriter takes the options as-is, CHECKing invalid values as needed. Libsnapshot/UE sets up the options, using IPropertyFetcher.\n\nThis enables two levels of testing: CowWriter tests can code for any value of num_compress_threads without worrying about device configs, and SnapshotManager tests can verify that when the device enables threads, the default number is only two.",
+      "revId": "7336f7f4bfa36125402f027c735ae5bd8296c24c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2ef89c16_94c6e9e6",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_writer.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 243,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-12-08T16:50:23Z",
+      "side": 1,
+      "message": "nit: \"auto wt \u003d \" is fine here, since the type is already on the right-hand side",
+      "revId": "7336f7f4bfa36125402f027c735ae5bd8296c24c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fb437058_f116935c",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_writer.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 446,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-12-08T16:50:23Z",
+      "side": 1,
+      "message": "nit: pending_blocks",
+      "revId": "7336f7f4bfa36125402f027c735ae5bd8296c24c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
