@@ -3,6 +3,23 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "1f3bb543_ea3199f6",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 9
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-12-08T16:53:07Z",
+      "side": 1,
+      "message": "One other thought: this looks threaded whether or not the \"threaded\" property is set to true. Maybe rename to \"threads\" and have it be an int? (We can always cap it to 2 in CowWriter.)",
+      "revId": "7336f7f4bfa36125402f027c735ae5bd8296c24c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "91aacb9b_eea1f52c",
         "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_writer.h",
         "patchSetId": 9
