@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f3250f51_c2e28b70",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1130827
+      },
+      "writtenOn": "2022-12-08T06:29:17Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "56b240ba_b04b6715",
+      "revId": "eafd18ff447aea301de2987da1c54dfb0d4910d2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "6baf6bc8_a297cbd2",
@@ -84,6 +102,42 @@
       "side": 1,
       "message": "Okay, I checked what it was:\n\n    ~/android/aosp :) diff -r ../master/system/core/libutils/ system/core/libutils/\n    diff \u0027--color\u003dauto\u0027 -r ../master/system/core/libutils/Android.bp system/core/libutils/Android.bp\n    172a173,176\n    \u003e \n    \u003e     header_abi_checker: {\n    \u003e         diff_flags: [\"-allow-adding-removing-weak-symbols\"],\n    \u003e     },\n\nI think you know better though. Do we want that on AOSP, or should we remove it internally?",
       "parentUuid": "7c908702_9d345f1d",
+      "revId": "eafd18ff447aea301de2987da1c54dfb0d4910d2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "02ed94df_2f77882d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1130827
+      },
+      "writtenOn": "2022-12-08T06:29:17Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6baf6bc8_a297cbd2",
+      "revId": "eafd18ff447aea301de2987da1c54dfb0d4910d2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3a5315b9_07f2740d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1130827
+      },
+      "writtenOn": "2022-12-08T06:29:17Z",
+      "side": 1,
+      "message": "Sorry that I forgot the afdo flag. We need to ignore weak symbols for both.",
+      "parentUuid": "f4eddf1b_645504a0",
       "revId": "eafd18ff447aea301de2987da1c54dfb0d4910d2",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
