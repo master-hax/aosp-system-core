@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "9ab4c8cf_2dd31c9a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 9
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-12-08T23:27:42Z",
+      "side": 1,
+      "message": "Renamed. I have still set this to bool; Please see below for the explanation.",
+      "parentUuid": "1f3bb543_ea3199f6",
+      "revId": "7336f7f4bfa36125402f027c735ae5bd8296c24c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "91aacb9b_eea1f52c",
@@ -31,6 +49,24 @@
       "writtenOn": "2022-12-08T16:50:23Z",
       "side": 1,
       "message": "nit: num_compress_threads_",
+      "revId": "7336f7f4bfa36125402f027c735ae5bd8296c24c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "dc59caed_580d19c1",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_writer.h",
+        "patchSetId": 9
+      },
+      "lineNbr": 214,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-12-08T23:27:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "91aacb9b_eea1f52c",
       "revId": "7336f7f4bfa36125402f027c735ae5bd8296c24c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -52,6 +88,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "e6460316_63d54284",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_compress.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 162,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-12-08T23:27:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "30767712_8c333b90",
+      "revId": "7336f7f4bfa36125402f027c735ae5bd8296c24c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "cd5bdc41_1edc9a94",
@@ -65,6 +119,24 @@
       "writtenOn": "2022-12-08T16:50:23Z",
       "side": 1,
       "message": "What guarantees the compressed output blocks will be in the right order?",
+      "revId": "7336f7f4bfa36125402f027c735ae5bd8296c24c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "dbed59ba_424beb85",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_compress.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 193,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-12-08T23:27:42Z",
+      "side": 1,
+      "message": "I have added sequence check to make sure block are indeed in order.\n\nIn general, if the blocks are not sequential, cow_api_test and presubmit will fail.",
+      "parentUuid": "cd5bdc41_1edc9a94",
       "revId": "7336f7f4bfa36125402f027c735ae5bd8296c24c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -86,6 +158,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "53505ac7_ebe181a4",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_compress.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 196,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-12-08T23:27:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0d0e7ca8_23f3b808",
+      "revId": "7336f7f4bfa36125402f027c735ae5bd8296c24c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "5cf2187f_38509b0e",
@@ -99,6 +189,24 @@
       "writtenOn": "2022-12-08T16:50:23Z",
       "side": 1,
       "message": "TODO should have bug # attached. But... it\u0027s a bit awkward to have the value set from CowOptions, and then overridden by a boolean property. Ideally CowWriter takes the options as-is, CHECKing invalid values as needed. Libsnapshot/UE sets up the options, using IPropertyFetcher.\n\nThis enables two levels of testing: CowWriter tests can code for any value of num_compress_threads without worrying about device configs, and SnapshotManager tests can verify that when the device enables threads, the default number is only two.",
+      "revId": "7336f7f4bfa36125402f027c735ae5bd8296c24c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ee6b70c0_cbae72fc",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_writer.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 160,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-12-08T23:27:42Z",
+      "side": 1,
+      "message": "Thanks. I have moved this now to use CowOptions.\n\nI have removed TODO. We don\u0027t want to set the numbers of threads more than 2. I have tested both full and incremnetal OTA with 3, 4 threads. More threads doesn\u0027t improve as pipeline (number of blocks submitted for compression) is not more than 512 or 1024. Very occasionally, we do see bursts of huge blocks during incremental OTA. Else, for 512 set of blocks, 2 threads is more than sufficient. Adding more threads will actually degrade performance as we are adding more CPU and the ability to split the blocks and re-configure all those compressed blocks.",
+      "parentUuid": "5cf2187f_38509b0e",
       "revId": "7336f7f4bfa36125402f027c735ae5bd8296c24c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -139,6 +247,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "ada2996c_46f97d7d",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_writer.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 413,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-12-08T23:27:42Z",
+      "side": 1,
+      "message": "I already have a test with 259 blocks to cover this case.\n\nI will add couple of more cases to cover XOR blocks before resolving this as done.",
+      "parentUuid": "e52d767d_e27bcef4",
+      "revId": "7336f7f4bfa36125402f027c735ae5bd8296c24c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "fb437058_f116935c",
         "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_writer.cpp",
         "patchSetId": 9
@@ -150,6 +276,24 @@
       "writtenOn": "2022-12-08T16:50:23Z",
       "side": 1,
       "message": "nit: pending_blocks",
+      "revId": "7336f7f4bfa36125402f027c735ae5bd8296c24c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8da18d70_c48bb3e5",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_writer.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 446,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-12-08T23:27:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fb437058_f116935c",
       "revId": "7336f7f4bfa36125402f027c735ae5bd8296c24c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
