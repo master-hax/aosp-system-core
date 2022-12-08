@@ -20,6 +20,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "8e2c4580_17692597",
+        "filename": "trusty/keymint/src/keymint_hal_main.rs",
+        "patchSetId": 2
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1678423
+      },
+      "writtenOn": "2022-12-08T06:08:34Z",
+      "side": 1,
+      "message": "There is a check in `channel_execute` before calling `execute`. https://android-review.git.corp.google.com/c/platform/system/keymint/+/2255235/8/hal/src/lib.rs#164\n\nDo you think it is good to have a check here as well for extra precautions?",
+      "parentUuid": "191de1b0_818a06f1",
+      "revId": "6d8fe4db5019198b6a3d9fc71de4413ad39631f0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "60f5b6b4_5201d977",
         "filename": "trusty/keymint/src/keymint_hal_main.rs",
         "patchSetId": 2
@@ -31,6 +49,24 @@
       "writtenOn": "2022-10-14T13:56:04Z",
       "side": 1,
       "message": "What happens if `recv_buf `is size 0?",
+      "revId": "6d8fe4db5019198b6a3d9fc71de4413ad39631f0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "94845183_88ff14f7",
+        "filename": "trusty/keymint/src/keymint_hal_main.rs",
+        "patchSetId": 2
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1678423
+      },
+      "writtenOn": "2022-12-08T06:08:34Z",
+      "side": 1,
+      "message": "Assuming it is an error condition,`extract_rsp` returns an error if it is \u003c 2\n\nBut can there be valid cases too where resp size is \u003c 2? I assume not, since the TA code at least sends the response Ok. But I just wanted to confirm.",
+      "parentUuid": "60f5b6b4_5201d977",
       "revId": "6d8fe4db5019198b6a3d9fc71de4413ad39631f0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -54,6 +90,24 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "42f314dc_33a8c00c",
+        "filename": "trusty/keymint/src/keymint_hal_main.rs",
+        "patchSetId": 2
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1678423
+      },
+      "writtenOn": "2022-12-08T06:08:34Z",
+      "side": 1,
+      "message": "I removed the prefixes. I am not yet sure (didn\u0027t look into it yet) how to fix the logger initialization to have the location details though.",
+      "parentUuid": "60216612_8b5fddd2",
+      "revId": "6d8fe4db5019198b6a3d9fc71de4413ad39631f0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "9f3c942f_5940927c",
         "filename": "trusty/keymint/src/keymint_hal_main.rs",
         "patchSetId": 2
@@ -65,6 +119,24 @@
       "writtenOn": "2022-10-14T13:56:04Z",
       "side": 1,
       "message": "(For discussion and maybe a later CL) There\u0027s going to be an extra data copy on the most common path (single-message response), that we could maybe optimize out (at a cost of more complicated code).",
+      "revId": "6d8fe4db5019198b6a3d9fc71de4413ad39631f0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9b921b15_194ce3f4",
+        "filename": "trusty/keymint/src/keymint_hal_main.rs",
+        "patchSetId": 2
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 1678423
+      },
+      "writtenOn": "2022-12-08T06:08:34Z",
+      "side": 1,
+      "message": "Thanks for pointing it out. I added an optimization to avoid the extra copy in the single response case. Please let me know if there is a better way.",
+      "parentUuid": "9f3c942f_5940927c",
       "revId": "6d8fe4db5019198b6a3d9fc71de4413ad39631f0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
