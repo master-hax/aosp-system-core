@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a8604fdb_cd466202",
+        "filename": "trusty/keymint/src/keymint_hal_main.rs",
+        "patchSetId": 3
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 1836235
+      },
+      "writtenOn": "2022-12-08T11:36:47Z",
+      "side": 1,
+      "message": "Why not just return `Ok(full_rsp)` regardless (and drop `num_of_messages`) ?",
+      "revId": "041579ba87db12869b1468883b632e454b7f9d9c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bd93b51a_f5390b94",
+        "filename": "trusty/keymint/src/keymint_hal_main.rs",
+        "patchSetId": 3
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 1836235
+      },
+      "writtenOn": "2022-12-08T11:36:47Z",
+      "side": 1,
+      "message": "Won\u0027t `recv_buf` still have the leading byte indicating no-more-to-come?",
+      "revId": "041579ba87db12869b1468883b632e454b7f9d9c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}

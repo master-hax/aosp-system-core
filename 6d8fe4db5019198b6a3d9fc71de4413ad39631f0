@@ -36,6 +36,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "9cc61504_9ea4f668",
+        "filename": "trusty/keymint/src/keymint_hal_main.rs",
+        "patchSetId": 2
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1836235
+      },
+      "writtenOn": "2022-12-08T11:36:47Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "8e2c4580_17692597",
+      "revId": "6d8fe4db5019198b6a3d9fc71de4413ad39631f0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "60f5b6b4_5201d977",
@@ -67,6 +85,24 @@
       "side": 1,
       "message": "Assuming it is an error condition,`extract_rsp` returns an error if it is \u003c 2\n\nBut can there be valid cases too where resp size is \u003c 2? I assume not, since the TA code at least sends the response Ok. But I just wanted to confirm.",
       "parentUuid": "60f5b6b4_5201d977",
+      "revId": "6d8fe4db5019198b6a3d9fc71de4413ad39631f0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6f0df2f3_089f4039",
+        "filename": "trusty/keymint/src/keymint_hal_main.rs",
+        "patchSetId": 2
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1836235
+      },
+      "writtenOn": "2022-12-08T11:36:47Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "94845183_88ff14f7",
       "revId": "6d8fe4db5019198b6a3d9fc71de4413ad39631f0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
