@@ -105,6 +105,23 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "e52d767d_e27bcef4",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_writer.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 413,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-12-08T16:51:49Z",
+      "side": 1,
+      "message": "Given this condition, I\u0027d change the \"num_threads \u003d\u003d 2\" test in your follow-up CL, to have an odd number of compressed blocks.",
+      "revId": "7336f7f4bfa36125402f027c735ae5bd8296c24c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "fb437058_f116935c",
         "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_writer.cpp",
         "patchSetId": 9
