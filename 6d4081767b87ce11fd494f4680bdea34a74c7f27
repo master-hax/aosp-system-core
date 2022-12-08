@@ -111,6 +111,30 @@
       },
       "revId": "6d4081767b87ce11fd494f4680bdea34a74c7f27",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "89ca57fc_94d838b5",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 435,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-12-08T02:53:29Z",
+      "side": 1,
+      "message": "Ok, I agree this seems to be the best option. Just a nit. Could you change it to:\n```\nif (!kill(-pgid, signal)) {\n  process++;\n} else if (errno !\u003d ESRCH) {\n  PLOG(WARNING) \u003c\u003c \"kill(\" \u003c\u003c -pgid \u003c\u003c \", \" \u003c\u003c signal \u003c\u003c \") failed\";\n}\n```\n\nThis avoids an extra check in your current expressions when you check `r \u003d\u003d -1` and then `r \u003d\u003d 0` if the first check fails. According to manpage return can be either 0 or -1, so no reason for the second check.\nIt also slightly easier to read IMHO.",
+      "parentUuid": "85dc98be_a8b9463c",
+      "range": {
+        "startLine": 431,
+        "startChar": 8,
+        "endLine": 435,
+        "endChar": 9
+      },
+      "revId": "6d4081767b87ce11fd494f4680bdea34a74c7f27",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
