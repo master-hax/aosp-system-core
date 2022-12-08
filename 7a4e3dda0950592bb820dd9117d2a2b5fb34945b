@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "8fc121b9_c37cfb41",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_writer.h",
+        "patchSetId": 8
+      },
+      "lineNbr": 214,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-12-08T07:49:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0058381a_955fd5b8",
+      "revId": "7a4e3dda0950592bb820dd9117d2a2b5fb34945b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "84195d80_7ab25336",
@@ -35,6 +53,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "de7ce2b7_beaa5e7b",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_writer.h",
+        "patchSetId": 8
+      },
+      "lineNbr": 218,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-12-08T07:49:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "84195d80_7ab25336",
+      "revId": "7a4e3dda0950592bb820dd9117d2a2b5fb34945b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "9ca6a05e_b413e0aa",
@@ -48,6 +84,24 @@
       "writtenOn": "2022-12-08T01:16:40Z",
       "side": 1,
       "message": "This is happening outside the lock. It\u0027d be better to declare CompressWork around L126, then assign it right after cv_.wait() returns. Using idiomatic wait makes it a little clearer:\n\n    CompressWork blocks;\n    {\n        std::unique_lock\u003cstd::mutex\u003e lock(lock_);\n        cv_.wait(lock_, [this]() -\u003e bool {\n            return !work_queue_.empty() || stopped_;\n        });\n        \n        if (stopped_) {\n            return;\n        }\n\n        blocks \u003d std::move(work_queue_.front());\n        work_queue_.pop();\n    }",
+      "revId": "7a4e3dda0950592bb820dd9117d2a2b5fb34945b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0609782e_6a7ba534",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_compress.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 139,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-12-08T07:49:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ca6a05e_b413e0aa",
       "revId": "7a4e3dda0950592bb820dd9117d2a2b5fb34945b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
