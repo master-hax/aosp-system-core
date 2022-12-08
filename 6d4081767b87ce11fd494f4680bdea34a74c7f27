@@ -87,6 +87,30 @@
       },
       "revId": "6d4081767b87ce11fd494f4680bdea34a74c7f27",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "85dc98be_a8b9463c",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 435,
+      "author": {
+        "id": 1291338
+      },
+      "writtenOn": "2022-12-08T01:58:02Z",
+      "side": 1,
+      "message": "\u003e Is that correct?\n\nYes.\n\n\u003e Sounds like you want to always return the number of killed processes. Correct?\n\nYes, I think it fits better for the name `KillProcessGroup`.",
+      "parentUuid": "77711161_6819993a",
+      "range": {
+        "startLine": 431,
+        "startChar": 8,
+        "endLine": 435,
+        "endChar": 9
+      },
+      "revId": "6d4081767b87ce11fd494f4680bdea34a74c7f27",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
