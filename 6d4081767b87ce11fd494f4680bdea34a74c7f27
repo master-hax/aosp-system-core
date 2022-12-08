@@ -39,6 +39,30 @@
       },
       "revId": "6d4081767b87ce11fd494f4680bdea34a74c7f27",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "90a69302_128c2269",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 435,
+      "author": {
+        "id": 1291338
+      },
+      "writtenOn": "2022-12-08T01:22:04Z",
+      "side": 1,
+      "message": "Then how should we handle the cgroup unavailable situation? I think it\u0027s complex because:\n\n1) we skip the early-returning part above (when the file is empty or doesn\u0027t exist)\n2) initialPid is always included here. kill will always \"succeed\"\n3) the loop in `KillProcessGroup` won\u0027t stop, which is the reason of regression in the previous patchset\n\n    while ((processes \u003d DoKillProcessGroupOnce(cgroup, uid, initialPid, signal)) \u003e 0) {\n        if (max_processes !\u003d nullptr \u0026\u0026 processes \u003e *max_processes) {\n            *max_processes \u003d processes;\n        }\n        LOG(VERBOSE) \u003c\u003c \"Killed \" \u003c\u003c processes \u003c\u003c \" processes for processgroup \" \u003c\u003c initialPid;\n        if (retry \u003e 0) {\n            std::this_thread::sleep_for(5ms);\n            --retry;\n        } else {\n            break;\n        }\n    }\n    \nThis bug hasn\u0027t existed not because we counted `processes` correctly, but because we early-returned based on the file.",
+      "parentUuid": "356f0809_e9492060",
+      "range": {
+        "startLine": 431,
+        "startChar": 8,
+        "endLine": 435,
+        "endChar": 9
+      },
+      "revId": "6d4081767b87ce11fd494f4680bdea34a74c7f27",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
