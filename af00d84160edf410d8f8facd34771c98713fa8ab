@@ -39,6 +39,23 @@
       "message": "missing the bug number.",
       "revId": "af00d84160edf410d8f8facd34771c98713fa8ab",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "da074819_29fb2415",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-12-08T01:01:07Z",
+      "side": 1,
+      "message": "You might want to split CTS test into a separate patch.",
+      "revId": "af00d84160edf410d8f8facd34771c98713fa8ab",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
