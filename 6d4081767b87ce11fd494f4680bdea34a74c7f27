@@ -63,6 +63,30 @@
       },
       "revId": "6d4081767b87ce11fd494f4680bdea34a74c7f27",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "77711161_6819993a",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 435,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-12-08T01:48:22Z",
+      "side": 1,
+      "message": "Ok, I think I understand you. Before your change this function would return:\n- the number of killed+dead processes if cgroups are available\n- 0 if cgroups are not available, even if it killed the initialPid\n\nIs that correct?\nIf so then I have to admit this logic it broken. We have to either always returned the number of killed processes or the number of killed+dead processes. Sounds like you want to always return the number of killed processes. Correct?",
+      "parentUuid": "90a69302_128c2269",
+      "range": {
+        "startLine": 431,
+        "startChar": 8,
+        "endLine": 435,
+        "endChar": 9
+      },
+      "revId": "6d4081767b87ce11fd494f4680bdea34a74c7f27",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
