@@ -16,6 +16,24 @@
       "message": "this seems to be the virtio device for spi, not any block device",
       "revId": "cdabefcc4ec37bb026dd14cdc43f8fcc628a3831",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bf8441ca_7265d9bb",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1956428
+      },
+      "writtenOn": "2022-12-09T20:15:46Z",
+      "side": 1,
+      "message": "Fixed the commit message.",
+      "parentUuid": "6940aba5_f8cbdecd",
+      "revId": "cdabefcc4ec37bb026dd14cdc43f8fcc628a3831",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
